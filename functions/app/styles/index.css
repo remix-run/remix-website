@@ -1,0 +1,7 @@
+/* 
+ * These styles will only be applied when routes/index.ts is rendered
+ */
+
+h1 {
+  color: red;
+}
