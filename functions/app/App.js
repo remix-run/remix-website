@@ -1,8 +1,23 @@
 import React from "react";
 
 import { Meta, Scripts, Styles, Routes } from "@remix-run/react";
+import { useLocation } from "react-router-dom";
 
 export default function App() {
+  let location = useLocation();
+  let locations = React.useRef();
+  if (!locations.current) {
+    locations.current = new Set();
+    locations.current.add(location.key);
+  }
+  React.useEffect(() => {
+    if (locations.current.has(location.key)) return;
+    locations.current.add(location.key);
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  }, [location]);
+
   return (
     <html lang="en">
       <head>
@@ -12,6 +27,10 @@ export default function App() {
           content="width=device-width,initial-scale=1,viewport-fit=cover"
         />
         <Meta />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/github-markdown-css@4.0.0/github-markdown.css"
+        />
         <Styles />
       </head>
       <body>

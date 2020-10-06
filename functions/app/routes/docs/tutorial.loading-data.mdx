@@ -1,0 +1,89 @@
+---
+meta:
+  title: Loading Data
+---
+
+import { Link } from "@remix-run/react";
+
+# Loading Data
+
+Remix will automatically call what are called "route loaders" to make data available to the route component. These route loaders are only ever run server side so you can use whatever you need to load data, including a direct connection to your database.
+
+## Accessing data for a route
+
+Even though we haven't created a loader yet, we can still ask for the data at a route as if we had one and we'll get `null`.
+
+Open up "routes/gists.js", import `useRouteData` from Remix, then drop in a console log to see it.
+
+```jsx
+import React from "react";
+import { useRouteData } from "@remix-run/react";
+
+export default function Gists() {
+  let [data] = useRouteData();
+  console.log(data);
+  return (
+    <div>
+      <h2>Public Gists</h2>
+    </div>
+  );
+}
+```
+
+If you visit "/gists" you should see `null` in the console.
+
+## Your first loader
+
+Now let's make the loader. Create the file `data/loaders/gists.js` and put this in it.
+
+```js
+const fetch = require("node-fetch");
+module.exports = function () {
+  return fetch("https://api.github.com/gists");
+};
+```
+
+Refresh the browser at "/gists" and you should see a bunch of gists in the console!
+
+Go ahead and map over that array however you'd like, here's a suggestion:
+
+```jsx
+// ...
+export default function Gists() {
+  let [data] = useRouteData();
+
+  return (
+    <div>
+      <h2>Public Gists</h2>
+      <ul>
+        {data.map((gist) => (
+          <li key={gist.id}>
+            <a href={gist.html_url}>{Object.keys(gist.files)[0]}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+## Data for meta tags
+
+Meta tags pretty much always depend on data, so Remix passes the route data to your meta tag function:
+
+```jsx
+export function meta({ data }) {
+  return {
+    title: "Public Gists",
+    description: `View the latest ${data.length} gists from the public`,
+  };
+}
+```
+
+Now if somebody posts a link to this site on social media, the preview will include the description with that data-driven meta description 🙌.
+
+<div className="next-prev-links">
+  <Link className="next" to="../nested-routes-params">
+    Next up: Nested Routes and Params
+  </Link>
+</div>

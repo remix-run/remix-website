@@ -1,0 +1,114 @@
+@font-face {
+  font-family: "Virgil";
+  src: url("https://excalidraw.com/FG_Virgil.woff2");
+}
+@font-face {
+  font-family: "Cascadia";
+  src: url("https://excalidraw.com/Cascadia.woff2");
+}
+
+body {
+  margin: 0;
+}
+
+#nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 15rem;
+  overflow: auto;
+  border-right: solid 1px hsl(214 50% 94% / 1);
+  background: hsl(214 50% 99% / 1);
+}
+
+#logo {
+  position: sticky;
+  background: linear-gradient(
+    hsl(214 50% 99% / 1),
+    hsl(214 50% 99% / 1),
+    hsl(214 50% 99% / 0)
+  );
+  top: 0;
+  padding: 1rem;
+  padding-top: 0.5rem;
+}
+
+#logo svg {
+  max-width: 10rem;
+}
+
+nav {
+  margin-top: 3rem;
+  padding: 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+nav ul {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+nav > ul > li {
+  margin-bottom: 2rem;
+}
+
+nav .section {
+  text-transform: uppercase;
+  font-weight: 500;
+  color: hsl(214 50% 15% / 1);
+  display: block;
+  padding-bottom: 0.33rem;
+  font-size: 0.85rem;
+}
+
+nav a:hover {
+  color: hsl(214 20% 25% / 1);
+  text-decoration: none;
+}
+
+nav a {
+  color: hsl(214 20% 50% / 1);
+  text-decoration: none;
+  display: block;
+  padding: 0.33rem 0;
+}
+
+nav a.active {
+  color: #e765c3;
+}
+
+main {
+  padding: 2rem 3rem;
+  margin-left: 15rem;
+  transition: opacity ease-in 200ms;
+}
+
+main.loading {
+  opacity: 0.25;
+  transition-delay: 500ms;
+}
+
+.markdown-body {
+  max-width: 800px;
+}
+
+.markdown-body {
+  color: hsl(214 50% 24% / 1);
+}
+
+h1 {
+  color: hsl(214 50% 47% / 1);
+  margin-bottom: 2rem;
+}
+
+.next-prev-links {
+  text-align: right;
+  margin: 3rem 0;
+  font-size: 200%;
+}
+
+svg > *[fill] {
+  transition: opacity 200ms;
+}

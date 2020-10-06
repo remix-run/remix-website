@@ -1,0 +1,66 @@
+---
+meta:
+  title: Defining Routes
+---
+
+import { Link } from "@remix-run/react";
+
+# Defining Routes
+
+Routes in remix can be defined two ways: conventionally inside of the "app/routes" folder or manually with `remix.config.routes`. For this getting started guide we'll just cover the conventional files, but check out the <Link to="../routing">Routing Guide</Link>.
+
+## Creating your first route
+
+Create a file like "app/routes/gists.js". Then edit the file to look like this:
+
+```js
+import React from "react";
+
+export default function Gists() {
+  return (
+    <div>
+      <h2>Public Gists</h2>
+    </div>
+  );
+}
+```
+
+Now visit [http://localhost:3000/gists](http://localhost:3000/gists). Not bad!
+
+Let's add a link to this route from the main application layout. Open up `app/App.js` and add the link:
+
+```js
+import { Link } from "@remix-run/react";
+
+// somewhere on the page:
+<Link to="/gists">Gists</Link>;
+```
+
+That's it. Make a file, get a route. We'll talk about nested routes later in this tutorial because they're awesome, but not yet.
+
+## Meta tags
+
+Meta tags are fundamental to the web so Remix makes it easy.
+
+From your route component, export a `meta` function. From there, return an object with the "title" key and then any other meta tags you'd like to include, like the description. These will be server rendered and kept up-to-date as the user navigates around your app.
+
+```jsx
+export function meta() {
+  return {
+    title: "Public Gists",
+    description: "View the latest gists from the public",
+  };
+}
+
+export default function Gists() {
+  // ...
+}
+```
+
+Now refresh the browser and click around and watch the title update 😀.
+
+<div className="next-prev-links">
+  <Link className="next" to="../loading-data">
+    Next up: Loading Data
+  </Link>
+</div>

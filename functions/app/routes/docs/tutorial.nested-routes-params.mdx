@@ -1,0 +1,279 @@
+---
+meta:
+  title: Nested Routes and Params
+---
+
+import { Link } from "@remix-run/react";
+
+# Nested Routes and Params
+
+This page is a little longer than the others but the ideas here are important, so we encourage you to make it all the way through.
+
+It would be cool if we could punch in somebody's GitHub username and see their gists, like `/gists/ryanflorence`.
+
+This is going to involve a few steps, and we'll introduce a couple new Remix concepts along the way.
+
+1. Defining a new route
+2. Defining a new loader for the route
+3. Refactoring to share UI with nested routes
+4. Moving the public gists list to an "index route"
+
+## Defining a new route with a nested URL
+
+Create a new file called `routes/gists.$username.js`. The `.` creates a `/` in the URL, so we just created a URL for `/gists/:username`. We'll see how folders can do the same thing to the URL when we get to nested routes.
+
+The `$` in the URL makes that segment "dynamic". Remix will parse out the value in that segment and provide it in the `useParams` hook. Whatever the name of the file is will be the name of the param. So in our case we'd have `params.username` becuase the file is named `$username.js`.
+
+This file will look a lot like the `routes/gists.js` file from before, except for dropping in the params to the title.
+
+```jsx
+import React from "react";
+import { useRouteData, Link, useParams } from "@remix-run/react";
+
+export default function UserGists() {
+  let [data] = useRouteData();
+  let params = useParams();
+
+  return (
+    <div>
+      <h2>{params.username}'s Gists</h2>
+      <ul>
+        {data.map((gist) => (
+          <li key={gist.id}>
+            <a href={gist.html_url}>{Object.keys(gist.files)[0]}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+We can't visit this route yet because we don't have a loader and we'll get an error, so let's make the loader.
+
+Note that you don't need to restart your server with any of this, you can add/remove files all you want, Remix can handle it.
+
+## Defining the loader
+
+Now make a file at `data/loaders/gists.$username.js`. It will look a lot like the `data/loaders/gists.js` file, but again, we use the params. Note that Remix passes them into your loader on the `params` key.
+
+```js
+const fetch = require("node-fetch");
+
+module.exports = function ({ params }) {
+  return fetch(`https://api.github.com/users/${params.username}/gists`);
+};
+```
+
+Alright, go check it out! [https://localhost:3000/gists/ryanflorence](https://localhost:3000/gists/ryanflorence)
+
+## Sharing UI with Nested Routes
+
+It would be cool to be able to have a list of users at the top of `/gists` that you can click through and see their gists, without rerending that list. We're going to use Nested Routes to accomplish this.
+
+Right now we've got the following files:
+
+```
+├── app
+│   └── routes
+│       ├── gists.$username.js
+│       └── gists.js
+└── data
+    └── loaders
+        ├── gists.$username.js
+        └── gists.js
+```
+
+We're going to rearrange them to get automatic UI sharing and layout nesting with Nested Routes.
+
+First we need a new folder at `routes/gists` and `data/loaders/gists`.
+
+```
+mkdir -p routes/gists data/loaders/gists
+```
+
+Then we're going to move our `gists.$username.js` into `gists/$username.js`.
+
+```
+mv routes/gists.$username.js routes/gists/$username.js
+mv data/loaders/gists.$username.js data/loaders/gists/$username.js
+```
+
+If your shell struggles with `$` you can escape it with `\$.username`.
+
+Now your files should look like this:
+
+```
+├── app
+│   └── routes
+│       ├── gists
+│       │   └── $username.js
+│       └── gists.js
+└── data
+    └── loaders
+        ├── gists
+        │   └── $username.js
+        └── gists.js
+```
+
+When your routes are arranged in folders like this, the file with the same name as the folder becomes a "layout route". In our case `routes/gists.js` is now the layout for all of the routes inside the folder `routes/gists`.
+
+Go ahead and visit [https://localhost:3000/gists/ryanflorence](https://localhost:3000/gists/ryanflorence) again. It might not be what you expect. You should only be seeing the public gists instead of Ryan's. The problem is we haven't rendered an `<Outlet/>` to tell Remix where we want the nested routes to show up.
+
+Open up `routes/gists.js` and add an `<Outlet/>`:
+
+```jsx
+import React from "react";
+
+// add Outlet to your imports
+import { Outlet, useRouteData, Link } from "@remix-run/react";
+
+export default function Gists() {
+  let [data] = useRouteData();
+
+  return (
+    <div>
+      {/* Add the outlet */}
+      <Outlet />
+
+      <hr />
+
+      {/* start giving this code the side-eye */}
+      <h2>Public Gists</h2>
+      <ul>
+        {data.map((gist) => (
+          <li key={gist.id}>
+            <a href={gist.html_url}>{Object.keys(gist.files)[0]}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+Refresh the browser and you should see Ryan's gists inside the `gists.js` layout! It's a common thing to scratch your head wondering where your child routes are. First thing you should do is check if the layout is rendering an `<Outlet/>` or not.
+
+Let's add some navigation to share as we switch between users:
+
+```jsx
+import React from "react";
+
+// add Outlet to your imports
+import { Outlet, useRouteData, Link } from "@remix-run/react";
+
+export default function Gists() {
+  let [data] = useRouteData();
+
+  return (
+    <div>
+      {/* Add shared nav */}
+      <nav>
+        <Link to="ryanflorence">Ryan Florence</Link> |{" "}
+        <Link to="your-user-name">You</Link>
+      </nav>
+      <Outlet />
+
+      <hr />
+
+      {/* increase side-eye */}
+      <h2>Public Gists</h2>
+      <ul>
+        {data.map((gist) => (
+          <li key={gist.id}>
+            <a href={gist.html_url}>{Object.keys(gist.files)[0]}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+Refresh and you can now click between those two users. The navigation doesn't get re-rendered, only the piece of the page that changes does.
+
+Okay, I hope you've been giving those public gists the side-eye. Seems like we don't want those rendering underneath the users every time. What would be really great is if when you visited `/gists` the public gists rendered, and if you visited `gists/some-user` you only saw the user's gists.
+
+Enter index routes.
+
+## Index Routes
+
+An index route is a child route that renders into the layout route's outlet when the layout route's path is matched exactly. Let me explain:
+
+Open up [http://localhost:3000/gists](http://localhost:3000/gists). You should see the public gists, but no user's gists. You probably expected that. When a layout route's path is matched exactly (in our case `/gists`), there is no child route to put in the outlet. Instead of having a blank page, we have the idea of an "index route" to fill in the outlet in this situation.
+
+So again, an index route is a child route that renders into the layout route's outlet when the layout route's path is matched exactly.
+
+Let's create an index route at `routes/gists/index.js`. You can just put something boring in it for now:
+
+```jsx
+import React from "react";
+export default function GistsIndex() {
+  return <div>Gists index!</div>;
+}
+```
+
+Now refresh the browser at `/gists` and you should see your new index route.
+
+Next let's move the public gists into this index route.
+
+It's going to look exactly like `routes/gists.js` did before we started this part of the tutorial. You can copy paste from here if you like, or move code around yourself.
+
+```jsx
+// routes/gists/index.js
+import React from "react";
+import { useRouteData, Link } from "@remix-run/react";
+
+export default function Gists() {
+  let [data] = useRouteData();
+
+  return (
+    <div>
+      <h2>Public Gists</h2>
+      <ul>
+        {data.map((gist) => (
+          <li key={gist.id}>
+            <a href={gist.html_url}>{Object.keys(gist.files)[0]}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+Visit `/gists` again in the browser. You should probably have an error.
+
+Since the route that wants this data moved, we should move the loader, too.
+
+```
+mv data/loaders/gists.js data/loaders/gists/index.js
+```
+
+Okay refresh again. Alright!
+
+You'll notice we no longer have a loader at `data/loaders/gists.js`, that's fine. Every route doesn't have to have a loader, and our new version of `routes/gists.js` doesn't need any data.
+
+## Homework
+
+Make the navigation data-driven. Instead of hard coding each user in there, fetch them from somewhere. Github has an endpoint that gives you all the users for an organization, maybe use that. A few questions to get you started:
+
+1. Which route will use this data?
+2. Which loader will fetch it?
+3. How do you access the data?
+
+Here's the url to get all the members of our training company, [React Training](https://reacttraining.com). Swap out our org for any org you like:
+
+```
+https://api.github.com/orgs/reacttraining/members
+```
+
+Then use that to build the navigation from data 🎉
+
+If this isn't totally sinking in yet, check out the <Link to="/docs/nested-routes">Nested Routes</Link> guide for more information.
+
+<div className="next-prev-links">
+  <Link className="next" to="../styling">
+    Next up: Styling
+  </Link>
+</div>
