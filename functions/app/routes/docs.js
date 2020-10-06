@@ -1,5 +1,7 @@
 import React from "react";
+import { useLocationPending } from "@remix-run/react";
 import { Outlet, NavLink } from "react-router-dom";
+import { LoadingLogo } from "../components/Logo";
 
 let sections = [
   [
@@ -36,9 +38,13 @@ let sections = [
 ];
 
 export default function Docs() {
+  let pending = useLocationPending();
   return (
     <>
       <section id="nav">
+        <div id="logo">
+          <LoadingLogo />
+        </div>
         <nav>
           <ul>
             {sections.map(([name, links], index) => (
@@ -58,7 +64,7 @@ export default function Docs() {
           </ul>
         </nav>
       </section>
-      <main className="markdown-body">
+      <main className={`markdown-body ${pending ? "loading" : ""}`}>
         <Outlet />
       </main>
     </>

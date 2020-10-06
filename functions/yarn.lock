@@ -5887,6 +5887,11 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+use-throttle@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/use-throttle/-/use-throttle-0.0.3.tgz#06d465b831c2ededb2c52448bee0b5d9833804ae"
+  integrity sha512-cgA3c+pe6V7cZ7pkLnYnWxXJub2AmksY7YTp/xiZzKesQyECJ1slWknVY2CVZOBf48avbZsAvJIDjO+aFu9+pw==
+
 util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
