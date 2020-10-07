@@ -6,8 +6,6 @@ import { useLocation } from "react-router-dom";
 export default function App() {
   let location = useLocation();
 
-  console.log(location.key, location.hash);
-
   let locations = React.useRef();
   if (!locations.current) {
     locations.current = new Set();

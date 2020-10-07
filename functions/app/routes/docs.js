@@ -3,6 +3,12 @@ import { useLocationPending } from "@remix-run/react";
 import { Outlet, NavLink } from "react-router-dom";
 import { LoadingLogo } from "../components/Logo";
 
+export function headers({ loaderHeaders }) {
+  return {
+    "Cache-Control": "public, max-age=3600",
+  };
+}
+
 let sections = [
   [
     "Quickstart Tutorial",

@@ -1194,18 +1194,18 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@remix-run/cli@^0.1.4":
-  version "0.1.4"
-  resolved "https://npm.pkg.github.com/download/@remix-run/cli/0.1.4/8db5325d65dfb5c72e8640b6ecdab37ee9f3a946b0fa681846b06175eafad354#7d512f64d80bbda3204ecce670981aa9bf224373"
-  integrity sha512-5HM+AZJfe27M8lKPl87I+sD2H3vCa5NMIXTG+SbFs0mumDLJka9oBkvGZKstL+LW3m+NArNZF9KAp/dLFjiFDw==
+"@remix-run/cli@^0.2.0":
+  version "0.2.0"
+  resolved "https://npm.pkg.github.com/download/@remix-run/cli/0.2.0/fd85d51187d21ad6b53a9a69b2147fde09431521d42ef18964e95b1f685e8993#3ba7a73a369769495c597771616d89a86790d581"
+  integrity sha512-Ipfx1lixYpoFOBaFuavsFdZSwzKbw+7HUtU9YuooMwh/6e2+YyNWxxl0MOpenZOi+UiU2s+0Q9fmSvrLJsyBJg==
   dependencies:
-    "@remix-run/core" "0.1.4"
+    "@remix-run/core" "0.2.0"
     meow "^7.1.1"
 
-"@remix-run/core@0.1.4", "@remix-run/core@^0.1.4":
-  version "0.1.4"
-  resolved "https://npm.pkg.github.com/download/@remix-run/core/0.1.4/aae1fb8474712918517bf181bf26b14c09d49a944d8ed89abee7697318935a30#4038fa9a504dca7d6240b1f22533208024c6d6f4"
-  integrity sha512-RYzVwYXhD1EZK6u9SexnltTZVk6P54gQKwmN8TA5dlT9rHX2HznaLODenAF2w9ePcgIa7k05DuNaLPk1l0IhTA==
+"@remix-run/core@0.2.0", "@remix-run/core@^0.2.0":
+  version "0.2.0"
+  resolved "https://npm.pkg.github.com/download/@remix-run/core/0.2.0/7c43cab836da0a7b162bedf26c3e6728cb540775d250363460c66138d25ebab2#c2eae12f2397cf7e573743ef09465586d3162063"
+  integrity sha512-5C1EnozzjLkHOHPRhWQUduPNNhfUM+FjOAeIhi3djZ/b1eI2dTokYfsPWiCPGXCQHxjn7GA34n2EYI6CQPatAg==
   dependencies:
     "@babel/core" "^7.11.6"
     "@babel/preset-env" "^7.11.5"
@@ -1235,24 +1235,24 @@
     signal-exit "^3.0.3"
     tmp "^0.2.1"
 
-"@remix-run/express@^0.1.4":
-  version "0.1.4"
-  resolved "https://npm.pkg.github.com/download/@remix-run/express/0.1.4/8a8f1c7eefe4cb67fc74e8cd080273e976ed21832f8d77b59f9b0d5e08f1ea3b#26272b7753ee2a4dc789537dec9c8112697a4b42"
-  integrity sha512-MiocdOcZOm+9T63TPtTHyLC9u5r4jL2rxmXBhCfC6FZS2EPLYbPaIXzUT7DGhvviND92DoCR1j9QpnrYZs8csg==
+"@remix-run/express@^0.2.0":
+  version "0.2.0"
+  resolved "https://npm.pkg.github.com/download/@remix-run/express/0.2.0/4af2bd039171c62aff2b2b60086d84c24fc13e0bd53a07f257e5343e0c01eb27#631aaf6388ebb410c11e67150b38618c94d9cae9"
+  integrity sha512-TMsiLcZAVTjP+3Ao23a4REyfH07ZQIwPork91/WIOq9heBVw+yDYs2Rj4lEcyHfmqWP5A1UKsLjJX3lCWhvTPw==
   dependencies:
-    "@remix-run/core" "0.1.4"
+    "@remix-run/core" "0.2.0"
 
-"@remix-run/loader@^0.1.4":
-  version "0.1.4"
-  resolved "https://npm.pkg.github.com/download/@remix-run/loader/0.1.4/80acb5674bc91475138d389e3239c442f30d96a104b7bc7e511fd617672dc5ad#5c406ca936a9cc7903bf301de99525ee88f2f990"
-  integrity sha512-jSq5tCPWm0XjXcgvb2pJWy9IDPx122OhoeTPQxnJnycR0GSGP9E/jn3CDHQfbxo3fC9lxLTQKLoi1/9ura9Gkg==
+"@remix-run/loader@^0.2.0":
+  version "0.2.0"
+  resolved "https://npm.pkg.github.com/download/@remix-run/loader/0.2.0/8591ac89e130dcda5dc62bf567be2b25a3629231c7995eefcd46e6d22a7a5e80#88faa45ef915bf08aa3105c444836aeab6646dd9"
+  integrity sha512-F0HYYv7muMk2OXRMliNH6zNrznwcoP76d9+fZwGK5I37npfjX3Sll8sqBBctCElvLRtImiBZigAisLoDrRPChw==
   dependencies:
-    "@remix-run/core" "0.1.4"
+    "@remix-run/core" "0.2.0"
 
-"@remix-run/react@^0.1.4":
-  version "0.1.4"
-  resolved "https://npm.pkg.github.com/download/@remix-run/react/0.1.4/e90a478408479c11b07b2473632ebd4c9cc2dd7031baccdf6b9b5e1fda13db72#ab0ac65b08322f50f3521730a8c66279c1eb3823"
-  integrity sha512-N5MlqWupvYmll/RBoxyzZrgnoAe0gCdKkUDypWyODDoQZk/kAI/Anlb2XPLuBaXD7YYVapCVe8ZAceXZz/EC+Q==
+"@remix-run/react@^0.2.0":
+  version "0.2.0"
+  resolved "https://npm.pkg.github.com/download/@remix-run/react/0.2.0/8ba30e08ec3fe45a1c1a9e72e623612a7a7ac3f138bfa0965ee6b4ed7ac7a981#78062258f0502044b537b0b293e3b3e899ddfd85"
+  integrity sha512-JgKZZYMcp6SP7JR8yC4akZKXlT590xA4g8YoI66N60Kj5EwsC4Dw+ckfsSNkyZRBBR0JEjK2KYIih4SXMBXvEQ==
 
 "@rollup/plugin-alias@^3.1.1":
   version "3.1.1"

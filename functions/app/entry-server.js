@@ -8,10 +8,11 @@ import App from "./App";
 export default function handleRequest(
   request,
   responseStatusCode,
+  responseHeaders,
   remixContext
 ) {
   let markup = renderToString(
-    <Remix request={request} context={remixContext}>
+    <Remix url={request.url} context={remixContext}>
       <App />
     </Remix>
   );
@@ -19,6 +20,7 @@ export default function handleRequest(
   return new Response("<!DOCTYPE html>" + markup, {
     status: responseStatusCode,
     headers: {
+      ...Object.fromEntries(responseHeaders),
       "Content-Type": "text/html",
     },
   });
