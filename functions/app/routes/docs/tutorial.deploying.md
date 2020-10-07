@@ -1,6 +1,6 @@
 ---
 meta:
-  title: Tutorial | Deploying
+  title: Deploying | Remix Tutorial
 ---
 
 # Deploying

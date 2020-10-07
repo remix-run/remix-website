@@ -5,17 +5,22 @@ import { useLocation } from "react-router-dom";
 
 export default function App() {
   let location = useLocation();
+
+  console.log(location.key, location.hash);
+
   let locations = React.useRef();
   if (!locations.current) {
     locations.current = new Set();
     locations.current.add(location.key);
   }
+
   React.useEffect(() => {
-    if (locations.current.has(location.key)) return;
+    let wasWeirdHistoryBug = location.key === "default";
+    if (wasWeirdHistoryBug || locations.current.has(location.key)) return;
     locations.current.add(location.key);
     requestAnimationFrame(() => {
       window.scrollTo(0, 0);
-    }, 100);
+    });
   }, [location]);
 
   return (

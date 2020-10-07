@@ -49,7 +49,7 @@ export default function Docs() {
           <ul>
             {sections.map(([name, links], index) => (
               <li key={index}>
-                <span className="section">{name}</span>
+                <div className="heading">{name}</div>
                 <ul>
                   {links.map(([label, to], index) => (
                     <li key={index}>
@@ -64,7 +64,7 @@ export default function Docs() {
           </ul>
         </nav>
       </section>
-      <main className={`markdown-body ${pending ? "loading" : ""}`}>
+      <main className={pending ? "loading" : ""}>
         <Outlet />
       </main>
     </>

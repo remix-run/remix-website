@@ -1,3 +1,5 @@
+@import "//unpkg.com/prism-themes@1.4.0/themes/prism-material-light.css";
+
 @font-face {
   font-family: "Virgil";
   src: url("https://excalidraw.com/FG_Virgil.woff2");
@@ -38,23 +40,26 @@ body {
   max-width: 10rem;
 }
 
-nav {
+#nav nav {
   margin-top: 1rem;
   padding: 0 1rem;
+}
+
+nav {
   font-size: 0.95rem;
   line-height: 1;
 }
 
-nav ul {
+#nav nav ul {
   padding-left: 0;
   list-style-type: none;
 }
 
-nav > ul > li {
+#nav nav > ul > li {
   margin-bottom: 2rem;
 }
 
-nav .section {
+nav .heading {
   text-transform: uppercase;
   font-weight: 500;
   color: hsl(214 50% 15% / 1);
@@ -80,7 +85,7 @@ nav a.active {
 }
 
 main {
-  padding: 2rem 3rem;
+  padding: 0rem 3rem;
   margin-left: 15rem;
   transition: opacity ease-in 200ms;
 }
@@ -91,7 +96,7 @@ main.loading {
 }
 
 .markdown-body {
-  max-width: 800px;
+  min-width: 45rem;
 }
 
 .markdown-body {
@@ -100,15 +105,44 @@ main.loading {
 
 h1 {
   color: hsl(214 50% 47% / 1);
-  margin-bottom: 2rem;
+  padding-top: 1.25rem;
 }
 
 .next-prev-links {
   text-align: right;
-  margin: 3rem 0;
-  font-size: 200%;
+  padding-top: 2rem;
+  padding-bottom: 10rem;
+  font-size: 150%;
 }
 
 svg > *[fill] {
   transition: opacity 200ms;
+}
+
+main {
+  display: flex;
+}
+
+main article {
+  flex: 0;
+  order: 0;
+}
+
+main nav {
+  flex: 1;
+  order: 1;
+  padding: 1rem;
+  margin-left: 3rem;
+  min-width: 20rem;
+  max-width: 20rem;
+  align-self: flex-start;
+  position: sticky;
+  top: 3rem;
+  border: solid 1px hsl(214 50% 94% / 1);
+  background: hsl(214 50% 99% / 1);
+  border-radius: 6px;
+}
+
+h2 {
+  padding-top: 1rem;
 }
