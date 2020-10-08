@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "node-fetch": "^2.6.1"
+  }
+}

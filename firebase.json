@@ -9,8 +9,8 @@
   "hosting": {
     "rewrites": [
       {
-        "source": "/api/todos",
-        "function": "todos"
+        "source": "/api/subscribeEmail",
+        "function": "subscribeEmail"
       },
       {
         "source": "**",

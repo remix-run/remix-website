@@ -29,11 +29,10 @@ export default function App() {
           name="viewport"
           content="width=device-width,initial-scale=1,viewport-fit=cover"
         />
+        <link rel="icon" href="/favicon-32.png" sizes="32x32" />
+        <link rel="icon" href="/favicon-96.png" sizes="96x96" />
+        <link rel="icon" href="/favicon-228.png" sizes="228x228" />
         <Meta />
-        <link
-          rel="stylesheet"
-          href="https://unpkg.com/github-markdown-css@4.0.0/github-markdown.css"
-        />
         <Styles />
       </head>
       <body>

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useThrottle } from "use-throttle";
-import { detect } from "detect-browser";
+import { useLocationPending } from "@remix-run/react";
 
-let colorMap = {
+let darkModeColorMap = {
   aqua: "#D5F3F1",
   green: "#BFF3C6",
   pink: "#F9AAE0",
@@ -11,7 +11,28 @@ let colorMap = {
   blue: "#92B6E0",
 };
 
+let colorMap = {
+  aqua: "#12DBD4",
+  green: "#09E16F",
+  pink: "#E765C3",
+  red: "#FF3D4E",
+  yellow: "#FFE071",
+  blue: "#3C70B5",
+};
+
 let defaultColors = ["aqua", "green", "pink", "red", "yellow"];
+
+export function LoadingLogo() {
+  let pending = useLocationPending();
+  let [colors, setColors] = useLogoAnimation();
+  React.useEffect(() => {
+    if (pending) {
+      let id = setTimeout(setColors, 250);
+      return () => clearTimeout(id);
+    }
+  }, [colors, pending]);
+  return <Logo colors={colors} />;
+}
 
 export function useLogoAnimation() {
   let [colors, setColors] = useState(defaultColors);
@@ -27,19 +48,8 @@ export function useLogoAnimation() {
 export default function Logo({ colors = defaultColors, ...props }) {
   let [r, e, m, i, x] = colors;
 
-  // Safari doesn't update the inner shadows on the logo, so we force a full
-  // rerender with a key
-  let sniffRef = useRef(null);
-  if (sniffRef.current === null) {
-    sniffRef.current = typeof window === "undefined" ? "server" : detect().name;
-  }
-  let logoKey = ["safari", "ios"].includes(sniffRef.current)
-    ? colors.join()
-    : undefined;
-
   return (
     <svg
-      key={logoKey}
       {...props}
       style={{ overflow: "visible" }}
       viewBox="0 0 643 239"
@@ -58,7 +68,7 @@ export default function Logo({ colors = defaultColors, ...props }) {
           width="200%"
           height="200%"
           filterUnits="objectBoundingBox"
-          id="yellow-outer"
+          id="white-outer"
         >
           <feOffset
             dx="0"
@@ -67,12 +77,12 @@ export default function Logo({ colors = defaultColors, ...props }) {
             result="shadowOffsetOuter1"
           ></feOffset>
           <feGaussianBlur
-            stdDeviation="5"
+            stdDeviation="2"
             in="shadowOffsetOuter1"
             result="shadowBlurOuter1"
           ></feGaussianBlur>
           <feColorMatrix
-            values="0 0 0 0 1   0 0 0 0 0.878431373   0 0 0 0 0.443137255  0 0 0 1 0"
+            values="-1 0 0 0 1, 0 -1 0 0 1, 0 0 -1 0 1, 0 0 0 1 0"
             type="matrix"
             in="shadowBlurOuter1"
           ></feColorMatrix>
@@ -426,76 +436,46 @@ export default function Logo({ colors = defaultColors, ...props }) {
           <use
             fill="black"
             fillOpacity="1"
-            filter={`url(#${r}-outer)`}
+            filter={`url(#white-outer)`}
             xlinkHref="#path-16"
           ></use>
           <use fill={colorMap[r]} fillRule="evenodd" xlinkHref="#path-16"></use>
-          <use
-            fill="black"
-            fillOpacity="1"
-            filter={`url(#${r}-inner)`}
-            xlinkHref="#path-16"
-          ></use>
         </g>
         <g>
           <use
             fill="black"
             fillOpacity="1"
-            filter={`url(#${e}-outer)`}
+            filter={`url(#white-outer)`}
             xlinkHref="#path-13"
           ></use>
           <use fill={colorMap[e]} fillRule="evenodd" xlinkHref="#path-13"></use>
-          <use
-            fill="black"
-            fillOpacity="1"
-            filter={`url(#${e}-inner)`}
-            xlinkHref="#path-13"
-          ></use>
         </g>
         <g>
           <use
             fill="black"
             fillOpacity="1"
-            filter={`url(#${m}-outer)`}
+            filter={`url(#white-outer)`}
             xlinkHref="#path-10"
           ></use>
           <use fill={colorMap[m]} fillRule="evenodd" xlinkHref="#path-10"></use>
-          <use
-            fill="black"
-            fillOpacity="1"
-            filter={`url(#${m}-inner)`}
-            xlinkHref="#path-10"
-          ></use>
         </g>
         <g>
           <use
             fill="black"
             fillOpacity="1"
-            filter={`url(#${i}-outer)`}
+            filter={`url(#white-outer)`}
             xlinkHref="#path-7"
           ></use>
           <use fill={colorMap[i]} fillRule="evenodd" xlinkHref="#path-7"></use>
-          <use
-            fill="black"
-            fillOpacity="1"
-            filter={`url(#${i}-inner)`}
-            xlinkHref="#path-7"
-          ></use>
         </g>
         <g>
           <use
             fill="black"
             fillOpacity="1"
-            filter={`url(#${x}-outer)`}
+            filter={`url(#white-outer)`}
             xlinkHref="#path-4"
           ></use>
           <use fill={colorMap[x]} fillRule="evenodd" xlinkHref="#path-4"></use>
-          <use
-            fill="black"
-            fillOpacity="1"
-            filter={`url(#${x}-inner)`}
-            xlinkHref="#path-4"
-          ></use>
         </g>
       </g>
     </svg>

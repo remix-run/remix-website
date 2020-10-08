@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "playground-a6490"
+    "default": "playground-a6490",
+    "production": "remix-run"
   }
 }

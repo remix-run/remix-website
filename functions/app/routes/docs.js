@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocationPending } from "@remix-run/react";
-import { Outlet, NavLink } from "react-router-dom";
-import { LoadingLogo } from "../components/Logo";
+import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { LoadingLogo } from "../components/DocsLogo";
 
 export function headers({ loaderHeaders }) {
   return {
@@ -45,12 +45,17 @@ let sections = [
 
 export default function Docs() {
   let pending = useLocationPending();
+  let location = useLocation();
+  let isIndex = location.pathname === "/docs";
   return (
     <>
-      <section id="nav">
+      <section id="nav" data-is-index={isIndex}>
         <div id="logo">
           <LoadingLogo />
         </div>
+        <NavLink to="/docs" id="index-link" activeClassName="hidden" end>
+          Home
+        </NavLink>
         <nav>
           <ul>
             {sections.map(([name, links], index) => (
@@ -70,7 +75,7 @@ export default function Docs() {
           </ul>
         </nav>
       </section>
-      <main className={pending ? "loading" : ""}>
+      <main data-is-index={isIndex} className={pending ? "loading" : ""}>
         <Outlet />
       </main>
     </>
