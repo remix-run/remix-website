@@ -5,7 +5,7 @@ import { LoadingLogo } from "../components/DocsLogo";
 
 export function headers({ loaderHeaders }) {
   return {
-    "Cache-Control": "public, max-age=3600",
+    "Cache-Control": "public, max-age=0, must-revalidate",
   };
 }
 

@@ -229,8 +229,8 @@ main nav {
   order: 1;
   padding: 1rem;
   margin-left: 3rem;
-  min-width: 20rem;
-  max-width: 20rem;
+  min-width: 15rem;
+  max-width: 15rem;
   align-self: flex-start;
   position: sticky;
   top: 3rem;
