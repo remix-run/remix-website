@@ -147,7 +147,7 @@ function PricingCards() {
             </div>
             <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
               <Checklist />
-              <BuyButton>Buy My Indie License</BuyButton>
+              <BuyButton to="indie">Buy My Indie License</BuyButton>
             </div>
           </div>
           <div className="flex flex-col rounded-lg shadow-lg overflow-hidden">
@@ -175,7 +175,7 @@ function PricingCards() {
             </div>
             <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
               <Checklist />
-              <BuyButton>Buy a Team License</BuyButton>
+              <BuyButton to="team">Buy a Team License</BuyButton>
             </div>
           </div>
         </div>
@@ -236,15 +236,15 @@ function Question({ title, children }) {
     </div>
   );
 }
-function BuyButton({ children }) {
+function BuyButton({ children, to }) {
   return (
     <div className="rounded-md shadow">
-      <a
-        href="#"
+      <Link
+        to={to}
         className="flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
       >
         {children}
-      </a>
+      </Link>
     </div>
   );
 }
