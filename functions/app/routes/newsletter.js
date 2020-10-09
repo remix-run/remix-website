@@ -115,12 +115,13 @@ export default function NewsLetter() {
   ////////////////////////////////////////
   // The party's about to get started
   return (
-    <div className="text-gray-100 max-w-3xl m-auto p-8 mt-0 sm:mt-20">
-      <Logo colors={colors} className="w-full" />
-      <div className="relative">
-        <div
-          aria-hidden={["thanks", "error"].includes(state)}
-          className={`
+    <div className="bg-gray-900 min-h-screen p-8 sm:p-20">
+      <div className="text-gray-100 max-w-3xl m-auto">
+        <Logo colors={colors} className="w-full" />
+        <div className="relative">
+          <div
+            aria-hidden={["thanks", "error"].includes(state)}
+            className={`
               ${
                 ["thanks", "error"].includes(state)
                   ? "opacity-0 transform translate-y-2 pointer-events-none"
@@ -129,67 +130,68 @@ export default function NewsLetter() {
               relative z-10
               transition duration-300 delay-1000
             `}
-        >
-          <form
-            autoComplete="off"
-            ref={formRef}
-            onSubmit={handleSubmit}
-            className={`
+          >
+            <form
+              autoComplete="off"
+              ref={formRef}
+              onSubmit={handleSubmit}
+              className={`
               flex justify-center flex-wrap sm:flex-no-wrap
             `}
-          >
-            <VisuallyHidden id="subscription-description">
-              Subscribe to our mailing list
-            </VisuallyHidden>
-            <Input
-              required
-              autoComplete="off"
-              onFocus={handleInputFocus}
-              onChange={handleNameChange}
-              aria-label="name"
-              aria-describedby="subscription-description"
-              type="text"
-              name="name"
-              placeholder="First Name"
-              disabled={["loading", "success", "thanks"].includes(state)}
-            />
-            <Input
-              required
-              autoComplete="off"
-              onFocus={handleInputFocus}
-              onChange={handleEmailChange}
-              aria-label="email"
-              aria-describedby="subscription-description"
-              type="email"
-              name="email"
-              placeholder="Email"
-              disabled={["loading", "success", "thanks"].includes(state)}
-            />
-            <LoadingButton
-              className="m-1 w-full sm:w-auto"
-              state={state}
-              text="Subscribe"
-              loadingText="Subscribing..."
-              successText="Successfully Subscribed"
-              errorText="Subscription Error"
-              icon={<MdEmail />}
-              onFocus={changeColors}
-              type="submit"
-              disabled={state !== "valid"}
             >
-              Subscribe
-            </LoadingButton>
-          </form>
-          <div className="text-center leading-tight mt-4 text-gray-400">
-            <p className="font-light text-gray-400 sm:text-2xl sm:leading-7">
-              Subscribe for weekly updates on Remix and techniques to build
-              better websites. We respect your privacy, unsubscribe at any time.
-            </p>
+              <VisuallyHidden id="subscription-description">
+                Subscribe to our mailing list
+              </VisuallyHidden>
+              <Input
+                required
+                autoComplete="off"
+                onFocus={handleInputFocus}
+                onChange={handleNameChange}
+                aria-label="name"
+                aria-describedby="subscription-description"
+                type="text"
+                name="name"
+                placeholder="First Name"
+                disabled={["loading", "success", "thanks"].includes(state)}
+              />
+              <Input
+                required
+                autoComplete="off"
+                onFocus={handleInputFocus}
+                onChange={handleEmailChange}
+                aria-label="email"
+                aria-describedby="subscription-description"
+                type="email"
+                name="email"
+                placeholder="Email"
+                disabled={["loading", "success", "thanks"].includes(state)}
+              />
+              <LoadingButton
+                className="m-1 w-full sm:w-auto"
+                state={state}
+                text="Subscribe"
+                loadingText="Subscribing..."
+                successText="Successfully Subscribed"
+                errorText="Subscription Error"
+                icon={<MdEmail />}
+                onFocus={changeColors}
+                type="submit"
+                disabled={state !== "valid"}
+              >
+                Subscribe
+              </LoadingButton>
+            </form>
+            <div className="text-center leading-tight mt-4 text-gray-400">
+              <p className="font-light text-gray-400 sm:text-2xl sm:leading-7">
+                Subscribe for weekly updates on Remix and techniques to build
+                better websites. We respect your privacy, unsubscribe at any
+                time.
+              </p>
+            </div>
           </div>
-        </div>
-        <div
-          aria-hidden={state !== "error"}
-          className={`
+          <div
+            aria-hidden={state !== "error"}
+            className={`
               ${
                 state === "error"
                   ? "opacity-100 z-10"
@@ -199,31 +201,32 @@ export default function NewsLetter() {
               absolute top-0 left-0 w-full text-center outline-none
               transition duration-300 delay-1100
             `}
-        >
-          <div
-            ref={errorRef}
-            tabIndex="-1"
-            className="outline-none text-xl text-white font-bold"
           >
-            Something went wrong
-          </div>
-          <div>
-            Looks like our request is failing or being blocked by an extension.
-          </div>
-          <div>
-            <a
-              className="text-blue-500 underline"
-              href="https://remix.ck.page/c4e9df94f6"
+            <div
+              ref={errorRef}
+              tabIndex="-1"
+              className="outline-none text-xl text-white font-bold"
             >
-              Please try our plain HTML version
-            </a>
+              Something went wrong
+            </div>
+            <div>
+              Looks like our request is failing or being blocked by an
+              extension.
+            </div>
+            <div>
+              <a
+                className="text-blue-500 underline"
+                href="https://remix.ck.page/c4e9df94f6"
+              >
+                Please try our plain HTML version
+              </a>
+            </div>
           </div>
-        </div>
-        <div
-          ref={thanksRef}
-          tabIndex="-1"
-          aria-hidden={state !== "thanks"}
-          className={`
+          <div
+            ref={thanksRef}
+            tabIndex="-1"
+            aria-hidden={state !== "thanks"}
+            className={`
               ${
                 state === "thanks"
                   ? "opacity-100 z-10"
@@ -232,14 +235,15 @@ export default function NewsLetter() {
               absolute top-0 left-0 w-full text-center outline-none
               transition duration-300 delay-1100
             `}
-        >
-          <p className="text-2xl mb-0">
-            Thanks, {data.name}! You're gonna love this.
-          </p>
-          <p className="text-gray-400 mt-0">
-            Please check your email to confirm, otherwise you won't get our
-            email.
-          </p>
+          >
+            <p className="text-2xl mb-0">
+              Thanks, {data.name}! You're gonna love this.
+            </p>
+            <p className="text-gray-400 mt-0">
+              Please check your email to confirm, otherwise you won't get our
+              email.
+            </p>
+          </div>
         </div>
       </div>
     </div>

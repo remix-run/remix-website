@@ -1,321 +1,181 @@
 import React from "react";
 import Logo, { useLogoAnimation } from "../components/Logo";
+import { Link } from "react-router-dom";
 
 export default function Buy() {
+  return (
+    <div className="bg-gray-200">
+      <div className="bg-gray-900">
+        <Hero />
+        <div className="mt-8 pb-12 bg-gray-200 sm:mt-12 sm:pb-16 lg:mt-16 lg:pb-24">
+          <PricingCards />
+          <FAQSection />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Hero() {
   let [colors, changeColors] = useLogoAnimation();
   return (
-    <div className="bg-gray-900">
-      <div className="pt-12 sm:pt-16 lg:pt-24">
-        <div className="max-w-screen-xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto space-y-2 lg:max-w-none">
-            <div className="max-w-md mx-auto" onMouseMove={changeColors}>
-              <Logo colors={colors} className="w-full" />
-            </div>
-            <p className="text-3xl leading-9 font-extrabold text-white sm:text-4xl sm:leading-10 lg:text-5xl lg:leading-none">
-              Beta Preview Now Available
-            </p>
-            <p className="text-xl leading-7 text-gray-300">
-              Beta licenses are limited
-            </p>
+    <div className="pt-12 sm:pt-16">
+      <div className="max-w-screen-xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto space-y-2 lg:max-w-none">
+          <div className="max-w-md mx-auto" onMouseMove={changeColors}>
+            <Logo colors={colors} className="w-full" />
           </div>
+          <p className="text-3xl leading-9 font-extrabold text-white sm:text-4xl sm:leading-10 lg:text-5xl lg:leading-none">
+            Beta Preview Now Available
+          </p>
+          <p className="text-xl leading-7 text-gray-300">
+            Beta licenses are limited, so act quickly!
+          </p>
         </div>
       </div>
-      <div className="mt-8 pb-12 bg-gray-200 sm:mt-12 sm:pb-16 lg:mt-16 lg:pb-24">
-        <div className="relative">
-          <div className="absolute inset-0 h-3/4 bg-gray-900" />
-          <div className="relative z-10 max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md mx-auto space-y-4 lg:max-w-5xl lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0">
-              <div className="flex flex-col rounded-lg shadow-lg overflow-hidden">
-                <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6">
-                  <div>
-                    <h3
-                      className="inline-flex px-4 py-1 rounded-full text-sm leading-5 font-semibold tracking-wide uppercase bg-blue-100 text-blue-600"
-                      id="tier-standard"
-                    >
-                      Indie License (Beta)
-                    </h3>
-                  </div>
-                  <div className="mt-4 flex items-baseline text-6xl leading-none font-extrabold">
-                    $250
-                    <span className="ml-1 text-2xl leading-8 font-medium text-gray-500">
-                      /yr
-                    </span>
-                  </div>
-                  <p className="mt-5 text-lg leading-7 text-gray-700">
-                    Got a side project but you've spent the last few weekends
-                    just screwing around with webpack? Knock it off! For a
-                    couple hundered bucks you've got us behind you.
-                  </p>
-                </div>
-                <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
-                  <Checklist>
-                    <Check>Unlimited projects</Check>
-                    <Check>Access to community chat</Check>
-                    <Check>Lower beta price</Check>
-                    <Check>Cancel any time, use the last version forever</Check>
-                  </Checklist>
-                  <div className="rounded-md shadow">
-                    <a
-                      href="#"
-                      className="flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-                      aria-describedby="tier-standard"
-                    >
-                      Buy My Indie License
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col rounded-lg shadow-lg overflow-hidden">
-                <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6">
-                  <div>
-                    <h3
-                      className="inline-flex px-4 py-1 rounded-full text-sm leading-5 font-semibold tracking-wide uppercase bg-blue-100 text-blue-600"
-                      id="tier-standard"
-                    >
-                      Team License (Beta)
-                    </h3>
-                  </div>
-                  <div className="mt-4 flex items-baseline text-6xl leading-none font-extrabold">
-                    $1000
-                    <span className="ml-1 text-2xl leading-8 font-medium text-gray-500">
-                      /dev /yr
-                    </span>
-                  </div>
-                  <p className="mt-5 text-lg leading-7 text-gray-700">
-                    Your projects need a solid foundation. You could hire a team
-                    for about $1M/yr to build it, or pay a fraction of that for
-                    Remix. Great tools increase the productivity of
-                    everybody—this is a steal.
-                  </p>
-                </div>
-                <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
-                  <Checklist>
-                    <Check>Unlimited projects</Check>
-                    <Check>Access to community chat</Check>
-                    <Check>Basic Support</Check>
-                    <Check>Team size can change (annual review)</Check>
-                  </Checklist>
-                  <div className="rounded-md shadow">
-                    <a
-                      href="#"
-                      className="flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-                      aria-describedby="tier-standard"
-                    >
-                      Buy a Team License
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white">
-        <div className="max-w-screen-xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
-          <h2 className="text-3xl leading-9 font-extrabold text-gray-900 text-center">
-            Frequently asked questions
-          </h2>
-          <div className="mt-12">
-            <dl className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:grid-rows-2 md:col-gap-8 md:row-gap-12 lg:grid-cols-3">
-              <div className="space-y-2">
-                <dt className="text-lg leading-6 font-medium text-gray-900">
-                  Is there a trial period?
-                </dt>
-                <dd className="text-base leading-6 text-gray-500">
-                  Not at this time. We are currently in beta and can make no
-                  guarantees to the production-readiness of Remix (that's the
-                  point of the beta!). Wait for the 1.0 release if you'd like a
-                  a refundable evaluation period.
-                </dd>
-              </div>
-              <div className="space-y-2">
-                <dt className="text-lg leading-6 font-medium text-gray-900">
-                  How do you make holy water?
-                </dt>
-                <dd className="text-base leading-6 text-gray-500">
-                  You boil the hell out of it. Lorem ipsum dolor sit amet
-                  consectetur adipisicing elit. Quas cupiditate laboriosam
-                  fugiat.
-                </dd>
-              </div>
-              <div className="space-y-2">
-                <dt className="text-lg leading-6 font-medium text-gray-900">
-                  Why do you never see elephants hiding in trees?
-                </dt>
-                <dd className="text-base leading-6 text-gray-500">
-                  Because they're so good at it. Lorem ipsum dolor sit amet
-                  consectetur adipisicing elit. Quas cupiditate laboriosam
-                  fugiat.
-                </dd>
-              </div>
-              <div className="space-y-2">
-                <dt className="text-lg leading-6 font-medium text-gray-900">
-                  What do you call someone with no body and no nose?
-                </dt>
-                <dd className="text-base leading-6 text-gray-500">
-                  Nobody knows. Lorem ipsum dolor sit amet consectetur
-                  adipisicing elit. Quas cupiditate laboriosam fugiat.
-                </dd>
-              </div>
-              <div className="space-y-2">
-                <dt className="text-lg leading-6 font-medium text-gray-900">
-                  Why can't you hear a pterodactyl go to the bathroom?
-                </dt>
-                <dd className="text-base leading-6 text-gray-500">
-                  Because the pee is silent. Lorem ipsum dolor sit amet
-                  consectetur adipisicing elit. Quas cupiditate laboriosam
-                  fugiat.
-                </dd>
-              </div>
-              <div className="space-y-2">
-                <dt className="text-lg leading-6 font-medium text-gray-900">
-                  Why did the invisible man turn down the job offer?
-                </dt>
-                <dd className="text-base leading-6 text-gray-500">
-                  He couldn't see himself doing it. Lorem ipsum dolor sit amet
-                  consectetur adipisicing elit. Quas cupiditate laboriosam
-                  fugiat.
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </div>
+    </div>
+  );
+}
 
-      <div className="py-16 xl:py-36 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden">
-        <div className="max-w-max-content lg:max-w-7xl mx-auto">
-          <div className="relative z-10 mb-8 md:mb-2 md:px-6">
-            <div className="text-base max-w-prose lg:max-w-none">
-              <p className="leading-6 text-green-600 font-semibold tracking-wide uppercase">
-                Annual License Renewal
+function FAQSection() {
+  return (
+    <div className="max-w-screen-xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+      <h2 className="text-3xl leading-9 font-extrabold text-gray-900 text-center">
+        Frequently asked questions
+      </h2>
+      <div className="mt-12">
+        <FAQ>
+          <Question title="What kind of support do I get?">
+            You'll get access to our issue tracker where you can report issues
+            and get help with usage questions within 48 hours on business days.
+            During the beta, you'll get access to weekly "office hours" with
+            Ryan and Micheal for real time help. Finally, you'll get access to a
+            private discord with other Remix users.
+          </Question>
+          <Question title="Is there a refundable trial period?">
+            Not at this time. We are currently in beta and can make no
+            guarantees to the production-readiness of Remix (it's pretty good
+            already, but that's the point of the beta!). Wait for the 1.0
+            release if you'd like a refundable trial period. All beta sales are
+            final.
+          </Question>
+          <Question title="What can I do with an indie License?">
+            An indie license is just for you and your own solo projects at the
+            time of purchase. You can use it on as as many projects as you like.
+            You'll get access to support and all updates to Remix.
+          </Question>
+          <Question title="What can I do with a team License?">
+            A team license is good for your entire team, on as many projects as
+            you like. It's priced by the number of developers expected to be
+            working in the Remix projects at the time of purchase. If you hire
+            more developers, you do not need to update the number of developers
+            on your license until it's due for renewal.
+          </Question>
+          <Question title="Why is the team license more expensive?">
+            We know that Remix is incredibly valuable for commercial
+            applications, so we've priced it to reflect that. But we also
+            recognize the commercial price is prohibitive for a solo developer
+            working on a side-project. So, we've drawn the line at one license
+            to make Remix accessible to individuals while still reflecting the
+            value it brings to a business.
+          </Question>
+          <Question title="What do I get with the license subscription?">
+            Subscribers can continue to use the latest version of Remix,
+            including bug fixes, optimizations, and new features. You also get
+            access to support (opening tickets, community chat, office hours
+            etc).
+          </Question>
+          <Question title="What happens if I cancel my subscription?">
+            You will be able to continue using the latest version of Remix at
+            the time your subscription expires forever, but you won't receive
+            any updates (besides security patches). You will also lose access to
+            support.
+          </Question>
+          <Question title="Can I just buy a few indie licenses for my team?">
+            No, that's against the software license. We're a bootstrapped
+            company, why you gotta do us like that?
+          </Question>
+          <Question title="Is Remix Open Source?">
+            No. It is commercially licensed only for the use of your projects.
+            However, React Router, the primary dependency of Remix, is OSS and
+            used by millions of developers across the world.
+          </Question>
+          <Question title="Can I use Remix for client projects?">
+            Yes of course! You just can't use it to create derivative competing
+            products.
+          </Question>
+          <Question title="Do you have geographical discounts?">
+            Not at this time, but we are aware of purchasing power parity and
+            hope to make Remix accessible to everybody in the future.
+          </Question>
+        </FAQ>
+      </div>
+      <div className="mt-12 lg:mt-24" />
+      <NotReady />
+    </div>
+  );
+}
+
+function PricingCards() {
+  return (
+    <div className="relative">
+      {" "}
+      <div className="absolute inset-0 h-3/4 bg-gray-900" />
+      <div className="relative z-10 max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md mx-auto space-y-4 lg:max-w-5xl lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0">
+          <div className="flex flex-col rounded-lg shadow-lg overflow-hidden">
+            <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6">
+              <div>
+                <h3
+                  className="inline-flex px-4 py-1 rounded-full text-sm leading-5 font-semibold tracking-wide uppercase bg-blue-100 text-blue-600"
+                  id="tier-standard"
+                >
+                  Indie License (Beta)
+                </h3>
+              </div>
+              <div className="mt-4 flex items-baseline text-6xl leading-none font-extrabold">
+                $250
+                <span className="ml-1 text-2xl leading-8 font-medium text-gray-500">
+                  /yr
+                </span>
+              </div>
+              <p className="mt-5 text-lg leading-7 text-gray-700">
+                Got a side project but you've spent the last few weekends just
+                screwing around with webpack? Knock it off! For a couple
+                hundered bucks you've got us behind you.
               </p>
-              <h1 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
-                Why is it per year?
-              </h1>
+            </div>
+            <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
+              <Checklist />
+              <BuyButton>Buy My Indie License</BuyButton>
             </div>
           </div>
-          <div className="relative">
-            <svg
-              className="hidden md:block absolute top-0 right-0 -mt-20 -mr-20"
-              width={404}
-              height={384}
-              fill="none"
-              viewBox="0 0 404 384"
-            >
-              <defs>
-                <pattern
-                  id="95e8f2de-6d30-4b7e-8159-f791729db21b"
-                  x={0}
-                  y={0}
-                  width={20}
-                  height={20}
-                  patternUnits="userSpaceOnUse"
+          <div className="flex flex-col rounded-lg shadow-lg overflow-hidden">
+            <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6">
+              <div>
+                <h3
+                  className="inline-flex px-4 py-1 rounded-full text-sm leading-5 font-semibold tracking-wide uppercase bg-blue-100 text-blue-600"
+                  id="tier-standard"
                 >
-                  <rect
-                    x={0}
-                    y={0}
-                    width={4}
-                    height={4}
-                    className="text-gray-200"
-                    fill="currentColor"
-                  />
-                </pattern>
-              </defs>
-              <rect
-                width={404}
-                height={384}
-                fill="url(#95e8f2de-6d30-4b7e-8159-f791729db21b)"
-              />
-            </svg>
-            <svg
-              className="hidden md:block absolute bottom-0 left-0 -mb-20 -ml-20"
-              width={404}
-              height={384}
-              fill="none"
-              viewBox="0 0 404 384"
-            >
-              <defs>
-                <pattern
-                  id="7a00fe67-0343-4a3c-8e81-c145097a3ce0"
-                  x={0}
-                  y={0}
-                  width={20}
-                  height={20}
-                  patternUnits="userSpaceOnUse"
-                >
-                  <rect
-                    x={0}
-                    y={0}
-                    width={4}
-                    height={4}
-                    className="text-gray-200"
-                    fill="currentColor"
-                  />
-                </pattern>
-              </defs>
-              <rect
-                width={404}
-                height={384}
-                fill="url(#7a00fe67-0343-4a3c-8e81-c145097a3ce0)"
-              />
-            </svg>
-            <div className="relative md:bg-white md:p-6">
-              <div className="lg:grid lg:grid-cols-2 lg:gap-6 mb-8">
-                <div className="prose prose-lg text-gray-700 mb-6 lg:max-w-none lg:mb-0">
-                  <p>
-                    Ultrices ultricies a in odio consequat egestas rutrum. Ut
-                    vitae aliquam in ipsum. Duis nullam placerat cursus risus
-                    ultrices nisi, vitae tellus in. Qui non fugiat aut minus aut
-                    rerum. Perspiciatis iusto mollitia iste minima soluta id.
-                  </p>
-                  <p>
-                    Erat pellentesque dictumst ligula porttitor risus eget et
-                    eget. Ultricies tellus felis id dignissim eget. Est augue{" "}
-                    <a href="#">maecenas</a> risus nulla ultrices congue nunc
-                    tortor. Eu leo risus porta integer suspendisse sed sit
-                    ligula elit.
-                  </p>
-                  <ol>
-                    <li>
-                      Integer varius imperdiet sed interdum felis cras in nec
-                      nunc.
-                    </li>
-                    <li>
-                      Quam malesuada odio ut sit egestas. Elementum at porta
-                      vitae.
-                    </li>
-                  </ol>
-                  <p>
-                    Amet, eu nulla id molestie quis tortor. Auctor erat justo,
-                    sed pellentesque scelerisque interdum blandit lectus. Nec
-                    viverra amet ac facilisis vestibulum. Vestibulum purus nibh
-                    ac ultricies congue.
-                  </p>
-                </div>
-                <div className="prose prose-lg text-gray-700">
-                  <p>
-                    Erat pellentesque dictumst ligula porttitor risus eget et
-                    eget. Ultricies tellus felis id dignissim eget. Est augue
-                    maecenas risus nulla ultrices congue nunc tortor.
-                  </p>
-                  <p>
-                    Eu leo risus porta integer suspendisse sed sit ligula elit.
-                    Elit egestas lacinia sagittis pellentesque neque dignissim
-                    vulputate sodales. Diam sed mauris felis risus, ultricies
-                    mauris netus tincidunt. Mauris sit eu ac tellus nibh non
-                    eget sed accumsan. Viverra ac sed venenatis pulvinar elit.
-                    Cras diam quis tincidunt lectus. Non mi vitae, scelerisque
-                    felis nisi, netus amet nisl.
-                  </p>
-                  <p>
-                    Eu eu mauris bibendum scelerisque adipiscing et. Justo,
-                    elementum consectetur morbi eros, posuere ipsum tortor. Eget
-                    cursus massa sed velit feugiat sed ut. Faucibus eros mauris
-                    morbi aliquam nullam. Scelerisque elementum sit magna
-                    ullamcorper dignissim pretium.
-                  </p>
-                </div>
+                  Team License (Beta)
+                </h3>
               </div>
+              <div className="mt-4 flex items-baseline text-6xl leading-none font-extrabold">
+                $1000
+                <span className="ml-1 text-2xl leading-8 font-medium text-gray-500">
+                  /dev /yr
+                </span>
+              </div>
+              <p className="mt-5 text-lg leading-7 text-gray-700">
+                Your projects need a solid foundation. You could hire a team for
+                about $1M/yr to build it, or pay a fraction of that for Remix.
+                Great tools increase the productivity of everybody—this is a
+                steal.
+              </p>
+            </div>
+            <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
+              <Checklist />
+              <BuyButton>Buy a Team License</BuyButton>
             </div>
           </div>
         </div>
@@ -325,7 +185,14 @@ export default function Buy() {
 }
 
 function Checklist({ children }) {
-  return <ul className="space-y-4">{children}</ul>;
+  return (
+    <ul className="space-y-4">
+      <Check>Unlimited projects</Check>
+      <Check>48 HR Support, office hours, private chat community</Check>
+      <Check>Free upgrades</Check>
+      <Check>Cancel any time, use the last version forever</Check>
+    </ul>
+  );
 }
 
 function Check({ children }) {
@@ -350,5 +217,54 @@ function Check({ children }) {
       </div>
       <p className="ml-3 text-base leading-6 text-gray-700">{children}</p>
     </li>
+  );
+}
+
+function FAQ({ children }) {
+  return (
+    <dl className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:grid-rows-2 md:col-gap-8 md:row-gap-12 lg:grid-cols-3">
+      {children}
+    </dl>
+  );
+}
+
+function Question({ title, children }) {
+  return (
+    <div className="space-y-2">
+      <dt className="text-lg leading-6 font-medium text-black">{title}</dt>
+      <dd className="text-base leading-6 text-gray-700">{children}</dd>
+    </div>
+  );
+}
+function BuyButton({ children }) {
+  return (
+    <div className="rounded-md shadow">
+      <a
+        href="#"
+        className="flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+      >
+        {children}
+      </a>
+    </div>
+  );
+}
+
+function NotReady() {
+  return (
+    <div className="max-w-screen-xl mx-auto">
+      <div className="px-6 py-6 bg-gray-100 rounded-lg md:py-12 md:px-12 lg:py-16 lg:px-16">
+        <div className="xl:w-0">
+          <h2 className="text-center text-2xl leading-8 font-extrabold tracking-tight text-black sm:text-3xl sm:leading-9">
+            Not ready to buy?
+          </h2>
+          <p className="text-center mt-3 text-lg leading-6 text-gray-800">
+            <Link to="/newsletter" className="text-black underline">
+              Sign up for our newsletter
+            </Link>{" "}
+            to stay up to date with our latest features, tutorials, and more.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
