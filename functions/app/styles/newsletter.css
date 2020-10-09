@@ -785,20 +785,3 @@ body {
     width: auto;
   }
 }
-
-/* youtube embeds */
-.ratio-16x9 {
-  padding-bottom: 56.25%;
-}
-.aspect {
-  position: relative;
-  width: 100%;
-  height: 0;
-}
-.aspect > * {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}

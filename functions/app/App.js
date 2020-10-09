@@ -33,6 +33,11 @@ export default function App() {
         <link rel="icon" href="/favicon-96.png" sizes="96x96" />
         <link rel="icon" href="/favicon-228.png" sizes="228x228" />
         <Meta />
+        {/* TODO: GET HIS OUT OF HERE! */}
+        <link
+          href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+          rel="stylesheet"
+        />
         <Styles />
       </head>
       <body>

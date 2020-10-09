@@ -1,10 +1,12 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "remix build",
+    "build": "yarn run css:build && remix build",
     "logs": "firebase functions:log",
     "shell": "firebase functions:shell",
-    "start": "NODE_ENV=development concurrently \"remix run\" \"firebase serve\""
+    "css:watch": "postcss styles/index.css -o app/global.css -w",
+    "css:build": "postcss styles/index.css -o app/global.css --env production",
+    "start": "NODE_ENV=development concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\""
   },
   "engines": {
     "node": "12"
@@ -22,11 +24,14 @@
     "@remix-run/express": "^0.2.0",
     "@remix-run/loader": "^0.2.0",
     "@remix-run/react": "^0.2.0",
+    "@tailwindcss/ui": "^0.6.2",
+    "autoprefixer": "^10.0.1",
     "detect-browser": "^5.1.1",
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.6.1",
     "front-matter": "^4.0.2",
     "history": "^5.0.0",
+    "postcss": "^8.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-icons": "^3.11.0",
@@ -34,13 +39,15 @@
     "rehype-parse": "^7.0.1",
     "rehype-slug": "^3.0.0",
     "rehype-wrap": "^1.0.10",
+    "tailwindcss": "^1.8.12",
     "use-throttle": "^0.0.3"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "^2.22.0",
-    "firebase-functions-test": "^0.2.0"
+    "firebase-functions-test": "^0.2.0",
+    "postcss-cli": "^8.1.0"
   },
   "private": true
 }
