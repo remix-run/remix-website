@@ -1,0 +1,5 @@
+{
+  "stripe": {
+    "secret_key": "sk_test_EkqJw4OfWv0BYbBGpFS4lr6c"
+  }
+}

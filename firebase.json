@@ -9,6 +9,10 @@
   "hosting": {
     "rewrites": [
       {
+        "source": "/api/createCheckout",
+        "function": "createCheckout"
+      },
+      {
         "source": "/api/subscribeEmail",
         "function": "subscribeEmail"
       },

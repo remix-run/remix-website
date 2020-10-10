@@ -1,20 +1,67 @@
 import React from "react";
 import Logo from "../components/Logo";
 import { authenticate } from "../utils/firebase";
+import { getUserWithToken } from "../utils/github";
+import { createCheckout } from "../utils/stripe";
+
+const fakeUser = {
+  name: "Ryan Florence",
+  avatar_url: "https://avatars0.githubusercontent.com/u/100200?v=4",
+  email: "rpflorence@gmail.com",
+  login: "ryanflorence",
+};
 
 export default function Indie() {
-  let [state, setState] = React.useState("idle"); // idle | autheticating | authenticated
-  let [auth, setAuth] = React.useState(null); // null | auth | error
+  // idle | autheticating | authenticated | error | checking_out | stripe_error
+  let [state, setState] = React.useState("authenticated");
+  let [data, setData] = React.useState({
+    user: fakeUser,
+    error: null,
+    stripeError: null,
+  });
+
+  let focusRef = React.useRef();
+  let manageFocus = React.useRef(false);
+
+  React.useEffect(() => {
+    if (manageFocus.current) {
+      if (focusRef.current) focusRef.current.focus();
+    }
+
+    if (manageFocus.current === false) {
+      manageFocus.current = true;
+    }
+  }, [state]);
 
   async function startSignin() {
     setState("authenticating");
     try {
       let auth = await authenticate();
-      setAuth(auth);
-      setState("athenticated");
+      let user = await getUserWithToken(auth.credential.accessToken);
+      console.log(user);
+      setData({ user });
+      setState("authenticated");
     } catch (error) {
-      setAuth(error);
+      setData({ error });
       setState("error");
+    }
+  }
+
+  function startOver() {
+    setData({});
+    setState("idle");
+  }
+
+  async function proceedToCheckout() {
+    setState("checking_out");
+    try {
+      let session = await createCheckout(data.user);
+      await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+    } catch (stripeError) {
+      setData({ ...data, stripeError });
+      setState("stripe_error");
     }
   }
 
@@ -25,82 +72,26 @@ export default function Indie() {
           <Logo />
         </div>
       </div>
-      <div className="mx-auto max-w-8xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
-        <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
-          <h2 className="text-4xl tracking-tight leading-10 font-extrabold text-gray-100 sm:text-5xl sm:leading-none md:text-6xl lg:text-5xl xl:text-6xl">
-            Do you have a GitHub Account?
-          </h2>
-          <p className="mt-3 mx-auto max-w-md text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl lg:mx-0">
-            You need a GitHub account to use Remix. You'll install it with npm
-            with GitHub packages and you get support through a repository on
-            GitHub. GitHub accounts are free.
-          </p>
-          <div className="mt-10 max-w-2xl mx-auto lg:mx-0 sm:flex sm:justify-center lg:justify-start">
-            <div className="flex-1 rounded-md shadow">
-              <button
-                disabled={
-                  state === "authenticating" || state === "authenticated"
-                }
-                type="button"
-                onClick={startSignin}
-                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
-              >
-                {state === "idle"
-                  ? "Yes! Login with GitHub"
-                  : state === "authenticating"
-                  ? "Logging in ..."
-                  : state === "error"
-                  ? "Try logging in again"
-                  : state === "authenticated"
-                  ? "Success!"
-                  : "Impossible state!"}
-              </button>
-            </div>
-            <div className="flex-1 mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
-              <a
-                href="#"
-                href="https://github.com/join"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-gray-600 bg-white hover:text-gray-900 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
-              >
-                No, Create an Account
-              </a>
-            </div>
-          </div>
-          {state === "error" && (
-            <div className="mt-10 max-w-2xl mx-auto lg:mx-0 rounded-md bg-red-50 p-4 text-left">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg
-                    class="h-5 w-5 text-red-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm leading-5 font-medium text-red-800">
-                    Oops! We couldn't log you in. Here's the error message:
-                  </h3>
-                  <div className="mx-2 mt-2 text-sm leading-5 text-red-700 italic">
-                    <p>{auth.message}</p>
-                  </div>
-                  <div className="mt-2 text-sm leading-5 text-red-800">
-                    <p>Please try again.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      {state === "idle" || state === "authenticating" || state === "error" ? (
+        <LogInToGitHub
+          state={state}
+          data={data}
+          startSignin={startSignin}
+          focusRef={focusRef}
+        />
+      ) : state === "authenticated" ||
+        state === "checking_out" ||
+        state === "stripe_error" ? (
+        <Checkout
+          state={state}
+          data={data}
+          proceedToCheckout={proceedToCheckout}
+          startOver={startOver}
+          focusRef={focusRef}
+        />
+      ) : (
+        <div>IMPOSSIBLE STATE!</div>
+      )}
       <div className="relative w-full h-64 sm:h-72 md:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 lg:h-full bg-gray-100">
         <Octocat />
       </div>
@@ -160,5 +151,204 @@ function Octocat() {
         d="m69.369 186.12l-3.066 10.683s-.8 3.861 2.84 4.546c3.8-.074 3.486-3.627 3.223-4.781z"
       />
     </svg>
+  );
+}
+
+function LogInToGitHub({ state, data, startSignin, focusRef }) {
+  return (
+    <div className="mx-auto max-w-8xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
+      <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
+        <h2 className="text-4xl tracking-tight leading-10 font-extrabold text-gray-100 sm:text-5xl sm:leading-none md:text-6xl lg:text-5xl xl:text-6xl">
+          Do you have a GitHub Account?
+        </h2>
+        <p className="mt-3 mx-auto max-w-md text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl lg:mx-0">
+          You need a GitHub account to use Remix. You'll install it with npm
+          with GitHub packages and you get support through a repository on
+          GitHub. GitHub accounts are free.
+        </p>
+        <div className="mt-10 max-w-2xl mx-auto lg:mx-0 sm:flex sm:justify-center lg:justify-start">
+          <div className="flex-1 rounded-md shadow">
+            <button
+              ref={
+                state === "idle" || state === "authenticating"
+                  ? focusRef
+                  : undefined
+              }
+              disabled={state === "authenticating" || state === "authenticated"}
+              type="button"
+              onClick={startSignin}
+              className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 active:bg-green-400 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+            >
+              {state === "idle"
+                ? "Yes! Login with GitHub"
+                : state === "authenticating"
+                ? "Logging in ..."
+                : state === "error"
+                ? "Try logging in again"
+                : state === "authenticated"
+                ? "Success!"
+                : "Impossible state!"}
+            </button>
+          </div>
+          <div className="flex-1 mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+            <a
+              href="https://github.com/join"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-gray-600 bg-white hover:text-gray-900 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+            >
+              No, Create an Account
+            </a>
+          </div>
+        </div>
+        {state === "error" && (
+          <div className="mt-10 max-w-2xl mx-auto lg:mx-0 rounded-md bg-red-50 p-4 text-left">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3
+                  ref={focusRef}
+                  tabIndex="-1"
+                  className="focus:outline-none text-sm leading-5 font-medium text-red-800"
+                >
+                  Oops! We couldn't log you in. Here's the error message:
+                </h3>
+                <div className="mx-2 mt-2 text-sm leading-5 text-red-700 italic">
+                  <p>{data.error.message}</p>
+                </div>
+                <div className="mt-2 text-sm leading-5 text-red-800">
+                  <p>Please try again.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Checkout({ state, data, proceedToCheckout, startOver, focusRef }) {
+  return (
+    <div className="mx-auto max-w-8xl w-full pt-8 pb-10 text-center lg:py-24 lg:text-left">
+      <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
+        <h2
+          ref={focusRef}
+          tabIndex="-1"
+          className="focus:outline-none text-4xl tracking-tight leading-10 font-extrabold text-gray-100 sm:text-5xl sm:leading-none md:text-6xl lg:text-5xl xl:text-6xl"
+        >
+          This you?
+        </h2>
+        <div className="mt-8 max-w-md mx-auto lg:mx-0 flex flex-col text-center bg-gray-800 rounded-lg shadow">
+          <div className="flex-1 flex flex-col p-8">
+            <img
+              className="w-32 h-32 flex-shrink-0 mx-auto bg-black rounded-full"
+              src={data.user.avatar_url}
+            />
+            <h3 className="mt-6 text-gray-100 text-sm leading-7 font-medium text-xl">
+              {data.user.name}
+            </h3>
+            <div className="text-gray-300 leading-7 inline-flex items-center justify-center">
+              <svg
+                aria-label="login"
+                className="-ml-1 w-5 h-5 mr-1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>{data.user.login}</span>
+            </div>
+            <div className="text-gray-300 leading-7 inline-flex items-center justify-center">
+              <svg
+                aria-label="email"
+                className="-ml-1 w-5 h-5 mr-1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+              </svg>
+              <span>{data.user.email}</span>
+            </div>
+          </div>
+        </div>
+        <div className="mt-8 flex items-center justify-center max-w-md mx-auto sm:mx-0 sm:justify-start">
+          <div className="max-w-md rounded-md shadow">
+            <button
+              ref={focusRef}
+              disabled={state === "checking_out"}
+              type="button"
+              onClick={proceedToCheckout}
+              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 active:bg-green-400 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+            >
+              {state === "checking_out"
+                ? "Checking out..."
+                : "Yep! Proceed to checkout"}
+            </button>
+          </div>
+          <div className="ml-3">
+            <button onClick={startOver} className="text-gray-300 underline">
+              No, start over
+            </button>
+          </div>
+        </div>
+
+        {state === "stripe_error" && (
+          <div className="mt-10 max-w-2xl mx-auto lg:mx-0 rounded-md bg-red-50 p-4 text-left">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3
+                  ref={focusRef}
+                  tabIndex="-1"
+                  className="focus:outline-none text-sm leading-5 font-medium text-red-800"
+                >
+                  Oops! Couldn't create a checkout session
+                </h3>
+                <div className="mx-2 mt-2 text-sm leading-5 text-red-700 italic">
+                  <p>{data.stripeError.message}</p>
+                </div>
+                <div className="mt-2 text-sm leading-5 text-red-800">
+                  <p>Please try again.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
