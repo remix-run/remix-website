@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
-// import * as firebaseui from "firebaseui";
+import "firebase/firestore";
 
 // TODO: move to .env
 let firebaseConfig = {
@@ -15,9 +15,15 @@ let firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+let db = firebase.firestore();
+
 async function authenticate() {
   let provider = new firebase.auth.GithubAuthProvider();
   return firebase.auth().signInWithPopup(provider);
 }
 
-export { firebase, authenticate };
+function getIdToken() {
+  return firebase.auth().currentUser.getIdToken(/*forceRefresh*/ true);
+}
+
+export { firebase, authenticate, getIdToken, db };
