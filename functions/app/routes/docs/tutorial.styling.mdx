@@ -20,7 +20,7 @@ But for now, lets check out the default styling approach in Remix.
 
 Remix uses plain ol' CSS with a few postcss plugins applied (so you can nest, use imports, etc.), but generally, it's just CSS.
 
-You'll notice your project has a folder in `app/styles` and a global css file at `app/global.css`. The global css file is applied to every page, so do your resets there and anything else you want applied to every page.
+You'll notice your project has CSS files next to routes of the same name and a top level `app/global.css`. The global css file is applied to every page, so do your resets there and anything else you want applied to every page.
 
 ## Conventional CSS
 
@@ -32,7 +32,7 @@ We've found this approach to let us keep our CSS a bit fast and loose without th
 
 ## Adding styles to our gists routes
 
-Go ahead and add a `styles/gists.css` and `styles/gists/$user.css` and add whatever styles you want. When you're done, open the dev tools and watch the `<head>` component as you navigate around. You'll see the styles loading and unloading per route.
+Go ahead and add a `routes/gists.css` and `routes/gists/$user.css` and add whatever styles you want. When you're done, open the dev tools and watch the `<head>` component as you navigate around. You'll see the styles loading and unloading per route.
 
 Since we're always using `<link/>` to add styles, we don't have a different code path for your styles in development vs. production like a lot of solutions.
 

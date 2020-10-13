@@ -1,9 +1,9 @@
-exports.browserBuildDirectory = "../public/build";
-exports.publicPath = "/build/";
 exports.appDirectory = "./app";
-exports.dataDirectory = "./data";
-exports.serverBuildDirectory = "./build";
+exports.browserBuildDirectory = "../public/build";
+exports.dataDirectory = "./loaders";
 exports.devServerPort = 8002;
+exports.publicPath = "/build/";
+exports.serverBuildDirectory = "./build";
 
 exports.mdx = {
   rehypePlugins: [
