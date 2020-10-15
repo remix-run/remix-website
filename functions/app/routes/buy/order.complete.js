@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouteData } from "@remix-run/react";
-import { useDoc } from "../hooks/firebase";
+import { useDoc } from "../../hooks/firebase";
 
 export default function () {
   let [{ username, data: initialData }] = useRouteData();

@@ -1,0 +1,24 @@
+- buy/indie
+  - login with github/google
+    - already purchased?
+      - redirect to dashboard with message to log out if they want to buy as somebody else
+  - save user to db
+  - redirect to stripe checkout
+- stripe checkout
+  - redirect to success url
+- buy/complete (loader)
+  - validate idToken
+    - invalid?
+      - 403
+  - generate remix package token (40 chars, crypto random bytes)
+  - save token to db
+    - tokens/<token> { userId, issued, token }
+- buy/complete route
+
+  - Thank you!
+  - Link to dashboard
+
+- Dashboard
+  - Token right there
+  - Link to docs
+  - Link to stripe customer dashboard

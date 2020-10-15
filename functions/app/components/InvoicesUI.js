@@ -18,7 +18,7 @@ let palette = {
   blue: "#3C70B5",
 };
 
-let { green, yellow, pink, aqua, blue } = palette;
+let { green, pink, aqua, blue } = palette;
 let steps = [
   [null, null, null, null],
   [aqua, null, null, null],

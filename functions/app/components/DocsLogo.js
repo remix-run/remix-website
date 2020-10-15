@@ -1,15 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useThrottle } from "use-throttle";
 import { useLocationPending } from "@remix-run/react";
 
-let darkModeColorMap = {
-  aqua: "#D5F3F1",
-  green: "#BFF3C6",
-  pink: "#F9AAE0",
-  red: "#FF8287",
-  yellow: "#FFEAAA",
-  blue: "#92B6E0",
-};
+// let darkModeColorMap = {
+//   aqua: "#D5F3F1",
+//   green: "#BFF3C6",
+//   pink: "#F9AAE0",
+//   red: "#FF8287",
+//   yellow: "#FFEAAA",
+//   blue: "#92B6E0",
+// };
 
 let colorMap = {
   aqua: "#12DBD4",
@@ -30,7 +30,7 @@ export function LoadingLogo() {
       let id = setTimeout(setColors, 250);
       return () => clearTimeout(id);
     }
-  }, [colors, pending]);
+  }, [colors, pending, setColors]);
   return <Logo colors={colors} />;
 }
 

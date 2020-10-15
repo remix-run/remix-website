@@ -35,6 +35,7 @@
     "firebaseui": "^4.6.1",
     "front-matter": "^4.0.2",
     "history": "^5.0.0",
+    "idtoken-verifier": "^2.1.0",
     "postcss": "^8.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -48,9 +49,17 @@
     "use-throttle": "^0.0.3"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "2.x",
+    "@typescript-eslint/parser": "2.x",
+    "babel-eslint": "10.x",
     "concurrently": "^5.3.0",
-    "eslint": "^7.6.0",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint": "6.x",
+    "eslint-config-react-app": "^5.2.1",
+    "eslint-plugin-flowtype": "4.x",
+    "eslint-plugin-import": "2.x",
+    "eslint-plugin-jsx-a11y": "6.x",
+    "eslint-plugin-react": "7.x",
+    "eslint-plugin-react-hooks": "2.x",
     "firebase-functions-test": "^0.2.0",
     "postcss-cli": "^8.1.0"
   },

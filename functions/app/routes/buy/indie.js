@@ -1,14 +1,13 @@
 import React from "react";
-import Logo from "../components/Logo";
-import { authenticate, getIdToken } from "../utils/firebase";
-import { createCheckout } from "../utils/stripe";
+import { authenticate, getIdToken } from "../../utils/firebase";
+import { createCheckoutClient } from "../../utils/checkout";
 
-const fakeUser = {
-  name: "Ryan Florence",
-  avatar_url: "https://avatars0.githubusercontent.com/u/100200?v=4",
-  email: "rpflorence@gmail.com",
-  login: "ryanflorence",
-};
+// const fakeUser = {
+//   name: "Ryan Florence",
+//   avatar_url: "https://avatars0.githubusercontent.com/u/100200?v=4",
+//   email: "rpflorence@gmail.com",
+//   login: "ryanflorence",
+// };
 
 export default function Indie() {
   // idle | autheticating | authenticated | error | checking_out | stripe_error
@@ -26,6 +25,7 @@ export default function Indie() {
 
   React.useEffect(() => {
     console.log(state, data);
+
     if (manageFocus.current) {
       if (focusRef.current) focusRef.current.focus();
     }
@@ -33,7 +33,7 @@ export default function Indie() {
     if (manageFocus.current === false) {
       manageFocus.current = true;
     }
-  }, [state]);
+  }, [state, data]);
 
   async function startSignin() {
     setState("authenticating");
@@ -60,14 +60,7 @@ export default function Indie() {
   async function proceedToCheckout() {
     setState("checking_out");
     try {
-      let session = await createCheckout(
-        data.uid,
-        data.user.login,
-        data.idToken
-      );
-      await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
+      await createCheckoutClient(data.uid, data.user, data.idToken);
     } catch (stripeError) {
       setData({ ...data, stripeError });
       setState("stripe_error");
@@ -76,11 +69,6 @@ export default function Indie() {
 
   return (
     <main className="lg:min-h-screen lg:relative bg-gray-900">
-      <div className="p-4 sm:px-8">
-        <div className="w-40">
-          <Logo />
-        </div>
-      </div>
       {state === "idle" || state === "authenticating" || state === "error" ? (
         <LogInToGitHub
           state={state}
@@ -116,9 +104,9 @@ function LogInToGitHub({ state, data, startSignin, focusRef }) {
           Do you have a GitHub Account?
         </h2>
         <p className="mt-3 mx-auto max-w-md text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl lg:mx-0">
-          You need a GitHub account to use Remix. You'll install it with npm
-          with GitHub packages and you get support through a repository on
-          GitHub. GitHub accounts are free.
+          Remix support is done primarily through GitHub, so we figure it's
+          easiest to just use your GitHub account for Remix. GitHub accounts are
+          free.
         </p>
         <div className="mt-10 max-w-2xl mx-auto lg:mx-0 sm:flex sm:justify-center lg:justify-start">
           <div className="flex-1 rounded-md shadow">
@@ -209,6 +197,7 @@ function Checkout({ state, data, proceedToCheckout, startOver, focusRef }) {
         <div className="mt-8 max-w-md mx-auto lg:mx-0 flex flex-col text-center bg-gray-800 rounded-lg shadow">
           <div className="flex-1 flex flex-col p-8">
             <img
+              alt="User profile"
               className="w-32 h-32 flex-shrink-0 mx-auto bg-black rounded-full"
               src={data.user.avatar_url}
             />
@@ -246,22 +235,26 @@ function Checkout({ state, data, proceedToCheckout, startOver, focusRef }) {
             </div>
           </div>
         </div>
-        <div className="mt-8 flex items-center justify-center max-w-md mx-auto sm:mx-0 sm:justify-start">
-          <div className="max-w-md rounded-md shadow">
+        <div className="mt-10 max-w-2xl mx-auto lg:mx-0 sm:flex sm:justify-center lg:justify-start">
+          <div className="flex-1 rounded-md shadow">
             <button
               ref={focusRef}
               disabled={state === "checking_out"}
               type="button"
               onClick={proceedToCheckout}
-              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 active:bg-green-400 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+              className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 active:bg-green-400 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
             >
               {state === "checking_out"
                 ? "Checking out..."
                 : "Yep! Proceed to checkout"}
             </button>
           </div>
-          <div className="ml-3">
-            <button onClick={startOver} className="text-gray-300 underline">
+
+          <div className="flex-1 mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+            <button
+              onClick={startOver}
+              className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-gray-600 bg-white hover:text-gray-900 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+            >
               No, start over
             </button>
           </div>

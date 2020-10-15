@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useThrottle } from "use-throttle";
 import { detect } from "detect-browser";
 
