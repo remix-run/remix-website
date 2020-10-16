@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@headlessui/react": "^0.2.0",
     "cors": "^2.8.5",
     "node-fetch": "^2.6.1"
   }

@@ -7,6 +7,10 @@ module.exports = {
   purge: ["./app/**/*.js", "./app/**/*.mdx", "./app/**/*.md"],
   theme: {
     extend: {
+      fontSize: {
+        xs: "0.85rem",
+        sm: "0.95rem",
+      },
       boxShadow: {
         yellow: "0 0 1px 3px rgb(255, 223, 9)",
       },
@@ -101,6 +105,7 @@ module.exports = {
     backgroundColor: ["hover", "focus", "active", "disabled"],
     textColor: ["hover", "focus", "active", "disabled"],
     opacity: ["hover", "focus", "active", "disabled"],
+    borderWidth: ["responsive", "last"],
   },
   plugins: [
     require("@tailwindcss/ui")({

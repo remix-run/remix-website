@@ -1,0 +1,62 @@
+@import "//unpkg.com/github-markdown-css@4.0.0/github-markdown.css";
+@import "//unpkg.com/prism-themes@1.4.0/themes/prism-material-light.css";
+
+@font-face {
+  font-family: "Virgil";
+  src: url("https://excalidraw.com/FG_Virgil.woff2");
+}
+@font-face {
+  font-family: "Cascadia";
+  src: url("https://excalidraw.com/Cascadia.woff2");
+}
+
+/* just for nested routes page */
+svg > *[fill] {
+  transition: opacity 200ms;
+}
+
+.markdown-body a {
+  @apply text-blue-500;
+}
+
+.toc {
+  @apply bg-blue-50;
+  @apply p-4;
+  @apply border-t;
+  @apply border-blue-200;
+}
+
+.toc .heading {
+  @apply uppercase;
+  @apply font-medium;
+  @apply tracking-tight;
+  @apply text-blue-900;
+  @apply pb-1;
+}
+
+.toc a {
+  @apply block;
+  @apply py-2;
+  @apply text-lg;
+  /* apply md:text-sm; */
+  @apply text-blue-400;
+  @apply border-b;
+  @apply border-blue-100;
+}
+
+.toc li:last-child a {
+  @apply border-b-0;
+}
+
+.toc a:hover {
+  @apply text-blue-700;
+}
+
+.toc a.active {
+  @apply text-red-600;
+}
+
+.markdown-body {
+  @apply mt-4;
+  @apply p-4;
+}
