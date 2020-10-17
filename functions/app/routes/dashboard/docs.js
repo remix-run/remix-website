@@ -2,6 +2,12 @@ import React from "react";
 import { useLocationPending } from "@remix-run/react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 
+export function headers() {
+  return {
+    "cache-control": "private, max-age=60",
+  };
+}
+
 let sections = [
   [
     "Quickstart Tutorial",

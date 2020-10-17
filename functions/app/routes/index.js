@@ -1,7 +1,7 @@
 import React from "react";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { FaArrowRight } from "react-icons/fa";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router-dom";
 
 export function headers() {
   return {
@@ -42,12 +42,44 @@ function ButtonLink({ to, children, primary = false }) {
   );
 }
 
+function LoginLink() {
+  return (
+    <Link
+      to="login"
+      className={`
+            mt-4 mr-4 inline-flex px-3 py-2 rounded-md text-m font-medium
+            text-gray-300 hover:text-white hover:bg-gray-800
+            focus:outline-none focus:text-white focus:bg-gray-800
+          `}
+    >
+      <svg
+        className="h-6 w-6 mr-1"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+        />
+      </svg>{" "}
+      Sign in
+    </Link>
+  );
+}
+
 export default function Index() {
   let [colors, changeColors] = useLogoAnimation();
 
   return (
     <div className="bg-gray-900 min-h-screen">
-      <div className="text-gray-100 mx-auto max-w-7xl w-full pt-16 pb-20 lg:py-32">
+      <div className="text-right">
+        <LoginLink />
+      </div>
+      <div className="text-gray-100 mx-auto max-w-7xl w-full pt-4 pb-20 lg:py-32">
         <div className="px-4 sm:px-8 xl:pr-16 lg:max-w-3xl lg:m-auto">
           <div className="max-w-md" onMouseMove={changeColors}>
             <Logo colors={colors} className="w-full" />

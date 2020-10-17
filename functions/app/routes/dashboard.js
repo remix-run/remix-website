@@ -1,10 +1,11 @@
 import React from "react";
-import { Link, useLocationPending } from "@remix-run/react";
-import { Outlet } from "react-router-dom";
+import { useLocationPending, useRouteData } from "@remix-run/react";
+import { Outlet, Link } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../components/Logo";
 
 export default function Dashboard() {
   let isPending = useLocationPending();
+
   return (
     <div>
       <TopNav />
@@ -51,13 +52,17 @@ function useFlashingColorsOnTransition() {
       let id = setTimeout(changeColors, 250);
       return () => clearTimeout(id);
     }
-  }, [isPending]);
+  }, [isPending, changeColors]);
   return colors;
 }
 
 function TopNav() {
+  let [user] = useRouteData();
   let [isOpen, setIsOpen] = React.useState(false);
   let colors = useFlashingColorsOnTransition();
+  let signout = () => {
+    window.location.assign("/logout");
+  };
   // TODO: this mobile menu isn't very accessible
   return (
     <nav className="sticky top-0 z-10 bg-gray-900">
@@ -86,13 +91,15 @@ function TopNav() {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <TopNavLink as="button">
+              <TopNavLink as="button" onClick={signout}>
                 <IconSignout /> Sign out
               </TopNavLink>
               <div className="ml-2 relative">
                 <img
+                  alt=""
+                  aria-hidden="true"
                   className="ml-2 h-8 w-8 rounded-full"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  src={user.picture}
                 />
               </div>
             </div>
@@ -123,21 +130,23 @@ function TopNav() {
           <div className="flex items-center px-5 space-x-3">
             <div className="flex-shrink-0">
               <img
+                aria-hidden="true"
+                alt=""
                 className="h-10 w-10 rounded-full"
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                src={user.picture}
               />
             </div>
             <div className="space-y-1">
               <div className="text-base font-medium leading-none text-white">
-                Tom Cook
+                {user.name}
               </div>
               <div className="text-sm font-medium leading-none text-gray-400">
-                tom@example.com
+                {user.email}
               </div>
             </div>
           </div>
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <TopNavLinkMobile as="button" onClick={() => setIsOpen(false)}>
+            <TopNavLinkMobile as="button" onClick={signout}>
               <svg
                 className="mr-2 h-6 w-6"
                 stroke="currentColor"
@@ -228,7 +237,7 @@ function IconSupport() {
 function IconSignout() {
   return (
     <svg
-      className="ml-2 h-6 w-6"
+      className="mr-2 h-6 w-6"
       stroke="currentColor"
       fill="none"
       viewBox="0 0 24 24"

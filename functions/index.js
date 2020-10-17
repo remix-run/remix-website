@@ -1,18 +1,23 @@
+const express = require("express");
 const functions = require("firebase-functions");
+const cookieParser = require("cookie-parser");
+const csrf = require("csurf");
 const { createRequestHandler: remix } = require("@remix-run/express");
-const fs = require("fs");
-const path = require("path");
 
-exports.app = functions.https.onRequest(
+let app = express();
+app.use(cookieParser());
+// app.use(csrf({ cookie: true }));
+
+app.post("/api/createCheckout", require("./api/createCheckout"));
+app.post("/api/subscribeEmail", require("./api/subscribeEmail"));
+app.post("/api/createUserSession", require("./api/createUserSession"));
+app.get(
+  "*",
   remix({
-    getLoadContext(req) {
-      return { req };
+    getLoadContext(req, res) {
+      return { req, res };
     },
   })
 );
 
-fs.readdirSync(path.join(__dirname, "api")).forEach((fileName) => {
-  exports[fileName.slice(0, -3)] = functions.https.onRequest(
-    require(path.join(__dirname, "api", fileName))
-  );
-});
+exports.app = functions.https.onRequest(app);

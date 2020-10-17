@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import cookies from "browser-cookies";
 
 // TODO: move to .env
 let firebaseConfig = {
@@ -15,15 +16,33 @@ let firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-let db = firebase.firestore();
+export let db = firebase.firestore();
 
-async function authenticate() {
+// we're using http sessions for auth
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+
+export async function authenticate() {
   let provider = new firebase.auth.GithubAuthProvider();
   return firebase.auth().signInWithPopup(provider);
 }
 
-function getIdToken() {
-  return firebase.auth().currentUser.getIdToken(/*forceRefresh*/ true);
+export function getIdToken() {
+  firebase.auth().currentUser.getIdToken(/*forceRefresh*/ true);
 }
 
-export { firebase, authenticate, getIdToken, db };
+export async function createUserSession(idToken) {
+  let csrfToken = cookies.get("csrfToken");
+  console.log({ csrfToken, idToken });
+  await fetch("/api/createUserSession", {
+    // so it saves the cookie
+    credentials: "same-origin",
+    method: "post",
+    body: JSON.stringify({ idToken, csrfToken }),
+    headers: {
+      "content-type": "application/json",
+    },
+  });
+  await firebase.auth().signOut();
+}
+
+export { firebase };

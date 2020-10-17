@@ -9,18 +9,6 @@
   "hosting": {
     "rewrites": [
       {
-        "source": "/api/createCheckout",
-        "function": "createCheckout"
-      },
-      {
-        "source": "/api/githubWebhook",
-        "function": "githubWebhook"
-      },
-      {
-        "source": "/api/subscribeEmail",
-        "function": "subscribeEmail"
-      },
-      {
         "source": "**",
         "function": "app"
       }

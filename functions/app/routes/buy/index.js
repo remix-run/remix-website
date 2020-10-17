@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../../components/Logo";
 
 export default function BuyIndex() {

@@ -3,7 +3,7 @@ meta:
   title: Defining Routes | Remix Tutorial
 ---
 
-import { Link } from "@remix-run/react";
+import { Link } from "react-router-dom";
 
 # Defining Routes
 
@@ -30,7 +30,7 @@ Now visit [http://localhost:3000/gists](http://localhost:3000/gists). Not bad!
 Let's add a link to this route from the main application layout. Open up `app/App.js` and add the link:
 
 ```js
-import { Link } from "@remix-run/react";
+import { Link } from "react-router-dom";
 
 // somewhere on the page:
 <Link to="/gists">Gists</Link>;
