@@ -1,13 +1,22 @@
 import React from "react";
-import { Link } from "@remix-run/react";
+import { Link, useLocationPending } from "@remix-run/react";
 import { Outlet } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../components/Logo";
 
 export default function Dashboard() {
+  let isPending = useLocationPending();
   return (
     <div>
       <TopNav />
-      <Outlet />
+      <div
+        className={
+          isPending
+            ? "duration-200 delay-300 transition-opacity opacity-25"
+            : ""
+        }
+      >
+        <Outlet />
+      </div>
     </div>
   );
 }
@@ -34,9 +43,21 @@ function TopNavLinkMobile({ as: Comp = Link, ...props }) {
   );
 }
 
+function useFlashingColorsOnTransition() {
+  let isPending = useLocationPending();
+  let [colors, changeColors] = useLogoAnimation();
+  React.useEffect(() => {
+    if (isPending) {
+      let id = setTimeout(changeColors, 250);
+      return () => clearTimeout(id);
+    }
+  }, [isPending]);
+  return colors;
+}
+
 function TopNav() {
   let [isOpen, setIsOpen] = React.useState(false);
-  let [colors, changeColors] = useLogoAnimation();
+  let colors = useFlashingColorsOnTransition();
   // TODO: this mobile menu isn't very accessible
   return (
     <nav className="sticky top-0 z-10 bg-gray-900">
