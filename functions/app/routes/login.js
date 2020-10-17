@@ -1,11 +1,12 @@
 import React from "react";
 import { authenticate, createUserSession } from "../utils/firebase";
+import { useGlobalData } from "@remix-run/react";
 // import { useNavigate } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { useLocation } from "react-router-dom";
 
 export default function Login() {
-  // let navigate = useNavigate();
+  let [{ csrfToken }] = useGlobalData();
   let [colors, changeColors] = useLogoAnimation();
   let location = useLocation();
 
@@ -79,21 +80,6 @@ export default function Login() {
               : "Impossible state!"}
           </button>
         </div>
-      </div>
-      <div className="relative w-full h-64 sm:h-72 md:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 lg:h-full">
-        <Octocat />
-      </div>
-    </main>
-  );
-}
-
-function LogInToGitHub({ state, data, startSignin, focusRef }) {
-  return (
-    <div className="mx-auto max-w-2xl w-full pt-4 pb-20 text-center lg:py-48 lg:text-left">
-      <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
-        <div className="mt-10 max-w-lg mx-auto lg:mx-0 sm:flex sm:justify-center lg:justify-start">
-          <div className="flex-1 rounded-md shadow"></div>
-        </div>
         {state === "error" && (
           <div className="mt-10 max-w-2xl mx-auto lg:mx-0 rounded-md bg-red-50 p-4 text-left">
             <div className="flex">
@@ -129,6 +115,21 @@ function LogInToGitHub({ state, data, startSignin, focusRef }) {
             </div>
           </div>
         )}
+      </div>
+      <div className="relative w-full h-64 sm:h-72 md:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 lg:h-full">
+        <Octocat />
+      </div>
+    </main>
+  );
+}
+
+function LogInToGitHub({ state, data, startSignin, focusRef }) {
+  return (
+    <div className="mx-auto max-w-2xl w-full pt-4 pb-20 text-center lg:py-48 lg:text-left">
+      <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
+        <div className="mt-10 max-w-lg mx-auto lg:mx-0 sm:flex sm:justify-center lg:justify-start">
+          <div className="flex-1 rounded-md shadow"></div>
+        </div>
       </div>
     </div>
   );

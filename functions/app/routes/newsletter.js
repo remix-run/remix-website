@@ -3,6 +3,9 @@ import Logo, { useLogoAnimation } from "../components/Logo";
 import LoadingButton from "../components/LoadingButton";
 import { MdEmail } from "react-icons/md";
 import VisuallyHidden from "@reach/visually-hidden";
+import { fetch } from "../utils/fetch";
+
+console.log("come on!");
 
 export function meta() {
   return {

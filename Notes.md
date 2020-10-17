@@ -1,0 +1,6 @@
+- csrf token stuff attack stuff
+- user session (just github) vs. login (actually have a user)
+  - for stripe we just need the session
+  - for /login and /dashboard/\* we need an actual user
+  - They share that code right now, need a method on top of createUserSession for /login
+- corporate self-serve purchases

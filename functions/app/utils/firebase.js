@@ -1,7 +1,8 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-// import cookies from "browser-cookies";
+import cookies from "browser-cookies";
+import { fetch } from "./fetch";
 
 // TODO: move to .env
 let firebaseConfig = {
@@ -31,18 +32,24 @@ export function getIdToken() {
 }
 
 export async function createUserSession(idToken) {
-  // let csrfToken = cookies.get("csrfToken");
-  // console.log({ csrfTokeidToken });
-  await fetch("/api/createUserSession", {
-    // so it saves the cookie
+  let res = await fetch("/api/createUserSession", {
     credentials: "same-origin",
     method: "post",
-    body: JSON.stringify({ idToken, csrfToken: "" }),
+    body: JSON.stringify({ idToken }),
     headers: {
       "content-type": "application/json",
+      "csrf-token": cookies.get("XSRF-TOKEN"),
     },
   });
   await firebase.auth().signOut();
+  console.log(res.status);
+  if (res.status === 403) {
+    throw new Error("Somebody's tryna hack us.");
+  }
+  if (res.status !== 200) {
+    throw new Error(await res.text());
+  }
+  return await res.json();
 }
 
 export { firebase };

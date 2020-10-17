@@ -44,7 +44,15 @@ async function createCheckout(uid, email, idToken, hostname) {
   await db.doc(`users/${uid}`).set({
     email,
     provider: "github",
-    createdAt: admin.firestore.Timestamp.now(),
+    // Getting a weird error *sometimes* in development
+    //
+    // "Value for argument "data" is not a valid Firestore document. Detected an
+    // object of type "Timestamp" that doesn't match the expected instance
+    // (found in field "createdAt"). Please ensure that the Firestore types you
+    // are using are from the same NPM package.)"
+
+    // So I'm skipping this, stripe already knows this information anyway
+    // createdAt: admin.firestore.Timestamp.now(),
   });
 
   // So we can look up the customer after and associate it with the user
