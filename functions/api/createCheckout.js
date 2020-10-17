@@ -1,8 +1,12 @@
 const { createCheckout } = require("../utils/checkout");
 
 module.exports = async (req, res) => {
-  let { uid, login, email, idToken } = req.body;
+  let { uid, email, idToken } = req.body;
   console.log("api/createCheckout", uid);
-  let session = await createCheckout(uid, login, email, idToken, req.hostname);
-  res.json({ id: session.id });
+  try {
+    let session = await createCheckout(uid, email, idToken, req.hostname);
+    res.json({ id: session.id });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

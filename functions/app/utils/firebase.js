@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import cookies from "browser-cookies";
+// import cookies from "browser-cookies";
 
 // TODO: move to .env
 let firebaseConfig = {
@@ -31,13 +31,13 @@ export function getIdToken() {
 }
 
 export async function createUserSession(idToken) {
-  let csrfToken = cookies.get("csrfToken");
-  console.log({ csrfToken, idToken });
+  // let csrfToken = cookies.get("csrfToken");
+  // console.log({ csrfTokeidToken });
   await fetch("/api/createUserSession", {
     // so it saves the cookie
     credentials: "same-origin",
     method: "post",
-    body: JSON.stringify({ idToken, csrfToken }),
+    body: JSON.stringify({ idToken, csrfToken: "" }),
     headers: {
       "content-type": "application/json",
     },

@@ -38,8 +38,8 @@ export default function Login() {
     try {
       let { user } = await authenticate();
       setState("authenticated");
-      let token = await user.getIdToken(true);
-      await createUserSession(token);
+      let idToken = await user.getIdToken(true);
+      await createUserSession(idToken);
       // navigate("/dashboard", { replace: true });
       let to = new URLSearchParams(location.search).get("from") || "/dashboard";
       window.location.replace(to);

@@ -29,6 +29,7 @@
     "@stripe/stripe-js": "^1.9.0",
     "@tailwindcss/ui": "^0.6.2",
     "autoprefixer": "^10.0.1",
+    "browser-cookies": "^1.2.0",
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
     "detect-browser": "^5.1.1",

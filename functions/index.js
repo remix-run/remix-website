@@ -1,7 +1,7 @@
 const express = require("express");
 const functions = require("firebase-functions");
 const cookieParser = require("cookie-parser");
-const csrf = require("csurf");
+// const csrf = require("csurf");
 const { createRequestHandler: remix } = require("@remix-run/express");
 
 let app = express();

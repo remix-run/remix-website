@@ -2258,6 +2258,11 @@ braces@^3.0.1, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
+browser-cookies@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/browser-cookies/-/browser-cookies-1.2.0.tgz#fca3ffb9b6a63aadc4d8c0999c6b57d0fa7d29b5"
+  integrity sha1-/KP/ubamOq3E2MCZnGtX0Pp9KbU=
+
 browserslist@^4.0.0, browserslist@^4.12.0, browserslist@^4.14.5, browserslist@^4.8.5:
   version "4.14.5"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.14.5.tgz#1c751461a102ddc60e40993639b709be7f2c4015"

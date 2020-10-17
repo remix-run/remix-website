@@ -14,8 +14,8 @@ const { addUserToken } = require("./tokens");
 //   indieBetaLicense: ["price_1HbT4UBIsmMSW7ROb1UqNcZq", "todo"],
 // };
 
-async function createCheckout(uid, login, email, idToken, hostname) {
-  console.log("createCheckout", uid, login, email);
+async function createCheckout(uid, email, idToken, hostname) {
+  console.log("createCheckout", uid, email);
 
   let baseUrl =
     process.env.NODE_ENV === "development"
@@ -44,10 +44,6 @@ async function createCheckout(uid, login, email, idToken, hostname) {
   await db.doc(`users/${uid}`).set({
     email,
     provider: "github",
-    providerData: {
-      login,
-      email,
-    },
     createdAt: admin.firestore.Timestamp.now(),
   });
 
