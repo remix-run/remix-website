@@ -59,4 +59,39 @@ svg > *[fill] {
 .markdown-body {
   @apply mt-4;
   @apply p-4;
+  padding-bottom: 50vh;
+}
+
+.markdown-body h2 {
+  @apply mt-0;
+  @apply pt-24;
+}
+
+@media (min-width: 1024px) {
+  .toc {
+    @apply fixed;
+    @apply top-0;
+    @apply pt-20;
+    @apply px-2;
+    @apply bottom-0;
+    @apply right-0;
+    @apply w-52;
+    @apply border-none;
+    @apply bg-transparent;
+  }
+
+  .toc .heading {
+    @apply mt-8;
+    @apply text-xs;
+  }
+
+  .toc a {
+    @apply text-sm;
+    @apply border-none;
+    @apply py-1;
+  }
+
+  .markdown-body {
+    @apply px-8;
+  }
 }
