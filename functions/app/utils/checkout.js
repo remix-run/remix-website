@@ -1,5 +1,4 @@
 import { loadStripe } from "@stripe/stripe-js";
-import { fetch } from "./fetch";
 
 // TODO: move this to .env
 let stripePromise = loadStripe(

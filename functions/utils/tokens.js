@@ -9,17 +9,16 @@ function generateToken() {
   });
 }
 
-async function addUserToken(uid) {
+async function addUserToken(uid, price, quantity) {
   let token = await generateToken();
 
   // Add the token
-  await db
-    .doc(`tokens/${token}`)
-    .set({ uid, issuedAt: admin.firestore.Timestamp.now() });
-
-  // Make it easy to look up/expire all tokens across all users, firestore
-  // queries make it easy to find all tokens for one user
-  await db.collection(`xUsersTokens`).add({ uid, token });
+  await db.doc(`tokens/${token}`).set({
+    issuedAt: admin.firestore.Timestamp.now(),
+    price,
+    quantity,
+    uid,
+  });
 
   return token;
 }

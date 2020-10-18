@@ -2,7 +2,6 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import cookies from "browser-cookies";
-import { fetch } from "./fetch";
 
 // TODO: move to .env
 let firebaseConfig = {

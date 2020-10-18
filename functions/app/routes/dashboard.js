@@ -1,14 +1,16 @@
 import React from "react";
 import { useLocationPending, useRouteData } from "@remix-run/react";
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../components/Logo";
+import { DataOutlet } from "../utils/routes";
 
 export default function Dashboard() {
   let isPending = useLocationPending();
+  let [data] = useRouteData();
 
   return (
     <div>
-      <TopNav />
+      <TopNav sessionUser={data.sessionUser} />
       <div
         className={
           isPending
@@ -16,7 +18,7 @@ export default function Dashboard() {
             : ""
         }
       >
-        <Outlet />
+        <DataOutlet data={data} />
       </div>
     </div>
   );
@@ -56,8 +58,7 @@ function useFlashingColorsOnTransition() {
   return colors;
 }
 
-function TopNav() {
-  let [user] = useRouteData();
+function TopNav({ sessionUser }) {
   let [isOpen, setIsOpen] = React.useState(false);
   let colors = useFlashingColorsOnTransition();
   let signout = () => {
@@ -99,7 +100,7 @@ function TopNav() {
                   alt=""
                   aria-hidden="true"
                   className="ml-2 h-8 w-8 rounded-full"
-                  src={user.picture}
+                  src={sessionUser.picture}
                 />
               </div>
             </div>
@@ -133,15 +134,15 @@ function TopNav() {
                 aria-hidden="true"
                 alt=""
                 className="h-10 w-10 rounded-full"
-                src={user.picture}
+                src={sessionUser.picture}
               />
             </div>
             <div className="space-y-1">
               <div className="text-base font-medium leading-none text-white">
-                {user.name}
+                {sessionUser.name}
               </div>
               <div className="text-sm font-medium leading-none text-gray-400">
-                {user.email}
+                {sessionUser.email}
               </div>
             </div>
           </div>

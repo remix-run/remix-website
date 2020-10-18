@@ -1,3 +1,3 @@
-module.exports = async function ({ context: { req } }) {
-  return { csrfToken: req.csrfToken() };
+module.exports = async function () {
+  return null;
 };

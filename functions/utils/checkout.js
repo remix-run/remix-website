@@ -10,9 +10,9 @@ const { addUserToken } = require("./tokens");
 //    we call api/createCheckout
 
 // [license]: [testPriceId, productionPriceId]
-// let products = {
-//   indieBetaLicense: ["price_1HbT4UBIsmMSW7ROb1UqNcZq", "todo"],
-// };
+let prices = {
+  indieBetaLicense: ["price_1HbT4UBIsmMSW7ROb1UqNcZq", "todo"],
+};
 
 async function createCheckout(uid, email, idToken, hostname) {
   console.log("createCheckout", uid, email);
@@ -22,18 +22,15 @@ async function createCheckout(uid, email, idToken, hostname) {
       ? "http://localhost:5000"
       : `https://${hostname}`;
 
-  // let productName = "indieBetaLicense";
-  // let productIndex = process.env.NODE_ENV === "production" ? 1 : 0;
+  let productName = "indieBetaLicense";
+  let priceIndex = process.env.NODE_ENV === "production" ? 1 : 0;
+  let price = prices[productName][priceIndex];
+  let quantity = 1;
 
   // Create a stripe session
   let session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
-    line_items: [
-      {
-        price: "price_1HbT4UBIsmMSW7ROb1UqNcZq",
-        quantity: 1,
-      },
-    ],
+    line_items: [{ price, quantity }],
     mode: "subscription",
     success_url: `${baseUrl}/buy/order/complete?idToken=${idToken}`,
     cancel_url: `${baseUrl}/buy/order/failed?idToken=${idToken}`,
@@ -56,7 +53,11 @@ async function createCheckout(uid, email, idToken, hostname) {
   });
 
   // So we can look up the customer after and associate it with the user
-  await db.doc(`orders/${uid}`).set({ stripeSessionId: session.id });
+  await db.doc(`orders/${uid}`).set({
+    stripeSessionId: session.id,
+    price,
+    quantity,
+  });
 
   // Client needs the stripe session id
   return session;
@@ -71,12 +72,22 @@ async function completeOrder(idToken) {
   // just want to verify we've actually got somebody here, not just a random
   // copy/paste of the URL to try to get a free account or something
   let { uid } = await admin.auth().verifyIdToken(idToken);
-  await addUserToken(uid);
+
   let order = await db.doc(`orders/${uid}`).get();
-  let { stripeSessionId } = order.data();
+  let { stripeSessionId, price, quantity } = order.data();
+
+  let token = await addUserToken(uid, price, quantity);
+
   let session = await stripe.checkout.sessions.retrieve(stripeSessionId);
-  await db.doc(`users/${uid}`).update({ stripeCustomerId: session.customer });
-  await db.doc(`orders/${uid}`).delete();
+
+  let userRef = db.doc(`users/${uid}`);
+
+  await Promise.all([
+    userRef.update({ stripeCustomerId: session.customer }),
+    userRef.collection("subscriptions").add({ price, quantity, token }),
+    db.doc(`orders/${uid}`).delete(),
+  ]);
+
   return null;
 }
 

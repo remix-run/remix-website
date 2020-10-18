@@ -1,12 +1,9 @@
 import React from "react";
 import { authenticate, createUserSession } from "../utils/firebase";
-import { useGlobalData } from "@remix-run/react";
-// import { useNavigate } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { useLocation } from "react-router-dom";
 
 export default function Login() {
-  let [{ csrfToken }] = useGlobalData();
   let [colors, changeColors] = useLogoAnimation();
   let location = useLocation();
 
