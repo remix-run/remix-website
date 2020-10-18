@@ -1,4 +1,5 @@
 module.exports = async ({ context: { res } }) => {
-  res.clearCookie("session");
+  console.log("Clear cookie __session");
+  res.clearCookie("__session");
   return { ok: true };
 };

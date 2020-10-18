@@ -16,11 +16,11 @@ module.exports = async (req, res) => {
   let twoWeeks = 60 * 60 * 24 * 14 * 1000;
   let cookie = await auth.createSessionCookie(idToken, { expiresIn: twoWeeks });
 
-  res.cookie("session", cookie, {
+  res.cookie("__session", cookie, {
     maxAge: twoWeeks,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    // sameSite: "lax",
   });
 
   res.json({ ok: true });

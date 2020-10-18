@@ -1,7 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import cookies from "browser-cookies";
 
 // TODO: move to .env
 let firebaseConfig = {
@@ -37,7 +36,6 @@ export async function createUserSession(idToken) {
     body: JSON.stringify({ idToken }),
     headers: {
       "content-type": "application/json",
-      "csrf-token": cookies.get("XSRF-TOKEN"),
     },
   });
   await firebase.auth().signOut();

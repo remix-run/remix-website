@@ -11,7 +11,10 @@ const { addUserToken } = require("./tokens");
 
 // [license]: [testPriceId, productionPriceId]
 let prices = {
-  indieBetaLicense: ["price_1HbT4UBIsmMSW7ROb1UqNcZq", "todo"],
+  indieBetaLicense: [
+    "price_1HbT4UBIsmMSW7ROb1UqNcZq",
+    "price_1HbT4UBIsmMSW7ROb1UqNcZq",
+  ],
 };
 
 async function createCheckout(uid, email, idToken, hostname) {
@@ -20,7 +23,7 @@ async function createCheckout(uid, email, idToken, hostname) {
   let baseUrl =
     process.env.NODE_ENV === "development"
       ? "http://localhost:5000"
-      : `https://${hostname}`;
+      : `https://playground-a6490.web.app`;
 
   let productName = "indieBetaLicense";
   let priceIndex = process.env.NODE_ENV === "production" ? 1 : 0;

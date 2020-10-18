@@ -2,7 +2,7 @@ const { Response } = require("@remix-run/loader");
 const { admin } = require("../../utils/firebase");
 
 module.exports = async ({ context: { req, res } }) => {
-  let sessionCookie = req.cookies.session;
+  let sessionCookie = req.cookies.__session;
   try {
     await admin.auth().verifySessionCookie(sessionCookie, true);
     return Response.redirect("/dashboard");

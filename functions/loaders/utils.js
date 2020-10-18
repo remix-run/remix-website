@@ -22,7 +22,7 @@ exports.requireCustomer = (loader) => {
 
     let redirect = `/login?from=${url.pathname + url.search}`;
 
-    let sessionCookie = req.cookies.session;
+    let sessionCookie = req.cookies.__session;
     if (sessionCookie === undefined) {
       return Response.redirect(redirect);
     }
@@ -39,6 +39,8 @@ exports.requireCustomer = (loader) => {
       }
       // because you can log in with github but not actually be a customer
     } catch (error) {
+      console.log("Error while creating session!");
+      console.error(error);
       return Response.redirect(redirect);
     }
 
