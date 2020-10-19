@@ -253,17 +253,15 @@ function NotReady() {
   return (
     <div className="max-w-screen-xl mx-auto">
       <div className="px-6 py-6 bg-gray-100 rounded-lg md:py-12 md:px-12 lg:py-16 lg:px-16">
-        <div className="xl:w-0">
-          <h2 className="text-center text-2xl leading-8 font-extrabold tracking-tight text-black sm:text-3xl sm:leading-9">
-            Not ready to buy?
-          </h2>
-          <p className="text-center mt-3 text-lg leading-6 text-gray-800">
-            <Link to="/newsletter" className="text-black underline">
-              Sign up for our newsletter
-            </Link>{" "}
-            to stay up to date with our latest features, tutorials, and more.
-          </p>
-        </div>
+        <h2 className="text-center text-2xl leading-8 font-extrabold tracking-tight text-black sm:text-3xl sm:leading-9">
+          Not ready to buy?
+        </h2>
+        <p className="text-center mt-3 text-lg leading-6 text-gray-800">
+          <Link to="/newsletter" className="text-black underline">
+            Sign up for our newsletter
+          </Link>{" "}
+          to stay up to date with our latest features, tutorials, and more.
+        </p>
       </div>
     </div>
   );

@@ -6,9 +6,10 @@ import { useLocation } from "react-router-dom";
 export default function Login() {
   let [colors, changeColors] = useLogoAnimation();
   let location = useLocation();
+  let loggedOut = location.search === "?loggedout=1";
 
-  // idle | authenticating | authenticated | error
-  let [state, setState] = React.useState("idle");
+  // loggedOut | idle | authenticating | authenticated | error
+  let [state, setState] = React.useState(loggedOut ? "loggedOut" : "idle");
   let [data, setData] = React.useState({ error: null });
 
   let focusRef = React.useRef();
@@ -57,7 +58,9 @@ export default function Login() {
           </div>
           <button
             ref={
-              state === "idle" || state === "authenticating"
+              state === "loggedOut" ||
+              state === "idle" ||
+              state === "authenticating"
                 ? focusRef
                 : undefined
             }
@@ -66,7 +69,7 @@ export default function Login() {
             onClick={startSignin}
             className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 active:bg-green-400 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
           >
-            {state === "idle"
+            {state === "idle" || state === "loggedOut"
               ? "Sign in with GitHub"
               : state === "authenticating"
               ? "Logging in ..."
@@ -108,6 +111,32 @@ export default function Login() {
                 <div className="mt-2 text-sm leading-5 text-red-800">
                   <p>Please try again.</p>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {state === "loggedOut" && (
+          <div className="rounded-md bg-green-950 p-4 mt-10 max-w-lg mx-auto text-left">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-green-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm leading-5 font-medium text-green-300">
+                  You have been logged out
+                </p>
               </div>
             </div>
           </div>

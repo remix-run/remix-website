@@ -4,8 +4,67 @@ module.exports = {
   future: {
     purgeLayersByDefault: true,
   },
+  experimental: {
+    darkModeVariant: true,
+  },
   purge: ["./app/**/*.js", "./app/**/*.mdx", "./app/**/*.md"],
+  plugins: [
+    require("@tailwindcss/ui")({ layout: "sidebar" }),
+    require("@tailwindcss/typography"),
+    neonButton(),
+  ],
   theme: {
+    typography: (theme) => ({
+      default: {
+        css: {
+          a: {
+            color: theme("colors.aqua.600"),
+            "&:hover": {
+              color: theme("colors.aqua.500"),
+            },
+            "&:active": {
+              color: theme("colors.aqua.400"),
+            },
+          },
+        },
+      },
+
+      dark: {
+        css: {
+          color: theme("colors.gray.300"),
+          h1: {
+            color: theme("colors.gray.100"),
+          },
+          h2: {
+            color: theme("colors.gray.100"),
+          },
+          h3: {
+            color: theme("colors.gray.100"),
+          },
+          h4: {
+            color: theme("colors.gray.100"),
+          },
+          h5: {
+            color: theme("colors.gray.100"),
+          },
+          h6: {
+            color: theme("colors.gray.100"),
+          },
+
+          strong: {
+            color: theme("colors.gray.100"),
+          },
+
+          code: {
+            color: theme("colors.gray.100"),
+          },
+
+          figcaption: {
+            color: theme("colors.gray.500"),
+          },
+        },
+      },
+    }),
     extend: {
       fontSize: {
         xs: "0.85rem",
@@ -26,6 +85,7 @@ module.exports = {
           700: "#0B837F",
           800: "#08635F",
           900: "#054240",
+          950: "#021c1c",
         },
         green: {
           50: "#F3FEF8",
@@ -38,6 +98,7 @@ module.exports = {
           700: "#058743",
           800: "#046532",
           900: "#034421",
+          950: "#02361a",
         },
         pink: {
           50: "#FEF7FC",
@@ -88,6 +149,7 @@ module.exports = {
           900: "#122236",
         },
         gray: {
+          50: "#fefefe",
           100: "#fcfcfc",
           200: "#eeeeee",
           300: "#e0e0e0",
@@ -102,98 +164,69 @@ module.exports = {
     },
   },
   variants: {
-    backgroundColor: ["hover", "focus", "active", "disabled"],
-    textColor: ["hover", "focus", "active", "disabled"],
+    typography: ["responsive", "dark"],
+    backgroundColor: [
+      "hover",
+      "focus",
+      "active",
+      "disabled",
+      "responsive",
+      "dark",
+    ],
+    textColor: ["hover", "focus", "active", "disabled", "responsive", "dark"],
     opacity: ["hover", "focus", "active", "disabled"],
     borderWidth: ["responsive", "last"],
   },
-  plugins: [
-    require("@tailwindcss/ui")({
-      layout: "sidebar",
-    }),
-    plugin(({ addUtilities, addComponents }) => {
-      addUtilities({
-        ".delay-100": {
-          "transition-delay": "100ms",
-        },
-        ".delay-200": {
-          "transition-delay": "200ms",
-        },
-        ".delay-300": {
-          "transition-delay": "300ms",
-        },
-        ".delay-400": {
-          "transition-delay": "400ms",
-        },
-        ".delay-500": {
-          "transition-delay": "500ms",
-        },
-        ".delay-600": {
-          "transition-delay": "600ms",
-        },
-        ".delay-700": {
-          "transition-delay": "700ms",
-        },
-        ".delay-800": {
-          "transition-delay": "800ms",
-        },
-        ".delay-900": {
-          "transition-delay": "900ms",
-        },
-        ".delay-1000": {
-          "transition-delay": "1000ms",
-        },
-        ".delay-1100": {
-          "transition-delay": "1100ms",
-        },
-      });
+};
 
-      addComponents({
-        // learn how to do this and get the ability to use the normal theme
-        // colors and stuff like neon-blue, neon-yellow, etc.
-        ".neon-button": {
-          transitionProperty: "transform, opacity, background",
-          transitionDuration: "200ms",
-          transitionTimingFunction: "ease-out",
-          transform: "scale(1.00001)",
-          textShadow: "0px 0px 5px hsla(0, 0%, 0%, 0.1)",
-          background: "hsl(209, 63%, 76%)",
-          boxShadow: `
+////////////////////////////////////////////////////////////////////////////////
+function neonButton() {
+  return plugin(({ addUtilities, addComponents }) => {
+    addComponents({
+      // learn how to do this and get the ability to use the normal theme
+      // colors and stuff like neon-blue, neon-yellow, etc.
+      ".neon-button": {
+        transitionProperty: "transform, opacity, background",
+        transitionDuration: "200ms",
+        transitionTimingFunction: "ease-out",
+        transform: "scale(1.00001)",
+        textShadow: "0px 0px 5px hsla(0, 0%, 0%, 0.1)",
+        background: "hsl(209, 63%, 76%)",
+        boxShadow: `
             0 0 1em rgb(39, 113, 186),
             0 0 1.5em rgb(39, 113, 186) inset
           `,
-          "&:disabled": {
-            boxShadow: "0 0 1.5em rgb(39, 113, 186) inset",
-          },
-          "&:focus": {
-            outline: "none",
-            background: "hsl(209, 63%, 76%)",
-            boxShadow: `
+        "&:disabled": {
+          boxShadow: "0 0 1.5em rgb(39, 113, 186) inset",
+        },
+        "&:focus": {
+          outline: "none",
+          background: "hsl(209, 63%, 76%)",
+          boxShadow: `
                 0 0 1px 3px rgb(255, 223, 9),
                 0 0 1.5em rgb(39, 113, 186) inset
               `,
-          },
-          "&:focus:not(:focus-visible)": {
-            boxShadow: `
+        },
+        "&:focus:not(:focus-visible)": {
+          boxShadow: `
               0 0 1em rgb(39, 113, 186),
               0 0 1.5em rgb(39, 113, 186) inset
             `,
-          },
-          "&:active:not(:focus-visible)": {
-            boxShadow: `
-              0 0 1.5em rgb(39, 113, 186) inset
-            `,
-          },
-          "&:active": {
-            outline: "none",
-            background: "hsl(209, 33%, 66%)",
-            transform: "scale(0.98)",
-            boxShadow: `
-              0 0 1.5em rgb(39, 113, 186) inset
-            `,
-          },
         },
-      });
-    }),
-  ],
-};
+        "&:active:not(:focus-visible)": {
+          boxShadow: `
+              0 0 1.5em rgb(39, 113, 186) inset
+            `,
+        },
+        "&:active": {
+          outline: "none",
+          background: "hsl(209, 33%, 66%)",
+          transform: "scale(0.98)",
+          boxShadow: `
+              0 0 1.5em rgb(39, 113, 186) inset
+            `,
+        },
+      },
+    });
+  });
+}

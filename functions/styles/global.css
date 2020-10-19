@@ -4,6 +4,7 @@
 /* purgecss end ignore */
 
 @tailwind utilities;
+@tailwind screens;
 
 :focus:not(:focus-visible) {
   outline: none;

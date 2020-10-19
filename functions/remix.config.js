@@ -45,7 +45,7 @@ function moveContentToMain() {
     let article = {
       type: "element",
       tagName: "article",
-      properties: { className: "markdown-body" },
+      properties: { className: "prose dark:prose-dark p-8 max-w-none" },
       children,
     };
     root.children = [...importsAndStuff, nav, article];

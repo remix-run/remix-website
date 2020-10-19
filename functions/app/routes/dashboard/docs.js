@@ -1,10 +1,9 @@
 import React from "react";
-import { useLocationPending } from "@remix-run/react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 
 export function headers() {
   return {
-    "cache-control": "private, max-age=60",
+    "cache-control": "private, max-age=600",
   };
 }
 
@@ -56,7 +55,7 @@ export default function Docs() {
   }, [location]);
 
   return (
-    <div>
+    <div className="dark:bg-gray-900 dark:text-gray-200">
       <button
         onClick={() => setShowNav(!showNav)}
         className={`
@@ -87,6 +86,7 @@ export default function Docs() {
         className={`
             ${hideNav ? "hidden md:block" : "md:block"}
             bg-blue-50 pl-4 pt-5 pb-2
+            dark:bg-aqua-950
             md:w-64 md:fixed md:top-0 md:bottom-0 md:pt-20 md:px-6
         `}
       >
@@ -95,7 +95,8 @@ export default function Docs() {
             <li key={index}>
               <div
                 className="
-                    uppercase font-medium tracking-tight text-blue-900 pb-1 mt-4
+                    uppercase font-medium tracking-tight pb-1 mt-4
+                    text-blue-900 dark:text-aqua-100
                     md:text-xs md:mt-8
                   "
               >
@@ -111,7 +112,9 @@ export default function Docs() {
                   >
                     <NavLink
                       className="
-                          block py-2 text-lg text-blue-400 hover:text-blue-700
+                          block py-2 text-lg
+                          text-blue-400 hover:text-blue-700
+                          dark:text-aqua-700 dark:hover:text-aqua-600
                           md:text-sm md:py-1
                         "
                       to={to}
@@ -126,7 +129,7 @@ export default function Docs() {
           ))}
         </ul>
       </nav>
-      <main className="md:ml-64 md:mr-52 md:max-w-5xl">
+      <main className="md:ml-64 md:flex md:max-w-3xl">
         <Outlet />
       </main>
     </div>

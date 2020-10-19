@@ -1,10 +1,12 @@
 import React from "react";
-
 import { Meta, Scripts, Styles, Routes } from "@remix-run/react";
 import { useLocation } from "react-router-dom";
 
+let noScriptPaths = new Set(["/", "/buy", "/logout", "/features"]);
+
 export default function App() {
   let location = useLocation();
+  let includeScripts = !noScriptPaths.has(location.pathname);
 
   let locations = React.useRef();
   if (!locations.current) {
@@ -35,9 +37,9 @@ export default function App() {
         <Meta />
         <Styles />
       </head>
-      <body>
+      <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200">
         <Routes />
-        <Scripts />
+        {includeScripts && <Scripts />}
       </body>
     </html>
   );

@@ -1,4 +1,3 @@
-const { Response } = require("@remix-run/loader");
 const { db } = require("../../../utils/firebase");
 const { requireCustomer } = require("../../utils");
 const { stripe } = require("../../../utils/stripe");
@@ -11,19 +10,12 @@ module.exports = requireCustomer(async (_, { sessionUser, user }) => {
     stripe.customers.retrieve(user.stripeCustomerId),
   ]);
 
-  let body = JSON.stringify({
+  return {
     sessionUser,
     user,
     stripeCustomer,
     subscriptions,
-  });
-
-  return new Response(body, {
-    headers: {
-      "content-type": "application/json",
-      "cache-control": "private, max-age=3600",
-    },
-  });
+  };
 });
 
 async function getSubscriptions(tokens) {

@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
     maxAge: twoWeeks,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    // sameSite: "lax",
+    sameSite: "lax",
   });
 
   res.json({ ok: true });

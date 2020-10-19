@@ -34,7 +34,7 @@ exports.requireCustomer = (loader) => {
       sessionUser = await admin.auth().verifySessionCookie(sessionCookie, true);
       // and an actual account
       userDoc = await db.doc(`users/${sessionUser.uid}`).get();
-      if (!userDoc.exists) {
+      if (!userDoc.exists || userDoc.data().stripeCustomerId === null) {
         return Response.redirect("/buy");
       }
       // because you can log in with github but not actually be a customer

@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 export function headers() {
   return {
     "Cache-Control": "public, max-age=0, must-revalidate",
+    Link:
+      "</buy>;rel=prefetch;as=document, </features>;rel=prefetch;as=document",
   };
 }
 
@@ -76,11 +78,11 @@ export default function Index() {
 
   return (
     <div className="bg-gray-900 min-h-screen">
-      <div className="text-right">
+      <div className="text-right md:max-w-3xl md:m-auto">
         <LoginLink />
       </div>
-      <div className="text-gray-100 mx-auto max-w-7xl w-full pt-4 pb-20 lg:py-32">
-        <div className="px-4 sm:px-8 xl:pr-16 lg:max-w-3xl lg:m-auto">
+      <div className="text-gray-100 mx-auto max-w-7xl w-full pt-4 pb-20">
+        <div className="px-4 sm:px-8 xl:pr-16 md:max-w-3xl md:m-auto">
           <div className="max-w-md" onMouseMove={changeColors}>
             <Logo colors={colors} className="w-full" />
           </div>

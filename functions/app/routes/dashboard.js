@@ -66,7 +66,7 @@ function TopNav({ sessionUser }) {
   };
   // TODO: this mobile menu isn't very accessible
   return (
-    <nav className="sticky top-0 z-10 bg-gray-900">
+    <nav className="sticky top-0 z-10 bg-gray-900 dark:bg-black">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">

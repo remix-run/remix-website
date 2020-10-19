@@ -41,21 +41,24 @@ async function createCheckout(uid, email, idToken, hostname) {
 
   // Add them to firestore so we can pick this back up again after a successful
   // stripe transaction
-  await db.doc(`users/${uid}`).set({
-    email,
-    provider: "github",
-    // Getting a weird error *sometimes* in development
-    //
-    // "Value for argument "data" is not a valid Firestore document. Detected an
-    // object of type "Timestamp" that doesn't match the expected instance
-    // (found in field "createdAt"). Please ensure that the Firestore types you
-    // are using are from the same NPM package.)"
+  let userRef = db.doc(`users/${uid}`);
+  let userDoc = await userRef.get();
+  if (userDoc.exists) {
+    // if there's an existing order they bailed on, delete it, this does not
+    // fail if the document doesnt' exist
+    await db.doc(`orders/${uid}`).delete();
+  } else {
+    // create the user, this is their first order
+    await db.doc(`users/${uid}`).set({
+      email,
+      provider: "github",
+      createdAt: admin.firestore.Timestamp.now(),
+      stripeCustomerId: null,
+    });
+  }
 
-    // So I'm skipping this, stripe already knows this information anyway
-    // createdAt: admin.firestore.Timestamp.now(),
-  });
-
-  // So we can look up the customer after and associate it with the user
+  // Temporary order so we can look up the customer after succesful purchase and
+  // associate it with the user
   await db.doc(`orders/${uid}`).set({
     stripeSessionId: session.id,
     price,
@@ -76,22 +79,19 @@ async function completeOrder(idToken) {
   // copy/paste of the URL to try to get a free account or something
   let { uid } = await admin.auth().verifyIdToken(idToken);
 
-  let order = await db.doc(`orders/${uid}`).get();
-  let { stripeSessionId, price, quantity } = order.data();
+  let userRef = db.doc(`users/${uid}`);
+  let orderRef = db.doc(`orders/${uid}`);
 
-  let token = await addUserToken(uid, price, quantity);
+  let order = await orderRef.get();
+  let { stripeSessionId, price, quantity } = order.data();
 
   let session = await stripe.checkout.sessions.retrieve(stripeSessionId);
 
-  let userRef = db.doc(`users/${uid}`);
-
   await Promise.all([
     userRef.update({ stripeCustomerId: session.customer }),
-    userRef.collection("subscriptions").add({ price, quantity, token }),
-    db.doc(`orders/${uid}`).delete(),
+    addUserToken(uid, price, quantity),
+    orderRef.delete(),
   ]);
-
-  return null;
 }
 
 exports.createCheckout = createCheckout;

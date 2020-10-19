@@ -1,23 +1,214 @@
-@import "//unpkg.com/github-markdown-css@4.0.0/github-markdown.css";
-@import "//unpkg.com/prism-themes@1.4.0/themes/prism-material-light.css";
+code[class*="language-"],
+pre[class*="language-"] {
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  color: #90a4ae;
+  background: #fafafa;
+  font-family: Roboto Mono, monospace;
+  font-size: 1em;
+  line-height: 1.5em;
 
-@font-face {
-  font-family: "Virgil";
-  src: url("https://excalidraw.com/FG_Virgil.woff2");
-}
-@font-face {
-  font-family: "Cascadia";
-  src: url("https://excalidraw.com/Cascadia.woff2");
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
 }
 
-/* just for nested routes page */
-svg > *[fill] {
-  transition: opacity 200ms;
+code[class*="language-"]::-moz-selection,
+pre[class*="language-"]::-moz-selection,
+code[class*="language-"] ::-moz-selection,
+pre[class*="language-"] ::-moz-selection {
+  background: #cceae7;
+  color: #263238;
 }
 
-.markdown-body a {
+code[class*="language-"]::selection,
+pre[class*="language-"]::selection,
+code[class*="language-"] ::selection,
+pre[class*="language-"] ::selection {
+  background: #cceae7;
+  color: #263238;
+}
+
+:not(pre) > code[class*="language-"] {
+  white-space: normal;
+  border-radius: 0.2em;
+  padding: 0.1em;
+}
+
+pre[class*="language-"] {
+  overflow: auto;
+  position: relative;
+  margin: 0.5em 0;
+  padding: 1.25em 1em;
+}
+
+.language-css > code,
+.language-sass > code,
+.language-scss > code {
+  color: #f76d47;
+}
+
+[class*="language-"] .namespace {
+  opacity: 0.7;
+}
+
+.token.atrule {
+  color: #7c4dff;
+}
+
+.token.attr-name {
+  color: #39adb5;
+}
+
+.token.attr-value {
+  color: #f6a434;
+}
+
+.token.attribute {
+  color: #f6a434;
+}
+
+.token.boolean {
+  color: #7c4dff;
+}
+
+.token.builtin {
+  color: #39adb5;
+}
+
+.token.cdata {
+  color: #39adb5;
+}
+
+.token.char {
+  color: #39adb5;
+}
+
+.token.class {
+  color: #39adb5;
+}
+
+.token.class-name {
+  color: #6182b8;
+}
+
+.token.comment {
+  color: #aabfc9;
+}
+
+.token.constant {
+  color: #7c4dff;
+}
+
+.token.deleted {
+  color: #e53935;
+}
+
+.token.doctype {
+  color: #aabfc9;
+}
+
+.token.entity {
+  color: #e53935;
+}
+
+.token.function {
+  color: #7c4dff;
+}
+
+.token.hexcode {
+  color: #f76d47;
+}
+
+.token.id {
+  color: #7c4dff;
+  font-weight: bold;
+}
+
+.token.important {
+  color: #7c4dff;
+  font-weight: bold;
+}
+
+.token.inserted {
+  color: #39adb5;
+}
+
+.token.keyword {
+  color: #7c4dff;
+}
+
+.token.number {
+  color: #f76d47;
+}
+
+.token.operator {
+  color: #39adb5;
+}
+
+.token.prolog {
+  color: #aabfc9;
+}
+
+.token.property {
+  color: #39adb5;
+}
+
+.token.pseudo-class {
+  color: #f6a434;
+}
+
+.token.pseudo-element {
+  color: #f6a434;
+}
+
+.token.punctuation {
+  color: #39adb5;
+}
+
+.token.regex {
+  color: #6182b8;
+}
+
+.token.selector {
+  color: #e53935;
+}
+
+.token.string {
+  color: #f6a434;
+}
+
+.token.symbol {
+  color: #7c4dff;
+}
+
+.token.tag {
+  color: #e53935;
+}
+
+.token.unit {
+  color: #f76d47;
+}
+
+.token.url {
+  color: #e53935;
+}
+
+.token.variable {
+  color: #e53935;
+}
+
+/* .prose a {
   @apply text-blue-500;
-}
+} */
 
 .toc {
   @apply bg-blue-50;
@@ -38,9 +229,8 @@ svg > *[fill] {
   @apply block;
   @apply py-2;
   @apply text-lg;
-  /* apply md:text-sm; */
-  @apply text-blue-400;
   @apply border-b;
+  @apply text-blue-400;
   @apply border-blue-100;
 }
 
@@ -67,21 +257,22 @@ svg > *[fill] {
   @apply pt-24;
 }
 
-@media (min-width: 1024px) {
+@screen md {
   .toc {
-    @apply fixed;
-    @apply top-0;
-    @apply pt-20;
-    @apply px-2;
-    @apply bottom-0;
-    @apply right-0;
-    @apply w-52;
+    @apply w-60;
+    @apply flex-shrink-0;
+    @apply order-1;
+    @apply self-start;
+    @apply sticky;
+    @apply top-24;
+    @apply pt-0;
+    @apply px-6;
     @apply border-none;
     @apply bg-transparent;
   }
 
   .toc .heading {
-    @apply mt-8;
+    @apply mt-0;
     @apply text-xs;
   }
 
@@ -93,5 +284,20 @@ svg > *[fill] {
 
   .markdown-body {
     @apply px-8;
+  }
+}
+
+/* @variants dark { */
+@media (prefers-color-scheme: dark) {
+  .toc a {
+    @apply text-aqua-700;
+    @apply border-blue-100;
+  }
+  .toc a:hover {
+    @apply text-aqua-600;
+    @apply border-blue-100;
+  }
+  .toc .heading {
+    @apply text-aqua-100;
   }
 }

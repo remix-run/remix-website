@@ -3,12 +3,6 @@ import { useRouteData } from "@remix-run/react";
 
 function openStripeCustomerPortal() {}
 
-export function headers({ loaderHeaders }) {
-  return {
-    "cache-control": loaderHeaders.get("cache-control"),
-  };
-}
-
 export default function DashboardIndex() {
   let [{ sessionUser, user, stripeCustomer, subscriptions }] = useRouteData();
   return (
