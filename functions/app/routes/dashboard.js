@@ -8,7 +8,7 @@ import { DataOutlet } from "../utils/routes";
 
 export default function Dashboard() {
   let isPending = useLocationPending();
-  let [data] = useRouteData();
+  let data = useRouteData();
 
   return (
     <div>

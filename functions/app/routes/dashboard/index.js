@@ -9,7 +9,7 @@ export function headers() {
 function openStripeCustomerPortal() {}
 
 export default function DashboardIndex() {
-  let [{ sessionUser, user, stripeCustomer, subscriptions }] = useRouteData();
+  let { sessionUser, user, stripeCustomer, subscriptions } = useRouteData();
   return (
     <div className="px-4 py-4 bg-gray-200 min-h-screen">
       <div className="bg-white shadow overflow-hidden sm:rounded-lg">

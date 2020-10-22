@@ -6,7 +6,7 @@ import VisuallyHidden from "@reach/visually-hidden";
 import * as CacheControl from "../utils/CacheControl";
 
 export function headers() {
-  return CacheControl.public;
+  return CacheControl.pub;
 }
 
 export function meta() {

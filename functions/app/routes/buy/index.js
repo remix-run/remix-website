@@ -5,7 +5,7 @@ import * as CacheControl from "../../utils/CacheControl";
 
 export function headers() {
   return {
-    ...CacheControl.public,
+    ...CacheControl.pub,
     Link: "</buy/indie>;rel=prefetch;as=document",
   };
 }
@@ -53,19 +53,23 @@ function FAQSection() {
       </h2>
       <div className="mt-12">
         <FAQ>
-          <Question title="What kind of support do I get?">
-            You'll get access to our issue tracker where you can report issues
-            and get help with usage questions within 48 hours on business days.
-            During the beta, you'll get access to weekly "office hours" with
-            Ryan and Micheal for real time help. Finally, you'll get access to a
-            private discord with other Remix users.
+          <Question title="Is this production ready?">
+            Nope. We are in beta. We need your help to get it production ready.
+            Please do not purchase a license if you are not comfortable with
+            bugs and missing features. Consider this like a Kickstarter, except
+            you get a nearly finished product immediately!
           </Question>
           <Question title="Is there a refundable trial period?">
-            Not at this time. We are currently in beta and can make no
-            guarantees to the production-readiness of Remix (it's pretty good
-            already, but that's the point of the beta!). Wait for the 1.0
-            release if you'd like a refundable trial period. All beta sales are
-            final.
+            Not yet. During the beta period all sales are final. We need your
+            support right now to get it over the finish line! Wait for the 1.0
+            release if you'd like a refundable trial period.
+          </Question>
+          <Question title="What kind of support do I get?">
+            You'll get access to our issue tracker where you can report issues
+            and get help with usage questions on business days. During the beta,
+            you'll get access to weekly "office hours" with Ryan and Micheal for
+            real time help. Finally, you'll get access to a private discord with
+            other Remix users.
           </Question>
           <Question title="What can I do with an indie License?">
             An indie license is just for you and your own solo projects at the
@@ -73,11 +77,10 @@ function FAQSection() {
             You'll get access to support and all updates to Remix.
           </Question>
           <Question title="What can I do with a team License?">
-            A team license is good for your entire team, on as many projects as
-            you like. It's priced by the number of developers expected to be
-            working in the Remix projects at the time of purchase. If you hire
-            more developers, you do not need to update the number of developers
-            on your license until it's due for renewal.
+            A team license is good for as many projects as you like. Each
+            license has a nubmer of developers assigned to it. You can assign
+            members of your team, and buy more seats on your license on the
+            dashboard after you purchase.
           </Question>
           <Question title="Why is the team license more expensive?">
             We know that Remix is incredibly valuable for commercial
@@ -95,9 +98,9 @@ function FAQSection() {
           </Question>
           <Question title="What happens if I cancel my subscription?">
             You will be able to continue using the latest version of Remix at
-            the time your subscription expires forever, but you won't receive
-            any updates (besides security patches). You will also lose access to
-            support.
+            the time your subscription expires for as long as you like, but you
+            won't receive any updates (besides security patches). You will also
+            lose access to support.
           </Question>
           <Question title="Can I just buy a few indie licenses for my team?">
             No, that's against the software license. We're a bootstrapped
@@ -268,7 +271,8 @@ function NotReady() {
           <Link to="/newsletter" className="text-black underline">
             Sign up for our newsletter
           </Link>{" "}
-          to stay up to date with our latest features, tutorials, and more.
+          to stay up to date with our latest features, tutorials, and the 1.0
+          release.
         </p>
       </div>
     </div>

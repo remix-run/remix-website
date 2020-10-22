@@ -39,7 +39,7 @@ export function AnimatedExampleApp() {
     );
     return () => clearTimeout(id);
   }, [step]);
-  return ExampleApp({ step });
+  return <ExampleApp step={step} />;
 }
 
 export function ExampleApp({ step, hideInvoice = false }) {

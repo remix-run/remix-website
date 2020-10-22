@@ -19,3 +19,24 @@ We're in beta so the docs are still incomplete but we're working on it :D Please
 ## Getting help
 
 You should have been invited to the discord channel. If not, please [email us](mailto:help@remix.run). We are staying pretty active in there with our beta customers and appreciate all of your feedback and patience.
+
+```jsx
+///////////////////////////////////////////////////////////////////
+// Sever side loaders fetch data from anywhere
+const db = require("../db");
+module.exports = async ({ params }) => {
+  let user = await db.query(`users/${params.userId}`);
+  return fetch(`https://api.github.com/users/${user.githubLogin}`);
+};
+
+///////////////////////////////////////////////////////////////////
+// Data gets pass to your route component on the server and client
+export default function UserGithubProfile({ data }) {
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <Avatar src={user.avatar_url} />
+    </div>
+  );
+}
+```

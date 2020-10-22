@@ -6,7 +6,7 @@ import * as CacheControl from "../utils/CacheControl";
 
 export function headers() {
   return {
-    ...CacheControl.public,
+    ...CacheControl.pub,
     Link:
       "</buy>;rel=prefetch;as=document, </features>;rel=prefetch;as=document",
   };

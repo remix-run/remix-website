@@ -45,7 +45,9 @@ function moveContentToMain() {
     let article = {
       type: "element",
       tagName: "article",
-      properties: { className: "prose dark:prose-dark p-8 max-w-none" },
+      properties: {
+        className: "prose dark:prose-dark xl:prose-lg p-8 max-w-none",
+      },
       children,
     };
     root.children = [...importsAndStuff, nav, article];

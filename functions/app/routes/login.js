@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import * as CacheControl from "../utils/CacheControl";
 
 export function headers() {
-  return CacheControl.public;
+  return CacheControl.pub;
 }
 
 export function meta() {

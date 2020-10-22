@@ -4,7 +4,7 @@ import { createCheckoutClient } from "../../utils/checkout";
 import * as CacheControl from "../../utils/CacheControl";
 
 export function headers() {
-  return CacheControl.public;
+  return CacheControl.pub;
 }
 
 // const fakeUser = {

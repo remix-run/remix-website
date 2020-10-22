@@ -8,7 +8,7 @@ export function headers() {
 }
 
 export default function () {
-  let [{ username, data: initialData }] = useRouteData();
+  let { username, data: initialData } = useRouteData();
   let data = useDoc(`order/${username}`, initialData);
   return (
     <div>
