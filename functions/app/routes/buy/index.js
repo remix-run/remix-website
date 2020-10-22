@@ -1,6 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../../components/Logo";
+import * as CacheControl from "../../utils/CacheControl";
+
+export function headers() {
+  return {
+    ...CacheControl.public,
+    Link: "</buy/indie>;rel=prefetch;as=document",
+  };
+}
 
 export default function BuyIndex() {
   return (

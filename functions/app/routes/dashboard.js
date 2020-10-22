@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { DataOutlet } from "../utils/routes";
 
+// headers set by children
+
 export default function Dashboard() {
   let isPending = useLocationPending();
   let [data] = useRouteData();

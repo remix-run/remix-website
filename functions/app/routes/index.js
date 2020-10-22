@@ -2,10 +2,11 @@ import React from "react";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import * as CacheControl from "../utils/CacheControl";
 
 export function headers() {
   return {
-    "Cache-Control": "public, max-age=0, must-revalidate",
+    ...CacheControl.public,
     Link:
       "</buy>;rel=prefetch;as=document, </features>;rel=prefetch;as=document",
   };

@@ -3,8 +3,11 @@ import Logo, { useLogoAnimation } from "../components/Logo";
 import LoadingButton from "../components/LoadingButton";
 import { MdEmail } from "react-icons/md";
 import VisuallyHidden from "@reach/visually-hidden";
+import * as CacheControl from "../utils/CacheControl";
 
-console.log("come on!");
+export function headers() {
+  return CacheControl.public;
+}
 
 export function meta() {
   return {

@@ -1,4 +1,12 @@
 import React from "react";
+import * as CacheControl from "../utils/CacheControl";
+
+export function headers() {
+  return {
+    ...CacheControl.public,
+    Link: "</buy>;rel=prefetch;as=document",
+  };
+}
 
 export default function Features() {
   return (
@@ -38,7 +46,7 @@ export default function Features() {
         </svg>
         <div className="relative">
           <h3 className="text-center text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
-            A better way to send money
+            Back to basics, with a modern twist
           </h3>
           <p className="mt-4 max-w-3xl mx-auto text-center text-xl leading-7 text-gray-500">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus
@@ -195,7 +203,7 @@ export default function Features() {
               className="relative mx-auto"
               width={490}
               src="https://tailwindui.com/img/features/feature-example-1.png"
-              alt
+              alt=""
             />
           </div>
         </div>

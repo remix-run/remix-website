@@ -1,5 +1,10 @@
 import React from "react";
 import { useRouteData } from "@remix-run/react";
+import * as CacheControl from "../../utils/CacheControl";
+
+export function headers() {
+  return CacheControl.none;
+}
 
 function openStripeCustomerPortal() {}
 

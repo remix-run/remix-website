@@ -1,37 +1,26 @@
 import React from "react";
-import { authenticate, createUserSession } from "../utils/firebase";
-import Logo, { useLogoAnimation } from "../components/Logo";
-import { useLocation } from "react-router-dom";
-import * as CacheControl from "../utils/CacheControl";
+import { authenticate, createUserSession } from "../../utils/firebase";
+import { createCheckoutClient } from "../../utils/checkout";
+import * as CacheControl from "../../utils/CacheControl";
 
 export function headers() {
   return CacheControl.public;
 }
 
-export function meta() {
-  return {
-    title: "Remix Login",
-  };
-}
+// const fakeUser = {
+//   name: "Ryan Florence",
+//   avatar_url: "https://avatars0.githubusercontent.com/u/100200?v=4",
+//   email: "rpflorence@gmail.com",
+//   login: "ryanflorence",
+// };
 
-export default function Login() {
-  let [colors, changeColors] = useLogoAnimation();
-  let location = useLocation();
-  let loggedOut = location.search === "?loggedout=1";
-
-  // loggedOut | idle | authenticating | authenticated | error
-  let [state, setState] = React.useState(loggedOut ? "loggedOut" : "idle");
+export default function Indie() {
+  // idle | autheticating | error
+  let [state, setState] = React.useState("idle");
   let [data, setData] = React.useState({ error: null });
 
   let focusRef = React.useRef();
   let manageFocus = React.useRef(false);
-
-  React.useEffect(() => {
-    if (state === "authenticating") {
-      let id = setTimeout(changeColors, 250);
-      return () => clearTimeout(id);
-    }
-  }, [state, changeColors]);
 
   React.useEffect(() => {
     if (manageFocus.current) {
@@ -47,12 +36,10 @@ export default function Login() {
     setState("authenticating");
     try {
       let { user } = await authenticate();
-      setState("authenticated");
       let idToken = await user.getIdToken(true);
       await createUserSession(idToken);
-      // navigate("/dashboard", { replace: true });
-      let to = new URLSearchParams(location.search).get("from") || "/dashboard";
-      window.location.replace(to);
+      await createCheckoutClient(user.uid, user.email, idToken);
+      // redirects to stripe checkout and then success_url
     } catch (error) {
       console.error(error);
       setData({ error });
@@ -62,34 +49,63 @@ export default function Login() {
 
   return (
     <main className="lg:min-h-screen lg:relative bg-gray-900">
-      <div className="py-16 px-4 lg:w-1/2 lg:pt-48">
-        <div className="m-auto max-w-lg">
-          <div className="px-1">
-            <Logo colors={colors} />
+      <LogInToGitHub
+        state={state}
+        data={data}
+        startSignin={startSignin}
+        focusRef={focusRef}
+      />
+      <div className="relative w-full h-64 sm:h-72 md:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 lg:h-full bg-gray-100">
+        <Octocat />
+      </div>
+    </main>
+  );
+}
+
+function LogInToGitHub({ state, data, startSignin, focusRef }) {
+  return (
+    <div className="mx-auto max-w-8xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
+      <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
+        <h2 className="text-4xl tracking-tight leading-10 font-extrabold text-gray-100 sm:text-5xl sm:leading-none md:text-6xl lg:text-5xl xl:text-6xl">
+          Do you have a GitHub Account?
+        </h2>
+        <p className="mt-3 mx-auto max-w-md text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl lg:mx-0">
+          Remix support is done primarily through GitHub, so we figure it's
+          easiest to just use your GitHub account for Remix. GitHub accounts are
+          free.
+        </p>
+        <div className="mt-10 max-w-2xl mx-auto lg:mx-0 sm:flex sm:justify-center lg:justify-start">
+          <div className="flex-1 rounded-md shadow">
+            <button
+              ref={
+                state === "idle" || state === "authenticating"
+                  ? focusRef
+                  : undefined
+              }
+              disabled={state === "authenticating"}
+              type="button"
+              onClick={startSignin}
+              className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 active:bg-green-400 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+            >
+              {state === "idle"
+                ? "Yes! Login with GitHub"
+                : state === "authenticating"
+                ? "Logging in ..."
+                : state === "error"
+                ? "Try logging in again"
+                : "Impossible state, tell @ryanflorence he sucks at programming!"}
+            </button>
           </div>
-          <button
-            ref={
-              state === "loggedOut" ||
-              state === "idle" ||
-              state === "authenticating"
-                ? focusRef
-                : undefined
-            }
-            disabled={state === "checking" || state === "authenticating"}
-            type="button"
-            onClick={startSignin}
-            className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 active:bg-green-400 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
-          >
-            {state === "idle" || state === "loggedOut"
-              ? "Sign in with GitHub"
-              : state === "authenticating"
-              ? "Logging in ..."
-              : state === "error"
-              ? "Try logging in again"
-              : state === "authenticated"
-              ? "You're in, redirecting!"
-              : "Impossible state!"}
-          </button>
+          <div className="flex-1 mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+            <a
+              href="https://github.com/join"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-gray-600 bg-white hover:text-gray-900 transition duration-150 ease-in-out md:py-4 md:text-lg md:px-10"
+            >
+              No, Create an Account
+            </a>
+          </div>
         </div>
         {state === "error" && (
           <div className="mt-10 max-w-2xl mx-auto lg:mx-0 rounded-md bg-red-50 p-4 text-left">
@@ -114,7 +130,7 @@ export default function Login() {
                   tabIndex="-1"
                   className="focus:outline-none text-sm leading-5 font-medium text-red-800"
                 >
-                  Oops! We couldn't log you in. Here's the error message:
+                  Oops! There was an error, here's message:
                 </h3>
                 <div className="mx-2 mt-2 text-sm leading-5 text-red-700 italic">
                   <p>{data.error.message}</p>
@@ -126,47 +142,6 @@ export default function Login() {
             </div>
           </div>
         )}
-
-        {state === "loggedOut" && (
-          <div className="rounded-md bg-green-950 p-4 mt-10 max-w-lg mx-auto text-left">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg
-                  className="h-5 w-5 text-green-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm leading-5 font-medium text-green-300">
-                  You have been logged out
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="relative w-full h-64 sm:h-72 md:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 lg:h-full">
-        <Octocat />
-      </div>
-    </main>
-  );
-}
-
-function LogInToGitHub({ state, data, startSignin, focusRef }) {
-  return (
-    <div className="mx-auto max-w-2xl w-full pt-4 pb-20 text-center lg:py-48 lg:text-left">
-      <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
-        <div className="mt-10 max-w-lg mx-auto lg:mx-0 sm:flex sm:justify-center lg:justify-start">
-          <div className="flex-1 rounded-md shadow"></div>
-        </div>
       </div>
     </div>
   );
@@ -175,7 +150,7 @@ function LogInToGitHub({ state, data, startSignin, focusRef }) {
 function Octocat() {
   return (
     <svg
-      className="absolute inset-0 w-full h-full object-cover p-10 sm:p-12 lg:p-24 bg-white"
+      className="absolute inset-0 w-full h-full object-cover p-10 sm:p-12 lg:p-24"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="-0.2 -1 379 334"
     >

@@ -1,6 +1,11 @@
 import React from "react";
 import { authenticate, createUserSession } from "../../utils/firebase";
 import { createCheckoutClient } from "../../utils/checkout";
+import * as CacheControl from "../../utils/CacheControl";
+
+export function headers() {
+  return CacheControl.public;
+}
 
 // const fakeUser = {
 //   name: "Ryan Florence",
@@ -8,7 +13,6 @@ import { createCheckoutClient } from "../../utils/checkout";
 //   email: "rpflorence@gmail.com",
 //   login: "ryanflorence",
 // };
-
 export default function Indie() {
   // idle | autheticating | error
   let [state, setState] = React.useState("idle");
