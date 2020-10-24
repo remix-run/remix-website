@@ -1,2 +1,2 @@
-const { requireCustomer } = require("../utils");
+const { requireCustomer } = require("../utils/session");
 module.exports = requireCustomer();

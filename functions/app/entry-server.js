@@ -20,7 +20,6 @@ export default function handleRequest(
   return new Response("<!DOCTYPE html>" + markup, {
     status: responseStatusCode,
     headers: {
-      "cache-control": "public, max-age=0, must-revalidate",
       ...Object.fromEntries(responseHeaders),
       "Content-Type": "text/html",
     },

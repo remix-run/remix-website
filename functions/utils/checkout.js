@@ -1,6 +1,6 @@
 const { db, admin } = require("./firebase");
 const { stripe } = require("./stripe");
-const { addUserToken } = require("./tokens");
+const { createOwnerToken } = require("./tokens");
 
 ////////////////////////////////////////////////////////////////////////////////
 // Checkout Workflow!
@@ -11,24 +11,39 @@ const { addUserToken } = require("./tokens");
 
 // [license]: [testPriceId, productionPriceId]
 let prices = {
-  indieBetaLicense: [
-    "price_1HbT4UBIsmMSW7ROb1UqNcZq",
-    "price_1HbT4UBIsmMSW7ROb1UqNcZq",
-  ],
+  beta: {
+    indie: {
+      test: "price_1HbT4UBIsmMSW7ROb1UqNcZq",
+      prod: "price_1HbT4UBIsmMSW7ROb1UqNcZq",
+    },
+    team: {
+      test: "price_1HfabKBIsmMSW7ROGEtHs2Zv",
+      prod: "price_1HfabKBIsmMSW7ROGEtHs2Zv",
+    },
+  },
 };
 
-async function createCheckout(uid, email, idToken, hostname) {
+async function createCheckout(
+  uid,
+  email,
+  idToken,
+  type,
+  qty,
+  // TODO: send this from client instead of hardcoding github.com
+  provider = "github.com"
+) {
   console.log("createCheckout", uid, email);
 
   let baseUrl =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:5000"
-      : `https://playground-a6490.web.app`;
+    process.env.NODE_ENV === "production"
+      ? `https://playground-a6490.web.app`
+      : "http://localhost:5000";
 
-  let productName = "indieBetaLicense";
-  let priceIndex = process.env.NODE_ENV === "production" ? 1 : 0;
-  let price = prices[productName][priceIndex];
-  let quantity = 1;
+  let productKey = type;
+  let priceKey = process.env.NODE_ENV === "production" ? "prod" : "test";
+  let price = prices.beta[productKey][priceKey];
+  if (!price) throw new Error(`Invalid price: ${productKey}.${priceKey}`);
+  let quantity = qty;
 
   // Create a stripe session
   let session = await stripe.checkout.sessions.create({
@@ -44,15 +59,18 @@ async function createCheckout(uid, email, idToken, hostname) {
   let userRef = db.doc(`users/${uid}`);
   let userDoc = await userRef.get();
   if (userDoc.exists) {
+    console.log("user doc exists!");
     // if there's an existing order they bailed on, delete it, this does not
     // fail if the document doesnt' exist
     await db.doc(`orders/${uid}`).delete();
   } else {
+    console.log("does not exist");
     // create the user, this is their first order
     await db.doc(`users/${uid}`).set({
       email,
-      provider: "github",
-      createdAt: admin.firestore.Timestamp.now(),
+      provider,
+      // getting that weird error again!
+      // createdAt: admin.firestore.Timestamp.now(),
       stripeCustomerId: null,
     });
   }
@@ -89,7 +107,7 @@ async function completeOrder(idToken) {
 
   await Promise.all([
     userRef.update({ stripeCustomerId: session.customer }),
-    addUserToken(uid, price, quantity),
+    createOwnerToken(uid, price, quantity),
     orderRef.delete(),
   ]);
 }

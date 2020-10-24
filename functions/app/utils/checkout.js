@@ -5,13 +5,13 @@ let stripePromise = loadStripe(
   "pk_test_51HbSz2BIsmMSW7RObRF1Aa47CdrPdnh9pwMxWdfJNUHXIIOmOKxwcd57Nsgu2VFeVY1Yw3uJjIwHSfnUMeTCXjnV00apPRNHuX"
 );
 
-export async function createCheckoutClient(uid, email, idToken) {
-  console.log(uid, idToken);
+export async function createCheckoutClient(uid, email, idToken, type, qty) {
+  console.log(uid, idToken, type, qty);
   let stripe = await stripePromise;
 
   let res = await fetch(`/api/createCheckout`, {
     method: "POST",
-    body: JSON.stringify({ uid, email, idToken }),
+    body: JSON.stringify({ uid, email, idToken, type, qty }),
     headers: {
       "Content-Type": "application/json",
       Accepts: "application/json",

@@ -7,7 +7,12 @@ module.exports = {
   experimental: {
     darkModeVariant: true,
   },
-  purge: ["./app/**/*.js", "./app/**/*.mdx", "./app/**/*.md"],
+  purge: [
+    "./app/**/*.js",
+    "./app/**/*.mdx",
+    "./app/**/*.md",
+    "./remix.config.js",
+  ],
   plugins: [
     require("@tailwindcss/ui")({ layout: "sidebar" }),
     require("@tailwindcss/typography"),

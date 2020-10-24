@@ -2,9 +2,10 @@ import React from "react";
 import { authenticate, createUserSession } from "../../utils/firebase";
 import { createCheckoutClient } from "../../utils/checkout";
 import * as CacheControl from "../../utils/CacheControl";
+import { useRouteData } from "@remix-run/react";
 
 export function headers() {
-  return CacheControl.pub;
+  return CacheControl.nostore;
 }
 
 // const fakeUser = {
@@ -15,6 +16,8 @@ export function headers() {
 // };
 
 export default function Indie() {
+  let { type, qty } = useRouteData();
+
   // idle | autheticating | error
   let [state, setState] = React.useState("idle");
   let [data, setData] = React.useState({ error: null });
@@ -38,7 +41,7 @@ export default function Indie() {
       let { user } = await authenticate();
       let idToken = await user.getIdToken(true);
       await createUserSession(idToken);
-      await createCheckoutClient(user.uid, user.email, idToken);
+      await createCheckoutClient(user.uid, user.email, idToken, type, qty);
       // redirects to stripe checkout and then success_url
     } catch (error) {
       console.error(error);

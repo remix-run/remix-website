@@ -2,6 +2,8 @@ import React from "react";
 import * as CacheControl from "../utils/CacheControl";
 import { ExampleApp } from "../components/Invoices";
 import TheRestHolyCrap from "../md/features.mdx";
+import PublicTopNav from "../components/PublicTopNav";
+import YouTube from "../components/YouTube";
 
 export function headers() {
   return {
@@ -21,7 +23,8 @@ function P(props) {
 export default function Features() {
   return (
     <div>
-      <div className="py-16 bg-gray-50 overflow-hidden lg:py-24">
+      <PublicTopNav />
+      <div className="py-8 bg-gray-50 overflow-hidden lg:py-24">
         <div className="relative max-w-xl mx-auto px-4 sm:px-6 lg:px-8 lg:max-w-screen-xl">
           <svg
             className="hidden lg:block absolute left-full transform -translate-x-1/2 -translate-y-1/4"
@@ -56,24 +59,35 @@ export default function Features() {
             />
           </svg>
           <div className="relative">
-            <h3 className="text-center text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
-              Web Fundamentals, Modern Architecture
-            </h3>
-            <p className="mt-4 max-w-3xl mx-auto text-center text-xl leading-7 text-gray-500">
-              With the rise of JavaScript heavy web sites and client side
-              routing, the React ecosystem has left behind a lot of the
-              fundamental pieces of the web. <B>Remix brings them back</B>.
-              Things like server rendering, http caching, meta tags, proper
-              status codes–and for Pete's sake document titles!
-            </p>
-            <p className="mt-4 max-w-3xl mx-auto text-center text-xl leading-7 text-gray-500">
-              At the same time, web infrastructure has changed for the better.{" "}
-              <B>CDNs</B> are far more capable, <B>serverless functions</B>{" "}
-              provide unprecendented scale, browsers have new APIs for{" "}
-              <B>preloading resources</B>, bundlers and <B>HTTP/2</B> change the
-              way we approach code splitting, and React's component model makes
-              building UI a breeze. Remix is built to take advantage of it all.
-            </p>
+            <div className="lg:max-w-7xl lg:m-auto lg:grid lg:grid-cols-2 lg:gap-6">
+              <div className="mt-4 mx-auto">
+                <h1 className="mb-4 text-center lg:text-right text-3xl leading-8 font-extrabold tracking-tight text-aqua-600 sm:text-5xl sm:leading-tight">
+                  Web Fundamentals
+                </h1>
+                <p className="lg:text-right font-sm sm:font-normal text-gray-600">
+                  With the rise of JavaScript heavy web sites and client side
+                  routing, the React ecosystem has left behind a lot of the
+                  fundamental pieces of the web. <B>Remix brings them back</B>.
+                  Things like server rendering, http caching, meta tags, proper
+                  status codes–and for Pete's sake document titles!
+                </p>
+              </div>
+              <div className="mt-8 lg:mt-4 mx-auto">
+                <h1 className="mb-4 text-center lg:text-left text-3xl leading-8 font-extrabold tracking-tight text-pink-500 sm:text-5xl sm:leading-tight">
+                  Modern Architecture
+                </h1>
+                <p className="font-sm sm:font-normal text-gray-600">
+                  At the same time, web infrastructure has changed for the
+                  better. <B>CDNs</B> are more advanced,{" "}
+                  <B>serverless functions</B> give unprecendented scale,
+                  browsers have new APIs for <B>preloading resources</B>,
+                  bundlers and <B>HTTP/2</B> change the way we approach code
+                  splitting. And of course, React's component model is
+                  incredible even for plain markup. Remix is built to take
+                  advantage of it all.
+                </p>
+              </div>
+            </div>
           </div>
           <div className="relative mt-12 lg:mt-24 lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
             <div className="relative">
@@ -194,7 +208,7 @@ export default function Features() {
                         everything. Not found? 200. No record? 200. Server
                         error? 200. Redirect (!) 200. This hurts your SEO and
                         your CDN capabilities. Remix sends the right status
-                        code, even on clientside transitions.
+                        code, even on client side transitions.
                       </p>
                     </div>
                   </div>
@@ -234,12 +248,13 @@ export default function Features() {
                   fill="url(#ca9667ae-9f92-4be7-abcb-9e3d727f2941)"
                 />
               </svg>
-              <img
-                className="relative mx-auto rounded-xl shadow-md"
-                width={490}
-                src="/img/unpkg.png"
-                alt=""
-              />
+              <div className="p-8">
+                <img
+                  className="relative mx-auto rounded-xl shadow-md w-full"
+                  src="/img/unpkg.png"
+                  alt=""
+                />
+              </div>
             </div>
           </div>
           <svg
@@ -531,6 +546,11 @@ export default function Features() {
         </div>
       </div>
       <DeployAnywhere />
+      {/*
+      <div className="m-auto max-w-7xl my-16">
+        <YouTube id="cmh8mp8TUUE" />
+      </div>
+      */}
       <CTA />
       <div className="bg-gray-100 py-24">
         <h2 className="text-center text-3xl leading-9 font-extrabold text-black sm:text-4xl sm:leading-10 mb-12">
@@ -772,8 +792,8 @@ function FirebaseLogo() {
 
 function LoaderDemo() {
   return (
-    <div className="relative mx-auto text-xs p-12">
-      <pre className="language-js rounded-xl shadow-md">
+    <div className="relative mx-auto text-xs sm:p-12">
+      <pre className="language-js sm:rounded-xl sm:shadow-md">
         <code className="language-js">
           <span className="token comment">
             ///////////////////////////////////////////////////////////////////
@@ -899,7 +919,7 @@ function LoaderDemo() {
             </span>
             <span className="token punctuation">&gt;</span>
           </span>
-          <span className="token operator">{"{"}</span>user
+          <span className="token operator">{"{"}</span>data
           <span className="token punctuation">.</span>
           <span className="token property-access">name</span>
           <span className="token punctuation">{"}"}</span>
@@ -921,7 +941,7 @@ function LoaderDemo() {
             <span className="token attr-name">src</span>
             <span className="token script language-javascript">
               <span className="token script-punctuation punctuation">=</span>
-              <span className="token punctuation">{"{"}</span>user
+              <span className="token punctuation">{"{"}</span>data
               <span className="token punctuation">.</span>
               <span className="token property-access">avatar_url</span>
               <span className="token punctuation">{"}"}</span>

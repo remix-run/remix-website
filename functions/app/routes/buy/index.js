@@ -54,10 +54,12 @@ function FAQSection() {
       <div className="mt-12">
         <FAQ>
           <Question title="Is this production ready?">
-            Nope. We are in beta. We need your help to get it production ready.
-            Please do not purchase a license if you are not comfortable with
-            bugs and missing features. Consider this like a Kickstarter, except
-            you get a nearly finished product immediately!
+            Nope. We've been focusing on APIs and production results, but there
+            are rough edges on the dev UX and likely some bugs. We need your
+            help to get it production ready. Please do not purchase a license if
+            you are not comfortable with bugs and missing features.{" "}
+            <b>Consider the beta like a Kickstarter</b>, except you get a nearly
+            finished product immediately.
           </Question>
           <Question title="Is there a refundable trial period?">
             Not yet. During the beta period all sales are final. We need your
@@ -158,7 +160,7 @@ function PricingCards() {
             </div>
             <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
               <Checklist />
-              <BuyButton to="indie">Buy My Indie License</BuyButton>
+              <BuyLink to="checkout?type=indie">Buy My Indie License</BuyLink>
             </div>
           </div>
           <div className="flex flex-col rounded-lg shadow-lg overflow-hidden">
@@ -186,7 +188,41 @@ function PricingCards() {
             </div>
             <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
               <Checklist />
-              <BuyButton to="team">Buy a Team License</BuyButton>
+              <form action="/buy/checkout">
+                <div>
+                  <select
+                    className="mt-1 mb-2 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+                    id="qty"
+                    name="qty"
+                    aria-label="Number of Licenses"
+                  >
+                    {Array.from({ length: 10 }).map((_, index, arr) =>
+                      index === arr.length - 1 ? (
+                        <option value="contact">Contact us for 11+</option>
+                      ) : (
+                        <option selected={index === 0} value={index + 2}>
+                          {index + 2} Seat License
+                        </option>
+                      )
+                    )}
+                  </select>
+                  <script
+                    dangerouslySetInnerHTML={{
+                      __html: `
+                      document.addEventListener('DOMContentLoaded', () => {
+                        document.getElementById('qty').onchange = (event) => {
+                          if (event.target.value === "contact") {
+                            window.location.assign("/contact")
+                          }
+                        }
+                      });
+                    `,
+                    }}
+                  />
+                </div>
+                <input type="hidden" name="type" value="team" />
+                <BuyButton to="team">Buy a Team License</BuyButton>
+              </form>
             </div>
           </div>
         </div>
@@ -247,16 +283,26 @@ function Question({ title, children }) {
     </div>
   );
 }
-function BuyButton({ children, to }) {
+
+function BuyButton({ children }) {
   return (
-    <div className="rounded-md shadow">
-      <Link
-        to={to}
-        className="flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-      >
-        {children}
-      </Link>
-    </div>
+    <button
+      type="submit"
+      className="flex w-full items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md shadow text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+    >
+      {children}
+    </button>
+  );
+}
+
+function BuyLink({ children, to }) {
+  return (
+    <Link
+      to={to}
+      className="flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md shadow text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+    >
+      {children}
+    </Link>
   );
 }
 

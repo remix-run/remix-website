@@ -3,10 +3,19 @@ import { Meta, Scripts, Styles, Routes } from "@remix-run/react";
 import { useLocation } from "react-router-dom";
 
 let noScriptPaths = new Set(["/", "/buy", "/logout", "/features"]);
+function shouldIncludeScripts(pathname) {
+  if (noScriptPaths.has(pathname)) {
+    return false;
+  }
+  if (pathname.startsWith("/invite")) {
+    return false;
+  }
+  return true;
+}
 
 export default function App() {
   let location = useLocation();
-  let includeScripts = !noScriptPaths.has(location.pathname);
+  let includeScripts = shouldIncludeScripts(location.pathname);
 
   let locations = React.useRef();
   if (!locations.current) {
@@ -37,7 +46,7 @@ export default function App() {
         <Meta />
         <Styles />
       </head>
-      <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200">
+      <body className="bg-white text-gray-900">
         <Routes />
         {includeScripts && <Scripts />}
       </body>

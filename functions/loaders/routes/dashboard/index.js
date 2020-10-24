@@ -1,25 +1,42 @@
-const { db } = require("../../../utils/firebase");
-const { requireCustomer } = require("../../utils");
+const { db, unwrapDoc, unwrapSnapshot } = require("../../../utils/firebase");
+const { requireCustomer } = require("../../utils/session");
 const { stripe } = require("../../../utils/stripe");
 
 module.exports = requireCustomer(async (_, { sessionUser, user }) => {
-  let tokens = await getTokens(user.uid);
-
-  let [subscriptions, stripeCustomer] = await Promise.all([
-    getSubscriptions(tokens),
-    stripe.customers.retrieve(user.stripeCustomerId),
+  let [stripeCustomer, licenses] = await Promise.all([
+    user.stripeCustomerId
+      ? stripe.customers.retrieve(user.stripeCustomerId)
+      : null,
+    getLicenses(user.uid),
   ]);
 
   return {
     sessionUser,
     user,
     stripeCustomer,
-    subscriptions,
+    licenses,
   };
 });
 
-async function getSubscriptions(tokens) {
-  let subscriptions = await Promise.all(
+async function getTokens(uid) {
+  let snapshot = await db
+    .collection("xTokensUsers")
+    .where("userRef", "==", db.doc(`/users/${uid}`))
+    .get();
+  let xTokens = unwrapSnapshot(snapshot);
+  return Promise.all(
+    xTokens.map(async (xTokenUser) => {
+      let token = unwrapDoc(await xTokenUser.tokenRef.get());
+      let owner = unwrapDoc(await token.ownerRef.get());
+      delete token.ownerRef;
+      return { ...token, role: xTokenUser.role, ownerEmail: owner.email };
+    })
+  );
+}
+
+async function getLicenses(uid) {
+  let tokens = await getTokens(uid);
+  let licenses = await Promise.all(
     tokens.map(async (token) => {
       let price = await stripe.prices.retrieve(token.price, {
         expand: ["product"],
@@ -28,28 +45,5 @@ async function getSubscriptions(tokens) {
     })
   );
 
-  return subscriptions;
-}
-
-async function getTokens(uid) {
-  let snapshot = await db
-    .collection("tokens")
-    .where("uid", "==", uid)
-    .orderBy("issuedAt")
-    .get();
-
-  return mapCollectionSnapshot(snapshot);
-}
-
-function mapCollectionSnapshot(snapshot) {
-  let docs = [];
-
-  snapshot.forEach((doc) => {
-    docs.push({
-      id: doc.id,
-      ...doc.data(),
-    });
-  });
-
-  return docs;
+  return licenses;
 }

@@ -11,7 +11,7 @@ export default function Dashboard() {
   let data = useRouteData();
 
   return (
-    <div>
+    <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200">
       <TopNav sessionUser={data.sessionUser} />
       <div
         className={
