@@ -23,13 +23,43 @@ async function getTokens(uid) {
     .collection("xTokensUsers")
     .where("userRef", "==", db.doc(`/users/${uid}`))
     .get();
+
   let xTokens = unwrapSnapshot(snapshot);
   return Promise.all(
     xTokens.map(async (xTokenUser) => {
       let token = unwrapDoc(await xTokenUser.tokenRef.get());
-      let owner = unwrapDoc(await token.ownerRef.get());
-      delete token.ownerRef;
-      return { ...token, role: xTokenUser.role, ownerEmail: owner.email };
+
+      // owner token
+      if (xTokenUser.role === "owner") {
+        let members = await getMembers(xTokenUser.tokenRef);
+        delete token.ownerRef;
+        return { ...token, role: xTokenUser.role, members };
+      }
+
+      // member token
+      else if (xTokenUser.role === "member") {
+        let owner = unwrapDoc(await token.ownerRef.get());
+        delete token.ownerRef;
+        return {
+          ...token,
+          role: xTokenUser.role,
+          ownerEmail: owner.email,
+        };
+      }
+    })
+  );
+}
+
+async function getMembers(tokenRef) {
+  let snapshot = await db
+    .collection("xTokensUsers")
+    .where("tokenRef", "==", tokenRef)
+    .get();
+  let xTokensUsers = unwrapSnapshot(snapshot);
+  return await Promise.all(
+    xTokensUsers.map(async (xTokenUser) => {
+      let user = await xTokenUser.userRef.get();
+      return unwrapDoc(user).email;
     })
   );
 }

@@ -31,12 +31,17 @@ exports.createOwnerToken = async (uid, price, quantity) => {
 };
 
 exports.getToken = async (token) => {
-  let doc = await db.doc(`tokens/${token}`).get();
-  if (doc.exists) {
-    return unwrapDoc(doc);
-  } else {
+  let tokenRef = db.doc(`tokens/${token}`);
+  let doc = await tokenRef.get();
+  if (!doc.exists) {
     return null;
   }
+  return unwrapDoc(doc);
+};
+
+exports.getTokenMembersSnapshot = (tokenId) => {
+  let tokenRef = db.doc(`tokens/${tokenId}`);
+  return db.collection("xTokensUsers").where("tokenRef", "==", tokenRef).get();
 };
 
 exports.addTokenMember = async (token, sessionUser) => {
