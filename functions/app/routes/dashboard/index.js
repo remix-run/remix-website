@@ -193,10 +193,12 @@ function CopyButton({ value }) {
   let [copied, setCopied] = React.useState();
 
   React.useEffect(() => {
-    let id = setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-    return () => clearTimeout(id);
+    if (copied) {
+      let id = setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+      return () => clearTimeout(id);
+    }
   }, [copied]);
 
   return (
