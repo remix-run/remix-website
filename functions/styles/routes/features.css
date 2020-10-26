@@ -16,10 +16,14 @@ svg > *[fill] {
   transition: opacity 200ms;
 }
 
+.prose pre {
+  @apply bg-gray-800;
+  @apply text-gray-300;
+}
+
 /**
  * prism.js default theme for JavaScript, CSS and HTML
  * Based on dabblet (http://dabblet.com)
- * @author Lea Verou
  */
 code[class*="language-"],
 pre[class*="language-"] {

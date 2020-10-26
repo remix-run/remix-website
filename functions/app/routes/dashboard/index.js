@@ -1,12 +1,11 @@
 import React from "react";
 import { useRouteData } from "@remix-run/react";
 import * as CacheControl from "../../utils/CacheControl";
+import { Link } from "react-router-dom";
 
 export function headers() {
   return CacheControl.none;
 }
-
-function openStripeCustomerPortal() {}
 
 export default function DashboardIndex() {
   return (
@@ -305,13 +304,12 @@ function AccountInfo() {
                     {stripeCustomer.email}
                   </div>
                   <div className="ml-4 flex-shrink-0">
-                    <button
-                      onClick={openStripeCustomerPortal}
+                    <a
+                      href="/dashboard/billing"
                       className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
-                      href="https://github.com/settings/profile"
                     >
                       Change at Stripe
-                    </button>
+                    </a>
                   </div>
                 </div>
               </dd>

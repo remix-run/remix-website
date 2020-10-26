@@ -12,7 +12,7 @@ export default function Dashboard() {
 
   return (
     <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200">
-      <TopNav sessionUser={data.sessionUser} />
+      <TopNav sessionUser={data.sessionUser} user={data.user} />
       <div
         className={
           isPending
@@ -60,7 +60,7 @@ function useFlashingColorsOnTransition() {
   return colors;
 }
 
-function TopNav({ sessionUser }) {
+function TopNav({ sessionUser, user }) {
   let [isOpen, setIsOpen] = React.useState(false);
   let colors = useFlashingColorsOnTransition();
   let signout = () => {
@@ -86,9 +86,11 @@ function TopNav({ sessionUser }) {
                 <TopNavLink to="support">
                   <IconSupport /> Support
                 </TopNavLink>
-                <TopNavLink as="button">
-                  <IconBilling /> Billing
-                </TopNavLink>
+                {user.stripeCustomerId && (
+                  <TopNavLink as="a" href="/dashboard/billing">
+                    <IconBilling /> Billing
+                  </TopNavLink>
+                )}
               </div>
             </div>
           </div>
@@ -125,9 +127,11 @@ function TopNav({ sessionUser }) {
           <TopNavLinkMobile to="support" onClick={() => setIsOpen(false)}>
             <IconSupport /> Support
           </TopNavLinkMobile>
-          <TopNavLinkMobile as="button" onClick={() => setIsOpen(false)}>
-            <IconBilling /> Billing
-          </TopNavLinkMobile>
+          {user.stripeCustomerId && (
+            <TopNavLinkMobile to="billing" onClick={() => setIsOpen(false)}>
+              <IconBilling /> Billing
+            </TopNavLinkMobile>
+          )}
         </div>
         <div className="pt-4 pb-3 border-t border-gray-700">
           <div className="flex items-center px-5 space-x-3">

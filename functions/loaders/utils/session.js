@@ -1,18 +1,21 @@
 const { Response } = require("@remix-run/loader");
-const { db, admin } = require("../../utils/firebase");
+const { db, admin, unwrapDoc } = require("../../utils/firebase");
 
-// People can log in with GitHub but not actually have a user account, this
-// makes sure we have both a user session and a user account
-//
-// usage:
-//
-// ```js
-// // some-loader.js
-// module.exports = requireUser((remixLoaderArg, { user, sessionUser }) => {
-//   return { user, sessionUser }
-// })
-// ``
+exports.getCustomer = async (req) => {
+  let sessionUser = await getSession(req);
+  if (!sessionUser) {
+    return null;
+  }
+  let userDoc = await db.doc(`users/${sessionUser.uid}`).get();
+  if (!userDoc.exists) {
+    return null;
+  }
+  let user = unwrapDoc(userDoc);
+  return { sessionUser, user };
+};
 
+// TODO: was planning on a compositional wrapping API here but realized it's stupid,
+// need to refactor to just be `let customer = await requireCustomer()`.
 exports.requireCustomer = (loader) => {
   return async (loaderArg, ...rest) => {
     let { url, context } = loaderArg;

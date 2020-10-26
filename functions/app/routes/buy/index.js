@@ -3,11 +3,15 @@ import { Link } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../../components/Logo";
 import * as CacheControl from "../../utils/CacheControl";
 
-export function headers() {
+export function meta() {
   return {
-    ...CacheControl.pub,
-    Link: "</buy/indie>;rel=prefetch;as=document",
+    title: "Buy Your Remix Supporter Preview License",
+    description: "We need your support to Remix over the finish line.",
   };
+}
+
+export function headers() {
+  return CacheControl.pub;
 }
 
 export default function BuyIndex() {
@@ -34,10 +38,14 @@ function Hero() {
             <Logo colors={colors} className="w-full" />
           </div>
           <p className="text-3xl leading-9 font-extrabold text-white sm:text-4xl sm:leading-10 lg:text-5xl lg:leading-none">
-            Beta Preview Now Available
+            Supporter Preview Now Available
           </p>
-          <p className="text-xl leading-7 text-gray-300">
-            Beta licenses are limited, so act quickly!
+          <p className="text-xl max-w-4xl m-auto leading-7 text-gray-300">
+            Remix is not production ready but it's close! We need your support
+            to get it over the finish line. You are buying a Supporter Preview
+            license, think of it like a kickstarter but you get to use the
+            product right away. Supporter Licenses are non-refundable and
+            limited.
           </p>
         </div>
       </div>
@@ -56,22 +64,28 @@ function FAQSection() {
           <Question title="Is this production ready?">
             Nope. We've been focusing on APIs and production results, but there
             are rough edges on the dev UX and likely some bugs. We need your
-            help to get it production ready. Please do not purchase a license if
-            you are not comfortable with bugs and missing features.{" "}
-            <b>Consider the beta like a Kickstarter</b>, except you get a nearly
-            finished product immediately.
+            help to get it production ready.{" "}
+            <span className="text-red-500">
+              Please do not purchase a license if you are not comfortable with
+              bugs and missing features
+            </span>
+            .
           </Question>
           <Question title="Is there a refundable trial period?">
-            Not yet. During the beta period all sales are final. We need your
-            support right now to get it over the finish line! Wait for the 1.0
-            release if you'd like a refundable trial period.
+            Not yet. During the support preivew all sales are final. We need
+            your support right now to get it over the finish line! Wait for the
+            1.0 release if you'd like a refundable trial period.
+          </Question>
+          <Question title="When is the 1.0 release?">
+            We're hoping to have a production ready release first quarter of
+            2021. Buying a support license helps us get there.
           </Question>
           <Question title="What kind of support do I get?">
             You'll get access to our issue tracker where you can report issues
-            and get help with usage questions on business days. During the beta,
-            you'll get access to weekly "office hours" with Ryan and Micheal for
-            real time help. Finally, you'll get access to a private discord with
-            other Remix users.
+            and get help with usage questions. You'll also get access to a
+            private discord with other Remix users and the Remix developers.
+            After the 1.0 release we will have more defined and expansive
+            support packages.
           </Question>
           <Question title="What can I do with an indie License?">
             An indie license is just for you and your own solo projects at the
@@ -80,9 +94,9 @@ function FAQSection() {
           </Question>
           <Question title="What can I do with a team License?">
             A team license is good for as many projects as you like. Each
-            license has a nubmer of developers assigned to it. You can assign
-            members of your team, and buy more seats on your license on the
-            dashboard after you purchase.
+            license has a set number of seats developers on your team occupy.
+            You can assign members of your team to a license, and buy more seats
+            on your license, on the dashboard after you purchase.
           </Question>
           <Question title="Why is the team license more expensive?">
             We know that Remix is incredibly valuable for commercial
@@ -91,12 +105,6 @@ function FAQSection() {
             working on a side-project. So, we've drawn the line at one license
             to make Remix accessible to individuals while still reflecting the
             value it brings to a business.
-          </Question>
-          <Question title="What do I get with the license subscription?">
-            Subscribers can continue to use the latest version of Remix,
-            including bug fixes, optimizations, and new features. You also get
-            access to support (opening tickets, community chat, office hours
-            etc).
           </Question>
           <Question title="What happens if I cancel my subscription?">
             You will be able to continue using the latest version of Remix at
@@ -198,9 +206,15 @@ function PricingCards() {
                   >
                     {Array.from({ length: 10 }).map((_, index, arr) =>
                       index === arr.length - 1 ? (
-                        <option value="contact">Contact us for 11+</option>
+                        <option key={index} value="contact">
+                          Contact us for 11+
+                        </option>
                       ) : (
-                        <option selected={index === 0} value={index + 2}>
+                        <option
+                          key={index}
+                          selected={index === 0}
+                          value={index + 2}
+                        >
                           {index + 2} Seat License
                         </option>
                       )
@@ -235,7 +249,7 @@ function Checklist({ children }) {
   return (
     <ul className="space-y-4">
       <Check>Unlimited projects</Check>
-      <Check>48 HR Support, office hours, private chat community</Check>
+      <Check>Access to Support</Check>
       <Check>Free upgrades</Check>
       <Check>Cancel any time, use the last version forever</Check>
     </ul>

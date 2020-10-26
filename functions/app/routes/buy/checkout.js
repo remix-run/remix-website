@@ -8,6 +8,12 @@ export function headers() {
   return CacheControl.nostore;
 }
 
+export function meta() {
+  return {
+    title: "Remix Checkout",
+  };
+}
+
 // const fakeUser = {
 //   name: "Ryan Florence",
 //   avatar_url: "https://avatars0.githubusercontent.com/u/100200?v=4",

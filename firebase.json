@@ -14,7 +14,7 @@
       }
     ],
     "public": "public",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": ["firebase.json", "**/.*"],
     "headers": [
       {
         "source": "/build/**",

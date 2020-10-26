@@ -2,13 +2,15 @@ TODOS
 
 Before launch
 
+x create discord (https://discord.gg/VBePs6d)
+x take out office hours, just be proactive
+
 - open stripe portal
-- test typescript
-- create discord (https://discord.gg/VBePs6d)
 - create public repo for bugs/support
 - create support page
 - write docs
 - move stripe keys to .env
+- add /terms and /privacy
 
 After launch
 
