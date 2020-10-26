@@ -4,7 +4,6 @@ const { stripe } = require("../../../utils/stripe");
 
 module.exports = requireCustomer(async ({ url }, { user }) => {
   try {
-    console.log(url);
     let session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
       return_url: url.origin + "/dashboard",
