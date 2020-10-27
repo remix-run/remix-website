@@ -2,7 +2,8 @@ import React from "react";
 import { Meta, Scripts, Styles, Routes } from "@remix-run/react";
 import { useLocation } from "react-router-dom";
 
-let noScriptPaths = new Set(["/", "/buy", "/logout", "/features"]);
+let noScriptPaths = new Set(["/", "/buy", "/logout", "/features", "/privacy"]);
+
 function shouldIncludeScripts(pathname) {
   if (noScriptPaths.has(pathname)) {
     return false;
