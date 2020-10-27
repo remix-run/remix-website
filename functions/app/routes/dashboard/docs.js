@@ -3,7 +3,7 @@ import { Outlet, NavLink, useLocation } from "react-router-dom";
 
 export function headers() {
   return {
-    "cache-control": "private, max-age=600",
+    "cache-control": "max-age=600",
   };
 }
 
@@ -129,7 +129,7 @@ export default function Docs() {
           ))}
         </ul>
       </nav>
-      <main className="md:ml-64 md:flex md:max-w-3xl">
+      <main className="md:ml-64 md:flex md:max-w-7xl">
         <Outlet />
       </main>
     </div>

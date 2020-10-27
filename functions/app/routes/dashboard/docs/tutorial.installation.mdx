@@ -8,49 +8,57 @@ import { Link } from "react-router-dom";
 
 # Installing Remix
 
-Welcome to Remix! Thank you so much for supporting us. We'll get you up and running in a few minutes. Make sure you first [Buy a Remix Run License](https://remix.run/buy) if you haven't already.
+Welcome to Remix! Thank you so much for supporting us. We'll get you up and running in a few minutes.
 
-If you run into any trouble, hit us up on the discord channel, you should have received an email about it. If you can't find that, [email us](mailto:help@remix.run) or hit us up on twitter: [@remix_run](https://twitter.com/remix_run).
+If you run into any trouble, ask for help through one of the support channels.
 
-## Cloning a starter project
+## Cloning the starter project
 
-The easiest way to get started right now is to clone one of our starter repos. Later we'll have a CLI to initialize everything you need but this works fine for now.
-
-Take your pick, express or firebase, we'll have more later (azure, aws, etc.). If you just want to goof around, use express, it's easy to switch later.
+For this tutorial we'll be using our express starter repo. We have other starters as well (firebase, vercel, etc.) and we're always working on more. Once you've got through this tutorial, check out the other starter repos and pick whatever hosting service provider you want.
 
 ```bash
-# express
-$ git clone git@github.com:remix-run/starter-express.git my-app
+$ git clone git@github.com:remix-run/starter-express.git my-remix-app
 
-# or firebase, read the README inside for differences from
-# this little guide
-$ git clone git@github.com:remix-run/starter-firebase.git my-app
+cd my-remix-app
 ```
-
-Your project should look something like this:
 
 ## Edit `.npmrc`
 
-When you purchased, we added you to a private github npm package. In order for yarn on your computer to be able to install Remix, you need to add a Personal GitHub Access Token to the `.npmrc` file. If you don't have a token, [follow these instructions to create one](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token).
+In order for yarn/npm on your computer to be able to install Remix, you need to add your license key to the npmrc. You'll find it on <Link to="/dashboard">the dashboard</Link>.
 
-Once you have your token, open up `.npmrc` and add it. The file looks like this
+It should look something like this:
 
 ```
-//npm.pkg.github.com/:_authToken=[insert your token here]
-@remix-run:registry=https://npm.pkg.github.com
+//npm.remix.run/:_authToken=<your token>
+@remix-run:registry=https://npm.remix.run
 ```
 
-The first line allows npm to authenicate you with GitHub when installing packages and the second line tells npm to use GitHub packages whenever you are installing something from the npm scope `@remix-run`.
-
-If you don't see an `.npmrc` in the root of your repository, reference the README.md file, it will tell you where to find it (it varies by the cloud service provider you're deploying to).
+The first line allows npm to authenicate you with our npm registry when installing packages and the second line tells npm to use our registry whenever you are installing something with the npm scope `@remix-run`.
 
 ## Start the development server
 
 ```bash
-$ yarn && yarn start
+$ yarn
+$ yarn start
 ```
 
-Now open up your browser to [http://localhost:3000](http://localhost:3000) and you should see the hello world page.
+Now open up your browser to [http://localhost:3000](http://localhost:3000) and you should see the hello world page!
+
+## Two processes
+
+We're using a tool called concurrently in package.json to run two processes in the same window with `yarn start`, but sometimes it's nice to split them out. In the first tab do:
+
+```bash
+$ remix run
+```
+
+This starts the development asset server. Then in another tab run
+
+```bash
+$ nodemon server.js
+```
+
+To run the express server. The reason we have a separate asset server from your app server is because Remix fits into any Node.js stack. Remix is just an endpoint on your server, rather than actually being your server.
 
 <div className="next-prev-links">
   <Link className="next" to="../defining-routes">

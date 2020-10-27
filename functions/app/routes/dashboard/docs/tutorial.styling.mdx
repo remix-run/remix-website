@@ -32,9 +32,9 @@ We've found this approach to let us keep our CSS a bit fast and loose without th
 
 ## Adding styles to our gists routes
 
-Go ahead and add a `routes/gists.css` and `routes/gists/$user.css` and add whatever styles you want. When you're done, open the dev tools and watch the `<head>` component as you navigate around. You'll see the styles loading and unloading per route.
+Go ahead and add a `routes/team.css` and `routes/team/$member.css` and add whatever styles you want. When you're done, open the dev tools and watch the `<head>` component as you navigate around. You'll see the styles loading and unloading per route.
 
-Since we're always using `<link/>` to add styles, we don't have a different code path for your styles in development vs. production like a lot of solutions.
+Since we're always using `<link/>` to add styles, we don't have a different code path for your styles in development vs. production like a lot of solutions. Your styles also always apply in the same order (order of your nested routes), so your dynamic style loading is at risk of different navigation paths.
 
 Hope you enjoy it! If not, we support tailwind by default and you can use any CSS-in-JS solution you want. Again, refer to the <Link to="/docs/styling">Styling Guide</Link> for details.
 

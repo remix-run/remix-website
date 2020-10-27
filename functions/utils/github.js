@@ -4,15 +4,11 @@ const octokit = new Octokit({ auth: config.github.token });
 
 exports.addToDiscussRepo = async (uid, id) => {
   let { data: githubUser } = await octokit.request("GET /user/{id}", { id });
-  let addRes = await octokit.request(
-    "PUT /repos/{owner}/{repo}/collaborators/{username}",
-    {
-      owner: "remix-run",
-      repo: "discuss",
-      username: githubUser.login,
-      permission: "pull",
-    }
-  );
-  console.log({ addRes });
+  await octokit.request("PUT /repos/{owner}/{repo}/collaborators/{username}", {
+    owner: "remix-run",
+    repo: "discuss",
+    username: githubUser.login,
+    permission: "pull",
+  });
   await db.doc(`users/${uid}`).update({ githubLogin: githubUser.login });
 };

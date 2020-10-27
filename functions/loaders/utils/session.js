@@ -33,7 +33,14 @@ exports.requireCustomer = (loader) => {
       // TODO: use unwrapDoc, watch out for all the users.uid cases though
       let user = { uid: userDoc.id, ...userDoc.data() };
       let data = { sessionUser, user };
-      return loader ? loader(loaderArg, ...[...rest, data]) : data;
+      return loader
+        ? loader(loaderArg, ...[...rest, data])
+        : new Response(JSON.stringify(data), {
+            headers: {
+              "cache-control": "max-age=600",
+              "content-type": "application/json",
+            },
+          });
     } catch (error) {
       console.log("Error while creating session!");
       console.error(error);

@@ -5,32 +5,40 @@ meta:
 
 # Deploying
 
-Alright! Let's get this app into production.
+We are working on making deployment to different cloud service providers a breeze, but at the moment the only two that we've got ready for you are Firebase and Vercel. From those starter repos you can use the service's own tools, like:
 
-If you're using the firebase starter it's as simple as this command from the root of the project:
-
-```
+```bash
 $ firebase deploy
+$ vercel
 ```
 
-We've got a script in `firebase.json` that runs the build before firebase deploys the project.
+We are actively working on starters to help you deploy to the following providers before the 1.0 release:
 
-If you're using the express starter, you'll need to run the build manually:
+- Firebase
+- Vercel
+- AWS Amplify
+- Architect
+- Azure
+- Netlify
+
+We'll have starter templates and dedicated docs to each platform, as well as docs on general deployment strategies to anywhere (all we need is an http request handler and a place for static assets).
+
+We're also working to get Remix running in worker environments like Cloudflare workers, but that may be a bit later.
+
+## Deploying an express app:
+
+The app we just built is an express You can deploy this app anywhere you can deploy an express app.
+
+First run the build:
 
 ```
-$ remix-run build
+yarn build
 ```
 
-That should create two builds, one for the server (`build/`) and one for the browser (`public/build/`). You can now deploy that express app anywhere.
+This builds your app in two places: `build/*` for the server rendering version, and `public/build/*` for the browser. Remix doesn't touch your loaders directory.
 
-If you want to take it for a test drive locally run:
+You should now be able to run it in production mode:
 
+```bash
+NODE_ENV=production node server.js
 ```
-$ NODE_ENV=production node server.js
-```
-
-## More to come
-
-We'll be adding more instructions to deploy to many of the cloud service providers out there.
-
-And that's it for our tutorial! We hope it's enough to get you off and running with Remix.
