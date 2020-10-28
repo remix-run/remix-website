@@ -21,7 +21,7 @@ exports.createOwnerToken = async (uid, price, quantity) => {
     issuedAt: admin.firestore.Timestamp.now(),
     price,
     quantity,
-    owerRef: db.doc(`users/${uid}`),
+    ownerRef: db.doc(`users/${uid}`),
     version: "*",
   });
 
