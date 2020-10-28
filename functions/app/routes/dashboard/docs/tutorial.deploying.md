@@ -32,7 +32,7 @@ The app we just built is an express You can deploy this app anywhere you can dep
 First run the build:
 
 ```
-yarn build
+npm run build
 ```
 
 This builds your app in two places: `build/*` for the server rendering version, and `public/build/*` for the browser. Remix doesn't touch your loaders directory.

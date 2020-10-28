@@ -58,8 +58,8 @@ let sections = [
     [
       ["Architect", "deploy/architect", { disabled: true }],
       ["Azure", "deploy/azure", { disabled: true }],
-      ["Express", "deploy/express"],
-      ["Firebase", "deploy/firebase"],
+      ["Express", "deploy/express", { disabled: true }],
+      ["Firebase", "deploy/firebase", { disabled: true }],
       ["Netlify", "deploy/netlify", { disabled: true }],
       ["Vercel", "deploy/vercel", { disabled: true }],
     ],

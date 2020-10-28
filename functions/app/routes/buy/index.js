@@ -206,8 +206,8 @@ function PricingCards() {
                   >
                     {Array.from({ length: 10 }).map((_, index, arr) =>
                       index === arr.length - 1 ? (
-                        <option key={index} value="contact">
-                          Contact us for 11+
+                        <option disabled key={index} value="contact">
+                          Email hello@remix.run for 11+
                         </option>
                       ) : (
                         <option
@@ -220,19 +220,6 @@ function PricingCards() {
                       )
                     )}
                   </select>
-                  <script
-                    dangerouslySetInnerHTML={{
-                      __html: `
-                      document.addEventListener('DOMContentLoaded', () => {
-                        document.getElementById('qty').onchange = (event) => {
-                          if (event.target.value === "contact") {
-                            window.location.assign("/contact")
-                          }
-                        }
-                      });
-                    `,
-                    }}
-                  />
                 </div>
                 <input type="hidden" name="type" value="team" />
                 <BuyButton to="team">Buy a Team License</BuyButton>
