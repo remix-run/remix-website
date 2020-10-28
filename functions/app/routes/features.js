@@ -12,6 +12,14 @@ export function headers() {
   };
 }
 
+export function meta() {
+  return {
+    title: "Features | Remix",
+    description:
+      "Web fundamentals on modern architecture. Check out the features of Remix.",
+  };
+}
+
 function B(props) {
   return <span className="text-black" {...props} />;
 }

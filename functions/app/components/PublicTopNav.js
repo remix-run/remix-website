@@ -7,9 +7,9 @@ export default function PublicTopNav() {
     <div className="bg-gray-900">
       <header className="relative z-10 flex items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         <div className="md:flex items-center">
-          <a href="/components" className="block w-24">
+          <Link to="/" className="block w-24">
             <Logo />
-          </a>
+          </Link>
         </div>
         <div className="flex text-sm leading-5">
           <TopNavLink
