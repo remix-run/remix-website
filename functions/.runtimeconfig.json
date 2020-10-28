@@ -3,6 +3,6 @@
     "token": "0b6c9206d4305abc98e5a95b00e6c6fe9b0f96d2"
   },
   "stripe": {
-    "secret_key": "sk_test_51HbSz2BIsmMSW7ROknP9XHjLXBMplQ50lGAKza5tARm1btyhVc4SmOEG10pMZiVL8RpHgRSnRw4j8kNm2ywWMiEN00ST2fTlvN"
+    "secret_key": "sk_live_Kqb2PKfBy1ZQRTkXh529jzaC"
   }
 }

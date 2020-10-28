@@ -1,10 +1,10 @@
 import React from "react";
 import { useRouteData } from "@remix-run/react";
-import * as CacheControl from "../../utils/CacheControl";
-import { Link } from "react-router-dom";
 
 export function headers() {
-  return CacheControl.none;
+  return {
+    "cache-control": "max-age=3600",
+  };
 }
 
 export default function DashboardIndex() {

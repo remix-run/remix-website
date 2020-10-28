@@ -1,3 +1,4 @@
+const { json } = require("@remix-run/loader");
 const { db, unwrapDoc, unwrapSnapshot } = require("../../../utils/firebase");
 const { requireCustomer } = require("../../utils/session");
 const { stripe } = require("../../../utils/stripe");
@@ -10,12 +11,19 @@ module.exports = requireCustomer(async (_, { sessionUser, user }) => {
     getLicenses(user.uid),
   ]);
 
-  return {
-    sessionUser,
-    user,
-    stripeCustomer,
-    licenses,
-  };
+  return json(
+    {
+      sessionUser,
+      user,
+      stripeCustomer,
+      licenses,
+    },
+    {
+      headers: {
+        "cache-control": "max-age=3600",
+      },
+    }
+  );
 });
 
 async function getTokens(uid) {

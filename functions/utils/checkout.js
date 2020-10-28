@@ -14,8 +14,8 @@ let prices = {
   beta: {
     indie: {
       test: "price_1HbT4UBIsmMSW7ROb1UqNcZq",
-      // prod: "price_1Hh5WkBhDjuvqbsSQdElIpjH",
-      prod: "price_1Hh5eOBhDjuvqbsSwGlIi3ul", // partner license >.<
+      prod: "price_1Hh5WkBhDjuvqbsSQdElIpjH",
+      // prod: "price_1Hh5eOBhDjuvqbsSwGlIi3ul", // partner license >.<
     },
     team: {
       test: "price_1HfabKBIsmMSW7ROGEtHs2Zv",
@@ -37,7 +37,8 @@ async function createCheckout(
 
   let baseUrl =
     process.env.NODE_ENV === "production"
-      ? `https://playground-a6490.web.app`
+      ? // ? `https://playground-a6490.web.app`
+        `https://remix.run`
       : "http://localhost:5000";
 
   let productKey = type;

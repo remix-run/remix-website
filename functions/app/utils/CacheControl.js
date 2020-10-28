@@ -3,7 +3,7 @@ export const pub = {
   // or switch back to cloudflare but make sure it caches html docs first
   // "cache-control": "public, max-age=60, s-max-age=86400, stale-while-revalidate=60",
   "cache-control":
-    "public, max-age=60, s-max-age=300, stale-while-revalidate=60",
+    "public, max-age=60, s-max-age=3600, stale-while-revalidate=60",
   "cache-key": "public",
 };
 
