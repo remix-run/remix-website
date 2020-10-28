@@ -256,7 +256,7 @@ pre.line-numbers > code {
 }
 
 /* should use @ variants dark { */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   .toc a {
     @apply text-aqua-700;
     @apply border-blue-100;
@@ -268,4 +268,4 @@ pre.line-numbers > code {
   .toc .heading {
     @apply text-aqua-100;
   }
-}
+} */

@@ -338,8 +338,7 @@ export default function Features() {
                           initial page is server rendered with data in the
                           markup while automatically fetching in the client as
                           the user navigates around. That's right, put{" "}
-                          <code>React.useEffect</code>
-                          back on the shelf.
+                          <code>React.useEffect</code> back on the shelf.
                         </p>
                       </div>
                     </div>
@@ -366,7 +365,7 @@ export default function Features() {
                       </div>
                       <div className="ml-4">
                         <h5 className="text-lg leading-6 font-medium text-gray-900">
-                          Talk to directly to your Database
+                          Talk directly to your Database
                         </h5>
                         <p className="mt-2 text-base leading-6 text-gray-600">
                           Since all data loading is on the server, you can talk

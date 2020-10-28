@@ -15,13 +15,14 @@ If you name a loader the same as a route, Remix will automatically call it befor
 
 Even though we haven't created a loader yet, we can still ask for the data at a route as if we had one and we'll get `null`.
 
-Open up "routes/gists.js", then console log the data prop to see it.
+Open up "routes/gists.js", then console log the data prop to see it using the `useRouteData` hook.
 
 ```jsx
 import React from "react";
 import { useRouteData } from "@remix-run/react";
 
-export default function Gists({ data }) {
+export default function Gists() {
+  let data = useRouteData();
   console.log(data);
   return (
     <div>
@@ -121,7 +122,8 @@ Whew, okay, back to our app. Go ahead and map over that array however you'd like
 
 ```jsx
 // ...
-export default function Gists({ data }) {
+export default function Gists() {
+  let data = useRouteData();
   return (
     <div>
       <h2>Public Gists</h2>

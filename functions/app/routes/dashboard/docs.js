@@ -47,7 +47,7 @@ let sections = [
       ["MDX", "mdx"],
       ["Not Found", "not-found", { disabled: true }],
       ["Performance", "performance", { disabled: true }],
-      ["PostCSS", "postcss", { disabled: true }],
+      ["PostCSS", "postcss"],
       ["Redirecting", "redirecting", { disabled: true }],
       ["Old School Apps", "oldschool", { disabled: true }],
       ["Routing", "routing"],

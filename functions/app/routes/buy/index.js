@@ -80,6 +80,9 @@ function FAQSection() {
             We're hoping to have a production ready release first quarter of
             2021. Buying a support license helps us get there.
           </Question>
+          <Question title="Is my license still valid after the 1.0 release?">
+            Yes. You're buying a full blown license.
+          </Question>
           <Question title="What kind of support do I get?">
             You'll get access to our issue tracker where you can report issues
             and get help with usage questions. You'll also get access to a

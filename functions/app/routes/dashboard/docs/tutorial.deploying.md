@@ -5,14 +5,13 @@ meta:
 
 # Deploying
 
-We are working on making deployment to different cloud service providers a breeze, but at the moment the only two that we've got ready for you are Firebase and Vercel. From those starter repos you can use the service's own tools, like:
+We are working on making deployment to different cloud service providers a breeze, but at the moment the only one that we've got ready is Firebase. From the starter repos you can use the service's own tools, like:
 
 ```bash
 $ firebase deploy
-$ vercel
 ```
 
-We are actively working on starters to help you deploy to the following providers before the 1.0 release:
+We are actively working on starters repos to help you deploy to the following providers before the 1.0 release:
 
 - Firebase
 - Vercel
@@ -27,7 +26,7 @@ We're also working to get Remix running in worker environments like Cloudflare w
 
 ## Deploying an express app:
 
-The app we just built is an express You can deploy this app anywhere you can deploy an express app.
+The app we just built is an express app. You can deploy this app anywhere you can deploy an express app.
 
 First run the build:
 
