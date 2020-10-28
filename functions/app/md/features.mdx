@@ -2,7 +2,7 @@
 
 No matter which page your user lands on, the total footprint of a Remix app is about 50kb over the network (including dependencies). It doesn't matter how large your application gets, each page only downloads what it needs, which is actually pretty uncommon in the React ecosystem.
 
-React apps are typically built two ways: bundle everything into one enormous file (yikes!) or code split into multiple bundles to load on demand. The apps that code split usually send down a very large build manifest, listing every asset you could possible need. That means as you add files and pages to your site, the footprint of _every page_ grows.
+React apps are typically built two ways: bundle everything into one enormous file (yikes!) or code split into multiple bundles to load on demand. The apps that code split usually send down a very large build manifest, listing every asset you could possibly need. That means as you add files and pages to your site, the footprint of _every page_ grows.
 
 Remix never loads more code than the page the user is looking at. You can have 10 or 10,000 routes, the footprint for each remains constant. Just because you added some routes to the photo viewer doesn't mean the contact page gets bigger over the network.
 

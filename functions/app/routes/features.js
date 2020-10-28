@@ -660,7 +660,6 @@ function AzureLogo() {
     <svg
       className="h-20"
       viewBox="0 0 161.67 129"
-      width={2500}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
