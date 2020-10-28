@@ -1,0 +1,184 @@
+---
+meta:
+  title: "@remix-run/react | Remix"
+---
+
+# `@remix-run/react`
+
+This module is only to be used inside your app/ folder, not in your loaders/. It contains module for use inside of the React layer.
+
+## `Meta`, `Styles`, `Routes`, `Script`
+
+These components are to be used once inside of your global application layout. They include everything Remix figured out or built in order for your page to render properly.
+
+```jsx
+import React from "react";
+import { Meta, Scripts, Styles, Routes } from "@remix-run/react";
+
+export default function App() {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <Meta />
+        <Styles />
+      </head>
+      <body>
+        <Routes />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+```
+
+## `useGlobalData`
+
+This hook returns the data loaded from your `loaders/global.js` file. It is not intended to be a "global data store", it's simply a root loader for any serverside information you need to fetch for your primary layout.
+
+```jsx
+import React from "react";
+import { useGlobalData, Meta, Scripts, Styles, Routes } from "@remix-run/react";
+
+export default function App() {
+  let globalData = useGlobalData();
+
+  return (
+    <html lang={globalData.lang}>
+      <head>
+        <meta charSet="utf-8" />
+        <Meta />
+        <Styles />
+      </head>
+      <body>
+        <Routes />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+```
+
+## `useRouteData`
+
+This hook returns the data from your route data loader.
+
+```jsx
+import React from "react";
+import { useRouteData } from "@remix-run/react";
+
+export default function Invoices() {
+  let invoices = useRouteData();
+  // ...
+}
+```
+
+Note that the data is already passed to your component as a prop, so this hook is more useful for creating abstractions with hooks.
+
+```jsx
+import React from "react";
+import { useRouteData } from "@remix-run/react";
+
+export default function Invoices({ data: invoices }) {
+  // don't need the hook
+}
+```
+
+For example, with firebase you could build a hook that turns the static data fetched from the server into a live document in the client:
+
+```jsx
+// if you're using firebase you could build a "live" route document
+function useLiveRouteData() {
+  // your server could return the path of the data it fetched, and the data on
+  // two keys. If all routes loaders with live data follow this convention, it
+  // doesn't matter which route we're using this hook in
+  let { path, data } = useRouteData();
+
+  // maybe you've got a firebase abstraction that takes a path to subscribe to
+  // and initial data.
+  let liveData = useFirestoreDoc(path, data);
+
+  // return the live data
+  return liveData;
+}
+```
+
+## useLocationPending
+
+During a clientside route transition, Remix loads the resources for the next page before continuing the transition (because we're all sick of flickering spinners). But we also need some UI to acknowledge that they clicked a link. This is the purpose of this hook.
+
+Whenever a transition is happening, this hook will return true, when it's over, it will return false. With this information you can create a loading indication on the current page, or even globally in your App.js.
+
+This example fades the page out if the transition is taking longer than 300ms.
+
+```jsx
+import React from "react";
+import {
+  useLocationPending,
+  Meta,
+  Scripts,
+  Styles,
+  Routes,
+} from "@remix-run/react";
+
+export default function App() {
+  let pending = useLocationPending();
+
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <Meta />
+        <Styles />
+      </head>
+      <body
+        style={{
+          opacity: pending ? "0.15" : "1",
+          transition: "opacity 500ms ease-in-out",
+          transitionDelay: "300ms",
+        }}
+      >
+        <Routes />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+```
+
+### useBeforeUnload
+
+This hook is just a helper around `window.onbeforeunload`.
+
+On client side page transitions, Remix is aware of the current version of your app. If you deployed in the middle of a user's session on your site, the next time they click a link it will be a full page transition (as if you used `<a>` instead of `<Link>`) and then the user gets the freshest version of your site.
+
+If you've got any important state on the page when this happens, you're going to want to save it off somewhere like local storage, because a real page transition will blow it away.
+
+Remix or not, this is just good practice to do anyway. The user can change the url, accidentally close the browser window, etc.
+
+```jsx
+import { useBeforeUnload } from "@remix-run/react";
+
+function SomeForm() {
+  let [state, setState] = React.useState(null);
+
+  // save it off before the transition
+  useBeforeUnload(
+    React.useCallback(() => {
+      localStorage.stuff = state
+    }),
+    [state]
+  );
+
+  // read it in when they return
+  React.useEffect(() => {
+    if (state === null && localStorage.stuff != null) {
+      setState(localStorage.stuff);
+    }
+  }, []);
+
+  return (
+    // ...
+  )
+}
+```

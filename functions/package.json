@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "yarn run css:build && remix build",
+    "build": "NODE_ENV=production yarn run css:build && NODE_ENV=production remix build",
     "logs": "firebase functions:log",
     "shell": "firebase functions:shell",
     "css:watch": "postcss styles --base styles --dir app/ -w",
@@ -21,10 +21,10 @@
     "@octokit/core": "^3.1.2",
     "@reach/alert": "^0.11.2",
     "@reach/visually-hidden": "^0.11.1",
-    "@remix-run/cli": "0.5.1",
-    "@remix-run/express": "0.5.1",
-    "@remix-run/loader": "0.5.1",
-    "@remix-run/react": "0.5.1",
+    "@remix-run/cli": "0.5.2",
+    "@remix-run/express": "0.5.2",
+    "@remix-run/loader": "0.5.2",
+    "@remix-run/react": "0.5.2",
     "@stripe/stripe-js": "^1.9.0",
     "@tailwindcss/typography": "^0.2.0",
     "@tailwindcss/ui": "^0.6.2",

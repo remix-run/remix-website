@@ -9,6 +9,13 @@ export function headers() {
 
 let sections = [
   [
+    "Development",
+    [
+      ["Releases", "releases", { disabled: true }],
+      ["Roadmap", "roadmap", { disabled: true }],
+    ],
+  ],
+  [
     "Quickstart Tutorial",
     [
       ["Installation", "tutorial/installation"],
@@ -22,21 +29,39 @@ let sections = [
   [
     "API",
     [
-      ["@remix-run/express", "express"],
-      ["@remix-run/firebase", "firebase"],
+      ["Remix Config", "config"],
+      ["Conventions", "conventions"],
+      ["Route Module", "route-module"],
+      ["Web Fetch API", "fetch"],
       ["@remix-run/react", "react"],
       ["@remix-run/loader", "loader"],
+      ["React Router v6", "react-router"],
     ],
   ],
   [
     "Guides",
     [
-      ["Data Loading", "data"],
-      ["Deploying", "deploying"],
-      ["HTTP Caching", "caching"],
-      ["Not Found Handling", "not-found"],
+      ["CDNs", "cdns", { disabled: true }],
+      ["Disabling JavaScript", "disabling-javascript"],
+      ["Error Handling", "error-handling", { disabled: true }],
+      ["MDX", "mdx"],
+      ["Not Found", "not-found", { disabled: true }],
+      ["Performance", "performance", { disabled: true }],
+      ["PostCSS", "postcss", { disabled: true }],
+      ["Redirecting", "redirecting", { disabled: true }],
+      ["Old School Apps", "oldschool", { disabled: true }],
       ["Routing", "routing"],
-      ["What about SSG?", "ssg"],
+    ],
+  ],
+  [
+    "Deploying",
+    [
+      ["Architect", "deploy/architect", { disabled: true }],
+      ["Azure", "deploy/azure", { disabled: true }],
+      ["Express", "deploy/express"],
+      ["Firebase", "deploy/firebase"],
+      ["Netlify", "deploy/netlify", { disabled: true }],
+      ["Vercel", "deploy/vercel", { disabled: true }],
     ],
   ],
 ];
@@ -87,7 +112,7 @@ export default function Docs() {
             ${hideNav ? "hidden md:block" : "md:block"}
             bg-blue-50 pl-4 pt-5 pb-2
             dark:bg-aqua-950
-            md:w-64 md:fixed md:top-0 md:bottom-0 md:pt-20 md:px-6
+            md:w-64 md:fixed md:overflow-auto md:top-0 md:bottom-0 md:pt-20 md:px-6
         `}
       >
         <ul>
@@ -103,25 +128,38 @@ export default function Docs() {
                 {name}
               </div>
               <ul>
-                {links.map(([label, to], index) => (
+                {links.map(([label, to, props = {}], index) => (
                   <li
                     className="
                         border-b border-blue-100 last:border-b-0 
                         md:border-none"
                     key={index}
                   >
-                    <NavLink
-                      className="
+                    {props.disabled ? (
+                      <div
+                        className="
+                          block py-2 text-lg
+                          text-blue-300
+                          dark:text-aqua-800
+                          md:text-sm md:py-1
+                        "
+                      >
+                        {label} (coming soon)
+                      </div>
+                    ) : (
+                      <NavLink
+                        className="
                           block py-2 text-lg
                           text-blue-400 hover:text-blue-700
                           dark:text-aqua-700 dark:hover:text-aqua-600
                           md:text-sm md:py-1
                         "
-                      to={to}
-                      activeClassName="active"
-                    >
-                      {label}
-                    </NavLink>
+                        to={to}
+                        activeClassName="active"
+                      >
+                        {label}
+                      </NavLink>
+                    )}
                   </li>
                 ))}
               </ul>

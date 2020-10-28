@@ -5,7 +5,7 @@ module.exports = {
     purgeLayersByDefault: true,
   },
   experimental: {
-    darkModeVariant: true,
+    darkModeVariant: false,
   },
   purge: [
     "./app/**/*.js",
@@ -169,16 +169,9 @@ module.exports = {
     },
   },
   variants: {
-    typography: ["responsive", "dark"],
-    backgroundColor: [
-      "hover",
-      "focus",
-      "active",
-      "disabled",
-      "responsive",
-      "dark",
-    ],
-    textColor: ["hover", "focus", "active", "disabled", "responsive", "dark"],
+    typography: ["responsive"],
+    backgroundColor: ["hover", "focus", "active", "disabled", "responsive"],
+    textColor: ["hover", "focus", "active", "disabled", "responsive"],
     opacity: ["hover", "focus", "active", "disabled"],
     borderWidth: ["responsive", "last"],
   },

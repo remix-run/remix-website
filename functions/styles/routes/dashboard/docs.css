@@ -1,6 +1,8 @@
 .prose pre {
-  @apply bg-gray-900;
-  @apply text-gray-300;
+  @apply bg-gray-100;
+  @apply text-gray-700;
+  @apply border-gray-200;
+  @apply border;
 }
 /**
  * prism.js default theme for JavaScript, CSS and HTML
@@ -8,8 +10,6 @@
  */
 code[class*="language-"],
 pre[class*="language-"] {
-  @apply text-gray-300;
-  background: none;
   font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
   text-align: left;
   white-space: pre;
@@ -31,15 +31,6 @@ pre[class*="language-"] ::-moz-selection,
 code[class*="language-"]::-moz-selection,
 code[class*="language-"] ::-moz-selection {
   text-shadow: none;
-  @apply bg-gray-900;
-}
-
-pre[class*="language-"]::selection,
-pre[class*="language-"] ::selection,
-code[class*="language-"]::selection,
-code[class*="language-"] ::selection {
-  text-shadow: none;
-  @apply bg-gray-500;
 }
 
 @media print {
@@ -55,11 +46,6 @@ pre[class*="language-"] {
   overflow: auto;
 }
 
-:not(pre) > code[class*="language-"],
-pre[class*="language-"] {
-  @apply bg-gray-900;
-}
-
 /* Inline code */
 :not(pre) > code[class*="language-"] {
   padding: 0.1em;
@@ -71,17 +57,17 @@ pre[class*="language-"] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  @apply text-gray-700;
+  @apply text-gray-400;
 }
 
 .token.punctuation {
-  @apply text-gray-400;
+  @apply text-gray-500;
 }
 
 .token.selector,
 .token.tag .punctuation,
 .token.tag > .tag {
-  @apply text-green-300;
+  @apply text-green-700;
 }
 
 .token.property,
@@ -91,7 +77,7 @@ pre[class*="language-"] {
 .token.symbol,
 .token.attr-name,
 .token.deleted {
-  @apply text-yellow-600;
+  @apply text-yellow-700;
 }
 
 .token.string,
@@ -99,7 +85,7 @@ pre[class*="language-"] {
 .token.attr-value,
 .token.builtin,
 .token.inserted {
-  @apply text-green-600;
+  @apply text-green-700;
 }
 
 .token.operator,
@@ -116,17 +102,17 @@ pre[class*="language-"] {
 }
 
 .token.keyword.module {
-  @apply text-aqua-400;
+  @apply text-aqua-600;
 }
 
 .token.function {
-  @apply text-blue-400;
+  @apply text-blue-600;
 }
 
 .token.regex,
 .token.important,
 .token.variable {
-  @apply text-yellow-600;
+  @apply text-yellow-700;
 }
 
 .token.important,
@@ -208,6 +194,7 @@ pre.line-numbers > code {
   @apply border-b;
   @apply text-blue-400;
   @apply border-blue-100;
+  @apply leading-4;
 }
 
 .toc li:last-child a {
@@ -222,15 +209,20 @@ pre.line-numbers > code {
   @apply text-red-600;
 }
 
-.markdown-body {
+.prose {
   @apply mt-4;
   @apply p-4;
   padding-bottom: 50vh;
 }
 
-.markdown-body h2 {
+.prose h2 {
   @apply mt-0;
-  @apply pt-24;
+  @apply pt-20;
+}
+
+.prose code::before,
+.prose code::after {
+  content: "";
 }
 
 @screen md {
@@ -255,10 +247,10 @@ pre.line-numbers > code {
   .toc a {
     @apply text-sm;
     @apply border-none;
-    @apply py-1;
+    @apply py-2;
   }
 
-  .markdown-body {
+  .prose {
     @apply px-8;
   }
 }
