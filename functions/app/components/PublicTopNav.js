@@ -5,7 +5,7 @@ import Logo from "./Logo";
 export default function PublicTopNav() {
   return (
     <div className="bg-gray-900">
-      <header className="max-w-4xl m-auto relative z-10 flex items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
+      <header className="relative z-10 flex items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         <div className="md:flex items-center">
           <a href="/components" className="block w-24">
             <Logo />

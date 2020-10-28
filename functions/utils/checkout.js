@@ -14,11 +14,12 @@ let prices = {
   beta: {
     indie: {
       test: "price_1HbT4UBIsmMSW7ROb1UqNcZq",
-      prod: "price_1HbT4UBIsmMSW7ROb1UqNcZq",
+      // prod: "price_1Hh5WkBhDjuvqbsSQdElIpjH",
+      prod: "price_1Hh5eOBhDjuvqbsSwGlIi3ul", // partner license >.<
     },
     team: {
       test: "price_1HfabKBIsmMSW7ROGEtHs2Zv",
-      prod: "price_1HfabKBIsmMSW7ROGEtHs2Zv",
+      prod: "price_1Hh5XqBhDjuvqbsSCboeBu7m",
     },
   },
 };

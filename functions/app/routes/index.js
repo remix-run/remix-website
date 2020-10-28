@@ -7,8 +7,8 @@ import * as CacheControl from "../utils/CacheControl";
 export function headers() {
   return {
     ...CacheControl.pub,
-    Link:
-      "</buy>;rel=prefetch;as=document, </features>;rel=prefetch;as=document",
+    // Link: "</newsletter>;rel=prefetch;as=document, </features>;rel=prefetch;as=document",
+    Link: "</newsletter>;rel=prefetch;as=document",
   };
 }
 
@@ -34,7 +34,7 @@ function ButtonLink({ to, children, primary = false }) {
   return (
     <Link
       to={to}
-      className={`w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base leading-6 font-semibold rounded-md shadow-sm focus:outline-none xl:text-lg xl:py-4 text-white transition ease-in-out duration-150 ${
+      className={`w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base leading-6 font-semibold rounded-md shadow-sm xl:text-lg xl:py-4 text-white transition ease-in-out duration-150 ${
         primary
           ? "bg-blue-500 hover:bg-blue-400 active:bg-blue-600"
           : "bg-gray-700 hover:bg-gray-600 active:bg-gray-700"
@@ -46,32 +46,33 @@ function ButtonLink({ to, children, primary = false }) {
 }
 
 function LoginLink() {
-  return (
-    <Link
-      to="login"
-      className={`
-            mt-4 mr-4 inline-flex px-3 py-2 rounded-md text-m font-medium
-            text-gray-300 hover:text-white hover:bg-gray-800
-            focus:outline-none focus:text-white focus:bg-gray-800
-          `}
-    >
-      <svg
-        className="h-6 w-6 mr-1"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-        />
-      </svg>{" "}
-      Sign in
-    </Link>
-  );
+  return <div className="pt-6" />;
+  // return (
+  //   <Link
+  //     to="login"
+  //     className={`
+  //           mt-4 mr-4 inline-flex px-3 py-2 rounded-md text-m font-medium
+  //           text-gray-300 hover:text-white hover:bg-gray-800
+  //           focus:outline-none focus:text-white focus:bg-gray-800
+  //         `}
+  //   >
+  //     <svg
+  //       className="h-6 w-6 mr-1"
+  //       xmlns="http://www.w3.org/2000/svg"
+  //       fill="none"
+  //       viewBox="0 0 24 24"
+  //       stroke="currentColor"
+  //     >
+  //       <path
+  //         strokeLinecap="round"
+  //         strokeLinejoin="round"
+  //         strokeWidth={2}
+  //         d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+  //       />
+  //     </svg>{" "}
+  //     Sign in
+  //   </Link>
+  // );
 }
 
 export default function Index() {
@@ -108,10 +109,12 @@ export default function Index() {
           </div>
           <div className="my-8" />
           <div className="sm:flex sm:mt-8 xl:mt-12">
+            {/*}
             <ButtonLink to="/features">Explore Features</ButtonLink>
             <div className="my-2 sm:mx-1 sm:my-0" />
-            <ButtonLink to="/buy" primary>
-              Buy a License &nbsp;
+            */}
+            <ButtonLink to="/newsletter" primary>
+              Join the newsletter &nbsp;
               <FaArrowRight />
             </ButtonLink>
           </div>

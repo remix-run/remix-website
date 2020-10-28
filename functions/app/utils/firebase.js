@@ -39,7 +39,6 @@ export async function createUserSession(idToken) {
     },
   });
   await firebase.auth().signOut();
-  console.log(res.status);
   if (res.status === 403) {
     throw new Error("Somebody's tryna hack us.");
   }
