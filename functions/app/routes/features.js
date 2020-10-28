@@ -338,7 +338,7 @@ export default function Features() {
                           initial page is server rendered with data in the
                           markup while automatically fetching in the client as
                           the user navigates around. That's right, put{" "}
-                          <code>React.useEffect</code> back on the shelf.
+                          <code>useEffect</code> back on the shelf.
                         </p>
                       </div>
                     </div>

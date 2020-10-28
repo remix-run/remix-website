@@ -72,7 +72,7 @@ function FAQSection() {
             .
           </Question>
           <Question title="Is there a refundable trial period?">
-            Not yet. During the support preivew all sales are final. We need
+            Not yet. During the support preview all sales are final. We need
             your support right now to get it over the finish line! Wait for the
             1.0 release if you'd like a refundable trial period.
           </Question>
@@ -165,8 +165,8 @@ function PricingCards() {
               </div>
               <p className="mt-5 text-lg leading-7 text-gray-700">
                 Got a side project but you've spent the last few weekends just
-                screwing around with webpack? Knock it off! For a couple
-                hundered bucks you've got us behind you.
+                screwing around with webpack? Knock it off! For a couple hundred
+                bucks you've got us behind you.
               </p>
             </div>
             <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">

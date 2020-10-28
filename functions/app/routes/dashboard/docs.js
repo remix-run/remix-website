@@ -155,7 +155,7 @@ export default function Docs() {
                           md:text-sm md:py-1
                         "
                         to={to}
-                        activeClassName="active"
+                        activeClassName="nav-active"
                       >
                         {label}
                       </NavLink>

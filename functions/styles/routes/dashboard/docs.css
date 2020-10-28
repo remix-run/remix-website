@@ -255,6 +255,11 @@ pre.line-numbers > code {
   }
 }
 
+.nav-active,
+.nav-active:hover {
+  @apply text-red-500;
+}
+
 /* should use @ variants dark { */
 /* @media (prefers-color-scheme: dark) {
   .toc a {
