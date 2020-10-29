@@ -6,7 +6,7 @@ module.exports = requireCustomer(async ({ url }, { user }) => {
   try {
     let session = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
-      return_url: url.origin + "/dashboard",
+      return_url: "https://remix.run/dashboard",
     });
     return Response.redirect(session.url);
   } catch (error) {
