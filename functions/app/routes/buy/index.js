@@ -44,8 +44,7 @@ function Hero() {
             Remix is not production ready but it's close! We need your support
             to get it over the finish line. You are buying a Supporter Preview
             license, think of it like a kickstarter but you get to use the
-            product right away. Supporter Licenses are non-refundable and
-            limited.
+            product right away. Supporter Licenses are non-refundable.
           </p>
         </div>
       </div>
