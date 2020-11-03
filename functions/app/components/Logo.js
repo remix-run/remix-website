@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { useThrottle } from "use-throttle";
-import { detect } from "detect-browser";
 
 let colorMap = {
   aqua: "#D5F3F1",
@@ -29,13 +28,7 @@ export default function Logo({ colors = defaultColors, ...props }) {
 
   // Safari doesn't update the inner shadows on the logo, so we force a full
   // rerender with a key
-  let sniffRef = useRef(null);
-  if (sniffRef.current === null) {
-    sniffRef.current = typeof window === "undefined" ? "server" : detect().name;
-  }
-  let logoKey = ["safari", "ios"].includes(sniffRef.current)
-    ? colors.join()
-    : undefined;
+  let logoKey = colors.join();
 
   return (
     <svg

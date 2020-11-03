@@ -1,12 +1,12 @@
 import React from "react";
 import Logo, { useLogoAnimation } from "../components/Logo";
-import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import * as CacheControl from "../utils/CacheControl";
 
 export function headers() {
   return {
     ...CacheControl.pub,
+    Vary: "cookie,accept-encoding",
     Link:
       "</buy>;rel=prefetch;as=document, </features>;rel=prefetch;as=document",
   };
@@ -112,7 +112,7 @@ export default function Index() {
             <div className="my-2 sm:mx-1 sm:my-0" />
             <ButtonLink to="/buy" primary>
               Buy a License &nbsp;
-              <FaArrowRight />
+              <ArrowRightIcon />
             </ButtonLink>
           </div>
           <div className="my-20" />
@@ -167,5 +167,22 @@ export default function Index() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ArrowRightIcon() {
+  return (
+    <svg
+      className="h-5"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        fillRule="evenodd"
+        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+        clipRule="evenodd"
+      />
+    </svg>
   );
 }
