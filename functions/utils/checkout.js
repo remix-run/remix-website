@@ -56,33 +56,17 @@ async function createCheckout(
     cancel_url: `${baseUrl}/buy/order/failed?idToken=${idToken}`,
   });
 
-  // Add them to firestore so we can pick this back up again after a successful
-  // stripe transaction
-  let userRef = db.doc(`users/${uid}`);
-  let userDoc = await userRef.get();
-  if (userDoc.exists) {
-    console.log("user doc exists!");
-    // if there's an existing order they bailed on, delete it, this does not
-    // fail if the document doesnt' exist
-    await db.doc(`orders/${uid}`).delete();
-  } else {
-    console.log("does not exist");
-    // create the user, this is their first order
-    await db.doc(`users/${uid}`).set({
-      email,
-      provider,
-      // getting that weird error again!
-      // createdAt: admin.firestore.Timestamp.now(),
-      stripeCustomerId: null,
-    });
-  }
-
   // Temporary order so we can look up the customer after succesful purchase and
   // associate it with the user
   await db.doc(`orders/${uid}`).set({
     stripeSessionId: session.id,
     price,
     quantity,
+    user: {
+      uid,
+      email,
+      provider,
+    },
   });
 
   // Client needs the stripe session id
@@ -103,12 +87,11 @@ async function completeOrder(idToken) {
   let orderRef = db.doc(`orders/${uid}`);
 
   let order = await orderRef.get();
-  let { stripeSessionId, price, quantity } = order.data();
-
+  let { stripeSessionId, price, quantity, user } = order.data();
   let session = await stripe.checkout.sessions.retrieve(stripeSessionId);
 
   await Promise.all([
-    userRef.update({ stripeCustomerId: session.customer }),
+    userRef.set({ ...user, stripeCustomerId: session.customer }),
     createOwnerToken(uid, price, quantity),
     orderRef.delete(),
   ]);
