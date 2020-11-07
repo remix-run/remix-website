@@ -5350,6 +5350,11 @@ node-releases@^1.1.61:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.64.tgz#71b4ae988e9b1dd7c1ffce58dd9e561752dfebc5"
   integrity sha512-Iec8O9166/x2HRMJyLLLWkd0sFFLrFNy+Xf+JQfSQsdBJzPcHpNl3JQ9gD4j+aJxmCa25jNsIbM4bmACtSbkSg==
 
+node-stream-string@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/node-stream-string/-/node-stream-string-1.0.1.tgz#2fa7885176c05a73e9bd2a2b7bb5209317465459"
+  integrity sha512-gwn1aPjLEEpKl4U24JHEgNCxO0gFzPQTmara68B6bkx/aru5l56k381PBElrOAnkYX9SOHPxcAPJ38+tPSJCAQ==
+
 normalize-package-data@^2.3.2, normalize-package-data@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-2.5.0.tgz#e66db1838b200c1dfc233225d12cb36520e234a8"
