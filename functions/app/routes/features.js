@@ -372,7 +372,7 @@ export default function Features() {
                           directly to your database. No need to write the
                           function once for the server, and again for the
                           browser (and certainly no screwing around with making
-                          things "isomoprhic", whatever that means!)
+                          things "isomorphic", whatever that means!)
                         </p>
                       </div>
                     </div>
