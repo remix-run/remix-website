@@ -44,13 +44,12 @@ let sections = [
       ["CDN Caching", "cdn-caching", { disabled: true }],
       ["Disabling JavaScript", "disabling-javascript"],
       ["Error Handling", "error-handling", { disabled: true }],
-      ["Data Loading", "data-loading", { disabled: true }],
       ["Data Mutations", "data-mutations", { new: true }],
       ["MDX", "mdx"],
       ["Not Found Handling", "not-found", { disabled: true }],
       ["PostCSS", "postcss"],
       ["Redirects", "redirects", { disabled: true }],
-      ["Sessions", "sessions", { disabled: true }],
+      ["Sessions", "sessions", { new: true }],
       ["Routing", "routing"],
     ],
   ],
@@ -145,7 +144,7 @@ export default function Docs() {
                           md:text-sm md:py-1
                         "
                       >
-                        {label} (coming soon)
+                        {label} 🚧
                       </div>
                     ) : (
                       <NavLink
