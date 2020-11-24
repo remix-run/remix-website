@@ -21,8 +21,6 @@ Go make a file at `app/routes/gists.new.tsx` and put this in it.
 import React from "react";
 
 export default function NewGist() {
-  let pendingForm = usePendingFormSubmit();
-
   return (
     <>
       <h2>New Gist!</h2>
@@ -54,9 +52,7 @@ Notice we're using a plain HTML `<form/>` with an action that points to our `/gi
 
 ## Data Actions
 
-You've seen a `loader`. Now you're going to create an `action`. Every data route can export a "reader" and a "writer". Just like React, you have `[state, setState] = React.useState()`, or `[state, dispatch] = React.useReducer()`. Readers and writers. Data and mutations.
-
-Loaders and Actions.
+You've seen a `loader`. Now you're going to create an `action`. Every data route can export a "reader" and a "writer". Just like React, you have `[state, setState] = React.useState()`, or `[state, dispatch] = React.useReducer()`. Readers and writers. Data and mutations. _Loaders and Actions_.
 
 Open up your data route at `data/gists.ts` and add an action:
 

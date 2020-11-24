@@ -25,6 +25,7 @@ let sections = [
       ["Loading Data", "tutorial/loading-data"],
       ["Nested Routes & Params", "tutorial/nested-routes-params"],
       ["Styling", "tutorial/styling"],
+      ["Data Mutations", "tutorial/mutations"],
       ["Deploying", "tutorial/deploying"],
     ],
   ],

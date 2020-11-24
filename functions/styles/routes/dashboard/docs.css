@@ -267,3 +267,12 @@ pre.line-numbers > code {
     @apply text-aqua-100;
   }
 } */
+
+.prose code {
+  font-weight: normal;
+  @apply bg-cool-gray-50;
+  @apply text-gray-700;
+  @apply p-1;
+  @apply rounded-sm;
+  @apply text-xs;
+}
