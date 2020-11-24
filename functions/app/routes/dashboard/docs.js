@@ -1,6 +1,8 @@
 import React from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 
+const VERSION = "0.8.x";
+
 export function headers() {
   return {
     "cache-control": "max-age=600",
@@ -115,6 +117,7 @@ export default function Docs() {
             md:w-64 md:fixed md:overflow-auto md:top-0 md:bottom-0 md:pt-20 md:px-6
         `}
       >
+        <div className="font-bold text-xs">v{VERSION}</div>
         <ul>
           {sections.map(([name, links], index) => (
             <li key={index}>
