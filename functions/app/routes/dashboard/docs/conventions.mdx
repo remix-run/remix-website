@@ -25,13 +25,13 @@ Any files in the app/routes directory will become routes in your application. Re
 
 The filename minus extension becomes the "route id". So a file at `routes/foo/$bar.js` has the route id of `routes/foo/$bar`. These route ids will show up in future APIs for preloading resources.
 
-## `loaders/routes/**/*.{js,ts}`
+## `data/routes/**/*.{js,ts}`
 
-Any files in this location become the loader for the corresponding route of the same name (minus extension).
+Any files in this location become the data route for the corresponding route of the same name (minus extension). These files export a `loader` function for "get" requests and/or an `action` function for "post", "put", "patch", and "delete" requests.
 
-## `loaders/global.{js,ts}`
+## `data/global.{js,ts}`
 
-This loader is called for on the initial server render. It's useful for getting data for the App component. It is not called on client route transitions. If you're loading information like the user's language here, we recommend doing a full page reload when that data changes with `<a href />` or `window.location.assign()`.
+This data route is called on the initial server render and after data actions in the client. It's useful for getting data to the App component or global things like the user's language preference.
 
 ## `app/routes/**/*.css`
 

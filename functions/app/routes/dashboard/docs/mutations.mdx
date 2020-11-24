@@ -109,18 +109,21 @@ Let's say you've got the route `app/routes/projects/new.js` with this form in it
 </form>
 ```
 
-Now make a data route that will handle the action somewhere like `loaders/routes/projects/new.js`. Any form submits that aren't "get" submits will call your data "action", any "get" requests (links, and the rare `<form method="get">`) will be handled by your "loader".
+Now make a data route that will handle the action somewhere like `data/routes/projects/new.ts`. Any form submits that aren't "get" submits will call your data "action", any "get" requests (links, and the rare `<form method="get">`) will be handled by your "loader".
 
 ```js
-const { parseFormBody, redirect } = require("@remix-run/data");
+import type { Action } from "@remix-run/data";
+import { parseFormBody, redirect } from "@remix-run/data";
 
 // Note the "action" export name, this will handle our form POST
-exports.action = async ({ request }) => {
-  // this helper will parse the form body on hte server
+let action: Action = async ({ request }) => {
+  // this helper will parse the form body on the server
   let newProject = parseFormBody(request);
   let project = await createProject(newProject);
   return redirect(`/projects/${project.id}`);
 };
+
+export { action };
 ```
 
 And that's it! Assuming `createProject` does what we want it to, that's the core functionality.
@@ -154,9 +157,10 @@ let [errors, project] = await createProject(newProject);
 If there are validation errors, we want to go back to the form and display them. If enabled, Remix sends a `session` object to your loaders and actions, we can use that to store the form validation errors.
 
 ```js
-const { parseFormBody } = require("@remix-run/data");
+import type { Action, loader } from "@remix-run/data";
+import { parseFormBody, redirect } from "@remix-run/data";
 
-exports.action = async ({ request, session }) => {
+let action: Action = async ({ request, session }) => {
   let newProject = await parseFormBody(request);
   let [errors, project] = await createProject(newProject);
 
@@ -171,15 +175,17 @@ exports.action = async ({ request, session }) => {
   return redirect(`/projects/${project.id}`);
 };
 
-exports.loader = () => {
+let loader: Loader = () => {
   // we'll be back here in a minute
 };
+
+export { action, loader };
 ```
 
 After we redirect from the validation errors, we end up back in this same data route, only this time it's a "GET", so our `exports.loader` will get called. Let's read the session data and send it to the form:
 
 ```js
-exports.loader = ({ request, session }) => {
+let loader: Loader = ({ request, session }) => {
   return session.get("failedSubmit") || null;
 };
 ```
@@ -370,7 +376,10 @@ function NewProject() {
             />
           </label>
         </p>
-        <Validation errorMessage={failedSubmit && failedSubmit.errors.name} />
+        <ValidationMessage
+          isPending={!!pendingForm}
+          errorMessage={failedSubmit && failedSubmit.errors.name}
+        />
 
         <p>
           <label>
@@ -388,7 +397,8 @@ function NewProject() {
             />
           </label>
         </p>
-        <Validation
+        <ValidationMessage
+          isPending={!!pendingForm}
           errorMessage={failedSubmit && failedSubmit.errors.description}
         />
 
@@ -493,29 +503,23 @@ function DeleteButton({ id, disabled, ...props }) {
 
 And the data route:
 
-```js
-import {
-  json,
-  parseFormBody,
-  redirect,
-  getCookieSession,
-} from "@remix-run/data";
+```ts
+import type { Action, Loader } from "@remix-run/data";
+import { json, parseFormBody, redirect } from "@remix-run/data";
 import { readTodos, createTodo, deleteTodo } from "../models/todo";
 
-exports.loader = async ({ request }) => {
-  let session = getCookieSession(request);
+let loader: Loader = = async ({ request, session }) => {
   let todos = await readTodos();
   let error = session.get("error") || null;
   return json({ todos, error });
 };
 
-exports.action = async ({ request }) => {
+let action: Action = async ({ request }) => {
   let body = await parseFormBody(request);
   switch (request.method) {
     case "post": {
       let [_, error] = await createTodo(body.name);
       if (error) {
-        let session = getCookieSession(request);
         session.flash("error", error);
       }
       return redirect("/todos");
@@ -529,6 +533,8 @@ exports.action = async ({ request }) => {
     }
   }
 };
+
+export { loader, action }
 ```
 
 ## Review
