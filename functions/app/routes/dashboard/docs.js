@@ -34,22 +34,23 @@ let sections = [
       ["Route Module", "route-module"],
       ["Web Fetch API", "fetch"],
       ["@remix-run/react", "react"],
-      ["@remix-run/loader", "loader"],
+      ["@remix-run/data", "data"],
       ["React Router v6", "react-router"],
     ],
   ],
   [
     "Guides",
     [
-      ["CDNs", "cdns", { disabled: true }],
+      ["CDN Caching", "cdn-caching", { disabled: true }],
       ["Disabling JavaScript", "disabling-javascript"],
       ["Error Handling", "error-handling", { disabled: true }],
+      ["Data Loading", "data-loading", { disabled: true }],
+      ["Data Mutations", "data-mutations", { new: true }],
       ["MDX", "mdx"],
-      ["Not Found", "not-found", { disabled: true }],
-      ["Performance", "performance", { disabled: true }],
+      ["Not Found Handling", "not-found", { disabled: true }],
       ["PostCSS", "postcss"],
-      ["Redirecting", "redirecting", { disabled: true }],
-      ["Old School Apps", "oldschool", { disabled: true }],
+      ["Redirects", "redirects", { disabled: true }],
+      ["Sessions", "sessions", { disabled: true }],
       ["Routing", "routing"],
     ],
   ],
@@ -157,7 +158,7 @@ export default function Docs() {
                         to={to}
                         activeClassName="nav-active"
                       >
-                        {label}
+                        {label} {props.new && "🆕"}
                       </NavLink>
                     )}
                   </li>

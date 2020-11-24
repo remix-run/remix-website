@@ -7,6 +7,13 @@
     "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
   },
   "hosting": {
+    "redirects": [
+      {
+        "source": "/dashboard/docs/loader",
+        "destination": "/dashboard/docs/data",
+        "type": 301
+      }
+    ],
     "rewrites": [
       {
         "source": "**",

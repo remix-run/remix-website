@@ -7,11 +7,11 @@ import { Link } from "react-router-dom";
 
 # Defining Routes
 
-Routes in remix can be defined two ways: conventionally inside of the "app/routes" folder or manually with `remix.config.routes`. For this getting started guide we'll just cover the conventional files, but check out the <Link to="/dashboard/docs/routing">Routing Guide</Link> to learn more about manual routes.
+Routes in remix can be defined two ways: conventionally inside of the "app/routes" and "data/routes" folders or manually with `remix.config.routes`. For this getting started guide we'll just cover the conventional files, but check out the <Link to="/dashboard/docs/routing">Routing Guide</Link> to learn more about manual routes.
 
 ## Creating your first route
 
-Create a file like "app/routes/gists.js". Then edit the file to look like this:
+Create a file like "app/routes/gists.tsx". Then edit the file to look like this:
 
 ```jsx
 import React from "react";
@@ -59,7 +59,7 @@ export default function Gists() {
 
 ## Headers
 
-Each route can also define its http headers. This is mostly important for http caching. Remix doesn't rely on building your website into static files to be uploaded to a CDN for performance, instead we rely on cache headers. The end result of either approach is the same: a static document on a CDN.
+Each route can also define its http headers. This is mostly important for http caching. Remix doesn't rely on building your website into static files to be uploaded to a CDN for performance, instead we rely on cache headers. The end result of either approach is the same: a static document on a CDN. [Check out this video for more information on that](https://youtu.be/bfLFHp7Sbkg).
 
 Usually, the difficulty with cache headers is configuring them. In Remix we've made it easy. Just export a `headers` function from your route.
 
@@ -73,6 +73,7 @@ export function headers() {
 export function meta() {
   /* ... */
 }
+
 export default function Gists() {
   /* ... */
 }
@@ -92,7 +93,7 @@ Now, when the next person visits our page, it looks like this:
 1. Request comes to the CDN
 2. CDN has the document cached already and sends it right away without ever touching our origin server!
 
-We have a lot more to say about caching in the <Link to="/dashboard/docs/preformance">Performance</Link> document, make sure to read it after this tutorial.
+We have a lot more to say about caching in the <Link to="/dashboard/cdn-caching">CDN Caching</Link> guide, make sure to read it sometime.
 
 <div className="next-prev-links">
   <Link className="next" to="../loading-data">

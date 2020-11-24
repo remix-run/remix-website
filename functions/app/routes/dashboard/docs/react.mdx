@@ -105,16 +105,20 @@ function useLiveRouteData() {
 
 ## useLocationPending
 
+Removed, use `usePendingLocation`
+
+## usePendingLocation
+
 During a clientside route transition, Remix loads the resources for the next page before continuing the transition (because we're all sick of flickering spinners). But we also need some UI to acknowledge that they clicked a link. This is the purpose of this hook.
 
-Whenever a transition is happening, this hook will return true, when it's over, it will return false. With this information you can create a loading indication on the current page, or even globally in your App.js.
+Whenever a transition is happening, this hook will return the pending (or next) location. when it's over, it will return `undefined`. With this information you can create a loading indication on the current page, a link, or even globally in your App.js.
 
 This example fades the page out if the transition is taking longer than 300ms.
 
 ```jsx
 import React from "react";
 import {
-  useLocationPending,
+  usePendingLocation,
   Meta,
   Scripts,
   Styles,
@@ -122,7 +126,7 @@ import {
 } from "@remix-run/react";
 
 export default function App() {
-  let pending = useLocationPending();
+  let pendingLocation = usePendingLocation();
 
   return (
     <html lang="en">
@@ -133,7 +137,7 @@ export default function App() {
       </head>
       <body
         style={{
-          opacity: pending ? "0.15" : "1",
+          opacity: !!pendingLocation ? "0.15" : "1",
           transition: "opacity 500ms ease-in-out",
           transitionDelay: "300ms",
         }}
@@ -180,5 +184,98 @@ function SomeForm() {
   return (
     // ...
   )
+}
+```
+
+## `<Form>`
+
+```js
+import { Form } from "@remix-run/react";
+
+//
+<Form>
+  <input type="text" name="title" />
+</Form>;
+```
+
+The `<Form>` component is how to perform data mutations like creating, updating, and deleting data. While it might be a mindshift to think about these tasks as "navigation", it's how the web has handled mutations since before JavaScript was created!
+
+For an in-depth look at mutations with form, check out the <Link to="../mutations">Mutations</Link> page.
+
+### Form `action` prop
+
+```js
+<Form action="/projects/new" />
+```
+
+This tells the form which action to call. The `action` export of the matching data route will be called. In the above example, the action url would match a file at `data/routes/projects/new.ts`.
+
+### Form `method` prop
+
+```js
+<Form method="post" />
+```
+
+This determins the [HTTP verb](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods) to be used: get, post, put, patch, delete. The default is "get".
+
+Native `<form>` only supports get and post, so if you want your form to work with JavaScript on or off the page you'll need to stick with those two. Without JavaScript, Remix will turn non-get requests into "post", but you'll still need to instruct your server with a hidden input like `<input type="hidden" name="_method" method="delete" />`. If you always include JavaScript, you don't need to worry about this.
+
+### Form `encType` prop
+
+Defaults to `application/x-www-urlencoded`, which is also the only supported value right now. Before 1.0 we'll also support `multipart/form-data`.
+
+### Form `replace` prop
+
+```js
+<Form replace />
+```
+
+Instructs the form to replace the current entry in the history stack, instead of pushing the new entry. This is useful for small mutations of records inside a list view, like "delete" or "mark complete". Anything that isn't really a page navigation.
+
+Note: has no effect without JavaScript on the page.
+
+### Form `forceRefresh` prop
+
+```js
+<Form forceRefresh />
+```
+
+If true, it will submit the form with the browser instead of JavaScript, even if JavaScript is on the page.
+
+## `usePendingFormSubmit`
+
+```js
+import { usePendingFormSubmit } from "@remix-run/react";
+
+// ...
+let { method, data } = usePendingFormSubmit();
+```
+
+Returns `{ method, data }` that are currently being used to submit a `<Form>`. This is useful for showing a pending indicator, optimistic UI for some newly created/destroyed data.
+
+When the form is no longer pending, this hook will return `undefined`.
+
+Here's a quick example:
+
+```js
+function SomeForm() {
+  let pendingSubmit = usePendingFormSubmit();
+  return pendingSubmit ? (
+    <div>
+      <h2>Creating...</h2>
+      <p>Name: {pendingSubmit.data.get("name")}</p>
+      <p>Description: {pendingSubmit.data.get("description")}</p>
+    </div>
+  ) : (
+    <Form>
+      <label>
+        Name: <input type="text" name="name" />
+      </label>
+      <label>
+        Description: <input type="text" name="description" />
+      </label>
+      <button type="submit">Submit</button>
+    </Form>
+  );
 }
 ```

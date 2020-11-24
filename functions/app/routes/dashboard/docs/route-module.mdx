@@ -82,7 +82,7 @@ export function headers({ loaderHeaders, parentHeaders }) {
   let loaderCache = parseCacheControl(loaderHeaders.get("cache-control"));
   let parentCache = parseCacheControl(parentHeaders.get("cache-control"));
 
-  // take the least conservative between the parent and loader, otherwise
+  // take the most conservative between the parent and loader, otherwise
   // we'll be too aggressive for one of them.
   let maxAge = Math.min(loaderCache["max-age"], parentCache["max-age"]);
 

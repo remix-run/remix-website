@@ -108,7 +108,7 @@ Flat files = nested urls + no layouts.
 
 You can introduce nesting or non-nesting at any level of your routes, like `routes/invoices/$id.edit.js`, which matches the URL `/invoices/123/edit` but does not create nesting inside of `$id.js`.
 
-## Wrapping up
+## Review
 
 Assuming the following `routes/` directory:
 
@@ -138,8 +138,16 @@ Let's look at a few URLs and what the component tree looks like.
 
 Nested files are nested layouts. Flat files are flat layouts.
 
-<div className="next-prev-links">
-  <Link className="next" to="../nested-routes">
-    Next up: Nested Routes
-  </Link>
-</div>
+## Action Only Routes
+
+Your routes are defined primarily by the `app/routes` folder, but you can also have "action only" routes. These are files in `data/routes/some-action.ts` that only export an `action`. Since actions are required to redirect, it's possible to have a route at `/some-route` even if there is no UI there.
+
+```ts
+// data/routes/some-action.ts
+let action = () => {
+  // ...
+  redirect("/elsewhere");
+};
+
+export { action };
+```
