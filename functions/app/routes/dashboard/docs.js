@@ -171,7 +171,7 @@ export default function Docs() {
           ))}
         </ul>
       </nav>
-      <main className="md:ml-64 md:flex md:max-w-7xl">
+      <main className="md:ml-64 md:flex">
         <Outlet />
       </main>
     </div>

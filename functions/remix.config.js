@@ -46,7 +46,7 @@ function moveContentToMain() {
       type: "element",
       tagName: "article",
       properties: {
-        className: "prose dark:prose-dark xl:prose-lg p-8 max-w-none",
+        className: "prose dark:prose-dark xl:prose-lg p-8 md:max-w-4xl",
       },
       children,
     };
