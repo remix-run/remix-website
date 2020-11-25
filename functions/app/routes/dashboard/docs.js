@@ -47,7 +47,7 @@ let sections = [
       ["CDN Caching", "cdn-caching", { disabled: true }],
       ["Disabling JavaScript", "disabling-javascript"],
       ["Error Handling", "error-handling", { disabled: true }],
-      ["Data Mutations", "data-mutations", { new: true }],
+      ["Data Mutations", "mutations", { new: true }],
       ["MDX", "mdx"],
       ["Not Found Handling", "not-found", { disabled: true }],
       ["PostCSS", "postcss"],
