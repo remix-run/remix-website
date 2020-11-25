@@ -13,7 +13,7 @@ let sections = [
   [
     "Development",
     [
-      ["Releases", "releases", { disabled: true }],
+      ["Releases", "releases", { new: true }],
       ["Roadmap", "roadmap", { disabled: true }],
     ],
   ],
