@@ -54,7 +54,7 @@ session.get("name", "ryan");
 
 ## `session.flash()`
 
-Sets a session value that will only be available on the next request. After that, it's gone. Most useful for "flash messages" and serverside form validation messages:
+Sets a session value that will be unset the first time it is read. After that, it's gone. Most useful for "flash messages" and server side form validation messages:
 
 ```ts
 let action = async ({ params, session }) => {
