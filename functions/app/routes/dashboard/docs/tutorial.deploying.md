@@ -37,7 +37,7 @@ NODE_ENV=production node server.js
 
 Some of you adventurous folks are trying to deploy to different platforms already. Here are a few quick tips:
 
-1. Remix dynamically requires your data routes, so if your deployment platform auto detects the files it needs by reading package.json and your main files imports, it's not going to get everything. You have to manually include them.
+1. Remix dynamically requires your data modules, so if your deployment platform auto detects the files it needs by reading package.json and your main files imports, it's not going to get everything. You have to manually include them.
 
 2. When remix boots up it reads your `app/` and `data/` directories to figure out the routes. We will probably make this a part of the build output instead, but for now, you'll need to deploy not only the build artifacts, but also the `app` and `data` source folders.
 

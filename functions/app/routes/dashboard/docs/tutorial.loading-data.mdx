@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 
 # Route Data Loaders
 
-Page data in Remix comes from "loaders" inside of "data routes". These loaders are only ever run server side so you can use whatever node modules you need to load data, including a direct connection to your database.
+Page data in Remix comes from "loaders" inside of "data modules". These loaders are only ever run server side so you can use whatever node modules you need to load data, including a direct connection to your database.
 
-If you name a data route the same as an app route, Remix will automatically call the loader in the data route before rendering, passing that data to your route.
+If you name a data module the same as an app route, Remix will automatically call the loader in the data module before rendering, passing that data to your route.
 
 ## Accessing data for a route
 

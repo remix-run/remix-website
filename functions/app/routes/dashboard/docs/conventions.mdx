@@ -27,11 +27,11 @@ The filename minus extension becomes the "route id". So a file at `routes/foo/$b
 
 ## `data/routes/**/*.{js,ts}`
 
-Any files in this location become the data route for the corresponding route of the same name (minus extension). These files export a `loader` function for "get" requests and/or an `action` function for "post", "put", "patch", and "delete" requests.
+Any files in this location become the "data module" for the corresponding "route module" of the same name (minus extension). These files export a `loader` function (for "get" requests) and/or an `action` function (for "post", "put", "patch", and "delete" requests).
 
 ## `data/global.{js,ts}`
 
-This data route is called on the initial server render and after data actions in the client. It's useful for getting data to the App component or global things like the user's language preference.
+This data module is called on the initial server render and after data actions in the client. It's useful for getting data to the App component or global things like the user's language preference.
 
 ## `app/routes/**/*.css`
 

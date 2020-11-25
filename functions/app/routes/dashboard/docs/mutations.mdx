@@ -109,7 +109,7 @@ Let's say you've got the route `app/routes/projects/new.js` with this form in it
 </form>
 ```
 
-Now make a data route that will handle the action somewhere like `data/routes/projects/new.ts`. Any form submits that aren't "get" submits will call your data "action", any "get" requests (links, and the rare `<form method="get">`) will be handled by your "loader".
+Now make a data module that will handle the action somewhere like `data/routes/projects/new.ts`. Any form submits that aren't "get" submits will call your data "action", any "get" requests (links, and the rare `<form method="get">`) will be handled by your "loader".
 
 ```js
 import type { Action } from "@remix-run/data";
@@ -182,7 +182,7 @@ let loader: Loader = () => {
 export { action, loader };
 ```
 
-After we redirect from the validation errors, we end up back in this same data route, only this time it's a "GET", so our `exports.loader` will get called. Let's read the session data and send it to the form:
+After we redirect from the validation errors, we end up back in this same data module, only this time it's a "GET", so our `exports.loader` will get called. Let's read the session data and send it to the form:
 
 ```js
 let loader: Loader = ({ request, session }) => {
@@ -501,7 +501,7 @@ function DeleteButton({ id, disabled, ...props }) {
 }
 ```
 
-And the data route:
+And the data module:
 
 ```ts
 import type { Action, Loader } from "@remix-run/data";

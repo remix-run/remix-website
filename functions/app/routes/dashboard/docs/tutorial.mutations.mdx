@@ -48,13 +48,13 @@ export default function NewGist() {
 }
 ```
 
-Notice we're using a plain HTML `<form/>` with an action that points to our `/gists` route, and then we name the inputs. When you submit this form, it will post to the gists data route. Before we do that, we need to handle it. Let's go create an "action".
+Notice we're using a plain HTML `<form/>` with an action that points to our `/gists` route, and then we name the inputs. When you submit this form, it will post to the gists data module. Before we do that, we need to handle it. Let's go create an "action".
 
 ## Data Actions
 
-You've seen a `loader`. Now you're going to create an `action`. Every data route can export a "reader" and a "writer". Just like React, you have `[state, setState] = React.useState()`, or `[state, dispatch] = React.useReducer()`. Readers and writers. Data and mutations. _Loaders and Actions_.
+You've seen a `loader`. Now you're going to create an `action`. Every data module can export a "reader" and a "writer". Just like React, you have `[state, setState] = React.useState()`, or `[state, dispatch] = React.useReducer()`. Readers and writers. Data and mutations. _Loaders and Actions_.
 
-Open up your data route at `data/gists.ts` and add an action:
+Open up your data module at `data/gists.ts` and add an action:
 
 ```ts
 // add the Action type
