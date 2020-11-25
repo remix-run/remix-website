@@ -259,17 +259,17 @@ function NewProject() {
 
 HOLD UP! If all you do is change your `<form>` to `<Form>`, you made the UX a little worse. If you don't have the time or drive to do the rest of the job here, leave it as `<form>` so that the browser handles pending UI state (spinner in the favicon of the tab, progress bar in the address bar, etc.) If you simply use `<Form>` without implementing pending UI, the user will have no idea anything is happening when they submit a form.
 
-Now let's add some pending UI so the user has a clue something happened when they submit. There's a hook called `usePendingForm`. When there is a pending form submit, Remix will give you the serialized version of the form as a <a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData">`FormData`</a> object. You'll be most interested in the <a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData/get">`formData.get()`</a> method..
+Now let's add some pending UI so the user has a clue something happened when they submit. There's a hook called `usePendingFormSubmit`. When there is a pending form submit, Remix will give you the serialized version of the form as a <a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData">`FormData`</a> object. You'll be most interested in the <a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData/get">`formData.get()`</a> method..
 
 ```jsx
-import { Form, useRouteData, usePendingForm } from "@remix-run/react";
+import { Form, useRouteData, usePendingFormSubmit } from "@remix-run/react";
 
 function NewProject() {
   let failedSubmit = useRouteData();
 
   // when the form is being processed on the server, this returns the same data
   // that was sent. When the submit is complete, this will return `undefined`.
-  let pendingForm = usePendingForm();
+  let pendingForm = usePendingFormSubmit();
 
   return (
     <Form method="post" action="/projects">
@@ -357,7 +357,7 @@ Now we can wrap our old error messages in this new fancy component, and even tur
 ```jsx
 function NewProject() {
   let failedSubmit = useRouteData();
-  let pendingForm = usePendingForm();
+  let pendingForm = usePendingFormSubmit();
 
   return (
     <form method="post" action="/projects">
@@ -417,7 +417,7 @@ Boom! Fancy UI!
 
 ## Optimistic UI, Pending Delete Indication, and more
 
-Something the previous example doesn't illustrate well is "optimistic UI". The `usePendingForm().data` object, as mentioned before, contains the values of the form that's being submit. You can use that to build an "optimistic UI" while the record is being created on the server.
+Something the previous example doesn't illustrate well is "optimistic UI". The `usePendingFormSubmit().data` object, as mentioned before, contains the values of the form that's being submit. You can use that to build an "optimistic UI" while the record is being created on the server.
 
 Consider a little todo list. You can optimistically show the new todo before it's even saved to the database.
 
@@ -430,7 +430,7 @@ Here's the component route:
 ```jsx
 export default function Todos() {
   let { todos } = useRouteData();
-  let pendingForm = usePendingForm();
+  let pendingForm = usePendingFormSubmit();
 
   let state = !pendingForm
     ? "idle"
@@ -545,7 +545,7 @@ Once that worked, we use JavaScript to submit the form by changing `<form>` to `
 
 Now that there was a stateful page with React, we added loading indicators and animation for the validation errors.
 
-From your components perspective, all that happend was the `usePendingForm` hook caused a state update when the form was submit, and then another state update when the data came back in `useRouteData()` and `usePendingForm()` no longer returned anything. Of course, a lot more happened inside of Remix, but as far as your component is concerned that's it. Just a couple state updates. This makes it really easy to dress up any user flow involving mutations.
+From your components perspective, all that happend was the `usePendingFormSubmit` hook caused a state update when the form was submit, and then another state update when the data came back in `useRouteData()` and `usePendingFormSubmit()` no longer returned anything. Of course, a lot more happened inside of Remix, but as far as your component is concerned that's it. Just a couple state updates. This makes it really easy to dress up any user flow involving mutations.
 
 ## See also
 
