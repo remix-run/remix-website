@@ -42,13 +42,15 @@ export default function NewGist() {
         <p>
           <button type="submit">Create Gist</button>
         </p>
-      </Form>
+      </form>
     </>
   );
 }
 ```
 
-Notice we're using a plain HTML `<form/>` with an action that points to our `/gists` route, and then we name the inputs. When you submit this form, it will post to the gists data module. Before we do that, we need to handle it. Let's go create an "action".
+Notice we're using a plain HTML `<form/>` with an action that points to our `/gists` route, and then we name the inputs. When you submit this form, the browser will post to the gists data module--no JavaScript required. We're going to make this work with a plain `<form>` first, and then we'll upgrade it to a Remix `<Form>` to show how to progressively enhance the form when you have the budget to create a really nice UX with JavaScript.
+
+Now let's go create an "action" to handle this form.
 
 ## Data Actions
 
@@ -107,9 +109,9 @@ Alright, fill out your form and give it a shot! You should see your new gist on 
 
 ## Upgrading to `<Form>` and pending UI states
 
-With a regular `<form>` we're letting the browser handle the post and the pending UI (the address bar/favicon animation). Remix has a `<Form>` component and hook to go along with it to let you progressively enhance your forms. If your sprint timeline is short, just use a `<form>` and move on with your life. If you've got the time to make a fancy loading page, you don't have to rewrite your code, just add some.
+With a regular `<form>` we're letting the browser handle the post and the pending UI (the address bar/favicon animation). Remix has a `<Form>` component and hook to go along with it to let you progressively enhance your forms. If your budget for this feature is short, just use a `<form>` and move on with your life. If you've got the time to make a fancy user experience, you don't have to rewrite your code with Remix, you can just add the fancy bits with `<Form>`.
 
-Let's update the code and add some loading indication. Note the new imports and the capital `<Form>`. Now Remix is going to handle the form submit clientside with `fetch` and you get access to the serialized form data in `usePendingFormSubmit()` to build that fancy UI.
+Let's update the code and add some loading indication. Note the new imports and the capital "F" `<Form>`. Now Remix is going to handle the form submit clientside with `fetch` and you get access to the serialized form data in `usePendingFormSubmit()` to build that fancy UI.
 
 ```tsx
 import React from "react";
@@ -187,7 +189,7 @@ To get the loading spinner to work, make a file at `app/routes/gists.new.css` an
 }
 ```
 
-That's it! As you can see, actions + `<Form>` are really powerful and really easy.
+That's it! As you can see, actions + `<Form>` are really powerful and really easy. And while it's really cool that it works without JavaScript, the point is not to accomodate "users without JavaScript". The point is that this programming model is very simple. Usually you have a whole bunch of other code to write to handle submiting a form with loading states and optimistic UI, but in remix it's simply using a capital F `<Form>` and a hook for the pending information, everythign else is the same.
 
 <div className="next-prev-links">
   <Link className="next" to="../deploying">

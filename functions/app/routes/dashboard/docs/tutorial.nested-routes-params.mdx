@@ -76,7 +76,7 @@ At the moment, this isn't a layout at all, it's just a list of the team. Let's r
 Make a file at `app/routes/team/index.tsx`.
 
 ```bash
-touch app/routes/team/index.js
+touch app/routes/team/index.tsx
 ```
 
 And drop this into it:
@@ -105,13 +105,13 @@ When a layout route's URL is matched exactly, the "index" route will render into
 
 ## Defining a child route with params
 
-In the Team component we linked to each member of the team, let's go add the route to display their information. Make a file named `routes/team/$member.js`. If you're doing it from the terminal you may need to escape the \$, but text editors usually handle this just fine.
+In the Team component we linked to each member of the team, let's go add the route to display their information. Make a file named `routes/team/$member.tsx`. If you're doing it from the terminal you may need to escape the \$, but text editors usually handle this just fine.
 
 ```bash
-touch app/routes/team/$member.js
+touch app/routes/team/$member.tsx
 
 # might have to escape it
-touch app/routes/team/\$member.js
+touch app/routes/team/\$member.tsx
 ```
 
 Now add this to the file:
