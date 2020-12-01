@@ -44,14 +44,6 @@ Sets a session value for use in subsequent requests:
 session.set("name", "ryan");
 ```
 
-## `session.get()`
-
-Accesses a session value from a previous request:
-
-```ts
-session.get("name", "ryan");
-```
-
 ## `session.flash()`
 
 Sets a session value that will be unset the first time it is read. After that, it's gone. Most useful for "flash messages" and server side form validation messages:
@@ -93,4 +85,29 @@ export default function App() {
     </html>
   );
 }
+```
+
+## `session.get()`
+
+Accesses a session value from a previous request:
+
+```ts
+session.get("name");
+```
+
+## `session.unset()`
+
+Removes a value from the session.
+
+```ts
+session.unset("name");
+```
+
+## `session.destroy()`
+
+Destroys a session object. This is usually useful when logging someone out of
+your site.
+
+```ts
+await session.destroy();
 ```
