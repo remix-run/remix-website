@@ -208,11 +208,6 @@ pre.line-numbers > code {
   padding-bottom: 50vh;
 }
 
-.prose h2 {
-  @apply mt-0;
-  @apply pt-20;
-}
-
 .prose code::before,
 .prose code::after {
   content: "";
