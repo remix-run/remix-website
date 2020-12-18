@@ -12,3 +12,15 @@ exports.addToDiscussRepo = async (uid, id) => {
   });
   await db.doc(`users/${uid}`).update({ githubLogin: githubUser.login });
 };
+
+exports.getRemixReleaseNotes = async () => {
+  let { data } = await octokit.request(
+    "GET /repos/{owner}/{repo}/contents/{path}",
+    {
+      owner: "remix-run",
+      repo: "remix",
+      path: "releases",
+    }
+  );
+  return data;
+};
