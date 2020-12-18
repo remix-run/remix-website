@@ -11,7 +11,7 @@ module.exports = async () => {
     { releases, changes },
     {
       headers: {
-        "cache-control": "max-age: 3600, s-maxage=0",
+        "cache-control": "max-age=3600, s-maxage=0",
       },
     }
   );

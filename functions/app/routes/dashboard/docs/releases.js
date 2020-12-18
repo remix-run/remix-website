@@ -2,6 +2,18 @@ import React from "react";
 import { Link } from "@remix-run/react";
 import { useRouteData } from "@remix-run/react";
 
+export function headers({ loaderHeaders }) {
+  return {
+    "cache-control": loaderHeaders.get("cache-control"),
+  };
+}
+
+export function meta() {
+  return {
+    title: `Remix Releases`,
+  };
+}
+
 export default function Releases() {
   let { releases, changes } = useRouteData();
   return (

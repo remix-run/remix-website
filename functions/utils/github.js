@@ -22,6 +22,7 @@ exports.getRemixVersionReleaseNotes = async (version) => {
   });
 
   return {
+    version,
     html: await processBase64Markdown(res.data.content),
   };
 };
