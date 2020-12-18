@@ -7,20 +7,18 @@ import { Link } from "react-router-dom";
 
 # @remix-run/data
 
-This package is to be included only by files located inside of your `data/` directory. You may want to reference the <Link to="fetch">Remix and Web Fetch API</Link> page as well.
+This package provides helpers for your route `loader` and `action`.
 
-The files in `data/routes` can define a loader, an action, or both. You'll use exports from "@remix-run/data" in these functions. For example, if you have a file like this, the `loader` will get called for "get" requests and the "action" will get called for everything else from a `<Form>` (like "post", "put", and "delete").
+For example, if you have a route like this, the `loader` will get called for "get" requests and the "action" will get called for everything else from a `<Form>` (like "post", "put", and "delete").
 
 ```ts
 import type { Loader, Action } from "@remix-run/data";
 
 // get requests
-let loader: Loader = () => {};
+export let loader: Loader = () => {};
 
 // everything else
-let action: Action = () => {};
-
-export { loader, action };
+export let action: Action = () => {};
 ```
 
 ## Loaders
@@ -28,7 +26,7 @@ export { loader, action };
 Remix passes some arguments to your loaders, then you return an object or a response.
 
 ```js
-let loader: Loader = ({ params, request, session, context }) => {
+export let loader: Loader = ({ params, request, session, context }) => {
   return objectOrResponse;
 };
 ```
@@ -39,7 +37,7 @@ Route params are passed to your loader. If you have a loader at `data/invoices/$
 
 ```js
 // if the user visits /invoices/123
-let loader: Loader = ({ params }) => {
+export let loader: Loader = ({ params }) => {
   params.invoiceId; // "123"
 };
 ```
@@ -52,7 +50,7 @@ You can also use this to read URL [URLSearchParams](https://developer.mozilla.or
 
 ```js
 // say the user is at /some/route?foo=bar
-let loader: Loader = ({ request }) => {
+export let loader: Loader = ({ request }) => {
   let url = new URL(request.url);
   let foo = url.searchParams.get("foo");
 };
@@ -86,7 +84,7 @@ And then your loader can access it.
 
 ```ts
 // data/some-loader.js
-let loader: Loader = ({ context }) => {
+export let loader: Loader = ({ context }) => {
   let { req } = context.req;
   // read a cookie
   req.cookies.session;
@@ -101,7 +99,7 @@ You can return plain JavaScript objects from your loaders that will be made avai
 // some fake database, not part of remix
 let db = require("../db");
 
-let loader: Loader = async () => {
+export let loader: Loader = async () => {
   let users = await db.query("users");
   return users;
 };
@@ -115,7 +113,7 @@ You can return Web API Response objects from your loaders. Here's a pretty basic
 // some fake database, not part of remix
 import db from "../db";
 
-let loader: Loader = async () => {
+export let loader: Loader = async () => {
   let users = await db.query("users");
 
   let body = JSON.stringify(users);
@@ -144,7 +142,7 @@ Let's say this is the loader for the route `/contracts/$name/$version` and it's 
 ```js
 import db from "../db";
 
-let loader: Loader = async ({ params }) => {
+export let loader: Loader = async ({ params }) => {
   // version 1 of the contract will never change
   let contract = await db.query(`
     select * from contracts
@@ -173,7 +171,7 @@ Loaders can return Responses with status codes. The initial HTML document will r
 This is very useful for "not found" data making it's way all the way down to the browser's UI with a real 404 status code, 500s, etc.
 
 ```js
-let loader: Loader = async ({ params }) => {
+export let loader: Loader = async ({ params }) => {
   let res = db.query("users").where("id", "=", "_why");
   if (res === null) {
     return new Response("not found", {
@@ -188,7 +186,7 @@ let loader: Loader = async ({ params }) => {
 This is also very useful for 500 error handling. You don't need to render a different page, instead, handle the error, send the data, and send a 500 response to the app.
 
 ```js
-let loader: Loader = async () => {
+export let loader: Loader = async () => {
   try {
     let stuff = await something();
   } catch (error) {
@@ -225,7 +223,7 @@ This is a shortcut for creating `application/json` responses.
 ```ts
 import { json } from "@remix-run/loader";
 
-let loader: Loader = () => {
+export let loader: Loader = () => {
   // basic
   return json({ any: "thing " });
 };
@@ -236,7 +234,7 @@ You can also pass a status code and headers:
 ```js
 import { json } from "@remix-run/loader";
 
-let loader: Loader = () => {
+export let loader: Loader = () => {
   return json(
     { not: "coffee" },
     {
@@ -261,7 +259,7 @@ They receive all the same arguments as loaders: `{ params, request, session, con
 import type { Action } from "@remix-run/data";
 import { redirect, request } from "@remix-run/data";
 
-let action: Action = async ({ params, request, session, context }) => {
+export let action: Action = async ({ params, request, session, context }) => {
   let body = parseFormBody(request);
   let newThing = await saveStuff(body);
   return redirect(`/stuff/${newThing.id}`);
@@ -308,7 +306,7 @@ If you are using checkboxes with the same name or `<select multiple>` (that's pr
 ```
 
 ```js
-let action: Action = async ({ request }) => {
+export let action: Action = async ({ request }) => {
   let body = parseFormBody(request);
 
   // 🚫 oops!

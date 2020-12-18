@@ -90,40 +90,46 @@ Let's start with our project form from earlier but make it usable:
 Let's say you've got the route `app/routes/projects/new.js` with this form in it:
 
 ```jsx
-<form method="post" action="/projects">
-  <p>
-    <label>
-      Name: <input name="name" type="text" />
-    </label>
-  </p>
-  <p>
-    <label>
-      Description:
-      <br />
-      <textarea name="description" />
-    </label>
-  </p>
-  <p>
-    <button type="submit">Create</button>
-  </p>
-</form>
+export default function NewProject() {
+  return (
+    <form method="post" action="/projects/new">
+      <p>
+        <label>
+          Name: <input name="name" type="text" />
+        </label>
+      </p>
+      <p>
+        <label>
+          Description:
+          <br />
+          <textarea name="description" />
+        </label>
+      </p>
+      <p>
+        <button type="submit">Create</button>
+      </p>
+    </form>
+  );
+}
 ```
 
-Now make a data module that will handle the action somewhere like `data/routes/projects/new.ts`. Any form submits that aren't "get" submits will call your data "action", any "get" requests (links, and the rare `<form method="get">`) will be handled by your "loader".
+Now add the route action. Any form submits that aren't "get" submits will call your data "action", any "get" requests (links, and the rare `<form method="get">`) will be handled by your "loader".
 
 ```js
 import type { Action } from "@remix-run/data";
 import { parseFormBody, redirect } from "@remix-run/data";
 
 // Note the "action" export name, this will handle our form POST
-let action: Action = async ({ request }) => {
+export let action: Action = async ({ request }) => {
   // this helper will parse the form body on the server
   let newProject = parseFormBody(request);
   let project = await createProject(newProject);
   return redirect(`/projects/${project.id}`);
 };
 
-export { action };
+export default function NewProject() {
+  // ... same as before
+}
 ```
 
 And that's it! Assuming `createProject` does what we want it to, that's the core functionality.
@@ -160,7 +166,7 @@ If there are validation errors, we want to go back to the form and display them.
 import type { Action, loader } from "@remix-run/data";
 import { parseFormBody, redirect } from "@remix-run/data";
 
-let action: Action = async ({ request, session }) => {
+export let action: Action = async ({ request, session }) => {
   let newProject = await parseFormBody(request);
   let [errors, project] = await createProject(newProject);
 
@@ -175,17 +181,15 @@ let action: Action = async ({ request, session }) => {
   return redirect(`/projects/${project.id}`);
 };
 
-let loader: Loader = () => {
+export let loader: Loader = () => {
   // we'll be back here in a minute
 };
-
-export { action, loader };
 ```
 
 After we redirect from the validation errors, we end up back in this same data module, only this time it's a "GET", so our `exports.loader` will get called. Let's read the session data and send it to the form:
 
 ```js
-let loader: Loader = ({ request, session }) => {
+export let loader: Loader = ({ request, session }) => {
   return session.get("failedSubmit") || null;
 };
 ```
@@ -195,11 +199,11 @@ Now we can display the validation errors and the previous values in our UI with 
 Notice how we add `defaultValue` to all of our inputs. Remember, this is still a `<form>`, so it's just normal browser/server stuff happening. We're getting the values back from the server so the user doesn't have to re-type what they had.
 
 ```jsx
-function NewProject() {
+export default function NewProject() {
   let failedSubmit = useRouteData();
 
   return (
-    <form method="post" action="/projects">
+    <form method="post" action="/projects/new">
       <p>
         <label>
           Name:{" "}
@@ -250,7 +254,7 @@ function NewProject() {
 
   return (
     // note the capital "F" <Form> now
-    <Form method="post" action="/projects">
+    <Form method="post" action="/projects/new">
       {/* ... */}
     </Form>
   );
@@ -263,6 +267,14 @@ Now let's add some pending UI so the user has a clue something happened when the
 
 ```jsx
 import { Form, useRouteData, usePendingFormSubmit } from "@remix-run/react";
+
+export let loader = () => {
+  // same as before
+};
+
+export let action = () => {
+  // same as before
+};
 
 function NewProject() {
   let failedSubmit = useRouteData();
@@ -428,6 +440,36 @@ Check out this sample Todo app component that uses all the tricks we've just lea
 Here's the component route:
 
 ```jsx
+import type { Action, Loader } from "@remix-run/data";
+import { json, parseFormBody, redirect } from "@remix-run/data";
+import { readTodos, createTodo, deleteTodo } from "../models/todo";
+
+export let loader: Loader = = async ({ request, session }) => {
+  let todos = await readTodos();
+  let error = session.get("error") || null;
+  return json({ todos, error });
+};
+
+export let action: Action = async ({ request }) => {
+  let body = await parseFormBody(request);
+  switch (request.method) {
+    case "post": {
+      let [_, error] = await createTodo(body.name);
+      if (error) {
+        session.flash("error", error);
+      }
+      return redirect("/todos");
+    }
+    case "delete": {
+      await deleteTodo(body.id);
+      return redirect("/todos");
+    }
+    default: {
+      throw new Error(`Unknown method! ${request.method}`);
+    }
+  }
+};
+
 export default function Todos() {
   let { todos } = useRouteData();
   let pendingForm = usePendingFormSubmit();
@@ -499,42 +541,6 @@ function DeleteButton({ id, disabled, ...props }) {
     </Form>
   );
 }
-```
-
-And the data module:
-
-```ts
-import type { Action, Loader } from "@remix-run/data";
-import { json, parseFormBody, redirect } from "@remix-run/data";
-import { readTodos, createTodo, deleteTodo } from "../models/todo";
-
-let loader: Loader = = async ({ request, session }) => {
-  let todos = await readTodos();
-  let error = session.get("error") || null;
-  return json({ todos, error });
-};
-
-let action: Action = async ({ request }) => {
-  let body = await parseFormBody(request);
-  switch (request.method) {
-    case "post": {
-      let [_, error] = await createTodo(body.name);
-      if (error) {
-        session.flash("error", error);
-      }
-      return redirect("/todos");
-    }
-    case "delete": {
-      await deleteTodo(body.id);
-      return redirect("/todos");
-    }
-    default: {
-      throw new Error(`Unknown method! ${request.method}`);
-    }
-  }
-};
-
-export { loader, action }
 ```
 
 ## Review

@@ -30,10 +30,8 @@ app.use(
 Then `@remix-run/express` will see that sessions are available, and send the session object to your loaders and actions:
 
 ```ts
-let loader = ({ session }) => {};
-let action = ({ session }) => {};
-
-export { loader, action };
+export let loader = ({ session }) => {};
+export let action = ({ session }) => {};
 ```
 
 ## `session.set()`
@@ -49,7 +47,7 @@ session.set("name", "ryan");
 Sets a session value that will be unset the first time it is read. After that, it's gone. Most useful for "flash messages" and server side form validation messages:
 
 ```ts
-let action = async ({ params, session }) => {
+export let action = async ({ params, session }) => {
   let deletedProject = await archiveProject(params.projectId);
   session.flash(
     "globalMessage",
@@ -60,8 +58,8 @@ let action = async ({ params, session }) => {
 ```
 
 ```ts
-// data/global.ts
-let loader = ({ session }) => {
+// app/global-data.ts
+export let loader = ({ session }) => {
   let message = session.get("globalMessage") || null;
   return { message };
 };

@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 It's time to get serious. We're going to be creating data here. If you've been doing web development for a decade or more, this is going to feel very familiar, if not, you're going to be blown away by how easy it used to be, and how easy it is again with Remix.
 
-## Get a GitHub Peresonal Access Token!
+## Get a GitHub Personal Access Token!
 
 This won't work without one. So go to your [GitHub Tokens](https://github.com/settings/tokens) page and create a new token. Make sure to check the box "Gists". That's all you'll need.
 
@@ -24,7 +24,7 @@ export default function NewGist() {
   return (
     <>
       <h2>New Gist!</h2>
-      <form method="post" action="/gists">
+      <form method="post">
         <p>
           <label>
             Gist file name:
@@ -54,29 +54,26 @@ Now let's go create an "action" to handle this form.
 
 ## Data Actions
 
-You've seen a `loader`. Now you're going to create an `action`. Every data module can export a "reader" and a "writer". Just like React, you have `[state, setState] = React.useState()`, or `[state, dispatch] = React.useReducer()`. Readers and writers. Data and mutations. _Loaders and Actions_.
+You've seen a `loader` already. Now you're going to create an `action`. Every route module can export a "reader" and a "writer". Just like React, you have `[state, setState] = React.useState()`, or `[state, dispatch] = React.useReducer()`. Readers and writers. Data and mutations. _Loaders and Actions_.
 
-Open up your data module at `data/gists.ts` and add an action:
+Go back to your new route and add this action:
 
 ```ts
-// add the Action type
-import type { Loader, Action } from "@remix-run/data";
+import React from "react";
 
-// add a couple new imports here
+// add a couple new imports
+import type { Action } from "@remix-run/data";
 import { parseFormBody, redirect } from "@remix-run/data";
 
-// Very important or else it won't work :)
-let token = "insert your github token here";
-
-// we already had this
-let loader: Loader = () => {
-  return fetch("https://api.github.com/gists");
-};
-
-// The new stuff!
+// Add the action
 let action: Action = async ({ request }) => {
-  // When the form request posts here, this helper turns it into a FormData or
-  // URLSearchParams
+  // Very important or else it won't work :)
+  let token = "insert your github token here";
+  // in a real world scenario you'd want this token to be an enviornment
+  // variable on your server, but as long as you only use it in this action, it
+  // won't get included in the browser bundle.
+
+  // When the form request posts here, this helper turns it into a FormData
   let body = await parseFormBody(request);
 
   // pull off what we need from the form, note they are named the same thing
@@ -102,7 +99,9 @@ let action: Action = async ({ request }) => {
   return redirect("/gists");
 };
 
-export { action, loader };
+export default function NewGist() {
+  // ... same as before
+}
 ```
 
 Alright, fill out your form and give it a shot! You should see your new gist on the `/gists` page!
@@ -115,14 +114,24 @@ Let's update the code and add some loading indication. Note the new imports and 
 
 ```tsx
 import React from "react";
+import type { Action } from "@remix-run/data";
+import { parseFormBody, redirect } from "@remix-run/data";
+
+// add another import here
 import { Form, usePendingFormSubmit } from "@remix-run/react";
 
+export let action: Action = async ({ request }) => {
+  // ... same as before
+};
+
 export default function NewGist() {
+  // add this
   let pendingForm = usePendingFormSubmit();
 
   return (
     <>
       <h2>New Gist!</h2>
+      /* and some pending UI */
       {pendingForm ? (
         <div>
           <p>
@@ -130,7 +139,8 @@ export default function NewGist() {
           </p>
         </div>
       ) : (
-        <Form method="post" action="/gists">
+        /* Note the capital Form, not form */
+        <Form method="post">
           <p>
             <label>
               Gist file name:
@@ -189,7 +199,7 @@ To get the loading spinner to work, make a file at `app/routes/gists.new.css` an
 }
 ```
 
-That's it! As you can see, actions + `<Form>` are really powerful and really easy. And while it's really cool that it works without JavaScript, the point is not to accomodate "users without JavaScript". The point is that this programming model is very simple. Usually you have a whole bunch of other code to write to handle submiting a form with loading states and optimistic UI, but in remix it's simply using a capital F `<Form>` and a hook for the pending information, everythign else is the same.
+That's it! As you can see, actions + `<Form>` are really powerful and really easy. While it's really cool that it works without JavaScript, the point is not to accomodate "users without JavaScript". The point is that this programming model is very simple. Usually you have a whole bunch of other code to write to handle submiting a form with loading states and optimistic UI, and error handling, but in Remix it's simply using a capital F `<Form>` and a hook for the pending information, everythign else is the same.
 
 <div className="next-prev-links">
   <Link className="next" to="../deploying">

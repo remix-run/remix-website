@@ -137,17 +137,3 @@ Let's look at a few URLs and what the component tree looks like.
 | /contact           | `App.js > routes/contact.js`                                |
 
 Nested files are nested layouts. Flat files are flat layouts.
-
-## Action Only Routes
-
-Your routes are defined primarily by the `app/routes` folder, but you can also have "action only" routes. These are files in `data/routes/some-action.ts` that only export an `action`. Since actions are required to redirect, it's possible to have a route at `/some-route` even if there is no UI there.
-
-```ts
-// data/routes/some-action.ts
-let action = () => {
-  // ...
-  redirect("/elsewhere");
-};
-
-export { action };
-```

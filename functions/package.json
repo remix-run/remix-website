@@ -37,6 +37,7 @@
     "firebase-functions": "^3.6.1",
     "firebaseui": "^4.6.1",
     "front-matter": "^4.0.2",
+    "gatsby-remark-prismjs": "^3.10.0",
     "history": "^5.0.0",
     "idtoken-verifier": "^2.1.0",
     "node-stream-string": "^1.0.1",

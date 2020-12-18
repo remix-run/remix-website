@@ -25,13 +25,9 @@ Any files in the app/routes directory will become routes in your application. Re
 
 The filename minus extension becomes the "route id". So a file at `routes/foo/$bar.js` has the route id of `routes/foo/$bar`. These route ids will show up in future APIs for preloading resources.
 
-## `data/routes/**/*.{js,ts}`
+## `app/global-data.{js,ts}`
 
-Any files in this location become the "data module" for the corresponding "route module" of the same name (minus extension). These files export a `loader` function (for "get" requests) and/or an `action` function (for "post", "put", "patch", and "delete" requests).
-
-## `data/global.{js,ts}`
-
-This data module is called on the initial server render and after data actions in the client. It's useful for getting data to the App component or global things like the user's language preference.
+This data module is called on the initial server render and after data actions in the client. It's useful for getting data to the App component or global things like the user's language preference or (public) server environment variables that the browser JavaScript needs to initialize (like Stripe public keys, etc).
 
 ## `app/routes/**/*.css`
 
@@ -65,4 +61,4 @@ Params can be nested routes, just create a folder with the `$` in it.
 
 <div className="text-red-500">Unstable API</div>
 
-When a route is not found, or an error is unhandled, we use these routes. We don't like this convention because "/404" should be a valid URL (maybe you're showing the best BBQ in Atlanta!). This is what we've got right now though. This will change soon.
+When a route is not found, or an error is unhandled, we use these routes. We don't like this convention because "/404" should be a valid URL (maybe you're showing the best BBQ in Atlanta!). This is what we've got right now though. This will change.
