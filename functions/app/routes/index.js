@@ -6,7 +6,6 @@ import * as CacheControl from "../utils/CacheControl";
 export function headers() {
   return {
     ...CacheControl.pub,
-    Vary: "cookie,accept-encoding",
     Link:
       "</buy>;rel=prefetch;as=document, </features>;rel=prefetch;as=document",
   };
@@ -84,9 +83,20 @@ export default function Index() {
       </div>
       <div className="text-gray-100 mx-auto max-w-7xl w-full pt-4 pb-20">
         <div className="px-4 sm:px-8 xl:pr-16 md:max-w-3xl md:m-auto">
-          <div className="max-w-md" onMouseMove={changeColors}>
+          <a id="logo" href="/logo" className="block max-w-md">
             <Logo colors={colors} className="w-full" />
-          </div>
+          </a>
+          <script
+            type="text/javascript"
+            dangerouslySetInnerHTML={{
+              __html: `
+                document.getElementById("logo").addEventListener("contextmenu", (event) => {
+                  event.preventDefault();
+                  window.location.assign("/logo");
+                });
+              `,
+            }}
+          />
           <h2 className="text-4xl tracking-tight leading-10 font-extrabold text-white sm:text-5xl sm:leading-none md:text-6xl">
             Build Better Websites
           </h2>
@@ -128,7 +138,7 @@ export default function Index() {
                 <div className="flex-shrink-0">
                   <img
                     className="h-12 w-12 rounded-full"
-                    src="/img/ryan.jpg"
+                    src="/img/ryan.webp"
                     alt=""
                   />
                 </div>
@@ -149,7 +159,7 @@ export default function Index() {
                 <div className="flex-shrink-0">
                   <img
                     className="h-12 w-12 rounded-full"
-                    src="/img/michael.jpg"
+                    src="/img/michael.webp"
                     alt=""
                   />
                 </div>
