@@ -1,4 +1,9 @@
 import React from "react";
+import * as CacheControl from "../utils/CacheControl";
+
+export function headers() {
+  return CacheControl.pub;
+}
 
 export default function Logo() {
   return (
