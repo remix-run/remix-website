@@ -1,3 +1,8 @@
+.prose h2 {
+  scroll-snap-margin-top: 3em;
+  scroll-margin-top: 3em;
+}
+
 .prose pre {
   @apply bg-gray-100;
   @apply text-gray-700;
