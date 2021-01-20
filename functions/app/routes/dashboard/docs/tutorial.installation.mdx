@@ -34,7 +34,7 @@ This project uses TypeScript, we encourage you to learn it if you haven't tried 
 
 ## Edit `.npmrc`
 
-In order for yarn/npm on your computer to be able to install Remix, you need to add your license key to the npmrc. You'll find it on <Link to="/dashboard">the dashboard</Link>.
+In order for npm (or yarn) to be able to install Remix, you need to add your license key to the `.npmrc` configuration. You'll find it on <Link to="/dashboard">the dashboard</Link>.
 
 It should look something like this:
 
@@ -45,7 +45,7 @@ It should look something like this:
 
 The first line allows npm to authenicate you with our npm registry when installing packages and the second line tells npm to use our registry whenever you are installing something with the npm scope `@remix-run`.
 
-You can also add those lines to your home directory npmrc at `~/.npmrc`, then all of your remix projects don't need their own npmrc.
+You can also add those lines to your home directory `~/.npmrc`, then all of your Remix projects don't need their own `.npmrc` file.
 
 ## Start the development server
 

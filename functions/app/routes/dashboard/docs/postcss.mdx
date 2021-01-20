@@ -28,10 +28,10 @@ These scripts run your `styles/` through PostCSS and output them into your `app/
 ```json
 {
   "scripts": {
-    "build": "yarn run css:build && remix build",
+    "build": "npm run css:build && remix build",
     "css:watch": "postcss styles --base styles --dir app/ --ext css -w",
     "css:build": "postcss styles --base styles --dir app/ --ext css --env production",
-    "start": "concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\""
+    "start": "concurrently \"npm run css:watch\" \"remix run\" \"firebase serve\""
   }
 }
 ```
