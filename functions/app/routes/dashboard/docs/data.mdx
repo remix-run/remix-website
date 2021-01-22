@@ -1,6 +1,6 @@
 ---
 meta:
-  title: "@remix-run/loader | Remix"
+  title: "@remix-run/data | Remix"
 ---
 
 import { Link } from "react-router-dom";
@@ -155,8 +155,8 @@ export let loader: Loader = async ({ params }) => {
   return new Response(body, {
     headers: {
       // cache that sucker for a year for everybody
-      "cache-control": "public, max-age=31540000000",
-      "content-type": "application/json",
+      "Cache-Control": "public, max-age=31540000000",
+      "Content-Type": "application/json",
     },
   });
 };
@@ -175,7 +175,7 @@ export let loader: Loader = async ({ params }) => {
   let res = db.query("users").where("id", "=", "_why");
   if (res === null) {
     return new Response("not found", {
-      status: 404,
+      status: 404
     });
   } else {
     return res;
@@ -194,8 +194,8 @@ export let loader: Loader = async () => {
     return new Response(body, {
       status: 500,
       headers: {
-        "content-type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
   }
 };
@@ -218,21 +218,28 @@ The initial server render will get a 500 for this page, and client side transiti
 
 ## `json`
 
-This is a shortcut for creating `application/json` responses.
+This is a shortcut for creating `application/json` responses. It assumes you are using `utf-8` encoding.
 
 ```ts
-import { json } from "@remix-run/loader";
+import { json } from "@remix-run/data";
 
 export let loader: Loader = () => {
-  // basic
-  return json({ any: "thing " });
+  // So you can write this:
+  return json({ any: "thing" });
+
+  // Instead of this:
+  return new Response(JSON.stringify({ any: "thing" }), {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
 };
 ```
 
 You can also pass a status code and headers:
 
-```js
-import { json } from "@remix-run/loader";
+```ts
+import { json } from "@remix-run/data";
 
 export let loader: Loader = () => {
   return json(
@@ -240,7 +247,7 @@ export let loader: Loader = () => {
     {
       status: 418,
       headers: {
-        "cache-control": "no-store",
+        "Cache-Control": "no-store",
       },
     }
   );
@@ -253,11 +260,11 @@ Data modules can export an `action` function that will be called when a `<Form>`
 
 See the <Link to="../mutations">Mutations Guide</Link> for more information.
 
-They receive all the same arguments as loaders: `{ params, request, session, context }`, however they must return a redirect
+They receive all the same arguments as loaders: `{ params, request, session, context }`, however they must return a redirect.
 
 ```ts
 import type { Action } from "@remix-run/data";
-import { redirect, request } from "@remix-run/data";
+import { redirect } from "@remix-run/data";
 
 export let action: Action = async ({ params, request, session, context }) => {
   let body = parseFormBody(request);
