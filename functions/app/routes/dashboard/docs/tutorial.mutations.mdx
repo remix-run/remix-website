@@ -63,7 +63,7 @@ import React from "react";
 
 // add a couple new imports
 import type { Action } from "@remix-run/data";
-import { parseFormBody, redirect } from "@remix-run/data";
+import { redirect } from "@remix-run/data";
 
 // Add the action
 let action: Action = async ({ request }) => {
@@ -74,7 +74,7 @@ let action: Action = async ({ request }) => {
   // won't get included in the browser bundle.
 
   // When the form request posts here, this helper turns it into a FormData
-  let body = await parseFormBody(request);
+  let body = new URLSearchParams(await request.text());
 
   // pull off what we need from the form, note they are named the same thing
   // as the `<input/>` in the form.
@@ -115,7 +115,7 @@ Let's update the code and add some loading indication. Note the new imports and 
 ```tsx
 import React from "react";
 import type { Action } from "@remix-run/data";
-import { parseFormBody, redirect } from "@remix-run/data";
+import { redirect } from "@remix-run/data";
 
 // add another import here
 import { Form, usePendingFormSubmit } from "@remix-run/react";

@@ -74,7 +74,7 @@ import { PrismaClient } from "@prisma/client";
 let prisma = new PrismaClient();
 
 export let action = async ({ params, request }) => {
-  let data = parseFormBody(request);
+  let data = new URLSearchParams(await request.text());
 
   let update = await prisma.post.update({
     where: { id: params.postId },
