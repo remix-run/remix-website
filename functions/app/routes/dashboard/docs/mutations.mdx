@@ -117,13 +117,15 @@ Now add the route action. Any form submits that aren't "get" submits will call y
 
 ```js
 import type { Action } from "@remix-run/data";
-import { parseFormBody, redirect } from "@remix-run/data";
+import { redirect } from "@remix-run/data";
 
 // Note the "action" export name, this will handle our form POST
 export let action: Action = async ({ request }) => {
-  // this helper will parse the form body on the server
-  let newProject = parseFormBody(request);
-  let project = await createProject(newProject);
+  let newProject = new URLSearchParams(await request.text());
+  let project = await createProject(
+    Object.fromEntries(newProject)
+  );
+
   return redirect(`/projects/${project.id}`);
 };
 
@@ -164,11 +166,13 @@ If there are validation errors, we want to go back to the form and display them.
 
 ```js
 import type { Action, loader } from "@remix-run/data";
-import { parseFormBody, redirect } from "@remix-run/data";
+import { redirect } from "@remix-run/data";
 
 export let action: Action = async ({ request, session }) => {
-  let newProject = await parseFormBody(request);
-  let [errors, project] = await createProject(newProject);
+  let newProject = new URLSearchParams(await request.text());
+  let [errors, project] = await createProject(
+    Object.fromEntries(newProject)
+  );
 
   if (errors) {
     // session.flash puts a value in the session that can only be read on the
@@ -441,7 +445,7 @@ Here's the component route:
 
 ```jsx
 import type { Action, Loader } from "@remix-run/data";
-import { json, parseFormBody, redirect } from "@remix-run/data";
+import { json, redirect } from "@remix-run/data";
 import { readTodos, createTodo, deleteTodo } from "../models/todo";
 
 export let loader: Loader = = async ({ request, session }) => {
@@ -451,7 +455,8 @@ export let loader: Loader = = async ({ request, session }) => {
 };
 
 export let action: Action = async ({ request }) => {
-  let body = await parseFormBody(request);
+  let body = new URLSearchParams(await request.text());
+
   switch (request.method) {
     case "post": {
       let [_, error] = await createTodo(body.name);
@@ -560,9 +565,6 @@ From your components perspective, all that happend was the `usePendingFormSubmit
   </Link>
 - <Link to="../react#usependinglocation">
     <code>usePendingLocation</code>
-  </Link>
-- <Link to="../data#parseformbody">
-    <code>parseFormBody</code>
   </Link>
 - <Link to="../sessions">
     <code>Sessions</code>
