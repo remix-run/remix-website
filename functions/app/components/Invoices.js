@@ -230,7 +230,7 @@ export function ExampleApp({ step, hideInvoice = false }) {
         }}
         transform="translate(15.068 10)"
       >
-        {"App.js"}
+        {"root.tsx"}
       </text>
       <text
         y={18}
@@ -243,7 +243,7 @@ export function ExampleApp({ step, hideInvoice = false }) {
         }}
         transform="translate(79.865 12.914)"
       >
-        {"> routes/invoices.js"}
+        {"> routes/invoices.tsx"}
       </text>
       <text
         y={18}
@@ -256,7 +256,7 @@ export function ExampleApp({ step, hideInvoice = false }) {
         }}
         transform="translate(276.475 13.348)"
       >
-        {"> $id.js"}
+        {"> $id.tsx"}
       </text>
       <text
         y={18}
@@ -269,7 +269,7 @@ export function ExampleApp({ step, hideInvoice = false }) {
         }}
         transform="translate(356.486 13.922)"
       >
-        {"> activity.js"}
+        {"> activity.tsx"}
       </text>
       <text
         y={18}

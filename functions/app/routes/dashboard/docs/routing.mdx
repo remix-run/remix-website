@@ -30,7 +30,7 @@ Nested folders create nested URLs. So if you put something in `routes/invoices/$
 
 <AnimatedExampleApp />
 
-The root layout of this UI is "App.js" and it matches up with the domain name in the URL. This isn't a route yet, this is just the layout, it renders all the time, wrapping the entire UI. It holds the top nav with the links to "Invoices | Projects | Customers".
+The root layout of this UI is "root.tsx" and it matches up with the domain name in the URL. This isn't a route yet, this is just the layout, it renders all the time, wrapping the entire UI. It holds the top nav with the links to "Invoices | Projects | Customers".
 
 The next segment of the URL, and our next layout, is a file in `routes/invoices.js`. This controls the invoices on the left and wraps the details/activity views. This is our first layout route that matched the URL.
 
@@ -125,15 +125,15 @@ Assuming the following `routes/` directory:
 
 Let's look at a few URLs and what the component tree looks like.
 
-| URL                | Component Heirarchy                                         |
-| ------------------ | ----------------------------------------------------------- |
-| /                  | `App.js > routes/index.js`                                  |
-| /invoices          | `App.js > routes/invoices.js > routes/invoices/index.js`    |
-| /invoices/late     | `App.js > routes/invoices.js > routes/invoices/late.js`     |
-| /invoices/123      | `App.js > routes/invoices.js > routes/invoices/$id.js`      |
-| /invoices/123/edit | `App.js > routes/invoices.js > routes/invoices/$id.edit.js` |
-| /invoices/no/match | `App.js > routes/404.js`                                    |
-| /invoices/new      | `App.js > routes/invoices.new.js`                           |
-| /contact           | `App.js > routes/contact.js`                                |
+| URL                | Component Heirarchy                                             |
+| ------------------ | --------------------------------------------------------------- |
+| /                  | `root.tsx > routes/index.tsx`                                   |
+| /invoices          | `root.tsx > routes/invoices.tsx > routes/invoices/index.tsx`    |
+| /invoices/late     | `root.tsx > routes/invoices.tsx > routes/invoices/late.tsx`     |
+| /invoices/123      | `root.tsx > routes/invoices.tsx > routes/invoices/$id.tsx`      |
+| /invoices/123/edit | `root.tsx > routes/invoices.tsx > routes/invoices/$id.edit.tsx` |
+| /invoices/no/match | `root.tsx > routes/404.tsx`                                     |
+| /invoices/new      | `root.tsx > routes/invoices.new.tsx`                            |
+| /contact           | `root.tsx > routes/contact.tsx`                                 |
 
 Nested files are nested layouts. Flat files are flat layouts.

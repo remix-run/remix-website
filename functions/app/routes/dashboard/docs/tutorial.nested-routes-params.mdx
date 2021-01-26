@@ -155,7 +155,7 @@ Open up the network pane in the devtools and watch how the cache headers tell th
 
 Also note that Remix is only fetching the data for the changed portion of the UI, the member. It doesn't need to refetch data from the `team.tsx`, because that part of the UI doesn't change. Remix has unique understanding of your app and can make optimizations like this thanks to nested routes.
 
-You can watch this behavior by adding a `<Link to="/team">Team</Link>` in your "app/App.js" file, visiting http://localhost:3000, opening the network tab, and watching the data requests come through.
+You can watch this behavior by adding a `<Link to="/team">Team</Link>` in your "app/root.tsx" file, visiting http://localhost:3000, opening the network tab, and watching the data requests come through.
 
 ## Homework
 

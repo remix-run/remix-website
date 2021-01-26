@@ -9,9 +9,9 @@ import { Link } from "react-router-dom";
 
 Do you ever look at a page on your site and think "why are we loading all of this JavaScript? There's nothing on this page but links!" This may seem a little odd for a JavaScript framework, but you can easily turn off JavaScript with a boolean but your data loading and links will still all work.
 
-## Editing App.js to Disable JavaScript
+## Editing root.tsx to Disable JavaScript
 
-In the near future we'll have a more built in way to do this, but this works pretty well already. Edit your App.js file (or whichever file you render the `<Scripts/>` tag in) and add something like this:
+In the near future we'll have a more built in way to do this, but this works pretty well already. Edit your `root.tsx` file (or whichever file you render the `<Scripts/>` tag in) and add something like this:
 
 ```jsx
 import React from "react";

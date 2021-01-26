@@ -253,7 +253,7 @@ Let's use progressive enhancement to make this UX a bit more fancy. By changing 
 ```jsx
 import { Form, useRouteData } from "@remix-run/react";
 
-function NewProject() {
+export default function NewProject() {
   let failedSubmit = useRouteData();
 
   return (
@@ -272,15 +272,15 @@ Now let's add some pending UI so the user has a clue something happened when the
 ```jsx
 import { Form, useRouteData, usePendingFormSubmit } from "@remix-run/react";
 
-export let loader = () => {
+export let loader: Loader = () => {
   // same as before
 };
 
-export let action = () => {
+export let action: Action = () => {
   // same as before
 };
 
-function NewProject() {
+export default function NewProject() {
   let failedSubmit = useRouteData();
 
   // when the form is being processed on the server, this returns the same data

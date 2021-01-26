@@ -85,9 +85,10 @@ So back to our question, why didn't we have to await the fetch and then await th
 
 You don't have to built up a full response, loaders can return plain objects, you just lose control over your headers this way:
 
-```js
-const db = require("../db");
-module.exports = async () => {
+```ts
+import db from "../db";
+
+export let loader: Loader = () => {
   let arrayOfStuff = await db.query(someQuery);
   return arrayOfStuff();
 };
@@ -96,9 +97,9 @@ module.exports = async () => {
 Remix also has a json helper so you can set headers without having to worry about the content type and stringifying the body, etc. This is likely your bread and butter.
 
 ```js
-const { json } = require("@remix-run/loader");
+import { json } from "@remix-run/loader";
 
-module.exports = async () => {
+export let loader: Loader = () => {
   let arrayOfStuff = await db.query(someQuery);
 
   return json(arrayOfStuff, {
