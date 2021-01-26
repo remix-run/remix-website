@@ -1,11 +1,11 @@
 import React from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 
-const VERSION = "0.8.x";
+const VERSION = "0.10.x";
 
 export function headers() {
   return {
-    "cache-control": "max-age=600"
+    "cache-control": "max-age=600",
   };
 }
 
@@ -14,8 +14,8 @@ let sections = [
     "Development",
     [
       ["Releases", "releases", { new: true }],
-      ["Roadmap", "roadmap", { disabled: true }]
-    ]
+      ["Roadmap", "roadmap", { disabled: true }],
+    ],
   ],
   [
     "Quickstart Tutorial",
@@ -26,8 +26,8 @@ let sections = [
       ["Nested Routes & Params", "tutorial/nested-routes-params"],
       ["Styling", "tutorial/styling"],
       ["Data Mutations", "tutorial/mutations"],
-      ["Deploying", "tutorial/deploying"]
-    ]
+      ["Deploying", "tutorial/deploying"],
+    ],
   ],
   [
     "API",
@@ -37,11 +37,12 @@ let sections = [
       ["Server Entry Module", "server-entry-module"],
       ["Browser Entry Module", "browser-entry-module"],
       ["Route Module", "route-module"],
+      ["Importing Images", "images", { new: true }],
       ["Web Fetch API", "fetch"],
       ["@remix-run/react", "react"],
       ["@remix-run/data", "data"],
-      ["React Router v6", "react-router"]
-    ]
+      ["React Router v6", "react-router"],
+    ],
   ],
   [
     "Guides",
@@ -49,14 +50,14 @@ let sections = [
       ["CDN Caching", "cdn-caching", { disabled: true }],
       ["Disabling JavaScript", "disabling-javascript"],
       ["Error Handling", "error-handling", { disabled: true }],
-      ["Data Mutations", "mutations", { new: true }],
+      ["Data Mutations", "mutations"],
       ["MDX", "mdx"],
       ["Not Found Handling", "not-found", { disabled: true }],
       ["PostCSS", "postcss"],
       ["Redirects", "redirects", { disabled: true }],
       ["Sessions", "sessions", { new: true }],
-      ["Routing", "routing"]
-    ]
+      ["Routing", "routing"],
+    ],
   ],
   [
     "Deploying",
@@ -66,9 +67,9 @@ let sections = [
       ["Express", "deploy/express", { disabled: true }],
       ["Firebase", "deploy/firebase", { disabled: true }],
       ["Netlify", "deploy/netlify", { disabled: true }],
-      ["Vercel", "deploy/vercel", { disabled: true }]
-    ]
-  ]
+      ["Vercel", "deploy/vercel", { disabled: true }],
+    ],
+  ],
 ];
 
 export default function Docs() {
