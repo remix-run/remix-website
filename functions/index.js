@@ -23,6 +23,7 @@ app.use(cookieParser());
 app.post("/api/createCheckout", require("./api/createCheckout"));
 app.post("/api/subscribeEmail", require("./api/subscribeEmail"));
 app.post("/api/createUserSession", require("./api/createUserSession"));
+app.get("/api/playground", require("./api/playground"));
 
 app.get(
   "*",
