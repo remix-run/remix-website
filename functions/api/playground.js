@@ -1,6 +1,6 @@
-const { db } = require("./utils/firebase");
-const { stripe } = require("./utils/stripe");
-const { createOwnerToken } = require("./utils/tokens");
+const { db } = require("../utils/firebase");
+const { stripe } = require("../utils/stripe");
+const { createOwnerToken } = require("../utils/tokens");
 
 module.exports = async (req, res) => {
   // let uid = "6j54Ub3sW3aGiqQqUpxAhpcCaSz1";

@@ -3,6 +3,10 @@
   scroll-margin-top: 3em;
 }
 
+.prose blockquote {
+  font-weight: normal;
+}
+
 .prose pre {
   @apply bg-gray-100;
   @apply text-gray-700;

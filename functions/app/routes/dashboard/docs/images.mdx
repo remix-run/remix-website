@@ -1,0 +1,160 @@
+---
+meta:
+  title: Importing Images | Remix
+---
+
+import { Link } from "react-router-dom";
+
+# Importing Images
+
+You can import and process images with the `img:` import syntax.
+
+```tsx
+import guitar from "img:./guitar.jpg?placeholder";
+
+export default function Guitar() {
+  return (
+    <img
+      alt="Guitar"
+      src={guitar.src}
+      width={guitar.width}
+      height={guitar.height}
+      style={{
+        backgroundImage: `url(${guitar.placeholder})`,
+        backgroundSize: "cover",
+      }}
+    />
+  );
+}
+```
+
+The imported module has the following shape:
+
+```tsx
+interface ImageAsset {
+  /**
+   * The url of the image. When using srcset, it's the last size defined.
+   */
+  src: string;
+
+  /**
+   * The width of the image. When using srcset, it's the last size defined.
+   */
+  width: number;
+
+  /**
+   * The height of the image. When using srcset, it's the last size defined.
+   */
+  height: number;
+
+  /**
+   * The string to be passed do `<img srcSet />` for responsive images. Sizes
+   * defined by the asset import `srcset=...sizes` query string param, like
+   * `./file.jpg?srcset=720,1080`.
+   */
+  srcset: string;
+
+  /**
+   * Base64 string that can be inlined for immediate render and scaled up. Typically set as the background
+   * of an image. Defaults to 1x1 transparent gif.
+   */
+  placeholder: string;
+
+  /**
+   * The image format.
+   */
+  format: "jpeg" | "png" | "webp" | "avif";
+}
+```
+
+You can only import the following formats: "jpeg", "png", "webp", and "avif".
+
+## URL Search Params
+
+Using a URL search params, you can resize, change the quality, generate a placeholder, and generate a source set for responsive images.
+
+```tsx
+// - drop quality to 25
+// - convert to AVIF
+// - generate base64 placeholder
+// - resize to 500
+import guitar from "img:./guitar.jpg?quality=50&format=avif&placeholder&width=500";
+
+// - 80 quality
+// - keep the same format
+// - generate responsive image at 720, 1080, 2048 widths
+// - generate base64 placeholder
+import guitar2 from "img:./guitar.jpg?quality=80&srcset=720,1080,2048&placeholder";
+```
+
+- `quality`: Defaults to `50`. Changes the quality of the image, smaller quality leads to smaller file size but worse quality.
+- `format`: Defaults to the format of the source image. Can convert to `jpeg`, `avif`, `webp`, and `png`.
+- `srcset`: Comma separated widths for responsive images. If defined, multiple files will be generated and a `srcset` string is returned on the module to pass directly to `<img srcSet />`. If `srcset` is undefined, the generated string will contain the main image (you can always plan on having a value here for `<Image/>` abstractions).
+- `width`: The width to resize the image to. Ignored when using `srcset`. If only width is defined, aspect ratio is preserved.
+- `height`: The height to resize the image to. Ignored when using `srcset`. If only height is defined, aspect ratio is preserved.
+- `width` + `height`: If both are defined, the image fit strategy is "cover" (no background added, image is zoomed to fill the space completely).
+
+## Examples
+
+```tsx
+import guitar from "img:./guitar.jpg?quality=50&format=avif&placeholder&width=500";
+import guitar2 from "img:./guitar.jpg?quality=80&format=jpg&srcset=720,1080,2048&placeholder";
+
+export default function Guitar() {
+  return (
+    <div>
+      <p>Fixed Image</p>
+      <img
+        alt="Guitar"
+        src={guitar.src}
+        style={{
+          backgroundImage: `url(${guitar.placeholder})`,
+          backgroundSize: "cover",
+        }}
+        width={guitar.width / 2}
+        height={guitar.height / 2}
+      />
+
+      <p>Responsive</p>
+      <img
+        alt="Guitar"
+        src={guitar2.src}
+        srcSet={guitar2.srcset}
+        style={{
+          backgroundImage: `url(${guitar2.placeholder})`,
+          backgroundSize: "cover",
+        }}
+      />
+    </div>
+  );
+}
+```
+
+## Notes
+
+### Build Performance
+
+Remix does its best to only process images once during development. The assets are saved to `remix.config.browserBuildDirectory` with all other assets. Remix also uses this as a cache. It will first check `config.browserBuildDirectory` for the image before generating a new one. Additionally, Remix attempts to clean up stale images that you no longer import between development rebuilds.
+
+### Not Intended for Content
+
+While this is a convenient and powerful API, **we caution you about overusing it**. We intend this feature to be used for things like marketing and landing pages, not content. If you try to use this for content (hundreds of blog posts, a knowledge base, etc.) your build times will be unacceptable no matter how smart we make Remix: it's a losing game.
+
+If you need images for content, we recommend using an image service instead of `img:` imports. Here are a few to get you started:
+
+- [Cloudinary](https://cloudinary.com/)
+- [Akamai Image Manager](https://www.akamai.com/us/en/products/performance/image-and-video-manager.jsp)
+- [imgIX](https://www.imgix.com/)
+- [Image Kit](https://imagekit.io/)
+
+### Why `img:` Instead of File Extensions?
+
+Why do we use the `img:*` syntax instead of implicitly using the file extension like `*.jpg`?
+
+First, TypeScript module declaration constraints don't work with an extension and a query string. We think the type hints are more important than removing the extra syntax.
+
+Second, [TC39 Import Assertions](https://github.com/tc39/proposal-import-assertions) are on the horizon (Stage 3 at the time of this doc), and they have a great explanation for their API that applies to ours as well:
+
+> Some developers have the intuition that the file extension could be used to determine the module type, as it is in many existing non-standard module systems. However, it's a deep web architectural principle that the suffix of the URL (which you might think of as the "file extension" outside of the web) does not lead to semantics of how the page is interpreted. In practice, on the web, there is a widespread mismatch between file extension and the HTTP Content Type header. All of this sums up to it being infeasible to depend on file extensions/suffixes included in the module specifier to be the basis for this checking.
+
+One day we hope to remove our special `img:` syntax and be able to use import assertions instead.
