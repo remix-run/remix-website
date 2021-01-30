@@ -115,7 +115,7 @@ export default function NewProject() {
 
 Now add the route action. Any form submits that aren't "get" submits will call your data "action", any "get" requests (links, and the rare `<form method="get">`) will be handled by your "loader".
 
-```js
+```ts
 import type { Action } from "@remix-run/data";
 import { redirect } from "@remix-run/data";
 
