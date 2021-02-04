@@ -68,9 +68,9 @@ export { getSession, commitSession, destroySession };
 
 ## Using sessions
 
-Use the session storage object to get access sessions in your `loader` and/or `action` function (see <Link to="../mutations">mutations</Link>).
+Use the session storage object to get access sessions in your `loader` and `action` functions (see <Link to="../mutations">mutations</Link>).
 
-The `getSession()` function retrieves the current session from the incoming request's `Cookie` header, and `commitSession()`/`destroySession()` provide the `Set-Cookie` header for the outgoing response.
+The input/output to a session storage object are HTTP cookies. `getSession()` retrieves the current session from the incoming request's `Cookie` header, and `commitSession()`/`destroySession()` provide the `Set-Cookie` header for the outgoing response.
 
 A simple login form might look something like this:
 
@@ -78,6 +78,7 @@ A simple login form might look something like this:
 // app/routes/login.tsx
 import type { Loader, Action } from "@remix-run/data";
 import { json, redirect } from "@remix-run/data";
+
 import { getSession, commitSession } from "../sessionStorage";
 
 export let loader: Loader = async ({ request }) => {
@@ -153,7 +154,7 @@ export default Login() {
 
 ## Creating a custom session storage
 
-Remix makes it easy to store sessions in your own database if needed. The `createSessionStorage()` API requires a `cookie` (or options for creating a cookie, see <Link to="../cookies">cookies</Link>) and a set of CRUD (create, read, update, delete) methods for managing the session data. The cookie is used to persist the session ID.
+Remix makes it easy to store sessions in your own database if needed. The `createSessionStorage()` API requires a `cookie` (or options for creating a cookie, see <Link to="../cookies">cookies</Link>) and a set of create, read, update, and delete (CRUD) methods for managing the session data. The cookie is used to persist the session ID.
 
 The following example shows how you could do this using a generic database client:
 

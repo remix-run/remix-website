@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 A [cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies) is a small piece of information that your server sends someone in a HTTP response that their browser will send back on subsequent requests. This technique is a fundamental building block of many interactive websites that adds state so you can build authentication (see <Link to="../sessions">sessions</Link>), shopping carts, user preferences, and many other features that require remembering who is "logged in".
 
-Remix' `Cookie` interface provides a logical container for cookies that may be reused across many requests and responses.
+Remix's `Cookie` interface provides a logical, reusable container for cookie metadata.
 
 ## Using cookies
 
@@ -20,17 +20,17 @@ Let's say you have a banner on your e-commerce site that prompts users to check 
 First, create a cookie:
 
 ```ts
-// app/userPrefs.ts
+// app/cookies.ts
 import { createCookie } from "@remix-run/data";
 
-let cookie = createCookie("user-prefs", {
+export let userPrefs = createCookie("user-prefs", {
   maxAge: 604_800 // one week 
 });
-
-export { cookie }
 ```
 
 Then, you can `import` the cookie and use it in your `loader` and/or `action`. The `loader` in this case just checks the value of the user preference so you can use it in your component for deciding whether or not to render the banner. When the button is clicked, the `<form>` calls the `action` on the server and reloads the page without the banner.
+
+**Note:** We recommend (for now) that you create all the cookies your app needs in `app/cookies.ts` and `import` them into your route modules. This allows the Remix compiler to correctly prune these imports out of the browser build where they are not needed. We hope to eventually remove this caveat.
 
 ```tsx
 // app/routes/index.tsx
@@ -39,28 +39,28 @@ import { useRouteData } from "@remix-run/react";
 import type { Action, Loader } from "@remix-run/data";
 import { json, redirect } from "@remix-run/data";
 
-import { cookie } from "../userPrefs";
+import { userPrefs } from "../cookies";
 
 export let loader: Loader = ({ request }) => {
-  let userPrefs = cookie.parse(request.headers.get("Cookie"));
-  let showBanner = userPrefs != null && "showBanner" in userPrefs
-    ? userPrefs.showBanner
+  let value = userPrefs.parse(request.headers.get("Cookie"));
+  let showBanner = value != null && "showBanner" in value
+    ? value.showBanner
     : true;
 
   return { showBanner };
 };
 
 export let action: Action = ({ request }) => {
-  let userPrefs = cookie.parse(request.headers.get("Cookie")) || {};
+  let value = userPrefs.parse(request.headers.get("Cookie")) || {};
   let bodyParams = new URLSearchParams(await request.text());
 
   if (bodyParams.get("bannerVisibility") === "hidden") {
-    userPrefs.showBanner = false;
+    value.showBanner = false;
   }
 
   return redirect("/", {
     headers: {
-      "Set-Cookie": cookie.serialize(userPrefs)
+      "Set-Cookie": userPrefs.serialize(value)
     }
   });
 };
@@ -113,7 +113,7 @@ Please read [more info about these attributes](https://developer.mozilla.org/en-
 
 ## Signing cookies
 
-It is possible to sign a cookie to automatically verify its contents when it is received in a new incoming request. Since it's relatively easy to spoof HTTP headers, this is a good idea for any information that you do not want someone to be able to fake, like authentication information (see <Link to="../sessions">sessions</Link>).
+It is possible to sign a cookie to automatically verify its contents when it is received. Since it's relatively easy to spoof HTTP headers, this is a good idea for any information that you do not want someone to be able to fake, like authentication information (see <Link to="../sessions">sessions</Link>).
 
 To sign a cookie, provide one or more `secrets` when you first create the cookie:
 
@@ -123,12 +123,29 @@ let cookie = createCookie("user-prefs", {
 });
 ```
 
+Cookies that have one or more `secrets` will be stored and verified in a way that ensures the cookie's integrity.
+
 Secrets may be rotated by adding new secrets to the front of the `secrets` array. Cookies that have been signed with old secrets will still be decoded successfully in `cookie.parse()`, and the newest secret (the first one in the array) will always be used to sign outgoing cookies created in `cookie.serialize()`.
 
 ```ts
+// app/userPrefs.ts
 let cookie = createCookie("user-prefs", {
   secrets: ["n3wsecr3t", "olds3cret"]
 });
+
+// in your route module...
+function loader({ request }) {
+  let oldCookie request.headers.get("Cookie");
+  // oldCookie may have been signed with "olds3cret", but still parses ok
+  let value = cookie.parse(oldCookie);
+
+  new Response("...", {
+    headers: {
+      // Set-Cookie is signed with "n3wsecr3t"
+      "Set-Cookie": cookie.serialize(value)
+    }
+  })
+}
 ```
 
 ## Cookie API
