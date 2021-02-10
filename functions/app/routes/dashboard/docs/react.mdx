@@ -7,13 +7,13 @@ meta:
 
 This module is only to be used inside your app/ folder, not in your loaders/. It contains module for use inside of the React layer.
 
-## `Meta`, `Styles`, `Routes`, `Script`
+## `Meta`, `Links`, `Routes`, `Script`
 
-These components are to be used once inside of your global application layout. They include everything Remix figured out or built in order for your page to render properly.
+These components are to be used once inside of your root route (`root.tsx`). They include everything Remix figured out or built in order for your page to render properly.
 
 ```jsx
 import React from "react";
-import { Meta, Scripts, Styles, Routes } from "@remix-run/react";
+import { Meta, Scripts, Links, Routes } from "@remix-run/react";
 
 export default function App() {
   return (
@@ -21,34 +21,7 @@ export default function App() {
       <head>
         <meta charSet="utf-8" />
         <Meta />
-        <Styles />
-      </head>
-      <body>
-        <Routes />
-        <Scripts />
-      </body>
-    </html>
-  );
-}
-```
-
-## `useGlobalData`
-
-This hook returns the data loaded from your `loaders/global.js` file. It is not intended to be a "global data store", it's simply a root loader for any serverside information you need to fetch for your primary layout.
-
-```jsx
-import React from "react";
-import { useGlobalData, Meta, Scripts, Styles, Routes } from "@remix-run/react";
-
-export default function App() {
-  let globalData = useGlobalData();
-
-  return (
-    <html lang={globalData.lang}>
-      <head>
-        <meta charSet="utf-8" />
-        <Meta />
-        <Styles />
+        <Links />
       </head>
       <body>
         <Routes />
@@ -121,7 +94,7 @@ import {
   usePendingLocation,
   Meta,
   Scripts,
-  Styles,
+  Links,
   Routes,
 } from "@remix-run/react";
 
@@ -133,7 +106,7 @@ export default function App() {
       <head>
         <meta charSet="utf-8" />
         <Meta />
-        <Styles />
+        <Links />
       </head>
       <body
         style={{

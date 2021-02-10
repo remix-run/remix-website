@@ -15,7 +15,7 @@ In the near future we'll have a more built in way to do this, but this works pre
 
 ```jsx
 import React from "react";
-import { Meta, Scripts, Styles, Routes } from "@remix-run/react";
+import { Meta, Scripts, Links, Routes } from "@remix-run/react";
 import { useLocation } from "react-router-dom";
 
 // set up the urls you don't want to serve JavaScript at all
@@ -32,7 +32,7 @@ export default function App() {
       <head>
         <meta charSet="utf-8" />
         <Meta />
-        <Styles />
+        <Links />
       </head>
       <body className="bg-white text-gray-900">
         <Routes />

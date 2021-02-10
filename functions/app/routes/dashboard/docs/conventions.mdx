@@ -29,14 +29,6 @@ Any files in the app/routes directory will become routes in your application. Re
 
 The filename minus extension becomes the "route id". So a file at `routes/foo/$bar.tsx` has the route id of `routes/foo/$bar`. These route ids will show up in future APIs for preloading resources.
 
-## app/routes/\*_/_.css
-
-CSS files with the same filename (minus extension) as a route will be loaded and unloaded with the route. CSS is always loaded, but not applied, before route transitions complete. They are always inserted into the document in the order of the route nesting. Finally, they are removed when that route no longer matches the URL (and isn't rendered).
-
-## app/global.css
-
-This file is included on every page as the first CSS link tag.
-
 ## Dots in Route Filesnames
 
 Adding a `.` in a route file will create a nested URL, but not a nested layout. Flat files are flat layouts, nested files are nested layouts. The `.` allows you to create nested URLs without needing to create a bunch of layouts.

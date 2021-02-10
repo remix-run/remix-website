@@ -42,7 +42,7 @@ And finally, our final route, `routes/invoices/$id/activity.js`. Sometime we cal
 
 Because we know all of your routes up front, and we can match them before we render anything--we now know the most important components that are about to render before we render. This gives us fine-grained control over style, data, and module loading that you just can't get without nested routes.
 
-In fact, when the user clicks on "Details" and "Activity", the only data we fetch is the data for changed portion of the app, rather than for every parent layout above it. It also gives us powerful control over which stylesheets to load and unload, which is a whole new set of tradeoffs for css that we find to be excellent.
+In fact, when the user clicks on "Details" and "Activity", the only data we fetch is the data for changed portion of the app, rather than for every parent layout above it. It also gives us powerful control over which assets to load and unload with the route module `links` export.
 
 For years we've been trying to move all of this kind of thing to the components, but that gets difficult because you don't know what you're going to render until you render it! How can you preload data? How can you know which styles to apply, or which modules to start loading? Nested routes mapping to nested layouts gives us a cheat code. We mostly know what is about to be rendered, so we coupled your async requirements there. When the location changes, we can fetch the modules, styles, and data in parallel before the update (and before the server render, gotta get those data-driven meta tags!).
 
