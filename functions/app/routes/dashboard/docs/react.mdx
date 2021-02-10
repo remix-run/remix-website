@@ -7,13 +7,14 @@ meta:
 
 This module is only to be used inside your app/ folder, not in your loaders/. It contains module for use inside of the React layer.
 
-## `Meta`, `Links`, `Routes`, `Script`
+## `Meta`, `Links`, `Outlet`, `Scripts`
 
 These components are to be used once inside of your root route (`root.tsx`). They include everything Remix figured out or built in order for your page to render properly.
 
 ```jsx
 import React from "react";
-import { Meta, Scripts, Links, Routes } from "@remix-run/react";
+import { Meta, Links, Scripts } from "@remix-run/react";
+import { Outlet } from "react-router-dom";
 
 export default function App() {
   return (
@@ -24,7 +25,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Routes />
+        <Outlet />
         <Scripts />
       </body>
     </html>
@@ -93,10 +94,10 @@ import React from "react";
 import {
   usePendingLocation,
   Meta,
-  Scripts,
   Links,
-  Routes,
+  Scripts
 } from "@remix-run/react";
+import { Outlet } from "react-router-dom";
 
 export default function App() {
   let pendingLocation = usePendingLocation();
@@ -115,7 +116,7 @@ export default function App() {
           transitionDelay: "300ms",
         }}
       >
-        <Routes />
+        <Outlet />
         <Scripts />
       </body>
     </html>

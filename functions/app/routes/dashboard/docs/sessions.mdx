@@ -249,6 +249,9 @@ export let action: Action = async ({ request, params }) => {
 
 ```ts
 // app/root.tsx
+import React from "react";
+import { Meta, Links, Scripts } from "@remix-run/react";
+import { Outlet } from "react-router-dom";
 import type { Loader } from "@remix-run/data";
 import { json } from "@remix-run/data";
 import { getSession, commitSession } from "./sessionStorage";
@@ -256,6 +259,7 @@ import { getSession, commitSession } from "./sessionStorage";
 export let loader: Loader = async ({ request }) => {
   let session = await getSession(request.headers.get("Cookie"));
   let message = session.get("globalMessage") || null;
+
   return json({ message }, {
     headers: {
       // When working with flash messages, it's important to remember
@@ -268,14 +272,15 @@ export let loader: Loader = async ({ request }) => {
 
 export default function App() {
   let { message } = useRouteData();
+
   return (
     <html>
       <head>
         <Meta />
-        <Styles />
+        <Links />
       </head>
       <body>
-        {message && <div>{message}</div>}
+        {message && <div className="flash">{message}</div>}
         <Outlet />
         <Scripts />
       </body>

@@ -15,8 +15,8 @@ In the near future we'll have a more built in way to do this, but this works pre
 
 ```jsx
 import React from "react";
-import { Meta, Scripts, Links, Routes } from "@remix-run/react";
-import { useLocation } from "react-router-dom";
+import { Meta, Links, Scripts } from "@remix-run/react";
+import { Outlet, useLocation } from "react-router-dom";
 
 // set up the urls you don't want to serve JavaScript at all
 let noScriptPaths = new Set(["/", "/buy", "/privacy", "/about"]);
@@ -35,7 +35,7 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-white text-gray-900">
-        <Routes />
+        <Outlet />
         {includeScripts && <Scripts />}
       </body>
     </html>
