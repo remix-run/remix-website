@@ -3,13 +3,13 @@ import { useRouteData } from "@remix-run/react";
 
 export function headers({ loaderHeaders }) {
   return {
-    "cache-control": loaderHeaders.get("cache-control"),
+    "Cache-Control": loaderHeaders.get("Cache-Control")
   };
 }
 
 export function meta({ data }) {
   return {
-    title: `Remix ${data.version} Release Notes`,
+    title: `Remix ${data.version} Release Notes`
   };
 }
 

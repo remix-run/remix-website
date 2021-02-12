@@ -5,7 +5,7 @@ const VERSION = "0.10.x";
 
 export function headers() {
   return {
-    "cache-control": "max-age=600",
+    "Cache-Control": "max-age=600"
   };
 }
 
@@ -14,8 +14,8 @@ let sections = [
     "Development",
     [
       ["Releases", "releases", { new: true }],
-      ["Roadmap", "roadmap", { disabled: true }],
-    ],
+      ["Roadmap", "roadmap", { disabled: true }]
+    ]
   ],
   [
     "Quickstart Tutorial",
@@ -26,8 +26,8 @@ let sections = [
       ["Nested Routes & Params", "tutorial/nested-routes-params"],
       ["Styling", "tutorial/styling", { new: true }],
       ["Data Mutations", "tutorial/mutations"],
-      ["Deploying", "tutorial/deploying"],
-    ],
+      ["Deploying", "tutorial/deploying"]
+    ]
   ],
   [
     "API",
@@ -41,8 +41,8 @@ let sections = [
       ["Web Fetch API", "fetch"],
       ["@remix-run/react", "react"],
       ["@remix-run/data", "data"],
-      ["React Router v6", "react-router"],
-    ],
+      ["React Router v6", "react-router"]
+    ]
   ],
   [
     "Guides",
@@ -57,8 +57,8 @@ let sections = [
       ["Redirects", "redirects", { disabled: true }],
       ["Cookies", "cookies"],
       ["Sessions", "sessions"],
-      ["Routing", "routing"],
-    ],
+      ["Routing", "routing"]
+    ]
   ],
   [
     "Deploying",
@@ -68,9 +68,9 @@ let sections = [
       ["Express", "deploy/express", { disabled: true }],
       ["Firebase", "deploy/firebase", { disabled: true }],
       ["Netlify", "deploy/netlify", { disabled: true }],
-      ["Vercel", "deploy/vercel", { disabled: true }],
-    ],
-  ],
+      ["Vercel", "deploy/vercel", { disabled: true }]
+    ]
+  ]
 ];
 
 export default function Docs() {

@@ -3,7 +3,7 @@ import { useRouteData } from "@remix-run/react";
 
 export function headers() {
   return {
-    "cache-control": "max-age=3600",
+    "Cache-Control": "max-age=3600"
   };
 }
 
@@ -18,7 +18,7 @@ export default function DashboardIndex() {
   );
 }
 
-let getNpmRc = (token) =>
+let getNpmRc = token =>
   `//npm.remix.run/:_authToken=${token}\n@remix-run:registry=https://npm.remix.run`;
 
 function Tokens() {

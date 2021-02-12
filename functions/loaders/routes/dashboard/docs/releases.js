@@ -1,7 +1,7 @@
 const { json } = require("@remix-run/loader");
 const {
   getRemixReleaseNotes,
-  getRemixChanges,
+  getRemixChanges
 } = require("../../../../utils/github");
 
 module.exports = async () => {
@@ -11,8 +11,8 @@ module.exports = async () => {
     { releases, changes },
     {
       headers: {
-        "cache-control": "max-age=3600, s-maxage=0",
-      },
+        "Cache-Control": "max-age=3600, s-maxage=0"
+      }
     }
   );
 };

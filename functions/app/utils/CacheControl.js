@@ -1,13 +1,13 @@
 export const pub = {
-  "cache-control":
+  "Cache-Control":
     "public, max-age=60, s-max-age=3600, stale-while-revalidate=60",
-  "cache-key": "public",
+  "cache-key": "public"
 };
 
 export const none = {
-  "cache-control": "no-cache",
+  "Cache-Control": "no-cache"
 };
 
 export const nostore = {
-  "cache-control": "no-store",
+  "Cache-Control": "no-store"
 };

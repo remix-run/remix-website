@@ -8,7 +8,7 @@ module.exports = requireCustomer(async (_, { sessionUser, user }) => {
     user.stripeCustomerId
       ? stripe.customers.retrieve(user.stripeCustomerId)
       : null,
-    getLicenses(user.uid),
+    getLicenses(user.uid)
   ]);
 
   return json(
@@ -16,12 +16,12 @@ module.exports = requireCustomer(async (_, { sessionUser, user }) => {
       sessionUser,
       user,
       stripeCustomer,
-      licenses,
+      licenses
     },
     {
       headers: {
-        "cache-control": "max-age=3600",
-      },
+        "Cache-Control": "max-age=3600"
+      }
     }
   );
 });
@@ -34,7 +34,7 @@ async function getTokens(uid) {
 
   let xTokens = unwrapSnapshot(snapshot);
   return Promise.all(
-    xTokens.map(async (xTokenUser) => {
+    xTokens.map(async xTokenUser => {
       let token = unwrapDoc(await xTokenUser.tokenRef.get());
 
       // owner token
@@ -51,7 +51,7 @@ async function getTokens(uid) {
         return {
           ...token,
           role: xTokenUser.role,
-          ownerEmail: owner.email,
+          ownerEmail: owner.email
         };
       }
     })
@@ -65,7 +65,7 @@ async function getMembers(tokenRef) {
     .get();
   let xTokensUsers = unwrapSnapshot(snapshot);
   return await Promise.all(
-    xTokensUsers.map(async (xTokenUser) => {
+    xTokensUsers.map(async xTokenUser => {
       let user = await xTokenUser.userRef.get();
       return unwrapDoc(user).email;
     })
@@ -75,9 +75,9 @@ async function getMembers(tokenRef) {
 async function getLicenses(uid) {
   let tokens = await getTokens(uid);
   let licenses = await Promise.all(
-    tokens.map(async (token) => {
+    tokens.map(async token => {
       let price = await stripe.prices.retrieve(token.price, {
-        expand: ["product"],
+        expand: ["product"]
       });
       return { token, price };
     })

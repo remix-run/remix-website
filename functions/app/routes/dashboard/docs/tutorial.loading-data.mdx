@@ -73,8 +73,8 @@ Instead of coming up with our own API, we built Remix on top of the Web Fetch AP
 return new Response(JSON.stringify({ teapot: true }), {
   status: 418,
   headers: {
-    "content-type": "application/json",
-    "cache-control": "max-age=3600",
+    "Content-Type": "application/json",
+    "Cache-Control": "max-age=3600",
   },
 });
 ```
@@ -103,12 +103,12 @@ export let loader: Loader = () => {
   let arrayOfStuff = await db.query(someQuery);
 
   return json(arrayOfStuff, {
-    "cache-control": "max-age=60",
+    "Cache-Control": "max-age=60",
   });
 };
 ```
 
-## Why cache-control headers matter in loaders:
+## Why Cache-Control headers matter in loaders:
 
 We saw that our routes can define their cache control, so why does it matter for loaders? It matters for two reasons:
 
@@ -119,7 +119,7 @@ Open up `app/routes/gists.ts` and update your headers function like so:
 ```jsx
 export function headers({ loaderHeaders }: { loaderHeaders: Headers }) {
   return {
-    "cache-control": loaderHeaders.get("cache-control"),
+    "Cache-Control": loaderHeaders.get("Cache-Control"),
   };
 }
 ```
@@ -202,7 +202,7 @@ export let loader: Loader = () => {
   let gists = await res.json();
   return json(gists, {
     headers: {
-      "cache-control": "max-age=300",
+      "Cache-Control": "max-age=300",
     },
   });
 };
@@ -219,7 +219,7 @@ export function meta({ data }: { data: Gist[] }) {
 // from the loader.
 export function headers({ loaderHeaders }: { loaderHeaders: Headers }) {
   return {
-    "cache-control": loaderHeaders.get("cache-control"),
+    "Cache-Control": loaderHeaders.get("Cache-Control"),
   };
 }
 

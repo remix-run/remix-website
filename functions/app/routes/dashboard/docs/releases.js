@@ -4,13 +4,13 @@ import { useRouteData } from "@remix-run/react";
 
 export function headers({ loaderHeaders }) {
   return {
-    "cache-control": loaderHeaders.get("cache-control"),
+    "Cache-Control": loaderHeaders.get("Cache-Control")
   };
 }
 
 export function meta() {
   return {
-    title: `Remix Releases`,
+    title: `Remix Releases`
   };
 }
 
@@ -25,7 +25,7 @@ export default function Releases() {
         history of all changes see the next section.
       </p>
       <ul>
-        {releases.map((version) => (
+        {releases.map(version => (
           <li key={version}>
             <Link to={version}>{version}</Link>
           </li>

@@ -90,8 +90,8 @@ let action: Action = async ({ request }) => {
       files: { [fileName]: { content } },
     }),
     headers: {
-      "content-type": "application/json",
-      authorization: `token ${token}`,
+      "Content-Type": "application/json",
+      "Authorization": `token ${token}`,
     },
   });
 

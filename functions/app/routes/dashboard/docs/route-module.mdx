@@ -87,28 +87,28 @@ export let action = async ({ params, request }) => {
 
 ## `headers`
 
-Each route can define it's own HTTP headers. Perhaps the most important header is the "cache-control" header to indicate to browser and CDN caches how long this page is good for.
+Each route can define it's own HTTP headers. One of the most important headers is the `Cache-Control` header that indicates to browser and CDN caches where and for how long a page is able to be cached.
 
 ```jsx
 export function headers({ loaderHeaders, parentHeaders }) {
   return {
-    "x-stretchy-pants": "its for fun",
-    "cache-control": "max-age=300, s-maxage=3600",
+    "X-Stretchy-Pants": "its for fun",
+    "Cache-Control": "max-age=300, s-maxage=3600",
   };
 }
 ```
 
-Usually your data is a better indicator of your cache control than your route module (data tends to be more dynamic than markup), so the loader's headers are passed in to the route module:
+Usually your data is a better indicator of your cache duration than your route module (data tends to be more dynamic than markup), so the loader's headers are passed in to `headers()` too:
 
 ```jsx
-export function headers({ loaderHeaders, parentHeaders }) {
+export function headers({ loaderHeaders }) {
   return {
-    "cache-control": loaderHeaders.get("cache-control"),
+    "Cache-Control": loaderHeaders.get("Cache-Control"),
   };
 }
 ```
 
-The headers arguments being passed in are instances of the <Link to="../fetch">Web Fetch API Headers</Link>.
+Note: `loaderHeaders` is an instance of the <Link to="../fetch">Web Fetch API</Link>'s `Headers` class.
 
 Because Remix has nested routes, there's a battle of the headers to be won when nested routes match. In this case, the deepest route wins. Consider these files in the routes directory:
 
@@ -130,25 +130,25 @@ If we are looking at `/users/123/profile` then three routes are rendering:
 </Users>
 ```
 
-If all three define headers, the deepest module wins, in this case `profile.js`.
+If all three define `headers`, the deepest module wins, in this case `profile.js`.
 
-We don't want surprise headers in your responses, so it's your job to merge them if you'd like. Remix passes in the `parentHeaders` to your headers function. So `users.js` headers get passed to `$userId.js`, and then `$userId.js` headers are passed to `profile.js` headers.
+We don't want surprise headers in your responses, so it's your job to merge them if you'd like. Remix passes in the `parentHeaders` to your `headers` function. So `users.js` headers get passed to `$userId.js`, and then `$userId.js` headers are passed to `profile.js` headers.
 
-That is all to say that Remix has given you a very large gun with which to shoot your foot. You need to be careful not to send a cache control from a child route module that is more aggressive than a parent route. Here's some code that picks the least aggressive caching in these cases:
+That is all to say that Remix has given you a very large gun with which to shoot your foot. You need to be careful not to send a `Cache-Control` from a child route module that is more aggressive than a parent route. Here's some code that picks the least aggressive caching in these cases:
 
 ```jsx
 import parseCacheControl from "parse-cache-control";
 
 export function headers({ loaderHeaders, parentHeaders }) {
-  let loaderCache = parseCacheControl(loaderHeaders.get("cache-control"));
-  let parentCache = parseCacheControl(parentHeaders.get("cache-control"));
+  let loaderCache = parseCacheControl(loaderHeaders.get("Cache-Control"));
+  let parentCache = parseCacheControl(parentHeaders.get("Cache-Control"));
 
   // take the most conservative between the parent and loader, otherwise
   // we'll be too aggressive for one of them.
   let maxAge = Math.min(loaderCache["max-age"], parentCache["max-age"]);
 
   return {
-    "cache-control": `max-age=${maxAge}`,
+    "Cache-Control": `max-age=${maxAge}`,
   };
 }
 ```
@@ -236,7 +236,7 @@ export let links: MetaFunction = () => {
 };
 ```
 
-### BockLinkDescriptor
+### BlockLinkDescriptor
 
 You can block `{ rel: "preload" }` HTMLLinkDescriptors on client side page transitions by wrapping them in `block(descriptor)`.
 
