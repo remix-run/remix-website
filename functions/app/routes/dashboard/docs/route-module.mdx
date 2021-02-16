@@ -310,3 +310,15 @@ export function ErrorBoundary({ error }) {
   );
 }
 ```
+
+## handle
+
+Exporting a handle allows you to create application conventions with the `useMatches()` hook. You can put whatever values you want on it:
+
+```js
+export let handle = {
+  its: "all yours",
+};
+```
+
+Please refer to the [`useMatches` documentation](/dashboard/docs/react#usematches) for more information.

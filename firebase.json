@@ -12,6 +12,11 @@
         "source": "/dashboard/docs/loader",
         "destination": "/dashboard/docs/data",
         "type": 301
+      },
+      {
+        "source": "/dashboard/docs/postcss",
+        "destination": "/dashboard/docs/styling",
+        "type": 301
       }
     ],
     "rewrites": [
