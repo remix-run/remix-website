@@ -24,7 +24,7 @@ You can load stylesheets from any server, here's an example of loading a modern 
 // root.tsx
 import type { LinksFunction } from "@remix-run/react";
 
-export let link: LinksFunction = () => {
+export let links: LinksFunction = () => {
   return [
     {
       rel: "stylesheet",
@@ -43,7 +43,7 @@ For stylesheets you control, but don't want to process with PostCSS, use the `ur
 import type { LinksFunction } from "@remix-run/react";
 import styles from "url:./styles/app.css";
 
-export let link: LinksFunction = () => {
+export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 ```
@@ -68,7 +68,7 @@ And then all CSS imports will be processed with your PostCSS config:
 import type { LinksFunction } from "@remix-run/react";
 import styles from "css:./styles/app.css";
 
-export let link: LinksFunction = () => {
+export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 ```
@@ -132,7 +132,7 @@ import type { LinksFunction } from "@remix-run/react";
 import tailwind from "css:./styles/tailwind.css";
 import styles from "css:./styles/app.css";
 
-export let link: LinksFunction = () => {
+export let links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: tailwind },
     { rel: "stylesheet", href: styles },
