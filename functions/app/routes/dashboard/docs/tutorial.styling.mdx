@@ -7,14 +7,12 @@ import { Link } from "react-router-dom";
 
 # Styling
 
-While Remix has no CSS processing right now, we will be adding postcss soon. Even without those tools, the CSS approach in Remix is pretty powerful.
-
-Two of the hardest parts of CSS for us have always been:
+Two of the hardest parts of CSS have always been:
 
 - writing styles that don't apply to unintended elements and
 - knowing which styles you need for a page.
 
-Using the route module `links` API, we can solve these problems easily with plain CSS.
+Using the route module `links` API, we can solve these problems easily.
 
 ## Adding styles to our gists routes
 
@@ -53,9 +51,9 @@ let links: LinksFunction = () => {
 
 When you're done, open the dev tools and watch the `<head>` component as you navigate around. You'll see the styles loading and unloading per route!
 
-Since we're always using `<link/>` to add styles, we don't have a different code path for your styles in development vs. production like a lot of solutions. Also, your styles also always apply in the same order (order of your nested routes), so your dynamic style loading isn't at risk of different navigation paths like other solutions.
+Since we're always using `<link>` to add styles, we don't have a different code path for your styles in development vs. production like a lot of solutions. Also, your styles also always apply in the same order (order of your nested routes), so your dynamic style loading isn't at risk of different navigation paths like other solutions.
 
-Again, we'll be doing more for processing CSS, but for now this is what we've got and we think it's great. Bring the CSS skills you already have, we'll make sure to load and unload it when the time is right!
+Remix supports <Link to="../../styling">several different styling options</Link>, so go ahead and pick your favorite and we'll make sure to load and unload your CSS when the time is right!
 
 <div className="next-prev-links">
   <Link className="next" to="../mutations">

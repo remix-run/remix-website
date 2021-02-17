@@ -36,7 +36,7 @@ export let link: LinksFunction = () => {
 
 ## Plain Stylesheets
 
-For stylesheets you control, but don't want to process with postcss, use the url import hint and `links`.
+For stylesheets you control, but don't want to process with PostCSS, use the `url:` import hint and `links`.
 
 ```ts
 // root.tsx
@@ -61,7 +61,7 @@ module.exports = {
 };
 ```
 
-And then all css imports will be processed with your postcss config:
+And then all CSS imports will be processed with your PostCSS config:
 
 ```ts
 // root.tsx
