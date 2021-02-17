@@ -223,7 +223,7 @@ export default function Features() {
                 </li>
               </ul>
             </div>
-            <div className="mt-10 -mx-4 relative lg:mt-0">
+            <div className="hidden mt-10 -mx-4 relative lg:block lg:mt-0">
               <svg
                 className="absolute left-1/2 transform -translate-x-1/2 translate-y-16 lg:hidden"
                 width={784}
@@ -415,7 +415,7 @@ export default function Features() {
                   </li>
                 </ul>
               </div>
-              <div className="mt-10 -mx-4 relative lg:mt-0 lg:col-start-1">
+              <div className="hidden mt-10 -mx-4 relative lg:block lg:mt-0 lg:col-start-1">
                 <svg
                   className="absolute left-1/2 transform -translate-x-1/2 translate-y-16 lg:hidden"
                   width={784}
@@ -513,7 +513,7 @@ export default function Features() {
               </li>
             </ul>
           </div>
-          <div className="mt-10 -mx-4 relative lg:mt-0">
+          <div className="hidden mt-10 -mx-4 relative lg:block lg:mt-0">
             <svg
               className="absolute left-1/2 transform -translate-x-1/2 translate-y-16 lg:hidden"
               width={784}
