@@ -17,10 +17,10 @@ Remix comes with several pre-built session storage options for common scenarios,
 
 For purely cookie-based sessions (where the session data itself is stored in the session cookie, see <Link to="../cookies">cookies</Link>) you can use `createCookieSessionStorage()`. The main advantage of cookie session storage is that you don't need any additional backend services or databases to use it. It can also be beneficial in some load balanced scenarios. However, cookie-based sessions may not exceed the browser's max allowed cookie length (typically 4kb).
 
-We recommend setting up your session storage object in `app/sessionStorage.ts` so all routes that need to access session data can import it from the same spot.
+We recommend setting up your session storage object in `app/sessions.js` so all routes that need to access session data can import it from the same spot.
 
-```ts
-// app/sessionStorage.ts
+```js
+// app/sessions.js
 import { createCookieSessionStorage } from "@remix-run/data";
 
 let {
@@ -42,8 +42,8 @@ export { getSession, commitSession, destroySession };
 
 For file-backed sessions, use `createFileSessionStorage()`. File session storage requires a file system, but this should be readily available on most cloud providers. The advantage of file-backed sessions is that only the session ID is stored in the cookie while the rest of the data is stored in a regular file on disk, so they are ideal for sessions with more than 4kb of data.
 
-```ts
-// app/sessionStorage.ts
+```js
+// app/sessions.js
 import { createCookie, createFileSessionStorage } from "@remix-run/data";
 
 // In this example the Cookie is created separately.
@@ -74,14 +74,13 @@ The input/output to a session storage object are HTTP cookies. `getSession()` re
 
 A simple login form might look something like this:
 
-```ts
-// app/routes/login.tsx
-import type { Loader, Action } from "@remix-run/data";
+```js
+// app/routes/login.js
 import { json, redirect } from "@remix-run/data";
 
-import { getSession, commitSession } from "../sessionStorage";
+import { getSession, commitSession } from "../sessions";
 
-export let loader: Loader = async ({ request }) => {
+export async function loader({ request }) {
   let session = await getSession(request.headers.get("Cookie"));
 
   if (session.has("userId")) {
@@ -96,9 +95,9 @@ export let loader: Loader = async ({ request }) => {
       "Set-Cookie": await commitSession(session)
     }
   });
-};
+}
 
-export let action: Action = async ({ request }) => {
+export async function action({ request }) {
   let session = await getSession(request.headers.get("Cookie"));
   let bodyParams = new URLSearchParams(await request.text());
 
@@ -126,9 +125,9 @@ export let action: Action = async ({ request }) => {
       "Set-Cookie": await commitSession(session)
     }
   });
-};
+}
 
-export default Login() {
+export default function Login() {
   let { currentUser, error } = useRouteData();
 
   return (
@@ -158,11 +157,10 @@ Remix makes it easy to store sessions in your own database if needed. The `creat
 
 The following example shows how you could do this using a generic database client:
 
-```ts
-import type { SessionStorage } from "@remix-run/data";
+```js
 import { createSessionStorage } from "@remix-run/data";
 
-function createDatabaseSessionStorage({ cookie, host, port }): SessionStorage {
+function createDatabaseSessionStorage({ cookie, host, port }) {
   // Configure your database client...
   let db = createDatabaseClient(host, port);
 
@@ -211,7 +209,7 @@ The `expires` argument to `readData` and `updateData` is the same `Date` at whic
 
 Returns `true` if the session has a variable with the given `name`.
 
-```ts
+```js
 session.has("userId");
 ```
 
@@ -219,7 +217,7 @@ session.has("userId");
 
 Sets a session value for use in subsequent requests:
 
-```ts
+```js
 session.set("userId", "1234");
 ```
 
@@ -227,36 +225,37 @@ session.set("userId", "1234");
 
 Sets a session value that will be unset the first time it is read. After that, it's gone. Most useful for "flash messages" and server-side form validation messages:
 
-```ts
-// app/routes/form.tsx
-import type { Action } from "@remix-run/data";
-import { getSession, commitSession } from "../sessionStorage";
+```js
+// app/routes/form.js
+import { getSession, commitSession } from "../sessions";
 
-export let action: Action = async ({ request, params }) => {
+export async function action({ request, params }) {
   let session = await getSession(request.headers.get("Cookie"));
   let deletedProject = await archiveProject(params.projectId);
+
   session.flash(
     "globalMessage",
     `Project ${deletedProject.name} successfully archived`
   );
+
   return redirect("/dashboard", {
     headers: {
       "Set-Cookie": await commitSession(session)
     }
   });
-};
+}
 ```
 
-```ts
-// app/root.tsx
+```js
+// app/root.js
 import React from "react";
-import { Meta, Links, Scripts } from "@remix-run/react";
 import { Outlet } from "react-router-dom";
-import type { Loader } from "@remix-run/data";
+import { Meta, Links, Scripts } from "@remix-run/react";
 import { json } from "@remix-run/data";
-import { getSession, commitSession } from "./sessionStorage";
 
-export let loader: Loader = async ({ request }) => {
+import { getSession, commitSession } from "./sessions";
+
+export async function loader({ request }) {
   let session = await getSession(request.headers.get("Cookie"));
   let message = session.get("globalMessage") || null;
 
@@ -268,7 +267,7 @@ export let loader: Loader = async ({ request }) => {
       "Set-Cookie": await commitSession(session)
     }
   });
-};
+}
 
 export default function App() {
   let { message } = useRouteData();
@@ -293,7 +292,7 @@ export default function App() {
 
 Accesses a session value from a previous request:
 
-```ts
+```js
 session.get("name");
 ```
 
@@ -301,6 +300,6 @@ session.get("name");
 
 Removes a value from the session.
 
-```ts
+```js
 session.unset("name");
 ```
