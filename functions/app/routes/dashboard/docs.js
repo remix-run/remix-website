@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 
-const VERSION = "0.10.x";
+const VERSION = "0.13.x";
 
 export function headers() {
   return {
