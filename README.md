@@ -23,21 +23,12 @@ NOTE: this is not "production mode" for the source code, but the production serv
 
 ## Deploying
 
-**Make sure to check wich firebase server you're using**
-
-Deploy to staging:
-
 ```sh
-# if in functions/
-cd functions/
-yarn use:staging
-firebase deploy
-```
+# production
+git push origin master
 
-Deploy to production:
-
-```sh
-cd functions/
-yarn use:production
-firebase deploy
+# staging
+git checkout -b staging
+# feel free to force push over staging at any time
+git push origin staging -f
 ```
