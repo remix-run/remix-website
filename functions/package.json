@@ -1,13 +1,16 @@
 {
   "name": "functions",
   "scripts": {
+    "use:staging": "firebase use staging && firebase functions:config:get > .runtimeconfig.json",
+    "use:production": "firebase use production && firebase functions:config:get > .runtimeconfig.json",
     "prebuild": "rm -rf build && rm -rf ../public/build && rm app/**/*.css",
     "build": "NODE_ENV=production yarn run css:build && NODE_ENV=production remix build",
     "logs": "firebase functions:log",
     "shell": "firebase functions:shell",
     "css:watch": "postcss styles --base styles --dir app/ -w",
     "css:build": "postcss styles --base styles --dir app/ --env production",
-    "start": "NODE_ENV=development concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\""
+    "start": "yarn use:staging && NODE_ENV=development concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\"",
+    "start:production": "yarn use:production && NODE_ENV=development concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\""
   },
   "engines": {
     "node": "12"
@@ -34,8 +37,8 @@
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
     "firebase": "^7.23.0",
-    "firebase-admin": "^9.2.0",
-    "firebase-functions": "^3.6.1",
+    "firebase-admin": "9.2.0",
+    "firebase-functions": "3.6.1",
     "firebaseui": "^4.6.1",
     "front-matter": "^4.0.2",
     "gatsby-remark-prismjs": "^3.10.0",

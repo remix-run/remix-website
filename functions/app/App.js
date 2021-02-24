@@ -1,5 +1,5 @@
 import React from "react";
-import { Meta, Scripts, Styles, Routes } from "@remix-run/react";
+import { Meta, Scripts, Styles, Routes, useGlobalData } from "@remix-run/react";
 import { useLocation } from "react-router-dom";
 
 let noScriptPaths = new Set([
@@ -22,6 +22,7 @@ function shouldIncludeScripts(pathname) {
 }
 
 export default function App() {
+  let { env } = useGlobalData();
   let location = useLocation();
   let includeScripts = shouldIncludeScripts(location.pathname);
 
@@ -56,6 +57,11 @@ export default function App() {
       </head>
       <body className="bg-white text-gray-900">
         <Routes />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(env)};`,
+          }}
+        />
         {includeScripts && <Scripts />}
       </body>
     </html>

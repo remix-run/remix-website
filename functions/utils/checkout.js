@@ -1,4 +1,4 @@
-const { db, admin } = require("./firebase");
+const { db, admin, config } = require("./firebase");
 const { stripe } = require("./stripe");
 const { createOwnerToken } = require("./tokens");
 
@@ -13,13 +13,13 @@ const { createOwnerToken } = require("./tokens");
 let prices = {
   beta: {
     indie: {
-      test: "price_1HbT4UBIsmMSW7ROb1UqNcZq",
-      prod: "price_1Hh5WkBhDjuvqbsSQdElIpjH",
+      staging: "price_1HbT4UBIsmMSW7ROb1UqNcZq",
+      production: "price_1Hh5WkBhDjuvqbsSQdElIpjH",
       // prod: "price_1Hh5eOBhDjuvqbsSwGlIi3ul", // partner license >.<
     },
     team: {
-      test: "price_1HfabKBIsmMSW7ROGEtHs2Zv",
-      prod: "price_1Hh5XqBhDjuvqbsSCboeBu7m",
+      staging: "price_1HfabKBIsmMSW7ROGEtHs2Zv",
+      production: "price_1Hh5XqBhDjuvqbsSCboeBu7m",
     },
   },
 };
@@ -33,17 +33,15 @@ async function createCheckout(
   // TODO: send this from client instead of hardcoding github.com
   provider = "github.com"
 ) {
-  console.log("createCheckout", uid, email);
-
   let baseUrl =
     process.env.NODE_ENV === "production"
-      ? // ? `https://playground-a6490.web.app`
-        `https://remix.run`
+      ? config.app.env === "staging"
+        ? `https://playground-a6490.web.app`
+        : `https://remix.run`
       : "http://localhost:5000";
 
   let productKey = type;
-  let priceKey = process.env.NODE_ENV === "production" ? "prod" : "test";
-  let price = prices.beta[productKey][priceKey];
+  let price = prices.beta[productKey][config.app.env];
   if (!price) throw new Error(`Invalid price: ${productKey}.${priceKey}`);
   let quantity = qty;
 

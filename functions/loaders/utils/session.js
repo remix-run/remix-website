@@ -1,7 +1,7 @@
 const { Response } = require("@remix-run/loader");
 const { db, admin, unwrapDoc } = require("../../utils/firebase");
 
-exports.getCustomer = async req => {
+exports.getCustomer = async (req) => {
   let sessionUser = await getSession(req);
   if (!sessionUser) {
     return null;
@@ -16,7 +16,7 @@ exports.getCustomer = async req => {
 
 // TODO: was planning on a compositional wrapping API here but realized it's stupid,
 // need to refactor to just be `let customer = await requireCustomer()`.
-exports.requireCustomer = loader => {
+exports.requireCustomer = (loader) => {
   return async (loaderArg, ...rest) => {
     let { url, context } = loaderArg;
 
@@ -38,8 +38,8 @@ exports.requireCustomer = loader => {
         : new Response(JSON.stringify(data), {
             headers: {
               "Cache-Control": "max-age=600",
-              "content-type": "application/json"
-            }
+              "content-type": "application/json",
+            },
           });
     } catch (error) {
       console.log("Error while creating session!");
