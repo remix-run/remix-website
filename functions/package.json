@@ -1,6 +1,7 @@
 {
   "name": "functions",
   "scripts": {
+    "prebuild": "rm -rf build && rm -rf ../public/build && rm app/**/*.css",
     "build": "NODE_ENV=production yarn run css:build && NODE_ENV=production remix build",
     "logs": "firebase functions:log",
     "shell": "firebase functions:shell",
