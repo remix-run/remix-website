@@ -1,16 +1,16 @@
 {
   "name": "functions",
   "scripts": {
-    "use:staging": "firebase use staging && firebase functions:config:get > .runtimeconfig.json",
-    "use:production": "firebase use production && firebase functions:config:get > .runtimeconfig.json",
-    "prebuild": "rm -rf build && rm -rf ../public/build && rm app/**/*.css",
     "build": "NODE_ENV=production yarn run css:build && NODE_ENV=production remix build",
+    "css:build": "postcss styles --base styles --dir app/ --env production",
+    "css:watch": "postcss styles --base styles --dir app/ -w",
+    "deploy": "firebase deploy",
     "logs": "firebase functions:log",
     "shell": "firebase functions:shell",
-    "css:watch": "postcss styles --base styles --dir app/ -w",
-    "css:build": "postcss styles --base styles --dir app/ --env production",
     "start": "yarn use:staging && NODE_ENV=development concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\"",
-    "start:production": "yarn use:production && NODE_ENV=development concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\""
+    "start:production": "yarn use:production && NODE_ENV=development concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\"",
+    "use:production": "firebase use production && firebase functions:config:get > .runtimeconfig.json",
+    "use:staging": "firebase use staging && firebase functions:config:get > .runtimeconfig.json"
   },
   "engines": {
     "node": "12"
@@ -76,7 +76,8 @@
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "2.x",
     "firebase-functions-test": "^0.2.0",
-    "postcss-cli": "^8.1.0"
+    "postcss-cli": "^8.1.0",
+    "firebase-tools": "9.0.1"
   },
   "private": true
 }
