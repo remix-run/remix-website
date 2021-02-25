@@ -8,6 +8,8 @@ module.exports = {
     darkModeVariant: false,
   },
   purge: [
+    "./app/**/*.tsx",
+    "./app/**/*.ts",
     "./app/**/*.js",
     "./app/**/*.mdx",
     "./app/**/*.md",

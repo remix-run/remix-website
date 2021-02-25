@@ -1,0 +1,242 @@
+.toc {
+  display: none;
+}
+
+/* InvoicesUI.js */
+
+@font-face {
+  font-family: "Virgil";
+
+  src: url("https://excalidraw.com/FG_Virgil.woff2");
+}
+
+@font-face {
+  font-family: "Cascadia";
+
+  src: url("https://excalidraw.com/Cascadia.woff2");
+}
+
+svg > *[fill] {
+  transition: opacity 200ms;
+}
+
+.prose pre {
+  --bg-opacity: 1;
+  background-color: #424242;
+  background-color: rgba(66, 66, 66, var(--bg-opacity));
+  --text-opacity: 1;
+  color: #e0e0e0;
+  color: rgba(224, 224, 224, var(--text-opacity));
+}
+
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+  --text-opacity: 1;
+  color: #bdbdbd;
+  color: rgba(189, 189, 189, var(--text-opacity));
+  background: none;
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+pre[class*="language-"]::-moz-selection,
+pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection,
+code[class*="language-"] ::-moz-selection {
+  text-shadow: none;
+  --bg-opacity: 1;
+  background-color: #212121;
+  background-color: rgba(33, 33, 33, var(--bg-opacity));
+}
+
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection, code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+  text-shadow: none;
+  --bg-opacity: 1;
+  background-color: #9e9e9e;
+  background-color: rgba(158, 158, 158, var(--bg-opacity));
+}
+
+pre[class*="language-"]::selection,
+pre[class*="language-"] ::selection,
+code[class*="language-"]::selection,
+code[class*="language-"] ::selection {
+  text-shadow: none;
+  --bg-opacity: 1;
+  background-color: #9e9e9e;
+  background-color: rgba(158, 158, 158, var(--bg-opacity));
+}
+
+@media print {
+  code[class*="language-"],
+  pre[class*="language-"] {
+    text-shadow: none;
+  }
+}
+
+/* Code blocks */
+
+pre[class*="language-"] {
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+  --bg-opacity: 1;
+  background-color: #212121;
+  background-color: rgba(33, 33, 33, var(--bg-opacity));
+}
+
+/* Inline code */
+
+:not(pre) > code[class*="language-"] {
+  padding: 0.1em;
+  border-radius: 0.3em;
+  white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  --text-opacity: 1;
+  color: #616161;
+  color: rgba(97, 97, 97, var(--text-opacity));
+}
+
+.token.punctuation {
+  --text-opacity: 1;
+  color: #bdbdbd;
+  color: rgba(189, 189, 189, var(--text-opacity));
+}
+
+.token.selector,
+.token.tag {
+  --text-opacity: 1;
+  color: #D05BB0;
+  color: rgba(208, 91, 176, var(--text-opacity));
+}
+
+.token.property,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.attr-name,
+.token.deleted {
+  --text-opacity: 1;
+  color: #E6CA66;
+  color: rgba(230, 202, 102, var(--text-opacity));
+}
+
+.token.string,
+.token.char,
+.token.attr-value,
+.token.builtin,
+.token.inserted {
+  --text-opacity: 1;
+  color: #08CB64;
+  color: rgba(8, 203, 100, var(--text-opacity));
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  --text-opacity: 1;
+  color: #10C5BF;
+  color: rgba(16, 197, 191, var(--text-opacity));
+}
+
+.token.atrule,
+.token.keyword {
+  --text-opacity: 1;
+  color: #D05BB0;
+  color: rgba(208, 91, 176, var(--text-opacity));
+}
+
+.token.function {
+  --text-opacity: 1;
+  color: #779BCB;
+  color: rgba(119, 155, 203, var(--text-opacity));
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  --text-opacity: 1;
+  color: #E6CA66;
+  color: rgba(230, 202, 102, var(--text-opacity));
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+pre.line-numbers {
+  position: relative;
+  padding-left: 3.8em;
+  counter-reset: linenumber;
+}
+
+pre.line-numbers > code {
+  position: relative;
+}
+
+.line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  font-size: 100%;
+  left: -3.8em;
+  width: 3em; /* works for line-numbers below 1000 lines */
+  letter-spacing: -1px;
+  border-right: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.line-numbers-rows > span {
+  pointer-events: none;
+  display: block;
+  counter-increment: linenumber;
+}
+
+.line-numbers-rows > span:before {
+  content: counter(linenumber);
+  --text-opacity: 1;
+  color: #757575;
+  color: rgba(117, 117, 117, var(--text-opacity));
+  display: block;
+  padding-right: 0.8em;
+  text-align: right;
+}

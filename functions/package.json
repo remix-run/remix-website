@@ -1,14 +1,14 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "NODE_ENV=production yarn run css:build && NODE_ENV=production remix build",
-    "css:build": "postcss styles --base styles --dir app/ --env production",
-    "css:watch": "postcss styles --base styles --dir app/ -w",
+    "build": "yarn css:build && remix build",
     "deploy": "firebase deploy",
     "logs": "firebase functions:log",
     "shell": "firebase functions:shell",
-    "start": "yarn use:staging && NODE_ENV=development concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\"",
-    "start:production": "yarn use:production && NODE_ENV=development concurrently \"yarn run css:watch\" \"remix run\" \"firebase serve\"",
+    "css:watch": "postcss styles --base styles --dir app/styles -w",
+    "css:build": "postcss styles --base styles --dir app/styles --env production",
+    "start": "yarn use:staging && NODE_ENV=development concurrently \"yarn css:watch\" \"remix run\" \"firebase serve\"",
+    "start:production": "yarn use:production && NODE_ENV=development concurrently \"yarn css:watch\" \"remix run\" \"firebase serve\"",
     "use:production": "firebase use production && firebase functions:config:get > .runtimeconfig.json",
     "use:staging": "firebase use staging && firebase functions:config:get > .runtimeconfig.json"
   },
@@ -25,10 +25,10 @@
     "@octokit/core": "^3.1.2",
     "@reach/alert": "^0.11.2",
     "@reach/visually-hidden": "^0.11.1",
-    "@remix-run/cli": "0.6.0",
-    "@remix-run/express": "0.6.0",
-    "@remix-run/loader": "0.6.0",
-    "@remix-run/react": "0.6.0",
+    "@remix-run/cli": "^0.13.3",
+    "@remix-run/data": "^0.13.3",
+    "@remix-run/express": "^0.13.3",
+    "@remix-run/react": "^0.13.3",
     "@stripe/stripe-js": "^1.9.0",
     "@tailwindcss/typography": "^0.2.0",
     "@tailwindcss/ui": "^0.6.2",
@@ -46,8 +46,8 @@
     "idtoken-verifier": "^2.1.0",
     "node-stream-string": "^1.0.1",
     "postcss": "^8.1.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "17",
+    "react-dom": "17",
     "react-router-dom": "^6.0.0-beta.0",
     "rehype-format": "^3.1.0",
     "rehype-parse": "^7.0.1",
@@ -64,6 +64,8 @@
     "use-throttle": "^0.0.3"
   },
   "devDependencies": {
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "2.x",
     "@typescript-eslint/parser": "2.x",
     "babel-eslint": "10.x",
@@ -76,8 +78,8 @@
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "2.x",
     "firebase-functions-test": "^0.2.0",
-    "postcss-cli": "^8.1.0",
-    "firebase-tools": "9.0.1"
+    "firebase-tools": "9.0.1",
+    "postcss-cli": "^8.1.0"
   },
   "private": true
 }
