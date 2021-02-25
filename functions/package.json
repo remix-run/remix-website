@@ -35,6 +35,7 @@
     "autoprefixer": "^10.0.1",
     "browser-cookies": "^1.2.0",
     "cookie-parser": "^1.4.5",
+    "cssnano": "^4.1.10",
     "csurf": "^1.11.0",
     "firebase": "^7.23.0",
     "firebase-admin": "9.2.0",
