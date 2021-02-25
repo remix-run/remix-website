@@ -27,8 +27,10 @@ export function getIdToken() {
   firebase.auth().currentUser.getIdToken(/*forceRefresh*/ true);
 }
 
+// TODO: remove this when we switch up the checkout flow, We're being weird here
+// and calling the action manually.
 export async function createUserSession(idToken) {
-  let res = await fetch("/api/createUserSession", {
+  let res = await fetch("/session/create?_data=routes%2Fsession.create", {
     credentials: "same-origin",
     method: "post",
     body: JSON.stringify({ idToken }),
@@ -40,10 +42,11 @@ export async function createUserSession(idToken) {
   if (res.status === 403) {
     throw new Error("Somebody's tryna hack us.");
   }
-  if (res.status !== 200) {
+  // remix redirect status code
+  if (res.status !== 204) {
     throw new Error(await res.text());
   }
-  return await res.json();
+  return { ok: true };
 }
 
 export { firebase };

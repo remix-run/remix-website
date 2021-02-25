@@ -1,10 +1,11 @@
 import React from "react";
-import { authenticate, createUserSession } from "../utils/firebase.client";
+import { authenticate } from "../utils/firebase.client";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { useLocation } from "react-router-dom";
 import * as CacheControl from "../utils/CacheControl";
 import { redirect } from "@remix-run/data";
 import type { LoaderFunction } from "@remix-run/data";
+import { usePendingFormSubmit, useSubmit } from "@remix-run/react";
 import { getCustomer } from "../utils/session.server";
 
 export let loader: LoaderFunction = async ({ context: { req } }) => {
@@ -30,12 +31,15 @@ export default function Login() {
   let location = useLocation();
   let loggedOut = location.search === "?loggedout=1";
 
-  // loggedOut | idle | authenticating | authenticated | error
+  // loggedOut | idle | authenticating | error
   let [state, setState] = React.useState(loggedOut ? "loggedOut" : "idle");
   let [data, setData] = React.useState({ error: null });
 
   let focusRef = React.useRef(null);
   let manageFocus = React.useRef(false);
+
+  let submit = useSubmit();
+  let pendingSubmit = usePendingFormSubmit();
 
   React.useEffect(() => {
     if (state === "authenticating") {
@@ -58,12 +62,12 @@ export default function Login() {
     setState("authenticating");
     try {
       let { user } = await authenticate();
-      setState("authenticated");
       let idToken = await user.getIdToken(true);
-      await createUserSession(idToken);
-      // navigate("/dashboard", { replace: true });
-      let to = new URLSearchParams(location.search).get("from") || "/dashboard";
-      window.location.replace(to);
+      submit(
+        { idToken },
+        { action: window.location.origin + "/session/create", method: "post" }
+      );
+      // action redirects
     } catch (error) {
       console.error(error);
       setData({ error });
@@ -97,7 +101,7 @@ export default function Login() {
               ? "Logging in ..."
               : state === "error"
               ? "Try logging in again"
-              : state === "authenticated"
+              : !!pendingSubmit
               ? "You're in, redirecting!"
               : "Impossible state!"}
           </button>
