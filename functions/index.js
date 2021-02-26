@@ -10,8 +10,6 @@ admin.initializeApp();
 let app = express();
 app.use(cookieParser());
 
-app.post("/api/createCheckout", require("./api/createCheckout"));
-app.post("/api/subscribeEmail", require("./api/subscribeEmail"));
 app.get("/api/playground", require("./api/playground"));
 
 app.all(

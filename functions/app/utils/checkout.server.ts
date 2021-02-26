@@ -94,3 +94,32 @@ export async function completeOrder(idToken) {
     orderRef.delete(),
   ]);
 }
+
+/*
+New registration flow
+
+- <Form/> with license to buy
+- action
+  - create stripe session
+  - use the session id template!
+    - https://stripe.com/docs/payments/checkout/custom-success-page#modify-success-url
+  - redirect to stripe w/ stripe session id
+- stripe does its thing
+- stripe comes back to success url
+  - create order, use order id as registration token
+  - kick off email for registration link (maybe stripe has this built in?)
+  - redirect to registration url
+- registration page
+  - loader looks up order from query param
+    - if already registered, redirect to dashboard
+  - <Form> with email/password (use email from stripe, but let them change it)
+  - checkbox for marketing newsletter
+- registration action
+  - create user with firebase admin https://firebase.google.com/docs/auth/admin/manage-users#create_a_user
+  - create a license
+  - add to convertkit as customer, maybe marketing
+  - redirect to dashboard
+
+- redo adding people to licenses, also
+
+*/

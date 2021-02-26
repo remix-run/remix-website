@@ -1,9 +1,10 @@
 import React from "react";
 import { useRouteData } from "@remix-run/react";
-import { redirect } from "@remix-run/data";
-import type { LoaderFunction } from "@remix-run/data";
+import { redirect, json } from "@remix-run/data";
+import type { LoaderFunction, ActionFunction } from "@remix-run/data";
 import { authenticate, createUserSession } from "../../utils/firebase.client";
 import { createCheckoutClient } from "../../utils/checkout.client";
+import { createCheckout } from "../../utils/checkout.server";
 import * as CacheControl from "../../utils/CacheControl";
 
 export let loader: LoaderFunction = ({ request }) => {
@@ -15,6 +16,20 @@ export let loader: LoaderFunction = ({ request }) => {
     return redirect("/buy");
   } else {
     return { type, qty };
+  }
+};
+
+export let action: ActionFunction = async ({ request }) => {
+  // @ts-expect-error need to change the lib (but we don't even have a tsconfig yet!)
+  let { uid, email, idToken, type, qty } = Object.fromEntries(
+    new URLSearchParams(await request.text())
+  );
+
+  try {
+    let session = await createCheckout(uid, email, idToken, type, qty);
+    return json({ id: session.id });
+  } catch (error) {
+    return json({ message: error.message }, { status: 500 });
   }
 };
 

@@ -3,6 +3,43 @@ import Logo, { useLogoAnimation } from "../components/Logo";
 import LoadingButton from "../components/LoadingButton";
 import VisuallyHidden from "@reach/visually-hidden";
 import * as CacheControl from "../utils/CacheControl";
+import { subscribeToForm } from "../utils/ck.server";
+import { json, redirect } from "@remix-run/data";
+import type { ActionFunction, LoaderFunction } from "@remix-run/data";
+import { usePendingFormSubmit, useRouteData, Form } from "@remix-run/react";
+import { newsletter } from "../utils/sessions";
+
+export let loader: LoaderFunction = async function subscribeEmail({ request }) {
+  let session = await newsletter.getSession(request.headers.get("Cookie"));
+  if (session.has("newsletter")) {
+    return json(session.data, {
+      headers: { "Set-Cookie": await newsletter.destroySession(session) },
+    });
+  } else {
+    return null;
+  }
+};
+
+export let action: ActionFunction = async ({ request }) => {
+  let session = await newsletter.getSession(request.headers.get("Cookie"));
+  let params = new URLSearchParams(await request.text());
+  let email = params.get("email");
+  let name = params.get("name");
+  let form = "1334747";
+
+  try {
+    await subscribeToForm(email, name, form);
+    session.set("newsletter", "success");
+  } catch (error) {
+    session.set("newsletter", "error");
+    session.set("error", error.message);
+  }
+  return redirect("/newsletter", {
+    headers: {
+      "Set-Cookie": await newsletter.commitSession(session),
+    },
+  });
+};
 
 export function headers() {
   return CacheControl.pub;
@@ -12,11 +49,13 @@ export function meta() {
   return {
     title: "Remix Newsletter",
     description:
-      "Subscribe for weekly updates on Remix and techniques to build better websites.",
+      "Subscribe for updates on Remix and techniques to build better websites.",
   };
 }
 
 export default function NewsLetter() {
+  let sessionData = useRouteData();
+  let pendingSubmit = usePendingFormSubmit();
   let [state, setState] = useState("idle"); // idle | valid | loading | error | success | thanks
   let [data, setData] = useState<{
     name: string;
@@ -31,33 +70,28 @@ export default function NewsLetter() {
   let [colors, changeColors] = useLogoAnimation();
 
   let errorRef = useRef(null);
-  let formRef = useRef();
+  let formRef = useRef(null);
   let thanksRef = useRef(null);
 
-  ////////////////////////////////////////
-  // effects
-
-  // The request to the mailing list
   useEffect(() => {
-    if (state === "loading") {
-      // if the request is fast we still want to see some fun animations!
-      let animationPromise = new Promise((res) => setTimeout(res, 2000));
-      let subscribePromise = subscribeToMailingList(data.name, data.email);
-      Promise.all([animationPromise, subscribePromise])
-        .then(([, res]) => {
-          if (res.error) {
-            setState("error");
-            setData({ ...data, error: res.error });
-          } else {
-            setState("success");
-          }
-        })
-        .catch((error) => {
-          setState("error");
-          setData({ ...data, error });
-        });
+    if (pendingSubmit) {
+      setState("loading");
     }
-  }, [state, data]);
+  }, [pendingSubmit]);
+
+  useEffect(() => {
+    if (!sessionData) return;
+    // artificial delay so there's a bit of an animation still
+    // TODO: useTransitionBlocker would be perfect for this (again)
+    new Promise((res) => setTimeout(res, 1000)).then(() => {
+      if (sessionData.newsletter === "success") {
+        setState("success");
+      } else if (sessionData.newsletter === "error") {
+        setState("error");
+        setData({ ...data, error: sessionData.error });
+      }
+    });
+  }, [sessionData]);
 
   // animate the logo on an interval while loading
   useEffect(() => {
@@ -66,6 +100,22 @@ export default function NewsLetter() {
       return () => clearInterval(id);
     }
   }, [state, colors, changeColors]);
+
+  // Reset after 5 seconds
+  useEffect(() => {
+    if (state === "thanks") {
+      setTimeout(() => {
+        setState("idle");
+        if (formRef.current != undefined) {
+          formRef.current.reset();
+        }
+        // avoid flash of no name in the animation
+        setTimeout(() => {
+          setData({ name: "", email: "", error: null });
+        }, 500);
+      }, 5000);
+    }
+  }, [state]);
 
   // manage focus on state changes
   useEffect(() => {
@@ -121,13 +171,6 @@ export default function NewsLetter() {
     changeColors();
   };
 
-  let handleSubmit = (event) => {
-    event.preventDefault();
-    let [name, email] = event.target.elements;
-    setData({ name: name.value, email: email.value });
-    setState("loading");
-  };
-
   ////////////////////////////////////////
   // The party's about to get started
   return (
@@ -144,16 +187,14 @@ export default function NewsLetter() {
                   : "opacity-100 z-10"
               }
               relative z-10
-              transition duration-300 delay-1000
+              transition duration-300 delay-500
             `}
           >
-            <form
+            <Form
+              method="post"
               autoComplete="off"
               ref={formRef}
-              onSubmit={handleSubmit}
-              className={`
-              flex justify-center flex-wrap sm:flex-no-wrap
-            `}
+              className="flex justify-center flex-wrap sm:flex-no-wrap"
             >
               <VisuallyHidden id="subscription-description">
                 Subscribe to our mailing list
@@ -196,7 +237,7 @@ export default function NewsLetter() {
               >
                 Subscribe
               </LoadingButton>
-            </form>
+            </Form>
             <div className="text-center leading-tight mt-4 text-gray-400">
               <p className="font-light text-gray-400 sm:text-2xl sm:leading-7">
                 Subscribe for weekly updates on Remix and techniques to build
@@ -214,8 +255,8 @@ export default function NewsLetter() {
                   : "opacity-0 transform -translate-y-2 pointer-events-none"
               }
               text-gray-200 text-center
-              absolute top-0 left-0 w-full text-center outline-none
-              transition duration-300 delay-1100
+              absolute top-0 left-0 w-full outline-none
+              transition duration-300 delay-500
             `}
           >
             <div
@@ -249,7 +290,7 @@ export default function NewsLetter() {
                   : "opacity-0 transform -translate-y-2 pointer-events-none"
               }
               absolute top-0 left-0 w-full text-center outline-none
-              transition duration-300 delay-1100
+              transition duration-300 delay-500
             `}
           >
             <p className="text-2xl mb-0">

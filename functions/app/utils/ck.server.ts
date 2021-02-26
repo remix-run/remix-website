@@ -1,9 +1,7 @@
-const fetch = require("node-fetch");
-
-// TODO: move to config
-const api_secret = "BDYDhz-LHH_xWmxZq_Qf06thC0M4V_Agof_-sjKsWNo";
+import { config } from "./firebase.server";
 
 function post(path, data) {
+  let api_secret = config.ck.secret;
   return fetch(`https://api.convertkit.com/v3/${path}`, {
     method: "POST",
     headers: {
@@ -17,7 +15,7 @@ function post(path, data) {
 }
 
 // https://developers.convertkit.com/#add-subscriber-to-a-form
-exports.subscribeToForm = async (email, first_name, formId) => {
+export let subscribeToForm = async (email, first_name, formId) => {
   let res = await post(`forms/${formId}/subscribe`, { email, first_name });
   return res.json();
 };
@@ -29,7 +27,7 @@ exports.subscribeToForm = async (email, first_name, formId) => {
 //
 // Also, we need to create the tag first, right now we do it
 // manually through the convert kit UI.
-exports.subscribeToTag = (email, first_name, tag, tags) => {
+export let subscribeToTag = (email, first_name, tag, tags) => {
   return post(`tags/${tag}/subscribe`, {
     email,
     first_name: first_name,
@@ -38,7 +36,7 @@ exports.subscribeToTag = (email, first_name, tag, tags) => {
 };
 
 // https://developers.convertkit.com/#create-a-purchase
-exports.addPurchase = (
+export let addPurchase = (
   email_address,
 
   // just has to be unique, can use like Date.now + whatever
@@ -65,4 +63,4 @@ exports.addPurchase = (
   });
 };
 
-exports.tags = {};
+export let tags = {};
