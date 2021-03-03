@@ -14,7 +14,8 @@ export default function handleRequest(
     <Remix url={request.url} context={remixContext} />
   );
 
-  responseHeaders.append("Content-Type", "text/html");
+  responseHeaders.set("Content-Type", "text/html");
+
   return new Response(streamString`<!DOCTYPE html>${markup}`, {
     status: responseStatusCode,
     headers: responseHeaders,

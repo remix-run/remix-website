@@ -1,0 +1,80 @@
+[data-loading-button] {
+  /* make it a grid so we can stack the child states */
+  display: inline-grid;
+  grid-template: 1fr / 1fr;
+  transition: all 100ms ease-in-out;
+}
+
+[data-loading-button] > * {
+  /* stack all states on top of each other */
+  grid-area: 1/1;
+
+  /* I don't know why it has to be a grid itself,
+     but the animation stops working if it's not */
+  display: grid;
+
+  /* lovely vertical/horizontal centering */
+  align-items: center;
+  justify-content: center;
+
+  /* make sure content gets centered vertically */
+  height: 100%;
+
+  /* the top level animation between states */
+  transition: opacity 300ms ease-in-out;
+
+  /* for icons absolute position inside right padding */
+  position: relative;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* hide when hidden, ofc */
+[data-loading-button] > [hidden] {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+/* this creates the sliding effect */
+[data-lb-slider] {
+  /* start from the right */
+  transform: translateX(50%);
+  transition: transform 300ms ease-in-out;
+  transition-delay: 0ms;
+}
+
+/* slide to the center when entering */
+[data-lb-direction="enter"] [data-lb-slider] {
+  transform: translateX(0%);
+}
+
+/* slide to the left when exiting */
+[data-lb-direction="exit"] [data-lb-slider] {
+  transform: translateX(-50%);
+}
+
+/* put the icon inside the right padding so text stays
+   horizontally centered (looks better on big buttons)
+   and for smaller buttons you can add 2rem of padding
+   to the right of the text if it feels off balance */
+[data-lb-icon] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

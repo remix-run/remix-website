@@ -7,13 +7,17 @@ import { subscribeToForm } from "../utils/ck.server";
 import { json, redirect } from "@remix-run/data";
 import type { ActionFunction, LoaderFunction } from "@remix-run/data";
 import { usePendingFormSubmit, useRouteData, Form } from "@remix-run/react";
-import { newsletter } from "../utils/sessions";
+import { newsletterStorage } from "../utils/sessions";
 
 export let loader: LoaderFunction = async function subscribeEmail({ request }) {
-  let session = await newsletter.getSession(request.headers.get("Cookie"));
+  let session = await newsletterStorage.getSession(
+    request.headers.get("Cookie")
+  );
   if (session.has("newsletter")) {
     return json(session.data, {
-      headers: { "Set-Cookie": await newsletter.destroySession(session) },
+      headers: {
+        "Set-Cookie": await newsletterStorage.destroySession(session),
+      },
     });
   } else {
     return null;
@@ -21,7 +25,9 @@ export let loader: LoaderFunction = async function subscribeEmail({ request }) {
 };
 
 export let action: ActionFunction = async ({ request }) => {
-  let session = await newsletter.getSession(request.headers.get("Cookie"));
+  let session = await newsletterStorage.getSession(
+    request.headers.get("Cookie")
+  );
   let params = new URLSearchParams(await request.text());
   let email = params.get("email");
   let name = params.get("name");
@@ -36,7 +42,7 @@ export let action: ActionFunction = async ({ request }) => {
   }
   return redirect("/newsletter", {
     headers: {
-      "Set-Cookie": await newsletter.commitSession(session),
+      "Set-Cookie": await newsletterStorage.commitSession(session),
     },
   });
 };
@@ -56,7 +62,9 @@ export function meta() {
 export default function NewsLetter() {
   let sessionData = useRouteData();
   let pendingSubmit = usePendingFormSubmit();
-  let [state, setState] = useState("idle"); // idle | valid | loading | error | success | thanks
+  let [state, setState] = useState<
+    "idle" | "valid" | "loading" | "error" | "success" | "thanks"
+  >("idle");
   let [data, setData] = useState<{
     name: string;
     email: string;
@@ -224,8 +232,8 @@ export default function NewsLetter() {
                 disabled={["loading", "success", "thanks"].includes(state)}
               />
               <LoadingButton
-                className="m-1 w-full sm:w-auto"
-                state={state}
+                className="m-1 w-full sm:w-auto inline-block neon-button rounded font-bold"
+                state={state === "thanks" || state === "valid" ? "idle" : state}
                 text="Subscribe"
                 loadingText="Subscribing..."
                 successText="Successfully Subscribed"
@@ -234,9 +242,7 @@ export default function NewsLetter() {
                 onFocus={changeColors}
                 type="submit"
                 disabled={state !== "valid"}
-              >
-                Subscribe
-              </LoadingButton>
+              />
             </Form>
             <div className="text-center leading-tight mt-4 text-gray-400">
               <p className="font-light text-gray-400 sm:text-2xl sm:leading-7">

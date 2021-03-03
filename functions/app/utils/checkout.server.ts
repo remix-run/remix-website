@@ -1,6 +1,10 @@
-import { db, admin, config } from "./firebase.server";
+import { db, admin, config, setDoc, getUnwrappedDoc } from "./firebase.server";
+import type { User, CompletedStripeSession } from "./Schema";
+import { Collections } from "./Schema";
 import { stripe } from "./stripe.server";
 import { createOwnerToken } from "./tokens.server";
+import { addToProductEmailList } from "./ck.server";
+import CompleteOrder from "../routes/buy/order.complete";
 
 ////////////////////////////////////////////////////////////////////////////////
 // Checkout Workflow!
@@ -8,31 +12,24 @@ import { createOwnerToken } from "./tokens.server";
 ////////////////////////////////////////////////////////////////////////////////
 // 1. It all starts when the user clicks "checkout" on /buy/<product> page and
 //    we call api/createCheckout
-
-// [license]: [testPriceId, productionPriceId]
-let prices = {
-  beta: {
-    indie: {
-      staging: "price_1HbT4UBIsmMSW7ROb1UqNcZq",
-      production: "price_1Hh5WkBhDjuvqbsSQdElIpjH",
-      // prod: "price_1Hh5eOBhDjuvqbsSwGlIi3ul", // partner license >.<
+export async function createCheckout(type: string, quantity: number) {
+  let prices = {
+    beta: {
+      indie: {
+        staging: "price_1IQkskBhDjuvqbsSnZHaXmP5",
+        production: "price_1Hh5WkBhDjuvqbsSQdElIpjH",
+        // prod: "price_1Hh5eOBhDjuvqbsSwGlIi3ul", // partner license >.<
+      },
+      team: {
+        staging: "price_1IQktIBhDjuvqbsSh5d3dbF1",
+        production: "price_1Hh5XqBhDjuvqbsSCboeBu7m",
+      },
     },
-    team: {
-      staging: "price_1HfabKBIsmMSW7ROGEtHs2Zv",
-      production: "price_1Hh5XqBhDjuvqbsSCboeBu7m",
-    },
-  },
-};
+  };
 
-export async function createCheckout(
-  uid,
-  email,
-  idToken,
-  type,
-  qty,
-  // TODO: send this from client instead of hardcoding github.com
-  provider = "github.com"
-) {
+  let price = prices.beta[type][config.app.env];
+  if (!price) throw new Error(`Invalid price: ${type}.${config.app.env}`);
+
   let baseUrl =
     process.env.NODE_ENV === "production"
       ? config.app.env === "staging"
@@ -40,35 +37,20 @@ export async function createCheckout(
         : `https://remix.run`
       : "http://localhost:5000";
 
-  let productKey = type;
-  let price = prices.beta[productKey][config.app.env];
-  if (!price) throw new Error(`Invalid price: ${productKey}.${config.app.env}`);
-  let quantity = qty;
-
   // Create a stripe session
-  let session = await stripe.checkout.sessions.create({
+  let stripeSession = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [{ price, quantity }],
     mode: "subscription",
-    success_url: `${baseUrl}/buy/order/complete?idToken=${idToken}`,
-    cancel_url: `${baseUrl}/buy/order/failed?idToken=${idToken}`,
-  });
-
-  // Temporary order so we can look up the customer after succesful purchase and
-  // associate it with the user
-  await db.doc(`orders/${uid}`).set({
-    stripeSessionId: session.id,
-    price,
-    quantity,
-    user: {
-      uid,
-      email,
-      provider,
+    success_url: `${baseUrl}/buy/order/complete?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${baseUrl}/buy/order/failed?session_id={CHECKOUT_SESSION_ID}`,
+    metadata: {
+      price,
+      quantity,
     },
   });
 
-  // Client needs the stripe session id
-  return session;
+  return stripeSession.id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,50 +58,64 @@ export async function createCheckout(
 
 ////////////////////////////////////////////////////////////////////////////////
 // 3. Success: Stripe redirects to success_url
-export async function completeOrder(idToken) {
-  // just want to verify we've actually got somebody here, not just a random
-  // copy/paste of the URL to try to get a free account or something
-  let { uid } = await admin.auth().verifyIdToken(idToken);
+export async function getStripeSession(stripeSessionId: string) {
+  let doc = await getUnwrappedDoc<CompletedStripeSession>(
+    `${Collections.completedStripeSessions}/${stripeSessionId}`
+  );
 
-  let userRef = db.doc(`users/${uid}`);
-  let orderRef = db.doc(`orders/${uid}`);
+  console.log({ doc });
 
-  let order = await orderRef.get();
-  let { stripeSessionId, price, quantity, user } = order.data();
-  let session = await stripe.checkout.sessions.retrieve(stripeSessionId);
+  // Session has already been fulfilled, pretend it doesn't exist.
+  if (doc?.data.fulfilled) {
+    return false;
+  }
 
-  await Promise.all([
-    userRef.set({ ...user, stripeCustomerId: session.customer }),
-    createOwnerToken(uid, price, quantity),
-    orderRef.delete(),
-  ]);
+  // try to find it from stripe
+  try {
+    let session = await stripe.checkout.sessions.retrieve(stripeSessionId);
+    return session;
+  } catch (e) {
+    return false;
+  }
 }
 
-/*
-New registration flow
+export async function fulfillOrder(idToken: string, stripeSessionId: string) {
+  let [sessionUser, stripeSession] = await Promise.all([
+    admin.auth().verifyIdToken(idToken),
+    stripe.checkout.sessions.retrieve(stripeSessionId),
+  ]);
 
-- <Form/> with license to buy
-- action
-  - create stripe session
-  - use the session id template!
-    - https://stripe.com/docs/payments/checkout/custom-success-page#modify-success-url
-  - redirect to stripe w/ stripe session id
-- stripe does its thing
-- stripe comes back to success url
-  - create order, use order id as registration token
-  - kick off email for registration link (maybe stripe has this built in?)
-  - redirect to registration url
-- registration page
-  - loader looks up order from query param
-    - if already registered, redirect to dashboard
-  - <Form> with email/password (use email from stripe, but let them change it)
-  - checkbox for marketing newsletter
-- registration action
-  - create user with firebase admin https://firebase.google.com/docs/auth/admin/manage-users#create_a_user
-  - create a license
-  - add to convertkit as customer, maybe marketing
-  - redirect to dashboard
+  let subscription = await stripe.subscriptions.retrieve(
+    stripeSession.subscription as string
+  );
+  let purchase = subscription.items.data[0];
+  let product = await stripe.products.retrieve(
+    purchase.price.product as string
+  );
 
-- redo adding people to licenses, also
+  await Promise.all([
+    setDoc<User>(`${Collections.users}/${sessionUser.uid}`, {
+      uid: sessionUser.uid,
+      email: sessionUser.email,
+      stripeCustomerId: stripeSession.customer as string,
+    }),
+    createOwnerToken(sessionUser.uid, purchase.price.id, purchase.quantity),
+    expireStripeSession(stripeSession.id, sessionUser.uid),
+    addToProductEmailList(sessionUser.email, subscription.id, {
+      name: product.name,
+      price: purchase.price.unit_amount / 100,
+      pid: product.id,
+      lid: product.id,
+    }),
+  ]);
 
-*/
+  return true;
+}
+
+// Might be a way to do this on stripe's side?
+async function expireStripeSession(sessionId: string, uid: string) {
+  return setDoc<CompletedStripeSession>(
+    `${Collections.completedStripeSessions}/${sessionId}`,
+    { fulfilled: true, uid }
+  );
+}

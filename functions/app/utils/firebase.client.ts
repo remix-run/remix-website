@@ -18,13 +18,32 @@ if (typeof window !== "undefined") {
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 }
 
+// https://firebase.google.com/docs/auth/web/password-auth
+// https://firebase.google.com/docs/reference/js/firebase.auth.Auth#createUserWithEmailAndPassword
+export async function createEmailUser(email: string, password: string) {
+  let messages = {
+    "auth/weak-password": "Password must be at least 6 characters",
+    "auth/email-already-exists": "The email address is already in use",
+    "auth/invalid-email": "The email address provided doesn't seem valid",
+  };
+
+  try {
+    return firebase.auth().createUserWithEmailAndPassword(email, password);
+  } catch (error) {
+    let message = messages[error.code] || error.message;
+    throw new Error(message);
+  }
+}
+
+export async function createGitHubUser() {}
+
 export async function authenticate() {
   let provider = new firebase.auth.GithubAuthProvider();
   return firebase.auth().signInWithPopup(provider);
 }
 
-export function getIdToken() {
-  firebase.auth().currentUser.getIdToken(/*forceRefresh*/ true);
+export async function getIdToken() {
+  return firebase.auth().currentUser.getIdToken(/*forceRefresh*/ true);
 }
 
 // TODO: remove this when we switch up the checkout flow, We're being weird here
@@ -38,14 +57,19 @@ export async function createUserSession(idToken) {
       "content-type": "application/json",
     },
   });
+
+  // sign out of the clientside auth, we'll just use our server session now
   await firebase.auth().signOut();
+
   if (res.status === 403) {
     throw new Error("Somebody's tryna hack us.");
   }
+
   // remix redirect status code
   if (res.status !== 204) {
     throw new Error(await res.text());
   }
+
   return { ok: true };
 }
 

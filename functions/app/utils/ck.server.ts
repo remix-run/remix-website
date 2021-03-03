@@ -27,32 +27,34 @@ export let subscribeToForm = async (email, first_name, formId) => {
 //
 // Also, we need to create the tag first, right now we do it
 // manually through the convert kit UI.
-export let subscribeToTag = (email, first_name, tag, tags) => {
+export let subscribeToTag = (email, tag, tags) => {
   return post(`tags/${tag}/subscribe`, {
     email,
-    first_name: first_name,
     tags,
   });
 };
 
 // https://developers.convertkit.com/#create-a-purchase
-export let addPurchase = (
-  email_address,
+interface Product {
+  /**
+   * This is your identifier for a product. Each product provided in the
+   * 'products' array must have a unique pid. Variants of the same product
+   * should have the same pid.
+   */
+  pid: string;
+  /**
+   * Each product should have an lid that is unique to the product for this
+   * purchase. i.e. A line item identifier.
+   */
+  lid: string;
+  price: number;
+  name: string;
+}
 
-  // just has to be unique, can use like Date.now + whatever
-  transaction_id,
-
-  // Something like:
-  //
-  //   {
-  //     pid: "1559454",
-  //     lid: "1559454",
-  //     price: 190,
-  //     name: "React Hooks Launch $190 - Patched"
-  //   }
-  //
-  // pid/lid are usually the same
-  product
+export let addToProductEmailList = (
+  email_address: string,
+  transaction_id: string,
+  product: Product
 ) => {
   return post("purchases", {
     purchase: {

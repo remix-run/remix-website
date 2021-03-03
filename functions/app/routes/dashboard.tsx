@@ -8,10 +8,7 @@ import { DataOutlet } from "../components/DataOutlet";
 import { requireCustomer } from "../utils/session.server";
 
 export let loader: LoaderFunction = ({ request, context }) => {
-  return requireCustomer(
-    request,
-    context
-  )((customer) => {
+  return requireCustomer(request)((customer) => {
     return json(customer, {
       headers: {
         "Cache-Control": "max-age=3600",

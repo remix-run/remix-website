@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { Meta, Scripts, Links, useRouteData } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction } from "@remix-run/data";
+import { json } from "@remix-run/data";
 import { useLocation, Outlet } from "react-router-dom";
 import twStyles from "url:./styles/tailwind.css";
 import appStyles from "url:./styles/app.css";
@@ -30,25 +31,21 @@ export let loader: LoaderFunction = () => {
     appId: "1:570373624547:web:e99465a877aa47e90dabd6",
   };
 
-  return {
-    env: {
-      firebase:
-        config.app.env === "production"
-          ? firebaseConfigProduction
-          : firebaseConfigStaging,
-      stripe: config.stripe.public_key,
+  return json(
+    {
+      env: {
+        firebase:
+          config.app.env === "production"
+            ? firebaseConfigProduction
+            : firebaseConfigStaging,
+        stripe: config.stripe.public_key,
+      },
     },
-  };
+    { headers: { "Cache-Control": "public, max-age=0" } }
+  );
 };
 
-let noScriptPaths = new Set([
-  "/",
-  "/buy",
-  "/logout",
-  "/features",
-  "/privacy",
-  "/logo",
-]);
+let noScriptPaths = new Set(["/", "/logout", "/features", "/privacy", "/logo"]);
 
 function shouldIncludeScripts(pathname) {
   if (noScriptPaths.has(pathname)) {
@@ -69,7 +66,7 @@ export default function App() {
   let { env } = useRouteData();
   let location = useLocation();
   let includeScripts = shouldIncludeScripts(location.pathname);
-  useWindowScrollRestoration();
+  // useWindowScrollRestoration();
 
   return (
     <html lang="en">
@@ -96,4 +93,9 @@ export default function App() {
       </body>
     </html>
   );
+}
+
+export function ErrorBoundary({ error }) {
+  console.error(error);
+  return <div>Error! {error.message}</div>;
 }

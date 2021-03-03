@@ -3,23 +3,35 @@ import Alert from "@reach/alert";
 import VisuallyHidden from "@reach/visually-hidden";
 import BeatSpinner from "./BeatSpinner";
 
-export default function LoadingButton({
+interface LoadingButtonProps {
+  text: string;
+  loadingText: string;
+  successText: string;
+  errorText: string;
+  icon: React.ReactNode;
+  state: "idle" | "valid" | "loading" | "success" | "error";
+  className?: string;
+}
+
+let LoadingButton: React.FC<
+  LoadingButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>
+> = ({
   text,
   loadingText,
   successText,
   errorText,
   icon,
-  state, // idle, loading, success, error
+  state,
   className = "",
   ...props
-}) {
+}) => {
+  console.log({ state });
   return (
     <button
       {...props}
       className={`
         ${className}
         ${state === "idle" ? "opacity-50" : ""}
-        inline-block neon-button rounded font-bold 
       `}
     >
       {/* no clue why I need this */}
@@ -97,9 +109,9 @@ export default function LoadingButton({
 
         <div
           aria-hidden={state !== "error"}
-          aria-label={errorText}
           className="absolute top-0 right-0 h-full w-full text-center"
         >
+          {errorText}{" "}
           <ExclamationIcon
             className={`
               ${state === "error" ? "opacity-100" : "opacity-0 ml-4"}
@@ -120,7 +132,7 @@ export default function LoadingButton({
       </VisuallyHidden>
     </button>
   );
-}
+};
 
 function CheckIcon({ className }) {
   return (
@@ -155,3 +167,5 @@ function ExclamationIcon({ className }) {
     </svg>
   );
 }
+
+export default LoadingButton;

@@ -1,7 +1,58 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Logo, { useLogoAnimation } from "../../components/Logo";
+import { ActionFunction, LoaderFunction } from "@remix-run/data";
+import { redirect, json } from "@remix-run/data";
+import { Form, usePendingFormSubmit, useRouteData } from "@remix-run/react";
+
+import BeatSpinner from "../../components/BeatSpinner";
+import Hero from "../../components/Hero";
+import LoadingButton, {
+  LoadingButtonProps,
+  styles as lbStyles,
+} from "../../components/LoadingButton";
 import * as CacheControl from "../../utils/CacheControl";
+import { buyStorage } from "../../utils/sessions";
+import { redirectToStripeCheckout } from "../../utils/checkout.client";
+import { createCheckout } from "../../utils/checkout.server";
+import { IconCheck, IconError, IconCard } from "../../components/icons";
+
+type RouteData = null | { stripeSessionId: string };
+
+export let loader: LoaderFunction = async ({ request }) => {
+  let session = await buyStorage.getSession(request.headers.get("Cookie"));
+  if (session.has("stripeSessionId")) {
+    let stripeSessionId = session.get("stripeSessionId");
+    let cookie = await buyStorage.destroySession(session);
+    return json({ stripeSessionId }, { headers: { "Set-Cookie": cookie } });
+  }
+  return json(null, { headers: CacheControl.pub });
+};
+
+export let action: ActionFunction = async ({ request }) => {
+  // firebase in dev redirects to 5001 😩
+  let url = new URL(request.url);
+  let origin = url.protocol + "//" + url.host;
+
+  let text = await request.text();
+  let params = new URLSearchParams(text);
+
+  let types = new Set(["indie", "team"]);
+  let type = params.get("type");
+  let qty = params.has("qty") ? parseInt(params.get("qty")) : 1;
+
+  if (!types.has(type)) {
+    return redirect(origin + "/buy");
+  } else {
+    let session = await buyStorage.getSession(request.headers.get("Cookie"));
+    let stripeSessionId = await createCheckout(type, qty);
+    session.flash("stripeSessionId", stripeSessionId);
+    return redirect(origin + "/buy", {
+      headers: {
+        "Set-Cookie": await buyStorage.commitSession(session),
+      },
+    });
+  }
+};
 
 export function meta() {
   return {
@@ -10,42 +61,95 @@ export function meta() {
   };
 }
 
-export function headers() {
-  return CacheControl.pub;
+export function headers({ loaderHeaders }) {
+  let cacheControl = loaderHeaders.get("Cache-Control") || "none";
+  return { "Cache-Control": cacheControl };
+}
+
+export function links() {
+  return [{ rel: "stylesheet", href: lbStyles }];
+}
+
+enum CheckoutState {
+  Idle,
+  CreatingSession,
+  AttemptingStripeRedirect,
+  Error,
 }
 
 export default function BuyIndex() {
+  let data = useRouteData<RouteData>();
+  let pendingSubmit = usePendingFormSubmit();
+  let [state, setState] = useState<CheckoutState>(CheckoutState.Idle);
+  let [pendingType, setPendingType] = useState<null | "indie" | "team">(null);
+
+  // important not to add "state" to these effects, their only purpose is to
+  // change state when remix's hooks change the data or pendingSubmit, since
+  // apps don't have access into those as "events". Have to derive the state a
+  // bit. Gotta think of a better answer than a bunch of wild effects firing off
+  // who-knows-when.
+
+  // when a pending submit comes in, move to the create session state
+  useEffect(() => {
+    if (!!pendingSubmit && state === CheckoutState.Idle) {
+      setState(CheckoutState.CreatingSession);
+      setPendingType(pendingSubmit.data.get("type") as "indie" | "team");
+    }
+  }, [pendingSubmit]);
+
+  // when remix calls the loader after a submit, move to redirecting
+  useEffect(() => {
+    if (!!data && state === CheckoutState.CreatingSession) {
+      setState(CheckoutState.AttemptingStripeRedirect);
+    }
+  }, [data]);
+
+  // actually try to redirect with stripe when
+  useEffect(() => {
+    if (state !== CheckoutState.AttemptingStripeRedirect) return;
+    (async () => {
+      // do some fun fade-out because stripe fades in, it'll be sweet!
+      setTimeout(() => {
+        document.body.classList.add("fade-out");
+        setTimeout(async () => {
+          try {
+            // await redirectToStripeCheckout(data.stripeSessionId);
+            await redirectToStripeCheckout(data.stripeSessionId);
+          } catch (error) {
+            console.error(error);
+            document.body.classList.remove("fade-out");
+            setState(CheckoutState.Error);
+          }
+        }, 300);
+      }, 500);
+    })();
+  }, [state]);
+
+  // stripe redirect failed, tell the user
+  useEffect(() => {
+    if (state === CheckoutState.Error) {
+      setTimeout(() => {
+        alert("There was an error checking out, please try again.");
+        setTimeout(() => {
+          setState(CheckoutState.Idle);
+          setPendingType(null);
+        });
+      }, 500);
+    }
+  }, [state]);
+
   return (
     <div className="bg-gray-200">
       <div className="bg-gray-900">
-        <Hero />
+        <Hero title="Supporter Preview Now Available">
+          Remix is not production ready but it's close! We need your support to
+          get it over the finish line. You are buying a Supporter Preview
+          license, think of it like a kickstarter but you get to use the product
+          right away. Supporter Licenses are non-refundable.
+        </Hero>
         <div className="mt-8 pb-12 bg-gray-200 sm:mt-12 sm:pb-16 lg:mt-16 lg:pb-24">
-          <PricingCards />
+          <PricingCards state={state} pendingType={pendingType} />
           <FAQSection />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Hero() {
-  let [colors, changeColors] = useLogoAnimation();
-  return (
-    <div className="pt-12 sm:pt-16">
-      <div className="max-w-screen-xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto space-y-2 lg:max-w-none">
-          <div className="max-w-md mx-auto" onMouseMove={changeColors}>
-            <Logo colors={colors} className="w-full" />
-          </div>
-          <p className="text-3xl leading-9 font-extrabold text-white sm:text-4xl sm:leading-10 lg:text-5xl lg:leading-none">
-            Supporter Preview Now Available
-          </p>
-          <p className="text-xl max-w-4xl m-auto leading-7 text-gray-300">
-            Remix is not production ready but it's close! We need your support
-            to get it over the finish line. You are buying a Supporter Preview
-            license, think of it like a kickstarter but you get to use the
-            product right away. Supporter Licenses are non-refundable.
-          </p>
         </div>
       </div>
     </div>
@@ -138,11 +242,22 @@ function FAQSection() {
     </div>
   );
 }
+function PricingCards({
+  state,
+  pendingType,
+}: {
+  state: CheckoutState;
+  pendingType: "indie" | "team";
+}) {
+  let buttonState = {
+    [CheckoutState.Idle]: "idle",
+    [CheckoutState.CreatingSession]: "loading",
+    [CheckoutState.AttemptingStripeRedirect]: "success",
+    [CheckoutState.Error]: "error",
+  }[state] as LoadingButtonProps["state"]; // TODO: why do I need this as?
 
-function PricingCards() {
   return (
     <div className="relative">
-      {" "}
       <div className="absolute inset-0 h-3/4 bg-gray-900" />
       <div className="relative z-10 max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-md mx-auto space-y-4 lg:max-w-5xl lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0">
@@ -170,7 +285,25 @@ function PricingCards() {
             </div>
             <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
               <Checklist />
-              <BuyLink to="checkout?type=indie">Buy My Indie License</BuyLink>
+              <Form action="/buy" method="post">
+                <input type="hidden" name="type" value="indie" />
+                <input type="hidden" name="qty" value="1" />
+                <LoadingButton
+                  disabled={pendingType === "team"}
+                  state={pendingType === "indie" ? buttonState : "idle"}
+                  text="Buy my indie license"
+                  textLoading="Loading..."
+                  ariaText="Buy my indie license"
+                  ariaLoadingAlert="Creating checkout session, please wait."
+                  ariaSuccessAlert="Redirecting to checkout, please wait."
+                  ariaErrorAlert="There was an error creating your checkout session, please try again."
+                  icon={<IconCard className="h-5" />}
+                  iconError={<IconError className="h-5" />}
+                  iconLoading={<BeatSpinner />}
+                  iconSuccess={<IconCheck className="h-5" />}
+                  className="w-full px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md shadow text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+                />
+              </Form>
             </div>
           </div>
           <div className="flex flex-col rounded-lg shadow-lg overflow-hidden">
@@ -198,13 +331,14 @@ function PricingCards() {
             </div>
             <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
               <Checklist />
-              <form action="/buy/checkout">
+              <Form action="/buy" method="post">
                 <div>
                   <select
                     className="mt-1 mb-2 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
                     id="qty"
                     name="qty"
                     aria-label="Number of Licenses"
+                    defaultValue="2"
                   >
                     {Array.from({ length: 10 }).map((_, index, arr) =>
                       index === arr.length - 1 ? (
@@ -212,11 +346,7 @@ function PricingCards() {
                           Email hello@remix.run for 11+
                         </option>
                       ) : (
-                        <option
-                          key={index}
-                          selected={index === 0}
-                          value={index + 2}
-                        >
+                        <option key={index} value={index + 2}>
                           {index + 2} Seat License
                         </option>
                       )
@@ -224,8 +354,22 @@ function PricingCards() {
                   </select>
                 </div>
                 <input type="hidden" name="type" value="team" />
-                <BuyButton>Buy a Team License</BuyButton>
-              </form>
+                <LoadingButton
+                  disabled={pendingType === "indie"}
+                  state={pendingType === "team" ? buttonState : "idle"}
+                  text="Buy team licenses"
+                  textLoading="Loading..."
+                  ariaText="Buy team licenses"
+                  ariaLoadingAlert="Creating checkout session, please wait."
+                  ariaSuccessAlert="Redirecting to checkout, please wait."
+                  ariaErrorAlert="There was an error creating your checkout session, please try again."
+                  icon={<IconCard className="h-5" />}
+                  iconError={<IconError className="h-5" />}
+                  iconLoading={<BeatSpinner />}
+                  iconSuccess={<IconCheck className="h-5" />}
+                  className="w-full px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md shadow text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+                />
+              </Form>
             </div>
           </div>
         </div>
@@ -287,25 +431,15 @@ function Question({ title, children }) {
   );
 }
 
-function BuyButton({ children }) {
+function BuyButton({ children, ...props }) {
   return (
     <button
+      {...props}
       type="submit"
       className="flex w-full items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md shadow text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
     >
       {children}
     </button>
-  );
-}
-
-function BuyLink({ children, to }) {
-  return (
-    <Link
-      to={to}
-      className="flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md shadow text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-    >
-      {children}
-    </Link>
   );
 }
 

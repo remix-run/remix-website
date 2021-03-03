@@ -215,3 +215,8 @@ body {
 .ratio-16x9 {
   padding-bottom: 56.25%;
 }
+
+.fade-out {
+  transition: opacity 300ms ease;
+  opacity: 0;
+}

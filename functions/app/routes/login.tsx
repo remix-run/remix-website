@@ -8,10 +8,10 @@ import type { LoaderFunction } from "@remix-run/data";
 import { usePendingFormSubmit, useSubmit } from "@remix-run/react";
 import { getCustomer } from "../utils/session.server";
 
-export let loader: LoaderFunction = async ({ context: { req } }) => {
-  let customer = await getCustomer(req);
+export let loader: LoaderFunction = async ({ request }) => {
+  let customer = await getCustomer(request);
   if (customer) {
-    return redirect("/dashboard/docs");
+    return redirect("/dashboard");
   }
   return null;
 };
