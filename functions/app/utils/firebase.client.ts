@@ -35,9 +35,7 @@ export async function createEmailUser(email: string, password: string) {
   }
 }
 
-export async function createGitHubUser() {}
-
-export async function authenticate() {
+export async function signInWithGitHub() {
   let provider = new firebase.auth.GithubAuthProvider();
   return firebase.auth().signInWithPopup(provider);
 }

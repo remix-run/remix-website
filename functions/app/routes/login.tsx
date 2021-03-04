@@ -1,5 +1,5 @@
 import React from "react";
-import { authenticate } from "../utils/firebase.client";
+import { signInWithGitHub } from "../utils/firebase.client";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { useLocation } from "react-router-dom";
 import * as CacheControl from "../utils/CacheControl";
@@ -61,7 +61,7 @@ export default function Login() {
   async function startSignin() {
     setState("authenticating");
     try {
-      let { user } = await authenticate();
+      let { user } = await signInWithGitHub();
       let idToken = await user.getIdToken(true);
       submit(
         { idToken },

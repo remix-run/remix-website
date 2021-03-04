@@ -12,17 +12,18 @@ export function unwrapSnapshot(snapshot) {
   return docs;
 }
 
-export function unwrapDoc<TSchema>(doc) {}
+export function unwrapDoc<TSchema>(doc) {
+  if (!doc.exists) return null;
+  let data: TSchema = doc.data();
+  return { data, _id: doc.id };
+}
 
 export async function setDoc<TSchema>(path, values: TSchema) {
   return db.doc(path).set(values);
 }
 
 export async function getUnwrappedDoc<TSchema>(path: string) {
-  let doc = await db.doc(path).get();
-  if (!doc.exists) return null;
-  let data = doc.data() as TSchema;
-  return { data, _id: doc.id };
+  return unwrapDoc(await db.doc(path).get());
 }
 
 export async function getSessionToken(idToken) {

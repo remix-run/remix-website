@@ -8,9 +8,18 @@ import { buyStorage, createUserSession } from "../../utils/sessions";
 import * as CacheControl from "../../utils/CacheControl";
 
 import Hero from "../../components/Hero";
-import { IconLock, IconError, IconCheck } from "../../components/icons";
+import {
+  IconLock,
+  IconError,
+  IconCheck,
+  IconGitHub,
+} from "../../components/icons";
 import BeatSpinner from "../../components/BeatSpinner";
-import { getIdToken, createEmailUser } from "../../utils/firebase.client";
+import {
+  getIdToken,
+  createEmailUser,
+  signInWithGitHub,
+} from "../../utils/firebase.client";
 import LoadingButton, { styles } from "../../components/LoadingButton";
 
 export let loader: LoaderFunction = async ({ request }) => {
@@ -87,8 +96,9 @@ enum State {
   Error,
 }
 
-function EmailPasswordForm() {
-  let [authState, setAuthState] = useState<State>(State.Idle);
+function RegistrationForm() {
+  let [state, setState] = useState<State>(State.Idle);
+  let [authMethod, setAuthMethod] = useState<"github" | "password">(null);
   let [error, setError] = useState<Error>(null);
   let [formValues, setFormValues] = useState({
     email: "",
@@ -105,16 +115,20 @@ function EmailPasswordForm() {
     formValues.password === formValues.verify;
 
   async function transition() {
-    switch (authState) {
+    switch (state) {
       case State.CreatingUser: {
         try {
           // fake it so we get SOME fun animations
           await new Promise((res) => setTimeout(res, 1000));
-          await createEmailUser(formValues.email, formValues.password);
-          setAuthState(State.FulfillingPurchase);
+          if (authMethod === "github") {
+            await signInWithGitHub();
+          } else {
+            await createEmailUser(formValues.email, formValues.password);
+          }
+          setState(State.FulfillingPurchase);
         } catch (error) {
           setError(error);
-          setAuthState(State.Error);
+          setState(State.Error);
         }
         break;
       }
@@ -134,142 +148,201 @@ function EmailPasswordForm() {
         break;
       }
       case State.Error: {
-        emailRef.current.select();
+        if (authMethod === "password") emailRef.current.select();
         break;
       }
     }
   }
   useEffect(() => {
     transition();
-  }, [authState]);
+  }, [state]);
 
   useEffect(() => {
     // remix action returned an error, move the client side machine along
-    if (authState === State.FulfillingPurchase && data.error) {
+    if (state === State.FulfillingPurchase && data.error) {
       setError(new Error(data.errorMessage));
-      setAuthState(State.Error);
+      setState(State.Error);
     }
   }, [data]);
 
   return (
-    <form
-      className="mt-8 space-y-6"
-      onChange={(event) => {
-        let form = event.currentTarget;
-        setFormValues({
-          email: form.email.value,
-          password: form.password.value,
-          verify: form.verify.value,
-        });
-      }}
-      onSubmit={(event) => {
-        event.preventDefault();
-        setAuthState(State.CreatingUser);
-      }}
-    >
-      <div className="rounded-md shadow-sm -space-y-px">
+    <div className="mt-8">
+      <form
+        className="space-y-6"
+        onChange={(event) => {
+          let form = event.currentTarget;
+          setFormValues({
+            email: form.email.value,
+            password: form.password.value,
+            verify: form.verify.value,
+          });
+        }}
+        onSubmit={(event) => {
+          event.preventDefault();
+          setAuthMethod("password");
+          setState(State.CreatingUser);
+        }}
+      >
+        <div className="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label htmlFor="email-address" className="sr-only">
+              Email address
+            </label>
+            <input
+              ref={emailRef}
+              autoFocus
+              aria-describedby={
+                state === State.Error ? "error-message" : "message"
+              }
+              id="email-address"
+              name="email"
+              type="email"
+              autoComplete="email"
+              defaultValue={data.email}
+              required
+              className="appearance-none rounded-none relative block w-full px-3 py-2 border-2 border-gray-700 placeholder-gray-500 text-gray-200 bg-gray-800 rounded-t-md focus:outline-none focus:border-yellow-500 focus:z-10 sm:text-sm"
+              placeholder="Email address"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="sr-only">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="off"
+              required
+              minLength={6}
+              className="-mt-1 appearance-none rounded-none relative block w-full px-3 py-2 border-2 border-gray-700 placeholder-gray-500 text-gray-200 bg-gray-800 focus:outline-none focus:border-yellow-500 focus:z-10 sm:text-sm"
+              placeholder="Password"
+            />
+          </div>
+          <div>
+            <label htmlFor="verify" className="sr-only">
+              Verify Password
+            </label>
+            <input
+              id="verify"
+              name="verify"
+              type="password"
+              autoComplete="off"
+              required
+              className="-mt-1 appearance-none rounded-none relative block w-full px-3 py-2 border-2 border-gray-700 placeholder-gray-500 text-gray-200 bg-gray-800 rounded-b-md focus:outline-none  focus:border-yellow-500 focus:z-10 sm:text-sm"
+              placeholder="Verify Password"
+            />
+          </div>
+        </div>
         <div>
-          <label htmlFor="email-address" className="sr-only">
-            Email address
-          </label>
-          <input
-            ref={emailRef}
-            autoFocus
-            aria-describedby={
-              authState === State.Error ? "error-message" : "message"
+          <LoadingButton
+            ariaErrorAlert={"There was an error creating your account"}
+            ariaLoadingAlert={
+              state === State.CreatingUser
+                ? "Registering account, please wait..."
+                : state === State.FulfillingPurchase
+                ? "Generating license, please wait..."
+                : "Loading..."
             }
-            id="email-address"
-            name="email"
-            type="email"
-            autoComplete="email"
-            defaultValue={data.email}
-            required
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border-2 border-gray-700 placeholder-gray-500 text-gray-200 bg-gray-800 rounded-t-md focus:outline-none focus:border-yellow-500 focus:z-10 sm:text-sm"
-            placeholder="Email address"
+            ariaSuccessAlert="Account created! Redirecting."
+            ariaText="Register Account"
+            disabled={!formIsValid || authMethod !== "password"}
+            icon={<IconLock className="h-5 w-5 text-blue-700" />}
+            iconError={<IconError className="h-5 w-5" />}
+            iconLoading={<BeatSpinner />}
+            iconSuccess={<IconCheck className="h-5 w-5" />}
+            state={
+              authMethod !== "password"
+                ? "idle"
+                : state === State.CreatingUser ||
+                  state === State.FulfillingPurchase
+                ? "loading"
+                : state === State.Error
+                ? "error"
+                : state === State.Success
+                ? "success"
+                : "idle"
+            }
+            text="Create Account"
+            textLoading={
+              state === State.CreatingUser
+                ? "Registering..."
+                : state === State.FulfillingPurchase
+                ? "Generating license..."
+                : "Loading..."
+            }
+            type="submit"
+            className={`w-full py-2 px-4 border-2 border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:border-yellow-500 ${
+              formIsValid ? "" : "opacity-50"
+            }`}
           />
         </div>
-        <div>
-          <label htmlFor="password" className="sr-only">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="off"
-            required
-            minLength={6}
-            className="-mt-1 appearance-none rounded-none relative block w-full px-3 py-2 border-2 border-gray-700 placeholder-gray-500 text-gray-200 bg-gray-800 focus:outline-none focus:border-yellow-500 focus:z-10 sm:text-sm"
-            placeholder="Password"
-          />
+        {error && (
+          <p id="error-message" className="text-red-600 text-center">
+            {error.message}
+          </p>
+        )}
+        <div className="sr-only" aria-live="polite">
+          {formIsValid
+            ? "Account form is now valid and ready to submit"
+            : "Account form is now invalid."}
         </div>
-        <div>
-          <label htmlFor="verify" className="sr-only">
-            Verify Password
-          </label>
-          <input
-            id="verify"
-            name="verify"
-            type="password"
-            autoComplete="off"
-            required
-            className="-mt-1 appearance-none rounded-none relative block w-full px-3 py-2 border-2 border-gray-700 placeholder-gray-500 text-gray-200 bg-gray-800 rounded-b-md focus:outline-none  focus:border-yellow-500 focus:z-10 sm:text-sm"
-            placeholder="Verify Password"
-          />
+      </form>
+      <div className="relative my-8">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-700" />
+        </div>
+        <div className="relative flex justify-center text-sm leading-5">
+          <span className="px-2 bg-gray-900 text-gray-300">Or you can</span>
         </div>
       </div>
       <div>
         <LoadingButton
+          onClick={() => {
+            setAuthMethod("github");
+            setState(State.CreatingUser);
+          }}
           ariaErrorAlert={"There was an error creating your account"}
           ariaLoadingAlert={
-            authState === State.CreatingUser
-              ? "Registering account, please wait..."
-              : authState === State.FulfillingPurchase
+            state === State.CreatingUser
+              ? "Registering account with GitHub, please wait..."
+              : state === State.FulfillingPurchase
               ? "Generating license, please wait..."
               : "Loading..."
           }
           ariaSuccessAlert="Account created! Redirecting."
-          ariaText="Register Account"
-          disabled={!formIsValid}
-          icon={<IconLock className="h-5 w-5 text-blue-700" />}
+          ariaText="Create Account"
+          disabled={authMethod && authMethod !== "github"}
+          icon={<IconGitHub className="h-5 w-5" />}
           iconError={<IconError className="h-5 w-5" />}
           iconLoading={<BeatSpinner />}
           iconSuccess={<IconCheck className="h-5 w-5" />}
           state={
-            authState === State.CreatingUser ||
-            authState === State.FulfillingPurchase
+            authMethod !== "github"
+              ? "idle"
+              : state === State.CreatingUser ||
+                state === State.FulfillingPurchase
               ? "loading"
-              : authState === State.Error
+              : state === State.Error
               ? "error"
-              : authState === State.Success
+              : state === State.Success
               ? "success"
               : "idle"
           }
-          text="Create Account"
+          text="Sign in with GitHub"
           textLoading={
-            authState === State.CreatingUser
-              ? "Registering..."
-              : authState === State.FulfillingPurchase
+            state === State.CreatingUser
+              ? "Signing in with GitHub..."
+              : state === State.FulfillingPurchase
               ? "Generating license..."
               : "Loading..."
           }
-          type="submit"
-          className={`w-full py-2 px-4 border-2 border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:border-yellow-500 ${
-            formIsValid ? "" : "opacity-50"
+          className={`w-full py-2 px-4 border-2 border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:border-yellow-500 ${
+            authMethod !== "github" ? "" : "opacity-50"
           }`}
         />
       </div>
-      {error && (
-        <p id="error-message" className="text-red-600 text-center">
-          {error.message}
-        </p>
-      )}
-      <div className="sr-only" aria-live="polite">
-        {formIsValid
-          ? "Account form is now valid and ready to submit"
-          : "Account form is now invalid."}
-      </div>
-    </form>
+    </div>
   );
 }
 
@@ -289,7 +362,7 @@ export default function CompleteOrder() {
             ? "There was a problem creating your account:"
             : "Payment complete! Let's get you an account"}
         </h2>
-        <EmailPasswordForm />
+        <RegistrationForm />
       </div>
     </div>
   );
