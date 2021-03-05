@@ -16,8 +16,6 @@ let error = (message) => {
 };
 
 export let loader: LoaderFunction = async ({ context, request, params }) => {
-  let url = new URL(request.url);
-
   // FIXME: requireToken is being used here like a normal function, not a things
   // that returns responses fix that and we can remove the type casting here
   let token = (await requireToken(

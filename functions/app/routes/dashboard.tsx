@@ -74,9 +74,7 @@ function useFlashingColorsOnTransition() {
 function TopNav({ sessionUser, user }) {
   let [isOpen, setIsOpen] = React.useState(false);
   let colors = useFlashingColorsOnTransition();
-  let signout = () => {
-    window.location.assign("/logout");
-  };
+
   // TODO: this mobile menu isn't very accessible
   return (
     <nav className="sticky top-0 z-10 bg-gray-900 dark:bg-black">
@@ -107,9 +105,11 @@ function TopNav({ sessionUser, user }) {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <TopNavLink as="button" onClick={signout}>
-                <IconSignout /> Sign out
-              </TopNavLink>
+              <form action="/logout" method="post">
+                <TopNavLink as="button" type="submit">
+                  <IconSignout /> Sign out
+                </TopNavLink>
+              </form>
               <div className="ml-2 relative">
                 <img
                   alt=""
@@ -164,22 +164,24 @@ function TopNav({ sessionUser, user }) {
             </div>
           </div>
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <TopNavLinkMobile as="button" onClick={signout}>
-              <svg
-                className="mr-2 h-6 w-6"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>{" "}
-              Sign out
-            </TopNavLinkMobile>
+            <form action="/logout" method="post">
+              <TopNavLinkMobile as="button" type="submit">
+                <svg
+                  className="mr-2 h-6 w-6"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>{" "}
+                Sign out
+              </TopNavLinkMobile>
+            </form>
           </div>
         </div>
       </div>

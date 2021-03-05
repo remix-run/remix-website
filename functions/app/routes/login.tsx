@@ -1,19 +1,34 @@
 import React from "react";
 import { signInWithGitHub } from "../utils/firebase.client";
 import Logo, { useLogoAnimation } from "../components/Logo";
-import { useLocation } from "react-router-dom";
 import * as CacheControl from "../utils/CacheControl";
-import { redirect } from "@remix-run/data";
+import { json, redirect } from "@remix-run/data";
 import type { LoaderFunction } from "@remix-run/data";
-import { usePendingFormSubmit, useSubmit } from "@remix-run/react";
+import {
+  usePendingFormSubmit,
+  useRouteData,
+  useSubmit,
+} from "@remix-run/react";
 import { getCustomer } from "../utils/session.server";
+import { rootStorage } from "../utils/sessions";
 
 export let loader: LoaderFunction = async ({ request }) => {
   let customer = await getCustomer(request);
   if (customer) {
     return redirect("/dashboard");
   }
-  return null;
+  let session = await rootStorage.getSession();
+  let loggedOut = session.get("loggedOut");
+  return json(
+    {
+      message: loggedOut ? "You have been logged out" : null,
+    },
+    {
+      headers: {
+        "Set-Cookie": await rootStorage.commitSession(session),
+      },
+    }
+  );
 };
 
 export function headers() {
@@ -28,8 +43,7 @@ export function meta() {
 
 export default function Login() {
   let [colors, changeColors] = useLogoAnimation();
-  let location = useLocation();
-  let loggedOut = location.search === "?loggedout=1";
+  let { loggedOut } = useRouteData();
 
   // loggedOut | idle | authenticating | error
   let [state, setState] = React.useState(loggedOut ? "loggedOut" : "idle");

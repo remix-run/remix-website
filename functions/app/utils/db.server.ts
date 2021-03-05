@@ -154,3 +154,10 @@ export let db = {
    */
   xTokensUsers: collection<XTokensUser>("xTokensUsers"),
 };
+
+/////////////////////////////////////////////////
+// make a serialize function so the dashboard doesn't have to construct all it's
+// own weird stuff
+//
+// let doc = await tokenRef.get()
+// serialize(doc, { include: [doc.ownerRef] })

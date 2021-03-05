@@ -15,6 +15,9 @@ export default function handleRequest(
   );
 
   responseHeaders.set("Content-Type", "text/html");
+  if (process.env.NODE_ENV !== "production") {
+    responseHeaders.set("Cache-Control", "no-store");
+  }
 
   return new Response(streamString`<!DOCTYPE html>${markup}`, {
     status: responseStatusCode,
