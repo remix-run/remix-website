@@ -246,7 +246,6 @@ function RegistrationForm() {
             }
             ariaSuccessAlert="Account created! Redirecting."
             ariaText="Register Account"
-            disabled={!formIsValid || authMethod !== "password"}
             icon={<IconLock className="h-5 w-5 text-blue-700" />}
             iconError={<IconError className="h-5 w-5" />}
             iconLoading={<BeatSpinner />}

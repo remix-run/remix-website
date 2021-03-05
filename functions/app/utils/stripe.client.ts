@@ -1,5 +1,4 @@
 import { loadStripe } from "@stripe/stripe-js";
-import { firebase } from "./firebase.client";
 
 declare global {
   var ENV: any;

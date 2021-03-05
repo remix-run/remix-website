@@ -1,10 +1,8 @@
-import { db, admin, config, setDoc, getUnwrappedDoc } from "./firebase.server";
-import type { User, CompletedStripeSession } from "./Schema";
-import { Collections } from "./Schema";
+import { admin, config } from "./firebase.server";
+import { db } from "./db.server";
 import { stripe } from "./stripe.server";
 import { createOwnerToken } from "./tokens.server";
 import { addToProductEmailList } from "./ck.server";
-import CompleteOrder from "../routes/buy/order.complete";
 
 ////////////////////////////////////////////////////////////////////////////////
 // Checkout Workflow!
@@ -59,14 +57,10 @@ export async function createCheckout(type: string, quantity: number) {
 ////////////////////////////////////////////////////////////////////////////////
 // 3. Success: Stripe redirects to success_url
 export async function getStripeSession(stripeSessionId: string) {
-  let doc = await getUnwrappedDoc<CompletedStripeSession>(
-    `${Collections.completedStripeSessions}/${stripeSessionId}`
-  );
-
-  console.log({ doc });
+  let doc = await db.completedStripeSessions.doc(stripeSessionId).get();
 
   // Session has already been fulfilled, pretend it doesn't exist.
-  if (doc?.data.fulfilled) {
+  if (doc.exists && doc.data().fulfilled) {
     return false;
   }
 
@@ -93,14 +87,19 @@ export async function fulfillOrder(idToken: string, stripeSessionId: string) {
     purchase.price.product as string
   );
 
+  let userRef = db.users.doc(sessionUser.uid);
+
   await Promise.all([
-    setDoc<User>(`${Collections.users}/${sessionUser.uid}`, {
+    userRef.set({
       uid: sessionUser.uid,
       email: sessionUser.email,
       stripeCustomerId: stripeSession.customer as string,
     }),
+    db.completedStripeSessions.doc(stripeSessionId).set({
+      fulfilled: true,
+      userRef,
+    }),
     createOwnerToken(sessionUser.uid, purchase.price.id, purchase.quantity),
-    expireStripeSession(stripeSession.id, sessionUser.uid),
     addToProductEmailList(sessionUser.email, subscription.id, {
       name: product.name,
       price: purchase.price.unit_amount / 100,
@@ -110,12 +109,4 @@ export async function fulfillOrder(idToken: string, stripeSessionId: string) {
   ]);
 
   return true;
-}
-
-// Might be a way to do this on stripe's side?
-async function expireStripeSession(sessionId: string, uid: string) {
-  return setDoc<CompletedStripeSession>(
-    `${Collections.completedStripeSessions}/${sessionId}`,
-    { fulfilled: true, uid }
-  );
 }

@@ -1,5 +1,6 @@
 import { Response, redirect } from "@remix-run/data";
-import { db, admin, unwrapDoc } from "./firebase.server";
+import { admin } from "./firebase.server";
+import { db } from "./db.server";
 import { rootStorage } from "./sessions";
 
 export let getCustomer = async (request) => {
@@ -7,11 +8,11 @@ export let getCustomer = async (request) => {
   if (!sessionUser) {
     return null;
   }
-  let userDoc = await db.doc(`users/${sessionUser.uid}`).get();
+  let userDoc = await db.users.doc(sessionUser.uid).get();
   if (!userDoc.exists) {
     return null;
   }
-  let user = unwrapDoc(userDoc);
+  let user = userDoc.data();
   return { sessionUser, user };
 };
 
@@ -27,11 +28,10 @@ export let requireCustomer = (request) => {
     // an actual account
     try {
       let sessionUser = await getUserSession(request);
-      let userDoc = await db.doc(`users/${sessionUser.uid}`).get();
+      let userDoc = await db.users.doc(sessionUser.uid).get();
       if (!userDoc.exists) {
         return redirect("/buy");
       }
-      // TODO: use unwrapDoc, watch out for all the users.uid cases though
       let user = { uid: userDoc.id, ...userDoc.data() };
       let data = { sessionUser, user };
       return loader

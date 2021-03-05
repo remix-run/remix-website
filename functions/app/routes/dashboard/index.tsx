@@ -2,36 +2,42 @@ import React from "react";
 import { useRouteData } from "@remix-run/react";
 import { json } from "@remix-run/data";
 import type { LoaderFunction } from "@remix-run/data";
-import { db, unwrapDoc, unwrapSnapshot } from "../../utils/firebase.server";
+import { unwrapSnapshot } from "../../utils/firebase.server";
 import { requireCustomer } from "../../utils/session.server";
 import { stripe } from "../../utils/stripe.server";
+import { db } from "../../utils/db.server";
+import * as CacheControl from "../../utils/CacheControl";
 
-export let loader: LoaderFunction = ({ request, context }) => {
-  return requireCustomer(
-    request,
-    context
-  )(async ({ sessionUser, user }) => {
-    async function getTokens(uid) {
-      let snapshot = await db
-        .collection("xTokensUsers")
-        .where("userRef", "==", db.doc(`/users/${uid}`))
+export let loader: LoaderFunction = ({ request }) => {
+  return requireCustomer(request)(async ({ sessionUser, user }) => {
+    async function getTokens(uid: string) {
+      let snapshot = await db.xTokensUsers
+        .where("userRef", "==", db.users.doc(uid))
         .get();
 
       let xTokens = unwrapSnapshot(snapshot);
       return Promise.all(
         xTokens.map(async (xTokenUser) => {
-          let token = unwrapDoc(await xTokenUser.tokenRef.get());
+          let tokenRef = await xTokenUser.tokenRef.get();
+          let token = { id: tokenRef.id, ...tokenRef.data() };
+          // FIXME: the types suck when you call `get` on references in
+          // `data()`, figure out how to get them to not suck?
+          let ownerRef = db.users.doc(token.ownerRef.id);
+          let owner = (await ownerRef.get()).data();
 
-          // owner token
           if (xTokenUser.role === "owner") {
             let members = await getMembers(xTokenUser.tokenRef);
-            delete token.ownerRef;
-            return { ...token, role: xTokenUser.role, members };
+            return {
+              ...token,
+              role: xTokenUser.role,
+              members,
+              ownerEmail: owner.email,
+            };
           }
 
           // member token
           else if (xTokenUser.role === "member") {
-            let owner = unwrapDoc(await token.ownerRef.get());
+            let owner = (await token.ownerRef.get()).data();
             delete token.ownerRef;
             return {
               ...token,
@@ -44,20 +50,19 @@ export let loader: LoaderFunction = ({ request, context }) => {
     }
 
     async function getMembers(tokenRef) {
-      let snapshot = await db
-        .collection("xTokensUsers")
+      let snapshot = await db.xTokensUsers
         .where("tokenRef", "==", tokenRef)
         .get();
       let xTokensUsers = unwrapSnapshot(snapshot);
       return await Promise.all(
         xTokensUsers.map(async (xTokenUser) => {
           let user = await xTokenUser.userRef.get();
-          return unwrapDoc(user).email;
+          return user.data().email;
         })
       );
     }
 
-    async function getLicenses(uid) {
+    async function getLicenses(uid: string) {
       let tokens = await getTokens(uid);
       let licenses = await Promise.all(
         tokens.map(async (token) => {
@@ -87,18 +92,14 @@ export let loader: LoaderFunction = ({ request, context }) => {
         licenses,
       },
       {
-        headers: {
-          "Cache-Control": "max-age=3600",
-        },
+        headers: CacheControl.short,
       }
     );
   });
 };
 
 export function headers() {
-  return {
-    "Cache-Control": "max-age=3600",
-  };
+  return CacheControl.short;
 }
 
 export default function DashboardIndex() {
@@ -142,13 +143,37 @@ function Tokens() {
             actions={<CopyButton value={license.token.id} />}
           />
           <DataListItem
+            label=".npmrc config (recommended)"
+            value={
+              <div className="w-full">
+                <p className="my-2 text-gray-800">
+                  We recommend putting your token into an environment variable
+                  so you don't risk accidentally committing your token to git,
+                  and your CI/build server will need to do it this way anyway.
+                </p>
+                <textarea
+                  readOnly
+                  className="resize-none block w-full rounded-md border border-gray-300 p-2 h-15 font-mono text-xs text-gray-600"
+                  value={getNpmRc("${REMIX_REGISTRY_TOKEN}")}
+                />
+              </div>
+            }
+            actions={<CopyButton value={getNpmRc("${REMIX_REGISTRY_TOKEN}")} />}
+          />
+          <DataListItem
             label=".npmrc config"
             value={
-              <textarea
-                readOnly
-                className="resize-none block w-full rounded-md border border-gray-300 p-2 h-15 font-mono text-xs text-gray-600"
-                value={getNpmRc(license.token.id)}
-              />
+              <div className="w-full">
+                <p className="my-2 text-gray-800">
+                  If you use this method, please ensure that your `.npmrc` is
+                  ignored by git.
+                </p>
+                <textarea
+                  readOnly
+                  className="resize-none block w-full rounded-md border border-gray-300 p-2 h-15 font-mono text-xs text-gray-600"
+                  value={getNpmRc(license.token.id)}
+                />
+              </div>
             }
             actions={<CopyButton value={getNpmRc(license.token.id)} />}
           />
@@ -361,38 +386,15 @@ function AccountInfo() {
         <dl>
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
             <dt className="text-sm leading-5 font-medium text-gray-500">
-              Name
-            </dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              <div className="flex items-center justify-between text-sm leading-5">
-                <div className="w-0 flex-1 flex items-center">
-                  {sessionUser.name}
-                </div>
-                <div className="ml-4 flex-shrink-0">
-                  <a
-                    className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
-                    href="https://github.com/settings/profile"
-                  >
-                    Change at GitHub
-                  </a>
-                </div>
-              </div>
-            </dd>
-          </div>
-          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              Email address
+              Email Address
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
               <div className="flex items-center justify-between text-sm leading-5">
                 <div className="w-0 flex-1 flex items-center">{user.email}</div>
                 <div className="ml-4 flex-shrink-0">
-                  <a
-                    className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
-                    href="https://github.com/settings/profile"
-                  >
-                    Change at GitHub
-                  </a>
+                  <span className="font-medium text-gray-600 hover:text-gray-500 transition duration-150 ease-in-out">
+                    TODO: Change Email Address
+                  </span>
                 </div>
               </div>
             </dd>

@@ -1,4 +1,5 @@
-import { config, db } from "./firebase.server";
+import { config } from "./firebase.server";
+import { db } from "./db.server";
 import { Octokit } from "@octokit/core";
 import { processBase64Markdown } from "./markdown.server";
 
@@ -12,7 +13,7 @@ export let addToDiscussRepo = async (uid, id) => {
     username: githubUser.login,
     permission: "pull",
   });
-  await db.doc(`users/${uid}`).update({ githubLogin: githubUser.login });
+  await db.users.doc(uid).update({ githubLogin: githubUser.login });
 };
 
 export let getRemixVersionReleaseNotes = async (version) => {

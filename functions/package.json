@@ -7,7 +7,7 @@
     "shell": "firebase functions:shell",
     "css:watch": "postcss styles --base styles --dir app/styles -w",
     "css:build": "postcss styles --base styles --dir app/styles --env production",
-    "start": "yarn use:staging && NODE_ENV=development concurrently \"yarn css:watch\" \"remix run\" \"firebase serve\"",
+    "start": "yarn use:staging && NODE_ENV=development concurrently \"remix run\" \"firebase serve\"",
     "start:production": "yarn use:production && NODE_ENV=development concurrently \"yarn css:watch\" \"remix run\" \"firebase serve\"",
     "use:production": "firebase use production && firebase functions:config:get > .runtimeconfig.json",
     "use:staging": "firebase use staging && firebase functions:config:get > .runtimeconfig.json"

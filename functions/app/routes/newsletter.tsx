@@ -8,6 +8,8 @@ import { json, redirect } from "@remix-run/data";
 import type { ActionFunction, LoaderFunction } from "@remix-run/data";
 import { usePendingFormSubmit, useRouteData, Form } from "@remix-run/react";
 import { newsletterStorage } from "../utils/sessions";
+import { IconCheck, IconError } from "../components/icons";
+import BeatSpinner from "../components/BeatSpinner";
 
 export let loader: LoaderFunction = async function subscribeEmail({ request }) {
   let session = await newsletterStorage.getSession(
@@ -231,18 +233,29 @@ export default function NewsLetter() {
                 placeholder="Email"
                 disabled={["loading", "success", "thanks"].includes(state)}
               />
-              <LoadingButton
-                className="m-1 w-full sm:w-auto inline-block neon-button rounded font-bold"
-                state={state === "thanks" || state === "valid" ? "idle" : state}
-                text="Subscribe"
-                loadingText="Subscribing..."
-                successText="Successfully Subscribed"
-                errorText="Subscription Error"
-                icon={<EmailIcon />}
-                onFocus={changeColors}
-                type="submit"
-                disabled={state !== "valid"}
-              />
+              <div className="w-full">
+                <LoadingButton
+                  state={
+                    state === "thanks" || state === "valid" ? "idle" : state
+                  }
+                  icon={<EmailIcon />}
+                  type="submit"
+                  disabled={state !== "valid"}
+                  ariaErrorAlert={"There was an error creating your account"}
+                  ariaLoadingAlert="Loading..."
+                  ariaSuccessAlert="Account created! Redirecting."
+                  ariaText="Create Account"
+                  iconError={<IconError className="h-5 w-5" />}
+                  iconLoading={<BeatSpinner />}
+                  iconSuccess={<IconCheck className="h-5 w-5" />}
+                  text="Subscribe"
+                  textLoading="Loading..."
+                  onFocus={changeColors}
+                  className={`w-full py-2 px-4 border-2 border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:border-yellow-500 ${
+                    state === "valid" ? "" : "opacity-50"
+                  }`}
+                />
+              </div>
             </Form>
             <div className="text-center leading-tight mt-4 text-gray-400">
               <p className="font-light text-gray-400 sm:text-2xl sm:leading-7">

@@ -12,7 +12,7 @@ import LoadingButton, {
 } from "../../components/LoadingButton";
 import * as CacheControl from "../../utils/CacheControl";
 import { buyStorage } from "../../utils/sessions";
-import { redirectToStripeCheckout } from "../../utils/checkout.client";
+import { redirectToStripeCheckout } from "../../utils/stripe.client";
 import { createCheckout } from "../../utils/checkout.server";
 import { IconCheck, IconError, IconCard } from "../../components/icons";
 

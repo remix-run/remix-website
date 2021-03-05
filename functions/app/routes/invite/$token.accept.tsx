@@ -1,15 +1,30 @@
 import React from "react";
 import { redirect } from "@remix-run/data";
 import type { LoaderFunction } from "@remix-run/data";
-import { error } from "../../utils/response.server";
 import { requireSession } from "../../utils/session.server";
 import { requireToken } from "../../utils/token.server";
 import { addTokenMember } from "../../utils/tokens.server";
+import type { Token } from "../../utils/db.server";
+
+let error = (message) => {
+  return new Response(JSON.stringify({ message }), {
+    status: 500,
+    headers: {
+      "content-type": "application/json",
+    },
+  });
+};
 
 export let loader: LoaderFunction = async ({ context, request, params }) => {
   let url = new URL(request.url);
-  let token = await requireToken(params.token);
-  let sessionUser = await requireSession({ context, url });
+
+  // FIXME: requireToken is being used here like a normal function, not a things
+  // that returns responses fix that and we can remove the type casting here
+  let token = (await requireToken(
+    params.token
+  )) as FirebaseFirestore.DocumentSnapshot<Token>;
+
+  let sessionUser = await requireSession(request);
   try {
     await addTokenMember(token, sessionUser);
   } catch (err) {

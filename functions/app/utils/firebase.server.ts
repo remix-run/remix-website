@@ -1,32 +1,19 @@
 import functions from "firebase-functions";
 import admin from "firebase-admin";
-import { redirectToStripeCheckout } from "./checkout.client";
 
 export { admin };
 export let db = admin.firestore();
 export let config = functions.config();
 
-export function unwrapSnapshot(snapshot) {
+export function unwrapSnapshot<DocumentData>(snapshot) {
   let docs = [];
-  snapshot.forEach((doc) => docs.push(unwrapDoc(doc)));
+  snapshot.forEach((doc) =>
+    docs.push({ _id: doc.id, ...(doc.data() as DocumentData) })
+  );
   return docs;
 }
 
-export function unwrapDoc<TSchema>(doc) {
-  if (!doc.exists) return null;
-  let data: TSchema = doc.data();
-  return { data, _id: doc.id };
-}
-
-export async function setDoc<TSchema>(path, values: TSchema) {
-  return db.doc(path).set(values);
-}
-
-export async function getUnwrappedDoc<TSchema>(path: string) {
-  return unwrapDoc(await db.doc(path).get());
-}
-
-export async function getSessionToken(idToken) {
+export async function getSessionToken(idToken: string) {
   let auth = admin.auth();
   let decodedToken = await auth.verifyIdToken(idToken);
   if (new Date().getTime() / 1000 - decodedToken.auth_time > 5 * 60) {
