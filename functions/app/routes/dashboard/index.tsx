@@ -15,7 +15,30 @@ import {
 import BrowserOnly from "../../components/BrowserOnly";
 import InfoBox from "../../components/InfoBox";
 import CopyButton from "../../components/CopyButton";
+import type Stripe from "stripe";
 
+interface DashboardData {
+  account: {
+    email: string;
+    billingEmail?: string;
+  };
+  licenses: License[];
+}
+
+interface License {
+  role: "owner" | "member";
+  key: string;
+  issuedAt: number;
+  quantity: number;
+  invitationToken: string;
+  members: [{ email: string }];
+  name: string;
+  ownerEmail: string;
+}
+
+// TODO: Some types inside of here are hard to know what's going on, but the
+// return value is typed at least! Basically converts all of the database
+// collections into a format that's easy for the dashboard to render.
 export let loader: LoaderFunction = ({ request }) => {
   return requireCustomer(request)(async ({ sessionUser, user }) => {
     async function getTokens(uid: string) {
@@ -35,12 +58,14 @@ export let loader: LoaderFunction = ({ request }) => {
 
           if (xTokenUser.role === "owner") {
             let members = await getMembers(xTokenUser.tokenRef);
-            return {
+            let data = {
               ...token,
               role: xTokenUser.role,
               members,
               ownerEmail: owner.email,
             };
+
+            return data;
           }
 
           // member token
@@ -51,13 +76,14 @@ export let loader: LoaderFunction = ({ request }) => {
               ...token,
               role: xTokenUser.role,
               ownerEmail: owner.email,
+              members: [owner.email],
             };
           }
         })
       );
     }
 
-    async function getMembers(tokenRef) {
+    async function getMembers(tokenRef): Promise<string[]> {
       let snapshot = await db.xTokensUsers
         .where("tokenRef", "==", tokenRef)
         .get();
@@ -70,14 +96,24 @@ export let loader: LoaderFunction = ({ request }) => {
       );
     }
 
-    async function getLicenses(uid: string) {
+    async function getLicenses(uid: string): Promise<License[]> {
       let tokens = await getTokens(uid);
       let licenses = await Promise.all(
         tokens.map(async (token) => {
           let price = await stripe.prices.retrieve(token.price, {
             expand: ["product"],
           });
-          return { token, price };
+          let product = price.product as Stripe.Product;
+          return {
+            role: token.role,
+            key: token.id,
+            issuedAt: token.issuedAt._seconds * 1000,
+            quantity: token.quantity,
+            invitationToken: token.id,
+            name: product.name,
+            members: token.members,
+            ownerEmail: token.ownerEmail,
+          };
         })
       );
 
@@ -92,17 +128,17 @@ export let loader: LoaderFunction = ({ request }) => {
       getLicenses(user.uid),
     ]);
 
-    return json(
-      {
-        sessionUser,
-        user,
-        stripeCustomer,
-        licenses,
+    let data: DashboardData = {
+      account: {
+        email: user.email,
+        billingEmail: stripeCustomer.deleted
+          ? null
+          : (stripeCustomer as Stripe.Customer).email,
       },
-      {
-        headers: CacheControl.short,
-      }
-    );
+      licenses,
+    };
+
+    return json(data, { headers: CacheControl.short });
   });
 };
 
@@ -111,7 +147,7 @@ export function headers() {
 }
 
 export default function DashboardIndex() {
-  let { user, stripeCustomer, licenses } = useRouteData();
+  let { account, licenses } = useRouteData<DashboardData>();
 
   let getNpmRc = (token) =>
     `//npm.remix.run/:_authToken=${token}\n@remix-run:registry=https://npm.remix.run`;
@@ -123,17 +159,17 @@ export default function DashboardIndex() {
           <DescriptionListItem
             first
             label="Email Address"
-            value={user.email}
+            value={account.email}
             actions={
               <span className="font-medium text-gray-600 hover:text-gray-500 transition duration-150 ease-in-out">
                 TODO: Change Email Address
               </span>
             }
           />
-          {stripeCustomer && (
+          {account.billingEmail && (
             <DescriptionListItem
               label="Billing Email Address"
-              value={stripeCustomer.email}
+              value={account.billingEmail}
               actions={
                 <a
                   href="/dashboard/billing"
@@ -146,7 +182,7 @@ export default function DashboardIndex() {
           )}
         </DescriptionList>
         {licenses.map((license, index) => (
-          <DescriptionList key={index} title={license.price.product.name}>
+          <DescriptionList key={index} title={license.name}>
             <DescriptionListItem
               first
               label="License Key"
@@ -154,11 +190,11 @@ export default function DashboardIndex() {
                 <div>
                   <div className="flex truncate italic text-sm text-gray-600">
                     <IconKey className="flex-shrink-0 h-5 w-5 text-gray-400 mr-1" />{" "}
-                    {license.token.id}
+                    {license.key}
                   </div>
                 </div>
               }
-              actions={<CopyButton value={license.token.id} />}
+              actions={<CopyButton value={license.key} />}
             />
             <DescriptionListItem
               label=".npmrc config (recommended)"
@@ -191,41 +227,39 @@ export default function DashboardIndex() {
                   <textarea
                     readOnly
                     className="resize-none block w-full rounded-md border border-gray-300 p-2 h-15 font-mono text-xs text-gray-600"
-                    value={getNpmRc(license.token.id)}
+                    value={getNpmRc(license.key)}
                   />
                 </div>
               }
-              actions={<CopyButton value={getNpmRc(license.token.id)} />}
+              actions={<CopyButton value={getNpmRc(license.key)} />}
             />
             <DescriptionListItem
               label="Issued"
               value={
                 <BrowserOnly>
-                  {new Date(
-                    license.token.issuedAt._seconds * 1000
-                  ).toLocaleDateString()}
+                  {new Date(license.issuedAt).toLocaleDateString()}
                 </BrowserOnly>
               }
             />
-            {license.token.role === "owner" && license.token.quantity > 1 ? (
+            {license.role === "owner" && license.quantity > 1 ? (
               <>
                 <DescriptionListItem
                   label="Seats Taken"
                   value={
                     <div>
-                      {license.token.members.length}/{license.token.quantity}
+                      {license.members.length}/{license.quantity}
                     </div>
                   }
                 />
 
-                {license.token.members.length < license.token.quantity ? (
+                {license.members.length < license.quantity ? (
                   <DescriptionListItem
                     label="Invitation URL"
                     value={
                       <div>
                         <div className="flex truncate italic text-sm text-gray-600 mb-3">
                           <IconLink className="mr-1 flex-shrink-0 h-5 w-5 text-gray-400" />{" "}
-                          https://remix.run/invite/{license.token.id}
+                          https://remix.run/invite/{license.invitationToken}
                         </div>
                         <InfoBox>
                           Invite team members to this license so they can access
@@ -235,7 +269,7 @@ export default function DashboardIndex() {
                     }
                     actions={
                       <CopyButton
-                        value={`https://remix.run/invite/${license.token.id}`}
+                        value={`https://remix.run/invite/${license.invitationToken}`}
                       />
                     }
                   />
@@ -253,7 +287,7 @@ export default function DashboardIndex() {
                   label="Team Members"
                   value={
                     <ul className="border border-gray-200 rounded-md">
-                      {license.token.members.map((member, index) => (
+                      {license.members.map((member, index) => (
                         <li
                           key={index}
                           className={`${
@@ -278,7 +312,7 @@ export default function DashboardIndex() {
             ) : (
               <DescriptionListItem
                 label="License Owner"
-                value={license.token.ownerEmail}
+                value={license.ownerEmail}
               />
             )}
           </DescriptionList>

@@ -1,4 +1,5 @@
 import { Response, redirect } from "@remix-run/data";
+import type { LoaderFunction } from "@remix-run/data";
 import { admin } from "./firebase.server";
 import { db } from "./db.server";
 import { rootStorage } from "./sessions";
@@ -21,32 +22,19 @@ export let getCustomer = async (request) => {
 export let requireCustomer = (request) => {
   return async (loader) => {
     let url = new URL(request.url);
-
     let redirectUrl = `/login?from=${url.pathname + url.search}`;
 
-    // need both a session and a user doc since you can log in with github w/o
-    // an actual account
-    try {
-      let sessionUser = await getUserSession(request);
-      let userDoc = await db.users.doc(sessionUser.uid).get();
-      if (!userDoc.exists) {
-        return redirect("/buy");
-      }
-      let user = { uid: userDoc.id, ...userDoc.data() };
-      let data = { sessionUser, user };
-      return loader
-        ? loader(data)
-        : new Response(JSON.stringify(data), {
-            headers: {
-              "Cache-Control": "max-age=600",
-              "content-type": "application/json",
-            },
-          });
-    } catch (error) {
-      console.log("Error while creating session!");
-      console.error(error);
-      return redirect(redirectUrl);
-    }
+    let sessionUser = await getUserSession(request);
+    if (!sessionUser) return redirect(redirectUrl);
+
+    let userDoc = await db.users.doc(sessionUser.uid).get();
+    // weird to have a session but not a user doc, should be impossible but who
+    // knows, just being extra careful.
+    if (!userDoc.exists) return redirect(redirectUrl);
+
+    let user = { uid: userDoc.id, ...userDoc.data() };
+    let data = { sessionUser, user };
+    return loader(data);
   };
 };
 
