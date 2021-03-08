@@ -35,6 +35,10 @@ export async function createEmailUser(email: string, password: string) {
   }
 }
 
+export async function signInWithEmail(email, password) {
+  return firebase.auth().signInWithEmailAndPassword(email, password);
+}
+
 export async function signInWithGitHub() {
   let provider = new firebase.auth.GithubAuthProvider();
   return firebase.auth().signInWithPopup(provider);

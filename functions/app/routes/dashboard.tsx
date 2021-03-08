@@ -110,14 +110,6 @@ function TopNav({ sessionUser, user }) {
                   <IconSignout /> Sign out
                 </TopNavLink>
               </form>
-              <div className="ml-2 relative">
-                <img
-                  alt=""
-                  aria-hidden="true"
-                  className="ml-2 h-8 w-8 rounded-full"
-                  src={sessionUser.picture}
-                />
-              </div>
             </div>
           </div>
 
@@ -145,24 +137,6 @@ function TopNav({ sessionUser, user }) {
           )}
         </div>
         <div className="pt-4 pb-3 border-t border-gray-700">
-          <div className="flex items-center px-5 space-x-3">
-            <div className="flex-shrink-0">
-              <img
-                aria-hidden="true"
-                alt=""
-                className="h-10 w-10 rounded-full"
-                src={sessionUser.picture}
-              />
-            </div>
-            <div className="space-y-1">
-              <div className="text-base font-medium leading-none text-white">
-                {sessionUser.name}
-              </div>
-              <div className="text-sm font-medium leading-none text-gray-400">
-                {sessionUser.email}
-              </div>
-            </div>
-          </div>
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <form action="/logout" method="post">
               <TopNavLinkMobile as="button" type="submit">

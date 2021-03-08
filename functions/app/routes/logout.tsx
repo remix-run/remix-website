@@ -8,7 +8,7 @@ import { rootStorage } from "../utils/sessions";
 export let action: ActionFunction = async ({ request }) => {
   let session = await rootStorage.getSession(request.headers.get("Cookie"));
   session.unset("token");
-  session.set("loggedout", true);
+  session.set("loggedOut", true);
   return redirect(request, "/login", {
     headers: {
       "Set-Cookie": await rootStorage.commitSession(session),

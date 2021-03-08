@@ -37,7 +37,7 @@ export default function Support() {
                 value={
                   <div>
                     Join a Discord chat server with other Remix users and the
-                    developers of Remix.
+                    developers of Remix. This is probably the most active place.
                   </div>
                 }
                 actions={
