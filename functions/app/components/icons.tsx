@@ -1,3 +1,7 @@
+import BeatSpinner from "./BeatSpinner";
+
+export { BeatSpinner };
+
 export function IconUser({ className }) {
   return (
     <svg

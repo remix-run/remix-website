@@ -131,9 +131,10 @@ export let loader: LoaderFunction = ({ request }) => {
     let data: DashboardData = {
       account: {
         email: user.email,
-        billingEmail: stripeCustomer.deleted
-          ? null
-          : (stripeCustomer as Stripe.Customer).email,
+        billingEmail:
+          stripeCustomer && !stripeCustomer.deleted
+            ? (stripeCustomer as Stripe.Customer).email
+            : null,
       },
       licenses,
     };

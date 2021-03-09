@@ -49,26 +49,55 @@ export let getTokenMembersSnapshot = (tokenId) => {
   return db.xTokensUsers.where("tokenRef", "==", tokenRef).get();
 };
 
-export let addTokenMember = async (
-  token: FirebaseFirestore.DocumentSnapshot<Token>,
-  sessionUser
-) => {
-  let userRef = await getOrCreateUserRef(sessionUser);
-  let tokenRef = db.tokens.doc(token.id);
+export let addTokenMember = async (idToken: string, token: string) => {
+  // check if the token is valid
+  let tokenRef = db.tokens.doc(token);
+  let tokenDoc = await tokenRef.get();
+  if (!tokenDoc.exists) {
+    throw new Error("Token does not exist");
+  }
+
+  // validate and get the user session
+  let sessionUser: admin.auth.DecodedIdToken;
+  try {
+    sessionUser = await admin.auth().verifyIdToken(idToken);
+  } catch (error) {
+    throw new Error("Could not authenticate user");
+  }
+
+  let userRef = db.users.doc(sessionUser.uid);
+
+  // create the user if they don't already exist
+  let userDoc = await userRef.get();
+  if (!userDoc.exists) {
+    await userRef.set({
+      uid: sessionUser.uid,
+      email: sessionUser.email,
+    });
+  }
 
   let xTokenUsersSnap = await db.xTokensUsers
     .where("userRef", "==", userRef)
     .get();
 
+  // They already have this token, move on...
   if (xTokenUsersSnap.size > 0) {
-    console.error(`Already added token ${token.id} to user ${sessionUser.uid}`);
-    return;
+    return true;
   }
 
+  // add the token
   await db.xTokensUsers.add({
     tokenRef,
     userRef,
-    ownerRef: token.data().ownerRef,
+    ownerRef: tokenDoc.data().ownerRef,
     role: "member",
   });
+
+  return true;
+  // addToProductEmailList(sessionUser.email, subscription.id, {
+  //   name: product.name,
+  //   price: purchase.price.unit_amount / 100,
+  //   pid: product.id,
+  //   lid: product.id,
+  // })
 };

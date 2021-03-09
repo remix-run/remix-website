@@ -51,9 +51,6 @@ function shouldIncludeScripts(pathname) {
   if (noScriptPaths.has(pathname)) {
     return false;
   }
-  if (pathname.startsWith("/invite")) {
-    return false;
-  }
   return true;
 }
 

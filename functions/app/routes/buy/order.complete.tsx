@@ -58,9 +58,9 @@ export let action: ActionFunction = async ({ request }) => {
   let url = new URL(request.url);
   let origin = url.protocol + "//" + url.host;
 
-  let params = new URLSearchParams(await request.text());
-  let idToken = params.get("idToken");
-  let stripeSessionId = params.get("stripeSessionId");
+  let searchParams = new URLSearchParams(await request.text());
+  let idToken = searchParams.get("idToken");
+  let stripeSessionId = searchParams.get("stripeSessionId");
 
   try {
     await fulfillOrder(idToken, stripeSessionId);
@@ -141,7 +141,6 @@ function RegistrationForm() {
           },
           {
             action: window.location.origin + "/buy/order/complete",
-            replace: true,
             method: "post",
           }
         );
@@ -153,6 +152,7 @@ function RegistrationForm() {
       }
     }
   }
+
   useEffect(() => {
     transition();
   }, [state]);

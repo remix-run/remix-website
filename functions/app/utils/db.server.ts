@@ -25,7 +25,7 @@ export interface User {
   /**
    * Their stripe customer id.
    */
-  stripeCustomerId: string;
+  stripeCustomerId?: string;
 
   /**
    * If the user has associated their account with GitHub, this is their login.
