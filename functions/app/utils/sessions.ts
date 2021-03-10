@@ -1,4 +1,5 @@
-import { createCookieSessionStorage, redirect } from "@remix-run/data";
+import { createCookieSessionStorage } from "@remix-run/data";
+import redirect from "./redirect";
 import { getSessionToken } from "./firebase.server";
 
 // TODO: these all have the same name, maybe should figure out what happens when
@@ -30,12 +31,12 @@ export let rootStorage = createCookieSessionStorage({
   },
 });
 
-export async function createUserSession(idToken) {
+export async function createUserSession(request, idToken) {
   let { getSession, commitSession } = rootStorage;
   let token = await getSessionToken(idToken);
   let session = await getSession();
   session.set("token", token);
-  return redirect("/dashboard", {
+  return redirect(request, "/dashboard", {
     headers: { "Set-Cookie": await commitSession(session) },
   });
 }

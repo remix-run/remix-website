@@ -2,14 +2,14 @@ import React from "react";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { Link } from "react-router-dom";
 import * as CacheControl from "../utils/CacheControl";
-import { Response, redirect } from "@remix-run/data";
+import redirect from "../utils/redirect";
 import type { LoaderFunction } from "@remix-run/data";
 import { getCustomer } from "../utils/session.server";
 
 export let loader: LoaderFunction = async ({ request }) => {
   let customer = await getCustomer(request);
   if (customer) {
-    return redirect("/dashboard/docs");
+    return redirect(request, "/dashboard/docs");
   }
   return null;
 };

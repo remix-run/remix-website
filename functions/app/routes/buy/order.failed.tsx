@@ -1,12 +1,11 @@
 import React from "react";
 import * as CacheControl from "../../utils/CacheControl";
-import { redirect } from "@remix-run/data";
+import redirect from "../../utils/redirect";
 import type { LoaderFunction } from "@remix-run/data";
 
-export let loader: LoaderFunction = async () => {
-  // let token = url.searchParams.get("idToken");
-  // cancel the order?
-  return redirect("/buy");
+export let loader: LoaderFunction = async ({ request }) => {
+  // TODO: add a message?
+  return redirect(request, "/buy");
 };
 
 export function headers() {

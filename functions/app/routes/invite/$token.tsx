@@ -52,7 +52,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   return json(
     { code: TokenCodes.Valid, error },
     {
-      header: {
+      headers: {
         "Set-Cookie": await rootStorage.commitSession(session),
       },
     }
@@ -69,7 +69,7 @@ export let action: ActionFunction = async ({ request, params }) => {
 
   try {
     await addTokenMember(idToken, params.token);
-    return createUserSession(idToken);
+    return createUserSession(request, idToken);
   } catch (e) {
     // no idea what happened ...
     let session = await rootStorage.getSession(request.headers.get("Cookie"));

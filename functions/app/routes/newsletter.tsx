@@ -4,7 +4,8 @@ import LoadingButton from "../components/LoadingButton";
 import VisuallyHidden from "@reach/visually-hidden";
 import * as CacheControl from "../utils/CacheControl";
 import { subscribeToForm } from "../utils/ck.server";
-import { json, redirect } from "@remix-run/data";
+import { json } from "@remix-run/data";
+import redirect from "../utils/redirect";
 import type { ActionFunction, LoaderFunction } from "@remix-run/data";
 import { usePendingFormSubmit, useRouteData, Form } from "@remix-run/react";
 import { newsletterStorage } from "../utils/sessions";
@@ -42,7 +43,7 @@ export let action: ActionFunction = async ({ request }) => {
     session.set("newsletter", "error");
     session.set("error", error.message);
   }
-  return redirect("/newsletter", {
+  return redirect(request, "/newsletter", {
     headers: {
       "Set-Cookie": await newsletterStorage.commitSession(session),
     },

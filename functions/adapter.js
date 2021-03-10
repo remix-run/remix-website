@@ -47,7 +47,8 @@ function createRemixHeaders(requestHeaders) {
 }
 
 function createRemixRequest(req) {
-  let origin = `${req.protocol}://${req.hostname}`;
+  let host = req.headers["x-forwarded-host"];
+  let origin = `${req.protocol}://${host}`;
   let url$1 = new url.URL(req.url, origin);
   let init = {
     method: req.method,

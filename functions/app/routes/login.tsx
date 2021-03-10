@@ -43,7 +43,7 @@ export let action: ActionFunction = async ({ request }) => {
   let idToken = params.get("idToken");
 
   try {
-    return createUserSession(idToken);
+    return createUserSession(request, idToken);
   } catch (e) {
     let session = await rootStorage.getSession(request.headers.get("Cookie"));
     session.set("error", e.message);

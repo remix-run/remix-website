@@ -48,7 +48,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     // invalid or already completed stripe session, what are you doing here?!
     return json(null, {
       status: 404,
-      headers: { "Cache-Control": CacheControl.nostore },
+      headers: CacheControl.nostore,
     });
   }
 };
@@ -64,7 +64,7 @@ export let action: ActionFunction = async ({ request }) => {
 
   try {
     await fulfillOrder(idToken, stripeSessionId);
-    return createUserSession(idToken);
+    return createUserSession(request, idToken);
   } catch (e) {
     // no idea what happened ...
     let session = await buyStorage.getSession(request.headers.get("Cookie"));
