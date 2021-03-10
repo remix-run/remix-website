@@ -31,7 +31,6 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   let session = await rootStorage.getSession(request.headers.get("Cookie"));
   let cookie = await rootStorage.destroySession(session);
-  console.log(session.data);
 
   return json(
     { error: session.get("error"), loggedOut: session.get("loggedOut") },
@@ -282,7 +281,6 @@ function LoginForm() {
 
 export default function Login() {
   let data = useRouteData();
-  console.log({ data });
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 pt-0 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 -mt-24">

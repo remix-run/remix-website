@@ -1,0 +1,394 @@
+
+import { mdx } from "@mdx-js/react";
+export function meta() { return {"title":"Defining Routes | Remix Tutorial"}}
+/* @jsxRuntime classic */
+/* @jsx mdx */
+import { Link } from "react-router-dom";
+
+
+const layoutProps = {
+  
+};
+const MDXLayout = "wrapper"
+export default function MDXContent({
+  components,
+  ...props
+}) {
+  return <MDXLayout {...layoutProps} {...props} components={components} mdxType="MDXLayout">
+
+    <nav {...{
+      "className": "toc"
+    }}><div parentName="nav" {...{
+        "className": "heading"
+      }}>{`On this page`}</div><ol parentName="nav" {...{
+        "className": "toc-level toc-level-1"
+      }}><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#creating-your-first-route"
+          }}>{`Creating your first route`}</a></li><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#meta-tags"
+          }}>{`Meta tags`}</a></li><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#headers"
+          }}>{`Headers`}</a></li></ol></nav><article {...{
+      "className": "prose dark:prose-dark xl:prose-lg p-8 md:max-w-4xl"
+    }}><h1 parentName="article" {...{
+        "id": "defining-routes"
+      }}>{`Defining Routes`}</h1>
+      <p parentName="article">{`Routes in remix can be defined two ways: by a filename convention inside of the "app/routes" directory or manually with the `}<inlineCode parentName="p">{`routes`}</inlineCode>{` function in `}<inlineCode parentName="p">{`remix.config.js`}</inlineCode>{`. For this getting started guide we'll just cover the conventional files, but check out the `}<Link to="/dashboard/docs/routing" mdxType="Link">{`Routing Guide`}</Link>{` to learn more about manual routes.`}</p>
+      <h2 parentName="article" {...{
+        "id": "creating-your-first-route"
+      }}>{`Creating your first route`}</h2>
+      <p parentName="article">{`Create a file like "app/routes/gists.tsx". Then edit the file to look like this:`}</p>
+      <pre parentName="article" {...{
+        "className": "language-jsx"
+      }}><code parentName="pre" {...{
+          "className": "language-jsx"
+        }}><span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`React`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"react"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`default`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Gists`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword control-flow"
+          }}>{`return`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`div`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`h2`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`Public Gists`}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`h2`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+    `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`div`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`Now visit `}<a parentName="p" {...{
+          "href": "http://localhost:3000/gists"
+        }}>{`http://localhost:3000/gists`}</a>{`. Not bad!`}</p>
+      <p parentName="article">{`Let's add a link to this route from the "root" layout. Open up `}<inlineCode parentName="p">{`app/root.tsx`}</inlineCode>{` and add the link:`}</p>
+      <pre parentName="article" {...{
+        "className": "language-jsx"
+      }}><code parentName="pre" {...{
+          "className": "language-jsx"
+        }}><span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`{`}</span>{` `}<span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Link`}</span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`}`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"react-router-dom"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// somewhere on the page:`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span><span parentName="span" {...{
+                "className": "token class-name"
+              }}>{`Link`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`to`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`/gists`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`Gists`}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span><span parentName="span" {...{
+                "className": "token class-name"
+              }}>{`Link`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`That's it. Make a file, get a route. If you add a "." in the name, like `}<inlineCode parentName="p">{`gists.public.js`}</inlineCode>{`, then the URL will be "gists/public". If you put it into a folder like `}<inlineCode parentName="p">{`gists/public.js`}</inlineCode>{` then you're defining a nested route--which we'll talk about later in this tutorial.`}</p>
+      <h2 parentName="article" {...{
+        "id": "meta-tags"
+      }}>{`Meta tags`}</h2>
+      <p parentName="article">{`Meta tags are fundamental to the web so Remix makes it easy.`}</p>
+      <p parentName="article">{`From your route component, export a `}<inlineCode parentName="p">{`meta`}</inlineCode>{` function. From there, return an object with the "title" key and then any other meta tags you'd like to include, like the description. These will be server rendered and kept up-to-date as the user navigates around your app.`}</p>
+      <pre parentName="article" {...{
+        "className": "language-jsx"
+      }}><code parentName="pre" {...{
+          "className": "language-jsx"
+        }}><span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}>{`meta`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword control-flow"
+          }}>{`return`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+    title`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"Public Gists"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+    description`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"View the latest gists from the public"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`default`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Gists`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// ...`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <h2 parentName="article" {...{
+        "id": "headers"
+      }}>{`Headers`}</h2>
+      <p parentName="article">{`Each route can also define its http headers. This is mostly important for http caching. Remix doesn't rely on building your website into static files to be uploaded to a CDN for performance, instead we rely on cache headers. The end result of either approach is the same: a static document on a CDN. `}<a parentName="p" {...{
+          "href": "https://youtu.be/bfLFHp7Sbkg"
+        }}>{`Check out this video for more information on that`}</a>{`.`}</p>
+      <p parentName="article">{`Usually, the difficulty with cache headers is configuring them. In Remix we've made it easy. Just export a `}<inlineCode parentName="p">{`headers`}</inlineCode>{` function from your route.`}</p>
+      <pre parentName="article" {...{
+        "className": "language-jsx"
+      }}><code parentName="pre" {...{
+          "className": "language-jsx"
+        }}><span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}>{`headers`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword control-flow"
+          }}>{`return`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"Cache-Control"`}</span><span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"public, max-age=300, s-maxage=3600"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}>{`meta`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`/* ... */`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword module"
+          }}>{`default`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Gists`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`/* ... */`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`The max-age tells the user's browser to cache this for 300 seconds, or 5 minutes. That means if they click back or on a link to the same page again within 5 minutes, the browser won't even make a request for the page, it will use the cache.`}</p>
+      <p parentName="article">{`The s-max-age tells the CDN to cache it for an hour. Here's what it looks like when the first person visits our website:`}</p>
+      <ol parentName="article">
+        <li parentName="ol">{`Request comes in to the website, which is really the CDN`}</li>
+        <li parentName="ol">{`CDN doesn't have the document cached, so it makes a request to our server (the "origin server").`}</li>
+        <li parentName="ol">{`Our server builds the page and sends it to the CDN`}</li>
+        <li parentName="ol">{`The CDN caches it and sends it to the visitor.`}</li>
+      </ol>
+      <p parentName="article">{`Now, when the next person visits our page, it looks like this:`}</p>
+      <ol parentName="article">
+        <li parentName="ol">{`Request comes to the CDN`}</li>
+        <li parentName="ol">{`CDN has the document cached already and sends it right away without ever touching our origin server!`}</li>
+      </ol>
+      <p parentName="article">{`We have a lot more to say about caching in the `}<Link to="/dashboard/cdn-caching" mdxType="Link">{`CDN Caching`}</Link>{` guide, make sure to read it sometime.`}</p>
+      <div className="next-prev-links">
+  <Link className="next" to="../loading-data" mdxType="Link">
+    Next up: Loading Data
+  </Link>
+      </div></article>
+    </MDXLayout>;
+}
+
+;
+MDXContent.isMDXComponent = true;

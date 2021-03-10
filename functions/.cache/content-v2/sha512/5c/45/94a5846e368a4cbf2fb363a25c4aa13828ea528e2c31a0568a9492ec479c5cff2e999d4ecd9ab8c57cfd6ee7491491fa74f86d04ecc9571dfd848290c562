@@ -1,0 +1,773 @@
+
+import { mdx } from "@mdx-js/react";
+export function meta() { return {"title":"Importing Images | Remix"}}
+/* @jsxRuntime classic */
+/* @jsx mdx */
+import { Link } from "react-router-dom";
+
+
+const layoutProps = {
+  
+};
+const MDXLayout = "wrapper"
+export default function MDXContent({
+  components,
+  ...props
+}) {
+  return <MDXLayout {...layoutProps} {...props} components={components} mdxType="MDXLayout">
+
+    <nav {...{
+      "className": "toc"
+    }}><div parentName="nav" {...{
+        "className": "heading"
+      }}>{`On this page`}</div><ol parentName="nav" {...{
+        "className": "toc-level toc-level-1"
+      }}><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#url-search-params"
+          }}>{`URL Search Params`}</a></li><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#examples"
+          }}>{`Examples`}</a></li><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#notes"
+          }}>{`Notes`}</a></li></ol></nav><article {...{
+      "className": "prose dark:prose-dark xl:prose-lg p-8 md:max-w-4xl"
+    }}><h1 parentName="article" {...{
+        "id": "importing-images"
+      }}>{`Importing Images`}</h1>
+      <p parentName="article">{`You can import and process images with the `}<inlineCode parentName="p">{`img:`}</inlineCode>{` import syntax.`}</p>
+      <pre parentName="article" {...{
+        "className": "language-tsx"
+      }}><code parentName="pre" {...{
+          "className": "language-tsx"
+        }}><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}>{`guitar`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"img:./guitar.jpg?placeholder"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`default`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Guitar`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`return`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`img`}</span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`alt`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`Guitar`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`src`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`guitar`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`.`}</span><span parentName="span" {...{
+                "className": "token property-access"
+              }}>{`src`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`width`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`guitar`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`.`}</span><span parentName="span" {...{
+                "className": "token property-access"
+              }}>{`width`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`height`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`guitar`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`.`}</span><span parentName="span" {...{
+                "className": "token property-access"
+              }}>{`height`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`style`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`
+        backgroundImage`}<span parentName="span" {...{
+                "className": "token operator"
+              }}>{`:`}</span>{` `}<span parentName="span" {...{
+                "className": "token template-string"
+              }}><span parentName="span" {...{
+                  "className": "token template-punctuation string"
+                }}>{`\``}</span><span parentName="span" {...{
+                  "className": "token string"
+                }}>{`url(`}</span><span parentName="span" {...{
+                  "className": "token interpolation"
+                }}><span parentName="span" {...{
+                    "className": "token interpolation-punctuation punctuation"
+                  }}>{`\${`}</span>{`guitar`}<span parentName="span" {...{
+                    "className": "token punctuation"
+                  }}>{`.`}</span><span parentName="span" {...{
+                    "className": "token property-access"
+                  }}>{`placeholder`}</span><span parentName="span" {...{
+                    "className": "token interpolation-punctuation punctuation"
+                  }}>{`}`}</span></span><span parentName="span" {...{
+                  "className": "token string"
+                }}>{`)`}</span><span parentName="span" {...{
+                  "className": "token template-punctuation string"
+                }}>{`\``}</span></span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`,`}</span>{`
+        backgroundSize`}<span parentName="span" {...{
+                "className": "token operator"
+              }}>{`:`}</span>{` `}<span parentName="span" {...{
+                "className": "token string"
+              }}>{`"cover"`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`,`}</span>{`
+      `}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+    `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`The imported module has the following shape:`}</p>
+      <pre parentName="article" {...{
+        "className": "language-tsx"
+      }}><code parentName="pre" {...{
+          "className": "language-tsx"
+        }}><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`interface`}</span>{` `}<span parentName="code" {...{
+            "className": "token class-name"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`ImageAsset`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`/**
+   * The url of the image. When using srcset, it's the last size defined.
+   */`}</span>{`
+  src`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token builtin"
+          }}>{`string`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`/**
+   * The width of the image. When using srcset, it's the last size defined.
+   */`}</span>{`
+  width`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token builtin"
+          }}>{`number`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`/**
+   * The height of the image. When using srcset, it's the last size defined.
+   */`}</span>{`
+  height`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token builtin"
+          }}>{`number`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`/**
+   * The string to be passed do \`<img srcSet />\` for responsive images. Sizes
+   * defined by the asset import \`srcset=...sizes\` query string param, like
+   * \`./file.jpg?srcset=720,1080\`.
+   */`}</span>{`
+  srcset`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token builtin"
+          }}>{`string`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`/**
+   * Base64 string that can be inlined for immediate render and scaled up. Typically set as the background
+   * of an image. Defaults to 1x1 transparent gif.
+   */`}</span>{`
+  placeholder`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token builtin"
+          }}>{`string`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`/**
+   * The image format.
+   */`}</span>{`
+  format`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"jpeg"`}</span>{` `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`|`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"png"`}</span>{` `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`|`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"webp"`}</span>{` `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`|`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"avif"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`You can only import the following formats: "jpeg", "png", "webp", and "avif".`}</p>
+      <h2 parentName="article" {...{
+        "id": "url-search-params"
+      }}>{`URL Search Params`}</h2>
+      <p parentName="article">{`Using a URL search params, you can resize, change the quality, generate a placeholder, and generate a source set for responsive images.`}</p>
+      <pre parentName="article" {...{
+        "className": "language-tsx"
+      }}><code parentName="pre" {...{
+          "className": "language-tsx"
+        }}><span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// - drop quality to 25`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// - convert to AVIF`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// - generate base64 placeholder`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// - resize to 500`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}>{`guitar`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"img:./guitar.jpg?quality=50&format=avif&placeholder&width=500"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// - 80 quality`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// - keep the same format`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// - generate responsive image at 720, 1080, 2048 widths`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// - generate base64 placeholder`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}>{`guitar2`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"img:./guitar.jpg?quality=80&srcset=720,1080,2048&placeholder"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}</code></pre>
+      <ul parentName="article">
+        <li parentName="ul"><inlineCode parentName="li">{`quality`}</inlineCode>{`: Defaults to `}<inlineCode parentName="li">{`50`}</inlineCode>{`. Changes the quality of the image, smaller quality leads to smaller file size but worse quality.`}</li>
+        <li parentName="ul"><inlineCode parentName="li">{`format`}</inlineCode>{`: Defaults to the format of the source image. Can convert to `}<inlineCode parentName="li">{`jpeg`}</inlineCode>{`, `}<inlineCode parentName="li">{`avif`}</inlineCode>{`, `}<inlineCode parentName="li">{`webp`}</inlineCode>{`, and `}<inlineCode parentName="li">{`png`}</inlineCode>{`.`}</li>
+        <li parentName="ul"><inlineCode parentName="li">{`srcset`}</inlineCode>{`: Comma separated widths for responsive images. If defined, multiple files will be generated and a `}<inlineCode parentName="li">{`srcset`}</inlineCode>{` string is returned on the module to pass directly to `}<inlineCode parentName="li">{`<img srcSet />`}</inlineCode>{`. If `}<inlineCode parentName="li">{`srcset`}</inlineCode>{` is undefined, the generated string will contain the main image (you can always plan on having a value here for `}<inlineCode parentName="li">{`<Image/>`}</inlineCode>{` abstractions).`}</li>
+        <li parentName="ul"><inlineCode parentName="li">{`width`}</inlineCode>{`: The width to resize the image to. Ignored when using `}<inlineCode parentName="li">{`srcset`}</inlineCode>{`. If only width is defined, aspect ratio is preserved.`}</li>
+        <li parentName="ul"><inlineCode parentName="li">{`height`}</inlineCode>{`: The height to resize the image to. Ignored when using `}<inlineCode parentName="li">{`srcset`}</inlineCode>{`. If only height is defined, aspect ratio is preserved.`}</li>
+        <li parentName="ul"><inlineCode parentName="li">{`width`}</inlineCode>{` + `}<inlineCode parentName="li">{`height`}</inlineCode>{`: If both are defined, the image fit strategy is "cover" (no background added, image is zoomed to fill the space completely).`}</li>
+      </ul>
+      <h2 parentName="article" {...{
+        "id": "examples"
+      }}>{`Examples`}</h2>
+      <pre parentName="article" {...{
+        "className": "language-tsx"
+      }}><code parentName="pre" {...{
+          "className": "language-tsx"
+        }}><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}>{`guitar`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"img:./guitar.jpg?quality=50&format=avif&placeholder&width=500"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}>{`guitar2`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"img:./guitar.jpg?quality=80&format=jpg&srcset=720,1080,2048&placeholder"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`default`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Guitar`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`return`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`div`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`Fixed Image`}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`img`}</span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`alt`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`Guitar`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`src`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`guitar`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`.`}</span><span parentName="span" {...{
+                "className": "token property-access"
+              }}>{`src`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`style`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`
+          backgroundImage`}<span parentName="span" {...{
+                "className": "token operator"
+              }}>{`:`}</span>{` `}<span parentName="span" {...{
+                "className": "token template-string"
+              }}><span parentName="span" {...{
+                  "className": "token template-punctuation string"
+                }}>{`\``}</span><span parentName="span" {...{
+                  "className": "token string"
+                }}>{`url(`}</span><span parentName="span" {...{
+                  "className": "token interpolation"
+                }}><span parentName="span" {...{
+                    "className": "token interpolation-punctuation punctuation"
+                  }}>{`\${`}</span>{`guitar`}<span parentName="span" {...{
+                    "className": "token punctuation"
+                  }}>{`.`}</span><span parentName="span" {...{
+                    "className": "token property-access"
+                  }}>{`placeholder`}</span><span parentName="span" {...{
+                    "className": "token interpolation-punctuation punctuation"
+                  }}>{`}`}</span></span><span parentName="span" {...{
+                  "className": "token string"
+                }}>{`)`}</span><span parentName="span" {...{
+                  "className": "token template-punctuation string"
+                }}>{`\``}</span></span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`,`}</span>{`
+          backgroundSize`}<span parentName="span" {...{
+                "className": "token operator"
+              }}>{`:`}</span>{` `}<span parentName="span" {...{
+                "className": "token string"
+              }}>{`"cover"`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`,`}</span>{`
+        `}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`width`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`guitar`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`.`}</span><span parentName="span" {...{
+                "className": "token property-access"
+              }}>{`width`}</span>{` `}<span parentName="span" {...{
+                "className": "token operator"
+              }}>{`/`}</span>{` `}<span parentName="span" {...{
+                "className": "token number"
+              }}>{`2`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`height`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`guitar`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`.`}</span><span parentName="span" {...{
+                "className": "token property-access"
+              }}>{`height`}</span>{` `}<span parentName="span" {...{
+                "className": "token operator"
+              }}>{`/`}</span>{` `}<span parentName="span" {...{
+                "className": "token number"
+              }}>{`2`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`Responsive`}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`img`}</span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`alt`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`Guitar`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`src`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`guitar2`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`.`}</span><span parentName="span" {...{
+                "className": "token property-access"
+              }}>{`src`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`srcSet`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`guitar2`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`.`}</span><span parentName="span" {...{
+                "className": "token property-access"
+              }}>{`srcset`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`style`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{`
+          backgroundImage`}<span parentName="span" {...{
+                "className": "token operator"
+              }}>{`:`}</span>{` `}<span parentName="span" {...{
+                "className": "token template-string"
+              }}><span parentName="span" {...{
+                  "className": "token template-punctuation string"
+                }}>{`\``}</span><span parentName="span" {...{
+                  "className": "token string"
+                }}>{`url(`}</span><span parentName="span" {...{
+                  "className": "token interpolation"
+                }}><span parentName="span" {...{
+                    "className": "token interpolation-punctuation punctuation"
+                  }}>{`\${`}</span>{`guitar2`}<span parentName="span" {...{
+                    "className": "token punctuation"
+                  }}>{`.`}</span><span parentName="span" {...{
+                    "className": "token property-access"
+                  }}>{`placeholder`}</span><span parentName="span" {...{
+                    "className": "token interpolation-punctuation punctuation"
+                  }}>{`}`}</span></span><span parentName="span" {...{
+                  "className": "token string"
+                }}>{`)`}</span><span parentName="span" {...{
+                  "className": "token template-punctuation string"
+                }}>{`\``}</span></span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`,`}</span>{`
+          backgroundSize`}<span parentName="span" {...{
+                "className": "token operator"
+              }}>{`:`}</span>{` `}<span parentName="span" {...{
+                "className": "token string"
+              }}>{`"cover"`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`,`}</span>{`
+        `}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+    `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`div`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <h2 parentName="article" {...{
+        "id": "notes"
+      }}>{`Notes`}</h2>
+      <h3 parentName="article" {...{
+        "id": "build-performance"
+      }}>{`Build Performance`}</h3>
+      <p parentName="article">{`Remix does its best to only process images once during development. The assets are saved to `}<inlineCode parentName="p">{`remix.config.browserBuildDirectory`}</inlineCode>{` with all other assets. Remix also uses this as a cache. It will first check `}<inlineCode parentName="p">{`config.browserBuildDirectory`}</inlineCode>{` for the image before generating a new one. Additionally, Remix attempts to clean up stale images that you no longer import between development rebuilds.`}</p>
+      <h3 parentName="article" {...{
+        "id": "not-intended-for-content"
+      }}>{`Not Intended for Content`}</h3>
+      <p parentName="article">{`While this is a convenient and powerful API, `}<strong parentName="p">{`we caution you about overusing it`}</strong>{`. We intend this feature to be used for things like marketing and landing pages, not content. If you try to use this for content (hundreds of blog posts, a knowledge base, etc.) your build times will be unacceptable no matter how smart we make Remix: it's a losing game.`}</p>
+      <p parentName="article">{`If you need images for content, we recommend using an image service instead of `}<inlineCode parentName="p">{`img:`}</inlineCode>{` imports. Here are a few to get you started:`}</p>
+      <ul parentName="article">
+        <li parentName="ul"><a parentName="li" {...{
+            "href": "https://cloudinary.com/"
+          }}>{`Cloudinary`}</a></li>
+        <li parentName="ul"><a parentName="li" {...{
+            "href": "https://www.akamai.com/us/en/products/performance/image-and-video-manager.jsp"
+          }}>{`Akamai Image Manager`}</a></li>
+        <li parentName="ul"><a parentName="li" {...{
+            "href": "https://www.imgix.com/"
+          }}>{`imgIX`}</a></li>
+        <li parentName="ul"><a parentName="li" {...{
+            "href": "https://imagekit.io/"
+          }}>{`Image Kit`}</a></li>
+      </ul>
+      <h3 parentName="article" {...{
+        "id": "why-img-instead-of-file-extensions"
+      }}>{`Why `}<inlineCode parentName="h3">{`img:`}</inlineCode>{` Instead of File Extensions?`}</h3>
+      <p parentName="article">{`Why do we use the `}<inlineCode parentName="p">{`img:*`}</inlineCode>{` syntax instead of implicitly using the file extension like `}<inlineCode parentName="p">{`*.jpg`}</inlineCode>{`?`}</p>
+      <p parentName="article">{`First, TypeScript module declaration constraints don't work with an extension and a query string. We think the type hints are more important than removing the extra syntax.`}</p>
+      <p parentName="article">{`Second, `}<a parentName="p" {...{
+          "href": "https://github.com/tc39/proposal-import-assertions"
+        }}>{`TC39 Import Assertions`}</a>{` are on the horizon (Stage 3 at the time of this doc), and they have a great explanation for their API that applies to ours as well:`}</p>
+      <blockquote parentName="article">
+        <p parentName="blockquote">{`Some developers have the intuition that the file extension could be used to determine the module type, as it is in many existing non-standard module systems. However, it's a deep web architectural principle that the suffix of the URL (which you might think of as the "file extension" outside of the web) does not lead to semantics of how the page is interpreted. In practice, on the web, there is a widespread mismatch between file extension and the HTTP Content Type header. All of this sums up to it being infeasible to depend on file extensions/suffixes included in the module specifier to be the basis for this checking.`}</p>
+      </blockquote>
+      <p parentName="article">{`One day we hope to remove our special `}<inlineCode parentName="p">{`img:`}</inlineCode>{` syntax and be able to use import assertions instead.`}</p></article>
+    </MDXLayout>;
+}
+
+;
+MDXContent.isMDXComponent = true;

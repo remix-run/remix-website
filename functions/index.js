@@ -7,6 +7,7 @@ const admin = require("firebase-admin");
 // just do it once at the top!
 admin.initializeApp();
 
+// TODO: do we even need an express app anymore here?
 let app = express();
 app.use(cookieParser());
 
@@ -15,6 +16,7 @@ app.get("/api/playground", require("./api/playground"));
 app.all(
   "*",
   createRequestHandler({
+    build: require("./build"),
     getLoadContext(req, res) {
       return { req, res };
     },

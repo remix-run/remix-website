@@ -1,10 +1,11 @@
 import React from "react";
+import type { LoaderFunction } from "@remix-run/react";
 import { useRouteData } from "@remix-run/react";
 import { Response, redirect } from "@remix-run/data";
 import { getCustomer } from "../../utils/session.server";
 import { addToDiscussRepo } from "../../utils/github.server";
 
-module.exports = async ({ context: { req } }) => {
+export let loader: LoaderFunction = async ({ context: { req } }) => {
   let { sessionUser, user } = await getCustomer(req);
   try {
     if (!user.githubLogin) {

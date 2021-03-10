@@ -1,0 +1,1601 @@
+
+import { mdx } from "@mdx-js/react";
+export function meta() { return {"title":"Data Mutations | Remix Tutorial"}}
+/* @jsxRuntime classic */
+/* @jsx mdx */
+import { Link } from "react-router-dom";
+
+
+const layoutProps = {
+  
+};
+const MDXLayout = "wrapper"
+export default function MDXContent({
+  components,
+  ...props
+}) {
+  return <MDXLayout {...layoutProps} {...props} components={components} mdxType="MDXLayout">
+
+    <nav {...{
+      "className": "toc"
+    }}><div parentName="nav" {...{
+        "className": "heading"
+      }}>{`On this page`}</div><ol parentName="nav" {...{
+        "className": "toc-level toc-level-1"
+      }}><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#get-a-github-personal-access-token"
+          }}>{`Get a GitHub Personal Access Token!`}</a></li><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#make-a-new-route"
+          }}>{`Make a new route`}</a></li><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#data-actions"
+          }}>{`Data Actions`}</a></li><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#upgrading-to-form-and-pending-ui-states"
+          }}>{`Upgrading to <Form> and pending UI states`}</a></li></ol></nav><article {...{
+      "className": "prose dark:prose-dark xl:prose-lg p-8 md:max-w-4xl"
+    }}><h1 parentName="article" {...{
+        "id": "data-mutations"
+      }}>{`Data Mutations`}</h1>
+      <p parentName="article">{`It's time to get serious. We're going to be creating data here. If you've been doing web development for a decade or more, this is going to feel very familiar, if not, you're going to be blown away by how easy it used to be, and how easy it is again with Remix.`}</p>
+      <h2 parentName="article" {...{
+        "id": "get-a-github-personal-access-token"
+      }}>{`Get a GitHub Personal Access Token!`}</h2>
+      <p parentName="article">{`This won't work without one. So go to your `}<a parentName="p" {...{
+          "href": "https://github.com/settings/tokens"
+        }}>{`GitHub Tokens`}</a>{` page and create a new token. Make sure to check the box "Gists". That's all you'll need.`}</p>
+      <h2 parentName="article" {...{
+        "id": "make-a-new-route"
+      }}>{`Make a new route`}</h2>
+      <p parentName="article">{`Go make a file at `}<inlineCode parentName="p">{`app/routes/gists.new.tsx`}</inlineCode>{` and put this in it.`}</p>
+      <pre parentName="article" {...{
+        "className": "language-tsx"
+      }}><code parentName="pre" {...{
+          "className": "language-tsx"
+        }}><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`React`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"react"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`default`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`NewGist`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`return`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`h2`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`New Gist!`}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`h2`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`form`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`method`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`post`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+        `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`label`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            Gist file name:
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`br`}</span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`input`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`required`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`type`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`text`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`name`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`fileName`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`label`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+        `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+        `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`label`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            Content:
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`br`}</span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`textarea`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`required`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`rows`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span><span parentName="span" {...{
+                "className": "token number"
+              }}>{`10`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`name`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`content`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`label`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+        `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+        `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`button`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`type`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`submit`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`Create Gist`}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`button`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+        `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`form`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+    `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`Notice we're using a plain HTML `}<inlineCode parentName="p">{`<form/>`}</inlineCode>{` with an action that points to our `}<inlineCode parentName="p">{`/gists`}</inlineCode>{` route, and then we name the inputs. When you submit this form, the browser will post to the gists data module--no JavaScript required. We're going to make this work with a plain `}<inlineCode parentName="p">{`<form>`}</inlineCode>{` first, and then we'll upgrade it to a Remix `}<inlineCode parentName="p">{`<Form>`}</inlineCode>{` to show how to progressively enhance the form when you have the budget to create a really nice UX with JavaScript.`}</p>
+      <p parentName="article">{`Now let's go create an "action" to handle this form.`}</p>
+      <h2 parentName="article" {...{
+        "id": "data-actions"
+      }}>{`Data Actions`}</h2>
+      <p parentName="article">{`You've seen a `}<inlineCode parentName="p">{`loader`}</inlineCode>{` already. Now you're going to create an `}<inlineCode parentName="p">{`action`}</inlineCode>{`. Every route module can export a "reader" and a "writer". Just like React, you have `}<inlineCode parentName="p">{`[state, setState] = React.useState()`}</inlineCode>{`, or `}<inlineCode parentName="p">{`[state, dispatch] = React.useReducer()`}</inlineCode>{`. Readers and writers. Data and mutations. `}<em parentName="p">{`Loaders and Actions`}</em>{`.`}</p>
+      <p parentName="article">{`Go back to your new route and add this action:`}</p>
+      <pre parentName="article" {...{
+        "className": "language-ts"
+      }}><code parentName="pre" {...{
+          "className": "language-ts"
+        }}><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`React`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"react"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// add a couple new imports`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`type`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{` `}<span parentName="code" {...{
+            "className": "token maybe-class-name"
+          }}>{`Action`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"@remix-run/data"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`{`}</span>{` redirect `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`}`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"@remix-run/data"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// Add the action`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` action`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token function-variable function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Action`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`async`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{` request `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token arrow operator"
+          }}>{`=>`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// Very important or else it won't work :)`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` token `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"insert your github token here"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// in a real world scenario you'd want this token to be an enviornment`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// variable on your server, but as long as you only use it in this action, it`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// won't get included in the browser bundle.`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// When the form request posts here, this helper turns it into a FormData`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` body `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`new`}</span>{` `}<span parentName="code" {...{
+            "className": "token class-name"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`URLSearchParams`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`await`}</span>{` request`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`.`}</span><span parentName="code" {...{
+            "className": "token method function property-access"
+          }}>{`text`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// pull off what we need from the form, note they are named the same thing`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// as the \`<input/>\` in the form.`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` fileName `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` body`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`.`}</span><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`get`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token string"
+          }}>{`"fileName"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`as`}</span>{` `}<span parentName="code" {...{
+            "className": "token builtin"
+          }}>{`string`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` content `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` body`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`.`}</span><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`get`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token string"
+          }}>{`"content"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// Hit the GitHub API to create a gist`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`await`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}>{`fetch`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token string"
+          }}>{`"https://api.github.com/gists"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+    method`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"post"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+    body`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token known-class-name class-name"
+          }}>{`JSON`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`.`}</span><span parentName="code" {...{
+            "className": "token method function property-access"
+          }}>{`stringify`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+      description`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"Created from Remix Form!"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+      `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`public`}</span><span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token boolean"
+          }}>{`true`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+      files`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`[`}</span>{`fileName`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`]`}</span><span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{` content `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+    headers`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+      `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"Content-Type"`}</span><span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"application/json"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+      `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"Authorization"`}</span><span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token template-string"
+          }}><span parentName="span" {...{
+              "className": "token template-punctuation string"
+            }}>{`\``}</span><span parentName="span" {...{
+              "className": "token string"
+            }}>{`token `}</span><span parentName="span" {...{
+              "className": "token interpolation"
+            }}><span parentName="span" {...{
+                "className": "token interpolation-punctuation punctuation"
+              }}>{`\${`}</span>{`token`}<span parentName="span" {...{
+                "className": "token interpolation-punctuation punctuation"
+              }}>{`}`}</span></span><span parentName="span" {...{
+              "className": "token template-punctuation string"
+            }}>{`\``}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`,`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// you always have to redirect from actions`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`return`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}>{`redirect`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token string"
+          }}>{`"/gists"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`default`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`NewGist`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// ... same as before`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`Alright, fill out your form and give it a shot! You should see your new gist on the `}<inlineCode parentName="p">{`/gists`}</inlineCode>{` page!`}</p>
+      <h2 parentName="article" {...{
+        "id": "upgrading-to-form-and-pending-ui-states"
+      }}>{`Upgrading to `}<inlineCode parentName="h2">{`<Form>`}</inlineCode>{` and pending UI states`}</h2>
+      <p parentName="article">{`With a regular `}<inlineCode parentName="p">{`<form>`}</inlineCode>{` we're letting the browser handle the post and the pending UI (the address bar/favicon animation). Remix has a `}<inlineCode parentName="p">{`<Form>`}</inlineCode>{` component and hook to go along with it to let you progressively enhance your forms. If your budget for this feature is short, just use a `}<inlineCode parentName="p">{`<form>`}</inlineCode>{` and move on with your life. If you've got the time to make a fancy user experience, you don't have to rewrite your code with Remix, you can just add the fancy bits with `}<inlineCode parentName="p">{`<Form>`}</inlineCode>{`.`}</p>
+      <p parentName="article">{`Let's update the code and add some loading indication. Note the new imports and the capital "F" `}<inlineCode parentName="p">{`<Form>`}</inlineCode>{`. Now Remix is going to handle the form submit clientside with `}<inlineCode parentName="p">{`fetch`}</inlineCode>{` and you get access to the serialized form data in `}<inlineCode parentName="p">{`usePendingFormSubmit()`}</inlineCode>{` to build that fancy UI.`}</p>
+      <pre parentName="article" {...{
+        "className": "language-tsx"
+      }}><code parentName="pre" {...{
+          "className": "language-tsx"
+        }}><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`React`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"react"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`type`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{` `}<span parentName="code" {...{
+            "className": "token maybe-class-name"
+          }}>{`Action`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"@remix-run/data"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`{`}</span>{` redirect `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`}`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"@remix-run/data"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// add another import here`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`import`}</span>{` `}<span parentName="code" {...{
+            "className": "token imports"
+          }}><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`{`}</span>{` `}<span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Form`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`,`}</span>{` usePendingFormSubmit `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`}`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`from`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"@remix-run/react"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` action`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token function-variable function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Action`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`async`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token parameter"
+          }}><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`{`}</span>{` request `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`}`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token arrow operator"
+          }}>{`=>`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// ... same as before`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`export`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`default`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`NewGist`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// add this`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` pendingForm `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}>{`usePendingFormSubmit`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`return`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`h2`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`New Gist!`}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`h2`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      /* and some pending UI */
+      `}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`pendingForm `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`?`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`
+        `}<span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`div`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span><span parentName="span" {...{
+                "className": "token class-name"
+              }}>{`Loading`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{` Creating gist: `}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`pendingForm`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`.`}</span><span parentName="code" {...{
+            "className": "token property-access"
+          }}>{`data`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`.`}</span><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`get`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token string"
+          }}>{`"fileName"`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+        `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`div`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span>{`
+      `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`
+        `}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`/* Note the capital Form, not form */`}</span>{`
+        `}<span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span><span parentName="span" {...{
+                "className": "token class-name"
+              }}>{`Form`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`method`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`post`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`label`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+              Gist file name:
+              `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`br`}</span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+              `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`input`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`required`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`type`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`text`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`name`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`fileName`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`label`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`label`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+              Content:
+              `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`br`}</span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+              `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`textarea`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`required`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`rows`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span><span parentName="span" {...{
+                "className": "token number"
+              }}>{`10`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`name`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`content`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{` `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`label`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+            `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`button`}</span>{` `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`type`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`submit`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`Create Gist`}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`button`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+          `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`p`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+        `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span><span parentName="span" {...{
+                "className": "token class-name"
+              }}>{`Form`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span>{`
+      `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+    `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span></span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`function`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}><span parentName="span" {...{
+              "className": "token maybe-class-name"
+            }}>{`Loading`}</span></span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`return`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`svg`}</span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`className`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`spin`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`style`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span>{` height`}<span parentName="span" {...{
+                "className": "token operator"
+              }}>{`:`}</span>{` `}<span parentName="span" {...{
+                "className": "token string"
+              }}>{`"1rem"`}</span>{` `}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`xmlns`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`http://www.w3.org/2000/svg`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`fill`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`none`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`viewBox`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`0 0 24 24`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`stroke`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`currentColor`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+    `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+      `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`<`}</span>{`path`}</span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`strokeLinecap`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`round`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`strokeLinejoin`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`round`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`strokeWidth`}</span><span parentName="span" {...{
+              "className": "token script language-javascript"
+            }}><span parentName="span" {...{
+                "className": "token script-punctuation punctuation"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`{`}</span><span parentName="span" {...{
+                "className": "token number"
+              }}>{`2`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`}`}</span></span>{`
+        `}<span parentName="span" {...{
+              "className": "token attr-name"
+            }}>{`d`}</span><span parentName="span" {...{
+              "className": "token attr-value"
+            }}><span parentName="span" {...{
+                "className": "token punctuation attr-equals"
+              }}>{`=`}</span><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span>{`M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15`}<span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`"`}</span></span>{`
+      `}<span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`/>`}</span></span><span parentName="code" {...{
+            "className": "token plain-text"
+          }}>{`
+    `}</span><span parentName="code" {...{
+            "className": "token tag"
+          }}><span parentName="span" {...{
+              "className": "token tag"
+            }}><span parentName="span" {...{
+                "className": "token punctuation"
+              }}>{`</`}</span>{`svg`}</span><span parentName="span" {...{
+              "className": "token punctuation"
+            }}>{`>`}</span></span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`To get the loading spinner to work, put this your css somewhere:`}</p>
+      <pre parentName="article" {...{
+        "className": "language-css"
+      }}><code parentName="pre" {...{
+          "className": "language-css"
+        }}><span parentName="code" {...{
+            "className": "token atrule"
+          }}><span parentName="span" {...{
+              "className": "token rule"
+            }}>{`@keyframes`}</span>{` spin`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token selector"
+          }}>{`100%`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+    `}<span parentName="code" {...{
+            "className": "token property"
+          }}>{`transform`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}>{`rotate`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token number"
+          }}>{`360`}</span><span parentName="code" {...{
+            "className": "token unit"
+          }}>{`deg`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+
+`}<span parentName="code" {...{
+            "className": "token selector"
+          }}><span parentName="span" {...{
+              "className": "token class"
+            }}>{`.spin`}</span></span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{`
+  `}<span parentName="code" {...{
+            "className": "token property"
+          }}>{`animation`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`:`}</span>{` spin `}<span parentName="code" {...{
+            "className": "token number"
+          }}>{`1`}</span><span parentName="code" {...{
+            "className": "token unit"
+          }}>{`s`}</span>{` infinite`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`That's it! As you can see, actions + `}<inlineCode parentName="p">{`<Form>`}</inlineCode>{` are really powerful and really easy. While it's really cool that it works without JavaScript, the point is not to accomodate "users without JavaScript". The point is that this programming model is very simple. Usually you have a whole bunch of other code to write to handle submiting a form with loading states and optimistic UI, and error handling, but in Remix it's simply using a capital F `}<inlineCode parentName="p">{`<Form>`}</inlineCode>{` and a hook for the pending information, everything else is the same.`}</p>
+      <div className="next-prev-links">
+  <Link className="next" to="../deploying" mdxType="Link">
+    Next up: Deploying
+  </Link>
+      </div></article>
+    </MDXLayout>;
+}
+
+;
+MDXContent.isMDXComponent = true;

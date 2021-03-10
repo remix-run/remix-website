@@ -1,0 +1,39 @@
+
+import { mdx } from "@mdx-js/react";
+export function meta() { return {"title":"Server Entry Module | Remix"}}
+/* @jsxRuntime classic */
+/* @jsx mdx */
+import { Link } from "react-router-dom";
+
+
+const layoutProps = {
+  
+};
+const MDXLayout = "wrapper"
+export default function MDXContent({
+  components,
+  ...props
+}) {
+  return <MDXLayout {...layoutProps} {...props} components={components} mdxType="MDXLayout">
+
+    <nav {...{
+      "className": "toc"
+    }}><div parentName="nav" {...{
+        "className": "heading"
+      }}>{`On this page`}</div><ol parentName="nav" {...{
+        "className": "toc-level toc-level-1"
+      }}></ol></nav><article {...{
+      "className": "prose dark:prose-dark xl:prose-lg p-8 md:max-w-4xl"
+    }}><h1 parentName="article" {...{
+        "id": "server-entry-module"
+      }}>{`Server Entry Module`}</h1>
+      <p parentName="article">{`Remix uses `}<inlineCode parentName="p">{`app/entry.server.js`}</inlineCode>{` to generate the HTTP response when rendering on the server. The `}<inlineCode parentName="p">{`default`}</inlineCode>{` export of this module is a function that lets you create the response, including HTTP status, headers, and HTML, giving you full control over the way the markup is generated and sent to the client.`}</p>
+      <p parentName="article">{`This module should render the markup for the current page using a `}<inlineCode parentName="p">{`<Remix>`}</inlineCode>{` element with the `}<inlineCode parentName="p">{`context`}</inlineCode>{` and `}<inlineCode parentName="p">{`url`}</inlineCode>{` for the current request. This markup will (optionally) be re-hydrated once JavaScript loads in the browser using the `}<Link to="../browser-entry-module" mdxType="Link">{`browser entry module`}</Link>{`.`}</p>
+      <p parentName="article">{`An example of how this is done can be found in `}<a parentName="p" {...{
+          "href": "https://github.com/remix-run/starter-express/blob/master/app/entry.server.tsx"
+        }}>{`the Express starter repo`}</a>{`.`}</p></article>
+    </MDXLayout>;
+}
+
+;
+MDXContent.isMDXComponent = true;

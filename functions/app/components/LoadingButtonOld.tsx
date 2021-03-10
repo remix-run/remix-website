@@ -25,7 +25,6 @@ let LoadingButton: React.FC<
   className = "",
   ...props
 }) => {
-  console.log({ state });
   return (
     <button
       {...props}

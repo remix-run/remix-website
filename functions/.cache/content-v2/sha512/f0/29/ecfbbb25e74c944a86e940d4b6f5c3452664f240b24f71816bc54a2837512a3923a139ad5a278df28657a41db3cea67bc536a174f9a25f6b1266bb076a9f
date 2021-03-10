@@ -1,0 +1,158 @@
+
+import { mdx } from "@mdx-js/react";
+export function meta() { return {"title":"Fetch API | Remix"}}
+/* @jsxRuntime classic */
+/* @jsx mdx */
+import { Link } from "react-router-dom";
+
+
+const layoutProps = {
+  
+};
+const MDXLayout = "wrapper"
+export default function MDXContent({
+  components,
+  ...props
+}) {
+  return <MDXLayout {...layoutProps} {...props} components={components} mdxType="MDXLayout">
+
+    <nav {...{
+      "className": "toc"
+    }}><div parentName="nav" {...{
+        "className": "heading"
+      }}>{`On this page`}</div><ol parentName="nav" {...{
+        "className": "toc-level toc-level-1"
+      }}><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#globally-available"
+          }}>{`Globally Available`}</a></li><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#mdn-docs"
+          }}>{`MDN Docs`}</a></li><li parentName="ol" {...{
+          "className": "toc-item toc-item-h2"
+        }}><a parentName="li" {...{
+            "className": "toc-link toc-link-h2",
+            "href": "#data-docs"
+          }}>{`Data Docs`}</a></li></ol></nav><article {...{
+      "className": "prose dark:prose-dark xl:prose-lg p-8 md:max-w-4xl"
+    }}><h1 parentName="article" {...{
+        "id": "web-fetch-api-in-remix"
+      }}>{`Web Fetch API in Remix`}</h1>
+      <p parentName="article">{`While you may be familiar with the different http request/response APIs in server side JavaScript, you might not realize that when browsers added `}<inlineCode parentName="p">{`window.fetch`}</inlineCode>{`, they also add three other objects: `}<inlineCode parentName="p">{`Headers`}</inlineCode>{`, `}<inlineCode parentName="p">{`Request`}</inlineCode>{`, and `}<inlineCode parentName="p">{`Response`}</inlineCode>{`. When you do this:`}</p>
+      <pre parentName="article" {...{
+        "className": "language-js"
+      }}><code parentName="pre" {...{
+          "className": "language-js"
+        }}><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` res `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword control-flow"
+          }}>{`await`}</span>{` `}<span parentName="code" {...{
+            "className": "token function"
+          }}>{`fetch`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`url`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`That `}<inlineCode parentName="p">{`res`}</inlineCode>{` is an instance of `}<inlineCode parentName="p">{`Response`}</inlineCode>{`. And you can make a response yourself:`}</p>
+      <pre parentName="article" {...{
+        "className": "language-js"
+      }}><code parentName="pre" {...{
+          "className": "language-js"
+        }}><span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` res `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`new`}</span>{` `}<span parentName="code" {...{
+            "className": "token class-name"
+          }}>{`Response`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token known-class-name class-name"
+          }}>{`JSON`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`.`}</span><span parentName="code" {...{
+            "className": "token method function property-access"
+          }}>{`stringify`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`{`}</span>{` hello`}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`:`}</span>{` `}<span parentName="code" {...{
+            "className": "token string"
+          }}>{`"there"`}</span>{` `}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`}`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token keyword"
+          }}>{`let`}</span>{` json `}<span parentName="code" {...{
+            "className": "token operator"
+          }}>{`=`}</span>{` `}<span parentName="code" {...{
+            "className": "token keyword control-flow"
+          }}>{`await`}</span>{` res`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`.`}</span><span parentName="code" {...{
+            "className": "token method function property-access"
+          }}>{`json`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token console class-name"
+          }}>{`console`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`.`}</span><span parentName="code" {...{
+            "className": "token method function property-access"
+          }}>{`log`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`(`}</span>{`json`}<span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`)`}</span><span parentName="code" {...{
+            "className": "token punctuation"
+          }}>{`;`}</span>{`
+`}<span parentName="code" {...{
+            "className": "token comment"
+          }}>{`// { hello: "there" }`}</span>{`
+`}</code></pre>
+      <p parentName="article">{`Rather than pick a server-side API, Remix adopt's the Web Fetch API for all http handling. Note that our deployment wrappers like `}<inlineCode parentName="p">{`@remix-run/express`}</inlineCode>{` are simply adapters between the deployment server's API and the Web API. `}<inlineCode parentName="p">{`@remix-run/express`}</inlineCode>{` interperets a Web API Response that you return from a loader or your server entry, into an express response to actually send from the server.`}</p>
+      <h2 parentName="article" {...{
+        "id": "globally-available"
+      }}>{`Globally Available`}</h2>
+      <p parentName="article">{`Remix adds `}<inlineCode parentName="p">{`Request`}</inlineCode>{`, `}<inlineCode parentName="p">{`Response`}</inlineCode>{`, `}<inlineCode parentName="p">{`Headers`}</inlineCode>{`, and `}<inlineCode parentName="p">{`fetch`}</inlineCode>{` to your loader's global context, so you can use them anywhere just like in the browser. We figure if `}<inlineCode parentName="p">{`"what".blink()`}</inlineCode>{` made it into the global context of node, we can add these browser globals to make Remix a little nicer to work with.`}</p>
+      <h2 parentName="article" {...{
+        "id": "mdn-docs"
+      }}>{`MDN Docs`}</h2>
+      <p parentName="article"><a parentName="p" {...{
+          "href": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API"
+        }}>{`https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API`}</a></p>
+      <p parentName="article">{`The MDN docs around `}<inlineCode parentName="p">{`fetch`}</inlineCode>{` are pretty great, but they're a bit lacking on the other objects.`}</p>
+      <h2 parentName="article" {...{
+        "id": "data-docs"
+      }}>{`Data Docs`}</h2>
+      <p parentName="article">{`While you may benefit form reading the MDN docs, our `}<Link to="../data" mdxType="Link">{`data documentation`}</Link>{` goes into detail on how to use these APIs in Remix.`}</p></article>
+    </MDXLayout>;
+}
+
+;
+MDXContent.isMDXComponent = true;
