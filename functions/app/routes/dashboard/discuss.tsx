@@ -1,59 +1,143 @@
-import React from "react";
-import type { LoaderFunction } from "@remix-run/react";
-import { useRouteData } from "@remix-run/react";
-import { Response, redirect } from "@remix-run/data";
-import { getCustomer } from "../../utils/session.server";
-import { addToDiscussRepo } from "../../utils/github.server";
+import React, { useEffect, useState } from "react";
+import type { ActionFunction } from "@remix-run/react";
+import { useSubmit } from "@remix-run/react";
+import redirectInternally from "../../utils/redirect";
+import { redirect } from "@remix-run/data";
+import { requireCustomer } from "../../utils/session.server";
+import { addToRepo } from "../../utils/github.server";
+import LoadingButton, { styles } from "../../components/LoadingButton";
+import type { LoadingButtonProps } from "../../components/LoadingButton";
+import {
+  BeatSpinner,
+  IconCheck,
+  IconError,
+  IconGitHub,
+} from "../../components/icons";
+import {
+  getClientsideUser,
+  getIdToken,
+  linkGitHubAccount,
+} from "../../utils/firebase.client";
+import { createUserSession } from "../../utils/sessions";
 
-export let loader: LoaderFunction = async ({ context: { req } }) => {
-  let { sessionUser, user } = await getCustomer(req);
-  try {
-    if (!user.githubLogin) {
-      // TODO: gonna need to prompt for this when we have different logins
-      let githubId = sessionUser.firebase.identities["github.com"][0];
-      await addToDiscussRepo(sessionUser.uid, githubId);
+export let action: ActionFunction = async ({ request }) => {
+  return requireCustomer(request)(async ({ sessionUser, user }) => {
+    let repo = "https://github.com/remix-run/discuss";
+
+    // already associated their account
+    if (user.githubLogin) {
+      return redirect(repo);
     }
-    return redirect("https://github.com/remix-run/discuss");
-  } catch (error) {
-    console.error(error);
-    return new Response(
-      JSON.stringify({ message: error.message || "Unknown error" }),
-      {
-        status: 500,
-        headers: {
-          "content-type": "application/json",
-        },
-      }
-    );
-  }
+
+    // they logged in with GitHub, but we haven't invited them yet
+    let ghIdentity = sessionUser.firebase.identities["github.com"];
+    let githubId = ghIdentity ? ghIdentity[0] : null;
+    if (githubId) {
+      await addToRepo(sessionUser.uid, githubId);
+      return redirect(repo);
+    }
+
+    // linking for the first time from our submit() in the component
+    let formParams = new URLSearchParams(await request.text());
+    if (formParams.has("githubId") && formParams.has("idToken")) {
+      await addToRepo(sessionUser.uid, formParams.get("githubId"));
+      // create a new session with this new information
+      await createUserSession(request, formParams.get("idToken"));
+      return redirect(repo);
+    }
+
+    // haven't linked anything yet, show the component
+    return redirectInternally(request, "/dashboard/discuss");
+  });
 };
 
-export default function Discuss() {
-  let error = useRouteData();
+export function links() {
+  return [{ rel: "stylesheet", href: styles }];
+}
+
+export default function Repo() {
+  let [state, setState] = useState<LoadingButtonProps["state"]>("idle");
+  let [error, setError] = useState<string>();
+  let submit = useSubmit();
+
+  let transition = async () => {
+    switch (state) {
+      case "loading": {
+        try {
+          await linkGitHubAccount();
+          setState("success");
+        } catch (error) {
+          console.error(error);
+          setError(error.message);
+          setState("error");
+        }
+        break;
+      }
+      case "success": {
+        let user = await getClientsideUser();
+        let githubProvider = user.providerData.find(
+          (provider) => provider.providerId === "github.com"
+        );
+        submit(
+          { githubId: githubProvider.uid, idToken: await getIdToken() },
+          {
+            // FIXME: Remix has a bug in useSubmit requiring location.origin
+            action: window.location.origin + "/dashboard/discuss",
+            method: "post",
+            replace: true,
+          }
+        );
+      }
+      case "error": {
+        setTimeout(() => {
+          setState("idle");
+        }, 2000);
+      }
+    }
+  };
+
+  useEffect(() => {
+    transition();
+  }, [state]);
+
   return (
-    <div className="mt-10 max-w-2xl mx-auto rounded-md bg-red-50 p-4">
-      <div className="flex">
-        <div className="flex-shrink-0">
-          <svg
-            className="h-5 w-5 text-red-400"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
-        <div className="ml-3">
-          <h3 className="focus:outline-none text-sm leading-5 font-medium text-red-800">
-            Could not add you to the GitHub repo, please email us:
-            hello@remix.run
-          </h3>
-          <div className="mx-2 mt-2 text-sm leading-5 text-red-700 italic">
-            <p>{error.message}</p>
+    <div className="px-4 py-4 bg-gray-200 min-h-screen">
+      <div className="max-w-xl m-auto">
+        <div className="bg-white mt-12 shadow sm:rounded-lg">
+          <div className="px-4 py-5 sm:p-6">
+            <h3 className="text-lg leading-6 font-medium text-gray-900">
+              Link Your GitHub Account
+            </h3>
+            <div className="mt-2 text-sm leading-5 text-gray-500">
+              <p>
+                In order to give you access to Remix Discuss, we need to link
+                your GitHub account to your account.
+              </p>
+            </div>
+            <div className="mt-5">
+              <LoadingButton
+                aria-describedby={state === "idle" ? "message" : "error"}
+                onClick={() => setState("loading")}
+                ariaErrorAlert="There was an error linking your account"
+                ariaLoadingAlert="Linking account, please wait..."
+                ariaSuccessAlert="Account linked, redirecting!"
+                ariaText="Link GitHubAccount"
+                icon={<IconGitHub className="h-5 w-5" />}
+                iconError={<IconError className="h-5 w-5" />}
+                iconLoading={<BeatSpinner />}
+                iconSuccess={<IconCheck className="h-5 w-5" />}
+                state={state}
+                text="Link GitHub Account"
+                textLoading="Loading..."
+                type="submit"
+                className="py-2 px-4 border-2 border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:border-yellow-500"
+              />
+            </div>
+            {error && (
+              <p id="error" className="text-red-600 mt-5">
+                {error}
+              </p>
+            )}
           </div>
         </div>
       </div>

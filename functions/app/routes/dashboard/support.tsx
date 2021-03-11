@@ -1,4 +1,5 @@
 import React from "react";
+import { Form, Link } from "@remix-run/react";
 
 export default function Support() {
   return (
@@ -14,30 +15,13 @@ export default function Support() {
             <dl>
               <DataListItem
                 first
-                label="Remix Discuss"
-                value={
-                  <div>
-                    Report bugs, ask usage questions, and discuss API proposals
-                    on GitHub. The first time you visit we'll add you to a
-                    private repo. You may need to accept the invitiation in your
-                    email.
-                  </div>
-                }
-                actions={
-                  <a
-                    className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
-                    href="/dashboard/discuss"
-                  >
-                    Visit Remix Discuss
-                  </a>
-                }
-              />
-              <DataListItem
                 label="Remix Chat"
                 value={
-                  <div>
+                  <div className="w-4/5">
                     Join a Discord chat server with other Remix users and the
-                    developers of Remix. This is probably the most active place.
+                    developers of Remix. This is the most active place to get
+                    help and report issues to Michael and Ryan as we ramp up to
+                    a stable release.
                   </div>
                 }
                 actions={
@@ -50,9 +34,31 @@ export default function Support() {
                 }
               />
               <DataListItem
+                label="Remix Discuss Repo"
+                value={
+                  <div className="w-4/5">
+                    We're not very active here yet, but it will be the primary
+                    place to report issues and discuss API proposals after we
+                    have a stable release. The first time you visit we'll add
+                    you to a private repo. You may need to accept the
+                    invitiation in your email.
+                  </div>
+                }
+                actions={
+                  <Form action="/dashboard/discuss" method="post">
+                    <button
+                      className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
+                      type="submit"
+                    >
+                      Visit Remix Repo
+                    </button>
+                  </Form>
+                }
+              />
+              <DataListItem
                 label="Email"
                 value={
-                  <div>
+                  <div className="w-4/5">
                     You can email us if you aren't getting the help you need
                     with the other support channels.
                   </div>
@@ -69,7 +75,7 @@ export default function Support() {
               <DataListItem
                 label="Twitter"
                 value={
-                  <div>
+                  <div className="w-4/5">
                     Maybe not the best support channel, but we're happy to chat
                     on twitter, too.
                   </div>

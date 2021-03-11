@@ -8,9 +8,6 @@ declare global {
 
 firebase.initializeApp(window.ENV.firebase);
 
-// we're using http sessions for auth
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
-
 // https://firebase.google.com/docs/auth/web/password-auth
 // https://firebase.google.com/docs/reference/js/firebase.auth.Auth#createUserWithEmailAndPassword
 export async function createEmailUser(email: string, password: string) {
@@ -41,31 +38,13 @@ export async function getIdToken() {
   return firebase.auth().currentUser.getIdToken(/*forceRefresh*/ true);
 }
 
-// TODO: remove this when we switch up the checkout flow, We're being weird here
-// and calling the action manually.
-export async function createUserSession(idToken) {
-  let res = await fetch("/session/create?_data=routes%2Fsession.create", {
-    credentials: "same-origin",
-    method: "post",
-    body: JSON.stringify({ idToken }),
-    headers: {
-      "content-type": "application/json",
-    },
-  });
+export async function linkGitHubAccount() {
+  let provider = new firebase.auth.GithubAuthProvider();
+  return firebase.auth().currentUser.linkWithPopup(provider);
+}
 
-  // sign out of the clientside auth, we'll just use our server session now
-  await firebase.auth().signOut();
-
-  if (res.status === 403) {
-    throw new Error("Somebody's tryna hack us.");
-  }
-
-  // remix redirect status code
-  if (res.status !== 204) {
-    throw new Error(await res.text());
-  }
-
-  return { ok: true };
+export async function getClientsideUser() {
+  return firebase.auth().currentUser;
 }
 
 export { firebase };

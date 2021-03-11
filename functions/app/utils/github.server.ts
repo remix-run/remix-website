@@ -5,8 +5,10 @@ import { processBase64Markdown } from "./markdown.server";
 
 let octokit = new Octokit({ auth: config.github.token });
 
-export let addToDiscussRepo = async (uid, id) => {
-  let { data: githubUser } = await octokit.request("GET /user/{id}", { id });
+export let addToRepo = async (uid: string, githubId: string) => {
+  let { data: githubUser } = await octokit.request("GET /user/{id}", {
+    id: githubId,
+  });
   await octokit.request("PUT /repos/{owner}/{repo}/collaborators/{username}", {
     owner: "remix-run",
     repo: "discuss",
