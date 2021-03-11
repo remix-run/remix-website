@@ -31,7 +31,7 @@ interface License {
   issuedAt: number;
   quantity: number;
   invitationToken: string;
-  members: [{ email: string }];
+  members: string[];
   name: string;
   ownerEmail: string;
 }
@@ -106,7 +106,7 @@ export let loader: LoaderFunction = ({ request }) => {
           return {
             role: token.role,
             key: token.id,
-            issuedAt: token.issuedAt._seconds * 1000,
+            issuedAt: token.issuedAt.seconds * 1000,
             quantity: token.quantity,
             invitationToken: token.id,
             name: product.name,
