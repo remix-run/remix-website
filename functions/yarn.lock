@@ -1924,10 +1924,10 @@
   dependencies:
     tslib "^2.0.0"
 
-"@remix-run/core@0.14.0-pre.3":
-  version "0.14.0-pre.3"
-  resolved "https://npm.remix.run/download/@remix-run/core/0.14.0-pre.3/06e9ce363fb59359e13afc3a6ce40ef322516e4e65c44b47335730221273f2f4#1e1def3986a6ab6366f699c80e27e9511f9bc9a0"
-  integrity sha512-SbXhr5MhzQJwVWYTQfDTMF4UmSzNmS1ryNNdvAaQ0shpXuYhYW5DExKfrmP763rie98R3wbx9HVfWHhV6mzezw==
+"@remix-run/core@0.14.0":
+  version "0.14.0"
+  resolved "https://npm.remix.run/download/@remix-run/core/0.14.0/0b2e566002b9e6775fc25152b47874905a1b5d4bf368e02657499d22ba4aef2c#4a5d15db72c6ac80be54f0a6ab48eb308b1b8c9a"
+  integrity sha512-PjcpgbcJyuOcG9uO9eSw7cYN/FXnzpxUCgOgOcftO50RRh7XglTrOvjcmyis1avh66C/4zQFdAfKMpPYqEIIGw==
   dependencies:
     "@types/cookie" "^0.4.0"
     cookie "^0.4.1"
@@ -1938,17 +1938,17 @@
     react-router-dom "^6.0.0-beta.0"
     tmp "^0.2.1"
 
-"@remix-run/data@0.14.0-pre.3":
-  version "0.14.0-pre.3"
-  resolved "https://npm.remix.run/download/@remix-run/data/0.14.0-pre.3/1f2dabba70d1f45020ae9af75c730accadfefac0e8923ca5669b512cdbccf55b#2f28e2877aa2c767c23578c456b36ab2f46b3d41"
-  integrity sha512-Gtn6gUMBF3to/CzgN58IndFelAe/JlPPAE5wHsWShAFEDlh64XOal3CwCUwyRVg283SwZrc65AE2MajuEZMbTA==
+"@remix-run/data@0.14.0":
+  version "0.14.0"
+  resolved "https://npm.remix.run/download/@remix-run/data/0.14.0/a57ae17063652449ffffede8d0a95d84fab193d99690835e7df82bf4b7436c13#a29d84a64ed7a6295031ceb58f768013bca2d24b"
+  integrity sha512-emR9S3p8w94JrW9j+iMnPkjYKVQt+jKcG8/CgL7W/5Rj81aERW4M8CSDsnO+O3xIYLXhSHhxsCd+/7sX0rGRAg==
   dependencies:
-    "@remix-run/core" "0.14.0-pre.3"
+    "@remix-run/core" "0.14.0"
 
-"@remix-run/dev@0.14.0-pre.3":
-  version "0.14.0-pre.3"
-  resolved "https://npm.remix.run/download/@remix-run/dev/0.14.0-pre.3/3c11e8e6d0780db6d9ae7f2cc24d9223bc380954faea3affcb710530b5fd7866#07cc3e7efa0b48515c7c5ec5e46ce9e61ee5fcba"
-  integrity sha512-sCNkVkiP7hw4Ge0kHrbOsimMf6rI4ly5O01lpInlGU4OqrHOzyjL+o9NQrtLWeYg46t33jO0hyP6eQOF/7tEGQ==
+"@remix-run/dev@0.14.0":
+  version "0.14.0"
+  resolved "https://npm.remix.run/download/@remix-run/dev/0.14.0/7b11a59ae4505a4395a2f603acb72717bf068a3f286428ff0072599c33fe5774#3222b886378b30af5e4f55db641940a2fc9ee058"
+  integrity sha512-JudLfKP01f4xufdQ1rnxUhxzLtCN/vaDeSdiI8sVKHGlFZqzPaVUnESAelcNQPxHmZw2G4HO5cl9zqMvsI4VmA==
   dependencies:
     "@babel/core" "^7.13.10"
     "@babel/preset-env" "^7.13.10"
@@ -1960,7 +1960,7 @@
     "@rollup/plugin-commonjs" "^17.1.0"
     "@rollup/plugin-json" "^4.1.0"
     "@rollup/plugin-node-resolve" "^11.2.0"
-    "@rollup/plugin-replace" "^2.3.4"
+    "@rollup/plugin-replace" "^2.4.1"
     cacache "^15.0.5"
     chokidar "^3.5.1"
     express "^4.17.1"
@@ -1975,17 +1975,17 @@
     sharp "^0.27.1"
     signal-exit "^3.0.3"
 
-"@remix-run/express@0.14.0-pre.3":
-  version "0.14.0-pre.3"
-  resolved "https://npm.remix.run/download/@remix-run/express/0.14.0-pre.3/93e6b9333bb8dee2595d3071588b493ae25969045f5f379865127d71b187f1cd#dc24fee92fbdec7dbd9a0bafa2401676bc551cd5"
-  integrity sha512-56xN2vCCKPFjDlhkJx1j9rWCTaQ3h7ly24qX2AgmkstFoJF5ammcfcXC63Rq9vRLJUV0e2WI5QZcI+aOfI1kYw==
+"@remix-run/express@0.14.0":
+  version "0.14.0"
+  resolved "https://npm.remix.run/download/@remix-run/express/0.14.0/0ade89a3995549f1046ba21afbce935ecd9949bf5342f1f95d81c4b5b122adf8#4bd6192ad3968ce4d880c14c5e0c6d5c61e2d222"
+  integrity sha512-tQRkFf5jq4FYRiIxOpNs0nvOHw+4qsZqa8RlMBRPiNyf+xzyfWBCtVlkylWrVVo+btIklXLwuV+iC6kNfdLDDg==
   dependencies:
-    "@remix-run/core" "0.14.0-pre.3"
+    "@remix-run/core" "0.14.0"
 
-"@remix-run/react@0.14.0-pre.3":
-  version "0.14.0-pre.3"
-  resolved "https://npm.remix.run/download/@remix-run/react/0.14.0-pre.3/eb335daf97330f5533ad037a1c023a68c0deef02ce1d997505b06d7511b30ee6#e3a76a1370485458888ca6e35664572588344a6b"
-  integrity sha512-B8wTAkyMEg4DH2v+oSZ7FPpBaeFbMqwU7+fB4tKPSlFucBH6oOPTE4m6Q+tn0tKFDU1KNOlVxiG9pq43TwbPYg==
+"@remix-run/react@0.14.0":
+  version "0.14.0"
+  resolved "https://npm.remix.run/download/@remix-run/react/0.14.0/a201dac4325d90181ea0e08b4f138d5b3d2fde3278657980cd11e585d3dfff66#4a7b1183aade39bf8faeab23419753eafb9ede36"
+  integrity sha512-GXqL43v6ao7IJD8pPQT29XmrJkIX1XemWgoisUs1H8MiJbqP0pEzlGvFLzP/9Dj3EN3rsfi70kf0QyEwx9Yzxg==
   dependencies:
     history "^5.0.0"
     react-router-dom "^6.0.0-beta.0"
@@ -2037,7 +2037,7 @@
     is-module "^1.0.0"
     resolve "^1.19.0"
 
-"@rollup/plugin-replace@^2.3.4":
+"@rollup/plugin-replace@^2.4.1":
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-replace/-/plugin-replace-2.4.1.tgz#c411b5ab72809fb1bfc8b487d8d02eef661460d3"
   integrity sha512-XwC1oK5rrtRJ0tn1ioLHS6OV5JTluJF7QE1J/q1hN3bquwjnVxjtMyY9iCnoyH9DQbf92CxajB3o98wZbP3oAQ==
