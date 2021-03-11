@@ -3,8 +3,6 @@ import { useRouteData, Link, useSubmit } from "@remix-run/react";
 import { json } from "@remix-run/data";
 import redirect from "../utils/redirect";
 import type { ActionFunction, LoaderFunction } from "@remix-run/data";
-
-import { fulfillOrder, getStripeSession } from "../utils/checkout.server";
 import { rootStorage, createUserSession } from "../utils/sessions";
 import * as CacheControl from "../utils/CacheControl";
 
@@ -18,7 +16,6 @@ import {
 import BeatSpinner from "../components/BeatSpinner";
 import {
   getIdToken,
-  createEmailUser,
   signInWithGitHub,
   signInWithEmail,
 } from "../utils/firebase.client";

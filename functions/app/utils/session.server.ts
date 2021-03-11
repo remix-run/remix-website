@@ -1,5 +1,4 @@
-import { Response, redirect } from "@remix-run/data";
-import type { LoaderFunction } from "@remix-run/data";
+import redirect from "./redirect";
 import { admin } from "./firebase.server";
 import { db } from "./db.server";
 import { rootStorage } from "./sessions";
@@ -22,32 +21,20 @@ export let getCustomer = async (request) => {
 export let requireCustomer = (request) => {
   return async (loader) => {
     let url = new URL(request.url);
-    let redirectUrl = `/login?from=${url.pathname + url.search}`;
+    let redirectUrl = `/login?next=${url.pathname + url.search}`;
 
     let sessionUser = await getUserSession(request);
-    if (!sessionUser) return redirect(redirectUrl);
+    if (!sessionUser) return redirect(request, redirectUrl);
 
     let userDoc = await db.users.doc(sessionUser.uid).get();
     // weird to have a session but not a user doc, should be impossible but who
     // knows, just being extra careful.
-    if (!userDoc.exists) return redirect(redirectUrl);
+    if (!userDoc.exists) return redirect(request, redirectUrl);
 
     let user = { uid: userDoc.id, ...userDoc.data() };
     let data = { sessionUser, user };
     return loader(data);
   };
-};
-
-export let requireSession = async ({ request }) => {
-  let url = new URL(request.url);
-  let redirectUrl = `/login?from=${url.pathname + url.search}`;
-  try {
-    return await getUserSession(request);
-  } catch (error) {
-    console.log("Error while creating session!");
-    console.error(error);
-    return redirect(redirectUrl);
-  }
 };
 
 async function getUserSession(request) {

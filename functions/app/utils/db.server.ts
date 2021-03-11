@@ -28,7 +28,8 @@ export interface User {
   stripeCustomerId?: string;
 
   /**
-   * If the user has associated their account with GitHub, this is their login.
+   * If the user has associated their account with GitHub, this is their login
+   * so we can give them access to repos, etc.
    */
   githubLogin?: string;
 }

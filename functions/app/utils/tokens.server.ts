@@ -1,8 +1,6 @@
 import crypto from "crypto";
 import { admin } from "./firebase.server";
 import { db } from "./db.server";
-import type { Token } from "./db.server";
-import { getOrCreateUserRef } from "./user.server";
 
 function generateToken(): Promise<string> {
   return new Promise((resolve) => {
