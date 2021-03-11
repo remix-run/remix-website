@@ -6,17 +6,10 @@ declare global {
   var ENV: any;
 }
 
-// TODO: only want side effects for the browser, can remove this after upgrading to
-// v0.13 and using *.client.js
-if (typeof window !== "undefined") {
-  firebase.initializeApp(
-    // set in global loader + App.js <script>
-    window.ENV.firebase
-  );
+firebase.initializeApp(window.ENV.firebase);
 
-  // we're using http sessions for auth
-  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
-}
+// we're using http sessions for auth
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 
 // https://firebase.google.com/docs/auth/web/password-auth
 // https://firebase.google.com/docs/reference/js/firebase.auth.Auth#createUserWithEmailAndPassword
