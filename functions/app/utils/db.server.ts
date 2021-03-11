@@ -97,10 +97,7 @@ export interface XTokensUser {
    */
   userRef: FirebaseFirestore.DocumentReference<User>;
 
-  /**
-   * ref to the owner of the token
-   */
-  ownerRef: FirebaseFirestore.DocumentReference<User>;
+  // ownerRef: FirebaseFirestore.DocumentReference<User>;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

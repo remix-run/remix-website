@@ -5,11 +5,8 @@ import type { LoaderFunction } from "@remix-run/data";
 import { requireCustomer } from "../../utils/session.server";
 import { stripe } from "../../utils/stripe.server";
 
-export let loader: LoaderFunction = ({ request, context }) => {
-  return requireCustomer(
-    request,
-    context
-  )(async ({ user }) => {
+export let loader: LoaderFunction = ({ request }) => {
+  return requireCustomer(request)(async ({ user }) => {
     try {
       let session = await stripe.billingPortal.sessions.create({
         customer: user.stripeCustomerId,

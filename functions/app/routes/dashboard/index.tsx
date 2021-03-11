@@ -5,7 +5,7 @@ import type { LoaderFunction } from "@remix-run/data";
 import { unwrapSnapshot } from "../../utils/firebase.server";
 import { requireCustomer } from "../../utils/session.server";
 import { stripe } from "../../utils/stripe.server";
-import { db } from "../../utils/db.server";
+import { db, Token, User } from "../../utils/db.server";
 import * as CacheControl from "../../utils/CacheControl";
 import { IconUser, IconKey, IconCopy, IconLink } from "../../components/icons";
 import {
@@ -49,10 +49,9 @@ export let loader: LoaderFunction = ({ request }) => {
       let xTokens = unwrapSnapshot(snapshot);
       return Promise.all(
         xTokens.map(async (xTokenUser) => {
-          let tokenRef = await xTokenUser.tokenRef.get();
-          let token = { id: tokenRef.id, ...tokenRef.data() };
-          // FIXME: the types suck when you call `get` on references in
-          // `data()`, figure out how to get them to not suck?
+          // TODO: figure out how to infer types on these ref types?
+          let tokenDoc = (await xTokenUser.tokenRef.get()) as FirebaseFirestore.DocumentSnapshot<Token>;
+          let token = { id: tokenDoc.id, ...tokenDoc.data() };
           let ownerRef = db.users.doc(token.ownerRef.id);
           let owner = (await ownerRef.get()).data();
 

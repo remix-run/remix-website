@@ -27,7 +27,6 @@ export let createOwnerToken = async (uid, price, quantity) => {
   await db.xTokensUsers.add({
     tokenRef,
     userRef: ownerRef,
-    ownerRef,
     role: "owner",
   });
 
@@ -87,7 +86,6 @@ export let addTokenMember = async (idToken: string, token: string) => {
   await db.xTokensUsers.add({
     tokenRef,
     userRef,
-    ownerRef: tokenDoc.data().ownerRef,
     role: "member",
   });
 
