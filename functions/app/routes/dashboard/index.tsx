@@ -162,7 +162,7 @@ export default function DashboardIndex() {
             value={account.email}
             actions={
               <span className="font-medium text-gray-600 hover:text-gray-500 transition duration-150 ease-in-out">
-                TODO: Change Email Address
+                {/*TODO: Change Email Address*/}
               </span>
             }
           />
@@ -197,41 +197,37 @@ export default function DashboardIndex() {
               actions={<CopyButton value={license.key} />}
             />
             <DescriptionListItem
-              label=".npmrc config (recommended)"
-              value={
-                <div className="w-full">
-                  <p className="my-2 text-gray-800">
-                    We recommend putting your token into an environment variable
-                    so you don't risk accidentally committing your token to git,
-                    and your CI/build server will need to do it this way anyway.
-                  </p>
-                  <textarea
-                    readOnly
-                    className="resize-none block w-full rounded-md border border-gray-300 p-2 h-15 font-mono text-xs text-gray-600"
-                    value={getNpmRc("${REMIX_REGISTRY_TOKEN}")}
-                  />
-                </div>
-              }
-              actions={
-                <CopyButton value={getNpmRc("${REMIX_REGISTRY_TOKEN}")} />
-              }
-            />
-            <DescriptionListItem
               label=".npmrc config"
               value={
                 <div className="w-full">
                   <p className="my-2 text-gray-800">
-                    If you use this method, please ensure that your `.npmrc` is
-                    ignored by git.
+                    Add the following lines to the <code>~/.npmrc</code> file in
+                    your <code>$HOME</code> directory.
                   </p>
                   <textarea
                     readOnly
                     className="resize-none block w-full rounded-md border border-gray-300 p-2 h-15 font-mono text-xs text-gray-600"
                     value={getNpmRc(license.key)}
                   />
+                  <p className="my-2 text-gray-800">
+                    You may also use{" "}
+                    <a
+                      href="https://docs.npmjs.com/cli/v7/configuring-npm/npmrc"
+                      className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
+                    >
+                      any valid npm config file
+                    </a>
+                    , but please be careful to keep your Remix license key out
+                    of public repositories!
+                  </p>
                 </div>
               }
-              actions={<CopyButton value={getNpmRc(license.key)} />}
+              actions={
+                <div>
+                  <p className="my-2">&nbsp;</p>
+                  <CopyButton value={getNpmRc(license.key)} />
+                </div>
+              }
             />
             <DescriptionListItem
               label="Issued"
