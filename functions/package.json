@@ -10,8 +10,7 @@
     "start": "yarn use:staging && NODE_ENV=development concurrently \"remix run\" \"firebase serve\"",
     "start:production": "yarn use:production && NODE_ENV=development concurrently \"yarn css:watch\" \"remix run\" \"firebase serve\"",
     "use:production": "firebase use production && firebase functions:config:get > .runtimeconfig.json",
-    "use:staging": "firebase use staging && firebase functions:config:get > .runtimeconfig.json",
-    "postinstall": "yarn build"
+    "use:staging": "firebase use staging && firebase functions:config:get > .runtimeconfig.json"
   },
   "engines": {
     "node": "12"
