@@ -111,6 +111,14 @@ export default function BuyIndex() {
       // do some fun fade-out because stripe fades in, it'll be sweet!
       setTimeout(() => {
         document.body.classList.add("fade-out");
+        // Safari seems to keep the website in memory, so if the user clicks
+        // "back" from stripe, the page is still faded out to white, this fades
+        // it back in.
+        window.onpageshow = (event) => {
+          if (event.persisted) {
+            document.body.classList.remove("fade-out");
+          }
+        };
         setTimeout(async () => {
           try {
             // await redirectToStripeCheckout(data.stripeSessionId);
