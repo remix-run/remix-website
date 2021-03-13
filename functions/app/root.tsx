@@ -87,17 +87,6 @@ export default function App() {
           }}
         />
         {includeScripts && <Scripts />}
-
-        {process.env.NODE_ENV === "development" && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-              document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
-              ':35729/livereload.js?snipver=1"></' + 'script>')
-            `,
-            }}
-          />
-        )}
       </body>
     </html>
   );
