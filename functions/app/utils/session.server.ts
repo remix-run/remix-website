@@ -16,20 +16,15 @@ export let getCustomer = async (request) => {
   return { sessionUser, user };
 };
 
-// TODO: was planning on a compositional wrapping API here but realized it's stupid,
-// need to refactor to just be `let customer = await requireCustomer()`.
 export let requireCustomer = (request) => {
   return async (loader) => {
-    let url = new URL(request.url);
-    let redirectUrl = `/login?next=${url.pathname + url.search}`;
-
     let sessionUser = await getUserSession(request);
-    if (!sessionUser) return redirect(request, redirectUrl);
+    if (!sessionUser) return redirect(request, "/login");
 
     let userDoc = await db.users.doc(sessionUser.uid).get();
     // weird to have a session but not a user doc, should be impossible but who
-    // knows, just being extra careful.
-    if (!userDoc.exists) return redirect(request, redirectUrl);
+    // knows, just being extra careful, send them to the buy page!
+    if (!userDoc.exists) return redirect(request, "/buy");
 
     let user = { uid: userDoc.id, ...userDoc.data() };
     let data = { sessionUser, user };

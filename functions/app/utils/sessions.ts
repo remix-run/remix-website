@@ -36,9 +36,8 @@ export async function createUserSession(request, idToken) {
   let token = await getSessionToken(idToken);
   let session = await getSession();
   session.set("token", token);
-  let url = new URL(request.url);
   let cookie = await commitSession(session, { maxAge: 604_800 });
-  return redirect(request, url.searchParams.get("next") || "/dashboard", {
+  return redirect(request, "/dashboard", {
     headers: { "Set-Cookie": cookie },
   });
 }

@@ -46,7 +46,7 @@ export let action: ActionFunction = async ({ request }) => {
     session.set("error", e.message);
     let cookie = await rootStorage.commitSession(session);
 
-    return redirect(`/login`, { headers: { "Set-Cookie": cookie } });
+    return redirect(request, `/login`, { headers: { "Set-Cookie": cookie } });
   }
 };
 
