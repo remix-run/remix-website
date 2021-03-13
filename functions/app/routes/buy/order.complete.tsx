@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouteData, Link, useSubmit } from "@remix-run/react";
 import { json, redirect } from "@remix-run/data";
 import type { ActionFunction, LoaderFunction } from "@remix-run/data";
@@ -118,8 +118,6 @@ function RegistrationForm() {
     switch (state) {
       case State.CreatingUser: {
         try {
-          // fake it so we get SOME fun animations
-          await new Promise((res) => setTimeout(res, 1000));
           if (authMethod === "github") {
             await signInWithGitHub();
           } else {
@@ -153,7 +151,7 @@ function RegistrationForm() {
     }
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     transition();
   }, [state]);
 

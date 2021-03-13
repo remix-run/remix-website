@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import type { ActionFunction } from "@remix-run/react";
 import { useSubmit } from "@remix-run/react";
 import redirectInternally from "../../utils/redirect";
@@ -96,7 +96,7 @@ export default function Repo() {
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     transition();
   }, [state]);
 

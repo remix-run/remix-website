@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouteData, Link, useSubmit } from "@remix-run/react";
 import { json } from "@remix-run/data";
 import redirect from "../utils/redirect";
@@ -89,8 +89,6 @@ function LoginForm() {
     switch (state) {
       case State.GettingIdToken: {
         try {
-          // fake it so we get SOME fun animations
-          await new Promise((res) => setTimeout(res, 1000));
           if (authMethod === "github") {
             await signInWithGitHub();
           } else {
@@ -127,7 +125,7 @@ function LoginForm() {
       }
     }
   }
-  useEffect(() => {
+  useLayoutEffect(() => {
     transition();
   }, [state]);
 
@@ -246,6 +244,7 @@ function LoginForm() {
         <LoadingButton
           onClick={() => {
             setAuthMethod("github");
+
             setState(State.GettingIdToken);
           }}
           ariaErrorAlert="There was an error creating your account"
