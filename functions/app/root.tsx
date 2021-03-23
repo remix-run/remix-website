@@ -1,10 +1,14 @@
 import React, { useRef } from "react";
-import { Meta, Scripts, Links, useRouteData } from "@remix-run/react";
+import {
+  Meta,
+  Scripts,
+  Links,
+  useRouteData,
+  useMatches,
+} from "@remix-run/react";
 import type { LinksFunction, LoaderFunction } from "@remix-run/data";
 import { json } from "@remix-run/data";
 import { useLocation, Outlet } from "react-router-dom";
-import twStyles from "url:./styles/tailwind.css";
-import appStyles from "url:./styles/app.css";
 import { useWindowScrollRestoration } from "./components/scroll";
 
 import { config } from "./utils/firebase.server";
@@ -54,15 +58,11 @@ function shouldIncludeScripts(pathname) {
   return true;
 }
 
-export let links: LinksFunction = () => [
-  { rel: "stylesheet", href: twStyles },
-  { rel: "stylesheet", href: appStyles },
-];
-
 export default function App() {
   let { env } = useRouteData();
   let location = useLocation();
   let includeScripts = shouldIncludeScripts(location.pathname);
+  let matches = useMatches();
   // useWindowScrollRestoration();
 
   return (

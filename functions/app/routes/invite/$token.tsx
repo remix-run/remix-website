@@ -26,6 +26,8 @@ import {
 } from "../../components/icons";
 import { createUserSession, rootStorage } from "../../utils/sessions";
 import Hero from "../../components/Hero";
+import twStyles from "url:../../styles/tailwind.css";
+import appStyles from "url:../../styles/app.css";
 
 enum TokenCodes {
   Invalid,
@@ -89,7 +91,11 @@ export function meta() {
 }
 
 export function links() {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: twStyles },
+    { rel: "stylesheet", href: appStyles },
+    { rel: "stylesheet", href: styles },
+  ];
 }
 
 enum State {

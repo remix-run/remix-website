@@ -11,6 +11,13 @@ import { usePendingFormSubmit, useRouteData, Form } from "@remix-run/react";
 import { newsletterStorage } from "../utils/sessions";
 import { IconCheck, IconError } from "../components/icons";
 import BeatSpinner from "../components/BeatSpinner";
+import twStyles from "url:../styles/tailwind.css";
+import appStyles from "url:../styles/app.css";
+
+export let links = () => [
+  { rel: "stylesheet", href: twStyles },
+  { rel: "stylesheet", href: appStyles },
+];
 
 export let loader: LoaderFunction = async function subscribeEmail({ request }) {
   let session = await newsletterStorage.getSession(

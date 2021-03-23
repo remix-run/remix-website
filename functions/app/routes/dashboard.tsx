@@ -6,6 +6,13 @@ import { Link } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { DataOutlet } from "../components/DataOutlet";
 import { requireCustomer } from "../utils/session.server";
+import twStyles from "url:../styles/tailwind.css";
+import appStyles from "url:../styles/app.css";
+
+export let links = () => [
+  { rel: "stylesheet", href: twStyles },
+  { rel: "stylesheet", href: appStyles },
+];
 
 export let loader: LoaderFunction = ({ request, context }) => {
   return requireCustomer(request)((customer) => {

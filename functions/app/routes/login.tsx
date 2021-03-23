@@ -21,6 +21,8 @@ import {
 } from "../utils/firebase.client";
 import LoadingButton, { styles } from "../components/LoadingButton";
 import { getCustomer } from "../utils/session.server";
+import twStyles from "url:../styles/tailwind.css";
+import appStyles from "url:../styles/app.css";
 
 export let loader: LoaderFunction = async ({ request }) => {
   let customer = await getCustomer(request);
@@ -55,7 +57,11 @@ export function headers() {
 }
 
 export function links() {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: twStyles },
+    { rel: "stylesheet", href: appStyles },
+    { rel: "stylesheet", href: styles },
+  ];
 }
 
 enum State {
@@ -125,6 +131,7 @@ function LoginForm() {
       }
     }
   }
+
   useLayoutEffect(() => {
     transition();
   }, [state]);

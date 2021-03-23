@@ -5,11 +5,18 @@ import * as CacheControl from "../utils/CacheControl";
 import redirect from "../utils/redirect";
 import type { LoaderFunction } from "@remix-run/data";
 import { getCustomer } from "../utils/session.server";
+import twStyles from "url:../styles/tailwind.css";
+import appStyles from "url:../styles/app.css";
+
+export let links = () => [
+  { rel: "stylesheet", href: twStyles },
+  { rel: "stylesheet", href: appStyles },
+];
 
 export let loader: LoaderFunction = async ({ request }) => {
   let customer = await getCustomer(request);
   if (customer) {
-    return redirect(request, "/dashboard/docs");
+    return redirect(request, "/dashboard");
   }
   return null;
 };

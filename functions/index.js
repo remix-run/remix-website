@@ -6,5 +6,18 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 
 exports.app = functions.https.onRequest(
-  createRequestHandler({ build: require("./build") })
+  createRequestHandler({
+    build: require("./build"),
+    getLoadContext() {
+      return {
+        docs: {
+          owner: "ryanflorence",
+          repo: "github-docs-template",
+          remotePath: "docs",
+          localPath: "../../code/remix/docs",
+          versions: ">0",
+        },
+      };
+    },
+  })
 );

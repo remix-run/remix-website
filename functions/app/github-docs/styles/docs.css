@@ -1,0 +1,251 @@
+/******************************************************************************
+Extra resets
+******************************************************************************/
+body {
+  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, Segoe UI,
+    Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+}
+
+pre,
+code {
+  font-family: "Source Code Pro", SFMono-Regular, Consolas, Liberation Mono,
+    Menlo, monospace;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/******************************************************************************
+Syntax Highlighting / Color Scheme
+******************************************************************************/
+@media (prefers-color-scheme: dark) {
+  :root {
+    --base00: rgb(33, 33, 33);
+    --base01: rgb(45, 45, 45);
+    --base02: rgb(66, 66, 66);
+    --base03: rgb(75, 75, 75);
+    --base04: rgb(85, 85, 85);
+    --base05: rgb(175, 175, 175);
+    --base06: rgb(200, 200, 200);
+    --base06: rgb(250, 250, 250);
+    --base08: #fc4c51;
+    --base09: #d19a66;
+    --base0A: #ffeaaa;
+    --base0B: #bff3c6;
+    --base0C: #d5f3f1;
+    --base0D: #92b6e0;
+    --base0E: #f9aae0;
+    --base08: #fc6268;
+  }
+  body {
+    background: rgb(28, 28, 28);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --base00: #fcfcfc;
+    --base01: #e0e0e0;
+    --base02: #d6d6d6;
+    --base03: #8e908c;
+    --base04: #969896;
+    --base05: #4d4d4c;
+    --base06: #282a2e;
+    --base07: #1d1f21;
+    --base08: rgb(243, 102, 113);
+    --base09: #f5871f;
+    --base0A: rgb(187, 162, 51);
+    --base0B: rgb(31, 196, 108);
+    --base0C: rgb(48, 185, 181);
+    --base0D: #3c70b5;
+    --base0E: #8959a8;
+    --base0F: #a3685a;
+  }
+  body {
+    background: #ffffff;
+  }
+}
+
+body {
+  color: var(--base06);
+}
+
+a {
+  color: var(--base0D);
+}
+/*a:visited {
+  color: var(--base0E);
+}
+a:active {
+  color: var(--base08);
+}*/
+
+/******************************************************************************
+Page Layout
+******************************************************************************/
+body {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  overflow: hidden;
+}
+
+[data-docs-menu-wrapper] {
+  height: 100vh;
+  overflow: auto;
+  padding: 3rem 2rem;
+  border-right: solid 1px var(--base01);
+  /* so the spinner can be in the top right */
+  position: relative;
+  order: 1;
+}
+
+[data-docs-page-wrapper] {
+  order: 2;
+  height: 100vh;
+  overflow: auto;
+  padding: 3rem;
+  padding-bottom: 50vh;
+}
+
+/******************************************************************************
+Menu
+******************************************************************************/
+
+[data-docs-menu] {
+  margin: 0;
+  padding: 0;
+  line-height: 1.125;
+}
+
+[data-docs-menu]:not([data-level="1"]) {
+  padding-left: 0.75rem;
+}
+
+[data-docs-link] {
+  text-decoration: none;
+  font-weight: 500;
+  color: var(--base05);
+}
+
+[data-docs-menu-wrapper] a:hover {
+  text-decoration: underline;
+}
+
+[data-docs-label],
+[data-docs-link] {
+  display: inline-block;
+  padding: 0.25rem 0;
+}
+
+li[data-level="1"] {
+  margin-bottom: 2rem;
+}
+
+li[data-level="1"] > [data-docs-label],
+li[data-level="1"] > [data-docs-link] {
+  font-weight: 800;
+  font-size: 1.125rem;
+  color: var(--base06);
+}
+
+li[data-level="2"] > [data-docs-label],
+li[data-level="2"] > [data-docs-link] {
+  font-weight: 600;
+}
+
+[data-docs-menu] li {
+  list-style-type: none;
+}
+
+[data-docs-version-select] {
+  min-width: 6rem;
+  margin-bottom: 2rem;
+  padding: 0.25em;
+  background: var(--base00);
+  color: var(--base06);
+}
+[data-docs-version-select] option {
+  text-align: right;
+}
+
+@keyframes docs-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+[data-docs-spinner] {
+  position: fixed;
+  top: 1.5rem;
+  left: 0.5rem;
+  height: 1.75rem;
+  opacity: 0;
+  color: var(--base0D);
+}
+
+[data-docs-spinner][data-spin="true"] {
+  animation: docs-spin 1.5s infinite;
+  transition: opacity 100ms;
+  transition-delay: 100ms;
+  opacity: 1;
+}
+
+[data-docs-crumbs] {
+  display: flex;
+  margin-bottom: 2rem;
+}
+
+[data-docs-crumb] a {
+  padding: 0 0.25rem;
+  display: inline-block;
+  text-decoration: none;
+}
+
+[data-docs-crumb] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+}
+
+[data-docs-crumb]:not(:first-child):before {
+  padding: 0 0.25rem;
+  width: 16px;
+  height: 16px;
+  content: " ";
+  display: inline-block;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJncmF5Ij4KICA8cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMiIgZD0iTTkgNWw3IDctNyA3IiAvPgo8L3N2Zz4=");
+}
+
+[data-docs-skip] {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  position: absolute;
+}
+
+[data-docs-skip]:focus {
+  border: none;
+  margin-left: 0.25rem;
+  padding: 0 0.25rem;
+  background: inherit;
+  color: var(--base0D);
+  position: static;
+  width: auto;
+  height: auto;
+  clip: auto;
+  overflow: initial;
+}
+
+[data-docs-not-found] {
+  text-align: center;
+  margin-top: 3rem;
+}

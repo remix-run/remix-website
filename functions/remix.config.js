@@ -4,6 +4,16 @@ exports.devServerPort = 8002;
 exports.publicPath = "/build/";
 exports.serverBuildDirectory = "./build";
 
+exports.routes = (defineRoutes) => {
+  return defineRoutes((route) => {
+    route("/dashboard/docs", "github-docs/routes/redirect.tsx");
+    route("/dashboard/docs/:version", "github-docs/routes/version.tsx", () => {
+      route("/", "github-docs/routes/index.tsx");
+      route("*", "github-docs/routes/splat.tsx");
+    });
+  });
+};
+
 exports.mdx = {
   rehypePlugins: [
     require("@mapbox/rehype-prism"),

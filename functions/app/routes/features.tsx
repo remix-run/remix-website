@@ -6,6 +6,8 @@ import TheRestHolyCrap from "../md/features.mdx";
 import PublicTopNav from "../components/PublicTopNav";
 import styles from "url:../styles/routes/features.css";
 import type { LinksFunction } from "@remix-run/react";
+import twStyles from "url:../styles/tailwind.css";
+import appStyles from "url:../styles/app.css";
 
 export function headers() {
   return {
@@ -23,6 +25,8 @@ export function meta() {
 }
 
 export let links: LinksFunction = () => [
+  { rel: "stylesheet", href: twStyles },
+  { rel: "stylesheet", href: appStyles },
   {
     rel: "stylesheet",
     href: styles,
