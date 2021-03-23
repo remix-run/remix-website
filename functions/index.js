@@ -11,11 +11,11 @@ exports.app = functions.https.onRequest(
     getLoadContext() {
       return {
         docs: {
-          owner: "ryanflorence",
-          repo: "github-docs-template",
+          owner: "remix-run",
+          repo: "remix",
           remotePath: "docs",
-          localPath: "../../code/remix/docs",
-          versions: ">0",
+          localPath: "../../../code/remix/docs",
+          versions: ">=0.14",
         },
       };
     },

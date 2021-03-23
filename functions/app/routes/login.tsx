@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useRouteData, Link, useSubmit } from "@remix-run/react";
+import { useRouteData, useSubmit } from "@remix-run/react";
 import { json } from "@remix-run/data";
 import redirect from "../utils/redirect";
 import type { ActionFunction, LoaderFunction } from "@remix-run/data";
@@ -38,6 +38,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 };
 
 export let action: ActionFunction = async ({ request }) => {
+  // @ts-expect-error remix types are messed up
   let params = new URLSearchParams(await request.text());
   let idToken = params.get("idToken");
 

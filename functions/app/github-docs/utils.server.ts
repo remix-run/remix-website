@@ -3,31 +3,22 @@ import { promises as fs } from "fs";
 import path from "path";
 import parseAttributes from "gray-matter";
 import { processMarkdown } from "@ryanflorence/md";
-import { LoaderFunction, redirect } from "@remix-run/core";
+import { LoaderFunction, redirect, Request } from "@remix-run/core";
 import * as semver from "semver";
 import LRU from "lru-cache";
 
 let octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 let api = "https://api.github.com/repos";
 
-// let where = process.env.NODE_ENV === "production" ? "remote" : "local";
+let where = process.env.NODE_ENV === "production" ? "remote" : "local";
 // let where = "local";
-let where = "remote";
+// let where = "remote";
 
-let menuCache = new LRU<string, MenuDir>({
-  // 1 hour
-  maxAge: 3.6e6,
-});
+let maxAge = where === "local" ? 100 : 3.6e6; // 1 hour
 
-let versionsCache = new LRU<string, VersionHead[]>({
-  // 1 hour
-  maxAge: 3.6e6,
-});
-
-let docCache = new LRU<string, Doc>({
-  // 1 hour
-  maxAge: 3.6e6,
-});
+let menuCache = new LRU<string, MenuDir>({ maxAge });
+let versionsCache = new LRU<string, VersionHead[]>({ maxAge });
+let docCache = new LRU<string, Doc>({ maxAge });
 
 export interface MenuDir {
   type: "dir";
@@ -118,7 +109,6 @@ export async function getMenu(
 ): Promise<MenuDir> {
   let cached = menuCache.get(version.head);
   if (cached) {
-    console.log(`getMenu cached ${version.head}`);
     return cached;
   }
   let dirName = where === "remote" ? config.remotePath : config.localPath;
@@ -141,7 +131,6 @@ export async function getDoc(
   let cacheKey = `${slug}${version.head}`;
   let cached = docCache.get(cacheKey);
   if (cached) {
-    console.log(`getDoc cached ${cacheKey}`);
     return cached;
   }
 
@@ -280,8 +269,7 @@ async function getAttributes(
 
 async function getFileLocal(config: Config, fileName: string) {
   let docsRoot = path.join(process.cwd(), config.localPath);
-  let docsRootParent = path.dirname(docsRoot);
-  let resolvedPath = path.join(docsRootParent, fileName);
+  let resolvedPath = path.join(docsRoot, fileName);
   return fs.readFile(resolvedPath);
 }
 
@@ -444,7 +432,6 @@ export function addTrailingSlash(request: Request) {
 export async function getVersions(config: Config): Promise<VersionHead[]> {
   let cached = versionsCache.get("default");
   if (cached) {
-    console.log("getVersions cached");
     return cached;
   }
   let res: any = await octokit.request(
@@ -454,6 +441,7 @@ export async function getVersions(config: Config): Promise<VersionHead[]> {
       repo: config.repo,
     }
   );
+
   let tags: string[] = res.data
     .map((tag: any) => tag.ref.replace(/^refs\/tags\//, ""))
     .filter((tag: string) => semver.satisfies(tag, config.versions));
@@ -473,13 +461,13 @@ export function transformVersionsToLatest(tags: string[]) {
     let info = semver.coerce(tag)!;
     if (info.major > 0) {
       // 1.x.x
-      heads.set(`v${info.major}`, tag);
+      heads.set(`v${info.major}`, info.version);
     } else if (info.minor > 0) {
       // 0.1.x
-      heads.set(`v0.${info.minor}`, tag);
+      heads.set(`v0.${info.minor}`, info.version);
     } else {
       // 0.0.1
-      heads.set(`v0.0.${info.patch}`, tag);
+      heads.set(`v0.0.${info.patch}`, info.version);
     }
   }
 

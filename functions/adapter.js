@@ -13,7 +13,7 @@ function createRequestHandler({
   mode = process.env.NODE_ENV,
 }) {
   let handleRequest = core.createRequestHandler(build, mode);
-  return async (req, res, next) => {
+  return async (req, res) => {
     try {
       let request = createRemixRequest(req);
       let loadContext =
@@ -25,7 +25,8 @@ function createRequestHandler({
     } catch (error) {
       // Express doesn't support async functions, so we have to pass along the
       // error manually using next().
-      next(error);
+      console.error(error);
+      res.status(500).send(`<pre>${error.message}\n${error.stack}</pre>`);
     }
   };
 }

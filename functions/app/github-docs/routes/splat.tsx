@@ -27,6 +27,7 @@ export let loader: LoaderFunction = async ({ params, context, request }) => {
         headers: { "Cache-Control": getCacheControl(request.url) },
       });
     } catch (error) {
+      console.error(error);
       return json({ notFound: true }, { status: 404 });
     }
   });

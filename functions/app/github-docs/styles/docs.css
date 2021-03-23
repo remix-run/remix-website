@@ -180,7 +180,7 @@ li[data-level="2"] > [data-docs-link] {
 
 [data-docs-spinner] {
   position: fixed;
-  top: 1.5rem;
+  top: 0.5rem;
   left: 0.5rem;
   height: 1.75rem;
   opacity: 0;
