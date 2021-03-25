@@ -31,21 +31,22 @@ let baseUrl = "/dashboard/docs";
 
 export let loader: LoaderFunction = async ({ context, request, params }) => {
   return addTrailingSlash(request)(async () => {
-    let versions = await getVersions(context.docs);
-    let version = getVersion(params.version, versions);
-    if (!version) {
-      return json({ notFound: true }, { status: 404 });
-    }
-
     try {
+      let versions = await getVersions(context.docs);
+      let version = getVersion(params.version, versions);
+      if (!version) {
+        return json({ notFound: true }, { status: 404 });
+      }
+
       let menu = await getMenu(context.docs, version);
       let data: LoaderData = { menu, version, versions };
       return json(data, {
         headers: { "Cache-Control": getCacheControl(request.url) },
       });
     } catch (error) {
+      console.error(error);
       throw error;
-      return json({ notFound: true }, { status: 404 });
+      // return json({ notFound: true }, { status: 404 });
     }
   });
 };

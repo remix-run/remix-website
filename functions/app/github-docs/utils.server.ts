@@ -1,4 +1,3 @@
-import { Octokit } from "@octokit/core";
 import { promises as fs } from "fs";
 import path from "path";
 import parseAttributes from "gray-matter";
@@ -9,12 +8,10 @@ import { config } from "../utils/firebase.server";
 import LRU from "lru-cache";
 
 let GITHUB_TOKEN = config.github.token;
-let octokit = new Octokit({ auth: GITHUB_TOKEN });
-let api = "https://api.github.com/repos";
 
-// let where = process.env.NODE_ENV === "production" ? "remote" : "local";
+let where = process.env.NODE_ENV === "production" ? "remote" : "local";
 // let where = "local";
-let where = "remote";
+// let where = "remote";
 
 let maxAge = where === "local" ? 100 : 3.6e6; // 1 hour
 
@@ -220,23 +217,12 @@ async function getContentsRemote(
   slug: string,
   version: VersionHead
 ) {
-  let href = `${api}/${config.owner}/${config.repo}/contents/${slug}`;
+  let href = `/repos/${config.owner}/${config.repo}/contents/${slug}`;
   if (!version.isLatest) {
     href += `?ref=${version.version}`;
   }
 
-  let res = await fetch(href, {
-    headers: {
-      Authorization: `token ${GITHUB_TOKEN}`,
-      accept: "application/json",
-    },
-  });
-  if (res.status !== 200) {
-    console.error(res);
-    throw new Error("Failed to fetch remote contents");
-  }
-
-  return (await res.json()) as File[];
+  return fetchGithub<File[]>(href);
 }
 
 async function getContentsLocal(config: Config, slug: string): Promise<File[]> {
@@ -281,24 +267,12 @@ async function getFileRemote(
   slug: string,
   version: VersionHead
 ) {
-  let href = `${api}/${config.owner}/${config.repo}/contents/${slug}`;
+  let href = `/repos/${config.owner}/${config.repo}/contents/${slug}`;
   if (!version.isLatest) {
     href += `?ref=${version.version}`;
   }
 
-  let res = await fetch(href, {
-    headers: {
-      Authorization: `token ${GITHUB_TOKEN}`,
-      accept: "application/json",
-    },
-  });
-
-  if (res.status !== 200) {
-    console.error(res);
-    throw new Error(`Failed to fetch remote file ${slug}`);
-  }
-
-  let data = await res.json();
+  let data = await fetchGithub<{ content: string }>(href);
   return Buffer.from(data.content, "base64").toString("ascii");
 }
 
@@ -438,15 +412,12 @@ export async function getVersions(config: Config): Promise<VersionHead[]> {
   if (cached) {
     return cached;
   }
-  let res: any = await octokit.request(
-    "GET /repos/{owner}/{repo}/git/refs/tags",
-    {
-      owner: config.owner,
-      repo: config.repo,
-    }
+
+  let json = await fetchGithub<{ ref: string }[]>(
+    `/repos/${config.owner}/${config.repo}/git/refs/tags`
   );
 
-  let tags: string[] = res.data
+  let tags: string[] = json
     .map((tag: any) => tag.ref.replace(/^refs\/tags\//, ""))
     .filter((tag: string) => semver.satisfies(tag, config.versions));
 
@@ -488,4 +459,24 @@ export function transformVersionsToLatest(tags: string[]) {
 
 export function getVersion(head: string, versions: VersionHead[]) {
   return versions.find((v) => v.head === head);
+}
+
+async function fetchGithub<T>(href: string): Promise<T> {
+  let res = await fetch(`https://api.github.com${href}`, {
+    headers: {
+      Authorization: `token ${GITHUB_TOKEN}`,
+      accept: "application/json",
+    },
+  });
+
+  if (res.status !== 200) {
+    let error = await res.json();
+    throw new Error(
+      `Could not fetch from GitHub: ${href}: ${res.statusText}; ${
+        error && error.message
+      }`
+    );
+  }
+
+  return res.json();
 }
