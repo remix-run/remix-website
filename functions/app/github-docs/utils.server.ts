@@ -5,9 +5,11 @@ import parseAttributes from "gray-matter";
 import { processMarkdown } from "@ryanflorence/md";
 import { LoaderFunction, redirect, Request } from "@remix-run/core";
 import * as semver from "semver";
+import { config } from "../utils/firebase.server";
 import LRU from "lru-cache";
 
-let octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+let GITHUB_TOKEN = config.github.token;
+let octokit = new Octokit({ auth: GITHUB_TOKEN });
 let api = "https://api.github.com/repos";
 
 let where = process.env.NODE_ENV === "production" ? "remote" : "local";
@@ -225,7 +227,7 @@ async function getContentsRemote(
 
   let res = await fetch(href, {
     headers: {
-      Authorization: `token ${process.env.GITHUB_TOKEN}`,
+      Authorization: `token ${GITHUB_TOKEN}`,
       accept: "application/json",
     },
   });
@@ -285,7 +287,7 @@ async function getFileRemote(
 
   let res = await fetch(href, {
     headers: {
-      Authorization: `token ${process.env.GITHUB_TOKEN}`,
+      Authorization: `token ${GITHUB_TOKEN}`,
       accept: "application/json",
     },
   });
