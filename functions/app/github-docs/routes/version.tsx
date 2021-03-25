@@ -45,8 +45,7 @@ export let loader: LoaderFunction = async ({ context, request, params }) => {
       });
     } catch (error) {
       console.error(error);
-      throw error;
-      // return json({ notFound: true }, { status: 404 });
+      return json({ notFound: true }, { status: 404 });
     }
   });
 };
