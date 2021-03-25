@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useMatches, useRouteData } from "@remix-run/react";
+import { Link, Outlet, useNavigate, NavLink } from "react-router-dom";
+import { useMatches, usePendingLocation, useRouteData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/data";
 import { json } from "@remix-run/data";
 import docsStyles from "url:../styles/docs.css";
@@ -170,9 +170,9 @@ export function MenuList({ dir, level = 1 }: { dir: MenuDir; level?: number }) {
         dir.dirs.map((dir, index) => (
           <li data-docs-dir data-level={level} key={index}>
             {dir.hasIndex ? (
-              <Link data-docs-link to={baseUrl + dir.path + "/"}>
+              <NavLink data-docs-link to={baseUrl + dir.path + "/"}>
                 {dir.title}
-              </Link>
+              </NavLink>
             ) : (
               <span data-docs-label>{dir.title}</span>
             )}
@@ -181,9 +181,9 @@ export function MenuList({ dir, level = 1 }: { dir: MenuDir; level?: number }) {
         ))}
       {dir.files.map((file, index) => (
         <li data-docs-file key={index}>
-          <Link data-docs-link to={baseUrl + file.path + "/"}>
+          <NavLink data-docs-link to={baseUrl + file.path + "/"}>
             {file.title}
-          </Link>
+          </NavLink>
         </li>
       ))}
     </ul>

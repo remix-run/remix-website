@@ -71,6 +71,11 @@ body {
   color: var(--base06);
 }
 
+body[data-pending="true"],
+body[data-pending="true"] a {
+  cursor: wait;
+}
+
 a {
   color: var(--base0D);
 }
@@ -248,4 +253,8 @@ li[data-level="2"] > [data-docs-link] {
 [data-docs-not-found] {
   text-align: center;
   margin-top: 3rem;
+}
+
+a.active {
+  color: var(--base08);
 }

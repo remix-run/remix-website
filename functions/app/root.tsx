@@ -1,10 +1,11 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Meta,
   Scripts,
   Links,
   useRouteData,
   useMatches,
+  usePendingLocation,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction } from "@remix-run/data";
 import { json } from "@remix-run/data";
@@ -58,11 +59,27 @@ function shouldIncludeScripts(pathname) {
   return true;
 }
 
+function useDelayedPending() {
+  let [pending, setPending] = useState(false);
+  let pendingLocation = usePendingLocation();
+  useEffect(() => {
+    if (!pendingLocation) {
+      setPending(false);
+    } else {
+      let id = setTimeout(() => {
+        if (pendingLocation) setPending(true);
+      }, 100);
+      return () => clearTimeout(id);
+    }
+  }, [pendingLocation]);
+  return pending;
+}
+
 export default function App() {
   let { env } = useRouteData();
   let location = useLocation();
   let includeScripts = shouldIncludeScripts(location.pathname);
-  let matches = useMatches();
+  let pendingLocation = useDelayedPending();
   // useWindowScrollRestoration();
 
   return (
@@ -79,7 +96,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-white text-gray-900">
+      <body data-pending={!!pendingLocation} className="bg-white text-gray-900">
         <Outlet />
         <script
           dangerouslySetInnerHTML={{
@@ -87,6 +104,7 @@ export default function App() {
           }}
         />
         {includeScripts && <Scripts />}
+        {/* <script src="http://localhost:35729/livereload.js" /> */}
       </body>
     </html>
   );
