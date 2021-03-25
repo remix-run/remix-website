@@ -12,9 +12,9 @@ let GITHUB_TOKEN = config.github.token;
 let octokit = new Octokit({ auth: GITHUB_TOKEN });
 let api = "https://api.github.com/repos";
 
-let where = process.env.NODE_ENV === "production" ? "remote" : "local";
+// let where = process.env.NODE_ENV === "production" ? "remote" : "local";
 // let where = "local";
-// let where = "remote";
+let where = "remote";
 
 let maxAge = where === "local" ? 100 : 3.6e6; // 1 hour
 
@@ -232,6 +232,7 @@ async function getContentsRemote(
     },
   });
   if (res.status !== 200) {
+    console.error(res);
     throw new Error("Failed to fetch remote contents");
   }
 
@@ -293,6 +294,7 @@ async function getFileRemote(
   });
 
   if (res.status !== 200) {
+    console.error(res);
     throw new Error(`Failed to fetch remote file ${slug}`);
   }
 
