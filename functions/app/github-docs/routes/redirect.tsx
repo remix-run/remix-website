@@ -7,7 +7,7 @@ export let loader: LoaderFunction = async ({ request, context }) => {
   return requireCustomer(request)(async () => {
     let versions = await getVersions(context.docs);
     let root = "/dashboard/docs";
-    return redirect(request, `${root}/${versions[0].head}`);
+    return redirect(request, `${root}/${versions[0].head}/`);
   });
 };
 

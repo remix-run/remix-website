@@ -62,7 +62,7 @@
     "use-throttle": "^0.0.3",
     "@octokit/rest": "^18.1.1",
     "@remix-run/vercel": "^0.14.0",
-    "@ryanflorence/md": "1.1.5",
+    "@ryanflorence/md": "^1.2.0",
     "@types/semver": "^7.3.4",
     "@vercel/node": "1.8.3",
     "gray-matter": "^4.0.2",

@@ -2397,10 +2397,10 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@ryanflorence/md@1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@ryanflorence/md/-/md-1.1.5.tgz#e7876f6b9e035bebe78c2db8939eddfef58adedf"
-  integrity sha512-3WrmvuMLmpX5vHMwVrEKwB1IgpTRDREBYhKU2EebVTnqcrHPXSQ9Uno20m6lCmypF7cBcNAGhBCUiii5k38J4g==
+"@ryanflorence/md@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@ryanflorence/md/-/md-1.2.0.tgz#70c978c68808d602c552980a0bcacb2f56ed800e"
+  integrity sha512-/6skeVXHLXxco6OJ8QloQafZHprx9E9WV3c4+d4pierZ99s0SLBbNui3d0k00kFXL8wMG3F+DhvLm32/VJYwgA==
   dependencies:
     escape-goat "^3.0.0"
     hast "^1.0.0"

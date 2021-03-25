@@ -3,7 +3,7 @@ pre[data-line-numbers="true"] [data-line-number]:before {
   text-align: right;
   display: inline-block;
   width: 2rem;
-  color: var(--base02);
+  color: var(--base03);
   margin-right: 1.5rem;
 }
 
@@ -505,7 +505,7 @@ pre[data-line-numbers="true"] [data-line-number]:before {
 }
 
 .markdown-body pre {
-  padding: 1rem;
+  padding: 1rem 0;
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;

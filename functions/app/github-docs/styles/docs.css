@@ -258,3 +258,19 @@ li[data-level="2"] > [data-docs-link] {
 a.active {
   color: var(--base08);
 }
+
+.codeblock-line {
+  display: block;
+  position: relative;
+  padding-right: 1rem;
+}
+
+.codeblock-line[data-highlight="true"]:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: var(--base0D);
+  opacity: 0.1;
+}
