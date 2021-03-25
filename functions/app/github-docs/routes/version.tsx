@@ -19,6 +19,7 @@ import { useElementScrollRestoration } from "../scroll-restoration";
 import { useDelegatedReactRouterLinks } from "../delegate-links";
 import NavSpinner from "../spinner";
 import Breadcrumbs from "../breadcrumbs";
+import { requireCustomer } from "../../utils/session.server";
 
 ////////////////////////////////////////////////////////////////////////////////
 interface LoaderData {
@@ -30,24 +31,26 @@ interface LoaderData {
 let baseUrl = "/dashboard/docs";
 
 export let loader: LoaderFunction = async ({ context, request, params }) => {
-  return addTrailingSlash(request)(async () => {
-    try {
-      let versions = await getVersions(context.docs);
-      let version = getVersion(params.version, versions);
-      if (!version) {
+  return requireCustomer(request)(() =>
+    addTrailingSlash(request)(async () => {
+      try {
+        let versions = await getVersions(context.docs);
+        let version = getVersion(params.version, versions);
+        if (!version) {
+          return json({ notFound: true }, { status: 404 });
+        }
+
+        let menu = await getMenu(context.docs, version);
+        let data: LoaderData = { menu, version, versions };
+        return json(data, {
+          headers: { "Cache-Control": getCacheControl(request.url) },
+        });
+      } catch (error) {
+        console.error(error);
         return json({ notFound: true }, { status: 404 });
       }
-
-      let menu = await getMenu(context.docs, version);
-      let data: LoaderData = { menu, version, versions };
-      return json(data, {
-        headers: { "Cache-Control": getCacheControl(request.url) },
-      });
-    } catch (error) {
-      console.error(error);
-      return json({ notFound: true }, { status: 404 });
-    }
-  });
+    })
+  );
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +109,7 @@ export default function Docs() {
       <div data-docs-menu-wrapper>
         <NavSpinner />
         <Link to="/" aria-label="Remix">
-          <picture style={{ maxWidth: "300px" }}>
+          <picture style={{ width: "240px", height: "57px" }}>
             <source
               srcSet="/img/remix-on-dark-compressed.webp"
               media="(prefers-color-scheme: dark)"
@@ -120,12 +123,12 @@ export default function Docs() {
             <source
               srcSet="/img/remix-on-dark-compressed.png"
               media="(prefers-color-scheme: dark)"
-              type="image/webp"
+              type="image/png"
             />
             <source
               srcSet="/img/remix-on-light-compressed.png"
               media="(prefers-color-scheme: light)"
-              type="image/webp"
+              type="image/png"
             />
             <img src="/img/remix-on-light.png" />
           </picture>
