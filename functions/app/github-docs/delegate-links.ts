@@ -23,7 +23,8 @@ export function useDelegatedReactRouterLinks() {
         !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) // not modified
       ) {
         event.preventDefault();
-        navigate(a.pathname + a.search + a.hash);
+        let pathname = a.pathname.endsWith("/") ? a.pathname : a.pathname + "/";
+        navigate(pathname + a.search + a.hash);
       }
     };
 
