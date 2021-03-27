@@ -1,16 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Meta,
   Scripts,
   Links,
   useRouteData,
-  useMatches,
   usePendingLocation,
 } from "@remix-run/react";
-import type { LinksFunction, LoaderFunction } from "@remix-run/data";
+import type { LoaderFunction } from "@remix-run/data";
 import { json } from "@remix-run/data";
 import { useLocation, Outlet } from "react-router-dom";
-import { useWindowScrollRestoration } from "./components/scroll";
 
 import { config } from "./utils/firebase.server";
 

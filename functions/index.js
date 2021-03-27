@@ -8,16 +8,5 @@ admin.initializeApp();
 exports.app = functions.https.onRequest(
   createRequestHandler({
     build: require("./build"),
-    getLoadContext() {
-      return {
-        docs: {
-          owner: "remix-run",
-          repo: "remix",
-          remotePath: "docs",
-          localPath: "../../../code/remix/docs",
-          versions: ">=0.14",
-        },
-      };
-    },
   })
 );

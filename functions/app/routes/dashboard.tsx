@@ -96,7 +96,7 @@ function TopNav({ sessionUser, user }) {
                 <TopNavLink to=".">
                   <IconHome /> Dashboard
                 </TopNavLink>
-                <TopNavLink to="docs">
+                <TopNavLink as="a" href="https://docs.remix.run">
                   <IconDocumentation /> Documentation
                 </TopNavLink>
                 <TopNavLink to="support">
@@ -131,7 +131,11 @@ function TopNav({ sessionUser, user }) {
           <TopNavLinkMobile to="." onClick={() => setIsOpen(false)}>
             <IconHome /> Dashboard
           </TopNavLinkMobile>
-          <TopNavLinkMobile to="docs" onClick={() => setIsOpen(false)}>
+          <TopNavLinkMobile
+            as="a"
+            href="https://docs.remix.run"
+            onClick={() => setIsOpen(false)}
+          >
             <IconDocumentation /> Documentation
           </TopNavLinkMobile>
           <TopNavLinkMobile to="support" onClick={() => setIsOpen(false)}>
