@@ -1,7 +1,7 @@
 import React from "react";
 import { renderToNodeStream } from "react-dom/server";
-import { Response } from "@remix-run/core";
-import Remix from "@remix-run/react/server";
+import { Response } from "@remix-run/node";
+import { RemixServer } from "@remix-run/react";
 import streamString from "node-stream-string";
 
 export default function handleRequest(
@@ -11,7 +11,7 @@ export default function handleRequest(
   remixContext
 ) {
   let markup = renderToNodeStream(
-    <Remix url={request.url} context={remixContext} />
+    <RemixServer url={request.url} context={remixContext} />
   );
 
   responseHeaders.set("Content-Type", "text/html");

@@ -1,13 +1,9 @@
 import React from "react";
 import * as CacheControl from "../utils/CacheControl";
 import { ExampleApp } from "../components/Invoices";
-// @ts-expect-error
-import TheRestHolyCrap from "../md/features.mdx";
 import PublicTopNav from "../components/PublicTopNav";
-import styles from "url:../styles/routes/features.css";
+import styles from "../styles/routes/features.css";
 import type { LinksFunction } from "@remix-run/react";
-import twStyles from "url:../styles/tailwind.css";
-import appStyles from "url:../styles/app.css";
 
 export function headers() {
   return {
@@ -25,8 +21,6 @@ export function meta() {
 }
 
 export let links: LinksFunction = () => [
-  { rel: "stylesheet", href: twStyles },
-  { rel: "stylesheet", href: appStyles },
   {
     rel: "stylesheet",
     href: styles,
@@ -571,15 +565,6 @@ export default function Features() {
         <YouTube id="cmh8mp8TUUE" />
       </div>
       */}
-      <CTA />
-      <div className="bg-gray-100 py-24">
-        <h2 className="text-center text-3xl leading-9 font-extrabold text-black sm:text-4xl sm:leading-10 mb-12">
-          Still here? Alright, here's some more...
-        </h2>
-        <div className="m-auto max-w-4xl">
-          <TheRestHolyCrap />
-        </div>
-      </div>
       <CTA />
     </div>
   );

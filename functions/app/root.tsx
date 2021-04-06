@@ -6,9 +6,16 @@ import {
   useRouteData,
   usePendingLocation,
 } from "@remix-run/react";
-import type { LoaderFunction } from "@remix-run/data";
-import { json } from "@remix-run/data";
+import type { LoaderFunction, LinksFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { useLocation, Outlet } from "react-router-dom";
+import twStyles from "./styles/tailwind.css";
+import appStyles from "./styles/app.css";
+
+export let links: LinksFunction = () => [
+  { rel: "stylesheet", href: twStyles },
+  { rel: "stylesheet", href: appStyles },
+];
 
 import { config } from "./utils/firebase.server";
 

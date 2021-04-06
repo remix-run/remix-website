@@ -1,4 +1,4 @@
-import { createCookieSessionStorage } from "@remix-run/data";
+import { createCookieSessionStorage } from "@remix-run/node";
 import redirect from "./redirect";
 import { getSessionToken } from "./firebase.server";
 

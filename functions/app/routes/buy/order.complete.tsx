@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouteData, Link, useSubmit } from "@remix-run/react";
-import { json, redirect } from "@remix-run/data";
-import type { ActionFunction, LoaderFunction } from "@remix-run/data";
+import { json, redirect } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 
 import { fulfillOrder, getStripeSession } from "../../utils/checkout.server";
 import { buyStorage, createUserSession } from "../../utils/sessions";

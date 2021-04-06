@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ActionFunction, LoaderFunction } from "@remix-run/data";
-import { redirect, json } from "@remix-run/data";
+import { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { redirect, json } from "@remix-run/node";
 import { Form, usePendingFormSubmit, useRouteData } from "@remix-run/react";
 
 import BeatSpinner from "../../components/BeatSpinner";

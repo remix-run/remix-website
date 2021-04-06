@@ -1,8 +1,8 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouteData, useSubmit } from "@remix-run/react";
-import { json } from "@remix-run/data";
+import { json } from "@remix-run/node";
 import redirect from "../utils/redirect";
-import type { ActionFunction, LoaderFunction } from "@remix-run/data";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { rootStorage, createUserSession } from "../utils/sessions";
 import * as CacheControl from "../utils/CacheControl";
 
@@ -21,8 +21,6 @@ import {
 } from "../utils/firebase.client";
 import LoadingButton, { styles } from "../components/LoadingButton";
 import { getCustomer } from "../utils/session.server";
-import twStyles from "url:../styles/tailwind.css";
-import appStyles from "url:../styles/app.css";
 
 export let loader: LoaderFunction = async ({ request }) => {
   let customer = await getCustomer(request);
@@ -38,7 +36,6 @@ export let loader: LoaderFunction = async ({ request }) => {
 };
 
 export let action: ActionFunction = async ({ request }) => {
-  // @ts-expect-error remix types are messed up
   let params = new URLSearchParams(await request.text());
   let idToken = params.get("idToken");
 
@@ -58,11 +55,7 @@ export function headers() {
 }
 
 export function links() {
-  return [
-    { rel: "stylesheet", href: twStyles },
-    { rel: "stylesheet", href: appStyles },
-    { rel: "stylesheet", href: styles },
-  ];
+  return [{ rel: "stylesheet", href: styles }];
 }
 
 enum State {

@@ -6,7 +6,9 @@ declare global {
   var ENV: any;
 }
 
-firebase.initializeApp(window.ENV.firebase);
+if (typeof window !== "undefined") {
+  firebase.initializeApp(window.ENV.firebase);
+}
 
 // https://firebase.google.com/docs/auth/web/password-auth
 // https://firebase.google.com/docs/reference/js/firebase.auth.Auth#createUserWithEmailAndPassword

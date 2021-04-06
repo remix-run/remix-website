@@ -1,5 +1,5 @@
 import React, { ReactEventHandler, useState } from "react";
-import styles from "url:./loading-button.css";
+import styles from "./loading-button.css";
 
 export { styles };
 

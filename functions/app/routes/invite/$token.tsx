@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouteData, useSubmit } from "@remix-run/react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import Logo from "../../components/Logo";
-import type { LoaderFunction, ActionFunction } from "@remix-run/data";
-import { json, redirect } from "@remix-run/data";
-import { Response } from "@remix-run/data";
+import type { LoaderFunction, ActionFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { Response } from "@remix-run/node";
 import { db } from "../../utils/db.server";
 import {
   addTokenMember,
@@ -26,8 +26,6 @@ import {
 } from "../../components/icons";
 import { createUserSession, rootStorage } from "../../utils/sessions";
 import Hero from "../../components/Hero";
-import twStyles from "url:../../styles/tailwind.css";
-import appStyles from "url:../../styles/app.css";
 
 enum TokenCodes {
   Invalid,
@@ -91,11 +89,7 @@ export function meta() {
 }
 
 export function links() {
-  return [
-    { rel: "stylesheet", href: twStyles },
-    { rel: "stylesheet", href: appStyles },
-    { rel: "stylesheet", href: styles },
-  ];
+  return [{ rel: "stylesheet", href: styles }];
 }
 
 enum State {

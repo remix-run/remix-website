@@ -1,18 +1,11 @@
 import React from "react";
-import { json } from "@remix-run/data";
+import { json } from "@remix-run/node";
 import { usePendingLocation, useRouteData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/react";
 import { Link } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { DataOutlet } from "../components/DataOutlet";
 import { requireCustomer } from "../utils/session.server";
-import twStyles from "url:../styles/tailwind.css";
-import appStyles from "url:../styles/app.css";
-
-export let links = () => [
-  { rel: "stylesheet", href: twStyles },
-  { rel: "stylesheet", href: appStyles },
-];
 
 export let loader: LoaderFunction = ({ request, context }) => {
   return requireCustomer(request)((customer) => {

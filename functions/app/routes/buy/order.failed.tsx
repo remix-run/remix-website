@@ -1,7 +1,7 @@
 import React from "react";
 import * as CacheControl from "../../utils/CacheControl";
 import redirect from "../../utils/redirect";
-import type { LoaderFunction } from "@remix-run/data";
+import type { LoaderFunction } from "@remix-run/node";
 
 export let loader: LoaderFunction = async ({ request }) => {
   // TODO: add a message?

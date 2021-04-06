@@ -1,23 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import Logo, { useLogoAnimation } from "../components/Logo";
-import LoadingButton from "../components/LoadingButton";
+import LoadingButton, { styles as lbStyles } from "../components/LoadingButton";
 import VisuallyHidden from "@reach/visually-hidden";
 import * as CacheControl from "../utils/CacheControl";
 import { subscribeToForm } from "../utils/ck.server";
-import { json } from "@remix-run/data";
+import { json } from "@remix-run/node";
 import redirect from "../utils/redirect";
-import type { ActionFunction, LoaderFunction } from "@remix-run/data";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { usePendingFormSubmit, useRouteData, Form } from "@remix-run/react";
 import { newsletterStorage } from "../utils/sessions";
 import { IconCheck, IconError } from "../components/icons";
 import BeatSpinner from "../components/BeatSpinner";
-import twStyles from "url:../styles/tailwind.css";
-import appStyles from "url:../styles/app.css";
-
-export let links = () => [
-  { rel: "stylesheet", href: twStyles },
-  { rel: "stylesheet", href: appStyles },
-];
 
 export let loader: LoaderFunction = async function subscribeEmail({ request }) {
   let session = await newsletterStorage.getSession(
@@ -59,6 +52,10 @@ export let action: ActionFunction = async ({ request }) => {
 
 export function headers() {
   return CacheControl.pub;
+}
+
+export function links() {
+  return [{ rel: "stylesheet", href: lbStyles }];
 }
 
 export function meta() {
@@ -259,7 +256,7 @@ export default function NewsLetter() {
                   text="Subscribe"
                   textLoading="Loading..."
                   onFocus={changeColors}
-                  className={`w-full py-2 px-4 border-2 border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:border-yellow-500 ${
+                  className={`w-full m-1 py-2 px-4 border-2 border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:border-yellow-500 ${
                     state === "valid" ? "" : "opacity-50"
                   }`}
                 />
@@ -340,9 +337,9 @@ function Input(props) {
   return (
     <input
       className={`
-        w-full sm:w-56 py-1 px-2 text-lg rounded
-        focus:outline-none
-        focus:shadow-yellow bg-gray-700 placeholder-gray-400
+        w-full sm:w-56 py-1 px-2 text-lg rounded-md
+        focus:outline-none border-2 border-transparent
+        focus:border-yellow-500 bg-gray-700 placeholder-gray-400
         disabled:opacity-50
         m-1
       `}

@@ -3,15 +3,8 @@ import Logo, { useLogoAnimation } from "../components/Logo";
 import { Link } from "react-router-dom";
 import * as CacheControl from "../utils/CacheControl";
 import redirect from "../utils/redirect";
-import type { LoaderFunction } from "@remix-run/data";
+import type { LoaderFunction } from "@remix-run/node";
 import { getCustomer } from "../utils/session.server";
-import twStyles from "url:../styles/tailwind.css";
-import appStyles from "url:../styles/app.css";
-
-export let links = () => [
-  { rel: "stylesheet", href: twStyles },
-  { rel: "stylesheet", href: appStyles },
-];
 
 export let loader: LoaderFunction = async ({ request }) => {
   let customer = await getCustomer(request);
@@ -142,6 +135,13 @@ export default function Index() {
               Buy a License &nbsp;
               <ArrowRightIcon />
             </ButtonLink>
+          </div>
+          <div className="mt-4 text-gray-400">
+            Or follow our development regularly in our{" "}
+            <Link className="text-aqua-500" to="/newsletter">
+              newsletter
+            </Link>
+            .
           </div>
           <div className="my-20" />
           <div>

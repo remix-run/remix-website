@@ -1,18 +1,13 @@
-// Copyright © 2021 React Training LLC. All rights reserved.
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-
 var url = require("url");
-var core = require("@remix-run/core");
-require("@remix-run/express/fetchGlobals");
+var node = require("@remix-run/node");
+node.installGlobals();
 
 function createRequestHandler({
   build,
   getLoadContext,
   mode = process.env.NODE_ENV,
 }) {
-  let handleRequest = core.createRequestHandler(build, mode);
+  let handleRequest = node.createRequestHandler(build, mode);
   return async (req, res) => {
     try {
       let request = createRemixRequest(req);
@@ -22,17 +17,12 @@ function createRequestHandler({
           : undefined;
       let response = await handleRequest(request, loadContext);
       sendRemixResponse(res, response);
-    } catch (error) {
-      // Express doesn't support async functions, so we have to pass along the
-      // error manually using next().
-      console.error(error);
-      res.status(500).send(`<pre>${error.message}\n${error.stack}</pre>`);
-    }
+    } catch (error) {}
   };
 }
 
 function createRemixHeaders(requestHeaders) {
-  return new core.Headers(
+  return new node.Headers(
     Object.keys(requestHeaders).reduce((memo, key) => {
       let value = requestHeaders[key];
 
@@ -60,7 +50,7 @@ function createRemixRequest(req) {
     init.body = req.rawBody;
   }
 
-  return new core.Request(url$1.toString(), init);
+  return new node.Request(url$1.toString(), init);
 }
 
 function sendRemixResponse(res, response) {

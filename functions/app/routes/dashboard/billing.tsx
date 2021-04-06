@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouteData } from "@remix-run/react";
-import { redirect } from "@remix-run/data";
-import type { LoaderFunction } from "@remix-run/data";
+import { redirect } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
 import { requireCustomer } from "../../utils/session.server";
 import { stripe } from "../../utils/stripe.server";
 
