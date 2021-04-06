@@ -415,7 +415,7 @@ export default function Features() {
                         </h5>
                         <p className="mt-2 text-base leading-6 text-gray-600">
                           Because Remix's data mutation API is based on HTML and
-                          HTTP, idiomatic Remix sites don't require a JavaScript
+                          HTTP, idiomatic Remix sites don't require JavaScript
                           in the browser for the core features of your app to
                           work. You might want it though, Remix optimizes the
                           data loading in the browser by only fetching data for
