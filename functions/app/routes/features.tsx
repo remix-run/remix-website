@@ -394,8 +394,8 @@ export default function Features() {
                       <div className="flex-shrink-0">
                         <div className="flex items-center justify-center h-12 w-12 rounded-md bg-green-600 text-white">
                           <svg
-                            className="h-6 w-6"
                             xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -404,7 +404,7 @@ export default function Features() {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+                              d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
                             />
                           </svg>
                         </div>
