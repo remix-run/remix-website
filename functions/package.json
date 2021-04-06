@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "yarn css:build && remix build",
+    "build": "yarn css:build && remix build2",
     "deploy": "firebase deploy",
     "logs": "firebase functions:log",
     "shell": "firebase functions:shell",
