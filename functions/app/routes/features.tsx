@@ -3,7 +3,7 @@ import * as CacheControl from "../utils/CacheControl";
 import { ExampleApp } from "../components/Invoices";
 import PublicTopNav from "../components/PublicTopNav";
 import styles from "../styles/routes/features.css";
-import type { LinksFunction } from "@remix-run/react";
+import { Link, LinksFunction } from "@remix-run/react";
 
 export function headers() {
   return {
@@ -143,7 +143,7 @@ export default function Features() {
                         <a className="text-blue-500" href="https://unpkg.com">
                           UNPKG
                         </a>
-                        . It serves over <B>50 billion</B> requests per month
+                        . It serves over <B>70 billion</B> requests per month
                         without making a dent on our credit card bill. It's
                         possible because of HTTP caching and CDNs. A trend is to
                         turn to SSG to find performance like this, but then you
@@ -223,7 +223,7 @@ export default function Features() {
                         everything. Not found? 200. No record? 200. Server
                         error? 200. Redirect (!) 200. This hurts your SEO and
                         your CDN capabilities. Remix sends the right status
-                        code, even on client side transitions.
+                        code.
                       </p>
                     </div>
                   </div>
@@ -308,12 +308,18 @@ export default function Features() {
             <div className="lg:grid lg:grid-flow-row-dense lg:grid-cols-2 lg:gap-8 lg:items-center">
               <div className="lg:col-start-2">
                 <h4 className="text-2xl leading-8 font-extrabold text-gray-900 tracking-tight sm:text-3xl sm:leading-9">
-                  Data Loading, But Easy
+                  Can I Get a Write With That Read?
                 </h4>
                 <P>
                   Remix makes loading data for a route as simple as it sounds:
                   fetch some data, render it. Write a server side function to
                   fetch data, Remix does the rest.
+                </P>
+                <P>
+                  Now imagine if React only had props and not state. What's the
+                  point? All too often frameworks only provide read APIs when
+                  some projects have just as many writes! Remix provides
+                  conventions and API for both.
                 </P>
                 <ul className="mt-10">
                   <li>
@@ -372,14 +378,48 @@ export default function Features() {
                       </div>
                       <div className="ml-4">
                         <h5 className="text-lg leading-6 font-medium text-gray-900">
-                          Talk directly to your Database
+                          Talk Directly to Your Database
                         </h5>
                         <p className="mt-2 text-base leading-6 text-gray-600">
                           Since all data loading is on the server, you can talk
                           directly to your database. No need to write the
                           function once for the server, and again for the
-                          browser (and certainly no screwing around with making
-                          things "isomorphic", whatever that means!)
+                          browser.
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="mt-10">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-md bg-green-600 text-white">
+                          <svg
+                            className="h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="ml-4">
+                        <h5 className="text-lg leading-6 font-medium text-gray-900">
+                          Works Without Client Side JavaScript
+                        </h5>
+                        <p className="mt-2 text-base leading-6 text-gray-600">
+                          Because Remix's data mutation API is based on HTML and
+                          HTTP, idiomatic Remix sites don't require a JavaScript
+                          in the browser for the core features of your app to
+                          work. You might want it though, Remix optimizes the
+                          data loading in the browser by only fetching data for
+                          changed portions of the page.
                         </p>
                       </div>
                     </div>
@@ -573,7 +613,7 @@ export default function Features() {
 function CTA() {
   return (
     <div className="bg-aqua-600 py-20">
-      <div className="max-w-2xl mx-auto text-center px-4 sm:py-20 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto text-center px-4 sm:py-20 sm:px-6 lg:px-8">
         <h2 className="text-3xl leading-9 font-extrabold text-white sm:text-4xl sm:leading-10">
           <span className="block">Start shipping better websites today!</span>
         </h2>
@@ -583,6 +623,13 @@ function CTA() {
         >
           View Pricing
         </a>
+        <div className="mt-8">
+          Not Ready? Sign up for our{" "}
+          <Link to="/newsletter" className="underline">
+            newsletter
+          </Link>{" "}
+          to follow our development.
+        </div>
       </div>
     </div>
   );
@@ -797,178 +844,250 @@ function FirebaseLogo() {
 function LoaderDemo() {
   return (
     <div className="relative mx-auto text-xs sm:p-12">
-      <pre className="language-js sm:rounded-xl sm:shadow-md">
-        <code className="language-js">
-          <span className="token comment">
-            ///////////////////////////////////////////////////////////////////
-          </span>
-          {"\n"}
-          <span className="token comment">
-            // Server side loaders fetch data from anywhere
-          </span>
-          {"\n"}
-          <span className="token keyword">const</span> db{" "}
-          <span className="token operator">=</span>{" "}
-          <span className="token function">require</span>
-          <span className="token punctuation">(</span>
-          <span className="token string">"../db"</span>
-          <span className="token punctuation">)</span>
-          <span className="token punctuation">;</span>
-          {"\n"}module<span className="token punctuation">.</span>
-          <span className="token method-variable function-variable method function property-access">
-            exports
-          </span>{" "}
-          <span className="token operator">=</span>{" "}
-          <span className="token keyword">async</span>{" "}
-          <span className="token punctuation">(</span>
-          <span className="token parameter">
-            <span className="token punctuation">{"{"}</span> params{" "}
-            <span className="token punctuation">{"}"}</span>
-          </span>
-          <span className="token punctuation">)</span>{" "}
-          <span className="token arrow operator">=&gt;</span>{" "}
-          <span className="token punctuation">{"{"}</span>
-          {"\n"}
-          {"  "}
-          <span className="token keyword">let</span> user{" "}
-          <span className="token operator">=</span>{" "}
-          <span className="token keyword">await</span> db
-          <span className="token punctuation">.</span>
-          <span className="token method function property-access">query</span>
-          <span className="token punctuation">(</span>
-          <span className="token template-string">
-            <span className="token template-punctuation string">`</span>
-            <span className="token string">users/</span>
-            <span className="token interpolation">
-              <span className="token interpolation-punctuation punctuation">
-                ${"{"}
-              </span>
-              params<span className="token punctuation">.</span>
-              <span className="token property-access">userId</span>
-              <span className="token interpolation-punctuation punctuation">
-                {"}"}
-              </span>
-            </span>
-            <span className="token template-punctuation string">`</span>
-          </span>
-          <span className="token punctuation">)</span>
-          <span className="token punctuation">;</span>
-          {"\n"}
-          {"  "}
-          <span className="token keyword">return</span>{" "}
-          <span className="token function">fetch</span>
-          <span className="token punctuation">(</span>
-          <span className="token template-string">
-            <span className="token template-punctuation string">`</span>
-            <span className="token string">https://api.github.com/users/</span>
-            <span className="token interpolation">
-              <span className="token interpolation-punctuation punctuation">
-                ${"{"}
-              </span>
-              user<span className="token punctuation">.</span>
-              <span className="token property-access">githubLogin</span>
-              <span className="token interpolation-punctuation punctuation">
-                {"}"}
-              </span>
-            </span>
-            <span className="token template-punctuation string">`</span>
-          </span>
-          <span className="token punctuation">)</span>
-          <span className="token punctuation">;</span>
-          {"\n"}
-          <span className="token punctuation">{"}"}</span>
-          <span className="token punctuation">;</span>
-          {"\n"}
-          {"\n"}
-          <span className="token comment">
-            ///////////////////////////////////////////////////////////////////
-          </span>
-          {"\n"}
-          <span className="token comment">
-            // Data gets passed to your route component
-          </span>
-          {"\n"}
-          <span className="token keyword module">export</span>{" "}
-          <span className="token keyword module">default</span>{" "}
-          <span className="token keyword">function</span>{" "}
-          <span className="token function">
-            <span className="token maybe-class-name">UserGithubProfile</span>
-          </span>
-          <span className="token punctuation">(</span>
-          <span className="token parameter">
-            <span className="token punctuation">{"{"}</span> data{" "}
-            <span className="token punctuation">{"}"}</span>
-          </span>
-          <span className="token punctuation">)</span>{" "}
-          <span className="token punctuation">{"{"}</span>
-          {"\n"}
-          {"  "}
-          <span className="token keyword">return</span>{" "}
-          <span className="token punctuation">(</span>
-          {"\n"}
-          {"    "}
-          <span className="token operator">
-            <span className="token tag">
-              <span className="token punctuation">&lt;</span>div
-            </span>
-            <span className="token punctuation">&gt;</span>
-          </span>
-          <span className="token operator">
+      <pre
+        data-line-numbers="true"
+        data-lang="tsx"
+        style={{
+          borderRadius: "12px",
+          padding: "20px",
+          color: "var(--base05)",
+          backgroundColor: "var(--base00)",
+        }}
+      >
+        <code>
+          <span className="codeblock-line" data-line-number={1}>
+            <span style={{ color: "var(--base0E)" }}>import</span> {"{"}{" "}
+            <span style={{ color: "var(--base08)" }}>Form</span> {"}"}{" "}
+            <span style={{ color: "var(--base0E)" }}>from</span> "
+            <span style={{ color: "var(--base0B)" }}>@remix-run/react</span>";
             {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={2}>
+            <span style={{ color: "var(--base0E)" }}>import</span> {"{"}{" "}
+            <span style={{ color: "var(--base08)" }}>redirect</span> {"}"}{" "}
+            <span style={{ color: "var(--base0E)" }}>from</span> "
+            <span style={{ color: "var(--base0B)" }}>@remix-run/node</span>";
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={3}>
+            <span style={{ color: "var(--base0E)" }}>import</span>{" "}
+            <span style={{ color: "var(--base08)" }}>db</span>{" "}
+            <span style={{ color: "var(--base0E)" }}>from</span> "
+            <span style={{ color: "var(--base0B)" }}>../fake-db</span>";{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={4}>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={5}>
+            <span style={{ color: "var(--base03)" }}>
+              // Loads data for a route with GET requests
+            </span>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={6}>
+            <span style={{ color: "var(--base0E)" }}>export</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>function</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>loader</span>() {"{"}
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={7}>
+            {"  "}
+            <span style={{ color: "var(--base0E)" }}>return</span>{" "}
+            <span style={{ color: "var(--base08)" }}>db</span>.
+            <span style={{ color: "var(--base0D)" }}>team</span>.
+            <span style={{ color: "var(--base0D)" }}>findAll</span>();{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={8}>
+            {"}"}
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={9}>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={10}>
+            <span style={{ color: "var(--base03)" }}>
+              // Handles data writes for POST requests
+            </span>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={11}>
+            <span style={{ color: "var(--base0E)" }}>export</span>{" "}
+            <span style={{ color: "var(--base0E)" }}>async</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>function</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>action</span>({"{"}{" "}
+            <span style={{ color: "var(--base08)" }}>request</span> {"}"}) {"{"}
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={12}>
+            {"  "}
+            <span style={{ color: "var(--base0A)" }}>let</span>{" "}
+            <span style={{ color: "var(--base08)" }}>body</span>{" "}
+            <span style={{ color: "var(--base0E)" }}>=</span>{" "}
+            <span style={{ color: "var(--base0E)" }}>new</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>URLSearchParams</span>(
+            <span style={{ color: "var(--base0E)" }}>await</span>{" "}
+            <span style={{ color: "var(--base08)" }}>request</span>.
+            <span style={{ color: "var(--base0D)" }}>text</span>());{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={13}>
+            {"  "}
+            <span style={{ color: "var(--base0E)" }}>await</span>{" "}
+            <span style={{ color: "var(--base08)" }}>db</span>.
+            <span style={{ color: "var(--base0D)" }}>team</span>.
+            <span style={{ color: "var(--base0D)" }}>create</span>({"{"} name:{" "}
+            <span style={{ color: "var(--base08)" }}>body</span>.
+            <span style={{ color: "var(--base0D)" }}>get</span>("
+            <span style={{ color: "var(--base0B)" }}>teamName</span>") {"}"});
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={14}>
+            {"  "}
+            <span style={{ color: "var(--base0E)" }}>return</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>redirect</span>(`
+            <span style={{ color: "var(--base0B)" }}>/teams</span>`);{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={15}>
+            {"}"}
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={16}>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={17}>
+            <span style={{ color: "var(--base0E)" }}>export</span>{" "}
+            <span style={{ color: "var(--base0E)" }}>default</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>function</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>Teams</span>() {"{"}
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={18}>
+            {"  "}
+            <span style={{ color: "var(--base03)" }}>
+              // hooks to access route data
+            </span>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={19}>
+            {"  "}
+            <span style={{ color: "var(--base0A)" }}>let</span>{" "}
+            <span style={{ color: "var(--base08)" }}>teams</span>{" "}
+            <span style={{ color: "var(--base0E)" }}>=</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>useRouteData</span>();
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={20}>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={21}>
+            {"  "}
+            <span style={{ color: "var(--base03)" }}>
+              // hooks for pending/optimistic UI
+            </span>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={22}>
+            {"  "}
+            <span style={{ color: "var(--base0A)" }}>let</span>{" "}
+            <span style={{ color: "var(--base08)" }}>pendingSubmit</span>{" "}
+            <span style={{ color: "var(--base0E)" }}>=</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>usePendingFormSubmit</span>
+            ();{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={23}>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={24}>
+            {"  "}
+            <span style={{ color: "var(--base0E)" }}>return</span> ({"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={25}>
+            {"    "}&lt;&gt;{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={26}>
+            {"      "}&lt;
+            <span style={{ color: "var(--base0A)" }}>TeamsView</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>data</span>
+            <span style={{ color: "var(--base0E)" }}>=</span>
+            <span style={{ color: "var(--base0F)" }}>{"{"}</span>
+            <span style={{ color: "var(--base08)" }}>teams</span>
+            <span style={{ color: "var(--base0F)" }}>{"}"}</span> /&gt;{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={27}>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={28}>
             {"      "}
+            <span style={{ color: "var(--base0F)" }}>{"{"}</span>
+            <span style={{ color: "var(--base08)" }}>pendingSubmit</span>{" "}
+            <span style={{ color: "var(--base0E)" }}>?</span> ({"\n"}
           </span>
-          <span className="token operator">
-            <span className="token tag">
-              <span className="token punctuation">&lt;</span>h1
-            </span>
-            <span className="token punctuation">&gt;</span>
+          <span className="codeblock-line" data-line-number={29}>
+            {"        "}&lt;
+            <span style={{ color: "var(--base0A)" }}>Pending</span>&gt;{"\n"}
           </span>
-          <span className="token operator">{"{"}</span>data
-          <span className="token punctuation">.</span>
-          <span className="token property-access">name</span>
-          <span className="token punctuation">{"}"}</span>
-          <span className="token operator">
-            <span className="token tag">
-              <span className="token punctuation">&lt;/</span>h1
-            </span>
-            <span className="token punctuation">&gt;</span>
+          <span className="codeblock-line" data-line-number={30}>
+            {"          "}&lt;<span style={{ color: "var(--base08)" }}>p</span>
+            &gt;Creating new team:&lt;/
+            <span style={{ color: "var(--base08)" }}>p</span>&gt;{"\n"}
           </span>
-          <span className="token operator">
+          <span className="codeblock-line" data-line-number={31}>
+            {"          "}&lt;<span style={{ color: "var(--base08)" }}>p</span>
+            &gt;<span style={{ color: "var(--base0F)" }}>{"{"}</span>
+            <span style={{ color: "var(--base08)" }}>pendingSubmit</span>.
+            <span style={{ color: "var(--base0D)" }}>data</span>.
+            <span style={{ color: "var(--base0D)" }}>get</span>("
+            <span style={{ color: "var(--base0B)" }}>teamName</span>")
+            <span style={{ color: "var(--base0F)" }}>{"}"}</span>&lt;/
+            <span style={{ color: "var(--base08)" }}>p</span>&gt;{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={32}>
+            {"        "}&lt;/
+            <span style={{ color: "var(--base0A)" }}>Pending</span>&gt;{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={33}>
+            {"      "}) <span style={{ color: "var(--base0E)" }}>:</span> (
             {"\n"}
-            {"      "}
           </span>
-          <span className="token operator">
-            <span className="token tag">
-              <span className="token punctuation">&lt;</span>
-              <span className="token class-name">Avatar</span>
-            </span>{" "}
-            <span className="token attr-name">src</span>
-            <span className="token script language-javascript">
-              <span className="token script-punctuation punctuation">=</span>
-              <span className="token punctuation">{"{"}</span>data
-              <span className="token punctuation">.</span>
-              <span className="token property-access">avatar_url</span>
-              <span className="token punctuation">{"}"}</span>
-            </span>{" "}
-            <span className="token punctuation">/&gt;</span>
+          <span className="codeblock-line" data-line-number={34}>
+            {"        "}&lt;<span style={{ color: "var(--base0A)" }}>Form</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>method</span>
+            <span style={{ color: "var(--base0E)" }}>=</span>"
+            <span style={{ color: "var(--base0B)" }}>post</span>"&gt;{"\n"}
           </span>
-          <span className="token operator">
+          <span className="codeblock-line" data-line-number={35}>
+            {"          "}&lt;
+            <span style={{ color: "var(--base08)" }}>label</span>&gt;{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={36}>
+            {"            "}New Team: &lt;
+            <span style={{ color: "var(--base08)" }}>input</span>{" "}
+            <span style={{ color: "var(--base0D)" }}>name</span>
+            <span style={{ color: "var(--base0E)" }}>=</span>"
+            <span style={{ color: "var(--base0B)" }}>teamName</span>" /&gt;
             {"\n"}
-            {"    "}
           </span>
-          <span className="token maybe-class-name">
-            <span className="token tag">
-              <span className="token punctuation">&lt;/</span>div
-            </span>
-            <span className="token punctuation">&gt;</span>
+          <span className="codeblock-line" data-line-number={37}>
+            {"          "}&lt;/
+            <span style={{ color: "var(--base08)" }}>label</span>&gt;{"\n"}
           </span>
-          {"\n"}
-          {"  "}
-          <span className="token operator">)</span>
-          <span className="token punctuation">;</span>
-          {"\n"}
-          <span className="token punctuation">{"}"}</span>
-          {"\n"}
+          <span className="codeblock-line" data-line-number={38}>
+            {"        "}&lt;/
+            <span style={{ color: "var(--base0A)" }}>Form</span>&gt;{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={39}>
+            {"      "})<span style={{ color: "var(--base0F)" }}>{"}"}</span>
+            {"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={40}>
+            {"    "}&lt;/&gt;{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={41}>
+            {"  "});{"\n"}
+          </span>
+          <span className="codeblock-line" data-line-number={42}>
+            {"}"}
+            {"\n"}
+          </span>
         </code>
       </pre>
     </div>
