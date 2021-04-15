@@ -34,25 +34,24 @@ export default function Support() {
                 }
               />
               <DataListItem
-                label="Remix Discuss Repo"
+                label="Remix Source Repo"
                 value={
                   <div className="w-4/5">
-                    We're not very active here yet, but it will be the primary
-                    place to report issues and discuss API proposals after we
-                    have a stable release. The first time you visit we'll add
-                    you to a private repo. You may need to accept the
-                    invitiation in your email.
+                    We will soon be giving access to the source repo of Remix to
+                    our customers to be able to file issues, read the source,
+                    and follow our development progress more directly.
                   </div>
                 }
                 actions={
-                  <Form action="/dashboard/discuss" method="post">
-                    <button
-                      className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
-                      type="submit"
-                    >
-                      Visit Remix Repo
-                    </button>
-                  </Form>
+                  null
+                  // <Form action="/dashboard/discuss" method="post">
+                  //   <button
+                  //     className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
+                  //     type="submit"
+                  //   >
+                  //     Visit Remix Repo
+                  //   </button>
+                  // </Form>
                 }
               />
               <DataListItem
