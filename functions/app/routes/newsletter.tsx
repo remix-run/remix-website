@@ -246,10 +246,10 @@ export default function NewsLetter() {
                   icon={<EmailIcon />}
                   type="submit"
                   disabled={state !== "valid"}
-                  ariaErrorAlert={"There was an error creating your account"}
+                  ariaErrorAlert={"There was an error subscribing"}
                   ariaLoadingAlert="Loading..."
-                  ariaSuccessAlert="Account created! Redirecting."
-                  ariaText="Create Account"
+                  ariaSuccessAlert="You're subscribed!"
+                  ariaText="Subscribe to email list"
                   iconError={<IconError className="h-5 w-5" />}
                   iconLoading={<BeatSpinner />}
                   iconSuccess={<IconCheck className="h-5 w-5" />}
@@ -346,25 +346,6 @@ function Input(props) {
       {...props}
     />
   );
-}
-
-async function subscribeToMailingList(name, email) {
-  let res = await fetch(`/api/subscribeEmail`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      charset: "utf-8",
-    },
-    body: JSON.stringify({ email, name }),
-  });
-
-  let json = await res.json();
-
-  if (res.status === 500) {
-    throw new Error(json.message);
-  }
-
-  return json;
 }
 
 function EmailIcon() {
