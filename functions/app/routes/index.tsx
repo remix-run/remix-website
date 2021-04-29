@@ -121,10 +121,9 @@ export default function Index() {
             </p>
             <div className="my-4" />
             <p>
-              Built for the serverless era, and on top of our open source that
-              runs in millions of projects already, Remix gives you a sturdy
-              foundation to build better websites. You'll love the performance
-              and productivity our novel (and traditional) approach gives you.
+              Remix gives you a sturdy foundation to build better websites.
+              You'll love the performance and productivity our novel (and
+              traditional) approach gives you.
             </p>
           </div>
           <div className="my-8" />

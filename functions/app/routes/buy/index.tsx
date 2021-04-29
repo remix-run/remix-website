@@ -56,8 +56,9 @@ export let action: ActionFunction = async ({ request }) => {
 
 export function meta() {
   return {
-    title: "Buy Your Remix Supporter Preview License",
-    description: "We need your support to Remix over the finish line.",
+    title: "Buy Your Remix Beta License",
+    description:
+      "Build better websites. Remix is almost over the finish line, you can start building with it today.",
   };
 }
 
@@ -149,11 +150,10 @@ export default function BuyIndex() {
   return (
     <div className="bg-gray-200">
       <div className="bg-gray-900">
-        <Hero title="Supporter Preview Now Available">
-          Remix is not production ready but it's close! We need your support to
-          get it over the finish line. You are buying a Supporter Preview
-          license, think of it like a kickstarter but you get to use the product
-          right away. Supporter Licenses are non-refundable.
+        <Hero title="1.0 Beta is Here!">
+          Thanks to over 400+ preview customers, the Remix API is stable. No
+          we're just tightening the screws and fixing bugs for a final 1.0
+          release soon. Please note beta licenses are non-refundable.
         </Hero>
         <div className="mt-8 pb-12 bg-gray-200 sm:mt-12 sm:pb-16 lg:mt-16 lg:pb-24">
           <PricingCards state={state} pendingType={pendingType} />
@@ -173,26 +173,22 @@ function FAQSection() {
       <div className="mt-12">
         <FAQ>
           <Question title="Is this production ready?">
-            Nope. We've been focusing on APIs and production results, but there
-            are rough edges on the dev UX and likely some bugs. We need your
-            help to get it production ready.{" "}
-            <span className="text-red-500">
-              Please do not purchase a license if you are not comfortable with
-              bugs and missing features
-            </span>
-            .
+            Mostly. Since Remix hasn't had widespread use yet there are bound to
+            be bugs. Fixing them is a primary focus during beta. You can start
+            building with Remix now, knowing we'll have a solid 1.0 final
+            release in the coming weeks.
+          </Question>
+          <Question title="What does Beta mean?">
+            We consider the API stable and don't anticipate any breaking API
+            changes before the final release. Documentation and bug fixing are
+            what we're now focused on.
           </Question>
           <Question title="Is there a refundable trial period?">
-            Not yet. During the support preview all sales are final. We need
-            your support right now to get it over the finish line! Wait for the
-            1.0 release if you'd like a refundable trial period.
+            Not yet. There will be a 2-month refundable trial period after the
+            1.0 final release.
           </Question>
-          <Question title="When is the 1.0 release?">
-            We're hoping to have a production ready release first quarter of
-            2021. Buying a support license helps us get there.
-          </Question>
-          <Question title="Is my license still valid after the 1.0 release?">
-            Yes. You're buying a full blown license.
+          <Question title="Is my beta license still valid after the 1.0 release?">
+            Yes. You're buying a full license.
           </Question>
           <Question title="What kind of support do I get?">
             You'll get access to our issue tracker where you can report issues
@@ -201,16 +197,17 @@ function FAQSection() {
             After the 1.0 release we will have more defined and expansive
             support packages.
           </Question>
-          <Question title="What can I do with an indie License?">
-            An indie license is just for you and your own solo projects at the
-            time of purchase. You can use it on as as many projects as you like.
-            You'll get access to support and all updates to Remix.
+          <Question title="What can I do with an Indie License?">
+            An indie license is just for you and your own solo projects. You can
+            use it on as as many projects as you like. You'll get access to
+            support and all updates to Remix.
           </Question>
-          <Question title="What can I do with a team License?">
-            A team license is good for as many projects as you like. Each
-            license has a set number of seats developers on your team occupy.
-            You can assign members of your team to a license, and buy more seats
-            on your license, on the dashboard after you purchase.
+          <Question title="What can I do with a Team License?">
+            Team licensing is per developer, not per project. So if you have 8
+            people working on Remix projects you will need 8 seats on your
+            license but you can use it on as many projects as you want. After
+            purchasing, you assign members of your team to a license and can add
+            or remove them as your team changes.
           </Question>
           <Question title="Why is the team license more expensive?">
             We know that Remix is incredibly valuable for commercial
@@ -227,7 +224,7 @@ function FAQSection() {
             lose access to support.
           </Question>
           <Question title="Can I just buy a few indie licenses for my team?">
-            No, that's against the software license. We're a bootstrapped
+            No, that's against the software license. We're a self-funded
             company, why you gotta do us like that?
           </Question>
           <Question title="Is Remix Open Source?">
@@ -237,7 +234,8 @@ function FAQSection() {
           </Question>
           <Question title="Can I use Remix for client projects?">
             Yes of course! You just can't use it to create derivative competing
-            products.
+            products. When you hand off the project to the client they will need
+            a license to continue developing with Remix.
           </Question>
           <Question title="Do you have geographical discounts?">
             Not at this time, but we are aware of purchasing power parity and
@@ -285,10 +283,11 @@ function PricingCards({
                   /yr
                 </span>
               </div>
+              <div className="my-2">&nbsp;</div>
               <p className="mt-5 text-lg leading-7 text-gray-700">
                 Got a side project but you've spent the last few weekends just
-                screwing around with webpack? Knock it off! For a couple hundred
-                bucks you've got us behind you.
+                screwing around with bundlers and data loading? Knock it off!
+                You've got us behind you and can focus immediately on your idea.
               </p>
             </div>
             <div className="flex-1 flex flex-col justify-between px-6 pt-6 pb-8 bg-gray-100 space-y-6 sm:p-10 sm:pt-6">
@@ -329,6 +328,10 @@ function PricingCards({
                 <span className="ml-1 text-2xl leading-8 font-medium text-gray-500">
                   /dev /yr
                 </span>
+              </div>
+              <div className="my-2 text-gray-500">
+                <span className="text-red-600 line-through">$1200</span> /dev
+                /yr after 1.0 final
               </div>
               <p className="mt-5 text-lg leading-7 text-gray-700">
                 Your projects need a solid foundation. You could hire a team for
@@ -463,7 +466,11 @@ function NotReady() {
             Sign up for our newsletter
           </Link>{" "}
           to stay up to date with our latest features, tutorials, and the 1.0
-          release.
+          release. You can also{" "}
+          <a className="text-black underline" href="https://docs.remix.run">
+            browse our documentation
+          </a>{" "}
+          to get an idea about what developing with Remix is like.
         </p>
       </div>
     </div>
