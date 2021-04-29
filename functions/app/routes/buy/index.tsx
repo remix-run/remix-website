@@ -151,7 +151,7 @@ export default function BuyIndex() {
     <div className="bg-gray-200">
       <div className="bg-gray-900">
         <Hero title="1.0 Beta is Here!">
-          Thanks to over 400+ preview customers, the Remix API is stable. No
+          Thanks to over 400+ preview customers, the Remix API is stable. Now
           we're just tightening the screws and fixing bugs for a final 1.0
           release soon. Please note beta licenses are non-refundable.
         </Hero>
