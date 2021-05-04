@@ -15,6 +15,21 @@ export default function Support() {
             <dl>
               <DataListItem
                 first
+                label="Remix Source Repo"
+                value={
+                  <div className="w-4/5">
+                    Get access to the source repo of Remix to file issues, read
+                    the source, and follow our development progress more
+                    directly.
+                  </div>
+                }
+                actions={
+                  <Form action="/dashboard/discuss" method="post">
+                    <TextButton type="submit">Visit Remix Repo</TextButton>
+                  </Form>
+                }
+              />
+              <DataListItem
                 label="Remix Chat"
                 value={
                   <div className="w-4/5">
@@ -31,27 +46,6 @@ export default function Support() {
                   >
                     Visit Remix Chat
                   </a>
-                }
-              />
-              <DataListItem
-                label="Remix Source Repo"
-                value={
-                  <div className="w-4/5">
-                    We will soon be giving access to the source repo of Remix to
-                    our customers to be able to file issues, read the source,
-                    and follow our development progress more directly.
-                  </div>
-                }
-                actions={
-                  null
-                  // <Form action="/dashboard/discuss" method="post">
-                  //   <button
-                  //     className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
-                  //     type="submit"
-                  //   >
-                  //     Visit Remix Repo
-                  //   </button>
-                  // </Form>
                 }
               />
               <DataListItem
@@ -115,5 +109,14 @@ function DataListItem({ label, value, actions, first = false }) {
         )}
       </dd>
     </div>
+  );
+}
+
+function TextButton(props) {
+  return (
+    <button
+      {...props}
+      className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out"
+    />
   );
 }

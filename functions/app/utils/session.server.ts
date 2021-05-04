@@ -32,12 +32,16 @@ export let requireCustomer = (request) => {
   };
 };
 
-async function getUserSession(request) {
+export async function getIdTokenFromRequest(request): Promise<string | null> {
   let cookieSession = await rootStorage.getSession(
     request.headers.get("Cookie")
   );
-  let token = cookieSession.get("token");
-  if (!token) return null;
+  return cookieSession.get("token");
+}
+
+async function getUserSession(request) {
+  let token = await getIdTokenFromRequest(request);
+  if (typeof token !== "string") return null;
   try {
     let tokenUser = await admin.auth().verifySessionCookie(token, true);
     return tokenUser;

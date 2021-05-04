@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import { useEffect, useState } from "react";
 
 declare global {
   var ENV: any;
@@ -40,9 +41,9 @@ export async function getIdToken() {
   return firebase.auth().currentUser.getIdToken(/*forceRefresh*/ true);
 }
 
-export async function linkGitHubAccount() {
+export async function linkGitHubAccount(clientUser: firebase.User) {
   let provider = new firebase.auth.GithubAuthProvider();
-  return firebase.auth().currentUser.linkWithPopup(provider);
+  return clientUser.linkWithPopup(provider);
 }
 
 export async function getClientsideUser() {

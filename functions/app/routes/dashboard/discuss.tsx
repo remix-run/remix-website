@@ -14,6 +14,7 @@ import {
   IconGitHub,
 } from "../../components/icons";
 import {
+  firebase,
   getClientsideUser,
   getIdToken,
   linkGitHubAccount,
@@ -59,12 +60,13 @@ export default function Repo() {
   let [state, setState] = useState<LoadingButtonProps["state"]>("idle");
   let [error, setError] = useState<string>();
   let submit = useSubmit();
+  let clientUser = useClientUser();
 
   let transition = async () => {
     switch (state) {
       case "loading": {
         try {
-          await linkGitHubAccount();
+          await linkGitHubAccount(clientUser);
           setState("success");
         } catch (error) {
           console.error(error);
@@ -81,8 +83,7 @@ export default function Repo() {
         submit(
           { githubId: githubProvider.uid, idToken: await getIdToken() },
           {
-            // FIXME: Remix has a bug in useSubmit requiring location.origin
-            action: window.location.origin + "/dashboard/discuss",
+            action: "/dashboard/discuss",
             method: "post",
             replace: true,
           }
@@ -143,4 +144,16 @@ export default function Repo() {
       </div>
     </div>
   );
+}
+
+export function useClientUser() {
+  let [clientsideUser, setClientsideUser] = useState<firebase.User>(null);
+
+  useEffect(() => {
+    return firebase.auth().onAuthStateChanged((user) => {
+      setClientsideUser(user);
+    });
+  }, []);
+
+  return clientsideUser;
 }
