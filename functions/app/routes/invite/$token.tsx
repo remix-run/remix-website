@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useRouteData, useSubmit } from "@remix-run/react";
+import { useRouteData, useSubmit } from "remix";
 import { Link, useLocation, useParams } from "react-router-dom";
 import Logo from "../../components/Logo";
-import type { LoaderFunction, ActionFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Response } from "@remix-run/node";
+import type { LoaderFunction, ActionFunction } from "remix";
+import { json, redirect } from "remix";
+import { Response } from "remix";
 import { db } from "../../utils/db.server";
 import {
   addTokenMember,

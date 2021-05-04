@@ -1,7 +1,7 @@
 import React from "react";
-import { json } from "@remix-run/node";
-import { usePendingLocation, useRouteData } from "@remix-run/react";
-import type { LoaderFunction } from "@remix-run/react";
+import { json } from "remix";
+import { usePendingLocation, useRouteData } from "remix";
+import type { LoaderFunction } from "remix";
 import { Link } from "react-router-dom";
 import Logo, { useLogoAnimation } from "../components/Logo";
 import { DataOutlet } from "../components/DataOutlet";

@@ -1,4 +1,4 @@
-import { usePendingLocation } from "@remix-run/react";
+import { usePendingLocation } from "remix";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 

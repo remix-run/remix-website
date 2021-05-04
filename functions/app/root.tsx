@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  Meta,
-  Scripts,
-  Links,
-  useRouteData,
-  usePendingLocation,
-} from "@remix-run/react";
-import type { LoaderFunction, LinksFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { Meta, Scripts, Links, useRouteData, usePendingLocation } from "remix";
+import type { LoaderFunction, LinksFunction } from "remix";
+import { json } from "remix";
 import { useLocation, Outlet } from "react-router-dom";
 import twStyles from "./styles/tailwind.css";
 import appStyles from "./styles/app.css";

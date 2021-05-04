@@ -3,7 +3,7 @@ import * as CacheControl from "../utils/CacheControl";
 import { ExampleApp } from "../components/Invoices";
 import PublicTopNav from "../components/PublicTopNav";
 import styles from "../styles/routes/features.css";
-import { Link, LinksFunction } from "@remix-run/react";
+import { Link, LinksFunction } from "remix";
 
 export function headers() {
   return {

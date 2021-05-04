@@ -1,8 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import type { ActionFunction } from "@remix-run/react";
-import { useSubmit } from "@remix-run/react";
+import type { ActionFunction } from "remix";
+import { useSubmit } from "remix";
 import redirectInternally from "../../utils/redirect";
-import { redirect } from "@remix-run/node";
+import { redirect } from "remix";
 import { requireCustomer } from "../../utils/session.server";
 import { addToRepo } from "../../utils/github.server";
 import LoadingButton, { styles } from "../../components/LoadingButton";

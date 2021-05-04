@@ -1,6 +1,6 @@
 import * as CacheControl from "../utils/CacheControl";
 import redirect from "../utils/redirect";
-import type { ActionFunction } from "@remix-run/node";
+import type { ActionFunction } from "remix";
 import { rootStorage } from "../utils/sessions";
 
 export let action: ActionFunction = async ({ request }) => {

@@ -1,7 +1,7 @@
 import React from "react";
-import { useRouteData } from "@remix-run/react";
-import { json } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
+import { useRouteData } from "remix";
+import { json } from "remix";
+import type { LoaderFunction } from "remix";
 import { unwrapSnapshot } from "../../utils/firebase.server";
 import { requireCustomer } from "../../utils/session.server";
 import { stripe } from "../../utils/stripe.server";

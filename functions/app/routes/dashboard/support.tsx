@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Link } from "@remix-run/react";
+import { Form, Link } from "remix";
 
 export default function Support() {
   return (

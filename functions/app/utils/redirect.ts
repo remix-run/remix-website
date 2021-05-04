@@ -1,4 +1,4 @@
-import { redirect } from "@remix-run/node";
+import { redirect } from "remix";
 
 export default function (request, to, init = undefined) {
   // firebase in dev redirects to 5001 😩

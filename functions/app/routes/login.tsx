@@ -1,8 +1,8 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useRouteData, useSubmit } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { useRouteData, useSubmit } from "remix";
+import { json } from "remix";
 import redirect from "../utils/redirect";
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "remix";
 import { rootStorage, createUserSession } from "../utils/sessions";
 import * as CacheControl from "../utils/CacheControl";
 

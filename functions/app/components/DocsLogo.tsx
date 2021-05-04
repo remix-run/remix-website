@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useThrottle } from "use-throttle";
-import { usePendingLocation } from "@remix-run/react";
+import { usePendingLocation } from "remix";
 
 // let darkModeColorMap = {
 //   aqua: "#D5F3F1",

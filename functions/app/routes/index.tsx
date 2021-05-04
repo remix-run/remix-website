@@ -3,7 +3,7 @@ import Logo, { useLogoAnimation } from "../components/Logo";
 import { Link } from "react-router-dom";
 import * as CacheControl from "../utils/CacheControl";
 import redirect from "../utils/redirect";
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction } from "remix";
 import { getCustomer } from "../utils/session.server";
 
 export let loader: LoaderFunction = async ({ request }) => {
