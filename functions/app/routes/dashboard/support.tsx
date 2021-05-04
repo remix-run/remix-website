@@ -24,8 +24,23 @@ export default function Support() {
                   </div>
                 }
                 actions={
-                  <Form action="/dashboard/discuss" method="post">
+                  <Form action="/dashboard/github?dest=repo" method="post">
                     <TextButton type="submit">Visit Remix Repo</TextButton>
+                  </Form>
+                }
+              />
+              <DataListItem
+                label="Remix Roadmap"
+                value={
+                  <div className="w-4/5">
+                    Get access to the Remix product development board to see
+                    what is planned, what's in-progress, and what is recently
+                    finished.
+                  </div>
+                }
+                actions={
+                  <Form action="/dashboard/github?dest=roadmap" method="post">
+                    <TextButton type="submit">Visit Remix Roadmap</TextButton>
                   </Form>
                 }
               />
@@ -34,9 +49,8 @@ export default function Support() {
                 value={
                   <div className="w-4/5">
                     Join a Discord chat server with other Remix users and the
-                    developers of Remix. This is the most active place to get
-                    help and report issues to Michael and Ryan as we ramp up to
-                    a stable release.
+                    developers working on Remix. This is a great place to ask
+                    questions and get real-time help.
                   </div>
                 }
                 actions={
@@ -52,8 +66,9 @@ export default function Support() {
                 label="Email"
                 value={
                   <div className="w-4/5">
-                    You can email us if you aren't getting the help you need
-                    with the other support channels.
+                    Email is best for issues with your account or for reporting
+                    security issues you've identified. Please use the other
+                    support channels for help with code.
                   </div>
                 }
                 actions={

@@ -1,10 +1,10 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import type { ActionFunction } from "remix";
+import { ActionFunction, useRouteData } from "remix";
 import { useSubmit } from "remix";
 import redirectInternally from "../../utils/redirect";
 import { redirect } from "remix";
 import { requireCustomer } from "../../utils/session.server";
-import { addToRepo } from "../../utils/github.server";
+import { addToGithubEntities } from "../../utils/github.server";
 import LoadingButton, { styles } from "../../components/LoadingButton";
 import type { LoadingButtonProps } from "../../components/LoadingButton";
 import {
@@ -20,35 +20,48 @@ import {
   linkGitHubAccount,
 } from "../../utils/firebase.client";
 import { createUserSession } from "../../utils/sessions";
+import { useLocation } from "react-router";
 
 export let action: ActionFunction = async ({ request }) => {
   return requireCustomer(request)(async ({ sessionUser, user }) => {
-    let repo = "https://github.com/remix-run/discuss";
+    let formParams = new URLSearchParams(await request.text());
+    let dest = new URL(request.url).searchParams.get("dest") as
+      | "repo"
+      | "roadmap"
+      | null;
 
-    // already associated their account
-    if (user.githubLogin) {
-      return redirect(repo);
+    if (dest === null) throw new Error("Missing `dest` form param");
+
+    let repo = "https://github.com/remix-run/remix";
+    let roadmap = "https://github.com/orgs/remix-run/projects/1";
+    let redirectUrl = dest === "repo" ? repo : roadmap;
+
+    // already associated their account w/ destination
+    if (
+      (dest === "repo" && user.githubLogin) ||
+      (dest === "roadmap" && user.addedToRoadmap)
+    ) {
+      return redirect(redirectUrl);
     }
 
-    // they logged in with GitHub, but we haven't invited them yet
+    // already linked to GitHub but don't have access to whatever they're going for
     let ghIdentity = sessionUser.firebase.identities["github.com"];
     let githubId = ghIdentity ? ghIdentity[0] : null;
     if (githubId) {
-      await addToRepo(sessionUser.uid, githubId);
-      return redirect(repo);
+      await addToGithubEntities(sessionUser.uid, githubId);
+      return redirect(redirectUrl);
     }
 
-    // linking for the first time from our submit() in the component
-    let formParams = new URLSearchParams(await request.text());
+    // linking for the first time from our submit() in this route
     if (formParams.has("githubId") && formParams.has("idToken")) {
-      await addToRepo(sessionUser.uid, formParams.get("githubId"));
+      await addToGithubEntities(sessionUser.uid, formParams.get("githubId"));
       // create a new session with this new information
       await createUserSession(request, formParams.get("idToken"));
-      return redirect(repo);
+      return redirect(redirectUrl);
     }
 
     // haven't linked anything yet, show the component
-    return redirectInternally(request, "/dashboard/discuss");
+    return redirectInternally(request, "/dashboard/github");
   });
 };
 
@@ -59,6 +72,7 @@ export function links() {
 export default function Repo() {
   let [state, setState] = useState<LoadingButtonProps["state"]>("idle");
   let [error, setError] = useState<string>();
+  let location = useLocation();
   let submit = useSubmit();
   let clientUser = useClientUser();
 
@@ -81,9 +95,14 @@ export default function Repo() {
           (provider) => provider.providerId === "github.com"
         );
         submit(
-          { githubId: githubProvider.uid, idToken: await getIdToken() },
           {
-            action: "/dashboard/discuss",
+            githubId: githubProvider.uid,
+            idToken: await getIdToken(),
+          },
+          {
+            action: `/dashboard/github?dest=${new URLSearchParams(
+              location.search
+            ).get("dest")}`,
             method: "post",
             replace: true,
           }
@@ -111,8 +130,8 @@ export default function Repo() {
             </h3>
             <div className="mt-2 text-sm leading-5 text-gray-500">
               <p>
-                In order to give you access to Remix Discuss, we need to link
-                your GitHub account to your account.
+                In order to give you access to the Remix source repo, we need to
+                link your GitHub account to your Remix account.
               </p>
             </div>
             <div className="mt-5">
