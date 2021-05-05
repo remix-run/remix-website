@@ -3,7 +3,7 @@ import { ActionFunction, useRouteData } from "remix";
 import { useSubmit } from "remix";
 import redirectInternally from "../../utils/redirect";
 import { redirect } from "remix";
-import { requireCustomer } from "../../utils/session.server";
+import { createUserSession, requireCustomer } from "../../utils/session.server";
 import { addToGithubEntities } from "../../utils/github.server";
 import LoadingButton, { styles } from "../../components/LoadingButton";
 import type { LoadingButtonProps } from "../../components/LoadingButton";
@@ -19,7 +19,6 @@ import {
   getIdToken,
   linkGitHubAccount,
 } from "../../utils/firebase.client";
-import { createUserSession } from "../../utils/sessions";
 import { useLocation } from "react-router";
 
 export let action: ActionFunction = async ({ request }) => {

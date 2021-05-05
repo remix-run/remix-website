@@ -3,7 +3,7 @@ import { useRouteData, useSubmit } from "remix";
 import { json } from "remix";
 import redirect from "../utils/redirect";
 import type { ActionFunction, LoaderFunction } from "remix";
-import { rootStorage, createUserSession } from "../utils/sessions";
+import { rootStorage } from "../utils/sessions";
 import * as CacheControl from "../utils/CacheControl";
 
 import Hero from "../components/Hero";
@@ -20,7 +20,7 @@ import {
   signInWithEmail,
 } from "../utils/firebase.client";
 import LoadingButton, { styles } from "../components/LoadingButton";
-import { getCustomer } from "../utils/session.server";
+import { createUserSession, getCustomer } from "../utils/session.server";
 
 export let loader: LoaderFunction = async ({ request }) => {
   let customer = await getCustomer(request);
@@ -40,12 +40,11 @@ export let action: ActionFunction = async ({ request }) => {
   let idToken = params.get("idToken");
 
   try {
-    return createUserSession(request, idToken);
+    return await createUserSession(request, idToken);
   } catch (e) {
     let session = await rootStorage.getSession(request.headers.get("Cookie"));
     session.set("error", e.message);
     let cookie = await rootStorage.commitSession(session);
-
     return redirect(request, `/login`, { headers: { "Set-Cookie": cookie } });
   }
 };
@@ -126,14 +125,16 @@ function LoginForm() {
     }
   }
 
-  useLayoutEffect(() => {
-    transition();
-  }, [state]);
+  if (typeof window !== "undefined") {
+    useLayoutEffect(() => {
+      transition();
+    }, [state]);
+  }
 
   useEffect(() => {
     // remix action returned an error, move the client side machine along
     if (state === State.CreatingServerSession && data.error) {
-      setError(new Error(data.errorMessage));
+      setError(new Error(data.error));
       setState(State.Error);
     }
   }, [data]);
@@ -205,12 +206,11 @@ function LoginForm() {
             state={
               authMethod !== "password"
                 ? "idle"
-                : state === State.GettingIdToken
+                : state === State.GettingIdToken ||
+                  state === State.CreatingServerSession
                 ? "loading"
                 : state === State.Error
                 ? "error"
-                : state === State.CreatingServerSession
-                ? "success"
                 : "idle"
             }
             text="Sign in"
@@ -259,12 +259,11 @@ function LoginForm() {
           state={
             authMethod !== "github"
               ? "idle"
-              : state === State.GettingIdToken
+              : state === State.GettingIdToken ||
+                state === State.CreatingServerSession
               ? "loading"
               : state === State.Error
               ? "error"
-              : state === State.CreatingServerSession
-              ? "success"
               : "idle"
           }
           text="Sign in with GitHub"

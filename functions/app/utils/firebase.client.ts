@@ -43,7 +43,23 @@ export async function getIdToken() {
 
 export async function linkGitHubAccount(clientUser: firebase.User) {
   let provider = new firebase.auth.GithubAuthProvider();
-  return clientUser.linkWithPopup(provider);
+  try {
+    return clientUser.linkWithPopup(provider);
+  } catch (error) {
+    console.log(error);
+    if (error.code === "auth/credential-already-in-use") {
+      // FIXME:
+      // - somebody buys, registers with email:pass
+      // - they later click "login with github" and their gh email is different
+      // - now they have two firebase "accounts" and can't link them,
+      // - I don't know how to merge them
+
+      // return clientUser.linkWithCredential(error.credential);
+      throw error;
+    } else {
+      throw error;
+    }
+  }
 }
 
 export async function getClientsideUser() {

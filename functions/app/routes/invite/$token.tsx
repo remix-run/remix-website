@@ -24,8 +24,9 @@ import {
   IconGitHub,
   BeatSpinner,
 } from "../../components/icons";
-import { createUserSession, rootStorage } from "../../utils/sessions";
+import { rootStorage } from "../../utils/sessions";
 import Hero from "../../components/Hero";
+import { createUserSession } from "../../utils/session.server";
 
 enum TokenCodes {
   Invalid,

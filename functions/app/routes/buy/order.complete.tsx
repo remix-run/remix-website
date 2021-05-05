@@ -4,7 +4,7 @@ import { json, redirect } from "remix";
 import type { ActionFunction, LoaderFunction } from "remix";
 
 import { fulfillOrder, getStripeSession } from "../../utils/checkout.server";
-import { buyStorage, createUserSession } from "../../utils/sessions";
+import { buyStorage } from "../../utils/sessions";
 import * as CacheControl from "../../utils/CacheControl";
 
 import Hero from "../../components/Hero";
@@ -21,6 +21,7 @@ import {
   signInWithGitHub,
 } from "../../utils/firebase.client";
 import LoadingButton, { styles } from "../../components/LoadingButton";
+import { createUserSession } from "../../utils/session.server";
 
 export let loader: LoaderFunction = async ({ request }) => {
   let url = new URL(request.url);
