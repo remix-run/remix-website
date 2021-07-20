@@ -25,10 +25,10 @@
     "@octokit/core": "^3.1.2",
     "@reach/alert": "^0.11.2",
     "@reach/visually-hidden": "^0.11.1",
-    "remix": "0.17.0",
-    "@remix-run/node": "0.17.0",
-    "@remix-run/react": "0.17.0",
-    "@remix-run/express": "0.17.0",
+    "remix": "v0.0.0-experimental-9938d08",
+    "@remix-run/node": "v0.0.0-experimental-9938d08",
+    "@remix-run/react": "v0.0.0-experimental-9938d08",
+    "@remix-run/express": "v0.0.0-experimental-9938d08",
     "@stripe/stripe-js": "^1.9.0",
     "@tailwindcss/typography": "^0.2.0",
     "@tailwindcss/ui": "^0.6.2",
@@ -64,7 +64,7 @@
     "@octokit/rest": "^18.1.1"
   },
   "devDependencies": {
-    "@remix-run/dev": "0.17.0",
+    "@remix-run/dev": "v0.0.0-experimental-9938d08",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "2.x",
