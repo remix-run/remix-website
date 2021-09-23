@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Link } from "remix";
+import { Form } from "remix";
 
 export default function Support() {
   return (
@@ -24,7 +24,8 @@ export default function Support() {
                   </div>
                 }
                 actions={
-                  <Form action="/dashboard/github?dest=repo" method="post">
+                  <Form action="/dashboard/github" method="post">
+                    <input type="hidden" name="dest" value="repo" />
                     <TextButton type="submit">Visit Remix Repo</TextButton>
                   </Form>
                 }
@@ -39,7 +40,8 @@ export default function Support() {
                   </div>
                 }
                 actions={
-                  <Form action="/dashboard/github?dest=roadmap" method="post">
+                  <Form action="/dashboard/github" method="post">
+                    <input type="hidden" name="dest" value="roadmap" />
                     <TextButton type="submit">Visit Remix Roadmap</TextButton>
                   </Form>
                 }
