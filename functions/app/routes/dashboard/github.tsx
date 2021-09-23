@@ -24,7 +24,7 @@ import { useLocation } from "react-router-dom";
 export let action: ActionFunction = async ({ request }) => {
   return requireCustomer(request)(async ({ sessionUser, user }) => {
     let formParams = new URLSearchParams(await request.text());
-    let dest = new URL(request.url).searchParams.get("dest") as
+    let dest = formParams.get("dest") as
       | "repo"
       | "roadmap"
       | null;
