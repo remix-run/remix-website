@@ -54,3 +54,12 @@ export async function removeTrailingSlashes(request: Request) {
     throw redirect(url.pathname.slice(0, -1) + url.search);
   }
 }
+
+export async function ensureSecure(request: Request) {
+  let url = new URL(request.url);
+  if (url.protocol !== "https:") {
+    let newUrl = new URL(request.url);
+    newUrl.protocol = "https:";
+    throw redirect(newUrl.toString());
+  }
+}

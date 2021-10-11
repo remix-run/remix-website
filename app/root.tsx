@@ -7,9 +7,10 @@ import { Body } from "~/components/body";
 import { useScrollRestoration } from "~/components/scroll-restoration";
 import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
-import { removeTrailingSlashes } from "~/utils/http";
+import { removeTrailingSlashes, ensureSecure } from "~/utils/http";
 
 export let loader: LoaderFunction = async ({ request }) => {
+  await ensureSecure(request);
   await removeTrailingSlashes(request);
   return null;
 };
