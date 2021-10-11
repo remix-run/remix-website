@@ -29,7 +29,7 @@ export default function Newsletter() {
   }, []);
 
   useEffect(() => {
-    if (actionData?.ok && inputRef.current) {
+    if (transition.state === "idle" && actionData?.ok && inputRef.current) {
       inputRef.current.value = "";
     }
   }, [actionData]);
