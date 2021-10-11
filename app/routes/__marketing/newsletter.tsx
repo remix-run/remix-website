@@ -5,7 +5,7 @@ import { requirePost } from "~/utils/http";
 import { subscribeToNewsletter } from "~/utils/convertkit";
 import { useEffect, useRef } from "react";
 
-export function links() {
+export function meta() {
   return {
     title: "Remix Newsletter",
   };
