@@ -18,6 +18,7 @@ export let unstable_shouldReload = () => false;
 
 export function links() {
   return [
+    { rel: "preload", as: "font", href: "/font/founders-grotesk-bold.woff2" },
     { rel: "stylesheet", href: tailwind },
     { rel: "stylesheet", href: bailwind },
   ];
