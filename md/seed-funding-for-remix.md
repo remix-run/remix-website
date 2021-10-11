@@ -36,6 +36,6 @@ We'll say a LOT more about Remix very soon. For now, just know that the future o
 
 ## Thank you, Remix Supporters
 
-Remix would simply not exist without the support of our early adopters who bought a license in the last year. You've stuck it out with us through all twenty of our prereleases (!) and have truly made Remix more than the two of us could have ever imagined on our own. Sincerly, thank you.
+Remix would simply not exist without the support of our early adopters who bought a license in the last year. You've stuck it out with us through all twenty of our prereleases (!) and have truly made Remix more than the two of us could have ever imagined on our own. Sincerely, thank you.
 
 Our goal in the coming year is to help more people than ever build amazing experiences on the web, with Remix or without it. We have a talented team and a smart, engaged community. We are ready to explore and push the limits of what's possible in 2022.
