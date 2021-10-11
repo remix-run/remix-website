@@ -1,12 +1,11 @@
 import { json, LoaderFunction, useLoaderData } from "remix";
-import type { MetaFunction } from "remix";
 import { getBlogPost } from "~/utils/md";
 import type { MarkdownPost } from "~/utils/md";
 import mdStyles from "~/styles/md.css";
 
 export let loader: LoaderFunction = async ({ params }) => {
   let post: MarkdownPost = await getBlogPost(params.slug!);
-  return json(post, { headers: { "Cache-Control": "max-age=360" } });
+  return json(post);
 };
 
 export function links() {
