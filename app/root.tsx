@@ -10,7 +10,7 @@ import { Footer } from "~/components/footer";
 import { removeTrailingSlashes, ensureSecure } from "~/utils/http";
 
 export let loader: LoaderFunction = async ({ request }) => {
-  await ensureSecure(request);
+  // await ensureSecure(request);
   await removeTrailingSlashes(request);
   return null;
 };
