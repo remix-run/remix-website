@@ -24,12 +24,12 @@ export let meta = ({
     title: data.title + " | Remix",
     "og:url": url,
     "og:title": data.title,
-    "og:image": data.image,
+    "og:image": `https://remix.run/${data.image}`,
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",
     "twitter:site": "@remix_run",
     "twitter:title": data.title,
-    "twitter:image": data.image,
+    "twitter:image": `https://remix.run/${data.image}`,
     "twitter:image:alt": data.imageAlt,
   };
 };
