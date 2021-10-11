@@ -24,12 +24,13 @@ export let meta = ({
     title: data.title + " | Remix",
     "og:url": url,
     "og:title": data.title,
-    "og:image": `https://remix.run/${data.image}`,
+    "og:image":
+      "https://res.cloudinary.com/remix-run/image/upload/q_auto/v1633979504/newsletter/seed-funding-for-remix_xsamue.jpg",
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",
     "twitter:site": "@remix_run",
     "twitter:title": data.title,
-    "twitter:image": `https://remix.run/${data.image}`,
+    "twitter:image": `https://res.cloudinary.com/remix-run/image/upload/q_auto/v1633979504/newsletter/seed-funding-for-remix_xsamue.jpg`,
     "twitter:image:alt": data.imageAlt,
   };
 };
