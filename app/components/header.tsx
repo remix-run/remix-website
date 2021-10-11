@@ -34,7 +34,7 @@ export function Header({
           children="Dashboard"
         />{" "}
         <HeaderLink
-          to="https://github.com/remix-run/remix"
+          to="https://github.com/remix-run"
           children="GitHub"
           className="hidden sm:block"
         />
