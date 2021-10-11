@@ -5,6 +5,12 @@ import { requirePost } from "~/utils/http";
 import { subscribeToNewsletter } from "~/utils/convertkit";
 import { useEffect, useRef } from "react";
 
+export function links() {
+  return {
+    title: "Remix Newsletter",
+  };
+}
+
 export let action: ActionFunction = async ({ request }) => {
   requirePost(request);
 
