@@ -1,0 +1,8 @@
+/* TODO: make this way better */
+.bg_gradient_a {
+  @apply bg-red-brand;
+  background-image: radial-gradient(at 100% 1%, #fecc1b, transparent 50%),
+    radial-gradient(at 36% 97%, #fecc1b 0, transparent 50%),
+    radial-gradient(at 22% 89%, #f44250 0, transparent 50%),
+    radial-gradient(at 89% 99%, #d83bd2 0, transparent 50%);
+}

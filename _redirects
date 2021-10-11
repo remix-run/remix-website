@@ -1,0 +1,4 @@
+/login          https://remix-run.web.app/login       302
+/dashboard      https://remix-run.web.app/dashboard   302
+/support        https://remix-run.web.app/support     302
+/blog           /blog/seed-funding-for-remix          302

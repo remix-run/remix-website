@@ -1,0 +1,44 @@
+{
+  "private": true,
+  "name": "remix-app-template",
+  "description": "",
+  "license": "",
+  "scripts": {
+    "build:css": "postcss styles --base styles --dir app/styles --env production",
+    "dev:css": "postcss styles --base styles --dir app/styles -w",
+    "build": "npm run build:css && remix build",
+    "dev": "pm2-dev pm2.config.js",
+    "postinstall": "remix setup",
+    "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
+    "start": "remix-serve build"
+  },
+  "dependencies": {
+    "@remix-run/react": "^0.19.2",
+    "@remix-run/serve": "^0.19.2",
+    "@ryanflorence/md": "^6.1.1",
+    "@tailwindcss/aspect-ratio": "^0.3.0",
+    "front-matter": "^4.0.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "6.0.0-beta.6",
+    "remix": "^0.19.2",
+    "ts-invariant": "^0.9.3"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^0.19.2",
+    "@types/react": "^17.0.4",
+    "@types/react-dom": "^17.0.4",
+    "dotenv": "^10.0.0",
+    "pm2": "^5.1.2",
+    "postcss": "^8.3.9",
+    "postcss-cli": "^9.0.1",
+    "postcss-focus-visible": "^6.0.1",
+    "postcss-nesting": "^8.0.1",
+    "tailwindcss": "^2.2.16",
+    "typescript": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "sideEffects": false
+}

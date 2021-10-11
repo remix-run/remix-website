@@ -1,0 +1,27 @@
+.md-prose {
+  & p {
+    @apply my-8 text-sm;
+  }
+
+  & h2 {
+    @apply font-display text-lg dark:text-gray-200;
+  }
+
+  & strong {
+    @apply dark:text-gray-200;
+  }
+
+  & hr {
+    @apply dark:border-gray-700;
+  }
+
+  & a {
+    @apply text-blue-brand;
+    &:hover {
+      @apply underline;
+    }
+    &:active {
+      @apply text-red-brand;
+    }
+  }
+}
