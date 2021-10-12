@@ -20,7 +20,12 @@ export let loader: LoaderFunction = async ({ request }) => {
   // await ensureSecure(request);
   await removeTrailingSlashes(request);
   let url = new URL(request.url);
-  return { noIndex: url.hostname !== "remix.run" };
+  console.log("-------------------------");
+  console.log("-------------------------");
+  console.log(request.headers);
+  console.log("-------------------------");
+  console.log("-------------------------");
+  return { noIndex: url.hostname !== "remix.run", url: url.toString() };
 };
 
 export let unstable_shouldReload = () => false;
