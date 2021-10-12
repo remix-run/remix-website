@@ -1,4 +1,11 @@
-import { Meta, Links, useCatch, useMatches, Outlet } from "remix";
+import {
+  Meta,
+  Links,
+  useCatch,
+  useMatches,
+  Outlet,
+  useLoaderData,
+} from "remix";
 import type { LoaderFunction } from "remix";
 
 import tailwind from "~/styles/tailwind.css";
@@ -12,7 +19,8 @@ import { removeTrailingSlashes, ensureSecure } from "~/utils/http";
 export let loader: LoaderFunction = async ({ request }) => {
   // await ensureSecure(request);
   await removeTrailingSlashes(request);
-  return null;
+  let url = new URL(request.url);
+  return { noIndex: url.hostname !== "remix.run" };
 };
 
 export let unstable_shouldReload = () => false;
@@ -42,11 +50,13 @@ function Document({
   darkBg?: string;
 }) {
   useScrollRestoration();
+  let { noIndex } = useLoaderData();
   return (
     <html lang="en">
       <head>
         {title && <title>{title}</title>}
         <meta charSet="utf-8" />
+        {noIndex && <meta name="robots" content="noindex" />}
         <meta
           name="viewport"
           content="width=device-width,initial-scale=1,viewport-fit=cover"
