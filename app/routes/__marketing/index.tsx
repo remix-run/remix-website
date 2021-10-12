@@ -33,7 +33,7 @@ export default function Index() {
         <div className="font-display text-2xl text-white">
           After over a year of development, Remix{" "}
           <span className="text-blue-brand">v1.0</span> is around the corner,
-          and its going <span className="text-yellow-brand">open source</span>.
+          and it’s going <span className="text-yellow-brand">open source</span>.
         </div>
         <div className="h-6" />
         <div className="text-sm">
