@@ -56,10 +56,14 @@ export async function removeTrailingSlashes(request: Request) {
 }
 
 export async function ensureSecure(request: Request) {
-  let url = new URL(request.url);
-  if (url.protocol !== "https:") {
-    let newUrl = new URL(request.url);
-    newUrl.protocol = "https:";
-    throw redirect(newUrl.toString());
+  let proto = request.headers.get("x-forwarded-proto");
+  if (proto === "http") {
+    let secureUrl = new URL(request.url);
+    secureUrl.protocol = "https:";
+    throw redirect(secureUrl.toString());
   }
+}
+
+export function isProductionHost(request: Request) {
+  return "remix.run" === request.headers.get("host");
 }

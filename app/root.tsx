@@ -14,18 +14,16 @@ import { Body } from "~/components/body";
 import { useScrollRestoration } from "~/components/scroll-restoration";
 import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
-import { removeTrailingSlashes, ensureSecure } from "~/utils/http";
+import {
+  removeTrailingSlashes,
+  ensureSecure,
+  isProductionHost,
+} from "~/utils/http";
 
 export let loader: LoaderFunction = async ({ request }) => {
-  // await ensureSecure(request);
+  await ensureSecure(request);
   await removeTrailingSlashes(request);
-  let url = new URL(request.url);
-  console.log("-------------------------");
-  console.log("-------------------------");
-  console.log(request.headers);
-  console.log("-------------------------");
-  console.log("-------------------------");
-  return { noIndex: url.hostname !== "remix.run", url: url.toString() };
+  return { noIndex: !isProductionHost(request) };
 };
 
 export let unstable_shouldReload = () => false;
