@@ -1,9 +1,13 @@
 import path from "path";
 
-import { getLatestRefFromParam } from "@mcansh/undoc";
+import { getRefFromParam } from "@mcansh/undoc";
 import { Doc } from "@prisma/client";
-import { prisma } from "~/db.server";
 import invariant from "ts-invariant";
+
+import { prisma } from "~/db.server";
+import { getBranchOrTagFromRef } from "./get-tag-from-ref";
+
+invariant(process.env.REPO_LATEST_BRANCH, "REPO_LATEST_BRANCH is not set");
 
 export async function getDoc(
   slug: string,
@@ -11,9 +15,10 @@ export async function getDoc(
   lang: string
 ): Promise<Doc> {
   let refs = await prisma.gitHubRef.findMany();
-  let ref = await getLatestRefFromParam(
+  let ref = getRefFromParam(
     paramRef,
-    refs.map((r) => r.ref)
+    refs.map((r) => getBranchOrTagFromRef(r.ref)),
+    process.env.REPO_LATEST_BRANCH!
   );
 
   invariant(ref, `No ref found for ${paramRef}`);
