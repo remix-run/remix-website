@@ -46,14 +46,14 @@ function Document({
   title,
   forceDark,
   darkBg,
+  noIndex,
 }: {
   children: React.ReactNode;
   title?: string;
   forceDark?: boolean;
   darkBg?: string;
+  noIndex?: boolean;
 }) {
-  useScrollRestoration();
-  let { noIndex } = useLoaderData();
   return (
     <html lang="en">
       <head>
@@ -81,9 +81,9 @@ function Document({
       </head>
 
       <Body forceDark={forceDark} darkBg={darkBg}>
-        <div className="flex-1 flex flex-col h-full">
+        <div className="flex flex-col flex-1 h-full">
           <Header forceDark={forceDark} />
-          <div className="flex-1 flex flex-col">{children}</div>
+          <div className="flex flex-col flex-1">{children}</div>
           <Footer forceDark={forceDark} />
         </div>
       </Body>
@@ -94,8 +94,12 @@ function Document({
 export default function App() {
   let matches = useMatches();
   let forceDark = matches.some((match) => match.handle?.forceDark);
+
+  useScrollRestoration();
+  let { noIndex } = useLoaderData();
+
   return (
-    <Document forceDark={forceDark}>
+    <Document noIndex={noIndex} forceDark={forceDark}>
       <Outlet />
     </Document>
   );
@@ -104,8 +108,8 @@ export default function App() {
 export function ErrorBoundary({ error }: { error: Error }) {
   return (
     <Document title="Error" forceDark darkBg="bg-red-brand">
-      <div className="flex-1 flex flex-col justify-center text-white">
-        <div className="text-center leading-none">
+      <div className="flex flex-col justify-center flex-1 text-white">
+        <div className="leading-none text-center">
           <h1 className="text-[25vw]">Error</h1>
           <div className="text-xl">{error.message}</div>
           <div className="h-[10vh]" />
@@ -119,8 +123,8 @@ export function CatchBoundary() {
   let caught = useCatch();
   return (
     <Document title={caught.statusText} forceDark darkBg="bg-blue-brand">
-      <div className="flex-1 flex flex-col justify-center text-white">
-        <div className="text-center leading-none">
+      <div className="flex flex-col justify-center flex-1 text-white">
+        <div className="leading-none text-center">
           <h1 className="font-mono text-[25vw]">{caught.status}</h1>
           <a
             className="inline-block text-[8vw] underline"
