@@ -13,6 +13,7 @@
     "start": "remix-serve build"
   },
   "dependencies": {
+    "@prisma/client": "3.4.0",
     "@remix-run/react": "^0.20.1",
     "@remix-run/serve": "^0.20.1",
     "@ryanflorence/md": "^6.2.0",
@@ -34,6 +35,7 @@
     "postcss-cli": "^9.0.1",
     "postcss-focus-visible": "^6.0.1",
     "postcss-nesting": "^9.0.0",
+    "prisma": "3.4.0",
     "tailwindcss": "^2.2.19",
     "typescript": "^4.4.4"
   },
