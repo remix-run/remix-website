@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - staging
+    paths-ignore:
+      - "md/**"
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
