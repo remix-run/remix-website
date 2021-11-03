@@ -14,7 +14,7 @@ export function links() {
 
 export let meta = ({
   data,
-  params,
+  params
 }: {
   data: MarkdownPost;
   params: { slug: string };
@@ -22,19 +22,19 @@ export let meta = ({
   let url = `https://remix.run/blog/${params.slug}`;
 
   // TODO: Dynamically generate these from post titles and header images...
-  let socialImage = `/blog-images/social/${params.slug}.jpg`;
+  let socialImageUrl = `https://remix.run/blog-images/social/${params.slug}.jpg`;
 
   return {
     title: data.title + " | Remix",
     "og:url": url,
     "og:title": data.title,
-    "og:image": socialImage,
+    "og:image": socialImageUrl,
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",
     "twitter:site": "@remix_run",
     "twitter:title": data.title,
-    "twitter:image": socialImage,
-    "twitter:image:alt": data.imageAlt,
+    "twitter:image": socialImageUrl,
+    "twitter:image:alt": data.imageAlt
   };
 };
 
