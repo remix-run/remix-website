@@ -1,15 +1,13 @@
 ---
 title: React Router v6
-date: November 2, 2021
-image: /m-r.jpg
-imageAlt: "Michael and Ryan presenting at React Conf 2017"
+date: November 3, 2021
+image: /react-router-v6.jpg
+imageAlt: "A fork in the road in the middle of the woods"
 authors:
   - name: Michael Jackson
     bio: Co-Founder, CEO
     avatar: /m.jpg
 ---
-
-# React Router v6
 
 Today we are very happy to announce the stable release of [React Router v6](https://reactrouter.com).
 
@@ -100,7 +98,7 @@ class BlogPost extends React.Component {
 }
 ```
 
-Hooks eliminate both the need to use a `<Route render`> prop to access the router's internal state _and_ the need to pass props around manually to propagate that state to child components.
+Hooks eliminate both the need to use `<Route render>` to access the router's internal state (the `match`) _and_ the need to pass props around manually to propagate that state to child components.
 
 Another way to say this is to think about `useParams()` kind of like `useState()` for stuff on router context. The router knows some state (the current URL params) and lets you access it whenever you want with a hook. Without the hook we need a way to manually forward state to elements lower in the tree.
 
@@ -130,25 +128,46 @@ function App() {
 }
 ```
 
-Again, in a world without hooks you'd probably have to use a render prop or a higher-order component to access the current location. Also, without an explicit way to trigger side effects (i.e. `useEffect()`) you'd probably have to do something weird like render a `<Route path="/">` that renders `null` just so you can access the state.
+Again, in a world without hooks you'd have to do something weird like render a standalone `<Route path="/">` that renders `null` just so you can access the `location` as it changes. Also, without `useEffect()` for triggering side effects you'd have to do the `componentDidMount` + `componentDidUpdate` dance to make sure you send pageview events only when the `location` changes.
 
 ```tsx
 // React Router v5 code
 import * as React from "react";
 import { Switch, Route } from "react-router-dom";
 
+class PageviewTracker extends React.Component {
+  trackPageview() {
+    let { location } = this.props;
+    window.ga("set", "page", location.pathname + location.search);
+    window.ga("send", "pageview");
+  }
+
+  componentDidMount() {
+    this.trackPageview();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.location !== this.props.location) {
+      this.trackPageview();
+    }
+  }
+
+  render() {
+    return null; // lol
+  }
+}
+
 class App extends React.Component {
   return (
-    <Switch>
-      <Route
-        path="/"
-        render={({ location }) => {
-          window.ga("set", "page", location.pathname + location.search);
-          window.ga("send", "pageview");
-          return null; // lol
-        }}
-      />
-    </Switch>
+    <>
+      {/* This route isn't really a piece of the UI, it's just here
+          so we can access the current location... */}
+      <Route path="/" component={PageviewTracker} />
+
+      <Switch>
+        {/* your actual routes... */}
+      </Switch>
+    </>
   );
 }
 ```
@@ -205,7 +224,7 @@ render(
 
 However, if you look closely you'll see a few subtle improvements informed by our work over the years:
 
-- The `<Routes>` component instead of `<Switch>`. Instead of scanning the routes in order, it automatically picks the best one for the current URL. It also allows you to spread routes across your entire app instead of defining them all up front as a prop to `<Router>` as we did in v3.
+- We're using a `<Routes>` instead of `<Switch>`. Instead of scanning the routes in order, `<Routes>` automatically picks the best one for the current URL. It also allows you to spread routes across your entire app instead of defining them all up front as a prop to `<Router>` as we did in v3.
 - The `<Route element>` prop allows you to pass custom props (even `children`) to your route elements. It also makes it easy to [lazily load your route element using `<React.Suspense>`](https://github.com/remix-run/react-router/blob/2ee81d71fa9e8cd980a3d3e92bf9fab81e2efdea/examples/lazy-loading/src/App.tsx#L42-L46) in case it's a `React.lazy()` component. We wrote more about the advantages of the `<Route element>` API [in the instructions for upgrading from v5](https://reactrouter.com/docs/en/v6/upgrading/v5#advantages-of-route-element).
 - Instead of adding `<Route exact>` to all of your leaf routes to opt out of deep matching, you can use a `*` at the end of your route path to _opt in_ to deep matching, so you can still split your route config like this:
 
@@ -254,7 +273,7 @@ Feel free to [check out the rest of the v6 examples here](https://github.com/rem
 
 One additional feature that we brought over from v3 is first-class support for layout routes in the form of a new `<Outlet>` element. You can read more about layouts [in the v6 overview](https://reactrouterdotcom.fly.dev/docs/en/v6/getting-started/overview#nested-routes).
 
-This really is the most flexible and powerful routing API we've ever designed, and we are thrilled to see what you build with it.
+This really is the most flexible and powerful routing API we've ever designed, and we are really excited about the kinds of apps it's going to let us build.
 
 ## Relative Routes and Links
 
@@ -294,16 +313,16 @@ If you're a Reach Router user worried about losing the accessibility features it
 
 ## The Future: Remix
 
-One of the things people really love about React Router is how it does its job and then gets out of your way. React Router has never really tried to be an opinionated framework, so it fits right into your existing stack. Maybe you're server rendering, maybe not. Maybe you're code splitting, maybe not. Maybe you're rendering a dynamic site with client-side routing and data, or maybe you're just rendering a bunch of static pages. React Router is a powerful and flexible solution for all of these use cases and many more.
+React Router provides the foundation for many of the most ambitious and impressive web apps around today. It's an amazing feeling for me to open the developer console of a web app like Netflix, Twitter, Linear, or Coinbase and see React Router being used for the flagship apps of these businesses. Each of these companies has an exceptional pool of talent and resources, and they and many others choose to build their business on React and React Router.
 
-But if you're wondering if we have opinions, believe me, we do.
+One of the things people really love about React Router is how it does its job and then gets out of your way. It has never really tried to be an opinionated framework, so it fits right into your existing stack. Maybe you're server rendering, maybe not. Maybe you're code splitting, maybe not. Maybe you're rendering a dynamic site with client-side routing and data, or maybe you're just rendering a bunch of static pages. React Router will happily do whatever you want.
 
-We strongly believe that the right abstractions can create fun and inspiring experiences on the web and the wrong abstractions can create frustrating ones, both for developers and users. We believe in the power of the web platform and that by building on a foundation of web fundamentals we can help empower the next wave of ambitious creators to build better and faster websites than they ever have before.
+But how do you build the rest of your app? Routing is just one piece. What about data loading and mutations? What about caching and performance? Should you be server rendering? What's the best way to do code splitting? How should you deploy and host your app?
 
-React Router already provides the foundation for many of the most ambitious and impressive web apps. It's an amazing feeling for me to open the console of a web app like Netflix, Twitter, Linear, or Coinbase and see React Router being used for the flagship apps of these businesses. Each of these companies has an exceptional pool of talent and resources, and they and many others choose to build their business on React and React Router.
+It just so happens that we have some pretty strong opinions about all of this. That's why [we're building Remix](https://remix.run), a new web framework that is going to help you build better websites.
 
-But how can we empower even more developers to build incredible experiences on the web? Can we do more to help people with SEO? Can we do more to help with data loading and mutations? Can we do more to help with caching and performance? Can we do more to help build the user interface? Enter [Remix](https://remix.run).
+As web apps have become increasingly complex in recent years, front-end web development teams have taken on much more responsibility than ever before. Not only do they have to know how to write HTML, CSS, and JavaScript. They also need to know about TypeScript, compilers, and build pipelines. In addition, they need to understand bundlers and code splitting and understand how the app loads as customers navigate around the site. It's a lot to think about! Remix and the amazing Remix community are going to be like an extra member of your team that can help you manage and make smart decisions about how to do all of this and more.
 
-You can think about Remix as an integrated framework for React Router that provides conventions around server rendering, HTTP caching, handling HTML metadata, loading and mutating data, loading (and unloading) styles, code splitting, and much, much more. We [recently announced](https://remix.run/blog/seed-funding-for-remix) a round of funding for Remix and have started putting together our dream team to help us build it. We are incredibly excited and optimistic about it and will be saying much more about Remix very, very soon.
+We've been working on Remix for over a year now and recently [secured some funding](https://remix.run/blog/seed-funding-for-remix) and hired a team to help us build it. We will be releasing the code under an open source license before the end of the year. And React Router v6 is at the heart of Remix. As Remix moves forward and gets better and better so does the router. You will continue to see a steady stream of releases and improvements from us on both React Router and Remix.
 
-In the meantime, we very much hope you enjoy using React Router v6! It's been such an amazing ride for us to get to this point. But I'm not exaggerating at all when I say we are just getting started.
+We are incredibly grateful for all the support we've received up to this point, and for so many friends and customers who have believed in us over the years. And we sincerely hope you enjoy using React Router v6 and Remix!
