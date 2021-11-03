@@ -13,7 +13,7 @@ export function Header({
     <div
       x-comp="Header"
       className={
-        "container py-9 flex justify-between items-center " +
+        "container py-9 flex justify-between items-center xl:max-w-7xl " +
         (forceDark ? "text-white " : "text-gray-900 dark:text-white ") +
         className
       }
