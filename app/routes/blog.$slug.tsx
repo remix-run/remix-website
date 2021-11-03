@@ -14,24 +14,32 @@ export function links() {
 
 export let meta = ({
   data,
-  params,
+  params
 }: {
   data: MarkdownPost;
   params: { slug: string };
 }) => {
   let url = `https://remix.run/blog/${params.slug}`;
+
+  // TODO: Dynamically generate these from post titles and header images...
+  let headerImageUrls: Record<string, string> = {
+    "seed-funding-for-remix":
+      "https://res.cloudinary.com/remix-run/image/upload/q_auto/v1633979504/newsletter/seed-funding-for-remix_xsamue.jpg"
+  };
+
+  let imageUrl = headerImageUrls[params.slug];
+
   return {
     title: data.title + " | Remix",
     "og:url": url,
     "og:title": data.title,
-    "og:image":
-      "https://res.cloudinary.com/remix-run/image/upload/q_auto/v1633979504/newsletter/seed-funding-for-remix_xsamue.jpg",
+    "og:image": imageUrl,
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",
     "twitter:site": "@remix_run",
     "twitter:title": data.title,
-    "twitter:image": `https://res.cloudinary.com/remix-run/image/upload/q_auto/v1633979504/newsletter/seed-funding-for-remix_xsamue.jpg`,
-    "twitter:image:alt": data.imageAlt,
+    "twitter:image": imageUrl,
+    "twitter:image:alt": data.imageAlt
   };
 };
 
@@ -60,7 +68,7 @@ export default function BlogPost() {
               <div className="h-2" />
             </div>
             <div className="pb-4 md:pb-12">
-              {post.authors.map((author) => (
+              {post.authors.map(author => (
                 <div key={author.name} className="flex items-center my-2">
                   <div>
                     <img
