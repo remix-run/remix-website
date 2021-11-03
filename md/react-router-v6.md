@@ -238,8 +238,8 @@ function App() {
         <Route path="users" element={<Users />}>
           <Route index element={<UsersIndex />} />
 
-          {/* This route will match /users/*, allowing more routing to happen
-              in the <UsersSplat> component */}
+          {/* This route will match /users/*, allowing more routing
+              to happen in the <UsersSplat> component */}
           <Route path="*" element={<UsersSplat />} />
         </Route>
       </Route>
@@ -248,9 +248,10 @@ function App() {
 }
 
 function UsersSplat() {
-  // More routes here! These won't be defined until this component mounts,
-  // preserving the dynamic routing semantics we had in v5. All paths defined
-  // here are relative to /users since this element renders inside /users/*
+  // More routes here! These won't be defined until this component
+  // mounts, preserving the dynamic routing semantics we had in v5.
+  // All paths defined here are relative to /users since this element
+  // renders inside /users/*
   return (
     <Routes>
       <Route path=":id" element={<UserProfile />}>
