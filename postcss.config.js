@@ -3,5 +3,6 @@ module.exports = {
     tailwindcss: {},
     "postcss-nesting": {},
     "postcss-focus-visible": {},
+    cssnano: { preset: "default" },
   },
 };

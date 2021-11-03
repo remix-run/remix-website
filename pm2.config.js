@@ -15,7 +15,7 @@ module.exports = {
     },
     {
       name: "Remix",
-      script: "remix run",
+      script: "remix dev",
       ignore_watch: ["."],
       env: {
         ...result.parsed,

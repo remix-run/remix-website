@@ -1,3 +1,64 @@
+@media (prefers-color-scheme: light) {
+  :root {
+    --base00: theme("colors.gray.50");
+    --base01: theme("colors.gray.200");
+    --base02: theme("colors.gray.300");
+    --base03: theme("colors.gray.400");
+    --base04: theme("colors.gray.500");
+    --base05: theme("colors.gray.600");
+    --base06: theme("colors.gray.700");
+    --base07: theme("colors.gray.800");
+    --base08: theme("colors.red.700");
+    --base09: theme("colors.pink.brand");
+    --base0A: theme("colors.blue.brand");
+    --base0B: theme("colors.green.500");
+    --base0C: theme("colors.aqua.brand");
+    --base0D: theme("colors.blue.700");
+    --base0E: theme("colors.pink.brand");
+    --base0F: theme("colors.gray.700");
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --base00: theme("colors.gray.800");
+    --base01: theme("colors.gray.700");
+    --base02: theme("colors.gray.600");
+    --base03: theme("colors.gray.500");
+    --base04: theme("colors.gray.400");
+    --base05: theme("colors.gray.300");
+    --base06: theme("colors.gray.200");
+    --base07: theme("colors.gray.100");
+    --base08: theme("colors.yellow.brand");
+    --base09: theme("colors.pink.brand");
+    --base0A: theme("colors.blue.brand");
+    --base0B: theme("colors.green.brand");
+    --base0C: theme("colors.aqua.brand");
+    --base0D: theme("colors.blue.brand");
+    --base0E: theme("colors.red.brand");
+    --base0F: theme("colors.gray.200");
+  }
+}
+
+/* :nuthin {
+  --base00: #ffffff;
+  --base01: #f5f5f5;
+  --base02: #c8c8fa;
+  --base03: #969896;
+  --base04: #e8e8e8;
+  --base05: #333333;
+  --base06: #ffffff;
+  --base07: #ffffff;
+  --base08: #ed6a43;
+  --base09: #0086b3;
+  --base0A: #795da3;
+  --base0B: #183691;
+  --base0C: #183691;
+  --base0D: #795da3;
+  --base0E: #a71d5d;
+  --base0F: #333333;
+} */
+
 .md-prose {
   & p {
     @apply my-8 text-sm;
@@ -23,5 +84,9 @@
     &:active {
       @apply text-red-brand;
     }
+  }
+
+  & pre {
+    @apply break-normal overflow-auto p-2 md:p-3 border-t border-b sm:border sm:rounded-xl border-gray-200 dark:border-gray-700 text-2xs lg:text-xs -mx-6;
   }
 }
