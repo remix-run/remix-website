@@ -60,8 +60,10 @@
 } */
 
 .md-prose {
+  @apply text-sm;
+
   & p {
-    @apply my-8 text-sm;
+    @apply my-8;
   }
 
   & h2 {
@@ -88,5 +90,91 @@
 
   & pre {
     @apply break-normal overflow-auto p-2 md:p-3 border-t border-b sm:border sm:rounded-xl border-gray-200 dark:border-gray-700 text-2xs lg:text-xs -mx-6;
+  }
+
+  & code {
+    @apply rounded-lg  bg-gray-100 dark:bg-gray-800 p-1 text-xs text-gray-700 dark:text-gray-400;
+  }
+
+  /* unset the stuff from `& code` up there ^ */
+  & pre > code {
+    @apply bg-transparent p-0;
+    color: inherit;
+  }
+
+  & ol {
+    list-style: decimal;
+  }
+
+  & ul {
+    list-style: disc;
+  }
+
+  & ol,
+  & ul {
+    @apply pl-8 my-0 mb-4;
+  }
+
+  & ol ol,
+  & ul ol {
+    list-style-type: lower-roman;
+  }
+
+  & ol ul,
+  & ul ul {
+    list-style-type: circle;
+  }
+
+  & ol ol ol,
+  & ol ul ol,
+  & ul ol ol,
+  & ul ul ol {
+    list-style-type: lower-alpha;
+  }
+
+  & ol ol ul,
+  & ol ul ul,
+  & ul ol ul,
+  & ul ul ul {
+    list-style-type: square;
+  }
+
+  & dd {
+    @apply ml-0;
+  }
+
+  & ol ol,
+  & ol ul,
+  & ul ol,
+  & ul ul {
+    @apply my-0;
+  }
+
+  & li {
+    word-wrap: break-all;
+
+    & > p {
+      @apply m-0;
+    }
+
+    & > p + p {
+      @apply mt-4;
+    }
+
+    & + li {
+      @apply mt-1;
+    }
+  }
+
+  & dl {
+    @apply p-0 mt-0 mb-4;
+
+    & dt {
+      @apply p-0 mt-4 text-base italic font-semibold;
+    }
+
+    & dd {
+      @apply py-0 px-4 mb-4;
+    }
   }
 }
