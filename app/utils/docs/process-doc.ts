@@ -1,7 +1,11 @@
 import parseAttributes from "gray-matter";
-import { processMarkdown } from "@ryanflorence/md";
-import { Entry } from "@mcansh/undoc";
-import { Doc } from "@prisma/client";
+import { File } from "@mcansh/undoc";
+import { processMarkdown } from "@mcansh/undoc";
+import type { Doc } from "@prisma/client";
+
+if (!process.env.SITE_URL) {
+  throw new Error("SITE_URL is not set");
+}
 
 export type Attributes = Pick<
   Doc,
@@ -15,7 +19,10 @@ export type Attributes = Pick<
   | "published"
 >;
 
-async function processDoc(entry: Entry): Promise<{
+async function processDoc(
+  entry: File,
+  version: string
+): Promise<{
   attributes: Attributes;
   html: string;
   title: string;
@@ -29,13 +36,17 @@ async function processDoc(entry: Entry): Promise<{
 
   let path = entry.path.replace(/^\/docs/, "");
   let title = data.title || path;
-  let html = hasContent
-    ? await processMarkdown(data.toc === false ? content : "## toc\n" + content)
-    : "";
 
   let langMatch = path.match(/^\/_i18n\/(?<lang>[a-z]{2})\//);
-
   let lang = langMatch?.groups?.lang ?? "en";
+
+  let html = hasContent
+    ? await processMarkdown(
+        new URL(process.env.SITE_URL!),
+        data.toc === false ? content : "## toc\n" + content,
+        { linkOriginPath: `/docs/${lang}/${version}` + path }
+      )
+    : "";
 
   return {
     attributes: {
@@ -57,8 +68,4 @@ async function processDoc(entry: Entry): Promise<{
   };
 }
 
-async function processDocs(entries: Entry[]) {
-  return Promise.all(entries.map((entry) => processDoc(entry)));
-}
-
-export { processDoc, processDocs };
+export { processDoc };

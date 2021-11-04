@@ -1,10 +1,14 @@
-import { processMarkdown } from "@ryanflorence/md";
-import type { Prisma } from "@prisma/client";
+import type { GitHubRef, Prisma } from "@prisma/client";
 import invariant from "ts-invariant";
+import {
+  findMatchingEntries,
+  getPackage,
+  getVersionHead,
+  getVersions,
+} from "@mcansh/undoc";
 
 import { prisma } from "../../db.server";
-import { processDocs } from "./process-doc";
-import { findMatchingEntries, getPackage } from "@mcansh/undoc";
+import { processDoc } from "./process-doc";
 
 const REPO = process.env.REPO as string;
 const REPO_DOCS_PATH = process.env.REPO_DOCS_PATH as string;
@@ -29,8 +33,36 @@ async function saveDocs(ref: string, releaseNotes: string) {
 
   invariant(stream, "no stream");
 
+  let githubRef: GitHubRef;
+
+  let maybeRef = await prisma.gitHubRef.findUnique({
+    where: { ref },
+  });
+
+  if (maybeRef) {
+    githubRef = maybeRef;
+  } else {
+    githubRef = await prisma.gitHubRef.create({
+      data: { ref, releaseNotes },
+    });
+    console.log(`> created release for ${ref}`);
+  }
+
+  let version: string;
+
+  if (ref === process.env.REPO_LATEST_BRANCH) {
+    let githubRefs = await prisma.gitHubRef.findMany({ select: { ref: true } });
+    let refs = githubRefs.map((r) => r.ref);
+    let versions = getVersions(refs);
+    version = versions[0].version;
+  } else {
+    version = getVersionHead(githubRef.ref);
+  }
+
   let entries = await findMatchingEntries(stream, "/docs");
-  let entriesWithProcessedMD = await processDocs(entries);
+  let entriesWithProcessedMD = await Promise.all(
+    entries.map((entry) => processDoc(entry, version))
+  );
 
   console.info(`> Found ${entries.length} docs in ${ref}`);
 
@@ -52,52 +84,23 @@ async function saveDocs(ref: string, releaseNotes: string) {
       toc: entry.attributes.toc,
     }));
 
-  // check if we have this release already
-  let release = await prisma.gitHubRef.findUnique({
-    where: { ref },
+  // delete all docs for this version
+  // TODO: only delete docs that are not in the new docs
+  await prisma.doc.deleteMany({
+    where: {
+      githubRef: githubRef,
+    },
   });
 
-  // release exists already, so we need to update it
-  if (release) {
-    // delete all the docs for that release
-    // this way if we deleted one, it's gone
-    let deleted = await prisma.doc.deleteMany({
-      where: { githubRef: { ref } },
-    });
-
-    console.info(`> Deleted ${deleted.count} docs from ${ref}`);
-
-    let result = await prisma.gitHubRef.update({
-      where: { ref },
-      data: {
-        docs: { create: docsToCreate },
+  // create the docs
+  await prisma.gitHubRef.update({
+    where: { ref: githubRef.ref },
+    data: {
+      docs: {
+        create: docsToCreate,
       },
-      select: {
-        ref: true,
-        docs: { select: { id: true } },
-      },
-    });
-
-    console.info(
-      `> Updated release for version: ${result.ref} with ${result.docs.length} docs`
-    );
-  } else {
-    let result = await prisma.gitHubRef.create({
-      data: {
-        ref,
-        releaseNotes: await processMarkdown(releaseNotes),
-        docs: { create: docsToCreate },
-      },
-      select: {
-        ref: true,
-        docs: { select: { id: true } },
-      },
-    });
-
-    console.info(
-      `> Created release for version: ${result.ref} with ${result.docs.length} docs`
-    );
-  }
+    },
+  });
 }
 
 export { saveDocs };
