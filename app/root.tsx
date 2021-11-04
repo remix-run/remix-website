@@ -11,7 +11,6 @@ import type { LoaderFunction } from "remix";
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
 import { Body } from "~/components/body";
-import { useScrollRestoration } from "~/components/scroll-restoration";
 import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
 import {
@@ -52,7 +51,6 @@ function Document({
   forceDark?: boolean;
   darkBg?: string;
 }) {
-  useScrollRestoration();
   let { noIndex } = useLoaderData();
   return (
     <html lang="en">

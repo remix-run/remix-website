@@ -1,4 +1,5 @@
 import { Scripts, LiveReload } from "remix";
+import { ScrollRestoration } from "./scroll-restoration";
 
 export function Body({
   forceDark,
@@ -23,6 +24,7 @@ export function Body({
       }
     >
       {children}
+      <ScrollRestoration />
       <Scripts />
       {process.env.NODE_ENV === "development" && <LiveReload />}
     </body>

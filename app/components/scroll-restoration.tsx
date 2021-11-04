@@ -2,15 +2,42 @@ import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { useTransition, useBeforeUnload } from "remix";
 
+const STORAGE_KEY = "positions";
+
 let positions: { [key: string]: number } = {};
 
 if (typeof window !== "undefined") {
-  window.history.scrollRestoration = "manual";
-  let sessionPositions = sessionStorage.getItem("positions");
+  let sessionPositions = sessionStorage.getItem(STORAGE_KEY);
   if (sessionPositions) {
     positions = JSON.parse(sessionPositions);
   }
 }
+
+export function ScrollRestoration() {
+  useScrollRestoration();
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          window.history.scrollRestoration = 'manual'
+          try {
+            let positions = JSON.parse(sessionStorage.getItem(${JSON.stringify(
+              STORAGE_KEY
+            )}) ?? '{}')
+            let storedY = positions[window.history.state.key] || positions["default"]
+            if (typeof storedY === 'number') {
+              window.scrollTo(0, storedY)
+            }
+          } catch {
+            sessionStorage.removeItem(STORAGE_KEY)
+          }
+        `,
+      }}
+    />
+  );
+}
+
+let hydrated = false;
 
 function useScrollRestoration() {
   let location = useLocation();
@@ -34,12 +61,19 @@ function useScrollRestoration() {
 
   useBeforeUnload(
     React.useCallback(() => {
-      sessionStorage.setItem("positions", JSON.stringify(positions));
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(positions));
     }, [])
   );
 
   if (typeof window !== "undefined") {
     React.useLayoutEffect(() => {
+      // don't do anything on hydration, the component already did this with an
+      // inline script.
+      if (!hydrated) {
+        hydrated = true;
+        return;
+      }
+
       let y = positions[location.key];
 
       // been here before, scroll to it
@@ -74,5 +108,3 @@ function useScrollRestoration() {
     }
   }, [transition]);
 }
-
-export { useScrollRestoration };

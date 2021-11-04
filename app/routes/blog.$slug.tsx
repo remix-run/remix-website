@@ -2,6 +2,8 @@ import { json, LoaderFunction, useLoaderData } from "remix";
 import { getBlogPost } from "~/utils/md";
 import type { MarkdownPost } from "~/utils/md";
 import mdStyles from "~/styles/md.css";
+import { useRef } from "react";
+import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
 
 export let loader: LoaderFunction = async ({ params }) => {
   let post: MarkdownPost = await getBlogPost(params.slug!);
@@ -14,7 +16,7 @@ export function links() {
 
 export let meta = ({
   data,
-  params
+  params,
 }: {
   data: MarkdownPost;
   params: { slug: string };
@@ -34,12 +36,15 @@ export let meta = ({
     "twitter:site": "@remix_run",
     "twitter:title": data.title,
     "twitter:image": socialImageUrl,
-    "twitter:image:alt": data.imageAlt
+    "twitter:image:alt": data.imageAlt,
   };
 };
 
 export default function BlogPost() {
   let post = useLoaderData<MarkdownPost>();
+  let mdRef = useRef<HTMLDivElement>(null);
+  useDelegatedReactRouterLinks(mdRef);
+
   return (
     <div className="flex-1">
       <div>
@@ -63,7 +68,7 @@ export default function BlogPost() {
               <div className="h-2" />
             </div>
             <div className="pb-4 md:pb-12">
-              {post.authors.map(author => (
+              {post.authors.map((author) => (
                 <div key={author.name} className="flex items-center my-2">
                   <div>
                     <img
@@ -89,6 +94,7 @@ export default function BlogPost() {
         <div className="h-12" />
         <div className="container lg:max-w-3xl">
           <div
+            ref={mdRef}
             className="md-prose"
             dangerouslySetInnerHTML={{ __html: post.html }}
           />
