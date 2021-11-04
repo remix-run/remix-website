@@ -1,5 +1,6 @@
-import { forwardRef } from "react";
+import * as React from "react";
 import { Link } from "remix";
+import clsx from "clsx";
 
 export function OutlineButtonLink({
   to,
@@ -17,10 +18,10 @@ export function OutlineButtonLink({
       to={to}
       prefetch={prefetch}
       x-comp="OutlineButtonLink"
-      className={
-        "inline-block text-center box-border py-4 px-8 rounded bg-transparent text-white font-semibold border-2 " +
+      className={clsx(
+        "inline-block text-center box-border py-4 px-8 rounded bg-transparent text-white font-semibold border-2",
         className
-      }
+      )}
       children={children}
     />
   );
@@ -42,32 +43,36 @@ export function PrimaryButtonLink({
       x-comp="PrimaryButtonLink"
       to={to}
       prefetch={prefetch}
-      className={
-        "inline-block text-center box-border py-4 px-8 rounded bg-blue-brand text-white font-semibold " +
+      className={clsx(
+        "inline-block text-center box-border py-4 px-8 rounded bg-blue-brand text-white font-semibold",
         className
-      }
+      )}
       children={children}
     />
   );
 }
 
-export let Button = forwardRef<
+export let Button = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithRef<"button">
->(({ className, ...props }, ref) => {
+>(({ className, children, ...props }, ref) => {
   return (
     <button
+      ref={ref}
       x-comp="Button"
-      className={
-        "inline-block text-center box-border py-4 px-8 rounded bg-blue-brand text-white font-semibold " +
+      className={clsx(
+        "inline-block text-center box-border py-4 px-8 rounded bg-blue-brand text-white font-semibold",
         className
-      }
+      )}
+      type={props.type}
       {...props}
-    />
+    >
+      {children}
+    </button>
   );
 });
 
-export let Input = forwardRef<
+export let Input = React.forwardRef<
   HTMLInputElement,
   React.ComponentPropsWithRef<"input">
 >(({ className, ...props }, ref) => {
@@ -75,10 +80,11 @@ export let Input = forwardRef<
     <input
       ref={ref}
       x-comp="Input"
-      className={
-        "inline-block box-border py-4 px-8 rounded bg-gray-800 text-white " +
+      className={clsx(
+        "inline-block box-border py-4 px-8 rounded bg-gray-800 text-white",
         className
-      }
+      )}
+      title={props.title}
       {...props}
     />
   );
