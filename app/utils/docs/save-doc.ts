@@ -33,10 +33,15 @@ async function saveDocs(ref: string, releaseNotes: string) {
 
   invariant(stream, "no stream");
 
-  let githubRef: GitHubRef;
+  let githubRef: GitHubRef & { docs: { filePath: string; lang: string }[] };
 
   let maybeRef = await prisma.gitHubRef.findUnique({
     where: { ref },
+    include: {
+      docs: {
+        select: { filePath: true, lang: true },
+      },
+    },
   });
 
   if (maybeRef) {
@@ -44,6 +49,11 @@ async function saveDocs(ref: string, releaseNotes: string) {
   } else {
     githubRef = await prisma.gitHubRef.create({
       data: { ref, releaseNotes },
+      include: {
+        docs: {
+          select: { filePath: true, lang: true },
+        },
+      },
     });
     console.log(`> created release for ${ref}`);
   }
@@ -59,46 +69,88 @@ async function saveDocs(ref: string, releaseNotes: string) {
     version = getVersionHead(githubRef.ref);
   }
 
-  let entries = await findMatchingEntries(stream, "/docs");
-  let entriesWithProcessedMD = await Promise.all(
-    entries.map((entry) => processDoc(entry, version))
-  );
+  let existingDocs = githubRef.docs.map((doc) => doc.filePath);
 
-  console.info(`> Found ${entries.length} docs in ${ref}`);
+  await findMatchingEntries(stream, "/docs", existingDocs, {
+    onUpdatedEntry: async (entry) => {
+      let doc = await processDoc(entry, version);
 
-  // create a doc in the format that the db wants
-  let docsToCreate: Prisma.DocCreateWithoutGithubRefInput[] =
-    entriesWithProcessedMD.map((entry) => ({
-      filePath: entry.path,
-      html: entry.html,
-      lang: entry.lang,
-      md: entry.md,
-      hasContent: entry.hasContent,
-      title: entry.attributes.title,
-      description: entry.attributes.description,
-      disabled: entry.attributes.disabled,
-      hidden: entry.attributes.hidden,
-      order: entry.attributes.order,
-      published: entry.attributes.published,
-      siblingLinks: entry.attributes.siblingLinks,
-      toc: entry.attributes.toc,
-    }));
+      let docToSave: Prisma.DocCreateWithoutGithubRefInput = {
+        filePath: doc.path,
+        html: doc.html,
+        lang: doc.lang,
+        md: doc.md,
+        hasContent: doc.hasContent,
+        title: doc.attributes.title,
+        description: doc.attributes.description,
+        disabled: doc.attributes.disabled,
+        hidden: doc.attributes.hidden,
+        order: doc.attributes.order,
+        published: doc.attributes.published,
+        siblingLinks: doc.attributes.siblingLinks,
+        toc: doc.attributes.toc,
+      };
 
-  // delete all docs for this version
-  // TODO: only delete docs that are not in the new docs
-  await prisma.doc.deleteMany({
-    where: {
-      githubRef: githubRef,
+      await prisma.doc.update({
+        where: {
+          filePath_githubRefId_lang: {
+            filePath: doc.path,
+            githubRefId: githubRef.ref,
+            lang: doc.lang,
+          },
+        },
+        data: docToSave,
+      });
+
+      console.log(`> Updated ${doc.path} for ${ref}`);
     },
-  });
+    onNewEntry: async (entry) => {
+      let doc = await processDoc(entry, version);
 
-  // create the docs
-  await prisma.gitHubRef.update({
-    where: { ref: githubRef.ref },
-    data: {
-      docs: {
-        create: docsToCreate,
-      },
+      let docToSave: Prisma.DocCreateWithoutGithubRefInput = {
+        filePath: doc.path,
+        html: doc.html,
+        lang: doc.lang,
+        md: doc.md,
+        hasContent: doc.hasContent,
+        title: doc.attributes.title,
+        description: doc.attributes.description,
+        disabled: doc.attributes.disabled,
+        hidden: doc.attributes.hidden,
+        order: doc.attributes.order,
+        published: doc.attributes.published,
+        siblingLinks: doc.attributes.siblingLinks,
+        toc: doc.attributes.toc,
+      };
+
+      await prisma.doc.create({
+        data: {
+          ...docToSave,
+          githubRef: {
+            connect: {
+              ref: githubRef.ref,
+            },
+          },
+        },
+      });
+
+      console.log(`> Created ${doc.path} for ${ref}`);
+    },
+    onDeletedEntries: async (deletedEntries) => {
+      await prisma.doc.deleteMany({
+        where: {
+          filePath: {
+            in: deletedEntries.map((entry) => entry.path),
+          },
+          githubRef: {
+            ref: githubRef.ref,
+          },
+        },
+      });
+
+      console.log(
+        `> Deleted ${deletedEntries.length} docs for ${ref} in every locale`
+      );
     },
   });
 }
