@@ -4,10 +4,11 @@ import type { MarkdownPost } from "~/utils/md";
 import mdStyles from "~/styles/md.css";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
+import { CACHE_CONTROL } from "~/utils/http";
 
 export let loader: LoaderFunction = async ({ params }) => {
   let post: MarkdownPost = await getBlogPost(params.slug!);
-  return json(post);
+  return json(post, { headers: { "Cache-Control": CACHE_CONTROL } });
 };
 
 export function links() {
