@@ -1,63 +1,62 @@
-# Welcome to Remix!
+# Remix Website
 
-- [Remix Docs](https://docs.remix.run)
-- [Customer Dashboard](https://remix.run/dashboard)
+## Installation
 
-## Fly Setup
-
-1. [Install Fly](https://fly.io/docs/getting-started/installing-flyctl/)
-
-2. Sign up and log in to Fly
-
-   ```sh
-   flyctl auth signup
-   ```
-
-3. Setup Fly. It might ask if you want to deploy, say no since you haven't built the app yet.
-
-   ```sh
-   flyctl launch
-   ```
-
-4. **Important**: Fly is going to do an `npm install` when you deploy your app. This template assumes you have your Remix token available as an environment variable named `REMIX_TOKEN` for both npm installs on your computer and on Fly's servers. Open up your terminal rc file and add this:
-
-   ```sh
-   # .zshrc, .profile, .bash_rc, etc.
-   export REMIX_TOKEN="your token here"
-   ```
-
-   After you've done that, either open a new terminal tab or run `source ~/.zshrc` (or whatever your rc file is) to get the new env var available in your shell. Now you can run a local `npm install`.
-
-   ```sh
-   npm i
-   ```
-
-5. Lastly, you'll need to tell Fly about your token as well:
-
-   ```sh
-   flyctl secrets set REMIX_TOKEN=${REMIX_TOKEN}
-   ```
-
-   You can use this for other secrets too, like stripe tokens and database urls.
-
-## Development
-
-From your terminal:
+First setup your `.env` file, use `.env.example` to know what to set.
 
 ```sh
+npm i
 npm run dev
 ```
 
-This starts your app in development mode, rebuilding assets on file changes.
-
 ## Deployment
 
-If you've followed the setup instructions already, especially the REMIX_TOKEN environment variable step, all you need to do is run this:
+The staging server is always in sync with `main`
 
 ```sh
-npm run deploy
+git push origin main
+open https://remixdotrunstage.fly.dev
 ```
 
-You can run `flyctl info` to get the url and ip address of your server.
+Tagged commits are deployed to production:
 
-Check out the [fly docs](https://fly.io/docs/getting-started/node/) for more information.
+```sh
+npm version major
+# [some npm message]
+git push origin main --follow-tags
+```
+
+Use `major` because this isn't an API and it'll take pointless mental effort to think about if your padding change is a major or patch. Let's send the version tags TO THE MOON 🚀🌕.
+
+## Content
+
+Content is synced to the SQLite distributed system from the `main` branch. You do not need to deploy a tag in order to add or update content.
+
+```sh
+git push origin main
+# watch the app instances pull the new content
+fly logs -a remixdotrun
+```
+
+Authoring Blog Articles:
+
+- Put a markdown file in `content/blog/{slug-you-want}.md`
+- Follow the conventions found in other blog articles for author/meta
+- Push to `main`
+
+Changing page content:
+
+- Edit markdown files in `content/{pages,other}/{file}.md`
+- Push to `main`
+
+## CSS Notes
+
+You'll want the tailwind VSCode plugin fer sure, the hints are amazing.
+
+The color scheme has various shades but we also have a special "brand" rule for each of our brand colors so we don't have to know the specific number of that color like this: `<div className="text-pink-brand" />`.
+
+We want to use Tailwind's default classes as much as possible to avoid a large CSS file. A few things you can do to keep the styles shared:
+
+- Avoid changing anything but the theme in `tailwind.config.js`, no special classes, etc.
+- Avoid "inline rules" like `color-[#ccc]` as much as possible.
+- Silly HTML (like a wrapper div to add padding on a container) is better than one-off css rules.
