@@ -67,3 +67,7 @@ export async function ensureSecure(request: Request) {
 export function isProductionHost(request: Request) {
   return "remix.run" === request.headers.get("host");
 }
+
+// Add 5 minutes cache control to documents and json requests to speed up the
+// back button
+export const CACHE_CONTROL = "max-age=300";
