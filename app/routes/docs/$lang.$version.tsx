@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import cx from "clsx";
 
 import { getMenu, MenuNode } from "~/utils/docs/get-menu";
-// import markdownStyles from "~/styles/docs.css";
+import markdownStyles from "~/styles/docs.css";
 import { Menu } from "~/components/docs-menu";
 
 export let loader: LoaderFunction = async ({ params }) => {
@@ -18,9 +18,7 @@ export let loader: LoaderFunction = async ({ params }) => {
 };
 
 export function links() {
-  return [
-    // { rel: "stylesheet", href: markdownStyles }
-  ];
+  return [{ rel: "stylesheet", href: markdownStyles }];
 }
 
 export default function DocsLayout() {

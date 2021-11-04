@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCatch, useLoaderData } from "remix";
+import { useLoaderData } from "remix";
 import cx from "clsx";
 
 import { useDelegatedReactRouterLinks } from "~/hooks/delegate-links";
