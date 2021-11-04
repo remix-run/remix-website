@@ -43,5 +43,6 @@
   "engines": {
     "node": "16"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "version": "1.0.0"
 }
