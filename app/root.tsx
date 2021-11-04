@@ -45,13 +45,14 @@ function Document({
   title,
   forceDark,
   darkBg,
+  noIndex,
 }: {
   children: React.ReactNode;
   title?: string;
   forceDark?: boolean;
   darkBg?: string;
+  noIndex: boolean;
 }) {
-  let { noIndex } = useLoaderData();
   return (
     <html lang="en">
       <head>
@@ -90,10 +91,11 @@ function Document({
 }
 
 export default function App() {
+  let { noIndex } = useLoaderData();
   let matches = useMatches();
   let forceDark = matches.some((match) => match.handle?.forceDark);
   return (
-    <Document forceDark={forceDark}>
+    <Document noIndex={noIndex} forceDark={forceDark}>
       <Outlet />
     </Document>
   );
@@ -101,7 +103,7 @@ export default function App() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   return (
-    <Document title="Error" forceDark darkBg="bg-red-brand">
+    <Document noIndex title="Error" forceDark darkBg="bg-red-brand">
       <div className="flex-1 flex flex-col justify-center text-white">
         <div className="text-center leading-none">
           <h1 className="text-[25vw]">Error</h1>
@@ -116,7 +118,12 @@ export function ErrorBoundary({ error }: { error: Error }) {
 export function CatchBoundary() {
   let caught = useCatch();
   return (
-    <Document title={caught.statusText} forceDark darkBg="bg-blue-brand">
+    <Document
+      noIndex
+      title={caught.statusText}
+      forceDark
+      darkBg="bg-blue-brand"
+    >
       <div className="flex-1 flex flex-col justify-center text-white">
         <div className="text-center leading-none">
           <h1 className="font-mono text-[25vw]">{caught.status}</h1>

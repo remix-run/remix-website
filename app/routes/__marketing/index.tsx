@@ -1,7 +1,9 @@
 import { useLoaderData, json } from "remix";
-import type { LoaderFunction } from "remix";
+import type { LoaderFunction, LinksFunction } from "remix";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
-import { md } from "~/utils/md";
+import { getMarkdown } from "~/utils/md";
+import indexStyles from "../../styles/index.css";
+import { Green, Red, RedPortrait } from "~/components/gradients";
 
 export function meta() {
   let url = "https://remix.run/";
@@ -25,20 +27,58 @@ export function meta() {
   };
 }
 
+export let links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: indexStyles }];
+};
+
 export let loader: LoaderFunction = async () => {
-  let sample = await md("marketing/sample.md");
-  return json({ sample }, { headers: { "Cache-Control": "max-age=300" } });
+  let [sample, sampleSm] = await Promise.all([
+    getMarkdown("marketing/sample/sample.md"),
+    getMarkdown("marketing/sample-sm/sample.md"),
+  ]);
+  return json(
+    { sample, sampleSm },
+    { headers: { "Cache-Control": "max-age=300" } }
+  );
 };
 
 export default function Index() {
-  let { sample } = useLoaderData();
   return (
     <div
       x-comp="Index"
-      className="container md:max-w-2xl flex-1 flex flex-col justify-center xl:max-w-7xl"
+      className="container md:max-w-2xl flex-1 flex flex-col xl:max-w-7xl"
     >
-      <div>
-        <div className="h-8" />
+      <div className="h-8" />
+      <Hero />
+      <div className="h-9" />
+    </div>
+  );
+}
+
+function BigTweet() {
+  return (
+    <div className="max-w-xl">
+      <p>fpoiuaposidfpoiausd</p>
+      <p>fpoiuaposidfpoiausd</p>
+      <p>fpoiuaposidfpoiausd</p>
+      <p>fpoiuaposidfpoiausd</p>
+      <p>fpoiuaposidfpoiausd</p>
+      <p>fpoiuaposidfpoiausd</p>
+      <p>fpoiuaposidfpoiausd</p>
+      <p>fpoiuaposidfpoiausd</p>
+      <p>fpoiuaposidfpoiausd</p>
+    </div>
+  );
+}
+
+function Hero() {
+  let { sample, sampleSm } = useLoaderData();
+  return (
+    <div
+      x-comp="Hero"
+      className="xl:flex xl:w-full xl:items-center xl:justify-between xl:gap-32"
+    >
+      <div className="xl:w-1/2 xl:mb-10">
         <div className="font-display text-2xl text-white xl:text-6xl xl:max-w-2xl">
           Focused on web <span className="text-aqua-brand">fundamentals</span>{" "}
           and <span className="text-green-brand">modern</span> UX, you’re simply
@@ -51,27 +91,39 @@ export default function Index() {
           fundamentals to deliver a fast, slick, and resilient user experience.
           People are gonna love using your stuff.
         </div>
-        <div className="h-9" />
-        <div>
-          <link rel="prefetch" as="image" href="/m-r.jpg" />
-          <link rel="prefetch" as="image" href="/m.jpg" />
-          <link rel="prefetch" as="image" href="/r.jpg" />
+        <div className="h-9 xl:h-10" />
+        <div className="flex flex-col xl:flex-row gap-4">
           <PrimaryButtonLink
             prefetch="intent"
             to="/blog/seed-funding-for-remix"
-            className="w-full uppercase"
+            className="w-full xl:w-60 xl:order-1"
             children="Get Started"
           />
-          <div className="h-4" />
           <OutlineButtonLink
             to="/newsletter"
-            className="w-full uppercase"
+            className="w-full xl:w-60"
             children="Read the Docs"
           />
         </div>
-        <div dangerouslySetInnerHTML={{ __html: sample.html }} />
-        <div className="h-20" />
+      </div>
+      <div className="p-4 -mx-6 xl:p-10 mt-6 xl:mt-0 relative xl:w-1/2 xl:h-[51rem] overflow-hidden sm:mx-auto rounded-xl xl:rounded-3xl xl:overflow-visible">
+        <Red className="absolute left-0 top-0 h-full xl:rounded-3xl" />
+        <Sample html={sample.html} className="sm:hidden" />
+        <Sample html={sampleSm.html} className="hidden sm:block" />
       </div>
     </div>
+  );
+}
+
+function Sample({ html, className }: { html: string; className?: string }) {
+  return (
+    <div
+      className={
+        "relative xl:absolute z-10 text-3xs sm:text-xs min-w-full rounded-lg xl:rounded-xl p-3 xl:p-4 overflow-auto xl:overflow-visible bg-gray-800" +
+        " " +
+        className
+      }
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
 }

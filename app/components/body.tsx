@@ -16,7 +16,7 @@ export function Body({
     <body
       x-comp="Body"
       className={
-        "min-h-screen flex flex-col w-full" +
+        "min-h-screen flex flex-col w-full overflow-x-hidden" +
         (forceDark
           ? ` ${darkBg} text-gray-300 `
           : " bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-300 ") +

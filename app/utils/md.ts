@@ -11,12 +11,12 @@ let contentPath = path.join(__dirname, "..", "md");
 /**
  * Parses a markdown file, including front matter.
  */
-export async function md(filenameWithoutExt: string) {
-  let filePath = path.join(contentPath, filenameWithoutExt + ".md");
+export async function md(filename: string) {
+  let filePath = path.join(contentPath, filename);
   try {
     await fs.access(filePath);
   } catch (e) {
-    throw json("File not found", { status: 404 });
+    return null;
   }
   let contents = (await fs.readFile(filePath)).toString();
   let { attributes, body } = parseFrontMatter(contents);
@@ -24,8 +24,24 @@ export async function md(filenameWithoutExt: string) {
   return { attributes, html };
 }
 
+export async function getMarkdown(filename: string) {
+  let result = await md(filename);
+
+  if (!result)
+    throw new Response(`Missing ${filename}`, {
+      status: 500,
+      statusText: "Internal Server Error",
+    });
+
+  return result;
+}
+
 export async function getBlogPost(slug: string): Promise<MarkdownPost> {
-  let { attributes, html } = await md(slug);
+  let result = await md(slug + ".md");
+  if (!result) {
+    throw new Response("Not Found", { status: 404, statusText: "Not Found" });
+  }
+  let { attributes, html } = result;
   invariant(isMarkdownPostFrontmatter(attributes), "Invalid post frontmatter.");
   return { ...attributes, html };
 }

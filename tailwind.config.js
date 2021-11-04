@@ -20,6 +20,7 @@ module.exports = {
       display: ['"Founders Grotesk"'],
     },
     fontSize: {
+      "3xs": ["12px", "20px"],
       "2xs": ["14px", "24px"],
       xs: ["16px", "24px"],
       sm: ["18px", "32px"],
