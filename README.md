@@ -38,13 +38,15 @@ git push origin main
 fly logs -a remixdotrun
 ```
 
-Authoring Blog Articles:
+**Authoring Blog Articles:**
 
 - Put a markdown file in `content/blog/{slug-you-want}.md`
 - Follow the conventions found in other blog articles for author/meta
 - Push to `main`
 
-Changing page content:
+When linking to other posts use `[name](article-slug)`, you don't need to do `[name](/blog/article-slug)`
+
+**Changing page content:**
 
 - Edit markdown files in `content/{pages,other}/{file}.md`
 - Push to `main`
