@@ -16,8 +16,8 @@ module.exports = {
   plugins: [require("@tailwindcss/aspect-ratio")],
   theme: {
     fontFamily: {
-      ...defaultTheme.fontFamily,
       display: ['"Founders Grotesk"'],
+      ...defaultTheme.fontFamily,
     },
     fontSize: {
       "d-p-sm": ["16px", "24px"],
