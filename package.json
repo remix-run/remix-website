@@ -42,7 +42,6 @@
     "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.4",
     "@types/semver": "^7.3.9",
-    "patch-package": "6.4.7",
     "pm2": "^5.1.2",
     "postcss": "^8.3.9",
     "postcss-cli": "^9.0.1",
