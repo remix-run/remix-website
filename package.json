@@ -17,11 +17,11 @@
     "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts && node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts"
   },
   "dependencies": {
-    "@mcansh/undoc": "^0.1.0",
+    "@mcansh/undoc": "0.1.0",
     "@prisma/client": "^3.4.1",
     "@remix-run/react": "^0.20.1",
     "@remix-run/serve": "^0.20.1",
-    "@ryanflorence/md": "^7.0.0",
+    "@ryanflorence/md": "7.0.1",
     "@tailwindcss/aspect-ratio": "^0.3.0",
     "accept-language": "^3.0.18",
     "clsx": "^1.1.1",
