@@ -136,22 +136,6 @@ async function saveDocs(ref: string, releaseNotes: string) {
 
       console.log(`> Created ${doc.path} for ${ref}`);
     },
-    onDeletedEntries: async (deletedEntries) => {
-      await prisma.doc.deleteMany({
-        where: {
-          filePath: {
-            in: deletedEntries.map((entry) => entry.path),
-          },
-          githubRef: {
-            ref: githubRef.ref,
-          },
-        },
-      });
-
-      console.log(
-        `> Deleted ${deletedEntries.length} docs for ${ref} in every locale`
-      );
-    },
   });
 }
 
