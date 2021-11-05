@@ -17,7 +17,7 @@
     "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts && node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts"
   },
   "dependencies": {
-    "@mcansh/undoc": "^0.0.3",
+    "@mcansh/undoc": "^0.1.0",
     "@prisma/client": "^3.4.1",
     "@remix-run/react": "^0.20.1",
     "@remix-run/serve": "^0.20.1",
