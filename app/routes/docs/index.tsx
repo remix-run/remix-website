@@ -13,7 +13,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     },
   });
 
-  let [latest] = await getVersions(refs.map((ref) => ref.ref));
+  let [latest] = getVersions(refs.map((ref) => ref.ref));
 
   // 1. get the user's preferred language
   let langHeader = request.headers.get("accept-language");
