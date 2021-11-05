@@ -12,13 +12,18 @@
     "format": "prettier --ignore-file .eslintignore --write ./",
     "postinstall": "remix setup",
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
-    "start": "remix-serve build"
+    "start": "remix-serve build",
+    "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts && node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts"
   },
   "dependencies": {
+    "@mcansh/undoc": "0.0.3",
+    "@prisma/client": "3.4.1",
     "@remix-run/react": "^0.20.1",
     "@remix-run/serve": "^0.20.1",
     "@ryanflorence/md": "^7.0.0",
     "@tailwindcss/aspect-ratio": "^0.3.0",
+    "accept-language": "3.0.18",
+    "clsx": "1.1.1",
     "cssnano": "^5.0.9",
     "front-matter": "^4.0.2",
     "react": "^17.0.1",
@@ -37,6 +42,8 @@
     "postcss-cli": "^9.0.1",
     "postcss-focus-visible": "^6.0.1",
     "postcss-nesting": "^8.0.1",
+    "prettier": "^2.4.1",
+    "prisma": "3.4.1",
     "tailwindcss": "^2.2.16",
     "typescript": "^4.1.2"
   },

@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - v1
+    paths-ignore:
+      - "md/**"
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
