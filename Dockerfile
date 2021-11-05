@@ -55,6 +55,7 @@ COPY --from=production-deps /remixapp/node_modules /remixapp/node_modules
 COPY --from=build /remixapp/node_modules/.prisma /remixapp/node_modules/.prisma
 COPY --from=build /remixapp/public /remixapp/public
 COPY --from=build /remixapp/prisma /remixapp/prisma
+COPY --from=build /remixapp/build /remixapp/build
 ADD . .
 
 CMD ["npm", "run", "start"]
