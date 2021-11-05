@@ -9,6 +9,7 @@ FROM base as deps
 WORKDIR /remixapp/
 
 ADD package.json package-lock.json .npmrc ./
+ADD patches ./patches
 RUN npm install --production=false
 
 # setup production node_modules

@@ -12,7 +12,7 @@ index cb33251..a97bfc2 100644
          let themeName = "base16";
 diff --git a/node_modules/@ryanflorence/md/package-lock.json b/node_modules/@ryanflorence/md/package-lock.json
 new file mode 100644
-index 0000000..1be8aef
+index 0000000..de63a1c
 --- /dev/null
 +++ b/node_modules/@ryanflorence/md/package-lock.json
 @@ -0,0 +1,16672 @@
@@ -37,7 +37,7 @@ index 0000000..1be8aef
 +        "remark-gfm": "1.0.0",
 +        "remark-html": "13.0.1",
 +        "remark-slug": "6.0.0",
-+        "shiki": "0.9.12",
++        "shiki": "^0.9.12",
 +        "unist-util-visit": "2.0.3"
 +      },
 +      "devDependencies": {
