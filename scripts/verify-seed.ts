@@ -9,8 +9,10 @@ async function go() {
   ]);
 
   if (refs && posts) {
+    console.log("Seed verified!");
     process.exit(0);
   } else {
+    console.log("Uhh we got problems, no refs or posts found...");
     process.exit(1);
   }
 }
