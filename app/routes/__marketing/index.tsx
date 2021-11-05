@@ -4,6 +4,13 @@ import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
 import { getMarkdown } from "~/utils/md";
 import indexStyles from "../../styles/index.css";
 import { Green, Red, RedPortrait } from "~/components/gradients";
+import { Twitter } from "~/components/icons";
+import {
+  Avatar,
+  BigTweet,
+  TweetCarousel,
+  tweets,
+} from "~/components/twitter-cards";
 
 export function meta() {
   let url = "https://remix.run/";
@@ -44,29 +51,15 @@ export let loader: LoaderFunction = async () => {
 
 export default function Index() {
   return (
-    <div
-      x-comp="Index"
-      className="container md:max-w-2xl flex-1 flex flex-col xl:max-w-7xl"
-    >
-      <div className="h-8" />
-      <Hero />
-      <div className="h-9" />
-    </div>
-  );
-}
-
-function BigTweet() {
-  return (
-    <div className="max-w-xl">
-      <p>fpoiuaposidfpoiausd</p>
-      <p>fpoiuaposidfpoiausd</p>
-      <p>fpoiuaposidfpoiausd</p>
-      <p>fpoiuaposidfpoiausd</p>
-      <p>fpoiuaposidfpoiausd</p>
-      <p>fpoiuaposidfpoiausd</p>
-      <p>fpoiuaposidfpoiausd</p>
-      <p>fpoiuaposidfpoiausd</p>
-      <p>fpoiuaposidfpoiausd</p>
+    <div x-comp="Index">
+      <div className="container md:max-w-2xl xl:max-w-7xl">
+        <div className="h-8" />
+        <Hero />
+        <div className="h-32" />
+        <BigTweet tweet={tweets[0]} />
+      </div>
+      <div className="h-10" />
+      <TweetCarousel tweets={tweets.slice(1)} />
     </div>
   );
 }
@@ -106,7 +99,7 @@ function Hero() {
           />
         </div>
       </div>
-      <div className="p-4 -mx-6 xl:p-10 mt-6 xl:mt-0 relative xl:w-1/2 xl:h-[51rem] overflow-hidden sm:mx-auto rounded-xl xl:rounded-3xl xl:overflow-visible">
+      <div className="p-4 -mx-6 xl:p-10 mt-6 xl:mt-0 relative xl:w-1/2 xl:h-[51rem] overflow-hidden sm:mx-auto sm:rounded-xl xl:rounded-3xl xl:overflow-visible">
         <Red className="absolute left-0 top-0 h-full xl:rounded-3xl" />
         <Sample html={sample.html} className="sm:hidden" />
         <Sample html={sampleSm.html} className="hidden sm:block" />
@@ -119,7 +112,7 @@ function Sample({ html, className }: { html: string; className?: string }) {
   return (
     <div
       className={
-        "relative xl:absolute z-10 text-3xs sm:text-xs min-w-full rounded-lg xl:rounded-xl p-3 xl:p-4 overflow-auto xl:overflow-visible bg-gray-800" +
+        "relative xl:absolute z-10 text-3xs sm:text-xs min-w-full sm:rounded-lg xl:rounded-xl p-3 xl:p-4 overflow-auto xl:overflow-visible bg-gray-800" +
         " " +
         className
       }

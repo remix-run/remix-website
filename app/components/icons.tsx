@@ -15,11 +15,10 @@ export function Hamburger() {
   );
 }
 
-export function Twitter() {
+export function Twitter({ className = "h-10 w-10" }: { className?: string }) {
   return (
     <svg
-      width="40"
-      height="40"
+      className={className}
       viewBox="0 0 40 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

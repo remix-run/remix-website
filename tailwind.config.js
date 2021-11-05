@@ -20,6 +20,22 @@ module.exports = {
       display: ['"Founders Grotesk"'],
     },
     fontSize: {
+      "d-p-sm": ["16px", "24px"],
+      "d-p-lg": ["20px", "32px"],
+      "d-h3": ["30px", "32px"],
+      "d-h2": ["45px", "48px"],
+      "d-h1": ["64px", "72px"],
+      "d-j": ["72px", "64px"],
+
+      "m-p-sm": ["14px", "24px"],
+      "m-p-lg": ["18px", "32px"],
+      "m-h3": ["20px", "24px"],
+      "m-h2": ["25px", "32px"],
+      "m-h1": ["32px", "32px"],
+      "m-j": ["40px", "48px"],
+
+      eyebrow: ["16px", "24px"],
+
       "3xs": ["12px", "20px"],
       "2xs": ["14px", "24px"],
       xs: ["16px", "24px"],
@@ -53,7 +69,7 @@ module.exports = {
           500: "#6a726d",
           600: "#545750",
           700: "#40413c",
-          800: "#2c2b2a",
+          800: "#1e1e1e",
           900: "#121212",
         },
         red: {
