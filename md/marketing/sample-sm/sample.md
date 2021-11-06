@@ -9,7 +9,7 @@ export async function action({ request }) {
 }
 
 export default function Projects() {
-  let projects = userLoaderData();
+  let projects = useLoaderData();
   let { state } = useTransition();
   let busy = state === "submitting";
 

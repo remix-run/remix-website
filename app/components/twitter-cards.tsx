@@ -19,12 +19,12 @@ export let tweets: TweetData[] = [
     avatar: "/img/jens.jpg",
   },
   {
-    href: "https://twitter.com/jkup/status/1456360115205033989",
-    username: "jkup",
-    name: "Jon Kuperman",
-    title: "Cloudflare",
-    body: "holy sh** Remix is good",
-    avatar: "/img/jkup.jpg",
+    href: "https://twitter.com/aweary/status/1456399484473200644",
+    username: "aweary",
+    name: "Brandon Dail",
+    title: "Discord, prev React Core",
+    body: "I just rewrote my first Remix app on top of Cloudflare Workers and Supabase and it’s so damn good",
+    avatar: "/img/aweary.jpg",
   },
   {
     href: "https://twitter.com/sergiodxa/status/1400503400802959361",
@@ -33,6 +33,14 @@ export let tweets: TweetData[] = [
     title: "Daffy, prev Vercel",
     body: "What’s really cool with Remix loaders is that you can do most of your data transformation and calculations there, like check if a list is empty, limit the number of records, only send specific attributes, so your React component just receives the data and renders it, no logic needed",
     avatar: "/img/sergio.jpg",
+  },
+  {
+    href: "https://twitter.com/jkup/status/1456360115205033989",
+    username: "jkup",
+    name: "Jon Kuperman",
+    title: "Cloudflare",
+    body: "holy sh** Remix is good",
+    avatar: "/img/jkup.jpg",
   },
   {
     href: "https://twitter.com/theflyingcoder1/status/1456407168291278851",
@@ -49,6 +57,14 @@ export let tweets: TweetData[] = [
     title: "Web Developer",
     body: "I love using @remix_run for my website.  Remix has improved my productivity as a front-end developer by empowering me to seamlessly switch between front-end and back-end code.",
     avatar: "/img/cammchenry.jpg",
+  },
+  {
+    href: "https://twitter.com/airuyi/status/1456438853804298244",
+    username: "airuyi",
+    name: "Fergus Meiklejohn",
+    title: "App Developer",
+    body: "If you're doing #webdevelopment you should check out Remix 🔥 It's a new (old) paradigm for web dev, which simplifies our code, especially state management😅, speeds up our page loads, and gives us a mental model and framework we can rely on to create our best work",
+    avatar: "/img/airuyi.jpg",
   },
 ];
 
@@ -68,33 +84,39 @@ export function Avatar({
 
 export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
   return (
-    <div className="__carousel flex overflow-x-scroll md:gap-6 pb-4">
-      {tweets.map((tweet, index) => (
-        <Tweet key={index} tweet={tweet} />
-      ))}
-    </div>
-  );
-}
-
-export function Tweet({ tweet }: { tweet: TweetData }) {
-  return (
-    <div className="__slide flex-shrink-0 p-8 w-[85vw] sm:p-10 md:w-[45vw] xl:w-[30vw] bg-gray-800 text-white md:rounded-lg">
-      <div className="flex items-center justify-between">
-        <div className="flex gap-4 items-center">
-          <Avatar src={tweet.avatar} />
-          <div>
-            <div className="text-m-h3 md:text-m-h2 font-display">
-              @{tweet.username}
+    <div className="max-w-max mx-auto">
+      <div className="__carousel flex overflow-x-scroll gap-6 md:pb-4">
+        {tweets.map((tweet, index) => (
+          <div
+            key={index}
+            className="__slide flex-shrink-0 p-8 sm:p-10 w-[85vw] md:w-[45vw] xl:w-[30rem] bg-gray-800 text-white rounded-lg"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex gap-4 items-center">
+                <Avatar src={tweet.avatar} />
+                <div>
+                  <a
+                    href={tweet.href}
+                    className="block text-m-h3 md:text-m-h3 font-display"
+                  >
+                    @{tweet.username}
+                  </a>
+                  <div className="text-m-p-sm lg:text-d-p-sm">
+                    {tweet.title}
+                  </div>
+                </div>
+              </div>
+              <a href={tweet.href} className="block">
+                <Twitter className="h-6 w-6" />
+              </a>
             </div>
-            <div>{tweet.title}</div>
+            <div className="h-6" />
+            <div className="text-m-p-sm xl:text-d-p-sm text-gray-300">
+              {tweet.body}
+            </div>
           </div>
-        </div>
-        <a href={tweet.href} className="block">
-          <Twitter className="h-6 w-6" />
-        </a>
+        ))}
       </div>
-      <div className="h-6" />
-      <div>{tweet.body}</div>
     </div>
   );
 }

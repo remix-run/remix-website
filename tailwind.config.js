@@ -16,10 +16,14 @@ module.exports = {
   plugins: [require("@tailwindcss/aspect-ratio")],
   theme: {
     fontFamily: {
-      display: ['"Founders Grotesk"'],
       ...defaultTheme.fontFamily,
+      display: ['"Founders Grotesk", "Arial Black", sans-serif'],
+      sans: ["Inter", ...defaultTheme.fontFamily.sans],
+      mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
+      // names come from the figma file
+      // desktop paragraph small -> d-p-s
       "d-p-sm": ["16px", "24px"],
       "d-p-lg": ["20px", "32px"],
       "d-h3": ["30px", "32px"],
@@ -27,6 +31,7 @@ module.exports = {
       "d-h1": ["64px", "72px"],
       "d-j": ["72px", "64px"],
 
+      // mobile paragraph small -> d-m-s
       "m-p-sm": ["14px", "24px"],
       "m-p-lg": ["18px", "32px"],
       "m-h3": ["20px", "24px"],
@@ -36,6 +41,8 @@ module.exports = {
 
       eyebrow: ["16px", "24px"],
 
+      // TODO: don't use these, I used them at first, replace all instances with
+      // the design system versions above
       "3xs": ["12px", "20px"],
       "2xs": ["14px", "24px"],
       xs: ["16px", "24px"],

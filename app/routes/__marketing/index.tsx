@@ -3,14 +3,9 @@ import type { LoaderFunction, LinksFunction } from "remix";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
 import { getMarkdown } from "~/utils/md";
 import indexStyles from "../../styles/index.css";
-import { Green, Red, RedPortrait } from "~/components/gradients";
-import { Twitter } from "~/components/icons";
-import {
-  Avatar,
-  BigTweet,
-  TweetCarousel,
-  tweets,
-} from "~/components/twitter-cards";
+import { Red } from "~/components/gradients";
+import { BigTweet, TweetCarousel, tweets } from "~/components/twitter-cards";
+import { ScrollExperience } from "~/components/scroll-experience";
 
 export function meta() {
   let url = "https://remix.run/";
@@ -60,6 +55,8 @@ export default function Index() {
       </div>
       <div className="h-10" />
       <TweetCarousel tweets={tweets.slice(1)} />
+      <div className="h-32" />
+      <ScrollExperience />
     </div>
   );
 }
@@ -101,7 +98,7 @@ function Hero() {
       </div>
       <div className="p-4 -mx-6 xl:p-10 mt-6 xl:mt-0 relative xl:w-1/2 xl:h-[51rem] overflow-hidden sm:mx-auto sm:rounded-xl xl:rounded-3xl xl:overflow-visible">
         <Red className="absolute left-0 top-0 h-full xl:rounded-3xl" />
-        <Sample html={sample.html} className="sm:hidden" />
+        <Sample html={sample.html} className="sm:hidden rounded-xl" />
         <Sample html={sampleSm.html} className="hidden sm:block" />
       </div>
     </div>
@@ -112,7 +109,7 @@ function Sample({ html, className }: { html: string; className?: string }) {
   return (
     <div
       className={
-        "relative xl:absolute z-10 text-3xs sm:text-xs min-w-full sm:rounded-lg xl:rounded-xl p-3 xl:p-4 overflow-auto xl:overflow-visible bg-gray-800" +
+        "relative xl:absolute z-10 text-m-p-sm sm:text-d-p-sm min-w-full sm:rounded-lg xl:rounded-xl p-3 xl:p-4 overflow-auto xl:overflow-visible bg-gray-800" +
         " " +
         className
       }

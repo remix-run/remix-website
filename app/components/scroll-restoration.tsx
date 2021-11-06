@@ -19,6 +19,7 @@ export function ScrollRestoration() {
     <script
       dangerouslySetInnerHTML={{
         __html: `
+          const STORAGE_KEY = "positions";
           window.history.scrollRestoration = 'manual'
           try {
             let positions = JSON.parse(sessionStorage.getItem(${JSON.stringify(
