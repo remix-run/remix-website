@@ -59,7 +59,7 @@ export default function BlogPost() {
           </div>
           <div className="pt-6 md:pt-12 relative z-10 container lg:max-w-4xl flex flex-col h-full w-full">
             <div className="flex-1">
-              <div className="text-2xs md:text-xs uppercase text-gray-300">
+              <div className="text-2xs md:text-xs uppercase text-gray-200">
                 {post.date}
               </div>
               <div className="h-2" />
@@ -83,7 +83,7 @@ export default function BlogPost() {
                     <div className="font-display text-base md:text-xl leading-none text-white">
                       {author.name}
                     </div>
-                    <div className="text-xs md:text-xs leading-tight text-gray-300">
+                    <div className="text-xs md:text-xs leading-tight text-gray-200">
                       {author.bio}
                     </div>
                   </div>

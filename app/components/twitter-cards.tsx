@@ -111,7 +111,7 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
               </a>
             </div>
             <div className="h-6" />
-            <div className="text-m-p-sm xl:text-d-p-sm text-gray-300">
+            <div className="text-m-p-sm xl:text-d-p-sm text-gray-200">
               {tweet.body}
             </div>
           </div>

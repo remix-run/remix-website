@@ -83,7 +83,7 @@ const Document: React.FC<DocumentProps> = ({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Code+Pro:wght@400;600&display=auto"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;600&display=auto"
           rel="stylesheet"
         />
 

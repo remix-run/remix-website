@@ -19,13 +19,16 @@ export function ScrollRestoration() {
     <script
       dangerouslySetInnerHTML={{
         __html: `
-          const STORAGE_KEY = "positions";
+          if (!window.history.state.key) {
+            window.history.replaceState({ key: Math.random().toString(32).slice(2) }, null);
+          }
           window.history.scrollRestoration = 'manual'
+          const STORAGE_KEY = "positions";
           try {
             let positions = JSON.parse(sessionStorage.getItem(${JSON.stringify(
               STORAGE_KEY
             )}) ?? '{}')
-            let storedY = positions[window.history.state.key] || positions["default"]
+            let storedY = positions[window.history.state.key];
             if (typeof storedY === 'number') {
               window.scrollTo(0, storedY)
             }
