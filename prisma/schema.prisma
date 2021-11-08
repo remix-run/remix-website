@@ -48,6 +48,13 @@ model Doc {
   @@unique([filePath, githubRefId, lang])
 }
 
+model Author {
+  name   String     @id
+  bio    String
+  avatar String
+  posts  BlogPost[]
+}
+
 model BlogPost {
   slug      String   @id
   md        String
@@ -56,8 +63,9 @@ model BlogPost {
   updatedAt DateTime @updatedAt
 
   // frontmatter attributes
-  title       String   @unique
-  description String?
-  published   Boolean? @default(false)
-  hidden      Boolean? @default(false)
+  title    String   @unique
+  date     DateTime
+  image    String
+  imageAlt String
+  authors  Author[]
 }
