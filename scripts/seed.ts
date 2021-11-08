@@ -3,6 +3,7 @@ import { installGlobals } from "@remix-run/node";
 
 import { saveDocs } from "../app/utils/docs/save-docs";
 import type { GitHubRelease } from "../app/@types/github";
+import { saveBlogPosts } from "../app/utils/save-blog-posts";
 
 installGlobals();
 
@@ -19,7 +20,7 @@ async function seed() {
 
   let releases = (await releasesPromise.json()) as GitHubRelease[];
 
-  const releasesToUse = releases.filter((release: any) => {
+  let releasesToUse = releases.filter((release) => {
     return satisfies(release.tag_name, ">=0.20", { includePrerelease: true });
   });
 
@@ -28,6 +29,8 @@ async function seed() {
   for (let release of releasesToUse) {
     promises.push(saveDocs(`refs/tags/${release.tag_name}`, release.body));
   }
+
+  promises.push(saveBlogPosts());
 
   await Promise.all(promises);
 }
