@@ -72,7 +72,7 @@ async function saveDocs(ref: string, releaseNotes: string) {
   let existingDocs = githubRef.docs.map((doc) => doc.filePath);
 
   await findMatchingEntries(stream, "/docs", existingDocs, {
-    onUpdatedEntry: async (entry) => {
+    async onEntry(entry) {
       let doc = await processDoc(entry, version);
 
       let docToSave: Prisma.DocCreateWithoutGithubRefInput = {
@@ -91,7 +91,7 @@ async function saveDocs(ref: string, releaseNotes: string) {
         toc: doc.attributes.toc,
       };
 
-      await prisma.doc.update({
+      await prisma.doc.upsert({
         where: {
           filePath_githubRefId_lang: {
             filePath: doc.path,
@@ -99,32 +99,7 @@ async function saveDocs(ref: string, releaseNotes: string) {
             lang: doc.lang,
           },
         },
-        data: docToSave,
-      });
-
-      console.log(`> Updated ${doc.path} for ${ref}`);
-    },
-    onNewEntry: async (entry) => {
-      let doc = await processDoc(entry, version);
-
-      let docToSave: Prisma.DocCreateWithoutGithubRefInput = {
-        filePath: doc.path,
-        html: doc.html,
-        lang: doc.lang,
-        md: doc.md,
-        hasContent: doc.hasContent,
-        title: doc.attributes.title,
-        description: doc.attributes.description,
-        disabled: doc.attributes.disabled,
-        hidden: doc.attributes.hidden,
-        order: doc.attributes.order,
-        published: doc.attributes.published,
-        siblingLinks: doc.attributes.siblingLinks,
-        toc: doc.attributes.toc,
-      };
-
-      await prisma.doc.create({
-        data: {
+        create: {
           ...docToSave,
           githubRef: {
             connect: {
@@ -132,9 +107,10 @@ async function saveDocs(ref: string, releaseNotes: string) {
             },
           },
         },
+        update: docToSave,
       });
 
-      console.log(`> Created ${doc.path} for ${ref}`);
+      console.log(`> Created or updated ${doc.path} for ${ref}`);
     },
     onDeletedEntries: async (deletedEntries) => {
       await prisma.doc.deleteMany({
