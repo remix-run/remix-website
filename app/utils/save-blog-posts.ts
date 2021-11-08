@@ -55,7 +55,7 @@ async function saveBlogPosts() {
       prisma.blogPost.upsert({
         where: { slug: slug },
         update: {
-          date: new Date(data.date),
+          date: data.date,
           html: processed,
           image: data.image,
           imageAlt: data.imageAlt,
@@ -64,7 +64,7 @@ async function saveBlogPosts() {
           title: data.title,
         },
         create: {
-          date: new Date(data.date),
+          date: data.date,
           html: processed,
           image: data.image,
           imageAlt: data.imageAlt,

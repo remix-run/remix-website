@@ -64,7 +64,7 @@ model BlogPost {
 
   // frontmatter attributes
   title    String   @unique
-  date     DateTime
+  date     String
   image    String
   imageAlt String
   authors  Author[]
