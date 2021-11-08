@@ -2,8 +2,9 @@ import fs from "fs/promises";
 import path from "path";
 import { processMarkdown } from "@ryanflorence/md";
 import parseFrontMatter from "front-matter";
-import { json } from "remix";
 import invariant from "ts-invariant";
+
+import { prisma } from "~/db.server";
 
 // This is relative to where this code ends up in the build, not the source
 let contentPath = path.join(__dirname, "..", "md");
@@ -37,13 +38,16 @@ export async function getMarkdown(filename: string) {
 }
 
 export async function getBlogPost(slug: string): Promise<MarkdownPost> {
-  let result = await md(slug + ".md");
+  let result = await prisma.blogPost.findUnique({
+    where: { slug: slug },
+    include: { authors: true },
+  });
+
   if (!result) {
     throw new Response("Not Found", { status: 404, statusText: "Not Found" });
   }
-  let { attributes, html } = result;
-  invariant(isMarkdownPostFrontmatter(attributes), "Invalid post frontmatter.");
-  return { ...attributes, html };
+  invariant(isMarkdownPostFrontmatter(result), "Invalid post frontmatter.");
+  return result;
 }
 
 /**

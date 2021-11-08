@@ -31,10 +31,10 @@ async function saveBlogPosts() {
   let slugs = files
     .map((file) => {
       let localFilePath = path.relative(path.join(process.cwd(), "md"), file);
-      return "/" + localFilePath.replace(/^\/md/, "");
+      return localFilePath.replace(/^\/md/, "");
     })
     .filter((file) => file.endsWith(".md"))
-    .filter((file) => !file.startsWith("/marketing"));
+    .filter((file) => !file.startsWith("marketing"));
 
   let promises = [];
 
@@ -50,8 +50,6 @@ async function saveBlogPosts() {
       postContent,
       { linkOriginPath: "/" }
     );
-
-    let promises = [];
 
     promises.push(
       prisma.blogPost.upsert({
@@ -79,8 +77,8 @@ async function saveBlogPosts() {
 
     console.log(`> Saved blog post ${slug}`);
 
-    promises.push(
-      ...data.authors.map((author: Author) => {
+    data.authors.map((author: Author) => {
+      promises.push(
         prisma.author.upsert({
           where: { name: author.name },
           create: {
@@ -100,11 +98,11 @@ async function saveBlogPosts() {
               },
             },
           },
-        });
+        })
+      );
 
-        console.log(`> Linked blog post ${slug} to author ${author.name}`);
-      })
-    );
+      console.log(`> Linked blog post ${slug} to author ${author.name}`);
+    });
 
     await Promise.all(promises);
   }

@@ -7,7 +7,7 @@ import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
 import { CACHE_CONTROL } from "~/utils/http";
 
 export let loader: LoaderFunction = async ({ params }) => {
-  let post: MarkdownPost = await getBlogPost(params.slug!);
+  let post: MarkdownPost = await getBlogPost(`${params.slug}.md`);
   return json(post, { headers: { "Cache-Control": CACHE_CONTROL } });
 };
 
@@ -52,18 +52,18 @@ export default function BlogPost() {
         <div className="h-[280px] md:h-[400px] md:max-w-3xl md:mx-auto md:rounded-xl xl:h-[480px] relative bg-gray-900">
           <div className="absolute inset-0">
             <img
-              className="h-full w-full object-cover object-top opacity-30 md:rounded-xl"
+              className="object-cover object-top w-full h-full opacity-30 md:rounded-xl"
               src={post.image}
               alt={post.imageAlt}
             />
           </div>
-          <div className="pt-6 md:pt-12 relative z-10 container lg:max-w-4xl flex flex-col h-full w-full">
+          <div className="container relative z-10 flex flex-col w-full h-full pt-6 md:pt-12 lg:max-w-4xl">
             <div className="flex-1">
-              <div className="text-2xs md:text-xs uppercase text-gray-200">
+              <div className="text-gray-200 uppercase text-2xs md:text-xs">
                 {post.date}
               </div>
               <div className="h-2" />
-              <div className="font-display text-2xl text-white md:text-4xl">
+              <div className="text-2xl text-white font-display md:text-4xl">
                 {post.title}
               </div>
               <div className="h-2" />
@@ -73,17 +73,17 @@ export default function BlogPost() {
                 <div key={author.name} className="flex items-center my-2">
                   <div>
                     <img
-                      className="h-10 w-10 md:h-14 md:w-14 rounded-full"
+                      className="w-10 h-10 rounded-full md:h-14 md:w-14"
                       src={author.avatar}
                       aria-hidden="true"
                     />
                   </div>
                   <div className="w-6" />
                   <div>
-                    <div className="font-display text-base md:text-xl leading-none text-white">
+                    <div className="text-base leading-none text-white font-display md:text-xl">
                       {author.name}
                     </div>
-                    <div className="text-xs md:text-xs leading-tight text-gray-200">
+                    <div className="text-xs leading-tight text-gray-200 md:text-xs">
                       {author.bio}
                     </div>
                   </div>
