@@ -1,6 +1,10 @@
 import { RouteComponent, ActionFunction, json } from "remix";
 import { getFlyInstances } from "~/utils/get-fly-instances";
 
+if (!process.env.AUTH_TOKEN) {
+  throw new Error("AUTH_TOKEN env var is not set");
+}
+
 const action: ActionFunction = async ({ request }) => {
   // verify post request
   if (request.method !== "POST") {
