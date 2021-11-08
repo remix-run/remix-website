@@ -1,7 +1,7 @@
 import { satisfies } from "semver";
 import { installGlobals } from "@remix-run/node";
 
-import { saveDocs } from "../app/utils/docs/save-doc";
+import { saveDocs } from "../app/utils/docs/save-docs";
 import type { GitHubRelease } from "../app/@types/github";
 
 installGlobals();
