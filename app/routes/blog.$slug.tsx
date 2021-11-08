@@ -1,13 +1,14 @@
 import { json, LoaderFunction, useLoaderData } from "remix";
+
 import { getBlogPost } from "~/utils/md";
-import type { MarkdownPost } from "~/utils/md";
+import type { BlogPostWithAuthors } from "~/utils/md";
 import mdStyles from "~/styles/md.css";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
 import { CACHE_CONTROL } from "~/utils/http";
 
 export let loader: LoaderFunction = async ({ params }) => {
-  let post: MarkdownPost = await getBlogPost(`${params.slug}.md`);
+  let post = await getBlogPost(`${params.slug}.md`);
   return json(post, { headers: { "Cache-Control": CACHE_CONTROL } });
 };
 
@@ -19,7 +20,7 @@ export let meta = ({
   data,
   params,
 }: {
-  data: MarkdownPost;
+  data: BlogPostWithAuthors;
   params: { slug: string };
 }) => {
   let url = `https://remix.run/blog/${params.slug}`;
@@ -42,7 +43,7 @@ export let meta = ({
 };
 
 export default function BlogPost() {
-  let post = useLoaderData<MarkdownPost>();
+  let post = useLoaderData<BlogPostWithAuthors>();
   let mdRef = useRef<HTMLDivElement>(null);
   useDelegatedReactRouterLinks(mdRef);
 

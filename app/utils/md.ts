@@ -3,6 +3,7 @@ import path from "path";
 import { processMarkdown } from "@ryanflorence/md";
 import parseFrontMatter from "front-matter";
 import invariant from "ts-invariant";
+import { Prisma } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
@@ -37,7 +38,15 @@ export async function getMarkdown(filename: string) {
   return result;
 }
 
-export async function getBlogPost(slug: string): Promise<MarkdownPost> {
+let blogPostWithAuthors = Prisma.validator<Prisma.BlogPostArgs>()({
+  include: { authors: true },
+});
+
+export type BlogPostWithAuthors = Prisma.BlogPostGetPayload<
+  typeof blogPostWithAuthors
+>;
+
+export async function getBlogPost(slug: string): Promise<BlogPostWithAuthors> {
   let result = await prisma.blogPost.findUnique({
     where: { slug: slug },
     include: { authors: true },
@@ -51,30 +60,11 @@ export async function getBlogPost(slug: string): Promise<MarkdownPost> {
 }
 
 /**
- * Markdown frontmatter data describing a post
- */
-export interface MarkdownPost {
-  title: string;
-  date: string;
-  image: string;
-  imageAlt: string;
-  authors: Author[];
-  html: string;
-}
-
-/**
- * Markdown frontmatter author
- */
-export interface Author {
-  name: string;
-  bio: string;
-  avatar: string;
-}
-
-/**
  * Seems pretty easy to type up a markdown frontmatter wrong, so we've got this runtime check that also gives us some type safety
  */
-export function isMarkdownPostFrontmatter(obj: any): obj is MarkdownPost {
+export function isMarkdownPostFrontmatter(
+  obj: any
+): obj is BlogPostWithAuthors {
   return (
     typeof obj === "object" &&
     obj.title &&
