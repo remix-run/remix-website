@@ -1,8 +1,8 @@
 import { RouteComponent, ActionFunction, json } from "remix";
 
-import { GitHubRelease } from "~/@types/github";
-import { saveDocs } from "~/utils/docs/save-docs";
-import { saveBlogPosts } from "~/utils/save-blog-posts";
+import type { GitHubRelease } from "~/@types/github";
+import { saveDocs } from "~/utils/docs/save-docs.server";
+import { saveBlogPosts } from "~/utils/save-blog-posts.server";
 
 if (!process.env.AUTH_TOKEN) {
   throw new Error("AUTH_TOKEN env var is not set");

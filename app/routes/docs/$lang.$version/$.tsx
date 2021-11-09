@@ -3,7 +3,7 @@ import { LoaderFunction, RouteComponent } from "remix";
 
 import { json } from "remix";
 
-import { getDoc } from "~/utils/docs/get-doc";
+import { getDoc } from "~/utils/docs/get-doc.server";
 import { DocsPage } from "~/components/doc";
 
 let loader: LoaderFunction = async ({ params }) => {

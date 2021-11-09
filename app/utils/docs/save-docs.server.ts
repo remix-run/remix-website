@@ -8,7 +8,7 @@ import {
 } from "@mcansh/undoc";
 
 import { prisma } from "../../db.server";
-import { processDoc } from "./process-doc";
+import { processDoc } from "./process-doc.server";
 
 const REPO = process.env.REPO as string;
 const REPO_DOCS_PATH = process.env.REPO_DOCS_PATH as string;

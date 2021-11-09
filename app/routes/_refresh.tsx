@@ -1,5 +1,7 @@
-import { RouteComponent, ActionFunction, json } from "remix";
-import { getFlyInstances } from "~/utils/get-fly-instances";
+import type { RouteComponent, ActionFunction } from "remix";
+import { json } from "remix";
+
+import { getFlyInstances } from "~/utils/get-fly-instances.server";
 
 if (!process.env.AUTH_TOKEN) {
   throw new Error("AUTH_TOKEN env var is not set");

@@ -2,7 +2,7 @@ import { getRefFromParam } from "@mcansh/undoc";
 import invariant from "ts-invariant";
 
 import { prisma } from "~/db.server";
-import { getBranchOrTagFromRef } from "./get-tag-from-ref";
+import { getBranchOrTagFromRef } from "./get-tag-from-ref.server";
 
 invariant(process.env.REPO_LATEST_BRANCH, "REPO_LATEST_BRANCH is not set");
 

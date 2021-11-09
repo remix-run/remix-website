@@ -5,7 +5,7 @@ import type { LoaderFunction } from "remix";
 import { useLocation } from "react-router-dom";
 import cx from "clsx";
 
-import { getMenu, MenuNode } from "~/utils/docs/get-menu";
+import { getMenu, MenuNode } from "~/utils/docs/get-menu.server";
 import markdownStyles from "~/styles/docs.css";
 import { Menu } from "~/components/docs-menu";
 
