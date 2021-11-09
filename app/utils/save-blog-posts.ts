@@ -3,9 +3,12 @@ import path from "path";
 
 import { processMarkdown } from "@mcansh/undoc";
 import parseAttributes from "gray-matter";
+import yaml from "yaml";
+import { isPresent } from "ts-is-present";
+import invariant from "ts-invariant";
 
 import { prisma } from "../db.server";
-import { Author } from "@prisma/client";
+import { isAuthor } from "./md";
 
 async function getAllFiles(dirPath: string, arrayOfFiles: string[] = []) {
   let files = await fsp.readdir(dirPath, { withFileTypes: true });
@@ -26,21 +29,24 @@ async function getAllFiles(dirPath: string, arrayOfFiles: string[] = []) {
   return arrayOfFiles;
 }
 
+let DATA_DIR = path.join(process.cwd(), "data");
+let POSTS_DIR = path.join(DATA_DIR, "posts");
+let AUTHORS_DIR = path.join(DATA_DIR, "authors");
+
 async function saveBlogPosts() {
-  let files = await getAllFiles(path.join(process.cwd(), "md"));
-  let slugs = files
-    .map((file) => {
-      let localFilePath = path.relative(path.join(process.cwd(), "md"), file);
-      return localFilePath.replace(/^\/md/, "");
-    })
-    .filter((file) => file.endsWith(".md"))
-    .filter((file) => !file.startsWith("marketing"));
+  let files = await getAllFiles(POSTS_DIR);
+  let posts = files.map((file) => {
+    let localFilePath = path.relative(POSTS_DIR, file);
+    return {
+      slug: localFilePath.replace(/^\/md/, ""),
+      filePath: file,
+    };
+  });
 
   let promises = [];
 
-  for (let slug of slugs) {
-    let absoluteFilePath = path.join(process.cwd(), "md", slug);
-    let fileContents = await fsp.readFile(absoluteFilePath, "utf8");
+  for (let post of posts) {
+    let fileContents = await fsp.readFile(post.filePath, "utf8");
     let { data, content } = parseAttributes(fileContents);
 
     let postContent = content.trim();
@@ -51,17 +57,39 @@ async function saveBlogPosts() {
       { linkOriginPath: "/" }
     );
 
+    let authorPromises = [];
+
+    for (const authorName of data.authors) {
+      authorPromises.push(getAuthor(authorName));
+    }
+
+    let authorsSettled = await Promise.allSettled(authorPromises);
+
+    let authors = authorsSettled
+      .map((author) => {
+        if (author.status === "fulfilled") {
+          return author.value;
+        }
+
+        console.error(author.reason);
+        return null;
+      })
+      .filter(isPresent);
+
     promises.push(
       prisma.blogPost.upsert({
-        where: { slug: slug },
+        where: { slug: post.slug },
         update: {
           date: data.date,
           html: processed,
           image: data.image,
           imageAlt: data.imageAlt,
           md: postContent,
-          slug: slug,
+          slug: post.slug,
           title: data.title,
+          authors: {
+            set: authors.map((author) => ({ name: author.name })),
+          },
         },
         create: {
           date: data.date,
@@ -69,43 +97,27 @@ async function saveBlogPosts() {
           image: data.image,
           imageAlt: data.imageAlt,
           md: postContent,
-          slug: slug,
+          slug: post.slug,
           title: data.title,
         },
       })
     );
 
-    console.log(`> Saved blog post ${slug}`);
-
-    data.authors.map((author: Author) => {
-      promises.push(
-        prisma.author.upsert({
-          where: { name: author.name },
-          create: {
-            avatar: author.avatar,
-            name: author.name,
-            bio: author.bio,
-            posts: {
-              connect: {
-                slug: slug,
-              },
-            },
-          },
-          update: {
-            posts: {
-              connect: {
-                slug: slug,
-              },
-            },
-          },
-        })
-      );
-
-      console.log(`> Linked blog post ${slug} to author ${author.name}`);
-    });
+    console.log(`> Saved blog post ${post.slug}`);
 
     await Promise.all(promises);
   }
+}
+
+async function getAuthor(authorName: string) {
+  let authorFile = path.join(AUTHORS_DIR, `${authorName}.yaml`);
+  let authorFileContents = await fsp.readFile(authorFile, "utf8");
+  let author = yaml.parse(authorFileContents);
+  invariant(
+    isAuthor(author),
+    `Author ${authorName} is not valid. Please check the author file.`
+  );
+  return author;
 }
 
 export { saveBlogPosts };

@@ -3,9 +3,9 @@ import path from "path";
 import { processMarkdown } from "@ryanflorence/md";
 import parseFrontMatter from "front-matter";
 import invariant from "ts-invariant";
-import { Prisma } from "@prisma/client";
+import { Author, Prisma } from "@prisma/client";
 
-import { prisma } from "~/db.server";
+import { prisma } from "../db.server";
 
 // This is relative to where this code ends up in the build, not the source
 let contentPath = path.join(__dirname, "..", "md");
@@ -72,9 +72,10 @@ export function isMarkdownPostFrontmatter(
     obj.image &&
     obj.imageAlt &&
     Array.isArray(obj.authors) &&
-    obj.authors.every(
-      (author: any) =>
-        typeof author === "object" && author.name && author.bio && author.avatar
-    )
+    obj.authors.every((author: any) => isAuthor(author))
   );
+}
+
+export function isAuthor(obj: any): obj is Author {
+  return typeof obj === "object" && obj.name && obj.title && obj.avatar;
 }

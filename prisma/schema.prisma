@@ -50,7 +50,7 @@ model Doc {
 
 model Author {
   name   String     @id
-  bio    String
+  title  String
   avatar String
   posts  BlogPost[]
 }

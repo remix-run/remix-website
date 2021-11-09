@@ -35,13 +35,16 @@
     "remix": "^0.20.1",
     "semver": "^7.3.5",
     "ts-invariant": "^0.9.3",
-    "ts-node": "^10.4.0"
+    "ts-is-present": "1.2.2",
+    "ts-node": "^10.4.0",
+    "yaml": "1.10.2"
   },
   "devDependencies": {
     "@remix-run/dev": "^0.20.1",
     "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.4",
     "@types/semver": "^7.3.9",
+    "@types/yaml": "1.9.7",
     "pm2": "^5.1.2",
     "postcss": "^8.3.9",
     "postcss-cli": "^9.0.1",

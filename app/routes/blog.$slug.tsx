@@ -85,7 +85,7 @@ export default function BlogPost() {
                       {author.name}
                     </div>
                     <div className="text-xs leading-tight text-gray-200 md:text-xs">
-                      {author.bio}
+                      {author.title}
                     </div>
                   </div>
                 </div>
