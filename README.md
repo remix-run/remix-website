@@ -6,6 +6,13 @@ First setup your `.env` file, use `.env.example` to know what to set.
 
 ```sh
 npm i
+prisma migrate reset
+npm run seed
+```
+
+Now you should be good to go:
+
+```
 npm run dev
 ```
 
