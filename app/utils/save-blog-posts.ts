@@ -34,7 +34,25 @@ let POSTS_DIR = path.join(DATA_DIR, "posts");
 let AUTHORS_DIR = path.join(DATA_DIR, "authors");
 
 async function saveBlogPosts() {
+  let existingPosts = await prisma.blogPost.findMany({
+    select: { slug: true },
+  });
+
   let files = await getAllFiles(POSTS_DIR);
+
+  let deletedPosts = existingPosts.filter(
+    (post) => !files.includes(path.join(POSTS_DIR, post.slug))
+  );
+
+  let promises = [];
+
+  for (const deletedPost of deletedPosts) {
+    promises.push(
+      prisma.blogPost.delete({ where: { slug: deletedPost.slug } })
+    );
+    console.log(`> Deleted blog post ${deletedPost.slug}`);
+  }
+
   let posts = files.map((file) => {
     let localFilePath = path.relative(POSTS_DIR, file);
     return {
@@ -42,8 +60,6 @@ async function saveBlogPosts() {
       filePath: file,
     };
   });
-
-  let promises = [];
 
   for (let post of posts) {
     let fileContents = await fsp.readFile(post.filePath, "utf8");
