@@ -2,6 +2,7 @@ import { RouteComponent, ActionFunction, json } from "remix";
 
 import { GitHubRelease } from "~/@types/github";
 import { saveDocs } from "~/utils/docs/save-docs";
+import { saveBlogPosts } from "~/utils/save-blog-posts";
 
 if (!process.env.AUTH_TOKEN) {
   throw new Error("AUTH_TOKEN env var is not set");
@@ -25,11 +26,11 @@ let action: ActionFunction = async ({ request }) => {
 
   const ref = url.searchParams.get("ref");
 
-  console.log(`Refreshing docs for ${url.hostname} for ref ${ref}`);
-
   if (!ref) {
     throw new Response('missing "ref" query parameter', { status: 400 });
   }
+
+  console.log(`Refreshing docs for ${url.hostname} for ref ${ref}`);
 
   try {
     // generate docs for specified ref
@@ -46,7 +47,7 @@ let action: ActionFunction = async ({ request }) => {
 
     const release = (await releasePromise.json()) as GitHubRelease;
 
-    await saveDocs(ref, release.body);
+    await Promise.all([saveDocs(ref, release.body), saveBlogPosts()]);
 
     return json({ ok: true }, { status: 200 });
   } catch (error) {
