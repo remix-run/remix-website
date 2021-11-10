@@ -38,8 +38,9 @@
     "semver": "^7.3.5",
     "ts-invariant": "^0.9.3",
     "ts-is-present": "1.2.2",
+    "yaml": "1.10.2",
     "ts-node": "^10.4.0",
-    "yaml": "1.10.2"
+    "tween-functions": "^1.2.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^0.20.1",

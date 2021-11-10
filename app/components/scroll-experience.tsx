@@ -1,4 +1,8 @@
-import { ReactNode } from "react";
+import * as React from "react";
+import { ScrollStage, Actor, useStage, useActor } from "./stage";
+// @ts-expect-error
+import { easeInExpo, linear } from "tween-functions";
+import { formatStackTrace } from "@remix-run/node/errors";
 
 export function ScrollExperience() {
   return (
@@ -6,11 +10,50 @@ export function ScrollExperience() {
       <Intro />
       <div className="h-60" />
       <NestedRoutes />
-      <div className="h-96" />
-      <BrowserChrome url="https://example.com/sales/invoices/102000">
-        <Fakebooks />
-      </BrowserChrome>
-      <div className="h-96" />
+      <div className="h-[25vh]" />
+      <Spinnageddon />
+      <div className="h-[25vh]" />
+      <Waterfall />
+      <div className="h-[100vh]" />
+    </div>
+  );
+}
+
+function Waterfall() {
+  return (
+    <div>
+      <P2>
+        Because of nested routes, Remix can load all layout data in parallel.
+        Without this insight, you end up fetching in components with
+        render+fetch waterfalls. Look at how{" "}
+        <Em>the shape of the network requests effects the UI</Em>. Parallel
+        loading isn't just faster, it's a better user experience w/o all that
+        jank.
+      </P2>
+      <div className="md:flex md:justify-around md:gap-8 md:mx-16">
+        <div>
+          <BrowserChrome url="example.com/sales/invoices/102000">
+            <Fakebooks>
+              <Sales>
+                <Invoices>
+                  <Invoice />
+                </Invoices>
+              </Sales>
+            </Fakebooks>
+          </BrowserChrome>
+        </div>
+        <div>
+          <BrowserChrome url="example.com/sales/invoices/102000">
+            <Fakebooks>
+              <Sales>
+                <Invoices>
+                  <Invoice />
+                </Invoices>
+              </Sales>
+            </Fakebooks>
+          </BrowserChrome>
+        </div>
+      </div>
     </div>
   );
 }
@@ -20,43 +63,361 @@ function Intro() {
     <div className="p-6 md:p-10 max-w-5xl mx-auto">
       <div className="text-m-j font-display text-white md:text-d-j">
         While you were <span className="text-red-brand">waiting</span> for your
-        front-end build to finish,{" "}
-        <span className="text-blue-brand">distributed web</span> infrastructure
-        got really good. <span className="text-aqua-brand">Break through</span>{" "}
-        the static.
+        static site to build,{" "}
+        <span className="text-blue-brand">distributed web</span>{" "}
+        infra&shy;structure got really good.{" "}
+        <span className="text-pink-brand">Break through the static.</span>
       </div>
-      <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52">
+      <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 hyphen-manual">
         Remix automatically provides snappy page loads and instant transitions
-        without relying on static builds, but distributed systems. Performance
-        isn't really our goal–UX is. As you've pushed the boundaries of the web,
-        your tools haven't caught up to your appetite.{" "}
+        by leveraging distributed systems, not static builds. However, we don't
+        wear performance blinders: our end goal is UX, of which TTFB is only one
+        aspect. As you've pushed the boundaries of the web, your tools haven't
+        caught up to your appetite.{" "}
         <span className="text-white font-bold">Remix is ready</span> to serve
-        you. Check it out 👀
+        you from the initial request to the fanciest UX your designers can think
+        up. Check it out 👀
       </p>
+    </div>
+  );
+}
+
+function P1({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="px-2 md:px-6 mb-10 text-m-p-lg md:text-d-p-lg text-center max-w-xl mx-auto">
+      {children}
+    </p>
+  );
+}
+
+function P2({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="px-2 md:px-6 mb-10 text-m-p-lg md:text-d-p-lg text-center max-w-3xl mx-auto">
+      {children}
+    </p>
+  );
+}
+
+function Header({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-m-j md:text-d-h2 font-display text-center text-white mb-2 md:mb-4">
+      {children}
     </div>
   );
 }
 
 function NestedRoutes() {
   return (
-    <div className="p-6">
-      <div className="text-m-j md:text-d-h2 font-display text-center text-white">
-        Nested Routes
-      </div>
-      <div className="h-2" />
-      <p className="text-m-p-lg text-center max-w-xl mx-auto md:text-d-p-lg">
+    <div>
+      <Header>Nested Routes</Header>
+      <P2>
         Nearly every feature of Remix takes advantage of the unique insight
-        gained from Nested Routes. To understand Remix, you need to understand
-        nested routes.
-      </p>
+        gained from Nested Routes. To understand Remix, you first need to
+        understand nested routes.
+      </P2>
+      <div className="p-6">
+        <div className="h-40 md:h-20" />
+        <P2>
+          Most websites have multiple levels of navigation in layouts that
+          control a child component. We've learned these components are not only{" "}
+          <Em>coupled to URL segments</Em> but are also the semantic boundary of{" "}
+          <Em>data loading</Em> and <Em>code splitting</Em>.
+        </P2>
+        <P2>Click on the buttons to see how they're all related:</P2>
+        <div className="h-20" />
+        <div className="sticky bottom-[-10vh] md:bottom-[-20vh]">
+          <InteractiveRoutes />
+        </div>
+      </div>
+      <div className="h-20" />
+      <P2>
+        Typical web apps couple data fetching to components instead of URLs.
+        Even in frameworks with data loading and SSG abstractions, as soon as
+        you have a logged in user, a large data set, or you're just tired of
+        repeating data and layout code across the app, you bail on the
+        abstractions and fetch as you render inside of components.
+      </P2>
+      <P2>
+        Fetching inside of components creates a{" "}
+        <span className="text-aqua-brand">waterfall</span> of requests on the
+        network which makes your app artificially slower, introduces high risk
+        of content layout shift, and{" "}
+        <span className="text-red-brand">rages spinnageddon</span> on your
+        users.
+      </P2>
     </div>
   );
 }
 
-////////////////////////////////////////////////////////////////////////////////
-function Fakebooks() {
+function Spinnageddon() {
   return (
-    <div className="bg-white text-gray-600 rounded md:rounded-lg overflow-hidden flex min-h-full">
+    <ScrollStage pages={1.5}>
+      <Spinners />
+      <Actor start={0} end={SPINNER_END}>
+        <SayGoodbye />
+      </Actor>
+      <SayGoodbyeGreen />
+    </ScrollStage>
+  );
+}
+
+function Spinners() {
+  let stage = useStage();
+  let endBy = 0.5;
+  let start = (n: number) => (endBy / 20) * n;
+  return (
+    <div
+      hidden={stage.progress === 0}
+      className="fixed inset-0 overflow-hidden"
+    >
+      <Spinner
+        start={start(1)}
+        className="11 absolute bottom-[25vh] left-[8vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+      />
+      <Spinner
+        start={start(2)}
+        className="16 absolute bottom-[23vh] right-[32vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+      />
+      <Spinner
+        start={start(3)}
+        className="4 absolute top-[24vh] md:top-[16vh] left-[-4vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+      />
+      <Spinner
+        start={start(4)}
+        className="17 absolute bottom-[-5vh] md:bottom-[-4vh] right-[18vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+      />
+      <Spinner
+        start={start(5)}
+        className="13 absolute bottom-[-3vh] left-[15vw] md:left-[20vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+      />
+      <Spinner
+        start={start(6)}
+        className="7 absolute top-[20vh] md:top-[12vh] right-[-2vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+      />
+      <Spinner
+        start={start(7)}
+        className="14 absolute bottom-[16vh] left-[35vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+      />
+      <Spinner
+        start={start(8)}
+        className="20 absolute bottom-[10vh] md:bottom-[3vh] right-[-5vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+      />
+      <Spinner
+        start={start(9)}
+        className="10 absolute bottom-[37vh] md:bottom-[42vh] left-[3vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+      />
+      <Spinner
+        start={start(10)}
+        className="9 absolute top-[38vh] md:top-[50vh] right-[3vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+      />
+      <Spinner
+        start={start(11)}
+        className="19 absolute bottom-[36vh] md:bottom-[9vh] right-[10vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+      />
+      <Spinner
+        start={start(12)}
+        className="15 absolute bottom-[30vh] md:bottom-[2vh] right-[40vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+      />
+      <Spinner
+        start={start(13)}
+        className="18 absolute bottom-[25vh] right-[7vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+      />
+      <Spinner
+        start={start(14)}
+        className="6 absolute top-[8vh] right-[22vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+      />
+
+      <Spinner
+        start={start(15)}
+        className="3 absolute top-[1vh] right-[10vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+      />
+      <Spinner
+        start={start(16)}
+        className="12 absolute bottom-[12vh] md:bottom-[2vh] left-[2vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+      />
+      <Spinner
+        start={start(17)}
+        className="8 absolute top-[35vh] md:top-[25vh] left-[48vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+      />
+      <Spinner
+        start={start(18)}
+        className="5 absolute top-[20vh] md:top-[12vh] left-[35vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+      />
+      <Spinner
+        start={start(19)}
+        className="1 absolute top-[-5vh] left-[4vw] md:left-[13vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+      />
+      <Spinner
+        start={start(20)}
+        className="2 absolute top-[-1vh] right-[40vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+      />
+    </div>
+  );
+}
+
+let SPINNER_END = 0.9;
+
+function Spinner({ className, start }: { className: string; start: number }) {
+  return (
+    <Actor start={start} end={SPINNER_END}>
+      <img src="/loading.gif" className={className} />
+    </Actor>
+  );
+}
+
+function SayGoodbyeGreen() {
+  let stage = useStage();
+  return (
+    <div
+      className={
+        `sticky top-0 h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:80px] sm:leading-[80px] md:text-[length:140px] md:leading-[140px] bg-green-brand` +
+        " " +
+        (stage.progress < SPINNER_END ? "hidden" : "")
+      }
+    >
+      Say good&shy;bye to Spinnageddon
+    </div>
+  );
+}
+
+function SayGoodbye() {
+  let actor = useActor();
+  let opacity = easeInExpo(actor.progress, 0, 1, 1);
+  let scale = linear(actor.progress, 10, 1, 1);
+  return (
+    <div
+      style={{
+        opacity,
+        transform: `scale(${scale})`,
+      }}
+      className={
+        `fixed inset-0 h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:80px] sm:leading-[80px] md:text-[length:140px] md:leading-[140px]` +
+        " " +
+        (actor.progress > 0 ? "fixed inset-0" : "hidden")
+      }
+    >
+      Say good&shy;bye to Spinnageddon
+    </div>
+  );
+}
+
+function Em({ children }: { children: React.ReactNode }) {
+  return <b className="text-white">{children}</b>;
+}
+
+export let LayoutButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentPropsWithRef<"button"> & { active: boolean }
+>(({ className, active, ...props }, ref) => {
+  return (
+    <button
+      ref={ref}
+      className={
+        `font-mono font-bold py-2 px-6 m-2 text-[12px] md:text-d-p-sm leading-6 rounded-full opacity-80 ${
+          active ? "opacity-100" : ""
+        }` +
+        " " +
+        className
+      }
+      {...props}
+    />
+  );
+});
+
+function InteractiveRoutes() {
+  let [active, setActive] = React.useState(0);
+
+  return (
+    <>
+      <div className="text-center">
+        <LayoutButton
+          onClick={() => setActive(1)}
+          onMouseEnter={() => setActive(1)}
+          active={active === 1}
+          className="text-blue-brand bg-blue-900"
+        >
+          &lt;Root&gt;
+        </LayoutButton>
+        <LayoutButton
+          onClick={() => setActive(2)}
+          onMouseEnter={() => setActive(2)}
+          active={active === 2}
+          className="text-aqua-brand bg-aqua-900"
+        >
+          &lt;Sales&gt;
+        </LayoutButton>
+        <LayoutButton
+          onClick={() => setActive(3)}
+          onMouseEnter={() => setActive(3)}
+          active={active === 3}
+          className="text-yellow-brand bg-yellow-900"
+        >
+          &lt;Invoices&gt;
+        </LayoutButton>
+        <LayoutButton
+          onClick={() => setActive(4)}
+          onMouseEnter={() => setActive(4)}
+          active={active === 4}
+          className="text-red-brand bg-red-900"
+        >
+          &lt;Invoice id={"{id}"}&gt;
+        </LayoutButton>
+      </div>
+      <div className="h-4" />
+
+      <BrowserChrome
+        url={
+          {
+            0: "example.com/sales/invoices/102000",
+            1: (
+              <span>
+                <span className="text-blue-brand">example.com</span>
+                /sales/invoices/102000
+              </span>
+            ),
+            2: (
+              <span>
+                example.com/
+                <span className="text-aqua-brand">sales</span>/invoices/102000
+              </span>
+            ),
+            3: (
+              <span>
+                example.com/sales/
+                <span className="text-yellow-brand">invoices</span>/102000
+              </span>
+            ),
+            4: (
+              <span>
+                example.com/sales/invoices/
+                <span className="text-red-brand">102000</span>
+              </span>
+            ),
+          }[active || 0] as string
+        }
+      >
+        <Fakebooks highlight={active === 1}>
+          <Sales highlight={active === 2}>
+            <Invoices highlight={active === 3}>
+              <Invoice highlight={active === 4} />
+            </Invoices>
+          </Sales>
+        </Fakebooks>
+      </BrowserChrome>
+    </>
+  );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+function Fakebooks({
+  children,
+  highlight,
+}: {
+  children: React.ReactNode;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="relative bg-white text-gray-600 flex min-h-full rounded md:rounded-lg overflow-hidden">
       <div className="bg-gray-50 border-r border-gray-100">
         <div className="p-[5.7px] md:p-4">
           <div className="flex items-center text-[color:#23BF1F]">
@@ -78,16 +439,73 @@ function Fakebooks() {
           </div>
         </div>
       </div>
-      <div className="flex-1">
-        <Sales />
-      </div>
+      <div className="flex-1">{children}</div>
+      {highlight && (
+        <Highlighter className="bg-blue-brand ring-blue-brand">
+          <Resources
+            className="bg-blue-900"
+            data="/user.json"
+            mod="/root.mjs"
+          />
+        </Highlighter>
+      )}
     </div>
   );
 }
 
-function Sales() {
+function Highlighter({
+  className,
+  children,
+}: {
+  className: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="p-3 md:p-10">
+    <div
+      className={
+        "bg-opacity-30 absolute inset-0 z-10 ring-2 md:ring-4 ring-inset rounded md:rounded-lg flex items-center justify-center" +
+        " " +
+        className
+      }
+    >
+      {children}
+    </div>
+  );
+}
+
+function Resources({
+  className,
+  data,
+  mod,
+}: {
+  className: string;
+  data: string;
+  mod: string;
+}) {
+  return (
+    <div
+      className={
+        "font-mono p-2 bg-opacity-95 text-white rounded md:rounded-xl text-m-p-sm md:text-d-p-lg" +
+        " " +
+        className
+      }
+    >
+      import("{mod}")
+      <br />
+      fetch("{data}")
+    </div>
+  );
+}
+
+function Sales({
+  children,
+  highlight,
+}: {
+  children: React.ReactNode;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="relative p-3 md:p-10">
       <div className="font-display text-[length:10px] md:text-d-h3 text-black">
         Sales
       </div>
@@ -100,7 +518,16 @@ function Sales() {
         <div>Deposits</div>
       </div>
       <div className="h-3 md:h-4" />
-      <Invoices />
+      {children}
+      {highlight && (
+        <Highlighter className="bg-aqua-brand ring-aqua-brand">
+          <Resources
+            className="bg-aqua-900"
+            data="/sales/nav.json"
+            mod="/sales.mjs"
+          />
+        </Highlighter>
+      )}
     </div>
   );
 }
@@ -124,9 +551,15 @@ function InvoicesInfo({
   );
 }
 
-function Invoices() {
+function Invoices({
+  children,
+  highlight,
+}: {
+  children: React.ReactNode;
+  highlight?: boolean;
+}) {
   return (
-    <div>
+    <div className="relative">
       <div className="flex justify-between items-center gap-1 md:gap-4">
         <InvoicesInfo label="Overdue" amount="$10,800" />
         <div className="flex-1 h-[6px] md:h-4 flex rounded-full overflow-hidden">
@@ -138,7 +571,16 @@ function Invoices() {
       <div className="h-3 md:h-4" />
       <LabelText>Invoice List</LabelText>
       <div className="h-[2.8px] md:h-2" />
-      <InvoiceList />
+      <InvoiceList children={children} />
+      {highlight && (
+        <Highlighter className="bg-yellow-brand ring-yellow-brand -m-2">
+          <Resources
+            className="bg-yellow-900"
+            data="/invoices.json"
+            mod="/invoices.mjs"
+          />
+        </Highlighter>
+      )}
     </div>
   );
 }
@@ -177,7 +619,7 @@ let invoices = [
   },
 ];
 
-function InvoiceList() {
+function InvoiceList({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex rounded md:rounded-lg border border-gray-100">
       <div className="w-1/2 border-r border-gray-100">
@@ -215,9 +657,7 @@ function InvoiceList() {
           </div>
         ))}
       </div>
-      <div className="w-1/2">
-        <Invoice />
-      </div>
+      <div className="w-1/2">{children}</div>
     </div>
   );
 }
@@ -231,10 +671,10 @@ let getInvoiceDue = (invoice: typeof invoices[number]) =>
     ? "Due Today"
     : `Due in ${invoice.due} Days`;
 
-function Invoice() {
+function Invoice({ highlight }: { highlight?: boolean }) {
   let invoice = invoices[1];
   return (
-    <div className="p-3 md:p-10">
+    <div className="relative p-3 md:p-10">
       <div className="font-bold text-[length:5px] leading-[8.5px] md:text-[length:14px] md:leading-6">
         {invoice.name}
       </div>
@@ -244,8 +684,17 @@ function Invoice() {
       <LabelText>{getInvoiceDue(invoice)} • Invoiced 10/31/2000</LabelText>
       <div className="h-[5.7px] md:h-4" />
       <LineItem label="Pro Plan" amount="$6,000" />
-      <LineItem label="Customization" amount="$2,000" />
+      <LineItem label="Custom" amount="$2,000" />
       <LineItem bold label="Net Total" amount="$8,000" />
+      {highlight && (
+        <Highlighter className="bg-red-brand ring-red-brand">
+          <Resources
+            className="bg-red-900 absolute right-2 bottom-2 sm:static"
+            data="/invoice/{id}.json"
+            mod="/invoice.mjs"
+          />
+        </Highlighter>
+      )}
     </div>
   );
 }
@@ -273,7 +722,7 @@ function LineItem({
   );
 }
 
-function LabelText({ children }: { children: ReactNode }) {
+function LabelText({ children }: { children: React.ReactNode }) {
   return (
     <div className="uppercase text-gray-400 font-medium text-[length:5px] leading-[8.5px] md:text-[12px] md:leading-[24px]">
       {children}
@@ -285,7 +734,7 @@ function NavItem({
   children,
   className,
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
 }) {
   return (
@@ -323,7 +772,7 @@ function BrowserChrome({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative mx-2 md:mx-4 lg:mx-auto lg:max-w-4xl  bg-gray-700 rounded-lg">
+    <div className="relative mx-2 md:mx-4 lg:mx-auto lg:max-w-4xl  bg-gray-700 shadow-md rounded md:rounded-lg">
       <URLBar url={url} />
       <div className="px-2 pt-1 pb-2 md:px-4 md:pt-2 md:pb-4">{children}</div>
     </div>
