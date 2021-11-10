@@ -14,7 +14,9 @@
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
     "start": "remix-serve build",
     "prestart": "npm run seed",
-    "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts && node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts"
+    "db:reset": "prisma migrate reset",
+    "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts && node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts",
+    "clean:safe": "del public/build .cache build prisma/dev.db"
   },
   "dependencies": {
     "@mcansh/undoc": "0.4.0",
@@ -45,6 +47,7 @@
     "@types/react-dom": "^17.0.4",
     "@types/semver": "^7.3.9",
     "@types/yaml": "1.9.7",
+    "del-cli": "4.0.1",
     "pm2": "^5.1.2",
     "postcss": "^8.3.9",
     "postcss-cli": "^9.0.1",
