@@ -19,7 +19,16 @@ export function ScrollExperience() {
   );
 }
 
+function WaterfallHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-d-p-lg font-bold text-white text-center mb-2">
+      {children}
+    </div>
+  );
+}
+
 function Waterfall() {
+  let progress = 0.25;
   return (
     <div>
       <P2>
@@ -30,31 +39,248 @@ function Waterfall() {
         loading isn't just faster, it's a better user experience w/o all that
         jank.
       </P2>
-      <div className="md:flex md:justify-around md:gap-8 md:mx-16">
-        <div>
-          <BrowserChrome url="example.com/sales/invoices/102000">
-            <Fakebooks>
-              <Sales>
-                <Invoices>
-                  <Invoice />
-                </Invoices>
-              </Sales>
-            </Fakebooks>
-          </BrowserChrome>
+      <ScrollStage pages={2}>
+        <div className="sticky top-0">
+          <div className="h-8" />
+
+          <WaterfallHeader>Without Remix</WaterfallHeader>
+          <div className="scale-75 origin-top -mb-14">
+            <Actor start={0.52} end={0.9} persistent>
+              <WithoutRemix />
+            </Actor>
+          </div>
+
+          <WaterfallHeader>With Remix</WaterfallHeader>
+          <div className="scale-75 origin-top">
+            <Actor start={0.52} end={0.9} persistent>
+              <WithRemix />
+            </Actor>
+          </div>
         </div>
-        <div>
-          <BrowserChrome url="example.com/sales/invoices/102000">
-            <Fakebooks>
-              <Sales>
-                <Invoices>
-                  <Invoice />
-                </Invoices>
-              </Sales>
-            </Fakebooks>
-          </BrowserChrome>
+      </ScrollStage>
+    </div>
+  );
+}
+
+function JankSpinner({ className }: { className?: string }) {
+  return (
+    <div className={"h-full w-full" + " " + className}>
+      <img
+        src="/loading.gif"
+        className="h-full w-full object-contain object-top"
+      />
+    </div>
+  );
+}
+
+function WithoutRemix() {
+  let actor = useActor();
+  let progress = actor.progress * 100;
+
+  let resources: [string, number, number][] = [
+    ["document", 0, 10],
+    ["root.js", 10, 25],
+    ["user.json", 35, 10],
+    ["sales.js", 35, 21],
+    ["sales/nav.json", 56, 5],
+    ["invoices.js", 56, 10],
+    ["invoice.js", 66, 22],
+    ["invoice/{id}.json", 88, 12],
+  ];
+
+  let jank: [number, React.ReactNode][] = [
+    [10, <JankSpinner className="p-8" />],
+    [
+      35,
+      <Fakebooks className="h-[12rem]">
+        <JankSpinner className="p-12" />
+      </Fakebooks>,
+    ],
+    [
+      56,
+      <Fakebooks className="h-[12rem]">
+        <Sales shimmerNav>
+          <div className="h-[6rem]">
+            <JankSpinner className="p-8" />
+          </div>
+        </Sales>
+      </Fakebooks>,
+    ],
+    [
+      66,
+      <Fakebooks className="h-[12rem]">
+        <Sales>
+          <Invoices>
+            <JankSpinner className="p-10" />
+          </Invoices>
+        </Sales>
+      </Fakebooks>,
+    ],
+    [
+      100,
+      <Fakebooks className="h-[12rem]">
+        <Sales>
+          <Invoices>
+            <Invoice />
+          </Invoices>
+        </Sales>
+      </Fakebooks>,
+    ],
+  ];
+
+  let aboutBlank = <div className="bg-white h-full w-full" />;
+  let screen: React.ReactNode = aboutBlank;
+
+  // just practicing my interview skills in case remix tanks.
+  let i = jank.length;
+  while (i--) {
+    let [start, element] = jank[i];
+    if (progress >= start) {
+      screen = element;
+      break;
+    }
+  }
+
+  return (
+    <BrowserChrome
+      url={progress === 0 ? "about:blank" : "example.com/sales/invoices/102000"}
+    >
+      <div className="h-[12rem] bg-white">{screen}</div>
+
+      {/* <Fakebooks className="h-[12rem]">
+        <Sales>
+          <Invoices>
+            <Invoice />
+          </Invoices>
+        </Sales>
+      </Fakebooks> */}
+      <Network>
+        {resources.map(([name, start, size]) => (
+          <Resource key={name} name={name} start={start} size={size} />
+        ))}
+      </Network>
+    </BrowserChrome>
+  );
+}
+
+function WithRemix() {
+  let actor = useActor();
+  let progress = actor.progress * 100;
+
+  return (
+    <BrowserChrome
+      url={progress === 0 ? "about:blank" : "example.com/sales/invoices/102000"}
+    >
+      {progress < 27 ? (
+        <div className="bg-white h-[12rem]" />
+      ) : (
+        <Fakebooks className="h-[12rem]">
+          <Sales>
+            <Invoices>
+              <Invoice />
+            </Invoices>
+          </Sales>
+        </Fakebooks>
+      )}
+
+      <Network>
+        <Resource name="document" start={0} size={10 + 12 + 5} />
+        <Resource name="root.js" start={27} size={30} />
+        <Resource name="sales.js" start={27} size={21} />
+        <Resource name="invoices.js" start={27} size={8} />
+        <Resource name="invoice.js" start={27} size={10} />
+      </Network>
+    </BrowserChrome>
+  );
+}
+
+function Network({ children }: { children: React.ReactNode }) {
+  let actor = useActor();
+  return (
+    <div className="relative mt-4">
+      <Ticks />
+      <div className="h-4" />
+      <div>{children}</div>
+      <div className="absolute left-16 top-0 right-0 h-full">
+        <div
+          className="absolute top-0 h-full"
+          style={{
+            left: `${actor.progress * 100}%`,
+          }}
+        >
+          <ProgressHead className="w-2 -ml-1  text-blue-brand" />
+          <div className="w-[1px] relative top-[-1px] bg-blue-brand h-full" />
         </div>
       </div>
     </div>
+  );
+}
+
+function Resource({
+  name,
+  size,
+  start,
+}: {
+  name: string;
+  size: number;
+  start: number;
+}) {
+  let actor = useActor();
+  let progress = actor.progress * 100;
+  let end = start + size;
+
+  let complete = progress > end;
+  let width = complete ? size : Math.max(progress - start, 0);
+
+  return (
+    <div className="flex items-center justify-center border-b border-gray-600 last:border-b-0">
+      <div className="w-16 text-[length:8px]">{name}</div>
+      <div className="flex-1 relative">
+        <div
+          className={
+            "h-1" + " " + (complete ? "bg-green-brand" : "bg-blue-brand")
+          }
+          style={{
+            width: `${width}%`,
+            marginLeft: `${start}%`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function Ticks() {
+  let ticks = Array.from({ length: 50 }).fill(null);
+  return (
+    <div className="absolute top-0 left-16 right-0 flex justify-around">
+      {ticks.map((_, index) => (
+        <div
+          className={
+            (index + 1) % 10
+              ? "bg-gray-300 h-1 w-[1px]"
+              : "bg-gray-50 w-[1px] h-[6px]"
+          }
+          key={index}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ProgressHead({ className }: { className: string }) {
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 7 14"
+    >
+      <path
+        fill="currentColor"
+        d="M0 0h7v9.249a2 2 0 01-.495 1.316L3.5 14 .495 10.566A2 2 0 010 9.248V0z"
+      ></path>
+    </svg>
   );
 }
 
@@ -270,7 +496,7 @@ function SayGoodbyeGreen() {
   return (
     <div
       className={
-        `sticky top-0 h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:80px] sm:leading-[80px] md:text-[length:140px] md:leading-[140px] bg-green-brand` +
+        `sticky top-0 h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px] bg-green-brand` +
         " " +
         (stage.progress < SPINNER_END ? "hidden" : "")
       }
@@ -291,7 +517,7 @@ function SayGoodbye() {
         transform: `scale(${scale})`,
       }}
       className={
-        `fixed inset-0 h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:80px] sm:leading-[80px] md:text-[length:140px] md:leading-[140px]` +
+        `fixed inset-0 h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px]` +
         " " +
         (actor.progress > 0 ? "fixed inset-0" : "hidden")
       }
@@ -412,12 +638,20 @@ function InteractiveRoutes() {
 function Fakebooks({
   children,
   highlight,
+  className,
 }: {
   children: React.ReactNode;
   highlight?: boolean;
+  className?: string;
 }) {
   return (
-    <div className="relative bg-white text-gray-600 flex min-h-full rounded md:rounded-lg overflow-hidden">
+    <div
+      className={
+        "relative bg-white text-gray-600 flex rounded md:rounded-lg overflow-hidden" +
+        " " +
+        className
+      }
+    >
       <div className="bg-gray-50 border-r border-gray-100">
         <div className="p-[5.7px] md:p-4">
           <div className="flex items-center text-[color:#23BF1F]">
@@ -442,11 +676,7 @@ function Fakebooks({
       <div className="flex-1">{children}</div>
       {highlight && (
         <Highlighter className="bg-blue-brand ring-blue-brand">
-          <Resources
-            className="bg-blue-900"
-            data="/user.json"
-            mod="/root.mjs"
-          />
+          <Resources className="bg-blue-900" data="/user.json" mod="/root.js" />
         </Highlighter>
       )}
     </div>
@@ -500,9 +730,11 @@ function Resources({
 function Sales({
   children,
   highlight,
+  shimmerNav,
 }: {
   children: React.ReactNode;
   highlight?: boolean;
+  shimmerNav?: boolean;
 }) {
   return (
     <div className="relative p-3 md:p-10">
@@ -511,11 +743,27 @@ function Sales({
       </div>
       <div className="h-2 md:h-6" />
       <div className="flex gap-2 font-medium md:gap-4 text-gray-400 border-b border-gray-100 text-[length:5px] md:text-[length:14px] pb-1 md:pb-4">
-        <div>Overview</div>
-        <div>Subscriptions</div>
-        <div className="font-bold text-black">Invoices</div>
-        <div>Customers</div>
-        <div>Deposits</div>
+        {shimmerNav ? (
+          <>
+            <div className="bg-gray-300 animate-pulse w-1/3 rounded">
+              &nbsp;
+            </div>
+            <div className="bg-gray-300 animate-pulse w-1/3 rounded">
+              &nbsp;
+            </div>
+            <div className="bg-gray-300 animate-pulse w-1/3 rounded">
+              &nbsp;
+            </div>
+          </>
+        ) : (
+          <>
+            <div>Overview</div>
+            <div>Subscriptions</div>
+            <div className="font-bold text-black">Invoices</div>
+            <div>Customers</div>
+            <div>Deposits</div>
+          </>
+        )}
       </div>
       <div className="h-3 md:h-4" />
       {children}
@@ -524,7 +772,7 @@ function Sales({
           <Resources
             className="bg-aqua-900"
             data="/sales/nav.json"
-            mod="/sales.mjs"
+            mod="/sales.js"
           />
         </Highlighter>
       )}
@@ -577,7 +825,7 @@ function Invoices({
           <Resources
             className="bg-yellow-900"
             data="/invoices.json"
-            mod="/invoices.mjs"
+            mod="/invoices.js"
           />
         </Highlighter>
       )}
@@ -691,7 +939,7 @@ function Invoice({ highlight }: { highlight?: boolean }) {
           <Resources
             className="bg-red-900 absolute right-2 bottom-2 sm:static"
             data="/invoice/{id}.json"
-            mod="/invoice.mjs"
+            mod="/invoice.js"
           />
         </Highlighter>
       )}

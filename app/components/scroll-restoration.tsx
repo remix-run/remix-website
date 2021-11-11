@@ -32,7 +32,8 @@ export function ScrollRestoration() {
             if (typeof storedY === 'number') {
               window.scrollTo(0, storedY)
             }
-          } catch {
+          } catch(error) {
+            console.error(error)
             sessionStorage.removeItem(STORAGE_KEY)
           }
         `,
