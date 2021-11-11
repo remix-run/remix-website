@@ -28,7 +28,6 @@ function WaterfallHeader({ children }: { children: React.ReactNode }) {
 }
 
 function Waterfall() {
-  let progress = 0.25;
   return (
     <div>
       <P2>
@@ -39,20 +38,20 @@ function Waterfall() {
         loading isn't just faster, it's a better user experience w/o all that
         jank.
       </P2>
-      <ScrollStage pages={2}>
+      <ScrollStage pages={4}>
         <div className="sticky top-0">
           <div className="h-8" />
 
           <WaterfallHeader>Without Remix</WaterfallHeader>
           <div className="scale-75 origin-top -mb-14">
-            <Actor start={0.52} end={0.9} persistent>
+            <Actor start={0.26} end={0.95} persistent>
               <WithoutRemix />
             </Actor>
           </div>
 
           <WaterfallHeader>With Remix</WaterfallHeader>
           <div className="scale-75 origin-top">
-            <Actor start={0.52} end={0.9} persistent>
+            <Actor start={0.26} end={0.95} persistent>
               <WithRemix />
             </Actor>
           </div>
@@ -100,6 +99,16 @@ function WithoutRemix() {
       56,
       <Fakebooks className="h-[12rem]">
         <Sales shimmerNav>
+          <div className="h-[6rem]">
+            <JankSpinner className="p-8" />
+          </div>
+        </Sales>
+      </Fakebooks>,
+    ],
+    [
+      61,
+      <Fakebooks className="h-[12rem]">
+        <Sales>
           <div className="h-[6rem]">
             <JankSpinner className="p-8" />
           </div>
