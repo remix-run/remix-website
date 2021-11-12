@@ -8,7 +8,7 @@ import { isPresent } from "ts-is-present";
 import invariant from "ts-invariant";
 
 import { prisma } from "../db.server";
-import { isAuthor } from "./md";
+import { isAuthor } from "../models/post";
 
 async function getAllFiles(dirPath: string, arrayOfFiles: string[] = []) {
   let files = await fsp.readdir(dirPath, { withFileTypes: true });

@@ -1,7 +1,7 @@
 import { json, LoaderFunction, useLoaderData } from "remix";
 
-import { getBlogPost } from "~/utils/md";
-import type { BlogPostWithAuthors } from "~/utils/md";
+import { getBlogPost } from "~/models/post";
+import type { BlogPostWithAuthors } from "~/models/post";
 import mdStyles from "~/styles/md.css";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
