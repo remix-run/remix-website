@@ -23,7 +23,62 @@ export function ScrollExperience({
       <Prefetching />
       <div className="h-[75vh]" />
       <Mutations slides={markdown.mutations} />
+      <div className="mb-[-10vh]" />
+      <ErrorBoundaries />
       <div className="h-[100vh]" />
+    </div>
+  );
+}
+
+function ErrorBoundaries() {
+  return (
+    <ScrollStage pages={1}>
+      <Actor start={0.01} end={0.2}>
+        <Busted />
+      </Actor>
+      <Actor start={0.2} end={1}>
+        <div className="fixed inset-0 bg-blue-brand" />
+      </Actor>
+      <Actor start={0.2} end={2}>
+        <BlueScreen />
+      </Actor>
+    </ScrollStage>
+  );
+}
+
+function BlueScreen() {
+  return (
+    <div className="relative z-10 h-full bg-blue-brand px-6 sm:px-36 py-32 sm:py-40 text-white text-m-p-lg sm:text-d-p-lg">
+      <div className="text-d-h1 sm:text-d-j md:text-[length:120px]">:)</div>
+      <div className="my-10 sm:my-16 sm:max-w-4xl md:text-[length:30px] md:leading-[40px]">
+        Your websites run into problems, but with Remix they don’t need to be
+        refreshed. Error handling is hard to remember and hard to do. That’s why
+        it’s built in.
+      </div>
+      <div className="my-10 sm:my-16 sm:max-w-4xl md:text-[length:30px] md:leading-[40px]">
+        Errors while Server Rendering. Errors while Client Rendering. Even
+        errors in your server side data handling.
+      </div>
+      <img className="h-24 w-24" src="/qrcode.png" />
+    </div>
+  );
+}
+
+function Busted() {
+  let actor = useActor();
+  console.log("heyoooo");
+  let vals = [1, -1, 2, -2, 3, -3];
+  let ruhRuh_Random = () => vals[Math.floor(Math.random() * vals.length)];
+  return (
+    <div className="fixed inset-0">
+      <img
+        className="relative w-[110%] h-[110%]"
+        style={{
+          left: ruhRuh_Random() + "px",
+          top: ruhRuh_Random() + "px",
+        }}
+        src="/busted.jpg"
+      />
     </div>
   );
 }
