@@ -11,12 +11,20 @@ export type TweetData = {
 
 export let tweets: TweetData[] = [
   {
-    href: "https://twitter.com/meindertsmajens/status/1454393707604680711",
-    username: "meindertsmajens",
-    name: "Jens Meindertsma",
-    title: "Web Developer",
-    body: "Building with @remix_run has been awesome so far. Having used Next.js for applications for years, the nested layouts are a wonderful feature. I also haven't learned this much about the web in years.",
-    avatar: "/img/jens.jpg",
+    href: "https://twitter.com/elrickvm/status/1458918740918251524",
+    username: "elrickvm",
+    name: "Elrick Ryan",
+    title: "Fullstack Dev, Frontside",
+    body: "Remix is going to put developers on the Hot Path to build accessible, scaleable, and performant apps, that have stellar user experiences and amazing developer ergonomics. It's not only going to be a win for developers, but also a big win for the end-users!",
+    avatar: "/img/elrick.jpg",
+  },
+  {
+    href: "https://twitter.com/jkup/status/1456360115205033989",
+    username: "jkup",
+    name: "Jon Kuperman",
+    title: "Cloudflare",
+    body: "holy sh** Remix is good",
+    avatar: "/img/jkup.jpg",
   },
   {
     href: "https://twitter.com/aweary/status/1456399484473200644",
@@ -35,20 +43,20 @@ export let tweets: TweetData[] = [
     avatar: "/img/sergio.jpg",
   },
   {
-    href: "https://twitter.com/jkup/status/1456360115205033989",
-    username: "jkup",
-    name: "Jon Kuperman",
-    title: "Cloudflare",
-    body: "holy sh** Remix is good",
-    avatar: "/img/jkup.jpg",
-  },
-  {
     href: "https://twitter.com/theflyingcoder1/status/1456407168291278851",
     username: "theflyingcoder1",
     name: "Tom Rowe",
     title: "Fullstack Developer",
     body: "In my opinion @remix_run will be game changer for corporate teams hesitant to adopt full stack JavaScript. The core concepts are so intuitive you can pick it up in a day, and it will even integrate into your existing stack.",
     avatar: "/img/tom.jpg",
+  },
+  {
+    href: "https://twitter.com/meindertsmajens/status/1454393707604680711",
+    username: "meindertsmajens",
+    name: "Jens Meindertsma",
+    title: "Web Developer",
+    body: "Building with @remix_run has been awesome so far. Having used Next.js for applications for years, the nested layouts are a wonderful feature. I also haven't learned this much about the web in years.",
+    avatar: "/img/jens.jpg",
   },
   {
     href: "https://twitter.com/cammchenry/status/1447267585456812039",

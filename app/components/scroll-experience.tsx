@@ -1,27 +1,115 @@
 import * as React from "react";
 import { ScrollStage, Actor, useStage, useActor } from "./stage";
 // @ts-expect-error
-import { easeInExpo, linear } from "tween-functions";
-import { formatStackTrace } from "@remix-run/node/errors";
+import { easeOutQuad, easeInExpo, linear } from "tween-functions";
 
 export function ScrollExperience() {
   return (
     <div>
+      <img src="/wave.png" className="absolute -left-full" />
+      <img src="/loading.gif" className="absolute -left-full" />
       <Intro />
       <div className="h-60" />
       <NestedRoutes />
       <div className="h-[25vh]" />
       <Spinnageddon />
-      <div className="h-[25vh]" />
-      <Waterfall />
+      <Prefetching />
       <div className="h-[100vh]" />
+    </div>
+  );
+}
+
+function JumboP({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="px-6 text-m-j md:text-d-j text-gray-100 md:max-w-3xl font-display md:mx-auto my-[20vh]">
+      {children}
+    </div>
+  );
+}
+
+function Prefetching() {
+  return (
+    <div>
+      <JumboText>
+        Nested routes allow Remix to make your app{" "}
+        <span className="text-red-brand">as fast as instant.</span>
+      </JumboText>
+      <div className="h-[10vh]" />
+
+      <ScrollStage pages={2}>
+        <div className="h-[15vh]" />
+        <JumboP>
+          Remix can prefetch everything in parallel before the user clicks a
+          link.
+        </JumboP>
+        <JumboP>Public Data. User Data. Modules. Heck, even CSS.</JumboP>
+        <JumboP>Zero loading states. Zero skeleton UI. Zero jank.</JumboP>
+        <JumboP>
+          <span className="text-gray-500">
+            Alright, you caught us, they're just prefetch link tags,
+            #useThePlatform
+          </span>
+        </JumboP>
+        <div className="sticky bottom-[-5vh]">
+          <PrefetchBrowser />
+        </div>
+      </ScrollStage>
+    </div>
+  );
+}
+
+let moveStart = 0.65;
+let hoverStart = 0.68;
+let clickAt = 0.9;
+
+function PrefetchBrowser() {
+  return (
+    <BrowserChrome url="example.com/dashboard">
+      <Fakebooks className="h-[35vh] md:h-[45vh]">
+        <Actor start={0} end={moveStart}>
+          <Dashboard />
+        </Actor>
+        <Actor start={moveStart} end={clickAt}>
+          <Dashboard highlightOnHover />
+        </Actor>
+        <Actor start={clickAt}>
+          <Sales>
+            <Invoices>
+              <Invoice />
+            </Invoices>
+          </Sales>
+        </Actor>
+      </Fakebooks>
+
+      <Actor start={moveStart} end={clickAt - 0.2} persistent>
+        <Cursor />
+      </Actor>
+
+      <Actor start={hoverStart} end={clickAt - 0.05}>
+        <PrefetchNetwork />
+      </Actor>
+    </BrowserChrome>
+  );
+}
+
+function PrefetchNetwork() {
+  return (
+    <div className="absolute top-[35%] left-[34%] w-[50%] p-2 bg-gray-800 rounded drop-shadow-md">
+      <Network ticks={25}>
+        <Resource name="sales.js" start={0} size={44} />
+        <Resource name="sales/nav.json" start={0} size={42} />
+        <Resource name="invoices.js" start={0} size={40} />
+        <Resource name="invoice.js" start={0} size={84} />
+        <Resource name="invoice/{id}.json" start={0} size={48} />
+        <Resource name="invoice.css" start={0} size={10} />
+      </Network>
     </div>
   );
 }
 
 function WaterfallHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-d-p-lg font-bold text-white text-center mb-2">
+    <div className="text-d-p-lg lg:text-d-h3 font-bold text-white text-center mb-2 lg:mb-6">
       {children}
     </div>
   );
@@ -29,35 +117,47 @@ function WaterfallHeader({ children }: { children: React.ReactNode }) {
 
 function Waterfall() {
   return (
-    <div>
-      <P2>
-        Because of nested routes, Remix can load all layout data in parallel.
-        Without this insight, you end up fetching in components with
-        render+fetch waterfalls. Look at how{" "}
-        <Em>the shape of the network requests effects the UI</Em>. Parallel
-        loading isn't just faster, it's a better user experience w/o all that
-        jank.
-      </P2>
-      <ScrollStage pages={4}>
-        <div className="sticky top-0">
-          <div className="h-8" />
-
-          <WaterfallHeader>Without Remix</WaterfallHeader>
-          <div className="scale-75 origin-top -mb-14">
-            <Actor start={0.26} end={0.95} persistent>
+    <ScrollStage pages={4}>
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center pb-4 xl:pb-56">
+        <div className="xl:flex">
+          <div className="relative xl:-right-10">
+            <WaterfallHeader>Without Remix</WaterfallHeader>
+            <WaterfallBrowser>
               <WithoutRemix />
-            </Actor>
+            </WaterfallBrowser>
           </div>
 
-          <WaterfallHeader>With Remix</WaterfallHeader>
-          <div className="scale-75 origin-top">
-            <Actor start={0.26} end={0.95} persistent>
+          <div className="relative xl:-left-10">
+            <WaterfallHeader>With Remix</WaterfallHeader>
+            <WaterfallBrowser>
               <WithRemix />
-            </Actor>
+            </WaterfallBrowser>
           </div>
         </div>
-      </ScrollStage>
-    </div>
+      </div>
+    </ScrollStage>
+  );
+}
+
+function WaterfallBrowser({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Actor start={0.26} end={0.95} persistent>
+      <div
+        className={
+          "scale-75 origin-top sm:scale-50 xl:scale-75 xl:w-[50vw] -mb-14 sm:mb-[-18rem]" +
+          " " +
+          className
+        }
+      >
+        {children}
+      </div>
+    </Actor>
   );
 }
 
@@ -81,23 +181,23 @@ function WithoutRemix() {
     ["root.js", 10, 25],
     ["user.json", 35, 10],
     ["sales.js", 35, 21],
-    ["sales/nav.json", 56, 5],
+    ["sales/nav.json", 56, 8],
     ["invoices.js", 56, 10],
     ["invoice.js", 66, 22],
     ["invoice/{id}.json", 88, 12],
   ];
 
   let jank: [number, React.ReactNode][] = [
-    [10, <JankSpinner className="p-8" />],
+    [10, <JankSpinner className="p-8 sm:p-20" />],
     [
       35,
-      <Fakebooks className="h-[12rem]">
-        <JankSpinner className="p-12" />
+      <Fakebooks className="h-[25vh] sm:h-[38vh]">
+        <JankSpinner className="p-12 sm:p-24" />
       </Fakebooks>,
     ],
     [
       56,
-      <Fakebooks className="h-[12rem]">
+      <Fakebooks className="h-[25vh] sm:h-[38vh]">
         <Sales shimmerNav>
           <div className="h-[6rem]">
             <JankSpinner className="p-8" />
@@ -106,8 +206,8 @@ function WithoutRemix() {
       </Fakebooks>,
     ],
     [
-      61,
-      <Fakebooks className="h-[12rem]">
+      64,
+      <Fakebooks className="h-[25vh] sm:h-[38vh]">
         <Sales>
           <div className="h-[6rem]">
             <JankSpinner className="p-8" />
@@ -117,7 +217,7 @@ function WithoutRemix() {
     ],
     [
       66,
-      <Fakebooks className="h-[12rem]">
+      <Fakebooks className="h-[25vh] sm:h-[38vh]">
         <Sales>
           <Invoices>
             <JankSpinner className="p-10" />
@@ -127,7 +227,7 @@ function WithoutRemix() {
     ],
     [
       100,
-      <Fakebooks className="h-[12rem]">
+      <Fakebooks className="h-[25vh] sm:h-[38vh]">
         <Sales>
           <Invoices>
             <Invoice />
@@ -154,15 +254,8 @@ function WithoutRemix() {
     <BrowserChrome
       url={progress === 0 ? "about:blank" : "example.com/sales/invoices/102000"}
     >
-      <div className="h-[12rem] bg-white">{screen}</div>
-
-      {/* <Fakebooks className="h-[12rem]">
-        <Sales>
-          <Invoices>
-            <Invoice />
-          </Invoices>
-        </Sales>
-      </Fakebooks> */}
+      <div className="h-[25vh] sm:h-[38vh] bg-white">{screen}</div>
+      <div className="h-4" />
       <Network>
         {resources.map(([name, start, size]) => (
           <Resource key={name} name={name} start={start} size={size} />
@@ -180,10 +273,10 @@ function WithRemix() {
     <BrowserChrome
       url={progress === 0 ? "about:blank" : "example.com/sales/invoices/102000"}
     >
-      {progress < 27 ? (
-        <div className="bg-white h-[12rem]" />
+      {progress < 30 ? (
+        <div className="bg-white h-[25vh] sm:h-[38vh]" />
       ) : (
-        <Fakebooks className="h-[12rem]">
+        <Fakebooks className="h-[25vh] sm:h-[38vh]">
           <Sales>
             <Invoices>
               <Invoice />
@@ -191,26 +284,35 @@ function WithRemix() {
           </Sales>
         </Fakebooks>
       )}
-
+      <div className="h-4" />
       <Network>
-        <Resource name="document" start={0} size={10 + 12 + 5} />
-        <Resource name="root.js" start={27} size={30} />
-        <Resource name="sales.js" start={27} size={21} />
-        <Resource name="invoices.js" start={27} size={8} />
-        <Resource name="invoice.js" start={27} size={10} />
+        <Resource name="document" start={0} size={30} />
+        <Resource name="root.js" start={30} size={30} />
+        <Resource name="sales.js" start={30} size={21} />
+        <Resource name="invoices.js" start={30} size={8} />
+        <Resource name="invoice.js" start={30} size={10} />
+        <Resource name="&nbsp;" start={0} size={0} />
+        <Resource name="&nbsp;" start={0} size={0} />
+        <Resource name="&nbsp;" start={0} size={0} />
       </Network>
     </BrowserChrome>
   );
 }
 
-function Network({ children }: { children: React.ReactNode }) {
+function Network({
+  children,
+  ticks = 50,
+}: {
+  children: React.ReactNode;
+  ticks?: number;
+}) {
   let actor = useActor();
   return (
-    <div className="relative mt-4">
-      <Ticks />
+    <div className="relative">
+      <Ticks n={ticks} />
       <div className="h-4" />
       <div>{children}</div>
-      <div className="absolute left-16 top-0 right-0 h-full">
+      <div className="absolute left-16 sm:left-28 top-0 right-0 h-full">
         <div
           className="absolute top-0 h-full"
           style={{
@@ -243,11 +345,13 @@ function Resource({
 
   return (
     <div className="flex items-center justify-center border-b border-gray-600 last:border-b-0">
-      <div className="w-16 text-[length:8px]">{name}</div>
+      <div className="w-16 sm:w-28 text-[length:8px] sm:text-m-p-sm">
+        {name}
+      </div>
       <div className="flex-1 relative">
         <div
           className={
-            "h-1" + " " + (complete ? "bg-green-brand" : "bg-blue-brand")
+            "h-1 sm:h-2" + " " + (complete ? "bg-green-brand" : "bg-blue-brand")
           }
           style={{
             width: `${width}%`,
@@ -259,10 +363,10 @@ function Resource({
   );
 }
 
-function Ticks() {
-  let ticks = Array.from({ length: 50 }).fill(null);
+function Ticks({ n }: { n: number }) {
+  let ticks = Array.from({ length: n }).fill(null);
   return (
-    <div className="absolute top-0 left-16 right-0 flex justify-around">
+    <div className="absolute top-0 left-16 sm:left-28 right-0 flex justify-around">
       {ticks.map((_, index) => (
         <div
           className={
@@ -303,31 +407,53 @@ function Intro() {
         infra&shy;structure got really good.{" "}
         <span className="text-pink-brand">Break through the static.</span>
       </div>
-      <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 hyphen-manual">
-        Remix automatically provides snappy page loads and instant transitions
-        by leveraging distributed systems, not static builds. However, we don't
-        wear performance blinders: our end goal is UX, of which TTFB is only one
-        aspect. As you've pushed the boundaries of the web, your tools haven't
-        caught up to your appetite.{" "}
-        <span className="text-white font-bold">Remix is ready</span> to serve
-        you from the initial request to the fanciest UX your designers can think
-        up. Check it out 👀
+      <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
+        Remix provides snappy page loads and instant transitions by leveraging
+        distributed systems instead of static builds. However, page speed is
+        only one aspect of our true goal: <Em>better user experiences</Em>. As
+        you've pushed the boundaries of the web, your tools haven't caught up to
+        your appetite. <Em>Remix is ready</Em> to serve you from the initial
+        request to the fanciest UX your designers can think up. Check it out 👀
       </p>
     </div>
   );
 }
 
-function P1({ children }: { children: React.ReactNode }) {
+function P1({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <p className="px-2 md:px-6 mb-10 text-m-p-lg md:text-d-p-lg text-center max-w-xl mx-auto">
+    <p
+      className={
+        "px-6 text-m-p-lg md:text-d-p-lg md:px-10 md:max-w-2xl md:mx-auto md:text-center" +
+        " " +
+        className
+      }
+    >
       {children}
     </p>
   );
 }
 
-function P2({ children }: { children: React.ReactNode }) {
+function P2({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <p className="px-2 md:px-6 mb-10 text-m-p-lg md:text-d-p-lg text-center max-w-3xl mx-auto">
+    <p
+      className={
+        "px-6 mb-10 text-m-p-lg md:text-d-p-lg md:text-center max-w-3xl mx-auto" +
+        " " +
+        className
+      }
+    >
       {children}
     </p>
   );
@@ -341,45 +467,52 @@ function Header({ children }: { children: React.ReactNode }) {
   );
 }
 
+function JumboText({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-[length:48px] leading-[48px] md:text-[length:96px] md:leading-[96px] font-display text-white max-w-6xl mx-auto px-6 md:px-12">
+      {children}
+    </div>
+  );
+}
+
 function NestedRoutes() {
   return (
     <div>
       <Header>Nested Routes</Header>
       <P2>
-        Nearly every feature of Remix takes advantage of the unique insight
-        gained from Nested Routes. To understand Remix, you first need to
-        understand nested routes.
+        To understand Remix, you first need to understand nested routes.
+        Websites have levels of navigation that control child components. We've
+        learned these components are not only <Em>coupled to URL segments</Em>{" "}
+        but are also the semantic boundary of <Em>data loading</Em> and{" "}
+        <Em>code splitting</Em>.
       </P2>
+      <P2>Hover or tap the buttons to see how they're all related</P2>
       <div className="p-6">
-        <div className="h-40 md:h-20" />
-        <P2>
-          Most websites have multiple levels of navigation in layouts that
-          control a child component. We've learned these components are not only{" "}
-          <Em>coupled to URL segments</Em> but are also the semantic boundary of{" "}
-          <Em>data loading</Em> and <Em>code splitting</Em>.
-        </P2>
-        <P2>Click on the buttons to see how they're all related:</P2>
-        <div className="h-20" />
         <div className="sticky bottom-[-10vh] md:bottom-[-20vh]">
           <InteractiveRoutes />
         </div>
       </div>
-      <div className="h-20" />
+      <div className="h-[25vh]" />
+      <JumboText>
+        Through nested routes, Remix can eliminate nearly{" "}
+        <span className="text-green-brand">every loading state.</span>
+      </JumboText>
+      <div className="h-[25vh]" />
       <P2>
-        Typical web apps couple data fetching to components instead of URLs.
-        Even in frameworks with data loading and SSG abstractions, as soon as
-        you have a logged in user, a large data set, or you're just tired of
-        repeating data and layout code across the app, you bail on the
-        abstractions and fetch as you render inside of components.
-      </P2>
-      <P2>
-        Fetching inside of components creates a{" "}
-        <span className="text-aqua-brand">waterfall</span> of requests on the
-        network which makes your app artificially slower, introduces high risk
-        of content layout shift, and{" "}
+        Instead of using the URL, typical web apps couple data fetching and
+        module loading to components in the browser. This creates a{" "}
+        <span className="text-aqua-brand">waterfall of network requests</span>{" "}
+        which make your app artificially slower, introduces high risk of content
+        layout shift, and{" "}
         <span className="text-red-brand">rages spinnageddon</span> on your
         users.
       </P2>
+      <P2>
+        Remix loads data in parallel on the server and sends a fully formed HTML
+        document to your user. It's not just faster, but your users will
+        appreciate your jank-free UI.
+      </P2>
+      <Waterfall />
     </div>
   );
 }
@@ -490,13 +623,30 @@ function Spinners() {
   );
 }
 
-let SPINNER_END = 0.9;
+let SPINNER_END = 0.8;
 
 function Spinner({ className, start }: { className: string; start: number }) {
   return (
-    <Actor start={start} end={SPINNER_END}>
-      <img src="/loading.gif" className={className} />
-    </Actor>
+    <>
+      <Actor start={start} end={SPINNER_END}>
+        <img src="/loading.gif" className={className} />
+      </Actor>
+      <Actor start={SPINNER_END} end={1}>
+        <Wave className={className} />
+      </Actor>
+    </>
+  );
+}
+
+function Wave({ className }: { className: string }) {
+  let actor = useActor();
+  let opacity = easeInExpo(actor.progress, 1, 0, 1);
+  return (
+    <img
+      src="/wave.png"
+      style={{ opacity, transform: `scale(${opacity})` }}
+      className={className}
+    />
   );
 }
 
@@ -505,7 +655,7 @@ function SayGoodbyeGreen() {
   return (
     <div
       className={
-        `sticky top-0 h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px] bg-green-brand` +
+        `sticky top-0 h-screen flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px] text-white` +
         " " +
         (stage.progress < SPINNER_END ? "hidden" : "")
       }
@@ -564,6 +714,13 @@ function InteractiveRoutes() {
 
   return (
     <>
+      <P2
+        className={
+          "text-m-j lg:text-d-j" + " " + (active === 0 ? "animate-bounce" : "")
+        }
+      >
+        👇
+      </P2>
       <div className="text-center">
         <LayoutButton
           onClick={() => setActive(1)}
@@ -662,7 +819,7 @@ function Fakebooks({
       }
     >
       <div className="bg-gray-50 border-r border-gray-100">
-        <div className="p-[5.7px] md:p-4">
+        <div className="p-[5.7px] lg:p-4">
           <div className="flex items-center text-[color:#23BF1F]">
             <FakebooksLogo className="w-[8.5px] h-[8.5px] md:h-[18px] md:w-[18px] relative top-[1px]" />
             <div className="w-[1px] md:w-1" />
@@ -688,6 +845,134 @@ function Fakebooks({
           <Resources className="bg-blue-900" data="/user.json" mod="/root.js" />
         </Highlighter>
       )}
+    </div>
+  );
+}
+
+function Dashboard({ highlightOnHover }: { highlightOnHover?: boolean }) {
+  let stage = useStage();
+  return (
+    <div className="relative p-3 md:p-6">
+      <div className="font-display text-[length:10px] md:text-d-h3 text-black">
+        Dashboard
+      </div>
+      <div className="h-2 md:h-6" />
+      <div className="flex gap-2 font-medium md:gap-4 text-gray-400 border-b border-gray-100 text-[length:5px] md:text-[length:14px] pb-1 md:pb-4">
+        <div className="font-bold text-black">Recent Activity</div>
+        <div>Alerts</div>
+        <div>Messages</div>
+      </div>
+      <div className="h-3 md:h-4" />
+      <div className="flex gap-2">
+        <ActivityCard
+          title="New Invoice"
+          invoice={invoices[1]}
+          hovered={highlightOnHover && stage.progress > hoverStart}
+        />
+        <ActivityCard title="New Invoice" invoice={invoices[2]} />
+      </div>
+    </div>
+  );
+}
+
+function Cursor() {
+  let stage = useStage();
+  let actor = useActor();
+  let left = easeOutQuad(actor.progress, 5, 28, 1);
+  let top = easeOutQuad(actor.progress, 10, 40, 1);
+  let cursor = stage.progress < hoverStart ? <DefaultCursor /> : <Pointer />;
+  let clickOffset = 0.02;
+  let click =
+    stage.progress >= clickAt - clickOffset &&
+    stage.progress < clickAt + clickOffset;
+  let clickScale = linear(
+    stage.progress - clickAt + clickOffset,
+    0,
+    2,
+    clickOffset * 2
+  );
+
+  return (
+    <div>
+      <div
+        className="absolute"
+        style={{
+          top: top + "%",
+          left: left + "%",
+        }}
+      >
+        {cursor}
+        {click && (
+          <div
+            style={{
+              transform: `scale(${clickScale})`,
+            }}
+            className="absolute -top-2 -left-2 h-4 w-4 bg-red-brand rounded-full opacity-50"
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Pointer() {
+  return (
+    <svg
+      className="w-7 relative -left-2"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 28 32"
+    >
+      <path
+        fill="#fff"
+        stroke="#000"
+        strokeWidth="2"
+        d="M5.854 25.784l-4.69-9.602a1.634 1.634 0 01.729-2.167h0c.538-.277 1.002-.218 1.512.103.567.355 1.133 1.014 1.653 1.83.509.8.92 1.667 1.207 2.344a18.84 18.84 0 01.426 1.104l.004.013v.002h.003l1.948-.313V2.552c0-.868.692-1.552 1.522-1.552.83 0 1.522.684 1.522 1.552v0l.006 8.252v0h2s0 0 0 0c0-.872.774-1.637 1.6-1.637.872 0 1.606.726 1.606 1.552v2.552h2c0-.868.692-1.552 1.522-1.552.83 0 1.522.684 1.522 1.552v2.807h2c0-.868.693-1.552 1.522-1.552.83 0 1.522.684 1.522 1.552V17.471h.006L27 23.492s0 0 0 0C27 27.66 23.715 31 19.644 31h-6.726c-2.13 0-3.875-1.217-5.148-2.57a13.227 13.227 0 01-1.806-2.444 7.264 7.264 0 01-.108-.198l-.002-.004z"
+      ></path>
+    </svg>
+  );
+}
+
+function DefaultCursor() {
+  return (
+    <svg
+      className="w-7"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 23 32"
+    >
+      <path
+        fill="#fff"
+        stroke="#000"
+        strokeWidth="2"
+        d="M8.214 22.016L1 30.43V1.47l20.197 20.196H8.512l-.299.349z"
+      ></path>
+    </svg>
+  );
+}
+
+function ActivityCard({
+  invoice,
+  hovered,
+}: {
+  title: string;
+  invoice: typeof invoices[number];
+  hovered?: boolean;
+}) {
+  return (
+    <div
+      className={
+        "p-2 box-border flex-1 md:p-10 border rounded-lg border-gray-50" +
+        " " +
+        (hovered ? "bg-gray-50" : "")
+      }
+    >
+      <div className="text-center font-bold text-[length:5px] leading-[8.5px] md:text-[length:14px] md:leading-6">
+        New Invoice
+      </div>
+      <div className="h-[5.7px] md:h-4" />
+      <LineItem label="Customer" amount={invoice.name} />
+      <LineItem label="Net Total" amount={invoice.amount} />
     </div>
   );
 }
@@ -996,7 +1281,7 @@ function NavItem({
 }) {
   return (
     <div
-      className={`text-[length:7px] md:text-[length:14px] py-[1.4px] px-[2.8px] md:py-1 md:px-2 my-[1.4px] md:my-1 pr-4 md:pr-16 ${className}`}
+      className={`text-[length:7px] md:text-[length:10px] lg:text-[length:14px] py-[1.4px] px-[2.8px] md:py-1 md:px-2 my-[1.4px] md:my-1 pr-4 md:pr-16 ${className}`}
     >
       {children}
     </div>

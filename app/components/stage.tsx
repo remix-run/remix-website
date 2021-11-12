@@ -33,6 +33,7 @@ interface TScrollStageProps {
 }
 
 interface TFrame {
+  isDefault?: boolean;
   frame: number;
   progress: number;
   length: number;
@@ -40,12 +41,14 @@ interface TFrame {
 
 ////////////////////////////////////////////////////////////////////////////////
 let StageContext = createContext<TFrame>({
+  isDefault: true,
   frame: 0,
   progress: 0,
   length: 0,
 });
 
 let ActorContext = createContext<TFrame>({
+  isDefault: true,
   frame: 0,
   progress: 0,
   length: 0,
@@ -70,16 +73,18 @@ export let Actor = ({
   children,
 }: TActorProps) => {
   let stage = useContext(StageContext);
+  let actor = useActor();
+  let parent = actor.isDefault ? stage : actor;
 
-  let start = type === "progress" ? startProp * stage.length : startProp;
+  let start = type === "progress" ? startProp * parent.length : startProp;
   let end = endProp
     ? type === "progress"
-      ? endProp * stage.length
+      ? endProp * parent.length
       : endProp
-    : stage.length;
+    : parent.length;
 
   let length = end - start;
-  let frame = stage.frame - start;
+  let frame = parent.frame - start;
   let progress = Math.max(0, Math.min(frame / length, 1));
 
   let context = useMemo(() => {
@@ -89,7 +94,7 @@ export let Actor = ({
 
   let onStage = persistent
     ? true
-    : stage.frame >= start && (endProp ? stage.frame < end : true);
+    : parent.frame >= start && (endProp ? parent.frame < end : true);
 
   return onStage ? (
     <ActorContext.Provider value={context} children={children} />
