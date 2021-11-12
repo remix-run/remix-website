@@ -12,6 +12,8 @@ export function ScrollExperience() {
       <div className="h-60" />
       <NestedRoutes />
       <div className="h-[25vh]" />
+      <Waterfall />
+      <div className="h-[25vh]" />
       <Spinnageddon />
       <Prefetching />
       <div className="h-[100vh]" />
@@ -109,13 +111,13 @@ function PrefetchNetwork() {
 
 function WaterfallHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-d-p-lg lg:text-d-h3 font-bold text-white text-center mb-2 lg:mb-6">
+    <div className="font-display text-d-p-lg lg:text-d-h3 font-bold text-white text-center mb-2 lg:mb-6">
       {children}
     </div>
   );
 }
 
-function Waterfall() {
+function WaterfallComparison() {
   return (
     <ScrollStage pages={4}>
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center pb-4 xl:pb-56">
@@ -475,45 +477,56 @@ function JumboText({ children }: { children: React.ReactNode }) {
   );
 }
 
-function NestedRoutes() {
+function Waterfall() {
   return (
-    <div>
-      <Header>Nested Routes</Header>
-      <P2>
-        To understand Remix, you first need to understand nested routes.
-        Websites have levels of navigation that control child components. We've
-        learned these components are not only <Em>coupled to URL segments</Em>{" "}
-        but are also the semantic boundary of <Em>data loading</Em> and{" "}
-        <Em>code splitting</Em>.
-      </P2>
-      <P2>Hover or tap the buttons to see how they're all related</P2>
-      <div className="p-6">
-        <div className="sticky bottom-[-10vh] md:bottom-[-20vh]">
-          <InteractiveRoutes />
-        </div>
-      </div>
-      <div className="h-[25vh]" />
+    <>
       <JumboText>
         Through nested routes, Remix can eliminate nearly{" "}
         <span className="text-green-brand">every loading state.</span>
       </JumboText>
-      <div className="h-[25vh]" />
-      <P2>
-        Instead of using the URL, typical web apps couple data fetching and
-        module loading to components in the browser. This creates a{" "}
-        <span className="text-aqua-brand">waterfall of network requests</span>{" "}
-        which make your app artificially slower, introduces high risk of content
-        layout shift, and{" "}
-        <span className="text-red-brand">rages spinnageddon</span> on your
-        users.
-      </P2>
-      <P2>
+      <div className="h-[10vh]" />
+      <JumboP>
+        Most web apps fetch inside of components, creating{" "}
+        <span className="text-aqua-brand">request waterfalls</span>, slower
+        loads, and <span className="text-red-brand">jank.</span>
+      </JumboP>
+      <JumboP>
         Remix loads data in parallel on the server and sends a fully formed HTML
-        document to your user. It's not just faster, but your users will
-        appreciate your jank-free UI.
-      </P2>
-      <Waterfall />
-    </div>
+        document.{" "}
+        <span className="text-pink-brand">Way faster, jank free.</span>
+      </JumboP>
+      <WaterfallComparison />
+    </>
+  );
+}
+
+function NestedRoutes() {
+  return (
+    <>
+      <JumboText>
+        Remix has a cheat code
+        <br />
+        <span className="text-yellow-brand">Nested Routes.</span>
+        <br />
+        <span className="font-mono text-gray-800">↑↑↓↓←→←→BA</span>
+      </JumboText>
+      <div className="h-[25vh]" />
+      <div>
+        <JumboP>
+          Websites usually have levels of navigation that control child views.
+        </JumboP>
+        <JumboP>
+          Not only are these components pretty much always coupled to URL
+          segments...
+        </JumboP>
+        <JumboP>
+          ...they're also the semantic boundary of data loading and code
+          splitting.
+        </JumboP>
+        <JumboP>Hover or tap the buttons to see how they're all related</JumboP>
+        <InteractiveRoutes />
+      </div>
+    </>
   );
 }
 
@@ -714,13 +727,15 @@ function InteractiveRoutes() {
 
   return (
     <>
-      <P2
+      <div
         className={
-          "text-m-j lg:text-d-j" + " " + (active === 0 ? "animate-bounce" : "")
+          "text-m-j md:text-d-j text-center pb-2" +
+          " " +
+          (active === 0 ? "animate-bounce" : "")
         }
       >
         👇
-      </P2>
+      </div>
       <div className="text-center">
         <LayoutButton
           onClick={() => setActive(1)}
@@ -757,45 +772,47 @@ function InteractiveRoutes() {
       </div>
       <div className="h-4" />
 
-      <BrowserChrome
-        url={
-          {
-            0: "example.com/sales/invoices/102000",
-            1: (
-              <span>
-                <span className="text-blue-brand">example.com</span>
-                /sales/invoices/102000
-              </span>
-            ),
-            2: (
-              <span>
-                example.com/
-                <span className="text-aqua-brand">sales</span>/invoices/102000
-              </span>
-            ),
-            3: (
-              <span>
-                example.com/sales/
-                <span className="text-yellow-brand">invoices</span>/102000
-              </span>
-            ),
-            4: (
-              <span>
-                example.com/sales/invoices/
-                <span className="text-red-brand">102000</span>
-              </span>
-            ),
-          }[active || 0] as string
-        }
-      >
-        <Fakebooks highlight={active === 1}>
-          <Sales highlight={active === 2}>
-            <Invoices highlight={active === 3}>
-              <Invoice highlight={active === 4} />
-            </Invoices>
-          </Sales>
-        </Fakebooks>
-      </BrowserChrome>
+      <div className="sticky bottom-0 md:bottom-[-15vh]">
+        <BrowserChrome
+          url={
+            {
+              0: "example.com/sales/invoices/102000",
+              1: (
+                <span>
+                  <span className="text-blue-brand">example.com</span>
+                  /sales/invoices/102000
+                </span>
+              ),
+              2: (
+                <span>
+                  example.com/
+                  <span className="text-aqua-brand">sales</span>/invoices/102000
+                </span>
+              ),
+              3: (
+                <span>
+                  example.com/sales/
+                  <span className="text-yellow-brand">invoices</span>/102000
+                </span>
+              ),
+              4: (
+                <span>
+                  example.com/sales/invoices/
+                  <span className="text-red-brand">102000</span>
+                </span>
+              ),
+            }[active || 0] as string
+          }
+        >
+          <Fakebooks highlight={active === 1}>
+            <Sales highlight={active === 2}>
+              <Invoices highlight={active === 3}>
+                <Invoice highlight={active === 4} />
+              </Invoices>
+            </Sales>
+          </Fakebooks>
+        </BrowserChrome>
+      </div>
     </>
   );
 }
