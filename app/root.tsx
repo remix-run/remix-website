@@ -96,9 +96,7 @@ const Document: React.FC<DocumentProps> = ({
       <Body forceDark={forceDark} darkBg={darkBg}>
         <div className="flex flex-col flex-1 h-full">
           <Header forceDark={forceDark} />
-          <div className="flex flex-col flex-1 overflow-x-hidden">
-            {children}
-          </div>
+          <div className="flex flex-col flex-1">{children}</div>
           <Footer forceDark={forceDark} />
         </div>
       </Body>
