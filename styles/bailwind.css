@@ -20,3 +20,22 @@
 .__slide {
   scroll-snap-align: start;
 }
+
+.__mutation_code pre {
+  @apply h-[50vh] overflow-hidden py-2 sm:py-4 xl:h-full;
+
+  & .codeblock-line {
+    @apply block relative leading-relaxed px-2 sm:px-8;
+  }
+
+  & .codeblock-line[data-highlight="true"]::after {
+    pointer-events: none;
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: theme("colors.green.brand");
+    opacity: 0.2;
+  }
+}

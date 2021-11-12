@@ -2,8 +2,13 @@ import * as React from "react";
 import { ScrollStage, Actor, useStage, useActor } from "./stage";
 // @ts-expect-error
 import { easeOutQuad, easeInExpo, linear } from "tween-functions";
+import { Sequence, Slide } from "@ryanflorence/mdtut";
 
-export function ScrollExperience() {
+export function ScrollExperience({
+  markdown,
+}: {
+  markdown: { mutations: Sequence };
+}) {
   return (
     <div>
       <img src="/wave.png" className="absolute -left-full" />
@@ -16,7 +21,154 @@ export function ScrollExperience() {
       <div className="h-[25vh]" />
       <Spinnageddon />
       <Prefetching />
+      <div className="h-[75vh]" />
+      <Mutations slides={markdown.mutations} />
       <div className="h-[100vh]" />
+    </div>
+  );
+}
+
+function Mutations({ slides }: { slides: Sequence }) {
+  return (
+    <>
+      <div className="p-6 md:p-10 max-w-5xl mx-auto">
+        <div className="text-m-j font-display text-white md:text-d-j">
+          Data loading ...{" "}
+          <img src="/yawn.png" className="h-8 md:h-14 inline" /> You ever notice
+          most of the code in your app is for{" "}
+          <span className="text-yellow-brand">changing data?</span>
+        </div>
+        <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
+          Imagine if React only had props and no way to set state. What's the
+          point? If a web framework helps you load data but doesn't help you
+          write it, also, what's the point?! Remix doesn't drop you off at the{" "}
+          <code>&lt;form onSubmit&gt;</code> cliff.{" "}
+          <span className="text-gray-600">
+            (what the heck is <code>event.preventDefault</code> for anyway?)
+          </span>
+        </p>
+      </div>
+      <div className="h-[25vh]" />
+      <JumboText>
+        Resilient, progressively enhanced{" "}
+        <span className="text-blue-brand">data updates</span> are built in.
+      </JumboText>
+      <div className="h-[25vh]" />
+      <MutationSlides sequence={slides} />
+    </>
+  );
+}
+
+function MutationSlides({ sequence }: { sequence: Sequence }) {
+  let slideLength = 1 / 6;
+  return (
+    <ScrollStage pages={5.5}>
+      <div className="xl:flex">
+        <div className="p-max-w-lg flex-1 xl:mx-auto">
+          <div className="xl:h-[12vh]" />
+          <MutationP>
+            It’s so simple it's kind of silly. Just make a form...
+          </MutationP>
+          <MutationP>
+            ...and an action on the server. It's just a form so it even works
+            w/o JavaScript.
+          </MutationP>
+          <MutationP>
+            Remix runs the action server side, revalidates data client side, and
+            even handles race conditions from resubmissions.
+          </MutationP>
+          <MutationP>
+            Get fancy with transition hooks and make some pending UI. Remix
+            handles all the state, you simply ask for it.
+          </MutationP>
+          <MutationP>
+            Or get jiggy with some optimistic UI. Remix provides the data being
+            sent to the server so you can skip the busy spinners for mutations,
+            too.
+          </MutationP>
+          <MutationP>HTML Forms. Who knew?</MutationP>
+        </div>
+
+        <div className="bg-gray-800 sticky bottom-0 xl:bottom-auto xl:top-0 xl:flex-1 xl:self-start xl:h-screen xl:flex xl:items-center">
+          <MutationCode
+            start={0}
+            end={slideLength * 1.5}
+            slide={sequence.slides[0]}
+          />
+          <MutationCode
+            start={slideLength * 1.5}
+            end={slideLength * 2.5}
+            slide={sequence.slides[1]}
+          />
+          <Actor start={slideLength * 2.5} end={slideLength * 3.2}>
+            <MutationNetwork />
+          </Actor>
+          <MutationCode
+            start={slideLength * 3.2}
+            end={0.66}
+            slide={sequence.slides[2]}
+          />
+          <MutationCode start={0.66} end={2} slide={sequence.slides[3]} />
+        </div>
+      </div>
+    </ScrollStage>
+  );
+}
+
+function MutationNetwork() {
+  return (
+    <div className="h-[50vh] flex justify-center items-center xl:w-full">
+      <div className="w-4/5 pb-10">
+        <Network>
+          <Resource name="POST new" start={0} size={40} />
+          <Resource
+            name="GET invoices"
+            start={40}
+            size={10}
+            cancel
+            hideUntilStart
+          />
+          <Resource
+            name="GET 102000"
+            start={40}
+            size={10}
+            cancel
+            hideUntilStart
+          />
+          <Resource name="POST new" start={50} size={20} hideUntilStart />
+          <Resource name="GET invoices" start={70} size={20} hideUntilStart />
+          <Resource name="GET 102000" start={70} size={15} hideUntilStart />
+        </Network>
+      </div>
+    </div>
+  );
+}
+
+function MutationCode({
+  slide,
+  start,
+  end,
+  persistent,
+}: {
+  slide: Slide;
+  start: number;
+  end: number;
+  persistent?: boolean;
+}) {
+  return (
+    <Actor start={start} end={end} persistent={persistent}>
+      <div
+        className="__mutation_code xl:w-full text-m-p-sm sm:text-d-p-sm md:text-m-p-lg"
+        dangerouslySetInnerHTML={{ __html: slide.subject }}
+      />
+    </Actor>
+  );
+}
+
+function MutationP({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="px-6 sm:px-8 max-w-2xl text-m-j md:text-d-j text-gray-100 font-display h-[75vh] flex items-center">
+      <div>{children}</div>
     </div>
   );
 }
@@ -333,10 +485,14 @@ function Resource({
   name,
   size,
   start,
+  cancel,
+  hideUntilStart,
 }: {
   name: string;
   size: number;
   start: number;
+  cancel?: boolean;
+  hideUntilStart?: boolean;
 }) {
   let actor = useActor();
   let progress = actor.progress * 100;
@@ -347,13 +503,25 @@ function Resource({
 
   return (
     <div className="flex items-center justify-center border-b border-gray-600 last:border-b-0">
-      <div className="w-16 sm:w-28 text-[length:8px] sm:text-m-p-sm">
+      <div
+        className={
+          "w-16 sm:w-28 text-[length:8px] sm:text-m-p-sm" +
+          " " +
+          (width === 0 ? "opacity-0" : "")
+        }
+      >
         {name}
       </div>
       <div className="flex-1 relative">
         <div
           className={
-            "h-1 sm:h-2" + " " + (complete ? "bg-green-brand" : "bg-blue-brand")
+            "h-1 sm:h-2" +
+            " " +
+            (complete
+              ? cancel
+                ? "bg-red-brand"
+                : "bg-green-brand"
+              : "bg-blue-brand")
           }
           style={{
             width: `${width}%`,

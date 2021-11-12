@@ -6,6 +6,8 @@ import indexStyles from "../../styles/index.css";
 import { Red } from "~/components/gradients";
 import { BigTweet, TweetCarousel, tweets } from "~/components/twitter-cards";
 import { ScrollExperience } from "~/components/scroll-experience";
+import { Prose, Sequence } from "@ryanflorence/mdtut";
+import invariant from "ts-invariant";
 
 export function meta() {
   let url = "https://remix.run/";
@@ -33,18 +35,29 @@ export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
+type LoaderData = {
+  sample: Prose;
+  sampleSm: Prose;
+  mutations: Sequence;
+};
+
 export let loader: LoaderFunction = async () => {
-  let [sample, sampleSm] = await Promise.all([
+  let [[sample], [sampleSm], [, mutations]] = await Promise.all([
     getMarkdown("marketing/sample/sample.md"),
     getMarkdown("marketing/sample-sm/sample.md"),
+    getMarkdown("marketing/mutations/mutations.md"),
   ]);
-  return json(
-    { sample, sampleSm },
-    { headers: { "Cache-Control": "max-age=300" } }
-  );
+
+  invariant(sample.type === "prose", "sample.md should be prose");
+  invariant(sampleSm.type === "prose", "sample.md should be prose");
+  invariant(mutations.type === "sequence", "mutations.md should be a sequence");
+
+  let data: LoaderData = { sample, sampleSm, mutations };
+  return json(data, { headers: { "Cache-Control": "max-age=300" } });
 };
 
 export default function Index() {
+  let { mutations } = useLoaderData<LoaderData>();
   return (
     <div x-comp="Index">
       <div className="container md:max-w-2xl xl:max-w-7xl">
@@ -56,13 +69,13 @@ export default function Index() {
       <div className="h-10" />
       <TweetCarousel tweets={tweets.slice(1)} />
       <div className="h-32" />
-      <ScrollExperience />
+      <ScrollExperience markdown={{ mutations }} />
     </div>
   );
 }
 
 function Hero() {
-  let { sample, sampleSm } = useLoaderData();
+  let { sample, sampleSm } = useLoaderData<LoaderData>();
   return (
     <div
       x-comp="Hero"
