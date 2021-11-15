@@ -3,11 +3,12 @@ import { ScrollStage, Actor, useStage, useActor } from "./stage";
 // @ts-expect-error
 import { easeOutQuad, easeInExpo, linear } from "tween-functions";
 import { Sequence, Slide } from "@ryanflorence/mdtut";
+import { PrimaryButtonLink } from "./buttons";
 
 export function ScrollExperience({
   markdown,
 }: {
-  markdown: { mutations: Sequence };
+  markdown: { mutations: Sequence; errors: Sequence };
 }) {
   return (
     <div>
@@ -24,25 +25,147 @@ export function ScrollExperience({
       <div className="h-[75vh]" />
       <Mutations slides={markdown.mutations} />
       <div className="mb-[-10vh]" />
-      <ErrorBoundaries />
-      <div className="h-[100vh]" />
+      <ErrorBoundaries slides={markdown.errors} />
+      <DeployAnywhere />
+      <div className="h-[25vh]" />
     </div>
   );
 }
 
-function ErrorBoundaries() {
+function DeployAnywhere() {
   return (
-    <ScrollStage pages={1}>
-      <Actor start={0.01} end={0.2}>
-        <Busted />
-      </Actor>
-      <Actor start={0.2} end={1}>
-        <div className="fixed inset-0 bg-blue-brand" />
-      </Actor>
-      <Actor start={0.2} end={2}>
-        <BlueScreen />
-      </Actor>
-    </ScrollStage>
+    <div className="p-6 md:p-10 max-w-5xl mx-auto">
+      <div className="text-m-j font-display text-white md:text-d-j">
+        <span className="text-red-brand">The future is the edge.</span> Remix
+        can take you there today.
+      </div>
+      <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
+        Remix was made for the edge. The server runtime is built on the standard
+        Web Fetch API so it doesn't depend on Node.js. Remix already runs
+        natively on Cloudflare Workers, and it's ready to support anything else
+        that hits the scene. Oh right, Remix runs in serverless and traditional
+        Node.js environments, too.
+      </p>
+      <div className="h-6" />
+      <PrimaryButtonLink to="/docs">Get Started</PrimaryButtonLink>
+    </div>
+  );
+}
+
+function ErrorBoundaries({ slides }: { slides: Sequence }) {
+  return (
+    <>
+      <ScrollStage pages={1}>
+        <Actor start={0.01} end={0.2}>
+          <Busted />
+        </Actor>
+        <Actor start={0.2} end={1}>
+          <div className="fixed inset-0 bg-blue-brand" />
+        </Actor>
+        <Actor start={0.2} end={2}>
+          <BlueScreen />
+        </Actor>
+      </ScrollStage>
+      <div className="h-[33vh]" />
+      <JumboText>
+        Route Error Boundaries{" "}
+        <span className="text-yellow-brand">keep the happy path happy.</span>
+      </JumboText>
+      <div className="h-[10vh]" />
+      <ScrollStage pages={4}>
+        <div className="h-[15vh]" />
+        <JumboP>
+          Each route module can export an error boundary next to the default
+          route component.
+        </JumboP>
+        <div className="h-[25vh]" />
+        <JumboP>
+          If an error is thrown, client or server side, users see the boundary
+          instead of the default component.
+        </JumboP>
+        <JumboP>
+          Routes w/o trouble render normally, so they have more options than
+          slamming refresh.
+        </JumboP>
+        <JumboP>
+          If a route has no boundary, errors bubble up. Just put one at the top
+          and chill out about errors in code review, yeah?
+        </JumboP>
+
+        <div className="sticky bottom-[-5vh]">
+          <MutationCode start={0} end={0.25} slide={slides.slides[0]} />
+          <MutationCode start={0.25} end={0.4} slide={slides.slides[1]} />
+          <Actor start={0.4} end={0.5}>
+            <InvoiceError explode />
+          </Actor>
+          <Actor start={0.5} end={0.75}>
+            <InvoiceError />
+          </Actor>
+          <Actor start={0.75} end={2}>
+            <SalesError />
+          </Actor>
+        </div>
+      </ScrollStage>
+    </>
+  );
+}
+
+function SalesError() {
+  return (
+    <BrowserChrome url="example.com/sales/invoices/102000">
+      <Fakebooks className="h-[42vh] sm:h-[55vh]">
+        <Sales>
+          <div className="bg-red-100 absolute inset-0 flex items-center justify-center">
+            <div className="text-red-brand text-center">
+              <div className="text-[10px] sm:text-[14px] font-bold">Oops!</div>
+              <div className="text-[8px] sm:text-[12px] px-2">
+                Something busted that we didn't anticipate.
+              </div>
+            </div>
+          </div>
+        </Sales>
+      </Fakebooks>
+    </BrowserChrome>
+  );
+}
+
+function InvoiceError({ explode }: { explode?: boolean }) {
+  let actor = useActor();
+  return (
+    <BrowserChrome url="example.com/sales/invoices/102000">
+      <Fakebooks className="h-[42vh] sm:h-[55vh]">
+        <Sales>
+          <Invoices>
+            <Invoice error={explode ? actor.progress > 0.5 : true}>
+              {explode && <Explosion />}
+            </Invoice>
+          </Invoices>
+        </Sales>
+      </Fakebooks>
+    </BrowserChrome>
+  );
+}
+
+function Explosion() {
+  let actor = useActor();
+  let spriteHeight = 200;
+  let frameSpriteOrder = [
+    8, 9, 10, 11, 12, 13, 14, 15, 16, 0, 1, 2, 3, 4, 5, 6, 7,
+  ];
+  let frameProgressLength = 1 / frameSpriteOrder.length;
+  let index = Math.floor(actor.progress / frameProgressLength);
+  let activeFrame = frameSpriteOrder[index];
+  let bgOffset = activeFrame * spriteHeight;
+  return (
+    <div className="absolute z-10 inset-0 flex justify-center items-center">
+      <div
+        className="h-[188px] w-[142px] bg-no-repeat"
+        style={{
+          backgroundImage: "url(/explosion.png)",
+          backgroundPosition: `0px -${bgOffset}px`,
+        }}
+      />
+    </div>
   );
 }
 
@@ -56,8 +179,8 @@ function BlueScreen() {
         it’s built in.
       </div>
       <div className="my-10 sm:my-16 sm:max-w-4xl md:text-[length:30px] md:leading-[40px]">
-        Errors while Server Rendering. Errors while Client Rendering. Even
-        errors in your server side data handling.
+        Remix handles errors while Server Rendering. Errors while Client
+        Rendering. Even errors in your server side data handling.
       </div>
       <img className="h-24 w-24" src="/qrcode.png" />
     </div>
@@ -66,7 +189,6 @@ function BlueScreen() {
 
 function Busted() {
   let actor = useActor();
-  console.log("heyoooo");
   let vals = [1, -1, 2, -2, 3, -3];
   let ruhRuh_Random = () => vals[Math.floor(Math.random() * vals.length)];
   return (
@@ -74,8 +196,8 @@ function Busted() {
       <img
         className="relative w-[110%] h-[110%]"
         style={{
-          left: ruhRuh_Random() + "px",
-          top: ruhRuh_Random() + "px",
+          left: actor.progress === 0 ? "0" : ruhRuh_Random() + "px",
+          top: actor.progress === 0 ? "0" : ruhRuh_Random() + "px",
         }}
         src="/busted.jpg"
       />
@@ -89,17 +211,18 @@ function Mutations({ slides }: { slides: Sequence }) {
       <div className="p-6 md:p-10 max-w-5xl mx-auto">
         <div className="text-m-j font-display text-white md:text-d-j">
           Data loading ...{" "}
-          <img src="/yawn.png" className="h-8 md:h-14 inline" /> You ever notice
-          most of the code in your app is for{" "}
+          <img src="/yawn.png" className="h-8 md:h-14 inline" />
+          <br />
+          You ever notice most of the code in your app is for{" "}
           <span className="text-yellow-brand">changing data?</span>
         </div>
         <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
           Imagine if React only had props and no way to set state. What's the
           point? If a web framework helps you load data but doesn't help you
-          write it, also, what's the point?! Remix doesn't drop you off at the{" "}
+          update it, what's the point? Remix doesn't drop you off at the{" "}
           <code>&lt;form onSubmit&gt;</code> cliff.{" "}
-          <span className="text-gray-600">
-            (what the heck is <code>event.preventDefault</code> for anyway?)
+          <span className="text-gray-400">
+            (What the heck does <code>event.preventDefault</code> do anyway?)
           </span>
         </p>
       </div>
@@ -222,7 +345,7 @@ function MutationCode({
 
 function MutationP({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-6 sm:px-8 max-w-2xl text-m-j md:text-d-j text-gray-100 font-display h-[75vh] flex items-center">
+    <div className="px-6 sm:px-8 max-w-2xl sm:mx-auto text-m-j md:text-d-j text-gray-100 font-display h-[75vh] flex items-center">
       <div>{children}</div>
     </div>
   );
@@ -238,7 +361,7 @@ function JumboP({ children }: { children: React.ReactNode }) {
 
 function Prefetching() {
   return (
-    <div>
+    <>
       <JumboText>
         Nested routes allow Remix to make your app{" "}
         <span className="text-red-brand">as fast as instant.</span>
@@ -263,7 +386,7 @@ function Prefetching() {
           <PrefetchBrowser />
         </div>
       </ScrollStage>
-    </div>
+    </>
   );
 }
 
@@ -356,7 +479,7 @@ function WaterfallBrowser({
   children: React.ReactNode;
 }) {
   return (
-    <Actor start={0.26} end={0.95} persistent>
+    <Actor start={0.25} end={1} persistent>
       <div
         className={
           "scale-75 origin-top sm:scale-50 xl:scale-75 xl:w-[50vw] -mb-14 sm:mb-[-18rem]" +
@@ -370,13 +493,24 @@ function WaterfallBrowser({
   );
 }
 
-function JankSpinner({ className }: { className?: string }) {
+function JankSpinner({
+  className,
+  note,
+}: {
+  className?: string;
+  note?: boolean;
+}) {
   return (
     <div className={"h-full w-full" + " " + className}>
       <img
         src="/loading.gif"
         className="h-full w-full object-contain object-top"
       />
+      {note && (
+        <div className="text-gray-800 text-center">
+          (This is fake, keep scrolling)
+        </div>
+      )}
     </div>
   );
 }
@@ -393,11 +527,11 @@ function WithoutRemix() {
     ["sales/nav.json", 56, 8],
     ["invoices.js", 56, 10],
     ["invoice.js", 66, 22],
-    ["invoice/{id}.json", 88, 12],
+    ["invoice/{id}.json", 88, 10],
   ];
 
   let jank: [number, React.ReactNode][] = [
-    [10, <JankSpinner className="p-8 sm:p-20" />],
+    [10, <JankSpinner note className="p-8 sm:p-20" />],
     [
       35,
       <Fakebooks className="h-[25vh] sm:h-[38vh]">
@@ -435,7 +569,7 @@ function WithoutRemix() {
       </Fakebooks>,
     ],
     [
-      100,
+      98,
       <Fakebooks className="h-[25vh] sm:h-[38vh]">
         <Sales>
           <Invoices>
@@ -634,11 +768,12 @@ function Intro() {
       </div>
       <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
         Remix provides snappy page loads and instant transitions by leveraging
-        distributed systems instead of static builds. However, page speed is
-        only one aspect of our true goal: <Em>better user experiences</Em>. As
-        you've pushed the boundaries of the web, your tools haven't caught up to
-        your appetite. <Em>Remix is ready</Em> to serve you from the initial
-        request to the fanciest UX your designers can think up. Check it out 👀
+        distributed systems instead of static builds. It runs on the server, in
+        the browser, and automaties However, page speed is only one aspect of
+        our true goal: <Em>better user experiences</Em>. As you've pushed the
+        boundaries of the web, your tools haven't caught up to your appetite.{" "}
+        <Em>Remix is ready</Em> to serve you from the initial request to the
+        fanciest UX your designers can think up. Check it out 👀
       </p>
     </div>
   );
@@ -731,10 +866,10 @@ function NestedRoutes() {
         <br />
         <span className="text-yellow-brand">Nested Routes.</span>
         <br />
-        <span className="font-mono text-gray-800">↑↑↓↓←→←→BA</span>
+        <span className="font-mono text-gray-700">↑↑↓↓←→←→BA</span>
       </JumboText>
       <div className="h-[25vh]" />
-      <div>
+      <ScrollStage pages={2.75}>
         <JumboP>
           Websites usually have levels of navigation that control child views.
         </JumboP>
@@ -747,8 +882,10 @@ function NestedRoutes() {
           splitting.
         </JumboP>
         <JumboP>Hover or tap the buttons to see how they're all related</JumboP>
-        <InteractiveRoutes />
-      </div>
+        <Actor start={0.2} end={0.66} persistent>
+          <InteractiveRoutes />
+        </Actor>
+      </ScrollStage>
     </>
   );
 }
@@ -760,7 +897,7 @@ function Spinnageddon() {
       <Actor start={0} end={SPINNER_END}>
         <SayGoodbye />
       </Actor>
-      <SayGoodbyeGreen />
+      <SayGoodbyeOutro />
     </ScrollStage>
   );
 }
@@ -771,7 +908,7 @@ function Spinners() {
   let start = (n: number) => (endBy / 20) * n;
   return (
     <div
-      hidden={stage.progress === 0}
+      hidden={stage.progress === 0 || stage.progress === 1}
       className="fixed inset-0 overflow-hidden"
     >
       <Spinner
@@ -886,7 +1023,7 @@ function Wave({ className }: { className: string }) {
   );
 }
 
-function SayGoodbyeGreen() {
+function SayGoodbyeOutro() {
   let stage = useStage();
   return (
     <div
@@ -912,9 +1049,9 @@ function SayGoodbye() {
         transform: `scale(${scale})`,
       }}
       className={
-        `fixed inset-0 h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px]` +
+        `h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px]` +
         " " +
-        (actor.progress > 0 ? "fixed inset-0" : "hidden")
+        (actor.progress > 0 && actor.progress < 1 ? "fixed inset-0" : "hidden")
       }
     >
       Say good&shy;bye to Spinnageddon
@@ -947,6 +1084,12 @@ export let LayoutButton = React.forwardRef<
 
 function InteractiveRoutes() {
   let [active, setActive] = React.useState(0);
+  let actor = useActor();
+  let frameProgressLength = 1 / 5;
+  React.useEffect(() => {
+    let index = Math.floor(actor.progress / frameProgressLength);
+    setActive(actor.progress === 1 ? 0 : index);
+  }, [actor]);
 
   return (
     <>
@@ -1271,11 +1414,12 @@ function Sales({
   shimmerNav?: boolean;
 }) {
   return (
-    <div className="relative p-3 md:p-10">
+    <div className="relative p-3 md:p-10 h-full">
       <div className="font-display text-[length:10px] md:text-d-h3 text-black">
         Sales
       </div>
       <div className="h-2 md:h-6" />
+      {shimmerNav && <div className="h-4" />}
       <div className="flex gap-2 font-medium md:gap-4 text-gray-400 border-b border-gray-100 text-[length:5px] md:text-[length:14px] pb-1 md:pb-4">
         {shimmerNav ? (
           <>
@@ -1453,7 +1597,15 @@ let getInvoiceDue = (invoice: typeof invoices[number]) =>
     ? "Due Today"
     : `Due in ${invoice.due} Days`;
 
-function Invoice({ highlight }: { highlight?: boolean }) {
+function Invoice({
+  highlight,
+  error,
+  children,
+}: {
+  highlight?: boolean;
+  error?: boolean;
+  children?: React.ReactNode;
+}) {
   let invoice = invoices[1];
   return (
     <div className="relative p-3 md:p-10">
@@ -1477,6 +1629,17 @@ function Invoice({ highlight }: { highlight?: boolean }) {
           />
         </Highlighter>
       )}
+      {error && (
+        <div className="bg-red-100 absolute inset-0 flex pt-4 justify-center">
+          <div className="text-red-brand text-center">
+            <div className="text-[10px] md:text-[14px] font-bold">Oh snap!</div>
+            <div className="text-[8px] md:text-[12px] px-2">
+              There was a problem loading this invoice
+            </div>
+          </div>
+        </div>
+      )}
+      {children}
     </div>
   );
 }

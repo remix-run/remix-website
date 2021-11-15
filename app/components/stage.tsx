@@ -1,3 +1,6 @@
+// TODO: make `pages` optional and measure the div when unspecified, this will
+// allow more normal document flow and make it easier to do both mobile and
+// desktop.
 import {
   createContext,
   useCallback,

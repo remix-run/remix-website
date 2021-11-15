@@ -39,25 +39,28 @@ type LoaderData = {
   sample: Prose;
   sampleSm: Prose;
   mutations: Sequence;
+  errors: Sequence;
 };
 
 export let loader: LoaderFunction = async () => {
-  let [[sample], [sampleSm], [, mutations]] = await Promise.all([
+  let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
     getMarkdown("marketing/sample/sample.md"),
     getMarkdown("marketing/sample-sm/sample.md"),
     getMarkdown("marketing/mutations/mutations.md"),
+    getMarkdown("marketing/mutations/errors.md"),
   ]);
 
   invariant(sample.type === "prose", "sample.md should be prose");
   invariant(sampleSm.type === "prose", "sample.md should be prose");
   invariant(mutations.type === "sequence", "mutations.md should be a sequence");
+  invariant(errors.type === "sequence", "errors.md should be a sequence");
 
-  let data: LoaderData = { sample, sampleSm, mutations };
+  let data: LoaderData = { sample, sampleSm, mutations, errors };
   return json(data, { headers: { "Cache-Control": "max-age=300" } });
 };
 
 export default function Index() {
-  let { mutations } = useLoaderData<LoaderData>();
+  let { mutations, errors } = useLoaderData<LoaderData>();
   return (
     <div x-comp="Index">
       <div className="container md:max-w-2xl xl:max-w-7xl">
@@ -69,7 +72,7 @@ export default function Index() {
       <div className="h-10" />
       <TweetCarousel tweets={tweets.slice(1)} />
       <div className="h-32" />
-      <ScrollExperience markdown={{ mutations }} />
+      <ScrollExperience markdown={{ mutations, errors }} />
     </div>
   );
 }
@@ -90,9 +93,10 @@ function Hero() {
         </div>
         <div className="h-6" />
         <div className="text-sm xl:max-w-lg xl:text-base">
-          Remix let’s you focus on the user interface and work back through web
-          fundamentals to deliver a fast, slick, and resilient user experience.
-          People are gonna love using your stuff.
+          Remix is a full stack web framework that let’s you focus on the user
+          interface and work back through web fundamentals to deliver a fast,
+          slick, and resilient user experience. People are gonna love using your
+          stuff.
         </div>
         <div className="h-9 xl:h-10" />
         <div className="flex flex-col xl:flex-row gap-4">
@@ -109,7 +113,12 @@ function Hero() {
           />
         </div>
       </div>
-      <div className="p-4 -mx-6 xl:p-10 mt-6 xl:mt-0 relative xl:w-1/2 xl:h-[51rem] overflow-hidden sm:mx-auto sm:rounded-xl xl:rounded-3xl xl:overflow-visible">
+      <div
+        style={{
+          WebkitTransform: "translateZ(0)",
+        }}
+        className="p-4 -mx-6 xl:p-10 mt-6 xl:mt-0 relative xl:w-1/2 xl:h-[51rem] overflow-hidden sm:mx-auto sm:rounded-xl xl:rounded-3xl xl:overflow-visible"
+      >
         <Red className="absolute left-0 top-0 h-full xl:rounded-3xl" />
         <Sample html={sample.html} className="sm:hidden rounded-xl" />
         <Sample html={sampleSm.html} className="hidden sm:block" />

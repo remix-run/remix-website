@@ -19,7 +19,7 @@ export function ScrollRestoration() {
     <script
       dangerouslySetInnerHTML={{
         __html: `
-          if (!window.history.state.key) {
+          if (!window.history.state || !window.history.state.key) {
             window.history.replaceState({ key: Math.random().toString(32).slice(2) }, null);
           }
           window.history.scrollRestoration = 'manual'

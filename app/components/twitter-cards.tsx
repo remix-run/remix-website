@@ -11,19 +11,19 @@ export type TweetData = {
 
 export let tweets: TweetData[] = [
   {
-    href: "https://twitter.com/elrickvm/status/1458918740918251524",
-    username: "elrickvm",
-    name: "Elrick Ryan",
-    title: "Fullstack Dev, Frontside",
-    body: "Remix is going to put developers on the Hot Path to build accessible, scaleable, and performant apps, that have stellar user experiences and amazing developer ergonomics. It's not only going to be a win for developers, but also a big win for the end-users!",
-    avatar: "/img/elrick.jpg",
+    href: "https://twitter.com/jjenzz/status/1459941582912827398",
+    username: "jjenzz",
+    name: "Jenna Smith",
+    title: "Radix UI",
+    body: "I've been waiting for something to encourage progressive enhancement in the React space *forever* and Remix truly is so much more. Proving we don't need to sacrifice React or choose SSG for a lightning fast, accessible UI, and the DX makes it all too easy 🤤",
+    avatar: "/img/jenna.jpg",
   },
   {
     href: "https://twitter.com/jkup/status/1456360115205033989",
     username: "jkup",
     name: "Jon Kuperman",
     title: "Cloudflare",
-    body: "holy sh** Remix is good",
+    body: "holy 💩 Remix is good",
     avatar: "/img/jkup.jpg",
   },
   {
@@ -35,6 +35,14 @@ export let tweets: TweetData[] = [
     avatar: "/img/aweary.jpg",
   },
   {
+    href: "https://twitter.com/TAbrodi/status/1459531154533634048",
+    username: "TAbrodi",
+    name: "Tiger Abrodi",
+    title: "Software Developer",
+    body: "My mind is still blown away with Remix! So easy and elegant 😩. I love how it also focuses on Accessibility (Progressive Enhancement...) 🤯, A few days ago I was like wazzup with remix, we got Next.js and Svelte 😴 ... and now I'm fired up like crazy 😂. This is so good 🤤",
+    avatar: "/img/tiger.jpg",
+  },
+  {
     href: "https://twitter.com/sergiodxa/status/1400503400802959361",
     username: "sergiodxa",
     name: "Sergio Xalambrí",
@@ -43,12 +51,28 @@ export let tweets: TweetData[] = [
     avatar: "/img/sergio.jpg",
   },
   {
+    href: "https://twitter.com/elrickvm/status/1458918740918251524",
+    username: "elrickvm",
+    name: "Elrick Ryan",
+    title: "Fullstack Dev, Frontside",
+    body: "Remix is going to put developers on the Hot Path to build accessible, scaleable, and performant apps, that have stellar user experiences and amazing developer ergonomics. It's not only going to be a win for developers, but also a big win for the end-users!",
+    avatar: "/img/elrick.jpg",
+  },
+  {
     href: "https://twitter.com/theflyingcoder1/status/1456407168291278851",
     username: "theflyingcoder1",
     name: "Tom Rowe",
     title: "Fullstack Developer",
     body: "In my opinion @remix_run will be game changer for corporate teams hesitant to adopt full stack JavaScript. The core concepts are so intuitive you can pick it up in a day, and it will even integrate into your existing stack.",
     avatar: "/img/tom.jpg",
+  },
+  {
+    href: "https://twitter.com/wisecobbler/status/1388174702900772868",
+    username: "wisecobbler",
+    name: "Sophia Shoemaker",
+    title: "Software Engineer, Box",
+    body: "I love what @mjackson and @ryanflorence are doing with Remix! Deploying to AWS Lambda in under 30 seconds 🤯",
+    avatar: "/img/sophia.jpg",
   },
   {
     href: "https://twitter.com/meindertsmajens/status/1454393707604680711",
