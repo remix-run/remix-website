@@ -182,7 +182,7 @@
   }
 
   & a:focus {
-    @apply outline-none bg-gray-50 dark:bg-gray-900;
+    @apply outline-none bg-gray-100 dark:bg-gray-900;
   }
 
   & a:not(:hover) {
@@ -375,7 +375,7 @@
     }
 
     & .icon-link {
-      @apply flex h-full items-center text-brand align-middle;
+      @apply flex h-full items-center text-blue-brand align-middle;
     }
 
     & a .icon-link::before {
@@ -563,7 +563,7 @@
   }
 
   & docs-info {
-    @apply text-brand;
+    @apply text-blue-brand;
   }
 
   & docs-info::before {
