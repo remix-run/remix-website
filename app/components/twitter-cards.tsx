@@ -155,7 +155,7 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
 
 export function BigTweet({ tweet }: { tweet: TweetData }) {
   return (
-    <div className="max-w-xl mx-auto">
+    <div className="max-w-xl mx-auto p-6 sm:p-8">
       <div className="flex items-center justify-center gap-4 text-white">
         <div className="flex">
           <Avatar src={tweet.avatar} className="relative z-10" />

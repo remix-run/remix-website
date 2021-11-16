@@ -47,7 +47,11 @@ function DeployAnywhere() {
         Node.js environments, too.
       </p>
       <div className="h-6" />
-      <PrimaryButtonLink to="/docs">Get Started</PrimaryButtonLink>
+      <PrimaryButtonLink
+        prefetch="intent"
+        to="/docs/en/v0.20/getting-started"
+        children="Get Started"
+      />
     </div>
   );
 }

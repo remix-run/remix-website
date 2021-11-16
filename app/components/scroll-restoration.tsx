@@ -15,6 +15,18 @@ if (typeof window !== "undefined") {
 
 export function ScrollRestoration() {
   useScrollRestoration();
+
+  React.useEffect(() => {
+    window.history.scrollRestoration = "manual";
+  }, []);
+
+  useBeforeUnload(
+    React.useCallback(() => {
+      // so it restores automatically before JS hydrates
+      window.history.scrollRestoration = "auto";
+    }, [])
+  );
+
   return (
     <script
       dangerouslySetInnerHTML={{
@@ -22,8 +34,7 @@ export function ScrollRestoration() {
           if (!window.history.state || !window.history.state.key) {
             window.history.replaceState({ key: Math.random().toString(32).slice(2) }, null);
           }
-          window.history.scrollRestoration = 'manual'
-          const STORAGE_KEY = "positions";
+          let STORAGE_KEY = "positions";
           try {
             let positions = JSON.parse(sessionStorage.getItem(${JSON.stringify(
               STORAGE_KEY
@@ -56,6 +67,7 @@ function useScrollRestoration() {
     }
   }, [transition]);
 
+  // TODO: go back to using pending location
   React.useEffect(() => {
     let savePosition = () => {
       positions[location.key] = window.scrollY;
