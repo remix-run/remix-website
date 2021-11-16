@@ -772,12 +772,11 @@ function Intro() {
       </div>
       <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
         Remix provides snappy page loads and instant transitions by leveraging
-        distributed systems instead of static builds. It runs on the server, in
-        the browser, and automaties However, page speed is only one aspect of
-        our true goal: <Em>better user experiences</Em>. As you've pushed the
-        boundaries of the web, your tools haven't caught up to your appetite.{" "}
-        <Em>Remix is ready</Em> to serve you from the initial request to the
-        fanciest UX your designers can think up. Check it out 👀
+        distributed systems instead of static builds. However, page speed is
+        only one aspect of our true goal: <Em>better user experiences</Em>. As
+        you've pushed the boundaries of the web, your tools haven't caught up to
+        your appetite. <Em>Remix is ready</Em> to serve you from the initial
+        request to the fanciest UX your designers can think up. Check it out 👀
       </p>
     </div>
   );
