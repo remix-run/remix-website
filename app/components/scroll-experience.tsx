@@ -59,16 +59,16 @@ function DeployAnywhere() {
 function ErrorBoundaries({ slides }: { slides: Sequence }) {
   return (
     <>
-      <ScrollStage pages={1} fallbackLength={100} fallbackFrame={100}>
-        <Actor start={0.01} end={0.2}>
-          <Busted />
+      <ScrollStage pages={0.25}>
+        <Actor start={0.01} end={1}>
+          <Glitch />
         </Actor>
-        <Actor start={0.2} end={1}>
+      </ScrollStage>
+      <ScrollStage pages={1} fallbackLength={100} fallbackFrame={100}>
+        <Actor start={0.01} end={0.09}>
           <div className="fixed inset-0 bg-blue-brand" />
         </Actor>
-        <Actor start={0.2} end={2}>
-          <BlueScreen />
-        </Actor>
+        <BlueScreen />
       </ScrollStage>
       <div className="h-[33vh]" />
       <JumboText>
@@ -175,7 +175,7 @@ function Explosion() {
 
 function BlueScreen() {
   return (
-    <div className="relative z-10 h-full bg-blue-brand px-6 sm:px-36 py-32 sm:py-40 text-white text-m-p-lg sm:text-d-p-lg">
+    <div className="relative z-10 h-full bg-blue-brand px-6 sm:px-36 pb-32 sm:pb-40 text-white text-m-p-lg sm:text-d-p-lg">
       <div className="text-d-h1 sm:text-d-j md:text-[length:120px]">:)</div>
       <div className="my-10 sm:my-16 sm:max-w-4xl md:text-[length:30px] md:leading-[40px]">
         Your websites run into problems, but with Remix they don’t need to be
@@ -191,7 +191,7 @@ function BlueScreen() {
   );
 }
 
-function Busted() {
+function Glitch() {
   let actor = useActor();
   let vals = [1, -1, 2, -2, 3, -3];
   let ruhRuh_Random = () => vals[Math.floor(Math.random() * vals.length)];
@@ -877,7 +877,6 @@ function NestedRoutes() {
         <br />
         <span className="font-mono text-gray-700">↑↑↓↓←→←→BA</span>
       </JumboText>
-      <div className="h-[25vh]" />
       <ScrollStage pages={2.75}>
         <JumboP>
           Websites usually have levels of navigation that control child views.
@@ -895,6 +894,7 @@ function NestedRoutes() {
           <InteractiveRoutes />
         </Actor>
       </ScrollStage>
+      <div className="h-[7vh]" />
     </>
   );
 }
