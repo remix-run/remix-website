@@ -24,7 +24,10 @@ async function seed() {
     return satisfies(release.tag_name, ">=0.20", { includePrerelease: true });
   });
 
-  let promises: Promise<void>[] = [saveDocs("refs/heads/main", "")];
+  let promises: Promise<void>[] = [
+    saveDocs("refs/heads/main", ""),
+    saveDocs("refs/heads/dev", ""),
+  ];
 
   for (let release of releasesToUse) {
     promises.push(saveDocs(`refs/tags/${release.tag_name}`, release.body));
