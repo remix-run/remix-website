@@ -60,7 +60,7 @@ function HeaderLink({
       <a
         x-comp="HeaderLink"
         className={
-          "text-xs mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +
+          "text-d-p-sm mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +
           className
         }
         href={to}
@@ -73,7 +73,7 @@ function HeaderLink({
     <Link
       x-comp="HeaderLink"
       className={
-        "text-xs mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +
+        "text-d-p-sm mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +
         className
       }
       to={to}

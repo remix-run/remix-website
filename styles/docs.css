@@ -1,24 +1,46 @@
-/*
-Our markdown is parsed by a library Ryan hasn't put anywhere but his computer
-and npm (he'll get it on github soon enough).  It handles a few things that this
-stylesheet targets.
+/*****************************************************************************/
+/* syntax highlighting */
+@media (prefers-color-scheme: light) {
+  :root {
+    --base00: theme("colors.gray.50");
+    --base01: theme("colors.gray.200");
+    --base02: theme("colors.gray.300");
+    --base03: theme("colors.gray.400");
+    --base04: theme("colors.gray.500");
+    --base05: theme("colors.gray.600");
+    --base06: theme("colors.gray.700");
+    --base07: theme("colors.gray.800");
+    --base08: theme("colors.red.700");
+    --base09: theme("colors.pink.brand");
+    --base0A: theme("colors.blue.500");
+    --base0B: theme("colors.green.500");
+    --base0C: theme("colors.aqua.400");
+    --base0D: theme("colors.blue.700");
+    --base0E: theme("colors.pink.brand");
+    --base0F: theme("colors.gray.700");
+  }
+}
 
-- Syntax highlighting with the same package that vscode uses
-  - TODO: document all the fancy things you can do with code blocks
-- It adds ids and anchors to each heading
-- Builds a table of contents out of the headings in the markdown
-  - the toc links to the generated heading ids
-  - markdown files only get a a ToC if there is a "## toc" in the actual markdown
-  - it puts the toc and content as siblings:
-    ```
-    <div class="toc-container">
-      <ul class="toc"/>
-    </div>
-    <div class="md-prose">
-      <!-- actual markdown HTML -->
-    </div>
-    ```
-*/
+@media (prefers-color-scheme: dark) {
+  :root {
+    --base00: theme("colors.gray.800");
+    --base01: theme("colors.gray.700");
+    --base02: theme("colors.gray.600");
+    --base03: theme("colors.gray.500");
+    --base04: theme("colors.gray.400");
+    --base05: theme("colors.gray.300");
+    --base06: theme("colors.gray.200");
+    --base07: theme("colors.gray.100");
+    --base08: theme("colors.red.300");
+    --base09: theme("colors.pink.brand");
+    --base0A: theme("colors.blue.300");
+    --base0B: theme("colors.green.500");
+    --base0C: theme("colors.aqua.400");
+    --base0D: theme("colors.blue.500");
+    --base0E: theme("colors.yellow.400");
+    --base0F: theme("colors.gray.300");
+  }
+}
 
 /*****************************************************************************/
 /* layout */
@@ -87,56 +109,42 @@ stylesheet targets.
   @apply hidden xl:block; /* visibility */
   @apply h-full max-h-screen;
   @apply sticky top-6; /* sticky behavior */
-  /* @apply text-[color:var(--hue-0750)]; */
+  @apply text-gray-700 dark:text-gray-200;
   @apply pl-2;
   grid-area: toc;
 }
 
 .md-nav-item {
-  @apply rounded;
-  position: relative;
-  color: inherit;
-  transform: translateX(0);
+  @apply rounded relative text-[color:inherit] translate-x-0;
 }
 
 .md-nav-item::before {
-  @apply inset-0 rounded;
-  position: absolute;
+  @apply inset-0 rounded absolute bg-transparent;
   content: "";
-  background-color: transparent;
 }
 
 .md-nav-item--active {
-  @apply font-semibold;
-  color: var(--base0D);
-  padding-left: 0.25rem;
-  transform: translateX(-0.25rem);
+  @apply font-semibold text-blue-brand pl-1 -translate-x-1;
 }
 
 .md-nav-item--active::before {
-  background-color: var(--color-blue-500);
-  opacity: 0.125;
+  @apply opacity-10 bg-blue-brand;
 }
 
 .md-nav-item--level-1,
 .md-toc-title,
 /* Targets the first link, which is the page title */
 .toc > li > p > a {
-  @apply font-display text-base mb-2 font-medium tracking-wide;
-  /* leading-squeezed */
-  text-transform: uppercase;
-  display: block;
-  color: var(--hue-0750);
+  @apply block uppercase font-display text-d-p-sm mb-2 font-medium tracking-wide leading-[1.125];
+  @apply text-gray-700 dark:text-gray-200;
 
   & code {
-    text-transform: initial;
-    font-size: 85%;
+    @apply transform-none text-[length:85%];
   }
 }
 
 .toc {
-  @apply list-none py-3 px-0 rounded-lg border;
-  /* @apply border-[color:var(--hue-0100)] */
+  @apply list-none py-3 px-0 rounded-lg border border-gray-100 dark:border-gray-900;
 
   & > li > ul {
     height: 100%;
@@ -170,24 +178,23 @@ stylesheet targets.
   }
 
   & a {
-    @apply block py-1 px-5 text-base lg:text-sm relative;
+    @apply block py-1 px-5 text-d-p-sm lg:text-m-p-sm relative;
   }
 
   & a:focus {
-    @apply outline-none;
-    /* @apply bg-[color:var(--hue-0050)] */
+    @apply outline-none bg-gray-50 dark:bg-gray-900;
   }
 
   & a:not(:hover) {
-    /* @apply text-[color:inherit]; */
+    @apply text-[color:inherit];
   }
 
   & a[data-active] {
-    @apply text-blue-500;
+    @apply text-blue-brand;
   }
 
   & a[data-active]::before {
-    @apply content-[""] absolute top-0 left-0 h-full w-1 bg-blue-500;
+    @apply content-[""] absolute top-0 left-0 h-full w-1 bg-blue-brand;
   }
 
   & code {
@@ -205,9 +212,7 @@ stylesheet targets.
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   grid-area: main;
-  @apply min-w-0 flex-auto leading-normal text-base;
-  word-wrap: break-word;
-  /* @apply text-[color:var(--hue-0750)] */
+  @apply min-w-0 flex-auto leading-normal text-gray-700 dark:text-gray-300 text-d-p-sm break-words;
 
   & > :first-child {
     @apply mt-0;
@@ -229,20 +234,18 @@ stylesheet targets.
   }
 
   & .icon {
-    display: inline-block;
-    fill: currentColor;
-    vertical-align: text-bottom;
+    @apply inline-block fill-current align-text-bottom;
   }
 
   /*****************************************************************************/
   /* lists */
 
   & ol {
-    list-style: decimal;
+    @apply list-decimal;
   }
 
   & ul {
-    list-style: disc;
+    @apply list-disc;
   }
 
   & ol,
@@ -305,7 +308,7 @@ stylesheet targets.
     @apply p-0 mt-0 mb-4;
 
     & dt {
-      @apply p-0 mt-4 text-base italic font-semibold;
+      @apply p-0 mt-4 text-d-p-sm italic font-semibold;
     }
 
     & dd {
@@ -316,8 +319,7 @@ stylesheet targets.
   /*****************************************************************************/
   /* links */
   & a {
-    @apply no-underline;
-    /* @apply text-[color:var(--base0D)] */
+    @apply text-blue-brand no-underline;
   }
 
   & a:hover {
@@ -331,47 +333,29 @@ stylesheet targets.
 
   /*****************************************************************************/
   /* headings */
-
   & :is(h1, h2, h3, h4, h5, h6) {
-    @apply m-0 mt-8 mb-4;
+    @apply font-display m-0 mt-8 mb-4;
   }
 
   & h1 {
-    @apply my-10;
-    font-size: theme(fontSize.3xl);
+    @apply my-10 text-m-h2 md:text-m-h1;
   }
 
   & h2 {
-    font-size: theme(fontSize.2xl);
+    @apply text-m-h3 md:text-m-h2;
   }
 
   & h3 {
-    font-size: theme(fontSize.xl);
+    @apply text-d-p-lg lg:text-m-h2;
   }
 
   & h4 {
-    font-size: theme(fontSize.lg);
+    @apply text-m-h2;
   }
 
   & h5,
   & h6 {
-    font-size: theme(fontSize.base);
-  }
-
-  @media screen and (min-width: theme(screens.md)) {
-    & h1 {
-      font-size: theme(fontSize.5xl);
-    }
-
-    & h2 {
-      font-size: theme(fontSize.3xl);
-    }
-  }
-
-  @media screen and (min-width: theme(screens.lg)) {
-    & h3 {
-      font-size: theme(fontSize.2xl);
-    }
+    @apply text-d-p-sm;
   }
 
   /*****************************************************************************/
@@ -391,18 +375,13 @@ stylesheet targets.
     }
 
     & .icon-link {
-      @apply flex h-full items-center;
-      color: var(--base0D);
-      vertical-align: middle;
+      @apply flex h-full items-center text-brand align-middle;
     }
 
     & a .icon-link::before {
-      width: 16px;
-      height: 16px;
+      @apply w-4 h-4 inline-block invisible;
       content: " ";
-      display: inline-block;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='gray' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath fill-rule='evenodd' d='M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'%3E%3C/path%3E%3C/svg%3E");
-      visibility: hidden;
     }
 
     & a:hover .icon-link,
@@ -411,8 +390,7 @@ stylesheet targets.
     & a:hover .icon-link::before,
     & a .icon-link:hover::before,
     &:hover a .icon-link::before {
-      opacity: 1;
-      visibility: visible;
+      @apply opacity-100 visible;
     }
   }
 
@@ -433,9 +411,7 @@ stylesheet targets.
   /*****************************************************************************/
   /* images */
   & img {
-    border-style: none;
-    max-width: 100%;
-    background-color: var(--hue-0000);
+    @apply max-w-full border-0 bg-white dark:bg-black;
   }
 
   /*****************************************************************************/
@@ -445,8 +421,7 @@ stylesheet targets.
   & kbd,
   & pre {
     word-wrap: normal;
-    @apply rounded-lg border p-3 md:p-4 overflow-auto text-sm leading-none;
-    /* @apply border-[color:var(--hue-0100)] */
+    @apply rounded-lg border border-gray-100 dark:border-gray-900 p-3 md:p-4 overflow-auto text-m-p-sm leading-none;
   }
 
   & pre {
@@ -455,28 +430,17 @@ stylesheet targets.
 
   & code,
   & kbd {
-    /* @apply text-[color:var(--hue-0750)]; */
+    @apply text-gray-700 dark:text-gray-300;
   }
 
   /* TODO */
   & kbd {
-    display: inline-block;
-    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
-    line-height: 10px;
-    vertical-align: middle;
-    background-color: var(--hue-0100);
-    border: 1px solid var(--hue-0200);
-    border-radius: 3px;
-    box-shadow: inset 0 -1px 0 var(--hue-0200);
+    @apply bg-gray-100 dark:bg-gray-900 align-middle leading-[10px] font-mono inline-block border border-gray-200 dark:border-gray-800 rounded;
+    box-shadow: inset 0 -1px 0 hsl(0, 0%, 0%, 0.5);
   }
 
   & pre > code {
-    padding: 0;
-    margin: 0;
-    word-break: normal;
-    white-space: pre;
-    background: transparent;
-    border: 0;
+    @apply p-0 m-0 break-normal whitespace-pre bg-transparent border-0;
   }
 
   & .codeblock-line {
@@ -484,16 +448,15 @@ stylesheet targets.
   }
 
   & code {
-    @apply rounded py-0.5 px-1;
-    /* @apply text-[color:inherit] */
-    /* too dark! */
+    @apply rounded text-[color:inherit] py-[2px] px-1;
+    /* TODO: too dark! */
     /* background: var(--hue-0100); */
     background: hsla(210, 13%, 72%, 0.2);
   }
 
   & :is(a, h1, h2, h3, h4, h5, h6) code,
   & :is(a, h1, h2, h3, h4, h5, h6) kbd {
-    /* @apply text-[color:inherit]; */
+    @apply text-[color:inherit];
   }
 
   & :is(h1, h2, h3, h4, h5, h6) code {
@@ -525,71 +488,33 @@ stylesheet targets.
   &
     pre[data-line-numbers="true"]:not([data-lang="bash"], [data-lang="sh"])
     [data-line-number]::before {
-    padding-left: 0rem;
     content: attr(data-line-number);
-    text-align: right;
-    display: inline-block;
-    width: 2rem;
-    color: var(--hue-0300);
-    margin-right: 1.5rem;
-  }
-
-  &
-    pre[data-line-numbers="true"]:not([data-lang="bash"], [data-lang="sh"])
-    [data-line-number][data-highlight="true"]::before {
-    content: "+";
-    color: var(--base0B);
+    @apply pl-0 text-right inline-block w-8 mr-6 text-gray-300 dark:text-gray-600;
   }
 
   & pre[data-bad] {
-    border-color: var(--color-red-700);
-    @media (prefers-color-scheme: dark) {
-      border-color: var(--color-red-400);
-    }
+    @apply border-red-700 dark:border-red-400;
   }
 
   &
     pre[data-line-numbers="true"][data-bad]:not([data-lang="bash"], [data-lang="sh"])
     [data-line-number]::before {
-    color: var(--color-red-700);
-    @media (prefers-color-scheme: dark) {
-      color: var(--color-red-400);
-    }
-  }
-
-  & pre[data-bad] {
-    border-color: var(--color-red-700);
-    @media (prefers-color-scheme: dark) {
-      border-color: var(--color-red-400);
-    }
+    @apply text-red-700 dark:text-red-400;
   }
 
   & pre[data-filename]::before {
+    @apply block ml-4 pl-6 bg-no-repeat;
     content: attr(data-filename);
-    display: block;
-    margin-left: 1rem;
-    padding-left: 1.5rem;
-    padding-bottom: 1rem;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' width='16' height='16' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' /%3E%3C/svg%3E");
-    background-repeat: no-repeat;
   }
 
   & .codeblock-line[data-highlight="true"]::after {
-    pointer-events: none;
     content: " ";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: var(--base0B);
-    opacity: 0.05;
+    @apply bg-green-400 dark:bg-green-600 opacity-10 w-full top-0 left-0 absolute pointer-events-none;
   }
 
   & pre[data-bad] .codeblock-line[data-highlight="true"]::after {
-    background: var(--color-red-700);
-    @media (prefers-color-scheme: dark) {
-      background: var(--color-red-400);
-    }
+    @apply bg-red-700 dark:bg-red-400;
   }
 
   /*****************************************************************************/
@@ -598,15 +523,12 @@ stylesheet targets.
   & table {
     text-indent: 0;
     border-spacing: 0;
-    @apply block w-full text-left border-collapse overflow-auto max-w-full my-10;
-    /* @apply border-[color:inherit] */
+    @apply block w-full text-left border-collapse border-[color:inherit] overflow-auto max-w-full my-10;
   }
 
   & table th {
-    @apply sticky top-0 text-sm font-semibold bg-transparent;
-    /* @apply text-[color:var(--hue-0750)] */
-    @apply p-0 pb-1 pr-4 md:pr-6 border-0 border-b;
-    /* @apply border-[color:var(--hue-0200)] */
+    @apply sticky top-0 text-m-p-sm font-semibold text-gray-700 dark:text-gray-300 bg-transparent;
+    @apply p-0 pb-1 pr-4 md:pr-6 border-0 border-b border-gray-200 dark:border-gray-800;
   }
 
   & table tbody {
@@ -614,8 +536,7 @@ stylesheet targets.
   }
 
   & table td {
-    @apply p-0 py-2 pr-4 md:pr-6 text-sm whitespace-nowrap border-0 border-b;
-    /* @apply text-[color:var(--hue-1000)] border-[color:var(--hue-0100)] */
+    @apply p-0 py-2 pr-4 md:pr-6 text-m-p-sm text-black dark:text-white whitespace-nowrap border-0 border-b border-gray-100;
   }
 
   /*****************************************************************************/
@@ -634,43 +555,27 @@ stylesheet targets.
   }
 
   & docs-warning {
-    color: var(--color-yellow-900);
-    @media (prefers-color-scheme: dark) {
-      color: var(--color-yellow-200);
-    }
+    @apply text-yellow-900 dark:text-yellow-200;
   }
 
   & docs-warning::before {
-    background: var(--color-yellow-500);
-    opacity: 0.15;
+    @apply opacity-[0.15] bg-yellow-500;
   }
 
   & docs-info {
-    color: var(--color-blue-700);
-    @media (prefers-color-scheme: dark) {
-      color: var(--color-blue-300);
-    }
+    @apply text-brand;
   }
 
   & docs-info::before {
-    background: var(--color-blue-700);
-    @media (prefers-color-scheme: dark) {
-      background: var(--color-blue-300);
-    }
+    @apply bg-blue-brand;
   }
 
   & docs-error {
-    color: var(--color-red-700);
-    @media (prefers-color-scheme: dark) {
-      color: var(--color-red-400);
-    }
+    @apply text-red-700 dark:text-red-300;
   }
 
   & docs-error::before {
-    background: var(--color-red-700);
-    @media (prefers-color-scheme: dark) {
-      background: var(--color-red-400);
-    }
+    @apply bg-red-700 dark:bg-red-300;
   }
 
   & docs-cards {
@@ -687,8 +592,7 @@ stylesheet targets.
   }
 
   & docs-card {
-    @apply block w-full h-full rounded border shadow transition-shadow ease-out p-6;
-    /* @apply border-[color:var(--hue-0200)] */
+    @apply block w-full h-full rounded border border-gray-200 dark:border-gray-800 shadow transition-shadow ease-out p-6;
 
     & > :first-child {
       @apply mt-0;
@@ -707,8 +611,7 @@ stylesheet targets.
   /* blockquotes */
 
   & blockquote {
-    @apply mx-0 mt-0 mb-4 p-0 pl-4 border-l-4;
-    /* @apply text-[color:var(--hue-0600)] border-[color:var(--hue-0200)] */
+    @apply mx-0 mt-0 mb-4 p-0 pl-4 text-gray-600 dark:text-gray-400 border-l-4 border-gray-200 dark:border-gray-800;
   }
 
   & blockquote > :first-child {
@@ -723,7 +626,6 @@ stylesheet targets.
   /* hr */
 
   & hr {
-    @apply p-0 my-6 mx-0 h-[1px] border-0 overflow-visible;
-    /* @apply bg-[color:var(--hue-0200)] */
+    @apply p-0 my-6 mx-0 h-[1px] bg-gray-200 dark:bg-gray-800 border-0 overflow-visible;
   }
 }

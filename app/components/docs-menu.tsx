@@ -27,7 +27,7 @@ const MenuList: React.VFC<MenuListProps> = ({ nodes, level = 1 }) => {
   let linkPrefix = `/docs/${lang}/${version}`;
   let itemClassName = ({ isActive }: { isActive?: boolean } = {}) =>
     cx(
-      "md-nav-item py-1 block text-base lg:text-sm",
+      "md-nav-item py-1 block text-m-p-sm lg:text-sm",
       `md-nav-item--level-${level}`,
       {
         ["md-nav-item--active"]: isActive,

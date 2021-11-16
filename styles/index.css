@@ -16,9 +16,3 @@
   --base0E: theme("colors.pink.brand");
   --base0F: theme("colors.gray.200");
 }
-
-/* .md-prose {
-  & pre {
-    @apply ;
-  }
-} */

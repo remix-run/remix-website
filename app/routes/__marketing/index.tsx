@@ -91,7 +91,7 @@ function Hero() {
             <span className="text-yellow-brand">build better websites</span>
           </div>
           <div className="h-6" />
-          <div className="text-sm xl:pr-56 lg:text-d-p-lg">
+          <div className="text-m-p-lg xl:pr-56 lg:text-d-p-lg">
             Remix is a full stack web framework that let’s you focus on the user
             interface and work back through web fundamentals to deliver a fast,
             slick, and resilient user experience. People are gonna love using

@@ -60,11 +60,11 @@ export default function BlogPost() {
           </div>
           <div className="container relative z-10 flex flex-col w-full h-full pt-6 md:pt-12 lg:max-w-4xl">
             <div className="flex-1">
-              <div className="text-gray-200 uppercase text-2xs md:text-xs">
+              <div className="text-gray-200 uppercase text-m-p-sm md:text-d-p-sm">
                 {post.date}
               </div>
               <div className="h-2" />
-              <div className="text-2xl text-white font-display md:text-4xl">
+              <div className="text-m-h1 text-white font-display md:text-4xl">
                 {post.title}
               </div>
               <div className="h-2" />
@@ -81,10 +81,10 @@ export default function BlogPost() {
                   </div>
                   <div className="w-6" />
                   <div>
-                    <div className="text-base leading-none text-white font-display md:text-xl">
+                    <div className="text-d-p-lg leading-none text-white font-display md:text-d-h3">
                       {author.name}
                     </div>
-                    <div className="text-xs leading-tight text-gray-200 md:text-xs">
+                    <div className="text-d-p-sm leading-tight text-gray-200 md:text-d-p-sm">
                       {author.title}
                     </div>
                   </div>

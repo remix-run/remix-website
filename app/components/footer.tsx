@@ -12,7 +12,7 @@ export function Footer({
     <div
       x-comp="Footer"
       className={
-        "px-6 sm:px-8 py-9 text-xs flex justify-between items-center" +
+        "px-6 sm:px-8 py-9 text-d-p-sm flex justify-between items-center" +
         " " +
         (forceDark ? "text-white " : "text-black dark:text-white ") +
         className

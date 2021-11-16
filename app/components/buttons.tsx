@@ -18,7 +18,7 @@ export function OutlineButtonLink({
       prefetch={prefetch}
       x-comp="OutlineButtonLink"
       className={
-        "inline-flex items-center justify-center xl:text-base h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white font-semibold border-2 " +
+        "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white font-semibold border-2 " +
         className
       }
       children={children}
@@ -43,7 +43,7 @@ export function PrimaryButtonLink({
       to={to}
       prefetch={prefetch}
       className={
-        "inline-flex items-center justify-center xl:text-base h-14 xl:h-16 box-border px-8 rounded bg-blue-brand text-white font-semibold " +
+        "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 box-border px-8 rounded bg-blue-brand text-white font-semibold " +
         className
       }
       children={children}

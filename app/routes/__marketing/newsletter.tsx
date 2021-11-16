@@ -47,9 +47,9 @@ export default function Newsletter() {
     >
       <div>
         <div className="h-8" />
-        <div className="font-display text-2xl text-white">Newsletter</div>
+        <div className="font-display text-m-h1 text-white">Newsletter</div>
         <div className="h-6" />
-        <div className="text-sm" id="newsletter-text">
+        <div className="text-m-p-lg" id="newsletter-text">
           Stay up-to-date with news, announcements, and releases for our
           projects like Remix and React Router. We respect your privacy,
           unsubscribe at any time.
