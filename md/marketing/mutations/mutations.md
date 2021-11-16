@@ -53,10 +53,10 @@ export default function NewInvoice() {
 
 ---
 
-```tsx [3-8]
+```tsx [3-9]
 export default function NewInvoice() {
-  let transition = useTransition();
-  return transition.submission ? (
+  let { submission } = useTransition();
+  return submission ? (
     <Invoice
       invoice={Object.fromEntries(
         submission.formData
@@ -67,9 +67,7 @@ export default function NewInvoice() {
       <input type="text" name="company" />
       <input type="text" name="amount" />
       <button type="submit">
-        {transition.state === "submitting"
-          ? "Creating invoice..."
-          : "Create invoice"}
+        Create invoice
       </button>
     </Form>
   );

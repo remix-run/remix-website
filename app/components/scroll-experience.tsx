@@ -41,8 +41,8 @@ function DeployAnywhere() {
       </div>
       <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
         Remix was made for the edge. The server runtime is built on the standard
-        Web Fetch API so it doesn't depend on Node.js. Remix already runs
-        natively on Cloudflare Workers, and it's ready to support anything else
+        Web Fetch API so it doesn’t depend on Node.js. Remix already runs
+        natively on Cloudflare Workers, and it’s ready to support anything else
         that hits the scene. Oh right, Remix runs in serverless and traditional
         Node.js environments, too.
       </p>
@@ -59,7 +59,7 @@ function DeployAnywhere() {
 function ErrorBoundaries({ slides }: { slides: Sequence }) {
   return (
     <>
-      <ScrollStage pages={1}>
+      <ScrollStage pages={1} fallbackLength={100} fallbackFrame={100}>
         <Actor start={0.01} end={0.2}>
           <Busted />
         </Actor>
@@ -76,7 +76,7 @@ function ErrorBoundaries({ slides }: { slides: Sequence }) {
         <span className="text-yellow-brand">keep the happy path happy.</span>
       </JumboText>
       <div className="h-[10vh]" />
-      <ScrollStage pages={4}>
+      <ScrollStage pages={4} fallbackLength={100} fallbackFrame={46}>
         <div className="h-[15vh]" />
         <JumboP>
           Each route module can export an error boundary next to the default
@@ -88,7 +88,7 @@ function ErrorBoundaries({ slides }: { slides: Sequence }) {
           instead of the default component.
         </JumboP>
         <JumboP>
-          Routes w/o trouble render normally, so they have more options than
+          Routes w/o trouble render normally, so users have more options than
           slamming refresh.
         </JumboP>
         <JumboP>
@@ -123,7 +123,7 @@ function SalesError() {
             <div className="text-red-brand text-center">
               <div className="text-[10px] sm:text-[14px] font-bold">Oops!</div>
               <div className="text-[8px] sm:text-[12px] px-2">
-                Something busted that we didn't anticipate.
+                Something busted that we didn’t anticipate.
               </div>
             </div>
           </div>
@@ -221,9 +221,9 @@ function Mutations({ slides }: { slides: Sequence }) {
           <span className="text-yellow-brand">changing data?</span>
         </div>
         <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
-          Imagine if React only had props and no way to set state. What's the
-          point? If a web framework helps you load data but doesn't help you
-          update it, what's the point? Remix doesn't drop you off at the{" "}
+          Imagine if React only had props and no way to set state. What’s the
+          point? If a web framework helps you load data but doesn’t help you
+          update it, what’s the point? Remix doesn’t drop you off at the{" "}
           <code>&lt;form onSubmit&gt;</code> cliff.{" "}
           <span className="text-gray-400">
             (What the heck does <code>event.preventDefault</code> do anyway?)
@@ -244,16 +244,16 @@ function Mutations({ slides }: { slides: Sequence }) {
 function MutationSlides({ sequence }: { sequence: Sequence }) {
   let slideLength = 1 / 6;
   return (
-    <ScrollStage pages={5.5}>
+    <ScrollStage pages={5.5} fallbackLength={100} fallbackFrame={25}>
       <div className="xl:flex">
         <div className="p-max-w-lg flex-1 xl:mx-auto">
           <div className="xl:h-[12vh]" />
           <MutationP>
-            It’s so simple it's kind of silly. Just make a form...
+            It’s so simple it’s kind of silly. Just make a form...
           </MutationP>
           <MutationP>
-            ...and an action on the server. It's just a form so it even works
-            w/o JavaScript.
+            ...and an action on the server. The whole thing works w/o
+            JavaScript.
           </MutationP>
           <MutationP>
             Remix runs the action server side, revalidates data client side, and
@@ -372,7 +372,7 @@ function Prefetching() {
       </JumboText>
       <div className="h-[10vh]" />
 
-      <ScrollStage pages={2}>
+      <ScrollStage pages={2} fallbackLength={100} fallbackFrame={75}>
         <div className="h-[15vh]" />
         <JumboP>
           Remix can prefetch everything in parallel before the user clicks a
@@ -382,7 +382,7 @@ function Prefetching() {
         <JumboP>Zero loading states. Zero skeleton UI. Zero jank.</JumboP>
         <JumboP>
           <span className="text-gray-500">
-            Alright, you caught us, they're just prefetch link tags,
+            Alright, you caught us, they’re just prefetch link tags,
             #useThePlatform
           </span>
         </JumboP>
@@ -453,7 +453,7 @@ function WaterfallHeader({ children }: { children: React.ReactNode }) {
 
 function WaterfallComparison() {
   return (
-    <ScrollStage pages={4}>
+    <ScrollStage pages={4} fallbackLength={800} fallbackFrame={560}>
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center pb-4 xl:pb-56">
         <div className="xl:flex">
           <div className="relative xl:-right-10">
@@ -470,6 +470,11 @@ function WaterfallComparison() {
             </WaterfallBrowser>
           </div>
         </div>
+        <Actor start={0} end={1}>
+          <div className="text-gray-300 text-m-p-sm md:text-d-p-sm text-center absolute bottom-0 w-full pb-4">
+            (Keep scrolling to compare)
+          </div>
+        </Actor>
       </div>
     </ScrollStage>
   );
@@ -772,11 +777,12 @@ function Intro() {
       </div>
       <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
         Remix provides snappy page loads and instant transitions by leveraging
-        distributed systems instead of static builds. However, page speed is
-        only one aspect of our true goal: <Em>better user experiences</Em>. As
-        you've pushed the boundaries of the web, your tools haven't caught up to
-        your appetite. <Em>Remix is ready</Em> to serve you from the initial
-        request to the fanciest UX your designers can think up. Check it out 👀
+        distributed systems instead of static builds. Deploy your app to the
+        edge and keep your UI fast and fresh. Page speed is only one aspect of
+        our true goal: <Em>better user experiences</Em>. As you’ve pushed the
+        boundaries of the web, your tools haven’t caught up to your appetite.{" "}
+        <Em>Remix is ready</Em> to serve you from the initial request to the
+        fanciest UX your designers can think up. Check it out 👀
       </p>
     </div>
   );
@@ -881,10 +887,10 @@ function NestedRoutes() {
           segments...
         </JumboP>
         <JumboP>
-          ...they're also the semantic boundary of data loading and code
+          ...they’re also the semantic boundary of data loading and code
           splitting.
         </JumboP>
-        <JumboP>Hover or tap the buttons to see how they're all related</JumboP>
+        <JumboP>Hover or tap the buttons to see how they’re all related</JumboP>
         <Actor start={0.2} end={0.66} persistent>
           <InteractiveRoutes />
         </Actor>
@@ -1141,7 +1147,7 @@ function InteractiveRoutes() {
       </div>
       <div className="h-4" />
 
-      <div className="sticky bottom-0 md:bottom-[-15vh]">
+      <div className="sticky bottom-0 md:bottom-[-14vh]">
         <BrowserChrome
           url={
             {

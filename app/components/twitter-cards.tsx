@@ -121,7 +121,7 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
         {tweets.map((tweet, index) => (
           <div
             key={index}
-            className="__slide flex-shrink-0 p-8 sm:p-10 w-[80vw] md:w-[45vw] xl:w-[30rem] bg-gray-800 text-white rounded-lg"
+            className="__slide flex-shrink-0 p-8 sm:p-10 w-[80vw] md:w-[43vw] xl:w-[30rem] bg-gray-800 text-white rounded-lg"
           >
             <div className="flex items-center justify-between">
               <div className="flex gap-4 items-center">
