@@ -19,10 +19,7 @@ export type Attributes = Pick<
   | "published"
 >;
 
-async function processDoc(
-  entry: File,
-  version: string
-): Promise<{
+export interface ProcessedDoc {
   attributes: Attributes;
   html: string;
   title: string;
@@ -30,7 +27,9 @@ async function processDoc(
   md: string;
   lang: string;
   hasContent: boolean;
-}> {
+}
+
+async function processDoc(entry: File, version: string): Promise<ProcessedDoc> {
   let { data, content } = parseAttributes(entry.content!);
   let hasContent = content.trim() !== "";
 
