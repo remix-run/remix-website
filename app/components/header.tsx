@@ -23,17 +23,8 @@ export function Header({
         <Wordmark />
       </Link>
 
-      <div className="hidden ">
-        <button type="button">
-          <Hamburger />
-        </button>
-      </div>
-
       <nav className="flex">
-        <HeaderLink
-          to="https://remix-run.web.app/dashboard"
-          children="Dashboard"
-        />{" "}
+        <HeaderLink to="/docs" children="Docs" />{" "}
         <HeaderLink
           to="https://github.com/remix-run"
           children="GitHub"
@@ -77,7 +68,6 @@ function HeaderLink({
         className
       }
       to={to}
-      prefetch="intent"
       children={children}
     />
   );

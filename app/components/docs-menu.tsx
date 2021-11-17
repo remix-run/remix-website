@@ -44,6 +44,7 @@ const MenuList: React.VFC<MenuListProps> = ({ nodes, level = 1 }) => {
       data-level={level}
     >
       {nodes
+        .sort((a, b) => a.title.localeCompare(b.title))
         .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
         .map((node, index) => {
           let dirItemClassName = ({ isActive }: { isActive?: boolean } = {}) =>
@@ -53,7 +54,11 @@ const MenuList: React.VFC<MenuListProps> = ({ nodes, level = 1 }) => {
 
           return (
             <li key={node.slug} data-dir="" data-level={level}>
-              {node.hasContent ? (
+              {node.disabled ? (
+                <span className={dirItemClassName() + " opacity-25"}>
+                  {node.title} 🚧
+                </span>
+              ) : node.hasContent ? (
                 <NavLink
                   prefetch="intent"
                   end

@@ -115,7 +115,11 @@
 }
 
 .md-nav-item {
-  @apply rounded relative text-[color:inherit] translate-x-0;
+  @apply rounded relative text-[color:inherit] translate-x-0 pl-2;
+}
+
+.md-nav-item--level-1 {
+  @apply pl-0;
 }
 
 .md-nav-item::before {
@@ -124,7 +128,7 @@
 }
 
 .md-nav-item--active {
-  @apply font-semibold text-blue-brand pl-1 -translate-x-1;
+  @apply font-semibold text-blue-brand pl-3 -translate-x-1;
 }
 
 .md-nav-item--active::before {

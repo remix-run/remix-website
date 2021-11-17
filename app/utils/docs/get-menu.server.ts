@@ -11,6 +11,7 @@ export interface MenuNode {
   title: string;
   slug: string;
   hasContent: boolean;
+  disabled: boolean;
   order: number | null;
   children: MenuNode[];
 }
@@ -62,7 +63,7 @@ export async function getMenu(
 
   // first pass we figure out the slugs
   for (let doc of mergedDocs) {
-    if (doc.hidden || doc.disabled) continue;
+    if (doc.hidden) continue;
     let slug = doc.filePath.replace(/\.md$/, "");
     let isIndex = slug.endsWith("/index");
     if (isIndex) {
@@ -84,6 +85,7 @@ export async function getMenu(
       title: doc.title,
       hasContent: doc.hasContent,
       order: doc.order,
+      disabled: doc.disabled,
       children: [],
     };
 
