@@ -773,9 +773,9 @@ function Intro() {
         Remix is a seamless server and browser runtime that provides snappy page
         loads and instant transitions by leveraging distributed systems and
         native browser features instead of clunky static builds. Built on the
-        Web Fetch API (instead of Node) it can run anywhere. It already runs
-        natively on Cloudflare Workers, and of course supports serverless and
-        traditional Node.js environments, so you can come as you are.
+        Web Fetch API (instead of Node) <Em>it can run anywhere</Em>. It already
+        runs natively on Cloudflare Workers, and of course supports serverless
+        and traditional Node.js environments, so you can come as you are.
       </p>
       <div className="h-6" />
       <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
