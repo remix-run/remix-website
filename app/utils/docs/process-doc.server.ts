@@ -49,12 +49,12 @@ async function processDoc(entry: File, version: string): Promise<ProcessedDoc> {
 
   return {
     attributes: {
-      disabled: data.disabled === "true",
-      hidden: data.hidden === "true",
+      disabled: data.disabled,
+      hidden: data.hidden,
       order: data.order ? Number(data.order) : null,
-      siblingLinks: data.siblingLinks === "true",
+      siblingLinks: data.siblingLinks,
       title,
-      toc: data.toc !== "false",
+      toc: data.toc !== false,
       description: data.description,
       published: data.published,
     },

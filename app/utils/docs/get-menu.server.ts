@@ -38,25 +38,11 @@ export async function getMenu(
             lang,
             githubRef: { ref },
           },
-          select: {
-            filePath: true,
-            title: true,
-            order: true,
-            hidden: true,
-            hasContent: true,
-          },
         }),
     prisma.doc.findMany({
       where: {
         lang: "en",
         githubRef: { ref },
-      },
-      select: {
-        filePath: true,
-        title: true,
-        order: true,
-        hidden: true,
-        hasContent: true,
       },
     }),
   ]);
@@ -73,7 +59,7 @@ export async function getMenu(
 
   // first pass we figure out the slugs
   for (let doc of mergedDocs) {
-    if (doc.hidden) continue;
+    if (doc.hidden || doc.disabled) continue;
     let slug = doc.filePath.replace(/\.md$/, "");
     let isIndex = slug.endsWith("/index");
     if (isIndex) {
