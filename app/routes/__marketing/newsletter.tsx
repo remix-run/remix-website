@@ -20,7 +20,11 @@ export let action: ActionFunction = async ({ request }) => {
     return json({ error: "Invalid Email" }, { status: 400 });
   }
 
-  await subscribeToNewsletter(email);
+  try {
+    await subscribeToNewsletter(email);
+  } catch (e: any) {
+    return json({ error: e.message || "Unknown error" });
+  }
 
   return json({ ok: true });
 };
@@ -38,7 +42,7 @@ export default function Newsletter() {
     if (transition.state === "idle" && actionData?.ok && inputRef.current) {
       inputRef.current.value = "";
     }
-  }, [actionData]);
+  }, [transition.state, actionData]);
 
   return (
     <div
@@ -55,6 +59,7 @@ export default function Newsletter() {
           unsubscribe at any time.
         </div>
         <div className="h-9" />
+        <div className="h-[100vh]" />
         <Form
           replace
           method="post"

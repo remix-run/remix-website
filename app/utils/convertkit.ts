@@ -15,6 +15,6 @@ export async function subscribeToNewsletter(email: string) {
 
   let data = await res.json();
   if (data.error) {
-    throw new Error(`Newsletter Error: ${data.error}`);
+    throw new Error(data.error);
   }
 }
