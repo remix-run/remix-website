@@ -16,13 +16,14 @@ if (typeof window !== "undefined") {
 export function ScrollRestoration() {
   useScrollRestoration();
 
+  // wait for the browser to restore it on its own
   React.useEffect(() => {
     window.history.scrollRestoration = "manual";
   }, []);
 
+  // let the browser restore on it's own for refresh
   useBeforeUnload(
     React.useCallback(() => {
-      // so it restores automatically before JS hydrates
       window.history.scrollRestoration = "auto";
     }, [])
   );
@@ -67,14 +68,11 @@ function useScrollRestoration() {
     }
   }, [transition]);
 
-  // TODO: go back to using pending location
   React.useEffect(() => {
-    let savePosition = () => {
+    if (transition.location) {
       positions[location.key] = window.scrollY;
-    };
-    window.addEventListener("scroll", savePosition);
-    return () => window.removeEventListener("scroll", savePosition);
-  }, [location]);
+    }
+  }, [transition, location]);
 
   useBeforeUnload(
     React.useCallback(() => {
