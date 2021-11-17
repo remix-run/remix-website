@@ -118,6 +118,10 @@
   @apply rounded relative text-[color:inherit] translate-x-0 pl-2;
 }
 
+a.md-nav-item {
+  @apply hover:text-blue-brand transition-colors;
+}
+
 .md-nav-item--level-1 {
   @apply pl-0;
 }
