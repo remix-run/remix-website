@@ -38,7 +38,7 @@ export default function DocsLayout() {
       {menu.length > 0 ? (
         <div className="lg:hidden">
           <details ref={detailsRef}>
-            <summary className="py-4">Docs Navigation</summary>
+            <summary className="py-4 cursor-pointer">Docs Navigation</summary>
             <div>
               <Menu nodes={menu} className="py-6 text-d-p-sm font-medium" />
             </div>

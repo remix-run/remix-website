@@ -58,8 +58,8 @@ function ErrorBoundaries({ slides }: { slides: Sequence }) {
           <Glitch />
         </Actor>
       </ScrollStage>
-      <ScrollStage pages={1} fallbackLength={100} fallbackFrame={100}>
-        <Actor start={0.01} end={0.99}>
+      <ScrollStage pages={1} fallbackLength={100} fallbackFrame={0}>
+        <Actor start={0.01} end={0.95}>
           <div className="fixed inset-0 bg-blue-brand" />
         </Actor>
         <BlueScreen />

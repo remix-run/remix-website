@@ -401,6 +401,7 @@
   }
 
   & summary {
+    cursor: pointer;
     display: list-item;
   }
 
