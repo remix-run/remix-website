@@ -1,4 +1,5 @@
 import { getRefFromParam } from "@mcansh/undoc";
+import { json } from "remix";
 import invariant from "ts-invariant";
 
 import { prisma } from "~/db.server";
@@ -28,7 +29,9 @@ export async function getMenu(
     process.env.REPO_LATEST_BRANCH!
   );
 
-  invariant(ref, `No ref found for ${versionOrBranchParam}`);
+  if (!ref) {
+    throw json(`No ref found for ${versionOrBranchParam}`, 404);
+  }
 
   let [localizedDocs, englishDocs] = await Promise.all([
     lang === "en"
