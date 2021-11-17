@@ -26,33 +26,27 @@ export function ScrollExperience({
       <Mutations slides={markdown.mutations} />
       <div className="mb-[-10vh]" />
       <ErrorBoundaries slides={markdown.errors} />
-      <DeployAnywhere />
-      <div className="h-[25vh]" />
+      <CTA />
     </div>
   );
 }
 
-function DeployAnywhere() {
+function CTA() {
   return (
-    <div className="p-6 md:p-10 max-w-5xl mx-auto">
-      <div className="text-m-j font-display text-white md:text-d-j">
-        <span className="text-red-brand">The future is the edge.</span> Remix
-        can take you there today.
+    <>
+      <JumboText>
+        That's probably enough for now. What are you waiting for?
+      </JumboText>
+      <div className="max-w-6xl mx-auto px-6 md:px-12">
+        <div className="h-4" />
+        <PrimaryButtonLink
+          prefetch="intent"
+          to="/docs/en/v0.20/getting-started"
+          children="Go Play!"
+        />
       </div>
-      <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
-        Remix was made for the edge. The server runtime is built on the standard
-        Web Fetch API so it doesn’t depend on Node.js. Remix already runs
-        natively on Cloudflare Workers, and it’s ready to support anything else
-        that hits the scene. Oh right, Remix runs in serverless and traditional
-        Node.js environments, too.
-      </p>
-      <div className="h-6" />
-      <PrimaryButtonLink
-        prefetch="intent"
-        to="/docs/en/v0.20/getting-started"
-        children="Get Started"
-      />
-    </div>
+      <div className="h-[25vh]" />
+    </>
   );
 }
 
@@ -65,7 +59,7 @@ function ErrorBoundaries({ slides }: { slides: Sequence }) {
         </Actor>
       </ScrollStage>
       <ScrollStage pages={1} fallbackLength={100} fallbackFrame={100}>
-        <Actor start={0.01} end={0.09}>
+        <Actor start={0.01} end={0.99}>
           <div className="fixed inset-0 bg-blue-brand" />
         </Actor>
         <BlueScreen />
@@ -76,7 +70,7 @@ function ErrorBoundaries({ slides }: { slides: Sequence }) {
         <span className="text-yellow-brand">keep the happy path happy.</span>
       </JumboText>
       <div className="h-[10vh]" />
-      <ScrollStage pages={4} fallbackLength={100} fallbackFrame={46}>
+      <ScrollStage pages={3.25} fallbackLength={100} fallbackFrame={46}>
         <div className="h-[15vh]" />
         <JumboP>
           Each route module can export an error boundary next to the default
@@ -357,7 +351,7 @@ function MutationP({ children }: { children: React.ReactNode }) {
 
 function JumboP({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-6 text-m-j md:text-d-j text-gray-100 md:max-w-3xl font-display md:mx-auto my-[20vh]">
+    <div className="px-6 text-m-j md:text-d-j text-gray-100 md:max-w-3xl md:mx-auto font-display h-[50vh]">
       {children}
     </div>
   );
@@ -776,11 +770,18 @@ function Intro() {
         <span className="text-pink-brand">Break through the static.</span>
       </div>
       <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
-        Remix provides snappy page loads and instant transitions by leveraging
-        distributed systems instead of static builds. Deploy your app to the
-        edge and keep your UI fast and fresh. Page speed is only one aspect of
-        our true goal: <Em>better user experiences</Em>. As you’ve pushed the
-        boundaries of the web, your tools haven’t caught up to your appetite.{" "}
+        Remix is a seamless server and browser runtime that provides snappy page
+        loads and instant transitions by leveraging distributed systems and
+        native browser features instead of clunky static builds. Built on the
+        Web Fetch API (instead of Node) it can run anywhere. It already runs
+        natively on Cloudflare Workers, and of course supports serverless and
+        traditional Node.js environments, so you can come as you are.
+      </p>
+      <div className="h-6" />
+      <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
+        Page speed is only one aspect of our true goal though. We're after{" "}
+        <Em>better user experiences</Em>. As you’ve pushed the boundaries of the
+        web, your tools haven’t caught up to your appetite.{" "}
         <Em>Remix is ready</Em> to serve you from the initial request to the
         fanciest UX your designers can think up. Check it out 👀
       </p>
@@ -851,7 +852,7 @@ function Waterfall() {
         Through nested routes, Remix can eliminate nearly{" "}
         <span className="text-green-brand">every loading state.</span>
       </JumboText>
-      <div className="h-[10vh]" />
+      <div className="h-[25vh]" />
       <JumboP>
         Most web apps fetch inside of components, creating{" "}
         <span className="text-aqua-brand">request waterfalls</span>, slower
@@ -877,6 +878,7 @@ function NestedRoutes() {
         <br />
         <span className="font-mono text-gray-700">↑↑↓↓←→←→BA</span>
       </JumboText>
+      <div className="h-[25vh]" />
       <ScrollStage pages={2.75}>
         <JumboP>
           Websites usually have levels of navigation that control child views.
@@ -894,7 +896,6 @@ function NestedRoutes() {
           <InteractiveRoutes />
         </Actor>
       </ScrollStage>
-      <div className="h-[7vh]" />
     </>
   );
 }

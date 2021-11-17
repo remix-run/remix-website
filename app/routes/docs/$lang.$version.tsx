@@ -34,7 +34,7 @@ export default function DocsLayout() {
   }, [location]);
 
   return (
-    <div className="md-layout lg:flex lg:h-full md-down:container">
+    <div className="md-layout lg:flex lg:h-full px-6">
       {menu.length > 0 ? (
         <div className="lg:hidden">
           <details ref={detailsRef}>
