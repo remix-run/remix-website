@@ -4,11 +4,21 @@
  * use any `dark:` variants, just style the pages with the colors in the
  * designs.
  */
-
 import { Outlet } from "remix";
+
+import { Header } from "~/components/header";
+import { Footer } from "~/components/footer";
 
 export let handle = { forceDark: true };
 
 export default function Marketing() {
-  return <Outlet />;
+  return (
+    <div className="flex flex-col flex-1 h-full">
+      <Header forceDark={true} />
+      <div className="flex flex-col flex-1">
+        <Outlet />
+      </div>
+      <Footer forceDark={true} />
+    </div>
+  );
 }

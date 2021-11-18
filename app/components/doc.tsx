@@ -2,7 +2,10 @@ import * as React from "react";
 import { useLoaderData } from "remix";
 import cx from "clsx";
 
-import { useDelegatedReactRouterLinks } from "~/hooks/delegate-links";
+import {
+  PrefetchMarkdownLinks,
+  useDelegatedReactRouterLinks,
+} from "~/components/delegate-links";
 import type { Doc as PrismaDoc } from "@prisma/client";
 
 export let meta = ({ data: doc }: { data?: PrismaDoc }) => {
@@ -22,7 +25,7 @@ const DocsPage: React.VFC = () => {
   useDelegatedReactRouterLinks(ref);
 
   return (
-    <React.Fragment>
+    <PrefetchMarkdownLinks>
       <div
         ref={ref}
         className={cx("markdown", {
@@ -30,7 +33,7 @@ const DocsPage: React.VFC = () => {
         })}
         dangerouslySetInnerHTML={{ __html: doc.html }}
       />
-    </React.Fragment>
+    </PrefetchMarkdownLinks>
   );
 };
 

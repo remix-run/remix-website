@@ -13,8 +13,6 @@ import type { LoaderFunction } from "remix";
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
 import { Body } from "~/components/body";
-import { Header } from "~/components/header";
-import { Footer } from "~/components/footer";
 import {
   removeTrailingSlashes,
   ensureSecure,
@@ -94,11 +92,7 @@ const Document: React.FC<DocumentProps> = ({
       </head>
 
       <Body forceDark={forceDark} darkBg={darkBg}>
-        <div className="flex flex-col flex-1 h-full">
-          <Header forceDark={forceDark} />
-          <div className="flex flex-col flex-1">{children}</div>
-          <Footer forceDark={forceDark} />
-        </div>
+        {children}
       </Body>
     </html>
   );

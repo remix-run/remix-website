@@ -8,6 +8,7 @@ import cx from "clsx";
 import { getMenu, MenuNode } from "~/utils/docs/get-menu.server";
 import markdownStyles from "~/styles/docs.css";
 import { Menu } from "~/components/docs-menu";
+import { Wordmark } from "~/components/logo";
 
 export let loader: LoaderFunction = async ({ params }) => {
   invariant(!!params.version, "Need a version param");
@@ -37,8 +38,13 @@ export default function DocsLayout() {
     <div className="md-layout lg:flex lg:h-full px-6">
       {menu.length > 0 ? (
         <div className="lg:hidden">
+          <div className="absolute top-6 right-6">
+            <Wordmark />
+          </div>
           <details ref={detailsRef}>
-            <summary className="py-4 cursor-pointer">Docs Navigation</summary>
+            <summary className="pb-4 pt-6 cursor-pointer">
+              Docs Navigation
+            </summary>
             <div>
               <Menu nodes={menu} className="py-6 text-d-p-sm font-medium" />
             </div>
@@ -57,6 +63,8 @@ export default function DocsLayout() {
               "py-10 pl-6 pr-3 xl:pr-5 2xl:pr-6", // spacing
             ])}
           >
+            <Wordmark />
+            <div className="h-8" />
             <Menu nodes={menu} />
           </div>
         </div>
