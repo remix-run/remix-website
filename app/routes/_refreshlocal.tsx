@@ -49,14 +49,12 @@ async function processDocs(request: Request): Promise<void> {
 
   const release = (await releasePromise.json()) as GitHubRelease;
 
-  await Promise.all([saveDocs(ref, release.body)]);
+  await Promise.all([saveDocs(ref, release.body), saveBlogPosts()]);
 }
 
 let action: ActionFunction = async ({ request }) => {
   try {
-    console.log("Adding to queue", queue.size + 1);
     await queue.add(() => processDocs(request));
-    console.log("done with request", queue.size);
 
     return json({ ok: true }, { status: 200 });
   } catch (error) {

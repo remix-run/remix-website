@@ -44,10 +44,10 @@ async function saveBlogPosts() {
     (post) => !files.includes(path.join(POSTS_DIR, post.slug))
   );
 
-  let promises = [];
+  let deletePromises = [];
 
   for (const deletedPost of deletedPosts) {
-    promises.push(
+    deletePromises.push(
       prisma.blogPost.delete({ where: { slug: deletedPost.slug } })
     );
     console.log(`> Deleted blog post ${deletedPost.slug}`);
@@ -61,7 +61,13 @@ async function saveBlogPosts() {
     };
   });
 
+  let upsertPromises = [];
+  let authorParsePromises = [];
+  let authorPromises = [];
+
   for (let post of posts) {
+    console.log(`> Processing blog post ${post.slug}`);
+
     let fileContents = await fsp.readFile(post.filePath, "utf8");
     let { data, content } = parseAttributes(fileContents);
 
@@ -73,13 +79,11 @@ async function saveBlogPosts() {
       { linkOriginPath: "/" }
     );
 
-    let authorPromises = [];
-
     for (const authorName of data.authors) {
-      authorPromises.push(getAuthor(authorName));
+      authorParsePromises.push(getAuthor(authorName));
     }
 
-    let authorsSettled = await Promise.allSettled(authorPromises);
+    let authorsSettled = await Promise.allSettled(authorParsePromises);
 
     let authors = authorsSettled
       .map((author) => {
@@ -92,7 +96,17 @@ async function saveBlogPosts() {
       })
       .filter(isPresent);
 
-    promises.push(
+    for (const author of authors) {
+      authorPromises.push(
+        prisma.author.upsert({
+          where: { name: author.name },
+          create: author,
+          update: author,
+        })
+      );
+    }
+
+    upsertPromises.push(
       prisma.blogPost.upsert({
         where: { slug: post.slug },
         update: {
@@ -121,7 +135,8 @@ async function saveBlogPosts() {
 
     console.log(`> Saved blog post ${post.slug}`);
 
-    await Promise.all(promises);
+    await Promise.all(authorPromises);
+    await Promise.all(upsertPromises);
   }
 }
 
