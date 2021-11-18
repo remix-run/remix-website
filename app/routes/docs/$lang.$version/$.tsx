@@ -24,4 +24,4 @@ const SplatPage: RouteComponent = () => {
 
 export default SplatPage;
 export { loader };
-// export { meta } from "~/components/doc";
+export { meta } from "~/components/doc";
