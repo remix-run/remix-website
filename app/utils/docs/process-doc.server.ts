@@ -43,7 +43,10 @@ async function processDoc(entry: File, version: string): Promise<ProcessedDoc> {
     ? await processMarkdown(
         new URL(process.env.SITE_URL!),
         data.toc === false ? content : "## toc\n" + content,
-        { linkOriginPath: `/docs/${lang}/${version}` + path }
+        {
+          linkOriginPath:
+            `/docs/${lang}/${version.replace("refs/heads/", "")}` + path,
+        }
       )
     : "";
 

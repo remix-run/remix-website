@@ -181,12 +181,12 @@ a.md-nav-item {
     overflow-y: auto;
   }
 
-  & > li > ul > li > ul {
+  & > li > ul > li ul {
     @apply mb-3 ml-3 md:ml-4 lg:ml-3 2xl:ml-4;
   }
 
   & a {
-    @apply block py-1 px-5 text-d-p-sm lg:text-m-p-sm relative;
+    @apply block py-1 px-5 text-d-p-sm lg:text-m-p-sm relative hover:text-blue-brand transition-colors;
   }
 
   & a:focus {
@@ -342,28 +342,29 @@ a.md-nav-item {
   /*****************************************************************************/
   /* headings */
   & :is(h1, h2, h3, h4, h5, h6) {
-    @apply font-display m-0 mt-8 mb-4;
+    @apply m-0 mt-8 mb-4;
+  }
+
+  & :is(h1, h2) {
+    @apply font-display;
   }
 
   & h1 {
-    @apply my-10 text-m-h2 md:text-m-h1;
+    @apply my-10 text-m-h1 md:text-d-h1;
   }
 
   & h2 {
-    @apply text-m-h3 md:text-m-h2;
+    @apply text-m-h2 md:text-d-h2;
   }
 
   & h3 {
-    @apply text-d-p-lg lg:text-m-h2;
+    @apply text-m-h3 md:text-d-h3;
   }
 
-  & h4 {
-    @apply text-m-h2;
-  }
-
+  & h4,
   & h5,
   & h6 {
-    @apply text-d-p-sm;
+    @apply text-m-p-lg md:text-d-p-lg font-bold;
   }
 
   /*****************************************************************************/
@@ -457,10 +458,7 @@ a.md-nav-item {
   }
 
   & code {
-    @apply rounded text-[color:inherit] py-[2px] px-1;
-    /* TODO: too dark! */
-    /* background: var(--hue-0100); */
-    background: hsla(210, 13%, 72%, 0.2);
+    @apply rounded text-[color:inherit] py-[2px] px-1 bg-gray-50 dark:bg-gray-800;
   }
 
   & :is(a, h1, h2, h3, h4, h5, h6) code,
@@ -512,7 +510,7 @@ a.md-nav-item {
   }
 
   & pre[data-filename]::before {
-    @apply block ml-4 pl-6 bg-no-repeat;
+    @apply block ml-4 pl-6 pb-3 bg-no-repeat;
     content: attr(data-filename);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' width='16' height='16' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' /%3E%3C/svg%3E");
   }
