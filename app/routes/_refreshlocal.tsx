@@ -1,4 +1,5 @@
 import { RouteComponent, ActionFunction, json } from "remix";
+import PQueue from "p-queue";
 
 import type { GitHubRelease } from "~/@types/github";
 import { saveDocs } from "~/utils/docs/save-docs.server";
@@ -8,7 +9,9 @@ if (!process.env.AUTH_TOKEN) {
   throw new Error("AUTH_TOKEN env var is not set");
 }
 
-let action: ActionFunction = async ({ request }) => {
+const queue = new PQueue({ concurrency: 1 });
+
+async function processDocs(request: Request): Promise<void> {
   const url = new URL(request.url);
 
   // verify post request
@@ -32,22 +35,28 @@ let action: ActionFunction = async ({ request }) => {
 
   console.log(`Refreshing docs for ${url.hostname} for ref ${ref}`);
 
+  // generate docs for specified ref
+  let tag = ref.replace(/^refs\/tags\//, "");
+
+  const releasePromise = await fetch(
+    `https://api.github.com/repos/${process.env.REPO}/releases/tags/${tag}`,
+    {
+      headers: {
+        accept: "application/vnd.github.v3+json",
+      },
+    }
+  );
+
+  const release = (await releasePromise.json()) as GitHubRelease;
+
+  await Promise.all([saveDocs(ref, release.body)]);
+}
+
+let action: ActionFunction = async ({ request }) => {
   try {
-    // generate docs for specified ref
-    let tag = ref.replace(/^refs\/tags\//, "");
-
-    const releasePromise = await fetch(
-      `https://api.github.com/repos/${process.env.REPO}/releases/tags/${tag}`,
-      {
-        headers: {
-          accept: "application/vnd.github.v3+json",
-        },
-      }
-    );
-
-    const release = (await releasePromise.json()) as GitHubRelease;
-
-    await Promise.all([saveDocs(ref, release.body), saveBlogPosts()]);
+    console.log("Adding to queue", queue.size + 1);
+    await queue.add(() => processDocs(request));
+    console.log("done with request", queue.size);
 
     return json({ ok: true }, { status: 200 });
   } catch (error) {
