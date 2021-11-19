@@ -35,7 +35,7 @@ export default function DocsLayout() {
   }, [location]);
 
   return (
-    <div className="md-layout lg:flex lg:h-full px-6">
+    <div className="md-layout lg:flex lg:h-full px-6 lg:mx-auto">
       {menu.length > 0 ? (
         <div className="lg:hidden">
           <div className="absolute top-6 right-6">
@@ -58,8 +58,8 @@ export default function DocsLayout() {
             className={cx([
               // Sidebar nav scroll container
               "h-full max-h-screen overflow-x-hidden overflow-y-auto", // auto scrolling
-              "sticky top-[-1rem]", // sticky behavior
               "w-64 xl:w-80 2xl:w-96", // width
+              "sticky top-0",
               "py-10 pl-6 pr-3 xl:pr-5 2xl:pr-6", // spacing
             ])}
           >
