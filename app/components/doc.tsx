@@ -33,6 +33,7 @@ const DocsPage: React.VFC = () => {
         })}
         dangerouslySetInnerHTML={{ __html: doc.html }}
       />
+      <div className="h-[90vh]" />
     </PrefetchMarkdownLinks>
   );
 };
