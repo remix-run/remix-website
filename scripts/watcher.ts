@@ -3,7 +3,8 @@ import path from "path";
 
 import { PrismaClient } from "@prisma/client";
 import chokidar from "chokidar";
-import { processDoc, ProcessedDoc } from "../app/utils/docs/process-doc.server";
+import { processDoc } from "../app/utils/docs/process-doc.server";
+import { upsertDoc } from "../app/utils/docs/save-docs.server";
 
 let prisma = new PrismaClient();
 
@@ -21,68 +22,6 @@ let DOCS_DIR = path.resolve(process.cwd(), process.env.LOCAL_DOCS_PATH);
 let DOCS_FILES = DOCS_DIR + "/**/*.md";
 
 let WATCH = [DOCS_FILES];
-
-async function updateOrCreateDoc(processed: ProcessedDoc) {
-  let exists = await prisma.doc.findFirst({
-    where: {
-      filePath: processed.path,
-      lang: processed.lang,
-      githubRef: { ref: BRANCH },
-    },
-  });
-
-  if (exists) {
-    try {
-      await prisma.doc.updateMany({
-        where: {
-          filePath: processed.path,
-          lang: processed.lang,
-          githubRef: { ref: BRANCH },
-        },
-        data: {
-          ...processed.attributes,
-          filePath: processed.path,
-          md: processed.md,
-          html: processed.html,
-          lang: processed.lang,
-          hasContent: processed.hasContent,
-          title: processed.title,
-        },
-      });
-      console.log(`updated doc ${processed.path}`);
-    } catch (error) {
-      console.error(`failed to update doc ${processed.path}`, error);
-    }
-  } else {
-    try {
-      await prisma.doc.create({
-        data: {
-          ...processed.attributes,
-          filePath: processed.path,
-          md: processed.md,
-          html: processed.html,
-          lang: processed.lang,
-          hasContent: processed.hasContent,
-          title: processed.title,
-          githubRef: {
-            connectOrCreate: {
-              where: {
-                ref: BRANCH,
-              },
-              create: {
-                ref: BRANCH,
-                releaseNotes: "",
-              },
-            },
-          },
-        },
-      });
-      console.log(`created doc ${processed.path}`);
-    } catch (error) {
-      console.error(`failed to create doc ${processed.path}`, error);
-    }
-  }
-}
 
 let watcher = chokidar.watch(WATCH, {
   persistent: true,
@@ -124,7 +63,7 @@ watcher
         BRANCH
       );
 
-      promises.push(updateOrCreateDoc(processed));
+      promises.push(upsertDoc(BRANCH, processed));
     }
 
     await Promise.all(promises);
@@ -150,7 +89,7 @@ watcher
       BRANCH
     );
 
-    await updateOrCreateDoc(processed);
+    upsertDoc(BRANCH, processed);
   })
   .on("change", async (filepath) => {
     let actualFilePath = path.join("/docs", filepath);
@@ -166,7 +105,7 @@ watcher
       BRANCH
     );
 
-    await updateOrCreateDoc(processed);
+    upsertDoc(BRANCH, processed);
   })
   .on("unlink", async (filepath) => {
     let actualFilePath = path.join("/docs", filepath);

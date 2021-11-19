@@ -8,7 +8,7 @@ import {
 } from "@mcansh/undoc";
 
 import { prisma } from "../../db.server";
-import { processDoc } from "./process-doc.server";
+import { processDoc, ProcessedDoc } from "./process-doc.server";
 
 const REPO = process.env.REPO as string;
 const REPO_DOCS_PATH = process.env.REPO_DOCS_PATH as string;
@@ -75,42 +75,7 @@ async function saveDocs(ref: string, releaseNotes: string) {
     async onEntry(entry) {
       let doc = await processDoc(entry, version);
 
-      let docToSave: Prisma.DocCreateWithoutGithubRefInput = {
-        filePath: doc.path,
-        html: doc.html,
-        lang: doc.lang,
-        md: doc.md,
-        hasContent: doc.hasContent,
-        title: doc.attributes.title,
-        description: doc.attributes.description,
-        disabled: doc.attributes.disabled,
-        hidden: doc.attributes.hidden,
-        order: doc.attributes.order,
-        published: doc.attributes.published,
-        siblingLinks: doc.attributes.siblingLinks,
-        toc: doc.attributes.toc,
-      };
-
-      await prisma.doc.upsert({
-        where: {
-          filePath_githubRefId_lang: {
-            filePath: doc.path,
-            githubRefId: githubRef.ref,
-            lang: doc.lang,
-          },
-        },
-        create: {
-          ...docToSave,
-          githubRef: {
-            connect: {
-              ref: githubRef.ref,
-            },
-          },
-        },
-        update: docToSave,
-      });
-
-      console.log(`> Created or updated ${doc.path} for ${ref}`);
+      await upsertDoc(githubRef.ref, doc);
     },
     onDeletedEntries: async (deletedEntries) => {
       await prisma.doc.deleteMany({
@@ -131,4 +96,50 @@ async function saveDocs(ref: string, releaseNotes: string) {
   });
 }
 
-export { saveDocs };
+async function upsertDoc(ref: string, doc: ProcessedDoc) {
+  console.log(doc.attributes);
+
+  try {
+    let updates: Prisma.DocCreateWithoutGithubRefInput = {
+      filePath: doc.path,
+      html: doc.html,
+      lang: doc.lang,
+      md: doc.md,
+      hasContent: Boolean(doc.hasContent),
+      title: doc.attributes.title,
+      description: doc.attributes.description,
+      disabled: Boolean(doc.attributes.disabled),
+      hidden: Boolean(doc.attributes.hidden),
+      order: doc.attributes.order,
+      published: doc.attributes.published,
+      siblingLinks: Boolean(doc.attributes.siblingLinks),
+      toc: Boolean(doc.attributes.toc),
+    };
+
+    await prisma.doc.upsert({
+      where: {
+        filePath_githubRefId_lang: {
+          filePath: doc.path,
+          githubRefId: ref,
+          lang: doc.lang,
+        },
+      },
+      create: {
+        ...updates,
+        githubRef: {
+          connect: {
+            ref: ref,
+          },
+        },
+      },
+      update: updates,
+    });
+
+    console.log(`> Upserted ${doc.path} for ${ref}`);
+  } catch (error) {
+    console.error(error);
+    console.error(`> Failed to upsert ${doc.path} for ${ref}`);
+  }
+}
+
+export { saveDocs, upsertDoc };
