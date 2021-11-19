@@ -34,10 +34,10 @@
     --base08: theme("colors.red.300");
     --base09: theme("colors.pink.brand");
     --base0A: theme("colors.blue.300");
-    --base0B: theme("colors.green.500");
+    --base0B: theme("colors.yellow.brand");
     --base0C: theme("colors.aqua.400");
     --base0D: theme("colors.blue.500");
-    --base0E: theme("colors.yellow.400");
+    --base0E: theme("colors.blue.600");
     --base0F: theme("colors.gray.300");
   }
 }
@@ -512,7 +512,7 @@ a.md-nav-item {
   & pre[data-filename]::before {
     @apply block ml-4 pl-6 pb-3 bg-no-repeat;
     content: attr(data-filename);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' width='16' height='16' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' /%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' width='16' height='16' viewBox='0 0 24 24' stroke='#aaa'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' /%3E%3C/svg%3E");
   }
 
   & .codeblock-line[data-highlight="true"]::after {
