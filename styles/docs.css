@@ -74,21 +74,6 @@
 }
 
 .md-toc-container {
-  @media screen and (min-width: theme(screens.lg)) {
-    /* display: grid;
-    grid-template: "main";
-    grid-template-columns: minmax(auto, theme(screens.lg)); */
-
-    /*
-     * NOTE: There is a chromium bug that cuts off the focus ring when *any*
-     * overflow value is set on a container. The 0.5rem offset accounts for the
-     * added padding to fix this visually while maintaining the proper visual
-     * space.
-     * https://bugs.chromium.org/p/chromium/issues/detail?id=462609
-     */
-    /* gap: calc(var(--w-gap) - 0.5rem); */
-  }
-
   @media screen and (min-width: theme(screens.xl)) {
     display: grid;
     grid-template-areas: "main toc";
@@ -96,14 +81,6 @@
         var(--w-toc) + 0.5rem
       );
   }
-}
-
-.md-layout-nav {
-  grid-area: nav;
-}
-
-.md-layout-main {
-  grid-area: main;
 }
 
 .md-toc-nav {

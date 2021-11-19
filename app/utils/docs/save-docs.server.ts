@@ -97,8 +97,6 @@ async function saveDocs(ref: string, releaseNotes: string) {
 }
 
 async function upsertDoc(ref: string, doc: ProcessedDoc) {
-  console.log(doc.attributes);
-
   try {
     let updates: Prisma.DocCreateWithoutGithubRefInput = {
       filePath: doc.path,
