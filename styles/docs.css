@@ -75,9 +75,9 @@
 
 .md-toc-container {
   @media screen and (min-width: theme(screens.lg)) {
-    display: grid;
+    /* display: grid;
     grid-template: "main";
-    grid-template-columns: minmax(auto, theme(screens.lg));
+    grid-template-columns: minmax(auto, theme(screens.lg)); */
 
     /*
      * NOTE: There is a chromium bug that cuts off the focus ring when *any*
@@ -86,10 +86,11 @@
      * space.
      * https://bugs.chromium.org/p/chromium/issues/detail?id=462609
      */
-    gap: calc(var(--w-gap) - 0.5rem);
+    /* gap: calc(var(--w-gap) - 0.5rem); */
   }
 
   @media screen and (min-width: theme(screens.xl)) {
+    display: grid;
     grid-template-areas: "main toc";
     grid-template-columns: minmax(auto, var(--w-content)) calc(
         var(--w-toc) + 0.5rem
@@ -106,11 +107,10 @@
 }
 
 .md-toc-nav {
-  @apply hidden xl:block; /* visibility */
-  @apply h-full max-h-screen;
-  @apply sticky top-6; /* sticky behavior */
+  @apply xl:h-full xl:max-h-screen;
+  @apply xl:sticky xl:top-10; /* sticky behavior */
   @apply text-gray-700 dark:text-gray-200;
-  @apply pl-2;
+  @apply mb-8 xl:mb-0 xl:pl-8;
   grid-area: toc;
 }
 
