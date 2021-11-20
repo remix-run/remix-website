@@ -2,6 +2,7 @@ import * as React from "react";
 import { useLoaderData } from "remix";
 import cx from "clsx";
 
+import { AddCopyToCodeBlocks } from "./code-copy";
 import {
   PrefetchMarkdownLinks,
   useDelegatedReactRouterLinks,
@@ -25,16 +26,18 @@ const DocsPage: React.VFC = () => {
   useDelegatedReactRouterLinks(ref);
 
   return (
-    <PrefetchMarkdownLinks>
-      <div
-        ref={ref}
-        className={cx("markdown", {
-          "has-toc": doc.toc,
-        })}
-        dangerouslySetInnerHTML={{ __html: doc.html }}
-      />
-      <div className="h-[90vh]" />
-    </PrefetchMarkdownLinks>
+    <AddCopyToCodeBlocks>
+      <PrefetchMarkdownLinks>
+        <div
+          ref={ref}
+          className={cx("markdown", {
+            "has-toc": doc.toc,
+          })}
+          dangerouslySetInnerHTML={{ __html: doc.html }}
+        />
+        <div className="h-[90vh]" />
+      </PrefetchMarkdownLinks>
+    </AddCopyToCodeBlocks>
   );
 };
 
