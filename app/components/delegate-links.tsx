@@ -7,6 +7,7 @@ function isLinkEvent(event: MouseEvent) {
   let a = event.target.closest("a");
   return (
     a && // is anchor or has anchor parent
+    !a.hasAttribute("data-noprefetch") && // didn't opt out
     a.hasAttribute("href") && // has an href
     a.host === window.location.host && // is internal
     a
