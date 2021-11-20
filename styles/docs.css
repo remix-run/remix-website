@@ -412,7 +412,7 @@ a.md-nav-item {
   }
 
   & pre {
-    @apply mt-0 mb-4;
+    @apply mt-0 mb-4 leading-relaxed bg-[color:var(--base00)];
   }
 
   & code,
@@ -431,7 +431,7 @@ a.md-nav-item {
   }
 
   & .codeblock-line {
-    @apply block relative pr-4 leading-relaxed;
+    @apply block relative pr-4;
   }
 
   & code {
