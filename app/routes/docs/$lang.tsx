@@ -16,7 +16,7 @@ let loader: LoaderFunction = async ({ request, params }) => {
     },
   });
 
-  let [latest] = await getVersions(refs.map((ref) => ref.ref));
+  let [latest] = getVersions(refs.map((ref) => ref.ref));
 
   // 1. we have a language in the url
   if (lang) {
