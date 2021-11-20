@@ -1727,7 +1727,7 @@ function BrowserChrome({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative mx-2 md:mx-4 lg:mx-auto lg:max-w-4xl  bg-gray-700 shadow-md rounded md:rounded-lg max-h-[75vh] overflow-hidden">
+    <div className="relative mx-2 md:mx-4 lg:mx-auto lg:max-w-4xl  bg-gray-700 shadow-md rounded md:rounded-lg">
       <URLBar url={url} />
       <div className="px-2 pt-1 pb-2 md:px-4 md:pt-2 md:pb-4">{children}</div>
     </div>
