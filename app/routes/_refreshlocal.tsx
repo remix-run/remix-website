@@ -3,7 +3,6 @@ import PQueue from "p-queue";
 
 import type { GitHubRelease } from "~/@types/github";
 import { saveDocs } from "~/utils/docs/save-docs.server";
-import { saveBlogPosts } from "~/utils/save-blog-posts.server";
 
 if (!process.env.AUTH_TOKEN) {
   throw new Error("AUTH_TOKEN env var is not set");
@@ -49,7 +48,7 @@ async function processDocs(request: Request): Promise<void> {
 
   const release = (await releasePromise.json()) as GitHubRelease;
 
-  await Promise.all([saveDocs(ref, release.body), saveBlogPosts()]);
+  await saveDocs(ref, release.body);
 }
 
 let action: ActionFunction = async ({ request }) => {
