@@ -7,6 +7,8 @@
     "moduleResolution": "node",
     "target": "ES2019",
     "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "paths": {
       "~/*": ["./app/*"]
     },

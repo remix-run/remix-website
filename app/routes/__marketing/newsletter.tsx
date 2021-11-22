@@ -20,7 +20,11 @@ export let action: ActionFunction = async ({ request }) => {
     return json({ error: "Invalid Email" }, { status: 400 });
   }
 
-  await subscribeToNewsletter(email);
+  try {
+    await subscribeToNewsletter(email);
+  } catch (e: any) {
+    return json({ error: e.message || "Unknown error" });
+  }
 
   return json({ ok: true });
 };
@@ -38,7 +42,7 @@ export default function Newsletter() {
     if (transition.state === "idle" && actionData?.ok && inputRef.current) {
       inputRef.current.value = "";
     }
-  }, [actionData]);
+  }, [transition.state, actionData]);
 
   return (
     <div
@@ -47,14 +51,15 @@ export default function Newsletter() {
     >
       <div>
         <div className="h-8" />
-        <div className="font-display text-2xl text-white">Newsletter</div>
+        <div className="font-display text-m-h1 text-white">Newsletter</div>
         <div className="h-6" />
-        <div className="text-sm" id="newsletter-text">
+        <div className="text-m-p-lg" id="newsletter-text">
           Stay up-to-date with news, announcements, and releases for our
           projects like Remix and React Router. We respect your privacy,
           unsubscribe at any time.
         </div>
         <div className="h-9" />
+        <div className="h-[100vh]" />
         <Form
           replace
           method="post"

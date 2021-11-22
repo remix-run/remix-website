@@ -13,7 +13,8 @@ export function Header({
     <div
       x-comp="Header"
       className={
-        "container py-9 flex justify-between items-center " +
+        "px-6 lg:px-12 py-9 flex justify-between items-center" +
+        " " +
         (forceDark ? "text-white " : "text-gray-900 dark:text-white ") +
         className
       }
@@ -22,17 +23,8 @@ export function Header({
         <Wordmark />
       </Link>
 
-      <div className="hidden ">
-        <button type="button">
-          <Hamburger />
-        </button>
-      </div>
-
       <nav className="flex">
-        <HeaderLink
-          to="https://remix-run.web.app/dashboard"
-          children="Dashboard"
-        />{" "}
+        <HeaderLink to="/docs" children="Docs" />{" "}
         <HeaderLink
           to="https://github.com/remix-run"
           children="GitHub"
@@ -59,7 +51,7 @@ function HeaderLink({
       <a
         x-comp="HeaderLink"
         className={
-          "text-xs mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +
+          "text-d-p-sm mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +
           className
         }
         href={to}
@@ -72,11 +64,10 @@ function HeaderLink({
     <Link
       x-comp="HeaderLink"
       className={
-        "text-xs mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +
+        "text-d-p-sm mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +
         className
       }
       to={to}
-      prefetch="intent"
       children={children}
     />
   );

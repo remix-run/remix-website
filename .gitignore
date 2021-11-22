@@ -6,3 +6,9 @@ node_modules
 
 /app/styles
 /.env
+
+/prisma/*.db
+/prisma/*.db-journal
+
+/.yalc
+yalc.lock

@@ -15,20 +15,37 @@ if (typeof window !== "undefined") {
 
 export function ScrollRestoration() {
   useScrollRestoration();
+
+  // wait for the browser to restore it on its own
+  React.useEffect(() => {
+    window.history.scrollRestoration = "manual";
+  }, []);
+
+  // let the browser restore on it's own for refresh
+  useBeforeUnload(
+    React.useCallback(() => {
+      window.history.scrollRestoration = "auto";
+    }, [])
+  );
+
   return (
     <script
       dangerouslySetInnerHTML={{
         __html: `
-          window.history.scrollRestoration = 'manual'
+          if (!window.history.state || !window.history.state.key) {
+            window.history.replaceState({ key: Math.random().toString(32).slice(2) }, null);
+          }
+          let STORAGE_KEY = "positions";
           try {
             let positions = JSON.parse(sessionStorage.getItem(${JSON.stringify(
               STORAGE_KEY
             )}) ?? '{}')
-            let storedY = positions[window.history.state.key] || positions["default"]
+            let storedY = positions[window.history.state.key];
             if (typeof storedY === 'number') {
               window.scrollTo(0, storedY)
             }
-          } catch {
+          } catch(error) {
+            console.error(error)
             sessionStorage.removeItem(STORAGE_KEY)
           }
         `,
@@ -52,12 +69,10 @@ function useScrollRestoration() {
   }, [transition]);
 
   React.useEffect(() => {
-    let savePosition = () => {
+    if (transition.location) {
       positions[location.key] = window.scrollY;
-    };
-    window.addEventListener("scroll", savePosition);
-    return () => window.removeEventListener("scroll", savePosition);
-  }, [location]);
+    }
+  }, [transition, location]);
 
   useBeforeUnload(
     React.useCallback(() => {

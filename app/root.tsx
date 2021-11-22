@@ -1,3 +1,5 @@
+import * as React from "react";
+
 import {
   Meta,
   Links,
@@ -11,8 +13,6 @@ import type { LoaderFunction } from "remix";
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
 import { Body } from "~/components/body";
-import { Header } from "~/components/header";
-import { Footer } from "~/components/footer";
 import {
   removeTrailingSlashes,
   ensureSecure,
@@ -40,18 +40,20 @@ export function links() {
   ];
 }
 
-function Document({
+interface DocumentProps {
+  title?: string;
+  forceDark?: boolean;
+  darkBg?: string;
+  noIndex: boolean;
+}
+
+const Document: React.FC<DocumentProps> = ({
   children,
   title,
   forceDark,
   darkBg,
-}: {
-  children: React.ReactNode;
-  title?: string;
-  forceDark?: boolean;
-  darkBg?: string;
-}) {
-  let { noIndex } = useLoaderData();
+  noIndex,
+}) => {
   return (
     <html lang="en">
       <head>
@@ -74,26 +76,35 @@ function Document({
           type="image/png"
           media="(prefers-color-scheme: dark)"
         />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;600&display=auto"
+          rel="stylesheet"
+        />
+
         <Meta />
         <Links />
       </head>
 
       <Body forceDark={forceDark} darkBg={darkBg}>
-        <div className="flex-1 flex flex-col h-full">
-          <Header forceDark={forceDark} />
-          <div className="flex-1 flex flex-col">{children}</div>
-          <Footer forceDark={forceDark} />
-        </div>
+        {children}
       </Body>
     </html>
   );
-}
+};
 
 export default function App() {
   let matches = useMatches();
   let forceDark = matches.some((match) => match.handle?.forceDark);
+  let { noIndex } = useLoaderData();
+
   return (
-    <Document forceDark={forceDark}>
+    <Document noIndex={noIndex} forceDark={forceDark}>
       <Outlet />
     </Document>
   );
@@ -101,11 +112,11 @@ export default function App() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   return (
-    <Document title="Error" forceDark darkBg="bg-red-brand">
-      <div className="flex-1 flex flex-col justify-center text-white">
-        <div className="text-center leading-none">
+    <Document noIndex title="Error" forceDark darkBg="bg-red-brand">
+      <div className="flex flex-col justify-center flex-1 text-white">
+        <div className="leading-none text-center">
           <h1 className="text-[25vw]">Error</h1>
-          <div className="text-xl">{error.message}</div>
+          <div className="text-d-h3">{error.message}</div>
           <div className="h-[10vh]" />
         </div>
       </div>
@@ -116,9 +127,14 @@ export function ErrorBoundary({ error }: { error: Error }) {
 export function CatchBoundary() {
   let caught = useCatch();
   return (
-    <Document title={caught.statusText} forceDark darkBg="bg-blue-brand">
-      <div className="flex-1 flex flex-col justify-center text-white">
-        <div className="text-center leading-none">
+    <Document
+      noIndex
+      title={caught.statusText}
+      forceDark
+      darkBg="bg-blue-brand"
+    >
+      <div className="flex flex-col justify-center flex-1 text-white">
+        <div className="leading-none text-center">
           <h1 className="font-mono text-[25vw]">{caught.status}</h1>
           <a
             className="inline-block text-[8vw] underline"

@@ -17,20 +17,29 @@ module.exports = {
   theme: {
     fontFamily: {
       ...defaultTheme.fontFamily,
-      display: ['"Founders Grotesk"'],
+      display: ['"Founders Grotesk", "Arial Black", sans-serif'],
+      sans: ["Inter", ...defaultTheme.fontFamily.sans],
+      mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
-      "2xs": ["14px", "24px"],
-      xs: ["16px", "24px"],
-      sm: ["18px", "32px"],
-      base: ["20px", "32px"],
-      lg: ["25px", "32px"],
-      xl: ["30px", "32px"],
-      "2xl": ["32px", "32px"],
-      "3xl": ["40px", "48px"],
-      "4xl": ["45px", "48px"],
-      "5xl": ["64px", "72px"],
-      "6xl": ["72px", "64px"],
+      // names come from the figma file
+      // desktop paragraph small -> d-p-s
+      "d-p-sm": ["16px", "24px"],
+      "d-p-lg": ["20px", "32px"],
+      "d-h3": ["30px", "32px"],
+      "d-h2": ["45px", "48px"],
+      "d-h1": ["64px", "72px"],
+      "d-j": ["72px", "64px"],
+
+      // mobile paragraph small -> d-m-s
+      "m-p-sm": ["14px", "24px"],
+      "m-p-lg": ["18px", "32px"],
+      "m-h3": ["20px", "24px"],
+      "m-h2": ["24px", "32px"],
+      "m-h1": ["32px", "32px"],
+      "m-j": ["40px", "48px"],
+
+      eyebrow: ["16px", "24px"],
     },
     container: {
       center: true,
@@ -44,15 +53,15 @@ module.exports = {
     extend: {
       colors: {
         gray: {
-          50: "#f9faf9",
-          100: "#f0f1f1",
-          200: "#dddfe1",
+          50: "#f8fbfc",
+          100: "#eef2f8",
+          200: "#d0d0d0",
           300: "#b7bcbe",
-          400: "#889493",
+          400: "#828282",
           500: "#6a726d",
-          600: "#545750",
-          700: "#40413c",
-          800: "#2c2b2a",
+          600: "#3f3f3f",
+          700: "#292929",
+          800: "#1e1e1e",
           900: "#121212",
         },
         red: {

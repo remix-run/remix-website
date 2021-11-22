@@ -1,8 +1,41 @@
-/* TODO: make this way better */
-.bg_gradient_a {
-  @apply bg-red-brand;
-  background-image: radial-gradient(at 100% 1%, #fecc1b, transparent 50%),
-    radial-gradient(at 36% 97%, #fecc1b 0, transparent 50%),
-    radial-gradient(at 22% 89%, #f44250 0, transparent 50%),
-    radial-gradient(at 89% 99%, #d83bd2 0, transparent 50%);
+/* When you bail on tailwind, start the className with __ so that they are easy to identify in the HTML as escape hatches, we don't want very many of these! */
+
+.__carousel {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.__carousel::-webkit-scrollbar {
+  @apply w-3 h-3;
+}
+
+.__carousel::-webkit-scrollbar-thumb {
+  background: white;
+  @apply bg-gray-500 rounded-lg;
+}
+.__carousel::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.__slide {
+  scroll-snap-align: start;
+}
+
+.__mutation_code pre {
+  @apply h-[50vh] overflow-hidden py-2 sm:py-4;
+
+  & .codeblock-line {
+    @apply block relative leading-relaxed px-2 sm:px-8;
+  }
+
+  & .codeblock-line[data-highlight="true"]::after {
+    pointer-events: none;
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: theme("colors.green.brand");
+    opacity: 0.2;
+  }
 }

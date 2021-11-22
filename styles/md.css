@@ -60,14 +60,14 @@
 } */
 
 .md-prose {
-  @apply text-sm;
+  @apply text-m-p-lg;
 
   & p {
     @apply my-8;
   }
 
   & h2 {
-    @apply font-display text-lg dark:text-gray-200;
+    @apply font-display text-m-h2 dark:text-gray-200;
   }
 
   & strong {
@@ -89,11 +89,11 @@
   }
 
   & pre {
-    @apply break-normal overflow-auto p-2 md:p-3 border-t border-b sm:border sm:rounded-xl border-gray-200 dark:border-gray-700 text-2xs lg:text-xs -mx-6;
+    @apply break-normal overflow-auto p-2 md:p-3 border-t border-b sm:border sm:rounded-xl border-gray-200 dark:border-gray-700 text-m-p-sm lg:text-d-p-sm -mx-6;
   }
 
   & code {
-    @apply rounded-lg  bg-gray-100 dark:bg-gray-800 p-1 text-xs text-gray-700 dark:text-gray-400;
+    @apply rounded-lg  bg-gray-100 dark:bg-gray-800 p-1 text-d-p-sm text-gray-700 dark:text-gray-400;
   }
 
   /* unset the stuff from `& code` up there ^ */
@@ -170,7 +170,7 @@
     @apply p-0 mt-0 mb-4;
 
     & dt {
-      @apply p-0 mt-4 text-base italic font-semibold;
+      @apply p-0 mt-4 text-d-p-sm italic font-semibold;
     }
 
     & dd {
