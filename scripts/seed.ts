@@ -20,9 +20,7 @@ async function seed() {
   let releases = (await releasesPromise.json()) as GitHubRelease[];
 
   let releasesToUse = releases.filter((release) => {
-    return satisfies(release.tag_name, ">=1.0.0-rc.2", {
-      includePrerelease: true,
-    });
+    return satisfies(release.tag_name, ">=1.0.0");
   });
 
   let promises: Promise<void>[] = [
@@ -33,8 +31,6 @@ async function seed() {
   for (let release of releasesToUse) {
     promises.push(saveDocs(`refs/tags/${release.tag_name}`, release.body));
   }
-
-  promises.push(saveBlogPosts());
 
   await Promise.all(promises);
 }
