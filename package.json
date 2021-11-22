@@ -22,8 +22,8 @@
   "dependencies": {
     "@mcansh/undoc": "0.5.0",
     "@prisma/client": "^3.5.0",
-    "@remix-run/react": "^0.21.0",
-    "@remix-run/serve": "^0.21.0",
+    "@remix-run/react": "^1.0.3",
+    "@remix-run/serve": "^1.0.3",
     "@ryanflorence/md": "7.0.1",
     "@ryanflorence/mdtut": "^1.2.1",
     "@tailwindcss/aspect-ratio": "^0.3.0",
@@ -39,7 +39,7 @@
     "react-router-dom": "6.0.2",
     "remark": "^13.0.0",
     "remark-html": "^13.0.1",
-    "remix": "^0.21.0",
+    "remix": "^1.0.3",
     "semver": "^7.3.5",
     "ts-invariant": "^0.9.3",
     "ts-is-present": "1.2.2",
@@ -48,8 +48,8 @@
     "yaml": "1.10.2"
   },
   "devDependencies": {
-    "@remix-run/dev": "^0.21.0",
-    "@types/react": "^17.0.35",
+    "@remix-run/dev": "^1.0.3",
+    "@types/react": "^17.0.36",
     "@types/react-dom": "^17.0.11",
     "@types/semver": "^7.3.9",
     "@types/yaml": "1.9.7",
@@ -59,11 +59,11 @@
     "postcss": "^8.3.11",
     "postcss-cli": "^9.0.2",
     "postcss-focus-visible": "^6.0.1",
-    "postcss-nesting": "^10.0.1",
+    "postcss-nesting": "^10.0.2",
     "prettier": "^2.4.1",
     "prisma": "^3.5.0",
     "tailwindcss": "^2.2.19",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.2"
   },
   "engines": {
     "node": "16"
