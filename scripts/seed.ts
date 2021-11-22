@@ -13,7 +13,6 @@ async function seed() {
     {
       headers: {
         accept: "application/vnd.github.v3+json",
-        authorization: `token ${process.env.GITHUB_TOKEN}`,
       },
     }
   );

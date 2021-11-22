@@ -25,11 +25,7 @@ if (!REPO || !REPO_DOCS_PATH || !REPO_LATEST_BRANCH) {
  * ref: refs/heads/dev
  */
 async function saveDocs(ref: string, releaseNotes: string) {
-  let stream = await getPackage(REPO, ref, {
-    headers: {
-      authorization: `token ${process.env.GITHUB_TOKEN}`,
-    },
-  });
+  let stream = await getPackage(REPO, ref);
 
   invariant(stream, "no stream");
 
