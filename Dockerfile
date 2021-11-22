@@ -3,6 +3,8 @@ FROM node:16-bullseye-slim as base
 
 RUN apt-get update && apt-get install -y openssl
 
+ENV NODE_ENV=production
+
 # install all node_modules, including dev
 FROM base as deps
 
@@ -43,8 +45,6 @@ RUN npm run build
 
 # build smaller image for running
 FROM base
-
-ENV NODE_ENV=production
 
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
