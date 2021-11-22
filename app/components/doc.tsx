@@ -52,7 +52,8 @@ async function handleClickForPreTags(event: React.MouseEvent<HTMLElement>) {
   if (!(event.target instanceof HTMLElement)) return;
   let pre = event.target.closest("pre");
   if (!(pre instanceof HTMLPreElement)) return; // not in a pre
-  if (!("copyable" in pre.dataset)) return; // not a copyable pre
+  if ("nocopy" in pre.dataset) return; // not a copyable pre
+  if (!("lang" in pre.dataset)) return; // no language specified
   if (!pre.textContent) return; // no content to copy
 
   if (window.getSelection()?.toString() !== "") return; // wanted to select something
