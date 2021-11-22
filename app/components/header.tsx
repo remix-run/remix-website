@@ -24,7 +24,6 @@ export function Header({
       </Link>
 
       <nav className="flex">
-        <HeaderLink to="/docs" children="Docs" />{" "}
         <HeaderLink
           to="https://github.com/remix-run"
           children="GitHub"
