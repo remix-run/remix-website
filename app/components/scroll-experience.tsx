@@ -37,11 +37,11 @@ function CTA() {
       <JumboText>
         That's probably enough for now. What are you waiting for?
       </JumboText>
-      <div className="max-w-6xl mx-auto px-6 md:px-12">
+      <div className="max-w-6xl px-6 mx-auto md:px-12">
         <div className="h-4" />
         <PrimaryButtonLink
           prefetch="intent"
-          to="/docs/en/v0.20/getting-started"
+          to="/docs/getting-started"
           children="Go Play!"
         />
       </div>
@@ -113,8 +113,8 @@ function SalesError() {
     <BrowserChrome url="example.com/sales/invoices/102000">
       <Fakebooks className="h-[42vh] sm:h-[55vh]">
         <Sales>
-          <div className="bg-red-100 absolute inset-0 flex items-center justify-center">
-            <div className="text-red-brand text-center">
+          <div className="absolute inset-0 flex items-center justify-center bg-red-100">
+            <div className="text-center text-red-brand">
               <div className="text-[10px] sm:text-[14px] font-bold">Oops!</div>
               <div className="text-[8px] sm:text-[12px] px-2">
                 Something busted that we didn’t anticipate.
@@ -155,7 +155,7 @@ function Explosion() {
   let activeFrame = frameSpriteOrder[index];
   let bgOffset = activeFrame * spriteHeight;
   return (
-    <div className="absolute z-10 inset-0 flex justify-center items-center">
+    <div className="absolute inset-0 z-10 flex items-center justify-center">
       <div
         className="h-[188px] w-[142px] bg-no-repeat"
         style={{
@@ -169,7 +169,7 @@ function Explosion() {
 
 function BlueScreen() {
   return (
-    <div className="relative z-10 h-full bg-blue-brand px-6 sm:px-36 pb-32 sm:pb-40 text-white text-m-p-lg sm:text-d-p-lg">
+    <div className="relative z-10 h-full px-6 pb-32 text-white bg-blue-brand sm:px-36 sm:pb-40 text-m-p-lg sm:text-d-p-lg">
       <div className="text-d-h1 sm:text-d-j md:text-[length:120px]">:)</div>
       <div className="my-10 sm:my-16 sm:max-w-4xl md:text-[length:30px] md:leading-[40px]">
         Your websites run into problems, but with Remix they don’t need to be
@@ -180,7 +180,7 @@ function BlueScreen() {
         Remix handles errors while Server Rendering. Errors while Client
         Rendering. Even errors in your server side data handling.
       </div>
-      <img className="h-24 w-24" src="/qrcode.png" />
+      <img className="w-24 h-24" src="/qrcode.png" />
     </div>
   );
 }
@@ -206,15 +206,15 @@ function Glitch() {
 function Mutations({ slides }: { slides: Sequence }) {
   return (
     <>
-      <div className="p-6 md:p-10 max-w-5xl mx-auto">
-        <div className="text-m-j font-display text-white md:text-d-j">
+      <div className="max-w-5xl p-6 mx-auto md:p-10">
+        <div className="text-white text-m-j font-display md:text-d-j">
           Data loading ...{" "}
-          <img src="/yawn.png" className="h-8 md:h-14 inline" />
+          <img src="/yawn.png" className="inline h-8 md:h-14" />
           <br />
           You ever notice most of the code in your app is for{" "}
           <span className="text-yellow-brand">changing data?</span>
         </div>
-        <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
+        <p className="mt-2 text-m-p-lg md:text-d-p-lg md:pr-52 lg:pr-72 hyphen-manual">
           Imagine if React only had props and no way to set state. What’s the
           point? If a web framework helps you load data but doesn’t help you
           update it, what’s the point? Remix doesn’t drop you off at the{" "}
@@ -240,7 +240,7 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
   return (
     <ScrollStage pages={5.5} fallbackLength={100} fallbackFrame={25}>
       <div className="xl:flex">
-        <div className="p-max-w-lg flex-1 xl:mx-auto">
+        <div className="flex-1 p-max-w-lg xl:mx-auto">
           <div className="xl:h-[12vh]" />
           <MutationP>
             It’s so simple it’s kind of silly. Just make a form...
@@ -265,7 +265,7 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
           <MutationP>HTML Forms. Who knew?</MutationP>
         </div>
 
-        <div className="bg-gray-800 sticky bottom-0 xl:bottom-auto xl:top-0 xl:flex-1 xl:self-start xl:h-screen xl:flex xl:items-center">
+        <div className="sticky bottom-0 bg-gray-800 xl:bottom-auto xl:top-0 xl:flex-1 xl:self-start xl:h-screen xl:flex xl:items-center">
           <MutationCode
             start={0}
             end={slideLength * 1.5}
@@ -439,7 +439,7 @@ function PrefetchNetwork() {
 
 function WaterfallHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-display text-d-p-lg lg:text-d-h3 font-bold text-white text-center mb-2 lg:mb-6">
+    <div className="mb-2 font-bold text-center text-white font-display text-d-p-lg lg:text-d-h3 lg:mb-6">
       {children}
     </div>
   );
@@ -448,7 +448,7 @@ function WaterfallHeader({ children }: { children: React.ReactNode }) {
 function WaterfallComparison() {
   return (
     <ScrollStage pages={4} fallbackLength={800} fallbackFrame={560}>
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center pb-4 xl:pb-56">
+      <div className="sticky top-0 flex flex-col justify-center w-full h-screen pb-4 xl:pb-56">
         <div className="xl:flex">
           <div className="relative xl:-right-10">
             <WaterfallHeader>Without Remix</WaterfallHeader>
@@ -465,7 +465,7 @@ function WaterfallComparison() {
           </div>
         </div>
         <Actor start={0} end={1}>
-          <div className="text-gray-300 text-m-p-sm md:text-d-p-sm text-center absolute bottom-0 w-full pb-4">
+          <div className="absolute bottom-0 w-full pb-4 text-center text-gray-300 text-m-p-sm md:text-d-p-sm">
             (Keep scrolling to compare)
           </div>
         </Actor>
@@ -507,10 +507,10 @@ function JankSpinner({
     <div className={"h-full w-full" + " " + className}>
       <img
         src="/loading.gif"
-        className="h-full w-full object-contain object-top"
+        className="object-contain object-top w-full h-full"
       />
       {note && (
-        <div className="text-gray-800 text-center">
+        <div className="text-center text-gray-800">
           (This is fake, keep scrolling)
         </div>
       )}
@@ -583,7 +583,7 @@ function WithoutRemix() {
     ],
   ];
 
-  let aboutBlank = <div className="bg-white h-full w-full" />;
+  let aboutBlank = <div className="w-full h-full bg-white" />;
   let screen: React.ReactNode = aboutBlank;
 
   // just practicing my interview skills in case remix tanks.
@@ -658,14 +658,14 @@ function Network({
       <Ticks n={ticks} />
       <div className="h-4" />
       <div>{children}</div>
-      <div className="absolute left-16 sm:left-28 top-0 right-0 h-full">
+      <div className="absolute top-0 right-0 h-full left-16 sm:left-28">
         <div
           className="absolute top-0 h-full"
           style={{
             left: `${actor.progress * 100}%`,
           }}
         >
-          <ProgressHead className="w-2 -ml-1  text-blue-brand" />
+          <ProgressHead className="w-2 -ml-1 text-blue-brand" />
           <div className="w-[1px] relative top-[-1px] bg-blue-brand h-full" />
         </div>
       </div>
@@ -704,7 +704,7 @@ function Resource({
       >
         {name}
       </div>
-      <div className="flex-1 relative">
+      <div className="relative flex-1">
         <div
           className={
             "h-1 sm:h-2" +
@@ -728,7 +728,7 @@ function Resource({
 function Ticks({ n }: { n: number }) {
   let ticks = Array.from({ length: n }).fill(null);
   return (
-    <div className="absolute top-0 left-16 sm:left-28 right-0 flex justify-around">
+    <div className="absolute top-0 right-0 flex justify-around left-16 sm:left-28">
       {ticks.map((_, index) => (
         <div
           className={
@@ -761,15 +761,15 @@ function ProgressHead({ className }: { className: string }) {
 
 function Intro() {
   return (
-    <div className="p-6 md:p-10 max-w-5xl mx-auto">
-      <div className="text-m-j font-display text-white md:text-d-j">
+    <div className="max-w-5xl p-6 mx-auto md:p-10">
+      <div className="text-white text-m-j font-display md:text-d-j">
         While you were <span className="text-red-brand">waiting</span> for your
         static site to build,{" "}
         <span className="text-blue-brand">distributed web</span>{" "}
         infra&shy;structure got really good.{" "}
         <span className="text-pink-brand">Break through the static.</span>
       </div>
-      <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
+      <p className="mt-2 text-m-p-lg md:text-d-p-lg md:pr-52 lg:pr-72 hyphen-manual">
         Remix is a seamless server and browser runtime that provides snappy page
         loads and instant transitions by leveraging distributed systems and
         native browser features instead of clunky static builds. Built on the
@@ -778,7 +778,7 @@ function Intro() {
         and traditional Node.js environments, so you can come as you are.
       </p>
       <div className="h-6" />
-      <p className="text-m-p-lg md:text-d-p-lg mt-2 md:pr-52 lg:pr-72 hyphen-manual">
+      <p className="mt-2 text-m-p-lg md:text-d-p-lg md:pr-52 lg:pr-72 hyphen-manual">
         Page speed is only one aspect of our true goal though. We're after{" "}
         <Em>better user experiences</Em>. As you’ve pushed the boundaries of the
         web, your tools haven’t caught up to your appetite.{" "}
@@ -831,7 +831,7 @@ function P2({
 
 function Header({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-m-j md:text-d-h2 font-display text-center text-white mb-2 md:mb-4">
+    <div className="mb-2 text-center text-white text-m-j md:text-d-h2 font-display md:mb-4">
       {children}
     </div>
   );
@@ -1117,7 +1117,7 @@ function InteractiveRoutes() {
           onClick={() => setActive(1)}
           onMouseEnter={() => setActive(1)}
           active={active === 1}
-          className="text-blue-brand bg-blue-900"
+          className="bg-blue-900 text-blue-brand"
         >
           &lt;Root&gt;
         </LayoutButton>
@@ -1133,7 +1133,7 @@ function InteractiveRoutes() {
           onClick={() => setActive(3)}
           onMouseEnter={() => setActive(3)}
           active={active === 3}
-          className="text-yellow-brand bg-yellow-900"
+          className="bg-yellow-900 text-yellow-brand"
         >
           &lt;Invoices&gt;
         </LayoutButton>
@@ -1141,7 +1141,7 @@ function InteractiveRoutes() {
           onClick={() => setActive(4)}
           onMouseEnter={() => setActive(4)}
           active={active === 4}
-          className="text-red-brand bg-red-900"
+          className="bg-red-900 text-red-brand"
         >
           &lt;Invoice id={"{id}"}&gt;
         </LayoutButton>
@@ -1211,7 +1211,7 @@ function Fakebooks({
         className
       }
     >
-      <div className="bg-gray-50 border-r border-gray-100">
+      <div className="border-r border-gray-100 bg-gray-50">
         <div className="p-[5.7px] lg:p-4">
           <div className="flex items-center text-[color:#23BF1F]">
             <FakebooksLogo className="w-[8.5px] h-[8.5px] md:h-[18px] md:w-[18px] relative top-[1px]" />
@@ -1300,7 +1300,7 @@ function Cursor() {
             style={{
               transform: `scale(${clickScale})`,
             }}
-            className="absolute -top-2 -left-2 h-4 w-4 bg-red-brand rounded-full opacity-50"
+            className="absolute w-4 h-4 rounded-full opacity-50 -top-2 -left-2 bg-red-brand"
           />
         )}
       </div>
@@ -1311,7 +1311,7 @@ function Cursor() {
 function Pointer() {
   return (
     <svg
-      className="w-7 relative -left-2"
+      className="relative w-7 -left-2"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 28 32"
@@ -1424,7 +1424,7 @@ function Sales({
   shimmerNav?: boolean;
 }) {
   return (
-    <div className="relative p-3 md:p-10 h-full">
+    <div className="relative h-full p-3 md:p-10">
       <div className="font-display text-[length:10px] md:text-d-h3 text-black">
         Sales
       </div>
@@ -1433,13 +1433,13 @@ function Sales({
       <div className="flex gap-2 font-medium md:gap-4 text-gray-400 border-b border-gray-100 text-[length:5px] md:text-[length:14px] pb-1 md:pb-4">
         {shimmerNav ? (
           <>
-            <div className="bg-gray-300 animate-pulse w-1/3 rounded">
+            <div className="w-1/3 bg-gray-300 rounded animate-pulse">
               &nbsp;
             </div>
-            <div className="bg-gray-300 animate-pulse w-1/3 rounded">
+            <div className="w-1/3 bg-gray-300 rounded animate-pulse">
               &nbsp;
             </div>
-            <div className="bg-gray-300 animate-pulse w-1/3 rounded">
+            <div className="w-1/3 bg-gray-300 rounded animate-pulse">
               &nbsp;
             </div>
           </>
@@ -1496,7 +1496,7 @@ function Invoices({
 }) {
   return (
     <div className="relative">
-      <div className="flex justify-between items-center gap-1 md:gap-4">
+      <div className="flex items-center justify-between gap-1 md:gap-4">
         <InvoicesInfo label="Overdue" amount="$10,800" />
         <div className="flex-1 h-[6px] md:h-4 flex rounded-full overflow-hidden">
           <div className="w-1/3 bg-yellow-brand" />
@@ -1509,7 +1509,7 @@ function Invoices({
       <div className="h-[2.8px] md:h-2" />
       <InvoiceList children={children} />
       {highlight && (
-        <Highlighter className="bg-yellow-brand ring-yellow-brand -m-2">
+        <Highlighter className="-m-2 bg-yellow-brand ring-yellow-brand">
           <Resources
             className="bg-yellow-900"
             data="/invoices.json"
@@ -1557,7 +1557,7 @@ let invoices = [
 
 function InvoiceList({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex rounded md:rounded-lg border border-gray-100">
+    <div className="flex border border-gray-100 rounded md:rounded-lg">
       <div className="w-1/2 border-r border-gray-100">
         {invoices.map((invoice, index) => (
           <div
@@ -1633,15 +1633,15 @@ function Invoice({
       {highlight && (
         <Highlighter className="bg-red-brand ring-red-brand">
           <Resources
-            className="bg-red-900 absolute right-2 bottom-2 sm:static"
+            className="absolute bg-red-900 right-2 bottom-2 sm:static"
             data="/invoice/{id}.json"
             mod="/invoice.js"
           />
         </Highlighter>
       )}
       {error && (
-        <div className="bg-red-100 absolute inset-0 flex pt-4 justify-center">
-          <div className="text-red-brand text-center">
+        <div className="absolute inset-0 flex justify-center pt-4 bg-red-100">
+          <div className="text-center text-red-brand">
             <div className="text-[10px] md:text-[14px] font-bold">Oh snap!</div>
             <div className="text-[8px] md:text-[12px] px-2">
               There was a problem loading this invoice
@@ -1736,12 +1736,12 @@ function BrowserChrome({
 
 function URLBar({ url }: { url: string }) {
   return (
-    <div className="flex px-1 pt-1 pb-0 md:px-2 md:pt-2 items-center justify-center">
-      <div className="flex items-center w-2/3 rounded-md py-1 px-2 md:py-1 md:px-3 relative bg-gray-600 text-gray-100">
+    <div className="flex items-center justify-center px-1 pt-1 pb-0 md:px-2 md:pt-2">
+      <div className="relative flex items-center w-2/3 px-2 py-1 text-gray-100 bg-gray-600 rounded-md md:py-1 md:px-3">
         <span className="text-[length:10px] md:text-m-p-sm">{url}</span>
-        <Refresh className="absolute right-1 w-4 h-4 md:h-5 md:w-5" />
+        <Refresh className="absolute w-4 h-4 right-1 md:h-5 md:w-5" />
       </div>
-      <div className="absolute left-1 md:left-2 flex p-2 gap-1 md:gap-2">
+      <div className="absolute flex gap-1 p-2 left-1 md:left-2 md:gap-2">
         <Circle />
         <Circle />
         <Circle />
@@ -1751,7 +1751,7 @@ function URLBar({ url }: { url: string }) {
 }
 
 function Circle() {
-  return <div className="bg-gray-400 rounded-full w-2 h-2 md:h-3 md:w-3" />;
+  return <div className="w-2 h-2 bg-gray-400 rounded-full md:h-3 md:w-3" />;
 }
 
 function Refresh({ className }: { className: string }) {

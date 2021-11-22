@@ -98,15 +98,15 @@ function Hero() {
             your stuff.
           </div>
           <div className="h-9 xl:h-10" />
-          <div className="flex flex-col xl:flex-row gap-4 xl:">
+          <div className="flex flex-col gap-4 xl:flex-row xl:">
             <PrimaryButtonLink
               prefetch="intent"
-              to="/docs/en/v0.20/getting-started"
+              to="/docs/getting-started"
               className="w-full xl:w-60 xl:order-1"
               children="Get Started"
             />
             <OutlineButtonLink
-              to="/docs/en/v0.20"
+              to="/docs"
               className="w-full xl:w-60"
               children="Read the Docs"
             />
@@ -114,7 +114,7 @@ function Hero() {
         </div>
       </div>
       <div className="p-4 sm:p-8 -mx-6 sm:-mx-8 md:p-10 lg:p-8 mt-6 lg:mt-0 relative lg:w-1/2 lg:h-[51rem] overflow-hidden lg:rounded-l-2xl">
-        <Red className="absolute left-0 top-0 h-full xl:rounded-3xl" />
+        <Red className="absolute top-0 left-0 h-full xl:rounded-3xl" />
         <Sample html={sample.html} className="sm:hidden rounded-xl" />
         <Sample html={sampleSm.html} className="hidden sm:block" />
       </div>
