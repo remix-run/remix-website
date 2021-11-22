@@ -106,6 +106,7 @@ function Hero() {
               children="Get Started"
             />
             <OutlineButtonLink
+              prefetch="intent"
               to="/docs/en/v1"
               className="w-full xl:w-60"
               children="Read the Docs"

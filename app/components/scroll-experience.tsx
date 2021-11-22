@@ -41,7 +41,7 @@ function CTA() {
         <div className="h-4" />
         <PrimaryButtonLink
           prefetch="intent"
-          to="/docs/getting-started"
+          to="/docs/en/v1"
           children="Go Play!"
         />
       </div>
