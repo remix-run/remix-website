@@ -5,7 +5,7 @@ kill_timeout = 5
 processes = []
 
 [build]
-  builder = "heroku/buildpacks:20"
+  builtin = "node"
 
 [env]
   PORT = "8080"
@@ -17,7 +17,6 @@ processes = []
 [[services]]
   http_checks = []
   internal_port = 8080
-  processes = ["app"]
   protocol = "tcp"
   script_checks = []
 
