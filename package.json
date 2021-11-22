@@ -69,5 +69,5 @@
     "node": "16"
   },
   "sideEffects": false,
-  "version": "9.0.0"
+  "version": "10.0.0"
 }
