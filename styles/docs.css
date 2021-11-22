@@ -96,7 +96,7 @@
 }
 
 a.md-nav-item {
-  @apply hover:text-blue-brand transition-colors;
+  @apply transition-colors hover:text-blue-brand;
 }
 
 .md-nav-item--level-1 {
@@ -104,12 +104,12 @@ a.md-nav-item {
 }
 
 .md-nav-item::before {
-  @apply inset-0 rounded absolute bg-transparent;
+  @apply absolute inset-0 bg-transparent rounded;
   content: "";
 }
 
 .md-nav-item--active {
-  @apply font-semibold text-blue-brand pl-3 -translate-x-1;
+  @apply pl-3 font-semibold -translate-x-1 text-blue-brand;
 }
 
 .md-nav-item--active::before {
@@ -129,7 +129,7 @@ a.md-nav-item {
 }
 
 .toc {
-  @apply list-none py-3 px-0 rounded-lg border border-gray-100 dark:border-gray-900;
+  @apply px-0 py-3 list-none border border-gray-100 rounded-lg dark:border-gray-900;
 
   & > li > ul {
     height: 100%;
@@ -163,11 +163,11 @@ a.md-nav-item {
   }
 
   & a {
-    @apply block py-1 px-5 text-d-p-sm lg:text-m-p-sm relative hover:text-blue-brand transition-colors;
+    @apply relative block px-5 py-1 transition-colors text-d-p-sm lg:text-m-p-sm hover:text-blue-brand;
   }
 
   & a:focus {
-    @apply outline-none bg-gray-100 dark:bg-gray-900;
+    @apply bg-gray-100 outline-none dark:bg-gray-900;
   }
 
   & a:not(:hover) {
@@ -197,7 +197,7 @@ a.md-nav-item {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   grid-area: main;
-  @apply min-w-0 flex-auto leading-normal text-gray-700 dark:text-gray-300 text-d-p-sm break-words;
+  @apply flex-auto min-w-0 leading-normal text-gray-700 break-words dark:text-gray-300 text-d-p-sm;
 
   & > :first-child {
     @apply mt-0;
@@ -219,7 +219,7 @@ a.md-nav-item {
   }
 
   & .icon {
-    @apply inline-block fill-current align-text-bottom;
+    @apply inline-block align-text-bottom fill-current;
   }
 
   /*****************************************************************************/
@@ -293,18 +293,18 @@ a.md-nav-item {
     @apply p-0 mt-0 mb-4;
 
     & dt {
-      @apply p-0 mt-4 text-d-p-sm italic font-semibold;
+      @apply p-0 mt-4 italic font-semibold text-d-p-sm;
     }
 
     & dd {
-      @apply py-0 px-4 mb-4;
+      @apply px-4 py-0 mb-4;
     }
   }
 
   /*****************************************************************************/
   /* links */
   & a {
-    @apply text-blue-brand no-underline;
+    @apply no-underline text-blue-brand;
   }
 
   & a:hover {
@@ -341,7 +341,7 @@ a.md-nav-item {
   & h4,
   & h5,
   & h6 {
-    @apply text-m-p-lg md:text-d-p-lg font-bold;
+    @apply font-bold text-m-p-lg md:text-d-p-lg;
   }
 
   /*****************************************************************************/
@@ -352,7 +352,7 @@ a.md-nav-item {
     scroll-margin-top: 1em;
 
     & a {
-      @apply flex h-full items-center absolute top-0 -left-6 -right-0 leading-none z-10;
+      @apply absolute top-0 z-10 flex items-center h-full leading-none -left-6 -right-0;
     }
 
     &:hover a,
@@ -361,11 +361,11 @@ a.md-nav-item {
     }
 
     & .icon-link {
-      @apply flex h-full items-center text-blue-brand align-middle;
+      @apply flex items-center h-full align-middle text-blue-brand;
     }
 
     & a .icon-link::before {
-      @apply w-4 h-4 inline-block invisible;
+      @apply invisible inline-block w-4 h-4;
       content: " ";
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='gray' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath fill-rule='evenodd' d='M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'%3E%3C/path%3E%3C/svg%3E");
     }
@@ -376,7 +376,7 @@ a.md-nav-item {
     & a:hover .icon-link::before,
     & a .icon-link:hover::before,
     &:hover a .icon-link::before {
-      @apply opacity-100 visible;
+      @apply visible opacity-100;
     }
   }
 
@@ -398,7 +398,7 @@ a.md-nav-item {
   /*****************************************************************************/
   /* images */
   & img {
-    @apply max-w-full border-0 bg-white dark:bg-black;
+    @apply max-w-full bg-white border-0 dark:bg-black;
   }
 
   /*****************************************************************************/
@@ -408,7 +408,7 @@ a.md-nav-item {
   & kbd,
   & pre {
     word-wrap: normal;
-    @apply rounded-lg border border-gray-100 dark:border-gray-900 p-3 md:p-4 overflow-auto text-m-p-sm leading-none;
+    @apply p-3 overflow-auto leading-none border border-gray-100 rounded-lg dark:border-gray-900 md:p-4 text-m-p-sm;
   }
 
   & pre {
@@ -431,7 +431,7 @@ a.md-nav-item {
   }
 
   & .codeblock-line {
-    @apply block relative pr-4;
+    @apply relative block pr-4;
   }
 
   & code {
@@ -473,7 +473,7 @@ a.md-nav-item {
     pre[data-line-numbers="true"]:not([data-lang="bash"], [data-lang="sh"])
     [data-line-number]::before {
     content: attr(data-line-number);
-    @apply pl-0 text-right inline-block w-8 mr-6 text-gray-300 dark:text-gray-600;
+    @apply inline-block w-8 pl-0 mr-6 text-right text-gray-300 dark:text-gray-600;
   }
 
   & pre[data-bad] {
@@ -487,14 +487,35 @@ a.md-nav-item {
   }
 
   & pre[data-filename]::before {
-    @apply block ml-4 pl-6 pb-3 bg-no-repeat;
+    @apply block pb-3 pl-6 ml-4 bg-no-repeat;
     content: attr(data-filename);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' width='16' height='16' viewBox='0 0 24 24' stroke='#aaa'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' /%3E%3C/svg%3E");
   }
 
+  & pre[data-copyable] {
+    @apply relative;
+  }
+
+  & pre[data-copyable]::after {
+    @apply absolute hidden w-2 h-2 text-gray-700 cursor-pointer top-2 right-2 dark:text-gray-300;
+    height: 24px;
+    width: 24px;
+    content: " ";
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' preserveAspectRatio='xMidYMid meet' width='24' height='24' fill='#aaa'%3E%3Cpath d='M22.6,4H21.55a3.89,3.89,0,0,0-7.31,0H13.4A2.41,2.41,0,0,0,11,6.4V10H25V6.4A2.41,2.41,0,0,0,22.6,4ZM23,8H13V6.25A.25.25,0,0,1,13.25,6h2.69l.12-1.11A1.24,1.24,0,0,1,16.61,4a2,2,0,0,1,3.15,1.18l.09.84h2.9a.25.25,0,0,1,.25.25Z' /%3E%3Cpath d='M33.25,18.06H21.33l2.84-2.83a1,1,0,1,0-1.42-1.42L17.5,19.06l5.25,5.25a1,1,0,0,0,.71.29,1,1,0,0,0,.71-1.7l-2.84-2.84H33.25a1,1,0,0,0,0-2Z' /%3E%3Cpath d='M29,16h2V6.68A1.66,1.66,0,0,0,29.35,5H27.08V7H29Z' /%3E%3Cpath d='M29,31H7V7H9V5H6.64A1.66,1.66,0,0,0,5,6.67V31.32A1.66,1.66,0,0,0,6.65,33H29.36A1.66,1.66,0,0,0,31,31.33V22.06H29Z' /%3E%3C/svg%3E");
+  }
+
+  & pre[data-copyable][data-copied]::after {
+    @apply block;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' width='24' height='24' stroke='#aaa'%3E%3Cpath d='M21 6.285l-11.16 12.733-6.84-6.018 1.319-1.49 5.341 4.686 9.865-11.196 1.475 1.285z'/%3E%3C/svg%3E");
+  }
+
+  & pre:hover[data-copyable]::after {
+    @apply block;
+  }
+
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
-    @apply bg-green-400 dark:bg-green-600 opacity-10 w-full top-0 left-0 absolute pointer-events-none;
+    @apply absolute top-0 left-0 w-full bg-green-400 pointer-events-none dark:bg-green-600 opacity-10;
   }
 
   & pre[data-bad] .codeblock-line[data-highlight="true"]::after {
@@ -511,8 +532,8 @@ a.md-nav-item {
   }
 
   & table th {
-    @apply sticky top-0 text-m-p-sm font-semibold text-gray-700 dark:text-gray-300 bg-transparent;
-    @apply p-0 pb-1 pr-4 md:pr-6 border-0 border-b border-gray-200 dark:border-gray-800;
+    @apply sticky top-0 font-semibold text-gray-700 bg-transparent text-m-p-sm dark:text-gray-300;
+    @apply p-0 pb-1 pr-4 border-0 border-b border-gray-200 md:pr-6 dark:border-gray-800;
   }
 
   & table tbody {
@@ -520,7 +541,7 @@ a.md-nav-item {
   }
 
   & table td {
-    @apply p-0 py-2 pr-4 md:pr-6 text-m-p-sm text-black dark:text-white whitespace-nowrap border-0 border-b border-gray-100;
+    @apply p-0 py-2 pr-4 text-black border-0 border-b border-gray-100 md:pr-6 text-m-p-sm dark:text-white whitespace-nowrap;
   }
 
   /*****************************************************************************/
@@ -529,7 +550,7 @@ a.md-nav-item {
   & docs-info,
   & docs-warning,
   & docs-error {
-    @apply mt-0 mb-3 relative rounded-lg block border-l-2 border-r-2 border-current py-2 px-4;
+    @apply relative block px-4 py-2 mt-0 mb-3 border-l-2 border-r-2 border-current rounded-lg;
   }
 
   & docs-info::before,
@@ -563,7 +584,7 @@ a.md-nav-item {
   }
 
   & docs-cards {
-    @apply flex flex-col md:grid grid-cols-2 gap-6;
+    @apply flex flex-col grid-cols-2 gap-6 md:grid;
 
     & > a {
       @apply block rounded;
@@ -576,7 +597,7 @@ a.md-nav-item {
   }
 
   & docs-card {
-    @apply block w-full h-full rounded border border-gray-200 dark:border-gray-800 shadow transition-shadow ease-out p-6;
+    @apply block w-full h-full p-6 transition-shadow ease-out border border-gray-200 rounded shadow dark:border-gray-800;
 
     & > :first-child {
       @apply mt-0;
@@ -595,7 +616,7 @@ a.md-nav-item {
   /* blockquotes */
 
   & blockquote {
-    @apply mx-0 mt-0 mb-4 p-0 pl-4 text-gray-600 dark:text-gray-400 border-l-4 border-gray-200 dark:border-gray-800;
+    @apply p-0 pl-4 mx-0 mt-0 mb-4 text-gray-600 border-l-4 border-gray-200 dark:text-gray-400 dark:border-gray-800;
   }
 
   & blockquote > :first-child {
