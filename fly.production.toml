@@ -7,12 +7,13 @@ processes = []
 [build]
   builtin = "node"
 
+
 [env]
   PORT = "8080"
 
 [experimental]
   allowed_public_ports = []
-  auto_rollback = true
+  auto_rollback = false
 
 [[services]]
   http_checks = []
@@ -21,8 +22,8 @@ processes = []
   script_checks = []
 
   [services.concurrency]
-    hard_limit = 100
-    soft_limit = 80
+    hard_limit = 25
+    soft_limit = 20
     type = "requests"
 
   [[services.ports]]
