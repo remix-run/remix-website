@@ -4,7 +4,9 @@ date: November 22, 2021
 image: /remix-v1.jpg
 imageAlt: "The Remix logo"
 authors:
-  - michael
+  - name: Michael Jackson
+    avatar: /m.jpg
+    title: Co-Founder, CEO
 ---
 
 Today we are happy to release Remix v1 into the world.
