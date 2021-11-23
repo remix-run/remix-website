@@ -12,3 +12,5 @@ node_modules
 
 /.yalc
 yalc.lock
+
+.envrc

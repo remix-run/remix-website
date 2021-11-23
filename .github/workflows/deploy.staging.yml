@@ -23,5 +23,7 @@ jobs:
           access_token: ${{ github.token }}
       - uses: actions/checkout@v2
       - uses: superfly/flyctl-actions@1.1
+        env:
+          auth_token: ${{ secrets.AUTH_TOKEN }}
         with:
-          args: "deploy --config ./fly.staging.toml --build-arg DATABASE_URL=file:/remixapp/prisma/remix.db?connection_limit=1 --strategy bluegreen"
+          args: "deploy --config ./fly.staging.toml --build-arg AUTH_TOKEN--strategy bluegreen"

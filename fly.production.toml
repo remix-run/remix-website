@@ -5,8 +5,7 @@ kill_timeout = 5
 processes = []
 
 [build]
-  builtin = "node"
-
+  dockerfile = "Dockerfile.fly"
 
 [env]
   PORT = "8080"
