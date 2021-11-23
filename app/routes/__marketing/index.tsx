@@ -14,7 +14,7 @@ export function meta() {
   let title = "Remix - Build Better Websites";
   let image = "https://remix.run/img/og.1.jpg";
   let description =
-    "After over a year of development, Remix v1.0 is around the corner and its going open source";
+    "Remix is a full stack web framework that let’s you focus on the user interface and work back through web fundamentals to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
   return {
     title,
     description,
