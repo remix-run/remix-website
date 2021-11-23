@@ -101,7 +101,7 @@ function Hero() {
           <div className="flex flex-col gap-4 xl:flex-row xl:">
             <PrimaryButtonLink
               prefetch="intent"
-              to="/docs/en/dev/tutorials/blog"
+              to="/docs/en/v1/tutorials/blog"
               className="w-full xl:w-60 xl:order-1"
               children="Get Started"
             />
