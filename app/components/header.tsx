@@ -1,6 +1,5 @@
 import { Link } from "remix";
 import { Wordmark } from "./logo";
-import { Hamburger } from "./icons";
 
 export function Header({
   forceDark,
@@ -19,12 +18,20 @@ export function Header({
         className
       }
     >
-      <Link to="/" prefetch="intent">
+      <Link
+        onContextMenu={(event) => {
+          event.preventDefault();
+          window.location.href =
+            "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
+        }}
+        to="/"
+        prefetch="intent"
+      >
         <Wordmark />
       </Link>
 
       <nav className="flex">
-        <HeaderLink to="/docs" children="Docs" />{" "}
+        <HeaderLink to="/docs/en/v1" children="Docs" />{" "}
         <HeaderLink
           to="https://github.com/remix-run"
           children="GitHub"
@@ -39,10 +46,12 @@ function HeaderLink({
   to,
   children,
   className = "",
+  prefetch = "none",
 }: {
   to: string;
   children: React.ReactNode;
   className?: string;
+  prefetch?: "none" | "intent";
 }) {
   let external = to.startsWith("https://");
 
@@ -62,6 +71,7 @@ function HeaderLink({
 
   return (
     <Link
+      prefetch={prefetch}
       x-comp="HeaderLink"
       className={
         "text-d-p-sm mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +

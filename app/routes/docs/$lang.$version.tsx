@@ -1,6 +1,6 @@
 import * as React from "react";
 import invariant from "ts-invariant";
-import { json, useLoaderData, Outlet } from "remix";
+import { json, useLoaderData, Outlet, Link } from "remix";
 import type { LoaderFunction } from "remix";
 import { useLocation } from "react-router-dom";
 import cx from "clsx";
@@ -9,13 +9,14 @@ import { getMenu, MenuNode } from "~/utils/docs/get-menu.server";
 import markdownStyles from "~/styles/docs.css";
 import { Menu } from "~/components/docs-menu";
 import { Wordmark } from "~/components/logo";
+import { CACHE_CONTROL } from "~/utils/http";
 
 export let loader: LoaderFunction = async ({ params }) => {
   invariant(!!params.version, "Need a version param");
   invariant(!!params.lang, "Need a lang param");
 
   let menu: MenuNode[] = await getMenu(params.version, params.lang);
-  return json(menu, { headers: { "Cache-Control": "" } });
+  return json(menu, { headers: { "Cache-Control": CACHE_CONTROL } });
 };
 
 export function links() {
@@ -39,7 +40,16 @@ export default function DocsLayout() {
       {menu.length > 0 ? (
         <div className="lg:hidden">
           <div className="absolute top-6 right-6">
-            <Wordmark />
+            <Link
+              onContextMenu={(event) => {
+                event.preventDefault();
+                window.location.href =
+                  "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
+              }}
+              to="."
+            >
+              <Wordmark />
+            </Link>
           </div>
           <details ref={detailsRef}>
             <summary className="pb-4 pt-6 cursor-pointer">
@@ -63,7 +73,16 @@ export default function DocsLayout() {
               "py-10 pl-6 pr-3 xl:pr-5 2xl:pr-6", // spacing
             ])}
           >
-            <Wordmark />
+            <Link
+              onContextMenu={(event) => {
+                event.preventDefault();
+                window.location.href =
+                  "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
+              }}
+              to="."
+            >
+              <Wordmark />
+            </Link>
             <div className="h-8" />
             <Menu nodes={menu} />
           </div>

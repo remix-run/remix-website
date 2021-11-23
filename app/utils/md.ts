@@ -8,6 +8,14 @@ import { processMarkdown } from "@ryanflorence/md";
 import { Page, process } from "@ryanflorence/mdtut";
 import { remarkCodeBlocksShiki } from "@ryanflorence/md";
 import invariant from "ts-invariant";
+import LRUCache from "lru-cache";
+
+let cache = new LRUCache<string, Page>({
+  max: 1024 * 1024 * 12, // 12 mb
+  length(value, key) {
+    return JSON.stringify(value).length + (key ? key.length : 0);
+  },
+});
 
 // This is relative to where this code ends up in the build, not the source
 let contentPath = path.join(__dirname, "..", "md");
@@ -23,18 +31,27 @@ export async function md(filename: string) {
   } catch (e) {
     return null;
   }
+
   let contents = (await fs.readFile(filePath)).toString();
   let { attributes, body } = parseFrontMatter(contents);
   let html = await processMarkdown(body);
-  return { attributes, html };
+
+  let obj = { attributes, html };
+  return obj;
 }
 
 let processor = remark().use(remarkCodeBlocksShiki).use(html);
 
 export async function getMarkdown(filename: string): Promise<Page> {
+  let cached = cache.get(filename);
+  if (cached) {
+    return cached;
+  }
   let filePath = path.join(contentPath, filename);
   let file = await fs.readFile(filePath);
-  return process(processor, file);
+  let page = await process(processor, file);
+  cache.set(filename, page);
+  return page;
 }
 
 export async function getBlogPost(slug: string): Promise<MarkdownPost> {
