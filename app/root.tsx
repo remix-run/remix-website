@@ -59,6 +59,7 @@ const Document: React.FC<DocumentProps> = ({
       <head>
         {title && <title>{title}</title>}
         <meta charSet="utf-8" />
+        <meta name="theme-color" content="#121212" />
         {noIndex && <meta name="robots" content="noindex" />}
         <meta
           name="viewport"
