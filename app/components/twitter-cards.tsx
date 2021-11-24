@@ -103,13 +103,15 @@ export let tweets: TweetData[] = [
 export function Avatar({
   src,
   className,
+  alt,
 }: {
   src: string;
   className?: string;
+  alt: string;
 }) {
   return (
     <div className={"h-12 w-12" + " " + className}>
-      <img src={src} className="object-cover rounded-full" />
+      <img src={src} className="object-cover rounded-full" alt={alt} />
     </div>
   );
 }
@@ -119,34 +121,40 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
     <div className="max-w-max mx-auto">
       <div className="__carousel flex overflow-x-scroll gap-6 md:pb-4">
         {tweets.map((tweet, index) => (
-          <div
+          <figure
             key={index}
             className="__slide flex-shrink-0 p-8 sm:p-10 w-[80vw] md:w-[43vw] xl:w-[30rem] bg-gray-800 text-white rounded-lg"
           >
             <div className="flex items-center justify-between">
               <div className="flex gap-4 items-center">
-                <Avatar src={tweet.avatar} />
-                <div>
+                <Avatar alt="" src={tweet.avatar} />
+                <figcaption>
                   <a
                     href={tweet.href}
                     className="block text-m-h3 md:text-m-h3 font-display"
+                    aria-label={`Tweet from ${tweet.name}`}
                   >
                     @{tweet.username}
                   </a>
                   <div className="text-m-p-sm lg:text-d-p-sm">
                     {tweet.title}
                   </div>
-                </div>
+                </figcaption>
               </div>
-              <a href={tweet.href} className="block">
-                <Twitter className="h-6 w-6" />
+              <a
+                href={tweet.href}
+                className="block"
+                aria-label={`Tweet from ${tweet.name}`}
+                tabIndex={-1}
+              >
+                <Twitter className="h-6 w-6" role="presentation" />
               </a>
             </div>
             <div className="h-6" />
-            <div className="text-m-p-sm xl:text-d-p-sm text-gray-200">
+            <blockquote className="text-m-p-sm xl:text-d-p-sm text-gray-200">
               {tweet.body}
-            </div>
-          </div>
+            </blockquote>
+          </figure>
         ))}
       </div>
     </div>
@@ -155,29 +163,34 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
 
 export function BigTweet({ tweet }: { tweet: TweetData }) {
   return (
-    <div className="max-w-xl mx-auto p-6 sm:p-8">
+    <figure className="max-w-xl mx-auto p-6 sm:p-8">
       <div className="flex items-center justify-center gap-4 text-white">
         <div className="flex">
-          <Avatar src={tweet.avatar} className="relative z-10" />
-          <Twitter className="h-12 w-12 text-white relative -left-4" />
+          <Avatar alt="" src={tweet.avatar} className="relative z-10" />
+          <Twitter
+            role="presentation"
+            className="h-12 w-12 text-white relative -left-4"
+          />
         </div>
-        <div>
+        <figcaption>
           <a
             href={tweet.href}
             target="_blank"
             className="block text-m-h3 md:text-d-h3 font-display"
+            aria-label={`Tweet from ${tweet.name}`}
           >
             {tweet.name}
           </a>
+          <span className="sr-only">, </span>
           <div className="text-m-p-lg md:text-d-lg uppercase">
             {tweet.title}
           </div>
-        </div>
+        </figcaption>
       </div>
       <div className="h-10" />
-      <div className="text-center text-m-p-lg leading-6 md:text-d-p-lg">
+      <blockquote className="text-center text-m-p-lg leading-6 md:text-d-p-lg">
         {tweet.body}
-      </div>
-    </div>
+      </blockquote>
+    </figure>
   );
 }

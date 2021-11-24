@@ -12,8 +12,8 @@ export function ScrollExperience({
 }) {
   return (
     <div>
-      <img src="/wave.png" className="absolute -left-full" />
-      <img src="/loading.gif" className="absolute -left-full" />
+      <img src="/wave.png" alt="" className="absolute -left-full" />
+      <img src="/loading.gif" alt="" className="absolute -left-full" />
       <Intro />
       <div className="h-60" />
       <NestedRoutes />
@@ -65,45 +65,51 @@ function ErrorBoundaries({ slides }: { slides: Sequence }) {
         <BlueScreen />
       </ScrollStage>
       <div className="h-[33vh]" />
-      <JumboText>
-        Route Error Boundaries{" "}
-        <span className="text-yellow-brand">keep the happy path happy.</span>
-      </JumboText>
-      <div className="h-[10vh]" />
-      <ScrollStage pages={3.25} fallbackLength={100} fallbackFrame={46}>
-        <div className="h-[15vh]" />
-        <JumboP>
-          Each route module can export an error boundary next to the default
-          route component.
-        </JumboP>
-        <div className="h-[25vh]" />
-        <JumboP>
-          If an error is thrown, client or server side, users see the boundary
-          instead of the default component.
-        </JumboP>
-        <JumboP>
-          Routes w/o trouble render normally, so users have more options than
-          slamming refresh.
-        </JumboP>
-        <JumboP>
-          If a route has no boundary, errors bubble up. Just put one at the top
-          and chill out about errors in code review, yeah?
-        </JumboP>
+      <section>
+        <JumboText>
+          <h2>
+            Route Error Boundaries{" "}
+            <span className="text-yellow-brand">
+              keep the happy path happy.
+            </span>
+          </h2>
+        </JumboText>
+        <div className="h-[10vh]" />
+        <ScrollStage pages={3.25} fallbackLength={100} fallbackFrame={46}>
+          <div className="h-[15vh]" />
+          <JumboP>
+            Each route module can export an error boundary next to the default
+            route component.
+          </JumboP>
+          <div className="h-[25vh]" />
+          <JumboP>
+            If an error is thrown, client or server side, users see the boundary
+            instead of the default component.
+          </JumboP>
+          <JumboP>
+            Routes w/o trouble render normally, so users have more options than
+            slamming refresh.
+          </JumboP>
+          <JumboP>
+            If a route has no boundary, errors bubble up. Just put one at the
+            top and chill out about errors in code review, yeah?
+          </JumboP>
 
-        <div className="sticky bottom-[-5vh]">
-          <MutationCode start={0} end={0.25} slide={slides.slides[0]} />
-          <MutationCode start={0.25} end={0.4} slide={slides.slides[1]} />
-          <Actor start={0.4} end={0.5}>
-            <InvoiceError explode />
-          </Actor>
-          <Actor start={0.5} end={0.75}>
-            <InvoiceError />
-          </Actor>
-          <Actor start={0.75} end={2}>
-            <SalesError />
-          </Actor>
-        </div>
-      </ScrollStage>
+          <div className="sticky bottom-[-5vh]">
+            <MutationCode start={0} end={0.25} slide={slides.slides[0]} />
+            <MutationCode start={0.25} end={0.4} slide={slides.slides[1]} />
+            <Actor start={0.4} end={0.5}>
+              <InvoiceError explode />
+            </Actor>
+            <Actor start={0.5} end={0.75}>
+              <InvoiceError />
+            </Actor>
+            <Actor start={0.75} end={2}>
+              <SalesError />
+            </Actor>
+          </div>
+        </ScrollStage>
+      </section>
     </>
   );
 }
@@ -169,8 +175,11 @@ function Explosion() {
 
 function BlueScreen() {
   return (
-    <div className="relative z-10 h-full px-6 pb-32 text-white bg-blue-brand sm:px-36 sm:pb-40 text-m-p-lg sm:text-d-p-lg">
-      <div className="text-d-h1 sm:text-d-j md:text-[length:120px]">:)</div>
+    <section className="relative z-10 h-full px-6 pb-32 text-white bg-blue-brand sm:px-36 sm:pb-40 text-m-p-lg sm:text-d-p-lg">
+      <h2 className="sr-only">Error Handling</h2>
+      <div aria-hidden className="text-d-h1 sm:text-d-j md:text-[length:120px]">
+        :)
+      </div>
       <div className="my-10 sm:my-16 sm:max-w-4xl md:text-[length:30px] md:leading-[40px]">
         Your websites run into problems, but with Remix they don’t need to be
         refreshed. Error handling is hard to remember and hard to do. That’s why
@@ -180,8 +189,8 @@ function BlueScreen() {
         Remix handles errors while Server Rendering. Errors while Client
         Rendering. Even errors in your server side data handling.
       </div>
-      <img className="w-24 h-24" src="/qrcode.png" />
-    </div>
+      <img className="w-24 h-24" alt="" aria-hidden src="/qrcode.png" />
+    </section>
   );
 }
 
@@ -190,8 +199,9 @@ function Glitch() {
   let vals = [1, -1, 2, -2, 3, -3];
   let ruhRuh_Random = () => vals[Math.floor(Math.random() * vals.length)];
   return (
-    <div className="fixed inset-0">
+    <div className="fixed inset-0 motion-reduce:hidden">
       <img
+        alt=""
         className="relative w-[110%] h-[110%]"
         style={{
           left: actor.progress === 0 ? "0" : ruhRuh_Random() + "px",
@@ -205,14 +215,17 @@ function Glitch() {
 
 function Mutations({ slides }: { slides: Sequence }) {
   return (
-    <>
+    <section>
       <div className="max-w-5xl p-6 mx-auto md:p-10">
         <div className="text-white text-m-j font-display md:text-d-j">
-          Data loading ...{" "}
-          <img src="/yawn.png" className="inline h-8 md:h-14" />
-          <br />
-          You ever notice most of the code in your app is for{" "}
-          <span className="text-yellow-brand">changing data?</span>
+          <h2 className="inline">Data loading</h2>{" "}
+          <span aria-hidden>
+            ... <img src="/yawn.png" alt="" className="inline h-8 md:h-14" />
+          </span>
+          <p>
+            You ever notice most of the code in your app is for{" "}
+            <span className="text-yellow-brand">changing data?</span>
+          </p>
         </div>
         <p className="mt-2 text-m-p-lg md:text-d-p-lg md:pr-52 lg:pr-72 hyphen-manual">
           Imagine if React only had props and no way to set state. What’s the
@@ -231,7 +244,7 @@ function Mutations({ slides }: { slides: Sequence }) {
       </JumboText>
       <div className="h-[25vh]" />
       <MutationSlides sequence={slides} />
-    </>
+    </section>
   );
 }
 
@@ -242,27 +255,29 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
       <div className="xl:flex">
         <div className="flex-1 p-max-w-lg xl:mx-auto">
           <div className="xl:h-[12vh]" />
-          <MutationP>
-            It’s so simple it’s kind of silly. Just make a form...
-          </MutationP>
-          <MutationP>
-            ...and an action on the server. The whole thing works w/o
-            JavaScript.
-          </MutationP>
-          <MutationP>
-            Remix runs the action server side, revalidates data client side, and
-            even handles race conditions from resubmissions.
-          </MutationP>
-          <MutationP>
-            Get fancy with transition hooks and make some pending UI. Remix
-            handles all the state, you simply ask for it.
-          </MutationP>
-          <MutationP>
-            Or get jiggy with some optimistic UI. Remix provides the data being
-            sent to the server so you can skip the busy spinners for mutations,
-            too.
-          </MutationP>
-          <MutationP>HTML Forms. Who knew?</MutationP>
+          <div className="max-w-full px-6">
+            <MutationP>
+              It’s so simple it’s kind of silly. Just make a form...
+            </MutationP>
+            <MutationP>
+              ...and an action on the server. The whole thing works with no
+              JavaScript!
+            </MutationP>
+            <MutationP>
+              Remix runs the action server side, revalidates data client side,
+              and even handles race conditions from resubmissions.
+            </MutationP>
+            <MutationP>
+              Get fancy with transition hooks and make some pending UI. Remix
+              handles all the state, you simply ask for it.
+            </MutationP>
+            <MutationP>
+              Or get jiggy with some optimistic UI. Remix provides the data
+              being sent to the server so you can skip the busy spinners for
+              mutations, too.
+            </MutationP>
+            <MutationP>HTML Forms. Who knew?</MutationP>
+          </div>
         </div>
 
         <div className="sticky bottom-0 bg-gray-800 xl:bottom-auto xl:top-0 xl:flex-1 xl:self-start xl:h-screen xl:flex xl:items-center">
@@ -293,7 +308,10 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
 
 function MutationNetwork() {
   return (
-    <div className="h-[50vh] flex justify-center items-center xl:w-full">
+    <div
+      className="h-[50vh] flex justify-center items-center xl:w-full select-none"
+      aria-hidden
+    >
       <div className="w-4/5 pb-10">
         <Network>
           <Resource name="POST new" start={0} size={40} />
@@ -343,23 +361,27 @@ function MutationCode({
 
 function MutationP({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-6 sm:px-8 max-w-2xl sm:mx-auto text-m-j md:text-d-j text-gray-100 font-display h-[75vh] flex items-center">
-      <div>{children}</div>
-    </div>
+    <p className="px-6 sm:px-8 max-w-2xl sm:mx-auto text-m-j md:text-d-j text-gray-100 font-display h-[75vh] flex items-center">
+      {children}
+    </p>
   );
 }
 
-function JumboP({ children }: { children: React.ReactNode }) {
+function JumboP({ children, ...props }: React.ComponentPropsWithoutRef<"p">) {
   return (
-    <div className="px-6 text-m-j md:text-d-j text-gray-100 md:max-w-3xl md:mx-auto font-display h-[50vh]">
+    <p
+      {...props}
+      className="px-6 text-m-j md:text-d-j text-gray-100 md:max-w-3xl md:mx-auto font-display h-[50vh]"
+    >
       {children}
-    </div>
+    </p>
   );
 }
 
 function Prefetching() {
   return (
-    <>
+    <section>
+      <h2 className="sr-only">Pre-fetching Everything</h2>
       <JumboText>
         Nested routes allow Remix to make your app{" "}
         <span className="text-red-brand">as fast as instant.</span>
@@ -384,7 +406,7 @@ function Prefetching() {
           <PrefetchBrowser />
         </div>
       </ScrollStage>
-    </>
+    </section>
   );
 }
 
@@ -448,7 +470,10 @@ function WaterfallHeader({ children }: { children: React.ReactNode }) {
 function WaterfallComparison() {
   return (
     <ScrollStage pages={4} fallbackLength={800} fallbackFrame={560}>
-      <div className="sticky top-0 flex flex-col justify-center w-full h-screen pb-4 xl:pb-56">
+      <div
+        className="sticky top-0 flex flex-col justify-center w-full h-screen pb-4 xl:pb-56"
+        aria-hidden
+      >
         <div className="xl:flex">
           <div className="relative xl:-right-10">
             <WaterfallHeader>Without Remix</WaterfallHeader>
@@ -508,6 +533,7 @@ function JankSpinner({
       <img
         src="/loading.gif"
         className="object-contain object-top w-full h-full"
+        alt=""
       />
       {note && (
         <div className="text-center text-gray-800">
@@ -761,14 +787,14 @@ function ProgressHead({ className }: { className: string }) {
 
 function Intro() {
   return (
-    <div className="max-w-5xl p-6 mx-auto md:p-10">
-      <div className="text-white text-m-j font-display md:text-d-j">
+    <section className="max-w-5xl p-6 mx-auto md:p-10">
+      <h2 className="text-white text-m-j font-display md:text-d-j">
         While you were <span className="text-red-brand">waiting</span> for your
         static site to build,{" "}
         <span className="text-blue-brand">distributed web</span>{" "}
         infra&shy;structure got really good.{" "}
         <span className="text-pink-brand">Break through the static.</span>
-      </div>
+      </h2>
       <p className="mt-2 text-m-p-lg md:text-d-p-lg md:pr-52 lg:pr-72 hyphen-manual">
         Remix is a seamless server and browser runtime that provides snappy page
         loads and instant transitions by leveraging distributed systems and
@@ -785,7 +811,7 @@ function Intro() {
         <Em>Remix is ready</Em> to serve you from the initial request to the
         fanciest UX your designers can think up. Check it out 👀
       </p>
-    </div>
+    </section>
   );
 }
 
@@ -847,7 +873,8 @@ function JumboText({ children }: { children: React.ReactNode }) {
 
 function Waterfall() {
   return (
-    <>
+    <section>
+      <h2 className="sr-only">What about loading states?</h2>
       <JumboText>
         Through nested routes, Remix can eliminate nearly{" "}
         <span className="text-green-brand">every loading state.</span>
@@ -864,39 +891,51 @@ function Waterfall() {
         <span className="text-pink-brand">Way faster, jank free.</span>
       </JumboP>
       <WaterfallComparison />
-    </>
+    </section>
   );
 }
 
 function NestedRoutes() {
+  function handleSectionFocus(event: React.FocusEvent) {
+    let elem = event.target;
+    if (!(elem instanceof HTMLElement)) return;
+
+    elem.scrollIntoView(true);
+  }
+
   return (
-    <>
+    <section>
       <JumboText>
-        Remix has a cheat code
-        <br />
-        <span className="text-yellow-brand">Nested Routes.</span>
-        <br />
-        <span className="font-mono text-gray-700">↑↑↓↓←→←→BA</span>
+        <h2>
+          Remix has a cheat code:
+          <br />
+          <span className="text-yellow-brand">Nested Routes.</span>
+        </h2>
+        <span className="font-mono text-gray-700" aria-hidden>
+          ↑↑↓↓←→←→BA
+        </span>
       </JumboText>
       <div className="h-[25vh]" />
       <ScrollStage pages={2.75}>
-        <JumboP>
+        <JumboP tabIndex={0} onFocus={handleSectionFocus}>
           Websites usually have levels of navigation that control child views.
         </JumboP>
-        <JumboP>
+        <JumboP tabIndex={0} onFocus={handleSectionFocus}>
           Not only are these components pretty much always coupled to URL
           segments...
         </JumboP>
-        <JumboP>
+        <JumboP tabIndex={0} onFocus={handleSectionFocus}>
           ...they’re also the semantic boundary of data loading and code
           splitting.
         </JumboP>
-        <JumboP>Hover or tap the buttons to see how they’re all related</JumboP>
+        <JumboP aria-hidden>
+          Hover or tap the buttons to see how they’re all related
+        </JumboP>
         <Actor start={0.2} end={0.66} persistent>
           <InteractiveRoutes />
         </Actor>
       </ScrollStage>
-    </>
+    </section>
   );
 }
 
@@ -1012,7 +1051,7 @@ function Spinner({ className, start }: { className: string; start: number }) {
   return (
     <>
       <Actor start={start} end={SPINNER_END}>
-        <img src="/loading.gif" className={className} />
+        <img src="/loading.gif" alt="" className={className} />
       </Actor>
       <Actor start={SPINNER_END} end={1}>
         <Wave className={className} />
@@ -1027,6 +1066,7 @@ function Wave({ className }: { className: string }) {
   return (
     <img
       src="/wave.png"
+      alt=""
       style={{ opacity, transform: `scale(${opacity})` }}
       className={className}
     />
@@ -1037,6 +1077,7 @@ function SayGoodbyeOutro() {
   let stage = useStage();
   return (
     <div
+      aria-hidden
       className={
         `sticky top-0 h-screen flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px] text-white` +
         " " +
@@ -1096,6 +1137,14 @@ function InteractiveRoutes() {
   let [active, setActive] = React.useState(0);
   let actor = useActor();
   let frameProgressLength = 1 / 5;
+
+  function handleSectionFocus(event: React.FocusEvent) {
+    let elem = event.target;
+    if (!(elem instanceof HTMLElement)) return;
+
+    elem.scrollIntoView(true);
+  }
+
   React.useEffect(() => {
     let index = Math.floor(actor.progress / frameProgressLength);
     setActive(actor.progress === 1 ? 0 : index);
@@ -1109,13 +1158,15 @@ function InteractiveRoutes() {
           " " +
           (active === 0 ? "animate-bounce" : "")
         }
+        aria-hidden
       >
         👇
       </div>
-      <div className="text-center">
+      <div className="text-center" onFocus={handleSectionFocus}>
         <LayoutButton
           onClick={() => setActive(1)}
           onMouseEnter={() => setActive(1)}
+          onFocus={() => setActive(1)}
           active={active === 1}
           className="bg-blue-900 text-blue-brand"
         >
@@ -1124,6 +1175,7 @@ function InteractiveRoutes() {
         <LayoutButton
           onClick={() => setActive(2)}
           onMouseEnter={() => setActive(2)}
+          onFocus={() => setActive(2)}
           active={active === 2}
           className="text-aqua-brand bg-aqua-900"
         >
@@ -1132,6 +1184,7 @@ function InteractiveRoutes() {
         <LayoutButton
           onClick={() => setActive(3)}
           onMouseEnter={() => setActive(3)}
+          onFocus={() => setActive(3)}
           active={active === 3}
           className="bg-yellow-900 text-yellow-brand"
         >
@@ -1140,6 +1193,7 @@ function InteractiveRoutes() {
         <LayoutButton
           onClick={() => setActive(4)}
           onMouseEnter={() => setActive(4)}
+          onFocus={() => setActive(4)}
           active={active === 4}
           className="bg-red-900 text-red-brand"
         >
@@ -1727,7 +1781,7 @@ function BrowserChrome({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative mx-2 md:mx-4 lg:mx-auto lg:max-w-4xl  bg-gray-700 shadow-md rounded md:rounded-lg max-h-[75vh] overflow-hidden">
+    <div className="relative mx-2 md:mx-4 lg:mx-auto lg:max-w-4xl  bg-gray-700 shadow-md rounded md:rounded-lg max-h-[75vh] overflow-hidden select-none">
       <URLBar url={url} />
       <div className="px-2 pt-1 pb-2 md:px-4 md:pt-2 md:pb-4">{children}</div>
     </div>

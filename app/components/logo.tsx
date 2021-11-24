@@ -1,20 +1,17 @@
 export function Wordmark({
   height = 24,
-  className,
-}: {
-  height?: number;
-  className?: string;
-}) {
+  ...props
+}: React.ComponentPropsWithoutRef<"svg">) {
   return (
     <svg
       x-comp="Wordmark"
-      aria-label="Remix Logo"
-      className={className}
       height={height}
       viewBox="0 0 659 165"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
+      <title>Remix Logo</title>
       <path
         fillRule="evenodd"
         clipRule="evenodd"
