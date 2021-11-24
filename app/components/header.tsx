@@ -74,7 +74,7 @@ function HeaderLink({
       prefetch={prefetch}
       x-comp="HeaderLink"
       className={
-        "text-d-p-sm mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 " +
+        "text-d-p-sm mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 font-semibold " +
         className
       }
       to={to}
