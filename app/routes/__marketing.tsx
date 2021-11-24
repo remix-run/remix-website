@@ -15,9 +15,9 @@ export default function Marketing() {
   return (
     <div className="flex flex-col flex-1 h-full">
       <Header forceDark={true} />
-      <div className="flex flex-col flex-1">
+      <main className="flex flex-col flex-1" tabIndex={-1}>
         <Outlet />
-      </div>
+      </main>
       <Footer forceDark={true} />
     </div>
   );

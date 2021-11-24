@@ -1,4 +1,4 @@
-import { Link } from "remix";
+import { NavLink } from "remix";
 import { Wordmark } from "./logo";
 
 export function Header({
@@ -9,8 +9,7 @@ export function Header({
   className?: string;
 }) {
   return (
-    <div
-      x-comp="Header"
+    <header
       className={
         "px-6 lg:px-12 py-9 flex justify-between items-center" +
         " " +
@@ -18,7 +17,7 @@ export function Header({
         className
       }
     >
-      <Link
+      <NavLink
         onContextMenu={(event) => {
           event.preventDefault();
           window.location.href =
@@ -26,11 +25,12 @@ export function Header({
         }}
         to="/"
         prefetch="intent"
+        aria-label="Remix"
       >
-        <Wordmark />
-      </Link>
+        <Wordmark aria-hidden />
+      </NavLink>
 
-      <nav className="flex">
+      <nav className="flex" aria-label="Site navigation">
         <HeaderLink to="/docs/en/v1" children="Docs" />{" "}
         <HeaderLink
           to="https://github.com/remix-run"
@@ -38,7 +38,7 @@ export function Header({
           className="hidden sm:block"
         />
       </nav>
-    </div>
+    </header>
   );
 }
 
@@ -70,7 +70,7 @@ function HeaderLink({
   }
 
   return (
-    <Link
+    <NavLink
       prefetch={prefetch}
       x-comp="HeaderLink"
       className={

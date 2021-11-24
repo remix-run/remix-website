@@ -9,7 +9,7 @@ export function Footer({
   className?: string;
 }) {
   return (
-    <div
+    <footer
       x-comp="Footer"
       className={
         "px-6 lg:px-12 py-9 text-d-p-sm flex justify-between items-center" +
@@ -19,24 +19,25 @@ export function Footer({
       }
     >
       <div className="flex items-center">
-        <Wordmark height={16} />
+        <Wordmark height={16} aria-label="Remix logo" role="img" />
       </div>
-      <div
+      <nav
         className={
           "flex gap-6 " +
           (forceDark ? "text-white" : "text-black dark:text-white")
         }
+        aria-label="Find us on the web"
       >
         <a href="https://github.com/remix-run">
-          <GitHub />
+          <GitHub aria-hidden />
         </a>
         <a href="https://twitter.com/remix_run">
-          <Twitter />
+          <Twitter aria-hidden />
         </a>
         <a href="https://youtube.com/remix_run">
-          <YouTube />
+          <YouTube aria-hidden />
         </a>
-      </div>
-    </div>
+      </nav>
+    </footer>
   );
 }
