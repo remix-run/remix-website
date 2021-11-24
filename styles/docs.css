@@ -74,10 +74,13 @@
 }
 
 .md-toc-container {
+  display: grid;
+  grid-template:
+    "toc" auto
+    "main" auto / 1fr;
+
   @media screen and (min-width: theme(screens.xl)) {
-    display: grid;
-    grid-template-areas: "main toc";
-    grid-template-columns: minmax(auto, var(--w-content)) calc(
+    grid-template: "main toc" 1fr / minmax(auto, var(--w-content)) calc(
         var(--w-toc) + 0.5rem
       );
   }
