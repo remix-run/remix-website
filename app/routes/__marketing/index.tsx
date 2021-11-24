@@ -14,7 +14,7 @@ export function meta() {
   let title = "Remix - Build Better Websites";
   let image = "https://remix.run/img/og.1.jpg";
   let description =
-    "Remix is a full stack web framework that let’s you focus on the user interface and work back through web fundamentals to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
+    "Remix is a full stack web framework that lets you focus on the user interface and work back through web fundamentals to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
   return {
     title,
     description,
@@ -92,7 +92,7 @@ function Hero() {
           </div>
           <div className="h-6" />
           <div className="text-m-p-lg xl:pr-56 lg:text-d-p-lg">
-            Remix is a full stack web framework that let’s you focus on the user
+            Remix is a full stack web framework that lets you focus on the user
             interface and work back through web fundamentals to deliver a fast,
             slick, and resilient user experience. People are gonna love using
             your stuff.
@@ -101,7 +101,7 @@ function Hero() {
           <div className="flex flex-col gap-4 xl:flex-row xl:">
             <PrimaryButtonLink
               prefetch="intent"
-              to="/docs/en/dev/tutorials/blog"
+              to="/docs/en/v1/tutorials/blog"
               className="w-full xl:w-60 xl:order-1"
               children="Get Started"
             />
