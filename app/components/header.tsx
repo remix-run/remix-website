@@ -30,7 +30,7 @@ export function Header({
         <Wordmark aria-hidden />
       </NavLink>
 
-      <nav className="flex" aria-label="Site navigation">
+      <nav className="flex" aria-label="Main">
         <HeaderLink to="/docs/en/v1" children="Docs" />{" "}
         <HeaderLink
           to="https://github.com/remix-run"

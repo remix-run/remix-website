@@ -28,13 +28,13 @@ export function Footer({
         }
         aria-label="Find us on the web"
       >
-        <a href="https://github.com/remix-run">
+        <a href="https://github.com/remix-run" aria-label="GitHub">
           <GitHub aria-hidden />
         </a>
-        <a href="https://twitter.com/remix_run">
+        <a href="https://twitter.com/remix_run" aria-label="Twitter">
           <Twitter aria-hidden />
         </a>
-        <a href="https://youtube.com/remix_run">
+        <a href="https://youtube.com/remix_run" aria-label="YouTube">
           <YouTube aria-hidden />
         </a>
       </nav>
