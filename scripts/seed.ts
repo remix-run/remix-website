@@ -19,7 +19,7 @@ async function seed() {
   let releases = (await releasesPromise.json()) as GitHubRelease[];
 
   let releasesToUse = releases.filter((release) => {
-    return satisfies(release.tag_name, ">=1.0.4", {
+    return satisfies(release.tag_name, ">=1.0.6", {
       includePrerelease: true,
     });
   });
