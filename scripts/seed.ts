@@ -36,7 +36,7 @@ async function seed() {
   let promises: Promise<void>[] = [saveDocs("refs/heads/main", "")];
 
   for (let release of releasesToUse) {
-    promises.push(saveDocs(`refs/tags/${release.tag_name}`, release.body));
+    promises.unshift(saveDocs(`refs/tags/${release.tag_name}`, release.body));
   }
 
   await Promise.all(promises);
