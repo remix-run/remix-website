@@ -4,6 +4,9 @@ import { json, useLoaderData, Outlet, Link } from "remix";
 import type { LoaderFunction } from "remix";
 import { useLocation } from "react-router-dom";
 import cx from "clsx";
+import { DocSearch } from "@docsearch/react";
+import docsearchStylesheet from "@docsearch/css/dist/style.css";
+import docsearchStylesheetOverrides from "~/styles/docsearch.css";
 
 import { getMenu, MenuNode } from "~/utils/docs/get-menu.server";
 import markdownStyles from "~/styles/docs.css";
@@ -20,7 +23,11 @@ export let loader: LoaderFunction = async ({ params }) => {
 };
 
 export function links() {
-  return [{ rel: "stylesheet", href: markdownStyles }];
+  return [
+    { rel: "stylesheet", href: markdownStyles },
+    { rel: "stylesheet", href: docsearchStylesheet },
+    { rel: "stylesheet", href: docsearchStylesheetOverrides },
+  ];
 }
 
 export default function DocsLayout() {
@@ -39,7 +46,12 @@ export default function DocsLayout() {
     <div className="lg:flex lg:h-full px-6">
       {menu.length > 0 ? (
         <div className="lg:hidden">
-          <div className="absolute top-6 right-6">
+          <div className="absolute top-6 right-6 flex gap-2 items-center">
+            <DocSearch
+              appId="6OHWJSR8G4"
+              indexName="remix"
+              apiKey="dff56670dbec8494409989d6ec9c8ac2"
+            />
             <Link
               onContextMenu={(event) => {
                 event.preventDefault();
@@ -83,6 +95,12 @@ export default function DocsLayout() {
             >
               <Wordmark />
             </Link>
+            <div className="h-8" />
+            <DocSearch
+              appId="6OHWJSR8G4"
+              indexName="remix"
+              apiKey="dff56670dbec8494409989d6ec9c8ac2"
+            />
             <div className="h-8" />
             <Menu nodes={menu} />
           </div>
