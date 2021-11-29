@@ -8,6 +8,11 @@ import invariant from "ts-invariant";
 installGlobals();
 
 async function seed() {
+  invariant(
+    process.env.REPO_LATEST_BRANCH,
+    "REPO_LATEST_BRANCH is not defined"
+  );
+
   let releasesPromise = await fetch(
     `https://api.github.com/repos/${process.env.REPO}/releases`,
     {
@@ -33,13 +38,14 @@ async function seed() {
     });
   });
 
-  let promises: Promise<void>[] = [saveDocs("refs/heads/main", "")];
+  let promises: Promise<void>[] = [];
 
   for (let release of releasesToUse) {
     promises.unshift(saveDocs(`refs/tags/${release.tag_name}`, release.body));
   }
 
   await Promise.all(promises);
+  await saveDocs(process.env.REPO_LATEST_BRANCH, "");
 }
 
 try {
