@@ -20,6 +20,7 @@
     "clean:safe": "del public/build .cache build prisma/dev.db"
   },
   "dependencies": {
+    "@docsearch/css": "^3.0.0-alpha.41",
     "@docsearch/react": "^3.0.0-alpha.41",
     "@mcansh/undoc": "0.5.0",
     "@prisma/client": "^3.5.0",
