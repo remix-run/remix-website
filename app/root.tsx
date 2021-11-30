@@ -19,10 +19,22 @@ import {
   isProductionHost,
 } from "~/utils/http";
 
+declare global {
+  var __env: {
+    NODE_ENV: "development" | "production";
+  };
+}
+
 export let loader: LoaderFunction = async ({ request }) => {
   await ensureSecure(request);
   await removeTrailingSlashes(request);
-  return { noIndex: !isProductionHost(request) };
+  let env = {
+    NODE_ENV: process.env.NODE_ENV,
+  };
+  return {
+    noIndex: !isProductionHost(request),
+    env,
+  };
 };
 
 export let unstable_shouldReload = () => false;
@@ -102,7 +114,11 @@ const Document: React.FC<DocumentProps> = ({
 export default function App() {
   let matches = useMatches();
   let forceDark = matches.some((match) => match.handle?.forceDark);
-  let { noIndex } = useLoaderData();
+  let { noIndex, env } = useLoaderData();
+
+  React.useEffect(() => {
+    window.__env = env;
+  }, []);
 
   return (
     <Document noIndex={noIndex} forceDark={forceDark}>

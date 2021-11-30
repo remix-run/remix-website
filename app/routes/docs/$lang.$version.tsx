@@ -59,19 +59,24 @@ export default function DocsLayout() {
         <div className="lg:hidden">
           <div className="absolute top-6 right-6 flex gap-2 items-center">
             {hydrated ? (
-              <DocSearch
-                appId="6OHWJSR8G4"
-                indexName="remix"
-                apiKey="dff56670dbec8494409989d6ec9c8ac2"
-              />
+              <div className="mr-2">
+                <DocSearch
+                  appId="6OHWJSR8G4"
+                  indexName="remix"
+                  apiKey="dff56670dbec8494409989d6ec9c8ac2"
+                />
+              </div>
             ) : (
               <DocSearchPlaceholder />
             )}
             <Link
               onContextMenu={(event) => {
-                event.preventDefault();
-                window.location.href =
-                  "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
+                let NODE_ENV = window.__env && window.__env.NODE_ENV;
+                if (NODE_ENV !== "development") {
+                  event.preventDefault();
+                  window.location.href =
+                    "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
+                }
               }}
               to="."
             >
@@ -102,9 +107,12 @@ export default function DocsLayout() {
           >
             <Link
               onContextMenu={(event) => {
-                event.preventDefault();
-                window.location.href =
-                  "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
+                let NODE_ENV = window.__env && window.__env.NODE_ENV;
+                if (NODE_ENV !== "development") {
+                  event.preventDefault();
+                  window.location.href =
+                    "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
+                }
               }}
               to="."
             >
