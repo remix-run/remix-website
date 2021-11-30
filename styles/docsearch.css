@@ -23,3 +23,9 @@
     --docsearch-muted-color: #7f8497;
   }
 }
+
+@media (min-width: 751px) {
+  .DocSearch-Button {
+    margin-left: 0;
+  }
+}
