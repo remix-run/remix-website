@@ -12,7 +12,7 @@ import { getMenu, MenuNode } from "~/utils/docs/get-menu.server";
 import markdownStyles from "~/styles/docs.css";
 import { Menu } from "~/components/docs-menu";
 import { Wordmark } from "~/components/logo";
-import { CACHE_CONTROL } from "~/utils/http";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export let loader: LoaderFunction = async ({ params }) => {
   invariant(!!params.version, "Need a version param");

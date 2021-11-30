@@ -1,7 +1,7 @@
 import { json, Form, useTransition, useActionData } from "remix";
 import type { ActionFunction } from "remix";
 import { Button, Input } from "~/components/buttons";
-import { requirePost } from "~/utils/http";
+import { requirePost } from "~/utils/http.server";
 import { subscribeToNewsletter } from "~/utils/convertkit";
 import { useEffect, useRef } from "react";
 

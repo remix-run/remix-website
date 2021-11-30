@@ -5,12 +5,14 @@ import { json } from "remix";
 
 import { getDoc } from "~/utils/docs/get-doc.server";
 import { DocsPage } from "~/components/doc";
-import { CACHE_CONTROL } from "~/utils/http";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
-let loader: LoaderFunction = async ({ params }) => {
+let loader: LoaderFunction = async ({ params, context, request }) => {
   invariant(!!params.version, "Expected version param");
   invariant(!!params.lang, "Expected language param");
   invariant(!!params["*"], "Expected file path");
+
+  console.log({ params, context, request });
 
   let { lang, version } = params;
 

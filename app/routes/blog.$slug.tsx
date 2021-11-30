@@ -1,11 +1,11 @@
 import { json, LoaderFunction, useLoaderData } from "remix";
 
-import { getBlogPost } from "~/utils/md";
-import type { MarkdownPost } from "~/utils/md";
+import { getBlogPost } from "~/utils/md.server";
+import type { MarkdownPost } from "~/utils/md.server";
 import mdStyles from "~/styles/md.css";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
-import { CACHE_CONTROL } from "~/utils/http";
+import { CACHE_CONTROL } from "~/utils/http.server";
 import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
 

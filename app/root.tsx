@@ -17,7 +17,7 @@ import {
   removeTrailingSlashes,
   ensureSecure,
   isProductionHost,
-} from "~/utils/http";
+} from "~/utils/http.server";
 
 declare global {
   var __env: {
