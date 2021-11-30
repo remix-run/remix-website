@@ -41,6 +41,10 @@ export default function DocsLayout() {
   let menu = useLoaderData<MenuNode[]>();
   let location = useLocation();
   let detailsRef = React.useRef<HTMLDetailsElement>(null);
+  let [hydrated, setHydrated] = React.useState(false);
+  React.useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   React.useEffect(() => {
     let details = detailsRef.current;
@@ -54,11 +58,15 @@ export default function DocsLayout() {
       {menu.length > 0 ? (
         <div className="lg:hidden">
           <div className="absolute top-6 right-6 flex gap-2 items-center">
-            <DocSearch
-              appId="6OHWJSR8G4"
-              indexName="remix"
-              apiKey="dff56670dbec8494409989d6ec9c8ac2"
-            />
+            {hydrated ? (
+              <DocSearch
+                appId="6OHWJSR8G4"
+                indexName="remix"
+                apiKey="dff56670dbec8494409989d6ec9c8ac2"
+              />
+            ) : (
+              <DocSearchPlaceholder />
+            )}
             <Link
               onContextMenu={(event) => {
                 event.preventDefault();
@@ -103,11 +111,15 @@ export default function DocsLayout() {
               <Wordmark />
             </Link>
             <div className="h-8" />
-            <DocSearch
-              appId="6OHWJSR8G4"
-              indexName="remix"
-              apiKey="dff56670dbec8494409989d6ec9c8ac2"
-            />
+            {hydrated ? (
+              <DocSearch
+                appId="6OHWJSR8G4"
+                indexName="remix"
+                apiKey="dff56670dbec8494409989d6ec9c8ac2"
+              />
+            ) : (
+              <DocSearchPlaceholder />
+            )}
             <div className="h-8" />
             <Menu nodes={menu} />
           </div>
@@ -124,4 +136,11 @@ export default function DocsLayout() {
 
 export function unstable_shouldReload() {
   return false;
+}
+
+// The Algolia doc search container is hard-coded at 36px. It doesn't render
+// anything on the server, so we get a mis-match after hydration. This
+// placeholder prevents layout shift when the search appears.
+function DocSearchPlaceholder() {
+  return <div className="h-[36px]" />;
 }
