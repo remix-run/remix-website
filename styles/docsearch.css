@@ -24,8 +24,14 @@
   }
 }
 
-@media (min-width: 751px) {
+@media screen and (min-width: 751px) {
   .DocSearch-Button {
     margin-left: 0;
+  }
+}
+
+@media print {
+  .DocSearch-Button {
+    display: none;
   }
 }
