@@ -4,14 +4,14 @@ export async function loader({ request }) {
 }
 
 export async function action({ request }) {
-  let form = await request.formData();
+  const form = await request.formData();
   return createProject({ title: form.get("title") });
 }
 
 export default function Projects() {
-  let projects = useLoaderData();
-  let { state } = useTransition();
-  let busy = state === "submitting";
+  const projects = useLoaderData();
+  const { state } = useTransition();
+  const busy = state === "submitting";
 
   return (
     <div>
