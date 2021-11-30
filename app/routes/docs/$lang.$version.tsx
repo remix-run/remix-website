@@ -1,7 +1,7 @@
 import * as React from "react";
 import invariant from "ts-invariant";
 import { json, useLoaderData, Outlet, Link } from "remix";
-import type { LoaderFunction } from "remix";
+import type { LoaderFunction, MetaFunction, LinksFunction } from "remix";
 import { useLocation } from "react-router-dom";
 import cx from "clsx";
 import { DocSearch } from "@docsearch/react";
@@ -22,13 +22,20 @@ export let loader: LoaderFunction = async ({ params }) => {
   return json(menu, { headers: { "Cache-Control": CACHE_CONTROL } });
 };
 
-export function links() {
+export let links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: markdownStyles },
     { rel: "stylesheet", href: docsearchStylesheet },
     { rel: "stylesheet", href: docsearchStylesheetOverrides },
   ];
-}
+};
+
+export let meta: MetaFunction = ({ params }) => {
+  return {
+    "docsearch:language": params.lang || "en",
+    "docsearch:version": params.version || "v1",
+  };
+};
 
 export default function DocsLayout() {
   let menu = useLoaderData<MenuNode[]>();
