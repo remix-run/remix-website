@@ -1,5 +1,3 @@
-import path from "path";
-
 import { getRefFromParam } from "@mcansh/undoc";
 import { Doc } from "@prisma/client";
 import invariant from "ts-invariant";
