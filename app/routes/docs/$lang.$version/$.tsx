@@ -14,7 +14,8 @@ let loader: LoaderFunction = async ({ params, context, request }) => {
 
   let { lang, version, "*": splat } = params;
 
-  let filePath = lang === "en" ? `/docs/${splat}` : `/docs/${lang}/${splat}`;
+  let filePath =
+    lang === "en" ? `/docs/${splat}` : `/docs/_i18n/${lang}/${splat}`;
 
   let doc = await getDoc(filePath, version, lang);
 

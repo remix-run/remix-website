@@ -13,7 +13,7 @@ let loader: LoaderFunction = async ({ params }) => {
 
   let { lang, version } = params;
 
-  let filePath = lang === "en" ? `/docs/index` : `/docs/${lang}/index`;
+  let filePath = lang === "en" ? `/docs/index` : `/docs/_i18n/${lang}/index`;
 
   let doc = await getDoc(filePath, version, lang);
 
