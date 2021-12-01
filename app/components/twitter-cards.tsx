@@ -176,6 +176,7 @@ export function BigTweet({ tweet }: { tweet: TweetData }) {
           <a
             href={tweet.href}
             target="_blank"
+            rel="noopener"
             className="block text-m-h3 md:text-d-h3 font-display"
             aria-label={`Tweet from ${tweet.name}`}
           >

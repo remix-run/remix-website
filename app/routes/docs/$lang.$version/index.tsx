@@ -5,7 +5,7 @@ import { json } from "remix";
 
 import { getDoc } from "~/utils/docs/get-doc.server";
 import { DocsPage } from "~/components/doc";
-import { CACHE_CONTROL } from "~/utils/http";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 let loader: LoaderFunction = async ({ params }) => {
   invariant(!!params.version, "Expected version param");

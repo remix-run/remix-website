@@ -1,7 +1,7 @@
 import { useLoaderData, json } from "remix";
 import type { LoaderFunction, LinksFunction } from "remix";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
-import { getMarkdown } from "~/utils/md";
+import { getMarkdown } from "~/utils/md.server";
 import indexStyles from "../../styles/index.css";
 import { Red } from "~/components/gradients";
 import { BigTweet, TweetCarousel, tweets } from "~/components/twitter-cards";

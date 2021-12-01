@@ -26,8 +26,8 @@ export default function NewInvoice() {
 }
 
 export async function action({ request }) {
-  let body = await request.formData();
-  let invoice = await createInvoice(body);
+  const body = await request.formData();
+  const invoice = await createInvoice(body);
   return redirect(`/invoices/${invoice.id}`);
 }
 ```
@@ -36,7 +36,7 @@ export async function action({ request }) {
 
 ```tsx [2,8-10]
 export default function NewInvoice() {
-  let transition = useTransition();
+  const transition = useTransition();
   return (
     <Form method="post">
       <input type="text" name="company" />
@@ -55,7 +55,7 @@ export default function NewInvoice() {
 
 ```tsx [3-9]
 export default function NewInvoice() {
-  let { submission } = useTransition();
+  const { submission } = useTransition();
   return submission ? (
     <Invoice
       invoice={Object.fromEntries(

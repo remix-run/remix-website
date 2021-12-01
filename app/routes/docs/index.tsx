@@ -1,6 +1,6 @@
 import acceptLanguage from "accept-language";
 import { LoaderFunction, redirect } from "remix";
-import { getVersions } from "@mcansh/undoc";
+import { getVersions } from "~/utils/undoc.server";
 
 import { prisma } from "~/db.server";
 

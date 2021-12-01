@@ -2,7 +2,7 @@
 
 ```tsx [6-15]
 export default function InvoiceRoute() {
-  let invoice = useLoaderData();
+  const invoice = useLoaderData();
   return <Invoice data={invoice} />;
 }
 ```
@@ -11,7 +11,7 @@ export default function InvoiceRoute() {
 
 ```tsx [6-15]
 export default function InvoiceRoute() {
-  let invoice = useLoaderData();
+  const invoice = useLoaderData();
   return <Invoice data={invoice} />;
 }
 
@@ -32,7 +32,7 @@ export function ErrorBoundary({ error }) {
 
 ```tsx
 export default function InvoiceRoute() {
-  let invoice = useLoaderData();
+  const invoice = useLoaderData();
   return <Invoice data={invoice} />;
 }
 ```

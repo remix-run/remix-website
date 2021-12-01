@@ -1,7 +1,7 @@
 import type { LoaderFunction, RouteComponent } from "remix";
 import { redirect } from "remix";
 import acceptLanguage from "accept-language";
-import { getVersions } from "@mcansh/undoc";
+import { getVersions } from "~/utils/undoc.server";
 
 import { prisma } from "~/db.server";
 
