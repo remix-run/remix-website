@@ -12,9 +12,11 @@ let loader: LoaderFunction = async ({ params }) => {
   invariant(!!params.lang, "Expected language param");
   invariant(!!params["*"], "Expected file path");
 
-  let { lang, version } = params;
+  let { lang, version, "*": splat } = params;
 
-  let doc = await getDoc(params["*"], version, lang);
+  let filePath = lang === "en" ? `/docs/${splat}` : `/docs/${lang}/${splat}`;
+
+  let doc = await getDoc(filePath, version, lang);
 
   return json(doc, { headers: { "Cache-Control": CACHE_CONTROL } });
 };

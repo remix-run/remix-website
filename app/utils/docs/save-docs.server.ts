@@ -65,31 +65,36 @@ async function saveDocs(ref: string, releaseNotes: string) {
     version = getVersionHead(githubRef.ref);
   }
 
-  let existingDocs = githubRef.docs.map((doc) => doc.filePath);
+  let currentDocs = githubRef.docs.map((doc) => doc.filePath);
+  let newDocs: string[] = [];
 
-  await findMatchingEntries(stream, "/docs", existingDocs, {
-    async onEntry(entry) {
-      let doc = await processDoc(entry, version);
+  await findMatchingEntries(stream, "/docs", async (entry) => {
+    if (!entry.path.endsWith(".md")) {
+      // ignore non markdown files
+      return;
+    }
+    console.log(`> Adding or updating ${entry.path}`);
+    newDocs.push(entry.path);
+    let doc = await processDoc(entry, version);
+    await upsertDoc(githubRef.ref, doc);
+  });
 
-      await upsertDoc(githubRef.ref, doc);
-    },
-    onDeletedEntries: async (deletedEntries) => {
-      await prisma.doc.deleteMany({
-        where: {
-          filePath: {
-            in: deletedEntries,
-          },
-          githubRef: {
-            ref: githubRef.ref,
-          },
-        },
-      });
+  let deletedEntries = currentDocs.filter((p) => !newDocs.includes(p));
 
-      for (const doc of deletedEntries) {
-        console.log(`> Deleted ${doc} for ${ref}`);
-      }
+  await prisma.doc.deleteMany({
+    where: {
+      filePath: {
+        in: deletedEntries,
+      },
+      githubRef: {
+        ref: githubRef.ref,
+      },
     },
   });
+
+  for (const doc of deletedEntries) {
+    console.log(`> Deleted ${doc} for ${ref}`);
+  }
 }
 
 async function upsertDoc(ref: string, doc: ProcessedDoc) {

@@ -27,7 +27,7 @@ export async function getDoc(
   }
 
   let doc: Doc;
-  let slugs = [path.join("/", `${slug}.md`), path.join("/", slug, "index.md")];
+  let slugs = [`${slug}.md`, `${slug}/index.md`];
   try {
     doc = await prisma.doc.findFirst({
       where: {

@@ -13,7 +13,9 @@ let loader: LoaderFunction = async ({ params }) => {
 
   let { lang, version } = params;
 
-  let doc = await getDoc("index", version, lang);
+  let filePath = lang === "en" ? `/docs/index` : `/docs/${lang}/index`;
+
+  let doc = await getDoc(filePath, version, lang);
 
   return json(doc, { headers: { "Cache-Control": CACHE_CONTROL } });
 };
