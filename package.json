@@ -18,7 +18,8 @@
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
     "start": "NODE_ENV=production remix-serve build",
     "db:reset": "prisma migrate reset",
-    "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts && node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts"
+    "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts",
+    "postseed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts"
   },
   "dependencies": {
     "@docsearch/css": "^3.0.0-alpha.41",

@@ -36,8 +36,9 @@ COPY --from=deps /remixapp/node_modules /remixapp/node_modules
 
 # schema doesn't change much so these will stay cached
 ADD prisma .
-RUN npx prisma migrate reset --force
+RUN npx prisma migrate reset --force --skip-seed
 RUN npx prisma generate
+RUN npm run seed
 
 # remixapp code changes all the time
 ADD . .
