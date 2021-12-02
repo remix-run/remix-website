@@ -15,7 +15,6 @@ processes = []
   auto_rollback = false
 
 [[services]]
-  http_checks = []
   internal_port = 8080
   protocol = "tcp"
   script_checks = []
@@ -38,3 +37,25 @@ processes = []
     interval = "15s"
     restart_limit = 6
     timeout = "2s"
+
+[[services.http_checks]]
+  # 10 minutes
+  interval = 600000
+  grace_period = "5s"
+  method = "post"
+  path = "/_refresh"
+  protocol = "http"
+  timeout = 2000
+  tls_skip_verify = false
+  [services.http_checks.headers]
+    Authorization = "Bearer $AUTH_TOKEN"
+
+[[services.http_checks]]
+  # 11 minutes
+  interval = 660000
+  grace_period = "5s"
+  method = "get"
+  path = "/docs/en/v1"
+  protocol = "http"
+  timeout = 2000
+  tls_skip_verify = false
