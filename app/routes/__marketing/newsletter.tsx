@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 
 export function meta() {
   return {
-    title: "Remix Newsletter",
+    title: "Remix Newsletter"
   };
 }
 
@@ -59,7 +59,6 @@ export default function Newsletter() {
           unsubscribe at any time.
         </div>
         <div className="h-9" />
-        <div className="h-[100vh]" />
         <Form
           replace
           method="post"
@@ -77,7 +76,7 @@ export default function Newsletter() {
             className="w-full sm:w-auto sm:flex-1 placeholder-gray-500"
           />
           <Button
-            onClick={(event) => {
+            onClick={event => {
               if (transition.state === "submitting") {
                 event.preventDefault();
               }
