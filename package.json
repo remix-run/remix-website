@@ -14,7 +14,6 @@
     "postinstall": "remix setup",
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
     "start": "NODE_ENV=production remix-serve build",
-    "prestart": "npm run seed",
     "db:reset": "prisma migrate reset",
     "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts && node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts",
     "clean:safe": "del public/build .cache build prisma/dev.db"
