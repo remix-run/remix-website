@@ -12,8 +12,6 @@ let loader: LoaderFunction = async ({ params, context, request }) => {
   invariant(!!params.lang, "Expected language param");
   invariant(!!params["*"], "Expected file path");
 
-  console.log({ params, context, request });
-
   let { lang, version } = params;
 
   let doc = await getDoc(params["*"], version, lang);
