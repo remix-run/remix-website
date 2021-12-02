@@ -48,7 +48,7 @@ processes = []
   timeout = 2000
   tls_skip_verify = false
   [services.http_checks.headers]
-    Authorization = "Bearer $AUTH_TOKEN"
+    Authorization = "$AUTH_TOKEN"
 
 [[services.http_checks]]
   # 11 minutes
