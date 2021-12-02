@@ -150,5 +150,5 @@ export function unstable_shouldReload() {
 // anything on the server, so we get a mis-match after hydration. This
 // placeholder prevents layout shift when the search appears.
 function DocSearchPlaceholder() {
-  return <div className="h-[36px]" />;
+  return <div className="h-9" />;
 }

@@ -134,7 +134,6 @@ export function ErrorBoundary({ error }: { error: Error }) {
         <div className="leading-none text-center">
           <h1 className="text-[25vw]">Error</h1>
           <div className="text-d-h3">{error.message}</div>
-          <div className="h-[10vh]" />
         </div>
       </div>
     </Document>
@@ -159,7 +158,6 @@ export function CatchBoundary() {
           >
             {caught.statusText}
           </a>
-          <div className="h-[10vh]" />
         </div>
       </div>
     </Document>
