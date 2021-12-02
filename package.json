@@ -10,7 +10,7 @@
     "build": "npm run build:css && remix build",
     "dev": "pm2-dev pm2.config.js",
     "dev:docs": "node -r ts-node/register/transpile-only -r dotenv/config scripts/watcher.ts",
-    "format": "prettier --ignore-file .eslintignore --write ./",
+    "format": "prettier --write ./",
     "postinstall": "remix setup",
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
     "start": "NODE_ENV=production remix-serve build",
