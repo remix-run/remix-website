@@ -4,6 +4,18 @@ FROM node:16-bullseye-slim as base
 RUN apt-get update && apt-get install -y openssl
 
 ENV NODE_ENV=production
+ARG COMMIT_SHA
+ENV COMMIT_SHA=$COMMIT_SHA
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+ARG REPO
+ENV REPO=$REPO
+ARG REPO_DOCS_PATH
+ENV REPO_DOCS_PATH=$REPO_DOCS_PATH
+ARG REPO_LATEST_BRANCH
+ENV REPO_LATEST_BRANCH=$REPO_LATEST_BRANCH
+ARG SITE_URL
+ENV SITE_URL=$SITE_URL
 
 # install all node_modules, including dev
 FROM base as deps
@@ -25,11 +37,6 @@ RUN npm prune --production
 # build remixapp
 FROM base as build
 
-ARG COMMIT_SHA
-ENV COMMIT_SHA=$COMMIT_SHA
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
-
 WORKDIR /remixapp/
 
 COPY --from=deps /remixapp/node_modules /remixapp/node_modules
@@ -48,9 +55,6 @@ RUN npm run build
 
 # build smaller image for running
 FROM base
-
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
 
 WORKDIR /remixapp/
 
