@@ -1,10 +1,13 @@
 {
+  "name": "remix-website",
+  "version": "27.0.0",
   "private": true,
-  "name": "remix-app-template",
   "description": "",
   "license": "",
+  "sideEffects": false,
   "scripts": {
     "clean": "git clean -fdX .",
+    "clean:safe": "del public/build .cache build prisma/dev.db",
     "build:css": "postcss styles --base styles --dir app/styles --env production",
     "dev:css": "postcss styles --base styles --dir app/styles -w",
     "build": "npm run build:css && remix build",
@@ -15,8 +18,7 @@
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
     "start": "NODE_ENV=production remix-serve build",
     "db:reset": "prisma migrate reset",
-    "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts && node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts",
-    "clean:safe": "del public/build .cache build prisma/dev.db"
+    "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts && node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts"
   },
   "dependencies": {
     "@docsearch/css": "^3.0.0-alpha.41",
@@ -70,7 +72,5 @@
   },
   "engines": {
     "node": "16"
-  },
-  "sideEffects": false,
-  "version": "27.0.0"
+  }
 }
