@@ -23,7 +23,7 @@ processes = []
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
-    type = "connections"
+    type = "requests"
 
   [[services.ports]]
     handlers = ["http"]
@@ -34,7 +34,7 @@ processes = []
     port = 443
 
   [[services.tcp_checks]]
-    grace_period = "1s"
+    grace_period = "500s"
     interval = "15s"
     restart_limit = 6
     timeout = "2s"
