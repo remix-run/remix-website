@@ -170,7 +170,7 @@ Anything involved with data loading and server components **can't be used as-is*
 
 On a personal level, this is the [exact thing][ember-firebase] Michael and I ran away from when we came to React. When we got to React, we said "set state" and it was done. It didn't matter what other libraries we brought to the party, they didn't need to be plugged-in to React.
 
-It might be easy to justify this API by thinking that there are only so many data libs that people will use. I actually mispoke spoke earlier. It's not just data packages that need to be wrapped. It's any server side API that is asynchronous 😟. This demo used `marked`, `sanitize-html` and `excerpts`. Lucky for the demo, those are all synchronous. But there are asynchronous markdown libraries and sanitization functions. Most of the time an asynchronous API is faster so that's what most modern utilities use. Had the demo picked one of those, the package json would look something like this:
+It might be easy to justify this API by thinking that there are only so many data libs that people will use. But it's not just data packages that need to be wrapped. It's any server side API that is asynchronous 😟. This demo used `marked`, `sanitize-html` and `excerpts`. Lucky for the demo, those are all synchronous. But there are asynchronous markdown libraries and sanitization functions. Most of the time an asynchronous API is faster so that's what most modern utilities use. Had the demo picked one of those, the package json would look something like this:
 
 ```json
 {
@@ -269,7 +269,7 @@ export default function Dashboard() {
 In a Remix loader, it's normal promises and async/await.
 
 ```tsx
-export function loader() {
+export async function loader() {
   let [user, projects] = await Promise.all([
     prisma.user.findUnique(),
     prisma.project.findMany(),
