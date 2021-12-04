@@ -9,11 +9,11 @@ authors:
     title: Co-Founder
 ---
 
-Since releasing Remix v1 two big questions keep coming up:
+Two big questions keep coming up since releasing Remix v1:
 
 > `let`?!
 
-We switched the docs to `const` because there are hills not worth dying on, or even visiting. Knock yourself out 😆
+Yeah, we use `let`. We switched the docs to `const` though because some hills are not worth dying on--or even visiting. Knock yourself out 😆
 
 > Server Components?
 
