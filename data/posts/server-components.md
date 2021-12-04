@@ -270,8 +270,6 @@ export default function Dashboard() {
 }
 ```
 
-I have trained thousands of developers on React, JavaScript, and web development, so I speak with some authority when I say that the vast majority of developers are not going to understand what the heck any of that code is doing (nor should they). Almost everybody will end up serializing all of their asynchronous code in React because it's the only way to write code that isn't inscrutable.
-
 In a Remix loader, it's normal promises and async/await. It can be tricky too, but it's JavaScript knowledge that you can bring to Remix and take with you elsewhere.
 
 ```tsx
@@ -299,7 +297,7 @@ export async function loader() {
 }
 ```
 
-It just seems like a lot to ask of the community, especially when the benefits (at least for a Remix app) aren't totally obvious yet.
+It just seems like a lot to ask of the community.
 
 ## Uncanny Valley in Wrappers
 
