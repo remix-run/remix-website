@@ -170,18 +170,85 @@ If you know prisma you should be confused by this code. Anything involved with d
 
 On a personal level, this is the [exact thing][ember-firebase] Michael and I ran away from when we came to React. When we got to React, we said "set state" and it was done. It didn't matter what other libraries we brought to the party, they didn't need to be plugged-in to React.
 
-Perhaps this is a necessary step for React and we can be dragged along, but if you've been using Remix for a while, you'll already know we have a strong bias for keeping the abstractions to a minimum. This feels like the first step down a road we already know we don't like 👻
+A second problem with this kind of API is that it will be easy for developers to accidentally create serialized data loading in their components when they could have parallelized it:
 
-In the end though, we're excited to have a new lever to pull that helps us bend the tradeoffs to create better user experiences. We're also happy to tell we've been invited to the React Working Group. We hope to help React continue to be an amazing UI library, and for Remix to take full advantage of not just the Web Platform, but React too.
+```tsx
+// in remix its obvious this is serialized and
+// artifically slower than it needs to be
+export async function loader({ params }) {
+  let users = await prisma.user.findMany();
+  let projects = await prisma.project.findMany();
+  return { users, projects };
+}
 
-[server-components]: https://reactjs.org/blog/2020/12/21/data-fetching-with-react-server-components.html
-[demo]: https://github.com/reactjs/server-components-demo/tree/9285cbd2624c6838ebd2d05df1685df2c0f2f875
-[prisma-demo]: https://github.com/prisma/server-components-demo/blob/36de5831ac2df454a223a7094c46acc53edf1ee2/src/NoteList.server.js
-[react-prisma]: https://github.com/prisma/prisma/blob/1904c4b11fd5a5faa7c9ab9098667fb27e2b3c07/packages/react-prisma/src/index.ts
-[react-packages]: https://github.com/prisma/server-components-demo/blob/c1dc0cd124b178fa41fa0a1cdc3792ff729918b4/package.json#L27-L29
-[ember-firebase]: https://github.com/mjackson/ember-firebase
-[fly]: https://fly.io/docs/getting-started/multi-region-databases/
-[cf-kv]: https://developers.cloudflare.com/workers/learning/how-kv-works
+// fix it with Promise.all
+export async function loader({ params }) {
+  let [users, projects] = await Promise.all([
+    prisma.user.findMany(),
+    prisma.project.findMany(),
+  ]);
+  return { users, projects };
+}
+
+// not obvious in server components
+export default function Dashboard() {
+  let users = prisma.user.findMany();
+  let projects = prisma.project.findMany();
+  // ...
+}
+```
+
+Not only is that an easy mistake, but it's not possible to fix. The react prisma wrapper needs to provide both read _and_ preload APIs, but at the time of this article, it doesn't. It needs something like this:
+
+```ts [2,3]
+export default function Dashboard() {
+  prisma.preload.user.findMany();
+  prisma.preload.project.findMany();
+  let users = prisma.user.findMany();
+  let projects = prisma.project.findMany();
+  // ...
+}
+```
+
+It just seems like a lot to ask of the community, especially when the benefits (at least for a Remix app) aren't totally obvious yet.
+
+Another issue with these packages is that the read APIs need to be wrapped but the write APIs should not be wrapped (you don't mutate your data while rendering). So when you're working with a UI that reads from and writes to prisma you'll use `react-prisma` for the reads but normal prisma [for the writes][normal-prisma]. Likewise, when reading from the file system you'll need [`react-fs`][react-fs], but when writing you'll use the normal fs module. The demo conveniently has all writes happening in a separate node server, so it didn't run into these questions, but I'm already confused about how to initialize prisma in an app that does reads and writes. This is the [`db.server.js`][db-server] from the Server Components demo:
+
+```tsx filename=db.server.js
+import { PrismaClient } from "react-prisma";
+export const prisma = new PrismaClient();
+```
+
+That only knows how to do reads. How do I initialize a client that can do both?
+
+```tsx filename=db.server.js
+import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "react-prisma";
+export const prismaReact = new PrismaClient();
+export const prisma = new PrismaClient();
+```
+
+Maybe that works? Even if it does, it's going to be awkward in code using wrapper libraries for reads and the real library for writes.
+
+Perhaps this is a necessary step for React and we can be dragged along, but if you've been using Remix for a while, you'll already know we have a strong bias for keeping the abstractions to a minimum and staying close to the tech you're using.
+
+JavaScript already has syntax for async behavior, is it worth hiding that and requiring hundreds of `react-*` packages of various quality and correctness just to get data into a component? Is it worth wrapping every data library on NPM with three APIs, one for reads, one for preloads, and one for writes--especially when Remix apps on modern infrastructure can send a full page in under second?
+
+This feels like the first step back onto the road we ran from when coming to React 👻
+
+In the end though, we're excited to have a new lever to pull that helps us bend the tradeoffs to create better user experiences. We're also happy to announce we've been invited to the React Working Group. We hope to help React continue to be an amazing UI library (without getting weird), and for Remix to take full advantage of not just the Web Platform, but React too.
+
 [cf-durable-objects]: https://blog.cloudflare.com/introducing-workers-durable-objects/
-[fauna]: https://fauna.com/
+[cf-kv]: https://developers.cloudflare.com/workers/learning/how-kv-works
+[demo]: https://github.com/reactjs/server-components-demo/tree/9285cbd2624c6838ebd2d05df1685df2c0f2f875
 [deno]: https://deno.com/blog/deploy-beta1
+[ember-firebase]: https://github.com/mjackson/ember-firebase
+[fauna]: https://fauna.com/
+[fly]: https://fly.io/docs/getting-started/multi-region-databases/
+[normal-prisma]: https://github.com/prisma/prisma/blob/1904c4b11fd5a5faa7c9ab9098667fb27e2b3c07/packages/react-prisma/src/index.ts#L94-L95
+[prisma-demo]: https://github.com/prisma/server-components-demo/blob/36de5831ac2df454a223a7094c46acc53edf1ee2/src/NoteList.server.js
+[react-packages]: https://github.com/prisma/server-components-demo/blob/c1dc0cd124b178fa41fa0a1cdc3792ff729918b4/package.json#L27-L29
+[react-prisma]: https://github.com/prisma/prisma/blob/1904c4b11fd5a5faa7c9ab9098667fb27e2b3c07/packages/react-prisma/src/index.ts
+[server-components]: https://reactjs.org/blog/2020/12/21/data-fetching-with-react-server-components.html
+[react-fs]: https://unpkg.com/browse/react-fs@0.0.0-experimental-3310209d0/cjs/react-fs.node.development.server.js
+[db-server]: https://github.com/prisma/server-components-demo/blob/c1dc0cd124b178fa41fa0a1cdc3792ff729918b4/src/db.server.js
