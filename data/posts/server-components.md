@@ -278,13 +278,10 @@ export function loader() {
   let [userBioHtml, projectsWithDescriptions] = await Promise.all([
     sanitizeHtml(await marked(userBioHtml)),
     Promise.all(
-      projects.map(async (project) => {
-        let html = await sanitize(await marked(project.description));
-        return {
-          ...project,
-          descriptionHtml: html,
-        };
-      })
+      projects.map(async (project) => ({
+        ...project,
+        descriptionHtml: await sanitize(await marked(project.description)),
+      }))
     ),
   ]);
 
