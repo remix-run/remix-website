@@ -13,13 +13,13 @@ Two big questions keep coming up since releasing Remix v1:
 
 > `let`?!
 
-Yeah, we use `let`. We switched the docs to `const` though because some hills are not worth dying on--or even visiting. Knock yourself out 😆
+Yeah, we use `let`. We switched the docs to `const` though because some hills are not worth dying on (or even visiting). Knock yourself out 😆
 
 > Server Components?
 
 Aha! Now this is something worth talking about. We've been experimenting with Suspense for years. In fact, the early versions of Remix used it. Realizing it probably wouldn't be released by the time we were ready, we built the async parts of Remix into the framework and are very happy with the results.
 
-After following along with the React team's announcements and doing our own research into Server Components and Remix, we're excited for their potential to create a better user experience for some of your pages, but we're not sure they are the right approach for all of your app.
+After following along with the React team's announcements, and doing our own research into Server Components and Remix, we're excited for their potential to create a better user experience for some of your pages, but we're not sure they are the right approach for all of your app.
 
 [What are Server Components?][server-components]
 
@@ -28,24 +28,24 @@ After following along with the React team's announcements and doing our own rese
 When talking about rendering and data loading, there are three approaches in the React ecosystem:
 
 1. **Fetch As You Render** - Components render a spinner, fetch data in a `useEffect`, set state, render the child components, they render spinners, they fetch, etc. If you use React Query or swr or just your own `useFetch` kind of abstraction, this is what you're doing (along with nearly every other React website).
-2. **Fetch Then Render** - Fetch all of the next pages resources in parallel while keeping the old screen up, then turn the UI over to a fully rendered document. This is the default in Remix.
+2. **Fetch Then Render** - Fetch all of the next pages resources in parallel while keeping the old screen up (usually with a spinner on the link or progress bar at the top), then turn the UI over to a fully rendered document. This is the default in Remix.
 3. **Render As You Fetch** - Fetch all of the next pages resources in parallel, but intead of waiting for all of them, render the parts that are ready immediately. You need a framework above React to achieve this.
 
 Without the help of a framework, Suspense and Server Components are **Fetch As You Render**. Unfortunately, this is probably the worst one of the three (and probably what you're doing right now). This approach leads to spinners that beget spinners that bounce and jank the user all around until the page is finally complete at an artificially slowed down pace.
 
 I say _artificially_ because all of those resources could have been fetched in parallel. They aren't fetched in parallel because _rendering components is what kicks off the loading_. You don't know what to load until you render. Now your resource loading has artifical dependencies on the UI hierarchy. Render spinner, fetch, render new spinner, fetch, render new spinner, fetch, etc.
 
-I took the [official Server Components demo][demo], shuffled code around into Remix's route conventions, and then deployed both versions to a servers in Australia. With a good connection, you can't really tell a difference. But on a slow network, it's clear that loading in parallel is the way to go:
+I took the [official Server Components demo][demo], shuffled code around into Remix's route conventions, and then deployed both versions to servers in Australia. With a good connection, you can't really tell a difference. But on a slow network, it's clear that loading in parallel is the way to go:
 
 <iframe width="100%" height="390" src="https://www.youtube.com/embed/DUKT_eLwIAk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-We recognize this demo from React doesn't show off the recently announced streaming server rendering. But remember, streamed rendering is still fetch as you render. Perhaps it will give the user something more useful sooner, but not the full page.
+We recognize the Server Components demo doesn't show off the recently announced streaming server rendering. But remember, streamed rendering is still fetch as you render. Perhaps it will give the user something more useful sooner, but it still requires rendering to know what to fetch next, creating a slower, bouncy loading experience.
 
 ## Render As You Fetch
 
 The strategy these React features were built for is **Render As You Fetch**, but React can't do that all by itself; it needs a framework above it to kick off a parallel load of the page's resources _before it renders_. As that framework fetches everything in parallel, React can now render the pieces that are ready _as you fetch_.
 
-Facebook has a fancy compiler, Relay, backend infrastructure, and a team that gets paid way more than you and I to make this possible. **But you have Remix**.
+Facebook has a fancy compiler, Relay, backend infrastructure, and multiple teams of engineers that get paid way more than you and I to make this possible. **But you have Remix**.
 
 ## Server Components in Remix
 
@@ -53,7 +53,7 @@ Remix is uniquely positioned to take full advantage of Suspense, Server Componen
 
 Additionally, Remix already has the benefits of colocating your server and client code, including the `{name}.client.js` and `{name}.server.js` file convention (it hints to the compiler which files should run only in one place or the other).
 
-If Remix adopts Server Components for data loading, we think that a simple file rename is all you'll have to do to use them:
+If Remix adopts Server Components for data loading, we think that a simple file rename is all you'll have to do to use them for your routes:
 
 ```sh
 # from
@@ -66,9 +66,9 @@ The `loader` and `useLoaderData` APIs won't need to change and you're already ru
 
 ## But ... We're Not Sure
 
-We're not sure you'll actually want to enable server components for some of your routes.
+We're not sure you'll actually want to enable server components for some, or even most, of your routes.
 
-First, backend infrastructure is getting _really_ good. Not only can you can run your app servers at the edge, but you can get your data to the edge with things like [Fly.io Postgres Read Replicas][fly], [Cloudflare KV][cf-kv] and [Durable Objects][cf-durable-objects], [FaunaDB][fauna], [Deno Deploy][deno] and more. These technologies enable you to render full pages, even with user data, in mere milliseconds. Remix already works with these technologies.
+First, backend infrastructure is getting _really_ good. Not only can you can run your app servers at the edge, but you can get your data to the edge with things like [Fly.io Postgres Read Replicas][fly], [Cloudflare KV][cf-kv] and [Durable Objects][cf-durable-objects], [FaunaDB][fauna], [Deno Deploy][deno] and more. These technologies enable you to render full pages—even with user data—in mere milliseconds. Remix already works with these technologies.
 
 If you can render a full document in under a second, rendering that in streamed chunks of UI in quick succession might actually be a degraded user experience.
 
@@ -111,17 +111,17 @@ But from now on, every time you click an item it only transfers this little bugg
 example note. It contains **Markdown**!"}
 ```
 
+Without server components, the only time the user has to download that template again is if they empty their browser cache or you ship a new version of the template.
+
 Because server components couple your data to your template, your users have to download the template _with every single interaction_ related to that component. While it's "Zero-Bundle" for your JavaScript, the subsequent interactions are "Infinite Bundle" over the wire 😟.
 
-Clicking all three links with Server Components results in 14kB over the wire--it's only 1.5kB with Remix. We're hoping in a real world app this difference isn't the 10x we're seeing in the demo.
-
-Without server components, the only time the user has to download that template again is if they empty their browser cache or you ship a new version of the template.
+Clicking all three links with Server Components results in 14kB over the wire—it's only 1.5kB with Remix. We're hoping in a real world app this difference isn't the 10x we're seeing in the demo.
 
 Note that the item template wasn't included in the initial page load of the Remix version either. The only benefit we got on the initial page load from Server Components was removing the hydration `<script>`. Is it worth trading that for much larger payloads as the user interacts with the app? We don't know yet, but that's our second biggest concern <small>("what's your first?")</small>.
 
 ## Our Take
 
-Server Components + streamed rendering seems optimal for pages you can't make fast on the backend or when you don't expect your user to click on more than a link or two. You'll get the user something useful as soon as possible. For anything else, we're not sure the tradeoffs on subsequent interactions are worth removing the hydration script--especially for sites where your users visit more pages than the one they landed on. Remix is concerned about the entire user experience, not just the TTFB.
+Server Components + streamed rendering seems optimal for pages you can't make fast on the backend or when you don't expect your user to click on more than a link or two. You'll get the user something useful as soon as possible. For anything else, we're not sure the tradeoffs on subsequent interactions are worth removing the hydration script—especially for sites where your users visit more pages than the one they landed on. Remix is concerned about the entire user experience, not just the TTFB.
 
 Additionaly, if you can get your app and your data to the edge, you can usually render the entire document, even with the hydration script data duplication, in milliseconds. The UX of a document coming in pieces _very quickly_ might not be ideal. Or at the very least, not needed.
 
@@ -164,7 +164,9 @@ export default function NoteList({ searchText }) {
 }
 ```
 
-If you know prisma you should be confused by this code. How is that `findMany` returning synchronously? That is not the normal `prisma` you're used to, it's a special, [React specific version][react-prisma]. Anything involved with data loading and server components **can't be used as-is**. The tiny demo [has three wrappers][react-packages] of normal things (`fetch`, `fs`, `prisma`) to accomodate React's new features.
+If you know prisma you should be confused by this code. How is that `findMany` returning synchronously? It's not, not really, because it isn't the `prisma` you're used to. It's a special, [React specific version][react-prisma].
+
+Anything involved with data loading and server components **can't be used as-is**. The tiny demo [has three wrappers][react-packages] of normal things (`fetch`, `fs`, `prisma`) to accomodate React's new features.
 
 On a personal level, this is the [exact thing][ember-firebase] Michael and I ran away from when we came to React. When we got to React, we said "set state" and it was done. It didn't matter what other libraries we brought to the party, they didn't need to be plugged-in to React.
 
@@ -196,7 +198,7 @@ export default function Dashboard() {
 }
 ```
 
-Not only is that an easy mistake, but it's not possible to fix. The react prisma wrapper needs to provide both read _and_ preload APIs, but at the time of this article, it doesn't. You're stuck. It needs to add something like this:
+Not only is that an easy mistake, but it's not possible to fix. The React Prisma wrapper needs to provide both read _and_ preload APIs, but at the time of this article, it doesn't. You're stuck. It needs to add something like this:
 
 ```ts [2,3]
 export default function Dashboard() {
@@ -210,7 +212,9 @@ export default function Dashboard() {
 
 It just seems like a lot to ask of the community, especially when the benefits (at least for a Remix app) aren't totally obvious yet.
 
-**A third issue** with these packages is that the read APIs need to be wrapped but the write APIs should not be wrapped (you don't mutate your data while rendering). So when you're working with a UI that reads from and writes to prisma, you'll use `react-prisma` for the reads but normal prisma [for the writes][normal-prisma]. Likewise, when reading from the file system you'll need [`react-fs`][react-fs], but when writing you'll use the normal `fs` module. The demo conveniently has all writes happening in a separate node server, so it didn't run into these questions, but I'm already confused about how to initialize prisma in an app that does reads and writes. This is the [`db.server.js`][db-server] from the Server Components demo:
+**A third issue** with these packages is that the read APIs need to be wrapped but the write APIs should not be wrapped (you don't mutate your data while rendering). So when you're building a UI that reads from and writes to prisma, you'll use `react-prisma` for the reads but normal prisma [for the writes][normal-prisma]. Likewise, when reading from the file system you'll need [`react-fs`][react-fs], but when writing you'll use the normal `fs` module.
+
+The demo conveniently has all writes happening in a separate node server away from React, so it didn't run into these questions, but I'm already confused about how to initialize prisma in an app that does reads and writes. This is the [`db.server.js`][db-server] from the Server Components demo:
 
 ```tsx filename=db.server.js
 import { PrismaClient } from "react-prisma";
@@ -221,14 +225,14 @@ That only knows how to do reads. How do I initialize a client that can do both?
 
 ```tsx filename=db.server.js
 import { PrismaClient } from "@prisma/client";
-import { PrismaClient } from "react-prisma";
-export const prismaReact = new PrismaClient();
-export const prisma = new PrismaClient();
+import { PrismaClient as ReactPrismaClient } from "react-prisma";
+export const prismaIsh = new ReactPrismaClient();
+export const prismaActually = new PrismaClient();
 ```
 
 Maybe that works? Even if it does, it's going to be awkward in code using wrapper libraries for reads and the real library for writes.
 
-Perhaps this is a necessary step for React and we can be dragged along, but if you've been using Remix for a while, you'll already know we have a strong bias for keeping the abstractions to a minimum and staying close to the tech you're using. JavaScript already has syntax for async behavior, is it worth hiding that and requiring hundreds of `react-*` packages of various quality and correctness just to get data into a component? Is it worth wrapping every data library on NPM with three APIs, one for reads, one for preloads, and one for writes--especially when Remix apps on modern infrastructure can send a full page in under second?
+Perhaps this is a necessary step for React and we can be dragged along, but if you've been using Remix for a while, you'll already know we have a strong bias for keeping the abstractions to a minimum and staying close to the tech you're using. JavaScript already has syntax for async behavior, is it worth hiding that and requiring hundreds of `react-*` packages of various quality and correctness just to get data into a component? Is it worth wrapping every data library on NPM with three APIs, one for reads, one for preloads, and one for writes—especially when Remix apps on modern infrastructure can send a full page in under second?
 
 This feels like the first step back onto the road we ran from when coming to React 👻
 
