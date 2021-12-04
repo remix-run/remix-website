@@ -33,35 +33,46 @@ When talking about rendering and data loading, there are three approaches in the
 
 Without the help of a framework, Suspense and Server Components are **Fetch As You Render**. Which unfortunately is the worst one of the three (and probably what you're doing right now). This approach leads to spinners that beget spinners that bounce and jank the user all around until the page is finally complete at an artificially slowed down pace.
 
-I say _artificially_ because all of those resources could have been fetched in parallel but aren't _rendering of components is what kicks off loading_. You don't know what to load until you render. Now your resource loading has artifical dependencies on the UI hierarchy. Render spinner, fetch, render new spinner, fetch, render new spinner, fetch, etc.
+I say _artificially_ because all of those resources could have been fetched in parallel. They aren't because _rendering components is what kicks off the loads_. You don't know what to load until you render. Now your resource loading has artifical dependencies on the UI hierarchy. Render spinner, fetch, render new spinner, fetch, render new spinner, fetch, etc.
 
 I took the [official Server Components demo][demo] and shuffled code around into Remix's route conventions and deployed both of them to a servers in Australia. With a good connection, you can't really tell a difference. But on a slow network, it's clear that loading in parallel is the way to go:
 
 <iframe width="100%" height="390" src="https://www.youtube.com/embed/DUKT_eLwIAk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-We recognize this demo from React doesn't show off the recently announced streaming server rendering. But remember streamed rendering of server components with Suspense still doesn't fix the network waterfall problem. It's still fetch as you render, but for the initial page load.
+We recognize this demo from React doesn't show off the recently announced streaming server rendering. But remember, streamed rendering is still fetch as you render. Perhaps it will give the user something more useful sooner, but not the full page.
 
 ## Render As You Fetch
 
-The strategy these React features were built for is _Render As You Fetch_ but React can't do that all by itself; it needs a framework above it to kick off a parallel load of the page's resources _before it renders_. As that framework fetches everything in parallel, React can now render the pieces that are ready as you fetch.
+The strategy these React features were built for is **Render As You Fetch**, but React can't do that all by itself; it needs a framework above it to kick off a parallel load of the page's resources _before it renders_. As that framework fetches everything in parallel, React can now render the pieces that are ready as you fetch.
 
-Facebook has a fancy compiler, Relay, backend infrastructure, and a team that gets paid way more than you and I to make this possible. **You have Remix**.
+Facebook has a fancy compiler, Relay, backend infrastructure, and a team that gets paid way more than you and I to make this possible. **But you have Remix**.
 
 ## Server Components in Remix
 
-Remix is uniquely positioned to take full advantage of Suspense, Server Components, and streamed rendering: it already knows everything about a page just from the URL and that's what React needs for _Render As You Fetch_.
+Remix is uniquely positioned to take full advantage of Suspense, Server Components, and streamed rendering: it already knows everything about a page just from the URL, just what React needs for render as you fetch.
 
-Additionally, Remix already has the benefits of colocating your server and client code, including the `{name}.client.js` and `{name}.server.js` file convention to hint to the compiler which files should only run in one place or the other.
+(A nice side effect of this is that Remix can prefetch all of the resources for a URL the user is expected to visit and just skip this entire conversation after the initial page load, but I digress...)
 
-If Remix adopts Server Components for data loading, we are confident that a simple file rename is all you have to do: from `routes/posts.tsx` to `routes/posts.server.tsx`. The `loader` and `useLoaderData` APIs won't need to change and you're already running server code in your route modules anyway. In some ways, Remix routes are already server components.
+Additionally, Remix already has the benefits of colocating your server and client code, including the `{name}.client.js` and `{name}.server.js` file convention (it hints to the compiler which files should only run in one place or the other).
+
+If Remix adopts Server Components for data loading, we think that a simple file rename is all you'll have to do to use them:
+
+```sh
+# from
+routes/posts.tsx
+# to
+routes/posts.server.tsx
+```
+
+The `loader` and `useLoaderData` APIs won't need to change and you're already running server code in your route modules anyway. In some ways, Remix routes are already server components.
 
 ## But ... We're Not Sure
 
-We're not sure you'll actually want to enable server components for most of your routes.
+We're not sure you'll actually want to enable server components for some of your routes.
 
 First, backend infrastructure is getting _really_ good. Not only can you can run your app servers at the edge, but you can get your data to the edge with things like [Fly.io Postgres Read Replicas][fly], [Cloudflare KV][cf-kv] and [Durable Objects][cf-durable-objects], [FaunaDB][fauna], [Deno Deploy][deno] and more. These technologies enable you to render full pages, even with user data, in mere milliseconds. Remix already works with these technologies.
 
-## The Big Tradeoff
+If you can render a full document in under a second, rendering that in streamed chunks of UI in quick succession might actually be a degraded user experience.
 
 There's also a significant tradeoff to consider before enabling server components in your app.
 
@@ -70,9 +81,9 @@ Server Components big feature is "Zero-Bundle". This has two main benefits:
 1. The browser never needs to load the JavaScript bundle that contains the template that renders the server component
 2. It also removes the need for the typical React SSR inline hydration `<script>` full of JSON that's repeated in the markup already (open the devtools here on this site and you'll notice at the bottom this entire post is repeated in the markup and the script tag).
 
-While this sounds great on the surface, the tradeoff is now every time the user interacts with the site, **the template is repeated in the server component response**.
+This sounds great on the surface, but now every time the user interacts with the site **the template is repeated in the server component payload**.
 
-Clicking on a single item in the Server Components demo results in a fetch for this, this is a "server component".
+Clicking on a single item in the Server Components demo results in a fetch for this (this is a "server component").
 
 ```text
 M1:{"id":22,"chunks":[2],"name":""}
@@ -84,7 +95,7 @@ J4:["$","ul",null,{"className":"notes-list","children":[["$","li","1",{"children
 J5:["$","div",null,{"className":"note","children":[["$","div",null,{"className":"note-header","children":[["$","h1",null,{"className":"note-title","children":"I wrote this note toda"}],["$","div",null,{"className":"note-menu","role":"menubar","children":[["$","small",null,{"className":"note-updated-at","role":"status","children":["Last updated on ","3 Dec 2021 at 5:59 PM"]}],["$","@2",null,{"noteId":3,"children":"Edit"}]]}]]}],["$","div",null,{"className":"note-preview","children":["$","div",null,{"className":"text-with-markdown","dangerouslySetInnerHTML":{"__html":"<p>It was an excellent note.</p>\n"}}]}]]}]
 ```
 
-That's over 4kB. If you click all three, you get a response just like it.
+That's over 4kB. If you click all three items, you get a response just like it for each one.
 
 The first time you click a link on the Remix version you have to download the template in this code split bundle:
 
@@ -94,7 +105,7 @@ import{a as i,c as a,d as p}from"/build/_shared/chunk-CDZR6LSD.js";import{a as m
 import{a as d}from"/build/_shared/chunk-XXRJHXMM.js";import{b as i,e as t,f as e}from"/build/_shared/chunk-AKSB5QXU.js";e();e();var n=i(d());function o({text:r}){return t.createElement("div",{className:"text-with-markdown",dangerouslySetInnerHTML:{__html:(0,n.default)(r)}})}function a({body:r}){return t.createElement("div",{className:"note-preview"},t.createElement(o,{text:r}))}export{a};
 ```
 
-But from now on, every time you click a link, all that is transferred is this little bugger:
+But from now on, every navigation only transfers this little bugger:
 
 ```text
 {"id": 1, "createdAt": "2020-12-30T10:13:29.023Z", "updatedAt":
@@ -102,21 +113,23 @@ But from now on, every time you click a link, all that is transferred is this li
 example note. It contains **Markdown**!"}
 ```
 
-Because server components couple your data to your template over the wire, your users have to download the template _with every single interaction_ related to that component. While it's "Zero-Bundle" for the JavaScript side of the template, for the subsequent interactions it's "Infinite Bundle" 😟
+Because server components couple your data to your template over the wire, your users have to download the template _with every single interaction_ related to that component. While it's "Zero-Bundle" for your JavaScript, the subsequent interactions are "Infinite Bundle" 😟.
 
-Without server components, the only time the user has to download that template again is if they empty their browser cache or you ship a new version of the app that changes the it.
+Clicking all three links with Server Components results in 14kB over the write. With Remix it's only 1.5kB. We're hoping in a real world app this difference isn't the 10x we're seeing in the demo.
 
-Clicking all three links in the server components version results in 14kB over the write, with Remix it's only 1.5kB. We're hoping in a real world app this difference isn't 10x.
+Without server components, the only time the user has to download that template again is if they empty their browser cache or you ship a new version of the template.
 
-Note that the item template wasn't included in the initial page load of the Remix version either. So the only benefit we got on the initial page load from server components was removing the hydration `<script>`. It trades that for much larger payloads as the user interacts with the app.
+Note that the item template wasn't included in the initial page load of the Remix version either. So the only benefit we got on the initial page load from Server Components was removing the hydration `<script>`. Is it worth trading that for much larger payloads as the user interacts with the app? We don't know yet, but that's our second biggest concern.
 
 ## Our Take
 
-Server Components + streamed rendering seems optimal for pages you can't make fast on the backend or you don't expect your user to click on more than a link or two. This way you can get the user something useful as soon as possible. For anything else, we're still not sure the tradeoffs on subsequent interactions are worth removing the hydration script. Especially for sites where your users visit more pages than the one they landed on. Remix is concerned about the entire user experience, not just the TTFB.
+Server Components + streamed rendering seems optimal for pages you can't make fast on the backend or when you don't expect your user to click on more than a link or two. You'll get the user something useful as soon as possible. For anything else, we're not sure the tradeoffs on subsequent interactions are worth removing the hydration script--especially for sites where your users visit more pages than the one they landed on. Remix is concerned about the entire user experience, not just the TTFB.
 
-Additionaly, if you can get your app and your data to the edge, you can usually render the entire document, even with the hydration script data duplication, in mere milliseconds. We're not sure what the value is in streaming in such a short window of time. The UX of a document coming in pieces _very quickly_ might not be ideal. Or at the very least, not needed.
+Additionaly, if you can get your app and your data to the edge, you can usually render the entire document, even with the hydration script data duplication, in milliseconds. The UX of a document coming in pieces _very quickly_ might not be ideal. Or at the very least, not needed.
 
-## The Show Stopper
+Server components also complicate your code in order to use them, and this is our biggest concern.
+
+## Our Biggest Concern
 
 So far what we've discussed are tradeoffs in a silly demo toy app. While instructive, it's still a bit speculative on how the tradeoffs will pan out in the real world.
 
@@ -157,9 +170,9 @@ If you know prisma you should be confused by this code. Anything involved with d
 
 On a personal level, this is the [exact thing][ember-firebase] Michael and I ran away from when we came to React. When we got to React, we said "set state" and it was done. It didn't matter what other libraries we brought to the party, they didn't need to be plugged-in to React.
 
-Perhaps this is a necessary step for React and we can be dragged along, but if you've been using Remix for a while, you'll already know we have a strong bias for keeping the abstractions to a minimum. This feels like the path we're on has looped back to the one from which we ran 👻
+Perhaps this is a necessary step for React and we can be dragged along, but if you've been using Remix for a while, you'll already know we have a strong bias for keeping the abstractions to a minimum. This feels like the first step down a road we already know we don't like 👻
 
-In the end though, we're excited to have a new lever to pull that helps you and us bend the tradeoffs to create a better user experience. We're also happy to tell you we've been invited to the React Working Group where we can help steer these features in the best direction possible and help Remix take full advantage of not just the Web Platform, but React as well.
+In the end though, we're excited to have a new lever to pull that helps us bend the tradeoffs to create better user experiences. We're also happy to tell we've been invited to the React Working Group. We hope to help React continue to be an amazing UI library, and for Remix to take full advantage of not just the Web Platform, but React too.
 
 [server-components]: https://reactjs.org/blog/2020/12/21/data-fetching-with-react-server-components.html
 [demo]: https://github.com/reactjs/server-components-demo/tree/9285cbd2624c6838ebd2d05df1685df2c0f2f875
