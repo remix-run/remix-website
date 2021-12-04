@@ -170,6 +170,23 @@ Anything involved with data loading and server components **can't be used as-is*
 
 On a personal level, this is the [exact thing][ember-firebase] Michael and I ran away from when we came to React. When we got to React, we said "set state" and it was done. It didn't matter what other libraries we brought to the party, they didn't need to be plugged-in to React.
 
+It might be easy to justify this API by thinking that there are only so many data libs that people will use. I actually mispoke spoke earlier. It's not just data packages that need to be wrapped. It's any server side API that is asynchronous 😟. This demo used `marked`, `sanitize-html` and `excerpts`. Lucky for the demo, those are all synchronous. But there are asynchronous markdown libraries and sanitization functions. Most of the time an asynchronous API is faster so that's what most modern utilities use. Had the demo picked one of those, the package json would look something like this:
+
+```json
+{
+  "dependencies": {
+    "react-fetch": "*",
+    "react-fs": "*",
+    "react-prisma": "*",
+    "react-marked": "*",
+    "react-sanitize-html": "*",
+    "react-excerpts": "*"
+  }
+}
+```
+
+It's not hard to see where this is headed.
+
 **A second problem** with this kind of API is that it will be easy for developers to accidentally create serialized data loading in their components when they could have parallelized it:
 
 ```tsx
@@ -202,11 +219,80 @@ Not only is that an easy mistake, but it's not possible to fix. The React Prisma
 
 ```ts [2,3]
 export default function Dashboard() {
-  prisma.preload.user.findMany();
+  prisma.preload.user.findUnique();
   prisma.preload.project.findMany();
-  let users = prisma.user.findMany();
+  let user = prisma.user.findUnique();
   let projects = prisma.project.findMany();
   // ...
+}
+```
+
+And if this page needs to use the asynchronous markdown and sanitization libs, in order to parallelize all of the asynchronous operations it gets ... rough.
+
+```ts
+export default function Dashboard() {
+  prisma.preload.user.findUnique();
+  prisma.preload.project.findMany();
+
+  let user = prisma.user.findUnique();
+  marked.preload(user.bio);
+
+  let projects = prisma.project.findMany();
+  projects.forEach((project) => {
+    marked.preload(project.description);
+  });
+
+  let userBioHtml = marked(user.bio);
+
+  projects.forEach((project) => {
+    let html = marked(project.description);
+    sanitizeHtml.preload(html);
+  });
+
+  let projectsWithDescriptions = projects.map((project) => {
+    return {
+      ...project,
+      descriptionHtml: sanitizeHtml(marked(project.description)),
+    };
+  });
+
+  let data = {
+    user,
+    userBioHtml,
+    projectsWithDescriptions,
+  };
+
+  // 🥺
+}
+```
+
+In a Remix loader, it's normal promises and async/await.
+
+```tsx
+export function loader() {
+  let [user, projects] = await Promise.all([
+    prisma.user.findUnique(),
+    prisma.project.findMany(),
+  ]);
+
+  let [userBioHtml, projectsWithDescriptions] = await Promise.all([
+    sanitizeHtml(await marked(userBioHtml)),
+    Promise.all(
+      projects.map(async (project) => {
+        let html = await sanitize(await marked(project.description));
+        return {
+          ...project,
+          descriptionHtml: html,
+        };
+      })
+    ),
+  ]);
+
+  return {
+    user,
+    userBioHtml,
+    projectsWithDescriptions,
+  };
 }
 ```
 
