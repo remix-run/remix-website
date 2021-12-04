@@ -22,13 +22,19 @@ export let meta = ({
   data,
   params,
 }: {
-  data: MarkdownPost;
+  data?: MarkdownPost;
   params: { slug: string };
 }) => {
   let url = `https://remix.run/blog/${params.slug}`;
 
   // TODO: Dynamically generate these from post titles and header images...
   let socialImageUrl = `https://remix.run/blog-images/social/${params.slug}.jpg`;
+
+  if (!data) {
+    return {
+      title: "Hey Not Found",
+    };
+  }
 
   return {
     title: data.title + " | Remix",

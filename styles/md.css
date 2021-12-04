@@ -89,11 +89,15 @@
   }
 
   & pre {
-    @apply break-normal overflow-auto p-2 md:p-3 border-t border-b sm:border sm:rounded-xl border-gray-200 dark:border-gray-700 text-m-p-sm lg:text-d-p-sm -mx-6;
+    @apply my-8 break-normal overflow-auto p-2 md:p-3 border-t border-b sm:border sm:rounded-xl border-gray-200 dark:border-gray-700 text-m-p-sm lg:text-d-p-sm -mx-6;
+  }
+
+  & pre[data-lang="text"] {
+    @apply whitespace-pre-wrap break-all;
   }
 
   & code {
-    @apply rounded-lg  bg-gray-100 dark:bg-gray-800 p-1 text-d-p-sm text-gray-700 dark:text-gray-400;
+    @apply rounded-lg  bg-gray-50 dark:bg-gray-800 p-1 text-d-p-sm text-gray-700 dark:text-gray-400;
   }
 
   /* unset the stuff from `& code` up there ^ */
@@ -176,5 +180,18 @@
     & dd {
       @apply py-0 px-4 mb-4;
     }
+  }
+
+  & blockquote {
+    @apply pl-4 italic border-l-4 font-serif;
+  }
+
+  & .codeblock-line {
+    @apply relative block;
+  }
+
+  & .codeblock-line[data-highlight="true"]::after {
+    content: " ";
+    @apply absolute top-0 -mx-3 left-0 right-0 bg-green-400 pointer-events-none dark:bg-green-600 opacity-10;
   }
 }

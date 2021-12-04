@@ -17,6 +17,13 @@ let cache = new LRUCache<string, Page>({
   },
 });
 
+let postsCache = new LRUCache<string, MarkdownPost>({
+  max: 1024 * 1024 * 12, // 12 mb
+  length(value, key) {
+    return JSON.stringify(value).length + (key ? key.length : 0);
+  },
+});
+
 // This is relative to where this code ends up in the build, not the source
 let contentPath = path.join(__dirname, "..", "md");
 let blogPath = path.join(__dirname, "..", "data/posts");
@@ -55,6 +62,9 @@ export async function getMarkdown(filename: string): Promise<Page> {
 }
 
 export async function getBlogPost(slug: string): Promise<MarkdownPost> {
+  let cached = postsCache.get(slug);
+  if (cached) return cached;
+
   let result = await md(slug + ".md");
   if (!result) {
     throw new Response("Not Found", { status: 404, statusText: "Not Found" });
@@ -63,7 +73,10 @@ export async function getBlogPost(slug: string): Promise<MarkdownPost> {
 
   invariant(isMarkdownPostFrontmatter(attributes), "Invalid post frontmatter.");
 
-  return { ...attributes, html };
+  let post = { ...attributes, html };
+  postsCache.set(slug, post);
+
+  return post;
 }
 
 /**
@@ -83,7 +96,7 @@ export interface MarkdownPost {
  */
 export interface Author {
   name: string;
-  bio: string;
+  title: string;
   avatar: string;
 }
 
