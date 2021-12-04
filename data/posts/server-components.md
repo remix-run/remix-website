@@ -230,7 +230,7 @@ export const prismaIsh = new ReactPrismaClient();
 export const prismaActually = new PrismaClient();
 ```
 
-Maybe that works? Even if it does, it's going to be awkward in code using wrapper libraries for reads and the real library for writes.
+Maybe that works? Even if it does, it's going to be awkward using wrapper libraries for reads and the real library for writes. What is the developer experience when reading the prisma documentation and trying to bring that information into a React app? When do I use await? When do I not? Why is there no create method? Prisma is going to get a bunch of issues from people trying to use it in React that will just make no sense to the maintainers unless they know the magic. I expect this API decision by React will have major, negative, network effects across web development. I really hope people are still thinking of how to avoid these wrappers.
 
 Perhaps this is a necessary step for React and we can be dragged along, but if you've been using Remix for a while, you'll already know we have a strong bias for keeping the abstractions to a minimum and staying close to the tech you're using. JavaScript already has syntax for async behavior, is it worth hiding that and requiring hundreds of `react-*` packages of various quality and correctness just to get data into a component? Is it worth wrapping every data library on NPM with three APIs, one for reads, one for preloads, and one for writes—especially when Remix apps on modern infrastructure can send a full page in under second?
 
