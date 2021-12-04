@@ -266,7 +266,7 @@ export default function Dashboard() {
 }
 ```
 
-I have trained _thousands_ of developers on React, JavaScript, and web development, so I speak with some authority when I say that the vast majority of developers are not going to understand what the heck any of that code is doing (nor should they) and will end up serializing all of their asynchronous code in React because it's the only way to write code that isn't a bit bonkers.
+I have trained _thousands_ of developers on React, JavaScript, and web development, so I speak with some authority when I say that the vast majority of developers are not going to understand what the heck any of that code is doing (nor should they). Almost everybody will end up serializing all of their asynchronous code in React because it's the only way to write code that isn't inscrutable.
 
 In a Remix loader, it's normal promises and async/await. It can be tricky too, but it's JavaScript knowledge that you can bring to React and take with you elsewhere.
 
