@@ -2,7 +2,7 @@
 title: Server Components and Remix
 date: December 6, 2021
 image: /remix-v1.jpg
-imageAlt: ""
+imageAlt: "Nothing yet"
 authors:
   - name: Ryan Florence
     avatar: /r.jpg
