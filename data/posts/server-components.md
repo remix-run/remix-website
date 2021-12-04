@@ -17,7 +17,7 @@ We switched the docs to `const` because there are hills not worth dying on, or e
 
 > Server Components?
 
-Aha! Now this is something worth talking about. We've been experimenting with Suspense for years--in fact, the early versions of Remix used it. Realizing it probably wouldn't be released by the time we were ready, we built the async parts of Remix into the framework and are very happy with the results.
+Aha! Now this is something worth talking about. We've been experimenting with Suspense for years. In fact, the early versions of Remix used it. Realizing it probably wouldn't be released by the time we were ready, we built the async parts of Remix into the framework and are very happy with the results.
 
 After following along with the React team's announcements and doing our own research into Server Components and Remix, we're excited for their potential to create a better user experience for some of your pages, but we're not sure they are the right approach for all of your app.
 
