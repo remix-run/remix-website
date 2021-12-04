@@ -127,7 +127,7 @@ Additionaly, if you can get your app and your data to the edge, you can usually 
 
 ## Our Biggest Concern
 
-Server components also complicate your code in order to use them, and this is our biggest concern.
+Server components complicate your code in order to use them. This is our biggest concern.
 
 So far what we've discussed are tradeoffs in a silly demo toy app. While instructive, it's still a bit speculative on how the tradeoffs will pan out in the real world.
 
