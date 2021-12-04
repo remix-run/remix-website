@@ -166,6 +166,8 @@ export default function NoteList({ searchText }) {
 
 If you know prisma you should be confused by this code. How is that `findMany` returning synchronously? It's not, not really, because it isn't the `prisma` you're used to. It's a special, [React specific version][react-prisma].
 
+## Wrappers
+
 Anything involved with data loading and server components **can't be used as-is**. The tiny demo [has three wrappers][react-packages] of normal things (`fetch`, `fs`, `prisma`) to accomodate React's new features.
 
 On a personal level, this is the [exact thing][ember-firebase] Michael and I ran away from when we came to React. When we got to React, we said "set state" and it was done. It didn't matter what other libraries we brought to the party, they didn't need to be plugged-in to React.
@@ -187,7 +189,9 @@ It might be easy to justify this API by thinking that there are only so many dat
 
 It's not hard to see where this is headed.
 
-**A second problem** with this kind of API is that it will be easy for developers to accidentally create serialized data loading in their components when they could have parallelized it:
+## Accidental Serialization
+
+A second problem with this kind of API is that it will be easy for developers to accidentally create serialized data loading in their components when they could have parallelized it:
 
 ```tsx
 // in remix its obvious this is serialized and
@@ -297,7 +301,9 @@ export async function loader() {
 
 It just seems like a lot to ask of the community, especially when the benefits (at least for a Remix app) aren't totally obvious yet.
 
-**A third issue** with these packages is that the read APIs need to be wrapped but the write APIs should not be wrapped (you don't mutate your data while rendering). So when you're building a UI that reads from and writes to prisma, you'll use `react-prisma` for the reads but normal prisma [for the writes][normal-prisma]. Likewise, when reading from the file system you'll need [`react-fs`][react-fs], but when writing you'll use the normal `fs` module.
+## Uncanny Valley in Wrappers
+
+A third issue with these packages is that the read APIs need to be wrapped but the write APIs should not be wrapped (you don't mutate your data while rendering). So when you're building a UI that reads from and writes to prisma, you'll use `react-prisma` for the reads but normal prisma [for the writes][normal-prisma]. Likewise, when reading from the file system you'll need [`react-fs`][react-fs], but when writing you'll use the normal `fs` module.
 
 The demo conveniently has all writes happening in a separate node server away from React, so it didn't run into these questions, but I'm already confused about how to initialize prisma in an app that does reads and writes. This is the [`db.server.js`][db-server] from the Server Components demo:
 
