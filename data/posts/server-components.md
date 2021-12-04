@@ -127,11 +127,11 @@ Additionaly, if you can get your app and your data to the edge, you can usually 
 
 ## Our Biggest Concern
 
-Server components complicate your code in order to use them. This is our biggest concern.
-
 So far what we've discussed are tradeoffs in a silly demo toy app. While instructive, it's still a bit speculative on how the tradeoffs will pan out in the real world.
 
-There's one thing, however, that really concerns us. This is some code from the [server components demo that uses prisma][prisma-demo]:
+Server components complicate your code in order to use them. This is our biggest concern.
+
+Here is some code from the [server components demo that uses prisma][prisma-demo]:
 
 ```js lines=[1,5,13]
 import { prisma } from "./db.server";
