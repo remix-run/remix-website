@@ -29,11 +29,11 @@ When talking about rendering and data loading, there are three approaches in the
 
 1. **Fetch As You Render** - Components render a spinner, fetch data in a `useEffect`, set state, render the child components, they render spinners, they fetch, etc. If you use React Query or swr or just your own `useFetch` kind of abstraction, this is what you're doing (along with nearly every other React website).
 2. **Fetch Then Render** - Fetch all of the next pages resources in parallel while keeping the old screen up (usually with a spinner on the link or progress bar at the top), then turn the UI over to a fully rendered document. This is the default in Remix.
-3. **Render As You Fetch** - Fetch all of the next pages resources in parallel, but intead of waiting for all of them, render the parts that are ready immediately. You need a framework above React to achieve this.
+3. **Render As You Fetch** - Fetch all of the next pages resources in parallel, but instead of waiting for all of them, render the parts that are ready immediately. You need a framework above React to achieve this.
 
 Without the help of a framework, Suspense and Server Components are **Fetch As You Render**. Unfortunately, this is probably the worst one of the three (and probably what you're doing right now). This approach leads to spinners that beget spinners that bounce and jank the user all around until the page is finally complete at an artificially slowed down pace.
 
-I say _artificially_ because all of those resources could have been fetched in parallel. They aren't fetched in parallel because _rendering components is what kicks off the loading_. You don't know what to load until you render. Now your resource loading has artifical dependencies on the UI hierarchy. Render spinner, fetch, render new spinner, fetch, render new spinner, fetch, etc.
+I say _artificially_ because all of those resources could have been fetched in parallel. They aren't fetched in parallel because _rendering components is what kicks off the loading_. You don't know what to load until you render. Now your resource loading has artificial dependencies on the UI hierarchy. Render spinner, fetch, render new spinner, fetch, render new spinner, fetch, etc.
 
 I took the [official Server Components demo][demo], shuffled code around into Remix's route conventions, and then deployed both versions to servers in Australia. With a good connection, you can't really tell a difference. But on a slow network, it's clear that loading in parallel is the way to go:
 
@@ -51,7 +51,7 @@ Facebook has a fancy compiler, Relay, backend infrastructure, and multiple teams
 
 Remix is uniquely positioned to take full advantage of Suspense, Server Components, and streamed rendering: it already knows everything about a page just from the URL, just what React needs for render as you fetch. (A nice side effect of this is that Remix can prefetch all of the resources for a URL the user is expected to visit, skipping this entire conversation after the initial page load, but I digress...)
 
-Additionally, Remix already has the benefits of colocating your server and client code, including the `{name}.client.js` and `{name}.server.js` file convention (it hints to the compiler which files should run only in one place or the other).
+Additionally, Remix already has the benefits of co-locating your server and client code, including the `{name}.client.js` and `{name}.server.js` file convention (it hints to the compiler which files should run only in one place or the other).
 
 If Remix adopts Server Components for data loading, we think that a simple file rename is all you'll have to do to use them for your routes:
 
@@ -123,7 +123,7 @@ Note that the item template wasn't included in the initial page load of the Remi
 
 Server Components + streamed rendering seems optimal for pages you can't make fast on the backend or when you don't expect your user to click on more than a link or two. You'll get the user something useful as soon as possible. For anything else, we're not sure the tradeoffs on subsequent interactions are worth removing the hydration script—especially for sites where your users visit more pages than the one they landed on. Remix is concerned about the entire user experience, not just the TTFB.
 
-Additionaly, if you can get your app and your data to the edge, you can usually render the entire document, even with the hydration script data duplication, in milliseconds. The UX of a document coming in pieces _very quickly_ might not be ideal. Or at the very least, not needed.
+Additionally, if you can get your app and your data to the edge, you can usually render the entire document, even with the hydration script data duplication, in milliseconds. The UX of a document coming in pieces _very quickly_ might not be ideal. Or at the very least, not needed.
 
 ## Our Biggest Concern
 
@@ -168,11 +168,11 @@ If you know prisma you should be confused by this code. How is that `findMany` r
 
 ## Wrappers
 
-Anything involved with data loading and server components **can't be used as-is**. The tiny demo [has three wrappers][react-packages] of normal things (`fetch`, `fs`, `prisma`) to accomodate React's new features.
+Anything involved with data loading and server components **can't be used as-is**. The tiny demo [has three wrappers][react-packages] of normal things (`fetch`, `fs`, `prisma`) to accommodate React's new features.
 
 On a personal level, this is the [exact thing][ember-firebase] Michael and I ran away from when we came to React. When we got to React, we said "set state" and it was done. It didn't matter what other libraries we brought to the party, they didn't need to be plugged-in to React.
 
-It might be easy to justify this API by thinking that there are only so many data libs that people will use. But it's not just data packages that need to be wrapped. It's any server side API that is asynchronous 😟. This demo used `marked`, `sanitize-html` and `excerpts`. Lucky for the demo, those are all synchronous. But there are asynchronous markdown libraries and sanitization functions. Most of the time an asynchronous API is faster so that's what most modern utilities use. Had the demo picked one of those, the package json would look something like this:
+It's not just data packages that need to be wrapped either. It's any server side API that is asynchronous 😟. This demo used `marked`, `sanitize-html` and `excerpts`, which are all synchronous. But there are asynchronous markdown libraries and sanitization functions out there. Most of the time an asynchronous API is faster. Had the demo picked one of those, the package json would look something like this:
 
 ```json
 {
@@ -189,13 +189,13 @@ It might be easy to justify this API by thinking that there are only so many dat
 
 It's not hard to see where this is headed.
 
-## Accidental Serialization
+## Accidental Serialized Code
 
-A second problem with this kind of API is that it will be easy for developers to accidentally create serialized data loading in their components when they could have parallelized it:
+A second problem with this kind of API is that it will be easy for developers to accidentally create serialized code that could have been parallelized.
 
 ```tsx
 // in remix its obvious this is serialized and
-// artifically slower than it needs to be
+// artificially slower than it needs to be
 export async function loader({ params }) {
   let users = await prisma.user.findMany();
   let projects = await prisma.project.findMany();
@@ -231,7 +231,7 @@ export default function Dashboard() {
 }
 ```
 
-And if this page needs to use the asynchronous markdown and sanitization libs, in order to parallelize all of the asynchronous operations it gets ... rough.
+That's not big deal, but what if the markdown and sanitation functions you're using are asynchronous? Parallelizing that gets ... rough.
 
 ```ts
 export default function Dashboard() {
@@ -303,7 +303,7 @@ It just seems like a lot to ask of the community.
 
 A third issue with these packages is that the read APIs need to be wrapped but the write APIs should not be wrapped (you don't mutate your data while rendering). So when you're building a UI that reads from and writes to prisma, you'll use `react-prisma` for the reads but normal prisma [for the writes][normal-prisma]. Likewise, when reading from the file system you'll need [`react-fs`][react-fs], but when writing you'll use the normal `fs` module.
 
-The demo conveniently has all writes happening in a separate node server away from React, so it didn't run into these questions, but I'm already confused about how to initialize prisma in an app that does reads and writes. This is the [`db.server.js`][db-server] from the Server Components demo:
+The demo doesn't run into this because the writes happen in a separate node server API, away from React. I'm unsure how you would initialize prisma in an app that does reads and writes. This is the [`db.server.js`][db-server] from the Server Components demo:
 
 ```tsx filename=db.server.js
 import { PrismaClient } from "react-prisma";
@@ -315,17 +315,23 @@ That only knows how to do reads. How do I initialize a client that can do both?
 ```tsx filename=db.server.js
 import { PrismaClient } from "@prisma/client";
 import { PrismaClient as ReactPrismaClient } from "react-prisma";
-export const prismaIsh = new ReactPrismaClient();
-export const prismaActually = new PrismaClient();
+export const prismaInComponents = new ReactPrismaClient();
+export const prismaEveryWhereElse = new PrismaClient();
 ```
 
-Maybe that works? Even if it does, it's going to be awkward using wrapper libraries for reads and the real library for writes. What is the developer experience when reading the prisma documentation and trying to bring that information into a React app? When do I use await? When do I not? Why is there no create method? Prisma is going to get a bunch of issues from people trying to use it in React that will just make no sense to the maintainers unless they know the magic. I expect this API decision by React will have major, negative, network effects across web development. I really hope people are still thinking of how to avoid these wrappers.
-
-Perhaps this is a necessary step for React and we can be dragged along, but if you've been using Remix for a while, you'll already know we have a strong bias for keeping the abstractions to a minimum and staying close to the tech you're using. JavaScript already has syntax for async behavior, is it worth hiding that and requiring hundreds of `react-*` packages of various quality and correctness just to get data into a component? Is it worth wrapping every data library on NPM with three APIs, one for reads, one for preloads, and one for writes—especially when Remix apps on modern infrastructure can send a full page in under second?
+Maybe that works? What is the developer experience when reading the prisma documentation and trying to bring that information into a React app? What's the effect on the prisma issues tab?
 
 This feels like the first step back onto the road we ran from when coming to React 👻
 
-In the end though, we're excited to have a new lever to pull that helps us bend the tradeoffs to create better user experiences. We're also happy to announce we've been invited to the React Working Group. We hope to help React continue to be an amazing UI library (without getting too weird), and for Remix to take full advantage of not just the Web Platform, but React too.
+But hey, our first priority is the user experience, not the developer experience (you're second place, sorry!). Perhaps this is a necessary step for React to provide the best UX possible. We'd love to see some alternatives though.
+
+If you've been using Remix for a while, you'll already know we have a strong bias for keeping the abstractions to a minimum and staying close to the tech you're using. JavaScript already has syntax for async behavior, is it worth hiding that and requiring hundreds of `react-*` packages of various quality and correctness just to get data into a component?
+
+## Remix Can Help
+
+Fortunately, with Remix you'll probably be able to skip all the `react-*` packages and write normal JavaScript for tricky async code. Loaders should be able to work the same as they do today and Remix can manage the internal, nested suspense caches that necessitate the wrappers. You'll get all the benefits of server components, render as you fetch, and parallel asset loading with fewer tradeoffs.
+
+We're excited to have a new lever to pull that helps us bend the tradeoffs to create better user experiences. We're also happy to announce we've been invited to the React Working Group. We hope to help React continue to be an amazing UI library (without getting too weird), and for Remix to take full advantage of not just the Web Platform, but React too.
 
 [cf-durable-objects]: https://blog.cloudflare.com/introducing-workers-durable-objects/
 [cf-kv]: https://developers.cloudflare.com/workers/learning/how-kv-works
