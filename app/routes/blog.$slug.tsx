@@ -57,14 +57,14 @@ export default function BlogPost() {
 
   return (
     <div className="flex flex-col flex-1 h-full">
-      <Header forceDark={true} />
+      <Header />
       <div className="flex flex-col flex-1">
         <div className="flex-1">
           <div>
             <div className="h-[280px] md:h-[400px] md:max-w-3xl md:mx-auto md:rounded-xl xl:h-[480px] relative bg-gray-900">
               <div className="absolute inset-0">
                 <img
-                  className="object-cover object-top w-full h-full opacity-30 md:rounded-xl"
+                  className="object-cover object-top w-full h-full opacity-40 md:rounded-xl"
                   src={post.image}
                   alt={post.imageAlt}
                 />
@@ -115,7 +115,7 @@ export default function BlogPost() {
           </div>
         </div>
       </div>
-      <Footer forceDark={true} />
+      <Footer />
     </div>
   );
 }
