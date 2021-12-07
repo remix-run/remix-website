@@ -67,7 +67,7 @@
   }
 
   & h2 {
-    @apply font-display md:text-m-h2 md:text-d-h2 dark:text-gray-200;
+    @apply font-display text-m-h2 md:text-d-h2 dark:text-gray-200;
   }
 
   & strong {
