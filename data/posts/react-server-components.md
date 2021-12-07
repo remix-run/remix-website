@@ -172,6 +172,28 @@ If you can render a full document, with user data, in 500ms, or even 50ms with R
 
 We're anxious to hear what the React team has to say about React Server Components and streaming rendering at React Conf this week. For now, we are just happy to be able to provide the core team with our feedback and we hope our research helps push the technology forward. Stay tuned for more news from us in this area!
 
+## Live Demos and Source Code
+
+Hacker News Demos:
+
+- [Next.js HN Live Demo](https://next-news-rsc.vercel.sh/rsc)
+- [Remix HN Live Demo](https://remix-hn-one.vercel.app/)
+
+Hacker News Source Code:
+
+- [Next.js HN Source Code](https://github.com/vercel/next-rsc-demo/tree/8bb054d022dbfc5b513d81b1df3775e5be31d460)
+- [Remix HN Source Code](https://github.com/ryanflorence/remix-hn)
+
+Notes App Demos:
+
+- [RSC Notes Live Demo](https://react-server-components.fly.dev/)
+- [Remix Notes Live Demo](https://remix-sc-notes.fly.dev/)
+
+Notes App Source Code:
+
+- [RSC Notes Prisma Fork](https://github.com/prisma/server-components-demo/tree/598ace3b3d61b90ae8d0d96497f5497942f3b849)
+- [Remix Notes Source Code](https://github.com/ryanflorence/server-components-demo/tree/ed52ed6bf70d278540c39305b80634267e6b0dbb)
+
 [cf-durable-objects]: https://blog.cloudflare.com/introducing-workers-durable-objects/
 [cf-kv]: https://developers.cloudflare.com/workers/learning/how-kv-works
 [db-server]: https://github.com/prisma/server-components-demo/blob/c1dc0cd124b178fa41fa0a1cdc3792ff729918b4/src/db.server.js
