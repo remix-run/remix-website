@@ -153,7 +153,7 @@ I'm not happy to say that. I'm genuinely interested in new ways to build better 
 
 Additionally, neither of these demos had any nested UI on the initial load. This is where Remix would really shine, parallelizing the data loading for **render as you fetch**. If Remix is already faster for a single page layout, it certainly won't need any help for the nested layouts that it's already so good at.
 
-Backend infrastructure is getting _really_ good. Not only can you can run your app servers at the edge (close to your users), but you can get your data to the edge too with things like [Fly.io Postgres Read Replicas][fly], [Cloudflare KV][cf-kv] and [Durable Objects][cf-durable-objects], [FaunaDB][fauna], [Deno Deploy][deno] and more. These technologies enable you to render full pages—even with user data—in mere milliseconds. Remix already works with these technologies (check out our [Cloudflare Workers Demo][workers-demo]).
+Backend infrastructure is getting _really_ good. Not only can you run your app servers at the edge (close to your users), but you can get your data to the edge too: [Fly.io Postgres Read Replicas][fly], [Cloudflare KV][cf-kv] and [Durable Objects][cf-durable-objects], [FaunaDB][fauna], [Deno Deploy][deno] and more. These technologies enable you to render full pages—even with user data—in mere milliseconds. Remix already works with these technologies (check out our [Cloudflare Workers Demo][workers-demo]).
 
 If you can render a full document, with user data, in 500ms, or even 50ms with Remix, it's unclear why you'd want to stream that in with spinners bouncing around (even if it was twice as fast instead of twice as slow today).
 
