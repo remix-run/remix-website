@@ -562,7 +562,7 @@ a.md-nav-item {
   }
 
   & docs-warning {
-    @apply text-yellow-900 dark:text-yellow-200;
+    @apply text-yellow-900 dark:text-yellow-100;
   }
 
   & docs-warning::before {
@@ -570,7 +570,7 @@ a.md-nav-item {
   }
 
   & docs-info {
-    @apply text-blue-brand;
+    @apply text-blue-brand dark:text-blue-300;
   }
 
   & docs-info::before {
