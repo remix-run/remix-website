@@ -1,0 +1,7 @@
+.__hero {
+  @media screen and (min-width: 768px) {
+    background-image: url(/ryan-speaks.jpg);
+    background-repeat: no-repeat;
+    background-position-x: calc(50% + 280px);
+  }
+}

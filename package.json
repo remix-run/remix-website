@@ -28,6 +28,7 @@
     "@prisma/client": "^3.5.0",
     "@remix-run/react": "^1.1.1",
     "@remix-run/serve": "^1.1.1",
+    "@reach/menu-button": "^0.16.2",
     "@ryanflorence/md": "^7.0.1",
     "@ryanflorence/mdtut": "^1.2.1",
     "@tailwindcss/aspect-ratio": "^0.3.0",

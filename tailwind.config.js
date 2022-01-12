@@ -13,7 +13,30 @@ module.exports = {
   variants: {
     aspectRatio: ["responsive"],
   },
-  plugins: [require("@tailwindcss/aspect-ratio")],
+  plugins: [
+    require("@tailwindcss/aspect-ratio"),
+    function ({ addVariant, e }) {
+      addVariant("selected", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `.${e(`selected${separator}${className}`)}[data-selected]`;
+        });
+      });
+      addVariant("expanded", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `.${e(
+            `expanded${separator}${className}`
+          )}[aria-expanded="true"]`;
+        });
+      });
+      addVariant("not-expanded", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `.${e(
+            `not-expanded${separator}${className}`
+          )}[aria-expanded="false"]`;
+        });
+      });
+    },
+  ],
   theme: {
     fontFamily: {
       ...defaultTheme.fontFamily,
@@ -143,6 +166,10 @@ module.exports = {
           900: "#441325",
         },
       },
+
+      boxShadow: (theme) => ({
+        speaker: `0 ${theme("spacing.2")} ${theme("colors.pink.brand")}`,
+      }),
     },
   },
 };
