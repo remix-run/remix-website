@@ -31,6 +31,7 @@ By the end, hopefully you'll consider Remix for your next project (no pun intend
 - Next.js requires client side JavaScript for data mutations, Remix doesn't.
 - Next.js build times increase linearly with your data, Remix build times are nearly instant and decoupled from data.
 - Next.js requires you to change your application architecture and sacrifice performance when your data scales.
+- SSG and general "Jamstack" techniques are a workaround for slow backend services. The latest generation of services are fast. Invest in your back end, not frontend workarounds.
 - We think Remix's abstractions lead to better application code, but you will have the opportunity to decide that one for yourself with a scavenger hunt at the end 🥾
 
 ## Self-Descriptions
@@ -45,7 +46,7 @@ Next.js is built by Vercel. Looking at the GitHub repo for the Vercel platform i
 
 We describe Remix as:
 
-> Remix is an edge native JavaScript framework for building modern, fast, and resilient user experiences. It unifies the client and server with web fundamentals so you can think less about code and more about your product.
+> Remix is an edge native, full stack JavaScript framework for building modern, fast, and resilient user experiences. It unifies the client and server with web fundamentals so you can think less about code and more about your product.
 
 We'll leave it to you to contrast those descriptions.
 
@@ -493,11 +494,11 @@ If cache miss requests are a significant portion of your visits, getting 100% ca
 
 ### Personalization
 
-Imagine the product team comes to you and says the home page is changing to display similar products to what the user has purchased in the past instead of a set list of products.
+Let's look at another change. Imagine the product team comes to you and says the home page is changing to display similar products to what the user has purchased in the past, instead of a set list of products.
 
-Like the search page, SSG is out the door. SSG has a limited set of use-cases, the moment you want to display personalized information your performance is gone.
+Like the search page, SSG is out the door. SSG has a limited set of use-cases, your performance is gone the moment you want to display personalized information.
 
-For Remix, this is just a different database query on the backend.
+For Remix, this is just a different database query on the back end.
 
 Virtually every website has users. As your site grows you're going to start showing the user more and more personalized information.
 
@@ -509,7 +510,11 @@ Remix apps get their speed from backend infrastructure and prefetching. Next.js 
 
 Since you have to make your back end fast in either case, invest your time there instead of abstractions for the architectural divergence caused by SSG.
 
-Data loading is only half of the story. In Remix, your data abstractions can also encapsulate data mutation concerns since Remix has both loading and mutation APIs. All the code stays on the server, leading to better application code and smaller bundles in the browser.
+SSG and the Jamstack were great work-a-rounds for slow backend services. The latest generation is fast and only getting faster. Even the Shopify API backing these apps can send a response to a query in 200ms from pretty much anywhere in the world, I tested it from every continent except Antarctica! <small>(Going to need [@chancethedev][https://twitter.com/chancethedev] to try it out for me when he's there this month.)</small>
+
+It would honestly be totally acceptable to skip all caching strategies this article discussed and hit the shopify API in each request on the server. Instead of a 1.2s load it would be 1.4. Instead of 0.8s it would be 1. Bupkus. If you've got a slow backend API, invest your time making that fast, not caching work-a-rounds.
+
+Data loading is only half of the story, too. In Remix, your data abstractions can also encapsulate data mutation concerns since Remix has both loading and mutation APIs. All the code stays on the server, leading to better application code and smaller bundles in the browser.
 
 With Next.js you have to ship your own data mutation code to the browser to interact with the API routes and propagate updates to the rest of the UI. As we saw in this article, even top teams mess this up around errors, interruptions, and race conditions. Not only does this cause a degraded user experience, we think this architectural divergence makes application abstractions harder work with, too (but you get to decide that for yourself in the next section).
 
