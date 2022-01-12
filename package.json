@@ -26,6 +26,7 @@
     "@docsearch/react": "^3.0.0-alpha.41",
     "@mcansh/undoc": "^0.5.0",
     "@prisma/client": "^3.5.0",
+    "@reach/menu-button": "^0.16.2",
     "@remix-run/react": "^1.0.3",
     "@remix-run/serve": "^1.0.3",
     "@ryanflorence/md": "^7.0.1",
