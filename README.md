@@ -18,22 +18,26 @@ npm run dev
 
 ## Deployment
 
-The staging server is always in sync with `main`
+The production server is always in sync with `main`
 
 ```sh
 git push origin main
-open https://remixdotrunstage.fly.dev
+open https://remix.run
 ```
 
-Tagged commits are deployed to production:
+Pushing the "stage" tag will deploy to staging.
 
 ```sh
-npm version major
-# [some npm message]
-git push origin main --follow-tags
+git checkout my/branch
+
+# move the tag
+git tag -f stage
+
+# push it to deploy
+git push origin stage -f
 ```
 
-Use `major` because this isn't an API and it'll take pointless mental effort to think about if your padding change is a major or patch. Let's send the version tags TO THE MOON 🚀🌕.
+When you're happy with it, merge your branch into `main` and push.
 
 ## Content
 
