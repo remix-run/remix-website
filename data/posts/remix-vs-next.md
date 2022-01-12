@@ -99,7 +99,7 @@ Isn't SSG as fast as it gets? How is Remix faster? <small>(Maybe I should call m
 
 Remix has less JavaScript partly because none of the dynamic data loading and mutation code needs to go to the browser (search page, adding to cart, more on that later). With SSG, anything dynamic needs extra client side JavaScript.
 
-**Network Waterfall**: If you look at the network waterfall of both apps, the Remix network waterfall is flatter with fewer requests, while Next.js has more steps.
+**Network Waterfall**: If you look at the network waterfall of both apps, the Remix network waterfall is flatter with fewer requests, while Next.js has more steps and chains.
 
 <div class="flex w-full gap-4">
   <div class="w-1/2">
@@ -112,7 +112,7 @@ Remix has less JavaScript partly because none of the dynamic data loading and mu
   </div>
 </div>
 
-The Next.js graph has a lot more requests and many start later in the timeline that are critical to rendering the page. If it could eliminate those chains it, would get closer to Remix's performance.
+Notice how the Next.js graph has requests that start later in the timeline that are critical to rendering the page. If it could eliminate those chains it would get closer to Remix's performance.
 
 (Some of the bars look like chains on the Remix graph, but that's just the browser deciding when to load things it already knows about. Like the last images, they aren't in the viewport so maybe it waited. Also, we purposefully lazy loaded the last few scripts because those bundles aren't needed for the initial render)
 
@@ -165,7 +165,7 @@ Because SSG doesn't scale to dynamic pages, Next.js switched to client side data
 
 Fetching in the client also means more JavaScript over the network, and more time for parse/eval. Remember, Next.js is sending 40% more JavaScript than Remix. Doing more work in the browser starts to add up (note the red bar at the bottom for a "long task" in Next.js, and only a blip of activity for Remix).
 
-**Why Remix is still fast**: Neither Remix example actually had to talk to the shopify API in the request. While SSG can't cache the search page, the Remix versions can—with either `stale-while-revalidate` or Redis. When you have a single, dynamic way to generate pages, you can tweak your caching strategy without changing your application code. The result is SSG speed on commonly visited, dynamic—pages. The `"/search"` page will likely be primed, as well as the categories on the left nav and common queries like "tshirt".
+**Why Remix is still fast**: Neither Remix example actually had to talk to the shopify API in the request. While SSG can't cache the search page, the Remix versions can—with either `stale-while-revalidate` or Redis. When you have a single, dynamic way to generate pages, you can tweak your caching strategy without changing your application code. The result is SSG speed on commonly visited pages. The `"/search"` page will likely be primed, as well as the categories on the left nav and common queries like "tshirt".
 
 It's interesting to note that the Next.js app also caches search queries, but only in the browser for that one single user and session. Moving that optimization to the server in Remix speeds it up for everybody.
 
@@ -222,7 +222,7 @@ Let's travel around the world to Sydney, Australia and see what a cache miss is 
 
 A ha! Finally a UX tradeoff. There's an argument that getting a skeleton screen in front of the user sooner but a visually complete page later is better. You'd have to A/B test this in your own app to be sure. The delta between those states matters too.
 
-My money is on the fetching, especially as the Redis cache fills up with common queries. Those requests would come out of the cache and be visually complete at the same time the skeleton screens show up.
+My money is on the the Remix version, especially as the Redis cache fills up with common queries. Those requests would come out of the cache and be visually complete at the same time the skeleton screens show up.
 
 I wouldn't leave it to a hunch though in the real world, I'd test it. Because of Remix's design, it would be a two-line net change in my route:
 
@@ -254,10 +254,9 @@ Nothing fundamentally changes about _how_ the data is loaded, simply _when_. No 
 This is a big difference from Next.js, and even backend-focused frameworks like Rails, Phoenix, and Laravel. If you want to do the fetching with the document, you can use their abstractions (like `getServerSideProps`), but if you want to change to client fetching, you have to:
 
 - Move the loading code to an "api route"
-- Ship extra JavaScript to the browser
-- Get API tokens/auth/envvars into the browser (safely!)
+- Ship extra JavaScript to the browser to talk to it
 
-It's a complete shift for your application code. Sometimes even a different team and project. As you get more familiar with Remix, you'll see that the transition from server to browser code is unprecedented in web development.
+It's a complete shift for your application code, sometimes a different team. As you get more familiar with Remix, you'll see that the transition from server to browser code is seamless and unprecedented in web development.
 
 ### It's About the User's Network
 
@@ -276,7 +275,7 @@ Next is now four seconds behind on a Remix cache miss. As the user's network get
 
 On the flip side, as the user's network gets slower in Remix, the TTFB penalty for server fetching is diminished.
 
-Consider that it takes Remix on the server 300ms to fetch the search results. That's as big as the penalty will ever get, it's decoupled from the user's network. User's with fast connections still get a fast TTFB and everybody gets a faster time to "visually complete" than client fetching.
+Consider that it takes Remix on the server 300ms to fetch the search results. That's as big as the penalty will ever get. It's decoupled from the user's network. User's with fast connections still get a fast TTFB and everybody gets a faster time to "visually complete" than client fetching.
 
 Your server's connection to the cloud is almost guaranteed to be faster than the user's. Probably best to keep the data fetching there. In other words, you can make your server fast, but you can't do anything about the user's network. All you can do is:
 
@@ -325,17 +324,15 @@ Since Remix uses HTML `<link rel="prefetch">` (instead of an in memory cache lik
 
 ## Data Mutations
 
-This is where Remix and Next.js start to look completely different. Half of your app code is related to data mutations, we think it's time your web framework respects that. Next.js doesn't have any API for data mutations but Remix does.
+This is where Remix and Next.js start to look completely different. Half of your app code is related to data mutations. We think it's time your web framework respected that.
 
-**How mutations work in Next.js**: Next.js doesn't do anything for you here. `<button onClick={itsAllUpToYou}>`. Typically you'll manage the form's state to know what to post, add an API route to post to, track loading and errors states yourself, and finally deal with errors, interruptions, and race conditions yourself <small>(lol, nobody deals with that stuff)</small>.
+**How mutations work in Next.js**: Next.js doesn't do anything for you here. `<button onClick={itsAllUpToYou}>`. Typically you'll manage the form's state to know what to post, add an API route to post to, track loading and errors states yourself, revalidate data and propagate changes throughout the UI, and finally deal with errors, interruptions, and race conditions <small>(lol, nobody deals with that stuff)</small>.
 
-**How mutations work in Remix**:
-
-Remix uses HTML forms.
+**How mutations work in Remix**: Remix uses HTML forms.
 
 > pffft ... I'm building a web app, this will never work.
 
-Highly interactive web apps have been my entire career. While the API you're about to see looks incapable of handling the needs of a modern web app, I assure you it is. <small>(We've got an example coming soon.)</small>
+You might think the API you're about to see looks incapable of handling the needs of a modern web app. Remix scales up to sophisticated user experiences, but it also scales down. Highly interactive web apps have been my entire career, Remix was designed with them in mind.
 
 Since the dawn of the web, a mutation is modeled as `<form method="post" action="/add-to-cart">`. Ignoring Remix completely, it looks like this:
 
@@ -360,9 +357,11 @@ Remix does the same thing, except optimized with capital-F `<Form>` and a functi
 
 There are no React Context or global state management tricks. There's no extra application code needed to communicate a mutation with the server. This is why the Remix bundles are nearly 30% smaller than the Next.js bundles.
 
+Smaller bundles aren't the only thing Remix does for you here.
+
 ## Errors, Interruptions, and Race Conditions
 
-Because Remix can handle both data loading and mutations, it has a unique ability in the web framework space to fix long-standing issues with web apps.
+Because Remix handles all of your interactions with the server (both data loading and data mutations), it has a unique ability in the web framework space to fix long-standing issues with web apps.
 
 ### Unhandled Errors
 
@@ -440,7 +439,7 @@ While it's totally valid to use Remix this way, it's not our intent that you bui
 
 What we wanted was the simplicity of HTML and got resilience. Maybe your user just went into a tunnel on the train as the page was loading the JavaScript. That page will still generally work.
 
-When you write server side code in Remix, there isn't very much "Remix API" to learn. Instead of inventing another new JavaScript request/response API, Remix uses the [Web Fetch API][fetch]. To work with URL search params, we use the built-in `URLSearchParams`. To work with form data, we use the built-in `FormData`.
+We look to the web platform for writing your server side code, too. Instead of inventing another new JavaScript request/response API, Remix uses the [Web Fetch API][fetch]. To work with URL search params, we use the built-in `URLSearchParams`. To work with form data, we use the built-in `FormData`.
 
 ```js
 export function loader({ request }) {
@@ -460,9 +459,7 @@ export function action({ request }) {
 
 You will find that when you start learning Remix, you'll spend as much time on the MDN docs, if not more, than the Remix docs. We want Remix to help you build better websites even when you're not using it.
 
-It's a core value for us. Remix starts with HTML, HTTP as the foundation, and then enhances it JavaScript, providing all the tools you need to build modern web apps.
-
-While Remix apps are incredibly fast, we actually aren't hyper focused on performance, just great user and developer experiences. We look to the platform for answers to problems, make them easier to use, and the performance shakes out by itself.
+It's a core value for us. While Remix apps are incredibly fast, we actually aren't hyper focused on performance, just great user and developer experiences. We look to the platform for answers to problems, make them easier to use, and the performance shakes out by itself.
 
 ## Discussion
 
@@ -483,8 +480,6 @@ In Remix, you simply update your products with Shopify and your products will be
 This infrastructure is more work than going with SSG, but as we've seen in this article, it scales to any size product catalog, any kind of UI (the search page) and actually gets faster than SSG with more users (we can cache common search queries). You're also not coupled to a specific host, and barely coupled to a framework.
 
 Additionally, we think loading data in only one way, on the server, leads to cleaner abstractions.
-
-Finally, building the Next.js app for a shopify store with just 250 products takes [TODO:] minutes, and that just keeps growing with your catalog. Running the Remix build takes three seconds.
 
 > What about empty caches hits?
 
@@ -520,11 +515,11 @@ With Next.js you have to ship your own data mutation code to the browser to inte
 
 > Aren't you ignoring `getServerSideProps`?
 
-A lot of folks say you can do all the things Remix does with `getServerSideProps`. This would definitely make it easier to build the shopify abstractions in Next.js and keep it all on the server.
+Some folks say you can do all the things Remix does with `getServerSideProps`. This would definitely make it easier to build the shopify abstractions in Next.js and keep it all on the server.
 
-However, you still have the data mutations to deal with. You'll need a combination of `getServerSideProps`, API routes, and your own browser code that communicates with them for mutations (including error handling, interruptions, race conditions, redirects, and revalidation). What we're really saying here is "you could build your own Remix". Indeed, you could.
+However, you still have the data mutations to deal with. You'll need a combination of `getServerSideProps`, API routes, and your own browser code that communicates with them for mutations (including error handling, interruptions, race conditions, redirects, and revalidation). What we're really saying here is "you could build your own Remix". Indeed, you could. We already did though 😇.
 
-We didn't even get to talk about some of our favorite features in Remix like nested routes (and Remix's built-in network optimizations around them), catch boundaries, transition APIs for pending and optimistic UI, resource routes, SEO, built-in session abstractions, and more. Perhaps now that we've answered the big question everybody keeps asking us, we can start showing off what Remix can do!
+We didn't even get to talk about some of our favorite features in Remix like nested routes (and Remix's built-in network optimizations around them), catch boundaries, transition APIs for pending and optimistic UI, resource routes, SEO, cookies, sessions, non-Node.js environments, and more. Perhaps now that we've answered the big question everybody keeps asking us, we can start showing off what Remix can do!
 
 ## Scavenger Hunt 🥾
 
@@ -534,7 +529,7 @@ Remix handles all communication with the server, and all data loading and mutati
 
 Next.js has four ways to load data (and zero ways to change data) mentioned in the docs. Each one called at different times and in different places.
 
-I don't have any numbers, graphs, or videos, but rather a scavenger hunt so you can make up your own mind on this point. So here's your scavenger hunt. Follow the code in each projects for these features:
+I don't have any numbers, graphs, or videos, but rather a scavenger hunt so you can make up your own mind on this point. So here's your scavenger hunt.
 
 - Figure out how a product page gets its data
 - Figure out how the search page gets its data
