@@ -97,15 +97,15 @@ function Hero() {
             <div className="flex flex-col gap-4 md:flex-row">
               <PrimaryButtonLink
                 prefetch="intent"
-                to="/docs/en/v1/tutorials/blog"
+                to="speak"
                 className="w-full md:w-auto"
                 children="Call for Speakers"
               />
               <OutlineButtonLink
                 prefetch="intent"
-                to="/docs/en/v1"
+                to="sponsor"
                 className="w-full md:w-auto"
-                children="Call for Sponsors"
+                children="Become a Sponsor"
               />
             </div>
           </div>
