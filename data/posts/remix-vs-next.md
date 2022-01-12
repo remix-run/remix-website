@@ -523,28 +523,36 @@ We didn't even get to talk about some of our favorite features in Remix like nes
 
 ## Scavenger Hunt 🥾
 
-I made a totally subjective point earlier, that I think Remix's design leads to better application abstractions.
+I've made a slightly subjective point a few times in here that I think Remix's design leads to better application abstractions. To help you make up your own mind I want to send you on a scavenger hunt.
 
-Remix handles all communication with the server, and all data loading and mutations happen there. There are fewer things you need to abstract, and far fewer constraints around those abstractions.
+My opinion is that the integrations look very different between the two apps because Remix can keep the entire abstraction server side, while Next's has to build abstractions for the build, server, and browser fetching.
 
-Next.js has four ways to load data (and zero ways to change data) mentioned in the docs. Each one called at different times and in different places.
+Your scavenger hunt is to trace the code path of how all of these interactions work:
 
-I don't have any numbers, graphs, or videos, but rather a scavenger hunt so you can make up your own mind on this point. So here's your scavenger hunt.
+- How a product page gets its data (SSG in next, normal `loader` in Remix)
+  - Starts in "/pages" for Next.js, uses SSG
+  - Starts in "app/routes" for Remix, normal `loader`
+- How the search page gets its data (s)
+  - Starts in "/pages" for Next.js, fetched client side
+  - Starts in "app/routes" for Remix, normal `loader`
+- How the "Add to Cart" button works
+  - Starts with a button `onClick` handler in Next.js
+  - Starts with a `<Form>` in Remix.
 
-- Figure out how a product page gets its data
-- Figure out how the search page gets its data
-- Figure out how a commerce provider is created
-- Imagine how to build a new commerce provider
+I'll get you started:
 
-Here are the repositories:
-
-- [Next.js source][next-source]
-- [Remix source][remix-source]
+- [Here is the Next.js shopify integration][next-shopify]
+- [Here is the Remix shopify integration][remix-shopify]
 
 Here are the deployments:
 
 - [Next.js][next-demo]
 - [Remix][remix-rewrite]
+
+And finally two tips:
+
+- Next.js uses a bundler "paths" config when the app is built to decide which commerce back end to use. When you see imports for the commerce backend, it's first going through the path alias.
+- Remix `<Form action={url}>` defaults to the route that it's rendered in, so when you see a form, you need to know which route it rendered in or look at the HTML "action" value. That route's action will be called when the form is submitted.
 
 Godspeed and thanks for reading!
 
@@ -580,6 +588,6 @@ Godspeed and thanks for reading!
 [code-next-add-to-cart]: https://github.com/vercel/commerce/blob/3670ff58690be3af9e2fc33f0d4ba04c992d2cb9/components/product/ProductSidebar/ProductSidebar.tsx#L64
 [code-next-api-call]: https://github.com/vercel/commerce/blob/3670ff58690be3af9e2fc33f0d4ba04c992d2cb9/components/product/ProductSidebar/ProductSidebar.tsx#L29-L41
 [eb]: https://remix.run/docs/en/v1/guides/errors
-[next-source]: https://github.com/vercel/commerce
-[remix-source]: https://github.com/jacob-ebey/remix-ecommerce
+[next-shopify]: https://github.com/vercel/commerce/tree/main/framework/shopify
+[remix-shopify]: https://github.com/jacob-ebey/remix-ecommerce/blob/main/app/models/ecommerce-providers/shopify.server.ts
 [fetch]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API

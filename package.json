@@ -72,5 +72,6 @@
   },
   "engines": {
     "node": "16"
-  }
+  },
+  "prettier": {}
 }
