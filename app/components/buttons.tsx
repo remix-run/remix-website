@@ -80,7 +80,7 @@ export let Input = React.forwardRef<
       ref={ref}
       x-comp="Input"
       className={
-        "inline-block box-border py-4 px-8 rounded bg-gray-800 text-white " +
+        "inline-block box-border py-4 px-8 rounded dark:bg-gray-800 dark:text-white border-solid border border-gray-300 dark:border-none " +
         className
       }
       title={props.title}

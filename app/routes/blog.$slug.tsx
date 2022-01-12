@@ -1,4 +1,5 @@
-import { json, LoaderFunction, useLoaderData } from "remix";
+import type { LoaderFunction, MetaFunction } from "remix";
+import { json, useLoaderData } from "remix";
 
 import { getBlogPost } from "~/utils/md.server";
 import type { MarkdownPost } from "~/utils/md.server";
@@ -38,13 +39,16 @@ export let meta = ({
 
   return {
     title: data.title + " | Remix",
+    description: data.summary,
     "og:url": url,
     "og:title": data.title,
     "og:image": socialImageUrl,
+    "og:description": data.summary,
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",
     "twitter:site": "@remix_run",
     "twitter:title": data.title,
+    "twitter:description": data.summary,
     "twitter:image": socialImageUrl,
     "twitter:image:alt": data.imageAlt,
   };

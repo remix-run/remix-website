@@ -1,6 +1,7 @@
 ---
 title: React Server Components and Remix
-date: December 7, 2021
+summary: The current state of React Server Components their future in Remix.
+date: 2021-12-07
 image: /blog-images/headers/react-server-components.jpg
 imageAlt: "Screenshot of two apps, one with loading spinners"
 authors:
