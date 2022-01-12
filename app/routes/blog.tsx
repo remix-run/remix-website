@@ -74,7 +74,7 @@ export default function Blog() {
         <div className="md:grid md:grid-cols-12">
           <div className="md:col-span-7">
             <div className="mb-14">
-              <Link to={latestPost.slug}>
+              <Link to={latestPost.slug} prefetch="intent">
                 <div className="aspect-h-9 aspect-w-16 mb-6">
                   <img
                     className="object-cover object-top w-full h-full md:rounded-md mb-6"
@@ -96,7 +96,7 @@ export default function Blog() {
             <div className="mt-12 lg:grid lg:grid-cols-2 lg:gap-6">
               {posts.map((post) => (
                 <div key={post.slug}>
-                  <Link to={post.slug}>
+                  <Link to={post.slug} prefetch="intent">
                     <div className="aspect-h-9 aspect-w-16 mb-6">
                       <img
                         className="object-cover object-top h-full w-full md:rounded-md"
@@ -130,6 +130,7 @@ export default function Blog() {
                     <div className="flex flex-col">
                       <Link
                         to={post.slug}
+                        prefetch="intent"
                         className="text-m-p-sm lg:text-d-p-sm"
                       >
                         {post.title}

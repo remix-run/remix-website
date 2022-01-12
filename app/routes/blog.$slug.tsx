@@ -61,7 +61,7 @@ export default function BlogPost() {
 
   return (
     <div className="flex flex-col flex-1 h-full">
-      <Header />
+      <Header to="/blog" />
       <div className="flex flex-col flex-1">
         <div className="flex-1">
           <div>
