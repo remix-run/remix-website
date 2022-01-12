@@ -274,9 +274,9 @@ Let's do one more, this time in Hong Kong with a slow network.
 
 Next is now four seconds behind on a Remix cache miss. As the user's network gets worse, the data fetching takes longer and the waterfall chain penalties are compounded.
 
-On the flip side, as the user's network gets slower in Remix, the TTFB penalty for server fetching is diminished.
+On the flip side, as the user's network gets slower in Remix, the initial response penalty for server fetching is diminished.
 
-Consider that it takes Remix on the server 300ms to fetch the search results. That's as big as the penalty will ever get. It's decoupled from the user's network. User's with fast connections still get a fast TTFB and everybody gets a faster time to "visually complete" than client fetching.
+Consider that it takes Remix on the server 300ms to fetch the search results. That's as big as the penalty will ever get. It's decoupled from the user's network. User's with fast connections still get a fast initial response and everybody gets a faster time to "visually complete" than client fetching.
 
 Your server's connection to the cloud is almost guaranteed to be faster than the user's. Probably best to keep the data fetching there. In other words, you can make your server fast, but you can't do anything about the user's network. All you can do is:
 
