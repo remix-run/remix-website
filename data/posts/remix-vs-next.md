@@ -314,7 +314,7 @@ function Search() {
   let [query, setQuery] = useState("");
   return (
     <Form>
-      <input type="text" name="q" onChange={e => setQuery(e.target.value)} />
+      <input type="text" name="q" onChange={(e) => setQuery(e.target.value)} />
       {query && <PrefetchPageLinks page={`/search?q=${query}`} />}
     </Form>
   );
