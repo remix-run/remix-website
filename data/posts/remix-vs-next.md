@@ -510,7 +510,7 @@ Remix apps get their speed from backend infrastructure and prefetching. Next.js 
 
 Since you have to make your back end fast in either case, invest your time there instead of abstractions for the architectural divergence caused by SSG.
 
-SSG and the Jamstack were great work-a-rounds for slow backend services. The latest generation is fast and only getting faster. Even the Shopify API backing these apps can send a response to a query in 200ms from pretty much anywhere in the world, I tested it from every continent except Antarctica! <small>(Going to need [@chancethedev][https://twitter.com/chancethedev] to try it out for me when he's there this month.)</small>
+SSG and the Jamstack were great work-a-rounds for slow backend services. The latest generation is fast and only getting faster. Even the Shopify API backing these apps can send a response to a query in 200ms from pretty much anywhere in the world, I tested it from every continent except Antarctica! <small>(Going to need [@chancethedev](https://twitter.com/chancethedev) to try it out for me when he's there this month.)</small>
 
 It would honestly be totally acceptable to skip all caching strategies this article discussed and hit the shopify API in each request on the server. Instead of a 1.2s load it would be 1.4. Instead of 0.8s it would be 1. Bupkus. If you've got a slow backend API, invest your time making that fast, not caching work-a-rounds.
 
