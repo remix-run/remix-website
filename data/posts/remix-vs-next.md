@@ -534,10 +534,10 @@ My opinion is that the integrations look very different between the two apps bec
 
 Your scavenger hunt is to trace the code path of how all of these interactions work:
 
-- How a product page gets its data (SSG in next, normal `loader` in Remix)
+- How a product page gets its data
   - Starts in "/pages" for Next.js, uses SSG
   - Starts in "app/routes" for Remix, normal `loader`
-- How the search page gets its data (s)
+- How the search page gets its data
   - Starts in "/pages" for Next.js, fetched client side
   - Starts in "app/routes" for Remix, normal `loader`
 - How the "Add to Cart" button works
