@@ -1,8 +1,8 @@
 ---
 title: Remix vs Next.js
 date: January 11, 2021
-image: /blog-images/headers/react-server-components.jpg
-imageAlt: "TODO"
+image: /blog-images/headers/remix-vs-next.jpg
+imageAlt: Remix and Next.js Logos
 authors:
   - name: Ryan Florence
     avatar: /r.jpg
@@ -83,7 +83,7 @@ Before we say anything, let's acknowledge that all three versions are dang fast.
 
 **Why the Remix port is fast**: Remix doesn't support SSG so we used the HTTP [stale-while-revalidate caching directive][swr]. The end result is the same: a static document at the edge (Vercel's CDN). The difference is how the documents get there. Instead of fetching all of the data and rendering the pages to static documents at build/deploy time, the cache is primed when you're getting traffic. Documents are served from the cache and revalidated in the background for the next visitor. Like SSG, no visitors pays the download + render cost when you're getting traffic. If you're wondering about cache misses, we'll discuss that a little later (SSG has them too).
 
-**Why the Remix rewrite is fast**: This version doesn't use SSG or HTTP caching, or even a CDN (though it probably should). Instead of caching documents at the edge, this version _caches data_ at the edge in [Redis][redis]. In fact, it actually **runs the application at the edge too**. Each document is rendered dynamically for each request. We'll see this approach comes with more benefits than speed, too. This might have been difficult to build a few years ago, but the landscape has changed and is only getting better.
+**Why the Remix rewrite is fast**: This version doesn't use SSG or HTTP caching, or even a CDN (though it probably should). Instead of caching documents at the edge, this version _caches data_ at the edge in [Redis][redis]. In fact, it actually **runs the application at the edge too**. Each document is rendered dynamically for each request from multiple instances of the app in different regions around the world. We'll see this approach comes with more benefits than speed, too. This might have been difficult to build a few years ago, but the landscape has changed and is only getting better.
 
 ### Homepage, 3G
 
@@ -314,7 +314,7 @@ function Search() {
   let [query, setQuery] = useState("");
   return (
     <Form>
-      <input type="text" name="q" onChange={(e) => setQuery(e.target.value)} />
+      <input type="text" name="q" onChange={e => setQuery(e.target.value)} />
       {query && <PrefetchPageLinks page={`/search?q=${query}`} />}
     </Form>
   );
@@ -517,6 +517,10 @@ Since you have to make your back end fast in either case, invest your time there
 Data loading is only half of the story. In Remix, your data abstractions can also encapsulate data mutation concerns since Remix has both loading and mutation APIs. All the code stays on the server, leading to better application code and smaller bundles in the browser.
 
 With Next.js you have to ship your own data mutation code to the browser to interact with the API routes and propagate updates to the rest of the UI. As we saw in this article, even top teams mess this up around errors, interruptions, and race conditions. Not only does this cause a degraded user experience, we think this architectural divergence makes application abstractions harder work with, too (but you get to decide that for yourself in the next section).
+
+> You're ignoring `getServerSideProps`
+
+A lot of folks say you can do all the things Remix does with `getServerSideProps`. This would definitely make it easier to build the shopify abstractions in Next.js and keep it all on the server. But Next.js doesn't have any APIs to communicate with those data mutation APIs built in, you are still on your own to communicate with those
 
 We didn't even get to talk about some of our favorite features in Remix like nested routes (and Remix's built-in network optimizations around them), catch boundaries, transition APIs for pending and optimistic UI, resource routes, SEO, built-in session abstractions, and more. Perhaps now that we've answered the big question everybody keeps asking us, we can start really showing off what Remix can do!
 
