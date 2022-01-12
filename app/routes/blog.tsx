@@ -95,7 +95,7 @@ export default function Blog() {
               {posts.map((post) => (
                 <div key={post.slug}>
                   <Link to={post.slug}>
-                    <div className="aspect-h-1 aspect-w-1 mb-6">
+                    <div className="aspect-h-9 aspect-w-16 mb-6">
                       <img
                         className="object-cover object-top h-full w-full md:rounded-md"
                         src={post.image}
