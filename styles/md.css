@@ -68,6 +68,14 @@
     @apply font-display text-m-h2 md:text-d-h2 dark:text-gray-200;
   }
 
+  & h3 {
+    @apply font-display text-m-h3 md:text-d-h3 dark:text-gray-200;
+  }
+
+  & h4 {
+    @apply font-bold;
+  }
+
   & strong {
     @apply dark:text-gray-200;
   }
@@ -112,9 +120,13 @@
     list-style: disc;
   }
 
+  & video {
+    @apply w-full my-8;
+  }
+
   & ol,
   & ul {
-    @apply pl-8 my-0 mb-4;
+    @apply pl-8 my-8 mb-4;
   }
 
   & ol ol,
@@ -182,6 +194,37 @@
 
   & blockquote {
     @apply pl-4 italic border-l-4 font-serif;
+  }
+
+  & details {
+    @apply my-8;
+  }
+
+  & summary {
+    cursor: pointer;
+  }
+
+  & figcaption {
+    @apply font-bold text-center text-m-p-sm lg:text-d-p-sm;
+  }
+
+  & table {
+    text-indent: 0;
+    border-spacing: 0;
+    @apply w-full text-left border-collapse border-[color:inherit] overflow-auto max-w-full my-10;
+  }
+
+  & table th {
+    @apply sticky top-0 font-semibold text-gray-700 bg-transparent text-m-p-sm dark:text-gray-300;
+    @apply p-0 pb-1 pr-4 border-0 border-b border-gray-200 md:pr-6 dark:border-gray-800;
+  }
+
+  & table tbody {
+    @apply align-baseline;
+  }
+
+  & table td {
+    @apply p-0 py-2 pr-4 text-black border-0 border-b border-gray-100 md:pr-6 text-m-p-sm dark:text-white whitespace-nowrap;
   }
 
   & .codeblock-line {

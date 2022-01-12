@@ -8,7 +8,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   mode: "jit",
-  purge: ["./app/**/*.{ts,tsx}"],
+  purge: ["./app/**/*.{ts,tsx}", "./data/**/*.md"],
   darkMode: "media",
   variants: {
     aspectRatio: ["responsive"],
