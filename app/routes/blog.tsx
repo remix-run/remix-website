@@ -75,11 +75,13 @@ export default function Blog() {
           <div className="md:col-span-7">
             <div className="mb-14">
               <Link to={latestPost.slug}>
-                <img
-                  className="object-cover object-top w-full h-full md:rounded-md mb-6"
-                  src={latestPost.image}
-                  alt={latestPost.imageAlt}
-                />
+                <div className="aspect-h-9 aspect-w-16 mb-6">
+                  <img
+                    className="object-cover object-top w-full h-full md:rounded-md mb-6"
+                    src={latestPost.image}
+                    alt={latestPost.imageAlt}
+                  />
+                </div>
                 <p className="text-m-p-sm lg:text-d-p-sm">
                   {latestPost.dateDisplay}
                 </p>
