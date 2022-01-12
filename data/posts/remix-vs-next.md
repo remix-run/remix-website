@@ -418,7 +418,7 @@ I said earlier that we are fanatical about the network tab. Let's see how Remix 
   <source src="/blog-images/posts/remix-vs-next/change-quantity-remix.mp4?f" type="video/mp4" />
 </video>
 
-You can see Remix cancels the request on interruptions and revalidates the data after the POST completes. This ensures that the UI across the entire page (not just this form) is sync with whatever changes your form just made with the server.
+You can see Remix cancels the request on interruptions and revalidates the data after the POST completes. This ensures that the UI across the entire page (not just this form) is in sync with whatever changes your form just made with the server.
 
 You might think that maybe we just had more attention to detail in our app than the Next.js app. None of this behavior is in the application code. It's all built-in to Remix's data mutation APIs. <small>(It's really just doing what the browser does with HTML forms....)</small>
 
@@ -490,7 +490,7 @@ Finally, building the Next.js app for a shopify store with just 250 products tak
 
 This is a great question. Server and HTTP caching only work when your site is getting traffic. Turns out, your business only works when your site is getting traffic too 😳. You don't need your two page views a day to be one second faster, you need an email list.
 
-- Empty cache hits on product pages in Remix are no slower than the search page in the Next.js site (where it can't use SSG). When was the last time you shopped online without searching? As that cache fills up with common queries, it gets way faster than Next.js
+- Empty cache hits on product pages in Remix are no slower than the search page in the Next.js site (where it can't use SSG). When was the last time you shopped online without searching? As that cache fills up with common queries, it gets faster than Next.js
 - Common landing pages will be primed pretty much always, then Remix's prefetching makes the next transitions instant. Remix can prefetch any page, dynamic or otherwise, Next.js can't.
 - At a certain scale with SSG, you'll need to switch to ISR. Now you have the same cache miss problem on pages that weren't part of your last deployment.
 
@@ -500,7 +500,7 @@ If cache miss requests are a significant portion of your visits, getting 100% ca
 
 Imagine the product team comes to you and says the home page is changing to display similar products to what the user has purchased in the past instead of a set list of products.
 
-Like the search page, SSG is out the door. This has to be dynamic. Now you've got a network waterfall chain killing your perf. SSG has a limited set of use-cases. The moment you want to display personalized information, it's over.
+Like the search page, SSG is out the door. SSG has a limited set of use-cases, the moment you want to display personalized information your performance is gone.
 
 For Remix, this is just a different database query on the backend.
 
@@ -510,7 +510,7 @@ In this case, the top of the ecommerce food chain is Amazon.com. That entire pag
 
 ## Bottom Line
 
-Remix apps get their speed from backend infrastructure and prefetching. Next.js gets its speed from SSG. Since SSG has limited use cases, especially as features and data scale, you will lose that speed unless you make your back end fast.
+Remix apps get their speed from backend infrastructure and prefetching. Next.js gets its speed from SSG. Since SSG has limited use cases, especially as features and data scale, you will lose that speed unless you make your back end fast (and make sure you don't introduce network waterfall chains when you switch away from SSG!).
 
 Since you have to make your back end fast in either case, invest your time there instead of abstractions for the architectural divergence caused by SSG.
 
@@ -518,11 +518,13 @@ Data loading is only half of the story. In Remix, your data abstractions can als
 
 With Next.js you have to ship your own data mutation code to the browser to interact with the API routes and propagate updates to the rest of the UI. As we saw in this article, even top teams mess this up around errors, interruptions, and race conditions. Not only does this cause a degraded user experience, we think this architectural divergence makes application abstractions harder work with, too (but you get to decide that for yourself in the next section).
 
-> You're ignoring `getServerSideProps`
+> Aren't you ignoring `getServerSideProps`?
 
-A lot of folks say you can do all the things Remix does with `getServerSideProps`. This would definitely make it easier to build the shopify abstractions in Next.js and keep it all on the server. But Next.js doesn't have any APIs to communicate with those data mutation APIs built in, you are still on your own to communicate with those
+A lot of folks say you can do all the things Remix does with `getServerSideProps`. This would definitely make it easier to build the shopify abstractions in Next.js and keep it all on the server.
 
-We didn't even get to talk about some of our favorite features in Remix like nested routes (and Remix's built-in network optimizations around them), catch boundaries, transition APIs for pending and optimistic UI, resource routes, SEO, built-in session abstractions, and more. Perhaps now that we've answered the big question everybody keeps asking us, we can start really showing off what Remix can do!
+However, you still have the data mutations to deal with. You'll need a combination of `getServerSideProps`, API routes, and your own browser code that communicates with them for mutations (including error handling, interruptions, race conditions, redirects, and revalidation). What we're really saying here is "you could build your own Remix". Indeed, you could.
+
+We didn't even get to talk about some of our favorite features in Remix like nested routes (and Remix's built-in network optimizations around them), catch boundaries, transition APIs for pending and optimistic UI, resource routes, SEO, built-in session abstractions, and more. Perhaps now that we've answered the big question everybody keeps asking us, we can start showing off what Remix can do!
 
 ## Scavenger Hunt 🥾
 
