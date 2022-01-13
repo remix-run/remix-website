@@ -76,7 +76,7 @@ export default function BlogPost() {
               <div className="container relative z-10 flex flex-col w-full h-full pt-6 md:pt-12 lg:max-w-4xl">
                 <div className="flex-1">
                   <div className="text-gray-200 uppercase text-m-p-sm md:text-d-p-sm">
-                    {post.date}
+                    {post.dateDisplay}
                   </div>
                   <div className="h-2" />
                   <div className="text-m-h1 text-white font-display md:text-4xl">
