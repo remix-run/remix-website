@@ -596,6 +596,6 @@ Thanks for reading, and have fun using [Remix](https://remix.run)!
 [code-next-add-to-cart]: https://github.com/vercel/commerce/blob/3670ff58690be3af9e2fc33f0d4ba04c992d2cb9/components/product/ProductSidebar/ProductSidebar.tsx#L64
 [code-next-api-call]: https://github.com/vercel/commerce/blob/3670ff58690be3af9e2fc33f0d4ba04c992d2cb9/components/product/ProductSidebar/ProductSidebar.tsx#L29-L41
 [eb]: https://remix.run/docs/en/v1/guides/errors
-[next-shopify]: https://github.com/vercel/commerce/tree/main/framework/Shopify
-[remix-shopify]: https://github.com/jacob-ebey/remix-ecommerce/blob/main/app/models/ecommerce-providers/Shopify.server.ts
+[next-shopify]: https://github.com/vercel/commerce/tree/main/framework/shopify
+[remix-shopify]: https://github.com/jacob-ebey/remix-ecommerce/blob/main/app/models/ecommerce-providers/shopify.server.ts
 [fetch]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
