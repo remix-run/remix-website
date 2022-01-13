@@ -1,6 +1,7 @@
 ---
 title: Seed Funding for Remix
-date: October 11, 2021
+summary: Remix has raised $3M in seed funding and the Remix Web Framework is going free and open source.
+date: 2021-10-11
 image: /m-r.jpg
 imageAlt: "Michael and Ryan presenting at React Conf 2017"
 authors:

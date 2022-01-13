@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 
+import * as dateFns from "date-fns";
 import remark from "remark";
 import html from "remark-html";
 import parseFrontMatter from "front-matter";
@@ -47,6 +48,23 @@ export async function md(filename: string) {
   return obj;
 }
 
+export async function getBlogPostListings(): Promise<
+  Array<MarkdownPostListing>
+> {
+  let files = await fs.readdir(blogPath);
+  let listings: Array<MarkdownPostListing & { date: Date }> = [];
+  for (let file of files) {
+    if (file.endsWith(".md")) {
+      const slug = file.replace(/\.md$/, "");
+      let { html, authors, ...listing } = await getBlogPost(slug);
+      listings.push({ slug, ...listing });
+    }
+  }
+  return listings
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+    .map(({ date, ...listing }) => listing);
+}
+
 let processor = remark().use(remarkCodeBlocksShiki).use(html);
 
 export async function getMarkdown(filename: string): Promise<Page> {
@@ -61,6 +79,15 @@ export async function getMarkdown(filename: string): Promise<Page> {
   return page;
 }
 
+function formatDate(date: Date) {
+  return dateFns.format(
+    dateFns.add(date, {
+      minutes: new Date().getTimezoneOffset(),
+    }),
+    "PPP"
+  );
+}
+
 export async function getBlogPost(slug: string): Promise<MarkdownPost> {
   let cached = postsCache.get(slug);
   if (cached) return cached;
@@ -71,12 +98,24 @@ export async function getBlogPost(slug: string): Promise<MarkdownPost> {
   }
   let { attributes, html } = result;
 
-  invariant(isMarkdownPostFrontmatter(attributes), "Invalid post frontmatter.");
+  invariant(
+    isMarkdownPostFrontmatter(attributes),
+    `Invalid post frontmatter in ${slug}`
+  );
 
-  let post = { ...attributes, html };
+  let post = { ...attributes, dateDisplay: formatDate(attributes.date), html };
   postsCache.set(slug, post);
 
   return post;
+}
+
+export interface MarkdownPostListing {
+  title: string;
+  slug: string;
+  summary: string;
+  dateDisplay: string;
+  image: string;
+  imageAlt: string;
 }
 
 /**
@@ -84,7 +123,9 @@ export async function getBlogPost(slug: string): Promise<MarkdownPost> {
  */
 export interface MarkdownPost {
   title: string;
-  date: string;
+  summary: string;
+  date: Date;
+  dateDisplay: string;
   image: string;
   imageAlt: string;
   authors: Author[];
@@ -107,7 +148,8 @@ export function isMarkdownPostFrontmatter(obj: any): obj is MarkdownPost {
   return (
     typeof obj === "object" &&
     obj.title &&
-    obj.date &&
+    obj.summary &&
+    obj.date instanceof Date &&
     obj.image &&
     obj.imageAlt &&
     Array.isArray(obj.authors) &&

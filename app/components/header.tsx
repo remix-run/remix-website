@@ -3,9 +3,11 @@ import { Wordmark } from "./logo";
 
 export function Header({
   forceDark,
+  to = "/",
   className = "",
 }: {
   forceDark?: boolean;
+  to?: string;
   className?: string;
 }) {
   return (
@@ -26,7 +28,7 @@ export function Header({
               "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
           }
         }}
-        to="/"
+        to={to}
         prefetch="intent"
         aria-label="Remix"
       >
@@ -34,6 +36,7 @@ export function Header({
       </NavLink>
 
       <nav className="flex" aria-label="Main">
+        <HeaderLink to="/blog" children="Blog" />{" "}
         <HeaderLink to="/docs/en/v1" children="Docs" />{" "}
         <HeaderLink
           to="https://github.com/remix-run"
