@@ -153,7 +153,7 @@ export default function Blog() {
                 replace
                 method="post"
                 className={
-                  "flex gap-4 flex-col" +
+                  "flex gap-4 flex-col " +
                   (transition.state === "submitting" ? "opacity-50" : "")
                 }
               >
