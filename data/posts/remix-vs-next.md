@@ -327,9 +327,9 @@ Since Remix uses HTML's `<link rel="prefetch">` (instead of an in memory cache l
 
 This is where Remix and Next.js start to look completely different. Half of your app code is related to data mutations. It's time your web framework respects that.
 
-**How mutations work in Next.js**: Next.js doesn't do anything for you here. `<button onClick={itsAllUpToYou}>`. Typically you'll manage the form's state to know what to post, add an API route to post to, track loading and errors states yourself, revalidate data and propagate changes throughout the UI, and finally deal with errors, interruptions, and race conditions <small>(lol, nobody _actually_ deals with that stuff)</small>.
+**How mutations work in Next.js**: Next.js doesn't do anything for you here. `<button onClick={itsAllUpToYou}>`. Typically you'll manage the form's state to know what to post, add an API route to post to, track loading and errors states yourself, revalidate data and propagate changes throughout the UI, and finally deal with errors, interruptions, and race conditions <small>(but let's be honest, nobody _actually_ deals with that stuff)</small>.
 
-**How mutations work in Remix**: Remix uses HTML forms.
+**How mutations work in Remix**: Remix uses HTML forms. I know what you're thinking.
 
 > pffft ... I'm building a web app, this will never work.
 
