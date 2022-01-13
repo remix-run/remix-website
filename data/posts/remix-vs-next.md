@@ -84,7 +84,7 @@ Before we say anything, let's acknowledge that all three versions are dang fast.
 
 **Why the Remix port is fast**: Remix doesn't support SSG so we used the HTTP [stale-while-revalidate caching directive][swr]. The end result is the same: a static document at the edge (Vercel's CDN). The difference is how the documents get there. Instead of fetching all of the data and rendering the pages to static documents at build/deploy time, the cache is primed when you're getting traffic. Documents are served from the cache and revalidated in the background for the next visitor. Like SSG, no visitor pays the download + render cost when you're getting traffic. If you're wondering about cache misses, we'll discuss that a little later (SSG has them too).
 
-**Why the Remix rewrite is fast**: This version doesn't use SSG or HTTP caching, or even a CDN (though it probably be even faster if it did). Instead of caching documents at the edge, this version _caches data_ at the edge in [Redis][redis]. In fact, it actually **runs the application at the edge too**. Each document is rendered dynamically for each request from multiple instances of the app in different regions around the world. We'll see this approach comes with more benefits than speed, too. This might have been difficult to build a few years ago, but the server landscape has changed significantly in the past few years and is only getting better.
+**Why the Remix rewrite is fast**: This version doesn't use SSG or HTTP caching, or even a CDN (though it could probably be even faster if it did). Instead of caching documents at the edge, this version _caches data_ at the edge in [Redis][redis]. In fact, it actually **runs the application at the edge too**. Each document is rendered dynamically for each request from multiple instances of the app in different regions around the world. We'll see this approach comes with more benefits than speed, too. This might have been difficult to build a few years ago, but the server landscape has changed significantly in the past few years and is only getting better.
 
 ### Homepage, 3G
 
@@ -225,7 +225,7 @@ Aha! Finally a UX tradeoff. There's an argument that getting a skeleton screen i
 
 My money is on the the Remix version, especially as your server cache fills up with common queries. Those requests would come out of the cache and be visually complete at the same time the skeleton screens show up.
 
-I wouldn't leave it to a hunch though in the real world, I'd test it. Because of Remix's design, it would be a two-line net change in my route:
+I wouldn't leave it to a hunch though in the real world, I'd test it. Because of Remix's design, if you wanted to test this it would be a two-line net change in your route module:
 
 ```tsx
 // original, server fetched
@@ -250,7 +250,7 @@ export default function Search() {
 }
 ```
 
-Here we've isolated the actual search function in the `loader` in the `app/routes/search-products` route. The decision to call this function server side and include the data in the server's HTML response vs. call it after the skeleton UI has loaded is trivial. Nothing fundamentally changes about _how_ the data is loaded, simply _when_. No questions about API tokens, SDK browser compatibility, etc. Plus, all abstractions around the Shopify API remain unchanged!
+Here the search function is isolated in the `loader` in the `app/routes/search-products` route. The decision to call this function server side and include the data in the server's HTML response vs. call it after the skeleton UI has loaded is trivial. Nothing fundamentally changes about _how_ the data is loaded, simply _when_. No questions about API tokens, SDK browser compatibility, etc. Plus, all abstractions around the Shopify API remain unchanged!
 
 **This is a big difference from Next.js, and even backend-focused frameworks like Rails, Phoenix, and Laravel.** If you want to do the fetching with the document, you can use their abstractions (like `getServerSideProps`), but if you want to change to client fetching, you have to:
 
@@ -274,11 +274,11 @@ Let's do one more, this time in Hong Kong with a slow network.
 
 Next is now four seconds behind on a Remix cache miss. As the user's network gets worse, the data fetching takes longer and the network waterfall chain penalties are compounded.
 
-On the flip side, as the user's network gets slower in Remix, the initial response penalty for server fetching is diminished.
+On the flip side, the speed of the user's network matters a lot less in Remix. In other words, a user on a slow network can still have a relatively fast experience with your site.
 
-Consider that it takes Remix 300ms to fetch the search results on the server. That's as big as the penalty will ever get. It's decoupled from the user's network. User's with fast connections still get a fast initial response and everybody gets a faster time to "visually complete" than client fetching.
+Consider that it takes Remix 300ms to fetch the search results on the server. That's as big a performance penalty as they'll ever pay. It's decoupled from the user's network. Users with fast connections still get a fast initial response and everybody gets a faster time to "visually complete" than client fetching.
 
-Your server's connection to the cloud is almost guaranteed to be faster than the user's. Probably best to keep the data fetching there. In other words, you can make your server fast, but you can't do anything about the user's network. All you can do is:
+Your server's connection to the cloud is almost guaranteed to be faster than the user's. Probably best to keep the data fetching there. You can make your server fast, but you can't do anything about the user's network. All you can do is:
 
 - Parallelize the network waterfall
 - Do more on the server where the network is fast
@@ -291,9 +291,9 @@ And that's exactly what Remix is designed to do.
 
 Both frameworks can prefetch resources for links before the user clicks them. This enables instant transitions from the home page to the product pages.
 
-However, Next.js can only do this for pages that use SSG. The search page is out, again. <small>(Poor thing is probably feeling left out, it wants to be blazing fast too)</small>
+Next.js can only do this for pages that use SSG. The search page is out, again.
 
-**Remix can prefetch any page because there was no architectural divergence for data loading.** Prefetching an unknowable, user-driven search page URL is not any different than prefetching a knowable product URL.
+However, **Remix can prefetch any page because there was no architectural divergence for data loading.** Prefetching an unknowable, user-driven search page URL is not any different than prefetching a knowable product URL.
 
 In fact, Remix prefetching isn't limited to just links, it can prefetch any page, at any time, for any reason! Check this out, prefetching the search page as the user types:
 
