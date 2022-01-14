@@ -1,4 +1,5 @@
-import { json, LoaderFunction, useLoaderData } from "remix";
+import type { LoaderFunction, MetaFunction } from "remix";
+import { json, useLoaderData } from "remix";
 
 import { getBlogPost } from "~/utils/md.server";
 import type { MarkdownPost } from "~/utils/md.server";
@@ -38,13 +39,16 @@ export let meta = ({
 
   return {
     title: data.title + " | Remix",
+    description: data.summary,
     "og:url": url,
     "og:title": data.title,
     "og:image": socialImageUrl,
+    "og:description": data.summary,
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",
     "twitter:site": "@remix_run",
     "twitter:title": data.title,
+    "twitter:description": data.summary,
     "twitter:image": socialImageUrl,
     "twitter:image:alt": data.imageAlt,
   };
@@ -57,7 +61,7 @@ export default function BlogPost() {
 
   return (
     <div className="flex flex-col flex-1 h-full">
-      <Header />
+      <Header to="/blog" />
       <div className="flex flex-col flex-1">
         <div className="flex-1">
           <div>
@@ -72,7 +76,7 @@ export default function BlogPost() {
               <div className="container relative z-10 flex flex-col w-full h-full pt-6 md:pt-12 lg:max-w-4xl">
                 <div className="flex-1">
                   <div className="text-gray-200 uppercase text-m-p-sm md:text-d-p-sm">
-                    {post.date}
+                    {post.dateDisplay}
                   </div>
                   <div className="h-2" />
                   <div className="text-m-h1 text-white font-display md:text-4xl">

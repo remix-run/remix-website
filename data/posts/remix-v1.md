@@ -1,6 +1,7 @@
 ---
 title: Remix v1
-date: November 22, 2021
+summary: Remix is now production ready and completely free and open source.
+date: 2021-11-22
 image: /remix-v1.jpg
 imageAlt: "The Remix logo"
 authors:
