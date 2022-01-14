@@ -1,12 +1,11 @@
-import { Link, json, Form } from "remix";
-import type { LoaderFunction, LinksFunction } from "remix";
+import { Link, Form, json, useLoaderData } from "remix";
+import type { LinksFunction, LoaderFunction } from "remix";
 import cx from "clsx";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
-import { getMarkdown } from "~/utils/md.server";
 import indexStyles from "../../styles/index.css";
-import { Prose, Sequence } from "@ryanflorence/mdtut";
-import invariant from "ts-invariant";
 import { Fragment } from "react";
+import type { Sponsor, Speaker } from "~/utils/conf.server";
+import { getSpeakers, getSponsors } from "~/utils/conf.server";
 
 export function meta() {
   let url = "https://remix.run/conf";
@@ -35,27 +34,32 @@ export let links: LinksFunction = () => {
 };
 
 type LoaderData = {
-  sample: Prose;
-  sampleSm: Prose;
-  mutations: Sequence;
-  errors: Sequence;
+  speakers: Array<Speaker>;
+  sponsors: {
+    premier: Sponsor | undefined;
+    gold: Array<Sponsor>;
+    silver: Array<Sponsor>;
+    community: Array<Sponsor>;
+  };
 };
 
-export let loader: LoaderFunction = async () => {
-  let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
-    getMarkdown("marketing/sample/sample.md"),
-    getMarkdown("marketing/sample-sm/sample.md"),
-    getMarkdown("marketing/mutations/mutations.md"),
-    getMarkdown("marketing/mutations/errors.md"),
-  ]);
-
-  invariant(sample.type === "prose", "sample.md should be prose");
-  invariant(sampleSm.type === "prose", "sample.md should be prose");
-  invariant(mutations.type === "sequence", "mutations.md should be a sequence");
-  invariant(errors.type === "sequence", "errors.md should be a sequence");
-
-  let data: LoaderData = { sample, sampleSm, mutations, errors };
-  return json(data, { headers: { "Cache-Control": "max-age=300" } });
+export const loader: LoaderFunction = async () => {
+  const speakersOrdered = await getSpeakers();
+  const speakersShuffled = speakersOrdered.sort(() => Math.random() - 0.5);
+  const allSponsors = await getSponsors();
+  const sponsors = {
+    premier: allSponsors.find((s) => s.level === "premier"),
+    gold: allSponsors
+      .filter((s) => s.level === "gold")
+      .sort(() => Math.random() - 0.5),
+    silver: allSponsors
+      .filter((s) => s.level === "silver")
+      .sort(() => Math.random() - 0.5),
+    community: allSponsors
+      .filter((s) => s.level === "community")
+      .sort(() => Math.random() - 0.5),
+  };
+  return json<LoaderData>({ speakers: speakersShuffled, sponsors });
 };
 
 export default function ConfIndex() {
@@ -116,6 +120,7 @@ function Hero() {
 }
 
 function Speakers() {
+  const { speakers } = useLoaderData<LoaderData>();
   return (
     <div className="my-20">
       <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center ">
@@ -123,23 +128,31 @@ function Speakers() {
       </h2>
       <div className="px-6 lg:px-10 max-w-5xl mx-auto">
         <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 2xl:gap-10 sm:justify-center items-center">
-          {Array<Speaker>(9)
-            .fill({
-              id: 0,
-              name: "Joe Shmoe",
-              twitterHandle: "@joetheguy123",
-              title: "Developer Relations, FakeCo.",
-              imgSrc: "/whatever.jpg",
-            })
-            .map((speaker, i) => (
-              <Link
-                key={i}
-                to={`speakers/${speaker.id}`}
-                className="h-full w-full flex items-center justify-center"
+          {speakers.map((speaker, i) => (
+            <Link
+              key={i}
+              to={`speakers/${speaker.link}`}
+              className="h-full w-full flex items-center justify-center"
+            >
+              <div
+                className={cx(
+                  "w-full max-w-xs sm:max-w-none bg-gray-700 p-4 mt-10 rounded-tl-2xl rounded-br-2xl hover:shadow-speaker",
+                  // annoying hack that ensures speaker blocks are equal height since they
+                  // aren't direct children of the grid
+                  "sm:h-[calc(100%-2.5rem)] "
+                )}
               >
-                <FakeSpeaker {...speaker} />
-              </Link>
-            ))}
+                <div className="aspect-w-1 aspect-h-1 border-2 border-gray-200 bg-black -mt-10 rounded-tl-2xl rounded-br-2xl"></div>
+                <div className="mt-4">
+                  <h3>{speaker.name}</h3>
+                  <a href={speaker.link}>
+                    <p>{speaker.linkText}</p>
+                  </a>
+                  <p>{speaker.title}</p>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
@@ -147,30 +160,69 @@ function Speakers() {
 }
 
 function Sponsors() {
+  const { sponsors } = useLoaderData<LoaderData>();
   return (
     <div>
       <div className="md:container max-w-full overflow-hidden md:max-w-5xl">
         <div className="text-center my-20 md:mb-32">
+          {sponsors.premier ? (
+            <>
+              <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+                Premium Sponsor
+              </h2>
+              <a href={sponsors.premier.link}>
+                <img
+                  src={sponsors.premier.imgSrc}
+                  alt={sponsors.premier.name}
+                  className="h-full w-full"
+                />
+              </a>
+            </>
+          ) : null}
           <h2 className="mb-6 md:mb-8 uppercase font-semibold">
             Gold Sponsors
           </h2>
-          <div className="flex-gap-wrapper">
-            <div>
-              <ul className="list-none flex flex-shrink-0 flex-grow-0 flex-wrap gap-8 md:gap-12 lg:gap-14 items-center justify-center">
-                {Array(9)
-                  .fill(null)
-                  .map((_, i) => (
-                    <li
-                      key={i}
-                      className="flex flex-shrink-0 flex-grow-0 items-center justify-center max-w-xs max-h-[80px]"
-                    >
-                      <FakeCoLogo />
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          </div>
+          <SponsorsList sponsors={sponsors.gold} />
         </div>
+        <div className="text-center my-20 md:mb-32">
+          <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+            Silver Sponsors
+          </h2>
+          <SponsorsList sponsors={sponsors.silver} />
+        </div>
+        <div className="text-center my-20 md:mb-32">
+          <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+            Community Partners
+          </h2>
+          <SponsorsList sponsors={sponsors.community} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SponsorsList({ sponsors }: { sponsors: Array<Sponsor> }) {
+  return (
+    <div className="flex-gap-wrapper">
+      <div>
+        <ul className="list-none flex flex-shrink-0 flex-grow-0 flex-wrap gap-8 md:gap-12 lg:gap-14 items-center justify-center">
+          {sponsors.map((sponsor) => (
+            <li
+              key={sponsor.name}
+              className="flex flex-shrink-0 flex-grow-0 items-center justify-center max-w-xs max-h-[80px]"
+            >
+              <div className="border-2 border-200 h-11 w-24">
+                <a href={sponsor.link}>
+                  <img
+                    src={sponsor.imgSrc}
+                    alt={sponsor.name}
+                    className="h-full w-full"
+                  />
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
@@ -187,7 +239,7 @@ function SignUp() {
             </h2>
             <p className="text-lg md:text-xl mb-6 opacity-80">
               To get exclusive updates announcements about Remix Conf, subscribe
-              to our newsletter or{" "}
+              to our newsletter and{" "}
               <a href="https://discord.gg/VBePs6d">
                 join the conversation on Discord
               </a>
@@ -221,36 +273,4 @@ function SignUp() {
       </div>
     </div>
   );
-}
-
-function FakeSpeaker(props: Speaker) {
-  return (
-    <div
-      className={cx(
-        "w-full max-w-xs sm:max-w-none bg-gray-700 p-4 mt-10 rounded-tl-2xl rounded-br-2xl hover:shadow-speaker",
-        // annoying hack that ensures speaker blocks are equal height since they
-        // aren't direct children of the grid
-        "sm:h-[calc(100%-2.5rem)] "
-      )}
-    >
-      <div className="aspect-w-1 aspect-h-1 border-2 border-gray-200 bg-black -mt-10 rounded-tl-2xl rounded-br-2xl"></div>
-      <div className="mt-4">
-        <h3>{props.name}</h3>
-        {props.twitterHandle ? <p>{props.twitterHandle}</p> : null}
-        <p>{props.title}</p>
-      </div>
-    </div>
-  );
-}
-
-function FakeCoLogo() {
-  return <div className="border-2 border-200 h-11 w-24" />;
-}
-
-interface Speaker {
-  id: number;
-  name: string;
-  twitterHandle?: string;
-  title: string;
-  imgSrc: string;
 }
