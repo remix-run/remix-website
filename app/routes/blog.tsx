@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { LoaderFunction, ActionFunction, MetaFunction } from "remix";
+import type { LoaderFunction, MetaFunction } from "remix";
 import { json, useLoaderData, Link, useTransition, useActionData } from "remix";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
