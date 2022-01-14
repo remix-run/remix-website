@@ -1,8 +1,5 @@
-import { json, Form, useTransition, useActionData } from "remix";
-import type { ActionFunction } from "remix";
+import { Form, useTransition, useActionData } from "remix";
 import { Button, Input } from "~/components/buttons";
-import { requirePost } from "~/utils/http.server";
-import { subscribeToNewsletter } from "~/utils/convertkit";
 import { useEffect, useRef } from "react";
 
 export function meta() {
@@ -10,24 +7,6 @@ export function meta() {
     title: "Remix Newsletter",
   };
 }
-
-export let action: ActionFunction = async ({ request }) => {
-  requirePost(request);
-
-  let body = new URLSearchParams(await request.text());
-  let email = body.get("email");
-  if (typeof email !== "string" || email.indexOf("@") === -1) {
-    return json({ error: "Invalid Email" }, { status: 400 });
-  }
-
-  try {
-    await subscribeToNewsletter(email);
-  } catch (e: any) {
-    return json({ error: e.message || "Unknown error" });
-  }
-
-  return json({ ok: true });
-};
 
 export default function Newsletter() {
   let transition = useTransition();
@@ -61,6 +40,7 @@ export default function Newsletter() {
         <div className="h-9" />
         <Form
           replace
+          action="/_actions/newsletter"
           method="post"
           className={
             "sm:flex sm:gap-2 " +

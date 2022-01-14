@@ -151,6 +151,7 @@ export default function Blog() {
               </div>
               <Form
                 replace
+                action="/_actions/newsletter"
                 method="post"
                 className={
                   "flex gap-4 flex-col " +
