@@ -1,4 +1,4 @@
-import { Link, Form, json, useLoaderData } from "remix";
+import { Link, json, useLoaderData } from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
 import cx from "clsx";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
@@ -6,6 +6,7 @@ import indexStyles from "../../styles/index.css";
 import { Fragment } from "react";
 import type { Sponsor, Speaker } from "~/utils/conf.server";
 import { getSpeakers, getSponsors } from "~/utils/conf.server";
+import { Subscribe } from "~/components/subscribe";
 
 export function meta() {
   let url = "https://remix.run/conf";
@@ -237,7 +238,10 @@ function SignUp() {
             <h2 className="h2 mb-3 text-d-p-lg lg:text-d-h3 font-bold">
               Stay Updated
             </h2>
-            <p className="text-lg md:text-xl mb-6 opacity-80">
+            <p
+              className="text-lg md:text-xl mb-6 opacity-80"
+              id="newsletter-text"
+            >
               To get exclusive updates announcements about Remix Conf, subscribe
               to our newsletter and{" "}
               <a href="https://discord.gg/VBePs6d">
@@ -245,26 +249,7 @@ function SignUp() {
               </a>
               !
             </p>
-            <Form
-              method="post"
-              action="/newsletter" // TODO:
-              aria-label="Subscribe to the newsletter"
-              className="flex flex-col xs:flex-row"
-            >
-              <label>
-                <span className="sr-only">Email address</span>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="excited.attendee@remix.run"
-                  className="mb-4 xs:mb-0 xs:mr-4 flex-1 appearance-none w-full rounded py-2 px-3 bg-gray-700 hover:bg-gray-600 border border-transparent focus:border-blue-500 placeholder-gray-300 hover:placeholder-gray-200 text-base text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </label>
-              <button className="inline-flex items-center justify-center font-bold no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent transition-colors duration-200 px-5 py-3 lg:px-6 bg-blue-500 hover:bg-blue-600 border-2 border-blue-500 hover:border-blue-700 focus:ring-blue-500 focus:ring-opacity-60 text-white hover:text-white text-base rounded">
-                Subscribe
-              </button>
-            </Form>
+            <Subscribe descriptionId="newsletter-text" />
             <p className="text-gray-400 text-sm mt-1">
               We respect your privacy; unsubscribe at any time.
             </p>
