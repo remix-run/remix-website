@@ -50,7 +50,7 @@ export default function Blog() {
               <Link to={latestPost.slug} prefetch="intent">
                 <div className="aspect-h-9 aspect-w-16 mb-6">
                   <img
-                    className="object-cover object-top w-full h-full md:rounded-md mb-6"
+                    className="object-cover object-top w-full h-full md:rounded-md mb-6 shadow"
                     src={latestPost.image}
                     alt={latestPost.imageAlt}
                   />
@@ -72,7 +72,7 @@ export default function Blog() {
                   <Link to={post.slug} prefetch="intent">
                     <div className="aspect-h-9 aspect-w-16 mb-6">
                       <img
-                        className="object-cover object-top h-full w-full md:rounded-md"
+                        className="object-cover object-top h-full w-full md:rounded-md shadow"
                         src={post.image}
                         alt={post.imageAlt}
                       />
