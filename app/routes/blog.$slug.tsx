@@ -1,4 +1,11 @@
-import type { LoaderFunction, MetaFunction } from "remix";
+import * as React from "react";
+import {
+  Form,
+  LoaderFunction,
+  useActionData,
+  useFetcher,
+  useTransition,
+} from "remix";
 import { json, useLoaderData } from "remix";
 
 import { getBlogPost } from "~/utils/md.server";
@@ -9,6 +16,8 @@ import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
 import { CACHE_CONTROL } from "~/utils/http.server";
 import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
+import { Button, Input } from "~/components/buttons";
+import { Subscribe } from "~/components/subscribe";
 
 export let loader: LoaderFunction = async ({ params }) => {
   let post: MarkdownPost = await getBlogPost(params.slug!);
@@ -118,6 +127,17 @@ export default function BlogPost() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-24 mb-12 w-96 m-auto">
+        <h3 className="text-m-h3 font-bold mb-6 lg:text-d-h3">
+          Get updates on the latest Remix news
+        </h3>
+        <div className="mb-6" id="newsletter-text">
+          Be the first to learn about new Remix features, community events, and
+          tutorials.
+        </div>
+        <Subscribe descriptionId="newsletter-text" />
       </div>
       <Footer />
     </div>

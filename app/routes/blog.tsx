@@ -1,18 +1,9 @@
 import * as React from "react";
 import type { LoaderFunction, ActionFunction, MetaFunction } from "remix";
-import {
-  json,
-  useLoaderData,
-  Link,
-  Form,
-  useTransition,
-  useActionData,
-} from "remix";
-import { Button, Input } from "~/components/buttons";
+import { json, useLoaderData, Link, useTransition, useActionData } from "remix";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
-import { subscribeToNewsletter } from "~/utils/convertkit";
-import { requirePost } from "~/utils/http.server";
+import { Subscribe } from "~/components/subscribe";
 import type { MarkdownPostListing } from "~/utils/md.server";
 import { getBlogPostListings } from "~/utils/md.server";
 
@@ -24,24 +15,6 @@ export let meta: MetaFunction = () => {
     description:
       "Thoughts about building excellent user experiences with Remix.",
   };
-};
-
-export let action: ActionFunction = async ({ request }) => {
-  requirePost(request);
-
-  let body = new URLSearchParams(await request.text());
-  let email = body.get("email");
-  if (typeof email !== "string" || email.indexOf("@") === -1) {
-    return json({ error: "Invalid Email" }, { status: 400 });
-  }
-
-  try {
-    await subscribeToNewsletter(email);
-  } catch (e: any) {
-    return json({ error: e.message || "Unknown error" });
-  }
-
-  return json({ ok: true });
 };
 
 export const loader: LoaderFunction = async () => {
@@ -145,39 +118,11 @@ export default function Blog() {
               <h3 className="text-m-h3 font-bold mb-6 lg:text-d-h3">
                 Get updates on the latest Remix news
               </h3>
-              <div className="mb-6">
+              <div className="mb-6" id="newsletter-text">
                 Be the first to learn about new Remix features, community
                 events, and tutorials.
               </div>
-              <Form
-                replace
-                action="/_actions/newsletter"
-                method="post"
-                className={
-                  "flex gap-4 flex-col " +
-                  (transition.state === "submitting" ? "opacity-50" : "")
-                }
-              >
-                <Input
-                  aria-describedby="newsletter-text"
-                  ref={inputRef}
-                  type="email"
-                  name="email"
-                  placeholder="you@example.com"
-                  className="w-full sm:w-auto sm:flex-1 dark:placeholder-gray-500"
-                />
-                <Button
-                  onClick={(event) => {
-                    if (transition.state === "submitting") {
-                      event.preventDefault();
-                    }
-                  }}
-                  type="submit"
-                  className="w-full mt-2 sm:w-auto sm:mt-0 uppercase"
-                >
-                  Subscribe
-                </Button>
-              </Form>
+              <Subscribe descriptionId="newsletter-text" />
             </div>
           </div>
         </div>
