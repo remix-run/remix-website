@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "remix";
+import { Link } from "~/components/link";
 
 export function OutlineButtonLink({
   to,
@@ -18,7 +18,7 @@ export function OutlineButtonLink({
       prefetch={prefetch}
       x-comp="OutlineButtonLink"
       className={
-        "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white font-semibold border-2 " +
+        "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-blue-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2 " +
         className
       }
       children={children}
@@ -43,7 +43,7 @@ export function PrimaryButtonLink({
       to={to}
       prefetch={prefetch}
       className={
-        "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 box-border px-8 rounded bg-blue-brand text-white font-semibold " +
+        "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 box-border px-8 rounded bg-blue-brand text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 font-semibold " +
         className
       }
       children={children}
@@ -60,7 +60,7 @@ export let Button = React.forwardRef<
       ref={ref}
       x-comp="Button"
       className={
-        "inline-block text-center box-border py-4 px-8 rounded bg-blue-brand text-white font-semibold " +
+        "inline-flex items-center justify-center box-border py-4 px-8 rounded bg-blue-brand hover:bg-blue-500 text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 font-semibold " +
         className
       }
       type={props.type}

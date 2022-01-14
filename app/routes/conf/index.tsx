@@ -1,11 +1,12 @@
-import { Link, json, Form } from "remix";
-import type { LoaderFunction, LinksFunction } from "remix";
+import { json, Form, Link, useActionData, useTransition } from "remix";
+import type { ActionFunction, LinksFunction } from "remix";
 import cx from "clsx";
-import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
-import { getMarkdown } from "~/utils/md.server";
+import {
+  Button,
+  OutlineButtonLink,
+  PrimaryButtonLink,
+} from "~/components/buttons";
 import indexStyles from "../../styles/index.css";
-import { Prose, Sequence } from "@ryanflorence/mdtut";
-import invariant from "ts-invariant";
 import { Fragment } from "react";
 
 export function meta() {
@@ -34,36 +35,61 @@ export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
-type LoaderData = {
-  sample: Prose;
-  sampleSm: Prose;
-  mutations: Sequence;
-  errors: Sequence;
-};
+export let action: ActionFunction = async ({ request }) => {
+  const TOKEN = process.env.CONVERTKIT_KEY;
+  const URL = "https://api.convertkit.com/v3";
+  const FORM_ID = "1334747";
 
-export let loader: LoaderFunction = async () => {
-  let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
-    getMarkdown("marketing/sample/sample.md"),
-    getMarkdown("marketing/sample-sm/sample.md"),
-    getMarkdown("marketing/mutations/mutations.md"),
-    getMarkdown("marketing/mutations/errors.md"),
-  ]);
+  try {
+    let body = new URLSearchParams(await request.text());
+    let email = body.get("email");
 
-  invariant(sample.type === "prose", "sample.md should be prose");
-  invariant(sampleSm.type === "prose", "sample.md should be prose");
-  invariant(mutations.type === "sequence", "mutations.md should be a sequence");
-  invariant(errors.type === "sequence", "errors.md should be a sequence");
+    if (!email) {
+      return json(null, {
+        status: 400,
+        statusText: "Missing email address",
+      });
+    }
 
-  let data: LoaderData = { sample, sampleSm, mutations, errors };
-  return json(data, { headers: { "Cache-Control": "max-age=300" } });
+    if (!isEmail(email)) {
+      return json(null, {
+        status: 400,
+        statusText: "Invalid email address",
+      });
+    }
+
+    if (request.method.toLowerCase() !== "post") {
+      return json(null, {
+        status: 405,
+        statusText: `Expected "POST", received "${request.method.toUpperCase()}"`,
+      });
+    }
+
+    let res = await fetch(`${URL}/forms/${FORM_ID}/subscribe`, {
+      method: request.method,
+      body: JSON.stringify({
+        api_key: TOKEN,
+        email,
+      }),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    });
+    return res;
+  } catch (err) {
+    return json(null, {
+      status: 500,
+      statusText: `Egads! Something went wrong!`,
+    });
+  }
 };
 
 export default function ConfIndex() {
   return (
     <div x-comp="Index">
       <Hero />
-      <Sponsors />
       <Speakers />
+      <Sponsors />
       <SignUp />
     </div>
   );
@@ -97,7 +123,7 @@ function Hero() {
             <div className="flex flex-col gap-4 md:flex-row">
               <PrimaryButtonLink
                 prefetch="intent"
-                to="speak"
+                to="https://docs.google.com/forms/d/e/1FAIpQLScxtmGly2yKCJgkGx2ZjObnRsDjT_bR_Tsh7pi3t8Fs-3HXgw/viewform"
                 className="w-full md:w-auto"
                 children="Call for Speakers"
               />
@@ -142,6 +168,15 @@ function Speakers() {
             ))}
         </div>
       </div>
+      <div className="h-8 md:h-12" />
+      <div className="flex justify-center items-center gap-6">
+        <OutlineButtonLink to="https://docs.google.com/forms/d/e/1FAIpQLScxtmGly2yKCJgkGx2ZjObnRsDjT_bR_Tsh7pi3t8Fs-3HXgw/viewform">
+          Speak at Remix Conf
+        </OutlineButtonLink>
+        <PrimaryButtonLink to="https://ti.to/remix-conf/remix-conf2022">
+          Get Your Ticket
+        </PrimaryButtonLink>
+      </div>
     </div>
   );
 }
@@ -177,6 +212,8 @@ function Sponsors() {
 }
 
 function SignUp() {
+  let transition = useTransition();
+  let actionData = useActionData();
   return (
     <div className="my-6">
       <div className="container">
@@ -198,6 +235,11 @@ function SignUp() {
               action="/newsletter" // TODO:
               aria-label="Subscribe to the newsletter"
               className="flex flex-col xs:flex-row"
+              onSubmit={(event) => {
+                if (transition.state === "submitting") {
+                  event.preventDefault();
+                }
+              }}
             >
               <label>
                 <span className="sr-only">Email address</span>
@@ -209,13 +251,29 @@ function SignUp() {
                   required
                 />
               </label>
-              <button className="inline-flex items-center justify-center font-bold no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent transition-colors duration-200 px-5 py-3 lg:px-6 bg-blue-500 hover:bg-blue-600 border-2 border-blue-500 hover:border-blue-700 focus:ring-blue-500 focus:ring-opacity-60 text-white hover:text-white text-base rounded">
-                Subscribe
-              </button>
+              <Button>Subscribe</Button>
             </Form>
             <p className="text-gray-400 text-sm mt-1">
               We respect your privacy; unsubscribe at any time.
             </p>
+            {actionData?.subscription?.state ? (
+              <Status
+                color="green"
+                className="mt-4 w-full md:absolute md:left-0"
+              >
+                {(() => {
+                  switch (actionData.subscription.state) {
+                    case "inactive":
+                      return "Almost done! Go check your email and confirm your subscription or else you won't get our email :)";
+                    case "active":
+                    // we shouldn't get here...
+                    case "cancelled":
+                    default:
+                      return "Almost done! Go check your email and confirm your subscription or else you won't get our email :)";
+                  }
+                })()}
+              </Status>
+            ) : null}
           </div>
         </section>
       </div>
@@ -253,4 +311,34 @@ interface Speaker {
   twitterHandle?: string;
   title: string;
   imgSrc: string;
+}
+
+function Status({
+  className,
+  children,
+  color = "green",
+}: {
+  className?: string;
+  children: React.ReactNode;
+  color: "green" | "yellow" | "red";
+}) {
+  return (
+    <div
+      className={cx(className, "p-3 font-semibold rounded", {
+        "bg-green-500/20 text-green-500": color === "green",
+        "bg-yellow-200/70 text-yellow-900": color === "yellow",
+        "bg-red-500/20 text-red-500": color === "red",
+      })}
+    >
+      {children}
+    </div>
+  );
+}
+
+// https://github.com/segmentio/is-email/blob/master/lib/index.js
+const matcher =
+  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+function isEmail(string: string) {
+  if (string.length > 320) return false;
+  return matcher.test(string);
 }

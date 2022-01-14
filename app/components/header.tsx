@@ -1,18 +1,5 @@
-import { NavLink } from "remix";
+import { NavLink } from "~/components/link";
 import { Wordmark } from "./logo";
-import type { RemixNavLinkProps } from "@remix-run/react/components";
-
-const defaultNav: RemixNavLinkProps[] = [
-  {
-    to: "/docs/en/v1",
-    children: "Docs",
-  },
-  {
-    to: "https://github.com/remix-run",
-    children: "GitHub",
-    className: "hidden sm:block",
-  },
-];
 
 export function Header({
   forceDark,
@@ -70,22 +57,6 @@ function HeaderLink({
   className?: string;
   prefetch?: "none" | "intent";
 }) {
-  let external = to.startsWith("https://");
-
-  if (external) {
-    return (
-      <a
-        x-comp="HeaderLink"
-        className={
-          "text-d-p-sm mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 font-semibold " +
-          className
-        }
-        href={to}
-        children={children}
-      />
-    );
-  }
-
   return (
     <NavLink
       prefetch={prefetch}

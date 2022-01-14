@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Outlet, Link, NavLink } from "remix";
+import { Outlet } from "remix";
 import type { LinksFunction } from "remix";
+import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
 import { GitHub, Twitter, YouTube } from "~/components/icons";
 import {
@@ -65,7 +66,7 @@ function Header() {
           ))}
           <li>
             <HeaderLink
-              to="tickets"
+              to="https://ti.to/remix-conf/remix-conf2022"
               children="Get Your Tickets"
               className="text-yellow-brand hover:text-white"
             />
@@ -83,9 +84,12 @@ function Footer() {
       x-comp="Footer"
       className="px-6 lg:px-12 py-9 text-d-p-sm flex justify-between items-center text-white"
     >
-      <div className="flex items-center">
+      <div className="flex items-start md:items-center flex-col md:flex-row gap-2 md:gap-16">
         <Link to="/" aria-label="Remix home">
           <Wordmark height={16} aria-hidden />
+        </Link>
+        <Link to="coc" className="leading-none block font-semibold">
+          Code of Conduct
         </Link>
       </div>
       <nav className="flex gap-6 text-white" aria-label="Find us on the web">
@@ -112,21 +116,6 @@ interface HeaderLinkProps {
 
 const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
   ({ to, children, className, prefetch = "none", ...props }, ref) => {
-    let external = to.startsWith("https://");
-
-    if (external) {
-      return (
-        <a
-          ref={ref}
-          x-comp="HeaderLink"
-          className={cx("text-d-p-sm font-semibold", className)}
-          href={to}
-          children={children}
-          {...props}
-        />
-      );
-    }
-
     return (
       <NavLink
         ref={ref}
@@ -187,8 +176,7 @@ function MobileNavList() {
         <MobileMenuItem
           className="block"
           children="Get Your Tickets"
-          to="tickets"
-          // className="block select-none cursor-pointer no-underline py-2 px-3 outline-none selected:bg-gray-200 selected:text-white"
+          to="https://ti.to/remix-conf/remix-conf2022"
         />
       </MenuItems>
     </MenuPopover>
@@ -199,10 +187,9 @@ function MobileNav() {
   return (
     <div className="flex items-center gap-4 sm:hidden">
       <HeaderLink
-        className="block"
+        className="block text-yellow-brand hover:text-white"
         children="Tickets"
-        to="tickets"
-        // className="block select-none cursor-pointer no-underline py-2 px-3 outline-none selected:bg-gray-200 selected:text-white"
+        to="https://ti.to/remix-conf/remix-conf2022"
       />
       <Menu>
         <MobileNavButton />
