@@ -2,19 +2,19 @@
   linkText: "@TAbrodi"
   link: "https://twitter.com/TAbrodi"
   title: "Software Engineer"
-  imgSrc: "/conf/speakers/tiger.jpg"
+  imgSrc: "/conf-images/speakers/tiger.jpg"
 
 - name: "Ryan Dahl"
   linkText: "@ry"
   link: "https://github.com/ry"
   title: "CEO at Deno and Node.js Creator"
-  imgSrc: "/conf/speakers/ryan_dahl.jpg"
+  imgSrc: "/conf-images/speakers/ryan_dahl.jpg"
 
 - name: "Shaundai Person"
   linkText: "@shaundai"
   link: "https://twitter.com/shaundai"
   title: "Senior Software Engineer @Netflix"
-  imgSrc: "/conf/speakers/shaundai.jpg"
+  imgSrc: "/conf-images/speakers/shaundai.jpg"
 
 - name: "Ryan Florence"
   linkText: "@ryanflorence"
