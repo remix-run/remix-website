@@ -7,19 +7,51 @@
 }
 
 .animated-remix-conf-logo .remix {
-  transition: all 1.1s;
-  transition-delay: 0.3s;
-  opacity: 0;
-}
-.animated-remix-conf-logo .remix.visible {
-  opacity: 1;
+  --transform-start: matrix(1, 0, 0, 1, -800, -220);
+  --transform-end: matrix(1, 0, 0, 1, -227, -220);
+  animation-name: fadeSlideIn27;
+  animation-duration: 1.4s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-out;
+  transform: var(--transform-end);
 }
 
 .animated-remix-conf-logo .conf {
-  transition: all 1.1s;
-  transition-delay: 0.7s;
-  opacity: 0;
+  --transform-start: matrix(11.3585, 0, 0, 11.3585, -1500, -735.56);
+  --transform-end: matrix(11.3585, 0, 0, 11.3585, -1948.42, -735.56);
+  animation-name: fadeSlideIn64;
+  animation-duration: 1.8s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-out;
+  transform: var(--transform-end);
 }
-.animated-remix-conf-logo .conf.visible {
-  opacity: 1;
+
+@keyframes fadeSlideIn27 {
+  from {
+    opacity: 0;
+    transform: var(--transform-start);
+  }
+  27% {
+    opacity: 0;
+    transform: var(--transform-start);
+  }
+  to {
+    opacity: 1;
+    transform: var(--transform-end);
+  }
+}
+
+@keyframes fadeSlideIn64 {
+  from {
+    opacity: 0;
+    transform: var(--transform-start);
+  }
+  64% {
+    opacity: 0;
+    transform: var(--transform-start);
+  }
+  to {
+    opacity: 1;
+    transform: var(--transform-end);
+  }
 }
