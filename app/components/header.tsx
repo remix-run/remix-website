@@ -1,5 +1,18 @@
 import { NavLink } from "~/components/link";
 import { Wordmark } from "./logo";
+import type { RemixNavLinkProps } from "@remix-run/react/components";
+
+const defaultNav: RemixNavLinkProps[] = [
+  {
+    to: "/docs/en/v1",
+    children: "Docs",
+  },
+  {
+    to: "https://github.com/remix-run",
+    children: "GitHub",
+    className: "hidden sm:block",
+  },
+];
 
 export function Header({
   forceDark,

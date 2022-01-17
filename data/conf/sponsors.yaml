@@ -1,0 +1,24 @@
+- name: "Applitools"
+  link: "https://applitools.com"
+  imgSrc: "/conf-images/sponsors/applitools.png"
+  level: "silver"
+
+- name: "MediaJams"
+  link: "https://mediajams.dev"
+  imgSrc: "/conf-images/sponsors/mediajams.png"
+  level: "community"
+
+- name: "Centered"
+  link: "https://centered.app"
+  imgSrc: "/conf-images/sponsors/centered.png"
+  level: "community"
+
+- name: "egghead.io"
+  link: "https://egghead.io"
+  imgSrc: "/conf-images/sponsors/egghead.png"
+  level: "gold"
+
+- name: "PlantScale"
+  link: "https://planetscale.com"
+  imgSrc: "/conf-images/sponsors/planetscale.jpg"
+  level: "gold"

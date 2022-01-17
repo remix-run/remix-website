@@ -1,5 +1,5 @@
-import { json, Form, Link, useActionData, useTransition } from "remix";
-import type { ActionFunction, LinksFunction } from "remix";
+import { json, useLoaderData, Form, useActionData, useTransition } from "remix";
+import type { ActionFunction, LinksFunction, LoaderFunction } from "remix";
 import cx from "clsx";
 import {
   Button,
@@ -8,6 +8,10 @@ import {
 } from "~/components/buttons";
 import indexStyles from "../../styles/index.css";
 import { Fragment } from "react";
+import type { Sponsor, Speaker } from "~/utils/conf.server";
+import { getSpeakers, getSponsors } from "~/utils/conf.server";
+import { Subscribe } from "~/components/subscribe";
+import { Link } from "~/components/link";
 
 export function meta() {
   let url = "https://remix.run/conf";
@@ -35,61 +39,41 @@ export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
-export let action: ActionFunction = async ({ request }) => {
-  const TOKEN = process.env.CONVERTKIT_KEY;
-  const URL = "https://api.convertkit.com/v3";
-  const FORM_ID = "1334747";
+type LoaderData = {
+  speakers: Array<Speaker>;
+  sponsors: {
+    premier: Sponsor | undefined;
+    gold: Array<Sponsor>;
+    silver: Array<Sponsor>;
+    community: Array<Sponsor>;
+  };
+};
 
-  try {
-    let body = new URLSearchParams(await request.text());
-    let email = body.get("email");
-
-    if (!email) {
-      return json(null, {
-        status: 400,
-        statusText: "Missing email address",
-      });
-    }
-
-    if (!isEmail(email)) {
-      return json(null, {
-        status: 400,
-        statusText: "Invalid email address",
-      });
-    }
-
-    if (request.method.toLowerCase() !== "post") {
-      return json(null, {
-        status: 405,
-        statusText: `Expected "POST", received "${request.method.toUpperCase()}"`,
-      });
-    }
-
-    let res = await fetch(`${URL}/forms/${FORM_ID}/subscribe`, {
-      method: request.method,
-      body: JSON.stringify({
-        api_key: TOKEN,
-        email,
-      }),
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    });
-    return res;
-  } catch (err) {
-    return json(null, {
-      status: 500,
-      statusText: `Egads! Something went wrong!`,
-    });
-  }
+export const loader: LoaderFunction = async () => {
+  const speakersOrdered = await getSpeakers();
+  const speakersShuffled = speakersOrdered.sort(() => Math.random() - 0.5);
+  const allSponsors = await getSponsors();
+  const sponsors = {
+    premier: allSponsors.find((s) => s.level === "premier"),
+    gold: allSponsors
+      .filter((s) => s.level === "gold")
+      .sort(() => Math.random() - 0.5),
+    silver: allSponsors
+      .filter((s) => s.level === "silver")
+      .sort(() => Math.random() - 0.5),
+    community: allSponsors
+      .filter((s) => s.level === "community")
+      .sort(() => Math.random() - 0.5),
+  };
+  return json<LoaderData>({ speakers: speakersShuffled, sponsors });
 };
 
 export default function ConfIndex() {
   return (
     <div x-comp="Index">
       <Hero />
-      <Speakers />
       <Sponsors />
+      <Speakers />
       <SignUp />
     </div>
   );
@@ -123,7 +107,7 @@ function Hero() {
             <div className="flex flex-col gap-4 md:flex-row">
               <PrimaryButtonLink
                 prefetch="intent"
-                to="https://docs.google.com/forms/d/e/1FAIpQLScxtmGly2yKCJgkGx2ZjObnRsDjT_bR_Tsh7pi3t8Fs-3HXgw/viewform"
+                to="speak"
                 className="w-full md:w-auto"
                 children="Call for Speakers"
               />
@@ -142,6 +126,7 @@ function Hero() {
 }
 
 function Speakers() {
+  const { speakers } = useLoaderData<LoaderData>();
   return (
     <div className="my-20">
       <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center ">
@@ -149,71 +134,107 @@ function Speakers() {
       </h2>
       <div className="px-6 lg:px-10 max-w-5xl mx-auto">
         <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 2xl:gap-10 sm:justify-center items-center">
-          {Array<Speaker>(9)
-            .fill({
-              id: 0,
-              name: "Joe Shmoe",
-              twitterHandle: "@joetheguy123",
-              title: "Developer Relations, FakeCo.",
-              imgSrc: "/whatever.jpg",
-            })
-            .map((speaker, i) => (
-              <Link
-                key={i}
-                to={`speakers/${speaker.id}`}
-                className="h-full w-full flex items-center justify-center"
+          {speakers.map((speaker, i) => (
+            <Link
+              key={i}
+              to={`speakers/${speaker.link}`}
+              className="h-full w-full flex items-center justify-center"
+            >
+              <div
+                className={cx(
+                  "w-full max-w-xs sm:max-w-none bg-gray-700 p-4 mt-10 rounded-tl-2xl rounded-br-2xl hover:shadow-speaker",
+                  // annoying hack that ensures speaker blocks are equal height since they
+                  // aren't direct children of the grid
+                  "sm:h-[calc(100%-2.5rem)] "
+                )}
               >
-                <FakeSpeaker {...speaker} />
-              </Link>
-            ))}
+                <div className="aspect-w-1 aspect-h-1 border-2 border-gray-200 bg-black -mt-10 rounded-tl-2xl rounded-br-2xl"></div>
+                <div className="mt-4">
+                  <h3>{speaker.name}</h3>
+                  <a href={speaker.link}>
+                    <p>{speaker.linkText}</p>
+                  </a>
+                  <p>{speaker.title}</p>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
-      </div>
-      <div className="h-8 md:h-12" />
-      <div className="flex justify-center items-center gap-6">
-        <OutlineButtonLink to="https://docs.google.com/forms/d/e/1FAIpQLScxtmGly2yKCJgkGx2ZjObnRsDjT_bR_Tsh7pi3t8Fs-3HXgw/viewform">
-          Speak at Remix Conf
-        </OutlineButtonLink>
-        <PrimaryButtonLink to="https://ti.to/remix-conf/remix-conf2022">
-          Get Your Ticket
-        </PrimaryButtonLink>
       </div>
     </div>
   );
 }
 
 function Sponsors() {
+  const { sponsors } = useLoaderData<LoaderData>();
   return (
     <div>
       <div className="md:container max-w-full overflow-hidden md:max-w-5xl">
         <div className="text-center my-20 md:mb-32">
+          {sponsors.premier ? (
+            <>
+              <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+                Premium Sponsor
+              </h2>
+              <a href={sponsors.premier.link}>
+                <img
+                  src={sponsors.premier.imgSrc}
+                  alt={sponsors.premier.name}
+                  className="h-full w-full"
+                />
+              </a>
+            </>
+          ) : null}
           <h2 className="mb-6 md:mb-8 uppercase font-semibold">
             Gold Sponsors
           </h2>
-          <div className="flex-gap-wrapper">
-            <div>
-              <ul className="list-none flex flex-shrink-0 flex-grow-0 flex-wrap gap-8 md:gap-12 lg:gap-14 items-center justify-center">
-                {Array(9)
-                  .fill(null)
-                  .map((_, i) => (
-                    <li
-                      key={i}
-                      className="flex flex-shrink-0 flex-grow-0 items-center justify-center max-w-xs max-h-[80px]"
-                    >
-                      <FakeCoLogo />
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          </div>
+          <SponsorsList sponsors={sponsors.gold} />
+        </div>
+        <div className="text-center my-20 md:mb-32">
+          <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+            Silver Sponsors
+          </h2>
+          <SponsorsList sponsors={sponsors.silver} />
+        </div>
+        <div className="text-center my-20 md:mb-32">
+          <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+            Community Partners
+          </h2>
+          <SponsorsList sponsors={sponsors.community} />
         </div>
       </div>
     </div>
   );
 }
 
+function SponsorsList({ sponsors }: { sponsors: Array<Sponsor> }) {
+  return (
+    <div className="flex-gap-wrapper">
+      <div>
+        <ul className="list-none flex flex-shrink-0 flex-grow-0 flex-wrap gap-8 md:gap-12 lg:gap-14 items-center justify-center">
+          {sponsors.map((sponsor) => (
+            <li
+              key={sponsor.name}
+              className="flex flex-shrink-0 flex-grow-0 items-center justify-center max-w-xs max-h-[80px]"
+            >
+              <div className="border-2 border-200 h-11 w-24">
+                <a href={sponsor.link}>
+                  <img
+                    src={sponsor.imgSrc}
+                    alt={sponsor.name}
+                    className="h-full w-full"
+                  />
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 function SignUp() {
-  let transition = useTransition();
-  let actionData = useActionData();
   return (
     <div className="my-6">
       <div className="container">
@@ -222,123 +243,24 @@ function SignUp() {
             <h2 className="h2 mb-3 text-d-p-lg lg:text-d-h3 font-bold">
               Stay Updated
             </h2>
-            <p className="text-lg md:text-xl mb-6 opacity-80">
+            <p
+              className="text-lg md:text-xl mb-6 opacity-80"
+              id="newsletter-text"
+            >
               To get exclusive updates announcements about Remix Conf, subscribe
-              to our newsletter or{" "}
+              to our newsletter and{" "}
               <a href="https://discord.gg/VBePs6d">
                 join the conversation on Discord
               </a>
               !
             </p>
-            <Form
-              method="post"
-              action="/newsletter" // TODO:
-              aria-label="Subscribe to the newsletter"
-              className="flex flex-col xs:flex-row"
-              onSubmit={(event) => {
-                if (transition.state === "submitting") {
-                  event.preventDefault();
-                }
-              }}
-            >
-              <label>
-                <span className="sr-only">Email address</span>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="excited.attendee@remix.run"
-                  className="mb-4 xs:mb-0 xs:mr-4 flex-1 appearance-none w-full rounded py-2 px-3 bg-gray-700 hover:bg-gray-600 border border-transparent focus:border-blue-500 placeholder-gray-300 hover:placeholder-gray-200 text-base text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </label>
-              <Button>Subscribe</Button>
-            </Form>
+            <Subscribe descriptionId="newsletter-text" />
             <p className="text-gray-400 text-sm mt-1">
               We respect your privacy; unsubscribe at any time.
             </p>
-            {actionData?.subscription?.state ? (
-              <Status
-                color="green"
-                className="mt-4 w-full md:absolute md:left-0"
-              >
-                {(() => {
-                  switch (actionData.subscription.state) {
-                    case "inactive":
-                      return "Almost done! Go check your email and confirm your subscription or else you won't get our email :)";
-                    case "active":
-                    // we shouldn't get here...
-                    case "cancelled":
-                    default:
-                      return "Almost done! Go check your email and confirm your subscription or else you won't get our email :)";
-                  }
-                })()}
-              </Status>
-            ) : null}
           </div>
         </section>
       </div>
     </div>
   );
-}
-
-function FakeSpeaker(props: Speaker) {
-  return (
-    <div
-      className={cx(
-        "w-full max-w-xs sm:max-w-none bg-gray-700 p-4 mt-10 rounded-tl-2xl rounded-br-2xl hover:shadow-speaker",
-        // annoying hack that ensures speaker blocks are equal height since they
-        // aren't direct children of the grid
-        "sm:h-[calc(100%-2.5rem)] "
-      )}
-    >
-      <div className="aspect-w-1 aspect-h-1 border-2 border-gray-200 bg-black -mt-10 rounded-tl-2xl rounded-br-2xl"></div>
-      <div className="mt-4">
-        <h3>{props.name}</h3>
-        {props.twitterHandle ? <p>{props.twitterHandle}</p> : null}
-        <p>{props.title}</p>
-      </div>
-    </div>
-  );
-}
-
-function FakeCoLogo() {
-  return <div className="border-2 border-200 h-11 w-24" />;
-}
-
-interface Speaker {
-  id: number;
-  name: string;
-  twitterHandle?: string;
-  title: string;
-  imgSrc: string;
-}
-
-function Status({
-  className,
-  children,
-  color = "green",
-}: {
-  className?: string;
-  children: React.ReactNode;
-  color: "green" | "yellow" | "red";
-}) {
-  return (
-    <div
-      className={cx(className, "p-3 font-semibold rounded", {
-        "bg-green-500/20 text-green-500": color === "green",
-        "bg-yellow-200/70 text-yellow-900": color === "yellow",
-        "bg-red-500/20 text-red-500": color === "red",
-      })}
-    >
-      {children}
-    </div>
-  );
-}
-
-// https://github.com/segmentio/is-email/blob/master/lib/index.js
-const matcher =
-  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-function isEmail(string: string) {
-  if (string.length > 320) return false;
-  return matcher.test(string);
 }

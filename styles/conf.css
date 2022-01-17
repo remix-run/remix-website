@@ -5,3 +5,21 @@
     background-position-x: calc(50% + 280px);
   }
 }
+
+.animated-remix-conf-logo .remix {
+  transition: all 1.1s;
+  transition-delay: 0.3s;
+  opacity: 0;
+}
+.animated-remix-conf-logo .remix.visible {
+  opacity: 1;
+}
+
+.animated-remix-conf-logo .conf {
+  transition: all 1.1s;
+  transition-delay: 0.7s;
+  opacity: 0;
+}
+.animated-remix-conf-logo .conf.visible {
+  opacity: 1;
+}
