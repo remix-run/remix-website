@@ -341,7 +341,7 @@ The edge is what Remix was built for. As you can see, it's very promising. As we
 
 ## Clientside Transitions
 
-Both frameworks enable instant transitions with link prefetching, but Next.js can only do this for pages created from SSG. The search page is out, again. <small>(maybe next time, sport)</small>
+Both frameworks enable instant transitions with link prefetching, but Next.js only does this for pages created from SSG. The search page is out, again. <small>(maybe next time, sport)</small>
 
 However, **Remix can prefetch any page because there was no architectural divergence for data loading.** Prefetching an unknowable, user-driven search page URL is not any different than prefetching a knowable product URL.
 
@@ -543,7 +543,7 @@ Additionally, we think loading data in only one way, on the server, leads to cle
 This is a great question. Server and HTTP caching only work when your site is getting traffic. Turns out, your business only works when your site is getting traffic too 😳. You don't need two page views a day to be one second faster, you need a mailing list.
 
 - Empty cache hits on product pages in Remix are no slower than the search page in the Next.js site (where it can't use SSG). When was the last time you shopped online without searching? As that cache fills up with common queries, it gets even faster.
-- Common landing pages will be primed pretty much always, then Remix's prefetching makes the next transitions instant. Remix can prefetch any page, dynamic or otherwise, Next.js can't
+- Common landing pages will be primed pretty much always, then Remix's prefetching makes the next transitions instant. Remix can prefetch any page, dynamic or otherwise, Next.js doesn't.
 - At a certain scale with SSG, you'll need to switch to ISR. Now you have the same cache miss problem on pages that weren't part of your last deployment
 
 If cache miss requests are a significant portion of your visits, getting 100% cache hits won't fix your business: you don't have a technical problem, you have a marketing problem.
