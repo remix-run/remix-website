@@ -418,7 +418,7 @@ Because Remix handles all of your interactions with the server (both data loadin
 
 ## Unhandled Errors
 
-What happens when the the "add to cart" backend handler throws an error? Here we block requests to the routes that add items to the cart to see what happens.
+What happens when the "add to cart" backend handler throws an error? Here we block requests to the routes that add items to the cart to see what happens.
 
 <figcaption>Next.js Failed POST</figcaption>
 
