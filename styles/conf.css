@@ -1,11 +1,12 @@
 .__layout {
-  background-color: theme(colors.blue.700);
   background-image: linear-gradient(
     180deg,
     theme(colors.blue.800) 0px,
     theme(colors.blue.800) 20px,
     theme(colors.blue.700) 350px,
-    theme(colors.blue.700) 2000px
+    theme(colors.blue.700) 1000px,
+    theme(colors.blue.800) 2000px,
+    theme(colors.blue.900) 3000px
   );
 }
 
@@ -49,15 +50,38 @@
   text-shadow: var(--hero-text-shadow);
 }
 
-.__footer {
-  /* Desktop - Footer (conf) */
-  background-color: theme(colors.blue.700);
+.__section-speakers {
+  position: relative;
   background-image: linear-gradient(
     180deg,
-    theme(colors.blue.700) 0%,
-    theme(colors.blue.700) 20%,
-    theme(colors.blue.800) 200%
+    theme(colors.blue.900) 0px,
+    theme(colors.blue.800) 200px,
+    theme(colors.blue.800) 200px,
+    theme(colors.blue.700) 100%
   );
+
+  &::before {
+    position: absolute;
+    display: block;
+    content: "";
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+      180deg,
+      hsl(302deg 67% 54% / 0) 0px,
+      hsl(302deg 67% 54% / 0) 100px,
+      hsl(302deg 67% 54% / 0.375) 100%
+    );
+  }
+}
+
+.__speaker-img {
+  border: 1px solid theme("colors.blue.brand");
+}
+
+.__speaker-link:hover .__speaker-img {
+  border-color: theme("colors.pink.brand");
 }
 
 .animated-remix-conf-logo .remix {

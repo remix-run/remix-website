@@ -17,8 +17,17 @@ module.exports = {
     require("@tailwindcss/aspect-ratio"),
     function ({ addVariant, e }) {
       addVariant("selected", ({ modifySelectors, separator }) => {
-        modifySelectors(({ className }) => {
-          return `.${e(`selected${separator}${className}`)}[data-selected]`;
+        modifySelectors(({ className, selector }) => {
+          let pseudo = "";
+          if (/:(hover|focus|focus-within|focus-visible)$/.test(selector)) {
+            let i = selector.lastIndexOf(":");
+            if (i != -1) {
+              pseudo = selector.substr(i);
+            }
+          }
+          return `.${e(
+            `selected${separator}${className}`
+          )}[data-selected]${pseudo}`;
         });
       });
       addVariant("expanded", ({ modifySelectors, separator }) => {
@@ -167,10 +176,6 @@ module.exports = {
           900: "#441325",
         },
       },
-
-      boxShadow: (theme) => ({
-        speaker: `0 ${theme("spacing.2")} ${theme("colors.pink.brand")}`,
-      }),
     },
   },
 };

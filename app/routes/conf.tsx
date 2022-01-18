@@ -16,6 +16,13 @@ import styles from "../styles/conf.css";
 import stylesSm from "../styles/conf-sm.css";
 import stylesMd from "../styles/conf-md.css";
 import stylesLg from "../styles/conf-lg.css";
+import {
+  SubscribeEmailInput,
+  SubscribeForm,
+  SubscribeProvider,
+  SubscribeStatus,
+  SubscribeSubmit,
+} from "~/components/subscribe";
 
 export let handle = { forceDark: true };
 
@@ -45,13 +52,53 @@ const navItems: Array<HeaderLinkProps> = [
 
 export default function Conf() {
   return (
-    <div className="flex flex-col flex-1 h-full __layout">
+    <div className="flex flex-col flex-1 h-full text-white bg-blue-800 __layout">
       <Header />
       <main className="flex flex-col flex-1" tabIndex={-1}>
         <Outlet />
       </main>
+      <aside>
+        <SignUp />
+      </aside>
       <Footer />
     </div>
+  );
+}
+
+function SignUp() {
+  return (
+    <section className="my-6">
+      <div className="container">
+        <section className="section-signup relative">
+          <div className="md:max-w-xl mx-auto md:py-40 relative">
+            <h2 className="h2 mb-3 text-d-h3 text-yellow-brand font-bold font-jet-mono">
+              Stay Updated
+            </h2>
+            <p
+              className="text-lg md:text-xl mb-6 opacity-80"
+              id="newsletter-text"
+            >
+              To get exclusive updates announcements about Remix Conf, subscribe
+              to our newsletter and{" "}
+              <a href="https://discord.gg/VBePs6d">
+                join the conversation on Discord
+              </a>
+              !
+            </p>
+            <SubscribeProvider>
+              <SubscribeForm aria-describedby="newsletter-text">
+                <SubscribeEmailInput />
+                <SubscribeSubmit className="w-full mt-2 sm:w-auto sm:mt-0 uppercase font-jet-mono" />
+              </SubscribeForm>
+              <SubscribeStatus />
+            </SubscribeProvider>
+            <p className="text-white opacity-60 text-sm mt-1">
+              We respect your privacy; unsubscribe at any time.
+            </p>
+          </div>
+        </section>
+      </div>
+    </section>
   );
 }
 
@@ -72,7 +119,7 @@ function Header() {
       </NavLink>
 
       <nav className="flex" aria-label="Main">
-        <ul className="hidden sm:flex gap-4 md:gap-5 lg:gap-8 list-none items-center">
+        <ul className="hidden sm:flex gap-4 md:gap-5 lg:gap-8 list-none items-center font-jet-mono">
           {navItems.map((item) => (
             <li key={item.to + item.children}>
               <HeaderLink
@@ -105,7 +152,10 @@ function Footer() {
         <Link to="/" aria-label="Remix home">
           <Wordmark height={16} aria-hidden />
         </Link>
-        <Link to="coc" className="leading-none block font-semibold">
+        <Link
+          to="coc"
+          className="leading-none block font-semibold font-jet-mono"
+        >
           Code of Conduct
         </Link>
       </div>
@@ -167,7 +217,7 @@ function MobileNavButton() {
     <MenuButton
       id="nav-button"
       aria-label="Toggle menu"
-      className="border-2 border-gray-400 rounded-md h-9 w-9 flex items-center justify-center expanded:bg-gray-700"
+      className="border-2 border-white border-opacity-60 expanded:border-opacity-100 rounded-md h-9 w-9 flex items-center justify-center expanded:bg-blue-800"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +237,7 @@ function MobileMenuItem({ className, ...props }: HeaderLinkProps) {
       as={HeaderLink}
       className={cx(
         className,
-        "select-none cursor-pointer py-2 px-4 outline-none selected:bg-gray-600 selected:text-white hover:bg-blue-500 hover:text-white"
+        "select-none cursor-pointer py-2 px-4 outline-none selected:bg-pink-500 selected:text-white hover:bg-blue-700 selected:hover:bg-pink-600 hover:text-white"
       )}
       {...props}
     />
@@ -197,18 +247,18 @@ function MobileMenuItem({ className, ...props }: HeaderLinkProps) {
 function MobileNavList() {
   return (
     <MenuPopover className="absolute block">
-      <MenuItems className="relative block whitespace-nowrap outline-none py-2 border-2 border-gray-400 rounded-md mt-2 bg-black">
+      <MenuItems className="relative block whitespace-nowrap outline-none py-2 border-2 border-white rounded-md mt-2 bg-blue-800 font-jet-mono">
         {navItems.map((item) => (
           <MobileMenuItem
             key={item.to + item.children}
             {...item}
-            className="block text-gray-200 hover:text-white"
+            className="block text-white text-opacity-90 hover:text-opacity-100"
           />
         ))}
         <MobileMenuItem
-          className="block"
           children="Get Your Tickets"
           to="tickets"
+          className="block text-white text-opacity-90 hover:text-opacity-100"
         />
       </MenuItems>
     </MenuPopover>
@@ -217,7 +267,7 @@ function MobileNavList() {
 
 function MobileNav() {
   return (
-    <div className="flex items-center gap-4 sm:hidden">
+    <div className="flex items-center gap-4 sm:hidden font-jet-mono">
       <HeaderLink
         className="block text-yellow-brand hover:text-white"
         children="Tickets"

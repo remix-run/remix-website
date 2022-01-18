@@ -19,7 +19,3 @@ html {
 [hidden] {
   display: none !important;
 }
-
-[data-reach-menu-item][data-selected]:hover {
-  background: theme(colors.blue.600);
-}

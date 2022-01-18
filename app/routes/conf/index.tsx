@@ -1,16 +1,10 @@
-import { json, useLoaderData, Form, useActionData, useTransition } from "remix";
-import type { ActionFunction, LinksFunction, LoaderFunction } from "remix";
-import cx from "clsx";
-import {
-  Button,
-  OutlineButtonLink,
-  PrimaryButtonLink,
-} from "~/components/buttons";
+import { json, useLoaderData } from "remix";
+import type { LinksFunction, LoaderFunction } from "remix";
+import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
 import indexStyles from "../../styles/index.css";
 import { Fragment } from "react";
 import type { Sponsor, Speaker } from "~/utils/conf.server";
 import { getSpeakers, getSponsors } from "~/utils/conf.server";
-import { Subscribe } from "~/components/subscribe";
 import { Link } from "~/components/link";
 
 export function meta() {
@@ -74,9 +68,8 @@ export default function ConfIndex() {
   return (
     <div x-comp="Index">
       <Hero />
-      <Sponsors />
       <Speakers />
-      <SignUp />
+      <Sponsors />
     </div>
   );
 }
@@ -110,13 +103,13 @@ function Hero() {
               <PrimaryButtonLink
                 prefetch="intent"
                 to="speak"
-                className="w-full md:w-auto"
+                className="w-full md:w-auto font-jet-mono uppercase"
                 children="Call for Speakers"
               />
               <OutlineButtonLink
                 prefetch="intent"
                 to="sponsor"
-                className="w-full md:w-auto"
+                className="w-full md:w-auto font-jet-mono uppercase"
                 children="Become a Sponsor"
               />
             </div>
@@ -130,55 +123,53 @@ function Hero() {
 function Speakers() {
   const { speakers } = useLoaderData<LoaderData>();
   return (
-    <div className="my-20">
-      <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center ">
-        Featured Speakers
-      </h2>
-      <div className="px-6 lg:px-10 max-w-5xl mx-auto">
-        <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 2xl:gap-10 sm:justify-center items-center">
-          {speakers.map((speaker, i) => (
-            <Link
-              key={i}
-              to={`speakers/${speaker.link}`}
-              className="h-full w-full flex items-center justify-center"
-              aria-label={`${speaker.nameFirst} ${speaker.nameLast}, ${speaker.title}`}
-            >
-              <div
-                className={cx(
-                  "w-full max-w-xs sm:max-w-none bg-gray-700 p-4 mt-10 rounded-tl-2xl rounded-br-2xl hover:shadow-speaker",
-                  // annoying hack that ensures speaker blocks are equal height since they
-                  // aren't direct children of the grid
-                  "sm:h-[calc(100%-2.5rem)] "
-                )}
+    <section className="py-20 __section-speakers">
+      <div className="relative">
+        <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
+          Featured Speakers
+        </h2>
+        <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-x-8 sm:gap-y-14 md:gap-x-8 2xl:gap-x-10 sm:justify-center items-center">
+            {speakers.map((speaker, i) => (
+              <Link
+                key={i}
+                to={`speakers/${speaker.link}`}
+                className="__speaker-link h-full w-full flex items-center justify-center"
+                aria-label={`${speaker.nameFirst} ${speaker.nameLast}, ${speaker.title}`}
               >
-                <div className="aspect-w-1 aspect-h-1 border-2 border-gray-200 bg-black -mt-10 rounded-tl-2xl rounded-br-2xl"></div>
-                <div className="mt-4">
-                  <h3>
-                    {speaker.nameFirst} {speaker.nameLast}
-                  </h3>
-                  <p>{speaker.linkText}</p>
-                  <p>{speaker.title}</p>
+                <div className="w-full max-w-xs sm:max-w-none">
+                  <div className="__speaker-img rounded-md aspect-w-1 aspect-h-1 bg-black"></div>
+                  <div className="mt-4">
+                    <h3>
+                      {speaker.nameFirst} {speaker.nameLast}
+                    </h3>
+                    <p>{speaker.title}</p>
+                    <p className="text-m-p-sm font-semibold uppercase mt-2">
+                      {speaker.linkText}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 function Sponsors() {
   const { sponsors } = useLoaderData<LoaderData>();
   return (
-    <div>
+    <section>
       <div className="md:container max-w-full overflow-hidden md:max-w-5xl">
-        <div className="text-center my-20 md:mb-32">
+        <h2 className="sr-only">Sponsors</h2>
+        <div className="text-center py-20 md:mb-32">
           {sponsors.premier ? (
             <>
-              <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+              <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
                 Premium Sponsor
-              </h2>
+              </h3>
               <a href={sponsors.premier.link}>
                 <img
                   src={sponsors.premier.imgSrc}
@@ -188,25 +179,25 @@ function Sponsors() {
               </a>
             </>
           ) : null}
-          <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+          <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
             Gold Sponsors
-          </h2>
+          </h3>
           <SponsorsList sponsors={sponsors.gold} />
         </div>
         <div className="text-center my-20 md:mb-32">
-          <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+          <h3 className="mb-6 md:mb-8 uppercase font-semibold">
             Silver Sponsors
-          </h2>
+          </h3>
           <SponsorsList sponsors={sponsors.silver} />
         </div>
         <div className="text-center my-20 md:mb-32">
-          <h2 className="mb-6 md:mb-8 uppercase font-semibold">
+          <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
             Community Partners
-          </h2>
+          </h3>
           <SponsorsList sponsors={sponsors.community} />
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -232,37 +223,6 @@ function SponsorsList({ sponsors }: { sponsors: Array<Sponsor> }) {
             </li>
           ))}
         </ul>
-      </div>
-    </div>
-  );
-}
-
-function SignUp() {
-  return (
-    <div className="my-6">
-      <div className="container">
-        <section className="section-signup relative">
-          <div className="md:max-w-xl mx-auto md:py-40 relative">
-            <h2 className="h2 mb-3 text-d-p-lg lg:text-d-h3 font-bold">
-              Stay Updated
-            </h2>
-            <p
-              className="text-lg md:text-xl mb-6 opacity-80"
-              id="newsletter-text"
-            >
-              To get exclusive updates announcements about Remix Conf, subscribe
-              to our newsletter and{" "}
-              <a href="https://discord.gg/VBePs6d">
-                join the conversation on Discord
-              </a>
-              !
-            </p>
-            <Subscribe descriptionId="newsletter-text" />
-            <p className="text-gray-400 text-sm mt-1">
-              We respect your privacy; unsubscribe at any time.
-            </p>
-          </div>
-        </section>
       </div>
     </div>
   );
