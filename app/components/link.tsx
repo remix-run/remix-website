@@ -62,12 +62,22 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
 );
 
 function isAbsoluteUrl(str: string) {
-  try {
-    new URL(str);
-    return true;
-  } catch (_) {
+  // Using URL can cause hydration issues, revisit later
+  //   try {
+  //     new URL(str);
+  //     return true;
+  //   } catch (_) {
+  //     return false;
+  //   }
+
+  // https://github.com/sindresorhus/is-absolute-url/blob/main/index.js
+  const ABSOLUTE_URL_REGEX = /^[a-zA-Z][a-zA-Z\d+\-.]*?:/;
+  const WINDOWS_PATH_REGEX = /^[a-zA-Z]:\\/;
+
+  if (WINDOWS_PATH_REGEX.test(str)) {
     return false;
   }
+  return ABSOLUTE_URL_REGEX.test(str);
 }
 
 Link.displayName = "Link";

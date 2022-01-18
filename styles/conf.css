@@ -1,9 +1,63 @@
+.__layout {
+  background-color: theme(colors.blue.700);
+  background-image: linear-gradient(
+    180deg,
+    theme(colors.blue.800) 0px,
+    theme(colors.blue.800) 20px,
+    theme(colors.blue.700) 350px,
+    theme(colors.blue.700) 2000px
+  );
+}
+
 .__hero {
-  @media screen and (min-width: 768px) {
-    background-image: url(/ryan-speaks.jpg);
-    background-repeat: no-repeat;
-    background-position-x: calc(50% + 280px);
+  --hero-text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.5);
+  --img-jpg-1x: url("/conf-images/utah-sky-sm.jpg");
+  --img-jpg-2x: url("/conf-images/utah-sky-sm.jpg");
+  --img-avif-1x: url("/conf-images/utah-sky-sm.avif");
+  --img-avif-2x: url("/conf-images/utah-sky-md.avif");
+  position: relative;
+  background-image: var(--img-jpg-1x);
+  background-image: image-set(
+    var(--img-jpg-1x) 1x type("image/jpeg"),
+    var(--img-jpg-2x) 2x type("image/jpeg"),
+    var(--img-avif-1x) 1x type("image/avif"),
+    var(--img-avif-2x) 2x type("image/avif")
+  );
+  background-image: -webkit-image-set(
+    var(--img-jpg-1x) 1x,
+    var(--img-jpg-2x) 2x
+  );
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    background: linear-gradient(
+      180deg,
+      #073966 0%,
+      rgba(26, 101, 179, 0.43) 100%
+    );
   }
+}
+
+.__hero-text-shadow {
+  text-shadow: var(--hero-text-shadow);
+}
+
+.__footer {
+  /* Desktop - Footer (conf) */
+  background-color: theme(colors.blue.700);
+  background-image: linear-gradient(
+    180deg,
+    theme(colors.blue.700) 0%,
+    theme(colors.blue.700) 20%,
+    theme(colors.blue.800) 200%
+  );
 }
 
 .animated-remix-conf-logo .remix {

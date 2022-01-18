@@ -43,6 +43,7 @@ module.exports = {
       display: ['"Founders Grotesk", "Arial Black", sans-serif'],
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
       mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
+      "jet-mono": ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
       // names come from the figma file

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Outlet } from "remix";
+import { Outlet, useLocation } from "remix";
 import type { LinksFunction } from "remix";
 import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
@@ -13,11 +13,19 @@ import {
 } from "@reach/menu-button";
 import cx from "clsx";
 import styles from "../styles/conf.css";
+import stylesSm from "../styles/conf-sm.css";
+import stylesMd from "../styles/conf-md.css";
+import stylesLg from "../styles/conf-lg.css";
 
 export let handle = { forceDark: true };
 
 export let links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: styles },
+    { rel: "stylesheet", href: stylesSm, media: "(min-width: 640px)" },
+    { rel: "stylesheet", href: stylesMd, media: "(min-width: 768px)" },
+    { rel: "stylesheet", href: stylesLg, media: "(min-width: 1024px)" },
+  ];
 };
 
 const navItems: Array<HeaderLinkProps> = [
@@ -37,7 +45,7 @@ const navItems: Array<HeaderLinkProps> = [
 
 export default function Conf() {
   return (
-    <div className="flex flex-col flex-1 h-full">
+    <div className="flex flex-col flex-1 h-full __layout">
       <Header />
       <main className="flex flex-col flex-1" tabIndex={-1}>
         <Outlet />
@@ -48,8 +56,17 @@ export default function Conf() {
 }
 
 function Header() {
+  let location = useLocation();
+  let isConfHome = location.pathname === "/conf";
   return (
-    <header className="px-6 lg:px-12 py-9 flex justify-between items-start text-white">
+    <header
+      className={cx(
+        "px-6 lg:px-12 py-9 flex justify-between items-start text-white",
+        {
+          ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
+        }
+      )}
+    >
       <NavLink to="/conf" prefetch="intent" aria-label="Remix">
         <Logo />
       </NavLink>
@@ -82,7 +99,7 @@ function Footer() {
   return (
     <footer
       x-comp="Footer"
-      className="px-6 lg:px-12 py-9 text-d-p-sm flex justify-between items-center text-white"
+      className="px-6 lg:px-12 py-9 text-d-p-sm flex justify-between items-center text-white __footer"
     >
       <div className="flex items-start md:items-center flex-col md:flex-row gap-2 md:gap-16">
         <Link to="/" aria-label="Remix home">

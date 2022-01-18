@@ -51,7 +51,9 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async () => {
   const speakersOrdered = await getSpeakers();
-  const speakersShuffled = speakersOrdered.sort(() => Math.random() - 0.5);
+  const speakersShuffled = [...speakersOrdered].sort((a, b) =>
+    a.nameLast < b.nameLast ? -1 : a.nameLast > b.nameLast ? 1 : 0
+  );
   const allSponsors = await getSponsors();
   const sponsors = {
     premier: allSponsors.find((s) => s.level === "premier"),
@@ -84,22 +86,22 @@ function Hero() {
     <Fragment>
       <section
         x-comp="Hero"
-        className="__hero py-10 sm:py-16 md:py-24 lg:py-32"
+        className="__hero pb-10 pt-40 sm:pb-16 sm:pt-48 md:pb-24 md:pt-52 lg:pb-32 lg:pt-64"
       >
-        <div className="container">
+        <div className="container relative">
           <div className="max-w-xl mx-auto md:mx-0">
-            <h1 className="font-display text-m-h1 sm:text-d-h2 lg:text-[length:64px] lg:leading-[56px] xl:text-d-j">
+            <h1 className="font-jet-mono text-[length:32px] sm:text-[length:45px] lg:text-[length:64px] leading-tight __hero-text-shadow">
               <div className="text-white">May 24-26, 2022 </div>
               <div className="text-yellow-brand">Salt Lake City</div>
             </h1>
             <div className="h-6" />
-            <div className="space-y-4 text-m-p-lg lg:text-d-p-lg">
+            <div className="space-y-4 text-m-p-lg lg:text-d-p-lg text-white __hero-text-shadow">
               <p>
                 Remix is a full stack web framework that lets you focus on the
                 user interface and work back through web fundamentals to deliver
                 a fast, slick, and resilient user experience.
               </p>
-              <p className="font-bold text-white">
+              <p className="font-bold">
                 We can't wait to tell you all about it.
               </p>
             </div>
@@ -139,6 +141,7 @@ function Speakers() {
               key={i}
               to={`speakers/${speaker.link}`}
               className="h-full w-full flex items-center justify-center"
+              aria-label={`${speaker.nameFirst} ${speaker.nameLast}, ${speaker.title}`}
             >
               <div
                 className={cx(
@@ -150,10 +153,10 @@ function Speakers() {
               >
                 <div className="aspect-w-1 aspect-h-1 border-2 border-gray-200 bg-black -mt-10 rounded-tl-2xl rounded-br-2xl"></div>
                 <div className="mt-4">
-                  <h3>{speaker.name}</h3>
-                  <a href={speaker.link}>
-                    <p>{speaker.linkText}</p>
-                  </a>
+                  <h3>
+                    {speaker.nameFirst} {speaker.nameLast}
+                  </h3>
+                  <p>{speaker.linkText}</p>
                   <p>{speaker.title}</p>
                 </div>
               </div>
