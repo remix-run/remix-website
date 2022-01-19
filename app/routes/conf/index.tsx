@@ -45,9 +45,8 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async () => {
   const speakersOrdered = await getSpeakers();
-  const speakersShuffled = [...speakersOrdered].sort((a, b) =>
-    a.nameLast < b.nameLast ? -1 : a.nameLast > b.nameLast ? 1 : 0
-  );
+  const speakersShuffled = [...speakersOrdered].sort(() => Math.random() - 0.5);
+
   const allSponsors = await getSponsors();
   const sponsors = {
     premier: allSponsors.find((s) => s.level === "premier"),
@@ -130,31 +129,58 @@ function Speakers() {
         </h2>
         <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
           <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-x-8 sm:gap-y-14 md:gap-x-8 2xl:gap-x-10 sm:justify-center items-center">
-            {speakers.map((speaker, i) => (
-              <Link
-                key={i}
-                to={`speakers/${speaker.link}`}
-                className="__speaker-link h-full w-full flex items-center justify-center"
-                aria-label={`${speaker.nameFirst} ${speaker.nameLast}, ${speaker.title}`}
-              >
-                <div className="w-full max-w-xs sm:max-w-none">
-                  <div className="__speaker-img rounded-md aspect-w-1 aspect-h-1 bg-black"></div>
-                  <div className="mt-4">
-                    <h3>
-                      {speaker.nameFirst} {speaker.nameLast}
-                    </h3>
-                    <p>{speaker.title}</p>
-                    <p className="text-m-p-sm font-semibold uppercase mt-2">
-                      {speaker.linkText}
-                    </p>
-                  </div>
-                </div>
-              </Link>
+            {speakers.map((speaker) => (
+              <SpeakerDisplay speaker={speaker} key={speaker.name} />
             ))}
           </div>
         </div>
+        <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
+          Master of Ceremonies
+        </h2>
+        <div className="w-[300px] flex items-center m-auto">
+          <SpeakerDisplay
+            speaker={{
+              name: "Ceora Ford",
+              linkText: "@ceeoreo_",
+              link: "https://twitter.com/ceeoreo_",
+              title: "Developer Advocate, Apollo",
+              imgSrc: "/conf-images/speakers/ceora.jpg",
+            }}
+          />
+        </div>
+        <div className="flex justify-center mt-20">
+          <OutlineButtonLink
+            prefetch="intent"
+            to="speak"
+            className="w-full md:w-auto font-jet-mono uppercase"
+            children="Become a Speaker"
+          />
+        </div>
       </div>
     </section>
+  );
+}
+
+function SpeakerDisplay({ speaker }: { speaker: Speaker }) {
+  return (
+    <Link
+      to={`speakers/${speaker.link}`}
+      className="__speaker-link h-full w-full flex items-center justify-center"
+      aria-label={`${speaker.name}, ${speaker.title}`}
+    >
+      <div className="w-full max-w-xs sm:max-w-none">
+        <div className="__speaker-img rounded-md overflow-hidden aspect-w-1 aspect-h-1 bg-black">
+          <img src={speaker.imgSrc} alt={`${speaker.name}`} />
+        </div>
+        <div className="mt-4">
+          <h3>{speaker.name}</h3>
+          <p>{speaker.title}</p>
+          <p className="text-m-p-sm font-semibold uppercase mt-2">
+            {speaker.linkText}
+          </p>
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -182,26 +208,47 @@ function Sponsors() {
           <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
             Gold Sponsors
           </h3>
-          <SponsorsList sponsors={sponsors.gold} />
+          <SponsorsList sponsors={sponsors.gold} level="gold" />
         </div>
         <div className="text-center my-20 md:mb-32">
           <h3 className="mb-6 md:mb-8 uppercase font-semibold">
             Silver Sponsors
           </h3>
-          <SponsorsList sponsors={sponsors.silver} />
+          <SponsorsList sponsors={sponsors.silver} level="silver" />
         </div>
         <div className="text-center my-20 md:mb-32">
           <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
             Community Partners
           </h3>
-          <SponsorsList sponsors={sponsors.community} />
+          <SponsorsList sponsors={sponsors.community} level="community" />
+        </div>
+        <div className="flex justify-center mt-20">
+          <OutlineButtonLink
+            prefetch="intent"
+            to="sponsor"
+            className="w-full md:w-auto font-jet-mono uppercase"
+            children="Join the Sponsors"
+          />
         </div>
       </div>
     </section>
   );
 }
 
-function SponsorsList({ sponsors }: { sponsors: Array<Sponsor> }) {
+function SponsorsList({
+  sponsors,
+  level,
+}: {
+  sponsors: Array<Sponsor>;
+  level: Sponsor["level"];
+}) {
+  const size = {
+    premier: "",
+    gold: "w-[250px] h-[250px]",
+    silver: "w-[200px] h-[200px]",
+    community: "w-[150px] h-[150px]",
+  }[level];
+
   return (
     <div className="flex-gap-wrapper">
       <div>
@@ -209,14 +256,17 @@ function SponsorsList({ sponsors }: { sponsors: Array<Sponsor> }) {
           {sponsors.map((sponsor) => (
             <li
               key={sponsor.name}
-              className="flex flex-shrink-0 flex-grow-0 items-center justify-center max-w-xs max-h-[80px]"
+              className={`flex flex-shrink-0 flex-grow-0 items-center justify-center ${size}`}
             >
-              <div className="border-2 border-200 h-11 w-24">
-                <a href={sponsor.link}>
+              <div className="border-2 border-200 w-full h-full bg-white">
+                <a
+                  href={sponsor.link}
+                  className="h-full w-full flex items-center"
+                >
                   <img
                     src={sponsor.imgSrc}
                     alt={sponsor.name}
-                    className="h-full w-full"
+                    className="max-w-full max-h-full p-3"
                   />
                 </a>
               </div>

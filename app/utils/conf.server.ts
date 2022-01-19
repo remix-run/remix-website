@@ -6,8 +6,7 @@ import yaml from "yaml";
 import LRUCache from "lru-cache";
 
 export type Speaker = {
-  nameFirst: string;
-  nameLast: string;
+  name: string;
   linkText: string;
   link: string;
   title: string;
@@ -82,8 +81,7 @@ export async function getSponsors() {
 export function isSpeaker(obj: any): obj is Speaker {
   return (
     typeof obj === "object" &&
-    obj.nameFirst &&
-    obj.nameLast &&
+    obj.name &&
     obj.title &&
     obj.imgSrc &&
     obj.linkText &&
