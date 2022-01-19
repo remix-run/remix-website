@@ -22,3 +22,18 @@
   link: "https://planetscale.com"
   imgSrc: "/conf-images/sponsors/planetscale.jpg"
   level: "gold"
+
+- name: "Stately"
+  link: "https://stately.ai"
+  imgSrc: "/conf-images/sponsors/stately.png"
+  level: "community"
+
+- name: "Fly.io"
+  link: "https://fly.io"
+  imgSrc: "/conf-images/sponsors/fly.png"
+  level: "gold"
+
+- name: "Nx"
+  link: "https://nx.dev"
+  imgSrc: "/conf-images/sponsors/nx.jpg"
+  level: "gold"

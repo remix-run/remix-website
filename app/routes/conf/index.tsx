@@ -122,10 +122,10 @@ function Hero() {
 function Speakers() {
   const { speakers } = useLoaderData<LoaderData>();
   return (
-    <section className="py-20 __section-speakers">
+    <section className="py-20 __section-speakers" id="speakers">
       <div className="relative">
         <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
-          Featured Speakers
+          Speakers
         </h2>
         <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
           <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-x-8 sm:gap-y-14 md:gap-x-8 2xl:gap-x-10 sm:justify-center items-center">
@@ -164,7 +164,12 @@ function Speakers() {
 function SpeakerDisplay({ speaker }: { speaker: Speaker }) {
   return (
     <Link
-      to={`speakers/${speaker.link}`}
+      to={`speakers/${speaker.name
+        .toLowerCase()
+        .replace(/[ .']/g, " ")
+        .split(" ")
+        .filter(Boolean)
+        .join("-")}`}
       className="__speaker-link h-full w-full flex items-center justify-center"
       aria-label={`${speaker.name}, ${speaker.title}`}
     >
@@ -187,11 +192,11 @@ function SpeakerDisplay({ speaker }: { speaker: Speaker }) {
 function Sponsors() {
   const { sponsors } = useLoaderData<LoaderData>();
   return (
-    <section>
+    <section id="sponsors">
       <div className="md:container max-w-full overflow-hidden md:max-w-5xl">
         <h2 className="sr-only">Sponsors</h2>
-        <div className="text-center py-20 md:mb-32">
-          {sponsors.premier ? (
+        {sponsors.premier ? (
+          <div className="text-center py-20 md:mb-32">
             <>
               <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
                 Premium Sponsor
@@ -204,7 +209,9 @@ function Sponsors() {
                 />
               </a>
             </>
-          ) : null}
+          </div>
+        ) : null}
+        <div className="text-center my-20 md:mb-32">
           <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
             Gold Sponsors
           </h3>
@@ -249,31 +256,35 @@ function SponsorsList({
     community: "w-[150px] h-[150px]",
   }[level];
 
+  const width = {
+    premier: "",
+    gold: "w-[36rem]",
+    silver: "w-[46rem]",
+    community: "w-[50rem]",
+  }[level];
+
   return (
-    <div className="flex-gap-wrapper">
-      <div>
-        <ul className="list-none flex flex-shrink-0 flex-grow-0 flex-wrap gap-8 md:gap-12 lg:gap-14 items-center justify-center">
-          {sponsors.map((sponsor) => (
-            <li
-              key={sponsor.name}
-              className={`flex flex-shrink-0 flex-grow-0 items-center justify-center ${size}`}
-            >
-              <div className="border-2 border-200 w-full h-full bg-white">
-                <a
-                  href={sponsor.link}
-                  className="h-full w-full flex items-center"
-                >
-                  <img
-                    src={sponsor.imgSrc}
-                    alt={sponsor.name}
-                    className="max-w-full max-h-full p-3"
-                  />
-                </a>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div>
+      <ul
+        className={`${width} m-auto flex flex-wrap list-none gap-8 md:gap-12 lg:gap-14 items-center justify-center`}
+      >
+        {sponsors.map((sponsor) => (
+          <li key={sponsor.name} className={`${size}`}>
+            <div className="border-2 border-200 w-full h-full bg-white">
+              <a
+                href={sponsor.link}
+                className="h-full w-full flex items-center"
+              >
+                <img
+                  src={sponsor.imgSrc}
+                  alt={sponsor.name}
+                  className="max-w-full max-h-full p-3"
+                />
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

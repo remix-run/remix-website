@@ -41,12 +41,16 @@ const navItems: Array<HeaderLinkProps> = [
     children: "Speakers",
   },
   {
-    to: "sponsors",
-    children: "Sponsors",
+    to: "workshops",
+    children: "Workshops",
   },
   {
-    to: "safety",
-    children: "Safety",
+    to: "venue",
+    children: "Venue",
+  },
+  {
+    to: "schedule",
+    children: "Schedule",
   },
 ];
 
@@ -108,7 +112,7 @@ function Header() {
   return (
     <header
       className={cx(
-        "px-6 lg:px-12 py-9 flex justify-between items-start text-white",
+        "px-6 lg:px-12 py-9 flex justify-between items-start text-white gap-8",
         {
           ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
         }
@@ -119,7 +123,7 @@ function Header() {
       </NavLink>
 
       <nav className="flex" aria-label="Main">
-        <ul className="hidden sm:flex gap-4 md:gap-5 lg:gap-8 list-none items-center font-jet-mono">
+        <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center font-jet-mono">
           {navItems.map((item) => (
             <li key={item.to + item.children}>
               <HeaderLink
@@ -130,8 +134,8 @@ function Header() {
           ))}
           <li>
             <HeaderLink
-              to="tickets"
-              children="Get Your Tickets"
+              to="https://rmx.as/tickets"
+              children="Tickets"
               className="text-yellow-brand hover:text-white"
             />
           </li>
@@ -157,6 +161,12 @@ function Footer() {
           className="leading-none block font-semibold font-jet-mono"
         >
           Code of Conduct
+        </Link>
+        <Link
+          to="safety"
+          className="leading-none block font-semibold font-jet-mono"
+        >
+          Safety
         </Link>
       </div>
       <nav className="flex gap-6 text-white" aria-label="Find us on the web">
@@ -255,11 +265,6 @@ function MobileNavList() {
             className="block text-white text-opacity-90 hover:text-opacity-100"
           />
         ))}
-        <MobileMenuItem
-          children="Get Your Tickets"
-          to="tickets"
-          className="block text-white text-opacity-90 hover:text-opacity-100"
-        />
       </MenuItems>
     </MenuPopover>
   );
@@ -267,11 +272,11 @@ function MobileNavList() {
 
 function MobileNav() {
   return (
-    <div className="flex items-center gap-4 sm:hidden font-jet-mono">
+    <div className="flex items-center gap-4 md:hidden font-jet-mono">
       <HeaderLink
         className="block text-yellow-brand hover:text-white"
         children="Tickets"
-        to="tickets"
+        to="https://rmx.as/tickets"
       />
       <Menu>
         <MobileNavButton />
