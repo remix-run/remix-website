@@ -9,8 +9,8 @@ import { Link } from "~/components/link";
 
 export function meta() {
   let url = "https://remix.run/conf";
-  let title = "Remix Conf - May 24-26";
-  let image = "https://remix.run/img/og.1.jpg"; // TODO:
+  let title = "Remix Conf - May 24-25, 2022";
+  let image = "https://remix.run/conf-images/og.1.png";
   let description =
     "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!";
   return {
@@ -83,7 +83,7 @@ function Hero() {
         <div className="container relative">
           <div className="max-w-xl mx-auto md:mx-0">
             <h1 className="font-jet-mono text-[length:32px] sm:text-[length:45px] lg:text-[length:64px] leading-tight __hero-text-shadow">
-              <div className="text-white">May 24-26, 2022 </div>
+              <div className="text-white">May 24-25, 2022 </div>
               <div className="text-yellow-brand">Salt Lake City</div>
             </h1>
             <div className="h-6" />
