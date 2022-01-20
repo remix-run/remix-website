@@ -1,16 +1,20 @@
 import fsp from "fs/promises";
 import path from "path";
 import invariant from "ts-invariant";
+import { processMarkdown } from "@ryanflorence/md";
 
 import yaml from "yaml";
 import LRUCache from "lru-cache";
 
 export type Speaker = {
   name: string;
+  type: "emcee" | "regular";
   linkText: string;
   link: string;
   title: string;
   imgSrc: string;
+  bio: string;
+  slug: string;
 };
 
 export type Sponsor = {
@@ -48,7 +52,18 @@ export async function getSpeakers() {
         speakerRaw
       )} is not valid. Please check the speakers file.`
     );
-    speakers.push(speakerRaw);
+    speakers.push({
+      ...speakerRaw,
+      slug:
+        speakerRaw.slug ||
+        speakerRaw.name
+          .toLowerCase()
+          .replace(/[ .']/g, " ")
+          .split(" ")
+          .filter(Boolean)
+          .join("-"),
+      bio: await processMarkdown(speakerRaw.bio),
+    });
   }
   cache.set("speakers", speakers);
 
@@ -85,7 +100,9 @@ export function isSpeaker(obj: any): obj is Speaker {
     obj.title &&
     obj.imgSrc &&
     obj.linkText &&
-    obj.link
+    obj.link &&
+    obj.bio &&
+    (obj.type === "emcee" || obj.type === "regular")
   );
 }
 

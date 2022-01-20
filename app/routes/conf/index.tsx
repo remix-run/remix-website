@@ -34,7 +34,7 @@ export let links: LinksFunction = () => {
 };
 
 type LoaderData = {
-  speakers: Array<Speaker>;
+  speakers: Array<Omit<Speaker, "bio">>;
   sponsors: {
     premier: Sponsor | undefined;
     gold: Array<Sponsor>;
@@ -45,7 +45,10 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async () => {
   const speakersOrdered = await getSpeakers();
-  const speakersShuffled = [...speakersOrdered].sort(() => Math.random() - 0.5);
+  const speakersShuffled = speakersOrdered
+    // save a bit of data by not sending along the bio to the home page
+    .map(({ bio, ...s }) => s)
+    .sort(() => Math.random() - 0.5);
 
   const allSponsors = await getSponsors();
   const sponsors = {
@@ -121,6 +124,8 @@ function Hero() {
 
 function Speakers() {
   const { speakers } = useLoaderData<LoaderData>();
+  const mc = speakers.find((s) => s.type === "emcee");
+  const regularSpeakers = speakers.filter((s) => s.type === "regular");
   return (
     <section className="py-20 __section-speakers" id="speakers">
       <div className="relative">
@@ -129,25 +134,21 @@ function Speakers() {
         </h2>
         <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
           <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-x-8 sm:gap-y-14 md:gap-x-8 2xl:gap-x-10 sm:justify-center items-center">
-            {speakers.map((speaker) => (
+            {regularSpeakers.map((speaker) => (
               <SpeakerDisplay speaker={speaker} key={speaker.name} />
             ))}
           </div>
         </div>
-        <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
-          Master of Ceremonies
-        </h2>
-        <div className="w-[300px] flex items-center m-auto">
-          <SpeakerDisplay
-            speaker={{
-              name: "Ceora Ford",
-              linkText: "@ceeoreo_",
-              link: "https://twitter.com/ceeoreo_",
-              title: "Developer Advocate, Apollo",
-              imgSrc: "/conf-images/speakers/ceora.jpg",
-            }}
-          />
-        </div>
+        {mc ? (
+          <>
+            <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
+              Master of Ceremonies
+            </h2>
+            <div className="w-[300px] flex items-center m-auto">
+              <SpeakerDisplay speaker={mc} />
+            </div>
+          </>
+        ) : null}
         <div className="flex justify-center mt-20">
           <OutlineButtonLink
             prefetch="intent"
@@ -161,15 +162,10 @@ function Speakers() {
   );
 }
 
-function SpeakerDisplay({ speaker }: { speaker: Speaker }) {
+function SpeakerDisplay({ speaker }: { speaker: Omit<Speaker, "bio"> }) {
   return (
     <Link
-      to={`speakers/${speaker.name
-        .toLowerCase()
-        .replace(/[ .']/g, " ")
-        .split(" ")
-        .filter(Boolean)
-        .join("-")}`}
+      to={`speakers/${speaker.slug}`}
       className="__speaker-link h-full w-full flex items-center justify-center"
       aria-label={`${speaker.name}, ${speaker.title}`}
     >
@@ -192,42 +188,46 @@ function SpeakerDisplay({ speaker }: { speaker: Speaker }) {
 function Sponsors() {
   const { sponsors } = useLoaderData<LoaderData>();
   return (
-    <section id="sponsors">
+    <section id="sponsors" className="py-20">
       <div className="md:container max-w-full overflow-hidden md:max-w-5xl">
         <h2 className="sr-only">Sponsors</h2>
-        {sponsors.premier ? (
-          <div className="text-center py-20 md:mb-32">
-            <>
+        <div className="flex flex-col gap-20 lg:gap-36 text-center">
+          {sponsors.premier ? (
+            <div className="pb-8 lg:pb-20">
               <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
                 Premium Sponsor
               </h3>
-              <a href={sponsors.premier.link}>
-                <img
-                  src={sponsors.premier.imgSrc}
-                  alt={sponsors.premier.name}
-                  className="h-full w-full"
-                />
-              </a>
-            </>
+              <div className="w-[400px] m-auto">
+                <div className="border-2 border-200 bg-white inline-block">
+                  <a href={sponsors.premier.link}>
+                    <img
+                      src={sponsors.premier.imgSrc}
+                      alt={sponsors.premier.name}
+                      className="max-w-full max-h-full p-3"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          ) : null}
+          <div>
+            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
+              Gold Sponsors
+            </h3>
+            <SponsorsList sponsors={sponsors.gold} level="gold" />
           </div>
-        ) : null}
-        <div className="text-center my-20 md:mb-32">
-          <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
-            Gold Sponsors
-          </h3>
-          <SponsorsList sponsors={sponsors.gold} level="gold" />
-        </div>
-        <div className="text-center my-20 md:mb-32">
-          <h3 className="mb-6 md:mb-8 uppercase font-semibold">
-            Silver Sponsors
-          </h3>
-          <SponsorsList sponsors={sponsors.silver} level="silver" />
-        </div>
-        <div className="text-center my-20 md:mb-32">
-          <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
-            Community Partners
-          </h3>
-          <SponsorsList sponsors={sponsors.community} level="community" />
+          <div>
+            <h3 className="mb-6 md:mb-8 uppercase font-semibold">
+              Silver Sponsors
+            </h3>
+            <SponsorsList sponsors={sponsors.silver} level="silver" />
+          </div>
+          <div>
+            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
+              Community Partners
+            </h3>
+            <SponsorsList sponsors={sponsors.community} level="community" />
+          </div>
         </div>
         <div className="flex justify-center mt-20">
           <OutlineButtonLink
@@ -256,17 +256,17 @@ function SponsorsList({
     community: "w-[150px] h-[150px]",
   }[level];
 
-  const width = {
+  const ulClassName = {
     premier: "",
-    gold: "w-[36rem]",
-    silver: "w-[46rem]",
-    community: "w-[50rem]",
+    gold: "max-w-[36rem] gap-8 md:gap-12 lg:gap-14",
+    silver: "max-w-[46rem] gap-6 md:gap-10 lg:gap-12",
+    community: "max-w-[46rem] gap-4 md:gap-8 lg:gap-10",
   }[level];
 
   return (
     <div>
       <ul
-        className={`${width} m-auto flex flex-wrap list-none gap-8 md:gap-12 lg:gap-14 items-center justify-center`}
+        className={`${ulClassName} m-auto flex flex-wrap list-none items-center justify-center`}
       >
         {sponsors.map((sponsor) => (
           <li key={sponsor.name} className={`${size}`}>

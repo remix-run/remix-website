@@ -1,0 +1,6 @@
+.speaker-bio a {
+  text-decoration: underline;
+}
+.speaker-bio p {
+  padding-bottom: 0.6rem;
+}

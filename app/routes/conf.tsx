@@ -37,7 +37,7 @@ export let links: LinksFunction = () => {
 
 const navItems: Array<HeaderLinkProps> = [
   {
-    to: "speakers",
+    to: "/conf#speakers",
     children: "Speakers",
   },
   {
