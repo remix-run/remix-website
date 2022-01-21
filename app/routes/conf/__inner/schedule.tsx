@@ -33,7 +33,7 @@ export default function Safety() {
           onChange={(index) => {
             const [, chosenRoute] = days[index];
             if (chosenRoute) {
-              navigate(chosenRoute);
+              navigate(chosenRoute, { replace: true });
             }
           }}
         >

@@ -40,7 +40,17 @@
   title: "Senior Software Engineer, Netflix"
   imgSrc: "/conf-images/speakers/shaundai.jpg"
   bio: >-
-    Shaundai is awesome
+    Shaundai is a Senior Software Engineer (Netflix) and educator based in
+    Atlanta, GA, US. She is passionate about making programming interesting and
+    approachable for all, and does that through her work as a course instructor
+    ([tsforjs.com](https://www.tsforjs.com/)), co-lead for React Robins
+    ([reactrobins.com](https://www.reactrobins.com/)), and
+    [technical blogger](https://blog.shaundai.com/).
+
+
+    In her spare time, Shaundai loves to go hiking, jogging, and listen to
+    audiobooks. Find her on Twitter at
+    [@shaundai](https://twitter.com/shaundai).
 
 - name: "Ryan Florence"
   type: "regular"
