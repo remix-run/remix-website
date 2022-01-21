@@ -3,7 +3,7 @@ import { Outlet, useLocation } from "remix";
 import type { LinksFunction } from "remix";
 import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
-import { GitHub, Twitter, YouTube } from "~/components/icons";
+import { Discord, GitHub, Twitter, YouTube } from "~/components/icons";
 import {
   Menu,
   MenuButton,
@@ -178,6 +178,9 @@ function Footer() {
         </a>
         <a href="https://youtube.com/remix_run" aria-label="YouTube">
           <YouTube aria-hidden />
+        </a>
+        <a href="https://discord.gg/remix" aria-label="Remix">
+          <Discord aria-hidden />
         </a>
       </nav>
     </footer>
