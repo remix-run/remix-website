@@ -58,7 +58,13 @@
   title: "Co-Founder & CEO, Remix"
   imgSrc: "/m.jpg"
   bio: >-
-    Michael is awesome
+    Michael Jackson is the CEO and co-founder of [Remix](https://remix.run).
+    He is the co-author of [React Router](https://reactrouter.com/) and a
+    [prolific contributor to open source](https://github.com/mjackson). He is
+    the creator of [unpkg.com](https://unpkg.com) and gets a kick out of
+    discussing distributed system design as much as he enjoys front-end
+    architecture. Michael lives in Carlsbad, CA with his wife, two boys, and two
+    girls.
 
 - name: "Kent C. Dodds"
   type: "regular"
