@@ -1,3 +1,10 @@
+import type { MetaFunction } from "remix";
+
+export const meta: MetaFunction = () => ({
+  title: "Remix Conf Sponsorship",
+  description: "Sponsorship opportunities for Remix Conf.",
+});
+
 export default function SponsorUs() {
   return (
     <div>

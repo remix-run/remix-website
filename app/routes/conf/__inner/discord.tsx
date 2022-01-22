@@ -1,5 +1,11 @@
+import type { MetaFunction } from "remix";
 import { Link } from "remix";
 import { Discord } from "~/components/icons";
+
+export const meta: MetaFunction = () => ({
+  title: "Remix Conf Discord Server",
+  description: "Much of our coordination happens on Discord.",
+});
 
 const channels = [
   {

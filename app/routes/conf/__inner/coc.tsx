@@ -1,3 +1,10 @@
+import type { MetaFunction } from "remix";
+
+export const meta: MetaFunction = () => ({
+  title: "Remix Conf Code of Conduct",
+  description: "Adapted from confcodeofconduct.com",
+});
+
 export default function CoC() {
   return (
     <div className="text-white">

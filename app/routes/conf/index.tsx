@@ -3,7 +3,7 @@ import type { LinksFunction, LoaderFunction } from "remix";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
 import indexStyles from "../../styles/index.css";
 import { Fragment } from "react";
-import type { Sponsor, Speaker } from "~/utils/conf.server";
+import type { Sponsor, Speaker } from "~/utils/conf";
 import { getSpeakers, getSponsors } from "~/utils/conf.server";
 import { Link } from "~/components/link";
 

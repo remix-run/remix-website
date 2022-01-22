@@ -9,7 +9,7 @@ import {
 import { json, useLoaderData } from "remix";
 import { getSpeakers, getTalks } from "~/utils/conf.server";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
-import { isSpeaker, isTalk, Speaker, Talk, isTalkArray } from "~/utils/conf";
+import { isSpeaker, Speaker, Talk, isTalkArray } from "~/utils/conf";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: speakersStylesUrl }];
@@ -59,7 +59,7 @@ export default function Speaker() {
         <img
           src={speaker.imgSrc}
           alt={speaker.name}
-          className="rounded-md w-36 h-36 md:w-64 md:h-64"
+          className="object-cover rounded-md w-36 h-36 md:w-64 md:h-64"
           style={{ aspectRatio: "1/1" }}
         />
         <div className="text-m-p-lg lg:text-d-p-lg">

@@ -26,6 +26,9 @@ export function OutlineButtonLink({
   );
 }
 
+export const primaryButtonLinkClass =
+  "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 box-border px-8 rounded bg-blue-brand text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 font-semibold";
+
 export function PrimaryButtonLink({
   to,
   children,
@@ -42,10 +45,7 @@ export function PrimaryButtonLink({
       x-comp="PrimaryButtonLink"
       to={to}
       prefetch={prefetch}
-      className={
-        "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 box-border px-8 rounded bg-blue-brand text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 font-semibold " +
-        className
-      }
+      className={`${primaryButtonLinkClass} ${className}`}
       children={children}
     />
   );
