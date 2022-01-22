@@ -1,4 +1,10 @@
 import { primaryButtonLinkClass } from "~/components/buttons";
+import type { MetaFunction } from "remix";
+
+export const meta: MetaFunction = () => ({
+  title: "Remix Conf Workshops",
+  description: "Premium Remix Workshops from the Remix Team",
+});
 
 export default function Workshops() {
   return (
