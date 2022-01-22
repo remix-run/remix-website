@@ -1,4 +1,4 @@
-import { outlineButtonLinkClass } from "~/components/buttons";
+import { primaryButtonLinkClass } from "~/components/buttons";
 
 export default function Workshops() {
   return (
@@ -13,25 +13,57 @@ export default function Workshops() {
           They happen the day before the conference at the venue. Lunch, snacks,
           and beverages are included.
         </p>
-      </div>
-      <div className="container grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <div>
-          <img src="/k.jpg" alt="Kent C. Dodds" className="w-24 rounded-md" />
-          <h2 className="text-m-h2 lg:text-d-h2">Remix Fundamentals</h2>
-          <p>Details coming soon.</p>
-        </div>
-        <div>
-          <img src="/r.jpg" alt="Ryan Florence" className="w-24 rounded-md" />
-          <h2 className="text-m-h2 lg:text-d-h2">Advanced Remix</h2>
-          <p>Details coming soon.</p>
+        <div className="text-center">
+          <a
+            href="https://rmx.as/tickets"
+            className={`${primaryButtonLinkClass} font-display uppercase`}
+            children="Get Tickets"
+          />
         </div>
       </div>
-      <div className="flex justify-center mt-20">
-        <a
-          href="https://rmx.as/tickets"
-          className={`${outlineButtonLinkClass} w-full md:w-auto font-jet-mono uppercase`}
-          children="Get Tickets"
-        />
+      <div className="mt-12 container grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div>
+          <div className="flex flex-row lg:flex-col gap-4">
+            <img src="/k.jpg" alt="Kent C. Dodds" className="w-24 rounded-md" />
+            <div>
+              <h2 className="font-display text-m-h2 lg:text-d-h2">
+                Remix Fundamentals
+              </h2>
+              <p>with Kent C. Dodds</p>
+            </div>
+          </div>
+          <div className="mt-4 text-m-p-lg lg:text-d-p-lg flex flex-col gap-6">
+            <p>
+              The perfect workshop for ramping yourself up on Remix the day
+              before Remix conf.
+            </p>
+            <p>
+              At the end of this workshop, you'll know how to:
+              <ul className="list-disc list-inside">
+                <li>Bootstrap a new Remix app</li>
+                <li>Create Remix Routes</li>
+                <li>Style Remix applications</li>
+                <li>Load data in Remix loaders</li>
+                <li>Mutate data with forms and actions</li>
+                <li>Handle errors (both expected and unexpected)</li>
+              </ul>
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="flex flex-row lg:flex-col gap-4">
+            <img src="/r.jpg" alt="Ryan Florence" className="w-24 rounded-md" />
+            <div>
+              <h2 className="font-display text-m-h2 lg:text-d-h2">
+                Advanced Remix
+              </h2>
+              <p>with Ryan Florence</p>
+            </div>
+          </div>
+          <div className="mt-4 text-m-p-lg lg:text-d-p-lg flex flex-col gap-6">
+            <p>Details coming soon.</p>
+          </div>
+        </div>
       </div>
     </div>
   );

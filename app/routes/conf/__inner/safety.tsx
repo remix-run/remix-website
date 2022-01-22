@@ -20,10 +20,20 @@ export default function Safety() {
         </p>
         <p>
           In addition to following{" "}
-          <a href="https://coronavirus.utah.gov/">local requirements</a> we will
-          be implementing a system to help you know the comfort level of
+          <a className="underline" href="https://coronavirus.utah.gov/">
+            local requirements
+          </a>{" "}
+          we will be implementing a system to help you know the comfort level of
           physical contact one another while at the conference (no contact, fist
           bumps, hand shakes, etc.).
+        </p>
+        <p>
+          If you are not vaccinated, please{" "}
+          <a className="underline" href="https://www.testutah.com/">
+            get tested
+          </a>{" "}
+          before attending
+          {"."}
         </p>
         <p>
           If you have any questions or concerns, please email us at{" "}
@@ -35,6 +45,11 @@ export default function Safety() {
           </strong>
         </p>
       </div>
+      <img
+        className="w-48 block m-auto mt-16"
+        src="/conf-images/covid-image.png"
+        alt="COVID-19 sticker saying I got my covid-19 vaccine"
+      />
     </div>
   );
 }
