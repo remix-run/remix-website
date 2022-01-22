@@ -49,7 +49,7 @@ const navItems: Array<HeaderLinkProps> = [
     children: "Venue",
   },
   {
-    to: "schedule",
+    to: "schedule/may-25",
     children: "Schedule",
   },
 ];

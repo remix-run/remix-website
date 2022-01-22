@@ -1,3 +1,11 @@
+import type { MetaFunction } from "remix";
+import { primaryButtonLinkClass } from "~/components/buttons";
+
+export const meta: MetaFunction = () => ({
+  title: "Speak at Remix Conf",
+  description: "Learn what we're looking for and how to submit your own talk.",
+});
+
 export default function Speak() {
   return (
     <div>
@@ -21,12 +29,12 @@ export default function Speak() {
           This CFP is open from now until February 28th at midnight. We'll
           update you about your proposal on or before March 14th.
         </p>
-        <p>
-          Please fill out{" "}
-          <a className="underline" href="https://rmx.as/cfp">
-            the Remix Conf CFP form here.
-          </a>
-        </p>
+        <a
+          href="https://rmx.as/cfp"
+          className={`${primaryButtonLinkClass} w-full md:w-auto font-display uppercase`}
+        >
+          Submit Your Proposal
+        </a>
       </div>
     </div>
   );

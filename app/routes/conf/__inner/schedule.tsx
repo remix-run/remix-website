@@ -1,5 +1,11 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs";
 import { Link, Outlet, useMatches, useNavigate } from "remix";
+import type { MetaFunction } from "remix";
+
+export const meta: MetaFunction = () => ({
+  title: "Remix Conf Schedule",
+  description: "What's happening and when at Remix Conf",
+});
 
 export default function Safety() {
   const matches = useMatches();
