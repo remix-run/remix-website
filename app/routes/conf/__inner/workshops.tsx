@@ -37,17 +37,15 @@ export default function Workshops() {
               The perfect workshop for ramping yourself up on Remix the day
               before Remix conf.
             </p>
-            <p>
-              At the end of this workshop, you'll know how to:
-              <ul className="list-disc list-inside">
-                <li>Bootstrap a new Remix app</li>
-                <li>Create Remix Routes</li>
-                <li>Style Remix applications</li>
-                <li>Load data in Remix loaders</li>
-                <li>Mutate data with forms and actions</li>
-                <li>Handle errors (both expected and unexpected)</li>
-              </ul>
-            </p>
+            <p>At the end of this workshop, you'll know how to:</p>
+            <ul className="list-disc list-inside">
+              <li>Bootstrap a new Remix app</li>
+              <li>Create Remix Routes</li>
+              <li>Style Remix applications</li>
+              <li>Load data in Remix loaders</li>
+              <li>Mutate data with forms and actions</li>
+              <li>Handle errors (both expected and unexpected)</li>
+            </ul>
           </div>
         </div>
         <div>
