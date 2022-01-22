@@ -57,7 +57,9 @@ export async function getBlogPostListings(): Promise<
     if (file.endsWith(".md")) {
       const slug = file.replace(/\.md$/, "");
       let { html, authors, ...listing } = await getBlogPost(slug);
-      listings.push({ slug, ...listing });
+      if (!listing.draft) {
+        listings.push({ slug, ...listing });
+      }
     }
   }
   return listings
@@ -126,6 +128,7 @@ export interface MarkdownPost {
   summary: string;
   date: Date;
   dateDisplay: string;
+  draft?: boolean;
   image: string;
   imageAlt: string;
   authors: Author[];
@@ -150,6 +153,7 @@ export function isMarkdownPostFrontmatter(obj: any): obj is MarkdownPost {
     obj.title &&
     obj.summary &&
     obj.date instanceof Date &&
+    (typeof obj.draft === "boolean" || typeof obj.draft === "undefined") &&
     obj.image &&
     obj.imageAlt &&
     Array.isArray(obj.authors) &&
