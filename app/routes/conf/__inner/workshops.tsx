@@ -3,7 +3,7 @@ import { outlineButtonLinkClass } from "~/components/buttons";
 export default function Workshops() {
   return (
     <div className="text-white">
-      <h1 className="font-jet-mono text-m-h1 sm:text-d-h2 xl:text-d-j mb-16">
+      <h1 className="font-display text-m-h1 sm:text-d-h2 xl:text-d-j mb-16">
         Premium Remix Workshops from the Remix Team
       </h1>
       <div className="container text-m-p-lg lg:text-d-p-lg flex flex-col gap-4">

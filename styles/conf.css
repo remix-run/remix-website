@@ -1,5 +1,6 @@
 @import "@reach/menu-button/styles.css";
 @import "@reach/tabs/styles.css";
+@import "@reach/accordion/styles.css";
 
 .__layout {
   background-image: linear-gradient(

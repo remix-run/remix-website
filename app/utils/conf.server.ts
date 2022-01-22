@@ -5,36 +5,32 @@ import { processMarkdown } from "@ryanflorence/md";
 
 import yaml from "yaml";
 import LRUCache from "lru-cache";
+import {
+  isSpeaker,
+  isSpeakerArray,
+  isSponsor,
+  isSponsorArray,
+  isTalk,
+  isTalkArray,
+  Speaker,
+  Sponsor,
+  Talk,
+} from "./conf";
 
-export type Speaker = {
-  name: string;
-  type: "emcee" | "regular";
-  linkText: string;
-  link: string;
-  title: string;
-  imgSrc: string;
-  bio: string;
-  slug: string;
-};
-
-export type Sponsor = {
-  name: string;
-  link: string;
-  imgSrc: string;
-  level: "premier" | "gold" | "silver" | "community";
-};
-
-let cache = new LRUCache<string, Array<Speaker> | Array<Sponsor>>({
-  max: 1024 * 1024 * 12, // 12 mb
-  length(value, key) {
-    return JSON.stringify(value).length + (key ? key.length : 0);
-  },
-});
+let cache = new LRUCache<string, Array<Speaker> | Array<Sponsor> | Array<Talk>>(
+  {
+    max: 1024 * 1024 * 12, // 12 mb
+    length(value, key) {
+      return JSON.stringify(value).length + (key ? key.length : 0);
+    },
+  }
+);
 
 let DATA_DIR = path.join(process.cwd(), "data");
 let CONF_DIR = path.join(DATA_DIR, "conf");
 let SPEAKERS_FILE = path.join(CONF_DIR, "speakers.yaml");
 let SPONSORS_FILE = path.join(CONF_DIR, "sponsors.yaml");
+let TALKS_FILE = path.join(CONF_DIR, "talks.yaml");
 
 export async function getSpeakers() {
   let cached = cache.get("speakers");
@@ -93,33 +89,25 @@ export async function getSponsors() {
   return sponsors;
 }
 
-export function isSpeaker(obj: any): obj is Speaker {
-  return (
-    typeof obj === "object" &&
-    obj.name &&
-    obj.title &&
-    obj.imgSrc &&
-    obj.linkText &&
-    obj.link &&
-    obj.bio &&
-    (obj.type === "emcee" || obj.type === "regular")
-  );
-}
+export async function getTalks() {
+  let cached = cache.get("talks");
+  if (isTalkArray(cached)) {
+    return cached;
+  }
 
-export function isSponsor(obj: any): obj is Sponsor {
-  return (
-    typeof obj === "object" &&
-    obj.name &&
-    obj.link &&
-    obj.imgSrc &&
-    ["premier", "gold", "silver", "community"].includes(obj.level)
-  );
-}
+  let talksFileContents = await fsp.readFile(TALKS_FILE, "utf8");
+  let talksRaw = yaml.parse(talksFileContents);
+  let talks: Array<Talk> = [];
+  for (const talkRaw of talksRaw) {
+    invariant(
+      isTalk(talkRaw),
+      `Talk ${JSON.stringify(
+        talkRaw
+      )} is not valid. Please check the talks file.`
+    );
+    talks.push(talkRaw);
+  }
+  cache.set("talks", talks);
 
-function isSpeakerArray(arr: any): arr is Array<Speaker> {
-  return Array.isArray(arr) && arr.every(isSpeaker);
-}
-
-function isSponsorArray(arr: any): arr is Array<Sponsor> {
-  return Array.isArray(arr) && arr.every(isSponsor);
+  return talks;
 }

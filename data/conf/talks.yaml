@@ -1,0 +1,25 @@
+- title: Keynote
+  description: The Remix Co-Founders will kick the conference off.
+  time: 9:00am
+  speakers:
+    - Michael Jackson
+    - Ryan Florence
+    - Kent C. Dodds
+
+- title: TBA
+  description: More details will be announced later
+  time: 9:30am
+  speakers:
+    - Shaundai Person
+
+- title: TBA
+  description: More details will be announced later
+  time: 9:50am
+  speakers:
+    - Tiger Abrodi
+
+- title: TBA
+  description: More details will be announced later
+  time: 10:30am
+  speakers:
+    - Ryan Dahl

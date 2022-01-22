@@ -25,7 +25,7 @@ const channels = [
 export default function Speak() {
   return (
     <div>
-      <h1 className="font-jet-mono text-m-h1 sm:text-d-h2 text-white xl:text-d-j mb-16 flex items-center gap-4">
+      <h1 className="font-display text-m-h1 sm:text-d-h2 text-white xl:text-d-j mb-16 flex items-center gap-4">
         <Discord />
         <span>Remix Conf Discord</span>
       </h1>

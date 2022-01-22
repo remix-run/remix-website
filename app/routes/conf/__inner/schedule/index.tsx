@@ -1,2 +1,4 @@
-export * from "./may-25";
-export { default } from "./may-25";
+import type { LoaderFunction } from "remix";
+import { redirect } from "remix";
+
+export const loader: LoaderFunction = () => redirect("/conf/schedule/may-25");

@@ -1,7 +1,7 @@
 export default function Speak() {
   return (
     <div>
-      <h1 className="font-jet-mono text-m-h1 sm:text-d-h2 text-white xl:text-d-j mb-16">
+      <h1 className="font-display text-m-h1 sm:text-d-h2 text-white xl:text-d-j mb-16">
         Speak at Remix Conf
       </h1>
       <div className="container text-m-p-lg lg:text-d-p-lg text-white flex flex-col gap-4">

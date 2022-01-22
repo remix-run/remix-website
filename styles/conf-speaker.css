@@ -1,6 +1,6 @@
-.speaker-bio a {
+.speaker-prose a {
   text-decoration: underline;
 }
-.speaker-bio p {
+.speaker-prose p {
   padding-bottom: 0.6rem;
 }
