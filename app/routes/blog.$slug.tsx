@@ -63,10 +63,12 @@ export default function BlogPost() {
   return (
     <div className="flex flex-col flex-1 h-full">
       <Header to="/blog" />
-      <div className="m-auto max-w-3xl bg-red-700 text-gray-100 dark:bg-red-400 dark:text-gray-700 mb-8 py-3 px-5 rounded-sm text-center">
-        🚨 This is a draft, please do not share this page until it's officially
-        published 🚨
-      </div>
+      {post.draft ? (
+        <div className="m-auto max-w-3xl bg-red-700 text-gray-100 dark:bg-red-400 dark:text-gray-700 mb-8 py-3 px-5 rounded-sm text-center">
+          🚨 This is a draft, please do not share this page until it's
+          officially published 🚨
+        </div>
+      ) : null}
       <div className="flex flex-col flex-1">
         <div className="flex-1">
           <div>
