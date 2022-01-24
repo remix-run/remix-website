@@ -10,7 +10,7 @@ function getMapsDirections(address: string) {
   const url = new URL("http://maps.google.com/maps");
   url.searchParams.append(
     "saddr",
-    "150 West 500 South Salt Lake City, Utah 84101"
+    "Sheraton Salt Lake City Hotel, 150 West 500 South Salt Lake City, Utah 84101"
   );
   url.searchParams.append("daddr", address);
   return url.toString();
@@ -39,7 +39,13 @@ const locations: Array<Location> = [
     address: "593 S Evermore Ln, Pleasant Grove, UT 84062",
     walkingDistance: false,
   },
-
+  {
+    name: "Snowbird",
+    link: "https://www.snowbird.com",
+    description: `Skiing, Snowboarding, etc. Depends a lot on the weather. May not be enough snow.`,
+    address: "9385 S. Snowbird Center Dr. Snowbird, UT 84092",
+    walkingDistance: false,
+  },
   {
     name: "Boondocks",
     link: "https://draper.boondocks.com/",
