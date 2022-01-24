@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Outlet, useLocation } from "remix";
-import type { LinksFunction } from "remix";
+import { Outlet, useLocation, useLoaderData, json } from "remix";
+import type { LinksFunction, LoaderFunction } from "remix";
 import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/components/icons";
@@ -35,22 +35,37 @@ export let links: LinksFunction = () => {
   ];
 };
 
+type LoaderData = { earlyBird: boolean };
+
+// March 1 at 12:00am
+const EARLY_BIRD_ENDING_TIME = 1646121600000;
+
+export const loader: LoaderFunction = async () => {
+  return json<LoaderData>({
+    earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME,
+  });
+};
+
 const navItems: Array<HeaderLinkProps> = [
   {
     to: "/conf#speakers",
     children: "Speakers",
+    prefetch: "intent",
   },
   {
     to: "workshops",
     children: "Workshops",
+    prefetch: "intent",
   },
   {
     to: "venue",
     children: "Venue",
+    prefetch: "intent",
   },
   {
     to: "schedule/may-25",
     children: "Schedule",
+    prefetch: "intent",
   },
 ];
 
@@ -109,6 +124,7 @@ function SignUp() {
 function Header() {
   let location = useLocation();
   let isConfHome = location.pathname === "/conf";
+  let data = useLoaderData<LoaderData>();
   return (
     <header
       className={cx(
@@ -135,9 +151,13 @@ function Header() {
           <li>
             <HeaderLink
               to="https://rmx.as/tickets"
-              children="Tickets"
               className="text-yellow-brand hover:text-white"
-            />
+            >
+              Tickets{" "}
+              {data.earlyBird ? (
+                <small title="Early Bird discount!"> 🐣</small>
+              ) : null}
+            </HeaderLink>
           </li>
         </ul>
         <MobileNav />
@@ -274,13 +294,18 @@ function MobileNavList() {
 }
 
 function MobileNav() {
+  const data = useLoaderData<LoaderData>();
   return (
     <div className="flex items-center gap-4 md:hidden font-jet-mono">
       <HeaderLink
         className="block text-yellow-brand hover:text-white"
-        children="Tickets"
         to="https://rmx.as/tickets"
-      />
+      >
+        Tickets{" "}
+        {data.earlyBird ? (
+          <small title="Early Bird discount!"> 🐣</small>
+        ) : null}
+      </HeaderLink>
       <Menu>
         <MobileNavButton />
         <MobileNavList />

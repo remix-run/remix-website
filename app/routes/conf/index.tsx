@@ -34,6 +34,7 @@ export let links: LinksFunction = () => {
 };
 
 type LoaderData = {
+  earlyBird: boolean;
   speakers: Array<Omit<Speaker, "bio">>;
   sponsors: {
     premier: Sponsor | undefined;
@@ -42,6 +43,9 @@ type LoaderData = {
     community: Array<Sponsor>;
   };
 };
+
+// March 1 at 12:00am
+const EARLY_BIRD_ENDING_TIME = 1646121600000;
 
 export const loader: LoaderFunction = async () => {
   const speakersOrdered = await getSpeakers();
@@ -63,7 +67,11 @@ export const loader: LoaderFunction = async () => {
       .filter((s) => s.level === "community")
       .sort(() => Math.random() - 0.5),
   };
-  return json<LoaderData>({ speakers: speakersShuffled, sponsors });
+  return json<LoaderData>({
+    speakers: speakersShuffled,
+    sponsors,
+    earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME,
+  });
 };
 
 export default function ConfIndex() {
@@ -77,6 +85,7 @@ export default function ConfIndex() {
 }
 
 function Hero() {
+  const data = useLoaderData<LoaderData>();
   return (
     <Fragment>
       <section
@@ -99,6 +108,15 @@ function Hero() {
               <p className="font-bold">
                 We can't wait to tell you all about it.
               </p>
+              {data.earlyBird ? (
+                <small className="block pl-4">
+                  🐣{" "}
+                  <a href="https://rmx.as/tickets" className="underline">
+                    Early bird
+                  </a>{" "}
+                  discount ends Feb 28
+                </small>
+              ) : null}
             </div>
             <div className="h-9" />
             <div className="flex flex-col gap-4 md:flex-row">
