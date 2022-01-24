@@ -76,12 +76,14 @@ export default function Venue() {
               className="object-cover rounded-md w-full lg:w-96 xl:w-[34rem]"
             />
           </button>
-          <a
-            href="https://rmx.as/conf-hotel"
-            className={`${primaryButtonLinkClass} w-full md:w-auto font-display uppercase`}
-          >
-            Book your stay
-          </a>
+          <div className="w-full text-center">
+            <a
+              href="https://rmx.as/conf-hotel"
+              className={`${primaryButtonLinkClass} lg:w-full font-display uppercase`}
+            >
+              Book your stay
+            </a>
+          </div>
           <div className="hidden lg:block lg:w-96 xl:w-[34rem]">{map}</div>
         </div>
         <div className="text-m-p-lg lg:text-d-p-lg">

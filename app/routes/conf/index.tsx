@@ -122,7 +122,7 @@ function Hero() {
             <div className="flex flex-col gap-4 md:flex-row">
               <PrimaryButtonLink
                 prefetch="intent"
-                to="speak"
+                to="speakers/you"
                 className="w-full md:w-auto font-jet-mono uppercase"
                 children="Call for Speakers"
               />
@@ -170,7 +170,7 @@ function Speakers() {
         <div className="flex justify-center mt-20">
           <OutlineButtonLink
             prefetch="intent"
-            to="speak"
+            to="speakers/you"
             className="w-full md:w-auto font-jet-mono uppercase"
             children="Become a Speaker"
           />

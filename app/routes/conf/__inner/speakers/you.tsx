@@ -29,12 +29,14 @@ export default function Speak() {
           This CFP is open from now until February 28th at midnight. We'll
           update you about your proposal on or before March 14th.
         </p>
-        <a
-          href="https://rmx.as/cfp"
-          className={`${primaryButtonLinkClass} w-full md:w-auto font-display uppercase`}
-        >
-          Submit Your Proposal
-        </a>
+        <div className="w-full text-center">
+          <a
+            href="https://rmx.as/cfp"
+            className={`${primaryButtonLinkClass} font-display uppercase`}
+          >
+            Submit Your Proposal
+          </a>
+        </div>
       </div>
     </div>
   );

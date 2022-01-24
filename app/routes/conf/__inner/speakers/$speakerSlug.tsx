@@ -118,7 +118,7 @@ export function CatchBoundary() {
         <div className="container text-m-p-lg lg:text-d-p-lg text-white">
           <p>
             No speaker found with the slug "{params.speakerSlug}".{" "}
-            <Link to="../speak" className="underline">
+            <Link to="../speakers/you" className="underline">
               Would you like to speak?
             </Link>
           </p>

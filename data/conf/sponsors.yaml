@@ -47,12 +47,12 @@
   link: "https://www.sanity.io/"
   imgSrc: "/conf-images/sponsors/sanity.png"
   level: "community"
+
+- name: "Vercel"
+  link: "https://vercel.com/"
+  imgSrc: "/conf-images/sponsors/vercel.png"
+  level: "silver"
 # - name: "Cloudflare"
 #   link: "https://www.cloudflare.com/"
 #   imgSrc: "/conf-images/sponsors/cloudflare.png"
-#   level: "silver"
-
-# - name: "Vercel"
-#   link: "https://vercel.com/"
-#   imgSrc: "/conf-images/sponsors/vercel.png"
 #   level: "silver"
