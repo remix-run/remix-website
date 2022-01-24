@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useFetcher, useTransition } from "remix";
+import { useFetcher } from "remix";
 import type { FormProps } from "remix";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
@@ -27,9 +27,10 @@ function Subscribe({
   );
 }
 
+type ActionType = { ok?: boolean; error?: string } | undefined;
+
 const SubscribeContext = React.createContext<null | {
   fetcher: ReturnType<typeof useFetcher>;
-  inputRef: React.RefObject<HTMLInputElement>;
 }>(null);
 
 function useSubscribeContext() {
@@ -42,19 +43,11 @@ function useSubscribeContext() {
 }
 
 function SubscribeProvider({ children }: { children: React.ReactNode }) {
-  let transition = useTransition();
   let subscribe = useFetcher();
-  let inputRef = React.useRef<HTMLInputElement>(null);
-  React.useEffect(() => {
-    if (transition.state === "idle" && subscribe.data?.ok && inputRef.current) {
-      inputRef.current.value = "";
-    }
-  }, [transition.state, subscribe.data]);
   return (
     <SubscribeContext.Provider
       value={{
         fetcher: subscribe,
-        inputRef,
       }}
     >
       {children}
@@ -67,8 +60,7 @@ function SubscribeForm({
   children,
   ...props
 }: SubscribeFormProps) {
-  let subscribe = useFetcher();
-  let transition = useTransition();
+  let { fetcher: subscribe } = useSubscribeContext();
 
   return (
     <subscribe.Form
@@ -76,7 +68,7 @@ function SubscribeForm({
       action="/_actions/newsletter"
       method="post"
       className={cx(className, {
-        ["opacity-50"]: transition.state === "submitting",
+        ["opacity-50"]: subscribe.state === "submitting",
       })}
       {...props}
     >
@@ -113,10 +105,9 @@ function SubscribeEmailInput({
   placeholder = "you@example.com",
   ...props
 }: Omit<React.ComponentPropsWithoutRef<"input">, "type" | "name" | "value">) {
-  let { inputRef, fetcher } = useSubscribeContext();
+  let { fetcher } = useSubscribeContext();
   return (
     <SubscribeInput
-      ref={inputRef}
       type="email"
       name="email"
       placeholder={placeholder}
@@ -135,12 +126,12 @@ function SubscribeSubmit({
   className = "w-full mt-2 sm:w-auto sm:mt-0 uppercase",
   ...props
 }: Omit<React.ComponentPropsWithoutRef<"button">, "type">) {
-  let transition = useTransition();
+  let { fetcher } = useSubscribeContext();
   return (
     <Button
       onClick={(event) => {
         onClick?.(event);
-        if (transition.state === "submitting") {
+        if (fetcher.state === "submitting") {
           event.preventDefault();
         }
       }}
@@ -154,20 +145,20 @@ function SubscribeSubmit({
 }
 
 function SubscribeStatus() {
-  let transition = useTransition();
-  let { fetcher } = useSubscribeContext();
-  let subscribe = fetcher as any;
+  let { fetcher: subscribe } = useSubscribeContext();
   return (
     <div aria-live="polite" className="py-2 h-4">
-      {transition.state === "idle" && subscribe.data?.ok && (
+      {subscribe.type === "done" && (subscribe.data as ActionType)?.ok && (
         <div className="text-white">
           <b className="text-green-brand">Got it!</b> Please go{" "}
           <b className="text-red-brand">check your email</b> to confirm your
           subscription, otherwise you won't get our email.
         </div>
       )}
-      {transition.state === "idle" && subscribe.data?.error && (
-        <div className="text-red-brand">{subscribe.data.error}</div>
+      {subscribe.type === "done" && (subscribe.data as ActionType)?.error && (
+        <div className="text-red-brand">
+          {(subscribe.data as ActionType)?.error}
+        </div>
       )}
     </div>
   );
