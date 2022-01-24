@@ -13,13 +13,46 @@ module.exports = {
   variants: {
     aspectRatio: ["responsive"],
   },
-  plugins: [require("@tailwindcss/aspect-ratio")],
+  plugins: [
+    require("@tailwindcss/aspect-ratio"),
+    function ({ addVariant, e }) {
+      addVariant("selected", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className, selector }) => {
+          let pseudo = "";
+          if (/:(hover|focus|focus-within|focus-visible)$/.test(selector)) {
+            let i = selector.lastIndexOf(":");
+            if (i != -1) {
+              pseudo = selector.substr(i);
+            }
+          }
+          return `.${e(
+            `selected${separator}${className}`
+          )}[data-selected]${pseudo}`;
+        });
+      });
+      addVariant("expanded", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `.${e(
+            `expanded${separator}${className}`
+          )}[aria-expanded="true"]`;
+        });
+      });
+      addVariant("not-expanded", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `.${e(
+            `not-expanded${separator}${className}`
+          )}[aria-expanded="false"]`;
+        });
+      });
+    },
+  ],
   theme: {
     fontFamily: {
       ...defaultTheme.fontFamily,
       display: ['"Founders Grotesk", "Arial Black", sans-serif'],
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
       mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
+      "jet-mono": ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
       // names come from the figma file
@@ -117,17 +150,17 @@ module.exports = {
           900: "#0b2c25",
         },
         blue: {
-          50: "#f5f9fb",
-          100: "#dff0fc",
-          200: "#bcdcf9",
-          300: "#8ebbf0",
+          50: "#DAEEFF",
+          100: "#AAD6FF",
+          200: "#7FBFFF",
+          300: "#59A8FF",
           400: "#3992ff",
           brand: "#3992ff",
-          500: "#4d71da",
-          600: "#3f55c9",
-          700: "#3240a7",
-          800: "#232b7a",
-          900: "#141b4e",
+          500: "#287BD9",
+          600: "#1A65B3",
+          700: "#0F4F8C",
+          800: "#073966",
+          900: "#022340",
         },
         pink: {
           50: "#fcfbfb",

@@ -4,5 +4,6 @@ module.exports = {
     "postcss-nesting": {},
     "postcss-focus-visible": {},
     cssnano: { preset: "default" },
+    "postcss-import": {},
   },
 };

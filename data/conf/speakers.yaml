@@ -1,0 +1,116 @@
+- name: "Tiger Abrodi"
+  type: "regular"
+  linkText: "@TAbrodi"
+  link: "https://twitter.com/TAbrodi"
+  title: "Software Engineer"
+  imgSrc: "/conf-images/speakers/tiger.jpg"
+  bio: >-
+    Tiger is an engineer who is passionate about crafting things for the web.
+    He cares about Accessibility and Testing, with his motto being "Ship
+    accessible apps with confidence". Tiger also contributes to various
+    open-source libraries, communities and is a core member of
+    [the Open Source Raid Guild](https://github.com/OpenSourceRaidGuild/).
+
+
+    In his spare time, Tiger enjoys watching Anime (huge Naruto lover), helping
+    developers out in various communities, running, doing calisthenics, and
+    playing VR games. Tiger is big into discipline and developed
+    [Shisui](https://github.com/tigerabrodi/shisui/) using Remix in order better
+    be able to assess himself on a daily, weekly and monthly basis.
+    [tigerabrodi.tech](https://www.tigerabrodi.tech/)
+
+- name: "Ryan Dahl"
+  type: "regular"
+  linkText: "@ry"
+  link: "https://github.com/ry"
+  title: "CEO, Deno + Creator of Node.js"
+  imgSrc: "/conf-images/speakers/ryan_dahl.jpg"
+  bio: >-
+    In 2009, Ryan Dahl released [Node.js](https://nodejs.org/). Now, Ryan is the
+    CEO of [Deno](https://deno.com/), the company behind
+    [the Deno project](https://deno.land): A modern runtime for JavaScript and
+    TypeScript. [Deno's deploy product](https://deno.com/deploy) is pushing
+    this runtime in the future of modern web architecture via multi-regional
+    deploys with an outrageously fast runtime.
+
+- name: "Shaundai Person"
+  type: "regular"
+  linkText: "@shaundai"
+  link: "https://twitter.com/shaundai"
+  title: "Senior Software Engineer, Netflix"
+  imgSrc: "/conf-images/speakers/shaundai.jpg"
+  bio: >-
+    Shaundai is a Senior Software Engineer (Netflix) and educator based in
+    Atlanta, GA, US. She is passionate about making programming interesting and
+    approachable for all, and does that through her work as a course instructor
+    ([tsforjs.com](https://www.tsforjs.com/)), co-lead for React Robins
+    ([reactrobins.com](https://www.reactrobins.com/)), and
+    [technical blogger](https://blog.shaundai.com/).
+
+
+    In her spare time, Shaundai loves to go hiking, jogging, and listen to
+    audiobooks. Find her on Twitter at
+    [@shaundai](https://twitter.com/shaundai).
+
+- name: "Ryan Florence"
+  type: "regular"
+  linkText: "@ryanflorence"
+  link: "https://twitter.com/ryanflorence"
+  title: "Co-Founder, Remix"
+  imgSrc: "/r.jpg"
+  bio: >-
+    Ryan is awesome
+
+- name: "Michael Jackson"
+  type: "regular"
+  linkText: "@mjackson"
+  link: "https://twitter.com/mjackson"
+  title: "Co-Founder & CEO, Remix"
+  imgSrc: "/m.jpg"
+  bio: >-
+    Michael Jackson is the CEO and co-founder of [Remix](https://remix.run).
+    He is the co-author of [React Router](https://reactrouter.com/) and a
+    [prolific contributor to open source](https://github.com/mjackson). He is
+    the creator of [unpkg.com](https://unpkg.com) and gets a kick out of
+    discussing distributed system design as much as he enjoys front-end
+    architecture. Michael lives in Carlsbad, CA with his wife, two boys, and two
+    girls.
+
+- name: "Kent C. Dodds"
+  type: "regular"
+  linkText: "@kentcdodds"
+  link: "https://twitter.com/kentcdodds"
+  title: "Co-Founder, Remix"
+  imgSrc: "/k.jpg"
+  slug: kentcdodds
+  bio: >-
+    Kent C. Dodds is a world renowned speaker, teacher, and trainer and he's
+    actively involved in the
+    [open source community](https://github.com/kentcdodds) as a maintainer and
+    contributor of hundreds of popular npm packages. Kent is a Co-Founder and
+    Director of Developer Experience at [Remix](https://remix.run/). He is the
+    creator of [EpicReact.Dev](https://epicreact.dev/) and
+    [TestingJavaScript.com](https://testingjavascript.com/). He's an instructor
+    on [egghead.io](https://egghead.io/instructors/kentcdodds?af=5236ad) and
+    [Frontend Masters](https://frontendmasters.com/). He's also a
+    [Google Developer Expert](https://developers.google.com/experts/people/kent-c-dodds).
+    Kent is happily married and the father of four kids. He likes his family,
+    code, JavaScript, and Remix.
+
+- name: "Ceora Ford"
+  type: "emcee"
+  linkText: "@ceeoreo_"
+  link: "https://twitter.com/ceeoreo_"
+  title: "Developer Advocate, Apollo"
+  imgSrc: "/conf-images/speakers/ceora.jpg"
+  bio: >-
+    Ceora is a developer advocate based in Philadelphia. Her career thus far has
+    centered around creating educational content focused on making the tech
+    industry more accessible to everyone.  She's been able to work with amazing
+    companies like [CodeSandbox](https://codesandbox.com),
+    [DigitalOcean](https://digitalocean.com), [egghead.io](https://egghead.io),
+    and [Apollo GraphQL](https://www.apollographql.com) and
+    has recently joined
+    [the Stack Overflow Podcast](https://stackoverflow.blog/podcast) as a host.
+    Outside of tech, she spends way too much time watching anime, listening to
+    K-pop, and attempting to play the guitar.

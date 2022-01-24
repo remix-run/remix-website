@@ -1,0 +1,58 @@
+- name: "Applitools"
+  link: "https://applitools.com"
+  imgSrc: "/conf-images/sponsors/applitools.png"
+  level: "silver"
+
+- name: "MediaJams"
+  link: "https://mediajams.dev"
+  imgSrc: "/conf-images/sponsors/mediajams.png"
+  level: "community"
+
+- name: "Centered"
+  link: "https://centered.app"
+  imgSrc: "/conf-images/sponsors/centered.png"
+  level: "community"
+
+- name: "egghead.io"
+  link: "https://egghead.io"
+  imgSrc: "/conf-images/sponsors/egghead.png"
+  level: "gold"
+
+- name: "PlantScale"
+  link: "https://planetscale.com"
+  imgSrc: "/conf-images/sponsors/planetscale.jpg"
+  level: "gold"
+
+- name: "Stately"
+  link: "https://stately.ai"
+  imgSrc: "/conf-images/sponsors/stately.png"
+  level: "community"
+
+- name: "Fly.io"
+  link: "https://fly.io"
+  imgSrc: "/conf-images/sponsors/fly.png"
+  level: "gold"
+
+- name: "Nx"
+  link: "https://nx.dev"
+  imgSrc: "/conf-images/sponsors/nx.jpg"
+  level: "premier"
+
+- name: "Meta"
+  link: "https://meta.com"
+  imgSrc: "/conf-images/sponsors/meta.png"
+  level: "gold"
+
+- name: "Sanity"
+  link: "https://www.sanity.io/"
+  imgSrc: "/conf-images/sponsors/sanity.png"
+  level: "community"
+
+- name: "Vercel"
+  link: "https://vercel.com/"
+  imgSrc: "/conf-images/sponsors/vercel.png"
+  level: "silver"
+# - name: "Cloudflare"
+#   link: "https://www.cloudflare.com/"
+#   imgSrc: "/conf-images/sponsors/cloudflare.png"
+#   level: "silver"
