@@ -213,9 +213,9 @@ function Sponsors() {
           {sponsors.premier ? (
             <div className="pb-8 lg:pb-20">
               <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
-                Premium Sponsor
+                Premier Sponsor
               </h3>
-              <div className="w-[400px] m-auto">
+              <div className="max-w-[400px] w-full m-auto">
                 <div className="border-2 border-200 bg-white inline-block">
                   <a href={sponsors.premier.link}>
                     <img

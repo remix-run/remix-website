@@ -199,7 +199,7 @@ function Footer() {
         <a href="https://youtube.com/remix_run" aria-label="YouTube">
           <YouTube aria-hidden />
         </a>
-        <a href="https://discord.gg/remix" aria-label="Remix">
+        <a href="https://discord.gg/remix" aria-label="Discord">
           <Discord aria-hidden />
         </a>
       </nav>

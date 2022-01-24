@@ -96,7 +96,7 @@ export default function May25Schedule() {
 
 function TalkDetails({ talk }: { talk: TalkWithSpeaker }) {
   return (
-    <div className="flex gap-2 sm:gap-3 md:gap-5 items-center">
+    <div className="flex gap-2 sm:gap-3 md:gap-5 items-start flex-col">
       <span>{talk.title} by</span>
       <span className="flex gap-2 sm:gap-3 md:gap-5 flex-wrap">
         {talk.speakers.map((s) => (
