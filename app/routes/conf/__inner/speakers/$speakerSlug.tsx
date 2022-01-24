@@ -23,9 +23,9 @@ export const meta: MetaFunction = ({ data }) => {
         title: `${speaker.name} at Remix Conf`,
         description: `${speaker.name} (${
           speaker.title
-        }) is speaking about ${talks
+        }) is speaking at Remix Conf: ${talks
           .map((t) => `"${t.title}"`)
-          .join(", ")} at Remix Conf.`,
+          .join(", ")}`,
       };
     }
   }
