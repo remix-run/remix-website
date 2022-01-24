@@ -8,7 +8,18 @@ export const meta: MetaFunction = () => ({
   description: "Remix Conf in Salt Lake City, Utah at the Sheraton Hotel",
 });
 
-const TOTAL_HOTEL_IMAGES = 8;
+const hotelImages = [
+  "Sheraton Salt Lake City Hotel building with sign",
+  "Sheraton Salt Lake City Hotel building with pool",
+  "Large conference room with circular tables set for a meal",
+  "Outdoor fire pit surrounded by trees",
+  "Bar and seating area",
+  "Sheraton Salt Lake City Hotel building with pool at night",
+  "Sheraton Hotel lobby with seating area",
+  "Mountain range with city at the base",
+];
+const TOTAL_HOTEL_IMAGES = hotelImages.length;
+
 type LoaderData = { hotelImageNumber: number };
 
 export const loader: LoaderFunction = async () => {
@@ -53,16 +64,18 @@ export default function Venue() {
       <div className="mb-10 flex flex-col lg:flex-row gap-10">
         <Title className="block lg:hidden" />
         <div className="flex flex-col gap-6">
-          <img
-            src={`/conf-images/hotel/${hotelImageNumber}.jpg`}
+          <button
             onClick={() =>
               setHotelImageNumber((num) => (num % TOTAL_HOTEL_IMAGES) + 1)
             }
-            alt="Sheraton Map"
-            title="Sheraton Map"
-            style={{ aspectRatio: "16/9" }}
-            className="object-cover rounded-md w-full lg:w-96 xl:w-[34rem] cursor-pointer"
-          />
+          >
+            <img
+              src={`/conf-images/hotel/${hotelImageNumber}.jpg`}
+              alt={hotelImages[hotelImageNumber - 1]}
+              style={{ aspectRatio: "16/9" }}
+              className="object-cover rounded-md w-full lg:w-96 xl:w-[34rem]"
+            />
+          </button>
           <a
             href="https://rmx.as/conf-hotel"
             className={`${primaryButtonLinkClass} w-full md:w-auto font-display uppercase`}
