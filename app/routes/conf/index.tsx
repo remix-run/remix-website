@@ -146,7 +146,7 @@ function Speakers() {
   const regularSpeakers = speakers.filter((s) => s.type === "regular");
   return (
     <section className="py-20 __section-speakers" id="speakers">
-      <div className="relative">
+      <div className="relative container">
         <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
           Speakers
         </h2>
@@ -206,7 +206,7 @@ function SpeakerDisplay({ speaker }: { speaker: Omit<Speaker, "bio"> }) {
 function Sponsors() {
   const { sponsors } = useLoaderData<LoaderData>();
   return (
-    <section id="sponsors" className="py-20">
+    <section id="sponsors" className="py-20 container">
       <div className="md:container max-w-full overflow-hidden md:max-w-5xl">
         <h2 className="sr-only">Sponsors</h2>
         <div className="flex flex-col gap-20 lg:gap-36 text-center">

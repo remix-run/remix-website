@@ -60,21 +60,36 @@ export default function May25Schedule() {
                   {talk.time}
                 </td>
                 <td className="border-t border-b border-gray-200 p-2">
-                  {talk.title} by{" "}
-                  {listify(
-                    talk.speakers.map((s) => (
-                      <Link
-                        key={s.slug}
-                        className="underline"
-                        to={`/conf/speakers/${s.slug}`}
-                      >
-                        {s.name}
-                      </Link>
-                    ))
-                  )}
+                  <div className="flex gap-2 sm:gap-3 md:gap-5 items-center">
+                    <span>{talk.title} by</span>
+                    <span className="flex gap-2 sm:gap-3 md:gap-5 flex-wrap">
+                      {talk.speakers.map((s) => (
+                        <Link
+                          key={s.slug}
+                          className="underline w-10 h-10 sm:w-16 sm:h-16 md:w-24 md:h-24"
+                          to={`/conf/speakers/${s.slug}`}
+                        >
+                          <img
+                            src={s.imgSrc}
+                            className="rounded-md"
+                            alt={s.name}
+                            title={s.name}
+                          />
+                        </Link>
+                      ))}
+                    </span>
+                  </div>
                 </td>
               </tr>
             ))}
+            <tr>
+              <td className="border-t border-b border-gray-200 p-2">...</td>
+              <td className="border-t border-b border-gray-200 p-2">
+                <Link className="underline" to="/conf/speak">
+                  Your name here
+                </Link>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -85,34 +100,4 @@ export default function May25Schedule() {
       </div>
     </div>
   );
-}
-
-function listify(list: Array<React.ReactElement>) {
-  if (list.length < 2) return list;
-  if (list.length === 2) {
-    const [first, second] = list;
-    return [
-      first,
-      <React.Fragment key="and">{" and "}</React.Fragment>,
-      second,
-    ];
-  }
-
-  const els: Array<React.ReactElement> = [];
-  for (let index = 0; index < list.length; index++) {
-    const element = list[index];
-    const isFirst = index === 0;
-    if (isFirst) {
-      els.push(element);
-      continue;
-    }
-    const isLast = index === list.length - 1;
-    if (isLast) {
-      els.push(<React.Fragment key={index}>{", and "}</React.Fragment>);
-    } else {
-      els.push(<React.Fragment key={index}>, </React.Fragment>);
-    }
-    els.push(element);
-  }
-  return els;
 }
