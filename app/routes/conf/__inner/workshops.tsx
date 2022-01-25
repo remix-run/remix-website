@@ -59,13 +59,39 @@ export default function Workshops() {
             <img src="/r.jpg" alt="Ryan Florence" className="w-24 rounded-md" />
             <div>
               <h2 className="font-display text-m-h2 lg:text-d-h2">
-                Advanced Remix
+                Web Apps with Remix
               </h2>
               <p>with Ryan Florence</p>
             </div>
           </div>
           <div className="mt-4 text-m-p-lg lg:text-d-p-lg flex flex-col gap-6">
-            <p>Details coming soon.</p>
+            <p>
+              Learn to build state-of-the-art user interfaces on the web with
+              Remix. If you've been wondering how to make the jump from
+              "website" to "web app" with Remix, this is for you.
+            </p>
+            <p>At the end of this workshop, you'll know how to:</p>
+            <ul className="list-disc list-inside">
+              <li>
+                Eliminate busy indicators with Optimistic UI (while still
+                handling errors)
+              </li>
+              <li>
+                Optimize Remix's automatic data revalidation after mutations
+              </li>
+              <li>
+                Fetch data outside of navigations for data driven components
+                like Combobox/Autocomplete
+              </li>
+              <li>
+                Build global, animated navigation indicators, aware of
+                submissions, revalidation, and redirects.
+              </li>
+              <li>Build skeleton UI for instant user feedback on navigation</li>
+              <li>Step up your app's accessibility with focus management</li>
+              <li>Map keyboard shortcuts to data mutations</li>
+              <li>and more!</li>
+            </ul>
           </div>
         </div>
       </div>
