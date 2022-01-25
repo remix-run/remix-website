@@ -16,16 +16,18 @@ export default function Safety() {
     ["May 25th", "may-25"],
     ["May 26th", "may-26"],
   ];
-  const day = last.pathname.split("/").at(-1) ?? "may-25";
+
+  let splitPath = last.pathname.split("/");
+  const day = splitPath[splitPath.length - 1] ?? "may-25";
   const selectedDay = days.findIndex(([, d]) => d === day);
   const tabIndex = selectedDay === -1 ? 1 : selectedDay;
 
   return (
     <div className="text-white">
-      <h1 className="font-display text-m-h1 sm:text-d-h2 xl:text-d-j mb-16">
+      <h1 className="mb-16 font-display text-m-h1 sm:text-d-h2 xl:text-d-j">
         Remix Conf Schedule
       </h1>
-      <div className="container text-m-p-lg lg:text-d-p-lg flex flex-col gap-10">
+      <div className="container flex flex-col gap-10 text-m-p-lg lg:text-d-p-lg">
         <p>
           Get ready for some amazing UX/DX goodness at Remix Conf!
           <br />
@@ -57,7 +59,7 @@ export default function Safety() {
                 }}
               >
                 <Link
-                  className="w-full block"
+                  className="block w-full"
                   to={route}
                   onClick={(e) => {
                     if (e.metaKey) {
