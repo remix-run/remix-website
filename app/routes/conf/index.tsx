@@ -158,14 +158,14 @@ function Speakers() {
           </div>
         </div>
         {mc ? (
-          <>
+          <div id="mc">
             <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
               Master of Ceremonies
             </h2>
             <div className="w-[300px] flex items-center m-auto">
               <SpeakerDisplay speaker={mc} />
             </div>
-          </>
+          </div>
         ) : null}
         <div className="flex justify-center mt-20">
           <OutlineButtonLink

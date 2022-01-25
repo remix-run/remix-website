@@ -85,6 +85,16 @@ export default function May25Schedule() {
           </tbody>
         </table>
       </div>
+      <div className="mt-10">
+        <small>
+          The conference will be live streamed and recordings of all the talks
+          will be uploaded to{" "}
+          <a className="underline" href="https://rmx.as/youtube">
+            YouTube
+          </a>{" "}
+          soon after the event.
+        </small>
+      </div>
       <div className="mt-20">
         <h2 className="text-m-h3 font-display md:text-d-h3">After Party</h2>
         <small>7:00pm - 10:00pm</small>
