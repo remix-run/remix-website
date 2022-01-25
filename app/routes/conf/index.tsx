@@ -222,7 +222,7 @@ function Sponsors() {
                     <img
                       src={sponsors.premier.imgSrc}
                       alt={sponsors.premier.name}
-                      className="max-w-full max-h-full p-3"
+                      className="max-w-full max-h-full p-12"
                     />
                   </a>
                 </div>
