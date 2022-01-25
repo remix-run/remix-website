@@ -147,7 +147,7 @@ function SubscribeSubmit({
 function SubscribeStatus() {
   let { fetcher: subscribe } = useSubscribeContext();
   return (
-    <div aria-live="polite" className="py-2 h-4">
+    <div aria-live="polite" className="py-2">
       {subscribe.type === "done" && (subscribe.data as ActionType)?.ok && (
         <div className="text-white">
           <b className="text-green-brand">Got it!</b> Please go{" "}

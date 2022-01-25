@@ -109,11 +109,11 @@ function SignUp() {
                 <SubscribeEmailInput />
                 <SubscribeSubmit className="w-full mt-2 sm:w-auto sm:mt-0 uppercase font-jet-mono" />
               </SubscribeForm>
+              <p className="text-white opacity-60 text-sm mt-3">
+                We respect your privacy; unsubscribe at any time.
+              </p>
               <SubscribeStatus />
             </SubscribeProvider>
-            <p className="text-white opacity-60 text-sm mt-1">
-              We respect your privacy; unsubscribe at any time.
-            </p>
           </div>
         </section>
       </div>
