@@ -53,6 +53,11 @@ const navItems: Array<HeaderLinkProps> = [
     prefetch: "intent",
   },
   {
+    to: "/conf#sponsors",
+    children: "Sponsors",
+    prefetch: "intent",
+  },
+  {
     to: "workshops",
     children: "Workshops",
     prefetch: "intent",
@@ -93,16 +98,28 @@ function SignUp() {
             <h2 className="h2 mb-3 text-d-h3 text-yellow-brand font-bold font-jet-mono">
               Stay Updated
             </h2>
+            <div className="flex items-center gap-4 mb-6">
+              <a
+                href="https://discord.gg/remix"
+                aria-label="Discord"
+                title="Join Discord"
+              >
+                <Discord aria-hidden />
+              </a>
+              <p className="text-lg md:text-xl opacity-80">
+                <a className="underline" href="https://discord.gg/remix">
+                  Join the Remix community on Discord
+                </a>{" "}
+                to keep up with what's going on with the conference and the
+                Remix Community as a whole.
+              </p>
+            </div>
             <p
               className="text-lg md:text-xl mb-6 opacity-80"
               id="newsletter-text"
             >
               To get exclusive updates announcements about Remix Conf, subscribe
-              to our newsletter and{" "}
-              <a href="https://discord.gg/VBePs6d">
-                join the conversation on Discord
-              </a>
-              !
+              to our newsletter!
             </p>
             <SubscribeProvider>
               <SubscribeForm aria-describedby="newsletter-text">
@@ -306,10 +323,12 @@ function MobileNav() {
           <small title="Early Bird discount!"> 🐣</small>
         ) : null}
       </HeaderLink>
-      <Menu>
-        <MobileNavButton />
-        <MobileNavList />
-      </Menu>
+      <div>
+        <Menu>
+          <MobileNavButton />
+          <MobileNavList />
+        </Menu>
+      </div>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { Fragment } from "react";
 import type { Sponsor, Speaker } from "~/utils/conf";
 import { getSpeakers, getSponsors } from "~/utils/conf.server";
 import { Link } from "~/components/link";
+import { Discord } from "~/components/icons";
 
 export function meta() {
   let url = "https://remix.run/conf";
@@ -119,7 +120,7 @@ function Hero() {
               ) : null}
             </div>
             <div className="h-9" />
-            <div className="flex flex-col gap-4 md:flex-row">
+            <div className="flex flex-col gap-4 md:flex-row items-center">
               <PrimaryButtonLink
                 prefetch="intent"
                 to="speakers/you"

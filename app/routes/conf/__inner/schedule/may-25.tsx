@@ -67,19 +67,27 @@ export default function May25Schedule() {
             <tr>
               <td className="border-t border-b border-gray-200 p-2">...</td>
               <td className="border-t border-b border-gray-200 p-2">
-                <TalkDetails
-                  talk={{
-                    time: "...",
-                    title: "TBA",
-                    speakers: [
-                      {
-                        imgSrc: "/conf-images/mystery-speaker.jpg",
-                        name: "Mystery Speaker",
-                        slug: "you",
-                      },
-                    ],
-                  }}
-                />
+                <div className="flex sm:items-center flex-col gap-2 sm:gap-4 sm:flex-row">
+                  <TalkDetails
+                    talk={{
+                      time: "...",
+                      title: "TBA",
+                      speakers: [
+                        {
+                          imgSrc: "/conf-images/mystery-speaker.jpg",
+                          name: "You?",
+                          slug: "you",
+                        },
+                      ],
+                    }}
+                  />
+                  <Link
+                    className="underline text-d-p-sm md:text-d-p-lg"
+                    to="/conf/speakers/you"
+                  >
+                    Submit your talk
+                  </Link>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -98,7 +106,13 @@ export default function May25Schedule() {
       <div className="mt-20">
         <h2 className="text-m-h3 font-display md:text-d-h3">After Party</h2>
         <small>7:00pm - 10:00pm</small>
-        <p>More details to be provided soon! But it'll be super fun!</p>
+        <p>
+          After a full day of stellar talks, relax and have fun with fellow
+          Remix enthusiasts, speakers, and sponsors at our official Remix
+          after-party (same venue). We are busy planning all the details to
+          ensure there is a little fun for everyone to enjoy... more information
+          coming soon.{" "}
+        </p>
       </div>
     </div>
   );

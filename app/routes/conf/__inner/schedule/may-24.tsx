@@ -18,9 +18,11 @@ export default function May24Schedule() {
         <Link className="underline" to="/conf/venue">
           Venue
         </Link>
-        . Come to the welcome reception to pre-register and meet the speakers,
-        sponsors, and community. There will be snacks and chats.{" "}
-        <a href="https://rmx.as/tickets">Join us!</a>
+        . Come hang out with fellow Remix attendees, grab a snack, and get
+        registered to avoid the morning lines!{" "}
+        <a href="https://rmx.as/tickets" className="underline">
+          Join us!
+        </a>
       </p>
       <table className="w-full mt-10 border-collapse">
         <thead>
