@@ -122,6 +122,7 @@ export default function BlogPost() {
                 className="md-prose"
                 dangerouslySetInnerHTML={{ __html: post.html }}
               />
+              <hr />
             </div>
           </div>
         </div>
