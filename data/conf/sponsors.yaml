@@ -52,7 +52,8 @@
   link: "https://vercel.com/"
   imgSrc: "/conf-images/sponsors/vercel.png"
   level: "silver"
-# - name: "Cloudflare"
-#   link: "https://www.cloudflare.com/"
-#   imgSrc: "/conf-images/sponsors/cloudflare.png"
-#   level: "silver"
+
+- name: "WorkOS"
+  link: "https://workos.com/"
+  imgSrc: "/conf-images/sponsors/workos.png"
+  level: "silver"
