@@ -533,12 +533,14 @@ a.md-nav-item {
   /* blocks */
 
   & docs-info,
+  & docs-success,
   & docs-warning,
   & docs-error {
     @apply relative block px-4 py-2 mt-0 mb-3 border-l-2 border-r-2 border-current rounded-lg;
   }
 
   & docs-info::before,
+  & docs-success::before,
   & docs-warning::before,
   & docs-error::before {
     @apply inset-0 content-[""] absolute opacity-10 pointer-events-none;
@@ -566,6 +568,14 @@ a.md-nav-item {
 
   & docs-error::before {
     @apply bg-red-700 dark:bg-red-300;
+  }
+
+  & docs-success {
+    @apply text-green-brand dark:text-green-300;
+  }
+
+  & docs-success::before {
+    @apply bg-green-brand;
   }
 
   & docs-cards {
