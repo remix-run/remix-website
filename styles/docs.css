@@ -500,7 +500,7 @@ a.md-nav-item {
 
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
-    @apply absolute top-0 left-0 w-full bg-green-400 pointer-events-none dark:bg-green-600 opacity-10;
+    @apply absolute top-0 left-0 w-full bg-green-400 pointer-events-none dark:bg-green-300 opacity-10 dark:opacity-20;
   }
 
   & pre[data-bad] .codeblock-line[data-highlight="true"]::after {
