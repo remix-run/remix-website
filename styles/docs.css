@@ -89,6 +89,7 @@
   @apply xl:sticky xl:top-10; /* sticky behavior */
   @apply text-gray-700 dark:text-gray-200;
   @apply mb-8 xl:mb-0 xl:pl-8;
+  @apply overflow-y-auto overflow-x-hidden;
   grid-area: toc;
 }
 
@@ -130,34 +131,7 @@ a.md-nav-item {
 }
 
 .toc {
-  @apply px-0 py-3 list-none border border-gray-100 rounded-lg dark:border-gray-900;
-
-  & > li > ul {
-    height: 100%;
-    /*
-    Had to do some funky calculatin' here, but the gist is that this means the
-    little van box will max at 29rem at normal desktop screen heights, which is
-    ideal so that the words in the last line get cut off by the y-axis overflow,
-    helping users know that is a scrollable area.
-
-    It is *not* ideal when the browser height is small because scroll behavior
-    is a bit more confusing when the box, which itself has a vertical scrollbar,
-    extends beyond the bounds of the window, which also has a vertical
-    scrollbar. In that case we constrain it based on the screen size offset by
-    the other elements above and below it. The three declarations are for
-    progressive enhancement, as some versions of various browsers might not
-    support `min()` or `env(safe-area-inset-bottom)`
-    */
-    max-height: 29rem;
-    max-height: min(29rem, calc(100vh - 14.375rem));
-    max-height: min(
-      29rem,
-      calc(100vh - env(safe-area-inset-bottom) - 14.375rem)
-    );
-
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
+  /* @apply px-0 py-3 list-none border border-gray-100 rounded-lg dark:border-gray-900; */
 
   & > li > ul > li ul {
     @apply ml-3 md:ml-4 lg:ml-3 2xl:ml-4;
