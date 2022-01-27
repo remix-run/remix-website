@@ -1,9 +1,10 @@
 import * as React from "react";
-import type { LoaderFunction, MetaFunction } from "remix";
+import type { HeadersFunction, LoaderFunction, MetaFunction } from "remix";
 import { json, useLoaderData, Link, useTransition, useActionData } from "remix";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
 import { Subscribe } from "~/components/subscribe";
+import { CACHE_CONTROL } from "~/utils/http.server";
 import type { MarkdownPostListing } from "~/utils/md.server";
 import { getBlogPostListings } from "~/utils/md.server";
 
@@ -18,9 +19,16 @@ export let meta: MetaFunction = () => {
 };
 
 export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({
-    posts: await getBlogPostListings(),
-  });
+  return json<LoaderData>(
+    { posts: await getBlogPostListings() },
+    { headers: { "Cache-Control": CACHE_CONTROL } }
+  );
+};
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
 };
 
 export default function Blog() {

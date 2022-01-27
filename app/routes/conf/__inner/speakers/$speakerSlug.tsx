@@ -1,15 +1,14 @@
-import {
-  Link,
+import type {
   LinksFunction,
   LoaderFunction,
   MetaFunction,
-  useCatch,
-  useParams,
+  HeadersFunction,
 } from "remix";
-import { json, useLoaderData } from "remix";
+import { Link, useCatch, useParams, json, useLoaderData } from "remix";
 import { getSpeakers, getTalks } from "~/utils/conf.server";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
 import { isSpeaker, Speaker, Talk, isTalkArray } from "~/utils/conf";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: speakersStylesUrl }];
@@ -45,10 +44,16 @@ export const loader: LoaderFunction = async ({ params }) => {
   const speaker = allSpeakers.find((s) => s.slug === params.speakerSlug);
   if (!speaker) throw new Response("Speaker not found", { status: 404 });
   const talks = allTalks.filter((t) => t.speakers.includes(speaker.name));
-  return json<LoaderData>({
-    speaker,
-    talks,
-  });
+  return json<LoaderData>(
+    { speaker, talks },
+    { headers: { "Cache-Control": CACHE_CONTROL } }
+  );
+};
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
 };
 
 export default function Speaker() {

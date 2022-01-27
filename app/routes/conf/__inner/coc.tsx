@@ -1,9 +1,16 @@
-import type { MetaFunction } from "remix";
+import type { HeadersFunction, MetaFunction } from "remix";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({
   title: "Remix Conf Code of Conduct",
   description: "Adapted from confcodeofconduct.com",
 });
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
+};
 
 export default function CoC() {
   return (

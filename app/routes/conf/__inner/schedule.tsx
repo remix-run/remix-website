@@ -1,11 +1,18 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs";
 import { Link, Outlet, useMatches, useNavigate } from "remix";
-import type { MetaFunction } from "remix";
+import type { MetaFunction, HeadersFunction } from "remix";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({
   title: "Remix Conf Schedule",
   description: "What's happening and when at Remix Conf",
 });
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
+};
 
 export default function Safety() {
   const matches = useMatches();
@@ -60,6 +67,7 @@ export default function Safety() {
               >
                 <Link
                   className="block w-full"
+                  prefetch="intent"
                   to={route}
                   onClick={(e) => {
                     if (e.metaKey) {

@@ -1,9 +1,16 @@
-import type { MetaFunction } from "remix";
+import type { HeadersFunction, MetaFunction } from "remix";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({
   title: "Remix Conf Discord Server",
   description: "Much of our coordination happens on Discord.",
 });
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
+};
 
 export default function Safety() {
   return (

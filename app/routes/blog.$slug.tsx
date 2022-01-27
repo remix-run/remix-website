@@ -1,4 +1,4 @@
-import { LoaderFunction } from "remix";
+import type { LoaderFunction, HeadersFunction } from "remix";
 import { json, useLoaderData } from "remix";
 
 import { getBlogPost } from "~/utils/md.server";
@@ -14,6 +14,12 @@ import { Subscribe } from "~/components/subscribe";
 export let loader: LoaderFunction = async ({ params }) => {
   let post: MarkdownPost = await getBlogPost(params.slug!);
   return json(post, { headers: { "Cache-Control": CACHE_CONTROL } });
+};
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
 };
 
 export function links() {

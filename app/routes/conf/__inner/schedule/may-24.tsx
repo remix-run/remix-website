@@ -1,9 +1,16 @@
-import { Link, MetaFunction } from "remix";
+import { HeadersFunction, Link, MetaFunction } from "remix";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({
   title: "May 24th at Remix Conf",
   description: "May 24th is The Workshop and Welcome day at Remix.",
 });
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
+};
 
 export default function May24Schedule() {
   return (

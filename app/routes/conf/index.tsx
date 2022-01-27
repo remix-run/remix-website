@@ -1,4 +1,4 @@
-import { json, useLoaderData } from "remix";
+import { HeadersFunction, json, useLoaderData } from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
 import indexStyles from "../../styles/index.css";
@@ -6,7 +6,7 @@ import { Fragment } from "react";
 import type { Sponsor, Speaker } from "~/utils/conf";
 import { getSpeakers, getSponsors } from "~/utils/conf.server";
 import { Link } from "~/components/link";
-import { Discord } from "~/components/icons";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export function meta() {
   let url = "https://remix.run/conf";
@@ -68,11 +68,20 @@ export const loader: LoaderFunction = async () => {
       .filter((s) => s.level === "community")
       .sort(() => Math.random() - 0.5),
   };
-  return json<LoaderData>({
-    speakers: speakersShuffled,
-    sponsors,
-    earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME,
-  });
+  return json<LoaderData>(
+    {
+      speakers: speakersShuffled,
+      sponsors,
+      earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME,
+    },
+    { headers: { "Cache-Control": CACHE_CONTROL } }
+  );
+};
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
 };
 
 export default function ConfIndex() {
@@ -187,6 +196,7 @@ function SpeakerDisplay({ speaker }: { speaker: Omit<Speaker, "bio"> }) {
       to={`speakers/${speaker.slug}`}
       className="__speaker-link h-full w-full flex items-center justify-center"
       aria-label={`${speaker.name}, ${speaker.title}`}
+      prefetch="intent"
     >
       <div className="w-full max-w-xs sm:max-w-none">
         <div className="__speaker-img rounded-md overflow-hidden aspect-w-1 aspect-h-1 bg-black">

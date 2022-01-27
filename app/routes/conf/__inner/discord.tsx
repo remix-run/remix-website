@@ -1,12 +1,19 @@
-import type { MetaFunction } from "remix";
+import type { HeadersFunction, MetaFunction } from "remix";
 import { Link } from "remix";
 import { primaryButtonLinkClass } from "~/components/buttons";
 import { Discord } from "~/components/icons";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({
   title: "Remix Conf Discord Server",
   description: "Much of our coordination happens on Discord.",
 });
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
+};
 
 const channels = [
   {

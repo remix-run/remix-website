@@ -1,12 +1,19 @@
 import * as React from "react";
-import { MetaFunction, LoaderFunction, Link } from "remix";
+import { MetaFunction, LoaderFunction, Link, HeadersFunction } from "remix";
 import { json, useLoaderData } from "remix";
 import { primaryButtonLinkClass } from "~/components/buttons";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({
   title: "Remix Conf Venue",
   description: "Remix Conf in Salt Lake City, Utah at the Sheraton Hotel",
 });
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
+};
 
 const hotelImages = [
   "Sheraton Salt Lake City Hotel building with sign",

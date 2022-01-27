@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Outlet, useLocation, useLoaderData, json } from "remix";
-import type { LinksFunction, LoaderFunction } from "remix";
+import type { LinksFunction, LoaderFunction, HeadersFunction } from "remix";
 import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/components/icons";
@@ -23,6 +23,7 @@ import {
   SubscribeStatus,
   SubscribeSubmit,
 } from "~/components/subscribe";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export let handle = { forceDark: true };
 
@@ -41,9 +42,16 @@ type LoaderData = { earlyBird: boolean };
 const EARLY_BIRD_ENDING_TIME = 1646121600000;
 
 export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({
-    earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME,
-  });
+  return json<LoaderData>(
+    { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
+    { headers: { "Cache-Control": CACHE_CONTROL } }
+  );
+};
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
 };
 
 const navItems: Array<HeaderLinkProps> = [
@@ -190,16 +198,18 @@ function Footer() {
       className="px-6 lg:px-12 py-9 text-d-p-sm flex justify-between items-center text-white __footer"
     >
       <div className="flex items-start md:items-center flex-col md:flex-row gap-2 md:gap-16">
-        <Link to="/" aria-label="Remix home">
+        <Link to="/" aria-label="Remix home" prefetch="intent">
           <Wordmark height={16} aria-hidden />
         </Link>
         <Link
+          prefetch="intent"
           to="coc"
           className="leading-none block font-semibold font-jet-mono"
         >
           Code of Conduct
         </Link>
         <Link
+          prefetch="intent"
           to="safety"
           className="leading-none block font-semibold font-jet-mono"
         >

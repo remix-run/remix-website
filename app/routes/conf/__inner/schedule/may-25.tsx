@@ -1,5 +1,4 @@
-import * as React from "react";
-import { Link, MetaFunction } from "remix";
+import { HeadersFunction, Link, MetaFunction } from "remix";
 
 export const meta: MetaFunction = () => ({
   title: "May 25th at Remix Conf",
@@ -10,6 +9,7 @@ import type { LoaderFunction } from "remix";
 import { json, useLoaderData } from "remix";
 import { getSpeakers, getTalks } from "~/utils/conf.server";
 import { Speaker, Talk } from "~/utils/conf";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 type SpeakerInfo = Pick<Speaker, "imgSrc" | "name" | "slug">;
 type TalkWithSpeaker = Omit<Talk, "speakers" | "description"> & {
@@ -25,9 +25,16 @@ export const loader: LoaderFunction = async () => {
       .map(({ name, slug, imgSrc }) => ({ name, slug, imgSrc }));
     return { ...talk, speakers: speakersForTalk };
   });
-  return json<LoaderData>({
-    talks: talksWithSpeakers,
-  });
+  return json<LoaderData>(
+    { talks: talksWithSpeakers },
+    { headers: { "Cache-Control": CACHE_CONTROL } }
+  );
+};
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
 };
 
 export default function May25Schedule() {

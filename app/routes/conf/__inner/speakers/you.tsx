@@ -1,10 +1,17 @@
-import type { MetaFunction } from "remix";
+import type { HeadersFunction, MetaFunction } from "remix";
 import { primaryButtonLinkClass } from "~/components/buttons";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({
   title: "Speak at Remix Conf",
   description: "Learn what we're looking for and how to submit your own talk.",
 });
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
+};
 
 export default function Speak() {
   return (

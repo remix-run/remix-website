@@ -1,11 +1,18 @@
-import { Link, MetaFunction } from "remix";
+import { HeadersFunction, Link, MetaFunction } from "remix";
 import { Discord } from "~/components/icons";
+import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({
   title: "May 26th at Remix Conf",
   description:
     "May 26th is the day after the conference. Get together with other conference attendees before heading home.",
 });
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
+};
 
 function getMapsDirections(address: string) {
   const url = new URL("http://maps.google.com/maps");
