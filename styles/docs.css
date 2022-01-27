@@ -130,7 +130,7 @@ a.md-nav-item {
 }
 
 .toc {
-  @apply max-h-[90vh] overflow-x-hidden overflow-y-visible px-0 py-3 list-none border border-gray-100 rounded-lg dark:border-gray-900;
+  @apply max-h-[90vh] overflow-x-hidden overflow-y-visible px-0 py-3 list-none border border-gray-200 rounded-lg dark:border-gray-500;
 
   & > li > ul {
     & li li {
