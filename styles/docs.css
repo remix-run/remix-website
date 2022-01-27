@@ -571,7 +571,7 @@ a.md-nav-item {
   }
 
   & docs-success {
-    @apply text-green-brand dark:text-green-300;
+    @apply text-green-600 dark:text-green-300;
   }
 
   & docs-success::before {
