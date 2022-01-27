@@ -89,7 +89,6 @@
   @apply xl:sticky xl:top-10; /* sticky behavior */
   @apply text-gray-700 dark:text-gray-200;
   @apply mb-8 xl:mb-0 xl:pl-8;
-  @apply overflow-y-auto overflow-x-hidden;
   grid-area: toc;
 }
 
@@ -131,7 +130,17 @@ a.md-nav-item {
 }
 
 .toc {
-  /* @apply px-0 py-3 list-none border border-gray-100 rounded-lg dark:border-gray-900; */
+  @apply max-h-[90vh] overflow-x-hidden overflow-y-visible px-0 py-3 list-none border border-gray-100 rounded-lg dark:border-gray-900;
+
+  & > li > ul {
+    & li li {
+      @apply hidden xl:block;
+    }
+
+    & li li li {
+      @apply hidden;
+    }
+  }
 
   & > li > ul > li ul {
     @apply ml-3 md:ml-4 lg:ml-3 2xl:ml-4;
