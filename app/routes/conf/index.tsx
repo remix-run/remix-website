@@ -200,7 +200,7 @@ function SpeakerDisplay({ speaker }: { speaker: Omit<Speaker, "bio"> }) {
     >
       <div className="w-full max-w-xs sm:max-w-none">
         <div className="__speaker-img rounded-md overflow-hidden aspect-w-1 aspect-h-1 bg-black">
-          <img src={speaker.imgSrc} alt={`${speaker.name}`} />
+          <img src={speaker.imgSrc} alt={speaker.name} title={speaker.name} />
         </div>
         <div className="mt-4">
           <h3>{speaker.name}</h3>
@@ -307,6 +307,7 @@ function SponsorsList({
                 <img
                   src={sponsor.imgSrc}
                   alt={sponsor.name}
+                  title={sponsor.name}
                   className="max-w-full max-h-full p-3"
                 />
               </a>
