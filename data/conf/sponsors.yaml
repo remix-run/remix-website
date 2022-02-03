@@ -67,3 +67,8 @@
   link: "https://www.microsoft.com/"
   imgSrc: "/conf-images/sponsors/microsoft.png"
   level: "community"
+
+- name: "Amazon AWS"
+  link: "https://aws.amazon.com/"
+  imgSrc: "/conf-images/sponsors/aws.jpg"
+  level: "silver"
