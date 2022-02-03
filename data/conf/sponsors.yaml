@@ -70,5 +70,5 @@
 
 - name: "Amazon AWS"
   link: "https://aws.amazon.com/"
-  imgSrc: "/conf-images/sponsors/aws.jpg"
+  imgSrc: "/conf-images/sponsors/aws.png"
   level: "silver"
