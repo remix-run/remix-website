@@ -72,3 +72,8 @@
   link: "https://aws.amazon.com/"
   imgSrc: "/conf-images/sponsors/aws.png"
   level: "silver"
+
+- name: "Seasoned"
+  link: "https://www.seasoned.cc"
+  imgSrc: "/conf-images/sponsors/seasoned.png"
+  level: "silver"
