@@ -74,6 +74,11 @@
   level: "silver"
 
 - name: "Seasoned"
-  link: "https://www.seasoned.cc"
+  link: "https://www.seasoned.cc/remix"
   imgSrc: "/conf-images/sponsors/seasoned.png"
   level: "silver"
+
+- name: "Stream"
+  link: "https://getstream.io"
+  imgSrc: "/conf-images/sponsors/stream.png"
+  level: "community"
