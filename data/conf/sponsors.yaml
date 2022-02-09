@@ -68,9 +68,9 @@
   imgSrc: "/conf-images/sponsors/microsoft.png"
   level: "community"
 
-- name: "Amazon AWS"
-  link: "https://aws.amazon.com/"
-  imgSrc: "/conf-images/sponsors/aws.png"
+- name: "AWS Amplify"
+  link: "https://docs.amplify.aws"
+  imgSrc: "/conf-images/sponsors/amplify.png"
   level: "silver"
 
 - name: "Seasoned"

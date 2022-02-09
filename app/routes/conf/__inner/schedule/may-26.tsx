@@ -95,7 +95,8 @@ const activities: Array<Activity> = [
     name: "Social Axe Throwing",
     emoji: "🔪",
     link: "https://slc.socialaxethrowing.com/slc/",
-    description: "If you haven't axe throwing, it's more fun than you think.",
+    description:
+      "If you haven't been axe throwing, it's more fun than you think.",
     address: "1154 S 300 W E, Salt Lake City, UT 84101",
     discordLink:
       "https://discord.com/channels/770287896669978684/935587497570877541",
@@ -253,7 +254,10 @@ export default function May25Schedule() {
           the Discord server
         </Link>{" "}
         to help get people together who want to participate in the same
-        activities. Let us know if you have any other ideas!
+        activities.{" "}
+        <a href="https://discord.com/channels/770287896669978684/935586137752358912">
+          Let us know if you have any other ideas!
+        </a>
       </p>
     </div>
   );
