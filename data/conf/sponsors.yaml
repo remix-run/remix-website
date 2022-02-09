@@ -70,7 +70,7 @@
 
 - name: "AWS Amplify"
   link: "https://docs.amplify.aws"
-  imgSrc: "/conf-images/sponsors/amplify.png"
+  imgSrc: "/conf-images/sponsors/amplify.jpg"
   level: "silver"
 
 - name: "Seasoned"
