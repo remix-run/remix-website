@@ -15,7 +15,6 @@ export const headers: HeadersFunction = () => {
 export default function May24Schedule() {
   return (
     <div>
-      <strong>Workshop & Welcome Day</strong>
       <p>
         This is the day before the big event. We'll be holding two{" "}
         <Link className="underline" to="/conf/workshops">

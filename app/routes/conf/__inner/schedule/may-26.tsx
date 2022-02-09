@@ -1,4 +1,11 @@
-import { HeadersFunction, Link, MetaFunction } from "remix";
+import {
+  HeadersFunction,
+  Link,
+  MetaFunction,
+  LoaderFunction,
+  json,
+  useLoaderData,
+} from "remix";
 import { Discord } from "~/components/icons";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
@@ -24,17 +31,25 @@ function getMapsDirections(address: string) {
   return url.toString();
 }
 
-type Location = {
+type Activity = {
   emoji: string;
   name: string;
-  link: string;
   description: string;
-  address: string;
   discordLink: string;
-  walkingDistance: boolean;
-};
+} & (
+  | {
+      link?: never;
+      address?: never;
+      walkingDistance?: never;
+    }
+  | {
+      link: string;
+      address: string;
+      walkingDistance: boolean;
+    }
+);
 
-const locations: Array<Location> = [
+const activities: Array<Activity> = [
   {
     name: "Dave n Busters",
     emoji: "🎮",
@@ -147,43 +162,91 @@ const locations: Array<Location> = [
       "https://discord.com/channels/770287896669978684/935657377867378798",
     walkingDistance: false,
   },
+  {
+    name: "Soccer (or more properly: fútbol)",
+    emoji: "⚽",
+    description:
+      "Bring your shin guards and cleats! We'd love to see you there no matter your skill level.",
+    discordLink:
+      "https://discord.com/channels/770287896669978684/936018830709362698",
+  },
+  {
+    name: "Ogden Marathon (week before)",
+    emoji: "🏃",
+    link: "https://www.ogdenmarathon.com/",
+    address: "Dee Events Center, 4400 Harrison Blvd., Ogden, UT 84403",
+    description:
+      "The Satruday before the conference is the Ogden Marathon. So bring your running shoes and train up!",
+    discordLink:
+      "https://discord.com/channels/770287896669978684/940664027271528518",
+    walkingDistance: false,
+  },
 ];
 
+type LoaderData = { activities: Array<Activity> };
+
+export const loader: LoaderFunction = async () => {
+  return json<LoaderData>({
+    activities: activities.sort(() => Math.random() - 0.5),
+  });
+};
+
 export default function May25Schedule() {
+  const { activities } = useLoaderData<LoaderData>();
   return (
     <div>
-      <strong>Post-conference fun</strong>
       <p>
         This is post-conference day! Get together with other conference
         attendees before heading home. The conference organizers will facilitate
         getting folks together who want to do the same thing and help you know
-        fun places to go hang out. Here are some possibilities
+        fun places to go hang out. Here are some possibilities:
       </p>
       <ul className="pt-6 space-y-2">
-        {locations.map((location) => (
-          <li key={location.address}>
-            <span className="pr-2">{location.emoji}</span>
-            <a className="underline" href={location.link}>
-              {location.name}
-            </a>
-            <a className="mx-2" href={location.discordLink}>
+        {activities.map((activity) => (
+          <li key={activity.name}>
+            <span className="pr-2">{activity.emoji}</span>
+            {activity.link ? (
+              <a className="underline" href={activity.link}>
+                {activity.name}
+              </a>
+            ) : (
+              activity.name
+            )}
+            <a className="mx-2" href={activity.discordLink}>
               <Discord className="inline h-6 w-6" />
             </a>
-            {location.description}{" "}
-            <a
-              target="_blank"
-              href={getMapsDirections(`${location.name}, ${location.address}`)}
-              title={
-                location.walkingDistance
-                  ? "Walking directions"
-                  : "Bus/Car directions"
-              }
-            >
-              {location.walkingDistance ? "🚶" : "🚌"}
-            </a>
+            {activity.description}{" "}
+            {activity.address ? (
+              <a
+                target="_blank"
+                href={getMapsDirections(
+                  `${activity.name}, ${activity.address}`
+                )}
+                title={
+                  activity.walkingDistance
+                    ? "Walking directions"
+                    : "Bus/Car directions"
+                }
+              >
+                {activity.walkingDistance ? "🚶" : "🚌"}
+              </a>
+            ) : (
+              <span>
+                (Location still being determined.{" "}
+                <a className="underline" href={activity.discordLink}>
+                  Ideas welcome.
+                </a>
+                )
+              </span>
+            )}
           </li>
         ))}
       </ul>
+      <p className="pt-10">
+        Note that these don't all have to happen on the 26th. Feel free to get
+        together with attendees any time you all are in Utah. We're happy to
+        facilitate you getting together any time around the conference time.
+      </p>
       <p className="pt-10">
         We'll use{" "}
         <Link className="underline" to="/conf/discord">

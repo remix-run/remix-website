@@ -42,9 +42,6 @@ export default function May25Schedule() {
   return (
     <div>
       <div>
-        <h2 className="text-m-h3 font-display md:text-d-h3">
-          Single Track Conference
-        </h2>
         <small>9:00am - 4:30pm</small>{" "}
         <small>
           (This schedule is likely to change.{" "}
