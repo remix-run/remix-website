@@ -30,7 +30,7 @@
     "@reach/tabs": "^0.16.4",
     "@remix-run/react": "^1.1.1",
     "@remix-run/serve": "^1.1.1",
-    "@ryanflorence/md": "^7.0.1",
+    "@ryanflorence/md": "^7.1.0",
     "@ryanflorence/mdtut": "^1.2.1",
     "@tailwindcss/aspect-ratio": "^0.3.0",
     "accept-language": "^3.0.18",
