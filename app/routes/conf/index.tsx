@@ -302,7 +302,7 @@ function SponsorsList({
             <div className="border-2 border-200 w-full h-full bg-white">
               <a
                 href={sponsor.link}
-                className="h-full w-full flex items-center"
+                className="h-full w-full flex items-center justify-center"
               >
                 <img
                   src={sponsor.imgSrc}
