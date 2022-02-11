@@ -44,27 +44,27 @@
   level: "gold"
 
 - name: "Sanity"
-  link: "https://www.sanity.io/"
+  link: "https://www.sanity.io"
   imgSrc: "/conf-images/sponsors/sanity.png"
   level: "community"
 
 - name: "Vercel"
-  link: "https://vercel.com/"
+  link: "https://vercel.com"
   imgSrc: "/conf-images/sponsors/vercel.png"
   level: "silver"
 
 - name: "WorkOS"
-  link: "https://workos.com/"
+  link: "https://workos.com"
   imgSrc: "/conf-images/sponsors/workos.png"
   level: "silver"
 
 - name: "Prisma"
-  link: "https://www.prisma.io/"
+  link: "https://www.prisma.io"
   imgSrc: "/conf-images/sponsors/prisma.png"
   level: "silver"
 
 - name: "Microsoft"
-  link: "https://www.microsoft.com/"
+  link: "https://www.microsoft.com"
   imgSrc: "/conf-images/sponsors/microsoft.png"
   level: "community"
 
@@ -84,6 +84,11 @@
   level: "community"
 
 - name: "Vendure"
-  link: "https://www.vendure.io/"
+  link: "https://www.vendure.io"
   imgSrc: "/conf-images/sponsors/vendure.png"
+  level: "community"
+
+- name: "GraphCMS"
+  link: "https://graphcms.com"
+  imgSrc: "/conf-images/sponsors/graphcms.jpg"
   level: "community"
