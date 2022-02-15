@@ -182,6 +182,17 @@ const activities: Array<Activity> = [
       "https://discord.com/channels/770287896669978684/940664027271528518",
     walkingDistance: false,
   },
+  {
+    name: "Riding around SLC",
+    emoji: "🛴",
+    link: "https://www.visitsaltlake.com/plan-your-trip/getting-around/electric-scooters/",
+    address: "Salt Lake City, UT 84403",
+    description:
+      "Let's ride! If you've got a personal electric mobility device (like a onewheel/electric skateboard/etc.), join us for a ride around Salt Lake City. Don't have one (or can't fly with it)? Grab a lime scooter and join us!",
+    discordLink:
+      "https://discord.com/channels/770287896669978684/943032944988155946",
+    walkingDistance: true,
+  },
 ];
 
 type LoaderData = { activities: Array<Activity> };
