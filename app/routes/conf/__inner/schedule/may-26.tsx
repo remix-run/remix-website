@@ -186,7 +186,8 @@ const activities: Array<Activity> = [
     name: "Riding around SLC",
     emoji: "🛴",
     link: "https://www.visitsaltlake.com/plan-your-trip/getting-around/electric-scooters/",
-    address: "Salt Lake City, UT 84403",
+    address:
+      "Sheraton Salt Lake City Hotel, 150 W 500 S, Salt Lake City, UT 84101",
     description:
       "Let's ride! If you've got a personal electric mobility device (like a onewheel/electric skateboard/etc.), join us for a ride around Salt Lake City. Don't have one (or can't fly with it)? Grab a lime scooter and join us!",
     discordLink:
