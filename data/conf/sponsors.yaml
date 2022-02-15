@@ -92,3 +92,8 @@
   link: "https://graphcms.com"
   imgSrc: "/conf-images/sponsors/graphcms.jpg"
   level: "community"
+
+- name: "Storyblok"
+  link: "https://www.storyblok.com"
+  imgSrc: "/conf-images/sponsors/storyblok.png"
+  level: "community"
