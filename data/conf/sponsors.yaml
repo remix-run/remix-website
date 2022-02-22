@@ -97,3 +97,8 @@
   link: "https://www.storyblok.com"
   imgSrc: "/conf-images/sponsors/storyblok.png"
   level: "community"
+
+- name: "Cockroach Labs"
+  link: "https://www.cockroachlabs.com/product"
+  imgSrc: "/conf-images/sponsors/cockroachlabs.png"
+  level: "community"
