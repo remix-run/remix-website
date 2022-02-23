@@ -194,6 +194,17 @@ const activities: Array<Activity> = [
       "https://discord.com/channels/770287896669978684/943032944988155946",
     walkingDistance: true,
   },
+  {
+    name: "Pickleball",
+    emoji: "🎾",
+    link: "https://www.slc.gov/parks/parks-division/5th-ave-c-street-pickleball/",
+    address:
+      "5th Ave & C Street Pickleball Courts, 230 C St E, Salt Lake City, UT 84103",
+    description: "Grab your paddle and let's play pickleball!",
+    discordLink:
+      "https://discord.com/channels/770287896669978684/943032944988155946",
+    walkingDistance: false,
+  },
 ];
 
 type LoaderData = { activities: Array<Activity> };
