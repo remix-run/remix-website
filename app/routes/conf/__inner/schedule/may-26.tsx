@@ -205,6 +205,16 @@ const activities: Array<Activity> = [
       "https://discord.com/channels/770287896669978684/946145901896925215",
     walkingDistance: false,
   },
+  {
+    name: "Ultimate Frisbee",
+    emoji: "🥏",
+    link: "https://www.slc.gov/parks/parks-division/pioneer-park/",
+    address: "Pioneer Park, 350 S 300 W, Salt Lake City, UT 84101",
+    description: "Let's play ultimate!",
+    discordLink:
+      "https://discord.com/channels/770287896669978684/946161999245635614",
+    walkingDistance: true,
+  },
 ];
 
 type LoaderData = { activities: Array<Activity> };
