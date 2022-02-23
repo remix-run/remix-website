@@ -202,7 +202,7 @@ const activities: Array<Activity> = [
       "5th Ave & C Street Pickleball Courts, 230 C St E, Salt Lake City, UT 84103",
     description: "Grab your paddle and let's play pickleball!",
     discordLink:
-      "https://discord.com/channels/770287896669978684/943032944988155946",
+      "https://discord.com/channels/770287896669978684/946145901896925215",
     walkingDistance: false,
   },
 ];
