@@ -1,5 +1,5 @@
 import { primaryButtonLinkClass } from "~/components/buttons";
-import type { HeadersFunction, MetaFunction } from "remix";
+import { HeadersFunction, Link, MetaFunction } from "remix";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({
@@ -34,44 +34,43 @@ export default function Workshops() {
           />
         </div>
       </div>
-      <div className="mt-12 container grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <div>
-          <div className="flex flex-row lg:flex-col gap-4">
-            <img src="/k.jpg" alt="Kent C. Dodds" className="w-24 rounded-md" />
-            <div>
-              <h2 className="font-display text-m-h2 lg:text-d-h2">
-                Remix Fundamentals
-              </h2>
-              <p>with Kent C. Dodds</p>
-            </div>
-          </div>
+      <div className="mt-12 container grid grid-cols-1 lg:grid-cols-6 gap-12">
+        <div className="col-span-3 lg:col-span-2">
           <div className="mt-4 text-m-p-lg lg:text-d-p-lg flex flex-col gap-6">
-            <p>
-              The perfect workshop for ramping yourself up on Remix the day
-              before Remix conf.
-            </p>
-            <p>At the end of this workshop, you'll know how to:</p>
-            <ul className="list-disc list-inside">
-              <li>Bootstrap a new Remix app</li>
-              <li>Create Remix Routes</li>
-              <li>Style Remix applications</li>
-              <li>Load data in Remix loaders</li>
-              <li>Mutate data with forms and actions</li>
-              <li>Handle errors (both expected and unexpected)</li>
-            </ul>
+            <h2 className="font-display text-m-h2 lg:text-d-h2">
+              Your instructors
+            </h2>
+            <div className="flex flex-col items-center lg:items-start lg:flex-row gap-8">
+              <Link
+                className="underline flex flex-col gap-4"
+                to="/conf/speakers/kentcdodds"
+              >
+                <img
+                  src="/k.jpg"
+                  alt="Kent C. Dodds"
+                  className="w-36 rounded-md"
+                />
+                <span>Kent C. Dodds</span>
+              </Link>
+              <Link
+                className="underline flex flex-col gap-4"
+                to="/conf/speakers/ryan-florence"
+              >
+                <img
+                  src="/r.jpg"
+                  alt="Ryan Florence"
+                  className="w-36 rounded-md"
+                />
+                <span>Ryan Florence</span>
+              </Link>
+            </div>
           </div>
         </div>
-        <div>
-          <div className="flex flex-row lg:flex-col gap-4">
-            <img src="/r.jpg" alt="Ryan Florence" className="w-24 rounded-md" />
-            <div>
-              <h2 className="font-display text-m-h2 lg:text-d-h2">
-                Web Apps with Remix
-              </h2>
-              <p>with Ryan Florence</p>
-            </div>
-          </div>
+        <div className="col-span-3 lg:col-span-4">
           <div className="mt-4 text-m-p-lg lg:text-d-p-lg flex flex-col gap-6">
+            <h2 className="font-display text-m-h2 lg:text-d-h2">
+              Web Apps with Remix
+            </h2>
             <p>
               Learn to build state-of-the-art user interfaces on the web with
               Remix. If you've been wondering how to make the jump from
