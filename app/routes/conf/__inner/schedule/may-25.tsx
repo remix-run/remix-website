@@ -45,10 +45,10 @@ export default function May25Schedule() {
         <small>9:00am - 4:30pm</small>{" "}
         <small>
           (This schedule is likely to change.{" "}
-          <Link className="underline" to="/conf/speakers/you">
-            Want to Speak?
-          </Link>
-          )
+          <a href="#conf-newsletter-signup" className="underline">
+            📻 Stay tuned!
+          </a>{" "}
+          More speakers to be announced soon!)
         </small>
         <table className="w-full mt-6 border-collapse">
           <thead className="sr-only">
@@ -85,12 +85,12 @@ export default function May25Schedule() {
                       ],
                     }}
                   />
-                  <Link
-                    className="underline text-d-p-sm md:text-d-p-lg"
-                    to="/conf/speakers/you"
-                  >
-                    Submit your talk
-                  </Link>
+                  <span>
+                    <a href="#conf-newsletter-signup" className="underline">
+                      📻 Stay tuned!
+                    </a>{" "}
+                    More speakers to be announced soon!
+                  </span>
                 </div>
               </td>
             </tr>

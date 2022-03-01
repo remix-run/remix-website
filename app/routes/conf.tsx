@@ -99,7 +99,7 @@ export default function Conf() {
 
 function SignUp() {
   return (
-    <section className="my-6">
+    <section className="my-6" id="conf-newsletter-signup">
       <div className="container">
         <section className="section-signup relative">
           <div className="md:max-w-xl mx-auto md:py-40 relative">

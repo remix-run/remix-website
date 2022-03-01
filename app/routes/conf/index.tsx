@@ -1,6 +1,9 @@
 import { HeadersFunction, json, useLoaderData } from "remix";
 import type { LinksFunction, LoaderFunction } from "remix";
-import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
+import {
+  OutlineButtonLink,
+  primaryButtonLinkClass,
+} from "~/components/buttons";
 import indexStyles from "../../styles/index.css";
 import { Fragment } from "react";
 import type { Sponsor, Speaker } from "~/utils/conf";
@@ -35,7 +38,6 @@ export let links: LinksFunction = () => {
 };
 
 type LoaderData = {
-  earlyBird: boolean;
   speakers: Array<Omit<Speaker, "bio">>;
   sponsors: {
     premier: Sponsor | undefined;
@@ -44,9 +46,6 @@ type LoaderData = {
     community: Array<Sponsor>;
   };
 };
-
-// March 1 at 12:00am
-const EARLY_BIRD_ENDING_TIME = 1646121600000;
 
 export const loader: LoaderFunction = async () => {
   const speakersOrdered = await getSpeakers();
@@ -69,11 +68,7 @@ export const loader: LoaderFunction = async () => {
       .sort(() => Math.random() - 0.5),
   };
   return json<LoaderData>(
-    {
-      speakers: speakersShuffled,
-      sponsors,
-      earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME,
-    },
+    { speakers: speakersShuffled, sponsors },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
 };
@@ -95,7 +90,6 @@ export default function ConfIndex() {
 }
 
 function Hero() {
-  const data = useLoaderData<LoaderData>();
   return (
     <Fragment>
       <section
@@ -118,24 +112,15 @@ function Hero() {
               <p className="font-bold">
                 We can't wait to tell you all about it.
               </p>
-              {data.earlyBird ? (
-                <small className="block pl-4">
-                  🐣{" "}
-                  <a href="https://rmx.as/tickets" className="underline">
-                    Early bird
-                  </a>{" "}
-                  discount ends Feb 28
-                </small>
-              ) : null}
             </div>
             <div className="h-9" />
             <div className="flex flex-col gap-4 md:flex-row items-center">
-              <PrimaryButtonLink
-                prefetch="intent"
-                to="speakers/you"
-                className="w-full md:w-auto font-jet-mono uppercase"
-                children="Call for Speakers"
-              />
+              <a
+                href="https://rmx.as/tickets"
+                className={`${primaryButtonLinkClass} w-full md:w-auto font-jet-mono uppercase`}
+              >
+                Get Your Tickets
+              </a>
               <OutlineButtonLink
                 prefetch="intent"
                 to="sponsor"
@@ -167,6 +152,12 @@ function Speakers() {
             ))}
           </div>
         </div>
+        <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto mt-20 text-center">
+          <a href="#conf-newsletter-signup" className="underline">
+            📻 Stay tuned!
+          </a>{" "}
+          More speakers to be announced soon!
+        </div>
         {mc ? (
           <div id="mc">
             <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
@@ -177,14 +168,6 @@ function Speakers() {
             </div>
           </div>
         ) : null}
-        <div className="flex justify-center mt-20">
-          <OutlineButtonLink
-            prefetch="intent"
-            to="speakers/you"
-            className="w-full md:w-auto font-jet-mono uppercase"
-            children="Become a Speaker"
-          />
-        </div>
       </div>
     </section>
   );
