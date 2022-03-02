@@ -102,3 +102,18 @@
   link: "https://www.cockroachlabs.com/product"
   imgSrc: "/conf-images/sponsors/cockroachlabs.png"
   level: "community"
+
+- name: "Hyper.io"
+  link: "https://hyper.io"
+  imgSrc: "/conf-images/sponsors/hyper.png"
+  level: "community"
+
+- name: "Netlify"
+  link: "https://www.netlify.com"
+  imgSrc: "/conf-images/sponsors/netlify.png"
+  level: "community"
+
+- name: "Mirahi"
+  link: "https://mirahi.io"
+  imgSrc: "/conf-images/sponsors/mirahi.png"
+  level: "community"
