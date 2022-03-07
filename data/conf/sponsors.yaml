@@ -117,3 +117,8 @@
   link: "https://mirahi.io"
   imgSrc: "/conf-images/sponsors/mirahi.png"
   level: "community"
+
+- name: "This Dot Labs"
+  link: "https://www.thisdot.co"
+  imgSrc: "/conf-images/sponsors/thisdot.png"
+  level: "community"
