@@ -95,7 +95,7 @@ export default function DocsLayout() {
         </div>
       ) : null}
       {menu.length > 0 ? (
-        <div className="flex-shrink-0 hidden lg:block">
+        <div className="shrink-0 hidden lg:block">
           <div
             className={cx([
               // Sidebar nav scroll container
@@ -133,7 +133,7 @@ export default function DocsLayout() {
           </div>
         </div>
       ) : null}
-      <div className="lg:z-[1] flex-grow lg:h-full">
+      <div className="lg:z-[1] grow lg:h-full">
         <div className="py-6 md:py-8 lg:py-10 lg:pr-6 lg:pl-3 xl:pl-5 2xl:pl-6">
           <Outlet />
         </div>

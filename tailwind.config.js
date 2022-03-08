@@ -8,11 +8,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   mode: "jit",
-  purge: ["./app/**/*.{ts,tsx}", "./data/**/*.md"],
-  darkMode: "media",
-  variants: {
-    aspectRatio: ["responsive"],
-  },
+  content: ["./app/**/*.{ts,tsx}", "./data/**/*.md"],
   plugins: [
     require("@tailwindcss/aspect-ratio"),
     function ({ addVariant, e }) {
@@ -85,6 +81,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        current: "currentColor",
         gray: {
           50: "#f8fbfc",
           100: "#eef2f8",
