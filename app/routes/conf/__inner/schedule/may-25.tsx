@@ -7,26 +7,16 @@ export const meta: MetaFunction = () => ({
 
 import type { LoaderFunction } from "remix";
 import { json, useLoaderData } from "remix";
-import { getSpeakers, getTalks } from "~/utils/conf.server";
-import { Speaker, Talk } from "~/utils/conf";
+import { getSchedule } from "~/utils/conf.server";
 import { CACHE_CONTROL } from "~/utils/http.server";
+import { sluggify } from "~/utils/conf";
 
-type SpeakerInfo = Pick<Speaker, "imgSrc" | "name" | "slug">;
-type TalkWithSpeaker = Omit<Talk, "speakers" | "description"> & {
-  speakers: Array<SpeakerInfo>;
-};
-type LoaderData = { talks: Array<TalkWithSpeaker> };
+type LoaderData = { scheduleItems: Awaited<ReturnType<typeof getSchedule>> };
 
 export const loader: LoaderFunction = async () => {
-  const [talks, speakers] = await Promise.all([getTalks(), getSpeakers()]);
-  const talksWithSpeakers = talks.map(({ description, ...talk }) => {
-    const speakersForTalk = speakers
-      .filter((speaker) => talk.speakers.includes(speaker.name))
-      .map(({ name, slug, imgSrc }) => ({ name, slug, imgSrc }));
-    return { ...talk, speakers: speakersForTalk };
-  });
+  const scheduleItems = await getSchedule();
   return json<LoaderData>(
-    { talks: talksWithSpeakers },
+    { scheduleItems },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
 };
@@ -43,13 +33,7 @@ export default function May25Schedule() {
     <div>
       <div>
         <small>9:00am - 4:30pm</small>{" "}
-        <small>
-          (This schedule is likely to change.{" "}
-          <a href="#conf-newsletter-signup" className="underline">
-            📻 Stay tuned!
-          </a>{" "}
-          More speakers to be announced soon!)
-        </small>
+        <small>(This schedule may change.)</small>
         <table className="w-full mt-6 border-collapse">
           <thead className="sr-only">
             <tr>
@@ -58,42 +42,49 @@ export default function May25Schedule() {
             </tr>
           </thead>
           <tbody>
-            {data.talks.map((talk) => (
-              <tr key={talk.time}>
-                <td className="border-t border-b border-gray-200 p-2">
-                  {talk.time}
-                </td>
-                <td className="border-t border-b border-gray-200 p-2">
-                  <TalkDetails talk={talk} />
+            {data.scheduleItems.map((scheduleItem) => (
+              <tr
+                key={scheduleItem.time}
+                className="border-t border-b border-gray-200"
+                id={`time-${sluggify(scheduleItem.time)}`}
+              >
+                <td className="p-2 whitespace-nowrap">{scheduleItem.time}</td>
+                <td className="p-2 flex flex-col gap-4">
+                  <span
+                    className="md:text-m-p-lg text-d-p-lg font-bold"
+                    dangerouslySetInnerHTML={{
+                      __html: scheduleItem.titleHTML,
+                    }}
+                  />
+                  <div className="flex gap-3 sm:gap-4 md:gap-5 items-start flex-col sm:flex-row">
+                    {scheduleItem.speakers?.length ? (
+                      <span className="flex gap-2 sm:gap-3 md:gap-5 flex-wrap">
+                        {scheduleItem.speakers.map((s) => (
+                          <Link
+                            key={s.slug}
+                            className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32"
+                            to={`/conf/speakers/${s.slug}`}
+                          >
+                            <img
+                              src={s.imgSrc}
+                              className="rounded-md"
+                              alt={s.name}
+                              title={s.name}
+                            />
+                          </Link>
+                        ))}
+                      </span>
+                    ) : null}
+                    <div
+                      className="flex-1"
+                      dangerouslySetInnerHTML={{
+                        __html: scheduleItem.contentHTML,
+                      }}
+                    />
+                  </div>
                 </td>
               </tr>
             ))}
-            <tr>
-              <td className="border-t border-b border-gray-200 p-2">...</td>
-              <td className="border-t border-b border-gray-200 p-2">
-                <div className="flex sm:items-center flex-col gap-2 sm:gap-4 sm:flex-row">
-                  <TalkDetails
-                    talk={{
-                      time: "...",
-                      title: "TBA",
-                      speakers: [
-                        {
-                          imgSrc: "/conf-images/mystery-speaker.jpg",
-                          name: "You?",
-                          slug: "you",
-                        },
-                      ],
-                    }}
-                  />
-                  <span>
-                    <a href="#conf-newsletter-signup" className="underline">
-                      📻 Stay tuned!
-                    </a>{" "}
-                    More speakers to be announced soon!
-                  </span>
-                </div>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -118,30 +109,6 @@ export default function May25Schedule() {
           coming soon.{" "}
         </p>
       </div>
-    </div>
-  );
-}
-
-function TalkDetails({ talk }: { talk: TalkWithSpeaker }) {
-  return (
-    <div className="flex gap-2 sm:gap-3 md:gap-5 items-start flex-col">
-      <span>{talk.title} by</span>
-      <span className="flex gap-2 sm:gap-3 md:gap-5 flex-wrap">
-        {talk.speakers.map((s) => (
-          <Link
-            key={s.slug}
-            className="w-10 h-10 sm:w-16 sm:h-16 md:w-24 md:h-24"
-            to={`/conf/speakers/${s.slug}`}
-          >
-            <img
-              src={s.imgSrc}
-              className="rounded-md"
-              alt={s.name}
-              title={s.name}
-            />
-          </Link>
-        ))}
-      </span>
     </div>
   );
 }

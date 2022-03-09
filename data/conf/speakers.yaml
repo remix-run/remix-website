@@ -1,15 +1,14 @@
 - name: "Tiger Abrodi"
-  type: "regular"
   linkText: "@TAbrodi"
   link: "https://twitter.com/TAbrodi"
   title: "Software Engineer"
   imgSrc: "/conf-images/speakers/tiger.jpg"
   bio: >-
-    Tiger is an engineer who is passionate about crafting things for the web.
-    He cares about Accessibility and Testing, with his motto being "Ship
-    accessible apps with confidence". Tiger also contributes to various
-    open-source libraries, communities and is a core member of
-    [the Open Source Raid Guild](https://github.com/OpenSourceRaidGuild/).
+    Tiger is an engineer who is passionate about crafting things for the web. He
+    cares about Accessibility and Testing, with his motto being "Ship accessible
+    apps with confidence". Tiger also contributes to various open-source
+    libraries, communities and is a core member of [the Open Source Raid
+    Guild](https://github.com/OpenSourceRaidGuild/).
 
 
     In his spare time, Tiger enjoys watching Anime (huge Naruto lover), helping
@@ -20,21 +19,19 @@
     [tigerabrodi.tech](https://www.tigerabrodi.tech/)
 
 - name: "Ryan Dahl"
-  type: "regular"
   linkText: "@ry"
   link: "https://github.com/ry"
   title: "CEO, Deno + Creator of Node.js"
-  imgSrc: "/conf-images/speakers/ryan_dahl.jpg"
+  imgSrc: "/conf-images/speakers/ryan.jpg"
   bio: >-
     In 2009, Ryan Dahl released [Node.js](https://nodejs.org/). Now, Ryan is the
-    CEO of [Deno](https://deno.com/), the company behind
-    [the Deno project](https://deno.land): A modern runtime for JavaScript and
-    TypeScript. [Deno's deploy product](https://deno.com/deploy) is pushing
-    this runtime in the future of modern web architecture via multi-regional
-    deploys with an outrageously fast runtime.
+    CEO of [Deno](https://deno.com/), the company behind [the Deno
+    project](https://deno.land): A modern runtime for JavaScript and TypeScript.
+    [Deno's deploy product](https://deno.com/deploy) is pushing this runtime in
+    the future of modern web architecture via multi-regional deploys with an
+    outrageously fast runtime.
 
 - name: "Shaundai Person"
-  type: "regular"
   linkText: "@shaundai"
   link: "https://twitter.com/shaundai"
   title: "Senior Software Engineer, Netflix"
@@ -44,58 +41,26 @@
     Atlanta, GA, US. She is passionate about making programming interesting and
     approachable for all, and does that through her work as a course instructor
     ([tsforjs.com](https://www.tsforjs.com/)), co-lead for React Robins
-    ([reactrobins.com](https://www.reactrobins.com/)), and
-    [technical blogger](https://blog.shaundai.com/).
-
+    ([reactrobins.com](https://www.reactrobins.com/)), and [technical
+    blogger](https://blog.shaundai.com/).
 
     In her spare time, Shaundai loves to go hiking, jogging, and listen to
     audiobooks. Find her on Twitter at
     [@shaundai](https://twitter.com/shaundai).
 
-- name: "Ryan Florence"
-  type: "regular"
-  linkText: "@ryanflorence"
-  link: "https://twitter.com/ryanflorence"
-  title: "Co-Founder, Remix"
-  imgSrc: "/r.jpg"
-  bio: >-
-    Ryan is awesome
-
 - name: "Michael Jackson"
-  type: "regular"
   linkText: "@mjackson"
   link: "https://twitter.com/mjackson"
   title: "Co-Founder & CEO, Remix"
   imgSrc: "/m.jpg"
   bio: >-
-    Michael Jackson is the CEO and co-founder of [Remix](https://remix.run).
-    He is the co-author of [React Router](https://reactrouter.com/) and a
-    [prolific contributor to open source](https://github.com/mjackson). He is
-    the creator of [unpkg.com](https://unpkg.com) and gets a kick out of
-    discussing distributed system design as much as he enjoys front-end
-    architecture. Michael lives in Carlsbad, CA with his wife, two boys, and two
-    girls.
-
-- name: "Kent C. Dodds"
-  type: "regular"
-  linkText: "@kentcdodds"
-  link: "https://twitter.com/kentcdodds"
-  title: "Co-Founder, Remix"
-  imgSrc: "/k.jpg"
-  slug: kentcdodds
-  bio: >-
-    Kent C. Dodds is a world renowned speaker, teacher, and trainer and he's
-    actively involved in the
-    [open source community](https://github.com/kentcdodds) as a maintainer and
-    contributor of hundreds of popular npm packages. Kent is a Co-Founder and
-    Director of Developer Experience at [Remix](https://remix.run/). He is the
-    creator of [EpicReact.Dev](https://epicreact.dev/) and
-    [TestingJavaScript.com](https://testingjavascript.com/). He's an instructor
-    on [egghead.io](https://egghead.io/instructors/kentcdodds?af=5236ad) and
-    [Frontend Masters](https://frontendmasters.com/). He's also a
-    [Google Developer Expert](https://developers.google.com/experts/people/kent-c-dodds).
-    Kent is happily married and the father of four kids. He likes his family,
-    code, JavaScript, and Remix.
+    Michael Jackson is the CEO and co-creator/co-founder of
+    [Remix](https://remix.run). He is the co-author of [React
+    Router](https://reactrouter.com/) and a [prolific contributor to open
+    source](https://github.com/mjackson). He is the creator of
+    [unpkg.com](https://unpkg.com) and gets a kick out of discussing distributed
+    system design as much as he enjoys front-end architecture. Michael lives in
+    Carlsbad, CA with his wife, two boys, and two girls.
 
 - name: "Ceora Ford"
   type: "emcee"
@@ -109,8 +74,253 @@
     industry more accessible to everyone.  She's been able to work with amazing
     companies like [CodeSandbox](https://codesandbox.com),
     [DigitalOcean](https://digitalocean.com), [egghead.io](https://egghead.io),
-    and [Apollo GraphQL](https://www.apollographql.com) and
-    has recently joined
+    and [Apollo GraphQL](https://www.apollographql.com) and has recently joined
     [the Stack Overflow Podcast](https://stackoverflow.blog/podcast) as a host.
     Outside of tech, she spends way too much time watching anime, listening to
     K-pop, and attempting to play the guitar.
+
+- name: "Sébastien Morel"
+  linkText: "@sebastienmorel"
+  link: "https://www.linkedin.com/in/sebastienmorel"
+  title: "Chief Technology Officer at Crystallize"
+  imgSrc: "/conf-images/speakers/sebastien.jpg"
+  bio: >-
+    Sébastien is a passionate and accomplished tech leader and problem-solver
+    with extensive experience in architecture, performance optimizations,
+    development, and system administration. CTO at Crystallize, a super-fast,
+    super modern, super sexy, and super-powerful Headless eCommerce"", he's in
+    charge (among other) of the Developer eXperience initiative. 
+
+    Previously, he led and grew his former web agency for 18 years working on
+    more than 150 projects successfully and proudly implemented, deployed and
+    maintained. Agnostic of the web technology he's using, Sébastien is also an
+    open source maintainer active in the PHP/Symfony community.
+
+- name: "Arisa Fukuzaki"
+  linkText: "@arisa_dev"
+  link: "https://twitter.com/arisa_dev"
+  title: "DevRel Engineer at Storyblok"
+  imgSrc: "/conf-images/speakers/arisa.jpg"
+  bio: >-
+    Arisa is a DevRel Engineer at Storyblok & an organizer of a free tech skill
+    & knowledge-sharing community, Lilac. Her mission is to learn, speak,
+    connect and help. In her private time, she is a podcaster, an Aikido
+    fighter, and a GirlCode ambassador.
+
+- name: "Greg Brimble"
+  linkText: "@GregBrimble"
+  link: "https://twitter.com/GregBrimble"
+  title: "Systems Engineer at Cloudflare"
+  imgSrc: "/conf-images/speakers/greg.jpg"
+  bio: >-
+    Greg is a Systems Engineer at [Cloudflare](https://www.cloudflare.com/)
+    working on [Cloudflare Pages](https://pages.cloudflare.com/) in the Emerging
+    Technologies and Incubation department. Cloudflare Pages is a full-stack
+    developer platform and [they were very excited to add support for Remix at
+    the end of last
+    year](https://blog.cloudflare.com/remix-on-cloudflare-pages/).
+
+    Before Pages, Greg worked with Cloudflare's Speed Team where he learned to
+    appreciate the Network tab of DevTools. Greg has also contributed to the Web
+    Almanac and numerous open-source projects, and, most importantly, he has his
+    fingers crossed for enough snow to go [skiing after Remix
+    Conf](https://remix.run/conf/schedule/may-26)! ⛷
+
+- name: "Nick Small"
+  linkText: "nickjs.com"
+  link: "https://nickjs.com"
+  title: "JavaScript Developer"
+  imgSrc: "/conf-images/speakers/nick.jpg"
+  bio: >-
+    Nick is a long-time dev of many disciplines: JavaScript, full-stack, native,
+    operating systems, game dev. He's motivated by improving people's lives by
+    finding really bad software in consequential places and making it better.
+    Nick's been an early employee at mission-driven companies like Shopify and
+    Devoted Health; empowered citizens and civil servants at US Digital Service,
+    Defense Digital Service, and the NATO mission in Afghanistan; and
+    volunteered on projects to strengthen democracy and build municipal Open
+    Data pipelines.
+
+    These days Nick lives in the mountains with his wife and kids, and he's
+    focused on tooling to let more people write more accessible software with
+    fewer bugs. Go Remix. Active hobbies include: constructing crosswords
+    (poorly), flying planes (successfully) (so far), building better houses
+    (fingers crossed).
+
+- name: "Scott Smerchek"
+  linkText: "@smerchek"
+  link: "https://twitter.com/smerchek"
+  title: "Software Engineer at UDisc"
+  imgSrc: "/conf-images/speakers/scott.jpg"
+  bio: >-
+    Scott's a software engineer with over a decade of experience building web
+    applications for healthcare enterprises from frontend, to APIs, and even
+    infrastructure. Now Scot works at UDisc, a quickly growing disc golf company
+    that is pushing the sport forward through technology. Scott's always favored
+    working in the backend, but Remix is helping him to enjoy working across the
+    full stack, once again. He's incredibly excited about the future of building
+    web applications with Remix and the ease of deploying to the modern edge
+    hosting providers.
+
+- name: "Erick Tamayo"
+  linkText: "@ericktamayo"
+  link: "https://twitter.com/ericktamayo"
+  title: "Senior Web Developer at Shopify"
+  imgSrc: "/conf-images/speakers/erick.jpg"
+  bio: >-
+    Erick Tamayo was born in the Dominican Republic. He currently lives in
+    Calgary Canada with his family. Erick's currently developing Metronome which
+    is a tool for Real User Monitoring (RUM) specifically for Remix. He's been
+    following Remix since 2020 and decided to join the community in 2021. Since
+    then he's loved everything about Remix and its community!
+
+- name: "Ben Wishovich"
+  linkText: "@iambenwis"
+  link: "https://twitter.com/iambenwis"
+  title: "Full Stack Web Dev at Zero Motorcycles"
+  imgSrc: "/conf-images/speakers/ben.jpg"
+  bio: >-
+    Ben is a Full Stack Web Developer and Software Quality Engineer at Zero
+    Motorcycles for the last few years. He's become passionate about Rust and
+    Webassembly, and how to use them to provide new experiences on the web. He's
+    been a Remix supporter almost since the beginning, drawn in by its deft use
+    of web fundamentals and modern UX practices. Ben is excited to merge his two
+    passions and meet fellow web developers!
+
+- name: "Vic Vijayakumar"
+  linkText: "@VicVijayakumar"
+  link: "https://twitter.com/VicVijayakumar"
+  title: "Staff engineer at Eventbrite"
+  imgSrc: "/conf-images/speakers/vic.jpg"
+  bio: >-
+    Vic is a Staff Engineer @ Eventbrite and indie software maker from Raleigh,
+    North Carolina. He's a dad, runner, violinist, and is severely addicted to
+    acquiring new hobbies. He has run the tech side of North Carolina's
+    extremely popular Rare & Vintage Beer Festival for the last 10 years.
+
+    Vic was previously in the scientific communications space and a technical
+    cofounder of the Research Square platform, an inaugural recipient of the
+    Fast Company "Brands that Matter" list for accelerating research
+    communication during the pandemic.
+
+    In his spare time, you can find Vic building LEGO with his family or out at
+    the plant nursery adopting yet another plant.
+
+- name: "Daniel Weinmann"
+  linkText: "@danielweinmann"
+  link: "https://twitter.com/danielweinmann"
+  title: "Founder and CEO at Seasoned"
+  imgSrc: "/conf-images/speakers/daniel.jpg"
+  bio: >-
+    In order to bring his startups to life, Danile had to go through a 9-year
+    journey to become the technical founder and CTO he needed in his teams.
+    However, his real passion has always been the non-technical way, and having
+    to spend his days coding took a toll on him.
+
+    When Daniel was finally able to come back to the business side, he had a
+    secret weapon: in his struggles to leave the technical life behind, he
+    gained a deep understanding of what it takes for a non-technical founder to
+    create successful startups.
+
+    Beyond his own journey, he's helped tons of founders build world-class
+    products over the last 20+ years. Along the way, he was CEO, CMO, and CTO of
+    many startups. Daniel has also founded a few successful ones myself,
+    including Mailee, which was sold to a Brazilian internet provider, and
+    Catarse, the biggest crowdfunding platform in Latin America.
+
+- name: "Sarah Dayan"
+  linkText: "@frontstuff_io"
+  link: "https://twitter.com/frontstuff_io"
+  title: "Software Engineer at Algolia"
+  imgSrc: "/conf-images/speakers/sarah.jpg"
+  bio: >-
+    Sarah is a Staff Software Engineer from Paris, France who works on front-end
+    search experiences at Algolia.
+
+    She created the [Dinero.js](https://github.com/dinerojs/dinero.js) monetary
+    library and hosts the [Developer
+    Experience](https://developerexperience.buzzsprout.com/) podcast show. She's
+    passionate about building dynamic front-end experiences, and won't shut up
+    about TDD and utility-first CSS. She shares what she learns on [her
+    blog](https://frontstuff.io/) and at tech conferences around the world.
+
+- name: "Erik Rasmussen"
+  linkText: "@erikras"
+  link: "https://twitter.com/erikras"
+  title: "Software Engineer at Centered"
+  imgSrc: "/conf-images/speakers/erik.jpg"
+  bio: >-
+    Erik is an expat American living in Spain. He's the author of Redux Form and
+    Final Form, and am currently in love with TypeScript, XState, and Remix. His
+    day job is using those technologies to build Centered.app, a tool to combat
+    the Twitters' and Facebooks' attempts to steal your attention, and give it
+    back to you to be more productive in your work.
+
+- name: "Dennis Beatty"
+  linkText: "@dnsbty"
+  link: "https://twitter.com/dnsbty"
+  title: "Senior Software Engineer at Neighbor"
+  imgSrc: "/conf-images/speakers/dennis.jpg"
+  bio: >-
+    Dennis works as a senior software engineer at Neighbor, a marketplace for
+    self-storage, where he led the switch to Remix. While Dennis works across
+    the entire tech stack, he's especially comfortable with systems architecture
+    and seeing how pieces fit together. He's contributed to [open
+    source](https://github.com/dnsbty) software in various ways (mostly within
+    the Elixir ecosystem) and has enjoyed sharing some of his learning on [his
+    blog](https://dennisbeatty.com) and [his Youtube
+    channel](https://www.youtube.com/channel/UC9l_1J8y_au9Nlgrfz0rduw). Outside
+    of programming Dannis loves spending time with his wife and his daughter who
+    was born this past year, and he also skis, explores Utah's national forests,
+    and shoots photos of the stars.
+
+- name: "Brian LeRoux"
+  linkText: "@brianleroux"
+  link: "https://twitter.com/brianleroux"
+  title: "Co-founder of Begin.com"
+  imgSrc: "/conf-images/speakers/brian.jpg"
+  bio: >-
+    Brian is a cofounder of [Begin.com](https://begin.com) and maintainer of
+    [Architect](https://arc.codes). He's also sports a `&nbsp;` tattoo which has
+    a good backstory.
+
+- name: "Jon Jensen"
+  linkText: "@jenseng"
+  link: "https://twitter.com/jenseng"
+  title: "Senior Software Engineer at Netflix"
+  imgSrc: "/conf-images/speakers/jon.jpg"
+  bio: >-
+    Jon is a Senior Software Engineer (Netflix) working to improve the developer
+    experience for other UI engineers. Previously he worked at Amazon and
+    Instructure working on various things software-y. In his spare time, he's
+    usually in the mountains, playing Minecraft with his kids, or following the
+    Red Food Truck around SLC.
+
+- name: "Henri Helvetica"
+  linkText: "@HenriHelvetica"
+  link: "https://twitter.com/HenriHelvetica"
+  title: "Software Engineer at Catchpoint Systems"
+  imgSrc: "/conf-images/speakers/henri.jpg"
+  bio: >-
+    Henri is a developer who has turned his interests to a passionate mix of
+    site performance engineering and pinches of user experience, which led to
+    his joining Catchpoint Systems on the WebPageTest Team. When not reading the
+    deluge of daily research docs and case studies, or profiling sites in his
+    favourite tools, Henri can be found contributing back to the community:
+    Toronto Web Performance Group meetup + Jamstack Toronto organizer, curating
+    conference content or volunteering his time for lunch and learns at various
+    bootcamps. Otherwise, Henri is focusing on running the fastest 5k possible
+    (surprise surprise), encouraging a healthy lifestyle via `#devsWhoRun`.
+
+- name: "Emily Kauffman"
+  linkText: "@intrepid_em"
+  link: "https://twitter.com/intrepid_em"
+  title: "Lead Software Engineer at Harvie"
+  imgSrc: "/conf-images/speakers/emily.png"
+  bio: >-
+    Emily is a Lead Software Engineer based out of Pittsburgh, PA. She's a
+    lifelong learner, adjunct professor, and IoT enthusiast. Emily has a tech
+    background in healthcare, robotics, and more recently, bringing local food
+    to the masses at [Harvie](https://www.harvie.farm). In her spare time, you
+    can find Emily tinkering with her homemade conversion van, scuba diving, or
+    trying her hand at landscape photography.

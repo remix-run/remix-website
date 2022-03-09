@@ -138,7 +138,7 @@ function Hero() {
 function Speakers() {
   const { speakers } = useLoaderData<LoaderData>();
   const mc = speakers.find((s) => s.type === "emcee");
-  const regularSpeakers = speakers.filter((s) => s.type === "regular");
+  const talkSpeakers = speakers.filter((s) => s.type !== "emcee");
   return (
     <section className="py-20 __section-speakers" id="speakers">
       <div className="relative container">
@@ -146,25 +146,23 @@ function Speakers() {
           Speakers
         </h2>
         <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
-          <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-x-8 sm:gap-y-14 md:gap-x-8 2xl:gap-x-10 sm:justify-center items-center">
-            {regularSpeakers.map((speaker) => (
-              <SpeakerDisplay speaker={speaker} key={speaker.name} />
+          <div className="flex flex-col flex-wrap sm:flex-row gap-y-12 sm:gap-x-8 sm:gap-y-14 md:gap-x-8 2xl:gap-x-10 justify-center items-start">
+            {talkSpeakers.map((speaker) => (
+              <SpeakerDisplay
+                speaker={speaker}
+                key={speaker.name}
+                className="basis-72"
+              />
             ))}
           </div>
-        </div>
-        <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto mt-20 text-center">
-          <a href="#conf-newsletter-signup" className="underline">
-            📻 Stay tuned!
-          </a>{" "}
-          More speakers to be announced soon!
         </div>
         {mc ? (
           <div id="mc">
             <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
               Master of Ceremonies
             </h2>
-            <div className="w-[300px] flex items-center m-auto">
-              <SpeakerDisplay speaker={mc} />
+            <div className="flex justify-center m-auto">
+              <SpeakerDisplay speaker={mc} className="basis-72" />
             </div>
           </div>
         ) : null}
@@ -173,11 +171,17 @@ function Speakers() {
   );
 }
 
-function SpeakerDisplay({ speaker }: { speaker: Omit<Speaker, "bio"> }) {
+function SpeakerDisplay({
+  speaker,
+  className = "",
+}: {
+  speaker: Omit<Speaker, "bio">;
+  className?: string;
+}) {
   return (
     <Link
       to={`speakers/${speaker.slug}`}
-      className="__speaker-link h-full w-full flex items-center justify-center"
+      className={`__speaker-link h-full w-full flex items-center justify-center ${className}`}
       aria-label={`${speaker.name}, ${speaker.title}`}
       prefetch="intent"
     >
@@ -187,7 +191,7 @@ function SpeakerDisplay({ speaker }: { speaker: Omit<Speaker, "bio"> }) {
         </div>
         <div className="mt-4">
           <h3>{speaker.name}</h3>
-          <p>{speaker.title}</p>
+          <p className="text-m-p-sm">{speaker.title}</p>
           <p className="text-m-p-sm font-semibold uppercase mt-2">
             {speaker.linkText}
           </p>
