@@ -128,13 +128,14 @@ export default function App() {
   let forceDark = matches.some((match) => match.handle?.forceDark);
   let { noIndex, env } = useLoaderData();
 
-  React.useEffect(() => {
-    window.__env = env;
-  }, []);
-
   return (
     <Document noIndex={noIndex} forceDark={forceDark}>
       <Outlet />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `window.__env = ${JSON.stringify(env)};`,
+        }}
+      />
     </Document>
   );
 }
