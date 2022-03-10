@@ -47,6 +47,18 @@ export function links() {
       href: "/font/founders-grotesk-bold.woff2",
       crossOrigin: "anonymous",
     },
+    {
+      rel: "preload",
+      as: "font",
+      href: "https://fonts.gstatic.com/s/inter/v8/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7W0Q5nw.woff2",
+      crossOrigin: "anonymous",
+    },
+    {
+      rel: "preload",
+      as: "font",
+      href: "https://fonts.gstatic.com/s/sourcecodepro/v20/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevWnsUnxg.woff2",
+      crossOrigin: "anonymous",
+    },
     { rel: "stylesheet", href: tailwind },
     { rel: "stylesheet", href: bailwind },
   ];
@@ -100,8 +112,8 @@ const Document: React.FC<DocumentProps> = ({
           rel="stylesheet"
         />
 
-        <Meta />
         <Links />
+        <Meta />
       </head>
 
       <Body forceDark={forceDark} darkBg={darkBg}>
