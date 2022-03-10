@@ -76,7 +76,7 @@ Next.js is built by Vercel. Looking at the GitHub repo for the Vercel platform i
 
 We describe Remix as:
 
-> Remix is an edge native, full stack JavaScript framework for building modern, fast, and resilient user experiences. It unifies the client and server with web fundamentals so you can think less about code and more about your product.
+> Remix is an edge native, full stack JavaScript framework for building modern, fast, and resilient user experiences. It unifies the client and server with web standards so you can think less about code and more about your product.
 
 We'll leave it to you to contrast those descriptions.
 

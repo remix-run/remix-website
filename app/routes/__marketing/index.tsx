@@ -15,7 +15,7 @@ export function meta() {
   let title = "Remix - Build Better Websites";
   let image = "https://remix.run/img/og.1.jpg";
   let description =
-    "Remix is a full stack web framework that lets you focus on the user interface and work back through web fundamentals to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
+    "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
   return {
     title,
     description,
@@ -91,16 +91,15 @@ function Hero() {
         <div className="lg:w-1/2 lg:mb-10">
           <div className="lg:max-w-2xl lg:mx-auto">
             <h2 className="font-display text-m-h1 sm:text-d-h2 text-white lg:text-[length:64px] lg:leading-[56px] xl:text-d-j">
-              Focused on web{" "}
-              <span className="text-aqua-brand">fundamentals</span> and{" "}
-              <span className="text-green-brand">modern</span> UX, you’re simply
-              going to{" "}
+              Focused on <span className="text-aqua-brand">web standards</span>{" "}
+              and <span className="text-green-brand">modern web app</span> UX,
+              you’re simply going to{" "}
               <span className="text-yellow-brand">build better websites</span>
             </h2>
             <div className="h-6" />
             <p className="text-m-p-lg xl:pr-56 lg:text-d-p-lg">
               Remix is a full stack web framework that lets you focus on the
-              user interface and work back through web fundamentals to deliver a
+              user interface and work back through web standards to deliver a
               fast, slick, and resilient user experience. People are gonna love
               using your stuff.
             </p>

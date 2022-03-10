@@ -23,11 +23,11 @@ But we are just getting started.
 
 For the past 18 months we've been working on [Remix](https://remix.run). Last October, we launched a "supporter preview" and we have been overwhelmed by the support we received. Ryan and I could both earn normal developer salaries from Remix subscriptions, but we want to take it a lot further. We want to make Remix available to everyone. With the funding announcement today, we are closing our supporter preview and announcing that **Remix will soon be released under the MIT license**. We believe that releasing Remix as open source will drive innovation in the project and allow other frameworks to benefit as well from the progress we make. We are anxious to learn from, and give back to others.
 
-## Web Fundamentals, Modern UX
+## Web Standards, Modern UX
 
 So how exactly is Remix different from other frameworks? Instead of focusing on static sites, Remix starts with first principles like HTTP status codes and methods, HTTP caching, HTML prefetching of data, CSS, and other resources, the web `fetch` API, server rendering of pages with appropriate `<meta>` information for SEO, and much more. Our cache is the HTTP cache. Our "not found" pages are served with a 404. Our data mutations story is built around HTML `<form>`s. Progressive enhancement is a viable strategy. Many Remix sites don't even need JavaScript to work by simply letting the browser handle the UX.
 
-To put it simply: Remix is built on a solid foundation of web fundamentals.
+To put it simply: Remix is built on a solid foundation of web standards.
 
 But we think you should be able to add modern UX flair to your web apps and speed up the UX with JavaScript, so we've got you covered there too! Remix fully embraces the best parts about the modern web stack including client-side routing and rendering, optimistic UIs, seamless transitions between pages with resource prefetching and dynamic loading of code and data. Remix pairs these techniques with the concept of nested routing in React Router to build sites that maximize network efficiency and load instantly. Some of the most impressive web sites around today are built with React Router, and Remix is going to allow even more people to build similarly solid, incredible user experiences.
 
