@@ -1,23 +1,3 @@
-- name: "Tiger Abrodi"
-  linkText: "@TAbrodi"
-  link: "https://twitter.com/TAbrodi"
-  title: "Software Engineer"
-  imgSrc: "/conf-images/speakers/tiger.jpg"
-  bio: >-
-    Tiger is an engineer who is passionate about crafting things for the web. He
-    cares about Accessibility and Testing, with his motto being "Ship accessible
-    apps with confidence". Tiger also contributes to various open-source
-    libraries, communities and is a core member of [the Open Source Raid
-    Guild](https://github.com/OpenSourceRaidGuild/).
-
-
-    In his spare time, Tiger enjoys watching Anime (huge Naruto lover), helping
-    developers out in various communities, running, doing calisthenics, and
-    playing VR games. Tiger is big into discipline and developed
-    [Shisui](https://github.com/tigerabrodi/shisui/) using Remix in order better
-    be able to assess himself on a daily, weekly and monthly basis.
-    [tigerabrodi.tech](https://www.tigerabrodi.tech/)
-
 - name: "Ryan Dahl"
   linkText: "@ry"
   link: "https://github.com/ry"
@@ -324,3 +304,19 @@
     to the masses at [Harvie](https://www.harvie.farm). In her spare time, you
     can find Emily tinkering with her homemade conversion van, scuba diving, or
     trying her hand at landscape photography.
+
+- name: "Aaron K Saunders"
+  linkText: "@aaronksaunders"
+  link: "https://twitter.com/aaronksaunders"
+  title: "Founder & CEO of Clearly Innovative"
+  imgSrc: "/conf-images/speakers/aaron.jpg"
+  bio: >-
+    Aaron is an Information Technology Strategist, Thought Leader, and Diversity
+    and Inclusion Trailblazer - Founder & CEO of Clearly Innovative. He believes
+    technology and in his case coding is an enabler and an equalizer. Aaron has
+    focused a large part of his career training and developing individuals who
+    want to get into tech but cannot find the opening; through the
+    apprenticeship program he ran at Clearly Innovative, teaching web and mobile
+    development at Howard University, and the free technical videos on his
+    Youtube Channel he just want to help others get a seat at the table of tech
+    and innovation.

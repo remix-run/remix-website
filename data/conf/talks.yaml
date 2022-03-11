@@ -1,13 +1,13 @@
 - title: Keynote
   time: 9:10 AM
-  type: "regular"
+  type: regular
   description: The Remix Co-Founders will kick the conference off.
   speakers:
     - Michael Jackson
 
 - title: "Dynamic Apps with the Reliability of Static Deployment"
   time: 9:35 AM
-  type: "regular"
+  type: regular
   description: >-
     Remix is powerful and unique approach to building React applications that
     prioritizes the end user experience by enabling progressive enhancement by
@@ -28,28 +28,34 @@
 
 - title: TBA by Shaundai
   time: 10:00 AM
-  type: "regular"
+  type: regular
   description: More details will be announced later
   speakers:
     - Shaundai Person
 
-- title: TBA by Tiger
+- title: "State Machines On The Edge"
   time: 10:25 AM
-  type: "regular"
-  description: More details will be announced later
+  type: regular
+  description: >-
+    Modeling business logic with state machines has numerous benefits, from
+    eliminating bugs caused by impossible states to visualizing the logic to
+    communicate with non-technical shareholders to simply communicating user
+    flow between technical colleagues. In this talk, I'm going to demonstrate,
+    via live coding, how to combine the strengths of Remix and XState to create
+    a checkout flow entirely on the backend. No. JavaScript. Required.
   speakers:
-    - Tiger Abrodi
+    - Erik Rasmussen
 
 - title: TBA by Ryan
   time: 11:40 AM
-  type: "regular"
+  type: regular
   description: More details will be announced later
   speakers:
     - Ryan Dahl
 
 - title: Remix 3D Blast
   time: 12:05 PM
-  type: "lightning"
+  type: lightning
   description: >-
     Whether you want to progressively enhance a traditional website or build an
     immersive 3D experience, Remix gives us a powerful and fun framework to
@@ -72,7 +78,7 @@
 
 - title: "Web Vitals: The importance of measuring a user great web experience"
   time: 12:10 PM
-  type: "lightning"
+  type: lightning
   description: >-
     Nowadays, building a working web application is much more than deploying it
     to production. The impact on the way your app is delivered to your end-users
@@ -87,7 +93,7 @@
 
 - title: "Making slow responses seem fast with stale-while-revalidate"
   time: 12:15 PM
-  type: "lightning"
+  type: lightning
   description: >-
     The Cache-Control header has been around since HTTP/1.1 in 1997, yet for
     many of us, it's not something we think about every day. The
@@ -100,7 +106,7 @@
 
 - title: "Building tech for social good with low-code tools"
   time: 2:25 PM
-  type: "lightning"
+  type: lightning
   description: >-
     In this talk we are going to be talking about how to build hybrid apps that
     use a combination of frameworks like Remix and mixing them with no-code
@@ -114,7 +120,7 @@
 
 - title: "Expanding Remix with Rust"
   time: 2:30 PM
-  type: "lightning"
+  type: lightning
   description: >-
     Remix's unique use of Loader and Action functions offers the unique
     opportunity to expand your data processing with Rust. Rust offers near
@@ -127,7 +133,7 @@
 
 - title: "Full Stack Fast: Data on the Edge"
   time: 2:35 PM
-  type: "lightning"
+  type: lightning
   description: >-
     Why force your users to settle for either loading skeletons or slow page
     renders? Remix can bring your application rendering to the edge, but what
@@ -149,7 +155,7 @@
 
 - title: Remix your UI & UX to another level
   time: 2:45 PM
-  type: "regular"
+  type: regular
   description: >-
     Build performant web apps with a full-stack framework, Remix. Remix focuses
     on the UI to enjoy fast & resilient UX. Experience the "Remix magic" that
@@ -164,7 +170,7 @@
 
 - title: "Magically create forms + actions with Remix Forms"
   time: 3:10 PM
-  type: "regular"
+  type: regular
   description: >-
     One of the beautiful things about Remix is how easy it is to enhance it to
     make our lives easier. In this talk, I'll show you how I built [Remix
@@ -189,7 +195,7 @@
 
 - title: "Incremental Remix"
   time: 3:35 PM
-  type: "regular"
+  type: regular
   description: >-
     Remix is fantastic for building brand-new apps. But the truth is most of us
     are slogging away on crusty old ones. How can we incorporate Remix into our
@@ -202,7 +208,7 @@
 
 - title: "Outstanding Search Experiences with Remix and Algolia"
   time: 4:25 PM
-  type: "regular"
+  type: regular
   description: >-
     Outstanding search starts with two principles: immediate feedback and
     relevant results.
@@ -224,7 +230,7 @@
 
 - title: "Switching to Remix at Neighbor"
   time: 4:50 PM
-  type: "regular"
+  type: regular
   description: >-
     Neighbor is a marketplace that allows you to make extra cash by storing your
     neighbors' things in your extra space. After several years of using a
@@ -240,7 +246,7 @@
     - Dennis Beatty
 
 - title: Remix & high performance eCommerce
-  type: "backup"
+  type: backup
   description: >-
     Performances are key. That statement is true for any web application but
     even more for eCommerce applications that convert performances into revenue.
@@ -256,20 +262,8 @@
   speakers:
     - Sébastien Morel
 
-- title: "State Machines On The Edge"
-  type: "backup"
-  description: >-
-    Modeling business logic with state machines has numerous benefits, from
-    eliminating bugs caused by impossible states to visualizing the logic to
-    communicate with non-technical shareholders to simply communicating user
-    flow between technical colleagues. In this talk, I'm going to demonstrate,
-    via live coding, how to combine the strengths of Remix and XState to create
-    a checkout flow entirely on the backend. No. JavaScript. Required.
-  speakers:
-    - Erik Rasmussen
-
 - title: "How To WebPageTest"
-  type: "backup"
+  type: backup
   description: >-
     You cannot improve what you do not measure, and measuring page performance
     is at the heart of providing marvellous user experiences. "How To
@@ -281,7 +275,7 @@
     - Henri Helvetica
 
 - title: "Remixing a Symfony"
-  type: "backup"
+  type: backup
   description: >-
     In late 2020, I ran a Lighthouse test on a simple content page on Harvie,
     our farm management platform and Symfony app, and received a performance
@@ -299,3 +293,17 @@
     Remix has become a natural progression of that.
   speakers:
     - Emily Kauffman
+
+- title: "Intro To Remix - Working with Nested Routes and Parameterized Routes"
+  type: backup
+  description: >-
+    We will walk through a simple demonstration of a remix application using
+    nested routes and parameterized routes. The use of nested routes helps me
+    with component design and separation when architecting  an application.
+    Parameterized routes / Dynamic Routes contain state information that can
+    through the parameters that are defined on the route. This provides powerful
+    flexibility when designing your app and app's components. Putting the two
+    together in an simple solution to be a reference when you build something
+    amazing.
+  speakers:
+    - Aaron K Saunders
