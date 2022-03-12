@@ -14,19 +14,17 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: speakersStylesUrl }];
 };
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = ({ data }: { data: null | LoaderData }) => {
   if (data) {
     const { speaker, talks } = data;
-    if (isSpeaker(speaker) && isTalkArray(talks)) {
-      return {
-        title: `${speaker.name} at Remix Conf`,
-        description: `${speaker.name} (${
-          speaker.title
-        }) is speaking at Remix Conf: ${talks
-          .map((t) => `"${t.title}"`)
-          .join(", ")}`,
-      };
-    }
+    return {
+      title: `${speaker.name} at Remix Conf`,
+      description: `${speaker.name} (${
+        speaker.title
+      }) is speaking at Remix Conf: ${talks
+        .map((t) => `"${t.title}"`)
+        .join(", ")}`,
+    };
   }
   return {
     title: "Missing Speaker",
