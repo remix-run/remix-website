@@ -52,6 +52,14 @@ export default function May24Schedule() {
           </tr>
         </tbody>
       </table>
+      <div className="mt-10">
+        <small>
+          During the welcome reception, we will be recording the talks of all
+          backup speakers. We're still deciding whether you'll be invited to
+          attend those talks, but you'll definitely be able to watch them after
+          the conference!
+        </small>
+      </div>
     </div>
   );
 }

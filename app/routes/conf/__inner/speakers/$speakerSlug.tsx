@@ -7,34 +7,32 @@ import type {
 import { Link, useCatch, useParams, json, useLoaderData } from "remix";
 import { getSpeakers, getTalks } from "~/utils/conf.server";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
-import { isSpeaker, Speaker, Talk, isTalkArray } from "~/utils/conf";
+import { isSpeaker, Speaker, Talk, isTalkArray, sluggify } from "~/utils/conf";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: speakersStylesUrl }];
 };
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = ({ data }: { data: null | LoaderData }) => {
   if (data) {
     const { speaker, talks } = data;
-    if (isSpeaker(speaker) && isTalkArray(talks)) {
-      return {
-        title: `${speaker.name} at Remix Conf`,
-        description: `${speaker.name} (${
-          speaker.title
-        }) is speaking at Remix Conf: ${talks
-          .map((t) => `"${t.title}"`)
-          .join(", ")}`,
-      };
-    }
+    return {
+      title: `${speaker.name} at Remix Conf`,
+      description: `${speaker.name} (${
+        speaker.title
+      }) is speaking at Remix Conf: ${talks
+        .map((t) => `"${t.title}"`)
+        .join(", ")}`,
+    };
   }
   return {
     title: "Missing Speaker",
-    description: "Wanna speak at Remix Conf?",
+    description: "There is no speaker info at this URL.",
   };
 };
 
-type LoaderData = { speaker: Speaker; talks: Array<Talk> };
+type LoaderData = { speaker: Speaker; talks: Array<Omit<Talk, "description">> };
 
 export const loader: LoaderFunction = async ({ params }) => {
   const [allTalks, allSpeakers] = await Promise.all([
@@ -43,7 +41,10 @@ export const loader: LoaderFunction = async ({ params }) => {
   ]);
   const speaker = allSpeakers.find((s) => s.slug === params.speakerSlug);
   if (!speaker) throw new Response("Speaker not found", { status: 404 });
-  const talks = allTalks.filter((t) => t.speakers.includes(speaker.name));
+  const talks = allTalks
+    .filter((t) => t.speakers.includes(speaker.name))
+    // get rid of the description, we only use the HTML
+    .map(({ description, ...rest }) => rest);
   return json<LoaderData>(
     { speaker, talks },
     { headers: { "Cache-Control": CACHE_CONTROL } }
@@ -82,7 +83,7 @@ export default function Speaker() {
           </div>
           <div
             className="mt-4 md:mt-8 speaker-prose"
-            dangerouslySetInnerHTML={{ __html: speaker.bio }}
+            dangerouslySetInnerHTML={{ __html: speaker.bioHTML }}
           />
         </div>
       </div>
@@ -94,13 +95,29 @@ export default function Speaker() {
                 <h2 className="text-m-h3 font-display md:text-d-h3 inline">
                   {talk.title}
                 </h2>
-                <Link className="underline pl-2" to="../schedule/may-25">
-                  <time>{talk.time}</time>
-                </Link>
+                {talk.type === "backup" ? (
+                  <Link className="underline pl-2" to="../schedule/may-24">
+                    <span className="pl-2">backup talk</span>
+                  </Link>
+                ) : (
+                  <Link
+                    className="underline pl-2"
+                    to={`../schedule/may-25${
+                      talk.time ? `#time-${sluggify(talk.time)}` : ""
+                    }`}
+                  >
+                    <time>{talk.time}</time>{" "}
+                    {talk.type === "lightning" ? (
+                      <span title="Lightning talk">⚡</span>
+                    ) : (
+                      ""
+                    )}
+                  </Link>
+                )}
               </div>
               <div
                 className="speaker-prose"
-                dangerouslySetInnerHTML={{ __html: talk.description }}
+                dangerouslySetInnerHTML={{ __html: talk.descriptionHTML }}
               />
             </div>
           ))}
