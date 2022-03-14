@@ -17,6 +17,7 @@
     dynamic content immediately and on-demand. Even better, Remix lets you
     deploy your front-end to a plethora of backend cloud vendors.
 
+
     One big benefit of static approaches is 'immutable deployment' which means
     the code being deployed is deterministic and unchanging. In recent years,
     cloud providers have been enabling richer backend functionality with a
@@ -65,12 +66,14 @@
     off some zany 3D antics to explain how Remix and react-three-fiber can work
     together to help you build fantastic experiences for your users.
 
+
     We'll focus on: getting react-three-fiber set up in a Remix app; using
     nested routes and layouts to render a scene; moving scene state to the
     server with loaders and actions; streaming dynamic 3D resources to the
     client using resource routes; and finally, transitions and optimistic UI...
     in 3D! 💿 Rachel the Remix Disc will offer some nifty optimization tips
     along the way.
+
 
     It'll be a GL-and-web-fundamentals-fuelled blast!
   speakers:
@@ -83,6 +86,7 @@
     Nowadays, building a working web application is much more than deploying it
     to production. The impact on the way your app is delivered to your end-users
     is also important.
+
 
     Making your app experience better translates into more engagement,
     conversions, and revenue. That's why it is also vital (pun intended) to know
@@ -113,6 +117,7 @@
     backends like Zapier and Airtable, so that they can be managed and modified
     by non-technical people.
 
+
     I will specifically go over how I replaced the admissions process at my
     children's preschool with a website and made them paperfree.
   speakers:
@@ -141,6 +146,7 @@
     database cluster in Virginia? For the best performance and experience for
     your users, store your data on the edge, alongside the rest of your
     application.
+
 
     We'll discuss how the original colocated server and database configuration
     worked, how it evolved with Jamstack, improved with next-gen data services,

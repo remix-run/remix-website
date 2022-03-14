@@ -4,3 +4,8 @@
 .speaker-prose p {
   padding-bottom: 0.6rem;
 }
+.speaker-prose ul {
+  list-style: disc;
+  list-style-position: inside;
+  padding-left: 1rem;
+}
