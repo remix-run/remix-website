@@ -32,6 +32,8 @@ With this release, we're excited to give you three stacks, with more on the way:
 - [The Indie Stack](https://github.com/remix-run/indie-stack): Deployed to a long-running Node.js server with a persistent SQLite database. Intended to get you going quickly with little complexity for prototypes and proof of concepts that can be later updated to the Blues stack without much trouble.
 - [The Grunge Stack](https://github.com/remix-run/grunge-stack): Deployed to a serverless function running Node.js with DynamoDB for persistance. Intended for folks who want to deploy a production-grade application on AWS infrastructure serving millions of users.
 
+![Desktop showing three websites](/blog-images/posts/stacks.jpg)
+
 Yes, they're named after music genres 🎶🎸🎷🥁
 
 For all of these stacks, all you do is run the normal `npx create-remix@latest` and choose them from the CLI. This will generate your project for you and then just pop open the `README.md` to get things running! In all cases, you get a full app that's ready to develop locally and deploy to production with automated GitHub actions. It even supports a staging environment for your `dev` branch!
@@ -47,3 +49,7 @@ We fully expect the custom stacks to get a LOT of use. We think most people will
 ## Try Stacks!
 
 At Remix, we're fiercely committed to improving the user experience (UX) of your web application. Because developer experience (DX) and your productivity are an important input into that UX, we're working hard to make that excellent. And we're definitely not finished.
+
+```
+npx create-remix@latest
+```
