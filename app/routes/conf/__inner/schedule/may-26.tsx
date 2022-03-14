@@ -177,7 +177,7 @@ const activities: Array<Activity> = [
     link: "https://www.ogdenmarathon.com/",
     address: "Dee Events Center, 4400 Harrison Blvd., Ogden, UT 84403",
     description:
-      "The Satruday before the conference is the Ogden Marathon. So bring your running shoes and train up!",
+      "The Saturday before the conference is the Ogden Marathon. So bring your running shoes and train up!",
     discordLink:
       "https://discord.com/channels/770287896669978684/940664027271528518",
     walkingDistance: false,

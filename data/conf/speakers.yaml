@@ -135,12 +135,12 @@
   bio: >-
     Scott's a software engineer with over a decade of experience building web
     applications for healthcare enterprises from frontend, to APIs, and even
-    infrastructure. Now Scot works at UDisc, a quickly growing disc golf company
-    that is pushing the sport forward through technology. Scott's always favored
-    working in the backend, but Remix is helping him to enjoy working across the
-    full stack, once again. He's incredibly excited about the future of building
-    web applications with Remix and the ease of deploying to the modern edge
-    hosting providers.
+    infrastructure. Now Scott works at UDisc, a quickly growing disc golf
+    company that is pushing the sport forward through technology. Scott's always
+    favored working in the backend, but Remix is helping him to enjoy working
+    across the full stack, once again. He's incredibly excited about the future
+    of building web applications with Remix and the ease of deploying to the
+    modern edge hosting providers.
 
 - name: "Erick Tamayo"
   linkText: "@ericktamayo"
@@ -157,15 +157,14 @@
 - name: "Ben Wishovich"
   linkText: "@iambenwis"
   link: "https://twitter.com/iambenwis"
-  title: "Full Stack Web Dev at Zero Motorcycles"
+  title: "Full Stack Web Dev"
   imgSrc: "/conf-images/speakers/ben.jpg"
   bio: >-
-    Ben is a Full Stack Web Developer and Software Quality Engineer at Zero
-    Motorcycles for the last few years. He's become passionate about Rust and
-    Webassembly, and how to use them to provide new experiences on the web. He's
-    been a Remix supporter almost since the beginning, drawn in by its deft use
-    of web fundamentals and modern UX practices. Ben is excited to merge his two
-    passions and meet fellow web developers!
+    Ben is a full stack web developer and software quality engineer with
+    experience building high performance web applications. He's excited about
+    using Remix and Rust to expand the possibilities and performance of the web
+    app. When not coding, Ben might be found running around outside, cooking, or
+    reading sci-fi in the sunny SF Bay Area.
 
 - name: "Vic Vijayakumar"
   linkText: "@VicVijayakumar"
@@ -192,7 +191,7 @@
   title: "Founder and CEO at Seasoned"
   imgSrc: "/conf-images/speakers/daniel.jpg"
   bio: >-
-    In order to bring his startups to life, Danile had to go through a 9-year
+    In order to bring his startups to life, Daniel had to go through a 9-year
     journey to become the technical founder and CTO he needed in his teams.
     However, his real passion has always been the non-technical way, and having
     to spend his days coding took a toll on him.
@@ -204,14 +203,14 @@
 
     Beyond his own journey, he's helped tons of founders build world-class
     products over the last 20+ years. Along the way, he was CEO, CMO, and CTO of
-    many startups. Daniel has also founded a few successful ones myself,
+    many startups. Daniel has also founded a few successful ones himself,
     including Mailee, which was sold to a Brazilian internet provider, and
     Catarse, the biggest crowdfunding platform in Latin America.
 
 - name: "Sarah Dayan"
   linkText: "@frontstuff_io"
   link: "https://twitter.com/frontstuff_io"
-  title: "Software Engineer at Algolia"
+  title: "Staff Software Engineer at Algolia"
   imgSrc: "/conf-images/speakers/sarah.jpg"
   bio: >-
     Sarah is a Staff Software Engineer from Paris, France who works on front-end
@@ -231,7 +230,7 @@
   imgSrc: "/conf-images/speakers/erik.jpg"
   bio: >-
     Erik is an expat American living in Spain. He's the author of Redux Form and
-    Final Form, and am currently in love with TypeScript, XState, and Remix. His
+    Final Form, and is currently in love with TypeScript, XState, and Remix. His
     day job is using those technologies to build Centered.app, a tool to combat
     the Twitters' and Facebooks' attempts to steal your attention, and give it
     back to you to be more productive in your work.

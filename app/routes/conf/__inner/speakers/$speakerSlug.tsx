@@ -28,7 +28,7 @@ export const meta: MetaFunction = ({ data }: { data: null | LoaderData }) => {
   }
   return {
     title: "Missing Speaker",
-    description: "Wanna speak at Remix Conf?",
+    description: "There is no speaker info at this URL.",
   };
 };
 
