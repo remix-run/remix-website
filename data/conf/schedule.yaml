@@ -1,5 +1,5 @@
 - time: 7:30 AM
-  title: Breakfast & Registration
+  title: Breakfast & Registration 🍞 🥚 🥞 🍳 🍵 🥣 🥓 🍩
   content:
     A delicious hot breakfast is hosted in the hotel next to the conference
     room. If you didn't register the day before, now's the time to get your swag
@@ -24,7 +24,7 @@
   talk: State Machines On The Edge
 
 - time: 10:50 AM
-  title: Morning Break
+  title: ☕ Morning Break
   content:
     These breaks are extra long to give you time to visit with other attendees!
     Take advantage of that!
@@ -46,7 +46,8 @@
   talk: Making slow responses seem fast with stale-while-revalidate
 
 - time: 12:20 PM
-  title: Lunch
+  title:
+    Lunch 🥪 🌮 🥘 🍣 🥗 🍐 🌯 🥒 🍝 🌭 🥩 🍜 🦐 🥨 🥟 🍕 🥙 🍔 🍚 🍱 🍛 🍲 🍢
   content:
     You'll get a pre-paid card and directions to various local restaurants. The
     lunch break is extra long so you can take the opportunity to get to know
@@ -73,7 +74,7 @@
   talk: Incremental Remix
 
 - time: 4:00 PM
-  title: Afternoon Break
+  title: ☕ Afternoon Break
   content: This is the last break of the day. Take some deep breaths!
 
 - time: 4:25 PM

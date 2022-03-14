@@ -48,8 +48,10 @@ export default function May25Schedule() {
                 className="border-t border-b border-gray-200"
                 id={`time-${sluggify(scheduleItem.time)}`}
               >
-                <td className="p-2 whitespace-nowrap">{scheduleItem.time}</td>
-                <td className="p-2 flex flex-col gap-4">
+                <td className="px-2 py-8 lg:py-16 whitespace-nowrap">
+                  {scheduleItem.time}
+                </td>
+                <td className="px-2 py-8 lg:py-16 flex flex-col gap-4">
                   <span
                     className="md:text-m-p-lg text-d-p-lg font-bold"
                     dangerouslySetInnerHTML={{

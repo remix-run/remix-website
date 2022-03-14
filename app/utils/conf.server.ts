@@ -193,8 +193,8 @@ export async function getSchedule() {
             : talk.title
         ),
         contentHTML: await processMarkdown(
-          talk.description.length > 200
-            ? `${talk.description.slice(0, 197).trim()}...`
+          talk.description.length > 400
+            ? `${talk.description.slice(0, 297).trim()}...`
             : talk.description
         ),
         speakers: getSpeakersByName(talk.speakers),
