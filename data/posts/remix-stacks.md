@@ -15,7 +15,16 @@ When you're building a web application, in addition to the web framework you're 
 
 When lightning has struck 🌩 and you're ready to start coding your new mind blowing idea 🤯, the last thing you want is the tedious process of setup to get in between your inspiration and deploying your app. And when that idea turns out to be a great one, nobody wants to deploy that rushed setup to production.
 
-That's why we're excited to announce the release of **Remix Stacks**: the easiest way to get your Remix application started and ready to deploy! 🥞 In just a few minutes, we can get your app off the ground and ready to deploy all wired up with a CI/CD pipeline, connected database with a basic data model (via [prisma](https://prisma.io)), and even user authentication! It also has tools setup for development like [Tailwind](https://tailwindcss.com), [TypeScript](https://typescript.org), [Prettier](https://prettier.io), [ESLint](https://eslint.org), [Cypress](https://cypress.io), [MSW](https://mswjs.io), [Docker](https://www.docker.com/), [vitest](https://vitest.dev), [Testing Library](https://testing-library.com), and more!
+That's why we're excited to announce the release of **Remix Stacks**: the easiest way to get your Remix application started and ready to deploy! 🥞
+
+Stacks is really two features:
+
+1. Pre-built production ready templates from the Remix team
+2. The ability to create custom templates for you and your company
+
+## Built-in stacks
+
+In just a few minutes, we can get your app off the ground and ready to deploy all wired up with a CI/CD pipeline, connected database with a basic data model (via [prisma](https://prisma.io)), and even user authentication! It also has tools setup for development like [Tailwind](https://tailwindcss.com), [TypeScript](https://typescript.org), [Prettier](https://prettier.io), [ESLint](https://eslint.org), [Cypress](https://cypress.io), [MSW](https://mswjs.io), [Docker](https://www.docker.com/), [vitest](https://vitest.dev), [Testing Library](https://testing-library.com), and more!
 
 With this release, we're excited to give you three stacks, with more on the way:
 
@@ -31,9 +40,9 @@ We even have all layers of the testing trophy setup for you! With TypeScript/Pre
 
 ## Custom Stacks
 
-But we're not finished! This isn't all that stacks is about. We know that many of you at larger companies already have deployment environments and preferred databases. You have your own prettier and ESLint configs too. So we've built this feature in such a way that you can create your own stacks. Fork ours or create them from scratch. Then you can [use the `--template` flag](https://remix.run/pages/stacks#template) of the Remix CLI to generate a Remix project based on your own template! It even works from private GitHub repos, URLs to tarballs, and more. And we've got an ability for you to [customize the initialization](https://remix.run/pages/stacks#customize-initialization) and auto-remove TypeScript for folks who don't want the extra help.
+We know that many of you at larger companies already have deployment environments and preferred databases. You have your own prettier and ESLint configs too. So we've built this feature in such a way that you can create your own stacks. Fork ours or create them from scratch. Then you can [use the `--template` flag](https://remix.run/docs/en/v1/pages/stacks#--template) of the Remix CLI to generate a Remix project based on your own template! It even works from private GitHub repos, URLs to tarballs, and more. And we've got an ability for you to [customize the initialization](https://remix.run/docs/en/v1/pages/stacks#customize-initialization) and [auto-remove TypeScript](https://remix.run/docs/en/v1/pages/stacks#remove-typescript) for folks who don't want the extra help.
 
-We fully expect the custom stacks to get a LOT of use. We think most people will use custom stacks than the ones we build for you. Feel free to fork and modify whatever you like.
+We fully expect the custom stacks to get a LOT of use. We think most people will use custom stacks than the ones we build for you. Feel free to fork and modify whatever you like. Read more about creating custom stacks from the [Remix Stacks documentation](/pages/stacks).
 
 ## Try Stacks!
 
