@@ -127,3 +127,8 @@
   link: "https://www.catchpoint.com"
   imgSrc: "/conf-images/sponsors/catchpoint.png"
   level: "community"
+
+- name: "Firefly Health"
+  link: "https://www.firefly.health"
+  imgSrc: "/conf-images/sponsors/firefly-health.svg"
+  level: "community"
