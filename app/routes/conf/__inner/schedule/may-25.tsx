@@ -64,15 +64,17 @@ export default function May25Schedule() {
                         {scheduleItem.speakers.map((s) => (
                           <Link
                             key={s.slug}
-                            className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32"
                             to={`/conf/speakers/${s.slug}`}
+                            title={s.name}
+                            className="flex flex-col justify-center items-center"
                           >
                             <img
                               src={s.imgSrc}
-                              className="rounded-md"
+                              className="rounded-md w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32"
                               alt={s.name}
                               title={s.name}
                             />
+                            <small className="underline">Details</small>
                           </Link>
                         ))}
                       </span>
