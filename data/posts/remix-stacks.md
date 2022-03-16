@@ -45,6 +45,16 @@ We know that many of you at larger companies already have deployment environment
 
 We fully expect the custom stacks to get a LOT of use. We think most people will use custom stacks than the ones we build for you. Feel free to fork and modify whatever you like. Read more about creating custom stacks from the [Remix Stacks documentation](/pages/stacks).
 
+Let your imagination run wild with this. We think it's going to be a big hit. Here are some ideas of things you could use the `--template` flag for:
+
+- Local directory when developing your own stack.
+- GitHub repo when sharing your open source stack with the world.
+- Tarball URL when publishing your stack to S3 for others to use in your company.
+- Starter for building a content platform with your headless CMS and Remix.
+- Private GitHub repo for getting a Remix app started with your company's component library and deployed on your company's infrastructure.
+
+So much possibility here to help engineers hit the ground running to solve their own problems.
+
 ## Try Stacks!
 
 At Remix, we're fiercely committed to improving the user experience (UX) of your web application. Because developer experience (DX) and your productivity are an important input into that UX, we're working hard to make that excellent. And we're definitely not finished.
