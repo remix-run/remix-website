@@ -37,6 +37,8 @@ Watch me speed-run through [deploying the Indie Stack to production in less that
 
 <iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/Tx1S2uqkM28?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+Or, watch the same thing, except [deploying the Grunge Stack to AWS](https://youtu.be/LVoRguRxjlk)
+
 Yes, they're named after music genres 🎶🎸🎷🥁
 
 For all of these stacks, all you do is run the normal `npx create-remix@latest` and choose them from the CLI. This will generate your project for you and then just pop open the `README.md` to get things running! In all cases, you get a full app that's ready to develop locally and deploy to production with automated GitHub actions. It even supports a staging environment for your `dev` branch!
