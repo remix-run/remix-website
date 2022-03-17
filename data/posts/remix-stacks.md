@@ -1,5 +1,4 @@
 ---
-draft: true
 title: Remix Stacks
 summary: Introducing the easiest way to create a ready-to-deploy, production grade, fast web application with Remix.
 date: 2022-02-14
