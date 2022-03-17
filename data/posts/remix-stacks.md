@@ -25,7 +25,7 @@ Stacks is really two features:
 
 ## Built-in stacks
 
-In just a few minutes, we can get your app off the ground and ready to deploy all wired up with a CI/CD pipeline, connected database with a basic data model (via [prisma](https://prisma.io)), and even user authentication! It also has tools setup for development like [Tailwind](https://tailwindcss.com), [TypeScript](https://typescript.org), [Prettier](https://prettier.io), [ESLint](https://eslint.org), [Cypress](https://cypress.io), [MSW](https://mswjs.io), [Docker](https://www.docker.com/), [vitest](https://vitest.dev), [Testing Library](https://testing-library.com), and more!
+In just a few minutes, we can get your app off the ground and ready to deploy all wired up with a CI/CD pipeline, connected database with a basic data model (via [prisma](https://prisma.io)), and even user authentication! It also has tools setup for development like [Tailwind](https://tailwindcss.com), [TypeScript](https://typescriptlang.org), [Prettier](https://prettier.io), [ESLint](https://eslint.org), [Cypress](https://cypress.io), [MSW](https://mswjs.io), [Docker](https://www.docker.com/), [vitest](https://vitest.dev), [Testing Library](https://testing-library.com), and more!
 
 With this release, we're excited to give you three stacks, with more on the way:
 
