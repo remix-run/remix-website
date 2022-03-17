@@ -34,6 +34,10 @@ With this release, we're excited to give you three stacks, with more on the way:
 
 ![Desktop showing three websites](/blog-images/posts/stacks.jpg)
 
+Watch me speed-run through deploying the Indie Stack to production in less that 2 minutes:
+
+<iframe style="margin:auto;width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/oeLY3pCbWGA?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 Yes, they're named after music genres 🎶🎸🎷🥁
 
 For all of these stacks, all you do is run the normal `npx create-remix@latest` and choose them from the CLI. This will generate your project for you and then just pop open the `README.md` to get things running! In all cases, you get a full app that's ready to develop locally and deploy to production with automated GitHub actions. It even supports a staging environment for your `dev` branch!
