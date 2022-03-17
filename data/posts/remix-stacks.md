@@ -16,6 +16,8 @@ When lightning has struck 🌩 and you're ready to start coding your new mind bl
 
 That's why we're excited to announce the release of **Remix Stacks**: the easiest way to get your Remix application started and ready to deploy! 🥞
 
+[![Introducing stacks video](/blog-images/posts/stacks-intro-video.png)](https://www.youtube.com/watch?v=mHmgTPjGyc0&list=PLXoynULbYuEC8-gJCqyXo94RufAvSA6R3)
+
 Stacks is really two features:
 
 1. Pre-built production ready templates from the Remix team
@@ -31,7 +33,7 @@ With this release, we're excited to give you three stacks, with more on the way:
 - [The Indie Stack](https://github.com/remix-run/indie-stack): Deployed to a long-running Node.js server with a persistent SQLite database. Intended to get you going quickly with little complexity for prototypes and proof of concepts that can be later updated to the Blues stack without much trouble.
 - [The Grunge Stack](https://github.com/remix-run/grunge-stack): Deployed to a serverless function running Node.js with DynamoDB for persistance. Intended for folks who want to deploy a production-grade application on AWS infrastructure serving millions of users.
 
-![Desktop showing three websites](/blog-images/posts/stacks.jpg)
+[![Desktop showing three websites](/blog-images/posts/stacks.png)](https://github.com/topics/remix-stack)
 
 Watch me speed-run through [deploying the Indie Stack to production in less that 2 minutes](https://youtu.be/VBvEAhDMJXc?list=PLXoynULbYuEC8-gJCqyXo94RufAvSA6R3):
 
