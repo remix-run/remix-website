@@ -33,11 +33,11 @@ With this release, we're excited to give you three stacks, with more on the way:
 
 ![Desktop showing three websites](/blog-images/posts/stacks.jpg)
 
-Watch me speed-run through [deploying the Indie Stack to production in less that 2 minutes](https://youtu.be/Tx1S2uqkM28):
+Watch me speed-run through [deploying the Indie Stack to production in less that 2 minutes](https://youtu.be/VBvEAhDMJXc):
 
-<iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/Tx1S2uqkM28?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/VBvEAhDMJXc?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-Or, watch the same thing, except [deploying the Grunge Stack to AWS](https://youtu.be/LVoRguRxjlk)
+Or, watch the same thing, except [deploying the Grunge Stack to AWS](https://youtu.be/J9sHle5Q8ME)
 
 Yes, they're named after music genres 🎶🎸🎷🥁
 
@@ -49,9 +49,9 @@ We even have all layers of the testing trophy setup for you! With TypeScript/Pre
 
 We know that many of you at larger companies already have deployment environments and preferred databases. You have your own prettier and ESLint configs too. So we've built this feature in such a way that you can create your own stacks. Fork ours or create them from scratch. Then you can [use the `--template` flag](https://remix.run/docs/en/v1/pages/stacks#--template) of the Remix CLI to generate a Remix project based on your own template! It even works from private GitHub repos, URLs to tarballs, and more. And we've got an ability for you to [customize the initialization](https://remix.run/docs/en/v1/pages/stacks#customize-initialization) and [auto-remove TypeScript](https://remix.run/docs/en/v1/pages/stacks#remove-typescript) for folks who don't want the extra help.
 
-We fully expect the custom stacks to get a LOT of use. We think most people will use custom stacks than the ones we build for you. Feel free to fork and modify whatever you like. Read more about creating custom stacks from the [Remix Stacks documentation](/pages/stacks). Check out how quickly you can create a custom stack in [Make your own Remix Stack](https://youtu.be/PlTnKL_f3C0):
+We fully expect the custom stacks to get a LOT of use. We think most people will use custom stacks than the ones we build for you. Feel free to fork and modify whatever you like. Read more about creating custom stacks from the [Remix Stacks documentation](/pages/stacks). Check out how quickly you can create a custom stack in [Make your own Remix Stack](https://youtu.be/iAY9MWUF91c):
 
-<iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/PlTnKL_f3C0?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/iAY9MWUF91c?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Let your imagination run wild with this. We think it's going to be a big hit. Here are some ideas of things you could use the `--template` flag for:
 
