@@ -361,13 +361,13 @@ If most of your app deals with fetching and posting to API routes, get ready to 
 
 ## Built for Abstraction
 
-Many devs may look at this API and think that it's just too much code in the route config. Remix is able to co-locate loaders and actions with the route modules and builds the route config itself.
+Many devs may look at this API and think that it's just too much code in the route config. Remix is able to co-locate loaders and actions with the route modules and builds the route config itself from a file system. We expect people to create similar patterns for their apps.
 
-A very simple example of co-locating these concerns along with code splitting could look something like this:
+Here's a very simple example of how it could look to co-locate these concerns without a lot of effort. Create a "Route module" with a dynamic import to the real thing. This gets you code splitting as well as a cleaner Route configuration.
 
 ```jsx
 export async function loader(args) {
-  let actualLoader = await import("./actualModule").action;
+  let actualLoader = await import("./actualModule").loader;
   return actualLoader(args);
 }
 
@@ -376,15 +376,19 @@ export async function action(args) {
   return actualAction(args);
 }
 
-const Tasks = React.lazy(() => import("./actualModule").default);
+export const Component = React.lazy(() => import("./actualModule").default);
+```
 
-const TasksErrorBoundary = React.lazy(
-  () => import("./actualModule").ErrorBoundary
-);
+```jsx
+import * as Tasks from "./tasks.route";
 
-const TasksCatchBoundary = React.lazy(
-  () => import("./actualModule").CatchBoundary
-);
+// ...
+<Route
+  path="/tasks"
+  element={<Tasks.Component />}
+  loader={Tasks.loader}
+  action={Tasks.action}
+/>;
 ```
 
 ## Suspense + React Router = ❤️
