@@ -41,9 +41,9 @@ export default function Workshops() {
               Your instructors
             </h2>
             <div className="flex flex-col items-center lg:items-start lg:flex-row gap-8">
-              <Link
+              <a
                 className="underline flex flex-col gap-4"
-                to="/conf/speakers/kentcdodds"
+                href="https://twitter.com/kentcdodds"
               >
                 <img
                   src="/k.jpg"
@@ -51,10 +51,10 @@ export default function Workshops() {
                   className="w-36 rounded-md"
                 />
                 <span>Kent C. Dodds</span>
-              </Link>
-              <Link
+              </a>
+              <a
                 className="underline flex flex-col gap-4"
-                to="/conf/speakers/ryan-florence"
+                href="https://twitter.com/ryanflorence"
               >
                 <img
                   src="/r.jpg"
@@ -62,7 +62,7 @@ export default function Workshops() {
                   className="w-36 rounded-md"
                 />
                 <span>Ryan Florence</span>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
