@@ -99,11 +99,11 @@ function ProjectPage() {
     return <div>Loading...</div>;
   }
 
-  if (!data.notFound) {
+  if (data.notFound) {
     return <NotFound />;
   }
 
-  if (!data.error) {
+  if (data.error) {
     return <ErrorPage />;
   }
 
