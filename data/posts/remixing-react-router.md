@@ -302,7 +302,7 @@ Once you have the UI, the only other thing you need is the the action on the rou
       headers: { "Content-Type": "application/json; utf-8" },
     });
 
-    let project = await json();
+    let project = await res.json();
 
     // if there's a problem, just throw an exception and the
     // exception element will render, keeping the happy path happy.
