@@ -137,3 +137,8 @@
   link: "https://www.layer0.co/"
   imgSrc: "/conf-images/sponsors/layer0.png"
   level: "community"
+
+- name: "Uniform"
+  link: "https://uniform.dev"
+  imgSrc: "/conf-images/sponsors/uniform.jpg"
+  level: "community"
