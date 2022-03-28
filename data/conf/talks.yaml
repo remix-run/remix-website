@@ -27,10 +27,21 @@
   speakers:
     - Brian LeRoux
 
-- title: TBA by Shaundai
+- title: "Instantaneously Interactive: Remix as a Browser Framework"
   time: 10:00 AM
   type: regular
-  description: More details will be announced later
+  description: >-
+    Your Remix app is so performant that–even without a solid internet
+    connection–navigation on your site seems to happen almost instantaneously.
+    Whether rendered on the client side or server side, pages load data quickly
+    and all the information you users are interested in is on the screen without
+    the wait. But why?
+
+
+    In this talk, we discuss the optimizations in Remix for data fetching and
+    rendering apps in the browser that enhance both the user experience and
+    developer experience.
+
   speakers:
     - Shaundai Person
 
