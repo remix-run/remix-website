@@ -1133,7 +1133,7 @@ export let LayoutButton = React.forwardRef<
   );
 });
 
-function InteractiveRoutes() {
+export function InteractiveRoutes() {
   let [active, setActive] = React.useState(0);
   let actor = useActor();
   let frameProgressLength = 1 / 5;
@@ -1248,7 +1248,7 @@ function InteractiveRoutes() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-function Fakebooks({
+export function Fakebooks({
   children,
   highlight,
   className,
@@ -1468,14 +1468,16 @@ function Resources({
   );
 }
 
-function Sales({
+export function Sales({
   children,
   highlight,
   shimmerNav,
+  noActiveChild,
 }: {
   children: React.ReactNode;
   highlight?: boolean;
   shimmerNav?: boolean;
+  noActiveChild?: boolean;
 }) {
   return (
     <div className="relative h-full p-3 md:p-10">
@@ -1501,7 +1503,9 @@ function Sales({
           <>
             <div>Overview</div>
             <div>Subscriptions</div>
-            <div className="font-bold text-black">Invoices</div>
+            <div className={noActiveChild ? "" : "font-bold text-black"}>
+              Invoices
+            </div>
             <div>Customers</div>
             <div>Deposits</div>
           </>
@@ -1773,7 +1777,7 @@ function FakebooksLogo({ className }: { className: string }) {
   );
 }
 
-function BrowserChrome({
+export function BrowserChrome({
   url,
   children,
 }: {

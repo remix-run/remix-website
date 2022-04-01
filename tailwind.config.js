@@ -8,7 +8,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   mode: "jit",
-  content: ["./app/**/*.{ts,tsx}", "./data/**/*.md"],
+  content: ["./app/**/*.{ts,tsx}", "./data/**/*.md", "../remix/docs/**/*.md"],
   plugins: [
     require("@tailwindcss/aspect-ratio"),
     function ({ addVariant, e }) {
