@@ -142,3 +142,8 @@
   link: "https://uniform.dev"
   imgSrc: "/conf-images/sponsors/uniform.jpg"
   level: "community"
+
+- name: "Clerk"
+  link: "https://clerk.dev/"
+  imgSrc: "/conf-images/sponsors/clerk.svg"
+  level: "community"
