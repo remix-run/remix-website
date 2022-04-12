@@ -144,6 +144,6 @@
   level: "community"
 
 - name: "Clerk"
-  link: "https://clerk.dev/"
+  link: "https://clerk.dev/solutions/remix-authentication"
   imgSrc: "/conf-images/sponsors/clerk.svg"
   level: "community"
