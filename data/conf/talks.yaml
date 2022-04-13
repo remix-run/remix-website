@@ -58,10 +58,14 @@
   speakers:
     - Erik Rasmussen
 
-- title: TBA by Ryan
+- title: Deno and Remix
   time: 11:40 AM
   type: regular
-  description: More details will be announced later
+  description: >-
+    In this talk Ryan will give an overview of Deno, a modern JavaScript
+    runtime, and Deno Deploy, a serverless at edge JavaScript hosting service.
+    He'll give a peak behind the sceenes at the technology powering Deno Deploy,
+    and of course demo how to deploy a Remix app on it.
   speakers:
     - Ryan Dahl
 
