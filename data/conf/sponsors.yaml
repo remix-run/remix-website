@@ -147,3 +147,8 @@
   link: "https://clerk.dev/solutions/remix-authentication"
   imgSrc: "/conf-images/sponsors/clerk.svg"
   level: "community"
+
+- name: "Shopify"
+  link: "https://shopify.com"
+  imgSrc: "/conf-images/sponsors/shopify.svg"
+  level: "community"
