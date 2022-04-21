@@ -36,6 +36,11 @@ export default function SponsorUs() {
           </strong>
         </p>
         <p>We look forward to hearing from you.</p>
+        <p>
+          Note, Sponsorship for Remix Conf 2022 is already sold out. But we are
+          planning Remix Conf 2023 so if you're interested in sponsoring for
+          next year feel free to reach out!
+        </p>
       </div>
     </div>
   );

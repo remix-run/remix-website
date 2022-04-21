@@ -58,6 +58,14 @@
   speakers:
     - Erik Rasmussen
 
+- title: TBA by Anthony
+  time: 11:15 AM
+  type: regular
+  description: >-
+    More details about this talk will be revealed later
+  speakers:
+    - Anthony Frehner
+
 - title: Deno and Remix
   time: 11:40 AM
   type: regular

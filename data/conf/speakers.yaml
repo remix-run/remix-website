@@ -29,6 +29,31 @@
     audiobooks. Find her on Twitter at
     [@shaundai](https://twitter.com/shaundai).
 
+- name: "Anthony Frehner"
+  linkText: "@frehner_a"
+  link: "https://twitter.com/frehner_a"
+  title: "Senior Software Engineer, Netflix"
+  imgSrc: "/conf-images/speakers/anthony.jpg"
+  bio: >-
+    Anthony Frehner is a frontend web developer and architect. He likes to
+    contribute to open source when he has the time! Anthony is currently working
+    on [Hydrogen](https://hydrogen.shopify.dev/) 🙂
+
+
+    Anthony's recently been providing feedback on a [WICG
+    proposal](https://github.com/WICG/app-history) for which he also spent some
+    time making a [polyfill](https://github.com/frehner/appHistory). He's a
+    core-team member of the [single-spa](https://single-spa.js.org) open source
+    library, he occasionally give conference talks–here's Anthony's talk at
+    [React Rally 2019](https://youtu.be/RgqSlRbbvwA)–and [write technical
+    articles](https://dev.to/frehner), and he proposed a new CSS unit called
+    [vhc](https://github.com/w3c/csswg-drafts/issues/4329) which eventually
+    turned into the [`dvh`, `lvh`, and
+    `svh`](https://dev.to/frehner/css-vh-dvh-lvh-svh-and-vw-units-27k4) (and
+    equivalent `*vw`) CSS units, which was [very
+    exciting](https://twitter.com/frehner_a/status/1405915191582380041) for him
+    personally!
+
 - name: "Michael Jackson"
   linkText: "@mjackson"
   link: "https://twitter.com/mjackson"
