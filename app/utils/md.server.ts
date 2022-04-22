@@ -118,6 +118,7 @@ export interface MarkdownPostListing {
   dateDisplay: string;
   image: string;
   imageAlt: string;
+  featured?: boolean;
 }
 
 /**
@@ -129,6 +130,7 @@ export interface MarkdownPost {
   date: Date;
   dateDisplay: string;
   draft?: boolean;
+  featured?: boolean;
   image: string;
   imageAlt: string;
   authors: Author[];
@@ -154,6 +156,8 @@ export function isMarkdownPostFrontmatter(obj: any): obj is MarkdownPost {
     obj.summary &&
     obj.date instanceof Date &&
     (typeof obj.draft === "boolean" || typeof obj.draft === "undefined") &&
+    (typeof obj.featured === "boolean" ||
+      typeof obj.featured === "undefined") &&
     obj.image &&
     obj.imageAlt &&
     Array.isArray(obj.authors) &&

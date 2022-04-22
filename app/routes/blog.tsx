@@ -35,6 +35,8 @@ export default function Blog() {
   const data = useLoaderData<LoaderData>();
   const [latestPost, ...posts] = data.posts;
 
+  let featuredPosts = data.posts.filter((post) => post.featured);
+
   let transition = useTransition();
   let actionData = useActionData();
   let inputRef = React.useRef<HTMLInputElement>(null);
@@ -101,28 +103,33 @@ export default function Blog() {
           </div>
           <div className="md:hidden h-24" />
           <div className="md:col-span-4 md:col-start-9">
-            <h3 className="text-m-h3 font-bold mb-8 lg:text-d-h3">
-              Featured Articles
-            </h3>
-            <div className="grid grid-cols-1 gap-4">
-              {data.posts.map((post, index, array) => (
-                <React.Fragment key={post.slug}>
-                  <div className="flex flex-col">
-                    <div className="flex flex-col">
-                      <Link
-                        to={post.slug}
-                        prefetch="intent"
-                        className="text-m-p-sm lg:text-d-p-sm"
-                      >
-                        {post.title}
-                      </Link>
-                    </div>
-                  </div>
-                  {index !== array.length - 1 && <hr className="my-4" />}
-                </React.Fragment>
-              ))}
-            </div>
-            <div className="mt-24">
+            {featuredPosts.length ? (
+              <>
+                <h3 className="text-m-h3 font-bold mb-8 lg:text-d-h3">
+                  Featured Articles
+                </h3>
+                <div className="grid grid-cols-1 gap-4">
+                  {featuredPosts.map((post, index, array) => (
+                    <React.Fragment key={post.slug}>
+                      <div className="flex flex-col">
+                        <div className="flex flex-col">
+                          <Link
+                            to={post.slug}
+                            prefetch="intent"
+                            className="text-m-p-sm lg:text-d-p-sm"
+                          >
+                            {post.title}
+                          </Link>
+                        </div>
+                      </div>
+                      {index !== array.length - 1 && <hr className="my-4" />}
+                    </React.Fragment>
+                  ))}
+                </div>
+                <div className="h-24" />
+              </>
+            ) : null}
+            <div>
               <h3 className="text-m-h3 font-bold mb-6 lg:text-d-h3">
                 Get updates on the latest Remix news
               </h3>

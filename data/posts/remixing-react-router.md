@@ -1,6 +1,7 @@
 ---
 title: Remixing React Router
 summary: Remix picked up where React Router v3 left off, and now almost everything great about Remix is coming back to React Router!
+featured: true
 date: 2022-03-23
 image: /blog-images/posts/remixing-react-router/image.jpg
 imageAlt: React Router Logo
