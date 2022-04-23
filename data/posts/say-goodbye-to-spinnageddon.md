@@ -14,7 +14,7 @@ authors:
 
 When we launched Remix v1 with the new website, we had this example on the homepage that explained that Remix flattens your waterfall for code and assets resulting in a much better user experience. The app we used is called "Fakebooks" and is... eh... fake. But I decided to implement the bit we demonstrated and get it deployed so we can dig deeper into the claims we made.
 
-It's no secret that we're hoping to encourage folks who are using React Router to upgrade to Remix. Most React Router apps are client-only and suffer from the issues we describe on the site. So I also implemented Fakebooks using a basic client-rendered React Router app with Create React App (CRA). This setup represents [the single largest category](https://www.npmtrends.com/react-router-vs-react-scripts) of React Router apps.
+It's no secret that we're hoping to encourage folks who are using React Router to upgrade to Remix. Most React Router apps are client-only and suffer from the issues we describe on the site. So I also implemented Fakebooks using a basic client-rendered React Router app with Create React App (CRA). This setup represents [the largest single category](https://www.npmtrends.com/react-router-vs-react-scripts) of React Router apps.
 
 ## tl;dr
 
@@ -39,7 +39,7 @@ Interestingly, if we took the time to deploy Remix to multiple regions (or at le
 
 ## Comparisons
 
-Let's start with just watching the comparison for loading a specific invoice. We'll use WebPageTest.org for this comparison which will run the test three times and choose the fastest time. We'll also try it first in good conditions and then in poor conditions.
+Let's start with just watching the comparison for loading a specific invoice. We'll use [WebPageTest.org](https://webpagetest.org) for this comparison which will run the test three times and choose the median time. We'll also try it first in good conditions and then in poor conditions.
 
 [<figcaption>Fast Device, Virginia, Cable</figcaption>][virginia-comparison]
 
@@ -100,7 +100,7 @@ In any case, the end result with Remix is a jank-free and lightning fast experie
 
 ## The Code
 
-We've been talking about the user experience a lot and that's where we like to start, but the developer experience is really important as well (it is an input into user experience after all). This example is too contrived to come to many conclusions about the UX. As noted, it's missing mutations which is a great way to add complexity to any app and almost every app needs to support mutations.
+We've been talking about the user experience a lot and that's where we like to start, but the developer experience is really important as well (it is an input into user experience after all). This example is too contrived to come to many conclusions about the DX. As noted, it's missing mutations which is a great way to add complexity to any app and almost every app needs to support mutations.
 
 But if you take a look at the code in even this simple app, you'll see the beginnings of a much simpler codebase with Remix. And that really should be expected. Remix is a framework with conventions and utilities to aid you in development. Remix is also a full solution–as noted, the CRA version can't do the sever-side stuff, so it's using the Remix version as a backend–so a client-only app has to deal with the indirection of wiring up network calls to a backend.
 
