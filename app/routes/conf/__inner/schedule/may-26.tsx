@@ -71,16 +71,6 @@ const activities: Array<Activity> = [
     walkingDistance: false,
   },
   {
-    name: "Snowbird",
-    emoji: "⛷",
-    link: "https://www.snowbird.com",
-    description: `Skiing, Snowboarding, etc. Depends a lot on the weather. May not be enough snow.`,
-    address: "9385 S. Snowbird Center Dr. Snowbird, UT 84092",
-    discordLink:
-      "https://discord.com/channels/770287896669978684/935586906345984060",
-    walkingDistance: false,
-  },
-  {
     name: "Boondocks",
     emoji: "⛳",
     link: "https://draper.boondocks.com/",

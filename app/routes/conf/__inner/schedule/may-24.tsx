@@ -50,6 +50,12 @@ export default function May24Schedule() {
             <td className="p-3 border">6:00pm - 9:00pm</td>
             <td className="p-3 border">Welcome Reception</td>
           </tr>
+          <tr>
+            <td className="p-3 border">6:00pm - 9:00pm</td>
+            <td className="p-3 border">
+              "Hack && Hang" with Cockroach Labs and Netlify
+            </td>
+          </tr>
         </tbody>
       </table>
       <div className="mt-10">
