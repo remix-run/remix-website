@@ -58,11 +58,14 @@
   speakers:
     - Erik Rasmussen
 
-- title: TBA by Anthony
+- title: Remixing Hydrogen
   time: 11:15 AM
   type: regular
   description: >-
-    More details about this talk will be revealed later
+    Let's talk about some of the headaches of building headless Shopify
+    e-commerce stores, and how Hydrogen-UI + Remix make it better. Pre-built
+    Shopify components? Check. GraphQL auto-completion? Oh yeah. Speedy
+    websites? Blazing fast.
   speakers:
     - Anthony Frehner
 
