@@ -1,24 +1,24 @@
 ---
 title: Remix and “The Edge”
-summary: tk
-date: 2022-05-213
+summary: “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets which depending on compute. Remix is taking full advantage of this next generation of edge computing.
+date: 2022-05-13
 image: /blog-images/headers/tk.jpg
 imageAlt: tk
 authors:
   - name: Jim Nielsen
-    avatar: /jim.jpg
+    avatar: /j.jpg
     title: Director of Design
 ---
 
 There’s a lot in the air around CDNs and “the edge”. Traditionally, the edge has been perceived as a distributed network for storing and delivering static assets fast, while anything dynamic still requires compute _somewhere_ whether on the client (in the form of client-side JS talking to APIs) or a server (application server, lambda function, etc.).
 
-But that is changing. “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets which require compute. Chris Coyier talks about this in his post: “[It doesn’t much matter how CDNy your Jamstack site is if everything important happens from a single-origin server. Edge functions are probably part of the solution.][chris-coyier]”.
+But that is changing. “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets which require compute. Chris Coyier talks about this in his post: “[It doesn’t much matter how CDN your Jamstack site is if everything important happens from a single-origin server. Edge functions are probably part of the solution.][chris-coyier]”.
 
 > Static files on “the edge” is cool and all, but ya know what’s even cooler? Actually _doing stuff_ on the edge.
 
 Kent also talked about “the edge” and what’s coming to it in [his talk at Reactathon][reactathon-kent].
 
-![Screenshot from the video Kent’s talk, showing Kent and his title slide with the words “Shipping to the Edge”][img-reacathon-kent]
+![Screenshot from the video Kent’s talk, showing Kent and his title slide with the words “Shipping to the Edge”][img-reactathon-kent]
 
 In this post, we’ll take a closer look at different ways of delivering content on the web, why “the edge” exists, and how it’s evolving to better deliver great user experiences on the web (and why Remix takes advantage of it all).
 
@@ -90,7 +90,7 @@ Combine this kind of computing network with Remix and now you can deliver any le
 
 ## And One More Thing…
 
-Don’t even get us started on how streaming fits into this whole model. That’s a blog post for another day. If you can’t wait, go checkout [Ryan’s talk at Reactathon][reactathon-ryan].
+Streaming on the edge! But that’s a blog post for another day. If you can’t wait, go checkout [Ryan’s talk at Reactathon][reactathon-ryan].
 
 [chris-coyier]: https://chriscoyier.net/2022/05/04/it-doesnt-much-matter-how-cdny-your-jamstack-site-is-if-everything-important-happens-from-a-single-origin-server-edge-functions-are-probably-part-of-the-solution/
 [reactathon-kent]: https://youtu.be/V5hPAl1q7vo?t=2546
