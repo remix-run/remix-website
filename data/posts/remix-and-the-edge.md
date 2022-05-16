@@ -10,17 +10,17 @@ authors:
     title: Director of Design
 ---
 
-There’s a lot in the air around CDNs and “the edge”. Traditionally, the edge has been perceived as a distributed network for storing and delivering static assets fast, while anything dynamic still requires compute _somewhere_ whether on the client (in the form of client-side JS talking to APIs) or a server (application server, lambda function, etc.).
+There’s a lot in the air around CDNs and “the edge”. Traditionally, the edge has been perceived as a distributed network for storing and delivering static assets fast, while anything dynamic still requires compute _somewhere_ whether on the client (in the form of client-side JS talking to APIs) or the server (an application server, lambda function, etc.).
 
 But that is changing. “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets which require compute. Chris Coyier talks about this in his post: “[It doesn’t much matter how CDN your Jamstack site is if everything important happens from a single-origin server. Edge functions are probably part of the solution.][chris-coyier]”.
 
 > Static files on “the edge” is cool and all, but ya know what’s even cooler? Actually _doing stuff_ on the edge.
 
-Kent also talked about “the edge” and what’s coming to it in [his talk at Reactathon][reactathon-kent].
+Kent also talked about “the edge” and what’s coming next in [his talk at Reactathon][reactathon-kent].
 
-![Screenshot from the video Kent’s talk, showing Kent and his title slide with the words “Shipping to the Edge”][img-reactathon-kent]
+[![Screenshot from the video Kent’s talk, showing Kent and his title slide with the words “Shipping to the Edge”][img-reactathon-kent]][reactathon-kent]
 
-In this post, we’ll take a closer look at different ways of delivering content on the web, why “the edge” exists, and how it’s evolving to better deliver great user experiences on the web (and why Remix takes advantage of it all).
+In this post, we’ll take a closer look at the different ways of delivering content on the web, why “the edge” exists, and how it’s evolving to better deliver great user experiences on the web (and, of course, how Remix takes advantage of it all).
 
 ## First: Server Side Rendering (SSR)
 
@@ -36,21 +36,19 @@ SSG promises to make SSR faster by getting rid of the origin server (for static 
 
 ![Illustration depiciting two different users across the world connecting to CDN nodes close to their geographic location and being served the same resource.][img-ssg]
 
-But what about the dynamic stuff you were doing in SSR?
-
-If content on your site changes, the conventional wisdom is to regenerate the entire site and push it anew to the CDN.
+But what about the dynamic stuff you were doing in SSR? If content on your site changes, the conventional wisdom is to regenerate the entire site and push it anew to the CDN.
 
 And what about user-specific content? For that, you’ll need an escape hatch from this mode of “static content retrieval” and _some kind of server_ to generate this user-specific content.
 
 ## Enter: Client Side Rendering (CSR)
 
-A huge part of the static site generation and the JAMstack is the “A” part: APIs. This answers the question of: how do I generate and retrieve dynamic content tailored to individual users?
+A huge part of static site generation and the JAMstack is the “A” part: APIs. This answers the question of: how do I generate and retrieve dynamic content tailored to individual users?
 
-In the SSG model, you do this by delivering a static, empty shell for your content from a CDN. This shell, which is initially the same for all users, generally displays a loader and contains instructions on how to retrieve and render user-specific content.
+In the SSG model, this is commonly done by delivering a static, empty shell for your content from a CDN. This shell, which is initially the same for all users, generally displays a loader and contains instructions on how to retrieve and render user-specific content.
 
 ![tk][img-csr-1]
 
-Hello spinners! Each client is then required to go fetch their own, unique data—which is likely on an origin server somewhere in the world and that connects to a nearby database or the like for personalized or dynamic content.
+Hello spinners! Each client is then required to go fetch their own, unique data which is likely on an origin server somewhere in the world (that may connect to a nearby database) for personalized or dynamic content.
 
 ![tk][img-csr-2]
 
@@ -80,13 +78,13 @@ Some smart guy said, “Give me a lever and i’ll move the world”. Remix took
 
 ### Remix and NextGen “Edge”
 
-The next generation of “the edge”, like deno deploy, cloudflare workers, cloudflare K/V, etc., promise to combine static-content CDNs with dynamic-content servers, so you can deliver static assets and dynamic content requiring compute from the same network—think traditional SSR but distributed, as if an origin server and a CDN had a baby.
+The next generation of “The Edge” – technologies like [Deno deploy][deno-deploy]or [Cloudflare Workers][cloudflare-workers] — promise to combine static-content CDNs with dynamic-content servers, so you can deliver static assets and dynamic content requiring compute from the same network—think traditional SSR but distributed, as if an origin server and a CDN had a baby.
 
-“The edge” can either have the requested content, or do the compute required to get the requested content, so everything renders fast for all users all over the world. No more spinners!
+“The edge” can either have the requested content, or do the compute required to get the requested content and cache it, so everything renders fast for everyone all over the world. No more spinners!
 
 ![tk][img-edge]
 
-Combine this kind of computing network with Remix and now you can deliver any level of dynamicism you want, for any given page, spread out across a world-wide network of computing — all in service of a great user experience: personalized content and experiences, fast.
+Combine this kind of computing network with Remix and now you can deliver any level of dynamicism you want, for any given page, spread out across a world-wide network of computing — all in service of a great user experience: personalized content fast.
 
 ## And One More Thing…
 
@@ -105,3 +103,5 @@ Streaming on the edge! But that’s a blog post for another day. If you can’t 
 [isr]: https://nextjs.org/docs/basic-features/data-fetching/incremental-static-regeneration
 [dpr]: https://www.netlify.com/blog/2021/04/14/distributed-persistent-rendering-a-new-jamstack-approach-for-faster-builds/
 [remixing-router]: remixing-react-router
+[deno-deploy]: https://deno.com
+[cloudflare-workers]: https://workers.cloudflare.com
