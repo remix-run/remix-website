@@ -2,7 +2,7 @@
 title: Remix and “The Edge”
 summary: “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets which depending on compute. Remix is taking full advantage of this next generation of edge computing.
 date: 2022-05-13
-image: /blog-images/headers/tk.jpg
+image: /blog-images/headers/remix-and-the-edge.png
 imageAlt: tk
 authors:
   - name: Jim Nielsen
@@ -26,7 +26,7 @@ In this post, we’ll take a closer look at different ways of delivering content
 
 In the basic form of this model, you have a single-origin server which serves your content (dynamic or static), to everyone upon request.
 
-![tk][img-1]
+![Illustration depiciting two different users connecting to the same server across the world and being served the same resource.][img-ssr]
 
 While this model has its advantages, it’s prone to performance issues because 1) there’s only one server serving everyone, and 2) it’s not distributed around the world (speed is determined, in part, by the user’s geographic proximity to your server).
 
@@ -34,7 +34,7 @@ While this model has its advantages, it’s prone to performance issues because 
 
 SSG promises to make SSR faster by getting rid of the origin server (for static content) and putting everything on a distributed network of computers around the world (also known as a CDN). This makes accessing content collectively faster because content is spread around the world for faster retrieval.
 
-![tk][img-2]
+![Illustration depiciting two different users across the world connecting to CDN nodes close to their geographic location and being served the same resource.][img-ssg]
 
 But what about the dynamic stuff you were doing in SSR?
 
@@ -48,11 +48,11 @@ A huge part of the static site generation and the JAMstack is the “A” part: 
 
 In the SSG model, you do this by delivering a static, empty shell for your content from a CDN. This shell, which is initially the same for all users, generally displays a loader and contains instructions on how to retrieve and render user-specific content.
 
-![tk][img-3]
+![tk][img-csr-1]
 
 Hello spinners! Each client is then required to go fetch their own, unique data—which is likely on an origin server somewhere in the world and that connects to a nearby database or the like for personalized or dynamic content.
 
-![tk][img-4]
+![tk][img-csr-2]
 
 Do you see the problem? The CDN is marvelous at delivering content uniform to all users and requests. But the compute and data retrieval required to deliver user-specific content necessitates a server somewhere and therefore bypasses the distributed value-add of your CDN.
 
@@ -74,7 +74,7 @@ Remix gives you a conceptual lever you can pull to implement the level of dynami
 - User profile? Moderately dynamic (different for every user, changes infrequently). Push the lever towards the middle, between static and dynamic.
 - User feed? Highly dynamic (different for every user, changes by the minute). Push the lever all the way up towards dynamic.
 
-![tk][lever]
+![tk][img-lever]
 
 Some smart guy said, “Give me a lever and i’ll move the world”. Remix took that idea and ran with it. Now you have a lever to deliver any web page across the spectrum of dynamicism. And with the next generation of “the edge”, you can do it all over the world fast.
 
@@ -84,7 +84,7 @@ The next generation of “the edge”, like deno deploy, cloudflare workers, clo
 
 “The edge” can either have the requested content, or do the compute required to get the requested content, so everything renders fast for all users all over the world. No more spinners!
 
-![tk][img-5]
+![tk][img-edge]
 
 Combine this kind of computing network with Remix and now you can deliver any level of dynamicism you want, for any given page, spread out across a world-wide network of computing — all in service of a great user experience: personalized content and experiences, fast.
 
@@ -96,12 +96,12 @@ Streaming on the edge! But that’s a blog post for another day. If you can’t 
 [reactathon-kent]: https://youtu.be/V5hPAl1q7vo?t=2546
 [img-reactathon-kent]: /blog-images/posts/remix-and-the-edge/kent-talk.jpg
 [reactathon-ryan]: https://youtu.be/Ck-e3hd3pKw?t=9274
-[img-1]: /blog-images/posts/remix-and-the-edge/1.png
-[img-2]: /blog-images/posts/remix-and-the-edge/2.png
-[img-3]: /blog-images/posts/remix-and-the-edge/3.png
-[img-4]: /blog-images/posts/remix-and-the-edge/4.png
-[img-5]: /blog-images/posts/remix-and-the-edge/5.png
-[lever]: /blog-images/posts/remix-and-the-edge/lever.png
+[img-ssr]: /blog-images/posts/remix-and-the-edge/ssr.png
+[img-ssg]: /blog-images/posts/remix-and-the-edge/ssg.png
+[img-csr-1]: /blog-images/posts/remix-and-the-edge/csr-1.png
+[img-csr-2]: /blog-images/posts/remix-and-the-edge/csr-2.png
+[img-edge]: /blog-images/posts/remix-and-the-edge/edge.png
+[img-lever]: /blog-images/posts/remix-and-the-edge/static-to-dynamic.png
 [isr]: https://nextjs.org/docs/basic-features/data-fetching/incremental-static-regeneration
 [dpr]: https://www.netlify.com/blog/2021/04/14/distributed-persistent-rendering-a-new-jamstack-approach-for-faster-builds/
 [remixing-router]: remixing-react-router
