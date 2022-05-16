@@ -1,6 +1,6 @@
 ---
 title: Remix and “The Edge”
-summary: “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets which depending on compute. Remix is taking full advantage of this next generation of edge computing.
+summary: “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets resulting from compute. Remix is taking full advantage of this next generation of edge computing.
 date: 2022-05-13
 image: /blog-images/headers/remix-and-the-edge.png
 imageAlt: tk
