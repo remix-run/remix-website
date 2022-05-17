@@ -25,7 +25,7 @@ git push origin main
 open https://remix.run
 ```
 
-Pushing the "stage" tag will deploy to staging.
+Pushing the "stage" tag will deploy to [staging](https://remixdotrunstage.fly.dev/blog).
 
 ```sh
 git checkout my/branch
@@ -51,7 +51,7 @@ fly logs -a remixdotrun
 
 **Authoring Blog Articles:**
 
-- Put a markdown file in `content/blog/{slug-you-want}.md`
+- Put a markdown file in `data/posts/{slug-you-want}.md`
 - Follow the conventions found in other blog articles for author/meta
 - Push to `main`
 
