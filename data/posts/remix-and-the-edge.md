@@ -74,7 +74,7 @@ Remix gives you a conceptual lever you can pull to implement the level of dynami
 
 ![tk][img-lever]
 
-Some smart guy said, “Give me a lever and i’ll move the world”. Remix took that idea and ran with it. Now you have a lever to deliver any web page across the spectrum of dynamicism. And with the next generation of “the edge”, you can do it all over the world fast.
+Some smart guy said, “Give me a lever and I’ll move the world”. Remix took that idea and ran with it. Now you have a lever to deliver any web page across the spectrum of dynamism. And with the next generation of “the edge”, you can do it all over the world fast.
 
 ### Remix and NextGen “Edge”
 
