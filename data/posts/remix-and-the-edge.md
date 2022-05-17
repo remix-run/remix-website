@@ -64,9 +64,9 @@ But the thing about these alternative options and frameworks is that they presen
 
 ## Enter: Remix
 
-Remix doesn’t require you consider and buy-in to the trade-offs of these countless escape hatches. It allows you to decide on a page-by-page basis (and easily change your mind later) what level of dynamism you want for any given resource (or should I say route, as [Remix is coming to a react-router near you][remixing-router]). (In fact, you can even change the level of dynamism at runtime depending on the data, user, or A/B testing!!)
+Remix doesn’t require you consider and buy-in to the trade-offs of these countless escape hatches. It allows you to decide on a page-by-page basis (and easily change your mind later) what level of dynamism you want for any given resource (or should I say route, as [Remix is coming to a react-router near you][remixing-router]).
 
-Remix gives you a conceptual lever you can pull to implement the level of dynamism you want for any given page. And if that ever changes, just push or pull your lever. You can even control this lever at runtime depending on the data, user, or even A/B testing!
+Remix gives you a conceptual lever you can pull to implement the level of dynamism you want for any given page. And if that ever changes, just push or pull your lever. You can even control this lever at runtime depending on data, user, or even A/B testing!
 
 - About page? Mostly static (same content for every user, changes infrequently). Pull the lever close to “static”.
 - User profile? Moderately dynamic (different for every user, changes infrequently). Push the lever towards the middle, between static and dynamic.
