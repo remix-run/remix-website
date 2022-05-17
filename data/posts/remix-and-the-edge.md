@@ -3,7 +3,7 @@ title: Remix and “The Edge”
 summary: “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets resulting from compute. Remix is taking full advantage of this next generation of edge computing.
 date: 2022-05-13
 image: /blog-images/headers/remix-and-the-edge.png
-imageAlt: tk
+imageAlt: An illustration of a gauge with a dial that can go from “Static” on the left to “Dynamic” on the right, accompanied by the Remix logo.
 authors:
   - name: Jim Nielsen
     avatar: /j.jpg
@@ -46,11 +46,11 @@ A huge part of static site generation and the JAMstack is the “A” part: APIs
 
 In the SSG model, this is commonly done by delivering a static, empty shell for your content from a CDN. This shell, which is initially the same for all users, generally displays a loader and contains instructions on how to retrieve and render user-specific content.
 
-![tk][img-csr-1]
+![Illustration depiciting two different users across the world connecting to CDN nodes close to their geographic location and being served the same resource which is a document with a loading spinner.][img-csr-1]
 
 Hello spinners! Each client is then required to go fetch their own, unique data which is likely on an origin server somewhere in the world (that may connect to a nearby database) for personalized or dynamic content.
 
-![tk][img-csr-2]
+![Illustration depiciting two different users across the world bypassing CDN nodes close to their geographic location and instead connecting to the same origin server far from their geographic location to be served unique content.][img-csr-2]
 
 Do you see the problem? The CDN is marvelous at delivering content uniform to all users and requests. But the compute and data retrieval required to deliver user-specific content necessitates a server somewhere and therefore bypasses the distributed value-add of your CDN.
 
@@ -72,7 +72,7 @@ Remix gives you a conceptual lever you can pull to implement the level of dynami
 - User profile? Moderately dynamic (different for every user, changes infrequently). Push the lever towards the middle, between static and dynamic.
 - User feed? Highly dynamic (different for every user, changes by the minute). Push the lever all the way up towards dynamic.
 
-![tk][img-lever]
+![Illustration of a gauge with a dial. The gauge reads “Static” on the left and “Dynamic” on the right, with labled points on the spectrum between those two extremes for SSG, ISR, CSR, and SSR, each of which has a line through them to show they’re not needed. The Remix logo is shown below the gauge.][img-lever]
 
 Some smart guy said, “Give me a lever and I’ll move the world”. Remix took that idea and ran with it. Now you have a lever to deliver any web page across the spectrum of dynamism. And with the next generation of “the edge”, you can do it all over the world fast.
 
@@ -82,7 +82,7 @@ The next generation of “The Edge” — technologies like [Deno deploy][deno-d
 
 “The edge” can either have the requested content, or do the compute required to get the requested content and cache it, so everything renders fast for everyone all over the world. No more spinners!
 
-![tk][img-edge]
+![Illustration depiciting two different users across the world connecting to next generation edge nodes, which are a visual combination of a traditional CDN node and an origin server, resulting in each user retrieiving tailored content from a server in close proximity to their geographic location.][img-edge]
 
 Combine this kind of computing network with Remix and now you can deliver any level of dynamism you want, for any given page, spread out across a world-wide network of computing — all in service of a great user experience: personalized content fast.
 
