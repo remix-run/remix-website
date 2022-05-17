@@ -84,7 +84,7 @@ The next generation of “The Edge” – technologies like [Deno deploy][deno-d
 
 ![tk][img-edge]
 
-Combine this kind of computing network with Remix and now you can deliver any level of dynamicism you want, for any given page, spread out across a world-wide network of computing — all in service of a great user experience: personalized content fast.
+Combine this kind of computing network with Remix and now you can deliver any level of dynamism you want, for any given page, spread out across a world-wide network of computing — all in service of a great user experience: personalized content fast.
 
 ## And One More Thing…
 
