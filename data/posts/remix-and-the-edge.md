@@ -88,7 +88,7 @@ Combine this kind of computing network with Remix and now you can deliver any le
 
 ## And One More Thing…
 
-Streaming on the edge! But that’s a blog post for another day. If you can’t wait, go checkout [Ryan’s talk at Reactathon][reactathon-ryan].
+Streaming on the edge! But that’s a blog post for another day. If you can’t wait, go watch [Ryan’s talk at Reactathon][reactathon-ryan].
 
 [chris-coyier]: https://chriscoyier.net/2022/05/04/it-doesnt-much-matter-how-cdny-your-jamstack-site-is-if-everything-important-happens-from-a-single-origin-server-edge-functions-are-probably-part-of-the-solution/
 [reactathon-kent]: https://youtu.be/V5hPAl1q7vo?t=2546
