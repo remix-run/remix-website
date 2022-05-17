@@ -12,7 +12,7 @@ authors:
 
 There’s a lot in the air around CDNs and “the edge”. Traditionally, the edge has been perceived as a distributed network for storing and delivering static assets fast, while anything dynamic still requires compute _somewhere_ whether on the client (in the form of client-side JS talking to APIs) or the server (an application server, lambda function, etc.).
 
-But that is changing. “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets which require compute. Chris Coyier talks about this in his post: “[It doesn’t much matter how CDN your Jamstack site is if everything important happens from a single-origin server. Edge functions are probably part of the solution.][chris-coyier]”.
+But that is changing. “The edge” isn’t just about static assets anymore. It’s increasingly becoming a place for dynamic assets which require compute. Chris Coyier talks about this in his post: “[It doesn’t much matter how CDNy your Jamstack site is if everything important happens from a single-origin server. Edge functions are probably part of the solution.][chris-coyier]”.
 
 > Static files on “the edge” is cool and all, but ya know what’s even cooler? Actually _doing stuff_ on the edge.
 
