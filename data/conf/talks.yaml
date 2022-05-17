@@ -5,28 +5,6 @@
   speakers:
     - Michael Jackson
 
-- title: "Dynamic Apps with the Reliability of Static Deployment"
-  time: 9:35 AM
-  type: regular
-  description: >-
-    Remix is powerful and unique approach to building React applications that
-    prioritizes the end user experience by enabling progressive enhancement by
-    default. In the past, most React applications were either pre-rendered HTML
-    generated at compile time or client rendered requiring clunky loading
-    spinners. Remix does away with these awkward tradeoffs giving end users
-    dynamic content immediately and on-demand. Even better, Remix lets you
-    deploy your front-end to a plethora of backend cloud vendors.
-
-
-    One big benefit of static approaches is 'immutable deployment' which means
-    the code being deployed is deterministic and unchanging. In recent years,
-    cloud providers have been enabling richer backend functionality with a
-    similar paradigm called Infra as Code. In this talk Brian will show you how
-    the various cloud vendors achieve determinism and reliability of static
-    deployments with completely dynamic apps like Remix enables.
-  speakers:
-    - Brian LeRoux
-
 - title: "Instantaneously Interactive: Remix as a Browser Framework"
   time: 10:00 AM
   type: regular
@@ -295,14 +273,15 @@
     - Sébastien Morel
 
 - title: "How To WebPageTest"
-  type: backup
+  time: 9:35 AM
+  type: regular
   description: >-
     You cannot improve what you do not measure, and measuring page performance
     is at the heart of providing marvellous user experiences. "How To
-    WebPageTest" is a lightning talk where I will demonstrate how modern
-    profiling using WebPageTest will provide the best insights. I'll show you
-    tips and tricks on how to interpret the results, and I'll also expose you to
-    key features that are best in class in performance testing.
+    WebPageTest" is a talk where I will demonstrate how modern profiling using
+    WebPageTest will provide the best insights. I'll show you tips and tricks on
+    how to interpret the results, and I'll also expose you to key features that
+    are best in class in performance testing.
   speakers:
     - Henri Helvetica
 
