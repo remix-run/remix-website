@@ -78,7 +78,7 @@ Some smart guy said, “Give me a lever and I’ll move the world”. Remix took
 
 ### Remix and NextGen “Edge”
 
-The next generation of “The Edge” – technologies like [Deno deploy][deno-deploy], [Cloudflare Workers][cloudflare-workers], and (increasingly) many others — promise to combine static-content CDNs with dynamic-content servers, so you can deliver static assets and dynamic content requiring compute from the same network—think traditional SSR but distributed, as if an origin server and a CDN had a baby.
+The next generation of “The Edge” — technologies like [Deno deploy][deno-deploy], [Cloudflare Workers][cloudflare-workers], and (increasingly) many others — promise to combine static-content CDNs with dynamic-content servers, so you can deliver static assets and dynamic content requiring compute from the same network—think traditional SSR but distributed, as if an origin server and a CDN had a baby.
 
 “The edge” can either have the requested content, or do the compute required to get the requested content and cache it, so everything renders fast for everyone all over the world. No more spinners!
 
