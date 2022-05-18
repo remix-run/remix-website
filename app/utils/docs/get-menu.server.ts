@@ -93,8 +93,11 @@ export async function getMenu(
     map.set(slug, node);
     if (parentSlug) {
       let parent = map.get(parentSlug);
-      invariant(parent, `Expected ${parentSlug} in tree`);
-      parent.children.push(node);
+      if (!parent) {
+        console.error(`Expected ${parentSlug} in tree`);
+      } else {
+        parent.children.push(node);
+      }
     } else {
       tree.push(node);
     }
