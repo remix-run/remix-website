@@ -20,11 +20,13 @@ if (!REPO || !REPO_DOCS_PATH || !REPO_LATEST_BRANCH) {
   );
 }
 
+export const PATHS_TO_IGNORE = ["/decisions/template.md"];
+
 /**
  * ref: refs/tags/v6.0.0-beta.1
  * ref: refs/heads/dev
  */
-async function saveDocs(ref: string, releaseNotes: string) {
+export async function saveDocs(ref: string, releaseNotes: string) {
   let stream = await getPackage(REPO, ref);
 
   invariant(stream, "no stream");
@@ -44,7 +46,7 @@ async function saveDocs(ref: string, releaseNotes: string) {
     githubRef = maybeRef;
   } else {
     githubRef = await prisma.gitHubRef.create({
-      data: { ref, releaseNotes },
+      data: { ref, releaseNotes: releaseNotes || "" },
       include: {
         docs: {
           select: { filePath: true, lang: true },
@@ -69,6 +71,10 @@ async function saveDocs(ref: string, releaseNotes: string) {
 
   await findMatchingEntries(stream, "/docs", existingDocs, {
     async onEntry(entry) {
+      if (PATHS_TO_IGNORE.includes(entry.path)) {
+        return;
+      }
+
       let doc = await processDoc(entry, version);
 
       await upsertDoc(githubRef.ref, doc);
@@ -92,7 +98,7 @@ async function saveDocs(ref: string, releaseNotes: string) {
   });
 }
 
-async function upsertDoc(ref: string, doc: ProcessedDoc) {
+export async function upsertDoc(ref: string, doc: ProcessedDoc) {
   try {
     let updates: Prisma.DocCreateWithoutGithubRefInput = {
       filePath: doc.path,
@@ -135,5 +141,3 @@ async function upsertDoc(ref: string, doc: ProcessedDoc) {
     console.error(`> Failed to upsert ${doc.path} for ${ref}`);
   }
 }
-
-export { saveDocs, upsertDoc };
