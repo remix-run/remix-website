@@ -4,7 +4,7 @@ import path from "path";
 import { PrismaClient } from "@prisma/client";
 import chokidar from "chokidar";
 import { processDoc } from "../app/utils/docs/process-doc.server";
-import { PATHS_TO_IGNORE, upsertDoc } from "../app/utils/docs/save-docs.server";
+import { upsertDoc } from "../app/utils/docs/save-docs.server";
 
 let prisma = new PrismaClient();
 
@@ -48,10 +48,6 @@ watcher
     let promises = [];
 
     for (let filepath of allFiles) {
-      if (PATHS_TO_IGNORE.includes(filepath)) {
-        continue;
-      }
-
       let content = await fsp.readFile(filepath, "utf8");
       let actualFilePath = path.join(
         "/docs",
