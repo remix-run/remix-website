@@ -26,7 +26,7 @@ export const PATHS_TO_IGNORE = ["/decisions/template.md"];
  * ref: refs/tags/v6.0.0-beta.1
  * ref: refs/heads/dev
  */
-export async function saveDocs(ref: string, releaseNotes: string) {
+export async function saveDocs(ref: string, releaseNotes: string = "") {
   let stream = await getPackage(REPO, ref);
 
   invariant(stream, "no stream");
@@ -46,7 +46,7 @@ export async function saveDocs(ref: string, releaseNotes: string) {
     githubRef = maybeRef;
   } else {
     githubRef = await prisma.gitHubRef.create({
-      data: { ref, releaseNotes: releaseNotes || "" },
+      data: { ref, releaseNotes },
       include: {
         docs: {
           select: { filePath: true, lang: true },
