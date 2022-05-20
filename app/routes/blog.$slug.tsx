@@ -1,5 +1,6 @@
-import type { LoaderFunction, HeadersFunction } from "remix";
-import { json, useLoaderData } from "remix";
+import type { LoaderFunction, HeadersFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
 
 import { getBlogPost } from "~/utils/md.server";
 import type { MarkdownPost } from "~/utils/md.server";

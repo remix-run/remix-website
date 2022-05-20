@@ -1,5 +1,5 @@
-import type { RouteComponent, ActionFunction } from "remix";
-import { json } from "remix";
+import type { RouteComponent, ActionFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 
 import { getFlyInstances } from "~/utils/get-fly-instances.server";
 

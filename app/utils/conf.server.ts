@@ -57,7 +57,6 @@ export async function getSpeakers() {
       type: "speaker",
       slug: sluggify(speakerRaw.name),
       ...speakerRaw,
-      bio: undefined,
     };
     invariant(
       isSpeaker(speakerRawWithDefaults),

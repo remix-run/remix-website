@@ -1,6 +1,6 @@
 import * as React from "react";
-import { useFetcher } from "remix";
-import type { FormProps } from "remix";
+import { useFetcher } from "@remix-run/react";
+import type { FormProps } from "@remix-run/react";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
 

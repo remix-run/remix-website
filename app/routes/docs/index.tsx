@@ -1,5 +1,5 @@
 import acceptLanguage from "accept-language";
-import { LoaderFunction, redirect } from "remix";
+import { LoaderFunction, redirect } from "@remix-run/node";
 import { getVersions } from "~/utils/undoc.server";
 
 import { prisma } from "~/db.server";

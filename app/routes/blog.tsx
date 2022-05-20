@@ -1,6 +1,16 @@
 import * as React from "react";
-import type { HeadersFunction, LoaderFunction, MetaFunction } from "remix";
-import { json, useLoaderData, Link, useTransition, useActionData } from "remix";
+import type {
+  HeadersFunction,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
+import {
+  useLoaderData,
+  Link,
+  useTransition,
+  useActionData,
+} from "@remix-run/react";
+import { json } from "@remix-run/node";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
 import { Subscribe } from "~/components/subscribe";

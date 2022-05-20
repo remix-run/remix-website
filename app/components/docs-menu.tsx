@@ -1,5 +1,4 @@
-import { useParams } from "react-router-dom";
-import { NavLink } from "remix";
+import { NavLink, useParams } from "@remix-run/react";
 import cx from "clsx";
 
 import type { MenuNode } from "~/utils/docs/get-menu.server";

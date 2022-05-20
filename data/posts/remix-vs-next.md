@@ -359,7 +359,7 @@ No spinners, no skeletons, instant user experiences, even on slow networks 🏎
 This was super easy to do, too.
 
 ```tsx
-import { Form, PrefetchPageLinks } from "remix";
+import { Form, PrefetchPageLinks } from "@remix-run/react";
 
 function Search() {
   let [query, setQuery] = useState("");

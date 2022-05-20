@@ -1,6 +1,5 @@
 import * as React from "react";
-import { useLocation } from "react-router-dom";
-import { useTransition, useBeforeUnload } from "remix";
+import { useTransition, useBeforeUnload, useLocation } from "@remix-run/react";
 
 const STORAGE_KEY = "positions";
 

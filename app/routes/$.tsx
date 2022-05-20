@@ -1,5 +1,5 @@
 import { handleRedirects } from "~/utils/http.server";
-import { LoaderFunction, redirect, json } from "remix";
+import { LoaderFunction, redirect, json } from "@remix-run/node";
 import { prisma } from "~/db.server";
 import { getVersions } from "~/utils/undoc.server";
 import { getDoc } from "~/utils/docs/get-doc.server";

@@ -1,7 +1,7 @@
 import invariant from "ts-invariant";
-import { LoaderFunction, RouteComponent } from "remix";
+import { LoaderFunction } from "@remix-run/node";
 
-import { json } from "remix";
+import { json } from "@remix-run/node";
 
 import { getDoc } from "~/utils/docs/get-doc.server";
 import { DocsPage } from "~/components/doc";
@@ -18,9 +18,9 @@ let loader: LoaderFunction = async ({ params }) => {
   return json(doc, { headers: { "Cache-Control": CACHE_CONTROL } });
 };
 
-const SplatPage: RouteComponent = () => {
+function SplatPage() {
   return <DocsPage />;
-};
+}
 
 export default SplatPage;
 export { loader };

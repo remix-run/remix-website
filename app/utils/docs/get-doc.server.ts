@@ -6,7 +6,7 @@ import invariant from "ts-invariant";
 
 import { prisma } from "~/db.server";
 import { getBranchOrTagFromRef } from "./get-tag-from-ref.server";
-import { json } from "remix";
+import { json } from "@remix-run/node";
 
 invariant(process.env.REPO_LATEST_BRANCH, "REPO_LATEST_BRANCH is not set");
 

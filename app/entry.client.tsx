@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 import { load } from "fathom-client";
-import { RemixBrowser } from "remix";
+import { RemixBrowser } from "@remix-run/react";
 
 ReactDOM.hydrate(<RemixBrowser />, document);
 

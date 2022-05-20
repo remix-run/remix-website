@@ -1,6 +1,5 @@
 import * as React from "react";
-import { PrefetchPageLinks } from "remix";
-import { useNavigate } from "react-router-dom";
+import { PrefetchPageLinks, useNavigate } from "@remix-run/react";
 
 function isLinkEvent(event: MouseEvent) {
   if (!(event.target instanceof HTMLElement)) return;

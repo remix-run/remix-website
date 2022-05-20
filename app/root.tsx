@@ -7,8 +7,8 @@ import {
   useMatches,
   Outlet,
   useLoaderData,
-} from "remix";
-import type { LoaderFunction } from "remix";
+} from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/node";
 
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";

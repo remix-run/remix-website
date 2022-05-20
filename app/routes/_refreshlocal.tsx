@@ -1,4 +1,4 @@
-import { RouteComponent, ActionFunction, json } from "remix";
+import { RouteComponent, ActionFunction, json } from "@remix-run/node";
 import PQueue from "p-queue";
 
 import type { GitHubRelease } from "~/@types/github";

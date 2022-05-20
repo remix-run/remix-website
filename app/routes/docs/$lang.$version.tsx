@@ -1,8 +1,12 @@
 import * as React from "react";
 import invariant from "ts-invariant";
-import { json, useLoaderData, Outlet, Link } from "remix";
-import type { LoaderFunction, MetaFunction, LinksFunction } from "remix";
-import { useLocation } from "react-router-dom";
+import { useLoaderData, useLocation, Outlet, Link } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import type {
+  LoaderFunction,
+  MetaFunction,
+  LinksFunction,
+} from "@remix-run/node";
 import cx from "clsx";
 import { DocSearch } from "@docsearch/react";
 import docsearchStylesheet from "@docsearch/css/dist/style.css";

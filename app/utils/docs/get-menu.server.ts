@@ -1,5 +1,5 @@
 import { getRefFromParam } from "@mcansh/undoc";
-import { json } from "remix";
+import { json } from "@remix-run/node";
 import invariant from "ts-invariant";
 
 import { prisma } from "~/db.server";

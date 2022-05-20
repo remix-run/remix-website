@@ -1,4 +1,4 @@
-import { Scripts, LiveReload } from "remix";
+import { Scripts, LiveReload } from "@remix-run/react";
 import { ScrollRestoration } from "./scroll-restoration";
 
 export function Body({

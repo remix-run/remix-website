@@ -1,5 +1,6 @@
-import { useLoaderData, json } from "remix";
-import type { LoaderFunction, LinksFunction } from "remix";
+import { useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import type { LoaderFunction, LinksFunction } from "@remix-run/node";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
 import { getMarkdown } from "~/utils/md.server";
 import indexStyles from "../../styles/index.css";

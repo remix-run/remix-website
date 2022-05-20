@@ -1,5 +1,5 @@
-import type { LoaderFunction, RouteComponent } from "remix";
-import { redirect } from "remix";
+import type { LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import acceptLanguage from "accept-language";
 import { getVersions } from "~/utils/undoc.server";
 
@@ -46,9 +46,9 @@ let loader: LoaderFunction = async ({ request, params }) => {
   return redirect(`/docs/${preferred}/${latest.head}`);
 };
 
-const RedirectPage: RouteComponent = () => {
+function RedirectPage() {
   return null;
-};
+}
 
 export default RedirectPage;
 export { loader };

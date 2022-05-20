@@ -1,4 +1,5 @@
-import { ActionFunction, json } from "remix";
+import { json } from "@remix-run/node";
+import type { ActionFunction } from "@remix-run/node";
 import { subscribeToNewsletter } from "~/utils/convertkit";
 import { requirePost } from "~/utils/http.server";
 
