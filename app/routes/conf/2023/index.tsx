@@ -9,7 +9,7 @@ import {
   OutlineButtonLink,
   primaryButtonLinkClass,
 } from "~/components/buttons";
-import indexStyles from "../../styles/index.css";
+import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
 import type { Sponsor, Speaker } from "~/utils/conf";
 import { getSpeakers, getSponsors } from "~/utils/conf.server";
@@ -56,7 +56,13 @@ export const loader: LoaderFunction = async () => {
   const speakersOrdered = await getSpeakers();
   const speakersShuffled = speakersOrdered
     // save a bit of data by not sending along the bio to the home page
-    .map(({ bio, ...s }) => s)
+    .map(
+      ({
+        // @ts-ignore
+        bio,
+        ...s
+      }) => s
+    )
     .sort(() => Math.random() - 0.5);
 
   const allSponsors = await getSponsors();
