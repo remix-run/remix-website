@@ -1,4 +1,5 @@
-import { HeadersFunction, Link, MetaFunction } from "remix";
+import type { HeadersFunction, MetaFunction } from "@remix-run/node";
+import { Link } from "@remix-run/react";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({

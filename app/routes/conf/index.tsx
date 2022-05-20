@@ -1,5 +1,10 @@
-import { HeadersFunction, json, useLoaderData } from "remix";
-import type { LinksFunction, LoaderFunction } from "remix";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import type {
+  HeadersFunction,
+  LinksFunction,
+  LoaderFunction,
+} from "@remix-run/node";
 import {
   OutlineButtonLink,
   primaryButtonLinkClass,

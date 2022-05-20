@@ -1,4 +1,4 @@
-import type { HeadersFunction, MetaFunction } from "remix";
+import type { HeadersFunction, MetaFunction } from "@remix-run/node";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({

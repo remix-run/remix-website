@@ -1,6 +1,6 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs";
-import { Link, Outlet, useMatches, useNavigate } from "remix";
-import type { MetaFunction, HeadersFunction } from "remix";
+import { Link, Outlet, useMatches, useNavigate } from "@remix-run/react";
+import type { MetaFunction, HeadersFunction } from "@remix-run/node";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
 export const meta: MetaFunction = () => ({

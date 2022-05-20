@@ -1,11 +1,10 @@
-import {
+import { Link, useLoaderData } from "@remix-run/react";
+import type {
   HeadersFunction,
-  Link,
   MetaFunction,
   LoaderFunction,
-  json,
-  useLoaderData,
-} from "remix";
+} from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { Discord } from "~/components/icons";
 import { CACHE_CONTROL } from "~/utils/http.server";
 

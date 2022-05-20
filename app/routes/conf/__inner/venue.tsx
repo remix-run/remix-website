@@ -1,6 +1,11 @@
 import * as React from "react";
-import { MetaFunction, LoaderFunction, Link, HeadersFunction } from "remix";
-import { json, useLoaderData } from "remix";
+import type {
+  MetaFunction,
+  LoaderFunction,
+  HeadersFunction,
+} from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useLoaderData, Link } from "@remix-run/react";
 import { primaryButtonLinkClass } from "~/components/buttons";
 import { CACHE_CONTROL } from "~/utils/http.server";
 

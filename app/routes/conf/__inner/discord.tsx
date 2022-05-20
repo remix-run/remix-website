@@ -1,5 +1,5 @@
-import type { HeadersFunction, MetaFunction } from "remix";
-import { Link } from "remix";
+import type { HeadersFunction, MetaFunction } from "@remix-run/node";
+import { Link } from "@remix-run/react";
 import { primaryButtonLinkClass } from "~/components/buttons";
 import { Discord } from "~/components/icons";
 import { CACHE_CONTROL } from "~/utils/http.server";

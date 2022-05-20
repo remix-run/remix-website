@@ -3,8 +3,9 @@ import type {
   LoaderFunction,
   MetaFunction,
   HeadersFunction,
-} from "remix";
-import { Link, useCatch, useParams, json, useLoaderData } from "remix";
+} from "@remix-run/node";
+import { Link, useCatch, useParams, useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
 import { getSpeakers, getTalks } from "~/utils/conf.server";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
 import { isSpeaker, Speaker, Talk, isTalkArray, sluggify } from "~/utils/conf";
