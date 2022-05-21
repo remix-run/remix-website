@@ -1,0 +1,114 @@
+@import "@reach/tabs/styles.css";
+
+.__hero {
+  --bg-img-light: url(https://res.cloudinary.com/chancedigital/image/upload/v1653080288/remix.run/conf-2023-light.png);
+  --bg-img-twinkle: url(https://res.cloudinary.com/chancedigital/image/upload/v1653095379/remix.run/conf-2023-twinkle.png);
+  --overlay-gradient: linear-gradient(
+    90deg,
+    theme(colors.blue.brand) 0%,
+    theme(colors.pink.brand) 16.67%,
+    theme(colors.red.brand) 33.33%,
+    theme(colors.yellow.brand) 50%,
+    theme(colors.red.brand) 66.67%,
+    theme(colors.pink.brand) 82.33%,
+    theme(colors.blue.brand) 100%
+  );
+  position: relative;
+
+  & .__fx-wrapper,
+  & .__fx-lights,
+  & .__fx-twinkle,
+  & .__fx-colors {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  & .__fx-wrapper {
+    /* z-index: -1; */
+  }
+
+  & .__fx-lights {
+    opacity: 0.375;
+  }
+
+  & .__fx-lights::before {
+    content: "";
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    top: -25%;
+    left: -25%;
+    z-index: -1;
+    background-image: var(--bg-img-light);
+    background-size: 26px;
+    transform: rotate(-7deg);
+  }
+
+  & .__fx-twinkle {
+    background-image: var(--bg-img-twinkle);
+    background-repeat: repeat;
+    background-position: 0 0;
+    background-size: 180px;
+    animation: heroFxTwinkle 240s cubic-bezier(0.38, 0.54, 0.46, 0.63) infinite;
+    opacity: 0.6;
+  }
+
+  & .__fx-twinkle::before {
+    content: "";
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-image: inherit;
+    background-repeat: repeat;
+    background-position: 0 0;
+    background-size: 360px;
+    animation: heroFxTwinkle 120s linear infinite;
+    animation-direction: reverse;
+    opacity: 0.9;
+  }
+
+  & .__fx-colors {
+    background-image: linear-gradient(
+      90deg,
+      rgb(57 146 255) 0%,
+      rgb(216 59 210) 16.67%,
+      rgb(244 66 80) 33.33%,
+      rgb(254 204 27) 50%,
+      rgb(244 66 80) 66.67%,
+      rgb(216 59 210) 82.33%,
+      rgb(57 146 255) 100%
+    );
+    mix-blend-mode: soft-light;
+    opacity: 0.8;
+    animation: heroFxColors 240s linear infinite;
+  }
+}
+
+@keyframes heroFxTwinkle {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 2500px;
+  }
+}
+
+@keyframes heroFxColors {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 10000px 0;
+  }
+}

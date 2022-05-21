@@ -17,7 +17,7 @@ export const meta: MetaFunction = () => ({
 type LoaderData = { scheduleItems: Awaited<ReturnType<typeof getSchedule>> };
 
 export const loader: LoaderFunction = async () => {
-  const scheduleItems = await getSchedule();
+  const scheduleItems = await getSchedule(2022);
   return json<LoaderData>(
     { scheduleItems },
     { headers: { "Cache-Control": CACHE_CONTROL } }

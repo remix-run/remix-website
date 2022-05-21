@@ -37,8 +37,8 @@ type LoaderData = { speaker: Speaker; talks: Array<Omit<Talk, "description">> };
 
 export const loader: LoaderFunction = async ({ params }) => {
   const [allTalks, allSpeakers] = await Promise.all([
-    getTalks(),
-    getSpeakers(),
+    getTalks(2022),
+    getSpeakers(2022),
   ]);
   const speaker = allSpeakers.find((s) => s.slug === params.speakerSlug);
   if (!speaker) throw new Response("Speaker not found", { status: 404 });

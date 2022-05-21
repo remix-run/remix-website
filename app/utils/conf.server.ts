@@ -35,19 +35,28 @@ let cache = new LRUCache<
   },
 });
 
-let DATA_DIR = path.join(process.cwd(), "data");
-let CONF_DIR = path.join(DATA_DIR, "conf");
-let SPEAKERS_FILE = path.join(CONF_DIR, "speakers.yaml");
-let SPONSORS_FILE = path.join(CONF_DIR, "sponsors.yaml");
-let TALKS_FILE = path.join(CONF_DIR, "talks.yaml");
-let SCHEDULE_FILE = path.join(CONF_DIR, "schedule.yaml");
+const DATA_DIR = path.join(process.cwd(), "data");
+const CONF_ROOT_DIR = path.join(DATA_DIR, "conf");
 
-export async function getSpeakers() {
+function getConfPaths(year: ConfYear) {
+  let confDir = path.join(CONF_ROOT_DIR, String(year));
+  return {
+    speakersFile: path.join(confDir, "speakers.yaml"),
+    sponsorsFile: path.join(confDir, "sponsors.yaml"),
+    talksFile: path.join(confDir, "talks.yaml"),
+    scheduleFile: path.join(confDir, "schedule.yaml"),
+  };
+}
+
+type ConfYear = 2022 | 2023;
+
+export async function getSpeakers(year: ConfYear) {
   let cached = cache.get("speakers");
   if (isSpeakerArray(cached)) {
     return cached;
   }
 
+  let { speakersFile: SPEAKERS_FILE } = getConfPaths(year);
   let speakersFileContents = await fsp.readFile(SPEAKERS_FILE, "utf8");
   let speakersRaw = yaml.parse(speakersFileContents);
   let speakers: Array<Speaker> = [];
@@ -73,12 +82,13 @@ export async function getSpeakers() {
   return speakers;
 }
 
-export async function getSponsors() {
+export async function getSponsors(year: ConfYear) {
   let cached = cache.get("sponsors");
   if (isSponsorArray(cached)) {
     return cached;
   }
 
+  let { sponsorsFile: SPONSORS_FILE } = getConfPaths(year);
   let sponsorsFileContents = await fsp.readFile(SPONSORS_FILE, "utf8");
   let sponsorsRaw = yaml.parse(sponsorsFileContents);
   let sponsors: Array<Sponsor> = [];
@@ -96,12 +106,13 @@ export async function getSponsors() {
   return sponsors;
 }
 
-export async function getTalks() {
+export async function getTalks(year: ConfYear) {
   let cached = cache.get("talks");
   if (isTalkArray(cached)) {
     return cached;
   }
 
+  let { talksFile: TALKS_FILE } = getConfPaths(year);
   let talksFileContents = await fsp.readFile(TALKS_FILE, "utf8");
   let talksRaw = yaml.parse(talksFileContents);
   let talks: Array<Talk> = [];
@@ -122,13 +133,15 @@ export async function getTalks() {
   return talks;
 }
 
-export async function getSchedule() {
+export async function getSchedule(year: ConfYear) {
   let cached = cache.get("schedule");
   if (isScheduleItemArray(cached)) {
     return cached;
   }
-  let allTalks = await getTalks();
-  let allSpeakers = await getSpeakers();
+
+  let { scheduleFile: SCHEDULE_FILE } = getConfPaths(year);
+  let allTalks = await getTalks(year);
+  let allSpeakers = await getSpeakers(year);
 
   let schedulesFileContents = await fsp.readFile(SCHEDULE_FILE, "utf8");
   let scheduleItemsRaw = yaml.parse(schedulesFileContents);

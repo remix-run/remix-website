@@ -53,7 +53,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async () => {
-  const speakersOrdered = await getSpeakers();
+  const speakersOrdered = await getSpeakers(2022);
   const speakersShuffled = speakersOrdered
     // save a bit of data by not sending along the bio to the home page
     .map(
@@ -65,7 +65,7 @@ export const loader: LoaderFunction = async () => {
     )
     .sort(() => Math.random() - 0.5);
 
-  const allSponsors = await getSponsors();
+  const allSponsors = await getSponsors(2022);
   const sponsors = {
     premier: allSponsors.find((s) => s.level === "premier"),
     gold: allSponsors

@@ -5,9 +5,10 @@ import type {
   LinksFunction,
   LoaderFunction,
 } from "@remix-run/node";
+import cx from "clsx";
 import {
   OutlineButtonLink,
-  primaryButtonLinkClass,
+  secondaryButtonLinkClass,
 } from "~/components/buttons";
 import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
@@ -53,7 +54,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async () => {
-  const speakersOrdered = await getSpeakers();
+  const speakersOrdered = await getSpeakers(2023);
   const speakersShuffled = speakersOrdered
     // save a bit of data by not sending along the bio to the home page
     .map(
@@ -65,7 +66,7 @@ export const loader: LoaderFunction = async () => {
     )
     .sort(() => Math.random() - 0.5);
 
-  const allSponsors = await getSponsors();
+  const allSponsors = await getSponsors(2023);
   const sponsors = {
     premier: allSponsors.find((s) => s.level === "premier"),
     gold: allSponsors
@@ -94,8 +95,9 @@ export default function ConfIndex() {
   return (
     <div x-comp="Index">
       <Hero />
-      <Speakers />
-      <Sponsors />
+      {/* <Speakers /> */}
+      {/* <Workshops /> */}
+      {/* <Sponsors /> */}
     </div>
   );
 }
@@ -105,37 +107,37 @@ function Hero() {
     <Fragment>
       <section
         x-comp="Hero"
-        className="__hero pb-10 pt-40 sm:pb-16 sm:pt-48 md:pb-24 md:pt-52 lg:pb-32 lg:pt-64"
+        className="__hero bg-black relative pb-10 pt-40 sm:pb-16 sm:pt-48 md:pb-24 md:pt-52 lg:pb-32 lg:pt-64"
       >
+        <div className="__fx-wrapper">
+          <div className="__fx-lights"></div>
+          <div className="__fx-twinkle"></div>
+          <div className="__fx-colors"></div>
+        </div>
         <div className="container relative">
           <div className="max-w-xl mx-auto md:mx-0">
-            <h1 className="font-jet-mono text-[length:32px] sm:text-[length:45px] lg:text-[length:64px] leading-tight __hero-text-shadow">
-              <div className="text-white">May 24-25, 2022 </div>
+            <h1 className="font-display text-m-j md:text-d-j">
+              <div className="text-white">May, 2023 </div>
               <div className="text-yellow-brand">Salt Lake City</div>
             </h1>
             <div className="h-6" />
-            <div className="space-y-4 text-m-p-lg lg:text-d-p-lg text-white __hero-text-shadow">
-              <p>
-                Remix is a full stack web framework that lets you focus on the
-                user interface and work back through web standards to deliver a
-                fast, slick, and resilient user experience.
-              </p>
-              <p className="font-bold">
-                We can't wait to tell you all about it.
-              </p>
-            </div>
+            <p className="space-y-4 text-m-p-lg lg:text-d-p-lg text-white">
+              Remix is a full stack web framework that lets you focus on the
+              user interface and work back through web standards to deliver a
+              fast, slick, and resilient user experience.
+            </p>
             <div className="h-9" />
             <div className="flex flex-col gap-4 md:flex-row items-center">
               <a
                 href="https://rmx.as/tickets"
-                className={`${primaryButtonLinkClass} w-full md:w-auto font-jet-mono uppercase`}
+                className={`${secondaryButtonLinkClass} w-full md:w-auto`}
               >
                 Get Your Tickets
               </a>
               <OutlineButtonLink
                 prefetch="intent"
                 to="sponsor"
-                className="w-full md:w-auto font-jet-mono uppercase"
+                className="w-full md:w-auto"
                 children="Become a Sponsor"
               />
             </div>
@@ -147,29 +149,30 @@ function Hero() {
 }
 
 function Speakers() {
-  const { speakers } = useLoaderData<LoaderData>();
-  const mc = speakers.find((s) => s.type === "emcee");
-  const talkSpeakers = speakers.filter((s) => s.type !== "emcee");
+  let { speakers } = useLoaderData<LoaderData>();
+  let mc = speakers.find((s) => s.type === "emcee");
+  let talkSpeakers = speakers.filter((s) => s.type !== "emcee");
   return (
-    <section className="py-20 __section-speakers" id="speakers">
+    <section id="speakers" className="py-20 __section-speakers">
       <div className="relative container">
-        <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
+        <h2 className="font-display text-m-h1 md:text-d-h1 mb-6 md:mb-8 font-semibold">
           Speakers
         </h2>
-        <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
-          <div className="flex flex-col flex-wrap sm:flex-row gap-y-12 sm:gap-x-8 sm:gap-y-14 md:gap-x-8 2xl:gap-x-10 justify-center items-start">
-            {talkSpeakers.map((speaker) => (
-              <SpeakerDisplay
-                speaker={speaker}
-                key={speaker.name}
-                className="basis-72"
-              />
-            ))}
-          </div>
-        </div>
+      </div>
+      <div className="lg:container">
+        <ScrollX className="gap-5 lg:grid lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:auto-rows-fr">
+          <div className="w-6 md:w-8 shrink-0 grow-0 snap-start -mr-5 lg:hidden"></div>
+          {talkSpeakers.map((speaker) => (
+            <SpeakerDisplay
+              speaker={speaker}
+              key={speaker.name}
+              className="w-[36%] min-w-[116px] lg:w-auto lg:min-w-0 snap-start shrink-0 grow-0 origin-center scale-100 transition-transform duration-300 ease-out relative"
+            />
+          ))}
+        </ScrollX>
         {mc ? (
           <div id="mc">
-            <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
+            <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center">
               Master of Ceremonies
             </h2>
             <div className="flex justify-center m-auto">
@@ -192,7 +195,7 @@ function SpeakerDisplay({
   return (
     <Link
       to={`speakers/${speaker.slug}`}
-      className={`__speaker-link h-full w-full flex items-center justify-center ${className}`}
+      className={`__speaker-link flex items-start h-full w-full ${className}`}
       aria-label={`${speaker.name}, ${speaker.title}`}
       prefetch="intent"
     >
@@ -215,55 +218,31 @@ function SpeakerDisplay({
 function Sponsors() {
   const { sponsors } = useLoaderData<LoaderData>();
   return (
-    <section id="sponsors" className="py-20 container">
-      <div className="md:container max-w-full overflow-hidden md:max-w-5xl">
-        <h2 className="sr-only">Sponsors</h2>
-        <div className="flex flex-col gap-20 lg:gap-36 text-center">
+    <section id="sponsors" className="py-20 __section-sponsors">
+      <div className="relative container">
+        <h2 className="font-display text-m-h1 md:text-d-h1 mb-6 md:mb-8 font-semibold">
+          Sponsors
+        </h2>
+      </div>
+      <div className="lg:container">
+        <div></div>
+        <div className="container lg:mx-0 lg:px-0">
           {sponsors.premier ? (
-            <div className="pb-8 lg:pb-20">
-              <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
-                Premier Sponsor
-              </h3>
-              <div className="max-w-[400px] w-full m-auto">
-                <div className="border-2 border-200 bg-white inline-block">
-                  <a href={sponsors.premier.link}>
-                    <img
-                      src={sponsors.premier.imgSrc}
-                      alt={sponsors.premier.name}
-                      className="max-w-full max-h-full p-12"
-                    />
-                  </a>
-                </div>
-              </div>
-            </div>
-          ) : null}
-          <div>
-            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
-              Gold Sponsors
-            </h3>
-            <SponsorsList sponsors={sponsors.gold} level="gold" />
-          </div>
-          <div>
-            <h3 className="mb-6 md:mb-8 uppercase font-semibold">
-              Silver Sponsors
-            </h3>
-            <SponsorsList sponsors={sponsors.silver} level="silver" />
-          </div>
-          <div>
-            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
-              Community Partners
-            </h3>
-            <SponsorsList sponsors={sponsors.community} level="community" />
-          </div>
+            <a href={sponsors.premier.link}>
+              <img
+                src={sponsors.premier.imgSrc}
+                alt={sponsors.premier.name}
+                className="max-w-full max-h-full p-12"
+              />
+            </a>
+          ) : (
+            <div className="bg-blue-brand" />
+          )}
         </div>
-        <div className="flex justify-center mt-20">
-          <OutlineButtonLink
-            prefetch="intent"
-            to="sponsor"
-            className="w-full md:w-auto font-jet-mono uppercase"
-            children="Join the Sponsors"
-          />
-        </div>
+
+        {sponsors.gold.length > 0 ? (
+          <ScrollX className="gap-5 lg:grid lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:auto-rows-fr"></ScrollX>
+        ) : null}
       </div>
     </section>
   );
@@ -313,6 +292,24 @@ function SponsorsList({
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+function ScrollX({
+  className = "",
+  children,
+}: React.PropsWithChildren<{
+  className?: string;
+}>) {
+  return (
+    <div
+      className={cx(
+        className,
+        "flex overflow-x-auto snap-x snap-mandatory scroll-smooth lg:snap-none"
+      )}
+    >
+      {children}
     </div>
   );
 }

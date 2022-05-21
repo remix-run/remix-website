@@ -17,10 +17,10 @@ import {
   MenuLink,
 } from "@reach/menu-button";
 import cx from "clsx";
-import styles from "~/styles/conf.css";
-import stylesSm from "~/styles/conf-sm.css";
-import stylesMd from "~/styles/conf-md.css";
-import stylesLg from "~/styles/conf-lg.css";
+import styles from "~/styles/conf/2022/conf.css";
+import stylesSm from "~/styles/conf/2022/conf-sm.css";
+import stylesMd from "~/styles/conf/2022/conf-md.css";
+import stylesLg from "~/styles/conf/2022/conf-lg.css";
 import {
   SubscribeEmailInput,
   SubscribeForm,
@@ -153,7 +153,8 @@ function SignUp() {
 
 function Header() {
   let location = useLocation();
-  let isConfHome = location.pathname === "/conf";
+  let isConfHome =
+    location.pathname === "/conf" || location.pathname === "/conf/2022";
   let data = useLoaderData<LoaderData>();
   return (
     <header
@@ -164,7 +165,7 @@ function Header() {
         }
       )}
     >
-      <NavLink to="/conf" prefetch="intent" aria-label="Remix">
+      <NavLink to="." prefetch="intent" aria-label="Remix">
         <Logo />
       </NavLink>
 

@@ -17,10 +17,10 @@ import {
   MenuLink,
 } from "@reach/menu-button";
 import cx from "clsx";
-import styles from "~/styles/conf.css";
-import stylesSm from "~/styles/conf-sm.css";
-import stylesMd from "~/styles/conf-md.css";
-import stylesLg from "~/styles/conf-lg.css";
+import styles from "~/styles/conf/2023/conf.css";
+import stylesSm from "~/styles/conf/2023/conf-sm.css";
+import stylesMd from "~/styles/conf/2023/conf-md.css";
+import stylesLg from "~/styles/conf/2023/conf-lg.css";
 import {
   SubscribeEmailInput,
   SubscribeForm,
@@ -60,36 +60,36 @@ export const headers: HeadersFunction = () => {
 };
 
 const navItems: Array<HeaderLinkProps> = [
+  //   {
+  //     to: "/conf/2023#speakers",
+  //     children: "Speakers",
+  //     prefetch: "intent",
+  //   },
   {
-    to: "/conf#speakers",
-    children: "Speakers",
-    prefetch: "intent",
-  },
-  {
-    to: "/conf#sponsors",
+    to: "/conf/2023#sponsors",
     children: "Sponsors",
     prefetch: "intent",
   },
-  {
-    to: "workshops",
-    children: "Workshops",
-    prefetch: "intent",
-  },
-  {
-    to: "venue",
-    children: "Venue",
-    prefetch: "intent",
-  },
-  {
-    to: "schedule/may-25",
-    children: "Schedule",
-    prefetch: "intent",
-  },
+  //   {
+  //     to: "workshops",
+  //     children: "Workshops",
+  //     prefetch: "intent",
+  //   },
+  //   {
+  //     to: "venue",
+  //     children: "Venue",
+  //     prefetch: "intent",
+  //   },
+  //   {
+  //     to: "schedule/may-25",
+  //     children: "Schedule",
+  //     prefetch: "intent",
+  //   },
 ];
 
 export default function ConfTwentyTwentyTwo() {
   return (
-    <div className="flex flex-col flex-1 h-full text-white bg-blue-800 __layout">
+    <div className="flex flex-col flex-1 h-full text-white bg-black __layout">
       <Header />
       <main className="flex flex-col flex-1" tabIndex={-1}>
         <Outlet />
@@ -108,7 +108,7 @@ function SignUp() {
       <div className="container">
         <section className="section-signup relative">
           <div className="md:max-w-xl mx-auto md:py-40 relative">
-            <h2 className="h2 mb-3 text-d-h3 text-yellow-brand font-bold font-jet-mono">
+            <h2 className="h2 mb-3 text-d-h3 text-yellow-brand font-bold">
               Stay Updated
             </h2>
             <div className="flex items-center gap-4 mb-6">
@@ -137,7 +137,7 @@ function SignUp() {
             <SubscribeProvider>
               <SubscribeForm aria-describedby="newsletter-text">
                 <SubscribeEmailInput />
-                <SubscribeSubmit className="w-full mt-2 sm:w-auto sm:mt-0 uppercase font-jet-mono" />
+                <SubscribeSubmit className="w-full mt-2 sm:w-auto sm:mt-0 uppercase" />
               </SubscribeForm>
               <p className="text-white opacity-60 text-sm mt-3">
                 We respect your privacy; unsubscribe at any time.
@@ -153,7 +153,8 @@ function SignUp() {
 
 function Header() {
   let location = useLocation();
-  let isConfHome = location.pathname === "/conf";
+  let isConfHome =
+    location.pathname === "/conf" || location.pathname === "/conf/2023";
   let data = useLoaderData<LoaderData>();
   return (
     <header
@@ -164,29 +165,42 @@ function Header() {
         }
       )}
     >
-      <NavLink to="/conf" prefetch="intent" aria-label="Remix">
-        <Logo />
+      <NavLink
+        to={isConfHome ? "/" : "."}
+        prefetch="intent"
+        aria-label="Remix"
+        className="opacity-80 hover:opacity-100 transition-opacity duration-200"
+      >
+        <Wordmark />
       </NavLink>
 
       <nav className="flex" aria-label="Main">
-        <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center font-jet-mono">
+        <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center">
           {navItems.map((item) => (
             <li key={item.to + item.children}>
               <HeaderLink
                 {...item}
-                className="text-gray-200 hover:text-white"
+                className="opacity-80 hover:opacity-100 transition-opacity duration-200"
               />
             </li>
           ))}
-          <li>
+          {/* <li>
             <HeaderLink
               to="https://rmx.as/tickets"
-              className="text-yellow-brand hover:text-white"
+              className="text-yellow-brand hover:text-white transition-colors duration-200"
             >
               Tickets{" "}
               {data.earlyBird ? (
                 <small title="Early Bird discount!"> 🐣</small>
               ) : null}
+            </HeaderLink>
+          </li> */}
+          <li>
+            <HeaderLink
+              to="https://rmx.as/tickets"
+              className="text-pink-brand hover:text-white transition-colors duration-200"
+            >
+              Become a Sponsor
             </HeaderLink>
           </li>
         </ul>
@@ -209,14 +223,14 @@ function Footer() {
         <Link
           prefetch="intent"
           to="coc"
-          className="leading-none block font-semibold font-jet-mono"
+          className="leading-none block font-semibold"
         >
           Code of Conduct
         </Link>
         <Link
           prefetch="intent"
           to="safety"
-          className="leading-none block font-semibold font-jet-mono"
+          className="leading-none block font-semibold"
         >
           Safety
         </Link>
@@ -282,7 +296,7 @@ function MobileNavButton() {
     <MenuButton
       id="nav-button"
       aria-label="Toggle menu"
-      className="border-2 border-white border-opacity-60 expanded:border-opacity-100 rounded-md h-9 w-9 flex items-center justify-center expanded:bg-blue-800"
+      className="border-2 border-white border-opacity-60 expanded:border-opacity-100 rounded-md h-9 w-9 flex items-center justify-center expanded:bg-black"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -302,7 +316,7 @@ function MobileMenuItem({ className, ...props }: HeaderLinkProps) {
       as={HeaderLink}
       className={cx(
         className,
-        "select-none cursor-pointer py-2 px-4 outline-none selected:bg-pink-500 selected:text-white hover:bg-blue-700 selected:hover:bg-pink-600 hover:text-white"
+        "select-none cursor-pointer py-2 px-4 outline-none selected:bg-pink-500 selected:text-white hover:bg-gray-700 selected:hover:bg-pink-600 hover:text-white"
       )}
       {...props}
     />
@@ -312,7 +326,7 @@ function MobileMenuItem({ className, ...props }: HeaderLinkProps) {
 function MobileNavList() {
   return (
     <MenuPopover className="absolute block">
-      <MenuItems className="relative block whitespace-nowrap outline-none py-2 border-2 border-white rounded-md mt-2 bg-blue-800 font-jet-mono">
+      <MenuItems className="relative block whitespace-nowrap outline-none py-2 border-2 border-white rounded-md mt-2 bg-black">
         {navItems.map((item) => (
           <MobileMenuItem
             key={item.to + item.children}
@@ -328,7 +342,7 @@ function MobileNavList() {
 function MobileNav() {
   const data = useLoaderData<LoaderData>();
   return (
-    <div className="flex items-center gap-4 md:hidden font-jet-mono">
+    <div className="flex items-center gap-4 md:hidden">
       <HeaderLink
         className="block text-yellow-brand hover:text-white"
         to="https://rmx.as/tickets"
@@ -353,7 +367,7 @@ function Logo() {
     <svg
       viewBox="0 0 745 280"
       xmlns="http://www.w3.org/2000/svg"
-      className="animated-remix-conf-logo h-[40px] w-[106px] sm:h-[50px] sm:w-[133px]"
+      className="h-[40px] w-[106px] sm:h-[50px] sm:w-[133px]"
     >
       <g transform="matrix(1,0,0,1,-227,-220)" className="remix">
         <path

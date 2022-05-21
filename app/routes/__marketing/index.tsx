@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction } from "@remix-run/node";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
 import { getMarkdown } from "~/utils/md.server";
-import indexStyles from "../../styles/index.css";
+import indexStyles from "~/styles/index.css";
 import { Red } from "~/components/gradients";
 import { BigTweet, TweetCarousel, tweets } from "~/components/twitter-cards";
 import { ScrollExperience } from "~/components/scroll-experience";
