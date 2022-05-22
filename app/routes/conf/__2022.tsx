@@ -1,11 +1,8 @@
 import * as React from "react";
 import { Outlet, useLocation, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type {
-  LinksFunction,
-  LoaderFunction,
-  HeadersFunction,
-} from "@remix-run/node";
+import type { LinksFunction, LoaderFunction } from "@remix-run/node";
+import { useRect } from "@reach/rect";
 import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/components/icons";
@@ -28,7 +25,6 @@ import {
   SubscribeStatus,
   SubscribeSubmit,
 } from "~/components/subscribe";
-import { CACHE_CONTROL } from "~/utils/http.server";
 
 export let handle = { forceDark: true };
 
@@ -47,16 +43,9 @@ type LoaderData = { earlyBird: boolean };
 const EARLY_BIRD_ENDING_TIME = 1646121600000;
 
 export const loader: LoaderFunction = async () => {
-  return json<LoaderData>(
-    { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
-    { headers: { "Cache-Control": CACHE_CONTROL } }
-  );
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL,
-  };
+  return json<LoaderData>({
+    earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME,
+  });
 };
 
 const navItems: Array<HeaderLinkProps> = [
@@ -88,9 +77,11 @@ const navItems: Array<HeaderLinkProps> = [
 ];
 
 export default function ConfTwentyTwentyTwo() {
+  let bannerRef = React.useRef<HTMLDivElement | null>(null);
   return (
     <div className="flex flex-col flex-1 h-full text-white bg-blue-800 __layout">
-      <Header />
+      <TopBanner bannerRef={bannerRef} />
+      <Header bannerRef={bannerRef} />
       <main className="flex flex-col flex-1" tabIndex={-1}>
         <Outlet />
       </main>
@@ -151,48 +142,53 @@ function SignUp() {
   );
 }
 
-function Header() {
+function Header({
+  bannerRef,
+}: {
+  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
+}) {
   let location = useLocation();
   let isConfHome =
     location.pathname === "/conf" || location.pathname === "/conf/2022";
   let data = useLoaderData<LoaderData>();
+  let rect = useRect(bannerRef, { observe: isConfHome });
   return (
     <header
-      className={cx(
-        "px-6 lg:px-12 py-9 flex justify-between items-start text-white gap-8",
-        {
-          ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
-        }
-      )}
+      className={cx("text-white", {
+        ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
+      })}
+      style={isConfHome && rect ? { paddingTop: rect.height } : undefined}
     >
-      <NavLink to="." prefetch="intent" aria-label="Remix">
-        <Logo />
-      </NavLink>
+      <div className="px-6 lg:px-12 py-9 flex justify-between items-start gap-8">
+        <NavLink to="." prefetch="intent" aria-label="Remix">
+          <Logo />
+        </NavLink>
 
-      <nav className="flex" aria-label="Main">
-        <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center font-jet-mono">
-          {navItems.map((item) => (
-            <li key={item.to + item.children}>
+        <nav className="flex" aria-label="Main">
+          <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center font-jet-mono">
+            {navItems.map((item) => (
+              <li key={item.to + item.children}>
+                <HeaderLink
+                  {...item}
+                  className="text-gray-200 hover:text-white"
+                />
+              </li>
+            ))}
+            <li>
               <HeaderLink
-                {...item}
-                className="text-gray-200 hover:text-white"
-              />
+                to="https://rmx.as/tickets"
+                className="text-yellow-brand hover:text-white"
+              >
+                Tickets{" "}
+                {data.earlyBird ? (
+                  <small title="Early Bird discount!"> 🐣</small>
+                ) : null}
+              </HeaderLink>
             </li>
-          ))}
-          <li>
-            <HeaderLink
-              to="https://rmx.as/tickets"
-              className="text-yellow-brand hover:text-white"
-            >
-              Tickets{" "}
-              {data.earlyBird ? (
-                <small title="Early Bird discount!"> 🐣</small>
-              ) : null}
-            </HeaderLink>
-          </li>
-        </ul>
-        <MobileNav />
-      </nav>
+          </ul>
+          <MobileNav />
+        </nav>
+      </div>
     </header>
   );
 }
@@ -372,5 +368,28 @@ function Logo() {
         />
       </g>
     </svg>
+  );
+}
+
+function TopBanner({
+  bannerRef,
+}: {
+  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
+}) {
+  return (
+    <div
+      className="py-2 text-center bg-black sticky top-0 z-20"
+      ref={bannerRef}
+    >
+      <p className="container mx-auto">
+        <span className="text-pink-brand font-bold">
+          Announcing: Remix Conf 2023.
+        </span>{" "}
+        <Link to="2023" className="text-white underline">
+          Earlybird tickets and sponsorships available now
+          <span aria-hidden> →</span>
+        </Link>
+      </p>
+    </div>
   );
 }

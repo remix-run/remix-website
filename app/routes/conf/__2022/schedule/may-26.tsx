@@ -7,6 +7,7 @@ import type {
 import { json } from "@remix-run/node";
 import { Discord } from "~/components/icons";
 import { CACHE_CONTROL } from "~/utils/http.server";
+import { InnerLayout } from "../_ui";
 
 export const meta: MetaFunction = () => ({
   title: "May 26th at Remix Conf",
@@ -217,70 +218,72 @@ export const loader: LoaderFunction = async () => {
 export default function May25Schedule() {
   const { activities } = useLoaderData<LoaderData>();
   return (
-    <div>
-      <p>
-        This is post-conference day! Get together with other conference
-        attendees before heading home. The conference organizers will facilitate
-        getting folks together who want to do the same thing and help you know
-        fun places to go hang out. Here are some possibilities:
-      </p>
-      <ul className="pt-6 space-y-2">
-        {activities.map((activity) => (
-          <li key={activity.name}>
-            <span className="pr-2">{activity.emoji}</span>
-            {activity.link ? (
-              <a className="underline" href={activity.link}>
-                {activity.name}
-              </a>
-            ) : (
-              activity.name
-            )}
-            <a className="mx-2" href={activity.discordLink}>
-              <Discord className="inline h-6 w-6" />
-            </a>
-            {activity.description}{" "}
-            {activity.address ? (
-              <a
-                target="_blank"
-                href={getMapsDirections(
-                  `${activity.name}, ${activity.address}`
-                )}
-                title={
-                  activity.walkingDistance
-                    ? "Walking directions"
-                    : "Bus/Car directions"
-                }
-              >
-                {activity.walkingDistance ? "🚶" : "🚌"}
-              </a>
-            ) : (
-              <span>
-                (Location still being determined.{" "}
-                <a className="underline" href={activity.discordLink}>
-                  Ideas welcome.
+    <InnerLayout>
+      <div>
+        <p>
+          This is post-conference day! Get together with other conference
+          attendees before heading home. The conference organizers will
+          facilitate getting folks together who want to do the same thing and
+          help you know fun places to go hang out. Here are some possibilities:
+        </p>
+        <ul className="pt-6 space-y-2">
+          {activities.map((activity) => (
+            <li key={activity.name}>
+              <span className="pr-2">{activity.emoji}</span>
+              {activity.link ? (
+                <a className="underline" href={activity.link}>
+                  {activity.name}
                 </a>
-                )
-              </span>
-            )}
-          </li>
-        ))}
-      </ul>
-      <p className="pt-10">
-        Note that these don't all have to happen on the 26th. Feel free to get
-        together with attendees any time you all are in Utah. We're happy to
-        facilitate you getting together any time around the conference time.
-      </p>
-      <p className="pt-10">
-        We'll use{" "}
-        <Link className="underline" to="/conf/discord">
-          the Discord server
-        </Link>{" "}
-        to help get people together who want to participate in the same
-        activities.{" "}
-        <a href="https://discord.com/channels/770287896669978684/935586137752358912">
-          Let us know if you have any other ideas!
-        </a>
-      </p>
-    </div>
+              ) : (
+                activity.name
+              )}
+              <a className="mx-2" href={activity.discordLink}>
+                <Discord className="inline h-6 w-6" />
+              </a>
+              {activity.description}{" "}
+              {activity.address ? (
+                <a
+                  target="_blank"
+                  href={getMapsDirections(
+                    `${activity.name}, ${activity.address}`
+                  )}
+                  title={
+                    activity.walkingDistance
+                      ? "Walking directions"
+                      : "Bus/Car directions"
+                  }
+                >
+                  {activity.walkingDistance ? "🚶" : "🚌"}
+                </a>
+              ) : (
+                <span>
+                  (Location still being determined.{" "}
+                  <a className="underline" href={activity.discordLink}>
+                    Ideas welcome.
+                  </a>
+                  )
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+        <p className="pt-10">
+          Note that these don't all have to happen on the 26th. Feel free to get
+          together with attendees any time you all are in Utah. We're happy to
+          facilitate you getting together any time around the conference time.
+        </p>
+        <p className="pt-10">
+          We'll use{" "}
+          <Link className="underline" to="/conf/discord">
+            the Discord server
+          </Link>{" "}
+          to help get people together who want to participate in the same
+          activities.{" "}
+          <a href="https://discord.com/channels/770287896669978684/935586137752358912">
+            Let us know if you have any other ideas!
+          </a>
+        </p>
+      </div>
+    </InnerLayout>
   );
 }

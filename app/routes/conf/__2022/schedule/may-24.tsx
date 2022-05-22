@@ -1,0 +1,75 @@
+import type { HeadersFunction, MetaFunction } from "@remix-run/node";
+import { Link } from "@remix-run/react";
+import { CACHE_CONTROL } from "~/utils/http.server";
+import { InnerLayout } from "../_ui";
+
+export const meta: MetaFunction = () => ({
+  title: "May 24th at Remix Conf",
+  description: "May 24th is The Workshop and Welcome day at Remix.",
+});
+
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL,
+  };
+};
+
+export default function May24Schedule() {
+  return (
+    <InnerLayout>
+      <div>
+        <p>
+          This is the day before the big event. We'll be holding two{" "}
+          <Link className="underline" to="/conf/workshops">
+            workshops
+          </Link>{" "}
+          as well as a welcome reception, both at the{" "}
+          <Link className="underline" to="/conf/venue">
+            Venue
+          </Link>
+          . Come hang out with fellow Remix attendees, grab a snack, and get
+          registered to avoid the morning lines!{" "}
+          <a href="https://rmx.as/tickets" className="underline">
+            Join us!
+          </a>
+        </p>
+        <table className="w-full mt-10 border-collapse">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Event</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="p-3 border">10:00am - 4:00pm</td>
+              <td className="p-3 border">
+                <Link className="underline" to="/conf/workshops">
+                  Workshops
+                </Link>
+              </td>
+            </tr>
+            <tr>
+              <td className="p-3 border">6:00pm - 9:00pm</td>
+              <td className="p-3 border">Welcome Reception</td>
+            </tr>
+            <tr>
+              <td className="p-3 border">6:00pm - 9:00pm</td>
+              <td className="p-3 border">
+                "Hack && Hang" with Cockroach Labs and Netlify
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div className="mt-10">
+          <small>
+            During the welcome reception, we will be recording the talks of all
+            backup speakers. We're still deciding whether you'll be invited to
+            attend those talks, but you'll definitely be able to watch them
+            after the conference!
+          </small>
+        </div>
+      </div>
+    </InnerLayout>
+  );
+}

@@ -10,6 +10,7 @@ import { getSpeakers, getTalks } from "~/utils/conf.server";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
 import { isSpeaker, Speaker, Talk, isTalkArray, sluggify } from "~/utils/conf";
 import { CACHE_CONTROL } from "~/utils/http.server";
+import { InnerLayout } from "../_ui";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: speakersStylesUrl }];
@@ -61,70 +62,72 @@ export const headers: HeadersFunction = () => {
 export default function Speaker() {
   const { speaker, talks } = useLoaderData<LoaderData>();
   return (
-    <div>
-      <div className="mb-10 flex flex-col md:flex-row gap-10 text-white">
-        <img
-          src={speaker.imgSrc}
-          alt={speaker.name}
-          className="object-cover rounded-md w-36 h-36 md:w-64 md:h-64"
-          style={{ aspectRatio: "1/1" }}
-        />
-        <div className="text-m-p-lg lg:text-d-p-lg">
-          <h1 className="font-display text-m-h1 sm:text-d-h2 xl:text-d-j mb-2">
-            {speaker.name}
-          </h1>
-          <div className="mt-4">
-            <p>{speaker.title}</p>
-            <a
-              href={speaker.link}
-              className="underline text-m-p-sm font-semibold uppercase mt-2"
-            >
-              {speaker.linkText}
-            </a>
-          </div>
-          <div
-            className="mt-4 md:mt-8 speaker-prose"
-            dangerouslySetInnerHTML={{ __html: speaker.bioHTML }}
+    <InnerLayout>
+      <div>
+        <div className="mb-10 flex flex-col md:flex-row gap-10 text-white">
+          <img
+            src={speaker.imgSrc}
+            alt={speaker.name}
+            className="object-cover rounded-md w-36 h-36 md:w-64 md:h-64"
+            style={{ aspectRatio: "1/1" }}
           />
-        </div>
-      </div>
-      {talks.length ? (
-        <div className="mt-10">
-          {talks.map((talk) => (
-            <div key={talk.title} className="flex flex-col gap-4">
-              <div>
-                <h2 className="text-m-h3 font-display md:text-d-h3 inline">
-                  {talk.title}
-                </h2>
-                {talk.type === "backup" ? (
-                  <Link className="underline pl-2" to="../schedule/may-24">
-                    <span className="pl-2">backup talk</span>
-                  </Link>
-                ) : (
-                  <Link
-                    className="underline pl-2"
-                    to={`../schedule/may-25${
-                      talk.time ? `#time-${sluggify(talk.time)}` : ""
-                    }`}
-                  >
-                    <time>{talk.time}</time>{" "}
-                    {talk.type === "lightning" ? (
-                      <span title="Lightning talk">⚡</span>
-                    ) : (
-                      ""
-                    )}
-                  </Link>
-                )}
-              </div>
-              <div
-                className="speaker-prose"
-                dangerouslySetInnerHTML={{ __html: talk.descriptionHTML }}
-              />
+          <div className="text-m-p-lg lg:text-d-p-lg">
+            <h1 className="font-display text-m-h1 sm:text-d-h2 xl:text-d-j mb-2">
+              {speaker.name}
+            </h1>
+            <div className="mt-4">
+              <p>{speaker.title}</p>
+              <a
+                href={speaker.link}
+                className="underline text-m-p-sm font-semibold uppercase mt-2"
+              >
+                {speaker.linkText}
+              </a>
             </div>
-          ))}
+            <div
+              className="mt-4 md:mt-8 speaker-prose"
+              dangerouslySetInnerHTML={{ __html: speaker.bioHTML }}
+            />
+          </div>
         </div>
-      ) : null}
-    </div>
+        {talks.length ? (
+          <div className="mt-10">
+            {talks.map((talk) => (
+              <div key={talk.title} className="flex flex-col gap-4">
+                <div>
+                  <h2 className="text-m-h3 font-display md:text-d-h3 inline">
+                    {talk.title}
+                  </h2>
+                  {talk.type === "backup" ? (
+                    <Link className="underline pl-2" to="../schedule/may-24">
+                      <span className="pl-2">backup talk</span>
+                    </Link>
+                  ) : (
+                    <Link
+                      className="underline pl-2"
+                      to={`../schedule/may-25${
+                        talk.time ? `#time-${sluggify(talk.time)}` : ""
+                      }`}
+                    >
+                      <time>{talk.time}</time>{" "}
+                      {talk.type === "lightning" ? (
+                        <span title="Lightning talk">⚡</span>
+                      ) : (
+                        ""
+                      )}
+                    </Link>
+                  )}
+                </div>
+                <div
+                  className="speaker-prose"
+                  dangerouslySetInnerHTML={{ __html: talk.descriptionHTML }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </InnerLayout>
   );
 }
 

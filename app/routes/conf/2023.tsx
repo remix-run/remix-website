@@ -18,9 +18,6 @@ import {
 } from "@reach/menu-button";
 import cx from "clsx";
 import styles from "~/styles/conf/2023/conf.css";
-import stylesSm from "~/styles/conf/2023/conf-sm.css";
-import stylesMd from "~/styles/conf/2023/conf-md.css";
-import stylesLg from "~/styles/conf/2023/conf-lg.css";
 import {
   SubscribeEmailInput,
   SubscribeForm,
@@ -33,12 +30,7 @@ import { CACHE_CONTROL } from "~/utils/http.server";
 export let handle = { forceDark: true };
 
 export let links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: styles },
-    { rel: "stylesheet", href: stylesSm, media: "(min-width: 640px)" },
-    { rel: "stylesheet", href: stylesMd, media: "(min-width: 768px)" },
-    { rel: "stylesheet", href: stylesLg, media: "(min-width: 1024px)" },
-  ];
+  return [{ rel: "stylesheet", href: styles }];
 };
 
 type LoaderData = { earlyBird: boolean };

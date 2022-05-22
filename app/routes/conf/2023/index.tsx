@@ -129,17 +129,11 @@ function Hero() {
             <div className="h-9" />
             <div className="flex flex-col gap-4 md:flex-row items-center">
               <a
-                href="https://rmx.as/tickets"
+                href="#"
                 className={`${secondaryButtonLinkClass} w-full md:w-auto`}
               >
-                Get Your Tickets
+                Become a Sponsor
               </a>
-              <OutlineButtonLink
-                prefetch="intent"
-                to="sponsor"
-                className="w-full md:w-auto"
-                children="Become a Sponsor"
-              />
             </div>
           </div>
         </div>
@@ -153,7 +147,7 @@ function Speakers() {
   let mc = speakers.find((s) => s.type === "emcee");
   let talkSpeakers = speakers.filter((s) => s.type !== "emcee");
   return (
-    <section id="speakers" className="py-20 __section-speakers">
+    <section id="speakers" className="py-20">
       <div className="relative container">
         <h2 className="font-display text-m-h1 md:text-d-h1 mb-6 md:mb-8 font-semibold">
           Speakers
