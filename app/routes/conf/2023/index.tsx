@@ -165,7 +165,7 @@ function EarlySponsors() {
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
             <SponsorGridCell className="bg-gray-900">
               <a
-                className="flex w-full"
+                className="flex w-full p-4 md:p-8"
                 href="https://www.storyblok.com/"
                 aria-label="Storyblok"
               >
@@ -174,7 +174,7 @@ function EarlySponsors() {
             </SponsorGridCell>
             <SponsorGridCell className="bg-gray-900">
               <a
-                className="flex w-full"
+                className="flex w-full p-4 md:p-8"
                 href="https://www.netlify.com/"
                 aria-label="Netlify"
               >
@@ -270,7 +270,7 @@ function SponsorGridCell({
         "relative rounded-lg before:content-[''] before:block before:pb-[100%]"
       )}
     >
-      <div className="absolute top-0 left-0 w-full h-full p-8 flex items-center justify-center">
+      <div className="absolute top-0 left-0 w-full h-full p-8 2xl:p-10 flex items-center justify-center">
         {children}
       </div>
     </div>
