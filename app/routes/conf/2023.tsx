@@ -52,31 +52,10 @@ export const headers: HeadersFunction = () => {
 };
 
 const navItems: Array<HeaderLinkProps> = [
-  //   {
-  //     to: "/conf/2023#speakers",
-  //     children: "Speakers",
-  //     prefetch: "intent",
-  //   },
   {
-    to: "/conf/2023#sponsors",
-    children: "Sponsors",
-    prefetch: "intent",
+    to: "https://ti.to/remix-conf/remix-conf2023",
+    children: "Buy Tickets",
   },
-  //   {
-  //     to: "workshops",
-  //     children: "Workshops",
-  //     prefetch: "intent",
-  //   },
-  //   {
-  //     to: "venue",
-  //     children: "Venue",
-  //     prefetch: "intent",
-  //   },
-  //   {
-  //     to: "schedule/may-25",
-  //     children: "Schedule",
-  //     prefetch: "intent",
-  //   },
 ];
 
 export default function ConfTwentyTwentyTwo() {
@@ -176,20 +155,9 @@ function Header() {
               />
             </li>
           ))}
-          {/* <li>
-            <HeaderLink
-              to="https://rmx.as/tickets"
-              className="text-yellow-brand hover:text-white transition-colors duration-200"
-            >
-              Tickets{" "}
-              {data.earlyBird ? (
-                <small title="Early Bird discount!"> 🐣</small>
-              ) : null}
-            </HeaderLink>
-          </li> */}
           <li>
             <HeaderLink
-              to="https://rmx.as/tickets"
+              to="sponsor"
               className="text-pink-brand hover:text-white transition-colors duration-200"
             >
               Become a Sponsor
@@ -255,7 +223,6 @@ interface HeaderLinkProps {
 const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
   ({ to, children, className, prefetch = "none", ...props }, ref) => {
     let external = to.startsWith("https://");
-
     if (external) {
       return (
         <a

@@ -1,8 +1,13 @@
 import * as React from "react";
 import { Link } from "~/components/link";
 
-export const outlineButtonLinkClass =
+// TODO: This is a mess, we need to create a proper set of components for buttons
+
+export const outlinePrimaryButtonLinkClass =
   "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-blue-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2";
+
+export const outlineSecondaryButtonLinkClass =
+  "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-pink-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2";
 
 export function OutlineButtonLink({
   to,
@@ -20,7 +25,7 @@ export function OutlineButtonLink({
       to={to}
       prefetch={prefetch}
       x-comp="OutlineButtonLink"
-      className={`${outlineButtonLinkClass} ${className}`}
+      className={`${outlinePrimaryButtonLinkClass} ${className}`}
       children={children}
     />
   );

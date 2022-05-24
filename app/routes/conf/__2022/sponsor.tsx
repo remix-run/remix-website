@@ -22,27 +22,17 @@ export default function SponsorUs() {
         </h1>
         <div className="container text-m-p-lg lg:text-d-p-lg text-white flex flex-col gap-4">
           <p>
-            We're excited you're interested in sponsoring the conference!
-            Sponsoring Remix Conf will connect your company and brand to a group
-            of <strong>experienced</strong> software engineers (and their
-            managers) looking into the latest and greatest technology for
-            building web applications.
+            Sponsorship for Remix Conf 2022 is sold out, but we are currently
+            planning Remix Conf 2023.
           </p>
           <p>
-            If that sounds interesting to you, please email us at{" "}
-            <strong>
-              <a className="underline" href="mailto:conf@remix.run">
-                conf@remix.run
-              </a>
-              {". "}
-            </strong>
+            If you're interested in sponsoring for next year, please email us at{" "}
+            <a className="underline font-bold" href="mailto:conf@remix.run">
+              conf@remix.run
+            </a>
+            .
           </p>
-          <p>We look forward to hearing from you.</p>
-          <p>
-            Note, Sponsorship for Remix Conf 2022 is already sold out. But we
-            are planning Remix Conf 2023 so if you're interested in sponsoring
-            for next year feel free to reach out!
-          </p>
+          <p>We look forward to hearing from you!</p>
         </div>
       </div>
     </InnerLayout>
