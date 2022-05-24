@@ -53,7 +53,7 @@ export const headers: HeadersFunction = () => {
 
 const navItems: Array<HeaderLinkProps> = [
   {
-    to: "https://ti.to/remix-conf/remix-conf2023",
+    to: "https://ti.to/remix-conf/2023",
     children: "Buy Tickets",
   },
 ];

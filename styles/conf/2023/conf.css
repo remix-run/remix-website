@@ -95,6 +95,24 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .remix-logo-num-2,
+  .remix-logo-num-3 {
+    animation: logoNumberTick 2s cubic-bezier(0.05, 0.5, 0.32, 0.99);
+    animation-delay: 200ms;
+    transform: translateY(0);
+  }
+}
+
+@keyframes logoNumberTick {
+  from {
+    transform: translateY(20.5%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @keyframes heroFxTwinkle {
   from {
     background-position: 0 0;
