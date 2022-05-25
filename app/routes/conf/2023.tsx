@@ -53,23 +53,26 @@ export const headers: HeadersFunction = () => {
 
 const navItems: Array<HeaderLinkProps> = [
   {
-    to: "https://ti.to/remix-conf/2023",
-    children: "Buy Tickets",
+    to: "sponsor",
+    children: "Become a Sponsor",
   },
 ];
 
 export default function ConfTwentyTwentyTwo() {
   return (
-    <div className="flex flex-col flex-1 h-full text-white bg-black __layout">
-      <Header />
-      <main className="flex flex-col flex-1" tabIndex={-1}>
-        <Outlet />
-      </main>
-      <aside>
-        <SignUp />
-      </aside>
-      <Footer />
-    </div>
+    <>
+      <TopBanner />
+      <div className="flex flex-col flex-1 h-full text-white bg-black __layout">
+        <Header />
+        <main className="flex flex-col flex-1" tabIndex={-1}>
+          <Outlet />
+        </main>
+        <aside>
+          <SignUp />
+        </aside>
+        <Footer />
+      </div>
+    </>
   );
 }
 
@@ -126,11 +129,10 @@ function Header() {
   let location = useLocation();
   let isConfHome =
     location.pathname === "/conf" || location.pathname === "/conf/2023";
-  let data = useLoaderData<LoaderData>();
   return (
     <header
       className={cx(
-        "px-6 lg:px-12 py-9 flex justify-between items-start text-white gap-8",
+        "px-6 lg:px-12 py-9 pt-20 md:pt-14 flex justify-between items-start text-white gap-8",
         {
           ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
         }
@@ -344,5 +346,21 @@ function Logo() {
         />
       </g>
     </svg>
+  );
+}
+
+function TopBanner() {
+  return (
+    <div className="py-2 bg-black sticky top-0 z-20">
+      <p className="container mx-auto flex flex-col md:flex-row md:gap-1 justify-center items-center">
+        <span className="text-pink-brand font-bold">
+          Announcing: Remix Conf 2023.
+        </span>{" "}
+        <a href="https://rmx.as/tickets" className="text-white underline">
+          40% discount available today only.
+          <span aria-hidden> ↗</span>
+        </a>
+      </p>
+    </div>
   );
 }

@@ -77,11 +77,10 @@ const navItems: Array<HeaderLinkProps> = [
 ];
 
 export default function ConfTwentyTwentyTwo() {
-  let bannerRef = React.useRef<HTMLDivElement | null>(null);
   return (
     <div className="flex flex-col flex-1 h-full text-white bg-blue-800 __layout">
-      {/* <TopBanner bannerRef={bannerRef} /> */}
-      <Header bannerRef={bannerRef} />
+      <TopBanner />
+      <Header />
       <main className="flex flex-col flex-1" tabIndex={-1}>
         <Outlet />
       </main>
@@ -142,22 +141,16 @@ function SignUp() {
   );
 }
 
-function Header({
-  bannerRef,
-}: {
-  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
-}) {
+function Header() {
   let location = useLocation();
   let isConfHome =
     location.pathname === "/conf" || location.pathname === "/conf/2022";
   let data = useLoaderData<LoaderData>();
-  // let rect = useRect(bannerRef, { observe: isConfHome });
   return (
     <header
-      className={cx("text-white", {
+      className={cx("text-white pt-10 md:pt-4", {
         ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
       })}
-      // style={isConfHome && rect ? { paddingTop: rect.height } : undefined}
     >
       <div className="px-6 lg:px-12 py-9 flex justify-between items-start gap-8">
         <NavLink to="." prefetch="intent" aria-label="Remix">
@@ -371,17 +364,10 @@ function Logo() {
   );
 }
 
-function TopBanner({
-  bannerRef,
-}: {
-  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
-}) {
+function TopBanner() {
   return (
-    <div
-      className="py-2 text-center bg-black sticky top-0 z-20"
-      ref={bannerRef}
-    >
-      <p className="container mx-auto">
+    <div className="py-2 bg-black sticky top-0 z-20">
+      <p className="container mx-auto flex flex-col md:flex-row md:gap-1 justify-center items-center">
         <span className="text-pink-brand font-bold">
           Announcing: Remix Conf 2023.
         </span>{" "}
