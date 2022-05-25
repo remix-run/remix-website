@@ -1,7 +1,7 @@
-# - name: "Seasoned"
-#   link: "https://www.seasoned.cc/remix"
-#   imgSrc: "/conf-images/2023/sponsors/seasoned.png"
-#   level: "silver"
+- name: "Seasoned"
+  link: "https://www.seasoned.cc/remix"
+  imgSrc: "/conf-images/2023/sponsors/seasoned.png"
+  level: "silver"
 
 - name: "Storyblok"
   link: "https://www.storyblok.com"
