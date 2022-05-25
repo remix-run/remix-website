@@ -371,7 +371,10 @@ function TopBanner() {
         <span className="text-pink-brand font-bold">
           Announcing: Remix Conf 2023.
         </span>{" "}
-        <Link to="2023" className="text-white underline">
+        <Link
+          to="2023"
+          className="text-white underline sm:text-[16px] text-[3.4vw]"
+        >
           Earlybird tickets and sponsorships available now
           <span aria-hidden> →</span>
         </Link>

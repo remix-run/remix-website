@@ -17,3 +17,8 @@
   link: "https://www.netlify.com"
   imgSrc: "/conf-images/2023/sponsors/netlify.svg"
   level: "gold"
+
+- name: "Prisma"
+  link: "https://www.prisma.io"
+  imgSrc: "/conf-images/2023/sponsors/prisma.svg"
+  level: "silver"
