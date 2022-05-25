@@ -6,6 +6,7 @@ import type {
   LoaderFunction,
   HeadersFunction,
 } from "@remix-run/node";
+import { useRect } from "@reach/rect";
 import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/components/icons";
@@ -58,18 +59,22 @@ const navItems: Array<HeaderLinkProps> = [
   },
 ];
 
-export default function ConfTwentyTwentyTwo() {
+export default function ConfTwentyTwentyThree() {
+  let bannerRef = React.useRef<HTMLDivElement | null>(null);
   return (
-    <div className="flex flex-col flex-1 h-full text-white bg-black __layout">
-      <Header />
-      <main className="flex flex-col flex-1" tabIndex={-1}>
-        <Outlet />
-      </main>
-      <aside>
-        <SignUp />
-      </aside>
-      <Footer />
-    </div>
+    <>
+      <TopBanner bannerRef={bannerRef} />
+      <div className="flex flex-col flex-1 h-full text-white bg-black __layout">
+        <Header bannerRef={bannerRef} />
+        <main className="flex flex-col flex-1" tabIndex={-1}>
+          <Outlet />
+        </main>
+        <aside>
+          <SignUp />
+        </aside>
+        <Footer />
+      </div>
+    </>
   );
 }
 
@@ -122,11 +127,16 @@ function SignUp() {
   );
 }
 
-function Header() {
+function Header({
+  bannerRef,
+}: {
+  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
+}) {
   let location = useLocation();
   let isConfHome =
     location.pathname === "/conf" || location.pathname === "/conf/2023";
   let data = useLoaderData<LoaderData>();
+  let rect = useRect(bannerRef, { observe: isConfHome });
   return (
     <header
       className={cx(
@@ -135,6 +145,7 @@ function Header() {
           ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
         }
       )}
+      style={isConfHome && rect ? { paddingTop: rect.height } : undefined}
     >
       <NavLink
         to={isConfHome ? "/" : "."}
@@ -344,5 +355,28 @@ function Logo() {
         />
       </g>
     </svg>
+  );
+}
+
+function TopBanner({
+  bannerRef,
+}: {
+  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
+}) {
+  return (
+    <div
+      className="py-2 text-center bg-black sticky top-0 z-20"
+      ref={bannerRef}
+    >
+      <p className="container mx-auto">
+        <span className="text-pink-brand font-bold">
+          Announcing: Remix Conf 2023.
+        </span>{" "}
+        <a href="https://rmx.as/tickets" className="text-white underline">
+          40% discount available today only.
+          <span aria-hidden> ↗</span>
+        </a>
+      </p>
+    </div>
   );
 }

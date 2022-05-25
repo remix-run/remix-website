@@ -80,7 +80,7 @@ export default function ConfTwentyTwentyTwo() {
   let bannerRef = React.useRef<HTMLDivElement | null>(null);
   return (
     <div className="flex flex-col flex-1 h-full text-white bg-blue-800 __layout">
-      {/* <TopBanner bannerRef={bannerRef} /> */}
+      <TopBanner bannerRef={bannerRef} />
       <Header bannerRef={bannerRef} />
       <main className="flex flex-col flex-1" tabIndex={-1}>
         <Outlet />
@@ -151,13 +151,13 @@ function Header({
   let isConfHome =
     location.pathname === "/conf" || location.pathname === "/conf/2022";
   let data = useLoaderData<LoaderData>();
-  // let rect = useRect(bannerRef, { observe: isConfHome });
+  let rect = useRect(bannerRef, { observe: isConfHome });
   return (
     <header
       className={cx("text-white", {
         ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
       })}
-      // style={isConfHome && rect ? { paddingTop: rect.height } : undefined}
+      style={isConfHome && rect ? { paddingTop: rect.height } : undefined}
     >
       <div className="px-6 lg:px-12 py-9 flex justify-between items-start gap-8">
         <NavLink to="." prefetch="intent" aria-label="Remix">
@@ -387,7 +387,7 @@ function TopBanner({
         </span>{" "}
         <Link to="2023" className="text-white underline">
           Earlybird tickets and sponsorships available now
-          <span aria-hidden> →</span>
+          <span aria-hidden> ↗</span>
         </Link>
       </p>
     </div>
