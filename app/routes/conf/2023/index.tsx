@@ -19,8 +19,8 @@ import { CACHE_CONTROL } from "~/utils/http.server";
 
 export function meta() {
   let url = "https://remix.run/conf";
-  let title = "Remix Conf - May 24-25, 2022";
-  let image = "https://remix.run/conf-images/og.1.png";
+  let title = "Remix Conf — May 2023";
+  let image = "https://remix.run/conf-images/2023/og_image.jpg";
   let description =
     "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!";
   return {
@@ -93,7 +93,7 @@ export const headers: HeadersFunction = () => {
 
 export default function ConfIndex() {
   return (
-    <div x-comp="Index">
+    <div x-comp="Index" className="w-full overflow-x-hidden">
       <Hero />
       <EarlySponsors />
       {/* <Speakers /> */}
@@ -106,7 +106,7 @@ export default function ConfIndex() {
 function Hero() {
   return (
     <Fragment>
-      <section className="__hero bg-black relative pb-10 pt-40 sm:pb-16 sm:pt-48 md:pb-24 md:pt-52 lg:pb-32 lg:pt-64">
+      <section className="__hero bg-black relative pb-10 pt-40 sm:pb-16 sm:pt-48 md:pb-24 md:pt-52 lg:pb-32 lg:pt-64 w-full">
         <div className="__fx-wrapper">
           <div className="__fx-lights"></div>
           <div className="__fx-twinkle"></div>

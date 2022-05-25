@@ -98,8 +98,7 @@
 @media (prefers-reduced-motion: no-preference) {
   .remix-logo-num-2,
   .remix-logo-num-3 {
-    animation-delay: 200ms;
-    animation-duration: 2000ms;
+    animation-duration: 3300ms;
     animation-timing-function: cubic-bezier(0.05, 0.5, 0.32, 0.99);
     transform: translateY(0);
   }
@@ -115,10 +114,13 @@
 }
 
 @keyframes logoNumberTick {
-  from {
-    transform: translateY(20.5%);
+  0% {
+    transform: translateY(19.7%);
   }
-  to {
+  20% {
+    transform: translateY(19.7%);
+  }
+  100% {
     transform: translateY(0);
   }
 }
@@ -127,7 +129,7 @@
   0% {
     opacity: 1;
   }
-  50% {
+  70% {
     opacity: 0.925;
   }
   100% {
