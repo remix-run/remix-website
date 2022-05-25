@@ -125,20 +125,16 @@ function Hero() {
               </p>
             </div>
             <div className="h-9" />
-            <div className="flex flex-col gap-4 md:flex-row items-center">
-              <a
-                href="https://rmx.as/tickets"
-                className={`${primaryButtonLinkClass} w-full md:w-auto font-jet-mono uppercase`}
-              >
-                Get Your Tickets
-              </a>
-              <OutlineButtonLink
-                prefetch="intent"
-                to="sponsor"
-                className="w-full md:w-auto font-jet-mono uppercase"
-                children="Become a Sponsor"
-              />
-            </div>
+          </div>
+          <div className="flex justify-center w-full">
+            <a
+              href="https://www.youtube.com/watch?v=4_nxvVTNY9s"
+              className={`${primaryButtonLinkClass} w-full md:w-auto font-jet-mono uppercase flex gap-2 sm:gap-4`}
+            >
+              <span aria-hidden>📺</span>
+              <span>Watch the Live Stream</span>
+              <span aria-hidden>📺</span>
+            </a>
           </div>
         </div>
       </section>

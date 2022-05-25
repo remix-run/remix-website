@@ -377,18 +377,24 @@ function TopBanner({
   bannerRef: React.MutableRefObject<HTMLDivElement | null>;
 }) {
   return (
-    <div
-      className="py-2 text-center bg-black sticky top-0 z-20"
-      ref={bannerRef}
-    >
-      <p className="container mx-auto">
+    <div className="py-2 bg-black sticky top-0 z-20" ref={bannerRef}>
+      <p className="container mx-auto flex flex-col md:flex-row md:gap-1 justify-center items-center  text-center">
         <span className="text-pink-brand font-bold">
           Announcing: Remix Conf 2023.
         </span>{" "}
-        <Link to="2023" className="text-white underline">
-          Earlybird tickets and sponsorships available now
-          <span aria-hidden> ↗</span>
-        </Link>
+        <p className="block sm:inline-block text-[min(max(3.4vw,13px),16px)] sm:text-[16px] leading-tight">
+          <Link
+            to="2023"
+            className="text-white underline"
+            style={{ widows: 2 }}
+          >
+            Earlybird tickets and sponsorships{" "}
+            <span className="whitespace-nowrap">
+              available now
+              <span aria-hidden> ↗</span>
+            </span>
+          </Link>
+        </p>
       </p>
     </div>
   );

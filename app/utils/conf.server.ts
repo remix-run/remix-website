@@ -51,7 +51,7 @@ function getConfPaths(year: ConfYear) {
 type ConfYear = 2022 | 2023;
 
 export async function getSpeakers(year: ConfYear) {
-  let cached = cache.get("speakers");
+  let cached = cache.get(`speakers-${year}`);
   if (isSpeakerArray(cached)) {
     return cached;
   }
@@ -83,7 +83,7 @@ export async function getSpeakers(year: ConfYear) {
 }
 
 export async function getSponsors(year: ConfYear) {
-  let cached = cache.get("sponsors");
+  let cached = cache.get(`sponsors-${year}`);
   if (isSponsorArray(cached)) {
     return cached;
   }
@@ -107,7 +107,7 @@ export async function getSponsors(year: ConfYear) {
 }
 
 export async function getTalks(year: ConfYear) {
-  let cached = cache.get("talks");
+  let cached = cache.get(`talks-${year}`);
   if (isTalkArray(cached)) {
     return cached;
   }
@@ -134,7 +134,7 @@ export async function getTalks(year: ConfYear) {
 }
 
 export async function getSchedule(year: ConfYear) {
-  let cached = cache.get("schedule");
+  let cached = cache.get(`schedule-${year}`);
   if (isScheduleItemArray(cached)) {
     return cached;
   }

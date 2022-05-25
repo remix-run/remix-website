@@ -54,8 +54,8 @@ export const headers: HeadersFunction = () => {
 
 const navItems: Array<HeaderLinkProps> = [
   {
-    to: "https://ti.to/remix-conf/2023",
-    children: "Buy Tickets",
+    to: "sponsor",
+    children: "Become a Sponsor",
   },
 ];
 
@@ -139,44 +139,43 @@ function Header({
   let rect = useRect(bannerRef, { observe: isConfHome });
   return (
     <header
-      className={cx(
-        "px-6 lg:px-12 py-9 flex justify-between items-start text-white gap-8",
-        {
-          ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
-        }
-      )}
+      className={cx("text-white absolute top-0 left-0 right-0 z-10", {
+        ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
+      })}
       style={isConfHome && rect ? { paddingTop: rect.height } : undefined}
     >
-      <NavLink
-        to={isConfHome ? "/" : "."}
-        prefetch="intent"
-        aria-label="Remix"
-        className="opacity-80 hover:opacity-100 transition-opacity duration-200"
-      >
-        <Wordmark />
-      </NavLink>
+      <div className="px-6 lg:px-12 py-9 flex justify-between items-start gap-8">
+        <NavLink
+          to={isConfHome ? "/" : "."}
+          prefetch="intent"
+          aria-label="Remix"
+          className="opacity-80 hover:opacity-100 transition-opacity duration-200"
+        >
+          <Wordmark />
+        </NavLink>
 
-      <nav className="flex" aria-label="Main">
-        <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center">
-          {navItems.map((item) => (
-            <li key={item.to + item.children}>
+        <nav className="flex" aria-label="Main">
+          <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center">
+            {navItems.map((item) => (
+              <li key={item.to + item.children}>
+                <HeaderLink
+                  {...item}
+                  className="opacity-80 hover:opacity-100 transition-opacity duration-200"
+                />
+              </li>
+            ))}
+            <li>
               <HeaderLink
-                {...item}
-                className="opacity-80 hover:opacity-100 transition-opacity duration-200"
-              />
+                to="https://rmx.as/tickets"
+                className="text-pink-brand hover:text-white transition-colors duration-200"
+              >
+                Buy your ticket
+              </HeaderLink>
             </li>
-          ))}
-          <li>
-            <HeaderLink
-              to="sponsor"
-              className="text-pink-brand hover:text-white transition-colors duration-200"
-            >
-              Become a Sponsor
-            </HeaderLink>
-          </li>
-        </ul>
-        <MobileNav />
-      </nav>
+          </ul>
+          <MobileNav />
+        </nav>
+      </div>
     </header>
   );
 }
@@ -368,14 +367,19 @@ function TopBanner({
       className="py-2 text-center bg-black sticky top-0 z-20"
       ref={bannerRef}
     >
-      <p className="container mx-auto">
+      <p className="container mx-auto text-center">
         <span className="text-pink-brand font-bold">
           Announcing: Remix Conf 2023.
         </span>{" "}
-        <a href="https://rmx.as/tickets" className="text-white underline">
-          40% discount available today only.
-          <span aria-hidden> ↗</span>
-        </a>
+        <p className="block sm:inline-block text-[min(max(3.4vw,13px),16px)] sm:text-[16px] leading-tight">
+          <a href="https://rmx.as/tickets" className="text-white underline">
+            40% discount{" "}
+            <span className="whitespace-nowrap">
+              available today only.
+              <span aria-hidden> ↗</span>
+            </span>
+          </a>
+        </p>
       </p>
     </div>
   );
