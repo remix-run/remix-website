@@ -22,3 +22,8 @@
   link: "https://www.prisma.io"
   imgSrc: "/conf-images/2023/sponsors/prisma.svg"
   level: "silver"
+
+- name: "Fly.io"
+  link: "https://fly.io"
+  imgSrc: "/conf-images/sponsors/fly.png"
+  level: "gold"
