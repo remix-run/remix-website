@@ -83,7 +83,7 @@ export async function getSpeakers(year: ConfYear) {
 }
 
 export async function getSponsors(year: ConfYear) {
-  let cached = cache.get("sponsors");
+  let cached = cache.get(`sponsors-${year}`);
   if (isSponsorArray(cached)) {
     return cached;
   }
