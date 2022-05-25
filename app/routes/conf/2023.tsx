@@ -159,10 +159,10 @@ function Header() {
           ))}
           <li>
             <HeaderLink
-              to="sponsor"
+              to="https://rmx.as/tickets"
               className="text-pink-brand hover:text-white transition-colors duration-200"
             >
-              Become a Sponsor
+              Buy your ticket
             </HeaderLink>
           </li>
         </ul>
