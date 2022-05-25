@@ -169,7 +169,7 @@ function Header({
                 to="https://rmx.as/tickets"
                 className="text-pink-brand hover:text-white transition-colors duration-200"
               >
-                Buy your ticket
+                Buy Tickets
               </HeaderLink>
             </li>
           </ul>
@@ -316,7 +316,7 @@ function MobileNav() {
         className="block text-yellow-brand hover:text-white"
         to="https://rmx.as/tickets"
       >
-        Tickets{" "}
+        Buy Tickets{" "}
         {data.earlyBird ? (
           <small title="Early Bird discount!"> 🐣</small>
         ) : null}
