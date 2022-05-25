@@ -180,7 +180,7 @@ function Footer() {
         <Link to="/" aria-label="Remix home" prefetch="intent">
           <Wordmark height={16} aria-hidden />
         </Link>
-        <Link
+        {/* <Link
           prefetch="intent"
           to="coc"
           className="leading-none block font-semibold"
@@ -193,7 +193,7 @@ function Footer() {
           className="leading-none block font-semibold"
         >
           Safety
-        </Link>
+        </Link> */}
       </div>
       <nav className="flex gap-6 text-white" aria-label="Find us on the web">
         <a href="https://github.com/remix-run" aria-label="GitHub">

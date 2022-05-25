@@ -134,17 +134,17 @@ function Hero() {
               <div className="h-9" />
               <div className="flex flex-col gap-4 md:flex-row items-center">
                 <a
-                  href="#"
-                  className={`${secondaryButtonLinkClass} w-full md:w-auto`}
-                >
-                  Become a Sponsor
-                </a>
-                <a
                   href="https://ti.to/remix-conf/2023"
                   className={`${outlineSecondaryButtonLinkClass} w-full md:w-auto`}
                 >
                   Buy Tickets
                 </a>
+                <Link
+                  to="sponsor"
+                  className={`${secondaryButtonLinkClass} w-full md:w-auto`}
+                >
+                  Become a Sponsor
+                </Link>
               </div>
             </div>
           </div>
