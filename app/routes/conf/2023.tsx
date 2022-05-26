@@ -373,9 +373,9 @@ function TopBanner({
         </span>{" "}
         <p className="block sm:inline-block text-[min(max(3.4vw,13px),16px)] sm:text-[16px] leading-tight">
           <a href="https://rmx.as/tickets" className="text-white underline">
-            40% discount{" "}
+            30% discount{" "}
             <span className="whitespace-nowrap">
-              available today only.
+              available today.
               <span aria-hidden> ↗</span>
             </span>
           </a>
