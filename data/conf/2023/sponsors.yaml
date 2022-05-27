@@ -1,7 +1,7 @@
-- name: "Seasoned"
-  link: "https://www.seasoned.cc/remix"
-  imgSrc: "/conf-images/2023/sponsors/seasoned.png"
-  level: "silver"
+- name: "Netlify"
+  link: "https://www.netlify.com"
+  imgSrc: "/conf-images/2023/sponsors/netlify.svg"
+  level: "premier"
 
 - name: "Storyblok"
   link: "https://www.storyblok.com"
@@ -13,17 +13,22 @@
   imgSrc: "/conf-images/2023/sponsors/cockroachlabs.png"
   level: "gold"
 
-- name: "Netlify"
-  link: "https://www.netlify.com"
-  imgSrc: "/conf-images/2023/sponsors/netlify.svg"
+- name: "Nx"
+  link: "https://nx.dev"
+  imgSrc: "/conf-images/2023/sponsors/nx.svg"
   level: "gold"
-
-- name: "Prisma"
-  link: "https://www.prisma.io"
-  imgSrc: "/conf-images/2023/sponsors/prisma.svg"
-  level: "silver"
 
 - name: "Fly.io"
   link: "https://fly.io"
   imgSrc: "/conf-images/sponsors/fly.png"
   level: "gold"
+
+- name: "Seasoned"
+  link: "https://www.seasoned.cc/remix"
+  imgSrc: "/conf-images/2023/sponsors/seasoned.png"
+  level: "silver"
+
+- name: "Prisma"
+  link: "https://www.prisma.io"
+  imgSrc: "/conf-images/2023/sponsors/prisma.svg"
+  level: "silver"
