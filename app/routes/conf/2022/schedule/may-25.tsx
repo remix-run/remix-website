@@ -69,7 +69,7 @@ export default function May25Schedule() {
                           {scheduleItem.speakers.map((s) => (
                             <Link
                               key={s.slug}
-                              to={`/conf/speakers/${s.slug}`}
+                              to={`../../speakers/${s.slug}`}
                               title={s.name}
                               className="flex flex-col justify-center items-center"
                             >
