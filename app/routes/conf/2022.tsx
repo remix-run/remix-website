@@ -50,12 +50,12 @@ export const loader: LoaderFunction = async () => {
 
 const navItems: Array<HeaderLinkProps> = [
   {
-    to: "/conf#speakers",
+    to: "/conf/2022#speakers",
     children: "Speakers",
     prefetch: "intent",
   },
   {
-    to: "/conf#sponsors",
+    to: "/conf/2022#sponsors",
     children: "Sponsors",
     prefetch: "intent",
   },
