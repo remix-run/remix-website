@@ -1,7 +1,6 @@
 import * as React from "react";
-import { Outlet, useLocation, useLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderFunction } from "@remix-run/node";
+import { Outlet, useLocation } from "@remix-run/react";
+import type { LinksFunction } from "@remix-run/node";
 import { useRect } from "@reach/rect";
 import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
@@ -37,17 +36,6 @@ export let links: LinksFunction = () => {
   ];
 };
 
-type LoaderData = { earlyBird: boolean };
-
-// March 1 at 12:00am
-const EARLY_BIRD_ENDING_TIME = 1646121600000;
-
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({
-    earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME,
-  });
-};
-
 const navItems: Array<HeaderLinkProps> = [
   {
     to: "/conf/2022#speakers",
@@ -77,11 +65,10 @@ const navItems: Array<HeaderLinkProps> = [
 ];
 
 export default function ConfTwentyTwentyTwo() {
-  let bannerRef = React.useRef<HTMLDivElement | null>(null);
   return (
     <div className="flex flex-col flex-1 h-full text-white bg-blue-800 __layout">
-      <TopBanner bannerRef={bannerRef} />
-      <Header bannerRef={bannerRef} />
+      <TopBanner />
+      <Header />
       <main className="flex flex-col flex-1" tabIndex={-1}>
         <Outlet />
       </main>
@@ -142,22 +129,15 @@ function SignUp() {
   );
 }
 
-function Header({
-  bannerRef,
-}: {
-  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
-}) {
+function Header() {
   let location = useLocation();
   let isConfHome =
     location.pathname === "/conf" || location.pathname === "/conf/2022";
-  let data = useLoaderData<LoaderData>();
-  let rect = useRect(bannerRef, { observe: isConfHome });
   return (
     <header
-      className={cx("text-white", {
+      className={cx("text-white pt-10 md:pt-4", {
         ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
       })}
-      style={isConfHome && rect ? { paddingTop: rect.height } : undefined}
     >
       <div className="px-6 lg:px-12 py-9 flex justify-between items-start gap-8">
         <NavLink to="." prefetch="intent" aria-label="Remix">
@@ -179,10 +159,7 @@ function Header({
                 to="https://rmx.as/tickets"
                 className="text-yellow-brand hover:text-white"
               >
-                Tickets{" "}
-                {data.earlyBird ? (
-                  <small title="Early Bird discount!"> 🐣</small>
-                ) : null}
+                Tickets
               </HeaderLink>
             </li>
           </ul>
@@ -323,17 +300,13 @@ function MobileNavList() {
 }
 
 function MobileNav() {
-  const data = useLoaderData<LoaderData>();
   return (
     <div className="flex items-center gap-4 md:hidden font-jet-mono">
       <HeaderLink
         className="block text-yellow-brand hover:text-white"
         to="https://rmx.as/tickets"
       >
-        Tickets{" "}
-        {data.earlyBird ? (
-          <small title="Early Bird discount!"> 🐣</small>
-        ) : null}
+        Tickets
       </HeaderLink>
       <div>
         <Menu>
@@ -371,30 +344,17 @@ function Logo() {
   );
 }
 
-function TopBanner({
-  bannerRef,
-}: {
-  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
-}) {
+function TopBanner() {
   return (
-    <div className="py-2 bg-black sticky top-0 z-20" ref={bannerRef}>
-      <p className="container mx-auto flex flex-col md:flex-row md:gap-1 justify-center items-center  text-center">
+    <div className="py-2 bg-black sticky top-0 z-20">
+      <p className="container mx-auto flex flex-col md:flex-row md:gap-1 justify-center items-center sm:text-[16px] text-[3.2vw]">
         <span className="text-pink-brand font-bold">
           Announcing: Remix Conf 2023.
         </span>{" "}
-        <p className="block sm:inline-block text-[min(max(3.4vw,13px),16px)] sm:text-[16px] leading-tight">
-          <Link
-            to="2023"
-            className="text-white underline"
-            style={{ widows: 2 }}
-          >
-            Earlybird tickets and sponsorships{" "}
-            <span className="whitespace-nowrap">
-              available now
-              <span aria-hidden> ↗</span>
-            </span>
-          </Link>
-        </p>
+        <Link to="../2023" className="text-white underline">
+          Earlybird tickets and sponsorships available now
+          <span aria-hidden> →</span>
+        </Link>
       </p>
     </div>
   );

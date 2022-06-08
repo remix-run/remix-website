@@ -60,12 +60,11 @@ const navItems: Array<HeaderLinkProps> = [
 ];
 
 export default function ConfTwentyTwentyThree() {
-  let bannerRef = React.useRef<HTMLDivElement | null>(null);
   return (
     <>
-      <TopBanner bannerRef={bannerRef} />
+      <TopBanner />
       <div className="flex flex-col flex-1 h-full text-white bg-black __layout">
-        <Header bannerRef={bannerRef} />
+        <Header />
         <main className="flex flex-col flex-1" tabIndex={-1}>
           <Outlet />
         </main>
@@ -127,24 +126,17 @@ function SignUp() {
   );
 }
 
-function Header({
-  bannerRef,
-}: {
-  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
-}) {
+function Header() {
   let location = useLocation();
   let isConfHome =
     location.pathname === "/conf" || location.pathname === "/conf/2023";
-  let data = useLoaderData<LoaderData>();
-  let rect = useRect(bannerRef, { observe: isConfHome });
   return (
     <header
       className={cx("text-white absolute top-0 left-0 right-0 z-10", {
         ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
       })}
-      style={isConfHome && rect ? { paddingTop: rect.height } : undefined}
     >
-      <div className="px-6 lg:px-12 py-9 flex justify-between items-start gap-8">
+      <div className="px-6 lg:px-12 py-9 pt-20 md:pt-14 flex justify-between items-start gap-8">
         <NavLink
           to={isConfHome ? "/" : "."}
           prefetch="intent"
@@ -331,29 +323,17 @@ function MobileNav() {
   );
 }
 
-function TopBanner({
-  bannerRef,
-}: {
-  bannerRef: React.MutableRefObject<HTMLDivElement | null>;
-}) {
+function TopBanner() {
   return (
-    <div
-      className="py-2 text-center bg-black sticky top-0 z-20"
-      ref={bannerRef}
-    >
-      <p className="container mx-auto text-center">
+    <div className="py-2 bg-black sticky top-0 z-20">
+      <p className="container mx-auto flex flex-col md:flex-row md:gap-1 justify-center items-center sm:text-[16px] text-[3.2vw]">
         <span className="text-pink-brand font-bold">
           Announcing: Remix Conf 2023.
         </span>{" "}
-        <p className="block sm:inline-block text-[min(max(3.4vw,13px),16px)] sm:text-[16px] leading-tight">
-          <a href="https://rmx.as/tickets" className="text-white underline">
-            30% discount{" "}
-            <span className="whitespace-nowrap">
-              available today.
-              <span aria-hidden> ↗</span>
-            </span>
-          </a>
-        </p>
+        <a href="https://rmx.as/tickets" className="text-white underline">
+          30% discount available now.
+          <span aria-hidden> ↗</span>
+        </a>
       </p>
     </div>
   );

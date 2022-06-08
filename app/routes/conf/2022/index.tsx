@@ -128,11 +128,11 @@ function Hero() {
           </div>
           <div className="flex justify-center w-full">
             <a
-              href="https://www.youtube.com/watch?v=4_nxvVTNY9s"
+              href="https://www.youtube.com/playlist?list=PLXoynULbYuEC36XutMMWEuTu9uuh171wx"
               className={`${primaryButtonLinkClass} w-full md:w-auto font-jet-mono uppercase flex gap-2 sm:gap-4`}
             >
               <span aria-hidden>📺</span>
-              <span>Watch the Live Stream</span>
+              <span>Watch the Recordings</span>
               <span aria-hidden>📺</span>
             </a>
           </div>
