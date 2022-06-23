@@ -17,11 +17,10 @@ import { getSponsors } from "~/utils/conf.server";
 import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
-export function meta() {
-  let base = process.env.SITE_URL;
-  let url = `${base}/conf`;
+export function meta({ data: { siteUrl } }: { data: LoaderData }) {
+  let url = `${siteUrl}/conf`;
   let title = "Remix Conf — May 2023";
-  let image = `${base}/conf-images/2023/og_image.jpg`;
+  let image = `${siteUrl}/conf-images/2023/og_image.jpg`;
   let description =
     "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!";
   return {
@@ -45,13 +44,14 @@ export let links: LinksFunction = () => {
 };
 
 type LoaderData = {
+  siteUrl: string | undefined;
   sponsors: Array<Sponsor>;
 };
 
 export const loader: LoaderFunction = async () => {
   const allSponsors = (await getSponsors(2023)).sort(() => Math.random() - 0.5);
   return json<LoaderData>(
-    { sponsors: allSponsors },
+    { siteUrl: process.env.SITE_URL, sponsors: allSponsors },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
 };
