@@ -124,9 +124,10 @@ export default function BlogPost() {
             </div>
             <div className="h-12" />
             <div className="container lg:max-w-3xl">
+              {/* The markdown comes in via the parser wrapped in `div.md-prose`
+                  so we don't need to do that here */}
               <div
                 ref={mdRef}
-                className="md-prose"
                 dangerouslySetInnerHTML={{ __html: post.html }}
               />
               <hr />
