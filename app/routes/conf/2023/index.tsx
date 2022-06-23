@@ -18,9 +18,10 @@ import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
 export function meta() {
-  let url = "https://remix.run/conf";
+  let base = process.env.SITE_URL;
+  let url = `${base}/conf`;
   let title = "Remix Conf — May 2023";
-  let image = "https://remix.run/conf-images/2023/og_image.jpg";
+  let image = `${base}/conf-images/2023/og_image.jpg`;
   let description =
     "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!";
   return {

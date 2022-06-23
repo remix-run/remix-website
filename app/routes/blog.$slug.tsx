@@ -34,10 +34,11 @@ export let meta = ({
   data?: MarkdownPost;
   params: { slug: string };
 }) => {
-  let url = `https://remix.run/blog/${params.slug}`;
+  let base = process.env.SITE_URL;
+  let url = `${base}/blog/${params.slug}`;
 
   // TODO: Dynamically generate these from post titles and header images...
-  let socialImageUrl = `https://remix.run/blog-images/social/${params.slug}.jpg`;
+  let socialImageUrl = `${base}/blog-images/social/${params.slug}.jpg`;
 
   if (!data) {
     return {

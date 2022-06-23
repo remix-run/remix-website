@@ -12,9 +12,9 @@ import invariant from "ts-invariant";
 import { Fragment } from "react";
 
 export function meta() {
-  let url = "https://remix.run/";
+  let url = process.env.SITE_URL;
   let title = "Remix - Build Better Websites";
-  let image = "https://remix.run/img/og.1.jpg";
+  let image = `${url}/img/og.1.jpg`;
   let description =
     "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
   return {
