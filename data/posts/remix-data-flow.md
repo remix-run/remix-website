@@ -18,7 +18,7 @@ The idea is that data can only flow one-way through your app which therefore mak
 
 ![Illustration of the idea of one-way data flow depicting lines drawing a circular flow from view to action to state.][img-1]
 
-This came to be summarized in the phrase: “UI is a function state”, or `ui = fn(state)`. Whenever some state changes, due to an action, the view re-renders. To date, a number of sophisticated “state management” solutions have been created to facilitate building applications with this mental model.
+This came to be summarized in the phrase: “UI is a function of state”, or `ui = fn(state)`. Whenever some state changes, due to an action, the view re-renders. To date, a number of sophisticated “state management” solutions have been created to facilitate building applications with this mental model.
 
 The rarely-acknowledge problem here, however, is that this “one-way data flow” is a bit of a misnomer. It’s really a one-way data flow _on the client._ But having data exclusively on the client is rarely practical. Most of the time you need to persist data—to sync it—which means you need data to flow two ways: between the client and the server.
 
