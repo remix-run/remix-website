@@ -48,11 +48,11 @@ Forms, fetchers, loaders, actions, these are all “state management” solution
 
 ![The words “Loader” -> “Action” -> “Component” shown in a circular diagram.][img-6]
 
-With Remix, your UI becomes a function of state _across the network_, not just locally. An intriguing analogy to this model was articulated [in the Remix Discord](https://discord.com/channels/770287896669978684/770287896669978687/980184501726642186):
+With Remix, your UI becomes a function of state _across the network_, not just locally. An [interesting analogy](https://discord.com/channels/770287896669978684/770287896669978687/980184501726642186) to Remix’s data abstractions is React’s virtual DOM abstraction.
 
-> One interesting thing about Remix is I feel like it extends the virtual dom abstraction to APIs. E.g, in React you don't worry about manually updating the DOM, you just let the virtual dom diff everything and do efficient updates.
->
-> Remix kind of extends this to the API layer. Because of `useLoaderData`, on any mutation--you refetch _all_ of the data for your page. So you don't need to worry about managing any client side state.
+In React, you don’t worry about updating the DOM yourself. You set state and the virtual DOM does all the diffing to figure out how to make efficient updates to the DOM. Remix extends this idea to the API layer for persistent data.
+
+In Remix, you don’t worry about keeping client-side state in sync with the server. You “set state” with a mutation and the loaders take over to refetch the most up-to-date data and make updates to your component views.
 
 ![Screenshot of code example in Remix illustrating the one-way, cyclical flow of data through an app. There’s a `loader` function whose code flows into the `Route` component whose code, via a `<Form>` flows into the `action` function whose code flows back into a loader again.][img-7]
 
