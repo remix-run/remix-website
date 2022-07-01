@@ -14,7 +14,10 @@ import { Subscribe } from "~/components/subscribe";
 
 export let loader: LoaderFunction = async ({ params }) => {
   let post: MarkdownPost = await getBlogPost(params.slug!);
-  return json(post, { headers: { "Cache-Control": CACHE_CONTROL } });
+  return json(
+    { siteUrl: process.env.SITE_URL, post },
+    { headers: { "Cache-Control": CACHE_CONTROL } }
+  );
 };
 
 export const headers: HeadersFunction = () => {
@@ -31,39 +34,43 @@ export let meta = ({
   data,
   params,
 }: {
-  data?: MarkdownPost;
+  data: {
+    post?: MarkdownPost;
+    siteUrl: string;
+  };
   params: { slug: string };
 }) => {
-  let url = `https://remix.run/blog/${params.slug}`;
+  const { siteUrl, post } = data;
+  let url = `${siteUrl}/blog/${params.slug}`;
 
   // TODO: Dynamically generate these from post titles and header images...
-  let socialImageUrl = `https://remix.run/blog-images/social/${params.slug}.jpg`;
+  let socialImageUrl = `${siteUrl}/blog-images/social/${params.slug}.jpg`;
 
-  if (!data) {
+  if (!post) {
     return {
       title: "Hey Not Found",
     };
   }
 
   return {
-    title: data.title + " | Remix",
-    description: data.summary,
+    title: post.title + " | Remix",
+    description: post.summary,
     "og:url": url,
-    "og:title": data.title,
+    "og:title": post.title,
     "og:image": socialImageUrl,
-    "og:description": data.summary,
+    "og:description": post.summary,
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",
     "twitter:site": "@remix_run",
-    "twitter:title": data.title,
-    "twitter:description": data.summary,
+    "twitter:title": post.title,
+    "twitter:description": post.summary,
     "twitter:image": socialImageUrl,
-    "twitter:image:alt": data.imageAlt,
+    "twitter:image:alt": post.imageAlt,
   };
 };
 
 export default function BlogPost() {
-  let post = useLoaderData<MarkdownPost>();
+  let { post } = useLoaderData<MarkdownPost>();
   let mdRef = useRef<HTMLDivElement>(null);
   useDelegatedReactRouterLinks(mdRef);
 

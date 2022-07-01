@@ -11,16 +11,15 @@ import { Prose, Sequence } from "@ryanflorence/mdtut";
 import invariant from "ts-invariant";
 import { Fragment } from "react";
 
-export function meta() {
-  let url = "https://remix.run/";
+export function meta({ data: { siteUrl } }: { data: LoaderData }) {
   let title = "Remix - Build Better Websites";
-  let image = "https://remix.run/img/og.1.jpg";
+  let image = `${siteUrl}/img/og.1.jpg`;
   let description =
     "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
   return {
     title,
     description,
-    "og:url": url,
+    "og:url": siteUrl,
     "og:title": title,
     "og:description": description,
     "og:image": image,
@@ -40,6 +39,7 @@ export let links: LinksFunction = () => {
 type LoaderData = {
   sample: Prose;
   sampleSm: Prose;
+  siteUrl: string | undefined;
   mutations: Sequence;
   errors: Sequence;
 };
@@ -57,7 +57,13 @@ export let loader: LoaderFunction = async () => {
   invariant(mutations.type === "sequence", "mutations.md should be a sequence");
   invariant(errors.type === "sequence", "errors.md should be a sequence");
 
-  let data: LoaderData = { sample, sampleSm, mutations, errors };
+  let data: LoaderData = {
+    sample,
+    sampleSm,
+    siteUrl: process.env.SITE_URL,
+    mutations,
+    errors,
+  };
   return json(data, { headers: { "Cache-Control": "max-age=300" } });
 };
 

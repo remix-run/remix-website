@@ -16,10 +16,10 @@ import { getSpeakers, getSponsors } from "~/utils/conf.server";
 import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
-export function meta() {
-  let url = "https://remix.run/conf";
+export function meta({ data: { siteUrl } }: { data: LoaderData }) {
+  let url = `${siteUrl}/conf`;
   let title = "Remix Conf - May 24-25, 2022";
-  let image = "https://remix.run/conf-images/og.1.png";
+  let image = `${siteUrl}/conf-images/og.1.png`;
   let description =
     "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!";
   return {
@@ -43,6 +43,7 @@ export let links: LinksFunction = () => {
 };
 
 type LoaderData = {
+  siteUrl: string | undefined;
   speakers: Array<Omit<Speaker, "bio">>;
   sponsors: {
     premier: Sponsor | undefined;
@@ -79,7 +80,7 @@ export const loader: LoaderFunction = async () => {
       .sort(() => Math.random() - 0.5),
   };
   return json<LoaderData>(
-    { speakers: speakersShuffled, sponsors },
+    { siteUrl: process.env.SITE_URL, speakers: speakersShuffled, sponsors },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
 };
