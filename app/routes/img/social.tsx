@@ -5,8 +5,9 @@ import {
 } from "~/utils/social-image.server";
 
 export let loader: LoaderFunction = async ({ request }) => {
-  let siteUrl = new URL(request.url).host;
-  let searchParams = new URLSearchParams(new URL(request.url).search);
+  let requestUrl = new URL(request.url);
+  let siteUrl = requestUrl.host;
+  let searchParams = new URLSearchParams(requestUrl.search);
 
   let slug = searchParams.get("slug");
   let title = searchParams.get("title");
