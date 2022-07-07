@@ -1,6 +1,11 @@
-import type { LoaderFunction, HeadersFunction } from "@remix-run/node";
+import type {
+  HeadersFunction,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
+import invariant from "ts-invariant";
 
 import { getBlogPost } from "~/utils/md.server";
 import type { MarkdownPost } from "~/utils/md.server";
@@ -12,10 +17,14 @@ import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
 import { Subscribe } from "~/components/subscribe";
 
-export let loader: LoaderFunction = async ({ params }) => {
-  let post: MarkdownPost = await getBlogPost(params.slug!);
-  return json(
-    { siteUrl: process.env.SITE_URL, post },
+export let loader: LoaderFunction = async ({ params, request }) => {
+  let { slug } = params;
+  let siteUrl = new URL(request.url).host;
+  invariant(!!slug, "Expected slug param");
+
+  let post: MarkdownPost = await getBlogPost(slug);
+  return json<LoaderData>(
+    { siteUrl, post },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
 };
@@ -30,47 +39,48 @@ export function links() {
   return [{ rel: "stylesheet", href: mdStyles }];
 }
 
-export let meta = ({
-  data,
-  params,
-}: {
-  data: {
-    post?: MarkdownPost;
-    siteUrl: string;
-  };
-  params: { slug: string };
-}) => {
-  const { siteUrl, post } = data;
-  let url = `${siteUrl}/blog/${params.slug}`;
+export let meta: MetaFunction = ({ data, params }) => {
+  let { slug } = params;
+  invariant(!!slug, "Expected slug param");
 
-  // TODO: Dynamically generate these from post titles and header images...
-  let socialImageUrl = `${siteUrl}/blog-images/social/${params.slug}.jpg`;
-
+  let { siteUrl, post } = data as LoaderData;
+  // we should never get here since our loader throws a 404 :shrug:
   if (!post) {
     return {
       title: "Hey Not Found",
     };
   }
 
+  let socialImageUrl = `${siteUrl}/img/social?${new URLSearchParams({
+    slug,
+    siteUrl,
+    title: post.title,
+    authorName: post.authors[0]?.name || "Michael Jackson",
+    authorTitle: post.authors[0]?.title || "Co-Founder, CEO",
+    date: post.dateDisplay,
+  })}`;
+
+  let url = `${siteUrl}/blog/${slug}`;
+
   return {
     title: post.title + " | Remix",
     description: post.summary,
     "og:url": url,
     "og:title": post.title,
-    "og:image": socialImageUrl,
+    "og:image": socialImageUrl || undefined,
     "og:description": post.summary,
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",
     "twitter:site": "@remix_run",
     "twitter:title": post.title,
     "twitter:description": post.summary,
-    "twitter:image": socialImageUrl,
-    "twitter:image:alt": post.imageAlt,
+    "twitter:image": socialImageUrl || undefined,
+    "twitter:image:alt": socialImageUrl ? post.imageAlt : undefined,
   };
 };
 
 export default function BlogPost() {
-  let { post } = useLoaderData<MarkdownPost>();
+  let { post } = useLoaderData<LoaderData>();
   let mdRef = useRef<HTMLDivElement>(null);
   useDelegatedReactRouterLinks(mdRef);
 
@@ -156,4 +166,9 @@ export default function BlogPost() {
       <Footer />
     </div>
   );
+}
+
+interface LoaderData {
+  siteUrl: string;
+  post: MarkdownPost;
 }
