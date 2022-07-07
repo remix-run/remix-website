@@ -1,6 +1,8 @@
-import path from "path";
 import { json, LoaderFunction } from "@remix-run/node";
-import { getSocialImageUrl } from "~/utils/social-image.server";
+import {
+  getSocialImageUrl,
+  getImageContentType,
+} from "~/utils/social-image.server";
 
 export let loader: LoaderFunction = async ({ request }) => {
   let siteUrl = new URL(request.url).host;
@@ -26,11 +28,18 @@ export let loader: LoaderFunction = async ({ request }) => {
   });
 
   try {
+    let contentType = await getImageContentType(socialImageUrl);
+    if (!contentType) {
+      throw json({ error: "Invalid image" }, 400);
+    }
     let resp = await fetch(socialImageUrl, {
       headers: {
-        "Content-Type": `image/${path.extname(socialImageUrl).slice(1)}`,
+        "Content-Type": contentType,
       },
     });
+    if (resp.status >= 300) {
+      throw resp;
+    }
     return resp;
   } catch (err) {
     throw Error(

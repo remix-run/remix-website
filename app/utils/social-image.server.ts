@@ -138,6 +138,12 @@ export async function getSocialImageUrl({
   return getCloudinarySocialImageUrl(socialImageArgs);
 }
 
+export async function getImageContentType(imagePath: string) {
+  let ext = path.extname(imagePath).toLowerCase();
+  if (!ext) return null;
+  return `image/${ext.slice(1)}`;
+}
+
 interface SocialImageArgs {
   title: string;
   displayDate: string;
