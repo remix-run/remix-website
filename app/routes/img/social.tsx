@@ -1,16 +1,9 @@
 import path from "path";
-import invariant from "ts-invariant";
 import { json, LoaderFunction } from "@remix-run/node";
 import { getSocialImageUrl } from "~/utils/social-image.server";
 
-export let loader: LoaderFunction = async ({ params, request }) => {
-  try {
-    let url = new URL(request.url);
-    console.log({ url: url.host });
-  } catch (err) {}
-
-  let siteUrl = process.env.SITE_URL;
-  invariant(!!siteUrl, "Missing SITE_URL environment varialbe");
+export let loader: LoaderFunction = async ({ request }) => {
+  let siteUrl = new URL(request.url).host;
   let searchParams = new URLSearchParams(new URL(request.url).search);
 
   let slug = searchParams.get("slug");
