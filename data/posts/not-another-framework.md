@@ -5,9 +5,7 @@ date: 2022-01-26
 image: /blog-images/headers/not-another-framework.jpg
 imageAlt: Frustrated developer looking at her laptop with her hands on her head.
 authors:
-  - name: Ryan Florence
-    avatar: /r.jpg
-    title: Co-Founder
+  - Ryan Florence
 ---
 
 I'm certain there are a lot of you out there who are seeing the excitement around Remix and thinking:

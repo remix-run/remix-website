@@ -6,9 +6,7 @@ date: 2022-03-23
 image: /blog-images/posts/remixing-react-router/image.jpg
 imageAlt: React Router Logo
 authors:
-  - name: Ryan Florence
-    avatar: /r.jpg
-    title: Co-Founder
+  - Ryan Florence
 ---
 
 The first versions of React Router actually had an async hook to help with data loading called `willTransitionTo`. Nobody really knew how the heck to use React at the time and we were no exception. It wasn't _great_, but it was at least going in the right direction.

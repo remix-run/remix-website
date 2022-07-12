@@ -6,9 +6,7 @@ date: 2022-01-11
 image: /blog-images/headers/remix-vs-next.jpg
 imageAlt: Remix and Next.js Logos
 authors:
-  - name: Ryan Florence
-    avatar: /r.jpg
-    title: Co-Founder
+  - Ryan Florence
 ---
 
 Easily the biggest question we get asked is something like:
