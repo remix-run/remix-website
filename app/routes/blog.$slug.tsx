@@ -19,8 +19,9 @@ import { Subscribe } from "~/components/subscribe";
 
 export let loader: LoaderFunction = async ({ params, request }) => {
   let { slug } = params;
-  let siteUrl = new URL(request.url).host;
   invariant(!!slug, "Expected slug param");
+  let requestUrl = new URL(request.url);
+  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
   let post: MarkdownPost = await getBlogPost(slug);
   return json<LoaderData>(
