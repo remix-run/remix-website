@@ -6,8 +6,8 @@ import {
 
 export let loader: LoaderFunction = async ({ request }) => {
   let requestUrl = new URL(request.url);
-  let siteUrl = requestUrl.host;
   let searchParams = new URLSearchParams(requestUrl.search);
+  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
   let slug = searchParams.get("slug");
   let title = searchParams.get("title");
