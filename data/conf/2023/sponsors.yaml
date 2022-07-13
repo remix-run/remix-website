@@ -27,8 +27,3 @@
   link: "https://www.seasoned.cc/remix"
   imgSrc: "/conf-images/2023/sponsors/seasoned.png"
   level: "silver"
-
-- name: "Prisma"
-  link: "https://www.prisma.io"
-  imgSrc: "/conf-images/2023/sponsors/prisma.svg"
-  level: "silver"
