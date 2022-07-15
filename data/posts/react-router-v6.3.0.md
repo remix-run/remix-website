@@ -2,7 +2,7 @@
 title: React Router v6.3.0
 summary: A new package helps you upgrade from React Router v5 to v6 incrementally
 date: 2022-03-31
-image: /blog-images/social/react-router-v6.3.0.jpg
+image: /blog-images/headers/react-router-v6.3.0.jpg
 imageAlt: React Router Logo
 authors:
   - name: Ryan Florence
