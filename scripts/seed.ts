@@ -79,11 +79,7 @@ async function seedDocs() {
   let releases = (await releasesPromise.json()) as GitHubRelease[];
 
   let sortedReleases = releases
-    .map((release) =>
-      release.tag_name.includes("@")
-        ? release.tag_name.slice(release.tag_name.indexOf("@") + 1)
-        : release.tag_name
-    )
+    .map((release) => release.tag_name)
     .filter((release) => semver.valid(release))
     .sort((a, b) => semver.rcompare(a, b));
 
