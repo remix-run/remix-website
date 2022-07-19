@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
-import { satisfies, rcompare } from "semver";
+import * as semver from "semver";
 import { installGlobals } from "@remix-run/node";
 import parseFrontMatter from "front-matter";
 import { processMarkdown } from "@ryanflorence/md";
@@ -80,14 +80,16 @@ async function seedDocs() {
 
   let sortedReleases = releases
     .map((release) => release.tag_name)
-    .sort((a, b) => rcompare(a, b));
+    .filter((release) => semver.valid(release))
+    .sort((a, b) => semver.rcompare(a, b));
 
   let latestRelease = sortedReleases.at(0);
 
   invariant(latestRelease, "latest release is not defined");
+  console.log(`Using latest Remix release: ${latestRelease}`);
 
   let releasesToUse = releases.filter((release) => {
-    return satisfies(release.tag_name, `>=${latestRelease}`, {
+    return semver.satisfies(release.tag_name, `>=${latestRelease}`, {
       includePrerelease: true,
     });
   });

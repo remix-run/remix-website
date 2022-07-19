@@ -66,30 +66,34 @@ async function saveDocs(ref: string, releaseNotes: string) {
   }
 
   let existingDocs = githubRef.docs.map((doc) => doc.filePath);
+  let foundEntries: Array<string> = [];
 
-  await findMatchingEntries(stream, "/docs", existingDocs, {
-    async onEntry(entry) {
-      let doc = await processDoc(entry, version);
+  await findMatchingEntries(stream, "/docs", async (entry) => {
+    let doc = await processDoc(entry, version);
 
-      await upsertDoc(githubRef.ref, doc);
-    },
-    onDeletedEntries: async (deletedEntries) => {
-      await prisma.doc.deleteMany({
-        where: {
-          filePath: {
-            in: deletedEntries,
-          },
-          githubRef: {
-            ref: githubRef.ref,
-          },
-        },
-      });
+    foundEntries.push(doc.path);
 
-      for (const doc of deletedEntries) {
-        console.log(`> Deleted ${doc} for ${ref}`);
-      }
+    await upsertDoc(githubRef.ref, doc);
+  });
+
+  let deletedEntries = existingDocs.filter(
+    (existingFilepath) => !foundEntries.includes(existingFilepath)
+  );
+
+  let deleted = await prisma.doc.deleteMany({
+    where: {
+      filePath: {
+        in: deletedEntries,
+      },
+      githubRef: {
+        ref: githubRef.ref,
+      },
     },
   });
+
+  for (const doc of deletedEntries) {
+    console.log(`> Deleted ${doc} for ${githubRef.ref}`);
+  }
 }
 
 async function upsertDoc(ref: string, doc: ProcessedDoc) {
