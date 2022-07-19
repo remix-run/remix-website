@@ -6,12 +6,8 @@ featured: true
 image: /m-r.jpg
 imageAlt: "Michael and Ryan presenting at React Conf 2017"
 authors:
-  - name: Michael Jackson
-    avatar: /m.jpg
-    title: Co-Founder, CEO
-  - name: Ryan Florence
-    avatar: /r.jpg
-    title: Co-Founder
+  - Michael Jackson
+  - Ryan Florence
 ---
 
 Today we are happy to announce $3M in funding for [Remix](https://remix.run), the framework that helps you build better websites. The round was led by [OSS Capital](https://oss.capital/), with participation from Naval Ravikant, Ram Shriram, and Sahil Lavingia.

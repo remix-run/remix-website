@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 import fs from "fs/promises";
 import path from "path";
 
@@ -5,11 +6,16 @@ import * as dateFns from "date-fns";
 import remark from "remark";
 import html from "remark-html";
 import parseFrontMatter from "front-matter";
+import yaml from "yaml";
 import { processMarkdown } from "@ryanflorence/md";
 import { Page, process } from "@ryanflorence/mdtut";
 import { remarkCodeBlocksShiki } from "@ryanflorence/md";
 import invariant from "ts-invariant";
 import LRUCache from "lru-cache";
+
+let AUTHORS = yaml.parse(
+  readFileSync(path.join(__dirname, "..", "data", "authors.yml")).toString()
+);
 
 let cache = new LRUCache<string, Page>({
   max: 1024 * 1024 * 12, // 12 mb
@@ -43,6 +49,17 @@ export async function md(filename: string) {
   let contents = (await fs.readFile(filePath)).toString();
   let { attributes, body } = parseFrontMatter(contents);
   let html = await processMarkdown(body);
+
+  // Find each post author, by name, in our canonical collection of author info
+  attributes.authors = AUTHORS.filter(({ name }) =>
+    attributes.authors.includes(name)
+  );
+  if (attributes.authors.length === 0) {
+    console.warn(
+      "The author info in `%s` is incorrect and should be fixed to match what’s in the `authors.yaml` file.",
+      filePath
+    );
+  }
 
   let obj = { attributes, html };
   return obj;

@@ -53,6 +53,8 @@ fly logs -a remixdotrun
 
 - Put a markdown file in `data/posts/{your-post-slug}.md`
 - Follow the conventions found in other blog articles for author/meta
+  - Make sure your author name in the post is the same as the one in `data/authors.yml`
+  - If you don't have an author photo yet, create one. [The template is in Figma](https://www.figma.com/file/6G68ZVNbR6bMHl2p8727xi/www.remix.run?node-id=6%3A2).
 - Create and optimize any inline blog post image(s) and put them in `/public/blog-images/posts/{your-post-slug}/{image-name}.{format}`
   - @TODO convention for ensuring images are large enough for 1x/2x?
 - Create a featured image for the post that shows up on the blog’s index page as well as at the top of each post. Put it in `/public/blog-images/headers/{your-post-slug}.{format}` (this gets referenced in the YAML front-matter for each post).

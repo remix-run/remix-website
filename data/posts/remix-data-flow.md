@@ -5,9 +5,7 @@ date: 2022-06-22
 image: /blog-images/headers/remix-data-flow.png
 imageAlt: A graphic with the words “Loaders” -> “Component” -> “Action” connected by arrows and depicted cyclically.
 authors:
-  - name: Jim Nielsen
-    avatar: /j.jpg
-    title: Director of Design
+  - Jim Nielsen
 ---
 
 When React first appeared on the scene, one of its most compelling features was its “one-way data flow”. This is still outlined in the React docs under the page [“Thinking in React”][react-docs]

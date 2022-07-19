@@ -5,9 +5,7 @@ date: 2022-05-13
 image: /blog-images/headers/remix-and-the-edge.png
 imageAlt: An illustration of a gauge with a dial that can go from “Static” on the left to “Dynamic” on the right, accompanied by the Remix logo.
 authors:
-  - name: Jim Nielsen
-    avatar: /j.jpg
-    title: Director of Design
+  - Jim Nielsen
 ---
 
 There’s a lot in the air around CDNs and “the edge”. Traditionally, the edge has been perceived as a distributed network for storing and delivering static assets fast, while anything dynamic still requires compute _somewhere_ whether on the client (in the form of client-side JS talking to APIs) or the server (an application server, lambda function, etc.).

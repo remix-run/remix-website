@@ -6,9 +6,7 @@ featured: true
 image: /blog-images/headers/remix-stacks.jpg
 imageAlt: "Stack of pancakes with cream and strawberries"
 authors:
-  - name: Kent C. Dodds
-    avatar: /k.jpg
-    title: Co-Founder
+  - Kent C. Dodds
 ---
 
 When you're building a web application, in addition to the web framework you're using and all the tooling associated with that (which Remix is happy to provide), you typically need a CI/CD pipeline, a database, and a hosting platform. Lots of our early adopters are frontend developers who aren't accustomed to deploying app and database servers. And frankly even folks who are accustomed to it often don't enjoy the process of getting things set up.

@@ -5,9 +5,7 @@ date: 2022-03-31
 image: /blog-images/headers/react-router-v6.3.0.jpg
 imageAlt: React Router Logo
 authors:
-  - name: Ryan Florence
-    avatar: /r.jpg
-    title: Co-Founder
+  - Ryan Florence
 ---
 
 I love this phrase from the Ember.js community

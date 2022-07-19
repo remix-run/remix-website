@@ -5,9 +5,7 @@ date: 2021-11-03
 image: /react-router-v6.jpg
 imageAlt: "A fork in the road in the middle of the woods"
 authors:
-  - name: Michael Jackson
-    avatar: /m.jpg
-    title: Co-Founder, CEO
+  - Michael Jackson
 ---
 
 Today we are very happy to announce the stable release of [React Router v6](https://reactrouter.com).

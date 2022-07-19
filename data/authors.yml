@@ -1,0 +1,15 @@
+- name: Michael Jackson
+  avatar: /authors/profile-michael-jackson.png
+  title: Co-Founder, CEO
+- name: Ryan Florence
+  avatar: /authors/profile-ryan-florence.png
+  title: Co-Founder
+- name: Kent C. Dodds
+  avatar: /authors/profile-kent-c-dodds.png
+  title: Co-Founder
+- name: Chance Strickland
+  avatar: /authors/profile-chance-strickland.png
+  title: Software Engineer
+- name: Jim Nielsen
+  avatar: /authors/profile-jim-nielsen.png
+  title: Director of Design

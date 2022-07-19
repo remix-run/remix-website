@@ -5,9 +5,7 @@ date: 2021-12-07
 image: /blog-images/headers/react-server-components.jpg
 imageAlt: "Screenshot of two apps, one with loading spinners"
 authors:
-  - name: Ryan Florence
-    avatar: /r.jpg
-    title: Co-Founder
+  - Ryan Florence
 ---
 
 One big question keeps coming up after the Remix v1 release:
