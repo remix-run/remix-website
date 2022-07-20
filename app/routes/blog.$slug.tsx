@@ -8,7 +8,7 @@ import { json } from "@remix-run/node";
 import invariant from "ts-invariant";
 
 import { getBlogPost } from "~/utils/md.server";
-import type { MarkdownPost } from "~/utils/md.server";
+import type { BlogPost as MarkdownPost } from "~/utils/md.server";
 import mdStyles from "~/styles/md.css";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
@@ -23,7 +23,7 @@ export let loader: LoaderFunction = async ({ params, request }) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  let post: MarkdownPost = await getBlogPost(slug);
+  let post = await getBlogPost(slug);
   return json<LoaderData>(
     { siteUrl, post },
     { headers: { "Cache-Control": CACHE_CONTROL } }

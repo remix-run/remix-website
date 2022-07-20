@@ -13,7 +13,7 @@ import { remarkCodeBlocksShiki } from "@ryanflorence/md";
 import invariant from "ts-invariant";
 import LRUCache from "lru-cache";
 
-let AUTHORS = yaml.parse(
+let AUTHORS: Author[] = yaml.parse(
   readFileSync(path.join(__dirname, "..", "data", "authors.yml")).toString()
 );
 
@@ -24,7 +24,7 @@ let cache = new LRUCache<string, Page>({
   },
 });
 
-let postsCache = new LRUCache<string, MarkdownPost>({
+let postsCache = new LRUCache<string, BlogPost>({
   max: 1024 * 1024 * 12, // 12 mb
   length(value, key) {
     return JSON.stringify(value).length + (key ? key.length : 0);
@@ -49,11 +49,13 @@ export async function md(filename: string) {
   let contents = (await fs.readFile(filePath)).toString();
   let { attributes, body } = parseFrontMatter(contents);
   let html = await processMarkdown(body);
+  invariant(
+    isMarkdownPostFrontmatter(attributes),
+    `Invalid post frontmatter in ${filename}`
+  );
 
   // Find each post author, by name, in our canonical collection of author info
-  attributes.authors = AUTHORS.filter(({ name }) =>
-    attributes.authors.includes(name)
-  );
+  attributes.authors = getPostAuthors(attributes).map((a) => a.name);
   if (attributes.authors.length === 0) {
     console.warn(
       "The author info in `%s` is incorrect and should be fixed to match what’s in the `authors.yaml` file.",
@@ -107,7 +109,7 @@ function formatDate(date: Date) {
   );
 }
 
-export async function getBlogPost(slug: string): Promise<MarkdownPost> {
+export async function getBlogPost(slug: string): Promise<BlogPost> {
   let cached = postsCache.get(slug);
   if (cached) return cached;
 
@@ -122,9 +124,13 @@ export async function getBlogPost(slug: string): Promise<MarkdownPost> {
     `Invalid post frontmatter in ${slug}`
   );
 
-  let post = { ...attributes, dateDisplay: formatDate(attributes.date), html };
+  let post: BlogPost = {
+    ...attributes,
+    authors: attributes.authors.map(getAuthor).filter((a): a is Author => !!a),
+    dateDisplay: formatDate(attributes.date),
+    html,
+  };
   postsCache.set(slug, post);
-
   return post;
 }
 
@@ -150,8 +156,12 @@ export interface MarkdownPost {
   featured?: boolean;
   image: string;
   imageAlt: string;
-  authors: Author[];
+  authors: string[];
   html: string;
+}
+
+export interface BlogPost extends Omit<MarkdownPost, "authors"> {
+  authors: Author[];
 }
 
 /**
@@ -161,6 +171,14 @@ export interface Author {
   name: string;
   title: string;
   avatar: string;
+}
+
+function getAuthor(name: string): Author | undefined {
+  return AUTHORS.find((a) => a.name === name);
+}
+
+function getPostAuthors(attributes: MarkdownPost): Author[] {
+  return AUTHORS.filter(({ name }) => attributes.authors.includes(name));
 }
 
 /**
@@ -177,13 +195,6 @@ export function isMarkdownPostFrontmatter(obj: any): obj is MarkdownPost {
       typeof obj.featured === "undefined") &&
     obj.image &&
     obj.imageAlt &&
-    Array.isArray(obj.authors) &&
-    obj.authors.every(
-      (author: any) =>
-        typeof author === "object" &&
-        author.name &&
-        author.title &&
-        author.avatar
-    )
+    Array.isArray(obj.authors)
   );
 }
