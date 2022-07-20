@@ -1,7 +1,9 @@
 import path from "path";
-import fs from "fs/promises";
+import fs from "fs";
+import fsp from "fs/promises";
 import * as semver from "semver";
 import { installGlobals } from "@remix-run/node";
+import yaml from "yaml";
 import parseFrontMatter from "front-matter";
 import { processMarkdown } from "@ryanflorence/md";
 
@@ -13,7 +15,11 @@ import { prisma } from "../app/db.server";
 
 installGlobals();
 
-let blogPath = path.join(__dirname, "..", "data/posts");
+const DATA_PATH = path.join(__dirname, "..", "data");
+const BLOG_PATH = path.join(DATA_PATH, "posts");
+const AUTHORS: Author[] = yaml.parse(
+  fs.readFileSync(path.join(DATA_PATH, "authors.yml"), "utf-8")
+);
 
 async function seedBlog() {
   // simplest to just clear the existing DB tables before we seed
@@ -47,7 +53,7 @@ async function seedBlog() {
 }
 
 async function getBlogPosts(): Promise<BlogPostWithAuthors[]> {
-  let files = await fs.readdir(blogPath);
+  let files = await fsp.readdir(BLOG_PATH);
   let listings: Array<BlogPostWithAuthors> = [];
   for (let file of files) {
     if (file.endsWith(".md")) {
@@ -120,29 +126,32 @@ export async function getBlogPost(slug: string): Promise<BlogPostWithAuthors> {
     isMarkdownPostFrontmatter(attributes),
     `Invalid post frontmatter in ${slug}`
   );
+
   let post: MarkdownPost = { ...attributes, slug, html, md: body };
-  return mdToBlogPost(post);
+  return await mdToBlogPost(post);
 }
 
 async function md(filename: string) {
-  let filePath = path.join(blogPath, filename);
+  let filePath = path.join(BLOG_PATH, filename);
   try {
-    await fs.access(filePath);
+    await fsp.access(filePath);
   } catch (e) {
     return null;
   }
-  let contents = (await fs.readFile(filePath)).toString();
+  let contents = (await fsp.readFile(filePath)).toString();
   let { attributes, body } = parseFrontMatter(contents);
   let html = await processMarkdown(body);
   let obj = { attributes, html, body };
   return obj;
 }
 
-function mdToBlogPost(md: MarkdownPost): BlogPostWithAuthors {
+async function mdToBlogPost(md: MarkdownPost): Promise<BlogPostWithAuthors> {
   let post: BlogPostWithAuthors = {
     slug: md.slug,
     title: md.title,
-    authors: md.authors,
+    authors: md.authors
+      .map((author) => AUTHORS.find((a) => a.name === author))
+      .filter((a): a is Author => !!a),
     date: md.date.toString(),
     image: md.image,
     imageAlt: md.imageAlt,
@@ -165,14 +174,7 @@ function isMarkdownPostFrontmatter(obj: any): obj is MarkdownPost {
       typeof obj.featured === "undefined") &&
     obj.image &&
     obj.imageAlt &&
-    Array.isArray(obj.authors) &&
-    obj.authors.every(
-      (author: any) =>
-        typeof author === "object" &&
-        author.name &&
-        author.title &&
-        author.avatar
-    )
+    Array.isArray(obj.authors)
   );
 }
 
@@ -184,7 +186,7 @@ interface MarkdownPost {
   featured?: boolean;
   image: string;
   imageAlt: string;
-  authors: Author[];
+  authors: string[];
   html: string;
   md: string;
   slug: string;
@@ -194,9 +196,4 @@ interface Author {
   name: string;
   title: string;
   avatar: string;
-}
-
-async function getFileCreatedDate(file: string) {
-  let { birthtime } = await fs.stat(file);
-  return birthtime;
 }
