@@ -70,7 +70,7 @@ function getCloudinarySocialImageUrl({
     `co_rgb:${primaryTextColor}`, // text color
     "c_fit", // fit rule
     "g_north_west", // text box position
-    "w_$gw_mul_18", // text box width ($gw * 20.5)
+    "w_$gw_mul_18", // text box width ($gw * 18)
     "h_$gh_mul_7", // text box height ($gh * 7)
     "x_$gw_mul_1.5", // text box x position ($gw * 1.5)
     "y_$gh_mul_2.3", // text box y position ($gh * 2.3)
@@ -83,7 +83,7 @@ function getCloudinarySocialImageUrl({
     `co_rgb:${primaryTextColor}`, // text color
     `c_fit`, // fit rule
     `g_north_west`, // text box position
-    `w_$gw_mul_8.5`, // text box width ($gw * 5.5)
+    `w_$gw_mul_8.5`, // text box width ($gw * 8.5)
     `h_$gh_mul_4`, // text box height ($gh * 4)
     `x_$gw_mul_4.5`, // text box x position ($gw * 4.5)
     `y_$gh_mul_9`, // text box y position ($gh * 9)
