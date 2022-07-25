@@ -369,7 +369,7 @@ I'm so glad you asked! Using a resource route gives us a few advantages for this
 
 ## What else can resource routes do for you?
 
-I am biased, but I happen to think tasks like this are the perfect use-case for resource routes, but there are many other things you can explore with them. Folks in the Remix community have shown us how flexible and powerful they truly are.
+I am biased, but I happen to think tasks like this are the perfect use-case for resource routes. That said, there are many other things you can explore with them. Folks in the Remix community have shown us how flexible and powerful they truly are.
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://t.co/j9kvsdgUI8">https://t.co/j9kvsdgUI8</a>&#39;s css-in-js (<a href="https://t.co/VmcSCq43zQ">https://t.co/VmcSCq43zQ</a>) no longer gets embedded into the head (not great for caching). Now it&#39;s being served via a hashed-n-cached <a href="https://twitter.com/remix_run?ref_src=twsrc%5Etfw">@remix_run</a> resource route. New extracted styles == new hash == cache bust. I can also preload them now, too 😄</p>&mdash; Tanner Linsley (@tannerlinsley) <a href="https://twitter.com/tannerlinsley/status/1470160872907558913?ref_src=twsrc%5Etfw">December 12, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
