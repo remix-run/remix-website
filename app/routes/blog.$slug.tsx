@@ -63,18 +63,21 @@ export let meta: MetaFunction = ({ data, params }) => {
 
   let url = `${siteUrl}/blog/${slug}`;
 
+  // Strip some special chars that will show up weird in og textual previews
+  const strip = (str: string = "") => str.replace(/[<>&]/g, "");
+
   return {
     title: post.title + " | Remix",
     description: post.summary,
     "og:url": url,
-    "og:title": post.title,
+    "og:title": strip(post.title),
     "og:image": socialImageUrl || undefined,
-    "og:description": post.summary,
+    "og:description": strip(post.summary),
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",
     "twitter:site": "@remix_run",
-    "twitter:title": post.title,
-    "twitter:description": post.summary,
+    "twitter:title": strip(post.title),
+    "twitter:description": strip(post.summary),
     "twitter:image": socialImageUrl || undefined,
     "twitter:image:alt": socialImageUrl ? post.imageAlt : undefined,
   };
