@@ -14,8 +14,17 @@ module.exports = {
       ignore_watch: ["."],
     },
     {
-      name: "Remix",
-      script: "remix dev",
+      name: "Remix Dev",
+      script: "remix watch",
+      ignore_watch: ["."],
+      env: {
+        ...result.parsed,
+        NODE_ENV: "development",
+      },
+    },
+    {
+      name: "Express",
+      script: "node server.js",
       ignore_watch: ["."],
       env: {
         ...result.parsed,
