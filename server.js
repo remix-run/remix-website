@@ -16,6 +16,7 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+app.set('trust proxy', true)
 app.use(limiter);
 
 app.use(compression());
