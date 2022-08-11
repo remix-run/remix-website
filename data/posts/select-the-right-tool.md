@@ -1,5 +1,5 @@
 ---
-title: "<Select>ing The Right Tool For The Job"
+title: "<Select> The Right Tool For The Job"
 summary: A static file server won’t know how to handle the default browser requests from a <select>, showing that our technology choices are more interconnected than we often think. Remix can help, as it embraces characteristics inherent to the web such as a progressive enhancement and a server/client model.
 date: 2022-08-11
 featured: true
