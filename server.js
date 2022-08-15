@@ -10,10 +10,10 @@ const BUILD_DIR = path.join(process.cwd(), "build");
 const app = express();
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  windowMs: 2 * 60 * 1000, // 2 minutes
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 app.set("trust proxy", true);
