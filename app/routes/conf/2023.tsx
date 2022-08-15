@@ -6,7 +6,6 @@ import type {
   LoaderFunction,
   HeadersFunction,
 } from "@remix-run/node";
-import { useRect } from "@reach/rect";
 import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/components/icons";
