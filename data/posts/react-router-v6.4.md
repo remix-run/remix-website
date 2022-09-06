@@ -25,10 +25,10 @@ React Router 6.4 embraces this reality with new conventions, APIs, and automatic
 - Managing race conditions and interruptions for navigations, mutations, and revalidation
 - Managing errors and rendering something useful to the user
 - Pending UI
-- Skeleton UI
+- Skeleton UI with `<React.Suspense>`
 - and more...
 
-So, whether your UI needs are super boring are highly dynamic, it's hard to explain just how much simpler and more capable your code becomes when your router understands both data loading and data mutations. You kind of have to experience it yourself. Take it for a spin today:
+So, whether your UI needs are super boring are highly dynamic, it's hard to explain just how much simpler and more capable your code becomes when your router understands both data loading and mutations. You kind of have to experience it yourself. Take it for a spin today:
 
 - [Feature Overview][featureoverview]
 - [Tutorial][tutorial]
