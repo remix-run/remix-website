@@ -79,5 +79,5 @@ Happy routing!
 [tesla]: https://www.tesla.com/model3/design
 [figma]: https://figma.com
 [remix]: /
-[featureoverview]: https://reactrouter.com/en/main/getting-started/overview
-[tutorial]: https://reactrouter.com/en/main/getting-started/tutorial
+[featureoverview]: https://reactrouter.com/en/main/start/overview
+[tutorial]: https://reactrouter.com/en/main/start/tutorial
