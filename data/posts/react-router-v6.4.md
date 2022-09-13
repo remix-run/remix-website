@@ -1,7 +1,7 @@
 ---
 title: "React Router 6.4 Release"
 summary: "React Router 6.4 was released today, adding all of data loading, data mutation, pending navigation, and error handling APIs from Remix to every React Router app."
-date: 2022-09-07
+date: 2022-09-13
 image: /blog-images/posts/remixing-react-router/image.jpg
 imageAlt: Glowing React Router logo, 6 dots in an upward pyramid with a path of three from top to bottom connected.
 authors:
