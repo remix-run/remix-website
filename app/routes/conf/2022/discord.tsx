@@ -43,7 +43,7 @@ export default function Speak() {
       <div>
         <h1 className="font-display text-m-h1 sm:text-d-h2 text-white xl:text-d-j mb-16">
           <a
-            href="https://discord.gg/remix"
+            href="https://rmx.as/discord"
             className="flex items-center gap-4"
           >
             <Discord />
@@ -52,7 +52,7 @@ export default function Speak() {
         </h1>
         <div className="container text-m-p-lg lg:text-d-p-lg text-white flex flex-col gap-4">
           <p>
-            <a href="https://discord.gg/remix" className="underline">
+            <a href="https://rmx.as/discord" className="underline">
               The Remix Discord server
             </a>{" "}
             will be used throughout the conference to keep you up-to-date on
@@ -73,7 +73,7 @@ export default function Speak() {
           <p className="pt-4">Chat it up during the conference!</p>
           <div className="w-full mt-6 text-center">
             <a
-              href="https://discord.gg/remix"
+              href="https://rmx.as/discord"
               className={`${primaryButtonLinkClass} font-display uppercase flex items-center gap-4`}
             >
               <Discord /> Join the Discord
