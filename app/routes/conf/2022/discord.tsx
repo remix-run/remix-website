@@ -42,10 +42,7 @@ export default function Speak() {
     <InnerLayout>
       <div>
         <h1 className="font-display text-m-h1 sm:text-d-h2 text-white xl:text-d-j mb-16">
-          <a
-            href="https://rmx.as/discord"
-            className="flex items-center gap-4"
-          >
+          <a href="https://rmx.as/discord" className="flex items-center gap-4">
             <Discord />
             <span>Remix Conf Discord</span>
           </a>
