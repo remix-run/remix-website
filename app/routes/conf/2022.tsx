@@ -91,14 +91,14 @@ function SignUp() {
             </h2>
             <div className="flex items-center gap-4 mb-6">
               <a
-                href="https://discord.gg/remix"
+                href="https://rmx.as/discord"
                 aria-label="Discord"
                 title="Join Discord"
               >
                 <Discord aria-hidden />
               </a>
               <p className="text-lg md:text-xl opacity-80">
-                <a className="underline" href="https://discord.gg/remix">
+                <a className="underline" href="https://rmx.as/discord">
                   Join the Remix community on Discord
                 </a>{" "}
                 to keep up with what's going on with the conference and the
@@ -205,7 +205,7 @@ function Footer() {
         <a href="https://youtube.com/remix_run" aria-label="YouTube">
           <YouTube aria-hidden />
         </a>
-        <a href="https://discord.gg/remix" aria-label="Discord">
+        <a href="https://rmx.as/discord" aria-label="Discord">
           <Discord aria-hidden />
         </a>
       </nav>
