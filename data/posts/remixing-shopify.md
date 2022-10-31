@@ -11,7 +11,7 @@ authors:
 
 Today we are excited to share that Remix has joined forces with Shopify!
 
-Shopify has been a long time supporter of open source projects that push the web and commerce forward, and this pairing continues that tradition. It’s also great news for Remix, our community, our partners, and anyone who’s excited about building for the web.
+Shopify has been a long-time supporter of open source projects that push the web and commerce forward, and this pairing continues that tradition. It’s also great news for Remix, our community, our partners, and anyone who’s excited about building for the web.
 
 Remix adoption is growing at an incredible rate, and we regularly have conversations with many smart, passionate folks in the industry who are creating amazing experiences with Remix. You’ll hear about them in the coming months. They love how Remix encourages progressive enhancement and leverages web standards to help them build fast, resilient websites.
 
