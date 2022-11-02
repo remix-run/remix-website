@@ -90,9 +90,9 @@ We should note again that we're planning to do this all as minor Remix 1.x relea
 
 * `useTransition` has been renamed to `useNavigation` in React Router 6.4, so we'll mark `useTransition` as deprecated but keep it around
 * React Router flattened the `submission` field and removed the `type` field from navigations (formerly transitions) and fetchers, so we'll use wrapper hooks to add those back to `useTransition` and `useFetcher`
-* React Router doesn't have the concept of separate Error and Catch Boundaries, so we'll ensure thy remain functional
+* React Router doesn't have the concept of separate Error and Catch Boundaries, so we'll ensure they remain functional
 
-Where possible, (and we hope this is all cases) we will add feature flags to `remix.config.js` allowing you to opt-into the new Remix v2 behavior at your convenience, while providing backwards compatible-behavior if you do not opt-in.
+Where possible (and we hope this is all cases), we will add feature flags to `remix.config.js` allowing you to opt-into the new Remix v2 behavior at your convenience, while providing backwards compatible-behavior if you do not opt-in.
 
 ## Outro
 
