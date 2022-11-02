@@ -1,8 +1,8 @@
 ---
 title: React Router-ing Remix
 summary: We brought all the Remix goodies over to React Router and made improvements in the process. Now it's time to bring those improved APIs back over to Remix where they started!
-featured: true
-date: 2022-09-30
+featured: false
+date: 2022-11-02
 image: /blog-images/posts/remixing-react-router/image.jpg
 imageAlt: React Router Logo
 authors:
@@ -30,15 +30,15 @@ You can think of Remix's architecture as having 4 primary aspects:
 3. Client-side hydration
 4. Client navigation + data-fetching
 
-These 4 sections also happen to be nicely decoupled, so they provide us clean boundaries to do approach this in an iterative fashion to avoid a single big-bang release.
+These 4 sections also happen to be nicely decoupled, so they provide us clean boundaries to do approach this in an iterative fashion to avoid a single big-bang release.  This should mean a much smoother integration path for Remix users!
 
-**Step 1**
+### Step 1 - Server Navigation and Data Fetching
 
 We'll first update Remix's server runtime to use React Router's new `unstable_createStaticHandler` to do server-side data-fetching, and once we're comfortable we can release that without touching steps 2 through 4.  Even better - we can break this down into individual efforts for resource route requests, client-side navigation data fetch requests, and document requests.
 
 _Note: `createStaticHandler` is published as unstable in `6.4.0` in case we come across required changes during this process.  We'll stabilize it once we've completed the Remix integration._
 
-We're planning to do these one by one using Martin Fowler's [Strangler Fig][strangler-fig] pattern so we can gain the highest confidence that we haven't introduced any regressions (shout out to [DavidKPiano's tweet][davidkpiano-tweet] from a few months ago for re-surfacing this pattern in my brain!).  If you're unfamiliar with this pattern, the general gist of it is that you write the new code alongside the old code and slowly switch portions over.  We can take this even further with a feature-flagged approach that keeps both paths active and allows for validations during tests and at runtime.
+We're planning to do these one by one using Martin Fowler's [Strangler Fig][strangler-fig] pattern so we can gain the highest confidence that we haven't introduced any regressions (shout out to `@DavidKPiano` for re-surfacing this pattern in my brain [a few months ago][davidkpiano-tweet]!).  If you're unfamiliar with this pattern, the general gist of it is that you write the new code alongside the old code and slowly switch portions over.  We can take this even further with a feature-flagged approach that keeps both paths active and allows for validations during tests and at runtime.
 
 Here's a simplified example of what this might look like for a resource route request in Remix
 
@@ -68,21 +68,21 @@ This approach gives us a number of benefits:
 * Therefore, we can merge this code directly into into the `dev` branch instead of maintaining a long-lived feature branch
 * The assertions can be used for all of our unit and integration tests to make sure nothing breaks, and also enabled at runtime for local app development, which allows us to better test this out on real Remix apps
 * Once we're confident the new code paths are ready to go, we can alter the feature flags from a "run both" approach to a "run one or the other" approach, leaving us a very quick rollback strategy should anything go awry when we publish the new code paths
-* And finally, the feature flags give us nice and easy references of what to delete once we're all done 🪓
+* Finally, the feature flags give us nice and easy references of what to delete once we're all done 🪓
 
-**Step 2**
+### Step 2 - Server HTML Rendering
 
-Once we're done wth server-side data fetching, we can move onto server-side HTML rendering (using React Router's `unstable_StaticRouterProvider`).  This is another aspect we can (sort of) do independently.  We can render HTML on the server using the new APIs, but we won't be able to hydrate that on the client (using the old APIs) without some nasty code forks to determine whether to read from the old or new contexts.  Thankfully, idiomatic Remix apps works without JavaScript, so we can validate our tests and apps without JS during this step.  We obviously won't ship after Step 2, but we'll be able to gain a pretty high level of confidence in our SSR before moving onto step 3.  Again we'll use a flag to enable both paths and perform some level of HTML assertions between the old and new.
+Once we're done wth server-side data fetching, we can move onto server-side HTML rendering (using React Router's `unstable_StaticRouterProvider`).  This is another aspect we can (sort of) do independently.  We can render HTML on the server using the new APIs, but we won't be able to hydrate that on the client (using the old APIs) without some nasty code forks to determine whether to read from the old or new contexts.  Thankfully, idiomatic Remix apps work without JavaScript, so we can validate our tests and apps without JS during this step.  We obviously won't ship after Step 2, but we'll be able to gain a pretty high level of confidence in our SSR before moving onto step 3.  Again we'll use a flag to enable both paths and perform some level of HTML assertions between the old and new.
 
-The fun part here is that this step is where we start to fully realize Michael's vision of Remix being a ["compiler for React Router"][michael-tweet].  Now that react-router knows how to do all the cool data fetching stuff, all Remix has to do is compile a set of conventional router files on disk into the appropriate routes expected by React Router.  Once those route trees are created, it just hands them off to React Router for the heavy lifting 💪!
+The fun part here is that this step is where we start to fully realize Michael's vision of Remix being a ["compiler for React Router"][michael-tweet].  Now that react-router knows how to do all the cool data fetching stuff, Remix just compiles a set of conventional route files on disk into the appropriate routes expected by React Router.  Once those routes are created, it just hands them off to React Router for the heavy lifting 💪!
 
-**Step 3**
+## Step 3 - Client-side Hydration
 
-Onto client-side hydration!  This is where we'll remove the vast majority of the Remix code (bye-bye Transition Manager - we'll always love you 🙃).  In the same vein as above, Remix simply needs to leverage the route manifest provided by the server to generate a route tree to hand off to `createBrowserRouter` and then `RouterProvider` does the rest.  the _super_ cool part is that Remix gets to use the _exact same_ loader and action for all of it's routes, since all they do it make a `fetch` to the Remix server!  This probably won't go through the feature flag since we can't exactly hydrate the document twice 🤷‍♂️.
+Onto client-side hydration!  This is where we'll remove the vast majority of the Remix code (bye-bye Transition Manager - we'll always love you 🙃).  In the same vein as above, Remix simply needs to leverage the route manifest provided by the server to generate a route tree to hand off to `createBrowserRouter` and then `RouterProvider` does the rest.  The _super_ cool part is that Remix gets to use the _exact same loader and action_ for all of it's routes, since all they do it make a `fetch` to the Remix server with a `_data` param!  This probably won't go through the feature flag since we can't exactly hydrate the document twice 🤷‍♂️.
 
-**Step 4**
+### Step 4 - Client navigation and data-fetching
 
-This might be the most incorrectly asserted phrase in software development, but we're going to be stubborn here and use it again -- once we finish step 3, client side data-fetches will **Just Work™️** since that's entirely handled by React Router 6.4 now!
+This might be the most incorrectly asserted phrase in software development, but we're going to be stubborn here and use it again -- once we finish step 3, client side routing and data-fetches should **Just Work™️** since that's entirely handled by React Router 6.4 now!
 
 ## Backwards Compatibility
 
@@ -91,6 +91,8 @@ We should note again that we're planning to do this all as minor Remix 1.x relea
 * `useTransition` has been renamed to `useNavigation` in React Router 6.4, so we'll mark `useTransition` as deprecated but keep it around
 * React Router flattened the `submission` field and removed the `type` field from navigations (formerly transitions) and fetchers, so we'll use wrapper hooks to add those back to `useTransition` and `useFetcher`
 * React Router doesn't have the concept of separate Error and Catch Boundaries, so we'll ensure thy remain functional
+
+Where possible, (and we hope this is all cases) we will add feature flags to `remix.config.js` allowing you to opt-into the new Remix v2 behavior at your convenience, while providing backwards compatible-behavior if you do not opt-in.
 
 ## Outro
 
