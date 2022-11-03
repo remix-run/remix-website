@@ -44,7 +44,7 @@ type LoaderData = {
   errors: Sequence;
 };
 
-export let loader: LoaderFunction = async () => {
+export let loader: LoaderFunction = async ({ request }) => {
   let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
     getMarkdown("marketing/sample/sample.md"),
     getMarkdown("marketing/sample-sm/sample.md"),
@@ -57,10 +57,13 @@ export let loader: LoaderFunction = async () => {
   invariant(mutations.type === "sequence", "mutations.md should be a sequence");
   invariant(errors.type === "sequence", "errors.md should be a sequence");
 
+  let requestUrl = new URL(request.url);
+  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
+
   let data: LoaderData = {
     sample,
     sampleSm,
-    siteUrl: process.env.SITE_URL,
+    siteUrl,
     mutations,
     errors,
   };

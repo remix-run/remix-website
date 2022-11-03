@@ -53,7 +53,7 @@ type LoaderData = {
   };
 };
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request }) => {
   const speakersOrdered = await getSpeakers(2022);
   const speakersShuffled = speakersOrdered
     // save a bit of data by not sending along the bio to the home page
@@ -79,8 +79,12 @@ export const loader: LoaderFunction = async () => {
       .filter((s) => s.level === "community")
       .sort(() => Math.random() - 0.5),
   };
+
+  let requestUrl = new URL(request.url);
+  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
+
   return json<LoaderData>(
-    { siteUrl: process.env.SITE_URL, speakers: speakersShuffled, sponsors },
+    { siteUrl, speakers: speakersShuffled, sponsors },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
 };

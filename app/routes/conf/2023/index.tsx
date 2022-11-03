@@ -48,10 +48,13 @@ type LoaderData = {
   sponsors: Array<Sponsor>;
 };
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request }) => {
   const allSponsors = (await getSponsors(2023)).sort(() => Math.random() - 0.5);
+
+  let requestUrl = new URL(request.url);
+  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
   return json<LoaderData>(
-    { siteUrl: process.env.SITE_URL, sponsors: allSponsors },
+    { siteUrl, sponsors: allSponsors },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
 };
