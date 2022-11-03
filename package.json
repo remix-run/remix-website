@@ -23,7 +23,7 @@
   "dependencies": {
     "@docsearch/css": "^3.0.0-alpha.41",
     "@docsearch/react": "^3.0.0-alpha.41",
-    "@mcansh/undoc": "^0.8.0",
+    "@mcansh/undoc": "0.8.0",
     "@prisma/client": "^3.5.0",
     "@reach/menu-button": "0.17.0",
     "@reach/rect": "0.17.0",
