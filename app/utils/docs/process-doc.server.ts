@@ -1,5 +1,5 @@
 import parseAttributes from "gray-matter";
-import { File } from "@mcansh/undoc";
+import { TarEntry } from "@mcansh/undoc";
 import { processMarkdown } from "@mcansh/undoc";
 import type { Doc } from "@prisma/client";
 
@@ -29,7 +29,10 @@ export interface ProcessedDoc {
   hasContent: boolean;
 }
 
-async function processDoc(entry: File, version: string): Promise<ProcessedDoc> {
+async function processDoc(
+  entry: TarEntry,
+  version: string
+): Promise<ProcessedDoc> {
   let { data, content } = parseAttributes(entry.content!);
   let hasContent = content.trim() !== "";
 
