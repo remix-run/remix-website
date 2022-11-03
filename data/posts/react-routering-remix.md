@@ -78,7 +78,7 @@ The fun part here is that this step is where we start to fully realize Michael's
 
 ## Step 3 - Client-side Hydration
 
-Onto client-side hydration!  This is where we'll remove the vast majority of the Remix code (bye-bye Transition Manager - we'll always love you 🙃).  In the same vein as above, Remix simply needs to leverage the route manifest provided by the server to generate a route tree to hand off to `createBrowserRouter` and then `RouterProvider` does the rest.  The _super_ cool part is that Remix gets to use the _exact same loader and action_ for all of it's routes, since all they do it make a `fetch` to the Remix server with a `_data` param!  This probably won't go through the feature flag since we can't exactly hydrate the document twice 🤷‍♂️.
+On to client-side hydration!  This is where we'll remove the vast majority of the Remix code (bye-bye Transition Manager - we'll always love you 🙃).  In the same vein as above, Remix simply needs to leverage the route manifest provided by the server to generate a route tree to hand off to `createBrowserRouter` and then `RouterProvider` does the rest.  The _super_ cool part is that Remix gets to use the _exact same loader and action_ for all of it's routes, since all they do it make a `fetch` to the Remix server with a `_data` param!  This probably won't go through the feature flag since we can't exactly hydrate the document twice 🤷‍♂️.
 
 ### Step 4 - Client navigation and data-fetching
 
