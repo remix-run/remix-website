@@ -30,7 +30,7 @@ You can think of Remix's architecture as having 4 primary aspects:
 3. Client-side hydration
 4. Client navigation + data-fetching
 
-These 4 sections also happen to be nicely decoupled, so they provide us clean boundaries to do approach this in an iterative fashion to avoid a single big-bang release. This should mean a much smoother integration path for Remix users!
+These 4 sections also happen to be nicely decoupled, so they provide us clean boundaries to approach this in an iterative fashion to avoid a single big-bang release. This should mean a much smoother integration path for Remix users!
 
 ### Step 1 - Server Navigation and Data Fetching
 
@@ -65,7 +65,7 @@ function handleResourceRouteRequest({ request }) {
 This approach gives us a number of benefits:
 
 - The feature flag allows us to strip the new code paths out at build time, so we won't be including any of this new code in published remix releases (until we're ready)
-- Therefore, we can merge this code directly into into the `dev` branch instead of maintaining a long-lived feature branch
+- Therefore, we can merge this code directly into the `dev` branch instead of maintaining a long-lived feature branch
 - The assertions can be used for all of our unit and integration tests to make sure nothing breaks, and also enabled at runtime for local app development, which allows us to better test this out on real Remix apps
 - Once we're confident the new code paths are ready to go, we can alter the feature flags from a "run both" approach to a "run one or the other" approach, leaving us a very quick rollback strategy should anything go awry when we publish the new code paths
 - Finally, the feature flags give us nice and easy references of what to delete once we're all done 🪓
@@ -78,7 +78,7 @@ The fun part here is that this step is where we start to fully realize Michael's
 
 ## Step 3 - Client-side Hydration
 
-On to client-side hydration! This is where we'll remove the vast majority of the Remix code (bye-bye Transition Manager - we'll always love you 🙃). In the same vein as above, Remix simply needs to leverage the route manifest provided by the server to generate a route tree to hand off to `createBrowserRouter` and then `RouterProvider` does the rest. The _super_ cool part is that Remix gets to use the _exact same loader and action_ for all of it's routes, since all they do it make a `fetch` to the Remix server with a `_data` param! This probably won't go through the feature flag since we can't exactly hydrate the document twice 🤷‍♂️.
+On to client-side hydration! This is where we'll remove the vast majority of the Remix code (bye-bye Transition Manager - we'll always love you 🙃). In the same vein as above, Remix simply needs to leverage the route manifest provided by the server to generate a route tree to hand off to `createBrowserRouter` and then `RouterProvider` does the rest. The _super_ cool part is that Remix gets to use the _exact same loader and action_ for all of it's routes, since all they do is make a `fetch` to the Remix server with a `_data` param! This probably won't go through the feature flag since we can't exactly hydrate the document twice 🤷‍♂️.
 
 ### Step 4 - Client navigation and data-fetching
 
