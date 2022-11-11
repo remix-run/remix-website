@@ -154,7 +154,7 @@ export default function BlogPost() {
         </div>
       </div>
 
-      <div className="mt-24 mb-12 m-auto container sm:w-96">
+      <div className="mt-24 mb-12 m-auto container max-w-lg">
         <h3 className="text-m-h3 font-bold mb-6 lg:text-d-h3">
           Get updates on the latest Remix news
         </h3>
