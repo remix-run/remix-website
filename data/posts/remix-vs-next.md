@@ -1,7 +1,7 @@
 ---
 title: Remix vs Next.js
 summary: An objective comparison between Remix and Next.js
-featured: true
+featured: false
 date: 2022-01-11
 image: /blog-images/headers/remix-vs-next.jpg
 imageAlt: Remix and Next.js Logos
