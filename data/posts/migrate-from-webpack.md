@@ -5,7 +5,7 @@ date: 2022-11-22
 image: /blog-images/headers/webpack.png
 imageAlt: "webpack and remix logos"
 authors:
-  - Pedro Catorri
+  - Pedro Cattori
 ---
 
 Today, we're excited to share a way for Webpack-based apps to incrementally migrate to Remix. We've created an example of a Webpack-based Remix compiler and dev server so that you can use all your Webpack loaders and plugins from day one of the migration.
