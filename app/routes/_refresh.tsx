@@ -1,4 +1,4 @@
-import type { RouteComponent, ActionFunction } from "@remix-run/node";
+import type { DataFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
 import { getFlyInstances } from "~/utils/get-fly-instances.server";
@@ -7,7 +7,7 @@ if (!process.env.AUTH_TOKEN) {
   throw new Error("AUTH_TOKEN env var is not set");
 }
 
-const action: ActionFunction = async ({ request }) => {
+export async function action({ request }: DataFunctionArgs) {
   // verify post request
   if (request.method !== "POST") {
     throw new Response("", { status: 405 });
@@ -49,13 +49,9 @@ const action: ActionFunction = async ({ request }) => {
     return json({ instances });
   } catch (error) {
     console.error(error);
-    return json({ ok: false }, { status: 500 });
+    return json(
+      { ok: false },
+      { status: error instanceof Response ? error.status : 500 }
+    );
   }
-};
-
-const RefreshAllInstancesDocsPage: RouteComponent = () => {
-  return <p>nothing to see here</p>;
-};
-
-export default RefreshAllInstancesDocsPage;
-export { action };
+}

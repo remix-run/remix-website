@@ -1,4 +1,4 @@
-import { RouteComponent, ActionFunction, json } from "@remix-run/node";
+import { json, DataFunctionArgs } from "@remix-run/node";
 import PQueue from "p-queue";
 
 import type { GitHubRelease } from "~/@types/github";
@@ -51,20 +51,16 @@ async function processDocs(request: Request): Promise<void> {
   await saveDocs(ref, release.body);
 }
 
-let action: ActionFunction = async ({ request }) => {
+export async function action({ request }: DataFunctionArgs) {
   try {
     await queue.add(() => processDocs(request));
 
     return json({ ok: true }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return json({ ok: true }, { status: 500 });
+    return json(
+      { ok: false },
+      { status: error instanceof Response ? error.status : 500 }
+    );
   }
-};
-
-const RefreshInstance: RouteComponent = () => {
-  return <p>nothing to see here</p>;
-};
-
-export default RefreshInstance;
-export { action };
+}
