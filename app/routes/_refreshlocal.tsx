@@ -35,20 +35,24 @@ async function processDocs(request: Request): Promise<void> {
   console.log(`Refreshing docs for ${url.hostname} for ref ${ref}`);
 
   // generate docs for specified ref
-  let tag = ref.replace(/^refs\/tags\//, "");
+  if (/^refs\/heads\//.test(ref)) {
+    let tag = ref.replace(/^refs\/tags\//, "");
 
-  const releasePromise = await fetch(
-    `https://api.github.com/repos/${process.env.REPO}/releases/tags/${tag}`,
-    {
-      headers: {
-        accept: "application/vnd.github.v3+json",
-      },
-    }
-  );
+    const releasePromise = await fetch(
+      `https://api.github.com/repos/${process.env.REPO}/releases/tags/${tag}`,
+      {
+        headers: {
+          accept: "application/vnd.github.v3+json",
+        },
+      }
+    );
 
-  const release = (await releasePromise.json()) as GitHubRelease;
+    const release = (await releasePromise.json()) as GitHubRelease;
 
-  await saveDocs(ref, release.body);
+    await saveDocs(ref, release.body);
+  } else {
+    await saveDocs(ref, "");
+  }
 }
 
 export async function action({ request }: DataFunctionArgs) {
