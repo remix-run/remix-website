@@ -6,7 +6,7 @@ First setup your `.env` file, use `.env.example` to know what to set.
 
 ```sh
 npm i
-prisma migrate reset
+npm run db:reset
 npm run seed
 ```
 
@@ -15,6 +15,14 @@ Now you should be good to go:
 ```
 npm run dev
 ```
+
+To preview changes to the `docs` folder in the Remix repo, run the following command in a new terminal session.
+
+```
+npm run dev:docs
+```
+
+Note that by default this assumes the relative path to your local copy of the Remix docs is `../remix/docs`. This can be configured via `LOCAL_DOCS_PATH` in your `.env` file.
 
 ## Deployment
 
