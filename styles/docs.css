@@ -306,7 +306,7 @@ a.md-nav-item {
     @apply m-0 mt-8 mb-4;
   }
 
-  & :is(h1, h2) {
+  & :is(h1) {
     @apply font-display;
   }
 
@@ -315,11 +315,11 @@ a.md-nav-item {
   }
 
   & h2 {
-    @apply text-m-h2 md:text-d-h2;
+    @apply text-m-h2 md:text-d-h3;
   }
 
   & h3 {
-    @apply text-m-h3 md:text-d-h3;
+    @apply text-m-h3 md:text-m-h2;
   }
 
   & h4,
