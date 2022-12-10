@@ -11,7 +11,7 @@ const app = express();
 
 const limiter = rateLimit({
   windowMs: 2 * 60 * 1000, // 2 minutes
-  max: 200,
+  max: 1000,
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -54,7 +54,6 @@ app.all(
 );
 const port = process.env.PORT || 3000;
 
-console.log("fart");
 app.listen(port, () => {
   console.log(`Express server listening on port ${port}`);
 });
