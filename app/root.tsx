@@ -31,8 +31,14 @@ export let loader: LoaderFunction = async ({ request }) => {
   let env = {
     NODE_ENV: process.env.NODE_ENV,
   };
+
+  let isDevHost = !isProductionHost(request);
+  let url = new URL(request.url);
   return {
-    noIndex: !isProductionHost(request),
+    noIndex:
+      isDevHost ||
+      url.pathname === "/docs/en/v1/api/remix" ||
+      url.pathname === "/docs/en/v1/api/conventions",
     env,
   };
 };
