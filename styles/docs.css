@@ -121,12 +121,20 @@ a.md-nav-item {
 .md-toc-title,
 /* Targets the first link, which is the page title */
 .toc > li > p > a {
-  @apply block uppercase font-display text-d-p-sm mb-2 font-medium tracking-wide leading-[1.125];
+  @apply block font-display text-d-p-sm mb-2 font-bold tracking-wide leading-[1.125];
   @apply text-gray-700 dark:text-gray-200;
 
   & code {
     @apply transform-none text-[length:85%];
   }
+}
+
+.toc > li {
+  @apply mb-8;
+}
+
+.toc > ul:first-child {
+  @apply mb-0;
 }
 
 .toc {
@@ -311,7 +319,7 @@ a.md-nav-item {
   }
 
   & h1 {
-    @apply my-10 text-m-h1 md:text-d-h1;
+    @apply my-10 text-m-h2 md:text-d-h2;
   }
 
   & h2 {
@@ -326,6 +334,13 @@ a.md-nav-item {
   & h5,
   & h6 {
     @apply font-bold text-m-p-lg md:text-d-p-lg;
+  }
+
+  & h1 code,
+  & h2 code,
+  & h3 code {
+    border: none;
+    background: inherit;
   }
 
   /*****************************************************************************/
@@ -590,6 +605,13 @@ a.md-nav-item {
 
   & docs-success::before {
     @apply bg-green-brand;
+  }
+
+  & docs-info a,
+  & docs-success a,
+  & docs-warning a,
+  & docs-error a {
+    text-decoration: underline;
   }
 
   & docs-cards {
