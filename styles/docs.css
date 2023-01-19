@@ -576,11 +576,11 @@ a.md-nav-item {
   }
 
   & docs-warning {
-    @apply text-yellow-900 dark:text-yellow-100;
+    @apply text-yellow-800 dark:text-yellow-100;
   }
 
   & docs-warning::before {
-    @apply opacity-[0.15] bg-yellow-500;
+    @apply opacity-[0.15] bg-yellow-400;
   }
 
   & docs-info {
