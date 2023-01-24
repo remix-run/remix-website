@@ -260,8 +260,8 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
               It’s so simple it’s kind of silly. Just make a form...
             </MutationP>
             <MutationP>
-              ...and an action on the server. The whole thing works with no
-              JavaScript!
+              ...and an action on a route module. It looks like traditional HTML
+              forms but enables fully dynamic web experiences you're after.
             </MutationP>
             <MutationP>
               Remix runs the action server side, revalidates data client side,
@@ -276,7 +276,7 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
               being sent to the server so you can skip the busy spinners for
               mutations, too.
             </MutationP>
-            <MutationP>HTML Forms. Who knew?</MutationP>
+            <MutationP>HTML forms for mutations. Who knew?</MutationP>
           </div>
         </div>
 
