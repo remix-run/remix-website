@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Outlet, useLocation } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
-import { useRect } from "@reach/rect";
 import { Link, NavLink } from "~/components/link";
 import { Wordmark } from "~/components/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/components/icons";

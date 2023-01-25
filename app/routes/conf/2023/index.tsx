@@ -1,9 +1,9 @@
-import { json } from "@remix-run/node";
+import { json, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type {
   HeadersFunction,
   LinksFunction,
-  LoaderFunction,
+  LoaderArgs,
 } from "@remix-run/node";
 import cx from "clsx";
 import {
@@ -17,7 +17,7 @@ import { getSponsors } from "~/utils/conf.server";
 import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
-export function meta({ data: { siteUrl } }: { data: LoaderData }) {
+export const meta: MetaFunction<typeof loader> = ({ data: { siteUrl } }) => {
   let url = `${siteUrl}/conf`;
   let title = "Remix Conf — May 2023";
   let image = `${siteUrl}/conf-images/2023/og_image.jpg`;
@@ -37,23 +37,18 @@ export function meta({ data: { siteUrl } }: { data: LoaderData }) {
     "twitter:description": description,
     "twitter:image": image,
   };
-}
+};
 
 export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
-type LoaderData = {
-  siteUrl: string | undefined;
-  sponsors: Array<Sponsor>;
-};
-
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const allSponsors = (await getSponsors(2023)).sort(() => Math.random() - 0.5);
 
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
-  return json<LoaderData>(
+  return json(
     { siteUrl, sponsors: allSponsors },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
@@ -126,7 +121,7 @@ function Hero() {
 }
 
 function EarlySponsors() {
-  const { sponsors } = useLoaderData() as LoaderData;
+  const { sponsors } = useLoaderData<typeof loader>();
   return (
     <section className="relative my-10 sm:my-14 lg:my-24 xl:my-28">
       <div className="container">

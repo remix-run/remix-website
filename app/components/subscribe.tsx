@@ -1,8 +1,10 @@
 import * as React from "react";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, type FetcherWithComponents } from "@remix-run/react";
 import type { FormProps } from "@remix-run/react";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
+import type { action } from "~/routes/_actions/newsletter";
+import { SerializeFrom } from "@remix-run/node";
 
 function Subscribe({
   descriptionId,
@@ -27,10 +29,29 @@ function Subscribe({
   );
 }
 
-type ActionType = { ok?: boolean; error?: string } | undefined;
+function SubscribeProvider({ children }: { children: React.ReactNode }) {
+  let subscribe = useFetcher<typeof action>();
+  let inputRef = React.useRef<HTMLInputElement>(null);
+  React.useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  React.useEffect(() => {
+    if (subscribe.state === "idle" && subscribe.data?.ok && inputRef.current) {
+      inputRef.current.value = "";
+    }
+  }, [subscribe.state, subscribe.data]);
+
+  return (
+    <SubscribeContext.Provider value={{ fetcher: subscribe, inputRef }}>
+      {children}
+    </SubscribeContext.Provider>
+  );
+}
 
 const SubscribeContext = React.createContext<null | {
-  fetcher: ReturnType<typeof useFetcher>;
+  fetcher: FetcherWithComponents<SerializeFrom<typeof action>>;
+  inputRef: React.RefObject<HTMLInputElement>;
 }>(null);
 
 function useSubscribeContext() {
@@ -40,19 +61,6 @@ function useSubscribeContext() {
       "SubscribeForm components must be used inside of a SubscribeProvider"
     );
   return ctx;
-}
-
-function SubscribeProvider({ children }: { children: React.ReactNode }) {
-  let subscribe = useFetcher();
-  return (
-    <SubscribeContext.Provider
-      value={{
-        fetcher: subscribe,
-      }}
-    >
-      {children}
-    </SubscribeContext.Provider>
-  );
 }
 
 function SubscribeForm({
@@ -101,13 +109,15 @@ const SubscribeInput = React.forwardRef<
 
 SubscribeInput.displayName = "SubscribeInput";
 
-function SubscribeEmailInput({
-  placeholder = "you@example.com",
-  ...props
-}: Omit<React.ComponentPropsWithoutRef<"input">, "type" | "name" | "value">) {
-  let { fetcher } = useSubscribeContext();
+const SubscribeEmailInput = React.forwardRef<
+  HTMLInputElement,
+  Omit<React.ComponentPropsWithoutRef<"input">, "type" | "name" | "value">
+>(({ placeholder = "you@example.com", ...props }, forwardedRef) => {
+  let { fetcher, inputRef } = useSubscribeContext();
+  let ref = useComposedRefs(inputRef, forwardedRef);
   return (
     <SubscribeInput
+      ref={ref}
       type="email"
       name="email"
       placeholder={placeholder}
@@ -118,7 +128,8 @@ function SubscribeEmailInput({
       }
     />
   );
-}
+});
+SubscribeEmailInput.displayName = "SubscribeEmailInput";
 
 function SubscribeSubmit({
   children = "Subscribe",
@@ -148,17 +159,15 @@ function SubscribeStatus() {
   let { fetcher: subscribe } = useSubscribeContext();
   return (
     <div aria-live="polite" className="py-2">
-      {subscribe.type === "done" && (subscribe.data as ActionType)?.ok && (
+      {subscribe.type === "done" && subscribe.data?.ok && (
         <div className="text-white">
           <b className="text-green-brand">Got it!</b> Please go{" "}
           <b className="text-red-brand">check your email</b> to confirm your
           subscription, otherwise you won't get our email.
         </div>
       )}
-      {subscribe.type === "done" && (subscribe.data as ActionType)?.error && (
-        <div className="text-red-brand">
-          {(subscribe.data as ActionType)?.error}
-        </div>
+      {subscribe.type === "done" && subscribe.data?.error && (
+        <div className="text-red-brand">{subscribe.data?.error}</div>
       )}
     </div>
   );
@@ -173,3 +182,20 @@ export {
   SubscribeSubmit,
   SubscribeStatus,
 };
+
+function useComposedRefs<T>(...refs: React.Ref<T>[]) {
+  return React.useCallback(
+    (node: T) => {
+      refs.forEach((ref) => {
+        if (typeof ref === "function") {
+          ref(node);
+        } else if (ref) {
+          try {
+            (ref as React.MutableRefObject<T | null>).current = node;
+          } catch (_) {}
+        }
+      });
+    },
+    [refs]
+  );
+}

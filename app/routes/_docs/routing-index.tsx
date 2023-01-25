@@ -1,7 +1,6 @@
 import {
   BrowserChrome,
   Fakebooks,
-  InteractiveRoutes,
   Sales,
 } from "~/components/scroll-experience";
 

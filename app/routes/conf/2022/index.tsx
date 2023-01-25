@@ -3,7 +3,8 @@ import { useLoaderData } from "@remix-run/react";
 import type {
   HeadersFunction,
   LinksFunction,
-  LoaderFunction,
+  LoaderArgs,
+  MetaFunction,
 } from "@remix-run/node";
 import {
   OutlineButtonLink,
@@ -16,7 +17,7 @@ import { getSpeakers, getSponsors } from "~/utils/conf.server";
 import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
-export function meta({ data: { siteUrl } }: { data: LoaderData }) {
+export const meta: MetaFunction<typeof loader> = ({ data: { siteUrl } }) => {
   let url = `${siteUrl}/conf`;
   let title = "Remix Conf - May 24-25, 2022";
   let image = `${siteUrl}/conf-images/og.1.png`;
@@ -36,24 +37,13 @@ export function meta({ data: { siteUrl } }: { data: LoaderData }) {
     "twitter:description": description,
     "twitter:image": image,
   };
-}
+};
 
 export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
-type LoaderData = {
-  siteUrl: string | undefined;
-  speakers: Array<Omit<Speaker, "bio">>;
-  sponsors: {
-    premier: Sponsor | undefined;
-    gold: Array<Sponsor>;
-    silver: Array<Sponsor>;
-    community: Array<Sponsor>;
-  };
-};
-
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const speakersOrdered = await getSpeakers(2022);
   const speakersShuffled = speakersOrdered
     // save a bit of data by not sending along the bio to the home page
@@ -83,7 +73,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return json<LoaderData>(
+  return json(
     { siteUrl, speakers: speakersShuffled, sponsors },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
@@ -148,7 +138,7 @@ function Hero() {
 }
 
 function Speakers() {
-  const { speakers } = useLoaderData<LoaderData>();
+  const { speakers } = useLoaderData<typeof loader>();
   const mc = speakers.find((s) => s.type === "emcee");
   const talkSpeakers = speakers.filter((s) => s.type !== "emcee");
   return (
@@ -214,7 +204,7 @@ function SpeakerDisplay({
 }
 
 function Sponsors() {
-  const { sponsors } = useLoaderData<LoaderData>();
+  const { sponsors } = useLoaderData<typeof loader>();
   return (
     <section id="sponsors" className="py-20 container">
       <div className="md:container max-w-full overflow-hidden md:max-w-5xl">

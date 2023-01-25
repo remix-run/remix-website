@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "@remix-run/react";
-import { json, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
 
@@ -13,12 +13,7 @@ const refs = Prisma.validator<Prisma.GitHubRefArgs>()({
 
 type Ref = Prisma.GitHubRefGetPayload<typeof refs>;
 
-interface RouteData {
-  refs: (Ref & { versionOrBranch: string; docs: { count: number } })[];
-  commit: string;
-}
-
-export const loader: LoaderFunction = async () => {
+export const loader = async (_: LoaderArgs) => {
   let refs = await prisma.gitHubRef.findMany({
     select: {
       ref: true,
@@ -47,7 +42,7 @@ export const meta: MetaFunction = () => ({
 });
 
 export default function RefsPage() {
-  let data = useLoaderData<RouteData>();
+  let data = useLoaderData<typeof loader>();
 
   return (
     <div className="p-6">

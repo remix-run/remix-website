@@ -1,5 +1,5 @@
 import { handleRedirects } from "~/utils/http.server";
-import { LoaderFunction, redirect, json } from "@remix-run/node";
+import { redirect, json, LoaderArgs } from "@remix-run/node";
 import { prisma } from "~/db.server";
 import { getVersions } from "~/utils/undoc.server";
 import { getDoc } from "~/utils/docs/get-doc.server";
@@ -49,7 +49,7 @@ async function handleStaticFileRequests(param: string | undefined) {
   }
 }
 
-export let loader: LoaderFunction = async ({ request, params }) => {
+export let loader = async ({ request, params }: LoaderArgs) => {
   await handleRedirects(request);
   await handleStaticFileRequests(params["*"]);
 

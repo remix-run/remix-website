@@ -1,8 +1,8 @@
 import { NavLink } from "~/components/link";
 import { Wordmark } from "./logo";
-import type { RemixNavLinkProps } from "@remix-run/react/components";
+import type { NavLinkProps } from "@remix-run/react";
 
-const defaultNav: RemixNavLinkProps[] = [
+const defaultNav: NavLinkProps[] = [
   {
     to: "/docs/en/v1",
     children: "Docs",

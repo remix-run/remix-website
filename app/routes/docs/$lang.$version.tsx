@@ -2,11 +2,7 @@ import * as React from "react";
 import invariant from "ts-invariant";
 import { useLoaderData, useLocation, Outlet, Link } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type {
-  LoaderFunction,
-  MetaFunction,
-  LinksFunction,
-} from "@remix-run/node";
+import type { LoaderArgs, MetaFunction, LinksFunction } from "@remix-run/node";
 import cx from "clsx";
 import { DocSearch } from "@docsearch/react";
 import docsearchStylesheet from "@docsearch/css/dist/style.css";
@@ -18,7 +14,7 @@ import { Menu } from "~/components/docs-menu";
 import { Wordmark } from "~/components/logo";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
-export let loader: LoaderFunction = async ({ params }) => {
+export let loader = async ({ params }: LoaderArgs) => {
   invariant(!!params.version, "Need a version param");
   invariant(!!params.lang, "Need a lang param");
 

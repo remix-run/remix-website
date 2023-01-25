@@ -1,6 +1,6 @@
 import type {
   HeadersFunction,
-  LoaderFunction,
+  LoaderArgs,
   MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -17,14 +17,14 @@ import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
 import { Subscribe } from "~/components/subscribe";
 
-export let loader: LoaderFunction = async ({ params, request }) => {
+export let loader = async ({ params, request }: LoaderArgs) => {
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
   let post = await getBlogPost(slug);
-  return json<LoaderData>(
+  return json(
     { siteUrl, post },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
@@ -40,11 +40,11 @@ export function links() {
   return [{ rel: "stylesheet", href: mdStyles }];
 }
 
-export let meta: MetaFunction = ({ data, params }) => {
+export let meta: MetaFunction<typeof loader> = ({ data, params }) => {
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
 
-  let { siteUrl, post } = data as LoaderData;
+  let { siteUrl, post } = data;
   // we should never get here since our loader throws a 404 :shrug:
   if (!post) {
     return {
@@ -81,7 +81,7 @@ export let meta: MetaFunction = ({ data, params }) => {
 };
 
 export default function BlogPost() {
-  let { post } = useLoaderData<LoaderData>();
+  let { post } = useLoaderData<typeof loader>();
   let mdRef = useRef<HTMLDivElement>(null);
   useDelegatedReactRouterLinks(mdRef);
 
@@ -167,9 +167,4 @@ export default function BlogPost() {
       <Footer />
     </div>
   );
-}
-
-interface LoaderData {
-  siteUrl: string;
-  post: MarkdownPost;
 }

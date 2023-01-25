@@ -8,7 +8,7 @@ import {
   Outlet,
   useLoaderData,
 } from "@remix-run/react";
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
@@ -25,7 +25,7 @@ declare global {
   };
 }
 
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   await ensureSecure(request);
   await removeTrailingSlashes(request);
   let env = {
@@ -132,7 +132,7 @@ const Document: React.FC<DocumentProps> = ({
 export default function App() {
   let matches = useMatches();
   let forceDark = matches.some((match) => match.handle?.forceDark);
-  let { noIndex, env } = useLoaderData();
+  let { noIndex, env } = useLoaderData<typeof loader>();
 
   return (
     <Document noIndex={noIndex} forceDark={forceDark}>

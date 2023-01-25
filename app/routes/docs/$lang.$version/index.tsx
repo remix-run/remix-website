@@ -1,5 +1,5 @@
 import invariant from "ts-invariant";
-import { LoaderFunction } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 
 import { json } from "@remix-run/node";
 
@@ -7,7 +7,7 @@ import { getDoc } from "~/utils/docs/get-doc.server";
 import { DocsPage } from "~/components/doc";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
-let loader: LoaderFunction = async ({ params }) => {
+let loader = async ({ params }: LoaderArgs) => {
   invariant(!!params.version, "Expected version param");
   invariant(!!params.lang, "Expected language param");
 

@@ -216,7 +216,9 @@ export const loader: LoaderFunction = async () => {
 };
 
 export default function May25Schedule() {
-  const { activities } = useLoaderData<LoaderData>();
+  // Our internal serialization type struggles a bit with the union/intersection
+  // type we use for Activity
+  const { activities } = useLoaderData() as LoaderData;
   return (
     <InnerLayout>
       <div>

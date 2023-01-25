@@ -3,7 +3,7 @@ import { Outlet, useLocation, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type {
   LinksFunction,
-  LoaderFunction,
+  LoaderArgs,
   HeadersFunction,
 } from "@remix-run/node";
 import { Link, NavLink } from "~/components/link";
@@ -33,13 +33,11 @@ export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-type LoaderData = { earlyBird: boolean };
-
 // March 1 at 12:00am
 const EARLY_BIRD_ENDING_TIME = 1646121600000;
 
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>(
+export const loader = async (_: LoaderArgs) => {
+  return json(
     { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
@@ -300,7 +298,7 @@ function MobileNavList() {
 }
 
 function MobileNav() {
-  const data = useLoaderData<LoaderData>();
+  const data = useLoaderData<typeof loader>();
   return (
     <div className="flex items-center gap-4 md:hidden">
       <HeaderLink

@@ -1,7 +1,7 @@
 import * as React from "react";
 import type {
   MetaFunction,
-  LoaderFunction,
+  LoaderArgs,
   HeadersFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
@@ -33,10 +33,8 @@ const hotelImages = [
 ];
 const TOTAL_HOTEL_IMAGES = hotelImages.length;
 
-type LoaderData = { hotelImageNumber: number };
-
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({
+export const loader = async (_: LoaderArgs) => {
+  return json({
     hotelImageNumber: Math.floor(Math.random() * TOTAL_HOTEL_IMAGES) + 1,
   });
 };
@@ -68,7 +66,7 @@ function Title({ className }: { className: string }) {
 }
 
 export default function Venue() {
-  const data = useLoaderData<LoaderData>();
+  const data = useLoaderData<typeof loader>();
   const [hotelImageNumber, setHotelImageNumber] = React.useState(
     data.hotelImageNumber
   );

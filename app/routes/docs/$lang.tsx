@@ -1,11 +1,11 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import acceptLanguage from "accept-language";
 import { getVersions } from "~/utils/undoc.server";
 
 import { prisma } from "~/db.server";
 
-let loader: LoaderFunction = async ({ request, params }) => {
+let loader = async ({ request, params }: LoaderArgs) => {
   let lang = params.lang;
 
   let refs = await prisma.gitHubRef.findMany({

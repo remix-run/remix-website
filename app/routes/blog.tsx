@@ -1,15 +1,10 @@
 import * as React from "react";
 import type {
   HeadersFunction,
-  LoaderFunction,
+  LoaderArgs,
   MetaFunction,
 } from "@remix-run/node";
-import {
-  useLoaderData,
-  Link,
-  useTransition,
-  useActionData,
-} from "@remix-run/react";
+import { useLoaderData, Link } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
@@ -17,8 +12,6 @@ import { Subscribe } from "~/components/subscribe";
 import { CACHE_CONTROL } from "~/utils/http.server";
 import type { MarkdownPostListing } from "~/utils/md.server";
 import { getBlogPostListings } from "~/utils/md.server";
-
-type LoaderData = { posts: Array<MarkdownPostListing> };
 
 export let meta: MetaFunction = () => {
   return {
@@ -28,8 +21,8 @@ export let meta: MetaFunction = () => {
   };
 };
 
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>(
+export const loader = async (_: LoaderArgs) => {
+  return json(
     { posts: await getBlogPostListings() },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
@@ -42,20 +35,10 @@ export const headers: HeadersFunction = () => {
 };
 
 export default function Blog() {
-  const data = useLoaderData<LoaderData>();
+  const data = useLoaderData<typeof loader>();
   const [latestPost, ...posts] = data.posts;
 
   let featuredPosts = data.posts.filter((post) => post.featured);
-
-  let transition = useTransition();
-  let actionData = useActionData();
-  let inputRef = React.useRef<HTMLInputElement>(null);
-
-  React.useEffect(() => {
-    if (transition.state === "idle" && actionData?.ok && inputRef.current) {
-      inputRef.current.value = "";
-    }
-  }, [transition.state, actionData]);
 
   return (
     <div className="flex flex-col flex-1 h-full">

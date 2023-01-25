@@ -1,6 +1,6 @@
 import type {
   LinksFunction,
-  LoaderFunction,
+  LoaderArgs,
   MetaFunction,
   HeadersFunction,
 } from "@remix-run/node";
@@ -8,7 +8,7 @@ import { Link, useCatch, useParams, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { getSpeakers, getTalks } from "~/utils/conf.server";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
-import { isSpeaker, Speaker, Talk, isTalkArray, sluggify } from "~/utils/conf";
+import { Speaker, sluggify } from "~/utils/conf";
 import { CACHE_CONTROL } from "~/utils/http.server";
 import { InnerLayout } from "../_ui";
 
@@ -16,7 +16,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: speakersStylesUrl }];
 };
 
-export const meta: MetaFunction = ({ data }: { data: null | LoaderData }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (data) {
     const { speaker, talks } = data;
     return {
@@ -34,9 +34,7 @@ export const meta: MetaFunction = ({ data }: { data: null | LoaderData }) => {
   };
 };
 
-type LoaderData = { speaker: Speaker; talks: Array<Omit<Talk, "description">> };
-
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const [allTalks, allSpeakers] = await Promise.all([
     getTalks(2022),
     getSpeakers(2022),
@@ -47,7 +45,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     .filter((t) => t.speakers.includes(speaker.name))
     // get rid of the description, we only use the HTML
     .map(({ description, ...rest }) => rest);
-  return json<LoaderData>(
+  return json(
     { speaker, talks },
     { headers: { "Cache-Control": CACHE_CONTROL } }
   );
@@ -60,7 +58,7 @@ export const headers: HeadersFunction = () => {
 };
 
 export default function Speaker() {
-  const { speaker, talks } = useLoaderData<LoaderData>();
+  const { speaker, talks } = useLoaderData<typeof loader>();
   return (
     <InnerLayout>
       <div>

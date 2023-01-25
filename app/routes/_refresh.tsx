@@ -1,4 +1,4 @@
-import type { DataFunctionArgs } from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
 import { getFlyInstances } from "~/utils/get-fly-instances.server";
@@ -7,7 +7,7 @@ if (!process.env.AUTH_TOKEN) {
   throw new Error("AUTH_TOKEN env var is not set");
 }
 
-export async function action({ request }: DataFunctionArgs) {
+export async function action({ request }: ActionArgs) {
   // verify post request
   if (request.method !== "POST") {
     throw new Response("", { status: 405 });

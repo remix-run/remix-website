@@ -1,4 +1,4 @@
-import { json, DataFunctionArgs } from "@remix-run/node";
+import { json, ActionArgs } from "@remix-run/node";
 import PQueue from "p-queue";
 
 import type { GitHubRelease } from "~/@types/github";
@@ -55,7 +55,7 @@ async function processDocs(request: Request): Promise<void> {
   }
 }
 
-export async function action({ request }: DataFunctionArgs) {
+export async function action({ request }: ActionArgs) {
   try {
     await queue.add(() => processDocs(request));
 
