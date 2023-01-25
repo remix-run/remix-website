@@ -21,8 +21,8 @@
     "postseed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts"
   },
   "dependencies": {
-    "@docsearch/css": "^3.0.0-alpha.41",
-    "@docsearch/react": "^3.0.0-alpha.41",
+    "@docsearch/css": "^3.3.2",
+    "@docsearch/react": "^3.3.2",
     "@mcansh/undoc": "0.8.0",
     "@prisma/client": "^3.5.0",
     "@reach/menu-button": "0.17.0",
