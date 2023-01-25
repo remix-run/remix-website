@@ -56,6 +56,9 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log(`Express server listening on port ${port}`);
+  if (process.env.NODE_ENV === "development") {
+    console.log(`http://localhost:${port}`);
+  }
 });
 
 function purgeRequireCache() {
