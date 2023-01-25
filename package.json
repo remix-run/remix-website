@@ -32,7 +32,7 @@
     "@remix-run/node": "^1.11.1",
     "@remix-run/react": "^1.11.1",
     "@remix-run/serve": "^1.11.1",
-    "@ryanflorence/md": "^7.1.0",
+    "@ryanflorence/md": "^7.2.0",
     "@ryanflorence/mdtut": "^1.2.1",
     "@tailwindcss/aspect-ratio": "^0.3.0",
     "accept-language": "^3.0.18",
