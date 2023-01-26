@@ -1403,7 +1403,7 @@ function ActivityCard({
   hovered,
 }: {
   title: string;
-  invoice: typeof invoices[number];
+  invoice: (typeof invoices)[number];
   hovered?: boolean;
 }) {
   return (
@@ -1656,7 +1656,7 @@ function InvoiceList({ children }: { children: React.ReactNode }) {
   );
 }
 
-let getInvoiceDue = (invoice: typeof invoices[number]) =>
+let getInvoiceDue = (invoice: (typeof invoices)[number]) =>
   invoice.due === false
     ? "Paid"
     : invoice.due < 0
