@@ -1,11 +1,12 @@
 import * as React from "react";
 import { useTransition, useBeforeUnload, useLocation } from "@remix-run/react";
+import { canUseDOM, useLayoutEffect } from "~/utils/misc";
 
 const STORAGE_KEY = "positions";
 
 let positions: { [key: string]: number } = {};
 
-if (typeof window !== "undefined") {
+if (canUseDOM) {
   let sessionPositions = sessionStorage.getItem(STORAGE_KEY);
   if (sessionPositions) {
     positions = JSON.parse(sessionPositions);
@@ -79,42 +80,40 @@ function useScrollRestoration() {
     }, [])
   );
 
-  if (typeof window !== "undefined") {
-    React.useLayoutEffect(() => {
-      // don't do anything on hydration, the component already did this with an
-      // inline script.
-      if (!hydrated) {
-        hydrated = true;
+  useLayoutEffect(() => {
+    // don't do anything on hydration, the component already did this with an
+    // inline script.
+    if (!hydrated) {
+      hydrated = true;
+      return;
+    }
+
+    let y = positions[location.key];
+
+    // been here before, scroll to it
+    if (y) {
+      window.scrollTo(0, y);
+      return;
+    }
+
+    // try to scroll to the hash
+    if (location.hash) {
+      let el = document.querySelector(location.hash);
+      if (el) {
+        el.scrollIntoView();
         return;
       }
+    }
 
-      let y = positions[location.key];
+    // don't do anything on submissions
+    if (wasSubmissionRef.current === true) {
+      wasSubmissionRef.current = false;
+      return;
+    }
 
-      // been here before, scroll to it
-      if (y) {
-        window.scrollTo(0, y);
-        return;
-      }
-
-      // try to scroll to the hash
-      if (location.hash) {
-        let el = document.querySelector(location.hash);
-        if (el) {
-          el.scrollIntoView();
-          return;
-        }
-      }
-
-      // don't do anything on submissions
-      if (wasSubmissionRef.current === true) {
-        wasSubmissionRef.current = false;
-        return;
-      }
-
-      // otherwise go to the top on new locations
-      window.scrollTo(0, 0);
-    }, [location]);
-  }
+    // otherwise go to the top on new locations
+    window.scrollTo(0, 0);
+  }, [location]);
 
   React.useEffect(() => {
     if (transition.submission) {

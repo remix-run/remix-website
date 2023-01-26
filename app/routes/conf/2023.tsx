@@ -15,7 +15,7 @@ import {
   MenuPopover,
   MenuItems,
   MenuLink,
-} from "@reach/menu-button";
+} from "~/components/primitives/menu-button";
 import cx from "clsx";
 import styles from "~/styles/conf/2023/conf.css";
 import {
@@ -268,7 +268,12 @@ function MobileNavButton() {
   );
 }
 
-function MobileMenuItem({ className, ...props }: HeaderLinkProps) {
+function MobileMenuItem({
+  className,
+  ...props
+}: HeaderLinkProps & {
+  index: number;
+}) {
   return (
     <MenuLink
       as={HeaderLink}
@@ -285,9 +290,10 @@ function MobileNavList() {
   return (
     <MenuPopover className="absolute block">
       <MenuItems className="relative block whitespace-nowrap outline-none py-2 border-2 border-white rounded-md mt-2 bg-black">
-        {navItems.map((item) => (
+        {navItems.map((item, i) => (
           <MobileMenuItem
             key={item.to + item.children}
+            index={i}
             {...item}
             className="block text-white text-opacity-90 hover:text-opacity-100"
           />

@@ -1,4 +1,10 @@
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs";
+import {
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+} from "~/components/primitives/tabs";
 import { Link, Outlet, useMatches, useNavigate } from "@remix-run/react";
 import type { MetaFunction, HeadersFunction } from "@remix-run/node";
 import { CACHE_CONTROL } from "~/utils/http.server";
@@ -55,9 +61,10 @@ export default function Safety() {
             }}
           >
             <TabList className="flex justify-around">
-              {days.map(({ name, slug, displayDate }) => (
+              {days.map(({ name, slug, displayDate }, i) => (
                 <Tab
                   key={slug}
+                  index={i}
                   tabIndex={-1}
                   className="w-full"
                   onFocus={(e) => {
@@ -91,7 +98,7 @@ export default function Safety() {
 
             <TabPanels className="pt-10">
               {days.map(({ slug, displayDate, name }, index) => (
-                <TabPanel key={slug}>
+                <TabPanel key={slug} index={index}>
                   <h2 className="text-m-h3 lg:text-d-h3 mb-4 font-display">
                     {displayDate}: {name}
                   </h2>

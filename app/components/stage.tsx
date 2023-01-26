@@ -10,6 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { canUseDOM, useHydrated } from "~/utils/misc";
 
 ////////////////////////////////////////////////////////////////////////////////
 interface TStageProps {
@@ -146,14 +147,6 @@ export function useStage(): TFrame {
   return useContext(StageContext);
 }
 
-let hydrated = false;
-function useHydrated() {
-  useEffect(() => {
-    hydrated = true;
-  });
-  return hydrated;
-}
-
 export function useOnResize(fn: () => void) {
   useEffect(() => {
     window.addEventListener("resize", fn);
@@ -162,8 +155,9 @@ export function useOnResize(fn: () => void) {
 }
 
 export function useWindowScroll(fallback: number = 0): number {
+  let hydrated = useHydrated();
   let [scroll, setScroll] = useState<number>(
-    typeof window === "undefined" ? fallback : window.scrollY
+    hydrated && canUseDOM ? window.scrollY : fallback
   );
   let handleScroll = useCallback(() => {
     setScroll(window.scrollY);
