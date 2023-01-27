@@ -1,12 +1,8 @@
 // adapted from https://github.com/radix-ui/primitives/blob/2f139a832ba0cdfd445c937ebf63c2e79e0ef7ed/packages/react/polymorphic/src/polymorphic.ts
-// Would have liked to use it directly instead of copying but they are
-// (rightfully) treating it as an internal utility, so copy/paste it is to
-// prevent any needless churn if they make breaking changes. Big thanks to Jenna
-// for the heavy lifting! https://github.com/jjenzz
-
-// TODO: Delete this eventually!
+// Big thanks to Jenna for the heavy lifting! https://github.com/jjenzz
 
 import type * as React from "react";
+import { forwardRef as React_forwardRef } from "react";
 
 type Merge<P1 = {}, P2 = {}> = Omit<P1, keyof P2> & P2;
 
@@ -23,10 +19,12 @@ type IntrinsicElement<E> = E extends ForwardRefComponent<infer I, any>
   : never;
 
 type ForwardRefExoticComponent<E, OwnProps> = React.ForwardRefExoticComponent<
-  Merge<
-    E extends React.ElementType ? React.ComponentPropsWithRef<E> : never,
-    OwnProps & { as?: E }
-  >
+  PropsWithAs<E, OwnProps>
+>;
+
+type PropsWithAs<E, OwnProps> = Merge<
+  E extends React.ElementType ? React.ComponentPropsWithRef<E> : never,
+  OwnProps & { as?: E }
 >;
 
 interface ForwardRefComponent<
@@ -71,12 +69,26 @@ interface MemoComponent<IntrinsicElementString, OwnProps = {}>
   ): React.ReactElement | null;
 }
 
-/** @internal */
-export default () => {
-  throw new Error(
-    "@reach/polymorphic is a package for internal utility types and should not be used at runtime."
-  );
-};
+function forwardRef<OwnProps, TagName>(
+  render: RenderFunction<OwnProps, TagName>
+) {
+  return React_forwardRef(render) as ForwardRefComponent<TagName, OwnProps>;
+}
+
+interface RenderFunction<OwnProps, TagName> {
+  (
+    props: PropsWithAs<TagName, OwnProps>,
+    ref: React.ForwardedRef<
+      TagName extends keyof HTMLElementTagNameMap
+        ? HTMLElementTagNameMap[TagName]
+        : TagName extends keyof SVGElementTagNameMap
+        ? SVGElementTagNameMap[TagName]
+        : any
+    >
+  ): React.ReactElement | null;
+}
+
+export { forwardRef };
 
 export type {
   ForwardRefComponent,
@@ -84,4 +96,5 @@ export type {
   MemoComponent,
   Merge,
   OwnProps,
+  RenderFunction,
 };

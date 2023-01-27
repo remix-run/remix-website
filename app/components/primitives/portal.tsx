@@ -12,7 +12,12 @@
  */
 
 import * as React from "react";
-import { useForceUpdate, useHydrated, useLayoutEffect } from "./utils";
+import {
+  getOwnerDocument,
+  useForceUpdate,
+  useHydrated,
+  useLayoutEffect,
+} from "./utils";
 import { createPortal } from "react-dom";
 
 const PortalImpl: React.FC<PortalProps> = ({
@@ -25,12 +30,11 @@ const PortalImpl: React.FC<PortalProps> = ({
   let forceUpdate = useForceUpdate();
 
   useLayoutEffect(() => {
-    // This ref may be null when a hot-loader replaces components on the page
     if (!mountNode.current) {
       return;
     }
 
-    let ownerDocument = mountNode.current?.ownerDocument || document;
+    let ownerDocument = getOwnerDocument(mountNode.current);
     let body = containerRef?.current || ownerDocument.body;
     portalNode.current = ownerDocument.createElement(type);
     body.appendChild(portalNode.current);
