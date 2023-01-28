@@ -31,8 +31,9 @@ const CLOSE_MENU = "CLOSE_MENU";
 const OPEN_MENU_AT_FIRST_ITEM = "OPEN_MENU_AT_FIRST_ITEM";
 const OPEN_MENU_AT_INDEX = "OPEN_MENU_AT_INDEX";
 const OPEN_MENU_CLEARED = "OPEN_MENU_CLEARED";
-const SEARCH_FOR_ITEM = "SEARCH_FOR_ITEM";
-const SELECT_ITEM_AT_INDEX = "SELECT_ITEM_AT_INDEX";
+const TYPEAHEAD_SEARCH = "TYPEAHEAD_SEARCH";
+const CLEAR_TYPEAHEAD = "CLEAR_TYPEAHEAD";
+const SET_ACTIVE_ITEM = "SET_ACTIVE_ITEM";
 const SET_BUTTON_ID = "SET_BUTTON_ID";
 
 const DropdownCollectionContext = createCollectionContext<
@@ -58,7 +59,7 @@ const initialState: DropdownState = {
 
   // The index of the current selected item. When the selection is cleared a
   // value of -1 is used.
-  selectionIndex: -1,
+  activeItemIndex: -1,
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -117,6 +118,12 @@ const DropdownProvider_: React.FC<DropdownProviderProps> = ({
       // to the tooltip (like native OS tooltips).
       // @ts-ignore
       window.__REACH_DISABLE_TOOLTIPS = false;
+    }
+  }, [state.isExpanded]);
+
+  React.useEffect(() => {
+    if (!state.isExpanded) {
+      dispatch({ type: CLEAR_SELECTION_INDEX });
     }
   }, [state.isExpanded]);
 
@@ -227,7 +234,7 @@ function useDropdownTrigger<Elem extends FocusableElement = FocusableElement>({
             break;
         }
       }),
-    [onKeyDown, firstNonDisabledIndex]
+    [onKeyDown, dispatch, firstNonDisabledIndex]
   );
 
   let handleMouseDown = React.useMemo(
@@ -251,7 +258,7 @@ function useDropdownTrigger<Elem extends FocusableElement = FocusableElement>({
           dispatch({ type: OPEN_MENU_CLEARED });
         }
       }),
-    [onMouseDown, isExpanded]
+    [onMouseDown, mouseDownStartPosRef, isExpanded, triggerClickedRef, dispatch]
   );
 
   return {
@@ -321,7 +328,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
     readyToSelect,
     selectCallbacks,
     triggerRef,
-    state: { selectionIndex, isExpanded },
+    state: { activeItemIndex, isExpanded },
   } = useDropdownContext("useDropdownItem");
 
   let ownRef = React.useRef<Elem | null>(null);
@@ -356,7 +363,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
     };
   }, [disabled, element, index, key]);
   useCollectionItem(collectionItem, DropdownCollectionContext);
-  let isSelected = index === selectionIndex && !disabled;
+  let isSelected = index === activeItemIndex && !disabled;
 
   let ref = useComposedRefs(forwardedRef, handleRefSet, setValueTextFromDOM);
 
@@ -367,7 +374,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
     triggerRef.current?.focus();
     onSelect && onSelect();
     dispatch({ type: CLICK_MENU_ITEM });
-  }, [onSelect]);
+  }, [dispatch, onSelect, triggerRef]);
 
   let handleClick = React.useMemo(
     () =>
@@ -432,16 +439,15 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           ) {
             dropdownRef.current.focus();
           }
-
           dispatch({
-            type: SELECT_ITEM_AT_INDEX,
+            type: SET_ACTIVE_ITEM,
             payload: {
               index,
             },
           });
         }
       }),
-    [onMouseEnter, isSelected, index, disabled]
+    [onMouseEnter, dropdownRef, isSelected, index, disabled, dispatch]
   );
 
   let handleMouseLeave = React.useMemo(
@@ -450,7 +456,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
         // Clear out selection when mouse over a non-dropdown-item child.
         dispatch({ type: CLEAR_SELECTION_INDEX });
       }),
-    [onMouseLeave]
+    [dispatch, onMouseLeave]
   );
 
   let handleMouseMove = React.useMemo(
@@ -466,7 +472,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
         }
         if (!isSelected && index != null && !disabled) {
           dispatch({
-            type: SELECT_ITEM_AT_INDEX,
+            type: SET_ACTIVE_ITEM,
             payload: {
               index,
               dropdownRef,
@@ -474,7 +480,16 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           });
         }
       }),
-    [onMouseMove, isSelected, index, disabled]
+    [
+      onMouseMove,
+      readyToSelect,
+      isSelected,
+      index,
+      disabled,
+      mouseDownStartPosRef,
+      dispatch,
+      dropdownRef,
+    ]
   );
 
   let handleFocus = React.useMemo(
@@ -483,14 +498,14 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
         readyToSelect.current = true;
         if (!isSelected && index != null && !disabled) {
           dispatch({
-            type: SELECT_ITEM_AT_INDEX,
+            type: SET_ACTIVE_ITEM,
             payload: {
               index,
             },
           });
         }
       }),
-    [onFocus, isSelected, index, disabled]
+    [onFocus, readyToSelect, isSelected, index, disabled, dispatch]
   );
 
   let handleMouseUp = React.useMemo(
@@ -520,7 +535,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           }
         }
       }),
-    [onMouseUp, element, disabled, select]
+    [onMouseUp, readyToSelect, element, disabled, select]
   );
 
   React.useEffect(() => {
@@ -624,46 +639,35 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
     dropdownRef,
     selectCallbacks,
     dropdownId,
-    state: { isExpanded, triggerId, selectionIndex, typeaheadQuery },
+    state: { isExpanded, triggerId, activeItemIndex, typeaheadQuery },
   } = useDropdownContext("useDropdownItems");
 
   let items = useDropdownCollection();
   let ref = useComposedRefs(dropdownRef, forwardedRef);
 
   React.useEffect(() => {
-    // Respond to user char key input with typeahead
-    let match = findItemFromTypeahead(items, typeaheadQuery);
-    if (typeaheadQuery && match != null) {
-      dispatch({
-        type: SELECT_ITEM_AT_INDEX,
-        payload: {
-          index: match,
-          dropdownRef,
-        },
-      });
-    }
     let timeout = window.setTimeout(
-      () => typeaheadQuery && dispatch({ type: SEARCH_FOR_ITEM, payload: "" }),
+      () => typeaheadQuery && dispatch({ type: CLEAR_TYPEAHEAD }),
       1000
     );
     return () => window.clearTimeout(timeout);
-  }, [dispatch, items, typeaheadQuery, dropdownRef]);
+  }, [dispatch, typeaheadQuery]);
 
   let prevItemsLengthRef = React.useRef<number | null>(null);
   let prevSelectedRef = React.useRef<DropdownCollectionItem | null>(null);
-  let prevSelectionIndexRef = React.useRef<number | null>(null);
+  let prevActiveItemIndexRef = React.useRef<number | null>(null);
 
   React.useEffect(() => {
     let prevItemsLength = prevItemsLengthRef.current;
     let prevSelected = prevSelectedRef.current;
-    let prevSelectionIndex = prevSelectionIndexRef.current;
+    let prevActiveItemIndex = prevActiveItemIndexRef.current;
 
-    if (selectionIndex > items.length - 1) {
+    if (activeItemIndex > items.length - 1) {
       // If for some reason our selection index is larger than our possible
       // index range (let's say the last item is selected and the list
       // dynamically updates), we need to select the last item in the list.
       dispatch({
-        type: SELECT_ITEM_AT_INDEX,
+        type: SET_ACTIVE_ITEM,
         payload: {
           index: items.length - 1,
           dropdownRef,
@@ -677,20 +681,20 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
       // This prevents any dynamic adding/removing of items from actually
       // changing a user's expected selection.
       prevItemsLength !== items.length &&
-      selectionIndex > -1 &&
+      activeItemIndex > -1 &&
       prevSelected &&
-      prevSelectionIndex === selectionIndex &&
-      items[selectionIndex] !== prevSelected
+      prevActiveItemIndex === activeItemIndex &&
+      items[activeItemIndex] !== prevSelected
     ) {
       dispatch({
-        type: SELECT_ITEM_AT_INDEX,
+        type: SET_ACTIVE_ITEM,
         payload: {
           index: items.findIndex((i) => i.key === prevSelected?.key),
           dropdownRef,
         },
       });
     }
-  }, [dropdownRef, dispatch, items, selectionIndex]);
+  }, [dropdownRef, dispatch, items, activeItemIndex]);
 
   // This is the most annoying thing in the world but I'm pretty sure it's the
   // only reliable way to track changing values in the previous effect in a way
@@ -699,14 +703,14 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
     prevItemsLengthRef.current = items.length;
   }, [items.length]);
 
-  let selectedItem = items[selectionIndex];
+  let selectedItem = items[activeItemIndex];
   React.useEffect(() => {
     prevSelectedRef.current = selectedItem;
   }, [selectedItem]);
 
   React.useEffect(() => {
-    prevSelectionIndexRef.current = selectionIndex;
-  }, [selectionIndex]);
+    prevActiveItemIndexRef.current = activeItemIndex;
+  }, [activeItemIndex]);
 
   let handleKeyDown = React.useMemo(
     () =>
@@ -723,9 +727,9 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
           }
 
           let selectableIndex = selectableItems.findIndex(
-            (item) => item.index === selectionIndex
+            (item) => item.index === activeItemIndex
           );
-          let index = selectionIndex;
+          let index = activeItemIndex;
           switch (event.key) {
             case "ArrowDown":
             case "ArrowRight": {
@@ -765,7 +769,7 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
 
           function select(index: number) {
             dispatch({
-              type: SELECT_ITEM_AT_INDEX,
+              type: SET_ACTIVE_ITEM,
               payload: { index, dropdownRef },
             });
           }
@@ -803,7 +807,7 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
             case "Enter":
             case " ": {
               let selected = items.find(
-                (item) => item.index === selectionIndex
+                (item) => item.index === activeItemIndex
               );
               if (!selected || selected.disabled) {
                 return;
@@ -843,8 +847,11 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
               if (event.key.length === 1) {
                 let query = typeaheadQuery + event.key.toLowerCase();
                 dispatch({
-                  type: SEARCH_FOR_ITEM,
-                  payload: query,
+                  type: TYPEAHEAD_SEARCH,
+                  payload: {
+                    query,
+                    items,
+                  },
                 });
               }
               break;
@@ -853,19 +860,23 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
         }
       }),
     [
-      onKeyDown,
       cycleSelection,
+      dispatch,
+      dropdownRef,
       isExpanded,
       items,
-      selectionIndex,
-      typeaheadQuery,
+      onKeyDown,
       orientation,
+      selectCallbacks,
+      activeItemIndex,
+      triggerRef,
+      typeaheadQuery,
     ]
   );
 
   return {
     data: {
-      activeDescendant: useItemId(selectionIndex) || undefined,
+      activeDescendant: useItemId(activeItemIndex) || undefined,
       triggerId,
     },
     props: {
@@ -972,7 +983,7 @@ function useDropdownPopover<Elem extends FocusableElement = FocusableElement>({
         }
         dispatch({ type: CLOSE_MENU });
       }),
-    [onBlur]
+    [dispatch, onBlur]
   );
 
   return {
@@ -1069,7 +1080,7 @@ function useItemId(index: number | null) {
 
 interface DropdownState {
   isExpanded: boolean;
-  selectionIndex: number;
+  activeItemIndex: number;
   triggerId: null | string;
   typeaheadQuery: string;
 }
@@ -1081,7 +1092,7 @@ type DropdownAction =
   | { type: "OPEN_MENU_AT_INDEX"; payload: { index: number } }
   | { type: "OPEN_MENU_CLEARED" }
   | {
-      type: "SELECT_ITEM_AT_INDEX";
+      type: "SET_ACTIVE_ITEM";
       payload: {
         dropdownRef?: DropdownRef;
         index: number;
@@ -1091,85 +1102,104 @@ type DropdownAction =
     }
   | { type: "CLEAR_SELECTION_INDEX" }
   | { type: "SET_BUTTON_ID"; payload: string }
-  | { type: "SEARCH_FOR_ITEM"; payload: string };
+  | {
+      type: "TYPEAHEAD_SEARCH";
+      payload: {
+        query: string;
+        items: DropdownCollectionItem<FocusableElement>[];
+      };
+    }
+  | { type: "CLEAR_TYPEAHEAD" };
 
-function reducer(
-  state: DropdownState,
-  action: DropdownAction = {} as DropdownAction
-): DropdownState {
+function reducer(state: DropdownState, action: DropdownAction): DropdownState {
   switch (action.type) {
     case CLICK_MENU_ITEM:
       return {
         ...state,
         isExpanded: false,
-        selectionIndex: -1,
+        activeItemIndex: -1,
       };
     case CLOSE_MENU:
       return {
         ...state,
         isExpanded: false,
-        selectionIndex: -1,
+        activeItemIndex: -1,
       };
     case OPEN_MENU_AT_FIRST_ITEM:
       return {
         ...state,
         isExpanded: true,
-        selectionIndex: 0,
+        activeItemIndex: 0,
       };
     case OPEN_MENU_AT_INDEX:
       return {
         ...state,
         isExpanded: true,
-        selectionIndex: action.payload.index,
+        activeItemIndex: action.payload.index,
       };
     case OPEN_MENU_CLEARED:
       return {
         ...state,
         isExpanded: true,
-        selectionIndex: -1,
+        activeItemIndex: -1,
       };
-    case SELECT_ITEM_AT_INDEX: {
-      let { dropdownRef = { current: null } } = action.payload;
-      if (
-        action.payload.index < 0 ||
-        action.payload.index === state.selectionIndex
-      ) {
+    case SET_ACTIVE_ITEM: {
+      let nextActiveItemIndex = getValidActiveItemIndex(action.payload.index, {
+        max: action.payload.max,
+        currentActiveItemIndex: state.activeItemIndex,
+      });
+
+      if (nextActiveItemIndex === state.activeItemIndex) {
         return state;
       }
 
-      if (dropdownRef.current) {
-        let doc = getOwnerDocument(dropdownRef.current);
-        if (dropdownRef.current !== doc?.activeElement) {
-          dropdownRef.current.focus();
-        }
-      }
-
       return {
         ...state,
-        selectionIndex:
-          action.payload.max != null
-            ? Math.min(Math.max(action.payload.index, 0), action.payload.max)
-            : Math.max(action.payload.index, 0),
+        activeItemIndex: nextActiveItemIndex,
       };
     }
-    case CLEAR_SELECTION_INDEX:
-      return {
-        ...state,
-        selectionIndex: -1,
-      };
+    case CLEAR_SELECTION_INDEX: {
+      if (state.activeItemIndex !== -1) {
+        return {
+          ...state,
+          activeItemIndex: -1,
+        };
+      }
+      return state;
+    }
     case SET_BUTTON_ID:
       return {
         ...state,
         triggerId: action.payload,
       };
-    case SEARCH_FOR_ITEM:
+    case TYPEAHEAD_SEARCH:
       if (typeof action.payload !== "undefined") {
-        return {
-          ...state,
-          typeaheadQuery: action.payload,
-        };
+        let { items, query } = action.payload;
+        let match = findItemFromTypeahead(items, query);
+        if (query && match != null) {
+          let nextActiveItemIndex = getValidActiveItemIndex(match, {
+            currentActiveItemIndex: state.activeItemIndex,
+          });
+          if (
+            nextActiveItemIndex === state.activeItemIndex &&
+            query === state.typeaheadQuery
+          ) {
+            return state;
+          }
+          return {
+            ...state,
+            activeItemIndex: nextActiveItemIndex,
+            typeaheadQuery: query,
+          };
+        }
       }
       return state;
+    case CLEAR_TYPEAHEAD:
+      if (state.typeaheadQuery === "") return state;
+      return {
+        ...state,
+        typeaheadQuery: "",
+      };
     default:
       return state;
   }
@@ -1247,3 +1277,24 @@ export {
   useDropdownContext,
   useDropdownCollection,
 };
+
+function getValidActiveItemIndex(
+  index: number,
+  {
+    currentActiveItemIndex,
+    max,
+  }: {
+    currentActiveItemIndex: number;
+    max?: number | null;
+  }
+) {
+  if (
+    index < 0 ||
+    index === currentActiveItemIndex ||
+    !Number.isInteger(index)
+  ) {
+    return currentActiveItemIndex;
+  }
+
+  return max != null ? Math.min(index, max) : index;
+}

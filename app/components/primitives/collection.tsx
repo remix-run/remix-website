@@ -133,8 +133,6 @@ function insertAt<T extends any[]>(
   return [...array.slice(0, index), item, ...array.slice(index)] as T;
 }
 
-type SomeElement<T> = T extends Element ? T : HTMLElement;
-
 interface CollectionItem<Elem = FocusableElement> {
   element: Elem | null;
   index: number;
