@@ -1,8 +1,8 @@
 import path from "path";
 
 import { getRefFromParam } from "@mcansh/undoc";
-import { Doc } from "@prisma/client";
-import invariant from "ts-invariant";
+import type { Doc } from "@prisma/client";
+import invariant from "tiny-invariant";
 
 import { prisma } from "~/db.server";
 import { getBranchOrTagFromRef } from "./get-tag-from-ref.server";

@@ -14,7 +14,6 @@ export function Body({
 }) {
   return (
     <body
-      x-comp="Body"
       className={
         "min-h-screen flex flex-col w-full overflow-x-hidden" +
         (forceDark

@@ -383,8 +383,6 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           return;
         }
 
-        console.log("click");
-
         if (isAnchorElement(element)) {
           if (disabled) {
             event.preventDefault();

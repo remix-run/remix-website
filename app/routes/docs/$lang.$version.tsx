@@ -1,5 +1,5 @@
 import * as React from "react";
-import invariant from "ts-invariant";
+import invariant from "tiny-invariant";
 import { useLoaderData, useLocation, Outlet, Link } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type { LoaderArgs, MetaFunction, LinksFunction } from "@remix-run/node";
@@ -8,7 +8,8 @@ import { DocSearch } from "@docsearch/react";
 import docsearchStylesheet from "@docsearch/css/dist/style.css";
 import docsearchStylesheetOverrides from "~/styles/docsearch.css";
 
-import { getMenu, MenuNode } from "~/utils/docs/get-menu.server";
+import type { MenuNode } from "~/utils/docs/get-menu.server";
+import { getMenu } from "~/utils/docs/get-menu.server";
 import markdownStyles from "~/styles/docs.css";
 import { Menu } from "~/components/docs-menu";
 import { Wordmark } from "~/components/logo";
@@ -19,7 +20,7 @@ export let loader = async ({ params }: LoaderArgs) => {
   invariant(!!params.lang, "Need a lang param");
 
   let menu: MenuNode[] = await getMenu(params.version, params.lang);
-  return json(menu, { headers: { "Cache-Control": CACHE_CONTROL } });
+  return json(menu, { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } });
 };
 
 export let links: LinksFunction = () => {

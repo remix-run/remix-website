@@ -4,7 +4,7 @@ import type { FormProps } from "@remix-run/react";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
 import type { action } from "~/routes/_actions/newsletter";
-import { SerializeFrom } from "@remix-run/node";
+import type { SerializeFrom } from "@remix-run/node";
 
 function Subscribe({
   descriptionId,
@@ -76,7 +76,7 @@ function SubscribeForm({
       action="/_actions/newsletter"
       method="post"
       className={cx(className, {
-        ["opacity-50"]: subscribe.state === "submitting",
+        "opacity-50": subscribe.state === "submitting",
       })}
       {...props}
     >

@@ -29,7 +29,7 @@ const MenuList: React.VFC<MenuListProps> = ({ nodes, level = 1 }) => {
       "md-nav-item py-1 block text-m-p-sm lg:text-sm",
       `md-nav-item--level-${level}`,
       {
-        ["md-nav-item--active"]: isActive,
+        "md-nav-item--active": isActive,
         "md-nav-heading": level === 1,
       }
     );
@@ -37,8 +37,8 @@ const MenuList: React.VFC<MenuListProps> = ({ nodes, level = 1 }) => {
   return (
     <ul
       className={cx("md-nav-list text-[color:var(--hue-0750)] mb-3", {
-        ["ml-3 md:ml-4 lg:ml-3 2xl:ml-4"]: level === 3,
-        ["ml-6 md:ml-8 lg:ml-6 2xl:ml-8"]: level === 4,
+        "ml-3 md:ml-4 lg:ml-3 2xl:ml-4": level === 3,
+        "ml-6 md:ml-8 lg:ml-6 2xl:ml-8": level === 4,
       })}
       data-level={level}
     >
@@ -48,7 +48,7 @@ const MenuList: React.VFC<MenuListProps> = ({ nodes, level = 1 }) => {
         .map((node, index) => {
           let dirItemClassName = ({ isActive }: { isActive?: boolean } = {}) =>
             cx(itemClassName({ isActive: level !== 1 && isActive }), {
-              ["pt-0"]: level === 1 && index === 0,
+              "pt-0": level === 1 && index === 0,
             });
 
           return (

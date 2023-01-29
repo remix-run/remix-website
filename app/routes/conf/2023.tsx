@@ -39,13 +39,13 @@ const EARLY_BIRD_ENDING_TIME = 1646121600000;
 export const loader = async (_: LoaderArgs) => {
   return json(
     { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
-    { headers: { "Cache-Control": CACHE_CONTROL } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
 };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL,
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
   };
 };
 
@@ -59,7 +59,7 @@ const navItems: Array<HeaderLinkProps> = [
 export default function ConfTwentyTwentyThree() {
   return (
     <>
-      <TopBanner />
+      {/* <TopBanner /> */}
       <div className="flex flex-col flex-1 h-full text-white bg-black __layout">
         <Header />
         <main className="flex flex-col flex-1" tabIndex={-1}>
@@ -130,7 +130,7 @@ function Header() {
   return (
     <header
       className={cx("text-white absolute top-0 left-0 right-0 z-10", {
-        ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
+        "absolute top-0 left-0 right-0 z-10": isConfHome,
       })}
     >
       <div className="px-6 lg:px-12 py-9 pt-20 md:pt-14 flex justify-between items-start gap-8">
@@ -326,6 +326,7 @@ function MobileNav() {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function TopBanner() {
   return (
     <div className="py-2 bg-black sticky top-0 z-20">

@@ -75,13 +75,13 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   return json(
     { siteUrl, speakers: speakersShuffled, sponsors },
-    { headers: { "Cache-Control": CACHE_CONTROL } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
 };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL,
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
   };
 };
 

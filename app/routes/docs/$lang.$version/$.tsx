@@ -1,5 +1,5 @@
-import invariant from "ts-invariant";
-import { LoaderArgs } from "@remix-run/node";
+import invariant from "tiny-invariant";
+import type { LoaderArgs } from "@remix-run/node";
 
 import { json } from "@remix-run/node";
 
@@ -16,7 +16,7 @@ let loader = async ({ params, context, request }: LoaderArgs) => {
 
   let doc = await getDoc(params["*"], version, lang);
 
-  return json(doc, { headers: { "Cache-Control": CACHE_CONTROL } });
+  return json(doc, { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } });
 };
 
 function SplatPage() {

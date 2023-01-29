@@ -1,5 +1,6 @@
-import invariant from "ts-invariant";
-import { Author, Prisma } from "@prisma/client";
+import invariant from "tiny-invariant";
+import type { Author } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 import { prisma } from "../db.server";
 

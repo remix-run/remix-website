@@ -1,6 +1,6 @@
 import { getRefFromParam } from "@mcansh/undoc";
 import { json } from "@remix-run/node";
-import invariant from "ts-invariant";
+import invariant from "tiny-invariant";
 
 import { prisma } from "~/db.server";
 import { getBranchOrTagFromRef } from "./get-tag-from-ref.server";

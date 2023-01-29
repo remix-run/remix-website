@@ -68,6 +68,14 @@ export function isProductionHost(request: Request) {
   return "remix.run" === request.headers.get("host");
 }
 
-// Add 5 minutes cache control to documents and json requests to speed up the
-// back button
-export const CACHE_CONTROL = "max-age=300";
+export const CACHE_CONTROL = {
+  // Add 5 minutes cache control to documents and json requests to speed up the
+  // back button
+  DEFAULT: "max-age=300",
+  /**
+   * Keep it in the browser (and CDN) for 5 minutes so when they click
+   * back/forward/etc.  It's super fast, swr for 1 week on CDN so it stays fast
+   * but people get typos fixes and stuff, too.
+   */
+  doc: "max-age=300, stale-while-revalidate=604800",
+};

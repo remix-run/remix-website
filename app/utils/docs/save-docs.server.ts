@@ -1,5 +1,5 @@
 import type { GitHubRef, Prisma } from "@prisma/client";
-import invariant from "ts-invariant";
+import invariant from "tiny-invariant";
 import {
   findMatchingEntries,
   getPackage,
@@ -8,7 +8,8 @@ import {
 } from "@mcansh/undoc";
 
 import { prisma } from "../../db.server";
-import { processDoc, ProcessedDoc } from "./process-doc.server";
+import type { ProcessedDoc } from "./process-doc.server";
+import { processDoc } from "./process-doc.server";
 
 const REPO = process.env.REPO as string;
 const REPO_DOCS_PATH = process.env.REPO_DOCS_PATH as string;

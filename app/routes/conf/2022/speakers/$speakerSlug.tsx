@@ -8,7 +8,7 @@ import { Link, useCatch, useParams, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { getSpeakers, getTalks } from "~/utils/conf.server";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
-import { Speaker, sluggify } from "~/utils/conf";
+import { sluggify } from "~/utils/conf";
 import { CACHE_CONTROL } from "~/utils/http.server";
 import { InnerLayout } from "../_ui";
 
@@ -47,17 +47,17 @@ export const loader = async ({ params }: LoaderArgs) => {
     .map(({ description, ...rest }) => rest);
   return json(
     { speaker, talks },
-    { headers: { "Cache-Control": CACHE_CONTROL } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
 };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL,
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
   };
 };
 
-export default function Speaker() {
+export default function SpeakerRoute() {
   const { speaker, talks } = useLoaderData<typeof loader>();
   return (
     <InnerLayout>

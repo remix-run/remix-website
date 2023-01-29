@@ -17,7 +17,7 @@ export const meta: MetaFunction = () => ({
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL,
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
   };
 };
 
@@ -246,6 +246,7 @@ export default function May25Schedule() {
               {activity.address ? (
                 <a
                   target="_blank"
+                  rel="noreferrer"
                   href={getMapsDirections(
                     `${activity.name}, ${activity.address}`
                   )}

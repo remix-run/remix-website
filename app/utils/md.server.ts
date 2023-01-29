@@ -8,9 +8,10 @@ import html from "remark-html";
 import parseFrontMatter from "front-matter";
 import yaml from "yaml";
 import { processMarkdown } from "@ryanflorence/md";
-import { Page, process } from "@ryanflorence/mdtut";
+import type { Page } from "@ryanflorence/mdtut";
+import { process } from "@ryanflorence/mdtut";
 import { remarkCodeBlocksShiki } from "@ryanflorence/md";
-import invariant from "ts-invariant";
+import invariant from "tiny-invariant";
 import LRUCache from "lru-cache";
 
 let AUTHORS: Author[] = yaml.parse(
@@ -18,15 +19,15 @@ let AUTHORS: Author[] = yaml.parse(
 );
 
 let cache = new LRUCache<string, Page>({
-  max: 1024 * 1024 * 12, // 12 mb
-  length(value, key) {
+  maxSize: 1024 * 1024 * 12, // 12 mb
+  sizeCalculation(value, key) {
     return JSON.stringify(value).length + (key ? key.length : 0);
   },
 });
 
 let postsCache = new LRUCache<string, BlogPost>({
-  max: 1024 * 1024 * 12, // 12 mb
-  length(value, key) {
+  maxSize: 1024 * 1024 * 12, // 12 mb
+  sizeCalculation(value, key) {
     return JSON.stringify(value).length + (key ? key.length : 0);
   },
 });

@@ -1,9 +1,10 @@
-import { json, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type {
   HeadersFunction,
   LinksFunction,
   LoaderArgs,
+  MetaFunction,
 } from "@remix-run/node";
 import cx from "clsx";
 import {
@@ -12,7 +13,6 @@ import {
 } from "~/components/buttons";
 import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
-import type { Sponsor } from "~/utils/conf";
 import { getSponsors } from "~/utils/conf.server";
 import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
@@ -50,13 +50,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
   return json(
     { siteUrl, sponsors: allSponsors },
-    { headers: { "Cache-Control": CACHE_CONTROL } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
 };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL,
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
   };
 };
 
@@ -137,11 +137,7 @@ function EarlySponsors() {
                   href={s.link}
                   aria-label={s.name}
                 >
-                  <img
-                    src={s.imgSrc}
-                    aria-hidden
-                    className="block w-full h-auto"
-                  />
+                  <img src={s.imgSrc} alt="" className="block w-full h-auto" />
                 </a>
               </SponsorGridCell>
             ))}

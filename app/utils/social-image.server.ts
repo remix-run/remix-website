@@ -1,7 +1,7 @@
 import path from "path";
 import fsp from "fs/promises";
 import getEmojiRegex from "emoji-regex";
-import invariant from "ts-invariant";
+import invariant from "tiny-invariant";
 
 const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const CLOUDINARY_FOLDER_NAME = process.env.CLOUDINARY_FOLDER_NAME;

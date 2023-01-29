@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --reach-menu-button: 1;
-}
-
 @font-face {
   font-family: "Founders Grotesk";
   src: url("/font/founders-grotesk-bold.woff2") format("woff2");
@@ -18,4 +14,11 @@ html {
 
 [hidden] {
   display: none !important;
+}
+
+._no-triangle::-webkit-details-marker {
+  display: none;
+  &::-webkit-details-marker {
+    list-style-type: none;
+  }
 }

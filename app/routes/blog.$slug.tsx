@@ -5,10 +5,9 @@ import type {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import invariant from "ts-invariant";
+import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/utils/md.server";
-import type { BlogPost as MarkdownPost } from "~/utils/md.server";
 import mdStyles from "~/styles/md.css";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
@@ -26,13 +25,13 @@ export let loader = async ({ params, request }: LoaderArgs) => {
   let post = await getBlogPost(slug);
   return json(
     { siteUrl, post },
-    { headers: { "Cache-Control": CACHE_CONTROL } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
 };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL,
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
   };
 };
 
@@ -123,7 +122,7 @@ export default function BlogPost() {
                         <img
                           className="w-10 h-10 rounded-full md:h-14 md:w-14"
                           src={author.avatar}
-                          aria-hidden="true"
+                          alt=""
                         />
                       </div>
                       <div className="w-6" />

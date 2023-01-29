@@ -1,10 +1,17 @@
 import fsp from "fs/promises";
 import path from "path";
-import invariant from "ts-invariant";
+import invariant from "tiny-invariant";
 import { processMarkdown } from "@ryanflorence/md";
 
 import yaml from "yaml";
 import LRUCache from "lru-cache";
+import type {
+  ScheduleItem,
+  ScheduleItemSpeaker,
+  Speaker,
+  Sponsor,
+  Talk,
+} from "./conf";
 import {
   isScheduleItemArray,
   isScheduleItemRaw,
@@ -17,20 +24,16 @@ import {
   isTalk,
   isTalkArray,
   isTalkScheduleItemRaw,
-  ScheduleItem,
-  ScheduleItemSpeaker,
   sluggify,
-  Speaker,
-  Sponsor,
-  Talk,
 } from "./conf";
 
 let cache = new LRUCache<
   string,
   Array<Speaker> | Array<Sponsor> | Array<Talk> | Array<ScheduleItem>
 >({
-  max: 1024 * 1024 * 12, // 12 mb
-  length(value, key) {
+  max: 250,
+  maxSize: 1024 * 1024 * 12, // 12 mb
+  sizeCalculation(value, key) {
     return JSON.stringify(value).length + (key ? key.length : 0);
   },
 });

@@ -10,7 +10,6 @@ import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
 import { Subscribe } from "~/components/subscribe";
 import { CACHE_CONTROL } from "~/utils/http.server";
-import type { MarkdownPostListing } from "~/utils/md.server";
 import { getBlogPostListings } from "~/utils/md.server";
 
 export let meta: MetaFunction = () => {
@@ -24,13 +23,13 @@ export let meta: MetaFunction = () => {
 export const loader = async (_: LoaderArgs) => {
   return json(
     { posts: await getBlogPostListings() },
-    { headers: { "Cache-Control": CACHE_CONTROL } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
 };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL,
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
   };
 };
 

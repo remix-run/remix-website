@@ -7,8 +7,8 @@ import indexStyles from "~/styles/index.css";
 import { Red } from "~/components/gradients";
 import { BigTweet, TweetCarousel, tweets } from "~/components/twitter-cards";
 import { ScrollExperience } from "~/components/scroll-experience";
-import { Prose, Sequence } from "@ryanflorence/mdtut";
-import invariant from "ts-invariant";
+import type { Prose, Sequence } from "@ryanflorence/mdtut";
+import invariant from "tiny-invariant";
 import { Fragment } from "react";
 
 export function meta({ data: { siteUrl } }: { data: LoaderData }) {

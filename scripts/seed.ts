@@ -10,7 +10,7 @@ import { processMarkdown } from "@ryanflorence/md";
 import { saveDocs } from "../app/utils/docs/save-docs.server";
 import type { BlogPostWithAuthors } from "../app/models/post";
 import type { GitHubRelease } from "../app/@types/github";
-import invariant from "ts-invariant";
+import invariant from "tiny-invariant";
 import { prisma } from "../app/db.server";
 
 installGlobals();
