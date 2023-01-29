@@ -18,6 +18,10 @@ import {
   ensureSecure,
   isProductionHost,
 } from "~/utils/http.server";
+import { ColorSchemeScript } from "~/utils/color-scheme";
+import { parseColorScheme } from "~/utils/color-scheme.server";
+import iconsHref from "~/icons.svg";
+import { canUseDOM } from "~/utils/misc";
 
 declare global {
   var __env: {
@@ -25,7 +29,7 @@ declare global {
   };
 }
 
-export let loader = async ({ request }: LoaderArgs) => {
+export async function loader({ request }: LoaderArgs) {
   await ensureSecure(request);
   await removeTrailingSlashes(request);
   let env = {
@@ -34,14 +38,18 @@ export let loader = async ({ request }: LoaderArgs) => {
 
   let isDevHost = !isProductionHost(request);
   let url = new URL(request.url);
+
+  let colorScheme = await parseColorScheme(request);
+
   return {
+    colorScheme,
     noIndex:
       isDevHost ||
       url.pathname === "/docs/en/v1/api/remix" ||
       url.pathname === "/docs/en/v1/api/conventions",
     env,
   };
-};
+}
 
 export let unstable_shouldReload = () => false;
 
@@ -75,6 +83,7 @@ interface DocumentProps {
   forceDark?: boolean;
   darkBg?: string;
   noIndex: boolean;
+  children: React.ReactNode;
 }
 
 const Document: React.FC<DocumentProps> = ({
@@ -87,7 +96,7 @@ const Document: React.FC<DocumentProps> = ({
   return (
     <html lang="en">
       <head>
-        {title && <title>{title}</title>}
+        <ColorSchemeScript forceConsistentTheme={forceDark} />
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#121212" />
         {noIndex && <meta name="robots" content="noindex" />}
@@ -120,6 +129,7 @@ const Document: React.FC<DocumentProps> = ({
 
         <Links />
         <Meta />
+        {title && <title data-title-override="">{title}</title>}
       </head>
 
       <Body forceDark={forceDark} darkBg={darkBg}>
@@ -137,6 +147,15 @@ export default function App() {
   return (
     <Document noIndex={noIndex} forceDark={forceDark}>
       <Outlet />
+      <img
+        src={iconsHref}
+        alt=""
+        hidden
+        // this img tag simply forces the icons to be loaded at a higher
+        // priority than the scripts (chrome only for now)
+        // @ts-expect-error
+        fetchpriority="high"
+      />
       <script
         dangerouslySetInnerHTML={{
           __html: `window.__env = ${JSON.stringify(env)};`,
@@ -147,12 +166,17 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
+  if (!canUseDOM) {
+    console.error(error);
+  }
   return (
     <Document noIndex title="Error" forceDark darkBg="bg-red-brand">
       <div className="flex flex-col justify-center flex-1 text-white">
         <div className="leading-none text-center">
           <h1 className="text-[25vw]">Error</h1>
-          <div className="text-d-h3">{error.message}</div>
+          <div className="text-d-h3">
+            Something went wrong! Please try again later.
+          </div>
         </div>
       </div>
     </Document>

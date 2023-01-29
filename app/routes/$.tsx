@@ -1,8 +1,7 @@
 import { handleRedirects } from "~/utils/http.server";
-import { redirect, json, LoaderArgs } from "@remix-run/node";
-import { prisma } from "~/db.server";
-import { getVersions } from "~/utils/undoc.server";
-import { getDoc } from "~/utils/docs/get-doc.server";
+import type { LoaderArgs } from "@remix-run/node";
+import { redirect, json } from "@remix-run/node";
+import { getRepoDoc } from "~/modules/gh-docs";
 
 // We use the catch-all route to attempt to find a doc for the given path. If a
 // doc isn't found, we return a 404 as expected. However we also log those
@@ -54,19 +53,12 @@ export let loader = async ({ request, params }: LoaderArgs) => {
   await handleStaticFileRequests(params["*"]);
 
   try {
-    let refs = await prisma.gitHubRef.findMany({
-      where: {
-        ref: {
-          startsWith: "refs/tags/",
-        },
-      },
-    });
-    let [latest] = getVersions(refs.map((ref) => ref.ref));
-
-    await getDoc(params["*"] + "", latest.head, "en");
-    return redirect(`/docs/en/${latest.head}/${params["*"]}`);
+    let ref = "main";
+    let lang = "en";
+    let doc = await getRepoDoc(ref, params["*"]!);
+    if (!doc) throw null;
+    return redirect(`/docs/${lang}/${ref}/${params["*"]}`);
   } catch (_) {}
-
   throw json({}, { status: 404 });
 };
 
