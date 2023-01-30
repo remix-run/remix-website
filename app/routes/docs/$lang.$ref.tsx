@@ -112,7 +112,7 @@ export default function DocsLayout() {
   }, [location]);
 
   return (
-    <div className="lg:m-auto lg:max-w-[90rem]">
+    <div className="lg:m-auto lg:w-[90rem] lg:max-w-full">
       <div className="sticky top-0 z-20">
         <Header />
         <NavMenuMobile />
@@ -133,7 +133,7 @@ export default function DocsLayout() {
         >
           <Outlet />
         </div>
-        <div className="px-4 pt-8 pb-4 lg:ml-72 lg:pr-8 lg:pl-12">
+        <div className="px-4 pt-8 pb-4 lg:ml-72 lg:pr-8 lg:pl-12 min-w-0">
           <Footer />
         </div>
       </div>
@@ -257,15 +257,6 @@ function VersionSelect() {
             {version}
           </VersionLink>
         ))}
-        <VersionLink key={"4/5.x"} to="https://v5.reactrouter.com/">
-          v4/5.x
-        </VersionLink>
-        <VersionLink
-          key={"3.x"}
-          to="https://github.com/remix-run/react-router/tree/v3.2.6/docs"
-        >
-          v3.x
-        </VersionLink>
       </DetailsPopup>
     </DetailsMenu>
   );
@@ -331,16 +322,18 @@ function VersionLink({
 
 function DocSearchSection() {
   let hydrated = useHydrated();
-  return hydrated ? (
-    <div className="mr-2">
-      <DocSearch
-        appId="6OHWJSR8G4"
-        indexName="remix"
-        apiKey="dff56670dbec8494409989d6ec9c8ac2"
-      />
+  return (
+    <div className="mr-2 mb-6">
+      {hydrated ? (
+        <DocSearch
+          appId="6OHWJSR8G4"
+          indexName="remix"
+          apiKey="dff56670dbec8494409989d6ec9c8ac2"
+        />
+      ) : (
+        <DocSearchPlaceholder />
+      )}
     </div>
-  ) : (
-    <DocSearchPlaceholder />
   );
 }
 
@@ -525,7 +518,7 @@ function Menu() {
                 {category.attrs.title}
               </MenuCategoryLink>
             ) : (
-              <div className="mb-2 block font-bold lg:text-sm">
+              <div className="pb-1 pt-0 mb-2 text-[1rem] leading-[1.125] tracking-wide flex items-center font-bold">
                 {category.attrs.title}
               </div>
             )}
@@ -558,11 +551,11 @@ function MenuCategoryLink({
       prefetch="intent"
       to={to}
       className={cx(
+        "group pb-1 pt-0 mb-2 text-[1rem] leading-[1.125] tracking-wide flex items-center font-bold rounded-md",
         // link styles
-        "group -mx-4 flex items-center rounded-md py-1.5 pl-4 lg:text-sm",
         isActive
           ? "bg-gray-50 font-semibold text-red-brand dark:bg-gray-800"
-          : "text-gray-400 hover:text-gray-900 active:text-red-brand dark:text-gray-400 dark:hover:text-gray-50 dark:active:text-red-brand"
+          : "text-inherit hover:text-gray-900 active:text-red-brand dark:hover:text-gray-50 dark:active:text-red-brand"
       )}
       children={children}
     />
@@ -576,11 +569,15 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
       prefetch="intent"
       to={to}
       className={cx(
-        // link styles
-        "group my-1 flex items-center rounded-md border-transparent py-1.5 pl-4 lg:text-sm",
+        "py-1 pl-2 relative group my-1 flex items-center rounded-md border-transparent text-m-p-sm lg:text-sm",
+        "duration-150 transition-colors ease-in-out",
         isActive
-          ? "bg-gray-50 font-semibold text-red-brand dark:bg-gray-800"
-          : "text-gray-400 hover:text-gray-900 active:text-red-brand dark:text-gray-400 dark:hover:text-gray-50 dark:active:text-red-brand"
+          ? [
+              "font-semibold -translate-x-1",
+              "text-blue-brand hover:text-blue-700 dark:hover:text-blue-300",
+              "bg-blue-50 bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-40",
+            ]
+          : ["text-gray-700 dark:text-gray-400 hover:text-blue-500"]
       )}
       children={children}
     />

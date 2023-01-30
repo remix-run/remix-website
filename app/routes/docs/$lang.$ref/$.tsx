@@ -1,5 +1,10 @@
 import * as React from "react";
-import { useLoaderData, useNavigate, useParams } from "@remix-run/react";
+import {
+  useLoaderData,
+  useMatches,
+  useNavigate,
+  useParams,
+} from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type {
   HeadersFunction,
@@ -13,6 +18,7 @@ import type { Doc } from "~/modules/gh-docs";
 import { getRepoDoc } from "~/modules/gh-docs";
 import iconsHref from "~/icons.svg";
 import { seo } from "~/utils/seo";
+import cx from "clsx";
 
 export async function loader({ params, request }: LoaderArgs) {
   invariant(params.ref, "expected `ref` params");
@@ -76,9 +82,14 @@ export default function DocPage() {
   let { doc } = useLoaderData<typeof loader>();
   let ref = React.useRef<HTMLDivElement>(null);
   useDelegatedRouterLinks(ref);
+  let matches = useMatches();
+  let isDocsIndex = matches.some((match) =>
+    match.id.endsWith("$lang.$ref/index")
+  );
+
   return (
     <div className="xl:flex xl:w-full xl:gap-8">
-      {doc.headings.length > 3 ? (
+      {isDocsIndex ? null : doc.headings.length > 3 ? (
         <>
           <SmallOnThisPage doc={doc} />
           <LargeOnThisPage doc={doc} />
@@ -86,7 +97,7 @@ export default function DocPage() {
       ) : (
         <div className="hidden xl:order-1 xl:block xl:w-56 xl:flex-shrink-0" />
       )}
-      <div className="px-4 pt-8 pb-4 lg:ml-72 lg:pr-8 lg:pl-12  xl:flex-grow">
+      <div className="px-4 pt-8 pb-4 lg:ml-72 lg:pr-8 lg:pl-12 xl:flex-grow min-w-0">
         <div
           ref={ref}
           className="markdown w-full pb-[33vh]"
@@ -100,14 +111,20 @@ export default function DocPage() {
 function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   return (
     <div className="hidden xl:sticky xl:top-28 xl:order-1 xl:mt-10 xl:block xl:max-h-[calc(100vh-10rem)] xl:w-56 xl:flex-shrink-0 xl:self-start xl:overflow-auto">
-      <nav className="mb-2 text-sm font-bold">On this page</nav>
+      <nav className="pb-1 pt-0 mb-2 text-[1rem] leading-[1.125] tracking-wide flex items-center font-bold">
+        On this page
+      </nav>
       <ul>
         {doc.headings.map((heading, i) => (
           <li key={i}>
             <a
               href={`#${heading.slug}`}
               dangerouslySetInnerHTML={{ __html: heading.html || "" }}
-              className="block py-1 text-sm text-gray-400 hover:text-gray-900 active:text-red-brand dark:text-gray-400 dark:hover:text-gray-50 dark:active:text-red-brand"
+              className={cx(
+                "pb-1 relative group my-1 flex items-center rounded-md border-transparent text-m-p-sm lg:text-sm",
+                "text-gray-700 dark:text-gray-400 hover:text-blue-500",
+                "duration-150 transition-colors ease-in-out"
+              )}
             />
           </li>
         ))}
