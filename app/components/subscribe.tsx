@@ -32,9 +32,6 @@ function Subscribe({
 function SubscribeProvider({ children }: { children: React.ReactNode }) {
   let subscribe = useFetcher<typeof action>();
   let inputRef = React.useRef<HTMLInputElement>(null);
-  React.useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
 
   React.useEffect(() => {
     if (subscribe.state === "idle" && subscribe.data?.ok && inputRef.current) {
