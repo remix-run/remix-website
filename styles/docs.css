@@ -17,10 +17,8 @@
   --base0D: theme("colors.blue.700");
   --base0E: theme("colors.pink.brand");
   --base0F: theme("colors.gray.700");
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
+  &:where(.dark) {
     --base00: theme("colors.gray.800");
     --base01: theme("colors.gray.700");
     --base02: theme("colors.gray.600");

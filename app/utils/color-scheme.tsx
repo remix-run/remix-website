@@ -21,7 +21,7 @@ function ColorSchemeScriptImpl() {
         let colorScheme = ${JSON.stringify(colorScheme)};
         if (colorScheme === "system") {
           let media = window.matchMedia("(prefers-color-scheme: dark)")
-          if (media.matches) document.body.classList.add("dark");
+          if (media.matches) document.documentElement.classList.add("dark");
         }
       `,
     [] // eslint-disable-line
@@ -32,15 +32,15 @@ function ColorSchemeScriptImpl() {
     // eslint-disable-next-line
     useLayoutEffect(() => {
       if (colorScheme === "light") {
-        document.body.classList.remove("dark");
+        document.documentElement.classList.remove("dark");
       } else if (colorScheme === "dark") {
-        document.body.classList.add("dark");
+        document.documentElement.classList.add("dark");
       } else if (colorScheme === "system") {
         function check(media: MediaQueryList) {
           if (media.matches) {
-            document.body.classList.add("dark");
+            document.documentElement.classList.add("dark");
           } else {
-            document.body.classList.remove("dark");
+            document.documentElement.classList.remove("dark");
           }
         }
 

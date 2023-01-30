@@ -1,5 +1,6 @@
 import { Scripts, LiveReload } from "@remix-run/react";
 import { ScrollRestoration } from "./scroll-restoration";
+import cx from "clsx";
 
 export function Body({
   forceDark,
@@ -14,13 +15,13 @@ export function Body({
 }) {
   return (
     <body
-      className={
-        "min-h-screen flex flex-col w-full overflow-x-hidden" +
-        (forceDark
-          ? ` ${darkBg} text-gray-200 `
-          : " bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200 ") +
-        className
-      }
+      className={cx(
+        className,
+        "min-h-screen flex flex-col w-full overflow-x-hidden",
+        forceDark
+          ? [darkBg || "bg-gray-900", "text-gray-200"]
+          : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+      )}
     >
       {children}
       <ScrollRestoration />

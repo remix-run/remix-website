@@ -1,9 +1,9 @@
 /* this was copy/paste/modified from @docsearch/css/dist/_variables.css */
 /* they only support dark mode via data-theme on the html element */
 /* but we use media queries for that */
-/* html[data-theme="dark"] { */
-@media (prefers-color-scheme: dark) {
-  :root {
+:root {
+  /* @media (prefers-color-scheme: dark) { */
+  &:where([data-theme="dark"]) {
     --docsearch-text-color: #f5f6f7;
     --docsearch-container-background: rgba(9, 10, 17, 0.8);
     --docsearch-modal-background: #15172a;

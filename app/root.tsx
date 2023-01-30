@@ -18,7 +18,7 @@ import {
   ensureSecure,
   isProductionHost,
 } from "~/utils/http.server";
-import { ColorSchemeScript } from "~/utils/color-scheme";
+import { ColorSchemeScript, useColorScheme } from "~/utils/color-scheme";
 import { parseColorScheme } from "~/utils/color-scheme.server";
 import iconsHref from "~/icons.svg";
 import { canUseDOM } from "~/utils/misc";
@@ -93,8 +93,13 @@ const Document: React.FC<DocumentProps> = ({
   darkBg,
   noIndex,
 }) => {
+  let colorScheme = useColorScheme();
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={forceDark || colorScheme === "dark" ? "dark" : undefined}
+      data-theme={forceDark ? "dark" : colorScheme}
+    >
       <head>
         <ColorSchemeScript forceConsistentTheme={forceDark} />
         <meta charSet="utf-8" />
@@ -141,8 +146,8 @@ const Document: React.FC<DocumentProps> = ({
 
 export default function App() {
   let matches = useMatches();
-  let forceDark = matches.some((match) => match.handle?.forceDark);
   let { noIndex, env } = useLoaderData<typeof loader>();
+  let forceDark = matches.some((match) => match.handle?.forceDark);
 
   return (
     <Document noIndex={noIndex} forceDark={forceDark}>
