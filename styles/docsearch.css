@@ -21,14 +21,14 @@
   }
 }
 
-@media screen and (min-width: 751px) {
-  .DocSearch-Button {
+.DocSearch-Button {
+  @media screen and (min-width: 751px) {
     margin-left: 0;
   }
-}
-
-@media print {
-  .DocSearch-Button {
+  @media screen and (min-width: theme(screens.lg)) {
+    width: 100%;
+  }
+  @media print {
     display: none;
   }
 }

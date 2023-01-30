@@ -112,30 +112,35 @@ export default function DocsLayout() {
   }, [location]);
 
   return (
-    <div className="lg:m-auto lg:w-[90rem] lg:max-w-full">
+    <div>
       <div className="sticky top-0 z-20">
         <Header />
         <NavMenuMobile />
       </div>
       <div
         className={
-          changingVersions ? "opacity-25 transition-opacity delay-300" : ""
+          changingVersions
+            ? "opacity-25 transition-opacity delay-300"
+            : undefined
         }
       >
-        <NavMenuDesktop />
-        <div
-          className={cx(
-            "min-h-[80vh]",
-            !changingVersions && navigating
-              ? "opacity-25 transition-opacity delay-300"
-              : ""
-          )}
-        >
-          <Outlet />
-        </div>
-        <div className="px-4 pt-8 pb-4 lg:ml-72 lg:pr-8 lg:pl-12 min-w-0">
-          <Footer />
-        </div>
+        <InnerContainer>
+          <NavMenuDesktop />
+          <div
+            className={cx(
+              "min-h-[80vh]",
+              "lg:ml-72 lg:pl-6 xl:pl-10 2xl:pl-12",
+              !changingVersions && navigating
+                ? "opacity-25 transition-opacity delay-300"
+                : ""
+            )}
+          >
+            <Outlet />
+          </div>
+          <div className="pt-8 pb-4 lg:ml-72 lg:pl-12 min-w-0">
+            <Footer />
+          </div>
+        </InnerContainer>
       </div>
     </div>
   );
@@ -171,44 +176,48 @@ function Footer() {
 
 function Header() {
   return (
-    <div className="relative z-20 flex h-16 w-full items-center justify-between border-b border-gray-50 bg-white px-4 py-3 text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 lg:px-8">
-      <div className="flex w-full items-center justify-between gap-8 md:w-auto">
-        <Link
-          className="flex"
-          onContextMenu={(event) => {
-            let NODE_ENV = window.__env && window.__env.NODE_ENV;
-            if (NODE_ENV !== "development") {
-              event.preventDefault();
-              window.location.href =
-                "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
-            }
-          }}
-          to="."
-        >
-          <Wordmark />
-        </Link>
-        <div className="flex items-center gap-2">
-          <VersionSelect />
-          <ColorSchemeToggle />
+    <div className="border-b border-gray-50 bg-white text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100">
+      <InnerContainer>
+        <div className="relative z-20 flex h-16 w-full items-center justify-between py-3">
+          <div className="flex w-full items-center justify-between gap-8 md:w-auto">
+            <Link
+              className="flex"
+              onContextMenu={(event) => {
+                let NODE_ENV = window.__env && window.__env.NODE_ENV;
+                if (NODE_ENV !== "development") {
+                  event.preventDefault();
+                  window.location.href =
+                    "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
+                }
+              }}
+              to="."
+            >
+              <Wordmark />
+            </Link>
+            <div className="flex items-center gap-2">
+              <VersionSelect />
+              <ColorSchemeToggle />
+            </div>
+          </div>
+          <VersionWarning />
+          <div className="flex items-center gap-4">
+            <HeaderLink
+              href="https://github.com/remix-run/remix"
+              svgId="github"
+              label="View code on GitHub"
+              title="View code on GitHub"
+              svgSize="24x24"
+            />
+            <HeaderLink
+              href="https://rmx.as/discord"
+              svgId="discord"
+              label="Chat on Discord"
+              title="Chat on Discord"
+              svgSize="24x24"
+            />
+          </div>
         </div>
-      </div>
-      <VersionWarning />
-      <div className="flex items-center gap-4">
-        <HeaderLink
-          href="https://github.com/remix-run/remix"
-          svgId="github"
-          label="View code on GitHub"
-          title="View code on GitHub"
-          svgSize="24x24"
-        />
-        <HeaderLink
-          href="https://rmx.as/discord"
-          svgId="discord"
-          label="Chat on Discord"
-          title="Chat on Discord"
-          svgSize="24x24"
-        />
-      </div>
+      </InnerContainer>
     </div>
   );
 }
@@ -239,14 +248,16 @@ function VersionSelect() {
       </summary>
       <DetailsPopup>
         <VersionsLabel label="Branches" />
-        {branches.map((branch) => (
-          <VersionLink
-            key={branch}
-            to={currentGitHubRef === branch ? "" : `/${lang}/${branch}`}
-          >
-            {releaseBranch === branch ? `main (${latestVersion})` : branch}
-          </VersionLink>
-        ))}
+        {branches.map((branch) => {
+          return (
+            <VersionLink
+              key={branch}
+              to={currentGitHubRef === branch ? "" : `/${lang}/${branch}`}
+            >
+              {releaseBranch === branch ? `main (${latestVersion})` : branch}
+            </VersionLink>
+          );
+        })}
 
         <VersionsLabel label="Versions" />
         {versions.map((version) => (
@@ -323,16 +334,22 @@ function VersionLink({
 function DocSearchSection() {
   let hydrated = useHydrated();
   return (
-    <div className="mr-2 mb-6">
-      {hydrated ? (
-        <DocSearch
-          appId="6OHWJSR8G4"
-          indexName="remix"
-          apiKey="dff56670dbec8494409989d6ec9c8ac2"
-        />
-      ) : (
-        <DocSearchPlaceholder />
-      )}
+    <div className="lg:sticky lg:z-10 lg:top-0 lg:-translate-y-6">
+      <div className="lg:pt-6 lg:bg-white lg:dark:bg-gray-900">
+        {hydrated ? (
+          <DocSearch
+            appId="6OHWJSR8G4"
+            indexName="remix"
+            apiKey="dff56670dbec8494409989d6ec9c8ac2"
+          />
+        ) : (
+          // The Algolia doc search container is hard-coded at 36px. It doesn't
+          // render anything on the server, so we get a mis-match after hydration.
+          // This placeholder prevents layout shift when the search appears.
+          <div className="h-[36px]" />
+        )}
+      </div>
+      <div className="lg:h-6 lg:bg-gradient-to-b from-white dark:from-gray-900" />
     </div>
   );
 }
@@ -499,7 +516,7 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed top-16 bottom-0 hidden w-72 overflow-auto py-6 pl-8 pr-6 lg:block">
+    <div className="fixed top-16 bottom-0 hidden w-72 overflow-auto py-6 lg:block">
       <DocSearchSection />
       <Menu />
     </div>
@@ -693,11 +710,12 @@ function EditLink() {
   );
 }
 
-// The Algolia doc search container is hard-coded at 36px. It doesn't render
-// anything on the server, so we get a mis-match after hydration. This
-// placeholder prevents layout shift when the search appears.
-function DocSearchPlaceholder() {
-  return <div className="h-9" />;
+function InnerContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="m-auto w-[90rem] max-w-[calc(100%-2rem)] sm:max-w-[calc(100%-3rem)]">
+      {children}
+    </div>
+  );
 }
 
 function useDoc(): Doc | null {

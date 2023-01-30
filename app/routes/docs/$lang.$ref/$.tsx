@@ -97,7 +97,7 @@ export default function DocPage() {
       ) : (
         <div className="hidden xl:order-1 xl:block xl:w-56 xl:flex-shrink-0" />
       )}
-      <div className="px-4 pt-8 pb-4 lg:ml-72 lg:pr-8 lg:pl-12 xl:flex-grow min-w-0">
+      <div className="pt-8 pb-4 xl:flex-grow min-w-0">
         <div
           ref={ref}
           className="markdown w-full pb-[33vh]"

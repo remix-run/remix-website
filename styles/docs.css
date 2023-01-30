@@ -42,10 +42,6 @@
 /* layout */
 
 .markdown {
-  @media screen and (min-width: theme(screens.lg)) {
-    max-width: theme(screens.lg);
-  }
-
   &.has-toc {
     @media screen and (min-width: theme(screens.xl)) {
       --w-content: theme(screens.lg);
