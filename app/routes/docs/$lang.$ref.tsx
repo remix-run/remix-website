@@ -137,7 +137,7 @@ export default function DocsLayout() {
           >
             <Outlet />
           </div>
-          <div className="pt-8 pb-4 lg:ml-72 lg:pl-12 min-w-0">
+          <div className="pt-8 sm:pt-10 lg:pt-12 lg:ml-72 lg:pl-6 xl:pl-10 2xl:pl-12 min-w-0">
             <Footer />
           </div>
         </InnerContainer>
@@ -148,9 +148,9 @@ export default function DocsLayout() {
 
 function Footer() {
   return (
-    <div className="-ml-8 mt-16 flex justify-between border-t border-t-gray-50 pl-8 pt-4 text-sm text-gray-400 dark:border-gray-800">
+    <div className="flex justify-between border-t border-t-gray-50 py-4 text-sm text-gray-400 dark:border-gray-800">
       <div className="lg:flex lg:items-center">
-        <div className="pr-4">
+        <div>
           &copy;{" "}
           <a className="hover:underline" href="https://remix.run">
             Remix Software, Inc.
@@ -176,7 +176,14 @@ function Footer() {
 
 function Header() {
   return (
-    <div className="border-b border-gray-50 bg-white text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100">
+    <div
+      className={cx(
+        "relative border-b border-gray-50 bg-white text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100",
+        // This hides some of the underlying text when the user scrolls to the
+        // bottom which results in the overscroll bounce
+        "before:hidden lg:before:block before:absolute before:bg-inherit before:w-full before:h-[500%] before:left-0 before:bottom-0"
+      )}
+    >
       <InnerContainer>
         <div className="relative z-20 flex h-16 w-full items-center justify-between py-3">
           <div className="flex w-full items-center justify-between gap-8 md:w-auto">
@@ -301,7 +308,7 @@ function VersionLink({
           className,
           "after:absolute after:right-4 after:top-1 after:block after:-rotate-45 after:opacity-50 after:content-['→']",
           // Same as !isActive styles on <Link> below
-          "hover:bg-gray-50 active:text-red-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-red-brand"
+          "hover:bg-gray-50 active:text-blue-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-blue-brand"
         )}
       >
         {children}
@@ -315,8 +322,8 @@ function VersionLink({
         className,
         "before:bg-transparent",
         isActive
-          ? "text-red-brand"
-          : "hover:bg-gray-50 active:text-red-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-red-brand"
+          ? "text-blue-brand"
+          : "hover:bg-gray-50 active:text-blue-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-blue-brand"
       )}
       to={to}
     >
@@ -324,7 +331,10 @@ function VersionLink({
     </Link>
   ) : (
     <span
-      className={cx(className, "font-bold text-red-brand before:bg-red-brand")}
+      className={cx(
+        className,
+        "font-bold text-blue-brand before:bg-blue-brand"
+      )}
     >
       {children}
     </span>
@@ -333,20 +343,28 @@ function VersionLink({
 
 function DocSearchSection() {
   let hydrated = useHydrated();
+  let { currentGitHubRef } = useLoaderData<typeof loader>();
   return (
-    <div className="lg:sticky lg:z-10 lg:top-0 lg:-translate-y-6">
-      <div className="lg:pt-6 lg:bg-white lg:dark:bg-gray-900">
+    <div className="lg:sticky lg:z-10 lg:top-0">
+      <div
+        className={cx(
+          "lg:pt-6 lg:px-1 lg:bg-white lg:dark:bg-gray-900 relative",
+          // This hides some of the underlying text when the user scrolls to the
+          // bottom which results in the overscroll bounce
+          "before:hidden lg:before:block before:bg-inherit before:absolute before:h-[200%] before:w-full before:left-0 before:bottom-0 before:-z-10"
+        )}
+      >
         {hydrated ? (
           <DocSearch
             appId="6OHWJSR8G4"
-            indexName="remix"
+            indexName={`remix-${currentGitHubRef}`}
             apiKey="dff56670dbec8494409989d6ec9c8ac2"
           />
         ) : (
-          // The Algolia doc search container is hard-coded at 36px. It doesn't
+          // The Algolia doc search container is hard-coded at 40px. It doesn't
           // render anything on the server, so we get a mis-match after hydration.
           // This placeholder prevents layout shift when the search appears.
-          <div className="h-[36px]" />
+          <div className="h-20" />
         )}
       </div>
       <div className="lg:h-6 lg:bg-gradient-to-b from-white dark:from-gray-900" />
@@ -417,8 +435,8 @@ let ColorSchemeButton = React.forwardRef<
       className={cx(
         "flex w-full items-center gap-4 py-1 px-4",
         colorScheme === props.value
-          ? "text-red-brand"
-          : "hover:bg-gray-50 active:text-red-brand dark:hover:bg-gray-700 dark:active:text-red-brand"
+          ? "text-blue-brand"
+          : "hover:bg-gray-50 active:text-blue-brand dark:hover:bg-gray-700 dark:active:text-blue-brand"
       )}
     >
       <svg className="h-[18px] w-[18px]">
@@ -440,9 +458,9 @@ function VersionWarning() {
 
   return (
     <div className="hidden lg:block">
-      <div className="animate-[bounce_500ms_2.5] bg-red-brand p-2 text-xs text-white">
+      <div className="animate-[bounce_500ms_2.5] bg-blue-brand p-2 text-xs text-white">
         {warning}.{" "}
-        <Link to="/en/main" className="underline">
+        <Link to="/docs/en/main" className="underline">
           View latest
         </Link>
       </div>
@@ -516,9 +534,11 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed top-16 bottom-0 hidden w-72 overflow-auto py-6 lg:block">
+    <div className="fixed top-10 bottom-0 py-6 -translate-x-2 hidden w-72 overflow-auto lg:block">
       <DocSearchSection />
-      <Menu />
+      <div className="px-1">
+        <Menu />
+      </div>
     </div>
   );
 }
@@ -530,15 +550,9 @@ function Menu() {
       <ul>
         {menu.map((category) => (
           <li key={category.attrs.title} className="mb-6">
-            {category.hasContent ? (
-              <MenuCategoryLink to={category.slug}>
-                {category.attrs.title}
-              </MenuCategoryLink>
-            ) : (
-              <div className="pb-1 pt-0 mb-2 text-[1rem] leading-[1.125] tracking-wide flex items-center font-bold">
-                {category.attrs.title}
-              </div>
-            )}
+            <MenuCategoryHeading to={category.hasContent && category.slug}>
+              {category.attrs.title}
+            </MenuCategoryHeading>
             {category.children.map((doc) => (
               <MenuLink key={doc.slug} to={doc.slug}>
                 {doc.attrs.title} {doc.attrs.new && "🆕"}
@@ -555,12 +569,30 @@ function Menu() {
   );
 }
 
+function MenuCategoryHeading({
+  children,
+  to,
+}: {
+  children: React.ReactNode;
+  to?: string | null | false;
+}) {
+  let className =
+    "flex items-center py-1 mb-2 text-[1rem] leading-[1.125] tracking-wide font-bold rounded-md";
+  return to ? (
+    <MenuCategoryLink to={to} className={className} children={children} />
+  ) : (
+    <div className={className} children={children} />
+  );
+}
+
 function MenuCategoryLink({
   to,
   children,
+  className,
 }: {
   to: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   let isActive = useIsActivePath(to);
   return (
@@ -568,14 +600,15 @@ function MenuCategoryLink({
       prefetch="intent"
       to={to}
       className={cx(
-        "group pb-1 pt-0 mb-2 text-[1rem] leading-[1.125] tracking-wide flex items-center font-bold rounded-md",
-        // link styles
+        className,
+        "group",
         isActive
-          ? "bg-gray-50 font-semibold text-red-brand dark:bg-gray-800"
-          : "text-inherit hover:text-gray-900 active:text-red-brand dark:hover:text-gray-50 dark:active:text-red-brand"
+          ? "bg-gray-50 font-semibold text-blue-brand dark:bg-gray-800"
+          : "text-inherit hover:text-gray-900 active:text-blue-brand dark:hover:text-gray-50 dark:active:text-blue-brand"
       )}
-      children={children}
-    />
+    >
+      {children}
+    </Link>
   );
 }
 
@@ -590,7 +623,7 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
         "duration-150 transition-colors ease-in-out",
         isActive
           ? [
-              "font-semibold -translate-x-1",
+              "font-semibold",
               "text-blue-brand hover:text-blue-700 dark:hover:text-blue-300",
               "bg-blue-50 bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-40",
             ]
