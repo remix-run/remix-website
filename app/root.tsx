@@ -8,7 +8,7 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type { LoaderArgs } from "@remix-run/node";
-import { load as loadFathom } from "fathom-client";
+import { load as loadFathom, type LoadOptions } from "fathom-client";
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
 import { Body } from "~/components/body";
@@ -134,15 +134,14 @@ export default function App() {
   let forceDark = matches.some((match) => match.handle?.forceDark);
   let { noIndex, env } = useLoaderData<typeof loader>();
 
-  React.useEffect(() => {
-    if (env.NODE_ENV !== "development") {
-      loadFathom("IRVDGCHK", {
-        url: "https://cdn.usefathom.com/script.js",
-        spa: "history",
-        excludedDomains: ["localhost"],
-      });
-    }
-  }, [env.NODE_ENV]);
+  if (env.NODE_ENV !== "development") {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useFathomClient("IRVDGCHK", {
+      url: "https://cdn.usefathom.com/script.js",
+      spa: "history",
+      excludedDomains: ["localhost"],
+    });
+  }
 
   return (
     <Document noIndex={noIndex} forceDark={forceDark}>
@@ -191,4 +190,13 @@ export function CatchBoundary() {
       </div>
     </Document>
   );
+}
+
+function useFathomClient(siteId: string, loadOptions: LoadOptions) {
+  let loaded = React.useRef(false);
+  React.useEffect(() => {
+    if (loaded.current) return;
+    loadFathom(siteId, loadOptions);
+    loaded.current = true;
+  }, [loadOptions, siteId]);
 }
