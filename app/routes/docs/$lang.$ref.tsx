@@ -619,7 +619,7 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
       prefetch="intent"
       to={to}
       className={cx(
-        "py-1 pl-2 relative group my-1 flex items-center rounded-md border-transparent text-m-p-sm lg:text-sm",
+        "py-1 pl-2 relative group my-1 flex items-center rounded-md border-transparent lg:text-sm",
         "duration-150 transition-colors ease-in-out",
         isActive
           ? [

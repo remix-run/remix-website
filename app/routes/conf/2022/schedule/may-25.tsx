@@ -58,7 +58,7 @@ export default function May25Schedule() {
                   </td>
                   <td className="px-2 py-8 lg:py-16 flex flex-col gap-4">
                     <span
-                      className="md:text-m-p-lg text-d-p-lg font-bold"
+                      className="md:text-lg text-xl font-bold"
                       dangerouslySetInnerHTML={{
                         __html: scheduleItem.titleHTML,
                       }}
@@ -108,7 +108,7 @@ export default function May25Schedule() {
           </small>
         </div>
         <div className="mt-20">
-          <h2 className="text-m-h3 font-display md:text-d-h3">After Party</h2>
+          <h2 className="text-xl font-display md:text-3xl">After Party</h2>
           <small>7:00pm - 10:00pm</small>
           <p>
             After a full day of stellar talks, relax and have fun with fellow

@@ -121,7 +121,7 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
               href={`#${heading.slug}`}
               dangerouslySetInnerHTML={{ __html: heading.html || "" }}
               className={cx(
-                "pb-1 relative group my-1 flex items-center rounded-md border-transparent text-m-p-sm lg:text-sm",
+                "pb-1 relative group my-1 flex items-center rounded-md border-transparent text-sm",
                 "text-gray-700 dark:text-gray-400 hover:text-blue-500",
                 "duration-150 transition-colors ease-in-out"
               )}

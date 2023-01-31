@@ -115,7 +115,7 @@ a.md-nav-item {
 .md-toc-title,
 /* Targets the first link, which is the page title */
 .toc > li > p > a {
-  @apply block font-display text-d-p-sm mb-2 font-bold tracking-wide leading-[1.125];
+  @apply block font-display text-base mb-2 font-bold tracking-wide leading-[1.125];
   @apply text-gray-700 dark:text-gray-200;
 
   & code {
@@ -149,7 +149,7 @@ a.md-nav-item {
   }
 
   & a {
-    @apply relative block px-5 py-1 transition-colors text-d-p-sm lg:text-m-p-sm hover:text-blue-brand;
+    @apply relative block px-5 py-1 transition-colors text-base lg:text-sm hover:text-blue-brand;
   }
 
   & a:focus {
@@ -183,7 +183,7 @@ a.md-nav-item {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   grid-area: main;
-  @apply flex-auto min-w-0 leading-normal text-gray-700 break-words dark:text-gray-300 text-d-p-sm;
+  @apply flex-auto min-w-0 leading-normal text-gray-700 break-words dark:text-gray-300 text-base;
 
   & > :first-child {
     @apply mt-0;
@@ -279,7 +279,7 @@ a.md-nav-item {
     @apply p-0 mt-0 mb-4;
 
     & dt {
-      @apply p-0 mt-4 italic font-semibold text-d-p-sm;
+      @apply p-0 mt-4 italic font-semibold text-base;
     }
 
     & dd {
@@ -313,21 +313,21 @@ a.md-nav-item {
   }
 
   & h1 {
-    @apply my-10 text-m-h2 md:text-d-h2;
+    @apply my-10 text-2xl md:text-5xl;
   }
 
   & h2 {
-    @apply text-m-h2 md:text-d-h3;
+    @apply text-2xl md:text-3xl;
   }
 
   & h3 {
-    @apply text-m-h3 md:text-m-h2;
+    @apply text-xl md:text-2xl;
   }
 
   & h4,
   & h5,
   & h6 {
-    @apply font-bold text-m-p-lg md:text-d-p-lg;
+    @apply font-bold text-lg md:text-xl;
   }
 
   & h1 code,
@@ -401,7 +401,7 @@ a.md-nav-item {
   & kbd,
   & pre {
     word-wrap: normal;
-    @apply p-3 overflow-auto leading-none border border-gray-100 rounded-lg dark:border-gray-900 md:p-4 text-m-p-sm;
+    @apply p-3 overflow-auto leading-none border border-gray-100 rounded-lg dark:border-gray-900 md:p-4 text-sm;
   }
 
   & pre {
@@ -546,7 +546,7 @@ a.md-nav-item {
   }
 
   & table th {
-    @apply sticky top-0 font-semibold text-gray-700 bg-transparent text-m-p-sm dark:text-gray-300;
+    @apply sticky top-0 font-semibold text-gray-700 bg-transparent text-sm dark:text-gray-300;
     @apply p-0 pb-1 pr-4 border-0 border-b border-gray-200 md:pr-6 dark:border-gray-800;
   }
 
@@ -555,7 +555,7 @@ a.md-nav-item {
   }
 
   & table td {
-    @apply p-0 py-2 pr-4 text-black border-0 border-b border-gray-100 md:pr-6 text-m-p-sm dark:text-white whitespace-nowrap;
+    @apply p-0 py-2 pr-4 text-black border-0 border-b border-gray-100 md:pr-6 text-sm dark:text-white whitespace-nowrap;
   }
 
   /*****************************************************************************/

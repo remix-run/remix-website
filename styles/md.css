@@ -56,18 +56,18 @@
 } */
 
 .md-prose {
-  @apply text-m-p-lg;
+  @apply text-lg;
 
   & p {
     @apply my-8;
   }
 
   & h2 {
-    @apply font-display text-m-h2 md:text-d-h2 dark:text-gray-200;
+    @apply font-display text-2xl md:text-5xl dark:text-gray-200;
   }
 
   & h3 {
-    @apply font-display text-m-h3 md:text-d-h3 dark:text-gray-200;
+    @apply font-display text-xl md:text-3xl dark:text-gray-200;
   }
 
   & h4 {
@@ -93,7 +93,7 @@
   }
 
   & pre {
-    @apply my-8 break-normal overflow-auto p-2 md:p-3 border-t border-b sm:border sm:rounded-xl border-gray-200 dark:border-gray-700 text-m-p-sm lg:text-d-p-sm -mx-6;
+    @apply my-8 break-normal overflow-auto p-2 md:p-3 border-t border-b sm:border sm:rounded-xl border-gray-200 dark:border-gray-700 text-sm lg:text-base -mx-6;
   }
 
   & pre[data-lang="text"] {
@@ -101,7 +101,7 @@
   }
 
   & code {
-    @apply rounded-lg  bg-gray-50 dark:bg-gray-800 p-1 text-d-p-sm text-gray-700 dark:text-gray-400;
+    @apply rounded-lg  bg-gray-50 dark:bg-gray-800 p-1 text-base text-gray-700 dark:text-gray-400;
   }
 
   /* unset the stuff from `& code` up there ^ */
@@ -182,7 +182,7 @@
     @apply p-0 mt-0 mb-4;
 
     & dt {
-      @apply p-0 mt-4 text-d-p-sm italic font-semibold;
+      @apply p-0 mt-4 text-base italic font-semibold;
     }
 
     & dd {
@@ -203,7 +203,7 @@
   }
 
   & figcaption {
-    @apply font-bold text-center text-m-p-sm lg:text-d-p-sm;
+    @apply font-bold text-center text-sm lg:text-base;
   }
 
   & table {
@@ -213,7 +213,7 @@
   }
 
   & table th {
-    @apply sticky top-0 font-semibold text-gray-700 bg-transparent text-m-p-sm dark:text-gray-300;
+    @apply sticky top-0 font-semibold text-gray-700 bg-transparent text-sm dark:text-gray-300;
     @apply p-0 pb-1 pr-4 border-0 border-b border-gray-200 md:pr-6 dark:border-gray-800;
   }
 
@@ -222,7 +222,7 @@
   }
 
   & table td {
-    @apply p-0 py-2 pr-4 text-black border-0 border-b border-gray-100 md:pr-6 text-m-p-sm dark:text-white whitespace-nowrap;
+    @apply p-0 py-2 pr-4 text-black border-0 border-b border-gray-100 md:pr-6 text-sm dark:text-white whitespace-nowrap;
   }
 
   & .codeblock-line {

@@ -106,11 +106,11 @@ export default function BlogPost() {
               </div>
               <div className="container relative z-10 flex flex-col w-full h-full pt-6 md:pt-12 lg:max-w-4xl">
                 <div className="flex-1">
-                  <div className="text-gray-200 uppercase text-m-p-sm md:text-d-p-sm">
+                  <div className="text-gray-200 uppercase text-sm md:text-base">
                     {post.dateDisplay}
                   </div>
                   <div className="h-2" />
-                  <div className="text-m-h1 text-white font-display md:text-4xl">
+                  <div className="text-3xl text-white font-display md:text-4xl">
                     {post.title}
                   </div>
                   <div className="h-2" />
@@ -127,10 +127,10 @@ export default function BlogPost() {
                       </div>
                       <div className="w-6" />
                       <div>
-                        <div className="text-d-p-lg leading-none text-white font-display md:text-d-h3">
+                        <div className="text-xl leading-none text-white font-display md:text-3xl">
                           {author.name}
                         </div>
-                        <div className="text-d-p-sm leading-tight text-gray-200 md:text-d-p-sm">
+                        <div className="text-base leading-tight text-gray-200 md:text-base">
                           {author.title}
                         </div>
                       </div>
@@ -154,7 +154,7 @@ export default function BlogPost() {
       </div>
 
       <div className="mt-24 mb-12 m-auto container max-w-lg">
-        <h3 className="text-m-h3 font-bold mb-6 lg:text-d-h3">
+        <h3 className="text-xl font-bold mb-6 lg:text-3xl">
           Get updates on the latest Remix news
         </h3>
         <div className="mb-6" id="newsletter-text">

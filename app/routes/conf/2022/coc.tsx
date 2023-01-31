@@ -17,10 +17,10 @@ export default function CoC() {
   return (
     <InnerLayout>
       <div className="text-white">
-        <h1 className="font-display text-m-h1 sm:text-d-h2 xl:text-d-j mb-16">
+        <h1 className="font-display text-3xl sm:text-5xl xl:text-7xl mb-16">
           Remix Conf Code of Conduct
         </h1>
-        <div className="container text-m-p-lg lg:text-d-p-lg flex flex-col gap-4 mb-6">
+        <div className="container text-lg lg:text-xl flex flex-col gap-4 mb-6">
           <p>
             All attendees, speakers, sponsors and volunteers at our conference
             are required to agree with the following code of conduct. Organizers
@@ -30,9 +30,9 @@ export default function CoC() {
           </p>
 
           <div className="mb-8">
-            <h2 className="text-m-h2 sm:tsxt-d-h2 mb-2">The Quick Version</h2>
+            <h2 className="text-2xl sm:tsxt-d-h2 mb-2">The Quick Version</h2>
 
-            <div className="container text-m-p-sm lg:text-d-p-sm flex flex-col gap-4">
+            <div className="container text-sm lg:text-base flex flex-col gap-4">
               <p>
                 Our conference is dedicated to providing a harassment-free
                 conference experience for everyone, regardless of gender, gender
@@ -51,11 +51,11 @@ export default function CoC() {
           </div>
 
           <div>
-            <h2 className="text-m-h2 sm:tsxt-d-h2 mb-2">
+            <h2 className="text-2xl sm:tsxt-d-h2 mb-2">
               The Less Quick Version
             </h2>
 
-            <div className="container text-m-p-sm lg:text-d-p-sm flex flex-col gap-4">
+            <div className="container text-sm lg:text-base flex flex-col gap-4">
               <p>
                 Harassment includes offensive verbal comments related to gender,
                 gender identity and expression, age, sexual orientation,

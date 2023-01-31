@@ -8,7 +8,7 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type { LoaderArgs } from "@remix-run/node";
-import { load as loadFathom } from "fathom-client";
+import { load as loadFathom, type LoadOptions } from "fathom-client";
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
 import { Body } from "~/components/body";
@@ -148,15 +148,14 @@ export default function App() {
   let { noIndex, env } = useLoaderData<typeof loader>();
   let forceDark = matches.some((match) => match.handle?.forceDark);
 
-  React.useEffect(() => {
-    if (env.NODE_ENV !== "development") {
-      loadFathom("IRVDGCHK", {
-        url: "https://cdn.usefathom.com/script.js",
-        spa: "history",
-        excludedDomains: ["localhost"],
-      });
-    }
-  }, [env.NODE_ENV]);
+  if (env.NODE_ENV !== "development") {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useFathomClient("IRVDGCHK", {
+      url: "https://cdn.usefathom.com/script.js",
+      spa: "history",
+      excludedDomains: ["localhost"],
+    });
+  }
 
   return (
     <Document noIndex={noIndex} forceDark={forceDark}>
@@ -188,7 +187,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
       <div className="flex flex-col justify-center flex-1 text-white">
         <div className="leading-none text-center">
           <h1 className="text-[25vw]">Error</h1>
-          <div className="text-d-h3">
+          <div className="text-3xl">
             Something went wrong! Please try again later.
           </div>
         </div>
@@ -219,4 +218,13 @@ export function CatchBoundary() {
       </div>
     </Document>
   );
+}
+
+function useFathomClient(siteId: string, loadOptions: LoadOptions) {
+  let loaded = React.useRef(false);
+  React.useEffect(() => {
+    if (loaded.current) return;
+    loadFathom(siteId, loadOptions);
+    loaded.current = true;
+  }, [loadOptions, siteId]);
 }

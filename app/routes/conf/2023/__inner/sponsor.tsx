@@ -16,10 +16,10 @@ export default function SponsorUs() {
   return (
     <div>
       <div className="">
-        <h1 className="font-display text-m-h1 sm:text-d-h2 lg:text-d-h1 text-white mb-5 sm:mb-8 lg:mb-16">
+        <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl text-white mb-5 sm:mb-8 lg:mb-16">
           Become a Remix Conf Sponsor
         </h1>
-        <div className="text-m-p-lg lg:text-d-p-lg flex flex-col gap-3 lg:gap-4">
+        <div className="text-lg lg:text-xl flex flex-col gap-3 lg:gap-4">
           <p>
             We're excited you're interested in sponsoring the conference!
             Sponsoring Remix Conf will connect your company and brand to a group

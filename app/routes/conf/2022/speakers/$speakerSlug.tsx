@@ -69,15 +69,15 @@ export default function SpeakerRoute() {
             className="object-cover rounded-md w-36 h-36 md:w-64 md:h-64"
             style={{ aspectRatio: "1/1" }}
           />
-          <div className="text-m-p-lg lg:text-d-p-lg">
-            <h1 className="font-display text-m-h1 sm:text-d-h2 xl:text-d-j mb-2">
+          <div className="text-lg lg:text-xl">
+            <h1 className="font-display text-3xl sm:text-5xl xl:text-7xl mb-2">
               {speaker.name}
             </h1>
             <div className="mt-4">
               <p>{speaker.title}</p>
               <a
                 href={speaker.link}
-                className="underline text-m-p-sm font-semibold uppercase mt-2"
+                className="underline text-sm font-semibold uppercase mt-2"
               >
                 {speaker.linkText}
               </a>
@@ -93,7 +93,7 @@ export default function SpeakerRoute() {
             {talks.map((talk) => (
               <div key={talk.title} className="flex flex-col gap-4">
                 <div>
-                  <h2 className="text-m-h3 font-display md:text-d-h3 inline">
+                  <h2 className="text-xl font-display md:text-3xl inline">
                     {talk.title}
                   </h2>
                   {talk.type === "backup" ? (
@@ -136,10 +136,10 @@ export function CatchBoundary() {
   if (caught.status === 404) {
     return (
       <div>
-        <h1 className="font-jet-mono text-m-h1 sm:text-d-h2 text-white xl:text-d-j mb-10">
+        <h1 className="font-mono text-3xl sm:text-5xl text-white xl:text-7xl mb-10">
           Speaker not found
         </h1>
-        <div className="container text-m-p-lg lg:text-d-p-lg text-white">
+        <div className="container text-lg lg:text-xl text-white">
           <p>
             No speaker found with the slug "{params.speakerSlug}".{" "}
             <Link to="../speakers/you" className="underline">
