@@ -136,7 +136,7 @@ export function CatchBoundary() {
   if (caught.status === 404) {
     return (
       <div>
-        <h1 className="font-jet-mono text-3xl sm:text-5xl text-white xl:text-7xl mb-10">
+        <h1 className="font-mono text-3xl sm:text-5xl text-white xl:text-7xl mb-10">
           Speaker not found
         </h1>
         <div className="container text-lg lg:text-xl text-white">

@@ -104,7 +104,7 @@ function Hero() {
       >
         <div className="container relative">
           <div className="max-w-xl mx-auto md:mx-0">
-            <h1 className="font-jet-mono text-[length:32px] sm:text-[length:45px] lg:text-[length:64px] leading-tight __hero-text-shadow">
+            <h1 className="font-mono text-[length:32px] sm:text-[length:45px] lg:text-[length:64px] leading-tight __hero-text-shadow">
               <div className="text-white">May 24-25, 2022 </div>
               <div className="text-yellow-brand">Salt Lake City</div>
             </h1>
@@ -124,7 +124,7 @@ function Hero() {
           <div className="flex justify-center w-full">
             <a
               href="https://www.youtube.com/playlist?list=PLXoynULbYuEC36XutMMWEuTu9uuh171wx"
-              className={`${primaryButtonLinkClass} w-full md:w-auto font-jet-mono uppercase flex gap-2 sm:gap-4`}
+              className={`${primaryButtonLinkClass} w-full md:w-auto font-mono uppercase flex gap-2 sm:gap-4`}
             >
               <span aria-hidden>📺</span>
               <span>Watch the Recordings</span>
@@ -144,7 +144,7 @@ function Speakers() {
   return (
     <section className="py-20 __section-speakers" id="speakers">
       <div className="relative container">
-        <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
+        <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center font-mono">
           Speakers
         </h2>
         <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
@@ -160,7 +160,7 @@ function Speakers() {
         </div>
         {mc ? (
           <div id="mc">
-            <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-jet-mono">
+            <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-mono">
               Master of Ceremonies
             </h2>
             <div className="flex justify-center m-auto">
@@ -212,7 +212,7 @@ function Sponsors() {
         <div className="flex flex-col gap-20 lg:gap-36 text-center">
           {sponsors.premier ? (
             <div className="pb-8 lg:pb-20">
-              <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
+              <h3 className="mb-6 md:mb-8 uppercase font-semibold font-mono">
                 Premier Sponsor
               </h3>
               <div className="max-w-[400px] w-full m-auto">
@@ -229,7 +229,7 @@ function Sponsors() {
             </div>
           ) : null}
           <div>
-            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
+            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-mono">
               Gold Sponsors
             </h3>
             <SponsorsList sponsors={sponsors.gold} level="gold" />
@@ -241,7 +241,7 @@ function Sponsors() {
             <SponsorsList sponsors={sponsors.silver} level="silver" />
           </div>
           <div>
-            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-jet-mono">
+            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-mono">
               Community Partners
             </h3>
             <SponsorsList sponsors={sponsors.community} level="community" />
@@ -251,7 +251,7 @@ function Sponsors() {
           <OutlineButtonLink
             prefetch="intent"
             to="sponsor"
-            className="w-full md:w-auto font-jet-mono uppercase"
+            className="w-full md:w-auto font-mono uppercase"
             children="Join the Sponsors"
           />
         </div>

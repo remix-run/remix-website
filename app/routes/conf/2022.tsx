@@ -85,7 +85,7 @@ function SignUp() {
       <div className="container">
         <section className="section-signup relative">
           <div className="md:max-w-xl mx-auto md:py-40 relative">
-            <h2 className="h2 mb-3 text-3xl text-yellow-brand font-bold font-jet-mono">
+            <h2 className="h2 mb-3 text-3xl text-yellow-brand font-bold font-mono">
               Stay Updated
             </h2>
             <div className="flex items-center gap-4 mb-6">
@@ -114,7 +114,7 @@ function SignUp() {
             <SubscribeProvider>
               <SubscribeForm aria-describedby="newsletter-text">
                 <SubscribeEmailInput />
-                <SubscribeSubmit className="w-full mt-2 sm:w-auto sm:mt-0 uppercase font-jet-mono" />
+                <SubscribeSubmit className="w-full mt-2 sm:w-auto sm:mt-0 uppercase font-mono" />
               </SubscribeForm>
               <p className="text-white opacity-60 text-sm mt-3">
                 We respect your privacy; unsubscribe at any time.
@@ -135,7 +135,7 @@ function Header() {
   return (
     <header
       className={cx("text-white pt-10 md:pt-4", {
-        ["absolute top-0 left-0 right-0 z-10"]: isConfHome,
+        "absolute top-0 left-0 right-0 z-10": isConfHome,
       })}
     >
       <div className="px-6 lg:px-12 py-9 flex justify-between items-start gap-8">
@@ -144,7 +144,7 @@ function Header() {
         </NavLink>
 
         <nav className="flex" aria-label="Main">
-          <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center font-jet-mono">
+          <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center font-mono">
             {navItems.map((item) => (
               <li key={item.to + item.children}>
                 <HeaderLink
@@ -182,14 +182,14 @@ function Footer() {
         <Link
           prefetch="intent"
           to="coc"
-          className="leading-none block font-semibold font-jet-mono"
+          className="leading-none block font-semibold font-mono"
         >
           Code of Conduct
         </Link>
         <Link
           prefetch="intent"
           to="safety"
-          className="leading-none block font-semibold font-jet-mono"
+          className="leading-none block font-semibold font-mono"
         >
           Safety
         </Link>
@@ -290,7 +290,7 @@ function MobileMenuItem({
 function MobileNavList() {
   return (
     <MenuPopover className="absolute block">
-      <MenuItems className="relative block whitespace-nowrap outline-none py-2 border-2 border-white rounded-md mt-2 bg-blue-800 font-jet-mono">
+      <MenuItems className="relative block whitespace-nowrap outline-none py-2 border-2 border-white rounded-md mt-2 bg-blue-800 font-mono">
         {navItems.map((item, i) => (
           <MobileMenuItem
             key={item.to + item.children}
@@ -306,7 +306,7 @@ function MobileNavList() {
 
 function MobileNav() {
   return (
-    <div className="flex items-center gap-4 md:hidden font-jet-mono">
+    <div className="flex items-center gap-4 md:hidden font-mono">
       <HeaderLink
         className="block text-yellow-brand hover:text-white"
         to="https://rmx.as/tickets"

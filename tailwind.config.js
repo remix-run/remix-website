@@ -60,10 +60,13 @@ module.exports = {
   theme: {
     fontFamily: {
       ...defaultTheme.fontFamily,
-      display: ['"Founders Grotesk", "Arial Black", sans-serif'],
+      display: [
+        "Founders Grotesk",
+        "Arial Black",
+        ...defaultTheme.fontFamily.sans,
+      ],
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
       mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
-      "jet-mono": ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
       ...baseFontSizes,
