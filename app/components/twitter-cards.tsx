@@ -136,9 +136,7 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
                   >
                     @{tweet.username}
                   </a>
-                  <div className="text-sm lg:text-base">
-                    {tweet.title}
-                  </div>
+                  <div className="text-sm lg:text-base">{tweet.title}</div>
                 </figcaption>
               </div>
               <a
@@ -183,9 +181,7 @@ export function BigTweet({ tweet }: { tweet: TweetData }) {
             {tweet.name}
           </a>
           <span className="sr-only">, </span>
-          <div className="text-lg md:text-d-lg uppercase">
-            {tweet.title}
-          </div>
+          <div className="text-lg md:text-d-lg uppercase">{tweet.title}</div>
         </figcaption>
       </div>
       <div className="h-10" />
