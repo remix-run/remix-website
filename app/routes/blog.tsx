@@ -57,15 +57,11 @@ export default function Blog() {
                     alt={latestPost.imageAlt}
                   />
                 </div>
-                <p className="text-sm lg:text-base">
-                  {latestPost.dateDisplay}
-                </p>
+                <p className="text-sm lg:text-base">{latestPost.dateDisplay}</p>
                 <p className="text-2xl font-bold lg:text-5xl">
                   {latestPost.title}
                 </p>
-                <p className="text-sm lg:text-base">
-                  {latestPost.summary}
-                </p>
+                <p className="text-sm lg:text-base">{latestPost.summary}</p>
               </Link>
             </div>
             <div className="mt-12 lg:grid lg:grid-cols-2 lg:gap-6">
@@ -79,15 +75,9 @@ export default function Blog() {
                         alt={post.imageAlt}
                       />
                     </div>
-                    <p className="text-sm lg:text-base">
-                      {post.dateDisplay}
-                    </p>
-                    <p className="text-lg font-bold lg:text-xl">
-                      {post.title}
-                    </p>
-                    <p className="text-sm lg:text-base mb-12">
-                      {post.summary}
-                    </p>
+                    <p className="text-sm lg:text-base">{post.dateDisplay}</p>
+                    <p className="text-lg font-bold lg:text-xl">{post.title}</p>
+                    <p className="text-sm lg:text-base mb-12">{post.summary}</p>
                   </Link>
                 </div>
               ))}
