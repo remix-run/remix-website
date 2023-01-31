@@ -41,13 +41,13 @@ export default function Speak() {
   return (
     <InnerLayout>
       <div>
-        <h1 className="font-display text-m-h1 sm:text-d-h2 text-white xl:text-d-j mb-16">
+        <h1 className="font-display text-3xl sm:text-5xl text-white xl:text-7xl mb-16">
           <a href="https://rmx.as/discord" className="flex items-center gap-4">
             <Discord />
             <span>Remix Conf Discord</span>
           </a>
         </h1>
-        <div className="container text-m-p-lg lg:text-d-p-lg text-white flex flex-col gap-4">
+        <div className="container text-lg lg:text-xl text-white flex flex-col gap-4">
           <p>
             <a href="https://rmx.as/discord" className="underline">
               The Remix Discord server

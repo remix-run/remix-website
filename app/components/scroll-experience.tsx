@@ -175,9 +175,9 @@ function Explosion() {
 
 function BlueScreen() {
   return (
-    <section className="relative z-10 h-full px-6 pb-32 text-white bg-blue-brand sm:px-36 sm:pb-40 text-m-p-lg sm:text-d-p-lg">
+    <section className="relative z-10 h-full px-6 pb-32 text-white bg-blue-brand sm:px-36 sm:pb-40 text-lg sm:text-xl">
       <h2 className="sr-only">Error Handling</h2>
-      <div aria-hidden className="text-d-h1 sm:text-d-j md:text-[length:120px]">
+      <div aria-hidden className="text-6xl sm:text-7xl md:text-[length:120px]">
         :)
       </div>
       <div className="my-10 sm:my-16 sm:max-w-4xl md:text-[length:30px] md:leading-[40px]">
@@ -217,7 +217,7 @@ function Mutations({ slides }: { slides: Sequence }) {
   return (
     <section>
       <div className="max-w-5xl p-6 mx-auto md:p-10">
-        <div className="text-white text-m-j font-display md:text-d-j">
+        <div className="text-white text-4xl font-display md:text-7xl">
           <h2 className="inline">Data loading</h2>{" "}
           <span aria-hidden>
             ... <img src="/yawn.png" alt="" className="inline h-8 md:h-14" />
@@ -227,7 +227,7 @@ function Mutations({ slides }: { slides: Sequence }) {
             <span className="text-yellow-brand">changing data?</span>
           </p>
         </div>
-        <p className="mt-2 text-m-p-lg md:text-d-p-lg md:pr-52 lg:pr-72 hyphen-manual">
+        <p className="mt-2 text-lg md:text-xl md:pr-52 lg:pr-72 hyphen-manual">
           Imagine if React only had props and no way to set state. What’s the
           point? If a web framework helps you load data but doesn’t help you
           update it, what’s the point? Remix doesn’t drop you off at the{" "}
@@ -352,7 +352,7 @@ function MutationCode({
   return (
     <Actor start={start} end={end} persistent={persistent}>
       <div
-        className="__mutation_code xl:w-full text-m-p-sm sm:text-d-p-sm md:text-m-p-lg"
+        className="__mutation_code xl:w-full text-sm sm:text-base md:text-lg"
         dangerouslySetInnerHTML={{ __html: slide.subject }}
       />
     </Actor>
@@ -361,7 +361,7 @@ function MutationCode({
 
 function MutationP({ children }: { children: React.ReactNode }) {
   return (
-    <p className="px-6 sm:px-8 max-w-2xl sm:mx-auto text-m-j md:text-d-j text-gray-100 font-display h-[75vh] flex items-center">
+    <p className="px-6 sm:px-8 max-w-2xl sm:mx-auto text-4xl md:text-7xl text-gray-100 font-display h-[75vh] flex items-center">
       {children}
     </p>
   );
@@ -371,7 +371,7 @@ function JumboP({ children, ...props }: React.ComponentPropsWithoutRef<"p">) {
   return (
     <p
       {...props}
-      className="px-6 text-m-j md:text-d-j text-gray-100 md:max-w-3xl md:mx-auto font-display h-[50vh]"
+      className="px-6 text-4xl md:text-7xl text-gray-100 md:max-w-3xl md:mx-auto font-display h-[50vh]"
     >
       {children}
     </p>
@@ -461,7 +461,7 @@ function PrefetchNetwork() {
 
 function WaterfallHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-2 font-bold text-center text-white font-display text-d-p-lg lg:text-d-h3 lg:mb-6">
+    <div className="mb-2 font-bold text-center text-white font-display text-xl lg:text-3xl lg:mb-6">
       {children}
     </div>
   );
@@ -490,7 +490,7 @@ function WaterfallComparison() {
           </div>
         </div>
         <Actor start={0} end={1}>
-          <div className="absolute bottom-0 w-full pb-4 text-center text-gray-300 text-m-p-sm md:text-d-p-sm">
+          <div className="absolute bottom-0 w-full pb-4 text-center text-gray-300 text-sm md:text-base">
             (Keep scrolling to compare)
           </div>
         </Actor>
@@ -723,7 +723,7 @@ function Resource({
     <div className="flex items-center justify-center border-b border-gray-600 last:border-b-0">
       <div
         className={
-          "w-16 sm:w-28 text-[length:8px] sm:text-m-p-sm" +
+          "w-16 sm:w-28 text-[length:8px] sm:text-sm" +
           " " +
           (width === 0 ? "opacity-0" : "")
         }
@@ -788,14 +788,14 @@ function ProgressHead({ className }: { className: string }) {
 function Intro() {
   return (
     <section className="max-w-5xl p-6 mx-auto md:p-10">
-      <h2 className="text-white text-m-j font-display md:text-d-j">
+      <h2 className="text-white text-4xl font-display md:text-7xl">
         While you were <span className="text-red-brand">waiting</span> for your
         static site to build,{" "}
         <span className="text-blue-brand">distributed web</span>{" "}
         infra&shy;structure got really good.{" "}
         <span className="text-pink-brand">Break through the static.</span>
       </h2>
-      <p className="mt-2 text-m-p-lg md:text-d-p-lg md:pr-52 lg:pr-72 hyphen-manual">
+      <p className="mt-2 text-lg md:text-xl md:pr-52 lg:pr-72 hyphen-manual">
         Remix is a seamless server and browser runtime that provides snappy page
         loads and instant transitions by leveraging distributed systems and
         native browser features instead of clunky static builds. Built on the
@@ -804,7 +804,7 @@ function Intro() {
         and traditional Node.js environments, so you can come as you are.
       </p>
       <div className="h-6" />
-      <p className="mt-2 text-m-p-lg md:text-d-p-lg md:pr-52 lg:pr-72 hyphen-manual">
+      <p className="mt-2 text-lg md:text-xl md:pr-52 lg:pr-72 hyphen-manual">
         Page speed is only one aspect of our true goal though. We're after{" "}
         <Em>better user experiences</Em>. As you’ve pushed the boundaries of the
         web, your tools haven’t caught up to your appetite.{" "}
@@ -825,7 +825,7 @@ function P1({
   return (
     <p
       className={
-        "px-6 text-m-p-lg md:text-d-p-lg md:px-10 md:max-w-2xl md:mx-auto md:text-center" +
+        "px-6 text-lg md:text-xl md:px-10 md:max-w-2xl md:mx-auto md:text-center" +
         " " +
         className
       }
@@ -845,7 +845,7 @@ function P2({
   return (
     <p
       className={
-        "px-6 mb-10 text-m-p-lg md:text-d-p-lg md:text-center max-w-3xl mx-auto" +
+        "px-6 mb-10 text-lg md:text-xl md:text-center max-w-3xl mx-auto" +
         " " +
         className
       }
@@ -857,7 +857,7 @@ function P2({
 
 function Header({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-2 text-center text-white text-m-j md:text-d-h2 font-display md:mb-4">
+    <div className="mb-2 text-center text-white text-4xl md:text-5xl font-display md:mb-4">
       {children}
     </div>
   );
@@ -1122,7 +1122,7 @@ export let LayoutButton = React.forwardRef<
     <button
       ref={ref}
       className={
-        `font-mono font-bold py-2 px-6 m-2 text-[12px] md:text-d-p-sm leading-6 rounded-full opacity-80 ${
+        `font-mono font-bold py-2 px-6 m-2 text-[12px] md:text-base leading-6 rounded-full opacity-80 ${
           active ? "opacity-100" : ""
         }` +
         " " +
@@ -1154,7 +1154,7 @@ export function InteractiveRoutes() {
     <>
       <div
         className={
-          "text-m-j md:text-d-j text-center pb-2" +
+          "text-4xl md:text-7xl text-center pb-2" +
           " " +
           (active === 0 ? "animate-bounce" : "")
         }
@@ -1270,7 +1270,7 @@ export function Fakebooks({
           <div className="flex items-center text-[color:#23BF1F]">
             <FakebooksLogo className="w-[8.5px] h-[8.5px] md:h-[18px] md:w-[18px] relative top-[1px]" />
             <div className="w-[1px] md:w-1" />
-            <div className="font-display text-[length:8px] md:text-d-p-sm">
+            <div className="font-display text-[length:8px] md:text-base">
               Fakebooks
             </div>
           </div>
@@ -1300,7 +1300,7 @@ function Dashboard({ highlightOnHover }: { highlightOnHover?: boolean }) {
   let stage = useStage();
   return (
     <div className="relative p-3 md:p-6">
-      <div className="font-display text-[length:10px] md:text-d-h3 text-black">
+      <div className="font-display text-[length:10px] md:text-3xl text-black">
         Dashboard
       </div>
       <div className="h-2 md:h-6" />
@@ -1456,7 +1456,7 @@ function Resources({
   return (
     <div
       className={
-        "font-mono p-2 bg-opacity-95 text-white rounded md:rounded-xl text-m-p-sm md:text-d-p-lg" +
+        "font-mono p-2 bg-opacity-95 text-white rounded md:rounded-xl text-sm md:text-xl" +
         " " +
         className
       }
@@ -1481,7 +1481,7 @@ export function Sales({
 }) {
   return (
     <div className="relative h-full p-3 md:p-10">
-      <div className="font-display text-[length:10px] md:text-d-h3 text-black">
+      <div className="font-display text-[length:10px] md:text-3xl text-black">
         Sales
       </div>
       <div className="h-2 md:h-6" />
@@ -1796,7 +1796,7 @@ function URLBar({ url }: { url: string }) {
   return (
     <div className="flex items-center justify-center px-1 pt-1 pb-0 md:px-2 md:pt-2">
       <div className="relative flex items-center w-2/3 px-2 py-1 text-gray-100 bg-gray-600 rounded-md md:py-1 md:px-3">
-        <span className="text-[length:10px] md:text-m-p-sm">{url}</span>
+        <span className="text-[length:10px] md:text-sm">{url}</span>
         <Refresh className="absolute w-4 h-4 right-1 md:h-5 md:w-5" />
       </div>
       <div className="absolute flex gap-1 p-2 left-1 md:left-2 md:gap-2">

@@ -89,7 +89,7 @@ export default function DocsLayout() {
               Docs Navigation
             </summary>
             <div>
-              <Menu nodes={menu} className="py-6 text-d-p-sm font-medium" />
+              <Menu nodes={menu} className="py-6 text-base font-medium" />
             </div>
           </details>
           <hr className="mb-4" />

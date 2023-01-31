@@ -131,12 +131,12 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
                 <figcaption>
                   <a
                     href={tweet.href}
-                    className="block text-m-h3 md:text-m-h3 font-display"
+                    className="block text-xl md:text-xl font-display"
                     aria-label={`Tweet from ${tweet.name}`}
                   >
                     @{tweet.username}
                   </a>
-                  <div className="text-m-p-sm lg:text-d-p-sm">
+                  <div className="text-sm lg:text-base">
                     {tweet.title}
                   </div>
                 </figcaption>
@@ -151,7 +151,7 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
               </a>
             </div>
             <div className="h-6" />
-            <blockquote className="text-m-p-sm xl:text-d-p-sm text-gray-200">
+            <blockquote className="text-sm xl:text-base text-gray-200">
               {tweet.body}
             </blockquote>
           </figure>
@@ -177,19 +177,19 @@ export function BigTweet({ tweet }: { tweet: TweetData }) {
             href={tweet.href}
             target="_blank"
             rel="noopener"
-            className="block text-m-h3 md:text-d-h3 font-display"
+            className="block text-xl md:text-3xl font-display"
             aria-label={`Tweet from ${tweet.name}`}
           >
             {tweet.name}
           </a>
           <span className="sr-only">, </span>
-          <div className="text-m-p-lg md:text-d-lg uppercase">
+          <div className="text-lg md:text-d-lg uppercase">
             {tweet.title}
           </div>
         </figcaption>
       </div>
       <div className="h-10" />
-      <blockquote className="text-center text-m-p-lg leading-6 md:text-d-p-lg">
+      <blockquote className="text-center text-lg leading-6 md:text-xl">
         {tweet.body}
       </blockquote>
     </figure>

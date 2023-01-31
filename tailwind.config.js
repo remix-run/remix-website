@@ -6,6 +6,21 @@
  */
 const defaultTheme = require("tailwindcss/defaultTheme");
 
+/** @type {Record<string, [string, React.CSSProperties]>} */
+const baseFontSizes = {
+  xs: ["0.75rem", { lineHeight: "1.333" }], // 12px
+  sm: ["0.875rem", { lineHeight: "1.425" }], // 14px
+  base: ["1rem", { lineHeight: "1.5" }], // 16px
+  lg: ["1.125rem", { lineHeight: "1.556" }], // 18px
+  xl: ["1.25rem", { lineHeight: "1.556" }], // 20px
+  "2xl": ["1.5rem", { lineHeight: "1.333" }], // 24px
+  "3xl": ["1.875rem", { lineHeight: "1.2" }], // 30px
+  "4xl": ["2.25rem", { lineHeight: "1.111" }], // 36px
+  "5xl": ["3rem", { lineHeight: "1" }], // 48px
+  "6xl": ["4rem", { lineHeight: "0.938" }], // 64px
+  "7xl": ["4.5rem", { lineHeight: "0.889" }], // 72px
+};
+
 module.exports = {
   mode: "jit",
   content: ["./app/**/*.{ts,tsx}", "./data/**/*.md", "./tailwind-extras.html"],
@@ -51,24 +66,7 @@ module.exports = {
       "jet-mono": ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
-      // names come from the figma file
-      // desktop paragraph small -> d-p-s
-      "d-p-sm": ["16px", "24px"],
-      "d-p-lg": ["20px", "32px"],
-      "d-h3": ["30px", "32px"],
-      "d-h2": ["45px", "48px"],
-      "d-h1": ["64px", "72px"],
-      "d-j": ["72px", "64px"],
-
-      // mobile paragraph small -> d-m-s
-      "m-p-sm": ["14px", "24px"],
-      "m-p-lg": ["18px", "32px"],
-      "m-h3": ["20px", "24px"],
-      "m-h2": ["24px", "32px"],
-      "m-h1": ["32px", "32px"],
-      "m-j": ["40px", "48px"],
-
-      eyebrow: ["16px", "24px"],
+      ...baseFontSizes,
     },
     container: {
       center: true,

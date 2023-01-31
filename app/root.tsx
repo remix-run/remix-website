@@ -162,7 +162,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
       <div className="flex flex-col justify-center flex-1 text-white">
         <div className="leading-none text-center">
           <h1 className="text-[25vw]">Error</h1>
-          <div className="text-d-h3">{error.message}</div>
+          <div className="text-3xl">{error.message}</div>
         </div>
       </div>
     </Document>

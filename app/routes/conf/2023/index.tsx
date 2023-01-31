@@ -87,12 +87,12 @@ function Hero() {
               className="flex-auto w-full h-auto max-w-md md:max-w-lg xl:max-w-xl mx-auto xl:mx-0"
             />
             <div className="max-w-xl mx-auto md:mx-0">
-              <h1 className="font-display text-m-j md:text-d-j">
+              <h1 className="font-display text-4xl md:text-7xl">
                 <div className="text-white">May 9th - 11th, 2023 </div>
                 <div className="text-yellow-brand">Salt Lake City</div>
               </h1>
               <div className="h-6" />
-              <p className="space-y-4 text-m-p-lg lg:text-d-p-lg text-white">
+              <p className="space-y-4 text-lg lg:text-xl text-white">
                 Remix is a full stack web framework that lets you focus on the
                 user interface and work back through web standards to deliver a
                 fast, slick, and resilient user experience.
@@ -126,7 +126,7 @@ function EarlySponsors() {
     <section className="relative my-10 sm:my-14 lg:my-24 xl:my-28">
       <div className="container">
         <div className="max-w-xl xl:max-w-none mx-auto xl:mx-0">
-          <h2 className="font-display text-m-j md:text-d-j mb-4 md:mb-8 text-blue-brand">
+          <h2 className="font-display text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
             Sponsors
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -141,7 +141,7 @@ function EarlySponsors() {
                 </a>
               </SponsorGridCell>
             ))}
-            <SponsorGridCell className="bg-blue-brand text-white font-bold text-m-h3 xl:text-d-h3">
+            <SponsorGridCell className="bg-blue-brand text-white font-bold text-xl xl:text-3xl">
               <div>
                 Your Company Here?
                 <br />

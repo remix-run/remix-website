@@ -39,10 +39,10 @@ export default function Safety() {
   return (
     <InnerLayout>
       <div className="text-white">
-        <h1 className="mb-16 font-display text-m-h1 sm:text-d-h2 xl:text-d-j">
+        <h1 className="mb-16 font-display text-3xl sm:text-5xl xl:text-7xl">
           Remix Conf Schedule
         </h1>
-        <div className="container flex flex-col gap-10 text-m-p-lg lg:text-d-p-lg">
+        <div className="container flex flex-col gap-10 text-lg lg:text-xl">
           <p>
             Get ready for some amazing UX/DX goodness at Remix Conf!
             <br />
@@ -99,7 +99,7 @@ export default function Safety() {
             <TabPanels className="pt-10">
               {days.map(({ slug, displayDate, name }, index) => (
                 <TabPanel key={slug} index={index}>
-                  <h2 className="text-m-h3 lg:text-d-h3 mb-4 font-display">
+                  <h2 className="text-xl lg:text-3xl mb-4 font-display">
                     {displayDate}: {name}
                   </h2>
                   {tabIndex === index ? <Outlet /> : null}

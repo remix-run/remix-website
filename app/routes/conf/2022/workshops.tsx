@@ -18,10 +18,10 @@ export default function Workshops() {
   return (
     <InnerLayout>
       <div className="text-white">
-        <h1 className="font-display text-m-h1 sm:text-d-h2 xl:text-d-j mb-16">
+        <h1 className="font-display text-3xl sm:text-5xl xl:text-7xl mb-16">
           Premium Remix Workshops from the Remix Team
         </h1>
-        <div className="container text-m-p-lg lg:text-d-p-lg flex flex-col gap-4">
+        <div className="container text-lg lg:text-xl flex flex-col gap-4">
           <p>
             Remix workshops are a great way to get insights and experience from
             the Remix team on how to use Remix to build stellar user
@@ -38,8 +38,8 @@ export default function Workshops() {
         </div>
         <div className="mt-12 container grid grid-cols-1 lg:grid-cols-6 gap-12">
           <div className="col-span-3 lg:col-span-2">
-            <div className="mt-4 text-m-p-lg lg:text-d-p-lg flex flex-col gap-6">
-              <h2 className="font-display text-m-h2 lg:text-d-h2">
+            <div className="mt-4 text-lg lg:text-xl flex flex-col gap-6">
+              <h2 className="font-display text-2xl lg:text-5xl">
                 Your instructors
               </h2>
               <div className="flex flex-col items-center lg:items-start lg:flex-row gap-8">
@@ -69,8 +69,8 @@ export default function Workshops() {
             </div>
           </div>
           <div className="col-span-3 lg:col-span-4">
-            <div className="mt-4 text-m-p-lg lg:text-d-p-lg flex flex-col gap-6">
-              <h2 className="font-display text-m-h2 lg:text-d-h2">
+            <div className="mt-4 text-lg lg:text-xl flex flex-col gap-6">
+              <h2 className="font-display text-2xl lg:text-5xl">
                 Web Apps with Remix
               </h2>
               <p>

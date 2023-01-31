@@ -46,7 +46,7 @@ export default function RefsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-d-h2 font-semibold">Refs we got</h1>
+      <h1 className="text-5xl font-semibold">Refs we got</h1>
       <ul className="mt-4 space-y-4">
         {data.refs.map((ref) => (
           <li key={ref.ref}>

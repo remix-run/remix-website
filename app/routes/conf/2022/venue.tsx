@@ -53,7 +53,7 @@ const map = (
 function Title({ className }: { className: string }) {
   return (
     <div className={className}>
-      <h1 className="font-display text-m-h1 sm:text-d-h2 xl:text-d-j mb-2">
+      <h1 className="font-display text-3xl sm:text-5xl xl:text-7xl mb-2">
         Sheraton Salt Lake City Hotel
       </h1>
       <small>
@@ -98,7 +98,7 @@ export default function Venue() {
             </div>
             <div className="hidden lg:block lg:w-96 xl:w-[34rem]">{map}</div>
           </div>
-          <div className="text-m-p-lg lg:text-d-p-lg">
+          <div className="text-lg lg:text-xl">
             <Title className="hidden lg:block" />
             <div className="mt-4 flex flex-col gap-6">
               <p>

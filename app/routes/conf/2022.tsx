@@ -85,7 +85,7 @@ function SignUp() {
       <div className="container">
         <section className="section-signup relative">
           <div className="md:max-w-xl mx-auto md:py-40 relative">
-            <h2 className="h2 mb-3 text-d-h3 text-yellow-brand font-bold font-jet-mono">
+            <h2 className="h2 mb-3 text-3xl text-yellow-brand font-bold font-jet-mono">
               Stay Updated
             </h2>
             <div className="flex items-center gap-4 mb-6">
@@ -173,7 +173,7 @@ function Footer() {
   return (
     <footer
       x-comp="Footer"
-      className="px-6 lg:px-12 py-9 text-d-p-sm flex justify-between items-center text-white __footer"
+      className="px-6 lg:px-12 py-9 text-base flex justify-between items-center text-white __footer"
     >
       <div className="flex items-start md:items-center flex-col md:flex-row gap-2 md:gap-16">
         <Link to="/" aria-label="Remix home" prefetch="intent">
@@ -228,7 +228,7 @@ const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
         <a
           ref={ref}
           x-comp="HeaderLink"
-          className={cx("text-d-p-sm font-semibold", className)}
+          className={cx("text-base font-semibold", className)}
           href={to}
           children={children}
           {...props}
@@ -241,7 +241,7 @@ const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
         ref={ref}
         prefetch={prefetch}
         x-comp="HeaderLink"
-        className={cx("text-d-p-sm font-semibold", className)}
+        className={cx("text-base font-semibold", className)}
         to={to}
         children={children}
         {...props}

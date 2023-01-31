@@ -4,10 +4,10 @@ import { Link } from "~/components/link";
 // TODO: This is a mess, we need to create a proper set of components for buttons
 
 export const outlinePrimaryButtonLinkClass =
-  "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-blue-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2";
+  "inline-flex items-center justify-center xl:text-xl h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-blue-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2";
 
 export const outlineSecondaryButtonLinkClass =
-  "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-pink-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2";
+  "inline-flex items-center justify-center xl:text-xl h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-pink-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2";
 
 export function OutlineButtonLink({
   to,
@@ -32,7 +32,7 @@ export function OutlineButtonLink({
 }
 
 export const baseButtonLinkClass =
-  "inline-flex items-center justify-center xl:text-d-p-lg h-14 xl:h-16 box-border px-8 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent font-semibold";
+  "inline-flex items-center justify-center xl:text-xl h-14 xl:h-16 box-border px-8 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent font-semibold";
 
 export const primaryButtonLinkClass = `${baseButtonLinkClass} bg-blue-brand text-white hover:bg-blue-600 focus:ring-blue-200 transition-colors duration-200`;
 

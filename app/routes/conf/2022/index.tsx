@@ -109,7 +109,7 @@ function Hero() {
               <div className="text-yellow-brand">Salt Lake City</div>
             </h1>
             <div className="h-6" />
-            <div className="space-y-4 text-m-p-lg lg:text-d-p-lg text-white __hero-text-shadow">
+            <div className="space-y-4 text-lg lg:text-xl text-white __hero-text-shadow">
               <p>
                 Remix is a full stack web framework that lets you focus on the
                 user interface and work back through web standards to deliver a
@@ -193,8 +193,8 @@ function SpeakerDisplay({
         </div>
         <div className="mt-4">
           <h3>{speaker.name}</h3>
-          <p className="text-m-p-sm">{speaker.title}</p>
-          <p className="text-m-p-sm font-semibold uppercase mt-2">
+          <p className="text-sm">{speaker.title}</p>
+          <p className="text-sm font-semibold uppercase mt-2">
             {speaker.linkText}
           </p>
         </div>

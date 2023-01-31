@@ -57,13 +57,13 @@ export default function Blog() {
                     alt={latestPost.imageAlt}
                   />
                 </div>
-                <p className="text-m-p-sm lg:text-d-p-sm">
+                <p className="text-sm lg:text-base">
                   {latestPost.dateDisplay}
                 </p>
-                <p className="text-m-h2 font-bold lg:text-d-h2">
+                <p className="text-2xl font-bold lg:text-5xl">
                   {latestPost.title}
                 </p>
-                <p className="text-m-p-sm lg:text-d-p-sm">
+                <p className="text-sm lg:text-base">
                   {latestPost.summary}
                 </p>
               </Link>
@@ -79,13 +79,13 @@ export default function Blog() {
                         alt={post.imageAlt}
                       />
                     </div>
-                    <p className="text-m-p-sm lg:text-d-p-sm">
+                    <p className="text-sm lg:text-base">
                       {post.dateDisplay}
                     </p>
-                    <p className="text-m-p-lg font-bold lg:text-d-p-lg">
+                    <p className="text-lg font-bold lg:text-xl">
                       {post.title}
                     </p>
-                    <p className="text-m-p-sm lg:text-d-p-sm mb-12">
+                    <p className="text-sm lg:text-base mb-12">
                       {post.summary}
                     </p>
                   </Link>
@@ -97,7 +97,7 @@ export default function Blog() {
           <div className="md:col-span-4 md:col-start-9">
             {featuredPosts.length ? (
               <>
-                <h3 className="text-m-h3 font-bold mb-8 lg:text-d-h3">
+                <h3 className="text-xl font-bold mb-8 lg:text-3xl">
                   Featured Articles
                 </h3>
                 <div className="grid grid-cols-1 gap-4">
@@ -108,7 +108,7 @@ export default function Blog() {
                           <Link
                             to={post.slug}
                             prefetch="intent"
-                            className="text-m-p-sm lg:text-d-p-sm"
+                            className="text-sm lg:text-base"
                           >
                             {post.title}
                           </Link>
@@ -122,7 +122,7 @@ export default function Blog() {
               </>
             ) : null}
             <div>
-              <h3 className="text-m-h3 font-bold mb-6 lg:text-d-h3">
+              <h3 className="text-xl font-bold mb-6 lg:text-3xl">
                 Get updates on the latest Remix news
               </h3>
               <div className="mb-6" id="newsletter-text">

@@ -139,11 +139,11 @@ Because SSG doesn't scale to dynamic pages, Next.js switched to clientside data 
 
 <div class="flex w-full gap-4">
   <div class="w-1/2">
-    <figcaption class="text-center bold text-d-p-sm">Remix Search</figcaption>
+    <figcaption class="text-center bold text-base">Remix Search</figcaption>
     <a data-noprefetch href="/blog-images/posts/remix-vs-next/wpt-search-remix-waterfall.png"><img src="/blog-images/posts/remix-vs-next/wpt-search-remix-waterfall.png" /></a>
   </div>
   <div class="w-1/2">
-    <figcaption class="text-center text-d-p-sm">Next.js Search</figcaption>
+    <figcaption class="text-center text-base">Next.js Search</figcaption>
     <a data-noprefetch href="/blog-images/posts/remix-vs-next/wpt-search-next-waterfall.png"><img src="/blog-images/posts/remix-vs-next/wpt-search-next-waterfall.png" /></a>
   </div>
 </div>
@@ -317,11 +317,11 @@ You can see this play out in the network waterfall (as usual):
 
 <div class="flex w-full gap-4">
   <div class="w-1/2">
-    <figcaption class="text-center bold text-d-p-sm">Remix Rewrite @ Edge</figcaption>
+    <figcaption class="text-center bold text-base">Remix Rewrite @ Edge</figcaption>
     <a data-noprefetch href="/blog-images/posts/remix-vs-next/wpt-hkg-search-rewrite-waterfall.png"><img src="/blog-images/posts/remix-vs-next/wpt-hkg-search-rewrite-waterfall.png" /></a>
   </div>
   <div class="w-1/2">
-    <figcaption class="text-center text-d-p-sm">Remix Port in US East</figcaption>
+    <figcaption class="text-center text-base">Remix Port in US East</figcaption>
     <a data-noprefetch href="/blog-images/posts/remix-vs-next/wpt-hkg-search-port-waterfall.png"><img src="/blog-images/posts/remix-vs-next/wpt-hkg-search-port-waterfall.png" /></a>
   </div>
 </div>
