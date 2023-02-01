@@ -376,7 +376,16 @@ const TabListImpl = React.forwardRef(
             }
           }
         }),
-      [orientation, cycleSelection, tabs, selectedIndex]
+      [
+        cycleSelection,
+        focusedIndex,
+        keyboardActivation,
+        onKeyDown,
+        onSelectTabWithKeyboard,
+        orientation,
+        selectedIndex,
+        tabs,
+      ]
     );
 
     useLayoutEffect(() => {
@@ -620,8 +629,6 @@ const TabPanel = React.forwardRef(
       selectedIndex,
       id: tabsId,
     } = useTabsCtx("TabPanel");
-    let ownRef = React.useRef<HTMLElement | null>(null);
-
     let [element, setElement] = React.useState<HTMLElement | null>(null);
     let handleRefSet = React.useCallback((node: HTMLElement | null) => {
       setElement(node);
