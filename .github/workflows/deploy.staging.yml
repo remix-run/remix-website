@@ -111,7 +111,6 @@ jobs:
           field: "app"
 
       - name: 🚀 Deploy Staging
-        if: ${{ github.ref == 'refs/heads/dev' }}
         uses: superfly/flyctl-actions@1.3
         with:
           args: |
