@@ -74,6 +74,7 @@
     "@types/react-is": "^17.0.3",
     "@types/semver": "^7.3.13",
     "@vitejs/plugin-react": "^3.0.1",
+    "@vitest/coverage-c8": "^0.28.3",
     "chokidar": "^3.5.3",
     "del-cli": "^4.0.1",
     "eslint": "^8.12.0",
