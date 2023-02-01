@@ -20,7 +20,8 @@
     "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts",
     "postseed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "test": "vitest"
   },
   "dependencies": {
     "@docsearch/css": "^3.3.2",
@@ -66,14 +67,17 @@
   "devDependencies": {
     "@remix-run/dev": "^1.11.1",
     "@remix-run/eslint-config": "1.11.1",
+    "@testing-library/jest-dom": "^5.16.5",
     "@types/lru-cache": "^7.10.10",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/react-is": "^17.0.3",
     "@types/semver": "^7.3.13",
+    "@vitejs/plugin-react": "^3.0.1",
     "chokidar": "^3.5.3",
     "del-cli": "^4.0.1",
     "eslint": "^8.12.0",
+    "happy-dom": "^8.2.2",
     "pm2": "^5.2.2",
     "postcss": "^8.4.21",
     "postcss-cli": "^9.0.2",
@@ -84,7 +88,10 @@
     "prisma": "^3.5.0",
     "tailwindcss": "^3.2.4",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "vite": "^4.0.4",
+    "vite-tsconfig-paths": "^4.0.5",
+    "vitest": "^0.28.3"
   },
   "engines": {
     "node": ">=16"
