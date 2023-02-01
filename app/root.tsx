@@ -8,7 +8,10 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type { LoaderArgs } from "@remix-run/node";
-import { load as loadFathom, type LoadOptions } from "fathom-client";
+import {
+  load as loadFathom,
+  type LoadOptions as FathomLoadOptions,
+} from "fathom-client";
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
 import { Body } from "~/components/body";
@@ -24,7 +27,7 @@ declare global {
   };
 }
 
-export let loader = async ({ request }: LoaderArgs) => {
+export async function loader({ request }: LoaderArgs) {
   await ensureSecure(request);
   await removeTrailingSlashes(request);
   let env = {
@@ -40,30 +43,25 @@ export let loader = async ({ request }: LoaderArgs) => {
       url.pathname === "/docs/en/v1/api/conventions",
     env,
   };
-};
+}
 
 export let unstable_shouldReload = () => false;
 
 export function links() {
+  let preloadedFonts = [
+    "founders-grotesk-bold.woff2",
+    "inter-roman-latin-var.woff2",
+    "inter-italic-latin-var.woff2",
+    "source-code-pro-roman-var.woff2",
+    "source-code-pro-italic-var.woff2",
+  ];
   return [
-    {
+    ...preloadedFonts.map((font) => ({
       rel: "preload",
       as: "font",
-      href: "/font/founders-grotesk-bold.woff2",
+      href: `/font/${font}`,
       crossOrigin: "anonymous",
-    },
-    {
-      rel: "preload",
-      as: "font",
-      href: "https://fonts.gstatic.com/s/inter/v8/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7W0Q5nw.woff2",
-      crossOrigin: "anonymous",
-    },
-    {
-      rel: "preload",
-      as: "font",
-      href: "https://fonts.gstatic.com/s/sourcecodepro/v20/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevWnsUnxg.woff2",
-      crossOrigin: "anonymous",
-    },
+    })),
     { rel: "stylesheet", href: tailwind },
     { rel: "stylesheet", href: bailwind },
   ];
@@ -77,13 +75,13 @@ interface DocumentProps {
   children: React.ReactNode;
 }
 
-const Document: React.FC<DocumentProps> = ({
+function Document({
   children,
   title,
   forceDark,
   darkBg,
   noIndex,
-}) => {
+}: DocumentProps) {
   return (
     <html lang="en">
       <head>
@@ -109,6 +107,7 @@ const Document: React.FC<DocumentProps> = ({
         />
         <Links />
         <Meta />
+        {title && <title data-title-override="">{title}</title>}
       </head>
 
       <Body forceDark={forceDark} darkBg={darkBg}>
@@ -116,12 +115,12 @@ const Document: React.FC<DocumentProps> = ({
       </Body>
     </html>
   );
-};
+}
 
 export default function App() {
   let matches = useMatches();
-  let forceDark = matches.some((match) => match.handle?.forceDark);
   let { noIndex, env } = useLoaderData<typeof loader>();
+  let forceDark = matches.some((match) => match.handle?.forceDark);
 
   if (env.NODE_ENV !== "development") {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -181,7 +180,7 @@ export function CatchBoundary() {
   );
 }
 
-function useFathomClient(siteId: string, loadOptions: LoadOptions) {
+function useFathomClient(siteId: string, loadOptions: FathomLoadOptions) {
   let loaded = React.useRef(false);
   React.useEffect(() => {
     if (loaded.current) return;
