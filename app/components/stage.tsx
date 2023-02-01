@@ -105,6 +105,10 @@ export let Actor = ({
   ) : null;
 };
 
+function getStageLength(pages: number) {
+  return window.innerHeight * pages;
+}
+
 export let ScrollStage = ({
   pages,
   fallbackFrame = 0,
@@ -114,16 +118,15 @@ export let ScrollStage = ({
 }: TScrollStageProps) => {
   let ref = useRef<HTMLDivElement>(null);
   let relativeScroll = useRelativeWindowScroll(ref, fallbackFrame);
-  // let getLength = () => document.documentElement.clientHeight * pages;
-  let getLength = () => window.innerHeight * pages;
   let hydrated = useHydrated();
+
   let [length, setLength] = useState<number>(() => {
-    return hydrated ? getLength() : fallbackLength;
+    return hydrated ? getStageLength(pages) : fallbackLength;
   });
 
   // set length after server render
-  useEffect(() => setLength(getLength()), []);
-  useOnResize(useCallback(() => setLength(getLength()), [pages]));
+  useEffect(() => setLength(getStageLength(pages)), [pages]);
+  useOnResize(useCallback(() => setLength(getStageLength(pages)), [pages]));
 
   return (
     <Stage
@@ -167,7 +170,7 @@ export function useWindowScroll(fallback: number = 0): number {
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [handleScroll]);
 
   useOnResize(handleScroll);
 
