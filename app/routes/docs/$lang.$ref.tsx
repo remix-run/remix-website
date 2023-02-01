@@ -43,8 +43,9 @@ export let loader = async ({ params }: LoaderArgs) => {
 
   let branchesInMenu = ["main", "dev"];
   let [tags, branches] = await Promise.all([getRepoTags(), getRepoBranches()]);
-  if (!tags || !branches)
+  if (!tags || !branches) {
     throw new Response("Cannot reach GitHub", { status: 503 });
+  }
 
   if (process.env.NODE_ENV === "development") {
     branches.push("local");
@@ -259,7 +260,7 @@ function VersionSelect() {
           return (
             <VersionLink
               key={branch}
-              to={currentGitHubRef === branch ? "" : `/${lang}/${branch}`}
+              to={currentGitHubRef === branch ? "" : `/docs/${lang}/${branch}`}
             >
               {releaseBranch === branch ? `main (${latestVersion})` : branch}
             </VersionLink>
@@ -270,7 +271,7 @@ function VersionSelect() {
         {versions.map((version) => (
           <VersionLink
             key={version}
-            to={currentGitHubRef === version ? "" : `/${lang}/${version}`}
+            to={currentGitHubRef === version ? "" : `/docs/${lang}/${version}`}
           >
             {version}
           </VersionLink>
@@ -343,12 +344,14 @@ function VersionLink({
 
 function DocSearchSection() {
   let hydrated = useHydrated();
-  let { currentGitHubRef } = useLoaderData<typeof loader>();
+  let { isLatest } = useLoaderData<typeof loader>();
+  if (!isLatest) return null;
   return (
-    <div className="lg:sticky lg:z-10 lg:top-0">
+    <div className="lg:sticky lg:z-10 lg:top-0 relative">
+      <div className="-top-24 absolute h-24 w-full bg-white dark:bg-gray-900 hidden lg:block" />
       <div
         className={cx(
-          "lg:pt-6 lg:px-1 lg:bg-white lg:dark:bg-gray-900 relative",
+          "lg:px-1 lg:bg-white lg:dark:bg-gray-900 relative",
           // This hides some of the underlying text when the user scrolls to the
           // bottom which results in the overscroll bounce
           "before:hidden lg:before:block before:bg-inherit before:absolute before:h-[200%] before:w-full before:left-0 before:bottom-0 before:-z-10"
@@ -367,7 +370,7 @@ function DocSearchSection() {
           <div className="h-20" />
         )}
       </div>
-      <div className="lg:h-6 lg:bg-gradient-to-b from-white dark:from-gray-900" />
+      <div className="top-full absolute h-6 w-full bg-gradient-to-b from-white dark:from-gray-900 hidden lg:block" />
     </div>
   );
 }
@@ -527,14 +530,15 @@ function NavMenuMobile() {
           <Menu />
         </div>
       </DetailsMenu>
-      <DocSearchSection />
+      {/* TODO: Think about mobile search design and add this back. Doesn't currently fit where it used to go now with version selector and dark mode toggle. */}
+      {/* <DocSearchSection /> */}
     </div>
   );
 }
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed top-10 bottom-0 py-6 -translate-x-2 hidden w-72 overflow-auto lg:block">
+    <div className="fixed top-10 bottom-0 py-12 -translate-x-2 hidden w-72 overflow-auto lg:flex flex-col gap-6">
       <DocSearchSection />
       <div className="px-1">
         <Menu />
