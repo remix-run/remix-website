@@ -31,7 +31,9 @@ export default function Newsletter() {
     >
       <div>
         <div className="h-8" />
-        <div className="font-display font-extrabold text-3xl text-white">Newsletter</div>
+        <div className="font-display font-extrabold text-3xl text-white">
+          Newsletter
+        </div>
         <div className="h-6" />
         <div className="text-lg" id="newsletter-text">
           Stay up-to-date with news, announcements, and releases for our
