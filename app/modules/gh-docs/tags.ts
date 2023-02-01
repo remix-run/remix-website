@@ -5,10 +5,10 @@ import invariant from "tiny-invariant";
 import { octokit } from "./github";
 
 invariant(
-  process.env.RELEASE_VERSION_BASIS_PACKAGE,
-  "RELEASE_VERSION_BASIS_PACKAGE is not set"
+  process.env.RELEASE_PACKAGE,
+  "RELEASE_PACKAGE is not set"
 );
-const RELEASE_VERSION_BASIS_PACKAGE = process.env.RELEASE_VERSION_BASIS_PACKAGE;
+const RELEASE_PACKAGE = process.env.RELEASE_PACKAGE;
 
 /**
  * Fetches the repo tags
@@ -37,7 +37,7 @@ global.tagsCache ??= new LRUCache<string, string[]>({
   fetchMethod: async (key) => {
     console.log("Fetching fresh tags (releases)");
     let [owner, repo] = key.split("/");
-    return getAllReleases(owner, repo, RELEASE_VERSION_BASIS_PACKAGE);
+    return getAllReleases(owner, repo, RELEASE_PACKAGE);
   },
 });
 

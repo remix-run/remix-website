@@ -11,12 +11,12 @@ export type { Doc } from "./docs";
 
 invariant(process.env.SOURCE_REPO, "Missing process.env.SOURCE_REPO");
 invariant(
-  process.env.RELEASE_VERSION_BASIS_PACKAGE,
-  "Missing process.env.RELEASE_VERSION_BASIS_PACKAGE"
+  process.env.RELEASE_PACKAGE,
+  "Missing process.env.RELEASE_PACKAGE"
 );
 
 const REPO = process.env.SOURCE_REPO;
-const RELEASE_VERSION_BASIS_PACKAGE = process.env.RELEASE_VERSION_BASIS_PACKAGE;
+const RELEASE_PACKAGE = process.env.RELEASE_PACKAGE;
 
 export function getRepoTags() {
   return getTags(REPO);
@@ -49,5 +49,5 @@ function fixupRefName(ref: string) {
     // github.
     ref.startsWith("v")
     ? ref
-    : `${RELEASE_VERSION_BASIS_PACKAGE}@${ref}`;
+    : `${RELEASE_PACKAGE}@${ref}`;
 }

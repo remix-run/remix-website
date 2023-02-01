@@ -1,15 +1,9 @@
 .DS_Store
 node_modules
-
 /.cache
 /build
 /public/build
-
 /app/styles
 /.env
-
-/prisma/*.db
-/prisma/*.db-journal
-
 /.yalc
 yalc.lock
