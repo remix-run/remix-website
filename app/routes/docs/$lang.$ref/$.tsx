@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  useLoaderData,
-  useMatches,
-  useNavigate,
-  useParams,
-} from "@remix-run/react";
+import { useLoaderData, useMatches, useParams } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type {
   HeadersFunction,
@@ -19,6 +14,7 @@ import { getRepoDoc } from "~/modules/gh-docs";
 import iconsHref from "~/icons.svg";
 import { seo } from "~/utils/seo";
 import cx from "clsx";
+import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
 
 export async function loader({ params, request }: LoaderArgs) {
   invariant(params.ref, "expected `ref` params");
@@ -81,7 +77,7 @@ export let meta: MetaFunction = ({ data, parentsData }) => {
 export default function DocPage() {
   let { doc } = useLoaderData<typeof loader>();
   let ref = React.useRef<HTMLDivElement>(null);
-  useDelegatedRouterLinks(ref);
+  useDelegatedReactRouterLinks(ref);
   let matches = useMatches();
   let isDocsIndex = matches.some((match) =>
     match.id.endsWith("$lang.$ref/index")
@@ -172,38 +168,4 @@ export function CatchBoundary() {
       </p>
     </div>
   );
-}
-
-function useDelegatedRouterLinks(nodeRef: React.RefObject<HTMLElement>) {
-  let navigate = useNavigate();
-
-  React.useEffect(() => {
-    let node = nodeRef.current;
-    let handler = (event: MouseEvent) => {
-      if (!nodeRef.current) return;
-
-      if (!(event.target instanceof HTMLElement)) return;
-
-      let a = event.target.closest("a");
-
-      if (
-        a && // is anchor or has anchor parent
-        a.hasAttribute("href") && // has an href
-        a.host === window.location.host && // is internal
-        event.button === 0 && // left click
-        (!a.target || a.target === "_self") && // Let browser handle "target=_blank" etc.
-        !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) // not modified
-      ) {
-        event.preventDefault();
-        let { pathname, search, hash } = a;
-        navigate({ pathname, search, hash });
-      }
-    };
-
-    if (!node) return;
-    node.addEventListener("click", handler);
-    return () => {
-      node?.removeEventListener("click", handler);
-    };
-  }, [navigate, nodeRef]);
 }
