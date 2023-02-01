@@ -357,7 +357,7 @@ function DocSearchSection() {
         {hydrated ? (
           <DocSearch
             appId="6OHWJSR8G4"
-            indexName={`remix-${currentGitHubRef}`}
+            indexName="remix"
             apiKey="dff56670dbec8494409989d6ec9c8ac2"
           />
         ) : (
