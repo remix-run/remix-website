@@ -114,7 +114,6 @@ jobs:
         with:
           args: |
             deploy --config ./fly.production.toml \
-              --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.ref_name }}-${{ github.sha }} \
               --build-arg SOURCE_REPO="remix-run/remix" \
               --build-arg RELEASE_PACKAGE="remix" \
               --strategy rolling
