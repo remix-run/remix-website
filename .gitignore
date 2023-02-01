@@ -6,6 +6,7 @@ node_modules
 /app/styles
 /.env
 /.yalc
+/coverage
 yalc.lock
 
 **/gh-docs/__fixture__/tar.tgz
