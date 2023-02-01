@@ -2,6 +2,8 @@
   "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "types": ["vitest/globals"],
+    "module": "CommonJS",
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "moduleResolution": "node",
