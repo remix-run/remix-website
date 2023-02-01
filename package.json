@@ -20,7 +20,8 @@
     "seed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config  scripts/seed.ts",
     "postseed": "node -r ts-node/register/transpile-only --max-old-space-size=900 -r dotenv/config scripts/verify-seed.ts",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "test": "vitest"
   },
   "dependencies": {
     "@docsearch/css": "^3.3.2",
@@ -91,7 +92,7 @@
     "chokidar": "^3.5.3",
     "del-cli": "^4.0.1",
     "eslint": "^8.12.0",
-    "happy-dom": "^8.2.0",
+    "happy-dom": "^8.2.2",
     "pm2": "^5.2.2",
     "postcss": "^8.4.21",
     "postcss-cli": "^9.0.2",
