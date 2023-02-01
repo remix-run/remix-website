@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - "stage"
+    paths-ignore:
+      - ".vscode/**"
+      - "scripts/**"
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
