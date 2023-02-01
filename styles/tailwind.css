@@ -4,8 +4,57 @@
 
 @font-face {
   font-family: "Founders Grotesk";
-  src: url("/font/founders-grotesk-bold.woff2") format("woff2");
+  font-display: swap;
   font-style: normal;
+  src: url("/font/founders-grotesk-bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+  src: url("/font/inter-roman-latin-var.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: italic;
+  src: url("/font/inter-italic-latin-var.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+  src: url("/font/jetbrains-mono-roman-var.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: italic;
+  src: url("/font/jetbrains-mono-italic-var.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Code Pro";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+  src: url("/font/source-code-pro-roman-var.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Code Pro";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: italic;
+  src: url("/font/source-code-pro-italic-var.woff2") format("woff2");
 }
 
 html {

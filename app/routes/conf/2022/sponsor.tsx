@@ -17,7 +17,7 @@ export default function SponsorUs() {
   return (
     <InnerLayout>
       <div>
-        <h1 className="font-display text-3xl sm:text-5xl text-white xl:text-7xl mb-16">
+        <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-white xl:text-7xl mb-16">
           Become a Remix Conf Sponsor
         </h1>
         <div className="container text-lg lg:text-xl text-white flex flex-col gap-4">

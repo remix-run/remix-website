@@ -2,8 +2,9 @@ import * as React from "react";
 import { ScrollStage, Actor, useStage, useActor } from "./stage";
 // @ts-expect-error
 import { easeOutQuad, easeInExpo, linear } from "tween-functions";
-import { Sequence, Slide } from "@ryanflorence/mdtut";
+import type { Sequence, Slide } from "@ryanflorence/mdtut";
 import { PrimaryButtonLink } from "./buttons";
+import cx from "clsx";
 
 export function ScrollExperience({
   markdown,
@@ -217,7 +218,7 @@ function Mutations({ slides }: { slides: Sequence }) {
   return (
     <section>
       <div className="max-w-5xl p-6 mx-auto md:p-10">
-        <div className="text-white text-4xl font-display md:text-7xl">
+        <div className="text-white text-4xl font-display font-extrabold md:text-7xl">
           <h2 className="inline">Data loading</h2>{" "}
           <span aria-hidden>
             ... <img src="/yawn.png" alt="" className="inline h-8 md:h-14" />
@@ -361,7 +362,7 @@ function MutationCode({
 
 function MutationP({ children }: { children: React.ReactNode }) {
   return (
-    <p className="px-6 sm:px-8 max-w-2xl sm:mx-auto text-4xl md:text-7xl text-gray-100 font-display h-[75vh] flex items-center">
+    <p className="px-6 sm:px-8 max-w-2xl sm:mx-auto text-4xl md:text-7xl text-gray-100 font-display font-extrabold h-[75vh] flex items-center">
       {children}
     </p>
   );
@@ -371,7 +372,7 @@ function JumboP({ children, ...props }: React.ComponentPropsWithoutRef<"p">) {
   return (
     <p
       {...props}
-      className="px-6 text-4xl md:text-7xl text-gray-100 md:max-w-3xl md:mx-auto font-display h-[50vh]"
+      className="px-6 text-4xl md:text-7xl text-gray-100 md:max-w-3xl md:mx-auto font-display font-extrabold h-[50vh]"
     >
       {children}
     </p>
@@ -461,7 +462,7 @@ function PrefetchNetwork() {
 
 function WaterfallHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-2 font-bold text-center text-white font-display text-xl lg:text-3xl lg:mb-6">
+    <div className="mb-2 text-center text-white font-display font-extrabold text-xl lg:text-3xl lg:mb-6">
       {children}
     </div>
   );
@@ -529,7 +530,7 @@ function JankSpinner({
   note?: boolean;
 }) {
   return (
-    <div className={"h-full w-full" + " " + className}>
+    <div className={cx("h-full w-full", className)}>
       <img
         src="/loading.gif"
         className="object-contain object-top w-full h-full"
@@ -560,16 +561,16 @@ function WithoutRemix() {
   ];
 
   let jank: [number, React.ReactNode][] = [
-    [10, <JankSpinner note className="p-8 sm:p-20" />],
+    [10, <JankSpinner note className="p-8 sm:p-20" key={0} />],
     [
       35,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]">
+      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={1}>
         <JankSpinner className="p-12 sm:p-24" />
       </Fakebooks>,
     ],
     [
       56,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]">
+      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={2}>
         <Sales shimmerNav>
           <div className="h-[6rem]">
             <JankSpinner className="p-8" />
@@ -579,7 +580,7 @@ function WithoutRemix() {
     ],
     [
       64,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]">
+      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={3}>
         <Sales>
           <div className="h-[6rem]">
             <JankSpinner className="p-8" />
@@ -589,7 +590,7 @@ function WithoutRemix() {
     ],
     [
       66,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]">
+      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={4}>
         <Sales>
           <Invoices>
             <JankSpinner className="p-10" />
@@ -599,7 +600,7 @@ function WithoutRemix() {
     ],
     [
       98,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]">
+      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={5}>
         <Sales>
           <Invoices>
             <Invoice />
@@ -788,7 +789,7 @@ function ProgressHead({ className }: { className: string }) {
 function Intro() {
   return (
     <section className="max-w-5xl p-6 mx-auto md:p-10">
-      <h2 className="text-white text-4xl font-display md:text-7xl">
+      <h2 className="text-white text-4xl font-display font-extrabold md:text-7xl">
         While you were <span className="text-red-brand">waiting</span> for your
         static site to build,{" "}
         <span className="text-blue-brand">distributed web</span>{" "}
@@ -815,57 +816,57 @@ function Intro() {
   );
 }
 
-function P1({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <p
-      className={
-        "px-6 text-lg md:text-xl md:px-10 md:max-w-2xl md:mx-auto md:text-center" +
-        " " +
-        className
-      }
-    >
-      {children}
-    </p>
-  );
-}
+// function P1({
+//   children,
+//   className,
+// }: {
+//   children: React.ReactNode;
+//   className?: string;
+// }) {
+//   return (
+//     <p
+//       className={
+//         "px-6 text-lg md:text-xl md:px-10 md:max-w-2xl md:mx-auto md:text-center" +
+//         " " +
+//         className
+//       }
+//     >
+//       {children}
+//     </p>
+//   );
+// }
 
-function P2({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <p
-      className={
-        "px-6 mb-10 text-lg md:text-xl md:text-center max-w-3xl mx-auto" +
-        " " +
-        className
-      }
-    >
-      {children}
-    </p>
-  );
-}
+// function P2({
+//   children,
+//   className,
+// }: {
+//   children: React.ReactNode;
+//   className?: string;
+// }) {
+//   return (
+//     <p
+//       className={
+//         "px-6 mb-10 text-lg md:text-xl md:text-center max-w-3xl mx-auto" +
+//         " " +
+//         className
+//       }
+//     >
+//       {children}
+//     </p>
+//   );
+// }
 
-function Header({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-2 text-center text-white text-4xl md:text-5xl font-display md:mb-4">
-      {children}
-    </div>
-  );
-}
+// function Header({ children }: { children: React.ReactNode }) {
+//   return (
+//     <div className="mb-2 text-center text-white text-4xl md:text-5xl font-display font-extrabold md:mb-4">
+//       {children}
+//     </div>
+//   );
+// }
 
 function JumboText({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-[length:48px] leading-[48px] md:text-[length:96px] md:leading-[96px] font-display text-white max-w-6xl mx-auto px-6 md:px-12">
+    <div className="text-[length:48px] leading-[48px] md:text-[length:96px] md:leading-[96px] font-display font-extrabold text-white max-w-6xl mx-auto px-6 md:px-12">
       {children}
     </div>
   );
@@ -1079,7 +1080,7 @@ function SayGoodbyeOutro() {
     <div
       aria-hidden
       className={
-        `sticky top-0 h-screen flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px] text-white` +
+        `sticky top-0 h-screen flex w-screen items-center justify-center text-center font-display font-extrabold text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px] text-white` +
         " " +
         (stage.progress < SPINNER_END ? "hidden" : "")
       }
@@ -1100,7 +1101,7 @@ function SayGoodbye() {
         transform: `scale(${scale})`,
       }}
       className={
-        `h-screen text-white flex w-screen items-center justify-center text-center font-display text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px]` +
+        `h-screen text-white flex w-screen items-center justify-center text-center font-display font-extrabold text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px]` +
         " " +
         (actor.progress > 0 && actor.progress < 1 ? "fixed inset-0" : "hidden")
       }
@@ -1132,6 +1133,7 @@ export let LayoutButton = React.forwardRef<
     />
   );
 });
+LayoutButton.displayName = "LayoutButton";
 
 export function InteractiveRoutes() {
   let [active, setActive] = React.useState(0);
@@ -1148,7 +1150,7 @@ export function InteractiveRoutes() {
   React.useEffect(() => {
     let index = Math.floor(actor.progress / frameProgressLength);
     setActive(actor.progress === 1 ? 0 : index);
-  }, [actor]);
+  }, [actor, frameProgressLength]);
 
   return (
     <>
@@ -1270,7 +1272,7 @@ export function Fakebooks({
           <div className="flex items-center text-[color:#23BF1F]">
             <FakebooksLogo className="w-[8.5px] h-[8.5px] md:h-[18px] md:w-[18px] relative top-[1px]" />
             <div className="w-[1px] md:w-1" />
-            <div className="font-display text-[length:8px] md:text-base">
+            <div className="font-display font-extrabold text-[length:8px] md:text-base">
               Fakebooks
             </div>
           </div>
@@ -1300,7 +1302,7 @@ function Dashboard({ highlightOnHover }: { highlightOnHover?: boolean }) {
   let stage = useStage();
   return (
     <div className="relative p-3 md:p-6">
-      <div className="font-display text-[length:10px] md:text-3xl text-black">
+      <div className="font-display font-extrabold text-[length:10px] md:text-3xl text-black">
         Dashboard
       </div>
       <div className="h-2 md:h-6" />
@@ -1481,7 +1483,7 @@ export function Sales({
 }) {
   return (
     <div className="relative h-full p-3 md:p-10">
-      <div className="font-display text-[length:10px] md:text-3xl text-black">
+      <div className="font-display font-extrabold text-[length:10px] md:text-3xl text-black">
         Sales
       </div>
       <div className="h-2 md:h-6" />

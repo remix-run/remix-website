@@ -115,7 +115,7 @@ a.md-nav-item {
 .md-toc-title,
 /* Targets the first link, which is the page title */
 .toc > li > p > a {
-  @apply block font-display text-base mb-2 font-bold tracking-wide leading-[1.125];
+  @apply block font-display font-extrabold text-base mb-2 tracking-wide leading-[1.125];
   @apply text-gray-700 dark:text-gray-200;
 
   & code {
@@ -309,7 +309,7 @@ a.md-nav-item {
   }
 
   & :is(h1) {
-    @apply font-display;
+    @apply font-display font-extrabold;
   }
 
   & h1 {

@@ -108,7 +108,9 @@ export default function May25Schedule() {
           </small>
         </div>
         <div className="mt-20">
-          <h2 className="text-xl font-display md:text-3xl">After Party</h2>
+          <h2 className="text-xl font-display font-extrabold md:text-3xl">
+            After Party
+          </h2>
           <small>7:00pm - 10:00pm</small>
           <p>
             After a full day of stellar talks, relax and have fun with fellow

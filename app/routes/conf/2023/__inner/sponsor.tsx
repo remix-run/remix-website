@@ -16,7 +16,7 @@ export default function SponsorUs() {
   return (
     <div>
       <div className="">
-        <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl text-white mb-5 sm:mb-8 lg:mb-16">
+        <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-white mb-5 sm:mb-8 lg:mb-16">
           Become a Remix Conf Sponsor
         </h1>
         <div className="text-lg lg:text-xl flex flex-col gap-3 lg:gap-4">
