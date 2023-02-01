@@ -4,6 +4,12 @@ FROM node:16-bullseye-slim as base
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
 
+# consume build arguments for non-secret env vars
+ARG SOURCE_REPO
+ENV SOURCE_REPO=$SOURCE_REPO
+ARG RELEASE_PACKAGE
+ENV RELEASE_PACKAGE=$RELEASE_PACKAGE
+
 # install all node_modules, including dev
 FROM base as deps
 
