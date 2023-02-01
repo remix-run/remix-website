@@ -5,6 +5,7 @@ import type { LinkProps, NavLinkProps } from "@remix-run/react";
 const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
   ({ reloadDocument, replace, state, to, ...props }, ref) => {
     if (typeof to === "string" && isAbsoluteUrl(to)) {
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
       return <a {...props} href={to} />;
     }
     return (
@@ -26,6 +27,7 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
     {
       caseSensitive,
       className,
+      children,
       end,
       reloadDocument,
       replace,
@@ -45,7 +47,20 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
           : className;
       style =
         typeof style === "function" ? style({ isActive, isPending }) : style;
-      return <a {...props} href={to} style={style} className={className} />;
+      children =
+        typeof children === "function"
+          ? children({ isActive, isPending })
+          : children;
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      return (
+        <a
+          {...props}
+          href={to}
+          style={style}
+          className={className}
+          children={children}
+        />
+      );
     }
     return (
       <RemixNavLink
@@ -54,6 +69,7 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
         ref={ref}
         caseSensitive={caseSensitive}
         className={className}
+        children={children}
         end={end}
         reloadDocument={reloadDocument}
         replace={replace}

@@ -79,6 +79,7 @@ export let Button = React.forwardRef<
     </button>
   );
 });
+Button.displayName = "Button";
 
 export let Input = React.forwardRef<
   HTMLInputElement,
@@ -97,3 +98,4 @@ export let Input = React.forwardRef<
     />
   );
 });
+Input.displayName = "Input";

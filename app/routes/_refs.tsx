@@ -1,17 +1,7 @@
 import { Link, useLoaderData } from "@remix-run/react";
-import { json, LoaderArgs, MetaFunction } from "@remix-run/node";
-import { Prisma } from "@prisma/client";
+import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { prisma } from "~/db.server";
-
-const refs = Prisma.validator<Prisma.GitHubRefArgs>()({
-  select: {
-    ref: true,
-    createdAt: true,
-    updatedAt: true,
-  },
-});
-
-type Ref = Prisma.GitHubRefGetPayload<typeof refs>;
 
 export const loader = async (_: LoaderArgs) => {
   let refs = await prisma.gitHubRef.findMany({

@@ -1,5 +1,4 @@
-import { Form, useTransition, useActionData } from "@remix-run/react";
-import { Button, Input } from "~/components/buttons";
+import { useTransition, useActionData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Subscribe } from "~/components/subscribe";
 

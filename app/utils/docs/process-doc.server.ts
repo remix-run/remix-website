@@ -1,5 +1,5 @@
 import parseAttributes from "gray-matter";
-import { TarEntry } from "@mcansh/undoc";
+import type { TarEntry } from "@mcansh/undoc";
 import { processMarkdown } from "@mcansh/undoc";
 import type { Doc } from "@prisma/client";
 

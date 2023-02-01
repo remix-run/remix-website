@@ -1,4 +1,5 @@
-import { json, ActionArgs } from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import PQueue from "p-queue";
 
 import type { GitHubRelease } from "~/@types/github";
