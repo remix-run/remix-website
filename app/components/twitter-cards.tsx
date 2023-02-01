@@ -1,4 +1,5 @@
 import { Twitter } from "./icons";
+import cx from "clsx";
 
 export type TweetData = {
   href: string;
@@ -110,7 +111,7 @@ export function Avatar({
   alt: string;
 }) {
   return (
-    <div className={"h-12 w-12" + " " + className}>
+    <div className={cx("h-12 w-12", className)}>
       <img src={src} className="object-cover rounded-full" alt={alt} />
     </div>
   );
@@ -131,7 +132,7 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
                 <figcaption>
                   <a
                     href={tweet.href}
-                    className="block text-xl md:text-xl font-display"
+                    className="block text-xl md:text-xl font-display font-extrabold"
                     aria-label={`Tweet from ${tweet.name}`}
                   >
                     @{tweet.username}
@@ -174,8 +175,8 @@ export function BigTweet({ tweet }: { tweet: TweetData }) {
           <a
             href={tweet.href}
             target="_blank"
-            rel="noopener"
-            className="block text-xl md:text-3xl font-display"
+            rel="noreferrer"
+            className="block text-xl md:text-3xl font-display font-extrabold"
             aria-label={`Tweet from ${tweet.name}`}
           >
             {tweet.name}

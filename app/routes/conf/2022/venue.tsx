@@ -53,7 +53,7 @@ const map = (
 function Title({ className }: { className: string }) {
   return (
     <div className={className}>
-      <h1 className="font-display text-3xl sm:text-5xl xl:text-7xl mb-2">
+      <h1 className="font-display font-extrabold text-3xl sm:text-5xl xl:text-7xl mb-2">
         Sheraton Salt Lake City Hotel
       </h1>
       <small>
@@ -91,7 +91,7 @@ export default function Venue() {
             <div className="w-full text-center">
               <a
                 href="https://rmx.as/conf-hotel"
-                className={`${primaryButtonLinkClass} lg:w-full font-display uppercase`}
+                className={`${primaryButtonLinkClass} lg:w-full font-display font-extrabold uppercase`}
               >
                 Book your stay
               </a>

@@ -100,7 +100,7 @@ function Hero() {
       >
         <div className="lg:w-1/2 lg:mb-10">
           <div className="lg:max-w-2xl lg:mx-auto">
-            <h2 className="font-display text-3xl sm:text-5xl text-white lg:text-[length:64px] lg:leading-[56px] xl:text-7xl">
+            <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-white lg:text-[length:64px] lg:leading-[56px] xl:text-7xl">
               Focused on <span className="text-aqua-brand">web standards</span>{" "}
               and <span className="text-green-brand">modern web app</span> UX,
               you’re simply going to{" "}

@@ -16,7 +16,7 @@ export default function CoC() {
   return (
     <InnerLayout>
       <div className="text-white">
-        <h1 className="font-display text-3xl sm:text-5xl xl:text-7xl mb-16">
+        <h1 className="font-display font-extrabold text-3xl sm:text-5xl xl:text-7xl mb-16">
           Remix Conf Code of Conduct
         </h1>
         <div className="container text-lg lg:text-xl flex flex-col gap-4 mb-6">

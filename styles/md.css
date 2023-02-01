@@ -65,11 +65,11 @@
   }
 
   & h2 {
-    @apply font-display text-2xl md:text-5xl dark:text-gray-200;
+    @apply font-display font-extrabold text-2xl md:text-5xl dark:text-gray-200;
   }
 
   & h3 {
-    @apply font-display text-xl md:text-3xl dark:text-gray-200;
+    @apply font-display font-extrabold text-xl md:text-3xl dark:text-gray-200;
   }
 
   & h4 {
@@ -193,7 +193,7 @@
   }
 
   & blockquote {
-    @apply pl-4 italic border-l-4 font-serif;
+    @apply pl-4 italic border-l-4;
   }
 
   & details {

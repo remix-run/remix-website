@@ -107,17 +107,6 @@ const Document: React.FC<DocumentProps> = ({
           type="image/png"
           media="(prefers-color-scheme: dark)"
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;600&family=JetBrains+Mono:wght@600;700&display=auto"
-          rel="stylesheet"
-        />
-
         <Links />
         <Meta />
       </head>

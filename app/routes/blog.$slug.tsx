@@ -110,7 +110,7 @@ export default function BlogPost() {
                     {post.dateDisplay}
                   </div>
                   <div className="h-2" />
-                  <div className="text-3xl text-white font-display md:text-4xl">
+                  <div className="text-3xl text-white font-display font-extrabold md:text-4xl">
                     {post.title}
                   </div>
                   <div className="h-2" />
@@ -127,7 +127,7 @@ export default function BlogPost() {
                       </div>
                       <div className="w-6" />
                       <div>
-                        <div className="text-xl leading-none text-white font-display md:text-3xl">
+                        <div className="text-xl leading-none text-white font-display font-extrabold md:text-3xl">
                           {author.name}
                         </div>
                         <div className="text-base leading-tight text-gray-200 md:text-base">

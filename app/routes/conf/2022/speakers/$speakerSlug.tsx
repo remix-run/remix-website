@@ -70,7 +70,7 @@ export default function SpeakerRoute() {
             style={{ aspectRatio: "1/1" }}
           />
           <div className="text-lg lg:text-xl">
-            <h1 className="font-display text-3xl sm:text-5xl xl:text-7xl mb-2">
+            <h1 className="font-display font-extrabold text-3xl sm:text-5xl xl:text-7xl mb-2">
               {speaker.name}
             </h1>
             <div className="mt-4">
@@ -93,7 +93,7 @@ export default function SpeakerRoute() {
             {talks.map((talk) => (
               <div key={talk.title} className="flex flex-col gap-4">
                 <div>
-                  <h2 className="text-xl font-display md:text-3xl inline">
+                  <h2 className="text-xl font-display font-extrabold md:text-3xl inline">
                     {talk.title}
                   </h2>
                   {talk.type === "backup" ? (
