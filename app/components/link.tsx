@@ -41,13 +41,13 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
     if (typeof to === "string" && isAbsoluteUrl(to)) {
       let isActive = false;
       let isPending = false;
-      let _className =
+      className =
         typeof className === "function"
           ? className({ isActive, isPending })
           : className;
-      let _style =
+      style =
         typeof style === "function" ? style({ isActive, isPending }) : style;
-      let _children =
+      children =
         typeof children === "function"
           ? children({ isActive, isPending })
           : children;
@@ -56,9 +56,9 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
         <a
           {...props}
           href={to}
-          style={_style}
-          className={_className}
-          children={_children}
+          style={style}
+          className={className}
+          children={children}
         />
       );
     }
