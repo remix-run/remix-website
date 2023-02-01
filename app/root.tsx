@@ -1,17 +1,22 @@
 import * as React from "react";
 import {
-  Meta,
   Links,
-  useCatch,
-  useMatches,
+  LiveReload,
+  Meta,
   Outlet,
+  Scripts,
+  ScrollRestoration,
+  useCatch,
   useLoaderData,
+  useMatches,
 } from "@remix-run/react";
 import type { LoaderArgs } from "@remix-run/node";
-import { load as loadFathom, type LoadOptions } from "fathom-client";
+import {
+  load as loadFathom,
+  type LoadOptions as FathomLoadOptions,
+} from "fathom-client";
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
-import { Body } from "~/components/body";
 import {
   removeTrailingSlashes,
   ensureSecure,
@@ -21,6 +26,7 @@ import { ColorSchemeScript, useColorScheme } from "~/utils/color-scheme";
 import { parseColorScheme } from "~/utils/color-scheme.server";
 import iconsHref from "~/icons.svg";
 import { canUseDOM } from "~/utils/misc";
+import cx from "clsx";
 
 declare global {
   var __env: {
@@ -53,25 +59,20 @@ export async function loader({ request }: LoaderArgs) {
 export let unstable_shouldReload = () => false;
 
 export function links() {
+  let preloadedFonts = [
+    "founders-grotesk-bold.woff2",
+    "inter-roman-latin-var.woff2",
+    "inter-italic-latin-var.woff2",
+    "source-code-pro-roman-var.woff2",
+    "source-code-pro-italic-var.woff2",
+  ];
   return [
-    {
+    ...preloadedFonts.map((font) => ({
       rel: "preload",
       as: "font",
-      href: "/font/founders-grotesk-bold.woff2",
+      href: `/font/${font}`,
       crossOrigin: "anonymous",
-    },
-    {
-      rel: "preload",
-      as: "font",
-      href: "https://fonts.gstatic.com/s/inter/v8/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7W0Q5nw.woff2",
-      crossOrigin: "anonymous",
-    },
-    {
-      rel: "preload",
-      as: "font",
-      href: "https://fonts.gstatic.com/s/sourcecodepro/v20/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevWnsUnxg.woff2",
-      crossOrigin: "anonymous",
-    },
+    })),
     { rel: "stylesheet", href: tailwind },
     { rel: "stylesheet", href: bailwind },
   ];
@@ -81,17 +82,19 @@ interface DocumentProps {
   title?: string;
   forceDark?: boolean;
   darkBg?: string;
+  isDev?: boolean;
   noIndex: boolean;
   children: React.ReactNode;
 }
 
-const Document: React.FC<DocumentProps> = ({
+function Document({
   children,
   title,
   forceDark,
   darkBg,
   noIndex,
-}) => {
+  isDev,
+}: DocumentProps) {
   let colorScheme = useColorScheme();
   return (
     <html
@@ -125,12 +128,22 @@ const Document: React.FC<DocumentProps> = ({
         {title && <title data-title-override="">{title}</title>}
       </head>
 
-      <Body forceDark={forceDark} darkBg={darkBg}>
+      <body
+        className={cx(
+          "min-h-screen flex flex-col w-full overflow-x-hidden",
+          forceDark
+            ? [darkBg || "bg-gray-900", "text-gray-200"]
+            : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+        )}
+      >
         {children}
-      </Body>
+        <ScrollRestoration />
+        <Scripts />
+        {isDev ? <LiveReload /> : null}
+      </body>
     </html>
   );
-};
+}
 
 export default function App() {
   let matches = useMatches();
@@ -147,7 +160,11 @@ export default function App() {
   }
 
   return (
-    <Document noIndex={noIndex} forceDark={forceDark}>
+    <Document
+      noIndex={noIndex}
+      forceDark={forceDark}
+      isDev={env.NODE_ENV === "development"}
+    >
       <Outlet />
       <img
         src={iconsHref}
@@ -209,7 +226,7 @@ export function CatchBoundary() {
   );
 }
 
-function useFathomClient(siteId: string, loadOptions: LoadOptions) {
+function useFathomClient(siteId: string, loadOptions: FathomLoadOptions) {
   let loaded = React.useRef(false);
   React.useEffect(() => {
     if (loaded.current) return;
