@@ -12,17 +12,22 @@ import invariant from "tiny-invariant";
 import type { Doc } from "~/modules/gh-docs";
 import { getRepoDoc } from "~/modules/gh-docs";
 import iconsHref from "~/icons.svg";
-import { seo } from "~/utils/seo";
 import cx from "clsx";
 import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
+import type { loader as docsLayoutLoader } from "~/routes/docs/$lang.$ref";
 
 export async function loader({ params, request }: LoaderArgs) {
+  let url = new URL(request.url);
+  let pageUrl = url.protocol + "//" + url.host + url.pathname;
   invariant(params.ref, "expected `ref` params");
   let doc = await getRepoDoc(params.ref, params["*"] || "index");
   if (!doc) {
     throw new Response("", { status: 404 });
   }
-  return json({ doc }, { headers: { "Cache-Control": CACHE_CONTROL.doc } });
+  return json(
+    { doc, pageUrl },
+    { headers: { "Cache-Control": CACHE_CONTROL.doc } }
+  );
 }
 
 export let headers: HeadersFunction = () => {
@@ -32,43 +37,75 @@ export let headers: HeadersFunction = () => {
   };
 };
 
-export let meta: MetaFunction = ({ data, parentsData }) => {
+const LAYOUT_LOADER_KEY = "routes/docs/$lang.$ref";
+
+export let meta: MetaFunction<
+  typeof loader,
+  { [LAYOUT_LOADER_KEY]: typeof docsLayoutLoader }
+> = ({ data, parentsData }) => {
   if (!data) return { title: "Not Found" };
-  let parentData = parentsData["routes/$lang.$ref"];
+  let parentData = parentsData[LAYOUT_LOADER_KEY];
   if (!parentData) return {};
 
   let rootData = parentsData["root"];
-
   let { doc } = data;
   let { latestVersion, releaseBranch, branches, currentGitHubRef } = parentData;
 
-  let titleRef =
-    currentGitHubRef === releaseBranch
-      ? `v${latestVersion}`
+  let titleAppend =
+    currentGitHubRef === releaseBranch || currentGitHubRef === latestVersion
+      ? ""
       : branches.includes(currentGitHubRef)
-      ? `(${currentGitHubRef} branch)`
+      ? ` (${currentGitHubRef} branch)`
       : currentGitHubRef.startsWith("v")
-      ? currentGitHubRef
-      : `v${currentGitHubRef}`;
+      ? ` (${currentGitHubRef})`
+      : ` (v${currentGitHubRef})`;
 
-  let title = doc.attrs.title + ` ${titleRef}`;
+  let title = doc.attrs.title + titleAppend;
 
   // seo: only want to index the main branch
   let isMainBranch = currentGitHubRef === releaseBranch;
-
-  let [meta] = seo({
-    title: title,
-    twitter: { title },
-    openGraph: { title },
-  });
 
   let robots =
     rootData.isProductionHost && isMainBranch
       ? "index,follow"
       : "noindex,nofollow";
 
+  let pageUrl = data.pageUrl;
+
+  // TODO: add more + better SEO stuff
+  // let url = new URL(data.pageUrl);
+  // let siteUrl = url.protocol + "//" + url.host;
+  // let ogImage = `${siteUrl}/image.jpg`;
+  // let ogImageAlt = title;
+  // let twitterImage = ogImage;
+  // let twitterImageAlt = title;
+  // let description: 'some description';
+
   return {
-    ...meta,
+    title: `${title} | Remix`,
+    // description,
+
+    "og:title": title,
+    // "og:description": description,
+    "og:url": pageUrl,
+    "og:type": "article",
+    "og:site_name": "Remix",
+    // "og:image": ogImage,
+    // "og:image:alt": ogImageAlt,
+    // "og:image:secure_url": ogImage,
+    // "og:image:type": "image/jpeg",
+    // "og:image:width": "1200",
+    // "og:image:height": "630",
+    // "og:locale": "en_US",
+
+    "twitter:title": title,
+    "twitter:site": "@remix_run",
+    "twitter:creator": "@remix_run",
+    // "twitter:image": twitterImage,
+    // "twitter:image:alt": twitterImageAlt,
+    // "twitter:description": description,
+    // "twitter:card": "summary",
+
     robots: robots,
     googlebot: robots,
   };

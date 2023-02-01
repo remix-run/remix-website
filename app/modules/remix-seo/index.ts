@@ -1,1 +1,0 @@
-export { getSeo } from "./seo";
