@@ -7,3 +7,5 @@ node_modules
 /.env
 /.yalc
 yalc.lock
+
+**/gh-docs/__fixture__/tar.tgz
