@@ -1,9 +1,5 @@
-import {
-  meta,
-  loader,
-  headers,
-  default as DocsPage,
-} from "~/routes/docs/$lang.$ref/$";
+import { redirect } from "@remix-run/node";
 
-export default DocsPage;
-export { meta, loader, headers };
+export async function loader() {
+  return redirect("/docs/en/main", { status: 301 });
+}
