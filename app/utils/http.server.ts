@@ -1,5 +1,5 @@
 import { redirect } from "@remix-run/node";
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
 
 export function requirePost(request: Request) {
@@ -16,46 +16,41 @@ type Redirect = [string, string, number?];
 let redirects: null | Redirect[] = null;
 
 // TODO: add support with pathToRegexp to redirect with * and stuff
-export async function handleRedirects(request: Request) {
+export function handleRedirects(request: Request) {
   if (redirects === null) {
     let filePath = path.join(__dirname, "..", "_redirects");
-    redirects = (await fs.readFile(filePath))
-      .toString()
-      .split("\n")
-      .reduce((redirects, line: string) => {
-        if (line.startsWith("#") || line.trim() === "") {
-          return redirects;
-        }
+    let redirectsFileContents: string;
+    try {
+      redirectsFileContents = fs.readFileSync(filePath, "utf-8");
+    } catch (_) {
+      // no redirects file, so no redirects
+      return null;
+    }
 
-        let code = 302;
-        let [from, to, maybeCode] = line.split(/\s+/);
-        if (maybeCode) {
-          code = parseInt(maybeCode, 10);
-        }
-        redirects.push([from, to, code]);
-
+    let currentUrl = new URL(request.url);
+    for (let line of redirectsFileContents.split("\n")) {
+      line = line.trim();
+      if (!line || line.startsWith("#")) {
         return redirects;
-      }, [] as Redirect[]);
-  }
-
-  for (let r of redirects) {
-    let [from, location, status] = r;
-    let url = new URL(request.url);
-    if (url.pathname === from) {
-      throw redirect(location, { status });
+      }
+      let [from, location, maybeCode] = line.split(/\s+/);
+      let status = getValidRedirectCode(maybeCode);
+      if (currentUrl.pathname === from) {
+        throw redirect(location, { status });
+      }
     }
   }
   return null;
 }
 
-export async function removeTrailingSlashes(request: Request) {
+export function removeTrailingSlashes(request: Request) {
   let url = new URL(request.url);
   if (url.pathname.endsWith("/") && url.pathname !== "/") {
     throw redirect(url.pathname.slice(0, -1) + url.search);
   }
 }
 
-export async function ensureSecure(request: Request) {
+export function ensureSecure(request: Request) {
   let proto = request.headers.get("x-forwarded-proto");
   if (proto === "http") {
     let secureUrl = new URL(request.url);
@@ -79,3 +74,19 @@ export const CACHE_CONTROL = {
    */
   doc: "max-age=300, stale-while-revalidate=604800",
 };
+
+function getValidRedirectCode(code: string | number | undefined) {
+  let defaultCode = 302;
+  if (!code) return defaultCode;
+  if (typeof code === "string") {
+    try {
+      code = parseInt(code.trim(), 10);
+    } catch (_) {
+      return defaultCode;
+    }
+  }
+  if (!Number.isInteger(code) || code < 300 || code >= 400) {
+    return defaultCode;
+  }
+  return code;
+}
