@@ -40,7 +40,7 @@ const SAFE_STATIC_FILE_EXTENSIONS = [
   ".mov",
 ];
 
-async function handleStaticFileRequests(param: string | undefined) {
+function handleStaticFileRequests(param: string | undefined) {
   if (
     SAFE_STATIC_FILE_EXTENSIONS.some((ext) => !!(param && param.endsWith(ext)))
   ) {
@@ -49,8 +49,8 @@ async function handleStaticFileRequests(param: string | undefined) {
 }
 
 export let loader = async ({ request, params }: LoaderArgs) => {
-  await handleRedirects(request);
-  await handleStaticFileRequests(params["*"]);
+  handleRedirects(request);
+  handleStaticFileRequests(params["*"]);
 
   try {
     let ref = "main";

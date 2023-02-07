@@ -35,8 +35,8 @@ declare global {
 }
 
 export async function loader({ request }: LoaderArgs) {
-  await ensureSecure(request);
-  await removeTrailingSlashes(request);
+  ensureSecure(request);
+  removeTrailingSlashes(request);
   let env = {
     NODE_ENV: process.env.NODE_ENV,
   };
@@ -56,7 +56,7 @@ export async function loader({ request }: LoaderArgs) {
   };
 }
 
-export let unstable_shouldReload = () => false;
+export let shouldRevalidate = () => false;
 
 export function links() {
   let preloadedFonts = [
