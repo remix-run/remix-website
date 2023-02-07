@@ -37,7 +37,7 @@ export function Header({
 
       <nav className="flex" aria-label="Main">
         <HeaderLink to="/blog" children="Blog" />{" "}
-        <HeaderLink to="/docs/en/v1" children="Docs" />{" "}
+        <HeaderLink to="/docs/en/main" children="Docs" />{" "}
         <HeaderLink
           to="https://github.com/remix-run"
           children="GitHub"
