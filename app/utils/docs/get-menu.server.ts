@@ -1,8 +1,8 @@
-import { getRefFromParam } from "@mcansh/undoc";
 import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
 import { prisma } from "~/db.server";
+import { getRefFromParam } from "./get-doc.server";
 import { getBranchOrTagFromRef } from "./get-tag-from-ref.server";
 
 invariant(process.env.REPO_LATEST_BRANCH, "REPO_LATEST_BRANCH is not set");

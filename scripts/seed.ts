@@ -12,6 +12,7 @@ import type { BlogPostWithAuthors } from "../app/models/post";
 import type { GitHubRelease } from "../app/@types/github";
 import invariant from "tiny-invariant";
 import { prisma } from "../app/db.server";
+import { getReleaseVersion } from "../app/utils/docs/get-doc.server";
 
 installGlobals();
 
@@ -82,20 +83,31 @@ async function seedDocs() {
     }
   );
 
-  let releases = (await releasesPromise.json()) as GitHubRelease[];
+  let fetchedReleases = (await releasesPromise.json()) as GitHubRelease[];
+  let releases: { version: string; body: string; tagName: string }[] = [];
+  for (let release of fetchedReleases) {
+    let { body, tag_name: tagName } = release;
+    if (tagName.startsWith("@remix-run/")) {
+      continue;
+    }
 
-  let sortedReleases = releases
-    .map((release) => release.tag_name)
-    .filter((release) => semver.valid(release))
-    .sort((a, b) => semver.rcompare(a, b));
+    let version = getReleaseVersion(tagName);
+    if (version) {
+      releases.push({ version, body, tagName });
+    }
+  }
 
-  let latestRelease = sortedReleases.at(0);
+  let sortedReleases = releases.sort((a, b) =>
+    semver.rcompare(a.version, b.version)
+  );
+
+  let latestRelease = sortedReleases.at(0)?.["version"];
 
   invariant(latestRelease, "latest release is not defined");
   console.log(`Using latest Remix release: ${latestRelease}`);
 
   let releasesToUse = releases.filter((release) => {
-    return semver.satisfies(release.tag_name, `>=${latestRelease}`, {
+    return semver.satisfies(release.version, `>=${latestRelease}`, {
       includePrerelease: true,
     });
   });
@@ -103,7 +115,7 @@ async function seedDocs() {
   let promises: Promise<void>[] = [];
 
   for (let release of releasesToUse) {
-    promises.unshift(saveDocs(`refs/tags/${release.tag_name}`, release.body));
+    promises.unshift(saveDocs(`refs/tags/${release.tagName}`, release.body));
   }
 
   await Promise.all(promises);

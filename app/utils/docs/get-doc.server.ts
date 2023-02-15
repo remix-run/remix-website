@@ -1,6 +1,6 @@
 import path from "path";
 
-import { getRefFromParam } from "@mcansh/undoc";
+import semver from "semver";
 import type { Doc } from "@prisma/client";
 import invariant from "tiny-invariant";
 
@@ -59,4 +59,49 @@ export async function getDoc(
   }
 
   return doc;
+}
+
+/**
+ * NOTE: This is a modified version of the original function from @mcansh/undoc
+ * that accounts for how tags were changed with `remix@` prefixes after we
+ * switched to changesets.
+ */
+export function getRefFromParam(
+  refParam: string,
+  refs: string[],
+  latestBranchRef: string
+) {
+  invariant(refs.length, "Expected at least one ref");
+  if (refs.includes(refParam)) {
+    let validVersion = semver.valid(refParam);
+    return validVersion
+      ? `refs/tags/v${validVersion}`
+      : `refs/heads/${refParam}`;
+  }
+  let versions = refs
+    .map(getReleaseVersion)
+    .filter((ref): ref is string => !!(ref && semver.valid(ref)))
+    .sort(semver.rcompare);
+  let [latestVersion] = versions;
+  invariant(latestVersion, "No latest ref found");
+  if (semver.satisfies(latestVersion, refParam, { includePrerelease: true })) {
+    return latestBranchRef;
+  }
+  let maxSatisfying = semver.maxSatisfying(refs, refParam, {
+    includePrerelease: true,
+  });
+  if (maxSatisfying) {
+    return `refs/tags/${maxSatisfying}`;
+  }
+  return null;
+}
+
+export function getReleaseVersion(tagName: string) {
+  let version = tagName.startsWith("remix@")
+    ? tagName.replace("remix@", "v")
+    : tagName;
+  if (semver.valid(version)) {
+    return version;
+  }
+  return null;
 }
