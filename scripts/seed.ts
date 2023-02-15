@@ -12,7 +12,6 @@ import type { BlogPostWithAuthors } from "../app/models/post";
 import type { GitHubRelease } from "../app/@types/github";
 import invariant from "tiny-invariant";
 import { prisma } from "../app/db.server";
-import { getReleaseVersion } from "../app/utils/docs/get-doc.server";
 
 installGlobals();
 
@@ -173,6 +172,16 @@ async function mdToBlogPost(md: MarkdownPost): Promise<BlogPostWithAuthors> {
     md: md.md,
   };
   return post;
+}
+
+export function getReleaseVersion(tagName: string) {
+  let version = tagName.startsWith("remix@")
+    ? tagName.replace("remix@", "v")
+    : tagName;
+  if (semver.valid(version)) {
+    return version;
+  }
+  return null;
 }
 
 function isMarkdownPostFrontmatter(obj: any): obj is MarkdownPost {
