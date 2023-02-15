@@ -16,6 +16,8 @@ export interface MenuNode {
   children: MenuNode[];
 }
 
+export const DELETE_ME = "DELETE_ME";
+
 export async function getMenu(
   versionOrBranchParam: string,
   lang: string
