@@ -66,7 +66,15 @@ const navItems: Array<HeaderLinkProps> = [
 export default function ConfTwentyTwentyTwo() {
   return (
     <div className="flex flex-col flex-1 h-full text-white bg-blue-800 __layout">
-      <TopBanner />
+      {/* <TopBanner>
+        <span className="text-pink-brand font-bold">
+          Announcing: Remix Conf 2023.
+        </span>{" "}
+        <Link to="../2023" className="text-white underline">
+          Earlybird tickets and sponsorships available now
+          <span aria-hidden> →</span>
+        </Link>
+      </TopBanner> */}
       <Header />
       <main className="flex flex-col flex-1" tabIndex={-1}>
         <Outlet />
@@ -349,17 +357,13 @@ function Logo() {
   );
 }
 
-function TopBanner() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function TopBanner({ children }: { children?: React.ReactNode }) {
+  if (!children) return null;
   return (
     <div className="py-2 bg-black sticky top-0 z-20">
       <p className="container mx-auto flex flex-col md:flex-row md:gap-1 justify-center items-center sm:text-[16px] text-[3.2vw]">
-        <span className="text-pink-brand font-bold">
-          Announcing: Remix Conf 2023.
-        </span>{" "}
-        <Link to="../2023" className="text-white underline">
-          Earlybird tickets and sponsorships available now
-          <span aria-hidden> →</span>
-        </Link>
+        {children}
       </p>
     </div>
   );
