@@ -3,7 +3,19 @@ import { Link as RemixLink, NavLink as RemixNavLink } from "@remix-run/react";
 import type { LinkProps, NavLinkProps } from "@remix-run/react";
 
 const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
-  ({ reloadDocument, replace, state, to, ...props }, ref) => {
+  (
+    {
+      prefetch,
+      preventScrollReset,
+      relative,
+      reloadDocument,
+      replace,
+      state,
+      to,
+      ...props
+    },
+    ref
+  ) => {
     if (typeof to === "string" && isAbsoluteUrl(to)) {
       // eslint-disable-next-line jsx-a11y/anchor-has-content
       return <a {...props} href={to} />;
@@ -14,6 +26,9 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
         {...props}
         ref={ref}
         to={to}
+        prefetch={prefetch}
+        preventScrollReset={preventScrollReset}
+        relative={relative}
         reloadDocument={reloadDocument}
         replace={replace}
         state={state}
@@ -26,9 +41,12 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
   (
     {
       caseSensitive,
-      className,
       children,
+      className,
       end,
+      prefetch,
+      preventScrollReset,
+      relative,
       reloadDocument,
       replace,
       state,
@@ -68,9 +86,12 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
         {...props}
         ref={ref}
         caseSensitive={caseSensitive}
-        className={className}
         children={children}
+        className={className}
         end={end}
+        prefetch={prefetch}
+        preventScrollReset={preventScrollReset}
+        relative={relative}
         reloadDocument={reloadDocument}
         replace={replace}
         state={state}

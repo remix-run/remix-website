@@ -88,7 +88,7 @@ function Hero() {
             />
             <div className="max-w-xl mx-auto md:mx-0">
               <h1 className="font-display font-extrabold text-4xl md:text-7xl">
-                <div className="text-white">May 9th - 11th, 2023 </div>
+                <div className="text-white">May 9th-11th</div>
                 <div className="text-yellow-brand">Salt Lake City</div>
               </h1>
               <div className="h-6" />
