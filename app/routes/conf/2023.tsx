@@ -57,11 +57,13 @@ const navItems: Array<HeaderLinkProps> = [
 ];
 
 export default function ConfTwentyTwentyThree() {
+  let data = useLoaderData<typeof loader>();
+  let showTopBanner = data.earlyBird;
   return (
     <>
-      {/* <TopBanner /> */}
+      {showTopBanner ? <TopBanner /> : null}
       <div className="flex flex-col flex-1 h-full text-white bg-black __layout">
-        <Header />
+        <Header hasTopBanner={showTopBanner} />
         <main className="flex flex-col flex-1" tabIndex={-1}>
           <Outlet />
         </main>
@@ -123,7 +125,7 @@ function SignUp() {
   );
 }
 
-function Header() {
+function Header({ hasTopBanner }: { hasTopBanner?: boolean }) {
   let location = useLocation();
   let isConfHome =
     location.pathname === "/conf" || location.pathname === "/conf/2023";
@@ -133,7 +135,7 @@ function Header() {
         "absolute top-0 left-0 right-0 z-10": isConfHome,
       })}
     >
-      <div className="px-6 lg:px-12 py-9 pt-20 md:pt-14 flex justify-between items-start gap-8">
+      <div className="px-6 lg:px-12 py-9 flex justify-between items-start gap-8">
         <NavLink
           to={isConfHome ? "/" : "."}
           prefetch="intent"
@@ -185,13 +187,6 @@ function Footer() {
           className="leading-none block font-semibold"
         >
           Code of Conduct
-        </Link>
-        <Link
-          prefetch="intent"
-          to="../2022"
-          className="leading-none block font-semibold"
-        >
-          2022
         </Link>
       </div>
       <nav className="flex gap-6 text-white" aria-label="Find us on the web">
