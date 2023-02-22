@@ -56,6 +56,11 @@ export function links() {
     "source-code-pro-italic-var.woff2",
   ];
   return [
+    { rel: "icon", href: "/favicon-32.png", sizes: "32x32" },
+    { rel: "icon", href: "/favicon-128.png", sizes: "128x128" },
+    { rel: "icon", href: "/favicon-180.png", sizes: "180x180" },
+    { rel: "icon", href: "/favicon-192.png", sizes: "192x192" },
+    { rel: "apple-touch-icon", href: "/favicon-180.png", sizes: "180x180" },
     ...preloadedFonts.map((font) => ({
       rel: "preload",
       as: "font",
@@ -92,18 +97,6 @@ function Document({
         <meta
           name="viewport"
           content="width=device-width,initial-scale=1,viewport-fit=cover"
-        />
-        <link
-          rel="icon"
-          href="/favicon-light.1.png"
-          type="image/png"
-          media="(prefers-color-scheme: light)"
-        />
-        <link
-          rel="icon"
-          href="/favicon-dark.1.png"
-          type="image/png"
-          media="(prefers-color-scheme: dark)"
         />
         <Links />
         <Meta />
