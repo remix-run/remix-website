@@ -9,11 +9,13 @@ export type Speaker = {
   slug: string;
 };
 
+export type SponsorLevel = "premier" | "gold" | "silver" | "community";
+
 export type Sponsor = {
   name: string;
   link: string;
   imgSrc: string;
-  level: "premier" | "gold" | "silver" | "community";
+  level: SponsorLevel;
 };
 
 export type Talk = {

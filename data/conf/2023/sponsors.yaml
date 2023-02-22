@@ -1,7 +1,7 @@
-- name: "Netlify"
-  link: "https://www.netlify.com"
-  imgSrc: "/conf-images/2023/sponsors/netlify.svg"
-  level: "premier"
+- name: "Vercel"
+  link: "https://vercel.com"
+  imgSrc: "/conf-images/2023/sponsors/vercel.svg"
+  level: "gold"
 
 - name: "Storyblok"
   link: "https://www.storyblok.com"
@@ -20,10 +20,15 @@
 
 - name: "Fly.io"
   link: "https://fly.io"
-  imgSrc: "/conf-images/sponsors/fly.png"
+  imgSrc: "/conf-images/2023/sponsors/fly.svg"
   level: "gold"
 
 - name: "Seasoned"
   link: "https://www.seasoned.cc/remix"
   imgSrc: "/conf-images/2023/sponsors/seasoned.png"
   level: "silver"
+
+- name: "Netlify"
+  link: "https://www.netlify.com"
+  imgSrc: "/conf-images/2023/sponsors/netlify.svg"
+  level: "community"

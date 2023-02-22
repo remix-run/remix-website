@@ -14,6 +14,7 @@ import {
 import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
 import { getSponsors } from "~/utils/conf.server";
+import type { Sponsor, SponsorLevel } from "~/utils/conf";
 import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
@@ -44,12 +45,18 @@ export let links: LinksFunction = () => {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const allSponsors = (await getSponsors(2023)).sort(() => Math.random() - 0.5);
+  let allSponsors = await getSponsors(2023);
+  let sponsors: Partial<Record<SponsorLevel, Sponsor[]>> = {};
+  for (let sponsor of allSponsors.sort(() => Math.random() - 0.5)) {
+    let level = sponsor.level;
+    sponsors[level] ??= [];
+    sponsors[level]!.push(sponsor);
+  }
 
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
   return json(
-    { siteUrl, sponsors: allSponsors },
+    { siteUrl, sponsors },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
 };
@@ -62,7 +69,7 @@ export const headers: HeadersFunction = () => {
 
 export default function ConfIndex() {
   return (
-    <div x-comp="Index" className="w-full overflow-x-hidden">
+    <div className="w-full overflow-x-hidden">
       <Hero />
       <EarlySponsors />
     </div>
@@ -121,57 +128,168 @@ function Hero() {
 }
 
 function EarlySponsors() {
-  const { sponsors } = useLoaderData<typeof loader>();
+  let { sponsors } = useLoaderData<typeof loader>();
+  let premierSponsor = sponsors.premier?.[0];
   return (
     <section className="relative my-10 sm:my-14 lg:my-24 xl:my-28">
       <div className="container">
         <div className="max-w-xl xl:max-w-none mx-auto xl:mx-0">
-          <h2 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
-            Sponsors
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-            {sponsors.map((s) => (
-              <SponsorGridCell key={s.name} className="bg-gray-900">
-                <a
-                  className="flex w-full p-4 md:p-8"
-                  href={s.link}
-                  aria-label={s.name}
-                >
-                  <img src={s.imgSrc} alt="" className="block w-full h-auto" />
-                </a>
-              </SponsorGridCell>
-            ))}
-            <SponsorGridCell className="bg-blue-brand text-white font-bold text-xl xl:text-3xl">
+          <section className="flex flex-col gap-20 lg:gap-36">
+            <h2 className="sr-only">Sponsors</h2>
+            {premierSponsor ? (
               <div>
-                Your Company Here?
-                <br />
-                <Link to="sponsor" className="underline">
-                  Let's Talk.
-                </Link>
+                <h3 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
+                  Premier Sponsor
+                </h3>
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                  <GridCell>
+                    <GridCellLink to={premierSponsor.link}>
+                      <div className="flex w-full p-12 md:p-14 lg:p-16 2xl:p-20">
+                        <span className="sr-only">{premierSponsor.name}</span>
+                        <img
+                          src={premierSponsor.imgSrc}
+                          alt=""
+                          className="block w-full h-auto object-center object-contain"
+                        />
+                      </div>
+                    </GridCellLink>
+                  </GridCell>
+                </div>
               </div>
-            </SponsorGridCell>
-          </div>
+            ) : null}
+
+            <div>
+              <h3 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-yellow-brand">
+                Gold Sponsors
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                {sponsors.gold?.map((sponsor) => {
+                  return (
+                    <GridCell key={sponsor.name}>
+                      <GridCellLink to={sponsor.link}>
+                        <div className="flex w-full p-12 md:p-14 lg:p-16 2xl:p-20">
+                          <span className="sr-only">{sponsor.name}</span>
+                          <img
+                            src={sponsor.imgSrc}
+                            alt=""
+                            className="block w-full h-auto object-center object-contain"
+                          />
+                        </div>
+                      </GridCellLink>
+                    </GridCell>
+                  );
+                })}
+                <GridCell bgColor="blue">
+                  <GridCellLink to="sponsor" hoverColor="blue">
+                    <div className="h-full w-full flex items-center justify-center p-8 2xl:p-10 font-bold text-xl xl:text-3xl text-left">
+                      <div>
+                        Your Company Here?{" "}
+                        <span className="underline whitespace-nowrap">
+                          Let's Talk.
+                        </span>
+                      </div>
+                    </div>
+                  </GridCellLink>
+                </GridCell>
+              </div>
+            </div>
+
+            {(sponsors.silver?.length || 0) > 0 ? (
+              <div>
+                <h3 className="font-display font-extrabold text-3xl md:text-5xl mb-4 md:mb-8 text-pink-brand">
+                  Silver Sponsors
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {sponsors.silver!.map((sponsor) => {
+                    return (
+                      <GridCell key={sponsor.name}>
+                        <GridCellLink to={sponsor.link}>
+                          <div className="flex w-full p-12 md:p-14 lg:p-8 xl:p-12 2xl:p-20">
+                            <span className="sr-only">{sponsor.name}</span>
+                            <img
+                              src={sponsor.imgSrc}
+                              alt=""
+                              className="block w-full h-auto object-center object-contain"
+                            />
+                          </div>
+                        </GridCellLink>
+                      </GridCell>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+
+            {(sponsors.community?.length || 0) > 0 ? (
+              <div>
+                <h3 className="font-display font-extrabold text-2xl md:text-4xl mb-4 md:mb-8">
+                  Community Sponsors
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-8">
+                  {sponsors.community!.map((sponsor) => {
+                    return (
+                      <GridCell key={sponsor.name}>
+                        <GridCellLink to={sponsor.link}>
+                          <div className="flex w-full p-12 sm:p-8 xl:p-12">
+                            <span className="sr-only">{sponsor.name}</span>
+                            <img
+                              src={sponsor.imgSrc}
+                              alt=""
+                              className="block w-full h-auto object-center object-contain"
+                            />
+                          </div>
+                        </GridCellLink>
+                      </GridCell>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+          </section>
         </div>
       </div>
     </section>
   );
 }
 
-function SponsorGridCell({
-  className,
+function GridCell({
   children,
-}: React.PropsWithChildren<{ className: string }>) {
+  bgColor = "default",
+}: React.PropsWithChildren<{ bgColor?: "default" | "blue" }>) {
   return (
     <div
+      className={cx("rounded-lg sm:aspect-1 text-white outline-2", {
+        "bg-gray-900": bgColor === "default",
+        "bg-blue-brand": bgColor === "blue",
+      })}
+    >
+      {children}
+    </div>
+  );
+}
+
+function GridCellLink({
+  to,
+  children,
+  hoverColor = "default",
+}: {
+  to: string;
+  children: React.ReactNode;
+  hoverColor?: "default" | "blue";
+}) {
+  return (
+    <Link
+      to={to}
       className={cx(
-        className,
-        "relative rounded-lg before:content-[''] before:block before:pb-[100%]"
+        "w-full h-full flex items-center justify-center rounded-[inherit] outline-offset-2 outline-blue-brand focus-visible:outline focus-visible:outline-2 border-[1px] border-transparent transition-colors",
+        {
+          "hover:border-blue-300": hoverColor === "blue",
+          "hover:border-gray-400": hoverColor === "default",
+        }
       )}
     >
-      <div className="absolute top-0 left-0 w-full h-full p-8 2xl:p-10 flex items-center justify-center">
-        {children}
-      </div>
-    </div>
+      {children}
+    </Link>
   );
 }
 
