@@ -52,6 +52,7 @@ interface Speaker {
   tagLine: string | null;
   link: string | null;
   imgUrl: string | null;
+  twitterHandle: string | null;
 }
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -191,30 +192,62 @@ function EarlySponsors() {
   return (
     <section className="relative my-10 sm:my-14 lg:my-24 xl:my-28">
       <div className="container">
-        <div className="max-w-xl xl:max-w-none mx-auto xl:mx-0 flex flex-col w-full gap-20">
+        <div className="max-w-xl md:max-w-2xl xl:max-w-none mx-auto xl:mx-0 flex flex-col w-full gap-20 sm:gap-28 xl:gap-36">
           {speakers.length > 0 ? (
             <section>
               <h2 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
                 Speakers
               </h2>
-              <div className="max-w-sm sm:max-w-none mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+              <div className="max-w-sm sm:max-w-none mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-8">
                 {speakers.map((speaker) => {
                   let child = (
-                    <div className="flex w-full rounded-[inherit] overflow-hidden">
-                      <span className="sr-only">{speaker.nameFull}</span>
+                    <div className="flex flex-col gap-4 w-full rounded-[inherit] overflow-hidden p-4">
                       {speaker.imgUrl ? (
                         <img
                           src={speaker.imgUrl}
                           alt=""
-                          className="block w-full h-auto object-center object-contain"
+                          className="block w-full aspect-1 object-center object-contain saturate-50 group-hover/link:saturate-100 transition-all duration-1000"
                         />
-                      ) : null}
+                      ) : (
+                        <div
+                          aria-hidden
+                          className="flex w-full aspect-1 font-extrabold text-center items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-gray-400 select-none leading-1 text-6xl md:text-4xl xl:text-5xl"
+                        >
+                          {getInitials(speaker.nameFull)}
+                        </div>
+                      )}
+                      <div>
+                        <h3
+                          className="font-semibold"
+                          id={`speaker-${speaker.id}-name`}
+                        >
+                          {speaker.nameFull}
+                        </h3>
+                        {speaker.twitterHandle ? (
+                          <p
+                            className="text-sm text-gray-300"
+                            id={`speaker-${speaker.id}-twitter`}
+                          >
+                            {speaker.twitterHandle}
+                          </p>
+                        ) : null}
+                      </div>
                     </div>
                   );
                   return (
                     <GridCell key={speaker.id} type="speaker">
                       {speaker.link ? (
-                        <GridCellLink to={speaker.link}>{child}</GridCellLink>
+                        <GridCellLink
+                          to={speaker.link}
+                          labelledBy={`speaker-${speaker.id}-name`}
+                          describedBy={
+                            speaker.twitterHandle
+                              ? `speaker-${speaker.id}-twitter`
+                              : undefined
+                          }
+                        >
+                          {child}
+                        </GridCellLink>
                       ) : (
                         child
                       )}
@@ -368,21 +401,27 @@ function GridCellLink({
   to,
   children,
   hoverColor = "default",
+  labelledBy,
+  describedBy,
 }: {
   to: string;
   children: React.ReactNode;
   hoverColor?: "default" | "blue";
+  labelledBy?: string;
+  describedBy?: string;
 }) {
   return (
     <Link
       to={to}
       className={cx(
-        "w-full h-full flex items-center justify-center rounded-[inherit] outline-offset-2 outline-blue-brand focus-visible:outline focus-visible:outline-2 border-[1px] border-transparent transition-colors",
+        "group/link w-full h-full flex justify-center rounded-[inherit] outline-offset-2 outline-blue-brand focus-visible:outline focus-visible:outline-2 border-[1px] border-transparent transition-colors",
         {
           "hover:border-blue-300": hoverColor === "blue",
           "hover:border-gray-400": hoverColor === "default",
         }
       )}
+      aria-labelledby={labelledBy || undefined}
+      aria-describedby={describedBy || undefined}
     >
       {children}
     </Link>
@@ -885,6 +924,9 @@ function getSpeaker(speaker: SessionizeSpeakerData): Speaker {
   let link = getSpeakerLink(speaker);
   let tagLine = getSpeakerTagLine(speaker);
   let imgUrl = speaker.profilePicture ? String(speaker.profilePicture) : null;
+  let twitterHandle = link?.includes("twitter.com")
+    ? "@" + getTwitterHandle(link)
+    : null;
   let validatedSpeaker: Speaker = {
     id,
     tagLine,
@@ -893,6 +935,7 @@ function getSpeaker(speaker: SessionizeSpeakerData): Speaker {
     nameLast,
     nameFull,
     imgUrl,
+    twitterHandle,
   };
   return validatedSpeaker;
 }
@@ -995,4 +1038,17 @@ function getSpeakerTagLine(speaker: SessionizeSpeakerData) {
 
 function isNotEmpty<T>(value: T | null | undefined): value is T {
   return value != null;
+}
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase())
+    .join("");
+}
+
+function getTwitterHandle(url: string) {
+  let match = url.match(/twitter\.com\/([^/]+)/);
+  return match?.[1] || null;
 }
