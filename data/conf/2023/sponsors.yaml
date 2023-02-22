@@ -1,18 +1,3 @@
-- name: "Netlify"
-  link: "https://www.netlify.com"
-  imgSrc: "/conf-images/2023/sponsors/netlify.svg"
-  level: "premier"
-
-- name: "Storyblok"
-  link: "https://www.storyblok.com"
-  imgSrc: "/conf-images/2023/sponsors/storyblok.svg"
-  level: "gold"
-
-- name: "Cockroach Labs"
-  link: "https://www.cockroachlabs.com/product"
-  imgSrc: "/conf-images/2023/sponsors/cockroachlabs.png"
-  level: "gold"
-
 - name: "Nx"
   link: "https://nx.dev"
   imgSrc: "/conf-images/2023/sponsors/nx.svg"
@@ -20,10 +5,30 @@
 
 - name: "Fly.io"
   link: "https://fly.io"
-  imgSrc: "/conf-images/sponsors/fly.png"
+  imgSrc: "/conf-images/2023/sponsors/fly.svg"
   level: "gold"
+
+- name: "Vercel"
+  link: "https://vercel.com"
+  imgSrc: "/conf-images/2023/sponsors/vercel.svg"
+  level: "gold"
+
+- name: "Storyblok"
+  link: "https://www.storyblok.com"
+  imgSrc: "/conf-images/2023/sponsors/storyblok.svg"
+  level: "silver"
+
+- name: "Cockroach Labs"
+  link: "https://www.cockroachlabs.com/product"
+  imgSrc: "/conf-images/2023/sponsors/cockroachlabs.png"
+  level: "silver"
 
 - name: "Seasoned"
   link: "https://www.seasoned.cc/remix"
   imgSrc: "/conf-images/2023/sponsors/seasoned.png"
   level: "silver"
+
+- name: "Netlify"
+  link: "https://www.netlify.com"
+  imgSrc: "/conf-images/2023/sponsors/netlify.svg"
+  level: "community"

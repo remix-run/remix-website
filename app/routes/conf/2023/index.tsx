@@ -14,6 +14,7 @@ import {
 import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
 import { getSponsors } from "~/utils/conf.server";
+import type { Sponsor, SponsorLevel } from "~/utils/conf";
 import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
 
@@ -43,13 +44,78 @@ export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
+interface Speaker {
+  id: string;
+  nameFirst: string;
+  nameLast: string;
+  nameFull: string;
+  tagLine: string | null;
+  link: string | null;
+  imgUrl: string | null;
+  twitterHandle: string | null;
+}
+
 export const loader = async ({ request }: LoaderArgs) => {
-  const allSponsors = (await getSponsors(2023)).sort(() => Math.random() - 0.5);
+  let speakers: Speaker[] = [];
+
+  try {
+    let fetched = await fetch(
+      "https://sessionize.com/api/v2/s8ds2hnu/view/Speakers",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!fetched.ok) {
+      throw new Error(
+        "Error fetching speakers, responded with status: " + fetched.status
+      );
+    }
+    let json: unknown = await fetched.json();
+    if (!json || !Array.isArray(json)) {
+      throw new Error(
+        "Error fetching speakers. Expected an array, received:\n\n" + json
+      );
+    }
+
+    speakers = json
+      .map((speaker: unknown) => {
+        try {
+          validateSessionizeSpeakerData(speaker);
+        } catch (error) {
+          console.warn(
+            "Invalid speaker object; skipping.\n\nSee API settings to ensure expected data is included: https://sessionize.com/app/organizer/schedule/api/endpoint/9617/7818\n\n",
+            "Received:\n",
+            speaker
+          );
+          return null;
+        }
+        return getSpeaker(speaker);
+      })
+      .filter(isNotEmpty);
+  } catch (err) {
+    // Don't blow up the whole page if we can't fetch speakers
+    console.error(err);
+  }
+
+  let allSponsors = await getSponsors(2023);
+  let sponsors: Partial<Record<SponsorLevel, Sponsor[]>> = {};
+  for (let sponsor of allSponsors.sort(randomSort)) {
+    let level = sponsor.level;
+    sponsors[level] ??= [];
+    sponsors[level]!.push(sponsor);
+  }
 
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
   return json(
-    { siteUrl, sponsors: allSponsors },
+    {
+      siteUrl,
+      sponsors,
+      speakers: speakers.sort(randomSort),
+    },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
 };
@@ -62,7 +128,7 @@ export const headers: HeadersFunction = () => {
 
 export default function ConfIndex() {
   return (
-    <div x-comp="Index" className="w-full overflow-x-hidden">
+    <div className="w-full overflow-x-hidden">
       <Hero />
       <EarlySponsors />
     </div>
@@ -121,57 +187,244 @@ function Hero() {
 }
 
 function EarlySponsors() {
-  const { sponsors } = useLoaderData<typeof loader>();
+  let { sponsors, speakers } = useLoaderData<typeof loader>();
+  let premierSponsor = sponsors.premier?.[0];
   return (
     <section className="relative my-10 sm:my-14 lg:my-24 xl:my-28">
       <div className="container">
-        <div className="max-w-xl xl:max-w-none mx-auto xl:mx-0">
-          <h2 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
-            Sponsors
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-            {sponsors.map((s) => (
-              <SponsorGridCell key={s.name} className="bg-gray-900">
-                <a
-                  className="flex w-full p-4 md:p-8"
-                  href={s.link}
-                  aria-label={s.name}
-                >
-                  <img src={s.imgSrc} alt="" className="block w-full h-auto" />
-                </a>
-              </SponsorGridCell>
-            ))}
-            <SponsorGridCell className="bg-blue-brand text-white font-bold text-xl xl:text-3xl">
-              <div>
-                Your Company Here?
-                <br />
-                <Link to="sponsor" className="underline">
-                  Let's Talk.
-                </Link>
+        <div className="max-w-xl md:max-w-2xl xl:max-w-none mx-auto xl:mx-0 flex flex-col w-full gap-20 sm:gap-28 xl:gap-36">
+          {speakers.length > 0 ? (
+            <section>
+              <h2 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
+                Speakers
+              </h2>
+              <div className="max-w-sm sm:max-w-none mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-8">
+                {speakers.map((speaker) => {
+                  let child = (
+                    <div className="flex flex-col gap-4 w-full rounded-[inherit] overflow-hidden p-4">
+                      {speaker.imgUrl ? (
+                        <img
+                          src={speaker.imgUrl}
+                          alt=""
+                          className="block w-full aspect-1 object-center object-contain saturate-50 group-hover/link:saturate-100 transition-all duration-1000"
+                        />
+                      ) : (
+                        <div
+                          aria-hidden
+                          className="flex w-full aspect-1 font-extrabold text-center items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-gray-400 select-none leading-1 text-6xl md:text-4xl xl:text-5xl"
+                        >
+                          {getInitials(speaker.nameFull)}
+                        </div>
+                      )}
+                      <div>
+                        <h3
+                          className="font-semibold"
+                          id={`speaker-${speaker.id}-name`}
+                        >
+                          {speaker.nameFull}
+                        </h3>
+                        {speaker.twitterHandle ? (
+                          <p
+                            className="text-sm text-gray-300"
+                            id={`speaker-${speaker.id}-twitter`}
+                          >
+                            {speaker.twitterHandle}
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                  return (
+                    <GridCell key={speaker.id} type="speaker">
+                      {speaker.link ? (
+                        <GridCellLink
+                          to={speaker.link}
+                          labelledBy={`speaker-${speaker.id}-name`}
+                          describedBy={
+                            speaker.twitterHandle
+                              ? `speaker-${speaker.id}-twitter`
+                              : undefined
+                          }
+                        >
+                          {child}
+                        </GridCellLink>
+                      ) : (
+                        child
+                      )}
+                    </GridCell>
+                  );
+                })}
               </div>
-            </SponsorGridCell>
-          </div>
+            </section>
+          ) : null}
+
+          <section className="flex flex-col gap-20 lg:gap-36">
+            <h2 className="sr-only">Sponsors</h2>
+            {premierSponsor ? (
+              <div>
+                <h3 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
+                  Premier Sponsor
+                </h3>
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                  <GridCell type="sponsor">
+                    <GridCellLink to={premierSponsor.link}>
+                      <div className="flex w-full p-12 md:p-14 lg:p-16 2xl:p-20">
+                        <span className="sr-only">{premierSponsor.name}</span>
+                        <img
+                          src={premierSponsor.imgSrc}
+                          alt=""
+                          className="block w-full h-auto object-center object-contain"
+                        />
+                      </div>
+                    </GridCellLink>
+                  </GridCell>
+                </div>
+              </div>
+            ) : null}
+
+            <div>
+              <h3 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-yellow-brand">
+                Gold Sponsors
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                {sponsors.gold?.map((sponsor) => {
+                  return (
+                    <GridCell key={sponsor.name} type="sponsor">
+                      <GridCellLink to={sponsor.link}>
+                        <div className="flex w-full p-12 md:p-14 lg:p-16 2xl:p-20">
+                          <span className="sr-only">{sponsor.name}</span>
+                          <img
+                            src={sponsor.imgSrc}
+                            alt=""
+                            className="block w-full h-auto object-center object-contain"
+                          />
+                        </div>
+                      </GridCellLink>
+                    </GridCell>
+                  );
+                })}
+                <GridCell bgColor="blue" type="sponsor">
+                  <GridCellLink to="sponsor" hoverColor="blue">
+                    <div className="h-full w-full flex items-center justify-center p-8 2xl:p-10 font-bold text-xl xl:text-3xl text-left">
+                      <div>
+                        Your Company Here?{" "}
+                        <span className="underline whitespace-nowrap">
+                          Let's Talk.
+                        </span>
+                      </div>
+                    </div>
+                  </GridCellLink>
+                </GridCell>
+              </div>
+            </div>
+
+            {(sponsors.silver?.length || 0) > 0 ? (
+              <div>
+                <h3 className="font-display font-extrabold text-3xl md:text-5xl mb-4 md:mb-8 text-pink-brand">
+                  Silver Sponsors
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {sponsors.silver!.map((sponsor) => {
+                    return (
+                      <GridCell key={sponsor.name} type="sponsor">
+                        <GridCellLink to={sponsor.link}>
+                          <div className="flex w-full p-12 md:p-14 lg:p-8 xl:p-12 2xl:p-20">
+                            <span className="sr-only">{sponsor.name}</span>
+                            <img
+                              src={sponsor.imgSrc}
+                              alt=""
+                              className="block w-full h-auto object-center object-contain"
+                            />
+                          </div>
+                        </GridCellLink>
+                      </GridCell>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+
+            {(sponsors.community?.length || 0) > 0 ? (
+              <div>
+                <h3 className="font-display font-extrabold text-2xl md:text-4xl mb-4 md:mb-8">
+                  Community Sponsors
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-8">
+                  {sponsors.community!.map((sponsor) => {
+                    return (
+                      <GridCell key={sponsor.name} type="sponsor">
+                        <GridCellLink to={sponsor.link}>
+                          <div className="flex w-full p-12 sm:p-8 xl:p-12">
+                            <span className="sr-only">{sponsor.name}</span>
+                            <img
+                              src={sponsor.imgSrc}
+                              alt=""
+                              className="block w-full h-auto object-center object-contain"
+                            />
+                          </div>
+                        </GridCellLink>
+                      </GridCell>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+          </section>
         </div>
       </div>
     </section>
   );
 }
 
-function SponsorGridCell({
-  className,
+function GridCell({
   children,
-}: React.PropsWithChildren<{ className: string }>) {
+  bgColor = "default",
+  type,
+}: React.PropsWithChildren<{
+  bgColor?: "default" | "blue";
+  type: "sponsor" | "speaker";
+}>) {
   return (
     <div
-      className={cx(
-        className,
-        "relative rounded-lg before:content-[''] before:block before:pb-[100%]"
-      )}
+      className={cx("rounded-lg text-white outline-2", {
+        "bg-gray-900": bgColor === "default",
+        "bg-blue-brand": bgColor === "blue",
+        "sm:aspect-1": type === "sponsor",
+      })}
     >
-      <div className="absolute top-0 left-0 w-full h-full p-8 2xl:p-10 flex items-center justify-center">
-        {children}
-      </div>
+      {children}
     </div>
+  );
+}
+
+function GridCellLink({
+  to,
+  children,
+  hoverColor = "default",
+  labelledBy,
+  describedBy,
+}: {
+  to: string;
+  children: React.ReactNode;
+  hoverColor?: "default" | "blue";
+  labelledBy?: string;
+  describedBy?: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className={cx(
+        "group/link w-full h-full flex justify-center rounded-[inherit] outline-offset-2 outline-blue-brand focus-visible:outline focus-visible:outline-2 border-[1px] border-transparent transition-colors",
+        {
+          "hover:border-blue-300": hoverColor === "blue",
+          "hover:border-gray-400": hoverColor === "default",
+        }
+      )}
+      aria-labelledby={labelledBy || undefined}
+      aria-describedby={describedBy || undefined}
+    >
+      {children}
+    </Link>
   );
 }
 
@@ -663,4 +916,139 @@ function LogoRemixHero(props: React.ComponentPropsWithoutRef<"svg">) {
       </defs>
     </svg>
   );
+}
+
+function getSpeaker(speaker: SessionizeSpeakerData): Speaker {
+  let id = String(speaker.id);
+  let { nameFirst, nameLast, nameFull } = getSpeakerNames(speaker);
+  let link = getSpeakerLink(speaker);
+  let tagLine = getSpeakerTagLine(speaker);
+  let imgUrl = speaker.profilePicture ? String(speaker.profilePicture) : null;
+  let twitterHandle = link?.includes("twitter.com")
+    ? "@" + getTwitterHandle(link)
+    : null;
+  let validatedSpeaker: Speaker = {
+    id,
+    tagLine,
+    link,
+    nameFirst,
+    nameLast,
+    nameFull,
+    imgUrl,
+    twitterHandle,
+  };
+  return validatedSpeaker;
+}
+
+function randomSort() {
+  return Math.random() - 0.5;
+}
+
+interface SessionizeSpeakerData {
+  id: number | string;
+  firstName: string | null;
+  lastName: string | null;
+  fullName: string | null;
+  tagLine: string | null;
+  links: Array<{
+    title: string;
+    linkType: "Twitter" | "LinkedIn" | "Blog" | "Company_Website";
+    url: string;
+  }> | null;
+  questionAnswers: Array<{
+    question: string;
+    answer: string | null;
+  }> | null;
+  profilePicture: string | null;
+}
+
+function validateSessionizeSpeakerData(
+  data: unknown
+): asserts data is SessionizeSpeakerData {
+  if (
+    data == null ||
+    typeof data !== "object" ||
+    !("id" in data) ||
+    !("firstName" in data) ||
+    !("lastName" in data) ||
+    !("fullName" in data) ||
+    !("tagLine" in data) ||
+    !("links" in data) ||
+    !("questionAnswers" in data) ||
+    !("profilePicture" in data) ||
+    (data.links != null && !Array.isArray(data.links)) ||
+    (data.questionAnswers != null && !Array.isArray(data.questionAnswers))
+  ) {
+    throw new Error("Invalid speaker data");
+  }
+}
+
+function getSpeakerNames(speaker: SessionizeSpeakerData) {
+  let preferredName = speaker.questionAnswers?.find(
+    (qa) => qa.question === "Preferred Name"
+  )?.answer;
+  let nameFirst: string;
+  let nameLast = speaker.lastName ? String(speaker.lastName).trim() : "";
+  if (preferredName) {
+    nameFirst = preferredName.includes(nameLast)
+      ? preferredName.slice(0, preferredName.indexOf(nameLast)).trim()
+      : preferredName.trim();
+  } else {
+    nameFirst = speaker.firstName ? String(speaker.firstName).trim() : "";
+  }
+  let nameFull = [nameFirst, nameLast].filter(Boolean).join(" ");
+
+  return {
+    nameFirst,
+    nameLast,
+    nameFull,
+    preferredName,
+  };
+}
+
+function getSpeakerLink(speaker: SessionizeSpeakerData) {
+  type LinkType = "Twitter" | "LinkedIn" | "Blog" | "Company_Website";
+  let links: Partial<Record<LinkType, string>> = {};
+  for (let link of speaker.links || []) {
+    links[link.linkType] = link.url;
+  }
+  return (
+    links["Twitter"] ||
+    links["Blog"] ||
+    links["LinkedIn"] ||
+    links["Company_Website"] ||
+    null
+  );
+}
+
+function getSpeakerTagLine(speaker: SessionizeSpeakerData) {
+  if (speaker.tagLine) {
+    return speaker.tagLine.trim();
+  }
+  let jobTitle: string | undefined | null;
+  if (
+    (jobTitle = speaker.questionAnswers?.find(
+      (qa) => qa.question === "Current Job Title"
+    )?.answer)
+  ) {
+    return jobTitle.trim();
+  }
+  return null;
+}
+
+function isNotEmpty<T>(value: T | null | undefined): value is T {
+  return value != null;
+}
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase())
+    .join("");
+}
+
+function getTwitterHandle(url: string) {
+  let match = url.match(/twitter\.com\/([^/]+)/);
+  return match?.[1] || null;
 }
