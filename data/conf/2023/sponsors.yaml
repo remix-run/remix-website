@@ -1,8 +1,3 @@
-- name: "Nx"
-  link: "https://nx.dev"
-  imgSrc: "/conf-images/2023/sponsors/nx.svg"
-  level: "gold"
-
 - name: "Fly.io"
   link: "https://fly.io"
   imgSrc: "/conf-images/2023/sponsors/fly.svg"
@@ -12,6 +7,11 @@
   link: "https://vercel.com"
   imgSrc: "/conf-images/2023/sponsors/vercel.svg"
   level: "gold"
+
+- name: "Nx"
+  link: "https://nx.dev"
+  imgSrc: "/conf-images/2023/sponsors/nx.svg"
+  level: "silver"
 
 - name: "Storyblok"
   link: "https://www.storyblok.com"
@@ -31,4 +31,9 @@
 - name: "Netlify"
   link: "https://www.netlify.com"
   imgSrc: "/conf-images/2023/sponsors/netlify.svg"
+  level: "community"
+
+- name: "Sentry"
+  link: "https://sentry.io"
+  imgSrc: "/conf-images/2023/sponsors/sentry.svg"
   level: "community"
