@@ -17,6 +17,8 @@ import { getSponsors } from "~/utils/conf.server";
 import type { Sponsor, SponsorLevel } from "~/utils/conf";
 import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
+import { getSpeakers } from "~/utils/conf2023.server";
+import type { Speaker } from "~/utils/conf2023.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data: { siteUrl } }) => {
   let url = `${siteUrl}/conf`;
@@ -44,57 +46,11 @@ export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
-interface Speaker {
-  id: string;
-  nameFirst: string;
-  nameLast: string;
-  nameFull: string;
-  tagLine: string | null;
-  link: string | null;
-  imgUrl: string | null;
-  twitterHandle: string | null;
-}
-
 export const loader = async ({ request }: LoaderArgs) => {
   let speakers: Speaker[] = [];
 
   try {
-    let fetched = await fetch(
-      "https://sessionize.com/api/v2/s8ds2hnu/view/Speakers",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!fetched.ok) {
-      throw new Error(
-        "Error fetching speakers, responded with status: " + fetched.status
-      );
-    }
-    let json: unknown = await fetched.json();
-    if (!json || !Array.isArray(json)) {
-      throw new Error(
-        "Error fetching speakers. Expected an array, received:\n\n" + json
-      );
-    }
-
-    speakers = json
-      .map((speaker: unknown) => {
-        try {
-          validateSessionizeSpeakerData(speaker);
-        } catch (error) {
-          console.warn(
-            "Invalid speaker object; skipping.\n\nSee API settings to ensure expected data is included: https://sessionize.com/app/organizer/schedule/api/endpoint/9617/7818\n\n",
-            "Received:\n",
-            speaker
-          );
-          return null;
-        }
-        return getSpeaker(speaker);
-      })
-      .filter(isNotEmpty);
+    speakers = await getSpeakers();
   } catch (err) {
     // Don't blow up the whole page if we can't fetch speakers
     console.error(err);
@@ -114,15 +70,17 @@ export const loader = async ({ request }: LoaderArgs) => {
     {
       siteUrl,
       sponsors,
-      speakers: speakers.sort(randomSort),
+      speakers: speakers.sort((a, b) =>
+        a.isTopSpeaker ? -1 : b.isTopSpeaker ? 1 : randomSort()
+      ),
     },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
+    { headers: { "Cache-Control": CACHE_CONTROL.conf } }
   );
 };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
+    "Cache-Control": CACHE_CONTROL.conf,
   };
 };
 
@@ -138,7 +96,7 @@ export default function ConfIndex() {
 function Hero() {
   return (
     <Fragment>
-      <section className="__hero bg-black relative pb-10 pt-40 sm:pb-16 sm:pt-48 md:pb-24 md:pt-52 lg:pb-32 lg:pt-64 w-full">
+      <section className="__hero bg-black flex relative pb-10 pt-32 sm:pb-16 sm:pt-32 md:pb-24 md:pt-32 lg:py-32 lg:items-center lg:min-h-[min(100vh,900px)] w-full">
         <div className="__fx-wrapper">
           <div className="__fx-lights"></div>
           <div className="__fx-twinkle"></div>
@@ -146,12 +104,14 @@ function Hero() {
         </div>
         <div className="container relative">
           <div className="flex flex-col xl:flex-row-reverse items-center xl:justify-between">
-            <LogoRemixHero
-              role="img"
-              aria-label="Remix Conf 2023"
-              focusable="false"
-              className="flex-auto w-full h-auto max-w-md md:max-w-lg xl:max-w-xl mx-auto xl:mx-0"
-            />
+            <div className="flex flex-col items-center justify-center flex-auto w-full max-w-md md:max-w-lg xl:max-w-xl mx-auto xl:mx-0">
+              <LogoRemixHero
+                role="img"
+                aria-label="Remix Conf 2023"
+                focusable="false"
+                className="w-full h-auto"
+              />
+            </div>
             <div className="max-w-xl mx-auto md:mx-0">
               <h1 className="font-display font-extrabold text-4xl md:text-7xl">
                 <div className="text-white">May 9th-11th</div>
@@ -167,13 +127,13 @@ function Hero() {
               <div className="flex flex-col gap-4 md:flex-row items-center">
                 <a
                   href="https://rmx.as/tickets"
-                  className={`${outlineSecondaryButtonLinkClass} w-full md:w-auto`}
+                  className={`${outlineSecondaryButtonLinkClass} w-full md:w-[50%] xl:w-auto`}
                 >
                   Buy Tickets
                 </a>
                 <Link
                   to="sponsor"
-                  className={`${secondaryButtonLinkClass} w-full md:w-auto`}
+                  className={`${secondaryButtonLinkClass} w-full md:w-[50%] xl:w-auto`}
                 >
                   Become a Sponsor
                 </Link>
@@ -190,9 +150,23 @@ function EarlySponsors() {
   let { sponsors, speakers } = useLoaderData<typeof loader>();
   let premierSponsor = sponsors.premier?.[0];
   return (
-    <section className="relative my-10 sm:my-14 lg:my-24 xl:my-28">
+    <section className="relative">
       <div className="container">
         <div className="max-w-xl md:max-w-2xl xl:max-w-none mx-auto xl:mx-0 flex flex-col w-full gap-20 sm:gap-28 xl:gap-36">
+          <div className="flex flex-col justify-center items-center text-center">
+            <p className="font-display font-extrabold text-2xl md:text-4xl mb-4 md:mb-8">
+              Presented by<span className="sr-only"> Shopify</span>
+            </p>
+            <div className="w-72 sm:w-80 xl:w-96 max-w-full">
+              <GridCell>
+                <GridCellLink to=".">
+                  <div className="flex w-full p-12 md:p-14 lg:p-16 2xl:p-20">
+                    <LogoShopify className="w-full h-auto" aria-hidden />
+                  </div>
+                </GridCellLink>
+              </GridCell>
+            </div>
+          </div>
           {speakers.length > 0 ? (
             <section>
               <h2 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
@@ -203,11 +177,16 @@ function EarlySponsors() {
                   let child = (
                     <div className="flex flex-col gap-4 w-full rounded-[inherit] overflow-hidden p-4">
                       {speaker.imgUrl ? (
-                        <img
-                          src={speaker.imgUrl}
-                          alt=""
-                          className="block w-full aspect-1 object-center object-contain saturate-50 group-hover/link:saturate-100 transition-all duration-1000"
-                        />
+                        <div
+                          aria-hidden
+                          className="w-full aspect-1 border-[1px] border-gray-600 bg-gray-800"
+                        >
+                          <img
+                            src={speaker.imgUrl}
+                            alt=""
+                            className="block object-center object-contain saturate-50 group-hover/link:saturate-100 transition-all duration-1000"
+                          />
+                        </div>
                       ) : (
                         <div
                           aria-hidden
@@ -382,7 +361,7 @@ function GridCell({
   type,
 }: React.PropsWithChildren<{
   bgColor?: "default" | "blue";
-  type: "sponsor" | "speaker";
+  type?: "sponsor" | "speaker";
 }>) {
   return (
     <div
@@ -425,6 +404,36 @@ function GridCellLink({
     >
       {children}
     </Link>
+  );
+}
+
+function LogoShopify(props: React.ComponentPropsWithoutRef<"svg">) {
+  return (
+    <svg
+      width="215"
+      height="61"
+      viewBox="0 0 215 61"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M46.3758 11.5534C46.3342 11.2504 46.0695 11.0823 45.8498 11.064C45.6318 11.0457 41.3604 10.9808 41.3604 10.9808C41.3604 10.9808 37.7881 7.51175 37.4352 7.15885C37.0824 6.80596 36.3932 6.91249 36.1252 6.99239C36.1219 6.99406 35.4544 7.20047 34.3308 7.54837C34.1427 6.93913 33.8663 6.19005 33.4718 5.43765C32.2001 3.01066 30.3374 1.72725 28.0868 1.72393C28.0835 1.72393 28.0818 1.72393 28.0785 1.72393C27.922 1.72393 27.7672 1.73891 27.6108 1.75222C27.5442 1.67232 27.4776 1.59409 27.4077 1.51751C26.4272 0.468815 25.1705 -0.0422181 23.664 0.00272613C20.7576 0.0859563 17.8629 2.18502 15.5158 5.91373C13.8645 8.53714 12.6077 11.8331 12.2515 14.3849C8.91395 15.4186 6.58017 16.141 6.52857 16.1577C4.84399 16.687 4.79073 16.7386 4.571 18.3267C4.40787 19.5268 0 53.6113 0 53.6113L36.9392 60L52.9493 56.0199C52.9493 56.0199 46.4174 11.8564 46.3758 11.5534ZM32.4814 8.12099C31.6308 8.384 30.6636 8.68363 29.6149 9.00823C29.5933 7.53672 29.4185 5.48926 28.7327 3.71978C30.9383 4.1376 32.0236 6.63284 32.4814 8.12099ZM27.6823 9.60748C25.7464 10.2067 23.634 10.8609 21.515 11.5168C22.1109 9.23461 23.2412 6.96243 24.6295 5.47261C25.1455 4.9183 25.8679 4.30073 26.7235 3.94783C27.5275 5.62575 27.7023 8.00114 27.6823 9.60748ZM23.7222 1.93699C24.4047 1.92201 24.979 2.07183 25.4701 2.39476C24.6844 2.80259 23.9253 3.38853 23.2129 4.15258C21.3668 6.13346 19.9519 9.20798 19.3876 12.1743C17.6281 12.7186 15.9069 13.253 14.3222 13.7424C15.3227 9.07315 19.2361 2.06683 23.7222 1.93699Z"
+        fill="#95BF47"
+      />
+      <path
+        d="M45.8514 11.0657C45.6334 11.0474 41.362 10.9825 41.362 10.9825C41.362 10.9825 37.7898 7.51344 37.4369 7.16055C37.3054 7.02904 37.1273 6.96079 36.9408 6.9325L36.9425 59.9984L52.951 56.02C52.951 56.02 46.4191 11.8581 46.3775 11.5551C46.3358 11.2521 46.0695 11.084 45.8514 11.0657Z"
+        fill="#5E8E3E"
+      />
+      <path
+        d="M28.0668 19.2972L26.2075 26.2535C26.2075 26.2535 24.1334 25.3097 21.6748 25.4645C18.0692 25.6926 18.0309 27.9664 18.0676 28.5374C18.264 31.6485 26.4488 32.3277 26.9083 39.6153C27.2695 45.3482 23.867 49.27 18.9648 49.5796C13.0804 49.9508 9.84109 46.4801 9.84109 46.4801L11.0879 41.1767C11.0879 41.1767 14.3488 43.637 16.9589 43.4722C18.6635 43.364 19.2727 41.9774 19.2111 40.9969C18.9548 36.9386 12.2897 37.1783 11.8686 30.5099C11.514 24.8986 15.1995 19.2123 23.331 18.6996C26.4638 18.4982 28.0668 19.2972 28.0668 19.2972Z"
+        fill="#fff"
+      />
+      <path
+        d="M74.0322 33.8637C72.1913 32.8648 71.2452 32.0228 71.2452 30.8654C71.2452 29.3927 72.5594 28.4466 74.6117 28.4466C77.0007 28.4466 79.1338 29.4455 79.1338 29.4455L80.8162 24.291C80.8162 24.291 79.2692 23.0808 74.7157 23.0808C68.379 23.0808 63.9873 26.7097 63.9873 31.8114C63.9873 34.704 66.0379 36.9131 68.7736 38.4898C70.9827 39.7512 71.7719 40.6461 71.7719 41.9603C71.7719 43.3274 70.6674 44.4319 68.6168 44.4319C65.5607 44.4319 62.6747 42.8535 62.6747 42.8535L60.8867 48.008C60.8867 48.008 63.5531 49.7961 68.0389 49.7961C74.5605 49.7961 79.2412 46.5881 79.2412 40.8029C79.2395 37.7023 76.8736 35.4932 74.0322 33.8637Z M100.013 23.0296C96.8048 23.0296 94.2804 24.5552 92.3355 26.8683L92.2298 26.8154L95.0167 12.2484H87.7588L80.7122 49.3239H87.9701L90.3889 36.6506C91.3349 31.8643 93.8065 28.9205 96.1213 28.9205C97.7508 28.9205 98.3832 30.025 98.3832 31.6034C98.3832 32.6023 98.2775 33.8125 98.0678 34.8114L95.3337 49.3256H102.592L105.431 34.3375C105.747 32.7591 105.958 30.8671 105.958 29.604C105.955 25.5012 103.799 23.0296 100.013 23.0296Z M122.363 23.0296C113.632 23.0296 107.849 30.9183 107.849 39.7001C107.849 45.3268 111.319 49.849 117.841 49.849C126.413 49.849 132.198 42.1717 132.198 33.1785C132.198 27.9728 129.147 23.0296 122.363 23.0296ZM118.787 44.2767C116.315 44.2767 115.263 42.1733 115.263 39.5432C115.263 35.3892 117.42 28.6052 121.364 28.6052C123.941 28.6052 124.781 30.8142 124.781 32.9705C124.781 37.4398 122.627 44.2767 118.787 44.2767Z M150.762 23.0296C145.863 23.0296 143.083 27.3421 143.083 27.3421H142.979L143.4 23.4506H136.984C136.669 26.0807 136.089 30.0762 135.512 33.0745L130.463 59.6313H137.721L139.718 48.9029H139.877C139.877 48.9029 141.366 49.849 144.137 49.849C152.656 49.849 158.23 41.12 158.23 32.2837C158.23 27.395 156.073 23.0296 150.762 23.0296ZM143.82 44.3807C141.936 44.3807 140.821 43.329 140.821 43.329L142.031 36.545C142.873 32.0228 145.239 29.0245 147.764 29.0245C149.973 29.0245 150.656 31.0751 150.656 33.0217C150.656 37.7023 147.869 44.3807 143.82 44.3807Z M168.59 12.6166C166.277 12.6166 164.436 14.4575 164.436 16.8234C164.436 18.9797 165.803 20.4524 167.854 20.4524H167.959C170.221 20.4524 172.166 18.9268 172.219 16.2456C172.219 14.1421 170.799 12.6166 168.59 12.6166Z M158.441 49.3239H165.697L170.642 23.6091H163.331L158.441 49.3239Z M189.101 23.5563H184.052L184.314 22.3461C184.735 19.8745 186.208 17.6654 188.627 17.6654C189.918 17.6654 190.94 18.0336 190.94 18.0336L192.36 12.3541C192.36 12.3541 191.098 11.7234 188.415 11.7234C185.838 11.7234 183.263 12.4597 181.316 14.1421C178.844 16.2456 177.687 19.295 177.109 22.3461L176.9 23.5563H173.533L172.481 29.0262H175.848L172.009 49.3256H179.267L183.106 29.0262H188.102L189.101 23.5563Z M206.56 23.6092C206.56 23.6092 202.023 35.0392 199.986 41.2785H199.88C199.742 39.2692 198.092 23.6092 198.092 23.6092H190.466L194.833 47.2205C194.939 47.7456 194.886 48.0626 194.675 48.4307C193.832 50.0603 192.413 51.6387 190.73 52.7961C189.363 53.7949 187.838 54.4256 186.629 54.8466L188.627 61C190.1 60.6847 193.149 59.4745 195.726 57.0557C199.04 53.9534 202.089 49.1671 205.244 42.6455L214.132 23.6075H206.56V23.6092Z"
+        fill="#fff"
+      />
+    </svg>
   );
 }
 
@@ -918,128 +927,6 @@ function LogoRemixHero(props: React.ComponentPropsWithoutRef<"svg">) {
   );
 }
 
-function getSpeaker(speaker: SessionizeSpeakerData): Speaker {
-  let id = String(speaker.id);
-  let { nameFirst, nameLast, nameFull } = getSpeakerNames(speaker);
-  let link = getSpeakerLink(speaker);
-  let tagLine = getSpeakerTagLine(speaker);
-  let imgUrl = speaker.profilePicture ? String(speaker.profilePicture) : null;
-  let twitterHandle = link?.includes("twitter.com")
-    ? "@" + getTwitterHandle(link)
-    : null;
-  let validatedSpeaker: Speaker = {
-    id,
-    tagLine,
-    link,
-    nameFirst,
-    nameLast,
-    nameFull,
-    imgUrl,
-    twitterHandle,
-  };
-  return validatedSpeaker;
-}
-
-function randomSort() {
-  return Math.random() - 0.5;
-}
-
-interface SessionizeSpeakerData {
-  id: number | string;
-  firstName: string | null;
-  lastName: string | null;
-  fullName: string | null;
-  tagLine: string | null;
-  links: Array<{
-    title: string;
-    linkType: "Twitter" | "LinkedIn" | "Blog" | "Company_Website";
-    url: string;
-  }> | null;
-  questionAnswers: Array<{
-    question: string;
-    answer: string | null;
-  }> | null;
-  profilePicture: string | null;
-}
-
-function validateSessionizeSpeakerData(
-  data: unknown
-): asserts data is SessionizeSpeakerData {
-  if (
-    data == null ||
-    typeof data !== "object" ||
-    !("id" in data) ||
-    !("firstName" in data) ||
-    !("lastName" in data) ||
-    !("fullName" in data) ||
-    !("tagLine" in data) ||
-    !("links" in data) ||
-    !("questionAnswers" in data) ||
-    !("profilePicture" in data) ||
-    (data.links != null && !Array.isArray(data.links)) ||
-    (data.questionAnswers != null && !Array.isArray(data.questionAnswers))
-  ) {
-    throw new Error("Invalid speaker data");
-  }
-}
-
-function getSpeakerNames(speaker: SessionizeSpeakerData) {
-  let preferredName = speaker.questionAnswers?.find(
-    (qa) => qa.question === "Preferred Name"
-  )?.answer;
-  let nameFirst: string;
-  let nameLast = speaker.lastName ? String(speaker.lastName).trim() : "";
-  if (preferredName) {
-    nameFirst = preferredName.includes(nameLast)
-      ? preferredName.slice(0, preferredName.indexOf(nameLast)).trim()
-      : preferredName.trim();
-  } else {
-    nameFirst = speaker.firstName ? String(speaker.firstName).trim() : "";
-  }
-  let nameFull = [nameFirst, nameLast].filter(Boolean).join(" ");
-
-  return {
-    nameFirst,
-    nameLast,
-    nameFull,
-    preferredName,
-  };
-}
-
-function getSpeakerLink(speaker: SessionizeSpeakerData) {
-  type LinkType = "Twitter" | "LinkedIn" | "Blog" | "Company_Website";
-  let links: Partial<Record<LinkType, string>> = {};
-  for (let link of speaker.links || []) {
-    links[link.linkType] = link.url;
-  }
-  return (
-    links["Twitter"] ||
-    links["Blog"] ||
-    links["LinkedIn"] ||
-    links["Company_Website"] ||
-    null
-  );
-}
-
-function getSpeakerTagLine(speaker: SessionizeSpeakerData) {
-  if (speaker.tagLine) {
-    return speaker.tagLine.trim();
-  }
-  let jobTitle: string | undefined | null;
-  if (
-    (jobTitle = speaker.questionAnswers?.find(
-      (qa) => qa.question === "Current Job Title"
-    )?.answer)
-  ) {
-    return jobTitle.trim();
-  }
-  return null;
-}
-
-function isNotEmpty<T>(value: T | null | undefined): value is T {
-  return value != null;
-}
-
 function getInitials(name: string) {
   return name
     .split(" ")
@@ -1048,7 +935,6 @@ function getInitials(name: string) {
     .join("");
 }
 
-function getTwitterHandle(url: string) {
-  let match = url.match(/twitter\.com\/([^/]+)/);
-  return match?.[1] || null;
+function randomSort() {
+  return Math.random() - 0.5;
 }

@@ -39,13 +39,13 @@ const EARLY_BIRD_ENDING_TIME = 1646121600000;
 export const loader = async (_: LoaderArgs) => {
   return json(
     { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
+    { headers: { "Cache-Control": CACHE_CONTROL.conf } }
   );
 };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
+    "Cache-Control": CACHE_CONTROL.conf,
   };
 };
 
