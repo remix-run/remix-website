@@ -17,6 +17,8 @@ import { getSponsors } from "~/utils/conf.server";
 import type { Sponsor, SponsorLevel } from "~/utils/conf";
 import { Link } from "~/components/link";
 import { CACHE_CONTROL } from "~/utils/http.server";
+import { getSpeakers } from "~/utils/conf2023.server";
+import type { Speaker } from "~/utils/conf2023.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data: { siteUrl } }) => {
   let url = `${siteUrl}/conf`;
@@ -44,57 +46,11 @@ export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
-interface Speaker {
-  id: string;
-  nameFirst: string;
-  nameLast: string;
-  nameFull: string;
-  tagLine: string | null;
-  link: string | null;
-  imgUrl: string | null;
-  twitterHandle: string | null;
-}
-
 export const loader = async ({ request }: LoaderArgs) => {
   let speakers: Speaker[] = [];
 
   try {
-    let fetched = await fetchNaiveStaleWhileRevalidate(
-      "https://sessionize.com/api/v2/s8ds2hnu/view/Speakers",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!fetched.ok) {
-      throw new Error(
-        "Error fetching speakers, responded with status: " + fetched.status
-      );
-    }
-    let json: unknown = await fetched.json();
-    if (!json || !Array.isArray(json)) {
-      throw new Error(
-        "Error fetching speakers. Expected an array, received:\n\n" + json
-      );
-    }
-
-    speakers = json
-      .map((speaker: unknown) => {
-        try {
-          validateSessionizeSpeakerData(speaker);
-        } catch (error) {
-          console.warn(
-            "Invalid speaker object; skipping.\n\nSee API settings to ensure expected data is included: https://sessionize.com/app/organizer/schedule/api/endpoint/9617/7818\n\n",
-            "Received:\n",
-            speaker
-          );
-          return null;
-        }
-        return getSpeaker(speaker);
-      })
-      .filter(isNotEmpty);
+    speakers = await getSpeakers();
   } catch (err) {
     // Don't blow up the whole page if we can't fetch speakers
     console.error(err);
@@ -969,128 +925,6 @@ function LogoRemixHero(props: React.ComponentPropsWithoutRef<"svg">) {
   );
 }
 
-function getSpeaker(speaker: SessionizeSpeakerData): Speaker {
-  let id = String(speaker.id);
-  let { nameFirst, nameLast, nameFull } = getSpeakerNames(speaker);
-  let link = getSpeakerLink(speaker);
-  let tagLine = getSpeakerTagLine(speaker);
-  let imgUrl = speaker.profilePicture ? String(speaker.profilePicture) : null;
-  let twitterHandle = link?.includes("twitter.com")
-    ? "@" + getTwitterHandle(link)
-    : null;
-  let validatedSpeaker: Speaker = {
-    id,
-    tagLine,
-    link,
-    nameFirst,
-    nameLast,
-    nameFull,
-    imgUrl,
-    twitterHandle,
-  };
-  return validatedSpeaker;
-}
-
-function randomSort() {
-  return Math.random() - 0.5;
-}
-
-interface SessionizeSpeakerData {
-  id: number | string;
-  firstName: string | null;
-  lastName: string | null;
-  fullName: string | null;
-  tagLine: string | null;
-  links: Array<{
-    title: string;
-    linkType: "Twitter" | "LinkedIn" | "Blog" | "Company_Website";
-    url: string;
-  }> | null;
-  questionAnswers: Array<{
-    question: string;
-    answer: string | null;
-  }> | null;
-  profilePicture: string | null;
-}
-
-function validateSessionizeSpeakerData(
-  data: unknown
-): asserts data is SessionizeSpeakerData {
-  if (
-    data == null ||
-    typeof data !== "object" ||
-    !("id" in data) ||
-    !("firstName" in data) ||
-    !("lastName" in data) ||
-    !("fullName" in data) ||
-    !("tagLine" in data) ||
-    !("links" in data) ||
-    !("questionAnswers" in data) ||
-    !("profilePicture" in data) ||
-    (data.links != null && !Array.isArray(data.links)) ||
-    (data.questionAnswers != null && !Array.isArray(data.questionAnswers))
-  ) {
-    throw new Error("Invalid speaker data");
-  }
-}
-
-function getSpeakerNames(speaker: SessionizeSpeakerData) {
-  let preferredName = speaker.questionAnswers?.find(
-    (qa) => qa.question === "Preferred Name"
-  )?.answer;
-  let nameFirst: string;
-  let nameLast = speaker.lastName ? String(speaker.lastName).trim() : "";
-  if (preferredName) {
-    nameFirst = preferredName.includes(nameLast)
-      ? preferredName.slice(0, preferredName.indexOf(nameLast)).trim()
-      : preferredName.trim();
-  } else {
-    nameFirst = speaker.firstName ? String(speaker.firstName).trim() : "";
-  }
-  let nameFull = [nameFirst, nameLast].filter(Boolean).join(" ");
-
-  return {
-    nameFirst,
-    nameLast,
-    nameFull,
-    preferredName,
-  };
-}
-
-function getSpeakerLink(speaker: SessionizeSpeakerData) {
-  type LinkType = "Twitter" | "LinkedIn" | "Blog" | "Company_Website";
-  let links: Partial<Record<LinkType, string>> = {};
-  for (let link of speaker.links || []) {
-    links[link.linkType] = link.url;
-  }
-  return (
-    links["Twitter"] ||
-    links["Blog"] ||
-    links["LinkedIn"] ||
-    links["Company_Website"] ||
-    null
-  );
-}
-
-function getSpeakerTagLine(speaker: SessionizeSpeakerData) {
-  if (speaker.tagLine) {
-    return speaker.tagLine.trim();
-  }
-  let jobTitle: string | undefined | null;
-  if (
-    (jobTitle = speaker.questionAnswers?.find(
-      (qa) => qa.question === "Current Job Title"
-    )?.answer)
-  ) {
-    return jobTitle.trim();
-  }
-  return null;
-}
-
-function isNotEmpty<T>(value: T | null | undefined): value is T {
-  return value != null;
-}
-
 function getInitials(name: string) {
   return name
     .split(" ")
@@ -1099,80 +933,6 @@ function getInitials(name: string) {
     .join("");
 }
 
-function getTwitterHandle(url: string) {
-  let match = url.match(/twitter\.com\/([^/]+)/);
-  return match?.[1] || null;
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/API/Request/cache#examples
-async function fetchNaiveStaleWhileRevalidate(
-  url: string,
-  opts?: {
-    method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-    headers: HeadersInit;
-  }
-) {
-  let method = opts?.method || "GET";
-  let headers = opts?.headers || {};
-  let controller = new AbortController();
-  let res: Response;
-  try {
-    res = await fetch(url, {
-      method,
-      headers,
-      cache: "only-if-cached",
-      mode: "same-origin",
-      signal: controller.signal,
-    });
-  } catch (err) {
-    // Workaround for Chrome, which fails with a TypeError
-    if (err instanceof TypeError && err.message === "Failed to fetch") {
-      return fetchWithForceCache();
-    }
-    throw err;
-  }
-  if (res.status === 504) {
-    return fetchWithForceCache();
-  }
-
-  let date = res.headers.get("date");
-  let dt = date ? new Date(date).getTime() : 0;
-  if (dt < Date.now() - 60 * 60 * 24) {
-    // If older than 24 hours
-    controller.abort();
-    controller = new AbortController();
-    return fetch(url, {
-      method,
-      headers,
-      cache: "reload",
-      mode: "same-origin",
-      signal: controller.signal,
-    });
-  }
-
-  if (dt < Date.now() - 60 * 60 * 24 * 7) {
-    // If it's older than 1 week, fetch but don't wait for it. We'll return the
-    // stale value while this call "revalidates"
-    fetch(url, {
-      method,
-      headers,
-      cache: "no-cache",
-      mode: "same-origin",
-    });
-  }
-
-  // return possibly stale value
-  return res;
-
-  function fetchWithForceCache() {
-    controller.abort();
-    controller = new AbortController();
-    return fetch(url, {
-      method,
-      headers,
-      cache: "force-cache",
-      mode: "same-origin",
-      signal: controller.signal,
-    });
-  }
+function randomSort() {
+  return Math.random() - 0.5;
 }
