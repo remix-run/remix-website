@@ -10,6 +10,11 @@ module.exports = {
   content: ["./app/**/*.{ts,tsx}", "./data/**/*.md", "./tailwind-extras.html"],
   plugins: [aspectRatioPlugin, selectedVariantPlugin, expandedVariantPlugin],
   theme: {
+    screens: {
+      "2xs": "320px",
+      xs: "480px",
+      ...defaultTheme.screens,
+    },
     fontFamily: {
       display: ["Founders Grotesk", "Inter", ...defaultTheme.fontFamily.sans],
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
