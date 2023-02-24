@@ -59,7 +59,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   let speakers: Speaker[] = [];
 
   try {
-    let fetched = await fetch(
+    let fetched = await fetchNaiveStaleWhileRevalidate(
       "https://sessionize.com/api/v2/s8ds2hnu/view/Speakers",
       {
         method: "GET",
@@ -116,13 +116,13 @@ export const loader = async ({ request }: LoaderArgs) => {
       sponsors,
       speakers: speakers.sort(randomSort),
     },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
+    { headers: { "Cache-Control": CACHE_CONTROL.conf } }
   );
 };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
+    "Cache-Control": CACHE_CONTROL.conf,
   };
 };
 
@@ -224,7 +224,6 @@ function EarlySponsors() {
                           className="w-full aspect-1 border-[1px] border-gray-600 bg-gray-800"
                         >
                           <img
-                            loading="lazy"
                             src={speaker.imgUrl}
                             alt=""
                             className="block object-center object-contain saturate-50 group-hover/link:saturate-100 transition-all duration-1000"
@@ -1103,4 +1102,77 @@ function getInitials(name: string) {
 function getTwitterHandle(url: string) {
   let match = url.match(/twitter\.com\/([^/]+)/);
   return match?.[1] || null;
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/Request/cache#examples
+async function fetchNaiveStaleWhileRevalidate(
+  url: string,
+  opts?: {
+    method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+    headers: HeadersInit;
+  }
+) {
+  let method = opts?.method || "GET";
+  let headers = opts?.headers || {};
+  let controller = new AbortController();
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method,
+      headers,
+      cache: "only-if-cached",
+      mode: "same-origin",
+      signal: controller.signal,
+    });
+  } catch (err) {
+    // Workaround for Chrome, which fails with a TypeError
+    if (err instanceof TypeError && err.message === "Failed to fetch") {
+      return fetchWithForceCache();
+    }
+    throw err;
+  }
+  if (res.status === 504) {
+    return fetchWithForceCache();
+  }
+
+  let date = res.headers.get("date");
+  let dt = date ? new Date(date).getTime() : 0;
+  if (dt < Date.now() - 60 * 60 * 24) {
+    // If older than 24 hours
+    controller.abort();
+    controller = new AbortController();
+    return fetch(url, {
+      method,
+      headers,
+      cache: "reload",
+      mode: "same-origin",
+      signal: controller.signal,
+    });
+  }
+
+  if (dt < Date.now() - 60 * 60 * 24 * 7) {
+    // If it's older than 1 week, fetch but don't wait for it. We'll return the
+    // stale value while this call "revalidates"
+    fetch(url, {
+      method,
+      headers,
+      cache: "no-cache",
+      mode: "same-origin",
+    });
+  }
+
+  // return possibly stale value
+  return res;
+
+  function fetchWithForceCache() {
+    controller.abort();
+    controller = new AbortController();
+    return fetch(url, {
+      method,
+      headers,
+      cache: "force-cache",
+      mode: "same-origin",
+      signal: controller.signal,
+    });
+  }
 }

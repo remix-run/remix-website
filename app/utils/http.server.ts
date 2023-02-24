@@ -73,6 +73,9 @@ export const CACHE_CONTROL = {
    * but people get typos fixes and stuff, too.
    */
   doc: "max-age=300, stale-while-revalidate=604800",
+
+  // Keep it in the browser (and CDN) for 1 day
+  conf: `max-age=${60 * 60 * 24}, stale-while-revalidate=604800`,
 };
 
 function getValidRedirectCode(code: string | number | undefined) {

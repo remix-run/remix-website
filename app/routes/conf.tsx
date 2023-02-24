@@ -6,7 +6,7 @@ export let handle = { forceDark: true };
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
+    "Cache-Control": CACHE_CONTROL.conf,
   };
 };
 
