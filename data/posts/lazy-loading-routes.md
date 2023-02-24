@@ -9,7 +9,8 @@ authors:
   - Matt Brophy
 ---
 
-[React Router 6.4][react-router-6.4] introduced the concept of a _"Data Router"_ with the primary focus being to separate data fetching from rendering to eliminate **render+fetch chains** and the spinners that come along with them.
+
+[React Router 6.4][react-router-6.4] introduced the concept of a _"Data Router"_ with the primary focus being to separate data fetching from rendering to eliminate **render + fetch chains** and the spinners that come along with them.
 
 These chains are more commonly referred to as "waterfalls", but we're trying to re-think that term because most folks hear waterfall and picture [Niagra Falls][niagra], where all of the water falls down in one big nice waterfall.  But "all at once" seems like a great way to load data, so why the hate on "waterfalls"?  Maybe we should chase 'em after all?
 
@@ -69,7 +70,7 @@ But this comes with a downside.  So far we've talked about how to optimize our d
 
 <figcaption class="my-2">The singular JS bundle blocks the parallel data fetches</figcaption>
 
-A user loading the homepage at `/` will still be downloading the loaders and components for the `/projects` and `/projects/:projectId` routes, even though they don't need them!  And in cases, the user may not even navigate to those routes and will _never_ need those bundles.  This can't be ideal for our UX.
+A user loading the homepage at `/` will still be downloading the loaders and components for the `projects` and `:projectId` routes, even though they don't need them!  And in the worst case, the user will _never_ need them if they don't navigate to those routes.  This can't be ideal for our UX.
 
 ## `React.lazy` to the Rescue?
 
@@ -92,7 +93,7 @@ function App() {
 
 <figcaption class="my-2">The React.lazy() call produces a similar render + fetch chain</figcaption>
 
-So while we can leverage `React.lazy()` with data routers, we end up introducing a waterfall to download the component _after_ our data fetches.  Ruben Casas wrote up a great [post][react-router-6.4-code-splitting] on some of the approaches to leverage code-splitting in data routers with `React.lazy()`.
+So while we can leverage `React.lazy()` with data routers, we end up introducing a waterfall to download the component _after_ our data fetches.  Ruben Casas [wrote up a great post][react-router-6.4-code-splitting] on some of the approaches to leverage code-splitting in data routers with `React.lazy()`.
 
 ## Introducing `Route.lazy`
 
@@ -104,7 +105,7 @@ If you step back and look at a route definition, it can be split into 3 sections
 * Data loading/submitting fields such `loader` and `action`
 * Rendering fields such as `element` and `errorElement`
 
-The only thing a data router truly needs on the critical path is the path matching fields, as it needs to be able to identify all of the routes matched for a given URL.  After matching, we already have an asynchronous navigation in progress so there's no reason we could also be fetching route information during that navigation.  And then we odn't need the rndering aspects until we're done with data-fetching since we don't render the destination route until then.  Yes, this will introduce the concept of a "chain" but it's an opt-in choice to handle the trade-off between initial load speed and subsequent navigation speeds.
+The only thing a data router truly needs on the critical path is the path matching fields, as it needs to be able to identify all of the routes matched for a given URL.  After matching, we already have an asynchronous navigation in progress so there's no reason we couldn't also be fetching route information during that navigation.  And then we don't need the rendering aspects until we're done with data-fetching since we don't render the destination route until then.  Yes, this will introduce the concept of a "chain" but it's an opt-in choice to handle the trade-off between initial load speed and subsequent navigation speeds.
 
 Here's what this look like using our route structure from above:
 
@@ -122,23 +123,23 @@ const routes = [{
     element: <Home />,
   }, {
     path: 'projects',
-    lazy: () => import("./projects"),
+    lazy: () => import("./projects"), // 💤 Lazy load!
     children: [{
       path: ':projectId',
-      lazy: () => import("./project"),
+      lazy: () => import("./project"), // 💤 Lazy load!
     }],
   }],
 }]
 
 // projects.jsx
-export function loader = () => { ... }; // Formerly named getProjects
+export function loader = () => { ... }; // formerly named getProjects
 
-export function Component() { ... } // Formerly named Projects
+export function Component() { ... } // formerly named Projects
 ```
 
-_What's `export function Component` you ask?  The properties exported from this lazy module are added to the route definition verbatim.  Because it's odd to export an `element`, we've added support for `Component` definition directly on a route object now as well._
+_What's `export function Component` you ask?  The properties exported from this lazy module are added to the route definition verbatim.  Because it's odd to export an `element`, we've added support for defining `Component` on a route object instead of `element`._
 
-In this case we've opted to leave the layout and home routes in the primary bundle as thayt's the most common entry-point for our users.  But we've moved the imports of our `projects` and `:projectId` routes into their own lazy imports.  React Router will call these `lazy()` functions in parallel when routing to `/projects/123`, followed by their loaders.
+In this case we've opted to leave the layout and home routes in the primary bundle as that's the most common entry-point for our users.  But we've moved the imports of our `projects` and `:projectId` routes into their own lazy imports.  React Router will call these `lazy()` functions in parallel when routing to `/projects/123`, followed by their loaders.
 
 The resulting network graph would look something like this on initial load:
 
@@ -172,7 +173,7 @@ Into this:
 
 <figcaption class="my-2">We can unblock the data fetch by extracting the component</figcaption>
 
-Because `lazy()` is statically defined and runs immediately, you can get fancy inside and load chunks in whatever way you see fit.  And because your route `Component`/`element` will never attempt to render until the loader has completed, you can even "provide" your component from you loader and get that parallelization of the component chunk and the data fetch.  Here's an example of a utility to will get you the optimized network graph above:
+Because `lazy()` is statically defined and runs immediately, you can get fancy inside and load chunks in whatever way you see fit.  And because your route `Component`/`element` will never attempt to render until the loader has completed, you can even "provide" the `Component` from your `loader` and get that parallelization of the component chunk and the data fetch.  Here's an example of a utility to will get you the optimized network graph above:
 
 ```jsx
 const routes = [{
@@ -223,7 +224,7 @@ const routes = [{
 }];
 ```
 
-This way you can include the _Very tiny loader_ on the critical path so it cn start as fast as possible, and still load the `Component` via `lazy()`.  As a matter of fact, this is almost exactly how Remix approaches this issue because route loader sare their own API endpoint.
+This way you can include the _tiny_ loader on the critical path so it cn start as fast as possible, and still load the `Component` via `lazy()`.  As a matter of fact, this is almost exactly how Remix approaches this issue because route loader sare their own API endpoint.
 
 
 ## More Information
