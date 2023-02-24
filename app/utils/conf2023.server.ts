@@ -3,6 +3,7 @@ import LRUCache from "lru-cache";
 let cache = new LRUCache<string, Speaker[]>({
   max: 250,
   maxSize: 1024 * 1024 * 12, // 12 mb
+  ttl: 1000 * 60 * 60 * 24, // 24 hours
   sizeCalculation(value, key) {
     return JSON.stringify(value).length + (key ? key.length : 0);
   },
