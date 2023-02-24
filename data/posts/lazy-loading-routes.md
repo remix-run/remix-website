@@ -177,7 +177,7 @@ Because `lazy()` is statically defined and runs immediately, you can get fancy i
 
 ```jsx
 const routes = [{
-  path: "parallel",
+  path: "projects",
   lazy() {
     return parallelize(
       () => import("./loader"),
