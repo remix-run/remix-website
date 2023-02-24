@@ -11,7 +11,9 @@ let cache = new LRUCache<string, Speaker[]>({
 
 const SPEAKERS_CACHE_KEY = "speakers";
 
-export async function getSpeakers(opts: { noCache?: boolean } = {}) {
+export async function getSpeakers(
+  opts: { noCache?: boolean } = {}
+): Promise<Speaker[]> {
   let { noCache = false } = opts;
   if (!noCache) {
     let cached = cache.get(SPEAKERS_CACHE_KEY);
@@ -20,7 +22,8 @@ export async function getSpeakers(opts: { noCache?: boolean } = {}) {
     }
   }
 
-  let fetched = await fetchNaiveStaleWhileRevalidate(
+  let fetch = noCache ? fetchNoCache : fetchNaiveStaleWhileRevalidate;
+  let fetched = await fetch(
     "https://sessionize.com/api/v2/s8ds2hnu/view/Speakers",
     {
       method: "GET",
@@ -81,6 +84,7 @@ function modelSpeaker(speaker: SessionizeSpeakerData): Speaker {
     nameFull,
     imgUrl,
     twitterHandle,
+    isTopSpeaker: !!speaker.isTopSpeaker,
   };
   return validatedSpeaker;
 }
@@ -147,6 +151,13 @@ function isNotEmpty<T>(value: T | null | undefined): value is T {
   return value != null;
 }
 
+async function fetchNoCache(url: string, opts?: RequestInit) {
+  return fetch(url, {
+    ...opts,
+    cache: "no-cache",
+  });
+}
+
 // https://developer.mozilla.org/en-US/docs/Web/API/Request/cache#examples
 async function fetchNaiveStaleWhileRevalidate(
   url: string,
@@ -164,7 +175,6 @@ async function fetchNaiveStaleWhileRevalidate(
       method,
       headers,
       cache: "only-if-cached",
-      mode: "same-origin",
       signal: controller.signal,
     });
   } catch (err) {
@@ -188,7 +198,6 @@ async function fetchNaiveStaleWhileRevalidate(
       method,
       headers,
       cache: "reload",
-      mode: "same-origin",
       signal: controller.signal,
     });
   }
@@ -200,7 +209,6 @@ async function fetchNaiveStaleWhileRevalidate(
       method,
       headers,
       cache: "no-cache",
-      mode: "same-origin",
     });
   }
 
@@ -214,7 +222,6 @@ async function fetchNaiveStaleWhileRevalidate(
       method,
       headers,
       cache: "force-cache",
-      mode: "same-origin",
       signal: controller.signal,
     });
   }
@@ -229,6 +236,7 @@ export interface Speaker {
   link: string | null;
   imgUrl: string | null;
   twitterHandle: string | null;
+  isTopSpeaker: boolean;
 }
 
 export interface SessionizeSpeakerData {
@@ -247,6 +255,7 @@ export interface SessionizeSpeakerData {
     answer: string | null;
   }> | null;
   profilePicture: string | null;
+  isTopSpeaker: boolean;
 }
 
 function validateSessionizeSpeakerData(
@@ -263,6 +272,7 @@ function validateSessionizeSpeakerData(
     !("links" in data) ||
     !("questionAnswers" in data) ||
     !("profilePicture" in data) ||
+    !("isTopSpeaker" in data) ||
     (data.links != null && !Array.isArray(data.links)) ||
     (data.questionAnswers != null && !Array.isArray(data.questionAnswers))
   ) {

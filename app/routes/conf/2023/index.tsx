@@ -70,7 +70,9 @@ export const loader = async ({ request }: LoaderArgs) => {
     {
       siteUrl,
       sponsors,
-      speakers: speakers.sort(randomSort),
+      speakers: speakers.sort((a, b) =>
+        a.isTopSpeaker ? -1 : b.isTopSpeaker ? 1 : randomSort()
+      ),
     },
     { headers: { "Cache-Control": CACHE_CONTROL.conf } }
   );
