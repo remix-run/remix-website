@@ -219,11 +219,17 @@ function EarlySponsors() {
                   let child = (
                     <div className="flex flex-col gap-4 w-full rounded-[inherit] overflow-hidden p-4">
                       {speaker.imgUrl ? (
-                        <img
-                          src={speaker.imgUrl}
-                          alt=""
-                          className="block w-full aspect-1 object-center object-contain saturate-50 group-hover/link:saturate-100 transition-all duration-1000"
-                        />
+                        <div
+                          aria-hidden
+                          className="w-full aspect-1 border-[1px] border-gray-600 bg-gray-800"
+                        >
+                          <img
+                            loading="lazy"
+                            src={speaker.imgUrl}
+                            alt=""
+                            className="block object-center object-contain saturate-50 group-hover/link:saturate-100 transition-all duration-1000"
+                          />
+                        </div>
                       ) : (
                         <div
                           aria-hidden
