@@ -749,7 +749,9 @@ function EditLink() {
 
 function InnerContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="m-auto w-[90rem] max-w-full px-4 sm:px-6 lg:px-8">{children}</div>
+    <div className="m-auto w-[90rem] max-w-full px-4 sm:px-6 lg:px-8">
+      {children}
+    </div>
   );
 }
 
