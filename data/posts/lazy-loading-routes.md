@@ -93,7 +93,7 @@ function App() {
 
 <figcaption class="my-2">The React.lazy() call produces a similar render + fetch chain</figcaption>
 
-So while we can leverage `React.lazy()` with data routers, we end up introducing a waterfall to download the component _after_ our data fetches.  Ruben Casas [wrote up a great post][react-router-6.4-code-splitting] on some of the approaches to leverage code-splitting in data routers with `React.lazy()`.
+So while we can leverage `React.lazy()` with data routers, we end up introducing a chain to download the component _after_ our data fetches.  Ruben Casas [wrote up a great post][react-router-6.4-code-splitting] on some of the approaches to leverage code-splitting in data routers with `React.lazy()`.
 
 ## Introducing Route.lazy
 
@@ -144,7 +144,7 @@ export function Component() { ... } // formerly named Project
 
 _What's `export function Component` you ask?  The properties exported from this lazy module are added to the route definition verbatim.  Because it's odd to export an `element`, we've added support for defining `Component` on a route object instead of `element` (but don't worry `element` still works!)._
 
-In this case we've opted to leave the layout and home routes in the primary bundle as that's the most common entry-point for our users.  But we've moved the imports of our `projects` and `:projectId` routes into their own lazy imports.  React Router will call these `lazy()` functions in parallel when routing to `/projects/123`, followed by their loaders.
+In this case we've opted to leave the layout and home routes in the primary bundle as that's the most common entry-point for our users.  But we've moved the imports of our `projects` and `:projectId` routes into their own dynamic imports that won't be loaded unless we navigate to those routes.
 
 The resulting network graph would look something like this on initial load:
 
@@ -152,7 +152,7 @@ The resulting network graph would look something like this on initial load:
 
 <figcaption class="my-2">The lazy() method allows us to trim down our critical path bundle</figcaption>
 
-Now our critical path bundle includes _only_ those routes we've deemed critical for initial entry to our site.  Then when a user clicks a link to `/projects/123`, we fetch those routes in parallel via the `lazy()` method:
+Now our critical path bundle includes _only_ those routes we've deemed critical for initial entry to our site.  Then when a user clicks a link to `/projects/123`, we fetch those routes in parallel via the `lazy()` method and execute their returned `loader` methods:
 
 <img alt="network diagram showing a link click using route.lazy()" src="/blog-images/posts/lazy-loading-routes/network6.png" class="border rounded-md p-3 shadow" />
 
@@ -170,23 +170,21 @@ In this example above, our route modules include our `loader` as well as our `Co
 
 <figcaption class="my-2">Singular route files block the data fetch behind the component download</figcaption>
 
-But what if we could turn that into this:
+But what if we could turn this 👆 into this 👇:
 
 <img alt="network diagram showing separate loader and component files unblocking the data fetch" src="/blog-images/posts/lazy-loading-routes/network8.png" class="border rounded-md p-3 shadow" />
 
 <figcaption class="my-2">We can unblock the data fetch by extracting the component to it's own file</figcaption>
 
-Because `lazy()` is statically defined and runs immediately, you can get fancy inside and load chunks in whatever way you see fit.  And because your route `Component`/`element` will never attempt to render until the loader has completed, you can even "provide" the `Component` from your `loader` and parallelize the data fetch alongside the component chunk.  Here's an example of a utility that would get you the optimized network graph above:
+Because `lazy()` is statically defined and runs immediately, you can get fancy inside and load chunks in whatever way you see fit.  And because your route `Component`/`element` will never attempt to render until the loader has completed, you can even "provide" the `Component` from your `loader` and parallelize the data fetch alongside the component chunk.  You could achieve something like the above with a utility like this:
 
 ```jsx
 const routes = [{
   path: "projects",
-  lazy() {
-    return parallelize(
-      () => import("./projects-loader"),
-      () => import("./projects-component")
-    );
-  },
+  lazy: () => parallelize(
+    () => import("./projects-loader"),
+    () => import("./projects-component")
+  ),
 }];
 
 async function parallelize(loadLoaderChunk, loadComponentChunk) {
@@ -227,7 +225,7 @@ This way you can include the _tiny_ loader on the critical path so it can start 
 
 ## More Information
 
-For more information, check out the [decision doc][decision-doc] or the [example][example] in the GitHub repository.
+For more information, check out the [decision doc][decision-doc] or the [example][example] in the GitHub repository. Happy Lazy Loading!
 
 
 [niagra]: https://en.wikipedia.org/wiki/Niagara_Falls
