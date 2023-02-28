@@ -56,8 +56,6 @@ export async function loader({ request }: LoaderArgs) {
   };
 }
 
-export let shouldRevalidate = () => false;
-
 export function links() {
   let preloadedFonts = [
     "founders-grotesk-bold.woff2",

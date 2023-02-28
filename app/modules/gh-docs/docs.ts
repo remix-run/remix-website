@@ -53,8 +53,7 @@ export async function getMenu(
   ref: string,
   lang: string
 ): Promise<MenuDoc[] | undefined> {
-  //   return menuCache.fetch(`${repo}:${ref}`);
-  return await fetchMenu(`${repo}:${ref}`);
+  return menuCache.fetch(`${repo}:${ref}`);
 }
 
 function parseAttrs(
