@@ -9,7 +9,7 @@ let cache = new LRUCache<string, Speaker[]>({
   },
 });
 
-const SPEAKERS_CACHE_KEY = "speakers-2023";
+const SPEAKERS_CACHE_KEY = "speakers";
 
 export async function getSpeakers(
   opts: { noCache?: boolean } = {}
