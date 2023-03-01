@@ -1,20 +1,17 @@
-import {
-  BrowserChrome,
-  Fakebooks,
-  Sales,
-} from "~/ui/scroll-experience";
+import { BrowserChrome } from "~/ui/browser-chrome";
+import * as Fakebooks from "~/ui/fakebooks";
 
 export let handle = { forceDark: true };
 
-export default function () {
+export default function RoutingIndex() {
   return (
     <div className="pt-8">
       <BrowserChrome url="example.com/sales">
-        <Fakebooks>
-          <Sales noActiveChild>
+        <Fakebooks.RootView>
+          <Fakebooks.SalesView noActiveChild>
             <div className="h-72" />
-          </Sales>
-        </Fakebooks>
+          </Fakebooks.SalesView>
+        </Fakebooks.RootView>
       </BrowserChrome>
     </div>
   );

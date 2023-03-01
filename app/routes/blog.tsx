@@ -10,7 +10,7 @@ import { Footer } from "~/ui/footer";
 import { Header } from "~/ui/header";
 import { Subscribe } from "~/ui/subscribe";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import { getBlogPostListings } from "~/lib/md.server";
+import { getBlogPostListings } from "~/lib/blog.server";
 
 export let meta: MetaFunction = () => {
   return {

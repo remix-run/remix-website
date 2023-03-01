@@ -1,7 +1,7 @@
 import fsp from "fs/promises";
 import path from "path";
 import invariant from "tiny-invariant";
-import { processMarkdown } from "@ryanflorence/md";
+import { processMarkdown } from "~/lib/md.server";
 
 import yaml from "yaml";
 import LRUCache from "lru-cache";
@@ -64,8 +64,9 @@ export async function getSpeakers(year: ConfYear) {
   let speakersRaw = yaml.parse(speakersFileContents);
   let speakers: Array<Speaker> = [];
   for (let speakerRaw of speakersRaw) {
+    let { html: bioHTML } = await processMarkdown(speakerRaw.bio);
     let speakerRawWithDefaults = {
-      bioHTML: await processMarkdown(speakerRaw.bio),
+      bioHTML,
       type: "speaker",
       slug: sluggify(speakerRaw.name),
       ...speakerRaw,
@@ -126,9 +127,10 @@ export async function getTalks(year: ConfYear) {
         talkRaw
       )} is not valid. Please check the talks file.`
     );
+    let { html: descriptionHTML } = await processMarkdown(talkRaw.description);
     talks.push({
       ...talkRaw,
-      descriptionHTML: await processMarkdown(talkRaw.description),
+      descriptionHTML,
     });
   }
   cache.set("talks", talks);
@@ -178,10 +180,14 @@ export async function getSchedule(year: ConfYear) {
       if (isScheduleItemRawWithSpeakers(scheduleItemRaw)) {
         speakers = getSpeakersByName(scheduleItemRaw.speakers);
       }
+      let [{ html: titleHTML }, { html: contentHTML }] = await Promise.all([
+        processMarkdown(scheduleItemRaw.title),
+        processMarkdown(scheduleItemRaw.content),
+      ]);
       scheduleItems.push({
         time: scheduleItemRaw.time,
-        titleHTML: await processMarkdown(scheduleItemRaw.title),
-        contentHTML: await processMarkdown(scheduleItemRaw.content),
+        titleHTML,
+        contentHTML,
         speakers,
       });
     } else if (isTalkScheduleItemRaw(scheduleItemRaw)) {
@@ -200,18 +206,22 @@ export async function getSchedule(year: ConfYear) {
           scheduleItemRaw.time
         }) for ${JSON.stringify(scheduleItemRaw)}`
       );
-      scheduleItems.push({
-        time: scheduleItemRaw.time,
-        titleHTML: await processMarkdown(
+      let [{ html: titleHTML }, { html: contentHTML }] = await Promise.all([
+        processMarkdown(
           talk.type === "lightning"
             ? `<span title="Lightning talk">⚡</span> ${talk.title}`
             : talk.title
         ),
-        contentHTML: await processMarkdown(
+        processMarkdown(
           talk.description.length > 400
-            ? `${talk.description.slice(0, 297).trim()}...`
+            ? `${talk.description.slice(0, 297).trim()}…`
             : talk.description
         ),
+      ]);
+      scheduleItems.push({
+        time: scheduleItemRaw.time,
+        titleHTML,
+        contentHTML,
         speakers: getSpeakersByName(talk.speakers),
       });
     }

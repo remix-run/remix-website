@@ -1,4 +1,4 @@
-import { processMarkdown } from "@ryanflorence/md";
+import { processMarkdown } from "~/lib/md.server";
 import LRUCache from "lru-cache";
 import parseYamlHeader from "gray-matter";
 import { getRepoContent } from "./repo-content";
@@ -6,13 +6,15 @@ import { getRepoTarballStream } from "./repo-tarball";
 import { createTarFileProcessor } from "./tarball";
 import { load as $ } from "cheerio";
 
+interface MenuDocAttributes {
+  title: string;
+  order?: number;
+  new?: boolean;
+  [key: string]: any;
+}
+
 export interface MenuDoc {
-  attrs: {
-    title: string;
-    order?: number;
-    new?: boolean;
-    [key: string]: any;
-  };
+  attrs: MenuDocAttributes;
   children: MenuDoc[];
   filename: string;
   hasContent: boolean;
@@ -92,8 +94,12 @@ async function fetchDoc(key: string) {
   let filename = `docs/${slug}.md`;
   let md = await getRepoContent(repo, ref, filename);
   if (md === null) return undefined;
-  let { content, attrs } = parseAttrs(md, filename);
-  let html = await processMarkdown(content);
+  let { html, attributes } = await processMarkdown(md);
+  let attrs: MenuDocAttributes = { title: filename };
+  if (isPlainObject(attributes)) {
+    attrs = { title: filename, ...attributes };
+  }
+
   // sorry, cheerio is so much easier than using rehype stuff.
   let headings = createTableOfContentsFromHeadings(html);
   return { attrs, filename, html, slug, headings, children: [] };
@@ -193,4 +199,8 @@ function makeSlug(docName: string): string {
     .replace(/\.md$/, "")
     .replace(/index$/, "")
     .replace(/\/$/, "");
+}
+
+function isPlainObject(obj: unknown): obj is Record<keyof any, unknown> {
+  return !!obj && Object.prototype.toString.call(obj) === "[object Object]";
 }
