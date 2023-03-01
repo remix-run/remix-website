@@ -1,6 +1,6 @@
 import { useTransition, useActionData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
-import { Subscribe } from "~/components/subscribe";
+import { Subscribe } from "~/ui/subscribe";
 
 export function meta() {
   return {

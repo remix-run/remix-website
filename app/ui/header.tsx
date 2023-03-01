@@ -1,4 +1,4 @@
-import { NavLink } from "~/components/link";
+import { NavLink } from "~/ui/link";
 import { Wordmark } from "./logo";
 
 export function Header({

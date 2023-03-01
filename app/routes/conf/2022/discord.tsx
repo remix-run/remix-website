@@ -1,8 +1,8 @@
 import type { HeadersFunction, MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
-import { primaryButtonLinkClass } from "~/components/buttons";
-import { Discord } from "~/components/icons";
-import { CACHE_CONTROL } from "~/utils/http.server";
+import { primaryButtonLinkClass } from "~/ui/buttons";
+import { Discord } from "~/ui/icons";
+import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "./_ui";
 
 export const meta: MetaFunction = () => ({

@@ -1,4 +1,4 @@
-import { InteractiveRoutes } from "~/components/scroll-experience";
+import { InteractiveRoutes } from "~/ui/scroll-experience";
 
 export let handle = { forceDark: true };
 

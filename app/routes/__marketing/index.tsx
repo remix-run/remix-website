@@ -1,12 +1,12 @@
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction } from "@remix-run/node";
-import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
-import { getMarkdown } from "~/utils/md.server";
+import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
+import { getMarkdown } from "~/lib/md.server";
 import indexStyles from "~/styles/index.css";
-import { Red } from "~/components/gradients";
-import { BigTweet, TweetCarousel, tweets } from "~/components/twitter-cards";
-import { ScrollExperience } from "~/components/scroll-experience";
+import { Red } from "~/ui/gradients";
+import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
+import { ScrollExperience } from "~/ui/scroll-experience";
 import type { Prose, Sequence } from "@ryanflorence/mdtut";
 import invariant from "tiny-invariant";
 import { Fragment } from "react";

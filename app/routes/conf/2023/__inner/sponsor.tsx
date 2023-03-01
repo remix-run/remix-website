@@ -1,5 +1,5 @@
 import type { HeadersFunction, MetaFunction } from "@remix-run/node";
-import { CACHE_CONTROL } from "~/utils/http.server";
+import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const meta: MetaFunction = () => ({
   title: "Remix Conf 2023 Sponsorship",

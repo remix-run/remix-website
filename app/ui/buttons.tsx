@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "~/components/link";
+import { Link } from "~/ui/link";
 
 export const outlinePrimaryButtonLinkClass =
   "inline-flex items-center justify-center xl:text-xl h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-blue-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2";
