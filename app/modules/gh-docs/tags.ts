@@ -4,10 +4,7 @@ import semver from "semver";
 import invariant from "tiny-invariant";
 import { octokit } from "./github";
 
-invariant(
-  process.env.RELEASE_PACKAGE,
-  "RELEASE_PACKAGE is not set"
-);
+invariant(process.env.RELEASE_PACKAGE, "RELEASE_PACKAGE is not set");
 const RELEASE_PACKAGE = process.env.RELEASE_PACKAGE;
 
 /**

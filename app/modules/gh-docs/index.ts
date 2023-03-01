@@ -10,10 +10,7 @@ export { getLatestVersion, getAllReleases } from "./tags";
 export type { Doc } from "./docs";
 
 invariant(process.env.SOURCE_REPO, "Missing process.env.SOURCE_REPO");
-invariant(
-  process.env.RELEASE_PACKAGE,
-  "Missing process.env.RELEASE_PACKAGE"
-);
+invariant(process.env.RELEASE_PACKAGE, "Missing process.env.RELEASE_PACKAGE");
 
 const REPO = process.env.SOURCE_REPO;
 const RELEASE_PACKAGE = process.env.RELEASE_PACKAGE;
