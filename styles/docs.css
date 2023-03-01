@@ -17,10 +17,8 @@
   --base0D: theme("colors.blue.700");
   --base0E: theme("colors.pink.brand");
   --base0F: theme("colors.gray.700");
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
+  &:where(.dark) {
     --base00: theme("colors.gray.800");
     --base01: theme("colors.gray.700");
     --base02: theme("colors.gray.600");
@@ -44,10 +42,6 @@
 /* layout */
 
 .markdown {
-  @media screen and (min-width: theme(screens.lg)) {
-    max-width: theme(screens.lg);
-  }
-
   &.has-toc {
     @media screen and (min-width: theme(screens.xl)) {
       --w-content: theme(screens.lg);
@@ -624,7 +618,7 @@ a.md-nav-item {
     @apply flex flex-col grid-cols-2 gap-6 md:grid;
 
     & > a {
-      @apply block rounded;
+      @apply block relative;
       color: unset;
     }
 
@@ -634,7 +628,7 @@ a.md-nav-item {
   }
 
   & docs-card {
-    @apply block w-full h-full p-6 transition-shadow ease-out border border-gray-200 rounded shadow dark:border-gray-800;
+    @apply block w-full h-full rounded-lg p-4 sm:p-6 border-[3px] border-gray-50 hover:border-gray-100 dark:border-gray-700 hover:dark:border-gray-600;
 
     & > :first-child {
       @apply mt-0;
@@ -643,10 +637,6 @@ a.md-nav-item {
     & > :last-child {
       @apply mb-0;
     }
-  }
-
-  & a:hover docs-card {
-    @apply shadow-lg;
   }
 
   /*****************************************************************************/

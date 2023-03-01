@@ -1,9 +1,6 @@
 /* this was copy/paste/modified from @docsearch/css/dist/_variables.css */
-/* they only support dark mode via data-theme on the html element */
-/* but we use media queries for that */
-/* html[data-theme="dark"] { */
-@media (prefers-color-scheme: dark) {
-  :root {
+:root {
+  &:where(.dark) {
     --docsearch-text-color: #f5f6f7;
     --docsearch-container-background: rgba(9, 10, 17, 0.8);
     --docsearch-modal-background: #15172a;
@@ -24,14 +21,16 @@
   }
 }
 
-@media screen and (min-width: 751px) {
-  .DocSearch-Button {
+.DocSearch-Button {
+  @apply border border-transparent bg-gray-100 hover:bg-gray-200 focus:border focus:border-gray-100 focus:bg-white dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:border-gray-400 dark:focus:bg-gray-700 shadow-none h-10;
+
+  @media screen and (min-width: 751px) {
     margin-left: 0;
   }
-}
-
-@media print {
-  .DocSearch-Button {
+  @media screen and (min-width: theme(screens.lg)) {
+    width: 100%;
+  }
+  @media print {
     display: none;
   }
 }
