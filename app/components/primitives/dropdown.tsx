@@ -1015,7 +1015,6 @@ const DropdownPopover = React.forwardRef<HTMLDivElement, DropdownPopoverProps>(
         {...sharedProps}
         targetRef={targetRef as any}
         position={position}
-        unstable_preventPortalRenderBeforeHydration
         children={props.children}
       />
     ) : (

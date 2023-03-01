@@ -30,19 +30,13 @@ const PortalImpl: React.FC<PortalProps> = ({
   let forceUpdate = useForceUpdate();
 
   useLayoutEffect(() => {
-    if (!mountNode.current) {
-      return;
-    }
-
     let ownerDocument = getOwnerDocument(mountNode.current);
-    let body = containerRef?.current || ownerDocument.body;
-    portalNode.current = ownerDocument.createElement(type);
-    body.appendChild(portalNode.current);
+    let container = containerRef?.current || ownerDocument.body;
+    let child = ownerDocument.createElement(type);
+    container.appendChild((portalNode.current = child));
     forceUpdate();
     return () => {
-      if (portalNode.current && body) {
-        body.removeChild(portalNode.current);
-      }
+      container.removeChild(child);
     };
   }, [type, forceUpdate, containerRef]);
 
@@ -62,11 +56,11 @@ const PortalImpl: React.FC<PortalProps> = ({
  * @see Docs https://TODO.com/portal#portal
  */
 const Portal: React.FC<PortalProps> = ({
-  unstable_preventRenderBeforeHydration,
+  unstable_skipRenderBeforeHydration,
   ...props
 }) => {
   let hydrated = useHydrated();
-  if (unstable_preventRenderBeforeHydration && !hydrated) {
+  if (unstable_skipRenderBeforeHydration && !hydrated) {
     return null;
   }
   return <PortalImpl {...props} />;
@@ -96,7 +90,7 @@ interface PortalProps {
    * @see Docs https://TODO.com/portal#portal-containerRef
    */
   containerRef?: React.RefObject<Node>;
-  unstable_preventRenderBeforeHydration?: boolean;
+  unstable_skipRenderBeforeHydration?: boolean;
 }
 
 Portal.displayName = "Portal";
