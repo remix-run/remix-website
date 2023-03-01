@@ -2,7 +2,7 @@ import {
   BrowserChrome,
   Fakebooks,
   Sales,
-} from "~/components/scroll-experience";
+} from "~/ui/scroll-experience";
 
 export let handle = { forceDark: true };
 

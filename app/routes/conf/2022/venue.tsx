@@ -6,8 +6,8 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
-import { primaryButtonLinkClass } from "~/components/buttons";
-import { CACHE_CONTROL } from "~/utils/http.server";
+import { primaryButtonLinkClass } from "~/ui/buttons";
+import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "./_ui";
 
 export const meta: MetaFunction = () => ({

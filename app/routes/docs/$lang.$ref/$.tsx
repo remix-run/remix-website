@@ -7,13 +7,13 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { CACHE_CONTROL } from "~/utils/http.server";
+import { CACHE_CONTROL } from "~/lib/http.server";
 import invariant from "tiny-invariant";
-import type { Doc } from "~/modules/gh-docs";
-import { getRepoDoc } from "~/modules/gh-docs";
+import type { Doc } from "~/lib/gh-docs";
+import { getRepoDoc } from "~/lib/gh-docs";
 import iconsHref from "~/icons.svg";
 import cx from "clsx";
-import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
+import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import type { loader as docsLayoutLoader } from "~/routes/docs/$lang.$ref";
 
 export async function loader({ params, request }: LoaderArgs) {

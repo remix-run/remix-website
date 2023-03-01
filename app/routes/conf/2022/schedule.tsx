@@ -4,10 +4,10 @@ import {
   Tab,
   TabPanels,
   TabPanel,
-} from "~/components/primitives/tabs";
+} from "~/ui/primitives/tabs";
 import { Link, Outlet, useMatches, useNavigate } from "@remix-run/react";
 import type { MetaFunction, HeadersFunction } from "@remix-run/node";
-import { CACHE_CONTROL } from "~/utils/http.server";
+import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "./_ui";
 
 export const meta: MetaFunction = () => ({

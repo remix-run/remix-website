@@ -10,15 +10,15 @@ import cx from "clsx";
 import {
   secondaryButtonLinkClass,
   outlineSecondaryButtonLinkClass,
-} from "~/components/buttons";
+} from "~/ui/buttons";
 import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
-import { getSponsors } from "~/utils/conf.server";
-import type { Sponsor, SponsorLevel } from "~/utils/conf";
-import { Link } from "~/components/link";
-import { CACHE_CONTROL } from "~/utils/http.server";
-import { getSpeakers } from "~/utils/conf2023.server";
-import type { Speaker } from "~/utils/conf2023.server";
+import { getSponsors } from "~/lib/conf.server";
+import type { Sponsor, SponsorLevel } from "~/lib/conf";
+import { Link } from "~/ui/link";
+import { CACHE_CONTROL } from "~/lib/http.server";
+import { getSpeakers } from "~/lib/conf2023.server";
+import type { Speaker } from "~/lib/conf2023.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data: { siteUrl } }) => {
   let url = `${siteUrl}/conf`;

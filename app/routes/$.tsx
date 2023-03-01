@@ -1,7 +1,7 @@
-import { handleRedirects } from "~/utils/http.server";
+import { handleRedirects } from "~/lib/http.server";
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
-import { getRepoDoc } from "~/modules/gh-docs";
+import { getRepoDoc } from "~/lib/gh-docs";
 
 // We use the catch-all route to attempt to find a doc for the given path. If a
 // doc isn't found, we return a 404 as expected. However we also log those

@@ -1,6 +1,6 @@
 import type { HeadersFunction, MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
-import { CACHE_CONTROL } from "~/utils/http.server";
+import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "../_ui";
 
 export const meta: MetaFunction = () => ({

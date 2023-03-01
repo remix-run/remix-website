@@ -6,10 +6,10 @@ import type {
 } from "@remix-run/node";
 import { Link, useCatch, useParams, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { getSpeakers, getTalks } from "~/utils/conf.server";
+import { getSpeakers, getTalks } from "~/lib/conf.server";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
-import { sluggify } from "~/utils/conf";
-import { CACHE_CONTROL } from "~/utils/http.server";
+import { sluggify } from "~/lib/conf";
+import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "../_ui";
 
 export const links: LinksFunction = () => {

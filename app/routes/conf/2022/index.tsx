@@ -9,13 +9,13 @@ import type {
 import {
   OutlineButtonLink,
   primaryButtonLinkClass,
-} from "~/components/buttons";
+} from "~/ui/buttons";
 import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
-import type { Sponsor, Speaker } from "~/utils/conf";
-import { getSpeakers, getSponsors } from "~/utils/conf.server";
-import { Link } from "~/components/link";
-import { CACHE_CONTROL } from "~/utils/http.server";
+import type { Sponsor, Speaker } from "~/lib/conf";
+import { getSpeakers, getSponsors } from "~/lib/conf.server";
+import { Link } from "~/ui/link";
+import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data: { siteUrl } }) => {
   let url = `${siteUrl}/conf`;

@@ -5,9 +5,9 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { getSchedule } from "~/utils/conf.server";
-import { CACHE_CONTROL } from "~/utils/http.server";
-import { sluggify } from "~/utils/conf";
+import { getSchedule } from "~/lib/conf.server";
+import { CACHE_CONTROL } from "~/lib/http.server";
+import { sluggify } from "~/lib/conf";
 import { InnerLayout } from "../_ui";
 
 export const meta: MetaFunction = () => ({
