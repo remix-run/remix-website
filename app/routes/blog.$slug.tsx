@@ -7,7 +7,7 @@ import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
-import { getBlogPost } from "~/lib/md.server";
+import { getBlogPost } from "~/lib/blog.server";
 import mdStyles from "~/styles/md.css";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";

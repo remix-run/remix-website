@@ -2,12 +2,12 @@ import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction } from "@remix-run/node";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
-import { getMarkdown } from "~/lib/md.server";
+import { getMarkdownTutPage } from "~/lib/mdtut.server";
+import type { Prose, Sequence } from "~/lib/mdtut.server";
 import indexStyles from "~/styles/index.css";
 import { Red } from "~/ui/gradients";
 import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
-import { ScrollExperience } from "~/ui/scroll-experience";
-import type { Prose, Sequence } from "@ryanflorence/mdtut";
+import { ScrollExperience } from "~/ui/homepage-scroll-experience";
 import invariant from "tiny-invariant";
 import { Fragment } from "react";
 
@@ -46,10 +46,10 @@ type LoaderData = {
 
 export let loader: LoaderFunction = async ({ request }) => {
   let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
-    getMarkdown("marketing/sample/sample.md"),
-    getMarkdown("marketing/sample-sm/sample.md"),
-    getMarkdown("marketing/mutations/mutations.md"),
-    getMarkdown("marketing/mutations/errors.md"),
+    getMarkdownTutPage("marketing/sample/sample.md"),
+    getMarkdownTutPage("marketing/sample-sm/sample.md"),
+    getMarkdownTutPage("marketing/mutations/mutations.md"),
+    getMarkdownTutPage("marketing/mutations/errors.md"),
   ]);
 
   invariant(sample.type === "prose", "sample.md should be prose");
@@ -84,7 +84,7 @@ export default function Index() {
         <TweetCarousel tweets={tweets.slice(1)} />
       </section>
       <div className="h-32" />
-      <ScrollExperience markdown={{ mutations, errors }} />
+      <ScrollExperience mutations={mutations} errors={errors} />
     </div>
   );
 }
