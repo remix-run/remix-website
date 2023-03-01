@@ -18,10 +18,10 @@ export default function Workshops() {
   return (
     <InnerLayout>
       <div className="text-white">
-        <h1 className="font-display font-extrabold text-3xl sm:text-5xl xl:text-7xl mb-16">
+        <h1 className="mb-16 font-display text-3xl font-extrabold sm:text-5xl xl:text-7xl">
           Premium Remix Workshops from the Remix Team
         </h1>
-        <div className="container text-lg lg:text-xl flex flex-col gap-4">
+        <div className="container flex flex-col gap-4 text-lg lg:text-xl">
           <p>
             Remix workshops are a great way to get insights and experience from
             the Remix team on how to use Remix to build stellar user
@@ -36,15 +36,15 @@ export default function Workshops() {
             />
           </div>
         </div>
-        <div className="mt-12 container grid grid-cols-1 lg:grid-cols-6 gap-12">
+        <div className="container mt-12 grid grid-cols-1 gap-12 lg:grid-cols-6">
           <div className="col-span-3 lg:col-span-2">
-            <div className="mt-4 text-lg lg:text-xl flex flex-col gap-6">
-              <h2 className="font-display font-extrabold text-2xl lg:text-5xl">
+            <div className="mt-4 flex flex-col gap-6 text-lg lg:text-xl">
+              <h2 className="font-display text-2xl font-extrabold lg:text-5xl">
                 Your instructors
               </h2>
-              <div className="flex flex-col items-center lg:items-start lg:flex-row gap-8">
+              <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start">
                 <a
-                  className="underline flex flex-col gap-4"
+                  className="flex flex-col gap-4 underline"
                   href="https://twitter.com/kentcdodds"
                 >
                   <img
@@ -55,7 +55,7 @@ export default function Workshops() {
                   <span>Kent C. Dodds</span>
                 </a>
                 <a
-                  className="underline flex flex-col gap-4"
+                  className="flex flex-col gap-4 underline"
                   href="https://twitter.com/ryanflorence"
                 >
                   <img
@@ -69,8 +69,8 @@ export default function Workshops() {
             </div>
           </div>
           <div className="col-span-3 lg:col-span-4">
-            <div className="mt-4 text-lg lg:text-xl flex flex-col gap-6">
-              <h2 className="font-display font-extrabold text-2xl lg:text-5xl">
+            <div className="mt-4 flex flex-col gap-6 text-lg lg:text-xl">
+              <h2 className="font-display text-2xl font-extrabold lg:text-5xl">
                 Web Apps with Remix
               </h2>
               <p>
@@ -79,7 +79,7 @@ export default function Workshops() {
                 "website" to "web app" with Remix, this is for you.
               </p>
               <p>At the end of this workshop, you'll know how to:</p>
-              <ul className="list-disc list-inside">
+              <ul className="list-inside list-disc">
                 <li>
                   Eliminate busy indicators with Optimistic UI (while still
                   handling errors)

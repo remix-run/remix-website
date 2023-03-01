@@ -26,11 +26,11 @@ export default function Newsletter() {
   return (
     <div
       x-comp="Newsletter"
-      className="container md:max-w-2xl flex-1 flex flex-col justify-center"
+      className="container flex flex-1 flex-col justify-center md:max-w-2xl"
     >
       <div>
         <div className="h-8" />
-        <div className="font-display font-extrabold text-3xl text-white">
+        <div className="font-display text-3xl font-extrabold text-white">
           Newsletter
         </div>
         <div className="h-6" />

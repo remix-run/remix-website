@@ -53,7 +53,7 @@ const map = (
 function Title({ className }: { className: string }) {
   return (
     <div className={className}>
-      <h1 className="font-display font-extrabold text-3xl sm:text-5xl xl:text-7xl mb-2">
+      <h1 className="mb-2 font-display text-3xl font-extrabold sm:text-5xl xl:text-7xl">
         Sheraton Salt Lake City Hotel
       </h1>
       <small>
@@ -73,7 +73,7 @@ export default function Venue() {
   return (
     <InnerLayout>
       <div className="text-white">
-        <div className="mb-10 flex flex-col lg:flex-row gap-10">
+        <div className="mb-10 flex flex-col gap-10 lg:flex-row">
           <Title className="block lg:hidden" />
           <div className="flex flex-col gap-6">
             <button
@@ -85,13 +85,13 @@ export default function Venue() {
                 src={`/conf-images/hotel/${hotelImageNumber}.jpg`}
                 alt={hotelImages[hotelImageNumber - 1]}
                 style={{ aspectRatio: "16/9" }}
-                className="object-cover rounded-md w-full lg:w-96 xl:w-[34rem]"
+                className="w-full rounded-md object-cover lg:w-96 xl:w-[34rem]"
               />
             </button>
             <div className="w-full text-center">
               <a
                 href="https://rmx.as/conf-hotel"
-                className={`${primaryButtonLinkClass} lg:w-full font-display font-extrabold uppercase`}
+                className={`${primaryButtonLinkClass} font-display font-extrabold uppercase lg:w-full`}
               >
                 Book your stay
               </a>

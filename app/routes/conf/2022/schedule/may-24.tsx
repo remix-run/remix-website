@@ -33,7 +33,7 @@ export default function May24Schedule() {
             Join us!
           </a>
         </p>
-        <table className="w-full mt-10 border-collapse">
+        <table className="mt-10 w-full border-collapse">
           <thead>
             <tr>
               <th>Time</th>
@@ -42,20 +42,20 @@ export default function May24Schedule() {
           </thead>
           <tbody>
             <tr>
-              <td className="p-3 border">10:00am - 4:00pm</td>
-              <td className="p-3 border">
+              <td className="border p-3">10:00am - 4:00pm</td>
+              <td className="border p-3">
                 <Link className="underline" to="/conf/workshops">
                   Workshops
                 </Link>
               </td>
             </tr>
             <tr>
-              <td className="p-3 border">6:00pm - 9:00pm</td>
-              <td className="p-3 border">Welcome Reception</td>
+              <td className="border p-3">6:00pm - 9:00pm</td>
+              <td className="border p-3">Welcome Reception</td>
             </tr>
             <tr>
-              <td className="p-3 border">6:00pm - 9:00pm</td>
-              <td className="p-3 border">
+              <td className="border p-3">6:00pm - 9:00pm</td>
+              <td className="border p-3">
                 "Hack && Hang" with Cockroach Labs and Netlify
               </td>
             </tr>

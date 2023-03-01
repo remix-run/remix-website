@@ -17,10 +17,10 @@ export default function Safety() {
   return (
     <InnerLayout>
       <div>
-        <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-white xl:text-7xl mb-16">
+        <h1 className="mb-16 font-display text-3xl font-extrabold text-white sm:text-5xl xl:text-7xl">
           COVID-19 and Participant Safety
         </h1>
-        <div className="container text-lg lg:text-xl text-white flex flex-col gap-4">
+        <div className="container flex flex-col gap-4 text-lg text-white lg:text-xl">
           <p>
             Remix Conf is committed to making sure everyone is safe and healthy.
             Like everyone else, we're monitoring the COVID situation and will
@@ -55,7 +55,7 @@ export default function Safety() {
           </p>
         </div>
         <img
-          className="w-48 block m-auto mt-16"
+          className="m-auto mt-16 block w-48"
           src="/conf-images/covid-image.png"
           alt="COVID-19 sticker saying I got my covid-19 vaccine"
         />

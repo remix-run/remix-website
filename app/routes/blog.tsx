@@ -40,10 +40,10 @@ export default function Blog() {
   let featuredPosts = data.posts.filter((post) => post.featured);
 
   return (
-    <div className="flex flex-col flex-1 h-full">
+    <div className="flex h-full flex-1 flex-col">
       <Header />
       <main
-        className="flex flex-col flex-1 container mt-16 lg:mt-32"
+        className="container mt-16 flex flex-1 flex-col lg:mt-32"
         tabIndex={-1}
       >
         <div className="md:grid md:grid-cols-12">
@@ -52,7 +52,7 @@ export default function Blog() {
               <Link to={latestPost.slug} prefetch="intent">
                 <div className="aspect-h-9 aspect-w-16 mb-6">
                   <img
-                    className="object-cover object-top w-full h-full md:rounded-md mb-6 shadow"
+                    className="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
                     src={latestPost.image}
                     alt={latestPost.imageAlt}
                   />
@@ -70,24 +70,24 @@ export default function Blog() {
                   <Link to={post.slug} prefetch="intent">
                     <div className="aspect-h-9 aspect-w-16 mb-6">
                       <img
-                        className="object-cover object-top h-full w-full md:rounded-md shadow"
+                        className="h-full w-full object-cover object-top shadow md:rounded-md"
                         src={post.image}
                         alt={post.imageAlt}
                       />
                     </div>
                     <p className="text-sm lg:text-base">{post.dateDisplay}</p>
                     <p className="text-lg font-bold lg:text-xl">{post.title}</p>
-                    <p className="text-sm lg:text-base mb-12">{post.summary}</p>
+                    <p className="mb-12 text-sm lg:text-base">{post.summary}</p>
                   </Link>
                 </div>
               ))}
             </div>
           </div>
-          <div className="md:hidden h-24" />
+          <div className="h-24 md:hidden" />
           <div className="md:col-span-4 md:col-start-9">
             {featuredPosts.length ? (
               <>
-                <h3 className="text-xl font-bold mb-8 lg:text-3xl">
+                <h3 className="mb-8 text-xl font-bold lg:text-3xl">
                   Featured Articles
                 </h3>
                 <div className="grid grid-cols-1 gap-4">
@@ -112,7 +112,7 @@ export default function Blog() {
               </>
             ) : null}
             <div>
-              <h3 className="text-xl font-bold mb-6 lg:text-3xl">
+              <h3 className="mb-6 text-xl font-bold lg:text-3xl">
                 Get updates on the latest Remix news
               </h3>
               <div className="mb-6" id="newsletter-text">

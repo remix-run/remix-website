@@ -103,13 +103,13 @@ function Hero() {
         className="__hero pb-10 pt-40 sm:pb-16 sm:pt-48 md:pb-24 md:pt-52 lg:pb-32 lg:pt-64"
       >
         <div className="container relative">
-          <div className="max-w-xl mx-auto md:mx-0">
-            <h1 className="font-mono text-[length:32px] sm:text-[length:45px] lg:text-[length:64px] leading-tight __hero-text-shadow">
+          <div className="mx-auto max-w-xl md:mx-0">
+            <h1 className="__hero-text-shadow font-mono text-[length:32px] leading-tight sm:text-[length:45px] lg:text-[length:64px]">
               <div className="text-white">May 24-25, 2022 </div>
               <div className="text-yellow-brand">Salt Lake City</div>
             </h1>
             <div className="h-6" />
-            <div className="space-y-4 text-lg lg:text-xl text-white __hero-text-shadow">
+            <div className="__hero-text-shadow space-y-4 text-lg text-white lg:text-xl">
               <p>
                 Remix is a full stack web framework that lets you focus on the
                 user interface and work back through web standards to deliver a
@@ -121,10 +121,10 @@ function Hero() {
             </div>
             <div className="h-9" />
           </div>
-          <div className="flex justify-center w-full">
+          <div className="flex w-full justify-center">
             <a
               href="https://www.youtube.com/playlist?list=PLXoynULbYuEC36XutMMWEuTu9uuh171wx"
-              className={`${primaryButtonLinkClass} w-full md:w-auto font-mono uppercase flex gap-2 sm:gap-4`}
+              className={`${primaryButtonLinkClass} flex w-full gap-2 font-mono uppercase sm:gap-4 md:w-auto`}
             >
               <span aria-hidden>📺</span>
               <span>Watch the Recordings</span>
@@ -142,13 +142,13 @@ function Speakers() {
   const mc = speakers.find((s) => s.type === "emcee");
   const talkSpeakers = speakers.filter((s) => s.type !== "emcee");
   return (
-    <section className="py-20 __section-speakers" id="speakers">
-      <div className="relative container">
-        <h2 className="mb-6 md:mb-8 uppercase font-semibold text-center font-mono">
+    <section className="__section-speakers py-20" id="speakers">
+      <div className="container relative">
+        <h2 className="mb-6 text-center font-mono font-semibold uppercase md:mb-8">
           Speakers
         </h2>
-        <div className="px-6 lg:px-10 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
-          <div className="flex flex-col flex-wrap sm:flex-row gap-y-12 sm:gap-x-8 sm:gap-y-14 md:gap-x-8 2xl:gap-x-10 justify-center items-start">
+        <div className="mx-auto max-w-xs px-6 sm:max-w-2xl lg:max-w-5xl lg:px-10">
+          <div className="flex flex-col flex-wrap items-start justify-center gap-y-12 sm:flex-row sm:gap-x-8 sm:gap-y-14 md:gap-x-8 2xl:gap-x-10">
             {talkSpeakers.map((speaker) => (
               <SpeakerDisplay
                 speaker={speaker}
@@ -160,10 +160,10 @@ function Speakers() {
         </div>
         {mc ? (
           <div id="mc">
-            <h2 className="mt-24 mb-6 md:mb-8 uppercase font-semibold text-center font-mono">
+            <h2 className="mt-24 mb-6 text-center font-mono font-semibold uppercase md:mb-8">
               Master of Ceremonies
             </h2>
-            <div className="flex justify-center m-auto">
+            <div className="m-auto flex justify-center">
               <SpeakerDisplay speaker={mc} className="basis-72" />
             </div>
           </div>
@@ -183,18 +183,18 @@ function SpeakerDisplay({
   return (
     <Link
       to={`speakers/${speaker.slug}`}
-      className={`__speaker-link h-full w-full flex items-center justify-center ${className}`}
+      className={`__speaker-link flex h-full w-full items-center justify-center ${className}`}
       aria-label={`${speaker.name}, ${speaker.title}`}
       prefetch="intent"
     >
       <div className="w-full max-w-xs sm:max-w-none">
-        <div className="__speaker-img rounded-md overflow-hidden aspect-w-1 aspect-h-1 bg-black">
+        <div className="__speaker-img aspect-w-1 aspect-h-1 overflow-hidden rounded-md bg-black">
           <img src={speaker.imgSrc} alt={speaker.name} title={speaker.name} />
         </div>
         <div className="mt-4">
           <h3>{speaker.name}</h3>
           <p className="text-sm">{speaker.title}</p>
-          <p className="text-sm font-semibold uppercase mt-2">
+          <p className="mt-2 text-sm font-semibold uppercase">
             {speaker.linkText}
           </p>
         </div>
@@ -206,22 +206,22 @@ function SpeakerDisplay({
 function Sponsors() {
   const { sponsors } = useLoaderData<typeof loader>();
   return (
-    <section id="sponsors" className="py-20 container">
-      <div className="md:container max-w-full overflow-hidden md:max-w-5xl">
+    <section id="sponsors" className="container py-20">
+      <div className="max-w-full overflow-hidden md:container md:max-w-5xl">
         <h2 className="sr-only">Sponsors</h2>
-        <div className="flex flex-col gap-20 lg:gap-36 text-center">
+        <div className="flex flex-col gap-20 text-center lg:gap-36">
           {sponsors.premier ? (
             <div className="pb-8 lg:pb-20">
-              <h3 className="mb-6 md:mb-8 uppercase font-semibold font-mono">
+              <h3 className="mb-6 font-mono font-semibold uppercase md:mb-8">
                 Premier Sponsor
               </h3>
-              <div className="max-w-[400px] w-full m-auto">
-                <div className="border-2 border-200 bg-white inline-block">
+              <div className="m-auto w-full max-w-[400px]">
+                <div className="border-200 inline-block border-2 bg-white">
                   <a href={sponsors.premier.link}>
                     <img
                       src={sponsors.premier.imgSrc}
                       alt={sponsors.premier.name}
-                      className="max-w-full max-h-full p-12"
+                      className="max-h-full max-w-full p-12"
                     />
                   </a>
                 </div>
@@ -229,29 +229,29 @@ function Sponsors() {
             </div>
           ) : null}
           <div>
-            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-mono">
+            <h3 className="mb-6 font-mono font-semibold uppercase md:mb-8">
               Gold Sponsors
             </h3>
             <SponsorsList sponsors={sponsors.gold} level="gold" />
           </div>
           <div>
-            <h3 className="mb-6 md:mb-8 uppercase font-semibold">
+            <h3 className="mb-6 font-semibold uppercase md:mb-8">
               Silver Sponsors
             </h3>
             <SponsorsList sponsors={sponsors.silver} level="silver" />
           </div>
           <div>
-            <h3 className="mb-6 md:mb-8 uppercase font-semibold font-mono">
+            <h3 className="mb-6 font-mono font-semibold uppercase md:mb-8">
               Community Partners
             </h3>
             <SponsorsList sponsors={sponsors.community} level="community" />
           </div>
         </div>
-        <div className="flex justify-center mt-20">
+        <div className="mt-20 flex justify-center">
           <OutlineButtonLink
             prefetch="intent"
             to="sponsor"
-            className="w-full md:w-auto font-mono uppercase"
+            className="w-full font-mono uppercase md:w-auto"
             children="Join the Sponsors"
           />
         </div>
@@ -284,20 +284,20 @@ function SponsorsList({
   return (
     <div>
       <ul
-        className={`${ulClassName} m-auto flex flex-wrap list-none items-center justify-center`}
+        className={`${ulClassName} m-auto flex list-none flex-wrap items-center justify-center`}
       >
         {sponsors.map((sponsor) => (
           <li key={sponsor.name} className={`${size}`}>
-            <div className="border-2 border-200 w-full h-full bg-white">
+            <div className="border-200 h-full w-full border-2 bg-white">
               <a
                 href={sponsor.link}
-                className="h-full w-full flex items-center justify-center"
+                className="flex h-full w-full items-center justify-center"
               >
                 <img
                   src={sponsor.imgSrc}
                   alt={sponsor.name}
                   title={sponsor.name}
-                  className="max-w-full max-h-full p-3"
+                  className="max-h-full max-w-full p-3"
                 />
               </a>
             </div>

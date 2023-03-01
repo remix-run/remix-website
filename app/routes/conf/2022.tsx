@@ -65,7 +65,7 @@ const navItems: Array<HeaderLinkProps> = [
 
 export default function ConfTwentyTwentyTwo() {
   return (
-    <div className="flex flex-col flex-1 h-full text-white bg-blue-800 __layout">
+    <div className="__layout flex h-full flex-1 flex-col bg-blue-800 text-white">
       {/* <TopBanner>
         <span className="text-pink-brand font-bold">
           Announcing: Remix Conf 2023.
@@ -76,7 +76,7 @@ export default function ConfTwentyTwentyTwo() {
         </Link>
       </TopBanner> */}
       <Header />
-      <main className="flex flex-col flex-1" tabIndex={-1}>
+      <main className="flex flex-1 flex-col" tabIndex={-1}>
         <Outlet />
       </main>
       <aside>
@@ -92,11 +92,11 @@ function SignUp() {
     <section className="my-6" id="conf-newsletter-signup">
       <div className="container">
         <section className="section-signup relative">
-          <div className="md:max-w-xl mx-auto md:py-40 relative">
-            <h2 className="h2 mb-3 text-3xl text-yellow-brand font-bold font-mono">
+          <div className="relative mx-auto md:max-w-xl md:py-40">
+            <h2 className="h2 mb-3 font-mono text-3xl font-bold text-yellow-brand">
               Stay Updated
             </h2>
-            <div className="flex items-center gap-4 mb-6">
+            <div className="mb-6 flex items-center gap-4">
               <a
                 href="https://rmx.as/discord"
                 aria-label="Discord"
@@ -104,7 +104,7 @@ function SignUp() {
               >
                 <Discord aria-hidden />
               </a>
-              <p className="text-lg md:text-xl opacity-80">
+              <p className="text-lg opacity-80 md:text-xl">
                 <a className="underline" href="https://rmx.as/discord">
                   Join the Remix community on Discord
                 </a>{" "}
@@ -113,7 +113,7 @@ function SignUp() {
               </p>
             </div>
             <p
-              className="text-lg md:text-xl mb-6 opacity-80"
+              className="mb-6 text-lg opacity-80 md:text-xl"
               id="newsletter-text"
             >
               To get exclusive updates announcements about Remix Conf, subscribe
@@ -122,9 +122,9 @@ function SignUp() {
             <SubscribeProvider>
               <SubscribeForm aria-describedby="newsletter-text">
                 <SubscribeEmailInput />
-                <SubscribeSubmit className="w-full mt-2 sm:w-auto sm:mt-0 uppercase font-mono" />
+                <SubscribeSubmit className="mt-2 w-full font-mono uppercase sm:mt-0 sm:w-auto" />
               </SubscribeForm>
-              <p className="text-white opacity-60 text-sm mt-3">
+              <p className="mt-3 text-sm text-white opacity-60">
                 We respect your privacy; unsubscribe at any time.
               </p>
               <SubscribeStatus />
@@ -142,17 +142,17 @@ function Header() {
     location.pathname === "/conf" || location.pathname === "/conf/2022";
   return (
     <header
-      className={cx("text-white pt-10 md:pt-4", {
+      className={cx("pt-10 text-white md:pt-4", {
         "absolute top-0 left-0 right-0 z-10": isConfHome,
       })}
     >
-      <div className="px-6 lg:px-12 py-9 flex justify-between items-start gap-8">
+      <div className="flex items-start justify-between gap-8 px-6 py-9 lg:px-12">
         <NavLink to="." prefetch="intent" aria-label="Remix">
           <Logo />
         </NavLink>
 
         <nav className="flex" aria-label="Main">
-          <ul className="hidden md:flex gap-4 md:gap-5 lg:gap-8 list-none items-center font-mono">
+          <ul className="hidden list-none items-center gap-4 font-mono md:flex md:gap-5 lg:gap-8">
             {navItems.map((item) => (
               <li key={item.to + item.children}>
                 <HeaderLink
@@ -181,23 +181,23 @@ function Footer() {
   return (
     <footer
       x-comp="Footer"
-      className="px-6 lg:px-12 py-9 text-base flex justify-between items-center text-white __footer"
+      className="__footer flex items-center justify-between px-6 py-9 text-base text-white lg:px-12"
     >
-      <div className="flex items-start md:items-center flex-col md:flex-row gap-2 md:gap-16">
+      <div className="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-16">
         <Link to="/" aria-label="Remix home" prefetch="intent">
           <Wordmark height={16} aria-hidden />
         </Link>
         <Link
           prefetch="intent"
           to="coc"
-          className="leading-none block font-semibold font-mono"
+          className="block font-mono font-semibold leading-none"
         >
           Code of Conduct
         </Link>
         <Link
           prefetch="intent"
           to="safety"
-          className="leading-none block font-semibold font-mono"
+          className="block font-mono font-semibold leading-none"
         >
           Safety
         </Link>
@@ -263,7 +263,7 @@ function MobileNavButton() {
     <MenuButton
       id="nav-button"
       aria-label="Toggle menu"
-      className="border-2 border-white border-opacity-60 expanded:border-opacity-100 rounded-md h-9 w-9 flex items-center justify-center expanded:bg-blue-800"
+      className="flex h-9 w-9 items-center justify-center rounded-md border-2 border-white border-opacity-60 expanded:border-opacity-100 expanded:bg-blue-800"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +288,7 @@ function MobileMenuItem({
       as={HeaderLink}
       className={cx(
         className,
-        "select-none cursor-pointer py-2 px-4 outline-none selected:bg-pink-500 selected:text-white hover:bg-blue-700 selected:hover:bg-pink-600 hover:text-white"
+        "cursor-pointer select-none py-2 px-4 outline-none hover:bg-blue-700 hover:text-white selected:bg-pink-500 selected:text-white selected:hover:bg-pink-600"
       )}
       {...props}
     />
@@ -298,7 +298,7 @@ function MobileMenuItem({
 function MobileNavList() {
   return (
     <MenuPopover className="absolute block">
-      <MenuItems className="relative block whitespace-nowrap outline-none py-2 border-2 border-white rounded-md mt-2 bg-blue-800 font-mono">
+      <MenuItems className="relative mt-2 block whitespace-nowrap rounded-md border-2 border-white bg-blue-800 py-2 font-mono outline-none">
         {navItems.map((item, i) => (
           <MobileMenuItem
             key={item.to + item.children}
@@ -314,7 +314,7 @@ function MobileNavList() {
 
 function MobileNav() {
   return (
-    <div className="flex items-center gap-4 md:hidden font-mono">
+    <div className="flex items-center gap-4 font-mono md:hidden">
       <HeaderLink
         className="block text-yellow-brand hover:text-white"
         to="https://rmx.as/tickets"
@@ -361,8 +361,8 @@ function Logo() {
 function TopBanner({ children }: { children?: React.ReactNode }) {
   if (!children) return null;
   return (
-    <div className="py-2 bg-black sticky top-0 z-20">
-      <p className="container mx-auto flex flex-col md:flex-row md:gap-1 justify-center items-center sm:text-[16px] text-[3.2vw]">
+    <div className="sticky top-0 z-20 bg-black py-2">
+      <p className="container mx-auto flex flex-col items-center justify-center text-[3.2vw] sm:text-[16px] md:flex-row md:gap-1">
         {children}
       </p>
     </div>

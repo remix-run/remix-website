@@ -129,7 +129,7 @@ function Document({
 
       <body
         className={cx(
-          "min-h-screen flex flex-col w-full overflow-x-hidden",
+          "flex min-h-screen w-full flex-col overflow-x-hidden",
           forceDark
             ? [darkBg || "bg-gray-900", "text-gray-200"]
             : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200"
@@ -189,8 +189,8 @@ export function ErrorBoundary({ error }: { error: Error }) {
   }
   return (
     <Document noIndex title="Error" forceDark darkBg="bg-red-brand">
-      <div className="flex flex-col justify-center flex-1 text-white">
-        <div className="leading-none text-center">
+      <div className="flex flex-1 flex-col justify-center text-white">
+        <div className="text-center leading-none">
           <h1 className="text-[25vw]">Error</h1>
           <div className="text-3xl">
             Something went wrong! Please try again later.
@@ -210,8 +210,8 @@ export function CatchBoundary() {
       forceDark
       darkBg="bg-blue-brand"
     >
-      <div className="flex flex-col justify-center flex-1 text-white">
-        <div className="leading-none text-center">
+      <div className="flex flex-1 flex-col justify-center text-white">
+        <div className="text-center leading-none">
           <h1 className="font-mono text-[25vw]">{caught.status}</h1>
           <a
             className="inline-block text-[8vw] underline"

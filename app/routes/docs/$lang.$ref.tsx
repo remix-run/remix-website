@@ -138,7 +138,7 @@ export default function DocsLayout() {
           >
             <Outlet />
           </div>
-          <div className="pt-8 sm:pt-10 lg:pt-12 lg:ml-72 lg:pl-6 xl:pl-10 2xl:pl-12 min-w-0">
+          <div className="min-w-0 pt-8 sm:pt-10 lg:ml-72 lg:pt-12 lg:pl-6 xl:pl-10 2xl:pl-12">
             <Footer />
           </div>
         </InnerContainer>
@@ -182,7 +182,7 @@ function Header() {
         "relative border-b border-gray-50 bg-white text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100",
         // This hides some of the underlying text when the user scrolls to the
         // bottom which results in the overscroll bounce
-        "before:hidden lg:before:block before:absolute before:bg-inherit before:w-full before:h-[500%] before:left-0 before:bottom-0"
+        "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:hidden before:h-[500%] before:w-full lg:before:block"
       )}
     >
       <InnerContainer>
@@ -347,14 +347,14 @@ function DocSearchSection() {
   let { isLatest } = useLoaderData<typeof loader>();
   if (!isLatest) return null;
   return (
-    <div className="lg:sticky lg:z-10 lg:top-0 relative">
-      <div className="-top-24 absolute h-24 w-full bg-white dark:bg-gray-900 hidden lg:block" />
+    <div className="relative lg:sticky lg:top-0 lg:z-10">
+      <div className="absolute -top-24 hidden h-24 w-full bg-white dark:bg-gray-900 lg:block" />
       <div
         className={cx(
-          "lg:px-1 lg:bg-white lg:dark:bg-gray-900 relative",
+          "relative lg:bg-white lg:px-1 lg:dark:bg-gray-900",
           // This hides some of the underlying text when the user scrolls to the
           // bottom which results in the overscroll bounce
-          "before:hidden lg:before:block before:bg-inherit before:absolute before:h-[200%] before:w-full before:left-0 before:bottom-0 before:-z-10"
+          "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:-z-10 before:hidden before:h-[200%] before:w-full lg:before:block"
         )}
       >
         {hydrated ? (
@@ -370,7 +370,7 @@ function DocSearchSection() {
           <div className="h-20" />
         )}
       </div>
-      <div className="top-full absolute h-6 w-full bg-gradient-to-b from-white dark:from-gray-900 hidden lg:block" />
+      <div className="absolute top-full hidden h-6 w-full bg-gradient-to-b from-white dark:from-gray-900 lg:block" />
     </div>
   );
 }
@@ -538,7 +538,7 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed top-10 bottom-0 py-12 -translate-x-2 hidden w-72 overflow-auto lg:flex flex-col gap-6">
+    <div className="fixed top-10 bottom-0 hidden w-72 -translate-x-2 flex-col gap-6 overflow-auto py-12 lg:flex">
       <DocSearchSection />
       <div className="px-1">
         <Menu />
@@ -623,15 +623,15 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
       prefetch="intent"
       to={to}
       className={cx(
-        "py-1 pl-2 relative group my-1 flex items-center rounded-md border-transparent lg:text-sm",
-        "duration-150 transition-colors ease-in-out",
+        "group relative my-1 flex items-center rounded-md border-transparent py-1 pl-2 lg:text-sm",
+        "transition-colors duration-150 ease-in-out",
         isActive
           ? [
               "font-semibold",
               "text-blue-brand hover:text-blue-700 dark:hover:text-blue-300",
               "bg-blue-50 bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-40",
             ]
-          : ["text-gray-700 dark:text-gray-400 hover:text-blue-500"]
+          : ["text-gray-700 hover:text-blue-500 dark:text-gray-400"]
       )}
       children={children}
     />

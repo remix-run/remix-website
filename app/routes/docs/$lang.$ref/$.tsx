@@ -130,7 +130,7 @@ export default function DocPage() {
       ) : (
         <div className="hidden xl:order-1 xl:block xl:w-56 xl:flex-shrink-0" />
       )}
-      <div className="pt-8 pb-4 xl:flex-grow min-w-0">
+      <div className="min-w-0 pt-8 pb-4 xl:flex-grow">
         <div
           ref={ref}
           className="markdown w-full pb-[33vh]"
@@ -144,7 +144,7 @@ export default function DocPage() {
 function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   return (
     <div className="hidden xl:sticky xl:top-28 xl:order-1 xl:mt-10 xl:block xl:max-h-[calc(100vh-10rem)] xl:w-56 xl:flex-shrink-0 xl:self-start xl:overflow-auto">
-      <nav className="pb-1 pt-0 mb-2 text-[1rem] leading-[1.125] tracking-wide flex items-center font-bold">
+      <nav className="mb-2 flex items-center pb-1 pt-0 text-[1rem] font-bold leading-[1.125] tracking-wide">
         On this page
       </nav>
       <ul>
@@ -154,9 +154,9 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
               href={`#${heading.slug}`}
               dangerouslySetInnerHTML={{ __html: heading.html || "" }}
               className={cx(
-                "pb-1 relative group my-1 flex items-center rounded-md border-transparent text-sm",
-                "text-gray-700 dark:text-gray-400 hover:text-blue-500",
-                "duration-150 transition-colors ease-in-out"
+                "group relative my-1 flex items-center rounded-md border-transparent pb-1 text-sm",
+                "text-gray-700 hover:text-blue-500 dark:text-gray-400",
+                "transition-colors duration-150 ease-in-out"
               )}
             />
           </li>
@@ -168,7 +168,7 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
 
 function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   return (
-    <details className="group flex h-full flex-col -mx-4 sm:-mx-6 lg:mx-0 xl:ml-80 lg:mt-4 xl:hidden">
+    <details className="group -mx-4 flex h-full flex-col sm:-mx-6 lg:mx-0 lg:mt-4 xl:ml-80 xl:hidden">
       <summary className="_no-triangle flex cursor-pointer select-none items-center gap-2 border-b border-gray-50 bg-white px-2 py-3 text-sm font-medium hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
         <div className="flex items-center gap-2">
           <svg aria-hidden className="h-5 w-5 group-open:hidden">

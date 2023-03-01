@@ -13,7 +13,7 @@ export function Header({
   return (
     <header
       className={
-        "px-6 lg:px-12 py-9 flex justify-between items-center" +
+        "flex items-center justify-between px-6 py-9 lg:px-12" +
         " " +
         (forceDark ? "text-white " : "text-gray-900 dark:text-white ") +
         className
@@ -65,7 +65,7 @@ function HeaderLink({
       prefetch={prefetch}
       x-comp="HeaderLink"
       className={
-        "text-base mx-2 sm:mx-4 last:mr-0 opacity-80 hover:opacity-100 font-semibold " +
+        "mx-2 text-base font-semibold opacity-80 last:mr-0 hover:opacity-100 sm:mx-4 " +
         className
       }
       to={to}

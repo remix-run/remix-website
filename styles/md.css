@@ -63,11 +63,11 @@
   }
 
   & h2 {
-    @apply font-display font-extrabold text-2xl md:text-5xl dark:text-gray-200;
+    @apply font-display text-2xl font-extrabold dark:text-gray-200 md:text-5xl;
   }
 
   & h3 {
-    @apply font-display font-extrabold text-xl md:text-3xl dark:text-gray-200;
+    @apply font-display text-xl font-extrabold dark:text-gray-200 md:text-3xl;
   }
 
   & h4 {
@@ -93,7 +93,7 @@
   }
 
   & pre {
-    @apply my-8 break-normal overflow-auto p-2 md:p-3 border-t border-b sm:border sm:rounded-xl border-gray-200 dark:border-gray-700 text-sm lg:text-base -mx-6;
+    @apply my-8 -mx-6 overflow-auto break-normal border-t border-b border-gray-200 p-2 text-sm dark:border-gray-700 sm:rounded-xl sm:border md:p-3 lg:text-base;
   }
 
   & pre[data-lang="text"] {
@@ -101,7 +101,7 @@
   }
 
   & code {
-    @apply rounded-lg  bg-gray-50 dark:bg-gray-800 p-1 text-base text-gray-700 dark:text-gray-400;
+    @apply rounded-lg  bg-gray-50 p-1 text-base text-gray-700 dark:bg-gray-800 dark:text-gray-400;
   }
 
   /* unset the stuff from `& code` up there ^ */
@@ -119,12 +119,12 @@
   }
 
   & video {
-    @apply w-full my-8;
+    @apply my-8 w-full;
   }
 
   & ol,
   & ul {
-    @apply pl-8 my-8 mb-4;
+    @apply my-8 mb-4 pl-8;
   }
 
   & ol ol,
@@ -179,19 +179,19 @@
   }
 
   & dl {
-    @apply p-0 mt-0 mb-4;
+    @apply mt-0 mb-4 p-0;
 
     & dt {
-      @apply p-0 mt-4 text-base italic font-semibold;
+      @apply mt-4 p-0 text-base font-semibold italic;
     }
 
     & dd {
-      @apply py-0 px-4 mb-4;
+      @apply mb-4 py-0 px-4;
     }
   }
 
   & blockquote {
-    @apply pl-4 italic border-l-4;
+    @apply border-l-4 pl-4 italic;
   }
 
   & details {
@@ -203,18 +203,18 @@
   }
 
   & figcaption {
-    @apply font-bold text-center text-sm lg:text-base;
+    @apply text-center text-sm font-bold lg:text-base;
   }
 
   & table {
     text-indent: 0;
     border-spacing: 0;
-    @apply w-full text-left border-collapse border-[color:inherit] overflow-auto max-w-full my-10;
+    @apply my-10 w-full max-w-full border-collapse overflow-auto border-[color:inherit] text-left;
   }
 
   & table th {
-    @apply sticky top-0 font-semibold text-gray-700 bg-transparent text-sm dark:text-gray-300;
-    @apply p-0 pb-1 pr-4 border-0 border-b border-gray-200 md:pr-6 dark:border-gray-800;
+    @apply sticky top-0 bg-transparent text-sm font-semibold text-gray-700 dark:text-gray-300;
+    @apply border-0 border-b border-gray-200 p-0 pb-1 pr-4 dark:border-gray-800 md:pr-6;
   }
 
   & table tbody {
@@ -222,7 +222,7 @@
   }
 
   & table td {
-    @apply p-0 py-2 pr-4 text-black border-0 border-b border-gray-100 md:pr-6 text-sm dark:text-white whitespace-nowrap;
+    @apply whitespace-nowrap border-0 border-b border-gray-100 p-0 py-2 pr-4 text-sm text-black dark:text-white md:pr-6;
   }
 
   & .codeblock-line {
@@ -231,7 +231,7 @@
 
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
-    @apply absolute top-0 -mx-3 left-0 right-0 bg-green-400 pointer-events-none dark:bg-green-600 opacity-10;
+    @apply pointer-events-none absolute top-0 left-0 right-0 -mx-3 bg-green-400 opacity-10 dark:bg-green-600;
   }
 
   & :is(h1, h2, h3, h4, h5, h6) {
@@ -240,7 +240,7 @@
     scroll-margin-top: 1em;
 
     & a {
-      @apply absolute top-0 z-10 flex items-center h-full leading-none -left-6 -right-0;
+      @apply absolute top-0 -left-6 -right-0 z-10 flex h-full items-center leading-none;
     }
 
     &:hover a,
@@ -249,11 +249,11 @@
     }
 
     & .icon-link {
-      @apply flex items-center h-full align-middle text-blue-brand;
+      @apply flex h-full items-center align-middle text-blue-brand;
     }
 
     & a .icon-link::before {
-      @apply invisible inline-block w-4 h-4;
+      @apply invisible inline-block h-4 w-4;
       content: " ";
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='gray' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath fill-rule='evenodd' d='M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'%3E%3C/path%3E%3C/svg%3E");
     }

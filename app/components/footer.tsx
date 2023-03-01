@@ -12,7 +12,7 @@ export function Footer({
     <footer
       x-comp="Footer"
       className={
-        "px-6 lg:px-12 py-9 text-base flex justify-between items-center" +
+        "flex items-center justify-between px-6 py-9 text-base lg:px-12" +
         " " +
         (forceDark ? "text-white " : "text-black dark:text-white ") +
         className
