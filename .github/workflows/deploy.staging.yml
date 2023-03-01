@@ -2,7 +2,7 @@ name: 🚀 Deploy (staging)
 on:
   push:
     branches:
-      - stage
+      - dev
     paths-ignore:
       - ".vscode/**"
       - "scripts/**"
