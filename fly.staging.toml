@@ -36,12 +36,12 @@ processes = []
     restart_limit = 6
     timeout = "2s"
 
-  [[services.http_checks]]
-    grace_period = "5s"
-    headers = {}
-    interval = 10_000
-    method = "get"
-    path = "/healthcheck"
-    protocol = "http"
-    timeout = 2_000
-    tls_skip_verify = false
+#   [[services.http_checks]]
+#     grace_period = "5s"
+#     headers = {}
+#     interval = 10_000
+#     method = "get"
+#     path = "/healthcheck"
+#     protocol = "http"
+#     timeout = 2_000
+#     tls_skip_verify = false
