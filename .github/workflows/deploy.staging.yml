@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - ".vscode/**"
       - "scripts/**"
+      - "README.md"
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
