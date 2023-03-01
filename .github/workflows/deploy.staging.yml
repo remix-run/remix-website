@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - stage
-      # TODO: Remove this before merging
-      - docs-architecture
     paths-ignore:
       - ".vscode/**"
       - "scripts/**"
