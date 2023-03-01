@@ -10,6 +10,7 @@ import {
   useLoaderData,
   useMatches,
 } from "@remix-run/react";
+import { json } from "@remix-run/node";
 import type { LoaderArgs } from "@remix-run/node";
 import {
   load as loadFathom,
@@ -46,14 +47,21 @@ export async function loader({ request }: LoaderArgs) {
 
   let colorScheme = await parseColorScheme(request);
 
-  return {
-    colorScheme,
-    noIndex:
-      isDevHost ||
-      url.pathname === "/docs/en/v1/api/remix" ||
-      url.pathname === "/docs/en/v1/api/conventions",
-    env,
-  };
+  return json(
+    {
+      colorScheme,
+      noIndex:
+        isDevHost ||
+        url.pathname === "/docs/en/v1/api/remix" ||
+        url.pathname === "/docs/en/v1/api/conventions",
+      env,
+    },
+    {
+      headers: {
+        Vary: "Cookie",
+      },
+    }
+  );
 }
 
 export function links() {
