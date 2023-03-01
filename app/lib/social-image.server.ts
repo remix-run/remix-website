@@ -29,7 +29,7 @@ function getCloudinarySocialImageUrl({
   displayDate,
   authorName,
   authorTitle,
-}: SocialImageArgs) {
+}: SocialImageArgs): URL {
   // Important: no leading hash for hex values
   let primaryTextColor = "ffffff";
   let secondaryTextColor = "d0d0d0";
@@ -112,36 +112,54 @@ function getCloudinarySocialImageUrl({
     `l_${CLOUDINARY_FOLDER_NAME}:profile-${authorNameSlug}.jpg`, // image filename
   ].join(",");
 
-  return [
-    `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-    vars,
-    templateImageTransform,
-    dateTransform,
-    titleTransform,
-    authorImageTransform,
-    authorNameTransform,
-    authorTitleTransform,
-    templateImage,
-  ].join("/");
+  return new URL(
+    [
+      `${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      vars,
+      templateImageTransform,
+      dateTransform,
+      titleTransform,
+      authorImageTransform,
+      authorNameTransform,
+      authorTitleTransform,
+      templateImage,
+    ].join("/"),
+    "https://res.cloudinary.com"
+  );
 }
 
 export async function getSocialImageUrl({
   slug,
   siteUrl,
   ...socialImageArgs
-}: { slug: string; siteUrl: string } & SocialImageArgs) {
+}: { slug: string; siteUrl: string } & SocialImageArgs): Promise<URL> {
   let basePath = `blog-images/social/${slug}.jpg`;
   let filePath = path.join(__dirname, "..", "public", basePath);
   if (await fileExists(filePath)) {
-    return `${siteUrl}/${basePath}`;
+    return new URL(basePath, siteUrl);
   }
   return getCloudinarySocialImageUrl(socialImageArgs);
 }
 
+const VALID_IMAGE_TYPES = [
+  "apng",
+  "avif",
+  "gif",
+  "jpeg",
+  "png",
+  "svg+xml",
+  "webp",
+] as const;
+
+type ImageContentType = `image/${(typeof VALID_IMAGE_TYPES)[number]}`;
+
 export async function getImageContentType(imagePath: string) {
-  let ext = path.extname(imagePath).toLowerCase();
-  if (!ext) return null;
-  return `image/${ext.slice(1)}`;
+  let imgType = path.extname(imagePath).toLowerCase().slice(1);
+  if (!imgType) return null;
+  if (imgType === "jpg") imgType = "jpeg";
+  if (imgType === "svg") imgType = "svg+xml";
+  if (!VALID_IMAGE_TYPES.includes(imgType as any)) return null;
+  return `image/${imgType}` as ImageContentType;
 }
 
 interface SocialImageArgs {
