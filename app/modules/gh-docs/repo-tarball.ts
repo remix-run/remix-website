@@ -1,8 +1,8 @@
 import followRedirects from "follow-redirects";
 import fs from "fs";
-import invariant from "tiny-invariant";
 import path from "path";
 import tar from "tar";
+import { env } from "~/env.server";
 
 /**
  * Fetches a repo tarball from GitHub or your local repo as a tarball in
@@ -42,13 +42,9 @@ export async function getRepoTarballStream(
  * production.
  */
 export async function getLocalTarballStream(): Promise<NodeJS.ReadableStream> {
-  invariant(
-    process.env.LOCAL_REPO_RELATIVE_PATH,
-    "Expected LOCAL_REPO_RELATIVE_PATH"
-  );
   let localDocsPath = path.join(
     process.cwd(),
-    process.env.LOCAL_REPO_RELATIVE_PATH,
+    env.LOCAL_REPO_RELATIVE_PATH,
     "docs"
   );
   await tar.c({ gzip: true, file: ".local.tgz" }, [localDocsPath]);

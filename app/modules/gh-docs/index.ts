@@ -2,6 +2,7 @@ import { getDoc, getMenu } from "./docs";
 import { getBranches } from "./branches";
 import { getLatestVersion, getTags } from "./tags";
 import invariant from "tiny-invariant";
+import { env } from "~/env.server";
 
 export { validateParams } from "./params";
 export { getRepoTarballStream } from "./repo-tarball";
@@ -9,11 +10,8 @@ export { getLatestVersion, getAllReleases } from "./tags";
 
 export type { Doc } from "./docs";
 
-invariant(process.env.SOURCE_REPO, "Missing process.env.SOURCE_REPO");
-invariant(process.env.RELEASE_PACKAGE, "Missing process.env.RELEASE_PACKAGE");
-
-const REPO = process.env.SOURCE_REPO;
-const RELEASE_PACKAGE = process.env.RELEASE_PACKAGE;
+const REPO = env.SOURCE_REPO;
+const RELEASE_PACKAGE = env.RELEASE_PACKAGE;
 
 export function getRepoTags() {
   return getTags(REPO);

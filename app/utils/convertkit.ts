@@ -1,9 +1,7 @@
-if (typeof process.env.CONVERTKIT_KEY !== "string") {
-  throw new Error("Missing envvar CONVERTKIT_KEY, please set it.");
-}
+import { env } from "~/env.server";
 
 export async function subscribeToNewsletter(email: string) {
-  let TOKEN = process.env.CONVERTKIT_KEY;
+  let TOKEN = env.CONVERTKIT_KEY;
   let URL = "https://api.convertkit.com/v3";
   let FORM_ID = "1334747";
 

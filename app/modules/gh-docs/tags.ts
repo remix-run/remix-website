@@ -1,11 +1,10 @@
 import LRUCache from "lru-cache";
 import parseLinkHeader from "parse-link-header";
 import semver from "semver";
-import invariant from "tiny-invariant";
+import { env } from "~/env.server";
 import { octokit } from "./github";
 
-invariant(process.env.RELEASE_PACKAGE, "RELEASE_PACKAGE is not set");
-const RELEASE_PACKAGE = process.env.RELEASE_PACKAGE;
+const RELEASE_PACKAGE = env.RELEASE_PACKAGE;
 
 /**
  * Fetches the repo tags
