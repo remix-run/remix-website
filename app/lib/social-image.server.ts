@@ -1,19 +1,10 @@
 import path from "path";
 import fsp from "fs/promises";
 import getEmojiRegex from "emoji-regex";
-import invariant from "tiny-invariant";
+import { env } from "~/env.server";
 
-const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-const CLOUDINARY_FOLDER_NAME = process.env.CLOUDINARY_FOLDER_NAME;
-
-invariant(
-  CLOUDINARY_CLOUD_NAME,
-  "process.env.CLOUDINARY_CLOUD_NAME must be set for generating social images"
-);
-invariant(
-  CLOUDINARY_FOLDER_NAME,
-  "process.env.CLOUDINARY_FOLDER_NAME must be set for generating social images"
-);
+const CLOUDINARY_CLOUD_NAME = env.CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_FOLDER_NAME = env.CLOUDINARY_FOLDER_NAME;
 
 function stripEmojis(string: string): string {
   return string.replace(getEmojiRegex(), "").replace(/\s+/g, " ").trim();

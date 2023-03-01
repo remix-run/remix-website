@@ -5,6 +5,7 @@ import { getRepoContent } from "./repo-content";
 import { getRepoTarballStream } from "./repo-tarball";
 import { createTarFileProcessor } from "./tarball";
 import { load as $ } from "cheerio";
+import { env } from "~/env.server";
 
 interface MenuDocAttributes {
   title: string;
@@ -31,7 +32,7 @@ declare global {
   var docCache: LRUCache<string, Doc>;
 }
 
-let NO_CACHE = process.env.NO_CACHE;
+let NO_CACHE = env.NO_CACHE;
 
 global.menuCache ??= new LRUCache<string, MenuDoc[]>({
   // let menuCache = new LRUCache<string, MenuDoc[]>({

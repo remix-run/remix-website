@@ -31,12 +31,6 @@ import { canUseDOM } from "~/lib/misc";
 import cx from "clsx";
 import { metaV1 } from "@remix-run/v1-meta";
 
-declare global {
-  var __env: {
-    NODE_ENV: "development" | "production";
-  };
-}
-
 export async function loader({ request }: LoaderArgs) {
   ensureSecure(request);
   removeTrailingSlashes(request);
