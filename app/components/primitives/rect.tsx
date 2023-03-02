@@ -9,7 +9,7 @@
  */
 
 import * as React from "react";
-import observeRect from "@reach/observe-rect";
+import { observeRect, getRect, rectChanged } from "~/utils/observe-rect";
 import { useLayoutEffect } from "./utils";
 
 /**
@@ -21,58 +21,48 @@ import { useLayoutEffect } from "./utils";
 function useRect<T extends Element = HTMLElement>(
   nodeRef: React.RefObject<T | undefined | null>,
   options: UseRectOptions = {}
-): null | DOMRect {
+): null | Rect {
   let { observe, onChange } = options;
-  let [element, setElement] = React.useState(nodeRef.current);
-  let initialRectIsSet = React.useRef(false);
-  let initialRefIsSet = React.useRef(false);
+  let [element, setElement] = React.useState<T | null | undefined>(null);
   let [rect, setRect] = React.useState<DOMRect | null>(null);
   let onChangeRef = React.useRef(onChange);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useLayoutEffect(() => {
     onChangeRef.current = onChange;
-    if (nodeRef.current !== element) {
-      setElement(nodeRef.current);
-    }
+  }, [onChange]);
+
+  // This should never trigger an endless loop because the ref should point to a
+  // stable node reference or null/undefined. If it's anything else, it's a user
+  // problem and we should probably catch that with a custom error.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useLayoutEffect(() => {
+    setElement(nodeRef.current);
   });
 
   useLayoutEffect(() => {
-    if (element && !initialRectIsSet.current) {
-      initialRectIsSet.current = true;
-      setRect(element.getBoundingClientRect());
-    }
-  }, [element]);
-
-  useLayoutEffect(() => {
-    if (!observe) {
+    let node = element || nodeRef.current;
+    if (!node) {
+      // TODO: Consider a warning, we should probably have a ref here (I think)
       return;
     }
 
-    let elem = element;
-    // State initializes before refs are placed, meaning the element state will
-    // be undefined on the first render. We still want the rect on the first
-    // render, so initially we'll use the nodeRef that was passed instead of
-    // state for our measurements.
-    if (!initialRefIsSet.current) {
-      initialRefIsSet.current = true;
-      elem = nodeRef.current;
-    }
+    let currentRect = getRect(node);
+    setRect((prevRect) => {
+      if (!prevRect || rectChanged(prevRect, currentRect)) {
+        return currentRect;
+      }
+      return prevRect;
+    });
 
-    if (!elem) {
-      // TODO: Consider a warning
-      return;
-    }
-
-    let observer = observeRect(elem, (rect) => {
+    let observer = observeRect(node, (rect) => {
       onChangeRef.current?.(rect);
       setRect(rect);
     });
+
     observer.observe();
     return () => {
       observer.unobserve();
     };
-  }, [observe, element, nodeRef]);
+  }, [nodeRef, element, observe]);
 
   return rect;
 }

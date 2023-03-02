@@ -1,12 +1,16 @@
 import * as React from "react";
 import {
-  Meta,
   Links,
-  useCatch,
-  useMatches,
+  LiveReload,
+  Meta,
   Outlet,
+  Scripts,
+  ScrollRestoration,
+  useCatch,
   useLoaderData,
+  useMatches,
 } from "@remix-run/react";
+import { json } from "@remix-run/node";
 import type { LoaderArgs } from "@remix-run/node";
 import {
   load as loadFathom,
@@ -14,12 +18,16 @@ import {
 } from "fathom-client";
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
-import { Body } from "~/components/body";
 import {
   removeTrailingSlashes,
   ensureSecure,
   isProductionHost,
 } from "~/utils/http.server";
+import { ColorSchemeScript, useColorScheme } from "~/utils/color-scheme";
+import { parseColorScheme } from "~/utils/color-scheme.server";
+import iconsHref from "~/icons.svg";
+import { canUseDOM } from "~/utils/misc";
+import cx from "clsx";
 
 declare global {
   var __env: {
@@ -36,16 +44,25 @@ export async function loader({ request }: LoaderArgs) {
 
   let isDevHost = !isProductionHost(request);
   let url = new URL(request.url);
-  return {
-    noIndex:
-      isDevHost ||
-      url.pathname === "/docs/en/v1/api/remix" ||
-      url.pathname === "/docs/en/v1/api/conventions",
-    env,
-  };
-}
 
-export let shouldRevalidate = () => false;
+  let colorScheme = await parseColorScheme(request);
+
+  return json(
+    {
+      colorScheme,
+      noIndex:
+        isDevHost ||
+        url.pathname === "/docs/en/v1/api/remix" ||
+        url.pathname === "/docs/en/v1/api/conventions",
+      env,
+    },
+    {
+      headers: {
+        Vary: "Cookie",
+      },
+    }
+  );
+}
 
 export function links() {
   let preloadedFonts = [
@@ -76,6 +93,7 @@ interface DocumentProps {
   title?: string;
   forceDark?: boolean;
   darkBg?: string;
+  isDev?: boolean;
   noIndex: boolean;
   children: React.ReactNode;
 }
@@ -86,11 +104,17 @@ function Document({
   forceDark,
   darkBg,
   noIndex,
+  isDev,
 }: DocumentProps) {
+  let colorScheme = useColorScheme();
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={forceDark || colorScheme === "dark" ? "dark" : undefined}
+      data-theme={forceDark ? "dark" : colorScheme}
+    >
       <head>
-        {title && <title>{title}</title>}
+        <ColorSchemeScript forceConsistentTheme={forceDark} />
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#121212" />
         {noIndex && <meta name="robots" content="noindex" />}
@@ -103,9 +127,19 @@ function Document({
         {title && <title data-title-override="">{title}</title>}
       </head>
 
-      <Body forceDark={forceDark} darkBg={darkBg}>
+      <body
+        className={cx(
+          "flex min-h-screen w-full flex-col overflow-x-hidden",
+          forceDark
+            ? [darkBg || "bg-gray-900", "text-gray-200"]
+            : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+        )}
+      >
         {children}
-      </Body>
+        <ScrollRestoration />
+        <Scripts />
+        {isDev ? <LiveReload /> : null}
+      </body>
     </html>
   );
 }
@@ -125,8 +159,21 @@ export default function App() {
   }
 
   return (
-    <Document noIndex={noIndex} forceDark={forceDark}>
+    <Document
+      noIndex={noIndex}
+      forceDark={forceDark}
+      isDev={env.NODE_ENV === "development"}
+    >
       <Outlet />
+      <img
+        src={iconsHref}
+        alt=""
+        hidden
+        // this img tag simply forces the icons to be loaded at a higher
+        // priority than the scripts (chrome only for now)
+        // @ts-expect-error
+        fetchpriority="high"
+      />
       <script
         dangerouslySetInnerHTML={{
           __html: `window.__env = ${JSON.stringify(env)};`,
@@ -137,12 +184,17 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
+  if (!canUseDOM) {
+    console.error(error);
+  }
   return (
     <Document noIndex title="Error" forceDark darkBg="bg-red-brand">
-      <div className="flex flex-col justify-center flex-1 text-white">
-        <div className="leading-none text-center">
+      <div className="flex flex-1 flex-col justify-center text-white">
+        <div className="text-center leading-none">
           <h1 className="text-[25vw]">Error</h1>
-          <div className="text-3xl">{error.message}</div>
+          <div className="text-3xl">
+            Something went wrong! Please try again later.
+          </div>
         </div>
       </div>
     </Document>
@@ -158,8 +210,8 @@ export function CatchBoundary() {
       forceDark
       darkBg="bg-blue-brand"
     >
-      <div className="flex flex-col justify-center flex-1 text-white">
-        <div className="leading-none text-center">
+      <div className="flex flex-1 flex-col justify-center text-white">
+        <div className="text-center leading-none">
           <h1 className="font-mono text-[25vw]">{caught.status}</h1>
           <a
             className="inline-block text-[8vw] underline"

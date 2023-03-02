@@ -41,13 +41,13 @@ export default function Speak() {
   return (
     <InnerLayout>
       <div>
-        <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-white xl:text-7xl mb-16">
+        <h1 className="mb-16 font-display text-3xl font-extrabold text-white sm:text-5xl xl:text-7xl">
           <a href="https://rmx.as/discord" className="flex items-center gap-4">
             <Discord />
             <span>Remix Conf Discord</span>
           </a>
         </h1>
-        <div className="container text-lg lg:text-xl text-white flex flex-col gap-4">
+        <div className="container flex flex-col gap-4 text-lg text-white lg:text-xl">
           <p>
             <a href="https://rmx.as/discord" className="underline">
               The Remix Discord server
@@ -57,7 +57,7 @@ export default function Speak() {
             cool place to hang out and talk about building awesome web
             experiences).
           </p>
-          <ul className="list-disc list-inside">
+          <ul className="list-inside list-disc">
             {channels.map(({ name, link, description }) => (
               <li key={name}>
                 <a className="underline" href={link}>
@@ -68,10 +68,10 @@ export default function Speak() {
             ))}
           </ul>
           <p className="pt-4">Chat it up during the conference!</p>
-          <div className="w-full mt-6 text-center">
+          <div className="mt-6 w-full text-center">
             <a
               href="https://rmx.as/discord"
-              className={`${primaryButtonLinkClass} font-display uppercase flex items-center gap-4`}
+              className={`${primaryButtonLinkClass} flex items-center gap-4 font-display uppercase`}
             >
               <Discord /> Join the Discord
             </a>

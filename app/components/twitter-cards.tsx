@@ -112,27 +112,27 @@ export function Avatar({
 }) {
   return (
     <div className={cx("h-12 w-12", className)}>
-      <img src={src} className="object-cover rounded-full" alt={alt} />
+      <img src={src} className="rounded-full object-cover" alt={alt} />
     </div>
   );
 }
 
 export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
   return (
-    <div className="max-w-max mx-auto">
-      <div className="__carousel flex overflow-x-scroll gap-6 md:pb-4">
+    <div className="mx-auto max-w-max">
+      <div className="__carousel flex gap-6 overflow-x-scroll md:pb-4">
         {tweets.map((tweet, index) => (
           <figure
             key={index}
-            className="__slide shrink-0 p-8 sm:p-10 w-[80vw] md:w-[43vw] xl:w-[30rem] bg-gray-800 text-white rounded-lg"
+            className="__slide w-[80vw] shrink-0 rounded-lg bg-gray-800 p-8 text-white sm:p-10 md:w-[43vw] xl:w-[30rem]"
           >
             <div className="flex items-center justify-between">
-              <div className="flex gap-4 items-center">
+              <div className="flex items-center gap-4">
                 <Avatar alt="" src={tweet.avatar} />
                 <figcaption>
                   <a
                     href={tweet.href}
-                    className="block text-xl md:text-xl font-display font-extrabold"
+                    className="block font-display text-xl font-extrabold md:text-xl"
                     aria-label={`Tweet from ${tweet.name}`}
                   >
                     @{tweet.username}
@@ -150,7 +150,7 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
               </a>
             </div>
             <div className="h-6" />
-            <blockquote className="text-sm xl:text-base text-gray-200">
+            <blockquote className="text-sm text-gray-200 xl:text-base">
               {tweet.body}
             </blockquote>
           </figure>
@@ -162,13 +162,13 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
 
 export function BigTweet({ tweet }: { tweet: TweetData }) {
   return (
-    <figure className="max-w-xl mx-auto p-6 sm:p-8">
+    <figure className="mx-auto max-w-xl p-6 sm:p-8">
       <div className="flex items-center justify-center gap-4 text-white">
         <div className="flex">
           <Avatar alt="" src={tweet.avatar} className="relative z-10" />
           <Twitter
             role="presentation"
-            className="h-12 w-12 text-white relative -left-4"
+            className="relative -left-4 h-12 w-12 text-white"
           />
         </div>
         <figcaption>
@@ -176,7 +176,7 @@ export function BigTweet({ tweet }: { tweet: TweetData }) {
             href={tweet.href}
             target="_blank"
             rel="noreferrer"
-            className="block text-xl md:text-3xl font-display font-extrabold"
+            className="block font-display text-xl font-extrabold md:text-3xl"
             aria-label={`Tweet from ${tweet.name}`}
           >
             {tweet.name}

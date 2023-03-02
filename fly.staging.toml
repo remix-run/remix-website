@@ -4,28 +4,25 @@ kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
 
-[build]
-  builtin = "node"
-
-[env]
-  PORT = "8080"
-
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
+  cmd = "start.sh"
+  entrypoint = "sh"
 
 [[services]]
-  http_checks = []
   internal_port = 8080
+  processes = ["app"]
   protocol = "tcp"
   script_checks = []
 
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
-    type = "requests"
+    type = "connections"
 
   [[services.ports]]
+    force_https = true
     handlers = ["http"]
     port = 80
 
@@ -38,3 +35,13 @@ processes = []
     interval = "15s"
     restart_limit = 6
     timeout = "2s"
+
+  [[services.http_checks]]
+    grace_period = "5s"
+    headers = {}
+    interval = 10_000
+    method = "get"
+    path = "/healthcheck"
+    protocol = "http"
+    timeout = 2_000
+    tls_skip_verify = false

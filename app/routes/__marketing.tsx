@@ -13,9 +13,9 @@ export let handle = { forceDark: true };
 
 export default function Marketing() {
   return (
-    <div className="flex flex-col flex-1 h-full">
+    <div className="flex h-full flex-1 flex-col">
       <Header forceDark={true} />
-      <main className="flex flex-col flex-1" tabIndex={-1}>
+      <main className="flex flex-1 flex-col" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer forceDark={true} />

@@ -39,7 +39,7 @@ export default function May25Schedule() {
         <div>
           <small>9:00am - 4:30pm</small>{" "}
           <small>(This schedule may change.)</small>
-          <table className="w-full mt-6 border-collapse">
+          <table className="mt-6 w-full border-collapse">
             <thead className="sr-only">
               <tr>
                 <th>Time</th>
@@ -53,29 +53,29 @@ export default function May25Schedule() {
                   className="border-t border-b border-gray-200"
                   id={`time-${sluggify(scheduleItem.time)}`}
                 >
-                  <td className="px-2 py-8 lg:py-16 whitespace-nowrap">
+                  <td className="whitespace-nowrap px-2 py-8 lg:py-16">
                     {scheduleItem.time}
                   </td>
-                  <td className="px-2 py-8 lg:py-16 flex flex-col gap-4">
+                  <td className="flex flex-col gap-4 px-2 py-8 lg:py-16">
                     <span
-                      className="md:text-lg text-xl font-bold"
+                      className="text-xl font-bold md:text-lg"
                       dangerouslySetInnerHTML={{
                         __html: scheduleItem.titleHTML,
                       }}
                     />
-                    <div className="flex gap-3 sm:gap-4 md:gap-5 items-start flex-col sm:flex-row">
+                    <div className="flex flex-col items-start gap-3 sm:flex-row sm:gap-4 md:gap-5">
                       {scheduleItem.speakers?.length ? (
-                        <span className="flex gap-2 sm:gap-3 md:gap-5 flex-wrap">
+                        <span className="flex flex-wrap gap-2 sm:gap-3 md:gap-5">
                           {scheduleItem.speakers.map((s) => (
                             <Link
                               key={s.slug}
                               to={`../../speakers/${s.slug}`}
                               title={s.name}
-                              className="flex flex-col justify-center items-center"
+                              className="flex flex-col items-center justify-center"
                             >
                               <img
                                 src={s.imgSrc}
-                                className="rounded-md w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32"
+                                className="h-16 w-16 rounded-md sm:h-24 sm:w-24 md:h-32 md:w-32"
                                 alt={s.name}
                                 title={s.name}
                               />
@@ -108,7 +108,7 @@ export default function May25Schedule() {
           </small>
         </div>
         <div className="mt-20">
-          <h2 className="text-xl font-display font-extrabold md:text-3xl">
+          <h2 className="font-display text-xl font-extrabold md:text-3xl">
             After Party
           </h2>
           <small>7:00pm - 10:00pm</small>

@@ -85,49 +85,49 @@ export default function BlogPost() {
   useDelegatedReactRouterLinks(mdRef);
 
   return (
-    <div className="flex flex-col flex-1 h-full">
+    <div className="flex h-full flex-1 flex-col">
       <Header to="/blog" />
       {post.draft ? (
-        <div className="m-auto max-w-3xl bg-red-700 text-gray-100 dark:bg-red-400 dark:text-gray-700 mb-8 py-3 px-5 rounded-sm text-center">
+        <div className="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 py-3 px-5 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">
           🚨 This is a draft, please do not share this page until it's
           officially published 🚨
         </div>
       ) : null}
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-1 flex-col">
         <div className="flex-1">
           <div>
-            <div className="h-[280px] md:h-[400px] md:max-w-3xl md:mx-auto md:rounded-xl xl:h-[480px] relative bg-gray-900">
+            <div className="relative h-[280px] bg-gray-900 md:mx-auto md:h-[400px] md:max-w-3xl md:rounded-xl xl:h-[480px]">
               <div className="absolute inset-0">
                 <img
-                  className="object-cover object-top w-full h-full opacity-40 md:rounded-xl"
+                  className="h-full w-full object-cover object-top opacity-40 md:rounded-xl"
                   src={post.image}
                   alt={post.imageAlt}
                 />
               </div>
-              <div className="container relative z-10 flex flex-col w-full h-full pt-6 md:pt-12 lg:max-w-4xl">
+              <div className="container relative z-10 flex h-full w-full flex-col pt-6 md:pt-12 lg:max-w-4xl">
                 <div className="flex-1">
-                  <div className="text-gray-200 uppercase text-sm md:text-base">
+                  <div className="text-sm uppercase text-gray-200 md:text-base">
                     {post.dateDisplay}
                   </div>
                   <div className="h-2" />
-                  <div className="text-3xl text-white font-display font-extrabold md:text-4xl">
+                  <div className="font-display text-3xl font-extrabold text-white md:text-4xl">
                     {post.title}
                   </div>
                   <div className="h-2" />
                 </div>
                 <div className="pb-4 md:pb-12">
                   {post.authors.map((author) => (
-                    <div key={author.name} className="flex items-center my-2">
+                    <div key={author.name} className="my-2 flex items-center">
                       <div>
                         <img
-                          className="w-10 h-10 rounded-full md:h-14 md:w-14"
+                          className="h-10 w-10 rounded-full md:h-14 md:w-14"
                           src={author.avatar}
                           alt=""
                         />
                       </div>
                       <div className="w-6" />
                       <div>
-                        <div className="text-xl leading-none text-white font-display font-extrabold md:text-3xl">
+                        <div className="font-display text-xl font-extrabold leading-none text-white md:text-3xl">
                           {author.name}
                         </div>
                         <div className="text-base leading-tight text-gray-200 md:text-base">
@@ -153,8 +153,8 @@ export default function BlogPost() {
         </div>
       </div>
 
-      <div className="mt-24 mb-12 m-auto container max-w-lg">
-        <h3 className="text-xl font-bold mb-6 lg:text-3xl">
+      <div className="container m-auto mt-24 mb-12 max-w-lg">
+        <h3 className="mb-6 text-xl font-bold lg:text-3xl">
           Get updates on the latest Remix news
         </h3>
         <div className="mb-6" id="newsletter-text">

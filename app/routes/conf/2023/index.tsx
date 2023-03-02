@@ -70,7 +70,9 @@ export const loader = async ({ request }: LoaderArgs) => {
     {
       siteUrl,
       sponsors,
-      speakers: speakers.sort(randomSort),
+      speakers: speakers.sort((a, b) =>
+        a.isTopSpeaker ? -1 : b.isTopSpeaker ? 1 : randomSort()
+      ),
     },
     { headers: { "Cache-Control": CACHE_CONTROL.conf } }
   );
@@ -94,35 +96,35 @@ export default function ConfIndex() {
 function Hero() {
   return (
     <Fragment>
-      <section className="__hero bg-black flex relative pb-10 pt-32 sm:pb-16 sm:pt-32 md:pb-24 md:pt-32 lg:py-32 lg:items-center lg:min-h-[min(100vh,900px)] w-full">
+      <section className="__hero relative flex w-full bg-black pb-10 pt-32 sm:pb-16 sm:pt-32 md:pb-24 md:pt-32 lg:min-h-[min(100vh,900px)] lg:items-center lg:py-32">
         <div className="__fx-wrapper">
           <div className="__fx-lights"></div>
           <div className="__fx-twinkle"></div>
           <div className="__fx-colors"></div>
         </div>
         <div className="container relative">
-          <div className="flex flex-col xl:flex-row-reverse items-center xl:justify-between">
-            <div className="flex flex-col items-center justify-center flex-auto w-full max-w-md md:max-w-lg xl:max-w-xl mx-auto xl:mx-0">
+          <div className="flex flex-col items-center xl:flex-row-reverse xl:justify-between">
+            <div className="mx-auto flex w-full max-w-md flex-auto flex-col items-center justify-center md:max-w-lg xl:mx-0 xl:max-w-xl">
               <LogoRemixHero
                 role="img"
                 aria-label="Remix Conf 2023"
                 focusable="false"
-                className="w-full h-auto"
+                className="h-auto w-full"
               />
             </div>
-            <div className="max-w-xl mx-auto md:mx-0">
-              <h1 className="font-display font-extrabold text-4xl md:text-7xl">
+            <div className="mx-auto max-w-xl md:mx-0">
+              <h1 className="font-display text-4xl font-extrabold md:text-7xl">
                 <div className="text-white">May 9th-11th</div>
                 <div className="text-yellow-brand">Salt Lake City</div>
               </h1>
               <div className="h-6" />
-              <p className="space-y-4 text-lg lg:text-xl text-white">
+              <p className="space-y-4 text-lg text-white lg:text-xl">
                 Remix is a full stack web framework that lets you focus on the
                 user interface and work back through web standards to deliver a
                 fast, slick, and resilient user experience.
               </p>
               <div className="h-9" />
-              <div className="flex flex-col gap-4 md:flex-row items-center">
+              <div className="flex flex-col items-center gap-4 md:flex-row">
                 <a
                   href="https://rmx.as/tickets"
                   className={`${outlineSecondaryButtonLinkClass} w-full md:w-[50%] xl:w-auto`}
@@ -150,16 +152,16 @@ function EarlySponsors() {
   return (
     <section className="relative">
       <div className="container">
-        <div className="max-w-xl md:max-w-2xl xl:max-w-none mx-auto xl:mx-0 flex flex-col w-full gap-20 sm:gap-28 xl:gap-36">
-          <div className="flex flex-col justify-center items-center text-center">
-            <p className="font-display font-extrabold text-2xl md:text-4xl mb-4 md:mb-8">
+        <div className="mx-auto flex w-full max-w-xl flex-col gap-20 sm:gap-28 md:max-w-2xl xl:mx-0 xl:max-w-none xl:gap-36">
+          <div className="flex flex-col items-center justify-center text-center">
+            <p className="mb-4 font-display text-2xl font-extrabold md:mb-8 md:text-4xl">
               Presented by<span className="sr-only"> Shopify</span>
             </p>
-            <div className="w-72 sm:w-80 xl:w-96 max-w-full">
+            <div className="w-72 max-w-full sm:w-80 xl:w-96">
               <GridCell>
                 <GridCellLink to=".">
                   <div className="flex w-full p-12 md:p-14 lg:p-16 2xl:p-20">
-                    <LogoShopify className="w-full h-auto" aria-hidden />
+                    <LogoShopify className="h-auto w-full" aria-hidden />
                   </div>
                 </GridCellLink>
               </GridCell>
@@ -167,28 +169,28 @@ function EarlySponsors() {
           </div>
           {speakers.length > 0 ? (
             <section>
-              <h2 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
+              <h2 className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl">
                 Speakers
               </h2>
-              <div className="max-w-sm sm:max-w-none mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-8">
+              <div className="mx-auto grid max-w-sm grid-cols-1 gap-8 sm:max-w-none sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
                 {speakers.map((speaker) => {
                   let child = (
-                    <div className="flex flex-col gap-4 w-full rounded-[inherit] overflow-hidden p-4">
+                    <div className="flex w-full flex-col gap-4 overflow-hidden rounded-[inherit] p-4">
                       {speaker.imgUrl ? (
                         <div
                           aria-hidden
-                          className="w-full aspect-1 border-[1px] border-gray-600 bg-gray-800"
+                          className="aspect-1 w-full border-[1px] border-gray-600 bg-gray-800"
                         >
                           <img
                             src={speaker.imgUrl}
                             alt=""
-                            className="block object-center object-contain saturate-50 group-hover/link:saturate-100 transition-all duration-1000"
+                            className="block object-contain object-center saturate-50 transition-all duration-1000 group-hover/link:saturate-100"
                           />
                         </div>
                       ) : (
                         <div
                           aria-hidden
-                          className="flex w-full aspect-1 font-extrabold text-center items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-gray-400 select-none leading-1 text-6xl md:text-4xl xl:text-5xl"
+                          className="leading-1 flex aspect-1 w-full select-none items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-center text-6xl font-extrabold text-gray-400 md:text-4xl xl:text-5xl"
                         >
                           {getInitials(speaker.nameFull)}
                         </div>
@@ -239,10 +241,10 @@ function EarlySponsors() {
             <h2 className="sr-only">Sponsors</h2>
             {premierSponsor ? (
               <div>
-                <h3 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-blue-brand">
+                <h3 className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl">
                   Premier Sponsor
                 </h3>
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
                   <GridCell type="sponsor">
                     <GridCellLink to={premierSponsor.link}>
                       <div className="flex w-full p-12 md:p-14 lg:p-16 2xl:p-20">
@@ -250,7 +252,7 @@ function EarlySponsors() {
                         <img
                           src={premierSponsor.imgSrc}
                           alt=""
-                          className="block w-full h-auto object-center object-contain"
+                          className="block h-auto w-full object-contain object-center"
                         />
                       </div>
                     </GridCellLink>
@@ -260,10 +262,10 @@ function EarlySponsors() {
             ) : null}
 
             <div>
-              <h3 className="font-display font-extrabold text-4xl md:text-7xl mb-4 md:mb-8 text-yellow-brand">
+              <h3 className="mb-4 font-display text-4xl font-extrabold text-yellow-brand md:mb-8 md:text-7xl">
                 Gold Sponsors
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
                 {sponsors.gold?.map((sponsor) => {
                   return (
                     <GridCell key={sponsor.name} type="sponsor">
@@ -273,7 +275,7 @@ function EarlySponsors() {
                           <img
                             src={sponsor.imgSrc}
                             alt=""
-                            className="block w-full h-auto object-center object-contain"
+                            className="block h-auto w-full object-contain object-center"
                           />
                         </div>
                       </GridCellLink>
@@ -282,10 +284,10 @@ function EarlySponsors() {
                 })}
                 <GridCell bgColor="blue" type="sponsor">
                   <GridCellLink to="sponsor" hoverColor="blue">
-                    <div className="h-full w-full flex items-center justify-center p-8 2xl:p-10 font-bold text-xl xl:text-3xl text-left">
+                    <div className="flex h-full w-full items-center justify-center p-8 text-left text-xl font-bold xl:text-3xl 2xl:p-10">
                       <div>
                         Your Company Here?{" "}
-                        <span className="underline whitespace-nowrap">
+                        <span className="whitespace-nowrap underline">
                           Let's Talk.
                         </span>
                       </div>
@@ -297,10 +299,10 @@ function EarlySponsors() {
 
             {(sponsors.silver?.length || 0) > 0 ? (
               <div>
-                <h3 className="font-display font-extrabold text-3xl md:text-5xl mb-4 md:mb-8 text-pink-brand">
+                <h3 className="mb-4 font-display text-3xl font-extrabold text-pink-brand md:mb-8 md:text-5xl">
                   Silver Sponsors
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {sponsors.silver!.map((sponsor) => {
                     return (
                       <GridCell key={sponsor.name} type="sponsor">
@@ -310,7 +312,7 @@ function EarlySponsors() {
                             <img
                               src={sponsor.imgSrc}
                               alt=""
-                              className="block w-full h-auto object-center object-contain"
+                              className="block h-auto w-full object-contain object-center"
                             />
                           </div>
                         </GridCellLink>
@@ -323,10 +325,10 @@ function EarlySponsors() {
 
             {(sponsors.community?.length || 0) > 0 ? (
               <div>
-                <h3 className="font-display font-extrabold text-2xl md:text-4xl mb-4 md:mb-8">
+                <h3 className="mb-4 font-display text-2xl font-extrabold md:mb-8 md:text-4xl">
                   Community Sponsors
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-8">
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 xl:grid-cols-5">
                   {sponsors.community!.map((sponsor) => {
                     return (
                       <GridCell key={sponsor.name} type="sponsor">
@@ -336,7 +338,7 @@ function EarlySponsors() {
                             <img
                               src={sponsor.imgSrc}
                               alt=""
-                              className="block w-full h-auto object-center object-contain"
+                              className="block h-auto w-full object-contain object-center"
                             />
                           </div>
                         </GridCellLink>
@@ -391,7 +393,7 @@ function GridCellLink({
     <Link
       to={to}
       className={cx(
-        "group/link w-full h-full flex justify-center rounded-[inherit] outline-offset-2 outline-blue-brand focus-visible:outline focus-visible:outline-2 border-[1px] border-transparent transition-colors",
+        "group/link flex h-full w-full justify-center rounded-[inherit] border-[1px] border-transparent outline-offset-2 outline-blue-brand transition-colors focus-visible:outline focus-visible:outline-2",
         {
           "hover:border-blue-300": hoverColor === "blue",
           "hover:border-gray-400": hoverColor === "default",

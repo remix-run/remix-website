@@ -355,7 +355,6 @@ const MenuPopover = React.forwardRef<HTMLDivElement, MenuPopoverProps>(
         {...sharedProps}
         targetRef={targetRef as any}
         position={position}
-        unstable_preventPortalRenderBeforeHydration
         children={props.children}
       />
     ) : (

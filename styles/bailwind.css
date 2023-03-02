@@ -6,12 +6,12 @@
 }
 
 .__carousel::-webkit-scrollbar {
-  @apply w-3 h-3;
+  @apply h-3 w-3;
 }
 
 .__carousel::-webkit-scrollbar-thumb {
   background: white;
-  @apply bg-gray-500 rounded-lg;
+  @apply rounded-lg bg-gray-500;
 }
 .__carousel::-webkit-scrollbar-track {
   @apply bg-transparent;
@@ -25,7 +25,7 @@
   @apply h-[50vh] overflow-hidden py-2 sm:py-4;
 
   & .codeblock-line {
-    @apply block relative leading-relaxed px-2 sm:px-8;
+    @apply relative block px-2 leading-relaxed sm:px-8;
   }
 
   & .codeblock-line[data-highlight="true"]::after {

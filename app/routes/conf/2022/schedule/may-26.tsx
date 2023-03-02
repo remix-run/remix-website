@@ -228,7 +228,7 @@ export default function May25Schedule() {
           facilitate getting folks together who want to do the same thing and
           help you know fun places to go hang out. Here are some possibilities:
         </p>
-        <ul className="pt-6 space-y-2">
+        <ul className="space-y-2 pt-6">
           {activities.map((activity) => (
             <li key={activity.name}>
               <span className="pr-2">{activity.emoji}</span>

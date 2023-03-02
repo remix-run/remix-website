@@ -16,12 +16,10 @@ import { tabbable } from "tabbable";
 ////////////////////////////////////////////////////////////////////////////////
 
 const Popover = forwardRef<PopoverProps, "div">(
-  ({ unstable_preventPortalRenderBeforeHydration, ...props }, ref) => {
+  ({ unstable_skipRenderBeforeHydration, ...props }, ref) => {
     return (
       <Portal
-        unstable_preventRenderBeforeHydration={
-          unstable_preventPortalRenderBeforeHydration
-        }
+        unstable_skipRenderBeforeHydration={unstable_skipRenderBeforeHydration}
       >
         <PopoverImpl ref={ref} {...props} />
       </Portal>
@@ -49,8 +47,7 @@ interface PopoverProps {
    * of the selected option. Pretty sure this will change so don't use it
    * anywhere in public yet!
    */
-  unstable_observableRefs?: React.RefObject<PossibleElement>[];
-  unstable_preventPortalRenderBeforeHydration?: boolean;
+  unstable_skipRenderBeforeHydration?: boolean;
 }
 
 /**
@@ -59,13 +56,7 @@ interface PopoverProps {
  */
 const PopoverImpl = forwardRef<PopoverProps, "div">(
   (
-    {
-      as: Comp = "div",
-      targetRef,
-      position = positionDefault,
-      unstable_observableRefs = [],
-      ...props
-    },
+    { as: Comp = "div", targetRef, position = positionDefault, ...props },
     forwardedRef
   ) => {
     let popoverRef = React.useRef<HTMLDivElement>(null);
@@ -75,6 +66,8 @@ const PopoverImpl = forwardRef<PopoverProps, "div">(
 
     useSimulateTabNavigationForReactTree(targetRef as any, popoverRef);
 
+    let popoverStyles = getStyles(position, targetRect, popoverRect);
+
     return (
       <Comp
         data-reach-popover=""
@@ -82,12 +75,7 @@ const PopoverImpl = forwardRef<PopoverProps, "div">(
         {...props}
         style={{
           position: "absolute",
-          ...getStyles(
-            position,
-            targetRect,
-            popoverRect,
-            ...unstable_observableRefs
-          ),
+          ...popoverStyles,
           ...props.style,
         }}
       />
@@ -100,16 +88,13 @@ PopoverImpl.displayName = "PopoverImpl";
 function getStyles(
   position: PositionPopover,
   targetRect: Rect | null,
-  popoverRect: Rect | null,
-  ...unstable_observableRefs: React.RefObject<PossibleElement>[]
+  popoverRect: Rect | null
 ): React.CSSProperties {
-  return popoverRect
-    ? position(
-        targetRect,
-        popoverRect,
-        ...unstable_observableRefs.map((ref) => ref.current)
-      )
-    : { visibility: "hidden" };
+  let needToMeasurePopup = !popoverRect;
+  if (needToMeasurePopup) {
+    return { visibility: "hidden" };
+  }
+  return position(targetRect, popoverRect);
 }
 
 function getTopPosition(

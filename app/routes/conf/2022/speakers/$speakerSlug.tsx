@@ -62,28 +62,28 @@ export default function SpeakerRoute() {
   return (
     <InnerLayout>
       <div>
-        <div className="mb-10 flex flex-col md:flex-row gap-10 text-white">
+        <div className="mb-10 flex flex-col gap-10 text-white md:flex-row">
           <img
             src={speaker.imgSrc}
             alt={speaker.name}
-            className="object-cover rounded-md w-36 h-36 md:w-64 md:h-64"
+            className="h-36 w-36 rounded-md object-cover md:h-64 md:w-64"
             style={{ aspectRatio: "1/1" }}
           />
           <div className="text-lg lg:text-xl">
-            <h1 className="font-display font-extrabold text-3xl sm:text-5xl xl:text-7xl mb-2">
+            <h1 className="mb-2 font-display text-3xl font-extrabold sm:text-5xl xl:text-7xl">
               {speaker.name}
             </h1>
             <div className="mt-4">
               <p>{speaker.title}</p>
               <a
                 href={speaker.link}
-                className="underline text-sm font-semibold uppercase mt-2"
+                className="mt-2 text-sm font-semibold uppercase underline"
               >
                 {speaker.linkText}
               </a>
             </div>
             <div
-              className="mt-4 md:mt-8 speaker-prose"
+              className="speaker-prose mt-4 md:mt-8"
               dangerouslySetInnerHTML={{ __html: speaker.bioHTML }}
             />
           </div>
@@ -93,16 +93,16 @@ export default function SpeakerRoute() {
             {talks.map((talk) => (
               <div key={talk.title} className="flex flex-col gap-4">
                 <div>
-                  <h2 className="text-xl font-display font-extrabold md:text-3xl inline">
+                  <h2 className="inline font-display text-xl font-extrabold md:text-3xl">
                     {talk.title}
                   </h2>
                   {talk.type === "backup" ? (
-                    <Link className="underline pl-2" to="../schedule/may-24">
+                    <Link className="pl-2 underline" to="../schedule/may-24">
                       <span className="pl-2">backup talk</span>
                     </Link>
                   ) : (
                     <Link
-                      className="underline pl-2"
+                      className="pl-2 underline"
                       to={`../schedule/may-25${
                         talk.time ? `#time-${sluggify(talk.time)}` : ""
                       }`}
@@ -136,10 +136,10 @@ export function CatchBoundary() {
   if (caught.status === 404) {
     return (
       <div>
-        <h1 className="font-mono text-3xl sm:text-5xl text-white xl:text-7xl mb-10">
+        <h1 className="mb-10 font-mono text-3xl text-white sm:text-5xl xl:text-7xl">
           Speaker not found
         </h1>
-        <div className="container text-lg lg:text-xl text-white">
+        <div className="container text-lg text-white lg:text-xl">
           <p>
             No speaker found with the slug "{params.speakerSlug}".{" "}
             <Link to="../speakers/you" className="underline">

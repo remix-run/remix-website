@@ -38,7 +38,7 @@ function CTA() {
       <JumboText>
         That's probably enough for now. What are you waiting for?
       </JumboText>
-      <div className="max-w-6xl px-6 mx-auto md:px-12">
+      <div className="mx-auto max-w-6xl px-6 md:px-12">
         <div className="h-4" />
         <PrimaryButtonLink
           prefetch="intent"
@@ -122,8 +122,8 @@ function SalesError() {
         <Sales>
           <div className="absolute inset-0 flex items-center justify-center bg-red-100">
             <div className="text-center text-red-brand">
-              <div className="text-[10px] sm:text-[14px] font-bold">Oops!</div>
-              <div className="text-[8px] sm:text-[12px] px-2">
+              <div className="text-[10px] font-bold sm:text-[14px]">Oops!</div>
+              <div className="px-2 text-[8px] sm:text-[12px]">
                 Something busted that we didn’t anticipate.
               </div>
             </div>
@@ -176,7 +176,7 @@ function Explosion() {
 
 function BlueScreen() {
   return (
-    <section className="relative z-10 h-full px-6 pb-32 text-white bg-blue-brand sm:px-36 sm:pb-40 text-lg sm:text-xl">
+    <section className="relative z-10 h-full bg-blue-brand px-6 pb-32 text-lg text-white sm:px-36 sm:pb-40 sm:text-xl">
       <h2 className="sr-only">Error Handling</h2>
       <div aria-hidden className="text-6xl sm:text-7xl md:text-[length:120px]">
         :)
@@ -190,7 +190,7 @@ function BlueScreen() {
         Remix handles errors while Server Rendering. Errors while Client
         Rendering. Even errors in your server side data handling.
       </div>
-      <img className="w-24 h-24" alt="" aria-hidden src="/qrcode.png" />
+      <img className="h-24 w-24" alt="" aria-hidden src="/qrcode.png" />
     </section>
   );
 }
@@ -203,7 +203,7 @@ function Glitch() {
     <div className="fixed inset-0 motion-reduce:hidden">
       <img
         alt=""
-        className="relative w-[110%] h-[110%]"
+        className="relative h-[110%] w-[110%]"
         style={{
           left: actor.progress === 0 ? "0" : ruhRuh_Random() + "px",
           top: actor.progress === 0 ? "0" : ruhRuh_Random() + "px",
@@ -217,8 +217,8 @@ function Glitch() {
 function Mutations({ slides }: { slides: Sequence }) {
   return (
     <section>
-      <div className="max-w-5xl p-6 mx-auto md:p-10">
-        <div className="text-white text-4xl font-display font-extrabold md:text-7xl">
+      <div className="mx-auto max-w-5xl p-6 md:p-10">
+        <div className="font-display text-4xl font-extrabold text-white md:text-7xl">
           <h2 className="inline">Data loading</h2>{" "}
           <span aria-hidden>
             ... <img src="/yawn.png" alt="" className="inline h-8 md:h-14" />
@@ -228,7 +228,7 @@ function Mutations({ slides }: { slides: Sequence }) {
             <span className="text-yellow-brand">changing data?</span>
           </p>
         </div>
-        <p className="mt-2 text-lg md:text-xl md:pr-52 lg:pr-72 hyphen-manual">
+        <p className="hyphen-manual mt-2 text-lg md:pr-52 md:text-xl lg:pr-72">
           Imagine if React only had props and no way to set state. What’s the
           point? If a web framework helps you load data but doesn’t help you
           update it, what’s the point? Remix doesn’t drop you off at the{" "}
@@ -254,7 +254,7 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
   return (
     <ScrollStage pages={5.5} fallbackLength={100} fallbackFrame={25}>
       <div className="xl:flex">
-        <div className="flex-1 p-max-w-lg xl:mx-auto">
+        <div className="p-max-w-lg flex-1 xl:mx-auto">
           <div className="xl:h-[12vh]" />
           <div className="max-w-full px-6">
             <MutationP>
@@ -281,7 +281,7 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
           </div>
         </div>
 
-        <div className="sticky bottom-0 bg-gray-800 xl:bottom-auto xl:top-0 xl:flex-1 xl:self-start xl:h-screen xl:flex xl:items-center">
+        <div className="sticky bottom-0 bg-gray-800 xl:bottom-auto xl:top-0 xl:flex xl:h-screen xl:flex-1 xl:items-center xl:self-start">
           <MutationCode
             start={0}
             end={slideLength * 1.5}
@@ -310,7 +310,7 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
 function MutationNetwork() {
   return (
     <div
-      className="h-[50vh] flex justify-center items-center xl:w-full select-none"
+      className="flex h-[50vh] select-none items-center justify-center xl:w-full"
       aria-hidden
     >
       <div className="w-4/5 pb-10">
@@ -353,7 +353,7 @@ function MutationCode({
   return (
     <Actor start={start} end={end} persistent={persistent}>
       <div
-        className="__mutation_code xl:w-full text-sm sm:text-base md:text-lg"
+        className="__mutation_code text-sm sm:text-base md:text-lg xl:w-full"
         dangerouslySetInnerHTML={{ __html: slide.subject }}
       />
     </Actor>
@@ -362,7 +362,7 @@ function MutationCode({
 
 function MutationP({ children }: { children: React.ReactNode }) {
   return (
-    <p className="px-6 sm:px-8 max-w-2xl sm:mx-auto text-4xl md:text-7xl text-gray-100 font-display font-extrabold h-[75vh] flex items-center">
+    <p className="flex h-[75vh] max-w-2xl items-center px-6 font-display text-4xl font-extrabold text-gray-100 sm:mx-auto sm:px-8 md:text-7xl">
       {children}
     </p>
   );
@@ -372,7 +372,7 @@ function JumboP({ children, ...props }: React.ComponentPropsWithoutRef<"p">) {
   return (
     <p
       {...props}
-      className="px-6 text-4xl md:text-7xl text-gray-100 md:max-w-3xl md:mx-auto font-display font-extrabold h-[50vh]"
+      className="h-[50vh] px-6 font-display text-4xl font-extrabold text-gray-100 md:mx-auto md:max-w-3xl md:text-7xl"
     >
       {children}
     </p>
@@ -447,7 +447,7 @@ function PrefetchBrowser() {
 
 function PrefetchNetwork() {
   return (
-    <div className="absolute top-[35%] left-[34%] w-[50%] p-2 bg-gray-800 rounded drop-shadow-md">
+    <div className="absolute top-[35%] left-[34%] w-[50%] rounded bg-gray-800 p-2 drop-shadow-md">
       <Network ticks={25}>
         <Resource name="sales.js" start={0} size={44} />
         <Resource name="sales/nav.json" start={0} size={42} />
@@ -462,7 +462,7 @@ function PrefetchNetwork() {
 
 function WaterfallHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-2 text-center text-white font-display font-extrabold text-xl lg:text-3xl lg:mb-6">
+    <div className="mb-2 text-center font-display text-xl font-extrabold text-white lg:mb-6 lg:text-3xl">
       {children}
     </div>
   );
@@ -472,7 +472,7 @@ function WaterfallComparison() {
   return (
     <ScrollStage pages={4} fallbackLength={800} fallbackFrame={560}>
       <div
-        className="sticky top-0 flex flex-col justify-center w-full h-screen pb-4 xl:pb-56"
+        className="sticky top-0 flex h-screen w-full flex-col justify-center pb-4 xl:pb-56"
         aria-hidden
       >
         <div className="xl:flex">
@@ -491,7 +491,7 @@ function WaterfallComparison() {
           </div>
         </div>
         <Actor start={0} end={1}>
-          <div className="absolute bottom-0 w-full pb-4 text-center text-gray-300 text-sm md:text-base">
+          <div className="absolute bottom-0 w-full pb-4 text-center text-sm text-gray-300 md:text-base">
             (Keep scrolling to compare)
           </div>
         </Actor>
@@ -511,7 +511,7 @@ function WaterfallBrowser({
     <Actor start={0.25} end={1} persistent>
       <div
         className={
-          "scale-75 origin-top sm:scale-50 xl:scale-75 xl:w-[50vw] -mb-14 sm:mb-[-18rem]" +
+          "-mb-14 origin-top scale-75 sm:mb-[-18rem] sm:scale-50 xl:w-[50vw] xl:scale-75" +
           " " +
           className
         }
@@ -533,7 +533,7 @@ function JankSpinner({
     <div className={cx("h-full w-full", className)}>
       <img
         src="/loading.gif"
-        className="object-contain object-top w-full h-full"
+        className="h-full w-full object-contain object-top"
         alt=""
       />
       {note && (
@@ -610,7 +610,7 @@ function WithoutRemix() {
     ],
   ];
 
-  let aboutBlank = <div className="w-full h-full bg-white" />;
+  let aboutBlank = <div className="h-full w-full bg-white" />;
   let screen: React.ReactNode = aboutBlank;
 
   // just practicing my interview skills in case remix tanks.
@@ -627,7 +627,7 @@ function WithoutRemix() {
     <BrowserChrome
       url={progress === 0 ? "about:blank" : "example.com/sales/invoices/102000"}
     >
-      <div className="h-[25vh] sm:h-[38vh] bg-white">{screen}</div>
+      <div className="h-[25vh] bg-white sm:h-[38vh]">{screen}</div>
       <div className="h-4" />
       <Network>
         {resources.map(([name, start, size]) => (
@@ -647,7 +647,7 @@ function WithRemix() {
       url={progress === 0 ? "about:blank" : "example.com/sales/invoices/102000"}
     >
       {progress < 30 ? (
-        <div className="bg-white h-[25vh] sm:h-[38vh]" />
+        <div className="h-[25vh] bg-white sm:h-[38vh]" />
       ) : (
         <Fakebooks className="h-[25vh] sm:h-[38vh]">
           <Sales>
@@ -685,15 +685,15 @@ function Network({
       <Ticks n={ticks} />
       <div className="h-4" />
       <div>{children}</div>
-      <div className="absolute top-0 right-0 h-full left-16 sm:left-28">
+      <div className="absolute top-0 right-0 left-16 h-full sm:left-28">
         <div
           className="absolute top-0 h-full"
           style={{
             left: `${actor.progress * 100}%`,
           }}
         >
-          <ProgressHead className="w-2 -ml-1 text-blue-brand" />
-          <div className="w-[1px] relative top-[-1px] bg-blue-brand h-full" />
+          <ProgressHead className="-ml-1 w-2 text-blue-brand" />
+          <div className="relative top-[-1px] h-full w-[1px] bg-blue-brand" />
         </div>
       </div>
     </div>
@@ -724,7 +724,7 @@ function Resource({
     <div className="flex items-center justify-center border-b border-gray-600 last:border-b-0">
       <div
         className={
-          "w-16 sm:w-28 text-[length:8px] sm:text-sm" +
+          "w-16 text-[length:8px] sm:w-28 sm:text-sm" +
           " " +
           (width === 0 ? "opacity-0" : "")
         }
@@ -755,13 +755,13 @@ function Resource({
 function Ticks({ n }: { n: number }) {
   let ticks = Array.from({ length: n }).fill(null);
   return (
-    <div className="absolute top-0 right-0 flex justify-around left-16 sm:left-28">
+    <div className="absolute top-0 right-0 left-16 flex justify-around sm:left-28">
       {ticks.map((_, index) => (
         <div
           className={
             (index + 1) % 10
-              ? "bg-gray-300 h-1 w-[1px]"
-              : "bg-gray-50 w-[1px] h-[6px]"
+              ? "h-1 w-[1px] bg-gray-300"
+              : "h-[6px] w-[1px] bg-gray-50"
           }
           key={index}
         />
@@ -788,15 +788,15 @@ function ProgressHead({ className }: { className: string }) {
 
 function Intro() {
   return (
-    <section className="max-w-5xl p-6 mx-auto md:p-10">
-      <h2 className="text-white text-4xl font-display font-extrabold md:text-7xl">
+    <section className="mx-auto max-w-5xl p-6 md:p-10">
+      <h2 className="font-display text-4xl font-extrabold text-white md:text-7xl">
         While you were <span className="text-red-brand">waiting</span> for your
         static site to build,{" "}
         <span className="text-blue-brand">distributed web</span>{" "}
         infra&shy;structure got really good.{" "}
         <span className="text-pink-brand">Break through the static.</span>
       </h2>
-      <p className="mt-2 text-lg md:text-xl md:pr-52 lg:pr-72 hyphen-manual">
+      <p className="hyphen-manual mt-2 text-lg md:pr-52 md:text-xl lg:pr-72">
         Remix is a seamless server and browser runtime that provides snappy page
         loads and instant transitions by leveraging distributed systems and
         native browser features instead of clunky static builds. Built on the
@@ -805,7 +805,7 @@ function Intro() {
         and traditional Node.js environments, so you can come as you are.
       </p>
       <div className="h-6" />
-      <p className="mt-2 text-lg md:text-xl md:pr-52 lg:pr-72 hyphen-manual">
+      <p className="hyphen-manual mt-2 text-lg md:pr-52 md:text-xl lg:pr-72">
         Page speed is only one aspect of our true goal though. We're after{" "}
         <Em>better user experiences</Em>. As you’ve pushed the boundaries of the
         web, your tools haven’t caught up to your appetite.{" "}
@@ -866,7 +866,7 @@ function Intro() {
 
 function JumboText({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-[length:48px] leading-[48px] md:text-[length:96px] md:leading-[96px] font-display font-extrabold text-white max-w-6xl mx-auto px-6 md:px-12">
+    <div className="mx-auto max-w-6xl px-6 font-display text-[length:48px] font-extrabold leading-[48px] text-white md:px-12 md:text-[length:96px] md:leading-[96px]">
       {children}
     </div>
   );
@@ -971,19 +971,19 @@ function Spinners() {
       />
       <Spinner
         start={start(3)}
-        className="4 absolute top-[24vh] md:top-[16vh] left-[-4vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+        className="4 absolute top-[24vh] left-[-4vw] h-[13vh] w-[13vh] md:top-[16vh] md:h-[13vw] md:w-[13vw]"
       />
       <Spinner
         start={start(4)}
-        className="17 absolute bottom-[-5vh] md:bottom-[-4vh] right-[18vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+        className="17 absolute bottom-[-5vh] right-[18vw] h-[13vh] w-[13vh] md:bottom-[-4vh] md:h-[13vw] md:w-[13vw]"
       />
       <Spinner
         start={start(5)}
-        className="13 absolute bottom-[-3vh] left-[15vw] md:left-[20vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+        className="13 absolute bottom-[-3vh] left-[15vw] h-[13vh] w-[13vh] md:left-[20vw] md:h-[13vw] md:w-[13vw]"
       />
       <Spinner
         start={start(6)}
-        className="7 absolute top-[20vh] md:top-[12vh] right-[-2vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+        className="7 absolute top-[20vh] right-[-2vw] h-[13vh] w-[13vh] md:top-[12vh] md:h-[13vw] md:w-[13vw]"
       />
       <Spinner
         start={start(7)}
@@ -991,23 +991,23 @@ function Spinners() {
       />
       <Spinner
         start={start(8)}
-        className="20 absolute bottom-[10vh] md:bottom-[3vh] right-[-5vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+        className="20 absolute bottom-[10vh] right-[-5vw] h-[13vh] w-[13vh] md:bottom-[3vh] md:h-[13vw] md:w-[13vw]"
       />
       <Spinner
         start={start(9)}
-        className="10 absolute bottom-[37vh] md:bottom-[42vh] left-[3vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+        className="10 absolute bottom-[37vh] left-[3vw] h-[5vh] w-[5vh] md:bottom-[42vh] md:h-[5vw] md:w-[5vw]"
       />
       <Spinner
         start={start(10)}
-        className="9 absolute top-[38vh] md:top-[50vh] right-[3vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+        className="9 absolute top-[38vh] right-[3vw] h-[5vh] w-[5vh] md:top-[50vh] md:h-[5vw] md:w-[5vw]"
       />
       <Spinner
         start={start(11)}
-        className="19 absolute bottom-[36vh] md:bottom-[9vh] right-[10vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+        className="19 absolute bottom-[36vh] right-[10vw] h-[5vh] w-[5vh] md:bottom-[9vh] md:h-[5vw] md:w-[5vw]"
       />
       <Spinner
         start={start(12)}
-        className="15 absolute bottom-[30vh] md:bottom-[2vh] right-[40vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+        className="15 absolute bottom-[30vh] right-[40vw] h-[8vh] w-[8vh] md:bottom-[2vh] md:h-[8vw] md:w-[8vw]"
       />
       <Spinner
         start={start(13)}
@@ -1024,19 +1024,19 @@ function Spinners() {
       />
       <Spinner
         start={start(16)}
-        className="12 absolute bottom-[12vh] md:bottom-[2vh] left-[2vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+        className="12 absolute bottom-[12vh] left-[2vw] h-[8vh] w-[8vh] md:bottom-[2vh] md:h-[8vw] md:w-[8vw]"
       />
       <Spinner
         start={start(17)}
-        className="8 absolute top-[35vh] md:top-[25vh] left-[48vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+        className="8 absolute top-[35vh] left-[48vw] h-[5vh] w-[5vh] md:top-[25vh] md:h-[5vw] md:w-[5vw]"
       />
       <Spinner
         start={start(18)}
-        className="5 absolute top-[20vh] md:top-[12vh] left-[35vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+        className="5 absolute top-[20vh] left-[35vw] h-[8vh] w-[8vh] md:top-[12vh] md:h-[8vw] md:w-[8vw]"
       />
       <Spinner
         start={start(19)}
-        className="1 absolute top-[-5vh] left-[4vw] md:left-[13vw] h-[13vh] w-[13vh] md:h-[13vw] md:w-[13vw]"
+        className="1 absolute top-[-5vh] left-[4vw] h-[13vh] w-[13vh] md:left-[13vw] md:h-[13vw] md:w-[13vw]"
       />
       <Spinner
         start={start(20)}
@@ -1080,7 +1080,7 @@ function SayGoodbyeOutro() {
     <div
       aria-hidden
       className={
-        `sticky top-0 h-screen flex w-screen items-center justify-center text-center font-display font-extrabold text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px] text-white` +
+        `sticky top-0 flex h-screen w-screen items-center justify-center text-center font-display text-[length:48px] font-extrabold leading-[48px] text-white sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px]` +
         " " +
         (stage.progress < SPINNER_END ? "hidden" : "")
       }
@@ -1101,7 +1101,7 @@ function SayGoodbye() {
         transform: `scale(${scale})`,
       }}
       className={
-        `h-screen text-white flex w-screen items-center justify-center text-center font-display font-extrabold text-[length:48px] leading-[48px] sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px]` +
+        `flex h-screen w-screen items-center justify-center text-center font-display text-[length:48px] font-extrabold leading-[48px] text-white sm:text-[length:65px] sm:leading-[65px] md:text-[length:80px] md:leading-[80px] lg:text-[length:100px] lg:leading-[100px] xl:text-[length:140px] xl:leading-[140px]` +
         " " +
         (actor.progress > 0 && actor.progress < 1 ? "fixed inset-0" : "hidden")
       }
@@ -1123,7 +1123,7 @@ export let LayoutButton = React.forwardRef<
     <button
       ref={ref}
       className={
-        `font-mono font-bold py-2 px-6 m-2 text-[12px] md:text-base leading-6 rounded-full opacity-80 ${
+        `m-2 rounded-full py-2 px-6 font-mono text-[12px] font-bold leading-6 opacity-80 md:text-base ${
           active ? "opacity-100" : ""
         }` +
         " " +
@@ -1156,7 +1156,7 @@ export function InteractiveRoutes() {
     <>
       <div
         className={
-          "text-4xl md:text-7xl text-center pb-2" +
+          "pb-2 text-center text-4xl md:text-7xl" +
           " " +
           (active === 0 ? "animate-bounce" : "")
         }
@@ -1179,7 +1179,7 @@ export function InteractiveRoutes() {
           onMouseEnter={() => setActive(2)}
           onFocus={() => setActive(2)}
           active={active === 2}
-          className="text-aqua-brand bg-aqua-900"
+          className="bg-aqua-900 text-aqua-brand"
         >
           &lt;Sales&gt;
         </LayoutButton>
@@ -1262,7 +1262,7 @@ export function Fakebooks({
   return (
     <div
       className={
-        "relative bg-white text-gray-600 flex rounded md:rounded-lg overflow-hidden" +
+        "relative flex overflow-hidden rounded bg-white text-gray-600 md:rounded-lg" +
         " " +
         className
       }
@@ -1270,9 +1270,9 @@ export function Fakebooks({
       <div className="border-r border-gray-100 bg-gray-50">
         <div className="p-[5.7px] lg:p-4">
           <div className="flex items-center text-[color:#23BF1F]">
-            <FakebooksLogo className="w-[8.5px] h-[8.5px] md:h-[18px] md:w-[18px] relative top-[1px]" />
+            <FakebooksLogo className="relative top-[1px] h-[8.5px] w-[8.5px] md:h-[18px] md:w-[18px]" />
             <div className="w-[1px] md:w-1" />
-            <div className="font-display font-extrabold text-[length:8px] md:text-base">
+            <div className="font-display text-[length:8px] font-extrabold md:text-base">
               Fakebooks
             </div>
           </div>
@@ -1280,7 +1280,7 @@ export function Fakebooks({
           <div className="font-bold text-gray-800">
             <NavItem>Dashboard</NavItem>
             <NavItem>Accounts</NavItem>
-            <NavItem className="bg-gray-100 rounded md:rounded-md">
+            <NavItem className="rounded bg-gray-100 md:rounded-md">
               Sales
             </NavItem>
             <NavItem>Expenses</NavItem>
@@ -1302,11 +1302,11 @@ function Dashboard({ highlightOnHover }: { highlightOnHover?: boolean }) {
   let stage = useStage();
   return (
     <div className="relative p-3 md:p-6">
-      <div className="font-display font-extrabold text-[length:10px] md:text-3xl text-black">
+      <div className="font-display text-[length:10px] font-extrabold text-black md:text-3xl">
         Dashboard
       </div>
       <div className="h-2 md:h-6" />
-      <div className="flex gap-2 font-medium md:gap-4 text-gray-400 border-b border-gray-100 text-[length:5px] md:text-[length:14px] pb-1 md:pb-4">
+      <div className="flex gap-2 border-b border-gray-100 pb-1 text-[length:5px] font-medium text-gray-400 md:gap-4 md:pb-4 md:text-[length:14px]">
         <div className="font-bold text-black">Recent Activity</div>
         <div>Alerts</div>
         <div>Messages</div>
@@ -1356,7 +1356,7 @@ function Cursor() {
             style={{
               transform: `scale(${clickScale})`,
             }}
-            className="absolute w-4 h-4 rounded-full opacity-50 -top-2 -left-2 bg-red-brand"
+            className="absolute -top-2 -left-2 h-4 w-4 rounded-full bg-red-brand opacity-50"
           />
         )}
       </div>
@@ -1367,7 +1367,7 @@ function Cursor() {
 function Pointer() {
   return (
     <svg
-      className="relative w-7 -left-2"
+      className="relative -left-2 w-7"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 28 32"
@@ -1411,12 +1411,12 @@ function ActivityCard({
   return (
     <div
       className={
-        "p-2 box-border flex-1 md:p-10 border rounded-lg border-gray-50" +
+        "box-border flex-1 rounded-lg border border-gray-50 p-2 md:p-10" +
         " " +
         (hovered ? "bg-gray-50" : "")
       }
     >
-      <div className="text-center font-bold text-[length:5px] leading-[8.5px] md:text-[length:14px] md:leading-6">
+      <div className="text-center text-[length:5px] font-bold leading-[8.5px] md:text-[length:14px] md:leading-6">
         New Invoice
       </div>
       <div className="h-[5.7px] md:h-4" />
@@ -1436,7 +1436,7 @@ function Highlighter({
   return (
     <div
       className={
-        "bg-opacity-30 absolute inset-0 z-10 ring-2 md:ring-4 ring-inset rounded md:rounded-lg flex items-center justify-center" +
+        "absolute inset-0 z-10 flex items-center justify-center rounded bg-opacity-30 ring-2 ring-inset md:rounded-lg md:ring-4" +
         " " +
         className
       }
@@ -1458,7 +1458,7 @@ function Resources({
   return (
     <div
       className={
-        "font-mono p-2 bg-opacity-95 text-white rounded md:rounded-xl text-sm md:text-xl" +
+        "rounded bg-opacity-95 p-2 font-mono text-sm text-white md:rounded-xl md:text-xl" +
         " " +
         className
       }
@@ -1483,21 +1483,21 @@ export function Sales({
 }) {
   return (
     <div className="relative h-full p-3 md:p-10">
-      <div className="font-display font-extrabold text-[length:10px] md:text-3xl text-black">
+      <div className="font-display text-[length:10px] font-extrabold text-black md:text-3xl">
         Sales
       </div>
       <div className="h-2 md:h-6" />
       {shimmerNav && <div className="h-4" />}
-      <div className="flex gap-2 font-medium md:gap-4 text-gray-400 border-b border-gray-100 text-[length:5px] md:text-[length:14px] pb-1 md:pb-4">
+      <div className="flex gap-2 border-b border-gray-100 pb-1 text-[length:5px] font-medium text-gray-400 md:gap-4 md:pb-4 md:text-[length:14px]">
         {shimmerNav ? (
           <>
-            <div className="w-1/3 bg-gray-300 rounded animate-pulse">
+            <div className="w-1/3 animate-pulse rounded bg-gray-300">
               &nbsp;
             </div>
-            <div className="w-1/3 bg-gray-300 rounded animate-pulse">
+            <div className="w-1/3 animate-pulse rounded bg-gray-300">
               &nbsp;
             </div>
-            <div className="w-1/3 bg-gray-300 rounded animate-pulse">
+            <div className="w-1/3 animate-pulse rounded bg-gray-300">
               &nbsp;
             </div>
           </>
@@ -1540,7 +1540,7 @@ function InvoicesInfo({
   return (
     <div className={right ? "text-right" : ""}>
       <LabelText>{label}</LabelText>
-      <div className="text-black text-[length:6.4px] md:text-[length:18px]">
+      <div className="text-[length:6.4px] text-black md:text-[length:18px]">
         {amount}
       </div>
     </div>
@@ -1558,7 +1558,7 @@ function Invoices({
     <div className="relative">
       <div className="flex items-center justify-between gap-1 md:gap-4">
         <InvoicesInfo label="Overdue" amount="$10,800" />
-        <div className="flex-1 h-[6px] md:h-4 flex rounded-full overflow-hidden">
+        <div className="flex h-[6px] flex-1 overflow-hidden rounded-full md:h-4">
           <div className="w-1/3 bg-yellow-brand" />
           <div className="flex-1 bg-green-brand" />
         </div>
@@ -1617,24 +1617,24 @@ let invoices = [
 
 function InvoiceList({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex border border-gray-100 rounded md:rounded-lg">
+    <div className="flex rounded border border-gray-100 md:rounded-lg">
       <div className="w-1/2 border-r border-gray-100">
         {invoices.map((invoice, index) => (
           <div
             key={index}
             className={
-              "py-[4.2px] md:py-3 border-b border-gray-50" +
+              "border-b border-gray-50 py-[4.2px] md:py-3" +
               " " +
               (index === 1
-                ? "px-[5.7px] md:px-4 bg-gray-50"
-                : "mx-[5.7px] md:mx-4 border-transparent")
+                ? "bg-gray-50 px-[5.7px] md:px-4"
+                : "mx-[5.7px] border-transparent md:mx-4")
             }
           >
-            <div className="flex justify-between font-bold text-[length:5px] leading-[8.5px] md:text-[length:14px] md:leading-6">
+            <div className="flex justify-between text-[length:5px] font-bold leading-[8.5px] md:text-[length:14px] md:leading-6">
               <div>{invoice.name}</div>
               <div>{invoice.amount}</div>
             </div>
-            <div className="flex justify-between text-gray-400 font-medium text-[length:4.2px] leading-[6px] md:text-[length:12px] md:leading-4">
+            <div className="flex justify-between text-[length:4.2px] font-medium leading-[6px] text-gray-400 md:text-[length:12px] md:leading-4">
               <div>{invoice.number}</div>
               <div
                 className={
@@ -1679,10 +1679,10 @@ function Invoice({
   let invoice = invoices[1];
   return (
     <div className="relative p-3 md:p-10">
-      <div className="font-bold text-[length:5px] leading-[8.5px] md:text-[length:14px] md:leading-6">
+      <div className="text-[length:5px] font-bold leading-[8.5px] md:text-[length:14px] md:leading-6">
         {invoice.name}
       </div>
-      <div className="font-bold text-[length:11px] leading-[14px] md:text-[length:32px] md:leading-[40px]">
+      <div className="text-[length:11px] font-bold leading-[14px] md:text-[length:32px] md:leading-[40px]">
         {invoice.amount}
       </div>
       <LabelText>{getInvoiceDue(invoice)} • Invoiced 10/31/2000</LabelText>
@@ -1693,17 +1693,17 @@ function Invoice({
       {highlight && (
         <Highlighter className="bg-red-brand ring-red-brand">
           <Resources
-            className="absolute bg-red-900 right-2 bottom-2 sm:static"
+            className="absolute right-2 bottom-2 bg-red-900 sm:static"
             data="/invoice/{id}.json"
             mod="/invoice.js"
           />
         </Highlighter>
       )}
       {error && (
-        <div className="absolute inset-0 flex justify-center pt-4 bg-red-100">
+        <div className="absolute inset-0 flex justify-center bg-red-100 pt-4">
           <div className="text-center text-red-brand">
-            <div className="text-[10px] md:text-[14px] font-bold">Oh snap!</div>
-            <div className="text-[8px] md:text-[12px] px-2">
+            <div className="text-[10px] font-bold md:text-[14px]">Oh snap!</div>
+            <div className="px-2 text-[8px] md:text-[12px]">
               There was a problem loading this invoice
             </div>
           </div>
@@ -1726,7 +1726,7 @@ function LineItem({
   return (
     <div
       className={
-        "flex justify-between border-t border-gray-100 text-[5px] leading-[9px] md:text-[14px] md:leading-[24px] py-[5.7px] md:py-4" +
+        "flex justify-between border-t border-gray-100 py-[5.7px] text-[5px] leading-[9px] md:py-4 md:text-[14px] md:leading-[24px]" +
         " " +
         (bold ? "font-bold" : "")
       }
@@ -1739,7 +1739,7 @@ function LineItem({
 
 function LabelText({ children }: { children: React.ReactNode }) {
   return (
-    <div className="uppercase text-gray-400 font-medium text-[length:5px] leading-[8.5px] md:text-[12px] md:leading-[24px]">
+    <div className="text-[length:5px] font-medium uppercase leading-[8.5px] text-gray-400 md:text-[12px] md:leading-[24px]">
       {children}
     </div>
   );
@@ -1754,7 +1754,7 @@ function NavItem({
 }) {
   return (
     <div
-      className={`text-[length:7px] md:text-[length:10px] lg:text-[length:14px] py-[1.4px] px-[2.8px] md:py-1 md:px-2 my-[1.4px] md:my-1 pr-4 md:pr-16 ${className}`}
+      className={`my-[1.4px] py-[1.4px] px-[2.8px] pr-4 text-[length:7px] md:my-1 md:py-1 md:px-2 md:pr-16 md:text-[length:10px] lg:text-[length:14px] ${className}`}
     >
       {children}
     </div>
@@ -1787,7 +1787,7 @@ export function BrowserChrome({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative mx-2 md:mx-4 lg:mx-auto lg:max-w-4xl  bg-gray-700 shadow-md rounded md:rounded-lg max-h-[75vh] overflow-hidden select-none">
+    <div className="relative mx-2 max-h-[75vh] select-none overflow-hidden  rounded bg-gray-700 shadow-md md:mx-4 md:rounded-lg lg:mx-auto lg:max-w-4xl">
       <URLBar url={url} />
       <div className="px-2 pt-1 pb-2 md:px-4 md:pt-2 md:pb-4">{children}</div>
     </div>
@@ -1797,11 +1797,11 @@ export function BrowserChrome({
 function URLBar({ url }: { url: string }) {
   return (
     <div className="flex items-center justify-center px-1 pt-1 pb-0 md:px-2 md:pt-2">
-      <div className="relative flex items-center w-2/3 px-2 py-1 text-gray-100 bg-gray-600 rounded-md md:py-1 md:px-3">
+      <div className="relative flex w-2/3 items-center rounded-md bg-gray-600 px-2 py-1 text-gray-100 md:py-1 md:px-3">
         <span className="text-[length:10px] md:text-sm">{url}</span>
-        <Refresh className="absolute w-4 h-4 right-1 md:h-5 md:w-5" />
+        <Refresh className="absolute right-1 h-4 w-4 md:h-5 md:w-5" />
       </div>
-      <div className="absolute flex gap-1 p-2 left-1 md:left-2 md:gap-2">
+      <div className="absolute left-1 flex gap-1 p-2 md:left-2 md:gap-2">
         <Circle />
         <Circle />
         <Circle />
@@ -1811,7 +1811,7 @@ function URLBar({ url }: { url: string }) {
 }
 
 function Circle() {
-  return <div className="w-2 h-2 bg-gray-400 rounded-full md:h-3 md:w-3" />;
+  return <div className="h-2 w-2 rounded-full bg-gray-400 md:h-3 md:w-3" />;
 }
 
 function Refresh({ className }: { className: string }) {

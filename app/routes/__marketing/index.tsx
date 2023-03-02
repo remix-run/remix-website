@@ -98,27 +98,27 @@ function Hero() {
         x-comp="Hero"
         className="px-6 sm:px-8 lg:flex lg:w-full lg:items-center lg:justify-between lg:gap-12"
       >
-        <div className="lg:w-1/2 lg:mb-10">
-          <div className="lg:max-w-2xl lg:mx-auto">
-            <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-white lg:text-[length:64px] lg:leading-[56px] xl:text-7xl">
+        <div className="lg:mb-10 lg:w-1/2">
+          <div className="lg:mx-auto lg:max-w-2xl">
+            <h2 className="font-display text-3xl font-extrabold text-white sm:text-5xl lg:text-[length:64px] lg:leading-[56px] xl:text-7xl">
               Focused on <span className="text-aqua-brand">web standards</span>{" "}
               and <span className="text-green-brand">modern web app</span> UX,
               you’re simply going to{" "}
               <span className="text-yellow-brand">build better websites</span>
             </h2>
             <div className="h-6" />
-            <p className="text-lg xl:pr-56 lg:text-xl">
+            <p className="text-lg lg:text-xl xl:pr-56">
               Remix is a full stack web framework that lets you focus on the
               user interface and work back through web standards to deliver a
               fast, slick, and resilient user experience. People are gonna love
               using your stuff.
             </p>
             <div className="h-9 xl:h-10" />
-            <div className="flex flex-col gap-4 xl:flex-row xl:">
+            <div className="xl: flex flex-col gap-4 xl:flex-row">
               <PrimaryButtonLink
                 prefetch="intent"
                 to="/docs/en/v1/tutorials/blog"
-                className="w-full xl:w-60 xl:order-1"
+                className="w-full xl:order-1 xl:w-60"
                 children="Get Started"
               />
               <OutlineButtonLink
@@ -130,9 +130,9 @@ function Hero() {
             </div>
           </div>
         </div>
-        <div className="p-4 sm:p-8 -mx-6 sm:-mx-8 md:p-10 lg:p-8 mt-6 lg:mt-0 relative lg:w-1/2 lg:h-[51rem] overflow-hidden lg:rounded-l-2xl">
+        <div className="relative -mx-6 mt-6 overflow-hidden p-4 sm:-mx-8 sm:p-8 md:p-10 lg:mt-0 lg:h-[51rem] lg:w-1/2 lg:rounded-l-2xl lg:p-8">
           <Red className="absolute top-0 left-0 h-full xl:rounded-3xl" />
-          <Sample html={sample.html} className="sm:hidden rounded-xl" />
+          <Sample html={sample.html} className="rounded-xl sm:hidden" />
           <Sample html={sampleSm.html} className="hidden sm:block" />
         </div>
       </section>
@@ -144,7 +144,7 @@ function Sample({ html, className }: { html: string; className?: string }) {
   return (
     <div
       className={
-        "relative text-sm sm:text-base sm:rounded-lg xl:rounded-xl p-3 xl:p-4 overflow-auto bg-gray-800 lg:max-w-max md:max-w-full" +
+        "relative overflow-auto bg-gray-800 p-3 text-sm sm:rounded-lg sm:text-base md:max-w-full lg:max-w-max xl:rounded-xl xl:p-4" +
         " " +
         className
       }

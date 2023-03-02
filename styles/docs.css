@@ -17,10 +17,8 @@
   --base0D: theme("colors.blue.700");
   --base0E: theme("colors.pink.brand");
   --base0F: theme("colors.gray.700");
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
+  &:where(.dark) {
     --base00: theme("colors.gray.800");
     --base01: theme("colors.gray.700");
     --base02: theme("colors.gray.600");
@@ -44,10 +42,6 @@
 /* layout */
 
 .markdown {
-  @media screen and (min-width: theme(screens.lg)) {
-    max-width: theme(screens.lg);
-  }
-
   &.has-toc {
     @media screen and (min-width: theme(screens.xl)) {
       --w-content: theme(screens.lg);
@@ -93,7 +87,7 @@
 }
 
 .md-nav-item {
-  @apply rounded relative text-[color:inherit] translate-x-0 pl-2;
+  @apply relative translate-x-0 rounded pl-2 text-[color:inherit];
 }
 
 a.md-nav-item {
@@ -105,23 +99,23 @@ a.md-nav-item {
 }
 
 .md-nav-item::before {
-  @apply absolute inset-0 bg-transparent rounded;
+  @apply absolute inset-0 rounded bg-transparent;
   content: "";
 }
 
 .md-nav-item--active {
-  @apply pl-3 font-semibold -translate-x-1 text-blue-brand;
+  @apply -translate-x-1 pl-3 font-semibold text-blue-brand;
 }
 
 .md-nav-item--active::before {
-  @apply opacity-10 bg-blue-brand;
+  @apply bg-blue-brand opacity-10;
 }
 
 .md-nav-item--level-1,
 .md-toc-title,
 /* Targets the first link, which is the page title */
 .toc > li > p > a {
-  @apply block font-display font-extrabold text-base mb-2 tracking-wide leading-[1.125];
+  @apply mb-2 block font-display text-base font-extrabold leading-[1.125] tracking-wide;
   @apply text-gray-700 dark:text-gray-200;
 
   & code {
@@ -138,7 +132,7 @@ a.md-nav-item {
 }
 
 .toc {
-  @apply max-h-[90vh] overflow-x-hidden overflow-y-visible px-0 py-3 list-none border border-gray-200 rounded-lg dark:border-gray-500;
+  @apply max-h-[90vh] list-none overflow-x-hidden overflow-y-visible rounded-lg border border-gray-200 px-0 py-3 dark:border-gray-500;
 
   & > li > ul {
     & li li {
@@ -155,7 +149,7 @@ a.md-nav-item {
   }
 
   & a {
-    @apply relative block px-5 py-1 transition-colors text-base lg:text-sm hover:text-blue-brand;
+    @apply relative block px-5 py-1 text-base transition-colors hover:text-blue-brand lg:text-sm;
   }
 
   & a:focus {
@@ -171,7 +165,7 @@ a.md-nav-item {
   }
 
   & a[data-active]::before {
-    @apply content-[""] absolute top-0 left-0 h-full w-1 bg-blue-brand;
+    @apply absolute top-0 left-0 h-full w-1 bg-blue-brand content-[""];
   }
 
   & code {
@@ -189,7 +183,7 @@ a.md-nav-item {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   grid-area: main;
-  @apply flex-auto min-w-0 leading-normal text-gray-700 break-words dark:text-gray-300 text-base;
+  @apply min-w-0 flex-auto break-words text-base leading-normal text-gray-700 dark:text-gray-300;
 
   & > :first-child {
     @apply mt-0;
@@ -211,7 +205,7 @@ a.md-nav-item {
   }
 
   & .icon {
-    @apply inline-block align-text-bottom fill-current;
+    @apply inline-block fill-current align-text-bottom;
   }
 
   /*****************************************************************************/
@@ -227,7 +221,7 @@ a.md-nav-item {
 
   & ol,
   & ul {
-    @apply pl-8 my-0 mb-4;
+    @apply my-0 mb-4 pl-8;
   }
 
   & ol ol,
@@ -282,21 +276,21 @@ a.md-nav-item {
   }
 
   & dl {
-    @apply p-0 mt-0 mb-4;
+    @apply mt-0 mb-4 p-0;
 
     & dt {
-      @apply p-0 mt-4 italic font-semibold text-base;
+      @apply mt-4 p-0 text-base font-semibold italic;
     }
 
     & dd {
-      @apply px-4 py-0 mb-4;
+      @apply mb-4 px-4 py-0;
     }
   }
 
   /*****************************************************************************/
   /* links */
   & a {
-    @apply no-underline text-blue-brand;
+    @apply text-blue-brand no-underline;
   }
 
   & a:hover {
@@ -333,7 +327,7 @@ a.md-nav-item {
   & h4,
   & h5,
   & h6 {
-    @apply font-bold text-lg md:text-xl;
+    @apply text-lg font-bold md:text-xl;
   }
 
   & h1 code,
@@ -351,7 +345,7 @@ a.md-nav-item {
     scroll-margin-top: 1em;
 
     & a {
-      @apply absolute top-0 z-10 flex items-center h-full leading-none -left-6 -right-0;
+      @apply absolute top-0 -left-6 -right-0 z-10 flex h-full items-center leading-none;
     }
 
     &:hover a,
@@ -360,11 +354,11 @@ a.md-nav-item {
     }
 
     & .icon-link {
-      @apply flex items-center h-full align-middle text-blue-brand;
+      @apply flex h-full items-center align-middle text-blue-brand;
     }
 
     & a .icon-link::before {
-      @apply invisible inline-block w-4 h-4;
+      @apply invisible inline-block h-4 w-4;
       content: " ";
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='gray' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath fill-rule='evenodd' d='M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'%3E%3C/path%3E%3C/svg%3E");
     }
@@ -382,7 +376,7 @@ a.md-nav-item {
   /*****************************************************************************/
   /* details / summary */
   & details {
-    @apply block mt-0 mb-4;
+    @apply mt-0 mb-4 block;
   }
 
   & summary {
@@ -397,7 +391,7 @@ a.md-nav-item {
   /*****************************************************************************/
   /* images */
   & img {
-    @apply max-w-full bg-white border-0 dark:bg-black;
+    @apply max-w-full border-0 bg-white dark:bg-black;
   }
 
   /*****************************************************************************/
@@ -407,11 +401,11 @@ a.md-nav-item {
   & kbd,
   & pre {
     word-wrap: normal;
-    @apply p-3 overflow-auto leading-none border border-gray-100 rounded-lg dark:border-gray-900 md:p-4 text-sm;
+    @apply overflow-auto rounded-lg border border-gray-100 p-3 text-sm leading-none dark:border-gray-900 md:p-4;
   }
 
   & pre {
-    @apply mt-0 mb-4 leading-relaxed bg-[color:var(--base00)];
+    @apply mt-0 mb-4 bg-[color:var(--base00)] leading-relaxed;
   }
 
   & code,
@@ -421,12 +415,12 @@ a.md-nav-item {
 
   /* TODO */
   & kbd {
-    @apply bg-gray-100 dark:bg-gray-900 align-middle leading-[10px] font-mono inline-block border border-gray-200 dark:border-gray-800 rounded;
+    @apply inline-block rounded border border-gray-200 bg-gray-100 align-middle font-mono leading-[10px] dark:border-gray-800 dark:bg-gray-900;
     box-shadow: inset 0 -1px 0 hsl(0, 0%, 0%, 0.5);
   }
 
   & pre > code {
-    @apply p-0 m-0 break-normal whitespace-pre bg-transparent border-0;
+    @apply m-0 whitespace-pre break-normal border-0 bg-transparent p-0;
   }
 
   & .codeblock-line {
@@ -434,7 +428,7 @@ a.md-nav-item {
   }
 
   & code {
-    @apply rounded text-[color:inherit] py-[2px] px-1 bg-gray-50 dark:bg-gray-800;
+    @apply rounded bg-gray-50 py-[2px] px-1 text-[color:inherit] dark:bg-gray-800;
   }
 
   & :is(a, h1, h2, h3, h4, h5, h6) code,
@@ -472,7 +466,7 @@ a.md-nav-item {
     pre[data-line-numbers="true"]:not([data-lang="bash"], [data-lang="sh"])
     [data-line-number]::before {
     content: attr(data-line-number);
-    @apply inline-block w-8 pl-0 mr-6 text-right text-gray-300 dark:text-gray-600;
+    @apply mr-6 inline-block w-8 pl-0 text-right text-gray-300 dark:text-gray-600;
   }
 
   & pre[data-good] {
@@ -502,7 +496,7 @@ a.md-nav-item {
   }
 
   & pre[data-filename]::before {
-    @apply block pb-3 pl-6 ml-4 bg-no-repeat;
+    @apply ml-4 block bg-no-repeat pb-3 pl-6;
     content: attr(data-filename);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' width='16' height='16' viewBox='0 0 24 24' stroke='#aaa'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' /%3E%3C/svg%3E");
     background-position: 0px 3px;
@@ -513,7 +507,7 @@ a.md-nav-item {
   }
 
   & pre:not([data-nocopy])[data-lang]::after {
-    @apply absolute hidden w-2 h-2 text-gray-700 cursor-pointer top-2 right-2 dark:text-gray-300;
+    @apply absolute top-2 right-2 hidden h-2 w-2 cursor-pointer text-gray-700 dark:text-gray-300;
     height: 24px;
     width: 24px;
     content: " ";
@@ -531,7 +525,7 @@ a.md-nav-item {
 
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
-    @apply absolute top-0 left-0 w-full bg-green-400 pointer-events-none dark:bg-green-300 opacity-10 dark:opacity-20;
+    @apply pointer-events-none absolute top-0 left-0 w-full bg-green-400 opacity-10 dark:bg-green-300 dark:opacity-20;
   }
 
   & pre[data-good] .codeblock-line[data-highlight="true"]::after {
@@ -548,12 +542,12 @@ a.md-nav-item {
   & table {
     text-indent: 0;
     border-spacing: 0;
-    @apply block w-full text-left border-collapse border-[color:inherit] overflow-auto max-w-full my-10;
+    @apply my-10 block w-full max-w-full border-collapse overflow-auto border-[color:inherit] text-left;
   }
 
   & table th {
-    @apply sticky top-0 font-semibold text-gray-700 bg-transparent text-sm dark:text-gray-300;
-    @apply p-0 pb-1 pr-4 border-0 border-b border-gray-200 md:pr-6 dark:border-gray-800;
+    @apply sticky top-0 bg-transparent text-sm font-semibold text-gray-700 dark:text-gray-300;
+    @apply border-0 border-b border-gray-200 p-0 pb-1 pr-4 dark:border-gray-800 md:pr-6;
   }
 
   & table tbody {
@@ -561,7 +555,7 @@ a.md-nav-item {
   }
 
   & table td {
-    @apply p-0 py-2 pr-4 text-black border-0 border-b border-gray-100 md:pr-6 text-sm dark:text-white whitespace-nowrap;
+    @apply whitespace-nowrap border-0 border-b border-gray-100 p-0 py-2 pr-4 text-sm text-black dark:text-white md:pr-6;
   }
 
   /*****************************************************************************/
@@ -571,14 +565,14 @@ a.md-nav-item {
   & docs-success,
   & docs-warning,
   & docs-error {
-    @apply relative block px-4 py-2 mt-0 mb-3 border-l-2 border-r-2 border-current rounded-lg;
+    @apply relative mt-0 mb-3 block rounded-lg border-l-2 border-r-2 border-current px-4 py-2;
   }
 
   & docs-info::before,
   & docs-success::before,
   & docs-warning::before,
   & docs-error::before {
-    @apply inset-0 content-[""] absolute opacity-10 pointer-events-none;
+    @apply pointer-events-none absolute inset-0 opacity-10 content-[""];
   }
 
   & docs-warning {
@@ -586,7 +580,7 @@ a.md-nav-item {
   }
 
   & docs-warning::before {
-    @apply opacity-[0.15] bg-yellow-400;
+    @apply bg-yellow-400 opacity-[0.15];
   }
 
   & docs-info {
@@ -621,10 +615,10 @@ a.md-nav-item {
   }
 
   & docs-cards {
-    @apply flex flex-col grid-cols-2 gap-6 md:grid;
+    @apply flex grid-cols-2 flex-col gap-6 md:grid;
 
     & > a {
-      @apply block rounded;
+      @apply relative block;
       color: unset;
     }
 
@@ -634,7 +628,7 @@ a.md-nav-item {
   }
 
   & docs-card {
-    @apply block w-full h-full p-6 transition-shadow ease-out border border-gray-200 rounded shadow dark:border-gray-800;
+    @apply block h-full w-full rounded-lg border-[3px] border-gray-50 p-4 hover:border-gray-100 dark:border-gray-700 hover:dark:border-gray-600 sm:p-6;
 
     & > :first-child {
       @apply mt-0;
@@ -645,15 +639,11 @@ a.md-nav-item {
     }
   }
 
-  & a:hover docs-card {
-    @apply shadow-lg;
-  }
-
   /*****************************************************************************/
   /* blockquotes */
 
   & blockquote {
-    @apply p-0 pl-4 mx-0 mt-0 mb-4 text-gray-600 border-l-4 border-gray-200 dark:text-gray-400 dark:border-gray-800;
+    @apply mx-0 mt-0 mb-4 border-l-4 border-gray-200 p-0 pl-4 text-gray-600 dark:border-gray-800 dark:text-gray-400;
   }
 
   & blockquote > :first-child {
@@ -668,6 +658,6 @@ a.md-nav-item {
   /* hr */
 
   & hr {
-    @apply p-0 my-6 mx-0 h-[1px] bg-gray-200 dark:bg-gray-800 border-0 overflow-visible;
+    @apply my-6 mx-0 h-[1px] overflow-visible border-0 bg-gray-200 p-0 dark:bg-gray-800;
   }
 }
