@@ -93,7 +93,7 @@ function App() {
 
 <figcaption class="my-2">The React.lazy() call produces a similar render + fetch chain</figcaption>
 
-So while we can leverage `React.lazy()` with data routers, we end up introducing a chain to download the component _after_ our data fetches.  Ruben Casas [wrote up a great post][react-router-6.4-code-splitting] on some of the approaches to leverage code-splitting in data routers with `React.lazy()`.
+So while we can leverage `React.lazy()` with data routers, we end up introducing a chain to download the component _after_ our data fetches.  Ruben Casas [wrote up a great post][react-router-6.4-code-splitting] on some of the approaches to leverage code-splitting in data routers with `React.lazy()`.  But as we can see from the post, code splitting was still not super straightforward and came with some DX downsides as it was a bit verbose and tedious to do manually. As a result of this sub-par DX, we received a [Proposal][proposal] (and an initial [POC implementation][poc]) from `@rossipedia`.  This proposal did a great job of outlining the current challenges and got us thinking about the best way to introduce first-class code-splitting support in a `RouterProvider`.  We'd like to give a **huge** shout out to both of these folks (and the rest of our amazing community) for being such active participants in the evolution of React Router 🙌.
 
 ## Introducing Route.lazy
 
@@ -220,5 +220,7 @@ For more information, check out the [decision doc][decision-doc] or the [example
 [when-to-fetch]: https://www.youtube.com/watch?v=95B8mnhzoCM
 [react-lazy]: https://beta.reactjs.org/reference/react/lazy
 [react-router-6.4-code-splitting]: https://www.infoxicator.com/en/react-router-6-4-code-splitting
+[proposal]: https://github.com/remix-run/react-router/discussions/9826
+[poc]: https://github.com/remix-run/react-router/pull/9830
 [decision-doc]: https://github.com/remix-run/react-router/blob/main/decisions/0002-lazy-route-modules.md
 [example]: https://github.com/remix-run/react-router/tree/main/examples/lazy-loading-router-provider
