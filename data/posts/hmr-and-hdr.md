@@ -128,7 +128,7 @@ In the meantime, you can use the example templates 👆 from the previous sectio
 // remix.config.js
 {
   future: {
-    unstable_dev: true;
+    unstable_dev: true,
     // see other configuration options here: https://github.com/remix-run/remix/releases/tag/remix%401.12.0
   }
 }
