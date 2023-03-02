@@ -107,7 +107,7 @@ If you step back and look at a route definition, it can be split into 3 sections
 
 The only thing a data router truly needs on the critical path is the path matching fields, as it needs to be able to identify all of the routes matched for a given URL.  After matching, we already have an asynchronous navigation in progress so there's no reason we couldn't also be fetching route information during that navigation.  And then we don't need the rendering aspects until we're done with data-fetching since we don't render the destination route until data fetches have completed.  Yes, this can introduce the concept of a "chain" (load route, then load data) but it's an opt-in lever you can pull as needed to address the trade-off between initial load speed and subsequent navigation speeds.
 
-Here's what this looks like using our route structure from above, and using the new `lazy()` method on a route definition:
+Here's what this looks like using our route structure from above, and using the new `lazy()` method (available in React Router v6.9.0) on a route definition:
 
 ```jsx
 // app.jsx
@@ -164,64 +164,50 @@ This gives us a bit of the best of both worlds in that we're able to trim our cr
 
 Some of the astute readers may feel a bit of a 🕷️ spidey-sense tingling for some hidden chaining going on in here.  Is this the _optimal_ network graph?  As it turns out, it's not!  But it's pretty good for the lack of code we had to write to get it 😉.
 
-In this example above, our route modules include our `loader` as well as our `Component`, which means that we need to download the contents of _both_ before we can start our `loader` fetch.  In practice, your React Router SPA loaders are generally pretty small and hitting external APIs where the majority of your business logic lives.  Components on the other hand define your entire user interface, including all of the user-interactivity that goes along with it - and they can get quite big.  It seems silly to block the loader fetch by the JS download for a large Component tree?
+In this example above, our route modules include our `loader` as well as our `Component`, which means that we need to download the contents of _both_ before we can start our `loader` fetch.  In practice, your React Router SPA loaders are generally pretty small and hitting external APIs where the majority of your business logic lives.  Components on the other hand define your entire user interface, including all of the user-interactivity that goes along with it - and they can get quite big.  It seems silly to block the `loader` (which is likely making a `fetch()` call to some API) by the JS download for a large `Component` tree?
 
 <img alt="network diagram showing a loader + component chunk blocking a data fetch" src="/blog-images/posts/lazy-loading-routes/network7.png" class="border rounded-md p-3 shadow" />
 
 <figcaption class="my-2">Singular route files block the data fetch behind the component download</figcaption>
 
-But what if we could turn this 👆 into this 👇:
+But what if we could turn this 👆 into this 👇?
 
 <img alt="network diagram showing separate loader and component files unblocking the data fetch" src="/blog-images/posts/lazy-loading-routes/network8.png" class="border rounded-md p-3 shadow" />
 
 <figcaption class="my-2">We can unblock the data fetch by extracting the component to it's own file</figcaption>
 
-Because `lazy()` is statically defined and runs immediately, you can get fancy inside and load chunks in whatever way you see fit.  And because your route `Component`/`element` will never attempt to render until the loader has completed, you can even "provide" the `Component` from your `loader` and parallelize the data fetch alongside the component chunk.  You could achieve something like the above with a utility like this:
+The good news is that you can with minimal code changes!  If a `loader`/`action` is statically defined on a route, then it will be executed in parallel with `lazy()`.  This allows us to decouple the loader data fetch from the component chunk download by separating the loader and component into separate files:
 
 ```jsx
 const routes = [{
   path: "projects",
-  lazy: () => parallelize(
-    () => import("./projects-loader"),
-    () => import("./projects-component")
-  ),
+  loader({ request, params }) {
+    let { loader } = await import("./projects-loader");
+    return loader({ request, params });
+  },
+  lazy: () => import("./projects-component"),
 }];
-
-async function parallelize(loadLoaderChunk, loadComponentChunk) {
-  // Start the component chunk fetch immediately, but don't await it
-  let componentPromise = loadComponentChunk();
-  // Load the loader chunk in parallel
-  let { loader } = await loadLoaderChunk();
-  let LoadedComponent;
-
-  return {
-    // Once the loader chunk completes, return a loader that calls the actual
-    // loader and waits for the component to finish downloading
-    async loader(arg) {
-      let [data, cmp] = await Promise.all([loader(arg), componentPromise]);
-      LoadedComponent = cmp.Component;
-      return data;
-    },
-    // Component is just a wrapper that will reference the loaded component
-    Component: () => <LoadedComponent />,
-  };
-}
 ```
 
-## Static Properties
+Any fields defined statically on the route will always take precedence over anything returned from lazy.  So while you should not be defining a static `loader` _and also_ returning a `loader` from `lazy`, the lazy version will be ignored and you'll get a console warning if you do.
 
-It's also worth noting that while you can lazily load any non-path-matching properties via `lazy()`, it's not _required_ that you assign them all via `lazy()`.  You're free to still assign static route properties and they will be unable to be overwritten via `lazy()`.  A future optimization we plan to make is if you statically provide a loader, we'll call it in parallel with `lazy()`.  For example, maybe you have a single API endpoint that knows how to fetch data for a given route based on the route ID:
+This statically-defined loader concept also opens up some interesting possibilities for inlining code directly.  For example, maybe you have a single API endpoint that knows how to fetch data for a given route based on the request URL.  You could inline all of your loaders at minimal bundle cost and achieve total parallelization between your data fetch and your component (or route module) chunk download.
 
 ```js
 const routes = [{
   id: 'route',
-  path: "parallel",
+  path: "projects",
   loader: ({ request }) => fetchDataForUrl(request.url),
-  lazy: () => import("./route-module-without-loader"),
+  lazy: () => import("./projects-component"),
 }];
 ```
 
-This way you can include the _tiny_ loader on the critical path so it can start as fast as possible, and still load the `Component` via `lazy()`.  As a matter of fact, this is almost exactly how Remix approaches this issue because route loaders are their own API endpoints 🔥.
+<img alt="network diagram showing total parallelization between the data fetch and the component download" src="/blog-images/posts/lazy-loading-routes/network9.png" class="border rounded-md p-3 shadow" />
+
+<figcaption class="my-2">Look ma, no loader chunk!</figcaption>
+
+As a matter of fact, this is exactly how Remix approaches this issue because route loaders are their own API endpoints 🔥.
+
 
 ## More Information
 
