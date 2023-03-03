@@ -209,18 +209,16 @@ export async function loadPlugins() {
           }
         }
 
-        kallbacks.push(async () => {
-          let addedLines = parseLineHighlights(metaParams.get("add"));
-          let removedLines = parseLineHighlights(metaParams.get("remove"));
-          let highlightLines = parseLineHighlights(metaParams.get("lines"));
-          let startValNum = metaParams.has("start")
-            ? Number(metaParams.get("start"))
-            : 1;
-          let startingLineNumber = Number.isFinite(startValNum)
-            ? startValNum
-            : 1;
-          let numbers = !metaParams.has("nonumber");
+        let addedLines = parseLineHighlights(metaParams.get("add"));
+        let removedLines = parseLineHighlights(metaParams.get("remove"));
+        let highlightLines = parseLineHighlights(metaParams.get("lines"));
+        let startValNum = metaParams.has("start")
+          ? Number(metaParams.get("start"))
+          : 1;
+        let startingLineNumber = Number.isFinite(startValNum) ? startValNum : 1;
+        let numbers = !metaParams.has("nonumber");
 
+        kallbacks.push(async () => {
           let { tokens, fgColor, bgColor } = (await tokenizePool.run({
             code: node.value,
             language,
