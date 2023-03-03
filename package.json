@@ -62,6 +62,7 @@
     "remark-gfm": "^3.0.1",
     "remark-html": "^15.0.2",
     "remark-parse": "^10.0.1",
+    "remark-rehype": "^10.1.0",
     "remark-slug": "^7.0.1",
     "remix": "^1.11.1",
     "semver": "^7.3.8",
