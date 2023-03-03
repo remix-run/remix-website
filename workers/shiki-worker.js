@@ -14,7 +14,10 @@ let fgColor;
 /** @type {string} */
 let bgColor;
 
-module.exports = async function highlight({ code, language }) {
+/**
+ * @param {{ code: string; language: string }} args
+ */
+async function highlight({ code, language }) {
   highlighter = highlighter || (await getHighlighter({ themes: [theme] }));
   fgColor =
     fgColor ||
@@ -31,11 +34,13 @@ module.exports = async function highlight({ code, language }) {
   return {
     fgColor,
     bgColor,
-    tokens: tokens.map((lineTokens) =>
-      lineTokens.map((t) => ({ content: t.content, color: t.color }))
-    ),
+    // tokens: tokens.map((lineTokens) =>
+    //   lineTokens.map((t) => ({ content: t.content, color: t.color }))
+    // ),
+    tokens: tokens,
   };
-};
+}
+module.exports = highlight;
 
 // The theme actually stores #FFFF${base-16-color-id} because vscode-textmate
 // requires colors to be valid hex codes, if they aren't, it changes them to a

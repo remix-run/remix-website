@@ -185,7 +185,7 @@ export async function loadPlugins() {
         "prisma",
       ];
       let langSet = new Set(langs);
-      let transformers: Array<() => Promise<any>> = [];
+      let transformTasks: Promise<void>[] = [];
 
       visit(tree, "code", (node) => {
         if (!node.lang || !node.value || !langSet.has(node.lang as Lang)) {
@@ -218,109 +218,110 @@ export async function loadPlugins() {
         let startingLineNumber = Number.isFinite(startValNum) ? startValNum : 1;
         let numbers = !metaParams.has("nonumber");
 
-        transformers.push(async () => {
-          let { tokens, fgColor, bgColor } = (await tokenizePool.run({
-            code: node.value,
-            language,
-          })) as {
-            tokens: Shiki.IThemedToken[][];
-            fgColor: string;
-            bgColor: string;
-          };
+        transformTasks.push(
+          new Promise(async (res) => {
+            let { tokens, fgColor, bgColor } = (await tokenizePool.run({
+              code: node.value,
+              language,
+            })) as {
+              tokens: Shiki.IThemedToken[][];
+              fgColor: string;
+              bgColor: string;
+            };
 
-          let children = tokens.map(
-            (lineTokens, zeroBasedLineNumber): Hast.Element => {
-              let children = lineTokens.map(
-                (token): Hast.Text | Hast.Element => {
-                  let color = convertFakeHexToCustomProp(token.color || "");
-                  let content: Hast.Text = {
-                    type: "text",
-                    // Do not escape the _actual_ content
-                    value: token.content,
-                  };
+            let children = tokens.map(
+              (lineTokens, zeroBasedLineNumber): Hast.Element => {
+                let children = lineTokens.map(
+                  (token): Hast.Text | Hast.Element => {
+                    let color = convertFakeHexToCustomProp(token.color || "");
+                    let content: Hast.Text = {
+                      type: "text",
+                      // Do not escape the _actual_ content
+                      value: token.content,
+                    };
 
-                  return color && color !== fgColor
-                    ? {
-                        type: "element",
-                        tagName: "span",
-                        properties: {
-                          style: `color: ${htmlEscape(color)}`,
-                        },
-                        children: [content],
-                      }
-                    : content;
+                    return color && color !== fgColor
+                      ? {
+                          type: "element",
+                          tagName: "span",
+                          properties: {
+                            style: `color: ${htmlEscape(color)}`,
+                          },
+                          children: [content],
+                        }
+                      : content;
+                  }
+                );
+
+                children.push({
+                  type: "text",
+                  value: "\n",
+                });
+
+                let isDiff = addedLines.length > 0 || removedLines.length > 0;
+                let diffLineNumber = startingLineNumber - 1;
+                let lineNumber = zeroBasedLineNumber + startingLineNumber;
+                let highlightLine = highlightLines?.includes(lineNumber);
+                let removeLine = removedLines.includes(lineNumber);
+                let addLine = addedLines.includes(lineNumber);
+                if (!removeLine) {
+                  diffLineNumber++;
                 }
-              );
 
-              children.push({
-                type: "text",
-                value: "\n",
-              });
-
-              let isDiff = addedLines.length > 0 || removedLines.length > 0;
-              let diffLineNumber = startingLineNumber - 1;
-              let lineNumber = zeroBasedLineNumber + startingLineNumber;
-              let highlightLine = highlightLines?.includes(lineNumber);
-              let removeLine = removedLines.includes(lineNumber);
-              let addLine = addedLines.includes(lineNumber);
-              if (!removeLine) {
-                diffLineNumber++;
+                return {
+                  type: "element",
+                  tagName: "span",
+                  properties: {
+                    className: "codeblock-line",
+                    dataHighlight: highlightLine ? "true" : undefined,
+                    dataLineNumber: numbers ? lineNumber : undefined,
+                    dataAdd: isDiff ? addLine : undefined,
+                    dataRemove: isDiff ? removeLine : undefined,
+                    dataDiffLineNumber: isDiff ? diffLineNumber : undefined,
+                  },
+                  children,
+                };
               }
+            );
+            let metaProps: { [key: string]: string } = {};
+            metaParams.forEach((val, key) => {
+              if (key === "lines") return;
+              metaProps[`data-${key}`] = val;
+            });
 
-              return {
-                type: "element",
-                tagName: "span",
-                properties: {
-                  className: "codeblock-line",
-                  dataHighlight: highlightLine ? "true" : undefined,
-                  dataLineNumber: numbers ? lineNumber : undefined,
-                  dataAdd: isDiff ? addLine : undefined,
-                  dataRemove: isDiff ? removeLine : undefined,
-                  dataDiffLineNumber: isDiff ? diffLineNumber : undefined,
-                },
-                children,
-              };
-            }
-          );
-          let metaProps: { [key: string]: string } = {};
-          metaParams.forEach((val, key) => {
-            if (key === "lines") return;
-            metaProps[`data-${key}`] = val;
-          });
-
-          let nodeValue = {
-            type: "element",
-            tagName: "pre",
-            properties: {
-              ...metaProps,
-              dataLineNumbers: numbers ? "true" : "false",
-              dataLang: htmlEscape(language),
-              style: `color: ${htmlEscape(
-                fgColor
-              )};background-color: ${htmlEscape(bgColor)}`,
-            },
-            children: [
-              {
-                type: "element",
-                tagName: "code",
-                children,
+            let nodeValue = {
+              type: "element",
+              tagName: "pre",
+              properties: {
+                ...metaProps,
+                dataLineNumbers: numbers ? "true" : "false",
+                dataLang: htmlEscape(language),
+                style: `color: ${htmlEscape(
+                  fgColor
+                )};background-color: ${htmlEscape(bgColor)}`,
               },
-            ],
-          };
+              children: [
+                {
+                  type: "element",
+                  tagName: "code",
+                  children,
+                },
+              ],
+            };
 
-          let data = node.data ?? {};
-          (node as any).type = "element";
-          data.hProperties ??= {};
-          data.hChildren = [nodeValue];
-          node.data = data;
-
-          //   Object.assign(node, nodeValue);
-        });
+            let data = node.data ?? {};
+            (node as any).type = "element";
+            data.hProperties ??= {};
+            data.hChildren = [nodeValue];
+            node.data = data;
+            res();
+          })
+        );
 
         return SKIP;
       });
 
-      await Promise.all(transformers.map((k) => k()));
+      await Promise.all(transformTasks);
     };
   };
 
