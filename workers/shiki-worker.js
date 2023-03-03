@@ -4,22 +4,30 @@
 //
 // This is intended to work around a memory leak in shiki so that our site
 // doesn't crash when we hit memory limits
-const path = require("path");
-const { getHighlighter, loadTheme } = require("shiki");
-const themeName = "base16";
-let theme, highlighter;
+const { getHighlighter } = require("shiki");
+const theme = require("./shiki-theme");
+
+/** @type {Awaited<ReturnType<typeof getHighlighter>>} */
+let highlighter;
+/** @type {string} */
+let fgColor;
+/** @type {string} */
+let bgColor;
 
 module.exports = async function highlight({ code, language }) {
-  theme = theme || (await loadTheme(path.resolve(__dirname, "base16.json")));
   highlighter = highlighter || (await getHighlighter({ themes: [theme] }));
-  let fgColor = convertFakeHexToCustomProp(
-    highlighter.getForegroundColor(themeName) || ""
-  );
-  let bgColor = convertFakeHexToCustomProp(
-    highlighter.getBackgroundColor(themeName) || ""
-  );
+  fgColor =
+    fgColor ||
+    convertFakeHexToCustomProp(
+      highlighter.getForegroundColor(theme.name) || ""
+    );
+  bgColor =
+    bgColor ||
+    convertFakeHexToCustomProp(
+      highlighter.getBackgroundColor(theme.name) || ""
+    );
 
-  let tokens = highlighter.codeToThemedTokens(code, language, themeName);
+  let tokens = highlighter.codeToThemedTokens(code, language, theme.name);
   return {
     fgColor,
     bgColor,

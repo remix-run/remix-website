@@ -185,7 +185,7 @@ export async function loadPlugins() {
         "prisma",
       ];
       let langSet = new Set(langs);
-      let kallbacks: Array<() => Promise<any>> = [];
+      let transformers: Array<() => Promise<any>> = [];
 
       visit(tree, "code", (node) => {
         if (!node.lang || !node.value || !langSet.has(node.lang as Lang)) {
@@ -218,7 +218,7 @@ export async function loadPlugins() {
         let startingLineNumber = Number.isFinite(startValNum) ? startValNum : 1;
         let numbers = !metaParams.has("nonumber");
 
-        kallbacks.push(async () => {
+        transformers.push(async () => {
           let { tokens, fgColor, bgColor } = (await tokenizePool.run({
             code: node.value,
             language,
@@ -320,7 +320,7 @@ export async function loadPlugins() {
         return SKIP;
       });
 
-      await Promise.all(kallbacks.map((k) => k()));
+      await Promise.all(transformers.map((k) => k()));
     };
   };
 
