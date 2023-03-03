@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 /*!
  * Forked from https://github.com/ryanflorence/md/blob/master/index.ts
  *
@@ -14,6 +15,12 @@ import type * as Hast from "hast";
 import type * as Unist from "unist";
 import type * as Shiki from "shiki";
 import type * as Unified from "unified";
+
+type WorkerArgs = Parameters<typeof import("../../workers/shiki-worker")>[0];
+type WorkerResult = Awaited<
+  ReturnType<typeof import("../../workers/shiki-worker")>
+>;
+type TTinypool = import("tinypool").Tinypool;
 
 export interface ProcessorOptions {
   resolveHref?(href: string): string;
@@ -78,8 +85,7 @@ export async function loadPlugins() {
       import("tinypool"),
     ]);
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  let tokenizePool: import("tinypool").Tinypool;
+  let tokenizePool: TTinypool;
 
   type MdastNode = Mdast.Root | Mdast.Content;
 
@@ -157,9 +163,8 @@ export async function loadPlugins() {
     UnistNode.Root,
     UnistNode.Root
   > = (options) => {
-    // using TinyThread because shiki has some gnarly memory leaks so we stick
-    // it in a worker to keep it isolated and configure it so it will be
-    // destroyed if it remains unused for a while
+    // Using Tinypool because Shiki has memory leaks. See notes in
+    // shiki-worker.js for details.
     tokenizePool =
       tokenizePool ||
       new Tinypool({
@@ -195,6 +200,7 @@ export async function loadPlugins() {
         if (node.lang === "js") node.lang = "javascript";
         if (node.lang === "ts") node.lang = "typescript";
         let language = node.lang;
+        let code = node.value;
 
         // TODO: figure out how this is ever an array?
         let meta = Array.isArray(node.meta) ? node.meta[0] : node.meta;
@@ -220,14 +226,10 @@ export async function loadPlugins() {
 
         transformTasks.push(
           new Promise(async (res) => {
-            let { tokens, fgColor, bgColor } = (await tokenizePool.run({
-              code: node.value,
+            let { tokens, fgColor, bgColor } = await runWorker({
+              code,
               language,
-            })) as {
-              tokens: Shiki.IThemedToken[][];
-              fgColor: string;
-              bgColor: string;
-            };
+            });
 
             let children = tokens.map(
               (lineTokens, zeroBasedLineNumber): Hast.Element => {
@@ -323,6 +325,10 @@ export async function loadPlugins() {
 
       await Promise.all(transformTasks);
     };
+
+    async function runWorker(args: WorkerArgs): Promise<WorkerResult> {
+      return await tokenizePool.run(args);
+    }
   };
 
   return {
