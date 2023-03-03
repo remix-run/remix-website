@@ -23,13 +23,13 @@ Conveniently enough, the same day I started writing this article, `@devagrawal09
 
 <figcaption class="my-2">Check back with Remix in 2026!</figcaption>
 
-It's clear from the thread that folks have varying interpretations of "major rewrites," and that frameworks have done this with varying degrees of success over the years. Part of why things are not cut-and-dry here is that while SemVer gives us a way to communicate _when_ breaking changes exist - we do not have a similar agreed-upon process of _how_ to introduce breaking changes in our frameworks and communicate them to application developers. Generally speaking the minimal bar for a major [SemVer][semver] release is a set of release notes which outline the breaking changes in the major release. Ideally these also include instructions on how to go about changing your code to adopt the breaking changes. But that's really it - beyond that there's very little standardization around how to best prepare and help your users adopt breaking changes across major releases.
+It's clear from the thread that folks have varying interpretations of "major rewrites," and that frameworks have done this with varying degrees of success over the years. Part of why things are not cut-and-dry here is that while SemVer gives us a way to communicate _when_ breaking changes exist - we do not have a similar agreed-upon process of _how_ to introduce breaking changes in our frameworks and communicate them to application developers. Generally speaking the minimal bar for a major SemVer release is a set of release notes which outline the breaking changes in the major release. Ideally these also include instructions on how to go about changing your code to adopt the breaking changes. But that's really it - beyond that there's very little standardization around how to best prepare and help your users adopt breaking changes across major releases.
 
 For that reason, we've seen a ton of different approaches over the years, including but not limited to:
 
-- Writing a [detailed][angular-v2-migration-guide] [migration][react-router-v6-migration-guide] [guide][express-v4-migration-guide]
-- Releasing a [preparation version][angular-1.5.0] prior to the major release to better prep your code to adopt the breaking changes
-- Releasing a separate package that allows you to run [both][ngupgrade] [versions][vue-migration-build] together
+- Writing a detailed migration guide [<sup>1</sup>][angular-v2-migration-guide] [<sup>2</sup>][react-router-v6-migration-guide] [<sup>3</sup>][express-v4-migration-guide]
+- Releasing a "preparation version" prior to the major release to better prep your code to adopt the breaking changes [<sup>1</sup>][angular-1.5.0]
+- Releasing a separate package that allows you to run both versions together [<sup>1</sup>][ngupgrade] [<sup>2</sup>][vue-migration-build]
 - Creating code-mod tooling that can help update your application code automatically
   - **TODO: Do we know of any good examples here?**
 
