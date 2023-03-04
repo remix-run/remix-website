@@ -1,6 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LoaderFunction, LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
 import type { Prose, Sequence } from "~/lib/mdtut.server";
@@ -11,7 +11,8 @@ import { ScrollExperience } from "~/ui/homepage-scroll-experience";
 import invariant from "tiny-invariant";
 import { Fragment } from "react";
 
-export function meta({ data: { siteUrl } }: { data: LoaderData }) {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  let { siteUrl = "" } = data || {};
   let title = "Remix - Build Better Websites";
   let image = `${siteUrl}/img/og.1.jpg`;
   let description =
@@ -30,7 +31,7 @@ export function meta({ data: { siteUrl } }: { data: LoaderData }) {
     "twitter:description": description,
     "twitter:image": image,
   };
-}
+};
 
 export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
@@ -44,7 +45,7 @@ type LoaderData = {
   errors: Sequence;
 };
 
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
     getMarkdownTutPage("marketing/sample/sample.md"),
     getMarkdownTutPage("marketing/sample-sm/sample.md"),
