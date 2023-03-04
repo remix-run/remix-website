@@ -7,8 +7,6 @@
  *   - MIT https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/LICENSE
  *   - https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/src/worker/mdxCompiler.ts
  */
-import path from "path";
-import { getHighlighter, loadTheme } from "shiki";
 import type { Lang } from "shiki";
 import rangeParser from "parse-numeric-range";
 import parseFrontMatter from "front-matter";
@@ -17,10 +15,7 @@ import type * as Hast from "hast";
 import type * as Unist from "unist";
 import type * as Shiki from "shiki";
 import type * as Unified from "unified";
-
-// This is relative to where this code ends up in the build, not the source
-const DATA_PATH = path.join(__dirname, "..", "data");
-const THEME_PATH = path.join(DATA_PATH, "base16.json");
+import type { Tinypool as TTinypool } from "tinypool";
 
 export interface ProcessorOptions {
   resolveHref?(href: string): string;
@@ -76,17 +71,15 @@ type InternalPlugin<Input, Output> = Unified.Plugin<
   Output
 >;
 
-let theme: Awaited<ReturnType<typeof loadTheme>>;
-let highlighter: Awaited<ReturnType<typeof getHighlighter>>;
-let fgColor: string;
-let bgColor: string;
-
+let tokenizePool: TTinypool;
 export async function loadPlugins() {
-  let [{ visit, SKIP }, { htmlEscape }, { toc }] = await Promise.all([
-    import("unist-util-visit"),
-    import("escape-goat"),
-    import("mdast-util-toc"),
-  ]);
+  let [{ visit, SKIP }, { htmlEscape }, { toc }, { Tinypool }] =
+    await Promise.all([
+      import("unist-util-visit"),
+      import("escape-goat"),
+      import("mdast-util-toc"),
+      import("tinypool"),
+    ]);
 
   type MdastNode = Mdast.Root | Mdast.Content;
 
@@ -164,6 +157,17 @@ export async function loadPlugins() {
     UnistNode.Root,
     UnistNode.Root
   > = (options) => {
+    // Using Tinypool because Shiki has memory leaks. See notes in
+    // shiki-worker.js for details.
+    tokenizePool =
+      tokenizePool ||
+      new Tinypool({
+        // worker directory is relative to the build output
+        filename: require.resolve("../workers/shiki-worker.js"),
+        minThreads: 0,
+        idleTimeout: 60,
+      });
+
     return async function transformer(tree: UnistNode.Root) {
       let langs: Lang[] = [
         "js",
@@ -315,33 +319,8 @@ export async function loadPlugins() {
 
       await Promise.all(transformTasks);
 
-      async function highlight({
-        code,
-        language,
-      }: {
-        code: string;
-        language: Lang;
-      }) {
-        theme = theme || (await loadTheme(THEME_PATH));
-        highlighter =
-          highlighter || (await getHighlighter({ themes: [theme] }));
-        fgColor =
-          fgColor ||
-          convertFakeHexToCustomProp(
-            highlighter.getForegroundColor(theme.name) || ""
-          );
-        bgColor =
-          bgColor ||
-          convertFakeHexToCustomProp(
-            highlighter.getBackgroundColor(theme.name) || ""
-          );
-
-        let tokens = highlighter.codeToThemedTokens(code, language, theme.name);
-        return {
-          fgColor,
-          bgColor,
-          tokens: tokens,
-        };
+      async function highlight(args: WorkerArgs): Promise<WorkerResult> {
+        return await tokenizePool.run(args);
       }
     };
   };
@@ -517,3 +496,8 @@ export namespace UnistNode {
     value: string;
   }
 }
+
+type WorkerArgs = Parameters<typeof import("../../workers/shiki-worker")>[0];
+type WorkerResult = Awaited<
+  ReturnType<typeof import("../../workers/shiki-worker")>
+>;
