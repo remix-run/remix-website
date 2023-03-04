@@ -21,6 +21,8 @@ const cache = new LRUCache<string, MarkdownTutPage>({
   },
 });
 
+let processor: Awaited<ReturnType<typeof getProcessor>>;
+
 async function getProcessor() {
   let [
     { unified },
@@ -41,7 +43,7 @@ async function getProcessor() {
 }
 
 async function getMarkdownTutPage(filename: string): Promise<MarkdownTutPage> {
-  let processor = await getProcessor();
+  processor = processor || (await getProcessor());
   let cached = cache.get(filename);
   if (cached) {
     return cached;
