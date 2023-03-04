@@ -6,10 +6,7 @@ import type {
   LoaderArgs,
   MetaFunction,
 } from "@remix-run/node";
-import {
-  OutlineButtonLink,
-  primaryButtonLinkClass,
-} from "~/ui/buttons";
+import { OutlineButtonLink, primaryButtonLinkClass } from "~/ui/buttons";
 import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
 import type { Sponsor, Speaker } from "~/lib/conf";
