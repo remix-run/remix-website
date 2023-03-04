@@ -21,12 +21,13 @@ export interface ProcessorOptions {
   resolveHref?(href: string): string;
 }
 
+let processor: Awaited<ReturnType<typeof getProcessor>>;
 export async function processMarkdown(
   content: string,
   options?: ProcessorOptions
 ) {
+  processor = processor || (await getProcessor(options));
   let { attributes, body: raw } = parseFrontMatter(content);
-  let processor = await getProcessor(options);
   let vfile = await processor.process(raw);
   let html = vfile.value.toString();
   return { attributes, raw, html };
