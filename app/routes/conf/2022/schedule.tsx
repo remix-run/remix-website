@@ -1,10 +1,4 @@
-import {
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-} from "~/ui/primitives/tabs";
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from "~/ui/primitives/tabs";
 import { Link, Outlet, useMatches, useNavigate } from "@remix-run/react";
 import type { MetaFunction, HeadersFunction } from "@remix-run/node";
 import { CACHE_CONTROL } from "~/lib/http.server";
