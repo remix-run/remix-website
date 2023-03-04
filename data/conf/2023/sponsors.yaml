@@ -37,3 +37,8 @@
   link: "https://sentry.io"
   imgSrc: "/conf-images/2023/sponsors/sentry.svg"
   level: "community"
+
+- name: "Appwrite"
+  link: "https://appwrite.io"
+  imgSrc: "/conf-images/2023/sponsors/appwrite.svg"
+  level: "community"
