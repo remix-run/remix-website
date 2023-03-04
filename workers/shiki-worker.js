@@ -39,10 +39,7 @@ async function highlight({ code, language }) {
   return {
     fgColor,
     bgColor,
-    // tokens: tokens.map((lineTokens) =>
-    //   lineTokens.map((t) => ({ content: t.content, color: t.color }))
-    // ),
-    tokens: tokens,
+    tokens,
   };
 }
 module.exports = highlight;
