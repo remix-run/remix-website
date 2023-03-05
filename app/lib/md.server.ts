@@ -12,7 +12,6 @@ import { getHighlighter, loadTheme } from "shiki";
 import type { Lang } from "shiki";
 import rangeParser from "parse-numeric-range";
 import parseFrontMatter from "front-matter";
-import type * as Mdast from "mdast";
 import type * as Hast from "hast";
 import type * as Unist from "unist";
 import type * as Shiki from "shiki";
@@ -61,7 +60,6 @@ export async function getProcessor(options?: ProcessorOptions) {
 
   return unified()
     .use(remarkParse)
-    .use(plugins.tocPlugin, options)
     .use(plugins.stripLinkExtPlugin, options)
     .use(plugins.remarkCodeBlocksShiki)
     .use(remarkGfm)
@@ -83,61 +81,10 @@ let fgColor: string;
 let bgColor: string;
 
 export async function loadPlugins() {
-  let [{ visit, SKIP }, { htmlEscape }, { toc }] = await Promise.all([
+  let [{ visit, SKIP }, { htmlEscape }] = await Promise.all([
     import("unist-util-visit"),
     import("escape-goat"),
-    import("mdast-util-toc"),
   ]);
-
-  type MdastNode = Mdast.Root | Mdast.Content;
-
-  // Kinda weird hack, should probably copy/modify mdhast-util-doc but this just
-  // replace any heading with `## toc` in it with the toc
-  const tocPlugin: InternalPlugin<UnistNode.Root, UnistNode.Root> = () => {
-    return async function transformer(tree) {
-      if (tree.children.length === 0) {
-        return {
-          type: "root",
-          children: [],
-        };
-      }
-
-      let first = tree.children[0];
-      if (
-        first.type === "heading" &&
-        first.children[0] &&
-        "value" in first.children[0] &&
-        first.children[0].value === "toc"
-      ) {
-        let result = toc(tree as MdastNode, { heading: "toc" });
-        // remove the `## toc` placeholder
-        tree.children.splice(0, 1);
-
-        // nothing to TOC about (get it?!)
-        if (!result.map) {
-          return getTocWrapper(false, tree.children);
-        }
-
-        result.map.data = { hProperties: { class: "toc" } };
-        return getTocWrapper(result.map, tree.children);
-      } else {
-        return {
-          type: "root",
-          children: [
-            {
-              type: "element",
-              data: {
-                hProperties: {
-                  class: "md-prose",
-                },
-              },
-              children: tree.children,
-            },
-          ],
-        };
-      }
-    };
-  };
 
   const stripLinkExtPlugin: InternalPlugin<UnistNode.Root, UnistNode.Root> = (
     options = {}
@@ -348,52 +295,9 @@ export async function loadPlugins() {
   };
 
   return {
-    tocPlugin,
     stripLinkExtPlugin,
     remarkCodeBlocksShiki,
   };
-
-  function getTocWrapper(
-    toc: Mdast.List | false | null,
-    children: any
-  ): UnistNode.Root {
-    return {
-      type: "root",
-      children: [
-        {
-          type: "element",
-          data: {
-            hProperties: {
-              class: "md-toc-container",
-            },
-          },
-          children: [
-            {
-              type: "element",
-              data: {
-                hProperties: {
-                  class: "md-toc-nav",
-                  role: "navigation",
-                },
-              },
-              // @ts-expect-error
-              children: [toc].filter(Boolean),
-            },
-            {
-              type: "element",
-              data: {
-                hProperties: {
-                  class: "md-prose",
-                },
-              },
-              // @ts-expect-error
-              children,
-            },
-          ],
-        },
-      ],
-    };
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

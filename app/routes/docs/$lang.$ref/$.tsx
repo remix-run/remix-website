@@ -131,11 +131,12 @@ export default function DocPage() {
         <div className="hidden xl:order-1 xl:block xl:w-56 xl:flex-shrink-0" />
       )}
       <div className="min-w-0 pt-8 pb-4 xl:flex-grow">
-        <div
-          ref={ref}
-          className="markdown w-full pb-[33vh]"
-          dangerouslySetInnerHTML={{ __html: doc.html }}
-        />
+        <div ref={ref} className="markdown w-full pb-[33vh]">
+          <div
+            className="md-prose"
+            dangerouslySetInnerHTML={{ __html: doc.html }}
+          />
+        </div>
       </div>
     </div>
   );
