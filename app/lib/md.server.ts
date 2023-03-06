@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 /*!
  * Forked from https://github.com/ryanflorence/md/blob/master/index.ts
  *
@@ -9,7 +8,6 @@
  */
 import path from "path";
 import { getHighlighter, loadTheme } from "shiki";
-import type { Lang } from "shiki";
 import rangeParser from "parse-numeric-range";
 import parseFrontMatter from "front-matter";
 import type * as Hast from "hast";
@@ -119,7 +117,7 @@ export async function loadPlugins() {
       let bgColor = convertFakeHexToCustomProp(
         highlighter.getBackgroundColor(theme.name) || ""
       );
-      let langs: Lang[] = [
+      let langs: Shiki.Lang[] = [
         "js",
         "json",
         "jsx",
@@ -137,7 +135,11 @@ export async function loadPlugins() {
       let transformTasks: Array<() => Promise<void>> = [];
 
       visit(tree, "code", (node) => {
-        if (!node.lang || !node.value || !langSet.has(node.lang as Lang)) {
+        if (
+          !node.lang ||
+          !node.value ||
+          !langSet.has(node.lang as Shiki.Lang)
+        ) {
           return;
         }
 
@@ -290,7 +292,7 @@ export async function loadPlugins() {
         language,
       }: {
         code: string;
-        language: Lang;
+        language: Shiki.Lang;
       }) {
         return highlighter.codeToThemedTokens(code, language, theme.name);
       }
