@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 /*!
  * Forked from https://github.com/ryanflorence/md/blob/master/index.ts
  *
@@ -7,7 +6,6 @@
  *   - MIT https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/LICENSE
  *   - https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/src/worker/mdxCompiler.ts
  */
-import type { Lang } from "shiki";
 import rangeParser from "parse-numeric-range";
 import parseFrontMatter from "front-matter";
 import type * as Hast from "hast";
@@ -56,7 +54,7 @@ export async function getProcessor(options?: ProcessorOptions) {
   return unified()
     .use(remarkParse)
     .use(plugins.stripLinkExtPlugin, options)
-    .use(plugins.remarkCodeBlocksShiki)
+    .use(plugins.remarkCodeBlocksShiki, options)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
@@ -116,7 +114,7 @@ export async function loadPlugins() {
       });
 
     return async function transformer(tree: UnistNode.Root) {
-      let langs: Lang[] = [
+      let langs: Shiki.Lang[] = [
         "js",
         "json",
         "jsx",
@@ -134,7 +132,11 @@ export async function loadPlugins() {
       let transformTasks: Array<() => Promise<void>> = [];
 
       visit(tree, "code", (node) => {
-        if (!node.lang || !node.value || !langSet.has(node.lang as Lang)) {
+        if (
+          !node.lang ||
+          !node.value ||
+          !langSet.has(node.lang as Shiki.Lang)
+        ) {
           return;
         }
 
@@ -420,7 +422,7 @@ export namespace UnistNode {
   }
 }
 
-type WorkerArgs = Parameters<typeof import("../../workers/shiki-worker")>[0];
-type WorkerResult = Awaited<
-  ReturnType<typeof import("../../workers/shiki-worker")>
->;
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+type WorkerFn = typeof import("~/../workers/shiki-worker");
+type WorkerArgs = Parameters<WorkerFn>[0];
+type WorkerResult = Awaited<ReturnType<WorkerFn>>;
