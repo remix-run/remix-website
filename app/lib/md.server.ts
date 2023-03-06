@@ -61,7 +61,7 @@ export async function getProcessor(options?: ProcessorOptions) {
   return unified()
     .use(remarkParse)
     .use(plugins.stripLinkExtPlugin, options)
-    .use(plugins.remarkCodeBlocksShiki)
+    .use(plugins.remarkCodeBlocksShiki, options)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
