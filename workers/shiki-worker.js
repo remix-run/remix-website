@@ -21,7 +21,7 @@ const THEME_PATH = path.join(__dirname, "..", "data", "base16.json");
 /**
  * @param {{ code: string; language: string }} args
  */
-async function highlight({ code, language }) {
+async function getThemedTokens({ code, language }) {
   theme = theme || (await loadTheme(THEME_PATH));
   highlighter = highlighter || (await getHighlighter({ themes: [theme] }));
   fgColor =
@@ -42,7 +42,7 @@ async function highlight({ code, language }) {
     tokens,
   };
 }
-module.exports = highlight;
+module.exports = getThemedTokens;
 
 // The theme actually stores #FFFF${base-16-color-id} because vscode-textmate
 // requires colors to be valid hex codes, if they aren't, it changes them to a
