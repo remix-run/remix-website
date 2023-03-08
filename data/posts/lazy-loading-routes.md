@@ -1,5 +1,5 @@
 ---
-title: Lazy Loading Routes in React Router
+title: Lazy Loading Routes in React Router 6.4+
 summary: Decoupling data-fetching from rendering introduces some complexities if you want to lazily load your route components.  Check out how the newly introduced `route.lazy()` method helps solve this to keep your app bundles small and your UX snappy!
 featured: true
 date: 2023-02-27
@@ -9,7 +9,7 @@ authors:
   - Matt Brophy
 ---
 
-[React Router 6.4][react-router-6.4] introduced the concept of a _"Data Router"_ with the primary focus of separating data fetching from rendering to eliminate **render + fetch chains** and the spinners that come along with them.
+[React Router 6.4][react-router-6.4] introduced the concept of a _"Data Router"_ (`createBrowserRouter` + `RouterProvider`) with the primary focus of separating data fetching from rendering to eliminate **render + fetch chains** and the spinners that come along with them.
 
 These chains are more commonly referred to as "waterfalls", but we're trying to re-think that term because most folks hear waterfall and picture [Niagra Falls][niagra], where all of the water falls down in one big nice waterfall. But "all at once" seems like a great way to load data, so why the hate on waterfalls? Maybe we should chase 'em after all?
 
@@ -60,7 +60,7 @@ const routes = [{
 }]
 ```
 
-But this comes with a downside. So far we've talked about how to optimize our data fetches, but we've also got to consider how to optimize our JS bundle fetches too! With this naive route definition above, while we can fetch all of our data in parallel, we've blocked the start of the data fetch by the download of a Javascript bundle containing _all_ of our loaders and _all_ our our components.
+But this comes with a downside. So far we've talked about how to optimize our data fetches, but we've also got to consider how to optimize our JS bundle fetches too! With this route definition above, while we can fetch all of our data in parallel, we've blocked the start of the data fetch by the download of a Javascript bundle containing _all_ of our loaders and components.
 
 Consider a user entering your site on the `/` route:
 
@@ -91,7 +91,7 @@ function App() {
 
 <figcaption class="my-2">The React.lazy() call produces a similar render + fetch chain</figcaption>
 
-So while we can leverage `React.lazy()` with data routers, we end up introducing a chain to download the component _after_ our data fetches. Ruben Casas [wrote up a great post][react-router-6.4-code-splitting] on some of the approaches to leverage code-splitting in data routers with `React.lazy()`. But as we can see from the post, code splitting was still not super straightforward and came with some DX downsides as it was a bit verbose and tedious to do manually. As a result of this sub-par DX, we received a [Proposal][proposal] (and an initial [POC implementation][poc]) from `@rossipedia`. This proposal did a great job of outlining the current challenges and got us thinking about the best way to introduce first-class code-splitting support in a `RouterProvider`. We'd like to give a **huge** shout out to both of these folks (and the rest of our amazing community) for being such active participants in the evolution of React Router 🙌.
+So while we can leverage `React.lazy()` with data routers, we end up introducing a chain to download the component _after_ our data fetches. Ruben Casas [wrote up a great post][react-router-6.4-code-splitting] on some of the approaches to leverage code-splitting in data routers with `React.lazy()`. But as we can see from the post, code splitting was still a bit verbose and tedious to do manually. As a result of this sub-par DX, we received a [Proposal][proposal] (and an initial [POC implementation][poc]) from `@rossipedia`. This proposal did a great job of outlining the current challenges and got us thinking about the best way to introduce first-class code-splitting support in a `RouterProvider`. We'd like to give a **huge** shout out to both of these folks (and the rest of our amazing community) for being such active participants in the evolution of React Router 🙌.
 
 ## Introducing Route.lazy
 
