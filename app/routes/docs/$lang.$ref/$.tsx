@@ -144,24 +144,26 @@ export default function DocPage() {
 
 function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   return (
-    <div className="hidden xl:sticky xl:top-28 xl:order-1 xl:mt-10 xl:block xl:max-h-[calc(100vh-10rem)] xl:w-56 xl:flex-shrink-0 xl:self-start xl:overflow-auto">
-      <nav className="mb-2 flex items-center pb-1 pt-0 text-[1rem] font-bold leading-[1.125] tracking-wide">
+    <div className="hidden xl:block sticky top-28 order-1 mt-10 pb-4 max-h-[calc(100vh-10rem)] w-56 flex-shrink-0 self-start overflow-y-auto">
+      <nav className="mb-2 flex items-center pb-1 pt-0 text-[1rem] font-bold tracking-wide">
         On this page
       </nav>
-      <ul>
-        {doc.headings.map((heading, i) => (
-          <li key={i}>
-            <a
-              href={`#${heading.slug}`}
-              dangerouslySetInnerHTML={{ __html: heading.html || "" }}
-              className={cx(
-                "group relative my-1 flex items-center rounded-md border-transparent pb-1 text-sm",
-                "text-gray-700 hover:text-blue-500 dark:text-gray-400",
-                "transition-colors duration-150 ease-in-out"
-              )}
-            />
-          </li>
-        ))}
+      <ul className="md-toc flex flex-col flex-wrap gap-2 leading-[1.125]">
+        {doc.headings.map((heading, i) => {
+          return (
+            <li key={i}>
+              <a
+                href={`#${heading.slug}`}
+                dangerouslySetInnerHTML={{ __html: heading.html || "" }}
+                className={cx(
+                  "group relative my-1 rounded-md border-transparent pb-1 text-sm",
+                  "text-gray-700 hover:text-blue-500 dark:text-gray-400",
+                  "transition-colors duration-150 ease-in-out"
+                )}
+              />
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
