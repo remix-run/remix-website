@@ -1,8 +1,8 @@
-import { InteractiveRoutes } from "~/components/scroll-experience";
+import { InteractiveRoutes } from "~/ui/homepage-scroll-experience";
 
 export let handle = { forceDark: true };
 
-export default function () {
+export default function Routing() {
   return (
     <div className="pt-8">
       <InteractiveRoutes />

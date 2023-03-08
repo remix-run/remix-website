@@ -22,11 +22,11 @@ import {
   removeTrailingSlashes,
   ensureSecure,
   isProductionHost,
-} from "~/utils/http.server";
-import { ColorSchemeScript, useColorScheme } from "~/utils/color-scheme";
-import { parseColorScheme } from "~/utils/color-scheme.server";
+} from "~/lib/http.server";
+import { ColorSchemeScript, useColorScheme } from "~/lib/color-scheme";
+import { parseColorScheme } from "~/lib/color-scheme.server";
 import iconsHref from "~/icons.svg";
-import { canUseDOM } from "~/utils/misc";
+import { canUseDOM } from "~/lib/misc";
 import cx from "clsx";
 
 declare global {

@@ -24,8 +24,8 @@ import docsearchStylesheet from "@docsearch/css/dist/style.css";
 import docsearchStylesheetOverrides from "~/styles/docsearch.css";
 
 import markdownStyles from "~/styles/docs.css";
-import { Wordmark } from "~/components/logo";
-import { useHydrated } from "~/utils/misc";
+import { Wordmark } from "~/ui/logo";
+import { useHydrated } from "~/lib/misc";
 
 import iconsHref from "~/icons.svg";
 import {
@@ -34,9 +34,9 @@ import {
   getRepoTags,
   validateParams,
   getLatestVersion,
-} from "~/modules/gh-docs";
-import type { Doc } from "~/modules/gh-docs";
-import { useColorScheme } from "~/utils/color-scheme";
+} from "~/lib/gh-docs";
+import type { Doc } from "~/lib/gh-docs";
+import { useColorScheme } from "~/lib/color-scheme";
 
 export let loader = async ({ params }: LoaderArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;

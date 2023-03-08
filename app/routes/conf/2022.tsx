@@ -1,16 +1,16 @@
 import * as React from "react";
 import { Outlet, useLocation } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
-import { Link, NavLink } from "~/components/link";
-import { Wordmark } from "~/components/logo";
-import { Discord, GitHub, Twitter, YouTube } from "~/components/icons";
+import { Link, NavLink } from "~/ui/link";
+import { Wordmark } from "~/ui/logo";
+import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
 import {
   Menu,
   MenuButton,
   MenuPopover,
   MenuItems,
   MenuLink,
-} from "~/components/primitives/menu-button";
+} from "~/ui/primitives/menu-button";
 import cx from "clsx";
 import styles from "~/styles/conf/2022/conf.css";
 import stylesSm from "~/styles/conf/2022/conf-sm.css";
@@ -22,7 +22,7 @@ import {
   SubscribeProvider,
   SubscribeStatus,
   SubscribeSubmit,
-} from "~/components/subscribe";
+} from "~/ui/subscribe";
 
 export let handle = { forceDark: true };
 

@@ -1,17 +1,18 @@
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LoaderFunction, LinksFunction } from "@remix-run/node";
-import { OutlineButtonLink, PrimaryButtonLink } from "~/components/buttons";
-import { getMarkdown } from "~/utils/md.server";
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
+import { getMarkdownTutPage } from "~/lib/mdtut.server";
+import type { Prose, Sequence } from "~/lib/mdtut.server";
 import indexStyles from "~/styles/index.css";
-import { Red } from "~/components/gradients";
-import { BigTweet, TweetCarousel, tweets } from "~/components/twitter-cards";
-import { ScrollExperience } from "~/components/scroll-experience";
-import type { Prose, Sequence } from "@ryanflorence/mdtut";
+import { Red } from "~/ui/gradients";
+import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
+import { ScrollExperience } from "~/ui/homepage-scroll-experience";
 import invariant from "tiny-invariant";
 import { Fragment } from "react";
 
-export function meta({ data: { siteUrl } }: { data: LoaderData }) {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  let { siteUrl = "" } = data || {};
   let title = "Remix - Build Better Websites";
   let image = `${siteUrl}/img/og.1.jpg`;
   let description =
@@ -30,7 +31,7 @@ export function meta({ data: { siteUrl } }: { data: LoaderData }) {
     "twitter:description": description,
     "twitter:image": image,
   };
-}
+};
 
 export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
@@ -44,12 +45,12 @@ type LoaderData = {
   errors: Sequence;
 };
 
-export let loader: LoaderFunction = async ({ request }) => {
+export let loader = async ({ request }: LoaderArgs) => {
   let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
-    getMarkdown("marketing/sample/sample.md"),
-    getMarkdown("marketing/sample-sm/sample.md"),
-    getMarkdown("marketing/mutations/mutations.md"),
-    getMarkdown("marketing/mutations/errors.md"),
+    getMarkdownTutPage("marketing/sample/sample.md"),
+    getMarkdownTutPage("marketing/sample-sm/sample.md"),
+    getMarkdownTutPage("marketing/mutations/mutations.md"),
+    getMarkdownTutPage("marketing/mutations/errors.md"),
   ]);
 
   invariant(sample.type === "prose", "sample.md should be prose");
@@ -84,7 +85,7 @@ export default function Index() {
         <TweetCarousel tweets={tweets.slice(1)} />
       </section>
       <div className="h-32" />
-      <ScrollExperience markdown={{ mutations, errors }} />
+      <ScrollExperience mutations={mutations} errors={errors} />
     </div>
   );
 }

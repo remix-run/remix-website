@@ -7,13 +7,13 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { CACHE_CONTROL } from "~/utils/http.server";
+import { CACHE_CONTROL } from "~/lib/http.server";
 import invariant from "tiny-invariant";
-import type { Doc } from "~/modules/gh-docs";
-import { getRepoDoc } from "~/modules/gh-docs";
+import type { Doc } from "~/lib/gh-docs";
+import { getRepoDoc } from "~/lib/gh-docs";
 import iconsHref from "~/icons.svg";
 import cx from "clsx";
-import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
+import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import type { loader as docsLayoutLoader } from "~/routes/docs/$lang.$ref";
 
 export async function loader({ params, request }: LoaderArgs) {
@@ -131,11 +131,12 @@ export default function DocPage() {
         <div className="hidden xl:order-1 xl:block xl:w-56 xl:flex-shrink-0" />
       )}
       <div className="min-w-0 pt-8 pb-4 xl:flex-grow">
-        <div
-          ref={ref}
-          className="markdown w-full pb-[33vh]"
-          dangerouslySetInnerHTML={{ __html: doc.html }}
-        />
+        <div ref={ref} className="markdown w-full pb-[33vh]">
+          <div
+            className="md-prose"
+            dangerouslySetInnerHTML={{ __html: doc.html }}
+          />
+        </div>
       </div>
     </div>
   );
@@ -143,24 +144,26 @@ export default function DocPage() {
 
 function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   return (
-    <div className="hidden xl:sticky xl:top-28 xl:order-1 xl:mt-10 xl:block xl:max-h-[calc(100vh-10rem)] xl:w-56 xl:flex-shrink-0 xl:self-start xl:overflow-auto">
-      <nav className="mb-2 flex items-center pb-1 pt-0 text-[1rem] font-bold leading-[1.125] tracking-wide">
+    <div className="sticky top-28 order-1 mt-10 hidden max-h-[calc(100vh-10rem)] w-56 flex-shrink-0 self-start overflow-y-auto pb-4 xl:block">
+      <nav className="mb-2 flex items-center pb-1 pt-0 text-[1rem] font-bold tracking-wide">
         On this page
       </nav>
-      <ul>
-        {doc.headings.map((heading, i) => (
-          <li key={i}>
-            <a
-              href={`#${heading.slug}`}
-              dangerouslySetInnerHTML={{ __html: heading.html || "" }}
-              className={cx(
-                "group relative my-1 flex items-center rounded-md border-transparent pb-1 text-sm",
-                "text-gray-700 hover:text-blue-500 dark:text-gray-400",
-                "transition-colors duration-150 ease-in-out"
-              )}
-            />
-          </li>
-        ))}
+      <ul className="md-toc flex flex-col flex-wrap gap-2 leading-[1.125]">
+        {doc.headings.map((heading, i) => {
+          return (
+            <li key={i}>
+              <a
+                href={`#${heading.slug}`}
+                dangerouslySetInnerHTML={{ __html: heading.html || "" }}
+                className={cx(
+                  "group relative my-1 rounded-md border-transparent pb-1 text-sm",
+                  "text-gray-700 hover:text-blue-500 dark:text-gray-400",
+                  "transition-colors duration-150 ease-in-out"
+                )}
+              />
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

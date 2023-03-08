@@ -7,14 +7,14 @@ import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
-import { getBlogPost } from "~/utils/md.server";
+import { getBlogPost } from "~/lib/blog.server";
 import mdStyles from "~/styles/md.css";
 import { useRef } from "react";
-import { useDelegatedReactRouterLinks } from "~/components/delegate-links";
-import { CACHE_CONTROL } from "~/utils/http.server";
-import { Header } from "~/components/header";
-import { Footer } from "~/components/footer";
-import { Subscribe } from "~/components/subscribe";
+import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
+import { CACHE_CONTROL } from "~/lib/http.server";
+import { Header } from "~/ui/header";
+import { Footer } from "~/ui/footer";
+import { Subscribe } from "~/ui/subscribe";
 
 export let loader = async ({ params, request }: LoaderArgs) => {
   let { slug } = params;
@@ -145,6 +145,7 @@ export default function BlogPost() {
                   so we don't need to do that here */}
               <div
                 ref={mdRef}
+                className="md-prose"
                 dangerouslySetInnerHTML={{ __html: post.html }}
               />
               <hr />

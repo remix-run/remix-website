@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo } from "react";
 import { useMatches, useTransition } from "@remix-run/react";
-import { canUseDOM } from "~/utils/misc";
+import { canUseDOM } from "~/lib/misc";
 
 export type ColorScheme = "dark" | "light" | "system";
 

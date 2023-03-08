@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { canUseDOM, useHydrated } from "~/utils/misc";
+import { canUseDOM, useHydrated } from "~/lib/misc";
 
 ////////////////////////////////////////////////////////////////////////////////
 interface TStageProps {
@@ -59,7 +59,7 @@ let ActorContext = createContext<TFrame>({
 });
 
 ////////////////////////////////////////////////////////////////////////////////
-export let Stage = ({ frame, length, DEBUG, children }: TStageProps) => {
+export function Stage({ frame, length, DEBUG, children }: TStageProps) {
   let progress = frame / length;
   let context = useMemo(() => {
     let context: TFrame = { frame, progress, length };
@@ -67,15 +67,15 @@ export let Stage = ({ frame, length, DEBUG, children }: TStageProps) => {
   }, [frame, progress, length]);
   if (DEBUG) console.log(context);
   return <StageContext.Provider value={context} children={children} />;
-};
+}
 
-export let Actor = ({
+export function Actor({
   type = "progress",
   start: startProp,
   end: endProp,
   persistent = false,
   children,
-}: TActorProps) => {
+}: TActorProps) {
   let stage = useContext(StageContext);
   let actor = useActor();
   let parent = actor.isDefault ? stage : actor;
@@ -103,19 +103,19 @@ export let Actor = ({
   return onStage ? (
     <ActorContext.Provider value={context} children={children} />
   ) : null;
-};
+}
 
 function getStageLength(pages: number) {
   return window.innerHeight * pages;
 }
 
-export let ScrollStage = ({
+export function ScrollStage({
   pages,
   fallbackFrame = 0,
   fallbackLength = 1080,
   DEBUG = false,
   children,
-}: TScrollStageProps) => {
+}: TScrollStageProps) {
   let ref = useRef<HTMLDivElement>(null);
   let relativeScroll = useRelativeWindowScroll(ref, fallbackFrame);
   let hydrated = useHydrated();
@@ -139,9 +139,8 @@ export let ScrollStage = ({
       </div>
     </Stage>
   );
-};
+}
 
-////////////////////////////////////////////////////////////////////////////////
 export function useActor(): TFrame {
   return useContext(ActorContext);
 }
@@ -150,14 +149,14 @@ export function useStage(): TFrame {
   return useContext(StageContext);
 }
 
-export function useOnResize(fn: () => void) {
+function useOnResize(fn: () => void) {
   useEffect(() => {
     window.addEventListener("resize", fn);
     return () => window.removeEventListener("resize", fn);
   }, [fn]);
 }
 
-export function useWindowScroll(fallback: number = 0): number {
+function useWindowScroll(fallback: number = 0): number {
   let hydrated = useHydrated();
   let [scroll, setScroll] = useState<number>(
     hydrated && canUseDOM ? window.scrollY : fallback
@@ -177,7 +176,7 @@ export function useWindowScroll(fallback: number = 0): number {
   return scroll;
 }
 
-export function useRelativeWindowScroll(
+function useRelativeWindowScroll(
   ref: React.RefObject<HTMLElement>,
   fallback: number = 0
 ): number {
