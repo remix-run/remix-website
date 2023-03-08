@@ -144,7 +144,7 @@ export default function DocPage() {
 
 function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   return (
-    <div className="hidden xl:block sticky top-28 order-1 mt-10 pb-4 max-h-[calc(100vh-10rem)] w-56 flex-shrink-0 self-start overflow-y-auto">
+    <div className="sticky top-28 order-1 mt-10 hidden max-h-[calc(100vh-10rem)] w-56 flex-shrink-0 self-start overflow-y-auto pb-4 xl:block">
       <nav className="mb-2 flex items-center pb-1 pt-0 text-[1rem] font-bold tracking-wide">
         On this page
       </nav>
