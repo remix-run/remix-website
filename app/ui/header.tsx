@@ -21,8 +21,7 @@ export function Header({
     >
       <NavLink
         onContextMenu={(event) => {
-          let NODE_ENV = window.__env && window.__env.NODE_ENV;
-          if (NODE_ENV !== "development") {
+          if (process.env.NODE_ENV !== "development") {
             event.preventDefault();
             window.location.href =
               "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
