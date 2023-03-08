@@ -145,6 +145,7 @@ export default function BlogPost() {
                   so we don't need to do that here */}
               <div
                 ref={mdRef}
+                className="md-prose"
                 dangerouslySetInnerHTML={{ __html: post.html }}
               />
               <hr />
