@@ -9,7 +9,7 @@ authors:
   - Matt Brophy
 ---
 
-[React Router 6.4][react-router-6.4] introduced the concept of a _"Data Router"_ (`createBrowserRouter` + `RouterProvider`) with the primary focus of separating data fetching from rendering to eliminate **render + fetch chains** and the spinners that come along with them.
+[React Router 6.4][react-router-6.4] introduced the concept of a [_"Data Router"_][data-router] with the primary focus of separating data fetching from rendering to eliminate **render + fetch chains** and the spinners that come along with them.
 
 These chains are more commonly referred to as "waterfalls", but we're trying to re-think that term because most folks hear waterfall and picture [Niagra Falls][niagra], where all of the water falls down in one big nice waterfall. But "all at once" seems like a great way to load data, so why the hate on waterfalls? Maybe we should chase 'em after all?
 
@@ -162,13 +162,13 @@ This gives us a bit of the best of both worlds in that we're able to trim our cr
 
 Some of the astute readers may feel a bit of a 🕷️ spidey-sense tingling for some hidden chaining going on in here. Is this the _optimal_ network graph? As it turns out, it's not! But it's pretty good for the lack of code we had to write to get it 😉.
 
-In this example above, our route modules include our `loader` as well as our `Component`, which means that we need to download the contents of _both_ before we can start our `loader` fetch. In practice, your React Router SPA loaders are generally pretty small and hitting external APIs where the majority of your business logic lives. Components on the other hand define your entire user interface, including all of the user-interactivity that goes along with it - and they can get quite big. It seems silly to block the `loader` (which is likely making a `fetch()` call to some API) by the JS download for a large `Component` tree?
+In this example above, our route modules include our `loader` as well as our `Component`, which means that we need to download the contents of _both_ before we can start our `loader` fetch. In practice, your React Router SPA loaders are generally pretty small and hitting external APIs where the majority of your business logic lives. Components on the other hand define your entire user interface, including all of the user-interactivity that goes along with it - and they can get quite big.
 
 <img alt="network diagram showing a loader + component chunk blocking a data fetch" src="/blog-images/posts/lazy-loading-routes/network7.png" class="border rounded-md p-3 shadow" />
 
 <figcaption class="my-2">Singular route files block the data fetch behind the component download</figcaption>
 
-But what if we could turn this 👆 into this 👇?
+It seems silly to block the `loader` (which is likely making a `fetch()` call to some API) by the JS download for a large `Component` tree? What if we could turn this 👆 into this 👇?
 
 <img alt="network diagram showing separate loader and component files unblocking the data fetch" src="/blog-images/posts/lazy-loading-routes/network8.png" class="border rounded-md p-3 shadow" />
 
@@ -213,6 +213,7 @@ As a matter of fact, this is exactly how Remix approaches this issue because rou
 
 For more information, check out the [decision doc][decision-doc] or the [example][example] in the GitHub repository. Happy Lazy Loading!
 
+[data-router]: https://reactrouter.com/en/main/routers/picking-a-router
 [niagra]: https://en.wikipedia.org/wiki/Niagara_Falls
 [react-router-6.4]: https://remix.run/blog/react-router-v6.4
 [remixing-react-router]: https://remix.run/blog/remixing-react-router
