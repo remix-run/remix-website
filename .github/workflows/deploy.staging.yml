@@ -1,6 +1,8 @@
 name: 🚀 Deploy (staging)
 on:
   push:
+    tags:
+      - stage
     branches:
       - dev
     paths-ignore:

@@ -9,7 +9,7 @@
  */
 
 import * as React from "react";
-import { observeRect, getRect, rectChanged } from "~/utils/observe-rect";
+import { observeRect, getRect, rectChanged } from "~/lib/observe-rect";
 import { useLayoutEffect } from "./utils";
 
 /**

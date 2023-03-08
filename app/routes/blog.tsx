@@ -6,11 +6,11 @@ import type {
 } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { Footer } from "~/components/footer";
-import { Header } from "~/components/header";
-import { Subscribe } from "~/components/subscribe";
-import { CACHE_CONTROL } from "~/utils/http.server";
-import { getBlogPostListings } from "~/utils/md.server";
+import { Footer } from "~/ui/footer";
+import { Header } from "~/ui/header";
+import { Subscribe } from "~/ui/subscribe";
+import { CACHE_CONTROL } from "~/lib/http.server";
+import { getBlogPostListings } from "~/lib/blog.server";
 
 export let meta: MetaFunction = () => {
   return {

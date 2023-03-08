@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import type { ActionArgs } from "@remix-run/node";
-import { subscribeToNewsletter } from "~/utils/convertkit";
-import { requirePost } from "~/utils/http.server";
+import { subscribeToNewsletter } from "~/lib/convertkit";
+import { requirePost } from "~/lib/http.server";
 
 export let action = async ({ request }: ActionArgs) => {
   requirePost(request);

@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import {
   getSocialImageUrl,
   getImageContentType,
-} from "~/utils/social-image.server";
+} from "~/lib/social-image.server";
 
 export let loader = async ({ request }: LoaderArgs) => {
   let requestUrl = new URL(request.url);
@@ -29,7 +29,7 @@ export let loader = async ({ request }: LoaderArgs) => {
   });
 
   try {
-    let contentType = await getImageContentType(socialImageUrl);
+    let contentType = await getImageContentType(socialImageUrl.pathname);
     if (!contentType) {
       throw json({ error: "Invalid image" }, 400);
     }

@@ -2,6 +2,26 @@ import { redirect } from "@remix-run/node";
 import fs from "fs";
 import path from "path";
 
+export const CACHE_CONTROL = {
+  /**
+   * Add 5 minutes cache control to documents and json requests to speed up the
+   * back button
+   */
+  DEFAULT: "max-age=300",
+  /**
+   * Keep it in the browser (and CDN) for 5 minutes so when they click
+   * back/forward/etc. it's super fast. SWR for 1 week on CDN so it stays fast,
+   * but people get typos/fixes and stuff too.
+   */
+  doc: "max-age=300, stale-while-revalidate=604800",
+  /**
+   * Keep it in the browser (and CDN) for 1 day, we won't be updating these as
+   * often until the conf is a bit closer, and we can prevent over-fetching from
+   * Sessionize which is pretty slow.
+   */
+  conf: `max-age=${60 * 60 * 24}`,
+};
+
 export function requirePost(request: Request) {
   if (request.method.toLowerCase() !== "post") {
     throw new Response("", {
@@ -77,21 +97,6 @@ export function ensureSecure(request: Request) {
 export function isProductionHost(request: Request) {
   return "remix.run" === request.headers.get("host");
 }
-
-export const CACHE_CONTROL = {
-  // Add 5 minutes cache control to documents and json requests to speed up the
-  // back button
-  DEFAULT: "max-age=300",
-  /**
-   * Keep it in the browser (and CDN) for 5 minutes so when they click
-   * back/forward/etc.  It's super fast, swr for 1 week on CDN so it stays fast
-   * but people get typos fixes and stuff, too.
-   */
-  doc: "max-age=300, stale-while-revalidate=604800",
-
-  // Keep it in the browser (and CDN) for 1 day
-  conf: `public, max-age=${60 * 60 * 24}, stale-while-revalidate=604800`,
-};
 
 function getValidRedirectCode(code: string | number | undefined) {
   let defaultCode = 302;

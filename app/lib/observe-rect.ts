@@ -7,9 +7,6 @@ const RECT_PROPS = [
   "width",
 ] as const;
 
-let rectChanged = (a: DOMRect, b: DOMRect | undefined) =>
-  RECT_PROPS.some((prop) => a[prop] !== b?.[prop]);
-
 let observedNodes = new Map<Element, RectProps>();
 let rafId: number;
 
@@ -65,6 +62,10 @@ function observeRect(node: Element, onChange: (rect: DOMRect) => void) {
       }
     },
   };
+}
+
+function rectChanged(a: DOMRect, b: DOMRect | undefined) {
+  return RECT_PROPS.some((prop) => a[prop] !== b?.[prop]);
 }
 
 export { getRect, observeRect, rectChanged };

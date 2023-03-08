@@ -11,6 +11,7 @@ processes = []
   entrypoint = "sh"
 
 [[services]]
+  # This is set to the PORT env variable in the Dockerfile
   internal_port = 8080
   processes = ["app"]
   protocol = "tcp"

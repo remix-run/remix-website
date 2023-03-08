@@ -1,15 +1,19 @@
 import * as React from "react";
-import { ScrollStage, Actor, useStage, useActor } from "./stage";
 // @ts-expect-error
 import { easeOutQuad, easeInExpo, linear } from "tween-functions";
-import type { Sequence, Slide } from "@ryanflorence/mdtut";
-import { PrimaryButtonLink } from "./buttons";
+import type { Sequence, Slide } from "~/lib/mdtut.server";
+import { PrimaryButtonLink } from "~/ui/buttons";
 import cx from "clsx";
+import { Actor, ScrollStage, useActor, useStage } from "~/ui/stage";
+import * as Fakebooks from "~/ui/fakebooks";
+import { BrowserChrome } from "~/ui/browser-chrome";
 
 export function ScrollExperience({
-  markdown,
+  mutations,
+  errors,
 }: {
-  markdown: { mutations: Sequence; errors: Sequence };
+  mutations: Sequence;
+  errors: Sequence;
 }) {
   return (
     <div>
@@ -24,9 +28,9 @@ export function ScrollExperience({
       <Spinnageddon />
       <Prefetching />
       <div className="h-[75vh]" />
-      <Mutations slides={markdown.mutations} />
+      <Mutations slides={mutations} />
       <div className="mb-[-10vh]" />
-      <ErrorBoundaries slides={markdown.errors} />
+      <ErrorBoundaries slides={errors} />
       <CTA />
     </div>
   );
@@ -118,8 +122,8 @@ function ErrorBoundaries({ slides }: { slides: Sequence }) {
 function SalesError() {
   return (
     <BrowserChrome url="example.com/sales/invoices/102000">
-      <Fakebooks className="h-[42vh] sm:h-[55vh]">
-        <Sales>
+      <Fakebooks.RootView className="h-[42vh] sm:h-[55vh]">
+        <Fakebooks.SalesView>
           <div className="absolute inset-0 flex items-center justify-center bg-red-100">
             <div className="text-center text-red-brand">
               <div className="text-[10px] font-bold sm:text-[14px]">Oops!</div>
@@ -128,8 +132,8 @@ function SalesError() {
               </div>
             </div>
           </div>
-        </Sales>
-      </Fakebooks>
+        </Fakebooks.SalesView>
+      </Fakebooks.RootView>
     </BrowserChrome>
   );
 }
@@ -138,15 +142,17 @@ function InvoiceError({ explode }: { explode?: boolean }) {
   let actor = useActor();
   return (
     <BrowserChrome url="example.com/sales/invoices/102000">
-      <Fakebooks className="h-[42vh] sm:h-[55vh]">
-        <Sales>
-          <Invoices>
-            <Invoice error={explode ? actor.progress > 0.5 : true}>
+      <Fakebooks.RootView className="h-[42vh] sm:h-[55vh]">
+        <Fakebooks.SalesView>
+          <Fakebooks.InvoicesView>
+            <Fakebooks.InvoiceView
+              error={explode ? actor.progress > 0.5 : true}
+            >
               {explode && <Explosion />}
-            </Invoice>
-          </Invoices>
-        </Sales>
-      </Fakebooks>
+            </Fakebooks.InvoiceView>
+          </Fakebooks.InvoicesView>
+        </Fakebooks.SalesView>
+      </Fakebooks.RootView>
     </BrowserChrome>
   );
 }
@@ -416,23 +422,26 @@ let hoverStart = 0.68;
 let clickAt = 0.9;
 
 function PrefetchBrowser() {
+  let stage = useStage();
   return (
     <BrowserChrome url="example.com/dashboard">
-      <Fakebooks className="h-[35vh] md:h-[45vh]">
+      <Fakebooks.RootView className="h-[35vh] md:h-[45vh]">
         <Actor start={0} end={moveStart}>
-          <Dashboard />
+          <Fakebooks.DashboardView />
         </Actor>
         <Actor start={moveStart} end={clickAt}>
-          <Dashboard highlightOnHover />
+          <Fakebooks.DashboardView
+            highlightOnHover={stage.progress > hoverStart}
+          />
         </Actor>
         <Actor start={clickAt}>
-          <Sales>
-            <Invoices>
-              <Invoice />
-            </Invoices>
-          </Sales>
+          <Fakebooks.SalesView>
+            <Fakebooks.InvoicesView>
+              <Fakebooks.InvoiceView />
+            </Fakebooks.InvoicesView>
+          </Fakebooks.SalesView>
         </Actor>
-      </Fakebooks>
+      </Fakebooks.RootView>
 
       <Actor start={moveStart} end={clickAt - 0.2} persistent>
         <Cursor />
@@ -564,49 +573,49 @@ function WithoutRemix() {
     [10, <JankSpinner note className="p-8 sm:p-20" key={0} />],
     [
       35,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={1}>
+      <Fakebooks.RootView className="h-[25vh] sm:h-[38vh]" key={1}>
         <JankSpinner className="p-12 sm:p-24" />
-      </Fakebooks>,
+      </Fakebooks.RootView>,
     ],
     [
       56,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={2}>
-        <Sales shimmerNav>
+      <Fakebooks.RootView className="h-[25vh] sm:h-[38vh]" key={2}>
+        <Fakebooks.SalesView shimmerNav>
           <div className="h-[6rem]">
             <JankSpinner className="p-8" />
           </div>
-        </Sales>
-      </Fakebooks>,
+        </Fakebooks.SalesView>
+      </Fakebooks.RootView>,
     ],
     [
       64,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={3}>
-        <Sales>
+      <Fakebooks.RootView className="h-[25vh] sm:h-[38vh]" key={3}>
+        <Fakebooks.SalesView>
           <div className="h-[6rem]">
             <JankSpinner className="p-8" />
           </div>
-        </Sales>
-      </Fakebooks>,
+        </Fakebooks.SalesView>
+      </Fakebooks.RootView>,
     ],
     [
       66,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={4}>
-        <Sales>
-          <Invoices>
+      <Fakebooks.RootView className="h-[25vh] sm:h-[38vh]" key={4}>
+        <Fakebooks.SalesView>
+          <Fakebooks.InvoicesView>
             <JankSpinner className="p-10" />
-          </Invoices>
-        </Sales>
-      </Fakebooks>,
+          </Fakebooks.InvoicesView>
+        </Fakebooks.SalesView>
+      </Fakebooks.RootView>,
     ],
     [
       98,
-      <Fakebooks className="h-[25vh] sm:h-[38vh]" key={5}>
-        <Sales>
-          <Invoices>
-            <Invoice />
-          </Invoices>
-        </Sales>
-      </Fakebooks>,
+      <Fakebooks.RootView className="h-[25vh] sm:h-[38vh]" key={5}>
+        <Fakebooks.SalesView>
+          <Fakebooks.InvoicesView>
+            <Fakebooks.InvoiceView />
+          </Fakebooks.InvoicesView>
+        </Fakebooks.SalesView>
+      </Fakebooks.RootView>,
     ],
   ];
 
@@ -649,13 +658,13 @@ function WithRemix() {
       {progress < 30 ? (
         <div className="h-[25vh] bg-white sm:h-[38vh]" />
       ) : (
-        <Fakebooks className="h-[25vh] sm:h-[38vh]">
-          <Sales>
-            <Invoices>
-              <Invoice />
-            </Invoices>
-          </Sales>
-        </Fakebooks>
+        <Fakebooks.RootView className="h-[25vh] sm:h-[38vh]">
+          <Fakebooks.SalesView>
+            <Fakebooks.InvoicesView>
+              <Fakebooks.InvoiceView />
+            </Fakebooks.InvoicesView>
+          </Fakebooks.SalesView>
+        </Fakebooks.RootView>
       )}
       <div className="h-4" />
       <Network>
@@ -1115,7 +1124,7 @@ function Em({ children }: { children: React.ReactNode }) {
   return <b className="text-white">{children}</b>;
 }
 
-export let LayoutButton = React.forwardRef<
+export const LayoutButton = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithRef<"button"> & { active: boolean }
 >(({ className, active, ...props }, ref) => {
@@ -1136,7 +1145,7 @@ export let LayoutButton = React.forwardRef<
 LayoutButton.displayName = "LayoutButton";
 
 export function InteractiveRoutes() {
-  let [active, setActive] = React.useState(0);
+  let [activeRoute, onActiveRouteChange] = React.useState(0);
   let actor = useActor();
   let frameProgressLength = 1 / 5;
 
@@ -1149,7 +1158,7 @@ export function InteractiveRoutes() {
 
   React.useEffect(() => {
     let index = Math.floor(actor.progress / frameProgressLength);
-    setActive(actor.progress === 1 ? 0 : index);
+    onActiveRouteChange(actor.progress === 1 ? 0 : index);
   }, [actor, frameProgressLength]);
 
   return (
@@ -1158,7 +1167,7 @@ export function InteractiveRoutes() {
         className={
           "pb-2 text-center text-4xl md:text-7xl" +
           " " +
-          (active === 0 ? "animate-bounce" : "")
+          (activeRoute === 0 ? "animate-bounce" : "")
         }
         aria-hidden
       >
@@ -1166,37 +1175,37 @@ export function InteractiveRoutes() {
       </div>
       <div className="text-center" onFocus={handleSectionFocus}>
         <LayoutButton
-          onClick={() => setActive(1)}
-          onMouseEnter={() => setActive(1)}
-          onFocus={() => setActive(1)}
-          active={active === 1}
+          onClick={() => onActiveRouteChange(1)}
+          onMouseEnter={() => onActiveRouteChange(1)}
+          onFocus={() => onActiveRouteChange(1)}
+          active={activeRoute === 1}
           className="bg-blue-900 text-blue-brand"
         >
           &lt;Root&gt;
         </LayoutButton>
         <LayoutButton
-          onClick={() => setActive(2)}
-          onMouseEnter={() => setActive(2)}
-          onFocus={() => setActive(2)}
-          active={active === 2}
+          onClick={() => onActiveRouteChange(2)}
+          onMouseEnter={() => onActiveRouteChange(2)}
+          onFocus={() => onActiveRouteChange(2)}
+          active={activeRoute === 2}
           className="bg-aqua-900 text-aqua-brand"
         >
           &lt;Sales&gt;
         </LayoutButton>
         <LayoutButton
-          onClick={() => setActive(3)}
-          onMouseEnter={() => setActive(3)}
-          onFocus={() => setActive(3)}
-          active={active === 3}
+          onClick={() => onActiveRouteChange(3)}
+          onMouseEnter={() => onActiveRouteChange(3)}
+          onFocus={() => onActiveRouteChange(3)}
+          active={activeRoute === 3}
           className="bg-yellow-900 text-yellow-brand"
         >
           &lt;Invoices&gt;
         </LayoutButton>
         <LayoutButton
-          onClick={() => setActive(4)}
-          onMouseEnter={() => setActive(4)}
-          onFocus={() => setActive(4)}
-          active={active === 4}
+          onClick={() => onActiveRouteChange(4)}
+          onMouseEnter={() => onActiveRouteChange(4)}
+          onFocus={() => onActiveRouteChange(4)}
+          active={activeRoute === 4}
           className="bg-red-900 text-red-brand"
         >
           &lt;Invoice id={"{id}"}&gt;
@@ -1233,16 +1242,64 @@ export function InteractiveRoutes() {
                   <span className="text-red-brand">102000</span>
                 </span>
               ),
-            }[active || 0] as string
+            }[activeRoute || 0] as string
           }
         >
-          <Fakebooks highlight={active === 1}>
-            <Sales highlight={active === 2}>
-              <Invoices highlight={active === 3}>
-                <Invoice highlight={active === 4} />
-              </Invoices>
-            </Sales>
-          </Fakebooks>
+          <Fakebooks.RootView
+            overlay={
+              activeRoute === 1 ? (
+                <Highlighter className="bg-blue-brand ring-blue-brand">
+                  <Resources
+                    className="bg-blue-900"
+                    data="/user.json"
+                    mod="/root.js"
+                  />
+                </Highlighter>
+              ) : null
+            }
+          >
+            <Fakebooks.SalesView
+              overlay={
+                activeRoute === 2 ? (
+                  <Highlighter className="bg-aqua-brand ring-aqua-brand">
+                    <Resources
+                      className="bg-aqua-900"
+                      data="/sales/nav.json"
+                      mod="/sales.js"
+                    />
+                  </Highlighter>
+                ) : null
+              }
+            >
+              <Fakebooks.InvoicesView
+                overlay={
+                  activeRoute === 3 ? (
+                    <Highlighter className="-m-2 bg-yellow-brand ring-yellow-brand">
+                      <Resources
+                        className="bg-yellow-900"
+                        data="/invoices.json"
+                        mod="/invoices.js"
+                      />
+                    </Highlighter>
+                  ) : null
+                }
+              >
+                <Fakebooks.InvoiceView
+                  overlay={
+                    activeRoute === 4 ? (
+                      <Highlighter className="bg-red-brand ring-red-brand">
+                        <Resources
+                          className="absolute right-2 bottom-2 bg-red-900 sm:static"
+                          data="/invoice/{id}.json"
+                          mod="/invoice.js"
+                        />
+                      </Highlighter>
+                    ) : null
+                  }
+                />
+              </Fakebooks.InvoicesView>
+            </Fakebooks.SalesView>
+          </Fakebooks.RootView>
         </BrowserChrome>
       </div>
     </>
@@ -1250,79 +1307,6 @@ export function InteractiveRoutes() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-export function Fakebooks({
-  children,
-  highlight,
-  className,
-}: {
-  children: React.ReactNode;
-  highlight?: boolean;
-  className?: string;
-}) {
-  return (
-    <div
-      className={
-        "relative flex overflow-hidden rounded bg-white text-gray-600 md:rounded-lg" +
-        " " +
-        className
-      }
-    >
-      <div className="border-r border-gray-100 bg-gray-50">
-        <div className="p-[5.7px] lg:p-4">
-          <div className="flex items-center text-[color:#23BF1F]">
-            <FakebooksLogo className="relative top-[1px] h-[8.5px] w-[8.5px] md:h-[18px] md:w-[18px]" />
-            <div className="w-[1px] md:w-1" />
-            <div className="font-display text-[length:8px] font-extrabold md:text-base">
-              Fakebooks
-            </div>
-          </div>
-          <div className="h-2 md:h-7" />
-          <div className="font-bold text-gray-800">
-            <NavItem>Dashboard</NavItem>
-            <NavItem>Accounts</NavItem>
-            <NavItem className="rounded bg-gray-100 md:rounded-md">
-              Sales
-            </NavItem>
-            <NavItem>Expenses</NavItem>
-            <NavItem>Reports</NavItem>
-          </div>
-        </div>
-      </div>
-      <div className="flex-1">{children}</div>
-      {highlight && (
-        <Highlighter className="bg-blue-brand ring-blue-brand">
-          <Resources className="bg-blue-900" data="/user.json" mod="/root.js" />
-        </Highlighter>
-      )}
-    </div>
-  );
-}
-
-function Dashboard({ highlightOnHover }: { highlightOnHover?: boolean }) {
-  let stage = useStage();
-  return (
-    <div className="relative p-3 md:p-6">
-      <div className="font-display text-[length:10px] font-extrabold text-black md:text-3xl">
-        Dashboard
-      </div>
-      <div className="h-2 md:h-6" />
-      <div className="flex gap-2 border-b border-gray-100 pb-1 text-[length:5px] font-medium text-gray-400 md:gap-4 md:pb-4 md:text-[length:14px]">
-        <div className="font-bold text-black">Recent Activity</div>
-        <div>Alerts</div>
-        <div>Messages</div>
-      </div>
-      <div className="h-3 md:h-4" />
-      <div className="flex gap-2">
-        <ActivityCard
-          title="New Invoice"
-          invoice={invoices[1]}
-          hovered={highlightOnHover && stage.progress > hoverStart}
-        />
-        <ActivityCard title="New Invoice" invoice={invoices[2]} />
-      </div>
-    </div>
-  );
-}
 
 function Cursor() {
   let stage = useStage();
@@ -1400,32 +1384,6 @@ function DefaultCursor() {
   );
 }
 
-function ActivityCard({
-  invoice,
-  hovered,
-}: {
-  title: string;
-  invoice: (typeof invoices)[number];
-  hovered?: boolean;
-}) {
-  return (
-    <div
-      className={
-        "box-border flex-1 rounded-lg border border-gray-50 p-2 md:p-10" +
-        " " +
-        (hovered ? "bg-gray-50" : "")
-      }
-    >
-      <div className="text-center text-[length:5px] font-bold leading-[8.5px] md:text-[length:14px] md:leading-6">
-        New Invoice
-      </div>
-      <div className="h-[5.7px] md:h-4" />
-      <LineItem label="Customer" amount={invoice.name} />
-      <LineItem label="Net Total" amount={invoice.amount} />
-    </div>
-  );
-}
-
 function Highlighter({
   className,
   children,
@@ -1467,373 +1425,5 @@ function Resources({
       <br />
       fetch("{data}")
     </div>
-  );
-}
-
-export function Sales({
-  children,
-  highlight,
-  shimmerNav,
-  noActiveChild,
-}: {
-  children: React.ReactNode;
-  highlight?: boolean;
-  shimmerNav?: boolean;
-  noActiveChild?: boolean;
-}) {
-  return (
-    <div className="relative h-full p-3 md:p-10">
-      <div className="font-display text-[length:10px] font-extrabold text-black md:text-3xl">
-        Sales
-      </div>
-      <div className="h-2 md:h-6" />
-      {shimmerNav && <div className="h-4" />}
-      <div className="flex gap-2 border-b border-gray-100 pb-1 text-[length:5px] font-medium text-gray-400 md:gap-4 md:pb-4 md:text-[length:14px]">
-        {shimmerNav ? (
-          <>
-            <div className="w-1/3 animate-pulse rounded bg-gray-300">
-              &nbsp;
-            </div>
-            <div className="w-1/3 animate-pulse rounded bg-gray-300">
-              &nbsp;
-            </div>
-            <div className="w-1/3 animate-pulse rounded bg-gray-300">
-              &nbsp;
-            </div>
-          </>
-        ) : (
-          <>
-            <div>Overview</div>
-            <div>Subscriptions</div>
-            <div className={noActiveChild ? "" : "font-bold text-black"}>
-              Invoices
-            </div>
-            <div>Customers</div>
-            <div>Deposits</div>
-          </>
-        )}
-      </div>
-      <div className="h-3 md:h-4" />
-      {children}
-      {highlight && (
-        <Highlighter className="bg-aqua-brand ring-aqua-brand">
-          <Resources
-            className="bg-aqua-900"
-            data="/sales/nav.json"
-            mod="/sales.js"
-          />
-        </Highlighter>
-      )}
-    </div>
-  );
-}
-
-function InvoicesInfo({
-  label,
-  amount,
-  right,
-}: {
-  label: string;
-  amount: string;
-  right?: boolean;
-}) {
-  return (
-    <div className={right ? "text-right" : ""}>
-      <LabelText>{label}</LabelText>
-      <div className="text-[length:6.4px] text-black md:text-[length:18px]">
-        {amount}
-      </div>
-    </div>
-  );
-}
-
-function Invoices({
-  children,
-  highlight,
-}: {
-  children: React.ReactNode;
-  highlight?: boolean;
-}) {
-  return (
-    <div className="relative">
-      <div className="flex items-center justify-between gap-1 md:gap-4">
-        <InvoicesInfo label="Overdue" amount="$10,800" />
-        <div className="flex h-[6px] flex-1 overflow-hidden rounded-full md:h-4">
-          <div className="w-1/3 bg-yellow-brand" />
-          <div className="flex-1 bg-green-brand" />
-        </div>
-        <InvoicesInfo label="Due Soon" amount="$62,000" right />
-      </div>
-      <div className="h-3 md:h-4" />
-      <LabelText>Invoice List</LabelText>
-      <div className="h-[2.8px] md:h-2" />
-      <InvoiceList children={children} />
-      {highlight && (
-        <Highlighter className="-m-2 bg-yellow-brand ring-yellow-brand">
-          <Resources
-            className="bg-yellow-900"
-            data="/invoices.json"
-            mod="/invoices.js"
-          />
-        </Highlighter>
-      )}
-    </div>
-  );
-}
-
-let invoices = [
-  {
-    name: "Santa Monica",
-    number: 1995,
-    amount: "$10,800",
-    due: -1,
-  },
-  {
-    name: "Stankonia",
-    number: 2000,
-    amount: "$8,000",
-    due: 0,
-    active: true,
-  },
-  {
-    name: "Ocean Avenue",
-    number: 2003,
-    amount: "$9,500",
-    due: false,
-  },
-  {
-    name: "Tubthumper",
-    number: 1997,
-    amount: "$14,000",
-    due: 10,
-  },
-  {
-    name: "Wide Open Sp...",
-    number: 1998,
-    amount: "$4,600",
-    due: 8,
-  },
-];
-
-function InvoiceList({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex rounded border border-gray-100 md:rounded-lg">
-      <div className="w-1/2 border-r border-gray-100">
-        {invoices.map((invoice, index) => (
-          <div
-            key={index}
-            className={
-              "border-b border-gray-50 py-[4.2px] md:py-3" +
-              " " +
-              (index === 1
-                ? "bg-gray-50 px-[5.7px] md:px-4"
-                : "mx-[5.7px] border-transparent md:mx-4")
-            }
-          >
-            <div className="flex justify-between text-[length:5px] font-bold leading-[8.5px] md:text-[length:14px] md:leading-6">
-              <div>{invoice.name}</div>
-              <div>{invoice.amount}</div>
-            </div>
-            <div className="flex justify-between text-[length:4.2px] font-medium leading-[6px] text-gray-400 md:text-[length:12px] md:leading-4">
-              <div>{invoice.number}</div>
-              <div
-                className={
-                  "uppercase" +
-                  " " +
-                  (invoice.due === false
-                    ? "text-green-brand"
-                    : invoice.due < 0
-                    ? "text-red-brand"
-                    : "")
-                }
-              >
-                {getInvoiceDue(invoice)}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="w-1/2">{children}</div>
-    </div>
-  );
-}
-
-let getInvoiceDue = (invoice: (typeof invoices)[number]) =>
-  invoice.due === false
-    ? "Paid"
-    : invoice.due < 0
-    ? "Overdue"
-    : invoice.due === 0
-    ? "Due Today"
-    : `Due in ${invoice.due} Days`;
-
-function Invoice({
-  highlight,
-  error,
-  children,
-}: {
-  highlight?: boolean;
-  error?: boolean;
-  children?: React.ReactNode;
-}) {
-  let invoice = invoices[1];
-  return (
-    <div className="relative p-3 md:p-10">
-      <div className="text-[length:5px] font-bold leading-[8.5px] md:text-[length:14px] md:leading-6">
-        {invoice.name}
-      </div>
-      <div className="text-[length:11px] font-bold leading-[14px] md:text-[length:32px] md:leading-[40px]">
-        {invoice.amount}
-      </div>
-      <LabelText>{getInvoiceDue(invoice)} • Invoiced 10/31/2000</LabelText>
-      <div className="h-[5.7px] md:h-4" />
-      <LineItem label="Pro Plan" amount="$6,000" />
-      <LineItem label="Custom" amount="$2,000" />
-      <LineItem bold label="Net Total" amount="$8,000" />
-      {highlight && (
-        <Highlighter className="bg-red-brand ring-red-brand">
-          <Resources
-            className="absolute right-2 bottom-2 bg-red-900 sm:static"
-            data="/invoice/{id}.json"
-            mod="/invoice.js"
-          />
-        </Highlighter>
-      )}
-      {error && (
-        <div className="absolute inset-0 flex justify-center bg-red-100 pt-4">
-          <div className="text-center text-red-brand">
-            <div className="text-[10px] font-bold md:text-[14px]">Oh snap!</div>
-            <div className="px-2 text-[8px] md:text-[12px]">
-              There was a problem loading this invoice
-            </div>
-          </div>
-        </div>
-      )}
-      {children}
-    </div>
-  );
-}
-
-function LineItem({
-  label,
-  amount,
-  bold,
-}: {
-  label: string;
-  amount: string;
-  bold?: boolean;
-}) {
-  return (
-    <div
-      className={
-        "flex justify-between border-t border-gray-100 py-[5.7px] text-[5px] leading-[9px] md:py-4 md:text-[14px] md:leading-[24px]" +
-        " " +
-        (bold ? "font-bold" : "")
-      }
-    >
-      <div>{label}</div>
-      <div>{amount}</div>
-    </div>
-  );
-}
-
-function LabelText({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="text-[length:5px] font-medium uppercase leading-[8.5px] text-gray-400 md:text-[12px] md:leading-[24px]">
-      {children}
-    </div>
-  );
-}
-
-function NavItem({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`my-[1.4px] py-[1.4px] px-[2.8px] pr-4 text-[length:7px] md:my-1 md:py-1 md:px-2 md:pr-16 md:text-[length:10px] lg:text-[length:14px] ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function FakebooksLogo({ className }: { className: string }) {
-  return (
-    <svg
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <path
-        fill="#23BF1F"
-        fillRule="evenodd"
-        d="M12 3a9 9 0 000 18h4.5c1.398 0 2.097 0 2.648-.228a3 3 0 001.624-1.624C21 18.597 21 17.898 21 16.5V12a9 9 0 00-9-9zm-4 8a1 1 0 011-1h6a1 1 0 110 2H9a1 1 0 01-1-1zm3 4a1 1 0 011-1h3a1 1 0 110 2h-3a1 1 0 01-1-1z"
-        clipRule="evenodd"
-      ></path>
-    </svg>
-  );
-}
-
-export function BrowserChrome({
-  url,
-  children,
-}: {
-  url: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="relative mx-2 max-h-[75vh] select-none overflow-hidden  rounded bg-gray-700 shadow-md md:mx-4 md:rounded-lg lg:mx-auto lg:max-w-4xl">
-      <URLBar url={url} />
-      <div className="px-2 pt-1 pb-2 md:px-4 md:pt-2 md:pb-4">{children}</div>
-    </div>
-  );
-}
-
-function URLBar({ url }: { url: string }) {
-  return (
-    <div className="flex items-center justify-center px-1 pt-1 pb-0 md:px-2 md:pt-2">
-      <div className="relative flex w-2/3 items-center rounded-md bg-gray-600 px-2 py-1 text-gray-100 md:py-1 md:px-3">
-        <span className="text-[length:10px] md:text-sm">{url}</span>
-        <Refresh className="absolute right-1 h-4 w-4 md:h-5 md:w-5" />
-      </div>
-      <div className="absolute left-1 flex gap-1 p-2 md:left-2 md:gap-2">
-        <Circle />
-        <Circle />
-        <Circle />
-      </div>
-    </div>
-  );
-}
-
-function Circle() {
-  return <div className="h-2 w-2 rounded-full bg-gray-400 md:h-3 md:w-3" />;
-}
-
-function Refresh({ className }: { className: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      fill="none"
-      viewBox="0 0 7 7"
-    >
-      <path
-        fill="#fff"
-        fillOpacity="0.8"
-        d="M5.088 4.004l-.125.126.125.125.126-.125-.126-.126zm-1.073-.822l.948.948.251-.252-.948-.948-.251.252zm1.2.948l.947-.948-.251-.252-.948.948.251.252z"
-      ></path>
-      <path
-        stroke="#fff"
-        strokeLinecap="round"
-        strokeOpacity="0.8"
-        strokeWidth="0.355"
-        d="M4.26 4.966a1.659 1.659 0 11.829-1.436"
-      ></path>
-    </svg>
   );
 }
