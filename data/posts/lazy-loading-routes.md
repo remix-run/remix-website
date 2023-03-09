@@ -2,7 +2,7 @@
 title: Lazy Loading Routes in React Router 6.4+
 summary: Decoupling data-fetching from rendering introduces some complexities if you want to lazily load your route components.  Check out how the newly introduced `route.lazy()` method helps solve this to keep your app bundles small and your UX snappy!
 featured: true
-date: 2023-03-08
+date: 2023-03-10
 image: /blog-images/headers/waterfall.jpg
 imageAlt: A waterfall down a series of rocks shaped like a stairway
 authors:
