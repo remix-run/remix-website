@@ -85,6 +85,12 @@
   /*****************************************************************************/
   /* general text styles */
 
+  & p,
+  & ul,
+  & ol {
+    @apply max-w-2xl;
+  }
+
   & p {
     @apply mt-0 mb-4;
   }
@@ -230,8 +236,8 @@
   /* heading anchors */
   & :is(h1, h2, h3, h4, h5, h6) {
     @apply relative;
-    scroll-snap-margin-top: 1em;
-    scroll-margin-top: 1em;
+    scroll-snap-margin-top: 3em;
+    scroll-margin-top: 3em;
 
     & a {
       @apply absolute top-0 -left-6 -right-0 z-10 flex h-full items-center leading-none;
@@ -281,6 +287,10 @@
   /* images */
   & img {
     @apply max-w-full border-0 bg-white dark:bg-black;
+  }
+
+  & img.tutorial {
+    @apply aspect-[1.47] w-full bg-transparent;
   }
 
   /*****************************************************************************/
