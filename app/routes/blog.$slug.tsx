@@ -141,7 +141,7 @@ export default function BlogPost() {
               </div>
             </div>
             <div className="h-12" />
-            <div className="container lg:max-w-3xl">
+            <div className="container px-0 lg:max-w-3xl">
               {/* The markdown comes in via the parser wrapped in `div.md-prose`
                   so we don't need to do that here */}
               <div

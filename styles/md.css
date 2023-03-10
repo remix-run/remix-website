@@ -93,7 +93,7 @@
   }
 
   & pre {
-    @apply my-8 -mx-6 overflow-auto break-normal border-t border-b border-gray-200 p-2 text-sm dark:border-gray-700 sm:rounded-xl sm:border md:p-3 lg:text-base;
+    @apply my-8 overflow-auto break-normal border-t border-b border-gray-200 p-2 text-sm dark:border-gray-700 sm:rounded-xl sm:border md:p-3 lg:text-base;
   }
 
   & pre[data-lang="text"] {
