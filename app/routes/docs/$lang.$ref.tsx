@@ -355,7 +355,7 @@ function DocSearchSection() {
       <div className="absolute -top-24 hidden h-24 w-full bg-white dark:bg-gray-900 lg:block" />
       <div
         className={cx(
-          "relative lg:bg-white lg:px-1 lg:dark:bg-gray-900",
+          "relative h-10 lg:bg-white lg:px-1 lg:dark:bg-gray-900",
           // This hides some of the underlying text when the user scrolls to the
           // bottom which results in the overscroll bounce
           "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:-z-10 before:hidden before:h-[200%] before:w-full lg:before:block"
