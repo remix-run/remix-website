@@ -133,6 +133,9 @@ export default function DocsLayout() {
           <div
             ref={docsContainer}
             className={cx(
+              // add scroll margin to focused elements so that they aren't
+              // obscured by the sticky header
+              "[&_*:focus]:scroll-mt-[8rem] lg:[&_*:focus]:scroll-mt-[5rem]",
               "min-h-[80vh]",
               "lg:ml-72 lg:pl-6 xl:pl-10 2xl:pl-12",
               !changingVersions && navigating
@@ -546,7 +549,7 @@ function NavMenuDesktop() {
   return (
     <div className="fixed top-10 bottom-0 hidden w-72 -translate-x-2 flex-col gap-6 overflow-auto py-12 lg:flex">
       <DocSearchSection />
-      <div className="px-1">
+      <div className="px-1 [&_*:focus]:scroll-mt-[6rem]">
         <Menu />
       </div>
     </div>
