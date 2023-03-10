@@ -20,10 +20,11 @@ import { CACHE_CONTROL } from "~/lib/http.server";
 import { getSpeakers } from "~/lib/conf2023.server";
 import type { Speaker } from "~/lib/conf2023.server";
 
-export const meta: MetaFunction<typeof loader> = ({ data: { siteUrl } }) => {
-  let url = `${siteUrl}/conf`;
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  let { siteUrl } = data || {};
+  let url = siteUrl ? `${siteUrl}/conf` : null;
   let title = "Remix Conf — May 2023";
-  let image = `${siteUrl}/conf-images/2023/og_image.jpg`;
+  let image = siteUrl ? `${siteUrl}/conf-images/2023/og_image.jpg` : null;
   let description =
     "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!";
   return {

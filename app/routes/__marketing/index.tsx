@@ -12,9 +12,9 @@ import invariant from "tiny-invariant";
 import { Fragment } from "react";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  let { siteUrl = "" } = data || {};
+  let { siteUrl } = data || {};
   let title = "Remix - Build Better Websites";
-  let image = `${siteUrl}/img/og.1.jpg`;
+  let image = siteUrl ? `${siteUrl}/img/og.1.jpg` : null;
   let description =
     "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
   return {

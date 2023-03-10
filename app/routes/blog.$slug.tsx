@@ -43,31 +43,32 @@ export let meta: MetaFunction<typeof loader> = ({ data, params }) => {
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
 
-  let { siteUrl, post } = data;
-  // we should never get here since our loader throws a 404 :shrug:
+  let { siteUrl, post } = data || {};
   if (!post) {
     return {
-      title: "Hey Not Found",
+      title: "404 Not Found | Remix",
     };
   }
 
-  let socialImageUrl = `${siteUrl}/img/social?${new URLSearchParams({
-    slug,
-    siteUrl,
-    title: post.title,
-    authorName: post.authors[0]?.name || "Michael Jackson",
-    authorTitle: post.authors[0]?.title || "Co-Founder, CEO",
-    date: post.dateDisplay,
-  })}`;
+  let socialImageUrl = siteUrl
+    ? `${siteUrl}/img/social?${new URLSearchParams({
+        slug,
+        siteUrl,
+        title: post.title,
+        authorName: post.authors[0]?.name || "Michael Jackson",
+        authorTitle: post.authors[0]?.title || "Co-Founder, CEO",
+        date: post.dateDisplay,
+      })}`
+    : null;
 
-  let url = `${siteUrl}/blog/${slug}`;
+  let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
 
   return {
     title: post.title + " | Remix",
     description: post.summary,
     "og:url": url,
     "og:title": post.title,
-    "og:image": socialImageUrl || undefined,
+    "og:image": socialImageUrl,
     "og:description": post.summary,
     "twitter:card": "summary_large_image",
     "twitter:creator": "@remix_run",

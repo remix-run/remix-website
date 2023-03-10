@@ -14,10 +14,11 @@ import { getSpeakers, getSponsors } from "~/lib/conf.server";
 import { Link } from "~/ui/link";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
-export const meta: MetaFunction<typeof loader> = ({ data: { siteUrl } }) => {
-  let url = `${siteUrl}/conf`;
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  let { siteUrl } = data || {};
+  let url = siteUrl ? `${siteUrl}/conf` : null;
   let title = "Remix Conf - May 24-25, 2022";
-  let image = `${siteUrl}/conf-images/og.1.png`;
+  let image = siteUrl ? `${siteUrl}/conf-images/og.1.png` : null;
   let description =
     "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!";
   return {
