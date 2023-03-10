@@ -47,9 +47,21 @@ If we look at the how some of the above approaches play out for the application 
 
 **Migration Guides** are generally followed and implemented in a feature branch.
 
+<img alt="Diagram of a long lived feature branch for implementing the changes from a migration guide" src="/blog-images/posts/future-flags/migration-guide.png" class="border rounded-md p-3 shadow" />
+
+<figcaption class="my-2">Long-lived feature branch for a migration guide</figcaption>
+
 **Preparation Versions** tend to split the work into 2 feature branches - one to upgrade to the preparation version and another for the major version. This is a marginally better approach, but these individual branches still comes with the same downsides.
 
+<img alt="Diagram of 2 shorter-lived feature branches for implementing the changes from a preparation version" src="/blog-images/posts/future-flags/prep-version.png" class="border rounded-md p-3 shadow" />
+
+<figcaption class="my-2">2 medium-lived feature branches for a preparation version</figcaption>
+
 **Migration Builds** and/or backwards compatibility flags do an even better job of eliminating the long lived feature branches, but they still come with 2 aspects that are not ideal. First, they present a bit of underlying technical risk as running two packages side by side (v2 and v2 "back-compat") is not quite the same as running v2 -- so there is a non-zero surface area for bugs to pop up across the inter-communication of the packages. Second, and probably more importantly, these still dump _all_ of the new features (and breaking changes) on you all at once. There's often very little you can do _in advance_ to prepare your codebase for the upgrade and to lessen the impact. Once v2 releases, you can _potentially_ avoid the long-lived feature branch by upgrading to the new version and back-compat package. But then you're playing catch up on your main branch for a while as you adopt the breaking changes iteratively and eventually remove the compatibility build or back-compat flags.
+
+<img alt="Diagram of many short-lived branches to implement features via a migration build" src="/blog-images/posts/future-flags/back-compat.png" class="border rounded-md p-3 shadow" />
+
+<figcaption class="my-2">Migration builds allow iterative feature adoption after the release</figcaption>
 
 We're not thrilled with any of these approaches, and are hoping that we can provide an even smoother path through major upgrades.
 
@@ -68,7 +80,17 @@ At Remix, our goal introducing breaking changes in major versions is two-fold:
 1. _Eliminate_ the need for a long-lived feature branch
 2. Let you opt-into breaking changes _for the next version_ individually _as they are released in the current version_
 
-Said another way, most approaches we've seen try to give you an off-ramp from v1 to v2 _after v2 is released_. Instead, Remix aims to provide you a bunch of small on-ramps to _eventual_ v2 features as they are released _in v1 releases_. If all goes as plan and you stay up to date as new "on ramps" come out, then your code _as it's written today_ will "just work" when you upgrade to a new major version. This effectively makes major version upgrades no more painful than minor version upgrades 🤯. Additionally, by introducing these features _over-time_ in v1 - we provide a much larger surface area in which application developers can spread out their v2-related code changes.
+Said another way, most approaches we've seen try to give you an off-ramp from v1 to v2 _after v2 is released_. Instead, Remix aims to provide you a bunch of small on-ramps to _eventual_ v2 features as they are released _in v1 releases_. If all goes as plan and you stay up to date as new "on ramps" come out, then your code _as it's written today_ will "just work" when you upgrade to a new major version. This effectively makes major version upgrades no more painful than minor version upgrades 🤯.
+
+<img alt="Diagram of the lack of a feature branches for adopting v2 features via future flags" src="/blog-images/posts/future-flags/future-flags.png" class="border rounded-md p-3 shadow" />
+
+<figcaption class="my-2">Future flags eliminate the need for adoption after the release</figcaption>
+
+Additionally, by introducing these features _over-time_ in v1 - we provide a much larger surface area in which application developers can spread out their v2-related code changes.
+
+<img alt="Diagram of the gradual adoption of v2 feature via future flags through the v1 lifetime" src="/blog-images/posts/future-flags/future-flags-v1.png" class="border rounded-md p-3 shadow" />
+
+<figcaption class="my-2">Features can be adopted gradually throughout the v1 lifetime</figcaption>
 
 We understand this is a lofty goal, and we know it may not work out exactly as we plan all the time, but we're serious about stability and want to makes sure that our process is considering the burden a major version upgrade can put on our application developers.
 
