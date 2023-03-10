@@ -238,7 +238,18 @@ export async function loadPlugins() {
 
           let data = node.data ?? {};
           (node as any).type = "element";
-          data.hProperties ??= {};
+          (node as any).tagName = "div";
+          let properties =
+            data.hProperties && typeof data.hProperties === "object"
+              ? data.hProperties
+              : {};
+          data.hProperties = {
+            ...properties,
+            dataCodeBlock: "",
+            ...nodeProperties,
+            dataLineNumbers: usesLineNumbers ? "true" : "false",
+            dataLang: htmlEscape(language),
+          };
           data.hChildren = [nodeValue];
           node.data = data;
         }
