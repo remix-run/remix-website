@@ -107,10 +107,17 @@ function Document({
   isDev,
 }: DocumentProps) {
   let colorScheme = useColorScheme();
+  let matches = useMatches();
+  let isDocsPage = !!matches.find((match) =>
+    match.id.startsWith("routes/docs/")
+  );
   return (
     <html
       lang="en"
-      className={forceDark || colorScheme === "dark" ? "dark" : undefined}
+      className={cx({
+        dark: forceDark || colorScheme === "dark",
+        "scroll-pt-[6rem] lg:scroll-pt-[4rem]": isDocsPage,
+      })}
       data-theme={forceDark ? "dark" : colorScheme}
     >
       <head>
