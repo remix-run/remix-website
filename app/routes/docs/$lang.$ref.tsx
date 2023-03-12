@@ -156,16 +156,16 @@ export default function DocsLayout() {
 
 function Footer() {
   return (
-    <div className="flex justify-between border-t border-t-gray-50 py-4 text-sm text-gray-400 dark:border-gray-800">
-      <div className="lg:flex lg:items-center">
+    <div className="flex justify-between gap-4 border-t border-t-gray-50 py-4 text-sm text-gray-400 dark:border-gray-800">
+      <div className="sm:flex sm:items-center sm:gap-2 lg:gap-4">
         <div>
           &copy;{" "}
           <a className="hover:underline" href="https://remix.run">
             Remix Software, Inc.
           </a>
         </div>
-        <div className="hidden lg:block">•</div>
-        <div className="pr-4 lg:pl-4">
+        <div className="hidden sm:block">•</div>
+        <div>
           Docs and examples licensed under{" "}
           <a
             className="hover:underline"
@@ -365,16 +365,18 @@ function DocSearchSection() {
         )}
       >
         {hydrated ? (
-          <DocSearch
-            appId="6OHWJSR8G4"
-            indexName="remix"
-            apiKey="dff56670dbec8494409989d6ec9c8ac2"
-          />
+          <div className="animate-[fadeIn_100ms_ease-in_1]">
+            <DocSearch
+              appId="6OHWJSR8G4"
+              indexName="remix"
+              apiKey="dff56670dbec8494409989d6ec9c8ac2"
+            />
+          </div>
         ) : (
           // The Algolia doc search container is hard-coded at 40px. It doesn't
           // render anything on the server, so we get a mis-match after hydration.
           // This placeholder prevents layout shift when the search appears.
-          <div className="h-20" />
+          <div className="h-10" />
         )}
       </div>
       <div className="absolute top-full hidden h-6 w-full bg-gradient-to-b from-white dark:from-gray-900 lg:block" />
