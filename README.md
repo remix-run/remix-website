@@ -16,13 +16,7 @@ Now you should be good to go:
 npm run dev
 ```
 
-To preview changes to the `docs` folder in the Remix repo, run the following command in a new terminal session.
-
-```
-npm run dev:docs
-```
-
-Note that by default this assumes the relative path to your local copy of the Remix docs is `../remix/docs`. This can be configured via `LOCAL_REPO_RELATIVE_PATH` in your `.env` file.
+To preview local changes to the `docs` folder in the Remix repo, select "local" from the version dropdown menu on the site. Note that by default this assumes the relative path to your local copy of the Remix docs is `../remix/docs`. This can be configured via `LOCAL_REPO_RELATIVE_PATH` in your `.env` file.
 
 ## Deployment
 
