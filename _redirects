@@ -5,3 +5,5 @@
 /api            /api/conventions                      302
 /podcast        https://remix.transistor.fm/          302
 /stacks         https://remix.run/pages/stacks        302
+
+/docs/en/v1/pages/technical-explanation /docs/start/technical-explanation
