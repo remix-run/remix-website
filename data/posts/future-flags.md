@@ -73,7 +73,7 @@ When we first started talking about how to handle breaking changes for Remix, I 
 
 Later on in my career working on a Vue SSR application, we were preparing for a Vue 2 -> 3 upgrade and I was very excited to see the [Feature Flags][vue-migration-build-feature-flags] they were introducing in their build (although I switched jobs prior to performing that upgrade so I don't know how smooth it went).
 
-We knew at Remix that this concept of feature flags was _crucial_ if we wanted to be able to provide a smooth upgrade experience for our users. But we wanted to go even further than we'd seen frameworks go before. Even in the best approaches above with back-compt flags - developers are still left with an "here's all the new stuff at once" dump in a major version - leaving them to play catch-up for a period of time. Furthermore this also sort of stacks up all of the v2 code changes one after another, giving you a compacted surface area for potentially nuanced bugs. We wanted to see if we could do better.
+We knew at Remix that this concept of feature flags was _crucial_ if we wanted to be able to provide a smooth upgrade experience for our users. But we wanted to go even further than we have before with our OSS. Even in the best approaches above with backwards-compatibility flags - developers are still left with a "here's all the new stuff at once" dump in a major version - leaving them to play catch-up for a period of time. Furthermore this also sort of stacks up all of the v2 code changes one after another, giving you a compacted surface area for potentially nuanced bugs. We wanted to see if we could do better.
 
 At Remix, our goal introducing breaking changes in major versions is two-fold:
 
