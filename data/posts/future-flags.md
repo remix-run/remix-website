@@ -1,6 +1,6 @@
 ---
 title: Future Proofing Your Remix App
-summary: We've introduced the concept of future flags to give you a best-in-class upgrade path for your Remix app.
+summary: We've introduced the concept of future flags to give you a smooth upgrade path for your Remix app.
 featured: true
 date: 2023-03-13
 image: /blog-images/headers/the-future-is-now.jpg
@@ -94,7 +94,7 @@ Additionally, by introducing these features _over-time_ in v1 - we provide a muc
 
 We understand this is a lofty goal, and we know it may not work out exactly as we plan all the time, but we're serious about stability and want to makes sure that our process is considering the burden a major version upgrade can put on our application developers.
 
-We plan to do this via what we're calling **future flags** in the `remix.config.js` file. Think of these as **feature flags for future features** (now say that 5 times fast 😉). As we implement new features, we always try to do them in a backwards-compatible way. But when we can't and decide a breaking change is warranted, we don't table that feature up for an _eventual_ v2. Instead, we add a **future flag** and implement the new feature alongside the current behavior in a v1 minor release. This allows users to start using the feature, providing feedback, and reporting bugs _immediately_.
+We plan to do this via what we're calling **future flags** in the `remix.config.js` file. Think of these as **feature flags for future features** (now say that 5 times fast 😉). As we implement new features, we always try to do them in a backwards-compatible way. But when we can't and decide a breaking change is warranted, we don't table that feature up for an _eventual_ v2 release. Instead, we add a **future flag** and implement the new feature alongside the current behavior in a v1 minor release. This allows users to start using the feature, providing feedback, and reporting bugs _immediately_.
 
 That way, not only can you adopt features incrementally (and eagerly without a major version bump), we can also work out any kinks incrementally _before_ releasing v2. Eventually we also then add deprecation warnings to the v1 releases to nudge users to the new behavior. Then in v2 we remove the old v1 approach, remove the deprecations, and remove the flag - thus making the flagged behavior the new default in v2. If at the time v2 is released, an application has opted into _all_ future flags and updated their code - then they should just be able to update their Remix dependencies to v2 and delete the future flags from their `remix.config.js` and be running on v2 in a matter of minutes.
 
@@ -152,7 +152,7 @@ Here's a list of the current flags in Remix v1 today:
 - `v2_meta` - Enable the new API for your `meta` functions
 - `v2_routeConvention` - Enable the flat routes style of file-based routing
 
-We're in the process of preparing for our v2 release, so all `future.unstable_` flags are being stabilized into `future.v2_` flags (except for those which are not breaking changes, like PostCSS/Tailwind/Vanilla Extract support). This includes adding deprecation warnigns for apps still using the old way. Once we stabilize them all we'll do a final Remix 1.15.0 release and let that run for a bit to give folks time to opt into any flags they haven't yet added. Then we'll plan to release Remix 2.0.0 and start working on releasing flag-driven Remix v3 features.
+We're in the process of preparing for our v2 release, so all `future.unstable_` flags are being stabilized into `future.v2_` flags (except for those which are not breaking changes, like PostCSS/Tailwind/Vanilla Extract support). This includes adding deprecation warnings for apps still using the old way. Once we stabilize them all we'll do a final Remix 1.15.0 release and let that run for a bit to give folks time to opt into any flags they haven't yet added. Then we'll plan to release Remix 2.0.0 and start working on releasing flag-driven Remix v3 features.
 
 **TODO: Link to docs**
 
