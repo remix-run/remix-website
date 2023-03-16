@@ -100,39 +100,18 @@ That way, not only can you adopt features incrementally (and eagerly without a m
 
 ## Unstable vs. V2 Flags
 
-Future flags can come in one of 2 forms: `future.unstable_feature` or `future.v2_feature` and the lifecycle of a flag will depend on the nature of the change and if it's breaking or not.
+Future flags can come in one of 2 forms: `future.unstable_feature` or `future.v2_feature` and the lifecycle of a flag will depend on the nature of the change and if it's breaking or not. The decision flow for a new feature looks something like this:
 
-Consider a new feature we want to implement in Remix - let's call it "speedy routing" since speed is all the hype these days. The decision flow for this new feature would go something like this:
+<img alt="Flowchart of the decision process for how to introduce a new feature" src="/blog-images/posts/future-flags/feature-flowchart.png" class="border rounded-md p-3 shadow" />
 
-- Can we implement this feature in a backwards-compatible way?
-  - If yes, are we confident in the API for this feature?
-    - 🚀 If yes, awesome! We can implement it and ship it without any flags
-    - If no, that's ok too!
-      - Let's get this out to the community for feedback on the API
-      - 🚀 We implement this feature behind a `future.unstable_speedyRouting` flag
-      - Early adopters can use the feature and provide feedback and we can iterate if needed
-      - When we feel the API is stable, we remove the future flag and the non-breaking change lands in v1
-  - If no, are we confident in the API for this feature?
-    - If yes, awesome!
-      - 🚀 We implement this feature behind a `future.v2_speedyRouting` flag
-      - Early adopters can use the feature and report any bugs they find
-      - At some point we add deprecation warnings to v1
-      - When v2 releases this becomes the new default behavior
-    - If no, that's ok too!
-      - Let's get this out to the community for feedback on the API
-      - 🚀 We implement this feature behind a `future.unstable_speedyRouting` flag
-      - Early adopters can use the feature provide feedback and we can iterate if needed
-      - 🚀 When we feel the API is stable, we convert it to a `future.v2_speedyRouting` flag
-      - Early adopters can use the feature and report any bugs they find
-      - At some point we add deprecation warnings to v1
-      - When v2 releases this becomes the new default behavior
+<figcaption class="my-2">Flowchart for introducing a new feature</figcaption>
 
 The lifecycle is thus either:
 
 - Non-Breaking + Stable API Feature -> Lands in v1
 - Non-Breaking + Unstable API -> `future_unstable_` flag -> Lands in v1
-- Breaking + Stable API Feature -> `future.v2_` flag -> Lands in v1
-- Breaking + Unstable API -> `future_unstable_` flag -> `future.v2_` flag -> Lands in v1
+- Breaking + Stable API Feature -> `future.v2_` flag -> Lands in v2
+- Breaking + Unstable API -> `future_unstable_` flag -> `future.v2_` flag -> Lands in v2
 
 And for clarification - `unstable_` here _does not mean_ that we think the feature is bug-ridden! It means that we're not 100% confident the API won't undergo some minor changes before it stabilizes. We _absolutely_ want Early Adopters to start using these features so we can iterate on (or gain confidence in) the API.
 
