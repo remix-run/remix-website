@@ -133,8 +133,9 @@ Here's a list of the current flags in Remix v1 today:
 
 We're in the process of preparing for our v2 release, so all `future.unstable_` flags are being stabilized into `future.v2_` flags (except for those which are not breaking changes, like PostCSS/Tailwind/Vanilla Extract support). This includes adding deprecation warnings for apps still using the old way. Once we stabilize them all we'll do a final Remix 1.15.0 release and let that run for a bit to give folks time to opt into any flags they haven't yet added. Then we'll plan to release Remix 2.0.0 and start working on releasing flag-driven Remix v3 features.
 
-**TODO: Link to docs**
+In the future, check out the [docs][future-flags-docs] on this strategy for an up -to-date listing of active future flags.
 
+[future-flags-docs]: https://remix.run/docs/pages/api-development-strategy
 [semver]: https://semver.org/
 [dom]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
 [react-router-v6-migration-guide]: https://reactrouter.com/en/main/upgrading/v5#introduction
