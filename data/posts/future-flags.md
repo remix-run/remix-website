@@ -116,7 +116,7 @@ Consider a new feature we want to implement in Remix - let's call it "speedy rou
     - If yes, awesome!
       - 🚀 We implement this feature behind a `future.v2_speedyRouting` flag
       - Early adopters can use the feature and report any bugs they find
-      - At some pint we add deprecation warnings to v1
+      - At some point we add deprecation warnings to v1
       - When v2 releases this becomes the new default behavior
     - If no, that's ok too!
       - Let's get this out to the community for feedback on the API
@@ -124,7 +124,7 @@ Consider a new feature we want to implement in Remix - let's call it "speedy rou
       - Early adopters can use the feature provide feedback and we can iterate if needed
       - 🚀 When we feel the API is stable, we convert it to a `future.v2_speedyRouting` flag
       - Early adopters can use the feature and report any bugs they find
-      - At some pint we add deprecation warnings to v1
+      - At some point we add deprecation warnings to v1
       - When v2 releases this becomes the new default behavior
 
 The lifecycle is thus either:
