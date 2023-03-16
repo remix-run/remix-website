@@ -102,9 +102,9 @@ That way, not only can you adopt features incrementally (and eagerly without a m
 
 Future flags can come in one of 2 forms: `future.unstable_feature` or `future.v2_feature` and the lifecycle of a flag will depend on the nature of the change and if it's breaking or not. The decision flow for a new feature looks something like this:
 
-<img alt="Flowchart of the decision process for how to introduce a new feature" src="/blog-images/posts/future-flags/feature-flowchart.png" class="border rounded-md p-3 shadow" />
+<a href="/blog-images/posts/future-flags/feature-flowchart.png" target="_blank"><img alt="Flowchart of the decision process for how to introduce a new feature" src="/blog-images/posts/future-flags/feature-flowchart.png" class="border rounded-md p-3 shadow" /></a>
 
-<figcaption class="my-2">Flowchart for introducing a new feature</figcaption>
+<figcaption class="my-2">Flowchart for introducing new features (click to open in a new tab)</figcaption>
 
 The lifecycle is thus either:
 
