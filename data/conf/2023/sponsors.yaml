@@ -28,6 +28,11 @@
   imgSrc: "/conf-images/2023/sponsors/seasoned.png"
   level: "silver"
 
+- name: "Grafbase"
+  link: "https://grafbase.com/"
+  imgSrc: "/conf-images/2023/sponsors/grafbase.svg"
+  level: "silver"
+
 - name: "Netlify"
   link: "https://www.netlify.com"
   imgSrc: "/conf-images/2023/sponsors/netlify.svg"
