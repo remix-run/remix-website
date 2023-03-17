@@ -34,8 +34,6 @@ For that reason, we've seen a variety of different approaches over the years, in
 - Writing a detailed **migration guide** [<sup>1</sup>][react-router-v6-migration-guide] [<sup>2</sup>][angular-v2-migration-guide] [<sup>3</sup>][express-v4-migration-guide]
 - Releasing a **preparation version** prior to the major release to better prep your code to adopt the breaking changes [<sup>1</sup>][angular-1.5.0]
 - Releasing a **compatibility package** that allows you to run both versions together [<sup>1</sup>][react-router-v6-back-compat] [<sup>2</sup>][vue-migration-build] [<sup>3</sup>][ngupgrade]
-- Creating code-mod tooling that can help update your application code automatically
-  - **TODO: Do we know of any good examples here?**
 
 We've seen approaches that work well, and some that don't. However there seems to be a concept consistent across the success stories which is providing a path for application developers to upgrade their applications **iteratively**. At scale, the inability to iteratively upgrade portions of an application becomes problematic. You end up with a long lived `version-N-upgrade` branch that some engineer ends up thanklessly rebasing onto the latest `main` branch on a regular basis, and probably pulling their hair out bit-by-bit in the process.
 
