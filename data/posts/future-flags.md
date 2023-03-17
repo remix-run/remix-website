@@ -109,9 +109,9 @@ Future flags can come in one of 2 forms: `future.unstable_feature` or `future.v2
 The lifecycle is thus either:
 
 - Non-Breaking + Stable API Feature -> Lands in v1
-- Non-Breaking + Unstable API -> `future_unstable_` flag -> Lands in v1
+- Non-Breaking + Unstable API -> `future.unstable_` flag -> Lands in v1
 - Breaking + Stable API Feature -> `future.v2_` flag -> Lands in v2
-- Breaking + Unstable API -> `future_unstable_` flag -> `future.v2_` flag -> Lands in v2
+- Breaking + Unstable API -> `future.unstable_` flag -> `future.v2_` flag -> Lands in v2
 
 And for clarification - `unstable_` here _does not mean_ that we think the feature is bug-ridden! It means that we're not 100% confident the API won't undergo some minor changes before it stabilizes. We _absolutely_ want Early Adopters to start using these features so we can iterate on (or gain confidence in) the API.
 
