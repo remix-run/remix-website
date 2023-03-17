@@ -43,7 +43,7 @@ These long-lived feature branches also tend to be very slow to move along since 
 
 ## Feature Branches
 
-If we look at the how some of the above approaches play out for the application developers, we often see that they all involve some form of a long-lived feature branch which incurs the downsides mentioned above. In all cases, The lifetime of the feature branch is dictated by the number of breaking changes, but even with only a few breaking changes - it can take a bit of time to address those changes in a large codebase.
+If we look at the how some of the above approaches play out for the application developers, we often see that they all involve some form of a long-lived feature branch which incurs the downsides mentioned above. In all cases, the lifetime of the feature branch is dictated by the number of breaking changes, but even with only a few breaking changes - it can take a bit of time to address those changes in a large codebase.
 
 **Migration Guides** are generally followed and implemented in a feature branch.
 
@@ -138,8 +138,8 @@ In the future, check out the [docs][future-flags-docs] on this strategy for an u
 [future-flags-docs]: https://remix.run/docs/pages/api-development-strategy
 [semver]: https://semver.org/
 [dom]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
-[react-router-v6-migration-guide]: https://reactrouter.com/en/main/upgrading/v5#introduction
-[react-router-v6-back-compat]: https://reactrouter.com/en/main/upgrading/v5#backwards-compatibility-package
+[react-router-v6-migration-guide]: https://reactrouter.com/upgrading/v5#introduction
+[react-router-v6-back-compat]: https://reactrouter.com/upgrading/v5#backwards-compatibility-package
 [angular-v2-migration-guide]: https://angular.io/guide/upgrade
 [ngupgrade]: https://angular.io/guide/upgrade#upgrading-with-ngupgrade
 [angular-1.5.0]: https://www.infoworld.com/article/3031266/angular-150-paves-the-way-for-angular-2.html
