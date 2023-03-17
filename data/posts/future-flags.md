@@ -1,8 +1,8 @@
 ---
 title: Future Proofing Your Remix App
 summary: We've introduced the concept of future flags to give you a smooth upgrade path for your Remix app.
-featured: true
-date: 2023-03-13
+featured: false
+date: 2023-03-17
 image: /blog-images/headers/the-future-is-now.jpg
 imageAlt: The Future is Now
 authors:
