@@ -1,15 +1,18 @@
 import LRUCache from "lru-cache";
-import { octokit } from "./github";
+import type { Octokit } from "octokit";
 
-export async function getBranches(repo: string) {
-  return branchesCache.fetch(repo);
-}
-
+type CacheContext = { octokit: Octokit };
 declare global {
-  var branchesCache: LRUCache<string, string[]>;
+  var branchesCache: LRUCache<string, string[], CacheContext>;
 }
 
-global.branchesCache ??= new LRUCache<string, string[]>({
+export async function getBranches(repo: string, { octokit }: CacheContext) {
+  return branchesCache.fetch(repo, {
+    context: { octokit },
+  });
+}
+
+global.branchesCache ??= new LRUCache<string, string[], CacheContext>({
   max: 3,
   ttl: 1000 * 60 * 5, // 5 minutes, so we can see new tags quickly
   allowStale: true,
@@ -17,10 +20,14 @@ global.branchesCache ??= new LRUCache<string, string[]>({
   fetchMethod: fetchBranches,
 });
 
-async function fetchBranches(key: string) {
+async function fetchBranches(
+  key: string,
+  staleValue: string[] | undefined,
+  { context }: LRUCache.FetchOptionsWithContext<string, string[], CacheContext>
+) {
   console.log("Fetching fresh branches", key);
   let [owner, repo] = key.split("/");
-  let { data } = await octokit.rest.repos.listBranches({
+  let { data } = await context.octokit.rest.repos.listBranches({
     mediaType: { format: "json" },
     owner,
     repo,

@@ -36,13 +36,18 @@ import {
   getLatestVersion,
 } from "~/lib/gh-docs";
 import type { Doc } from "~/lib/gh-docs";
+import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
+import { RELEASE_PACKAGE } from "~/lib/env.server";
 
 export let loader = async ({ params }: LoaderArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
 
   let branchesInMenu = ["main", "dev"];
-  let [tags, branches] = await Promise.all([getRepoTags(), getRepoBranches()]);
+  let [tags, branches] = await Promise.all([
+    getRepoTags({ octokit, releasePackage: RELEASE_PACKAGE }),
+    getRepoBranches({ octokit }),
+  ]);
   if (!tags || !branches) {
     throw new Response("Cannot reach GitHub", { status: 503 });
   }
