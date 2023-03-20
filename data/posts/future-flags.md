@@ -37,7 +37,7 @@ For that reason, we've seen a variety of different approaches over the years, in
 
 We've seen approaches that work well, and some that don't. However there seems to be a concept consistent across the success stories which is providing a path for application developers to upgrade their applications **iteratively**. At scale, the inability to iteratively upgrade portions of an application becomes problematic. You end up with a long lived `version-N-upgrade` branch that some engineer ends up thanklessly rebasing onto the latest `main` branch on a regular basis, and probably pulling their hair out bit-by-bit in the process.
 
-These long-lived feature branches also tend to be very slow to move along since our stakeholders don't _want_ to stop feature development for a few weeks so we can upgrade our stacks (which are invisible to the customer). They want to keep shipping new features in parallel, so not only are teams only allocating a portion of their capacity to the upgrade, their also dealing with the inherent context switching between the old and new worlds, which causes the upgrade to move even slower.
+These long-lived feature branches also tend to be very slow to move along. Our stakeholders don't _want_ to stop feature development for a few weeks so we can upgrade our stacks (which are invisible to the customer) - they want to keep shipping new features in parallel. So not only are teams only allocating a portion of their capacity to the upgrade, they're also dealing with the inherent context switching between the old and new worlds. This causes the upgrade to move even slower.
 
 ## Feature Branches
 
@@ -133,7 +133,7 @@ We're in the process of preparing for our v2 release, so all `future.unstable_` 
 
 In the future, check out the [docs][future-flags-docs] on this strategy for an up -to-date listing of active future flags.
 
-[future-flags-docs]: https://remix.run/docs/pages/api-development-strategy
+[future-flags-docs]: https://remix.run/docs/en/main/pages/api-development-strategy
 [semver]: https://semver.org/
 [dom]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
 [react-router-v6-migration-guide]: https://reactrouter.com/upgrading/v5#introduction
