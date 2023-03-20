@@ -57,6 +57,9 @@ export let loader = async ({ request, params }: LoaderArgs) => {
     let lang = "en";
     let doc = await getRepoDoc(ref, params["*"]!);
     if (!doc) throw null;
+    // FIXME: This results in two fetches, as the loader for the docs page will
+    // repeat the request cycle. This isn't a problem if the doc is in the LRU
+    // cache but we should probably fix it anyway.
     return redirect(`/docs/${lang}/${ref}/${params["*"]}`);
   } catch (_) {}
   throw json({}, { status: 404 });

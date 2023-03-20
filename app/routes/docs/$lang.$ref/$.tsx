@@ -20,14 +20,16 @@ export async function loader({ params, request }: LoaderArgs) {
   let url = new URL(request.url);
   let pageUrl = url.protocol + "//" + url.host + url.pathname;
   invariant(params.ref, "expected `ref` params");
-  let doc = await getRepoDoc(params.ref, params["*"] || "index");
-  if (!doc) {
-    throw new Response("", { status: 404 });
+  try {
+    let doc = await getRepoDoc(params.ref, params["*"] || "index");
+    if (!doc) throw null;
+    return json(
+      { doc, pageUrl },
+      { headers: { "Cache-Control": CACHE_CONTROL.doc } }
+    );
+  } catch (_) {
+    throw json(null, { status: 404 });
   }
-  return json(
-    { doc, pageUrl },
-    { headers: { "Cache-Control": CACHE_CONTROL.doc } }
-  );
 }
 
 export let headers: HeadersFunction = () => {
