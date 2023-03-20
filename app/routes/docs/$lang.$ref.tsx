@@ -744,7 +744,7 @@ function EditLink() {
     return null;
   }
 
-  let repoUrl = "https://github.com/remix-run/react-router";
+  let repoUrl = "https://github.com/remix-run/remix";
   // TODO: deal with translations when we add them with params.lang
   let editUrl = `${repoUrl}/edit/${params.ref}/docs/${doc.slug}.md`;
 
