@@ -170,7 +170,10 @@ function EarlySponsors() {
           </div>
           {speakers.length > 0 ? (
             <section>
-              <h2 className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl">
+              <h2
+                id="speakers"
+                className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
+              >
                 Speakers
               </h2>
               <div className="mx-auto grid max-w-sm grid-cols-1 gap-8 sm:max-w-none sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
@@ -239,7 +242,9 @@ function EarlySponsors() {
           ) : null}
 
           <section className="flex flex-col gap-20 lg:gap-36">
-            <h2 className="sr-only">Sponsors</h2>
+            <h2 id="sponsors" className="sr-only">
+              Sponsors
+            </h2>
             {premierSponsor ? (
               <div>
                 <h3 className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl">
