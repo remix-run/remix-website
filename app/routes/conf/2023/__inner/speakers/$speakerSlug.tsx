@@ -83,6 +83,9 @@ export const loader = async ({ params }: LoaderArgs) => {
                 startsAtISO: startsAt?.toISOString() || null,
                 startsAtFormatted:
                   startsAt?.toLocaleTimeString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
                     hour: "numeric",
                     minute: "numeric",
                     timeZone: "America/Denver",
@@ -117,7 +120,7 @@ export default function SpeakerRoute() {
   }
 
   return (
-    <div>
+    <article>
       <div className="mb-10 flex flex-col gap-6 text-white sm:flex-row sm:gap-10">
         {speaker.imgUrl ? (
           <div className="sm:w-64 sm:flex-none">
@@ -130,9 +133,12 @@ export default function SpeakerRoute() {
         ) : null}
         <div>
           <div className="mb-4 flex flex-col gap-3">
-            <h1 className="font-display text-3xl font-extrabold sm:text-4xl lg:text-5xl">
-              {speaker.nameFull}
-            </h1>
+            <header>
+              <h1 className="font-display text-3xl font-extrabold sm:text-4xl lg:text-5xl">
+                {speaker.nameFull}
+              </h1>
+              <p className="text-gray-300">{speaker.tagLine}</p>
+            </header>
             {links.size > 0 ? (
               <ul className="flex gap-2 text-sm sm:text-base">
                 {[...links.values()].map((link) => {
@@ -164,67 +170,51 @@ export default function SpeakerRoute() {
           ) : null}
         </div>
       </div>
-      {/* speaker.sessions.length ? (
-        <div className="mt-10">
-          {speaker.sessions.map((session) => {
-            let startsAtISO = session.startsAtISO;
-            let startsAtFormatted = session.startsAtFormatted;
-            // let endsAt = session.endsAt ? new Date(session.endsAt) : null;
-            return (
-              <div key={session.title} className="flex flex-col gap-4">
-                <div>
-                  <h2 className="inline font-display text-xl font-extrabold md:text-3xl">
-                    {session.title}
-                  </h2>
-                  {startsAtISO ? (
-                    <span
-                      className="pl-2 underline"
-                      //   to={`../schedule/may-25${
-                      //     startsAt ? `#time-${sluggify(session.id)}` : ""
-                      //   }`}
-                    >
-                      <time dateTime={startsAtISO}>{startsAtFormatted}</time>{" "}
-                    </span>
+
+      {speaker.sessions.length ? (
+        <aside className="mt-10">
+          <h2 className="mb-4 font-display text-base font-extrabold uppercase text-gray-300 sm:text-lg">
+            {speaker.nameFirst}’s Sessions
+          </h2>
+          <div className="flex flex-col gap-4 sm:gap-6">
+            {speaker.sessions.map((session) => {
+              let startsAtISO = session.startsAtISO;
+              let startsAtFormatted = session.startsAtFormatted;
+              // let endsAt = session.endsAt ? new Date(session.endsAt) : null;
+              return (
+                <article
+                  key={session.title}
+                  className="flex flex-col gap-4 border-[1px] border-gray-600 bg-gray-900 p-4 sm:p-6"
+                >
+                  <div>
+                    <h3 className="inline font-display text-xl font-extrabold md:text-3xl">
+                      {session.title}
+                    </h3>
+                    {startsAtISO ? (
+                      <div
+                        className="text-gray-300"
+                        //   to={`../schedule/may-25${
+                        //     startsAt ? `#time-${sluggify(session.id)}` : ""
+                        //   }`}
+                      >
+                        <time dateTime={startsAtISO}>{startsAtFormatted}</time>{" "}
+                      </div>
+                    ) : null}
+                  </div>
+                  {session.description ? (
+                    <div
+                      className="speaker-prose"
+                      dangerouslySetInnerHTML={{ __html: session.description }}
+                    />
                   ) : null}
-                </div>
-                {session.description ? (
-                  <div
-                    className="speaker-prose"
-                    dangerouslySetInnerHTML={{ __html: session.description }}
-                  />
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-        ) : null */}
-    </div>
+                </article>
+              );
+            })}
+          </div>
+        </aside>
+      ) : null}
+    </article>
   );
-}
-
-export function CatchBoundary() {
-  const caught = useCatch();
-  const params = useParams();
-
-  if (caught.status === 404) {
-    return (
-      <div>
-        <h1 className="mb-10 font-mono text-3xl text-white sm:text-5xl xl:text-7xl">
-          Speaker not found
-        </h1>
-        <div className="container text-lg text-white lg:text-xl">
-          <p>
-            No speaker found with the slug "{params.speakerSlug}".{" "}
-            <Link to="../speakers/you" className="underline">
-              Would you like to speak?
-            </Link>
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }
 
 function getLinkIcon({ url, linkType }: { url: string; linkType?: string }) {
