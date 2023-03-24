@@ -18,7 +18,7 @@ import type { Sponsor, SponsorLevel } from "~/lib/conf";
 import { Link } from "~/ui/link";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { getSpeakers } from "~/lib/conf2023.server";
-import type { Speaker } from "~/lib/conf2023.server";
+import type { Speaker } from "~/lib/conf2023";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   let { siteUrl } = data || {};
@@ -219,21 +219,12 @@ function EarlySponsors() {
                   );
                   return (
                     <GridCell key={speaker.id} type="speaker">
-                      {speaker.link ? (
-                        <GridCellLink
-                          to={speaker.link}
-                          labelledBy={`speaker-${speaker.id}-name`}
-                          describedBy={
-                            speaker.twitterHandle
-                              ? `speaker-${speaker.id}-twitter`
-                              : undefined
-                          }
-                        >
-                          {child}
-                        </GridCellLink>
-                      ) : (
-                        child
-                      )}
+                      <GridCellLink
+                        to={`speakers/${speaker.slug}`}
+                        label={`Speaker bio for ${speaker.nameFull}`}
+                      >
+                        {child}
+                      </GridCellLink>
                     </GridCell>
                   );
                 })}
@@ -386,12 +377,14 @@ function GridCellLink({
   to,
   children,
   hoverColor = "default",
+  label,
   labelledBy,
   describedBy,
 }: {
   to: string;
   children: React.ReactNode;
   hoverColor?: "default" | "blue";
+  label?: string;
   labelledBy?: string;
   describedBy?: string;
 }) {
@@ -405,7 +398,8 @@ function GridCellLink({
           "hover:border-gray-400": hoverColor === "default",
         }
       )}
-      aria-labelledby={labelledBy || undefined}
+      aria-label={label || undefined}
+      aria-labelledby={label ? undefined : labelledBy || undefined}
       aria-describedby={describedBy || undefined}
     >
       {children}

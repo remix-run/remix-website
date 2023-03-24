@@ -1,23 +1,38 @@
 import LRUCache from "lru-cache";
+import {
+  sluggify,
+  validateSessionizeSessionData,
+  validateSessionizeSpeakerData,
+} from "./conf2023";
+import type {
+  Speaker,
+  SpeakerSession,
+  Schedule,
+  ScheduleSession,
+  SessionizeSpeakerData,
+  SessionizeSessionData,
+} from "./conf2023";
 
 const NO_CACHE =
   process.env.NO_CACHE != null ? process.env.NO_CACHE === "true" : undefined;
 const SPEAKERS_CACHE_KEY = "speakers";
 const SESSIONS_CACHE_KEY = "sessions";
+const SCHEDULES_CACHE_KEY = "sessions";
 const SESSIONIZE_ENDPOINT = "https://sessionize.com/api/v2/s8ds2hnu";
 const SESSIONIZE_API_DETAILS_URL =
   "https://sessionize.com/app/organizer/schedule/api/endpoint/9617/7818";
 
-let cache = new LRUCache<"speakers" | "sessions", (Speaker | SpeakerSession)[]>(
-  {
-    max: 250,
-    maxSize: 1024 * 1024 * 12, // 12 mb
-    ttl: 1000 * 60 * 60 * 24, // 24 hours
-    sizeCalculation(value, key) {
-      return JSON.stringify(value).length + (key ? key.length : 0);
-    },
-  }
-);
+let cache = new LRUCache<
+  "speakers" | "sessions" | "schedules",
+  (Speaker | SpeakerSession | Schedule)[]
+>({
+  max: 250,
+  maxSize: 1024 * 1024 * 12, // 12 mb
+  ttl: 1000 * 60 * 60 * 24, // 24 hours
+  sizeCalculation(value, key) {
+    return JSON.stringify(value).length + (key ? key.length : 0);
+  },
+});
 
 export async function getSpeakers(
   opts: { noCache?: boolean } = {}
@@ -53,6 +68,7 @@ export async function getSpeakers(
     .map((speaker: unknown) => {
       try {
         validateSessionizeSpeakerData(speaker);
+        console.log(speaker);
       } catch (error) {
         console.warn(
           `Invalid speaker object; skipping.\n\nSee API settings to ensure expected data is included: ${SESSIONIZE_API_DETAILS_URL}\n\n`,
@@ -71,7 +87,18 @@ export async function getSpeakers(
   return speakers;
 }
 
-export async function getSpeakerSessions(
+export async function getSpeakerBySlug(
+  slug: string,
+  opts?: { noCache?: boolean }
+): Promise<Speaker | null> {
+  // Unfortunately, Sessionize doesn't have an API for fetching a single speaker,
+  // so we have to fetch all of them and then filter down to the one we want.
+  let speakers = await getSpeakers(opts);
+  let speaker = speakers.find((s) => s.slug === slug);
+  return speaker || null;
+}
+
+export async function getConfSessions(
   opts: { noCache?: boolean } = {}
 ): Promise<SpeakerSession[]> {
   let { noCache = NO_CACHE ?? false } = opts;
@@ -132,7 +159,17 @@ export async function getSpeakerSessions(
   return sessions;
 }
 
-export async function getSchedule(): Promise<Schedule[]> {
+export async function getSchedules(
+  opts: { noCache?: boolean } = {}
+): Promise<Schedule[]> {
+  let { noCache = NO_CACHE ?? false } = opts;
+  if (!noCache) {
+    let cached = cache.get(SCHEDULES_CACHE_KEY);
+    if (cached) {
+      return cached as Schedule[];
+    }
+  }
+
   let [fetched, speakers] = await Promise.all([
     fetch(`${SESSIONIZE_ENDPOINT}/view/GridSmart`, {
       method: "GET",
@@ -154,7 +191,7 @@ export async function getSchedule(): Promise<Schedule[]> {
     );
   }
 
-  let schedule = json
+  let schedules = json
     .map((dailySchedule: unknown) => {
       try {
         if (
@@ -193,15 +230,14 @@ export async function getSchedule(): Promise<Schedule[]> {
                 return timeSlot.rooms.flatMap<ScheduleSession>((room) => {
                   let session = room.session;
                   let sessionSpeakers = session.speakers.map((speaker) => {
-                    let found = speakers.find((s) => s.id === speaker.id);
+                    let found = speakers.find((s) => s.id === speaker.id)!;
                     let sessionSpeaker: ScheduleSession["speakers"][number] = {
                       id: speaker.id,
-                      nameFirst: found?.nameFirst ?? null,
-                      nameLast: found?.nameLast ?? null,
-                      nameFull: found?.nameFull ?? speaker.name,
-                      imgUrl:
-                        sessionSpeakers.find((s) => s.id === speaker.id)
-                          ?.imgUrl || null,
+                      slug: found.slug,
+                      nameFirst: found.nameFirst,
+                      nameLast: found.nameLast,
+                      nameFull: found.nameFull,
+                      imgUrl: found.imgUrl,
                     };
                     return sessionSpeaker;
                   });
@@ -241,23 +277,29 @@ export async function getSchedule(): Promise<Schedule[]> {
         return null;
       }
     })
-    .filter(isNotEmpty);
+    .filter(isNotEmpty)
+    .sort((a, b) => {
+      let isEariler = a.date < b.date;
+      let isLater = a.date > b.date;
+      return isEariler ? -1 : isLater ? 1 : 0;
+    });
 
-  return schedule.sort((a, b) => {
-    let isEariler = a.date < b.date;
-    let isLater = a.date > b.date;
-    return isEariler ? -1 : isLater ? 1 : 0;
-  });
+  if (!noCache) {
+    cache.set(SCHEDULES_CACHE_KEY, schedules);
+  }
+
+  return schedules;
 }
 
 function modelSpeaker(speaker: SessionizeSpeakerData): Speaker {
   let id = String(speaker.id);
   let { nameFirst, nameLast, nameFull } = getSpeakerNames(speaker);
-  let link = getSpeakerLink(speaker);
+
   let tagLine = getSpeakerTagLine(speaker);
   let imgUrl = speaker.profilePicture ? String(speaker.profilePicture) : null;
-  let twitterHandle = link?.includes("twitter.com")
-    ? "@" + getTwitterHandle(link)
+  let twitterUrl = speaker.links?.find((link) => link.title === "Twitter")?.url;
+  let twitterHandle = twitterUrl?.includes("twitter.com")
+    ? "@" + getTwitterHandle(twitterUrl)
     : null;
   let bio = speaker.bio
     ? speaker.bio
@@ -266,17 +308,23 @@ function modelSpeaker(speaker: SessionizeSpeakerData): Speaker {
         .filter(Boolean)
         .join("\n")
     : null;
+  let isEmcee =
+    speaker.questionAnswers?.find((qa) => qa.question === "Emcee?")?.answer ===
+    "true";
+
   let validatedSpeaker: Speaker = {
     id,
     tagLine,
-    link,
     bio,
     nameFirst,
     nameLast,
     nameFull,
+    slug: sluggify(nameFull),
     imgUrl,
     twitterHandle,
     isTopSpeaker: !!speaker.isTopSpeaker,
+    isEmcee,
+    links: speaker.links || [],
   };
   return validatedSpeaker;
 }
@@ -292,7 +340,11 @@ function modelSpeakerSession(session: SessionizeSessionData): SpeakerSession {
   let speakers =
     session.speakers && Array.isArray(session.speakers)
       ? session.speakers.map((speaker) => {
-          return { id: String(speaker.id), name: String(speaker.name) };
+          return {
+            id: speaker.id,
+            name: speaker.name,
+            slug: sluggify(speaker.name),
+          };
         })
       : [];
   return {
@@ -326,21 +378,6 @@ function getSpeakerNames(speaker: SessionizeSpeakerData) {
     nameFull,
     preferredName,
   };
-}
-
-function getSpeakerLink(speaker: SessionizeSpeakerData) {
-  type LinkType = "Twitter" | "LinkedIn" | "Blog" | "Company_Website";
-  let links: Partial<Record<LinkType, string>> = {};
-  for (let link of speaker.links || []) {
-    links[link.linkType] = link.url;
-  }
-  return (
-    links["Twitter"] ||
-    links["Blog"] ||
-    links["LinkedIn"] ||
-    links["Company_Website"] ||
-    null
-  );
 }
 
 function getSpeakerTagLine(speaker: SessionizeSpeakerData) {
@@ -440,126 +477,5 @@ async function fetchNaiveStaleWhileRevalidate(
       cache: "force-cache",
       signal: controller.signal,
     });
-  }
-}
-
-export interface Speaker {
-  id: string;
-  nameFirst: string;
-  nameLast: string;
-  nameFull: string;
-  bio: string | null;
-  tagLine: string | null;
-  link: string | null;
-  imgUrl: string | null;
-  twitterHandle: string | null;
-  isTopSpeaker: boolean;
-}
-
-export interface SpeakerSession {
-  id: string;
-  title: string;
-  description: string | null;
-  startsAt: Date | null;
-  endsAt: Date | null;
-  speakers: Array<{ id: string; name: string }>;
-}
-
-interface ScheduleSession {
-  id: string;
-  room: string;
-  title: string;
-  description: string | null;
-  startsAt: Date;
-  endsAt: Date;
-  speakers: Array<{
-    id: string;
-    nameFirst: string | null;
-    nameLast: string | null;
-    nameFull: string;
-    imgUrl: string | null;
-  }>;
-}
-
-export interface Schedule {
-  date: Date;
-  sessions: ScheduleSession[];
-}
-
-export interface SessionizeSpeakerData {
-  id: number | string;
-  firstName: string | null;
-  lastName: string | null;
-  fullName: string | null;
-  tagLine: string | null;
-  bio: string | null;
-  links: Array<{
-    title: string;
-    linkType: "Twitter" | "LinkedIn" | "Blog" | "Company_Website";
-    url: string;
-  }> | null;
-  questionAnswers: Array<{
-    question: string;
-    answer: string | null;
-  }> | null;
-  profilePicture: string | null;
-  isTopSpeaker: boolean;
-}
-
-export interface SessionizeSessionData {
-  id: number | string;
-  title: string;
-  description: string | null;
-  startsAt: string | null;
-  endsAt: string | null;
-  isServiceSession: boolean;
-  isPlenumSession: boolean;
-  speakers: Array<{ id: string; name: string }>;
-  categories: Array<{
-    id: string;
-    name: string;
-    categoryItems: Array<{ id: string; name: string }>;
-  }>;
-  roomId: number | null;
-  room: string | null;
-  status: string;
-}
-
-function validateSessionizeSpeakerData(
-  data: unknown
-): asserts data is SessionizeSpeakerData {
-  if (
-    data == null ||
-    typeof data !== "object" ||
-    !("id" in data) ||
-    !("firstName" in data) ||
-    !("lastName" in data) ||
-    !("fullName" in data) ||
-    !("tagLine" in data) ||
-    !("links" in data) ||
-    !("questionAnswers" in data) ||
-    !("profilePicture" in data) ||
-    !("isTopSpeaker" in data) ||
-    (data.links != null && !Array.isArray(data.links)) ||
-    (data.questionAnswers != null && !Array.isArray(data.questionAnswers))
-  ) {
-    throw new Error("Invalid speaker data");
-  }
-}
-
-function validateSessionizeSessionData(
-  data: unknown
-): asserts data is SessionizeSessionData {
-  if (
-    data == null ||
-    typeof data !== "object" ||
-    !("id" in data)
-    // !("title" in data) ||
-    // !("description" in data) ||
-    // !("startsAt" in data) ||
-    // !("endsAt" in data)
-    // TODO: ...
-  ) {
-    throw new Error("Invalid session data");
   }
 }
