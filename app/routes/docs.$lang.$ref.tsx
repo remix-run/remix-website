@@ -487,6 +487,8 @@ function VersionWarningMessage({
   branches: string[];
   currentGitHubRef: string;
 }) {
+  let { "*": splat } = useParams();
+
   // Don't want to show release-next in the menu, but we do want to show
   // the branch-warning
   let warning = [...branches, "release-next"].includes(currentGitHubRef)
@@ -496,7 +498,10 @@ function VersionWarningMessage({
   return (
     <>
       {warning}.{" "}
-      <Link to="/docs/en/main" className="underline">
+      <Link
+        to={splat ? `/docs/en/main/${splat}` : "/docs/en/main"}
+        className="underline"
+      >
         View latest
       </Link>
     </>
