@@ -28,7 +28,7 @@ export interface Doc extends Omit<MenuDoc, "hasContent"> {
 
 declare global {
   var menuCache: LRUCache<string, MenuDoc[]>;
-  var docCache: LRUCache<string, Doc | undefined>;
+  var docCache: LRUCache<string, Doc>;
 }
 
 let NO_CACHE = process.env.NO_CACHE;
@@ -55,7 +55,8 @@ export async function getMenu(
   ref: string,
   lang: string
 ): Promise<MenuDoc[] | undefined> {
-  return menuCache.fetch(`${repo}:${ref}`);
+  let menu = await menuCache.fetch(`${repo}:${ref}`);
+  return menu || undefined;
 }
 
 function parseAttrs(
@@ -79,7 +80,7 @@ function parseAttrs(
  * let's have simpler and faster deployments with just one origin server, but
  * still distribute the documents across the CDN.
  */
-global.docCache ??= new LRUCache<string, Doc | undefined>({
+global.docCache ??= new LRUCache<string, Doc>({
   // let docCache = new LRUCache<string, Doc | undefined>({
   max: 300,
   ttl: NO_CACHE ? 1 : 1000 * 60 * 5, // 5 minutes
@@ -88,12 +89,14 @@ global.docCache ??= new LRUCache<string, Doc | undefined>({
   fetchMethod: fetchDoc,
 });
 
-async function fetchDoc(key: string) {
+async function fetchDoc(key: string): Promise<Doc> {
   console.log("Fetching fresh doc", key);
   let [repo, ref, slug] = key.split(":");
   let filename = `docs/${slug}.md`;
   let md = await getRepoContent(repo, ref, filename);
-  if (md === null) return undefined;
+  if (md === null) {
+    throw Error(`Could not find ${filename} in ${repo}@${ref}`);
+  }
   let { html, attributes } = await processMarkdown(md);
   let attrs: MenuDocAttributes = { title: filename };
   if (isPlainObject(attributes)) {
@@ -124,7 +127,7 @@ export async function getDoc(
 ): Promise<Doc | undefined> {
   let key = `${repo}:${ref}:${slug}`;
   let doc = await docCache.fetch(key);
-  return doc;
+  return doc || undefined;
 }
 
 /**

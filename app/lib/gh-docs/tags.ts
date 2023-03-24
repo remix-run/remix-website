@@ -1,17 +1,23 @@
 import LRUCache from "lru-cache";
 import parseLinkHeader from "parse-link-header";
 import semver from "semver";
-import invariant from "tiny-invariant";
-import { octokit } from "./github";
+import type { Octokit } from "octokit";
 
-invariant(process.env.RELEASE_PACKAGE, "RELEASE_PACKAGE is not set");
-const RELEASE_PACKAGE = process.env.RELEASE_PACKAGE;
+type CacheContext = { octokit: Octokit; releasePackage: string };
+declare global {
+  var tagsCache: LRUCache<string, string[], CacheContext>;
+}
 
 /**
  * Fetches the repo tags
  */
-export async function getTags(repo: string) {
-  return tagsCache.fetch(repo);
+export async function getTags(
+  repo: string,
+  { octokit, releasePackage }: CacheContext
+) {
+  return tagsCache.fetch(repo, {
+    context: { octokit, releasePackage },
+  });
 }
 
 export function getLatestVersion(tags: string[]) {
@@ -20,21 +26,17 @@ export function getLatestVersion(tags: string[]) {
   )[0];
 }
 
-declare global {
-  var tagsCache: LRUCache<string, string[]>;
-}
-
 // global for SS "HMR", we need a better story here
-global.tagsCache ??= new LRUCache<string, string[]>({
+global.tagsCache ??= new LRUCache<string, string[], CacheContext>({
   // let tagsCache = new LRUCache<string, string[]>({
   max: 3,
   ttl: 1000 * 60 * 5, // 5 minutes, so we can see new tags quickly
   allowStale: true,
   noDeleteOnFetchRejection: true,
-  fetchMethod: async (key) => {
+  fetchMethod: async (key, _, { context }) => {
     console.log("Fetching fresh tags (releases)");
     let [owner, repo] = key.split("/");
-    return getAllReleases(owner, repo, RELEASE_PACKAGE);
+    return getAllReleases(owner, repo, context.releasePackage, context);
   },
 });
 
@@ -44,8 +46,15 @@ export async function getAllReleases(
   owner: string,
   repo: string,
   primaryPackage: string,
-  page = 1,
-  releases: string[] = []
+  {
+    octokit,
+    page = 1,
+    releases = [],
+  }: {
+    octokit: Octokit;
+    page?: number;
+    releases?: string[];
+  }
 ): Promise<string[]> {
   console.log("Fetching fresh releases, page", page);
   let { data, headers, status } = await octokit.rest.repos.listReleases({
@@ -87,13 +96,11 @@ export async function getAllReleases(
 
   let parsed = parseLinkHeader(headers.link);
   if (parsed?.next) {
-    return await getAllReleases(
-      owner,
-      repo,
-      primaryPackage,
-      page + 1,
-      releases
-    );
+    return await getAllReleases(owner, repo, primaryPackage, {
+      page: page + 1,
+      releases,
+      octokit,
+    });
   }
 
   return releases;

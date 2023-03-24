@@ -2,6 +2,7 @@ import { getDoc, getMenu } from "./docs";
 import { getBranches } from "./branches";
 import { getLatestVersion, getTags } from "./tags";
 import invariant from "tiny-invariant";
+import type { Octokit } from "octokit";
 
 export { validateParams } from "./params";
 export { getRepoTarballStream } from "./repo-tarball";
@@ -15,16 +16,28 @@ invariant(process.env.RELEASE_PACKAGE, "Missing process.env.RELEASE_PACKAGE");
 const REPO = process.env.SOURCE_REPO;
 const RELEASE_PACKAGE = process.env.RELEASE_PACKAGE;
 
-export function getRepoTags() {
-  return getTags(REPO);
+export function getRepoTags({
+  octokit,
+  releasePackage,
+}: {
+  octokit: Octokit;
+  releasePackage: string;
+}) {
+  return getTags(REPO, { octokit, releasePackage });
 }
 
-export function getRepoBranches() {
-  return getBranches(REPO);
+export function getRepoBranches({ octokit }: { octokit: Octokit }) {
+  return getBranches(REPO, { octokit });
 }
 
-export async function getLatestRepoTag(): Promise<string> {
-  let tags = await getTags(REPO);
+export async function getLatestRepoTag({
+  octokit,
+  releasePackage,
+}: {
+  octokit: Octokit;
+  releasePackage: string;
+}): Promise<string> {
+  let tags = await getTags(REPO, { octokit, releasePackage });
   invariant(tags, "Expected tags in getLatestRepoTag");
   return getLatestVersion(tags);
 }

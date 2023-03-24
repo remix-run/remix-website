@@ -8,6 +8,7 @@ node_modules
 /.env
 /.yalc
 yalc.lock
+/.local.tgz
 
 **/gh-docs/__fixture__/tar.tgz
 /NOTES.md

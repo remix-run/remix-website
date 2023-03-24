@@ -7,5 +7,4 @@ if (process.env.NODE_ENV !== "test" && !GITHUB_TOKEN) {
 }
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
-
 export { octokit };

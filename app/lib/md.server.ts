@@ -63,7 +63,7 @@ export async function getProcessor(options?: ProcessorOptions) {
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
-    .use(rehypeSlug, { prefix: "md-" })
+    .use(rehypeSlug)
     .use(rehypeAutolinkHeadings);
 }
 
