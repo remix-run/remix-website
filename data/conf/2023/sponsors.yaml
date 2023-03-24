@@ -20,7 +20,7 @@
 
 - name: "Cockroach Labs"
   link: "https://www.cockroachlabs.com/product"
-  imgSrc: "/conf-images/2023/sponsors/cockroachlabs.png"
+  imgSrc: "/conf-images/2023/sponsors/cockroachlabs.svg"
   level: "silver"
 
 - name: "Seasoned"
@@ -32,6 +32,11 @@
   link: "https://grafbase.com/"
   imgSrc: "/conf-images/2023/sponsors/grafbase.svg"
   level: "silver"
+
+- name: "Edgeio"
+  link: "https://edg.io"
+  imgSrc: "/conf-images/2023/sponsors/edgeio.svg"
+  level: "community"
 
 - name: "Netlify"
   link: "https://www.netlify.com"
