@@ -27,6 +27,7 @@ export async function loader(_: LoaderArgs) {
             schedule.date.toLocaleString("en-US", {
               month: "short",
               day: "numeric",
+              timeZone: "America/Denver",
             })
           ),
           dateISO: schedule.date.toISOString(),
@@ -34,14 +35,16 @@ export async function loader(_: LoaderArgs) {
             weekday: "long",
             month: "long",
             day: "numeric",
+            timeZone: "America/Denver",
           }),
           dateFormattedShort: schedule.date.toLocaleString("en-US", {
             month: "short",
             day: "numeric",
+            timeZone: "America/Denver",
           }),
           sessions: schedule.sessions.map((session) => {
-            let startsAt = session.startsAt ? new Date(session.startsAt) : null;
-            let endsAt = session.endsAt ? new Date(session.endsAt) : null;
+            let startsAt = session.startsAt ? session.startsAt : null;
+            let endsAt = session.endsAt ? session.endsAt : null;
             return {
               ...session,
               speakersFormatted: formatter.format(
