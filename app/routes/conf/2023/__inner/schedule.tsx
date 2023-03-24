@@ -96,14 +96,6 @@ export default function Safety() {
         Remix Conf Schedule
       </h1>
       <div className="flex flex-col gap-10 text-lg lg:text-xl">
-        <p>
-          Get ready for some amazing UX/DX goodness at Remix Conf!
-          <br />
-          <small>
-            (This is a preliminary schedule and is subject to change).
-          </small>
-        </p>
-
         <Tabs
           index={selectedDayIndex === -1 ? 0 : selectedDayIndex}
           onChange={(index) => {
@@ -233,6 +225,12 @@ export default function Safety() {
             ))}
           </TabPanels>
         </Tabs>
+        <p className="mt-10">
+          <small>
+            Please note that this is a preliminary schedule and is subject to
+            change. All changes will be published here ahead of the conference.
+          </small>
+        </p>
       </div>
     </div>
   );
