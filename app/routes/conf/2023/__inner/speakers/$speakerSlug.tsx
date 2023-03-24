@@ -5,7 +5,7 @@ import type {
   MetaFunction,
   HeadersFunction,
 } from "@remix-run/node";
-import { Link, useCatch, useParams, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";

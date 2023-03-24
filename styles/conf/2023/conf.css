@@ -152,3 +152,35 @@
     background-position: 10000px 0;
   }
 }
+
+.schedule-row {
+  grid-template-rows: auto min-content;
+  grid-template-areas:
+    "time img"
+    "heading img"
+    "description description";
+  grid-template-columns: 1fr 3.5rem;
+
+  @media (min-width: 768px) {
+    grid-template-areas:
+      "time heading img"
+      "time description img";
+    grid-template-columns: 9rem 1fr 140px;
+  }
+}
+
+.schedule-row-item--time {
+  grid-area: time;
+}
+
+.schedule-row-item--img {
+  grid-area: img;
+}
+
+.schedule-row-item--heading {
+  grid-area: heading;
+}
+
+.schedule-row-item--description {
+  grid-area: description;
+}

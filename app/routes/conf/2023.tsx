@@ -51,6 +51,14 @@ export const headers: HeadersFunction = () => {
 
 const navItems: Array<HeaderLinkProps> = [
   {
+    to: "/conf/2023#speakers",
+    children: "Speakers",
+  },
+  {
+    to: "schedule",
+    children: "Schedule",
+  },
+  {
     to: "sponsor",
     children: "Become a Sponsor",
   },
