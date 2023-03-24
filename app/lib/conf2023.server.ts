@@ -68,7 +68,6 @@ export async function getSpeakers(
     .map((speaker: unknown) => {
       try {
         validateSessionizeSpeakerData(speaker);
-        console.log(speaker);
       } catch (error) {
         console.warn(
           `Invalid speaker object; skipping.\n\nSee API settings to ensure expected data is included: ${SESSIONIZE_API_DETAILS_URL}\n\n`,
