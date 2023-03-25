@@ -17,7 +17,7 @@ const NO_CACHE =
   process.env.NO_CACHE != null ? process.env.NO_CACHE === "true" : undefined;
 const SPEAKERS_CACHE_KEY = "speakers";
 const SESSIONS_CACHE_KEY = "sessions";
-const SCHEDULES_CACHE_KEY = "sessions";
+const SCHEDULES_CACHE_KEY = "schedules";
 const SESSIONIZE_ENDPOINT = "https://sessionize.com/api/v2/s8ds2hnu";
 const SESSIONIZE_API_DETAILS_URL =
   "https://sessionize.com/app/organizer/schedule/api/endpoint/9617/7818";
