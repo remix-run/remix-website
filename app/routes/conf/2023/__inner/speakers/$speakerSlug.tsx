@@ -64,8 +64,8 @@ export const loader = async ({ params }: LoaderArgs) => {
   if (!speaker) {
     throw json(null, 404);
   }
-  let speakerSessions = allSessions.filter((s) =>
-    s.speakers.some((sp) => sp.id === speaker?.id)
+  let speakerSessions = allSessions.filter((session) =>
+    (session.speakers || []).some((sp) => sp.id === speaker?.id)
   );
   return json(
     {
