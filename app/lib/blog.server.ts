@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import * as dateFns from "date-fns";
+import { DateTime } from "luxon";
 import invariant from "tiny-invariant";
 import LRUCache from "lru-cache";
 import yaml from "yaml";
@@ -99,12 +99,13 @@ function getValidAuthorNames(authors: string[]) {
 }
 
 function formatDate(date: Date) {
-  return dateFns.format(
-    dateFns.add(date, {
-      minutes: new Date().getTimezoneOffset(),
-    }),
-    "PPP"
-  );
+  let offset = new Date().getTimezoneOffset();
+  return DateTime.fromJSDate(date)
+    .plus({ minutes: offset })
+    .setZone("America/Los_Angeles")
+    .toLocaleString(DateTime.DATE_FULL, {
+      locale: "en-US",
+    });
 }
 
 /**

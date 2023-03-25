@@ -7,7 +7,7 @@ import type {
   LoaderArgs,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { getSchedules } from "~/lib/conf2023.server";
+import { formatDate, getSchedules } from "~/lib/conf2023.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { sluggify } from "~/lib/conf";
 
@@ -24,23 +24,20 @@ export async function loader(_: LoaderArgs) {
         return {
           ...schedule,
           dateSlug: sluggify(
-            schedule.date.toLocaleString("en-US", {
+            formatDate(schedule.date, {
               month: "short",
               day: "numeric",
-              timeZone: "America/Denver",
             })
           ),
-          dateISO: schedule.date.toISOString(),
-          dateFormatted: schedule.date.toLocaleString("en-US", {
+          dateISO: schedule.date.toISO(),
+          dateFormatted: formatDate(schedule.date, {
             weekday: "long",
             month: "long",
             day: "numeric",
-            timeZone: "America/Denver",
           }),
-          dateFormattedShort: schedule.date.toLocaleString("en-US", {
+          dateFormattedShort: formatDate(schedule.date, {
             month: "short",
             day: "numeric",
-            timeZone: "America/Denver",
           }),
           sessions: schedule.sessions.map((session) => {
             let startsAt = session.startsAt ? session.startsAt : null;
@@ -50,20 +47,22 @@ export async function loader(_: LoaderArgs) {
               speakersFormatted: formatter.format(
                 session.speakers.map((speaker) => speaker.nameFull)
               ) as string,
-              startsAtISO: startsAt?.toISOString() || null,
-              startsAtFormatted:
-                startsAt?.toLocaleTimeString("en-US", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  timeZone: "America/Denver",
-                }) || null,
-              endsAtISO: endsAt?.toISOString() || null,
-              endsAtFormatted:
-                endsAt?.toLocaleTimeString("en-US", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  timeZone: "America/Denver",
-                }) || null,
+              startsAtISO: startsAt?.toISO() || null,
+              startsAtFormatted: startsAt
+                ? formatDate(startsAt, {
+                    hour: "numeric",
+                    minute: "numeric",
+                    timeZone: "America/Denver",
+                  })
+                : null,
+              endsAtISO: endsAt?.toISO() || null,
+              endsAtFormatted: endsAt
+                ? formatDate(endsAt, {
+                    hour: "numeric",
+                    minute: "numeric",
+                    timeZone: "America/Denver",
+                  })
+                : null,
             };
           }),
         };
@@ -228,11 +227,9 @@ export default function Safety() {
             ))}
           </TabPanels>
         </Tabs>
-        <p className="mt-10">
-          <small>
-            Please note that this is a preliminary schedule and is subject to
-            change. All changes will be published here ahead of the conference.
-          </small>
+        <p className="mx-auto mt-10 max-w-xl text-base text-gray-300">
+          Please note that this is a preliminary schedule and is subject to
+          change. All changes will be published here ahead of the conference.
         </p>
       </div>
     </div>

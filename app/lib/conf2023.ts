@@ -1,3 +1,4 @@
+import type { DateTime } from "luxon";
 import { sluggify } from "~/lib/conf";
 
 export { sluggify };
@@ -68,8 +69,8 @@ export interface SpeakerSession {
   id: string;
   title: string;
   description: string | null;
-  startsAt: Date | null;
-  endsAt: Date | null;
+  startsAt: DateTime | null;
+  endsAt: DateTime | null;
   speakers: Array<{ id: string; slug: string; name: string }>;
 }
 
@@ -78,8 +79,8 @@ export interface ScheduleSession {
   room: string;
   title: string;
   description: string | null;
-  startsAt: Date;
-  endsAt: Date;
+  startsAt: DateTime;
+  endsAt: DateTime;
   speakers: Array<{
     id: string;
     slug: string;
@@ -91,7 +92,7 @@ export interface ScheduleSession {
 }
 
 export interface Schedule {
-  date: Date;
+  date: DateTime;
   sessions: ScheduleSession[];
 }
 

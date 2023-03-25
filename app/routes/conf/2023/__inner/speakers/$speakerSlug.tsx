@@ -74,29 +74,33 @@ export const loader = async ({ params }: LoaderArgs) => {
         sessions: speaker.isEmcee
           ? []
           : speakerSessions.map((session) => {
-              let startsAt = session.startsAt
-                ? new Date(session.startsAt)
-                : null;
-              let endsAt = session.endsAt ? new Date(session.endsAt) : null;
+              let startsAt = session.startsAt || null;
+              let endsAt = session.endsAt || null;
               return {
                 ...session,
-                startsAtISO: startsAt?.toISOString() || null,
+                startsAtISO: startsAt?.toISO() || null,
                 startsAtFormatted:
-                  startsAt?.toLocaleTimeString("en-US", {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                    timeZone: "America/Denver",
-                  }) || null,
-                endsAtISO: endsAt?.toISOString() || null,
+                  startsAt?.toLocaleString(
+                    {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                      timeZone: "America/Denver",
+                    },
+                    { locale: "en-US" }
+                  ) || null,
+                endsAtISO: endsAt?.toISO() || null,
                 endsAtFormatted:
-                  endsAt?.toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    minute: "numeric",
-                    timeZone: "America/Denver",
-                  }) || null,
+                  endsAt?.toLocaleString(
+                    {
+                      hour: "numeric",
+                      minute: "numeric",
+                      timeZone: "America/Denver",
+                    },
+                    { locale: "en-US" }
+                  ) || null,
               };
             }),
       },

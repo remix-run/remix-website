@@ -1,4 +1,5 @@
 import LRUCache from "lru-cache";
+import { DateTime } from "luxon";
 import {
   sluggify,
   validateSessionizeSessionData,
@@ -13,6 +14,7 @@ import type {
   SessionizeSessionData,
 } from "./conf2023";
 
+const CONF_TIME_ZONE = "America/Denver";
 const NO_CACHE =
   process.env.NO_CACHE != null ? process.env.NO_CACHE === "true" : undefined;
 const SPEAKERS_CACHE_KEY = "speakers";
@@ -207,7 +209,7 @@ export async function getSchedules(
         }
 
         let schedule: Schedule = {
-          date: new Date(dailySchedule.date),
+          date: getDateTime(dailySchedule.date),
           sessions: dailySchedule.timeSlots
             .flatMap(
               (timeSlot: {
@@ -247,8 +249,8 @@ export async function getSchedules(
                       ? "Registration"
                       : session.title,
                     description: session.description,
-                    startsAt: new Date(session.startsAt),
-                    endsAt: new Date(session.endsAt),
+                    startsAt: getDateTime(session.startsAt),
+                    endsAt: getDateTime(session.endsAt),
                     speakers: sessionSpeakers,
                   };
                 });
@@ -288,6 +290,21 @@ export async function getSchedules(
   }
 
   return schedules;
+}
+
+function getDateTime(isoDate: string) {
+  return DateTime.fromISO(isoDate, { zone: CONF_TIME_ZONE });
+}
+
+export function formatDate(
+  date: DateTime,
+  opts: Intl.DateTimeFormatOptions
+): string {
+  return (
+    date
+      // .plus({ minutes: new Date().getTimezoneOffset() })
+      .toLocaleString(opts, { locale: "en-US" })
+  );
 }
 
 function modelSpeaker(speaker: SessionizeSpeakerData): Speaker {
@@ -334,8 +351,8 @@ function modelSpeakerSession(session: SessionizeSessionData): SpeakerSession {
   let description = session.description
     ? String(session.description).trim()
     : null;
-  let startsAt = session.startsAt ? new Date(session.startsAt) : null;
-  let endsAt = session.endsAt ? new Date(session.endsAt) : null;
+  let startsAt = session.startsAt ? getDateTime(session.startsAt) : null;
+  let endsAt = session.endsAt ? getDateTime(session.endsAt) : null;
   let speakers =
     session.speakers && Array.isArray(session.speakers)
       ? session.speakers.map((speaker) => {
