@@ -16,7 +16,15 @@ Now you should be good to go:
 npm run dev
 ```
 
-To preview local changes to the `docs` folder in the Remix repo, select "local" from the version dropdown menu on the site. Note that by default this assumes the relative path to your local copy of the Remix docs is `../remix/docs`. This can be configured via `LOCAL_REPO_RELATIVE_PATH` in your `.env` file.
+To preview local changes to the `docs` folder in the Remix repo, select "local" from the version dropdown menu on the site.
+
+There are a couple LRUCache's for talking to GitHub and processing markdown that expire after 5 minutes. If you want them to expire immediately for local development, set the `NO_CACHE` environment variable.
+
+```
+NO_CACHE=1 npm run dev
+```
+
+Note that by default this assumes the relative path to your local copy of the Remix docs is `../remix/docs`. This can be configured via `LOCAL_REPO_RELATIVE_PATH` in your `.env` file.
 
 ## Deployment
 
