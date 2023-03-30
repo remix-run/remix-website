@@ -11,21 +11,22 @@ export type Speaker = {
 
 export type SponsorLevel = "premier" | "gold" | "silver" | "community";
 
-export type Sponsor = {
+export interface Sponsor {
   name: string;
   link: string;
   imgSrc: string;
   level: SponsorLevel;
-};
+  about?: string;
+}
 
-export type Talk = {
+export interface Talk {
   title: string;
   description: string;
   descriptionHTML: string;
   time?: string;
   type: "regular" | "lightning" | "backup";
   speakers: Array<string>;
-};
+}
 
 export type ScheduleItemSpeaker = {
   slug: string;
@@ -68,14 +69,19 @@ export function isSpeaker(obj: any): obj is Speaker {
   );
 }
 
-export function isSponsor(obj: any): obj is Sponsor {
-  return (
+export function isSponsor(obj: unknown): obj is Sponsor {
+  return !!(
     obj &&
     typeof obj === "object" &&
-    obj.name &&
-    obj.link &&
-    obj.imgSrc &&
-    ["premier", "gold", "silver", "community"].includes(obj.level)
+    "name" in obj &&
+    typeof obj.name === "string" &&
+    "link" in obj &&
+    typeof obj.link === "string" &&
+    "imgSrc" in obj &&
+    typeof obj.imgSrc === "string" &&
+    (!("about" in obj) || typeof obj.about === "string") &&
+    "level" in obj &&
+    ["premier", "gold", "silver", "community"].includes(obj.level as string)
   );
 }
 

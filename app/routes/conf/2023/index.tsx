@@ -242,8 +242,30 @@ function EarlySponsors() {
                   Premier Sponsor
                 </h3>
                 <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
-                  <GridCell type="sponsor">
-                    <GridCellLink to={premierSponsor.link}>
+                  {premierSponsor.about ? (
+                    <GridCell order={2}>
+                      <div className="h-full space-y-4 p-6 font-sans text-lg font-semibold text-gray-200 sm:p-8 lg:space-y-6 lg:p-14 lg:text-xl 2xl:space-y-8 2xl:p-16 2xl:text-2xl 2xl:leading-[1.675]">
+                        {premierSponsor.about.split("\n").map((line) => {
+                          line = line.trim();
+                          if (!line) return null;
+                          return <p key={line}>{line}</p>;
+                        })}
+                        <p>
+                          <a
+                            href={premierSponsor.link}
+                            className="text-blue-400 hover:text-blue-500 hover:underline active:text-blue-500"
+                          >
+                            Visit {premierSponsor.name}
+                          </a>
+                        </p>
+                      </div>
+                    </GridCell>
+                  ) : null}
+                  <GridCell type="sponsor" order={1}>
+                    <GridCellLink
+                      to={premierSponsor.link}
+                      tabIndex={premierSponsor.about ? -1 : undefined}
+                    >
                       <div className="flex w-full p-12 md:p-14 lg:p-16 2xl:p-20">
                         <span className="sr-only">{premierSponsor.name}</span>
                         <img
@@ -355,10 +377,12 @@ function EarlySponsors() {
 function GridCell({
   children,
   bgColor = "default",
+  order,
   type,
 }: React.PropsWithChildren<{
   bgColor?: "default" | "blue";
   type?: "sponsor" | "speaker";
+  order?: 1 | 2;
 }>) {
   return (
     <div
@@ -366,6 +390,8 @@ function GridCell({
         "bg-gray-900": bgColor === "default",
         "bg-blue-brand": bgColor === "blue",
         "sm:aspect-1": type === "sponsor",
+        "order-1": order === 1,
+        "order-2": order === 2,
       })}
     >
       {children}
@@ -380,6 +406,7 @@ function GridCellLink({
   label,
   labelledBy,
   describedBy,
+  tabIndex,
 }: {
   to: string;
   children: React.ReactNode;
@@ -387,10 +414,12 @@ function GridCellLink({
   label?: string;
   labelledBy?: string;
   describedBy?: string;
+  tabIndex?: number;
 }) {
   return (
     <Link
       to={to}
+      tabIndex={tabIndex}
       className={cx(
         "group/link flex h-full w-full justify-center rounded-[inherit] border-[1px] border-transparent outline-offset-2 outline-blue-brand transition-colors focus-visible:outline focus-visible:outline-2",
         {
