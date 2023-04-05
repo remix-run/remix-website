@@ -11,6 +11,7 @@ import { Header } from "~/ui/header";
 import { Subscribe } from "~/ui/subscribe";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { getBlogPostListings } from "~/lib/blog.server";
+import { twObjectPosition } from "~/lib/tailwind-utils";
 
 export let meta: MetaFunction = () => {
   return {
@@ -52,7 +53,9 @@ export default function Blog() {
               <Link to={latestPost.slug} prefetch="intent">
                 <div className="aspect-h-9 aspect-w-16 mb-6">
                   <img
-                    className="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
+                    className={`mb-6 h-full w-full object-cover ${twObjectPosition(
+                      latestPost.imagePosition || "top"
+                    )} shadow md:rounded-md`}
                     src={latestPost.image}
                     alt={latestPost.imageAlt}
                   />
@@ -70,7 +73,9 @@ export default function Blog() {
                   <Link to={post.slug} prefetch="intent">
                     <div className="aspect-h-9 aspect-w-16 mb-6">
                       <img
-                        className="h-full w-full object-cover object-top shadow md:rounded-md"
+                        className={`h-full w-full object-cover ${twObjectPosition(
+                          latestPost.imagePosition || "top"
+                        )} shadow md:rounded-md`}
                         src={post.image}
                         alt={post.imageAlt}
                       />

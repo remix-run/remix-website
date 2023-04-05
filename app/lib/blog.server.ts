@@ -123,6 +123,8 @@ function isMarkdownPostFrontmatter(obj: any): obj is MarkdownPost {
       typeof obj.featured === "undefined") &&
     obj.image &&
     obj.imageAlt &&
+    (typeof obj.imagePosition === "undefined" ||
+      ["top", "center", "bottom"].includes(obj.imagePosition)) &&
     Array.isArray(obj.authors)
   );
 }
@@ -134,6 +136,7 @@ interface MarkdownPostListing {
   dateDisplay: string;
   image: string;
   imageAlt: string;
+  imagePosition?: "top" | "center" | "bottom";
   featured?: boolean;
 }
 
@@ -149,6 +152,7 @@ interface MarkdownPost {
   featured?: boolean;
   image: string;
   imageAlt: string;
+  imagePosition?: "top" | "center" | "bottom";
   authors: string[];
   html: string;
 }

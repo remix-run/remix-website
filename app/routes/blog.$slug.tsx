@@ -15,6 +15,7 @@ import { CACHE_CONTROL } from "~/lib/http.server";
 import { Header } from "~/ui/header";
 import { Footer } from "~/ui/footer";
 import { Subscribe } from "~/ui/subscribe";
+import { twObjectPosition } from "~/lib/tailwind-utils";
 
 export let loader = async ({ params, request }: LoaderArgs) => {
   let { slug } = params;
@@ -89,7 +90,7 @@ export default function BlogPost() {
     <div className="flex h-full flex-1 flex-col">
       <Header to="/blog" />
       {post.draft ? (
-        <div className="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 py-3 px-5 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">
+        <div className="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 px-5 py-3 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">
           🚨 This is a draft, please do not share this page until it's
           officially published 🚨
         </div>
@@ -100,7 +101,9 @@ export default function BlogPost() {
             <div className="relative h-[280px] bg-gray-900 md:mx-auto md:h-[400px] md:max-w-3xl md:rounded-xl xl:h-[480px]">
               <div className="absolute inset-0">
                 <img
-                  className="h-full w-full object-cover object-top opacity-40 md:rounded-xl"
+                  className={`h-full w-full object-cover ${twObjectPosition(
+                    post.imagePosition || "top"
+                  )} opacity-40 md:rounded-xl`}
                   src={post.image}
                   alt={post.imageAlt}
                 />
