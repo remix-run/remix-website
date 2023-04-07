@@ -55,3 +55,8 @@
   link: "https://appwrite.io"
   imgSrc: "/conf-images/2023/sponsors/appwrite.svg"
   level: "community"
+
+- name: "Catchpoint"
+  link: "https://www.catchpoint.com"
+  imgSrc: "/conf-images/2023/sponsors/catchpoint.svg"
+  level: "community"
