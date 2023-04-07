@@ -2,6 +2,9 @@
   link: "https://fly.io"
   imgSrc: "/conf-images/2023/sponsors/fly.svg"
   level: "premier"
+  about: |
+    Fly.io is a globally distributed cloud platform that makes it easy to deploy and scale your apps. Fly is built on top of the open source Flyctl CLI and the Fly Machines API.
+    Fly is a proud sponsor of the Remix community.
 
 - name: "Vercel"
   link: "https://vercel.com"
