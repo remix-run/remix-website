@@ -4,7 +4,7 @@ import {
   getImageContentType,
 } from "~/lib/social-image.server";
 
-export let loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
   let requestUrl = new URL(request.url);
   let searchParams = new URLSearchParams(requestUrl.search);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;

@@ -10,7 +10,7 @@ export type TweetData = {
   avatar: string;
 };
 
-export let tweets: TweetData[] = [
+export const tweets: TweetData[] = [
   {
     href: "https://twitter.com/jjenzz/status/1459941582912827398",
     username: "jjenzz",
