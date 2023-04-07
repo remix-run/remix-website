@@ -1,13 +1,25 @@
+const { createRoutesFromFolders } = require("@remix-run/v1-route-convention");
+
 /**
- * @type {import('@remix-run/dev/config').AppConfig}
+ * @type {import('@remix-run/dev').AppConfig}
  */
 const config = {
-  ignoredRouteFiles: [
-    ".*",
-    "_ui/**/*",
-    "_ui.(js|jsx|tsx)",
-    "*.ui.(js|jsx|tsx)",
-  ],
+  ignoredRouteFiles: ["**/*"],
   devServerBroadcastDelay: 500,
+  routes: (defineRoutes) =>
+    createRoutesFromFolders(defineRoutes, {
+      ignoredFilePatterns: [
+        ".*",
+        "_ui/**/*",
+        "_ui.(js|jsx|tsx)",
+        "*.ui.(js|jsx|tsx)",
+      ],
+    }),
+  future: {
+    v2_meta: true,
+    v2_routeConvention: true,
+    v2_normalizeFormMethod: true,
+    v2_errorBoundary: true,
+  },
 };
 module.exports = config;

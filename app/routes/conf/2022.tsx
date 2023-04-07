@@ -24,9 +24,9 @@ import {
   SubscribeSubmit,
 } from "~/ui/subscribe";
 
-export let handle = { forceDark: true };
+export const handle = { forceDark: true };
 
-export let links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: styles },
     { rel: "stylesheet", href: stylesSm, media: "(min-width: 640px)" },

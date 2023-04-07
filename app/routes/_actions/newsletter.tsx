@@ -3,7 +3,7 @@ import type { ActionArgs } from "@remix-run/node";
 import { subscribeToNewsletter } from "~/lib/convertkit";
 import { requirePost } from "~/lib/http.server";
 
-export let action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionArgs) => {
   requirePost(request);
 
   let body = new URLSearchParams(await request.text());

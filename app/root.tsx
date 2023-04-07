@@ -1,15 +1,16 @@
 import * as React from "react";
 import {
+  isRouteErrorResponse,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useCatch,
   useLoaderData,
   useMatches,
 } from "@remix-run/react";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type { LoaderArgs } from "@remix-run/node";
 import {
@@ -28,6 +29,7 @@ import { parseColorScheme } from "~/lib/color-scheme.server";
 import iconsHref from "~/icons.svg";
 import { canUseDOM } from "~/lib/misc";
 import cx from "clsx";
+import { metaV1 } from "@remix-run/v1-meta";
 
 declare global {
   var __env: {
@@ -50,6 +52,7 @@ export async function loader({ request }: LoaderArgs) {
   return json(
     {
       colorScheme,
+      isProductionHost: !isDevHost,
       noIndex:
         isDevHost ||
         url.pathname === "/docs/en/v1/api/remix" ||
@@ -89,6 +92,12 @@ export function links() {
   ];
 }
 
+export const meta: MetaFunction<typeof loader> = (args) => {
+  return metaV1(args, {
+    viewport: "width=device-width,initial-scale=1,viewport-fit=cover",
+  });
+};
+
 interface DocumentProps {
   title?: string;
   forceDark?: boolean;
@@ -125,10 +134,6 @@ function Document({
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#121212" />
         {noIndex && <meta name="robots" content="noindex" />}
-        <meta
-          name="viewport"
-          content="width=device-width,initial-scale=1,viewport-fit=cover"
-        />
         <Links />
         <Meta />
         {title && <title data-title-override="">{title}</title>}
@@ -190,10 +195,34 @@ export default function App() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
+export function ErrorBoundary({ error }: { error: unknown }) {
   if (!canUseDOM) {
     console.error(error);
   }
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <Document
+        noIndex
+        title={error.statusText}
+        forceDark
+        darkBg="bg-blue-brand"
+      >
+        <div className="flex flex-1 flex-col justify-center text-white">
+          <div className="text-center leading-none">
+            <h1 className="font-mono text-[25vw]">{error.status}</h1>
+            <a
+              className="inline-block text-[8vw] underline"
+              href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${error.status}`}
+            >
+              {error.statusText}
+            </a>
+          </div>
+        </div>
+      </Document>
+    );
+  }
+
   return (
     <Document noIndex title="Error" forceDark darkBg="bg-red-brand">
       <div className="flex flex-1 flex-col justify-center text-white">
@@ -202,30 +231,6 @@ export function ErrorBoundary({ error }: { error: Error }) {
           <div className="text-3xl">
             Something went wrong! Please try again later.
           </div>
-        </div>
-      </div>
-    </Document>
-  );
-}
-
-export function CatchBoundary() {
-  let caught = useCatch();
-  return (
-    <Document
-      noIndex
-      title={caught.statusText}
-      forceDark
-      darkBg="bg-blue-brand"
-    >
-      <div className="flex flex-1 flex-col justify-center text-white">
-        <div className="text-center leading-none">
-          <h1 className="font-mono text-[25vw]">{caught.status}</h1>
-          <a
-            className="inline-block text-[8vw] underline"
-            href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${caught.status}`}
-          >
-            {caught.statusText}
-          </a>
         </div>
       </div>
     </Document>

@@ -1,10 +1,14 @@
-import type { HeadersFunction, MetaFunction } from "@remix-run/node";
+import type { HeadersFunction } from "@remix-run/node";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import { metaV1 } from "@remix-run/v1-meta";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
-export const meta: MetaFunction = () => ({
-  title: "Remix Conf Code of Conduct",
-  description: "Adapted from confcodeofconduct.com",
-});
+export const meta: MetaFunction = (args) => {
+  return metaV1(args, {
+    title: "Remix Conf Code of Conduct",
+    description: "Adapted from confcodeofconduct.com",
+  });
+};
 
 export const headers: HeadersFunction = () => {
   return {

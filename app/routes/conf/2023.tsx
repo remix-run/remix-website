@@ -27,9 +27,9 @@ import {
 } from "~/ui/subscribe";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
-export let handle = { forceDark: true };
+export const handle = { forceDark: true };
 
-export let links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 

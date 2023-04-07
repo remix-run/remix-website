@@ -1,10 +1,8 @@
-import type {
-  HeadersFunction,
-  LoaderArgs,
-  MetaFunction,
-} from "@remix-run/node";
+import type { HeadersFunction, LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
+import { metaV1 } from "@remix-run/v1-meta";
 import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/lib/blog.server";
@@ -16,7 +14,7 @@ import { Header } from "~/ui/header";
 import { Footer } from "~/ui/footer";
 import { Subscribe } from "~/ui/subscribe";
 
-export let loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
   let requestUrl = new URL(request.url);
@@ -39,15 +37,16 @@ export function links() {
   return [{ rel: "stylesheet", href: mdStyles }];
 }
 
-export let meta: MetaFunction<typeof loader> = ({ data, params }) => {
+export const meta: MetaFunction<typeof loader> = (args) => {
+  let { data, params } = args;
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
 
   let { siteUrl, post } = data || {};
   if (!post) {
-    return {
+    return metaV1(args, {
       title: "404 Not Found | Remix",
-    };
+    });
   }
 
   let socialImageUrl = siteUrl
@@ -63,7 +62,7 @@ export let meta: MetaFunction<typeof loader> = ({ data, params }) => {
 
   let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
 
-  return {
+  return metaV1(args, {
     title: post.title + " | Remix",
     description: post.summary,
     "og:url": url,
@@ -77,7 +76,7 @@ export let meta: MetaFunction<typeof loader> = ({ data, params }) => {
     "twitter:description": post.summary,
     "twitter:image": socialImageUrl || undefined,
     "twitter:image:alt": socialImageUrl ? post.imageAlt : undefined,
-  };
+  });
 };
 
 export default function BlogPost() {

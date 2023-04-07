@@ -154,18 +154,25 @@ function SubscribeSubmit({
 
 function SubscribeStatus() {
   let { fetcher: subscribe } = useSubscribeContext();
+  let { isSuccessful } =
+    subscribe.state === "idle" && subscribe.data?.ok
+      ? { isSuccessful: true }
+      : { isSuccessful: false };
+  let { isError, error } =
+    subscribe.state === "idle" && subscribe.data?.error
+      ? { isError: true, error: subscribe.data.error }
+      : { isError: false, error: null };
+
   return (
     <div aria-live="polite" className="py-2">
-      {subscribe.type === "done" && subscribe.data?.ok && (
+      {isSuccessful && (
         <div className="text-white">
           <b className="text-green-brand">Got it!</b> Please go{" "}
           <b className="text-red-brand">check your email</b> to confirm your
           subscription, otherwise you won't get our email.
         </div>
       )}
-      {subscribe.type === "done" && subscribe.data?.error && (
-        <div className="text-red-brand">{subscribe.data?.error}</div>
-      )}
+      {isError && <div className="text-red-brand">{error}</div>}
     </div>
   );
 }

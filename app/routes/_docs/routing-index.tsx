@@ -1,7 +1,7 @@
 import { BrowserChrome } from "~/ui/browser-chrome";
 import * as Fakebooks from "~/ui/fakebooks";
 
-export let handle = { forceDark: true };
+export const handle = { forceDark: true };
 
 export default function RoutingIndex() {
   return (

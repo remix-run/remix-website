@@ -1,11 +1,17 @@
 import type {
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
   HeadersFunction,
 } from "@remix-run/node";
-import { Link, useCatch, useParams, useLoaderData } from "@remix-run/react";
+import {
+  Link,
+  useParams,
+  useLoaderData,
+  isRouteErrorResponse,
+} from "@remix-run/react";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
+import { metaV1 } from "@remix-run/v1-meta";
 import { getSpeakers, getTalks } from "~/lib/conf.server";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
 import { sluggify } from "~/lib/conf";
@@ -16,22 +22,22 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: speakersStylesUrl }];
 };
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  if (data) {
-    const { speaker, talks } = data;
-    return {
+export const meta: MetaFunction<typeof loader> = (args) => {
+  if (args.data) {
+    const { speaker, talks } = args.data;
+    return metaV1(args, {
       title: `${speaker.name} at Remix Conf`,
       description: `${speaker.name} (${
         speaker.title
       }) is speaking at Remix Conf: ${talks
         .map((t) => `"${t.title}"`)
         .join(", ")}`,
-    };
+    });
   }
-  return {
+  return metaV1(args, {
     title: "Missing Speaker",
     description: "There is no speaker info at this URL.",
-  };
+  });
 };
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -129,27 +135,29 @@ export default function SpeakerRoute() {
   );
 }
 
-export function CatchBoundary() {
-  const caught = useCatch();
-  const params = useParams();
+export function ErrorBoundary({ error }: { error: unknown }) {
+  let params = useParams();
 
-  if (caught.status === 404) {
-    return (
-      <div>
-        <h1 className="mb-10 font-mono text-3xl text-white sm:text-5xl xl:text-7xl">
-          Speaker not found
-        </h1>
-        <div className="container text-lg text-white lg:text-xl">
-          <p>
-            No speaker found with the slug "{params.speakerSlug}".{" "}
-            <Link to="../speakers/you" className="underline">
-              Would you like to speak?
-            </Link>
-          </p>
+  if (isRouteErrorResponse(error)) {
+    if (error.status === 404) {
+      return (
+        <div>
+          <h1 className="mb-10 font-mono text-3xl text-white sm:text-5xl xl:text-7xl">
+            Speaker not found
+          </h1>
+          <div className="container text-lg text-white lg:text-xl">
+            <p>
+              No speaker found with the slug "{params.speakerSlug}".{" "}
+              <Link to="../speakers/you" className="underline">
+                Would you like to speak?
+              </Link>
+            </p>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    throw new Error(`Unexpected caught response with status: ${error.status}`);
   }
 
-  throw new Error(`Unexpected caught response with status: ${caught.status}`);
+  throw error;
 }

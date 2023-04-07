@@ -10,14 +10,15 @@ import {
   useParams,
   useResolvedPath,
 } from "@remix-run/react";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { matchPath } from "react-router-dom";
 import { json, redirect } from "@remix-run/node";
 import type {
   LoaderArgs,
-  MetaFunction,
   LinksFunction,
   HeadersFunction,
 } from "@remix-run/node";
+import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
 import { DocSearch } from "@docsearch/react";
 import docsearchStylesheet from "@docsearch/css/dist/style.css";
@@ -40,7 +41,7 @@ import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
 import { RELEASE_PACKAGE } from "~/lib/env.server";
 
-export let loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
 
   let branchesInMenu = ["main", "dev"];
@@ -77,7 +78,7 @@ export let loader = async ({ params }: LoaderArgs) => {
   });
 };
 
-export let links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: markdownStyles },
     { rel: "stylesheet", href: docsearchStylesheet },
@@ -85,14 +86,14 @@ export let links: LinksFunction = () => {
   ];
 };
 
-export let meta: MetaFunction = ({ params }) => {
-  return {
-    "docsearch:language": params.lang || "en",
-    "docsearch:version": params.ref || "v1",
-  };
+export const meta: MetaFunction<typeof loader> = (args) => {
+  return metaV1(args, {
+    "docsearch:language": args.params.lang || "en",
+    "docsearch:version": args.params.ref || "v1",
+  });
 };
 
-export let headers: HeadersFunction = () => {
+export const headers: HeadersFunction = () => {
   return { "Cache-Control": "max-age=300" };
 };
 
@@ -668,7 +669,7 @@ function DetailsPopup({ children }: { children: React.ReactNode }) {
  * An enhanced `<details>` component that's intended to be used as a menu (a bit
  * like a menu-button).
  */
-export let DetailsMenu = React.forwardRef<
+export const DetailsMenu = React.forwardRef<
   HTMLDetailsElement,
   React.ComponentPropsWithRef<"details">
 >(({ ...props }, forwardedRef) => {

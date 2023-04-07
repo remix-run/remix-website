@@ -1,19 +1,19 @@
-import type {
-  HeadersFunction,
-  LoaderFunction,
-  MetaFunction,
-} from "@remix-run/node";
+import type { HeadersFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import { metaV1 } from "@remix-run/v1-meta";
 import { getSchedule } from "~/lib/conf.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { sluggify } from "~/lib/conf";
 import { InnerLayout } from "../_ui";
 
-export const meta: MetaFunction = () => ({
-  title: "May 25th at Remix Conf",
-  description: "May 25th is the day of the conference at Remix Conf.",
-});
+export const meta: MetaFunction = (args) => {
+  return metaV1(args, {
+    title: "May 25th at Remix Conf",
+    description: "May 25th is the day of the conference at Remix Conf.",
+  });
+};
 
 type LoaderData = { scheduleItems: Awaited<ReturnType<typeof getSchedule>> };
 

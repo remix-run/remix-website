@@ -2,7 +2,7 @@ import { Outlet } from "@remix-run/react";
 import type { HeadersFunction } from "@remix-run/node";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
-export let handle = { forceDark: true };
+export const handle = { forceDark: true };
 
 export const headers: HeadersFunction = () => {
   return {

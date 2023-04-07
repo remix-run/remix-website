@@ -22,10 +22,12 @@
   "dependencies": {
     "@docsearch/css": "^3.3.2",
     "@docsearch/react": "^3.3.2",
-    "@remix-run/express": "^1.14.3",
-    "@remix-run/node": "^1.14.3",
-    "@remix-run/react": "^1.14.3",
-    "@remix-run/serve": "^1.14.3",
+    "@remix-run/express": "^1.15.0",
+    "@remix-run/node": "^1.15.0",
+    "@remix-run/react": "^1.15.0",
+    "@remix-run/serve": "^1.15.0",
+    "@remix-run/v1-meta": "0.1.0-pre.2",
+    "@remix-run/v1-route-convention": "0.1.0-pre.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "accept-language": "^3.0.18",
     "cheerio": "^1.0.0-rc.12",
@@ -77,8 +79,8 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.14.3",
-    "@remix-run/eslint-config": "1.14.3",
+    "@remix-run/dev": "^1.15.0",
+    "@remix-run/eslint-config": "^1.15.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@types/follow-redirects": "^1.14.1",
     "@types/gunzip-maybe": "^1.4.0",
@@ -116,6 +118,8 @@
     "node": ">=18"
   },
   "overrides": {
-    "esbuild": "0.16.17"
+    "@remix-run/dev": "^1.15.0",
+    "@remix-run/react": "^1.15.0",
+    "@remix-run/server-runtime": "^1.15.0"
   }
 }

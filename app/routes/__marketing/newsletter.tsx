@@ -1,15 +1,17 @@
-import { useTransition, useActionData } from "@remix-run/react";
+import { useNavigation, useActionData } from "@remix-run/react";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Subscribe } from "~/ui/subscribe";
+import { metaV1 } from "@remix-run/v1-meta";
 
-export function meta() {
-  return {
+export const meta: MetaFunction = (args) => {
+  return metaV1(args, {
     title: "Remix Newsletter",
-  };
-}
+  });
+};
 
 export default function Newsletter() {
-  let transition = useTransition();
+  let navigation = useNavigation();
   let actionData = useActionData();
   let inputRef = useRef<HTMLInputElement>(null);
 
@@ -18,10 +20,10 @@ export default function Newsletter() {
   }, []);
 
   useEffect(() => {
-    if (transition.state === "idle" && actionData?.ok && inputRef.current) {
+    if (navigation.state === "idle" && actionData?.ok && inputRef.current) {
       inputRef.current.value = "";
     }
-  }, [transition.state, actionData]);
+  }, [navigation.state, actionData]);
 
   return (
     <div

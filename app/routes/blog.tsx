@@ -1,23 +1,21 @@
 import * as React from "react";
-import type {
-  HeadersFunction,
-  LoaderArgs,
-  MetaFunction,
-} from "@remix-run/node";
+import type { HeadersFunction, LoaderArgs } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
+import { metaV1 } from "@remix-run/v1-meta";
 import { Footer } from "~/ui/footer";
 import { Header } from "~/ui/header";
 import { Subscribe } from "~/ui/subscribe";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { getBlogPostListings } from "~/lib/blog.server";
 
-export let meta: MetaFunction = () => {
-  return {
+export const meta: MetaFunction = (args) => {
+  return metaV1(args, {
     title: "Remix Blog",
     description:
       "Thoughts about building excellent user experiences with Remix.",
-  };
+  });
 };
 
 export const loader = async (_: LoaderArgs) => {

@@ -2,11 +2,12 @@ import * as React from "react";
 import type {
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
   HeadersFunction,
 } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
+import { metaV1 } from "@remix-run/v1-meta";
+import { useLoaderData } from "@remix-run/react";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { getSpeakerBySlug, getConfSessions } from "~/lib/conf2023.server";
@@ -17,22 +18,22 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: speakersStylesUrl }];
 };
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  if (data) {
-    let { speaker /*, talks */ } = data;
-    return {
+export const meta: MetaFunction<typeof loader> = (args) => {
+  if (args.data) {
+    let { speaker /*, talks */ } = args.data;
+    return metaV1(args, {
       title: `${speaker.nameFull} at Remix Conf`,
       //   description: `${speaker.name} (${
       //     speaker.title
       //   }) is speaking at Remix Conf: ${talks
       //     .map((t) => `"${t.title}"`)
       //     .join(", ")}`,
-    };
+    });
   }
-  return {
+  return metaV1(args, {
     title: "Missing Speaker",
     description: "There is no speaker info at this URL.",
-  };
+  });
 };
 
 export const loader = async ({ params }: LoaderArgs) => {

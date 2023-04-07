@@ -48,7 +48,7 @@ function handleStaticFileRequests(param: string | undefined) {
   }
 }
 
-export let loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
   handleRedirects(request);
   handleStaticFileRequests(params["*"]);
 

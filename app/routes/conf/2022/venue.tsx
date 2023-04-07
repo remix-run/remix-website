@@ -1,19 +1,19 @@
 import * as React from "react";
-import type {
-  MetaFunction,
-  LoaderArgs,
-  HeadersFunction,
-} from "@remix-run/node";
+import type { LoaderArgs, HeadersFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { useLoaderData, Link } from "@remix-run/react";
+import { metaV1 } from "@remix-run/v1-meta";
 import { primaryButtonLinkClass } from "~/ui/buttons";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "./_ui";
 
-export const meta: MetaFunction = () => ({
-  title: "Remix Conf Venue",
-  description: "Remix Conf in Salt Lake City, Utah at the Sheraton Hotel",
-});
+export const meta: MetaFunction = (args) => {
+  return metaV1(args, {
+    title: "Remix Conf Venue",
+    description: "Remix Conf in Salt Lake City, Utah at the Sheraton Hotel",
+  });
+};
 
 export const headers: HeadersFunction = () => {
   return {

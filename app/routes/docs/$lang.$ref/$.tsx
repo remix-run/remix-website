@@ -1,12 +1,18 @@
 import * as React from "react";
-import { useLoaderData, useMatches, useParams } from "@remix-run/react";
+import {
+  isRouteErrorResponse,
+  useLoaderData,
+  useMatches,
+  useParams,
+} from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type {
   HeadersFunction,
   LoaderArgs,
-  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import { metaV1, getMatchesData } from "@remix-run/v1-meta";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import invariant from "tiny-invariant";
 import type { Doc } from "~/lib/gh-docs";
@@ -15,6 +21,7 @@ import iconsHref from "~/icons.svg";
 import cx from "clsx";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import type { loader as docsLayoutLoader } from "~/routes/docs/$lang.$ref";
+import type { loader as rootLoader } from "~/root";
 
 export async function loader({ params, request }: LoaderArgs) {
   let url = new URL(request.url);
@@ -32,7 +39,7 @@ export async function loader({ params, request }: LoaderArgs) {
   }
 }
 
-export let headers: HeadersFunction = () => {
+export const headers: HeadersFunction = () => {
   return {
     "Cache-Control": CACHE_CONTROL.doc,
     Vary: "Cookie",
@@ -41,15 +48,25 @@ export let headers: HeadersFunction = () => {
 
 const LAYOUT_LOADER_KEY = "routes/docs/$lang.$ref";
 
-export let meta: MetaFunction<
+export const meta: MetaFunction<
   typeof loader,
-  { [LAYOUT_LOADER_KEY]: typeof docsLayoutLoader }
-> = ({ data, parentsData }) => {
-  if (!data) return { title: "Not Found" };
-  let parentData = parentsData[LAYOUT_LOADER_KEY];
-  if (!parentData) return {};
+  {
+    [LAYOUT_LOADER_KEY]: typeof docsLayoutLoader;
+    root: typeof rootLoader;
+  }
+> = (args) => {
+  let { data } = args;
+  let matchesData = getMatchesData(args);
+  let parentData = matchesData[LAYOUT_LOADER_KEY];
+  if (!data) {
+    return metaV1(args, {
+      title: "Not Found",
+    });
+  }
+  if (!parentData) {
+    return metaV1(args, {});
+  }
 
-  let rootData = parentsData["root"];
   let { doc } = data;
   let { latestVersion, releaseBranch, branches, currentGitHubRef } = parentData;
 
@@ -67,6 +84,7 @@ export let meta: MetaFunction<
   // seo: only want to index the main branch
   let isMainBranch = currentGitHubRef === releaseBranch;
 
+  let rootData = matchesData.root;
   let robots =
     rootData.isProductionHost && isMainBranch
       ? "index,follow"
@@ -83,7 +101,7 @@ export let meta: MetaFunction<
   // let twitterImageAlt = title;
   // let description: 'some description';
 
-  return {
+  return metaV1(args, {
     title: `${title} | Remix`,
     // description,
 
@@ -110,7 +128,7 @@ export let meta: MetaFunction<
 
     robots: robots,
     googlebot: robots,
-  };
+  });
 };
 
 export default function DocPage() {
@@ -200,14 +218,23 @@ function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   );
 }
 
-export function CatchBoundary() {
+export function ErrorBoundary({ error }: { error: unknown }) {
   let params = useParams();
-  return (
-    <div className="flex h-[50vh] flex-col items-center justify-center">
-      <h1 className="text-9xl font-bold">404</h1>
-      <p className="text-lg">
-        There is no doc for <i className="text-gray-500">{params["*"]}</i>
-      </p>
-    </div>
-  );
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div className="flex h-[50vh] flex-col items-center justify-center">
+        <h1 className="text-9xl font-bold">{error.status}</h1>
+        <p className="text-lg">
+          {error.status === 400 ? (
+            <>
+              There is no doc for <i className="text-gray-500">{params["*"]}</i>
+            </>
+          ) : (
+            error.statusText
+          )}
+        </p>
+      </div>
+    );
+  }
+  throw error;
 }

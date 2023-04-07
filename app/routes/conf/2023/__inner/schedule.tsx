@@ -1,12 +1,10 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "~/ui/primitives/tabs";
 import { useLoaderData, useLocation, useNavigate } from "@remix-run/react";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import cx from "clsx";
-import type {
-  MetaFunction,
-  HeadersFunction,
-  LoaderArgs,
-} from "@remix-run/node";
+import type { HeadersFunction, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { metaV1 } from "@remix-run/v1-meta";
 import { formatDate, getSchedules } from "~/lib/conf2023.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { sluggify } from "~/lib/conf";
@@ -72,10 +70,12 @@ export async function loader(_: LoaderArgs) {
   );
 }
 
-export const meta: MetaFunction = () => ({
-  title: "Remix Conf Schedule",
-  description: "What's happening and when at Remix Conf",
-});
+export const meta: MetaFunction = (args) => {
+  return metaV1(args, {
+    title: "Remix Conf Schedule",
+    description: "What's happening and when at Remix Conf",
+  });
+};
 
 export const headers: HeadersFunction = () => {
   return {

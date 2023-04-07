@@ -1,11 +1,15 @@
-import type { HeadersFunction, MetaFunction } from "@remix-run/node";
+import type { HeadersFunction } from "@remix-run/node";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import { metaV1 } from "@remix-run/v1-meta";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "./_ui";
 
-export const meta: MetaFunction = () => ({
-  title: "Remix Conf Sponsorship",
-  description: "Sponsorship opportunities for Remix Conf.",
-});
+export const meta: MetaFunction = (args) => {
+  return metaV1(args, {
+    title: "Remix Conf Sponsorship",
+    description: "Sponsorship opportunities for Remix Conf.",
+  });
+};
 
 export const headers: HeadersFunction = () => {
   return {

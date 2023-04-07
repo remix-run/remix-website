@@ -4,8 +4,9 @@ import type {
   HeadersFunction,
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
 } from "@remix-run/node";
+import { metaV1 } from "@remix-run/v1-meta";
+import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { OutlineButtonLink, primaryButtonLinkClass } from "~/ui/buttons";
 import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
@@ -14,14 +15,14 @@ import { getSpeakers, getSponsors } from "~/lib/conf.server";
 import { Link } from "~/ui/link";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  let { siteUrl } = data || {};
+export const meta: MetaFunction<typeof loader> = (args) => {
+  let { siteUrl } = args.data || {};
   let url = siteUrl ? `${siteUrl}/conf` : null;
   let title = "Remix Conf - May 24-25, 2022";
   let image = siteUrl ? `${siteUrl}/conf-images/og.1.png` : null;
   let description =
     "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!";
-  return {
+  return metaV1(args, {
     title,
     description,
     "og:url": url,
@@ -34,10 +35,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     "twitter:title": title,
     "twitter:description": description,
     "twitter:image": image,
-  };
+  });
 };
 
-export let links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 

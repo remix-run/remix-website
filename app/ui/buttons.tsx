@@ -58,7 +58,7 @@ export function PrimaryButtonLink({
   );
 }
 
-export let Button = React.forwardRef<
+export const Button = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithRef<"button">
 >(({ className, children, ...props }, ref) => {
@@ -79,7 +79,7 @@ export let Button = React.forwardRef<
 });
 Button.displayName = "Button";
 
-export let Input = React.forwardRef<
+export const Input = React.forwardRef<
   HTMLInputElement,
   React.ComponentPropsWithRef<"input">
 >(({ className, ...props }, ref) => {

@@ -9,7 +9,7 @@ import { Outlet } from "@remix-run/react";
 import { Header } from "~/ui/header";
 import { Footer } from "~/ui/footer";
 
-export let handle = { forceDark: true };
+export const handle = { forceDark: true };
 
 export default function Marketing() {
   return (
