@@ -60,3 +60,8 @@
   link: "https://www.catchpoint.com"
   imgSrc: "/conf-images/2023/sponsors/catchpoint.svg"
   level: "community"
+
+- name: "Cloudflare"
+  link: "https://www.cloudflare.com"
+  imgSrc: "/conf-images/2023/sponsors/cloudflare.svg"
+  level: "community"

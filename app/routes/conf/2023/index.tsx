@@ -88,7 +88,7 @@ export const headers: HeadersFunction = () => {
 
 export default function ConfIndex() {
   return (
-    <div className="w-full overflow-x-hidden">
+    <div className="w-full">
       <Hero />
       <EarlySponsors />
     </div>
