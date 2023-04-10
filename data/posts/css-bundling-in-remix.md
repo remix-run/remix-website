@@ -1,17 +1,16 @@
 ---
-draft: true
-title: CSS Bundling in Remix v2
+title: CSS Bundling in Remix
 summary: Remix now provides built-in support for CSS Modules, Vanilla Extract, Tailwind and PostCSS.
 featured: false
 date: 2023-04-05
-image: /blog-images/headers/css-bundling-in-remix-v2.jpg
+image: /blog-images/headers/css-bundling-in-remix.jpg
 imageAlt: Close-up photo of cupcakes
 imagePosition: bottom
 authors:
   - Mark Dalgleish
 ---
 
-With the release of Remix v2, we're introducing some major additions to the way we handle CSS, as well as some quality-of-life improvements to our existing CSS solutions. This post will explain what's changing and why.
+With the release of Remix v1.16, we're introducing some major additions to the way we handle CSS, as well as some quality-of-life improvements to our existing CSS solutions. This post will explain what's changing and why.
 
 ## Background
 
@@ -40,7 +39,7 @@ Firstly, this meant that some of the most widely used tools in the Remix communi
 
 Secondly, this didn't cover everything. Many popular CSS solutions require bundler integrations that were at odds with Remix's more straightforward approach to CSS. This was particularly painful for those looking to migrate existing projects to Remix.
 
-With the release of Remix v2, we've been able to revisit our approach to styling and provide additional support for some of the most popular CSS bundling solutions—unlocking several new abilities and streamlining some old ones.
+With the release of Remix v1.16, we've been able to revisit our approach to styling and provide additional support for some of the most popular CSS bundling solutions—unlocking several new abilities and streamlining some old ones.
 
 ## CSS Modules
 
@@ -180,7 +179,7 @@ import "./styles.css";
 
 This is sometimes leveraged by component libraries that want to ship plain CSS files (e.g. [React Spectrum](https://react-spectrum.adobe.com/react-spectrum/index.html)) while allowing bundlers to exclude CSS from unused components.
 
-In Remix v2, once CSS bundling has been set up in your project, CSS side-effect imports like this are now supported automatically.
+Once CSS bundling has been set up in your project, CSS side-effect imports like this are now supported automatically.
 
 ```css
 /* Button.css */
@@ -205,7 +204,6 @@ Since JavaScript runtimes don't support importing CSS in this way, you'll also n
 
 ```js
 // remix.config.js
-/** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
   serverDependenciesToBundle: [
     /^@adobe\/react-spectrum/,
@@ -218,7 +216,7 @@ module.exports = {
 
 ## Tailwind
 
-One of the most popular CSS solutions in the Remix ecosystem is [Tailwind](https://tailwindcss.com/). The Remix documentation originally recommended setting up multiple npm scripts to run alongside the core Remix scripts.
+One of the most popular CSS solutions in the Remix ecosystem is [Tailwind](https://tailwindcss.com/). The Remix documentation originally recommended setting up multiple npm scripts to co-ordinate the Tailwind CLI alongside Remix.
 
 ```json
 {
@@ -235,7 +233,17 @@ One of the most popular CSS solutions in the Remix ecosystem is [Tailwind](https
 }
 ```
 
-This setup was obviously a bit cumbersome. Now, with Remix v2, this is no longer needed. As long as your project depends on `tailwindcss`, Remix automatically supports Tailwind's functions and directives in your CSS files.
+This setup was obviously a bit cumbersome, but this is no longer necessary. Instead, Remix now has built-in support for Tailwind behind a `tailwind` flag that can be enabled via `remix.config.js`.
+
+```js
+// remix.config.js
+module.exports = {
+  tailwind: true,
+  // ...
+};
+```
+
+With this flag enabled, as long as your project depends on `tailwindcss`, Remix automatically supports Tailwind's functions and directives in your CSS files.
 
 This means any npm scripts for generating Tailwind CSS files can be removed from `package.json`. Our earlier example could now be simplified to this.
 
@@ -244,7 +252,7 @@ This means any npm scripts for generating Tailwind CSS files can be removed from
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
-    // etc.
+    // ...
   }
 }
 ```
@@ -287,12 +295,22 @@ The original PostCSS setup guide for Remix recommended a project structure where
   "scripts": {
     "dev": "concurrently \"npm run dev:css\" \"remix dev\"",
     "dev:css": "postcss styles --base styles --dir app/styles -w",
-    // etc.
+    // ...
   }
 }
 ```
 
-With Remix v2, this is no longer needed. If a `postcss.config.js` file is present in your project, Remix will automatically run PostCSS on any imported CSS files. This means that your CSS source files can now be co-located with your component code.
+This setup is no longer required. Instead, Remix now has built-in support for PostCSS behind a `postcss` flag that can be enabled via `remix.config.js`.
+
+```js
+// remix.config.js
+module.exports = {
+  postcss: true,
+  // ...
+};
+```
+
+With this flag enabled, if a `postcss.config.js` file is present in your project, Remix will automatically run PostCSS on any imported CSS files. This means that your CSS source files can now be co-located with your component code.
 
 This also means that, just like when using the new built-in Tailwind support, your npm scripts can be simplified too.
 
@@ -300,7 +318,7 @@ This also means that, just like when using the new built-in Tailwind support, yo
 {
   "scripts": {
     "dev": "remix dev",
-    // etc.
+    // ...
   }
 }
 ```
