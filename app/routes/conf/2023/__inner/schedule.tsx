@@ -1,5 +1,10 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "~/ui/primitives/tabs";
-import { useLoaderData, useLocation, useNavigate } from "@remix-run/react";
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useNavigation,
+} from "@remix-run/react";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import cx from "clsx";
 import type { HeadersFunction, LoaderArgs } from "@remix-run/node";
@@ -87,7 +92,14 @@ export default function Safety() {
   let { schedules: days } = useLoaderData<typeof loader>();
   let navigate = useNavigate();
   let location = useLocation();
-  let requestedDay = location.hash?.slice(1) ?? "";
+  let navigation = useNavigation();
+  let searchParams = new URLSearchParams(
+    navigation.state === "loading"
+      ? navigation.location.search
+      : location.search
+  );
+
+  let requestedDay = searchParams.get("date");
   let selectedDayIndex = days.findIndex(
     ({ dateSlug }) => dateSlug === requestedDay
   );
@@ -103,7 +115,9 @@ export default function Safety() {
           onChange={(index) => {
             let { dateSlug } = days[index] ?? {};
             if (dateSlug) {
-              navigate({ hash: `#${dateSlug}` }, { replace: true });
+              let searchParams = new URLSearchParams(location.search);
+              searchParams.set("date", dateSlug);
+              navigate({ search: `?${searchParams}` }, { replace: true });
             }
           }}
         >

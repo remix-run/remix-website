@@ -527,6 +527,7 @@ const Tab = React.forwardRef(
         data-reach-tab=""
         data-orientation={orientation}
         data-selected={isSelected ? "" : undefined}
+        data-index={index}
         disabled={disabled}
         id={makeId(tabsId, "tab", index)}
         onClick={onSelect}
@@ -628,6 +629,7 @@ const TabPanel = React.forwardRef(
       selectedPanelRef,
       selectedIndex,
       id: tabsId,
+      isControlled,
     } = useTabsCtx("TabPanel");
     let [element, setElement] = React.useState<HTMLElement | null>(null);
     let handleRefSet = React.useCallback((node: HTMLElement | null) => {
@@ -655,9 +657,12 @@ const TabPanel = React.forwardRef(
     // implementation details of descendants than I'd like, but we'll add a test
     // to (hopefully) catch any regressions.
     let isSelected = index === selectedIndex;
-    let readyToHide = React.useRef(false);
+    let readyToHide = React.useRef(isControlled);
     let hidden = readyToHide.current ? !isSelected : false;
-    React.useEffect(() => {
+
+    // Use a layout effect to avoid flash. You'll probably get an SSR warning if
+    // it's not a controlled component but it's fine, React will figure it out.
+    useLayoutEffect(() => {
       readyToHide.current = true;
     }, []);
 
@@ -681,6 +686,7 @@ const TabPanel = React.forwardRef(
         {...props}
         ref={ref}
         data-reach-tab-panel=""
+        data-index={index}
         id={id}
       >
         {children}
