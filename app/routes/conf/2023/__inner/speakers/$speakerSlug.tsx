@@ -186,6 +186,9 @@ export default function SpeakerRoute() {
               let startsAtISO = session.startsAtISO;
               let startsAtFormatted = session.startsAtFormatted;
               // let endsAt = session.endsAt ? new Date(session.endsAt) : null;
+
+              console.log(session.description);
+
               return (
                 <article
                   key={session.title}
@@ -209,8 +212,62 @@ export default function SpeakerRoute() {
                   {session.description ? (
                     <div
                       className="speaker-prose"
-                      dangerouslySetInnerHTML={{ __html: session.description }}
-                    />
+                      dangerouslySetInnerHTML={{
+                        // TODO: This would probably be better parsed as
+                        // markdown on the server, but users will enter things
+                        // differently so this is my quick and dirty attempt to
+                        // make lists in sessionize look reasonable.
+                        __html: session.description
+                          .split("\n")
+                          .reduce((html, line, i, lines) => {
+                            line = line.trim();
+                            if (!line) return html;
+
+                            let olRegExp = /^\d+\.\s/;
+                            let ulRegExp = /^[-*]\s/;
+                            let previousLine = lines[i - 1];
+                            let nextLine = lines[i + 1];
+
+                            if (olRegExp.test(line)) {
+                              let digitless = line.replace(olRegExp, "");
+                              let nextLineStart =
+                                previousLine && olRegExp.test(previousLine)
+                                  ? "<li>"
+                                  : "<ol><li>";
+                              let nextLineEnd =
+                                nextLine && olRegExp.test(nextLine)
+                                  ? "</li>"
+                                  : "</li></ol>";
+                              return (
+                                html +
+                                nextLineStart +
+                                digitless.trim() +
+                                nextLineEnd
+                              );
+                            }
+
+                            if (ulRegExp.test(line)) {
+                              let bulletless = line.replace(ulRegExp, "");
+                              let nextLineStart =
+                                previousLine && ulRegExp.test(previousLine)
+                                  ? "<li>"
+                                  : "<ul><li>";
+                              let nextLineEnd =
+                                nextLine && ulRegExp.test(nextLine)
+                                  ? "</li>"
+                                  : "</li></ul>";
+                              return (
+                                html +
+                                nextLineStart +
+                                bulletless.trim() +
+                                nextLineEnd
+                              );
+                            }
+
+                            return html + "<p>" + line.trim() + "</p>";
+                          }, ""),
+                      }}
+                    ></div>
                   ) : null}
                 </article>
               );
