@@ -1,5 +1,10 @@
 import * as React from "react";
-import { Outlet, useLocation, useLoaderData } from "@remix-run/react";
+import {
+  Outlet,
+  useLocation,
+  useLoaderData,
+  useMatches,
+} from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type {
   LinksFunction,
@@ -49,7 +54,7 @@ export const headers: HeadersFunction = () => {
   };
 };
 
-const navItems: Array<HeaderLinkProps> = [
+const menuItems: Array<HeaderLinkProps> = [
   {
     to: "/conf/2023#speakers",
     children: "Speakers",
@@ -57,6 +62,10 @@ const navItems: Array<HeaderLinkProps> = [
   {
     to: "schedule",
     children: "Schedule",
+  },
+  {
+    to: "https://book.passkey.com/event/50366389/owner/1422/home",
+    children: "Book Your Stay",
   },
   {
     to: "sponsor",
@@ -155,7 +164,7 @@ function Header({ hasTopBanner }: { hasTopBanner?: boolean }) {
 
         <nav className="flex" aria-label="Main">
           <ul className="hidden list-none items-center gap-4 md:flex md:gap-5 lg:gap-8">
-            {navItems.map((item) => (
+            {menuItems.map((item) => (
               <li key={item.to + item.children}>
                 <HeaderLink
                   {...item}
@@ -181,10 +190,7 @@ function Header({ hasTopBanner }: { hasTopBanner?: boolean }) {
 
 function Footer() {
   return (
-    <footer
-      x-comp="Footer"
-      className="__footer flex items-center justify-between px-6 py-9 text-base text-white lg:px-12"
-    >
+    <footer className="__footer flex items-center justify-between px-6 py-9 text-base text-white lg:px-12">
       <div className="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-16">
         <Link to="/" aria-label="Remix home" prefetch="intent">
           <Wordmark height={16} aria-hidden />
@@ -222,17 +228,28 @@ interface HeaderLinkProps {
   prefetch?: "none" | "intent";
 }
 
+function isExternalUrl(value: string, currentHost: string) {
+  try {
+    let url = new URL(value);
+    return url.host !== currentHost;
+  } catch (err) {
+    return false;
+  }
+}
+
 const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
   ({ to, children, className, prefetch = "none", ...props }, ref) => {
-    let external = to.startsWith("https://");
+    let rootMatch = useMatches().find((match) => match.id === "root")!;
+    let external = isExternalUrl(to, rootMatch.data.host);
     if (external) {
       return (
         <a
           ref={ref}
-          x-comp="HeaderLink"
           className={cx("text-base font-semibold", className)}
           href={to}
           children={children}
+          target="_blank"
+          rel="noopener noreferrer"
           {...props}
         />
       );
@@ -242,7 +259,6 @@ const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
       <NavLink
         ref={ref}
         prefetch={prefetch}
-        x-comp="HeaderLink"
         className={cx("text-base font-semibold", className)}
         to={to}
         children={children}
@@ -293,7 +309,7 @@ function MobileNavList() {
   return (
     <MenuPopover className="absolute block">
       <MenuItems className="relative mt-2 block whitespace-nowrap rounded-md border-2 border-white bg-black py-2 outline-none">
-        {navItems.map((item, i) => (
+        {menuItems.map((item, i) => (
           <MobileMenuItem
             key={item.to + item.children}
             index={i}

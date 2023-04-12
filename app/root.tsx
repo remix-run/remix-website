@@ -52,6 +52,7 @@ export async function loader({ request }: LoaderArgs) {
   return json(
     {
       colorScheme,
+      host: url.host,
       isProductionHost: !isDevHost,
       noIndex:
         isDevHost ||
