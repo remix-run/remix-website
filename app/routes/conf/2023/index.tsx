@@ -100,7 +100,9 @@ function Hero() {
     <Fragment>
       <section className="__hero relative flex w-full bg-black pb-10 pt-32 sm:pb-16 sm:pt-32 md:pb-24 md:pt-32 lg:min-h-[min(100vh,900px)] lg:items-center lg:py-32">
         <div className="__fx-wrapper">
-          <div className="__fx-lights"></div>
+          <div className="__fx-lights">
+            <div className="__fx-lights__inner"></div>
+          </div>
           <div className="__fx-twinkle"></div>
           <div className="__fx-colors"></div>
         </div>
