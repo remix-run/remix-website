@@ -36,6 +36,11 @@
   imgSrc: "/conf-images/2023/sponsors/grafbase.svg"
   level: "silver"
 
+- name: "Graphabase"
+  link: "https://graphabase.com/"
+  imgSrc: "/conf-images/2023/sponsors/graphabase.svg"
+  level: "silver"
+
 - name: "Edgeio"
   link: "https://edg.io"
   imgSrc: "/conf-images/2023/sponsors/edgeio.svg"
