@@ -36,7 +36,7 @@ export const meta: MetaFunction<typeof loader> = (args) => {
   });
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export async function loader({ params }: LoaderArgs) {
   invariant(params.speakerSlug, "Missing speaker slug");
   let speakerSlug = params.speakerSlug;
   let speaker: Speaker | null;
@@ -77,8 +77,59 @@ export const loader = async ({ params }: LoaderArgs) => {
           : speakerSessions.map((session) => {
               let startsAt = session.startsAt || null;
               let endsAt = session.endsAt || null;
+
+              let descriptionHTML: string | null = null;
+              if (session.description) {
+                // Quick and dirty attempt to make arbitrarily formatted line
+                // breaks/lists from Sessionize not look like crap here.
+                descriptionHTML = session.description
+                  .split("\n")
+                  .reduce((html, line, i, lines) => {
+                    line = line.trim();
+                    if (!line) return html;
+
+                    let olRegExp = /^\d+\.\s/;
+                    let ulRegExp = /^[-*]\s/;
+                    let previousLine = lines[i - 1];
+                    let nextLine = lines[i + 1];
+
+                    if (olRegExp.test(line)) {
+                      let digitless = line.replace(olRegExp, "");
+                      let nextLineStart =
+                        previousLine && olRegExp.test(previousLine)
+                          ? "<li>"
+                          : "<ol><li>";
+                      let nextLineEnd =
+                        nextLine && olRegExp.test(nextLine)
+                          ? "</li>"
+                          : "</li></ol>";
+                      return (
+                        html + nextLineStart + digitless.trim() + nextLineEnd
+                      );
+                    }
+
+                    if (ulRegExp.test(line)) {
+                      let bulletless = line.replace(ulRegExp, "");
+                      let nextLineStart =
+                        previousLine && ulRegExp.test(previousLine)
+                          ? "<li>"
+                          : "<ul><li>";
+                      let nextLineEnd =
+                        nextLine && ulRegExp.test(nextLine)
+                          ? "</li>"
+                          : "</li></ul>";
+                      return (
+                        html + nextLineStart + bulletless.trim() + nextLineEnd
+                      );
+                    }
+
+                    return html + "<p>" + line.trim() + "</p>";
+                  }, "");
+              }
+
               return {
                 ...session,
+                descriptionHTML,
                 startsAtISO: startsAt?.toISO() || null,
                 startsAtFormatted:
                   startsAt?.toLocaleString(
@@ -108,7 +159,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     },
     { headers: { "Cache-Control": CACHE_CONTROL.conf } }
   );
-};
+}
 
 export const headers: HeadersFunction = () => {
   return {
@@ -199,73 +250,16 @@ export default function SpeakerRoute() {
                       {session.title}
                     </h3>
                     {startsAtISO ? (
-                      <div
-                        className="text-gray-300"
-                        //   to={`../schedule/may-25${
-                        //     startsAt ? `#time-${sluggify(session.id)}` : ""
-                        //   }`}
-                      >
+                      <div className="text-gray-300">
                         <time dateTime={startsAtISO}>{startsAtFormatted}</time>{" "}
                       </div>
                     ) : null}
                   </div>
-                  {session.description ? (
+                  {session.descriptionHTML ? (
                     <div
                       className="speaker-prose"
                       dangerouslySetInnerHTML={{
-                        // TODO: This would probably be better parsed as
-                        // markdown on the server, but users will enter things
-                        // differently so this is my quick and dirty attempt to
-                        // make lists in sessionize look reasonable.
-                        __html: session.description
-                          .split("\n")
-                          .reduce((html, line, i, lines) => {
-                            line = line.trim();
-                            if (!line) return html;
-
-                            let olRegExp = /^\d+\.\s/;
-                            let ulRegExp = /^[-*]\s/;
-                            let previousLine = lines[i - 1];
-                            let nextLine = lines[i + 1];
-
-                            if (olRegExp.test(line)) {
-                              let digitless = line.replace(olRegExp, "");
-                              let nextLineStart =
-                                previousLine && olRegExp.test(previousLine)
-                                  ? "<li>"
-                                  : "<ol><li>";
-                              let nextLineEnd =
-                                nextLine && olRegExp.test(nextLine)
-                                  ? "</li>"
-                                  : "</li></ol>";
-                              return (
-                                html +
-                                nextLineStart +
-                                digitless.trim() +
-                                nextLineEnd
-                              );
-                            }
-
-                            if (ulRegExp.test(line)) {
-                              let bulletless = line.replace(ulRegExp, "");
-                              let nextLineStart =
-                                previousLine && ulRegExp.test(previousLine)
-                                  ? "<li>"
-                                  : "<ul><li>";
-                              let nextLineEnd =
-                                nextLine && ulRegExp.test(nextLine)
-                                  ? "</li>"
-                                  : "</li></ul>";
-                              return (
-                                html +
-                                nextLineStart +
-                                bulletless.trim() +
-                                nextLineEnd
-                              );
-                            }
-
-                            return html + "<p>" + line.trim() + "</p>";
-                          }, ""),
+                        __html: session.descriptionHTML,
                       }}
                     ></div>
                   ) : null}
