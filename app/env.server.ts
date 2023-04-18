@@ -46,10 +46,6 @@ let envSchema = z.object({
   // For development, reading the docs from a local repo
   LOCAL_REPO_RELATIVE_PATH: z.string().superRefine(requiredInDevelopment),
 
-  // Not used locally, but make sure this is set in GitHub for production
-  FASTLY_API_TOKEN: z.string().superRefine(requiredInProduction),
-  FASTLY_SERVICE_ID: z.string().superRefine(requiredInProduction),
-
   NO_CACHE: z.coerce.boolean().default(false),
 });
 
