@@ -50,12 +50,4 @@ let envSchema = z.object({
   NO_CACHE: z.coerce.boolean().default(false),
 });
 
-export let env = envSchema.safeParse(process.env);
-
-if (!env.success) {
-  for (let error of env.error.errors) {
-    console.error(error);
-  }
-
-  throw new Error("Invalid environment variables");
-}
+export let env = envSchema.parse(process.env);
