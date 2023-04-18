@@ -39,14 +39,14 @@ import {
 import type { Doc } from "~/lib/gh-docs";
 import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
-import { RELEASE_PACKAGE } from "~/lib/env.server";
+import { env } from "~/env.server";
 
 export const loader = async ({ params }: LoaderArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
 
   let branchesInMenu = ["main", "dev"];
   let [tags, branches] = await Promise.all([
-    getRepoTags({ octokit, releasePackage: RELEASE_PACKAGE }),
+    getRepoTags({ octokit, releasePackage: env.RELEASE_PACKAGE }),
     getRepoBranches({ octokit }),
   ]);
   if (!tags || !branches) {
@@ -204,8 +204,7 @@ function Header() {
             <Link
               className="flex"
               onContextMenu={(event) => {
-                let NODE_ENV = window.__env && window.__env.NODE_ENV;
-                if (NODE_ENV !== "development") {
+                if (process.env.NODE_ENV !== "development") {
                   event.preventDefault();
                   window.location.href =
                     "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";

@@ -31,18 +31,9 @@ import { canUseDOM } from "~/lib/misc";
 import cx from "clsx";
 import { metaV1 } from "@remix-run/v1-meta";
 
-declare global {
-  var __env: {
-    NODE_ENV: "development" | "production";
-  };
-}
-
 export async function loader({ request }: LoaderArgs) {
   ensureSecure(request);
   removeTrailingSlashes(request);
-  let env = {
-    NODE_ENV: process.env.NODE_ENV,
-  };
 
   let isDevHost = !isProductionHost(request);
   let url = new URL(request.url);
@@ -58,7 +49,6 @@ export async function loader({ request }: LoaderArgs) {
         isDevHost ||
         url.pathname === "/docs/en/v1/api/remix" ||
         url.pathname === "/docs/en/v1/api/conventions",
-      env,
     },
     {
       headers: {
@@ -159,10 +149,10 @@ function Document({
 
 export default function App() {
   let matches = useMatches();
-  let { noIndex, env } = useLoaderData<typeof loader>();
+  let { noIndex } = useLoaderData<typeof loader>();
   let forceDark = matches.some((match) => match.handle?.forceDark);
 
-  if (env.NODE_ENV !== "development") {
+  if (process.env.NODE_ENV !== "development") {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useFathomClient("IRVDGCHK", {
       url: "https://cdn.usefathom.com/script.js",
@@ -175,7 +165,7 @@ export default function App() {
     <Document
       noIndex={noIndex}
       forceDark={forceDark}
-      isDev={env.NODE_ENV === "development"}
+      isDev={process.env.NODE_ENV === "development"}
     >
       <Outlet />
       <img
@@ -186,11 +176,6 @@ export default function App() {
         // priority than the scripts (chrome only for now)
         // @ts-expect-error
         fetchpriority="high"
-      />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `window.__env = ${JSON.stringify(env)};`,
-        }}
       />
     </Document>
   );
