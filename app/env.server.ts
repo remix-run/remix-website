@@ -1,9 +1,8 @@
 import { z } from "zod";
 
-const requiredInProduction: z.RefinementEffect<string>["refinement"] = (
-  value,
-  ctx
-) => {
+const requiredInProduction: z.RefinementEffect<
+  string | undefined
+>["refinement"] = (value, ctx) => {
   if (process.env.NODE_ENV === "production" && !value) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -12,10 +11,9 @@ const requiredInProduction: z.RefinementEffect<string>["refinement"] = (
   }
 };
 
-let requiredInDevelopment: z.RefinementEffect<string>["refinement"] = (
-  value,
-  ctx
-) => {
+let requiredInDevelopment: z.RefinementEffect<
+  string | undefined
+>["refinement"] = (value, ctx) => {
   if (process.env.NODE_ENV === "development" && !value) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -35,7 +33,7 @@ let envSchema = z.object({
   CLOUDINARY_FOLDER_NAME: z.string(),
 
   // A token to increase the rate limiting from 60/hr to 1000/hr
-  GITHUB_TOKEN: z.string().superRefine(requiredInProduction),
+  GITHUB_TOKEN: z.string().optional().superRefine(requiredInProduction),
 
   // GitHub repo to pull docs from
   SOURCE_REPO: z.string(),
@@ -44,9 +42,20 @@ let envSchema = z.object({
   RELEASE_PACKAGE: z.string(),
 
   // For development, reading the docs from a local repo
-  LOCAL_REPO_RELATIVE_PATH: z.string().superRefine(requiredInDevelopment),
+  LOCAL_REPO_RELATIVE_PATH: z
+    .string()
+    .optional()
+    .superRefine(requiredInDevelopment),
 
   NO_CACHE: z.coerce.boolean().default(false),
 });
 
-export let env = envSchema.parse(process.env);
+export let env = envSchema.safeParse(process.env);
+
+if (!env.success) {
+  for (let error of env.error.errors) {
+    console.error(error);
+  }
+
+  throw new Error("Invalid environment variables");
+}
