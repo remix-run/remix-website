@@ -241,7 +241,10 @@ function EarlySponsors() {
             </h2>
             {premierSponsor ? (
               <div>
-                <h3 className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl">
+                <h3
+                  id="heading-premier-sponsor"
+                  className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
+                >
                   Premier Sponsor
                 </h3>
                 <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
@@ -284,7 +287,10 @@ function EarlySponsors() {
             ) : null}
 
             <div>
-              <h3 className="mb-4 font-display text-4xl font-extrabold text-yellow-brand md:mb-8 md:text-7xl">
+              <h3
+                id="heading-gold-sponsors"
+                className="mb-4 font-display text-4xl font-extrabold text-yellow-brand md:mb-8 md:text-7xl"
+              >
                 Gold Sponsors
               </h3>
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
@@ -321,7 +327,10 @@ function EarlySponsors() {
 
             {(sponsors.silver?.length || 0) > 0 ? (
               <div>
-                <h3 className="mb-4 font-display text-3xl font-extrabold text-pink-brand md:mb-8 md:text-5xl">
+                <h3
+                  id="heading-silver-sponsors"
+                  className="mb-4 font-display text-3xl font-extrabold text-pink-brand md:mb-8 md:text-5xl"
+                >
                   Silver Sponsors
                 </h3>
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -347,7 +356,10 @@ function EarlySponsors() {
 
             {(sponsors.community?.length || 0) > 0 ? (
               <div>
-                <h3 className="mb-4 font-display text-2xl font-extrabold md:mb-8 md:text-4xl">
+                <h3
+                  id="heading-community-sponsors"
+                  className="mb-4 font-display text-2xl font-extrabold md:mb-8 md:text-4xl"
+                >
                   Community Sponsors
                 </h3>
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 xl:grid-cols-5">
