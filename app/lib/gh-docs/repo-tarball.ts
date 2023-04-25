@@ -2,6 +2,7 @@ import followRedirects from "follow-redirects";
 import fs from "fs";
 import path from "path";
 import tar from "tar";
+import invariant from "tiny-invariant";
 import { env } from "~/env.server";
 
 /**
@@ -42,6 +43,10 @@ export async function getRepoTarballStream(
  * production.
  */
 export async function getLocalTarballStream(): Promise<NodeJS.ReadableStream> {
+  invariant(
+    env.LOCAL_REPO_RELATIVE_PATH,
+    "LOCAL_REPO_RELATIVE_PATH is not set"
+  );
   let localDocsPath = path.join(
     process.cwd(),
     env.LOCAL_REPO_RELATIVE_PATH,

@@ -11,7 +11,7 @@ const requiredInProduction: z.RefinementEffect<
   }
 };
 
-let requiredInDevelopment: z.RefinementEffect<
+const requiredInDevelopment: z.RefinementEffect<
   string | undefined
 >["refinement"] = (value, ctx) => {
   if (process.env.NODE_ENV === "development" && !value) {
@@ -22,7 +22,7 @@ let requiredInDevelopment: z.RefinementEffect<
   }
 };
 
-let envSchema = z.object({
+const envSchema = z.object({
   FLY_APP_NAME: z.string(),
 
   // Get from https://app.convertkit.com/account_settings/advanced_settings
@@ -50,4 +50,4 @@ let envSchema = z.object({
   NO_CACHE: z.coerce.boolean().default(false),
 });
 
-export let env = envSchema.parse(process.env);
+export const env = envSchema.parse(process.env);
