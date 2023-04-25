@@ -41,6 +41,11 @@
   imgSrc: "/conf-images/2023/sponsors/graphabase.svg"
   level: "silver"
 
+- name: "Turso"
+  link: "https://turso.tech/"
+  imgSrc: "/conf-images/2023/sponsors/turso.svg"
+  level: "silver"
+
 - name: "Edgeio"
   link: "https://edg.io"
   imgSrc: "/conf-images/2023/sponsors/edgeio.svg"
