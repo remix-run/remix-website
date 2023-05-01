@@ -41,16 +41,17 @@ Step 2 instructions...
 For our advanced use case, [`mdx-bundler`](https://github.com/kentcdodds/mdx-bundler) was a perfect tool to help us format our page. `mdx-bundler` works in six steps:
 
 1. Read the Markdown source and build a Markdown abstract syntax tree (mdast)
-2. Transform the mdast using “[`remark`](https://github.com/remarkjs/remark)” Markdown plugins
+2. Transform the mdast using [`remark`](https://github.com/remarkjs/remark) Markdown plugins
 3. Convert the mdast to an HTML abstract syntax tree (hast)
-4. Transform the hast using “[`rehype`](https://github.com/rehypejs/rehype)” HTML plugins
+4. Transform the hast using [`rehype`](https://github.com/rehypejs/rehype) HTML plugins
 5. Convert the hast to an [ECMAScript](https://www.ecma-international.org/technical-committees/tc39) abstract syntax tree (east)
 6. Return JavaScript that allows you to control how your markup is rendered in a React component
 
 We knew we’d want to do a lot of experimenting with this process, and Remix and `mdx-bundler` made it easy to set up a rapid feedback loop for prototyping. We set up a simple function to configure our plugins and used Remix loaders to help us test our results as we worked. Our simplified code to generate our React component is:
 
 ```js
-export default async function getMdxContent(contentPath: string) {
+// app/features/mdx/getMdxContent.server.js
+export default async function getMdxContent(contentPath) {
   const result = await bundleMDX({
     file: getContentFilePath(contentPath),
     cwd: join(process.cwd(), "/app"),
@@ -78,17 +79,17 @@ export default async function getMdxContent(contentPath: string) {
 There are tons of `remark` and `rehype` plugins out there, so we experimented with lots of different configurations to see which AST was suited for the various transformations we’d need to make. Remix routing and rendering made our development loop a joy to use. One easy way to setup a simple feedback system in our route file looked like this:
 
 ```js
-// routes/workshops.$workshopId.tsx
+// routes/workshops.$workshopId.jsx
 export async function loader({ params }) {
   const fileContentResult = await getMdxFileContent(
     `workshops/${params["workshopId"]}.mdx`
   );
   const { code, frontmatter } = fileContentResult;
 
-  return {
+  return json({
     code,
     frontmatter,
-  };
+  });
 }
 
 export default function WorkshopPage() {
@@ -118,7 +119,7 @@ I needed to render an unfiltered grid, then filter it based on a button click, m
 That’s right, the URL. Remix works across the server and browser to ensure your state is always up to date. Just like a React component will re-render if one of its props changes, a Remix page will re-render if its URL changes. That means you can write your entire page and treat it like a big React component with a url prop. This mental model allows developers to drastically reduce the code needed to write since the web is really good at working with URLs and Remix is really good about loading data on a page. Here’s our home page code that handles a filtered category as a URL parameter:
 
 ```js
-// routes/_index.tsx
+// routes/_index.jsx
 export async function loader({ request }) {
   const url = new URL(request.url);
   const catFilter = url.searchParams.get("cat");
@@ -134,9 +135,9 @@ export async function loader({ request }) {
 
   const renderedContent = catFilter ? filteredContent : folderContent;
 
-  return {
+  return json({
     renderedContent,
-  };
+  });
 }
 
 export default function IndexPage() {
@@ -145,8 +146,8 @@ export default function IndexPage() {
   return (
     <main className="workshop-collections">
       {renderedContent.map((fileData) => {
-          return <WorkshopCard fileData={fileData} />;
-        })}
+        return <WorkshopCard fileData={fileData} />;
+      })}
     </main>
   );
 }
@@ -159,7 +160,7 @@ Since Remix took care of all data loading for us, we only needed to use two smal
 The filter buttons are `<Link>` components that turn into accessible anchor links. The page even works with JavaScript disabled. When JavasScript is enabled, there are lots of nice features that Remix offers. Category filter buttons include a `preventScrollReset` prop that will help to maintain the user’s scroll position as the page re-renders. Scroll preservation has always been a pain point in single-page applications, so chalk up another huge time saver for Remix. Another nice feature of Remix is its hooks, which help you write stateful code without creating state machines. A category `<Link>` can be styled as “active” by reading the URL search parameters with the `useSearchParams()` hook.
 
 ```js
-// components/WorkshopFilterBar.tsx
+// components/WorkshopFilterBar.jsx
 import { Link, useSearchParams } from "@remix-run/react";
 
 export default function WorkshopFilterBar({ categories }) {
@@ -226,7 +227,7 @@ export function ErrorBoundary() {
 }
 ```
 
-Redirects were also easy to manage. Our Codelabs site was hosted on Github pages, so we could send users to a new domain, but the rest of the URL would remain the same. Rather than going to a /codelabs/getting-started, we wanted users going to /workshops/getting-started. This was really easy with Remix:
+Redirects were also easy to manage. Our Codelabs site was hosted on Github pages, so we could send users to a new domain, but the rest of the URL would remain the same. Rather than going to /codelabs/getting-started, we wanted users going to /workshops/getting-started. This was really easy with Remix:
 
 ```js
 // routes/codelabs.$codelabs.[index.html].tsx
