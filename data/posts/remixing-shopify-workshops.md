@@ -20,9 +20,9 @@ With these goals in mind, we sat down, rolled up our sleeves, and dove into Remi
 
 ## From Markdown to Webpage
 
-When starting an ambitious new project, there’s typically a long list of setup tasks before you get to your first pageview. [Remix stacks](https://remix.run/docs/en/main/pages/stacks) are great tools to shorten this process. We chose the “[Indie Stack](https://github.com/remix-run/indie-stack)” as a solid starting point, made a few edits for our hosting platform, dropped in our Codelabs Markdown files, and we were ready to hack away.
+When starting an ambitious new project, there’s typically a long list of setup tasks before you get to your first pageview. [Remix Stacks](https://remix.run/pages/stacks) are great tools to shorten this process. We chose the “[Indie Stack](https://github.com/remix-run/indie-stack)” as a solid starting point, made a few edits for our hosting platform, dropped in our Codelabs Markdown files, and we were ready to hack away.
 
-Our first task was to transform Markdown to HTML. Google Codelabs uses some custom Markdown and a build-time compiler to generate static HTML that we can host anywhere. Remix includes [Markdown support](https://remix.run/docs/en/main/guides/mdx) for simple build-time use cases, so we started there. We experimented with this, but decided that we’d need more control over how the Markdown files rendered. Ultimately, it came down to using the existing Markdown structure so each ## Heading 2 would mark a separate step in a workshop:
+Our first task was to transform Markdown to HTML. Google Codelabs uses some custom Markdown and a build-time compiler to generate static HTML that we can host anywhere. Remix includes [Markdown support](https://remix.run/guides/mdx) for simple build-time use cases, so we started there. We experimented with this, but decided that we’d need more control over how the Markdown files rendered. Ultimately, it came down to using the existing Markdown structure so each ## Heading 2 would mark a separate step in a workshop:
 
 ```markdown
 ## Introduction <-- Title that shows in the sidebar navigation
@@ -38,16 +38,16 @@ Duration: 10:00
 Step 2 instructions...
 ```
 
-For our advanced use case, [MDX Bundler](https://github.com/kentcdodds/mdx-bundler) was a perfect tool to help us format our page. MDX bundler works in six steps:
+For our advanced use case, [`mdx-bundler`](https://github.com/kentcdodds/mdx-bundler) was a perfect tool to help us format our page. `mdx-bundler` works in six steps:
 
 1. Read the Markdown source and build a Markdown abstract syntax tree (mdast)
-1. Transform the mdast using “Remark” Markdown plugins
-1. Convert the mdast to an HTML abstract syntax tree (hast)
-1. Transform the hast using “Rehype” HTML plugins
-1. Convert the hast to an Ecmascript abstract syntax tree (east)
-1. Return JavaScript that allows you to control how your markup is rendered in a React component
+2. Transform the mdast using “[`remark`](https://github.com/remarkjs/remark)” Markdown plugins
+3. Convert the mdast to an HTML abstract syntax tree (hast)
+4. Transform the hast using “[`rehype`](https://github.com/rehypejs/rehype)” HTML plugins
+5. Convert the hast to an [ECMAScript](https://www.ecma-international.org/technical-committees/tc39) abstract syntax tree (east)
+6. Return JavaScript that allows you to control how your markup is rendered in a React component
 
-We knew we’d want to do a lot of experimenting with this process, and Remix and MDX Bundler made it easy to set up a rapid feedback loop for prototyping. We set up a simple function to configure our plugins and used Remix loaders to help us test our results as we worked. Our simplified code to generate our React component is:
+We knew we’d want to do a lot of experimenting with this process, and Remix and `mdx-bundler` made it easy to set up a rapid feedback loop for prototyping. We set up a simple function to configure our plugins and used Remix loaders to help us test our results as we worked. Our simplified code to generate our React component is:
 
 ```js
 export default async function getMdxContent(contentPath: string) {
@@ -75,7 +75,7 @@ export default async function getMdxContent(contentPath: string) {
 }
 ```
 
-There are tons of Remark and Rehype plugins out there, so we experimented with lots of different configurations to see which AST was suited for the various transformations we’d need to make. Remix routing and rendering made our development loop a joy to use. One easy way to setup a simple feedback system in our route file looked like this:
+There are tons of `remark` and `rehype` plugins out there, so we experimented with lots of different configurations to see which AST was suited for the various transformations we’d need to make. Remix routing and rendering made our development loop a joy to use. One easy way to setup a simple feedback system in our route file looked like this:
 
 ```js
 // routes/workshops.$workshopId.tsx
@@ -144,18 +144,17 @@ export default function IndexPage() {
 
   return (
     <main className="workshop-collections">
-      {renderedContent &&
-        renderedContent.map((fileData) => {
-          return <WorkshopCard />;
+      {renderedContent.map((fileData) => {
+          return <WorkshopCard fileData={fileData} />;
         })}
     </main>
   );
 }
 ```
 
-No useEffect, no spinning loaders, no state libraries. I iterated through the `renderedContent` array and trusted Remix to rerender when the URL changes. Notice the `URL()` constructor? That’s the same one that’s used and [documented for the web](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL), so I didn’t need to learn anything new.
+No `useEffect`, no spinning loaders, no state libraries. I iterated through the `renderedContent` array and trusted Remix to re-render when the URL changes. Notice the `URL()` constructor? That’s the same one that’s used and [documented for the web](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL), so I didn’t need to learn anything new.
 
-Since Remix took care of all data loading for us, we only needed to use two small state objects in React to track the current workshop step and some analytics events. Remix helped us to create really tidy React components—and less time debugging React leads to happy developers everywhere.
+Since Remix took care of all data loading for us, we only needed to use two small state objects in React to track the current workshop step and some analytics events. Remix helped us to create really tidy React components — and less time debugging React leads to happy developers everywhere.
 
 The filter buttons are `<Link>` components that turn into accessible anchor links. The page even works with JavaScript disabled. When JavasScript is enabled, there are lots of nice features that Remix offers. Category filter buttons include a `preventScrollReset` prop that will help to maintain the user’s scroll position as the page re-renders. Scroll preservation has always been a pain point in single-page applications, so chalk up another huge time saver for Remix. Another nice feature of Remix is its hooks, which help you write stateful code without creating state machines. A category `<Link>` can be styled as “active” by reading the URL search parameters with the `useSearchParams()` hook.
 
@@ -186,11 +185,11 @@ export default function WorkshopFilterBar({ categories }) {
 
 Performant data loading, done. Progressive enhancement, done. Accessibility—believe it or not—done.
 
-##The Miscellaneous Benefits
+## The Miscellaneous Benefits
 
 We continued to work on the workshops site for a few weeks, mostly focused on the “happy path” where everything works. As we got closer to a finished product, we started to address everything outside the happy path, and Remix had our backs once again.
 
-Errors are a reality of development and websites. Remix has dedicated `ErrorBoundary` and `CatchBoundary` components that can be added to your route to display helpful messages. What’s really neat is when you use nested routes, those [error boundaries are also nested within your application](https://remix.run/docs/en/1.15.0/guides/errors#nested-error-boundaries). This is great because when one piece of your code base blows up, the rest of the app can function as normal.
+Errors are a reality of development and websites. Remix has a dedicated [`ErrorBoundary` component](https://remix.run/route/error-boundary-v2) that can be added to your route to display helpful messages. What’s really neat is when you use nested routes, those [error boundaries are also nested within your application](https://remix.run/guides/errors#nested-error-boundaries). This is great because when one piece of your code base blows up, the rest of the app can function as normal.
 
 Triggering error boundaries is as simple as converting a thrown exception into an HTTP Response:
 
@@ -207,10 +206,10 @@ const fileContentResult = await getMdxFileContent(
   }
 });
 
-export function CatchBoundary() {
-  const caught = useCatch();
+export function ErrorBoundary() {
+  const error = useRouteError();
 
-  if (caught.status === 404) {
+  if (isRouteErrorResponse(error) && error.status === 404) {
     return (
       <BaseLayout>
         <div className="error-container">
@@ -234,7 +233,7 @@ Redirects were also easy to manage. Our Codelabs site was hosted on Github pages
 import { redirect } from "@remix-run/node";
 
 export async function loader({ params }) {
-  cost workshopId = params["codelabs"];
+  const workshopId = params["codelabs"];
 
   return redirect(`/workshops/${workshopId}`);
 }
@@ -264,4 +263,4 @@ export const meta = ({ data }) => {
 
 ## Looking to the Future, Reliving the Past
 
-Remix is an impressive and intuitive framework that seamlessly blends the best of both worlds—the simplicity of the past and the innovation of the future. Our team was able to accomplish a great deal in a relatively short amount of time, and we couldn't be happier that we decided to use this framework. We’re excited to take what we’ve learned and bring Remix to our developers to help them simplify their codebase and provide a better experience to their users. [Keep an eye out](https://shopify.engineering/) for new Remixed Shopify projects coming your way in the near future.
+Remix is an impressive and intuitive framework that seamlessly blends the best of both worlds — the simplicity of the past and the innovation of the future. Our team was able to accomplish a great deal in a relatively short amount of time, and we couldn't be happier that we decided to use this framework. We’re excited to take what we’ve learned and bring Remix to our developers to help them simplify their codebase and provide a better experience to their users. [Keep an eye out](https://shopify.engineering/) for new Remixed Shopify projects coming your way in the near future.
