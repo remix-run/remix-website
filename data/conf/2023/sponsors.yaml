@@ -37,13 +37,18 @@
   level: "silver"
 
 - name: "Graphabase"
-  link: "https://graphabase.com/"
+  link: "https://graphabase.com"
   imgSrc: "/conf-images/2023/sponsors/graphabase.svg"
   level: "silver"
 
 - name: "Turso"
-  link: "https://turso.tech/"
+  link: "https://turso.tech"
   imgSrc: "/conf-images/2023/sponsors/turso.svg"
+  level: "silver"
+
+- name: "Deepgram"
+  link: "https://deepgram.com"
+  imgSrc: "/conf-images/2023/sponsors/deepgram.svg"
   level: "silver"
 
 - name: "Edgeio"
