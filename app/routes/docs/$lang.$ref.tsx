@@ -409,7 +409,12 @@ function ColorSchemeToggle() {
         </svg>
       </summary>
       <DetailsPopup>
-        <Form replace action="/_actions/color-scheme" method="post">
+        <Form
+          preventScrollReset
+          replace
+          action="/_actions/color-scheme"
+          method="post"
+        >
           <input
             type="hidden"
             name="returnTo"
