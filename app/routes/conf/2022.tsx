@@ -263,7 +263,7 @@ function MobileNavButton() {
     <MenuButton
       id="nav-button"
       aria-label="Toggle menu"
-      className="flex h-9 w-9 items-center justify-center rounded-md border-2 border-white border-opacity-60 expanded:border-opacity-100 expanded:bg-blue-800"
+      className="flex h-9 w-9 items-center justify-center rounded-md border-2 border-white border-opacity-60 aria-expanded:border-opacity-100 aria-expanded:bg-blue-800"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +288,7 @@ function MobileMenuItem({
       as={HeaderLink}
       className={cx(
         className,
-        "cursor-pointer select-none py-2 px-4 outline-none hover:bg-blue-700 hover:text-white selected:bg-pink-500 selected:text-white selected:hover:bg-pink-600"
+        "cursor-pointer select-none py-2 px-4 outline-none hover:bg-blue-700 hover:text-white data-[selected]:bg-pink-500 data-[selected]:text-white data-[selected]:hover:bg-pink-600"
       )}
       {...props}
     />

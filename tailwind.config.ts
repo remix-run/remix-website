@@ -1,21 +1,22 @@
 // All tokens based on Jim Nielson's designs
 // https://www.figma.com/file/6G68ZVNbR6bMHl2p8727xi/www.remix.run?node-id=0%3A1&t=EXGqoelkZXIPTK6B-0
 
-const aspectRatioPlugin = require("@tailwindcss/aspect-ratio");
-const defaultTheme = require("tailwindcss/defaultTheme");
+import aspectRatioPlugin from "@tailwindcss/aspect-ratio";
+import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
-/** @type {TailwindConfig} */
 module.exports = {
-  mode: "jit",
   content: ["./app/**/*.{ts,tsx}", "./data/**/*.md", "./tailwind-extras.html"],
   darkMode: "class",
-  plugins: [aspectRatioPlugin, selectedVariantPlugin, expandedVariantPlugin],
+  plugins: [aspectRatioPlugin],
   theme: {
-    screens: {
-      "2xs": "320px",
-      xs: "480px",
-      ...defaultTheme.screens,
+    extend: {
+      screens: {
+        "2xs": "320px",
+        xs: "480px",
+      },
     },
+
     fontFamily: {
       display: ["Founders Grotesk", "Inter", ...defaultTheme.fontFamily.sans],
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
@@ -130,54 +131,14 @@ module.exports = {
         900: "#731c6b",
       },
     },
-    container({ theme }) {
-      return {
-        center: true,
-        padding: {
-          DEFAULT: theme("spacing.6", "1.5rem"),
-          sm: theme("spacing.6", "1.5rem"),
-          md: theme("spacing.8", "2rem"),
-          lg: theme("spacing.10", "2.5rem"),
-        },
-      };
-    },
+    container: ({ theme }) => ({
+      center: true,
+      padding: {
+        DEFAULT: theme("spacing.6", "1.5rem"),
+        sm: theme("spacing.6", "1.5rem"),
+        md: theme("spacing.8", "2rem"),
+        lg: theme("spacing.10", "2.5rem"),
+      },
+    }),
   },
-};
-
-function selectedVariantPlugin({ addVariant, e }) {
-  addVariant("selected", ({ modifySelectors, separator }) => {
-    modifySelectors(({ className, selector }) => {
-      let pseudo = "";
-      if (/:(hover|focus|focus-within|focus-visible)$/.test(selector)) {
-        let i = selector.lastIndexOf(":");
-        if (i != -1) {
-          pseudo = selector.substr(i);
-        }
-      }
-      return `.${e(
-        `selected${separator}${className}`
-      )}:where([data-selected])${pseudo}`;
-    });
-  });
-}
-
-function expandedVariantPlugin({ addVariant, e }) {
-  addVariant("expanded", ({ modifySelectors, separator }) => {
-    modifySelectors(({ className }) => {
-      return `.${e(
-        `expanded${separator}${className}`
-      )}:where([aria-expanded="true"])`;
-    });
-  });
-  addVariant("not-expanded", ({ modifySelectors, separator }) => {
-    modifySelectors(({ className }) => {
-      return `.${e(
-        `not-expanded${separator}${className}`
-      )}:where([aria-expanded="false"])`;
-    });
-  });
-}
-
-/**
- * @typedef {import("tailwindcss").Config} TailwindConfig
- */
+} satisfies Config;
