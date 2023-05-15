@@ -12,7 +12,7 @@ export async function action({ request }) {
 
 export default function Projects() {
   const projects = useLoaderData();
-  const { state } = useTransition();
+  const { state } = useNavigation();
   const busy = state === "submitting";
 
   return (

@@ -36,13 +36,13 @@ export async function action({ request }) {
 
 ```tsx [2,8-10]
 export default function NewInvoice() {
-  const transition = useTransition();
+  const navigation = useNavigation();
   return (
     <Form method="post">
       <input type="text" name="company" />
       <input type="text" name="amount" />
       <button type="submit">
-        {transition.state === "submitting"
+        {navigation.state === "submitting"
           ? "Creating invoice..."
           : "Create invoice"}
       </button>
@@ -55,12 +55,10 @@ export default function NewInvoice() {
 
 ```tsx [3-9]
 export default function NewInvoice() {
-  const { submission } = useTransition();
+  const { formData } = useNavigation();
   return submission ? (
     <Invoice
-      invoice={Object.fromEntries(
-        submission.formData
-      )}
+      invoice={Object.fromEntries(formData)}
     />
   ) : (
     <Form method="post">
