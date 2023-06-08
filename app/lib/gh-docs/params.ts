@@ -29,8 +29,19 @@ export function validateParams(
       let latest = semver.maxSatisfying(tags, "*");
       let path = [first];
 
-      if (expandedRef) path.push(expandedRef);
-      else if (latest) path.push(latest, second);
+      if (expandedRef) {
+        path.push(expandedRef);
+      } else if (latest) {
+        if (semver.valid(second)) {
+          // If second looks like a semver tag but we didn't find it as a ref in
+          // the repo, we might just have a stale set of branches/tags from github.
+          // Instead of pushing both in and generating a 404 (/en/1.16.0/1.17.0/pages/...)
+          // we just point them back to the requested doc on main
+          path.push("main");
+        } else {
+          path.push(latest, second);
+        }
+      }
 
       if (splat) path.push(splat);
       return path.join("/");
