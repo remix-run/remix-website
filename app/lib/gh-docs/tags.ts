@@ -26,6 +26,21 @@ export function getLatestVersion(tags: string[]) {
   )[0];
 }
 
+/**
+ * Returns the latest version of each major version
+ */
+export function getLatestVersionHeads(tags: string[]) {
+  let heads = new Map<number /*major*/, string /*head*/>();
+  for (let tag of tags) {
+    let major = semver.major(tag);
+    let head = heads.get(major);
+    if (!head || semver.gt(tag, head)) {
+      heads.set(major, tag);
+    }
+  }
+  return Array.from(heads.values()).sort(semver.compare).reverse();
+}
+
 // global for SS "HMR", we need a better story here
 global.tagsCache ??= new LRUCache<string, string[], CacheContext>({
   // let tagsCache = new LRUCache<string, string[]>({

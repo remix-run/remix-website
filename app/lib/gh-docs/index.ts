@@ -7,7 +7,11 @@ import { env } from "~/env.server";
 
 export { validateParams } from "./params";
 export { getRepoTarballStream } from "./repo-tarball";
-export { getLatestVersion, getAllReleases } from "./tags";
+export {
+  getLatestVersion,
+  getAllReleases,
+  getLatestVersionHeads,
+} from "./tags";
 
 export type { Doc } from "./docs";
 

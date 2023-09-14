@@ -35,6 +35,7 @@ import {
   getRepoTags,
   validateParams,
   getLatestVersion,
+  getLatestVersionHeads,
 } from "~/lib/gh-docs";
 import type { Doc } from "~/lib/gh-docs";
 import { octokit } from "~/lib/github.server";
@@ -68,7 +69,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   return json({
     menu,
-    versions: [getLatestVersion(tags)],
+    versions: getLatestVersionHeads(tags),
     latestVersion,
     releaseBranch,
     branches: branchesInMenu,
