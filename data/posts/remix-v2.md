@@ -35,7 +35,7 @@ This really deserves its own post, but I know some of you are probably wondering
 
 The tl;dr is that we are optimistic about adding support for RSC in Remix v3 and we are anxious to do our part in the effort to prove the technology in multiple frameworks. The capabilities of RSC are interesting, but Remix v2 relies on current stable React features, which at the time of this writing doesn't include RSC. When RSC is stable, you can expect that Remix will support it.
 
-However, "supporting RSC" is quite different from supporting other React features that we've seen. For example, when hooks showed up in 2018, they gave us a different way to build components but they had relatively little impact on bundling and application deployment. But RSC requires a much deeper integration.
+However, "supporting RSC" is quite different from supporting other React features that we've seen. For example, when hooks showed up in 2018, they gave us a different way to build components, but they had relatively little impact on bundling and application deployment. RSC, however, requires a much deeper integration.
 
 We are very encouraged by some of the changes we've seen in RSC since we initially evaluated it. In particular the `async` components you get in RSC look a lot like a Remix `loader` and component that got married and decided to ditch that obnoxious 3rd wheel, `useLoaderData`. So you can bet data loading will look somewhat different in Remix v3, but hopefully you'll just be moving a bunch of your `loader` code down into your new `async` components (but watch out for data dependency waterfalls! Did I already mention this should be its own post? It really should...).
 
