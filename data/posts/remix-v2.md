@@ -26,7 +26,7 @@ In case you haven't been following along, here are some of the highlights we've 
 - In [v1.13](https://github.com/remix-run/remix/releases/tag/remix%401.13.0) and [v1.16](https://github.com/remix-run/remix/releases/tag/remix%401.16.0) we shipped much improved support for various CSS strategies in Remix including PostCSS, CSS modules, Vanilla Extract, and CSS side-effect (global) imports.
 - In [v1.14](https://github.com/remix-run/remix/releases/tag/remix%401.14.0) and [v1.18](https://github.com/remix-run/remix/releases/tag/remix%401.18.0) we shipped a new dev server that does both hot module reloading (HMR) and hot data reloading (HDR). The new dev server is the default in v2.
 
-Additionally, one of the major highlights we are shipping in v2 is [a brand new CLI experience](https://github.com/remix-run/remix/pull/6887)!
+Additionally, one of the major highlights we are shipping in v2 is [a brand new `create-remix` CLI experience](https://github.com/remix-run/remix/pull/6887).
 
 For a complete list of everything that changed in v2, please refer to [the release notes](https://github.com/remix-run/remix/releases/tag/remix%402.0.0).
 
