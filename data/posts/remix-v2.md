@@ -8,7 +8,7 @@ authors:
   - Michael Jackson
 ---
 
-We are excited to announce that after nearly 2 years of sustained effort since releasing Remix version 1, 19 minor releases (over 100 patch releases), and thousands of closed issues and pull requests we are releasing Remix v2 into the world today.
+We are excited to announce that after nearly 2 years of sustained effort since releasing Remix version 1 — 19 minor releases, over 100 patch releases, and thousands of closed issues and pull requests — we are releasing Remix v2 into the world today.
 
 Back [in March we discussed at length](https://remix.run/blog/future-flags) our views on semantic versioning and building stable software, and described our approach to moving Remix forward without causing you to have to rewrite your app when we release a new major version. Today we are making good on that promise. If you have a Remix v1 app with all future flags enabled, you can seamlessly upgrade to v2 and simply drop those flags from your Remix config. Of course, this is a major version so we are also taking the opportunity to bump a few of our main dependencies (notably, React 18). For a comprehensive walkthrough of things you will need to upgrade, please refer to our [guide on preparing for v2](https://remix.run/docs/en/2.0.0/start/v2).
 
