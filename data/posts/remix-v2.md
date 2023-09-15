@@ -12,7 +12,7 @@ We are excited to announce that after nearly 2 years of sustained effort since r
 
 Back [in March we discussed at length](https://remix.run/blog/future-flags) our views on semantic versioning and building stable software, and described our approach to moving Remix forward without causing you to have to rewrite your app when we release a new major version. Today we are making good on that promise. If you have a Remix v1 app with all future flags enabled, you have a nearly seamless upgrade to v2 by simply dropping those flags from your Remix config. Of course, this is a major version so we are also taking the opportunity to bump a few of our main dependencies (notably, React 18 and Node 18).
 
-For a comprehensive walkthrough of things you will need to upgrade, please refer to our [guide on upgrading to v2](https://remix.run/docs/en/2.0.0/start/v2).
+For a comprehensive walkthrough of things you will need to upgrade, please refer to our [guide on upgrading to v2](https://remix.run/docs/en/main/start/v2).
 
 We want you to be confident that the software you're building your business on isn't going to pull the rug out from under you next year. Another way to think about it: if you've been using the future flags in Remix v1, you already had access to many of the features in Remix v2 months ago. This is an iterative software development lifecycle we have learned from many wise voices over the years, for which we are grateful. And Remix v3 will be developed in the same way. Now that v2 is shipped, you can expect v3 features to show up behind future flags in the coming months well in advance of a stable/final v3 release.
 
@@ -44,4 +44,4 @@ At Remix Conf earlier this year we hosted [a panel discussion](https://www.youtu
 
 Aaaaaand that's a wrap for this post! Seriously, I don't know why you're even still here 😅
 
-Go [read the upgrade guide](https://remix.run/docs/en/2.0.0/start/v2)!
+Go [read the upgrade guide](https://remix.run/docs/en/main/start/v2)!
