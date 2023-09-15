@@ -33,7 +33,7 @@ We have put together [a comprehensive upgrade guide for v2](https://remix.run/do
 
 This really deserves its own post, but I know some of you are probably wondering what Remix is planning to do with regards to React Server Components (RSC). It's a great question, and if you're reading this far you probably have it, so I'll do my best to give you some sense of where we're at.
 
-The tl;dr is that we are optimistic about adding support for RSC in Remix v3 and we are anxious to do our part in the effort to prove the technology in multiple frameworks. The capabilities of RSC are interesting, but Remix v2 relies on current stable React features, which at the time of this writing doesn't include RSC. When RSC is stable, you can expect Remix will support it.
+The tl;dr is that we are optimistic about adding support for RSC in Remix v3 and we are anxious to do our part in the effort to prove the technology in multiple frameworks. The capabilities of RSC are interesting, but Remix v2 relies on current stable React features, which at the time of this writing doesn't include RSC. When RSC is stable, you can expect that Remix will support it.
 
 However, "supporting RSC" is quite different from supporting other React features that we've seen. For example, when hooks showed up in 2018, they gave us a different way to build components but they had relatively little impact on bundling and application deployment. But RSC requires a much deeper integration.
 
