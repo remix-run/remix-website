@@ -9,6 +9,7 @@ import {
   ScrollRestoration,
   useLoaderData,
   useMatches,
+  useRouteError,
 } from "@remix-run/react";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
@@ -181,7 +182,8 @@ export default function App() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: unknown }) {
+export function ErrorBoundary() {
+  let error = useRouteError();
   if (!canUseDOM) {
     console.error(error);
   }

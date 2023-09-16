@@ -4,6 +4,7 @@ import {
   useLoaderData,
   useMatches,
   useParams,
+  useRouteError,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type {
@@ -218,7 +219,8 @@ function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   );
 }
 
-export function ErrorBoundary({ error }: { error: unknown }) {
+export function ErrorBoundary() {
+  let error = useRouteError();
   let params = useParams();
   if (isRouteErrorResponse(error)) {
     return (
