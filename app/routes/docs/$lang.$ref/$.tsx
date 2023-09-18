@@ -227,7 +227,7 @@ export function ErrorBoundary() {
       <div className="flex h-[50vh] flex-col items-center justify-center">
         <h1 className="text-9xl font-bold">{error.status}</h1>
         <p className="text-lg">
-          {error.status === 400 ? (
+          {[400, 404].includes(error.status) ? (
             <>
               There is no doc for <i className="text-gray-500">{params["*"]}</i>
             </>
