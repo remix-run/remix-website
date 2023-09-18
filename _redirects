@@ -5,3 +5,27 @@
 /api            /api/conventions                      302
 /podcast        https://remix.transistor.fm/          302
 /stacks         https://remix.run/pages/stacks        302
+
+# V2 docs reorganization
+/docs/file-conventions/route-files-v2   /docs/file-conventions/routes          301
+/docs/file-conventions/routes-files     /docs/file-conventions/routes          301
+/docs/guides/optimistic-ui              /docs/discussion/pending-ui            301
+/docs/guides/routing                    /docs/discussion/routes                301
+/docs/guides/styling                    /docs/styling/bundling                 301
+/docs/hooks/use-transition              /docs/hooks/use-navigation             301
+/docs/other-api/asset-imports           /docs/file-conventions/asset-imports   301
+/docs/other-api/dev-v2                  /docs/other-api/dev                    301
+/docs/other-api/fetch                   /docs/                                 302
+/docs/other-api/react-router            /docs/discussion/react-router          301
+/docs/pages/api-development-strategy    /docs/start/future-flags               301
+/docs/pages/community                   /docs/start/community                  301
+/docs/pages/contributing                /docs/guides/contributing              301
+/docs/pages/faq                         /docs/guides/faq                       301
+/docs/pages/gotchas                     /docs/guides/gotchas                   301
+/docs/pages/philosophy                  /docs/discussion/introduction          301
+/docs/pages/stacks                      /docs/guides/templates#stacks          301
+/docs/pages/technical-explanation       /docs/discussion/introduction          301
+/docs/pages/v2                          /docs/start/v2                         301
+/docs/route/catch-boundary              /docs/route/error-boundary             301
+/docs/route/error-boundary-v2           /docs/route/error-boundary             301
+/docs/route/meta-v2                     /docs/route/meta                       301

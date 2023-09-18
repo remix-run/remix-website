@@ -36,30 +36,34 @@ type Redirect = [string, string, number?];
 let redirects: null | Redirect[] = null;
 
 // TODO: add support with pathToRegexp to redirect with * and stuff
-export function handleRedirects(request: Request) {
+export function handleRedirects(pathname: string) {
   if (redirects === null) {
+    redirects = [];
+
     let filePath = path.join(__dirname, "..", "_redirects");
     let redirectsFileContents: string;
     try {
       redirectsFileContents = fs.readFileSync(filePath, "utf-8");
     } catch (_) {
       // no redirects file, so no redirects
-      return null;
+      return;
     }
 
-    let currentUrl = new URL(request.url);
     for (let line of redirectsFileContents.split("\n")) {
       line = line.trim();
       if (!line || line.startsWith("#")) {
-        return redirects;
+        continue;
       }
-      let [from, location, maybeCode] = line.split(/\s+/);
-      let status = getValidRedirectCode(maybeCode);
-      if (currentUrl.pathname === from) {
-        throw redirect(location, { status });
-      }
+      let [from, to, maybeCode] = line.split(/\s+/);
+      redirects.push([from, to, getValidRedirectCode(maybeCode)]);
     }
   }
+
+  let foundRedirect = redirects.find(([from]) => pathname === from);
+  if (foundRedirect) {
+    throw redirect(foundRedirect[1], { status: foundRedirect[2] });
+  }
+
   return null;
 }
 
