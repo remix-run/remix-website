@@ -49,7 +49,7 @@ function handleStaticFileRequests(param: string | undefined) {
 }
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  handleRedirects(request);
+  handleRedirects(new URL(request.url).pathname);
   handleStaticFileRequests(params["*"]);
 
   try {
