@@ -59,12 +59,13 @@ export function validateParams(
     return path.join("/");
   }
 
+  // If we don't have a language and we can't detect a ref, fallback to `main`
+  // so we get the latest and we can be comfortable redirecting on 404 slugs.
+  // If we were to redirect to the latest semver here (i.e., 2.1.0), then we
+  // can't safely process a slug 404 redirect in docs/$lang.$ref/$.tsx since we
+  // don't know that they weren't looking for something in a specific version
   if (!firstIsLang && !ref) {
-    let path = [
-      lang,
-      semver.maxSatisfying(tags, "*", { includePrerelease: false }),
-      first,
-    ];
+    let path = [lang, "main", first];
     if (second) path.push(second);
     if (splat) path.push(splat);
     return path.join("/");
