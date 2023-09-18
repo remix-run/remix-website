@@ -15,7 +15,8 @@ export default function InvoiceRoute() {
   return <Invoice data={invoice} />;
 }
 
-export function ErrorBoundary({ error }) {
+export function ErrorBoundary() {
+  let error = useRouteError();
   console.error(error);
   return (
     <div>

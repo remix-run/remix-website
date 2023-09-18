@@ -4,6 +4,7 @@ import {
   useLoaderData,
   useMatches,
   useParams,
+  useRouteError,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type {
@@ -13,7 +14,7 @@ import type {
 } from "@remix-run/node";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { metaV1, getMatchesData } from "@remix-run/v1-meta";
-import { CACHE_CONTROL } from "~/lib/http.server";
+import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
 import invariant from "tiny-invariant";
 import type { Doc } from "~/lib/gh-docs";
 import { getRepoDoc } from "~/lib/gh-docs";
@@ -35,6 +36,12 @@ export async function loader({ params, request }: LoaderArgs) {
       { headers: { "Cache-Control": CACHE_CONTROL.doc } }
     );
   } catch (_) {
+    if (params.ref === "main" && params["*"]) {
+      // Only perform redirects for 404's on `main` URLs which are likely being
+      // redirected from the root `/docs/{slug}`.  If someone is direct linking
+      // to a missing slug on an old version or tag, then a 404 feels appropriate.
+      handleRedirects(`/docs/${params["*"]}`);
+    }
     throw json(null, { status: 404 });
   }
 }
@@ -218,14 +225,15 @@ function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   );
 }
 
-export function ErrorBoundary({ error }: { error: unknown }) {
+export function ErrorBoundary() {
+  let error = useRouteError();
   let params = useParams();
   if (isRouteErrorResponse(error)) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center">
         <h1 className="text-9xl font-bold">{error.status}</h1>
         <p className="text-lg">
-          {error.status === 400 ? (
+          {[400, 404].includes(error.status) ? (
             <>
               There is no doc for <i className="text-gray-500">{params["*"]}</i>
             </>
