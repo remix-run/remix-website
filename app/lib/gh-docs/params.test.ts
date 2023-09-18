@@ -101,14 +101,12 @@ describe("validateParams", () => {
 
   describe("without a valid branch or tag in the first position", () => {
     it("adds lang and latest stable tag", () => {
-      expect(validate(TAGS, BRANCHES, { lang: "beef" })).toBe(
-        `en/${LATEST_STABLE_TAG}/beef`
-      );
+      expect(validate(TAGS, BRANCHES, { lang: "beef" })).toBe(`en/main/beef`);
     });
     describe("without a valid branch or tag in the second position", () => {
       it("adds lang and latest stable tag", () => {
         expect(validate(TAGS, BRANCHES, { lang: "beef", ref: "cheese" })).toBe(
-          `en/${LATEST_STABLE_TAG}/beef/cheese`
+          `en/main/beef/cheese`
         );
       });
     });
