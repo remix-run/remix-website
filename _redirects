@@ -29,3 +29,31 @@
 /docs/route/catch-boundary            /docs/route/error-boundary           302
 /docs/route/error-boundary-v2         /docs/route/error-boundary           302
 /docs/route/meta-v2                   /docs/route/meta                     302
+/docs/route/route-module              /docs/route/action                   302
+
+# The above also won't qualify for the /{slug} -> /docs/{slug} redirects since
+# they won't return anything from getRepoDoc() in routes/$.tsx, so handle the
+# root redirects as well
+/file-conventions/route-files-v2      /docs/file-conventions/routes        302
+/file-conventions/routes-files        /docs/file-conventions/routes        302
+/guides/optimistic-ui                 /docs/discussion/pending-ui          302
+/guides/routing                       /docs/discussion/routes              302
+/guides/styling                       /docs/styling/bundling               302
+/hooks/use-transition                 /docs/hooks/use-navigation           302
+/other-api/asset-imports              /docs/file-conventions/asset-imports 302
+/other-api/dev-v2                     /docs/other-api/dev                  302
+/other-api/fetch                      /docs/                               302
+/other-api/react-router               /docs/discussion/react-router        302
+/pages/api-development-strategy       /docs/start/future-flags             302
+/pages/community                      /docs/start/community                302
+/pages/contributing                   /docs/guides/contributing            302
+/pages/faq                            /docs/guides/faq                     302
+/pages/gotchas                        /docs/guides/gotchas                 302
+/pages/philosophy                     /docs/discussion/introduction        302
+/pages/stacks                         /docs/guides/templates#stacks        302
+/pages/technical-explanation          /docs/discussion/introduction        302
+/pages/v2                             /docs/start/v2                       302
+/route/catch-boundary                 /docs/route/error-boundary           302
+/route/error-boundary-v2              /docs/route/error-boundary           302
+/route/meta-v2                        /docs/route/meta                     302
+/route/route-module                   /docs/route/action                   302
