@@ -126,6 +126,7 @@ export default function DocsLayout() {
     <div>
       <div className="sticky top-0 z-20">
         <Header />
+        <VersionWarningMobile />
         <NavMenuMobile />
       </div>
       <div
@@ -220,7 +221,7 @@ function Header() {
               <ColorSchemeToggle />
             </div>
           </div>
-          <VersionWarning />
+          <VersionWarningDesktop />
           <div className="flex items-center gap-4">
             <HeaderLink
               href="https://github.com/remix-run/remix"
@@ -470,11 +471,45 @@ let ColorSchemeButton = React.forwardRef<
   );
 });
 
-function VersionWarning() {
+function VersionWarningMobile() {
   let { isLatest, branches, currentGitHubRef } = useLoaderData<typeof loader>();
-
   if (isLatest) return null;
 
+  return (
+    <div className="text-center lg:hidden">
+      <div className="bg-blue-brand p-2 text-xs text-white">
+        <VersionWarningMessage
+          branches={branches}
+          currentGitHubRef={currentGitHubRef}
+        />
+      </div>
+    </div>
+  );
+}
+
+function VersionWarningDesktop() {
+  let { isLatest, branches, currentGitHubRef } = useLoaderData<typeof loader>();
+  if (isLatest) return null;
+
+  return (
+    <div className="hidden lg:block">
+      <div className="animate-[bounce_500ms_2.5] bg-blue-brand p-2 text-xs text-white">
+        <VersionWarningMessage
+          branches={branches}
+          currentGitHubRef={currentGitHubRef}
+        />
+      </div>
+    </div>
+  );
+}
+
+function VersionWarningMessage({
+  branches,
+  currentGitHubRef,
+}: {
+  branches: string[];
+  currentGitHubRef: string;
+}) {
   // Don't want to show release-next in the menu, but we do want to show
   // the branch-warning
   let warning = [...branches, "release-next"].includes(currentGitHubRef)
@@ -482,14 +517,12 @@ function VersionWarning() {
     : `Viewing docs for an older release`;
 
   return (
-    <div className="hidden lg:block">
-      <div className="animate-[bounce_500ms_2.5] bg-blue-brand p-2 text-xs text-white">
-        {warning}.{" "}
-        <Link to="/docs/en/main" className="underline">
-          View latest
-        </Link>
-      </div>
-    </div>
+    <>
+      {warning}.{" "}
+      <Link to="/docs/en/main" className="underline">
+        View latest
+      </Link>
+    </>
   );
 }
 
