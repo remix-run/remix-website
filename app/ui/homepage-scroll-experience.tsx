@@ -44,11 +44,7 @@ function CTA() {
       </JumboText>
       <div className="mx-auto max-w-6xl px-6 md:px-12">
         <div className="h-4" />
-        <PrimaryButtonLink
-          prefetch="intent"
-          to="/docs/en/v1"
-          children="Go Play!"
-        />
+        <PrimaryButtonLink prefetch="intent" to="/docs" children="Go Play!" />
       </div>
       <div className="h-[25vh]" />
     </>
