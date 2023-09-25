@@ -4,7 +4,7 @@ const { createRoutesFromFolders } = require("@remix-run/v1-route-convention");
  * @type {import('@remix-run/dev').AppConfig}
  */
 const config = {
-  ignoredRouteFiles: ["**/*"],
+  ignoredRouteFiles: ["**/*[!_](img|marketing)*"],
   devServerBroadcastDelay: 500,
   routes: (defineRoutes) =>
     createRoutesFromFolders(defineRoutes, {
@@ -13,6 +13,8 @@ const config = {
         "_ui/**/*",
         "_ui.(js|jsx|tsx)",
         "*.ui.(js|jsx|tsx)",
+        "_marketing*",
+        "img*",
       ],
     }),
   serverModuleFormat: "cjs",
