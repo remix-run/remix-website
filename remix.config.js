@@ -16,6 +16,8 @@ const config = {
       ],
     }),
   serverModuleFormat: "cjs",
+  postcss: true,
+  tailwind: true,
   future: {
     v2_meta: true,
     v2_routeConvention: true,
