@@ -1,5 +1,4 @@
 import * as React from "react";
-// @ts-expect-error
 import { easeOutQuad, easeInExpo, linear } from "tween-functions";
 import type { Sequence, Slide } from "~/lib/mdtut.server";
 import { PrimaryButtonLink } from "~/ui/buttons";

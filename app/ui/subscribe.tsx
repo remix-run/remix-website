@@ -1,6 +1,6 @@
 import * as React from "react";
-import { useFetcher, type FetcherWithComponents } from "@remix-run/react";
-import type { FormProps } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
+import type { FormProps, FetcherWithComponents } from "@remix-run/react";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
 import type { action } from "~/routes/_actions/newsletter";

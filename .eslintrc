@@ -11,5 +11,8 @@
     "jest": {
       "version": 27
     }
+  },
+  "rules": {
+    "prefer-const": "off"
   }
 }
