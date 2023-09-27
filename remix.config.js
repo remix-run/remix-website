@@ -15,7 +15,6 @@ const v1Directories = [
  */
 const config = {
   ignoredRouteFiles: v1Directories.map((dir) => `**/${dir}*`),
-  devServerBroadcastDelay: 500,
   routes: (defineRoutes) =>
     createRoutesFromFolders(defineRoutes, {
       ignoredFilePatterns: [
@@ -36,6 +35,7 @@ const config = {
     v2_normalizeFormMethod: true,
     v2_errorBoundary: true,
     v2_headers: true,
+    v2_dev: true,
   },
 };
 module.exports = config;
