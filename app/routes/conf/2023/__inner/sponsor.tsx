@@ -1,19 +1,11 @@
-import type { HeadersFunction } from "@remix-run/node";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { metaV1 } from "@remix-run/v1-meta";
-import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const meta: MetaFunction = (args) => {
   return metaV1(args, {
     title: "Remix Conf 2023 Sponsorship",
     description: "Sponsorship opportunities for Remix Conf.",
   });
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.conf,
-  };
 };
 
 export default function SponsorUs() {
