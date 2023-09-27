@@ -7,11 +7,7 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type {
-  HeadersFunction,
-  LoaderArgs,
-  SerializeFrom,
-} from "@remix-run/node";
+import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { metaV1, getMatchesData } from "@remix-run/v1-meta";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
@@ -45,13 +41,6 @@ export async function loader({ params, request }: LoaderArgs) {
     throw json(null, { status: 404 });
   }
 }
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.doc,
-    Vary: "Cookie",
-  };
-};
 
 const LAYOUT_LOADER_KEY = "routes/docs/$lang.$ref";
 
