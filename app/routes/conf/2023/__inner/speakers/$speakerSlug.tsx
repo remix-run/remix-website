@@ -1,9 +1,5 @@
 import * as React from "react";
-import type {
-  LinksFunction,
-  LoaderArgs,
-  HeadersFunction,
-} from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { useLoaderData } from "@remix-run/react";
@@ -160,12 +156,6 @@ export async function loader({ params }: LoaderArgs) {
     { headers: { "Cache-Control": CACHE_CONTROL.conf } }
   );
 }
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
-};
 
 export default function SpeakerRoute() {
   let { speaker } = useLoaderData<typeof loader>();

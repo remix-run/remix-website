@@ -1,8 +1,6 @@
-import type { HeadersFunction } from "@remix-run/node";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import { metaV1 } from "@remix-run/v1-meta";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "../_ui";
 
 export const meta: MetaFunction = (args) => {
@@ -10,12 +8,6 @@ export const meta: MetaFunction = (args) => {
     title: "May 24th at Remix Conf",
     description: "May 24th is The Workshop and Welcome day at Remix.",
   });
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
 };
 
 export default function May24Schedule() {

@@ -1,8 +1,4 @@
-import type {
-  LinksFunction,
-  LoaderArgs,
-  HeadersFunction,
-} from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import {
   Link,
   useParams,
@@ -56,12 +52,6 @@ export const loader = async ({ params }: LoaderArgs) => {
     { speaker, talks },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
 };
 
 export default function SpeakerRoute() {

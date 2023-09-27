@@ -1,7 +1,5 @@
-import type { HeadersFunction } from "@remix-run/node";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { metaV1 } from "@remix-run/v1-meta";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "./_ui";
 
 export const meta: MetaFunction = (args) => {
@@ -9,12 +7,6 @@ export const meta: MetaFunction = (args) => {
     title: "Remix Conf Discord Server",
     description: "Much of our coordination happens on Discord.",
   });
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
 };
 
 export default function Safety() {

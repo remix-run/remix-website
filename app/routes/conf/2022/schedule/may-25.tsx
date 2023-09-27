@@ -1,4 +1,4 @@
-import type { HeadersFunction, LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
@@ -23,12 +23,6 @@ export const loader: LoaderFunction = async () => {
     { scheduleItems },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
 };
 
 export default function May25Schedule() {

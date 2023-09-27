@@ -7,7 +7,7 @@ import {
 } from "@remix-run/react";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import cx from "clsx";
-import type { HeadersFunction, LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { formatDate, getSchedules } from "~/lib/conf2023.server";
@@ -80,12 +80,6 @@ export const meta: MetaFunction = (args) => {
     title: "Remix Conf Schedule",
     description: "What's happening and when at Remix Conf",
   });
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
 };
 
 export default function Safety() {

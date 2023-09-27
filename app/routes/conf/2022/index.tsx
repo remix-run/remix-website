@@ -1,10 +1,6 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type {
-  HeadersFunction,
-  LinksFunction,
-  LoaderArgs,
-} from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
 import { OutlineButtonLink, primaryButtonLinkClass } from "~/ui/buttons";
@@ -76,12 +72,6 @@ export const loader = async ({ request }: LoaderArgs) => {
     { siteUrl, speakers: speakersShuffled, sponsors },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
 };
 
 export default function ConfIndex() {
