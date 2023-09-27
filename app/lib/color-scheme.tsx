@@ -35,7 +35,7 @@ function ColorSchemeScriptImpl() {
       } else if (colorScheme === "dark") {
         document.documentElement.classList.add("dark");
       } else if (colorScheme === "system") {
-        function check(media: MediaQueryList) {
+        function check(media: MediaQueryList | MediaQueryListEvent) {
           if (media.matches) {
             document.documentElement.classList.add("dark");
           } else {
@@ -46,9 +46,7 @@ function ColorSchemeScriptImpl() {
         let media = window.matchMedia("(prefers-color-scheme: dark)");
         check(media);
 
-        // @ts-expect-error I can't figure out what TypeScript wants here ...
         media.addEventListener("change", check);
-        // @ts-expect-error
         return () => media.removeEventListener("change", check);
       } else {
         console.error("Impossible color scheme state:", colorScheme);

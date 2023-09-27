@@ -175,7 +175,7 @@ export default function App() {
         hidden
         // this img tag simply forces the icons to be loaded at a higher
         // priority than the scripts (chrome only for now)
-        // @ts-expect-error
+        // @ts-expect-error -- silly React pretending this attribute doesn't exist
         fetchpriority="high"
       />
     </Document>

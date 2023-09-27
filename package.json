@@ -6,13 +6,10 @@
   "license": "",
   "sideEffects": false,
   "scripts": {
-    "build:css": "npm run generate:css -- --env production",
-    "build": "npm run build:css && remix build",
+    "build": "remix build",
     "dev": "run-p dev:*",
-    "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "remix watch",
     "dev:server": "cross-env NODE_ENV=development node --require dotenv/config server.js",
-    "generate:css": "postcss styles --base styles --dir app/styles",
     "format": "prettier --write ./",
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
     "start": "cross-env NODE_ENV=production node server.js",
@@ -24,10 +21,10 @@
   "dependencies": {
     "@docsearch/css": "^3.3.2",
     "@docsearch/react": "^3.3.2",
-    "@remix-run/express": "^1.15.0",
-    "@remix-run/node": "^1.15.0",
-    "@remix-run/react": "^1.15.0",
-    "@remix-run/serve": "^1.15.0",
+    "@remix-run/express": "^1.16.1",
+    "@remix-run/node": "^1.16.1",
+    "@remix-run/react": "^1.16.1",
+    "@remix-run/serve": "^1.16.1",
     "@remix-run/v1-meta": "0.1.0-pre.2",
     "@remix-run/v1-route-convention": "0.1.0-pre.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
@@ -82,8 +79,8 @@
     "zod": "^3.20.6"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.15.0",
-    "@remix-run/eslint-config": "^1.15.0",
+    "@remix-run/dev": "^1.16.1",
+    "@remix-run/eslint-config": "^1.16.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@types/follow-redirects": "^1.14.1",
     "@types/gunzip-maybe": "^1.4.0",
@@ -96,6 +93,7 @@
     "@types/semver": "^7.3.13",
     "@types/tar": "^6.1.3",
     "@types/tar-stream": "^2.2.2",
+    "@types/tween-functions": "^1.2.0",
     "@vitejs/plugin-react": "^3.0.1",
     "@vitest/coverage-c8": "^0.28.3",
     "chokidar": "^3.5.3",
@@ -121,8 +119,8 @@
     "node": ">=18"
   },
   "overrides": {
-    "@remix-run/dev": "^1.15.0",
-    "@remix-run/react": "^1.15.0",
-    "@remix-run/server-runtime": "^1.15.0"
+    "@remix-run/dev": "^1.16.1",
+    "@remix-run/react": "^1.16.1",
+    "@remix-run/server-runtime": "^1.16.1"
   }
 }
