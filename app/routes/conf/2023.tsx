@@ -6,11 +6,7 @@ import {
   useMatches,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type {
-  LinksFunction,
-  LoaderArgs,
-  HeadersFunction,
-} from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { Link, NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
@@ -46,12 +42,6 @@ export const loader = async (_: LoaderArgs) => {
     { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
     { headers: { "Cache-Control": CACHE_CONTROL.conf } }
   );
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.conf,
-  };
 };
 
 const menuItems: Array<HeaderLinkProps> = [

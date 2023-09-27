@@ -1,9 +1,7 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "~/ui/primitives/tabs";
 import { Link, Outlet, useMatches, useNavigate } from "@remix-run/react";
-import type { HeadersFunction } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "./_ui";
 
 export const meta: MetaFunction = (args) => {
@@ -11,12 +9,6 @@ export const meta: MetaFunction = (args) => {
     title: "Remix Conf Schedule",
     description: "What's happening and when at Remix Conf",
   });
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
 };
 
 export default function Safety() {

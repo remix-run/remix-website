@@ -41,6 +41,7 @@ import type { Doc } from "~/lib/gh-docs";
 import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
 import { env } from "~/env.server";
+import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const loader = async ({ params }: LoaderArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
@@ -95,7 +96,10 @@ export const meta: MetaFunction<typeof loader> = (args) => {
 };
 
 export const headers: HeadersFunction = () => {
-  return { "Cache-Control": "max-age=300" };
+  return {
+    "Cache-Control": CACHE_CONTROL.doc,
+    Vary: "Cookie",
+  };
 };
 
 export default function DocsLayout() {

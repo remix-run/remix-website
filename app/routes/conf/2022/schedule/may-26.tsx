@@ -1,10 +1,9 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
-import type { HeadersFunction, LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { Discord } from "~/ui/icons";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { InnerLayout } from "../_ui";
 
 export const meta: MetaFunction = (args) => {
@@ -13,12 +12,6 @@ export const meta: MetaFunction = (args) => {
     description:
       "May 26th is the day after the conference. Get together with other conference attendees before heading home.",
   });
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
 };
 
 function getMapsDirections(address: string) {

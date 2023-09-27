@@ -1,11 +1,7 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
-import type {
-  HeadersFunction,
-  LinksFunction,
-  LoaderArgs,
-} from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
 import {
@@ -78,12 +74,6 @@ export const loader = async ({ request }: LoaderArgs) => {
     },
     { headers: { "Cache-Control": CACHE_CONTROL.conf } }
   );
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.conf,
-  };
 };
 
 export default function ConfIndex() {
