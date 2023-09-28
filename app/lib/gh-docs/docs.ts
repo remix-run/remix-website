@@ -3,7 +3,7 @@ import LRUCache from "lru-cache";
 import parseYamlHeader from "gray-matter";
 import { getRepoContent } from "./repo-content";
 import { getRepoTarballStream } from "./repo-tarball";
-import { createTarFileProcessor } from "./tarball";
+import { createTarFileProcessor } from "./tarball.server";
 import { load as $ } from "cheerio";
 import { env } from "~/env.server";
 
