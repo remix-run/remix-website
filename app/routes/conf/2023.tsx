@@ -230,6 +230,7 @@ function isExternalUrl(value: string, currentHost: string) {
 const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
   ({ to, children, className, prefetch = "none", ...props }, ref) => {
     let rootMatch = useMatches().find((match) => match.id === "root")!;
+    // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
     let external = isExternalUrl(to, rootMatch.data.host);
     if (external) {
       return (

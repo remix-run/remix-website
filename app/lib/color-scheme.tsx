@@ -10,6 +10,7 @@ export function useColorScheme(): ColorScheme {
   let optimisticColorScheme = formData?.has("colorScheme")
     ? (formData.get("colorScheme") as ColorScheme)
     : null;
+  // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
   return optimisticColorScheme || rootLoaderData.colorScheme;
 }
 

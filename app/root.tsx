@@ -151,6 +151,7 @@ function Document({
 export default function App() {
   let matches = useMatches();
   let { noIndex } = useLoaderData<typeof loader>();
+  // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
   let forceDark = matches.some((match) => match.handle?.forceDark);
 
   if (process.env.NODE_ENV !== "development") {

@@ -817,6 +817,7 @@ function InnerContainer({ children }: { children: React.ReactNode }) {
 function useDoc(): Doc | null {
   let data = useMatches().slice(-1)[0].data;
   if (!data) return null;
+  // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
   return data.doc;
 }
 

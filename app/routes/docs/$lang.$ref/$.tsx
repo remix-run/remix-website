@@ -64,6 +64,7 @@ export const meta: MetaFunction<
   }
 
   let { doc } = data;
+  // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
   let { latestVersion, releaseBranch, branches, currentGitHubRef } = parentData;
 
   let titleAppend =
@@ -82,6 +83,7 @@ export const meta: MetaFunction<
 
   let rootData = matchesData.root;
   let robots =
+    // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
     rootData.isProductionHost && isMainBranch
       ? "index,follow"
       : "noindex,nofollow";
