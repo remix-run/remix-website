@@ -5,6 +5,11 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const { createRequestHandler } = require("@remix-run/express");
 const { broadcastDevReady } = require("@remix-run/node");
+const sourceMapSupport = require("source-map-support");
+const { installGlobals } = require("@remix-run/node");
+
+sourceMapSupport.install();
+installGlobals();
 
 const BUILD_DIR = path.join(process.cwd(), "build");
 const build = require(BUILD_DIR);

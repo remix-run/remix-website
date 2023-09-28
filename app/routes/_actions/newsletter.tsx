@@ -1,9 +1,9 @@
 import { json } from "@remix-run/node";
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs } from "@remix-run/node";
 import { subscribeToNewsletter } from "~/lib/convertkit";
 import { requirePost } from "~/lib/http.server";
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   requirePost(request);
 
   let body = new URLSearchParams(await request.text());

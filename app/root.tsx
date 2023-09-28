@@ -11,9 +11,9 @@ import {
   useMatches,
   useRouteError,
 } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import {
   load as loadFathom,
   type LoadOptions as FathomLoadOptions,
@@ -32,7 +32,7 @@ import { canUseDOM } from "~/lib/misc";
 import cx from "clsx";
 import { metaV1 } from "@remix-run/v1-meta";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   ensureSecure(request);
   removeTrailingSlashes(request);
 

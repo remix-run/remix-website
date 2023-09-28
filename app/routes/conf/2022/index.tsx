@@ -1,8 +1,8 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { OutlineButtonLink, primaryButtonLinkClass } from "~/ui/buttons";
 import indexStyles from "~/styles/index.css";
 import { Fragment } from "react";
@@ -38,7 +38,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const speakersOrdered = await getSpeakers(2022);
   const speakersShuffled = speakersOrdered
     // save a bit of data by not sending along the bio to the home page

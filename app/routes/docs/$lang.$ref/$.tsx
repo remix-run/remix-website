@@ -7,8 +7,8 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/react";
 import { metaV1, getMatchesData } from "@remix-run/v1-meta";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
 import invariant from "tiny-invariant";
@@ -20,7 +20,7 @@ import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import type { loader as docsLayoutLoader } from "~/routes/docs/$lang.$ref";
 import type { loader as rootLoader } from "~/root";
 
-export async function loader({ params, request }: LoaderArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
   let url = new URL(request.url);
   let pageUrl = url.protocol + "//" + url.host + url.pathname;
   invariant(params.ref, "expected `ref` params");

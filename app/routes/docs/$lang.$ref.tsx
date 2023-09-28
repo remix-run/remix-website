@@ -10,11 +10,11 @@ import {
   useParams,
   useResolvedPath,
 } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { matchPath } from "react-router-dom";
 import { json, redirect } from "@remix-run/node";
 import type {
-  LoaderArgs,
+  LoaderFunctionArgs,
   LinksFunction,
   HeadersFunction,
 } from "@remix-run/node";
@@ -43,7 +43,7 @@ import { useColorScheme } from "~/lib/color-scheme";
 import { env } from "~/env.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
 
   let branchesInMenu = ["main", "dev"];

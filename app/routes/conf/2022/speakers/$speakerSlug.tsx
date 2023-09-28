@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
   Link,
   useParams,
@@ -6,7 +6,7 @@ import {
   isRouteErrorResponse,
   useRouteError,
 } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { getSpeakers, getTalks } from "~/lib/conf.server";
@@ -37,7 +37,7 @@ export const meta: MetaFunction<typeof loader> = (args) => {
   });
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const [allTalks, allSpeakers] = await Promise.all([
     getTalks(2022),
     getSpeakers(2022),

@@ -1,11 +1,11 @@
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs } from "@remix-run/node";
 import {
   serializeColorScheme,
   validateColorScheme,
 } from "~/lib/color-scheme.server";
 import { safeRedirect } from "~/lib/http.server";
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   let formData = await request.formData();
   let colorScheme = formData.get("colorScheme");
   if (!validateColorScheme(colorScheme)) {

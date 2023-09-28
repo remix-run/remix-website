@@ -270,7 +270,7 @@ function InvoiceList({ children }: { children: React.ReactNode }) {
                   " " +
                   (invoice.due === false
                     ? "text-green-brand"
-                    : invoice.due < 0
+                    : Number(invoice.due) < 0
                     ? "text-red-brand"
                     : "")
                 }
@@ -397,7 +397,7 @@ function LineItem({
 function getInvoiceDue(invoice: (typeof invoices)[number]) {
   return invoice.due === false
     ? "Paid"
-    : invoice.due < 0
+    : Number(invoice.due) < 0
     ? "Overdue"
     : invoice.due === 0
     ? "Due Today"

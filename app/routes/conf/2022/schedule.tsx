@@ -1,7 +1,7 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "~/ui/primitives/tabs";
 import { Link, Outlet, useMatches, useNavigate } from "@remix-run/react";
 import { metaV1 } from "@remix-run/v1-meta";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { InnerLayout } from "./_ui";
 
 export const meta: MetaFunction = (args) => {

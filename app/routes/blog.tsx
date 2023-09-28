@@ -1,7 +1,7 @@
 import * as React from "react";
-import type { HeadersFunction, LoaderArgs } from "@remix-run/node";
+import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { Footer } from "~/ui/footer";
@@ -18,7 +18,7 @@ export const meta: MetaFunction = (args) => {
   });
 };
 
-export const loader = async (_: LoaderArgs) => {
+export const loader = async (_: LoaderFunctionArgs) => {
   return json(
     { posts: await getBlogPostListings() },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }

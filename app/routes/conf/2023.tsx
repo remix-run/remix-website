@@ -6,7 +6,7 @@ import {
   useMatches,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { Link, NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
@@ -37,7 +37,7 @@ export const links: LinksFunction = () => {
 // March 1 at 12:00am
 const EARLY_BIRD_ENDING_TIME = 1646121600000;
 
-export const loader = async (_: LoaderArgs) => {
+export const loader = async (_: LoaderFunctionArgs) => {
   return json(
     { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
     { headers: { "Cache-Control": CACHE_CONTROL.conf } }

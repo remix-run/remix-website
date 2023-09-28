@@ -1,5 +1,5 @@
 import { useNavigation, useActionData } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Subscribe } from "~/ui/subscribe";
 import { metaV1 } from "@remix-run/v1-meta";
