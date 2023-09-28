@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/react";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
 import {
@@ -44,7 +44,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: indexStyles }];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   let speakers: Speaker[] = [];
 
   try {

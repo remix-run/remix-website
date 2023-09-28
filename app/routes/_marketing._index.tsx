@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
@@ -47,7 +47,7 @@ type LoaderData = {
   errors: Sequence;
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
     getMarkdownTutPage("marketing/sample/sample.md"),
     getMarkdownTutPage("marketing/sample-sm/sample.md"),

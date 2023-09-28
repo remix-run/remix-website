@@ -1,8 +1,9 @@
 import { useNavigation, useActionData } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Subscribe } from "~/ui/subscribe";
 import { metaV1 } from "@remix-run/v1-meta";
+import type { action } from "~/routes/_actions/newsletter";
 
 export const meta: MetaFunction = (args) => {
   return metaV1(args, {
@@ -12,7 +13,7 @@ export const meta: MetaFunction = (args) => {
 
 export default function Newsletter() {
   let navigation = useNavigation();
-  let actionData = useActionData();
+  let actionData = useActionData<typeof action>();
   let inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

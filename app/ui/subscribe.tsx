@@ -69,7 +69,6 @@ function SubscribeForm({
 
   return (
     <subscribe.Form
-      replace
       action="/_actions/newsletter"
       method="post"
       className={cx(className, {

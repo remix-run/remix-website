@@ -1,10 +1,10 @@
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import {
   getSocialImageUrl,
   getImageContentType,
 } from "~/lib/social-image.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);
   let searchParams = new URLSearchParams(requestUrl.search);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;

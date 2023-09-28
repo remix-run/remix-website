@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { primaryButtonLinkClass } from "~/ui/buttons";
 import { Discord } from "~/ui/icons";
 import { InnerLayout } from "./_ui";

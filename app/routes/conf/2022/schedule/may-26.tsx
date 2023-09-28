@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";

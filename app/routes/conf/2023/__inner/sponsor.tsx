@@ -1,4 +1,4 @@
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { metaV1 } from "@remix-run/v1-meta";
 
 export const meta: MetaFunction = (args) => {

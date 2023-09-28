@@ -1,9 +1,9 @@
 import * as React from "react";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { useLoaderData } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import speakersStylesUrl from "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { getSpeakerBySlug, getConfSessions } from "~/lib/conf2023.server";
@@ -32,7 +32,7 @@ export const meta: MetaFunction<typeof loader> = (args) => {
   });
 };
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   invariant(params.speakerSlug, "Missing speaker slug");
   let speakerSlug = params.speakerSlug;
   let speaker: Speaker | null;

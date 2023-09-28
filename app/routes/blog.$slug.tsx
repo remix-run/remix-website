@@ -1,6 +1,6 @@
-import type { HeadersFunction, LoaderArgs } from "@remix-run/node";
+import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { V2_MetaFunction as MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import invariant from "tiny-invariant";
@@ -14,7 +14,7 @@ import { Header } from "~/ui/header";
 import { Footer } from "~/ui/footer";
 import { Subscribe } from "~/ui/subscribe";
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
   let requestUrl = new URL(request.url);

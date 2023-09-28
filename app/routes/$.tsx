@@ -1,5 +1,5 @@
 import { handleRedirects } from "~/lib/http.server";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { getRepoDoc } from "~/lib/gh-docs";
 
@@ -48,7 +48,7 @@ function handleStaticFileRequests(param: string | undefined) {
   }
 }
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   handleRedirects(new URL(request.url).pathname);
   handleStaticFileRequests(params["*"]);
 
