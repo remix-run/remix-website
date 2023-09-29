@@ -89,12 +89,24 @@ export function removeTrailingSlashes(request: Request) {
   }
 }
 
+// Taken from https://github.com/remix-run/remix-jokes/blob/8f786d9d7fa7ea62203e87c1e0bdaa9bda3b28af/app/root.tsx#L25-L46
 export function ensureSecure(request: Request) {
-  let proto = request.headers.get("x-forwarded-proto");
-  if (proto === "http") {
-    let secureUrl = new URL(request.url);
-    secureUrl.protocol = "https:";
-    throw redirect(secureUrl.toString());
+  let url = new URL(request.url);
+  let hostname = url.hostname;
+  let proto = request.headers.get("X-Forwarded-Proto") ?? url.protocol;
+
+  url.host =
+    request.headers.get("X-Forwarded-Host") ??
+    request.headers.get("host") ??
+    url.host;
+  url.protocol = "https:";
+
+  if (proto === "http" && hostname !== "localhost") {
+    throw redirect(url.toString(), {
+      headers: {
+        "X-Forwarded-Proto": "https",
+      },
+    });
   }
 }
 
