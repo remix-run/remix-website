@@ -2,7 +2,7 @@ name: 🚀 Deploy (production)
 on:
   push:
     branches:
-      - main
+      - brooks/http-to-https
     paths-ignore:
       - ".vscode/**"
       - "scripts/**"
