@@ -20,11 +20,7 @@ import {
 } from "fathom-client";
 import tailwind from "~/styles/tailwind.css";
 import bailwind from "~/styles/bailwind.css";
-import {
-  removeTrailingSlashes,
-  ensureSecure,
-  isProductionHost,
-} from "~/lib/http.server";
+import { removeTrailingSlashes, isProductionHost } from "~/lib/http.server";
 import { ColorSchemeScript, useColorScheme } from "~/lib/color-scheme";
 import { parseColorScheme } from "~/lib/color-scheme.server";
 import iconsHref from "~/icons.svg";
@@ -33,7 +29,6 @@ import cx from "clsx";
 import { metaV1 } from "@remix-run/v1-meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  ensureSecure(request);
   removeTrailingSlashes(request);
 
   let isDevHost = !isProductionHost(request);
