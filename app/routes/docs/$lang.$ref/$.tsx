@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  Link,
   isRouteErrorResponse,
   useLoaderData,
   useMatches,
@@ -170,8 +171,8 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
         {doc.headings.map((heading, i) => {
           return (
             <li key={i}>
-              <a
-                href={`#${heading.slug}`}
+              <Link
+                to={`#${heading.slug}`}
                 dangerouslySetInnerHTML={{ __html: heading.html || "" }}
                 className={cx(
                   "group relative my-1 rounded-md border-transparent pb-1 text-sm",
@@ -204,8 +205,8 @@ function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
       <ul className="pl-9">
         {doc.headings.map((heading, i) => (
           <li key={i}>
-            <a
-              href={`#${heading.slug}`}
+            <Link
+              to={`#${heading.slug}`}
               dangerouslySetInnerHTML={{ __html: heading.html || "" }}
               className="block py-2 text-sm text-gray-400 hover:text-gray-900 active:text-red-brand dark:text-gray-400 dark:hover:text-gray-50 dark:active:text-red-brand"
             />
