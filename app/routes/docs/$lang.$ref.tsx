@@ -693,6 +693,7 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
           : ["text-gray-700 hover:text-blue-500 dark:text-gray-400"]
       )}
       children={children}
+      unstable_viewTransition
     />
   );
 }

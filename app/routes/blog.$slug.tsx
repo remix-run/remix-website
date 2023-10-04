@@ -100,6 +100,7 @@ export default function BlogPost() {
               <div className="absolute inset-0">
                 <img
                   className="h-full w-full object-cover object-top opacity-40 md:rounded-xl"
+                  style={{ viewTransitionName: "image-expand" }}
                   src={post.image}
                   alt={post.imageAlt}
                 />

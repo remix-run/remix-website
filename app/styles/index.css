@@ -16,3 +16,24 @@
   --base0E: theme("colors.pink.brand");
   --base0F: theme("colors.gray.200");
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 1s;
+}
+
+::view-transition-old(image-expand),
+::view-transition-new(image-expand) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(image-expand) {
+  opacity: 1;
+  z-index: 10;
+}
+
+::view-transition-new(image-expand) {
+  opacity: 0.25;
+  z-index: 10000;
+}

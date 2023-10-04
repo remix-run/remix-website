@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, Link } from "@remix-run/react";
+import { useLoaderData, Link, NavLink } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
@@ -34,7 +34,6 @@ export const headers: HeadersFunction = () => {
 export default function Blog() {
   const data = useLoaderData<typeof loader>();
   const [latestPost, ...posts] = data.posts;
-
   let featuredPosts = data.posts.filter((post) => post.featured);
 
   return (
@@ -65,18 +64,37 @@ export default function Blog() {
             <div className="mt-12 lg:grid lg:grid-cols-2 lg:gap-6">
               {posts.map((post) => (
                 <div key={post.slug}>
-                  <Link to={post.slug} prefetch="intent">
-                    <div className="aspect-h-9 aspect-w-16 mb-6">
-                      <img
-                        className="h-full w-full object-cover object-top shadow md:rounded-md"
-                        src={post.image}
-                        alt={post.imageAlt}
-                      />
-                    </div>
-                    <p className="text-sm lg:text-base">{post.dateDisplay}</p>
-                    <p className="text-lg font-bold lg:text-xl">{post.title}</p>
-                    <p className="mb-12 text-sm lg:text-base">{post.summary}</p>
-                  </Link>
+                  <NavLink
+                    to={post.slug}
+                    prefetch="intent"
+                    unstable_viewTransition
+                  >
+                    {({ isTransitioning }) => (
+                      <>
+                        <div className="aspect-h-9 aspect-w-16 mb-6">
+                          <img
+                            className="h-full w-full object-cover object-top shadow md:rounded-md"
+                            src={post.image}
+                            alt={post.imageAlt}
+                            style={{
+                              viewTransitionName: isTransitioning
+                                ? "image-expand"
+                                : "",
+                            }}
+                          />
+                        </div>
+                        <p className="text-sm lg:text-base">
+                          {post.dateDisplay}
+                        </p>
+                        <p className="text-lg font-bold lg:text-xl">
+                          {post.title}
+                        </p>
+                        <p className="mb-12 text-sm lg:text-base">
+                          {post.summary}
+                        </p>
+                      </>
+                    )}
+                  </NavLink>
                 </div>
               ))}
             </div>
