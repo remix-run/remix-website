@@ -1,8 +1,17 @@
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { useRef } from "react";
+import type { ShowcaseCompany } from "~/lib/showcase.server";
+import { showcaseCompanies } from "~/lib/showcase.server";
 import { Footer } from "~/ui/footer";
 import { Header } from "~/ui/header";
 
+export async function loader() {
+  return json({ showcaseCompanies });
+}
+
 export default function Showcase() {
+  const { showcaseCompanies } = useLoaderData<typeof loader>();
   return (
     <div className="flex h-full flex-1 flex-col">
       <Header />
@@ -17,8 +26,8 @@ export default function Showcase() {
           </p>
         </div>
         <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-8 gap-y-6 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-12 lg:gap-y-10">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <ShowcaseCard key={i} />
+          {showcaseCompanies.map((company) => (
+            <ShowcaseCard key={company.name} {...company} />
           ))}
         </ul>
       </main>
@@ -27,7 +36,13 @@ export default function Showcase() {
   );
 }
 
-function ShowcaseCard() {
+function ShowcaseCard({
+  name,
+  description,
+  link,
+  imgSrc,
+  videoSrc,
+}: ShowcaseCompany) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const playVideo = () => {
@@ -48,11 +63,11 @@ function ShowcaseCard() {
           loop
           muted
           tabIndex={0}
-          poster="/showcase-assets/shopify.png"
+          poster={imgSrc}
           onFocus={playVideo}
           onBlur={pauseVideo}
         >
-          <source src="/showcase-assets/shopify.mp4" type="video/mp4" />
+          <source src={videoSrc} type="video/mp4" />
           {/* 😬 what is this? */}
           {/* <source
             src="https://cdn.shopify.com/videos/c/vp/6e7b8b8e8d7348dcabc229459f89f529/6e7b8b8e8d7348dcabc229459f89f529.m3u8"
@@ -61,17 +76,17 @@ function ShowcaseCard() {
         </video>
         <div className="p-4">
           <h2 className="font-medium">
-            <a href="https://www.shopify.com/">
+            <a href={link}>
               {/* Makes the whole card clickable */}
               <span
                 onMouseOver={playVideo}
                 onMouseOut={pauseVideo}
                 className="absolute inset-0 rounded-3xl"
               />
-              Shopify
+              {name}
             </a>
           </h2>
-          <p className="pt-2 text-xs font-light">A really cool company</p>
+          <p className="pt-2 text-xs font-light">{description}</p>
         </div>
       </div>
     </li>
