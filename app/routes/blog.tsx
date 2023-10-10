@@ -46,20 +46,37 @@ export default function Blog() {
         <div className="md:grid md:grid-cols-12">
           <div className="md:col-span-7">
             <div className="mb-14">
-              <Link to={latestPost.slug} prefetch="intent">
-                <div className="aspect-h-9 aspect-w-16 mb-6">
-                  <img
-                    className="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
-                    src={latestPost.image}
-                    alt={latestPost.imageAlt}
-                  />
-                </div>
-                <p className="text-sm lg:text-base">{latestPost.dateDisplay}</p>
-                <p className="text-2xl font-bold lg:text-5xl">
-                  {latestPost.title}
-                </p>
-                <p className="text-sm lg:text-base">{latestPost.summary}</p>
-              </Link>
+              <NavLink
+                to={latestPost.slug}
+                prefetch="intent"
+                unstable_viewTransition
+              >
+                {({ isTransitioning }) => (
+                  <>
+                    <div className="aspect-h-9 aspect-w-16 mb-6">
+                      <img
+                        className="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
+                        src={latestPost.image}
+                        alt={latestPost.imageAlt}
+                        style={
+                          isTransitioning
+                            ? {
+                                viewTransitionName: "image-expand",
+                              }
+                            : undefined
+                        }
+                      />
+                    </div>
+                    <p className="text-sm lg:text-base">
+                      {latestPost.dateDisplay}
+                    </p>
+                    <p className="text-2xl font-bold lg:text-5xl">
+                      {latestPost.title}
+                    </p>
+                    <p className="text-sm lg:text-base">{latestPost.summary}</p>
+                  </>
+                )}
+              </NavLink>
             </div>
             <div className="mt-12 lg:grid lg:grid-cols-2 lg:gap-6">
               {posts.map((post) => (
@@ -76,11 +93,13 @@ export default function Blog() {
                             className="h-full w-full object-cover object-top shadow md:rounded-md"
                             src={post.image}
                             alt={post.imageAlt}
-                            style={{
-                              viewTransitionName: isTransitioning
-                                ? "image-expand"
-                                : "",
-                            }}
+                            style={
+                              isTransitioning
+                                ? {
+                                    viewTransitionName: "image-expand",
+                                  }
+                                : undefined
+                            }
                           />
                         </div>
                         <p className="text-sm lg:text-base">

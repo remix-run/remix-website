@@ -39,3 +39,9 @@
     opacity: 0.2;
   }
 }
+
+/* This should probably be moved */
+::view-transition-old(image-expand),
+::view-transition-new(image-expand) {
+  height: 100%;
+}

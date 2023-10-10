@@ -96,11 +96,13 @@ export default function BlogPost() {
       <div className="flex flex-1 flex-col">
         <div className="flex-1">
           <div>
-            <div className="relative h-[280px] bg-gray-900 md:mx-auto md:h-[400px] md:max-w-3xl md:rounded-xl xl:h-[480px]">
+            <div
+              className="relative h-[280px] bg-gray-900 md:mx-auto md:h-[400px] md:max-w-3xl md:rounded-xl xl:h-[480px]"
+              style={{ viewTransitionName: "image-expand" }}
+            >
               <div className="absolute inset-0">
                 <img
                   className="h-full w-full object-cover object-top opacity-40 md:rounded-xl"
-                  style={{ viewTransitionName: "image-expand" }}
                   src={post.image}
                   alt={post.imageAlt}
                 />
