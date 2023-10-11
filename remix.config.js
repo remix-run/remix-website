@@ -28,5 +28,6 @@ const config = {
       ],
     }),
   serverModuleFormat: "cjs",
+  watchPaths: "./data",
 };
 module.exports = config;

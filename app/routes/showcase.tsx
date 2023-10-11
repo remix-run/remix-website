@@ -79,7 +79,16 @@ function ShowcaseCard({
           width={800}
           height={600}
         >
-          <source src={videoSrc} type="video/mp4" width={800} height={600} />
+          {["webm", "mp4"].map((ext) => (
+            <source
+              key={ext}
+              src={`${videoSrc}.${ext}`}
+              type={`video/${ext}`}
+              width={800}
+              height={600}
+            />
+          ))}
+
           {/* 😬 what is this? */}
           {/* <source
             src="https://cdn.shopify.com/videos/c/vp/6e7b8b8e8d7348dcabc229459f89f529/6e7b8b8e8d7348dcabc229459f89f529.m3u8"
