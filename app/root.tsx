@@ -11,7 +11,6 @@ import {
   useMatches,
   useRouteError,
 } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import {
@@ -26,7 +25,6 @@ import { parseColorScheme } from "~/lib/color-scheme.server";
 import iconsHref from "~/icons.svg";
 import { canUseDOM } from "~/lib/misc";
 import cx from "clsx";
-import { metaV1 } from "@remix-run/v1-meta";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   removeTrailingSlashes(request);
@@ -79,12 +77,6 @@ export function links() {
   ];
 }
 
-export const meta: MetaFunction<typeof loader> = (args) => {
-  return metaV1(args, {
-    viewport: "width=device-width,initial-scale=1,viewport-fit=cover",
-  });
-};
-
 interface DocumentProps {
   title?: string;
   forceDark?: boolean;
@@ -120,6 +112,10 @@ function Document({
         <ColorSchemeScript forceConsistentTheme={forceDark} />
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#121212" />
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1,viewport-fit=cover"
+        />
         {noIndex && <meta name="robots" content="noindex" />}
         <Links />
         <Meta />
