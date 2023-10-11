@@ -1,4 +1,3 @@
-import type { MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useRef } from "react";
@@ -7,7 +6,7 @@ import { showcaseExamples } from "~/lib/showcase.server";
 import { Footer } from "~/ui/footer";
 import { Header } from "~/ui/header";
 
-export const meta: MetaFunction = (args) => {
+export const meta = () => {
   return [
     {
       title: "Remix Showcase",
@@ -16,23 +15,36 @@ export const meta: MetaFunction = (args) => {
   ];
 };
 
+const descriptions = [
+  "Some quippy comment about how we're really great",
+  "Show me the money",
+  "Checkout the companies, organizations, nonprofits, and indie developers building better websites with Remix",
+];
+
 export async function loader() {
-  return json({ showcaseExamples });
+  return json({
+    showcaseExamples,
+    randomDescription:
+      descriptions[Math.floor(Math.random() * descriptions.length)],
+  });
 }
 
 export default function Showcase() {
-  const { showcaseExamples } = useLoaderData<typeof loader>();
+  const { showcaseExamples, randomDescription } =
+    useLoaderData<typeof loader>();
   return (
     <div className="flex h-full flex-1 flex-col">
       <Header />
       <main
-        className="container mt-16 flex flex-1 flex-col lg:mt-32"
+        className="container mt-16 flex flex-1 flex-col items-center lg:mt-32"
         tabIndex={-1} // is this every gonna be focused? just copy pasta
       >
-        <div className="text-center">
-          <h1 className="text-4xl font-bold lg:text-6xl">Remix Showcase</h1>
-          <p className="mt-4 text-lg font-light">
-            Some quippy comment about how we're really great
+        <div className="max-w-3xl text-center">
+          <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
+            Remix Showcase
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg font-light">
+            {randomDescription}
           </p>
         </div>
         <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-8 gap-y-6 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8 lg:gap-y-6 xl:gap-x-12 xl:gap-y-10">
