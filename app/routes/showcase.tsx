@@ -1,3 +1,4 @@
+import type { HeadersFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Fragment, forwardRef, useRef } from "react";
@@ -7,32 +8,30 @@ import { Footer } from "~/ui/footer";
 import { Header } from "~/ui/header";
 import { clsx } from "clsx";
 import { useHydrated } from "~/lib/misc";
+import { CACHE_CONTROL } from "~/lib/http.server";
+
+export async function loader() {
+  return json({ showcaseExamples });
+}
 
 export let meta = () => {
   return [
+    { title: "Remix Showcase" },
     {
-      title: "Remix Showcase",
-      description: "See who is using Remix to build better websites.",
+      name: "description",
+      content: "See who is using Remix to build better websites.",
     },
   ];
 };
 
-let descriptions = [
-  "Some quippy comment about how we're really great",
-  "Show me the money",
-  "Checkout the companies, organizations, nonprofits, and indie developers building better websites with Remix",
-];
-
-export async function loader() {
-  return json({
-    showcaseExamples,
-    randomDescription:
-      descriptions[Math.floor(Math.random() * descriptions.length)],
-  });
-}
+export const headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
+  };
+};
 
 export default function Showcase() {
-  let { showcaseExamples, randomDescription } = useLoaderData<typeof loader>();
+  let { showcaseExamples } = useLoaderData<typeof loader>();
   let isHydrated = useHydrated();
 
   let videoTabIndex = isHydrated ? -1 : 0;
@@ -49,7 +48,8 @@ export default function Showcase() {
             Remix Showcase
           </h1>
           <p className="mt-4 max-w-2xl text-lg font-light">
-            {randomDescription}
+            Checkout the companies, organizations, nonprofits, and indie
+            developers building better websites with Remix
           </p>
         </div>
         <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-8 gap-y-6 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8 lg:gap-y-6 xl:gap-x-12 xl:gap-y-10">
@@ -122,14 +122,8 @@ function MobileShowcase({
         autoPlay
         tabIndex={videoTabIndex}
       />
-      {/* prefers-reduced-motion */}
-      <ShowcaseVideo
-        className="motion-safe:hidden"
-        videoSrc={videoSrc}
-        poster={imgSrc}
-        autoPlay={false}
-        tabIndex={videoTabIndex}
-      />
+      {/* prefers-reduced-motion displays just an image */}
+      <ShowcaseImage className="motion-safe:hidden" src={imgSrc} />
       <ShowcaseDescription name={name} description={description} link={link} />
     </li>
   );
@@ -166,6 +160,23 @@ let ShowcaseVideo = forwardRef<
     </div>
   );
 });
+
+function ShowcaseImage({
+  className,
+  ...props
+}: React.ImgHTMLAttributes<HTMLImageElement>) {
+  return (
+    <div className={clsx("aspect-[4/3] object-cover object-top", className)}>
+      <img
+        className="max-h-full w-full max-w-full"
+        width={800}
+        height={600}
+        alt=""
+        {...props}
+      />
+    </div>
+  );
+}
 
 function ShowcaseDescription({
   description,
