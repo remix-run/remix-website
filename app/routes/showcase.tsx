@@ -1,4 +1,8 @@
-import type { HeadersFunction } from "@remix-run/node";
+import type {
+  HeadersFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Fragment, forwardRef, useRef } from "react";
@@ -10,17 +14,33 @@ import { clsx } from "clsx";
 import { useHydrated } from "~/lib/misc";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
-export async function loader() {
-  return json({ showcaseExamples });
-}
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  let requestUrl = new URL(request.url);
+  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-export let meta = () => {
+  return json({ siteUrl, showcaseExamples });
+};
+
+// Stolen from _marketing._index.tsx. eventually would like to replace
+export const meta: MetaFunction<typeof loader> = (args) => {
+  let { siteUrl } = args.data || {};
+  let title = "Remix Showcase";
+  let image = siteUrl ? `${siteUrl}/img/og.1.jpg` : null;
+  let description = "See who is using Remix to build better websites.";
+
   return [
-    { title: "Remix Showcase" },
-    {
-      name: "description",
-      content: "See who is using Remix to build better websites.",
-    },
+    { title },
+    { name: "description", content: description },
+    { property: "og:url", content: `${siteUrl}/showcase` },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:image", content: image },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:creator", content: "@remix_run" },
+    { name: "twitter:site", content: "@remix_run" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:image", content: image },
   ];
 };
 
