@@ -7,6 +7,7 @@ import { Footer } from "~/ui/footer";
 import { Header } from "~/ui/header";
 import { clsx } from "clsx";
 import { useHydrated } from "~/lib/misc";
+import { usePrefersReducedMotion } from "~/ui/primitives/utils";
 
 export let meta = () => {
   return [
@@ -33,6 +34,9 @@ export async function loader() {
 
 export default function Showcase() {
   let { showcaseExamples, randomDescription } = useLoaderData<typeof loader>();
+  // Unfortunately have to use JS for this, because I can't figure out a great way to
+  // avoid video autoplay via css
+  let prefersReducedMotion = usePrefersReducedMotion();
 
   return (
     <div className="flex h-full flex-1 flex-col">
@@ -54,7 +58,12 @@ export default function Showcase() {
             <Fragment key={example.name}>
               {/* Leveraging display: hidden to avoid using a bunch of JS to determine which preview should be shown */}
               <ShowcaseCard screen="desktop" {...example} />
-              <ShowcaseCard screen="mobile" {...example} />
+              <ShowcaseCard
+                screen="mobile"
+                // On mobile we autoplay videos, this avoids that until we know the user doesn't have prefers-reduced-motion
+                disableAutoPlay={Boolean(prefersReducedMotion)}
+                {...example}
+              />
             </Fragment>
           ))}
         </ul>
@@ -71,12 +80,15 @@ function ShowcaseCard({
   imgSrc,
   videoSrc,
   screen = "desktop",
+  disableAutoPlay = false,
 }: ShowcaseExample & {
   /**
    * mobile: autoplays and no play/pause functionality. Display hidden on md+ screen sizes
    * desktop: no-autoplay, only plays/pauses on hover or focus of anchor tag. Display hidden on non-md+ screen sizes
    */
   screen?: "mobile" | "desktop";
+  /** override to disable autoplay no matter the internal logic for this component. */
+  disableAutoPlay?: boolean;
 }) {
   let videoRef = useRef<HTMLVideoElement | null>(null);
   let isHydrated = useHydrated();
@@ -114,7 +126,7 @@ function ShowcaseCard({
           poster={imgSrc}
           width={800}
           height={600}
-          autoPlay={screen === "mobile"}
+          autoPlay={!disableAutoPlay && screen === "mobile"}
           preload="none"
         >
           {["webm", "mp4"].map((ext) => (
