@@ -15,6 +15,8 @@ for FILE in *.mov; do
     rm "$FILE"
 done
 
+WEBM_PARAMS=('-c:v libvpx-vp9 -crf 40')
+
 # Convert .mp4 to .webm
 for FILE in *.mp4; do
     # Check if the corresponding .webm file already exists
@@ -22,14 +24,20 @@ for FILE in *.mp4; do
         echo "Skipping conversion of $FILE to .webm as the file already exists."
     else
         # Convert .mp4 to .webm using ffmpeg
-        ffmpeg -i "$FILE" "${FILE%.*}".webm
+        ffmpeg -i "$FILE" $WEBM_PARAMS "${FILE%.*}".webm
     fi
 done
 
 # Convert images to .webp
 
-# PARAMS=('-m 6 -q 50 -mt -af -progress')
+WEBP_PARAMS=('-m 6 -q 40 -mt -af -progress')
 
-for FILE in *.@(jpg|jpeg|tif|tiff|png); do 
-    cwebp $PARAMS "$FILE" -o "${FILE%.*}".webp;
+for FILE in *.@(jpg|jpeg|tif|tiff|png); do
+    # Check if the corresponding .webp file already exists
+    if [ -f "${FILE%.*}.webp" ]; then
+        echo "Skipping conversion of $FILE to .webp as the file already exists."
+    else
+        # Convert .mp4 to .webp using ffmpeg
+        cwebp $WEBP_PARAMS "$FILE" -o "${FILE%.*}".webp;
+    fi
 done
