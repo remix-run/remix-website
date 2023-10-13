@@ -237,25 +237,3 @@ export function createContext<ContextValueType extends object | null>(
   Provider.displayName = `${rootComponentName}Provider`;
   return [Provider, useValidatedContext];
 }
-
-/**
- * Detect whether the user has prefers-reduced-motion turned on. Defaults to `null` since we can't know until after JS is loaded
- */
-export function usePrefersReducedMotion() {
-  let [prefersReducedMotion, setPrefersReducedMotion] = useState<
-    null | boolean
-  >(null);
-
-  useEffect(() => {
-    let mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let listen = () => setPrefersReducedMotion(mediaQuery.matches);
-    mediaQuery.addEventListener("change", listen);
-
-    // Set the initial value
-    listen();
-
-    return () => mediaQuery.removeEventListener("change", listen);
-  }, []);
-
-  return prefersReducedMotion;
-}
