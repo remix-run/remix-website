@@ -71,3 +71,21 @@
   link: "https://trigger.dev/"
   imgSrc: "/showcase-assets/trigger.webp"
   videoSrc: "/showcase-assets/trigger"
+
+- name: "OSS Capital"
+  description: "Early-stage VC for commercial open source"
+  link: "https://oss.capital/"
+  imgSrc: "/showcase-assets/oss-capital.webp"
+  videoSrc: "/showcase-assets/oss-capital"
+
+- name: "UDisc"
+  description: "App for Disk Golfers"
+  link: "https://udisc.com"
+  imgSrc: "/showcase-assets/udisk.webp"
+  videoSrc: "/showcase-assets/udisk"
+
+- name: "Kent C. Dodds Tech"
+  description: "Kent C. Dodds' gamified Blog, Call-in Podcast, and portfolio"
+  link: "https://kentcdodds.com"
+  imgSrc: "/showcase-assets/kentcdodds.webp"
+  videoSrc: "/showcase-assets/kentcdodds"

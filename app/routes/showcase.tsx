@@ -5,7 +5,16 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Fragment, forwardRef, useRef } from "react";
+import {
+  Fragment,
+  createContext,
+  forwardRef,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";
 import { Footer } from "~/ui/footer";
@@ -73,24 +82,103 @@ export default function Showcase() {
           </p>
         </div>
         <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-8 gap-y-6 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8 lg:gap-y-6 xl:gap-x-12 xl:gap-y-10">
-          {showcaseExamples.map((example) => (
-            <Fragment key={example.name}>
-              <DesktopShowcase
-                // Non-focusable since focusing on the anchor tag starts the video -- need to
-                // ensure that this is fine for screen readers, but I'm fairly confident the
-                // video is not critical information and just visual flair so I don't think
-                // we're providing an unusable or even bad experience to screen-reader users
-                videoTabIndex={videoTabIndex}
-                {...example}
-              />
-              <MobileShowcase videoTabIndex={videoTabIndex} {...example} />
-            </Fragment>
-          ))}
+          <IntersectionObserverProvider>
+            {showcaseExamples.map((example) => (
+              <Fragment key={example.name}>
+                <DesktopShowcase
+                  // Non-focusable since focusing on the anchor tag starts the video -- need to
+                  // ensure that this is fine for screen readers, but I'm fairly confident the
+                  // video is not critical information and just visual flair so I don't think
+                  // we're providing an unusable or even bad experience to screen-reader users
+                  videoTabIndex={videoTabIndex}
+                  {...example}
+                />
+                <MobileShowcase videoTabIndex={videoTabIndex} {...example} />
+              </Fragment>
+            ))}
+          </IntersectionObserverProvider>
         </ul>
       </main>
       <Footer />
     </div>
   );
+}
+
+type ObservedEntryMap = Map<Element, IntersectionObserverEntry>;
+type IntersectionObserverContext = {
+  observer: IntersectionObserver;
+  observedEntryMap: ObservedEntryMap;
+};
+
+const IntersectionObserverContext = createContext<
+  IntersectionObserverContext | undefined
+>(undefined);
+
+function IntersectionObserverProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  let [observer, setObserver] = useState<
+    IntersectionObserverContext["observer"] | null
+  >(null);
+  let [observedEntryMap, setObservedEntryMap] = useState<
+    IntersectionObserverContext["observedEntryMap"]
+  >(new Map());
+
+  useEffect(() => {
+    let newObserver = new IntersectionObserver(
+      (entries) => {
+        setObservedEntryMap((prevObservedEntryMap) => {
+          // copy the old map and update anything that's changed
+          // we never delete entries, which may be a mistake in some cases, but fine here
+          let newObservedEntryMap = new Map(prevObservedEntryMap);
+          entries.forEach((entry) => {
+            newObservedEntryMap.set(entry.target, entry);
+          });
+          return newObservedEntryMap;
+        });
+      },
+      { threshold: 0.3 }
+    );
+    setObserver(newObserver);
+
+    return () => {
+      newObserver?.disconnect();
+    };
+  }, []);
+
+  const value = useMemo(
+    () => (!observer ? undefined : { observer, observedEntryMap }),
+    [observedEntryMap, observer]
+  );
+
+  return (
+    <IntersectionObserverContext.Provider value={value}>
+      {children}
+    </IntersectionObserverContext.Provider>
+  );
+}
+
+function useIntersectionObserver<T>(ref: React.MutableRefObject<T>) {
+  const observerContext = useContext(IntersectionObserverContext);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (observerContext?.observer && node instanceof Element) {
+      observerContext.observer.observe(node);
+      return () => observerContext.observer.unobserve(node);
+    }
+  }, [observerContext?.observer, ref]);
+
+  let entry = useMemo(() => {
+    const node = ref.current;
+    if (observerContext?.observedEntryMap && node instanceof Element) {
+      return observerContext.observedEntryMap.get(node);
+    }
+  }, [observerContext?.observedEntryMap, ref]);
+
+  return entry;
 }
 
 type ShowcaseTypes = ShowcaseExample & { videoTabIndex: number };
@@ -133,13 +221,26 @@ function MobileShowcase({
   videoSrc,
   videoTabIndex,
 }: ShowcaseTypes) {
+  let ref = useRef<HTMLVideoElement | null>(null);
+  let entry = useIntersectionObserver(ref);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    if (node.paused && entry?.isIntersecting) {
+      node.play();
+    } else {
+      node.pause();
+    }
+  }, [entry]);
+
   return (
     <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow dark:border-gray-800 md:hidden">
       <ShowcaseVideo
+        ref={ref}
         className="motion-reduce:hidden"
         videoSrc={videoSrc}
         poster={imgSrc}
-        autoPlay
         tabIndex={videoTabIndex}
       />
       {/* prefers-reduced-motion displays just an image */}
@@ -165,6 +266,8 @@ let ShowcaseVideo = forwardRef<
         muted
         width={800}
         height={600}
+        // Note: autoplay must be off for this strategy to work, if autoplay is turned on all assets will be downloaded automatically
+        preload="none"
         {...props}
       >
         {["webm", "mp4"].map((ext) => (
