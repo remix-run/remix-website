@@ -97,7 +97,7 @@ export default function Showcase() {
                   />
                   <MobileShowcase
                     isHydrated={isHydrated}
-                    preload={preload}
+                    asImage={i > 5}
                     {...example}
                   />
                 </Fragment>
@@ -232,9 +232,12 @@ function MobileShowcase({
   link,
   imgSrc,
   videoSrc,
-  preload,
+  asImage = false,
   isHydrated,
-}: ShowcaseTypes) {
+}: ShowcaseTypes & {
+  /** Opt into only showing an image. This avoids loading a ton of videos on the page and crashing Brooks' terrible phone */
+  asImage?: boolean;
+}) {
   let ref = useRef<HTMLVideoElement | null>(null);
   let entry = useIntersectionObserver(ref);
 
@@ -248,16 +251,22 @@ function MobileShowcase({
 
   return (
     <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:hidden">
-      <ShowcaseVideo
-        ref={ref}
-        className="motion-reduce:hidden"
-        videoSrc={videoSrc}
-        poster={imgSrc}
-        preload={preload}
-        isHydrated={isHydrated}
+      {/* If it's an image, don't render the video, and remove the motion-safe class */}
+      {!asImage ? (
+        <ShowcaseVideo
+          ref={ref}
+          className="motion-reduce:hidden"
+          videoSrc={videoSrc}
+          poster={imgSrc}
+          preload="auto"
+          isHydrated={isHydrated}
+        />
+      ) : null}
+      {/* prefers-reduced-motion displays just an image even when there's a video */}
+      <ShowcaseImage
+        className={!asImage ? "motion-safe:hidden" : undefined}
+        src={imgSrc}
       />
-      {/* prefers-reduced-motion displays just an image */}
-      <ShowcaseImage className="motion-safe:hidden" src={imgSrc} />
       <ShowcaseDescription
         name={name}
         description={description}
