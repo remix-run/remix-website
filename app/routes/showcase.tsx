@@ -61,9 +61,8 @@ export const headers: HeadersFunction = () => {
 
 export default function Showcase() {
   let { showcaseExamples } = useLoaderData<typeof loader>();
+  // Might be a bit silly to declare here and then prop-drill, but was a little concerned about a needless useEffect+useState for every card
   let isHydrated = useHydrated();
-
-  let videoTabIndex = isHydrated ? -1 : 0;
 
   return (
     <div className="flex h-full flex-1 flex-col">
@@ -83,19 +82,27 @@ export default function Showcase() {
         </div>
         <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-8 gap-y-6 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8 lg:gap-y-6 xl:gap-x-12 xl:gap-y-10">
           <IntersectionObserverProvider>
-            {showcaseExamples.map((example) => (
-              <Fragment key={example.name}>
-                <DesktopShowcase
-                  // Non-focusable since focusing on the anchor tag starts the video -- need to
-                  // ensure that this is fine for screen readers, but I'm fairly confident the
-                  // video is not critical information and just visual flair so I don't think
-                  // we're providing an unusable or even bad experience to screen-reader users
-                  videoTabIndex={videoTabIndex}
-                  {...example}
-                />
-                <MobileShowcase videoTabIndex={videoTabIndex} {...example} />
-              </Fragment>
-            ))}
+            {showcaseExamples.map((example, i) => {
+              let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
+              return (
+                <Fragment key={example.name}>
+                  <DesktopShowcase
+                    // Non-focusable since focusing on the anchor tag starts the video -- need to
+                    // ensure that this is fine for screen readers, but I'm fairly confident the
+                    // video is not critical information and just visual flair so I don't think
+                    // we're providing an unusable or even bad experience to screen-reader users
+                    isHydrated={isHydrated}
+                    preload={preload}
+                    {...example}
+                  />
+                  <MobileShowcase
+                    isHydrated={isHydrated}
+                    preload={preload}
+                    {...example}
+                  />
+                </Fragment>
+              );
+            })}
           </IntersectionObserverProvider>
         </ul>
       </main>
@@ -139,7 +146,7 @@ function IntersectionObserverProvider({
           return newObservedEntryMap;
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0 }
     );
     setObserver(newObserver);
 
@@ -181,7 +188,10 @@ function useIntersectionObserver<T>(ref: React.MutableRefObject<T>) {
   return entry;
 }
 
-type ShowcaseTypes = ShowcaseExample & { videoTabIndex: number };
+type ShowcaseTypes = ShowcaseExample & {
+  preload?: "auto" | "metadata" | "none";
+  isHydrated: boolean;
+};
 
 function DesktopShowcase({
   name,
@@ -189,23 +199,26 @@ function DesktopShowcase({
   link,
   imgSrc,
   videoSrc,
-  videoTabIndex,
+  preload,
+  isHydrated,
 }: ShowcaseTypes) {
   let videoRef = useRef<HTMLVideoElement | null>(null);
 
   return (
-    <li className="relative hidden overflow-hidden rounded-md border border-gray-100 shadow dark:border-gray-800 md:block">
+    <li className="relative hidden overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:block">
       <ShowcaseVideo
         ref={videoRef}
         videoSrc={videoSrc}
         poster={imgSrc}
         autoPlay={false}
-        tabIndex={videoTabIndex}
+        preload={preload}
+        isHydrated={isHydrated}
       />
       <ShowcaseDescription
         name={name}
         description={description}
         link={link}
+        isHydrated={isHydrated}
         playVideo={() => videoRef.current?.play()}
         pauseVideo={() => videoRef.current?.pause()}
       />
@@ -219,7 +232,8 @@ function MobileShowcase({
   link,
   imgSrc,
   videoSrc,
-  videoTabIndex,
+  preload,
+  isHydrated,
 }: ShowcaseTypes) {
   let ref = useRef<HTMLVideoElement | null>(null);
   let entry = useIntersectionObserver(ref);
@@ -229,31 +243,36 @@ function MobileShowcase({
     if (!node) return;
     if (node.paused && entry?.isIntersecting) {
       node.play();
-    } else {
-      node.pause();
     }
   }, [entry]);
 
   return (
-    <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow dark:border-gray-800 md:hidden">
+    <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:hidden">
       <ShowcaseVideo
         ref={ref}
         className="motion-reduce:hidden"
         videoSrc={videoSrc}
         poster={imgSrc}
-        tabIndex={videoTabIndex}
+        preload={preload}
+        isHydrated={isHydrated}
       />
       {/* prefers-reduced-motion displays just an image */}
       <ShowcaseImage className="motion-safe:hidden" src={imgSrc} />
-      <ShowcaseDescription name={name} description={description} link={link} />
+      <ShowcaseDescription
+        name={name}
+        description={description}
+        link={link}
+        isHydrated={isHydrated}
+      />
     </li>
   );
 }
 
 let ShowcaseVideo = forwardRef<
   HTMLVideoElement,
-  React.VideoHTMLAttributes<HTMLVideoElement> & { videoSrc: string }
->(({ videoSrc, className, ...props }, ref) => {
+  Pick<ShowcaseTypes, "videoSrc" | "isHydrated"> &
+    React.VideoHTMLAttributes<HTMLVideoElement>
+>(({ videoSrc, className, isHydrated, ...props }, ref) => {
   return (
     <div className={clsx("aspect-[4/3] object-cover object-top", className)}>
       <video
@@ -267,7 +286,7 @@ let ShowcaseVideo = forwardRef<
         width={800}
         height={600}
         // Note: autoplay must be off for this strategy to work, if autoplay is turned on all assets will be downloaded automatically
-        preload="none"
+        tabIndex={isHydrated ? -1 : 0}
         {...props}
       >
         {["webm", "mp4"].map((ext) => (
@@ -305,15 +324,24 @@ function ShowcaseDescription({
   description,
   link,
   name,
+  isHydrated,
   playVideo,
   pauseVideo,
-}: Pick<ShowcaseExample, "description" | "link" | "name"> & {
+}: Pick<ShowcaseTypes, "description" | "link" | "name" | "isHydrated"> & {
   playVideo?: () => void;
   pauseVideo?: () => void;
 }) {
   return (
-    <div className="p-4">
-      <h2 className="font-medium">
+    <div
+      className={clsx("p-4", {
+        // relative position in combination with the inner span makes the whole card clickable
+        // only after hydration do we want it to be the size of the whole card, otherwise this
+        // will get in the way of controlling the video
+        relative: !isHydrated,
+      })}
+    >
+      {/* TODO: add hover indicator and maybe remove span if JS hasn't loaded */}
+      <h2 className="font-medium hover:text-blue-brand">
         <a
           href={link}
           rel="noopener noreferrer"
@@ -321,12 +349,12 @@ function ShowcaseDescription({
           onFocus={playVideo}
           onBlur={pauseVideo}
         >
-          {/* Makes the whole card clickable */}
           <span
             onMouseOver={playVideo}
             onMouseOut={pauseVideo}
             className="absolute inset-0"
           />
+
           {name}
         </a>
       </h2>
