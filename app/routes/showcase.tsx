@@ -146,7 +146,7 @@ function IntersectionObserverProvider({
           return newObservedEntryMap;
         });
       },
-      { threshold: 0 }
+      { threshold: 0, rootMargin: "75px 0px" }
     );
     setObserver(newObserver);
 
@@ -340,7 +340,6 @@ function ShowcaseDescription({
         relative: !isHydrated,
       })}
     >
-      {/* TODO: add hover indicator and maybe remove span if JS hasn't loaded */}
       <h2 className="font-medium hover:text-blue-brand">
         <a
           href={link}
