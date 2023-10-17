@@ -24,8 +24,10 @@ const config = {
         "*.ui.(js|jsx|tsx)",
         "_marketing*",
         "img*",
+        "showcase*",
       ],
     }),
   serverModuleFormat: "cjs",
+  watchPaths: "./data",
 };
 module.exports = config;
