@@ -5,16 +5,7 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import {
-  Fragment,
-  createContext,
-  forwardRef,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Fragment, forwardRef, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";
 import { Footer } from "~/ui/footer";
@@ -81,111 +72,32 @@ export default function Showcase() {
           </p>
         </div>
         <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-8 gap-y-6 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8 lg:gap-y-6 xl:gap-x-12 xl:gap-y-10">
-          <IntersectionObserverProvider>
-            {showcaseExamples.map((example, i) => {
-              let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
-              return (
-                <Fragment key={example.name}>
-                  <DesktopShowcase
-                    // Non-focusable since focusing on the anchor tag starts the video -- need to
-                    // ensure that this is fine for screen readers, but I'm fairly confident the
-                    // video is not critical information and just visual flair so I don't think
-                    // we're providing an unusable or even bad experience to screen-reader users
-                    isHydrated={isHydrated}
-                    preload={preload}
-                    {...example}
-                  />
-                  <MobileShowcase
-                    isHydrated={isHydrated}
-                    asImage={i > 5}
-                    {...example}
-                  />
-                </Fragment>
-              );
-            })}
-          </IntersectionObserverProvider>
+          {showcaseExamples.map((example, i) => {
+            let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
+            return (
+              <Fragment key={example.name}>
+                <DesktopShowcase
+                  // Non-focusable since focusing on the anchor tag starts the video -- need to
+                  // ensure that this is fine for screen readers, but I'm fairly confident the
+                  // video is not critical information and just visual flair so I don't think
+                  // we're providing an unusable or even bad experience to screen-reader users
+                  isHydrated={isHydrated}
+                  preload={preload}
+                  {...example}
+                />
+                <MobileShowcase
+                  isHydrated={isHydrated}
+                  asImage={i > 5}
+                  {...example}
+                />
+              </Fragment>
+            );
+          })}
         </ul>
       </main>
       <Footer />
     </div>
   );
-}
-
-type ObservedEntryMap = Map<Element, IntersectionObserverEntry>;
-type IntersectionObserverContext = {
-  observer: IntersectionObserver;
-  observedEntryMap: ObservedEntryMap;
-};
-
-const IntersectionObserverContext = createContext<
-  IntersectionObserverContext | undefined
->(undefined);
-
-function IntersectionObserverProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  let [observer, setObserver] = useState<
-    IntersectionObserverContext["observer"] | null
-  >(null);
-  let [observedEntryMap, setObservedEntryMap] = useState<
-    IntersectionObserverContext["observedEntryMap"]
-  >(new Map());
-
-  useEffect(() => {
-    let newObserver = new IntersectionObserver(
-      (entries) => {
-        setObservedEntryMap((prevObservedEntryMap) => {
-          // copy the old map and update anything that's changed
-          // we never delete entries, which may be a mistake in some cases, but fine here
-          let newObservedEntryMap = new Map(prevObservedEntryMap);
-          entries.forEach((entry) => {
-            newObservedEntryMap.set(entry.target, entry);
-          });
-          return newObservedEntryMap;
-        });
-      },
-      { threshold: 0, rootMargin: "75px 0px" }
-    );
-    setObserver(newObserver);
-
-    return () => {
-      newObserver?.disconnect();
-    };
-  }, []);
-
-  const value = useMemo(
-    () => (!observer ? undefined : { observer, observedEntryMap }),
-    [observedEntryMap, observer]
-  );
-
-  return (
-    <IntersectionObserverContext.Provider value={value}>
-      {children}
-    </IntersectionObserverContext.Provider>
-  );
-}
-
-function useIntersectionObserver<T>(ref: React.MutableRefObject<T>) {
-  const observerContext = useContext(IntersectionObserverContext);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (observerContext?.observer && node instanceof Element) {
-      observerContext.observer.observe(node);
-      return () => observerContext.observer.unobserve(node);
-    }
-  }, [observerContext?.observer, ref]);
-
-  let entry = useMemo(() => {
-    const node = ref.current;
-    if (observerContext?.observedEntryMap && node instanceof Element) {
-      return observerContext.observedEntryMap.get(node);
-    }
-  }, [observerContext?.observedEntryMap, ref]);
-
-  return entry;
 }
 
 type ShowcaseTypes = ShowcaseExample & {
@@ -238,27 +150,15 @@ function MobileShowcase({
   /** Opt into only showing an image. This avoids loading a ton of videos on the page and crashing Brooks' terrible phone */
   asImage?: boolean;
 }) {
-  let ref = useRef<HTMLVideoElement | null>(null);
-  let entry = useIntersectionObserver(ref);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    if (node.paused && entry?.isIntersecting) {
-      node.play();
-    }
-  }, [entry]);
-
   return (
     <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:hidden">
       {/* If it's an image, don't render the video, and remove the motion-safe class */}
       {!asImage ? (
         <ShowcaseVideo
-          ref={ref}
           className="motion-reduce:hidden"
           videoSrc={videoSrc}
           poster={imgSrc}
-          preload="auto"
+          autoPlay
           isHydrated={isHydrated}
         />
       ) : null}

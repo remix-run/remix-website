@@ -15,7 +15,7 @@ for FILE in *.mov; do
     rm "$FILE"
 done
 
-WEBM_PARAMS=('-c:v libvpx-vp9 -crf 40')
+WEBM_PARAMS=('-c:v libvpx-vp9 -crf 50')
 
 # Convert .mp4 to .webm
 for FILE in *.mp4; do
@@ -30,7 +30,7 @@ done
 
 # Convert images to .webp
 
-WEBP_PARAMS=('-m 6 -q 40 -mt -af -progress')
+WEBP_PARAMS=('-m 6 -q 30 -mt -af -progress')
 
 for FILE in *.@(jpg|jpeg|tif|tiff|png); do
     # Check if the corresponding .webp file already exists
