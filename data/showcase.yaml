@@ -54,7 +54,6 @@
   imgSrc: "/showcase-assets/robots-guide.webp"
   videoSrc: "/showcase-assets/robots-guide"
 
-
 - name: "Webstudio"
   description: "Open source visual development platform"
   link: "https://webstudio.is/"
