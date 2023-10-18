@@ -88,6 +88,8 @@ export default function Showcase() {
                 <MobileShowcase
                   isHydrated={isHydrated}
                   asImage={i > 5}
+                  // Only preload the first 2, since that's about all that should be "above the fold" on mobile
+                  preload={i < 2 ? "auto" : "none"}
                   {...example}
                 />
               </Fragment>
@@ -146,6 +148,7 @@ function MobileShowcase({
   videoSrc,
   asImage = false,
   isHydrated,
+  preload,
 }: ShowcaseTypes & {
   /** Opt into only showing an image. This avoids loading a ton of videos on the page and crashing Brooks' terrible phone */
   asImage?: boolean;
@@ -153,15 +156,15 @@ function MobileShowcase({
   const ref = useRef<HTMLVideoElement>(null);
 
   // autoplay videos -- using this useEffect because the `autoPlay` attribute overrides
-  // `preload="none"` which causes weird infinite loading issues
+  // `preload="none"` which causes weird infinite loading issues when caching is turned off
   useEffect(() => {
     const node = ref.current;
-    if (!node || asImage) return;
+    if (!node) return;
 
     if (node.paused) {
       node.play();
     }
-  }, [asImage]);
+  }, []);
 
   return (
     <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:hidden">
@@ -172,7 +175,7 @@ function MobileShowcase({
           className="motion-reduce:hidden"
           videoSrc={videoSrc}
           poster={imgSrc}
-          preload="none"
+          preload={preload}
           isHydrated={isHydrated}
         />
       ) : null}
