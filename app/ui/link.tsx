@@ -59,15 +59,18 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
     if (typeof to === "string" && isAbsoluteUrl(to)) {
       let isActive = false;
       let isPending = false;
+      let isTransitioning = false;
       className =
         typeof className === "function"
-          ? className({ isActive, isPending })
+          ? className({ isActive, isPending, isTransitioning })
           : className;
       style =
-        typeof style === "function" ? style({ isActive, isPending }) : style;
+        typeof style === "function"
+          ? style({ isActive, isPending, isTransitioning })
+          : style;
       children =
         typeof children === "function"
-          ? children({ isActive, isPending })
+          ? children({ isActive, isPending, isTransitioning })
           : children;
       // eslint-disable-next-line jsx-a11y/anchor-has-content
       return (
