@@ -36,11 +36,11 @@
   imgSrc: "/showcase-assets/daffy.webp"
   videoSrc: "/showcase-assets/daffy"
 
-- name: "Webstudio"
-  description: "Open source visual development platform"
-  link: "https://webstudio.is/"
-  imgSrc: "/showcase-assets/webstudio.webp"
-  videoSrc: "/showcase-assets/webstudio"
+- name: "Nour Hammour"
+  description: "Luxury fashion outwear brand from Paris"
+  link: "https://nour-hammour.com/"
+  imgSrc: "/showcase-assets/nour_hammour.webp"
+  videoSrc: "/showcase-assets/nour_hammour"
 
 - name: "Winamp"
   description: "Winamp Web Player"
@@ -53,6 +53,13 @@
   link: "https://robotsguide.com/"
   imgSrc: "/showcase-assets/robots-guide.webp"
   videoSrc: "/showcase-assets/robots-guide"
+
+
+- name: "Webstudio"
+  description: "Open source visual development platform"
+  link: "https://webstudio.is/"
+  imgSrc: "/showcase-assets/webstudio.webp"
+  videoSrc: "/showcase-assets/webstudio"
 
 - name: "Oxide"
   description: "Rack-scale servers for on-premise infrastructure"
