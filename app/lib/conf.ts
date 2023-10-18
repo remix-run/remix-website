@@ -99,7 +99,7 @@ export function isTalk(obj: any): obj is Talk {
 }
 
 export function isSimpleScheduleItemRaw(
-  obj: any
+  obj: any,
 ): obj is SimpleScheduleItemRaw {
   return (
     obj &&
@@ -127,7 +127,7 @@ export function isScheduleItemRaw(obj: any): obj is ScheduleItemRaw {
 }
 
 export function isScheduleItemRawWithSpeakers(
-  obj: any
+  obj: any,
 ): obj is SimpleScheduleItemRaw & { speakers: Array<string> } {
   return (
     isSimpleScheduleItemRaw(obj) &&
@@ -151,7 +151,7 @@ export function isScheduleItem(obj: any): obj is ScheduleItem {
             typeof s === "object" &&
             typeof s.slug === "string" &&
             typeof s.imgSrc === "string" &&
-            typeof s.name === "string"
+            typeof s.name === "string",
         )
       : true)
   );
@@ -170,7 +170,7 @@ export function isTalkArray(arr: any): arr is Array<Talk> {
 }
 
 export function isScheduleItemRawArray(
-  arr: any
+  arr: any,
 ): arr is Array<ScheduleItemRaw> {
   return Array.isArray(arr) && arr.every(isScheduleItemRaw);
 }

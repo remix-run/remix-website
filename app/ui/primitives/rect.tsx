@@ -20,7 +20,7 @@ import { useLayoutEffect } from "./utils";
  */
 function useRect<T extends Element = HTMLElement>(
   nodeRef: React.RefObject<T | undefined | null>,
-  options: UseRectOptions = {}
+  options: UseRectOptions = {},
 ): null | Rect {
   let { observe, onChange } = options;
   let [element, setElement] = React.useState<T | null | undefined>(null);

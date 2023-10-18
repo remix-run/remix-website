@@ -29,7 +29,7 @@ type PropsWithAs<E, OwnProps> = Merge<
 
 interface ForwardRefComponent<
   IntrinsicElementString,
-  OwnProps = {}
+  OwnProps = {},
   /*
    * Extends original type to ensure built in React types play nice with
    * polymorphic components still e.g. `React.ElementRef` etc.
@@ -50,7 +50,7 @@ interface ForwardRefComponent<
       ? Merge<P, OwnProps & { as: As }>
       : As extends keyof JSX.IntrinsicElements
       ? Merge<JSX.IntrinsicElements[As], OwnProps & { as: As }>
-      : never
+      : never,
   ): React.ReactElement | null;
 }
 
@@ -65,12 +65,12 @@ interface MemoComponent<IntrinsicElementString, OwnProps = {}>
       ? Merge<P, OwnProps & { as: As }>
       : As extends keyof JSX.IntrinsicElements
       ? Merge<JSX.IntrinsicElements[As], OwnProps & { as: As }>
-      : never
+      : never,
   ): React.ReactElement | null;
 }
 
 function forwardRef<OwnProps, TagName>(
-  render: RenderFunction<OwnProps, TagName>
+  render: RenderFunction<OwnProps, TagName>,
 ) {
   return React_forwardRef(render) as ForwardRefComponent<TagName, OwnProps>;
 }
@@ -84,7 +84,7 @@ interface RenderFunction<OwnProps, TagName> {
         : TagName extends keyof SVGElementTagNameMap
         ? SVGElementTagNameMap[TagName]
         : any
-    >
+    >,
   ): React.ReactElement | null;
 }
 

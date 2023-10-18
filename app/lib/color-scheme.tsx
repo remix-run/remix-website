@@ -24,7 +24,7 @@ function ColorSchemeScriptImpl() {
           if (media.matches) document.documentElement.classList.add("dark");
         }
       `,
-    [] // eslint-disable-line
+    [], // eslint-disable-line
     // we don't want this script to ever change
   );
 

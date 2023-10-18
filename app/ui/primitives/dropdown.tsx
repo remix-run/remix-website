@@ -164,7 +164,7 @@ interface DropdownProviderProps {
         props: DropdownContextValue & {
           // TODO: Remove in 1.0
           isOpen: boolean;
-        }
+        },
       ) => React.ReactNode);
   id?: string;
 }
@@ -192,7 +192,7 @@ function useDropdownTrigger<Elem extends FocusableElement = FocusableElement>({
   let items = useDropdownCollection();
   let firstNonDisabledIndex = React.useMemo(
     () => items.findIndex((item) => !item.disabled),
-    [items]
+    [items],
   );
   React.useEffect(() => {
     if (id != null && id !== triggerId) {
@@ -234,7 +234,7 @@ function useDropdownTrigger<Elem extends FocusableElement = FocusableElement>({
             break;
         }
       }),
-    [onKeyDown, dispatch, firstNonDisabledIndex]
+    [onKeyDown, dispatch, firstNonDisabledIndex],
   );
 
   let handleMouseDown = React.useMemo(
@@ -258,7 +258,13 @@ function useDropdownTrigger<Elem extends FocusableElement = FocusableElement>({
           dispatch({ type: OPEN_MENU_CLEARED });
         }
       }),
-    [onMouseDown, mouseDownStartPosRef, isExpanded, triggerClickedRef, dispatch]
+    [
+      onMouseDown,
+      mouseDownStartPosRef,
+      isExpanded,
+      triggerClickedRef,
+      dispatch,
+    ],
   );
 
   return {
@@ -295,7 +301,7 @@ interface DropdownTriggerProps
     > {}
 
 interface UseDropdownTriggerProps<
-  Elem extends FocusableElement = FocusableElement
+  Elem extends FocusableElement = FocusableElement,
 > extends DropdownTriggerOwnProps,
     React.HTMLAttributes<Elem> {
   ref?: React.Ref<Elem>;
@@ -343,7 +349,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
         setValueText(node.textContent);
       }
     },
-    [valueTextProp]
+    [valueTextProp],
   );
 
   let mouseEventStarted = React.useRef(false);
@@ -391,7 +397,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           }
         }
       }),
-    [onClick, element, select, disabled]
+    [onClick, element, select, disabled],
   );
 
   let handleDragStart = React.useMemo(
@@ -404,7 +410,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           event.preventDefault();
         }
       }),
-    [onDragStart, element]
+    [onDragStart, element],
   );
 
   let handleMouseDown = React.useMemo(
@@ -422,7 +428,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           event.preventDefault();
         }
       }),
-    [onMouseDown, element]
+    [onMouseDown, element],
   );
 
   let handleMouseEnter = React.useMemo(
@@ -445,7 +451,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           });
         }
       }),
-    [onMouseEnter, dropdownRef, isSelected, index, disabled, dispatch]
+    [onMouseEnter, dropdownRef, isSelected, index, disabled, dispatch],
   );
 
   let handleMouseLeave = React.useMemo(
@@ -454,7 +460,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
         // Clear out selection when mouse over a non-dropdown-item child.
         dispatch({ type: CLEAR_SELECTION_INDEX });
       }),
-    [dispatch, onMouseLeave]
+    [dispatch, onMouseLeave],
   );
 
   let handleMouseMove = React.useMemo(
@@ -487,7 +493,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
       mouseDownStartPosRef,
       dispatch,
       dropdownRef,
-    ]
+    ],
   );
 
   let handleFocus = React.useMemo(
@@ -503,7 +509,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           });
         }
       }),
-    [onFocus, readyToSelect, isSelected, index, disabled, dispatch]
+    [onFocus, readyToSelect, isSelected, index, disabled, dispatch],
   );
 
   let handleMouseUp = React.useMemo(
@@ -533,7 +539,7 @@ function useDropdownItem<Elem extends FocusableElement = FocusableElement>({
           }
         }
       }),
-    [onMouseUp, readyToSelect, element, disabled, select]
+    [onMouseUp, readyToSelect, element, disabled, select],
   );
 
   React.useEffect(() => {
@@ -599,7 +605,7 @@ const DropdownItem = React.forwardRef<HTMLDivElement, DropdownItemProps>(
   (rest, forwardedRef) => {
     let { props } = useDropdownItem({ ...rest, ref: forwardedRef });
     return <div data-reach-dropdown-item="" {...props} />;
-  }
+  },
 );
 
 interface DropdownItemOwnProps {
@@ -646,7 +652,7 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
   React.useEffect(() => {
     let timeout = window.setTimeout(
       () => typeaheadQuery && dispatch({ type: CLEAR_TYPEAHEAD }),
-      1000
+      1000,
     );
     return () => window.clearTimeout(timeout);
   }, [dispatch, typeaheadQuery]);
@@ -725,7 +731,7 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
           }
 
           let selectableIndex = selectableItems.findIndex(
-            (item) => item.index === activeItemIndex
+            (item) => item.index === activeItemIndex,
           );
           let index = activeItemIndex;
           switch (event.key) {
@@ -805,7 +811,7 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
             case "Enter":
             case " ": {
               let selected = items.find(
-                (item) => item.index === activeItemIndex
+                (item) => item.index === activeItemIndex,
               );
               if (!selected || selected.disabled) {
                 return;
@@ -869,7 +875,7 @@ function useDropdownItems<Elem extends FocusableElement = FocusableElement>({
       activeItemIndex,
       triggerRef,
       typeaheadQuery,
-    ]
+    ],
   );
 
   return {
@@ -894,7 +900,7 @@ const DropdownItems = React.forwardRef(
   ({ as: Comp = "div", ...rest }, forwardedRef) => {
     let { props } = useDropdownItems({ ...rest, ref: forwardedRef });
     return <Comp data-reach-dropdown-items="" {...props} />;
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"div", DropdownItemsProps>;
 
 interface DropdownItemsOwnProps {
@@ -907,7 +913,7 @@ interface DropdownItemsProps extends DropdownItemsOwnProps {
 }
 
 interface UseDropdownItemsProps<
-  Elem extends FocusableElement = FocusableElement
+  Elem extends FocusableElement = FocusableElement,
 > extends DropdownItemsOwnProps,
     React.HTMLAttributes<Elem> {
   ref?: React.Ref<Elem>;
@@ -981,7 +987,7 @@ function useDropdownPopover<Elem extends FocusableElement = FocusableElement>({
         }
         dispatch({ type: CLOSE_MENU });
       }),
-    [dispatch, onBlur]
+    [dispatch, onBlur],
   );
 
   return {
@@ -1020,7 +1026,7 @@ const DropdownPopover = React.forwardRef<HTMLDivElement, DropdownPopoverProps>(
     ) : (
       <div {...allProps} {...sharedProps} />
     );
-  }
+  },
 );
 
 interface DropdownPopoverOwnProps {
@@ -1029,7 +1035,7 @@ interface DropdownPopoverOwnProps {
 }
 
 interface UseDropdownPopoverProps<
-  Elem extends FocusableElement = FocusableElement
+  Elem extends FocusableElement = FocusableElement,
 > extends DropdownPopoverOwnProps {
   ref?: React.Ref<Elem>;
   onBlur?: React.FocusEventHandler<Elem>;
@@ -1054,7 +1060,7 @@ DropdownPopover.displayName = "DropdownPopover";
  */
 function findItemFromTypeahead(
   items: DropdownCollectionItem[],
-  string: string = ""
+  string: string = "",
 ) {
   if (!string) {
     return null;
@@ -1210,7 +1216,7 @@ function useDropdownCollection() {
 // Types
 
 interface DropdownCollectionItem<
-  Elem extends FocusableElement = FocusableElement
+  Elem extends FocusableElement = FocusableElement,
 > extends CollectionItem<Elem> {
   key: string;
   disabled?: boolean;
@@ -1242,7 +1248,7 @@ function isNavigationKeyboardEvent(
   event: React.KeyboardEvent,
   opts: {
     orientation?: "horizontal" | "vertical" | "both";
-  }
+  },
 ) {
   let keys = ["PageUp", "PageDown", "Home", "End"];
   if (opts.orientation === "horizontal" || opts.orientation === "both") {
@@ -1283,7 +1289,7 @@ function getValidActiveItemIndex(
   }: {
     currentActiveItemIndex: number;
     max?: number | null;
-  }
+  },
 ) {
   if (
     index < 0 ||

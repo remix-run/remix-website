@@ -54,7 +54,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
             ? err.message
             : "Something went wrong",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -62,7 +62,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw json(null, 404);
   }
   let speakerSessions = allSessions.filter((session) =>
-    (session.speakers || []).some((sp) => sp.id === speaker?.id)
+    (session.speakers || []).some((sp) => sp.id === speaker?.id),
   );
   return json(
     {
@@ -137,7 +137,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
                       minute: "numeric",
                       timeZone: "America/Denver",
                     },
-                    { locale: "en-US" }
+                    { locale: "en-US" },
                   ) || null,
                 endsAtISO: endsAt?.toISO() || null,
                 endsAtFormatted:
@@ -147,13 +147,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
                       minute: "numeric",
                       timeZone: "America/Denver",
                     },
-                    { locale: "en-US" }
+                    { locale: "en-US" },
                   ) || null,
               };
             }),
       },
     },
-    { headers: { "Cache-Control": CACHE_CONTROL.conf } }
+    { headers: { "Cache-Control": CACHE_CONTROL.conf } },
   );
 }
 

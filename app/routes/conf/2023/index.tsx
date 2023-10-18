@@ -69,10 +69,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       siteUrl,
       sponsors,
       speakers: speakers.sort((a, b) =>
-        a.isTopSpeaker ? -1 : b.isTopSpeaker ? 1 : randomSort()
+        a.isTopSpeaker ? -1 : b.isTopSpeaker ? 1 : randomSort(),
       ),
     },
-    { headers: { "Cache-Control": CACHE_CONTROL.conf } }
+    { headers: { "Cache-Control": CACHE_CONTROL.conf } },
   );
 };
 
@@ -430,7 +430,7 @@ function GridCellLink({
         {
           "hover:border-blue-300": hoverColor === "blue",
           "hover:border-gray-400": hoverColor === "default",
-        }
+        },
       )}
       aria-label={label || undefined}
       aria-labelledby={label ? undefined : labelledBy || undefined}

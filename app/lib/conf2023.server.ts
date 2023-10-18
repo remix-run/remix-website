@@ -37,7 +37,7 @@ let cache = new LRUCache<
 });
 
 export async function getSpeakers(
-  opts: { noCache?: boolean } = {}
+  opts: { noCache?: boolean } = {},
 ): Promise<Speaker[]> {
   let { noCache = NO_CACHE ?? false } = opts;
   if (!noCache) {
@@ -56,13 +56,13 @@ export async function getSpeakers(
   });
   if (!fetched.ok) {
     throw new Error(
-      "Error fetching speakers, responded with status: " + fetched.status
+      "Error fetching speakers, responded with status: " + fetched.status,
     );
   }
   let json: unknown = await fetched.json();
   if (!json || !Array.isArray(json)) {
     throw new Error(
-      "Error fetching speakers. Expected an array, received:\n\n" + json
+      "Error fetching speakers. Expected an array, received:\n\n" + json,
     );
   }
 
@@ -74,7 +74,7 @@ export async function getSpeakers(
         console.warn(
           `Invalid speaker object; skipping.\n\nSee API settings to ensure expected data is included: ${SESSIONIZE_API_DETAILS_URL}\n\n`,
           "Received:\n",
-          speaker
+          speaker,
         );
         return null;
       }
@@ -90,7 +90,7 @@ export async function getSpeakers(
 
 export async function getSpeakerBySlug(
   slug: string,
-  opts?: { noCache?: boolean }
+  opts?: { noCache?: boolean },
 ): Promise<Speaker | null> {
   // Unfortunately, Sessionize doesn't have an API for fetching a single speaker,
   // so we have to fetch all of them and then filter down to the one we want.
@@ -100,7 +100,7 @@ export async function getSpeakerBySlug(
 }
 
 export async function getConfSessions(
-  opts: { noCache?: boolean } = {}
+  opts: { noCache?: boolean } = {},
 ): Promise<SpeakerSession[]> {
   let { noCache = NO_CACHE ?? false } = opts;
   if (!noCache) {
@@ -119,13 +119,13 @@ export async function getConfSessions(
   });
   if (!fetched.ok) {
     throw new Error(
-      "Error fetching speakers, responded with status: " + fetched.status
+      "Error fetching speakers, responded with status: " + fetched.status,
     );
   }
   let json: unknown = await fetched.json();
   if (!json || !Array.isArray(json)) {
     throw new Error(
-      "Error fetching speakers. Expected an array, received:\n\n" + json
+      "Error fetching speakers. Expected an array, received:\n\n" + json,
     );
   }
 
@@ -161,7 +161,7 @@ export async function getConfSessions(
 }
 
 export async function getSchedules(
-  opts: { noCache?: boolean } = {}
+  opts: { noCache?: boolean } = {},
 ): Promise<Schedule[]> {
   let { noCache = NO_CACHE ?? false } = opts;
   if (!noCache) {
@@ -182,13 +182,13 @@ export async function getSchedules(
   ]);
   if (!fetched.ok) {
     throw new Error(
-      "Error fetching schedule, responded with status: " + fetched.status
+      "Error fetching schedule, responded with status: " + fetched.status,
     );
   }
   let json = await fetched.json();
   if (!json || !Array.isArray(json)) {
     throw new Error(
-      "Error fetching schedule. Expected an array, received:\n\n" + json
+      "Error fetching schedule. Expected an array, received:\n\n" + json,
     );
   }
 
@@ -254,7 +254,7 @@ export async function getSchedules(
                     speakers: sessionSpeakers,
                   };
                 });
-              }
+              },
             )
             .sort((a, b) => {
               let isEariler = a.startsAt < b.startsAt;
@@ -298,7 +298,7 @@ function getDateTime(isoDate: string) {
 
 export function formatDate(
   date: DateTime,
-  opts: Intl.DateTimeFormatOptions
+  opts: Intl.DateTimeFormatOptions,
 ): string {
   return (
     date
@@ -375,7 +375,7 @@ function modelSpeakerSession(session: SessionizeSessionData): SpeakerSession {
 
 function getSpeakerNames(speaker: SessionizeSpeakerData) {
   let preferredName = speaker.questionAnswers?.find(
-    (qa) => qa.question === "Preferred Name"
+    (qa) => qa.question === "Preferred Name",
   )?.answer;
   let nameFirst: string;
   let nameLast = speaker.lastName ? String(speaker.lastName).trim() : "";
@@ -403,7 +403,7 @@ function getSpeakerTagLine(speaker: SessionizeSpeakerData) {
   let jobTitle: string | undefined | null;
   if (
     (jobTitle = speaker.questionAnswers?.find(
-      (qa) => qa.question === "Current Job Title"
+      (qa) => qa.question === "Current Job Title",
     )?.answer)
   ) {
     return jobTitle.trim();
@@ -433,7 +433,7 @@ async function fetchNaiveStaleWhileRevalidate(
   opts?: {
     method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
     headers: HeadersInit;
-  }
+  },
 ) {
   let method = opts?.method || "GET";
   let headers = opts?.headers || {};

@@ -40,7 +40,7 @@ const EARLY_BIRD_ENDING_TIME = 1646121600000;
 export const loader = async (_: LoaderFunctionArgs) => {
   return json(
     { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
-    { headers: { "Cache-Control": CACHE_CONTROL.conf } }
+    { headers: { "Cache-Control": CACHE_CONTROL.conf } },
   );
 };
 
@@ -256,7 +256,7 @@ const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 function MobileNavButton() {
@@ -289,7 +289,7 @@ function MobileMenuItem({
       as={HeaderLink}
       className={cx(
         className,
-        "cursor-pointer select-none py-2 px-4 outline-none hover:bg-gray-700 hover:text-white selected:bg-pink-500 selected:text-white selected:hover:bg-pink-600"
+        "cursor-pointer select-none py-2 px-4 outline-none hover:bg-gray-700 hover:text-white selected:bg-pink-500 selected:text-white selected:hover:bg-pink-600",
       )}
       {...props}
     />

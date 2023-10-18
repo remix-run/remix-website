@@ -48,7 +48,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       headers: {
         Vary: "Cookie",
       },
-    }
+    },
   );
 }
 
@@ -97,7 +97,7 @@ function Document({
   let colorScheme = useColorScheme();
   let matches = useMatches();
   let isDocsPage = !!matches.find((match) =>
-    match.id.startsWith("routes/docs/")
+    match.id.startsWith("routes/docs/"),
   );
   return (
     <html
@@ -127,7 +127,7 @@ function Document({
           "flex min-h-screen w-full flex-col overflow-x-hidden",
           forceDark
             ? [darkBg || "bg-gray-900", "text-gray-200"]
-            : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+            : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200",
         )}
       >
         {children}

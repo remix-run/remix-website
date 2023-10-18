@@ -217,7 +217,7 @@ render(
       </Route>
     </Routes>
   </BrowserRouter>,
-  document.getElementById("root")
+  document.getElementById("root"),
 );
 ```
 

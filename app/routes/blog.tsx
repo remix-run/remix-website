@@ -21,7 +21,7 @@ export const meta: MetaFunction = (args) => {
 export const loader = async (_: LoaderFunctionArgs) => {
   return json(
     { posts: await getBlogPostListings() },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
 };
 

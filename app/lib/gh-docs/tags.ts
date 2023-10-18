@@ -13,7 +13,7 @@ declare global {
  */
 export async function getTags(
   repo: string,
-  { octokit, releasePackage }: CacheContext
+  { octokit, releasePackage }: CacheContext,
 ) {
   return tagsCache.fetch(repo, {
     context: { octokit, releasePackage },
@@ -22,7 +22,7 @@ export async function getTags(
 
 export function getLatestVersion(tags: string[]) {
   return tags.filter((tag) =>
-    semver.satisfies(tag, "*", { includePrerelease: false })
+    semver.satisfies(tag, "*", { includePrerelease: false }),
   )[0];
 }
 
@@ -69,7 +69,7 @@ export async function getAllReleases(
     octokit: Octokit;
     page?: number;
     releases?: string[];
-  }
+  },
 ): Promise<string[]> {
   console.log("Fetching fresh releases, page", page);
   let { data, headers, status } = await octokit.rest.repos.listReleases({
@@ -95,7 +95,7 @@ export async function getAllReleases(
             // After changesets, we look for remix@<VERSION>
             release.tag_name.split("@")[0] === primaryPackage ||
             // pre-changesets, tag_name started with "v"
-            /^v[0-9]/.test(release.tag_name)
+            /^v[0-9]/.test(release.tag_name),
         );
       })
       .map((release) => {
@@ -106,7 +106,7 @@ export async function getAllReleases(
             : // with changesets its like remix@<VERSION>
               release.tag_name.split("@")[1] || "unknown"
         );
-      })
+      }),
   );
 
   let parsed = parseLinkHeader(headers.link);

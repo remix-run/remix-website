@@ -44,7 +44,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return resp;
   } catch (err) {
     throw Error(
-      "Error fetching the social image; this is likely an error in the img/social route loader"
+      "Error fetching the social image; this is likely an error in the img/social route loader",
     );
   }
 };

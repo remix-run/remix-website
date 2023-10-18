@@ -5,7 +5,7 @@ const noop = () => {};
 
 function createCollectionContext<
   Elem extends FocusableElement = FocusableElement,
-  T extends CollectionItem<Elem> = CollectionItem<Elem>
+  T extends CollectionItem<Elem> = CollectionItem<Elem>,
 >(name: string, initialValue = {}) {
   type TT = CollectionContextValue<Elem, T>;
   let collectionItems: T[] = [];
@@ -43,10 +43,10 @@ function createCollectionContext<
  */
 function useCollectionItem<
   Elem extends FocusableElement = FocusableElement,
-  ItemType extends CollectionItem<Elem> = CollectionItem<Elem>
+  ItemType extends CollectionItem<Elem> = CollectionItem<Elem>,
 >(
   item: ItemType,
-  context: React.Context<CollectionContextValue<Elem, ItemType>>
+  context: React.Context<CollectionContextValue<Elem, ItemType>>,
 ) {
   let forceUpdate = useForceUpdate();
   let { registerItem } = React.useContext(context);
@@ -68,14 +68,14 @@ function useCollectionInit<ItemType extends CollectionItem>() {
 
 function useCollection<
   Elem extends FocusableElement = FocusableElement,
-  ItemType extends CollectionItem<Elem> = CollectionItem<Elem>
+  ItemType extends CollectionItem<Elem> = CollectionItem<Elem>,
 >(ctx: React.Context<CollectionContextValue<Elem, ItemType>>) {
   return React.useContext(ctx).collectionItems;
 }
 
 function CollectionProvider<
   Elem extends FocusableElement = FocusableElement,
-  ItemType extends CollectionItem<Elem> = CollectionItem<Elem>
+  ItemType extends CollectionItem<Elem> = CollectionItem<Elem>,
 >({
   context: Ctx,
   children,
@@ -101,7 +101,7 @@ function CollectionProvider<
         set((items) => items.filter((item) => element !== item.element));
       };
     },
-    [set]
+    [set],
   );
 
   return (
@@ -125,7 +125,7 @@ function CollectionProvider<
 function insertAt<T extends any[]>(
   array: T,
   item: T[number],
-  index?: number
+  index?: number,
 ): T {
   if (index == null || !(index in array)) {
     return [...array, item] as T;
@@ -140,7 +140,7 @@ interface CollectionItem<Elem = FocusableElement> {
 
 interface CollectionContextValue<
   Elem extends FocusableElement = FocusableElement,
-  T extends CollectionItem<Elem> = CollectionItem<Elem>
+  T extends CollectionItem<Elem> = CollectionItem<Elem>,
 > {
   collectionItems: T[];
   registerItem(item: T): UnregisterCollectionItem;

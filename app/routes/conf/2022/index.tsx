@@ -47,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         // @ts-ignore
         bio,
         ...s
-      }) => s
+      }) => s,
     )
     .sort(() => Math.random() - 0.5);
 
@@ -70,7 +70,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   return json(
     { siteUrl, speakers: speakersShuffled, sponsors },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
 };
 

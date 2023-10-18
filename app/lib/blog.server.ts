@@ -11,7 +11,7 @@ const dataPath = path.join(__dirname, "..", "data");
 const blogPath = path.join(dataPath, "posts");
 
 const AUTHORS: BlogAuthor[] = yaml.parse(
-  fs.readFileSync(path.join(dataPath, "authors.yml")).toString()
+  fs.readFileSync(path.join(dataPath, "authors.yml")).toString(),
 );
 
 const postsCache = new LRUCache<string, BlogPost>({
@@ -36,21 +36,21 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
   let { attributes, html } = result;
   invariant(
     isMarkdownPostFrontmatter(attributes),
-    `Invalid post frontmatter in ${slug}`
+    `Invalid post frontmatter in ${slug}`,
   );
 
   let validatedAuthors = getValidAuthorNames(attributes.authors);
   if (validatedAuthors.length === 0) {
     console.warn(
       "The author info in `%s` is incorrect and should be fixed to match what’s in the `authors.yaml` file.",
-      slug
+      slug,
     );
   }
   attributes.authors = validatedAuthors;
 
   invariant(
     isMarkdownPostFrontmatter(attributes),
-    `Invalid post frontmatter in ${slug}`
+    `Invalid post frontmatter in ${slug}`,
   );
 
   let post: BlogPost = {

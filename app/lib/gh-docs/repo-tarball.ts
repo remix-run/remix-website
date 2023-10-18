@@ -14,7 +14,7 @@ import { env } from "~/env.server";
  */
 export async function getRepoTarballStream(
   repo: string,
-  ref: string
+  ref: string,
 ): Promise<NodeJS.ReadableStream> {
   if (ref === "local") {
     console.log("Using local repo");
@@ -45,12 +45,12 @@ export async function getRepoTarballStream(
 export async function getLocalTarballStream(): Promise<NodeJS.ReadableStream> {
   invariant(
     env.LOCAL_REPO_RELATIVE_PATH,
-    "LOCAL_REPO_RELATIVE_PATH is not set"
+    "LOCAL_REPO_RELATIVE_PATH is not set",
   );
   let localDocsPath = path.join(
     process.cwd(),
     env.LOCAL_REPO_RELATIVE_PATH,
-    "docs"
+    "docs",
   );
   await tar.c({ gzip: true, file: ".local.tgz" }, [localDocsPath]);
   return fs.createReadStream(".local.tgz");

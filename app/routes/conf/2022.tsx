@@ -255,7 +255,7 @@ const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 function MobileNavButton() {
@@ -288,7 +288,7 @@ function MobileMenuItem({
       as={HeaderLink}
       className={cx(
         className,
-        "cursor-pointer select-none py-2 px-4 outline-none hover:bg-blue-700 hover:text-white selected:bg-pink-500 selected:text-white selected:hover:bg-pink-600"
+        "cursor-pointer select-none py-2 px-4 outline-none hover:bg-blue-700 hover:text-white selected:bg-pink-500 selected:text-white selected:hover:bg-pink-600",
       )}
       {...props}
     />

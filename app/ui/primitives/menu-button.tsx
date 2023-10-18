@@ -59,7 +59,7 @@ const Menu = React.forwardRef(
         <DropdownProvider id={id} children={children} />
       </Comp>
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<any, MenuProps>;
 
 /**
@@ -77,7 +77,7 @@ interface MenuProps {
         props: MenuContextValue & {
           // TODO: Remove in 1.0
           isOpen: boolean;
-        }
+        },
       ) => React.ReactNode);
   id?: string;
 }
@@ -118,7 +118,7 @@ const MenuButton = React.forwardRef(
         data-reach-menu-button=""
       />
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"button", MenuButtonProps>;
 
 /**
@@ -155,7 +155,7 @@ const MenuItemImpl = React.forwardRef(
         data-reach-menu-item=""
       />
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"div", MenuItemImplProps>;
 
 MenuItemImpl.displayName = "MenuItemImpl";
@@ -238,7 +238,7 @@ const MenuItems = React.forwardRef(
         data-reach-menu-items=""
       />
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"div", MenuItemsProps>;
 
 /**
@@ -277,7 +277,7 @@ const MenuLink = React.forwardRef(
         onSelect={onSelect || noop}
       />
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"a", MenuLinkProps>;
 
 /**
@@ -304,7 +304,7 @@ const MenuList = React.forwardRef(
         <MenuItems {...props} ref={forwardedRef} data-reach-menu-list="" />
       </MenuPopover>
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"div", MenuListProps>;
 
 /**
@@ -360,7 +360,7 @@ const MenuPopover = React.forwardRef<HTMLDivElement, MenuPopoverProps>(
     ) : (
       <div {...allProps} {...sharedProps} />
     );
-  }
+  },
 );
 
 /**

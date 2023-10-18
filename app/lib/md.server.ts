@@ -26,7 +26,7 @@ export interface ProcessorOptions {
 let processor: Awaited<ReturnType<typeof getProcessor>>;
 export async function processMarkdown(
   content: string,
-  options?: ProcessorOptions
+  options?: ProcessorOptions,
 ) {
   processor = processor || (await getProcessor(options));
   let { attributes, body: raw } = parseFrontMatter(content);
@@ -80,7 +80,7 @@ export async function loadPlugins() {
   ]);
 
   const stripLinkExtPlugin: InternalPlugin<UnistNode.Root, UnistNode.Root> = (
-    options = {}
+    options = {},
   ) => {
     return async function transformer(tree: UnistNode.Root) {
       visit(tree, "link", (node, index, parent) => {
@@ -112,10 +112,10 @@ export async function loadPlugins() {
       theme = theme || (await loadTheme(THEME_PATH));
       highlighter = highlighter || (await getHighlighter({ themes: [theme] }));
       let fgColor = convertFakeHexToCustomProp(
-        highlighter.getForegroundColor(theme.name) || ""
+        highlighter.getForegroundColor(theme.name) || "",
       );
       let bgColor = convertFakeHexToCustomProp(
-        highlighter.getBackgroundColor(theme.name) || ""
+        highlighter.getBackgroundColor(theme.name) || "",
       );
       let langs: Shiki.Lang[] = [
         "js",
@@ -182,7 +182,7 @@ export async function loadPlugins() {
                         children: [content],
                       }
                     : content;
-                }
+                },
               );
 
               children.push({
@@ -213,7 +213,7 @@ export async function loadPlugins() {
                 },
                 children,
               };
-            }
+            },
           );
 
           let nodeValue = {
@@ -224,7 +224,7 @@ export async function loadPlugins() {
               dataLineNumbers: usesLineNumbers ? "true" : "false",
               dataLang: htmlEscape(language),
               style: `color: ${htmlEscape(
-                fgColor
+                fgColor,
               )};background-color: ${htmlEscape(bgColor)}`,
             },
             children: [

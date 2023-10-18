@@ -18,7 +18,7 @@ function getMapsDirections(address: string) {
   const url = new URL("http://maps.google.com/maps");
   url.searchParams.append(
     "saddr",
-    "Sheraton Salt Lake City Hotel, 150 West 500 South Salt Lake City, Utah 84101"
+    "Sheraton Salt Lake City Hotel, 150 West 500 South Salt Lake City, Utah 84101",
   );
   url.searchParams.append("daddr", address);
   return url.toString();
@@ -241,7 +241,7 @@ export default function May25Schedule() {
                   target="_blank"
                   rel="noreferrer"
                   href={getMapsDirections(
-                    `${activity.name}, ${activity.address}`
+                    `${activity.name}, ${activity.address}`,
                   )}
                   title={
                     activity.walkingDistance

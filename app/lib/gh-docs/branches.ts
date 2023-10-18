@@ -23,7 +23,7 @@ global.branchesCache ??= new LRUCache<string, string[], CacheContext>({
 async function fetchBranches(
   key: string,
   staleValue: string[] | undefined,
-  { context }: LRUCache.FetchOptionsWithContext<string, string[], CacheContext>
+  { context }: LRUCache.FetchOptionsWithContext<string, string[], CacheContext>,
 ) {
   console.log("Fetching fresh branches", key);
   let [owner, repo] = key.split("/");

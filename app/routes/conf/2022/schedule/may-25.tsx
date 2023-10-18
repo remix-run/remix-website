@@ -21,7 +21,7 @@ export const loader: LoaderFunction = async () => {
   const scheduleItems = await getSchedule(2022);
   return json<LoaderData>(
     { scheduleItems },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
 };
 

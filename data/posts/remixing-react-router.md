@@ -223,7 +223,7 @@ ReactDOM.render(
         <Route index element={<Index />} />
       </Route>
     </Routes>
-  </BrowserRouter>
+  </BrowserRouter>,
 );
 ```
 
@@ -289,7 +289,7 @@ Once you have the UI, the only other thing you need is the the action on the rou
       // provides it to you here as a standard Web Fetch Request. The
       // formData as serialized by React Router and available to you
       // on the request. Standard HTML and DOM APIs, nothing new.
-      await request.formData()
+      await request.formData(),
     );
 
     // You already know the web fetch API because you've been using it

@@ -24,7 +24,7 @@ const Popover = forwardRef<PopoverProps, "div">(
         <PopoverImpl ref={ref} {...props} />
       </Portal>
     );
-  }
+  },
 );
 
 Popover.displayName = "Popover";
@@ -57,7 +57,7 @@ interface PopoverProps {
 const PopoverImpl = forwardRef<PopoverProps, "div">(
   (
     { as: Comp = "div", targetRef, position = positionDefault, ...props },
-    forwardedRef
+    forwardedRef,
   ) => {
     let popoverRef = React.useRef<HTMLDivElement>(null);
     let popoverRect = useRect(popoverRef, { observe: !props.hidden });
@@ -80,7 +80,7 @@ const PopoverImpl = forwardRef<PopoverProps, "div">(
         }}
       />
     );
-  }
+  },
 );
 
 PopoverImpl.displayName = "PopoverImpl";
@@ -88,7 +88,7 @@ PopoverImpl.displayName = "PopoverImpl";
 function getStyles(
   position: PositionPopover,
   targetRect: Rect | null,
-  popoverRect: Rect | null
+  popoverRect: Rect | null,
 ): React.CSSProperties {
   let needToMeasurePopup = !popoverRect;
   if (needToMeasurePopup) {
@@ -100,7 +100,7 @@ function getStyles(
 function getTopPosition(
   targetRect: Rect,
   popoverRect: Rect,
-  isDirectionUp: boolean
+  isDirectionUp: boolean,
 ) {
   return {
     top: isDirectionUp
@@ -154,7 +154,7 @@ function getCollisions(
   targetRect: Rect,
   popoverRect: Rect,
   offsetLeft: number = 0,
-  offsetBottom: number = 0
+  offsetBottom: number = 0,
 ) {
   let collisions = {
     top: targetRect.top - popoverRect.height < 0,
@@ -181,7 +181,7 @@ function getCollisions(
 // event.target)
 function useSimulateTabNavigationForReactTree<
   T extends HTMLElement,
-  P extends HTMLElement
+  P extends HTMLElement,
 >(triggerRef: React.RefObject<T>, popoverRef: React.RefObject<P>) {
   let ownerDocument = getOwnerDocument(triggerRef.current)!;
 
@@ -256,7 +256,7 @@ function useSimulateTabNavigationForReactTree<
       let elements = popoverRef.current && tabbable(popoverRef.current);
       return Boolean(
         elements &&
-          elements[elements.length - 1] === ownerDocument.activeElement
+          elements[elements.length - 1] === ownerDocument.activeElement,
       );
     }
     return false;
@@ -301,7 +301,7 @@ function useSimulateTabNavigationForReactTree<
   function tabbedToBrowserChrome(event: KeyboardEvent) {
     let elements = popoverRef.current
       ? tabbable(ownerDocument as any).filter(
-          (element) => !popoverRef.current!.contains(element)
+          (element) => !popoverRef.current!.contains(element),
         )
       : null;
     return elements ? event.target === elements[elements.length - 1] : false;

@@ -61,7 +61,7 @@ function Title({ className }: { className: string }) {
 export default function Venue() {
   const data = useLoaderData<typeof loader>();
   const [hotelImageNumber, setHotelImageNumber] = React.useState(
-    data.hotelImageNumber
+    data.hotelImageNumber,
   );
   return (
     <InnerLayout>

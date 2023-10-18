@@ -23,7 +23,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   let post = await getBlogPost(slug);
   return json(
     { siteUrl, post },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
 };
 

@@ -46,7 +46,7 @@ Here's a simplified example of what this might look like for a resource route re
 function handleResourceRouteRequest({ request }) {
   // If the flag is enabled, clone the request so we can use it twice
   let response = processResourceRouteRequest(
-    ENABLE_NEW_STUFF ? request.clone() : request
+    ENABLE_NEW_STUFF ? request.clone() : request,
   );
 
   // When our flag is enabled, send this request through the new

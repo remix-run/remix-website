@@ -9,7 +9,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import dotenv from "dotenv";
 
 let env = dotenv.parse(
-  fs.readFileSync(path.resolve(process.cwd(), ".env.example"))
+  fs.readFileSync(path.resolve(process.cwd(), ".env.example")),
 );
 
 export default defineConfig({

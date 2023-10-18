@@ -152,7 +152,7 @@ export default function DocsLayout() {
               "lg:ml-72 lg:pl-6 xl:pl-10 2xl:pl-12",
               !changingVersions && navigating
                 ? "opacity-25 transition-opacity delay-300"
-                : ""
+                : "",
             )}
           >
             <Outlet />
@@ -201,7 +201,7 @@ function Header() {
         "relative border-b border-gray-50 bg-white text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100",
         // This hides some of the underlying text when the user scrolls to the
         // bottom which results in the overscroll bounce
-        "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:hidden before:h-[500%] before:w-full lg:before:block"
+        "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:hidden before:h-[500%] before:w-full lg:before:block",
       )}
     >
       <InnerContainer>
@@ -327,7 +327,7 @@ function VersionLink({
           className,
           "after:absolute after:right-4 after:top-1 after:block after:-rotate-45 after:opacity-50 after:content-['→']",
           // Same as !isActive styles on <Link> below
-          "hover:bg-gray-50 active:text-blue-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-blue-brand"
+          "hover:bg-gray-50 active:text-blue-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-blue-brand",
         )}
       >
         {children}
@@ -342,7 +342,7 @@ function VersionLink({
         "before:bg-transparent",
         isActive
           ? "text-blue-brand"
-          : "hover:bg-gray-50 active:text-blue-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-blue-brand"
+          : "hover:bg-gray-50 active:text-blue-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-blue-brand",
       )}
       to={to}
     >
@@ -352,7 +352,7 @@ function VersionLink({
     <span
       className={cx(
         className,
-        "font-bold text-blue-brand before:bg-blue-brand"
+        "font-bold text-blue-brand before:bg-blue-brand",
       )}
     >
       {children}
@@ -372,7 +372,7 @@ function DocSearchSection() {
           "relative lg:bg-white lg:px-1 lg:dark:bg-gray-900",
           // This hides some of the underlying text when the user scrolls to the
           // bottom which results in the overscroll bounce
-          "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:-z-10 before:hidden before:h-[200%] before:w-full lg:before:block"
+          "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:-z-10 before:hidden before:h-[200%] before:w-full lg:before:block",
         )}
       >
         {hydrated ? (
@@ -464,7 +464,7 @@ let ColorSchemeButton = React.forwardRef<
         "flex w-full items-center gap-4 py-1 px-4",
         colorScheme === props.value
           ? "text-blue-brand"
-          : "hover:bg-gray-50 active:text-blue-brand dark:hover:bg-gray-700 dark:active:text-blue-brand"
+          : "hover:bg-gray-50 active:text-blue-brand dark:hover:bg-gray-700 dark:active:text-blue-brand",
       )}
     >
       <svg className="h-[18px] w-[18px]">
@@ -552,7 +552,7 @@ function HeaderLink({
       href={href}
       className={cx(
         `hidden text-gray-400 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50 md:block`,
-        className
+        className,
       )}
       title={title}
     >
@@ -667,7 +667,7 @@ function MenuCategoryLink({
         "group",
         isActive
           ? "bg-gray-50 font-semibold text-blue-brand dark:bg-gray-800"
-          : "text-inherit hover:text-gray-900 active:text-blue-brand dark:hover:text-gray-50 dark:active:text-blue-brand"
+          : "text-inherit hover:text-gray-900 active:text-blue-brand dark:hover:text-gray-50 dark:active:text-blue-brand",
       )}
     >
       {children}
@@ -690,7 +690,7 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
               "text-blue-brand hover:text-blue-700 dark:hover:text-blue-300",
               "bg-blue-50 bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-40",
             ]
-          : ["text-gray-700 hover:text-blue-500 dark:text-gray-400"]
+          : ["text-gray-700 hover:text-blue-500 dark:text-gray-400"],
       )}
       children={children}
     />
@@ -839,7 +839,7 @@ function useCodeBlockCopyButton(ref: React.RefObject<HTMLDivElement>) {
     if (!container) return;
 
     let codeBlocks = container.querySelectorAll(
-      "[data-code-block][data-lang]:not([data-nocopy])"
+      "[data-code-block][data-lang]:not([data-nocopy])",
     );
     let buttons = new Map<
       HTMLButtonElement,

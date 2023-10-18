@@ -55,7 +55,7 @@ function useSubscribeContext() {
   let ctx = React.useContext(SubscribeContext);
   if (!ctx)
     throw Error(
-      "SubscribeForm components must be used inside of a SubscribeProvider"
+      "SubscribeForm components must be used inside of a SubscribeProvider",
     );
   return ctx;
 }
@@ -97,10 +97,10 @@ const SubscribeInput = React.forwardRef<
       className = "w-full sm:w-auto sm:flex-1 dark:placeholder-gray-500",
       ...props
     },
-    forwardedRef
+    forwardedRef,
   ) => {
     return <Input ref={forwardedRef} className={className} {...props} />;
-  }
+  },
 );
 
 SubscribeInput.displayName = "SubscribeInput";
@@ -199,6 +199,6 @@ function useComposedRefs<T>(...refs: React.Ref<T>[]) {
         }
       });
     },
-    [refs]
+    [refs],
   );
 }

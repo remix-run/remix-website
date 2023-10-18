@@ -8,7 +8,7 @@ setTimeout(() => {
       document,
       <React.StrictMode>
         <RemixBrowser />
-      </React.StrictMode>
+      </React.StrictMode>,
     );
   });
 }, 10);

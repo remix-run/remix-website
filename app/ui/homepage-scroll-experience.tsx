@@ -1317,7 +1317,7 @@ function Cursor() {
     stage.progress - clickAt + clickOffset,
     0,
     2,
-    clickOffset * 2
+    clickOffset * 2,
   );
 
   return (

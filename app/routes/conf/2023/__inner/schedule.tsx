@@ -30,7 +30,7 @@ export async function loader(_: LoaderFunctionArgs) {
             formatDate(schedule.date, {
               month: "short",
               day: "numeric",
-            })
+            }),
           ),
           dateISO: schedule.date.toISO(),
           dateFormatted: formatDate(schedule.date, {
@@ -48,7 +48,7 @@ export async function loader(_: LoaderFunctionArgs) {
             return {
               ...session,
               speakersFormatted: formatter.format(
-                session.speakers.map((speaker) => speaker.nameFull)
+                session.speakers.map((speaker) => speaker.nameFull),
               ) as string,
               startsAtISO: startsAt?.toISO() || null,
               startsAtFormatted: startsAt
@@ -71,7 +71,7 @@ export async function loader(_: LoaderFunctionArgs) {
         };
       }),
     },
-    { headers: { "Cache-Control": CACHE_CONTROL.conf } }
+    { headers: { "Cache-Control": CACHE_CONTROL.conf } },
   );
 }
 
@@ -90,12 +90,12 @@ export default function Safety() {
   let searchParams = new URLSearchParams(
     navigation.state === "loading"
       ? navigation.location.search
-      : location.search
+      : location.search,
   );
 
   let requestedDay = searchParams.get("date");
   let selectedDayIndex = days.findIndex(
-    ({ dateSlug }) => dateSlug === requestedDay
+    ({ dateSlug }) => dateSlug === requestedDay,
   );
 
   return (
@@ -175,7 +175,7 @@ export default function Safety() {
                                           speakers.length === 1,
                                         "h-10 w-10 text-sm md:h-16 md:w-16 md:text-xl":
                                           speakers.length >= 2,
-                                      }
+                                      },
                                     )}
                                   >
                                     {speaker.imgUrl ? (
@@ -220,9 +220,7 @@ export default function Safety() {
                                   .filter(Boolean)
                                   .join("\n")
                                   .split("\n")
-                                  .map((line, i) => (
-                                    <p key={i}>{line}</p>
-                                  ))}
+                                  .map((line, i) => <p key={i}>{line}</p>)}
                               </div>
                             </td>
                           </tr>

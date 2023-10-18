@@ -8,7 +8,7 @@ export function getSpeakerSlug(speaker: Speaker) {
 }
 
 export function validateSessionizeSpeakerData(
-  data: unknown
+  data: unknown,
 ): asserts data is SessionizeSpeakerData {
   if (
     data == null ||
@@ -30,7 +30,7 @@ export function validateSessionizeSpeakerData(
 }
 
 export function validateSessionizeSessionData(
-  data: unknown
+  data: unknown,
 ): asserts data is SessionizeSessionData {
   if (
     data == null ||

@@ -155,7 +155,7 @@ function selectedVariantPlugin({ addVariant, e }) {
         }
       }
       return `.${e(
-        `selected${separator}${className}`
+        `selected${separator}${className}`,
       )}:where([data-selected])${pseudo}`;
     });
   });
@@ -165,14 +165,14 @@ function expandedVariantPlugin({ addVariant, e }) {
   addVariant("expanded", ({ modifySelectors, separator }) => {
     modifySelectors(({ className }) => {
       return `.${e(
-        `expanded${separator}${className}`
+        `expanded${separator}${className}`,
       )}:where([aria-expanded="true"])`;
     });
   });
   addVariant("not-expanded", ({ modifySelectors, separator }) => {
     modifySelectors(({ className }) => {
       return `.${e(
-        `not-expanded${separator}${className}`
+        `not-expanded${separator}${className}`,
       )}:where([aria-expanded="false"])`;
     });
   });

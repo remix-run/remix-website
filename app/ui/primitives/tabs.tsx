@@ -84,7 +84,7 @@ const Tabs = React.forwardRef(
       readOnly = false,
       ...props
     },
-    ref
+    ref,
   ) => {
     let { current: isControlled } = React.useRef(controlledIndex !== undefined);
 
@@ -118,7 +118,7 @@ const Tabs = React.forwardRef(
         onChange && onChange(index);
         setSelectedIndex(index);
       },
-      [onChange, setSelectedIndex]
+      [onChange, setSelectedIndex],
     );
     let onSelectTabWithKeyboard = React.useCallback(
       (index: number) => {
@@ -142,7 +142,7 @@ const Tabs = React.forwardRef(
           tabElement.focus();
         }
       },
-      [keyboardActivation, onChange, setSelectedIndex, tabs, selectedIndex]
+      [keyboardActivation, onChange, setSelectedIndex, tabs, selectedIndex],
     );
 
     return (
@@ -180,7 +180,7 @@ const Tabs = React.forwardRef(
         </TabsProvider>
       </CollectionProvider>
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"div", TabsProps>;
 
 /**
@@ -259,7 +259,7 @@ Tabs.displayName = "Tabs";
 const TabListImpl = React.forwardRef(
   (
     { children, as: Comp = "div", onKeyDown, cycleSelection = false, ...props },
-    forwardedRef
+    forwardedRef,
   ) => {
     let {
       focusedIndex,
@@ -300,7 +300,7 @@ const TabListImpl = React.forwardRef(
                 : selectedIndex;
 
             let selectableIndex = selectableItems.findIndex(
-              (item) => item.index === index
+              (item) => item.index === index,
             );
 
             switch (event.key) {
@@ -385,7 +385,7 @@ const TabListImpl = React.forwardRef(
         orientation,
         selectedIndex,
         tabs,
-      ]
+      ],
     );
 
     useLayoutEffect(() => {
@@ -420,7 +420,7 @@ const TabListImpl = React.forwardRef(
         {children}
       </Comp>
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"div", TabListProps>;
 
 TabListImpl.displayName = "TabList";
@@ -471,7 +471,7 @@ const Tab = React.forwardRef(
       onFocus,
       ...props
     },
-    forwardedRef
+    forwardedRef,
   ) => {
     let {
       id: tabsId,
@@ -542,7 +542,7 @@ const Tab = React.forwardRef(
         {children}
       </Comp>
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"button", TabProps>;
 
 /**
@@ -594,7 +594,7 @@ const TabPanelsImpl = React.forwardRef(
         </Comp>
       </CollectionProvider>
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"div", TabPanelsProps>;
 
 TabPanelsImpl.displayName = "TabPanels";
@@ -623,7 +623,7 @@ TabPanels.displayName = "TabPanels";
 const TabPanel = React.forwardRef(
   (
     { children, "aria-label": ariaLabel, as: Comp = "div", index, ...props },
-    forwardedRef
+    forwardedRef,
   ) => {
     let {
       selectedPanelRef,
@@ -638,7 +638,7 @@ const TabPanel = React.forwardRef(
 
     let descendant = React.useMemo(
       () => ({ element, index }),
-      [element, index]
+      [element, index],
     );
     useCollectionItem(descendant, TabPanelDescendantsContext);
 
@@ -669,7 +669,7 @@ const TabPanel = React.forwardRef(
     let ref = useComposedRefs(
       forwardedRef,
       handleRefSet,
-      isSelected ? selectedPanelRef : null
+      isSelected ? selectedPanelRef : null,
     );
 
     return (
@@ -692,7 +692,7 @@ const TabPanel = React.forwardRef(
         {children}
       </Comp>
     );
-  }
+  },
 ) as Polymorphic.ForwardRefComponent<"div", TabPanelProps>;
 
 /**
@@ -729,7 +729,7 @@ function useTabsContext(): TabsContextValue {
       id,
       selectedIndex,
     }),
-    [focusedIndex, id, selectedIndex]
+    [focusedIndex, id, selectedIndex],
   );
 }
 
@@ -750,7 +750,7 @@ interface TabsContextValue {
 }
 
 interface InternalTabsContextValue<
-  PanelElement extends FocusableElement = FocusableElement
+  PanelElement extends FocusableElement = FocusableElement,
 > {
   focusedIndex: number;
   id: string;
@@ -793,7 +793,7 @@ function isNavigationKeyboardEvent(
   event: React.KeyboardEvent,
   opts: {
     orientation?: "horizontal" | "vertical" | "both";
-  }
+  },
 ) {
   let keys = ["PageUp", "PageDown", "Home", "End"];
   if (opts.orientation === "horizontal" || opts.orientation === "both") {
@@ -824,18 +824,18 @@ export function useControlledState<T = any>({
   React.useEffect(() => {
     if (!isControlledRef.current && wasControlled) {
       console.warn(
-        `${calledFrom} is changing from controlled to uncontrolled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
+        `${calledFrom} is changing from controlled to uncontrolled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`,
       );
     }
     if (isControlledRef.current && !wasControlled) {
       console.warn(
-        `${calledFrom} is changing from uncontrolled to controlled. Components should not switch from uncontrolled to controlled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
+        `${calledFrom} is changing from uncontrolled to controlled. Components should not switch from uncontrolled to controlled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`,
       );
     }
   }, [wasControlled, calledFrom]);
 
   let [valueState, setValue] = React.useState(
-    isControlledRef.current ? controlledValue! : defaultValue
+    isControlledRef.current ? controlledValue! : defaultValue,
   );
   let set: React.Dispatch<React.SetStateAction<T>> = React.useCallback((n) => {
     if (!isControlledRef.current) {

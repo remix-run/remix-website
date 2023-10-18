@@ -115,7 +115,7 @@ function getCloudinarySocialImageUrl({
       authorTitleTransform,
       templateImage,
     ].join("/"),
-    "https://res.cloudinary.com"
+    "https://res.cloudinary.com",
   );
 }
 

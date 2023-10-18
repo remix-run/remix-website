@@ -21,10 +21,10 @@ describe("validateParams", () => {
     describe("and a valid tag in the second position", () => {
       it("returns null", () => {
         expect(validate(TAGS, BRANCHES, { lang: "en", ref: "v1.0.0" })).toBe(
-          null
+          null,
         );
         expect(
-          validate(TAGS, BRANCHES, { lang: "en", ref: "v1.0.0", "*": "beef" })
+          validate(TAGS, BRANCHES, { lang: "en", ref: "v1.0.0", "*": "beef" }),
         ).toBe(null);
       });
     });
@@ -32,17 +32,17 @@ describe("validateParams", () => {
     describe("and a valid shorthand tag", () => {
       it("expands the major shorthand", () => {
         expect(validate(TAGS, BRANCHES, { lang: "en", ref: "v1" })).toBe(
-          `en/${LATEST_V1_MAJOR_TAG}`
+          `en/${LATEST_V1_MAJOR_TAG}`,
         );
       });
       it("expands the minor shorthand", () => {
         expect(validate(TAGS, BRANCHES, { lang: "en", ref: "v1.1" })).toBe(
-          `en/${LATEST_V1_MINOR_TAG}`
+          `en/${LATEST_V1_MINOR_TAG}`,
         );
       });
       it("expands the major shorthand, preserves splat", () => {
         expect(
-          validate(TAGS, BRANCHES, { lang: "en", ref: "v1", "*": "beef/taco" })
+          validate(TAGS, BRANCHES, { lang: "en", ref: "v1", "*": "beef/taco" }),
         ).toBe(`en/${LATEST_V1_MAJOR_TAG}/beef/taco`);
       });
     });
@@ -50,24 +50,24 @@ describe("validateParams", () => {
     describe("and a valid branch in the second position", () => {
       it("returns null", () => {
         expect(validate(TAGS, BRANCHES, { lang: "en", ref: "main" })).toBe(
-          null
+          null,
         );
         expect(
-          validate(TAGS, BRANCHES, { lang: "en", ref: "main", "*": "beef" })
+          validate(TAGS, BRANCHES, { lang: "en", ref: "main", "*": "beef" }),
         ).toBe(null);
       });
     });
 
     it("redirects to the latest stable tag", () => {
       expect(validate(TAGS, BRANCHES, { lang: "en" })).toBe(
-        `en/${LATEST_STABLE_TAG}`
+        `en/${LATEST_STABLE_TAG}`,
       );
     });
 
     describe("and an invalid branch or tag in the second position", () => {
       it("inserts latest tag", () => {
         expect(validate(TAGS, BRANCHES, { lang: "en", ref: "beef" })).toBe(
-          `en/${LATEST_STABLE_TAG}/beef`
+          `en/${LATEST_STABLE_TAG}/beef`,
         );
       });
     });
@@ -80,7 +80,7 @@ describe("validateParams", () => {
 
     it("adds lang and keeps splat params around", () => {
       expect(validate(TAGS, BRANCHES, { lang: "v1.0.0", ref: "beef" })).toBe(
-        "en/v1.0.0/beef"
+        "en/v1.0.0/beef",
       );
     });
   });
@@ -88,7 +88,7 @@ describe("validateParams", () => {
   describe("with a valid shorthand tag in the first param", () => {
     it("adds lang, expands the major tag", () => {
       expect(validate(TAGS, BRANCHES, { lang: "v1" })).toBe(
-        `en/${LATEST_V1_MAJOR_TAG}`
+        `en/${LATEST_V1_MAJOR_TAG}`,
       );
     });
   });
@@ -106,7 +106,7 @@ describe("validateParams", () => {
     describe("without a valid branch or tag in the second position", () => {
       it("adds lang and latest stable tag", () => {
         expect(validate(TAGS, BRANCHES, { lang: "beef", ref: "cheese" })).toBe(
-          `en/main/beef/cheese`
+          `en/main/beef/cheese`,
         );
       });
     });

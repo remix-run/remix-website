@@ -69,7 +69,7 @@ export function handleRedirects(pathname: string) {
 
 export function safeRedirect(
   to: FormDataEntryValue | string | null | undefined,
-  init?: number | ResponseInit
+  init?: number | ResponseInit,
 ) {
   if (
     !to ||

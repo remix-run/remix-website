@@ -34,10 +34,10 @@ export function useForceUpdate() {
 }
 
 export function composeEventHandlers<
-  EventType extends { defaultPrevented: boolean }
+  EventType extends { defaultPrevented: boolean },
 >(
   theirHandler: ((event: EventType) => any) | undefined,
-  ourHandler: (event: EventType) => any
+  ourHandler: (event: EventType) => any,
 ): (event: EventType) => any {
   return (event) => {
     theirHandler && theirHandler(event);
@@ -67,7 +67,7 @@ export type AssignableRef<ValueType> =
  */
 export function assignRef<RefValueType = any>(
   ref: AssignableRef<RefValueType> | null | undefined,
-  value: any
+  value: any,
 ) {
   if (ref == null) return;
   if (isFunction(ref)) {
@@ -122,7 +122,7 @@ export function isFunction(value: any): value is Function {
  * @param element
  */
 export function getOwnerDocument<T extends Element>(
-  element: T | null | undefined
+  element: T | null | undefined,
 ) {
   if (!canUseDOM) {
     throw new Error("`document` can only be accessed in a browser environment");
@@ -131,7 +131,7 @@ export function getOwnerDocument<T extends Element>(
 }
 
 export function getOwnerWindow<T extends Element>(
-  element: T | null | undefined
+  element: T | null | undefined,
 ) {
   let ownerDocument = getOwnerDocument(element);
   return ownerDocument.defaultView || window;
@@ -142,19 +142,19 @@ export function makeId(...args: (string | number | null | undefined)[]) {
 }
 
 export function isAnchorElement(
-  element: Node | EventTarget | null | undefined
+  element: Node | EventTarget | null | undefined,
 ): element is HTMLAnchorElement {
   return !!(element && "tagName" in element && element?.tagName === "A");
 }
 
 export function isInputElement(
-  element: Element | null | undefined
+  element: Element | null | undefined,
 ): element is HTMLInputElement {
   return !!(element && "tagName" in element && element?.tagName === "INPUT");
 }
 
 export function isButtonElement(
-  element: Element | null | undefined
+  element: Element | null | undefined,
 ): element is HTMLButtonElement {
   return !!(element && "tagName" in element && element?.tagName === "BUTTON");
 }
@@ -165,7 +165,7 @@ export function isButtonElement(
  * @param nativeEvent
  */
 export function isRightClick(
-  nativeEvent: MouseEvent | PointerEvent | TouchEvent
+  nativeEvent: MouseEvent | PointerEvent | TouchEvent,
 ) {
   return "which" in nativeEvent
     ? nativeEvent.which === 3
@@ -180,7 +180,7 @@ export function isRightClick(
  * @param element
  */
 export function getComputedStyles(
-  element: Element
+  element: Element,
 ): CSSStyleDeclaration | null {
   let ownerWindow = getOwnerWindow(element);
   if (ownerWindow) {
@@ -203,10 +203,10 @@ type ContextProvider<T> = React.FC<React.PropsWithChildren<T>>;
 
 export function createContext<ContextValueType extends object | null>(
   rootComponentName: string,
-  defaultContext?: ContextValueType
+  defaultContext?: ContextValueType,
 ): [
   ContextProvider<ContextValueType>,
-  (callerComponentName: string) => ContextValueType
+  (callerComponentName: string) => ContextValueType,
 ] {
   let Ctx = React_createContext<ContextValueType | undefined>(defaultContext);
 
@@ -215,7 +215,7 @@ export function createContext<ContextValueType extends object | null>(
     let value = useMemo(
       () => context,
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      Object.values(context)
+      Object.values(context),
     ) as ContextValueType;
     return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
   }
@@ -229,7 +229,7 @@ export function createContext<ContextValueType extends object | null>(
       return defaultContext;
     }
     throw Error(
-      `${callerComponentName} must be rendered inside of a ${rootComponentName} component.`
+      `${callerComponentName} must be rendered inside of a ${rootComponentName} component.`,
     );
   }
 

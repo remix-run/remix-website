@@ -14,7 +14,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
       to,
       ...props
     },
-    ref
+    ref,
   ) => {
     if (typeof to === "string" && isAbsoluteUrl(to)) {
       // eslint-disable-next-line jsx-a11y/anchor-has-content
@@ -34,7 +34,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
         state={state}
       />
     );
-  }
+  },
 );
 
 const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
@@ -54,7 +54,7 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
       to,
       ...props
     },
-    ref
+    ref,
   ) => {
     if (typeof to === "string" && isAbsoluteUrl(to)) {
       let isActive = false;
@@ -102,7 +102,7 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
         to={to}
       />
     );
-  }
+  },
 );
 
 function isAbsoluteUrl(str: string) {

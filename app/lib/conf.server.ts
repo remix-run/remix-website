@@ -74,8 +74,8 @@ export async function getSpeakers(year: ConfYear) {
     invariant(
       isSpeaker(speakerRawWithDefaults),
       `Speaker ${JSON.stringify(
-        speakerRaw
-      )} is not valid. Please check the speakers file.`
+        speakerRaw,
+      )} is not valid. Please check the speakers file.`,
     );
     speakers.push({
       ...speakerRawWithDefaults,
@@ -100,8 +100,8 @@ export async function getSponsors(year: ConfYear) {
     invariant(
       isSponsor(sponsorRaw),
       `Sponsor ${JSON.stringify(
-        sponsorRaw
-      )} is not valid. Please check the sponsors file.`
+        sponsorRaw,
+      )} is not valid. Please check the sponsors file.`,
     );
     sponsors.push(sponsorRaw);
   }
@@ -124,8 +124,8 @@ export async function getTalks(year: ConfYear) {
     invariant(
       isTalk(talkRaw),
       `Talk ${JSON.stringify(
-        talkRaw
-      )} is not valid. Please check the talks file.`
+        talkRaw,
+      )} is not valid. Please check the talks file.`,
     );
     let { html: descriptionHTML } = await processMarkdown(talkRaw.description);
     talks.push({
@@ -159,8 +159,8 @@ export async function getSchedule(year: ConfYear) {
         invariant(
           speaker,
           `Speaker ${s} is not valid in ${JSON.stringify(
-            scheduleItemRaw
-          )}. Please check the schedules file.`
+            scheduleItemRaw,
+          )}. Please check the schedules file.`,
         );
         return {
           slug: speaker.slug,
@@ -172,8 +172,8 @@ export async function getSchedule(year: ConfYear) {
     invariant(
       isScheduleItemRaw(scheduleItemRaw),
       `schedule item ${JSON.stringify(
-        scheduleItemRaw
-      )} is not valid. Please check the schedules file.`
+        scheduleItemRaw,
+      )} is not valid. Please check the schedules file.`,
     );
     if (isSimpleScheduleItemRaw(scheduleItemRaw)) {
       let speakers: Array<ScheduleItemSpeaker> = [];
@@ -196,7 +196,7 @@ export async function getSchedule(year: ConfYear) {
         talk,
         `schedule item ${JSON.stringify(scheduleItemRaw)} references talk ${
           scheduleItemRaw.talk
-        } which does not exist.`
+        } which does not exist.`,
       );
       invariant(
         talk.time === scheduleItemRaw.time,
@@ -204,18 +204,18 @@ export async function getSchedule(year: ConfYear) {
           talk.time
         }" but that is not the time that is set in the scheduled item (${
           scheduleItemRaw.time
-        }) for ${JSON.stringify(scheduleItemRaw)}`
+        }) for ${JSON.stringify(scheduleItemRaw)}`,
       );
       let [{ html: titleHTML }, { html: contentHTML }] = await Promise.all([
         processMarkdown(
           talk.type === "lightning"
             ? `<span title="Lightning talk">⚡</span> ${talk.title}`
-            : talk.title
+            : talk.title,
         ),
         processMarkdown(
           talk.description.length > 400
             ? `${talk.description.slice(0, 297).trim()}…`
-            : talk.description
+            : talk.description,
         ),
       ]);
       scheduleItems.push({

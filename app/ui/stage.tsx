@@ -159,7 +159,7 @@ function useOnResize(fn: () => void) {
 function useWindowScroll(fallback: number = 0): number {
   let hydrated = useHydrated();
   let [scroll, setScroll] = useState<number>(
-    hydrated && canUseDOM ? window.scrollY : fallback
+    hydrated && canUseDOM ? window.scrollY : fallback,
   );
   let handleScroll = useCallback(() => {
     setScroll(window.scrollY);
@@ -178,7 +178,7 @@ function useWindowScroll(fallback: number = 0): number {
 
 function useRelativeWindowScroll(
   ref: React.RefObject<HTMLElement>,
-  fallback: number = 0
+  fallback: number = 0,
 ): number {
   let windowScroll = useWindowScroll(fallback);
   if (!ref.current) return fallback;

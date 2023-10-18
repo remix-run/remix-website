@@ -66,7 +66,7 @@ type TProcessor = Processor<
 
 async function process(
   processor: TProcessor,
-  content: string | Buffer
+  content: string | Buffer,
 ): Promise<MarkdownTutPage> {
   let state: State = STATE_NORMAL;
   let tree = (await processor.run(processor.parse(content))) as UnistNode.Root;
@@ -141,7 +141,7 @@ async function process(
 
 function stringify(
   processor: TProcessor,
-  root: Array<ProseNode | SequenceNode | SlideNode>
+  root: Array<ProseNode | SequenceNode | SlideNode>,
 ): MarkdownTutPage {
   let page: MarkdownTutPage = [];
   for (let node of root) {
@@ -171,7 +171,7 @@ function stringify(
 }
 
 function isSequenceFence<N extends { type: string; children?: unknown }>(
-  node: N
+  node: N,
 ): node is N & { type: "paragraph"; children: [UnistNode.Text] } {
   if (node.type !== "paragraph" || !Array.isArray(node.children)) {
     return false;
@@ -186,7 +186,7 @@ function isSequenceFence<N extends { type: string; children?: unknown }>(
 }
 
 function isSequenceBreak<N extends { type: string }>(
-  node: N
+  node: N,
 ): node is N & { type: "thematicBreak" } {
   return "type" in node && node.type === "thematicBreak";
 }

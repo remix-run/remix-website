@@ -7,7 +7,7 @@ export function validateParams(
   tags: string[],
   branches: string[],
   params: { lang: string; ref?: string; ["*"]?: string },
-  lang: string = "en"
+  lang: string = "en",
 ): string | null {
   let { lang: first, ref: second, "*": splat } = params;
 

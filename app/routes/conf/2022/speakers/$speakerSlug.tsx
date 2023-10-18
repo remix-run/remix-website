@@ -50,7 +50,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     .map(({ description, ...rest }) => rest);
   return json(
     { speaker, talks },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
 };
 
