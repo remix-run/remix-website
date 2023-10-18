@@ -6,13 +6,11 @@ First setup your `.env` file, use `.env.example` to know what to set.
 
 ```sh
 npm i
-npm run db:reset
-npm run seed
 ```
 
 Now you should be good to go:
 
-```
+```sh
 npm run dev
 ```
 
@@ -20,7 +18,7 @@ To preview local changes to the `docs` folder in the Remix repo, select "local" 
 
 There are a couple LRUCache's for talking to GitHub and processing markdown that expire after 5 minutes. If you want them to expire immediately for local development, set the `NO_CACHE` environment variable.
 
-```
+```sh
 NO_CACHE=1 npm run dev
 ```
 
@@ -40,11 +38,8 @@ Pushing the "stage" tag will deploy to [staging](https://remixdotrunstage.fly.de
 ```sh
 git checkout my/branch
 
-# move the tag
-git tag -f stage
-
-# push it to deploy
-git push origin stage -f
+# moves the `stage` tag and pushes it, triggering a deploy
+npm run push:stage
 ```
 
 When you're happy with it, merge your branch into `main` and push.

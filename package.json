@@ -10,6 +10,7 @@
     "dev": "remix dev -c 'node ./server.js'",
     "format": "prettier --write ./",
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
+    "push:stage": "git tag -f stage && git push origin stage -f",
     "start": "cross-env NODE_ENV=production node server.js",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "lint:fix": "npm run lint -- --fix",
