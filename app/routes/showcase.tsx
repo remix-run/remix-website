@@ -5,7 +5,7 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Fragment, forwardRef, useRef } from "react";
+import { Fragment, forwardRef, useEffect, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";
 import { Footer } from "~/ui/footer";
@@ -88,6 +88,8 @@ export default function Showcase() {
                 <MobileShowcase
                   isHydrated={isHydrated}
                   asImage={i > 5}
+                  // Only preload the first 2, since that's about all that should be "above the fold" on mobile
+                  preload={i < 2 ? "auto" : "none"}
                   {...example}
                 />
               </Fragment>
@@ -146,19 +148,34 @@ function MobileShowcase({
   videoSrc,
   asImage = false,
   isHydrated,
+  preload,
 }: ShowcaseTypes & {
   /** Opt into only showing an image. This avoids loading a ton of videos on the page and crashing Brooks' terrible phone */
   asImage?: boolean;
 }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  // autoplay videos -- using this useEffect because the `autoPlay` attribute overrides
+  // `preload="none"` which causes weird infinite loading issues when caching is turned off
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    if (node.paused) {
+      node.play();
+    }
+  }, []);
+
   return (
     <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:hidden">
       {/* If it's an image, don't render the video, and remove the motion-safe class */}
       {!asImage ? (
         <ShowcaseVideo
+          ref={ref}
           className="motion-reduce:hidden"
           videoSrc={videoSrc}
           poster={imgSrc}
-          autoPlay
+          preload={preload}
           isHydrated={isHydrated}
         />
       ) : null}
