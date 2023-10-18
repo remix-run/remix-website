@@ -5,7 +5,7 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Fragment, forwardRef, useRef } from "react";
+import { Fragment, forwardRef, useEffect, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";
 import { Footer } from "~/ui/footer";
@@ -87,7 +87,7 @@ export default function Showcase() {
                 />
                 <MobileShowcase
                   isHydrated={isHydrated}
-                  asImage={i > 5}
+                  // asImage={i > 5}
                   {...example}
                 />
               </Fragment>
@@ -150,15 +150,29 @@ function MobileShowcase({
   /** Opt into only showing an image. This avoids loading a ton of videos on the page and crashing Brooks' terrible phone */
   asImage?: boolean;
 }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    let t = setTimeout(() => {
+      ref.current?.play();
+    }, 0);
+
+    return () => {
+      clearTimeout(t);
+    };
+  }, []);
+
   return (
     <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:hidden">
       {/* If it's an image, don't render the video, and remove the motion-safe class */}
       {!asImage ? (
         <ShowcaseVideo
+          ref={ref}
           className="motion-reduce:hidden"
           videoSrc={videoSrc}
           poster={imgSrc}
-          autoPlay
+          // autoPlay={!asImage}
+          preload="none"
           isHydrated={isHydrated}
         />
       ) : null}
