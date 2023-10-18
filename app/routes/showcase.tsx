@@ -87,7 +87,7 @@ export default function Showcase() {
                 />
                 <MobileShowcase
                   isHydrated={isHydrated}
-                  // asImage={i > 5}
+                  asImage={i > 5}
                   {...example}
                 />
               </Fragment>
@@ -152,15 +152,16 @@ function MobileShowcase({
 }) {
   const ref = useRef<HTMLVideoElement>(null);
 
+  // autoplay videos -- using this useEffect because the `autoPlay` attribute overrides
+  // `preload="none"` which causes weird infinite loading issues
   useEffect(() => {
-    let t = setTimeout(() => {
-      ref.current?.play();
-    }, 0);
+    const node = ref.current;
+    if (!node || asImage) return;
 
-    return () => {
-      clearTimeout(t);
-    };
-  }, []);
+    if (node.paused) {
+      node.play();
+    }
+  }, [asImage]);
 
   return (
     <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:hidden">
@@ -171,7 +172,6 @@ function MobileShowcase({
           className="motion-reduce:hidden"
           videoSrc={videoSrc}
           poster={imgSrc}
-          // autoPlay={!asImage}
           preload="none"
           isHydrated={isHydrated}
         />
