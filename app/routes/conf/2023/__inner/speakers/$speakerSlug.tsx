@@ -226,9 +226,6 @@ export default function SpeakerRoute() {
             {speaker.sessions.map((session) => {
               let startsAtISO = session.startsAtISO;
               let startsAtFormatted = session.startsAtFormatted;
-              // let endsAt = session.endsAt ? new Date(session.endsAt) : null;
-
-              console.log(session.description);
 
               return (
                 <article
