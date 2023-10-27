@@ -74,7 +74,46 @@ Even then, there were three blockers for adopting Vite:
 2. Non-Node runtime support (Deno, CloudFlare)
 3. Server-aware, fullstack HMR
 
-In the meantime, the Remix compiler switched from Rollup to esbuild in [March 2021][march-2021]
+In the meantime, the Remix compiler switched from Rollup to esbuild in [March 2021][march-2021].
+
+In [July 2022][july-2022], Vite stabilized SSR support and just a few months later in [September 2022][september-2022] Deno became Vite-compatible.
+Making progress, but Vite was still missing CloudFlare support and server-aware HMR.
+
+Meanwhile at the [end of 2022][end-2022], we were focused on helping users migrate from Create React App and Webpack to Remix.
+Then in [March 2023][march-2023], React stopped recommending CRA and officially recommended fullstack frameworks, including Remix.
+We began 2023, ready to tackle server-aware HMR and in [May 2023][may-2023] we finally cracked it with Hot Data Revalidation.
+
+At this point, half of the Remix team was heads down working on compiler improvements for polyfills and optimizing rebuilds.
+For many users, the main bottleneck was reprocessing large component libraries like Material UI and AntD,
+so we started looking into pre-bundling dependencies.
+When prototyping a solution, we realized we would need to reimplement module caching, dependency tracking, and transformation pipelining from scratch on top of [esbuild's low-level plugin system][esbuild-limitations].
+In short, we'd effectively be building a worse version of Vite.
+So in [June 2023][june-2023], we started prototyping a Vite plugin for Remix.
+
+That left CloudFlare support in Vite as the last missing piece.
+Today, we're working directly with the CF core team and are confident that we can deliver best-in-class CF support before the Remix Vite plugin stabilizes.
+
+## Thanks Vite!
+
+Our users say that Remix made web development fun again.
+For us, Vite made framework development fun again.
+We’re excited to be the first major React framework to use Vite, and we’re proud to announce that Remix and Shopify will now be sponsoring Vite!
+
+Vite is an amazing project and we're grateful to the Vite team for their work.
+Special thanks to [Matias Capeletto (patak), Arnaud Barré, and Bjorn Lu from the Vite team][vite-team] for their guidance.
+
+The Remix community was quick to explore Vite support and we're grateful for their contributions:
+
+- [Discussion: Consider using Vite][consider-using-vite]
+- [remix-kit][remix-kit]
+- [remix-vite][remix-vite]
+- [vite-plugin-remix][vite-plugin-remix]
+
+Finally, we were inspired by how other frameworks implemented Vite support:
+
+- [Astro][astro]
+- [SolidStart][solidstart]
+- [SvelteKit][sveltekit]
 
 [indie-stack]: https://github.com/remix-run/indie-stack
 [hdr]: https://www.youtube.com/watch?v=2c2OeqOX72s
@@ -90,3 +129,18 @@ In the meantime, the Remix compiler switched from Rollup to esbuild in [March 20
 [vite-stable]: https://github.com/vitejs/vite/issues/1207
 [february-2021]: https://github.com/vitejs/vite/blob/v2.0.5/packages/vite/CHANGELOG.md
 [march-2021]: https://github.com/remix-run/remix/commit/d87b60c1a52e4bb39d0fde6b0fe218d3cf6c7af2
+[july-2022]: https://github.com/vitejs/vite/pull/8987
+[september-2022]: https://github.com/denoland/deno/issues/15427#issuecomment-1255526747
+[end-2022]: https://remix.run/blog/migrate-from-webpack
+[march-2023]: https://react.dev/
+[may-2023]: https://www.youtube.com/watch?v=79M4vYZi-po
+[esbuild-limitations]: https://esbuild.github.io/plugins/#plugin-api-limitations
+[june-2023]: https://github.com/pcattori/revive
+[vite-team]: https://vitejs.dev/team.html
+[consider-using-vite]: https://github.com/remix-run/remix/discussions/2427
+[remix-kit]: https://github.com/jrestall/remix-kit
+[remix-vite]: https://github.com/sudomf/remix-vite
+[vite-plugin-remix]: https://github.com/yracnet/vite-plugin-remix
+[astro]: https://astro.build/
+[solidstart]: https://start.solidjs.com/getting-started/what-is-solidstart
+[sveltekit]: https://kit.svelte.dev/
