@@ -18,13 +18,17 @@ Now you can get all the benefits of Vite's lightning fast DX ⚡️ out-of-the-b
 Try it out now:
 
 ```shellscript
+# minimal server
 npx create-remix@latest --template remix-run/remix/templates/unstable-vite
+
+# custom Express server
+npx create-remix@latest --template remix-run/remix/templates/unstable-vite-express
 ```
 
 So how fast is _lightning fast_ ⚡️? Well, we did some quick testing on the [Indie Stack][indie-stack] with a M1 Max MacBook Pro and here's what we found:
 
-> 10x faster HMR 🔥
-> 5x faster [HDR][hdr] 🔥
+- _10x faster HMR_ 🔥
+- _5x faster [HDR][hdr]_ 🔥
 
 But we didn't switch to Vite just for the speed. Unlike traditional build tools, [**Vite is specifically designed for building frameworks**][building-frameworks].
 
@@ -40,7 +44,7 @@ export default defineConfig({
 });
 ```
 
-You'll also get acess to the entire ecosystem of Vite plugins.
+You'll also get access to the entire ecosystem of Vite plugins.
 This lets us focus on making the core of Remix the best that it can be while Vite plugins handle the rest.
 Want to use MDX? There's a [Vite plugin][plugin-mdx] for that.
 Want to import SVGs as React components? [Vite plugin][plugin-svg]
