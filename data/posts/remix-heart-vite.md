@@ -9,13 +9,10 @@ authors:
   - Mark Dalgleish
 ---
 
-// TODO: link to docs
-// TODO: link to known limitations / issues
-
 Today we're excited to announce that unstable support for Vite is available in Remix v.2.2.0!
-Now you can get all the benefits of Vite's lightning fast DX ⚡️ out-of-the-box when using Remix.
+Now you get all the benefits of Vite's lightning fast DX ⚡️ out-of-the-box when using Remix.
 
-Try it out now:
+And you can try it out now!
 
 ```shellscript
 # minimal server
@@ -24,6 +21,8 @@ npx create-remix@latest --template remix-run/remix/templates/unstable-vite
 # custom Express server
 npx create-remix@latest --template remix-run/remix/templates/unstable-vite-express
 ```
+
+> Check out the new [docs for how to use Vite with Remix][docs]
 
 So how fast is _lightning fast_ ⚡️? Well, we did some quick testing on the [Indie Stack][indie-stack] with a M1 Max MacBook Pro and here's what we found:
 
@@ -97,6 +96,13 @@ So in [June 2023][june-2023], we started prototyping a Vite plugin for Remix.
 That left CloudFlare support in Vite as the last missing piece.
 Today, we're working directly with the CF core team and are confident that we can deliver best-in-class CF support before the Remix Vite plugin stabilizes.
 
+## Known Issues
+
+You know what they say: if your unstable release is bug-free, you shipped too late. 😅
+But seriously, we want to hear from you!
+
+We've got a couple [known issues][known-issues] so be sure to those (open and closed) before filing a bug report.
+
 ## Thanks Vite!
 
 Our users say that Remix made web development fun again.
@@ -121,6 +127,7 @@ Finally, we were inspired by how other frameworks implemented Vite support:
 
 [indie-stack]: https://github.com/remix-run/indie-stack
 [hdr]: https://www.youtube.com/watch?v=2c2OeqOX72s
+[docs]: https://remix.run/docs/en/main/future/vite
 [building-frameworks]: https://vitejs.dev/guide/philosophy.html#building-frameworks-on-top-of-vite
 [plugin-mdx]: https://mdxjs.com/packages/rollup/
 [plugin-svg]: https://github.com/pd4d10/vite-plugin-svgr
@@ -148,3 +155,4 @@ Finally, we were inspired by how other frameworks implemented Vite support:
 [astro]: https://astro.build/
 [solidstart]: https://start.solidjs.com/getting-started/what-is-solidstart
 [sveltekit]: https://kit.svelte.dev/
+[known-issues]: https://github.com/remix-run/remix/issues?q=is%3Aopen+is%3Aissue+label%3Avite
