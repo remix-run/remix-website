@@ -162,5 +162,5 @@ Finally, we were inspired by how other frameworks implemented Vite support:
 [astro]: https://astro.build/
 [solidstart]: https://start.solidjs.com/getting-started/what-is-solidstart
 [sveltekit]: https://kit.svelte.dev/
-[migration-guide]: https://remix.run/docs/en/main/future/vite#migration
+[migration-guide]: https://remix.run/docs/en/main/future/vite#migrating
 [known-issues]: https://github.com/remix-run/remix/issues?q=is%3Aopen+is%3Aissue+label%3Avite
