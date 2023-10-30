@@ -1,6 +1,6 @@
 ---
 title: Remix ❤️  Vite
-summary: Today we're announcing that unstable support for Vite is available in Remix v2.2.0!
+summary: Today we’re announcing that unstable support for Vite is available in Remix v2.2.0!
 date: 2023-10-30
 image: /blog-images/headers/remix_heart_vite.png
 imageAlt: "Remix loves Vite"
@@ -9,8 +9,8 @@ authors:
   - Mark Dalgleish
 ---
 
-Today we're excited to announce that unstable support for Vite is available in Remix v.2.2.0!
-Now you get all the benefits of Vite's lightning fast DX ⚡️ out-of-the-box when using Remix.
+Today we’re excited to announce that unstable support for Vite is available in Remix v.2.2.0!
+Now you get all the benefits of Vite’s lightning fast DX ⚡️ out-of-the-box when using Remix.
 
 And you can try it out now!
 
@@ -24,12 +24,12 @@ npx create-remix@latest --template remix-run/remix/templates/unstable-vite-expre
 
 > Check out the new [docs for how to use Vite with Remix][docs]
 
-So how fast is _lightning fast_ ⚡️? Well, we did some quick testing on the [Indie Stack][indie-stack] with a M1 Max MacBook Pro and here's what we found:
+So how fast is _lightning fast_ ⚡️? Well, we did some quick testing on the [Indie Stack][indie-stack] with a M1 Max MacBook Pro and here’s what we found:
 
 - _10x faster HMR_ 🔥
 - _5x faster [HDR][hdr]_ 🔥
 
-But we didn't switch to Vite just for the speed. Unlike traditional build tools, [**Vite is specifically designed for building frameworks**][building-frameworks].
+But we didn’t switch to Vite just for the speed. Unlike traditional build tools, [**Vite is specifically designed for building frameworks**][building-frameworks].
 
 In fact, with Vite, Remix is no longer a compiler. **Remix itself is just a Vite plugin**:
 
@@ -43,34 +43,35 @@ export default defineConfig({
 });
 ```
 
-You'll also get access to the entire ecosystem of Vite plugins.
-This lets us focus on making the core of Remix the best that it can be while Vite plugins handle the rest.
-Want to use MDX? There's a [Vite plugin][plugin-mdx] for that.
-Want to import SVGs as React components? [Vite plugin][plugin-svg]
-Prefer to use Vanilla Extract? [Vite plugin][plugin-vanilla-extract]
-Using `tsconfig` path aliases? [Vite plugin][plugin-path-alias]
+With this you’ll also get access to the entire ecosystem of [Vite plugins.][vite-plugins]
+This lets us focus on making the core of Remix the best that it can be while letting Vite plugins handle the rest.
+Want to import SVGs as React components? There’s a [Vite plugin][plugin-svg] for that.
+Using `tsconfig` path aliases? [Vite plugin.][plugin-path-alias]
+Prefer to use Vanilla Extract? [Vite plugin.][plugin-vanilla-extract]
+Want to use MDX? [Vite-compatible Rollup plugin.][plugin-mdx]
+Need something custom? [Write your own plugin!][vite-plugin-api]
 
-Here are even more benefits you'll get when using the Remix Vite plugin:
+Here are even more benefits you’ll get when using the Remix Vite plugin:
 
 - **Near-instant dev startup.** Vite lazily compiles your app code on-demand, so the dev server can boot immediately.
-- **Pre-bundled dependencies.** Vite only processes dependencies once, so large libraries like Material UI and AntD don't become bottlenecks for rebuilds nor hot updates.
+- **Pre-bundled dependencies.** Vite only processes dependencies once, so large libraries like Material UI and AntD don’t become bottlenecks for rebuilds nor hot updates.
 - **Incremental hot updates.** Vite keeps track of dependencies so it only needs to reprocess app code that depends on the changes.
 - **Greatly reduced memory usage.** Vite understands `import` statements and can invalidate stale modules on the server efficiently without relying on memory-hungry tricks to bypass the `import` cache. This should eliminate existing out-of-memory errors during development.
-- **Automatic route-based CSS splitting.** Vite's CSS splitting only loads the styles needed for the current page.
-- **Better browser state preservation during HMR.** Vite's built-in HMR runtime and error overlay ensure that browser state stays intact even in the presence of server errors.
+- **Automatic route-based CSS splitting.** Vite’s CSS splitting only loads the styles needed for the current page.
+- **Better browser state preservation during HMR.** Vite’s built-in HMR runtime and error overlay ensure that browser state stays intact even in the presence of server errors.
 - **Automatic hot server updates.** Code changes that affect the server are immediately reflected in your running server without restarting and without any [`global` tricks][global-tricks]
 - **ESM & CJS interop.** You author ESM, Vite outputs ESM. Your dependencies can be ESM or CJS. Vite handles the rest.
 - **TypeScript for all your files.** No more `.js` or `.mjs` files needed at the root of your project. Use `vite.config.ts` and even run your custom server via `tsx server.ts` or `node --loader tsm server.ts`.
 - **Workspaces.** Improved workspace compatibility for monorepos. Use with any package manager supported by Vite: `npm`, `yarn`, `pnpm`, etc.
-- **Browser compatibility targets.** Use Vite's [`build.target`][build-target] or grab a [plugin for browserslist support][plugin-browserslist].
+- **Browser compatibility targets.** Use Vite’s [`build.target`][build-target] or grab a [plugin for browserslist support][plugin-browserslist].
 
 ## Why now?
 
-Let's start at the beginning.
-Why didn't Remix start off using Vite?
-The short answer is that a stable release of Vite didn't exist yet!
+Let’s start at the beginning.
+Why didn’t Remix start off using Vite?
+The short answer is that a stable release of Vite didn’t exist yet!
 
-Remix development began in [July 2020][july-2020], but [Vite's first stable release][vite-stable] wasn't until [February 2021][february-2021].
+Remix development began in [July 2020][july-2020], but [Vite’s first stable release][vite-stable] wasn’t until [February 2021][february-2021].
 Even then, there were three blockers for adopting Vite:
 
 1. Stable SSR support
@@ -89,19 +90,23 @@ We began 2023, ready to tackle server-aware HMR and in [May 2023][may-2023] we f
 At this point, half of the Remix team was heads down working on compiler improvements for polyfills and optimizing rebuilds.
 For many users, the main bottleneck was reprocessing large component libraries like Material UI and AntD,
 so we started looking into pre-bundling dependencies.
-When prototyping a solution, we realized we would need to reimplement module caching, dependency tracking, and transformation pipelining from scratch on top of [esbuild's low-level plugin system][esbuild-limitations].
-In short, we'd effectively be building a worse version of Vite.
+When prototyping a solution, we realized we would need to reimplement module caching, dependency tracking, and transformation pipelining from scratch on top of [esbuild’s low-level plugin system][esbuild-limitations].
+In short, we’d effectively be building a worse version of Vite.
 So in [June 2023][june-2023], we started prototyping a Vite plugin for Remix.
 
 That left CloudFlare support in Vite as the last missing piece.
-Today, we're working directly with the CF core team and are confident that we can deliver best-in-class CF support before the Remix Vite plugin stabilizes.
+Today, we’re working directly with the CF core team and are confident that we can deliver best-in-class CF support before the Remix Vite plugin stabilizes.
 
-## Known Issues
+## We’d love your feedback
 
 You know what they say: if your unstable release is bug-free, you shipped too late. 😅
-But seriously, we want to hear from you!
+But seriously, we want to hear from you.
 
-We've got a couple [known issues][known-issues] so be sure to those (open and closed) before filing a bug report.
+We’ve got a couple [known issues,][known-issues] so be sure to look at those (both open and closed) before filing a bug report.
+Does it work the way you expect?
+Is there anything missing?
+Did you find the [migration guide][migration-guide] helpful?
+Let us know!
 
 ## Thanks Vite!
 
@@ -109,10 +114,10 @@ Our users say that Remix made web development fun again.
 For us, Vite made framework development fun again.
 We’re excited to be the first major React framework to use Vite, and we’re proud to announce that Remix and Shopify will now be sponsoring Vite!
 
-Vite is an amazing project and we're grateful to the Vite team for their work.
+Vite is an amazing project and we’re grateful to the Vite team for their work.
 Special thanks to [Matias Capeletto (patak), Arnaud Barré, and Bjorn Lu from the Vite team][vite-team] for their guidance.
 
-The Remix community was quick to explore Vite support and we're grateful for their contributions:
+The Remix community was quick to explore Vite support and we’re grateful for their contributions:
 
 - [Discussion: Consider using Vite][consider-using-vite]
 - [remix-kit][remix-kit]
@@ -129,10 +134,12 @@ Finally, we were inspired by how other frameworks implemented Vite support:
 [hdr]: https://www.youtube.com/watch?v=2c2OeqOX72s
 [docs]: https://remix.run/docs/en/main/future/vite
 [building-frameworks]: https://vitejs.dev/guide/philosophy.html#building-frameworks-on-top-of-vite
+[vite-plugins]: https://vitejs.dev/plugins
 [plugin-mdx]: https://mdxjs.com/packages/rollup/
 [plugin-svg]: https://github.com/pd4d10/vite-plugin-svgr
 [plugin-vanilla-extract]: https://vanilla-extract.style/documentation/integrations/vite/
 [plugin-path-alias]: https://github.com/aleclarson/vite-tsconfig-paths
+[vite-plugin-api]: https://vitejs.dev/guide/api-plugin.html
 [global-tricks]: https://remix.run/docs/en/main/guides/manual-mode#keeping-in-memory-server-state-across-rebuilds
 [build-target]: https://vitejs.dev/config/build-options.html#build-target
 [plugin-browserslist]: https://github.com/marcofugaro/browserslist-to-esbuild
@@ -155,4 +162,5 @@ Finally, we were inspired by how other frameworks implemented Vite support:
 [astro]: https://astro.build/
 [solidstart]: https://start.solidjs.com/getting-started/what-is-solidstart
 [sveltekit]: https://kit.svelte.dev/
+[migration-guide]: https://remix.run/docs/en/main/future/vite#migration
 [known-issues]: https://github.com/remix-run/remix/issues?q=is%3Aopen+is%3Aissue+label%3Avite
