@@ -114,7 +114,7 @@ Let us know!
 
 Our users say that Remix made web development fun again.
 For us, Vite made framework development fun again.
-We’re excited to be the first major React framework to use Vite, and we’re proud to announce that Remix and Shopify will now be sponsoring Vite!
+We're excited to join the extensive and welcoming Vite ecosystem, and proud to announce that Remix and Shopify will now be sponsoring Vite!
 
 Vite is an amazing project and we’re grateful to the Vite team for their work.
 Special thanks to [Matias Capeletto (patak), Arnaud Barré, and Bjorn Lu from the Vite team][vite-team] for their guidance.
