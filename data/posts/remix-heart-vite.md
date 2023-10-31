@@ -1,5 +1,5 @@
 ---
-title: Remix ❤️  Vite
+title: Remix ❤️ Vite
 summary: Today we’re announcing that unstable support for Vite is available in Remix v2.2.0!
 date: 2023-10-30
 image: /blog-images/headers/remix_heart_vite.png
@@ -9,10 +9,12 @@ authors:
   - Mark Dalgleish
 ---
 
-Today we’re excited to announce that unstable support for Vite is available in Remix v.2.2.0!
+Today we’re excited to announce that unstable support for Vite is available in Remix v2.2.0!
 Now you get all the benefits of Vite’s lightning fast DX ⚡️ out-of-the-box when using Remix.
 
-And you can try it out now!
+<iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/B_vIp4xETl4?si=O_3kKNmDnn4fHSa8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+Try it out now!
 
 ```shellscript
 # minimal server
