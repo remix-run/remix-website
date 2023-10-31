@@ -34,7 +34,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     if (!doc) throw null;
     return json(
       { doc, pageUrl },
-      { headers: { "Cache-Control": CACHE_CONTROL.doc } }
+      { headers: { "Cache-Control": CACHE_CONTROL.doc } },
     );
   } catch (_) {
     if (params.ref === "main" && params["*"]) {
@@ -147,7 +147,7 @@ export default function DocPage() {
   useDelegatedReactRouterLinks(ref);
   let matches = useMatches();
   let isDocsIndex = matches.some((match) =>
-    match.id.endsWith("$lang.$ref/index")
+    match.id.endsWith("$lang.$ref/index"),
   );
 
   return (
@@ -188,7 +188,7 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
                 className={cx(
                   "group relative my-1 rounded-md border-transparent pb-1 text-sm",
                   "text-gray-700 hover:text-blue-500 dark:text-gray-400",
-                  "transition-colors duration-150 ease-in-out"
+                  "transition-colors duration-150 ease-in-out",
                 )}
               />
             </li>
