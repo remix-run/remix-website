@@ -5,22 +5,42 @@ import ManacoEditor from "@monaco-editor/react";
 import type * as wc from "@webcontainer/api";
 
 export default function Playground() {
-  return (
-    <div className="flex flex-1 m-auto w-[90rem] max-w-full px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-1">
-        <section className="flex flex-1">
-          <style
-            dangerouslySetInnerHTML={{
-              __html: ".playground { height: 100%; }",
-            }}
-          />
-          <Editor />
-        </section>
-        <section className="flex-1">
-          <Preview />
-        </section>
-      </div>
+  const state = useWebContainer();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const loadingState = (
+    <div className="w-full h-full flex items-center justify-center">
+      {state?.status ? `${state.status}...` : "booting..."}
     </div>
+  );
+
+  if (!mounted || (!state?.containerPromise && !state?.container)) {
+    return loadingState;
+  }
+
+  return (
+    <Await resolve={state.containerPromise}>
+      {() => (
+        <div className="flex flex-1 m-auto w-[90rem] max-w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-1">
+            <section className="flex flex-1">
+              <style
+                dangerouslySetInnerHTML={{
+                  __html: ".playground { height: 100%; }",
+                }}
+              />
+              <Editor />
+            </section>
+            <section className="flex-1">
+              <Preview />
+            </section>
+          </div>
+        </div>
+      )}
+    </Await>
   );
 }
 
@@ -48,7 +68,6 @@ function Preview() {
     </div>
   );
 
-  console.log({ mounted, state });
   if (!mounted || !state?.urlPromise) {
     return loadingState;
   }
@@ -67,29 +86,15 @@ function Preview() {
 function Editor() {
   const [localContainer, setLocalContainer] =
     React.useState<wc.WebContainer | null>(null);
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
   const state = useWebContainer();
   const containerOrPromise =
     state?.container ?? state?.containerPromise ?? null;
-
-  const loadingState = (
-    <div className="w-full h-full flex items-center justify-center">
-      {state?.status ? `${state.status}...` : "booting..."}
-    </div>
-  );
-
-  if (!mounted) {
-    return loadingState;
-  }
 
   const editor = (
     <ManacoEditor
       key="playground-editor"
       className="playground"
-      loading={loadingState}
+      loading={"loading editor..."}
       wrapperProps={{
         className: "flex-1",
         style: { height: "unset" },
@@ -108,7 +113,7 @@ function Editor() {
     />
   );
   return (
-    <React.Suspense fallback={loadingState}>
+    <React.Suspense fallback={editor}>
       <Await resolve={containerOrPromise}>
         {(container) => {
           if (localContainer !== container) {
@@ -130,9 +135,9 @@ interface WebContainerStore {
     urlPromise?: Promise<string>;
     status:
       | "idle"
-      | "booting"
-      | "initializing"
-      | "installing"
+      | "booting container"
+      | "initializing template"
+      | "installing dependencies"
       | "ready"
       | "error";
   };
@@ -192,14 +197,13 @@ function useWebContainer() {
   if (!store.container && !store.containerPromise) {
     const deferredURL = new Deferred<string>();
     webContainerStore.update({
-      status: "booting",
+      status: "booting container",
       urlPromise: deferredURL.promise,
       containerPromise: import("@webcontainer/api")
         .then(({ WebContainer }) => WebContainer.boot())
         .then(async (container) => {
-          webContainerStore.update({ status: "initializing" });
+          webContainerStore.update({ status: "initializing template" });
 
-          // npx -y create-remix@latest . -y --no-color --no-motion --no-install --no-git-init
           const process = await container.spawn("npx", [
             "-y",
             "create-remix@latest",
@@ -209,6 +213,8 @@ function useWebContainer() {
             "--no-motion",
             "--no-install",
             "--no-git-init",
+            "--template",
+            "https://github.com/remix-run/remix/tree/main/templates/unstable-vite",
           ]);
           if ((await process.exit) !== 0) {
             throw new Error("Failed to create remix app");
@@ -222,37 +228,41 @@ function useWebContainer() {
 
           return container;
         })
-        .then(async (container) => {
-          webContainerStore.update({ status: "installing" });
-          const process = await container.spawn("npm", ["install"]);
-          if ((await process.exit) !== 0) {
-            throw new Error("Failed to install dependencies");
-          }
-
-          return container;
-        })
         .then((container) => {
-          webContainerStore.update({
-            status: "ready",
-            container,
-            containerPromise: undefined,
-          });
-
-          container.on("server-ready", (port, url) => {
-            if (port === 3000) {
-              deferredURL.resolve(url);
-            }
-          });
-
+          webContainerStore.update({ status: "installing dependencies" });
           container
-            .spawn("npm", ["run", "dev"])
-            .then(async (process) => {
-              return process.exit;
+            .spawn("npm", ["install"])
+            .then((process) => process.exit)
+            .then((exit) => {
+              if (exit !== 0) {
+                throw new Error("Failed to install dependencies");
+              }
+            })
+            .then(() => {
+              webContainerStore.update({
+                status: "ready",
+                container,
+                containerPromise: undefined,
+              });
+
+              container.on("server-ready", (port, url) => {
+                if (port === 5173) {
+                  deferredURL.resolve(url);
+                }
+              });
+
+              return container
+                .spawn("npm", ["run", "dev"])
+                .then(async (process) => {
+                  return process.exit;
+                });
+            })
+            .then(() => {
+              throw new Error("Dev server exited unexpectedly");
             })
             .catch((reason) => {
               deferredURL.reject(reason);
             });
-
           return container;
         })
         .catch((reason) => {
