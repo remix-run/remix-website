@@ -8,7 +8,11 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
+import type {
+  HeadersFunction,
+  LoaderFunctionArgs,
+  SerializeFrom,
+} from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
 import { metaV1, getMatchesData } from "@remix-run/v1-meta";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
@@ -30,7 +34,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     if (!doc) throw null;
     return json(
       { doc, pageUrl },
-      { headers: { "Cache-Control": CACHE_CONTROL.doc } },
+      { headers: { "Cache-Control": CACHE_CONTROL.doc } }
     );
   } catch (_) {
     if (params.ref === "main" && params["*"]) {
@@ -42,6 +46,13 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     throw json(null, { status: 404 });
   }
 }
+
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
+  // Inherit the caching headers from the loader so we do't cache 404s
+  let headers = new Headers(loaderHeaders);
+  headers.set("Vary", "Cookie");
+  return headers;
+};
 
 const LAYOUT_LOADER_KEY = "routes/docs/$lang.$ref";
 
@@ -136,7 +147,7 @@ export default function DocPage() {
   useDelegatedReactRouterLinks(ref);
   let matches = useMatches();
   let isDocsIndex = matches.some((match) =>
-    match.id.endsWith("$lang.$ref/index"),
+    match.id.endsWith("$lang.$ref/index")
   );
 
   return (
@@ -177,7 +188,7 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
                 className={cx(
                   "group relative my-1 rounded-md border-transparent pb-1 text-sm",
                   "text-gray-700 hover:text-blue-500 dark:text-gray-400",
-                  "transition-colors duration-150 ease-in-out",
+                  "transition-colors duration-150 ease-in-out"
                 )}
               />
             </li>
