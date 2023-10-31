@@ -23,14 +23,12 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   let post = await getBlogPost(slug);
   return json(
     { siteUrl, post },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } }
   );
 };
 
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
+  return loaderHeaders;
 };
 
 export function links() {
