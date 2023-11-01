@@ -56,7 +56,7 @@
 } */
 
 .md-prose {
-  @apply text-lg;
+  @apply text-base sm:text-lg;
 
   & p {
     @apply my-8;
@@ -92,22 +92,63 @@
     }
   }
 
+  & code,
+  & kbd,
   & pre {
-    @apply my-8 -mx-6 overflow-auto break-normal border-t border-b border-gray-200 p-2 text-sm dark:border-gray-700 sm:rounded-xl sm:border md:p-3 lg:text-base;
+    word-wrap: normal;
+    @apply overflow-auto rounded-lg border border-gray-100 p-3 text-sm leading-none dark:border-gray-900 md:p-4;
   }
 
-  & pre[data-lang="text"] {
-    @apply whitespace-pre-wrap break-all;
+  & pre {
+    @apply mt-0 mb-4 bg-[color:var(--base00)] leading-relaxed;
+  }
+
+  & code,
+  & kbd {
+    @apply text-gray-700 dark:text-gray-300;
+  }
+
+  & kbd {
+    @apply inline-block rounded border border-gray-200 bg-gray-100 align-middle font-mono leading-[10px] dark:border-gray-800 dark:bg-gray-900;
+    box-shadow: inset 0 -1px 0 hsl(0, 0%, 0%, 0.5);
+  }
+
+  & pre > code {
+    @apply m-0 whitespace-pre break-normal border-0 bg-transparent p-0;
+  }
+
+  & .codeblock-line {
+    @apply relative block pr-4;
   }
 
   & code {
-    @apply rounded-lg  bg-gray-50 p-1 text-base text-gray-700 dark:bg-gray-800 dark:text-gray-400;
+    @apply rounded bg-gray-50 py-[2px] px-1 text-[color:inherit] dark:bg-gray-800;
   }
 
-  /* unset the stuff from `& code` up there ^ */
-  & pre > code {
-    @apply bg-transparent p-0;
-    color: inherit;
+  & :is(a, h1, h2, h3, h4, h5, h6) code,
+  & :is(a, h1, h2, h3, h4, h5, h6) kbd {
+    @apply text-[color:inherit];
+  }
+
+  & :is(h1, h2, h3, h4, h5, h6) code {
+    font-size: 90%;
+    padding-top: max(0.125rem, 0.125em);
+    padding-bottom: max(0.125rem, 0.125em);
+    padding-right: max(0.25rem, 0.25em);
+    padding-left: max(0.25rem, 0.25em);
+  }
+
+  & pre code {
+    display: grid;
+    max-width: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    line-height: inherit;
+    word-wrap: normal;
+    background-color: initial;
+    border: 0;
+    border-radius: initial;
   }
 
   & ol {
