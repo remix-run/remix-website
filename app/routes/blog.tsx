@@ -41,7 +41,7 @@ export default function Blog() {
     <div className="flex h-full flex-1 flex-col">
       <Header />
       <main
-        className="container mt-16 flex flex-1 flex-col lg:mt-32"
+        className="px-6 max-w-full sm:container mt-16 flex flex-1 flex-col lg:mt-32"
         tabIndex={-1}
       >
         <div className="md:grid md:grid-cols-12">
