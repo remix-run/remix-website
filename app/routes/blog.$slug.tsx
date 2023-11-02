@@ -54,7 +54,7 @@ export const meta: MetaFunction<typeof loader> = (args) => {
         siteUrl,
         title: post.title,
         authorName: post.authors[0]?.name || "Michael Jackson",
-        authorTitle: post.authors[0]?.title || "Co-Founder, CEO",
+        authorTitle: post.authors[0]?.title || "Co-Founder",
         date: post.dateDisplay,
       })}`
     : null;
