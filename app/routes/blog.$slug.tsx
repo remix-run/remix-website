@@ -48,15 +48,22 @@ export const meta: MetaFunction<typeof loader> = (args) => {
     });
   }
 
-  let socialImageUrl = siteUrl
-    ? `${siteUrl}/img/social?${new URLSearchParams({
-        slug,
+  let socialSearchParams = siteUrl
+    ? new URLSearchParams({
         siteUrl,
         title: post.title,
-        authorName: post.authors[0]?.name || "Michael Jackson",
-        authorTitle: post.authors[0]?.title || "Co-Founder",
         date: post.dateDisplay,
-      })}`
+      })
+    : null;
+  if (socialSearchParams) {
+    for (let { name, title } of post.authors) {
+      socialSearchParams.append("authorName", name);
+      socialSearchParams.append("authorTitle", title);
+    }
+  }
+
+  let socialImageUrl = siteUrl
+    ? `${siteUrl}/img/${slug}?${socialSearchParams}`
     : null;
 
   let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
