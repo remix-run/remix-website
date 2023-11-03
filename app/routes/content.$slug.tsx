@@ -1,15 +1,12 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import type { SatoriOptions } from "satori";
 import satori from "satori";
 import svg2img from "svg2img";
-import path from "path";
-import fs from "fs/promises";
 
-async function readFile(filePath: string) {
-  console.log("the path", path.join(__dirname, filePath));
+async function getFont(fontPath: string) {
+  const res = await fetch(fontPath);
+
   try {
-    const data = await fs.readFile(path.join(__dirname, filePath));
-    return data.buffer;
+    return res.arrayBuffer();
   } catch (err) {
     console.log(err);
     throw new Error("Error reading font");
@@ -30,39 +27,6 @@ declare module "react" {
   interface HTMLAttributes<T> {
     tw?: string;
   }
-}
-
-async function getFont(
-  font: string,
-  weights = [100, 300, 500, 700, 900],
-  text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/\\!@#$%^&*()_+-=<>?[]{}|;:,.`'’\"–—",
-) {
-  const css = await fetch(
-    `https://fonts.googleapis.com/css2?family=${font}:wght@${weights.join(
-      ";",
-    )}&text=${encodeURIComponent(text)}`,
-    {
-      headers: {
-        // Make sure it returns TTF.
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
-      },
-    },
-  ).then((response) => response.text());
-  const resource = css.matchAll(
-    /src: url\((.+)\) format\('(opentype|truetype)'\)/g,
-  );
-  return Promise.all(
-    [...resource]
-      .map((match) => match[1])
-      .map((url) => fetch(url).then((response) => response.arrayBuffer()))
-      .map(async (buffer, i) => ({
-        name: font,
-        style: "normal",
-        weight: weights[i],
-        data: await buffer,
-      })),
-  ) as Promise<SatoriOptions["fonts"]>;
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -125,7 +89,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
         <p
           style={{
             fontSize: 50,
-            fontWeight: 500,
             color: "#d0d0d0",
             margin: 0,
           }}
@@ -166,7 +129,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
             display: "flex",
             flexDirection: "column",
             marginLeft: 30,
-            fontWeight: 500,
           }}
         >
           <span
@@ -195,17 +157,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
     {
       width: 2400,
       height: 1256,
+      // unfortunately satori doesn't support WOFF2
       fonts: [
         {
           name: "Founders Grotesk",
-          data: await readFile("../public/font/founders-grotesk-bold.ttf"),
+          data: await getFont(`${siteUrl}/font/founders-grotesk-bold.woff`),
         },
-        ...(await getFont("Inter")),
+        {
+          name: "Inter",
+          data: await getFont(`${siteUrl}/font/inter-roman-latin-var.woff`),
+        },
       ],
-      // fonts: await Promise.all([
-      //   getFont("Inter"),
-      //   getFont("Playfair Display"),
-      // ]).then((fonts) => fonts.flat()),
     },
   );
   const { data, error } = await new Promise(
