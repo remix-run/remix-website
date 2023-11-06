@@ -28,10 +28,6 @@ const envSchema = z.object({
   // Get from https://app.convertkit.com/account_settings/advanced_settings
   CONVERTKIT_KEY: z.string(),
 
-  // Cloudinary cloud name + folder where all images and files are stored
-  CLOUDINARY_CLOUD_NAME: z.string(),
-  CLOUDINARY_FOLDER_NAME: z.string(),
-
   // A token to increase the rate limiting from 60/hr to 1000/hr
   GITHUB_TOKEN: z.string().optional().superRefine(requiredInProduction),
 
