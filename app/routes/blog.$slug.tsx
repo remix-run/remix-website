@@ -48,24 +48,17 @@ export const meta: MetaFunction<typeof loader> = (args) => {
     });
   }
 
-  let socialSearchParams = siteUrl
-    ? new URLSearchParams({
-        siteUrl,
-        title: post.title,
-        date: post.dateDisplay,
-      })
-    : null;
-  if (socialSearchParams) {
+  let ogImageUrl = siteUrl ? new URL(`${siteUrl}/img/${slug}`) : null;
+  if (ogImageUrl) {
+    ogImageUrl.searchParams.set("title", post.title);
+    ogImageUrl.searchParams.set("date", post.dateDisplay);
     for (let { name, title } of post.authors) {
-      socialSearchParams.append("authorName", name);
-      socialSearchParams.append("authorTitle", title);
+      ogImageUrl.searchParams.append("authorName", name);
+      ogImageUrl.searchParams.append("authorTitle", title);
     }
   }
 
-  let socialImageUrl = siteUrl
-    ? `${siteUrl}/img/${slug}?${socialSearchParams}`
-    : null;
-
+  let socialImageUrl = ogImageUrl?.toString();
   let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
 
   return metaV1(args, {

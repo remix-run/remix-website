@@ -1,29 +1,12 @@
 import { json } from "@remix-run/node";
 import getEmojiRegex from "emoji-regex";
 
-export function stripEmojis(string: string): string {
+function stripEmojis(string: string): string {
   return string.replace(getEmojiRegex(), "").replace(/\s+/g, " ").trim();
 }
 
-export async function getFont(fontPath: string) {
-  const res = await fetch(fontPath);
-
-  try {
-    return res.arrayBuffer();
-  } catch (err) {
-    console.log(err);
-    throw new Error("Error reading font");
-  }
-}
-
-export function getAuthorPicUrl({
-  siteUrl,
-  name,
-}: {
-  siteUrl: string;
-  name: string;
-}) {
-  const authorNameSlug = name
+function getAuthorImgSrc(siteUrl: string, name: string) {
+  let authorNameSlug = name
     .toLowerCase()
     .replace(/[^a-z0-9\s_-]/g, "")
     .trim()
@@ -32,11 +15,26 @@ export function getAuthorPicUrl({
   return `${siteUrl}/authors/profile-${authorNameSlug}.png`;
 }
 
-export function getAuthors(searchParams: URLSearchParams) {
+/**
+ * Extracts the data needed for the og image from the params. Throws a 400 error if
+ * any anything is wrong
+ */
+export function getDataFromParams(
+  siteUrl: string,
+  searchParams: URLSearchParams,
+) {
+  let title = searchParams.get("title");
+  let displayDate = searchParams.get("date");
+
   let authorNames = searchParams.getAll("authorName");
   let authorTitles = searchParams.getAll("authorTitle");
 
-  if (authorNames.length === 0 || authorTitles.length === 0) {
+  if (
+    !title ||
+    !displayDate ||
+    authorNames.length === 0 ||
+    authorTitles.length === 0
+  ) {
     throw json({ error: "Missing required params" }, 400);
   }
 
@@ -47,5 +45,26 @@ export function getAuthors(searchParams: URLSearchParams) {
     );
   }
 
-  return authorNames.map((name, i) => ({ name, title: authorTitles[i] }));
+  let authors = authorNames.map((name, i) => ({
+    name,
+    title: authorTitles[i],
+    imgSrc: getAuthorImgSrc(siteUrl, name),
+  }));
+
+  return {
+    title: stripEmojis(title),
+    displayDate: stripEmojis(displayDate),
+    authors,
+  };
+}
+
+export async function getFont(fontPath: string) {
+  let res = await fetch(fontPath);
+
+  try {
+    return res.arrayBuffer();
+  } catch (err) {
+    console.log(err);
+    throw new Error("Error reading font");
+  }
 }
