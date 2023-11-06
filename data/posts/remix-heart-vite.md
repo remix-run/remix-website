@@ -1,7 +1,7 @@
 ---
 title: Remix ❤️ Vite
 summary: Today we’re announcing that unstable support for Vite is available in Remix v2.2.0!
-date: 2023-11-01
+date: 2023-10-31
 image: /blog-images/headers/remix_heart_vite.png
 imageAlt: "Remix loves Vite"
 authors:

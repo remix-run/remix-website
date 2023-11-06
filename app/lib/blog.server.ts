@@ -100,12 +100,14 @@ function getValidAuthorNames(authors: string[]) {
 
 function formatDate(date: Date) {
   let offset = new Date().getTimezoneOffset();
-  return DateTime.fromJSDate(date)
-    .plus({ minutes: offset })
-    .setZone("America/Los_Angeles")
-    .toLocaleString(DateTime.DATE_FULL, {
-      locale: "en-US",
-    });
+  return (
+    DateTime.fromJSDate(date)
+      // Necessary to set the offset for local development
+      .plus({ minutes: offset })
+      .toLocaleString(DateTime.DATE_FULL, {
+        locale: "en-US",
+      })
+  );
 }
 
 /**
