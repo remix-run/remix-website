@@ -40,7 +40,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         style={{
           display: "flex",
           flexDirection: "column",
-          width: 1600,
+          width: 1650,
           marginLeft: 144,
         }}
       >
