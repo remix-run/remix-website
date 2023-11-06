@@ -103,7 +103,7 @@ export default function BlogPost() {
                   alt={post.imageAlt}
                 />
               </div>
-              <div className="container relative z-10 flex h-full w-full flex-col pt-6 md:pt-12 lg:max-w-4xl">
+              <div className="container max-w-full relative z-10 flex h-full w-full flex-col pt-6 md:pt-12 lg:max-w-4xl">
                 <div className="flex-1">
                   <div className="text-sm uppercase text-gray-200 md:text-base">
                     {post.dateDisplay}
