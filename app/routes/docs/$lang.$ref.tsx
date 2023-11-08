@@ -198,7 +198,7 @@ function Header() {
   return (
     <div
       className={cx(
-        "relative border-b border-gray-50 bg-white text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100",
+        "relative border-b border-gray-100/50 bg-white text-black dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100",
         // This hides some of the underlying text when the user scrolls to the
         // bottom which results in the overscroll bounce
         "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:hidden before:h-[500%] before:w-full lg:before:block",
@@ -216,31 +216,39 @@ function Header() {
                     "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
                 }
               }}
-              to="."
+              to="/"
             >
               <Wordmark />
             </Link>
             <div className="flex items-center gap-2">
               <VersionSelect />
               <ColorSchemeToggle />
+              <HeaderMenuMobile className="md:hidden" />
             </div>
           </div>
           <VersionWarningDesktop />
-          <div className="flex items-center gap-4">
-            <HeaderLink
-              href="https://github.com/remix-run/remix"
-              svgId="github"
-              label="View code on GitHub"
-              title="View code on GitHub"
-              svgSize="24x24"
-            />
-            <HeaderLink
-              href="https://rmx.as/discord"
-              svgId="discord"
-              label="Chat on Discord"
-              title="Chat on Discord"
-              svgSize="24x24"
-            />
+          <div className="flex gap-8">
+            <div className="hidden items-center md:flex">
+              <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
+              <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
+              <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
+            </div>
+            <div className="flex items-center gap-2">
+              <HeaderLink
+                href="https://github.com/remix-run/remix"
+                svgId="github"
+                label="View code on GitHub"
+                title="View code on GitHub"
+                svgSize="24x24"
+              />
+              <HeaderLink
+                href="https://rmx.as/discord"
+                svgId="discord"
+                label="Chat on Discord"
+                title="Chat on Discord"
+                svgSize="24x24"
+              />
+            </div>
           </div>
         </div>
       </InnerContainer>
@@ -259,41 +267,47 @@ function VersionSelect() {
   } = useLoaderData<typeof loader>();
 
   // This is the same default, hover, focus style as the ColorScheme trigger
-  const className =
-    "border border-transparent bg-gray-100 hover:bg-gray-200 focus:border focus:border-gray-100 focus:bg-white dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:border-gray-400 dark:focus:bg-gray-700";
+  const baseClasses =
+    "bg-gray-100 hover:bg-gray-200 [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
 
   return (
     <DetailsMenu className="relative">
       <summary
-        className={`_no-triangle relative flex h-[40px] cursor-pointer list-none items-center justify-center gap-3 rounded-full px-3 ${className}`}
+        className={`_no-triangle relative flex h-[40px] cursor-pointer list-none items-center justify-center gap-1 rounded-full px-3 text-sm ${baseClasses}`}
       >
         <div>{currentGitHubRef}</div>
-        <svg aria-hidden className="h-[18px] w-[18px] text-gray-400">
-          <use href={`${iconsHref}#dropdown-arrows`} />
+        <svg aria-hidden className="h-5 w-5 -mr-1">
+          <use href={`${iconsHref}#chevrons-up-down`} />
         </svg>
       </summary>
       <DetailsPopup>
-        <VersionsLabel label="Branches" />
-        {branches.map((branch) => {
-          return (
-            <VersionLink
-              key={branch}
-              to={currentGitHubRef === branch ? "" : `/docs/${lang}/${branch}`}
-            >
-              {releaseBranch === branch ? `main (${latestVersion})` : branch}
-            </VersionLink>
-          );
-        })}
+        <div className="flex flex-col gap-px">
+          <VersionsLabel label="Branches" />
+          {branches.map((branch) => {
+            return (
+              <VersionLink
+                key={branch}
+                to={
+                  currentGitHubRef === branch ? "" : `/docs/${lang}/${branch}`
+                }
+              >
+                {releaseBranch === branch ? `main (${latestVersion})` : branch}
+              </VersionLink>
+            );
+          })}
 
-        <VersionsLabel label="Versions" />
-        {versions.map((version) => (
-          <VersionLink
-            key={version}
-            to={currentGitHubRef === version ? "" : `/docs/${lang}/${version}`}
-          >
-            {version}
-          </VersionLink>
-        ))}
+          <VersionsLabel label="Versions" />
+          {versions.map((version) => (
+            <VersionLink
+              key={version}
+              to={
+                currentGitHubRef === version ? "" : `/docs/${lang}/${version}`
+              }
+            >
+              {version}
+            </VersionLink>
+          ))}
+        </div>
       </DetailsPopup>
     </DetailsMenu>
   );
@@ -301,7 +315,7 @@ function VersionSelect() {
 
 function VersionsLabel({ label }: { label: string }) {
   return (
-    <div className="px-4 pt-2 pb-2 text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">
+    <div className="flex w-full items-center gap-2 py-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300">
       {label}
     </div>
   );
@@ -316,47 +330,27 @@ function VersionLink({
 }) {
   let isExternal = to.startsWith("http");
   let isActive = useIsActivePath(to);
-  let className =
-    "relative pl-4 group items-center flex py-1 before:mr-4 before:relative before:top-px before:block before:h-1.5 before:w-1.5 before:rounded-full before:content-['']";
+  let className = cx(
+    "flex w-full items-center gap-2 py-2 px-2 rounded-sm text-sm transition-colors duration-100",
+    isActive
+      ? "text-black bg-blue-200 dark:bg-blue-800 dark:text-gray-100"
+      : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-blue-800/50",
+  );
 
   if (isExternal) {
     return (
-      <a
-        href={to}
-        className={cx(
-          className,
-          "after:absolute after:right-4 after:top-1 after:block after:-rotate-45 after:opacity-50 after:content-['→']",
-          // Same as !isActive styles on <Link> below
-          "hover:bg-gray-50 active:text-blue-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-blue-brand",
-        )}
-      >
+      <a href={to} className={className}>
         {children}
       </a>
     );
   }
 
   return to ? (
-    <Link
-      className={cx(
-        className,
-        "before:bg-transparent",
-        isActive
-          ? "text-blue-brand"
-          : "hover:bg-gray-50 active:text-blue-brand dark:text-gray-200 dark:hover:bg-gray-700 dark:active:text-blue-brand",
-      )}
-      to={to}
-    >
+    <Link to={to} className={className}>
       {children}
     </Link>
   ) : (
-    <span
-      className={cx(
-        className,
-        "font-bold text-blue-brand before:bg-blue-brand",
-      )}
-    >
-      {children}
-    </span>
+    <span className={className}>{children}</span>
   );
 }
 
@@ -369,7 +363,7 @@ function DocSearchSection() {
       <div className="absolute -top-24 hidden h-24 w-full bg-white dark:bg-gray-900 lg:block" />
       <div
         className={cx(
-          "relative lg:bg-white lg:px-1 lg:dark:bg-gray-900",
+          "relative lg:bg-white lg:dark:bg-gray-900",
           // This hides some of the underlying text when the user scrolls to the
           // bottom which results in the overscroll bounce
           "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:-z-10 before:hidden before:h-[200%] before:w-full lg:before:block",
@@ -399,18 +393,21 @@ function ColorSchemeToggle() {
   let location = useLocation();
 
   // This is the same default, hover, focus style as the VersionSelect
-  let className =
-    "border border-transparent bg-gray-100 hover:bg-gray-200 focus:border focus:border-gray-100 focus:bg-white dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:border-gray-400 dark:focus:bg-gray-700";
+  let baseClasses =
+    "bg-gray-100 hover:bg-gray-200 [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
 
   return (
     <DetailsMenu className="relative cursor-pointer">
       <summary
-        className={`_no-triangle focus:border-200 flex h-[40px] w-[40px] items-center justify-center rounded-full ${className}`}
+        className={cx(
+          baseClasses,
+          "_no-triangle grid place-items-center h-10 w-10 rounded-full",
+        )}
       >
-        <svg className="hidden h-[24px] w-[24px] dark:inline">
+        <svg className="hidden h-5 w-5 dark:inline">
           <use href={`${iconsHref}#moon`} />
         </svg>
-        <svg className="h-[24px] w-[24px] dark:hidden">
+        <svg className="h-5 w-5 dark:hidden">
           <use href={`${iconsHref}#sun`} />
         </svg>
       </summary>
@@ -420,6 +417,7 @@ function ColorSchemeToggle() {
           replace
           action="/_actions/color-scheme"
           method="post"
+          className="flex flex-col gap-px"
         >
           <input
             type="hidden"
@@ -439,7 +437,7 @@ function ColorSchemeToggle() {
             name="colorScheme"
           />
           <ColorSchemeButton
-            svgId="setting"
+            svgId="monitor"
             label="System"
             value="system"
             name="colorScheme"
@@ -461,13 +459,13 @@ let ColorSchemeButton = React.forwardRef<
       ref={forwardedRef}
       disabled={colorScheme === props.value}
       className={cx(
-        "flex w-full items-center gap-4 py-1 px-4",
+        "flex w-full items-center gap-2 py-2 px-2 rounded-sm text-sm transition-colors duration-100",
         colorScheme === props.value
-          ? "text-blue-brand"
-          : "hover:bg-gray-50 active:text-blue-brand dark:hover:bg-gray-700 dark:active:text-blue-brand",
+          ? "text-black bg-blue-200 dark:bg-blue-800 dark:text-gray-100"
+          : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-blue-800/50",
       )}
     >
-      <svg className="h-[18px] w-[18px]">
+      <svg className="h-4 w-4">
         <use href={`${iconsHref}#${svgId}`} />
       </svg>{" "}
       {label}
@@ -530,6 +528,62 @@ function VersionWarningMessage({
   );
 }
 
+function HeaderMenuLink({
+  className = "",
+  to,
+  children,
+}: {
+  to: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  let isActive = useIsActivePath(to);
+
+  return (
+    <Link
+      prefetch="intent"
+      to={to}
+      className={cx(
+        className,
+        "text-sm leading-none p-2 py-2.5 underline-offset-4 hover:underline md:p-3",
+        isActive
+          ? "underline text-black decoration-black dark:text-gray-200 dark:decoration-gray-200"
+          : "text-gray-500 decoration-gray-200 dark:text-gray-400 dark:decoration-gray-500",
+      )}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function HeaderMenuMobile({ className = "" }: { className: string }) {
+  // This is the same default, hover, focus style as the VersionSelect
+  let baseClasses =
+    "bg-gray-100 hover:bg-gray-200 [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
+
+  return (
+    <DetailsMenu className={cx("relative cursor-pointer", className)}>
+      <summary
+        className={cx(
+          baseClasses,
+          "_no-triangle grid place-items-center h-10 w-10 rounded-full",
+        )}
+      >
+        <svg className="h-5 w-5">
+          <use href={`${iconsHref}#menu`} />
+        </svg>
+      </summary>
+      <DetailsPopup>
+        <div className="flex flex-col">
+          <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
+          <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
+          <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
+        </div>
+      </DetailsPopup>
+    </DetailsMenu>
+  );
+}
+
 function HeaderLink({
   className = "",
   href,
@@ -551,7 +605,7 @@ function HeaderLink({
     <a
       href={href}
       className={cx(
-        `hidden text-gray-400 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50 md:block`,
+        `hidden place-items-center w-10 h-10 text-black hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-50 md:grid`,
         className,
       )}
       title={title}
@@ -585,7 +639,7 @@ function NavMenuMobile() {
             {doc ? doc.attrs.title : "Navigation"}
           </div>
         </summary>
-        <div className="absolute h-[66vh] w-full overflow-auto overscroll-contain border-b bg-white p-3 shadow-2xl dark:border-gray-700 dark:bg-gray-900 dark:shadow-black">
+        <div className="absolute h-[66vh] w-full overflow-auto overscroll-contain border-b bg-white p-2 pt-5 shadow-2xl dark:border-gray-700 dark:bg-gray-900 dark:shadow-black">
           <Menu />
         </div>
       </DetailsMenu>
@@ -597,9 +651,9 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed top-10 bottom-0 hidden w-72 -translate-x-2 flex-col gap-6 overflow-auto py-12 lg:flex">
+    <div className="fixed top-16 bottom-0 hidden w-72 flex-col gap-6 overflow-auto -ml-3 pt-5 pr-5 pb-10 lg:flex">
       <DocSearchSection />
-      <div className="px-1 [&_*:focus]:scroll-mt-[6rem]">
+      <div className="[&_*:focus]:scroll-mt-[6rem]">
         <Menu />
       </div>
     </div>
@@ -612,7 +666,7 @@ function Menu() {
     <nav>
       <ul>
         {menu.map((category) => (
-          <li key={category.attrs.title} className="mb-6">
+          <li key={category.attrs.title} className="[&:not(:last-child)]:mb-6">
             <MenuCategoryHeading to={category.hasContent && category.slug}>
               {category.attrs.title}
             </MenuCategoryHeading>
@@ -640,7 +694,7 @@ function MenuCategoryHeading({
   to?: string | null | false;
 }) {
   let className =
-    "flex items-center py-1 mb-2 text-[1rem] leading-[1.125] tracking-wide font-bold rounded-md";
+    "flex items-center px-3 mb-2 text-base leading-[1.125] font-semibold rounded-md";
   return to ? (
     <MenuCategoryLink to={to} className={className} children={children} />
   ) : (
@@ -682,15 +736,14 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
       prefetch="intent"
       to={to}
       className={cx(
-        "group relative my-1 flex items-center rounded-md border-transparent py-1 pl-2 lg:text-sm",
-        "transition-colors duration-150 ease-in-out",
+        "group relative my-px flex items-center rounded-2xl border-transparent px-3 py-2 min-h-[2.25rem] text-sm",
+        "transition-colors duration-100",
         isActive
-          ? [
-              "font-semibold",
-              "text-blue-brand hover:text-blue-700 dark:hover:text-blue-300",
-              "bg-blue-50 bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-40",
-            ]
-          : ["text-gray-700 hover:text-blue-500 dark:text-gray-400"],
+          ? ["text-black dark:text-gray-100", "bg-blue-200 dark:bg-blue-800"]
+          : [
+              "text-gray-700 hover:text-black dark:text-gray-400 dark:hover:text-gray-100",
+              "hover:bg-blue-100 dark:hover:bg-blue-800/50",
+            ],
       )}
       children={children}
     />
@@ -700,7 +753,7 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
 function DetailsPopup({ children }: { children: React.ReactNode }) {
   return (
     <div className="absolute right-0 z-20 md:left-0">
-      <div className="relative top-1 w-40 rounded-lg border border-gray-100 bg-white py-2 shadow-lg dark:border-gray-400 dark:bg-gray-800 ">
+      <div className="relative top-1 w-40 rounded-md border border-gray-100 bg-white p-1 shadow-sm  dark:border-gray-800 dark:bg-gray-900 ">
         {children}
       </div>
     </div>
@@ -807,11 +860,7 @@ function EditLink() {
 }
 
 function InnerContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="m-auto w-[90rem] max-w-full px-4 sm:px-6 lg:px-8">
-      {children}
-    </div>
-  );
+  return <div className="m-auto px-4 sm:px-6 lg:px-8">{children}</div>;
 }
 
 function useDoc(): Doc | null {

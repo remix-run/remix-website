@@ -179,11 +179,7 @@
   /*****************************************************************************/
   /* links */
   & a {
-    @apply text-blue-brand no-underline;
-  }
-
-  & a:hover {
-    @apply underline;
+    @apply text-blue-600 decoration-1 underline-offset-2 hover:underline dark:text-blue-500;
   }
 
   & a:not([href]) {
@@ -194,23 +190,23 @@
   /*****************************************************************************/
   /* headings */
   & :is(h1, h2, h3, h4, h5, h6) {
-    @apply m-0 mt-8 mb-4;
+    @apply mt-8 mb-4;
   }
 
-  & :is(h1) {
-    @apply font-display font-extrabold;
+  &:not(docs-card) > :is(h1, h2, h3, h4, h5, h6) {
+    @apply text-black dark:text-gray-100;
   }
 
   & h1 {
-    @apply my-10 text-2xl md:text-5xl;
+    @apply my-8 font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl;
   }
 
   & h2 {
-    @apply text-2xl md:text-3xl;
+    @apply font-bold text-xl md:text-2xl;
   }
 
   & h3 {
-    @apply text-xl md:text-2xl;
+    @apply font-bold text-lg md:text-xl;
   }
 
   & h4,
@@ -222,8 +218,7 @@
   & h1 code,
   & h2 code,
   & h3 code {
-    border: none;
-    background: inherit;
+    /* @apply bg-gray-100/50; */
   }
 
   /*****************************************************************************/
@@ -247,9 +242,10 @@
     }
 
     & a .icon-link::before {
-      @apply invisible inline-block h-4 w-4;
-      content: " ";
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='gray' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath fill-rule='evenodd' d='M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'%3E%3C/path%3E%3C/svg%3E");
+      @apply invisible inline-block h-4 w-4 bg-gray-500 bg-cover opacity-0 transition-opacity;
+      content: "";
+      mask: url("data:image/svg+xml,%3Csvg width='24' height='24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+      mask-size: cover;
     }
 
     & a:hover .icon-link,
@@ -290,11 +286,11 @@
   & kbd,
   & pre {
     word-wrap: normal;
-    @apply overflow-auto rounded-lg border border-gray-100 p-3 text-sm leading-none dark:border-gray-900 md:p-4;
+    @apply overflow-auto rounded-lg p-3 text-sm leading-none md:p-4;
   }
 
   & pre {
-    @apply mt-0 mb-4 bg-[color:var(--base00)] leading-relaxed;
+    @apply my-4 border border-gray-100 leading-relaxed dark:border-gray-800;
   }
 
   & code,
@@ -316,13 +312,13 @@
     @apply relative block pr-4;
   }
 
-  & code {
-    @apply rounded bg-gray-50 py-[2px] px-1 text-[color:inherit] dark:bg-gray-800;
+  & :not(pre) > code {
+    @apply px-1.5 pt-px pb-0.5 rounded text-sm text-gray-700 bg-gray-100/50 dark:bg-gray-800/50;
   }
 
   & :is(a, h1, h2, h3, h4, h5, h6) code,
   & :is(a, h1, h2, h3, h4, h5, h6) kbd {
-    @apply text-[color:inherit];
+    @apply text-inherit;
   }
 
   & :is(h1, h2, h3, h4, h5, h6) code {
@@ -351,10 +347,9 @@
   }
 
   & [data-code-block-copy] {
-    @apply absolute top-2 right-2 h-2 w-2 cursor-pointer text-gray-700 opacity-0 dark:text-gray-300;
-    height: 24px;
-    width: 24px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' preserveAspectRatio='xMidYMid meet' width='24' height='24' fill='#aaa'%3E%3Cpath d='M22.6,4H21.55a3.89,3.89,0,0,0-7.31,0H13.4A2.41,2.41,0,0,0,11,6.4V10H25V6.4A2.41,2.41,0,0,0,22.6,4ZM23,8H13V6.25A.25.25,0,0,1,13.25,6h2.69l.12-1.11A1.24,1.24,0,0,1,16.61,4a2,2,0,0,1,3.15,1.18l.09.84h2.9a.25.25,0,0,1,.25.25Z' /%3E%3Cpath d='M33.25,18.06H21.33l2.84-2.83a1,1,0,1,0-1.42-1.42L17.5,19.06l5.25,5.25a1,1,0,0,0,.71.29,1,1,0,0,0,.71-1.7l-2.84-2.84H33.25a1,1,0,0,0,0-2Z' /%3E%3Cpath d='M29,16h2V6.68A1.66,1.66,0,0,0,29.35,5H27.08V7H29Z' /%3E%3Cpath d='M29,31H7V7H9V5H6.64A1.66,1.66,0,0,0,5,6.67V31.32A1.66,1.66,0,0,0,6.65,33H29.36A1.66,1.66,0,0,0,31,31.33V22.06H29Z' /%3E%3C/svg%3E");
+    @apply absolute top-[1.125rem] right-4 h-5 w-5 cursor-pointer bg-gray-500 opacity-0 hover:bg-black dark:bg-gray-400 dark:hover:bg-gray-100;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2' ry='2' vector-effect='non-scaling-stroke'%3E%3C/rect%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1' vector-effect='non-scaling-stroke'%3E%3C/path%3E%3C/svg%3E");
+    mask-size: cover;
   }
 
   & [data-code-block]:hover [data-code-block-copy],
@@ -363,8 +358,9 @@
   }
 
   & [data-code-block-copy][data-copied="true"] {
-    @apply opacity-100;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' width='24' height='24' stroke='#aaa'%3E%3Cpath d='M21 6.285l-11.16 12.733-6.84-6.018 1.319-1.49 5.341 4.686 9.865-11.196 1.475 1.285z'/%3E%3C/svg%3E");
+    @apply bg-black opacity-100 dark:bg-gray-100;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12' vector-effect='non-scaling-stroke'%3E%3C/polyline%3E%3C/svg%3E");
+    mask-size: cover;
   }
 
   & pre[data-line-numbers="true"]:not([data-lang="bash"], [data-lang="sh"]) {
@@ -380,7 +376,12 @@
   }
 
   & pre[data-good] {
-    @apply border-green-700 dark:border-green-400;
+    @apply bg-green-50 dark:bg-green-900/10;
+  }
+
+  & pre[data-good],
+  & pre[data-good][data-filename]:before {
+    @apply border-green-200 dark:border-green-900/50;
   }
 
   &
@@ -393,7 +394,12 @@
   }
 
   & pre[data-bad] {
-    @apply border-red-700 dark:border-red-400;
+    @apply bg-red-50 dark:bg-red-900/10;
+  }
+
+  & pre[data-bad],
+  & pre[data-bad][data-filename]:before {
+    @apply border-red-200 dark:border-red-900/50;
   }
 
   &
@@ -406,10 +412,15 @@
   }
 
   & pre[data-filename]::before {
-    @apply ml-4 block bg-no-repeat pb-3 pl-6;
+    @apply block mb-4 pb-4 pl-11 border-b border-gray-100 bg-no-repeat dark:border-gray-800;
     content: attr(data-filename);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' width='16' height='16' viewBox='0 0 24 24' stroke='#aaa'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' /%3E%3C/svg%3E");
-    background-position: 0px 3px;
+  }
+
+  & pre[data-filename]::after {
+    @apply absolute top-5 left-[1.125rem] w-4 h-4 bg-gray-400 dark:bg-gray-500;
+    content: "";
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z' vector-effect='non-scaling-stroke'%3E%3C/path%3E%3Cpolyline points='13 2 13 9 20 9' vector-effect='non-scaling-stroke'%3E%3C/polyline%3E%3C/svg%3E");
+    mask-size: cover;
   }
 
   & .codeblock-line[data-highlight="true"]::after {
@@ -507,7 +518,7 @@
     @apply flex grid-cols-2 flex-col gap-6 md:grid;
 
     & > a {
-      @apply relative block;
+      @apply relative block dark:text-inherit;
       color: unset;
     }
 
@@ -553,7 +564,6 @@
 
 .md-toc {
   & :where(li code) {
-    font-size: 0.925em;
-    border-radius: 3px;
+    @apply px-1.5 pt-px pb-0.5 rounded-sm text-xs text-gray-600 bg-gray-100/50 dark:text-gray-300 dark:bg-gray-800/50 group-hover:text-gray-100;
   }
 }
