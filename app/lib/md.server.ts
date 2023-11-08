@@ -114,9 +114,6 @@ export async function loadPlugins() {
       let fgColor = convertFakeHexToCustomProp(
         highlighter.getForegroundColor(theme.name) || "",
       );
-      let bgColor = convertFakeHexToCustomProp(
-        highlighter.getBackgroundColor(theme.name) || "",
-      );
       let langs: Shiki.Lang[] = [
         "js",
         "json",
@@ -223,9 +220,7 @@ export async function loadPlugins() {
               ...nodeProperties,
               dataLineNumbers: usesLineNumbers ? "true" : "false",
               dataLang: htmlEscape(language),
-              style: `color: ${htmlEscape(
-                fgColor,
-              )};background-color: ${htmlEscape(bgColor)}`,
+              style: `color: ${htmlEscape(fgColor)};`,
             },
             children: [
               {
