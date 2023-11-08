@@ -103,14 +103,14 @@ function Hero() {
       >
         <div className="lg:mb-10 lg:w-1/2">
           <div className="lg:mx-auto lg:max-w-2xl">
-            <h2 className="font-display text-3xl font-extrabold text-white sm:text-5xl lg:text-[length:64px] lg:leading-[56px] xl:text-7xl">
+            <h2 className="font-display text-3xl font-black text-white xs:text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl">
               Focused on <span className="text-aqua-brand">web standards</span>{" "}
               and <span className="text-green-brand">modern web app</span> UX,
               you’re simply going to{" "}
               <span className="text-yellow-brand">build better websites</span>
             </h2>
             <div className="h-6" />
-            <p className="text-lg lg:text-xl xl:pr-56">
+            <p className="xs:text-lg lg:text-xl xl:max-w-xl">
               Remix is a full stack web framework that lets you focus on the
               user interface and work back through web standards to deliver a
               fast, slick, and resilient user experience. People are gonna love
