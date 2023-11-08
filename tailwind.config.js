@@ -17,7 +17,7 @@ module.exports = {
       ...defaultTheme.screens,
     },
     fontFamily: {
-      display: ["Founders Grotesk", "Inter", ...defaultTheme.fontFamily.sans],
+      display: ["Inter", ...defaultTheme.fontFamily.sans],
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
       mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
     },

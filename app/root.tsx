@@ -54,7 +54,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export function links() {
   let preloadedFonts = [
-    "founders-grotesk-bold.woff2",
     "inter-roman-latin-var.woff2",
     "inter-italic-latin-var.woff2",
     "source-code-pro-roman-var.woff2",
