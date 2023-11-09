@@ -54,7 +54,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export function links() {
   let preloadedFonts = [
-    "founders-grotesk-bold.woff2",
     "inter-roman-latin-var.woff2",
     "inter-italic-latin-var.woff2",
     "source-code-pro-roman-var.woff2",
@@ -124,7 +123,7 @@ function Document({
 
       <body
         className={cx(
-          "flex min-h-screen w-full flex-col overflow-x-hidden",
+          "flex min-h-screen w-full flex-col overflow-x-hidden antialiased selection:bg-blue-200 selection:text-black dark:selection:bg-blue-800 dark:selection:text-white",
           forceDark
             ? [darkBg || "bg-gray-900", "text-gray-200"]
             : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200",

@@ -92,6 +92,7 @@
     "@types/tween-functions": "^1.2.1",
     "@vitejs/plugin-react": "^4.1.0",
     "@vitest/coverage-v8": "^0.34.6",
+    "autoprefixer": "^10.4.16",
     "eslint": "^8.51.0",
     "happy-dom": "^12.9.1",
     "postcss": "^8.4.31",

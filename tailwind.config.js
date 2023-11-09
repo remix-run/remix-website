@@ -17,7 +17,7 @@ module.exports = {
       ...defaultTheme.screens,
     },
     fontFamily: {
-      display: ["Founders Grotesk", "Inter", ...defaultTheme.fontFamily.sans],
+      display: ["Inter", ...defaultTheme.fontFamily.sans],
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
       mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
     },
@@ -30,13 +30,16 @@ module.exports = {
       "2xl": ["1.5rem", { lineHeight: "1.333" }], // 24px
       "3xl": ["1.875rem", { lineHeight: "1.2" }], // 30px
       "4xl": ["2.25rem", { lineHeight: "1.111" }], // 36px
-      "5xl": ["3rem", { lineHeight: "1" }], // 48px
-      "6xl": ["4rem", { lineHeight: "0.938" }], // 64px
-      "7xl": ["4.5rem", { lineHeight: "0.889" }], // 72px
+      "5xl": ["3rem", { lineHeight: "1.083" }], // 48px
+      "6xl": ["4rem", { lineHeight: "1.0625" }], // 64px
+      "7xl": ["4.5rem", { lineHeight: "1.05" }], // 72px
+      "8xl": ["6rem", { lineHeight: "1.125" }], // 96px
+      "9xl": ["8rem", { lineHeight: "1.125" }], // 128px
     },
     colors: {
       current: "currentColor",
       transparent: "transparent",
+      inherit: "inherit",
       white: "#fff",
       black: "#000",
       gray: {

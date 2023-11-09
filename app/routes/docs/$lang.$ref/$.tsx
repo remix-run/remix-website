@@ -151,7 +151,7 @@ export default function DocPage() {
   );
 
   return (
-    <div className="xl:flex xl:w-full xl:gap-8">
+    <div className="xl:flex xl:justify-between xl:w-full xl:gap-8">
       {isDocsIndex ? null : doc.headings.length > 3 ? (
         <>
           <SmallOnThisPage doc={doc} />
@@ -160,8 +160,8 @@ export default function DocPage() {
       ) : (
         <div className="hidden xl:order-1 xl:block xl:w-56 xl:flex-shrink-0" />
       )}
-      <div className="min-w-0 pt-8 pb-4 xl:flex-grow">
-        <div ref={ref} className="markdown w-full pb-[33vh]">
+      <div className="min-w-0 pt-12 xl:pt-20 xl:flex-grow">
+        <div ref={ref} className="markdown w-full max-w-3xl pb-[33vh]">
           <div
             className="md-prose"
             dangerouslySetInnerHTML={{ __html: doc.html }}
@@ -174,11 +174,9 @@ export default function DocPage() {
 
 function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   return (
-    <div className="sticky top-28 order-1 mt-10 hidden max-h-[calc(100vh-10rem)] w-56 flex-shrink-0 self-start overflow-y-auto pb-4 xl:block">
-      <nav className="mb-2 flex items-center pb-1 pt-0 text-[1rem] font-bold tracking-wide">
-        On this page
-      </nav>
-      <ul className="md-toc flex flex-col flex-wrap gap-2 leading-[1.125]">
+    <div className="sticky top-36 order-1 mt-20 hidden max-h-[calc(100vh-9rem)] w-56 flex-shrink-0 self-start overflow-y-auto pb-10 xl:block">
+      <nav className="mb-3 flex items-center font-semibold">On this page</nav>
+      <ul className="md-toc flex flex-col flex-wrap gap-3 leading-[1.125]">
         {doc.headings.map((heading, i) => {
           return (
             <li key={i}>
@@ -186,9 +184,7 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
                 to={`#${heading.slug}`}
                 dangerouslySetInnerHTML={{ __html: heading.html || "" }}
                 className={cx(
-                  "group relative my-1 rounded-md border-transparent pb-1 text-sm",
-                  "text-gray-700 hover:text-blue-500 dark:text-gray-400",
-                  "transition-colors duration-150 ease-in-out",
+                  "group relative py-1 text-sm text-gray-500 underline-offset-4 decoration-gray-200 hover:underline dark:text-gray-400 dark:decoration-gray-500",
                 )}
               />
             </li>
@@ -219,7 +215,7 @@ function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
             <Link
               to={`#${heading.slug}`}
               dangerouslySetInnerHTML={{ __html: heading.html || "" }}
-              className="block py-2 text-sm text-gray-400 hover:text-gray-900 active:text-red-brand dark:text-gray-400 dark:hover:text-gray-50 dark:active:text-red-brand"
+              className="block py-2 text-sm text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
             />
           </li>
         ))}

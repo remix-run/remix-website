@@ -35,15 +35,15 @@ export function Header({
       </NavLink>
 
       <nav className="flex" aria-label="Main">
-        <HeaderLink to="/blog">Blog</HeaderLink>
         <HeaderLink to="/docs/en/main">Docs</HeaderLink>
+        <HeaderLink to="/blog">Blog</HeaderLink>
+        <HeaderLink to="/showcase">Showcase</HeaderLink>
         <HeaderLink
           to="https://github.com/remix-run"
           className="hidden sm:block"
         >
           GitHub
         </HeaderLink>
-        <HeaderLink to="/showcase">Showcase</HeaderLink>
       </nav>
     </header>
   );

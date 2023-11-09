@@ -11,7 +11,7 @@ let primaryTextColor = "#ffffff";
 let secondaryTextColor = "#d0d0d0";
 
 let primaryFont = "Inter";
-let titleFont = "Founders Grotesk";
+let titleFont = "Inter";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let requestUrl = new URL(request.url);
@@ -56,9 +56,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
         <h1
           style={{
             fontFamily: titleFont,
+            fontWeight: 900,
             color: primaryTextColor,
-            fontSize: 160,
+            fontSize: 144,
             margin: 0,
+            marginTop: 32,
           }}
         >
           {title}
@@ -74,7 +76,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       fonts: [
         {
           name: titleFont,
-          data: await getFont(`${siteUrl}/font/founders-grotesk-bold.woff`),
+          data: await getFont(`${siteUrl}/font/inter-roman-latin-var.woff`),
         },
         {
           name: primaryFont,
