@@ -173,7 +173,7 @@ function Footer() {
         <div>
           &copy;{" "}
           <a className="hover:underline" href="https://remix.run">
-            Remix Software, Inc.
+            Shopify
           </a>
         </div>
         <div className="hidden sm:block">•</div>
