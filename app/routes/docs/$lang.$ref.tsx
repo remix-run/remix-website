@@ -651,7 +651,7 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed top-16 bottom-0 hidden w-72 flex-col gap-6 overflow-auto -ml-3 pt-5 pr-5 pb-10 lg:flex">
+    <div className="fixed top-16 bottom-0 hidden w-72 flex-col gap-6 overflow-auto -ml-3 pt-5 pr-5 pb-10 pl-1 lg:flex">
       <DocSearchSection />
       <div className="[&_*:focus]:scroll-mt-[6rem]">
         <Menu />
@@ -860,7 +860,11 @@ function EditLink() {
 }
 
 function InnerContainer({ children }: { children: React.ReactNode }) {
-  return <div className="m-auto px-4 sm:px-6 lg:px-8">{children}</div>;
+  return (
+    <div className="m-auto px-4 sm:px-6 lg:px-8 xl:max-w-[90rem]">
+      {children}
+    </div>
+  );
 }
 
 function useDoc(): Doc | null {
