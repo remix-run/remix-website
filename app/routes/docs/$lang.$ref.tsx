@@ -651,7 +651,7 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed top-16 bottom-0 hidden w-72 flex-col gap-6 overflow-auto -ml-3 pt-5 pr-5 pb-10 pl-1 lg:flex">
+    <div className="fixed top-16 bottom-0 hidden w-72 flex-col gap-6 overflow-auto -ml-3 pt-5 pr-5 pb-10 lg:flex">
       <DocSearchSection />
       <div className="[&_*:focus]:scroll-mt-[6rem]">
         <Menu />
@@ -737,7 +737,7 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
       to={to}
       className={cx(
         "group relative my-px flex items-center rounded-2xl border-transparent px-3 py-2 min-h-[2.25rem] text-sm",
-        "transition-colors duration-100",
+        "transition-colors duration-100 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
         isActive
           ? ["text-black dark:text-gray-100", "bg-blue-200 dark:bg-blue-800"]
           : [
