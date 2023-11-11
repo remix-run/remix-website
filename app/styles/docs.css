@@ -72,7 +72,7 @@
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   grid-area: main;
-  @apply min-w-0 flex-auto break-words text-base leading-normal text-gray-700 dark:text-gray-300;
+  @apply min-w-0 flex-auto break-words text-base leading-relaxed text-gray-700 dark:text-gray-300;
 
   & > :first-child {
     @apply mt-0;
