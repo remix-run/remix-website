@@ -286,7 +286,7 @@
   & kbd,
   & pre {
     word-wrap: normal;
-    @apply overflow-auto rounded-lg p-3 text-sm leading-none md:p-4;
+    @apply overflow-auto rounded-lg p-4 text-sm leading-none;
   }
 
   & pre {
@@ -412,7 +412,7 @@
   }
 
   & pre[data-filename]::before {
-    @apply block mb-4 pb-4 pl-11 border-b border-gray-100 bg-no-repeat dark:border-gray-800;
+    @apply sticky left-0 block mb-4 pb-4 pl-11 border-b border-gray-100 bg-no-repeat dark:border-gray-800;
     content: attr(data-filename);
   }
 
