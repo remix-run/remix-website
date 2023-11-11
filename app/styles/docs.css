@@ -455,7 +455,7 @@
   }
 
   & table td {
-    @apply w-full whitespace-nowrap border-0 border-b border-gray-100 p-0 py-2 pr-4 text-sm text-black dark:text-white;
+    @apply w-full whitespace-nowrap border-0 border-b border-gray-100 p-0 py-2 pr-4 text-sm text-black dark:text-white dark:border-gray-800/50;
   }
 
   /*****************************************************************************/
