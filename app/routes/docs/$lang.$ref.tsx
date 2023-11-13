@@ -20,13 +20,10 @@ import type {
 } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
-import { DocSearch } from "@docsearch/react";
-import docsearchStylesheet from "@docsearch/css/dist/style.css";
-import docsearchStylesheetOverrides from "~/styles/docsearch.css";
+import { DocSearch } from "~/ui/docsearch";
 
 import markdownStyles from "~/styles/docs.css";
 import { Wordmark } from "~/ui/logo";
-import { useHydrated } from "~/lib/misc";
 
 import iconsHref from "~/icons.svg";
 import {
@@ -81,11 +78,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 
 export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: markdownStyles },
-    { rel: "stylesheet", href: docsearchStylesheet },
-    { rel: "stylesheet", href: docsearchStylesheetOverrides },
-  ];
+  return [{ rel: "stylesheet", href: markdownStyles }];
 };
 
 export const meta: MetaFunction<typeof loader> = (args) => {
@@ -355,7 +348,6 @@ function VersionLink({
 }
 
 function DocSearchSection() {
-  let hydrated = useHydrated();
   let { isLatest } = useLoaderData<typeof loader>();
   if (!isLatest) return null;
   return (
@@ -369,20 +361,7 @@ function DocSearchSection() {
           "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:-z-10 before:hidden before:h-[200%] before:w-full lg:before:block",
         )}
       >
-        {hydrated ? (
-          <div className="animate-[fadeIn_100ms_ease-in_1]">
-            <DocSearch
-              appId="6OHWJSR8G4"
-              indexName="remix"
-              apiKey="dff56670dbec8494409989d6ec9c8ac2"
-            />
-          </div>
-        ) : (
-          // The Algolia doc search container is hard-coded at 40px. It doesn't
-          // render anything on the server, so we get a mis-match after hydration.
-          // This placeholder prevents layout shift when the search appears.
-          <div className="h-10" />
-        )}
+        <DocSearch />
       </div>
       <div className="absolute top-full hidden h-6 w-full bg-gradient-to-b from-white dark:from-gray-900 lg:block" />
     </div>
