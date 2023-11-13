@@ -8,6 +8,7 @@ import { Outlet } from "@remix-run/react";
 
 import { Header } from "~/ui/header";
 import { Footer } from "~/ui/footer";
+import { DocSearchModal } from "~/ui/docsearch";
 
 export const handle = { forceDark: true };
 
@@ -16,6 +17,7 @@ export default function Marketing() {
     <div className="flex h-full flex-1 flex-col">
       <Header forceDark={true} />
       <main className="flex flex-1 flex-col" tabIndex={-1}>
+        <DocSearchModal />
         <Outlet />
       </main>
       <Footer forceDark={true} />

@@ -13,6 +13,7 @@ import { CACHE_CONTROL } from "~/lib/http.server";
 import { Header } from "~/ui/header";
 import { Footer } from "~/ui/footer";
 import { Subscribe } from "~/ui/subscribe";
+import { DocSearchModal } from "~/ui/docsearch";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   let { slug } = params;
@@ -85,6 +86,8 @@ export default function BlogPost() {
 
   return (
     <div className="flex h-full flex-1 flex-col">
+      {/* TODO: Move this to a centralized place after refactoring routes to put blog and showcase in the same place */}
+      <DocSearchModal />
       <Header to="/blog" />
       {post.draft ? (
         <div className="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 py-3 px-5 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">

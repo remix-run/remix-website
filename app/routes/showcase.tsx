@@ -13,6 +13,7 @@ import { Header } from "~/ui/header";
 import { clsx } from "clsx";
 import { useHydrated } from "~/lib/misc";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import { DocSearchModal } from "~/ui/docsearch";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);
@@ -57,6 +58,8 @@ export default function Showcase() {
 
   return (
     <div className="flex h-full flex-1 flex-col">
+      {/* TODO: Move this to a centralized place after refactoring routes to put blog and showcase in the same place */}
+      <DocSearchModal />
       <Header />
       <main
         className="container mt-16 flex flex-1 flex-col items-center lg:mt-32"

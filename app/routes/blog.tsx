@@ -9,6 +9,7 @@ import { Header } from "~/ui/header";
 import { Subscribe } from "~/ui/subscribe";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { getBlogPostListings } from "~/lib/blog.server";
+import { DocSearchModal } from "~/ui/docsearch";
 
 export const meta: MetaFunction = (args) => {
   return metaV1(args, {
@@ -39,6 +40,8 @@ export default function Blog() {
 
   return (
     <div className="flex h-full flex-1 flex-col">
+      {/* TODO: Move this to a centralized place after refactoring routes to put blog and showcase in the same place */}
+      <DocSearchModal />
       <Header />
       <main
         className="px-6 max-w-full sm:container mt-16 flex flex-1 flex-col lg:mt-32"
