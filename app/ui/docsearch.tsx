@@ -1,14 +1,22 @@
 import type { DocSearchProps } from "@docsearch/react";
-import {
-  DocSearchModal as OriginalDocSearchModal,
-  DocSearch as OriginalDocSearch,
-  useDocSearchKeyboardEvents,
-} from "@docsearch/react";
+import { useDocSearchKeyboardEvents } from "@docsearch/react";
 import { useHydrated } from "~/lib/misc";
 import "@docsearch/css/dist/style.css";
 import "~/styles/docsearch.css";
-import { useCallback, useState } from "react";
+import { Suspense, lazy, useCallback, useState } from "react";
 import { createPortal } from "react-dom";
+
+const OriginalDocSearch = lazy(() =>
+  import("@docsearch/react").then((module) => ({
+    default: module.DocSearch,
+  })),
+);
+
+let OriginalDocSearchModal = lazy(() =>
+  import("@docsearch/react").then((module) => ({
+    default: module.DocSearchModal,
+  })),
+);
 
 let docSearchProps = {
   appId: "6OHWJSR8G4",
@@ -22,15 +30,19 @@ let docSearchProps = {
 export function DocSearch() {
   let hydrated = useHydrated();
 
-  return hydrated ? (
-    <div className="animate-[fadeIn_100ms_ease-in_1]">
-      <OriginalDocSearch {...docSearchProps} />
-    </div>
-  ) : (
+  if (!hydrated) {
     // The Algolia doc search container is hard-coded at 40px. It doesn't
     // render anything on the server, so we get a mis-match after hydration.
     // This placeholder prevents layout shift when the search appears.
-    <div className="h-10" />
+    return <div className="h-10" />;
+  }
+
+  return (
+    <Suspense fallback={<div className="h-10" />}>
+      <div className="animate-[fadeIn_100ms_ease-in_1]">
+        <OriginalDocSearch {...docSearchProps} />
+      </div>
+    </Suspense>
   );
 }
 
@@ -60,11 +72,13 @@ export function DocSearchModal() {
 
   if (isOpen) {
     return createPortal(
-      <OriginalDocSearchModal
-        initialScrollY={window.scrollY}
-        onClose={onClose}
-        {...docSearchProps}
-      />,
+      <Suspense fallback={null}>
+        <OriginalDocSearchModal
+          initialScrollY={window.scrollY}
+          onClose={onClose}
+          {...docSearchProps}
+        />
+      </Suspense>,
       document.body,
     );
   }
