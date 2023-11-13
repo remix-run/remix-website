@@ -3,7 +3,7 @@ import { useFetcher } from "@remix-run/react";
 import type { FormProps, FetcherWithComponents } from "@remix-run/react";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
-import type { action } from "~/routes/_actions/newsletter";
+import type { action } from "~/routes/[_]actions.newsletter";
 import type { SerializeFrom } from "@remix-run/node";
 
 function Subscribe({
