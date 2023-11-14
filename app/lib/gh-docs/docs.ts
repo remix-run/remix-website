@@ -114,7 +114,7 @@ function createTableOfContentsFromHeadings(html: string) {
   let $headings = $(html)("h2,h3");
 
   let headings = $headings.toArray().map((heading) => ({
-    html: $(heading)("a").remove().end().children().html(),
+    html: $(heading)("a").children().end().html(),
     slug: heading.attributes.find((attr) => attr.name === "id")?.value,
   }));
 

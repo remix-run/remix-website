@@ -64,7 +64,9 @@ export async function getProcessor(options?: ProcessorOptions) {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
     .use(rehypeSlug)
-    .use(rehypeAutolinkHeadings);
+    .use(rehypeAutolinkHeadings, {
+      behavior: "wrap",
+    });
 }
 
 type InternalPlugin<Input, Output> = Unified.Plugin<
