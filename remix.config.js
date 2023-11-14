@@ -1,6 +1,6 @@
 const { createRoutesFromFolders } = require("@remix-run/v1-route-convention");
 
-const v1Directories = ["_docs", "conf", "blog", "healthcheck", "docs", "$"];
+const v1Directories = ["conf"];
 
 /**
  * @type {import('@remix-run/dev').AppConfig}
@@ -10,13 +10,11 @@ const config = {
   routes: (defineRoutes) =>
     createRoutesFromFolders(defineRoutes, {
       ignoredFilePatterns: [
-        ".*",
-        "_ui/**/*",
-        "_ui.(js|jsx|tsx)",
-        "*.ui.(js|jsx|tsx)",
+        "**/_ui*",
         "_marketing*",
-        "img*",
-        "showcase*",
+        "blog*",
+        "docs*",
+        "img*/**",
       ],
     }),
   serverModuleFormat: "cjs",
