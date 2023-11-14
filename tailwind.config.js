@@ -26,11 +26,11 @@ module.exports = {
       sm: ["0.875rem", { lineHeight: "1.425" }], // 14px
       base: ["1rem", { lineHeight: "1.5" }], // 16px
       lg: ["1.125rem", { lineHeight: "1.556" }], // 18px
-      xl: ["1.25rem", { lineHeight: "1.556" }], // 20px
-      "2xl": ["1.5rem", { lineHeight: "1.333" }], // 24px
-      "3xl": ["1.875rem", { lineHeight: "1.2" }], // 30px
+      xl: ["1.25rem", { lineHeight: "1.5" }], // 20px
+      "2xl": ["1.5rem", { lineHeight: "1.5" }], // 24px
+      "3xl": ["1.875rem", { lineHeight: "1.333" }], // 30px
       "4xl": ["2.25rem", { lineHeight: "1.111" }], // 36px
-      "5xl": ["3rem", { lineHeight: "1.083" }], // 48px
+      "5xl": ["3rem", { lineHeight: "1.166" }], // 48px
       "6xl": ["4rem", { lineHeight: "1.0625" }], // 64px
       "7xl": ["4.5rem", { lineHeight: "1.05" }], // 72px
       "8xl": ["6rem", { lineHeight: "1.125" }], // 96px
