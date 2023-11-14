@@ -1,4 +1,4 @@
-import { meta, loader, default as DocsPage } from "~/routes/docs/$lang.$ref/$";
+import { meta, loader, default as DocsPage } from "~/routes/docs.$lang.$ref.$";
 
 function SplatPage() {
   return <DocsPage />;
