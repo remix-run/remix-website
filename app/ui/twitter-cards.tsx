@@ -132,7 +132,7 @@ export function TweetCarousel({ tweets }: { tweets: TweetData[] }) {
                 <figcaption>
                   <a
                     href={tweet.href}
-                    className="block font-display text-xl font-extrabold md:text-xl"
+                    className="block text-xl font-extrabold md:text-xl"
                     aria-label={`Tweet from ${tweet.name}`}
                   >
                     @{tweet.username}
@@ -176,7 +176,7 @@ export function BigTweet({ tweet }: { tweet: TweetData }) {
             href={tweet.href}
             target="_blank"
             rel="noreferrer"
-            className="block font-display text-xl font-extrabold md:text-3xl"
+            className="block text-xl font-extrabold md:text-3xl"
             aria-label={`Tweet from ${tweet.name}`}
           >
             {tweet.name}

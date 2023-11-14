@@ -107,7 +107,7 @@ function Hero() {
               />
             </div>
             <div className="mx-auto max-w-xl md:mx-0">
-              <h1 className="font-display text-4xl font-extrabold md:text-7xl">
+              <h1 className="text-4xl font-extrabold md:text-7xl">
                 <div className="text-white">May 9th-11th</div>
                 <div className="text-yellow-brand">Salt Lake City</div>
               </h1>
@@ -148,7 +148,7 @@ function EarlySponsors() {
       <div className="container">
         <div className="mx-auto flex w-full max-w-xl flex-col gap-20 sm:gap-28 md:max-w-2xl xl:mx-0 xl:max-w-none xl:gap-36">
           <div className="flex flex-col items-center justify-center text-center">
-            <p className="mb-4 font-display text-2xl font-extrabold md:mb-8 md:text-4xl">
+            <p className="mb-4 text-2xl font-extrabold md:mb-8 md:text-4xl">
               Presented by<span className="sr-only"> Shopify</span>
             </p>
             <div className="w-72 max-w-full sm:w-80 xl:w-96">
@@ -165,7 +165,7 @@ function EarlySponsors() {
             <section>
               <h2
                 id="speakers"
-                className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
+                className="mb-4 text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
               >
                 Speakers
               </h2>
@@ -233,7 +233,7 @@ function EarlySponsors() {
               <div>
                 <h3
                   id="heading-premier-sponsor"
-                  className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
+                  className="mb-4 text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
                 >
                   Premier Sponsor
                 </h3>
@@ -279,7 +279,7 @@ function EarlySponsors() {
             <div>
               <h3
                 id="heading-gold-sponsors"
-                className="mb-4 font-display text-4xl font-extrabold text-yellow-brand md:mb-8 md:text-7xl"
+                className="mb-4 text-4xl font-extrabold text-yellow-brand md:mb-8 md:text-7xl"
               >
                 Gold Sponsors
               </h3>
@@ -319,7 +319,7 @@ function EarlySponsors() {
               <div>
                 <h3
                   id="heading-silver-sponsors"
-                  className="mb-4 font-display text-3xl font-extrabold text-pink-brand md:mb-8 md:text-5xl"
+                  className="mb-4 text-3xl font-extrabold text-pink-brand md:mb-8 md:text-5xl"
                 >
                   Silver Sponsors
                 </h3>
@@ -348,7 +348,7 @@ function EarlySponsors() {
               <div>
                 <h3
                   id="heading-community-sponsors"
-                  className="mb-4 font-display text-2xl font-extrabold md:mb-8 md:text-4xl"
+                  className="mb-4 text-2xl font-extrabold md:mb-8 md:text-4xl"
                 >
                   Community Sponsors
                 </h3>

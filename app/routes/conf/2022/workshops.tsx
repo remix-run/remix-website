@@ -14,7 +14,7 @@ export default function Workshops() {
   return (
     <InnerLayout>
       <div className="text-white">
-        <h1 className="mb-16 font-display text-3xl font-extrabold sm:text-5xl xl:text-7xl">
+        <h1 className="mb-16 text-3xl font-extrabold sm:text-5xl xl:text-7xl">
           Premium Remix Workshops from the Remix Team
         </h1>
         <div className="container flex flex-col gap-4 text-lg lg:text-xl">
@@ -27,7 +27,7 @@ export default function Workshops() {
           <div className="text-center">
             <a
               href="https://rmx.as/tickets"
-              className={`${primaryButtonLinkClass} font-display font-extrabold uppercase`}
+              className={`${primaryButtonLinkClass} font-extrabold uppercase`}
               children="Get Tickets"
             />
           </div>
@@ -35,7 +35,7 @@ export default function Workshops() {
         <div className="container mt-12 grid grid-cols-1 gap-12 lg:grid-cols-6">
           <div className="col-span-3 lg:col-span-2">
             <div className="mt-4 flex flex-col gap-6 text-lg lg:text-xl">
-              <h2 className="font-display text-2xl font-extrabold lg:text-5xl">
+              <h2 className="text-2xl font-extrabold lg:text-5xl">
                 Your instructors
               </h2>
               <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start">
@@ -66,7 +66,7 @@ export default function Workshops() {
           </div>
           <div className="col-span-3 lg:col-span-4">
             <div className="mt-4 flex flex-col gap-6 text-lg lg:text-xl">
-              <h2 className="font-display text-2xl font-extrabold lg:text-5xl">
+              <h2 className="text-2xl font-extrabold lg:text-5xl">
                 Web Apps with Remix
               </h2>
               <p>

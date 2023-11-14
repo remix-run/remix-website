@@ -180,7 +180,7 @@ export default function SpeakerRoute() {
         <div>
           <div className="mb-4 flex flex-col gap-3">
             <header>
-              <h1 className="font-display text-3xl font-extrabold sm:text-4xl lg:text-5xl">
+              <h1 className="text-3xl font-extrabold sm:text-4xl lg:text-5xl">
                 {speaker.nameFull}
               </h1>
               <p className="text-gray-300">{speaker.tagLine}</p>
@@ -219,7 +219,7 @@ export default function SpeakerRoute() {
 
       {speaker.sessions.length ? (
         <aside className="mt-10">
-          <h2 className="mb-4 font-display text-base font-extrabold uppercase text-gray-300 sm:text-lg">
+          <h2 className="mb-4 text-base font-extrabold uppercase text-gray-300 sm:text-lg">
             {speaker.nameFirst}’s Sessions
           </h2>
           <div className="flex flex-col gap-4 sm:gap-6">
@@ -233,7 +233,7 @@ export default function SpeakerRoute() {
                   className="flex flex-col gap-4 border-[1px] border-gray-600 bg-gray-900 p-4 sm:p-6"
                 >
                   <div>
-                    <h3 className="inline font-display text-xl font-extrabold md:text-3xl">
+                    <h3 className="inline text-xl font-extrabold md:text-3xl">
                       {session.title}
                     </h3>
                     {startsAtISO ? (

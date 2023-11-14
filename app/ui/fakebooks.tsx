@@ -56,7 +56,7 @@ export function RootView({
           <div className="flex items-center text-[color:#23BF1F]">
             <FakebooksLogo className="relative top-[1px] h-[8.5px] w-[8.5px] md:h-[18px] md:w-[18px]" />
             <div className="w-[1px] md:w-1" />
-            <div className="font-display text-[length:8px] font-extrabold md:text-base">
+            <div className="text-[length:8px] font-extrabold md:text-base">
               Fakebooks
             </div>
           </div>
@@ -85,7 +85,7 @@ export function DashboardView({
 }) {
   return (
     <div className="relative p-3 md:p-6">
-      <div className="font-display text-[length:10px] font-extrabold text-black md:text-3xl">
+      <div className="text-[length:10px] font-extrabold text-black md:text-3xl">
         Dashboard
       </div>
       <div className="h-2 md:h-6" />
@@ -120,7 +120,7 @@ export function SalesView({
 }) {
   return (
     <div className="relative h-full p-3 md:p-10">
-      <div className="font-display text-[length:10px] font-extrabold text-black md:text-3xl">
+      <div className="text-[length:10px] font-extrabold text-black md:text-3xl">
         Sales
       </div>
       <div className="h-2 md:h-6" />

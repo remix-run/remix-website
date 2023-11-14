@@ -37,7 +37,7 @@ export default function Speak() {
   return (
     <InnerLayout>
       <div>
-        <h1 className="mb-16 font-display text-3xl font-extrabold text-white sm:text-5xl xl:text-7xl">
+        <h1 className="mb-16 text-3xl font-extrabold text-white sm:text-5xl xl:text-7xl">
           <a href="https://rmx.as/discord" className="flex items-center gap-4">
             <Discord />
             <span>Remix Conf Discord</span>
@@ -67,7 +67,7 @@ export default function Speak() {
           <div className="mt-6 w-full text-center">
             <a
               href="https://rmx.as/discord"
-              className={`${primaryButtonLinkClass} flex items-center gap-4 font-display uppercase`}
+              className={`${primaryButtonLinkClass} flex items-center gap-4 uppercase`}
             >
               <Discord /> Join the Discord
             </a>

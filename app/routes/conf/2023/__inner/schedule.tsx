@@ -100,7 +100,7 @@ export default function Safety() {
 
   return (
     <div className="text-white">
-      <h1 className="mb-16 font-display text-3xl font-extrabold sm:text-5xl xl:text-7xl">
+      <h1 className="mb-16 text-3xl font-extrabold sm:text-5xl xl:text-7xl">
         Remix Conf Schedule
       </h1>
       <div className="flex flex-col gap-10 text-lg lg:text-xl">
