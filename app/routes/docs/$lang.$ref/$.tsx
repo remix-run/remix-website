@@ -175,7 +175,9 @@ export default function DocPage() {
 function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   return (
     <div className="sticky top-36 order-1 mt-20 hidden max-h-[calc(100vh-9rem)] w-56 flex-shrink-0 self-start overflow-y-auto pb-10 xl:block">
-      <nav className="mb-3 flex items-center font-semibold">On this page</nav>
+      <nav className="mb-3 flex items-center font-semibold text-black dark:text-gray-100">
+        On this page
+      </nav>
       <ul className="md-toc flex flex-col flex-wrap gap-3 leading-[1.125]">
         {doc.headings.map((heading, i) => {
           return (
@@ -198,18 +200,18 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
 function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   return (
     <details className="group -mx-4 flex h-full flex-col sm:-mx-6 lg:mx-0 lg:mt-4 xl:ml-80 xl:hidden">
-      <summary className="_no-triangle flex cursor-pointer select-none items-center gap-2 border-b border-gray-50 bg-white px-2 py-3 text-sm font-medium hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
+      <summary className="_no-triangle flex cursor-pointer select-none items-center gap-2 border-b border-gray-50 bg-white px-2 py-3 text-sm hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-50/5 dark:active:bg-gray-50/10">
         <div className="flex items-center gap-2">
-          <svg aria-hidden className="h-5 w-5 group-open:hidden">
+          <svg aria-hidden className="h-4 w-4 group-open:hidden">
             <use href={`${iconsHref}#chevron-r`} />
           </svg>
-          <svg aria-hidden className="hidden h-5 w-5 group-open:block">
+          <svg aria-hidden className="hidden h-4 w-4 group-open:block">
             <use href={`${iconsHref}#chevron-d`} />
           </svg>
         </div>
         <div className="whitespace-nowrap">On this page</div>
       </summary>
-      <ul className="pl-9">
+      <ul className="px-5 py-3">
         {doc.headings.map((heading, i) => (
           <li key={i}>
             <Link

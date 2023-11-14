@@ -625,17 +625,17 @@ function NavMenuMobile() {
       <DetailsMenu className="group relative flex h-full flex-col">
         <summary
           tabIndex={0}
-          className="_no-triangle flex cursor-pointer select-none items-center gap-2 border-b border-gray-50 bg-white px-2 py-3 text-sm font-medium hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+          className="_no-triangle flex cursor-pointer select-none items-center gap-2 border-b border-gray-50 bg-white px-2 py-3 text-sm hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-50/5 dark:active:bg-gray-50/10"
         >
           <div className="flex items-center gap-2">
-            <svg aria-hidden className="h-5 w-5 group-open:hidden">
+            <svg aria-hidden className="h-4 w-4 group-open:hidden">
               <use href={`${iconsHref}#chevron-r`} />
             </svg>
-            <svg aria-hidden className="hidden h-5 w-5 group-open:block">
+            <svg aria-hidden className="hidden h-4 w-4 group-open:block">
               <use href={`${iconsHref}#chevron-d`} />
             </svg>
           </div>
-          <div className="whitespace-nowrap font-bold">
+          <div className="whitespace-nowrap">
             {doc ? doc.attrs.title : "Navigation"}
           </div>
         </summary>
@@ -694,7 +694,7 @@ function MenuCategoryHeading({
   to?: string | null | false;
 }) {
   let className =
-    "flex items-center px-3 mb-2 text-base leading-[1.125] font-semibold rounded-md";
+    "flex items-center px-3 mb-2 leading-[1.125] font-semibold rounded-md text-black dark:text-gray-100";
   return to ? (
     <MenuCategoryLink to={to} className={className} children={children} />
   ) : (
@@ -741,7 +741,7 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
         isActive
           ? ["text-black dark:text-gray-100", "bg-blue-200 dark:bg-blue-800"]
           : [
-              "text-gray-700 hover:text-black dark:text-gray-400 dark:hover:text-gray-100",
+              "hover:text-black dark:text-gray-400 dark:hover:text-gray-100",
               "hover:bg-blue-100 dark:hover:bg-blue-800/50",
             ],
       )}
