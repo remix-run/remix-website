@@ -4,7 +4,6 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { Discord } from "~/ui/icons";
-import { InnerLayout } from "../_ui";
 
 export const meta: MetaFunction = (args) => {
   return metaV1(args, {
@@ -213,73 +212,71 @@ export default function May25Schedule() {
   // type we use for Activity
   const { activities } = useLoaderData() as LoaderData;
   return (
-    <InnerLayout>
-      <div>
-        <p>
-          This is post-conference day! Get together with other conference
-          attendees before heading home. The conference organizers will
-          facilitate getting folks together who want to do the same thing and
-          help you know fun places to go hang out. Here are some possibilities:
-        </p>
-        <ul className="space-y-2 pt-6">
-          {activities.map((activity) => (
-            <li key={activity.name}>
-              <span className="pr-2">{activity.emoji}</span>
-              {activity.link ? (
-                <a className="underline" href={activity.link}>
-                  {activity.name}
-                </a>
-              ) : (
-                activity.name
-              )}
-              <a className="mx-2" href={activity.discordLink}>
-                <Discord className="inline h-6 w-6" />
+    <div>
+      <p>
+        This is post-conference day! Get together with other conference
+        attendees before heading home. The conference organizers will facilitate
+        getting folks together who want to do the same thing and help you know
+        fun places to go hang out. Here are some possibilities:
+      </p>
+      <ul className="space-y-2 pt-6">
+        {activities.map((activity) => (
+          <li key={activity.name}>
+            <span className="pr-2">{activity.emoji}</span>
+            {activity.link ? (
+              <a className="underline" href={activity.link}>
+                {activity.name}
               </a>
-              {activity.description}{" "}
-              {activity.address ? (
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  href={getMapsDirections(
-                    `${activity.name}, ${activity.address}`,
-                  )}
-                  title={
-                    activity.walkingDistance
-                      ? "Walking directions"
-                      : "Bus/Car directions"
-                  }
-                >
-                  {activity.walkingDistance ? "🚶" : "🚌"}
+            ) : (
+              activity.name
+            )}
+            <a className="mx-2" href={activity.discordLink}>
+              <Discord className="inline h-6 w-6" />
+            </a>
+            {activity.description}{" "}
+            {activity.address ? (
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href={getMapsDirections(
+                  `${activity.name}, ${activity.address}`,
+                )}
+                title={
+                  activity.walkingDistance
+                    ? "Walking directions"
+                    : "Bus/Car directions"
+                }
+              >
+                {activity.walkingDistance ? "🚶" : "🚌"}
+              </a>
+            ) : (
+              <span>
+                (Location still being determined.{" "}
+                <a className="underline" href={activity.discordLink}>
+                  Ideas welcome.
                 </a>
-              ) : (
-                <span>
-                  (Location still being determined.{" "}
-                  <a className="underline" href={activity.discordLink}>
-                    Ideas welcome.
-                  </a>
-                  )
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-        <p className="pt-10">
-          Note that these don't all have to happen on the 26th. Feel free to get
-          together with attendees any time you all are in Utah. We're happy to
-          facilitate you getting together any time around the conference time.
-        </p>
-        <p className="pt-10">
-          We'll use{" "}
-          <Link className="underline" to="/conf/discord">
-            the Discord server
-          </Link>{" "}
-          to help get people together who want to participate in the same
-          activities.{" "}
-          <a href="https://discord.com/channels/770287896669978684/935586137752358912">
-            Let us know if you have any other ideas!
-          </a>
-        </p>
-      </div>
-    </InnerLayout>
+                )
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p className="pt-10">
+        Note that these don't all have to happen on the 26th. Feel free to get
+        together with attendees any time you all are in Utah. We're happy to
+        facilitate you getting together any time around the conference time.
+      </p>
+      <p className="pt-10">
+        We'll use{" "}
+        <Link className="underline" to="/conf/discord">
+          the Discord server
+        </Link>{" "}
+        to help get people together who want to participate in the same
+        activities.{" "}
+        <a href="https://discord.com/channels/770287896669978684/935586137752358912">
+          Let us know if you have any other ideas!
+        </a>
+      </p>
+    </div>
   );
 }
