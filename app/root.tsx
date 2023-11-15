@@ -99,8 +99,9 @@ function Document({
   let colorScheme = useColorScheme();
   let matches = useMatches();
   let isDocsPage = !!matches.find((match) =>
-    match.id.startsWith("routes/docs/"),
+    match.id.startsWith("routes/docs"),
   );
+
   return (
     <html
       lang="en"
