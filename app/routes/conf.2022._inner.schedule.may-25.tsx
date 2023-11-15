@@ -42,7 +42,7 @@ export default function May25Schedule() {
             {data.scheduleItems.map((scheduleItem) => (
               <tr
                 key={scheduleItem.time}
-                className="border-t border-b border-gray-200"
+                className="border-b border-t border-gray-200"
                 id={`time-${sluggify(scheduleItem.time)}`}
               >
                 <td className="whitespace-nowrap px-2 py-8 lg:py-16">

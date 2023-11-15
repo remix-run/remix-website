@@ -219,7 +219,7 @@ function Mutations({ slides }: { slides: Sequence }) {
   return (
     <section>
       <div className="mx-auto max-w-5xl p-6 md:p-10">
-        <div className="mb-8 font-display font-black text-white text-4xl sm:text-5xl md:text-6xl">
+        <div className="mb-8 font-display text-4xl font-black text-white sm:text-5xl md:text-6xl">
           <h2 className="inline">Data loading</h2>{" "}
           <span aria-hidden>
             ... <img src="/yawn.png" alt="" className="inline h-8 md:h-14" />
@@ -451,7 +451,7 @@ function PrefetchBrowser() {
 
 function PrefetchNetwork() {
   return (
-    <div className="absolute top-[35%] left-[34%] w-[50%] rounded bg-gray-800 p-2 drop-shadow-md">
+    <div className="absolute left-[34%] top-[35%] w-[50%] rounded bg-gray-800 p-2 drop-shadow-md">
       <Network ticks={25}>
         <Resource name="sales.js" start={0} size={44} />
         <Resource name="sales/nav.json" start={0} size={42} />
@@ -689,7 +689,7 @@ function Network({
       <Ticks n={ticks} />
       <div className="h-4" />
       <div>{children}</div>
-      <div className="absolute top-0 right-0 left-16 h-full sm:left-28">
+      <div className="absolute left-16 right-0 top-0 h-full sm:left-28">
         <div
           className="absolute top-0 h-full"
           style={{
@@ -759,7 +759,7 @@ function Resource({
 function Ticks({ n }: { n: number }) {
   let ticks = Array.from({ length: n }).fill(null);
   return (
-    <div className="absolute top-0 right-0 left-16 flex justify-around sm:left-28">
+    <div className="absolute left-16 right-0 top-0 flex justify-around sm:left-28">
       {ticks.map((_, index) => (
         <div
           className={
@@ -976,7 +976,7 @@ function Spinners() {
       />
       <Spinner
         start={start(3)}
-        className="4 absolute top-[24vh] left-[-4vw] h-[13vh] w-[13vh] md:top-[16vh] md:h-[13vw] md:w-[13vw]"
+        className="4 absolute left-[-4vw] top-[24vh] h-[13vh] w-[13vh] md:top-[16vh] md:h-[13vw] md:w-[13vw]"
       />
       <Spinner
         start={start(4)}
@@ -988,7 +988,7 @@ function Spinners() {
       />
       <Spinner
         start={start(6)}
-        className="7 absolute top-[20vh] right-[-2vw] h-[13vh] w-[13vh] md:top-[12vh] md:h-[13vw] md:w-[13vw]"
+        className="7 absolute right-[-2vw] top-[20vh] h-[13vh] w-[13vh] md:top-[12vh] md:h-[13vw] md:w-[13vw]"
       />
       <Spinner
         start={start(7)}
@@ -1004,7 +1004,7 @@ function Spinners() {
       />
       <Spinner
         start={start(10)}
-        className="9 absolute top-[38vh] right-[3vw] h-[5vh] w-[5vh] md:top-[50vh] md:h-[5vw] md:w-[5vw]"
+        className="9 absolute right-[3vw] top-[38vh] h-[5vh] w-[5vh] md:top-[50vh] md:h-[5vw] md:w-[5vw]"
       />
       <Spinner
         start={start(11)}
@@ -1020,12 +1020,12 @@ function Spinners() {
       />
       <Spinner
         start={start(14)}
-        className="6 absolute top-[8vh] right-[22vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+        className="6 absolute right-[22vw] top-[8vh] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
       />
 
       <Spinner
         start={start(15)}
-        className="3 absolute top-[1vh] right-[10vw] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
+        className="3 absolute right-[10vw] top-[1vh] h-[5vh] w-[5vh] md:h-[5vw] md:w-[5vw]"
       />
       <Spinner
         start={start(16)}
@@ -1033,19 +1033,19 @@ function Spinners() {
       />
       <Spinner
         start={start(17)}
-        className="8 absolute top-[35vh] left-[48vw] h-[5vh] w-[5vh] md:top-[25vh] md:h-[5vw] md:w-[5vw]"
+        className="8 absolute left-[48vw] top-[35vh] h-[5vh] w-[5vh] md:top-[25vh] md:h-[5vw] md:w-[5vw]"
       />
       <Spinner
         start={start(18)}
-        className="5 absolute top-[20vh] left-[35vw] h-[8vh] w-[8vh] md:top-[12vh] md:h-[8vw] md:w-[8vw]"
+        className="5 absolute left-[35vw] top-[20vh] h-[8vh] w-[8vh] md:top-[12vh] md:h-[8vw] md:w-[8vw]"
       />
       <Spinner
         start={start(19)}
-        className="1 absolute top-[-5vh] left-[4vw] h-[13vh] w-[13vh] md:left-[13vw] md:h-[13vw] md:w-[13vw]"
+        className="1 absolute left-[4vw] top-[-5vh] h-[13vh] w-[13vh] md:left-[13vw] md:h-[13vw] md:w-[13vw]"
       />
       <Spinner
         start={start(20)}
-        className="2 absolute top-[-1vh] right-[40vw] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
+        className="2 absolute right-[40vw] top-[-1vh] h-[8vh] w-[8vh] md:h-[8vw] md:w-[8vw]"
       />
     </div>
   );
@@ -1085,7 +1085,7 @@ function SayGoodbyeOutro() {
     <div
       aria-hidden
       className={
-        `sticky top-0 flex h-screen w-screen items-center justify-center text-center font-display font-black text-white text-4xl sm:text-5xl sm:leading-6xl md:text-7xl lg:text-8xl xl:text-9xl` +
+        `sm:leading-6xl sticky top-0 flex h-screen w-screen items-center justify-center text-center font-display text-4xl font-black text-white sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl` +
         " " +
         (stage.progress < SPINNER_END ? "hidden" : "")
       }
@@ -1106,7 +1106,7 @@ function SayGoodbye() {
         transform: `scale(${scale})`,
       }}
       className={
-        `flex h-screen w-screen items-center justify-center text-center font-display font-black text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl` +
+        `flex h-screen w-screen items-center justify-center text-center font-display text-5xl font-black text-white sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl` +
         " " +
         (actor.progress > 0 && actor.progress < 1 ? "fixed inset-0" : "hidden")
       }
@@ -1128,7 +1128,7 @@ export const LayoutButton = React.forwardRef<
     <button
       ref={ref}
       className={
-        `m-2 rounded-full py-2 px-6 font-mono text-[12px] font-bold leading-6 opacity-80 md:text-base ${
+        `m-2 rounded-full px-6 py-2 font-mono text-[12px] font-bold leading-6 opacity-80 md:text-base ${
           active ? "opacity-100" : ""
         }` +
         " " +
@@ -1285,7 +1285,7 @@ export function InteractiveRoutes() {
                     activeRoute === 4 ? (
                       <Highlighter className="bg-red-brand ring-red-brand">
                         <Resources
-                          className="absolute right-2 bottom-2 bg-red-900 sm:static"
+                          className="absolute bottom-2 right-2 bg-red-900 sm:static"
                           data="/invoice/{id}.json"
                           mod="/invoice.js"
                         />
@@ -1336,7 +1336,7 @@ function Cursor() {
             style={{
               transform: `scale(${clickScale})`,
             }}
-            className="absolute -top-2 -left-2 h-4 w-4 rounded-full bg-red-brand opacity-50"
+            className="absolute -left-2 -top-2 h-4 w-4 rounded-full bg-red-brand opacity-50"
           />
         )}
       </div>

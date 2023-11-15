@@ -150,7 +150,7 @@ export default function DocsLayout() {
           >
             <Outlet />
           </div>
-          <div className="min-w-0 pt-8 sm:pt-10 lg:ml-72 lg:pt-12 lg:pl-6 xl:pl-10 2xl:pl-12">
+          <div className="min-w-0 pt-8 sm:pt-10 lg:ml-72 lg:pl-6 lg:pt-12 xl:pl-10 2xl:pl-12">
             <Footer />
           </div>
         </InnerContainer>
@@ -194,7 +194,7 @@ function Header() {
         "relative border-b border-gray-100/50 bg-white text-black dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100",
         // This hides some of the underlying text when the user scrolls to the
         // bottom which results in the overscroll bounce
-        "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:hidden before:h-[500%] before:w-full lg:before:block",
+        "before:absolute before:bottom-0 before:left-0 before:hidden before:h-[500%] before:w-full before:bg-inherit lg:before:block",
       )}
     >
       <InnerContainer>
@@ -269,7 +269,7 @@ function VersionSelect() {
         className={`_no-triangle relative flex h-[40px] cursor-pointer list-none items-center justify-center gap-1 rounded-full px-3 text-sm ${baseClasses}`}
       >
         <div>{currentGitHubRef}</div>
-        <svg aria-hidden className="h-5 w-5 -mr-1">
+        <svg aria-hidden className="-mr-1 h-5 w-5">
           <use href={`${iconsHref}#chevrons-up-down`} />
         </svg>
       </summary>
@@ -308,7 +308,7 @@ function VersionSelect() {
 
 function VersionsLabel({ label }: { label: string }) {
   return (
-    <div className="flex w-full items-center gap-2 py-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300">
+    <div className="flex w-full items-center gap-2 px-2 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-300">
       {label}
     </div>
   );
@@ -358,7 +358,7 @@ function DocSearchSection() {
           "relative lg:bg-white lg:dark:bg-gray-900",
           // This hides some of the underlying text when the user scrolls to the
           // bottom which results in the overscroll bounce
-          "before:bg-inherit before:absolute before:left-0 before:bottom-0 before:-z-10 before:hidden before:h-[200%] before:w-full lg:before:block",
+          "before:absolute before:bottom-0 before:left-0 before:-z-10 before:hidden before:h-[200%] before:w-full before:bg-inherit lg:before:block",
         )}
       >
         <DocSearch />
@@ -380,7 +380,7 @@ function ColorSchemeToggle() {
       <summary
         className={cx(
           baseClasses,
-          "_no-triangle grid place-items-center h-10 w-10 rounded-full",
+          "_no-triangle grid h-10 w-10 place-items-center rounded-full",
         )}
       >
         <svg className="hidden h-5 w-5 dark:inline">
@@ -438,10 +438,10 @@ let ColorSchemeButton = React.forwardRef<
       ref={forwardedRef}
       disabled={colorScheme === props.value}
       className={cx(
-        "flex w-full items-center gap-2 py-2 px-2 rounded-sm text-sm transition-colors duration-100",
+        "flex w-full items-center gap-2 rounded-sm px-2 py-2 text-sm transition-colors duration-100",
         colorScheme === props.value
-          ? "text-black bg-blue-200 dark:bg-blue-800 dark:text-gray-100"
-          : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-blue-800/50",
+          ? "bg-blue-200 text-black dark:bg-blue-800 dark:text-gray-100"
+          : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:bg-blue-800/50 dark:hover:text-gray-100",
       )}
     >
       <svg className="h-4 w-4">
@@ -524,9 +524,9 @@ function HeaderMenuLink({
       to={to}
       className={cx(
         className,
-        "text-sm leading-none p-2 py-2.5 underline-offset-4 hover:underline md:p-3",
+        "p-2 py-2.5 text-sm leading-none underline-offset-4 hover:underline md:p-3",
         isActive
-          ? "underline text-black decoration-black dark:text-gray-200 dark:decoration-gray-200"
+          ? "text-black underline decoration-black dark:text-gray-200 dark:decoration-gray-200"
           : "text-gray-500 decoration-gray-200 dark:text-gray-400 dark:decoration-gray-500",
       )}
     >
@@ -545,7 +545,7 @@ function HeaderMenuMobile({ className = "" }: { className: string }) {
       <summary
         className={cx(
           baseClasses,
-          "_no-triangle grid place-items-center h-10 w-10 rounded-full",
+          "_no-triangle grid h-10 w-10 place-items-center rounded-full",
         )}
       >
         <svg className="h-5 w-5">
@@ -584,7 +584,7 @@ function HeaderLink({
     <a
       href={href}
       className={cx(
-        `hidden place-items-center w-10 h-10 text-black hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-50 md:grid`,
+        `hidden h-10 w-10 place-items-center text-black hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-50 md:grid`,
         className,
       )}
       title={title}
@@ -630,7 +630,7 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed top-16 bottom-0 hidden w-72 flex-col gap-6 overflow-auto -ml-3 pt-5 pr-5 pb-10 lg:flex">
+    <div className="fixed bottom-0 top-16 -ml-3 hidden w-72 flex-col gap-6 overflow-auto pb-10 pr-5 pt-5 lg:flex">
       <DocSearchSection />
       <div className="[&_*:focus]:scroll-mt-[6rem]">
         <Menu />
@@ -715,8 +715,8 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
       prefetch="intent"
       to={to}
       className={cx(
-        "group relative my-px flex items-center rounded-2xl border-transparent px-3 py-2 min-h-[2.25rem] text-sm",
-        "transition-colors duration-100 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
+        "group relative my-px flex min-h-[2.25rem] items-center rounded-2xl border-transparent px-3 py-2 text-sm",
+        "outline-none transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
         isActive
           ? ["text-black dark:text-gray-100", "bg-blue-200 dark:bg-blue-800"]
           : [

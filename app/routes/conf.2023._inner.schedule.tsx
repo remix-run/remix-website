@@ -121,7 +121,7 @@ export default function Safety() {
                 key={dateSlug}
                 index={i}
                 // tabIndex={-1}
-                className="w-full whitespace-nowrap border-b-2 border-b-gray-800 py-2 px-4 data-[selected]:border-b-pink-brand data-[selected]:font-bold"
+                className="w-full whitespace-nowrap border-b-2 border-b-gray-800 px-4 py-2 data-[selected]:border-b-pink-brand data-[selected]:font-bold"
               >
                 <div className="w-full">
                   <div className="hidden md:block">{dateFormatted}</div>

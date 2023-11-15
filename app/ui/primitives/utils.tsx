@@ -170,8 +170,8 @@ export function isRightClick(
   return "which" in nativeEvent
     ? nativeEvent.which === 3
     : "button" in nativeEvent
-    ? (nativeEvent as any).button === 2
-    : false;
+      ? (nativeEvent as any).button === 2
+      : false;
 }
 
 /**

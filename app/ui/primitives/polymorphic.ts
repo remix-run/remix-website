@@ -47,10 +47,10 @@ interface ForwardRefComponent<
     props: As extends ""
       ? { as: keyof JSX.IntrinsicElements }
       : As extends React.ComponentType<infer P>
-      ? Merge<P, OwnProps & { as: As }>
-      : As extends keyof JSX.IntrinsicElements
-      ? Merge<JSX.IntrinsicElements[As], OwnProps & { as: As }>
-      : never,
+        ? Merge<P, OwnProps & { as: As }>
+        : As extends keyof JSX.IntrinsicElements
+          ? Merge<JSX.IntrinsicElements[As], OwnProps & { as: As }>
+          : never,
   ): React.ReactElement | null;
 }
 
@@ -62,10 +62,10 @@ interface MemoComponent<IntrinsicElementString, OwnProps = {}>
     props: As extends ""
       ? { as: keyof JSX.IntrinsicElements }
       : As extends React.ComponentType<infer P>
-      ? Merge<P, OwnProps & { as: As }>
-      : As extends keyof JSX.IntrinsicElements
-      ? Merge<JSX.IntrinsicElements[As], OwnProps & { as: As }>
-      : never,
+        ? Merge<P, OwnProps & { as: As }>
+        : As extends keyof JSX.IntrinsicElements
+          ? Merge<JSX.IntrinsicElements[As], OwnProps & { as: As }>
+          : never,
   ): React.ReactElement | null;
 }
 
@@ -82,8 +82,8 @@ interface RenderFunction<OwnProps, TagName> {
       TagName extends keyof HTMLElementTagNameMap
         ? HTMLElementTagNameMap[TagName]
         : TagName extends keyof SVGElementTagNameMap
-        ? SVGElementTagNameMap[TagName]
-        : any
+          ? SVGElementTagNameMap[TagName]
+          : any
     >,
   ): React.ReactElement | null;
 }

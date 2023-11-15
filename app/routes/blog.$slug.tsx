@@ -90,7 +90,7 @@ export default function BlogPost() {
       <DocSearchModal />
       <Header to="/blog" />
       {post.draft ? (
-        <div className="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 py-3 px-5 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">
+        <div className="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 px-5 py-3 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">
           🚨 This is a draft, please do not share this page until it's
           officially published 🚨
         </div>
@@ -106,7 +106,7 @@ export default function BlogPost() {
                   alt={post.imageAlt}
                 />
               </div>
-              <div className="container max-w-full relative z-10 flex h-full w-full flex-col pt-6 md:pt-12 lg:max-w-4xl">
+              <div className="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-12 lg:max-w-4xl">
                 <div className="flex-1">
                   <div className="text-sm uppercase text-gray-200 md:text-base">
                     {post.dateDisplay}
@@ -156,7 +156,7 @@ export default function BlogPost() {
         </div>
       </div>
 
-      <div className="container m-auto mt-24 mb-12 max-w-lg">
+      <div className="container m-auto mb-12 mt-24 max-w-lg">
         <h3 className="mb-6 text-xl font-bold lg:text-3xl">
           Get updates on the latest Remix news
         </h3>
