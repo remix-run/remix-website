@@ -1,33 +1,34 @@
 import { Header } from "~/ui/header";
 import { Footer } from "~/ui/footer";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { templates } from "~/lib/template.server";
+import { useLoaderData } from "@remix-run/react";
 
-const posterUrl =
-  "https://camo.githubusercontent.com/b0dc7ea8d2ffacd560d79cea8c792aa568cfdfc0b158950ea95194584fed0d4a/68747470733a2f2f6769746875622d70726f64756374696f6e2d757365722d61737365742d3632313064662e73332e616d617a6f6e6177732e636f6d2f313530303638342f3234363838353434392d31623030323836632d616133642d343462322d396566322d3034663639346562333539322e706e67";
-const title = "Epic Stack";
-const description =
-  "An opinionated project starter and reference that allows teams to ship their ideas to production faster and on a more stable foundation.";
-const initCode =
-  "npx create-remix@latest --template remix-run/remix/templates/unstable-vite-express";
-const repoUrl = "https://github.com/epicweb-dev/epic-stack/tree/main";
-const stars = 3000;
-const sponsorUrl = "https://github.com/sponsors/AlexandroMtzG";
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  return json({ templates });
+};
 
 export default function Templates() {
+  const { templates } = useLoaderData<typeof loader>();
+
+  let { name, description, imgSrc, repoUrl, stars, initCommand, sponsorUrl } =
+    templates[2];
+
   return (
     <div className="flex h-full flex-1 flex-col">
       <Header />
-      <InitCodeblock code={initCode} />
+      <InitCodeblock code={initCommand} />
 
       <main
         className="container mt-16 flex flex-1 flex-col items-center lg:mt-32"
         tabIndex={-1} // is this every gonna be focused? just copy pasta
       >
         <div>
-          <img src={posterUrl} alt="" />
-          <h2>{title}</h2>
+          <img src={imgSrc} alt="" />
+          <h2>{name}</h2>
           <p>{description}</p>
-          <code>{initCode}</code>
-          <InitCodeblock code={initCode} />
+          <code>{initCommand}</code>
+          <InitCodeblock code={initCommand} />
           <a href={repoUrl}>Repo</a>
           <p className="flex gap-x-1 items-center">
             <svg
@@ -42,28 +43,30 @@ export default function Templates() {
             </svg>
             <span>{stars}</span>
           </p>
-          <a className="flex gap-x-1 items-center" href={sponsorUrl}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              className="w-4"
-              fill="#b14587"
-            >
-              <path d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002ZM4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.58 20.58 0 0 0 8 13.393a20.58 20.58 0 0 0 3.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.749.749 0 0 1-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5Z"></path>
-            </svg>
-            <span>Sponsor</span>
-          </a>
+          {sponsorUrl ? (
+            <a className="flex gap-x-1 items-center" href={sponsorUrl}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                className="w-4"
+                fill="#b14587"
+              >
+                <path d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002ZM4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.58 20.58 0 0 0 8 13.393a20.58 20.58 0 0 0 3.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.749.749 0 0 1-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5Z"></path>
+              </svg>
+              <span>Sponsor</span>
+            </a>
+          ) : null}
 
           <Container>
             <a href={repoUrl} className="group text-sm">
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
                 <img
-                  src={posterUrl}
+                  src={imgSrc}
                   alt=""
                   className="h-full w-full object-cover object-center"
                 />
               </div>
-              <h2 className="mt-4 font-medium text-gray-900">{title}</h2>
+              <h2 className="mt-4 font-medium text-gray-900">{name}</h2>
               <p className="italic text-gray-500">{description}</p>
             </a>
           </Container>
@@ -71,13 +74,13 @@ export default function Templates() {
             <a href={repoUrl} className="group text-sm flex col-span-3">
               <div className="aspect-h-1 aspect-w-3 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
                 <img
-                  src={posterUrl}
+                  src={imgSrc}
                   alt=""
                   className="h-full w-full object-cover object-center"
                 />
               </div>
               <div>
-                <h2 className="mt-4 font-medium text-gray-900">{title}</h2>
+                <h2 className="mt-4 font-medium text-gray-900">{name}</h2>
                 <p className="italic text-gray-500">{description}</p>
               </div>
             </a>
@@ -180,7 +183,7 @@ function InitCodeblock({ code }: { code: string }) {
         data-nonumber=""
         data-line-numbers="false"
         data-lang="shellscript"
-        className="bg-gray-50 p-4 break-normal border rounded-lg border-gray-100 text-sm overflow-auto dark:bg-gray-800 dark:border-gray-900"
+        className="p-4 break-normal border rounded-lg border-gray-100 text-sm overflow-auto dark:border-gray-800"
       >
         <code>
           {npxMaybe === "npx" ? (
