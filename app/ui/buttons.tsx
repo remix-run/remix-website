@@ -67,7 +67,7 @@ export const Button = React.forwardRef<
       ref={ref}
       x-comp="Button"
       className={
-        "box-border inline-flex items-center justify-center rounded bg-blue-brand py-4 px-8 font-semibold text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-2 focus:ring-offset-transparent " +
+        "box-border inline-flex items-center justify-center rounded bg-blue-brand px-8 py-4 font-semibold text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-2 focus:ring-offset-transparent " +
         className
       }
       type={props.type}
@@ -88,7 +88,7 @@ export const Input = React.forwardRef<
       ref={ref}
       x-comp="Input"
       className={
-        "box-border inline-block rounded border border-solid border-gray-300 bg-white py-4 px-5 text-gray-900 dark:border-none dark:bg-gray-800 dark:text-white " +
+        "box-border inline-block rounded border border-solid border-gray-300 bg-white px-5 py-4 text-gray-900 dark:border-none dark:bg-gray-800 dark:text-white " +
         className
       }
       title={props.title}

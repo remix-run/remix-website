@@ -271,8 +271,8 @@ function InvoiceList({ children }: { children: React.ReactNode }) {
                   (invoice.due === false
                     ? "text-green-brand"
                     : Number(invoice.due) < 0
-                    ? "text-red-brand"
-                    : "")
+                      ? "text-red-brand"
+                      : "")
                 }
               >
                 {getInvoiceDue(invoice)}
@@ -313,7 +313,7 @@ function NavItem({
 }) {
   return (
     <div
-      className={`my-[1.4px] py-[1.4px] px-[2.8px] pr-4 text-[length:7px] md:my-1 md:py-1 md:px-2 md:pr-16 md:text-[length:10px] lg:text-[length:14px] ${className}`}
+      className={`my-[1.4px] px-[2.8px] py-[1.4px] pr-4 text-[length:7px] md:my-1 md:px-2 md:py-1 md:pr-16 md:text-[length:10px] lg:text-[length:14px] ${className}`}
     >
       {children}
     </div>
@@ -398,8 +398,8 @@ function getInvoiceDue(invoice: (typeof invoices)[number]) {
   return invoice.due === false
     ? "Paid"
     : Number(invoice.due) < 0
-    ? "Overdue"
-    : invoice.due === 0
-    ? "Due Today"
-    : `Due in ${invoice.due} Days`;
+      ? "Overdue"
+      : invoice.due === 0
+        ? "Due Today"
+        : `Due in ${invoice.due} Days`;
 }

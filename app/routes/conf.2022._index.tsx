@@ -149,7 +149,7 @@ function Speakers() {
         </div>
         {mc ? (
           <div id="mc">
-            <h2 className="mt-24 mb-6 text-center font-mono font-semibold uppercase md:mb-8">
+            <h2 className="mb-6 mt-24 text-center font-mono font-semibold uppercase md:mb-8">
               Master of Ceremonies
             </h2>
             <div className="m-auto flex justify-center">
@@ -177,7 +177,7 @@ function SpeakerDisplay({
       prefetch="intent"
     >
       <div className="w-full max-w-xs sm:max-w-none">
-        <div className="__speaker-img aspect-w-1 aspect-h-1 overflow-hidden rounded-md bg-black">
+        <div className="__speaker-img aspect-h-1 aspect-w-1 overflow-hidden rounded-md bg-black">
           <img src={speaker.imgSrc} alt={speaker.name} title={speaker.name} />
         </div>
         <div className="mt-4">

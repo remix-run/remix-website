@@ -84,10 +84,10 @@ export const meta: MetaFunction<
     currentGitHubRef === releaseBranch || currentGitHubRef === latestVersion
       ? ""
       : branches.includes(currentGitHubRef)
-      ? ` (${currentGitHubRef} branch)`
-      : currentGitHubRef.startsWith("v")
-      ? ` (${currentGitHubRef})`
-      : ` (v${currentGitHubRef})`;
+        ? ` (${currentGitHubRef} branch)`
+        : currentGitHubRef.startsWith("v")
+          ? ` (${currentGitHubRef})`
+          : ` (v${currentGitHubRef})`;
 
   let title = doc.attrs.title + titleAppend;
 
@@ -152,7 +152,7 @@ export default function DocPage() {
   );
 
   return (
-    <div className="xl:flex xl:justify-between xl:w-full xl:gap-8">
+    <div className="xl:flex xl:w-full xl:justify-between xl:gap-8">
       {isDocsIndex ? null : doc.headings.length > 3 ? (
         <>
           <SmallOnThisPage doc={doc} />
@@ -161,7 +161,7 @@ export default function DocPage() {
       ) : (
         <div className="hidden xl:order-1 xl:block xl:w-56 xl:flex-shrink-0" />
       )}
-      <div className="min-w-0 pt-12 xl:pt-20 xl:flex-grow">
+      <div className="min-w-0 pt-12 xl:flex-grow xl:pt-20">
         <div ref={ref} className="markdown w-full max-w-3xl pb-[33vh]">
           <div
             className="md-prose"
@@ -185,7 +185,7 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
                 to={`#${heading.slug}`}
                 dangerouslySetInnerHTML={{ __html: heading.html || "" }}
                 className={cx(
-                  "group relative py-1 text-sm text-gray-500 underline-offset-4 decoration-gray-200 hover:underline dark:text-gray-400 dark:decoration-gray-500",
+                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-400 dark:decoration-gray-500",
                 )}
               />
             </li>

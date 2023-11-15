@@ -86,7 +86,7 @@
   /* general text styles */
 
   & p {
-    @apply mt-0 mb-4;
+    @apply mb-4 mt-0;
   }
 
   & strong {
@@ -165,7 +165,7 @@
   }
 
   & dl {
-    @apply mt-0 mb-4 p-0;
+    @apply mb-4 mt-0 p-0;
 
     & dt {
       @apply mt-4 p-0 text-base font-semibold italic;
@@ -190,7 +190,7 @@
   /*****************************************************************************/
   /* headings */
   & :is(h1, h2, h3, h4, h5, h6) {
-    @apply mt-8 mb-4;
+    @apply mb-4 mt-8;
   }
 
   &:not(docs-card) > :is(h1, h2, h3, h4, h5, h6) {
@@ -198,15 +198,15 @@
   }
 
   & h1 {
-    @apply my-8 font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl;
+    @apply my-8 text-2xl font-black xs:text-3xl sm:text-4xl md:text-5xl;
   }
 
   & h2 {
-    @apply font-bold text-xl md:text-2xl;
+    @apply text-xl font-bold md:text-2xl;
   }
 
   & h3 {
-    @apply font-bold text-lg md:text-xl;
+    @apply text-lg font-bold md:text-xl;
   }
 
   & h4,
@@ -229,7 +229,7 @@
     scroll-margin-top: 1em;
 
     & a {
-      @apply absolute top-0 -left-6 -right-0 z-10 flex h-full items-center leading-none;
+      @apply absolute -left-6 -right-0 top-0 z-10 flex h-full items-center leading-none;
     }
 
     &:hover a,
@@ -261,7 +261,7 @@
   /*****************************************************************************/
   /* details / summary */
   & details {
-    @apply mt-0 mb-4 block;
+    @apply mb-4 mt-0 block;
   }
 
   & summary {
@@ -313,7 +313,7 @@
   }
 
   & :not(pre) > code {
-    @apply px-1.5 pt-px pb-0.5 rounded text-sm text-gray-700 bg-gray-100/50 dark:bg-gray-800/50;
+    @apply rounded bg-gray-100/50 px-1.5 pb-0.5 pt-px text-sm text-gray-700 dark:bg-gray-800/50;
   }
 
   & :is(a, h1, h2, h3, h4, h5, h6) code,
@@ -347,7 +347,7 @@
   }
 
   & [data-code-block-copy] {
-    @apply absolute top-[1.125rem] right-4 h-5 w-5 cursor-pointer bg-gray-500 opacity-0 hover:bg-black dark:bg-gray-400 dark:hover:bg-gray-100;
+    @apply absolute right-4 top-[1.125rem] h-5 w-5 cursor-pointer bg-gray-500 opacity-0 hover:bg-black dark:bg-gray-400 dark:hover:bg-gray-100;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2' ry='2' vector-effect='non-scaling-stroke'%3E%3C/rect%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1' vector-effect='non-scaling-stroke'%3E%3C/path%3E%3C/svg%3E");
     mask-size: cover;
   }
@@ -412,12 +412,12 @@
   }
 
   & pre[data-filename]::before {
-    @apply block mb-4 pb-4 pl-11 border-b border-gray-100 bg-no-repeat dark:border-gray-800;
+    @apply mb-4 block border-b border-gray-100 bg-no-repeat pb-4 pl-11 dark:border-gray-800;
     content: attr(data-filename);
   }
 
   & pre[data-filename]::after {
-    @apply absolute top-5 left-[1.125rem] w-4 h-4 bg-gray-400 dark:bg-gray-500;
+    @apply absolute left-[1.125rem] top-5 h-4 w-4 bg-gray-400 dark:bg-gray-500;
     content: "";
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z' vector-effect='non-scaling-stroke'%3E%3C/path%3E%3Cpolyline points='13 2 13 9 20 9' vector-effect='non-scaling-stroke'%3E%3C/polyline%3E%3C/svg%3E");
     mask-size: cover;
@@ -425,7 +425,7 @@
 
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
-    @apply pointer-events-none absolute top-0 left-0 w-full bg-green-400 opacity-10 dark:bg-green-300 dark:opacity-20;
+    @apply pointer-events-none absolute left-0 top-0 w-full bg-green-400 opacity-10 dark:bg-green-300 dark:opacity-20;
   }
 
   & pre[data-good] .codeblock-line[data-highlight="true"]::after {
@@ -446,7 +446,7 @@
   }
 
   & table th {
-    @apply w-full sticky top-0 bg-transparent text-sm font-semibold text-gray-700 dark:text-gray-300;
+    @apply sticky top-0 w-full bg-transparent text-sm font-semibold text-gray-700 dark:text-gray-300;
     @apply border-0 border-b border-gray-200 p-0 pb-1 pr-4 dark:border-gray-800;
   }
 
@@ -465,7 +465,7 @@
   & docs-success,
   & docs-warning,
   & docs-error {
-    @apply relative mt-0 mb-3 block rounded-lg border-l-2 border-r-2 border-current px-4 py-2;
+    @apply relative mb-3 mt-0 block rounded-lg border-l-2 border-r-2 border-current px-4 py-2;
   }
 
   & docs-info::before,
@@ -543,7 +543,7 @@
   /* blockquotes */
 
   & blockquote {
-    @apply mx-0 mt-0 mb-4 border-l-4 border-gray-200 p-0 pl-4 text-gray-600 dark:border-gray-800 dark:text-gray-400;
+    @apply mx-0 mb-4 mt-0 border-l-4 border-gray-200 p-0 pl-4 text-gray-600 dark:border-gray-800 dark:text-gray-400;
   }
 
   & blockquote > :first-child {
@@ -558,12 +558,12 @@
   /* hr */
 
   & hr {
-    @apply my-6 mx-0 h-[1px] overflow-visible border-0 bg-gray-200 p-0 dark:bg-gray-800;
+    @apply mx-0 my-6 h-[1px] overflow-visible border-0 bg-gray-200 p-0 dark:bg-gray-800;
   }
 }
 
 .md-toc {
   & :where(li code) {
-    @apply px-1.5 pt-px pb-0.5 rounded-sm text-xs text-gray-600 bg-gray-100/50 dark:text-gray-300 dark:bg-gray-800/50 group-hover:text-gray-100;
+    @apply rounded-sm bg-gray-100/50 px-1.5 pb-0.5 pt-px text-xs text-gray-600 group-hover:text-gray-100 dark:bg-gray-800/50 dark:text-gray-300;
   }
 }

@@ -138,8 +138,8 @@ function Header({ hasTopBanner }: { hasTopBanner?: boolean }) {
     location.pathname === "/conf" || location.pathname === "/conf/2023";
   return (
     <header
-      className={cx("absolute top-0 left-0 right-0 z-10 text-white", {
-        "absolute top-0 left-0 right-0 z-10": isConfHome,
+      className={cx("absolute left-0 right-0 top-0 z-10 text-white", {
+        "absolute left-0 right-0 top-0 z-10": isConfHome,
       })}
     >
       <div className="flex items-start justify-between gap-8 px-6 py-9 lg:px-12">
@@ -289,7 +289,7 @@ function MobileMenuItem({
       as={HeaderLink}
       className={cx(
         className,
-        "cursor-pointer select-none py-2 px-4 outline-none hover:bg-gray-700 hover:text-white selected:bg-pink-500 selected:text-white selected:hover:bg-pink-600",
+        "cursor-pointer select-none px-4 py-2 outline-none hover:bg-gray-700 hover:text-white selected:bg-pink-500 selected:text-white selected:hover:bg-pink-600",
       )}
       {...props}
     />

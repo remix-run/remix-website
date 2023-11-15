@@ -134,7 +134,7 @@ function Hero() {
           </div>
         </div>
         <div className="relative -mx-6 mt-6 overflow-hidden p-4 sm:-mx-8 sm:p-8 md:p-10 lg:mt-0 lg:h-[51rem] lg:w-1/2 lg:rounded-l-2xl lg:p-8">
-          <Red className="absolute top-0 left-0 h-full xl:rounded-3xl" />
+          <Red className="absolute left-0 top-0 h-full xl:rounded-3xl" />
           <Sample html={sample.html} className="rounded-xl sm:hidden" />
           <Sample html={sampleSm.html} className="hidden sm:block" />
         </div>
