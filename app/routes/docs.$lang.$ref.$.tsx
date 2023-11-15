@@ -54,7 +54,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
   return headers;
 };
 
-const LAYOUT_LOADER_KEY = "routes/docs/$lang.$ref";
+const LAYOUT_LOADER_KEY = "routes/docs.$lang.$ref";
 
 export const meta: MetaFunction<
   typeof loader,
@@ -64,6 +64,7 @@ export const meta: MetaFunction<
   }
 > = (args) => {
   let { data } = args;
+
   let matchesData = getMatchesData(args);
   let parentData = matchesData[LAYOUT_LOADER_KEY];
   if (!data) {
