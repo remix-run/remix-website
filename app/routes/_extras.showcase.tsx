@@ -1,25 +1,21 @@
-import type {
-  HeadersFunction,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Fragment, forwardRef, useEffect, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";
-import { Footer } from "~/ui/footer";
-import { Header } from "~/ui/header";
 import { clsx } from "clsx";
 import { useHydrated } from "~/lib/misc";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import { DocSearchModal } from "~/ui/docsearch";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return json({ siteUrl, showcaseExamples });
+  return json(
+    { siteUrl, showcaseExamples },
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
+  );
 };
 
 // Stolen from _marketing._index.tsx. eventually would like to replace
@@ -45,63 +41,51 @@ export const meta: MetaFunction<typeof loader> = (args) => {
   ];
 };
 
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-  };
-};
-
 export default function Showcase() {
   let { showcaseExamples } = useLoaderData<typeof loader>();
   // Might be a bit silly to declare here and then prop-drill, but was a little concerned about a needless useEffect+useState for every card
   let isHydrated = useHydrated();
 
   return (
-    <div className="flex h-full flex-1 flex-col">
-      {/* TODO: Move this to a centralized place after refactoring routes to put blog and showcase in the same place */}
-      <DocSearchModal />
-      <Header />
-      <main
-        className="container mt-16 flex flex-1 flex-col items-center lg:mt-32"
-        tabIndex={-1} // is this every gonna be focused? just copy pasta
-      >
-        <div className="max-w-3xl text-center">
-          <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
-            Remix Showcase
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg font-light">
-            Checkout the companies, organizations, nonprofits, and indie
-            developers building better websites with Remix
-          </p>
-        </div>
-        <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-8 gap-y-6 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8 lg:gap-y-6 xl:gap-x-12 xl:gap-y-10">
-          {showcaseExamples.map((example, i) => {
-            let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
-            return (
-              <Fragment key={example.name}>
-                <DesktopShowcase
-                  // Non-focusable since focusing on the anchor tag starts the video -- need to
-                  // ensure that this is fine for screen readers, but I'm fairly confident the
-                  // video is not critical information and just visual flair so I don't think
-                  // we're providing an unusable or even bad experience to screen-reader users
-                  isHydrated={isHydrated}
-                  preload={preload}
-                  {...example}
-                />
-                <MobileShowcase
-                  isHydrated={isHydrated}
-                  asImage={i > 5}
-                  // Only preload the first 2, since that's about all that should be "above the fold" on mobile
-                  preload={i < 2 ? "auto" : "none"}
-                  {...example}
-                />
-              </Fragment>
-            );
-          })}
-        </ul>
-      </main>
-      <Footer />
-    </div>
+    <main
+      className="container mt-16 flex flex-1 flex-col items-center lg:mt-32"
+      tabIndex={-1} // is this every gonna be focused? just copy pasta
+    >
+      <div className="max-w-3xl text-center">
+        <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
+          Remix Showcase
+        </h1>
+        <p className="mt-4 max-w-2xl text-lg font-light">
+          Checkout the companies, organizations, nonprofits, and indie
+          developers building better websites with Remix
+        </p>
+      </div>
+      <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-8 gap-y-6 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8 lg:gap-y-6 xl:gap-x-12 xl:gap-y-10">
+        {showcaseExamples.map((example, i) => {
+          let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
+          return (
+            <Fragment key={example.name}>
+              <DesktopShowcase
+                // Non-focusable since focusing on the anchor tag starts the video -- need to
+                // ensure that this is fine for screen readers, but I'm fairly confident the
+                // video is not critical information and just visual flair so I don't think
+                // we're providing an unusable or even bad experience to screen-reader users
+                isHydrated={isHydrated}
+                preload={preload}
+                {...example}
+              />
+              <MobileShowcase
+                isHydrated={isHydrated}
+                asImage={i > 5}
+                // Only preload the first 2, since that's about all that should be "above the fold" on mobile
+                preload={i < 2 ? "auto" : "none"}
+                {...example}
+              />
+            </Fragment>
+          );
+        })}
+      </ul>
+    </main>
   );
 }
 

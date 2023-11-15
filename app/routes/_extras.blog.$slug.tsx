@@ -2,7 +2,6 @@ import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { metaV1 } from "@remix-run/v1-meta";
 import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/lib/blog.server";
@@ -10,10 +9,7 @@ import mdStyles from "~/styles/md.css";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import { Header } from "~/ui/header";
-import { Footer } from "~/ui/footer";
 import { Subscribe } from "~/ui/subscribe";
-import { DocSearchModal } from "~/ui/docsearch";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   let { slug } = params;
@@ -44,9 +40,7 @@ export const meta: MetaFunction<typeof loader> = (args) => {
 
   let { siteUrl, post } = data || {};
   if (!post) {
-    return metaV1(args, {
-      title: "404 Not Found | Remix",
-    });
+    return [{ title: "404 Not Found | Remix" }];
   }
 
   let ogImageUrl = siteUrl ? new URL(`${siteUrl}/img/${slug}`) : null;
@@ -62,21 +56,24 @@ export const meta: MetaFunction<typeof loader> = (args) => {
   let socialImageUrl = ogImageUrl?.toString();
   let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
 
-  return metaV1(args, {
-    title: post.title + " | Remix",
-    description: post.summary,
-    "og:url": url,
-    "og:title": post.title,
-    "og:image": socialImageUrl,
-    "og:description": post.summary,
-    "twitter:card": "summary_large_image",
-    "twitter:creator": "@remix_run",
-    "twitter:site": "@remix_run",
-    "twitter:title": post.title,
-    "twitter:description": post.summary,
-    "twitter:image": socialImageUrl || undefined,
-    "twitter:image:alt": socialImageUrl ? post.imageAlt : undefined,
-  });
+  return [
+    { title: post.title + " | Remix" },
+    { name: "description", content: post.summary },
+    { property: "og:url", content: url },
+    { property: "og:title", content: post.title },
+    { property: "og:image", content: socialImageUrl },
+    { property: "og:description", content: post.summary },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:creator", content: "@remix_run" },
+    { name: "twitter:site", content: "@remix_run" },
+    { name: "twitter:title", content: post.title },
+    { name: "twitter:description", content: post.summary },
+    { name: "twitter:image", content: socialImageUrl },
+    {
+      name: "twitter:image:alt",
+      content: socialImageUrl ? post.imageAlt : undefined,
+    },
+  ];
 };
 
 export default function BlogPost() {
@@ -85,10 +82,7 @@ export default function BlogPost() {
   useDelegatedReactRouterLinks(mdRef);
 
   return (
-    <div className="flex h-full flex-1 flex-col">
-      {/* TODO: Move this to a centralized place after refactoring routes to put blog and showcase in the same place */}
-      <DocSearchModal />
-      <Header to="/blog" />
+    <>
       {post.draft ? (
         <div className="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 px-5 py-3 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">
           🚨 This is a draft, please do not share this page until it's
@@ -166,7 +160,6 @@ export default function BlogPost() {
         </div>
         <Subscribe descriptionId="newsletter-text" />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }
