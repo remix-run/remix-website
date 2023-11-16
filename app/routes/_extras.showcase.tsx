@@ -60,7 +60,7 @@ export default function Showcase() {
           developers building better websites with Remix
         </p>
       </div>
-      <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-8 gap-y-6 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8 lg:gap-y-6 xl:gap-x-12 xl:gap-y-10">
+      <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-6 gap-y-10 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8">
         {showcaseExamples.map((example, i) => {
           let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
           return (
