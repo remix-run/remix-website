@@ -6,7 +6,7 @@
   repoUrl: 'https://github.com/epicweb-dev/epic-stack'
   stars: 3000
   initCommand: 'npx create-epic-app@latest'
-  tags: ['fly.io', 'prisma']
+  tags: ['fly.io', 'prisma', 'tailwindcss']
 
 - name: 'Indie Stack'
   imgSrc: 'https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf'
@@ -14,7 +14,7 @@
   repoUrl: 'https://github.com/remix-run/indie-stack'
   stars: 915
   initCommand: 'npx create-remix@latest --template remix-run/indie-stack'
-  tags: ['fly.io', 'sqlite', 'prisma']
+  tags: ['fly.io', 'sqlite', 'prisma', 'tailwindcss']
 
 - name: 'Remix Page Blocks'
   imgSrc: 'https://camo.githubusercontent.com/dfa95a488c367ffec2091398cb4061d32e6160bcdd0d434200f2d96fac4d655e/68747470733a2f2f7961686f6f6465722e736972762e636f6d2f72656d6978626c6f636b732f706167652d626c6f636b732f636f7665722e706e67'
