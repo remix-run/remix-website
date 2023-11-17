@@ -1,26 +1,25 @@
 import { type Template } from "~/lib/template.server";
 import { Link } from "@remix-run/react";
+import cx from "clsx";
 
-export function TemplatesGrid({ templates }: { templates: Template[] }) {
+export function TemplatesGrid({ children }: { children: React.ReactNode }) {
   return (
     <ul className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
-      {templates.map((template) => (
-        <TemplateCard key={template.name} {...template} />
-      ))}
+      {children}
     </ul>
   );
 }
 
-function TemplateCard({
+export function TemplateCard({
   repoUrl,
   imgSrc,
   name,
   description,
   initCommand,
   tags,
-}: Template) {
+}: Omit<Template, "tags"> & { tags: React.ReactNode }) {
   return (
-    <a href={repoUrl} className="group text-sm">
+    <div className="group text-sm">
       <div className="aspect-h-1 aspect-w-2 relative w-full overflow-hidden rounded-t-lg bg-gray-100 group-hover:opacity-75">
         <img
           src={imgSrc}
@@ -29,20 +28,42 @@ function TemplateCard({
         />
       </div>
       <InitCodeblock initCommand={initCommand} />
-      <h2 className="mt-4 font-medium text-gray-900">{name}</h2>
-      <p className="italic text-gray-500">{description}</p>
+      <a href={repoUrl}>
+        <h2 className="mt-4 font-medium text-gray-900 dark:text-gray-100">
+          {name}
+        </h2>
+        <p className="italic text-gray-500">{description}</p>
+      </a>
       <div className="mt-4 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
-        {[...tags, ...tags, ...tags].map((tag) => (
-          <Link
-            key={tag}
-            to={`/templates/filter?tag=${tag}`}
-            className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 hover:bg-blue-100"
-          >
-            {tag}
-          </Link>
-        ))}
+        {tags}
       </div>
-    </a>
+    </div>
+  );
+}
+
+type TemplateTagProps = {
+  name: string;
+  to: string;
+  intent?: "primary" | "secondary";
+};
+
+export function TemplateTag({
+  name,
+  to,
+  intent = "primary",
+}: TemplateTagProps) {
+  return (
+    <Link
+      to={to}
+      className={cx(
+        "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ",
+        intent === "primary" &&
+          "bg-gray-50 text-gray-600 ring-gray-500/10 hover:bg-blue-100",
+        intent === "secondary" && "bg-gray-800",
+      )}
+    >
+      {name}
+    </Link>
   );
 }
 

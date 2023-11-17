@@ -1,7 +1,7 @@
 import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { templates } from "~/lib/template.server";
-import { TemplatesGrid } from "~/ui/templates";
+import { TemplateCard, TemplateTag, TemplatesGrid } from "~/ui/templates";
 
 /**
  * Simple function to redirect back to templates if search params, a set, or array of _something_ is empty
@@ -39,7 +39,8 @@ function checkSelectedTags(selectedTags: string[], tags: Set<string>) {
 export async function loader({ request, context }: LoaderFunctionArgs) {
   let searchParams = new URL(request.url).searchParams;
 
-  let selectedTags = [...new Set(searchParams.getAll("tag"))];
+  let selectedTagsSet = new Set(searchParams.getAll("tag"));
+  let selectedTags = [...selectedTagsSet];
 
   redirectIfEmpty(selectedTags);
 
@@ -49,28 +50,82 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   checkSelectedTags(selectedTags, tags);
 
   // Get all templates that have at all of the selected tags
-  const filteredTemplates = templates.filter(({ tags }) => {
+  let filteredTemplates = templates.filter(({ tags }) => {
     return selectedTags.every((tag) => tags.includes(tag));
   });
+  // go ahead and sort the tags to put all of the selected ones at the end
+  // .map(({ tags, ...template }) => {
+  //   let sortedTags = tags.sort(
+  //     (a, b) =>
+  //       Number(selectedTagsSet.has(a)) - Number(selectedTagsSet.has(b)),
+  //   );
+  //   return { ...template, tags: sortedTags };
+  // });
 
   return json({ selectedTags: selectedTags, templates: filteredTemplates });
 }
-
 export default function FilteredTemplates() {
-  const { selectedTags, templates } = useLoaderData<typeof loader>();
+  let { selectedTags, templates } = useLoaderData<typeof loader>();
+  let createFilterUrl = useCreateFilterUrl();
+
+  let selectedTagsSet = new Set(selectedTags);
 
   return (
     <main className="container mt-16 flex flex-1 flex-col items-center lg:mt-32">
-      <p>Selected Tags</p>
-      <ul>
+      <div className="self-start">
+        <h1 className="text-xl">Selected Tags</h1>
         {selectedTags.map((tag) => (
-          <li key={tag}>{tag}</li>
+          <Link
+            key={tag}
+            to={createFilterUrl({ remove: tag })}
+            className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 hover:bg-blue-100"
+          >
+            {tag}
+          </Link>
         ))}
-      </ul>
+      </div>
       <p>Templates</p>
       <br />
 
-      <TemplatesGrid templates={templates} />
+      <TemplatesGrid>
+        {templates.map(({ tags, ...template }) => {
+          return (
+            <TemplateCard
+              key={template.name}
+              {...template}
+              tags={tags.map((tag) => (
+                <TemplateTag
+                  key={tag}
+                  name={tag}
+                  to={
+                    selectedTagsSet.has(tag)
+                      ? createFilterUrl({ remove: tag })
+                      : createFilterUrl({ add: tag })
+                  }
+                  intent={selectedTagsSet.has(tag) ? "secondary" : "primary"}
+                />
+              ))}
+            />
+          );
+        })}
+      </TemplatesGrid>
     </main>
   );
+}
+
+function useCreateFilterUrl() {
+  let [searchParams] = useSearchParams();
+
+  return ({ add, remove }: { add?: string; remove?: string }) => {
+    let newSearchParams = new URLSearchParams(searchParams);
+
+    if (add) {
+      newSearchParams.append("tag", add);
+    }
+    if (remove) {
+      newSearchParams.delete("tag", remove);
+    }
+
+    return `/templates/filter?${newSearchParams}`;
+  };
 }

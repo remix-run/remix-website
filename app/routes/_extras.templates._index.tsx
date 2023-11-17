@@ -1,7 +1,7 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { type Template, templates } from "~/lib/template.server";
+import { templates } from "~/lib/template.server";
 import { useLoaderData } from "@remix-run/react";
-import { TemplatesGrid } from "~/ui/templates";
+import { TemplatesGrid, TemplateCard, TemplateTag } from "~/ui/templates";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({ templates });
@@ -50,7 +50,21 @@ export default function Templates() {
           </a>
         ) : null} */}
 
-      <TemplatesGrid templates={[...templates, ...templates]} />
+      <TemplatesGrid>
+        {templates.map(({ tags, ...template }) => (
+          <TemplateCard
+            key={template.name}
+            {...template}
+            tags={[...tags, ...tags, ...tags].map((tag) => (
+              <TemplateTag
+                key={tag}
+                name={tag}
+                to={`/templates/filter?tag=${tag}`}
+              />
+            ))}
+          />
+        ))}
+      </TemplatesGrid>
 
       <ProductExamples />
     </main>
