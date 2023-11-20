@@ -1,7 +1,6 @@
 import { type LoaderFunctionArgs } from "@remix-run/node";
 import satori from "satori";
 import svg2img from "svg2img";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { getDataFromParams, getFont } from "./utils.server";
 
 // Big thanks goes to Jacob Paris' blog outlining how to set this up
@@ -109,8 +108,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return new Response(data, {
     headers: {
       "Content-Type": "image/png",
-      // May need to adjust this to make it a longer cache since these are just images
-      "Cache-Control": CACHE_CONTROL.doc,
+      // starting with 1 day, may need to be longer as these images don't change often
+      // could also make it dependent on the date of the post
+      "Cache-Control": `max-age=${60 * 60 * 24}`,
     },
   });
 }
