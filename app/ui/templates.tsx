@@ -10,6 +10,16 @@ export function TemplatesGrid({ children }: { children: React.ReactNode }) {
   );
 }
 
+// TODO: move this to somewhere reusable
+export function slugify(string: string) {
+  return string
+    .toLowerCase()
+    .replace(/[ .':]/g, " ")
+    .split(" ")
+    .filter(Boolean)
+    .join("-");
+}
+
 export function TemplateCard({
   repoUrl,
   imgSrc,
@@ -19,14 +29,16 @@ export function TemplateCard({
   tags,
 }: Omit<Template, "tags"> & { tags: React.ReactNode }) {
   return (
-    <div className="group text-sm">
-      <div className="aspect-h-1 aspect-w-2 relative w-full overflow-hidden rounded-t-lg bg-gray-100 group-hover:opacity-75">
-        <img
-          src={imgSrc}
-          alt=""
-          className="h-full w-full object-cover object-center"
-        />
-      </div>
+    <div className="text-sm">
+      <Link to={slugify(name)}>
+        <div className="aspect-h-1 aspect-w-2 relative w-full overflow-hidden rounded-t-lg bg-gray-100 hover:opacity-75">
+          <img
+            src={imgSrc}
+            alt=""
+            className="h-full w-full object-cover object-center"
+          />
+        </div>
+      </Link>
       <InitCodeblock initCommand={initCommand} />
       <a href={repoUrl}>
         <h2 className="mt-4 font-medium text-gray-900 dark:text-gray-100">
@@ -42,15 +54,15 @@ export function TemplateCard({
 }
 
 type TemplateTagProps = {
-  name: string;
   to: string;
   intent?: "primary" | "secondary";
+  children: React.ReactNode;
 };
 
 export function TemplateTag({
-  name,
   to,
   intent = "primary",
+  children,
 }: TemplateTagProps) {
   return (
     <Link
@@ -59,15 +71,15 @@ export function TemplateTag({
         "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ",
         intent === "primary" &&
           "bg-gray-50 text-gray-600 ring-gray-500/10 hover:bg-blue-100",
-        intent === "secondary" && "bg-gray-800",
+        intent === "secondary" && "bg-gray-400 text-gray-50",
       )}
     >
-      {name}
+      {children}
     </Link>
   );
 }
 
-function InitCodeblock({ initCommand }: Pick<Template, "initCommand">) {
+export function InitCodeblock({ initCommand }: Pick<Template, "initCommand">) {
   // Probably a more elegant solution, but this is what I've got
   let [npxMaybe, ...otherCode] = initCommand.trim().split(" ");
 
@@ -94,7 +106,7 @@ function InitCodeblock({ initCommand }: Pick<Template, "initCommand">) {
           )}
         </code>
       </pre>
-      {/* <button
+      <button
         type="button"
         data-code-block-copy=""
         className="opacity-1 absolute right-2 top-2 h-6 w-6 cursor-pointer text-gray-700 dark:text-gray-300"
@@ -103,7 +115,7 @@ function InitCodeblock({ initCommand }: Pick<Template, "initCommand">) {
         }}
       >
         <span className="sr-only">Copy code to clipboard</span>
-      </button> */}
+      </button>
     </div>
   );
 }

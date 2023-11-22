@@ -75,17 +75,15 @@ export default function FilteredTemplates() {
       <div className="self-start">
         <h1 className="text-xl">Selected Tags</h1>
         {selectedTags.map((tag) => (
-          <Link
+          <TemplateTag
             key={tag}
             to={createFilterUrl({ remove: tag })}
-            className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 hover:bg-blue-100"
+            intent="secondary"
           >
             {tag}
-          </Link>
+          </TemplateTag>
         ))}
       </div>
-      <p>Templates</p>
-      <br />
 
       <TemplatesGrid>
         {templates.map(({ tags, ...template }) => {
@@ -96,14 +94,15 @@ export default function FilteredTemplates() {
               tags={tags.map((tag) => (
                 <TemplateTag
                   key={tag}
-                  name={tag}
                   to={
                     selectedTagsSet.has(tag)
                       ? createFilterUrl({ remove: tag })
                       : createFilterUrl({ add: tag })
                   }
                   intent={selectedTagsSet.has(tag) ? "secondary" : "primary"}
-                />
+                >
+                  {tag}
+                </TemplateTag>
               ))}
             />
           );
