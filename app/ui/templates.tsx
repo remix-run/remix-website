@@ -24,37 +24,63 @@ export function slugify(string: string) {
     .join("-");
 }
 
-export function TemplateCard({
-  name,
-  description,
+type TemplatePosterProps = Omit<Template, "description" | "tags" | "name"> & {
+  /** make the poster a link */
+  to?: string;
+  className?: string;
+};
+
+export function TemplatePoster({
+  to,
   imgSrc,
   repoUrl,
   stars,
   initCommand,
   sponsorUrl,
+  className,
+}: TemplatePosterProps) {
+  let img = (
+    <img
+      src={imgSrc}
+      alt=""
+      className="h-full w-full object-cover object-center"
+    />
+  );
+
+  return (
+    <div
+      className={cx(
+        // only need all this focus logic if this is a link
+        to &&
+          "focus-within:outline-blue rounded-lg focus-within:outline focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-gray-300/80",
+        className,
+      )}
+    >
+      <div className="relative">
+        <div
+          className={cx(
+            "aspect-h-1 aspect-w-2 relative w-full overflow-hidden rounded-t-lg bg-gray-100",
+            to && "hover:opacity-90",
+          )}
+        >
+          {to ? <Link to={to}>{img}</Link> : img}
+        </div>
+        <GitHubLinks repoUrl={repoUrl} stars={stars} sponsorUrl={sponsorUrl} />
+      </div>
+      <InitCodeblock initCommand={initCommand} />
+    </div>
+  );
+}
+
+export function TemplateCard({
+  name,
+  description,
   tags,
+  ...props
 }: Omit<Template, "tags"> & { tags: React.ReactNode }) {
   return (
     <div className="text-sm">
-      <div className="focus-within:outline-blue rounded-lg focus-within:outline focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-gray-300/80">
-        <div className="relative">
-          <div className="aspect-h-1 aspect-w-2 relative w-full overflow-hidden rounded-t-lg bg-gray-100 hover:opacity-75">
-            <Link to={slugify(name)}>
-              <img
-                src={imgSrc}
-                alt=""
-                className="h-full w-full object-cover object-center"
-              />
-            </Link>
-          </div>
-          <GitHubLinks
-            repoUrl={repoUrl}
-            stars={stars}
-            sponsorUrl={sponsorUrl}
-          />
-        </div>
-        <InitCodeblock initCommand={initCommand} />
-      </div>
+      <TemplatePoster to={slugify(name)} {...props} />
       <h2 className="mt-4 font-medium text-gray-900 dark:text-gray-100">
         {name}
       </h2>

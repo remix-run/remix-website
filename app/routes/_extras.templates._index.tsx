@@ -1,13 +1,12 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { templates } from "~/lib/template.server";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import {
   TemplatesGrid,
   TemplateCard,
   TemplateTag,
-  InitCodeblock,
-  GitHubLinks,
   slugify,
+  TemplatePoster,
 } from "~/ui/templates";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -29,27 +28,17 @@ export default function Templates() {
   } = templates[2];
 
   return (
-    <main className="container mt-16 flex flex-1 flex-col items-center lg:mt-32">
+    <main className="container mt-8 flex flex-1 flex-col items-center">
       <div className="flex w-full flex-row gap-4">
-        <div className="focus-within:outline-blue flex-1 rounded-lg focus-within:outline  focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-gray-300/80">
-          <div className="relative">
-            <div className="aspect-h-1 aspect-w-2 relative w-full overflow-hidden rounded-t-lg bg-gray-100 hover:opacity-90">
-              <Link to={slugify(name)}>
-                <img
-                  src={imgSrc}
-                  alt=""
-                  className="h-full w-full object-cover object-center"
-                />
-              </Link>
-            </div>
-            <GitHubLinks
-              repoUrl={repoUrl}
-              stars={stars}
-              sponsorUrl={sponsorUrl}
-            />
-          </div>
-          <InitCodeblock initCommand={initCommand} />
-        </div>
+        <TemplatePoster
+          to={slugify(name)}
+          imgSrc={imgSrc}
+          repoUrl={repoUrl}
+          stars={stars}
+          initCommand={initCommand}
+          sponsorUrl={sponsorUrl}
+          className="flex-1"
+        />
         <div className="flex min-w-[350px] flex-col">
           <h1 className="min-w-max text-lg font-medium uppercase tracking-tight text-gray-500">
             Featured Template

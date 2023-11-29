@@ -71,7 +71,7 @@ export default function FilteredTemplates() {
   let selectedTagsSet = new Set(selectedTags);
 
   return (
-    <main className="container mt-16 flex flex-1 flex-col items-center lg:mt-32">
+    <main className="container mt-8 flex flex-1 flex-col items-center">
       <div className="self-start">
         <h1 className="text-xl">Selected Tags</h1>
         {selectedTags.map((tag) => (
