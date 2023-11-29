@@ -48,7 +48,7 @@ export default function Showcase() {
 
   return (
     <main
-      className="container mt-16 flex flex-1 flex-col items-center lg:mt-32"
+      className="container mt-8 flex flex-1 flex-col items-center"
       tabIndex={-1} // is this every gonna be focused? just copy pasta
     >
       <div className="max-w-3xl text-center">
