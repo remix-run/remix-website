@@ -6,11 +6,22 @@ import iconsHref from "~/icons.svg";
 
 import "~/styles/templates.css";
 
-export function TemplatesGrid({ children }: { children: React.ReactNode }) {
+export function TemplatesGrid({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <ul className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
+    <div
+      className={cx(
+        "grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-8",
+        className,
+      )}
+    >
       {children}
-    </ul>
+    </div>
   );
 }
 
@@ -43,7 +54,11 @@ export function TemplatePoster({
     <img
       src={imgSrc}
       alt=""
-      className="h-full w-full object-cover object-center"
+      className={cx(
+        "h-full w-full rounded-t-lg object-cover object-center",
+        to &&
+          "group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-blue-brand",
+      )}
     />
   );
 
@@ -51,8 +66,8 @@ export function TemplatePoster({
     <div
       className={cx(
         // only need all this focus logic if this is a link
-        to &&
-          "focus-within:outline-blue rounded-lg focus-within:outline focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-gray-300/80",
+        // to &&
+        //   "rounded-lg focus-within:outline focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-gray-300/80",
         className,
       )}
     >
@@ -63,7 +78,13 @@ export function TemplatePoster({
             to && "hover:opacity-90",
           )}
         >
-          {to ? <Link to={to}>{img}</Link> : img}
+          {to ? (
+            <Link className="group" to={to}>
+              {img}
+            </Link>
+          ) : (
+            img
+          )}
         </div>
         <GitHubLinks repoUrl={repoUrl} stars={stars} sponsorUrl={sponsorUrl} />
       </div>
@@ -98,13 +119,13 @@ export function GitHubLinks({
   sponsorUrl,
 }: Pick<Template, "repoUrl" | "stars" | "sponsorUrl">) {
   return (
-    <div className="absolute right-2 top-2 rounded-md bg-gray-50/80 text-xs text-gray-900 ring-1 ring-inset ring-gray-500/10 backdrop-blur-sm">
+    <div className="absolute right-2 top-2 rounded-md bg-gray-50/70 text-xs text-gray-900 ring-1 ring-inset ring-gray-500/10 backdrop-blur-sm">
       <a
         href={repoUrl}
         rel="noopener noreferrer"
         target="_blank"
         className={cx(
-          "flex w-full items-center justify-center gap-2 p-2 transition-colors hover:bg-blue-50/50",
+          "flex w-full items-center justify-center gap-2 p-2 transition-colors hover:bg-blue-50/40",
           // Gotta git rid of the rounding on the bottom if there's another element
           sponsorUrl ? "rounded-t" : "rounded",
         )}
@@ -112,9 +133,9 @@ export function GitHubLinks({
         <svg aria-hidden className="h-4 w-4" viewBox="0 0 24 24">
           <use href={`${iconsHref}#github`} />
         </svg>
-        {/* TODO: handle various star sizes */}
         <span>
-          <span className="font-medium">Star</span> {stars}
+          <span className="font-medium">Star</span>{" "}
+          <span className="font-light">{stars}</span>
         </span>
       </a>
 

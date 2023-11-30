@@ -10,7 +10,7 @@ import {
 } from "~/ui/templates";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return json({ templates });
+  return json({ templates: [...templates, ...templates] });
 };
 
 export default function Templates() {
@@ -29,24 +29,25 @@ export default function Templates() {
 
   return (
     <main className="container mt-8 flex flex-1 flex-col items-center">
-      <div className="flex w-full flex-row gap-4">
+      <TemplatesGrid>
         <TemplatePoster
+          className="lg:col-span-2"
           to={slugify(name)}
           imgSrc={imgSrc}
           repoUrl={repoUrl}
           stars={stars}
           initCommand={initCommand}
           sponsorUrl={sponsorUrl}
-          className="flex-1"
         />
-        <div className="flex min-w-[350px] flex-col">
-          <h1 className="min-w-max text-lg font-medium uppercase tracking-tight text-gray-500">
+
+        <div className="-mt-6 flex flex-col md:mt-0">
+          <h1 className="text-sm uppercase tracking-tight text-gray-500 md:text-lg">
             Featured Template
           </h1>
-          <h2 className="mt-2 min-w-max text-3xl font-bold text-gray-900">
+          <h2 className="mt-4 text-2xl font-bold text-gray-900 lg:text-3xl">
             {name}
           </h2>
-          <p className="mt-4 text-justify italic text-gray-500">
+          <p className="mt-2 text-justify text-sm italic text-gray-500 lg:text-base">
             {description}
           </p>
           <div className="mt-2 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
@@ -57,9 +58,9 @@ export default function Templates() {
             ))}
           </div>
         </div>
-      </div>
 
-      <TemplatesGrid>
+        <div className="col-span-full hidden h-0 md:block lg:h-8" />
+
         {templates.map(({ tags, ...template }) => (
           <TemplateCard
             key={template.name}
