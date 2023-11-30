@@ -1,14 +1,19 @@
 // Pull full readme for this page from GitHub
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import {
+  json,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { templates } from "~/lib/template.server";
+import { getTemplateReadme, templates } from "~/lib/templates.server";
 import {
   slugify,
   TemplatePoster,
   TemplatesGrid,
   TemplateTag,
 } from "~/ui/templates";
+import markdownStyles from "~/styles/docs.css";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const templateSlug = params.slug;
@@ -22,10 +27,17 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw json({}, { status: 404 });
   }
 
-  return json({ template });
+  const readme = await getTemplateReadme(template.repoUrl);
+
+  return json({ template, readmeHtml: readme?.html });
 }
 
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: markdownStyles }];
+};
+
 export default function TemplatePage() {
+  let { template, readmeHtml } = useLoaderData<typeof loader>();
   let {
     name,
     description,
@@ -35,8 +47,9 @@ export default function TemplatePage() {
     initCommand,
     sponsorUrl,
     tags,
-  } = useLoaderData<typeof loader>().template;
+  } = template;
 
+  console.log(readmeHtml);
   return (
     <main className="container mt-8 flex flex-1 flex-col items-center">
       <TemplatesGrid>
@@ -68,6 +81,19 @@ export default function TemplatePage() {
           </div>
         </div>
       </TemplatesGrid>
+
+      {readmeHtml ? (
+        <>
+          <hr className="my-12 h-0 w-full border-t border-gray-100" />
+
+          <div className="markdown w-full max-w-3xl pb-[33vh]">
+            <div
+              className="md-prose"
+              dangerouslySetInnerHTML={{ __html: readmeHtml }}
+            />
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }

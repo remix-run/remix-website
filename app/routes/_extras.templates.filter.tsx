@@ -1,6 +1,6 @@
 import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
-import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
-import { templates } from "~/lib/template.server";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
+import { templates } from "~/lib/templates.server";
 import { TemplateCard, TemplateTag, TemplatesGrid } from "~/ui/templates";
 
 /**

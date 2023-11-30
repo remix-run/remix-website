@@ -91,7 +91,6 @@ global.docCache ??= new LRUCache<string, Doc>({
 });
 
 async function fetchDoc(key: string): Promise<Doc> {
-  console.log("Fetching fresh doc", key);
   let [repo, ref, slug] = key.split(":");
   let filename = `docs/${slug}.md`;
   let md = await getRepoContent(repo, ref, filename);
@@ -128,6 +127,7 @@ export async function getDoc(
 ): Promise<Doc | undefined> {
   let key = `${repo}:${ref}:${slug}`;
   let doc = await docCache.fetch(key);
+
   return doc || undefined;
 }
 

@@ -1,5 +1,5 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { templates } from "~/lib/template.server";
+import { templates } from "~/lib/templates.server";
 import { useLoaderData } from "@remix-run/react";
 import {
   TemplatesGrid,

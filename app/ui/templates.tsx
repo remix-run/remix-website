@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { type Template } from "~/lib/template.server";
+import { type Template } from "~/lib/templates.server";
 import { Link } from "@remix-run/react";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
