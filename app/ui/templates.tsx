@@ -88,7 +88,7 @@ export function TemplatePoster({
         </div>
         <GitHubLinks repoUrl={repoUrl} stars={stars} sponsorUrl={sponsorUrl} />
       </div>
-      <InitCodeblock initCommand={initCommand} />
+      <InitCodeblock initCommand={initCommand} rounded="bottom" />
     </div>
   );
 }
@@ -182,7 +182,13 @@ export function TemplateTag({
   );
 }
 
-export function InitCodeblock({ initCommand }: Pick<Template, "initCommand">) {
+export function InitCodeblock({
+  initCommand,
+  // Eh, not the best API, but I needed this
+  rounded = "full",
+}: Pick<Template, "initCommand"> & {
+  rounded?: "full" | "bottom";
+}) {
   // Probably a more elegant solution, but this is what I've got
   let [npxMaybe, ...otherCode] = initCommand.trim().split(" ");
   let [copied, setCopied] = useState(false);
@@ -196,8 +202,16 @@ export function InitCodeblock({ initCommand }: Pick<Template, "initCommand">) {
   }, [copied]);
 
   return (
-    <div className="code-block">
-      <pre>
+    <div className="code-block relative">
+      <pre
+        className={
+          rounded === "full"
+            ? "rounded-lg"
+            : rounded === "bottom"
+              ? "rounded-b-lg"
+              : undefined
+        }
+      >
         <code>
           <span className="codeblock-line">
             {npxMaybe === "npx" ? (

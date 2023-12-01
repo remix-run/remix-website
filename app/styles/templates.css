@@ -5,12 +5,10 @@
 *****************************************************************************/
 
 .code-block {
-  position: relative;
-
   & code,
   & pre {
     word-wrap: normal;
-    @apply overflow-auto rounded-b-lg p-3 text-sm leading-none md:p-4;
+    @apply overflow-auto p-3 text-sm leading-none md:p-4;
   }
 
   & pre {
