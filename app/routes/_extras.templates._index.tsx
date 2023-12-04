@@ -14,7 +14,7 @@ import {
 } from "~/ui/templates";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return json({ templates: [...templates, ...templates] });
+  return json({ templates });
 };
 
 export const meta: MetaFunction = () => {
@@ -55,13 +55,13 @@ export default function Templates() {
         />
 
         <div className="-mt-6 flex flex-col md:mt-0">
-          <h1 className="text-sm uppercase tracking-tight text-gray-500 md:text-lg">
+          <h1 className="text-sm uppercase tracking-tight text-gray-500 dark:text-gray-300 md:text-lg">
             Featured Template
           </h1>
-          <h2 className="mt-4 text-2xl font-bold text-gray-900 lg:text-3xl">
+          <h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-gray-200 lg:text-3xl">
             {title}
           </h2>
-          <p className="mt-2 text-justify text-sm italic text-gray-500 lg:text-base">
+          <p className="mt-2 text-justify text-sm italic text-gray-500 dark:text-gray-300 lg:text-base">
             {description}
           </p>
           <div className="mt-2 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">

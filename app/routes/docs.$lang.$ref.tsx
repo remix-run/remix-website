@@ -189,6 +189,11 @@ function Footer() {
 }
 
 function Header() {
+  // TODO: Remove prior to launch as this is only here to render the template link for non-production
+  let matches = useMatches();
+  let rootData = matches.find((match) => match.id === "root");
+  let showTemplates = !(rootData?.data as any)?.isProductionHost;
+
   return (
     <div
       className={cx(
@@ -226,6 +231,9 @@ function Header() {
               <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
               <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
               <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
+              {showTemplates ? (
+                <HeaderMenuLink to="/templates">Templates</HeaderMenuLink>
+              ) : null}
             </div>
             <div className="flex items-center gap-2">
               <HeaderLink
@@ -537,6 +545,11 @@ function HeaderMenuLink({
 }
 
 function HeaderMenuMobile({ className = "" }: { className: string }) {
+  // TODO: Remove prior to launch as this is only here to render the template link for non-production
+  let matches = useMatches();
+  let rootData = matches.find((match) => match.id === "root");
+  let showTemplates = !(rootData?.data as any)?.isProductionHost;
+
   // This is the same default, hover, focus style as the VersionSelect
   let baseClasses =
     "bg-gray-100 hover:bg-gray-200 [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
@@ -558,6 +571,9 @@ function HeaderMenuMobile({ className = "" }: { className: string }) {
           <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
           <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
           <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
+          {showTemplates ? (
+            <HeaderMenuLink to="/templates">Templates</HeaderMenuLink>
+          ) : null}
         </div>
       </DetailsPopup>
     </DetailsMenu>

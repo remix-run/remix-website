@@ -78,7 +78,7 @@ export default function TemplatePage() {
       <div className="flex w-full flex-col md:flex-row-reverse">
         {/* The sidebar comes first with a flex row-reverse for better keyboard navigation */}
         <div className="flex flex-col gap-2 md:sticky md:top-28 md:h-0 md:w-[400px]">
-          <p className="mt-2 text-justify text-sm italic text-gray-500 lg:text-base">
+          <p className="mt-2 text-justify text-sm italic text-gray-500 dark:text-gray-300 lg:text-base">
             {description}
           </p>
           <a

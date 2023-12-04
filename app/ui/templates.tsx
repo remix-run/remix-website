@@ -105,7 +105,9 @@ export function TemplateCard({
       <h2 className="mt-4 font-medium text-gray-900 dark:text-gray-100">
         {title}
       </h2>
-      <p className="mt-2 italic text-gray-500">{description}</p>
+      <p className="mt-2 italic text-gray-500 dark:text-gray-300">
+        {description}
+      </p>
       <div className="mt-4 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
         {tags}
       </div>
@@ -173,8 +175,8 @@ export function TemplateTag({
       className={cx(
         "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset",
         selected
-          ? "bg-blue-100 text-blue-900 ring-blue-500/10 hover:bg-blue-200"
-          : "bg-gray-50 text-gray-600 ring-gray-500/10 hover:bg-blue-100",
+          ? "bg-blue-100 ring-blue-500/10 hover:bg-blue-200 dark:bg-gray-300 dark:text-gray-900 dark:ring-gray-900/50 dark:hover:bg-gray-400 dark:hover:text-gray-900"
+          : "bg-gray-50 text-gray-600 ring-gray-500/10 hover:bg-blue-100 dark:bg-gray-900 dark:text-gray-300 dark:ring-gray-200/50 dark:hover:bg-gray-400 dark:hover:text-gray-900",
       )}
     >
       {children}
