@@ -101,7 +101,7 @@ export function TemplateCard({
 }: Omit<Template, "tags"> & { tags: React.ReactNode }) {
   return (
     <div className="text-sm">
-      <TemplatePoster to={slugify(name)} {...props} />
+      <TemplatePoster to={`/templates/${slugify(name)}`} {...props} />
       <h2 className="mt-4 font-medium text-gray-900 dark:text-gray-100">
         {name}
       </h2>
@@ -158,13 +158,13 @@ export function GitHubLinks({
 
 type TemplateTagProps = {
   to: string;
-  intent?: "primary" | "secondary";
+  selected?: boolean;
   children: React.ReactNode;
 };
 
 export function TemplateTag({
   to,
-  intent = "primary",
+  selected = false,
   children,
 }: TemplateTagProps) {
   return (
@@ -172,9 +172,9 @@ export function TemplateTag({
       to={to}
       className={cx(
         "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset",
-        intent === "primary" &&
-          "bg-gray-50 text-gray-600 ring-gray-500/10 hover:bg-blue-100",
-        intent === "secondary" && "bg-gray-400 text-gray-50",
+        selected
+          ? "bg-blue-100 text-blue-900 ring-blue-500/10 hover:bg-blue-200"
+          : "bg-gray-50 text-gray-600 ring-gray-500/10 hover:bg-blue-100",
       )}
     >
       {children}

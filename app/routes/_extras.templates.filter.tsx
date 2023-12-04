@@ -53,16 +53,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   let filteredTemplates = templates.filter(({ tags }) => {
     return selectedTags.every((tag) => tags.includes(tag));
   });
-  // go ahead and sort the tags to put all of the selected ones at the end
-  // .map(({ tags, ...template }) => {
-  //   let sortedTags = tags.sort(
-  //     (a, b) =>
-  //       Number(selectedTagsSet.has(a)) - Number(selectedTagsSet.has(b)),
-  //   );
-  //   return { ...template, tags: sortedTags };
-  // });
 
-  return json({ selectedTags: selectedTags, templates: filteredTemplates });
+  return json({
+    selectedTags,
+    templates: filteredTemplates,
+  });
 }
 export default function FilteredTemplates() {
   let { selectedTags, templates } = useLoaderData<typeof loader>();
@@ -72,20 +67,24 @@ export default function FilteredTemplates() {
 
   return (
     <main className="container mt-8 flex flex-1 flex-col items-center">
-      <div className="self-start">
-        <h1 className="text-xl">Selected Tags</h1>
-        {selectedTags.map((tag) => (
-          <TemplateTag
-            key={tag}
-            to={createFilterUrl({ remove: tag })}
-            intent="secondary"
-          >
-            {tag}
-          </TemplateTag>
-        ))}
+      <div className="flex w-full flex-col items-center gap-2 self-start md:flex-row md:gap-4">
+        <h1 className="min-w-fit self-start text-4xl font-bold lg:text-5xl">
+          Templates that use
+        </h1>
+        <div className="mt-2 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2 lg:mt-2">
+          {selectedTags.map((tag) => (
+            <TemplateTag
+              key={tag}
+              to={createFilterUrl({ remove: tag })}
+              selected
+            >
+              {tag}
+            </TemplateTag>
+          ))}
+        </div>
       </div>
 
-      <TemplatesGrid>
+      <TemplatesGrid className="mt-8 lg:mt-12">
         {templates.map(({ tags, ...template }) => {
           return (
             <TemplateCard
@@ -99,7 +98,7 @@ export default function FilteredTemplates() {
                       ? createFilterUrl({ remove: tag })
                       : createFilterUrl({ add: tag })
                   }
-                  intent={selectedTagsSet.has(tag) ? "secondary" : "primary"}
+                  selected={selectedTagsSet.has(tag)}
                 >
                   {tag}
                 </TemplateTag>
