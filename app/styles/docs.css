@@ -228,12 +228,13 @@
     scroll-snap-margin-top: 1em;
     scroll-margin-top: 1em;
 
-    & a {
+    /* only apply these styles for links starting with a hash -- if a header does not start with a hash, it was generated from HTML, not markdown headers */
+    & a[href^="#"] {
       @apply absolute -left-6 -right-0 top-0 z-10 flex h-full items-center leading-none;
     }
 
-    &:hover a,
-    & a:hover {
+    &:hover a[href^="#"],
+    & a[href^="#"]:hover {
       @apply no-underline;
     }
 
