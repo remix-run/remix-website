@@ -104,7 +104,7 @@ export default function FilteredTemplates() {
         {templates.map(({ tags, ...template }) => {
           return (
             <TemplateCard
-              key={template.name}
+              key={template.title}
               {...template}
               tags={tags.map((tag) => (
                 <TemplateTag

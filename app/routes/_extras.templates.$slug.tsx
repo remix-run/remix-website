@@ -17,7 +17,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   invariant(templateSlug, "templateSlug is required");
 
   let template = templates.find(
-    (template) => slugify(template.name) === templateSlug,
+    (template) => slugify(template.title) === templateSlug,
   );
 
   if (!template) {
@@ -50,16 +50,16 @@ export const meta: MetaFunction<typeof loader> = (args) => {
   let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
 
   return [
-    { title: template.name + " | Remix Templates" },
+    { title: template.title + " | Remix Templates" },
     { name: "description", content: template.description },
     { property: "og:url", content: url },
-    { property: "og:title", content: template.name },
+    { property: "og:title", content: template.title },
     { property: "og:image", content: socialImageUrl },
     { property: "og:description", content: template.description },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:creator", content: "@remix_run" },
     { name: "twitter:site", content: "@remix_run" },
-    { name: "twitter:title", content: template.name },
+    { name: "twitter:title", content: template.title },
     { name: "twitter:description", content: template.description },
     { name: "twitter:image", content: socialImageUrl },
     // {

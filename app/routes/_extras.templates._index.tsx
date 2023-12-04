@@ -31,7 +31,7 @@ export default function Templates() {
   const { templates } = useLoaderData<typeof loader>();
 
   let {
-    name,
+    title,
     description,
     imgSrc,
     repoUrl,
@@ -46,7 +46,7 @@ export default function Templates() {
       <TemplatesGrid>
         <TemplatePoster
           className="lg:col-span-2"
-          to={slugify(name)}
+          to={slugify(title)}
           imgSrc={imgSrc}
           repoUrl={repoUrl}
           stars={stars}
@@ -59,7 +59,7 @@ export default function Templates() {
             Featured Template
           </h1>
           <h2 className="mt-4 text-2xl font-bold text-gray-900 lg:text-3xl">
-            {name}
+            {title}
           </h2>
           <p className="mt-2 text-justify text-sm italic text-gray-500 lg:text-base">
             {description}
@@ -77,7 +77,7 @@ export default function Templates() {
 
         {templates.map(({ tags, ...template }) => (
           <TemplateCard
-            key={template.name}
+            key={template.title}
             {...template}
             tags={tags.map((tag) => (
               <TemplateTag key={tag} to={`/templates/filter?tag=${tag}`}>

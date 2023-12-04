@@ -35,7 +35,7 @@ export function slugify(string: string) {
     .join("-");
 }
 
-type TemplatePosterProps = Omit<Template, "description" | "tags" | "name"> & {
+type TemplatePosterProps = Omit<Template, "description" | "tags" | "title"> & {
   /** make the poster a link */
   to?: string;
   className?: string;
@@ -94,16 +94,16 @@ export function TemplatePoster({
 }
 
 export function TemplateCard({
-  name,
+  title,
   description,
   tags,
   ...props
 }: Omit<Template, "tags"> & { tags: React.ReactNode }) {
   return (
     <div className="text-sm">
-      <TemplatePoster to={`/templates/${slugify(name)}`} {...props} />
+      <TemplatePoster to={`/templates/${slugify(title)}`} {...props} />
       <h2 className="mt-4 font-medium text-gray-900 dark:text-gray-100">
-        {name}
+        {title}
       </h2>
       <p className="mt-2 italic text-gray-500">{description}</p>
       <div className="mt-4 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">

@@ -20,7 +20,7 @@ export let templates: Template[] = yaml
   }));
 
 export interface Template {
-  name: string;
+  title: string;
   imgSrc: string;
   description: string;
   repoUrl: string;
