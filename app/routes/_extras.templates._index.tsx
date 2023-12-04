@@ -1,4 +1,8 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import {
+  json,
+  type MetaFunction,
+  type LoaderFunctionArgs,
+} from "@remix-run/node";
 import { templates } from "~/lib/templates.server";
 import { useLoaderData } from "@remix-run/react";
 import {
@@ -11,6 +15,16 @@ import {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({ templates: [...templates, ...templates] });
+};
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remix Templates" },
+    {
+      name: "description",
+      content: "Templates to help you get up and running quickly with Remix.",
+    },
+  ];
 };
 
 export default function Templates() {

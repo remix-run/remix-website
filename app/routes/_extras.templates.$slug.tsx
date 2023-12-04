@@ -1,6 +1,7 @@
 // Pull full readme for this page from GitHub
 import {
   json,
+  type MetaFunction,
   type LinksFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
@@ -11,7 +12,7 @@ import { InitCodeblock, slugify, TemplateTag } from "~/ui/templates";
 import markdownStyles from "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const templateSlug = params.slug;
   invariant(templateSlug, "templateSlug is required");
 
@@ -23,13 +24,49 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw json({}, { status: 404 });
   }
 
+  let requestUrl = new URL(request.url);
+  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
+
   let readme = await getTemplateReadme(template.repoUrl);
 
-  return json({ template, readmeHtml: readme?.html });
+  return json({ siteUrl, template, readmeHtml: readme?.html });
 }
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: markdownStyles }];
+};
+
+export const meta: MetaFunction<typeof loader> = (args) => {
+  let { data, params } = args;
+  let { slug } = params;
+  invariant(!!slug, "Expected slug param");
+
+  let { siteUrl, template } = data || {};
+  if (!template) {
+    return [{ title: "404 Not Found | Remix" }];
+  }
+
+  let socialImageUrl = template.imgSrc;
+  let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
+
+  return [
+    { title: template.name + " | Remix Templates" },
+    { name: "description", content: template.description },
+    { property: "og:url", content: url },
+    { property: "og:title", content: template.name },
+    { property: "og:image", content: socialImageUrl },
+    { property: "og:description", content: template.description },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:creator", content: "@remix_run" },
+    { name: "twitter:site", content: "@remix_run" },
+    { name: "twitter:title", content: template.name },
+    { name: "twitter:description", content: template.description },
+    { name: "twitter:image", content: socialImageUrl },
+    // {
+    //   name: "twitter:image:alt",
+    //   content: socialImageUrl ? post.imageAlt : undefined,
+    // },
+  ];
 };
 
 export default function TemplatePage() {

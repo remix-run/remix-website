@@ -1,4 +1,9 @@
-import { redirect, type LoaderFunctionArgs, json } from "@remix-run/node";
+import {
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  redirect,
+  json,
+} from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { templates } from "~/lib/templates.server";
 import { TemplateCard, TemplateTag, TemplatesGrid } from "~/ui/templates";
@@ -59,6 +64,17 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     templates: filteredTemplates,
   });
 }
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remix Templates" },
+    {
+      name: "description",
+      content: "Templates to help you get up and running quickly with Remix.",
+    },
+  ];
+};
+
 export default function FilteredTemplates() {
   let { selectedTags, templates } = useLoaderData<typeof loader>();
   let createFilterUrl = useCreateFilterUrl();
