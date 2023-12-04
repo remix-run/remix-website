@@ -73,7 +73,6 @@ export default function TemplatePage() {
   let { template, readmeHtml } = useLoaderData<typeof loader>();
   let { description, repoUrl, initCommand, sponsorUrl, tags } = template;
 
-  console.log(readmeHtml);
   return (
     <main className="mt-8 flex flex-1 flex-col items-center px-8 lg:container">
       <div className="flex w-full flex-col md:flex-row-reverse">
