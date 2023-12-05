@@ -9,6 +9,7 @@ import {
   useNavigation,
   useParams,
   useResolvedPath,
+  useRouteLoaderData,
 } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { matchPath } from "react-router-dom";
@@ -40,6 +41,7 @@ import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
 import { env } from "~/env.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import type { loader as rootLoader } from "~/root";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
@@ -190,9 +192,8 @@ function Footer() {
 
 function Header() {
   // TODO: Remove prior to launch as this is only here to render the template link for non-production
-  let matches = useMatches();
-  let rootData = matches.find((match) => match.id === "root");
-  let showTemplates = !(rootData?.data as any)?.isProductionHost;
+  const rootData = useRouteLoaderData<typeof rootLoader>("root");
+  let showTemplates = !rootData?.isProductionHost;
 
   return (
     <div
@@ -546,9 +547,8 @@ function HeaderMenuLink({
 
 function HeaderMenuMobile({ className = "" }: { className: string }) {
   // TODO: Remove prior to launch as this is only here to render the template link for non-production
-  let matches = useMatches();
-  let rootData = matches.find((match) => match.id === "root");
-  let showTemplates = !(rootData?.data as any)?.isProductionHost;
+  const rootData = useRouteLoaderData<typeof rootLoader>("root");
+  let showTemplates = !rootData?.isProductionHost;
 
   // This is the same default, hover, focus style as the VersionSelect
   let baseClasses =

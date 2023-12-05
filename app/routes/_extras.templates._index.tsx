@@ -42,7 +42,7 @@ export default function Templates() {
   } = templates[2];
 
   return (
-    <main className="container mt-8 flex flex-1 flex-col items-center">
+    <main className="container flex flex-1 flex-col items-center">
       <TemplatesGrid>
         <TemplatePoster
           className="lg:col-span-2"
@@ -64,7 +64,7 @@ export default function Templates() {
           <p className="mt-2 text-justify text-sm italic text-gray-500 dark:text-gray-300 lg:text-base">
             {description}
           </p>
-          <div className="mt-2 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
+          <div className="mt-4 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
             {tags.map((tag) => (
               <TemplateTag key={tag} to={`/templates/filter?tag=${tag}`}>
                 {tag}
@@ -73,7 +73,7 @@ export default function Templates() {
           </div>
         </div>
 
-        <div className="col-span-full hidden h-0 md:block lg:h-8" />
+        <div className="col-span-full hidden h-0 lg:block" />
 
         {templates.map(({ tags, ...template }) => (
           <TemplateCard

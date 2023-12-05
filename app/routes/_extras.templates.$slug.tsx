@@ -74,11 +74,11 @@ export default function TemplatePage() {
   let { description, repoUrl, initCommand, sponsorUrl, tags } = template;
 
   return (
-    <main className="mt-8 flex flex-1 flex-col items-center px-8 lg:container">
+    <main className="flex flex-1 flex-col items-center px-8 lg:container">
       <div className="flex w-full flex-col md:flex-row-reverse">
         {/* The sidebar comes first with a flex row-reverse for better keyboard navigation */}
-        <div className="flex flex-col gap-2 md:sticky md:top-28 md:h-0 md:w-[400px]">
-          <p className="mt-2 text-justify text-sm italic text-gray-500 dark:text-gray-300 lg:text-base">
+        <div className="flex flex-col gap-4 md:sticky md:top-28 md:h-0 md:w-[400px] md:gap-2">
+          <p className="mt-2 text-sm italic text-gray-500 dark:text-gray-300 md:text-justify lg:text-base">
             {description}
           </p>
           <a
@@ -117,13 +117,15 @@ export default function TemplatePage() {
           </div>
         </div>
 
+        <hr className="mt-6 w-full border-gray-200 dark:border-gray-700 md:hidden" />
+
         {readmeHtml ? (
           <div
             // Have to specify the width this way, otherwise the markdown
             // content will take up the full container without a care in the
             // world for it's sibling -- not unlike my older brother on our
             // family's annual summer road trip to the beach.
-            className="markdown mt-12 w-full pr-0 md:mt-0 md:w-[calc(100%-400px)] md:pr-12 lg:pr-16"
+            className="markdown mt-6 w-full pr-0 md:mt-0 md:w-[calc(100%-400px)] md:pr-12 lg:pr-16"
           >
             <div
               className="md-prose"

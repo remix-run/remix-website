@@ -82,9 +82,9 @@ export default function FilteredTemplates() {
   let selectedTagsSet = new Set(selectedTags);
 
   return (
-    <main className="container mt-8 flex flex-1 flex-col items-center">
+    <main className="container flex flex-1 flex-col items-center">
       <div className="flex w-full flex-col items-center gap-2 self-start md:flex-row md:gap-4">
-        <h1 className="min-w-fit self-start text-4xl font-bold lg:text-5xl">
+        <h1 className="min-w-fit self-start text-2xl font-bold md:text-4xl md:font-normal">
           Templates that use
         </h1>
         <div className="mt-2 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2 lg:mt-2">

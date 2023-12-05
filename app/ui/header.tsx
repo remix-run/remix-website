@@ -2,9 +2,10 @@ import { NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
 import { DetailsMenu, DetailsPopup } from "~/ui/details-menu";
 import cx from "clsx";
-import { useMatches } from "@remix-run/react";
+import { useRouteLoaderData } from "@remix-run/react";
 
 import iconsHref from "~/icons.svg";
+import type { loader } from "~/root";
 
 export function Header({
   forceDark,
@@ -16,9 +17,8 @@ export function Header({
   className?: string;
 }) {
   // TODO: Remove prior to launch as this is only here to render the template link for non-production
-  let matches = useMatches();
-  let rootData = matches.find((match) => match.id === "root");
-  let showTemplates = !(rootData?.data as any)?.isProductionHost;
+  const rootData = useRouteLoaderData<typeof loader>("root");
+  let showTemplates = !rootData?.isProductionHost;
 
   return (
     <header
@@ -65,9 +65,9 @@ export function Header({
 }
 
 function HeaderMenuMobile({ className = "" }: { className: string }) {
-  let matches = useMatches();
-  let rootData = matches.find((match) => match.id === "root");
-  let showTemplates = !(rootData?.data as any)?.isProductionHost;
+  // TODO: Remove prior to launch as this is only here to render the template link for non-production
+  const rootData = useRouteLoaderData<typeof loader>("root");
+  let showTemplates = !rootData?.isProductionHost;
   // This is the same default, hover, focus style as the VersionSelect
   let baseClasses =
     "bg-gray-100 hover:bg-gray-200 [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
