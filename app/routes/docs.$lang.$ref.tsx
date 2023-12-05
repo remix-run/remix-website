@@ -9,6 +9,7 @@ import {
   useNavigation,
   useParams,
   useResolvedPath,
+  useRouteLoaderData,
 } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { matchPath } from "react-router-dom";
@@ -40,6 +41,7 @@ import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
 import { env } from "~/env.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import type { loader as rootLoader } from "~/root";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
@@ -189,6 +191,10 @@ function Footer() {
 }
 
 function Header() {
+  // TODO: Remove prior to launch as this is only here to render the template link for non-production
+  const rootData = useRouteLoaderData<typeof rootLoader>("root");
+  let showTemplates = !rootData?.isProductionHost;
+
   return (
     <div
       className={cx(
@@ -226,6 +232,9 @@ function Header() {
               <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
               <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
               <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
+              {showTemplates ? (
+                <HeaderMenuLink to="/templates">Templates</HeaderMenuLink>
+              ) : null}
             </div>
             <div className="flex items-center gap-2">
               <HeaderLink
@@ -537,6 +546,10 @@ function HeaderMenuLink({
 }
 
 function HeaderMenuMobile({ className = "" }: { className: string }) {
+  // TODO: Remove prior to launch as this is only here to render the template link for non-production
+  const rootData = useRouteLoaderData<typeof rootLoader>("root");
+  let showTemplates = !rootData?.isProductionHost;
+
   // This is the same default, hover, focus style as the VersionSelect
   let baseClasses =
     "bg-gray-100 hover:bg-gray-200 [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
@@ -558,6 +571,9 @@ function HeaderMenuMobile({ className = "" }: { className: string }) {
           <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
           <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
           <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
+          {showTemplates ? (
+            <HeaderMenuLink to="/templates">Templates</HeaderMenuLink>
+          ) : null}
         </div>
       </DetailsPopup>
     </DetailsMenu>

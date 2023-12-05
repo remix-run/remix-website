@@ -32,7 +32,7 @@ export default function Blog() {
 
   return (
     <main
-      className="mt-16 flex max-w-full flex-1 flex-col px-6 sm:container lg:mt-32"
+      className="mt-8 flex max-w-full flex-1 flex-col px-6 sm:container"
       tabIndex={-1}
     >
       <div className="md:grid md:grid-cols-12">
