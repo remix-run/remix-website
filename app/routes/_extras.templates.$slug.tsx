@@ -7,7 +7,11 @@ import {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { getTemplateReadme, templates } from "~/lib/templates.server";
+import {
+  getRepoStuff,
+  getTemplateReadme,
+  templates,
+} from "~/lib/templates.server";
 import { InitCodeblock, slugify, TemplateTag } from "~/ui/templates";
 import markdownStyles from "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
@@ -29,7 +33,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   let readme = await getTemplateReadme(template.repoUrl);
 
-  return json({ siteUrl, template, readmeHtml: readme?.html });
+  let repoStuff = await getRepoStuff(template.repoUrl);
+
+  return json({
+    siteUrl,
+    template: { ...template, ...repoStuff },
+    readmeHtml: readme?.html,
+  });
 }
 
 export const links: LinksFunction = () => {

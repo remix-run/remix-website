@@ -5,6 +5,7 @@ import LRUCache from "lru-cache";
 import { env } from "~/env.server";
 import { getRepoContent } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
+import { octokit } from "~/lib/github.server";
 
 // This is relative to where this code ends up in the build, not the source
 let dataPath = path.join(__dirname, "..", "data");
@@ -63,4 +64,30 @@ export async function getTemplateReadme(
   let doc = await templateReadmeCache.fetch(repo);
 
   return doc || undefined;
+}
+
+async function getSponsorUrl(owner: string) {
+  let sponsorUrl = `https://github.com/sponsors/${owner}`;
+
+  try {
+    let response = await fetch(sponsorUrl);
+    return !response.redirected ? sponsorUrl : null;
+  } catch (e) {
+    console.error("Failed to fetch sponsor url for", owner);
+    return null;
+  }
+}
+
+export async function getRepoStuff(repoUrl: string) {
+  let [owner, repo] = repoUrl.replace("https://github.com/", "").split("/");
+
+  let [{ data }, sponsorUrl] = await Promise.all([
+    octokit.rest.repos.get({ owner, repo }),
+    getSponsorUrl(owner),
+  ]);
+
+  let stars = data.stargazers_count;
+  let tags = data.topics;
+
+  return { stars, tags, sponsorUrl };
 }
