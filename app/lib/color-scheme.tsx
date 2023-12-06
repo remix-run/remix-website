@@ -1,21 +1,33 @@
-import { useLayoutEffect, useMemo } from "react";
-import { useMatches, useNavigation } from "@remix-run/react";
-import { canUseDOM } from "~/lib/misc";
+import { useMemo } from "react";
+import { useNavigation, useRouteLoaderData } from "@remix-run/react";
+import { useIsomorphicLayoutEffect } from "~/lib/misc";
+import type { loader as rootLoader } from "~/root";
 
 export type ColorScheme = "dark" | "light" | "system";
 
 export function useColorScheme(): ColorScheme {
-  let rootLoaderData = useMatches()[0].data;
+  let rootLoaderData = useRouteLoaderData<typeof rootLoader>("root");
+  let rootColorScheme = rootLoaderData?.colorScheme ?? "system";
+
   let { formData } = useNavigation();
   let optimisticColorScheme = formData?.has("colorScheme")
     ? (formData.get("colorScheme") as ColorScheme)
     : null;
-  // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
-  return optimisticColorScheme || rootLoaderData.colorScheme;
+  return optimisticColorScheme || rootColorScheme;
+}
+
+function syncColorScheme(media: MediaQueryList | MediaQueryListEvent) {
+  if (media.matches) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
 }
 
 function ColorSchemeScriptImpl() {
   let colorScheme = useColorScheme();
+  // This script automatically adds the dark class to the document element if
+  // colorScheme is "system" and prefers-color-scheme: dark is true.
   let script = useMemo(
     () => `
         let colorScheme = ${JSON.stringify(colorScheme)};
@@ -24,36 +36,36 @@ function ColorSchemeScriptImpl() {
           if (media.matches) document.documentElement.classList.add("dark");
         }
       `,
-    [], // eslint-disable-line
-    // we don't want this script to ever change
+    [], // eslint-disable-line -- we don't want this script to ever change
   );
 
-  if (canUseDOM) {
-    // eslint-disable-next-line
-    useLayoutEffect(() => {
-      if (colorScheme === "light") {
+  // Set
+  useIsomorphicLayoutEffect(() => {
+    switch (colorScheme) {
+      case "light":
         document.documentElement.classList.remove("dark");
-      } else if (colorScheme === "dark") {
+        break;
+      case "dark":
         document.documentElement.classList.add("dark");
-      } else if (colorScheme === "system") {
-        function check(media: MediaQueryList | MediaQueryListEvent) {
-          if (media.matches) {
-            document.documentElement.classList.add("dark");
-          } else {
-            document.documentElement.classList.remove("dark");
-          }
-        }
-
+        break;
+      case "system":
         let media = window.matchMedia("(prefers-color-scheme: dark)");
-        check(media);
-
-        media.addEventListener("change", check);
-        return () => media.removeEventListener("change", check);
-      } else {
+        syncColorScheme(media);
+        media.addEventListener("change", syncColorScheme);
+        return () => media.removeEventListener("change", syncColorScheme);
+      default:
         console.error("Impossible color scheme state:", colorScheme);
-      }
-    }, [colorScheme]);
-  }
+    }
+  }, [colorScheme]);
+
+  // always sync the color scheme if "system" is used
+  // this accounts for the docs pages adding some classnames to documentElement in root
+  useIsomorphicLayoutEffect(() => {
+    if (colorScheme === "system") {
+      let media = window.matchMedia("(prefers-color-scheme: dark)");
+      syncColorScheme(media);
+    }
+  });
 
   return <script dangerouslySetInnerHTML={{ __html: script }} />;
 }
