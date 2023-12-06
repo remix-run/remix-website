@@ -10,7 +10,9 @@ export const canUseDOM = !!(
   window.document.createElement
 );
 
-export const useLayoutEffect = canUseDOM ? React_useLayoutEffect : useEffect;
+export const useIsomorphicLayoutEffect = canUseDOM
+  ? React_useLayoutEffect
+  : useEffect;
 
 let hydrating = true;
 export function useHydrated() {
