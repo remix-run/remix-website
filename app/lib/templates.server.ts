@@ -5,17 +5,24 @@ import LRUCache from "lru-cache";
 import { env } from "~/env.server";
 import { getRepoContent } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
-import type { Octokit } from "octokit";
 import { slugify } from "~/ui/templates";
+import type { Octokit } from "octokit";
 
 // This is relative to where this code ends up in the build, not the source
 let dataPath = path.join(__dirname, "..", "data");
 
-let formatter = new Intl.NumberFormat("en", { notation: "compact" });
+// load the YAML file once and store it in memory
+// TODO: parse this with zod
+let _templates: TemplateYamlData[] = yaml.parse(
+  fs.readFileSync(path.join(dataPath, "templates.yaml")).toString(),
+);
+
+let starFormatter = new Intl.NumberFormat("en", { notation: "compact" });
 
 export interface Template {
   title: string;
   imgSrc: string;
+  featured?: boolean;
   description?: string;
   repoUrl: string;
   sponsorUrl?: string;
@@ -24,17 +31,19 @@ export interface Template {
   tags: string[];
 }
 
-type TemplateYamlKeys = "title" | "imgSrc" | "repoUrl" | "initCommand";
+type TemplateYamlKeys =
+  | "title"
+  | "imgSrc"
+  | "repoUrl"
+  | "initCommand"
+  | "featured";
 type TemplateYamlData = Pick<Template, TemplateYamlKeys>;
 type TemplateGitHubData = Omit<Template, TemplateYamlKeys>;
+type CacheContext = { octokit: Octokit };
 
-// load the YAML file once and store it in memory
-// TODO: parse this with zod
-let _templates: TemplateYamlData[] = yaml.parse(
-  fs.readFileSync(path.join(dataPath, "templates.yaml")).toString(),
-);
-
-// every time the templates are requested, fetch GitHub data against LRU cache
+/**
+ * Gets all of the templates, fetching and merging GitHub data for each one
+ */
 export async function getAllTemplates({ octokit }: CacheContext) {
   let templates: Template[] = await Promise.all(
     _templates.map(async (template) => {
@@ -52,6 +61,9 @@ export async function getAllTemplates({ octokit }: CacheContext) {
   return templates;
 }
 
+/**
+ * Get a single template by slug, fetching and merging GitHub data and README contents
+ */
 export async function getTemplate(
   templateSlug: string,
   { octokit }: CacheContext,
@@ -74,7 +86,7 @@ export async function getTemplate(
   return { ...template, ...gitHubData, readmeHtml };
 }
 
-type CacheContext = { octokit: Octokit };
+//#region LRUCache and fetchers for GitHub data and READMEs
 
 declare global {
   var templateReadmeCache: LRUCache<string, string>;
@@ -104,7 +116,7 @@ async function fetchReadme(repo: string): Promise<string> {
   return html;
 }
 
-export async function getTemplateReadme(repoUrl: string) {
+async function getTemplateReadme(repoUrl: string) {
   let repo = repoUrl.replace("https://github.com/", "");
   let doc = await templateReadmeCache.fetch(repo);
 
@@ -123,7 +135,7 @@ async function getSponsorUrl(owner: string) {
   }
 }
 
-export async function getTemplateGitHubData(
+async function getTemplateGitHubData(
   repoUrl: string,
   { octokit }: CacheContext,
 ) {
@@ -144,7 +156,9 @@ global.templateGitHubDataCache ??= new LRUCache<
   fetchMethod: fetchTemplateGitHubData,
 });
 
-export async function fetchTemplateGitHubData(
+let ignoredTopics = new Set(["remix-stack", "remix-run", "remix"]);
+
+async function fetchTemplateGitHubData(
   repoUrl: string,
   staleValue: TemplateGitHubData | undefined,
   {
@@ -159,8 +173,10 @@ export async function fetchTemplateGitHubData(
   ]);
 
   let description = data.description ?? undefined;
-  let stars = formatter.format(data.stargazers_count).toLowerCase();
-  let tags = data.topics ?? []; //.filter((topic) => topic !== "remix-stack");
+  let stars = starFormatter.format(data.stargazers_count).toLowerCase();
+  let tags = (data.topics ?? []).filter((topic) => !ignoredTopics.has(topic));
 
   return { description, stars, tags, sponsorUrl };
 }
+
+//#endregion

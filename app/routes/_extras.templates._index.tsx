@@ -16,7 +16,14 @@ import { octokit } from "~/lib/github.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let templates = await getAllTemplates({ octokit });
-  return json({ templates });
+
+  let featuredIdx = templates.findIndex(({ featured }) => featured);
+  featuredIdx = featuredIdx === -1 ? 0 : featuredIdx;
+
+  let featuredTemplate = templates[featuredIdx];
+  templates.splice(featuredIdx, 1);
+
+  return json({ templates, featuredTemplate });
 };
 
 export const meta: MetaFunction = () => {
@@ -30,7 +37,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Templates() {
-  const { templates } = useLoaderData<typeof loader>();
+  const { templates, featuredTemplate } = useLoaderData<typeof loader>();
 
   let {
     title,
@@ -41,7 +48,7 @@ export default function Templates() {
     initCommand,
     sponsorUrl,
     tags,
-  } = templates[2];
+  } = featuredTemplate;
 
   return (
     <main className="container flex flex-1 flex-col items-center">
