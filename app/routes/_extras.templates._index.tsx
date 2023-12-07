@@ -3,7 +3,7 @@ import {
   type MetaFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
-import { templates } from "~/lib/templates.server";
+import { getAllTemplates } from "~/lib/templates.server";
 import { useLoaderData } from "@remix-run/react";
 import {
   TemplatesGrid,
@@ -12,8 +12,10 @@ import {
   slugify,
   TemplatePoster,
 } from "~/ui/templates";
+import { octokit } from "~/lib/github.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  let templates = await getAllTemplates({ octokit });
   return json({ templates });
 };
 

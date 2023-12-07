@@ -5,7 +5,8 @@ import {
   json,
 } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
-import { templates } from "~/lib/templates.server";
+import { octokit } from "~/lib/github.server";
+import { getAllTemplates } from "~/lib/templates.server";
 import { TemplateCard, TemplateTag, TemplatesGrid } from "~/ui/templates";
 
 /**
@@ -48,6 +49,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   let selectedTags = [...selectedTagsSet];
 
   redirectIfEmpty(selectedTags);
+
+  let templates = await getAllTemplates({ octokit });
 
   let tags = new Set(templates.flatMap(({ tags }) => tags));
 

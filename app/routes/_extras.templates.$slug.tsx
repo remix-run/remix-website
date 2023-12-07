@@ -7,12 +7,9 @@ import {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import {
-  getRepoStuff,
-  getTemplateReadme,
-  templates,
-} from "~/lib/templates.server";
-import { InitCodeblock, slugify, TemplateTag } from "~/ui/templates";
+import { getTemplate } from "~/lib/templates.server";
+import { InitCodeblock, TemplateTag } from "~/ui/templates";
+import { octokit } from "~/lib/github.server";
 import markdownStyles from "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
 
@@ -20,9 +17,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const templateSlug = params.slug;
   invariant(templateSlug, "templateSlug is required");
 
-  let template = templates.find(
-    (template) => slugify(template.title) === templateSlug,
-  );
+  let template = await getTemplate(templateSlug, { octokit });
 
   if (!template) {
     throw json({}, { status: 404 });
@@ -31,14 +26,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  let readme = await getTemplateReadme(template.repoUrl);
-
-  let repoStuff = await getRepoStuff(template.repoUrl);
-
   return json({
     siteUrl,
-    template: { ...template, ...repoStuff },
-    readmeHtml: readme?.html,
+    template,
   });
 }
 
@@ -80,8 +70,16 @@ export const meta: MetaFunction<typeof loader> = (args) => {
 };
 
 export default function TemplatePage() {
-  let { template, readmeHtml } = useLoaderData<typeof loader>();
-  let { description, repoUrl, initCommand, sponsorUrl, tags } = template;
+  let { template } = useLoaderData<typeof loader>();
+  let {
+    description,
+    repoUrl,
+    initCommand,
+    sponsorUrl,
+    stars,
+    tags,
+    readmeHtml,
+  } = template;
 
   return (
     <main className="flex flex-1 flex-col items-center px-8 lg:container">
@@ -97,10 +95,17 @@ export default function TemplatePage() {
             target="_blank"
             className="flex items-center gap-2 font-medium hover:text-blue-brand"
           >
-            <svg aria-hidden className="h-4 w-4" viewBox="0 0 24 24">
+            <svg
+              aria-hidden
+              className="h-4 w-4 text-gray-900"
+              viewBox="0 0 24 24"
+            >
               <use href={`${iconsHref}#github`} />
             </svg>
-            <span>GitHub</span>
+            <span>
+              <span className="font-medium">Star</span>{" "}
+              <span className="font-light">{stars}</span>
+            </span>
           </a>
           {sponsorUrl ? (
             <a
