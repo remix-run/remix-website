@@ -1,29 +1,26 @@
-# This is just here to get started, this will be moved to the Remix GitHub repo eventually
-
+# TODO: fetch titles from GitHub and use the repo url for the slug 
 - title: "Epic Stack"
   imgSrc: "https://camo.githubusercontent.com/b0dc7ea8d2ffacd560d79cea8c792aa568cfdfc0b158950ea95194584fed0d4a/68747470733a2f2f6769746875622d70726f64756374696f6e2d757365722d61737365742d3632313064662e73332e616d617a6f6e6177732e636f6d2f313530303638342f3234363838353434392d31623030323836632d616133642d343462322d396566322d3034663639346562333539322e706e67"
   repoUrl: "https://github.com/epicweb-dev/epic-stack"
   initCommand: "npx create-epic-app@latest"
-  # Get all this from GitHub
-  description: "An opinionated project starter and reference that allows teams to ship their ideas to production faster and on a more stable foundation."
-  stars: 3000
-  tags: ["fly.io", "prisma", "tailwindcss"]
 
 - title: "Indie Stack"
   imgSrc: "https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf"
   repoUrl: "https://github.com/remix-run/indie-stack"
   initCommand: "npx create-remix@latest --template remix-run/indie-stack"
-  tags: ["fly.io", "sqlite", "prisma", "tailwindcss"]
-  # Get all this from GitHub
-  description: "The Remix Stack for deploying to Fly with SQLite, authentication, testing, linting, formatting, etc."
-  stars: 915
-
+  
 - title: "Remix Page Blocks"
   imgSrc: "https://camo.githubusercontent.com/dfa95a488c367ffec2091398cb4061d32e6160bcdd0d434200f2d96fac4d655e/68747470733a2f2f7961686f6f6465722e736972762e636f6d2f72656d6978626c6f636b732f706167652d626c6f636b732f636f7665722e706e67"
   repoUrl: "https://github.com/AlexandroMtzG/remix-page-blocks"
   initCommand: "npx create-remix@latest --template AlexandroMtzG/remix-page-blocks"
-  # Get all this from GitHub
-  description: "Simple page block editor with Remix and Tailwind CSS."
-  stars: 316
-  sponsorUrl: "https://github.com/sponsors/AlexandroMtzG"
-  tags: ["tailwindcss", "remix"]
+  featured: true
+
+- title: "Stripe Stack"
+  imgSrc: "https://raw.githubusercontent.com/dev-xo/dev-xo/main/stripe-stack/assets/images/Intro-Light.png"
+  repoUrl: "https://github.com/dev-xo/stripe-stack"
+  initCommand: "npx create-remix@latest --template dev-xo/stripe-stack"
+
+- title: "Remix Gospel Stack"
+  imgSrc: "https://repository-images.githubusercontent.com/533426847/134e6276-a6a8-41f1-94d3-f6dcb8f58b5f"
+  repoUrl: "https://github.com/PhilDL/remix-gospel-stack"
+  initCommand: "pnpm create remix@latest --init-script --install --template https://github.com/PhilDL/remix-gospel-stack"

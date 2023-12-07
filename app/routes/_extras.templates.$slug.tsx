@@ -7,8 +7,9 @@ import {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { getTemplateReadme, templates } from "~/lib/templates.server";
-import { InitCodeblock, slugify, TemplateTag } from "~/ui/templates";
+import { getTemplate } from "~/lib/templates.server";
+import { InitCodeblock, TemplateTag } from "~/ui/templates";
+import { octokit } from "~/lib/github.server";
 import markdownStyles from "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
 
@@ -16,9 +17,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const templateSlug = params.slug;
   invariant(templateSlug, "templateSlug is required");
 
-  let template = templates.find(
-    (template) => slugify(template.title) === templateSlug,
-  );
+  let template = await getTemplate(templateSlug, { octokit });
 
   if (!template) {
     throw json({}, { status: 404 });
@@ -27,9 +26,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  let readme = await getTemplateReadme(template.repoUrl);
-
-  return json({ siteUrl, template, readmeHtml: readme?.html });
+  return json({
+    siteUrl,
+    template,
+  });
 }
 
 export const links: LinksFunction = () => {
@@ -70,34 +70,56 @@ export const meta: MetaFunction<typeof loader> = (args) => {
 };
 
 export default function TemplatePage() {
-  let { template, readmeHtml } = useLoaderData<typeof loader>();
-  let { description, repoUrl, initCommand, sponsorUrl, tags } = template;
+  let { template } = useLoaderData<typeof loader>();
+  let {
+    description,
+    repoUrl,
+    initCommand,
+    sponsorUrl,
+    stars,
+    tags,
+    readmeHtml,
+  } = template;
 
   return (
     <main className="flex flex-1 flex-col items-center px-8 lg:container">
       <div className="flex w-full flex-col md:flex-row-reverse">
         {/* The sidebar comes first with a flex row-reverse for better keyboard navigation */}
-        <div className="flex flex-col gap-4 md:sticky md:top-28 md:h-0 md:w-[400px] md:gap-2">
-          <p className="mt-2 text-sm italic text-gray-500 dark:text-gray-300 md:text-justify lg:text-base">
+        <aside className="flex flex-col gap-4 md:sticky md:top-28 md:h-0 md:w-[400px]">
+          <p className="text-xl font-bold">
+            {repoUrl.replace("https://github.com/", "")}
+          </p>
+          <p className="text-sm italic text-gray-500 dark:text-gray-300 md:text-justify lg:text-base">
             {description}
           </p>
           <a
             href={repoUrl}
             rel="noopener noreferrer"
             target="_blank"
-            className="flex items-center gap-2 font-medium hover:text-blue-brand"
+            className="group flex items-center gap-2"
           >
-            <svg aria-hidden className="h-4 w-4" viewBox="0 0 24 24">
+            <svg
+              aria-hidden
+              className="h-4 w-4 text-gray-900"
+              viewBox="0 0 24 24"
+            >
               <use href={`${iconsHref}#github`} />
             </svg>
-            <span>GitHub</span>
+            <span>
+              <span className="font-medium group-hover:font-semibold">
+                Star
+              </span>{" "}
+              <span className="font-light group-hover:font-normal">
+                {stars}
+              </span>
+            </span>
           </a>
           {sponsorUrl ? (
             <a
               href={sponsorUrl}
               rel="noopener noreferrer"
               target="_blank"
-              className="flex items-center gap-2 font-medium hover:text-blue-brand"
+              className="flex items-center gap-2 font-medium hover:font-semibold"
             >
               <svg aria-hidden className="h-4 w-4" viewBox="0 0 16 16">
                 <use href={`${iconsHref}#heart-filled`} />
@@ -106,16 +128,17 @@ export default function TemplatePage() {
             </a>
           ) : null}
           <div className="relative">
+            <p>Use this template</p>
             <InitCodeblock initCommand={initCommand} />
           </div>
-          <div className="mt-2 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
+          <div className="flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
             {tags.map((tag) => (
               <TemplateTag key={tag} to={`/templates/filter?tag=${tag}`}>
                 {tag}
               </TemplateTag>
             ))}
           </div>
-        </div>
+        </aside>
 
         <hr className="mt-6 w-full border-gray-200 dark:border-gray-700 md:hidden" />
 

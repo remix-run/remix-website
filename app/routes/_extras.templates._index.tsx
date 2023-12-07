@@ -3,7 +3,7 @@ import {
   type MetaFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
-import { templates } from "~/lib/templates.server";
+import { getAllTemplates } from "~/lib/templates.server";
 import { useLoaderData } from "@remix-run/react";
 import {
   TemplatesGrid,
@@ -12,9 +12,18 @@ import {
   slugify,
   TemplatePoster,
 } from "~/ui/templates";
+import { octokit } from "~/lib/github.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return json({ templates });
+  let templates = await getAllTemplates({ octokit });
+
+  let featuredIdx = templates.findIndex(({ featured }) => featured);
+  featuredIdx = featuredIdx === -1 ? 0 : featuredIdx;
+
+  let featuredTemplate = templates[featuredIdx];
+  templates.splice(featuredIdx, 1);
+
+  return json({ templates, featuredTemplate });
 };
 
 export const meta: MetaFunction = () => {
@@ -28,7 +37,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Templates() {
-  const { templates } = useLoaderData<typeof loader>();
+  const { templates, featuredTemplate } = useLoaderData<typeof loader>();
 
   let {
     title,
@@ -39,7 +48,7 @@ export default function Templates() {
     initCommand,
     sponsorUrl,
     tags,
-  } = templates[2];
+  } = featuredTemplate;
 
   return (
     <main className="container flex flex-1 flex-col items-center">

@@ -105,9 +105,11 @@ export function TemplateCard({
       <h2 className="mt-4 font-medium text-gray-900 dark:text-gray-100">
         {title}
       </h2>
-      <p className="mt-2 italic text-gray-500 dark:text-gray-300">
-        {description}
-      </p>
+      {description ? (
+        <p className="mt-2 italic text-gray-500 dark:text-gray-300">
+          {description}
+        </p>
+      ) : null}
       <div className="mt-4 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
         {tags}
       </div>
