@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import yaml from "yaml";
 import LRUCache from "lru-cache";
 import { env } from "~/env.server";
@@ -7,15 +5,10 @@ import { getRepoContent } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
 import { slugify } from "~/ui/templates";
 import type { Octokit } from "octokit";
+import templatesYamlFileContents from "../../data/templates.yaml?raw";
 
-// This is relative to where this code ends up in the build, not the source
-let dataPath = path.join(__dirname, "..", "data");
-
-// load the YAML file once and store it in memory
 // TODO: parse this with zod
-let _templates: TemplateYamlData[] = yaml.parse(
-  fs.readFileSync(path.join(dataPath, "templates.yaml")).toString(),
-);
+let _templates: TemplateYamlData[] = yaml.parse(templatesYamlFileContents);
 
 let starFormatter = new Intl.NumberFormat("en", { notation: "compact" });
 

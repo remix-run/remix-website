@@ -1,18 +1,14 @@
 import * as React from "react";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import speakersStylesUrl from "~/styles/conf-speaker.css";
+import "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { getSpeakerBySlug, getConfSessions } from "~/lib/conf2023.server";
 import type { Speaker, SpeakerSession } from "~/lib/conf2023";
 import invariant from "tiny-invariant";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: speakersStylesUrl }];
-};
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   if (args.data) {

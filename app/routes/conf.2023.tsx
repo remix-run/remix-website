@@ -6,7 +6,7 @@ import {
   useMatches,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
@@ -18,7 +18,7 @@ import {
   MenuLink,
 } from "~/ui/primitives/menu-button";
 import cx from "clsx";
-import styles from "~/styles/conf/2023/conf.css";
+import "~/styles/conf/2023/conf.css";
 import {
   SubscribeEmailInput,
   SubscribeForm,
@@ -29,10 +29,6 @@ import {
 import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const handle = { forceDark: true };
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
 
 // March 1 at 12:00am
 const EARLY_BIRD_ENDING_TIME = 1646121600000;

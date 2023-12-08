@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import {
   Link,
   useParams,
@@ -10,13 +10,9 @@ import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { getSpeakers, getTalks } from "~/lib/conf.server";
-import speakersStylesUrl from "~/styles/conf-speaker.css";
+import "~/styles/conf-speaker.css";
 import { sluggify } from "~/lib/conf";
 import { CACHE_CONTROL } from "~/lib/http.server";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: speakersStylesUrl }];
-};
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   if (args.data) {

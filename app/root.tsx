@@ -17,9 +17,8 @@ import {
   load as loadFathom,
   type LoadOptions as FathomLoadOptions,
 } from "fathom-client";
-import { cssBundleHref } from "@remix-run/css-bundle";
-import tailwind from "~/styles/tailwind.css";
-import bailwind from "~/styles/bailwind.css";
+import "~/styles/tailwind.css";
+import "~/styles/bailwind.css";
 import { removeTrailingSlashes, isProductionHost } from "~/lib/http.server";
 import { ColorSchemeScript, useColorScheme } from "~/lib/color-scheme";
 import { parseColorScheme } from "~/lib/color-scheme.server";
@@ -72,10 +71,6 @@ export function links() {
       href: `/font/${font}`,
       crossOrigin: "anonymous",
     })),
-    { rel: "stylesheet", href: tailwind },
-    { rel: "stylesheet", href: bailwind },
-    // Will go away with Vite, but adding for now to get a more ergonomic doc-search setup
-    ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
   ];
 }
 

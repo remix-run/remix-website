@@ -1,12 +1,12 @@
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
 import type { Prose, Sequence } from "~/lib/mdtut.server";
-import indexStyles from "~/styles/index.css";
+import "~/styles/index.css";
 import { Red } from "~/ui/gradients";
 import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
 import { ScrollExperience } from "~/ui/homepage-scroll-experience";
@@ -33,10 +33,6 @@ export const meta: MetaFunction<typeof loader> = (args) => {
     "twitter:description": description,
     "twitter:image": image,
   });
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: indexStyles }];
 };
 
 type LoaderData = {

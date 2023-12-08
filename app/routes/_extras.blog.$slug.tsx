@@ -5,7 +5,7 @@ import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/lib/blog.server";
-import mdStyles from "~/styles/md.css";
+import "~/styles/md.css";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import { CACHE_CONTROL } from "~/lib/http.server";
@@ -28,10 +28,6 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
   // Inherit the caching headers from the loader so we do't cache 404s
   return loaderHeaders;
 };
-
-export function links() {
-  return [{ rel: "stylesheet", href: mdStyles }];
-}
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { data, params } = args;

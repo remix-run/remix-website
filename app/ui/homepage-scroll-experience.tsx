@@ -1,11 +1,13 @@
 import * as React from "react";
-import { easeOutQuad, easeInExpo, linear } from "tween-functions";
+import tweenFunctions from "tween-functions";
 import type { Sequence, Slide } from "~/lib/mdtut.server";
 import { PrimaryButtonLink } from "~/ui/buttons";
 import cx from "clsx";
 import { Actor, ScrollStage, useActor, useStage } from "~/ui/stage";
 import * as Fakebooks from "~/ui/fakebooks";
 import { BrowserChrome } from "~/ui/browser-chrome";
+
+const { easeOutQuad, easeInExpo, linear } = tweenFunctions;
 
 export function ScrollExperience({
   mutations,
@@ -863,7 +865,7 @@ function Intro() {
 
 // function Header({ children }: { children: React.ReactNode }) {
 //   return (
-//     <div className="mb-2 text-center text-white text-4xl md:text-5xl font-display font-black md:mb-4">
+//     <div className="mb-2 text-4xl font-black text-center text-white md:text-5xl font-display md:mb-4">
 //       {children}
 //     </div>
 //   );

@@ -1,14 +1,14 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
 import {
   secondaryButtonLinkClass,
   outlineSecondaryButtonLinkClass,
 } from "~/ui/buttons";
-import indexStyles from "~/styles/index.css";
+import "~/styles/index.css";
 import { Fragment } from "react";
 import { getSponsors } from "~/lib/conf.server";
 import type { Sponsor, SponsorLevel } from "~/lib/conf";
@@ -38,10 +38,6 @@ export const meta: MetaFunction<typeof loader> = (args) => {
     "twitter:description": description,
     "twitter:image": image,
   });
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: indexStyles }];
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
