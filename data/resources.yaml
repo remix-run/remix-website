@@ -4,6 +4,11 @@
   repoUrl: "https://github.com/epicweb-dev/epic-stack"
   initCommand: "npx create-epic-app@latest"
 
+- title: 'Remix Utils'
+  imgSrc: 'https://opengraph.githubassets.com/8175869a122fddcba511d07b5c805c752bdaa7168fc40e84731a036758e99bce/sergiodxa/remix-utils'
+  repoUrl: "https://github.com/sergiodxa/remix-utils"
+  initCommand: 'npm install remix-utils'
+
 - title: "Indie Stack"
   imgSrc: "https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf"
   repoUrl: "https://github.com/remix-run/indie-stack"

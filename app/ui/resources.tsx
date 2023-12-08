@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { type Template } from "~/lib/templates.server";
+import { type Resource } from "~/lib/resources.server";
 import { Link } from "@remix-run/react";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
 
-import "~/styles/templates.css";
+import "~/styles/resources.css";
 
-export function TemplatesGrid({
+export function ResourcesGrid({
   children,
   className,
 }: {
@@ -35,13 +35,13 @@ export function slugify(string: string) {
     .join("-");
 }
 
-type TemplatePosterProps = Omit<Template, "description" | "tags" | "title"> & {
+type ResourcePosterProps = Omit<Resource, "description" | "tags" | "title"> & {
   /** make the poster a link */
   to?: string;
   className?: string;
 };
 
-export function TemplatePoster({
+export function ResourcePoster({
   to,
   imgSrc,
   repoUrl,
@@ -49,7 +49,7 @@ export function TemplatePoster({
   initCommand,
   sponsorUrl,
   className,
-}: TemplatePosterProps) {
+}: ResourcePosterProps) {
   let img = (
     <img
       src={imgSrc}
@@ -93,15 +93,15 @@ export function TemplatePoster({
   );
 }
 
-export function TemplateCard({
+export function ResourceCard({
   title,
   description,
   tags,
   ...props
-}: Omit<Template, "tags"> & { tags: React.ReactNode }) {
+}: Omit<Resource, "tags"> & { tags: React.ReactNode }) {
   return (
     <div className="text-sm">
-      <TemplatePoster to={`/templates/${slugify(title)}`} {...props} />
+      <ResourcePoster to={`/resources/${slugify(title)}`} {...props} />
       <h2 className="mt-4 font-medium text-gray-900 dark:text-gray-100">
         {title}
       </h2>
@@ -121,7 +121,7 @@ export function GitHubLinks({
   repoUrl,
   stars,
   sponsorUrl,
-}: Pick<Template, "repoUrl" | "stars" | "sponsorUrl">) {
+}: Pick<Resource, "repoUrl" | "stars" | "sponsorUrl">) {
   return (
     <div className="absolute right-2 top-2 rounded-md bg-gray-50/70 text-xs text-gray-900 ring-1 ring-inset ring-gray-500/10 backdrop-blur-sm">
       <a
@@ -160,17 +160,17 @@ export function GitHubLinks({
   );
 }
 
-type TemplateTagProps = {
+type ResourceTagProps = {
   to: string;
   selected?: boolean;
   children: React.ReactNode;
 };
 
-export function TemplateTag({
+export function ResourceTag({
   to,
   selected = false,
   children,
-}: TemplateTagProps) {
+}: ResourceTagProps) {
   return (
     <Link
       to={to}
@@ -190,7 +190,7 @@ export function InitCodeblock({
   initCommand,
   // Eh, not the best API, but I needed this
   rounded = "full",
-}: Pick<Template, "initCommand"> & {
+}: Pick<Resource, "initCommand"> & {
   rounded?: "full" | "bottom";
 }) {
   // Probably a more elegant solution, but this is what I've got

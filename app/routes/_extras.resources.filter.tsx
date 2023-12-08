@@ -6,18 +6,18 @@ import {
 } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { octokit } from "~/lib/github.server";
-import { getAllTemplates } from "~/lib/templates.server";
-import { TemplateCard, TemplateTag, TemplatesGrid } from "~/ui/templates";
+import { getAllResources } from "~/lib/resources.server";
+import { ResourceCard, ResourceTag, ResourcesGrid } from "~/ui/resources";
 
 /**
- * Simple function to redirect back to templates if search params, a set, or array of _something_ is empty
+ * Simple function to redirect back to resources if search params, a set, or array of _something_ is empty
  */
 function redirectIfEmpty(
   tags: { size: number; length?: never } | { length: number; size?: never },
 ) {
   let size = tags.size ?? tags.length;
   if (size < 1) {
-    throw redirect("/templates");
+    throw redirect("/resources");
   }
 }
 
@@ -33,12 +33,12 @@ function checkSelectedTags(selectedTags: string[], tags: Set<string>) {
     }
   }
 
-  // if all tags were bad, go ahead and redirect back to the templates page
+  // if all tags were bad, go ahead and redirect back to the resources page
   redirectIfEmpty(newSearchParams);
 
   // if any tags were bad, redirect to the same page but only with the valid tags
   if (hasInvalidTag) {
-    throw redirect(`/templates/filter?${newSearchParams}`);
+    throw redirect(`/resources/filter?${newSearchParams}`);
   }
 }
 
@@ -50,36 +50,36 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   redirectIfEmpty(selectedTags);
 
-  let templates = await getAllTemplates({ octokit });
+  let resources = await getAllResources({ octokit });
 
-  let tags = new Set(templates.flatMap(({ tags }) => tags));
+  let tags = new Set(resources.flatMap(({ tags }) => tags));
 
   // Find tags that aren't in the search params and redirect
   checkSelectedTags(selectedTags, tags);
 
-  // Get all templates that have at all of the selected tags
-  let filteredTemplates = templates.filter(({ tags }) => {
+  // Get all resources that have at all of the selected tags
+  let filteredResources = resources.filter(({ tags }) => {
     return selectedTags.every((tag) => tags.includes(tag));
   });
 
   return json({
     selectedTags,
-    templates: filteredTemplates,
+    resources: filteredResources,
   });
 }
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Remix Templates" },
+    { title: "Remix Resources" },
     {
       name: "description",
-      content: "Templates to help you get up and running quickly with Remix.",
+      content: "Resources to help you get up and running quickly with Remix.",
     },
   ];
 };
 
-export default function FilteredTemplates() {
-  let { selectedTags, templates } = useLoaderData<typeof loader>();
+export default function FilteredResources() {
+  let { selectedTags, resources } = useLoaderData<typeof loader>();
   let createFilterUrl = useCreateFilterUrl();
 
   let selectedTagsSet = new Set(selectedTags);
@@ -88,29 +88,29 @@ export default function FilteredTemplates() {
     <main className="container flex flex-1 flex-col items-center">
       <div className="flex w-full flex-col items-center gap-2 self-start md:flex-row md:gap-4">
         <h1 className="min-w-fit self-start text-2xl font-bold md:text-4xl md:font-normal">
-          Templates that use
+          Resources that use
         </h1>
         <div className="mt-2 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2 lg:mt-2">
           {selectedTags.map((tag) => (
-            <TemplateTag
+            <ResourceTag
               key={tag}
               to={createFilterUrl({ remove: tag })}
               selected
             >
               {tag}
-            </TemplateTag>
+            </ResourceTag>
           ))}
         </div>
       </div>
 
-      <TemplatesGrid className="mt-8 lg:mt-12">
-        {templates.map(({ tags, ...template }) => {
+      <ResourcesGrid className="mt-8 lg:mt-12">
+        {resources.map(({ tags, ...resource }) => {
           return (
-            <TemplateCard
-              key={template.title}
-              {...template}
+            <ResourceCard
+              key={resource.title}
+              {...resource}
               tags={tags.map((tag) => (
-                <TemplateTag
+                <ResourceTag
                   key={tag}
                   to={
                     selectedTagsSet.has(tag)
@@ -120,12 +120,12 @@ export default function FilteredTemplates() {
                   selected={selectedTagsSet.has(tag)}
                 >
                   {tag}
-                </TemplateTag>
+                </ResourceTag>
               ))}
             />
           );
         })}
-      </TemplatesGrid>
+      </ResourcesGrid>
     </main>
   );
 }
@@ -143,6 +143,6 @@ function useCreateFilterUrl() {
       newSearchParams.delete("tag", remove);
     }
 
-    return `/templates/filter?${newSearchParams}`;
+    return `/resources/filter?${newSearchParams}`;
   };
 }
