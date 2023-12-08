@@ -55,7 +55,7 @@ export function ResourcePoster({
       src={imgSrc}
       alt=""
       className={cx(
-        "h-full w-full rounded-t-lg object-cover object-center",
+        "h-full w-full rounded-t-lg border-t-0 border-gray-100 object-cover object-center",
         to &&
           "group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-blue-brand",
       )}
@@ -233,6 +233,7 @@ export function InitCodeblock({
           </span>
         </code>
       </pre>
+
       <button
         type="button"
         onClick={() => {
@@ -242,6 +243,18 @@ export function InitCodeblock({
         data-code-block-copy
         data-copied={copied}
       >
+        {/* had to put these here instead of as a mask so we could add an opacity */}
+        <svg
+          aria-hidden
+          className="h-5 w-5 text-gray-500 hover:text-black dark:bg-gray-400 dark:hover:bg-gray-100"
+          viewBox="0 0 24 24"
+        >
+          {copied ? (
+            <use href={`${iconsHref}#check-mark`} />
+          ) : (
+            <use href={`${iconsHref}#copy`} />
+          )}
+        </svg>
         <span className="sr-only">Copy code to clipboard</span>
       </button>
     </div>
