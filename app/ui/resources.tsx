@@ -55,7 +55,7 @@ export function ResourcePoster({
       src={imgSrc}
       alt=""
       className={cx(
-        "h-full w-full rounded-t-lg border-t-0 border-gray-100 object-cover object-center",
+        "h-full w-full rounded-t-lg border border-b-0 border-gray-100 object-cover object-center",
         to &&
           "group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-blue-brand",
       )}
