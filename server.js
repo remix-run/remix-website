@@ -73,7 +73,7 @@ installGlobals();
 
   app.listen(port, () => {
     console.log(
-      `Express server listening on port ${port} (http://localhost:3000)`,
+      `Express server listening on port ${port} (http://localhost:${port})`,
     );
   });
 })();
