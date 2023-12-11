@@ -1,4 +1,3 @@
-import path from "path";
 import { DateTime } from "luxon";
 import invariant from "tiny-invariant";
 import LRUCache from "lru-cache";
@@ -7,12 +6,12 @@ import { processMarkdown } from "~/lib/md.server";
 import authorsYamlFileContents from "../../data/authors.yml?raw";
 
 const postContentsBySlug = Object.fromEntries(
-  Object.entries(import.meta.glob("../../data/posts/*.md", { as: "raw" })).map(
-    ([filePath, contents]) => [
-      path.basename(filePath).replace(/\.md$/, ""),
-      contents,
-    ],
-  ),
+  Object.entries(
+    import.meta.glob("../../data/posts/*.md", { as: "raw", eager: true }),
+  ).map(([filePath, contents]) => [
+    filePath.replace("../../data/posts/", "").replace(/\.md$/, ""),
+    contents,
+  ]),
 );
 
 const AUTHORS: BlogAuthor[] = yaml.parse(authorsYamlFileContents);
@@ -27,7 +26,7 @@ const postsCache = new LRUCache<string, BlogPost>({
 export async function getBlogPost(slug: string): Promise<BlogPost> {
   let cached = postsCache.get(slug);
   if (cached) return cached;
-  let contents = await postContentsBySlug[slug]?.();
+  let contents = postContentsBySlug[slug];
   if (!contents) {
     throw new Response("Not Found", { status: 404, statusText: "Not Found" });
   }

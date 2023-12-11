@@ -6,9 +6,12 @@ import type * as Mdast from "mdast";
 import type * as Unist from "unist";
 
 const mdContentsByFilename = Object.fromEntries(
-  Object.entries(import.meta.glob("../../md/**/*.md", { as: "raw" })).map(
-    ([filePath, contents]) => [filePath.replace("../../md/", ""), contents],
-  ),
+  Object.entries(
+    import.meta.glob("../../md/**/*.md", { as: "raw", eager: true }),
+  ).map(([filePath, contents]) => [
+    filePath.replace("../../md/", ""),
+    contents,
+  ]),
 );
 
 const STATE_NORMAL = "NORMAL";
@@ -49,7 +52,10 @@ async function getMarkdownTutPage(filename: string): Promise<MarkdownTutPage> {
   if (cached) {
     return cached;
   }
-  let file = await mdContentsByFilename[filename]();
+  let file = mdContentsByFilename[filename];
+  if (!file) {
+    throw new Error('File not found: "' + filename + '"');
+  }
   let page = (await processMarkdown(processor, file)) as MarkdownTutPage;
   cache.set(filename, page);
   return page;
