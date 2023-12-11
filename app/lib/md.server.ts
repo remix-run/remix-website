@@ -102,11 +102,13 @@ export async function loadPlugins() {
     UnistNode.Root
   > = (options) => {
     let theme: ReturnType<typeof toShikiTheme>;
-    let highlighter: Awaited<ReturnType<typeof getHighlighter>>;
+    let highlighterPromise: ReturnType<typeof getHighlighter>;
 
     return async function transformer(tree: UnistNode.Root) {
       theme = theme || toShikiTheme(themeJson as any);
-      highlighter = highlighter || (await getHighlighter({ themes: [theme] }));
+      highlighterPromise =
+        highlighterPromise || getHighlighter({ themes: [theme] });
+      let highlighter = await highlighterPromise;
       let fgColor = convertFakeHexToCustomProp(
         highlighter.getForegroundColor(theme.name) || "",
       );
@@ -296,7 +298,9 @@ export async function loadPlugins() {
         code: string;
         language: Shiki.Lang;
       }) {
-        return highlighter.codeToThemedTokens(code, language, theme.name);
+        return highlighter.codeToThemedTokens(code, language, theme.name, {
+          includeExplanation: false,
+        });
       }
     };
   };
