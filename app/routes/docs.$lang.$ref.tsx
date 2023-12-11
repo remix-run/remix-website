@@ -185,7 +185,7 @@ function Footer() {
 function Header() {
   // TODO: Remove prior to launch as this is only here to render the template link for non-production
   const rootData = useRouteLoaderData<typeof rootLoader>("root");
-  let showTemplates = !rootData?.isProductionHost;
+  let showResources = !rootData?.isProductionHost;
 
   return (
     <div
@@ -224,8 +224,8 @@ function Header() {
               <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
               <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
               <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
-              {showTemplates ? (
-                <HeaderMenuLink to="/templates">Templates</HeaderMenuLink>
+              {showResources ? (
+                <HeaderMenuLink to="/resources">Resources</HeaderMenuLink>
               ) : null}
             </div>
             <div className="flex items-center gap-2">
@@ -540,7 +540,7 @@ function HeaderMenuLink({
 function HeaderMenuMobile({ className = "" }: { className: string }) {
   // TODO: Remove prior to launch as this is only here to render the template link for non-production
   const rootData = useRouteLoaderData<typeof rootLoader>("root");
-  let showTemplates = !rootData?.isProductionHost;
+  let showResources = !rootData?.isProductionHost;
 
   // This is the same default, hover, focus style as the VersionSelect
   let baseClasses =
@@ -563,8 +563,8 @@ function HeaderMenuMobile({ className = "" }: { className: string }) {
           <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
           <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
           <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
-          {showTemplates ? (
-            <HeaderMenuLink to="/templates">Templates</HeaderMenuLink>
+          {showResources ? (
+            <HeaderMenuLink to="/resources">Resources</HeaderMenuLink>
           ) : null}
         </div>
       </DetailsPopup>
