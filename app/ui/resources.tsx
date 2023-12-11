@@ -16,7 +16,7 @@ export function ResourcesGrid({
   return (
     <div
       className={cx(
-        "grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-8",
+        "grid min-w-full grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-8",
         className,
       )}
     >
@@ -35,7 +35,10 @@ export function slugify(string: string) {
     .join("-");
 }
 
-type ResourcePosterProps = Omit<Resource, "description" | "tags" | "title"> & {
+type ResourcePosterProps = Pick<
+  Resource,
+  "imgSrc" | "repoUrl" | "stars" | "initCommand" | "sponsorUrl"
+> & {
   /** make the poster a link */
   to?: string;
   className?: string;
@@ -55,7 +58,7 @@ export function ResourcePoster({
       src={imgSrc}
       alt=""
       className={cx(
-        "h-full w-full rounded-t-lg border border-b-0 border-gray-100 object-cover object-center",
+        "h-full w-full rounded-t-lg border border-b-0 border-gray-100 object-cover object-center dark:border-gray-800",
         to &&
           "group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-blue-brand",
       )}
@@ -63,18 +66,11 @@ export function ResourcePoster({
   );
 
   return (
-    <div
-      className={cx(
-        // only need all this focus logic if this is a link
-        // to &&
-        //   "rounded-lg focus-within:outline focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-gray-300/80",
-        className,
-      )}
-    >
+    <div className={className}>
       <div className="relative">
         <div
           className={cx(
-            "aspect-h-1 aspect-w-2 relative w-full overflow-hidden rounded-t-lg bg-gray-100",
+            "aspect-h-1 aspect-w-2 relative w-full overflow-hidden rounded-t-lg bg-gray-100 dark:bg-gray-900",
             to && "hover:opacity-90",
           )}
         >
@@ -242,6 +238,7 @@ export function InitCodeblock({
         }}
         data-code-block-copy
         data-copied={copied}
+        className="outline-none"
       >
         {/* had to put these here instead of as a mask so we could add an opacity */}
         <svg

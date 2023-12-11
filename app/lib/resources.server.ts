@@ -14,24 +14,27 @@ let starFormatter = new Intl.NumberFormat("en", { notation: "compact" });
 
 export interface Resource {
   title: string;
+  repoUrl: string;
   imgSrc: string;
+  initCommand: string;
+  category: Exclude<Category, "all">;
   featured?: boolean;
   description?: string;
-  repoUrl: string;
   sponsorUrl?: string;
   stars: string;
-  initCommand: string;
   tags: string[];
 }
+export type Category = "all" | "templates" | "libraries";
 
 type ResourceYamlKeys =
   | "title"
   | "imgSrc"
   | "repoUrl"
   | "initCommand"
+  | "category"
   | "featured";
 type ResourceYamlData = Pick<Resource, ResourceYamlKeys>;
-type ResoureGitHubData = Omit<Resource, ResourceYamlKeys>;
+type ResourceGitHubData = Omit<Resource, ResourceYamlKeys>;
 type CacheContext = { octokit: Octokit };
 
 /**
@@ -85,7 +88,7 @@ declare global {
   var resourceReadmeCache: LRUCache<string, string>;
   var resourceGitHubDataCache: LRUCache<
     string,
-    ResoureGitHubData,
+    ResourceGitHubData,
     CacheContext
   >;
 }
@@ -139,7 +142,7 @@ async function getResourceGitHubData(
 
 global.resourceGitHubDataCache ??= new LRUCache<
   string,
-  ResoureGitHubData,
+  ResourceGitHubData,
   CacheContext
 >({
   max: 300,
@@ -153,11 +156,11 @@ let ignoredTopics = new Set(["remix-stack", "remix-run", "remix"]);
 
 async function fetchResourceGitHubData(
   repoUrl: string,
-  staleValue: ResoureGitHubData | undefined,
+  staleValue: ResourceGitHubData | undefined,
   {
     context,
-  }: LRUCache.FetchOptionsWithContext<string, ResoureGitHubData, CacheContext>,
-): Promise<ResoureGitHubData> {
+  }: LRUCache.FetchOptionsWithContext<string, ResourceGitHubData, CacheContext>,
+): Promise<ResourceGitHubData> {
   let [owner, repo] = repoUrl.replace("https://github.com/", "").split("/");
 
   let [{ data }, sponsorUrl] = await Promise.all([
