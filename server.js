@@ -1,4 +1,3 @@
-const { unstable_viteServerBuildModuleId } = require("@remix-run/dev");
 const path = require("path");
 const express = require("express");
 const compression = require("compression");
@@ -64,7 +63,10 @@ installGlobals();
     "*",
     createRequestHandler({
       build: vite
-        ? () => vite.ssrLoadModule(unstable_viteServerBuildModuleId)
+        ? () =>
+            vite.ssrLoadModule(
+              require("@remix-run/dev").unstable_viteServerBuildModuleId,
+            )
         : require(BUILD_DIR),
       mode: process.env.NODE_ENV,
     }),
