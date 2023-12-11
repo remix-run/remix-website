@@ -128,7 +128,7 @@ export default function ResourcePage() {
           </div>
           <div className="flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
             {tags.map((tag) => (
-              <ResourceTag key={tag} to={`/resources/filter?tag=${tag}`}>
+              <ResourceTag key={tag} to={`/resources?tag=${tag}`}>
                 {tag}
               </ResourceTag>
             ))}
