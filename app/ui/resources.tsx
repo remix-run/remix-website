@@ -171,13 +171,20 @@ export function ResourceTag({
     <Link
       to={to}
       className={cx(
-        "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset",
+        "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium leading-none ring-1 ring-inset",
         selected
           ? "bg-blue-100 ring-blue-500/10 hover:bg-blue-200 dark:bg-gray-300 dark:text-gray-900 dark:ring-gray-900/50 dark:hover:bg-gray-400 dark:hover:text-gray-900"
           : "bg-gray-50 text-gray-600 ring-gray-500/10 hover:bg-blue-100 dark:bg-gray-900 dark:text-gray-300 dark:ring-gray-200/50 dark:hover:bg-gray-400 dark:hover:text-gray-900",
       )}
     >
+      <span className="sr-only">{selected ? "remove" : "add"}</span>
       {children}
+      <span className="sr-only">tag</span>
+      {selected ? (
+        <svg aria-hidden className="-mr-1 h-3.5 w-3.5" viewBox="0 0 14 14">
+          <use href={`${iconsHref}#x-mark`} />
+        </svg>
+      ) : null}
     </Link>
   );
 }
