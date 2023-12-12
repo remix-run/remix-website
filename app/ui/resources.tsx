@@ -243,7 +243,7 @@ export function InitCodeblock({
         {/* had to put these here instead of as a mask so we could add an opacity */}
         <svg
           aria-hidden
-          className="h-5 w-5 text-gray-500 hover:text-black dark:bg-gray-400 dark:hover:bg-gray-100"
+          className="h-5 w-5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-100"
           viewBox="0 0 24 24"
         >
           {copied ? (

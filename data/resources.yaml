@@ -4,10 +4,10 @@
   initCommand: "npx create-epic-app@latest"
   category: "templates"
 
-- title: 'Remix Utils'
+- title: "Remix Utils"
   repoUrl: "https://github.com/sergiodxa/remix-utils"
-  imgSrc: 'https://opengraph.githubassets.com/8175869a122fddcba511d07b5c805c752bdaa7168fc40e84731a036758e99bce/sergiodxa/remix-utils'
-  initCommand: 'npm install remix-utils'
+  imgSrc: "https://opengraph.githubassets.com/436bcec7a75a4101d373e3c04ce22c94f8fa188cc59c7d35b8c409eec9588ae6/sergiodxa/remix-utils"
+  initCommand: "npm install remix-utils"
   category: "libraries"
 
 - title: "Indie Stack"
