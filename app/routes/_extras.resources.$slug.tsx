@@ -95,7 +95,7 @@ export default function ResourcePage() {
           >
             <svg
               aria-hidden
-              className="h-4 w-4 text-gray-900"
+              className="h-4 w-4 text-gray-900 dark:text-gray-400"
               viewBox="0 0 24 24"
             >
               <use href={`${iconsHref}#github`} />
