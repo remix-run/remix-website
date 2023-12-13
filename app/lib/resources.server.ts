@@ -3,9 +3,9 @@ import LRUCache from "lru-cache";
 import { env } from "~/env.server";
 import { getRepoContent } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
-import { slugify } from "~/ui/resources";
 import type { Octokit } from "octokit";
 import resourcesYamlFileContents from "../../data/resources.yaml?raw";
+import { slugify } from "./misc";
 
 // TODO: parse this with zod
 let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);
@@ -21,7 +21,8 @@ export interface Resource {
   featured?: boolean;
   description?: string;
   sponsorUrl?: string;
-  stars: string;
+  stars: number;
+  starsFormatted: string;
   tags: string[];
 }
 export type Category = "all" | "templates" | "libraries";
@@ -54,7 +55,7 @@ export async function getAllResources({ octokit }: CacheContext) {
     }),
   );
 
-  return resources;
+  return resources.sort((a, b) => b.stars - a.stars);
 }
 
 /**
@@ -169,10 +170,16 @@ async function fetchResourceGitHubData(
   ]);
 
   let description = data.description ?? undefined;
-  let stars = starFormatter.format(data.stargazers_count).toLowerCase();
+  let stars = data.stargazers_count;
   let tags = (data.topics ?? []).filter((topic) => !ignoredTopics.has(topic));
 
-  return { description, stars, tags, sponsorUrl };
+  return {
+    description,
+    stars,
+    starsFormatted: starFormatter.format(stars).toLowerCase(),
+    tags,
+    sponsorUrl,
+  };
 }
 
 //#endregion

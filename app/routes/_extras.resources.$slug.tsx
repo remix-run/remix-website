@@ -1,16 +1,18 @@
 // Pull full readme for this page from GitHub
 import {
   json,
-  type MetaFunction,
   type LoaderFunctionArgs,
+  type HeadersFunction,
+  type MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getResource } from "~/lib/resources.server";
-import { InitCodeblock, ResourceTag } from "~/ui/resources";
+import { InitCodeblock, ResourceTag, useCreateTagUrl } from "~/ui/resources";
 import { octokit } from "~/lib/github.server";
 import "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
+import { CACHE_CONTROL } from "~/lib/http.server";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const resourceSlug = params.slug;
@@ -25,11 +27,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return json({
-    siteUrl,
-    resource,
-  });
+  return json(
+    {
+      siteUrl,
+      resource,
+    },
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
+  );
 }
+
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
+  return loaderHeaders;
+};
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { data, params } = args;
@@ -57,10 +66,6 @@ export const meta: MetaFunction<typeof loader> = (args) => {
     { name: "twitter:title", content: resource.title },
     { name: "twitter:description", content: resource.description },
     { name: "twitter:image", content: socialImageUrl },
-    // {
-    //   name: "twitter:image:alt",
-    //   content: socialImageUrl ? post.imageAlt : undefined,
-    // },
   ];
 };
 
@@ -71,19 +76,25 @@ export default function ResourcePage() {
     repoUrl,
     initCommand,
     sponsorUrl,
-    stars,
+    starsFormatted,
     tags,
     readmeHtml,
   } = resource;
+  let createTagUrl = useCreateTagUrl();
 
   return (
     <main className="flex flex-1 flex-col items-center px-8 lg:container">
       <div className="flex w-full flex-col md:flex-row-reverse">
         {/* The sidebar comes first with a flex row-reverse for better keyboard navigation */}
         <aside className="flex flex-col gap-4 md:sticky md:top-28 md:h-0 md:w-[400px]">
-          <p className="text-xl font-bold">
+          <a
+            href={repoUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="text-xl font-bold hover:text-gray-600 dark:hover:text-gray-300"
+          >
             {repoUrl.replace("https://github.com/", "")}
-          </p>
+          </a>
           <p className="text-sm italic text-gray-500 dark:text-gray-300 md:text-justify lg:text-base">
             {description}
           </p>
@@ -105,7 +116,7 @@ export default function ResourcePage() {
                 Star
               </span>{" "}
               <span className="font-light group-hover:font-normal">
-                {stars}
+                {starsFormatted}
               </span>
             </span>
           </a>
@@ -122,13 +133,10 @@ export default function ResourcePage() {
               <span>Sponsor</span>
             </a>
           ) : null}
-          <div className="relative">
-            <p>Use this resource</p>
-            <InitCodeblock initCommand={initCommand} />
-          </div>
+          <InitCodeblock initCommand={initCommand} />
           <div className="flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
             {tags.map((tag) => (
-              <ResourceTag key={tag} to={`/resources?tag=${tag}`}>
+              <ResourceTag key={tag} to={createTagUrl({ add: tag })}>
                 {tag}
               </ResourceTag>
             ))}
