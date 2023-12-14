@@ -229,7 +229,7 @@ function GitHubLinks({
         rel="noopener noreferrer"
         target="_blank"
         className={cx(
-          "flex w-full items-center justify-center gap-2 p-2 transition-colors hover:bg-blue-50/40",
+          "flex w-full items-center justify-center gap-2 p-2 transition-colors hover:bg-gray-500/50",
           // Gotta git rid of the rounding on the bottom if there's another element
           sponsorUrl ? "rounded-t" : "rounded",
         )}
@@ -248,7 +248,7 @@ function GitHubLinks({
           href={sponsorUrl}
           rel="noopener noreferrer"
           target="_blank"
-          className="flex w-full items-center justify-center gap-2 rounded-b p-2 transition-colors hover:bg-blue-50/50"
+          className="flex w-full items-center justify-center gap-2 rounded-b p-2 transition-colors hover:bg-gray-500/50"
         >
           <svg aria-hidden className="h-4 w-4" viewBox="0 0 16 16">
             <use href={`${iconsHref}#heart-filled`} />
