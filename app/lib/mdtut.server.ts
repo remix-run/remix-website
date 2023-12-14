@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import { loadPlugins, type UnistNode } from "~/lib/md.server";
 import LRUCache from "lru-cache";
 import type { Processor } from "unified";
@@ -7,12 +5,18 @@ import type * as Hast from "hast";
 import type * as Mdast from "mdast";
 import type * as Unist from "unist";
 
+const mdContentsByFilename = Object.fromEntries(
+  Object.entries(
+    import.meta.glob("../../md/**/*.md", { as: "raw", eager: true }),
+  ).map(([filePath, contents]) => [
+    filePath.replace("../../md/", ""),
+    contents,
+  ]),
+);
+
 const STATE_NORMAL = "NORMAL";
 const STATE_SEQUENCING = "SEQUENCING";
 type State = typeof STATE_NORMAL | typeof STATE_SEQUENCING;
-
-// This is relative to where this code ends up in the build, not the source
-const CONTENT_PATH = path.join(__dirname, "..", "md");
 
 const cache = new LRUCache<string, MarkdownTutPage>({
   maxSize: 1024 * 1024 * 12, // 12 mb
@@ -21,7 +25,7 @@ const cache = new LRUCache<string, MarkdownTutPage>({
   },
 });
 
-let processor: Awaited<ReturnType<typeof getProcessor>>;
+let processorPromise: ReturnType<typeof getProcessor>;
 
 async function getProcessor() {
   let [
@@ -43,14 +47,17 @@ async function getProcessor() {
 }
 
 async function getMarkdownTutPage(filename: string): Promise<MarkdownTutPage> {
-  processor = processor || (await getProcessor());
+  processorPromise = processorPromise || getProcessor();
+  let processor = await processorPromise;
   let cached = cache.get(filename);
   if (cached) {
     return cached;
   }
-  let filePath = path.join(CONTENT_PATH, filename);
-  let file = await fs.promises.readFile(filePath);
-  let page = (await process(processor, file)) as MarkdownTutPage;
+  let file = mdContentsByFilename[filename];
+  if (!file) {
+    throw new Error('File not found: "' + filename + '"');
+  }
+  let page = (await processMarkdown(processor, file)) as MarkdownTutPage;
   cache.set(filename, page);
   return page;
 }
@@ -64,7 +71,7 @@ type TProcessor = Processor<
   string
 >;
 
-async function process(
+async function processMarkdown(
   processor: TProcessor,
   content: string | Buffer,
 ): Promise<MarkdownTutPage> {

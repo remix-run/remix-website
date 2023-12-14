@@ -4,57 +4,78 @@ const compression = require("compression");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const { createRequestHandler } = require("@remix-run/express");
-const { broadcastDevReady } = require("@remix-run/node");
 const sourceMapSupport = require("source-map-support");
 const { installGlobals } = require("@remix-run/node");
 
 sourceMapSupport.install();
 installGlobals();
 
-const BUILD_DIR = path.join(process.cwd(), "build");
-const build = require(BUILD_DIR);
+// Wrap file in an async function so we can import Vite's ESM build
+// since the CJS build is deprecated and logs a warning
+(async () => {
+  const vite =
+    process.env.NODE_ENV === "production"
+      ? undefined
+      : await import("vite").then(({ createServer }) =>
+          createServer({
+            server: {
+              middlewareMode: true,
+            },
+          }),
+        );
 
-const app = express();
+  const BUILD_DIR = path.join(process.cwd(), "build", "server");
 
-const limiter = rateLimit({
-  windowMs: 2 * 60 * 1000, // 2 minutes
-  max: 1000,
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+  const app = express();
 
-app.set("trust proxy", true);
-app.use(limiter);
+  const limiter = rateLimit({
+    windowMs: 2 * 60 * 1000, // 2 minutes
+    max: 1000,
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
 
-app.use(compression());
+  app.set("trust proxy", true);
+  app.use(limiter);
 
-// http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
-app.disable("x-powered-by");
+  app.use(compression());
 
-// Remix fingerprints its assets so we can cache forever.
-app.use(
-  "/build",
-  express.static("public/build", { immutable: true, maxAge: "1y" }),
-);
+  // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
+  app.disable("x-powered-by");
 
-// Everything else (like favicon.ico) is cached for an hour. You may want to be
-// more aggressive with this caching.
-app.use(express.static("public", { maxAge: "1h" }));
-
-app.use(morgan("tiny"));
-
-app.all(
-  "*",
-  createRequestHandler({
-    build,
-    mode: process.env.NODE_ENV,
-  }),
-);
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log(`Express server listening on port ${port}`);
-  if (process.env.NODE_ENV === "development") {
-    broadcastDevReady(build);
+  if (vite) {
+    app.use(vite.middlewares);
+  } else {
+    // Vite fingerprints its assets so we can cache forever.
+    app.use(
+      "/assets",
+      express.static("build/client/assets", { immutable: true, maxAge: "1y" }),
+    );
   }
-});
+
+  // Everything else (like favicon.ico) is cached for an hour. You may want to be
+  // more aggressive with this caching.
+  app.use(express.static("build/client", { maxAge: "1h" }));
+
+  app.use(morgan("tiny"));
+
+  app.all(
+    "*",
+    createRequestHandler({
+      build: vite
+        ? () =>
+            vite.ssrLoadModule(
+              require("@remix-run/dev").unstable_viteServerBuildModuleId,
+            )
+        : require(BUILD_DIR),
+      mode: process.env.NODE_ENV,
+    }),
+  );
+  const port = process.env.PORT || 3000;
+
+  app.listen(port, () => {
+    console.log(
+      `Express server listening on port ${port} (http://localhost:${port})`,
+    );
+  });
+})();

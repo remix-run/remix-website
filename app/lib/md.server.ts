@@ -6,18 +6,14 @@
  *   - MIT https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/LICENSE
  *   - https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/src/worker/mdxCompiler.ts
  */
-import path from "path";
-import { getHighlighter, loadTheme } from "shiki";
+import { getHighlighter, toShikiTheme } from "shiki";
 import rangeParser from "parse-numeric-range";
 import parseFrontMatter from "front-matter";
 import type * as Hast from "hast";
 import type * as Unist from "unist";
 import type * as Shiki from "shiki";
 import type * as Unified from "unified";
-
-// This is relative to where this code ends up in the build, not the source
-const DATA_PATH = path.join(__dirname, "..", "data");
-const THEME_PATH = path.join(DATA_PATH, "base16.json");
+import themeJson from "../../data/base16.json";
 
 export interface ProcessorOptions {
   resolveHref?(href: string): string;
@@ -105,12 +101,14 @@ export async function loadPlugins() {
     UnistNode.Root,
     UnistNode.Root
   > = (options) => {
-    let theme: Awaited<ReturnType<typeof loadTheme>>;
-    let highlighter: Awaited<ReturnType<typeof getHighlighter>>;
+    let theme: ReturnType<typeof toShikiTheme>;
+    let highlighterPromise: ReturnType<typeof getHighlighter>;
 
     return async function transformer(tree: UnistNode.Root) {
-      theme = theme || (await loadTheme(THEME_PATH));
-      highlighter = highlighter || (await getHighlighter({ themes: [theme] }));
+      theme = theme || toShikiTheme(themeJson as any);
+      highlighterPromise =
+        highlighterPromise || getHighlighter({ themes: [theme] });
+      let highlighter = await highlighterPromise;
       let fgColor = convertFakeHexToCustomProp(
         highlighter.getForegroundColor(theme.name) || "",
       );
@@ -300,7 +298,9 @@ export async function loadPlugins() {
         code: string;
         language: Shiki.Lang;
       }) {
-        return highlighter.codeToThemedTokens(code, language, theme.name);
+        return highlighter.codeToThemedTokens(code, language, theme.name, {
+          includeExplanation: false,
+        });
       }
     };
   };

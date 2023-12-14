@@ -1,6 +1,5 @@
 import { redirect } from "@remix-run/node";
-import fs from "fs";
-import path from "path";
+import redirectsFileContents from "../../_redirects?raw";
 
 export const CACHE_CONTROL = {
   /**
@@ -39,15 +38,6 @@ let redirects: null | Redirect[] = null;
 export function handleRedirects(pathname: string) {
   if (redirects === null) {
     redirects = [];
-
-    let filePath = path.join(__dirname, "..", "_redirects");
-    let redirectsFileContents: string;
-    try {
-      redirectsFileContents = fs.readFileSync(filePath, "utf-8");
-    } catch (_) {
-      // no redirects file, so no redirects
-      return;
-    }
 
     for (let line of redirectsFileContents.split("\n")) {
       line = line.trim();

@@ -14,16 +14,12 @@ import {
 import type { MetaFunction } from "@remix-run/react";
 import { matchPath } from "react-router-dom";
 import { json, redirect } from "@remix-run/node";
-import type {
-  LoaderFunctionArgs,
-  LinksFunction,
-  HeadersFunction,
-} from "@remix-run/node";
+import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
 
-import markdownStyles from "~/styles/docs.css";
+import "~/styles/docs.css";
 import { Wordmark } from "~/ui/logo";
 import { DetailsMenu, DetailsPopup } from "~/ui/details-menu";
 
@@ -78,10 +74,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     lang,
     isLatest,
   });
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: markdownStyles }];
 };
 
 export const meta: MetaFunction<typeof loader> = (args) => {

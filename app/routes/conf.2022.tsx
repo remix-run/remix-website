@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Outlet, useLocation } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
 import { Link, NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
@@ -12,10 +11,7 @@ import {
   MenuLink,
 } from "~/ui/primitives/menu-button";
 import cx from "clsx";
-import styles from "~/styles/conf/2022/conf.css";
-import stylesSm from "~/styles/conf/2022/conf-sm.css";
-import stylesMd from "~/styles/conf/2022/conf-md.css";
-import stylesLg from "~/styles/conf/2022/conf-lg.css";
+import "~/styles/conf/2022/conf.css";
 import {
   SubscribeEmailInput,
   SubscribeForm,
@@ -25,15 +21,6 @@ import {
 } from "~/ui/subscribe";
 
 export const handle = { forceDark: true };
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: styles },
-    { rel: "stylesheet", href: stylesSm, media: "(min-width: 640px)" },
-    { rel: "stylesheet", href: stylesMd, media: "(min-width: 768px)" },
-    { rel: "stylesheet", href: stylesLg, media: "(min-width: 1024px)" },
-  ];
-};
 
 const navItems: Array<HeaderLinkProps> = [
   {
@@ -67,7 +54,7 @@ export default function ConfTwentyTwentyTwo() {
   return (
     <div className="__layout flex h-full flex-1 flex-col bg-blue-800 text-white">
       {/* <TopBanner>
-        <span className="text-pink-brand font-bold">
+        <span className="font-bold text-pink-brand">
           Announcing: Remix Conf 2023.
         </span>{" "}
         <Link to="../2023" className="text-white underline">

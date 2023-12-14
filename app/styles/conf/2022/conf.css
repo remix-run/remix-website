@@ -9,13 +9,38 @@
     theme(colors.blue.900) 3000px
   );
 }
-
 .__hero {
-  --hero-text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.5);
   --img-jpg-1x: url("/conf-images/utah-sky-sm.jpg");
   --img-jpg-2x: url("/conf-images/utah-sky-sm.jpg");
   --img-avif-1x: url("/conf-images/utah-sky-sm.avif");
   --img-avif-2x: url("/conf-images/utah-sky-md.avif");
+}
+@media (min-width: 640px) {
+  .__hero {
+    --img-jpg-1x: url("/conf-images/utah-sky-md.jpg");
+    --img-jpg-2x: url("/conf-images/utah-sky-md.jpg");
+    --img-avif-1x: url("/conf-images/utah-sky-md.avif");
+    --img-avif-2x: url("/conf-images/utah-sky-md.avif");
+  }
+}
+@media (min-width: 768px) {
+  .__hero {
+    --img-jpg-1x: url("/conf-images/utah-sky-md.jpg");
+    --img-jpg-2x: url("/conf-images/utah-sky-md.jpg");
+    --img-avif-1x: url("/conf-images/utah-sky-md.avif");
+    --img-avif-2x: url("/conf-images/utah-sky-lg.avif");
+  }
+}
+@media (min-width: 1024px) {
+  .__hero {
+    --img-jpg-1x: url("/conf-images/utah-sky-md.jpg");
+    --img-jpg-2x: url("/conf-images/utah-sky-md.jpg");
+    --img-avif-1x: url("/conf-images/utah-sky-md.avif");
+    --img-avif-2x: url("/conf-images/utah-sky-lg.avif");
+  }
+}
+.__hero {
+  --hero-text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.5);
   position: relative;
   background-image: var(--img-jpg-1x);
   background-image: image-set(

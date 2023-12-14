@@ -24,6 +24,15 @@ NO_CACHE=1 npm run dev
 
 Note that by default this assumes the relative path to your local copy of the Remix docs is `../remix/docs`. This can be configured via `LOCAL_REPO_RELATIVE_PATH` in your `.env` file.
 
+## Preview
+
+To preview the production build locally:
+
+```sh
+npm run build
+npm run preview
+```
+
 ## Deployment
 
 The production server is always in sync with `main`

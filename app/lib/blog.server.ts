@@ -1,18 +1,20 @@
-import path from "path";
-import fs from "fs";
 import { DateTime } from "luxon";
 import invariant from "tiny-invariant";
 import LRUCache from "lru-cache";
 import yaml from "yaml";
 import { processMarkdown } from "~/lib/md.server";
+import authorsYamlFileContents from "../../data/authors.yml?raw";
 
-// This is relative to where this code ends up in the build, not the source
-const dataPath = path.join(__dirname, "..", "data");
-const blogPath = path.join(dataPath, "posts");
-
-const AUTHORS: BlogAuthor[] = yaml.parse(
-  fs.readFileSync(path.join(dataPath, "authors.yml")).toString(),
+const postContentsBySlug = Object.fromEntries(
+  Object.entries(
+    import.meta.glob("../../data/posts/*.md", { as: "raw", eager: true }),
+  ).map(([filePath, contents]) => [
+    filePath.replace("../../data/posts/", "").replace(/\.md$/, ""),
+    contents,
+  ]),
 );
+
+const AUTHORS: BlogAuthor[] = yaml.parse(authorsYamlFileContents);
 
 const postsCache = new LRUCache<string, BlogPost>({
   maxSize: 1024 * 1024 * 12, // 12 mb
@@ -24,11 +26,8 @@ const postsCache = new LRUCache<string, BlogPost>({
 export async function getBlogPost(slug: string): Promise<BlogPost> {
   let cached = postsCache.get(slug);
   if (cached) return cached;
-  let filePath = path.join(blogPath, slug + ".md");
-  let contents: string;
-  try {
-    contents = (await fs.promises.readFile(filePath)).toString();
-  } catch (e) {
+  let contents = postContentsBySlug[slug];
+  if (!contents) {
     throw new Response("Not Found", { status: 404, statusText: "Not Found" });
   }
 
@@ -68,15 +67,12 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
 export async function getBlogPostListings(): Promise<
   Array<MarkdownPostListing>
 > {
-  let files = await fs.promises.readdir(blogPath);
+  let slugs = Object.keys(postContentsBySlug);
   let listings: Array<MarkdownPostListing & { date: Date }> = [];
-  for (let file of files) {
-    if (file.endsWith(".md")) {
-      let slug = file.replace(/\.md$/, "");
-      let { html, authors, ...listing } = await getBlogPost(slug);
-      if (!listing.draft) {
-        listings.push({ slug, ...listing });
-      }
+  for (let slug of slugs) {
+    let { html, authors, ...listing } = await getBlogPost(slug);
+    if (!listing.draft) {
+      listings.push({ slug, ...listing });
     }
   }
   return listings

@@ -2,7 +2,6 @@
 import {
   json,
   type MetaFunction,
-  type LinksFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -10,7 +9,7 @@ import invariant from "tiny-invariant";
 import { getTemplate } from "~/lib/templates.server";
 import { InitCodeblock, TemplateTag } from "~/ui/templates";
 import { octokit } from "~/lib/github.server";
-import markdownStyles from "~/styles/docs.css";
+import "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -31,10 +30,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     template,
   });
 }
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: markdownStyles }];
-};
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { data, params } = args;

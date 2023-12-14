@@ -1,5 +1,5 @@
 import type { DocSearchProps } from "@docsearch/react";
-import { useDocSearchKeyboardEvents } from "@docsearch/react";
+import { useDocSearchKeyboardEvents } from "@docsearch/react/dist/esm/useDocSearchKeyboardEvents";
 import { useHydrated } from "~/lib/misc";
 import "@docsearch/css/dist/style.css";
 import "~/styles/docsearch.css";
