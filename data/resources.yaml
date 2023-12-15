@@ -142,7 +142,7 @@
   imgSrc: "https://opengraph.githubassets.com/fad382d926c5a1ff7d2ace391695b65b78eb5a3f28d78a76357a435cc7002a47/sergiodxa/remix-hono"
   initCommand: "npm install remix-hono"
   category: "libraries"
- 
+
 - title: "remix-i18next"
   repoUrl: "https://github.com/sergiodxa/remix-i18next"
   imgSrc: "https://opengraph.githubassets.com/6607244df1fa47f3b0cea225e69aaf619458ce857cb371081834299839a3b43e/sergiodxa/remix-i18next"
@@ -184,4 +184,3 @@
   imgSrc: "https://opengraph.githubassets.com/3fb64f01d43128d93fb733a9714cf0b5f15d00cf538630a82491ca98966ae376/alexanderson1993/remix-auth-webauthn"
   initCommand: "npm install remix-auth remix-auth-webauthn"
   category: "libraries"
-  
