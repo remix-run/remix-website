@@ -3,96 +3,100 @@ import LRUCache from "lru-cache";
 import { env } from "~/env.server";
 import { getRepoContent } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
-import { slugify } from "~/ui/templates";
 import type { Octokit } from "octokit";
-import templatesYamlFileContents from "../../data/templates.yaml?raw";
+import resourcesYamlFileContents from "../../data/resources.yaml?raw";
+import { slugify } from "./misc";
 
 // TODO: parse this with zod
-let _templates: TemplateYamlData[] = yaml.parse(templatesYamlFileContents);
+let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);
 
 let starFormatter = new Intl.NumberFormat("en", { notation: "compact" });
 
-export interface Template {
+export interface Resource {
   title: string;
+  repoUrl: string;
   imgSrc: string;
+  initCommand: string;
+  category: Exclude<Category, "all">;
   featured?: boolean;
   description?: string;
-  repoUrl: string;
   sponsorUrl?: string;
-  stars: string;
-  initCommand: string;
+  stars: number;
+  starsFormatted: string;
   tags: string[];
 }
+export type Category = "all" | "templates" | "libraries";
 
-type TemplateYamlKeys =
+type ResourceYamlKeys =
   | "title"
   | "imgSrc"
   | "repoUrl"
   | "initCommand"
+  | "category"
   | "featured";
-type TemplateYamlData = Pick<Template, TemplateYamlKeys>;
-type TemplateGitHubData = Omit<Template, TemplateYamlKeys>;
+type ResourceYamlData = Pick<Resource, ResourceYamlKeys>;
+type ResourceGitHubData = Omit<Resource, ResourceYamlKeys>;
 type CacheContext = { octokit: Octokit };
 
 /**
- * Gets all of the templates, fetching and merging GitHub data for each one
+ * Gets all of the resources, fetching and merging GitHub data for each one
  */
-export async function getAllTemplates({ octokit }: CacheContext) {
-  let templates: Template[] = await Promise.all(
-    _templates.map(async (template) => {
+export async function getAllResources({ octokit }: CacheContext) {
+  let resources: Resource[] = await Promise.all(
+    _resources.map(async (resource) => {
       // This is cached, so should just be a simple lookup
-      let gitHubData = await getTemplateGitHubData(template.repoUrl, {
+      let gitHubData = await getResourceGitHubData(resource.repoUrl, {
         octokit,
       });
       if (!gitHubData) {
-        throw new Error(`Could not find GitHub data for ${template.repoUrl}`);
+        throw new Error(`Could not find GitHub data for ${resource.repoUrl}`);
       }
-      return { ...template, ...gitHubData };
+      return { ...resource, ...gitHubData };
     }),
   );
 
-  return templates;
+  return resources.sort((a, b) => b.stars - a.stars);
 }
 
 /**
- * Get a single template by slug, fetching and merging GitHub data and README contents
+ * Get a single resource by slug, fetching and merging GitHub data and README contents
  */
-export async function getTemplate(
-  templateSlug: string,
+export async function getResource(
+  resourceSlug: string,
   { octokit }: CacheContext,
 ) {
-  let template = _templates.find(
-    (template) => slugify(template.title) === templateSlug,
+  let resource = _resources.find(
+    (resource) => slugify(resource.title) === resourceSlug,
   );
 
-  if (!template) return;
+  if (!resource) return;
 
   let [gitHubData, readmeHtml] = await Promise.all([
-    getTemplateGitHubData(template.repoUrl, { octokit }),
-    getTemplateReadme(template.repoUrl),
+    getResourceGitHubData(resource.repoUrl, { octokit }),
+    getResourceReadme(resource.repoUrl),
   ]);
 
   if (!gitHubData || !readmeHtml) {
-    throw new Error(`Could not find GitHub data for ${template.repoUrl}`);
+    throw new Error(`Could not find GitHub data for ${resource.repoUrl}`);
   }
 
-  return { ...template, ...gitHubData, readmeHtml };
+  return { ...resource, ...gitHubData, readmeHtml };
 }
 
 //#region LRUCache and fetchers for GitHub data and READMEs
 
 declare global {
-  var templateReadmeCache: LRUCache<string, string>;
-  var templateGitHubDataCache: LRUCache<
+  var resourceReadmeCache: LRUCache<string, string>;
+  var resourceGitHubDataCache: LRUCache<
     string,
-    TemplateGitHubData,
+    ResourceGitHubData,
     CacheContext
   >;
 }
 
 let NO_CACHE = env.NO_CACHE;
 
-global.templateReadmeCache ??= new LRUCache<string, string>({
+global.resourceReadmeCache ??= new LRUCache<string, string>({
   max: 300,
   ttl: NO_CACHE ? 1 : 1000 * 60 * 5, // 5 minutes
   allowStale: !NO_CACHE,
@@ -109,9 +113,9 @@ async function fetchReadme(repo: string): Promise<string> {
   return html;
 }
 
-async function getTemplateReadme(repoUrl: string) {
+async function getResourceReadme(repoUrl: string) {
   let repo = repoUrl.replace("https://github.com/", "");
-  let doc = await templateReadmeCache.fetch(repo);
+  let doc = await resourceReadmeCache.fetch(repo);
 
   return doc || undefined;
 }
@@ -128,36 +132,36 @@ async function getSponsorUrl(owner: string) {
   }
 }
 
-async function getTemplateGitHubData(
+async function getResourceGitHubData(
   repoUrl: string,
   { octokit }: CacheContext,
 ) {
-  return templateGitHubDataCache.fetch(repoUrl, {
+  return resourceGitHubDataCache.fetch(repoUrl, {
     context: { octokit },
   });
 }
 
-global.templateGitHubDataCache ??= new LRUCache<
+global.resourceGitHubDataCache ??= new LRUCache<
   string,
-  TemplateGitHubData,
+  ResourceGitHubData,
   CacheContext
 >({
   max: 300,
   ttl: NO_CACHE ? 1 : 1000 * 60 * 5, // 5 minutes
   allowStale: !NO_CACHE,
   noDeleteOnFetchRejection: true,
-  fetchMethod: fetchTemplateGitHubData,
+  fetchMethod: fetchResourceGitHubData,
 });
 
 let ignoredTopics = new Set(["remix-stack", "remix-run", "remix"]);
 
-async function fetchTemplateGitHubData(
+async function fetchResourceGitHubData(
   repoUrl: string,
-  staleValue: TemplateGitHubData | undefined,
+  staleValue: ResourceGitHubData | undefined,
   {
     context,
-  }: LRUCache.FetchOptionsWithContext<string, TemplateGitHubData, CacheContext>,
-): Promise<TemplateGitHubData> {
+  }: LRUCache.FetchOptionsWithContext<string, ResourceGitHubData, CacheContext>,
+): Promise<ResourceGitHubData> {
   let [owner, repo] = repoUrl.replace("https://github.com/", "").split("/");
 
   let [{ data }, sponsorUrl] = await Promise.all([
@@ -166,10 +170,16 @@ async function fetchTemplateGitHubData(
   ]);
 
   let description = data.description ?? undefined;
-  let stars = starFormatter.format(data.stargazers_count).toLowerCase();
+  let stars = data.stargazers_count;
   let tags = (data.topics ?? []).filter((topic) => !ignoredTopics.has(topic));
 
-  return { description, stars, tags, sponsorUrl };
+  return {
+    description,
+    stars,
+    starsFormatted: starFormatter.format(stars).toLowerCase(),
+    tags,
+    sponsorUrl,
+  };
 }
 
 //#endregion

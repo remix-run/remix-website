@@ -16,9 +16,9 @@ export function Header({
   to?: string;
   className?: string;
 }) {
-  // TODO: Remove prior to launch as this is only here to render the template link for non-production
+  // TODO: Remove prior to launch as this is only here to render the resource link for non-production
   const rootData = useRouteLoaderData<typeof loader>("root");
-  let showTemplates = !rootData?.isProductionHost;
+  let showResources = !rootData?.isProductionHost;
 
   return (
     <header
@@ -47,8 +47,8 @@ export function Header({
         <HeaderLink to="/docs/en/main">Docs</HeaderLink>
         <HeaderLink to="/blog">Blog</HeaderLink>
         <HeaderLink to="/showcase">Showcase</HeaderLink>
-        {showTemplates ? (
-          <HeaderLink to="/templates">Templates</HeaderLink>
+        {showResources ? (
+          <HeaderLink to="/resources">Resources</HeaderLink>
         ) : (
           <HeaderLink
             to="https://github.com/remix-run"
@@ -65,9 +65,9 @@ export function Header({
 }
 
 function HeaderMenuMobile({ className = "" }: { className: string }) {
-  // TODO: Remove prior to launch as this is only here to render the template link for non-production
+  // TODO: Remove prior to launch as this is only here to render the resource link for non-production
   const rootData = useRouteLoaderData<typeof loader>("root");
-  let showTemplates = !rootData?.isProductionHost;
+  let showResources = !rootData?.isProductionHost;
   // This is the same default, hover, focus style as the VersionSelect
   let baseClasses =
     "bg-gray-100 hover:bg-gray-200 [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
@@ -89,8 +89,8 @@ function HeaderMenuMobile({ className = "" }: { className: string }) {
           <HeaderLink to="/docs/en/main">Docs</HeaderLink>
           <HeaderLink to="/blog">Blog</HeaderLink>
           <HeaderLink to="/showcase">Showcase</HeaderLink>
-          {showTemplates ? (
-            <HeaderLink to="/templates">Templates</HeaderLink>
+          {showResources ? (
+            <HeaderLink to="/resources">Resources</HeaderLink>
           ) : (
             <HeaderLink
               to="https://github.com/remix-run"

@@ -1,89 +1,100 @@
 // Pull full readme for this page from GitHub
 import {
   json,
-  type MetaFunction,
   type LoaderFunctionArgs,
+  type HeadersFunction,
+  type MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { getTemplate } from "~/lib/templates.server";
-import { InitCodeblock, TemplateTag } from "~/ui/templates";
+import { getResource } from "~/lib/resources.server";
+import { InitCodeblock, ResourceTag, useCreateTagUrl } from "~/ui/resources";
 import { octokit } from "~/lib/github.server";
 import "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
+import { CACHE_CONTROL } from "~/lib/http.server";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const templateSlug = params.slug;
-  invariant(templateSlug, "templateSlug is required");
+  const resourceSlug = params.slug;
+  invariant(resourceSlug, "resourceSlug is required");
 
-  let template = await getTemplate(templateSlug, { octokit });
+  let resource = await getResource(resourceSlug, { octokit });
 
-  if (!template) {
+  if (!resource) {
     throw json({}, { status: 404 });
   }
 
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return json({
-    siteUrl,
-    template,
-  });
+  return json(
+    {
+      siteUrl,
+      resource,
+    },
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
+  );
 }
+
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
+  return loaderHeaders;
+};
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { data, params } = args;
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
 
-  let { siteUrl, template } = data || {};
-  if (!template) {
+  let { siteUrl, resource } = data || {};
+  if (!resource) {
     return [{ title: "404 Not Found | Remix" }];
   }
 
-  let socialImageUrl = template.imgSrc;
+  let socialImageUrl = resource.imgSrc;
   let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
 
   return [
-    { title: template.title + " | Remix Templates" },
-    { name: "description", content: template.description },
+    { title: resource.title + " | Remix Resources" },
+    { name: "description", content: resource.description },
     { property: "og:url", content: url },
-    { property: "og:title", content: template.title },
+    { property: "og:title", content: resource.title },
     { property: "og:image", content: socialImageUrl },
-    { property: "og:description", content: template.description },
+    { property: "og:description", content: resource.description },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:creator", content: "@remix_run" },
     { name: "twitter:site", content: "@remix_run" },
-    { name: "twitter:title", content: template.title },
-    { name: "twitter:description", content: template.description },
+    { name: "twitter:title", content: resource.title },
+    { name: "twitter:description", content: resource.description },
     { name: "twitter:image", content: socialImageUrl },
-    // {
-    //   name: "twitter:image:alt",
-    //   content: socialImageUrl ? post.imageAlt : undefined,
-    // },
   ];
 };
 
-export default function TemplatePage() {
-  let { template } = useLoaderData<typeof loader>();
+export default function ResourcePage() {
+  let { resource } = useLoaderData<typeof loader>();
   let {
     description,
     repoUrl,
     initCommand,
     sponsorUrl,
-    stars,
+    starsFormatted,
     tags,
     readmeHtml,
-  } = template;
+  } = resource;
+  let createTagUrl = useCreateTagUrl();
 
   return (
     <main className="flex flex-1 flex-col items-center px-8 lg:container">
       <div className="flex w-full flex-col md:flex-row-reverse">
         {/* The sidebar comes first with a flex row-reverse for better keyboard navigation */}
         <aside className="flex flex-col gap-4 md:sticky md:top-28 md:h-0 md:w-[400px]">
-          <p className="text-xl font-bold">
+          <a
+            href={repoUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="text-xl font-bold hover:text-gray-600 dark:hover:text-gray-300"
+          >
             {repoUrl.replace("https://github.com/", "")}
-          </p>
+          </a>
           <p className="text-sm italic text-gray-500 dark:text-gray-300 md:text-justify lg:text-base">
             {description}
           </p>
@@ -95,7 +106,7 @@ export default function TemplatePage() {
           >
             <svg
               aria-hidden
-              className="h-4 w-4 text-gray-900"
+              className="h-4 w-4 text-gray-900 dark:text-gray-400"
               viewBox="0 0 24 24"
             >
               <use href={`${iconsHref}#github`} />
@@ -105,7 +116,7 @@ export default function TemplatePage() {
                 Star
               </span>{" "}
               <span className="font-light group-hover:font-normal">
-                {stars}
+                {starsFormatted}
               </span>
             </span>
           </a>
@@ -122,15 +133,12 @@ export default function TemplatePage() {
               <span>Sponsor</span>
             </a>
           ) : null}
-          <div className="relative">
-            <p>Use this template</p>
-            <InitCodeblock initCommand={initCommand} />
-          </div>
+          <InitCodeblock initCommand={initCommand} />
           <div className="flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
             {tags.map((tag) => (
-              <TemplateTag key={tag} to={`/templates/filter?tag=${tag}`}>
+              <ResourceTag key={tag} to={createTagUrl({ add: tag })}>
                 {tag}
-              </TemplateTag>
+              </ResourceTag>
             ))}
           </div>
         </aside>
