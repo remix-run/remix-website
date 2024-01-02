@@ -1,6 +1,6 @@
 - title: "Epic Stack"
   repoUrl: "https://github.com/epicweb-dev/epic-stack"
-  imgSrc: "https://camo.githubusercontent.com/b0dc7ea8d2ffacd560d79cea8c792aa568cfdfc0b158950ea95194584fed0d4a/68747470733a2f2f6769746875622d70726f64756374696f6e2d757365722d61737365742d3632313064662e73332e616d617a6f6e6177732e636f6d2f313530303638342f3234363838353434392d31623030323836632d616133642d343462322d396566322d3034663639346562333539322e706e67"
+  imgSrc: "https://github-production-user-asset-6210df.s3.amazonaws.com/1500684/246885449-1b00286c-aa3d-44b2-9ef2-04f694eb3592.png"
   initCommand: "npx create-epic-app@latest"
   category: "templates"
   featured: true
@@ -49,7 +49,7 @@
 
 - title: "Remix K-pop Stack"
   repoUrl: "https://github.com/netlify-templates/kpop-stack"
-  imgSrc: "https://camo.githubusercontent.com/7a78b38ae1b2ffd2f8fa3343e81b4de412b722025a6907207e301ec5a1f9c049/68747470733a2f2f7265732e636c6f7564696e6172792e636f6d2f647a6b6f787273646a2f696d6167652f75706c6f61642f76313634383834343638342f436c65616e53686f745f323032322d30342d30315f61745f31362e32332e34305f32785f6f6f337070652e6a7067"
+  imgSrc: "https://res.cloudinary.com/dzkoxrsdj/image/upload/v1648844684/CleanShot_2022-04-01_at_16.23.40_2x_oo3ppe.jpg"
   initCommand: "npx create-remix template netlify-templates/kpop-stack"
   category: "templates"
 
