@@ -63,10 +63,7 @@ installGlobals();
     "*",
     createRequestHandler({
       build: vite
-        ? () =>
-            vite.ssrLoadModule(
-              require("@remix-run/dev").unstable_viteServerBuildModuleId,
-            )
+        ? () => vite.ssrLoadModule("virtual:remix/server-build")
         : require(BUILD_DIR),
       mode: process.env.NODE_ENV,
     }),
