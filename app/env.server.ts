@@ -26,7 +26,7 @@ const envSchema = z.object({
   FLY_APP_NAME: z.string(),
 
   // Get from https://app.convertkit.com/account_settings/advanced_settings
-  CONVERTKIT_KEY: z.string(),
+  CONVERTKIT_KEY: z.string().optional().superRefine(requiredInProduction),
 
   // A token to increase the rate limiting from 60/hr to 1000/hr
   GITHUB_TOKEN: z.string().optional().superRefine(requiredInProduction),
@@ -36,6 +36,9 @@ const envSchema = z.object({
 
   // Package from which to base docs version
   RELEASE_PACKAGE: z.string(),
+
+  FASTLY_API_TOKEN: z.string().optional().superRefine(requiredInProduction),
+  FASTLY_SERVICE_ID: z.string().optional().superRefine(requiredInProduction),
 
   // For development, reading the docs from a local repo
   LOCAL_REPO_RELATIVE_PATH: z

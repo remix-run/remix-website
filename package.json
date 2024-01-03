@@ -73,15 +73,15 @@
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.2",
     "yaml": "^1.10.2",
-    "zod": "^3.20.6"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@remix-run/dev": "2.4.1",
     "@remix-run/eslint-config": "2.4.1",
-    "@testing-library/jest-dom": "^6.1.6",
+    "@testing-library/jest-dom": "^6.2.0",
     "@types/follow-redirects": "^1.14.4",
     "@types/gunzip-maybe": "^1.4.2",
-    "@types/luxon": "^3.3.7",
+    "@types/luxon": "^3.3.8",
     "@types/parse-link-header": "^2.0.3",
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
