@@ -37,9 +37,6 @@ const envSchema = z.object({
   // Package from which to base docs version
   RELEASE_PACKAGE: z.string(),
 
-  FASTLY_API_TOKEN: z.string().optional().superRefine(requiredInProduction),
-  FASTLY_SERVICE_ID: z.string().optional().superRefine(requiredInProduction),
-
   // For development, reading the docs from a local repo
   LOCAL_REPO_RELATIVE_PATH: z
     .string()
