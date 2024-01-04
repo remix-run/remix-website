@@ -16,7 +16,7 @@ FROM base as deps
 WORKDIR /remixapp
 
 ADD package.json package-lock.json .npmrc ./
-RUN npm install --production=false
+RUN npm ci --production=false
 
 # Setup production node_modules
 FROM base as production-deps
