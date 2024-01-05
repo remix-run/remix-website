@@ -38,6 +38,8 @@ installGlobals();
   app.set("trust proxy", true);
   app.use(limiter);
 
+  app.get("/ip", (request, response) => response.send(request.ip));
+
   app.use(compression());
 
   // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
