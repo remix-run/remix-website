@@ -7,7 +7,7 @@ export default defineConfig({
     noExternal: ["@docsearch/react"],
   },
   plugins: [
-    remix(),
+    remix({ serverModuleFormat: "cjs" }),
     tsconfigPaths(),
     splitVendorChunkPlugin(),
   ],
