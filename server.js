@@ -36,9 +36,7 @@ installGlobals();
   });
 
   app.set("trust proxy", true);
-  app.use(limiter);
-
-  app.get("/ip", (request, response) => response.send(request.ip));
+     app.use(limiter);
 
   app.use(compression());
 
