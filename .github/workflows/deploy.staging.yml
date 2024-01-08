@@ -43,7 +43,7 @@ jobs:
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
-      
+
       - name: 🎈 Setup Fly
         uses: superfly/flyctl-actions/setup-flyctl@v1.4
 
