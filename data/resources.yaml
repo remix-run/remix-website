@@ -55,7 +55,7 @@
 
 - title: "Remix Page Blocks"
   repoUrl: "https://github.com/AlexandroMtzG/remix-page-blocks"
-  imgSrc: "https://camo.githubusercontent.com/dfa95a488c367ffec2091398cb4061d32e6160bcdd0d434200f2d96fac4d655e/68747470733a2f2f7961686f6f6465722e736972762e636f6d2f72656d6978626c6f636b732f706167652d626c6f636b732f636f7665722e706e67"
+  imgSrc: "https://yahooder.sirv.com/remix-page-blocks/hero.png"
   initCommand: "npx create-remix@latest template AlexandroMtzG/remix-page-blocks"
   category: "templates"
 
