@@ -7,7 +7,7 @@ import { OutlineButtonLink, primaryButtonLinkClass } from "~/ui/buttons";
 import "~/styles/index.css";
 import { Fragment } from "react";
 import type { Sponsor, Speaker } from "~/lib/conf";
-import { getSpeakers, getSponsors } from "~/lib/conf.server";
+import { getSpeakers, getSponsors } from "~/lib/conf2022.server";
 import { Link } from "~/ui/link";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
@@ -35,7 +35,7 @@ export const meta: MetaFunction<typeof loader> = (args) => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const speakersOrdered = await getSpeakers(2022);
+  const speakersOrdered = await getSpeakers();
   const speakersShuffled = speakersOrdered
     // save a bit of data by not sending along the bio to the home page
     .map(
@@ -47,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     )
     .sort(() => Math.random() - 0.5);
 
-  const allSponsors = await getSponsors(2022);
+  const allSponsors = await getSponsors();
   const sponsors = {
     premier: allSponsors.find((s) => s.level === "premier"),
     gold: allSponsors

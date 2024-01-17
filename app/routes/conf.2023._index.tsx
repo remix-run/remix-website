@@ -10,11 +10,10 @@ import {
 } from "~/ui/buttons";
 import "~/styles/index.css";
 import { Fragment } from "react";
-import { getSponsors } from "~/lib/conf.server";
 import type { Sponsor, SponsorLevel } from "~/lib/conf";
 import { Link } from "~/ui/link";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import { getSpeakers } from "~/lib/conf2023.server";
+import { getSpeakers, getSponsors } from "~/lib/conf2023.server";
 import type { Speaker } from "~/lib/conf2023";
 
 export const meta: MetaFunction<typeof loader> = (args) => {
@@ -50,7 +49,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     console.error(err);
   }
 
-  let allSponsors = await getSponsors(2023);
+  let allSponsors = await getSponsors();
   let sponsors: Partial<Record<SponsorLevel, Sponsor[]>> = {};
   for (let sponsor of allSponsors.sort(randomSort)) {
     let level = sponsor.level;
@@ -149,7 +148,7 @@ function EarlySponsors() {
             </p>
             <div className="w-72 max-w-full sm:w-80 xl:w-96">
               <GridCell>
-                <GridCellLink to=".">
+                <GridCellLink to="https://shopify.com/">
                   <div className="flex w-full p-12 md:p-14 lg:p-16 2xl:p-20">
                     <LogoShopify className="h-auto w-full" aria-hidden />
                   </div>

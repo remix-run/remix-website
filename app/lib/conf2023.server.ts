@@ -1,10 +1,13 @@
 import LRUCache from "lru-cache";
 import { DateTime } from "luxon";
+import yaml from "yaml";
+import invariant from "tiny-invariant";
 import {
   sluggify,
   validateSessionizeSessionData,
   validateSessionizeSpeakerData,
 } from "./conf2023";
+import sponsorsYamlFileContents from "../../data/conf/2023/sponsors.yaml?raw";
 import type {
   Speaker,
   SpeakerSession,
@@ -13,6 +16,8 @@ import type {
   SessionizeSpeakerData,
   SessionizeSessionData,
 } from "./conf2023";
+import type { Sponsor } from "./conf";
+import { isSponsor, isSponsorArray } from "./conf";
 
 const CONF_TIME_ZONE = "America/Denver";
 const NO_CACHE =
@@ -20,13 +25,14 @@ const NO_CACHE =
 const SPEAKERS_CACHE_KEY = "speakers";
 const SESSIONS_CACHE_KEY = "sessions";
 const SCHEDULES_CACHE_KEY = "schedules";
+const SPONSORS_CACHE_KEY = "schedules";
 const SESSIONIZE_ENDPOINT = "https://sessionize.com/api/v2/s8ds2hnu";
 const SESSIONIZE_API_DETAILS_URL =
   "https://sessionize.com/app/organizer/schedule/api/endpoint/9617/7818";
 
 let cache = new LRUCache<
   "speakers" | "sessions" | "schedules",
-  (Speaker | SpeakerSession | Schedule)[]
+  (Speaker | SpeakerSession | Schedule | Sponsor)[]
 >({
   max: 250,
   maxSize: 1024 * 1024 * 12, // 12 mb
@@ -494,4 +500,26 @@ async function fetchNaiveStaleWhileRevalidate(
       signal: controller.signal,
     });
   }
+}
+
+export async function getSponsors() {
+  let cached = cache.get(SPONSORS_CACHE_KEY);
+  if (isSponsorArray(cached)) {
+    return cached;
+  }
+
+  let sponsorsRaw = yaml.parse(sponsorsYamlFileContents);
+  let sponsors: Array<Sponsor> = [];
+  for (let sponsorRaw of sponsorsRaw) {
+    invariant(
+      isSponsor(sponsorRaw),
+      `Sponsor ${JSON.stringify(
+        sponsorRaw,
+      )} is not valid. Please check the sponsors file.`,
+    );
+    sponsors.push(sponsorRaw);
+  }
+  cache.set(SPONSORS_CACHE_KEY, sponsors);
+
+  return sponsors;
 }

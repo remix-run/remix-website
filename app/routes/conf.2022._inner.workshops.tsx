@@ -42,7 +42,7 @@ export default function Workshops() {
                 href="https://twitter.com/kentcdodds"
               >
                 <img
-                  src="/k.jpg"
+                  src="/authors/profile-kent-c-dodds.png"
                   alt="Kent C. Dodds"
                   className="w-36 rounded-md"
                 />
@@ -53,7 +53,7 @@ export default function Workshops() {
                 href="https://twitter.com/ryanflorence"
               >
                 <img
-                  src="/r.jpg"
+                  src="/authors/profile-ryan-florence.png"
                   alt="Ryan Florence"
                   className="w-36 rounded-md"
                 />

@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { metaV1 } from "@remix-run/v1-meta";
-import { getSchedule } from "~/lib/conf.server";
+import { getSchedule } from "~/lib/conf2022.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { sluggify } from "~/lib/conf";
 
@@ -17,7 +17,7 @@ export const meta: MetaFunction = (args) => {
 type LoaderData = { scheduleItems: Awaited<ReturnType<typeof getSchedule>> };
 
 export const loader: LoaderFunction = async () => {
-  const scheduleItems = await getSchedule(2022);
+  const scheduleItems = await getSchedule();
   return json<LoaderData>(
     { scheduleItems },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },

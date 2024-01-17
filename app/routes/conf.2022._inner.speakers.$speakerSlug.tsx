@@ -9,7 +9,7 @@ import {
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
-import { getSpeakers, getTalks } from "~/lib/conf.server";
+import { getSpeakers, getTalks } from "~/lib/conf2022.server";
 import "~/styles/conf-speaker.css";
 import { sluggify } from "~/lib/conf";
 import { CACHE_CONTROL } from "~/lib/http.server";
@@ -34,8 +34,8 @@ export const meta: MetaFunction<typeof loader> = (args) => {
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const [allTalks, allSpeakers] = await Promise.all([
-    getTalks(2022),
-    getSpeakers(2022),
+    getTalks(),
+    getSpeakers(),
   ]);
   const speaker = allSpeakers.find((s) => s.slug === params.speakerSlug);
   if (!speaker) throw new Response("Speaker not found", { status: 404 });
