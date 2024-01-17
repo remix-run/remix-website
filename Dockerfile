@@ -47,7 +47,6 @@ WORKDIR /remixapp
 
 COPY --from=production-deps /remixapp/node_modules /remixapp/node_modules
 COPY --from=build /remixapp/build /remixapp/build
-COPY --from=build /remixapp/data /remixapp/data
 COPY --from=build /remixapp/server.js /remixapp/server.js
 COPY --from=build /remixapp/package.json /remixapp/package.json
 COPY --from=build /remixapp/start.sh /remixapp/start.sh
