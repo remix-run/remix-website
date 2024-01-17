@@ -12,12 +12,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["./app/*"],
     },
     "noEmit": true,
     "baseUrl": ".",
     "allowJs": true,
     "isolatedModules": true,
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+  },
 }
