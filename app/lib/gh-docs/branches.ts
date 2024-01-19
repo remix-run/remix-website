@@ -1,4 +1,4 @@
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import type { Octokit } from "octokit";
 
 type CacheContext = { octokit: Octokit };

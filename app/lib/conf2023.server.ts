@@ -1,4 +1,4 @@
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import { DateTime } from "luxon";
 import yaml from "yaml";
 import invariant from "tiny-invariant";

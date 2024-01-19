@@ -2,7 +2,7 @@ import invariant from "tiny-invariant";
 import { processMarkdown } from "~/lib/md.server";
 
 import yaml from "yaml";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import type {
   ScheduleItem,
   ScheduleItemSpeaker,

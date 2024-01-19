@@ -1,5 +1,5 @@
 import { loadPlugins, type UnistNode } from "~/lib/md.server";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import type { Processor } from "unified";
 import type * as Hast from "hast";
 import type * as Mdast from "mdast";
