@@ -2,7 +2,7 @@
   "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "vite-plugin-arraybuffer/types"],
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "module": "ESNext",
