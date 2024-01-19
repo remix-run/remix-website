@@ -36,7 +36,7 @@
     "emoji-regex": "^10.3.0",
     "escape-goat": "^4.0.0",
     "express": "^4.18.2",
-    "express-rate-limit": "^6.7.0",
+    "express-rate-limit": "^7.1.5",
     "fathom-client": "^3.6.0",
     "follow-redirects": "^1.15.5",
     "front-matter": "^4.0.2",
