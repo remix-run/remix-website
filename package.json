@@ -95,7 +95,7 @@
     "autoprefixer": "^10.4.17",
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.56.0",
-    "happy-dom": "^13.2.0",
+    "happy-dom": "^13.2.1",
     "postcss": "^8.4.33",
     "postcss-import": "^16.0.0",
     "prettier": "^3.2.4",
