@@ -1,4 +1,4 @@
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import parseLinkHeader from "parse-link-header";
 import semver from "semver";
 import type { Octokit } from "octokit";

@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import invariant from "tiny-invariant";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import yaml from "yaml";
 import { processMarkdown } from "~/lib/md.server";
 import authorsYamlFileContents from "../../data/authors.yml?raw";

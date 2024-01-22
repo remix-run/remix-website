@@ -1,5 +1,5 @@
 import { processMarkdown } from "~/lib/md.server";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import parseYamlHeader from "gray-matter";
 import { getRepoContent } from "./repo-content";
 import { getRepoTarballStream } from "./repo-tarball";

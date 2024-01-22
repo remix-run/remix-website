@@ -1,5 +1,5 @@
 import yaml from "yaml";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import { env } from "~/env.server";
 import { getRepoContent } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
