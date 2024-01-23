@@ -23,8 +23,6 @@ const requiredInDevelopment: z.RefinementEffect<
 };
 
 const envSchema = z.object({
-  FLY_APP_NAME: z.string(),
-
   // Get from https://app.convertkit.com/account_settings/advanced_settings
   CONVERTKIT_KEY: z.string().optional().superRefine(requiredInProduction),
 
