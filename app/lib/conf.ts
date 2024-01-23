@@ -169,12 +169,6 @@ export function isTalkArray(arr: any): arr is Array<Talk> {
   return Array.isArray(arr) && arr.every(isTalk);
 }
 
-export function isScheduleItemRawArray(
-  arr: any,
-): arr is Array<ScheduleItemRaw> {
-  return Array.isArray(arr) && arr.every(isScheduleItemRaw);
-}
-
 export function isScheduleItemArray(arr: any): arr is Array<ScheduleItem> {
   return Array.isArray(arr) && arr.every(isScheduleItem);
 }

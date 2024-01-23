@@ -1,9 +1,4 @@
 import type { DateTime } from "luxon";
-import { slugify } from "~/ui/primitives/utils";
-
-export function getSpeakerSlug(speaker: Speaker) {
-  return slugify(speaker.nameFull);
-}
 
 export function validateSessionizeSpeakerData(
   data: unknown,
