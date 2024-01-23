@@ -22,13 +22,13 @@ import {
   isTalk,
   isTalkArray,
   isTalkScheduleItemRaw,
-  sluggify,
 } from "./conf";
 
 import speakersYamlFileContents from "../../data/conf/2022/speakers.yaml?raw";
 import sponsorsYamlFileContents from "../../data/conf/2022/sponsors.yaml?raw";
 import talksYamlFileContents from "../../data/conf/2022/talks.yaml?raw";
 import scheduleYamlFileContents from "../../data/conf/2022/schedule.yaml?raw";
+import { slugify } from "~/ui/primitives/utils";
 
 let cache = new LRUCache<
   string,
@@ -54,7 +54,7 @@ export async function getSpeakers() {
     let speakerRawWithDefaults = {
       bioHTML,
       type: "speaker",
-      slug: sluggify(speakerRaw.name),
+      slug: slugify(speakerRaw.name),
       ...speakerRaw,
     };
     invariant(

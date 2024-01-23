@@ -5,7 +5,7 @@ import { getRepoContent } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
 import type { Octokit } from "octokit";
 import resourcesYamlFileContents from "../../data/resources.yaml?raw";
-import { slugify } from "./misc";
+import { slugify } from "~/ui/primitives/utils";
 
 // TODO: parse this with zod
 let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);

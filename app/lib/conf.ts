@@ -178,12 +178,3 @@ export function isScheduleItemRawArray(
 export function isScheduleItemArray(arr: any): arr is Array<ScheduleItem> {
   return Array.isArray(arr) && arr.every(isScheduleItem);
 }
-
-export function sluggify(string: string) {
-  return string
-    .toLowerCase()
-    .replace(/[ .':]/g, " ")
-    .split(" ")
-    .filter(Boolean)
-    .join("-");
-}

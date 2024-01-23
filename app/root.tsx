@@ -23,8 +23,8 @@ import { removeTrailingSlashes, isProductionHost } from "~/lib/http.server";
 import { ColorSchemeScript, useColorScheme } from "~/lib/color-scheme";
 import { parseColorScheme } from "~/lib/color-scheme.server";
 import iconsHref from "~/icons.svg";
-import { canUseDOM } from "~/lib/misc";
 import cx from "clsx";
+import { canUseDOM } from "./ui/primitives/utils";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   removeTrailingSlashes(request);

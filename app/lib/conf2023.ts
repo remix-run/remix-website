@@ -1,10 +1,8 @@
 import type { DateTime } from "luxon";
-import { sluggify } from "~/lib/conf";
-
-export { sluggify };
+import { slugify } from "~/ui/primitives/utils";
 
 export function getSpeakerSlug(speaker: Speaker) {
-  return sluggify(speaker.nameFull);
+  return slugify(speaker.nameFull);
 }
 
 export function validateSessionizeSpeakerData(

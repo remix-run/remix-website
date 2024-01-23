@@ -237,3 +237,12 @@ export function createContext<ContextValueType extends object | null>(
   Provider.displayName = `${rootComponentName}Provider`;
   return [Provider, useValidatedContext];
 }
+
+export function slugify(string: string) {
+  return string
+    .toLowerCase()
+    .replace(/[ .':]/g, " ")
+    .split(" ")
+    .filter(Boolean)
+    .join("-");
+}

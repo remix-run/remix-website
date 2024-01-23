@@ -1,10 +1,10 @@
+import { createPortal } from "react-dom";
 import type { DocSearchProps } from "@docsearch/react";
 import { useDocSearchKeyboardEvents } from "@docsearch/react/dist/esm/useDocSearchKeyboardEvents";
-import { useHydrated } from "~/lib/misc";
 import "@docsearch/css/dist/style.css";
 import "~/styles/docsearch.css";
+import { useHydrated } from "./primitives/utils";
 import { Suspense, lazy, useCallback, useState } from "react";
-import { createPortal } from "react-dom";
 
 const OriginalDocSearch = lazy(() =>
   import("@docsearch/react").then((module) => ({

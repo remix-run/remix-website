@@ -3,7 +3,6 @@ import { DateTime } from "luxon";
 import yaml from "yaml";
 import invariant from "tiny-invariant";
 import {
-  sluggify,
   validateSessionizeSessionData,
   validateSessionizeSpeakerData,
 } from "./conf2023";
@@ -18,6 +17,7 @@ import type {
 } from "./conf2023";
 import type { Sponsor } from "./conf";
 import { isSponsor, isSponsorArray } from "./conf";
+import { slugify } from "~/ui/primitives/utils";
 
 const CONF_TIME_ZONE = "America/Denver";
 const NO_CACHE =
@@ -341,7 +341,7 @@ function modelSpeaker(speaker: SessionizeSpeakerData): Speaker {
     nameFirst,
     nameLast,
     nameFull,
-    slug: sluggify(nameFull),
+    slug: slugify(nameFull),
     imgUrl,
     twitterHandle,
     isTopSpeaker: !!speaker.isTopSpeaker,
@@ -365,7 +365,7 @@ function modelSpeakerSession(session: SessionizeSessionData): SpeakerSession {
           return {
             id: speaker.id,
             name: speaker.name,
-            slug: sluggify(speaker.name),
+            slug: slugify(speaker.name),
           };
         })
       : [];

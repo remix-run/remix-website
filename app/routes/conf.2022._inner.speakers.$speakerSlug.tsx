@@ -11,8 +11,8 @@ import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { getSpeakers, getTalks } from "~/lib/conf2022.server";
 import "~/styles/conf-speaker.css";
-import { sluggify } from "~/lib/conf";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import { slugify } from "~/ui/primitives/utils";
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   if (args.data) {
@@ -95,7 +95,7 @@ export default function SpeakerRoute() {
                   <Link
                     className="pl-2 underline"
                     to={`../schedule/may-25${
-                      talk.time ? `#time-${sluggify(talk.time)}` : ""
+                      talk.time ? `#time-${slugify(talk.time)}` : ""
                     }`}
                   >
                     <time>{talk.time}</time>{" "}

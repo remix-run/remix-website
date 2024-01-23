@@ -12,13 +12,13 @@
  */
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import {
   getOwnerDocument,
   useForceUpdate,
   useHydrated,
   useLayoutEffect,
 } from "./utils";
-import { createPortal } from "react-dom";
 
 const PortalImpl: React.FC<PortalProps> = ({
   children,
