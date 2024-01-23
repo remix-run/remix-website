@@ -18,11 +18,11 @@
   imgSrc: "/showcase-assets/docker-scout.webp"
   videoSrc: "/showcase-assets/docker-scout"
 
-- name: "GitHub"
-  description: "Copilot for PRs waitlist"
-  link: "https://copilot4prs.githubnext.com"
-  imgSrc: "/showcase-assets/github-copilot-prs.webp"
-  videoSrc: "/showcase-assets/github-copilot-prs"
+- name: "Shop"
+  description: "Shop by Shopify on web"
+  link: "https://shop.app/products/2069182873728"
+  imgSrc: "/showcase-assets/shop.webp"
+  videoSrc: "/showcase-assets/shop"
 
 - name: "Hydrogen"
   description: "Shopify's headless commerce framework"
@@ -35,6 +35,12 @@
   link: "https://www.daffy.org/"
   imgSrc: "/showcase-assets/daffy.webp"
   videoSrc: "/showcase-assets/daffy"
+
+- name: "GitHub"
+  description: "Copilot for PRs waitlist"
+  link: "https://copilot4prs.githubnext.com"
+  imgSrc: "/showcase-assets/github-copilot-prs.webp"
+  videoSrc: "/showcase-assets/github-copilot-prs"
 
 - name: "Nour Hammour"
   description: "Luxury fashion outwear brand from Paris"
@@ -65,12 +71,6 @@
   link: "https://oxide.computer/"
   imgSrc: "/showcase-assets/oxide.webp"
   videoSrc: "/showcase-assets/oxide"
-
-- name: "Shop"
-  description: "Shop by Shopify on web"
-  link: "https://shop.app/products/2069182873728"
-  imgSrc: "/showcase-assets/shop.webp"
-  videoSrc: "/showcase-assets/shop"
 
 - name: "Trigger.dev"
   description: "Open source background jobs framework"
