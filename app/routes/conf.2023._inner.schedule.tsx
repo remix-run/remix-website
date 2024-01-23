@@ -12,7 +12,7 @@ import { json } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { formatDate, getSchedules } from "~/lib/conf2023.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import { sluggify } from "~/lib/conf";
+import { slugify } from "~/ui/primitives/utils";
 
 export async function loader(_: LoaderFunctionArgs) {
   let schedules = await getSchedules();
@@ -26,7 +26,7 @@ export async function loader(_: LoaderFunctionArgs) {
       schedules: schedules.map((schedule) => {
         return {
           ...schedule,
-          dateSlug: sluggify(
+          dateSlug: slugify(
             formatDate(schedule.date, {
               month: "short",
               day: "numeric",

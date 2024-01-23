@@ -127,5 +127,4 @@ function isAbsoluteUrl(str: string) {
 Link.displayName = "Link";
 NavLink.displayName = "NavLink";
 
-export type { LinkProps, NavLinkProps };
 export { Link, NavLink };

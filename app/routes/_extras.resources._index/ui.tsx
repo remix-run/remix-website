@@ -1,9 +1,9 @@
 import type { Category, Resource } from "~/lib/resources.server";
 import { InitCodeblock, ResourceTag, useCreateTagUrl } from "~/ui/resources";
 import { Link, useSearchParams } from "@remix-run/react";
-import { slugify } from "~/lib/misc";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
+import { slugify } from "~/ui/primitives/utils";
 
 export let categories = ["all", "templates", "libraries"];
 

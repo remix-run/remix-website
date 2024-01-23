@@ -1,11 +1,4 @@
 import type { DateTime } from "luxon";
-import { sluggify } from "~/lib/conf";
-
-export { sluggify };
-
-export function getSpeakerSlug(speaker: Speaker) {
-  return sluggify(speaker.nameFull);
-}
 
 export function validateSessionizeSpeakerData(
   data: unknown,

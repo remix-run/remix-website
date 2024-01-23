@@ -5,8 +5,8 @@ import { Fragment, forwardRef, useEffect, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";
 import { clsx } from "clsx";
-import { useHydrated } from "~/lib/misc";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import { useHydrated } from "~/ui/primitives/utils";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);

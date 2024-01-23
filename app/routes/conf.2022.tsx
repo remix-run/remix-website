@@ -343,15 +343,3 @@ function Logo() {
     </svg>
   );
 }
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function TopBanner({ children }: { children?: React.ReactNode }) {
-  if (!children) return null;
-  return (
-    <div className="sticky top-0 z-20 bg-black py-2">
-      <p className="container mx-auto flex flex-col items-center justify-center text-[3.2vw] sm:text-[16px] md:flex-row md:gap-1">
-        {children}
-      </p>
-    </div>
-  );
-}

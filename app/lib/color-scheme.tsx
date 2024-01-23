@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useNavigation, useRouteLoaderData } from "@remix-run/react";
-import { useIsomorphicLayoutEffect } from "~/lib/misc";
 import type { loader as rootLoader } from "~/root";
+import { useLayoutEffect } from "~/ui/primitives/utils";
 
 export type ColorScheme = "dark" | "light" | "system";
 
@@ -40,7 +40,7 @@ function ColorSchemeScriptImpl() {
   );
 
   // Set
-  useIsomorphicLayoutEffect(() => {
+  useLayoutEffect(() => {
     switch (colorScheme) {
       case "light":
         document.documentElement.classList.remove("dark");
@@ -60,7 +60,7 @@ function ColorSchemeScriptImpl() {
 
   // always sync the color scheme if "system" is used
   // this accounts for the docs pages adding some classnames to documentElement in root
-  useIsomorphicLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (colorScheme === "system") {
       let media = window.matchMedia("(prefers-color-scheme: dark)");
       syncColorScheme(media);

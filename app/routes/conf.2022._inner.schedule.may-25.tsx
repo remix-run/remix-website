@@ -5,7 +5,7 @@ import type { MetaFunction } from "@remix-run/react";
 import { metaV1 } from "@remix-run/v1-meta";
 import { getSchedule } from "~/lib/conf2022.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import { sluggify } from "~/lib/conf";
+import { slugify } from "~/ui/primitives/utils";
 
 export const meta: MetaFunction = (args) => {
   return metaV1(args, {
@@ -43,7 +43,7 @@ export default function May25Schedule() {
               <tr
                 key={scheduleItem.time}
                 className="border-b border-t border-gray-200"
-                id={`time-${sluggify(scheduleItem.time)}`}
+                id={`time-${slugify(scheduleItem.time)}`}
               >
                 <td className="whitespace-nowrap px-2 py-8 lg:py-16">
                   {scheduleItem.time}

@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { canUseDOM, useHydrated } from "~/lib/misc";
+import { canUseDOM, useHydrated } from "./primitives/utils";
 
 ////////////////////////////////////////////////////////////////////////////////
 interface TStageProps {

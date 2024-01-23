@@ -169,21 +169,6 @@ export function isTalkArray(arr: any): arr is Array<Talk> {
   return Array.isArray(arr) && arr.every(isTalk);
 }
 
-export function isScheduleItemRawArray(
-  arr: any,
-): arr is Array<ScheduleItemRaw> {
-  return Array.isArray(arr) && arr.every(isScheduleItemRaw);
-}
-
 export function isScheduleItemArray(arr: any): arr is Array<ScheduleItem> {
   return Array.isArray(arr) && arr.every(isScheduleItem);
-}
-
-export function sluggify(string: string) {
-  return string
-    .toLowerCase()
-    .replace(/[ .':]/g, " ")
-    .split(" ")
-    .filter(Boolean)
-    .join("-");
 }
