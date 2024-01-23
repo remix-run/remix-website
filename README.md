@@ -83,8 +83,9 @@ When linking to other posts use `[name](article-slug)`, you don't need to do `[n
 - Record quick demo of the website (~6s)
 - Grab or screenshot the first frame of the video
 - Add both resources to public/showcase-assets
-- Run `cd public/showcase-assets && convert.sh` to convert images and videos to compressed formats
+- Run `cd public/showcase-assets && ./convert.sh` to convert images and videos to compressed formats
   - Warning: this script was created hastily with ChatGPT and little concern for others running it. Feel free to offer improvements to the script and/or documentation
+- Remove/don't commit the original video and image
 - Add new showcase example data to [showcase.yaml](./data/showcase.yaml)
 
 ### Adding to Resources
