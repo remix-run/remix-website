@@ -5,7 +5,7 @@ const aspectRatioPlugin = require("@tailwindcss/aspect-ratio");
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {TailwindConfig} */
-module.exports = {
+export default {
   mode: "jit",
   content: ["./app/**/*.{ts,tsx}", "./data/**/*.md", "./tailwind-extras.html"],
   darkMode: "class",

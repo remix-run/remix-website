@@ -5,12 +5,7 @@ import arraybuffer from "vite-plugin-arraybuffer";
 
 export default defineConfig({
   ssr: {
-    noExternal: ["@docsearch/react", "satori"],
+    noExternal: ["@docsearch/react"],
   },
-  plugins: [
-    remix({ serverModuleFormat: "cjs" }),
-    tsconfigPaths(),
-    splitVendorChunkPlugin(),
-    arraybuffer(),
-  ],
+  plugins: [remix(), tsconfigPaths(), splitVendorChunkPlugin(), arraybuffer()],
 });
