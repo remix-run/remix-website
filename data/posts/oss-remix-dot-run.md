@@ -38,7 +38,7 @@ Ryan Florence wrote it and now you can read [1500 lines of scroll-experience cod
 
 One of the unique features of our website is that we handle documentation without State Site Generation (prerendering the pages in build).
 
-The reason we do this is so we don't have to rebuild our entire site every time we fix a typo. In fact, the Remix docs don't exist in this repo at all. You can find them in the [Remix codebase](https://github.com/remix-run/remix/tree/main/docs) right next to the code. We have the docs here
+The reason we do this is so we don't have to rebuild our entire site every time we fix a typo. In fact, the Remix docs don't exist in this repo at all. You can find them in the [Remix codebase](https://github.com/remix-run/remix/tree/main/docs) right next to the code. We have the docs here:
 
 - To keep it close to the code
 - To make it easy to contribute to (before we opened these docs)
