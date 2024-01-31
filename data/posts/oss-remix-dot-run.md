@@ -74,7 +74,7 @@ We have a many plans to continue improving these pages, as well as add more page
 
 ### Vite!
 
-Remix.run already uses the new Vite compiler. This change was largely made so we could dog-food the new plugin and make sure it works for a real, production site. However, now changes like this will be much easier to show off and let others learn from.
+Remix.run already uses the new Vite plugin. This change was largely made so we could dog-food the new plugin and make sure it works for a real, production site. However, now changes like this will be much easier to show off and let others learn from.
 
 Here are some (simplified) examples where we were able to remove clunky patterns Remix forced us into and now Vite makes incredibly simple.
 
