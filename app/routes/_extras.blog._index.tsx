@@ -47,7 +47,7 @@ export default function Blog() {
                 />
               </div>
               <p className="text-sm lg:text-base">{latestPost.dateDisplay}</p>
-              <p className="text-2xl font-bold lg:text-5xl">
+              <p className="text-2xl font-bold lg:text-5xl lg:leading-normal">
                 {latestPost.title}
               </p>
               <p className="text-sm lg:text-base">{latestPost.summary}</p>
