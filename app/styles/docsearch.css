@@ -48,3 +48,7 @@
 
   @apply grid h-5 w-3.5 place-items-center rounded bg-white px-1 text-xs text-gray-600 dark:bg-gray-600 dark:text-gray-200;
 }
+
+.DocSearch-Container {
+  cursor: auto;
+}
