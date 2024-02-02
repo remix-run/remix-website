@@ -48,8 +48,9 @@ export function getRepoDocsMenu(ref: string, lang: string) {
   return getMenu(REPO, fixupRefName(ref), lang);
 }
 
-export function getRepoDoc(ref: string, slug: string) {
-  return getDoc(REPO, fixupRefName(ref), slug);
+export function getRepoDoc(ref: string, slug: string, dir?: string) {
+  let filepath = dir ? `${dir}/${slug}` : slug;
+  return getDoc(REPO, fixupRefName(ref), filepath);
 }
 
 function fixupRefName(ref: string) {
