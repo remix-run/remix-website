@@ -92,7 +92,7 @@ global.docCache ??= new LRUCache<string, Doc>({
 
 async function fetchDoc(key: string): Promise<Doc> {
   let [repo, ref, slug] = key.split(":");
-  let filename = `docs/${slug}.md`;
+  let filename = `${slug}.md`;
   let md = await getRepoContent(repo, ref, filename);
   if (md === null) {
     throw Error(`Could not find ${filename} in ${repo}@${ref}`);

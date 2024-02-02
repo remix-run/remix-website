@@ -30,7 +30,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   let pageUrl = url.protocol + "//" + url.host + url.pathname;
   invariant(params.ref, "expected `ref` params");
   try {
-    let doc = await getRepoDoc(params.ref, params["*"] || "index");
+    let slug = params["*"]?.endsWith("/changelog")
+      ? "CHANGELOG"
+      : `docs/${params["*"] || "index"}`;
+    let doc = await getRepoDoc(params.ref, slug);
     if (!doc) throw null;
     return json(
       { doc, pageUrl },
