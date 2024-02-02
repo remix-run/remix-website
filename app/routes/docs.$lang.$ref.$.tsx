@@ -29,14 +29,11 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   let url = new URL(request.url);
   let pageUrl = url.protocol + "//" + url.host + url.pathname;
   invariant(params.ref, "expected `ref` params");
-  let splat = params["*"];
-  let isChangelog = splat?.endsWith("/changelog");
   try {
-    let doc = await getRepoDoc(
-      params.ref,
-      isChangelog ? "CHANGELOG" : params["*"] || "index",
-      isChangelog ? "" : "docs",
-    );
+    let slug = params["*"]?.endsWith("/changelog")
+      ? "CHANGELOG"
+      : `docs/${params["*"] || "index"}`;
+    let doc = await getRepoDoc(params.ref, slug);
     if (!doc) throw null;
     return json(
       { doc, pageUrl },
