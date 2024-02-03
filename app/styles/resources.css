@@ -41,7 +41,7 @@
   }
 
   & [data-code-block-copy] {
-    @apply absolute right-4 top-[1.125rem] h-5 w-5 cursor-pointer bg-white/80 opacity-0 dark:bg-gray-900/80;
+    @apply absolute top-[1.125rem] h-5 w-5 cursor-pointer bg-white/80 opacity-0 dark:bg-gray-900/80;
   }
 
   &:hover [data-code-block-copy],

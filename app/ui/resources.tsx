@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { type Resource } from "~/lib/resources.server";
-import { Link, useSearchParams } from "@remix-run/react";
+import { transformNpmCommand } from "~/lib/transformNpmCommand";
+import type { PackageManager } from "~/lib/transformNpmCommand";
+import { DetailsMenu, DetailsPopup } from "./details-menu";
+
+import { Form, Link, useSearchParams, useSubmit } from "@remix-run/react";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
 
@@ -67,6 +71,13 @@ export function InitCodeblock({
   let [npxOrNpmMaybe, ...otherCode] = initCommand.trim().split(" ");
   let [copied, setCopied] = useState(false);
 
+  function handleCopied(copied: boolean, packageManager: PackageManager) {
+    setCopied(copied);
+    navigator.clipboard.writeText(
+      transformNpmCommand(npxOrNpmMaybe, otherCode.join(" "), packageManager),
+    );
+  }
+
   // Reset copied state after 4 seconds
   useEffect(() => {
     if (copied) {
@@ -106,30 +117,101 @@ export function InitCodeblock({
         </code>
       </pre>
 
-      <button
-        type="button"
-        onClick={() => {
-          setCopied(true);
-          navigator.clipboard.writeText(initCommand);
-        }}
-        data-code-block-copy
-        data-copied={copied}
-        className="outline-none"
-      >
-        {/* had to put these here instead of as a mask so we could add an opacity */}
-        <svg
-          aria-hidden
-          className="h-5 w-5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-100"
-          viewBox="0 0 24 24"
-        >
-          {copied ? (
-            <use href={`${iconsHref}#check-mark`} />
-          ) : (
-            <use href={`${iconsHref}#copy`} />
-          )}
-        </svg>
-        <span className="sr-only">Copy code to clipboard</span>
-      </button>
+      <CopyCodeBlock setCopied={handleCopied} copied={copied} />
     </div>
+  );
+}
+
+type CopyCodeBlockProps = {
+  copied: boolean;
+  setCopied: (copied: boolean, packageManager: PackageManager) => void;
+};
+
+function CopyCodeBlock({ copied, setCopied }: CopyCodeBlockProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+
+  return (
+    <DetailsMenu
+      className="absolute right-4 top-0 !opacity-100"
+      data-copied={copied}
+      onToggle={() => setIsMenuOpen((oldValue) => !oldValue)}
+    >
+      <summary
+        className="_no-triangle absolute top-0 grid"
+        data-copied={copied}
+      >
+        <span
+          data-code-block-copy
+          data-copied={copied}
+          className={`absolute right-0 top-0 opacity-0 hover:opacity-100 ${copied || isMenuOpen ? "!opacity-100" : ""}`}
+        >
+          <svg
+            aria-hidden
+            className="h-5 w-5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-100"
+            viewBox="0 0 24 24"
+          >
+            {copied ? (
+              <use href={`${iconsHref}#check-mark`} />
+            ) : (
+              <use href={`${iconsHref}#copy`} />
+            )}
+          </svg>
+          <span className="sr-only">Copy code to clipboard</span>
+        </span>
+      </summary>
+      <DetailsPopup className="-bottom-28" childrenClassName="!w-20">
+        <Form preventScrollReset replace className="flex flex-col gap-px">
+          <input
+            type="hidden"
+            name="category"
+            value={searchParams.get("category") || ""}
+          />
+
+          <PackageManagerButton
+            packageManager="npm"
+            setCopied={(copied) => setCopied(copied, "npm")}
+          />
+          <PackageManagerButton
+            packageManager="yarn"
+            setCopied={(copied) => setCopied(copied, "yarn")}
+          />
+          <PackageManagerButton
+            packageManager="pnpm"
+            setCopied={(copied) => setCopied(copied, "pnpm")}
+          />
+          <PackageManagerButton
+            packageManager="bun"
+            setCopied={(copied) => setCopied(copied, "bun")}
+          />
+        </Form>
+      </DetailsPopup>
+    </DetailsMenu>
+  );
+}
+
+type PackageManagerButtonProps = {
+  packageManager: PackageManager;
+  setCopied: (copied: boolean) => void;
+};
+
+function PackageManagerButton({
+  packageManager,
+  setCopied,
+}: PackageManagerButtonProps) {
+  const submit = useSubmit();
+  return (
+    <button
+      className="rounded-sm hover:cursor-pointer hover:bg-gray-50"
+      type="submit"
+      onClick={(e) => {
+        submit({
+          preventScrollReset: false,
+        });
+        setCopied(true);
+      }}
+    >
+      {packageManager}
+    </button>
   );
 }
