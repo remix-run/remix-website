@@ -63,7 +63,7 @@ export async function getProcessor(options?: ProcessorOptions) {
     .use(rehypeAutolinkHeadings);
 }
 
-type InternalPlugin<Input, Output> = Unified.Plugin<
+type InternalPlugin<Input extends string | Unist.Node | undefined, Output> = Unified.Plugin<
   [ProcessorOptions?],
   Input,
   Output
