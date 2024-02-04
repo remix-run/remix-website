@@ -57,7 +57,7 @@ async function getMarkdownTutPage(filename: string): Promise<MarkdownTutPage> {
   if (!file) {
     throw new Error('File not found: "' + filename + '"');
   }
-  let page = (await processMarkdown(processor, file)) as MarkdownTutPage;
+  let page = (await processMarkdown(processor as TProcessor, file)) as MarkdownTutPage;
   cache.set(filename, page);
   return page;
 }
@@ -68,6 +68,7 @@ type TProcessor = Processor<
   Hast.Node<Unist.Data>,
   Hast.Node<Unist.Data>,
   Hast.Node<Unist.Data>,
+  Unist.Parent,
   string
 >;
 
@@ -168,7 +169,7 @@ function stringify(
         let html = processor
           .stringify({ type: "root", children: childNodes } as Mdast.Root)
           .trim();
-        let subject = processor.stringify(subjectNode).trim();
+        let subject = processor.stringify(subjectNode as Mdast.Root).trim();
         slides.push({ type: "slide", subject, html });
       }
       page.push({ type: "sequence", slides });
