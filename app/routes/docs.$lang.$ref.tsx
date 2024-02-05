@@ -9,9 +9,9 @@ import {
   useNavigation,
   useParams,
   useResolvedPath,
+  matchPath,
 } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import { matchPath } from "react-router-dom";
 import { json, redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
