@@ -25,6 +25,7 @@ import { parseColorScheme } from "~/lib/color-scheme.server";
 import iconsHref from "~/icons.svg";
 import cx from "clsx";
 import { canUseDOM } from "./ui/primitives/utils";
+import { GlobalLoading } from "./ui/global-loading";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   removeTrailingSlashes(request);
@@ -128,6 +129,7 @@ function Document({
             : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200",
         )}
       >
+        <GlobalLoading />
         {children}
         <ScrollRestoration />
         <Scripts />
