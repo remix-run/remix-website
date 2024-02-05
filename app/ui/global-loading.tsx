@@ -1,21 +1,27 @@
-import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@remix-run/react";
 import cx from "clsx";
 
 export function GlobalLoading() {
-  const transition = useNavigation();
-  const active = transition.state !== "idle";
+  let transition = useNavigation();
+  let active = transition.state !== "idle";
 
-  const ref = React.useRef<HTMLDivElement>(null);
-  const [animationComplete, setAnimationComplete] = React.useState(true);
+  let ref = useRef<HTMLDivElement>(null);
+  let [animating, setAnimating] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!ref.current) return;
-    if (active) setAnimationComplete(false);
 
     Promise.allSettled(
       ref.current.getAnimations().map(({ finished }) => finished),
-    ).then(() => !active && setAnimationComplete(true));
+    ).then(() => {
+      if (!active) setAnimating(false);
+    });
+
+    if (active) {
+      let id = setTimeout(() => setAnimating(true), 100);
+      return () => clearTimeout(id);
+    }
   }, [active]);
 
   return (
@@ -30,11 +36,9 @@ export function GlobalLoading() {
         className={cx(
           "h-full bg-gradient-to-r from-blue-brand to-aqua-brand transition-all duration-500 ease-in-out",
           transition.state === "idle" &&
-            animationComplete &&
-            "w-0 opacity-0 transition-none",
+            (animating ? "w-full" : "w-0 opacity-0 transition-none"),
           transition.state === "submitting" && "w-4/12",
           transition.state === "loading" && "w-10/12",
-          transition.state === "idle" && !animationComplete && "w-full",
         )}
       />
     </div>
