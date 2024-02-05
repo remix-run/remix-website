@@ -22,13 +22,13 @@
 }
 
 .DocSearch-Button {
-  @apply h-10 bg-gray-100 px-3 ml-0 hover:bg-gray-200 hover:shadow-none focus:bg-gray-200 focus-visible:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus-visible:bg-gray-700;
+  @apply ml-0 h-10 bg-gray-100 px-3 hover:bg-gray-200 hover:shadow-none focus:bg-gray-200 focus-visible:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus-visible:bg-gray-700;
 
   @media screen and (min-width: theme(screens.lg)) {
     width: 100%;
   }
   @media not screen and (min-width: theme(screens.lg)) {
-    @apply w-10 px-0 place-content-center;
+    @apply w-10 place-content-center px-0;
     .DocSearch-Button-Keys,
     .DocSearch-Button-Placeholder {
       display: none;
