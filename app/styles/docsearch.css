@@ -22,13 +22,16 @@
 }
 
 .DocSearch-Button {
-  @apply h-10 bg-gray-100 px-3 hover:bg-gray-200 hover:shadow-none focus:bg-gray-200 focus-visible:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus-visible:bg-gray-700;
+  @apply h-10 bg-gray-100 px-3 ml-0 hover:bg-gray-200 hover:shadow-none focus:bg-gray-200 focus-visible:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus-visible:bg-gray-700;
 
-  @media screen and (min-width: 751px) {
-    margin-left: 0;
-  }
   @media screen and (min-width: theme(screens.lg)) {
     width: 100%;
+  }
+  @media not screen and (min-width: theme(screens.lg)) {
+    .DocSearch-Button-Keys,
+    .DocSearch-Button-Placeholder {
+      display: none;
+    }
   }
   @media print {
     display: none;
