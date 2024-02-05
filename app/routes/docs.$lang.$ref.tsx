@@ -623,8 +623,6 @@ function NavMenuMobile() {
           <Menu />
         </div>
       </DetailsMenu>
-      {/* TODO: Think about mobile search design and add this back. Doesn't currently fit where it used to go now with version selector and dark mode toggle. */}
-      {/* <DocSearchSection /> */}
     </div>
   );
 }
