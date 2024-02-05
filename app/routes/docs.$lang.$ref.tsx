@@ -209,6 +209,7 @@ function Header() {
             <div className="flex items-center gap-2">
               <VersionSelect />
               <ColorSchemeToggle />
+              <DocSearchSection className="lg:hidden" />
               <HeaderMenuMobile className="md:hidden" />
             </div>
           </div>
@@ -341,11 +342,16 @@ function VersionLink({
   );
 }
 
-function DocSearchSection() {
+function DocSearchSection({ className }: { className?: string }) {
   let { isLatest } = useLoaderData<typeof loader>();
   if (!isLatest) return null;
   return (
-    <div className="relative lg:sticky lg:top-0 lg:z-10">
+    <div className={
+      cx(
+        "relative lg:sticky lg:top-0 lg:z-10",
+        className,
+      )
+    }>
       <div className="absolute -top-24 hidden h-24 w-full bg-white dark:bg-gray-900 lg:block" />
       <div
         className={cx(
@@ -617,8 +623,6 @@ function NavMenuMobile() {
           <Menu />
         </div>
       </DetailsMenu>
-      {/* TODO: Think about mobile search design and add this back. Doesn't currently fit where it used to go now with version selector and dark mode toggle. */}
-      {/* <DocSearchSection /> */}
     </div>
   );
 }
