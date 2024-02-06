@@ -192,7 +192,7 @@ function Header() {
     >
       <InnerContainer>
         <div className="relative z-20 flex h-16 w-full items-center justify-between py-3">
-          <div className="flex w-full items-center justify-between gap-8 md:w-auto">
+          <div className="flex w-full items-center justify-between gap-4 sm:gap-8 md:w-auto">
             <Link
               className="flex"
               onContextMenu={(event) => {
