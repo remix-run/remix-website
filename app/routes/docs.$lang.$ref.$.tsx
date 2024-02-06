@@ -59,51 +59,25 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 
 const LAYOUT_LOADER_KEY = "routes/docs.$lang.$ref";
 
-function validateParentData(data: unknown): data is {
-  latestVersion: string;
-  releaseBranch: string;
-  branches: string[];
-  currentGitHubRef: string;
-} {
-  return (
-    !!data &&
-    typeof data === "object" &&
-    "latestVersion" in data &&
-    "releaseBranch" in data &&
-    "branches" in data &&
-    "currentGitHubRef" in data
-  );
-}
+type Loader = typeof loader;
+type MatchLoaders = {
+  [LAYOUT_LOADER_KEY]: typeof docsLayoutLoader;
+  root: typeof rootLoader;
+};
 
-function hasIsProductionHost(
-  data: unknown,
-): data is { isProductionHost: boolean } {
-  return !!data && typeof data === "object" && "isProductionHost" in data;
-}
-
-export const meta: MetaFunction<
-  typeof loader,
-  {
-    [LAYOUT_LOADER_KEY]: typeof docsLayoutLoader;
-    root: typeof rootLoader;
-  }
-> = (args) => {
+export const meta: MetaFunction<Loader, MatchLoaders> = (args) => {
   let { data } = args;
 
-  let matchesData = getMatchesData(args);
+  let matchesData = getMatchesData<Loader, MatchLoaders>(args);
   let parentData = matchesData[LAYOUT_LOADER_KEY];
   if (!data) {
     return metaV1(args, {
       title: "Not Found",
     });
   }
-  if (!parentData) {
-    return metaV1(args, {});
-  }
 
   let { doc } = data;
 
-  invariant(validateParentData(parentData), "invalid parent data");
   let { latestVersion, releaseBranch, branches, currentGitHubRef } = parentData;
 
   let titleAppend =
@@ -120,10 +94,6 @@ export const meta: MetaFunction<
   // seo: only want to index the main branch
   let isMainBranch = currentGitHubRef === releaseBranch;
 
-  invariant(
-    hasIsProductionHost(matchesData.root),
-    "No isProductionHost data found in root match data",
-  );
   let robots =
     matchesData.root.isProductionHost && isMainBranch
       ? "index,follow"
