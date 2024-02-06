@@ -27,6 +27,7 @@ import {
   SubscribeSubmit,
 } from "~/ui/subscribe";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import invariant from "tiny-invariant";
 
 export const handle = { forceDark: true };
 
@@ -223,28 +224,27 @@ function isExternalUrl(value: string, currentHost: string) {
   }
 }
 
+function hasHost(data: unknown): data is { host: string } {
+  return !!data && typeof data === "object" && "host" in data;
+}
+
 const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
   ({ to, children, className, prefetch = "none", ...props }, ref) => {
-    let rootMatch = useMatches().find((match) => match.id === "root")!;
-    if (
-      rootMatch.data &&
-      typeof rootMatch.data === "object" &&
-      "host" in rootMatch.data &&
-      typeof rootMatch.data.host === "string"
-    ) {
-      if (isExternalUrl(to, rootMatch.data.host)) {
-        return (
-          <a
-            ref={ref}
-            className={cx("text-base font-semibold", className)}
-            href={to}
-            children={children}
-            target="_blank"
-            rel="noopener noreferrer"
-            {...props}
-          />
-        );
-      }
+    let rootMatchData = useMatches().find((match) => match.id === "root")?.data;
+    invariant(hasHost(rootMatchData), "No host found in root match data");
+    let external = isExternalUrl(to, rootMatchData.host);
+    if (external) {
+      return (
+        <a
+          ref={ref}
+          className={cx("text-base font-semibold", className)}
+          href={to}
+          children={children}
+          target="_blank"
+          rel="noopener noreferrer"
+          {...props}
+        />
+      );
     }
 
     return (
