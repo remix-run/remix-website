@@ -59,6 +59,28 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 
 const LAYOUT_LOADER_KEY = "routes/docs.$lang.$ref";
 
+function validateParentData(data: unknown): data is {
+  latestVersion: string;
+  releaseBranch: string;
+  branches: string[];
+  currentGitHubRef: string;
+} {
+  return (
+    !!data &&
+    typeof data === "object" &&
+    "latestVersion" in data &&
+    "releaseBranch" in data &&
+    "branches" in data &&
+    "currentGitHubRef" in data
+  );
+}
+
+function hasIsProductionHost(
+  data: unknown,
+): data is { isProductionHost: boolean } {
+  return !!data && typeof data === "object" && "isProductionHost" in data;
+}
+
 export const meta: MetaFunction<
   typeof loader,
   {
@@ -80,7 +102,8 @@ export const meta: MetaFunction<
   }
 
   let { doc } = data;
-  // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
+
+  invariant(validateParentData(parentData), "invalid parent data");
   let { latestVersion, releaseBranch, branches, currentGitHubRef } = parentData;
 
   let titleAppend =
@@ -97,10 +120,12 @@ export const meta: MetaFunction<
   // seo: only want to index the main branch
   let isMainBranch = currentGitHubRef === releaseBranch;
 
-  let rootData = matchesData.root;
+  invariant(
+    hasIsProductionHost(matchesData.root),
+    "No isProductionHost data found in root match data",
+  );
   let robots =
-    // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
-    rootData.isProductionHost && isMainBranch
+    matchesData.root.isProductionHost && isMainBranch
       ? "index,follow"
       : "noindex,nofollow";
 
