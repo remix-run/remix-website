@@ -735,7 +735,7 @@ function EditLink() {
 
   let repoUrl = "https://github.com/remix-run/remix";
   // TODO: deal with translations when we add them with params.lang
-  let editUrl = `${repoUrl}/edit/${params.ref}/docs/${doc.slug}.md`;
+  let editUrl = `${repoUrl}/edit/${params.ref}/${doc.slug}.md`;
 
   return (
     <a className="flex items-center gap-1 hover:underline" href={editUrl}>
