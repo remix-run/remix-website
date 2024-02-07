@@ -1,6 +1,5 @@
 import { loadPlugins, type UnistNode } from "~/lib/md.server";
 import { LRUCache } from "lru-cache";
-import type { Processor } from "unified";
 import type * as Hast from "hast";
 import type * as Mdast from "mdast";
 import type * as Unist from "unist";
@@ -25,7 +24,8 @@ const cache = new LRUCache<string, MarkdownTutPage>({
   },
 });
 
-let processorPromise: ReturnType<typeof getProcessor>;
+type TProcessorPromise = ReturnType<typeof getProcessor>;
+let processorPromise: TProcessorPromise;
 
 async function getProcessor() {
   let [
@@ -57,27 +57,21 @@ async function getMarkdownTutPage(filename: string): Promise<MarkdownTutPage> {
   if (!file) {
     throw new Error('File not found: "' + filename + '"');
   }
-  let page = (await processMarkdown(processor as TProcessor, file)) as MarkdownTutPage;
+  let page = (await processMarkdown(processor, file)) as MarkdownTutPage;
   cache.set(filename, page);
   return page;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-type TProcessor = Processor<
-  Hast.Node<Unist.Data>,
-  Hast.Node<Unist.Data>,
-  Hast.Node<Unist.Data>,
-  Unist.Parent,
-  string
->;
+type TProcessor = Awaited<TProcessorPromise>;
 
 async function processMarkdown(
   processor: TProcessor,
   content: string | Buffer,
 ): Promise<MarkdownTutPage> {
   let state: State = STATE_NORMAL;
-  let tree = (await processor.run(processor.parse(content))) as UnistNode.Root;
+  let tree = await processor.run(processor.parse(content) as UnistNode.Root);
   let current: ProseNode | SlideNode = {
     type: "prose",
     children: [],
