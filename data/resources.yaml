@@ -176,7 +176,7 @@
 - title: "Remix Auth Microsoft Strategy"
   repoUrl: "https://github.com/juhanakristian/remix-auth-microsoft"
   imgSrc: "https://opengraph.githubassets.com/2d7dc3050538cff7d542584257cf746955a513bdfa1b65fbad2c8dddd86ce7e2/juhanakristian/remix-auth-microsoft"
-  initCommand: "npm install remix-auth-auth0"
+  initCommand: "npm install remix-auth-microsoft remix-auth remix-auth-oauth2"
   category: "libraries"
 
 - title: "Remix Auth WebAuthn Strategy"
