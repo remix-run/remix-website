@@ -59,28 +59,25 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 
 const LAYOUT_LOADER_KEY = "routes/docs.$lang.$ref";
 
-export const meta: MetaFunction<
-  typeof loader,
-  {
-    [LAYOUT_LOADER_KEY]: typeof docsLayoutLoader;
-    root: typeof rootLoader;
-  }
-> = (args) => {
+type Loader = typeof loader;
+type MatchLoaders = {
+  [LAYOUT_LOADER_KEY]: typeof docsLayoutLoader;
+  root: typeof rootLoader;
+};
+
+export const meta: MetaFunction<Loader, MatchLoaders> = (args) => {
   let { data } = args;
 
-  let matchesData = getMatchesData(args);
+  let matchesData = getMatchesData<Loader, MatchLoaders>(args);
   let parentData = matchesData[LAYOUT_LOADER_KEY];
   if (!data) {
     return metaV1(args, {
       title: "Not Found",
     });
   }
-  if (!parentData) {
-    return metaV1(args, {});
-  }
 
   let { doc } = data;
-  // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
+
   let { latestVersion, releaseBranch, branches, currentGitHubRef } = parentData;
 
   let titleAppend =
@@ -97,10 +94,8 @@ export const meta: MetaFunction<
   // seo: only want to index the main branch
   let isMainBranch = currentGitHubRef === releaseBranch;
 
-  let rootData = matchesData.root;
   let robots =
-    // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
-    rootData.isProductionHost && isMainBranch
+    matchesData.root.isProductionHost && isMainBranch
       ? "index,follow"
       : "noindex,nofollow";
 

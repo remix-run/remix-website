@@ -142,8 +142,12 @@ function Document({
 export default function App() {
   let matches = useMatches();
   let { noIndex } = useLoaderData<typeof loader>();
-  // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
-  let forceDark = matches.some((match) => match.handle?.forceDark);
+  let forceDark = matches.some(({ handle }) => {
+    if (handle && typeof handle === "object" && "forceDark" in handle) {
+      return handle.forceDark;
+    }
+    return false;
+  });
 
   if (process.env.NODE_ENV !== "development") {
     // eslint-disable-next-line react-hooks/rules-of-hooks

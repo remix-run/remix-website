@@ -36,6 +36,7 @@ import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
 import { env } from "~/env.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import invariant from "tiny-invariant";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
@@ -754,10 +755,13 @@ function InnerContainer({ children }: { children: React.ReactNode }) {
   );
 }
 
+function hasDoc(data: unknown): data is { doc: Doc } {
+  return !!data && typeof data === "object" && "doc" in data;
+}
+
 function useDoc(): Doc | null {
-  let data = useMatches().slice(-1)[0].data;
-  if (!data) return null;
-  // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
+  let data = useMatches().at(-1)?.data;
+  invariant(hasDoc(data), "No doc data found in loader data");
   return data.doc;
 }
 

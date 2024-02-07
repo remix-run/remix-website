@@ -27,6 +27,7 @@ import {
   SubscribeSubmit,
 } from "~/ui/subscribe";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import invariant from "tiny-invariant";
 
 export const handle = { forceDark: true };
 
@@ -223,11 +224,15 @@ function isExternalUrl(value: string, currentHost: string) {
   }
 }
 
+function hasHost(data: unknown): data is { host: string } {
+  return !!data && typeof data === "object" && "host" in data;
+}
+
 const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
   ({ to, children, className, prefetch = "none", ...props }, ref) => {
-    let rootMatch = useMatches().find((match) => match.id === "root")!;
-    // @ts-expect-error -- useMatches types changed to `unknown`, need to validate
-    let external = isExternalUrl(to, rootMatch.data.host);
+    let rootMatchData = useMatches().find((match) => match.id === "root")?.data;
+    invariant(hasHost(rootMatchData), "No host found in root match data");
+    let external = isExternalUrl(to, rootMatchData.host);
     if (external) {
       return (
         <a
