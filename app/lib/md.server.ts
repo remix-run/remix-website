@@ -63,11 +63,10 @@ export async function getProcessor(options?: ProcessorOptions) {
     .use(rehypeAutolinkHeadings);
 }
 
-type InternalPlugin<Input extends string | Unist.Node | undefined, Output> = Unified.Plugin<
-  [ProcessorOptions?],
-  Input,
-  Output
->;
+type InternalPlugin<
+  Input extends string | Unist.Node | undefined,
+  Output,
+> = Unified.Plugin<[ProcessorOptions?], Input, Output>;
 
 export async function loadPlugins() {
   let [{ visit, SKIP }, { htmlEscape }] = await Promise.all([
