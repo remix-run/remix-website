@@ -3,13 +3,13 @@
   imgSrc: "https://github-production-user-asset-6210df.s3.amazonaws.com/1500684/246885449-1b00286c-aa3d-44b2-9ef2-04f694eb3592.png"
   initCommand: "npx create-epic-app@latest"
   category: "templates"
-  featured: true
 
 - title: "Remix Utils"
   repoUrl: "https://github.com/sergiodxa/remix-utils"
   imgSrc: "https://opengraph.githubassets.com/436bcec7a75a4101d373e3c04ce22c94f8fa188cc59c7d35b8c409eec9588ae6/sergiodxa/remix-utils"
   initCommand: "npm install remix-utils"
   category: "libraries"
+  featured: true
 
 - title: "Indie Stack"
   repoUrl: "https://github.com/remix-run/indie-stack"
