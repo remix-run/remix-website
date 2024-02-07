@@ -1,6 +1,5 @@
 import { loadPlugins, type UnistNode } from "~/lib/md.server";
 import { LRUCache } from "lru-cache";
-import type { Processor } from "unified";
 import type * as Hast from "hast";
 import type * as Mdast from "mdast";
 import type * as Unist from "unist";
@@ -25,7 +24,8 @@ const cache = new LRUCache<string, MarkdownTutPage>({
   },
 });
 
-let processorPromise: ReturnType<typeof getProcessor>;
+type TProcessorPromise = ReturnType<typeof getProcessor>;
+let processorPromise: TProcessorPromise;
 
 async function getProcessor() {
   let [
@@ -64,19 +64,14 @@ async function getMarkdownTutPage(filename: string): Promise<MarkdownTutPage> {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-type TProcessor = Processor<
-  Hast.Node<Unist.Data>,
-  Hast.Node<Unist.Data>,
-  Hast.Node<Unist.Data>,
-  string
->;
+type TProcessor = Awaited<TProcessorPromise>;
 
 async function processMarkdown(
   processor: TProcessor,
   content: string | Buffer,
 ): Promise<MarkdownTutPage> {
   let state: State = STATE_NORMAL;
-  let tree = (await processor.run(processor.parse(content))) as UnistNode.Root;
+  let tree = await processor.run(processor.parse(content) as UnistNode.Root);
   let current: ProseNode | SlideNode = {
     type: "prose",
     children: [],
@@ -168,7 +163,7 @@ function stringify(
         let html = processor
           .stringify({ type: "root", children: childNodes } as Mdast.Root)
           .trim();
-        let subject = processor.stringify(subjectNode).trim();
+        let subject = processor.stringify(subjectNode as Mdast.Root).trim();
         slides.push({ type: "slide", subject, html });
       }
       page.push({ type: "sequence", slides });
