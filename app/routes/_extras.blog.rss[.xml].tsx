@@ -24,7 +24,7 @@ export const loader: LoaderFunction = async () => {
             `
             <item>
               <title>${getCData(post.title)}</title>
-              <description>RFC-822 date: ${getCData(post.summary)}</description>
+              <description>${getCData(post.summary)}</description>
               <pubDate>${new Date(post.dateDisplay).toUTCString()}</pubDate>
               <link>${blogUrl}/${post.slug}</link>
               <guid>${blogUrl}/${post.slug}</guid>
