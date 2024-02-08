@@ -1,6 +1,7 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { getBlogPostListings } from "~/lib/blog.server";
 import { Feed } from "feed";
+import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const loader: LoaderFunction = async () => {
   const blogUrl = `https://remix.run/blog`;
@@ -29,7 +30,7 @@ export const loader: LoaderFunction = async () => {
   return new Response(feed.rss2(), {
     headers: {
       "Content-Type": "application/xml",
-      "Cache-Control": "public, max-age=0",
+      "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
   });
 };
