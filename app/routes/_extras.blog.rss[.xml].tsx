@@ -12,7 +12,7 @@ export const loader: LoaderFunction = async () => {
     title: "Remix Blog",
     description: "Thoughts about building excellent user experiences with Remix.",
     link: blogUrl,
-    language: 'en-us',
+    language: 'en',
     generator: "https://github.com/jpmonette/feed",
     copyright: "© Shopify, Inc.",
   });
