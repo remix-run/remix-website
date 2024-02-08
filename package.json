@@ -38,6 +38,7 @@
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
     "fathom-client": "^3.6.0",
+    "feed": "^4.2.2",
     "follow-redirects": "^1.15.5",
     "front-matter": "^4.0.2",
     "gray-matter": "^4.0.3",
