@@ -6,13 +6,14 @@ import { CACHE_CONTROL } from "~/lib/http.server";
 export const loader: LoaderFunction = async () => {
   const blogUrl = `https://remix.run/blog`;
   const posts = await getBlogPostListings();
-  
+
   const feed = new Feed({
     id: blogUrl,
     title: "Remix Blog",
-    description: "Thoughts about building excellent user experiences with Remix.",
+    description:
+      "Thoughts about building excellent user experiences with Remix.",
     link: blogUrl,
-    language: 'en',
+    language: "en",
     updated: posts.length > 0 ? new Date(posts[0].dateDisplay) : new Date(),
     generator: "https://github.com/jpmonette/feed",
     copyright: "© Shopify, Inc.",
