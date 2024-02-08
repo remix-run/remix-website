@@ -160,7 +160,10 @@ function CopyCodeBlock({ copied, setCopied }: CopyCodeBlockProps) {
           <span className="sr-only">Copy code to clipboard</span>
         </span>
       </summary>
-      <DetailsPopup className="-bottom-28" childrenClassName="!w-20">
+      <DetailsPopup
+        className="!left-auto !right-0 top-10"
+        childrenClassName="!w-20"
+      >
         <Form preventScrollReset replace className="flex flex-col gap-px">
           <input
             type="hidden"
