@@ -26,7 +26,7 @@ export const loader: LoaderFunction = async () => {
       title: post.title,
       link: postLink,
       date: new Date(post.dateDisplay),
-      description: post.dateDisplay,
+      description: post.summary,
     });
   });
 
