@@ -184,3 +184,9 @@
   imgSrc: "https://opengraph.githubassets.com/3fb64f01d43128d93fb733a9714cf0b5f15d00cf538630a82491ca98966ae376/alexanderson1993/remix-auth-webauthn"
   initCommand: "npm install remix-auth remix-auth-webauthn"
   category: "libraries"
+
+- title: "Remix Fastify"
+  repoUrl: "https://github.com/mcansh/remix-fastify"
+  imgSrc: "https://opengraph.githubassets.com/bf7bed21844aba588acd9424c425bc47aad603e96330ba641b79e0c302adbd34/mcansh/remix-fastify"
+  initCommand: "npm install @mcansh/remix-fastify fastify @fastify/static"
+  categoryg: "libraries"
