@@ -72,6 +72,7 @@ export function links() {
       href: `/font/${font}`,
       crossOrigin: "anonymous",
     })),
+    { rel: "alternate", type: "application/rss+xml", href: "/blog/rss.xml" },
   ];
 }
 
