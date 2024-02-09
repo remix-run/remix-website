@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   isRouteErrorResponse,
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -133,7 +132,6 @@ function Document({
         {children}
         <ScrollRestoration />
         <Scripts />
-        {isDev ? <LiveReload /> : null}
       </body>
     </html>
   );
