@@ -185,6 +185,13 @@
   initCommand: "npm install remix-auth remix-auth-webauthn"
   category: "libraries"
 
+
+- title: "Remix Fastify"
+  repoUrl: "https://github.com/mcansh/remix-fastify"
+  imgSrc: "https://opengraph.githubassets.com/bf7bed21844aba588acd9424c425bc47aad603e96330ba641b79e0c302adbd34/mcansh/remix-fastify"
+  initCommand: "npm install @mcansh/remix-fastify fastify @fastify/static"
+  category: "libraries"
+
 - title: "HTTP Helmet"
   repoUrl: "https://github.com/mcansh/http-helmet"
   imgSrc: "https://opengraph.githubassets.com/a7b576dbdc5bf2627d5269202d58dd62c513320ab22d7b592b9da589c6cdedb4/mcansh/http-helmet"
