@@ -7,5 +7,5 @@ export default defineConfig({
   ssr: {
     noExternal: ["@docsearch/react"],
   },
-  plugins: [remix(), tsconfigPaths(), splitVendorChunkPlugin(), arraybuffer()],
+  plugins: [tsconfigPaths(), splitVendorChunkPlugin(), arraybuffer(), remix()],
 });
