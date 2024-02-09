@@ -184,3 +184,9 @@
   imgSrc: "https://opengraph.githubassets.com/3fb64f01d43128d93fb733a9714cf0b5f15d00cf538630a82491ca98966ae376/alexanderson1993/remix-auth-webauthn"
   initCommand: "npm install remix-auth remix-auth-webauthn"
   category: "libraries"
+
+- title: "HTTP Helmet"
+  repoUrl: "https://github.com/mcansh/http-helmet"
+  imgSrc: "https://opengraph.githubassets.com/a7b576dbdc5bf2627d5269202d58dd62c513320ab22d7b592b9da589c6cdedb4/mcansh/http-helmet"
+  initCommand: "npm install @mcansh/http-helmet"
+  category: "libraries"
