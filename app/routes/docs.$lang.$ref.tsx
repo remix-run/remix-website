@@ -36,7 +36,6 @@ import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
 import { env } from "~/env.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import invariant from "tiny-invariant";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
@@ -487,6 +486,8 @@ function VersionWarningMessage({
   branches: string[];
   currentGitHubRef: string;
 }) {
+  let { "*": splat } = useParams();
+
   // Don't want to show release-next in the menu, but we do want to show
   // the branch-warning
   let warning = [...branches, "release-next"].includes(currentGitHubRef)
@@ -496,7 +497,10 @@ function VersionWarningMessage({
   return (
     <>
       {warning}.{" "}
-      <Link to="/docs/en/main" className="underline">
+      <Link
+        to={splat ? `/docs/en/main/${splat}` : "/docs/en/main"}
+        className="underline"
+      >
         View latest
       </Link>
     </>
@@ -761,7 +765,7 @@ function hasDoc(data: unknown): data is { doc: Doc } {
 
 function useDoc(): Doc | null {
   let data = useMatches().at(-1)?.data;
-  invariant(hasDoc(data), "No doc data found in loader data");
+  if (!hasDoc(data)) return null;
   return data.doc;
 }
 
