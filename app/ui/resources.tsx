@@ -162,9 +162,9 @@ function CopyCodeBlock({ copied, setCopied }: CopyCodeBlockProps) {
       </summary>
       <DetailsPopup
         className="!left-auto !right-0 top-10"
-        childrenClassName="!w-20"
+        childrenClassName="!w-[110px]"
       >
-        <Form preventScrollReset replace className="flex flex-col gap-px">
+        <Form preventScrollReset replace className="flex flex-col">
           <input
             type="hidden"
             name="category"
@@ -205,9 +205,9 @@ function PackageManagerButton({
   const submit = useSubmit();
   return (
     <button
-      className="rounded-sm hover:cursor-pointer hover:bg-gray-50"
+      className="rounded-md p-1.5 text-left text-sm hover:cursor-pointer hover:bg-gray-50"
       type="submit"
-      onClick={(e) => {
+      onClick={() => {
         submit({
           preventScrollReset: false,
         });
