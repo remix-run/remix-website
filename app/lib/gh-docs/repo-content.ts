@@ -26,6 +26,12 @@ export async function getRepoContent(
     mediaType: { format: "base64" },
   });
 
+  return base64DecodeFileContents(contents);
+}
+
+export function base64DecodeFileContents(
+  contents: Awaited<ReturnType<typeof octokit.rest.repos.getContent>>,
+): string | null {
   if ("type" in contents.data && contents.data.type === "file") {
     return Buffer.from(contents.data.content, "base64").toString("utf-8");
   }

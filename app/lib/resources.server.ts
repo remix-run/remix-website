@@ -1,11 +1,12 @@
 import yaml from "yaml";
 import { LRUCache } from "lru-cache";
 import { env } from "~/env.server";
-import { getRepoContent } from "./gh-docs/repo-content";
+import { base64DecodeFileContents } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
 import type { Octokit } from "octokit";
 import resourcesYamlFileContents from "../../data/resources.yaml?raw";
 import { slugify } from "~/ui/primitives/utils";
+import { octokit } from "./github.server";
 
 // TODO: parse this with zod
 let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);
@@ -104,11 +105,16 @@ global.resourceReadmeCache ??= new LRUCache<string, string>({
   fetchMethod: fetchReadme,
 });
 
-async function fetchReadme(repo: string): Promise<string> {
-  let md = await getRepoContent(repo, "main", "README.md");
-  if (md === null) {
-    throw Error(`Could not find README in ${repo}`);
-  }
+async function fetchReadme(repoPair: string): Promise<string> {
+  let [owner, repo] = repoPair.split("/");
+  let contents = await octokit.rest.repos.getReadme({
+    owner,
+    repo,
+    mediaType: { format: "base64" },
+  });
+
+  let md = base64DecodeFileContents(contents);
+  if (!md) throw Error(`Could not find README in ${repo}`);
   let { html } = await processMarkdown(md);
   return html;
 }
