@@ -15,6 +15,7 @@ const postContentsBySlug = Object.fromEntries(
 );
 
 const AUTHORS: BlogAuthor[] = yaml.parse(authorsYamlFileContents);
+const AUTHOR_NAMES = AUTHORS.map((a) => a.name);
 
 const postsCache = new LRUCache<string, BlogPost>({
   maxSize: 1024 * 1024 * 12, // 12 mb
@@ -84,14 +85,8 @@ function getAuthor(name: string): BlogAuthor | undefined {
   return AUTHORS.find((a) => a.name === name);
 }
 
-function getValidAuthorNames(authors: string[]) {
-  let validatedAuthors: string[] = [];
-  for (let author of AUTHORS) {
-    if (authors.includes(author.name)) {
-      validatedAuthors.push(author.name);
-    }
-  }
-  return validatedAuthors;
+function getValidAuthorNames(authorNames: string[]) {
+  return authorNames.filter((authorName) => AUTHOR_NAMES.includes(authorName));
 }
 
 function formatDate(date: Date) {
