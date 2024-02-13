@@ -6,9 +6,7 @@ import { getRepoTarballStream } from "./repo-tarball";
 import { createTarFileProcessor } from "./tarball.server";
 import { load as $ } from "cheerio";
 import { env } from "~/env.server";
-import type { Octokit } from "octokit";
-
-type CacheContext = { octokit: Octokit };
+import type { CacheContext } from ".";
 
 interface MenuDocAttributes {
   title: string;

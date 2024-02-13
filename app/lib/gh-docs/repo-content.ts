@@ -2,10 +2,9 @@ import fsp from "fs/promises";
 import path from "path";
 import invariant from "tiny-invariant";
 import { env } from "~/env.server";
-import type { Octokit } from "octokit";
-import type { octokit } from "../github.server";
 
-type CacheContext = { octokit: Octokit };
+import type { octokit } from "../github.server";
+import type { CacheContext } from ".";
 
 /**
  * Fetches the contents of a file in a repository or from your local disk.

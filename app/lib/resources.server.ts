@@ -3,9 +3,9 @@ import { LRUCache } from "lru-cache";
 import { env } from "~/env.server";
 import { base64DecodeFileContents } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
-import type { Octokit } from "octokit";
 import resourcesYamlFileContents from "../../data/resources.yaml?raw";
 import { slugify } from "~/ui/primitives/utils";
+import type { CacheContext } from "./gh-docs";
 
 // TODO: parse this with zod
 let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);
@@ -36,7 +36,6 @@ type ResourceYamlKeys =
   | "featured";
 type ResourceYamlData = Pick<Resource, ResourceYamlKeys>;
 type ResourceGitHubData = Omit<Resource, ResourceYamlKeys>;
-type CacheContext = { octokit: Octokit };
 
 /**
  * Gets all of the resources, fetching and merging GitHub data for each one
