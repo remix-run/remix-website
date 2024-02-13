@@ -95,3 +95,9 @@
   link: "https://kentcdodds.com"
   imgSrc: "/showcase-assets/kentcdodds.webp"
   videoSrc: "/showcase-assets/kentcdodds"
+
+- name: "SaasRock"
+  description: "Remix SaaS Boilerplate"
+  link: "https://saasrock.com"
+  imgSrc: "/showcase-assets/saasrock.webp"
+  videoSrc: "/showcase-assets/saasrock"
