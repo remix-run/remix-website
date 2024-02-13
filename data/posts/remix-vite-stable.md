@@ -22,7 +22,7 @@ Let’s break down the most significant changes since our initial release.
 
 ## SPA mode
 
-The most significant change we’ve made is so important that we'll reserve discussing it's impact on the React ecosystem for a later post.
+The most significant change we’ve made is so important that we’ll reserve discussing its impact on the React ecosystem for a later post.
 
 The short version is that Remix now supports building purely static sites that don’t require a JavaScript server in production, all while keeping the benefits of Remix’s file based route conventions, automatic code splitting, route module prefetching, head tag management and more.
 
@@ -66,35 +66,13 @@ What you may not have realized is that this feature is actually achieved via a [
 With the move to Vite, we wanted to ensure that another fork of our build system wasn’t necessary, so we’ve been working with the Vercel team to bring this feature to Remix Vite.
 Now _anyone_ — not just Vercel consumers — can split their server build into multiple bundles however they like.
 
-To assign routes to different server bundles, the Remix Vite plugin now accepts a `serverBundles` function that’s called for each route in the tree and returns a string representing the ID of the server bundle you’d like to assign it to.
-
-For example, you could use this to create a separate server bundle containing all routes within a particular layout route (in this case `_authenticated.tsx`):
-
-```tsx
-import { vitePlugin as remix } from "@remix-run/dev";
-import { defineConfig } from "vite";
-
-export default defineConfig({
-  plugins: [
-    remix({
-      serverBundles: ({ branch }) => {
-        const isAuthenticatedRoute = branch.some((route) =>
-          route.id.split("/").includes("_authenticated"),
-        );
-
-        return isAuthenticatedRoute ? "authenticated" : "unauthenticated";
-      },
-    }),
-  ],
-});
-```
-
-Huge thanks to Vercel, and most notably [Nathan Rajlich][nathan-rajlich], for helping out with this.
+Huge thanks to Vercel, and most notably [Nathan Rajlich][nathan-rajlich], for helping out with this work.
 For more information on this feature, check out the [server bundles documentation][server-bundles].
 
 ## Presets
 
-When investigating support for Vercel and [Cloudflare Pages][cloudflare-pages] in Vite, it became clear that we needed a way for other tools and hosting providers to customize the behavior of the Remix Vite plugin without reaching into internals or running their own forks. To support this, we’ve introduced the concept of “presets”.
+When investigating support for Vercel and [Cloudflare Pages][cloudflare-pages] in Vite, it became clear that we needed a way for other tools and hosting providers to customize the behavior of the Remix Vite plugin without reaching into internals or running their own forks.
+To support this, we’ve introduced the concept of “presets”.
 
 Presets can only do two things:
 
@@ -105,7 +83,8 @@ Presets are designed to be published to npm and used within your Vite config.
 
 ### Cloudflare preset
 
-When we launched Remix Vite, Cloudflare wasn't quite ready yet. Now, with Remix Vite going stable, we provide a built-in preset for Cloudflare:
+When we launched Remix Vite, Cloudflare support wasn’t quite ready yet.
+Now, with Remix Vite going stable, we provide a built-in preset for Cloudflare:
 
 ```ts filename=vite.config.ts lines=[3,11]
 import {
@@ -140,9 +119,11 @@ For more information on this feature, including guidance on how to create your o
 Remix allows you to name files with a `.server.ts` extension to ensure they never accidentally end up on the client.
 However, it turned out that our previous implementation wasn’t compatible with Vite’s ESM model, so we were forced to revisit our approach.
 
-Instead, what if we made it a compile-time error if `.server.ts` files are ever imported in a client-only code path?
+Instead, what if we made it a compile-time error whenever `.server.ts` files are imported in a client code path?
 
-Our previous approach resulted in runtime errors that could easily slip through to production. Raising these errors during the build prevents them from impacting real users, while providing faster, more comprehensive feedback to developers. We quickly realized this is _much_ better.
+Our previous approach resulted in runtime errors that could easily slip through to production.
+Raising these errors during the build prevents them from impacting real users, while providing faster, more comprehensive feedback to developers.
+We quickly realized this is _much_ better.
 
 As a bonus, since we were already working in this area, we decided to add support for `.server` _directories_, not just files, making it easy to mark entire portions of your project as server-only.
 
@@ -173,13 +154,15 @@ export const PostPreview = ({ title, description }) => (
 );
 ```
 
-In its current state, the Remix Vite plugin would throw a compile-time error due to the use of a `.server` module on the client.
-This is a good thing! You definitely don’t want to leak server-only code to the client. You could fix this by splitting server-only code into its own file, but it’d be nice if you didn’t have to restructure our code if you didn’t want to — especially if you're migrating an existing project!
+In this file’s current state, Remix would throw a compile-time error due to the use of a `.server` module on the client.
+This is a good thing! You definitely don’t want to leak server-only code to the client.
+You could fix this by splitting server-only code into its own file, but it’d be nice if you didn’t have to restructure your code if you didn’t want to — especially if you’re migrating an existing project!
 
-This problem isn’t specific to Remix. It actually affects any full-stack Vite project, so we wrote a standalone Vite plugin called [vite-env-only] to solve it.
+This problem isn’t specific to Remix.
+It actually affects any full-stack Vite project, so we wrote a standalone Vite plugin called [vite-env-only] to solve it.
 This plugin lets you mark individual _expressions_ as server-only or client-only.
 
-With the help of this plugin and its `serverOnly$` macro, we can now explicitly mark our server-only code:
+For example, when using the `serverOnly$` macro:
 
 ```tsx
 import { serverOnly$ } from "vite-env-only";
@@ -215,7 +198,8 @@ For more information, check out our [documentation on splitting up client and se
 
 ## `.css?url` imports
 
-From the very beginning, Remix has provided an [alternative model for managing CSS imports][regular-css-imports]. When importing a CSS file, its URL is provided as a string for rendering in a `link` tag:
+From the very beginning, Remix has provided an [alternative model for managing CSS imports][regular-css-imports].
+When importing a CSS file, its URL is provided as a string for rendering in a `link` tag:
 
 ```tsx
 import type { LinksFunction } from "@remix-run/node"; // or cloudflare/deno
@@ -241,17 +225,24 @@ It turned out that this structure conflicted with [Vite’s public directory][vi
 
 Since Vite copies files from `public` into the client build directory, and Remix’s client build directory was nested within the public directory, some consumers found their public directory being recursively copied into&nbsp;itself&nbsp;🫠
 
-To fix this, we had to rearrange our build output a bit. Remix Vite now has a single top-level `buildDirectory` option that defaults to `"build"`, resulting in `build/client` and `build/server` directories.
+To fix this, we had to rearrange our build output a bit.
+Remix Vite now has a single top-level `buildDirectory` option that defaults to `"build"`, resulting in `build/client` and `build/server` directories.
 
-The funny thing is that even though we only implemented this change to fix a bug, we actually much prefer this structure. And based on the feedback we received, so did our early adopters!
+The funny thing is that even though we only implemented this change to fix a bug, we actually much prefer this structure.
+And based on the feedback we received, so did our early adopters!
 
 ## More than just a Vite plugin
 
-Our earliest adopters ran the Vite CLI directly — `vite dev` for local development and `vite build && vite build --ssr` to build for production. Due to the lack of a custom wrapper around Vite, our initial unstable release post mentioned that Remix was now “just a Vite plugin”.
+Our earliest adopters ran the Vite CLI directly — `vite dev` for local development and `vite build && vite build --ssr` to build for production.
+Due to the lack of a custom wrapper around Vite, our initial unstable release post mentioned that Remix was now “just a Vite plugin”.
 
-However, with the introduction of server bundles, we were unable to hang onto this approach. We initially assumed that there was just a single server build but this was no longer the case. When using the `serverBundles` plugin option there would now be a dynamic number of server builds, and Remix needed a way to orchestrate the entire build process. The Vite plugin also now provides a new `buildEnd` hook so you can run your own custom logic once the Remix build has finished.
+However, with the introduction of server bundles, we were unable to hang onto this approach.
+When using the `serverBundles` option there would now be a dynamic number of server builds.
+We had assumed that we’d be able to define multiple inputs and outputs to Vite’s `ssr` build but this turned out not to be the case, so Remix needed a way to orchestrate the entire build process.
+The Vite plugin also now provides a new `buildEnd` hook so you can run your own custom logic once the Remix build has finished.
 
-We’ve kept as much of our old architecture as possible by maximizing the amount of code in our Vite plugin (and we’re glad we did!), and added `remix vite:dev` and `remix vite:build` commands to the Remix CLI. In the Remix v3, these commands will become the default `dev` and `build` commands for Remix.
+We’ve kept as much of our old architecture as possible by maximizing the amount of code in our Vite plugin (and we’re glad we did!), and added `remix vite:dev` and `remix vite:build` commands to the Remix CLI.
+In Remix v3, these commands will become the default `dev` and `build` commands.
 
 So while we’re no longer “just a Vite plugin”, it’s fair to say that we’re still _mostly_ just a Vite&nbsp;plugin&nbsp;🙂
 
@@ -262,9 +253,11 @@ Now that Remix Vite is stable, you’ll start to see our documentation and templ
 Just like with our initial unstable release, we have a [migration guide][remix-vite-migration] for those of you looking to move your existing Remix projects over to Vite.
 
 Rest assured that the old Remix compiler will continue to work in Remix v2.
-However, from now on all new features and improvements that require compiler integrations will only be targeting Vite. In the future Vite will be the only official way to build Remix apps, so we encourage you to start migrating as soon as possible.
+However, from now on all new features and improvements that require compiler integrations will only be targeting Vite.
+In the future Vite will be the only official way to build Remix apps, so we encourage you to start migrating as soon as possible.
 
-If you have any feedback for us along the way, please reach out. We’d love to hear from you!
+If you have any feedback for us along the way, please reach out.
+We’d love to hear from you!
 
 ## Thank you
 
@@ -273,7 +266,8 @@ We couldn’t have come this far without you.
 
 We’d also like to extend an extra special thank you to [Hiroshi Ogawa][hiroshi-ogawa], an outside contributor who landed an astounding [25 pull requests][hiogawa-prs] into Remix&nbsp;Vite&nbsp;🔥
 
-And as always, thank you to the Vite team for providing such an amazing tool for us to build on top of. We’re excited to see where we can take it together.
+And as always, thank you to the Vite team for providing such an amazing tool for us to build on top of.
+We’re excited to see where we can take it together.
 
 💿⚡️🚀
 
