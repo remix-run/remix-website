@@ -2,7 +2,10 @@ import fsp from "fs/promises";
 import path from "path";
 import invariant from "tiny-invariant";
 import { env } from "~/env.server";
-import { octokit } from "../github.server";
+import type { Octokit } from "octokit";
+import type { octokit } from "../github.server";
+
+type CacheContext = { octokit: Octokit };
 
 /**
  * Fetches the contents of a file in a repository or from your local disk.
@@ -15,10 +18,11 @@ export async function getRepoContent(
   repoPair: string,
   ref: string,
   filepath: string,
+  context: CacheContext,
 ): Promise<string | null> {
   if (ref === "local") return getLocalContent(filepath);
   let [owner, repo] = repoPair.split("/");
-  let contents = await octokit.rest.repos.getContent({
+  let contents = await context.octokit.rest.repos.getContent({
     owner,
     repo,
     ref,

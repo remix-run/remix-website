@@ -6,7 +6,6 @@ import { processMarkdown } from "./md.server";
 import type { Octokit } from "octokit";
 import resourcesYamlFileContents from "../../data/resources.yaml?raw";
 import { slugify } from "~/ui/primitives/utils";
-import { octokit } from "./github.server";
 
 // TODO: parse this with zod
 let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);
@@ -74,7 +73,7 @@ export async function getResource(
 
   let [gitHubData, readmeHtml] = await Promise.all([
     getResourceGitHubData(resource.repoUrl, { octokit }),
-    getResourceReadme(resource.repoUrl),
+    getResourceReadme(resource.repoUrl, { octokit }),
   ]);
 
   if (!gitHubData || !readmeHtml) {
@@ -87,7 +86,7 @@ export async function getResource(
 //#region LRUCache and fetchers for GitHub data and READMEs
 
 declare global {
-  var resourceReadmeCache: LRUCache<string, string>;
+  var resourceReadmeCache: LRUCache<string, string, CacheContext>;
   var resourceGitHubDataCache: LRUCache<
     string,
     ResourceGitHubData,
@@ -97,7 +96,7 @@ declare global {
 
 let NO_CACHE = env.NO_CACHE;
 
-global.resourceReadmeCache ??= new LRUCache<string, string>({
+global.resourceReadmeCache ??= new LRUCache<string, string, CacheContext>({
   max: 300,
   ttl: NO_CACHE ? 1 : 1000 * 60 * 5, // 5 minutes
   allowStale: !NO_CACHE,
@@ -105,9 +104,13 @@ global.resourceReadmeCache ??= new LRUCache<string, string>({
   fetchMethod: fetchReadme,
 });
 
-async function fetchReadme(repoPair: string): Promise<string> {
-  let [owner, repo] = repoPair.split("/");
-  let contents = await octokit.rest.repos.getReadme({
+async function fetchReadme(
+  key: string,
+  _staleValue: string | undefined,
+  { context }: LRUCache.FetchOptionsWithContext<string, string, CacheContext>,
+): Promise<string> {
+  let [owner, repo] = key.split("/");
+  let contents = await context.octokit.rest.repos.getReadme({
     owner,
     repo,
     mediaType: { format: "base64" },
@@ -119,9 +122,9 @@ async function fetchReadme(repoPair: string): Promise<string> {
   return html;
 }
 
-async function getResourceReadme(repoUrl: string) {
+async function getResourceReadme(repoUrl: string, context: CacheContext) {
   let repo = repoUrl.replace("https://github.com/", "");
-  let doc = await resourceReadmeCache.fetch(repo);
+  let doc = await resourceReadmeCache.fetch(repo, { context });
 
   return doc || undefined;
 }
