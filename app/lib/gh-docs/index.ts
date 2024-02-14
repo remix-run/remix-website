@@ -15,6 +15,8 @@ export {
 
 export type { Doc } from "./docs";
 
+export type CacheContext = { octokit: Octokit };
+
 const REPO = env.SOURCE_REPO;
 const RELEASE_PACKAGE = env.RELEASE_PACKAGE;
 
@@ -48,8 +50,8 @@ export function getRepoDocsMenu(ref: string, lang: string) {
   return getMenu(REPO, fixupRefName(ref), lang);
 }
 
-export function getRepoDoc(ref: string, slug: string) {
-  return getDoc(REPO, fixupRefName(ref), slug);
+export function getRepoDoc(ref: string, slug: string, context: CacheContext) {
+  return getDoc(REPO, fixupRefName(ref), slug, context);
 }
 
 function fixupRefName(ref: string) {
