@@ -3,7 +3,6 @@ import path from "path";
 import invariant from "tiny-invariant";
 import { env } from "~/env.server";
 
-import type { octokit } from "../github.server";
 import type { CacheContext } from ".";
 
 /**
@@ -26,20 +25,13 @@ export async function getRepoContent(
     repo,
     ref,
     path: filepath,
-    mediaType: { format: "base64" },
+    mediaType: { format: "raw" },
   });
 
-  return base64DecodeFileContents(contents);
-}
-
-export function base64DecodeFileContents(
-  contents: Awaited<ReturnType<typeof octokit.rest.repos.getContent>>,
-): string | null {
-  if ("type" in contents.data && contents.data.type === "file") {
-    return Buffer.from(contents.data.content, "base64").toString("utf-8");
-  }
-
-  return null;
+  // when using `format: raw` the data property is the file contents
+  let md = contents.data as unknown;
+  if (md == null || typeof md !== "string") return null;
+  return md;
 }
 
 /**

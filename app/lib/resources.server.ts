@@ -1,7 +1,6 @@
 import yaml from "yaml";
 import { LRUCache } from "lru-cache";
 import { env } from "~/env.server";
-import { base64DecodeFileContents } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
 import resourcesYamlFileContents from "../../data/resources.yaml?raw";
 import { slugify } from "~/ui/primitives/utils";
@@ -112,11 +111,14 @@ async function fetchReadme(
   let contents = await context.octokit.rest.repos.getReadme({
     owner,
     repo,
-    mediaType: { format: "base64" },
+    mediaType: { format: "raw" },
   });
 
-  let md = base64DecodeFileContents(contents);
-  if (!md) throw Error(`Could not find README in ${repo}`);
+  // when using `format: raw` the data property is the file contents
+  let md = contents.data as unknown;
+  if (md == null || typeof md !== "string") {
+    throw Error(`Could not find README in ${key}`);
+  }
   let { html } = await processMarkdown(md);
   return html;
 }
