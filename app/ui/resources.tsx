@@ -4,7 +4,7 @@ import { transformNpmCommand } from "~/lib/transformNpmCommand";
 import type { PackageManager } from "~/lib/transformNpmCommand";
 import { DetailsMenu, DetailsPopup } from "./details-menu";
 
-import { Form, Link, useSearchParams, useSubmit } from "@remix-run/react";
+import { Link, useSearchParams, useSubmit } from "@remix-run/react";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
 
@@ -70,12 +70,18 @@ export function InitCodeblock({
   // Probably a more elegant solution, but this is what I've got
   let [npxOrNpmMaybe, ...otherCode] = initCommand.trim().split(" ");
   let [copied, setCopied] = useState(false);
+  const submit = useSubmit();
 
-  function handleCopied(copied: boolean, packageManager: PackageManager) {
-    setCopied(copied);
+  function handleCopy(packageManager: PackageManager) {
+    setCopied(true);
     navigator.clipboard.writeText(
       transformNpmCommand(npxOrNpmMaybe, otherCode.join(" "), packageManager),
     );
+    // This is a hack to close the details menu after clicking
+    submit(null, {
+      preventScrollReset: true,
+      replace: true,
+    });
   }
 
   // Reset copied state after 4 seconds
@@ -117,35 +123,24 @@ export function InitCodeblock({
         </code>
       </pre>
 
-      <CopyCodeBlock setCopied={handleCopied} copied={copied} />
+      <CopyCodeBlock copied={copied} onCopy={handleCopy} />
     </div>
   );
 }
 
 type CopyCodeBlockProps = {
   copied: boolean;
-  setCopied: (copied: boolean, packageManager: PackageManager) => void;
+  onCopy: (packageManager: PackageManager) => void;
 };
 
-function CopyCodeBlock({ copied, setCopied }: CopyCodeBlockProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchParams] = useSearchParams();
-
+function CopyCodeBlock({ copied, onCopy }: CopyCodeBlockProps) {
   return (
-    <DetailsMenu
-      className="absolute right-4 top-0 !opacity-100"
-      data-copied={copied}
-      onToggle={() => setIsMenuOpen((oldValue) => !oldValue)}
-    >
+    <DetailsMenu className="absolute" data-copied={copied} data-code-block-copy>
       <summary
-        className="_no-triangle absolute top-0 grid"
+        className="_no-triangle block outline-offset-2"
         data-copied={copied}
       >
-        <span
-          data-code-block-copy
-          data-copied={copied}
-          className={`absolute right-0 top-0 opacity-0 hover:opacity-100 ${copied || isMenuOpen ? "!opacity-100" : ""}`}
-        >
+        <span data-copied={copied}>
           <svg
             aria-hidden
             className="h-5 w-5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-100"
@@ -160,61 +155,26 @@ function CopyCodeBlock({ copied, setCopied }: CopyCodeBlockProps) {
           <span className="sr-only">Copy code to clipboard</span>
         </span>
       </summary>
-      <DetailsPopup
-        className="!left-auto !right-0 top-10"
-        childrenClassName="!w-[110px]"
-      >
-        <Form preventScrollReset replace className="flex flex-col">
-          <input
-            type="hidden"
-            name="category"
-            value={searchParams.get("category") || ""}
-          />
-
-          <PackageManagerButton
-            packageManager="npm"
-            setCopied={(copied) => setCopied(copied, "npm")}
-          />
-          <PackageManagerButton
-            packageManager="yarn"
-            setCopied={(copied) => setCopied(copied, "yarn")}
-          />
-          <PackageManagerButton
-            packageManager="pnpm"
-            setCopied={(copied) => setCopied(copied, "pnpm")}
-          />
-          <PackageManagerButton
-            packageManager="bun"
-            setCopied={(copied) => setCopied(copied, "bun")}
-          />
-        </Form>
-      </DetailsPopup>
+      <div className="absolute left-auto right-0 top-10 w-[110px]">
+        <DetailsPopup
+          // TODO: remove when we get the DetailsPopup figured out
+          className="w-full" // ehhh, we'll see
+        >
+          <div className="flex flex-col">
+            {(["npm", "yarn", "pnpm", "bun"] as const).map((packageManager) => (
+              <button
+                key={packageManager}
+                className="rounded-md p-1.5 text-left text-sm text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:bg-blue-800/50 dark:hover:text-gray-100"
+                onClick={() => {
+                  onCopy(packageManager);
+                }}
+              >
+                {packageManager}
+              </button>
+            ))}
+          </div>
+        </DetailsPopup>
+      </div>
     </DetailsMenu>
-  );
-}
-
-type PackageManagerButtonProps = {
-  packageManager: PackageManager;
-  setCopied: (copied: boolean) => void;
-};
-
-function PackageManagerButton({
-  packageManager,
-  setCopied,
-}: PackageManagerButtonProps) {
-  const submit = useSubmit();
-  return (
-    <button
-      className="rounded-md p-1.5 text-left text-sm hover:cursor-pointer hover:bg-gray-50"
-      type="submit"
-      onClick={() => {
-        submit({
-          preventScrollReset: false,
-        });
-        setCopied(true);
-      }}
-    >
-      {packageManager}
-    </button>
   );
 }
