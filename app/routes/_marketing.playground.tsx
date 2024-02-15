@@ -12,7 +12,7 @@ export default function Playground() {
   }, []);
 
   const loadingState = (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center">
       {state?.status ? `${state.status}...` : "booting..."}
     </div>
   );
@@ -24,7 +24,7 @@ export default function Playground() {
   return (
     <Await resolve={state.containerPromise}>
       {() => (
-        <div className="flex flex-1 m-auto w-[90rem] max-w-full px-4 sm:px-6 lg:px-8">
+        <div className="m-auto flex w-[90rem] max-w-full flex-1 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-1">
             <section className="flex flex-1">
               <style
@@ -59,7 +59,7 @@ function Preview() {
   }, []);
 
   const loadingState = (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center">
       {state?.status
         ? state.status === "ready"
           ? "waiting for server..."
@@ -76,7 +76,11 @@ function Preview() {
     <React.Suspense fallback={loadingState}>
       <Await resolve={state.urlPromise}>
         {(url) => (
-          <iframe className="bg-white w-full h-full border" src={url} />
+          <iframe
+            className="h-full w-full border bg-white"
+            src={url}
+            title="Remix preview"
+          />
         )}
       </Await>
     </React.Suspense>
