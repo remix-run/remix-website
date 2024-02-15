@@ -1,5 +1,4 @@
 import { forwardRef, useState, useRef, useEffect } from "react";
-import type { PropsWithChildren } from "react";
 import { useLocation, useNavigation } from "@remix-run/react";
 import cx from "clsx";
 
@@ -80,21 +79,14 @@ export const DetailsMenu = forwardRef<
 DetailsMenu.displayName = "DetailsMenu";
 
 type DetailsPopupProps = {
+  children: React.ReactNode;
   className?: string;
 };
 
-export function DetailsPopup({
-  children,
-  className,
-}: PropsWithChildren<DetailsPopupProps>) {
+export function DetailsPopup({ children, className }: DetailsPopupProps) {
   return (
-    // TODO: remove the width being defined here. Seems like it should be a min-width: fit-content or something, and anything more specific defined by the children passed in (or a className)
-    <div className={cx("absolute right-0 z-20 w-40 md:left-0", className)}>
-      <div
-        className={
-          "relative top-1 rounded-md border border-gray-100 bg-white p-1 shadow-sm  dark:border-gray-800 dark:bg-gray-900"
-        }
-      >
+    <div className={cx("absolute right-0 z-20 min-w-max md:left-0", className)}>
+      <div className="relative top-1 rounded-md border border-gray-100 bg-white p-1 shadow-sm  dark:border-gray-800 dark:bg-gray-900">
         {children}
       </div>
     </div>

@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type Resource } from "~/lib/resources.server";
 import { transformNpmCommand } from "~/lib/transformNpmCommand";
 import type { PackageManager } from "~/lib/transformNpmCommand";
 import { DetailsMenu, DetailsPopup } from "./details-menu";
 
-import { Link, useSearchParams, useSubmit } from "@remix-run/react";
+import { Link, useSearchParams } from "@remix-run/react";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
 
@@ -70,18 +70,12 @@ export function InitCodeblock({
   // Probably a more elegant solution, but this is what I've got
   let [npxOrNpmMaybe, ...otherCode] = initCommand.trim().split(" ");
   let [copied, setCopied] = useState(false);
-  const submit = useSubmit();
 
   function handleCopy(packageManager: PackageManager) {
     setCopied(true);
     navigator.clipboard.writeText(
       transformNpmCommand(npxOrNpmMaybe, otherCode.join(" "), packageManager),
     );
-    // This is a hack to close the details menu after clicking
-    submit(null, {
-      preventScrollReset: true,
-      replace: true,
-    });
   }
 
   // Reset copied state after 4 seconds
@@ -134,8 +128,14 @@ type CopyCodeBlockProps = {
 };
 
 function CopyCodeBlock({ copied, onCopy }: CopyCodeBlockProps) {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
   return (
-    <DetailsMenu className="absolute" data-copied={copied} data-code-block-copy>
+    <DetailsMenu
+      className="absolute"
+      data-copied={copied}
+      data-code-block-copy
+      ref={detailsRef}
+    >
       <summary
         className="_no-triangle block outline-offset-2"
         data-copied={copied}
@@ -155,11 +155,8 @@ function CopyCodeBlock({ copied, onCopy }: CopyCodeBlockProps) {
           <span className="sr-only">Copy code to clipboard</span>
         </span>
       </summary>
-      <div className="absolute left-auto right-0 top-10 w-[110px]">
-        <DetailsPopup
-          // TODO: remove when we get the DetailsPopup figured out
-          className="w-full" // ehhh, we'll see
-        >
+      <div className="absolute right-0 w-28">
+        <DetailsPopup>
           <div className="flex flex-col">
             {(["npm", "yarn", "pnpm", "bun"] as const).map((packageManager) => (
               <button
@@ -167,6 +164,8 @@ function CopyCodeBlock({ copied, onCopy }: CopyCodeBlockProps) {
                 className="rounded-md p-1.5 text-left text-sm text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:bg-blue-800/50 dark:hover:text-gray-100"
                 onClick={() => {
                   onCopy(packageManager);
+                  // Close the details menu
+                  detailsRef.current?.toggleAttribute("open");
                 }}
               >
                 {packageManager}

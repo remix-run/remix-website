@@ -65,7 +65,7 @@ function HeaderMenuMobile({ className = "" }: { className: string }) {
         </svg>
       </summary>
       <DetailsPopup>
-        <nav className="flex flex-col gap-2 px-2 py-2.5">
+        <nav className="flex w-40 flex-col gap-2 px-2 py-2.5">
           <HeaderLink to="/docs/en/main">Docs</HeaderLink>
           <HeaderLink to="/blog">Blog</HeaderLink>
           <HeaderLink to="/showcase">Showcase</HeaderLink>
