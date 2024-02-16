@@ -14,7 +14,7 @@ Today we’re excited to announce that support for [Vite] is now stable in Remix
 
 Here’s what we’ve been up to:
 
-- Closed [69 issues][remix-vite-issues] and merged [127 pull requests][remix-vite-pull-requests] related to Vite.
+- Closed [70 issues][remix-vite-issues] and merged [133 pull requests][remix-vite-pull-requests] related to Vite.
 - Migrated [the website you’re currently looking at][remix-run] to Vite, and assisted in the migration of [kentcdodds.com] and [shop.app] — with the latter resulting in a 50x HMR speed boost.
 - Shipped several new features and major improvements on top of Vite.
 
@@ -57,6 +57,41 @@ export default defineConfig({
 });
 ```
 
+## Cloudflare Pages support
+
+With our initial unstable release of Remix Vite, [Cloudflare Pages][cloudflare-pages] support wasn’t quite ready yet. Cloudflare’s `workerd` runtime is completely separate from Vite’s Node environment so we needed to figure out the best way to bridge this gap.
+
+With Remix Vite going stable, we now provide a built-in Vite plugin for integrating Cloudflare’s tooling with Remix during local development.
+
+To simulate the Cloudflare environment in Vite, [Wrangler][wrangler] provides [Node proxies to local `workerd` bindings][wrangler-getplatformproxy].
+Remix’s `cloudflareDevProxyVitePlugin` sets up these proxies for you:
+
+```ts filename=vite.config.ts lines=[3,8]
+import {
+  vitePlugin as remix,
+  cloudflareDevProxyVitePlugin as remixCloudflareDevProxy,
+} from "@remix-run/dev";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [remixCloudflareDevProxy(), remix()],
+});
+```
+
+The proxies are then available within `context.cloudflare` in your `loader` or `action` functions:
+
+```ts
+export const loader = ({ context }: LoaderFunctionArgs) => {
+  const { env, cf, ctx } = context.cloudflare;
+  // ... more loader code here...
+};
+```
+
+We’re still actively working with the Cloudflare team to ensure the best possible experience for Remix users.
+In the future the integration is likely to be even more seamless by leveraging Vite’s new (still experimental) [Runtime API][vite-runtime-api], so stay tuned for further updates.
+
+For more information on this feature, check out the [Remix Vite + Cloudflare documentation][remix-vite-cloudflare].
+
 ## Server bundles
 
 For those of you who have been running [Remix on Vercel][remix-on-vercel], you may have noticed that Vercel allows you to split your server build into multiple bundles with different routes targeting [serverless][remix-vercel-serverless] and [edge functions][remix-vercel-edge].
@@ -71,7 +106,7 @@ For more information on this feature, check out the [server bundles documentatio
 
 ## Presets
 
-When investigating support for Vercel and [Cloudflare Pages][cloudflare-pages] in Vite, it became clear that we needed a way for other tools and hosting providers to customize the behavior of the Remix Vite plugin without reaching into internals or running their own forks.
+When investigating Vercel support for Remix Vite, it became clear that we needed a way for other tools and hosting providers to customize the behavior of the Vite plugin without reaching into internals or running their own forks.
 To support this, we’ve introduced the concept of “presets”.
 
 Presets can only do two things:
@@ -80,35 +115,6 @@ Presets can only do two things:
 - Validate the resolved config.
 
 Presets are designed to be published to npm and used within your Vite config.
-
-### Cloudflare preset
-
-When we launched Remix Vite, Cloudflare support wasn’t quite ready yet.
-Now, with Remix Vite going stable, we provide a built-in preset for Cloudflare:
-
-```ts filename=vite.config.ts lines=[3,11]
-import {
-  vitePlugin as remix,
-  cloudflarePreset as cloudflare,
-} from "@remix-run/dev";
-import { defineConfig } from "vite";
-import { getBindingsProxy } from "wrangler";
-
-export default defineConfig({
-  plugins: [
-    remix({
-      presets: [cloudflare(getBindingsProxy)],
-    }),
-  ],
-  ssr: {
-    resolve: {
-      externalConditions: ["workerd", "worker"],
-    },
-  },
-});
-```
-
-### More presets
 
 The Vercel preset is coming soon, and we’re excited to see what other presets the community comes up with — especially since presets have access to all Remix Vite plugin options and are therefore not strictly limited to hosting provider support.
 
@@ -272,7 +278,7 @@ We’re excited to see where we can take it together.
 💿⚡️🚀
 
 [vite]: https://vitejs.dev
-[remix-vite-migration]: /docs/future/vite#migrating
+[remix-vite-migration]: https://remix.run/docs/future/vite#migrating
 [remix-vite-release]: ./remix-heart-vite
 [remix-vite-issues]: https://github.com/remix-run/remix/issues?q=is%3Aissue+is%3Aclosed+label%3Avite+closed%3A%3C2024-02-29
 [remix-vite-pull-requests]: https://github.com/remix-run/remix/pulls?q=is%3Apr+is%3Amerged+label%3Avite+closed%3A%3C2024-02-29
@@ -280,25 +286,26 @@ We’re excited to see where we can take it together.
 [kentcdodds.com]: https://kentcdodds.com
 [shop.app]: https://shop.app
 [react-router]: https://reactrouter.com
-[spa-mode]: /docs/future/spa-mode
+[spa-mode]: https://remix.run/docs/future/spa-mode
 [react-router-basename]: https://reactrouter.com/en/main/router-components/router
 [remix-on-vercel]: https://vercel.com/docs/frameworks/remix
 [remix-vercel-serverless]: https://vercel.com/docs/frameworks/remix#serverless-functions
 [remix-vercel-edge]: https://vercel.com/docs/frameworks/remix#edge-functions
 [vercel-remix-fork]: https://www.npmjs.com/package/@vercel/remix-run-dev
 [vercel-remix-builder]: https://github.com/vercel/vercel/blob/main/packages/remix/src/build.ts
-[server-bundles]: /docs/future/server-bundles
+[server-bundles]: https://remix.run/docs/future/server-bundles
 [nathan-rajlich]: https://n8.io
 [cloudflare-pages]: https://pages.cloudflare.com
-[presets]: /docs/future/presets
+[wrangler]: https://developers.cloudflare.com/workers/wrangler
+[presets]: https://remix.run/docs/future/presets
 [vite-public-directory]: https://vitejs.dev/guide/assets.html#the-public-directory
 [vite-base]: https://vitejs.dev/config/shared-options.html#base
-[remix-public-path]: /docs/en/main/file-conventions/remix-config#publicpath
+[remix-public-path]: https://remix.run/docs/en/main/file-conventions/remix-config#publicpath
 [remix-basename-discussion]: https://github.com/remix-run/remix/discussions/2891
 [vite-env-only]: https://github.com/pcattori/vite-env-only
 [server-client-splitting-decision-doc]: https://github.com/remix-run/remix/blob/main/decisions/0010-splitting-up-client-and-server-code-in-vite.md
-[splitting-client-server-docs]: /docs/future/vite#splitting-up-client-and-server-code
-[regular-css-imports]: /docs/styling/css
+[splitting-client-server-docs]: https://remix.run/docs/future/vite#splitting-up-client-and-server-code
+[regular-css-imports]: https://remix.run/docs/styling/css
 [vite-postcss]: https://vitejs.dev/guide/features#postcss
 [tailwind]: https://tailwindcss.com
 [vite-css-modules]: https://vitejs.dev/guide/features#css-modules
@@ -307,3 +314,6 @@ We’re excited to see where we can take it together.
 [vite-5-1-0]: https://vitejs.dev/blog/announcing-vite5-1
 [hiroshi-ogawa]: https://github.com/hi-ogawa
 [hiogawa-prs]: https://github.com/remix-run/remix/pulls?q=is%3Apr+is%3Amerged+label%3Avite+closed%3A%3C2024-02-29+author%3Ahi-ogawa
+[wrangler-getplatformproxy]: https://developers.cloudflare.com/workers/wrangler/api/#getplatformproxy
+[vite-runtime-api]: https://vitejs.dev/guide/api-vite-runtime#vite-runtime-api
+[remix-vite-cloudflare]: https://remix.run/docs/future/vite#cloudflare
