@@ -170,7 +170,7 @@
 - title: "Remix Auth Auth0 Strategy"
   repoUrl: "https://github.com/danestves/remix-auth-auth0"
   imgSrc: "https://opengraph.githubassets.com/40a594d1839126b029fcc8aabe328bd94795e8e967cc18cfc59408979e1d5eea/danestves/remix-auth-auth0"
-  initCommand: "npm install remix-auth-oauth0"
+  initCommand: "npm install remix-auth-auth0"
   category: "libraries"
 
 - title: "Remix Auth Microsoft Strategy"

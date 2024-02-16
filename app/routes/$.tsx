@@ -2,6 +2,7 @@ import { handleRedirects } from "~/lib/http.server";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { getRepoDoc } from "~/lib/gh-docs";
+import { octokit } from "~/lib/github.server";
 
 // We use the catch-all route to attempt to find a doc for the given path. If a
 // doc isn't found, we return a 404 as expected. However we also log those
@@ -55,7 +56,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   try {
     let ref = "main";
     let lang = "en";
-    let doc = await getRepoDoc(ref, `docs/${params["*"]}`);
+    let doc = await getRepoDoc(ref, `docs/${params["*"]}`, { octokit });
     if (!doc) throw null;
     // FIXME: This results in two fetches, as the loader for the docs page will
     // repeat the request cycle. This isn't a problem if the doc is in the LRU

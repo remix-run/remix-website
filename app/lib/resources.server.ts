@@ -1,11 +1,10 @@
 import yaml from "yaml";
 import { LRUCache } from "lru-cache";
 import { env } from "~/env.server";
-import { getRepoContent } from "./gh-docs/repo-content";
 import { processMarkdown } from "./md.server";
-import type { Octokit } from "octokit";
 import resourcesYamlFileContents from "../../data/resources.yaml?raw";
 import { slugify } from "~/ui/primitives/utils";
+import type { CacheContext } from "./gh-docs";
 
 // TODO: parse this with zod
 let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);
@@ -36,7 +35,6 @@ type ResourceYamlKeys =
   | "featured";
 type ResourceYamlData = Pick<Resource, ResourceYamlKeys>;
 type ResourceGitHubData = Omit<Resource, ResourceYamlKeys>;
-type CacheContext = { octokit: Octokit };
 
 /**
  * Gets all of the resources, fetching and merging GitHub data for each one
@@ -73,7 +71,7 @@ export async function getResource(
 
   let [gitHubData, readmeHtml] = await Promise.all([
     getResourceGitHubData(resource.repoUrl, { octokit }),
-    getResourceReadme(resource.repoUrl),
+    getResourceReadme(resource.repoUrl, { octokit }),
   ]);
 
   if (!gitHubData || !readmeHtml) {
@@ -86,7 +84,7 @@ export async function getResource(
 //#region LRUCache and fetchers for GitHub data and READMEs
 
 declare global {
-  var resourceReadmeCache: LRUCache<string, string>;
+  var resourceReadmeCache: LRUCache<string, string, CacheContext>;
   var resourceGitHubDataCache: LRUCache<
     string,
     ResourceGitHubData,
@@ -96,7 +94,7 @@ declare global {
 
 let NO_CACHE = env.NO_CACHE;
 
-global.resourceReadmeCache ??= new LRUCache<string, string>({
+global.resourceReadmeCache ??= new LRUCache<string, string, CacheContext>({
   max: 300,
   ttl: NO_CACHE ? 1 : 1000 * 60 * 5, // 5 minutes
   allowStale: !NO_CACHE,
@@ -104,18 +102,30 @@ global.resourceReadmeCache ??= new LRUCache<string, string>({
   fetchMethod: fetchReadme,
 });
 
-async function fetchReadme(repo: string): Promise<string> {
-  let md = await getRepoContent(repo, "main", "README.md");
-  if (md === null) {
-    throw Error(`Could not find README in ${repo}`);
+async function fetchReadme(
+  key: string,
+  _staleValue: string | undefined,
+  { context }: LRUCache.FetchOptionsWithContext<string, string, CacheContext>,
+): Promise<string> {
+  let [owner, repo] = key.split("/");
+  let contents = await context.octokit.rest.repos.getReadme({
+    owner,
+    repo,
+    mediaType: { format: "raw" },
+  });
+
+  // when using `format: raw` the data property is the file contents
+  let md = contents.data as unknown;
+  if (md == null || typeof md !== "string") {
+    throw Error(`Could not find README in ${key}`);
   }
   let { html } = await processMarkdown(md);
   return html;
 }
 
-async function getResourceReadme(repoUrl: string) {
+async function getResourceReadme(repoUrl: string, context: CacheContext) {
   let repo = repoUrl.replace("https://github.com/", "");
-  let doc = await resourceReadmeCache.fetch(repo);
+  let doc = await resourceReadmeCache.fetch(repo, { context });
 
   return doc || undefined;
 }
