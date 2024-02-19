@@ -903,6 +903,113 @@ function Waterfall() {
   );
 }
 
+/**
+ * @see https://en.wikipedia.org/wiki/Konami_Code
+ */
+function KonamiCode(props: React.HTMLProps<HTMLSpanElement>) {
+  const [konamiState, setKonamiState] = React.useState(0);
+  const konamiCode = React.useMemo(
+    () => [
+      {
+        code: "ArrowUp",
+        glyph: "↑",
+      },
+      {
+        code: "ArrowUp",
+        glyph: "↑",
+      },
+      {
+        code: "ArrowDown",
+        glyph: "↓",
+      },
+      {
+        code: "ArrowDown",
+        glyph: "↓",
+      },
+      {
+        code: "ArrowLeft",
+        glyph: "←",
+      },
+
+      {
+        code: "ArrowRight",
+        glyph: "→",
+      },
+      {
+        code: "ArrowLeft",
+        glyph: "←",
+      },
+      {
+        code: "ArrowRight",
+        glyph: "→",
+      },
+
+      {
+        code: "b",
+        glyph: "B",
+      },
+
+      {
+        code: "a",
+        glyph: "A",
+      },
+
+      {
+        code: "Enter",
+        glyph: "↵",
+      },
+    ],
+    [],
+  );
+
+  const konamiRef = React.useRef<HTMLSpanElement>(null);
+  const onKeyPress = React.useCallback(
+    (event: KeyboardEvent) => {
+      if (!konamiRef.current) return;
+
+      // only handle hotkeys when it's visible
+      if (
+        konamiRef.current.getBoundingClientRect().top < 0 ||
+        konamiRef.current.getBoundingClientRect().bottom > window.innerHeight
+      ) {
+        return;
+      }
+
+      setKonamiState((konamiState) => {
+        if (konamiState >= konamiCode.length) return konamiState;
+
+        if (konamiCode[konamiState].code === event.key) {
+          return konamiState + 1;
+        }
+
+        return konamiState;
+      });
+    },
+    [konamiCode],
+  );
+
+  React.useEffect(() => {
+    document.addEventListener("keyup", onKeyPress);
+    return () => {
+      document.removeEventListener("keyup", onKeyPress);
+    };
+  }, [onKeyPress]);
+
+  return (
+    <span ref={konamiRef} {...props}>
+      {konamiState < konamiCode.length ? (
+        konamiCode.map(({ glyph }, i) => (
+          <span key={i} className={konamiState > i ? "text-green-brand" : ""}>
+            {glyph}
+          </span>
+        ))
+      ) : (
+        <span className="text-6xl"> 🏆🏆🏆🏆🏆🏆🏆🏆🏆 </span>
+      )}
+    </span>
+  );
+}
+
 function NestedRoutes() {
   function handleSectionFocus(event: React.FocusEvent) {
     let elem = event.target;
@@ -919,9 +1026,7 @@ function NestedRoutes() {
           <br />
           <span className="text-yellow-brand">Nested Routes.</span>
         </h2>
-        <span className="font-mono text-gray-700" aria-hidden>
-          ↑↑↓↓←→←→BA
-        </span>
+        <KonamiCode className="font-mono text-gray-700" aria-hidden />
       </JumboText>
       <div className="h-[25vh]" />
       <ScrollStage pages={2.75}>
