@@ -36,6 +36,8 @@ export default function Brand() {
         Please use the logo with appropriate background. On dark backgrounds use
         the logo with white dots, and on light backgrounds use the logo with
         black dots.
+
+        You may also <a content="Google drive containing all image files for Remix Logo\'s" href="https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c"> download all image files for Remix Logo's in bulk through Google Drive.</a>
       </p>
       <h2>Logo</h2>
       <LogoBox name="remix-letter" Logo={LogoRemixLetter} />
