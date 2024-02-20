@@ -37,9 +37,9 @@ export default function Brand() {
         the logo with white dots, and on light backgrounds use the logo with
         black dots.
       </p>
-      <h2>Logo Letter</h2>
+      <h2>Logo</h2>
       <LogoBox name="remix-letter" Logo={LogoRemixLetter} />
-      <h2>Logo Remix</h2>
+      <h2>Logo Word</h2>
       <LogoBox name="remix" Logo={LogoRemix} />
     </div>
   );
