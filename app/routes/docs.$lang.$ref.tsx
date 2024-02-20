@@ -17,6 +17,9 @@ import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import "~/styles/docs.css";
 import { Wordmark } from "~/ui/logo";
@@ -181,6 +184,8 @@ function Footer() {
 }
 
 function Header() {
+  let navigate = useNavigate();
+  
   return (
     <div
       className={cx(
@@ -196,11 +201,8 @@ function Header() {
             <Link
               className="flex"
               onContextMenu={(event) => {
-                if (process.env.NODE_ENV !== "development") {
                   event.preventDefault();
-                  window.location.href =
-                    "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
-                }
+                  navigate("/brand");
               }}
               to="/"
             >
