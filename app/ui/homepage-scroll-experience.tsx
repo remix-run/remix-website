@@ -903,75 +903,35 @@ function Waterfall() {
   );
 }
 
+const konamiCode = [
+  { code: "ArrowUp", glyph: "↑" },
+  { code: "ArrowUp", glyph: "↑" },
+  { code: "ArrowDown", glyph: "↓" },
+  { code: "ArrowDown", glyph: "↓" },
+  { code: "ArrowLeft", glyph: "←" },
+  { code: "ArrowRight", glyph: "→" },
+  { code: "ArrowLeft", glyph: "←" },
+  { code: "ArrowRight", glyph: "→" },
+  { code: "b", glyph: "B" },
+  { code: "a", glyph: "A" },
+  { code: "Enter", glyph: "↵" },
+];
+
 /**
  * @see https://en.wikipedia.org/wiki/Konami_Code
  */
 function KonamiCode(props: React.HTMLProps<HTMLSpanElement>) {
   const [konamiState, setKonamiState] = React.useState(0);
-  const konamiCode = React.useMemo(
-    () => [
-      {
-        code: "ArrowUp",
-        glyph: "↑",
-      },
-      {
-        code: "ArrowUp",
-        glyph: "↑",
-      },
-      {
-        code: "ArrowDown",
-        glyph: "↓",
-      },
-      {
-        code: "ArrowDown",
-        glyph: "↓",
-      },
-      {
-        code: "ArrowLeft",
-        glyph: "←",
-      },
-
-      {
-        code: "ArrowRight",
-        glyph: "→",
-      },
-      {
-        code: "ArrowLeft",
-        glyph: "←",
-      },
-      {
-        code: "ArrowRight",
-        glyph: "→",
-      },
-
-      {
-        code: "b",
-        glyph: "B",
-      },
-
-      {
-        code: "a",
-        glyph: "A",
-      },
-
-      {
-        code: "Enter",
-        glyph: "↵",
-      },
-    ],
-    [],
-  );
-
   const konamiRef = React.useRef<HTMLSpanElement>(null);
-  const onKeyPress = React.useCallback(
-    (event: KeyboardEvent) => {
+
+  React.useEffect(() => {
+    const onKeyPress = (event: KeyboardEvent) => {
       if (!konamiRef.current) return;
 
       // only handle hotkeys when it's visible
-      if (
-        konamiRef.current.getBoundingClientRect().top < 0 ||
-        konamiRef.current.getBoundingClientRect().bottom > window.innerHeight
-      ) {
+      const { top, bottom } = konamiRef.current.getBoundingClientRect();
+      if (top < 0 || bottom > window.innerHeight) {
+        console.log("bailing");
         return;
       }
 
@@ -982,18 +942,16 @@ function KonamiCode(props: React.HTMLProps<HTMLSpanElement>) {
           return konamiState + 1;
         }
 
-        return konamiState;
+        // reset if the user messed up the code
+        return 0;
       });
-    },
-    [konamiCode],
-  );
+    };
 
-  React.useEffect(() => {
     document.addEventListener("keyup", onKeyPress);
     return () => {
       document.removeEventListener("keyup", onKeyPress);
     };
-  }, [onKeyPress]);
+  }, []);
 
   return (
     <span ref={konamiRef} {...props}>
