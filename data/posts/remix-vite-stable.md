@@ -1,7 +1,7 @@
 ---
 title: Remix Vite is Now Stable
 summary: Support for Vite is now stable in Remix v2.7.
-date: 2024-02-29
+date: 2024-02-20
 image: /blog-images/headers/remix-vite-stable.jpg
 # Image source: https://unsplash.com/photos/blue-and-purple-led-lights-2RLRbRkWtpc
 imageAlt: "Remix Vite is Now Stable"
@@ -14,7 +14,7 @@ Today we’re excited to announce that support for [Vite] is now stable in Remix
 
 Here’s what we’ve been up to:
 
-- Closed [70 issues][remix-vite-issues] and merged [133 pull requests][remix-vite-pull-requests] related to Vite.
+- Closed [75 issues][remix-vite-issues] and merged [136 pull requests][remix-vite-pull-requests] related to Vite.
 - Migrated [the website you’re currently looking at][remix-run] to Vite, and assisted in the migration of [kentcdodds.com] and [shop.app] — with the latter resulting in a 50x HMR speed boost.
 - Shipped several new features and major improvements on top of Vite.
 
@@ -280,8 +280,8 @@ We’re excited to see where we can take it together.
 [vite]: https://vitejs.dev
 [remix-vite-migration]: https://remix.run/docs/future/vite#migrating
 [remix-vite-release]: ./remix-heart-vite
-[remix-vite-issues]: https://github.com/remix-run/remix/issues?q=is%3Aissue+is%3Aclosed+label%3Avite+closed%3A%3C2024-02-29
-[remix-vite-pull-requests]: https://github.com/remix-run/remix/pulls?q=is%3Apr+is%3Amerged+label%3Avite+closed%3A%3C2024-02-29
+[remix-vite-issues]: https://github.com/remix-run/remix/issues?q=is%3Aissue+is%3Aclosed+label%3Avite+closed%3A%3C2024-02-21
+[remix-vite-pull-requests]: https://github.com/remix-run/remix/pulls?q=is%3Apr+is%3Amerged+label%3Avite+closed%3A%3C2024-02-21
 [remix-run]: https://remix.run
 [kentcdodds.com]: https://kentcdodds.com
 [shop.app]: https://shop.app
@@ -313,7 +313,7 @@ We’re excited to see where we can take it together.
 [vite-url-imports]: https://vitejs.dev/guide/assets#importing-asset-as-url
 [vite-5-1-0]: https://vitejs.dev/blog/announcing-vite5-1
 [hiroshi-ogawa]: https://github.com/hi-ogawa
-[hiogawa-prs]: https://github.com/remix-run/remix/pulls?q=is%3Apr+is%3Amerged+label%3Avite+closed%3A%3C2024-02-29+author%3Ahi-ogawa
+[hiogawa-prs]: https://github.com/remix-run/remix/pulls?q=is%3Apr+is%3Amerged+label%3Avite+closed%3A%3C2024-02-21+author%3Ahi-ogawa
 [wrangler-getplatformproxy]: https://developers.cloudflare.com/workers/wrangler/api/#getplatformproxy
 [vite-runtime-api]: https://vitejs.dev/guide/api-vite-runtime#vite-runtime-api
 [remix-vite-cloudflare]: https://remix.run/docs/future/vite#cloudflare
