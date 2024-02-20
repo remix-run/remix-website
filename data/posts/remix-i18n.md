@@ -63,7 +63,9 @@ There are a few configuration files, such as JSON files with localized values an
 
 ```js
 // common.json
-{"intro": "こんにちは！"}
+{
+  "intro": "こんにちは！"
+}
 ```
 
 ```js
