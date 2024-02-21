@@ -1,31 +1,32 @@
-import type { MetaArgs } from "@remix-run/node";
-import type { V1_MetaDescriptor } from "@remix-run/v1-meta";
-import { metaV1 } from "@remix-run/v1-meta";
+import type { MetaDescriptor } from "@remix-run/node";
 
-type DefaultMetadata = {
+type CustomMetaArgs = {
   title: string;
   description: string;
-  siteUrl: string;
-  image: string;
-} & V1_MetaDescriptor;
+  siteUrl?: string;
+  image?: string;
+} & { additionalMeta?: MetaDescriptor[] };
 
-export const meta = (
-  args: MetaArgs,
-  { title, description, siteUrl, image, ...rest }: DefaultMetadata,
-) => {
-  return metaV1(args, {
-    title,
-    description,
-    "og:url": siteUrl,
-    "og:title": title,
-    "og:description": description,
-    "og:image": image,
-    "twitter:card": "summary_large_image",
-    "twitter:creator": "@remix_run",
-    "twitter:site": "@remix_run",
-    "twitter:title": title,
-    "twitter:description": description,
-    "twitter:image": image,
-    ...rest,
-  });
+export const getMeta = ({
+  title,
+  description,
+  siteUrl,
+  image,
+  additionalMeta,
+}: CustomMetaArgs) => {
+  return [
+    { title },
+    { description },
+    { property: "og:url", content: siteUrl },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:image", content: image },
+    { property: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:creator", content: "@remix_run" },
+    { name: "twitter:site", content: "@remix_run" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:image", content: image },
+    ...(additionalMeta ?? []),
+  ];
 };
