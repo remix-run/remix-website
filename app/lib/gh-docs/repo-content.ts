@@ -3,8 +3,6 @@ import path from "path";
 import invariant from "tiny-invariant";
 import { env } from "~/env.server";
 
-import type { CacheContext } from ".";
-
 /**
  * Fetches the contents of a file in a repository or from your local disk.
  *
@@ -16,22 +14,16 @@ export async function getRepoContent(
   repoPair: string,
   ref: string,
   filepath: string,
-  context: CacheContext,
 ): Promise<string | null> {
   if (ref === "local") return getLocalContent(filepath);
   let [owner, repo] = repoPair.split("/");
-  let contents = await context.octokit.rest.repos.getContent({
-    owner,
-    repo,
-    ref,
-    path: filepath,
-    mediaType: { format: "raw" },
-  });
-
-  // when using `format: raw` the data property is the file contents
-  let md = contents.data as unknown;
-  if (md == null || typeof md !== "string") return null;
-  return md;
+  let pathname = `/${owner}/${repo}/${ref}/${filepath}`;
+  let response = await fetch(
+    new URL(pathname, "https://raw.githubusercontent.com/").href,
+    { headers: { "User-Agent": `docs:${owner}/${repo}` } },
+  );
+  if (!response.ok) return null;
+  return response.text();
 }
 
 /**

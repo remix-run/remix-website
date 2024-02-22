@@ -24,7 +24,6 @@ import cx from "clsx";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import type { loader as docsLayoutLoader } from "~/routes/docs.$lang.$ref";
 import type { loader as rootLoader } from "~/root";
-import { octokit } from "~/lib/github.server";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   let url = new URL(request.url);
@@ -34,7 +33,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     let slug = params["*"]?.endsWith("/changelog")
       ? "CHANGELOG"
       : `docs/${params["*"] || "index"}`;
-    let doc = await getRepoDoc(params.ref, slug, { octokit });
+    let doc = await getRepoDoc(params.ref, slug);
     if (!doc) throw null;
     return json(
       { doc, pageUrl },
