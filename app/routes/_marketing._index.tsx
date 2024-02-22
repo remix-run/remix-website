@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
@@ -12,6 +12,7 @@ import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
 import { ScrollExperience } from "~/ui/homepage-scroll-experience";
 import invariant from "tiny-invariant";
 import { Fragment } from "react";
+import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { siteUrl } = args.data || {};
@@ -66,7 +67,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     mutations,
     errors,
   };
-  return json(data, { headers: { "Cache-Control": "max-age=300" } });
+
+  return json(data, { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } });
+};
+
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
+  // Inherit the caching headers from the loader so we do't cache 404s
+  return loaderHeaders;
 };
 
 export default function Index() {
