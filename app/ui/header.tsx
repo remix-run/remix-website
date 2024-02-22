@@ -25,10 +25,8 @@ export function Header({
     >
       <NavLink
         onContextMenu={(event) => {
-          if (process.env.NODE_ENV !== "development") {
-            event.preventDefault();
-            navigate("/brand");
-          }
+          event.preventDefault();
+          navigate("/brand");
         }}
         to={to}
         prefetch="intent"

@@ -201,10 +201,8 @@ function Header() {
             <Link
               className="flex"
               onContextMenu={(event) => {
-                if (process.env.NODE_ENV !== "development") {
-                  event.preventDefault();
-                  navigate("/brand");
-                }
+                event.preventDefault();
+                navigate("/brand");
               }}
               to="/"
             >
