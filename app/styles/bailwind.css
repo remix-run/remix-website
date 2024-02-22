@@ -22,7 +22,7 @@
 }
 
 .__mutation_code pre {
-  @apply h-[50vh] overflow-hidden py-2 sm:py-4;
+  @apply h-[50vh] overflow-hidden bg-gray-800 py-2 sm:py-4;
 
   & .codeblock-line {
     @apply relative block px-2 leading-relaxed sm:px-8;
