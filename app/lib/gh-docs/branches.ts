@@ -1,5 +1,7 @@
 import { LRUCache } from "lru-cache";
-import type { CacheContext } from ".";
+import type { Octokit } from "octokit";
+
+type CacheContext = { octokit: Octokit };
 
 declare global {
   var branchesCache: LRUCache<string, string[], CacheContext>;

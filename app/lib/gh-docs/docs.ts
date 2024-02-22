@@ -6,7 +6,6 @@ import { getRepoTarballStream } from "./repo-tarball";
 import { createTarFileProcessor } from "./tarball.server";
 import { load as $ } from "cheerio";
 import { env } from "~/env.server";
-import type { CacheContext } from ".";
 
 interface MenuDocAttributes {
   title: string;
@@ -30,7 +29,7 @@ export interface Doc extends Omit<MenuDoc, "hasContent"> {
 
 declare global {
   var menuCache: LRUCache<string, MenuDoc[]>;
-  var docCache: LRUCache<string, Doc, CacheContext>;
+  var docCache: LRUCache<string, Doc>;
 }
 
 let NO_CACHE = env.NO_CACHE;
@@ -82,7 +81,7 @@ function parseAttrs(
  * let's have simpler and faster deployments with just one origin server, but
  * still distribute the documents across the CDN.
  */
-global.docCache ??= new LRUCache<string, Doc, CacheContext>({
+global.docCache ??= new LRUCache<string, Doc>({
   max: 300,
   ttl: NO_CACHE ? 1 : 1000 * 60 * 5, // 5 minutes
   allowStale: !NO_CACHE,
@@ -90,14 +89,10 @@ global.docCache ??= new LRUCache<string, Doc, CacheContext>({
   fetchMethod: fetchDoc,
 });
 
-async function fetchDoc(
-  key: string,
-  _staleValue: Doc | undefined,
-  { context }: LRUCache.FetchOptionsWithContext<string, Doc, CacheContext>,
-): Promise<Doc> {
+async function fetchDoc(key: string): Promise<Doc> {
   let [repo, ref, slug] = key.split(":");
   let filename = `${slug}.md`;
-  let md = await getRepoContent(repo, ref, filename, context);
+  let md = await getRepoContent(repo, ref, filename);
   if (md === null) {
     throw Error(`Could not find ${filename} in ${repo}@${ref}`);
   }
@@ -128,10 +123,9 @@ export async function getDoc(
   repo: string,
   ref: string,
   slug: string,
-  context: CacheContext,
 ): Promise<Doc | undefined> {
   let key = `${repo}:${ref}:${slug}`;
-  let doc = await docCache.fetch(key, { context });
+  let doc = await docCache.fetch(key);
 
   return doc || undefined;
 }
