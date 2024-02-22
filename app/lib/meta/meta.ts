@@ -28,5 +28,10 @@ export const getMeta = ({
     { name: "twitter:description", content: description },
     { name: "twitter:image", content: image },
     ...(additionalMeta ?? []),
-  ];
+  ].filter((v) => {
+    if ("content" in v) {
+      return !!v.content;
+    }
+    return true;
+  });
 };
