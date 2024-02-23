@@ -4,7 +4,9 @@ import { env } from "~/env.server";
 import { processMarkdown } from "./md.server";
 import resourcesYamlFileContents from "../../data/resources.yaml?raw";
 import { slugify } from "~/ui/primitives/utils";
-import type { CacheContext } from "./gh-docs";
+import type { Octokit } from "octokit";
+
+export type CacheContext = { octokit: Octokit };
 
 // TODO: parse this with zod
 let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);
