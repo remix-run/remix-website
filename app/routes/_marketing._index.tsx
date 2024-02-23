@@ -2,7 +2,6 @@ import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { metaV1 } from "@remix-run/v1-meta";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
 import type { Prose, Sequence } from "~/lib/mdtut.server";
@@ -12,28 +11,17 @@ import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
 import { ScrollExperience } from "~/ui/homepage-scroll-experience";
 import invariant from "tiny-invariant";
 import { Fragment } from "react";
+import { getMeta } from "~/lib/meta";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { siteUrl } = args.data || {};
   let title = "Remix - Build Better Websites";
-  let image = siteUrl ? `${siteUrl}/img/og.1.jpg` : null;
+  let image = siteUrl ?? `${siteUrl}/img/og.1.jpg`;
   let description =
     "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
-  return metaV1(args, {
-    title,
-    description,
-    "og:url": siteUrl,
-    "og:title": title,
-    "og:description": description,
-    "og:image": image,
-    "twitter:card": "summary_large_image",
-    "twitter:creator": "@remix_run",
-    "twitter:site": "@remix_run",
-    "twitter:title": title,
-    "twitter:description": description,
-    "twitter:image": image,
-  });
+
+  return getMeta({ title, description, siteUrl, image });
 };
 
 type LoaderData = {
