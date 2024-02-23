@@ -343,8 +343,6 @@ function VersionLink({
 }
 
 function DocSearchSection({ className }: { className?: string }) {
-  let { isLatest } = useLoaderData<typeof loader>();
-  if (!isLatest) return null;
   return (
     <div className={cx("relative lg:sticky lg:top-0 lg:z-10", className)}>
       <div className="absolute -top-24 hidden h-24 w-full bg-white dark:bg-gray-900 lg:block" />
