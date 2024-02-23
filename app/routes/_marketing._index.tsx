@@ -2,7 +2,6 @@ import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { metaV1 } from "@remix-run/v1-meta";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
 import type { Prose, Sequence } from "~/lib/mdtut.server";
