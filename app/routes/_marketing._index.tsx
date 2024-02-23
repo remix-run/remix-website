@@ -17,7 +17,7 @@ import { CACHE_CONTROL } from "~/lib/http.server";
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { siteUrl } = args.data || {};
   let title = "Remix - Build Better Websites";
-  let image = siteUrl ?? `${siteUrl}/img/og.1.jpg`;
+  let image = siteUrl ? `${siteUrl}/img/og.1.jpg` : undefined;
   let description =
     "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
 
