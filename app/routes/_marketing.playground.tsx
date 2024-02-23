@@ -218,7 +218,7 @@ function useWebContainer() {
             "--no-install",
             "--no-git-init",
             "--template",
-            "https://github.com/remix-run/remix/tree/main/templates/unstable-vite",
+            "https://github.com/remix-run/remix/tree/main/templates/vite",
           ]);
           if ((await process.exit) !== 0) {
             throw new Error("Failed to create remix app");
