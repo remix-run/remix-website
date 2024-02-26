@@ -10,77 +10,117 @@ authors:
   - Michael Jackson
 ---
 
-**Intro/hype**
+A large part of building good software is about picking the right tools for the right job. So when the Shop team at Shopify was tasked with building a web version of [Shop][apple-shop-app], they need a framework that allowed them to:
 
-## What is Shop?
+- Work with their existing tools and infrastructure
+- Share code with the mobile clients
+- Ship new features regularly and rapidly
+- Support millions of users
+- Launch in 3 months
 
-Provide a simple explanation of the app
+That's a pretty big ask. Fortunately Shopify employees some of the best developers in the world, and they know how to pick a framework like the professionals that they are.
 
-Been live for many years, but about a year ago they started talking about moving that platform to the web
+This is the story about how they built [shop.app][shop.app] with Remix.
 
-TODO: provide an image or gif of the shop app
+## The Shop App
 
-## Shop for the Web
+Shop is an application that that allows buyers to discover merchants and products, make purchases, and to track their orders. Shop automatically aggregates shipping information across various delivery services. So whether it's Amazon or a small private company, and no matter how they're shipping their product, Shop will automatically start tracking your package.
 
-For a long time, [shop.app][shop.app] was a simple landing/marketing page directing you to download the iOS or Android Shop app. There was no functionality — no way to browse categories or products, no way to add items to your cart, and certainly no way to purchase those items.
+Shop's usefulness has lead to it being downloaded from the Google Play Store and Apple App Store 10s of millions of times. The Shop app has existed and served the needs of many customers for years, during which the web client, [shop.app][shop.app], served essentially as marketing for the mobile apps. That is until about a year ago when Shopify started exploring what it would take to create Shop for the web.
 
-Make it easier for app developers and web developers to collaborate and build features on both platforms (last Feb).
+<div class="flex flex-col items-center">
+  <img alt="Shop app on Apple Play Store. Title says 'Shop: All your favorite brands'" src="/blog-images/posts/shop-case-study/shop-app-ios.jpg" class="h-svh" />
+</div>
 
-TODO: add image of the website
+## Building Shop for the Web
 
-**What were your goals for building Shop with Remix and did you achieve them?**
+As mentioned, for a long time, [shop.app][shop.app] was a simple landing/marketing page directing you to download the iOS or Android Shop app. There was no functionality — no way to browse categories or products, no way to add items to your cart, and certainly no way to purchase those items.
 
-Initially wanted feature parity with the App, but not really the main goal. Want to be able to be able to do a lot on web that you can do in the app, iteratively adding features. Main benefits to adding web:
+Initially the Shop team planning to create feature parity with the mobile apps, however that was not the main goal of building [shop.app][shop.app]. There are certain advantages a web client offered in addition to the full-featured mobile apps, namely capturing more users and creating a faster feedback loop.
 
-Numerous users coming in through web
-Running experiments daily to get feedback, leveraging that back into the App since the feedback cycle is much faster
-Also running ad campaigns
-Had a lot of UX setup from the app — in this case they went from a mobile experience to a desktop experience, opposite of what you usually do
+**Capturing more users**
 
-## Why Remix?
+There was already a large amount of traffic being captured on the marketing pages. While some of these visitors will continue through the journey and download the app, providing the ability to sign up or log in directly on the web creates a wider retention net
 
-Rails company — a few of the pages are built on rails. Wanted to move to a React SSR something — have these tools at Shopify as well
+**Faster feedback loop**
 
-Went with Remix as the "obvious choice". Happy with it for shop.ai, so they were happy to use it here as well
+New versions of the website can be shipped multiple times a day, whereas the mobile application has a much longer waiting period due to how the Play/App store work. This means that adding Shop Web would allow the Shop team to run short-term ad campaigns and daily experiments to gather user feedback which they would be able to leverage back into new versions of the mobile applications.
+
+<img alt="Diagram of a long lived feature branch for implementing the changes from a migration guide" src="/blog-images/posts/shop-case-study/shop-web.png" />
+
+## Rapid development with Remix
+
+**TODO: adjust styling to make quote stand out more**
+
+<blockquote>
+"I never produced so much in such a short amount of time with such good results" 
+<span class="block mt-4">- <a href="https://github.com/linddominic">Sebastian Ekström</a></span>
+</blockquote>
+
+The benefits for the users and Shopify were clear, now the focus was on the developers.
+
+Often when a project grows, it starts out as a website and is then expanded into mobile counterparts. With Shop it was the opposite; the way the mobile apps were built heavily influences how the website had to be built.
+
+The Shop team wanted to be able to use as much logic, styles, and UX from the Shop apps in Shop Web. They also wanted app and web developers to be able to easily collaborate and build features on both platforms.
+
+The mobile versions of Shop were built in React Native, and already had a large amount of infrastructure in place for styles and data loading. That meant whatever they used for the web needed to use React and needed to be flexible enough for the team to use their own patterns like data fetching with [Apollo Client][apollo-client]. Additionally, the pages needed to be Server-Side Rendered (SSR) for the best UX and SEO. Additionally, they needed something that would allow them to launch quickly, and rapidly add new features and pages as they went.
+
+While Shopify has some ways to build SSR'd React apps, the Shop team was eager to try Remix. Plus, they already had a good experience quickly shipping with Remix.
 
 ### Shop AI
 
-[shop.ai][shop.ai] now redirects to [shop.app][shop.app]. It's a chatbot powered by OpenAI that was first added to the apps, then ported back into the website. It's all the search feature
-
-Started Feb 2023, released March 15th 2023
+In February of 2023, shortly before the Shop Web work began, the lead developers on the team had a similar, but smaller scoped challenge: build a ChatGPT-powered shopping assistant on the web.
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Shop smarter with <a href="https://t.co/7YAW0Tk8Rh">https://t.co/7YAW0Tk8Rh</a>! We&#39;ve brought our ChatGPT-powered shopping assistant to the web — try it out, and don’t forget to sign in with Shop to save your faves 💜 <a href="https://t.co/DpSdLEr4QD">pic.twitter.com/DpSdLEr4QD</a></p>&mdash; Shop (@shop) <a href="https://twitter.com/shop/status/1636022946127831040?ref_src=twsrc%5Etfw">March 15, 2023</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+[Shop.ai][shop.ai] now redirects to [shop.app][shop.app], but at the time it was a single webpage showing off Shop chatbot built on top of OpenAI's newly released ChatGPT.
+
+The team had ~1 month to build this site. They chose Remix believing that it would make building this simple website fast and easy. Even though they didn't use many of the features that make Remix great (data fetching, routing, nested layouts, etc.), they still found it to be a fast and adaptable framework, which is exactly what they were looking for.
+
+This positive experience gave them confidence to go with Remix for Shop Web.
+
 ### Monorepo with React Native
 
-### Need to move fast
+As mentioned, the Shop app is built with React Native. To ease development between the iOS, Android, and now Web version of Shop, the team uses a monorepo the source code of 3 clients.
 
-Remix was flexible enough that they could keep the architecture they had. Remix didn't get in the way. Haven't adopted everything from Remix, but it allows you to do that.
+The monorepo setup also simplifies migrating the existing marketing version of shop.app pages to the new experience. The monorepo setup meant that the fundamental infrastructure for linting, testing, releasing, CI/CD, etc. are all setup for the team to build on top of.
 
-## Building Shop Web with Remix
+The Shop team found Remix flexible and easy to integrate into their existing setup, allowing them to start experimenting with building Shop Web on Remix.
 
-The ability to ship 4-5 pages in such a short time with such a small team — couldn’t have been done without Remix and with Remix allowing them to use as much as they could.
+### Get Sh\*t Done
 
-"I never produced so much in such a short amount of time with such good results" - [Sebastian Ekström][dominic]
+At Shopify there's a term often used: Get Shit Done. Shopify is a company that prides themselves on building new and innovative things, and building them fast.
 
-More quotes around 18:40 of the recording
+With Shop Web, the team was eager to get an initial version of the product pages launched as quickly as possible.
 
-Stays out of the way, just worked, etc.
+The team started building Shop Web in April, 2023. Because Remix was flexible enough to allow them to keep the architecture they had, and provided out of the box SSR, routing, loading patterns, and much more, the team was able to launch the initial product page in July, 2023.
 
-Started April 2023, initial launch for the product page was July 2023
+**That's 3 months to Get Shit Done**
+
+Remix was flexible enough to allow the Shop team to keep architecture they had. Remix didn't get in the way. Even though the team hasn't adopted everything Remix has to offer such as fully leaning on the Remix loading patterns and `defer`, the "guts out" approach of Remix means they could easily hook in their own patterns and libraries, while incrementally leveraging the bits of Remix they liked.
+
+According to the Shop team, their ability to ship an initial version of Shop Web to millions of people all around the world in such a short amount of time couldn’t have been done without Remix.
 
 ### Even faster with Vite
 
-Had been struggling with HMR since the start — running a custom TS server, Spin (cloud code thing at Shopify) — HMR times ~9s — down to 0.1s
+One struggle the team did have using Remix was slow Hot Module Replacement (HMR). It took ~9s from the time a developer hit save to when they were able to see their changes reflected locally.
 
-Sebastian led the Vite migration — took about 2 month. Wasn’t too hard, but everything around it (CJS -> ESM), broke everything around it. Fixing build tools, e2e, local environments, web sockets for HMR
-3 dependencies that were issues: lodash, date-fns, some other one. JS files that needed to be converted. Lots of tiny issues, paper cuts
+Due to these slow HRM times, the Shop team was eccstatic once the Remix team announced that they were [moving the compiler to a Vite plugin][vite-announcement]. They were so confident in the new Vite plugin and the DX benefits it would save their team, they didn't even hesitate until [it was marked as stable][vite-stable-announcement].
 
-Tailwind — huge bottleneck in HMR times. At 2.3s when they thought they were done with Vite. Then they split the tailwind processing to run in parallel. Can also use css modules so they’re not completely tied down.
-Style tokens to share with all the other projects (native, Shop Pay)
+Migrating to Vite improved their HMR times to 2.3s.
 
+These were just the initial numbers though. They had a number of small improvements the Vite migration made them aware of, mostly in terms of upgrading dependencies and converting some files from CJS to ESM, but the biggest one was the need to parallelize the [Tailwind][tailwind] build process, as it was a huge HMR bottleneck. Once they made this improvement they were able to further improve HMR times to 0.1s.
+
+**That's 9s down to 0.1s, a 90x improvement**
+
+[apple-shop-app]: https://apps.apple.com/ca/app/shop-all-your-favorite-brands/id1223471316
 [shop.app]: https://shop.app/
 [shop.ai]: https://shop.ai/
 [shop.ai-tweet]: https://twitter.com/shop/status/1636022946127831040
 [sebastian]: https://github.com/sebastianekstrom
 [dominic]: https://github.com/linddominic
+[apollo-client]: https://github.com/apollographql/apollo-client
+[vite-announcement]: https://remix.run/blog/remix-heart-vite
+[vite-stable-announcement]: https://remix.run/blog/remix-vite-stable
+[tailwind]: https://tailwindcss.com/
+[css-modules]: https://github.com/css-modules/css-modules
