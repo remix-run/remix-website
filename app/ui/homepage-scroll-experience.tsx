@@ -931,7 +931,6 @@ function KonamiCode(props: React.HTMLProps<HTMLSpanElement>) {
       // only handle hotkeys when it's visible
       const { top, bottom } = konamiRef.current.getBoundingClientRect();
       if (top < 0 || bottom > window.innerHeight) {
-        console.log("bailing");
         return;
       }
 
