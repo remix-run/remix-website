@@ -2,7 +2,7 @@
 title: Remix and i18n
 summary: We'll cover how internationalization (i18n) works with Remix. Together, we'll understand the impact of i18n, fundamental logic and how to manage i18n more efficiently with Remix.
 featured: false
-date: 2024-01-31
+date: 2024-02-29
 image: /blog-images/headers/sigmund-EgwhIBec0Ck-unsplash.jpg
 imageAlt: A globe close-up photo zooming in to the North American continent.
 authors:
@@ -73,8 +73,8 @@ There are a few configuration files, such as JSON files with localized values an
 export default {
   supportedLngs: ["en", "ja"],
   fallbackLng: "en",
-  defaultNS: "common",// common.json namespace
-  react: { useSuspense: false },// Disabling suspense is recommended
+  defaultNS: "common", // common.json namespace
+  react: { useSuspense: false }, // Disabling suspense is recommended
 };
 ```
 
@@ -93,7 +93,7 @@ let i18next = new RemixI18Next({
   i18next: {
     ...i18n,
     backend: {
-      loadPath: resolve('./public/locales/{{lng}}/{{ns}}.json'),
+      loadPath: resolve("./public/locales/{{lng}}/{{ns}}.json"),
     },
   },
   backend: Backend,
@@ -432,7 +432,7 @@ export default function ContactsLayout() {
 }
 ```
 
-To create a language switcher on the header, we can use `getLang` helper function on the `Header` component  `useLocation` and `useParams` hooks from Remix.
+To create a language switcher on the header, we can use `getLang` helper function on the `Header` component `useLocation` and `useParams` hooks from Remix.
 
 [`useLocation`][useLocation-docs] can be used to get the current pathname (object) and replace the pathname with the selected language.
 
