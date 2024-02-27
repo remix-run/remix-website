@@ -150,7 +150,7 @@ export default function MyPage() {
 
 I've written a [separate article about remix-i18next][smashing-i18n-article-remix-i18next] if you're interested in learning more about how exactly you can use remix-i18next with code snippets.
 
-However, the remix-i18next approach requires installing several additional npm modules and maintaining translation JSON files at the source code level. It'll require some effort to implement localized sub-directories. Consider the next approach if you want content editors to take more responsibility to help us with content tasks.
+Note, the remix-i18next approach requires installing several additional npm modules and maintaining translation JSON files at the source code level. It'll require some effort to implement localized sub-directories. Consider the next approach if you want content editors to take more responsibility to help you with content tasks.
 
 ### 2. A combination of Remix & CMS
 
