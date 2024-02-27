@@ -467,7 +467,7 @@ In this way, we can create a language switcher on the header to switch the langu
 
 ## More examples and sources
 
-Suppose you're looking for a different example and sources to see how i18n with Remix works. In that case, I recommend you check out the example from [Dilum Sanjaya's interactive Remix routing example][interactive-routing-dilum]. Dilum built an example app to visualize Remix routing, and his example includes an Optional Segments example from the Remix docs.
+If you're looking for a different example and sources to see how i18n with Remix works, I recommend you check out the example from [Dilum Sanjaya's interactive Remix routing example][interactive-routing-dilum]. Dilum built an example app to visualize Remix routing, and his example includes an Optional Segments example from the Remix docs.
 
 I hope you find this article helpful in understanding how i18n works with Remix and how to manage i18n more efficiently with Remix. If you have any questions or feedback, feel free to reach out to me on [Twitter][twitter-arisa]!
 
