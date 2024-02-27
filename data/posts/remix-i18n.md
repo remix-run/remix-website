@@ -54,7 +54,7 @@ Fortunately, Remix provides several practical and flexible options for implement
 
 ### 1. remix-18next
 
-[remix-i18next][remix-i18next] is a npm module created by [Sergio Xalambrí][sergio-github] for i18n with Remix. remix-i18next is built on top of i18n JavaScript library, [i18next][i18next]. i18next provides features to localize your product from the web to mobile and desktop along with standard i18n features.
+[remix-i18next][remix-i18next] is a npm module created by [Sergio Xalambrí][sergio-github] for i18n with Remix. remix-i18next is built on top of i18n JavaScript library, [i18next][i18next]. i18next provides features to localize your product on web, mobile, and desktop, and comes with many standard i18n features.
 
 This approach takes a few steps to implement i18n with Remix, such as installing several npm modules, maintaining translation JSON files at the source code level, and using the `useTranslation` hook to translate the content.
 
