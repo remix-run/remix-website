@@ -299,7 +299,7 @@ What we aim to receive necessary data would look like this.
 }
 ```
 
-How we slim down the data with the `getLang` function looks like this.
+We can slim down the data with the `getLang` function to return only the correct translation of the content
 
 ```jsx
 // ($lang).contacts.$contactId.tsx
