@@ -438,7 +438,6 @@ To create a language switcher on the header, we can use `getLang` helper functio
 
 ```jsx
 // components/Header.tsx
-// ...
 import { Link, useLocation, useParams } from "@remix-run/react";
 import { getLang } from "~/utils";
 
