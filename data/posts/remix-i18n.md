@@ -101,7 +101,7 @@ let i18next = new RemixI18Next({
 export default i18next;
 ```
 
-There are server-side and client-side config files with i18n initialization, detecting specific locales from each request and loading the translation JSON files. (For more details with those files, you can check out my [separate article about remix-i18next][smashing-i18n-article-remix-i18next].)
+There are server-side and client-side config files with i18n initialization for detecting specific locales from each request and loading the appropriate translation JSON files. For more details on those files, you can check out my [separate article about remix-i18next][smashing-i18n-article-remix-i18next].
 
 After setting up the configuration files, you can use the `useTranslation` hook to translate the content.
 
