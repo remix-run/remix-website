@@ -212,7 +212,7 @@ Let's look more in-depth at what I mentioned with some example code. You can for
 This example app is partially based on the Remix contact app tutorial. It has a `contacts` route and `contacts` route has a `contactId` parameter.
 
 ```
- app/
+app/
 ├── components/
 │   └── Header.tsx // language switcher
 ├── routes/
