@@ -156,7 +156,7 @@ Note, the remix-i18next approach requires installing several additional npm modu
 
 As I mentioned the importance of having **SEVERAL PRACTICAL & FLEXIBLE options**, investigating which CMS to use will be a vital process to have more options to find the best approach for your website. CMSs offer various methods to help structure localized content and manage that content separately from the source code.
 
-Depending on each CMS, the number of options and the way to help implement i18n would be different. In this article, I'll use [Storyblok](https://www.storyblok.com/) as one of the examples.
+Depending on each CMS, the number of options and the way to implement i18n will be different. In this article, I'll use [Storyblok](https://www.storyblok.com/) as one of the examples.
 
 Storyblok has four approaches you can choose to structure the content to leave enough room to make i18n implementations flexible and efficient.
 
