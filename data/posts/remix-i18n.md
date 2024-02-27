@@ -22,7 +22,7 @@ i18n stands for internationalization. Between the first character, “i,” and 
 
 There are many reasons why we should care about i18n. The most important reason is that it makes your application more accessible to people who speak different languages. There are interesting numbers and statistics that prove this. For example, 5.07 billion people used the internet in 2020. That's more than half of the world's population. Of the over 5 billion users, 74.1% accessed the content in another language than English.
 
-You can find what you read above in this statistics [from Statista][lang-statistics-on-the-internet].
+You can find and explore the statistics for the above claim [on Statista][lang-statistics-on-the-internet].
 
 ## i18n fundamentals
 
