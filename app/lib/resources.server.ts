@@ -58,6 +58,11 @@ export async function getAllResources({ octokit }: CacheContext) {
   return resources.sort((a, b) => b.stars - a.stars);
 }
 
+
+const replaceRelativeLinks = (readme: string, repoUrl: string) => {
+  return readme.replaceAll('src="./', `src=\"${repoUrl}/raw/main/`);
+};
+
 /**
  * Get a single resource by slug, fetching and merging GitHub data and README contents
  */
@@ -80,7 +85,11 @@ export async function getResource(
     throw new Error(`Could not find GitHub data for ${resource.repoUrl}`);
   }
 
-  return { ...resource, ...gitHubData, readmeHtml };
+  return {
+    ...resource,
+    ...gitHubData,
+    readmeHtml: replaceRelativeLinks(readmeHtml, resource.repoUrl),
+  };
 }
 
 //#region LRUCache and fetchers for GitHub data and READMEs
