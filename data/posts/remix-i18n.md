@@ -224,7 +224,7 @@ app/
 └── utils.ts // reusable getLang function to check valid params.lang
 ```
 
-A `lang` parameter is where you can see it catches all slugs in different nested levels, such as `ja/contacts` and `ja/contacts/ryan-florance` in this example app. It covers the case if you want to implement localized sub-directories without CMSs.
+A `$lang` parameter will match all slugs in different nested levels, such as `ja/contacts` and `ja/contacts/ryan-florance` in this example app. It covers the case if you want to implement localized sub-directories without CMSs.
 
 Built-in parameters like `params.lang` saves you time when implementing i18n-supported routes. To enable Optional Segments, you can add `($lang)` in the routes like this, `app/routes/($lang).contacts.$contactId` to catch `lang` parameter in the route.
 
