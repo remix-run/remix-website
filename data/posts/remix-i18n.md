@@ -50,7 +50,7 @@ I insist on this a lot in [my i18n talk][remixconf-arisa] because otherwise your
 
 i18n is a complex topic, and there's more than one straightforward way to implement it. That's why we need several practical and flexible options to find the best way to implement i18n for each project.
 
-But Remix provides several practical and flexible options for implementing i18n! Let's take a look at how i18n works with Remix.
+Fortunately, Remix provides several practical and flexible options for implementing i18n! Let's take a look at how i18n works with Remix.
 
 ### 1. remix-18next
 
