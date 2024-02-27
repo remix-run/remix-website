@@ -192,7 +192,7 @@ Mixing folder-level and field-level translation approaches is also possible. Thi
 
 [Space-level translation][space-level-docs] approach is for creating a separate space for each language and region. This approach simplifies the division of environments for content editors and developers. It's good to keep in mind as a way to simplify the environments.
 
-For example, while you secure the divided environments in each space, you can use [Storyblok CLI][storyblok-cli] and [Management API][mapi-docs] to share components, pages (it's called `story` at Storyblok), and schemas between spaces. It's a good way to keep the content structure and components consistent.
+For example, while you secure the divided environments in each space, you can use [Storyblok CLI][storyblok-cli] and [Management API][mapi-docs] to share components, pages (a `story` at Storyblok), and schemas between spaces. It's a good way to keep the content structure and components consistent.
 
 I listed four approaches from one of the CMSs but there are cases in which you won't go with the CMS approach regardless of your great POC to convince your team and decision-makers. (Sometimes, things like making budget decisions are out of our hands, right?) In that case, you can consider the following approach.
 
