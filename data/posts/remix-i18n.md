@@ -172,7 +172,7 @@ Storyblok has four approaches you can choose to structure the content to leave e
 It makes it easier for us to implement localized sub-directories as we can focus on implementation.
 You can enjoy great DX while implementing i18n with Remix and a folder-level translation approach using Remix's [Splat Routes][splat-routes] to catch all slugs in any nested levels.
 
-I've also written a [separate article about a combination of Remix & CMS with a folder-level translation approach][smashing-i18n-article-remix-storyblok] including how to use Splat Routes for more details.
+I've also written a [separate article about a combination of Remix & CMS with a folder-level translation approach][smashing-i18n-article-remix-storyblok] including how to use Splat Routes.
 
 [Field-level translation][field-level-docs] approach creates one content tree and no need to create stand-alone folders for each language and region. Translatable fields will be stored in the content tree as a separate stand-alone property with suffixes of each language. In short, if you want to apply the same page layout for each language and region, you can use this approach to prevent duplicating common pages in several localized content folders. Instead, create one page and localize the content in one content tree.
 
