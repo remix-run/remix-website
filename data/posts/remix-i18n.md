@@ -248,7 +248,7 @@ export function getLang(params: Params<string>) {
 }
 ```
 
-As this `getLang` function is also designed to return selected valid `params.lang` values, it can be used to get only the necessary data for the selected language. The contact data object with types in `data.tsx` looks like this.
+The `getLang` function returns the selected valid `params.lang` value, which means it can be used to get only the necessary data for the selected language. The contact data object with types in `data.tsx` looks like this:
 
 ```js
 // data.tsx
