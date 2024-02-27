@@ -430,7 +430,7 @@ export default function ContactsLayout() {
 }
 ```
 
-To create a language switcher on the header, we can use `getLang` helper function on the `Header` component `useLocation` and `useParams` hooks from Remix.
+To create a language switcher on the header, we can use `getLang` helper function on the `Header` component with the `useLocation` and `useParams` hooks from Remix.
 
 [`useLocation`][useLocation-docs] can be used to get the current pathname (object) and replace the pathname with the selected language.
 
