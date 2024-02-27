@@ -48,7 +48,7 @@ When you are going to implement i18n with any framework, you should to consider 
 
 I insist on this a lot in [my i18n talk][remixconf-arisa] because otherwise your DX will be painful and you will likely end up sacrificing UX due to the technical limitations of the frameworks. I'm not saying that other frameworks are inadequate, but I have experienced nightmares with other frameworks when I was working on i18n projects, such as not being able to modify slugs programmatically, requiring extra npm packages, etc.
 
-i18n is a complex topic, and there's more than a straightforward way to implement it. That's why we need several practical and flexible options to find the best way to implement i18n for each project.
+i18n is a complex topic, and there's more than one straightforward way to implement it. That's why we need several practical and flexible options to find the best way to implement i18n for each project.
 
 But Remix provides several practical and flexible options for implementing i18n! Let's take a look at how i18n works with Remix.
 
