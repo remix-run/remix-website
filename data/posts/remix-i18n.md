@@ -46,7 +46,7 @@ Alternatively, you can use different domains and URL parameters for other langua
 
 When you are going to implement i18n with any framework, you should to consider if they provide **MULTIPLE PRACTICAL & FLEXIBLE options**.
 
-I insist that a lot in [my i18n talk][remixconf-arisa] because otherwise, your DX will be painful, and your users also need to sacrifice their UX for some inconvenience due to the technical limitations of the frameworks. I'm not saying that other frameworks are inadequate. But it's true I had nightmares with other frameworks when I was working on i18n projects, such as not being able to modify slugs programmatically, requiring to install extra npm packages, etc.
+I insist on this a lot in [my i18n talk][remixconf-arisa] because otherwise your DX will be painful and you will likely end up sacrificing UX due to the technical limitations of the frameworks. I'm not saying that other frameworks are inadequate, but I have experienced nightmares with other frameworks when I was working on i18n projects, such as not being able to modify slugs programmatically, requiring extra npm packages, etc.
 
 i18n is a complex topic, and there's more than a straightforward way to implement it. That's why we need several practical and flexible options to find the best way to implement i18n for each project.
 
