@@ -1,6 +1,6 @@
 ---
 title: Remix and i18n
-summary: We'll cover how internationalization (i18n) works with Remix. Together, we'll understand the impact of i18n, fundamental logic and how to manage i18n more efficiently with Remix.
+summary: Learn how to implement internationalization (i18n) in your Remix project. Discover the significance of i18n, its underlying principles, and strategies for effective management using Remix.
 featured: false
 date: 2024-02-29
 image: /blog-images/headers/sigmund-EgwhIBec0Ck-unsplash.jpg
@@ -34,7 +34,7 @@ This approach uses the location of the request's IP address to serve the most po
 
 ### Accept-Language header or Navigator.languages
 
-This approach is based on the language settings of the browser. It's more accurate than using the location of the IP address. However, this approach provides language information but only provides regional information.
+This approach is based on the language settings of the browser. It's more accurate than using the location of the IP address. This approach provides the user's preferred language information, but users cannot switch languages from the UI.
 
 ### Identifiers in URLs
 
@@ -224,6 +224,8 @@ app/
 └── utils.ts // reusable getLang function to check valid params.lang
 ```
 
+The urls `/ja/contacts/ryan-florence` and `/contacts/ryan-florence` will both match the `app/routes/($lang).contacts.$contactId` route, since `($lang)` is optional. In this example if there is no `lang` param provided, we default to English (`en`).
+
 A `$lang` parameter will match all slugs in different nested levels, such as `ja/contacts` and `ja/contacts/ryan-florance` in this example app. It covers the case if you want to implement localized sub-directories without CMSs.
 
 Built-in parameters like `params.lang` saves you time when implementing i18n-supported routes. To enable Optional Segments, you can add `($lang)` in the routes like this, `app/routes/($lang).contacts.$contactId` to catch `lang` parameter in the route.
@@ -242,11 +244,16 @@ import { Params } from "@remix-run/react";
 export function getLang(params: Params<string>) {
   const lang = params.lang ?? "en";
   if (lang !== "ja" && lang !== "en") {
-    throw new Error(`Invalid language ${lang}`);
+    throw new Response(null, {
+      status: 404,
+      statusText: `Not Found: Invalid language ${lang}`,
+    });
   }
   return lang;
 }
 ```
+
+For invalid `params.lang`, it throws a 404 status with a message "Not Found: Invalid language ${lang}". How to throw 404 response is explained in the [Remix docs][404-response].
 
 The `getLang` function returns the selected valid `params.lang` value, which means it can be used to get only the necessary data for the selected language. The contact data object with types in `data.tsx` looks like this:
 
@@ -269,34 +276,6 @@ type ContactMutation = {
     }
   }
 };
-```
-
-What we aim to receive necessary data would look like this.
-
-```js
-// contacts in Japanese for the name list on the sidebar
-{
-  "contacts": [
-    {
-      "id": "kent c.-dodds",
-      "name": "ケント C. ドッズ"
-    },
-    {
-      "id": "pedro-cattori",
-      "name": "ペドロ カトーリ"
-    },
-    //...
-  ]
-}
-```
-
-```js
-// single contact in Japanese for selected contact
-{
-  "avatar": "https://sessionize.com/image/820b-400o400o2-Ja1KDrBAu5NzYTPLSC3GW8.jpg",
-  "twitter": "@BrooksLybrand",
-  "name": "ブルックス リーブランド"
-}
 ```
 
 We can slim down the data with the `getLang` function to return only the correct translation of the content
@@ -495,6 +474,7 @@ I hope this article helped you understand how i18n works and how to manage i18n 
 [optional-segments-example-repo]: https://github.com/schabibi1/remix-optional-segments
 [optional-segments-app-gif]: /blog-images/posts/remix-i18n/optional-segments-preview.gif
 [google-seo-guideline]: https://developers.google.com/search/docs/crawling-indexing/url-structure
+[404-response]: https://remix.run/docs/en/main/guides/not-found#how-to-send-a-404
 [useLocation-docs]: https://remix.run/docs/en/main/hooks/use-location
 [useParams-docs]: https://remix.run/docs/en/main/hooks/use-params
 [interactive-routing-dilum]: https://interactive-remix-routing-v2.netlify.app/
