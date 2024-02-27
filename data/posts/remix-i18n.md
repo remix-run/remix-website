@@ -198,8 +198,7 @@ I listed four approaches from one of the CMSs but there are cases in which you w
 
 ### 3. Optional Segments
 
-Luckily, Remix provides a built-in feature called [Optional Segments][optional-segments-docs].
-Optional Segments solve all possible problems with i18n we saw above and even with the decisions to go without the CMS approach if you have limited options. What provides the enjoyable DX is that you can use Remix's built-in features to catch all slugs, and it covers features like those below.
+Remix provides a built-in feature called [Optional Segments][optional-segments-docs]. Optional Segments solve all the potential problems with i18n we saw above and is a good approach if you are unable to adopt a CMS. Remix's built-in features provide enjoyable DX that allow you to:
 
 - Catch all slugs in nested levels
 - By just adding `($lang)` in the routes enables to catch `lang` parameter in the route
