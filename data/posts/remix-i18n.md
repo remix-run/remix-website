@@ -228,7 +228,7 @@ A `$lang` parameter will match all slugs in different nested levels, such as `ja
 
 Built-in parameters like `params.lang` saves you time when implementing i18n-supported routes. To enable Optional Segments, you can add `($lang)` in the routes like this, `app/routes/($lang).contacts.$contactId` to catch `lang` parameter in the route.
 
-Configuring localized sub-directories with functionally working routes is the most important yet time-consufnig part of the i18n implementation process depending on the built-in features from frameworks.
+Configuring localized sub-directories with functionally working routes is the most important yet time-consuming part of the i18n implementation process depending on the built-in features from frameworks.
 Remix removes the pain by providing helpful parameters, a flexible structure, and the best DX for developers.
 
 > Make sure you follow the [Google SEO guideline][google-seo-guideline] for non-ASCII characters in the URL. It's not recommended to use non-ASCII characters in the URL. (i.e., `ja/contacts/マイケル-ジャクソン`) It's better to use ASCII characters in the URL. (i.e., `ja/contacts/michael-jackson`)
