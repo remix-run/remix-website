@@ -434,7 +434,7 @@ To create a language switcher on the header, we can use `getLang` helper functio
 
 [`useLocation`][useLocation-docs] can be used to get the current pathname (object) and replace the pathname with the selected language.
 
-[`useParams`][useParams-docs] returns an object key and value pairs of the dynamic params from the current location that are matched by the routes. (i.e., `routes/($lang).contacts.$contactId.tsx` matched by `ja/contacts/glenn-reyes`. `params.contactId` is `glenn-reyes`.)
+[`useParams`][useParams-docs] returns an object key and value pairs of the dynamic params from the current location that are matched by the routes. (e.g., `routes/($lang).contacts.$contactId.tsx` matched by `ja/contacts/glenn-reyes` will return `params.contactId` with a value of `glenn-reyes`).
 
 ```jsx
 // components/Header.tsx
