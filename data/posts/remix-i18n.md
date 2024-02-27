@@ -205,7 +205,7 @@ Remix provides a built-in feature called [Optional Segments][optional-segments-d
 
 Also, it's possible to detect if `params.lang` is not a valid language value by creating a reusable helper function. It's a great way to provide the best UX for users.
 
-Let's look more in-depth at what I mentioned with the example code. You can fork and clone this [Optional Segments example app repo][optional-segments-example-repo] to test it out on your local machine.
+Let's look more in-depth at what I mentioned with some example code. You can fork and clone this [Optional Segments example app repo][optional-segments-example-repo] to test it out on your local machine.
 
 ![A GIF of Remix Optional Segments example app][optional-segments-app-gif]
 
