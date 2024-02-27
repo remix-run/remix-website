@@ -190,7 +190,7 @@ To enable corresponding live preview on the Storyblok UI, you can install [Advan
 
 Mixing folder-level and field-level translation approaches is also possible. This approach is more complex and handles many regions such as `de-at`, `de-ch`, `de-de`, etc.
 
-[Space-level translation][space-level-docs] approach is for creating a separate space for each language and region. This approach simplifies the division of environments for content editors and developers. It's good to keep in mind as a way to simplify the environments to work.
+[Space-level translation][space-level-docs] approach is for creating a separate space for each language and region. This approach simplifies the division of environments for content editors and developers. It's good to keep in mind as a way to simplify the environments.
 
 For example, while you secure the divided environments in each space, you can use [Storyblok CLI][storyblok-cli] and [Management API][mapi-docs] to share components, pages (it's called `story` at Storyblok), and schemas between spaces. It's a good way to keep the content structure and components consistent.
 
