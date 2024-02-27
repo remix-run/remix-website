@@ -11,7 +11,7 @@ authors:
 
 Experts are constantly discussing how to make the web better. Accessibility, UI/UX, web performance, you name it. You might not hear about internationalization (i18n) as much as other topics, but it is still essential to making the web better. In this article, we'll gain an understanding of the the impact of i18n, explore the fundamental logic, and learn how to implement i18n in a Remix app.
 
-I also talked about i18n with Remix in my talk at Remix Conf 2023. If youwant to watch the video recording, you can find [my i18n talk here][remixconf-arisa].
+I also talked about i18n with Remix in my Remix Conf 2023 talk. If you want to watch the video recording, you can find [my i18n talk here][remixconf-arisa].
 
 <iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/IAMKH8oOLes?si=RVXWYiStu-DQZbS8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
