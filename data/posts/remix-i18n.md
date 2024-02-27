@@ -19,7 +19,6 @@ I also talked about i18n with Remix in my Remix Conf 2023 talk. If you want to w
 
 i18n stands for internationalization. Between the first character, “i,” and the last character, “n,” from there are 18 characters. In short, i18n is about implementing the structures and features for your applications to be ready to localize content.
 
-## Why we should care about i18n?
 
 There are many reasons why we should care about i18n. The most important reason is that it makes your application more accessible to people who speak different languages. There are interesting numbers and statistics to prove that. For example, 5.07 billion users are using the internet in 2020. That's more than half of the world's population. Of over 5 billion users, 74.1% access the content in any language other than English.
 
