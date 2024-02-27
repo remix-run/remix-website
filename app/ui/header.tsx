@@ -41,6 +41,7 @@ export function Header({
         <HeaderLink to="/blog">Blog</HeaderLink>
         <HeaderLink to="/showcase">Showcase</HeaderLink>
         <HeaderLink to="/resources">Resources</HeaderLink>
+        <HeaderLink to="/playground">Playground</HeaderLink>
       </nav>
 
       <HeaderMenuMobile className="md:hidden" />
