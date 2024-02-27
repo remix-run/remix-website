@@ -40,7 +40,7 @@ This approach is based on the language settings of the browser. It's more accura
 
 This approach is based on identifiers set in the URL. It's the most accurate way to determine languages and regions. It requires more work to implement but provides the best UX for users. Examples of identifiers in URLs are `https://remix.run/de-at`, `https://remix.run/fr-ca`, etc. This approach is called localized sub-directories.
 
-Technically, you can use different domains and URL parameters for other languages and regions to create URL identifiers if you don't consider SEO and same-origin policy. But we care about those to improve the web better, so we'll focus on localized sub-directories in this article.
+Alternatively, you can use different domains and URL parameters for other languages and regions to create URL identifiers if you don't care about SEO and same-origin policy. But generally we care about those things as we make the web better, so we'll focus on localized sub-directories in this article.
 
 ## How i18n works with Remix
 
