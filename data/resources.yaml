@@ -196,3 +196,15 @@
   imgSrc: "https://opengraph.githubassets.com/a7b576dbdc5bf2627d5269202d58dd62c513320ab22d7b592b9da589c6cdedb4/mcansh/http-helmet"
   initCommand: "npm install @mcansh/http-helmet"
   category: "libraries"
+
+- title: "remix-client-cache"
+  repoUrl: "https://github.com/Code-Forge-Net/remix-client-cache"
+  imgSrc: "https://opengraph.githubassets.com/6895fd09322b013c24ed810a1b65af484bfc07b841e5c8960c3be4acbbbbafcb/Code-Forge-Net/remix-client-cache"
+  initCommand: "npm install remix-client-cache"
+  category: "libraries"
+
+- title: "remix-toast"
+  repoUrl: "https://github.com/Code-Forge-Net/remix-toast"
+  imgSrc: "https://opengraph.githubassets.com/8fadfa577649b2afb0e90d2882f1cfafc2a75328f3f01b9d0bb047216d5fd565/Code-Forge-Net/remix-toast"
+  initCommand: "npm install remix-toast"
+  category: "libraries"
