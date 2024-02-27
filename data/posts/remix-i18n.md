@@ -200,8 +200,8 @@ I listed four approaches from one of the CMSs but there are cases in which you w
 
 Remix provides a built-in feature called [Optional Segments][optional-segments-docs]. Optional Segments solve all the potential problems with i18n we saw above and is a good approach if you are unable to adopt a CMS. Remix's built-in features provide enjoyable DX that allow you to:
 
-- Catch all slugs in nested levels
-- By just adding `($lang)` in the routes enables to catch `lang` parameter in the route
+- Catch all slugs in nested urls and layouts
+- Simply add a `($lang)` in your routes enables to catch `lang` parameter
 
 Also, it's possible to detect if `params.lang` is not a valid language value by creating a reusable helper function. It's a great way to provide the best UX for users.
 
