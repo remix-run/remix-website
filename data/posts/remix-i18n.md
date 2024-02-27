@@ -30,7 +30,7 @@ Before we dive into how i18n works with Remix, let's take a look at the fundamen
 
 ### Location of the IP address
 
-This approach is based on the location of the IP address. There are more accurate ways to determine languages and regions. This approach won't provide the best UX for users. For example, if you're traveling to another country, you will see the content in the language of your current country.
+This approach uses the location of the request's IP address to serve the most popular language of that region. This approach has a couple of problems, the first being that there are more accurate ways to determine languages and regions. Additionally, this approach does not provide the best UX for users. For example, if you're traveling to another country, you will see the content in the language of that country instead of your preferred language.
 
 ### Accept-Language header or Navigator.languages
 
