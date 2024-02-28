@@ -58,10 +58,35 @@ export async function getAllResources({ octokit }: CacheContext) {
   return resources.sort((a, b) => b.stars - a.stars);
 }
 
+/**
+ * Replace relative links in the README with absolute links
+ *
+ * Works only with images
+ *
+ * @param inputString - The README string
+ * @param repoUrl - The URL of the repository
+ * @returns The README string with relative links replaced with absolute links
+ *
+ * @example
+ * const input = `<img src="./relative">`;
+ * const repoUrl = "https://my-repo";
+ * const readme = replaceRelativeLinks(input, repoUrl);
+ * console.log(readme); // <img src="https://my-repo/raw/main/relative">
+ *
+ */
 
-const replaceRelativeLinks = (readme: string, repoUrl: string) => {
-  return readme.replaceAll('src="./', `src=\"${repoUrl}/raw/main/`);
-};
+export function replaceRelativeLinks(inputString: string, repoUrl: string) {
+  // Regular expression to match <img src="./relative"
+  var regex = /<img src="\.\//g;
+
+  // Replace matched substrings with <img src="https://repoUrl/raw/main"
+  var replacedString = inputString.replace(
+    regex,
+    `<img src="${repoUrl}/raw/main/`,
+  );
+
+  return replacedString;
+}
 
 /**
  * Get a single resource by slug, fetching and merging GitHub data and README contents
