@@ -476,6 +476,13 @@
     @apply pointer-events-none absolute inset-0 opacity-10 content-[""];
   }
 
+  & docs-info > :last-child,
+  & docs-success > :last-child,
+  & docs-warning > :last-child,
+  & docs-error > :last-child {
+    @apply mb-0;
+  }
+
   & docs-warning {
     @apply text-yellow-800 dark:text-yellow-100;
   }
