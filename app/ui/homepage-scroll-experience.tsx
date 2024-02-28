@@ -903,6 +903,70 @@ function Waterfall() {
   );
 }
 
+const konamiCode = [
+  { code: "ArrowUp", glyph: "↑" },
+  { code: "ArrowUp", glyph: "↑" },
+  { code: "ArrowDown", glyph: "↓" },
+  { code: "ArrowDown", glyph: "↓" },
+  { code: "ArrowLeft", glyph: "←" },
+  { code: "ArrowRight", glyph: "→" },
+  { code: "ArrowLeft", glyph: "←" },
+  { code: "ArrowRight", glyph: "→" },
+  { code: "b", glyph: "B" },
+  { code: "a", glyph: "A" },
+  { code: "Enter", glyph: "↵" },
+];
+
+/**
+ * @see https://en.wikipedia.org/wiki/Konami_Code
+ */
+function KonamiCode(props: React.HTMLProps<HTMLSpanElement>) {
+  const [konamiState, setKonamiState] = React.useState(0);
+  const konamiRef = React.useRef<HTMLSpanElement>(null);
+
+  React.useEffect(() => {
+    const onKeyPress = (event: KeyboardEvent) => {
+      if (!konamiRef.current) return;
+
+      // only handle hotkeys when it's visible
+      const { top, bottom } = konamiRef.current.getBoundingClientRect();
+      if (top < 0 || bottom > window.innerHeight) {
+        return;
+      }
+
+      setKonamiState((konamiState) => {
+        if (konamiState >= konamiCode.length) return konamiState;
+
+        if (konamiCode[konamiState].code === event.key) {
+          return konamiState + 1;
+        }
+
+        // reset if the user messed up the code
+        return 0;
+      });
+    };
+
+    document.addEventListener("keyup", onKeyPress);
+    return () => {
+      document.removeEventListener("keyup", onKeyPress);
+    };
+  }, []);
+
+  return (
+    <span ref={konamiRef} {...props}>
+      {konamiState < konamiCode.length ? (
+        konamiCode.map(({ glyph }, i) => (
+          <span key={i} className={konamiState > i ? "text-green-brand" : ""}>
+            {glyph}
+          </span>
+        ))
+      ) : (
+        <span className="text-6xl"> 🏆🏆🏆🏆🏆🏆🏆🏆🏆 </span>
+      )}
+    </span>
+  );
+}
+
 function NestedRoutes() {
   function handleSectionFocus(event: React.FocusEvent) {
     let elem = event.target;
@@ -919,9 +983,7 @@ function NestedRoutes() {
           <br />
           <span className="text-yellow-brand">Nested Routes.</span>
         </h2>
-        <span className="font-mono text-gray-700" aria-hidden>
-          ↑↑↓↓←→←→BA
-        </span>
+        <KonamiCode className="font-mono text-gray-700" aria-hidden />
       </JumboText>
       <div className="h-[25vh]" />
       <ScrollStage pages={2.75}>

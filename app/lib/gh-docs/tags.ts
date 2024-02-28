@@ -2,9 +2,8 @@ import { LRUCache } from "lru-cache";
 import parseLinkHeader from "parse-link-header";
 import semver from "semver";
 import type { Octokit } from "octokit";
-import type { CacheContext as BaseCacheContext } from ".";
 
-type CacheContext = BaseCacheContext & { releasePackage: string };
+type CacheContext = { octokit: Octokit; releasePackage: string };
 declare global {
   var tagsCache: LRUCache<string, string[], CacheContext>;
 }
