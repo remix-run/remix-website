@@ -1,16 +1,24 @@
 import { loadPlugins, type UnistNode } from "~/lib/md.server";
 import { LRUCache } from "lru-cache";
+import invariant from "tiny-invariant";
 import type * as Hast from "hast";
 import type * as Mdast from "mdast";
 import type * as Unist from "unist";
 
 const mdContentsByFilename = Object.fromEntries(
   Object.entries(
-    import.meta.glob("../../md/**/*.md", { as: "raw", eager: true }),
-  ).map(([filePath, contents]) => [
-    filePath.replace("../../md/", ""),
-    contents,
-  ]),
+    import.meta.glob("../../md/**/*.md", {
+      query: "?raw",
+      import: "default",
+      eager: true,
+    }),
+  ).map(([filePath, contents]) => {
+    invariant(
+      typeof contents === "string",
+      `Expected ${filePath} to be a string, but got ${typeof contents}`,
+    );
+    return [filePath.replace("../../md/", ""), contents];
+  }),
 );
 
 const STATE_NORMAL = "NORMAL";

@@ -7,11 +7,21 @@ import authorsYamlFileContents from "../../data/authors.yml?raw";
 
 const postContentsBySlug = Object.fromEntries(
   Object.entries(
-    import.meta.glob("../../data/posts/*.md", { as: "raw", eager: true }),
-  ).map(([filePath, contents]) => [
-    filePath.replace("../../data/posts/", "").replace(/\.md$/, ""),
-    contents,
-  ]),
+    import.meta.glob("../../data/posts/*.md", {
+      query: "?raw",
+      import: "default",
+      eager: true,
+    }),
+  ).map(([filePath, contents]) => {
+    invariant(
+      typeof contents === "string",
+      `Expected ${filePath} to be a string, but got ${typeof contents}`,
+    );
+    return [
+      filePath.replace("../../data/posts/", "").replace(/\.md$/, ""),
+      contents,
+    ];
+  }),
 );
 
 const AUTHORS: BlogAuthor[] = yaml.parse(authorsYamlFileContents);
