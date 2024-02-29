@@ -3,7 +3,7 @@ import type { MetaFunction } from "@remix-run/react";
 export const meta: MetaFunction = () => {
   return [
     { title: "Remix Conf Code of Conduct" },
-    { description: "Adapted from confcodeofconduct.com" },
+    { name: "description", content: "Adapted from confcodeofconduct.com" },
   ];
 };
 
