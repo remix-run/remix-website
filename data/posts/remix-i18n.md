@@ -1,5 +1,5 @@
 ---
-title: Remix and i18n
+title: Internationalization with Remix
 summary: Learn how to implement internationalization (i18n) in your Remix project. Discover the significance of i18n, its underlying principles, and strategies for effective management using Remix.
 featured: false
 date: 2024-02-29
