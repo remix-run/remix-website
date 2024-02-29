@@ -1,7 +1,6 @@
 import * as React from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { metaV1 } from "@remix-run/v1-meta";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import "~/styles/conf-speaker.css";
@@ -12,20 +11,13 @@ import invariant from "tiny-invariant";
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   if (args.data) {
-    let { speaker /*, talks */ } = args.data;
-    return metaV1(args, {
-      title: `${speaker.nameFull} at Remix Conf`,
-      //   description: `${speaker.name} (${
-      //     speaker.title
-      //   }) is speaking at Remix Conf: ${talks
-      //     .map((t) => `"${t.title}"`)
-      //     .join(", ")}`,
-    });
+    const { speaker } = args.data;
+    return [{ title: `${speaker.nameFull} at Remix Conf` }];
   }
-  return metaV1(args, {
-    title: "Missing Speaker",
-    description: "There is no speaker info at this URL.",
-  });
+  return [
+    { title: "Missing Speaker" },
+    { description: "There is no speaker info at this URL." },
+  ];
 };
 
 export async function loader({ params }: LoaderFunctionArgs) {
