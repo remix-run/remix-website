@@ -50,12 +50,21 @@ New versions of the website can be shipped multiple times a day, whereas the mob
 
 ## Rapid development with Remix
 
-**TODO: adjust styling to make quote stand out more**
-
-<blockquote>
-"I never produced so much in such a short amount of time with such good results" 
-<span class="block mt-4">- <a href="https://github.com/linddominic">Sebastian Ekström</a></span>
-</blockquote>
+<figure>
+  <blockquote class="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 sm:text-2xl sm:leading-9">
+    <p>“I never produced so much in such a short amount of time with such good results.”</p>
+  </blockquote>
+  <figcaption>
+    <a class="mt-10 flex items-center gap-x-6" href="https://github.com/sebastianekstrom">
+      <img class="h-12 w-12 rounded-full bg-gray-50" src="/blog-images/posts/shop-case-study/sebastian-ekstrom.jpg" alt="">
+      <div class="text-sm leading-6 text-left">
+        <div class="font-semibold text-gray-900">Sebastian Ekström</div>
+        <div class="mt-0.5 text-gray-600 font-light">Senior Developer at Shopify</div>
+      </div>
+    </a>
+  </figcaption>
+</figure>
+</section>
 
 The benefits for the users and Shopify were clear, now the focus was on the developers.
 
@@ -112,6 +121,20 @@ Migrating to Vite improved their HMR times to 2.3s.
 These were just the initial numbers though. They had a number of small improvements the Vite migration made them aware of, mostly in terms of upgrading dependencies and converting some files from CJS to ESM, but the biggest one was the need to parallelize the [Tailwind][tailwind] build process, as it was a huge HMR bottleneck. Once they made this improvement they were able to further improve HMR times to 0.1s.
 
 **That's 9s down to 0.1s, a 90x improvement**
+
+Certainly, here's a conclusion for your blog post:
+
+## In Conclusion
+
+The journey of building Shop Web with Remix has been a testament to the power of choosing the right tools for the right job. Shopify's Shop team managed to overcome a multitude of challenges thanks to their expertise and the flexibility of Remix.
+
+By leveraging the advantages of a monorepo setup, embracing the "Get Sh\*t Done" mindset, and harnessing the rapid development capabilities of Remix, the team successfully transformed a simple marketing page into a fully functional web app, all within a remarkable three-month timeframe.
+
+The move to Vite further accelerated the development process, slashing HMR times and boosting productivity. This experience underscores the importance of continuous improvement and adaptation in the world of software development.
+
+As the Shop Web project continues to evolve, one thing remains certain: the combination of a skilled team and powerful tools like Remix and Vite can lead to impressive results, and serve as an inspiring example for developers around the globe.
+
+In the end, the story of Shop Web is not just about building a web application; it's about how the right blend of people, processes, and technology can come together to create something truly exceptional.
 
 [apple-shop-app]: https://apps.apple.com/ca/app/shop-all-your-favorite-brands/id1223471316
 [shop.app]: https://shop.app/
