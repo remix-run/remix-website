@@ -37,7 +37,7 @@ In fact, with Vite, Remix is no longer a compiler. **Remix itself is just a Vite
 
 ```ts
 // vite.config.ts
-import { unstable_vitePlugin as remix } from "@remix-run/dev";
+import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
 
 export default defineConfig({
