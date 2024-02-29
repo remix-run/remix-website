@@ -6,6 +6,7 @@ import {
   useMatches,
   useParams,
   useRouteError,
+  NavLink,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import type {
@@ -179,12 +180,16 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
         {doc.headings.map((heading, i) => {
           return (
             <li key={i}>
-              <Link
+              <NavLink
                 to={`#${heading.slug}`}
+                className={({ isActive, isPending }) =>
+                  cx(
+                    "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-400 dark:decoration-gray-500",
+                    isActive && "active", // Apply "active" class when the link is active
+                    isPending && "pending", // Apply "pending" class when the link is pending
+                  )
+                }
                 dangerouslySetInnerHTML={{ __html: heading.html || "" }}
-                className={cx(
-                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-400 dark:decoration-gray-500",
-                )}
               />
             </li>
           );
