@@ -10,71 +10,59 @@ authors:
   - Michael Jackson
 ---
 
-A large part of building good software is about picking the right tools for the right job. So when the Shop team at Shopify was tasked with building a web version of [Shop][apple-shop-app], they need a framework that allowed them to:
+Building good software is largely about picking the the right tools for the right job. So when the Shop team at Shopify was tasked with building a web version of [Shop][apple-shop-app], they knew they needed a framework that allowed them to:
 
-- Work with their existing tools and infrastructure
-- Share code with the mobile clients
-- Ship new features regularly and rapidly
-- Support millions of users
-- Launch in 3 months
+- Utilize existing tools and infrastructure
+- Leverage code from the mobile clients
+- Enable regular and rapid feature releases
+- Scale to support millions of users
+- Launch within a 3-month timeframe
 
-That's a pretty big ask. Fortunately Shopify employees some of the best developers in the world, and they know how to pick a framework like the professionals that they are.
+That's a pretty big ask. Fortunately, Shopify employs some of the world's best developers who know how to pick a framework like the processionals they are.
 
-This is the story about how they built [shop.app][shop.app] with Remix.
+This is the story about how [shop.app][shop.app] was built with Remix.
 
 ## The Shop App
-
-Shop is an application that that allows buyers to discover merchants and products, make purchases, and to track their orders. Shop automatically aggregates shipping information across various delivery services. So whether it's Amazon or a small private company, and no matter how they're shipping their product, Shop will automatically start tracking your package.
-
-Shop's usefulness has lead to it being downloaded from the Google Play Store and Apple App Store 10s of millions of times. The Shop app has existed and served the needs of many customers for years, during which the web client, [shop.app][shop.app], served essentially as marketing for the mobile apps. That is until about a year ago when Shopify started exploring what it would take to create Shop for the web.
 
 <div class="flex flex-col items-center">
   <img alt="Shop app on Apple Play Store. Title says 'Shop: All your favorite brands'" src="/blog-images/posts/shop-case-study/shop-app-ios.jpg" class="h-svh" />
 </div>
 
+Shop is an application that allows buyers to discover merchants and products, make purchases, and track their orders. Shop automatically aggregates shipping information across various delivery services. So whether it's Amazon or a small private company, no matter how the product is shipped, Shop will automatically track all of your packages in a single place.
+
+Shop's usefulness has led to it being downloaded from the Google Play Store and Apple App Store 10s of millions of times. The Shop app has existed and served the needs of many customers for years, during which the web client ([shop.app][shop.app]) acted merely as a marketing site for the mobile apps.
+
+Then, nearly 1 year ago, Shopify decided to explore what it would take to create Shop for the web.
+
 ## Building Shop for the Web
-
-As mentioned, for a long time, [shop.app][shop.app] was a simple landing/marketing page directing you to download the iOS or Android Shop app. There was no functionality — no way to browse categories or products, no way to add items to your cart, and certainly no way to purchase those items.
-
-Initially the Shop team planning to create feature parity with the mobile apps, however that was not the main goal of building [shop.app][shop.app]. There are certain advantages a web client offered in addition to the full-featured mobile apps, namely capturing more users and creating a faster feedback loop.
-
-**Capturing more users**
-
-There was already a large amount of traffic being captured on the marketing pages. While some of these visitors will continue through the journey and download the app, providing the ability to sign up or log in directly on the web creates a wider retention net
-
-**Faster feedback loop**
-
-New versions of the website can be shipped multiple times a day, whereas the mobile application has a much longer waiting period due to how the Play/App store work. This means that adding Shop Web would allow the Shop team to run short-term ad campaigns and daily experiments to gather user feedback which they would be able to leverage back into new versions of the mobile applications.
 
 <img alt="Diagram of a long lived feature branch for implementing the changes from a migration guide" src="/blog-images/posts/shop-case-study/shop-web.png" />
 
+For a long time [shop.app][shop.app] was a simple landing/marketing page redirecting you to download the iOS or Android Shop app. There was no functionality — no way to browse categories or products, no way to add items to your cart, and certainly no way to purchase those items.
+
+Initially, the Shop team intended to develop a website that would have the same features as the mobile applications. However, a web version of Shop offers more than just another way for existing users to use Shop. There are certain advantages a web client offered in addition to the full-featured mobile apps, namely capturing new users and creating a faster feedback loop.
+
+**Capturing more users**
+
+The marketing pages were already drawing substantial traffic. While some visitors would proceed to download the app, offering the option to sign up or log in directly on the web broadened the scope for user retention.
+
+**Faster feedback loop**
+
+New versions of the website can be shipped multiple times a day, whereas the mobile application has a much longer waiting period due to the nature of mobile app releases.
+
+Adding Shop Web would open up new possibilities for the team. It would enable them to run short-term ad campaigns and conduct daily experiments. The valuable user feedback gathered from these activities could then be utilized to enhance future versions of the mobile applications.
+
 ## Rapid development with Remix
 
-<figure>
-  <blockquote class="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 sm:text-2xl sm:leading-9">
-    <p>“I never produced so much in such a short amount of time with such good results.”</p>
-  </blockquote>
-  <figcaption>
-    <a class="mt-10 flex items-center gap-x-6" href="https://github.com/sebastianekstrom">
-      <img class="h-12 w-12 rounded-full bg-gray-50" src="/blog-images/posts/shop-case-study/sebastian-ekstrom.jpg" alt="">
-      <div class="text-sm leading-6 text-left">
-        <div class="font-semibold text-gray-900">Sebastian Ekström</div>
-        <div class="mt-0.5 text-gray-600 font-light">Senior Developer at Shopify</div>
-      </div>
-    </a>
-  </figcaption>
-</figure>
-</section>
+The benefit to customers and Shopify were both clear, now all that was left was to makes sure it could be built right.
 
-The benefits for the users and Shopify were clear, now the focus was on the developers.
-
-Often when a project grows, it starts out as a website and is then expanded into mobile counterparts. With Shop it was the opposite; the way the mobile apps were built heavily influences how the website had to be built.
+Often when a project grows, it starts out as a website and is then expanded into mobile counterparts. With Shop, it was the opposite; the way the mobile apps were built heavily influenced how the website had to be built.
 
 The Shop team wanted to be able to use as much logic, styles, and UX from the Shop apps in Shop Web. They also wanted app and web developers to be able to easily collaborate and build features on both platforms.
 
-The mobile versions of Shop were built in React Native, and already had a large amount of infrastructure in place for styles and data loading. That meant whatever they used for the web needed to use React and needed to be flexible enough for the team to use their own patterns like data fetching with [Apollo Client][apollo-client]. Additionally, the pages needed to be Server-Side Rendered (SSR) for the best UX and SEO. Additionally, they needed something that would allow them to launch quickly, and rapidly add new features and pages as they went.
+The mobile versions of Shop, built in React Native, already had a substantial infrastructure in place for styles and data loading. Consequently, any framework chosen for the web needed to be use React. Moreover, it had to be flexible enough to accommodate the team's existing patterns, such as data fetching with [Apollo Client][apollo-client].
 
-While Shopify has some ways to build SSR'd React apps, the Shop team was eager to try Remix. Plus, they already had a good experience quickly shipping with Remix.
+Finally, the pages needed to be Server-Side Rendered (SSR) for the best UX and SEO. While Shopify already had methods for building React apps with SSR, the Shop team was eager to experiment with Remix. They needed something that would allow them to launch quickly, and rapidly add new features and pages over time, and they already had a good experience quickly shipping with Remix.
 
 ### Shop AI
 
@@ -84,7 +72,7 @@ In February of 2023, shortly before the Shop Web work began, the lead developers
 
 [Shop.ai][shop.ai] now redirects to [shop.app][shop.app], but at the time it was a single webpage showing off Shop chatbot built on top of OpenAI's newly released ChatGPT.
 
-The team had ~1 month to build this site. They chose Remix believing that it would make building this simple website fast and easy. Even though they didn't use many of the features that make Remix great (data fetching, routing, nested layouts, etc.), they still found it to be a fast and adaptable framework, which is exactly what they were looking for.
+The team had ~1 month to build this site. They chose Remix, believing it would expedite and simplify the building of this straightforward website. Even though they didn't use many of the features that make Remix great (data fetching, routing, nested layouts, etc.), they still found it to be a fast and adaptable framework, which is exactly what they were looking for.
 
 This positive experience gave them confidence to go with Remix for Shop Web.
 
@@ -106,6 +94,22 @@ The team started building Shop Web in April, 2023. Because Remix was flexible en
 
 **That's 3 months to Get Shit Done**
 
+<figure>
+  <blockquote class="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 sm:text-2xl sm:leading-9">
+    <p>“I have never produced so much in such a short amount of time with and with such good results.”</p>
+  </blockquote>
+  <figcaption>
+    <a class="mt-10 flex items-center gap-x-6" href="https://github.com/sebastianekstrom">
+      <img class="h-12 w-12 rounded-full bg-gray-50" src="/blog-images/posts/shop-case-study/sebastian-ekstrom.jpg" alt="">
+      <div class="text-sm leading-6 text-left">
+        <div class="font-semibold text-gray-900">Sebastian Ekström</div>
+        <div class="mt-0.5 text-gray-600 font-light">Senior Developer at Shopify</div>
+      </div>
+    </a>
+  </figcaption>
+</figure>
+</section>
+
 Remix was flexible enough to allow the Shop team to keep architecture they had. Remix didn't get in the way. Even though the team hasn't adopted everything Remix has to offer such as fully leaning on the Remix loading patterns and `defer`, the "guts out" approach of Remix means they could easily hook in their own patterns and libraries, while incrementally leveraging the bits of Remix they liked.
 
 According to the Shop team, their ability to ship an initial version of Shop Web to millions of people all around the world in such a short amount of time couldn’t have been done without Remix.
@@ -124,17 +128,15 @@ These were just the initial numbers though. They had a number of small improveme
 
 Certainly, here's a conclusion for your blog post:
 
-## In Conclusion
+## Summing up
 
-The journey of building Shop Web with Remix has been a testament to the power of choosing the right tools for the right job. Shopify's Shop team managed to overcome a multitude of challenges thanks to their expertise and the flexibility of Remix.
+The journey of building Shop Web with Remix has been a testament to Remix's flexibility, DX, and scalability.
 
-By leveraging the advantages of a monorepo setup, embracing the "Get Sh\*t Done" mindset, and harnessing the rapid development capabilities of Remix, the team successfully transformed a simple marketing page into a fully functional web app, all within a remarkable three-month timeframe.
+By leveraging the advantages of a monorepo setup, building on top of their existing infrastructure, and harnessing the rapid development capabilities of Remix, the team successfully transformed [shop.app][shop.app] from a simple marketing site into a fully functional web application.
 
-The move to Vite further accelerated the development process, slashing HMR times and boosting productivity. This experience underscores the importance of continuous improvement and adaptation in the world of software development.
+The move to Vite further accelerated the development process, drastically improving HMR times and boosting productivity. The team was able to do this before Vite was even stabilized due to Remix's continuous delivery with [unstable and future flags][future-proofing-blog].
 
-As the Shop Web project continues to evolve, one thing remains certain: the combination of a skilled team and powerful tools like Remix and Vite can lead to impressive results, and serve as an inspiring example for developers around the globe.
-
-In the end, the story of Shop Web is not just about building a web application; it's about how the right blend of people, processes, and technology can come together to create something truly exceptional.
+The Shop team was able to quickly and effectively deliver a complex and helpful web app to millions of users. What will you build with Remix?
 
 [apple-shop-app]: https://apps.apple.com/ca/app/shop-all-your-favorite-brands/id1223471316
 [shop.app]: https://shop.app/
@@ -147,3 +149,4 @@ In the end, the story of Shop Web is not just about building a web application; 
 [vite-stable-announcement]: https://remix.run/blog/remix-vite-stable
 [tailwind]: https://tailwindcss.com/
 [css-modules]: https://github.com/css-modules/css-modules
+[future-proofing-blog]: https://remix.run/blog/future-flags
