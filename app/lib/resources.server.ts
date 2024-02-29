@@ -5,40 +5,32 @@ import { processMarkdown } from "./md.server";
 import resourcesYamlFileContents from "../../data/resources.yaml?raw";
 import { slugify } from "~/ui/primitives/utils";
 import type { Octokit } from "octokit";
+import type { ResourceYamlData } from "~/schemas/yaml-resource-schema";
+import { yamlResourceSchema } from "~/schemas/yaml-resource-schema";
 
 export type CacheContext = { octokit: Octokit };
 
 const GITHUB_URL = "https://github.com";
 
-// TODO: parse this with zod
-let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);
+let _resources = yamlResourceSchema.parse(
+  yaml.parse(resourcesYamlFileContents),
+);
 
 let starFormatter = new Intl.NumberFormat("en", { notation: "compact" });
 
-export interface Resource {
-  title: string;
-  repoUrl: string;
-  imgSrc: string;
-  initCommand: string;
-  category: Exclude<Category, "all">;
-  featured?: boolean;
+export interface ResourceGitHubData  {
   description?: string;
   sponsorUrl?: string;
   stars: number;
   starsFormatted: string;
   tags: string[];
 }
-export type Category = "all" | "templates" | "libraries";
 
-type ResourceYamlKeys =
-  | "title"
-  | "imgSrc"
-  | "repoUrl"
-  | "initCommand"
-  | "category"
-  | "featured";
-type ResourceYamlData = Pick<Resource, ResourceYamlKeys>;
-type ResourceGitHubData = Omit<Resource, ResourceYamlKeys>;
+export type Resource = ResourceYamlData & ResourceGitHubData;
+
+export type Category = "all" | ResourceYamlData["category"];
+
+ 
 
 /**
  * Gets all of the resources, fetching and merging GitHub data for each one
