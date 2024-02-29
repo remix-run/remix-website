@@ -119,7 +119,11 @@ function LogoBox({
         ([variant, { bg, border, fg, highlight, outline }]) => (
           <div className="flex flex-col" key={variant}>
             <div
-              className={`flex h-40 items-center justify-center rounded-lg border-[3px] p-4 md:h-48 ${bg} ${border}`}
+              className={cx(
+                "flex h-40 items-center justify-center rounded-lg border-[3px] p-4 md:h-48",
+                bg,
+                border,
+              )}
             >
               <Logo fg={fg} highlight={highlight} outline={outline} />
             </div>
