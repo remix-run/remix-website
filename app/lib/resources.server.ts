@@ -8,6 +8,8 @@ import type { Octokit } from "octokit";
 
 export type CacheContext = { octokit: Octokit };
 
+const GITHUB_URL = "https://github.com";
+
 // TODO: parse this with zod
 let _resources: ResourceYamlData[] = yaml.parse(resourcesYamlFileContents);
 
@@ -76,13 +78,13 @@ export async function getAllResources({ octokit }: CacheContext) {
  */
 
 export function replaceRelativeLinks(inputString: string, repoUrl: string) {
-  // Regular expression to match <img src="./relative"
-  var regex = /<img src="\.\//g;
+  // Regular expression to match <img ... src="./relative"
+  const regex = /(<img(?:\s+\w+="[^"]*")*\s+)(src="\.\/*)/g;
 
-  // Replace matched substrings with <img src="https://repoUrl/raw/main"
-  var replacedString = inputString.replace(
+  // Replace matched substrings with <img ... src="https://repoUrl/raw/main"
+  const replacedString = inputString.replace(
     regex,
-    `<img src="${repoUrl}/raw/main/`,
+    `$1src="${repoUrl}/raw/main/`,
   );
 
   return replacedString;
@@ -113,7 +115,7 @@ export async function getResource(
   return {
     ...resource,
     ...gitHubData,
-    readmeHtml: replaceRelativeLinks(readmeHtml, resource.repoUrl),
+    readmeHtml,
   };
 }
 
@@ -156,18 +158,18 @@ async function fetchReadme(
     throw Error(`Could not find README in ${key}`);
   }
   let { html } = await processMarkdown(md);
-  return html;
+  return replaceRelativeLinks(html, `${GITHUB_URL}/${key}`);
 }
 
 async function getResourceReadme(repoUrl: string, context: CacheContext) {
-  let repo = repoUrl.replace("https://github.com/", "");
+  let repo = repoUrl.replace(`${GITHUB_URL}/`, "");
   let doc = await resourceReadmeCache.fetch(repo, { context });
 
   return doc || undefined;
 }
 
 async function getSponsorUrl(owner: string) {
-  let sponsorUrl = `https://github.com/sponsors/${owner}`;
+  let sponsorUrl = `${GITHUB_URL}/sponsors/${owner}`;
 
   try {
     let response = await fetch(sponsorUrl);
@@ -208,7 +210,7 @@ async function fetchResourceGitHubData(
     context,
   }: LRUCache.FetchOptionsWithContext<string, ResourceGitHubData, CacheContext>,
 ): Promise<ResourceGitHubData> {
-  let [owner, repo] = repoUrl.replace("https://github.com/", "").split("/");
+  let [owner, repo] = repoUrl.replace(`${GITHUB_URL}/`, "").split("/");
 
   let [{ data }, sponsorUrl] = await Promise.all([
     context.octokit.rest.repos.get({ owner, repo }),

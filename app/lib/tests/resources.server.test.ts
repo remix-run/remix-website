@@ -15,31 +15,17 @@ describe("replaceRelativeLinks", () => {
     expect(replaceRelativeLinks(input, repoUrl)).toEqual(input);
   });
 
-  it("should replace relative links with absolute links for multiple images", () => {
-    const input = `<img src="./relative1"><img src="./relative2">`;
+  it("should replace relative links with absolute links when src is not the first attribute", () => {
+    const input = `<img alt="alt text" src="./relative">`;
     const repoUrl = "https://my-repo";
-    const expected = `<img src="${repoUrl}/raw/main/relative1"><img src="${repoUrl}/raw/main/relative2">`;
-    expect(replaceRelativeLinks(input, repoUrl)).toEqual(expected);
-  });
-
-  it("should replace relative links with absolute links for images with other attributes", () => {
-    const input = `<img src="./relative" alt="alt text">`;
-    const repoUrl = "https://my-repo";
-    const expected = `<img src="${repoUrl}/raw/main/relative" alt="alt text">`;
-    expect(replaceRelativeLinks(input, repoUrl)).toEqual(expected);
-  });
-
-  it("should replace relative links with absolute links for images with other attributes and multiple images", () => {
-    const input = `<img src="./relative" alt="alt text"><img src="./relative2" alt="alt text2">`;
-    const repoUrl = "https://my-repo";
-    const expected = `<img src="${repoUrl}/raw/main/relative" alt="alt text"><img src="${repoUrl}/raw/main/relative2" alt="alt text2">`;
+    const expected = `<img alt="alt text" src="${repoUrl}/raw/main/relative">`;
     expect(replaceRelativeLinks(input, repoUrl)).toEqual(expected);
   });
 
   it("should replace relative links with absolute links for images with other attributes and multiple images and other tags", () => {
-    const input = `<img src="./relative" alt="alt text"><img src="./relative2" alt="alt text2"><link src="./relative">`;
+    const input = `<img alt="alt text" src="./relative" ><img src="./relative2" alt="alt text2"><link src="./relative">`;
     const repoUrl = "https://my-repo";
-    const expected = `<img src="${repoUrl}/raw/main/relative" alt="alt text"><img src="${repoUrl}/raw/main/relative2" alt="alt text2"><link src="./relative">`;
+    const expected = `<img alt="alt text" src="${repoUrl}/raw/main/relative" ><img src="${repoUrl}/raw/main/relative2" alt="alt text2"><link src="./relative">`;
     expect(replaceRelativeLinks(input, repoUrl)).toEqual(expected);
   });
 
