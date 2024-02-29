@@ -1,4 +1,4 @@
-import { replaceRelativeLinks } from "../resources.server";
+import { fetchResourcesFromYaml, replaceRelativeLinks } from "./index";
 
 describe("replaceRelativeLinks", () => {
   it("should replace relative links with absolute links for images", () => {
@@ -52,5 +52,12 @@ describe("replaceRelativeLinks", () => {
     const input = `you can find it here ./relative`;
     const repoUrl = "https://my-repo";
     expect(replaceRelativeLinks(input, repoUrl)).toEqual(input);
+  });
+});
+
+describe("fetchResourcesFromYaml", () => {
+  it("fetches resources from the yaml file properly and returns an array of resources", () => {
+    const resources = fetchResourcesFromYaml();
+    expect(resources.length).toBeGreaterThan(0);
   });
 });
