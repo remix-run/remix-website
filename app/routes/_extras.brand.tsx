@@ -39,8 +39,9 @@ export default function Brand() {
           content="Google drive containing all image files for Remix Logo\'s"
           href="https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c"
           className="text-blue-brand hover:underline"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          {" "}
           download all image files for Remix Logo's in bulk through Google
           Drive.
         </a>
