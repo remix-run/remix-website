@@ -2,13 +2,15 @@ import { Link } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { primaryButtonLinkClass } from "~/ui/buttons";
 import { Discord } from "~/ui/icons";
-import { metaV1 } from "@remix-run/v1-meta";
 
-export const meta: MetaFunction = (args) => {
-  return metaV1(args, {
-    title: "Remix Conf Discord Server",
-    description: "Much of our coordination happens on Discord.",
-  });
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remix Conf Discord Server" },
+    {
+      name: "description",
+      content: "Much of our coordination happens on Discord.",
+    },
+  ];
 };
 
 const channels = [

@@ -1,12 +1,14 @@
 import type { MetaFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
-import { metaV1 } from "@remix-run/v1-meta";
 
-export const meta: MetaFunction = (args) => {
-  return metaV1(args, {
-    title: "May 24th at Remix Conf",
-    description: "May 24th is The Workshop and Welcome day at Remix.",
-  });
+export const meta: MetaFunction = () => {
+  return [
+    { title: "May 24th at Remix Conf" },
+    {
+      name: "description",
+      content: "May 24th is The Workshop and Welcome day at Remix.",
+    },
+  ];
 };
 
 export default function May24Schedule() {

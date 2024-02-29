@@ -8,7 +8,6 @@ import {
 } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { metaV1 } from "@remix-run/v1-meta";
 import { getSpeakers, getTalks } from "~/lib/conf2022.server";
 import "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";
@@ -17,19 +16,22 @@ import { slugify } from "~/ui/primitives/utils";
 export const meta: MetaFunction<typeof loader> = (args) => {
   if (args.data) {
     const { speaker, talks } = args.data;
-    return metaV1(args, {
-      title: `${speaker.name} at Remix Conf`,
-      description: `${speaker.name} (${
-        speaker.title
-      }) is speaking at Remix Conf: ${talks
-        .map((t) => `"${t.title}"`)
-        .join(", ")}`,
-    });
+    return [
+      { title: `${speaker.name} at Remix Conf` },
+      {
+        name: "description",
+        content: `${speaker.name} (${
+          speaker.title
+        }) is speaking at Remix Conf: ${talks
+          .map((t) => `"${t.title}"`)
+          .join(", ")}`,
+      },
+    ];
   }
-  return metaV1(args, {
-    title: "Missing Speaker",
-    description: "There is no speaker info at this URL.",
-  });
+  return [
+    { title: "Remix Conf Speaker" },
+    { name: "description", content: "Speaker at Remix Conf." },
+  ];
 };
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {

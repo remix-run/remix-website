@@ -3,14 +3,16 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
 import { useLoaderData, Link } from "@remix-run/react";
-import { metaV1 } from "@remix-run/v1-meta";
 import { primaryButtonLinkClass } from "~/ui/buttons";
 
-export const meta: MetaFunction = (args) => {
-  return metaV1(args, {
-    title: "Remix Conf Venue",
-    description: "Remix Conf in Salt Lake City, Utah at the Sheraton Hotel",
-  });
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remix Conf Venue" },
+    {
+      name: "description",
+      content: "Remix Conf in Salt Lake City, Utah at the Sheraton Hotel",
+    },
+  ];
 };
 
 const hotelImages = [
