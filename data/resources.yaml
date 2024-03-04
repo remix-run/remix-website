@@ -9,7 +9,6 @@
   imgSrc: "https://opengraph.githubassets.com/436bcec7a75a4101d373e3c04ce22c94f8fa188cc59c7d35b8c409eec9588ae6/sergiodxa/remix-utils"
   initCommand: "npm install remix-utils"
   category: "libraries"
-  featured: true
 
 - title: "Indie Stack"
   repoUrl: "https://github.com/remix-run/indie-stack"
@@ -61,9 +60,10 @@
 
 - title: "Remix Dev Tools"
   repoUrl: "https://github.com/Code-Forge-Net/Remix-Dev-Tools"
-  imgSrc: "https://github.com/Code-Forge-Net/Remix-Dev-Tools/raw/main/assets/remix-dev-tools.png"
+  imgSrc: "https://raw.githubusercontent.com/Code-Forge-Net/Remix-Dev-Tools/main/assets/remix-dev-tools.png"
   initCommand: "npm install remix-development-tools -D"
   category: "libraries"
+  featured: true
 
 - title: "Stripe Stack"
   repoUrl: "https://github.com/dev-xo/stripe-stack"
