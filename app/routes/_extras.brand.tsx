@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import type { FC } from "react";
+import cx from "clsx";
 
 export const meta: MetaFunction = () => {
   return [
@@ -31,10 +32,8 @@ export default function Brand() {
         Additionally, you may not use our trademarks for t-shirts, stickers, or
         other merchandise without explicit written consent.
       </p>
-      <AssetHeader>Logo</AssetHeader>
       <p>
-        Please use the logo with appropriate background. On dark backgrounds use
-        the light or glowing logo, and on light backgrounds use the dark logo. You may also{" "}
+        You may also{" "}
         <a
           content="Google drive containing all image files for Remix Logo\'s"
           href="https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c"
@@ -46,8 +45,18 @@ export default function Brand() {
           Drive.
         </a>
       </p>
+      <AssetHeader>Logo</AssetHeader>
+      <p>
+        Please use the logo with appropriate background. On dark backgrounds use
+        the light or glowing logo, and on light backgrounds use the dark logo.
+      </p>
       <LogoBox name="remix-letter" Logo={LogoRemixLetter} />
       <AssetHeader>Logo Word</AssetHeader>
+      <p>
+        You can also use the full "Remix" logo. This is useful for things like
+        hero images, Open Graph images, and other places where you want to use
+        the full wordmark.
+      </p>
       <LogoBox name="remix" Logo={LogoRemix} />
     </div>
   );
@@ -67,6 +76,46 @@ interface LogoProps {
   outline?: string;
 }
 
+// Tailwind classnames for the various ways we style the individual
+// component pieces of each LogoBox variant
+let variants = {
+  light: {
+    bg: "bg-white",
+    border: "border-gray-50 dark:border-transparent",
+    fg: "fill-gray-900",
+    highlight: "fill-black-brand",
+    outline: "black",
+  },
+  "light-outline": {
+    bg: "bg-white",
+    border: "border-gray-50 dark:border-transparent",
+    fg: "fill-gray-900",
+    highlight: "fill-transparent",
+    outline: "black",
+  },
+  dark: {
+    bg: "bg-gray-900",
+    border: "border-transparent dark:border-gray-800",
+    fg: "fill-gray-900",
+    highlight: "fill-white",
+    outline: "white",
+  },
+  "dark-outline": {
+    bg: "bg-gray-900",
+    border: "border-transparent dark:border-gray-800",
+    fg: "fill-gray-900",
+    highlight: "fill-transparent",
+    outline: "white",
+  },
+  glowing: {
+    bg: "bg-gray-900",
+    border: "border-gray-50 dark:border-transparent",
+    fg: "fill-gray-900",
+    highlight: "fill-white",
+    outline: "glow",
+  },
+};
+
 function LogoBox({
   name,
   Logo,
@@ -74,47 +123,8 @@ function LogoBox({
   name: "remix-letter" | "remix";
   Logo: FC<LogoProps>;
 }) {
-  // Tailwind classnames for the various ways we style the individual
-  // component pieces of each LogoBox variant
-  let variants = {
-    light: {
-      bg: "bg-white",
-      border: "border-gray-50 dark:border-transparent",
-      fg: "fill-gray-900",
-      highlight: "fill-black-brand",
-      outline: "black",
-    },
-    "light-outline": {
-      bg: "bg-white",
-      border: "border-gray-50 dark:border-transparent",
-      fg: "fill-gray-900",
-      highlight: "fill-transparent",
-      outline: "black",
-    },
-    dark: {
-      bg: "bg-gray-900",
-      border: "border-transparent dark:border-gray-800",
-      fg: "fill-gray-900",
-      highlight: "fill-white",
-      outline: "white",
-    },
-    "dark-outline": {
-      bg: "bg-gray-900",
-      border: "border-transparent dark:border-gray-800",
-      fg: "fill-gray-900",
-      highlight: "fill-transparent",
-      outline: "white",
-    },
-    "glowing": {
-      bg: "bg-gray-900",
-      border: "border-gray-50 dark:border-transparent",
-      fg: "fill-gray-900",
-      highlight: "fill-white",
-      outline: "glow",
-    },
-  };
   return (
-    <div className="grid grid-cols-2 grid-rows-2 gap-4 gap-x-6">
+    <div className="grid grid-cols-1 grid-rows-2 gap-4 gap-x-6 sm:grid-cols-2">
       {Object.entries(variants).map(
         ([variant, { bg, border, fg, highlight, outline }]) => (
           <div className="flex flex-col" key={variant}>
@@ -127,7 +137,7 @@ function LogoBox({
             >
               <Logo fg={fg} highlight={highlight} outline={outline} />
             </div>
-            <div className="mt-1 flex items-end gap-4 text-sm text-gray-800">
+            <div className="mt-1 flex items-end gap-4 text-sm text-gray-800 dark:text-gray-100">
               {["svg", "png"].map((format) => (
                 <a
                   className="uppercase underline opacity-50 hover:opacity-100"
@@ -148,7 +158,9 @@ function LogoBox({
 
 function LogoRemixLetter({ fg, highlight, outline }: LogoProps): JSX.Element {
   if (outline === "glow") {
-    return glowingLogoRemixLetter({ fg, highlight, outline });
+    return (
+      <GlowingLogoRemixLetter fg={fg} highlight={highlight} outline={outline} />
+    );
   }
   return (
     <svg
@@ -176,7 +188,7 @@ function LogoRemixLetter({ fg, highlight, outline }: LogoProps): JSX.Element {
 
 function LogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
   if (outline === "glow") {
-    return glowingLogoRemix( {fg, highlight, outline });
+    return <GlowingLogoRemix fg={fg} highlight={highlight} outline={outline} />;
   }
   return (
     <svg
@@ -226,47 +238,51 @@ function LogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
   );
 }
 
-function glowingLogoRemixLetter({ fg, highlight, outline }: LogoProps): JSX.Element {
-  const colorsToUse: Record<string, string> = { "blue":   "0,186,255", }
-  const glow: JSX.Element = glowDefs("blue", colorsToUse["blue"]);
-    return (
-      <svg
-        width="200"
-        height="200"
-        viewBox="0 0 800 800"
-        className={fg}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {glow}
-        <path
-          d="M589.94 527.613L589.939 527.595L589.937 527.577C587.275 499.813 578.691 478.677 564.403 463.234C552.056 449.888 535.585 440.94 515.372 435.566C569.234 424.272 608 379.587 608 313.42C608 266.703 592.597 228.492 561.505 201.997C530.461 175.543 484.047 161 422.456 161H195H193V163V259.41V261.41H195H399.889C426.723 261.41 446.529 267.174 459.586 277.401C472.568 287.57 479.13 302.347 479.13 321.011C479.13 342.372 472.531 356.69 459.665 365.785C446.642 374.991 426.849 379.109 399.889 379.109H195H193V381.109V479.634V481.634H195H355.883H393.871C415.216 481.634 431.143 484.652 442.233 493.952C453.278 503.214 459.967 519.095 461.833 545.957L461.834 545.965L461.834 545.972C464.673 582.864 464.317 601.111 463.975 618.633L463.975 618.648L463.975 618.658C463.865 624.303 463.756 629.89 463.756 636V638H465.756H592.201H594.201V636C594.201 608.005 594.201 582.331 589.94 527.613Z"
-          stroke={outline}
-          strokeWidth="6"
-          className={highlight}
-          filter="url(#blue)"
-        />
-        <path
-          d="M193 636V638H195H355.878H357.878V636V588.994C357.878 583.787 356.609 576.706 352.266 570.874C347.847 564.941 340.428 560.553 328.697 560.553H195H193V562.553V636Z"
-          stroke={outline}
-          strokeWidth="6"
-          className={highlight}
-          filter="url(#blue)"
-        />
-      </svg>
-    )
+const glowColors = [
+  ["blue", "0,186,255"],
+  ["green", "10,247,168"],
+  ["purple", "186,0,219"],
+  ["red", "235,43,5"],
+  ["yellow", "245,241,2"],
+];
+
+function GlowingLogoRemixLetter({
+  fg,
+  highlight,
+  outline,
+}: LogoProps): JSX.Element {
+  const [colorName, colorValue] = glowColors[0];
+  const glow: JSX.Element = (
+    <GlowDefs colorName={colorName} colorValue={colorValue} />
+  );
+  return (
+    <svg
+      width="200"
+      height="200"
+      viewBox="0 0 800 800"
+      className={fg}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {glow}
+      <path
+        d="M589.94 527.613L589.939 527.595L589.937 527.577C587.275 499.813 578.691 478.677 564.403 463.234C552.056 449.888 535.585 440.94 515.372 435.566C569.234 424.272 608 379.587 608 313.42C608 266.703 592.597 228.492 561.505 201.997C530.461 175.543 484.047 161 422.456 161H195H193V163V259.41V261.41H195H399.889C426.723 261.41 446.529 267.174 459.586 277.401C472.568 287.57 479.13 302.347 479.13 321.011C479.13 342.372 472.531 356.69 459.665 365.785C446.642 374.991 426.849 379.109 399.889 379.109H195H193V381.109V479.634V481.634H195H355.883H393.871C415.216 481.634 431.143 484.652 442.233 493.952C453.278 503.214 459.967 519.095 461.833 545.957L461.834 545.965L461.834 545.972C464.673 582.864 464.317 601.111 463.975 618.633L463.975 618.648L463.975 618.658C463.865 624.303 463.756 629.89 463.756 636V638H465.756H592.201H594.201V636C594.201 608.005 594.201 582.331 589.94 527.613Z"
+        stroke={outline}
+        strokeWidth="6"
+        className={highlight}
+        filter="url(#blue)"
+      />
+      <path
+        d="M193 636V638H195H355.878H357.878V636V588.994C357.878 583.787 356.609 576.706 352.266 570.874C347.847 564.941 340.428 560.553 328.697 560.553H195H193V562.553V636Z"
+        stroke={outline}
+        strokeWidth="6"
+        className={highlight}
+        filter="url(#blue)"
+      />
+    </svg>
+  );
 }
 
-function glowingLogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
-  const colorsToUse: Record<string, string> = {
-    "blue":   "0,186,255",
-    "green":  "10, 247, 168",
-    "purple": "186, 0, 219",
-    "red":    "235, 43, 5",
-    "yellow": "245, 241, 2",
-  }
-  const glow: JSX.Element[] = Object.keys(colorsToUse).map(
-    (color: string) => glowDefs(color, colorsToUse[color])
-  );
+function GlowingLogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
   return (
     <svg
       width="300"
@@ -275,7 +291,13 @@ function glowingLogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
       className={fg}
       xmlns="http://www.w3.org/2000/svg"
     >
-      {glow}
+      {glowColors.map(([colorName, colorValue]) => (
+        <GlowDefs
+          key={colorName}
+          colorName={colorName}
+          colorValue={colorValue}
+        />
+      ))}
       <path
         d="M289.128 342.216H228V305.876H306.122C316.64 305.876 324.744 304.272 330.231 300.362C335.796 296.398 338.494 290.199 338.494 281.489C338.494 273.772 335.778 267.468 330.271 263.121C324.8 258.803 316.704 256.517 306.122 256.517H228V221H314.836C338.367 221 355.822 226.601 367.381 236.526C378.917 246.433 384.716 260.764 384.716 278.535C384.716 304.983 368.506 322.098 346.66 324.956L346.593 326.928C355.892 328.802 363.157 332.384 368.348 338.039C373.537 343.69 376.745 351.51 377.747 362.033C379.337 382.607 379.385 392.578 379.387 403.065H332.56C332.57 401.087 332.605 399.232 332.642 397.347C332.774 390.493 332.912 383.332 331.811 368.898C331.077 358.26 328.423 351.49 323.615 347.427C318.828 343.382 312.125 342.216 303.798 342.216H289.128Z"
         stroke={outline}
@@ -323,28 +345,44 @@ function glowingLogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
 }
 
 /**
- * @function glowDefs
- * @param colorName name of a color, this serves as the filter reference in the <path></path> as well. 
- * @param colorValue associated RGB value for the given color. 
+ * @function GlowDefs
+ * @param colorName name of a color, this serves as the filter reference in the <path></path> as well.
+ * @param colorValue associated RGB value for the given color.
  * @author Function derived from https://codepen.io/dipscom/pen/mVYjPw by Pedro Tavares.
- * @example glowDefs(colorValue = 0,186,255, colorName = blue)
+ * @example <GlowDefs colorValue="0,186,255" colorName="blue" />
  *  ==> <defs><filter id="blue"></filter>..</defs>
  *   and a reference for path <path filter={"url(#blue)"}><path/>
  * @returns a JSX Element containing a definition and filter for a glow effect.
  */
-function glowDefs(colorName: string, colorValue: string): JSX.Element {
-  return (        
+function GlowDefs({
+  colorName,
+  colorValue,
+}: {
+  colorName: string;
+  colorValue: string;
+}) {
+  return (
     <defs>
-      <filter id={`${colorName}`} height="300%" width="300%" x="-75%" y="-75%">
-        <feMorphology operator="dilate" radius="9" in="SourceAlpha" result="thicken" />
+      <filter id={colorName} height="300%" width="300%" x="-75%" y="-75%">
+        <feMorphology
+          operator="dilate"
+          radius="9"
+          in="SourceAlpha"
+          result="thicken"
+        />
         <feGaussianBlur in="thicken" stdDeviation="10" result="blurred" />
         <feFlood floodColor={`rgb(${colorValue})`} result="glowColor" />
-        <feComposite in="glowColor" in2="blurred" operator="in" result="softGlow_colored" />
+        <feComposite
+          in="glowColor"
+          in2="blurred"
+          operator="in"
+          result="softGlow_colored"
+        />
         <feMerge>
-          <feMergeNode in="softGlow_colored"/>
-          <feMergeNode in="SourceGraphic"/>
+          <feMergeNode in="softGlow_colored" />
+          <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
     </defs>
-  )
+  );
 }
