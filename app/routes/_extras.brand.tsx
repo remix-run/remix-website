@@ -1,13 +1,14 @@
 import type { MetaFunction } from "@remix-run/node";
 import type { FC } from "react";
 import cx from "clsx";
+import { getMeta } from "~/lib/meta";
 
 export const meta: MetaFunction = () => {
-  return [
-    {
-      title: "Remix Assets and Branding Guidelines",
-    },
-  ];
+  return getMeta({
+    title: "Remix Assets and Branding Guidelines",
+    description:
+      "Remix brand assets and guidelines for using the Remix name and logos.",
+  });
 };
 
 export default function Brand() {
