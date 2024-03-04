@@ -16,7 +16,7 @@ export const meta: MetaFunction<typeof loader> = (args) => {
   }
   return [
     { title: "Missing Speaker" },
-    { description: "There is no speaker info at this URL." },
+    { name: "description", content: "There is no speaker info at this URL." },
   ];
 };
 

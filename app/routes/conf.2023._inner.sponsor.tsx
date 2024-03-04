@@ -3,7 +3,10 @@ import type { MetaFunction } from "@remix-run/react";
 export const meta: MetaFunction = () => {
   return [
     { title: "Remix Conf 2023 Sponsorship" },
-    { description: "Sponsorship opportunities for Remix Conf." },
+    {
+      name: "description",
+      content: "Sponsorship opportunities for Remix Conf.",
+    },
   ];
 };
 

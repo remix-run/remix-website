@@ -77,7 +77,7 @@ export async function loader(_: LoaderFunctionArgs) {
 export const meta: MetaFunction = () => {
   return [
     { title: "Remix Conf Schedule" },
-    { description: "What's happening and when at Remix Conf" },
+    { name: "description", content: "What's happening and when at Remix Conf" },
   ];
 };
 
