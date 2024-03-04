@@ -95,3 +95,9 @@
   link: "https://kentcdodds.com"
   imgSrc: "/showcase-assets/kentcdodds.webp"
   videoSrc: "/showcase-assets/kentcdodds"
+
+- name: "Passionfroot"
+  description: "The next-gen platform for creator-brand partnerships"
+  link: "https://www.passionfroot.me"
+  imgSrc: "/showcase-assets/passionfroot.webp"
+  videoSrc: "/showcase-assets/passionfroot"
