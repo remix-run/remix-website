@@ -101,3 +101,9 @@
   link: "https://saasrock.com"
   imgSrc: "/showcase-assets/saasrock.webp"
   videoSrc: "/showcase-assets/saasrock"
+
+- name: "Passionfroot"
+  description: "The next-gen platform for creator-brand partnerships"
+  link: "https://www.passionfroot.me"
+  imgSrc: "/showcase-assets/passionfroot.webp"
+  videoSrc: "/showcase-assets/passionfroot"
