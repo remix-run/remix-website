@@ -17,9 +17,7 @@ import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
 import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
-import {
-  useNavigate,
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import "~/styles/docs.css";
 import { Wordmark } from "~/ui/logo";
@@ -185,7 +183,7 @@ function Footer() {
 
 function Header() {
   let navigate = useNavigate();
-  
+
   return (
     <div
       className={cx(
