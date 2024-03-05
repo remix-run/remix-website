@@ -1,11 +1,13 @@
 import type { MetaFunction } from "@remix-run/react";
-import { metaV1 } from "@remix-run/v1-meta";
 
-export const meta: MetaFunction = (args) => {
-  return metaV1(args, {
-    title: "Remix Conf Sponsorship",
-    description: "Sponsorship opportunities for Remix Conf.",
-  });
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remix Conf Sponsorship" },
+    {
+      name: "description",
+      content: "Sponsorship opportunities for Remix Conf.",
+    },
+  ];
 };
 
 export default function SponsorUs() {

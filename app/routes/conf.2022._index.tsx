@@ -1,7 +1,6 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { metaV1 } from "@remix-run/v1-meta";
 import type { MetaFunction } from "@remix-run/react";
 import { OutlineButtonLink, primaryButtonLinkClass } from "~/ui/buttons";
 import "~/styles/index.css";
@@ -10,27 +9,16 @@ import type { Sponsor, Speaker } from "~/lib/conf";
 import { getSpeakers, getSponsors } from "~/lib/conf2022.server";
 import { Link } from "~/ui/link";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import { getMeta } from "~/lib/meta";
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { siteUrl } = args.data || {};
-  let url = siteUrl ? `${siteUrl}/conf` : null;
-  let title = "Remix Conf - May 24-25, 2022";
-  let image = siteUrl ? `${siteUrl}/conf-images/og.1.png` : null;
-  let description =
-    "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!";
-  return metaV1(args, {
-    title,
-    description,
-    "og:url": url,
-    "og:title": title,
-    "og:description": description,
-    "og:image": image,
-    "twitter:card": "summary_large_image",
-    "twitter:creator": "@remix_run",
-    "twitter:site": "@remix_run",
-    "twitter:title": title,
-    "twitter:description": description,
-    "twitter:image": image,
+  return getMeta({
+    title: "Remix Conf - May 24-25, 2022",
+    description:
+      "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!",
+    siteUrl: siteUrl ? `${siteUrl}/conf` : undefined,
+    image: siteUrl ? `${siteUrl}/conf-images/og.1.png` : undefined,
   });
 };
 

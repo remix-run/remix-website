@@ -2,15 +2,17 @@ import { Link, useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { metaV1 } from "@remix-run/v1-meta";
 import { Discord } from "~/ui/icons";
 
-export const meta: MetaFunction = (args) => {
-  return metaV1(args, {
-    title: "May 26th at Remix Conf",
-    description:
-      "May 26th is the day after the conference. Get together with other conference attendees before heading home.",
-  });
+export const meta: MetaFunction = () => {
+  return [
+    { title: "May 26th at Remix Conf" },
+    {
+      name: "description",
+      content:
+        "May 26th is the day after the conference. Get together with other conference attendees before heading home.",
+    },
+  ];
 };
 
 function getMapsDirections(address: string) {

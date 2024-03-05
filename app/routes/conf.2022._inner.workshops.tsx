@@ -1,12 +1,14 @@
 import { primaryButtonLinkClass } from "~/ui/buttons";
 import type { MetaFunction } from "@remix-run/react";
-import { metaV1 } from "@remix-run/v1-meta";
 
-export const meta: MetaFunction = (args) => {
-  return metaV1(args, {
-    title: "Remix Conf Workshops",
-    description: "Premium Remix Workshops from the Remix Team",
-  });
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remix Conf Workshops" },
+    {
+      name: "description",
+      content: "Premium Remix Workshops from the Remix Team",
+    },
+  ];
 };
 
 export default function Workshops() {

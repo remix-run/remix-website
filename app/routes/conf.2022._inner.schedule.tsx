@@ -1,13 +1,12 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "~/ui/primitives/tabs";
 import { Link, Outlet, useMatches, useNavigate } from "@remix-run/react";
-import { metaV1 } from "@remix-run/v1-meta";
 import type { MetaFunction } from "@remix-run/react";
 
-export const meta: MetaFunction = (args) => {
-  return metaV1(args, {
-    title: "Remix Conf Schedule",
-    description: "What's happening and when at Remix Conf",
-  });
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remix Conf Schedule" },
+    { name: "description", content: "What's happening and when at Remix Conf" },
+  ];
 };
 
 export default function Safety() {

@@ -1,11 +1,10 @@
 import type { MetaFunction } from "@remix-run/react";
-import { metaV1 } from "@remix-run/v1-meta";
 
-export const meta: MetaFunction = (args) => {
-  return metaV1(args, {
-    title: "Remix Conf Code of Conduct",
-    description: "Adapted from confcodeofconduct.com",
-  });
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remix Conf Code of Conduct" },
+    { name: "description", content: "Adapted from confcodeofconduct.com" },
+  ];
 };
 
 export default function CoC() {
