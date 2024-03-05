@@ -3,6 +3,7 @@ import { Wordmark } from "~/ui/logo";
 import { DetailsMenu, DetailsPopup } from "~/ui/details-menu";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
+import { useNavigate } from "react-router-dom";
 
 export function Header({
   forceDark,
@@ -13,6 +14,7 @@ export function Header({
   to?: string;
   className?: string;
 }) {
+  let navigate = useNavigate();
   return (
     <header
       className={cx(
@@ -23,11 +25,8 @@ export function Header({
     >
       <NavLink
         onContextMenu={(event) => {
-          if (process.env.NODE_ENV !== "development") {
-            event.preventDefault();
-            window.location.href =
-              "https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c";
-          }
+          event.preventDefault();
+          navigate("/brand");
         }}
         to={to}
         prefetch="intent"
