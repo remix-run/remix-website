@@ -1,15 +1,15 @@
 ---
 title: Internationalization with Remix
-summary: Learn how to implement internationalization (i18n) in your Remix project. Discover the significance of i18n, its underlying principles, and strategies for effective management using Remix.
+summary: Learn how to implement internationalization (i18n) in your Remix project. Discover the significance of i18n, gain an understanding of the core principles, and learn various strategies for effective i18n management with Remix.
 featured: false
-date: 2024-02-29
+date: 2024-03-06
 image: /blog-images/headers/sigmund-EgwhIBec0Ck-unsplash.jpg
 imageAlt: A globe close-up photo zooming in to the North American continent.
 authors:
   - Arisa Fukuzaki
 ---
 
-Experts are constantly discussing how to make the web better. Accessibility, UI/UX, web performance, you name it. You might not hear about internationalization (i18n) as much as other topics, but it is still essential to making the web better. In this article, we'll gain an understanding of the the impact of i18n, explore the fundamental logic, and learn how to implement i18n in a Remix app.
+Experts are constantly discussing how to make the web better. Accessibility, UI/UX, web performance, you name it. You might not hear about internationalization (i18n) as much as other topics, but it is still essential to making the web better. In this article, we'll gain an understanding of the impact of i18n, explore the fundamental logic, and learn how to implement i18n in a Remix app.
 
 I also talked about i18n with Remix in my Remix Conf 2023 talk. If you want to watch the video recording, you can find [my i18n talk here][remixconf-arisa].
 
@@ -17,8 +17,7 @@ I also talked about i18n with Remix in my Remix Conf 2023 talk. If you want to w
 
 ## What is i18n?
 
-i18n stands for internationalization. Between the first character, “i,” and the last character, “n,” from there are 18 characters. In short, i18n is about implementing the structures and features for your applications to be ready to localize content.
-
+i18n stands for internationalization: there are 18 characters between the first character, “i” and the last character, “n”. In short, i18n is about implementing the structures and features in your applications to deliver a localized version of your content for every one of your user.
 
 There are many reasons why we should care about i18n. The most important reason is that it makes your application more accessible to people who speak different languages. There are interesting numbers and statistics that prove this. For example, 5.07 billion people used the internet in 2020. That's more than half of the world's population. Of the over 5 billion users, 74.1% accessed the content in another language than English.
 
@@ -34,7 +33,7 @@ This approach uses the location of the request's IP address to serve the most po
 
 ### Accept-Language header or Navigator.languages
 
-This approach is based on the language settings of the browser. It's more accurate than using the location of the IP address. This approach provides the user's preferred language information, but users cannot switch languages from the UI.
+This approach is based on the language settings of your browser. It's more accurate than using the location of the IP address. This approach provides the user's preferred language information, but users cannot switch languages from the UI.
 
 ### Identifiers in URLs
 
@@ -44,9 +43,9 @@ Alternatively, you can use different domains and URL parameters for other langua
 
 ## How i18n works with Remix
 
-When you are going to implement i18n with any framework, you should to consider if they provide **MULTIPLE PRACTICAL & FLEXIBLE options**.
+When you are going to implement i18n with any framework, you should consider whether or not they provide **MULTIPLE PRACTICAL & FLEXIBLE options**.
 
-I insist on this a lot in [my i18n talk][remixconf-arisa] because otherwise your DX will be painful and you will likely end up sacrificing UX due to the technical limitations of the frameworks. I'm not saying that other frameworks are inadequate, but I have experienced nightmares with other frameworks when I was working on i18n projects, such as not being able to modify slugs programmatically, requiring extra npm packages, etc.
+I insist on this a lot in [my i18n talk][remixconf-arisa] because otherwise your DX will be painful and you will likely end up sacrificing UX due to the technical limitations of the framework. I'm not saying that other frameworks are inadequate, but I have experienced nightmares with other frameworks when I was working on i18n projects, such as not being able to modify slugs programmatically, requiring extra npm packages, etc.
 
 i18n is a complex topic, and there's more than one straightforward way to implement it. That's why we need several practical and flexible options to find the best way to implement i18n for each project.
 
@@ -201,7 +200,7 @@ I listed four approaches from one of the CMSs but there are cases in which you w
 Remix provides a built-in feature called [Optional Segments][optional-segments-docs]. Optional Segments solve all the potential problems with i18n we saw above and is a good approach if you are unable to adopt a CMS. Remix's built-in features provide enjoyable DX that allow you to:
 
 - Catch all slugs in nested urls and layouts
-- Simply add a `($lang)` in your routes enables to catch `lang` parameter
+- Pull out an optional `lang` parameter by simply adding `($lang)` to in your routes
 
 Also, it's possible to detect if `params.lang` is not a valid language value by creating a reusable helper function. It's a great way to provide the best UX for users.
 
@@ -226,14 +225,14 @@ app/
 
 The urls `/ja/contacts/ryan-florence` and `/contacts/ryan-florence` will both match the `app/routes/($lang).contacts.$contactId` route, since `($lang)` is optional. In this example if there is no `lang` param provided, we default to English (`en`).
 
-A `$lang` parameter will match all slugs in different nested levels, such as `ja/contacts` and `ja/contacts/ryan-florance` in this example app. It covers the case if you want to implement localized sub-directories without CMSs.
+A `$lang` parameter will match all slugs in different nested levels, such as `ja/contacts` and `ja/contacts/ryan-florance` in this example app. It covers the case where you want to implement localized sub-directories without a CMS.
 
 Built-in parameters like `params.lang` saves you time when implementing i18n-supported routes. To enable Optional Segments, you can add `($lang)` in the routes like this, `app/routes/($lang).contacts.$contactId` to catch `lang` parameter in the route.
 
 Configuring localized sub-directories with functionally working routes is the most important yet time-consuming part of the i18n implementation process depending on the built-in features from frameworks.
 Remix removes the pain by providing helpful parameters, a flexible structure, and the best DX for developers.
 
-> Make sure you follow the [Google SEO guideline][google-seo-guideline] for non-ASCII characters in the URL. It's not recommended to use non-ASCII characters in the URL. (i.e., `ja/contacts/マイケル-ジャクソン`) It's better to use ASCII characters in the URL. (i.e., `ja/contacts/michael-jackson`)
+> Make sure you follow the [Google SEO guideline][google-seo-guideline] for non-ASCII characters in the URL. It's not recommended to use non-ASCII characters in the URL (i.e., `ja/contacts/マイケル-ジャクソン`). It's better to use ASCII characters in the URL (i.e., `ja/contacts/michael-jackson`).
 
 The Optional Segments example app repo also includes a reusable function to check if `params.lang` is not a valid language code. For better UX, detecting when users access the URL with an invalid language code is essential. It is also important to show them that the page with an invalid language slug doesn't exist.
 
