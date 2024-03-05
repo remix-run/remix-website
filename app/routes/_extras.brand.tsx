@@ -425,7 +425,7 @@ function GlowingLogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
           width="215.852"
           height="194.22"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
@@ -478,7 +478,7 @@ function GlowingLogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
           width="273.634"
           height="189.724"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
@@ -531,7 +531,7 @@ function GlowingLogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
           width="192.493"
           height="193.228"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
@@ -584,7 +584,7 @@ function GlowingLogoRemix({ fg, highlight, outline }: LogoProps): JSX.Element {
           width="103.526"
           height="239.944"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
