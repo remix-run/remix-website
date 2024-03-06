@@ -2,7 +2,7 @@
 title: "Case Study: Building Shop with Remix"
 summary: A case study on how Shopify rapidly built a web version of their popular iOS/Android app Shop with Remix
 featured: true
-date: 2024-02-22
+date: 2024-03-31
 # Reach out to Shop to see if they have any other branding
 image: /blog-images/headers/shop-case-study.png
 imageAlt: shop
@@ -10,18 +10,30 @@ authors:
   - Brooks Lybrand
 ---
 
+<details>
+  <summary><strong>Things to discuss with Michael</strong></summary>
+  <ul>
+    <li>
+      First person vs third person is confusing to me. Who is the narrator? Is it the Remix team? Is it Shopify?
+    </li>
+    <li>
+      The tense is still weird. We started changing it but it's not obvious to me what it should be. When I started writing, I was thinking I'm telling the history of how this was built, so primarily past tense. Yet we added a lot of present tense.
+    </li>
+  </ul>
+</details>
+
 Building good software is largely about picking the the right tools for the right job. So when Shopify decided to build a web version of [Shop][apple-shop-app], we knew we needed to:
 
 - Utilize existing tools and infrastructure
-- Leverage code from the mobile clients
+- Leverage code from the native clients
 - Enable regular and rapid feature releases
 - Scale to support millions of users
 
 We were also on a very aggressive timeframe – only 3 months! That's a pretty big ask.
 
-We sat down **INCLUDE SEBASTIAN AND DOMINIC HERE** with the Shop web team to discuss why they chose Remix for this project and how it went. This is the story about how [shop.app][shop.app] was built with Remix.
+We sat down with [Sebastian Ekström][sebastian] and [Dominic Lind][dominic] from the Shop web team to discuss why they chose Remix for this project and how it went. This is the story about how [Shop.app][shop.app] was built with Remix.
 
-## The Shop App
+## What is the Shop App?
 
 <div class="flex flex-col items-center">
   <img alt="Shop app on Apple Play Store. Title says 'Shop: All your favorite brands'" src="/blog-images/posts/shop-case-study/shop-app-ios.jpg" class="h-svh" />
@@ -29,29 +41,29 @@ We sat down **INCLUDE SEBASTIAN AND DOMINIC HERE** with the Shop web team to dis
 
 Shop is an application that allows buyers to discover merchants and products, make purchases, and track orders. Shop automatically aggregates shipping information across various delivery services. So whether it's Amazon or a small private company, no matter how the product is shipped, Shop will automatically track all of your packages in one spot.
 
-Shop's native app has millions of downloads from the Google Play Store and Apple App Store. The Shop app has existed and served the needs of many customers for years, during which the web client ([shop.app][shop.app]) acted merely as a marketing site for the mobile app.
+Shop's native app has millions of downloads from the Google Play Store and Apple App Store. The Shop app has existed and served the needs of many customers for years, during which the web client acted merely as a marketing site for the native app.
 
-Then, nearly 1 year ago, Shopify decided to explore what it would take to create Shop for the web.
+In early 2023, Shopify started exploring what it would take to create Shop for the web.
 
-## Building Shop.app
+## The need for Shop on the web
 
 <img alt="Diagram of a long lived feature branch for implementing the changes from a migration guide" src="/blog-images/posts/shop-case-study/shop-web.png" />
 
-For a long time [shop.app][shop.app] was a simple landing/marketing page redirecting you to download the iOS or Android app. There was no functionality — no way to browse categories or products, no way to add items to your cart, and certainly no way to purchase anything.
+For a long time Shop.app was a simple landing/marketing page redirecting you to download the iOS or Android app. There was no functionality — no way to browse categories or products, no way to add items to your cart, and certainly no way to purchase anything.
 
-Initially, the Shop team intended to develop a site that had feature parity with the mobile apps. However, in addition the web version of Shop offers some unique advantages!
+The initial goal was to achieve feature parity with the native apps. However, it became clear that just having a web version of Shop for existing users was not thinking big enough. The web has unique advantages to native that would help complement the existing clients.
 
 **Capturing more users**
 
-Prior to the rebuild, the Shop marketing pages were already drawing substantial traffic. While some visitors would proceed to download the app, many would not. Offering users the option to sign up or log in directly on the web widens the net for acquiring new users.
+Even with limited functionality, the Shop marketing pages drew substantial traffic daily. While some of these visitors who would proceed to download the app, many would not. With Shop.app users would have the option to sign up on the web, which would widen the net for acquiring new users.
 
 **Faster feedback loop**
 
-New versions of the website can be shipped multiple times a day, whereas the native application has a much longer waiting period due to the nature of native app releases.
+New versions of the website can be shipped multiple times a day, whereas the native application have a much longer waiting period due to the nature mobile development.
 
-Adding Shop.app opens up new possibilities. It enables us to run short-term ad campaigns and conduct daily experiments. The valuable user feedback gathered from these activities can then be utilized to enhance future versions of the native applications.
+Adding Shop.app would open up new possibilities. It enables Shopify to run short-term ad campaigns and conduct daily experiments. The valuable user feedback gathered from these activities could then be utilized to enhance future versions of both the native and web clients of Shop.
 
-## Rapid Development with Remix
+## Building Shop.app with Remix
 
 Often when a project grows, it starts out as a website and then expands into native counterparts. With Shop, it was the opposite; the way the native apps were built heavily influenced how the website had to be built.
 
@@ -61,19 +73,19 @@ The native versions of Shop, built in React Native, already had a substantial in
 
 Finally, the pages needed to be Server-Side Rendered (SSR) for the best UX and SEO. While Shopify already had methods for building React apps with SSR, the Shop team was eager to experiment with Remix. They needed something that would allow them to launch quickly, and rapidly add new features and pages over time.
 
-### Shop AI
+### Proof of concept: Shop.ai
 
 In February of 2023, shortly before the Shop.app work began, the lead developers on the team had a similar, but smaller-scoped challenge: build an AI-powered shopping assistant on the web.
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Shop smarter with <a href="https://t.co/7YAW0Tk8Rh">https://t.co/7YAW0Tk8Rh</a>! We&#39;ve brought our ChatGPT-powered shopping assistant to the web — try it out, and don’t forget to sign in with Shop to save your faves 💜 <a href="https://t.co/DpSdLEr4QD">pic.twitter.com/DpSdLEr4QD</a></p>&mdash; Shop (@shop) <a href="https://twitter.com/shop/status/1636022946127831040?ref_src=twsrc%5Etfw">March 15, 2023</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-[Shop.ai][shop.ai] now redirects to [shop.app][shop.app], but at the time it was a single webpage showing off a Shop chatbot built on top of OpenAI's newly released ChatGPT.
+[Shop.ai][shop.ai] now redirects to [Shop.app][shop.app], but the initial version was a single webpage showing off a Shop chatbot built on top of OpenAI's newly released ChatGPT.
 
-The team had ~1 month to build this site. They chose Remix, believing it would expedite this project. Even though they didn't use many of the features that makes Remix great (data fetching, routing, nested layouts, etc.), they still found it to be a fast and adaptable framework, which is exactly what they were looking for.
+The team had ~1 month to build this site. They were looking for a fast and adaptable framework to expedite this project. This was a perfect opportunity to try Remix. Even though they didn't use many of the features that makes Remix great (data fetching, routing, nested layouts, etc.), it proved to be straightforward and flexible enough for Shop.ai.
 
-This positive experience gave them confidence to go with Remix when it came time to build Shop.app.
+This positive experience gave them confidence to pick Remix when it came time to build Shop.app.
 
-### Monorepo with React Native
+### Monorepo + Remix = Success
 
 As mentioned, the Shop native app is built with React Native. To ease development between the iOS, Android, and web versions of Shop, the team uses a monorepo that contains the source code for all three.
 
@@ -127,7 +139,7 @@ These were just the initial numbers though. They had a number of small improveme
 
 The journey of building Shop Web with Remix is a testament to Remix's flexibility, DX, and scalability, as well Shopify's focus on building good, useful software quickly and iteratively.
 
-By leveraging the advantages of a monorepo setup, building on top of their existing infrastructure, and harnessing the rapid development capabilities of Remix, the team successfully transformed [shop.app][shop.app] from a simple marketing site into a fully functional web application.
+By leveraging the advantages of a monorepo setup, building on top of their existing infrastructure, and harnessing the rapid development capabilities of Remix, the team successfully transformed Shop.app from a simple marketing site into a fully functional web application.
 
 The move to Vite further accelerated the development process, drastically improving HMR times and boosting productivity. The team was able to do this before Vite was even stabilized due to Remix's continuous delivery with [unstable and future flags][future-proofing-blog].
 
