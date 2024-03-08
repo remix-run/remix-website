@@ -113,13 +113,13 @@ The Shop team was able to easily integrate Remix into this existing setup, due t
   </figcaption>
 </figure>
 
-At Shopify we have a phrase: "Get Shit Done". Shopify is a company that prides itself in building new and innovative things, and building them fast.
+At Shopify we have a phrase: _"Get Shit Done"_. Shopify as a company prides itself in building new and innovative things, and building them fast.
 
-With Shop.app, the team was eager to launch an initial version of the product pages as quickly as possible.
+With Shop.app, the team was eager to launch an initial version of the product pages as quickly as possible. The whole team was aligned on building as fast as they could, and they found they could go pretty fast with Remix.
 
-The team started building Shop.app in April, 2023. Beyond being flexible enough to easily integrate with their existing monorepo, Remix also provided many other out-of-the-box features the team needed to move fast: SSR, routing, link prefetching, and much more. Using Remix the team was able to launch the initial product page in July, 2023.
+The team started building Shop.app in April, 2023. Beyond being flexible enough to easily integrate with their existing monorepo, Remix also provided many other out-of-the-box features the team needed to move fast: SSR, routing, link prefetching, and much more. Using Remix the team was able to launch the initial product page by July, 2023.
 
-**That's 3 months to Get Shit Done**
+**That's 3 months of _Getting Shit Done_**
 
 With Remix, the team was able use their existing backend, patterns, and libraries instead of being forced to rewrite their infrastructure in a "Remix-y" way. There are additional Remix-specific APIs Shop.app doesn't fully take advantage of such as the Remix loading patterns and `defer`. Remix gives developers full control of their site and offers useful levers to pull when needed. This philosophy allowed the Shop team to easily hook in their own patterns and libraries, while incrementally leveraging and experimenting with Remix features as they went.
 
@@ -129,11 +129,11 @@ Shipping the initial version of Shop.app to millions of people all around the wo
 
 One struggle the team did have with Remix was slow Hot Module Replacement (HMR). It took ~9s from the time a developer hit save to when they were able to see their changes reflected locally.
 
-Because of this poor developer experience, the Shop team was ecstatic when they learned that the Remix team was [changing the compiler to be a Vite plugin][vite-announcement]. They were so confident in the new Vite plugin and the DX benefits to their team, they didn't hesitate and started using it before [it was marked as stable][vite-stable-announcement].
+Because of this poor developer experience, the Shop team was ecstatic when they learned that the Remix team was [changing the compiler to be a Vite plugin][vite-announcement]. They were so confident in the new Vite plugin and the DX benefits it would give their team, they didn't hesitate to starting using it, even before [it was marked as stable][vite-stable-announcement].
 
 Migrating to Vite immediately improved their HMR times to 2.3s.
 
-These were just the initial numbers. They made several more improvements, mostly around upgrading dependencies and converting some files from CJS to ESM. But their biggest gain came from parallelizing the [Tailwind][tailwind] build process which was a huge HMR bottleneck. Once parallelized, HMR times decreased all the way down to 0.1s.
+These were just the initial numbers. The team was able to reduce HMR times even further by parallelizing the build process for their style system, [Tailwind CSS][tailwind]. Once parallelized, HMR times decreased all the way down to 0.1s.
 
 **That's 9s down to 0.1s, a 90x improvement**
 
