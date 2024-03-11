@@ -16,8 +16,7 @@ Building good software is largely about understanding your constraints and then 
 - Leverage code from the native clients
 - Enable regular and rapid feature releases
 - Scale to support millions of users
-
-Shopify was also on a very aggressive timeline – only 3 months! That's a pretty big ask.
+- Ship as quickly as possible
 
 We on the Remix team sat down with our colleagues [Sebastian Ekström][sebastian] and [Dominic Lind][dominic] from the Shop team to discuss why they chose Remix for this project and how it went. This is the story about how [Shop.app][shop.app] was built with Remix.
 
