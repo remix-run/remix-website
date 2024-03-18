@@ -4,6 +4,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import arraybuffer from "vite-plugin-arraybuffer";
 
 export default defineConfig({
+  build: {
+    sourcemap: true,
+  },
   ssr: {
     noExternal: ["@docsearch/react"],
   },
