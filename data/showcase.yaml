@@ -107,3 +107,9 @@
   link: "https://www.passionfroot.me"
   imgSrc: "/showcase-assets/passionfroot.webp"
   videoSrc: "/showcase-assets/passionfroot"
+
+- name: "SaaSKits"
+  description: "An open source SaaS boilerplate built with Remix, Stripe, Prisma and Resend to help you bootstrap your SaaS idea quickly."
+  link: "https://saaskits.dev/"
+  imgSrc: "/showcase-assets/saas-kits.webp"
+  videoSrc: "/showcase-assets/saas-kits"
