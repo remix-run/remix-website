@@ -77,13 +77,13 @@ Remix development began in [July 2020][july-2020], but [Vite’s first stable re
 Even then, there were three blockers for adopting Vite:
 
 1. Stable SSR support
-2. Non-Node runtime support (Deno, CloudFlare)
+2. Non-Node runtime support (Deno, Cloudflare)
 3. Server-aware, fullstack HMR
 
 In the meantime, the Remix compiler switched from Rollup to esbuild in [March 2021][march-2021].
 
 In [July 2022][july-2022], Vite stabilized SSR support and just a few months later in [September 2022][september-2022] Deno became Vite-compatible.
-Making progress, but Vite was still missing CloudFlare support and server-aware HMR.
+Making progress, but Vite was still missing Cloudflare support and server-aware HMR.
 
 Meanwhile at the [end of 2022][end-2022], we were focused on helping users migrate from Create React App and Webpack to Remix.
 Then in [March 2023][march-2023], React stopped recommending CRA and officially recommended fullstack frameworks, including Remix.
@@ -96,7 +96,7 @@ When prototyping a solution, we realized we would need to reimplement module cac
 In short, we’d effectively be building a worse version of Vite.
 So in [June 2023][june-2023], we started prototyping a Vite plugin for Remix.
 
-That left CloudFlare support in Vite as the last missing piece.
+That left Cloudflare support in Vite as the last missing piece.
 Today, we’re working directly with the CF core team and are confident that we can deliver best-in-class CF support before the Remix Vite plugin stabilizes.
 
 ## We’d love your feedback
