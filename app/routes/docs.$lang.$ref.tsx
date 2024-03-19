@@ -11,10 +11,8 @@ import {
   useResolvedPath,
   matchPath,
 } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
-import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
 import { useNavigate } from "react-router-dom";
@@ -72,13 +70,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     currentGitHubRef: ref,
     lang,
     isLatest,
-  });
-};
-
-export const meta: MetaFunction<typeof loader> = (args) => {
-  return metaV1(args, {
-    "docsearch:language": args.params.lang || "en",
-    "docsearch:version": args.params.ref || "v1",
   });
 };
 

@@ -2,7 +2,7 @@ import type { MetaDescriptor } from "@remix-run/node";
 
 type CustomMetaArgs = {
   title: string;
-  description: string;
+  description?: string;
   siteUrl?: string;
   image?: string;
 } & { additionalMeta?: MetaDescriptor[] };
