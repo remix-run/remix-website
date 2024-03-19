@@ -27,7 +27,9 @@ import { getMeta } from "~/lib/meta";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   let url = new URL(request.url);
-  let pageUrl = url.protocol + "//" + url.host + url.pathname;
+  let baseUrl = url.protocol + "//" + url.host;
+  let siteUrl = baseUrl + url.pathname;
+  let ogImageUrl = baseUrl + "/img/og.1.jpg";
   invariant(params.ref, "expected `ref` params");
   try {
     let slug = params["*"]?.endsWith("/changelog")
@@ -36,7 +38,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     let doc = await getRepoDoc(params.ref, slug);
     if (!doc) throw null;
     return json(
-      { doc, pageUrl },
+      { doc, siteUrl, ogImageUrl },
       { headers: { "Cache-Control": CACHE_CONTROL.doc } },
     );
   } catch (_) {
@@ -105,16 +107,14 @@ export const meta: MetaFunction<Loader, MatchLoaders> = (args) => {
       ? "index,follow"
       : "noindex,nofollow";
 
-  let pageUrl = data.pageUrl;
-
-  let image = `${pageUrl}/img/og.1.jpg`;
+  let { siteUrl, ogImageUrl } = data;
 
   return getMeta({
     title: `${title} | Remix`,
     // TODO: add a description
     // let description: 'some description';
-    siteUrl: pageUrl,
-    image,
+    siteUrl,
+    image: ogImageUrl,
     additionalMeta: [
       { name: "og:type", content: "article" },
       { name: "og:site_name", content: "Remix" },
