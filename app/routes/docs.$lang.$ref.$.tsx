@@ -19,7 +19,6 @@ import invariant from "tiny-invariant";
 import type { Doc } from "~/lib/gh-docs";
 import { getRepoDoc } from "~/lib/gh-docs";
 import iconsHref from "~/icons.svg";
-import cx from "clsx";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import type { loader as docsLayoutLoader } from "~/routes/docs.$lang.$ref";
 import type { loader as rootLoader } from "~/root";
