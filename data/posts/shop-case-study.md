@@ -68,22 +68,22 @@ In February of 2023, shortly before the Shop.app work began, the lead developers
 
 [Shop.ai][shop.ai] now redirects to [Shop.app][shop.app]. However, the initial version was a single webpage showing off a Shop chatbot built on top of OpenAI's newly released ChatGPT.
 
-The team had ~1 month to build this site. They were looking for a fast and adaptable framework to expedite this project. This was the perfect opportunity to try Remix. Even though they didn't use many of the features that makes it great (data fetching, routing, nested layouts, etc.), Remix proved to be straightforward and flexible enough to rapidly develope Shop.ai.
+The team had ~1 month to build this site. They were looking for a fast and adaptable framework to expedite this project. This was the perfect opportunity to try Remix. Even though they didn't use many of the features that makes it great (data fetching, routing, nested layouts, etc.), Remix proved to be straightforward and flexible enough to rapidly develop Shop.ai.
 
 This positive experience gave them confidence to pick Remix when it came time to build Shop.app.
 
 ### Monorepo + Remix = Success
 
 <figure>
-  <blockquote class="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 sm:text-2xl sm:leading-9">
+  <blockquote class="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 dark:text-gray-200 sm:text-2xl sm:leading-9">
     <p>“With Shop.app we wanted to reuse a lot of the code we had from the [native] app. Remix allowed us to do that without being a hurdle. It allowed us to migrate piece by piece.”</p>
   </blockquote>
   <figcaption>
     <a class="mt-10 flex items-center gap-x-6" href="https://github.com/linddominic">
       <img class="h-12 w-12 rounded-full bg-gray-50" src="/blog-images/posts/shop-case-study/dominic-lind.png" alt="">
       <div class="text-sm leading-6 text-left">
-        <div class="font-semibold text-gray-900">Dominic Lind</div>
-        <div class="mt-0.5 text-gray-600 font-light">Senior Staff Developer at Shopify</div>
+        <div class="font-semibold text-gray-900 dark:text-gray-200">Dominic Lind</div>
+        <div class="mt-0.5 text-gray-600 dark:text-gray-400 font-light">Senior Staff Developer at Shopify</div>
       </div>
     </a>
   </figcaption>
@@ -98,15 +98,15 @@ The Shop team was able to easily integrate Remix with the existing infrastructur
 ### Get Sh\*t Done
 
 <figure>
-  <blockquote class="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 sm:text-2xl sm:leading-9">
+  <blockquote class="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 dark:text-gray-200 sm:text-2xl sm:leading-9">
     <p>“I have never produced so much, in such a short amount of time, with such good results.”</p>
   </blockquote>
   <figcaption>
     <a class="mt-10 flex items-center gap-x-6" href="https://github.com/sebastianekstrom">
       <img class="h-12 w-12 rounded-full bg-gray-50" src="/blog-images/posts/shop-case-study/sebastian-ekstrom.jpg" alt="">
       <div class="text-sm leading-6 text-left">
-        <div class="font-semibold text-gray-900">Sebastian Ekström</div>
-        <div class="mt-0.5 text-gray-600 font-light">Senior Developer at Shopify</div>
+        <div class="font-semibold text-gray-900 dark:text-gray-200">Sebastian Ekström</div>
+        <div class="mt-0.5 text-gray-600 dark:text-gray-400 font-light">Senior Developer at Shopify</div>
       </div>
     </a>
   </figcaption>
@@ -128,7 +128,7 @@ Shipping the initial version of Shop.app to millions of people all around the wo
 
 One struggle the team did have with Remix was slow Hot Module Replacement (HMR). It took ~9s from the time a developer hit save to when they were able to see their changes reflected locally.
 
-Because of this poor developer experience, the Shop team was ecstatic when they learned that the Remix team was [changing the compiler to be a Vite plugin][vite-announcement]. They were so confident in the new Vite plugin and the DX benefits it would give their team they didn't hesitate to starting using it, even before [it was marked as stable][vite-stable-announcement].
+Luckily we were already working on a solution. The Shop team was ecstatic when they learned that the Remix team was [changing the compiler to be a Vite plugin][vite-announcement]. They were so confident in the new Vite plugin and the DX benefits it would give their team they didn't hesitate to starting using it, even before [it was marked as stable][vite-stable-announcement].
 
 Migrating to Vite immediately improved their HMR times to 2.3s.
 
