@@ -634,14 +634,30 @@ function Menu() {
       <ul>
         {menu.map((category) => (
           <li key={category.attrs.title} className="[&:not(:last-child)]:mb-6">
-            <MenuCategoryHeading to={category.hasContent && category.slug}>
-              {category.attrs.title}
-            </MenuCategoryHeading>
-            {category.children.map((doc) => (
-              <MenuLink key={doc.slug} to={doc.slug}>
-                {doc.attrs.title} {doc.attrs.new && "🆕"}
-              </MenuLink>
-            ))}
+            <details className="group relative flex flex-col">
+              <summary className="mb-2 flex items-center">
+                <div className="flex items-center gap-2">
+                  <svg aria-hidden className="h-5 w-5 group-open:hidden">
+                    <use href={`${iconsHref}#chevron-r`} />
+                  </svg>
+                  <svg aria-hidden className="hidden h-5 w-5 group-open:block">
+                    <use href={`${iconsHref}#chevron-d`} />
+                  </svg>
+                </div>
+                <MenuCategoryHeading to={category.hasContent && category.slug}>
+                  {category.attrs.title}
+                </MenuCategoryHeading>
+              </summary>
+              <ul>
+                {category.children.map((doc) => (
+                  <li key={doc.slug}>
+                    <MenuLink to={doc.slug}>
+                      {doc.attrs.title} {doc.attrs.new && "🆕"}
+                    </MenuLink>
+                  </li>
+                ))}
+              </ul>
+            </details>
           </li>
         ))}
       </ul>
@@ -661,7 +677,7 @@ function MenuCategoryHeading({
   to?: string | null | false;
 }) {
   let className =
-    "flex items-center px-3 mb-2 text-base leading-[1.125] font-semibold rounded-md";
+    "flex items-center px-3 text-base leading-[1.125] font-semibold rounded-md";
   return to ? (
     <MenuCategoryLink to={to} className={className} children={children} />
   ) : (
