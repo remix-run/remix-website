@@ -347,7 +347,6 @@ function DocSearchSection({ className }: { className?: string }) {
       >
         <DocSearch />
       </div>
-      <div className="absolute top-full hidden h-6 w-full bg-gradient-to-b from-white dark:from-gray-900 lg:block" />
     </div>
   );
 }
@@ -618,7 +617,7 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed bottom-0 top-16 -ml-3 hidden w-72 flex-col gap-6 overflow-auto pb-10 pr-5 pt-5 lg:flex">
+    <div className="fixed bottom-0 top-16 -ml-3 hidden w-72 flex-col gap-3 overflow-auto pb-10 pr-5 pt-5 lg:flex">
       <DocSearchSection />
       <div className="[&_*:focus]:scroll-mt-[6rem]">
         <Menu />
@@ -633,9 +632,15 @@ function Menu() {
     <nav>
       <ul>
         {menu.map((category) => (
-          <li key={category.attrs.title} className="[&:not(:last-child)]:mb-6">
-            <details className="group relative flex flex-col">
-              <summary className="mb-2 flex items-center">
+          <li key={category.attrs.title} className="[&:not(:last-child)]:mb-3">
+            <details
+              className="group relative flex cursor-pointer flex-col"
+              open
+            >
+              <summary className="_no-triangle -mb-1 flex select-none items-center justify-between px-3 py-3 hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
+                <MenuCategoryHeading to={category.hasContent && category.slug}>
+                  {category.attrs.title}
+                </MenuCategoryHeading>
                 <div className="flex items-center gap-2">
                   <svg aria-hidden className="h-5 w-5 group-open:hidden">
                     <use href={`${iconsHref}#chevron-r`} />
@@ -644,9 +649,6 @@ function Menu() {
                     <use href={`${iconsHref}#chevron-d`} />
                   </svg>
                 </div>
-                <MenuCategoryHeading to={category.hasContent && category.slug}>
-                  {category.attrs.title}
-                </MenuCategoryHeading>
               </summary>
               {category.children.map((doc) => (
                 <MenuLink key={doc.slug} to={doc.slug}>
@@ -673,7 +675,7 @@ function MenuCategoryHeading({
   to?: string | null | false;
 }) {
   let className =
-    "flex items-center px-3 text-base leading-[1.125] font-semibold rounded-md";
+    "flex items-center text-base leading-[1.125] font-semibold rounded-md";
   return to ? (
     <MenuCategoryLink to={to} className={className} children={children} />
   ) : (
