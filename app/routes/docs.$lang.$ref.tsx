@@ -648,15 +648,11 @@ function Menu() {
                   {category.attrs.title}
                 </MenuCategoryHeading>
               </summary>
-              <ul>
-                {category.children.map((doc) => (
-                  <li key={doc.slug}>
-                    <MenuLink to={doc.slug}>
-                      {doc.attrs.title} {doc.attrs.new && "🆕"}
-                    </MenuLink>
-                  </li>
-                ))}
-              </ul>
+              {category.children.map((doc) => (
+                <MenuLink key={doc.slug} to={doc.slug}>
+                  {doc.attrs.title} {doc.attrs.new && "🆕"}
+                </MenuLink>
+              ))}
             </details>
           </li>
         ))}
