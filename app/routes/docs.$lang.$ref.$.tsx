@@ -198,7 +198,10 @@ function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
       </summary>
       <ul className="pl-9">
         {doc.headings.map((heading, i) => (
-          <li key={i}>
+          <li
+            key={i}
+            className={heading.headingLevel === "h2" ? "ml-0" : "ml-4"}
+          >
             <Link
               to={`#${heading.slug}`}
               dangerouslySetInnerHTML={{ __html: heading.html || "" }}
