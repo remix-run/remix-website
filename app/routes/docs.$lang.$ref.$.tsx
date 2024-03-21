@@ -19,7 +19,6 @@ import invariant from "tiny-invariant";
 import type { Doc } from "~/lib/gh-docs";
 import { getRepoDoc } from "~/lib/gh-docs";
 import iconsHref from "~/icons.svg";
-import cx from "clsx";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import type { loader as docsLayoutLoader } from "~/routes/docs.$lang.$ref";
 import type { loader as rootLoader } from "~/root";
@@ -164,13 +163,16 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
       <ul className="md-toc flex flex-col flex-wrap gap-3 leading-[1.125]">
         {doc.headings.map((heading, i) => {
           return (
-            <li key={i}>
+            <li
+              key={i}
+              className={heading.headingLevel === "h2" ? "ml-0" : "ml-4"}
+            >
               <Link
                 to={`#${heading.slug}`}
                 dangerouslySetInnerHTML={{ __html: heading.html || "" }}
-                className={cx(
-                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-400 dark:decoration-gray-500",
-                )}
+                className={
+                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-400 dark:decoration-gray-500"
+                }
               />
             </li>
           );
@@ -196,7 +198,10 @@ function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
       </summary>
       <ul className="pl-9">
         {doc.headings.map((heading, i) => (
-          <li key={i}>
+          <li
+            key={i}
+            className={heading.headingLevel === "h2" ? "ml-0" : "ml-4"}
+          >
             <Link
               to={`#${heading.slug}`}
               dangerouslySetInnerHTML={{ __html: heading.html || "" }}
