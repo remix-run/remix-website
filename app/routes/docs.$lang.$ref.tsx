@@ -628,42 +628,75 @@ function NavMenuDesktop() {
 
 function Menu() {
   let { menu } = useLoaderData<typeof loader>();
+
   return menu ? (
     <nav>
       <ul>
-        {menu.map((category) => (
-          <li key={category.attrs.title} className="[&:not(:last-child)]:mb-3">
-            <details
-              className="group relative flex cursor-pointer flex-col"
-              open
-            >
-              <summary className="_no-triangle -mb-1 flex select-none items-center justify-between px-3 py-3 hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
-                <MenuCategoryHeading to={category.hasContent && category.slug}>
-                  {category.attrs.title}
-                </MenuCategoryHeading>
-                <div className="flex items-center gap-2">
-                  <svg aria-hidden className="h-5 w-5 group-open:hidden">
-                    <use href={`${iconsHref}#chevron-r`} />
-                  </svg>
-                  <svg aria-hidden className="hidden h-5 w-5 group-open:block">
-                    <use href={`${iconsHref}#chevron-d`} />
-                  </svg>
-                </div>
-              </summary>
-              {category.children.map((doc) => (
-                <MenuLink key={doc.slug} to={doc.slug}>
-                  {doc.attrs.title} {doc.attrs.new && "🆕"}
-                </MenuLink>
-              ))}
-            </details>
-          </li>
-        ))}
+        {menu.map((category) => {
+          return (
+            <li key={category.attrs.title} className="mb-3">
+              <MenuCategoryDetails slug={category.slug}>
+                <summary className="_no-triangle flex select-none items-center justify-between px-3 py-3 hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
+                  <MenuCategoryHeading
+                    to={category.hasContent && category.slug}
+                  >
+                    {category.attrs.title}
+                  </MenuCategoryHeading>
+                  <div className="flex items-center gap-2">
+                    <svg aria-hidden className="h-5 w-5 group-open:hidden">
+                      <use href={`${iconsHref}#chevron-r`} />
+                    </svg>
+                    <svg
+                      aria-hidden
+                      className="hidden h-5 w-5 group-open:block"
+                    >
+                      <use href={`${iconsHref}#chevron-d`} />
+                    </svg>
+                  </div>
+                </summary>
+                {category.children.map((doc) => {
+                  return (
+                    <MenuLink key={doc.slug} to={doc.slug}>
+                      {doc.attrs.title} {doc.attrs.new && "🆕"}
+                    </MenuLink>
+                  );
+                })}
+              </MenuCategoryDetails>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   ) : (
     <div className="bold text-gray-300 dark:text-gray-400">
       Failed to load menu
     </div>
+  );
+}
+
+type MenuCategoryDetailsType = {
+  slug: string;
+  children: React.ReactNode;
+};
+
+function MenuCategoryDetails({ slug, children }: MenuCategoryDetailsType) {
+  const isActivePath = useIsActivePath(slug);
+  // By default only the active path is open
+  const [isOpen, setIsOpen] = React.useState(isActivePath);
+
+  return (
+    <details
+      className="group relative flex cursor-pointer flex-col"
+      open={isOpen}
+      onToggle={(e) => {
+        // Synchronize the DOM's state with React state to prevent the
+        // details element from being closed after navigation and re-evaluation
+        // of useIsActivePath
+        setIsOpen(e.currentTarget.open);
+      }}
+    >
+      {children}
+    </details>
   );
 }
 
