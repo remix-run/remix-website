@@ -684,6 +684,13 @@ function MenuCategoryDetails({ slug, children }: MenuCategoryDetailsType) {
   // By default only the active path is open
   const [isOpen, setIsOpen] = React.useState(isActivePath);
 
+  // Auto open the details element, useful when navigating from the home page
+  React.useEffect(() => {
+    if (isActivePath) {
+      setIsOpen(true);
+    }
+  }, [isActivePath]);
+
   return (
     <details
       className="group relative flex cursor-pointer flex-col"
