@@ -636,7 +636,7 @@ function Menu() {
           return (
             <li key={category.attrs.title} className="mb-3">
               <MenuCategoryDetails slug={category.slug}>
-                <summary className="_no-triangle flex select-none items-center justify-between px-3 py-3 hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
+                <summary className="_no-triangle flex select-none items-center justify-between rounded-2xl px-3 py-3 hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
                   <MenuCategoryHeading
                     to={category.hasContent && category.slug}
                   >
