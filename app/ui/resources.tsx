@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type Resource } from "~/lib/resources.server";
+import { transformNpmCommand } from "~/lib/transformNpmCommand";
+import type { PackageManager } from "~/lib/transformNpmCommand";
+import { DetailsMenu, DetailsPopup } from "./details-menu";
+
 import { Link, useSearchParams } from "@remix-run/react";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
@@ -67,6 +71,13 @@ export function InitCodeblock({
   let [npxOrNpmMaybe, ...otherCode] = initCommand.trim().split(" ");
   let [copied, setCopied] = useState(false);
 
+  function handleCopy(packageManager: PackageManager) {
+    setCopied(true);
+    navigator.clipboard.writeText(
+      transformNpmCommand(npxOrNpmMaybe, otherCode.join(" "), packageManager),
+    );
+  }
+
   // Reset copied state after 4 seconds
   useEffect(() => {
     if (copied) {
@@ -106,30 +117,63 @@ export function InitCodeblock({
         </code>
       </pre>
 
-      <button
-        type="button"
-        onClick={() => {
-          setCopied(true);
-          navigator.clipboard.writeText(initCommand);
-        }}
-        data-code-block-copy
-        data-copied={copied}
-        className="outline-none"
-      >
-        {/* had to put these here instead of as a mask so we could add an opacity */}
-        <svg
-          aria-hidden
-          className="h-5 w-5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-100"
-          viewBox="0 0 24 24"
-        >
-          {copied ? (
-            <use href={`${iconsHref}#check-mark`} />
-          ) : (
-            <use href={`${iconsHref}#copy`} />
-          )}
-        </svg>
-        <span className="sr-only">Copy code to clipboard</span>
-      </button>
+      <CopyCodeBlock copied={copied} onCopy={handleCopy} />
     </div>
+  );
+}
+
+type CopyCodeBlockProps = {
+  copied: boolean;
+  onCopy: (packageManager: PackageManager) => void;
+};
+
+function CopyCodeBlock({ copied, onCopy }: CopyCodeBlockProps) {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  return (
+    <DetailsMenu
+      className="absolute"
+      data-copied={copied}
+      data-code-block-copy
+      ref={detailsRef}
+    >
+      <summary
+        className="_no-triangle block outline-offset-2"
+        data-copied={copied}
+      >
+        <span data-copied={copied}>
+          <svg
+            aria-hidden
+            className="h-5 w-5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-100"
+            viewBox="0 0 24 24"
+          >
+            {copied ? (
+              <use href={`${iconsHref}#check-mark`} />
+            ) : (
+              <use href={`${iconsHref}#copy`} />
+            )}
+          </svg>
+          <span className="sr-only">Copy code to clipboard</span>
+        </span>
+      </summary>
+      <div className="absolute right-0 w-28">
+        <DetailsPopup>
+          <div className="flex flex-col">
+            {(["npm", "yarn", "pnpm", "bun"] as const).map((packageManager) => (
+              <button
+                key={packageManager}
+                className="rounded-md p-1.5 text-left text-sm text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:bg-blue-800/50 dark:hover:text-gray-100"
+                onClick={() => {
+                  onCopy(packageManager);
+                  // Close the details menu
+                  detailsRef.current?.toggleAttribute("open");
+                }}
+              >
+                {packageManager}
+              </button>
+            ))}
+          </div>
+        </DetailsPopup>
+      </div>
+    </DetailsMenu>
   );
 }

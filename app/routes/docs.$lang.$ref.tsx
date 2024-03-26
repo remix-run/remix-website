@@ -260,7 +260,7 @@ function VersionSelect() {
         </svg>
       </summary>
       <DetailsPopup>
-        <div className="flex flex-col gap-px">
+        <div className="flex w-40 flex-col gap-px">
           <VersionsLabel label="Branches" />
           {branches.map((branch) => {
             return (
@@ -379,7 +379,7 @@ function ColorSchemeToggle() {
           replace
           action="/_actions/color-scheme"
           method="post"
-          className="flex flex-col gap-px"
+          className="flex w-40 flex-col gap-px"
         >
           <input
             type="hidden"
@@ -541,7 +541,7 @@ function HeaderMenuMobile({ className = "" }: { className: string }) {
         </svg>
       </summary>
       <DetailsPopup>
-        <div className="flex flex-col">
+        <div className="flex w-40 flex-col">
           <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
           <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
           <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
