@@ -11,10 +11,8 @@ import {
   useResolvedPath,
   matchPath,
 } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
-import { metaV1 } from "@remix-run/v1-meta";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
 import { useNavigate } from "react-router-dom";
@@ -72,13 +70,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     currentGitHubRef: ref,
     lang,
     isLatest,
-  });
-};
-
-export const meta: MetaFunction<typeof loader> = (args) => {
-  return metaV1(args, {
-    "docsearch:language": args.params.lang || "en",
-    "docsearch:version": args.params.ref || "v1",
   });
 };
 
@@ -356,7 +347,6 @@ function DocSearchSection({ className }: { className?: string }) {
       >
         <DocSearch />
       </div>
-      <div className="absolute top-full hidden h-6 w-full bg-gradient-to-b from-white dark:from-gray-900 lg:block" />
     </div>
   );
 }
@@ -627,7 +617,7 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed bottom-0 top-16 -ml-3 hidden w-72 flex-col gap-6 overflow-auto pb-10 pr-5 pt-5 lg:flex">
+    <div className="fixed bottom-0 top-16 -ml-3 hidden w-72 flex-col gap-3 overflow-auto pb-10 pr-5 pt-5 lg:flex">
       <DocSearchSection />
       <div className="[&_*:focus]:scroll-mt-[6rem]">
         <Menu />
@@ -638,27 +628,82 @@ function NavMenuDesktop() {
 
 function Menu() {
   let { menu } = useLoaderData<typeof loader>();
+
   return menu ? (
     <nav>
       <ul>
-        {menu.map((category) => (
-          <li key={category.attrs.title} className="[&:not(:last-child)]:mb-6">
-            <MenuCategoryHeading to={category.hasContent && category.slug}>
-              {category.attrs.title}
-            </MenuCategoryHeading>
-            {category.children.map((doc) => (
-              <MenuLink key={doc.slug} to={doc.slug}>
-                {doc.attrs.title} {doc.attrs.new && "🆕"}
-              </MenuLink>
-            ))}
-          </li>
-        ))}
+        {menu.map((category) => {
+          return (
+            <li key={category.attrs.title} className="mb-3">
+              <MenuCategoryDetails slug={category.slug}>
+                <summary className="_no-triangle flex select-none items-center justify-between rounded-2xl px-3 py-3 hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
+                  <MenuCategoryHeading
+                    to={category.hasContent && category.slug}
+                  >
+                    {category.attrs.title}
+                  </MenuCategoryHeading>
+                  <div className="flex items-center gap-2">
+                    <svg aria-hidden className="h-5 w-5 group-open:hidden">
+                      <use href={`${iconsHref}#chevron-r`} />
+                    </svg>
+                    <svg
+                      aria-hidden
+                      className="hidden h-5 w-5 group-open:block"
+                    >
+                      <use href={`${iconsHref}#chevron-d`} />
+                    </svg>
+                  </div>
+                </summary>
+                {category.children.map((doc) => {
+                  return (
+                    <MenuLink key={doc.slug} to={doc.slug}>
+                      {doc.attrs.title} {doc.attrs.new && "🆕"}
+                    </MenuLink>
+                  );
+                })}
+              </MenuCategoryDetails>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   ) : (
     <div className="bold text-gray-300 dark:text-gray-400">
       Failed to load menu
     </div>
+  );
+}
+
+type MenuCategoryDetailsType = {
+  slug: string;
+  children: React.ReactNode;
+};
+
+function MenuCategoryDetails({ slug, children }: MenuCategoryDetailsType) {
+  const isActivePath = useIsActivePath(slug);
+  // By default only the active path is open
+  const [isOpen, setIsOpen] = React.useState(isActivePath);
+
+  // Auto open the details element, useful when navigating from the home page
+  React.useEffect(() => {
+    if (isActivePath) {
+      setIsOpen(true);
+    }
+  }, [isActivePath]);
+
+  return (
+    <details
+      className="group relative flex cursor-pointer flex-col"
+      open={isOpen}
+      onToggle={(e) => {
+        // Synchronize the DOM's state with React state to prevent the
+        // details element from being closed after navigation and re-evaluation
+        // of useIsActivePath
+        setIsOpen(e.currentTarget.open);
+      }}
+    >
+      {children}
+    </details>
   );
 }
 
@@ -670,7 +715,7 @@ function MenuCategoryHeading({
   to?: string | null | false;
 }) {
   let className =
-    "flex items-center px-3 mb-2 text-base leading-[1.125] font-semibold rounded-md";
+    "flex items-center text-base leading-[1.125] font-semibold rounded-md";
   return to ? (
     <MenuCategoryLink to={to} className={className} children={children} />
   ) : (

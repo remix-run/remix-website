@@ -4,8 +4,20 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import arraybuffer from "vite-plugin-arraybuffer";
 
 export default defineConfig({
+  build: {
+    sourcemap: true,
+  },
   ssr: {
     noExternal: ["@docsearch/react"],
   },
-  plugins: [tsconfigPaths(), splitVendorChunkPlugin(), arraybuffer(), remix()],
+  plugins: [
+    tsconfigPaths(),
+    splitVendorChunkPlugin(),
+    arraybuffer(),
+    remix({
+      future: {
+        unstable_singleFetch: true,
+      },
+    }),
+  ],
 });

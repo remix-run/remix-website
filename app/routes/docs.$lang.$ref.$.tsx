@@ -14,20 +14,21 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
-import { metaV1, getMatchesData } from "@remix-run/v1-meta";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
 import invariant from "tiny-invariant";
 import type { Doc } from "~/lib/gh-docs";
 import { getRepoDoc } from "~/lib/gh-docs";
 import iconsHref from "~/icons.svg";
-import cx from "clsx";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import type { loader as docsLayoutLoader } from "~/routes/docs.$lang.$ref";
 import type { loader as rootLoader } from "~/root";
+import { getMeta } from "~/lib/meta";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   let url = new URL(request.url);
-  let pageUrl = url.protocol + "//" + url.host + url.pathname;
+  let baseUrl = url.protocol + "//" + url.host;
+  let siteUrl = baseUrl + url.pathname;
+  let ogImageUrl = baseUrl + "/img/og.1.jpg";
   invariant(params.ref, "expected `ref` params");
   try {
     let slug = params["*"]?.endsWith("/changelog")
@@ -36,7 +37,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     let doc = await getRepoDoc(params.ref, slug);
     if (!doc) throw null;
     return json(
-      { doc, pageUrl },
+      { doc, siteUrl, ogImageUrl },
       { headers: { "Cache-Control": CACHE_CONTROL.doc } },
     );
   } catch (_) {
@@ -51,7 +52,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 }
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  // Inherit the caching headers from the loader so we do't cache 404s
+  // Inherit the caching headers from the loader so we don't cache 404s
   let headers = new Headers(loaderHeaders);
   headers.set("Vary", "Cookie");
   return headers;
@@ -68,12 +69,18 @@ type MatchLoaders = {
 export const meta: MetaFunction<Loader, MatchLoaders> = (args) => {
   let { data } = args;
 
-  let matchesData = getMatchesData<Loader, MatchLoaders>(args);
-  let parentData = matchesData[LAYOUT_LOADER_KEY];
+  let parentData = args.matches.find(
+    (match) => match.id === LAYOUT_LOADER_KEY,
+  )?.data;
+  let rootData = args.matches.find((match) => match.id === "root")?.data;
+  invariant(
+    parentData && "latestVersion" in parentData,
+    "No parent data found",
+  );
+  invariant(rootData && "isProductionHost" in rootData, "No root data found");
+
   if (!data) {
-    return metaV1(args, {
-      title: "Not Found",
-    });
+    return [{ title: "Not Found" }];
   }
 
   let { doc } = data;
@@ -95,48 +102,26 @@ export const meta: MetaFunction<Loader, MatchLoaders> = (args) => {
   let isMainBranch = currentGitHubRef === releaseBranch;
 
   let robots =
-    matchesData.root.isProductionHost && isMainBranch
+    rootData.isProductionHost && isMainBranch
       ? "index,follow"
       : "noindex,nofollow";
 
-  let pageUrl = data.pageUrl;
+  let { siteUrl, ogImageUrl } = data;
 
-  // TODO: add more + better SEO stuff
-  // let url = new URL(data.pageUrl);
-  // let siteUrl = url.protocol + "//" + url.host;
-  // let ogImage = `${siteUrl}/image.jpg`;
-  // let ogImageAlt = title;
-  // let twitterImage = ogImage;
-  // let twitterImageAlt = title;
-  // let description: 'some description';
-
-  return metaV1(args, {
+  return getMeta({
     title: `${title} | Remix`,
-    // description,
-
-    "og:title": title,
-    // "og:description": description,
-    "og:url": pageUrl,
-    "og:type": "article",
-    "og:site_name": "Remix",
-    // "og:image": ogImage,
-    // "og:image:alt": ogImageAlt,
-    // "og:image:secure_url": ogImage,
-    // "og:image:type": "image/jpeg",
-    // "og:image:width": "1200",
-    // "og:image:height": "630",
-    // "og:locale": "en_US",
-
-    "twitter:title": title,
-    "twitter:site": "@remix_run",
-    "twitter:creator": "@remix_run",
-    // "twitter:image": twitterImage,
-    // "twitter:image:alt": twitterImageAlt,
-    // "twitter:description": description,
-    // "twitter:card": "summary",
-
-    robots: robots,
-    googlebot: robots,
+    // TODO: add a description
+    // let description: 'some description';
+    siteUrl,
+    image: ogImageUrl,
+    additionalMeta: [
+      { name: "og:type", content: "article" },
+      { name: "og:site_name", content: "Remix" },
+      { name: "docsearch:language", content: args.params.lang || "en" },
+      { name: "docsearch:version", content: args.params.ref || "v1" },
+      { name: "robots", content: robots },
+      { name: "googlebot", content: robots },
+    ],
   });
 };
 
@@ -178,13 +163,16 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
       <ul className="md-toc flex flex-col flex-wrap gap-3 leading-[1.125]">
         {doc.headings.map((heading, i) => {
           return (
-            <li key={i}>
+            <li
+              key={i}
+              className={heading.headingLevel === "h2" ? "ml-0" : "ml-4"}
+            >
               <Link
                 to={`#${heading.slug}`}
                 dangerouslySetInnerHTML={{ __html: heading.html || "" }}
-                className={cx(
-                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-400 dark:decoration-gray-500",
-                )}
+                className={
+                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-400 dark:decoration-gray-500"
+                }
               />
             </li>
           );
@@ -210,7 +198,10 @@ function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
       </summary>
       <ul className="pl-9">
         {doc.headings.map((heading, i) => (
-          <li key={i}>
+          <li
+            key={i}
+            className={heading.headingLevel === "h2" ? "ml-0" : "ml-4"}
+          >
             <Link
               to={`#${heading.slug}`}
               dangerouslySetInnerHTML={{ __html: heading.html || "" }}

@@ -1,5 +1,14 @@
 # Remix Website
 
+## Contributing
+
+If you want to make a contribution
+
+- [Fork and clone](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) this repo
+- Create a branch
+- Push any changes you make to your branch
+- Open up a PR in this Repo
+
 ## Setup
 
 First setup your `.env` file, use `.env.example` to know what to set.

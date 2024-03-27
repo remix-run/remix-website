@@ -25,7 +25,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 };
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  // Inherit the caching headers from the loader so we do't cache 404s
+  // Inherit the caching headers from the loader so we don't cache 404s
   return loaderHeaders;
 };
 
