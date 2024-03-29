@@ -45,7 +45,7 @@
   }
 
   &:hover [data-code-block-copy],
-  & [data-code-block-copy]:focus {
+  & [data-code-block-copy]:focus-within {
     @apply opacity-100;
   }
 
