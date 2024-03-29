@@ -633,16 +633,33 @@ function Menu() {
     <nav>
       <ul>
         {menu.map((category) => {
+          // Technically we can have a category that has content (and thus
+          // needs it's own link) _and_ has children, so needs to be a details
+          // element. It's ridiculous, but it's possible.
+          const menuCategoryType = category.hasContent
+            ? category.children.length > 0
+              ? "linkAndDetails"
+              : "link"
+            : "details";
+
           return (
             <li key={category.attrs.title} className="mb-3">
-              <MenuCategoryDetails slug={category.slug}>
-                <summary className="_no-triangle flex select-none items-center justify-between rounded-2xl px-3 py-3 hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
-                  <MenuCategoryHeading
-                    to={category.hasContent && category.slug}
-                  >
+              {menuCategoryType === "link" ? (
+                <MenuSummary as="div">
+                  <MenuCategoryLink to={category.slug}>
                     {category.attrs.title}
-                  </MenuCategoryHeading>
-                  <div className="flex items-center gap-2">
+                  </MenuCategoryLink>
+                </MenuSummary>
+              ) : (
+                <MenuCategoryDetails className="group" slug={category.slug}>
+                  <MenuSummary>
+                    {menuCategoryType === "linkAndDetails" ? (
+                      <MenuCategoryLink to={category.slug}>
+                        {category.attrs.title}
+                      </MenuCategoryLink>
+                    ) : (
+                      category.attrs.title
+                    )}
                     <svg aria-hidden className="h-5 w-5 group-open:hidden">
                       <use href={`${iconsHref}#chevron-r`} />
                     </svg>
@@ -652,16 +669,16 @@ function Menu() {
                     >
                       <use href={`${iconsHref}#chevron-d`} />
                     </svg>
-                  </div>
-                </summary>
-                {category.children.map((doc) => {
-                  return (
-                    <MenuLink key={doc.slug} to={doc.slug}>
-                      {doc.attrs.title} {doc.attrs.new && "🆕"}
-                    </MenuLink>
-                  );
-                })}
-              </MenuCategoryDetails>
+                  </MenuSummary>
+                  {category.children.map((doc) => {
+                    return (
+                      <MenuLink key={doc.slug} to={doc.slug}>
+                        {doc.attrs.title} {doc.attrs.new && "🆕"}
+                      </MenuLink>
+                    );
+                  })}
+                </MenuCategoryDetails>
+              )}
             </li>
           );
         })}
@@ -675,11 +692,16 @@ function Menu() {
 }
 
 type MenuCategoryDetailsType = {
+  className?: string;
   slug: string;
   children: React.ReactNode;
 };
 
-function MenuCategoryDetails({ slug, children }: MenuCategoryDetailsType) {
+function MenuCategoryDetails({
+  className,
+  slug,
+  children,
+}: MenuCategoryDetailsType) {
   const isActivePath = useIsActivePath(slug);
   // By default only the active path is open
   const [isOpen, setIsOpen] = React.useState(isActivePath);
@@ -693,7 +715,7 @@ function MenuCategoryDetails({ slug, children }: MenuCategoryDetailsType) {
 
   return (
     <details
-      className="group relative flex cursor-pointer flex-col"
+      className={cx(className, "relative flex cursor-pointer flex-col")}
       open={isOpen}
       onToggle={(e) => {
         // Synchronize the DOM's state with React state to prevent the
@@ -707,42 +729,67 @@ function MenuCategoryDetails({ slug, children }: MenuCategoryDetailsType) {
   );
 }
 
-function MenuCategoryHeading({
+// This components attempts to keep all of the styles as similar as possible
+function MenuSummary({
   children,
-  to,
+  as = "summary",
 }: {
   children: React.ReactNode;
-  to?: string | null | false;
+  as?: "summary" | "div";
 }) {
-  let className =
-    "flex items-center text-base leading-[1.125] font-semibold rounded-md";
-  return to ? (
-    <MenuCategoryLink to={to} className={className} children={children} />
-  ) : (
-    <div className={className} children={children} />
+  const sharedClassName =
+    "rounded-2xl px-3 py-3 transition-colors duration-100";
+  const wrappedChildren = (
+    <div className="flex h-5 w-full items-center justify-between text-base font-semibold leading-[1.125]">
+      {children}
+    </div>
+  );
+
+  if (as === "summary") {
+    return (
+      <summary
+        className={cx(
+          sharedClassName,
+          "_no-triangle block select-none",
+          "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
+          "hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700",
+        )}
+      >
+        {wrappedChildren}
+      </summary>
+    );
+  }
+
+  return (
+    <div
+      className={cx(
+        sharedClassName,
+        "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-inset has-[:focus-visible]:ring-blue-800 dark:has-[:focus-visible]:ring-gray-100",
+      )}
+    >
+      {wrappedChildren}
+    </div>
   );
 }
 
 function MenuCategoryLink({
   to,
   children,
-  className,
 }: {
   to: string;
   children: React.ReactNode;
-  className?: string;
 }) {
   let isActive = useIsActivePath(to);
+
   return (
     <Link
       prefetch="intent"
       to={to}
       className={cx(
-        className,
-        "group",
+        "outline-none focus-visible:text-blue-brand dark:focus-visible:text-blue-400",
         isActive
-          ? "bg-gray-50 font-semibold text-blue-brand dark:bg-gray-800"
-          : "text-inherit hover:text-gray-900 active:text-blue-brand dark:hover:text-gray-50 dark:active:text-blue-brand",
+          ? "text-blue-brand dark:text-blue-brand"
+          : "hover:text-blue-brand dark:hover:text-blue-400 ",
       )}
     >
       {children}
