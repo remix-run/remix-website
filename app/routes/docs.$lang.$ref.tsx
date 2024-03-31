@@ -119,22 +119,24 @@ export default function DocsLayout() {
         }
       >
         <InnerContainer>
-          <NavMenuDesktop />
-          <div
-            ref={docsContainer}
-            className={cx(
-              // add scroll margin to focused elements so that they aren't
-              // obscured by the sticky header
-              "[&_*:focus]:scroll-mt-[8rem] lg:[&_*:focus]:scroll-mt-[5rem]",
-              "min-h-[80vh]",
-              "lg:ml-72 lg:pl-6 xl:pl-10 2xl:pl-12",
-              !changingVersions && navigating
-                ? "opacity-25 transition-opacity delay-300"
-                : "",
-            )}
-          >
-            <Outlet />
-          </div>
+          <section className="flex">
+            <NavMenuDesktop />
+            <div
+              ref={docsContainer}
+              className={cx(
+                // add scroll margin to focused elements so that they aren't
+                // obscured by the sticky header
+                "[&_*:focus]:scroll-mt-[8rem] lg:[&_*:focus]:scroll-mt-[5rem]",
+                "min-h-[80vh]",
+                "lg:ml-3 lg:pl-6 xl:pl-10 2xl:pl-12",
+                !changingVersions && navigating
+                  ? "opacity-25 transition-opacity delay-300"
+                  : "",
+              )}
+            >
+              <Outlet />
+            </div>
+          </section>
           <div className="min-w-0 pt-8 sm:pt-10 lg:ml-72 lg:pl-6 lg:pt-12 xl:pl-10 2xl:pl-12">
             <Footer />
           </div>
@@ -617,7 +619,7 @@ function NavMenuMobile() {
 
 function NavMenuDesktop() {
   return (
-    <div className="fixed bottom-0 top-16 -ml-3 hidden w-72 flex-col gap-3 overflow-auto pb-10 pr-5 pt-5 lg:flex">
+    <div className="sticky bottom-0 top-16 -ml-3 hidden min-w-72 flex-col gap-3 overflow-auto pb-10 pr-5 pt-5 lg:flex">
       <DocSearchSection />
       <div className="[&_*:focus]:scroll-mt-[6rem]">
         <Menu />
