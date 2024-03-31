@@ -126,7 +126,7 @@ export default function DocsLayout() {
               className={cx(
                 // add scroll margin to focused elements so that they aren't
                 // obscured by the sticky header
-                "[&_*:focus]:scroll-mt-[8rem] lg:[&_*:focus]:scroll-mt-[5rem]",
+                "[&_*:focus]:scroll-mt-[8rem] lg:[&_*:focus]:scroll-mt-[5rem] overflow-hidden lg:overflow-auto",
                 "min-h-[80vh]",
                 "lg:ml-3 lg:pl-6 xl:pl-10 2xl:pl-12",
                 !changingVersions && navigating
