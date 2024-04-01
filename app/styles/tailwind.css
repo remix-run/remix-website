@@ -38,6 +38,10 @@ html {
   font-size: 16px;
 }
 
+.dark {
+    color-scheme: dark;
+}
+
 [hidden] {
   display: none !important;
 }
