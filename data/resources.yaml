@@ -221,7 +221,7 @@
   initCommand: "npx @inlang/paraglide-js init && npm i remix-paraglidejs @inlang/paraglide-js-adapter-vite"
   category: "libraries"
 
-- title: ""
+- title: "vite-svg-sprite-plugin"
   repoUrl: "https://github.com/mcansh/vite-svg-sprite-plugin"
   imgSrc: "https://opengraph.githubassets.com/1/mcansh/vite-svg-sprite-plugin"
   initCommand: "npm install @mcansh/vite-svg-sprite-plugin"
