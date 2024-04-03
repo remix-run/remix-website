@@ -221,6 +221,12 @@
   initCommand: "npx @inlang/paraglide-js init && npm i remix-paraglidejs @inlang/paraglide-js-adapter-vite"
   category: "libraries"
 
+- title: "SaaSKits - Remix Boilerplate"
+  repoUrl: "https://github.com/saas-kits/remix-boilerplate"
+  imgSrc: "https://opengraph.githubassets.com/8fadfa577649b2afb0e90d2882f1cfafac4832a5c307934bc9ceb7adf7b33787/saas-kits/remix-boilerplate"
+  initCommand: "pnpm create remix@latest --init-script --install --template saas-kits/remix-boilerplate"
+  category: "templates"
+
 - title: "vite-svg-sprite-plugin"
   repoUrl: "https://github.com/mcansh/vite-svg-sprite-plugin"
   imgSrc: "https://opengraph.githubassets.com/1/mcansh/vite-svg-sprite-plugin"
