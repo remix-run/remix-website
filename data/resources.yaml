@@ -220,7 +220,7 @@
   imgSrc: "https://opengraph.githubassets.com/261c7cc1db489c2cba871b43957993802ec0f7c6609d06014534906a22036a7e/BRIKEV/remix-paraglidejs"
   initCommand: "npx @inlang/paraglide-js init && npm i remix-paraglidejs @inlang/paraglide-js-adapter-vite"
   category: "libraries"
-  
+
 - title: "SaaSKits - Remix Boilerplate"
   repoUrl: "https://github.com/saas-kits/remix-boilerplate"
   imgSrc: "https://opengraph.githubassets.com/8fadfa577649b2afb0e90d2882f1cfafac4832a5c307934bc9ceb7adf7b33787/saas-kits/remix-boilerplate"
