@@ -75,7 +75,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 export const headers: HeadersFunction = () => {
   return {
-    "Cache-Control": CACHE_CONTROL.doc,
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
     Vary: "Cookie",
   };
 };
