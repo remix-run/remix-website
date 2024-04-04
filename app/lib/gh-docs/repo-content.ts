@@ -22,7 +22,11 @@ export async function getRepoContent(
     new URL(pathname, "https://raw.githubusercontent.com/").href,
     { headers: { "User-Agent": `docs:${owner}/${repo}` } },
   );
-  if (!response.ok) return null;
+  if (!response.ok) {
+    // Need to consume for undici since it won't garbage collect
+    await response.text();
+    return null;
+  }
   return response.text();
 }
 

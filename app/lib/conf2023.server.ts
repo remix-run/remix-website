@@ -61,6 +61,8 @@ export async function getSpeakers(
     },
   });
   if (!fetched.ok) {
+    // Need to consume for undici since it won't garbage collect
+    await fetched.text();
     throw new Error(
       "Error fetching speakers, responded with status: " + fetched.status,
     );
@@ -124,6 +126,8 @@ export async function getConfSessions(
     },
   });
   if (!fetched.ok) {
+    // Need to consume for undici since it won't garbage collect
+    await fetched.text();
     throw new Error(
       "Error fetching speakers, responded with status: " + fetched.status,
     );
@@ -187,6 +191,8 @@ export async function getSchedules(
     getSpeakers(),
   ]);
   if (!fetched.ok) {
+    // Need to consume for undici since it won't garbage collect
+    await fetched.text();
     throw new Error(
       "Error fetching schedule, responded with status: " + fetched.status,
     );
@@ -460,6 +466,8 @@ async function fetchNaiveStaleWhileRevalidate(
     throw err;
   }
   if (res.status === 504) {
+    // Need to consume for undici since it won't garbage collect
+    await res.text();
     return fetchWithForceCache();
   }
 
