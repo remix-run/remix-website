@@ -164,7 +164,9 @@ async function getSponsorUrl(owner: string) {
   let sponsorUrl = `${GITHUB_URL}/sponsors/${owner}`;
 
   try {
-    let response = await fetch(sponsorUrl);
+    // We don't need the body, just need to know if it's redirected
+    // method: "HEAD" removes the need for garbage collection: https://github.com/nodejs/undici?tab=readme-ov-file#garbage-collection
+    let response = await fetch(sponsorUrl, { method: "HEAD" });
     return !response.redirected ? sponsorUrl : undefined;
   } catch (e) {
     console.error("Failed to fetch sponsor url for", owner);
