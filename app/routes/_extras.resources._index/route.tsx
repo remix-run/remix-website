@@ -5,7 +5,7 @@ import {
   type MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { ResourceTag, useCreateTagUrl } from "~/ui/resources";
+import { ResourceTag } from "~/ui/resources";
 import { getResourcesForRequest } from "./data.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import {
@@ -54,7 +54,6 @@ export const meta: MetaFunction<typeof loader> = (args) => {
 export default function Resources() {
   let { featuredResource, selectedCategory, selectedTags, resources } =
     useLoaderData<typeof loader>();
-  let createTagUrl = useCreateTagUrl();
 
   return (
     <main className="container flex flex-1 flex-col items-center md:mt-8">
@@ -74,11 +73,7 @@ export default function Resources() {
           </h1>
           <div className="mt-2 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2 lg:mt-2">
             {selectedTags.map((tag) => (
-              <ResourceTag
-                key={tag}
-                to={createTagUrl({ remove: tag })}
-                selected
-              >
+              <ResourceTag key={tag} value={tag} selected>
                 {tag}
               </ResourceTag>
             ))}
