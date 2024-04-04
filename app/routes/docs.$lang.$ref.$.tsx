@@ -38,7 +38,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     if (!doc) throw null;
     return json(
       { doc, siteUrl, ogImageUrl },
-      { headers: { "Cache-Control": CACHE_CONTROL.doc } },
+      { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
     );
   } catch (_) {
     if (params.ref === "main" && params["*"]) {
