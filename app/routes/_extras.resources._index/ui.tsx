@@ -1,5 +1,5 @@
 import type { Category, Resource } from "~/lib/resources.server";
-import { InitCodeblock, ResourceTag, useCreateTagUrl } from "~/ui/resources";
+import { InitCodeblock, ResourceTag } from "~/ui/resources";
 import { Link, useSearchParams } from "@remix-run/react";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
@@ -22,7 +22,6 @@ export function FeaturedResourcePoster({
     sponsorUrl,
     tags,
   } = featuredResource;
-  let createTagUrl = useCreateTagUrl();
 
   return (
     <>
@@ -47,7 +46,7 @@ export function FeaturedResourcePoster({
         </p>
         <div className="mt-4 flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
           {tags.map((tag) => (
-            <ResourceTag key={tag} to={createTagUrl({ add: tag })}>
+            <ResourceTag key={tag} value={tag}>
               {tag}
             </ResourceTag>
           ))}
@@ -113,7 +112,6 @@ export function ResourceCards({
   selectedCategory,
   selectedTags,
 }: ResourceCardsProps) {
-  let createTagUrl = useCreateTagUrl();
   let selectedTagsSet = new Set(selectedTags);
 
   if (resources.length > 0) {
@@ -132,11 +130,7 @@ export function ResourceCards({
           {tags.map((tag) => (
             <ResourceTag
               key={tag}
-              to={
-                selectedTagsSet.has(tag)
-                  ? createTagUrl({ remove: tag })
-                  : createTagUrl({ add: tag })
-              }
+              value={tag}
               selected={selectedTagsSet.has(tag)}
             >
               {tag}

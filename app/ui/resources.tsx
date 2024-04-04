@@ -1,58 +1,67 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { type Resource } from "~/lib/resources.server";
-import { Link, useSearchParams } from "@remix-run/react";
+import { Form, useSearchParams } from "@remix-run/react";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
 
 import "~/styles/resources.css";
 
-export function useCreateTagUrl() {
-  let [searchParams] = useSearchParams();
-
-  return ({ add, remove }: { add?: string; remove?: string }) => {
-    let newSearchParams = new URLSearchParams(searchParams);
-
-    if (add) {
-      newSearchParams.append("tag", add);
-    }
-    if (remove) {
-      newSearchParams.delete("tag", remove);
-    }
-
-    return `/resources?${newSearchParams}`;
-  };
-}
-
 type ResourceTagProps = {
-  to: string;
-  selected?: boolean;
+  value: string;
   children: React.ReactNode;
+  selected?: boolean;
 };
 
 export function ResourceTag({
-  to,
-  selected = false,
+  value,
   children,
+  selected: _selected,
 }: ResourceTagProps) {
+  let [searchParams] = useSearchParams();
+
+  let selected = _selected ?? searchParams.has("tag", value);
+
+  let hiddenInputs = useMemo(() => {
+    const seenTags = new Set<string>([value]);
+    return [
+      ...[...searchParams.entries()].map(([param, paramValue], key) => {
+        let seen =
+          param === "tag" && (seenTags.has(paramValue) || paramValue === value);
+        seenTags.add(paramValue);
+        if (seen) {
+          return <Fragment key={key} />;
+        }
+        return (
+          <input key={key} type="hidden" name={param} value={paramValue} />
+        );
+      }),
+    ];
+  }, [searchParams, value]);
+
   return (
-    <Link
-      to={to}
-      className={cx(
-        "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium leading-none ring-1 ring-inset",
-        selected
-          ? "bg-blue-100 ring-blue-500/10 hover:bg-blue-200 dark:bg-gray-300 dark:text-gray-900 dark:ring-gray-900/50 dark:hover:bg-gray-400 dark:hover:text-gray-900"
-          : "bg-gray-50 text-gray-600 ring-gray-500/10 hover:bg-blue-100 dark:bg-gray-900 dark:text-gray-300 dark:ring-gray-200/50 dark:hover:bg-gray-400 dark:hover:text-gray-900",
-      )}
-    >
-      <span className="sr-only">{selected ? "remove" : "add"}</span>
-      {children}
-      <span className="sr-only">tag</span>
-      {selected ? (
-        <svg aria-hidden className="-mr-1 h-3.5 w-3.5" viewBox="0 0 14 14">
-          <use href={`${iconsHref}#x-mark`} />
-        </svg>
-      ) : null}
-    </Link>
+    <Form action="/resources" className="inline-flex">
+      {hiddenInputs}
+      <button
+        type="submit"
+        className={cx(
+          "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium leading-none ring-1 ring-inset",
+          selected
+            ? "bg-blue-100 ring-blue-500/10 hover:bg-blue-200 dark:bg-gray-300 dark:text-gray-900 dark:ring-gray-900/50 dark:hover:bg-gray-400 dark:hover:text-gray-900"
+            : "bg-gray-50 text-gray-600 ring-gray-500/10 hover:bg-blue-100 dark:bg-gray-900 dark:text-gray-300 dark:ring-gray-200/50 dark:hover:bg-gray-400 dark:hover:text-gray-900",
+        )}
+        name={selected ? undefined : "tag"}
+        value={selected ? undefined : value}
+      >
+        <span className="sr-only">{selected ? "remove" : "add"}</span>
+        {children}
+        <span className="sr-only">tag</span>
+        {selected ? (
+          <svg aria-hidden className="-mr-1 h-3.5 w-3.5" viewBox="0 0 14 14">
+            <use href={`${iconsHref}#x-mark`} />
+          </svg>
+        ) : null}
+      </button>
+    </Form>
   );
 }
 

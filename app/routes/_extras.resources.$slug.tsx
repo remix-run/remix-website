@@ -8,7 +8,7 @@ import {
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getResource } from "~/lib/resources.server";
-import { InitCodeblock, ResourceTag, useCreateTagUrl } from "~/ui/resources";
+import { InitCodeblock, ResourceTag } from "~/ui/resources";
 import { octokit } from "~/lib/github.server";
 import "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
@@ -80,7 +80,6 @@ export default function ResourcePage() {
     tags,
     readmeHtml,
   } = resource;
-  let createTagUrl = useCreateTagUrl();
 
   return (
     <main className="flex flex-1 flex-col items-center px-8 lg:container">
@@ -136,7 +135,7 @@ export default function ResourcePage() {
           <InitCodeblock initCommand={initCommand} />
           <div className="flex w-full max-w-full flex-wrap gap-x-2 gap-y-2">
             {tags.map((tag) => (
-              <ResourceTag key={tag} to={createTagUrl({ add: tag })}>
+              <ResourceTag key={tag} value={tag}>
                 {tag}
               </ResourceTag>
             ))}
