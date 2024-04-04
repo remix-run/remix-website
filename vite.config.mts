@@ -16,7 +16,7 @@ export default defineConfig({
     arraybuffer(),
     remix({
       future: {
-        unstable_singleFetch: true,
+        unstable_singleFetch: false,
       },
     }),
   ],
