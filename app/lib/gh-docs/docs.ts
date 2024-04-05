@@ -100,15 +100,20 @@ async function fetchDoc(key: string): Promise<Doc> {
   if (md === null) {
     throw Error(`Could not find ${filename} in ${repo}@${ref}`);
   }
-  let { html, attributes } = await processMarkdown(md);
-  let attrs: MenuDocAttributes = { title: filename };
-  if (isPlainObject(attributes)) {
-    attrs = { title: filename, ...attributes };
-  }
+  try {
+    let { html, attributes } = await processMarkdown(md);
+    let attrs: MenuDocAttributes = { title: filename };
+    if (isPlainObject(attributes)) {
+      attrs = { title: filename, ...attributes };
+    }
 
-  // sorry, cheerio is so much easier than using rehype stuff.
-  let headings = createTableOfContentsFromHeadings(html);
-  return { attrs, filename, html, slug, headings, children: [] };
+    // sorry, cheerio is so much easier than using rehype stuff.
+    let headings = createTableOfContentsFromHeadings(html);
+    return { attrs, filename, html, slug, headings, children: [] };
+  } catch (err) {
+    console.error(`Error processing doc file ${filename} in ${ref}`, err);
+    throw err;
+  }
 }
 
 // create table of contents from h2 and h3 headings
