@@ -232,3 +232,9 @@
   imgSrc: "https://opengraph.githubassets.com/1/mcansh/vite-svg-sprite-plugin"
   initCommand: "npm install @mcansh/vite-svg-sprite-plugin"
   category: "libraries"
+
+- title: "Sanity.io Visual Editing Template"
+  repoUrl: "https://github.com/SimeonGriggs/sanity-remix-template"
+  imgSrc: "https://opengraph.githubassets.com/080f84d879e2777e3516f1d70082d6d6258fe6a8c5db5e4356a2f92e5e8cebf7/SimeonGriggs/sanity-remix-template"
+  initCommand: "npx create-remix@latest --template SimeonGriggs/sanity-remix-template"
+  category: "templates"
