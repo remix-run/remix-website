@@ -6,7 +6,7 @@ const requiredInProduction: z.RefinementEffect<
   if (process.env.NODE_ENV === "production" && !value) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "Missing required environment variable" + ctx.path.join("."),
+      message: "Missing required environment variable " + ctx.path.join("."),
     });
   }
 };
@@ -17,7 +17,7 @@ const requiredInDevelopment: z.RefinementEffect<
   if (process.env.NODE_ENV === "development" && !value) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "Missing required environment variable" + ctx.path.join("."),
+      message: "Missing required environment variable " + ctx.path.join("."),
     });
   }
 };
