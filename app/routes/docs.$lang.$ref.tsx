@@ -105,7 +105,7 @@ export default function DocsLayout() {
   useCodeBlockCopyButton(docsContainer);
 
   return (
-    <div>
+    <div className="[--header-height:theme(spacing.16)] [--nav-width:theme(spacing.72)]">
       <div className="sticky top-0 z-20">
         <Header />
         <VersionWarningMobile />
@@ -128,7 +128,7 @@ export default function DocsLayout() {
                 // obscured by the sticky header
                 "[&_*:focus]:scroll-mt-[8rem] lg:[&_*:focus]:scroll-mt-[5rem]",
                 // Account for the left navbar
-                "min-h-[80vh] lg:ml-3 lg:w-[calc(100%-theme(spacing.72))]",
+                "min-h-[80vh] lg:ml-3 lg:w-[calc(100%-var(--nav-width))]",
                 "lg:pl-6 xl:pl-10 2xl:pl-12",
                 !changingVersions && navigating
                   ? "opacity-25 transition-opacity delay-300"
@@ -188,7 +188,7 @@ function Header() {
       )}
     >
       <InnerContainer>
-        <div className="relative z-20 flex h-16 w-full items-center justify-between py-3">
+        <div className="relative z-20 flex h-[--header-height] w-full items-center justify-between py-3">
           <div className="flex w-full items-center justify-between gap-4 sm:gap-8 md:w-auto">
             <Link
               className="flex"
@@ -622,9 +622,9 @@ function NavMenuDesktop() {
   return (
     <div
       className={cx(
-        "sticky bottom-0 top-16 -ml-3 hidden w-72 flex-col gap-3 self-start overflow-auto pb-10 pr-5 pt-5 lg:flex",
+        "sticky bottom-0 top-16 -ml-3 hidden w-[--nav-width] flex-col gap-3 self-start overflow-auto pb-10 pr-5 pt-5 lg:flex",
         // Account for the height of the top nav
-        "h-[calc(100vh-theme(spacing.16))]",
+        "h-[calc(100vh-var(--header-height))]",
       )}
     >
       <DocSearchSection />
