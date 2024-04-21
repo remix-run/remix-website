@@ -107,3 +107,9 @@
   link: "https://www.passionfroot.me"
   imgSrc: "/showcase-assets/passionfroot.webp"
   videoSrc: "/showcase-assets/passionfroot"
+
+- name: "Leads1LLC"
+  description: "Veteran-led firm innovating business solutions through quality training and services"
+  link: "https://www.leads1llc.com"
+  imgSrc: "/showcase-assets/leads1llc.webp"
+  videoSrc: "/showcase-assets/leads1llc"
