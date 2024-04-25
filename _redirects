@@ -57,3 +57,8 @@
 /route/error-boundary-v2              /docs/route/error-boundary           302
 /route/meta-v2                        /docs/route/meta                     302
 /route/route-module                   /docs/route/action                   302
+
+/docs/future/presets                  /docs/guides/presets                 302  
+/docs/future/server-bundles           /docs/guides/server-bundles          302
+/docs/future/spa-mode                 /docs/guides/spa-mode                302
+/docs/future/vite                     /docs/guides/vite                    302
