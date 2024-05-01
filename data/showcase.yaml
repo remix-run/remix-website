@@ -36,12 +36,6 @@
   imgSrc: "/showcase-assets/daffy.webp"
   videoSrc: "/showcase-assets/daffy"
 
-- name: "GitHub"
-  description: "Copilot for PRs waitlist"
-  link: "https://copilot4prs.githubnext.com"
-  imgSrc: "/showcase-assets/github-copilot-prs.webp"
-  videoSrc: "/showcase-assets/github-copilot-prs"
-
 - name: "Nour Hammour"
   description: "Luxury fashion outwear brand from Paris"
   link: "https://nour-hammour.com/"
