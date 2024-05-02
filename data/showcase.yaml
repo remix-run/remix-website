@@ -101,3 +101,9 @@
   link: "https://www.passionfroot.me"
   imgSrc: "/showcase-assets/passionfroot.webp"
   videoSrc: "/showcase-assets/passionfroot"
+
+- name: "Atmos Financial"
+  description: "Bank accounts that fund solar"
+  link: "https://www.joinatmos.com"
+  imgSrc: "/showcase-assets/atmos.webp"
+  videoSrc: "/showcase-assets/atmos"
