@@ -64,10 +64,10 @@
   initCommand: "npm install remix-development-tools -D"
   category: "libraries"
 
-- title: "Stripe Stack"
-  repoUrl: "https://github.com/dev-xo/stripe-stack"
-  imgSrc: "https://raw.githubusercontent.com/dev-xo/dev-xo/main/stripe-stack/assets/images/Intro-Light.png"
-  initCommand: "npx create-remix@latest template dev-xo/stripe-stack"
+- title: "Remix SaaS"
+  repoUrl: "https://github.com/dev-xo/remix-saas"
+  imgSrc: "https://raw.githubusercontent.com/dev-xo/dev-xo/main/remix-saas/intro.png"
+  initCommand: "npx create-remix-saas@latest"
   category: "templates"
 
 - title: "Remix Auth"
