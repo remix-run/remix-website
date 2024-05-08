@@ -7,6 +7,7 @@ date: 2024-05-15
 # TODO: Add a new blog image
 image: /blog-images/posts/remixing-react-router/image.jpg
 imageAlt: A waterfall down a series of rocks shaped like a stairway
+hidden: true
 authors:
   - Brooks Lybrand
 ---
@@ -80,20 +81,30 @@ There's a problem with the statement
 
 The problem is that 2-syllable, multi-sprint, call-for-tshirt-sizing, manager-fear-inducing word **_migration_**.
 
-Our strategy up until now has been to make the bridge from a React Router app to Remix so seamless it doesn't even feel like a migration. The problem is, no matter how good a job we do building that bridge, it still _feels_ like a rewrite. Emotionally, changing an import from one package to another feels like a rewrite, otherwise it would just be a major version upgrade.
+Our strategy up until now has been to make the bridge from a React Router app to Remix so seamless it doesn't even feel like a migration. The problem is, no matter how good of a job we do building that bridge, it still _feels_ like a rewrite. Emotionally, changing an import from one package to another feels like a rewrite, otherwise it would just be a major version upgrade.
 
-HERE
+So we had a thought: what if we just made it a major version upgrade?
 
-That's why we're
+Turns out we've been making that _Remix ➡️ React_ bridge a little too well, and now Remix and React Router are basically the same thing (minus Vite). If we just ship a Vite plugin for React Router, the two projects could be merged.
 
-Our first strategy: Vite + SPA mode
-
-React Router + Vite = React Router v7
+So that's what we're gonna do.
 
 <img alt="React Router logo plus Vite logo equals React Router logo with a v7 under it" src="/blog-images/posts/react-router-v7/rr-plus-vite-is-rr-7.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
 
-- commitment non-painful major upgrades: Future flags
-- the only difference between react router and Remix is the vite plugin
+We want everyone in the React ecosystem to have access to
+
+- Automatic code splitting
+- Simplified data loading
+- Form Actions, Server actions
+- Simplified pending states
+- Optimistic UI
+- Server rendering
+- Static pre-rendering
+- RSC is coming
+
+We want that 5 million line Shopify app, and those 7+ million React Router apps to be able to easily upgrade and take advantage of the latest and greatest React has to offer. We want creating a new React app to be easy and scalable.
+
+And we want to provide the best the best upgrade path possible.
 
 ## How to upgrade
 
@@ -120,7 +131,19 @@ If you have any questions, please don't hesitate to [reach out on to us on Disco
 
 ## What's happening to Remix
 
+You may be wondering: what's happening to Remix? Fair question.
+
+We're not going anywhere. Remix the package is gonna take a little nap. We have a ton of ideas we've been workshopping and are eager to get right and get into your hands. The Remix team of 7 is going to be heads down on shipping React Router v7 and delivering the smoothest upgrade process we possibly can. Our goal is that if you're on the latest minor or Remix v2 or React Router v6 you can just codemod your way to React Router v7. That means the `@react-run` packages are gonna hibernate for a bit.
+
 <img alt="Remix logo with a sleeping emoji" src="/blog-images/posts/react-router-v7/sleepy-remix.jpeg" class="w-full aspect-[16/9] rounded-md shadow-lg" />
+
+But we don't expect Remix to be asleep forever.
+
+With any project that's been around for 4 years (or 10 years) you learn a lot along the way, and have to wrestle with the urge to throw everything away and start from scratch without the baggage of early APIs and design decisions. Plus, we believe React Server Components really change the game, but they're a new primitive to build on top of, and just like everyone we're discovering the best way to do that.
+
+So [subscribe][remix-newsletter] (or stay subscribed) to our newsletter, follow us on [Twitter][remix-twitter], and join our [Discord][remix-discord] to stay up to date on all the latest.
+
+We're more energized than ever to keep helping people **build better websites**.
 
 ---
 
@@ -143,3 +166,5 @@ If you have any questions, please don't hesitate to [reach out on to us on Disco
 [vite]: https://vitejs.dev/
 [remix-heart-vite]: remix-heart-vite
 [client-data]: https://remix.run/docs/en/main/guides/client-data
+[remix-newsletter]: https://rmx.as/newsletter
+[remix-twitter]: https://twitter.com/remix_run/
