@@ -1,12 +1,11 @@
 ---
-# TODO: clean up title and summary
 title: React Router v7
-summary: Remix v3 (SIKE!)
+summary: We're remixing React Router (again), and we're convinced this is going to be the best version yet.
 featured: true
 date: 2024-05-15
 # TODO: Add a new blog image
 image: /blog-images/posts/remixing-react-router/image.jpg
-imageAlt: A waterfall down a series of rocks shaped like a stairway
+imageAlt: React Router Logo
 hidden: true
 authors:
   - Brooks Lybrand
