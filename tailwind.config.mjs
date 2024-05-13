@@ -7,7 +7,20 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 /** @type {TailwindConfig} */
 export default {
   mode: "jit",
-  content: ["./app/**/*.{ts,tsx}", "./data/**/*.md", "./tailwind-extras.html"],
+  content: ["./app/**/*.{ts,tsx}", "./data/**/*.md"],
+  // docs have some tailwind classes, tell tailwind to always add these classes
+  // so the right classes are still added in CI
+  safelist: [
+    "mb-4",
+    "aspect-[4/3]",
+    "w-full",
+    "overflow-hidden",
+    "rounded-lg",
+    "aspect-[1/1]",
+    "w-full",
+    "overflow-hidden",
+    "rounded-lg",
+  ],
   darkMode: "class",
   plugins: [aspectRatioPlugin, selectedVariantPlugin, expandedVariantPlugin],
   theme: {
