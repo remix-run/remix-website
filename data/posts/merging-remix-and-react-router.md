@@ -1,6 +1,6 @@
 ---
 title: Merging Remix and React Router
-summary: We've been building a bridge from React Router to Remix, and we made it so good that Remix will now just be React Router.
+summary: We've been building a bridge from React Router to Remix, and we made it so good that we're going to merge Remix and React Router.
 featured: true
 date: 2024-05-15
 # TODO: Add a new blog image
@@ -11,13 +11,13 @@ authors:
   - Brooks Lybrand
 ---
 
-We've been building a bridge
+We've been building a bridge. You can hear Ryan talk about this announcement at React Conf 🎥
 
-<img alt="React Router logo with an arrow pointing to the Remix logo" src="/blog-images/posts/merging-remix-and-react-router/react-router-to-remix.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<iframe style="width:100%;aspect-ratio:16/9;"  src="https://www.youtube.com/embed/T8TZQ6k4SLE" title="React Conf 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 For nearly 4 years we've been working on Remix, a fullstack framework built on web standards to help you build better websites and applications. React Router has always been Remix's largest dependency after React itself. The two projects are so closely aligned that we [updated React Router][remixing-react-router] to include Remix's great loading patterns, and later [rewrote Remix][react-routering-remix] to _even more directly depend_ on React Router.
 
-There are millions of projects using React Router, many built on top of Create React App (CRA). These days CRA is no longer recommended and [the React docs recommend using a framework][use-a-framework]. Since Remix has always sort of been **"React Router: The Framework"** we wanted to create a bridge for all these React Router projects to be able to upgrade to Remix.
+There are millions of projects using React Router, many built on top of Create React App (CRA). These days CRA is no longer recommended and [the React docs recommend using a framework][use-a-framework]. Since Remix has always been effectively **"React Router: The Framework"**, we wanted to create a bridge for all these React Router projects to be able to upgrade to Remix.
 
 Turns out we made that bridge a little two well, specifically with the introduction of [our Vite plugin][remix-vite-stable] and [SPA Mode][spa-mode]. We found ourselves looking at Remix, then looking at React Router, then looking back at Remix, and we could no longer meaningful tell the difference.
 
@@ -25,17 +25,15 @@ Turns out we made that bridge a little two well, specifically with the introduct
 
 So we're remixing React Router (again).
 
-Actually, we're doing a little more than that. What we planned to release as **Remix v3** is now going to be released as **React Router v7**.
+Actually, we're doing a little more than that. Remix has always just been a layer on top of React Router - and that layer has been shrinking over time. It's now so small that we're just going to eliminate it. What we planned to release as **Remix v3** is now going to be released as **React Router v7**.
 
-Here's the story.
+Here's the story:
 
 ## 10 years of React Router
 
-We just pass the [10 year anniversary of the first commit to React Router][react-router-first-commit] 🎉
+We just passed the [10 year anniversary of the first commit to React Router][react-router-first-commit] 🎉
 
-[Ryan][ryan-florence] and [Michael][michael-jackson] have been building and maintaining React Router for a _long_ time, and it's undergone several major iterations. Some of those iterations have made individuals so angry they've expressed the desire to do bodily harm to the two of them (that's another story for another day). Don't worry, our team is much better at [smooth major version upgrades][future-flags] now.
-
-For the first 6 years, React Router was just an open source project that Michael and Ryan would work on when they had breaks between teaching people how to use React at [React Training][react-training]. Fast-forward to a global pandemic that forced them to find a new way to put food on the table and the two of them decided to build **"React Router: The Framework"** (better known as Remix). 4 years and [1 acquisition][remixing-shopify] later, they now have a team of 6 engineers actively working on React Router and Remix (and 1 who Tweets about the work).
+[Ryan][ryan-florence] and [Michael][michael-jackson] have been building and maintaining React Router for a _long_ time, and it's undergone several major iterations. For the first 6 years, React Router was just an open source project that Michael and Ryan would work on when they had breaks between teaching people how to use React at [React Training][react-training]. Fast-forward to a global pandemic that forced them to find a new way to put food on the table and the two of them decided to build **"React Router: The Framework"** (better known as Remix). 4 years and [1 acquisition][remixing-shopify] later, they now have a team of 6 engineers actively working on React Router and Remix (and 1 who Tweets about the work).
 
 For 10 years, React Router has remained one of the most widely used dependencies in the React Ecosystem. Just looking at the number of public GitHub repositories using React Router fills us on the Remix team with a tremendous amount of responsibility for these projects.
 
@@ -119,7 +117,8 @@ We are working hard to stabilize React Router v7 and will be sharing early relea
 
 1. Upgrade to the latest minor version of Remix or React Router
 2. Enable all feature flags
-3. Replace imports with `react-router`
+3. Change `@remix-run/*` dependencies to `react-router` in your `package.json`
+4. Replace `@remix-run/*` imports with `react-router`
 
 We are committed to making both upgrade paths non-breaking except for changing imports, assuming you have all future flags enabled and are using Vite.
 
@@ -156,7 +155,7 @@ We're more energized than ever to keep helping people **build better websites**.
 [future-flags]: future-flags
 [upgrade-guide-v6]: https://reactrouter.com/en/v7/upgrading/v6
 [upgrade-guide-remix]: https://reactrouter.com/en/v7/upgrading/remix
-[remix-discord]: rmx.as/discord
+[remix-discord]: https://rmx.as/discord
 [react-router-first-commit]: https://github.com/remix-run/react-router/commit/987de78deb9687f15133188f2e8e51ffd653794d
 [ryan-florence]: https://twitter.com/ryanflorence
 [michael-jackson]: https://twitter.com/mjackson
