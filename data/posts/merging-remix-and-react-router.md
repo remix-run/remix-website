@@ -26,6 +26,8 @@ So we're remixing React Router (again).
 
 Actually, we're doing a little more than that. Remix has always just been a layer on top of React Router - and that layer has been shrinking over time. It's now so small that we're just going to eliminate it. What we planned to release as **Remix v3** is now going to be released as **React Router v7**.
 
+**TL;DR:** React Router is getting everything that's great about Remix (and more!) in the next version. Remix users should keep using Remix and switch to React Router v7 when it's released by just changing the imports. We have plans for the future of the Remix packages we're excited to share as soon as we can.
+
 Here's the story:
 
 ## 10 years of React Router
