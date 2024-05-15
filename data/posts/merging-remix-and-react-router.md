@@ -129,15 +129,30 @@ If you have any questions, please don't hesitate to [reach out on to us on Disco
 
 You may be wondering: _"what's going to happen to Remix?"_ Fair question.
 
-We're not going anywhere. Remix the package is gonna take a little nap. We have a ton of ideas we've been workshopping and are eager to get right and get into your hands. The Remix team is going to be heads down shipping React Router v7 and delivering the smoothest upgrade process we possibly can. Our goal is that if you're on the latest minor version of Remix v2 or React Router v6 you can just codemod and script your way to React Router v7.
+**What does this mean if I'm currently using Remix?**
 
-Once we release React Router 7 the `@remix-run/*` packages are gonna hibernate for a bit.
+If you're currently using Remix, keep using it! We're going to be shipping more future flags and continuing to improve Remix as we prep for React Router v7. Once we release React Router v7 we'll provide a codemod to automatically update all of your imports
+
+```tsx
+- import { Link } from `@remix-run/react`
++ import { Link } from `react-router`
+```
+
+**What does this mean if I was excited to try Remix?**
+
+Go ahead and use it! The upgrade to React Router v7 (once it's ready) will just be a codemod to change all your imports (see above).
+
+If you'd prefer to use React Router 6, that's great too. [We've already ported a lot of goodies from Remix into React Router][remixing-react-router]. However, you won't get a lot of the features Remix gives you out of the box like SSR and the Vite plugin until we release them in React Router v7.
+
+**What does this mean if I'm on React Router and was planning to migrate to Remix?**
+
+We are heads-down on releasing React Router v7 and getting it into your hands ASAP. If you can't wait till v7 and want all the amazing features that come with Remix, go ahead and upgrade to it. The move from Remix to React Router will just be a codemod that updates your imports. If you _can wait_, then keep your eyes peeled as we wrap up React Router v7 and give you all these new goodies
+
+As for the Remix brand, it's not going anywhere. We are the Remix team, React Router is a Remix project, and we have really exciting plans beyond React Router we can't wait to talk about. The Remix packages are going to take a little nap. Right now the Remix team is going to be heads down shipping React Router v7 and delivering the smoothest upgrade process we possibly can.
 
 <img alt="Remix logo with a sleeping emoji" src="/blog-images/posts/merging-remix-and-react-router/sleepy-remix.jpeg" class="w-full aspect-[16/9] rounded-md shadow-lg" />
 
-But we don't expect Remix to be asleep forever.
-
-With any project that's been around for 4 years (or 10 years), you learn a lot along the way and have to wrestle with the urge to throw everything away and start from scratch without the baggage of early APIs and design decisions. On top of that, we believe React Server Components really change the game, but they're a new primitive to build on top of, and just like everyone we're discovering the best way to do that.
+With any project that's been around for 4 years (or 10 years), you learn a lot along the way and have to wrestle with the urge to throw everything away and start from scratch without the baggage of early APIs and design decisions. On top of that, we believe React Server Components really change the game, but they're a new primitive to build on top of, and just like everyone we're discovering the best way to do that. We can't talk about it much (yet!), but our plans for Remix are to build something more powerful and even more server-centric, something you'd use a React Router project on top of. We just felt like it'd be a little awkward to say "use your Remix v2 project in your Remix v4 project".
 
 We've been cooking on some really exciting ideas, and we're excited to start sharing them with you in the future. For now though we're going to remain heads down on stabilizing React Router v7 so you can start upgrading your projects ASAP. So [subscribe][remix-newsletter] (or stay subscribed) to our newsletter, follow us on [Twitter][remix-twitter], and join our [Discord][remix-discord] to stay up to date on all the latest.
 
