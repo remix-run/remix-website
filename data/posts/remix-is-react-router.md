@@ -1,10 +1,10 @@
 ---
-title: React Router v7
-summary: We're remixing React Router (again), and we're convinced this is going to be the best version yet.
+title: Remix is Becoming React Router
+summary: We've been building a bridge from React Router to Remix, and we made it so good that Remix will now just be React Router.
 featured: true
 date: 2024-05-15
 # TODO: Add a new blog image
-image: /blog-images/posts/remixing-react-router/image.jpg
+image: /blog-images/posts/remix-is-react-router/remix-to-react-router.jpeg
 imageAlt: React Router Logo
 hidden: true
 authors:
@@ -13,7 +13,7 @@ authors:
 
 We've been building a bridge
 
-<img alt="React Router logo with an arrow pointing to the Remix logo" src="/blog-images/posts/react-router-v7/react-router-to-remix.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="React Router logo with an arrow pointing to the Remix logo" src="/blog-images/posts/remix-is-react-router/react-router-to-remix.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
 
 For nearly 4 years we've been working on Remix, a fullstack framework built on web standards to help you build better websites and applications. React Router has always been Remix's largest dependency after React itself. The two projects are so closely aligned that we [updated React Router][remixing-react-router] to include Remix's great loading patterns, and later [rewrote Remix][react-routering-remix] to _even more directly depend_ on React Router.
 
@@ -37,11 +37,11 @@ For the first 6 years, React Router was just an open source project that Michael
 
 For 10 years, React Router has remained one of the most widely used dependencies in the React Ecosystem. Just looking at the number of public GitHub repositories using React Router fills us on the Remix team with a tremendous amount of responsibility for these projects.
 
-<img alt="React Router's repo on GitHub is used by 7.8m other projects" src="/blog-images/posts/react-router-v7/react-router-usage.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="React Router's repo on GitHub is used by 7.8m other projects" src="/blog-images/posts/remix-is-react-router/react-router-usage.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
 
 Shopify itself heavily depends on React Router. In fact, we currently have a 5 million line application that is very core to Shopify's business running on React Router. That's just one of many Shopify sites using React Router.
 
-<img alt="Shopify logo with text reading 5m lines and a ton of other apps" src="/blog-images/posts/react-router-v7/react-router-usage-shopify.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="Shopify logo with text reading 5m lines and a ton of other apps" src="/blog-images/posts/remix-is-react-router/react-router-usage-shopify.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
 
 ## Building better websites
 
@@ -62,7 +62,7 @@ However, CRA didn't provide a router, a data fetching solution, or any of the fe
 
 These days CRA is no longer a recommended way to create React applications, and it hasn't been for a while. It's been nearly a year since the last commit to CRA, and commits slowed down considerably leading up to it. At this point, CRA is considered unmaintained, and [the React docs don't even recommend using it][react-start-a-project].
 
-<img alt="Create React App GitHub showing the last 3 commits from June 14, 2023, May 29, 2023, and Sep 8, 2022. There is a cartoon tombstone to the right with RIP engraved on it" src="/blog-images/posts/react-router-v7/rip-cra.png" class="rounded-md shadow-lg" />
+<img alt="Create React App GitHub showing the last 3 commits from June 14, 2023, May 29, 2023, and Sep 8, 2022. There is a cartoon tombstone to the right with RIP engraved on it" src="/blog-images/posts/remix-is-react-router/rip-cra.png" class="rounded-md shadow-lg" />
 
 So not only do we feel a huge responsibility for all the React Router apps, we also believe there is a large, unmet need for a good CRA replacement.
 
@@ -70,13 +70,13 @@ At the same time, [Vite][vite] has risen substantially in popularity, offering a
 
 Vite provides a default React starter, and for many has taken up the mantel of the "CRA replacement". This is good, but it still doesn't provide a solution like the React docs recommend, and it certainly doesn't provide all of the features we think React apps should care about. In fact, [the Vite team even prefers the CRA replacement come from deeper within the React community][patak-remix-cra-tweet].
 
-<img alt="NPM trends of @vitejs/plugin-react vs react-scripts with @vitejs/plugin-react overtaking react-scripts" src="/blog-images/posts/react-router-v7/vite-ftw.png" class="rounded-md shadow-lg" />
+<img alt="NPM trends of @vitejs/plugin-react vs react-scripts with @vitejs/plugin-react overtaking react-scripts" src="/blog-images/posts/remix-is-react-router/vite-ftw.png" class="rounded-md shadow-lg" />
 
 Last fall we decided to [bet on Vite][remix-heart-vite] and start deprecating our classic compiler. The Vite team and community have been very accepting and supportive, and we're excited to be one of many great projects building on top of Vite.
 
 Switching to Vite opens up Remix to even more users. We also added [SPA mode][spa-mode] and [Client Data][client-data] to create the best bridge we possibly could to _convince devs with React Router apps to migrate to Remix_ and take advantage of all the great features it has to offer. After all, at this point what is Remix but React Router + Vite?
 
-<img alt="React Router logo plus Vite logo equals Remix logo" src="/blog-images/posts/react-router-v7/rr-plus-vite-is-remix.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="React Router logo plus Vite logo equals Remix logo" src="/blog-images/posts/remix-is-react-router/rr-plus-vite-is-remix.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
 
 ## Modern React without a rewrite
 
@@ -94,7 +94,7 @@ Turns out we made that **Remix ➡️ React Router** bridge a little too well, a
 
 So that's what we're gonna do.
 
-<img alt="React Router logo plus Vite logo equals React Router logo with a v7 under it" src="/blog-images/posts/react-router-v7/rr-plus-vite-is-rr-7.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="React Router logo plus Vite logo equals React Router logo with a v7 under it" src="/blog-images/posts/remix-is-react-router/rr-plus-vite-is-rr-7.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
 
 We want everyone in the React ecosystem to have access to
 
@@ -111,15 +111,9 @@ We want that 5 million line Shopify app, those 7+ million React Router projects 
 
 That's why we're just making it a major version upgrade.
 
-## How to upgrade
+## What's next?
 
-As of today we've released an alpha version of React Router v7.
-
-```sh
-npm install react-router@alpha
-```
-
-Both Remix and React Router leverage [future flags][future-flags], and the general upgrade flow will be:
+We are working hard to stabilize React Router v7 and will be sharing early releases to gather feedback as we go. We are determined to make upgrading as smooth as possible. Both Remix and React Router leverage [future flags][future-flags], and the general upgrade flow will be:
 
 1. Upgrade to the latest minor version of Remix or React Router
 2. Enable all feature flags
@@ -127,10 +121,7 @@ Both Remix and React Router leverage [future flags][future-flags], and the gener
 
 We are committed to making both upgrade paths non-breaking except for changing imports, assuming you have all future flags enabled and are using Vite.
 
-We also plan to provide codemods and keep our guides up-to-date to provide the most straightforward, pain-free upgrade path we possibly can:
-
-- [Remix ➡️ React Router v7 guide][upgrade-guide-remix]
-- [React Router v6 ➡️ React Router v7 guide][upgrade-guide-v6]
+We also plan to provide codemods and dedicated guides to provide the most straightforward, pain-free upgrade path we possibly can
 
 If you have any questions, please don't hesitate to [reach out on to us on Discord][remix-discord].
 
@@ -140,9 +131,9 @@ You may be wondering: _"what's going to happen to Remix?"_ Fair question.
 
 We're not going anywhere. Remix the package is gonna take a little nap. We have a ton of ideas we've been workshopping and are eager to get right and get into your hands. The Remix team is going to be heads down shipping React Router v7 and delivering the smoothest upgrade process we possibly can. Our goal is that if you're on the latest minor version of Remix v2 or React Router v6 you can just codemod and script your way to React Router v7.
 
-In the meantime the `@remix-run/*` packages are gonna hibernate for a bit.
+Once we release React Router 7 the `@remix-run/*` packages are gonna hibernate for a bit.
 
-<img alt="Remix logo with a sleeping emoji" src="/blog-images/posts/react-router-v7/sleepy-remix.jpeg" class="w-full aspect-[16/9] rounded-md shadow-lg" />
+<img alt="Remix logo with a sleeping emoji" src="/blog-images/posts/remix-is-react-router/sleepy-remix.jpeg" class="w-full aspect-[16/9] rounded-md shadow-lg" />
 
 But we don't expect Remix to be asleep forever.
 
