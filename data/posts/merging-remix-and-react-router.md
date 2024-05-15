@@ -142,7 +142,7 @@ If you're currently using Remix, keep using it! We're going to be shipping more 
 
 Go ahead and use it! The upgrade to React Router v7 (once it's ready) will just be a codemod to change all your imports (see above).
 
-If you'd prefer to use React Router 6, that's great too. [We've already ported a lot of goodies from Remix into React Router][remixing-react-router]. However, you won't get a lot of the features Remix gives you out of the box like SSR and the Vite plugin until we release them in React Router v7.
+If you'd prefer to use React Router 6, that's great too. [We've already ported a lot of goodies from Remix into React Router][remixing-react-router]. However, you won't get a lot of the features Remix gives you out of the box like SSR, prefetching, or the Vite plugin until we release them in React Router v7.
 
 **What does this mean if I'm on React Router and was planning to migrate to Remix?**
 
