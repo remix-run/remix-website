@@ -18,7 +18,7 @@ For nearly 4 years we've been working on Remix, a fullstack framework built on w
 
 There are millions of projects using React Router, many built on top of Create React App (CRA). These days CRA is no longer recommended and [the React docs recommend using a framework][use-a-framework]. Since Remix has always been effectively **"React Router: The Framework"**, we wanted to create a bridge for all these React Router projects to be able to upgrade to Remix.
 
-Turns out we made that bridge a little two well, specifically with the introduction of [our Vite plugin][remix-vite-stable] and [SPA Mode][spa-mode]. We found ourselves looking at Remix, then looking at React Router, then looking back at Remix, and we could no longer meaningful tell the difference.
+Turns out we made that bridge a little too well, specifically with the introduction of [our Vite plugin][remix-vite-stable] and [SPA Mode][spa-mode]. We found ourselves looking at Remix, then looking at React Router, then looking back at Remix, and we could no longer meaningful tell the difference.
 
 <img alt="Spider-man as Remix pointing to spider-man as React Router" src="/blog-images/posts/merging-remix-and-react-router/remix-react-router-spider-man.png" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
 
