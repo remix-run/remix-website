@@ -152,7 +152,9 @@ We are heads-down on releasing React Router v7 and getting it into your hands AS
 
 As for the Remix brand, it's not going anywhere. We are the Remix team, React Router is a Remix project, and we have really exciting plans beyond React Router we can't wait to talk about. The Remix packages are going to take a little nap. Right now the Remix team is going to be heads down shipping React Router v7 and delivering the smoothest upgrade process we possibly can.
 
-<img alt="Remix logo with a sleeping emoji" src="/blog-images/posts/merging-remix-and-react-router/sleepy-remix.jpeg" class="w-full aspect-[16/9] rounded-md shadow-lg" />
+<img alt="React Router versions on a line with Remix versions crossing over. They cross at React Router v7 and Remix v3, with React Router continuing on and Remix continuing with the shushing face emoji" src="/blog-images/posts/merging-remix-and-react-router/react-router-remix-graphic.jpeg" class="w-full aspect-[16/9] rounded-md shadow-lg" />
+
+<figcaption class="my-2">Graphic by <a href="https://twitter.com/jacobmparis/status/1790904647630151889">Jacob Paris</a></figcaption>
 
 With any project that's been around for 4 years (or 10 years), you learn a lot along the way and have to wrestle with the urge to throw everything away and start from scratch without the baggage of early APIs and design decisions. On top of that, we believe React Server Components really change the game, but they're a new primitive to build on top of, and just like everyone we're discovering the best way to do that. We can't talk about it much (yet!), but we have ideas to make Remix something more powerful and even more server-centric, something you'd use a React Router project on top of.
 
