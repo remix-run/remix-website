@@ -12,7 +12,7 @@ authors:
 
 We've been building a bridge. You can hear Ryan talk about this announcement at React Conf 🎥
 
-<iframe style="width:100%;aspect-ratio:16/9;"  src="https://www.youtube.com/embed/T8TZQ6k4SLE" title="React Conf 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe style="width:100%;aspect-ratio:16/9;"  src="https://www.youtube.com/embed/T8TZQ6k4SLE?start=5537&end=7070" title="React Conf 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 For nearly 4 years we've been working on Remix, a fullstack framework built on web standards to help you build better websites and applications. React Router has always been Remix's largest dependency after React itself. The two projects are so closely aligned that we [updated React Router][remixing-react-router] to include Remix's great loading patterns, and later [rewrote Remix][react-routering-remix] to _even more directly depend_ on React Router.
 
