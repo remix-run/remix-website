@@ -85,7 +85,7 @@ There's a problem with the statement
 
 > convince devs with React Router apps to migrate to Remix
 
-The problem is that 2-syllable, multi-sprint, call-for-tshirt-sizing, manager-fear-inducing, quarter-spanning word **_migration_** 😱
+The problem is that 2-syllable, multi-sprint, call-for-tshirt-sizing, manager-fear-inducing, quarter-spanning word **_migrate_** 😱
 
 Our strategy up until now has been to make the bridge from a React Router app to Remix so seamless it doesn't even feel like a migration. From personal experience at other gigs, we all prefer keeping our [poker planning][poker-planning] short. The problem is, no matter how good of a job we do building that bridge, it still _feels_ like a rewrite. Emotionally, changing an import from one package to another feels like a rewrite, otherwise it would just be a major version upgrade.
 
