@@ -317,9 +317,11 @@
     @apply rounded bg-gray-100/50 px-1.5 pb-0.5 pt-px text-sm text-gray-700 dark:bg-gray-800/50;
   }
 
+  /* Undo the .md-prose code and .md-prose kbd color above for links. */
   & :is(a, h1, h2, h3, h4, h5, h6) code,
   & :is(a, h1, h2, h3, h4, h5, h6) kbd {
-    @apply text-inherit;
+    /* dark:text-inherit needs to be specified explicitly, otherwise the dark text color rule would override this rule. */
+    @apply text-inherit dark:text-inherit;
   }
 
   & :is(h1, h2, h3, h4, h5, h6) code {
