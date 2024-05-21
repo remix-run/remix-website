@@ -1,7 +1,7 @@
 ---
 title: "Incremental Path to React 19: React Conf Follow-Up"
 summary: React Router v7 will provide an incremental path to the entire, full stack feature set of React. Upgrading from to React Router v7 is non-breaking for both React Router v6 and Remix v2.
-date: 2024-05-26
+date: 2024-05-21
 image: /blog-images/headers/reactconf-2024.jpg
 imageAlt: Ryan Florence presenting at React Conf
 authors:
