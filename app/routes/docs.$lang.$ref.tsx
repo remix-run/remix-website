@@ -248,6 +248,8 @@ function VersionSelect() {
     lang,
   } = useLoaderData<typeof loader>();
 
+  let { "*": splat } = useParams();
+
   // This is the same default, hover, focus style as the ColorScheme trigger
   const baseClasses =
     "bg-gray-100 hover:bg-gray-200 [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
@@ -270,7 +272,9 @@ function VersionSelect() {
               <VersionLink
                 key={branch}
                 to={
-                  currentGitHubRef === branch ? "" : `/docs/${lang}/${branch}`
+                  currentGitHubRef === branch
+                    ? ""
+                    : `/docs/${lang}/${branch}${splat ? `/${splat}` : ""}`
                 }
               >
                 {releaseBranch === branch ? `main (${latestVersion})` : branch}
@@ -283,7 +287,9 @@ function VersionSelect() {
             <VersionLink
               key={version}
               to={
-                currentGitHubRef === version ? "" : `/docs/${lang}/${version}`
+                currentGitHubRef === version
+                  ? ""
+                  : `/docs/${lang}/${version}${splat ? `/${splat}` : ""}`
               }
             >
               {version}
