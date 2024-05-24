@@ -36,12 +36,6 @@
   imgSrc: "/showcase-assets/daffy.webp"
   videoSrc: "/showcase-assets/daffy"
 
-- name: "GitHub"
-  description: "Copilot for PRs waitlist"
-  link: "https://copilot4prs.githubnext.com"
-  imgSrc: "/showcase-assets/github-copilot-prs.webp"
-  videoSrc: "/showcase-assets/github-copilot-prs"
-
 - name: "Nour Hammour"
   description: "Luxury fashion outwear brand from Paris"
   link: "https://nour-hammour.com/"
@@ -67,7 +61,7 @@
   videoSrc: "/showcase-assets/webstudio"
 
 - name: "Oxide"
-  description: "Rack-scale servers for on-premise infrastructure"
+  description: "Rack-scale servers for on-premises infrastructure"
   link: "https://oxide.computer/"
   imgSrc: "/showcase-assets/oxide.webp"
   videoSrc: "/showcase-assets/oxide"
@@ -113,3 +107,9 @@
   link: "https://www.solin.stream/"
   imgSrc: "/showcase-assets/solin.webp"
   videoSrc: "/showcase-assets/solin"
+
+- name: "Forge 42"
+  description: "Forge42 is a development agency that specializes in web development and design with Remix.run"
+  link: "https://forge42.dev"
+  imgSrc: "/showcase-assets/forge42.webp"
+  videoSrc: "/showcase-assets/forge42"

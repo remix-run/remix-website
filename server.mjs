@@ -4,10 +4,8 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import { createRequestHandler } from "@remix-run/express";
 import sourceMapSupport from "source-map-support";
-import { installGlobals } from "@remix-run/node";
 
 sourceMapSupport.install();
-installGlobals();
 
 const viteDevServer =
   process.env.NODE_ENV === "production"
