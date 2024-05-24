@@ -61,7 +61,7 @@
   videoSrc: "/showcase-assets/webstudio"
 
 - name: "Oxide"
-  description: "Rack-scale servers for on-premise infrastructure"
+  description: "Rack-scale servers for on-premises infrastructure"
   link: "https://oxide.computer/"
   imgSrc: "/showcase-assets/oxide.webp"
   videoSrc: "/showcase-assets/oxide"
