@@ -1,19 +1,16 @@
 /*!
- * Forked from https://github.com/ryanflorence/md/blob/master/index.ts
- *
  * Adapted from
  * - ggoodman/nostalgie
  *   - MIT https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/LICENSE
  *   - https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/src/worker/mdxCompiler.ts
+ * - remix/remix-website
  */
-import { getHighlighter, toShikiTheme } from "shiki";
-import rangeParser from "parse-numeric-range";
 import parseFrontMatter from "front-matter";
-import type * as Hast from "hast";
-import type * as Unist from "unist";
-import type * as Shiki from "shiki";
-import type * as Unified from "unified";
 import themeJson from "../../data/base16.json";
+import { getHighlighter } from "shiki";
+import { transformerCopyButton } from '@rehype-pretty/transformers';
+import type * as Unist from "unist";
+import type * as Unified from "unified";
 
 export interface ProcessorOptions {
   resolveHref?(href: string): string;
@@ -40,6 +37,7 @@ export async function getProcessor(options?: ProcessorOptions) {
     { default: rehypeSlug },
     { default: rehypeStringify },
     { default: rehypeAutolinkHeadings },
+    { default: rehypePrettyCode },
     plugins,
   ] = await Promise.all([
     import("unified"),
@@ -49,19 +47,38 @@ export async function getProcessor(options?: ProcessorOptions) {
     import("rehype-slug"),
     import("rehype-stringify"),
     import("rehype-autolink-headings"),
+    import("rehype-pretty-code"),
     loadPlugins(),
   ]);
 
+  // The theme actually stores #FFFF${base-16-color-id} because vscode-textmate
+  // requires colors to be valid hex codes, if they aren't, it changes them to a
+  // default, so this is a mega hack to trick it.
+  const themeString = JSON.stringify(themeJson).replace(/#FFFF(.{2})/g, "var(--base$1)");
+  
   return unified()
     .use(remarkParse)
     .use(plugins.stripLinkExtPlugin, options)
-    .use(plugins.remarkCodeBlocksShiki, options)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
     .use(rehypeSlug)
-    .use(rehypeAutolinkHeadings);
+    .use(rehypeAutolinkHeadings)
+    .use(rehypePrettyCode, {
+      keepBackground: false,
+      theme: JSON.parse(themeString),
+      transformers: [
+        transformerCopyButton({
+          visibility: 'always',
+          feedbackDuration: 3_000,
+          copyIcon: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'%3E%3Crect width='13' height='13' x='9' y='9' rx='2' ry='2' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E",
+          successIcon: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'%3E%3Cpath d='M20 6 9 17l-5-5' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E",
+        }),
+      ],
+    });
 }
+
+
 
 type InternalPlugin<
   Input extends string | Unist.Node | undefined,
@@ -96,235 +113,12 @@ export async function loadPlugins() {
     };
   };
 
-  const remarkCodeBlocksShiki: InternalPlugin<
-    UnistNode.Root,
-    UnistNode.Root
-  > = (options) => {
-    let theme: ReturnType<typeof toShikiTheme>;
-    let highlighterPromise: ReturnType<typeof getHighlighter>;
-
-    return async function transformer(tree: UnistNode.Root) {
-      theme = theme || toShikiTheme(themeJson as any);
-      highlighterPromise =
-        highlighterPromise || getHighlighter({ themes: [theme] });
-      let highlighter = await highlighterPromise;
-      let fgColor = convertFakeHexToCustomProp(
-        highlighter.getForegroundColor(theme.name) || "",
-      );
-      let langs: Shiki.Lang[] = [
-        "js",
-        "json",
-        "jsx",
-        "ts",
-        "tsx",
-        "markdown",
-        "shellscript",
-        "html",
-        "css",
-        "diff",
-        "mdx",
-        "prisma",
-      ];
-      let langSet = new Set(langs);
-      let transformTasks: Array<() => Promise<void>> = [];
-
-      visit(tree, "code", (node) => {
-        if (
-          !node.lang ||
-          !node.value ||
-          !langSet.has(node.lang as Shiki.Lang)
-        ) {
-          return;
-        }
-
-        if (node.lang === "js") node.lang = "javascript";
-        if (node.lang === "ts") node.lang = "typescript";
-        let language = node.lang;
-        let code = node.value;
-        let {
-          addedLines,
-          highlightLines,
-          nodeProperties,
-          removedLines,
-          startingLineNumber,
-          usesLineNumbers,
-        } = getCodeBlockMeta();
-
-        transformTasks.push(highlightNodes);
-        return SKIP;
-
-        async function highlightNodes() {
-          let tokens = getThemedTokens({ code, language });
-          let children = tokens.map(
-            (lineTokens, zeroBasedLineNumber): Hast.Element => {
-              let children = lineTokens.map(
-                (token): Hast.Text | Hast.Element => {
-                  let color = convertFakeHexToCustomProp(token.color || "");
-                  let content: Hast.Text = {
-                    type: "text",
-                    // Do not escape the _actual_ content
-                    value: token.content,
-                  };
-
-                  return color && color !== fgColor
-                    ? {
-                        type: "element",
-                        tagName: "span",
-                        properties: {
-                          style: `color: ${htmlEscape(color)}`,
-                        },
-                        children: [content],
-                      }
-                    : content;
-                },
-              );
-
-              children.push({
-                type: "text",
-                value: "\n",
-              });
-
-              let isDiff = addedLines.length > 0 || removedLines.length > 0;
-              let diffLineNumber = startingLineNumber - 1;
-              let lineNumber = zeroBasedLineNumber + startingLineNumber;
-              let highlightLine = highlightLines?.includes(lineNumber);
-              let removeLine = removedLines.includes(lineNumber);
-              let addLine = addedLines.includes(lineNumber);
-              if (!removeLine) {
-                diffLineNumber++;
-              }
-
-              return {
-                type: "element",
-                tagName: "span",
-                properties: {
-                  className: "codeblock-line",
-                  dataHighlight: highlightLine ? "true" : undefined,
-                  dataLineNumber: usesLineNumbers ? lineNumber : undefined,
-                  dataAdd: isDiff ? addLine : undefined,
-                  dataRemove: isDiff ? removeLine : undefined,
-                  dataDiffLineNumber: isDiff ? diffLineNumber : undefined,
-                },
-                children,
-              };
-            },
-          );
-
-          let nodeValue = {
-            type: "element",
-            tagName: "pre",
-            properties: {
-              ...nodeProperties,
-              dataLineNumbers: usesLineNumbers ? "true" : "false",
-              dataLang: htmlEscape(language),
-              style: `color: ${htmlEscape(fgColor)};`,
-            },
-            children: [
-              {
-                type: "element",
-                tagName: "code",
-                children,
-              },
-            ],
-          };
-
-          let data = node.data ?? {};
-          (node as any).type = "element";
-          (node as any).tagName = "div";
-          let properties =
-            data.hProperties && typeof data.hProperties === "object"
-              ? data.hProperties
-              : {};
-          data.hProperties = {
-            ...properties,
-            dataCodeBlock: "",
-            ...nodeProperties,
-            dataLineNumbers: usesLineNumbers ? "true" : "false",
-            dataLang: htmlEscape(language),
-          };
-          data.hChildren = [nodeValue];
-          node.data = data;
-        }
-
-        function getCodeBlockMeta() {
-          // TODO: figure out how this is ever an array?
-          let meta = Array.isArray(node.meta) ? node.meta[0] : node.meta;
-
-          let metaParams = new URLSearchParams();
-          if (meta) {
-            let linesHighlightsMetaShorthand = meta.match(/^\[(.+)\]$/);
-            if (linesHighlightsMetaShorthand) {
-              metaParams.set("lines", linesHighlightsMetaShorthand[0]);
-            } else {
-              metaParams = new URLSearchParams(meta.split(/\s+/).join("&"));
-            }
-          }
-
-          let addedLines = parseLineHighlights(metaParams.get("add"));
-          let removedLines = parseLineHighlights(metaParams.get("remove"));
-          let highlightLines = parseLineHighlights(metaParams.get("lines"));
-          let startValNum = metaParams.has("start")
-            ? Number(metaParams.get("start"))
-            : 1;
-          let startingLineNumber = Number.isFinite(startValNum)
-            ? startValNum
-            : 1;
-          let usesLineNumbers = !metaParams.has("nonumber");
-
-          let nodeProperties: { [key: string]: string } = {};
-          metaParams.forEach((val, key) => {
-            if (key === "lines") return;
-            nodeProperties[`data-${key}`] = val;
-          });
-
-          return {
-            addedLines,
-            highlightLines,
-            nodeProperties,
-            removedLines,
-            startingLineNumber,
-            usesLineNumbers,
-          };
-        }
-      });
-
-      await Promise.all(transformTasks.map((exec) => exec()));
-
-      function getThemedTokens({
-        code,
-        language,
-      }: {
-        code: string;
-        language: Shiki.Lang;
-      }) {
-        return highlighter.codeToThemedTokens(code, language, theme.name, {
-          includeExplanation: false,
-        });
-      }
-    };
-  };
-
   return {
     stripLinkExtPlugin,
-    remarkCodeBlocksShiki,
   };
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-function parseLineHighlights(param: string | null) {
-  if (!param) return [];
-  let range = param.match(/^\[(.+)\]$/);
-  if (!range) return [];
-  return rangeParser(range[1]);
-}
-
-// The theme actually stores #FFFF${base-16-color-id} because vscode-textmate
-// requires colors to be valid hex codes, if they aren't, it changes them to a
-// default, so this is a mega hack to trick it.
-function convertFakeHexToCustomProp(color: string) {
-  return color.replace(/^#FFFF(.+)/, "var(--base$1)");
-}
 
 function isRelativeUrl(test: string) {
   // Probably fragile but should work well enough.
