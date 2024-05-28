@@ -102,6 +102,12 @@
   imgSrc: "/showcase-assets/passionfroot.webp"
   videoSrc: "/showcase-assets/passionfroot"
 
+- name: "Solin"
+  description: "The world's largest marketplace for fitness challenges from creators"
+  link: "https://www.solin.stream/"
+  imgSrc: "/showcase-assets/solin.webp"
+  videoSrc: "/showcase-assets/solin"
+
 - name: "Forge 42"
   description: "Forge42 is a development agency that specializes in web development and design with Remix.run"
   link: "https://forge42.dev"
