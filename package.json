@@ -25,7 +25,6 @@
     "@remix-run/express": "^2.9.2",
     "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
-    "@remix-run/server-runtime": "^2.9.2",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.1.0",
