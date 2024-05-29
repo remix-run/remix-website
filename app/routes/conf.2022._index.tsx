@@ -8,7 +8,6 @@ import { Fragment } from "react";
 import type { Sponsor, Speaker } from "~/lib/conf";
 import { getSpeakers, getSponsors } from "~/lib/conf2022.server";
 import { Link } from "~/ui/link";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { getMeta } from "~/lib/meta";
 
 export const meta: MetaFunction<typeof loader> = (args) => {
@@ -52,10 +51,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return json(
-    { siteUrl, speakers: speakersShuffled, sponsors },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
+  return json({ siteUrl, speakers: speakersShuffled, sponsors });
 };
 
 export default function ConfIndex() {

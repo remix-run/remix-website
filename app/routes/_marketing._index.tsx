@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
 import type { Prose, Sequence } from "~/lib/mdtut.server";
@@ -57,11 +57,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 
   return json(data, { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } });
-};
-
-export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  // Inherit the caching headers from the loader so we don't cache 404s
-  return loaderHeaders;
 };
 
 export default function Index() {

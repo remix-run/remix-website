@@ -26,7 +26,6 @@ import {
   SubscribeStatus,
   SubscribeSubmit,
 } from "~/ui/subscribe";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import invariant from "tiny-invariant";
 
 export const handle = { forceDark: true };
@@ -35,10 +34,7 @@ export const handle = { forceDark: true };
 const EARLY_BIRD_ENDING_TIME = 1646121600000;
 
 export const loader = async (_: LoaderFunctionArgs) => {
-  return json(
-    { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
-    { headers: { "Cache-Control": CACHE_CONTROL.conf } },
-  );
+  return json({ earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME });
 };
 
 const menuItems: Array<HeaderLinkProps> = [

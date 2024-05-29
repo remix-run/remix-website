@@ -10,7 +10,6 @@ import cx from "clsx";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { formatDate, getSchedules } from "~/lib/conf2023.server";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { slugify } from "~/ui/primitives/utils";
 
 export async function loader(_: LoaderFunctionArgs) {
@@ -20,58 +19,55 @@ export async function loader(_: LoaderFunctionArgs) {
     style: "long",
     type: "conjunction",
   });
-  return json(
-    {
-      schedules: schedules.map((schedule) => {
-        return {
-          ...schedule,
-          dateSlug: slugify(
-            formatDate(schedule.date, {
-              month: "short",
-              day: "numeric",
-            }),
-          ),
-          dateISO: schedule.date.toISO(),
-          dateFormatted: formatDate(schedule.date, {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-          }),
-          dateFormattedShort: formatDate(schedule.date, {
+  return json({
+    schedules: schedules.map((schedule) => {
+      return {
+        ...schedule,
+        dateSlug: slugify(
+          formatDate(schedule.date, {
             month: "short",
             day: "numeric",
           }),
-          sessions: schedule.sessions.map((session) => {
-            let startsAt = session.startsAt ? session.startsAt : null;
-            let endsAt = session.endsAt ? session.endsAt : null;
-            return {
-              ...session,
-              speakersFormatted: formatter.format(
-                session.speakers.map((speaker) => speaker.nameFull),
-              ) as string,
-              startsAtISO: startsAt?.toISO() || null,
-              startsAtFormatted: startsAt
-                ? formatDate(startsAt, {
-                    hour: "numeric",
-                    minute: "numeric",
-                    timeZone: "America/Denver",
-                  })
-                : null,
-              endsAtISO: endsAt?.toISO() || null,
-              endsAtFormatted: endsAt
-                ? formatDate(endsAt, {
-                    hour: "numeric",
-                    minute: "numeric",
-                    timeZone: "America/Denver",
-                  })
-                : null,
-            };
-          }),
-        };
-      }),
-    },
-    { headers: { "Cache-Control": CACHE_CONTROL.conf } },
-  );
+        ),
+        dateISO: schedule.date.toISO(),
+        dateFormatted: formatDate(schedule.date, {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        }),
+        dateFormattedShort: formatDate(schedule.date, {
+          month: "short",
+          day: "numeric",
+        }),
+        sessions: schedule.sessions.map((session) => {
+          let startsAt = session.startsAt ? session.startsAt : null;
+          let endsAt = session.endsAt ? session.endsAt : null;
+          return {
+            ...session,
+            speakersFormatted: formatter.format(
+              session.speakers.map((speaker) => speaker.nameFull),
+            ) as string,
+            startsAtISO: startsAt?.toISO() || null,
+            startsAtFormatted: startsAt
+              ? formatDate(startsAt, {
+                  hour: "numeric",
+                  minute: "numeric",
+                  timeZone: "America/Denver",
+                })
+              : null,
+            endsAtISO: endsAt?.toISO() || null,
+            endsAtFormatted: endsAt
+              ? formatDate(endsAt, {
+                  hour: "numeric",
+                  minute: "numeric",
+                  timeZone: "America/Denver",
+                })
+              : null,
+          };
+        }),
+      };
+    }),
+  });
 }
 
 export const meta: MetaFunction = () => {

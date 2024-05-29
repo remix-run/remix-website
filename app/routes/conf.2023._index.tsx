@@ -11,7 +11,6 @@ import "~/styles/index.css";
 import { Fragment } from "react";
 import type { Sponsor, SponsorLevel } from "~/lib/conf";
 import { Link } from "~/ui/link";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { getSpeakers, getSponsors } from "~/lib/conf2023.server";
 import type { Speaker } from "~/lib/conf2023";
 import { getMeta } from "~/lib/meta";
@@ -47,16 +46,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
-  return json(
-    {
-      siteUrl,
-      sponsors,
-      speakers: speakers.sort((a, b) =>
-        a.isTopSpeaker ? -1 : b.isTopSpeaker ? 1 : randomSort(),
-      ),
-    },
-    { headers: { "Cache-Control": CACHE_CONTROL.conf } },
-  );
+  return json({
+    siteUrl,
+    sponsors,
+    speakers: speakers.sort((a, b) =>
+      a.isTopSpeaker ? -1 : b.isTopSpeaker ? 1 : randomSort(),
+    ),
+  });
 };
 
 export default function ConfIndex() {

@@ -12,7 +12,7 @@ import {
   matchPath,
 } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
-import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +34,6 @@ import type { Doc } from "~/lib/gh-docs";
 import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
 import { env } from "~/env.server";
-import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
@@ -71,13 +70,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     lang,
     isLatest,
   });
-};
-
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.DEFAULT,
-    Vary: "Cookie",
-  };
 };
 
 export default function DocsLayout() {

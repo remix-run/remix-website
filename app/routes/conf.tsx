@@ -1,14 +1,13 @@
 import { Outlet } from "@remix-run/react";
-import type { HeadersFunction } from "@remix-run/node";
+import { unstable_defineLoader as defineLoader } from "@remix-run/node";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const handle = { forceDark: true };
 
-export const headers: HeadersFunction = () => {
-  return {
-    "Cache-Control": CACHE_CONTROL.conf,
-  };
-};
+export const loader = defineLoader(async ({ response }) => {
+  response.headers.set("Cache-Control", CACHE_CONTROL.conf);
+  return null;
+});
 
 export default function Conf() {
   return <Outlet />;

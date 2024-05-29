@@ -8,11 +8,7 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import type {
-  HeadersFunction,
-  LoaderFunctionArgs,
-  SerializeFrom,
-} from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
 import invariant from "tiny-invariant";
@@ -50,13 +46,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     throw json(null, { status: 404 });
   }
 }
-
-export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  // Inherit the caching headers from the loader so we don't cache 404s
-  let headers = new Headers(loaderHeaders);
-  headers.set("Vary", "Cookie");
-  return headers;
-};
 
 const LAYOUT_LOADER_KEY = "routes/docs.$lang.$ref";
 

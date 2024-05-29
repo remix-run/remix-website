@@ -1,7 +1,6 @@
 import {
   json,
   type LoaderFunctionArgs,
-  type HeadersFunction,
   type MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -23,10 +22,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     { ...data, siteUrl },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
-};
-
-export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  return loaderHeaders;
 };
 
 export const meta: MetaFunction<typeof loader> = (args) => {
