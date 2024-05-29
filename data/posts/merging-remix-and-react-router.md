@@ -28,6 +28,8 @@ Actually, we're doing a little more than that. Remix has always just been a laye
 
 **TL;DR:** React Router is getting everything that's great about Remix (and more!) in the next version. Remix users should keep using Remix and switch to React Router v7 when it's released by just changing the imports. We have plans for the future of the Remix packages we're excited to share as soon as we can.
 
+Read our follow up post, [Incremental Path to React 19][follow-up-post], for more insight into this decision and answers to common questions.
+
 Here's the story:
 
 ## 10 years of React Router
@@ -164,6 +166,7 @@ We're more energized than ever to keep helping people **build better websites**.
 
 ---
 
+[follow-up-post]: incremental-path-to-react-19
 [remix-vite-stable]: remix-vite-stable
 [spa-mode]: https://remix.run/docs/en/main/guides/spa-mode
 [remixing-react-router]: remixing-react-router
