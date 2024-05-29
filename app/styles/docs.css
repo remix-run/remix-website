@@ -579,7 +579,7 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 }
 
 .rehype-pretty-copy {  
-  @apply absolute !mr-3 !mt-[-5px] cursor-pointer opacity-20 !h-5 !w-5 ;
+  @apply absolute !mr-3 !mt-[-5px] cursor-pointer !h-5 !w-5 ;
   
   .ready {
     @apply !h-5 !w-5 !m-0;
@@ -590,9 +590,8 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   }
 }
 
-.rehype-pretty-copy:hover {  
-  @apply opacity-100;
-
+figure[data-rehype-pretty-code-figure]:has(> [data-rehype-pretty-code-title]) > pre > code button.rehype-pretty-copy {
+  @apply !mt-0;
 }
 
 [data-rehype-pretty-code-title] {
