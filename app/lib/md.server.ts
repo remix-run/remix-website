@@ -67,6 +67,7 @@ export async function getProcessor(options?: ProcessorOptions) {
     .use(rehypePrettyCode, {
       keepBackground: false,
       theme: JSON.parse(themeString),
+      filterMetaString: (str) => str.replace(/lines=\[([^]*)\]/g, '{$1}').replace(/filename=([^ ]*)/g, 'title="$1"'),
       transformers: [
         transformerCopyButton({
           visibility: 'hover',
