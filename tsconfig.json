@@ -2,7 +2,13 @@
   "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["vitest/globals", "vite-plugin-arraybuffer/types"],
+    "types": [
+      "vitest/globals",
+      "vite-plugin-arraybuffer/types",
+      "vite/client",
+      "@remix-run/node/globals",
+      "@remix-run/react/future/single-fetch.d.ts",
+    ],
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "module": "ESNext",
