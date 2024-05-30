@@ -1,9 +1,6 @@
 // Pull full readme for this page from GitHub
-import {
-  json,
-  type LoaderFunctionArgs,
-  type MetaFunction,
-} from "@remix-run/node";
+import { unstable_defineLoader as defineLoader } from "@remix-run/node";
+import type { MetaArgs_SingleFetch } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getResource } from "~/lib/resources.server";
@@ -13,30 +10,28 @@ import "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
+export const loader = defineLoader(async ({ request, params, response }) => {
   const resourceSlug = params.slug;
   invariant(resourceSlug, "resourceSlug is required");
 
   let resource = await getResource(resourceSlug, { octokit });
 
   if (!resource) {
-    throw json({}, { status: 404 });
+    response.status = 404;
+    throw {};
   }
 
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
+  response.headers.set("Cache-Control", CACHE_CONTROL.DEFAULT);
 
-  return json(
-    {
-      siteUrl,
-      resource,
-    },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
-}
+  return {
+    siteUrl,
+    resource,
+  };
+});
 
-export const meta: MetaFunction<typeof loader> = (args) => {
-  let { data, params } = args;
+export const meta = ({ data, params }: MetaArgs_SingleFetch<typeof loader>) => {
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
 

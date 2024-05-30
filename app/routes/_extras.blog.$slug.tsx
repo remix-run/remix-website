@@ -1,7 +1,6 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import type { MetaArgs_SingleFetch } from "@remix-run/react";
+import { unstable_defineLoader as defineLoader } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/lib/blog.server";
@@ -11,21 +10,18 @@ import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { Subscribe } from "~/ui/subscribe";
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({ params, request, response }) => {
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
   let post = await getBlogPost(slug);
-  return json(
-    { siteUrl, post },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
-};
+  response.headers.set("Cache-Control", CACHE_CONTROL.DEFAULT);
+  return { siteUrl, post };
+});
 
-export const meta: MetaFunction<typeof loader> = (args) => {
-  let { data, params } = args;
+export const meta = ({ data, params }: MetaArgs_SingleFetch<typeof loader>) => {
   let { slug } = params;
   invariant(!!slug, "Expected slug param");
 

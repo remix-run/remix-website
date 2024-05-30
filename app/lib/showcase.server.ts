@@ -5,10 +5,10 @@ export const showcaseExamples: ShowcaseExample[] = yaml.parse(
   showcaseYamlFileContents,
 );
 
-export interface ShowcaseExample {
+export type ShowcaseExample = {
   name: string;
   description: string;
   link: string;
   imgSrc: string;
   videoSrc: string;
-}
+};

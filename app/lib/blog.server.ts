@@ -63,7 +63,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
     `Invalid post frontmatter in ${slug}`,
   );
 
-  let post: BlogPost = {
+  let post = {
     ...attributes,
     authors: attributes.authors
       .map(getAuthor)
@@ -75,9 +75,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
   return post;
 }
 
-export async function getBlogPostListings(): Promise<
-  Array<MarkdownPostListing>
-> {
+export async function getBlogPostListings() {
   let slugs = Object.keys(postContentsBySlug);
   let listings: Array<MarkdownPostListing & { date: Date }> = [];
   for (let slug of slugs) {
@@ -143,7 +141,7 @@ interface MarkdownPostListing {
 /**
  * Markdown frontmatter data describing a post
  */
-interface MarkdownPost {
+type MarkdownPost = {
   title: string;
   summary: string;
   date: Date;
@@ -154,14 +152,14 @@ interface MarkdownPost {
   imageAlt: string;
   authors: string[];
   html: string;
-}
+};
 
-export interface BlogAuthor {
+export type BlogAuthor = {
   name: string;
   title: string;
   avatar: string;
-}
+};
 
-export interface BlogPost extends Omit<MarkdownPost, "authors"> {
+export type BlogPost = Omit<MarkdownPost, "authors"> & {
   authors: BlogAuthor[];
-}
+};

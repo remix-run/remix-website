@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { unstable_defineLoader as defineLoader } from "@remix-run/node";
+import type { MetaArgs_SingleFetch } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 import { Fragment, forwardRef, useEffect, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
@@ -8,18 +8,16 @@ import { clsx } from "clsx";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { useHydrated } from "~/ui/primitives/utils";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({ request, response }) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
+  response.headers.set("Cache-Control", CACHE_CONTROL.DEFAULT);
 
-  return json(
-    { siteUrl, showcaseExamples },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
-};
+  return { siteUrl, showcaseExamples };
+});
 
 // Stolen from _marketing._index.tsx. eventually would like to replace
-export const meta: MetaFunction<typeof loader> = (args) => {
+export const meta = (args: MetaArgs_SingleFetch<typeof loader>) => {
   let { siteUrl } = args.data || {};
   let title = "Remix Showcase";
   let image = siteUrl ? `${siteUrl}/img/og.1.jpg` : null;

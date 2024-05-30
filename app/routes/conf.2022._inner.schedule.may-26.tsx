@@ -1,7 +1,5 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import { Discord } from "~/ui/icons";
 
 export const meta: MetaFunction = () => {
@@ -201,18 +199,16 @@ const activities: Array<Activity> = [
   },
 ];
 
-type LoaderData = { activities: Array<Activity> };
-
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({
+export const loader = async () => {
+  return {
     activities: activities.sort(() => Math.random() - 0.5),
-  });
+  };
 };
 
 export default function May25Schedule() {
   // Our internal serialization type struggles a bit with the union/intersection
   // type we use for Activity
-  const { activities } = useLoaderData() as LoaderData;
+  const { activities } = useLoaderData<typeof loader>();
   return (
     <div>
       <p>
