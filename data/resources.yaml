@@ -64,10 +64,10 @@
   initCommand: "npm install remix-development-tools -D"
   category: "libraries"
 
-- title: "Stripe Stack"
-  repoUrl: "https://github.com/dev-xo/stripe-stack"
-  imgSrc: "https://raw.githubusercontent.com/dev-xo/dev-xo/main/stripe-stack/assets/images/Intro-Light.png"
-  initCommand: "npx create-remix@latest template dev-xo/stripe-stack"
+- title: "Remix SaaS"
+  repoUrl: "https://github.com/dev-xo/remix-saas"
+  imgSrc: "https://raw.githubusercontent.com/dev-xo/dev-xo/main/remix-saas/intro.png"
+  initCommand: "npx create-remix-saas@latest"
   category: "templates"
 
 - title: "Remix Auth"
@@ -198,14 +198,14 @@
   category: "libraries"
 
 - title: "remix-client-cache"
-  repoUrl: "https://github.com/Code-Forge-Net/remix-client-cache"
-  imgSrc: "https://opengraph.githubassets.com/6895fd09322b013c24ed810a1b65af484bfc07b841e5c8960c3be4acbbbbafcb/Code-Forge-Net/remix-client-cache"
+  repoUrl: "https://github.com/forge42dev/remix-client-cache"
+  imgSrc: "https://opengraph.githubassets.com/6895fd09322b013c24ed810a1b65af484bfc07b841e5c8960c3be4acbbbbafcb/forge42dev/remix-client-cache"
   initCommand: "npm install remix-client-cache"
   category: "libraries"
 
 - title: "remix-toast"
-  repoUrl: "https://github.com/Code-Forge-Net/remix-toast"
-  imgSrc: "https://opengraph.githubassets.com/8fadfa577649b2afb0e90d2882f1cfafc2a75328f3f01b9d0bb047216d5fd565/Code-Forge-Net/remix-toast"
+  repoUrl: "https://github.com/forge42dev/remix-toast"
+  imgSrc: "https://opengraph.githubassets.com/8fadfa577649b2afb0e90d2882f1cfafc2a75328f3f01b9d0bb047216d5fd565/forge42dev/remix-toast"
   initCommand: "npm install remix-toast"
   category: "libraries"
 
