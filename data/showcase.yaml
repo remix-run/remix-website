@@ -61,7 +61,7 @@
   videoSrc: "/showcase-assets/webstudio"
 
 - name: "Oxide"
-  description: "Rack-scale servers for on-premise infrastructure"
+  description: "Rack-scale servers for on-premises infrastructure"
   link: "https://oxide.computer/"
   imgSrc: "/showcase-assets/oxide.webp"
   videoSrc: "/showcase-assets/oxide"
@@ -102,6 +102,18 @@
   imgSrc: "/showcase-assets/passionfroot.webp"
   videoSrc: "/showcase-assets/passionfroot"
 
+- name: "Solin"
+  description: "The world's largest marketplace for fitness challenges from creators"
+  link: "https://www.solin.stream/"
+  imgSrc: "/showcase-assets/solin.webp"
+  videoSrc: "/showcase-assets/solin"
+
+- name: "Forge 42"
+  description: "Forge42 is a development agency that specializes in web development and design with Remix.run"
+  link: "https://forge42.dev"
+  imgSrc: "/showcase-assets/forge42.webp"
+  videoSrc: "/showcase-assets/forge42"
+  
 - name: "Atmos Financial"
   description: "Bank accounts that fund solar"
   link: "https://www.joinatmos.com"

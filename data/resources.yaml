@@ -69,6 +69,7 @@
   imgSrc: "https://raw.githubusercontent.com/dev-xo/dev-xo/main/remix-saas/intro.png"
   initCommand: "npx create-remix-saas@latest"
   category: "templates"
+  featured: true
 
 - title: "Remix Auth"
   repoUrl: "https://github.com/sergiodxa/remix-auth"
@@ -111,7 +112,6 @@
   imgSrc: "https://opengraph.githubassets.com/064b0c3873168b19305c8d90fcd7550295c232c56ad90cf5f71a86d2e9904871/edmundhung/conform"
   initCommand: "npm install @conform-to/react @conform-to/zod --save"
   category: "libraries"
-  featured: true
 
 - title: "@epic-web/remember"
   repoUrl: "https://github.com/epicweb-dev/remember"
@@ -198,14 +198,14 @@
   category: "libraries"
 
 - title: "remix-client-cache"
-  repoUrl: "https://github.com/Code-Forge-Net/remix-client-cache"
-  imgSrc: "https://opengraph.githubassets.com/6895fd09322b013c24ed810a1b65af484bfc07b841e5c8960c3be4acbbbbafcb/Code-Forge-Net/remix-client-cache"
+  repoUrl: "https://github.com/forge42dev/remix-client-cache"
+  imgSrc: "https://opengraph.githubassets.com/6895fd09322b013c24ed810a1b65af484bfc07b841e5c8960c3be4acbbbbafcb/forge42dev/remix-client-cache"
   initCommand: "npm install remix-client-cache"
   category: "libraries"
 
 - title: "remix-toast"
-  repoUrl: "https://github.com/Code-Forge-Net/remix-toast"
-  imgSrc: "https://opengraph.githubassets.com/8fadfa577649b2afb0e90d2882f1cfafc2a75328f3f01b9d0bb047216d5fd565/Code-Forge-Net/remix-toast"
+  repoUrl: "https://github.com/forge42dev/remix-toast"
+  imgSrc: "https://opengraph.githubassets.com/8fadfa577649b2afb0e90d2882f1cfafc2a75328f3f01b9d0bb047216d5fd565/forge42dev/remix-toast"
   initCommand: "npm install remix-toast"
   category: "libraries"
 
