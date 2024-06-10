@@ -4,31 +4,31 @@
   --base00: theme("colors.gray.50");
   --base01: theme("colors.gray.200");
   --base02: theme("colors.gray.300");
-  --base03: theme("colors.gray.400");
+  --base03: theme("colors.gray.500");
   --base04: theme("colors.gray.500");
   --base05: theme("colors.gray.600");
   --base06: theme("colors.gray.700");
   --base07: theme("colors.gray.800");
   --base08: theme("colors.red.700");
-  --base09: theme("colors.pink.brand");
-  --base0A: theme("colors.blue.500");
-  --base0B: theme("colors.green.500");
-  --base0C: theme("colors.aqua.400");
+  --base09: theme("colors.pink.700");
+  --base0A: theme("colors.blue.700");
+  --base0B: theme("colors.green.700");
+  --base0C: theme("colors.aqua.700");
   --base0D: theme("colors.blue.700");
-  --base0E: theme("colors.pink.brand");
+  --base0E: theme("colors.pink.700");
   --base0F: theme("colors.gray.700");
 
   &:where(.dark) {
     --base00: theme("colors.gray.800");
     --base01: theme("colors.gray.700");
     --base02: theme("colors.gray.600");
-    --base03: theme("colors.gray.500");
+    --base03: theme("colors.gray.400");
     --base04: theme("colors.gray.400");
-    --base05: theme("colors.gray.300");
+    --base05: theme("colors.gray.200");
     --base06: theme("colors.gray.200");
     --base07: theme("colors.gray.100");
     --base08: theme("colors.red.300");
-    --base09: theme("colors.pink.brand");
+    --base09: theme("colors.pink.400");
     --base0A: theme("colors.blue.300");
     --base0B: theme("colors.yellow.brand");
     --base0C: theme("colors.aqua.300");
@@ -179,7 +179,7 @@
   /*****************************************************************************/
   /* links */
   & a {
-    @apply text-blue-600 decoration-1 underline-offset-2 hover:underline dark:text-blue-500;
+    @apply text-blue-700 underline decoration-1 underline-offset-2 hover:underline dark:text-blue-500;
   }
 
   & a:not([href]) {
@@ -428,7 +428,7 @@
 
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
-    @apply pointer-events-none absolute left-0 top-0 w-full bg-green-400 opacity-10 dark:bg-green-300 dark:opacity-20;
+    @apply pointer-events-none absolute left-0 top-0 w-full bg-green-400 opacity-10 dark:bg-green-600;
   }
 
   & pre[data-good] .codeblock-line[data-highlight="true"]::after {
@@ -458,7 +458,7 @@
   }
 
   & table td {
-    @apply w-full whitespace-nowrap border-0 border-b border-gray-100 p-0 py-2 pr-4 text-sm text-black dark:text-white;
+    @apply w-full whitespace-nowrap border-0 border-b border-gray-100 p-0 py-2 pr-4 text-sm text-black dark:border-gray-800 dark:text-white;
   }
 
   /*****************************************************************************/
@@ -494,7 +494,7 @@
   }
 
   & docs-info {
-    @apply text-blue-brand dark:text-blue-300;
+    @apply text-blue-600 dark:text-blue-300;
   }
 
   & docs-info::before {
@@ -530,6 +530,7 @@
     & > a {
       @apply relative block dark:text-inherit;
       color: unset;
+      text-decoration: unset;
     }
 
     & > a:hover {

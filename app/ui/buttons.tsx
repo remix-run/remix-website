@@ -32,7 +32,7 @@ export function OutlineButtonLink({
 export const baseButtonLinkClass =
   "inline-flex items-center justify-center xl:text-xl h-14 xl:h-16 box-border px-8 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent font-semibold";
 
-export const primaryButtonLinkClass = `${baseButtonLinkClass} bg-blue-brand text-white hover:bg-blue-600 focus:ring-blue-200 transition-colors duration-200`;
+export const primaryButtonLinkClass = `${baseButtonLinkClass} bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-200 transition-colors duration-200`;
 
 export const secondaryButtonLinkClass = `${baseButtonLinkClass} bg-pink-brand text-white hover:bg-pink-600 focus:ring-blue-200 transition-colors duration-200`;
 

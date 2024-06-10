@@ -138,7 +138,7 @@ function Sample({ html, className }: { html: string; className?: string }) {
   return (
     <div
       className={
-        "relative overflow-auto bg-gray-800 p-3 text-sm sm:rounded-lg sm:text-base md:max-w-full lg:max-w-max xl:rounded-xl xl:p-4" +
+        "relative overflow-auto bg-[#252525] p-3 text-sm sm:rounded-lg sm:text-base md:max-w-full lg:max-w-max xl:rounded-xl xl:p-4" +
         " " +
         className
       }
