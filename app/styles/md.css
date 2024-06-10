@@ -11,7 +11,7 @@
   --base09: theme("colors.pink.700");
   --base0A: theme("colors.blue.700");
   --base0B: theme("colors.green.700");
-  --base0C: theme("colors.aqua.brand");
+  --base0C: theme("colors.aqua.700");
   --base0D: theme("colors.blue.700");
   --base0E: theme("colors.pink.700");
   --base0F: theme("colors.gray.700");
@@ -22,17 +22,17 @@
     --base02: theme("colors.gray.600");
     --base03: theme("colors.gray.400");
     --base04: theme("colors.gray.400");
-    --base05: theme("colors.gray.300");
+    --base05: theme("colors.gray.200");
     --base06: theme("colors.gray.200");
     --base07: theme("colors.gray.100");
-    --base08: theme("colors.yellow.brand");
+    --base08: theme("colors.red.300");
     --base09: theme("colors.pink.400");
-    --base0A: theme("colors.blue.600");
-    --base0B: theme("colors.green.brand");
+    --base0A: theme("colors.blue.300");
+    --base0B: theme("colors.yellow.brand");
     --base0C: theme("colors.aqua.300");
     --base0D: theme("colors.blue.300");
     --base0E: theme("colors.pink.300");
-    --base0F: theme("colors.gray.200");
+    --base0F: theme("colors.gray.300");
   }
 }
 
@@ -83,10 +83,7 @@
   }
 
   & a {
-    @apply text-blue-brand;
-    &:hover {
-      @apply underline;
-    }
+    @apply text-blue-700 underline dark:text-blue-500;
     &:active {
       @apply text-red-brand;
     }
@@ -100,7 +97,7 @@
   }
 
   & pre {
-    @apply mb-4 mt-0 bg-[color:var(--base00)] leading-relaxed;
+    @apply my-4 border border-gray-100 leading-relaxed dark:border-gray-800;
   }
 
   & code,
@@ -121,13 +118,18 @@
     @apply relative block pr-4;
   }
 
+  & :not(pre) > code {
+    @apply rounded bg-gray-100/50 px-1.5 pb-0.5 pt-px text-sm text-gray-700 dark:bg-gray-800/50;
+  }
+
   & code {
-    @apply rounded bg-gray-50 px-1 py-[2px] text-[color:inherit] dark:bg-gray-800;
+    @apply rounded px-1 py-[2px] text-inherit;
   }
 
   & :is(a, h1, h2, h3, h4, h5, h6) code,
   & :is(a, h1, h2, h3, h4, h5, h6) kbd {
-    @apply text-[color:inherit];
+    /* dark:text-inherit needs to be specified explicitly, otherwise the dark text color rule would override this rule. */
+    @apply text-inherit dark:text-inherit;
   }
 
   & :is(h1, h2, h3, h4, h5, h6) code {
