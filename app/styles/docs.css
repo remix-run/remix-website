@@ -375,7 +375,7 @@
     pre[data-line-numbers="true"]:not([data-lang="bash"], [data-lang="sh"])
     [data-line-number]::before {
     content: attr(data-line-number);
-    @apply mr-6 inline-block w-8 pl-0 text-right text-gray-300 dark:text-gray-600;
+    @apply mr-6 inline-block w-8 pl-0 text-right text-gray-300 dark:text-gray-500;
   }
 
   & pre[data-good] {
@@ -428,7 +428,7 @@
 
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
-    @apply pointer-events-none absolute left-0 top-0 w-full bg-green-400 opacity-10 dark:bg-green-600;
+    @apply pointer-events-none absolute left-0 top-0 w-full bg-green-400 opacity-10 dark:bg-green-500 dark:opacity-15;
   }
 
   & pre[data-good] .codeblock-line[data-highlight="true"]::after {

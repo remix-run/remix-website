@@ -274,7 +274,7 @@
 
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
-    @apply pointer-events-none absolute left-0 right-0 top-0 -mx-3 bg-green-400 opacity-10 dark:bg-green-500;
+    @apply pointer-events-none absolute left-0 right-0 top-0 -mx-3 bg-green-400 opacity-10 dark:bg-green-500 dark:opacity-15;
   }
 
   & :is(h1, h2, h3, h4, h5, h6) {
