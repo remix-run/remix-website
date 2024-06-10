@@ -26,7 +26,7 @@
   position: relative; /* Required for data-highlight to render behind code */
   z-index: 0; /* Required for data-highlight to render behind code */
   & pre {
-    @apply h-[50vh] py-2 sm:py-4;
+    @apply h-[50vh] overflow-hidden py-2 sm:py-4;
 
     & .codeblock-line {
       @apply relative block px-2 leading-relaxed sm:px-8;
