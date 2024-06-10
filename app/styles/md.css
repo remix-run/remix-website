@@ -268,6 +268,10 @@
     @apply whitespace-nowrap border-0 border-b border-gray-100 p-0 py-2 pr-4 text-sm text-black dark:text-white md:pr-6;
   }
 
+  & [data-code-block] {
+    position: relative; /* Required for data-highlight to render behind code */
+  }
+
   & .codeblock-line {
     @apply relative block;
   }
@@ -275,6 +279,7 @@
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
     @apply pointer-events-none absolute left-0 right-0 top-0 -mx-3 bg-green-400 opacity-10 dark:bg-green-500 dark:opacity-15;
+    z-index: -1; /* Required for data-highlight to render behind code */
   }
 
   & :is(h1, h2, h3, h4, h5, h6) {

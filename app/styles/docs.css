@@ -346,7 +346,7 @@
   }
 
   & [data-code-block] {
-    position: relative;
+    position: relative; /* Required for data-highlight to render behind code */
   }
 
   & [data-code-block-copy] {
@@ -429,6 +429,7 @@
   & .codeblock-line[data-highlight="true"]::after {
     content: " ";
     @apply pointer-events-none absolute left-0 top-0 w-full bg-green-400 opacity-10 dark:bg-green-500 dark:opacity-15;
+    z-index: -1; /* Required for data-highlight to render behind code */
   }
 
   & pre[data-good] .codeblock-line[data-highlight="true"]::after {
