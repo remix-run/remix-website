@@ -122,7 +122,7 @@ function SalesError() {
       <Fakebooks.RootView className="h-[42vh] sm:h-[55vh]">
         <Fakebooks.SalesView>
           <div className="absolute inset-0 flex items-center justify-center bg-red-100">
-            <div className="text-center text-red-brand">
+            <div className="text-center text-red-700">
               <div className="text-[10px] font-bold sm:text-[14px]">Oops!</div>
               <div className="px-2 text-[8px] sm:text-[12px]">
                 Something busted that we didn’t anticipate.
@@ -284,7 +284,7 @@ function MutationSlides({ sequence }: { sequence: Sequence }) {
           </div>
         </div>
 
-        <div className="sticky bottom-0 bg-gray-800 xl:bottom-auto xl:top-0 xl:flex xl:h-screen xl:flex-1 xl:items-center xl:self-start">
+        <div className="sticky bottom-0 bg-[#252525] xl:bottom-auto xl:top-0 xl:flex xl:h-screen xl:flex-1 xl:items-center xl:self-start">
           <MutationCode
             start={0}
             end={slideLength * 1.5}
@@ -401,7 +401,7 @@ function Prefetching() {
         <JumboP>Public Data. User Data. Modules. Heck, even CSS.</JumboP>
         <JumboP>Zero loading states. Zero skeleton UI. Zero jank.</JumboP>
         <JumboP>
-          <span className="text-gray-500">
+          <span className="text-gray-400">
             Alright, you caught us, they’re just prefetch link tags,
             #useThePlatform
           </span>
@@ -1192,9 +1192,7 @@ export const LayoutButton = React.forwardRef<
     <button
       ref={ref}
       className={
-        `m-2 rounded-full px-6 py-2 font-mono text-[12px] font-bold leading-6 opacity-80 md:text-base ${
-          active ? "opacity-100" : ""
-        }` +
+        `m-2 rounded-full px-6 py-2 font-mono text-[12px] font-bold leading-6 opacity-80 md:text-base ${active ? "opacity-100" : ""}` +
         " " +
         className
       }
