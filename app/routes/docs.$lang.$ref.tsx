@@ -149,7 +149,7 @@ export default function DocsLayout() {
 
 function Footer() {
   return (
-    <div className="flex justify-between gap-4 border-t border-t-gray-50 py-4 text-sm text-gray-500 dark:text-gray-300 dark:border-gray-800">
+    <div className="flex justify-between gap-4 border-t border-t-gray-50 py-4 text-sm text-gray-500 dark:border-gray-800 dark:text-gray-300">
       <div className="sm:flex sm:items-center sm:gap-2 lg:gap-4">
         <div>
           &copy;{" "}
@@ -700,9 +700,7 @@ function Menu() {
       </ul>
     </nav>
   ) : (
-    <div className="bold text-gray-300">
-      Failed to load menu
-    </div>
+    <div className="bold text-gray-300">Failed to load menu</div>
   );
 }
 
@@ -824,9 +822,9 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
         isActive
           ? ["text-black dark:text-gray-100", "bg-blue-200 dark:bg-blue-800"]
           : [
-            "text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-gray-100",
-            "hover:bg-blue-100 dark:hover:bg-blue-800/50",
-          ],
+              "text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-gray-100",
+              "hover:bg-blue-100 dark:hover:bg-blue-800/50",
+            ],
       )}
       children={children}
     />
