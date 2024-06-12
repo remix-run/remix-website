@@ -76,7 +76,8 @@ export default function Showcase() {
               />
               <MobileShowcase
                 isHydrated={isHydrated}
-                asImage={i > 5}
+                // asImage={i > 5}
+                asImage
                 // Only preload the first 2, since that's about all that should be "above the fold" on mobile
                 preload={i < 2 ? "auto" : "none"}
                 {...example}
