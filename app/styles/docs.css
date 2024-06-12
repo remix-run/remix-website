@@ -579,15 +579,24 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 }
 
 .rehype-pretty-copy {  
-  @apply absolute !mr-3 !mt-[-5px] cursor-pointer !h-5 !w-5 ;
+  @apply absolute !mr-3 !mt-[-5px] cursor-pointer opacity-50 !h-7 !w-7 shadow-sm !rounded-md;
+  background-color: hsl(var(--background));
+  border-color: hsl(var(--input));
+  border-width: 1px;
+  align-items: center;
+  justify-content: center;
   
-  .ready {
-    @apply !h-5 !w-5 !m-0;
+  & .ready {
+    @apply !h-4 !w-4 !m-0;
   }
 
-  .success {
-    @apply !h-5 !w-5 !m-0;
+  & .success {
+    @apply !h-4 !w-4 !m-0;
   }
+}
+
+.rehype-pretty-copy:hover {
+  @apply opacity-100 bg-gray-100;
 }
 
 figure[data-rehype-pretty-code-figure]:has(> [data-rehype-pretty-code-title]) > pre > code button.rehype-pretty-copy {
