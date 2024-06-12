@@ -62,7 +62,7 @@ export default function Showcase() {
       </div>
       <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-6 gap-y-10 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8">
         {showcaseExamples.map((example, i) => {
-          let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
+          let preload: ShowcaseTypes["preload"] = i < 2 ? "auto" : "none";
           return (
             <Fragment key={example.name}>
               <DesktopShowcase
