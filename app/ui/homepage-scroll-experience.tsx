@@ -1192,7 +1192,7 @@ export const LayoutButton = React.forwardRef<
     <button
       ref={ref}
       className={
-        `m-2 rounded-full px-6 py-2 font-mono text-[12px] font-bold leading-6 bg-opacity-70 md:text-base ${active ? "opacity-100" : ""}` +
+        `m-2 rounded-full px-6 py-2 font-mono text-[12px] font-bold leading-6 bg-opacity-70 md:text-base ${active ? "opacity-100" : "opacity-80"}` +
         " " +
         className
       }
