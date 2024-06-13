@@ -21,21 +21,27 @@
   scroll-snap-align: start;
 }
 
-.__mutation_code pre {
-  @apply h-[50vh] overflow-hidden bg-gray-800 py-2 sm:py-4;
+.__mutation_code {
+  @apply bg-[#252525];
+  position: relative; /* Required for data-highlight to render behind code */
+  z-index: 0; /* Required for data-highlight to render behind code */
+  & pre {
+    @apply h-[50vh] overflow-hidden py-2 sm:py-4;
 
-  & .codeblock-line {
-    @apply relative block px-2 leading-relaxed sm:px-8;
-  }
+    & .codeblock-line {
+      @apply relative block px-2 leading-relaxed sm:px-8;
+    }
 
-  & .codeblock-line[data-highlight="true"]::after {
-    pointer-events: none;
-    content: " ";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: theme("colors.green.brand");
-    opacity: 0.2;
+    & .codeblock-line[data-highlight="true"]::after {
+      pointer-events: none;
+      content: " ";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      background: theme("colors.green.500");
+      opacity: 0.125;
+      z-index: -1; /* Required for data-highlight to render behind code */
+    }
   }
 }

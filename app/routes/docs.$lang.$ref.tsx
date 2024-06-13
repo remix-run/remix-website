@@ -149,7 +149,7 @@ export default function DocsLayout() {
 
 function Footer() {
   return (
-    <div className="flex justify-between gap-4 border-t border-t-gray-50 py-4 text-sm text-gray-400 dark:border-gray-800">
+    <div className="flex justify-between gap-4 border-t border-t-gray-50 py-4 text-sm text-gray-500 dark:border-gray-800 dark:text-gray-300">
       <div className="sm:flex sm:items-center sm:gap-2 lg:gap-4">
         <div>
           &copy;{" "}
@@ -322,7 +322,7 @@ function VersionLink({
     "flex w-full items-center gap-2 py-2 px-2 rounded-sm text-sm transition-colors duration-100",
     isActive
       ? "text-black bg-blue-200 dark:bg-blue-800 dark:text-gray-100"
-      : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-blue-800/50",
+      : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-blue-800/50",
   );
 
   if (isExternal) {
@@ -433,7 +433,7 @@ let ColorSchemeButton = React.forwardRef<
         "flex w-full items-center gap-2 rounded-sm px-2 py-2 text-sm transition-colors duration-100",
         colorScheme === props.value
           ? "bg-blue-200 text-black dark:bg-blue-800 dark:text-gray-100"
-          : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:bg-blue-800/50 dark:hover:text-gray-100",
+          : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-300 dark:hover:bg-blue-800/50 dark:hover:text-gray-100",
       )}
     >
       <svg className="h-4 w-4">
@@ -524,7 +524,7 @@ function HeaderMenuLink({
         "p-2 py-2.5 text-sm leading-none underline-offset-4 hover:underline md:p-3",
         isActive
           ? "text-black underline decoration-black dark:text-gray-200 dark:decoration-gray-200"
-          : "text-gray-500 decoration-gray-200 dark:text-gray-400 dark:decoration-gray-500",
+          : "text-gray-500 decoration-gray-200 dark:text-gray-300 dark:decoration-gray-500",
       )}
     >
       {children}
@@ -582,7 +582,7 @@ function HeaderLink({
     <a
       href={href}
       className={cx(
-        `hidden h-10 w-10 place-items-center text-black hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-50 md:grid`,
+        `hidden h-10 w-10 place-items-center text-black hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-50 md:grid`,
         className,
       )}
       title={title}
@@ -700,9 +700,7 @@ function Menu() {
       </ul>
     </nav>
   ) : (
-    <div className="bold text-gray-300 dark:text-gray-400">
-      Failed to load menu
-    </div>
+    <div className="bold text-gray-300">Failed to load menu</div>
   );
 }
 
@@ -824,7 +822,7 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
         isActive
           ? ["text-black dark:text-gray-100", "bg-blue-200 dark:bg-blue-800"]
           : [
-              "text-gray-700 hover:text-black dark:text-gray-400 dark:hover:text-gray-100",
+              "text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-gray-100",
               "hover:bg-blue-100 dark:hover:bg-blue-800/50",
             ],
       )}

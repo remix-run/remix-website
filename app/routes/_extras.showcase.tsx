@@ -61,7 +61,7 @@ export default function Showcase() {
         </p>
       </div>
       <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-6 gap-y-10 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8">
-        {showcaseExamples.map((example, i) => {
+        {showcaseExamples.slice(0, 16).map((example, i) => {
           let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
           return (
             <Fragment key={example.name}>
@@ -76,7 +76,8 @@ export default function Showcase() {
               />
               <MobileShowcase
                 isHydrated={isHydrated}
-                asImage={i > 5}
+                // asImage={i > 5}
+                asImage
                 // Only preload the first 2, since that's about all that should be "above the fold" on mobile
                 preload={i < 2 ? "auto" : "none"}
                 {...example}
