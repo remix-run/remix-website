@@ -17,7 +17,6 @@ export default defineConfig({
     remix({
       future: {
         unstable_singleFetch: true,
-        unstable_fogOfWar: true,
       },
     }),
   ],
