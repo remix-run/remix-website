@@ -161,7 +161,7 @@ export default function SpeakerRoute() {
             <img
               src={speaker.imgUrl}
               alt=""
-              className="aspect-1 w-full max-w-full border-[1px] border-gray-600 bg-gray-800 object-contain object-center"
+              className="aspect-square w-full max-w-full border-[1px] border-gray-600 bg-gray-800 object-contain object-center"
             />
           </div>
         ) : null}

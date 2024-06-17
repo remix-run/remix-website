@@ -8,7 +8,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 export default {
   content: ["./app/**/*.{ts,tsx}", "./data/**/*.md"],
   darkMode: "class",
-  plugins: [aspectRatioPlugin, selectedVariantPlugin, expandedVariantPlugin],
+  plugins: [selectedVariantPlugin, expandedVariantPlugin],
   theme: {
     extend: {
       screens: {

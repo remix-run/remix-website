@@ -159,7 +159,7 @@ function EarlySponsors() {
                       {speaker.imgUrl ? (
                         <div
                           aria-hidden
-                          className="aspect-1 w-full border-[1px] border-gray-600 bg-gray-800"
+                          className="aspect-square w-full border-[1px] border-gray-600 bg-gray-800"
                         >
                           <img
                             src={speaker.imgUrl}
@@ -170,7 +170,7 @@ function EarlySponsors() {
                       ) : (
                         <div
                           aria-hidden
-                          className="leading-1 flex aspect-1 w-full select-none items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-center text-6xl font-extrabold text-gray-400 md:text-4xl xl:text-5xl"
+                          className="leading-1 aspect-square flex w-full select-none items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-center text-6xl font-extrabold text-gray-400 md:text-4xl xl:text-5xl"
                         >
                           {getInitials(speaker.nameFull)}
                         </div>
@@ -377,7 +377,7 @@ function GridCell({
       className={cx("rounded-lg text-white outline-2", {
         "bg-gray-900": bgColor === "default",
         "bg-blue-brand": bgColor === "blue",
-        "sm:aspect-1": type === "sponsor",
+        "sm:aspect-square": type === "sponsor",
         "order-1": order === 1,
         "order-2": order === 2,
       })}
