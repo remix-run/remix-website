@@ -10,10 +10,11 @@ export default {
   darkMode: "class",
   plugins: [aspectRatioPlugin, selectedVariantPlugin, expandedVariantPlugin],
   theme: {
-    screens: {
-      "2xs": "320px",
-      xs: "480px",
-      ...defaultTheme.screens,
+    extend: {
+      screens: {
+        "2xs": "320px",
+        xs: "480px",
+      },
     },
     fontFamily: {
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
