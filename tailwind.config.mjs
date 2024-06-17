@@ -145,6 +145,15 @@ export default {
       };
     },
   },
+  // classes that exist within the docs
+  safelist: [
+    "w-full",
+    "mb-4",
+    "rounded-lg",
+    "aspect-[4/3]",
+    "aspect-[1/1]",
+    "overflow-hidden",
+  ],
 };
 
 function selectedVariantPlugin({ addVariant, e }) {
