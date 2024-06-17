@@ -62,7 +62,7 @@ function ErrorBoundaries({ slides }: { slides: Sequence }) {
       </ScrollStage>
       <ScrollStage pages={1} fallbackLength={100} fallbackFrame={0}>
         <Actor start={0.01} end={0.95}>
-          <div className="fixed inset-0 bg-blue-brand" />
+          <div className="fixed inset-0 bg-blue-600" />
         </Actor>
         <BlueScreen />
       </ScrollStage>
@@ -179,7 +179,7 @@ function Explosion() {
 
 function BlueScreen() {
   return (
-    <section className="relative z-10 h-full bg-blue-brand px-6 pb-32 text-lg text-white sm:px-36 sm:pb-40 sm:text-xl">
+    <section className="relative z-10 h-full bg-blue-600 px-6 pb-32 text-lg text-white sm:px-36 sm:pb-40 sm:text-xl">
       <h2 className="sr-only">Error Handling</h2>
       <div aria-hidden className="text-6xl sm:text-7xl md:text-[length:120px]">
         :)
@@ -1192,7 +1192,7 @@ export const LayoutButton = React.forwardRef<
     <button
       ref={ref}
       className={
-        `m-2 rounded-full px-6 py-2 font-mono text-[12px] font-bold leading-6 opacity-80 md:text-base ${active ? "opacity-100" : ""}` +
+        `m-2 rounded-full px-6 py-2 font-mono text-[12px] font-bold leading-6 bg-opacity-70 md:text-base ${active ? "opacity-100" : "opacity-80"}` +
         " " +
         className
       }
@@ -1237,7 +1237,7 @@ export function InteractiveRoutes() {
           onMouseEnter={() => onActiveRouteChange(1)}
           onFocus={() => onActiveRouteChange(1)}
           active={activeRoute === 1}
-          className="bg-blue-900 text-blue-brand"
+          className="bg-blue-900 text-blue-300"
         >
           &lt;Root&gt;
         </LayoutButton>
@@ -1264,7 +1264,7 @@ export function InteractiveRoutes() {
           onMouseEnter={() => onActiveRouteChange(4)}
           onFocus={() => onActiveRouteChange(4)}
           active={activeRoute === 4}
-          className="bg-red-900 text-red-brand"
+          className="bg-red-900 text-red-300"
         >
           &lt;Invoice id={"{id}"}&gt;
         </LayoutButton>
