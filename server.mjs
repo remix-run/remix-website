@@ -47,7 +47,11 @@ if (viteDevServer) {
 // more aggressive with this caching.
 app.use(express.static("build/client", { maxAge: "1h" }));
 
-app.use(morgan("tiny"));
+app.use(
+  morgan("tiny", {
+    skip: (req) => req.method === "GET" && req.url.startsWith("/__manifest"),
+  }),
+);
 
 app.all(
   "*",
