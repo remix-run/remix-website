@@ -17,7 +17,6 @@ export default {
       ...defaultTheme.screens,
     },
     fontFamily: {
-      display: ["Inter", ...defaultTheme.fontFamily.sans],
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
       mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
     },
