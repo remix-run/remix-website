@@ -131,7 +131,7 @@ function EarlySponsors() {
       <div className="container">
         <div className="mx-auto flex w-full max-w-xl flex-col gap-20 sm:gap-28 md:max-w-2xl xl:mx-0 xl:max-w-none xl:gap-36">
           <div className="flex flex-col items-center justify-center text-center">
-            <p className="mb-4 font-display text-2xl font-extrabold md:mb-8 md:text-4xl">
+            <p className="font-display mb-4 text-2xl font-extrabold md:mb-8 md:text-4xl">
               Presented by<span className="sr-only"> Shopify</span>
             </p>
             <div className="w-72 max-w-full sm:w-80 xl:w-96">
@@ -148,7 +148,7 @@ function EarlySponsors() {
             <section>
               <h2
                 id="speakers"
-                className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
+                className="font-display mb-4 text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
               >
                 Speakers
               </h2>
@@ -159,7 +159,7 @@ function EarlySponsors() {
                       {speaker.imgUrl ? (
                         <div
                           aria-hidden
-                          className="aspect-1 w-full border-[1px] border-gray-600 bg-gray-800"
+                          className="aspect-square w-full border-[1px] border-gray-600 bg-gray-800"
                         >
                           <img
                             src={speaker.imgUrl}
@@ -170,7 +170,7 @@ function EarlySponsors() {
                       ) : (
                         <div
                           aria-hidden
-                          className="leading-1 flex aspect-1 w-full select-none items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-center text-6xl font-extrabold text-gray-400 md:text-4xl xl:text-5xl"
+                          className="leading-1 aspect-square flex w-full select-none items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-center text-6xl font-extrabold text-gray-400 md:text-4xl xl:text-5xl"
                         >
                           {getInitials(speaker.nameFull)}
                         </div>
@@ -216,7 +216,7 @@ function EarlySponsors() {
               <div>
                 <h3
                   id="heading-premier-sponsor"
-                  className="mb-4 font-display text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
+                  className="font-display mb-4 text-4xl font-extrabold text-blue-brand md:mb-8 md:text-7xl"
                 >
                   Premier Sponsor
                 </h3>
@@ -262,7 +262,7 @@ function EarlySponsors() {
             <div>
               <h3
                 id="heading-gold-sponsors"
-                className="mb-4 font-display text-4xl font-extrabold text-yellow-brand md:mb-8 md:text-7xl"
+                className="font-display mb-4 text-4xl font-extrabold text-yellow-brand md:mb-8 md:text-7xl"
               >
                 Gold Sponsors
               </h3>
@@ -302,7 +302,7 @@ function EarlySponsors() {
               <div>
                 <h3
                   id="heading-silver-sponsors"
-                  className="mb-4 font-display text-3xl font-extrabold text-pink-brand md:mb-8 md:text-5xl"
+                  className="font-display mb-4 text-3xl font-extrabold text-pink-brand md:mb-8 md:text-5xl"
                 >
                   Silver Sponsors
                 </h3>
@@ -331,7 +331,7 @@ function EarlySponsors() {
               <div>
                 <h3
                   id="heading-community-sponsors"
-                  className="mb-4 font-display text-2xl font-extrabold md:mb-8 md:text-4xl"
+                  className="font-display mb-4 text-2xl font-extrabold md:mb-8 md:text-4xl"
                 >
                   Community Sponsors
                 </h3>
@@ -377,7 +377,7 @@ function GridCell({
       className={cx("rounded-lg text-white outline-2", {
         "bg-gray-900": bgColor === "default",
         "bg-blue-brand": bgColor === "blue",
-        "sm:aspect-1": type === "sponsor",
+        "sm:aspect-square": type === "sponsor",
         "order-1": order === 1,
         "order-2": order === 2,
       })}

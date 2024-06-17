@@ -161,7 +161,7 @@ function SpeakerDisplay({
       prefetch="intent"
     >
       <div className="w-full max-w-xs sm:max-w-none">
-        <div className="__speaker-img aspect-h-1 aspect-w-1 overflow-hidden rounded-md bg-black">
+        <div className="__speaker-img aspect-square overflow-hidden rounded-md bg-black">
           <img src={speaker.imgSrc} alt={speaker.name} title={speaker.name} />
         </div>
         <div className="mt-4">
