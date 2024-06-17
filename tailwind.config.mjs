@@ -6,7 +6,6 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {TailwindConfig} */
 export default {
-  mode: "jit",
   content: ["./app/**/*.{ts,tsx}", "./data/**/*.md", "./tailwind-extras.html"],
   darkMode: "class",
   plugins: [aspectRatioPlugin, selectedVariantPlugin, expandedVariantPlugin],
