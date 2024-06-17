@@ -170,7 +170,7 @@ function EarlySponsors() {
                       ) : (
                         <div
                           aria-hidden
-                          className="leading-1 aspect-square flex w-full select-none items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-center text-6xl font-extrabold text-gray-400 md:text-4xl xl:text-5xl"
+                          className="leading-1 flex aspect-square w-full select-none items-center justify-center border-[1px] border-gray-600 bg-gray-800 text-center text-6xl font-extrabold text-gray-400 md:text-4xl xl:text-5xl"
                         >
                           {getInitials(speaker.nameFull)}
                         </div>
