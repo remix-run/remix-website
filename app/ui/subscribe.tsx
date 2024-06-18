@@ -165,7 +165,7 @@ function SubscribeStatus() {
   return (
     <div aria-live="polite" className="py-2">
       {isSuccessful && (
-        <div className="text-white">
+        <div>
           <b className="text-green-brand">Got it!</b> Please go{" "}
           <b className="text-red-brand">check your email</b> to confirm your
           subscription, otherwise you won't get our email.
