@@ -772,7 +772,7 @@ function MenuSummary({
         className={cx(
           sharedClassName,
           "_no-triangle block select-none",
-          "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
+          "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800 dark:focus-visible:ring-gray-100",
           "hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700",
         )}
       >
@@ -810,7 +810,7 @@ function MenuCategoryLink({
         "outline-none focus-visible:text-blue-brand dark:focus-visible:text-blue-400",
         isActive
           ? "text-blue-brand dark:text-blue-brand"
-          : "hover:text-blue-brand dark:hover:text-blue-400 ",
+          : "hover:text-blue-brand dark:hover:text-blue-400",
       )}
     >
       {children}
@@ -829,7 +829,7 @@ function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
       to={to}
       className={cx(
         "group relative my-px flex min-h-[2.25rem] items-center rounded-2xl border-transparent px-3 py-2 text-sm",
-        "outline-none transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
+        "outline-none transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800 dark:focus-visible:ring-gray-100",
         isActive
           ? ["text-black dark:text-gray-100", "bg-blue-200 dark:bg-blue-800"]
           : [

@@ -1,23 +1,21 @@
 // All tokens based on Jim Nielson's designs
 // https://www.figma.com/file/6G68ZVNbR6bMHl2p8727xi/www.remix.run?node-id=0%3A1&t=EXGqoelkZXIPTK6B-0
 
-const aspectRatioPlugin = require("@tailwindcss/aspect-ratio");
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {TailwindConfig} */
 export default {
-  mode: "jit",
-  content: ["./app/**/*.{ts,tsx}", "./data/**/*.md", "./tailwind-extras.html"],
+  content: ["./app/**/*.{ts,tsx}", "./data/**/*.md"],
   darkMode: "class",
-  plugins: [aspectRatioPlugin, selectedVariantPlugin, expandedVariantPlugin],
+  plugins: [selectedVariantPlugin, expandedVariantPlugin],
   theme: {
-    screens: {
-      "2xs": "320px",
-      xs: "480px",
-      ...defaultTheme.screens,
+    extend: {
+      screens: {
+        "2xs": "320px",
+        xs: "480px",
+      },
     },
     fontFamily: {
-      display: ["Inter", ...defaultTheme.fontFamily.sans],
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
       mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
     },
@@ -145,6 +143,15 @@ export default {
       };
     },
   },
+  // classes that exist within the docs
+  safelist: [
+    "w-full",
+    "mb-4",
+    "rounded-lg",
+    "aspect-[4/3]",
+    "aspect-[1/1]",
+    "overflow-hidden",
+  ],
 };
 
 function selectedVariantPlugin({ addVariant, e }) {

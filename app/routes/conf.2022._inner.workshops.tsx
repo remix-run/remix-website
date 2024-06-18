@@ -14,7 +14,7 @@ export const meta: MetaFunction = () => {
 export default function Workshops() {
   return (
     <div className="text-white">
-      <h1 className="mb-16 font-display text-3xl font-extrabold sm:text-5xl xl:text-7xl">
+      <h1 className="font-display mb-16 text-3xl font-extrabold sm:text-5xl xl:text-7xl">
         Premium Remix Workshops from the Remix Team
       </h1>
       <div className="container flex flex-col gap-4 text-lg lg:text-xl">

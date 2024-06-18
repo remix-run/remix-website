@@ -1,3 +1,4 @@
+import cx from "clsx";
 import { Discord, GitHub, Twitter, YouTube } from "./icons";
 import { Wordmark } from "./logo";
 
@@ -11,12 +12,11 @@ export function Footer({
   return (
     <footer
       x-comp="Footer"
-      className={
-        "flex items-center justify-between px-6 py-9 text-base lg:px-12" +
-        " " +
-        (forceDark ? "text-white " : "text-black dark:text-white ") +
-        className
-      }
+      className={cx(
+        "flex items-center justify-between px-6 py-9 text-base lg:px-12",
+        forceDark ? "text-white" : "text-black dark:text-white",
+        className,
+      )}
     >
       <div className="flex items-center">
         <Wordmark height={16} aria-label="Remix logo" role="img" />
