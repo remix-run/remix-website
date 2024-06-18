@@ -334,7 +334,9 @@ function VersionLink({
   }
 
   return to ? (
-    <Link to={to} className={className}>
+    // No need to discover these versioned links since they all match the
+    // current route we're on but with different params
+    <Link to={to} className={className} discover="none">
       {children}
     </Link>
   ) : (
@@ -704,6 +706,10 @@ function Menu() {
   );
 }
 
+let MenuCategoryContext = React.createContext<{ isOpen: boolean }>({
+  isOpen: false,
+});
+
 type MenuCategoryDetailsType = {
   className?: string;
   slug: string;
@@ -727,18 +733,20 @@ function MenuCategoryDetails({
   }, [isActivePath]);
 
   return (
-    <details
-      className={cx(className, "relative flex cursor-pointer flex-col")}
-      open={isOpen}
-      onToggle={(e) => {
-        // Synchronize the DOM's state with React state to prevent the
-        // details element from being closed after navigation and re-evaluation
-        // of useIsActivePath
-        setIsOpen(e.currentTarget.open);
-      }}
-    >
-      {children}
-    </details>
+    <MenuCategoryContext.Provider value={{ isOpen }}>
+      <details
+        className={cx(className, "relative flex cursor-pointer flex-col")}
+        open={isOpen}
+        onToggle={(e) => {
+          // Synchronize the DOM's state with React state to prevent the
+          // details element from being closed after navigation and re-evaluation
+          // of useIsActivePath
+          setIsOpen(e.currentTarget.open);
+        }}
+      >
+        {children}
+      </details>
+    </MenuCategoryContext.Provider>
   );
 }
 
@@ -811,9 +819,12 @@ function MenuCategoryLink({
 }
 
 function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
+  // Only discover expanded links to keep manifest calls to a reasonable URL length
+  let { isOpen } = React.useContext(MenuCategoryContext);
   let isActive = useIsActivePath(to);
   return (
     <Link
+      discover={isOpen ? "render" : "none"}
       prefetch="intent"
       to={to}
       className={cx(
