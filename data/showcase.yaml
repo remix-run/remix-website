@@ -48,11 +48,11 @@
   imgSrc: "/showcase-assets/winamp.webp"
   videoSrc: "/showcase-assets/winamp"
 
-- name: "Robots Guide"
-  description: "Interactive guide to the world of Robotics"
-  link: "https://robotsguide.com/"
-  imgSrc: "/showcase-assets/robots-guide.webp"
-  videoSrc: "/showcase-assets/robots-guide"
+- name: "Atmos Financial"
+  description: "Bank accounts that fund solar"
+  link: "https://www.joinatmos.com"
+  imgSrc: "/showcase-assets/atmos.webp"
+  videoSrc: "/showcase-assets/atmos"
 
 - name: "Webstudio"
   description: "Open source visual development platform"
@@ -72,11 +72,11 @@
   imgSrc: "/showcase-assets/trigger.webp"
   videoSrc: "/showcase-assets/trigger"
 
-- name: "OSS Capital"
-  description: "Early-stage VC for commercial open source"
-  link: "https://oss.capital/"
-  imgSrc: "/showcase-assets/oss-capital.webp"
-  videoSrc: "/showcase-assets/oss-capital"
+- name: "Robots Guide"
+  description: "Interactive guide to the world of Robotics"
+  link: "https://robotsguide.com/"
+  imgSrc: "/showcase-assets/robots-guide.webp"
+  videoSrc: "/showcase-assets/robots-guide"
 
 - name: "UDisc"
   description: "App for Disk Golfers"
@@ -113,3 +113,9 @@
   link: "https://forge42.dev"
   imgSrc: "/showcase-assets/forge42.webp"
   videoSrc: "/showcase-assets/forge42"
+
+- name: "OSS Capital"
+  description: "Early-stage VC for commercial open source"
+  link: "https://oss.capital/"
+  imgSrc: "/showcase-assets/oss-capital.webp"
+  videoSrc: "/showcase-assets/oss-capital"
