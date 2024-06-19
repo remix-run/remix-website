@@ -62,7 +62,7 @@ export default function Showcase() {
       </div>
       <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-6 gap-y-10 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8">
         {showcaseExamples.map((example, i) => {
-          let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
+          let loading: ShowcaseTypes["loading"] = i < 6 ? "eager" : "lazy";
           return (
             <Fragment key={example.name}>
               <DesktopShowcase
@@ -73,10 +73,14 @@ export default function Showcase() {
                 // providing an unusable or even bad experience to
                 // screen-reader users
                 isHydrated={isHydrated}
-                preload={preload}
+                loading={loading}
                 {...example}
               />
-              <MobileShowcase isHydrated={isHydrated} {...example} />
+              <MobileShowcase
+                isHydrated={isHydrated}
+                loading={loading}
+                {...example}
+              />
             </Fragment>
           );
         })}
@@ -86,7 +90,7 @@ export default function Showcase() {
 }
 
 type ShowcaseTypes = ShowcaseExample & {
-  preload?: "auto" | "metadata" | "none";
+  loading?: "lazy" | "eager";
   isHydrated: boolean;
 };
 
@@ -96,7 +100,7 @@ function DesktopShowcase({
   link,
   imgSrc,
   videoSrc,
-  preload,
+  loading,
   isHydrated,
 }: ShowcaseTypes) {
   let videoRef = useRef<HTMLVideoElement | null>(null);
@@ -108,7 +112,7 @@ function DesktopShowcase({
         videoSrc={videoSrc}
         poster={imgSrc}
         autoPlay={false}
-        preload={preload}
+        loading={loading}
         isHydrated={isHydrated}
       />
       <ShowcaseDescription
@@ -129,7 +133,8 @@ function MobileShowcase({
   link,
   imgSrc,
   isHydrated,
-}: Omit<ShowcaseTypes, "preload" | "videoSrc">) {
+  loading,
+}: Omit<ShowcaseTypes, "videoSrc">) {
   return (
     <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:hidden">
       <div className={"aspect-[4/3] object-cover object-top"}>
@@ -139,6 +144,7 @@ function MobileShowcase({
           height={600}
           alt=""
           src={imgSrc}
+          loading={loading}
         />
       </div>
       <ShowcaseDescription
@@ -153,9 +159,9 @@ function MobileShowcase({
 
 let ShowcaseVideo = forwardRef<
   HTMLVideoElement,
-  Pick<ShowcaseTypes, "videoSrc" | "isHydrated"> &
+  Pick<ShowcaseTypes, "videoSrc" | "isHydrated" | "loading"> &
     React.VideoHTMLAttributes<HTMLVideoElement>
->(({ videoSrc, className, isHydrated, ...props }, ref) => {
+>(({ videoSrc, className, isHydrated, loading, ...props }, ref) => {
   return (
     <div className={clsx("aspect-[4/3] object-cover object-top", className)}>
       <video
@@ -170,6 +176,7 @@ let ShowcaseVideo = forwardRef<
         height={600}
         // Note: autoplay must be off for this strategy to work, if autoplay is turned on all assets will be downloaded automatically
         tabIndex={isHydrated ? -1 : 0}
+        preload={loading === "eager" ? "auto" : "none"}
         {...props}
       >
         {["webm", "mp4"].map((ext) => (
@@ -179,6 +186,8 @@ let ShowcaseVideo = forwardRef<
             type={`video/${ext}`}
             width={800}
             height={600}
+            // avoid video assets downloading on mobile
+            media="(min-width: 768px)"
           />
         ))}
       </video>
