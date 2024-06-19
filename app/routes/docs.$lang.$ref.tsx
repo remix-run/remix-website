@@ -334,7 +334,9 @@ function VersionLink({
   }
 
   return to ? (
-    <Link to={to} className={className}>
+    // No need to discover these versioned links since they all match the
+    // current route we're on but with different params
+    <Link to={to} className={className} discover="none">
       {children}
     </Link>
   ) : (
@@ -704,6 +706,10 @@ function Menu() {
   );
 }
 
+let MenuCategoryContext = React.createContext<{ isOpen: boolean }>({
+  isOpen: false,
+});
+
 type MenuCategoryDetailsType = {
   className?: string;
   slug: string;
@@ -727,18 +733,20 @@ function MenuCategoryDetails({
   }, [isActivePath]);
 
   return (
-    <details
-      className={cx(className, "relative flex cursor-pointer flex-col")}
-      open={isOpen}
-      onToggle={(e) => {
-        // Synchronize the DOM's state with React state to prevent the
-        // details element from being closed after navigation and re-evaluation
-        // of useIsActivePath
-        setIsOpen(e.currentTarget.open);
-      }}
-    >
-      {children}
-    </details>
+    <MenuCategoryContext.Provider value={{ isOpen }}>
+      <details
+        className={cx(className, "relative flex cursor-pointer flex-col")}
+        open={isOpen}
+        onToggle={(e) => {
+          // Synchronize the DOM's state with React state to prevent the
+          // details element from being closed after navigation and re-evaluation
+          // of useIsActivePath
+          setIsOpen(e.currentTarget.open);
+        }}
+      >
+        {children}
+      </details>
+    </MenuCategoryContext.Provider>
   );
 }
 
@@ -764,7 +772,7 @@ function MenuSummary({
         className={cx(
           sharedClassName,
           "_no-triangle block select-none",
-          "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
+          "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800 dark:focus-visible:ring-gray-100",
           "hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700",
         )}
       >
@@ -802,7 +810,7 @@ function MenuCategoryLink({
         "outline-none focus-visible:text-blue-brand dark:focus-visible:text-blue-400",
         isActive
           ? "text-blue-brand dark:text-blue-brand"
-          : "hover:text-blue-brand dark:hover:text-blue-400 ",
+          : "hover:text-blue-brand dark:hover:text-blue-400",
       )}
     >
       {children}
@@ -811,14 +819,17 @@ function MenuCategoryLink({
 }
 
 function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
+  // Only discover expanded links to keep manifest calls to a reasonable URL length
+  let { isOpen } = React.useContext(MenuCategoryContext);
   let isActive = useIsActivePath(to);
   return (
     <Link
+      discover={isOpen ? "render" : "none"}
       prefetch="intent"
       to={to}
       className={cx(
         "group relative my-px flex min-h-[2.25rem] items-center rounded-2xl border-transparent px-3 py-2 text-sm",
-        "outline-none transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
+        "outline-none transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800 dark:focus-visible:ring-gray-100",
         isActive
           ? ["text-black dark:text-gray-100", "bg-blue-200 dark:bg-blue-800"]
           : [

@@ -47,7 +47,7 @@ const map = (
 function Title({ className }: { className: string }) {
   return (
     <div className={className}>
-      <h1 className="mb-2 font-display text-3xl font-extrabold sm:text-5xl xl:text-7xl">
+      <h1 className="font-display mb-2 text-3xl font-extrabold sm:text-5xl xl:text-7xl">
         Sheraton Salt Lake City Hotel
       </h1>
       <small>

@@ -62,7 +62,7 @@ function ErrorBoundaries({ slides }: { slides: Sequence }) {
       </ScrollStage>
       <ScrollStage pages={1} fallbackLength={100} fallbackFrame={0}>
         <Actor start={0.01} end={0.95}>
-          <div className="fixed inset-0 bg-blue-brand" />
+          <div className="fixed inset-0 bg-blue-600" />
         </Actor>
         <BlueScreen />
       </ScrollStage>
@@ -179,7 +179,7 @@ function Explosion() {
 
 function BlueScreen() {
   return (
-    <section className="relative z-10 h-full bg-blue-brand px-6 pb-32 text-lg text-white sm:px-36 sm:pb-40 sm:text-xl">
+    <section className="relative z-10 h-full bg-blue-600 px-6 pb-32 text-lg text-white sm:px-36 sm:pb-40 sm:text-xl">
       <h2 className="sr-only">Error Handling</h2>
       <div aria-hidden className="text-6xl sm:text-7xl md:text-[length:120px]">
         :)
@@ -221,7 +221,7 @@ function Mutations({ slides }: { slides: Sequence }) {
   return (
     <section>
       <div className="mx-auto max-w-5xl p-6 md:p-10">
-        <div className="mb-8 font-display text-4xl font-black text-white sm:text-5xl md:text-6xl">
+        <div className="mb-8 text-4xl font-black text-white sm:text-5xl md:text-6xl">
           <h2 className="inline">Data loading</h2>{" "}
           <span aria-hidden>
             ... <img src="/yawn.png" alt="" className="inline h-8 md:h-14" />
@@ -365,7 +365,7 @@ function MutationCode({
 
 function MutationP({ children }: { children: React.ReactNode }) {
   return (
-    <p className="flex h-[75vh] max-w-2xl items-center px-6 font-display text-4xl font-black text-gray-100 sm:mx-auto sm:px-8 md:text-6xl">
+    <p className="flex h-[75vh] max-w-2xl items-center px-6 text-4xl font-black text-gray-100 sm:mx-auto sm:px-8 md:text-6xl">
       {children}
     </p>
   );
@@ -375,7 +375,7 @@ function JumboP({ children, ...props }: React.ComponentPropsWithoutRef<"p">) {
   return (
     <p
       {...props}
-      className="h-[50vh] px-6 font-display text-4xl font-black text-gray-100 md:mx-auto md:max-w-3xl md:text-6xl"
+      className="h-[50vh] px-6 text-4xl font-black text-gray-100 md:mx-auto md:max-w-3xl md:text-6xl"
     >
       {children}
     </p>
@@ -468,7 +468,7 @@ function PrefetchNetwork() {
 
 function WaterfallHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-2 text-center font-display text-xl font-black text-white lg:mb-6 lg:text-3xl">
+    <div className="mb-2 text-center text-xl font-black text-white lg:mb-6 lg:text-3xl">
       {children}
     </div>
   );
@@ -795,7 +795,7 @@ function ProgressHead({ className }: { className: string }) {
 function Intro() {
   return (
     <section className="mx-auto max-w-5xl p-6 md:p-10">
-      <h2 className="font-display text-4xl font-black text-white sm:text-5xl md:text-6xl">
+      <h2 className="text-4xl font-black text-white sm:text-5xl md:text-6xl">
         While you were <span className="text-red-brand">waiting</span> for your
         static site to build,{" "}
         <span className="text-blue-brand">distributed web</span>{" "}
@@ -865,7 +865,7 @@ function Intro() {
 
 // function Header({ children }: { children: React.ReactNode }) {
 //   return (
-//     <div className="mb-2 text-4xl font-black text-center text-white md:text-5xl font-display md:mb-4">
+//     <div className="mb-2 text-4xl font-black text-center text-white md:text-5xl  md:mb-4">
 //       {children}
 //     </div>
 //   );
@@ -873,7 +873,7 @@ function Intro() {
 
 function JumboText({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-6xl px-6 font-display text-5xl font-black text-white md:px-12 md:text-[88px] md:leading-[96px]">
+    <div className="mx-auto max-w-6xl px-6 text-5xl font-black text-white md:px-12 md:text-[88px] md:leading-[96px]">
       {children}
     </div>
   );
@@ -1149,7 +1149,7 @@ function SayGoodbyeOutro() {
     <div
       aria-hidden
       className={
-        `sm:leading-6xl sticky top-0 flex h-screen w-screen items-center justify-center text-center font-display text-4xl font-black text-white sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl` +
+        `sm:leading-6xl sticky top-0 flex h-screen w-screen items-center justify-center text-center text-4xl font-black text-white sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl` +
         " " +
         (stage.progress < SPINNER_END ? "hidden" : "")
       }
@@ -1170,7 +1170,7 @@ function SayGoodbye() {
         transform: `scale(${scale})`,
       }}
       className={
-        `flex h-screen w-screen items-center justify-center text-center font-display text-5xl font-black text-white sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl` +
+        `flex h-screen w-screen items-center justify-center text-center text-5xl font-black text-white sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl` +
         " " +
         (actor.progress > 0 && actor.progress < 1 ? "fixed inset-0" : "hidden")
       }
@@ -1192,7 +1192,7 @@ export const LayoutButton = React.forwardRef<
     <button
       ref={ref}
       className={
-        `m-2 rounded-full px-6 py-2 font-mono text-[12px] font-bold leading-6 opacity-80 md:text-base ${active ? "opacity-100" : ""}` +
+        `m-2 rounded-full bg-opacity-70 px-6 py-2 font-mono text-[12px] font-bold leading-6 md:text-base ${active ? "opacity-100" : "opacity-80"}` +
         " " +
         className
       }
@@ -1237,7 +1237,7 @@ export function InteractiveRoutes() {
           onMouseEnter={() => onActiveRouteChange(1)}
           onFocus={() => onActiveRouteChange(1)}
           active={activeRoute === 1}
-          className="bg-blue-900 text-blue-brand"
+          className="bg-blue-900 text-blue-300"
         >
           &lt;Root&gt;
         </LayoutButton>
@@ -1264,7 +1264,7 @@ export function InteractiveRoutes() {
           onMouseEnter={() => onActiveRouteChange(4)}
           onFocus={() => onActiveRouteChange(4)}
           active={activeRoute === 4}
-          className="bg-red-900 text-red-brand"
+          className="bg-red-900 text-red-300"
         >
           &lt;Invoice id={"{id}"}&gt;
         </LayoutButton>
