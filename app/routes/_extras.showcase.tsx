@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Fragment, forwardRef, useEffect, useRef } from "react";
+import { Fragment, forwardRef, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";
 import { clsx } from "clsx";
@@ -61,25 +61,24 @@ export default function Showcase() {
         </p>
       </div>
       <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-6 gap-y-10 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8">
-        {showcaseExamples.slice(0, 16).map((example, i) => {
-          let preload: ShowcaseTypes["preload"] = i < 6 ? "auto" : "none";
+        {showcaseExamples.map((example, i) => {
+          let loading: ShowcaseTypes["loading"] = i < 6 ? "eager" : "lazy";
           return (
             <Fragment key={example.name}>
               <DesktopShowcase
-                // Non-focusable since focusing on the anchor tag starts the video -- need to
-                // ensure that this is fine for screen readers, but I'm fairly confident the
-                // video is not critical information and just visual flair so I don't think
-                // we're providing an unusable or even bad experience to screen-reader users
+                // Non-focusable since focusing on the anchor tag starts the
+                // video -- need to ensure that this is fine for screen
+                // readers, but I'm fairly confident the video is not critical
+                // information and just visual flair so I don't think we're
+                // providing an unusable or even bad experience to
+                // screen-reader users
                 isHydrated={isHydrated}
-                preload={preload}
+                loading={loading}
                 {...example}
               />
               <MobileShowcase
                 isHydrated={isHydrated}
-                // asImage={i > 5}
-                asImage
-                // Only preload the first 2, since that's about all that should be "above the fold" on mobile
-                preload={i < 2 ? "auto" : "none"}
+                loading={loading}
                 {...example}
               />
             </Fragment>
@@ -91,7 +90,7 @@ export default function Showcase() {
 }
 
 type ShowcaseTypes = ShowcaseExample & {
-  preload?: "auto" | "metadata" | "none";
+  loading?: "lazy" | "eager";
   isHydrated: boolean;
 };
 
@@ -101,7 +100,7 @@ function DesktopShowcase({
   link,
   imgSrc,
   videoSrc,
-  preload,
+  loading,
   isHydrated,
 }: ShowcaseTypes) {
   let videoRef = useRef<HTMLVideoElement | null>(null);
@@ -113,7 +112,7 @@ function DesktopShowcase({
         videoSrc={videoSrc}
         poster={imgSrc}
         autoPlay={false}
-        preload={preload}
+        loading={loading}
         isHydrated={isHydrated}
       />
       <ShowcaseDescription
@@ -133,45 +132,21 @@ function MobileShowcase({
   description,
   link,
   imgSrc,
-  videoSrc,
-  asImage = false,
   isHydrated,
-  preload,
-}: ShowcaseTypes & {
-  /** Opt into only showing an image. This avoids loading a ton of videos on the page and crashing Brooks' terrible phone */
-  asImage?: boolean;
-}) {
-  const ref = useRef<HTMLVideoElement>(null);
-
-  // autoplay videos -- using this useEffect because the `autoPlay` attribute overrides
-  // `preload="none"` which causes weird infinite loading issues when caching is turned off
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    if (node.paused) {
-      node.play();
-    }
-  }, []);
-
+  loading,
+}: Omit<ShowcaseTypes, "videoSrc">) {
   return (
     <li className="relative block overflow-hidden rounded-md border border-gray-100 shadow hover:shadow-blue-200 dark:border-gray-800 md:hidden">
-      {/* If it's an image, don't render the video, and remove the motion-safe class */}
-      {!asImage ? (
-        <ShowcaseVideo
-          ref={ref}
-          className="motion-reduce:hidden"
-          videoSrc={videoSrc}
-          poster={imgSrc}
-          preload={preload}
-          isHydrated={isHydrated}
+      <div className={"aspect-[4/3] object-cover object-top"}>
+        <img
+          className="max-h-full w-full max-w-full"
+          width={800}
+          height={600}
+          alt=""
+          src={imgSrc}
+          loading={loading}
         />
-      ) : null}
-      {/* prefers-reduced-motion displays just an image even when there's a video */}
-      <ShowcaseImage
-        className={!asImage ? "motion-safe:hidden" : undefined}
-        src={imgSrc}
-      />
+      </div>
       <ShowcaseDescription
         name={name}
         description={description}
@@ -184,9 +159,9 @@ function MobileShowcase({
 
 let ShowcaseVideo = forwardRef<
   HTMLVideoElement,
-  Pick<ShowcaseTypes, "videoSrc" | "isHydrated"> &
+  Pick<ShowcaseTypes, "videoSrc" | "isHydrated" | "loading"> &
     React.VideoHTMLAttributes<HTMLVideoElement>
->(({ videoSrc, className, isHydrated, ...props }, ref) => {
+>(({ videoSrc, className, isHydrated, loading, ...props }, ref) => {
   return (
     <div className={clsx("aspect-[4/3] object-cover object-top", className)}>
       <video
@@ -201,6 +176,7 @@ let ShowcaseVideo = forwardRef<
         height={600}
         // Note: autoplay must be off for this strategy to work, if autoplay is turned on all assets will be downloaded automatically
         tabIndex={isHydrated ? -1 : 0}
+        preload={loading === "eager" ? "auto" : "none"}
         {...props}
       >
         {["webm", "mp4"].map((ext) => (
@@ -210,29 +186,14 @@ let ShowcaseVideo = forwardRef<
             type={`video/${ext}`}
             width={800}
             height={600}
+            // avoid video assets downloading on mobile
+            media="(min-width: 768px)"
           />
         ))}
       </video>
     </div>
   );
 });
-
-function ShowcaseImage({
-  className,
-  ...props
-}: React.ImgHTMLAttributes<HTMLImageElement>) {
-  return (
-    <div className={clsx("aspect-[4/3] object-cover object-top", className)}>
-      <img
-        className="max-h-full w-full max-w-full"
-        width={800}
-        height={600}
-        alt=""
-        {...props}
-      />
-    </div>
-  );
-}
 
 function ShowcaseDescription({
   description,
@@ -248,9 +209,10 @@ function ShowcaseDescription({
   return (
     <div
       className={clsx("p-4", {
-        // relative position in combination with the inner span makes the whole card clickable
-        // only after hydration do we want it to be the size of the whole card, otherwise this
-        // will get in the way of controlling the video
+        // relative position in combination with the inner span makes the whole
+        // card clickable only after hydration do we want it to be the size of
+        // the whole card, otherwise this will get in the way of controlling
+        // the video
         relative: !isHydrated,
       })}
     >
