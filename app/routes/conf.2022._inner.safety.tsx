@@ -13,7 +13,7 @@ export const meta: MetaFunction = () => {
 export default function Safety() {
   return (
     <div>
-      <h1 className="mb-16 font-display text-3xl font-extrabold text-white sm:text-5xl xl:text-7xl">
+      <h1 className="font-display mb-16 text-3xl font-extrabold text-white sm:text-5xl xl:text-7xl">
         COVID-19 and Participant Safety
       </h1>
       <div className="container flex flex-col gap-4 text-lg text-white lg:text-xl">

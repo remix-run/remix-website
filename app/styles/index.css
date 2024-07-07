@@ -10,9 +10,9 @@
   --base08: theme("colors.blue.300");
   --base09: theme("colors.pink.brand");
   --base0A: theme("colors.yellow.brand");
-  --base0B: theme("colors.green.brand");
+  --base0B: theme("colors.green.400");
   --base0C: theme("colors.aqua.brand");
-  --base0D: theme("colors.blue.brand");
-  --base0E: theme("colors.pink.brand");
+  --base0D: theme("colors.blue.400");
+  --base0E: theme("colors.pink.400");
   --base0F: theme("colors.gray.200");
 }

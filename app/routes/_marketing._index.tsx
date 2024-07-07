@@ -94,7 +94,7 @@ function Hero() {
       >
         <div className="lg:mb-10 lg:w-1/2">
           <div className="lg:mx-auto lg:max-w-2xl">
-            <h2 className="font-display text-3xl font-black text-white xs:text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl">
+            <h2 className="text-3xl font-black text-white xs:text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl">
               Focused on <span className="text-aqua-brand">web standards</span>{" "}
               and <span className="text-green-brand">modern web app</span> UX,
               you’re simply going to{" "}
@@ -138,7 +138,7 @@ function Sample({ html, className }: { html: string; className?: string }) {
   return (
     <div
       className={
-        "relative overflow-auto bg-gray-800 p-3 text-sm sm:rounded-lg sm:text-base md:max-w-full lg:max-w-max xl:rounded-xl xl:p-4" +
+        "relative overflow-auto bg-[#252525] p-3 text-sm sm:rounded-lg sm:text-base md:max-w-full lg:max-w-max xl:rounded-xl xl:p-4" +
         " " +
         className
       }

@@ -53,10 +53,10 @@ export function RootView({
     >
       <div className="border-r border-gray-100 bg-gray-50">
         <div className="p-[5.7px] lg:p-4">
-          <div className="flex items-center text-[color:#23BF1F]">
+          <div className="flex items-center text-green-700">
             <FakebooksLogo className="relative top-[1px] h-[8.5px] w-[8.5px] md:h-[18px] md:w-[18px]" />
             <div className="w-[1px] md:w-1" />
-            <div className="font-display text-[length:8px] font-extrabold md:text-base">
+            <div className="text-[length:8px] font-extrabold md:text-base">
               Fakebooks
             </div>
           </div>
@@ -85,11 +85,11 @@ export function DashboardView({
 }) {
   return (
     <div className="relative p-3 md:p-6">
-      <div className="font-display text-[length:10px] font-extrabold text-black md:text-3xl">
+      <div className="text-[length:10px] font-extrabold text-black md:text-3xl">
         Dashboard
       </div>
       <div className="h-2 md:h-6" />
-      <div className="flex gap-2 border-b border-gray-100 pb-1 text-[length:5px] font-medium text-gray-400 md:gap-4 md:pb-4 md:text-[length:14px]">
+      <div className="flex gap-2 border-b border-gray-100 pb-1 text-[length:5px] font-medium text-gray-500 md:gap-4 md:pb-4 md:text-[length:14px]">
         <div className="font-bold text-black">Recent Activity</div>
         <div>Alerts</div>
         <div>Messages</div>
@@ -120,12 +120,12 @@ export function SalesView({
 }) {
   return (
     <div className="relative h-full p-3 md:p-10">
-      <div className="font-display text-[length:10px] font-extrabold text-black md:text-3xl">
+      <div className="text-[length:10px] font-extrabold text-black md:text-3xl">
         Sales
       </div>
       <div className="h-2 md:h-6" />
       {shimmerNav && <div className="h-4" />}
-      <div className="flex gap-2 border-b border-gray-100 pb-1 text-[length:5px] font-medium text-gray-400 md:gap-4 md:pb-4 md:text-[length:14px]">
+      <div className="flex gap-2 border-b border-gray-100 pb-1 text-[length:5px] font-medium text-gray-500 md:gap-4 md:pb-4 md:text-[length:14px]">
         {shimmerNav ? (
           <>
             <div className="w-1/3 animate-pulse rounded bg-gray-300">
@@ -209,7 +209,7 @@ export function InvoiceView({
       {overlay}
       {error && (
         <div className="absolute inset-0 flex justify-center bg-red-100 pt-4">
-          <div className="text-center text-red-brand">
+          <div className="text-center text-red-700">
             <div className="text-[10px] font-bold md:text-[14px]">Oh snap!</div>
             <div className="px-2 text-[8px] md:text-[12px]">
               There was a problem loading this invoice
@@ -262,16 +262,16 @@ function InvoiceList({ children }: { children: React.ReactNode }) {
               <div>{invoice.name}</div>
               <div>{invoice.amount}</div>
             </div>
-            <div className="flex justify-between text-[length:4.2px] font-medium leading-[6px] text-gray-400 md:text-[length:12px] md:leading-4">
+            <div className="flex justify-between text-[length:4.2px] font-medium leading-[6px] text-gray-500 md:text-[length:12px] md:leading-4">
               <div>{invoice.number}</div>
               <div
                 className={
                   "uppercase" +
                   " " +
                   (invoice.due === false
-                    ? "text-green-brand"
+                    ? "text-green-700"
                     : Number(invoice.due) < 0
-                      ? "text-red-brand"
+                      ? "text-red-600"
                       : "")
                 }
               >
@@ -295,7 +295,7 @@ function FakebooksLogo({ className }: { className: string }) {
       viewBox="0 0 24 24"
     >
       <path
-        fill="#23BF1F"
+        fill="currentColor"
         fillRule="evenodd"
         d="M12 3a9 9 0 000 18h4.5c1.398 0 2.097 0 2.648-.228a3 3 0 001.624-1.624C21 18.597 21 17.898 21 16.5V12a9 9 0 00-9-9zm-4 8a1 1 0 011-1h6a1 1 0 110 2H9a1 1 0 01-1-1zm3 4a1 1 0 011-1h3a1 1 0 110 2h-3a1 1 0 01-1-1z"
         clipRule="evenodd"
@@ -365,7 +365,7 @@ function NewInvoiceCard({
 
 function LabelText({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-[length:5px] font-medium uppercase leading-[8.5px] text-gray-400 md:text-[12px] md:leading-[24px]">
+    <div className="text-[length:5px] font-medium uppercase leading-[8.5px] text-gray-500 md:text-[12px] md:leading-[24px]">
       {children}
     </div>
   );

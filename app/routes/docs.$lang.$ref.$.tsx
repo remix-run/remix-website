@@ -171,7 +171,7 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
                 to={`#${heading.slug}`}
                 dangerouslySetInnerHTML={{ __html: heading.html || "" }}
                 className={
-                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-400 dark:decoration-gray-500"
+                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-300 dark:decoration-gray-500"
                 }
               />
             </li>
@@ -205,7 +205,7 @@ function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
             <Link
               to={`#${heading.slug}`}
               dangerouslySetInnerHTML={{ __html: heading.html || "" }}
-              className="block py-2 text-sm text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+              className="block py-2 text-sm text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-200"
             />
           </li>
         ))}

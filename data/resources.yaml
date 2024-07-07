@@ -69,6 +69,7 @@
   imgSrc: "https://raw.githubusercontent.com/dev-xo/dev-xo/main/remix-saas/intro.png"
   initCommand: "npx create-remix-saas@latest"
   category: "templates"
+  featured: true
 
 - title: "Remix Auth"
   repoUrl: "https://github.com/sergiodxa/remix-auth"
@@ -111,7 +112,6 @@
   imgSrc: "https://opengraph.githubassets.com/064b0c3873168b19305c8d90fcd7550295c232c56ad90cf5f71a86d2e9904871/edmundhung/conform"
   initCommand: "npm install @conform-to/react @conform-to/zod --save"
   category: "libraries"
-  featured: true
 
 - title: "@epic-web/remember"
   repoUrl: "https://github.com/epicweb-dev/remember"

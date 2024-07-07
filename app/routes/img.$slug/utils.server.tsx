@@ -1,8 +1,10 @@
 import { json } from "@remix-run/node";
 import getEmojiRegex from "emoji-regex";
 import satori from "satori";
-import interFont from "./inter-roman-latin-var.woff?arraybuffer";
+import interRegular from "./inter-regular-basic-latin.woff?arraybuffer";
+import interBlack from "./inter-black-basic-latin.woff?arraybuffer";
 import socialBackground from "./social-background.png?arraybuffer";
+import { Wordmark } from "~/ui/logo";
 
 // Big thanks goes to Jacob Paris' blog outlining how to set this up
 // https://www.jacobparis.com/content/remix-og
@@ -11,7 +13,6 @@ let primaryTextColor = "#ffffff";
 let secondaryTextColor = "#d0d0d0";
 
 let primaryFont = "Inter";
-let titleFont = "Inter";
 
 export async function createOgImageSVG(request: Request) {
   let requestUrl = new URL(request.url);
@@ -32,8 +33,9 @@ export async function createOgImageSVG(request: Request) {
         height: "100%",
         width: "100%",
         fontFamily: primaryFont,
+        color: primaryTextColor,
         backgroundImage: `url("data:image/png;base64,${arrayBufferToBase64(socialBackground)}")`,
-        padding: "125px 0",
+        padding: "144px",
       }}
     >
       <div
@@ -41,30 +43,28 @@ export async function createOgImageSVG(request: Request) {
           display: "flex",
           flexDirection: "column",
           width: 1800,
-          marginLeft: 144,
         }}
       >
-        <p
+        <div
           style={{
-            fontSize: 50,
+            fontSize: 48,
             color: secondaryTextColor,
             margin: 0,
           }}
         >
           {displayDate}
-        </p>
-        <h1
+        </div>
+        <div
           style={{
-            fontFamily: titleFont,
-            fontWeight: 900,
-            color: primaryTextColor,
+            fontWeight: "bold",
             fontSize: 144,
+            lineHeight: 1.1,
             margin: 0,
-            marginTop: 32,
+            marginTop: 48,
           }}
         >
           {title}
-        </h1>
+        </div>
       </div>
 
       <Authors authors={authors} />
@@ -75,12 +75,16 @@ export async function createOgImageSVG(request: Request) {
       // Unfortunately satori doesn't support WOFF2 so we have to have a woff version
       fonts: [
         {
-          name: titleFont,
-          data: interFont,
+          name: primaryFont,
+          data: interRegular,
+          weight: 400,
+          style: "normal",
         },
         {
           name: primaryFont,
-          data: interFont,
+          data: interBlack,
+          weight: 900,
+          style: "normal",
         },
       ],
     },
@@ -158,61 +162,73 @@ function Authors({
   authors: ReturnType<typeof getDataFromParams>["authors"];
 }) {
   // We will have problems if we have more than 2 authors
-  const picDimensions = authors.length * -60 + 380;
+  const picDimensions = authors.length * -40 + 280;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      {authors.map(({ name, title, imgSrc }) => (
-        <div
-          style={{
-            display: "flex",
-            width: 1600,
-            marginLeft: 144,
-            alignItems: "center",
-          }}
-          key={name + title}
-        >
-          <img
-            width={picDimensions}
-            height={picDimensions}
-            // No alt needed, this is all turning into an image
-            alt=""
-            src={imgSrc}
-            style={{
-              marginLeft: -40,
-              borderRadius: 9999,
-            }}
-          />
-          <h2
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-end",
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: 48 }}>
+        {authors.map(({ name, title, imgSrc }) => (
+          <div
             style={{
               display: "flex",
-              flexDirection: "column",
-              marginLeft: 30,
+              width: 1600,
+              alignItems: "center",
             }}
+            key={name + title}
           >
-            <span
+            <img
+              width={picDimensions}
+              height={picDimensions}
+              // No alt needed, this is all turning into an image
+              alt=""
+              src={imgSrc}
               style={{
-                fontFamily: primaryFont,
-                color: primaryTextColor,
-                fontSize: 70,
-                margin: 0,
+                marginLeft: 0,
+                borderRadius: 9999,
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                marginLeft: 48,
               }}
             >
-              {name}
-            </span>
-            <span
-              style={{
-                fontFamily: primaryFont,
-                color: secondaryTextColor,
-                fontSize: 40,
-                margin: 0,
-              }}
-            >
-              {title}
-            </span>
-          </h2>
-        </div>
-      ))}
+              <div
+                style={{
+                  fontWeight: "bold",
+                  fontSize: authors.length * -8 + 80,
+                }}
+              >
+                {name}
+              </div>
+              <div
+                style={{
+                  color: secondaryTextColor,
+                  fontSize: 40,
+                }}
+              >
+                {title}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Wordmark
+        style={{
+          width: 480,
+          height: 120,
+          opacity: 0.25,
+          marginBottom: authors.length * -32 + 96,
+        }}
+      />
     </div>
   );
 }

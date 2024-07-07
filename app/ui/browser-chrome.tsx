@@ -8,7 +8,7 @@ export function BrowserChrome({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative mx-2 max-h-[75vh] select-none overflow-hidden  rounded bg-gray-700 shadow-md md:mx-4 md:rounded-lg lg:mx-auto lg:max-w-4xl">
+    <div className="relative mx-2 max-h-[75vh] select-none overflow-hidden rounded bg-gray-700 shadow-md md:mx-4 md:rounded-lg lg:mx-auto lg:max-w-4xl">
       <URLBar url={url} />
       <div className="px-2 pb-2 pt-1 md:px-4 md:pb-4 md:pt-2">{children}</div>
     </div>

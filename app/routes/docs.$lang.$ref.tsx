@@ -149,7 +149,7 @@ export default function DocsLayout() {
 
 function Footer() {
   return (
-    <div className="flex justify-between gap-4 border-t border-t-gray-50 py-4 text-sm text-gray-400 dark:border-gray-800">
+    <div className="flex justify-between gap-4 border-t border-t-gray-50 py-4 text-sm text-gray-500 dark:border-gray-800 dark:text-gray-300">
       <div className="sm:flex sm:items-center sm:gap-2 lg:gap-4">
         <div>
           &copy;{" "}
@@ -322,7 +322,7 @@ function VersionLink({
     "flex w-full items-center gap-2 py-2 px-2 rounded-sm text-sm transition-colors duration-100",
     isActive
       ? "text-black bg-blue-200 dark:bg-blue-800 dark:text-gray-100"
-      : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-blue-800/50",
+      : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-blue-800/50",
   );
 
   if (isExternal) {
@@ -334,7 +334,9 @@ function VersionLink({
   }
 
   return to ? (
-    <Link to={to} className={className}>
+    // No need to discover these versioned links since they all match the
+    // current route we're on but with different params
+    <Link to={to} className={className} discover="none">
       {children}
     </Link>
   ) : (
@@ -433,7 +435,7 @@ let ColorSchemeButton = React.forwardRef<
         "flex w-full items-center gap-2 rounded-sm px-2 py-2 text-sm transition-colors duration-100",
         colorScheme === props.value
           ? "bg-blue-200 text-black dark:bg-blue-800 dark:text-gray-100"
-          : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-400 dark:hover:bg-blue-800/50 dark:hover:text-gray-100",
+          : "text-gray-700 hover:bg-blue-200/50 hover:text-black dark:text-gray-300 dark:hover:bg-blue-800/50 dark:hover:text-gray-100",
       )}
     >
       <svg className="h-4 w-4">
@@ -524,7 +526,7 @@ function HeaderMenuLink({
         "p-2 py-2.5 text-sm leading-none underline-offset-4 hover:underline md:p-3",
         isActive
           ? "text-black underline decoration-black dark:text-gray-200 dark:decoration-gray-200"
-          : "text-gray-500 decoration-gray-200 dark:text-gray-400 dark:decoration-gray-500",
+          : "text-gray-500 decoration-gray-200 dark:text-gray-300 dark:decoration-gray-500",
       )}
     >
       {children}
@@ -582,7 +584,7 @@ function HeaderLink({
     <a
       href={href}
       className={cx(
-        `hidden h-10 w-10 place-items-center text-black hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-50 md:grid`,
+        `hidden h-10 w-10 place-items-center text-black hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-50 md:grid`,
         className,
       )}
       title={title}
@@ -700,11 +702,13 @@ function Menu() {
       </ul>
     </nav>
   ) : (
-    <div className="bold text-gray-300 dark:text-gray-400">
-      Failed to load menu
-    </div>
+    <div className="bold text-gray-300">Failed to load menu</div>
   );
 }
+
+let MenuCategoryContext = React.createContext<{ isOpen: boolean }>({
+  isOpen: false,
+});
 
 type MenuCategoryDetailsType = {
   className?: string;
@@ -729,18 +733,20 @@ function MenuCategoryDetails({
   }, [isActivePath]);
 
   return (
-    <details
-      className={cx(className, "relative flex cursor-pointer flex-col")}
-      open={isOpen}
-      onToggle={(e) => {
-        // Synchronize the DOM's state with React state to prevent the
-        // details element from being closed after navigation and re-evaluation
-        // of useIsActivePath
-        setIsOpen(e.currentTarget.open);
-      }}
-    >
-      {children}
-    </details>
+    <MenuCategoryContext.Provider value={{ isOpen }}>
+      <details
+        className={cx(className, "relative flex cursor-pointer flex-col")}
+        open={isOpen}
+        onToggle={(e) => {
+          // Synchronize the DOM's state with React state to prevent the
+          // details element from being closed after navigation and re-evaluation
+          // of useIsActivePath
+          setIsOpen(e.currentTarget.open);
+        }}
+      >
+        {children}
+      </details>
+    </MenuCategoryContext.Provider>
   );
 }
 
@@ -766,7 +772,7 @@ function MenuSummary({
         className={cx(
           sharedClassName,
           "_no-triangle block select-none",
-          "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
+          "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800 dark:focus-visible:ring-gray-100",
           "hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700",
         )}
       >
@@ -804,7 +810,7 @@ function MenuCategoryLink({
         "outline-none focus-visible:text-blue-brand dark:focus-visible:text-blue-400",
         isActive
           ? "text-blue-brand dark:text-blue-brand"
-          : "hover:text-blue-brand dark:hover:text-blue-400 ",
+          : "hover:text-blue-brand dark:hover:text-blue-400",
       )}
     >
       {children}
@@ -813,18 +819,21 @@ function MenuCategoryLink({
 }
 
 function MenuLink({ to, children }: { to: string; children: React.ReactNode }) {
+  // Only discover expanded links to keep manifest calls to a reasonable URL length
+  let { isOpen } = React.useContext(MenuCategoryContext);
   let isActive = useIsActivePath(to);
   return (
     <Link
+      discover={isOpen ? "render" : "none"}
       prefetch="intent"
       to={to}
       className={cx(
         "group relative my-px flex min-h-[2.25rem] items-center rounded-2xl border-transparent px-3 py-2 text-sm",
-        "outline-none transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800  dark:focus-visible:ring-gray-100",
+        "outline-none transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-800 dark:focus-visible:ring-gray-100",
         isActive
           ? ["text-black dark:text-gray-100", "bg-blue-200 dark:bg-blue-800"]
           : [
-              "text-gray-700 hover:text-black dark:text-gray-400 dark:hover:text-gray-100",
+              "text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-gray-100",
               "hover:bg-blue-100 dark:hover:bg-blue-800/50",
             ],
       )}

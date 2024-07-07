@@ -34,16 +34,8 @@
   src: url("/font/source-code-pro-italic-var.woff2") format("woff2");
 }
 
-html {
-  font-size: 16px;
-}
-
 .dark {
   color-scheme: dark;
-}
-
-[hidden] {
-  display: none !important;
 }
 
 ._no-triangle::-webkit-details-marker {

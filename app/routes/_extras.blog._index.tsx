@@ -39,7 +39,7 @@ export default function Blog() {
         <div className="md:col-span-7">
           <div className="mb-14">
             <Link to={latestPost.slug} prefetch="intent">
-              <div className="aspect-h-9 aspect-w-16 mb-6">
+              <div className="mb-6 aspect-[16/9]">
                 <img
                   className="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
                   src={latestPost.image}
@@ -57,7 +57,7 @@ export default function Blog() {
             {posts.map((post) => (
               <div key={post.slug}>
                 <Link to={post.slug} prefetch="intent">
-                  <div className="aspect-h-9 aspect-w-16 mb-6">
+                  <div className="mb-6 aspect-[16/9]">
                     <img
                       className="h-full w-full object-cover object-top shadow md:rounded-md"
                       src={post.image}
