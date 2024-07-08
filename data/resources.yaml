@@ -69,13 +69,13 @@
   imgSrc: "https://raw.githubusercontent.com/dev-xo/dev-xo/main/remix-saas/intro.png"
   initCommand: "npx create-remix-saas@latest"
   category: "templates"
-  featured: true
 
 - title: "Remix Auth"
   repoUrl: "https://github.com/sergiodxa/remix-auth"
   imgSrc: "https://opengraph.githubassets.com/f21cb22e0016348ae0d181d50fd80f0036579308eb917f8d376db2f392a322e4/sergiodxa/remix-auth"
   initCommand: "npm install remix-auth"
   category: "libraries"
+  featured: true
 
 - title: "Remix Gospel Stack"
   repoUrl: "https://github.com/PhilDL/remix-gospel-stack"
