@@ -51,7 +51,7 @@ Over time, as the user navigates around - more and more route implementations ar
 
 This approach works for most applications - since the manifest is pretty lightweight and compresses well since it's a repetitive key/value JSON structure. For example, the manifest for https://remix.run/ contains 50 routes, weighs 19.6Kb, but only sends 2.6Kb over the wire after compression.
 
-However, Remix doesn't only want to to provide good performance for small-to-medium sized applications - we want _large_ and _extremely large_ applications to be fast by default too! Thankfully, we love dog-fooding React Router and Remix on the myriad of applications at Shopify, both internal and public-facing. As we began rolling out Remix to https://www.shopify.com we realized _just how big_ that site is. When you take into account all of the routes and their internationalized URLs (i.e., `/pricing`, `/en/pricing`, `/es/precios` and many more) - the app had over 1300 routes! And because Remix doesn't have a good solution for URL aliasing (yet!), many of the route entries were duplicates pointing to the same route module - and thus duplicating the module information (it's path, it's other module `imports`, etc.). This resulted in a manifest that was over 8Mb uncompressed, and over 100Kb compressed (TODO: Confirm this numbers). On slower devices, this could have a noticeable impact on page load times for the deice to decompress the JS module and then parsed/compiled/executed.
+However, Remix doesn't only want to to provide good performance for small-to-medium sized applications - we want _large_ and _extremely large_ applications to be fast by default too! Thankfully, we love dog-fooding React Router and Remix on the myriad of applications at Shopify, both internal and public-facing. As we began rolling out Remix to https://www.shopify.com we realized _just how big_ that site is. When you take into account all of the routes and their internationalized URLs (i.e., `/pricing`, `/en/pricing`, `/es/precios` and many more) - the app had over 1300 routes! And because Remix doesn't have a good solution for URL aliasing (yet!), many of the route entries were duplicates pointing to the same route module - and thus duplicating the module information (it's path, it's other module `imports`, etc.). This resulted in a manifest that was over 10Mb uncompressed, and ~85Kb compressed. On slower devices, this could have a noticeable impact on page load times for the deice to decompress the JS module and then parsed/compiled/executed.
 
 ## Fog of War
 
@@ -106,7 +106,7 @@ Remix will discover those routes via a `fetch` call to the Remix server and patc
 
 As you can see - this type of "discovery" allows for the route manifest to start small and grow with the user's path through the app, thus allowing your app to scale to any number of routes without incurring a performance hit on app load.
 
-As mentioned earlier, we've been dog-fooding this on https://shopify.com and we're loving the results. Prior to Fog of war, their route manifest contained 1300 routes and weighted over 8MB uncompressed. Once Fog of War was enabled, their initial homepage manifest dropped to just 3 routes and 1.9Kb uncompressed.
+As mentioned earlier, we've been dog-fooding this on https://shopify.com and we're loving the results. Prior to Fog of war, their route manifest contained 1300 routes and weighted over 10MB uncompressed. Once Fog of War was enabled, their initial homepage manifest dropped to just 3 routes and 1.9Kb uncompressed.
 
 ## React Router Implementation
 
