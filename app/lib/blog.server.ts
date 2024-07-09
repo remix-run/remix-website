@@ -152,6 +152,7 @@ interface MarkdownPost {
   featured?: boolean;
   image: string;
   imageAlt: string;
+  imageDisableOverlay?: boolean;
   authors: string[];
   html: string;
 }

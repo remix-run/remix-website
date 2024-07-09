@@ -2,9 +2,11 @@
 title: Fog of War
 summary: The Fog of War concept in Remix and React Router provides infinite scalability for your applications
 featured: false
+draft: true
 date: 2024-07-10
 image: /blog-images/headers/fog-of-war.png
 imageAlt: Fog of War
+imageDisableOverlay: true
 authors:
   - Matt Brophy
 ---
