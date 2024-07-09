@@ -1,11 +1,15 @@
-import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type {
+  HeadersFunction,
+  LinksFunction,
+  LoaderFunctionArgs,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/lib/blog.server";
-import "~/styles/md.css";
+import mdStyles from "~/styles/md.css?url";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import { CACHE_CONTROL } from "~/lib/http.server";
@@ -28,6 +32,10 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
   // Inherit the caching headers from the loader so we don't cache 404s
   return loaderHeaders;
 };
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: mdStyles },
+];
 
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { data, params } = args;
@@ -105,9 +113,9 @@ export default function BlogPost() {
                     {post.dateDisplay}
                   </div>
                   <div className="h-2" />
-                  <div className="font-display text-3xl font-extrabold text-white md:text-4xl">
+                  <h1 className="font-display text-3xl font-extrabold text-white md:text-4xl">
                     {post.title}
-                  </div>
+                  </h1>
                   <div className="h-2" />
                 </div>
                 <div className="pb-4 md:pb-12">
