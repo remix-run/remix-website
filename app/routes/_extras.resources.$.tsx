@@ -13,9 +13,10 @@ import { octokit } from "~/lib/github.server";
 import "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import { getMeta } from "~/lib/meta";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const resourceSlug = params.slug;
+  const resourceSlug = params["*"];
   invariant(resourceSlug, "resourceSlug is required");
 
   let resource = await getResource(resourceSlug, { octokit });
@@ -25,7 +26,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   let requestUrl = new URL(request.url);
-  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
+  let siteUrl = `${requestUrl.protocol}//${requestUrl.host}/resources/${resourceSlug}`;
 
   return json(
     {
@@ -40,33 +41,20 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
   return loaderHeaders;
 };
 
-export const meta: MetaFunction<typeof loader> = (args) => {
-  let { data, params } = args;
-  let { slug } = params;
-  invariant(!!slug, "Expected slug param");
-
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   let { siteUrl, resource } = data || {};
   if (!resource) {
     return [{ title: "404 Not Found | Remix" }];
   }
 
   let socialImageUrl = resource.imgSrc;
-  let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
 
-  return [
-    { title: resource.title + " | Remix Resources" },
-    { name: "description", content: resource.description },
-    { property: "og:url", content: url },
-    { property: "og:title", content: resource.title },
-    { property: "og:image", content: socialImageUrl },
-    { property: "og:description", content: resource.description },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:creator", content: "@remix_run" },
-    { name: "twitter:site", content: "@remix_run" },
-    { name: "twitter:title", content: resource.title },
-    { name: "twitter:description", content: resource.description },
-    { name: "twitter:image", content: socialImageUrl },
-  ];
+  return getMeta({
+    title: resource.title + " | Remix Resources",
+    description: resource.description,
+    siteUrl,
+    image: socialImageUrl,
+  });
 };
 
 export default function ResourcePage() {
