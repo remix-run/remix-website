@@ -176,7 +176,3 @@ We'd like to give a huge shout out to [Shane Walker][twitter-swalker326] for wor
 [remix-2-10]: https://github.com/remix-run/remix/blob/main/CHANGELOG.md#v2100
 [twitter-swalker326]: https://twitter.com/swalker326
 [rr-mf-example]: https://github.com/swalker326/react-router-fog-of-war-example/
-[img-fow-1]: /blog-images/posts/fog-of-war/1.png
-[img-fow-2]: /blog-images/posts/fog-of-war/2.png
-[img-fow-3]: /blog-images/posts/fog-of-war/3.png
-[img-fow-4]: /blog-images/posts/fog-of-war/4.png
