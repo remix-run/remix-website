@@ -23,37 +23,17 @@ Most of these Remix optimizations share a common goal of eliminating network wat
 
 In order to avoid "render then fetch" waterfalls, Remix [decouples rendering from fetching][when-to-fetch] (see also: [Remixing React Router][remixing-rr]). In order to do this, Remix needs to know your route tree up front so that when a link is clicked - it can kick off the data fetches and download the route modules in parallel. This results in an inverted and more performant approach of "fetch then render" (or "fetch while render" if you're [streaming data][streaming]).
 
-In a "render then fetch" world, Remix would need to first download the route implementation, then render the component, which would kick off the data fetches - causing a waterfall:
+In a "render then fetch" world, your application needs to download the route implementation, then render the component, which would kick off the data fetches - causing a waterfall:
 
-TODO: Replace with excalidraw?
-
-```txt
-Click /blog link
-                |- Fetch <Blog> ->
-                                  |- Render <Blog> ->
-                                                    |- Fetch blog.json ->
-                                                                         |-- Render <Blog>
-```
+<img alt="Render then Fetch network diagram" src="/blog-images/posts/fog-of-war/render-then-fetch.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 With "fetch then render", the module fetch and data fetch can be parallelized:
 
-```txt
-Click /blog link
-                |- Fetch <Blog> ->
-                |- Fetch blog.json ->
-                                     |- Render <Blog>
-```
+<img alt="Fetch then Render network diagram" src="/blog-images/posts/fog-of-war/fetch-then-render.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 You can take this one step further in Remix via [`<Link prefetch>`][link-prefetch], which allows you to prefetch the route data and components before a user even clicks a link. That way, when the link is clicked the navigation can be instantaneous:
 
-```txt
-<Link prefetch="render">
-                        |- Fetch <Blog> ->
-                        |- Fetch blog.json ->
-...
-Click /blog link
-                |- Render <Blog>
-```
+<img alt="Prefetching network diagram" src="/blog-images/posts/fog-of-war/prefetch.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 ## The Route Manifest
 
@@ -77,21 +57,12 @@ However, Remix doesn't only want to to provide good performance for small-to-med
 
 At Remix, we're big fans of the Retro vibes of our younger years - from old school web development using HTML `<form>` elements and HTTP `POST` requests, to 90's music, to retro video games with [ever expanding maps][wikipedia-fog-of-war]. These expanding game maps provided the inspiration for (at the very least) the name of our solution to this problem of ever-growing route manifests.
 
-TODO: Insert image of video game fog of war?
-
 A Remix route tree is not so different from a map in a video game. In a game, the map may be huge, but the player doesn't start with the ability to see the entire map. They start with only the initial portion of the map exposed. As they move around, more and more of the map loads in.
 Why can't the Remix manifest work this way? Why can't we just load only the matched initial routes on SSR and fill them in as the user navigates around? Well the simple answer is - we can and we did. Sort of.
 
 Prior to v1.0, Remix actually worked this way! Only the initial routes were included on SSR, and then when a link was clicked, we made a request to the server to get the new routes, and then we fetched the data and route modules for the new routes. This looked something like:
 
-```txt
-Click /link
-           |-- discover route -->
-                                 |-- load data -->
-                                 |-- load module -->
-                                                    | render /link
-
-```
+<img alt="Remix v0 network diagram" src="/blog-images/posts/fog-of-war/v0.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 But, as you can see, that approach leads to a network waterfall - and we hate those! It also means we can't implement `<Link prefetch>` anymore because we don't even have the routes to match, let alone their metadata for fetching data and modules.
 
@@ -103,24 +74,17 @@ The key to implementing this in Remix without introducing network waterfalls and
 
 Consider the above diagram, with the discovery aspect done eagerly:
 
-```txt
-Render /link
-            |-- discover route -->
-...
-Click /link
-           |-- load data -->
-           |-- load module -->
-                              | render /link
-```
+<img alt="Fog of War network diagram with eager discovery" src="/blog-images/posts/fog-of-war/fow-eager.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 Instead of waiting for a link to be clicked to discover routes, we can eagerly do this based on the links rendered on the page - which represents the paths the user could potentially go next. Remix batches up all rendered links and makes a single `fetch` call to the Remix server to get back the routes required to that set of links. If we do this as soon as those links are rendered, then it's highly likely those routes will be discovered and added to the route tree before the user has had time to find and click their chosen link. If we patch these in before a link is clicked, then the Remix behavior won't have changed _at all_ - even though we're shipping only the matched routes on initial load.
 
-Also, it's worth noting that because this is all just an optimization, the application works fine without it - just a bit slower because of the network waterfall. So if a user _does_ click that link within the short amount of time it takes to patch it into the manifest, then that link navigation will encounter the waterfall. This is like like `<Link prefetch>` where if the prefetch doesn't complete in time, the fetch happens on click and the user sees a spinner during the navigation. It's also worth noting that a route only has to be discovered once per session. subsequent navigations to the same route won't require a discovery step.
+And, if we combine this eager discovery with the `<Link prefetch>` optimization above - we can still achieve instantaneous navigation!
+
+<img alt="Fog of War network diagram with eager discovery" src="/blog-images/posts/fog-of-war/fow-eager-prefetch.png" class="m-auto w-4/5 border rounded-md shadow" />
+
+It's also worth noting that because this is all just an optimization, the application works fine without it - just a bit slower because of the network waterfall. So if a user _does_ click that link within the short amount of time it takes to patch it into the manifest, then that link navigation will encounter the waterfall. This is like like `<Link prefetch>` where if the prefetch doesn't complete in time, the fetch happens on click and the user sees a spinner during the navigation. It's also worth noting that a route only has to be discovered once per session. subsequent navigations to the same route won't require a discovery step.
 
 ## Visual Explanation
-
-TODO: Bullets for now - work with Tim to get diagrams integrated
-TODO: Do we want to attach URLs to the diagram or remain high level?
 
 Lets take a step back and see how this looks from a more visual "route tree" standpoint. Let's look at the current state" of Remix today, where the full manifest is shipped on initial load. In the below route tree, the red dots are the actively rendered route, and the white area conveys that routes the manifest knows about, which is all of them in the current state:
 
@@ -142,7 +106,7 @@ Remix will discover those routes via a `fetch` call to the Remix server and patc
 
 As you can see - this type of "discovery" allows for the route manifest to start small and grow with the user's path through the app, thus allowing your app to scale to any number of routes without incurring a performance hit on app load.
 
-TODO: Looping back to shopify.com, this had a XXX impact on their initial route manifest...
+As mentioned earlier, we've been dog-fooding this on https://shopify.com and we're loving the results. Prior to Fog of war, their route manifest contained 1300 routes and weighted over 8MB uncompressed. Once Fog of War was enabled, their initial homepage manifest dropped to just 3 routes and 1.9Kb uncompressed.
 
 ## React Router Implementation
 
