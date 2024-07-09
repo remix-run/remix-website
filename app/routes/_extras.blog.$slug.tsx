@@ -1,11 +1,15 @@
-import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type {
+  HeadersFunction,
+  LinksFunction,
+  LoaderFunctionArgs,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/lib/blog.server";
-import "~/styles/md.css";
+import mdStyles from "~/styles/md.css?url";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import { CACHE_CONTROL } from "~/lib/http.server";
@@ -30,6 +34,10 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
   return loaderHeaders;
 };
 
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: mdStyles },
+];
+
 export const meta: MetaFunction<typeof loader> = (args) => {
   let { data, params } = args;
   let { slug } = params;
@@ -47,6 +55,9 @@ export const meta: MetaFunction<typeof loader> = (args) => {
     for (let { name, title } of post.authors) {
       ogImageUrl.searchParams.append("authorName", name);
       ogImageUrl.searchParams.append("authorTitle", title);
+    }
+    if (post.ogImage) {
+      ogImageUrl.searchParams.set("ogImage", post.ogImage);
     }
   }
 
@@ -106,9 +117,9 @@ export default function BlogPost() {
                     {post.dateDisplay}
                   </div>
                   <div className="h-2" />
-                  <div className="font-display text-3xl font-extrabold text-white md:text-4xl">
+                  <h1 className="font-display text-3xl font-extrabold text-white md:text-4xl">
                     {post.title}
-                  </div>
+                  </h1>
                   <div className="h-2" />
                 </div>
                 <div className="pb-4 md:pb-12">

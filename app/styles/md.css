@@ -63,15 +63,17 @@
   }
 
   & h2 {
-    @apply text-2xl font-extrabold dark:text-gray-200 md:text-5xl;
+    @apply text-2xl font-bold dark:text-gray-200 md:text-3xl;
   }
 
   & h3 {
-    @apply text-xl font-extrabold dark:text-gray-200 md:text-3xl;
+    @apply text-xl font-bold dark:text-gray-200 md:text-2xl;
   }
 
-  & h4 {
-    @apply font-bold;
+  & h4,
+  & h5,
+  & h6 {
+    @apply text-lg font-bold md:text-xl;
   }
 
   & strong {
