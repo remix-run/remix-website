@@ -142,6 +142,8 @@ Remix will discover those routes via a `fetch` call to the Remix server and patc
 
 As you can see - this type of "discovery" allows for the route manifest to start small and grow with the user's path through the app, thus allowing your app to scale to any number of routes without incurring a performance hit on app load.
 
+TODO: Looping back to shopify.com, this had a XXX impact on their initial route manifest...
+
 ## React Router Implementation
 
 As with most routing features in Remix, it's all React Router under the hood. Fog of War is made possible by a new [`unstable_patchRoutesOnMiss`][rr-patch-routes-on-miss] API. This API allows you to provide an implementation to add new routes to the route tree anytime React Router is unable to match a path in the current route tree. You can implement any async logic you need in this method to discover the appropriate routes and patch them into the current tree any any location you need.
