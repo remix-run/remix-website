@@ -11,9 +11,9 @@ authors:
   - Matt Brophy
 ---
 
-Remix is built to ensure your applications are performant by default. With [Fog of War][remix-fog-of-war][^1], we're ensuring this is the case no matter the size of your application.
+Remix is built to ensure your applications are performant by default. With the new [Fog of War][remix-fog-of-war][^1] feature, we're ensuring this is the case no matter the size of your application.
 
-[^1]: The Fog of War feature was released behind an unstable flag in Remix [v2.10][remix-2-10] for early beta testing - we hope to stabilize it in an upcoming release.
+[^1]: The Fog of War feature was released behind an `unstable` flag in Remix [v2.10][remix-2-10] for early beta testing - we hope to stabilize it in an upcoming release
 
 ## Background
 
@@ -90,23 +90,23 @@ Lets take a step back and see how this looks from a more visual "route tree" sta
 
 TODO: Replace this with the proper image - full tree with 3 "active" routes and all routes in white "known" section
 
-<img alt="Route tree showing the entire manifest without Fog of War enabled" src="/blog-images/posts/fog-of-war/1.png" class="m-auto w-4/5 border rounded-md shadow" />
+<img alt="Route tree showing the entire manifest without Fog of War enabled" src="/blog-images/posts/fog-of-war/tree-1.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 Now, if we enable Fog of War, we'll only ship the active routes in the manifest on initial load:
 
-<img alt="Route tree showing the initial manifest with Fog of War enabled" src="/blog-images/posts/fog-of-war/2.png" class="m-auto w-4/5 border rounded-md shadow" />
+<img alt="Route tree showing the initial manifest with Fog of War enabled" src="/blog-images/posts/fog-of-war/tree-2.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 Client side as we hydrate (render) the UI, we'll encounter a handful of outgoing link to other unknown routes:
 
-<img alt="Route tree showing destination links rendered on the current page" src="/blog-images/posts/fog-of-war/3.png" class="m-auto w-4/5 border rounded-md shadow" />
+<img alt="Route tree showing destination links rendered on the current page" src="/blog-images/posts/fog-of-war/tree-3.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 Remix will discover those routes via a `fetch` call to the Remix server and patch them into them manifest:
 
-<img alt="Route tree with expanded manifest including destination links" src="/blog-images/posts/fog-of-war/4.png" class="m-auto w-4/5 border rounded-md shadow" />
+<img alt="Route tree with expanded manifest including destination links" src="/blog-images/posts/fog-of-war/tree-4.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 As you can see - this type of "discovery" allows for the route manifest to start small and grow with the user's path through the app, thus allowing your app to scale to any number of routes without incurring a performance hit on app load.
 
-As mentioned earlier, we've been dog-fooding this on https://shopify.com and we're loving the results. Prior to Fog of war, their route manifest contained 1300 routes and weighted over 10MB uncompressed. Once Fog of War was enabled, their initial homepage manifest dropped to just 3 routes and 1.9Kb uncompressed.
+As mentioned earlier, we've been dog-fooding this on https://shopify.com and we're loving the results. Prior to Fog of War, their route manifest contained 1300 routes and weighted over 10MB uncompressed. Once Fog of War was enabled, their initial homepage manifest dropped to just 3 routes and 1.9Kb uncompressed.
 
 ## React Router Implementation
 
