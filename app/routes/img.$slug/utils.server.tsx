@@ -3,7 +3,6 @@ import getEmojiRegex from "emoji-regex";
 import satori from "satori";
 import interRegular from "./inter-regular-basic-latin.woff?arraybuffer";
 import interBlack from "./inter-black-basic-latin.woff?arraybuffer";
-import socialBackground from "./social-background.png?arraybuffer";
 import { Wordmark } from "~/ui/logo";
 
 // Big thanks goes to Jacob Paris' blog outlining how to set this up
@@ -19,10 +18,14 @@ export async function createOgImageSVG(request: Request) {
   let searchParams = new URLSearchParams(requestUrl.search);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  let { title, displayDate, authors } = getDataFromParams(
+  let { title, displayDate, authors, ogImage } = getDataFromParams(
     siteUrl,
     searchParams,
   );
+
+  const backgroundImage = ogImage
+    ? `url(${siteUrl}${ogImage})`
+    : `url("data:image/png;base64,${arrayBufferToBase64((await import("./social-background.png?arraybuffer")).default)}")`;
 
   return satori(
     <div
@@ -34,7 +37,9 @@ export async function createOgImageSVG(request: Request) {
         width: "100%",
         fontFamily: primaryFont,
         color: primaryTextColor,
-        backgroundImage: `url("data:image/png;base64,${arrayBufferToBase64(socialBackground)}")`,
+        backgroundImage,
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
         padding: "144px",
       }}
     >
@@ -123,6 +128,7 @@ function getAuthorImgSrc(siteUrl: string, name: string) {
 function getDataFromParams(siteUrl: string, searchParams: URLSearchParams) {
   let title = searchParams.get("title");
   let displayDate = searchParams.get("date");
+  let ogImage = searchParams.get("ogImage");
 
   let authorNames = searchParams.getAll("authorName");
   let authorTitles = searchParams.getAll("authorTitle");
@@ -152,6 +158,7 @@ function getDataFromParams(siteUrl: string, searchParams: URLSearchParams) {
   return {
     title: stripEmojis(title),
     displayDate: stripEmojis(displayDate),
+    ogImage,
     authors,
   };
 }

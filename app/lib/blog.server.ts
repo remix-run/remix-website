@@ -152,6 +152,8 @@ interface MarkdownPost {
   featured?: boolean;
   image: string;
   imageAlt: string;
+  /* Must be a path to an image in the public directory */
+  ogImage?: string;
   authors: string[];
   html: string;
 }

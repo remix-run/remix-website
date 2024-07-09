@@ -47,6 +47,9 @@ export const meta: MetaFunction<typeof loader> = (args) => {
       ogImageUrl.searchParams.append("authorName", name);
       ogImageUrl.searchParams.append("authorTitle", title);
     }
+    if (post.ogImage) {
+      ogImageUrl.searchParams.set("ogImage", post.ogImage);
+    }
   }
 
   let socialImageUrl = ogImageUrl?.toString();
