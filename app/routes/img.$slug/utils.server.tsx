@@ -23,9 +23,14 @@ export async function createOgImageSVG(request: Request) {
     searchParams,
   );
 
-  const backgroundImage = ogImage
-    ? `url(${siteUrl}${ogImage})`
-    : `url("data:image/png;base64,${arrayBufferToBase64((await import("./social-background.png?arraybuffer")).default)}")`;
+  let backgroundImage: string;
+  if (ogImage) {
+    backgroundImage = `url(${siteUrl}${ogImage})`;
+  } else {
+    let socialBackground = await import("./social-background.png?arraybuffer");
+    let base64 = arrayBufferToBase64(socialBackground.default);
+    backgroundImage = `url("data:image/png;base64,${base64}")`;
+  }
 
   return satori(
     <div
