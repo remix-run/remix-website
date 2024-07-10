@@ -154,6 +154,7 @@ interface MarkdownPost {
   imageAlt: string;
   /* Must be a path to an image in the public directory */
   ogImage?: string;
+  imageDisableOverlay?: boolean;
   authors: string[];
   html: string;
 }

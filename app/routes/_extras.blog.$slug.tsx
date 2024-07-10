@@ -14,6 +14,7 @@ import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { Subscribe } from "~/ui/subscribe";
+import cx from "clsx";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   let { slug } = params;
@@ -102,7 +103,10 @@ export default function BlogPost() {
             <div className="relative h-[280px] bg-gray-900 md:mx-auto md:h-[400px] md:max-w-3xl md:rounded-xl xl:h-[480px]">
               <div className="absolute inset-0">
                 <img
-                  className="h-full w-full object-cover object-top opacity-40 md:rounded-xl"
+                  className={cx(
+                    "h-full w-full object-cover object-top md:rounded-xl",
+                    !post.imageDisableOverlay && "opacity-40",
+                  )}
                   src={post.image}
                   alt={post.imageAlt}
                 />
