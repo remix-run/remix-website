@@ -1,9 +1,10 @@
 ---
 title: Fog of War
-summary: Introducing Fog of War - infinitely scalable Remix and React Router applications
+summary: "Introducing Fog of War: infinitely scalable Remix and React Router applications"
 featured: false
 date: 2024-07-10
 image: /blog-images/headers/fog-of-war.png
+ogImage: /blog-images/headers/fog-of-war.png
 imageAlt: Fog of War
 imageDisableOverlay: true
 authors:
