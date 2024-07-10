@@ -127,7 +127,7 @@ As we hydrate (render) the UI client side, we'll encounter a handful of links to
 
 <img alt="Route tree showing destination links rendered on the current page" src="/blog-images/posts/fog-of-war/tree-3.png" class="m-auto w-4/5 border rounded-md shadow" />
 
-Remix will discover those routes via a `fetch` call to the Remix server and patch them into them manifest:
+Remix will discover those routes via a `fetch` call to the Remix server and patch them into the manifest:
 
 <img alt="Route tree with expanded manifest including destination links" src="/blog-images/posts/fog-of-war/tree-4.png" class="m-auto w-4/5 border rounded-md shadow" />
 
