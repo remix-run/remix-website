@@ -10,7 +10,7 @@ authors:
   - Matt Brophy
 ---
 
-Remix is designed to make your application performant by default. Our latest feature, [Fog of War][remix-fog-of-war][^1], ensures your application stays performant no matter how much it grows.
+Remix is designed to make your application performant by default. Our latest feature, [Fog of War][remix-fog-of-war][^1], helps your application stay performant no matter how large it grows.
 
 [^1]: The Fog of War feature was released behind an `unstable` flag in Remix [v2.10][remix-2-10] for early beta testing—we hope to stabilize it in an upcoming release
 
@@ -18,7 +18,7 @@ Remix is designed to make your application performant by default. Our latest fea
 
 Remix has primarily been a compiler and server-runtime on top of React Router aimed at giving you the idiomatic and performant way we would have written a React Router SSR app. Could you build your own React Router SSR application without using Remix? Absolutely! However, to get the same kind of performance optimizations, you'd very likely end up writing your own compiler and server-runtime, mimicking a lot of the optimizations Remix has built-in.
 
-Most of these Remix optimizations share a common goal of eliminating network waterfalls.
+Most of Remix's optimizations share a common goal of eliminating network waterfalls.
 
 In order to avoid "render then fetch" waterfalls, Remix [decouples rendering from fetching][when-to-fetch] (see also: [Remixing React Router][remixing-rr]). In order to do this, Remix needs to know your route tree up front so it can kick off the data fetches and download the route modules in parallel whenever a link is clicked. This results in the inverted and more performant approach of "fetch then render" (or "fetch while render" if you're [streaming data][streaming]).
 
@@ -36,7 +36,7 @@ You can take this one step further in Remix via [`<Link prefetch>`][link-prefetc
 
 ## The Route Manifest
 
-Let's define a few important terms for clarity:
+First of all, let's define a few important terms for clarity:
 
 - **Route tree**: A tree of routes which defines the URLs your app can match via parent/child relationships
 - **Route definition**: Parts of the route used to match a URL (`path`, `index`, `children`)
