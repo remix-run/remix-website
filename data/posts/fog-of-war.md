@@ -14,7 +14,7 @@ Remix is designed to make your application performant by default. Our latest fea
 
 [^1]: The Fog of War feature was released behind an `unstable` flag in Remix [v2.10][remix-2-10] for early beta testing—we hope to stabilize it in an upcoming release
 
-## How Remix makes fetch(es) happen
+## How Remix Makes Fetch(es) Happen
 
 Remix has primarily been a compiler and server-runtime on top of React Router aimed at giving you the idiomatic and performant way we would have written a React Router SSR app. Could you build your own React Router SSR application without using Remix? Absolutely! However, to get the same kind of performance optimizations, you'd very likely end up writing your own compiler and server-runtime, mimicking a lot of the optimizations Remix has built-in.
 
@@ -22,7 +22,7 @@ Most of these Remix optimizations share a common goal of eliminating network wat
 
 In order to avoid "render then fetch" waterfalls, Remix [decouples rendering from fetching][when-to-fetch] (see also: [Remixing React Router][remixing-rr]). In order to do this, Remix needs to know your route tree up front so it can kick off the data fetches and download the route modules in parallel whenever a link is clicked. This results in the inverted and more performant approach of "fetch then render" (or "fetch while render" if you're [streaming data][streaming]).
 
-In a "render then fetch" world, your application needs to download the route implementation, then render the component, which would kick off the data fetches - causing a waterfall:
+In a "render then fetch" world, your application downloads the route implementation, then kicks off the data fetches while rendering the component—causing a waterfall:
 
 <img alt="Render then Fetch network diagram" src="/blog-images/posts/fog-of-war/render-then-fetch.png" class="m-auto w-4/5 border rounded-md shadow" />
 
@@ -39,8 +39,8 @@ You can take this one step further in Remix via [`<Link prefetch>`][link-prefetc
 Let's define a few important terms for clarity:
 
 - **Route tree**: A tree of routes which defines the URLs your app can match via parent/child relationships
-- **Route definition**: Parts of the route used to match a URL - `path`, `index`, `children`
-- **Route implementation**: Parts of the route needed to load data and render the UI (`loader`, `Component`, `ErrorBoundary`, etc.)
+- **Route definition**: Parts of the route used to match a URL (`path`, `index`, `children`)
+- **Route implementation**: Parts of the route used to load data and render the UI (`loader`, `Component`, `ErrorBoundary`, etc.)
 
 In order to implement optimizations mentioned in the previous section, Remix needs to know all of your route _definitions_ in the client so that it can match routes based on nothing more than a `<Link to>`. Once a link is clicked and routes are matched, Remix can fetch data and download the route _implementations_ in parallel.
 
@@ -76,11 +76,11 @@ This approach works for most applications - since the manifest is pretty lightwe
 
 However, Remix doesn't only want to to provide good performance for small-to-medium sized applications—we want _large_ and _extremely large_ applications to be fast by default too! Because we love dog-fooding React Router and Remix on the myriad of applications at Shopify, both internal and public-facing, we knew our current strategy was not cutting it for those larger applications.
 
-As we began rolling out Remix to https://www.shopify.com, we realized _just how big_ that site is. When you take into account all of the routes and their internationalized URLs (i.e., `/pricing`, `/en/pricing`, `/es/precios` and many more)–the app had over 1300 routes! And because Remix doesn't have a good solution for URL aliasing (yet!), many of the route entries were duplicates pointing to the same route module, and thus duplicating the module information (it's path, it's other module `imports`, etc.). This resulted in a manifest that was ~85Kb compressed, and ~10Mb uncompressed. On slower devices, this could have a noticeable impact on page load times for the device to decompress/parse/compile/execute the JS module.
+As we began rolling out Remix to https://www.shopify.com, we realized _just how big_ that site is. When you take into account all of the routes and their internationalized URLs (i.e., `/pricing`, `/en/pricing`, `/es/precios` and many more)–the app had over 1300 routes! And because Remix doesn't have a good solution for URL aliasing (yet!), many of the route entries were duplicates pointing to the same route module, and thus duplicating the module information (its path, its other module `imports`, etc.). This resulted in a manifest that was ~85Kb compressed, and ~10Mb uncompressed. On slower devices, this could have a noticeable impact on page load times for the device to decompress/parse/compile/execute the JS module.
 
 ## Fog of War
 
-At Remix, we're big fans of the Retro vibes of our younger years: from old school web development using HTML `<form>` elements and HTTP `POST` requests, to 90's music, to retro video games with [ever expanding maps][wikipedia-fog-of-war]. These expanding game maps provided the inspiration for (at the very least) the name of our solution to this problem of ever-growing route manifests.
+At Remix, we're big fans of the Retro vibes of our younger years: from old school web development using HTML `<form>` elements and HTTP `POST` requests, to '90s music, to retro video games with [ever expanding maps][wikipedia-fog-of-war]. These expanding game maps provided the inspiration for (at the very least) the name of our solution to this problem of ever-growing route manifests.
 
 A Remix route tree is not so different from a map in a video game. In a game, the map may be huge, but the player doesn't start with the ability to see the entire map. They start with only the initial portion of the map exposed. As they move around, more and more of the map loads in.
 
