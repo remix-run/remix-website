@@ -20,7 +20,7 @@
 
 - name: "Shop"
   description: "Shop by Shopify on web"
-  link: "https://shop.app/products/2069182873728"
+  link: "https://shop.app/"
   imgSrc: "/showcase-assets/shop.webp"
   videoSrc: "/showcase-assets/shop"
 
