@@ -1,5 +1,11 @@
 # Note: all video sources should have a .webm and a .mp4 for a fallback, hence why the file type isn't specified
 
+- name: "Sanity Learn"
+  description: "Interactive educational platform for Sanity.io"
+  link: "https://www.sanity.io/learn"
+  imgSrc: "/showcase-assets/sanity-learn.webp"
+  videoSrc: "/showcase-assets/sanity-learn"
+
 - name: "Shopify"
   description: "Ecommerce platform website"
   link: "https://www.shopify.com"
