@@ -167,8 +167,8 @@ You can expand on this async logic and move towards a manifest-like approach, no
 ```js
 // Manifest mapping route prefixes to sub-app implementations
 let manifest = {
-  account: () => await import("./account"),
-  dashboard: () => await import("./dashboard"),
+  "/account": () => import("./account"),
+  "/dashboard": () => import("./dashboard"),
 };
 
 let router = createBrowserRouter(
@@ -180,13 +180,13 @@ let router = createBrowserRouter(
   ],
   {
     async unstable_patchRoutesOnMiss({ path, patch }) {
-      let prefix = Object.keys(manifest).find((prefix) => path.startsWith(`/${prefix}`));
+      let prefix = Object.keys(manifest).find((p) => path.startsWith(p));
       if (prefix) {
         let children = await manifest[prefix]();
         patch(null, children);
       }
     },
-  }
+  },
 );
 ```
 
