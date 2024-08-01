@@ -11,9 +11,10 @@ authors:
   - Matt Brophy
 ---
 
-Remix is designed to make your application performant by default. Our latest feature, [Fog of War][remix-fog-of-war][^1], helps your application stay performant no matter how large it grows.
+Remix is designed to make your application performant by default. Our latest feature, [Fog of War][remix-fog-of-war][^1] (a.k.a. "Lazy Route Discovery")[^2], helps your application stay performant no matter how large it grows.
 
 [^1]: The Fog of War feature was released behind an `unstable` flag in Remix [v2.10][remix-2-10] for early beta testing—we hope to stabilize it in an upcoming release
+[^2]: This was released behind the `future.unstable_fogOFWar` flag in v2.10, but the flag was renamed to `future.unstable_lazyRouteDiscovery` in v2.11. We found that without the context behind "Fog of War" we discuss in this post, the flag naming could be a bit confusing 🙂.
 
 ## How Remix Makes Fetch(es) Happen
 
@@ -93,7 +94,7 @@ Prior to v1.0, Remix actually worked this way! Only the initial routes were incl
 
 But, as you can see, that approach leads to a network waterfall—and we hate those! It also means we can't implement `<Link prefetch>` anymore because we don't even have the routes to match, let alone their metadata for fetching data and modules.
 
-So for Remix 1.0 the full manifest was shipped to eliminate waterfalls and allow link prefetching. The "partial manifest" optimization was left for another day - and that day finally came in Remix [v2.10][remix-2-10] with the release of the `future.unstable_fogOfWar` flag.
+So for Remix 1.0 the full manifest was shipped to eliminate waterfalls and allow link prefetching. The "partial manifest" optimization was left for another day - and that day finally came in Remix [v2.10][remix-2-10] with the release of the `future.unstable_fogOfWar` flag (renamed to `future.unstable_lazyRouteDiscovery` in [v2.11][remix-2-11])[^2].
 
 ## Eager Route Discovery
 
@@ -203,5 +204,6 @@ We'd also like to give a huge shout-out to [Shane Walker][twitter-swalker326] fo
 [route-lazy]: https://reactrouter.com/en/main/route/lazy
 [wikipedia-fog-of-war]: https://en.wikipedia.org/wiki/Fog_of_war
 [remix-2-10]: https://github.com/remix-run/remix/blob/main/CHANGELOG.md#v2100
+[remix-2-11]: https://github.com/remix-run/remix/blob/main/CHANGELOG.md#v2110
 [twitter-swalker326]: https://twitter.com/swalker326
 [rr-mf-example]: https://github.com/swalker326/react-router-fog-of-war-example/
