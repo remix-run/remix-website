@@ -9,7 +9,7 @@ authors:
   - Ryan Florence
 ---
 
-Last week [I gave a talk](https://www.youtube.com/embed/T8TZQ6k4SLE?start=5473) about React Router and Remix at React Conf and [we posted an announcement](./merging-remix-and-react-router) here. Now that the dust has settled, I wanted to provide some more insight into the decision announced there and answer some common questions.
+Last week [I gave a talk](https://www.youtube.com/watch?v=ZcwA0xt8FlQ) about React Router and Remix at React Conf and [we posted an announcement](./merging-remix-and-react-router) here. Now that the dust has settled, I wanted to provide some more insight into the decision announced there and answer some common questions.
 
 ## tl;dr
 
