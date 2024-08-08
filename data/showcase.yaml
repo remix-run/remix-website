@@ -129,6 +129,6 @@
   - name: "Codante"
   description: "The best platform to learn what real programming is, hands-on"
   link: "https://codante.io/"
-  imgSrc: "/showcase-assets/oss-capital.webp"
-  videoSrc: "/showcase-assets/oss-capital"
+  imgSrc: "/showcase-assets/codante.webp"
+  videoSrc: "/showcase-assets/codante"
 
