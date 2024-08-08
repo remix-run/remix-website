@@ -365,7 +365,7 @@ function MutationCode({
 
 function MutationP({ children }: { children: React.ReactNode }) {
   return (
-    <p className="flex h-[75vh] max-w-2xl items-center px-6 text-4xl font-black text-gray-100 sm:mx-auto sm:px-8 md:text-6xl">
+    <p className="flex min-h-[75vh] max-w-2xl items-center px-6 text-4xl font-black text-gray-100 sm:mx-auto sm:px-8 md:text-6xl">
       {children}
     </p>
   );
@@ -375,7 +375,7 @@ function JumboP({ children, ...props }: React.ComponentPropsWithoutRef<"p">) {
   return (
     <p
       {...props}
-      className="h-[50vh] px-6 text-4xl font-black text-gray-100 md:mx-auto md:max-w-3xl md:text-6xl"
+      className="min-h-[50vh] px-6 pb-12 text-4xl font-black text-gray-100 md:mx-auto md:max-w-3xl md:text-6xl"
     >
       {children}
     </p>
