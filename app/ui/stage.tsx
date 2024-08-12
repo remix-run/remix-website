@@ -134,7 +134,7 @@ export function ScrollStage({
       length={length}
       DEBUG={DEBUG}
     >
-      <div ref={ref} style={{ height: `${pages * 100}vh` }}>
+      <div ref={ref} style={{ minHeight: `${pages * 100}vh` }}>
         {children}
       </div>
     </Stage>
