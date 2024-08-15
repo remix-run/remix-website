@@ -238,3 +238,9 @@
   imgSrc: "https://opengraph.githubassets.com/080f84d879e2777e3516f1d70082d6d6258fe6a8c5db5e4356a2f92e5e8cebf7/SimeonGriggs/sanity-remix-template"
   initCommand: "npx create-remix@latest --template SimeonGriggs/sanity-remix-template"
   category: "templates"
+
+- title: "Remix with Justd Installed"
+  repoUrl: "https://github.com/justdlabs/remix"
+  imgSrc: "https://camo.githubusercontent.com/076066f43ba75163106f304fc42750445f55343abb62e10429d554b4f227d942/68747470733a2f2f6765746a757374642e636f6d2f6f70656e67726170682d696d6167652e706e673f763d31"
+  initCommand: "npx create-remix@latest --template justdlabs/remix"
+  category: "templates"
