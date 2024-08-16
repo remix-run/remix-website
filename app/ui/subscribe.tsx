@@ -6,6 +6,8 @@ import cx from "clsx";
 import type { action } from "~/routes/[_]actions.newsletter";
 import type { SerializeFrom } from "@remix-run/node";
 
+// TODO: look into if v3_fetcherPersist simplifies this component
+
 function Subscribe({
   descriptionId,
   formClassName = "flex gap-4 flex-col",

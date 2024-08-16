@@ -53,15 +53,6 @@ const navItems: Array<HeaderLinkProps> = [
 export default function ConfTwentyTwentyTwo() {
   return (
     <div className="__layout flex h-full flex-1 flex-col bg-blue-800 text-white">
-      {/* <TopBanner>
-        <span className="font-bold text-pink-brand">
-          Announcing: Remix Conf 2023.
-        </span>{" "}
-        <Link to="../2023" className="text-white underline">
-          Earlybird tickets and sponsorships available now
-          <span aria-hidden> →</span>
-        </Link>
-      </TopBanner> */}
       <Header />
       <main className="flex flex-1 flex-col" tabIndex={-1}>
         <Outlet />
