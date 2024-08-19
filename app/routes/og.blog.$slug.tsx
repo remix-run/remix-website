@@ -2,9 +2,12 @@ import invariant from "tiny-invariant";
 import getEmojiRegex from "emoji-regex";
 import { type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { isOpenGraphImageRequest, OpenGraphImageData } from "remix-og-image";
 import {
-  BlogAuthor,
+  isOpenGraphImageRequest,
+  type OpenGraphImageData,
+} from "remix-og-image";
+import {
+  type BlogAuthor,
   getBlogPost,
   getBlogPostListings,
 } from "~/lib/blog.server";
