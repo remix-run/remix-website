@@ -159,12 +159,12 @@ interface MarkdownPost {
   html: string;
 }
 
-export interface BlogAuthor {
+export type BlogAuthor = {
   name: string;
   title: string;
   avatar: string;
-}
+};
 
-export interface BlogPost extends Omit<MarkdownPost, "authors"> {
+export type BlogPost = Omit<MarkdownPost, "authors"> & {
   authors: BlogAuthor[];
-}
+};

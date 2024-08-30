@@ -19,12 +19,19 @@
     "test": "vitest",
     "typecheck": "tsc -b"
   },
+  "overrides": {
+    "@remix-run/express": "v0.0.0-nightly-24d1b2186-20240830",
+    "@remix-run/node": "v0.0.0-nightly-24d1b2186-20240830",
+    "@remix-run/react": "v0.0.0-nightly-24d1b2186-20240830",
+    "@remix-run/dev": "v0.0.0-nightly-24d1b2186-20240830",
+    "@remix-run/eslint-config": "v0.0.0-nightly-24d1b2186-20240830"
+  },
   "dependencies": {
     "@docsearch/css": "^3.5.2",
     "@docsearch/react": "^3.5.2",
-    "@remix-run/express": "2.11.2",
-    "@remix-run/node": "2.11.2",
-    "@remix-run/react": "2.11.2",
+    "@remix-run/express": "v0.0.0-nightly-24d1b2186-20240830",
+    "@remix-run/node": "v0.0.0-nightly-24d1b2186-20240830",
+    "@remix-run/react": "v0.0.0-nightly-24d1b2186-20240830",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.1.0",
     "compression": "^1.7.4",
@@ -59,7 +66,6 @@
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
-    "remix": "2.11.2",
     "satori": "^0.10.14",
     "semver": "^7.5.4",
     "shiki": "^0.14.7",
@@ -76,8 +82,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@remix-run/dev": "2.11.2",
-    "@remix-run/eslint-config": "2.11.2",
+    "@remix-run/dev": "v0.0.0-nightly-24d1b2186-20240830",
+    "@remix-run/eslint-config": "v0.0.0-nightly-24d1b2186-20240830",
     "@testing-library/jest-dom": "^6.2.0",
     "@types/follow-redirects": "^1.14.4",
     "@types/gunzip-maybe": "^1.4.2",
