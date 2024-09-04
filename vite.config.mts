@@ -2,6 +2,7 @@ import { defineConfig, splitVendorChunkPlugin } from "vite";
 import { vitePlugin as remix } from "@remix-run/dev";
 import tsconfigPaths from "vite-tsconfig-paths";
 import arraybuffer from "vite-plugin-arraybuffer";
+import { openGraphImagePlugin } from "remix-og-image/plugin";
 
 export default defineConfig({
   build: {
@@ -22,6 +23,11 @@ export default defineConfig({
         unstable_singleFetch: true,
         unstable_lazyRouteDiscovery: true,
       },
+    }),
+    openGraphImagePlugin({
+      elementSelector: "#og-image",
+      outputDirectory: "public/og",
+      format: "webp",
     }),
   ],
 });
