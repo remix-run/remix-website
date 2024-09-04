@@ -127,7 +127,7 @@
 - title: "Remix PWA"
   repoUrl: "https://github.com/remix-pwa/remix-pwa"
   imgSrc: "https://opengraph.githubassets.com/bfaae6d33827636906648c6e514f0a5d2f8bd8eabf96b4cefbdc873fd2d14989/remix-pwa/remix-pwa"
-  initCommand: "npx remix-pwa@latest init"
+  initCommand: "npm i -D @remix-pwa/dev"
   category: "libraries"
   featured: true
 
