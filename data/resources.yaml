@@ -75,7 +75,6 @@
   imgSrc: "https://opengraph.githubassets.com/f21cb22e0016348ae0d181d50fd80f0036579308eb917f8d376db2f392a322e4/sergiodxa/remix-auth"
   initCommand: "npm install remix-auth"
   category: "libraries"
-  featured: true
 
 - title: "Remix Gospel Stack"
   repoUrl: "https://github.com/PhilDL/remix-gospel-stack"
@@ -130,6 +129,7 @@
   imgSrc: "https://opengraph.githubassets.com/bfaae6d33827636906648c6e514f0a5d2f8bd8eabf96b4cefbdc873fd2d14989/remix-pwa/remix-pwa"
   initCommand: "npx remix-pwa@latest init"
   category: "libraries"
+  featured: true
 
 - title: "Remix Auth TOTP"
   repoUrl: "https://github.com/dev-xo/remix-auth-totp"
