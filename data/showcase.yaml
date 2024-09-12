@@ -125,3 +125,9 @@
   link: "https://oss.capital/"
   imgSrc: "/showcase-assets/oss-capital.webp"
   videoSrc: "/showcase-assets/oss-capital"
+
+- name: "Flashboard"
+  description: "Instant Admin Panels for PostgreSQL"
+  link: "https://getflashboard.com/"
+  imgSrc: "/showcase-assets/flashboard.webp"
+  videoSrc: "/showcase-assets/flashboard"
