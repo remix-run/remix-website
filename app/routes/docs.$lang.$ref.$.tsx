@@ -7,12 +7,8 @@ import {
   useParams,
   useRouteError,
 } from "@remix-run/react";
-import { json } from "@remix-run/node";
-import type {
-  HeadersFunction,
-  LoaderFunctionArgs,
-  SerializeFrom,
-} from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
+import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
 import invariant from "tiny-invariant";
@@ -36,7 +32,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       : `docs/${params["*"] || "index"}`;
     let doc = await getRepoDoc(params.ref, slug);
     if (!doc) throw null;
-    return json(
+    return data(
       { doc, siteUrl, ogImageUrl },
       { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
     );
@@ -47,7 +43,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       // to a missing slug on an old version or tag, then a 404 feels appropriate.
       handleRedirects(`/docs/${params["*"]}`);
     }
-    throw json(null, { status: 404 });
+    throw data(null, { status: 404 });
   }
 }
 
@@ -156,7 +152,7 @@ export default function DocPage() {
   );
 }
 
-function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
+function LargeOnThisPage({ doc }: { doc: Doc }) {
   return (
     <div className="sticky top-36 order-1 mt-20 hidden max-h-[calc(100vh-9rem)] w-56 flex-shrink-0 self-start overflow-y-auto pb-10 xl:block">
       <nav className="mb-3 flex items-center font-semibold">On this page</nav>
@@ -182,7 +178,7 @@ function LargeOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
   );
 }
 
-function SmallOnThisPage({ doc }: { doc: SerializeFrom<Doc> }) {
+function SmallOnThisPage({ doc }: { doc: Doc }) {
   return (
     <details className="group -mx-4 flex h-full flex-col sm:-mx-6 lg:mx-0 lg:mt-4 xl:ml-80 xl:hidden">
       <summary className="_no-triangle flex cursor-pointer select-none items-center gap-2 border-b border-gray-50 bg-white px-2 py-3 text-sm font-medium hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700">
