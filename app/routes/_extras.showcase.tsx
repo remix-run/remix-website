@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Fragment, forwardRef, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
@@ -12,7 +12,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return json(
+  return data(
     { siteUrl, showcaseExamples },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );

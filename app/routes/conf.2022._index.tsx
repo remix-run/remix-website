@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
@@ -52,7 +52,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return json(
+  return data(
     { siteUrl, speakers: speakersShuffled, sponsors },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );

@@ -1,5 +1,5 @@
 import {
-  json,
+  unstable_data as data,
   type LoaderFunctionArgs,
   type HeadersFunction,
   type MetaFunction,
@@ -17,10 +17,10 @@ import {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
-  let data = await getResourcesForRequest(request);
+  let resource = await getResourcesForRequest(request);
 
-  return json(
-    { ...data, siteUrl },
+  return data(
+    { ...resource, siteUrl },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
 };

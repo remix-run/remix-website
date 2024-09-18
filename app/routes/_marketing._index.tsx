@@ -1,10 +1,9 @@
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
 import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
-import type { Prose, Sequence } from "~/lib/mdtut.server";
 import "~/styles/index.css";
 import { Red } from "~/ui/gradients";
 import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
@@ -24,14 +23,6 @@ export const meta: MetaFunction<typeof loader> = (args) => {
   return getMeta({ title, description, siteUrl, image });
 };
 
-type LoaderData = {
-  sample: Prose;
-  sampleSm: Prose;
-  siteUrl: string | undefined;
-  mutations: Sequence;
-  errors: Sequence;
-};
-
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
     getMarkdownTutPage("marketing/sample/sample.md"),
@@ -48,15 +39,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  let data: LoaderData = {
-    sample,
-    sampleSm,
-    siteUrl,
-    mutations,
-    errors,
-  };
-
-  return json(data, { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } });
+  return data(
+    {
+      sample,
+      sampleSm,
+      siteUrl,
+      mutations,
+      errors,
+    },
+    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
+  );
 };
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
@@ -65,7 +57,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 };
 
 export default function Index() {
-  let { mutations, errors } = useLoaderData<LoaderData>();
+  let { mutations, errors } = useLoaderData<typeof loader>();
   return (
     <div x-comp="Index">
       <div className="h-8" />
@@ -84,7 +76,7 @@ export default function Index() {
 }
 
 function Hero() {
-  let { sample, sampleSm } = useLoaderData<LoaderData>();
+  let { sample, sampleSm } = useLoaderData<typeof loader>();
   return (
     <Fragment>
       <h1 className="sr-only">Welcome to Remix</h1>

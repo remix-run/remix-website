@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
@@ -21,7 +21,7 @@ export const meta: MetaFunction<typeof loader> = (args) => {
   return getMeta({
     title: "Remix Conf — May 2023",
     description:
-      "Join us in Salt Lake City, UT for our innaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!",
+      "Join us in Salt Lake City, UT for our inaugural conference. Featuring distinguished speakers, workshops, and lots of fun in between. See you there!",
     siteUrl: siteUrl ? `${siteUrl}/conf` : undefined,
     image: siteUrl ? `${siteUrl}/conf-images/2023/og_image.jpg` : undefined,
   });
@@ -47,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
-  return json(
+  return data(
     {
       siteUrl,
       sponsors,

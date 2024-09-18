@@ -11,7 +11,7 @@ import {
   useResolvedPath,
   matchPath,
 } from "@remix-run/react";
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
@@ -61,7 +61,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   let releaseBranch = "main";
   let isLatest = ref === releaseBranch || ref === latestVersion;
 
-  return json({
+  return {
     menu,
     versions: getLatestVersionHeads(tags),
     latestVersion,
@@ -70,7 +70,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     currentGitHubRef: ref,
     lang,
     isLatest,
-  });
+  };
 };
 
 export const headers: HeadersFunction = () => {

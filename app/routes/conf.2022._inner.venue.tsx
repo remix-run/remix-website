@@ -1,6 +1,5 @@
 import * as React from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
 import { useLoaderData, Link } from "@remix-run/react";
 import { primaryButtonLinkClass } from "~/ui/buttons";
@@ -28,9 +27,9 @@ const hotelImages = [
 const TOTAL_HOTEL_IMAGES = hotelImages.length;
 
 export const loader = async (_: LoaderFunctionArgs) => {
-  return json({
+  return {
     hotelImageNumber: Math.floor(Math.random() * TOTAL_HOTEL_IMAGES) + 1,
-  });
+  };
 };
 
 const map = (

@@ -1,6 +1,6 @@
 // Pull full readme for this page from GitHub
 import {
-  json,
+  unstable_data as data,
   type LoaderFunctionArgs,
   type HeadersFunction,
   type MetaFunction,
@@ -22,13 +22,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   let resource = await getResource(resourceSlug, { octokit });
 
   if (!resource) {
-    throw json({}, { status: 404 });
+    throw new Response(null, { status: 404 });
   }
 
   let requestUrl = new URL(request.url);
   let siteUrl = `${requestUrl.protocol}//${requestUrl.host}/resources/${resourceSlug}`;
 
-  return json(
+  return data(
     {
       siteUrl,
       resource,

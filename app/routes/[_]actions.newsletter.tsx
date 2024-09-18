@@ -15,8 +15,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     await subscribeToNewsletter(email);
   } catch (e: any) {
-    return data({ error: e.message || "Unknown error", ok: false });
+    return { error: e.message || "Unknown error", ok: false };
   }
 
-  return data({ error: null, ok: true });
+  return { error: null, ok: true };
 };

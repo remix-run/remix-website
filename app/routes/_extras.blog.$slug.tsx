@@ -5,7 +5,7 @@ import type {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/lib/blog.server";
@@ -24,7 +24,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   let post = await getBlogPost(slug);
 
-  return json(
+  return data(
     { siteUrl, post },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
