@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import "~/styles/conf-speaker.css";
@@ -35,7 +35,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
       getConfSessions(),
     ]);
   } catch (err) {
-    throw json(
+    throw data(
       {
         error:
           err && typeof err === "object" && "message" in err
@@ -47,12 +47,12 @@ export async function loader({ params }: LoaderFunctionArgs) {
   }
 
   if (!speaker) {
-    throw json(null, 404);
+    throw new Response(null, { status: 404 });
   }
   let speakerSessions = allSessions.filter((session) =>
     (session.speakers || []).some((sp) => sp.id === speaker?.id),
   );
-  return json(
+  return data(
     {
       speaker: {
         ...speaker,

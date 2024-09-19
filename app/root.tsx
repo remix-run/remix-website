@@ -10,7 +10,7 @@ import {
   useMatches,
   useRouteError,
 } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import {
   load as loadFathom,
@@ -34,7 +34,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   let colorScheme = await parseColorScheme(request);
 
-  return json(
+  return data(
     {
       colorScheme,
       host: url.host,

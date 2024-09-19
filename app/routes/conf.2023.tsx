@@ -5,7 +5,7 @@ import {
   useLoaderData,
   useMatches,
 } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
@@ -35,7 +35,7 @@ export const handle = { forceDark: true };
 const EARLY_BIRD_ENDING_TIME = 1646121600000;
 
 export const loader = async (_: LoaderFunctionArgs) => {
-  return json(
+  return data(
     { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
     { headers: { "Cache-Control": CACHE_CONTROL.conf } },
   );

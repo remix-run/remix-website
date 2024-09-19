@@ -1,4 +1,3 @@
-import { json } from "@remix-run/node";
 import getEmojiRegex from "emoji-regex";
 import satori from "satori";
 import interRegular from "./inter-regular-basic-latin.woff?arraybuffer";
@@ -144,13 +143,13 @@ function getDataFromParams(siteUrl: string, searchParams: URLSearchParams) {
     authorNames.length === 0 ||
     authorTitles.length === 0
   ) {
-    throw json({ error: "Missing required params" }, 400);
+    throw Response.json({ error: "Missing required params" }, { status: 400 });
   }
 
   if (authorNames.length !== authorTitles.length) {
-    throw json(
+    throw Response.json(
       { error: "Number of authorNames must match number of authorTitles" },
-      400,
+      { status: 400 },
     );
   }
 

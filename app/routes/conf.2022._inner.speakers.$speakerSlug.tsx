@@ -7,7 +7,7 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { unstable_data as data } from "@remix-run/node";
 import { getSpeakers, getTalks } from "~/lib/conf2022.server";
 import "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";
@@ -45,7 +45,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     .filter((t) => t.speakers.includes(speaker.name))
     // get rid of the description, we only use the HTML
     .map(({ description, ...rest }) => rest);
-  return json(
+  return data(
     { speaker, talks },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
