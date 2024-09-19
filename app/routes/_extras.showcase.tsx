@@ -1,21 +1,16 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { unstable_data as data } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Fragment, forwardRef, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";
 import { clsx } from "clsx";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { useHydrated } from "~/ui/primitives/utils";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return data(
-    { siteUrl, showcaseExamples },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
+  return { siteUrl, showcaseExamples };
 };
 
 // Stolen from _marketing._index.tsx. eventually would like to replace

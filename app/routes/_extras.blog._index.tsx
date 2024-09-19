@@ -2,16 +2,11 @@ import * as React from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import { unstable_data as data } from "@remix-run/node";
 import { Subscribe } from "~/ui/subscribe";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { getBlogPostListings } from "~/lib/blog.server";
 
 export const loader = async (_: LoaderFunctionArgs) => {
-  return data(
-    { posts: await getBlogPostListings() },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
+  return { posts: await getBlogPostListings() };
 };
 
 export const meta: MetaFunction = () => {

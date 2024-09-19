@@ -1,10 +1,5 @@
 // Pull full readme for this page from GitHub
-import {
-  unstable_data as data,
-  type LoaderFunctionArgs,
-  type HeadersFunction,
-  type MetaFunction,
-} from "@remix-run/node";
+import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getResource } from "~/lib/resources.server";
@@ -12,7 +7,6 @@ import { InitCodeblock, ResourceTag } from "~/ui/resources";
 import { octokit } from "~/lib/github.server";
 import "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import { getMeta } from "~/lib/meta";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -28,18 +22,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   let requestUrl = new URL(request.url);
   let siteUrl = `${requestUrl.protocol}//${requestUrl.host}/resources/${resourceSlug}`;
 
-  return data(
-    {
-      siteUrl,
-      resource,
-    },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
+  return { siteUrl, resource };
 }
-
-export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  return loaderHeaders;
-};
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   let { siteUrl, resource } = data || {};

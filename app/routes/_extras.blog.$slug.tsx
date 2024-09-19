@@ -1,18 +1,13 @@
-import type {
-  HeadersFunction,
-  LinksFunction,
-  LoaderFunctionArgs,
-} from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import { unstable_data as data } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/lib/blog.server";
 import mdStyles from "~/styles/md.css?url";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
-import { CACHE_CONTROL } from "~/lib/http.server";
+
 import { Subscribe } from "~/ui/subscribe";
 import cx from "clsx";
 
@@ -24,15 +19,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   let post = await getBlogPost(slug);
 
-  return data(
-    { siteUrl, post },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
-};
-
-export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  // Inherit the caching headers from the loader so we don't cache 404s
-  return loaderHeaders;
+  return { siteUrl, post };
 };
 
 export const links: LinksFunction = () => [

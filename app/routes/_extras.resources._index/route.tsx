@@ -1,13 +1,7 @@
-import {
-  unstable_data as data,
-  type LoaderFunctionArgs,
-  type HeadersFunction,
-  type MetaFunction,
-} from "@remix-run/node";
+import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { ResourceTag } from "~/ui/resources";
 import { getResourcesForRequest } from "./data.server";
-import { CACHE_CONTROL } from "~/lib/http.server";
 import {
   FeaturedResourcePoster,
   ResourceCards,
@@ -19,14 +13,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
   let resource = await getResourcesForRequest(request);
 
-  return data(
-    { ...resource, siteUrl },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
-};
-
-export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  return loaderHeaders;
+  return { ...resource, siteUrl };
 };
 
 export const meta: MetaFunction<typeof loader> = (args) => {
