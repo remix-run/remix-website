@@ -1,6 +1,6 @@
 import { handleRedirects } from "~/lib/http.server";
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import { unstable_data as data, redirect } from "@remix-run/node";
 import { getRepoDoc } from "~/lib/gh-docs";
 
 // We use the catch-all route to attempt to find a doc for the given path. If a
@@ -44,11 +44,12 @@ function handleStaticFileRequests(param: string | undefined) {
   if (
     SAFE_STATIC_FILE_EXTENSIONS.some((ext) => !!(param && param.endsWith(ext)))
   ) {
-    throw new Response(null, { status: 404 });
+    throw data({}, { status: 404 });
   }
 }
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+  // throw data({ butts: true }, { status: 401 });
   handleRedirects(new URL(request.url).pathname);
   handleStaticFileRequests(params["*"]);
 
@@ -62,7 +63,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     // cache but we should probably fix it anyway.
     return redirect(`/docs/${lang}/${ref}/${params["*"]}`);
   } catch (_) {}
-  throw new Response(null, { status: 404 });
+  throw data({}, { status: 404 });
 };
 
 export default function () {
