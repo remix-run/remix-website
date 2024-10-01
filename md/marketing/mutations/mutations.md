@@ -53,9 +53,10 @@ export default function NewInvoice() {
 
 ---
 
-```tsx [3-9]
+```tsx [3-8]
 export default function NewInvoice() {
-  const { formData } = useNavigation();
+  const { formData, state } = useNavigation();
+  const submission = state !== "idle";
   return submission ? (
     <Invoice
       invoice={Object.fromEntries(formData)}
