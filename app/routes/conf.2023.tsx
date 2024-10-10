@@ -5,7 +5,7 @@ import {
   useLoaderData,
   useMatches,
 } from "@remix-run/react";
-import { unstable_data as data } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";

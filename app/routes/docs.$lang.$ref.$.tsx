@@ -7,7 +7,7 @@ import {
   useParams,
   useRouteError,
 } from "@remix-run/react";
-import { unstable_data as data } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";

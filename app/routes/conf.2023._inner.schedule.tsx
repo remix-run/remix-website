@@ -8,7 +8,7 @@ import {
 import type { MetaFunction } from "@remix-run/react";
 import cx from "clsx";
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { unstable_data as data } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import { formatDate, getSchedules } from "~/lib/conf2023.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { slugify } from "~/ui/primitives/utils";

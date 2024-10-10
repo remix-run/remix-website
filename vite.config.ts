@@ -5,7 +5,7 @@ import arraybuffer from "vite-plugin-arraybuffer";
 
 declare module "@remix-run/server-runtime" {
   interface Future {
-    unstable_singleFetch: true;
+    v3_singleFetch: true;
   }
 }
 
@@ -26,8 +26,8 @@ export default defineConfig({
         v3_fetcherPersist: true,
         v3_relativeSplatPath: true,
         v3_throwAbortReason: true,
-        unstable_singleFetch: true,
-        unstable_lazyRouteDiscovery: true,
+        v3_singleFetch: true,
+        v3_lazyRouteDiscovery: true,
         unstable_optimizeDeps: true,
       },
     }),
