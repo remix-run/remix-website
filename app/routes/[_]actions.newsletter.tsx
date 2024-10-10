@@ -1,4 +1,4 @@
-import { unstable_data as data } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { subscribeToNewsletter } from "~/lib/convertkit";
 import { requirePost } from "~/lib/http.server";

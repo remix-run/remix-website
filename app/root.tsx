@@ -10,7 +10,7 @@ import {
   useMatches,
   useRouteError,
 } from "@remix-run/react";
-import { unstable_data as data } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import {
   load as loadFathom,
