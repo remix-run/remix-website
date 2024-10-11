@@ -22,9 +22,9 @@
   "dependencies": {
     "@docsearch/css": "^3.5.2",
     "@docsearch/react": "^3.5.2",
-    "@remix-run/express": "2.12.1",
-    "@remix-run/node": "2.12.1",
-    "@remix-run/react": "2.12.1",
+    "@remix-run/express": "2.13.0",
+    "@remix-run/node": "2.13.0",
+    "@remix-run/react": "2.13.0",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.1.0",
     "compression": "^1.7.4",
@@ -59,7 +59,6 @@
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
-    "remix": "2.12.1",
     "satori": "^0.10.14",
     "semver": "^7.5.4",
     "shiki": "^0.14.7",
@@ -76,8 +75,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@remix-run/dev": "2.12.1",
-    "@remix-run/eslint-config": "2.12.1",
+    "@remix-run/dev": "2.13.0",
+    "@remix-run/eslint-config": "2.13.0",
     "@testing-library/jest-dom": "^6.2.0",
     "@types/follow-redirects": "^1.14.4",
     "@types/gunzip-maybe": "^1.4.2",
