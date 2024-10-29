@@ -12,9 +12,9 @@ authors:
 ---
 
 
-I graduated from college before iPhones existed. I have a degree in graphic design—steeped in ancient texts predating everything we know about the modern web—which means I was trained in the arcane arts of printed logos and typography. While it's helpful to assert my credentials, what I'm actually trying to say is that the future always benefits from a rich history of experiences and references. If you pay close attention to fashion and trends, you know this to be true. Old things frequently inspire new things, and while the Remix team has been hard at work to release React Router v7, it has been my task to update the identity of this particular new thing.
+Since I graduated from college before IPhones existed, I was steeped in ancient texts predating everything we know about the modern web. Translation: *I was trained as a print designer.* Outside of dating myself, what I'm actually trying to say is that the future always benefits from a rich history of experiences and references. If you pay close attention to fashion and trends, you know this to be true. Old things frequently inspire new things, and while the Remix team has been hard at work to release React Router v7, it has been my task to update the identity of this particular new thing.
 
-My name is Tim Quirino, and I've recently joined Remix as a Brand & Product Designer after Shopify acquired my former startup (Threads.com). In this blog post, we'll take a tour of the brand updates to React Router. I'll break it down into 3 parts; starting with the logo changes, continuing with the updates to the wordmark, and finishing with the creation of a ligature that marks this release. 
+My name is Tim Quirino, and I've recently joined Remix as a Staff Product Designer after Shopify acquired my former startup (Threads.com). In this blog post, we'll take a tour of the brand updates to React Router. I'll break it down into 3 parts; starting with the logo changes, continuing with the updates to the wordmark, and finishing with the creation of a ligature that marks this release. 
 
 <img alt="A visual summary of updates to the React Router brand identity, with visible guidelines" src="/blog-images/posts/react-router-brand-update/update-guidelines.png" class="m-auto w-4/5 border rounded-md" />
 
