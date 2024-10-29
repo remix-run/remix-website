@@ -12,7 +12,7 @@ authors:
 ---
 
 
-Since I graduated from college before IPhones existed, I was steeped in ancient texts predating everything we know about the modern web. Translation: *I was trained as a print designer.* Outside of dating myself, what I'm actually trying to say is that the future always benefits from a rich history of experiences and references. If you pay close attention to fashion and trends, you know this to be true. Old things frequently inspire new things, and while the Remix team has been hard at work to release React Router v7, it has been my task to update the identity of this particular new thing.
+My formal design training predates much of what we now know about the modern web. In school, I was steeped in ancient texts and trained as a print designer where I learned that the future always benefits from a rich history of experiences and references. If you pay close attention to fashion and trends, you know this to be true. Old things frequently inspire the new, and while the Remix team has been hard at work shipping React Router v7, we decided to take a look at the brand identity to see if we could freshen it up a bit.
 
 My name is Tim Quirino, and I've recently joined Remix as a Staff Product Designer after Shopify acquired my former startup (Threads.com). In this blog post, we'll take a tour of the brand updates to React Router. I'll break it down into 3 parts; starting with the logo changes, continuing with the updates to the wordmark, and finishing with the creation of a ligature that marks this release. 
 
