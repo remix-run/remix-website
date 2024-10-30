@@ -24,7 +24,7 @@ My name is Tim Quirino, and I've recently joined Remix as a Staff Product Design
 
 The React Router logo is already an elegant abstraction of what React Router does. For anyone that doesn't know, it's a visual representation of a route tree. The connected nodes are an actively rendered route. There is meaning in the way it flows from top-to-bottom and connects adjacent nodes to present the quickest and cleanest path. If you've read [Matt Brophy's post about Fog of War](https://remix.run/blog/fog-of-war), you can see the obvious similarities.
 
-I admire it's simplicity, but from an execution perspective, there were obvious opportunities for improvement. 
+I admire its simplicity, but from an execution perspective, there were obvious opportunities for improvement. 
 
 <img alt="The old React Router logo with guidelines showing what to fix" src="/blog-images/posts/react-router-brand-update/logo-before.png" class="my-8 border rounded-md" />
 
