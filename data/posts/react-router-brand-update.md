@@ -54,7 +54,7 @@ When the word "Router" is styled as an outline, you can more clearly see the ret
 
 ## Creating a mark for this release
 
-Initially, I didn't think we needed a unique visual identifier for "v7." After all, React Router has been around for years and previous versions never received a visual identity of their own. But a release such as this is significant to those 7+ million React Router projects (and the 5 million line Shopify App) and we take our work very seriously. 
+Initially, I didn't think we needed a unique visual identifier for "v7." After all, React Router has been around for years and previous versions never received a visual identity of their own. But a release such as this is significant to millions of React Router projects (and the 5 million line Shopify App) and we take our work very seriously. 
 
 In the world outside of tech, major releases typically get custom treatments. If you have a favorite Metallica logo, it likely has to do with the music they released in that era. The logos for "The Empire Strikes Back" and "A New Hope" were made by the same team, with the same actors, but designed to convey different parts of the story. Just as the logo and wordmark are crafted with intention, there is significance to marking this release.
 
