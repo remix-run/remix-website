@@ -70,4 +70,4 @@ When kerning them together, nesting started to emerge as an obvious direction. T
 
 I'm happy with the way this brand update turned out because the process is a reflection of the way the Remix team works. Far from being linear, this task meandered playfully without compromising detail and intentionality. Perhaps more importantly, it's a true evolution—one that allows us to be more flexible and creative about our identity—without losing sight of how we got here.
 
-<img alt="Six badges designed in the style of the old web to show how new React Router brand updates can be used" src="/blog-images/posts/badges.png" class="m-auto w-4/5 border rounded-md" />
+<img alt="Six badges designed in the style of the old web to show how new React Router brand updates can be used" src="/blog-images/posts/react-router-brand-update/badges.png" class="m-auto w-4/5 border rounded-md" />
