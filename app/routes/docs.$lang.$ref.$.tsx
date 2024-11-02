@@ -190,7 +190,6 @@ function LargeOnThisPage({
           break;
         }
       }
-      // console.log("active heading", activeHeading);
     }
 
     window.addEventListener("scroll", handleScroll);
