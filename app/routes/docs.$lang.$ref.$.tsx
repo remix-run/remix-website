@@ -19,6 +19,8 @@ import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import type { loader as docsLayoutLoader } from "~/routes/docs.$lang.$ref";
 import type { loader as rootLoader } from "~/root";
 import { getMeta } from "~/lib/meta";
+import { useEffect, useRef, useState } from "react";
+import cx from "clsx";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   let url = new URL(request.url);
@@ -135,7 +137,7 @@ export default function DocPage() {
       {isDocsIndex ? null : doc.headings.length > 3 ? (
         <>
           <SmallOnThisPage doc={doc} />
-          <LargeOnThisPage doc={doc} />
+          <LargeOnThisPage doc={doc} mdRef={ref} key={doc.slug} />
         </>
       ) : (
         <div className="hidden xl:order-1 xl:block xl:w-56 xl:flex-shrink-0" />
@@ -152,9 +154,54 @@ export default function DocPage() {
   );
 }
 
-function LargeOnThisPage({ doc }: { doc: Doc }) {
+function LargeOnThisPage({
+  doc,
+  mdRef,
+}: {
+  doc: Doc;
+  mdRef: React.RefObject<HTMLDivElement>;
+}) {
+  const navRef = useRef<HTMLDivElement>(null);
+  const [activeHeading, setActiveHeading] = useState("");
+  useEffect(() => {
+    const node = mdRef.current;
+    if (!node) return;
+
+    const h2 = Array.from(node.querySelectorAll("h2"));
+    const h3 = Array.from(node.querySelectorAll("h3"));
+
+    const combinedHeadings = [...h2, ...h3]
+      .sort((a, b) => a.offsetTop - b.offsetTop)
+      // Iterate backwards through headings to find the last one above scroll position
+      .reverse();
+
+    function handleScroll() {
+      // bail if the nav is not visible
+      const node = navRef.current;
+      if (!node) return;
+      if (window.getComputedStyle(node).display !== "block") {
+        return;
+      }
+
+      for (const heading of combinedHeadings) {
+        // 100px arbitrary value to to offset the height of the header (h-16)
+        if (window.scrollY + 100 > heading.offsetTop) {
+          setActiveHeading(heading.id);
+          break;
+        }
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [mdRef]);
   return (
-    <div className="sticky top-36 order-1 mt-20 hidden max-h-[calc(100vh-9rem)] w-56 flex-shrink-0 self-start overflow-y-auto pb-10 xl:block">
+    <div
+      ref={navRef}
+      className="sticky top-36 order-1 mt-20 hidden max-h-[calc(100vh-9rem)] w-56 flex-shrink-0 self-start overflow-y-auto pb-10 xl:block"
+    >
       <nav className="mb-3 flex items-center font-semibold">On this page</nav>
       <ul className="md-toc flex flex-col flex-wrap gap-3 leading-[1.125]">
         {doc.headings.map((heading, i) => {
@@ -166,9 +213,12 @@ function LargeOnThisPage({ doc }: { doc: Doc }) {
               <Link
                 to={`#${heading.slug}`}
                 dangerouslySetInnerHTML={{ __html: heading.html || "" }}
-                className={
-                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-300 dark:decoration-gray-500"
-                }
+                className={cx(
+                  "group relative py-1 text-sm text-gray-500 decoration-gray-200 underline-offset-4 hover:underline dark:text-gray-300 dark:decoration-gray-500",
+                  {
+                    underline: activeHeading == heading.slug,
+                  },
+                )}
               />
             </li>
           );
