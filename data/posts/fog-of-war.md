@@ -196,7 +196,7 @@ This ability to implement async logic also lends itself very well to Micro Front
 We'd also like to give a huge shout-out to [Shane Walker][twitter-swalker326] for working with us during the initial release to put together a [great example][rr-mf-example] of using this new API in a federated `rsbuild` React Router application. Make sure to give it a look if you're interested in using Module Federation in your React Router app!
 
 [rr-patch-routes-on-miss]: https://reactrouter.com/en/main/routers/create-browser-router#optsunstable_patchroutesonmiss
-[remix-fog-of-war]: https://remix.run/docs/en/main/guides/fog-of-war
+[remix-fog-of-war]: https://remix.run/docs/en/main/guides/lazy-route-discovery
 [when-to-fetch]: https://www.youtube.com/watch?v=95B8mnhzoCM
 [remixing-rr]: https://remix.run/blog/remixing-react-router
 [streaming]: https://remix.run/docs/en/main/guides/streaming
