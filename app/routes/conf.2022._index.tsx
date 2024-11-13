@@ -1,5 +1,5 @@
-import { data , useLoaderData } from "react-router";
-import type { LoaderFunctionArgs , MetaFunction } from "react-router";
+import { data, useLoaderData } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { OutlineButtonLink, primaryButtonLinkClass } from "~/ui/buttons";
 import "~/styles/index.css";
 import { Fragment } from "react";
@@ -59,11 +59,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function ConfIndex() {
   return (
     // eslint-disable-next-line react/no-unknown-property
-    (<div x-comp="Index">
+    <div x-comp="Index">
       <Hero />
       <Speakers />
       <Sponsors />
-    </div>)
+    </div>
   );
 }
 

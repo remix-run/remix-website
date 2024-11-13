@@ -1,4 +1,8 @@
-import type { LinksFunction, LoaderFunctionArgs , MetaFunction } from "react-router";
+import type {
+  LinksFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "react-router";
 import { useLoaderData } from "react-router";
 import invariant from "tiny-invariant";
 

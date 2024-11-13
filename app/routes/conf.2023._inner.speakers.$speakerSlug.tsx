@@ -1,6 +1,6 @@
 import * as React from "react";
-import type { LoaderFunctionArgs , MetaFunction } from "react-router";
-import { data , useLoaderData } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { data, useLoaderData } from "react-router";
 import "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { getSpeakerBySlug, getConfSessions } from "~/lib/conf2023.server";

@@ -1,5 +1,9 @@
-import { useLoaderData , data } from "react-router";
-import type { MetaFunction , HeadersFunction, LoaderFunctionArgs } from "react-router";
+import { useLoaderData, data } from "react-router";
+import type {
+  MetaFunction,
+  HeadersFunction,
+  LoaderFunctionArgs,
+} from "react-router";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
 import "~/styles/index.css";

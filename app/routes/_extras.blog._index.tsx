@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { LoaderFunctionArgs , MetaFunction } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { useLoaderData, Link } from "react-router";
 import { Subscribe } from "~/ui/subscribe";
 import { getBlogPostListings } from "~/lib/blog.server";

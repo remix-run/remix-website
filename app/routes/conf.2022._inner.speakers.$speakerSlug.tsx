@@ -1,5 +1,12 @@
-import type { LoaderFunctionArgs , MetaFunction } from "react-router";
-import { Link, useParams, useLoaderData, isRouteErrorResponse, useRouteError , data } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import {
+  Link,
+  useParams,
+  useLoaderData,
+  isRouteErrorResponse,
+  useRouteError,
+  data,
+} from "react-router";
 import { getSpeakers, getTalks } from "~/lib/conf2022.server";
 import "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";

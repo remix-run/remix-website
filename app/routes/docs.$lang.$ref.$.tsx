@@ -6,8 +6,13 @@ import {
   useMatches,
   useParams,
   useRouteError,
- data } from "react-router";
-import type { HeadersFunction, LoaderFunctionArgs , MetaFunction } from "react-router";
+  data,
+} from "react-router";
+import type {
+  HeadersFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "react-router";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
 import invariant from "tiny-invariant";
 import type { Doc } from "~/lib/gh-docs";

@@ -10,7 +10,9 @@ import {
   useParams,
   useResolvedPath,
   matchPath,
- redirect , useNavigate } from "react-router";
+  redirect,
+  useNavigate,
+} from "react-router";
 import type { LoaderFunctionArgs, HeadersFunction } from "react-router";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
@@ -334,9 +336,9 @@ function VersionLink({
   return to ? (
     // No need to discover these versioned links since they all match the
     // current route we're on but with different params
-    (<Link to={to} className={className} discover="none">
+    <Link to={to} className={className} discover="none">
       {children}
-    </Link>)
+    </Link>
   ) : (
     <span className={className}>{children}</span>
   );
