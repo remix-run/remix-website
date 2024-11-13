@@ -48,11 +48,12 @@ function ColorSchemeScriptImpl() {
       case "dark":
         document.documentElement.classList.add("dark");
         break;
-      case "system":
+      case "system": {
         let media = window.matchMedia("(prefers-color-scheme: dark)");
         syncColorScheme(media);
         media.addEventListener("change", syncColorScheme);
         return () => media.removeEventListener("change", syncColorScheme);
+      }
       default:
         console.error("Impossible color scheme state:", colorScheme);
     }

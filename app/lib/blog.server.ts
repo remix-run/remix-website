@@ -81,14 +81,14 @@ export async function getBlogPostListings(): Promise<
   let slugs = Object.keys(postContentsBySlug);
   let listings: Array<MarkdownPostListing & { date: Date }> = [];
   for (let slug of slugs) {
-    let { html, authors, ...listing } = await getBlogPost(slug);
+    let { ...listing } = await getBlogPost(slug);
     if (!listing.draft) {
       listings.push({ slug, ...listing });
     }
   }
   return listings
     .sort((a, b) => b.date.getTime() - a.date.getTime())
-    .map(({ date, ...listing }) => listing);
+    .map(({ ...listing }) => listing);
 }
 
 function getAuthor(name: string): BlogAuthor | undefined {

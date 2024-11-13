@@ -94,7 +94,6 @@ const SubscribeInput = React.forwardRef<
 >(
   (
     {
-      children,
       className = "w-full sm:w-auto sm:flex-1 dark:placeholder-gray-500",
       ...props
     },
@@ -196,6 +195,7 @@ function useComposedRefs<T>(...refs: React.Ref<T>[]) {
         } else if (ref) {
           try {
             (ref as React.MutableRefObject<T | null>).current = node;
+            // eslint-disable-next-line no-empty -- this is fine, right?
           } catch (_) {}
         }
       });

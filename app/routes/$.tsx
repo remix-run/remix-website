@@ -62,10 +62,11 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     // repeat the request cycle. This isn't a problem if the doc is in the LRU
     // cache but we should probably fix it anyway.
     return redirect(`/docs/${lang}/${ref}/${params["*"]}`);
+    // eslint-disable-next-line no-empty -- should probably do something here
   } catch (_) {}
   throw data({}, { status: 404 });
 };
 
-export default function () {
+export default function Page() {
   return null;
 }

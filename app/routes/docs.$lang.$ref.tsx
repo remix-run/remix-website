@@ -446,6 +446,8 @@ let ColorSchemeButton = React.forwardRef<
   );
 });
 
+ColorSchemeButton.displayName = "ColorSchemeButton";
+
 function VersionWarningMobile() {
   let { isLatest, branches, currentGitHubRef } = useLoaderData<typeof loader>();
   if (isLatest) return null;

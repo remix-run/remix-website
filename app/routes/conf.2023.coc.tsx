@@ -119,7 +119,7 @@ export default function CoC() {
   );
 }
 
-function InnerLayout({ children }: React.PropsWithChildren<{}>) {
+function InnerLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="my-8 md:my-12 xl:my-14">
       <div className="container">{children}</div>

@@ -28,7 +28,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     // save a bit of data by not sending along the bio to the home page
     .map(
       ({
-        // @ts-ignore
+        // @ts-expect-error -- type is typed wrong
         bio,
         ...s
       }) => s,
@@ -60,6 +60,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function ConfIndex() {
   return (
+    // eslint-disable-next-line react/no-unknown-property
     <div x-comp="Index">
       <Hero />
       <Speakers />
@@ -72,6 +73,7 @@ function Hero() {
   return (
     <Fragment>
       <section
+        // eslint-disable-next-line react/no-unknown-property
         x-comp="Hero"
         className="__hero pb-10 pt-40 sm:pb-16 sm:pt-48 md:pb-24 md:pt-52 lg:pb-32 lg:pt-64"
       >

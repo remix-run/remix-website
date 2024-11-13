@@ -43,7 +43,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!speaker) throw new Response("Speaker not found", { status: 404 });
   const talks = allTalks
     .filter((t) => t.speakers.includes(speaker.name))
-    // get rid of the description, we only use the HTML
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- get rid of the description, we only use the HTML
     .map(({ description, ...rest }) => rest);
   return data(
     { speaker, talks },

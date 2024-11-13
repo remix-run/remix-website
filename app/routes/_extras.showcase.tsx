@@ -190,6 +190,8 @@ let ShowcaseVideo = forwardRef<
   );
 });
 
+ShowcaseVideo.displayName = "ShowcaseVideo";
+
 function ShowcaseDescription({
   description,
   link,

@@ -236,6 +236,8 @@ const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
   },
 );
 
+HeaderLink.displayName = "HeaderLink";
+
 function MobileNavButton() {
   return (
     <MenuButton
