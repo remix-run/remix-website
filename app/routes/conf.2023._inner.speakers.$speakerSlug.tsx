@@ -1,8 +1,6 @@
 import * as React from "react";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { data } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { data, useLoaderData } from "react-router";
 import "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { getSpeakerBySlug, getConfSessions } from "~/lib/conf2023.server";

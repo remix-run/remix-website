@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useEffect } from "react";
-import { useLocation, useNavigation } from "@remix-run/react";
+import { useLocation, useNavigation } from "react-router";
 
 /**
  * An enhanced `<details>` component that's intended to be used as a menu (a bit

@@ -1,6 +1,6 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "~/ui/primitives/tabs";
-import { Link, Outlet, useMatches, useNavigate } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
+import { Link, Outlet, useMatches, useNavigate } from "react-router";
+import type { MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => {
   return [

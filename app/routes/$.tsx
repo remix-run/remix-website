@@ -1,6 +1,6 @@
 import { handleRedirects } from "~/lib/http.server";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { data, redirect } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "react-router";
+import { data, redirect } from "react-router";
 import { getRepoDoc } from "~/lib/gh-docs";
 
 // We use the catch-all route to attempt to find a doc for the given path. If a

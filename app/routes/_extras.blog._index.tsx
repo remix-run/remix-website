@@ -1,7 +1,6 @@
 import * as React from "react";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, Link } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { useLoaderData, Link } from "react-router";
 import { Subscribe } from "~/ui/subscribe";
 import { getBlogPostListings } from "~/lib/blog.server";
 

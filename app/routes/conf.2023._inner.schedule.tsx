@@ -4,11 +4,10 @@ import {
   useLocation,
   useNavigate,
   useNavigation,
-} from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
+  data,
+} from "react-router";
+import type { MetaFunction, LoaderFunctionArgs } from "react-router";
 import cx from "clsx";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { data } from "@remix-run/node";
 import { formatDate, getSchedules } from "~/lib/conf2023.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { slugify } from "~/ui/primitives/utils";

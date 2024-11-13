@@ -1,5 +1,5 @@
-import { Link, useLoaderData } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
+import type { MetaFunction } from "react-router";
 import { Discord } from "~/ui/icons";
 
 export const meta: MetaFunction = () => {

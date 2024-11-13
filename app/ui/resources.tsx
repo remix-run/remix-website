@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { type Resource } from "~/lib/resources.server";
-import { Form, useSearchParams } from "@remix-run/react";
+import { Form, useSearchParams } from "react-router";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
 

@@ -3,7 +3,7 @@ import { Wordmark } from "~/ui/logo";
 import { DetailsMenu, DetailsPopup } from "~/ui/details-menu";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export function Header({
   forceDark,

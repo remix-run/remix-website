@@ -1,6 +1,9 @@
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
+import type {
+  LinksFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "react-router";
+import { useLoaderData } from "react-router";
 import invariant from "tiny-invariant";
 
 import { getBlogPost } from "~/lib/blog.server";

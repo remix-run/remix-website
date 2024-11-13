@@ -1,13 +1,12 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import {
   Link,
   useParams,
   useLoaderData,
   isRouteErrorResponse,
   useRouteError,
-} from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
-import { data } from "@remix-run/node";
+  data,
+} from "react-router";
 import { getSpeakers, getTalks } from "~/lib/conf2022.server";
 import "~/styles/conf-speaker.css";
 import { CACHE_CONTROL } from "~/lib/http.server";

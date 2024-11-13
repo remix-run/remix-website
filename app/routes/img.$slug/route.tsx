@@ -1,4 +1,4 @@
-import { type LoaderFunctionArgs } from "@remix-run/node";
+import { type LoaderFunctionArgs } from "react-router";
 import svg2img from "svg2img";
 import { createOgImageSVG } from "./utils.server";
 

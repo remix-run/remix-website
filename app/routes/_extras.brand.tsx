@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "react-router";
 import type { FC } from "react";
 import cx from "clsx";
 import { getMeta } from "~/lib/meta";

@@ -1,7 +1,5 @@
-import { data } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import type { MetaFunction } from "@remix-run/react";
+import { data, useLoaderData } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { OutlineButtonLink, primaryButtonLinkClass } from "~/ui/buttons";
 import "~/styles/index.css";
 import { Fragment } from "react";

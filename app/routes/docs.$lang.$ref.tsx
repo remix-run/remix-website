@@ -10,12 +10,12 @@ import {
   useParams,
   useResolvedPath,
   matchPath,
-} from "@remix-run/react";
-import { redirect } from "@remix-run/node";
-import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
+  redirect,
+  useNavigate,
+} from "react-router";
+import type { LoaderFunctionArgs, HeadersFunction } from "react-router";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
-import { useNavigate } from "react-router-dom";
 
 import "~/styles/docs.css";
 import { Wordmark } from "~/ui/logo";
