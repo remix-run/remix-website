@@ -1,5 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import { getSchedule } from "~/lib/conf2022.server";
@@ -16,18 +15,16 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-type LoaderData = { scheduleItems: Awaited<ReturnType<typeof getSchedule>> };
-
-export const loader: LoaderFunction = async () => {
+export async function loader() {
   const scheduleItems = await getSchedule();
-  return json<LoaderData>(
+  return data(
     { scheduleItems },
     { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
   );
-};
+}
 
 export default function May25Schedule() {
-  const data = useLoaderData<LoaderData>();
+  const data = useLoaderData<typeof loader>();
   return (
     <div>
       <div>

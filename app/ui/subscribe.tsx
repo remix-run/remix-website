@@ -3,8 +3,7 @@ import { useFetcher } from "@remix-run/react";
 import type { FormProps, FetcherWithComponents } from "@remix-run/react";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
-import type { action } from "~/routes/[_]actions.newsletter";
-import type { SerializeFrom } from "@remix-run/node";
+import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
 
 // TODO: look into if v3_fetcherPersist simplifies this component
 
@@ -32,7 +31,7 @@ function Subscribe({
 }
 
 function SubscribeProvider({ children }: { children: React.ReactNode }) {
-  let subscribe = useFetcher<typeof action>();
+  let subscribe = useFetcher<NewsletterActionData>();
   let inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -49,7 +48,7 @@ function SubscribeProvider({ children }: { children: React.ReactNode }) {
 }
 
 const SubscribeContext = React.createContext<null | {
-  fetcher: FetcherWithComponents<SerializeFrom<typeof action>>;
+  fetcher: FetcherWithComponents<NewsletterActionData>;
   inputRef: React.RefObject<HTMLInputElement>;
 }>(null);
 
