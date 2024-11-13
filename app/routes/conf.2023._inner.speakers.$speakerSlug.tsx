@@ -248,8 +248,7 @@ export default function SpeakerRoute() {
   );
 }
 
-function getLinkIcon({ url, linkType }: { url: string; linkType?: string }) {
-  url = removeTrailingSlash(url);
+function getLinkIcon({ linkType }: { linkType?: string }) {
   if (linkType === "Twitter") {
     return <TwitterIcon />;
   }

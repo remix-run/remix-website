@@ -73,5 +73,6 @@ export { getRect, observeRect, rectChanged };
 export interface RectProps {
   rect: DOMRect | undefined;
   hasRectChanged: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   callbacks: Function[];
 }

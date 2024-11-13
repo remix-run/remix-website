@@ -15,7 +15,6 @@ import { slugify } from "~/ui/primitives/utils";
 
 export async function loader(_: LoaderFunctionArgs) {
   let schedules = await getSchedules();
-  // @ts-ignore
   let formatter = new Intl.ListFormat("en", {
     style: "long",
     type: "conjunction",
