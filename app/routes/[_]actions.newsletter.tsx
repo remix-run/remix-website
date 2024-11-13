@@ -20,14 +20,3 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   return { error: null, ok: true };
 };
-
-// This is less than ideal, but adding so we can remove SerializeFrom
-export type NewsletterActionData =
-  | {
-      error: string;
-      ok: boolean;
-    }
-  | {
-      error: any;
-      ok: boolean;
-    };
