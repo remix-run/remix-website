@@ -3,7 +3,7 @@ import { useFetcher } from "react-router";
 import type { FormProps, FetcherWithComponents } from "react-router";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
-import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
+import type { action } from "~/routes/[_]actions.newsletter";
 
 // TODO: look into if v3_fetcherPersist simplifies this component
 
@@ -31,7 +31,7 @@ function Subscribe({
 }
 
 function SubscribeProvider({ children }: { children: React.ReactNode }) {
-  let subscribe = useFetcher<NewsletterActionData>();
+  let subscribe = useFetcher<typeof action>();
   let inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -48,7 +48,7 @@ function SubscribeProvider({ children }: { children: React.ReactNode }) {
 }
 
 const SubscribeContext = React.createContext<null | {
-  fetcher: FetcherWithComponents<NewsletterActionData>;
+  fetcher: ReturnType<typeof useFetcher<typeof action>>;
   inputRef: React.RefObject<HTMLInputElement>;
 }>(null);
 
