@@ -4,7 +4,7 @@ import {
   type Resource,
 } from "~/lib/resources.server";
 import { categories } from "./ui";
-import { redirect } from "@remix-run/node";
+import { redirect } from "react-router";
 import { octokit } from "~/lib/github.server";
 
 export async function getResourcesForRequest(request: Request) {

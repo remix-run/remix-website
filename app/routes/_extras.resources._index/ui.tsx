@@ -1,6 +1,6 @@
 import type { Category, Resource } from "~/lib/resources.server";
 import { InitCodeblock, ResourceTag } from "~/ui/resources";
-import { Link, useSearchParams } from "@remix-run/react";
+import { Link, useSearchParams } from "react-router";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
 import { slugify } from "~/ui/primitives/utils";

@@ -1,7 +1,5 @@
-import { useLoaderData } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
-import { data } from "@remix-run/node";
-import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData , data } from "react-router";
+import type { MetaFunction , HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage } from "~/lib/mdtut.server";
 import "~/styles/index.css";

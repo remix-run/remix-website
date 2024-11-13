@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useNavigation, useRouteLoaderData } from "@remix-run/react";
+import { useNavigation, useRouteLoaderData } from "react-router";
 import type { loader as rootLoader } from "~/root";
 import { useLayoutEffect } from "~/ui/primitives/utils";
 

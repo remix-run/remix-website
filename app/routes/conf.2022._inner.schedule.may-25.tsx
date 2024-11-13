@@ -1,6 +1,5 @@
-import { data } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
+import { data , Link, useLoaderData } from "react-router";
+import type { MetaFunction } from "react-router";
 import { getSchedule } from "~/lib/conf2022.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { slugify } from "~/ui/primitives/utils";

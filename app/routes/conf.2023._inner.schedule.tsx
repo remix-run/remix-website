@@ -1,14 +1,7 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "~/ui/primitives/tabs";
-import {
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useNavigation,
-} from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
+import { useLoaderData, useLocation, useNavigate, useNavigation , data } from "react-router";
+import type { MetaFunction , LoaderFunctionArgs } from "react-router";
 import cx from "clsx";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { data } from "@remix-run/node";
 import { formatDate, getSchedules } from "~/lib/conf2023.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { slugify } from "~/ui/primitives/utils";
@@ -97,7 +90,7 @@ export default function Safety() {
   );
 
   return (
-    <div className="text-white">
+    (<div className="text-white">
       <h1 className="font-display mb-16 text-3xl font-extrabold sm:text-5xl xl:text-7xl">
         Remix Conf Schedule
       </h1>
@@ -145,7 +138,7 @@ export default function Safety() {
                     <tbody className="flex flex-col gap-6 md:gap-10">
                       {sessions.map((session) => {
                         return (
-                          <tr
+                          (<tr
                             key={session.id}
                             className="schedule-row grid flex-none items-start gap-x-3 gap-y-2 md:gap-x-5"
                           >
@@ -221,7 +214,7 @@ export default function Safety() {
                                   .map((line, i) => <p key={i}>{line}</p>)}
                               </div>
                             </td>
-                          </tr>
+                          </tr>)
                         );
                       })}
                     </tbody>
@@ -236,6 +229,6 @@ export default function Safety() {
           change. All changes will be published here ahead of the conference.
         </p>
       </div>
-    </div>
+    </div>)
   );
 }

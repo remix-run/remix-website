@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Outlet, useLocation } from "@remix-run/react";
+import { Outlet, useLocation } from "react-router";
 import { Link, NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";

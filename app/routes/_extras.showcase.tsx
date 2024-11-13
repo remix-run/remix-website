@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { useLoaderData } from "react-router";
 import { Fragment, forwardRef, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";

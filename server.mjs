@@ -2,7 +2,7 @@ import express from "express";
 import compression from "compression";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-import { createRequestHandler } from "@remix-run/express";
+import { createRequestHandler } from "@react-router/express";
 import sourceMapSupport from "source-map-support";
 
 sourceMapSupport.install();
@@ -57,7 +57,7 @@ app.all(
   "*",
   createRequestHandler({
     build: viteDevServer
-      ? () => viteDevServer.ssrLoadModule("virtual:remix/server-build")
+      ? () => viteDevServer.ssrLoadModule("virtual:react-router/server-build")
       : await import("./build/server/index.js"),
     mode: process.env.NODE_ENV,
   }),

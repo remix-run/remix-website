@@ -6,10 +6,8 @@ import {
   useMatches,
   useParams,
   useRouteError,
-} from "@remix-run/react";
-import { data } from "@remix-run/node";
-import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
-import type { MetaFunction } from "@remix-run/react";
+ data } from "react-router";
+import type { HeadersFunction, LoaderFunctionArgs , MetaFunction } from "react-router";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
 import invariant from "tiny-invariant";
 import type { Doc } from "~/lib/gh-docs";

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Link as RemixLink, NavLink as RemixNavLink } from "@remix-run/react";
-import type { LinkProps, NavLinkProps } from "@remix-run/react";
+import { Link as RemixLink, NavLink as RemixNavLink } from "react-router";
+import type { LinkProps, NavLinkProps } from "react-router";
 
 const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
   (

@@ -9,9 +9,9 @@ import {
   useLoaderData,
   useMatches,
   useRouteError,
-} from "@remix-run/react";
-import { data } from "@remix-run/node";
-import type { LoaderFunctionArgs } from "@remix-run/node";
+  data,
+} from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import {
   load as loadFathom,
   type LoadOptions as FathomLoadOptions,
@@ -171,6 +171,7 @@ export default function App() {
         // this img tag simply forces the icons to be loaded at a higher
         // priority than the scripts (chrome only for now)
         // @ts-expect-error -- silly React pretending this attribute doesn't exist
+        // eslint-disable-next-line react/no-unknown-property
         fetchpriority="high"
       />
     </Document>

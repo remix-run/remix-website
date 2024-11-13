@@ -1,5 +1,5 @@
-import { Link } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
+import { Link } from "react-router";
+import type { MetaFunction } from "react-router";
 import { primaryButtonLinkClass } from "~/ui/buttons";
 import { Discord } from "~/ui/icons";
 

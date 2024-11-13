@@ -1,6 +1,6 @@
 // Pull full readme for this page from GitHub
-import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { type LoaderFunctionArgs, type MetaFunction } from "react-router";
+import { useLoaderData } from "react-router";
 import invariant from "tiny-invariant";
 import { getResource } from "~/lib/resources.server";
 import { InitCodeblock, ResourceTag } from "~/ui/resources";

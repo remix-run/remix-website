@@ -1,5 +1,5 @@
-import { data } from "@remix-run/node";
-import type { ActionFunctionArgs } from "@remix-run/node";
+import { data } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import { subscribeToNewsletter } from "~/lib/convertkit";
 import { requirePost } from "~/lib/http.server";
 

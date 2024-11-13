@@ -4,7 +4,7 @@
  * use any `dark:` variants, just style the pages with the colors in the
  * designs.
  */
-import { Outlet } from "@remix-run/react";
+import { Outlet } from "react-router";
 
 import { Header } from "~/ui/header";
 import { Footer } from "~/ui/footer";

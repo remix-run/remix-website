@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction } from "react-router";
 import { getBlogPostListings } from "~/lib/blog.server";
 import { Feed } from "feed";
 import { CACHE_CONTROL } from "~/lib/http.server";

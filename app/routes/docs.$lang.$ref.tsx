@@ -10,12 +10,10 @@ import {
   useParams,
   useResolvedPath,
   matchPath,
-} from "@remix-run/react";
-import { redirect } from "@remix-run/node";
-import type { LoaderFunctionArgs, HeadersFunction } from "@remix-run/node";
+ redirect , useNavigate } from "react-router";
+import type { LoaderFunctionArgs, HeadersFunction } from "react-router";
 import cx from "clsx";
 import { DocSearch } from "~/ui/docsearch";
-import { useNavigate } from "react-router-dom";
 
 import "~/styles/docs.css";
 import { Wordmark } from "~/ui/logo";
@@ -336,9 +334,9 @@ function VersionLink({
   return to ? (
     // No need to discover these versioned links since they all match the
     // current route we're on but with different params
-    <Link to={to} className={className} discover="none">
+    (<Link to={to} className={className} discover="none">
       {children}
-    </Link>
+    </Link>)
   ) : (
     <span className={className}>{children}</span>
   );

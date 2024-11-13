@@ -1,4 +1,4 @@
-import { createCookie } from "@remix-run/node";
+import { createCookie } from "react-router";
 import type { ColorScheme } from "./color-scheme";
 
 let cookie = createCookie("color-scheme", {

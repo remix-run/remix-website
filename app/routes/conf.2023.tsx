@@ -1,12 +1,6 @@
 import * as React from "react";
-import {
-  Outlet,
-  useLocation,
-  useLoaderData,
-  useMatches,
-} from "@remix-run/react";
-import { data } from "@remix-run/node";
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import { Outlet, useLocation, useLoaderData, useMatches , data } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import { Link, NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
