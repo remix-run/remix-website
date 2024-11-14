@@ -1,10 +1,10 @@
 import * as React from "react";
-import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import type { MetaFunction } from "react-router";
 import { useLoaderData, Link } from "react-router";
 import { Subscribe } from "~/ui/subscribe";
 import { getBlogPostListings } from "~/lib/blog.server";
 
-export const loader = async (_: LoaderFunctionArgs) => {
+export const loader = async () => {
   return { posts: await getBlogPostListings() };
 };
 

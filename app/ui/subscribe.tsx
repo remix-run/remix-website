@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useFetcher } from "react-router";
-import type { FormProps, FetcherWithComponents } from "react-router";
+import type { FormProps } from "react-router";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
 import type { action } from "~/routes/[_]actions.newsletter";
@@ -94,6 +94,7 @@ const SubscribeInput = React.forwardRef<
 >(
   (
     {
+      children,
       className = "w-full sm:w-auto sm:flex-1 dark:placeholder-gray-500",
       ...props
     },
@@ -196,7 +197,7 @@ function useComposedRefs<T>(...refs: React.Ref<T>[]) {
           try {
             (ref as React.MutableRefObject<T | null>).current = node;
             // eslint-disable-next-line no-empty -- this is fine, right?
-          } catch (_) {}
+          } catch {}
         }
       });
     },

@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import type { MetaFunction } from "react-router";
 import { useLoaderData, Link } from "react-router";
 import { primaryButtonLinkClass } from "~/ui/buttons";
 
@@ -25,7 +25,7 @@ const hotelImages = [
 ];
 const TOTAL_HOTEL_IMAGES = hotelImages.length;
 
-export const loader = async (_: LoaderFunctionArgs) => {
+export const loader = async () => {
   return {
     hotelImageNumber: Math.floor(Math.random() * TOTAL_HOTEL_IMAGES) + 1,
   };

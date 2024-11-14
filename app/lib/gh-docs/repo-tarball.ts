@@ -32,7 +32,7 @@ export async function getRepoTarballStream(
       return res;
     }
     throw new Error(`Could not fetch ${tarballURL}`);
-  } catch (err) {
+  } catch {
     throw new Error(`Could not fetch ${tarballURL}`);
   }
 }
