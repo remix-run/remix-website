@@ -85,7 +85,7 @@ function getValidRedirectCode(code: string | number | undefined) {
   if (typeof code === "string") {
     try {
       code = parseInt(code.trim(), 10);
-    } catch (_) {
+    } catch {
       return defaultCode;
     }
   }

@@ -41,7 +41,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       { doc, siteUrl, ogImageUrl },
       { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
     );
-  } catch (_) {
+  } catch {
     if (params.ref === "main" && params["*"]) {
       // Only perform redirects for 404's on `main` URLs which are likely being
       // redirected from the root `/docs/{slug}`.  If someone is direct linking

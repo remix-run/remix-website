@@ -6,7 +6,6 @@ import {
   useMatches,
   data,
 } from "react-router";
-import type { LoaderFunctionArgs } from "react-router";
 import { Link, NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
@@ -34,7 +33,7 @@ export const handle = { forceDark: true };
 // March 1 at 12:00am
 const EARLY_BIRD_ENDING_TIME = 1646121600000;
 
-export const loader = async (_: LoaderFunctionArgs) => {
+export const loader = async () => {
   return data(
     { earlyBird: Date.now() < EARLY_BIRD_ENDING_TIME },
     { headers: { "Cache-Control": CACHE_CONTROL.conf } },
@@ -219,7 +218,7 @@ function isExternalUrl(value: string, currentHost: string) {
   try {
     let url = new URL(value);
     return url.host !== currentHost;
-  } catch (err) {
+  } catch {
     return false;
   }
 }

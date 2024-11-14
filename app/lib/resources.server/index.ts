@@ -168,7 +168,7 @@ async function getSponsorUrl(owner: string) {
     // method: "HEAD" removes the need for garbage collection: https://github.com/nodejs/undici?tab=readme-ov-file#garbage-collection
     let response = await fetch(sponsorUrl, { method: "HEAD" });
     return !response.redirected ? sponsorUrl : undefined;
-  } catch (e) {
+  } catch {
     console.error("Failed to fetch sponsor url for", owner);
     return undefined;
   }

@@ -6,13 +6,13 @@ import {
   useNavigation,
   data,
 } from "react-router";
-import type { MetaFunction, LoaderFunctionArgs } from "react-router";
+import type { MetaFunction } from "react-router";
 import cx from "clsx";
 import { formatDate, getSchedules } from "~/lib/conf2023.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { slugify } from "~/ui/primitives/utils";
 
-export async function loader(_: LoaderFunctionArgs) {
+export async function loader() {
   let schedules = await getSchedules();
   let formatter = new Intl.ListFormat("en", {
     style: "long",

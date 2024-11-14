@@ -63,7 +63,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     // cache but we should probably fix it anyway.
     return redirect(`/docs/${lang}/${ref}/${params["*"]}`);
     // eslint-disable-next-line no-empty -- should probably do something here
-  } catch (_) {}
+  } catch {}
   throw data({}, { status: 404 });
 };
 

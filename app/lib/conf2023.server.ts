@@ -78,7 +78,7 @@ export async function getSpeakers(
     .map((speaker: unknown) => {
       try {
         validateSessionizeSpeakerData(speaker);
-      } catch (error) {
+      } catch {
         console.warn(
           `Invalid speaker object; skipping.\n\nSee API settings to ensure expected data is included: ${SESSIONIZE_API_DETAILS_URL}\n\n`,
           "Received:\n",
@@ -158,7 +158,7 @@ export async function getConfSessions(
           flatSessions.set(session.id, modelSpeakerSession(session));
         }
         return Array.from(flatSessions.values());
-      } catch (error) {
+      } catch {
         return null;
       }
     })
@@ -286,7 +286,7 @@ export async function getSchedules(
         //   flatSessions.set(session.id, modelSpeakerSession(session));
         // }
         // return Array.from(flatSessions.values());
-      } catch (error) {
+      } catch {
         return null;
       }
     })
