@@ -1,14 +1,14 @@
 import * as React from "react";
-import type { MetaFunction } from "react-router";
-import { useLoaderData, Link } from "react-router";
+import { Link } from "react-router";
 import { Subscribe } from "~/ui/subscribe";
 import { getBlogPostListings } from "~/lib/blog.server";
+import type { Route } from "./+types/_extras.blog._index";
 
 export const loader = async () => {
   return { posts: await getBlogPostListings() };
 };
 
-export const meta: MetaFunction = () => {
+export const meta: Route.MetaFunction = () => {
   return [
     { title: "Remix Blog" },
     {
@@ -18,11 +18,10 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Blog() {
-  const data = useLoaderData<typeof loader>();
-  const [latestPost, ...posts] = data.posts;
+export default function Blog({ loaderData }: Route.ComponentProps) {
+  const [latestPost, ...posts] = loaderData.posts;
 
-  let featuredPosts = data.posts.filter((post) => post.featured);
+  let featuredPosts = loaderData.posts.filter((post) => post.featured);
 
   return (
     <main

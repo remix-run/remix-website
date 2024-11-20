@@ -1,11 +1,3 @@
-import type {
-  LinksFunction,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "react-router";
-import { useLoaderData } from "react-router";
-import invariant from "tiny-invariant";
-
 import { getBlogPost } from "~/lib/blog.server";
 import mdStyles from "~/styles/md.css?url";
 import { useRef } from "react";
@@ -13,26 +5,23 @@ import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 
 import { Subscribe } from "~/ui/subscribe";
 import cx from "clsx";
+import type { Route } from "./+types/_extras.blog.$slug";
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  let { slug } = params;
-  invariant(!!slug, "Expected slug param");
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  let post = await getBlogPost(slug);
+  let post = await getBlogPost(params.slug);
 
   return { siteUrl, post };
 };
 
-export const links: LinksFunction = () => [
+export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: mdStyles },
 ];
 
-export const meta: MetaFunction<typeof loader> = (args) => {
-  let { data, params } = args;
+export function meta({ data, params }: Route.MetaArgs) {
   let { slug } = params;
-  invariant(!!slug, "Expected slug param");
 
   let { siteUrl, post } = data || {};
   if (!post) {
@@ -73,10 +62,10 @@ export const meta: MetaFunction<typeof loader> = (args) => {
       content: socialImageUrl ? post.imageAlt : undefined,
     },
   ];
-};
+}
 
-export default function BlogPost() {
-  let { post } = useLoaderData<typeof loader>();
+export default function BlogPost({ loaderData }: Route.ComponentProps) {
+  let { post } = loaderData;
   let mdRef = useRef<HTMLDivElement>(null);
   useDelegatedReactRouterLinks(mdRef);
 

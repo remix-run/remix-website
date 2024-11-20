@@ -1,11 +1,6 @@
-import { useLoaderData, data } from "react-router";
-import type {
-  MetaFunction,
-  HeadersFunction,
-  LoaderFunctionArgs,
-} from "react-router";
+import { type HeadersFunction, data } from "react-router";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
-import { getMarkdownTutPage } from "~/lib/mdtut.server";
+import { getMarkdownTutPage, type Prose } from "~/lib/mdtut.server";
 import "~/styles/index.css";
 import { Red } from "~/ui/gradients";
 import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
@@ -14,18 +9,19 @@ import invariant from "tiny-invariant";
 import { Fragment } from "react";
 import { getMeta } from "~/lib/meta";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import type { Route } from "./+types/_marketing._index";
 
-export const meta: MetaFunction<typeof loader> = (args) => {
-  let { siteUrl } = args.data || {};
+export function meta({ data }: Route.MetaArgs) {
+  let { siteUrl } = data;
   let title = "Remix - Build Better Websites";
   let image = siteUrl ? `${siteUrl}/img/og.1.jpg` : undefined;
   let description =
     "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
 
   return getMeta({ title, description, siteUrl, image });
-};
+}
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: Route.LoaderArgs) => {
   let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
     getMarkdownTutPage("marketing/sample/sample.md"),
     getMarkdownTutPage("marketing/sample-sm/sample.md"),
@@ -58,12 +54,12 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
   return loaderHeaders;
 };
 
-export default function Index() {
-  let { mutations, errors } = useLoaderData<typeof loader>();
+export default function Index({ loaderData }: Route.ComponentProps) {
+  let { mutations, errors, sample, sampleSm } = loaderData;
   return (
     <div x-comp="Index">
       <div className="h-8" />
-      <Hero />
+      <Hero sample={sample} sampleSm={sampleSm} />
       <div className="h-32" />
       <section>
         <h2 className="sr-only">Testimonials</h2>
@@ -77,8 +73,7 @@ export default function Index() {
   );
 }
 
-function Hero() {
-  let { sample, sampleSm } = useLoaderData<typeof loader>();
+function Hero({ sample, sampleSm }: { sample: Prose; sampleSm: Prose }) {
   return (
     <Fragment>
       <h1 className="sr-only">Welcome to Remix</h1>
