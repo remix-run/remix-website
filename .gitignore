@@ -8,6 +8,8 @@ node_modules
 /.yalc
 yalc.lock
 /.local.tgz
+.react-router/
 
 **/gh-docs/__fixture__/tar.tgz
 /NOTES.md
+
