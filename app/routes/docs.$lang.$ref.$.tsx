@@ -2,30 +2,25 @@ import * as React from "react";
 import {
   Link,
   isRouteErrorResponse,
-  useLoaderData,
   useMatches,
   useParams,
   useRouteError,
   data,
+  useLoaderData,
 } from "react-router";
-import type {
-  HeadersFunction,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "react-router";
+import type { HeadersFunction } from "react-router";
 import { CACHE_CONTROL, handleRedirects } from "~/lib/http.server";
 import invariant from "tiny-invariant";
 import type { Doc } from "~/lib/gh-docs";
 import { getRepoDoc } from "~/lib/gh-docs";
 import iconsHref from "~/icons.svg";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
-import type { loader as docsLayoutLoader } from "~/routes/docs.$lang.$ref";
-import type { loader as rootLoader } from "~/root";
 import { getMeta } from "~/lib/meta";
 import { useEffect, useRef, useState } from "react";
 import cx from "clsx";
+import type { Route } from "./+types/docs.$lang.$ref.$";
 
-export async function loader({ params, request }: LoaderFunctionArgs) {
+export async function loader({ params, request }: Route.LoaderArgs) {
   let url = new URL(request.url);
   let baseUrl = url.protocol + "//" + url.host;
   let siteUrl = baseUrl + url.pathname;
@@ -59,21 +54,9 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
   return headers;
 };
 
-const LAYOUT_LOADER_KEY = "routes/docs.$lang.$ref";
-
-type Loader = typeof loader;
-type MatchLoaders = {
-  [LAYOUT_LOADER_KEY]: typeof docsLayoutLoader;
-  root: typeof rootLoader;
-};
-
-export const meta: MetaFunction<Loader, MatchLoaders> = (args) => {
-  let { data } = args;
-
-  let parentData = args.matches.find(
-    (match) => match.id === LAYOUT_LOADER_KEY,
-  )?.data;
-  let rootData = args.matches.find((match) => match.id === "root")?.data;
+export function meta({ data, matches, params }: Route.MetaArgs) {
+  let rootData = matches[0].data;
+  let parentData = matches[1].data;
   invariant(
     parentData && "latestVersion" in parentData,
     "No parent data found",
@@ -118,16 +101,16 @@ export const meta: MetaFunction<Loader, MatchLoaders> = (args) => {
     additionalMeta: [
       { name: "og:type", content: "article" },
       { name: "og:site_name", content: "Remix" },
-      { name: "docsearch:language", content: args.params.lang || "en" },
-      { name: "docsearch:version", content: args.params.ref || "v1" },
+      { name: "docsearch:language", content: params.lang || "en" },
+      { name: "docsearch:version", content: params.ref || "v1" },
       { name: "robots", content: robots },
       { name: "googlebot", content: robots },
     ],
   });
-};
+}
 
 export default function DocPage() {
-  let { doc } = useLoaderData<typeof loader>();
+  const { doc } = useLoaderData<typeof loader>();
   let ref = React.useRef<HTMLDivElement>(null);
   useDelegatedReactRouterLinks(ref);
   let matches = useMatches();

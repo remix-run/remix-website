@@ -1,7 +1,7 @@
 import { handleRedirects } from "~/lib/http.server";
-import type { LoaderFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { getRepoDoc } from "~/lib/gh-docs";
+import type { Route } from "./+types/$";
 
 // We use the catch-all route to attempt to find a doc for the given path. If a
 // doc isn't found, we return a 404 as expected. However we also log those
@@ -48,7 +48,7 @@ function handleStaticFileRequests(param: string | undefined) {
   }
 }
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
   // throw data({ butts: true }, { status: 401 });
   handleRedirects(new URL(request.url).pathname);
   handleStaticFileRequests(params["*"]);

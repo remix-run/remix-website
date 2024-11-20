@@ -1,5 +1,6 @@
-import { redirect, type LoaderFunctionArgs } from "react-router";
-export async function loader({ params }: LoaderFunctionArgs) {
-  const { lang } = params;
-  return redirect(`/docs/${lang}/main`);
+import { redirect } from "react-router";
+import type { Route } from "./+types/docs.$lang._index";
+
+export async function loader({ params }: Route.LoaderArgs) {
+  return redirect(`/docs/${params.lang}/main`);
 }

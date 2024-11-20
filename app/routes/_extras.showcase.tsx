@@ -1,12 +1,11 @@
-import type { LoaderFunctionArgs, MetaFunction } from "react-router";
-import { useLoaderData } from "react-router";
 import { Fragment, forwardRef, useRef } from "react";
 import type { ShowcaseExample } from "~/lib/showcase.server";
 import { showcaseExamples } from "~/lib/showcase.server";
 import { clsx } from "clsx";
 import { useHydrated } from "~/ui/primitives/utils";
+import type { Route } from "./+types/_extras.showcase";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: Route.LoaderArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
@@ -14,8 +13,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 // Stolen from _marketing._index.tsx. eventually would like to replace
-export const meta: MetaFunction<typeof loader> = (args) => {
-  let { siteUrl } = args.data || {};
+export function meta({ data }: Route.MetaArgs) {
+  let { siteUrl } = data;
   let title = "Remix Showcase";
   let image = siteUrl ? `${siteUrl}/img/og.1.jpg` : null;
   let description = "See who is using Remix to build better websites.";
@@ -34,10 +33,9 @@ export const meta: MetaFunction<typeof loader> = (args) => {
     { name: "twitter:description", content: description },
     { name: "twitter:image", content: image },
   ];
-};
+}
 
-export default function Showcase() {
-  let { showcaseExamples } = useLoaderData<typeof loader>();
+export default function Showcase({ loaderData }: Route.ComponentProps) {
   // Might be a bit silly to declare here and then prop-drill, but was a little concerned about a needless useEffect+useState for every card
   let isHydrated = useHydrated();
 
@@ -56,7 +54,7 @@ export default function Showcase() {
         </p>
       </div>
       <ul className="mt-8 grid w-full max-w-md grid-cols-1 gap-x-6 gap-y-10 self-center md:max-w-3xl md:grid-cols-2 lg:max-w-6xl lg:grid-cols-3 lg:gap-x-8">
-        {showcaseExamples.map((example, i) => {
+        {loaderData.showcaseExamples.map((example, i) => {
           let loading: ShowcaseTypes["loading"] = i < 6 ? "eager" : "lazy";
           return (
             <Fragment key={example.name}>

@@ -1,6 +1,4 @@
 // Pull full readme for this page from GitHub
-import { type LoaderFunctionArgs, type MetaFunction } from "react-router";
-import { useLoaderData } from "react-router";
 import invariant from "tiny-invariant";
 import { getResource } from "~/lib/resources.server";
 import { InitCodeblock, ResourceTag } from "~/ui/resources";
@@ -8,8 +6,9 @@ import { octokit } from "~/lib/github.server";
 import "~/styles/docs.css";
 import iconsHref from "~/icons.svg";
 import { getMeta } from "~/lib/meta";
+import type { Route } from "./+types/_extras.resources.$";
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: Route.LoaderArgs) {
   const resourceSlug = params["*"];
   invariant(resourceSlug, "resourceSlug is required");
 
@@ -25,8 +24,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return { siteUrl, resource };
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  let { siteUrl, resource } = data || {};
+export function meta({ data }: Route.MetaArgs) {
+  let { siteUrl, resource } = data;
   if (!resource) {
     return [{ title: "404 Not Found | Remix" }];
   }
@@ -39,10 +38,9 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     siteUrl,
     image: socialImageUrl,
   });
-};
+}
 
-export default function ResourcePage() {
-  let { resource } = useLoaderData<typeof loader>();
+export default function ResourcePage({ loaderData }: Route.ComponentProps) {
   let {
     description,
     repoUrl,
@@ -51,7 +49,7 @@ export default function ResourcePage() {
     starsFormatted,
     tags,
     readmeHtml,
-  } = resource;
+  } = loaderData.resource;
 
   return (
     <main className="flex flex-1 flex-col items-center px-8 lg:container">
