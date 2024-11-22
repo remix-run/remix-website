@@ -5,6 +5,7 @@ date: 2024-11-22
 image: /blog-images/headers/react-router-v7.jpg
 ogImage: /blog-images/headers/react-router-v7.jpg
 imageAlt: "The React Router logo"
+imageDisableOverlay: true
 authors:
   - Michael Jackson
 ---
