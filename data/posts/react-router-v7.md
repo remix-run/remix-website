@@ -19,7 +19,7 @@ For the majority of the React ecosystem that has been around for the last 10 yea
 
 For React Router v6 users, this release brings a wealth of features from Remix back into React Router [in the form of "framework mode"](https://reactrouter.com/upgrading/component-routes). In addition to the handful of components and hooks that you already use, you now have access to a compiler with broad support for dependencies (based on Vite), server rendering, bundle splitting and optimization, vastly improved type safety, a world-class development environment with HMR, and much more. Read the [React Router v6 upgrade guide](https://reactrouter.com/upgrading/v6) for more information on how we've made the upgrade path as smooth as possible for you, and what you have to look forward to in v7.
 
-For Remix v2 users, this release brings a host of improvements to the type safety in Remix, as well as support for improved routing [via `routes.ts`](https://reactrouter.com/start/framework/routing). Check out [the Remix v2 upgrade guide](https://reactrouter.com/upgrading/remix) for more information on how you can upgrade to React Router v7.
+For Remix v2 users, this release brings a host of improvements to the type safety in Remix, as well as support for improved routing [via `routes.ts`](https://reactrouter.com/start/framework/routing) and [pre-rendering static pages](https://reactrouter.com/start/framework/rendering). Check out [the Remix v2 upgrade guide](https://reactrouter.com/upgrading/remix) for more information on how you can upgrade to React Router v7.
 
 ## New Apps
 
