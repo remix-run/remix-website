@@ -3,6 +3,7 @@ title: React Router v7
 summary: React Router v7 brings all the great things you love from Remix back to React Router
 date: 2024-11-22
 image: /blog-images/headers/react-router-v7.jpg
+ogImage: /blog-images/headers/react-router-v7.jpg
 imageAlt: "The React Router logo"
 authors:
   - Michael Jackson
