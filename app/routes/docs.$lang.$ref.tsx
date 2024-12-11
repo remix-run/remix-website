@@ -450,15 +450,18 @@ ColorSchemeButton.displayName = "ColorSchemeButton";
 
 function VersionWarningMobile() {
   let { isLatest, branches, currentGitHubRef } = useLoaderData<typeof loader>();
-  if (isLatest) return null;
 
   return (
     <div className="text-center lg:hidden">
       <div className="bg-blue-brand p-2 text-xs text-white">
-        <VersionWarningMessage
-          branches={branches}
-          currentGitHubRef={currentGitHubRef}
-        />
+        {isLatest ? (
+          <ReactRouterV7Message />
+        ) : (
+          <VersionWarningMessage
+            branches={branches}
+            currentGitHubRef={currentGitHubRef}
+          />
+        )}
       </div>
     </div>
   );
@@ -466,17 +469,31 @@ function VersionWarningMobile() {
 
 function VersionWarningDesktop() {
   let { isLatest, branches, currentGitHubRef } = useLoaderData<typeof loader>();
-  if (isLatest) return null;
 
   return (
     <div className="hidden lg:block">
       <div className="animate-[bounce_500ms_2.5] bg-blue-brand p-2 text-xs text-white">
-        <VersionWarningMessage
-          branches={branches}
-          currentGitHubRef={currentGitHubRef}
-        />
+        {isLatest ? (
+          <ReactRouterV7Message />
+        ) : (
+          <VersionWarningMessage
+            branches={branches}
+            currentGitHubRef={currentGitHubRef}
+          />
+        )}
       </div>
     </div>
+  );
+}
+
+function ReactRouterV7Message() {
+  return (
+    <>
+      React Router v7 has been released.{" "}
+      <a href="https://reactrouter.com/home" className="underline">
+        View the docs
+      </a>
+    </>
   );
 }
 
