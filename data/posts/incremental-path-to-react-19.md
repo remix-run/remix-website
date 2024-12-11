@@ -9,6 +9,12 @@ authors:
   - Ryan Florence
 ---
 
+**Update (Dec 2024):** [React Router v7](https://reactrouter.com/) has been released!
+
+We now recommend starting all new projects with React Router v7 and [upgrading existing Remix apps](https://reactrouter.com/upgrading/remix).
+
+---
+
 Last week [I gave a talk](https://www.youtube.com/watch?v=ZcwA0xt8FlQ) about React Router and Remix at React Conf and [we posted an announcement](./merging-remix-and-react-router) here. Now that the dust has settled, I wanted to provide some more insight into the decision announced there and answer some common questions.
 
 ## tl;dr

@@ -10,6 +10,12 @@ authors:
   - Brooks Lybrand
 ---
 
+**Update (Dec 2024):** [React Router v7](https://reactrouter.com/) has been released!
+
+We now recommend starting all new projects with React Router v7 and [upgrading existing Remix apps](https://reactrouter.com/upgrading/remix).
+
+---
+
 We've been building a bridge. You can hear Ryan talk about this announcement at React Conf 🎥
 
 <iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/ZcwA0xt8FlQ?si=vNgdHMWQIHpDyXb5" title="React Conf 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
