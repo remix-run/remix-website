@@ -244,3 +244,9 @@
   imgSrc: "https://camo.githubusercontent.com/076066f43ba75163106f304fc42750445f55343abb62e10429d554b4f227d942/68747470733a2f2f6765746a757374642e636f6d2f6f70656e67726170682d696d6167652e706e673f763d31"
   initCommand: "npx create-remix@latest --template justdlabs/remix"
   category: "templates"
+
+- title: "auth-remix"
+  repoUrl: "https://github.com/hambergerpls/auth-remix"
+  imgSrc: "https://opengraph.githubassets.com/1/hambergerpls/auth-remix"
+  initCommand: "npm install auth-remix"
+  category: "libraries"
