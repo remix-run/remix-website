@@ -277,7 +277,7 @@ function MobileMenuItem({
 
 function MobileNavList() {
   return (
-    <MenuPopover className="absolute block">
+    <MenuPopover>
       <MenuItems className="relative mt-2 block whitespace-nowrap rounded-md border-2 border-white bg-blue-800 py-2 font-mono outline-none">
         {navItems.map((item, i) => (
           <MobileMenuItem
