@@ -11,18 +11,16 @@ export default function RemixJam2025() {
 
       <LetterOfIntent />
 
-      <div className="relative min-w-[120%]">
-        <img src={seatsHref} alt="" aria-hidden="true" />
+      <img src={seatsHref} alt="" aria-hidden="true" />
 
-        <NewsletterSignup />
-      </div>
+      <NewsletterSignup />
     </div>
   );
 }
 
 function Nav() {
   return (
-    <nav className="fixed left-1/2 top-12 z-10 flex w-3/4 max-w-[1600px] -translate-x-1/2 flex-col items-center gap-4 rounded-3xl bg-white/80 px-6 py-12 backdrop-blur-[10px] md:w-[93%] md:flex-row md:justify-between md:rounded-[100px] md:py-9 md:pl-12 md:pr-9 xl:py-10 xl:pr-10 2xl:px-16 2xl:py-12">
+    <nav className="fixed left-1/2 top-12 z-10 flex w-3/4 max-w-[1600px] -translate-x-1/2 flex-col items-center gap-4 rounded-3xl bg-white/80 px-6 py-12 backdrop-blur-[10px] md:w-[93%] md:flex-row md:justify-between md:rounded-[100px] md:px-9 md:py-9 xl:py-10 xl:pr-10 2xl:px-16 2xl:py-12">
       <h1 className="sr-only">Remix Jam 2025</h1>
 
       <img src={logoHref} alt="" className="h-9 md:h-6 lg:h-9 2xl:h-12" />
@@ -35,7 +33,7 @@ function Nav() {
 
       <Link
         to="#newsletter"
-        className="rounded-full bg-black px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-[rgb(97,176,255)] xl:px-6 xl:py-5 xl:text-xl 2xl:px-9 2xl:py-6 2xl:text-2xl"
+        className="rounded-full bg-black px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-blue-brand xl:px-6 xl:py-5 xl:text-xl 2xl:px-9 2xl:py-6 2xl:text-2xl"
       >
         Tickets
       </Link>
@@ -117,24 +115,24 @@ function NewsletterSignup() {
     <aside
       id="newsletter"
       // className="bg-gradient-to-b from-red-600 via-yellow-400 to-yellow-200 px-6 py-24"
-      className="px-6 py-24"
+      className="w-full px-10 pb-[200px]"
       style={{
         background:
           "linear-gradient(180deg, #ff3300 0%, rgb(235, 210, 110) 100%)",
       }}
     >
-      <div className="mx-auto max-w-2xl text-center">
-        <h2 className="mb-16 text-center text-5xl font-bold tracking-tight text-white">
-          Sign up to get notified
+      <div className="mx-auto flex w-[1000px] max-w-full flex-col items-center">
+        <h2 className="text-center text-[1.75rem] font-bold leading-tight tracking-tight text-white md:text-4xl md:leading-tight lg:text-[2.5rem] lg:leading-tight xl:text-5xl xl:leading-tight">
+          <span>Sign up to get notified</span>
           <br />
-          when Remix Jam tickets are available
+          <span>when Remix Jam tickets are available</span>
         </h2>
 
-        <form className="flex flex-col gap-4">
+        <form className="mt-7 flex w-[280px] flex-col gap-5 p-5">
           <div className="flex flex-col gap-2">
             <label
               htmlFor="name"
-              className="text-left text-sm font-medium text-white"
+              className="text-left text-xs font-medium text-white"
             >
               Name
             </label>
@@ -143,14 +141,14 @@ function NewsletterSignup() {
               id="name"
               name="name"
               placeholder="Jane Smith"
-              className="rounded-lg bg-white/20 px-4 py-3 text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="rounded-xl bg-black/20 p-5 text-sm leading-none text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white"
             />
           </div>
 
           <div className="flex flex-col gap-2">
             <label
               htmlFor="email"
-              className="text-left text-sm font-medium text-white"
+              className="text-left text-xs font-medium text-white"
             >
               Email
             </label>
@@ -159,13 +157,13 @@ function NewsletterSignup() {
               id="email"
               name="email"
               placeholder="jane@email.com"
-              className="rounded-lg bg-white/20 px-4 py-3 text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="rounded-xl bg-black/20 p-5 text-sm leading-none text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white"
             />
           </div>
 
           <button
             type="submit"
-            className="mt-4 rounded-lg bg-black px-6 py-3 font-semibold text-white transition-colors hover:bg-gray-900"
+            className="rounded-2xl bg-black px-5 py-4 text-sm font-semibold text-white transition-colors hover:bg-blue-brand"
           >
             Sign Up
           </button>
