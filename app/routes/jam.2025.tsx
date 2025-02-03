@@ -2,11 +2,24 @@ import { Link } from "react-router";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { useEffect, useRef } from "react";
 import { clsx } from "clsx";
+import { getMeta } from "~/lib/meta";
+import type { Route } from "./+types/jam.2025";
 
 export function headers() {
   return {
     "Cache-Control": CACHE_CONTROL.DEFAULT,
   };
+}
+
+export function meta({ matches }: Route.MetaArgs) {
+  const [rootMatch] = matches;
+  const { siteUrl } = rootMatch.data;
+  return getMeta({
+    title: "Remix Jam 2025",
+    description: "It's time to get the band back together",
+    siteUrl: `${siteUrl}/jam`,
+    image: `${siteUrl}/conf-images/2025/og_image.jpg`,
+  });
 }
 
 export default function RemixJam2025() {
