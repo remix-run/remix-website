@@ -1,5 +1,7 @@
 import { Link } from "react-router";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import { useEffect, useRef } from "react";
+import { clsx } from "clsx";
 
 export function headers() {
   return {
@@ -14,18 +16,20 @@ export default function RemixJam2025() {
 
       <LetterOfIntent />
 
-      <div className="flex flex-col items-center">
-        <div className="aspect-[8/3] w-[1824px] lg:w-[2016px] xl:w-[2344px] 2xl:w-[2784px]">
-          <img
-            src="/conf-images/2025/seats.svg"
-            className="w-full"
-            alt=""
-            aria-hidden="true"
-          />
+      <div className="relative">
+        <div className="flex flex-col items-center">
+          <div className="aspect-[8/3] w-[1824px] lg:w-[2016px] xl:w-[2344px] 2xl:w-[2784px]">
+            <img
+              src="/conf-images/2025/seats.svg"
+              className="w-full"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
         </div>
-      </div>
 
-      <NewsletterSignup />
+        <NewsletterSignup />
+      </div>
     </div>
   );
 }
@@ -59,14 +63,16 @@ function Nav() {
 }
 
 function LetterOfIntent() {
+  const ref = useRef<HTMLElement>(null);
+  useParallax(ref);
+
   return (
     <main
-      className="mx-auto w-[95%] max-w-[1400px] pt-[310px] md:w-3/4 md:pt-[200px] lg:w-[65%] lg:pt-[280px] 2xl:w-[60%]"
-      // TODO: figure out parallax effect
-      // style={{
-      //   willChange: "transform",
-      //   transform: "translateY(275px)",
-      // }}
+      ref={ref}
+      className={clsx(
+        "relative mx-auto w-[95%] max-w-[1400px] pt-[310px] md:w-3/4 md:pt-[200px] lg:w-[65%] lg:pt-[280px] 2xl:w-[60%]",
+        "[--parallax-transform-percent:0.75] xl:[--parallax-transform-percent:0.9]",
+      )}
     >
       <div className="px-12 pb-[400px] pt-12 2xl:py-24">
         <h2 className="text-center text-4xl font-bold leading-tight tracking-tight md:text-[2.5rem] md:leading-tight lg:text-5xl lg:leading-tight xl:text-6xl xl:leading-tight 2xl:text-7xl 2xl:leading-tight">
@@ -132,12 +138,7 @@ function NewsletterSignup() {
   return (
     <aside
       id={newsletterId}
-      // className="bg-gradient-to-b from-red-600 via-yellow-400 to-yellow-200 px-6 py-24"
-      className="w-full px-10 pb-[200px]"
-      style={{
-        background:
-          "linear-gradient(180deg, #ff3300 0%, rgb(235, 210, 110) 100%)",
-      }}
+      className="w-full bg-gradient-to-b from-[#ff3300] to-[#ebd26e] px-10 pb-[200px]"
     >
       <div className="mx-auto flex w-[1000px] max-w-full flex-col items-center">
         <h2 className="text-center text-[1.75rem] font-bold leading-tight tracking-tight text-white md:text-4xl md:leading-tight lg:text-[2.5rem] lg:leading-tight xl:text-5xl xl:leading-tight">
@@ -199,4 +200,31 @@ function smoothScroll(e: React.MouseEvent<HTMLAnchorElement>) {
   document
     .querySelector(`#${newsletterId}`)
     ?.scrollIntoView({ behavior: "smooth" });
+}
+
+// TODO: Move this into a callback ref once we upgrade to React 19
+function useParallax(ref: React.RefObject<HTMLElement>) {
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    let rafId: number;
+    const onScroll = () => {
+      rafId = requestAnimationFrame(() => {
+        const scrolled = window.scrollY;
+        element.style.transform = `translateY(calc(${scrolled}px * (1 - var(--parallax-transform-percent))))`;
+      });
+    };
+
+    // There is a small problem with this being JS only -- if you refresh the page or navigate back then forward, and the page is half way scrolled, the position of the text won't be right.
+    // You have two options:
+    // 1. Call `onScroll` and have a slight flash of the text moving into location
+    // 2. Don't call onScroll and the text will be far away, but then snap in correctly as soon as the user scrolls
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      console;
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, [ref]);
 }
