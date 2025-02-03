@@ -1,8 +1,17 @@
 import { Link } from "react-router";
-
 import logoHref from "./images/remix-jam-logo.svg";
 import locationHref from "./images/location.svg";
 import seatsHref from "./images/seats.svg";
+
+const newsletterId = "newsletter";
+const newsletterLink = `#${newsletterId}`;
+
+function smoothScroll(e: React.MouseEvent<HTMLAnchorElement>) {
+  e.preventDefault();
+  document
+    .querySelector(`#${newsletterId}`)
+    ?.scrollIntoView({ behavior: "smooth" });
+}
 
 export default function RemixJam2025() {
   return (
@@ -24,7 +33,7 @@ export default function RemixJam2025() {
 
 function Nav() {
   return (
-    <nav className="fixed left-1/2 top-12 z-10 flex w-3/4 max-w-[1600px] -translate-x-1/2 flex-col items-center gap-4 rounded-3xl bg-white/80 px-6 py-12 backdrop-blur-[10px] md:w-[93%] md:flex-row md:justify-between md:rounded-[100px] md:px-9 md:py-9 xl:py-10 xl:pr-10 2xl:px-16 2xl:py-12">
+    <nav className="fixed left-1/2 top-12 z-10 flex w-3/4 max-w-[1600px] -translate-x-1/2 flex-col items-center gap-4 rounded-3xl bg-white/50 px-6 py-12 backdrop-blur-md md:w-[93%] md:flex-row md:justify-between md:rounded-[100px] md:px-9 md:py-9 xl:py-10 xl:pr-10 2xl:px-16 2xl:py-12">
       <h1 className="sr-only">Remix Jam 2025</h1>
 
       <img src={logoHref} alt="" className="h-9 md:h-6 lg:h-9 2xl:h-12" />
@@ -36,7 +45,8 @@ function Nav() {
       />
 
       <Link
-        to="#newsletter"
+        to={newsletterLink}
+        onClick={smoothScroll}
         className="rounded-full bg-black px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-blue-brand xl:px-6 xl:py-5 xl:text-xl 2xl:px-9 2xl:py-6 2xl:text-2xl"
       >
         Tickets
@@ -101,7 +111,8 @@ function LetterOfIntent() {
             We can't wait to tell you more. If you want to be notified as soon
             as tickets go on sale,{" "}
             <Link
-              to="#newsletter"
+              to={newsletterLink}
+              onClick={smoothScroll}
               className="font-bold text-blue-brand hover:underline"
             >
               sign up for our newsletter below!
@@ -117,7 +128,7 @@ function LetterOfIntent() {
 function NewsletterSignup() {
   return (
     <aside
-      id="newsletter"
+      id={newsletterId}
       // className="bg-gradient-to-b from-red-600 via-yellow-400 to-yellow-200 px-6 py-24"
       className="w-full px-10 pb-[200px]"
       style={{
