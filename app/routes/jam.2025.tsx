@@ -1,16 +1,10 @@
 import { Link } from "react-router";
-import logoHref from "./images/remix-jam-logo.svg";
-import locationHref from "./images/location.svg";
-import seatsHref from "./images/seats.svg";
+import { CACHE_CONTROL } from "~/lib/http.server";
 
-const newsletterId = "newsletter";
-const newsletterLink = `#${newsletterId}`;
-
-function smoothScroll(e: React.MouseEvent<HTMLAnchorElement>) {
-  e.preventDefault();
-  document
-    .querySelector(`#${newsletterId}`)
-    ?.scrollIntoView({ behavior: "smooth" });
+export function headers() {
+  return {
+    "Cache-Control": CACHE_CONTROL.DEFAULT,
+  };
 }
 
 export default function RemixJam2025() {
@@ -22,7 +16,12 @@ export default function RemixJam2025() {
 
       <div className="flex flex-col items-center">
         <div className="aspect-[8/3] w-[1824px] lg:w-[2016px] xl:w-[2344px] 2xl:w-[2784px]">
-          <img src={seatsHref} className="w-full" alt="" aria-hidden="true" />
+          <img
+            src="/conf-images/2025/seats.svg"
+            className="w-full"
+            alt=""
+            aria-hidden="true"
+          />
         </div>
       </div>
 
@@ -36,10 +35,14 @@ function Nav() {
     <nav className="fixed left-1/2 top-12 z-10 flex w-3/4 max-w-[1600px] -translate-x-1/2 flex-col items-center gap-4 rounded-3xl bg-white/50 px-6 py-12 backdrop-blur-md md:w-[93%] md:flex-row md:justify-between md:rounded-[100px] md:px-9 md:py-9 xl:py-10 xl:pr-10 2xl:px-16 2xl:py-12">
       <h1 className="sr-only">Remix Jam 2025</h1>
 
-      <img src={logoHref} alt="" className="h-9 md:h-6 lg:h-9 2xl:h-12" />
+      <img
+        src="/conf-images/2025/remix-jam-logo.svg"
+        alt=""
+        className="h-9 md:h-6 lg:h-9 2xl:h-12"
+      />
 
       <img
-        src={locationHref}
+        src="/conf-images/2025/location.svg"
         alt="Toronto 2025"
         className="h-9 md:h-6 lg:h-9 2xl:h-12"
       />
@@ -186,4 +189,14 @@ function NewsletterSignup() {
       </div>
     </aside>
   );
+}
+
+const newsletterId = "newsletter";
+const newsletterLink = `#${newsletterId}`;
+
+function smoothScroll(e: React.MouseEvent<HTMLAnchorElement>) {
+  e.preventDefault();
+  document
+    .querySelector(`#${newsletterId}`)
+    ?.scrollIntoView({ behavior: "smooth" });
 }
