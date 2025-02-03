@@ -33,7 +33,7 @@ export default function RemixJam2025() {
         <div className="flex flex-col items-center">
           <div className="aspect-[8/3] w-[1824px] lg:w-[2016px] xl:w-[2344px] 2xl:w-[2784px]">
             <img
-              src="/conf-images/2025/seats.svg"
+              src="/conf-images/2025/seat-combined.svg"
               className="w-full"
               alt=""
               aria-hidden="true"
