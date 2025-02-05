@@ -4,11 +4,23 @@ import { useEffect, useRef } from "react";
 import { clsx } from "clsx";
 import { getMeta } from "~/lib/meta";
 import type { Route } from "./+types/jam.2025";
+import "~/styles/jam.css";
 
 export function headers() {
   return {
     "Cache-Control": CACHE_CONTROL.DEFAULT,
   };
+}
+
+export function links() {
+  return [
+    {
+      rel: "preload",
+      as: "font",
+      href: "/font/fira-sans-extra-bold.woff2",
+      crossOrigin: "anonymous",
+    },
+  ];
 }
 
 export function meta({ matches }: Route.MetaArgs) {
@@ -83,16 +95,16 @@ function LetterOfIntent() {
     <main
       ref={ref}
       className={clsx(
-        "relative mx-auto w-[95%] max-w-[1400px] pt-[310px] md:w-3/4 md:pt-[200px] lg:w-[65%] lg:pt-[280px] 2xl:w-[60%]",
+        "relative pt-[320px] md:pt-[410px] xl:pt-[420px] 2xl:pt-[600px]",
         "[--parallax-transform-percent:0.75] xl:[--parallax-transform-percent:0.9]",
       )}
     >
-      <div className="px-12 pb-[400px] pt-12 2xl:py-24">
-        <h2 className="text-center text-4xl font-bold leading-tight tracking-tight md:text-[2.5rem] md:leading-tight lg:text-5xl lg:leading-tight xl:text-6xl xl:leading-tight 2xl:text-7xl 2xl:leading-tight">
-          We figure it's time to get the band back together.
+      <div className="3xl:w-[60%] 3xl:pt-0 3xl:pb-0 mx-auto w-[85%] max-w-[1400px] pb-[200px] md:w-3/4 md:pb-[200px] lg:w-3/4 lg:pb-14 lg:pt-12 xl:w-2/3 xl:pb-14 xl:pt-12 2xl:w-2/3 2xl:pb-28 2xl:pt-24">
+        <h2 className="3xl:text-8xl text-left font-fira-sans text-4xl font-extrabold leading-[1.1] tracking-[-0.02em] md:text-[3.625rem] lg:text-6xl 2xl:text-[5.25rem]">
+          It&rsquo;s time to get the band back together
         </h2>
 
-        <div className="mt-12 flex flex-col gap-12 text-justify text-base md:mt-24 lg:mt-32 lg:text-xl 2xl:text-2xl">
+        <div className="mt-9 flex flex-col gap-12 text-justify text-base lg:text-xl 2xl:text-2xl">
           <p>
             A lot has changed since the last Remix Conf in 2023. The React team
             has introduced so many great features and new paradigms with React
@@ -154,7 +166,7 @@ function NewsletterSignup() {
       className="w-full bg-gradient-to-b from-[#ff3300] to-[#ebd26e] px-10 pb-[200px]"
     >
       <div className="mx-auto flex w-[1000px] max-w-full flex-col items-center">
-        <h2 className="text-center text-[1.75rem] font-bold leading-tight tracking-tight text-white md:text-4xl md:leading-tight lg:text-[2.5rem] lg:leading-tight xl:text-5xl xl:leading-tight">
+        <h2 className="text-[1.75rem] font-bold leading-tight tracking-tight text-white md:text-4xl md:leading-tight lg:text-[2.5rem] lg:leading-tight xl:text-5xl xl:leading-tight">
           <span>Sign up to get notified</span>
           <br />
           <span>when Remix Jam tickets are available</span>

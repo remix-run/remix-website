@@ -1,7 +1,7 @@
 // All tokens based on Jim Nielson's designs
 // https://www.figma.com/file/6G68ZVNbR6bMHl2p8727xi/www.remix.run?node-id=0%3A1&t=EXGqoelkZXIPTK6B-0
 
-const defaultTheme = require("tailwindcss/defaultTheme");
+import defaultTheme from "tailwindcss/defaultTheme";
 
 /** @type {TailwindConfig} */
 export default {
@@ -13,10 +13,12 @@ export default {
       screens: {
         "2xs": "320px",
         xs: "480px",
+        "3xl": "120rem",
       },
     },
     fontFamily: {
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
+      "fira-sans": ["Fira Sans", ...defaultTheme.fontFamily.sans],
       mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
