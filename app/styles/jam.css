@@ -5,3 +5,80 @@
   font-display: swap;
   src: url("/font/fira-sans-extra-bold.woff2") format("woff2");
 }
+
+.keepsake {
+  position: absolute;
+}
+
+.keepsake img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.lanyard {
+  rotate: 14deg;
+  top: -32px;
+  right: -237px;
+  width: 320px;
+  height: 401px;
+}
+
+.lanyard img:hover {
+  transform: rotate(5deg);
+}
+
+.sticker {
+  rotate: -8deg;
+  top: 255px;
+  right: 96px;
+  width: 145px;
+  height: 43px;
+}
+
+.sticker img:hover {
+  transform: rotate(5deg);
+}
+
+@screen md {
+  .lanyard {
+    top: -111px;
+    right: -175px;
+    width: 431px;
+    height: 540px;
+  }
+}
+
+@screen lg {
+  .lanyard {
+    top: -178px;
+    right: -179px;
+    width: 523px;
+    height: 656px;
+  }
+}
+
+@screen xl {
+  .lanyard {
+    top: -154px;
+    right: -215px;
+    width: 605px;
+    height: 758px;
+  }
+}
+
+@screen 2xl {
+  .lanyard {
+    top: -273px;
+    right: -70px;
+    width: 644px;
+    height: 807px;
+  }
+}
+
+@screen 3xl {
+  .lanyard {
+    top: -359px;
+    right: -97px;
+    width: 772px;
+    height: 968px;
+  }
+}

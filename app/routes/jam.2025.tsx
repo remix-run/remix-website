@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { getMeta } from "~/lib/meta";
 import type { Route } from "./+types/jam.2025";
@@ -37,12 +37,24 @@ export function meta({ matches }: Route.MetaArgs) {
 export default function RemixJam2025() {
   return (
     <div className="bg-gradient-to-b from-[#ebebe6] to-white">
+      <div className="relative z-10">
+        <Link
+          to={newsletterLink}
+          onClick={smoothScroll}
+          className="absolute right-4 top-6 rounded-full bg-black px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-blue-brand xl:px-6 xl:py-5 xl:text-xl 2xl:px-9 2xl:py-6 2xl:text-2xl"
+        >
+          Tickets
+        </Link>
+
+        <KeepSakes />
+      </div>
+
       {/* <Nav /> */}
 
       <LetterOfIntent />
 
       <div className="relative">
-        <div className="flex flex-col items-center pt-[300px] xl:pt-[400px] 2xl:pt-[300px]">
+        <div className="flex flex-col items-center overflow-hidden pt-[300px] xl:pt-[400px] 2xl:pt-[300px]">
           {/* <div className="h-[679px] w-[1824px] lg:h-[751px] lg:w-[2016px] xl:h-[876px] xl:w-[2344px] 2xl:h-[1037px] 2xl:w-[2784px]"> */}
           <div className="aspect-[2.69] w-[1824px] lg:w-[2016px] xl:w-[2344px] 2xl:w-[2784px]">
             <img
@@ -59,31 +71,80 @@ export default function RemixJam2025() {
   );
 }
 
-function Nav() {
+function KeepSakes() {
   return (
-    <nav className="fixed left-1/2 top-12 z-10 flex w-3/4 max-w-[1600px] -translate-x-1/2 flex-col items-center gap-4 rounded-3xl bg-white/50 px-6 py-12 backdrop-blur-md md:w-[93%] md:flex-row md:justify-between md:rounded-[100px] md:px-9 md:py-9 xl:py-10 xl:pr-10 2xl:px-16 2xl:py-12">
-      <h1 className="sr-only">Remix Jam 2025</h1>
-
-      <img
-        src="/conf-images/2025/remix-jam-logo.svg"
-        alt=""
-        className="h-9 md:h-6 lg:h-9 2xl:h-12"
+    <>
+      <KeepSake
+        src="/conf-images/2025/remix-logo-sticker.svg"
+        alt="Remix Logo Sticker"
+        className="sticker"
       />
 
-      <img
-        src="/conf-images/2025/location.svg"
-        alt="Toronto 2025"
-        className="h-9 md:h-6 lg:h-9 2xl:h-12"
+      <KeepSake
+        src="/conf-images/2025/remix-lanyard.avif"
+        alt="All Access Remix Jam 2025 Lanyard that says 'Michael Jackson co-author, Remix, Shopify'"
+        className="lanyard"
       />
+    </>
+  );
+}
 
-      <Link
-        to={newsletterLink}
-        onClick={smoothScroll}
-        className="rounded-full bg-black px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-blue-brand xl:px-6 xl:py-5 xl:text-xl 2xl:px-9 2xl:py-6 2xl:text-2xl"
+type KeepSakeProps = {
+  src: string;
+  alt: string;
+  className: string;
+};
+
+function KeepSake({ src, alt, className }: KeepSakeProps) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setStartPos({ x: e.clientX - translate.x, y: e.clientY - translate.y });
+    setIsDragging(true);
+  };
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setTranslate({
+        x: e.clientX - startPos.x,
+        y: e.clientY - startPos.y,
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, startPos]);
+
+  return (
+    <div className={clsx("keepsake", className)}>
+      <div
+        onMouseDown={handleMouseDown}
+        className={clsx(
+          "cursor-grab select-none",
+          isDragging ? "cursor-grabbing" : "cursor-grab",
+        )}
+        style={{
+          transform: `translate(${translate.x}px, ${translate.y}px)`,
+        }}
       >
-        Tickets
-      </Link>
-    </nav>
+        <div>
+          <img src={src} alt={alt} draggable={false} />
+        </div>
+      </div>
+    </div>
   );
 }
 
