@@ -37,22 +37,22 @@ export function meta({ matches }: Route.MetaArgs) {
 export default function RemixJam2025() {
   return (
     <div className="bg-gradient-to-b from-[#ebebe6] to-white">
-      <Nav />
+      {/* <Nav /> */}
 
       <LetterOfIntent />
 
       <div className="relative">
-        <div className="flex flex-col items-center">
-          <div className="aspect-[8/3] w-[1824px] lg:w-[2016px] xl:w-[2344px] 2xl:w-[2784px]">
+        <div className="flex flex-col items-center pt-[300px] xl:pt-[400px] 2xl:pt-[300px]">
+          {/* <div className="h-[679px] w-[1824px] lg:h-[751px] lg:w-[2016px] xl:h-[876px] xl:w-[2344px] 2xl:h-[1037px] 2xl:w-[2784px]"> */}
+          <div className="aspect-[2.69] w-[1824px] lg:w-[2016px] xl:w-[2344px] 2xl:w-[2784px]">
             <img
               src="/conf-images/2025/seat-combined.svg"
-              className="w-full"
+              className="size-full"
               alt=""
               aria-hidden="true"
             />
           </div>
         </div>
-
         <NewsletterSignup />
       </div>
     </div>
@@ -166,7 +166,7 @@ function NewsletterSignup() {
       className="w-full bg-gradient-to-b from-[#ff3300] to-[#ebd26e] px-10 pb-[200px]"
     >
       <div className="mx-auto flex w-[1000px] max-w-full flex-col items-center">
-        <h2 className="text-[1.75rem] font-bold leading-tight tracking-tight text-white md:text-4xl md:leading-tight lg:text-[2.5rem] lg:leading-tight xl:text-5xl xl:leading-tight">
+        <h2 className="text-center text-[1.75rem] font-bold leading-tight tracking-tight text-white md:text-4xl md:leading-tight lg:text-[2.5rem] lg:leading-tight xl:text-5xl xl:leading-tight">
           <span>Sign up to get notified</span>
           <br />
           <span>when Remix Jam tickets are available</span>
@@ -247,7 +247,6 @@ function useParallax(ref: React.RefObject<HTMLElement>) {
     // 2. Don't call onScroll and the text will be far away, but then snap in correctly as soon as the user scrolls
     window.addEventListener("scroll", onScroll);
     return () => {
-      console;
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(rafId);
     };
