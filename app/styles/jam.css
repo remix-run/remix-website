@@ -15,6 +15,16 @@ CSS Variables used in this file:
   src: url("/font/fira-sans-extra-bold.woff2") format("woff2");
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* Letter of Intent */
 
 .letter-of-intent {
@@ -25,13 +35,6 @@ CSS Variables used in this file:
 @screen md {
   .letter-of-intent {
     padding-top: 410px;
-  }
-}
-
-@screen xl {
-  .letter-of-intent {
-    padding-top: 420px;
-    --parallax-transform-percent: 0.9;
   }
 }
 
@@ -48,13 +51,53 @@ CSS Variables used in this file:
 }
 
 .keepsake .rotate {
+  width: 100%;
+  height: 100%;
   transform: rotate(var(--rotate));
-  transition: transform 0.3s ease-in-out;
+  /* bit of a bounce */
+  transition: transform 0.3s cubic-bezier(0, 1.5, 0.67, 1.06);
   will-change: transform;
 }
 
 .keepsake .rotate:hover {
   transform: rotate(calc(var(--rotate) + var(--hover-rotate)));
+}
+
+.postcard {
+  --rotate: -6deg;
+  --hover-rotate: 3deg;
+  top: 17px;
+  left: -5px;
+  width: 369px;
+  height: 258px;
+}
+
+.postcard-container {
+  box-shadow:
+    rgba(0, 0, 0, 0.067) 0.568132px 0.568132px 1.44623px -0.321429px,
+    rgba(0, 0, 0, 0.067) 1.39174px 1.39174px 3.5428px -0.642857px,
+    rgba(0, 0, 0, 0.07) 2.63715px 2.63715px 6.7131px -0.964286px,
+    rgba(0, 0, 0, 0.07) 4.60378px 4.60378px 11.7193px -1.28571px,
+    rgba(0, 0, 0, 0.07) 8.01261px 8.01261px 20.3968px -1.60714px,
+    rgba(0, 0, 0, 0.075) 14.676px 14.676px 37.3591px -1.92857px,
+    rgba(0, 0, 0, 0.082) 29px 29px 73.8219px -2.25px;
+}
+
+.postcard-container:after {
+  content: "";
+  border: 13px #f4f3ef solid;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  box-sizing: border-box;
+  left: 0;
+  top: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.keepsake-container:has(.postcard) {
+  --parallax-transform-percent: 0.8;
 }
 
 .lanyard {
@@ -67,7 +110,7 @@ CSS Variables used in this file:
 }
 
 .keepsake-container:has(.lanyard) {
-  --parallax-transform-percent: 0.7;
+  --parallax-transform-percent: 0.9;
 }
 
 .sticker {
@@ -80,7 +123,7 @@ CSS Variables used in this file:
 }
 
 .keepsake-container:has(.sticker) {
-  --parallax-transform-percent: 0.7;
+  --parallax-transform-percent: 0.8;
 }
 
 .pick {
@@ -93,10 +136,18 @@ CSS Variables used in this file:
 }
 
 .keepsake-container:has(.pick) {
-  --parallax-transform-percent: 0.75;
+  --parallax-transform-percent: 1;
 }
 
 @screen md {
+  .postcard {
+    --rotate: -4deg;
+    top: 17px;
+    left: -4px;
+    width: 533px;
+    height: 373px;
+  }
+
   .lanyard {
     top: -111px;
     right: -175px;
@@ -120,6 +171,13 @@ CSS Variables used in this file:
 }
 
 @screen lg {
+  .postcard {
+    top: 27px;
+    left: 16px;
+    width: 534px;
+    height: 374px;
+  }
+
   .lanyard {
     top: -178px;
     right: -179px;
@@ -143,6 +201,13 @@ CSS Variables used in this file:
 }
 
 @screen xl {
+  .postcard {
+    top: -43px;
+    left: 32px;
+    width: 800px;
+    height: 560px;
+  }
+
   .lanyard {
     top: -154px;
     right: -215px;
@@ -166,6 +231,13 @@ CSS Variables used in this file:
 }
 
 @screen 2xl {
+  .postcard {
+    top: 44px;
+    left: 82px;
+    width: 800px;
+    height: 560px;
+  }
+
   .lanyard {
     top: -273px;
     right: -70px;
@@ -189,6 +261,13 @@ CSS Variables used in this file:
 }
 
 @screen 3xl {
+  .postcard {
+    top: 44px;
+    left: 153px;
+    width: 800px;
+    height: 560px;
+  }
+
   .lanyard {
     top: -359px;
     right: -97px;

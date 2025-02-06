@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { getMeta } from "~/lib/meta";
 import type { Route } from "./+types/jam.2025";
-import "~/styles/jam.css";
+
+import jamStyles from "~/styles/jam.css?url";
 
 export function headers() {
   return {
@@ -20,6 +21,7 @@ export function links() {
       href: "/font/fira-sans-extra-bold.woff2",
       crossOrigin: "anonymous",
     },
+    { rel: "stylesheet", href: jamStyles },
   ];
 }
 
@@ -38,15 +40,14 @@ export default function RemixJam2025() {
   return (
     <div className="bg-gradient-to-b from-[#ebebe6] to-white">
       <div className="relative z-10">
+        <KeepSakes />
+
         <Link
           to={newsletterLink}
-          onClick={smoothScroll}
           className="absolute right-4 top-6 rounded-full bg-black px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-blue-brand xl:px-6 xl:py-5 xl:text-xl 2xl:px-9 2xl:py-6 2xl:text-2xl"
         >
           Tickets
         </Link>
-
-        <KeepSakes />
       </div>
 
       {/* <Nav /> */}
@@ -80,6 +81,10 @@ function KeepSakes() {
           alt="Remix Logo Sticker"
           draggable={false}
         />
+      </KeepSake>
+
+      <KeepSake className="postcard">
+        <PostCard />
       </KeepSake>
 
       <KeepSake className="lanyard">
@@ -160,6 +165,32 @@ function KeepSake({ className, children }: KeepSakeProps) {
   );
 }
 
+function PostCard() {
+  return (
+    <div className="postcard-container flex size-full flex-col items-start justify-between rounded-[0.25rem] p-7 lg:p-8 xl:p-9">
+      <div className="absolute inset-0">
+        <img
+          className="size-full rounded-[0.25rem] object-cover object-left-top"
+          src="/conf-images/2025/toronto-postcard.avif"
+          alt="stylized Toronto skyline"
+          draggable={false}
+        />
+      </div>
+
+      <img
+        className="relative h-[110px] w-[245px]"
+        src="/conf-images/2025/remix-jam-lockup.svg"
+        alt=""
+        draggable={false}
+      />
+      <h1 className="relative self-end text-xl font-extrabold uppercase leading-none tracking-[-0.02em] text-[#f4f3ef] xl:text-4xl">
+        <span className="sr-only">Remix Jam Toronto '25</span>
+        <span>Fall 2025</span>
+      </h1>
+    </div>
+  );
+}
+
 function LetterOfIntent() {
   const ref = useRef<HTMLElement>(null);
   useParallax(ref);
@@ -213,7 +244,6 @@ function LetterOfIntent() {
             as tickets go on sale,{" "}
             <Link
               to={newsletterLink}
-              onClick={smoothScroll}
               className="font-bold text-blue-brand hover:underline"
             >
               sign up for our newsletter below!
@@ -286,13 +316,6 @@ function NewsletterSignup() {
 
 const newsletterId = "newsletter";
 const newsletterLink = `#${newsletterId}`;
-
-function smoothScroll(e: React.MouseEvent<HTMLAnchorElement>) {
-  e.preventDefault();
-  document
-    .querySelector(`#${newsletterId}`)
-    ?.scrollIntoView({ behavior: "smooth" });
-}
 
 // TODO: Move this into a callback ref once we upgrade to React 19
 function useParallax(ref: React.RefObject<HTMLElement>) {
