@@ -1,3 +1,12 @@
+/*
+CSS Variables used in this file:
+--parallax-transform-percent: Controls how much elements move during parallax scrolling (0-1).
+  Lower values = more movement. Default is 0.75, meaning elements move 25% of scroll distance.
+
+--rotate: Base rotation angle for keepsake elements (in degrees)
+--hover-rotate: Additional rotation on hover (in degrees)
+*/
+
 @font-face {
   font-family: "Fira Sans";
   font-weight: 800;
@@ -6,36 +15,85 @@
   src: url("/font/fira-sans-extra-bold.woff2") format("woff2");
 }
 
+/* Letter of Intent */
+
+.letter-of-intent {
+  padding-top: 320px;
+  --parallax-transform-percent: 0.75;
+}
+
+@screen md {
+  .letter-of-intent {
+    padding-top: 410px;
+  }
+}
+
+@screen xl {
+  .letter-of-intent {
+    padding-top: 420px;
+    --parallax-transform-percent: 0.9;
+  }
+}
+
+@screen 2xl {
+  .letter-of-intent {
+    padding-top: 600px;
+  }
+}
+
+/* Keepsakes */
+
 .keepsake {
   position: absolute;
 }
 
-.keepsake img {
+.keepsake .rotate {
+  transform: rotate(var(--rotate));
   transition: transform 0.3s ease-in-out;
+  will-change: transform;
+}
+
+.keepsake .rotate:hover {
+  transform: rotate(calc(var(--rotate) + var(--hover-rotate)));
 }
 
 .lanyard {
-  rotate: 14deg;
+  --rotate: 14deg;
+  --hover-rotate: 5deg;
   top: -32px;
   right: -237px;
   width: 320px;
   height: 401px;
 }
 
-.lanyard img:hover {
-  transform: rotate(5deg);
+.keepsake-container:has(.lanyard) {
+  --parallax-transform-percent: 0.7;
 }
 
 .sticker {
-  rotate: -8deg;
+  --rotate: -8deg;
+  --hover-rotate: 5deg;
   top: 255px;
   right: 96px;
   width: 145px;
   height: 43px;
 }
 
-.sticker img:hover {
-  transform: rotate(5deg);
+.keepsake-container:has(.sticker) {
+  --parallax-transform-percent: 0.7;
+}
+
+.pick {
+  --rotate: 38deg;
+  --hover-rotate: 5deg;
+  top: -10px;
+  left: 120px;
+  width: 60px;
+  height: 70px;
+}
+
+.keepsake-container:has(.pick) {
+  --parallax-transform-percent: 0.75;
 }
 
 @screen md {
@@ -44,6 +102,20 @@
     right: -175px;
     width: 431px;
     height: 540px;
+  }
+
+  .sticker {
+    top: 259px;
+    right: -9px;
+    width: 202px;
+    height: 60px;
+  }
+
+  .pick {
+    top: 78px;
+    left: 482px;
+    width: 60px;
+    height: 70px;
   }
 }
 
@@ -54,6 +126,20 @@
     width: 523px;
     height: 656px;
   }
+
+  .sticker {
+    top: 286px;
+    right: -18px;
+    width: 304px;
+    height: 90px;
+  }
+
+  .pick {
+    top: 75px;
+    left: 501px;
+    width: 76px;
+    height: 89px;
+  }
 }
 
 @screen xl {
@@ -62,6 +148,20 @@
     right: -215px;
     width: 605px;
     height: 758px;
+  }
+
+  .sticker {
+    top: 456px;
+    right: -2px;
+    width: 304px;
+    height: 90px;
+  }
+
+  .pick {
+    top: 50px;
+    left: 764px;
+    width: 100px;
+    height: 117px;
   }
 }
 
@@ -72,6 +172,20 @@
     width: 644px;
     height: 807px;
   }
+
+  .sticker {
+    top: 436px;
+    right: 288px;
+    width: 304px;
+    height: 90px;
+  }
+
+  .pick {
+    top: 94px;
+    left: 798px;
+    width: 100px;
+    height: 117px;
+  }
 }
 
 @screen 3xl {
@@ -80,5 +194,19 @@
     right: -97px;
     width: 772px;
     height: 968px;
+  }
+
+  .sticker {
+    top: 498px;
+    right: 370px;
+    width: 304px;
+    height: 90px;
+  }
+
+  .pick {
+    top: 143px;
+    left: 894px;
+    width: 100px;
+    height: 117px;
   }
 }

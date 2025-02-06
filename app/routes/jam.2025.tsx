@@ -74,28 +74,39 @@ export default function RemixJam2025() {
 function KeepSakes() {
   return (
     <>
-      <KeepSake
-        src="/conf-images/2025/remix-logo-sticker.svg"
-        alt="Remix Logo Sticker"
-        className="sticker"
-      />
+      <KeepSake className="sticker">
+        <img
+          src="/conf-images/2025/remix-logo-sticker.svg"
+          alt="Remix Logo Sticker"
+          draggable={false}
+        />
+      </KeepSake>
 
-      <KeepSake
-        src="/conf-images/2025/remix-lanyard.avif"
-        alt="All Access Remix Jam 2025 Lanyard that says 'Michael Jackson co-author, Remix, Shopify'"
-        className="lanyard"
-      />
+      <KeepSake className="lanyard">
+        <img
+          src="/conf-images/2025/remix-lanyard.avif"
+          alt="All Access Remix Jam 2025 Lanyard that says 'Michael Jackson co-author, Remix, Shopify'"
+          draggable={false}
+        />
+      </KeepSake>
+
+      <KeepSake className="pick">
+        <img
+          src="/conf-images/2025/remix-pick.avif"
+          alt="Guitar pick with Remix logo and 'Remix Jam Toronto '25'"
+          draggable={false}
+        />
+      </KeepSake>
     </>
   );
 }
 
 type KeepSakeProps = {
-  src: string;
-  alt: string;
   className: string;
+  children: React.ReactNode;
 };
 
-function KeepSake({ src, alt, className }: KeepSakeProps) {
+function KeepSake({ className, children }: KeepSakeProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
@@ -107,7 +118,6 @@ function KeepSake({ src, alt, className }: KeepSakeProps) {
 
   useEffect(() => {
     if (!isDragging) return;
-
     const handleMouseMove = (e: MouseEvent) => {
       setTranslate({
         x: e.clientX - startPos.x,
@@ -128,21 +138,23 @@ function KeepSake({ src, alt, className }: KeepSakeProps) {
     };
   }, [isDragging, startPos]);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  useParallax(containerRef);
+
   return (
-    <div className={clsx("keepsake", className)}>
+    <div className="keepsake-container" ref={containerRef}>
       <div
         onMouseDown={handleMouseDown}
         className={clsx(
-          "cursor-grab select-none",
+          "keepsake select-none",
           isDragging ? "cursor-grabbing" : "cursor-grab",
+          className,
         )}
         style={{
           transform: `translate(${translate.x}px, ${translate.y}px)`,
         }}
       >
-        <div>
-          <img src={src} alt={alt} draggable={false} />
-        </div>
+        <div className="rotate">{children}</div>
       </div>
     </div>
   );
@@ -153,15 +165,9 @@ function LetterOfIntent() {
   useParallax(ref);
 
   return (
-    <main
-      ref={ref}
-      className={clsx(
-        "relative pt-[320px] md:pt-[410px] xl:pt-[420px] 2xl:pt-[600px]",
-        "[--parallax-transform-percent:0.75] xl:[--parallax-transform-percent:0.9]",
-      )}
-    >
-      <div className="3xl:w-[60%] 3xl:pt-0 3xl:pb-0 mx-auto w-[85%] max-w-[1400px] pb-[200px] md:w-3/4 md:pb-[200px] lg:w-3/4 lg:pb-14 lg:pt-12 xl:w-2/3 xl:pb-14 xl:pt-12 2xl:w-2/3 2xl:pb-28 2xl:pt-24">
-        <h2 className="3xl:text-8xl text-left font-fira-sans text-4xl font-extrabold leading-[1.1] tracking-[-0.02em] md:text-[3.625rem] lg:text-6xl 2xl:text-[5.25rem]">
+    <main ref={ref} className={clsx("letter-of-intent relative")}>
+      <div className="mx-auto w-[85%] max-w-[1400px] pb-[200px] md:w-3/4 md:pb-[200px] lg:w-3/4 lg:pb-14 lg:pt-12 xl:w-2/3 xl:pb-14 xl:pt-12 2xl:w-2/3 2xl:pb-28 2xl:pt-24 3xl:w-[60%] 3xl:pb-0 3xl:pt-0">
+        <h2 className="text-left font-fira-sans text-4xl font-extrabold leading-[1.1] tracking-[-0.02em] md:text-[3.625rem] lg:text-6xl 2xl:text-[5.25rem] 3xl:text-8xl">
           It&rsquo;s time to get the band back together
         </h2>
 
@@ -298,7 +304,7 @@ function useParallax(ref: React.RefObject<HTMLElement>) {
     const onScroll = () => {
       rafId = requestAnimationFrame(() => {
         const scrolled = window.scrollY;
-        element.style.transform = `translateY(calc(${scrolled}px * (1 - var(--parallax-transform-percent))))`;
+        element.style.transform = `translateY(calc(${scrolled}px * (1 - var(--parallax-transform-percent, 0.75))))`;
       });
     };
 
