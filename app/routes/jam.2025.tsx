@@ -75,32 +75,30 @@ export default function RemixJam2025() {
 type KeepsakeId = "sticker" | "postcard" | "lanyard" | "pick";
 
 function Keepsakes() {
-  const [zIndexes, setZIndexes] = useState<Record<KeepsakeId, number>>({
+  const [order, setOrder] = useState<Record<KeepsakeId, number>>({
     sticker: 1,
     postcard: 2,
     lanyard: 3,
     pick: 4,
   });
 
-  console.log(zIndexes);
-
   const moveToFront = (id: KeepsakeId) => {
-    setZIndexes((current) => {
-      const newIndexes = { ...current };
+    setOrder((current) => {
+      const newOrder = { ...current };
       // Find the current max z-index
       const currentIndex = current[id];
 
       // Decrease all items that were above the moved item
-      for (let key in newIndexes) {
-        if (newIndexes[key as KeepsakeId] > currentIndex) {
-          newIndexes[key as KeepsakeId]--;
+      for (let key in newOrder) {
+        if (newOrder[key as KeepsakeId] > currentIndex) {
+          newOrder[key as KeepsakeId]--;
         }
       }
 
       // Move the dragged item to the top
-      newIndexes[id] = 4;
+      newOrder[id] = 4;
 
-      return newIndexes;
+      return newOrder;
     });
   };
 
@@ -108,7 +106,7 @@ function Keepsakes() {
     <div className="isolate">
       <Keepsake
         className="sticker"
-        order={zIndexes.sticker}
+        order={order.sticker}
         onDragStart={() => moveToFront("sticker")}
       >
         <img
@@ -120,7 +118,7 @@ function Keepsakes() {
 
       <Keepsake
         className="postcard"
-        order={zIndexes.postcard}
+        order={order.postcard}
         onDragStart={() => moveToFront("postcard")}
       >
         <PostCard />
@@ -128,7 +126,7 @@ function Keepsakes() {
 
       <Keepsake
         className="lanyard"
-        order={zIndexes.lanyard}
+        order={order.lanyard}
         onDragStart={() => moveToFront("lanyard")}
       >
         <img
@@ -140,7 +138,7 @@ function Keepsakes() {
 
       <Keepsake
         className="pick"
-        order={zIndexes.pick}
+        order={order.pick}
         onDragStart={() => moveToFront("pick")}
       >
         <img
