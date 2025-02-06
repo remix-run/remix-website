@@ -13,7 +13,6 @@ export default {
       screens: {
         "2xs": "320px",
         xs: "480px",
-        "3xl": "120rem",
       },
     },
     fontFamily: {

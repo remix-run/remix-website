@@ -196,9 +196,9 @@ function LetterOfIntent() {
   useParallax(ref);
 
   return (
-    <main ref={ref} className={clsx("letter-of-intent relative")}>
-      <div className="mx-auto w-[85%] max-w-[1400px] pb-[200px] md:w-3/4 md:pb-[200px] lg:w-3/4 lg:pb-14 lg:pt-12 xl:w-2/3 xl:pb-14 xl:pt-12 2xl:w-2/3 2xl:pb-28 2xl:pt-24 3xl:w-[60%] 3xl:pb-0 3xl:pt-0">
-        <h2 className="text-left font-fira-sans text-4xl font-extrabold leading-[1.1] tracking-[-0.02em] md:text-[3.625rem] lg:text-6xl 2xl:text-[5.25rem] 3xl:text-8xl">
+    <main ref={ref} className="letter-of-intent relative">
+      <div className="letter-of-intent-container">
+        <h2 className="text-left font-fira-sans text-4xl font-extrabold leading-[1.1] tracking-[-0.02em] md:text-[3.625rem] lg:text-6xl 2xl:text-[5.25rem]">
           It&rsquo;s time to get the band back together
         </h2>
 

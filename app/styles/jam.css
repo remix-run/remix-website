@@ -32,16 +32,11 @@ html {
   --parallax-transform-percent: 0.75;
 }
 
-@screen md {
-  .letter-of-intent {
-    padding-top: 410px;
-  }
-}
-
-@screen 2xl {
-  .letter-of-intent {
-    padding-top: 600px;
-  }
+.letter-of-intent-container {
+  max-width: 1400px;
+  width: 85%;
+  padding-bottom: 200px;
+  @apply mx-auto pb-0 pt-0;
 }
 
 /* Keepsakes */
@@ -140,6 +135,15 @@ html {
 }
 
 @screen md {
+  .letter-of-intent {
+    padding-top: 410px;
+  }
+
+  .letter-of-intent-container {
+    width: 75%;
+    padding-bottom: 200px;
+  }
+
   .postcard {
     --rotate: -4deg;
     top: 17px;
@@ -171,6 +175,12 @@ html {
 }
 
 @screen lg {
+  .letter-of-intent-container {
+    width: 75%;
+    padding-bottom: 56px;
+    padding-top: 48px;
+  }
+
   .postcard {
     top: 27px;
     left: 16px;
@@ -201,11 +211,17 @@ html {
 }
 
 @screen xl {
+  .letter-of-intent-container {
+    width: 67%;
+    padding-bottom: 56px;
+    padding-top: 48px;
+  }
+
   .postcard {
-    top: -43px;
-    left: 32px;
-    width: 800px;
-    height: 560px;
+    top: 27px;
+    left: 16px;
+    width: 600px;
+    height: 420px;
   }
 
   .lanyard {
@@ -231,6 +247,16 @@ html {
 }
 
 @screen 2xl {
+  .letter-of-intent {
+    padding-top: 600px;
+  }
+
+  .letter-of-intent-container {
+    width: 67%;
+    padding-bottom: 110px;
+    padding-top: 96px;
+  }
+
   .postcard {
     top: 44px;
     left: 82px;
@@ -260,7 +286,16 @@ html {
   }
 }
 
-@screen 3xl {
+@media (min-width: 120rem /* 1920px */) {
+  .letter-of-intent-container {
+    width: 60%;
+    @apply pb-0 pt-0;
+  }
+
+  .letter-of-intent h2 {
+    @apply text-8xl;
+  }
+
   .postcard {
     top: 44px;
     left: 153px;
