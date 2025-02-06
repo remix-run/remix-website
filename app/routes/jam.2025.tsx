@@ -38,9 +38,9 @@ export function meta({ matches }: Route.MetaArgs) {
 
 export default function RemixJam2025() {
   return (
-    <div className="bg-gradient-to-b from-[#ebebe6] to-white">
+    <div className="overflow-x-hidden bg-gradient-to-b from-[#ebebe6] to-white">
       <div className="relative z-10">
-        <KeepSakes />
+        <Keepsakes />
 
         <Link
           to={newsletterLink}
@@ -55,7 +55,7 @@ export default function RemixJam2025() {
       <LetterOfIntent />
 
       <div className="relative">
-        <div className="flex flex-col items-center overflow-hidden pt-[300px] xl:pt-[400px] 2xl:pt-[300px]">
+        <div className="flex flex-col items-center overflow-hidden pt-[450px] xl:pt-[400px] 2xl:pt-[450px]">
           {/* <div className="h-[679px] w-[1824px] lg:h-[751px] lg:w-[2016px] xl:h-[876px] xl:w-[2344px] 2xl:h-[1037px] 2xl:w-[2784px]"> */}
           <div className="aspect-[2.69] w-[1824px] lg:w-[2016px] xl:w-[2344px] 2xl:w-[2784px]">
             <img
@@ -72,92 +72,110 @@ export default function RemixJam2025() {
   );
 }
 
-function KeepSakes() {
+type KeepsakeId = "sticker" | "postcard" | "lanyard" | "pick";
+
+function Keepsakes() {
+  const [zIndexes, setZIndexes] = useState<Record<KeepsakeId, number>>({
+    sticker: 1,
+    postcard: 2,
+    lanyard: 3,
+    pick: 4,
+  });
+
+  console.log(zIndexes);
+
+  const moveToFront = (id: KeepsakeId) => {
+    setZIndexes((current) => {
+      const newIndexes = { ...current };
+      // Find the current max z-index
+      const currentIndex = current[id];
+
+      // Decrease all items that were above the moved item
+      for (let key in newIndexes) {
+        if (newIndexes[key as KeepsakeId] > currentIndex) {
+          newIndexes[key as KeepsakeId]--;
+        }
+      }
+
+      // Move the dragged item to the top
+      newIndexes[id] = 4;
+
+      return newIndexes;
+    });
+  };
+
   return (
-    <>
-      <KeepSake className="sticker">
+    <div className="isolate">
+      <Keepsake
+        className="sticker"
+        order={zIndexes.sticker}
+        onDragStart={() => moveToFront("sticker")}
+      >
         <img
           src="/conf-images/2025/remix-logo-sticker.svg"
           alt="Remix Logo Sticker"
           draggable={false}
         />
-      </KeepSake>
+      </Keepsake>
 
-      <KeepSake className="postcard">
+      <Keepsake
+        className="postcard"
+        order={zIndexes.postcard}
+        onDragStart={() => moveToFront("postcard")}
+      >
         <PostCard />
-      </KeepSake>
+      </Keepsake>
 
-      <KeepSake className="lanyard">
+      <Keepsake
+        className="lanyard"
+        order={zIndexes.lanyard}
+        onDragStart={() => moveToFront("lanyard")}
+      >
         <img
           src="/conf-images/2025/remix-lanyard.avif"
           alt="All Access Remix Jam 2025 Lanyard that says 'Michael Jackson co-author, Remix, Shopify'"
           draggable={false}
         />
-      </KeepSake>
+      </Keepsake>
 
-      <KeepSake className="pick">
+      <Keepsake
+        className="pick"
+        order={zIndexes.pick}
+        onDragStart={() => moveToFront("pick")}
+      >
         <img
           src="/conf-images/2025/remix-pick.avif"
           alt="Guitar pick with Remix logo and 'Remix Jam Toronto '25'"
           draggable={false}
         />
-      </KeepSake>
-    </>
+      </Keepsake>
+    </div>
   );
 }
 
-type KeepSakeProps = {
+type KeepsakeProps = {
   className: string;
   children: React.ReactNode;
+  onDragStart: () => void;
+  order?: number;
 };
 
-function KeepSake({ className, children }: KeepSakeProps) {
-  const [isDragging, setIsDragging] = useState(false);
-  const [translate, setTranslate] = useState({ x: 0, y: 0 });
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setStartPos({ x: e.clientX - translate.x, y: e.clientY - translate.y });
-    setIsDragging(true);
-  };
-
-  useEffect(() => {
-    if (!isDragging) return;
-    const handleMouseMove = (e: MouseEvent) => {
-      setTranslate({
-        x: e.clientX - startPos.x,
-        y: e.clientY - startPos.y,
-      });
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging, startPos]);
-
+function Keepsake({ className, children, onDragStart, order }: KeepsakeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useDrag(elementRef, onDragStart);
   useParallax(containerRef);
 
   return (
-    <div className="keepsake-container" ref={containerRef}>
+    <div
+      className="keepsake-container relative"
+      style={{ zIndex: order }}
+      ref={containerRef}
+    >
       <div
-        onMouseDown={handleMouseDown}
-        className={clsx(
-          "keepsake select-none",
-          isDragging ? "cursor-grabbing" : "cursor-grab",
-          className,
-        )}
-        style={{
-          transform: `translate(${translate.x}px, ${translate.y}px)`,
-        }}
+        ref={elementRef}
+        className={clsx("keepsake cursor-grab select-none", className)}
       >
         <div className="rotate">{children}</div>
       </div>
@@ -316,6 +334,75 @@ function NewsletterSignup() {
 
 const newsletterId = "newsletter";
 const newsletterLink = `#${newsletterId}`;
+
+// TODO: Move this into a callback ref once we upgrade to React 19
+function useDrag(ref: React.RefObject<HTMLElement>, onDragStart?: () => void) {
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    let isDragging = false;
+    let startPos = { x: 0, y: 0 };
+    let translate = { x: 0, y: 0 };
+
+    const getEventPos = (e: MouseEvent | TouchEvent) => {
+      const pos = "touches" in e ? e.touches[0] : e;
+      return { x: pos.clientX, y: pos.clientY };
+    };
+
+    const handleStart = (e: MouseEvent | TouchEvent) => {
+      isDragging = true;
+      element.style.cursor = "grabbing";
+      onDragStart?.();
+      const pos = getEventPos(e);
+      startPos = {
+        x: pos.x - translate.x,
+        y: pos.y - translate.y,
+      };
+    };
+
+    const handleMove = (e: MouseEvent | TouchEvent) => {
+      if (!isDragging) return;
+      e.preventDefault(); // Prevent scrolling on touch devices
+
+      const pos = getEventPos(e);
+      translate = {
+        x: pos.x - startPos.x,
+        y: pos.y - startPos.y,
+      };
+
+      element.style.transform = `translate(${translate.x}px, ${translate.y}px)`;
+    };
+
+    const handleEnd = () => {
+      isDragging = false;
+      element.style.cursor = "grab";
+    };
+
+    // Mouse events
+    element.addEventListener("mousedown", handleStart);
+    document.addEventListener("mousemove", handleMove);
+    document.addEventListener("mouseup", handleEnd);
+
+    // Touch events
+    element.addEventListener("touchstart", handleStart, { passive: false });
+    document.addEventListener("touchmove", handleMove, { passive: false });
+    document.addEventListener("touchend", handleEnd);
+    document.addEventListener("touchcancel", handleEnd);
+
+    return () => {
+      element.removeEventListener("mousedown", handleStart);
+      document.removeEventListener("mousemove", handleMove);
+      document.removeEventListener("mouseup", handleEnd);
+
+      element.removeEventListener("touchstart", handleStart);
+      document.removeEventListener("touchmove", handleMove);
+      document.removeEventListener("touchend", handleEnd);
+      document.removeEventListener("touchcancel", handleEnd);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tell me when this starts breaking
+  }, [ref]);
+}
 
 // TODO: Move this into a callback ref once we upgrade to React 19
 function useParallax(ref: React.RefObject<HTMLElement>) {
