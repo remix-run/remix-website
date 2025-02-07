@@ -52,8 +52,6 @@ export default function RemixJam2025() {
         </Link>
       </div>
 
-      {/* <Nav /> */}
-
       <LetterOfIntent />
 
       <div className="relative">
