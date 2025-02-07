@@ -227,7 +227,7 @@ function LetterOfIntent() {
             mutations, and transitions out of the box! And we took everything
             that was great about Remix and ported it back into React Router v7,
             building a bridge to the future of React for the millions of apps
-            that have built on React Router over the last decade.
+            that have been built on React Router over the last decade.
           </p>
           <p>
             But we haven't stopped there; we've been jamming in our garage this
