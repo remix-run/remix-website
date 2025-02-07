@@ -38,7 +38,7 @@ export function meta({ matches }: Route.MetaArgs) {
 
 export default function RemixJam2025() {
   return (
-    <div className="overflow-x-hidden bg-gradient-to-b from-[#ebebe6] to-white">
+    <div className="overflow-x-hidden bg-gradient-to-b from-[#ebebe6] to-white dark:text-gray-900">
       <div className="relative z-10">
         <Keepsakes />
 
