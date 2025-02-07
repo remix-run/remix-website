@@ -28,8 +28,9 @@ html {
 /* Letter of Intent */
 
 .letter-of-intent {
-  padding-top: 320px;
   --parallax-transform-percent: 0.75;
+  padding-top: 320px;
+  padding-bottom: 450px;
 }
 
 .letter-of-intent-container {
@@ -37,6 +38,11 @@ html {
   width: 85%;
   padding-bottom: 200px;
   @apply mx-auto pb-0 pt-0;
+}
+
+.seats-container {
+  aspect-ratio: 2.69;
+  width: 1824px;
 }
 
 /* Keepsakes */
@@ -136,7 +142,7 @@ html {
 
 @screen md {
   .letter-of-intent {
-    padding-top: 410px;
+    padding-top: 810px;
   }
 
   .letter-of-intent-container {
@@ -181,6 +187,10 @@ html {
     padding-top: 48px;
   }
 
+  .seats-container {
+    width: 2016px;
+  }
+
   .postcard {
     top: 27px;
     left: 16px;
@@ -211,6 +221,14 @@ html {
 }
 
 @screen xl {
+  .letter-of-intent {
+    padding-bottom: 400px;
+  }
+
+  .seats-container {
+    width: 2344px;
+  }
+
   .letter-of-intent-container {
     width: 67%;
     padding-bottom: 56px;
@@ -249,6 +267,11 @@ html {
 @screen 2xl {
   .letter-of-intent {
     padding-top: 600px;
+    padding-bottom: 450px;
+  }
+
+  .seats-container {
+    width: 2784px;
   }
 
   .letter-of-intent-container {

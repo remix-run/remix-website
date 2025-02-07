@@ -57,9 +57,8 @@ export default function RemixJam2025() {
       <LetterOfIntent />
 
       <div className="relative">
-        <div className="flex flex-col items-center overflow-hidden pt-[450px] xl:pt-[400px] 2xl:pt-[450px]">
-          {/* <div className="h-[679px] w-[1824px] lg:h-[751px] lg:w-[2016px] xl:h-[876px] xl:w-[2344px] 2xl:h-[1037px] 2xl:w-[2784px]"> */}
-          <div className="aspect-[2.69] w-[1824px] lg:w-[2016px] xl:w-[2344px] 2xl:w-[2784px]">
+        <div className="flex flex-col items-center overflow-hidden">
+          <div className="seats-container">
             <img
               src="/conf-images/2025/seat-combined.svg"
               className="size-full"
