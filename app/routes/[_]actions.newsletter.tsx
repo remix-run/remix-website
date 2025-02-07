@@ -21,7 +21,7 @@ export async function action({ request }: Route.ActionArgs) {
   try {
     await subscribeToNewsletter(email, tags);
   } catch (e: any) {
-    return { error: e.message || "Unknown error", ok: false };
+    return { error: e.message || "Something went wrong", ok: false };
   }
 
   return { error: null, ok: true };

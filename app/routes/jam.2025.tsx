@@ -222,14 +222,16 @@ function LetterOfIntent() {
         <div className="mt-9 flex flex-col gap-12 text-justify text-base lg:text-xl 2xl:text-2xl">
           <p>
             A lot has changed since the last Remix Conf in 2023. The React team
-            has introduced so many great features and new paradigms with React
-            19. Because of this, we on the Remix team felt it our responsibility
-            to build a bridge to React 19 for the million of applications using
-            React Router, by bringing everything that made Remix great into it.
+            has incorporated a lot of what made Remix great into React itself in
+            React 19. React now ships with support for <code>{"<form>"}</code>s,
+            mutations, and transitions out of the box! And we took everything
+            that was great about Remix and ported it back into React Router v7,
+            building a bridge to the future of React for the millions of apps
+            that have built on React Router over the last decade.
           </p>
           <p>
-            But we haven't stopped there; we've still been jamming in our
-            garage, and we're ready to start jamming with all of you again.
+            But we haven't stopped there; we've been jamming in our garage this
+            whole time, and we're ready to start jamming again with all of you.
             That's why we're letting you know to mark your calendars for Remix
             Jam, Fall 2025.
           </p>
@@ -238,7 +240,7 @@ function LetterOfIntent() {
             Shopify in the beautiful city of Toronto. Remix Jam will be the best
             opportunity to hang out IRL with the Remix community and core team,
             as well as hear from leading experts who are successfully using
-            Remix technologies to solve real problems.
+            Remix to solve real problems.
           </p>
           <p>
             Our tagline, "
@@ -247,13 +249,13 @@ function LetterOfIntent() {
             to build better websites, which is why we made Remix.
           </p>
           <blockquote className="italic text-blue-400">
-            "...a full stack web framework that lets you focus on the user
-            interface and work back through web standards to deliver a fast,
-            slick, and resilient user experience."
+            "Remix lets you focus on the user interface and work back through
+            web standards to deliver a fast, slick, and resilient user
+            experience."
           </blockquote>
           <p>
             We're pushing further, not just with projects like React Router but
-            in our broader mission and philosophy to useThePlatform to build a
+            in our broader mission and philosophy to #useThePlatform to build a
             better web.
           </p>
           <p>
@@ -320,11 +322,21 @@ function NewsletterSignup() {
           <div aria-live="polite">
             {isSuccessful && (
               <p className="font-semibold text-white">
+                You're good to go ✅
+                <br />
+                <br />
                 Please confirm your email to be notified when ticket sales are
                 available.
               </p>
             )}
-            {isError && <div className="font-semibold text-white">{error}</div>}
+            {isError && (
+              <div className="font-semibold text-white">
+                {error} ⚠️
+                <br />
+                <br />
+                Please try again
+              </div>
+            )}
           </div>
         </subscribe.Form>
       </div>
@@ -397,7 +409,7 @@ function useDrag(ref: React.RefObject<HTMLElement>, onDragStart?: () => void) {
 
       element.removeEventListener("touchstart", handleStart);
       document.removeEventListener("touchmove", handleMove);
-      document.removeEventListener("touchend", handleEnd);
+      element.removeEventListener("touchend", handleEnd);
       document.removeEventListener("touchcancel", handleEnd);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- tell me when this starts breaking
