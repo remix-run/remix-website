@@ -1,9 +1,11 @@
-import { Link } from "react-router";
+import { Link, useFetcher } from "react-router";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { getMeta } from "~/lib/meta";
+import { getSubscribeStatus } from "~/ui/subscribe";
 import type { Route } from "./+types/jam.2025";
+import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
 
 import jamStyles from "~/styles/jam.css?url";
 
@@ -273,6 +275,9 @@ function LetterOfIntent() {
 }
 
 function NewsletterSignup() {
+  const subscribe = useFetcher<NewsletterActionData>();
+  const { isSuccessful, isError, error } = getSubscribeStatus(subscribe);
+
   return (
     <aside
       id={newsletterId}
@@ -285,23 +290,11 @@ function NewsletterSignup() {
           <span>when Remix Jam tickets are available</span>
         </h2>
 
-        <form className="mt-7 flex w-[280px] flex-col gap-5 p-5">
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="name"
-              className="text-left text-xs font-medium text-white"
-            >
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Jane Smith"
-              className="rounded-xl bg-black/20 p-5 text-sm leading-none text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white"
-            />
-          </div>
-
+        <subscribe.Form
+          className="mt-7 flex w-[280px] flex-col gap-5 p-5"
+          action="/_actions/newsletter"
+          method="POST"
+        >
           <div className="flex flex-col gap-2">
             <label
               htmlFor="email"
@@ -317,14 +310,24 @@ function NewsletterSignup() {
               className="rounded-xl bg-black/20 p-5 text-sm leading-none text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white"
             />
           </div>
-
+          <input type="hidden" name="tag" value="6280341" />
           <button
             type="submit"
             className="rounded-2xl bg-black px-5 py-4 text-sm font-semibold text-white transition-colors hover:bg-blue-brand"
           >
             Sign Up
           </button>
-        </form>
+
+          <div aria-live="polite">
+            {isSuccessful && (
+              <p className="font-semibold text-white">
+                Please confirm your email to be notified when ticket sales are
+                available.
+              </p>
+            )}
+            {isError && <div className="font-semibold text-white">{error}</div>}
+          </div>
+        </subscribe.Form>
       </div>
     </aside>
   );

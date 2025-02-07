@@ -1,9 +1,9 @@
 import { data } from "react-router";
-import type { ActionFunctionArgs } from "react-router";
 import { subscribeToNewsletter } from "~/lib/convertkit";
 import { requirePost } from "~/lib/http.server";
+import type { Route, Info } from "./+types/[_]actions.newsletter";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export async function action({ request }: Route.ActionArgs) {
   requirePost(request);
 
   let body = new URLSearchParams(await request.text());
@@ -12,11 +12,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return data({ error: "Invalid Email", ok: false }, { status: 400 });
   }
 
+  let tags = body.getAll("tag").map((tag) => parseInt(tag));
+
+  if (tags.some((tag) => isNaN(tag))) {
+    return data({ error: "Invalid Tag", ok: false }, { status: 400 });
+  }
+
   try {
-    await subscribeToNewsletter(email);
+    await subscribeToNewsletter(email, tags);
   } catch (e: any) {
     return { error: e.message || "Unknown error", ok: false };
   }
 
   return { error: null, ok: true };
-};
+}
+
+export type NewsletterActionData = Info["actionData"];
