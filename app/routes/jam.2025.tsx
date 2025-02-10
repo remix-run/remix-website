@@ -246,7 +246,7 @@ function LetterOfIntent() {
             is still at the heart of everything we do. We want to enable users
             to build better websites, which is why we made Remix.
           </p>
-          <blockquote className="italic text-blue-400">
+          <blockquote className="italic text-blue-600">
             "Remix lets you focus on the user interface and work back through
             web standards to deliver a fast, slick, and resilient user
             experience."

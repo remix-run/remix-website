@@ -183,7 +183,7 @@ html {
 @screen lg {
   .letter-of-intent-container {
     width: 75%;
-    padding-bottom: 56px;
+    padding-bottom: 150px;
     padding-top: 48px;
   }
 
@@ -222,7 +222,7 @@ html {
 
 @screen xl {
   .letter-of-intent {
-    padding-bottom: 400px;
+    padding-bottom: 450px;
   }
 
   .seats-container {
