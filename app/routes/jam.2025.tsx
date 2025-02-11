@@ -200,7 +200,7 @@ function PostCard() {
       />
       <h1 className="relative self-end text-xl font-extrabold uppercase leading-none tracking-[-0.02em] text-[#f4f3ef] xl:text-4xl">
         <span className="sr-only">Remix Jam Toronto '25</span>
-        <span>Fall 2025</span>
+        <time dateTime="2025-10-10">Oct 10, 2025</time>
       </h1>
     </div>
   );
@@ -231,7 +231,11 @@ function LetterOfIntent() {
             But we haven't stopped there; we've been jamming in our garage this
             whole time, and we're ready to start jamming again with all of you.
             That's why we're letting you know to mark your calendars for Remix
-            Jam, Fall 2025.
+            Jam,{" "}
+            <time className="font-bold" dateTime="2025-10-10">
+              Oct 10, 2025
+            </time>
+            .
           </p>
           <p>
             Remix Jam is a gathering of the web's biggest fans, hosted by
