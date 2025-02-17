@@ -26,7 +26,7 @@
 
 - name: "NASA"
   description: "GCN: NASA's Time-Domain and Multimessenger Alert System"
-  link: "https://github.com/nasa-gcn/gcn.nasa.gov"
+  link: "https://gcn.nasa.gov/"
   imgSrc: "/showcase-assets/nasa-gnc.webp"
   videoSrc: "/showcase-assets/nasa-gnc"
 
