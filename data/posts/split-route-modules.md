@@ -134,4 +134,4 @@ export default {
 } satisfies Config;
 ```
 
-As always, we'd love to hear your feedback. If you run into any problems or have any suggestions for improvements, please [file an issue](https://github.com/remix-run/react-router/issues) or [start a discussion](https://github.com/remix-run/react-router/discussions).
+As always, we'd love to hear your feedback. If you run into any problems or have suggestions for improvements, please [file an issue](https://github.com/remix-run/react-router/issues) or [start a discussion](https://github.com/remix-run/react-router/discussions).
