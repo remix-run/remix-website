@@ -85,7 +85,7 @@ export default function Component({ loaderData }) {
 
 Since these exports have now been split into separate modules, the React Router Vite plugin can ensure that they are downloaded independently.
 
-This optimization is even more pronounced when more of the Route Module API is used. For example, when using `clientLoader`, `clientAction` and `HydrateFallback`, the timeline for a single route module during a client-side navigation might look like this:
+This optimization is even more pronounced when using additional parts of the Route Module API. For example, when using `clientLoader`, `clientAction` and `HydrateFallback`, the timeline for a single route module during a client-side navigation might look like this:
 
 ```
 Get Route Module:     |--~~~++++=======|
