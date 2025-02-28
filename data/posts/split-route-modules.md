@@ -10,7 +10,7 @@ authors:
   - Mark Dalgleish
 ---
 
-With the release of [React Router v7.2.0](https://github.com/remix-run/react-router/releases/tag/react-router%407.2.0), we’ve introduced a new opt-in framework feature called Split Route Modules. In this post we’ll explore the performance problem that Split Route Modules solves, how it works, and how to use it today.
+With the release of [React Router v7.2.0](https://github.com/remix-run/react-router/releases/tag/react-router%407.2.0), we’ve introduced a new opt-in framework feature called Split Route Modules. In this post, we’ll explore the performance problem that Split Route Modules solves, how it works, and how to use it today.
 
 ## Route Modules
 
