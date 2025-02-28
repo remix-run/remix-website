@@ -32,7 +32,7 @@ export default function Component({ loaderData }) {
 }
 ```
 
-Here we have a minimal `clientLoader` that makes a basic fetch call to an external API. The route component, on the other hand, is much larger.
+Here we have a small `clientLoader` that makes a basic fetch call to an external API. The route component, on the other hand, is much larger.
 
 Unfortunately, because these exports are both contained within the same module, the client loader has to wait for the rest of the route module to download before it can start running. If the client loader needs to perform an async operation, like hitting an external API, this delay can be felt by the user.
 
@@ -100,8 +100,8 @@ Get clientLoader:     |--|
 Get clientAction:     |~~~|
 Get HydrateFallback:  SKIPPED
 Get Component:        |=======|
-Run clientLoader:        |-----|
-Render:                        |-|
+Run clientLoader:         |-----|
+Render:                         |-|
 ```
 
 This looks much better! As before, the client loader doesn't need to wait for the component to download, and now it doesn't need to wait for the `clientAction` or `HydrateFallback` exports to download either. In fact, it doesn't even need to download the `HydrateFallback` export at all during client navigations since it's only ever used on the initial page load.
