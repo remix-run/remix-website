@@ -108,6 +108,87 @@ Render:                         |-|
 
 This looks much better! As before, the client loader doesn't need to wait for the component to download, and now it doesn't need to wait for the `clientAction` or `HydrateFallback` exports to download either. In fact, it doesn't even need to download the `HydrateFallback` export at all during client navigations since it's only ever used on the initial page load.
 
+## Limitations
+
+It’s worth being aware that route modules can be written in a way that doesn’t support code splitting.
+
+For example, take the following (admittedly contrived) route module:
+
+```tsx
+// routes/example.tsx
+import { MassiveComponent } from "~/components";
+
+const shared = () => console.log("hello");
+
+export async function clientLoader() {
+  shared();
+  return await fetch("https://example.com/api").then((response) =>
+    response.json(),
+  );
+}
+
+export default function Component({ loaderData }) {
+  shared();
+  return <MassiveComponent data={loaderData} />;
+}
+```
+
+Since the `shared` function that’s used in the `clientLoader` is also used in the `default` component export, the React Router Vite plugin will not be able to split the client loader into its own module.
+
+**If a route module cannot be split, your application will still continue to work as expected.** The only difference is that the client loader can't be downloaded independently of the component, giving you the same performance tradeoffs that route modules have always had.
+
+That said, you can avoid this de-optimization by ensuring that any code shared between exports is extracted into a separate file. In our example, that might mean creating a `shared.ts` file:
+
+```tsx
+// routes/example/shared.ts
+export const shared = () => console.log("hello");
+```
+
+You can then import this shared code in your route module:
+
+```tsx
+// routes/example/route.tsx
+import { MassiveComponent } from "~/components";
+import { shared } from "./shared";
+
+export async function clientLoader() {
+  shared();
+  return await fetch("https://example.com/api").then((response) =>
+    response.json(),
+  );
+}
+
+export default function Component({ loaderData }) {
+  shared();
+  return <MassiveComponent data={loaderData} />;
+}
+```
+
+Since the shared code is now in its own module, the route module can be split into two separate virtual modules that import the `shared` function:
+
+```tsx
+// routes/example/route.tsx?route-chunk=clientLoader
+import { shared } from "./shared";
+
+export async function clientLoader() {
+  shared();
+  return await fetch("https://example.com/api").then((response) =>
+    response.json(),
+  );
+}
+```
+
+```tsx
+// routes/example/route.tsx?route-chunk=main
+import { MassiveComponent } from "~/components";
+import { shared } from "./shared";
+
+export default function Component({ loaderData }) {
+  shared();
+  return <MassiveComponent data={loaderData} />;
+}
+```
+
 ## Try it out
 
 This feature will be enabled by default in a future release, but you can try it out today by setting the `future.unstable_splitRouteModules` flag in your React Router config:
