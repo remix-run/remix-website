@@ -16,7 +16,7 @@ With the release of [React Router v7.2.0](https://github.com/remix-run/react-rou
 
 One of React Router’s defining features in framework mode is the [Route&nbsp;Module&nbsp;API](https://reactrouter.com/start/framework/route-module) which lets you define everything a route needs in a single file. While convenient, this API can sometimes come with a performance tradeoff.
 
-Take for example the following route module:
+Take, for example, the following route module:
 
 ```ts
 import { MassiveComponent } from "~/components";
