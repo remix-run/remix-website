@@ -104,7 +104,7 @@ Run clientLoader:        |-----|
 Render:                        |-|
 ```
 
-This looks much better! As before, the client loader doesn't need to wait for the component to download — and now it doesn't need to wait for the `clientAction` or `HydrateFallback` exports to download either. In fact, it doesn't even need to download the `HydrateFallback` export at all during client navigations since it's only ever used on the initial page load.
+This looks much better! As before, the client loader doesn't need to wait for the component to download, and now it doesn't need to wait for the `clientAction` or `HydrateFallback` exports to download either. In fact, it doesn't even need to download the `HydrateFallback` export at all during client navigations since it's only ever used on the initial page load.
 
 ## Try it out
 
