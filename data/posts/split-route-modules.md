@@ -44,7 +44,7 @@ Run clientLoader:            |-----|
 Render:                            |-|
 ```
 
-The external API call made from the `clientLoader` is delayed waiting for the hypothetical `MassiveComponent` to download. Since we can't render the component without the data from the client loader, the user has to wait for this network waterfall to complete before the page is rendered.
+The `clientLoader` is delayed from calling the external API since it has to wait for the hypothetical `MassiveComponent` to download. Since we can't render the component without the data from the client loader, the user has to wait for this network waterfall to complete before the page is rendered.
 
 Ideally we’d like to be able to download the `clientLoader` export independently and run it as soon as it’s available:
 
