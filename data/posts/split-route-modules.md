@@ -34,7 +34,7 @@ export default function Component({ loaderData }) {
 
 Here we have a minimal `clientLoader` that makes a basic fetch call to an external API. The route component, on the other hand, is much larger.
 
-Unfortunately, because these exports are both contained within the same module, the client loader has to wait for the rest of the route module to download before it can start running. If the client loader needs to perform an async operation like hitting an external API, this delay can be felt by the user.
+Unfortunately, because these exports are both contained within the same module, the client loader has to wait for the rest of the route module to download before it can start running. If the client loader needs to perform an async operation, like hitting an external API, this delay can be felt by the user.
 
 To visualize this as a timeline:
 
