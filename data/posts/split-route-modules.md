@@ -108,6 +108,10 @@ Render:                         |-|
 
 This looks much better! As before, the client loader doesn't need to wait for the component to download, and now it doesn't need to wait for the `clientAction` or `HydrateFallback` exports to download either. In fact, it doesn't even need to download the `HydrateFallback` export at all during client navigations since it's only ever used on the initial page load.
 
+You might be surprised to see `clientAction` in the timeline above, even though we’re simply navigating to a new route. Technically, we could have skipped downloading it altogether at this point since it’s not needed yet. However, we’ve opted to download the `clientAction` as soon as the route module is needed in order to improve the performance of any subsequent form submissions.
+
+As you can see, this approach allows us to manage both the downloading and execution of each individual route export in isolation. We can download everything as soon as the route module is needed, but only ever wait for the exports that are needed for the current user interaction.
+
 ## Limitations
 
 It’s worth being aware that route modules can be written in a way that doesn’t support code splitting.
