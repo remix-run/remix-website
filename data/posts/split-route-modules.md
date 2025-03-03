@@ -42,7 +42,7 @@ Unfortunately, because these exports are both contained within the same module, 
 
 To visualize this as a timeline:
 
-<img alt="Waterfall diagram showing 'Click /route' triggering 'Get route module' (split into 'clientLoader' and 'Component' segments) followed by 'Run clientLoader' before 'Render content' occurs" src="/blog-images/posts/split-route-modules/get-route-module.png" class="m-auto w-4/5 border rounded-md shadow" />
+<img alt="Waterfall diagram showing 'Click /route' triggering 'Get route module' (split into 'clientLoader' and 'Component' segments) followed by 'Run clientLoader' before 'Render content' occurs" src="/blog-images/posts/split-route-modules/get-route-module.png" class="m-auto sm:w-4/5 border rounded-md shadow" />
 
 Note that, while the route module is a single request from the browser, in this diagram we’re showing how it’s made up of multiple logical units — in this case, `clientLoader` and `Component`.
 
@@ -50,7 +50,7 @@ The `clientLoader` is delayed from calling the external API since it has to wait
 
 Ideally we’d like to be able to download the `clientLoader` export independently and run it as soon as it’s available:
 
-<img alt="Waterfall diagram showing 'Click /route' triggering a parallel 'Get clientLoader' and 'Get Component' followed by 'Run clientLoader' before 'Render content' occurs, now earlier than before" src="/blog-images/posts/split-route-modules/get-route-module-split.png" class="m-auto w-4/5 border rounded-md shadow" />
+<img alt="Waterfall diagram showing 'Click /route' triggering a parallel 'Get clientLoader' and 'Get Component' followed by 'Run clientLoader' before 'Render content' occurs, now earlier than before" src="/blog-images/posts/split-route-modules/get-route-module-split.png" class="m-auto sm:w-4/5 border rounded-md shadow" />
 
 At a framework level, the easiest way for us to solve this would be to force you to author your route in multiple files (`route/clientLoader.ts`, `route/component.tsx`, etc.) — but we really didn't want to give up on the convenience of the Route Module API. The question is, how do we achieve this?
 
@@ -84,11 +84,11 @@ Since these exports have now been split into separate modules, the React Router 
 
 This optimization is even more pronounced when using additional parts of the Route Module API. For example, when using `clientLoader`, `clientAction` and `HydrateFallback`, the timeline for a single route module during a client-side navigation might look like this:
 
-<img alt="Waterfall diagram showing 'Click /route' triggering 'Get route module' (split into 'clientLoader', 'clientAction', 'Component' and 'HydrateFallback' segments) followed by 'Run clientLoader' before 'Render content' occurs" src="/blog-images/posts/split-route-modules/get-big-route-module.png" class="m-auto w-4/5 border rounded-md shadow" />
+<img alt="Waterfall diagram showing 'Click /route' triggering 'Get route module' (split into 'clientLoader', 'clientAction', 'Component' and 'HydrateFallback' segments) followed by 'Run clientLoader' before 'Render content' occurs" src="/blog-images/posts/split-route-modules/get-big-route-module.png" class="m-auto sm:w-4/5 border rounded-md shadow" />
 
 This would instead be optimized to the following:
 
-<img alt="Waterfall diagram showing 'Click /route' triggering a parallel 'Get clientLoader', 'Get clientAction' and 'Get Component' (with 'HydrateFallback' being skipped) followed by 'Run clientLoader' before 'Render content' occurs, now earlier than before" src="/blog-images/posts/split-route-modules/get-big-route-module-split.png" class="m-auto w-4/5 border rounded-md shadow" />
+<img alt="Waterfall diagram showing 'Click /route' triggering a parallel 'Get clientLoader', 'Get clientAction' and 'Get Component' (with 'HydrateFallback' being skipped) followed by 'Run clientLoader' before 'Render content' occurs, now earlier than before" src="/blog-images/posts/split-route-modules/get-big-route-module-split.png" class="m-auto sm:w-4/5 border rounded-md shadow" />
 
 This looks much better! As before, the client loader doesn't need to wait for the component to download, and now it doesn't need to wait for the `clientAction` or `HydrateFallback` exports to download either. In fact, it doesn't even need to download the `HydrateFallback` export at all during client navigations since it's only ever used on the initial page load.
 
