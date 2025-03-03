@@ -14,7 +14,7 @@ authors:
 
 With the release of [React Router v7.2.0](https://github.com/remix-run/react-router/releases/tag/react-router%407.2.0), we’ve introduced a new opt-in framework feature called Split Route Modules. In this post, we’ll explore the performance problem that Split Route Modules solves, how it works, and how to use it today.
 
-Please note that this feature is currently experimental, enabled by the `future.unstable_splitRouteModules` flag. If you want to use it in production, we recommend testing against your production build to ensure that the optimization is working as expected.
+Please note that this feature is currently [unstable](https://reactrouter.com/community/api-development-strategy#unstable-flags), enabled by the `future.unstable_splitRouteModules` flag. We'd love any interested users to play with it locally and provide feedback, but we do not recommend using it in production yet. If you do choose to adopt this flag in production, please ensure you do sufficient testing against your production build to ensure that the optimization is working as expected.
 
 ## Route Modules
 
