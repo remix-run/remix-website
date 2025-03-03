@@ -10,6 +10,8 @@ authors:
   - Mark Dalgleish
 ---
 
+<!-- Diagrams: https://excalidraw.com/#json=V90fQLt2mHxQnRuXn-5hS,pBKDQqcOAiKfXZf4bTRh1g -->
+
 With the release of [React Router v7.2.0](https://github.com/remix-run/react-router/releases/tag/react-router%407.2.0), we’ve introduced a new opt-in framework feature called Split Route Modules. In this post, we’ll explore the performance problem that Split Route Modules solves, how it works, and how to use it today.
 
 Please note that this feature is currently experimental, enabled by the `future.unstable_splitRouteModules` flag. If you want to use it in production, we recommend testing against your production build to ensure that the optimization is working as expected.
@@ -40,22 +42,15 @@ Unfortunately, because these exports are both contained within the same module, 
 
 To visualize this as a timeline:
 
-```
-Get Route Module:  |--=======|
-Run clientLoader:            |-----|
-Render:                            |-|
-```
+<img alt="Waterfall diagram showing 'Click /route' triggering 'Get route module' (split into 'clientLoader' and 'Component' segments) followed by 'Run clientLoader' before 'Render content' occurs" src="/blog-images/posts/split-route-modules/get-route-module.png" class="m-auto w-4/5 border rounded-md shadow" />
+
+Note that, while the route module is a single request from the browser, in this diagram we’re showing how it’s made up of multiple logical units — in this case, `clientLoader` and `Component`.
 
 The `clientLoader` is delayed from calling the external API since it has to wait for the hypothetical `MassiveComponent` to download. Since we can't render the component without the data from the client loader, the user has to wait for this network waterfall to complete before the page is rendered.
 
 Ideally we’d like to be able to download the `clientLoader` export independently and run it as soon as it’s available:
 
-```
-Get clientLoader:  |--|
-Get Component:     |=======|
-Run clientLoader:     |-----|
-Render:                     |-|
-```
+<img alt="Waterfall diagram showing 'Click /route' triggering a parallel 'Get clientLoader' and 'Get Component' followed by 'Run clientLoader' before 'Render content' occurs, now earlier than before" src="/blog-images/posts/split-route-modules/get-route-module-split.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 At a framework level, the easiest way for us to solve this would be to force you to author your route in multiple files (`route/clientLoader.ts`, `route/component.tsx`, etc.) — but we really didn't want to give up on the convenience of the Route Module API. The question is, how do we achieve this?
 
@@ -89,22 +84,11 @@ Since these exports have now been split into separate modules, the React Router 
 
 This optimization is even more pronounced when using additional parts of the Route Module API. For example, when using `clientLoader`, `clientAction` and `HydrateFallback`, the timeline for a single route module during a client-side navigation might look like this:
 
-```
-Get Route Module:     |--~~~++++=======|
-Run clientLoader:                      |-----|
-Render:                                      |-|
-```
+<img alt="Waterfall diagram showing 'Click /route' triggering 'Get route module' (split into 'clientLoader', 'clientAction', 'Component' and 'HydrateFallback' segments) followed by 'Run clientLoader' before 'Render content' occurs" src="/blog-images/posts/split-route-modules/get-big-route-module.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 This would instead be optimized to the following:
 
-```
-Get clientLoader:     |--|
-Get clientAction:     |~~~|
-Get HydrateFallback:  SKIPPED
-Get Component:        |=======|
-Run clientLoader:         |-----|
-Render:                         |-|
-```
+<img alt="Waterfall diagram showing 'Click /route' triggering a parallel 'Get clientLoader', 'Get clientAction' and 'Get Component' (with 'HydrateFallback' being skipped) followed by 'Run clientLoader' before 'Render content' occurs, now earlier than before" src="/blog-images/posts/split-route-modules/get-big-route-module-split.png" class="m-auto w-4/5 border rounded-md shadow" />
 
 This looks much better! As before, the client loader doesn't need to wait for the component to download, and now it doesn't need to wait for the `clientAction` or `HydrateFallback` exports to download either. In fact, it doesn't even need to download the `HydrateFallback` export at all during client navigations since it's only ever used on the initial page load.
 
