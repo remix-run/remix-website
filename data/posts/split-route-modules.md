@@ -1,7 +1,7 @@
 ---
 title: Split Route Modules
 summary: React Router v7.2’s framework mode now supports automatic code splitting of route modules
-date: 2025-02-27
+date: 2025-03-06
 image: /blog-images/headers/split-route-modules.jpg
 ogImage: /blog-images/headers/split-route-modules.jpg
 imageAlt: "A close-up of a stylized atom"
