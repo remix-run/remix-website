@@ -58,9 +58,9 @@
   initCommand: "npx create-remix@latest template AlexandroMtzG/remix-page-blocks"
   category: "templates"
 
-- title: "Remix Dev Tools"
-  repoUrl: "https://github.com/Code-Forge-Net/Remix-Dev-Tools"
-  imgSrc: "https://raw.githubusercontent.com/Code-Forge-Net/Remix-Dev-Tools/main/assets/remix-dev-tools.png"
+- title: "React Router Dev Tools"
+  repoUrl: "https://github.com/forge-42/react-router-devtools"
+  imgSrc: "https://raw.githubusercontent.com/forge-42/react-router-devtools/main/assets/remix-dev-tools.png"
   initCommand: "npm install remix-development-tools -D"
   category: "libraries"
 
@@ -198,14 +198,14 @@
   category: "libraries"
 
 - title: "remix-client-cache"
-  repoUrl: "https://github.com/forge42dev/remix-client-cache"
-  imgSrc: "https://opengraph.githubassets.com/6895fd09322b013c24ed810a1b65af484bfc07b841e5c8960c3be4acbbbbafcb/forge42dev/remix-client-cache"
+  repoUrl: "https://github.com/forge-42/remix-client-cache"
+  imgSrc: "https://opengraph.githubassets.com/c8972eabb7508c8a4ae1580cd460896d380e9ce76109c7788022e2ae7e32f9ca/forge-42/remix-client-cache"
   initCommand: "npm install remix-client-cache"
   category: "libraries"
 
 - title: "remix-toast"
-  repoUrl: "https://github.com/forge42dev/remix-toast"
-  imgSrc: "https://opengraph.githubassets.com/8fadfa577649b2afb0e90d2882f1cfafc2a75328f3f01b9d0bb047216d5fd565/forge42dev/remix-toast"
+  repoUrl: "https://github.com/forge-42/remix-toast"
+  imgSrc: "https://opengraph.githubassets.com/d50e8541ce64e7f6993bf765e22d0d30d53fdb2c17c56cec81e942b5ee2f135b/forge-42/remix-toast"
   initCommand: "npm install remix-toast"
   category: "libraries"
 
