@@ -6,6 +6,7 @@ import { getMeta } from "~/lib/meta";
 import { getSubscribeStatus } from "~/ui/subscribe";
 import type { Route } from "./+types/jam.2025";
 import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
+import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
 
 import jamStyles from "~/styles/jam.css?url";
 
@@ -72,6 +73,9 @@ export default function RemixJam2025() {
           </div>
         </div>
         <NewsletterSignup />
+      </div>
+      <div className="bg-black pb-20">
+        <Footer />
       </div>
     </div>
   );
@@ -448,4 +452,87 @@ function useParallax(ref: React.RefObject<HTMLElement>) {
       cancelAnimationFrame(rafId);
     };
   }, [ref]);
+}
+
+function Footer() {
+  return (
+    <footer className="font-conf-mono flex flex-col items-center gap-2 px-6 py-12 text-center text-gray-400">
+      <div className="flex items-center gap-5">
+        <Link
+          to="/"
+          className="rounded-3xl border border-gray-400 px-4 py-1 uppercase text-white hover:text-blue-brand"
+        >
+          remix.run
+        </Link>
+        <a
+          href="https://github.com/remix-run"
+          aria-label="GitHub"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <GitHub
+            className="size-8 transition-colors hover:text-white"
+            aria-hidden
+          />
+        </a>
+        <a
+          href="https://twitter.com/remix_run"
+          aria-label="Twitter"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Twitter
+            className="size-8 transition-colors hover:text-white"
+            aria-hidden
+          />
+        </a>
+        <a
+          href="https://youtube.com/remix_run"
+          aria-label="YouTube"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <YouTube
+            className="size-8 transition-colors hover:text-white"
+            aria-hidden
+          />
+        </a>
+        <a
+          href="https://rmx.as/discord"
+          aria-label="Discord"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Discord
+            className="size-8 transition-colors hover:text-white"
+            aria-hidden
+          />
+        </a>
+      </div>
+      <div className="flex flex-col items-center gap-2 uppercase leading-loose">
+        <div>
+          docs and examples licensed under{" "}
+          <a
+            href="https://opensource.org/licenses/MIT"
+            className="text-white hover:text-blue-brand"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            MIT
+          </a>
+        </div>
+        <div>
+          ©2025{" "}
+          <a
+            href="https://shopify.com"
+            className="text-white hover:text-blue-brand"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Shopify, Inc.
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
 }

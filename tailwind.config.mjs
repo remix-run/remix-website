@@ -18,7 +18,7 @@ export default {
     fontFamily: {
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
       "fira-sans": ["Fira Sans", ...defaultTheme.fontFamily.sans],
-      "conf-mono-sans": ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
+      "conf-mono": ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
       mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
