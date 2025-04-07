@@ -23,6 +23,12 @@ export function links() {
       href: "/font/fira-sans-extra-bold.woff2",
       crossOrigin: "anonymous",
     },
+    {
+      rel: "preload",
+      as: "font",
+      href: "/font/jet-brains-mono-regular.woff2",
+      crossOrigin: "anonymous",
+    },
     { rel: "stylesheet", href: jamStyles },
   ];
 }

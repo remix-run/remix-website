@@ -15,6 +15,14 @@ CSS Variables used in this file:
   src: url("/font/fira-sans-extra-bold.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: "JetBrains Mono";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/font/jet-brains-mono-regular.woff2") format("woff2");
+}
+
 html {
   scroll-behavior: smooth;
 }
