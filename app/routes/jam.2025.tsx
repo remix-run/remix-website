@@ -1,6 +1,6 @@
 import { Link, useFetcher } from "react-router";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { getMeta } from "~/lib/meta";
 import { getSubscribeStatus } from "~/ui/subscribe";
@@ -18,12 +18,6 @@ export function headers() {
 
 export function links() {
   return [
-    {
-      rel: "preload",
-      as: "font",
-      href: "/font/fira-sans-extra-bold.woff2",
-      crossOrigin: "anonymous",
-    },
     {
       rel: "preload",
       as: "font",
@@ -45,37 +39,135 @@ export function meta({ matches }: Route.MetaArgs) {
   });
 }
 
+function Background() {
+  let colorMatrixRef = useRef<SVGFEColorMatrixElement>(null);
+  let rafIdRef = useRef<number>(0);
+  let filterId = useId();
+
+  // Effect runs once on mount to start an animation loop that continuously
+  // cycles the hue rotation of the SVG filter over 2500ms.
+  useEffect(() => {
+    let colorMatrix = colorMatrixRef.current;
+    if (!colorMatrix) return;
+
+    let startTime: number | null = null;
+    let duration = 2500;
+    let maxValue = 360;
+
+    // Animation frame handler: Calculates elapsed time, determines the current
+    // hue value (0-360) based on the 2500ms cycle, and directly updates the
+    // 'values' attribute of the feColorMatrix element.
+    let animate = (timestamp: number) => {
+      if (startTime === null) {
+        startTime = timestamp;
+      }
+
+      let elapsed = timestamp - startTime;
+      let progress = (elapsed % duration) / duration;
+      let currentValue = Math.floor(progress * maxValue);
+
+      if (colorMatrixRef.current) {
+        colorMatrixRef.current.setAttribute("values", String(currentValue));
+      }
+
+      rafIdRef.current = requestAnimationFrame(animate);
+    };
+
+    rafIdRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(rafIdRef.current);
+    };
+  }, []);
+
+  return (
+    <div className="fixed -inset-11 isolate -z-10">
+      {/* Base radial gradient layer */}
+      <div
+        className="absolute size-full"
+        style={{
+          background:
+            "radial-gradient(72% 63% at 50% 32.300000000000004%,#3b3b3b .036346160613726086%,rgb(26,26,26) 100%)",
+        }}
+      />
+      {/* Layer applying the animated SVG filter */}
+      <div
+        className="absolute size-full"
+        style={{
+          filter: `url(#${filterId}) blur(4px)`,
+        }}
+      >
+        {/* SVG containing the filter definition */}
+        <svg className="absolute">
+          <defs>
+            <filter id={filterId}>
+              <feTurbulence
+                result="undulation"
+                numOctaves="2"
+                baseFrequency="0.000845,0.00338"
+                seed="0"
+                type="turbulence"
+              />
+              <feColorMatrix
+                ref={colorMatrixRef}
+                in="undulation"
+                type="hueRotate"
+                values="0"
+              />
+              <feColorMatrix
+                in="dist"
+                result="circulation"
+                type="matrix"
+                values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0"
+              />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="circulation"
+                scale="44.24242424242424"
+                result="dist"
+              />
+              <feDisplacementMap
+                in="dist"
+                in2="undulation"
+                scale="44.24242424242424"
+                result="output"
+              />
+            </filter>
+          </defs>
+        </svg>
+        {/* Masked overlay image */}
+        <div
+          className="size-full"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+            maskImage: "url('/conf-images/2025/background-mask.avif')",
+            maskSize: "cover",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function RemixJam2025() {
   return (
-    <div className="overflow-x-hidden bg-gradient-to-b from-[#ebebe6] to-white dark:text-gray-900">
+    <div className="relative overflow-x-hidden">
+      <Background />
       <Navbar />
-      <div className="relative z-10">
+
+      {/* <div className="relative z-10">
         <Keepsakes />
-
-        <Link
-          to={newsletterLink}
-          className="absolute right-4 top-6 rounded-full bg-black px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-blue-brand xl:px-6 xl:py-5 xl:text-xl 2xl:px-9 2xl:py-6 2xl:text-2xl"
-        >
-          Tickets
-        </Link>
       </div>
 
-      <LetterOfIntent />
+      <LetterOfIntent /> */}
 
-      <div className="relative">
-        <div className="flex flex-col items-center overflow-hidden">
-          <div className="seats-container">
-            <img
-              src="/conf-images/2025/seat-combined.svg"
-              className="size-full"
-              alt=""
-              aria-hidden="true"
-            />
-          </div>
-        </div>
-        <NewsletterSignup />
-      </div>
-      <div className="bg-black pb-20">
+      <div className="h-[80vh] w-full" />
+
+      {/* Next up! */}
+      {/* <NewsletterSignup /> */}
+      <div className="pb-20">
         <Footer />
       </div>
     </div>
@@ -173,7 +265,7 @@ function Keepsake({ className, children, onDragStart, order }: KeepsakeProps) {
   const elementRef = useRef<HTMLDivElement>(null);
 
   useDrag(elementRef, onDragStart);
-  useParallax(containerRef);
+  // useParallax(containerRef);
 
   return (
     <div
@@ -219,12 +311,12 @@ function PostCard() {
 
 function LetterOfIntent() {
   const ref = useRef<HTMLElement>(null);
-  useParallax(ref);
+  // useParallax(ref);
 
   return (
     <main ref={ref} className="letter-of-intent relative">
       <div className="letter-of-intent-container">
-        <h2 className="text-left font-fira-sans text-4xl font-extrabold leading-[1.1] tracking-[-0.02em] md:text-[3.625rem] lg:text-6xl 2xl:text-[5.25rem]">
+        <h2 className="text-left text-4xl font-extrabold leading-[1.1] tracking-[-0.02em] md:text-[3.625rem] lg:text-6xl 2xl:text-[5.25rem]">
           It&rsquo;s time to get the band back together
         </h2>
 
@@ -429,35 +521,9 @@ function useDrag(ref: React.RefObject<HTMLElement>, onDragStart?: () => void) {
   }, [ref]);
 }
 
-// TODO: Move this into a callback ref once we upgrade to React 19
-function useParallax(ref: React.RefObject<HTMLElement>) {
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    let rafId: number;
-    const onScroll = () => {
-      rafId = requestAnimationFrame(() => {
-        const scrolled = window.scrollY;
-        element.style.transform = `translateY(calc(${scrolled}px * (1 - var(--parallax-transform-percent, 0.75))))`;
-      });
-    };
-
-    // There is a small problem with this being JS only -- if you refresh the page or navigate back then forward, and the page is half way scrolled, the position of the text won't be right.
-    // You have two options:
-    // 1. Call `onScroll` and have a slight flash of the text moving into location
-    // 2. Don't call onScroll and the text will be far away, but then snap in correctly as soon as the user scrolls
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(rafId);
-    };
-  }, [ref]);
-}
-
 function Footer() {
   return (
-    <footer className="font-conf-mono flex flex-col items-center gap-2 px-6 py-12 text-center text-gray-400">
+    <footer className="flex flex-col items-center gap-2 px-6 py-12 text-center font-conf-mono text-gray-400">
       <div className="flex items-center gap-5">
         <Link
           to="/"
@@ -554,7 +620,7 @@ function Navbar() {
       <div className="flex-1" />
 
       <Link
-        to="#"
+        to="#newsletter"
         className="flex items-center gap-2 rounded-full bg-white px-6 py-4 text-xl font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white"
       >
         <TicketLogo className="size-8 fill-current" />
@@ -580,4 +646,50 @@ function TicketLogo({ className }: { className?: string }) {
       <path d="M20.19 4H4c-1.1 0-1.99.9-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.81-2-1.81-2zm-2.46 9.3l-8.86 2.36-1.66-2.88.93-.25 1.26.99 2.39-.64-2.4-4.16 1.4-.38 4.01 3.74 2.44-.65c.51-.14 1.04.17 1.18.68.13.51-.17 1.04-.69 1.19z"></path>
     </svg>
   );
+}
+
+// old code we might be using later
+
+export function Seats() {
+  return (
+    <div className="relative">
+      <div className="flex flex-col items-center overflow-hidden">
+        <div className="seats-container">
+          <img
+            src="/conf-images/2025/seat-combined.svg"
+            className="size-full"
+            alt=""
+            aria-hidden="true"
+          />
+        </div>
+      </div>
+      <NewsletterSignup />
+    </div>
+  );
+}
+
+// TODO: Move this into a callback ref once we upgrade to React 19
+function useParallax(ref: React.RefObject<HTMLElement>) {
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    let rafId: number;
+    const onScroll = () => {
+      rafId = requestAnimationFrame(() => {
+        const scrolled = window.scrollY;
+        element.style.transform = `translateY(calc(${scrolled}px * (1 - var(--parallax-transform-percent, 0.75))))`;
+      });
+    };
+
+    // There is a small problem with this being JS only -- if you refresh the page or navigate back then forward, and the page is half way scrolled, the position of the text won't be right.
+    // You have two options:
+    // 1. Call `onScroll` and have a slight flash of the text moving into location
+    // 2. Don't call onScroll and the text will be far away, but then snap in correctly as soon as the user scrolls
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, [ref]);
 }
