@@ -39,7 +39,29 @@ export function meta({ matches }: Route.MetaArgs) {
   });
 }
 
+export default function RemixJam2025() {
+  return (
+    <div className="relative overflow-x-hidden px-6">
+      <Background />
+      <Navbar />
+
+      {/* <div className="relative z-10">
+        <Keepsakes />
+      </div>
+
+      <LetterOfIntent /> */}
+
+      <div className="h-[200px]" />
+
+      <NewsletterSignup />
+
+      <Footer />
+    </div>
+  );
+}
+
 function Background() {
+  const prefersReducedMotion = usePrefersReducedMotion();
   let colorMatrixRef = useRef<SVGFEColorMatrixElement>(null);
   let rafIdRef = useRef<number>(0);
   let filterId = useId();
@@ -47,6 +69,8 @@ function Background() {
   // Effect runs once on mount to start an animation loop that continuously
   // cycles the hue rotation of the SVG filter over 2500ms.
   useEffect(() => {
+    if (prefersReducedMotion) return; // Bail if user prefers reduced motion
+
     let colorMatrix = colorMatrixRef.current;
     if (!colorMatrix) return;
 
@@ -78,7 +102,7 @@ function Background() {
     return () => {
       cancelAnimationFrame(rafIdRef.current);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <div className="fixed -inset-11 isolate -z-10">
@@ -146,29 +170,6 @@ function Background() {
             maskPosition: "center",
           }}
         />
-      </div>
-    </div>
-  );
-}
-
-export default function RemixJam2025() {
-  return (
-    <div className="relative overflow-x-hidden">
-      <Background />
-      <Navbar />
-
-      {/* <div className="relative z-10">
-        <Keepsakes />
-      </div>
-
-      <LetterOfIntent /> */}
-
-      <div className="h-[80vh] w-full" />
-
-      {/* Next up! */}
-      {/* <NewsletterSignup /> */}
-      <div className="pb-20">
-        <Footer />
       </div>
     </div>
   );
@@ -387,64 +388,52 @@ function NewsletterSignup() {
   return (
     <aside
       id={newsletterId}
-      className="w-full bg-gradient-to-b from-[#ff3300] to-[#ebd26e] px-10 pb-[200px]"
+      className="mx-auto max-w-2xl text-center text-base"
     >
-      <div className="mx-auto flex w-[1000px] max-w-full flex-col items-center">
-        <h2 className="text-center text-[1.75rem] font-bold leading-tight tracking-tight text-white md:text-4xl md:leading-tight lg:text-[2.5rem] lg:leading-tight xl:text-5xl xl:leading-tight">
-          <span>Sign up to get notified</span>
-          <br />
-          <span>when Remix Jam tickets are available</span>
-        </h2>
+      <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
+        Sign up for our Newsletter to be stay up to date on any announcements,
+        lineup changes, or additional details about Remix Jam
+      </h2>
 
-        <subscribe.Form
-          className="mt-7 flex w-[280px] flex-col gap-5 p-5"
-          action="/_actions/newsletter"
-          method="POST"
+      <subscribe.Form
+        className="mt-12 flex flex-col items-center"
+        action="/_actions/newsletter"
+        method="POST"
+      >
+        <input type="hidden" name="tag" value="6280341" />
+        <label
+          htmlFor="email"
+          className="font-conf-mono uppercase text-white/30"
         >
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="email"
-              className="text-left text-xs font-medium text-white"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="jane@email.com"
-              className="rounded-xl bg-black/20 p-5 text-sm leading-none text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white"
-            />
-          </div>
-          <input type="hidden" name="tag" value="6280341" />
-          <button
-            type="submit"
-            className="rounded-2xl bg-black px-5 py-4 text-sm font-semibold text-white transition-colors hover:bg-blue-brand"
-          >
-            Sign Up
-          </button>
+          email
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="your@email.com"
+          className="mt-[10px] w-full max-w-sm rounded-full border-0 bg-black px-6 py-4 text-center text-xl text-white ring-inset placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-brand sm:leading-6"
+        />
+        <button
+          type="submit"
+          className="mt-5 w-full max-w-sm rounded-full border-0 bg-black px-6 py-4 text-center text-xl font-semibold text-white ring-inset transition-colors duration-300 placeholder:text-white hover:bg-blue-brand focus:ring-blue-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset sm:leading-6"
+        >
+          Sign Up
+        </button>
 
-          <div aria-live="polite">
-            {isSuccessful && (
-              <p className="font-semibold text-white">
-                You're good to go ✅
-                <br />
-                <br />
-                Please confirm your email to be notified when ticket sales are
-                available.
-              </p>
-            )}
-            {isError && (
-              <div className="font-semibold text-white">
-                {error} ⚠️
-                <br />
-                <br />
-                Please try again
-              </div>
-            )}
-          </div>
-        </subscribe.Form>
-      </div>
+        <div aria-live="polite" className="mt-4 text-sm text-white">
+          {isSuccessful && (
+            <p>
+              You're good to go ✅ Please confirm your email to be notified when
+              ticket sales are available.
+            </p>
+          )}
+          {isError && (
+            <p className="text-red-400">{error} ⚠️ Please try again.</p>
+          )}
+        </div>
+      </subscribe.Form>
     </aside>
   );
 }
@@ -523,7 +512,7 @@ function useDrag(ref: React.RefObject<HTMLElement>, onDragStart?: () => void) {
 
 function Footer() {
   return (
-    <footer className="flex flex-col items-center gap-2 px-6 py-12 text-center font-conf-mono text-gray-400">
+    <footer className="flex flex-col items-center gap-2 py-[160px] text-center font-conf-mono text-gray-400">
       <div className="flex items-center gap-5">
         <Link
           to="/"
@@ -692,4 +681,30 @@ function useParallax(ref: React.RefObject<HTMLElement>) {
       cancelAnimationFrame(rafId);
     };
   }, [ref]);
+}
+
+export function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+    // Set the initial state
+    setPrefersReducedMotion(mediaQueryList.matches);
+
+    const listener = (event: MediaQueryListEvent) => {
+      setPrefersReducedMotion(event.matches);
+    };
+
+    // Add the listener
+    mediaQueryList.addEventListener("change", listener);
+
+    // Clean up the listener on unmount
+    return () => {
+      mediaQueryList.removeEventListener("change", listener);
+    };
+  }, []);
+
+  return prefersReducedMotion;
 }
