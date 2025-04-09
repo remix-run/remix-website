@@ -51,7 +51,10 @@ export default function RemixJam2025() {
 
       <LetterOfIntent /> */}
 
-      <div className="h-[200px]" />
+      <EventDetails />
+
+      {/* Spacer */}
+      <div className="h-[100px] w-full" />
 
       <NewsletterSignup />
 
@@ -310,72 +313,40 @@ function PostCard() {
   );
 }
 
-function LetterOfIntent() {
-  const ref = useRef<HTMLElement>(null);
-  // useParallax(ref);
-
+function EventDetails() {
   return (
-    <main ref={ref} className="letter-of-intent relative">
-      <div className="letter-of-intent-container">
-        <h2 className="text-left text-4xl font-extrabold leading-[1.1] tracking-[-0.02em] md:text-[3.625rem] lg:text-6xl 2xl:text-[5.25rem]">
-          It&rsquo;s time to get the band back together
-        </h2>
+    <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[280px] text-center">
+      <SectionLabel>Pack Your Bags</SectionLabel>
 
-        <div className="mt-9 flex flex-col gap-12 text-justify text-base lg:text-xl 2xl:text-2xl">
-          <p>
-            A lot has changed since the last Remix Conf in 2023. The React team
-            has incorporated a lot of what made Remix great into React itself in
-            React 19. React now ships with support for <code>{"<form>"}</code>s,
-            mutations, and transitions out of the box! And we took everything
-            that was great about Remix and ported it back into React Router v7,
-            building a bridge to the future of React for the millions of apps
-            that have been built on React Router over the last decade.
-          </p>
-          <p>
-            But we haven't stopped there; we've been jamming in our garage this
-            whole time, and we're ready to start jamming again with all of you.
-            That's why we're letting you know to mark your calendars for Remix
-            Jam,{" "}
-            <time className="font-bold" dateTime="2025-10-10">
-              Oct 10, 2025
-            </time>
-            .
-          </p>
-          <p>
-            Remix Jam is a gathering of the web's biggest fans, hosted by
-            Shopify in the beautiful city of Toronto. Remix Jam will be the best
-            opportunity to hang out IRL with the Remix community and core team,
-            as well as hear from leading experts who are successfully using
-            Remix to solve real problems.
-          </p>
-          <p>
-            Our tagline, "
-            <span className="font-medium italic">Build Better Websites</span>"
-            is still at the heart of everything we do. We want to enable users
-            to build better websites, which is why we made Remix.
-          </p>
-          <blockquote className="italic text-blue-700">
-            "Remix lets you focus on the user interface and work back through
-            web standards to deliver a fast, slick, and resilient user
-            experience."
-          </blockquote>
-          <p>
-            We're pushing further, not just with projects like React Router but
-            in our broader mission and philosophy to #useThePlatform to build a
-            better web.
-          </p>
-          <p>
-            We can't wait to tell you more. If you want to be notified as soon
-            as tickets go on sale,{" "}
-            <Link
-              to={newsletterLink}
-              className="font-bold text-blue-600 hover:underline"
-            >
-              sign up for our newsletter below!
-            </Link>
-          </p>
-          <p className="mt-12 italic">— The Remix Team</p>
-        </div>
+      <h1 className="flex flex-col gap-3 text-6xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none">
+        <span>Remix Jam</span>
+        <span className="flex items-center justify-center gap-5">
+          Toronto
+          <span className="rounded-full px-8 py-5 text-4xl leading-none ring-[6px] ring-inset ring-white">
+            Event
+          </span>
+        </span>
+        <time dateTime="2025-10-10" className="whitespace-nowrap">
+          October 10 2025
+        </time>
+      </h1>
+
+      <SectionLabel>Overview</SectionLabel>
+      <div className="flex flex-col items-center gap-6 md:gap-8">
+        <p className="text-xl font-bold leading-relaxed text-white md:text-3xl">
+          Join us in person for a special event — to learn about our shared
+          past, present, and future — hosted by the Remix team & Shopify in the
+          heart of Toronto.
+        </p>
+      </div>
+
+      <SectionLabel>Location</SectionLabel>
+      <div className="flex flex-col items-center gap-6 md:gap-8">
+        <address className="text-xl font-bold not-italic leading-relaxed text-white md:text-3xl">
+          620 King St W
+          <br />
+          Toronto, ON M5V 1M7, Canada
+        </address>
       </div>
     </main>
   );
@@ -401,12 +372,9 @@ function NewsletterSignup() {
         method="POST"
       >
         <input type="hidden" name="tag" value="6280341" />
-        <label
-          htmlFor="email"
-          className="font-conf-mono uppercase text-white/30"
-        >
-          email
-        </label>
+        <SectionLabel>
+          <label htmlFor="email">email</label>
+        </SectionLabel>
         <input
           type="email"
           id="email"
@@ -493,7 +461,7 @@ function useDrag(ref: React.RefObject<HTMLElement>, onDragStart?: () => void) {
     // Touch events
     element.addEventListener("touchstart", handleStart, { passive: false });
     document.addEventListener("touchmove", handleMove, { passive: false });
-    document.addEventListener("touchend", handleEnd);
+    element.addEventListener("touchend", handleEnd);
     document.addEventListener("touchcancel", handleEnd);
 
     return () => {
@@ -707,4 +675,12 @@ export function usePrefersReducedMotion() {
   }, []);
 
   return prefersReducedMotion;
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="font-conf-mono text-sm uppercase tracking-widest text-white/30 md:text-base">
+      {children}
+    </p>
+  );
 }
