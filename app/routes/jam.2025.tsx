@@ -49,9 +49,6 @@ export default function RemixJam2025() {
     <div className="relative overflow-x-hidden px-6">
       <Background>
         <Navbar />
-        <div className="top-layer">
-          <Keepsakes />
-        </div>
 
         {/* <LetterOfIntent /> */}
 
@@ -65,15 +62,19 @@ export default function RemixJam2025() {
         <NewsletterSignup />
 
         <Footer />
+
+        <div className="top-layer absolute inset-0">
+          <Keepsakes />
+        </div>
       </Background>
     </div>
   );
 }
 
 function Background({ children }: { children: React.ReactNode }) {
-  const prefersReducedMotion = usePrefersReducedMotion();
+  // const prefersReducedMotion = usePrefersReducedMotion();
   let colorMatrixRef = useRef<SVGFEColorMatrixElement>(null);
-  let rafIdRef = useRef<number>(0);
+  // let rafIdRef = useRef<number>(0);
   let filterId = useId();
 
   // Effect runs once on mount to start an animation loop that continuously
