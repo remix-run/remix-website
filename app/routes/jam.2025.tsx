@@ -26,7 +26,7 @@ export function links() {
     {
       rel: "preload",
       as: "font",
-      href: "/font/jet-brains-mono-regular.woff2",
+      href: "/font/jet-brains-mono.woff2",
       crossOrigin: "anonymous",
     },
     { rel: "stylesheet", href: jamStyles },
@@ -48,9 +48,12 @@ export default function RemixJam2025() {
   return (
     <div className="relative overflow-x-hidden px-6">
       <Background>
-        <Navbar />
+        <Navbar className="z-40" />
 
         {/* <LetterOfIntent /> */}
+        <div className="top-layer z-30">
+          <Keepsakes />
+        </div>
 
         <EventDetails />
 
@@ -62,10 +65,6 @@ export default function RemixJam2025() {
         <NewsletterSignup />
 
         <Footer />
-
-        <div className="top-layer absolute inset-0">
-          <Keepsakes />
-        </div>
       </Background>
     </div>
   );
@@ -604,10 +603,13 @@ function Footer() {
   );
 }
 
-function Navbar() {
+function Navbar({ className }: { className?: string }) {
   return (
     <nav
-      className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between p-4 md:p-9"
+      className={clsx(
+        "fixed left-0 right-0 top-0 flex items-center justify-between p-4 md:p-9",
+        className,
+      )}
       style={{
         background: `linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)`,
       }}
