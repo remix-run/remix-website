@@ -57,6 +57,8 @@ export default function RemixJam2025() {
 
         <EventDetails />
 
+        <FaqSection />
+
         {/* Spacer */}
         <div className="h-[100px] w-full" />
 
@@ -328,11 +330,11 @@ function EventDetails() {
     <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[280px] text-center">
       <SectionLabel>Pack Your Bags</SectionLabel>
 
-      <h1 className="flex flex-col gap-3 text-6xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none">
+      <h1 className="flex flex-col gap-3 text-2xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none">
         <span>Remix Jam</span>
-        <span className="flex items-center justify-center gap-5">
+        <span className="flex items-center justify-center gap-3 md:gap-5">
           Toronto
-          <span className="rounded-full px-8 py-5 text-4xl leading-none ring-[6px] ring-inset ring-white">
+          <span className="rounded-full px-4 py-3 text-xl leading-none ring-4 ring-inset ring-white md:px-8 md:py-5 md:text-4xl md:ring-[6px]">
             Event
           </span>
         </span>
@@ -574,23 +576,23 @@ function Footer() {
 function Navbar() {
   return (
     <nav
-      className="top-layer fixed left-0 right-0 top-0 flex items-center justify-between p-9"
+      className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between p-4 md:p-9"
       style={{
         background: `linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)`,
       }}
     >
       <Link to="/jam/2025" className="flex items-center">
-        <JamLogo className="w-[200px] fill-white" />
+        <JamLogo className="w-[100px] fill-white md:w-[200px]" />
       </Link>
 
       {/* Placeholder for navigation links */}
       <div className="flex-1" />
 
       <Link
-        to="#newsletter"
-        className="flex items-center gap-2 rounded-full bg-white px-6 py-4 text-xl font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white"
+        to={newsletterLink}
+        className="flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl"
       >
-        <TicketLogo className="size-8 fill-current" />
+        <TicketLogo className="size-6 fill-current md:size-8" />
         <span>Ticket</span>
       </Link>
     </nav>
@@ -649,7 +651,7 @@ function useParallax(ref: React.RefObject<HTMLElement>) {
       });
     };
 
-    // There is a small problem with this being JS only -- if you refresh the page or navigate back then forward, and the page is half way scrolled, the position of the text won't be right.
+    // There is a small problem with this being JS only -- if you refresh the page or navigate back and forward, and the page is half way scrolled, the position of the text won't be right.
     // You have two options:
     // 1. Call `onScroll` and have a slight flash of the text moving into location
     // 2. Don't call onScroll and the text will be far away, but then snap in correctly as soon as the user scrolls
@@ -692,5 +694,148 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
     <p className="font-conf-mono text-sm uppercase tracking-widest text-white/30 md:text-base">
       {children}
     </p>
+  );
+}
+
+function FaqSection() {
+  return (
+    <section className="top-layer mx-auto w-full max-w-[800px] overflow-hidden rounded-[32px]">
+      <div className="flex flex-col gap-1">
+        <div className="rounded-lg bg-black/35">
+          <h3 className="flex items-center justify-between p-6 font-conf-mono font-normal text-white">
+            FAQ
+          </h3>
+        </div>
+        <FaqItem question="Where can I find the event lineup?">
+          Our lineup will be announced in June with a range of speakers and
+          topics. Be sure to sign up for the Remix Newsletter to get notified
+          about them!
+        </FaqItem>
+        <FaqItem question="Where will the event be hosted?">
+          The Remix team is hosting this event in conjunction with Shopify at
+          620 King St W Toronto, ON M5V 1M7, Canada
+        </FaqItem>
+        <FaqItem question="Will there be a group discount?">
+          Ask Brooks!
+        </FaqItem>
+        <FaqItem question="Where should I stay?">
+          We are working with a few trusted partners to set something up. Stay
+          tuned for more on this soon!
+        </FaqItem>
+        <FaqItem question="What's the refund policy?">
+          There are no refunds, but tickets will be transferable.
+        </FaqItem>
+        <FaqItem question="How do I transfer a ticket?">Ask Brooks!</FaqItem>
+        <FaqItem question="What if I have other questions?">
+          You guessed it, ask Brooks!
+        </FaqItem>
+      </div>
+    </section>
+  );
+}
+
+function FaqItem({
+  question,
+  className,
+  children,
+}: {
+  question: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  const animation = useRef<Animation | null>(null);
+
+  const animateAccordion = (open: boolean) => {
+    const details = detailsRef.current;
+
+    // Ensure elements exist before animating
+    if (!details) return;
+
+    // Cancel any previous animations
+    animation.current?.cancel();
+
+    const startHeight = `${details.offsetHeight}px`;
+    // Set the target open state *before* measuring end height
+    details.open = open;
+    const endHeight = `${details.offsetHeight}px`;
+
+    // If height doesn't change, skip animation (e.g., empty content)
+    if (startHeight === endHeight) {
+      details.style.height = "";
+      details.style.overflow = "";
+      return;
+    }
+
+    const duration = 200; // Consistent duration
+    details.style.overflow = "hidden"; // Prevent content spill during animation
+
+    animation.current = details.animate(
+      { height: [startHeight, endHeight] },
+      { duration, easing: "ease-out" },
+    );
+
+    // Clean up inline styles on completion
+    animation.current.onfinish = () => {
+      details.style.height = "";
+      details.style.overflow = "";
+      animation.current = null;
+    };
+  };
+
+  const handleSummaryClick = (event: React.MouseEvent<HTMLElement>) => {
+    const details = detailsRef.current;
+    if (!details) return;
+
+    // Allow default behavior if motion is reduced
+    if (prefersReducedMotion) {
+      return;
+    }
+
+    // Prevent default instant toggle only if animating
+    event.preventDefault();
+
+    const targetOpenState = !details.open;
+    animateAccordion(targetOpenState);
+  };
+
+  // Cleanup animation on unmount
+  useEffect(() => {
+    const currentAnimation = animation.current;
+    return () => {
+      currentAnimation?.cancel();
+    };
+  }, []);
+
+  return (
+    <details
+      ref={detailsRef}
+      className={clsx(
+        "group overflow-hidden rounded-xl bg-black/35 open:bg-black",
+        className,
+      )}
+    >
+      <summary
+        onClick={handleSummaryClick}
+        className="_no-triangle flex cursor-pointer items-center justify-between gap-3 p-4 font-conf-mono font-normal text-white transition-colors hover:bg-black md:p-6"
+      >
+        {question}
+        {/* Plus/Minus Icon - relies solely on group-open state */}
+        <div className="relative size-4 shrink-0 rounded-full p-1 opacity-30 ring ring-white/80 group-open:opacity-100 group-hover:opacity-100 md:size-8">
+          <span className="absolute left-1/2 top-1/2 block h-[2px] w-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/80" />
+          <span
+            className={clsx(
+              "absolute left-1/2 top-1/2 block h-1/2 w-[2px] -translate-x-1/2 -translate-y-1/2 bg-white/80",
+              "transition-transform duration-300 ease-in-out group-open:rotate-90", // Use group-open for styling
+            )}
+          />
+        </div>
+      </summary>
+      <div>
+        <div className="p-5 pt-0 text-white/80">{children}</div>
+      </div>
+    </details>
   );
 }

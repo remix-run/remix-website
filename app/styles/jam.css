@@ -9,10 +9,9 @@ CSS Variables used in this file:
 
 @font-face {
   font-family: "JetBrains Mono";
-  font-weight: 400;
   font-style: normal;
   font-display: swap;
-  src: url("/font/jet-brains-mono-regular.woff2") format("woff2");
+  src: url("/font/jet-brains-mono.woff2") format("woff2");
 }
 
 html {
