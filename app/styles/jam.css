@@ -55,6 +55,11 @@ html {
   position: absolute;
 }
 
+.keepsake.has-border {
+  border: 16px solid white;
+  border-radius: 4px;
+}
+
 .keepsake .rotate {
   width: 100%;
   height: 100%;
@@ -68,6 +73,7 @@ html {
   transform: rotate(calc(var(--rotate) + var(--hover-rotate)));
 }
 
+/* Postcard */
 .postcard {
   --rotate: -6deg;
   --hover-rotate: 3deg;
@@ -105,6 +111,53 @@ html {
   --parallax-transform-percent: 0.8;
 }
 
+@screen md {
+  .postcard {
+    --rotate: -4deg;
+    top: 17px;
+    left: -4px;
+    width: 533px;
+    height: 373px;
+  }
+}
+
+@screen lg {
+  .postcard {
+    top: 27px;
+    left: 16px;
+    width: 534px;
+    height: 374px;
+  }
+}
+
+@screen xl {
+  .postcard {
+    top: 27px;
+    left: 16px;
+    width: 600px;
+    height: 420px;
+  }
+}
+
+@screen 2xl {
+  .postcard {
+    top: 44px;
+    left: 82px;
+    width: 800px;
+    height: 560px;
+  }
+}
+
+@media (min-width: 120rem /* 1920px */) {
+  .postcard {
+    top: 44px;
+    left: 153px;
+    width: 800px;
+    height: 560px;
+  }
+}
+
+/* Lanyard */
 .lanyard {
   --rotate: 14deg;
   --hover-rotate: 5deg;
@@ -118,6 +171,52 @@ html {
   --parallax-transform-percent: 0.9;
 }
 
+@screen md {
+  .lanyard {
+    top: -111px;
+    right: -175px;
+    width: 431px;
+    height: 540px;
+  }
+}
+
+@screen lg {
+  .lanyard {
+    top: -178px;
+    right: -179px;
+    width: 523px;
+    height: 656px;
+  }
+}
+
+@screen xl {
+  .lanyard {
+    top: -154px;
+    right: -215px;
+    width: 605px;
+    height: 758px;
+  }
+}
+
+@screen 2xl {
+  .lanyard {
+    top: -273px;
+    right: -70px;
+    width: 644px;
+    height: 807px;
+  }
+}
+
+@media (min-width: 120rem /* 1920px */) {
+  .lanyard {
+    top: -359px;
+    right: -97px;
+    width: 772px;
+    height: 968px;
+  }
+}
+
+/* Sticker */
 .sticker {
   --rotate: -8deg;
   --hover-rotate: 5deg;
@@ -131,8 +230,54 @@ html {
   --parallax-transform-percent: 0.8;
 }
 
+@screen md {
+  .sticker {
+    top: 259px;
+    right: -9px;
+    width: 202px;
+    height: 60px;
+  }
+}
+
+@screen lg {
+  .sticker {
+    top: 286px;
+    right: -18px;
+    width: 304px;
+    height: 90px;
+  }
+}
+
+@screen xl {
+  .sticker {
+    top: 456px;
+    right: -2px;
+    width: 304px;
+    height: 90px;
+  }
+}
+
+@screen 2xl {
+  .sticker {
+    top: 436px;
+    right: 288px;
+    width: 304px;
+    height: 90px;
+  }
+}
+
+@media (min-width: 120rem /* 1920px */) {
+  .sticker {
+    top: 498px;
+    right: 370px;
+    width: 304px;
+    height: 90px;
+  }
+}
+
+/* Pick */
 .pick {
-  --rotate: 38deg;
+  --rotate: -30deg;
   --hover-rotate: 5deg;
   top: -10px;
   left: 120px;
@@ -145,6 +290,52 @@ html {
 }
 
 @screen md {
+  .pick {
+    top: 78px;
+    left: 482px;
+    width: 60px;
+    height: 70px;
+  }
+}
+
+@screen lg {
+  .pick {
+    top: 75px;
+    left: 501px;
+    width: 76px;
+    height: 89px;
+  }
+}
+
+@screen xl {
+  .pick {
+    top: 50px;
+    left: 764px;
+    width: 100px;
+    height: 117px;
+  }
+}
+
+@screen 2xl {
+  .pick {
+    top: 200px;
+    left: 200px;
+    width: 100px;
+    height: 117px;
+  }
+}
+
+@media (min-width: 120rem /* 1920px */) {
+  .pick {
+    top: 143px;
+    left: 894px;
+    width: 100px;
+    height: 117px;
+  }
+}
+
+/* Responsive styles for other elements */
+@screen md {
   .letter-of-intent {
     padding-top: 480px;
   }
@@ -152,35 +343,6 @@ html {
   .letter-of-intent-container {
     width: 75%;
     padding-bottom: 200px;
-  }
-
-  .postcard {
-    --rotate: -4deg;
-    top: 17px;
-    left: -4px;
-    width: 533px;
-    height: 373px;
-  }
-
-  .lanyard {
-    top: -111px;
-    right: -175px;
-    width: 431px;
-    height: 540px;
-  }
-
-  .sticker {
-    top: 259px;
-    right: -9px;
-    width: 202px;
-    height: 60px;
-  }
-
-  .pick {
-    top: 78px;
-    left: 482px;
-    width: 60px;
-    height: 70px;
   }
 }
 
@@ -193,34 +355,6 @@ html {
 
   .seats-container {
     width: 2016px;
-  }
-
-  .postcard {
-    top: 27px;
-    left: 16px;
-    width: 534px;
-    height: 374px;
-  }
-
-  .lanyard {
-    top: -178px;
-    right: -179px;
-    width: 523px;
-    height: 656px;
-  }
-
-  .sticker {
-    top: 286px;
-    right: -18px;
-    width: 304px;
-    height: 90px;
-  }
-
-  .pick {
-    top: 75px;
-    left: 501px;
-    width: 76px;
-    height: 89px;
   }
 }
 
@@ -237,34 +371,6 @@ html {
     width: 67%;
     padding-bottom: 56px;
     padding-top: 48px;
-  }
-
-  .postcard {
-    top: 27px;
-    left: 16px;
-    width: 600px;
-    height: 420px;
-  }
-
-  .lanyard {
-    top: -154px;
-    right: -215px;
-    width: 605px;
-    height: 758px;
-  }
-
-  .sticker {
-    top: 456px;
-    right: -2px;
-    width: 304px;
-    height: 90px;
-  }
-
-  .pick {
-    top: 50px;
-    left: 764px;
-    width: 100px;
-    height: 117px;
   }
 }
 
@@ -283,34 +389,6 @@ html {
     padding-bottom: 110px;
     padding-top: 96px;
   }
-
-  .postcard {
-    top: 44px;
-    left: 82px;
-    width: 800px;
-    height: 560px;
-  }
-
-  .lanyard {
-    top: -273px;
-    right: -70px;
-    width: 644px;
-    height: 807px;
-  }
-
-  .sticker {
-    top: 436px;
-    right: 288px;
-    width: 304px;
-    height: 90px;
-  }
-
-  .pick {
-    top: 94px;
-    left: 798px;
-    width: 100px;
-    height: 117px;
-  }
 }
 
 @media (min-width: 120rem /* 1920px */) {
@@ -321,33 +399,5 @@ html {
 
   .letter-of-intent h2 {
     @apply text-8xl;
-  }
-
-  .postcard {
-    top: 44px;
-    left: 153px;
-    width: 800px;
-    height: 560px;
-  }
-
-  .lanyard {
-    top: -359px;
-    right: -97px;
-    width: 772px;
-    height: 968px;
-  }
-
-  .sticker {
-    top: 498px;
-    right: 370px;
-    width: 304px;
-    height: 90px;
-  }
-
-  .pick {
-    top: 143px;
-    left: 894px;
-    width: 100px;
-    height: 117px;
   }
 }

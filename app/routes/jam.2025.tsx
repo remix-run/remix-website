@@ -78,41 +78,41 @@ function Background({ children }: { children: React.ReactNode }) {
 
   // Effect runs once on mount to start an animation loop that continuously
   // cycles the hue rotation of the SVG filter over 2500ms.
-  useEffect(() => {
-    if (prefersReducedMotion) return; // Bail if user prefers reduced motion
+  // useEffect(() => {
+  //   if (prefersReducedMotion) return; // Bail if user prefers reduced motion
 
-    let colorMatrix = colorMatrixRef.current;
-    if (!colorMatrix) return;
+  //   let colorMatrix = colorMatrixRef.current;
+  //   if (!colorMatrix) return;
 
-    let startTime: number | null = null;
-    let duration = 2500;
-    let maxValue = 360;
+  //   let startTime: number | null = null;
+  //   let duration = 2500;
+  //   let maxValue = 360;
 
-    // Animation frame handler: Calculates elapsed time, determines the current
-    // hue value (0-360) based on the 2500ms cycle, and directly updates the
-    // 'values' attribute of the feColorMatrix element.
-    let animate = (timestamp: number) => {
-      if (startTime === null) {
-        startTime = timestamp;
-      }
+  //   // Animation frame handler: Calculates elapsed time, determines the current
+  //   // hue value (0-360) based on the 2500ms cycle, and directly updates the
+  //   // 'values' attribute of the feColorMatrix element.
+  //   let animate = (timestamp: number) => {
+  //     if (startTime === null) {
+  //       startTime = timestamp;
+  //     }
 
-      let elapsed = timestamp - startTime;
-      let progress = (elapsed % duration) / duration;
-      let currentValue = Math.floor(progress * maxValue);
+  //     let elapsed = timestamp - startTime;
+  //     let progress = (elapsed % duration) / duration;
+  //     let currentValue = Math.floor(progress * maxValue);
 
-      if (colorMatrixRef.current) {
-        colorMatrixRef.current.setAttribute("values", String(currentValue));
-      }
+  //     if (colorMatrixRef.current) {
+  //       colorMatrixRef.current.setAttribute("values", String(currentValue));
+  //     }
 
-      rafIdRef.current = requestAnimationFrame(animate);
-    };
+  //     rafIdRef.current = requestAnimationFrame(animate);
+  //   };
 
-    rafIdRef.current = requestAnimationFrame(animate);
+  //   rafIdRef.current = requestAnimationFrame(animate);
 
-    return () => {
-      cancelAnimationFrame(rafIdRef.current);
-    };
-  }, [prefersReducedMotion]);
+  //   return () => {
+  //     cancelAnimationFrame(rafIdRef.current);
+  //   };
+  // }, [prefersReducedMotion]);
 
   return (
     <>
@@ -190,15 +190,63 @@ function Background({ children }: { children: React.ReactNode }) {
   );
 }
 
-type KeepsakeId = "sticker" | "postcard" | "lanyard" | "pick";
+const KEEPSAKES = [
+  {
+    id: "sticker",
+    src: "/conf-images/2025/keepsakes/remix-logo-sticker.svg",
+    alt: "Remix Logo Sticker",
+    hasBorder: false,
+  },
+  {
+    id: "poster",
+    src: "/conf-images/2025/keepsakes/poster.avif",
+    alt: "Remix Jam event poster featuring a stylized aerial view of Toronto's CN Tower and downtown skyline in vibrant blues, pinks, and yellows. The Remix Jam logo with three circular icons appears at the top, and 'TORONTO' is prominently displayed at the bottom along with the date 'OCT 10 2025'. The artwork has a modern, digital aesthetic with the CN Tower's observation deck as the central focal point surrounded by abstract skyscrapers.",
+    hasBorder: true,
+  },
+  {
+    id: "photo-1",
+    src: "/conf-images/2025/keepsakes/photo-1.avif",
+    alt: "A modern interior space featuring tiered wooden stadium-style seating with grey cushions arranged in ascending steps. The seating area is flanked by black metal railings and has an industrial-style exposed ceiling with visible ductwork and lighting. A large potted plant with broad green leaves sits in the foreground. The space has a minimalist design with concrete flooring and transitions into what appears to be a bar or counter area visible in the background. The overall aesthetic combines warm wood tones with industrial elements and natural accents.",
+    hasBorder: true,
+  },
+  {
+    id: "photo-2",
+    src: "/conf-images/2025/keepsakes/photo-2.avif",
+    alt: "A street view in downtown Toronto featuring the historic Gooderham Building, a distinctive red-brick flatiron building with a green copper turret, set against modern glass skyscrapers and condos. The intersection shows traffic lights, parked cars, and pedestrians under a bright blue sky. The architectural contrast highlights Toronto's blend of historic and contemporary buildings.",
+    hasBorder: true,
+  },
+  {
+    id: "pick",
+    src: "/conf-images/2025/keepsakes/remix-pick.avif",
+    alt: "Guitar pick with Remix logo and 'Remix Jam Toronto '25'",
+    hasBorder: false,
+  },
+  {
+    id: "ticket",
+    src: "/conf-images/2025/keepsakes/ticket.avif",
+    alt: "Fake Remix Jam 2025 Event Ticket",
+    hasBorder: false,
+  },
+  {
+    id: "boarding-pass",
+    src: "/conf-images/2025/keepsakes/boarding-pass.avif",
+    alt: "Fake Remix Jam 2025 Boarding Pass",
+    hasBorder: false,
+  },
+] as const;
+
+type KeepsakeId = (typeof KEEPSAKES)[number]["id"];
 
 function Keepsakes() {
-  const [order, setOrder] = useState<Record<KeepsakeId, number>>({
-    sticker: 1,
-    postcard: 2,
-    lanyard: 3,
-    pick: 4,
-  });
+  const [order, setOrder] = useState<Record<KeepsakeId, number>>(
+    KEEPSAKES.reduce(
+      (acc, keepsake, index) => {
+        acc[keepsake.id] = index + 1;
+        return acc;
+      },
+      {} as Record<KeepsakeId, number>,
+    ),
+  );
 
   const moveToFront = (id: KeepsakeId) => {
     setOrder((current) => {
@@ -214,7 +262,7 @@ function Keepsakes() {
       }
 
       // Move the dragged item to the top
-      newOrder[id] = 4;
+      newOrder[id] = KEEPSAKES.length;
 
       return newOrder;
     });
@@ -222,49 +270,17 @@ function Keepsakes() {
 
   return (
     <div className="isolate">
-      <Keepsake
-        className="sticker"
-        order={order.sticker}
-        onDragStart={() => moveToFront("sticker")}
-      >
-        <img
-          src="/conf-images/2025/remix-logo-sticker.svg"
-          alt="Remix Logo Sticker"
-          draggable={false}
-        />
-      </Keepsake>
-
-      <Keepsake
-        className="postcard"
-        order={order.postcard}
-        onDragStart={() => moveToFront("postcard")}
-      >
-        <PostCard />
-      </Keepsake>
-
-      <Keepsake
-        className="lanyard"
-        order={order.lanyard}
-        onDragStart={() => moveToFront("lanyard")}
-      >
-        <img
-          src="/conf-images/2025/remix-lanyard.avif"
-          alt="All Access Remix Jam 2025 Lanyard that says 'Michael Jackson co-author, Remix, Shopify'"
-          draggable={false}
-        />
-      </Keepsake>
-
-      <Keepsake
-        className="pick"
-        order={order.pick}
-        onDragStart={() => moveToFront("pick")}
-      >
-        <img
-          src="/conf-images/2025/remix-pick.avif"
-          alt="Guitar pick with Remix logo and 'Remix Jam Toronto '25'"
-          draggable={false}
-        />
-      </Keepsake>
+      {KEEPSAKES.map((keepsake) => (
+        <Keepsake
+          key={keepsake.id}
+          className={keepsake.id}
+          order={order[keepsake.id]}
+          onDragStart={() => moveToFront(keepsake.id)}
+          hasBorder={keepsake.hasBorder}
+        >
+          <img src={keepsake.src} alt={keepsake.alt} draggable={false} />
+        </Keepsake>
+      ))}
     </div>
   );
 }
@@ -274,9 +290,16 @@ type KeepsakeProps = {
   children: React.ReactNode;
   onDragStart: () => void;
   order?: number;
+  hasBorder?: boolean;
 };
 
-function Keepsake({ className, children, onDragStart, order }: KeepsakeProps) {
+function Keepsake({
+  className,
+  children,
+  onDragStart,
+  order,
+  hasBorder,
+}: KeepsakeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const elementRef = useRef<HTMLDivElement>(null);
 
@@ -291,7 +314,9 @@ function Keepsake({ className, children, onDragStart, order }: KeepsakeProps) {
     >
       <div
         ref={elementRef}
-        className={clsx("keepsake cursor-grab select-none", className)}
+        className={clsx("keepsake cursor-grab select-none", className, {
+          "has-border": hasBorder,
+        })}
       >
         <div className="rotate">{children}</div>
       </div>
