@@ -51,7 +51,7 @@ export default function RemixJam2025() {
         <Navbar className="z-40" />
 
         {/* <LetterOfIntent /> */}
-        <div className="top-layer z-30">
+        <div className="relative z-30">
           <Keepsakes />
         </div>
 

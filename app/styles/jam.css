@@ -63,8 +63,10 @@ html {
   will-change: transform;
 }
 
-.keepsake .rotate:hover {
-  transform: rotate(calc(var(--rotate) + var(--hover-rotate)));
+@media (hover: hover) {
+  .keepsake .rotate:hover {
+    transform: rotate(calc(var(--rotate) + var(--hover-rotate)));
+  }
 }
 
 /* Ensure images fill their containers properly */
