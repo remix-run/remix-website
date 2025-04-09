@@ -10,6 +10,11 @@ import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
 
 import jamStyles from "~/styles/jam.css?url";
 
+// TODO:
+// - add title animation
+// - add new keepsakes
+// - ticket hover experience
+
 export function headers() {
   return {
     "Cache-Control": CACHE_CONTROL.DEFAULT,
@@ -42,28 +47,28 @@ export function meta({ matches }: Route.MetaArgs) {
 export default function RemixJam2025() {
   return (
     <div className="relative overflow-x-hidden px-6">
-      <Background />
-      <Navbar />
+      <Background>
+        <Navbar />
+        <div className="top-layer">
+          <Keepsakes />
+        </div>
 
-      {/* <div className="relative z-10">
-        <Keepsakes />
-      </div>
+        {/* <LetterOfIntent /> */}
 
-      <LetterOfIntent /> */}
+        <EventDetails />
 
-      <EventDetails />
+        {/* Spacer */}
+        <div className="h-[100px] w-full" />
 
-      {/* Spacer */}
-      <div className="h-[100px] w-full" />
+        <NewsletterSignup />
 
-      <NewsletterSignup />
-
-      <Footer />
+        <Footer />
+      </Background>
     </div>
   );
 }
 
-function Background() {
+function Background({ children }: { children: React.ReactNode }) {
   const prefersReducedMotion = usePrefersReducedMotion();
   let colorMatrixRef = useRef<SVGFEColorMatrixElement>(null);
   let rafIdRef = useRef<number>(0);
@@ -108,73 +113,78 @@ function Background() {
   }, [prefersReducedMotion]);
 
   return (
-    <div className="fixed -inset-11 isolate -z-10">
+    <>
       {/* Base radial gradient layer */}
       <div
-        className="absolute size-full"
+        className="fixed -inset-11 z-0"
         style={{
           background:
             "radial-gradient(72% 63% at 50% 32.300000000000004%,#3b3b3b .036346160613726086%,rgb(26,26,26) 100%)",
         }}
       />
-      {/* Layer applying the animated SVG filter */}
-      <div
-        className="absolute size-full"
-        style={{
-          filter: `url(#${filterId}) blur(4px)`,
-        }}
-      >
-        {/* SVG containing the filter definition */}
-        <svg className="absolute">
-          <defs>
-            <filter id={filterId}>
-              <feTurbulence
-                result="undulation"
-                numOctaves="2"
-                baseFrequency="0.000845,0.00338"
-                seed="0"
-                type="turbulence"
-              />
-              <feColorMatrix
-                ref={colorMatrixRef}
-                in="undulation"
-                type="hueRotate"
-                values="0"
-              />
-              <feColorMatrix
-                in="dist"
-                result="circulation"
-                type="matrix"
-                values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0"
-              />
-              <feDisplacementMap
-                in="SourceGraphic"
-                in2="circulation"
-                scale="44.24242424242424"
-                result="dist"
-              />
-              <feDisplacementMap
-                in="dist"
-                in2="undulation"
-                scale="44.24242424242424"
-                result="output"
-              />
-            </filter>
-          </defs>
-        </svg>
-        {/* Masked overlay image */}
+
+      <div className="isolate">
+        {children}
+
+        {/* Layer applying the animated SVG filter */}
         <div
-          className="size-full"
+          className="fixed -inset-11"
           style={{
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-            maskImage: "url('/conf-images/2025/background-mask.avif')",
-            maskSize: "cover",
-            maskRepeat: "no-repeat",
-            maskPosition: "center",
+            filter: `url(#${filterId}) blur(4px)`,
           }}
-        />
+        >
+          {/* SVG containing the filter definition */}
+          <svg className="absolute">
+            <defs>
+              <filter id={filterId}>
+                <feTurbulence
+                  result="undulation"
+                  numOctaves="2"
+                  baseFrequency="0.000845,0.00338"
+                  seed="0"
+                  type="turbulence"
+                />
+                <feColorMatrix
+                  ref={colorMatrixRef}
+                  in="undulation"
+                  type="hueRotate"
+                  values="0"
+                />
+                <feColorMatrix
+                  in="dist"
+                  result="circulation"
+                  type="matrix"
+                  values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0"
+                />
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="circulation"
+                  scale="44.24242424242424"
+                  result="dist"
+                />
+                <feDisplacementMap
+                  in="dist"
+                  in2="undulation"
+                  scale="44.24242424242424"
+                  result="output"
+                />
+              </filter>
+            </defs>
+          </svg>
+          {/* Masked overlay image */}
+          <div
+            className="size-full"
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.3)",
+              maskImage: "url('/conf-images/2025/background-mask.avif')",
+              maskSize: "cover",
+              maskRepeat: "no-repeat",
+              maskPosition: "center",
+            }}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -367,7 +377,7 @@ function NewsletterSignup() {
       </h2>
 
       <subscribe.Form
-        className="mt-12 flex flex-col items-center"
+        className="top-layer mt-12 flex flex-col items-center"
         action="/_actions/newsletter"
         method="POST"
       >
@@ -564,7 +574,7 @@ function Footer() {
 function Navbar() {
   return (
     <nav
-      className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between p-9"
+      className="top-layer fixed left-0 right-0 top-0 flex items-center justify-between p-9"
       style={{
         background: `linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)`,
       }}

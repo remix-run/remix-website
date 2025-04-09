@@ -25,6 +25,11 @@ html {
   }
 }
 
+/* Kind of annoying, but need to apply this class to all layers that should be clickable */
+.top-layer {
+  @apply relative z-10;
+}
+
 /* Letter of Intent */
 
 .letter-of-intent {
