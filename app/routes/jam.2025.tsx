@@ -192,12 +192,6 @@ function Background({ children }: { children: React.ReactNode }) {
 
 const KEEPSAKES = [
   {
-    id: "sticker",
-    src: "/conf-images/2025/keepsakes/remix-logo-sticker.svg",
-    alt: "Remix Logo Sticker",
-    hasBorder: false,
-  },
-  {
     id: "poster",
     src: "/conf-images/2025/keepsakes/poster.avif",
     alt: "Remix Jam event poster featuring a stylized aerial view of Toronto's CN Tower and downtown skyline in vibrant blues, pinks, and yellows. The Remix Jam logo with three circular icons appears at the top, and 'TORONTO' is prominently displayed at the bottom along with the date 'OCT 10 2025'. The artwork has a modern, digital aesthetic with the CN Tower's observation deck as the central focal point surrounded by abstract skyscrapers.",
@@ -231,6 +225,12 @@ const KEEPSAKES = [
     id: "boarding-pass",
     src: "/conf-images/2025/keepsakes/boarding-pass.avif",
     alt: "Fake Remix Jam 2025 Boarding Pass",
+    hasBorder: false,
+  },
+  {
+    id: "sticker",
+    src: "/conf-images/2025/keepsakes/remix-logo-sticker.svg",
+    alt: "Remix Logo Sticker",
     hasBorder: false,
   },
 ] as const;
@@ -304,7 +304,6 @@ function Keepsake({
   const elementRef = useRef<HTMLDivElement>(null);
 
   useDrag(elementRef, onDragStart);
-  // useParallax(containerRef);
 
   return (
     <div
@@ -314,11 +313,17 @@ function Keepsake({
     >
       <div
         ref={elementRef}
-        className={clsx("keepsake cursor-grab select-none", className, {
-          "has-border": hasBorder,
-        })}
+        className={clsx("keepsake cursor-grab select-none", className)}
       >
-        <div className="rotate">{children}</div>
+        <div className="rotate">
+          <div
+            className={clsx("h-full w-full", {
+              "rounded border-[16px] border-white": hasBorder,
+            })}
+          >
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -352,7 +357,7 @@ function PostCard() {
 
 function EventDetails() {
   return (
-    <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[280px] text-center">
+    <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]">
       <SectionLabel>Pack Your Bags</SectionLabel>
 
       <h1 className="flex flex-col gap-3 text-2xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none">

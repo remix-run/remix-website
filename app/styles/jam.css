@@ -55,16 +55,10 @@ html {
   position: absolute;
 }
 
-.keepsake.has-border {
-  border: 16px solid white;
-  border-radius: 4px;
-}
-
 .keepsake .rotate {
   width: 100%;
   height: 100%;
   transform: rotate(var(--rotate));
-  /* bit of a bounce */
   transition: transform 0.3s cubic-bezier(0, 1.5, 0.67, 1.06);
   will-change: transform;
 }
@@ -73,146 +67,223 @@ html {
   transform: rotate(calc(var(--rotate) + var(--hover-rotate)));
 }
 
-/* Postcard */
-.postcard {
-  --rotate: -6deg;
-  --hover-rotate: 3deg;
-  top: 17px;
-  left: -5px;
-  width: 369px;
-  height: 258px;
-}
-
-.postcard-container {
-  box-shadow:
-    rgba(0, 0, 0, 0.067) 0.568132px 0.568132px 1.44623px -0.321429px,
-    rgba(0, 0, 0, 0.067) 1.39174px 1.39174px 3.5428px -0.642857px,
-    rgba(0, 0, 0, 0.07) 2.63715px 2.63715px 6.7131px -0.964286px,
-    rgba(0, 0, 0, 0.07) 4.60378px 4.60378px 11.7193px -1.28571px,
-    rgba(0, 0, 0, 0.07) 8.01261px 8.01261px 20.3968px -1.60714px,
-    rgba(0, 0, 0, 0.075) 14.676px 14.676px 37.3591px -1.92857px,
-    rgba(0, 0, 0, 0.082) 29px 29px 73.8219px -2.25px;
-}
-
-.postcard-container:after {
-  content: "";
-  border: 13px #f4f3ef solid;
+/* Ensure images fill their containers properly */
+.keepsake img {
   width: 100%;
   height: 100%;
-  position: absolute;
-  box-sizing: border-box;
-  left: 0;
-  top: 0;
-  border-radius: inherit;
-  pointer-events: none;
+  object-fit: cover;
 }
 
-.keepsake-container:has(.postcard) {
-  --parallax-transform-percent: 0.8;
+/* Poster */
+.poster {
+  --rotate: -8deg;
+  --hover-rotate: 4deg;
+  top: 60px;
+  left: -140px;
+  width: 260px;
+  height: 375px;
 }
 
 @screen md {
-  .postcard {
-    --rotate: -4deg;
-    top: 17px;
-    left: -4px;
-    width: 533px;
-    height: 373px;
+  .poster {
+    top: -20px;
+    left: -60px;
+    width: 415px;
+    height: 565px;
   }
 }
 
 @screen lg {
-  .postcard {
-    top: 27px;
-    left: 16px;
-    width: 534px;
-    height: 374px;
+  .poster {
+    top: -60px;
+    left: -80px;
+    width: 495px;
+    height: 697px;
   }
 }
 
 @screen xl {
-  .postcard {
-    top: 27px;
-    left: 16px;
-    width: 600px;
-    height: 420px;
+  .poster {
+    top: -80px;
+    left: -100px;
+    width: 580px;
+    height: 812px;
   }
 }
 
-@screen 2xl {
-  .postcard {
-    top: 44px;
-    left: 82px;
-    width: 800px;
-    height: 560px;
-  }
-}
-
-@media (min-width: 120rem /* 1920px */) {
-  .postcard {
-    top: 44px;
-    left: 153px;
-    width: 800px;
-    height: 560px;
-  }
-}
-
-/* Lanyard */
-.lanyard {
-  --rotate: 14deg;
-  --hover-rotate: 5deg;
-  top: -32px;
-  right: -237px;
-  width: 320px;
-  height: 401px;
-}
-
-.keepsake-container:has(.lanyard) {
-  --parallax-transform-percent: 0.9;
+/* Photo 1 */
+.photo-1 {
+  --rotate: 6deg;
+  --hover-rotate: -3deg;
+  top: 240px;
+  right: -100px;
+  width: 220px;
+  height: 165px;
 }
 
 @screen md {
-  .lanyard {
-    top: -111px;
-    right: -175px;
-    width: 431px;
-    height: 540px;
+  .photo-1 {
+    top: 140px;
+    right: -40px;
+    width: 350px;
+    height: 263px;
   }
 }
 
 @screen lg {
-  .lanyard {
-    top: -178px;
-    right: -179px;
-    width: 523px;
-    height: 656px;
+  .photo-1 {
+    top: 160px;
+    right: -60px;
+    width: 420px;
+    height: 315px;
   }
 }
 
 @screen xl {
-  .lanyard {
-    top: -154px;
-    right: -215px;
-    width: 605px;
-    height: 758px;
+  .photo-1 {
+    top: 180px;
+    right: -80px;
+    width: 490px;
+    height: 368px;
   }
 }
 
-@screen 2xl {
-  .lanyard {
-    top: -273px;
-    right: -70px;
-    width: 644px;
-    height: 807px;
+/* Photo 2 */
+.photo-2 {
+  --rotate: -4deg;
+  --hover-rotate: 3deg;
+  top: 580px;
+  left: -120px;
+  width: 220px;
+  height: 147px;
+}
+
+@screen md {
+  .photo-2 {
+    top: 520px;
+    left: -50px;
+    width: 350px;
+    height: 233px;
   }
 }
 
-@media (min-width: 120rem /* 1920px */) {
-  .lanyard {
-    top: -359px;
-    right: -97px;
-    width: 772px;
-    height: 968px;
+@screen lg {
+  .photo-2 {
+    top: 580px;
+    left: -70px;
+    width: 420px;
+    height: 280px;
+  }
+}
+
+@screen xl {
+  .photo-2 {
+    top: 640px;
+    left: -90px;
+    width: 490px;
+    height: 327px;
+  }
+}
+
+/* Pick */
+.pick {
+  --rotate: -30deg;
+  --hover-rotate: 10deg;
+  top: 160px;
+  left: -30px;
+  width: 50px;
+  height: 58px;
+}
+
+@screen md {
+  .pick {
+    top: 120px;
+    left: 60px;
+    width: 80px;
+    height: 93px;
+  }
+}
+
+@screen lg {
+  .pick {
+    top: 140px;
+    left: 80px;
+    width: 100px;
+    height: 117px;
+  }
+}
+
+/* Ticket */
+.ticket {
+  --rotate: 12deg;
+  --hover-rotate: -4deg;
+  top: 640px;
+  right: -120px;
+  width: 240px;
+  height: 84px;
+}
+
+@screen md {
+  .ticket {
+    top: 540px;
+    right: -60px;
+    width: 375px;
+    height: 131px;
+  }
+}
+
+@screen lg {
+  .ticket {
+    top: 600px;
+    right: -80px;
+    width: 450px;
+    height: 158px;
+  }
+}
+
+@screen xl {
+  .ticket {
+    top: 660px;
+    right: -100px;
+    width: 525px;
+    height: 184px;
+  }
+}
+
+/* Boarding Pass */
+.boarding-pass {
+  --rotate: -6deg;
+  --hover-rotate: 3deg;
+  top: 920px;
+  left: -100px;
+  width: 260px;
+  height: 97px;
+}
+
+@screen md {
+  .boarding-pass {
+    top: 880px;
+    left: -40px;
+    width: 400px;
+    height: 149px;
+  }
+}
+
+@screen lg {
+  .boarding-pass {
+    top: 960px;
+    left: -60px;
+    width: 480px;
+    height: 179px;
+  }
+}
+
+@screen xl {
+  .boarding-pass {
+    top: 1040px;
+    left: -80px;
+    width: 560px;
+    height: 209px;
   }
 }
 
@@ -220,20 +291,16 @@ html {
 .sticker {
   --rotate: -8deg;
   --hover-rotate: 5deg;
-  top: 255px;
-  right: 96px;
-  width: 145px;
-  height: 43px;
-}
-
-.keepsake-container:has(.sticker) {
-  --parallax-transform-percent: 0.8;
+  top: 440px;
+  right: -40px;
+  width: 120px;
+  height: 36px;
 }
 
 @screen md {
   .sticker {
-    top: 259px;
-    right: -9px;
+    top: 280px;
+    right: 80px;
     width: 202px;
     height: 60px;
   }
@@ -241,96 +308,10 @@ html {
 
 @screen lg {
   .sticker {
-    top: 286px;
-    right: -18px;
+    top: 320px;
+    right: 100px;
     width: 304px;
     height: 90px;
-  }
-}
-
-@screen xl {
-  .sticker {
-    top: 456px;
-    right: -2px;
-    width: 304px;
-    height: 90px;
-  }
-}
-
-@screen 2xl {
-  .sticker {
-    top: 436px;
-    right: 288px;
-    width: 304px;
-    height: 90px;
-  }
-}
-
-@media (min-width: 120rem /* 1920px */) {
-  .sticker {
-    top: 498px;
-    right: 370px;
-    width: 304px;
-    height: 90px;
-  }
-}
-
-/* Pick */
-.pick {
-  --rotate: -30deg;
-  --hover-rotate: 5deg;
-  top: -10px;
-  left: 120px;
-  width: 60px;
-  height: 70px;
-}
-
-.keepsake-container:has(.pick) {
-  --parallax-transform-percent: 1;
-}
-
-@screen md {
-  .pick {
-    top: 78px;
-    left: 482px;
-    width: 60px;
-    height: 70px;
-  }
-}
-
-@screen lg {
-  .pick {
-    top: 75px;
-    left: 501px;
-    width: 76px;
-    height: 89px;
-  }
-}
-
-@screen xl {
-  .pick {
-    top: 50px;
-    left: 764px;
-    width: 100px;
-    height: 117px;
-  }
-}
-
-@screen 2xl {
-  .pick {
-    top: 200px;
-    left: 200px;
-    width: 100px;
-    height: 117px;
-  }
-}
-
-@media (min-width: 120rem /* 1920px */) {
-  .pick {
-    top: 143px;
-    left: 894px;
-    width: 100px;
-    height: 117px;
   }
 }
 
