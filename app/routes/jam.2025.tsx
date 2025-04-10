@@ -358,18 +358,20 @@ function EventDetails() {
     <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]">
       <SectionLabel>Pack Your Bags</SectionLabel>
 
-      <h1 className="flex flex-col gap-3 text-2xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none">
-        <span>Remix Jam</span>
+      <Title>
+        <ScrambleText text="Remix Jam" delay={0} color="blue" />
         <span className="flex items-center justify-center gap-3 md:gap-5">
-          Toronto
-          <span className="rounded-full px-4 py-3 text-xl leading-none ring-4 ring-inset ring-white md:px-8 md:py-5 md:text-4xl md:ring-[6px]">
-            Event
-          </span>
+          <ScrambleText text="Toronto" delay={300} color="green" />
+          <FadeInBadge delay={1200} />
         </span>
-        <time dateTime="2025-10-10" className="whitespace-nowrap">
-          October 10 2025
-        </time>
-      </h1>
+        <ScrambleText
+          text="October 10 2025"
+          delay={600}
+          cyclesToResolve={8}
+          color="yellow"
+          className="whitespace-nowrap"
+        />
+      </Title>
 
       <SectionLabel>Overview</SectionLabel>
       <div className="flex flex-col items-center gap-6 md:gap-8">
@@ -389,6 +391,228 @@ function EventDetails() {
         </address>
       </div>
     </main>
+  );
+}
+
+/**
+ * Generates a scrambled character based on the target character and current iteration
+ * Uses a deterministic sequence unique to each character
+ * @param targetChar - The final character we're trying to reach
+ * @param iteration - Current iteration in the scramble sequence
+ * @param maxIterations - Number of iterations before resolving to target character
+ */
+function getScrambledLetter(
+  targetChar: string,
+  iteration: number,
+  maxIterations: number,
+) {
+  const scrambleChars =
+    "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  // Return the target character if we're done cycling
+  if (iteration >= maxIterations) return targetChar;
+
+  // Create a repeatable sequence for this character
+  const charCode = targetChar.charCodeAt(0);
+  const start = (charCode * 7) % scrambleChars.length;
+  const position = (start + iteration * 11) % scrambleChars.length;
+  return scrambleChars[position];
+}
+
+type ScrambleColor = "blue" | "green" | "yellow";
+
+const colorMap: Record<ScrambleColor, string> = {
+  blue: "text-blue-brand",
+  green: "text-green-brand",
+  yellow: "text-yellow-brand",
+} as const;
+
+type ScrambleTextProps = {
+  /** The text to animate */
+  text: string;
+  /** Delay before animation starts (in ms) */
+  delay?: number;
+  /** Color theme of the text while scrambling (becomes white when resolved) */
+  color?: ScrambleColor;
+  /** Additional classes to apply to the container */
+  className?: string;
+  /** Number of cycles before a character resolves */
+  cyclesToResolve?: number;
+  /** Delay between each character appearing (in ms) */
+  charDelay?: number;
+  /** Delay between each scramble cycle (in ms) */
+  cycleDelay?: number;
+};
+
+/**
+ * Animated text component that reveals characters one by one with a scramble effect
+ * Each character cycles through random characters before settling on its final form
+ */
+function ScrambleText({
+  text,
+  delay = 0,
+  color = "blue",
+  className = "",
+  cyclesToResolve = 10,
+  charDelay = 100,
+  cycleDelay = 50,
+}: ScrambleTextProps) {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [progress, setProgress] = useState<
+    Array<{ visible: boolean; iteration: number; resolved: boolean }>
+  >(
+    text
+      .split("")
+      .map(() => ({ visible: false, iteration: 0, resolved: false })),
+  );
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const finalText = text.toUpperCase();
+
+    // Handle the reveal and cycling of each character
+    const cleanupFns = finalText.split("").map((_, charIndex) => {
+      // Reveal the character
+      const timeout = setTimeout(
+        () => {
+          setProgress((prev) =>
+            prev.map((p, i) => (i === charIndex ? { ...p, visible: true } : p)),
+          );
+
+          // Start cycling after character is revealed
+          let iteration = 0;
+          const cycleInterval = setInterval(() => {
+            iteration++;
+            setProgress((prev) => {
+              // Only proceed if previous characters are done
+              const canProgress =
+                charIndex === 0 ||
+                prev.slice(0, charIndex).every((p) => p.resolved);
+
+              if (!canProgress) return prev;
+
+              const newProgress = [...prev];
+              if (iteration >= cyclesToResolve) {
+                clearInterval(cycleInterval);
+                newProgress[charIndex] = {
+                  visible: true,
+                  iteration,
+                  resolved: true,
+                };
+              } else {
+                newProgress[charIndex] = {
+                  visible: true,
+                  iteration,
+                  resolved: false,
+                };
+              }
+              return newProgress;
+            });
+          }, cycleDelay);
+
+          return () => clearInterval(cycleInterval);
+        },
+        delay + charIndex * charDelay,
+      );
+
+      return () => clearTimeout(timeout);
+    });
+
+    // Cleanup all timeouts and intervals
+    return () => cleanupFns.forEach((cleanup) => cleanup());
+  }, [
+    text,
+    delay,
+    cyclesToResolve,
+    charDelay,
+    cycleDelay,
+    prefersReducedMotion,
+  ]);
+
+  const finalText = text.toUpperCase();
+
+  return prefersReducedMotion ? (
+    <span className={clsx("text-white", className)}>
+      {finalText}
+      <span className="sr-only">{finalText}</span>
+    </span>
+  ) : (
+    <>
+      <span className="sr-only">{finalText}</span>
+      <span className={className} aria-hidden="true">
+        {finalText.split("").map((char, i) => {
+          const currentChar = progress[i].visible
+            ? getScrambledLetter(char, progress[i].iteration, cyclesToResolve)
+            : char;
+
+          return (
+            <span
+              key={i}
+              className={clsx(
+                progress[i].visible ? "opacity-100" : "opacity-0",
+                progress[i].resolved ? "text-white" : colorMap[color],
+              )}
+            >
+              {currentChar}
+            </span>
+          );
+        })}
+      </span>
+    </>
+  );
+}
+
+/**
+ * Simple component that fades in after a delay
+ */
+function FadeInBadge({ delay = 0 }: { delay?: number }) {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const timeout = setTimeout(() => {
+      setIsVisible(true);
+    }, delay);
+
+    return () => clearTimeout(timeout);
+  }, [delay, prefersReducedMotion]);
+
+  const badgeClasses =
+    "rounded-full px-4 py-3 text-xl leading-none ring-4 ring-inset ring-white md:px-8 md:py-5 md:text-4xl md:ring-[6px]";
+
+  return (
+    <>
+      <span className="sr-only">Event</span>
+      <span
+        className={clsx(
+          badgeClasses,
+          !prefersReducedMotion && [
+            "transition-opacity duration-500",
+            isVisible ? "opacity-100" : "opacity-0",
+          ],
+        )}
+      >
+        Event
+      </span>
+    </>
+  );
+}
+
+/**
+ * Main title component with three animated lines of text
+ * Each line appears in sequence with a different color while scrambling
+ */
+function Title({ children }: { children: React.ReactNode }) {
+  return (
+    <h1
+      className="flex flex-col gap-3 text-3xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none"
+      role="banner"
+    >
+      {children}
+    </h1>
   );
 }
 
