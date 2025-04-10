@@ -118,7 +118,7 @@ html {
   --rotate: 6deg;
   --hover-rotate: -3deg;
   top: 300px;
-  right: -180px;
+  right: -210px;
   width: 220px;
   height: 165px;
 }
@@ -218,8 +218,8 @@ html {
 .ticket {
   --rotate: -10deg;
   --hover-rotate: -4deg;
-  top: 680px;
-  right: -120px;
+  top: 650px;
+  right: -180px;
   width: 240px;
   height: 84px;
 }

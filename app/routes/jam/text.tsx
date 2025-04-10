@@ -9,7 +9,7 @@ import clsx from "clsx";
 export function Title({ children }: { children: React.ReactNode }) {
   return (
     <h1
-      className="flex flex-col gap-3 text-3xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none"
+      className="flex flex-col gap-3 text-4xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none"
       role="banner"
     >
       {children}
@@ -19,7 +19,7 @@ export function Title({ children }: { children: React.ReactNode }) {
 
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-conf-mono text-sm uppercase tracking-widest text-white/30 md:text-base">
+    <p className="font-conf-mono text-xs uppercase tracking-widest text-white/50 md:text-base">
       {children}
     </p>
   );

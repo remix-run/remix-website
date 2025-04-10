@@ -65,7 +65,7 @@ function EventDetails() {
 
       <SectionLabel>Overview</SectionLabel>
       <div className="flex flex-col items-center gap-6 md:gap-8">
-        <p className="text-xl font-bold leading-relaxed text-white md:text-3xl">
+        <p className="text-lg font-bold leading-relaxed text-white md:text-3xl">
           Join us in person for a special event — to learn about our shared
           past, present, and future — hosted by the Remix team & Shopify in the
           heart of Toronto.
@@ -74,7 +74,7 @@ function EventDetails() {
 
       <SectionLabel>Location</SectionLabel>
       <div className="flex flex-col items-center gap-6 md:gap-8">
-        <address className="text-xl font-bold not-italic leading-relaxed text-white md:text-3xl">
+        <address className="text-lg font-bold not-italic leading-relaxed text-white md:text-3xl">
           620 King St W
           <br />
           Toronto, ON M5V 1M7, Canada
