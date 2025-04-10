@@ -49,14 +49,15 @@ function EventDetails() {
       <SectionLabel>Pack Your Bags</SectionLabel>
 
       <Title>
-        <ScrambleText text="Remix Jam" delay={0} color="blue" />
+        <ScrambleText text="Remix Jam" delay={100} color="blue" />
         <span className="flex items-center justify-center gap-3 md:gap-5">
-          <ScrambleText text="Toronto" delay={300} color="green" />
+          <ScrambleText text="Toronto" delay={400} color="green" />
           <FadeInBadge delay={1200} />
         </span>
         <ScrambleText
           text="October 10 2025"
-          delay={600}
+          delay={700}
+          charDelay={80}
           cyclesToResolve={8}
           color="yellow"
           className="whitespace-nowrap"

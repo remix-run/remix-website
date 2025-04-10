@@ -25,6 +25,9 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
+const SCRAMBLE_CHARS =
+  "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 /**
  * Generates a scrambled character based on the target character and current iteration
  * Uses a deterministic sequence unique to each character
@@ -37,17 +40,14 @@ function getScrambledLetter(
   iteration: number,
   maxIterations: number,
 ) {
-  const scrambleChars =
-    "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
   // Return the target character if we're done cycling
   if (iteration >= maxIterations) return targetChar;
 
   // Create a repeatable sequence for this character
   const charCode = targetChar.charCodeAt(0);
-  const start = (charCode * 7) % scrambleChars.length;
-  const position = (start + iteration * 11) % scrambleChars.length;
-  return scrambleChars[position];
+  const start = (charCode * 7) % SCRAMBLE_CHARS.length;
+  const position = (start + iteration * 11) % SCRAMBLE_CHARS.length;
+  return SCRAMBLE_CHARS[position];
 }
 
 type ScrambleColor = "blue" | "green" | "yellow";
@@ -91,7 +91,7 @@ export function ScrambleText({
   const prefersReducedMotion = usePrefersReducedMotion();
   const [progress, setProgress] = useState<
     Array<{ visible: boolean; iteration: number; resolved: boolean }>
-  >(
+  >(() =>
     text
       .split("")
       .map(() => ({ visible: false, iteration: 0, resolved: false })),
@@ -100,10 +100,8 @@ export function ScrambleText({
   useEffect(() => {
     if (prefersReducedMotion) return;
 
-    const finalText = text.toUpperCase();
-
     // Handle the reveal and cycling of each character
-    const cleanupFns = finalText.split("").map((_, charIndex) => {
+    const cleanupFns = text.split("").map((_, charIndex) => {
       // Reveal the character
       const timeout = setTimeout(
         () => {
@@ -161,35 +159,34 @@ export function ScrambleText({
     prefersReducedMotion,
   ]);
 
-  const finalText = text.toUpperCase();
-
-  return prefersReducedMotion ? (
-    <span className={clsx("text-white", className)}>
-      {finalText}
-      <span className="sr-only">{finalText}</span>
-    </span>
-  ) : (
+  return (
     <>
-      <span className="sr-only">{finalText}</span>
-      <span className={className} aria-hidden="true">
-        {finalText.split("").map((char, i) => {
-          const currentChar = progress[i].visible
-            ? getScrambledLetter(char, progress[i].iteration, cyclesToResolve)
-            : char;
+      <span className="sr-only">{text}</span>
+      {prefersReducedMotion ? (
+        <span className={clsx("text-white", className)} aria-hidden="true">
+          {text}
+        </span>
+      ) : (
+        <span className={className} aria-hidden="true">
+          {text.split("").map((char, i) => {
+            const currentChar = progress[i].visible
+              ? getScrambledLetter(char, progress[i].iteration, cyclesToResolve)
+              : char;
 
-          return (
-            <span
-              key={i}
-              className={clsx(
-                progress[i].visible ? "opacity-100" : "opacity-0",
-                progress[i].resolved ? "text-white" : colorMap[color],
-              )}
-            >
-              {currentChar}
-            </span>
-          );
-        })}
-      </span>
+            return (
+              <span
+                key={i}
+                className={clsx(
+                  progress[i].visible ? "opacity-100" : "opacity-0",
+                  progress[i].resolved ? "text-white" : colorMap[color],
+                )}
+              >
+                {currentChar}
+              </span>
+            );
+          })}
+        </span>
+      )}
     </>
   );
 }
