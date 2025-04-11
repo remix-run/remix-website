@@ -190,3 +190,22 @@ export function ScrambleText({
     </>
   );
 }
+
+/**
+ * A simple component for displaying centered informational text blocks.
+ */
+export function InfoText({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={clsx("mx-auto max-w-2xl text-center", className)}>
+      <p className="text-lg font-bold leading-relaxed text-white md:text-3xl">
+        {children}
+      </p>
+    </div>
+  );
+}

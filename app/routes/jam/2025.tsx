@@ -9,7 +9,7 @@ import { Navbar } from "./navbar";
 
 import type { Route } from "./+types/2025";
 import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
-import { ScrambleText, SectionLabel, Title } from "./text";
+import { ScrambleText, SectionLabel, Title, InfoText } from "./text";
 
 export function meta({ matches }: Route.MetaArgs) {
   const [rootMatch] = matches;
@@ -65,13 +65,11 @@ function EventDetails() {
       </Title>
 
       <SectionLabel>Overview</SectionLabel>
-      <div className="flex flex-col items-center gap-6 md:gap-8">
-        <p className="text-lg font-bold leading-relaxed text-white md:text-3xl">
-          Join us in person for a special event — to learn about our shared
-          past, present, and future — hosted by the Remix team & Shopify in the
-          heart of Toronto.
-        </p>
-      </div>
+      <InfoText>
+        Join us in person for a special event — to learn about our shared past,
+        present, and future — hosted by the Remix team & Shopify in the heart of
+        Toronto.
+      </InfoText>
 
       <SectionLabel>Location</SectionLabel>
       <div className="flex flex-col items-center gap-6 md:gap-8">
@@ -177,7 +175,7 @@ function NewsletterSignup({ className }: { className?: string }) {
   );
 }
 
-function FaqSection({ className }: { className?: string }) {
+export function FaqSection({ className }: { className?: string }) {
   return (
     <section
       className={clsx(
