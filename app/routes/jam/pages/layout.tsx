@@ -7,7 +7,7 @@ import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
 
 import type { Route } from "./+types/layout";
 
-import jamStyles from "./jam.css?url";
+import jamStyles from "../jam.css?url";
 
 export function headers() {
   return {

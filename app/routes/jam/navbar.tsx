@@ -1,7 +1,17 @@
 import clsx from "clsx";
 import { Link } from "react-router";
 
-export function Navbar({ className }: { className?: string }) {
+export function Navbar({
+  className,
+  showTicketLink = false,
+}: {
+  className?: string;
+  /**
+   * boolean to show/hide the ticket link on the far left
+   * generally this is a bad API, but for this simple page difference it's fine
+   */
+  showTicketLink?: boolean;
+}) {
   return (
     <nav
       className={clsx(
@@ -19,13 +29,15 @@ export function Navbar({ className }: { className?: string }) {
       {/* Placeholder for navigation links */}
       <div className="flex-1" />
 
-      <Link
-        to="#newsletter"
-        className="flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl"
-      >
-        <TicketLogo className="size-6 fill-current md:size-8" />
-        <span>Ticket</span>
-      </Link>
+      {showTicketLink ? (
+        <Link
+          to="#newsletter"
+          className="flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl"
+        >
+          <TicketLogo className="size-6 fill-current md:size-8" />
+          <span>Ticket</span>
+        </Link>
+      ) : null}
     </nav>
   );
 }
