@@ -8,7 +8,7 @@ import { Keepsakes } from "../keepsakes";
 import { Navbar } from "../navbar";
 import { ScrambleText, SectionLabel, Title, InfoText } from "../text";
 import { FAQ } from "../faq";
-import ogImageSrc from "../images/og_image.jpg";
+import ogImageSrc from "../images/og-thumbnail-1.jpg";
 
 import type { Route } from "./+types/2025";
 import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
