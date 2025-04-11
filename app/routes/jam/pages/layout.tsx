@@ -8,6 +8,7 @@ import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
 import type { Route } from "./+types/layout";
 
 import jamStyles from "../jam.css?url";
+import maskSrc from "../images/background-mask.avif";
 
 export function headers() {
   return {
@@ -159,7 +160,7 @@ function Background({ children }: { children: React.ReactNode }) {
             className="size-full"
             style={{
               backgroundColor: "rgba(0, 0, 0, 0.3)",
-              maskImage: "url('/conf-images/2025/background-mask.avif')",
+              maskImage: `url('${maskSrc}')`,
               maskSize: "cover",
               maskRepeat: "no-repeat",
               maskPosition: "center",

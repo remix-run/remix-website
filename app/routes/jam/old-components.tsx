@@ -2,13 +2,17 @@
 
 import { useEffect } from "react";
 
+import postcardSrc from "./images/keepsakes/toronto-postcard.avif";
+import lockupSrc from "./images/remix-jam-lockup.svg";
+import seatsSrc from "./images/seat-combined.svg";
+
 export function PostCard() {
   return (
     <div className="postcard-container flex size-full flex-col items-start justify-between rounded-[0.25rem] p-7 lg:p-8 xl:p-9">
       <div className="absolute inset-0">
         <img
           className="size-full rounded-[0.25rem] object-cover object-left-top"
-          src="/conf-images/2025/toronto-postcard.avif"
+          src={postcardSrc}
           alt="stylized Toronto skyline"
           draggable={false}
         />
@@ -16,7 +20,7 @@ export function PostCard() {
 
       <img
         className="relative h-[110px] w-[245px]"
-        src="/conf-images/2025/remix-jam-lockup.svg"
+        src={lockupSrc}
         alt=""
         draggable={false}
       />
@@ -33,12 +37,7 @@ export function Seats() {
     <div className="relative">
       <div className="flex flex-col items-center overflow-hidden">
         <div className="seats-container">
-          <img
-            src="/conf-images/2025/seat-combined.svg"
-            className="size-full"
-            alt=""
-            aria-hidden="true"
-          />
+          <img src={seatsSrc} className="size-full" alt="" aria-hidden="true" />
         </div>
       </div>
       {/* <NewsletterSignup /> */}

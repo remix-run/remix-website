@@ -6,11 +6,12 @@ import { Address, usePrefersReducedMotion } from "../utils";
 import { clsx } from "clsx";
 import { Keepsakes } from "../keepsakes";
 import { Navbar } from "../navbar";
+import { ScrambleText, SectionLabel, Title, InfoText } from "../text";
+import { FAQ } from "../faq";
+import ogImageSrc from "../images/og_image.jpg";
 
 import type { Route } from "./+types/2025";
 import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
-import { ScrambleText, SectionLabel, Title, InfoText } from "../text";
-import { FAQ } from "../faq";
 
 export function meta({ matches }: Route.MetaArgs) {
   const [rootMatch] = matches;
@@ -19,7 +20,7 @@ export function meta({ matches }: Route.MetaArgs) {
     title: "Remix Jam 2025",
     description: "It's time to get the band back together",
     siteUrl: `${siteUrl}/jam`,
-    image: `${siteUrl}/conf-images/2025/og_image.jpg`,
+    image: ogImageSrc,
   });
 }
 
