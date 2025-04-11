@@ -4,6 +4,10 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { Link, type LinkProps } from "react-router";
+import { ButtonHTMLAttributes } from "react";
+
+const jamStyles =
+  "flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";
 
 export function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -56,14 +60,20 @@ export function Address({ className }: { className?: string }) {
 
 export function JamLink({ className, children, ...props }: LinkProps) {
   return (
-    <Link
-      className={clsx(
-        "flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl",
-        className,
-      )}
-      {...props}
-    >
+    <Link className={clsx(jamStyles, className)} {...props}>
       {children}
     </Link>
+  );
+}
+
+export function JamButton({
+  className,
+  children,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button className={clsx(jamStyles, className)} {...props}>
+      {children}
+    </button>
   );
 }

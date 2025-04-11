@@ -1,13 +1,15 @@
+import { useState } from "react";
 import { Navbar } from "../navbar";
 import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
 import { FAQ, Question } from "../faq";
-import { BrooksLink, JamLink } from "../utils";
-import { useState } from "react";
-
+import { BrooksLink, JamButton } from "../utils";
 import ticketSrc from "../images/keepsakes/ticket.avif";
+import { Form } from "react-router";
+
+import iconsHref from "~/icons.svg";
+import clsx from "clsx";
 
 // TODO:
-// Add purchase form
 // Hook up Shopify API to get ticket data
 // Implement Shopify checkout
 // Setup logic to base ticket info displayed based on discount code in URL
@@ -17,10 +19,6 @@ import ticketSrc from "../images/keepsakes/ticket.avif";
 // Create real ticket component
 
 export default function TicketPage() {
-  const [quantity, setQuantity] = useState(1);
-  const price = 149.0;
-  const total = (price * quantity).toFixed(2);
-
   return (
     <>
       <Navbar className="z-40" />
@@ -40,7 +38,7 @@ export default function TicketPage() {
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
 
-        <div className="w-full max-w-[800px] overflow-hidden rounded-xl bg-gray-800">
+        <div className="z-10 w-full max-w-[800px] overflow-hidden rounded-xl bg-gray-800">
           {/* TODO: Replace with actual ticket component/image */}
           <img
             src={ticketSrc}
@@ -50,37 +48,7 @@ export default function TicketPage() {
           />
         </div>
 
-        <div className="z-10 flex items-center gap-6">
-          <span className="font-conf-mono text-3xl font-normal text-white">
-            $ {total}
-          </span>
-          <div className="flex items-center rounded-full border border-white/20 px-2">
-            <button
-              className="flex h-12 w-12 items-center justify-center text-2xl text-white/90 transition-colors hover:text-white disabled:opacity-50"
-              aria-label="Decrease quantity"
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              disabled={quantity <= 1}
-            >
-              -
-            </button>
-            <span className="w-12 text-center text-2xl text-white">
-              {quantity}
-            </span>
-            <button
-              className="flex h-12 w-12 items-center justify-center text-2xl text-white/90 transition-colors hover:text-white"
-              aria-label="Increase quantity"
-              onClick={() => setQuantity(quantity + 1)}
-            >
-              +
-            </button>
-          </div>
-          <JamLink
-            to="#"
-            className="rounded-full bg-gradient-to-b from-white/90 to-white/80 px-12 py-4 text-xl font-normal text-black hover:from-white hover:to-white/90"
-          >
-            Checkout
-          </JamLink>
-        </div>
+        <TicketPurchase />
 
         <InfoText>
           You have been invited to purchase this ticket with a{" "}
@@ -98,5 +66,59 @@ export default function TicketPage() {
         </Question>
       </FAQ>
     </>
+  );
+}
+
+function TicketPurchase() {
+  const [quantity, setQuantity] = useState(1);
+
+  return (
+    <Form method="post" className="z-10 flex w-[90%] items-center gap-3">
+      <div className="flex grow items-center justify-between rounded-[48px] px-6 py-4 ring-4 ring-inset ring-white/30">
+        <span className="font-conf-mono text-xl font-normal text-white">
+          $ 149.00
+        </span>
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            className="size-8 text-white/30 transition-colors hover:text-white disabled:opacity-30 disabled:hover:text-white/30"
+            aria-label="Decrease quantity"
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            disabled={quantity <= 1}
+          >
+            <svg aria-hidden viewBox="0 0 24 24">
+              <use href={`${iconsHref}#circle-minus`} />
+            </svg>
+          </button>
+          <input
+            type="number"
+            name="quantity"
+            value={quantity}
+            readOnly
+            className={clsx(
+              "bg-transparent text-center text-xl text-white outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+              // hacky, but who cares, who is trying to order all of our tickets all at once anyway!?!
+              quantity > 9 ? "w-8" : "w-4",
+            )}
+          />
+          <button
+            type="button"
+            className="size-8 text-white/30 transition-colors hover:text-white disabled:opacity-30 disabled:hover:text-white/30"
+            aria-label="Increase quantity"
+            onClick={() => setQuantity(quantity + 1)}
+          >
+            <svg aria-hidden viewBox="0 0 24 24">
+              <use href={`${iconsHref}#circle-plus`} />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <JamButton
+        type="submit"
+        className="rounded-full bg-gradient-to-b from-white/90 to-white/80 px-12 py-4 text-xl font-normal text-black hover:from-white hover:to-white/90"
+      >
+        Checkout
+      </JamButton>
+    </Form>
   );
 }
