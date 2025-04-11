@@ -9,7 +9,7 @@ import clsx from "clsx";
 export function Title({ children }: { children: React.ReactNode }) {
   return (
     <h1
-      className="flex flex-col gap-3 text-4xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none"
+      className="flex flex-col gap-2 text-[2.75rem] font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none"
       role="banner"
     >
       {children}
@@ -202,8 +202,8 @@ export function InfoText({
   className?: string;
 }) {
   return (
-    <div className={clsx("mx-auto max-w-2xl text-center", className)}>
-      <p className="text-lg font-bold leading-relaxed text-white md:text-3xl">
+    <div className={clsx("text-center", className)}>
+      <p className="text-lg font-bold leading-[1.4] text-white md:text-3xl">
         {children}
       </p>
     </div>

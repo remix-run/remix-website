@@ -13,7 +13,7 @@ export function FAQ({
   return (
     <section
       className={clsx(
-        "mx-auto w-full max-w-[800px] overflow-hidden rounded-[32px]",
+        "mx-auto w-full max-w-[800px] overflow-hidden rounded-[32px] text-sm md:text-base",
         className,
       )}
     >

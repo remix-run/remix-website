@@ -176,7 +176,7 @@ function Footer({ className }: { className?: string }) {
   return (
     <footer
       className={clsx(
-        "flex flex-col items-center gap-2 py-[160px] text-center font-conf-mono text-gray-400",
+        "flex flex-col items-center gap-2 py-[160px] text-center font-conf-mono text-sm text-gray-400 md:text-base",
         className,
       )}
     >

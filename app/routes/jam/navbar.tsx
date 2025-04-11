@@ -23,7 +23,7 @@ export function Navbar({
       }}
     >
       <Link to="/jam/2025" className="flex items-center">
-        <JamLogo className="w-[100px] fill-white md:w-[200px]" />
+        <JamLogo className="h-[48px] fill-white md:h-auto md:w-[200px]" />
       </Link>
 
       {/* Placeholder for navigation links */}

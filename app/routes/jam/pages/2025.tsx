@@ -148,11 +148,11 @@ function NewsletterSignup({ className }: { className?: string }) {
           name="email"
           required
           placeholder="your@email.com"
-          className="mt-[10px] w-full max-w-sm rounded-full border-0 bg-black px-6 py-4 text-center text-xl text-white ring-inset placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-brand sm:leading-6"
+          className="mt-[10px] w-full max-w-sm rounded-full border-0 bg-black px-6 py-4 text-center text-lg text-white ring-inset placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-brand sm:leading-6"
         />
         <button
           type="submit"
-          className="mt-5 w-full max-w-sm rounded-full border-0 bg-black px-6 py-4 text-center text-xl font-semibold text-white ring-inset transition-colors duration-300 placeholder:text-white hover:bg-blue-brand focus:ring-blue-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset sm:leading-6"
+          className="mt-5 w-full max-w-sm rounded-full border-0 bg-black px-6 py-4 text-center text-lg font-semibold text-white ring-inset transition-colors duration-300 placeholder:text-white hover:bg-blue-brand focus:ring-blue-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset sm:leading-6"
         >
           Sign Up
         </button>
