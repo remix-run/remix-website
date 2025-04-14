@@ -2,29 +2,21 @@ import { useState } from "react";
 import { Navbar } from "../navbar";
 import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
 import { FAQ, Question } from "../faq";
-import { BrooksLink, JamButton } from "../utils";
+import { JamButton } from "../utils";
 import ticketSrc from "../images/keepsakes/ticket.avif";
-import { Form, redirect } from "react-router";
+import { Form, redirect, useFetcher } from "react-router";
 import clsx from "clsx";
-import { getProduct, createCart } from "../storefront.server";
+import { getProduct, createCart, getDiscountData } from "../storefront.server";
 
 import iconsHref from "~/icons.svg";
 import type { Route } from "./+types/2025.ticket";
 
 // TODO:
-// Hook up Shopify API to get ticket data
-// Implement Shopify checkout
 // Setup logic to base ticket info displayed based on discount code in URL
 //   redirect if no discount code or incorrect one
 //   OR just say "coming soon"
 // Setup meta tags
 // Create real ticket component
-
-type TicketData = {
-  price: string;
-  productId: string;
-  discountCode?: string;
-};
 
 export async function loader({ request }: Route.LoaderArgs) {
   // Get discount code from URL params
@@ -33,13 +25,12 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   // Get product data
   const product = await getProduct("remix-jam-2025");
+  const discountData = getDiscountData(discountCode);
 
   return {
-    ticket: {
-      price: product.price,
-      productId: product.productId,
-      discountCode,
-    } as TicketData,
+    productId: product.productId,
+    availableForSale: product.availableForSale,
+    ...discountData,
   };
 }
 
@@ -49,18 +40,22 @@ export async function action({ request }: Route.ActionArgs) {
   const quantity = parseInt(formData.get("quantity") as string) || 1;
   const discountCode = formData.get("discountCode") as string;
 
-  const cart = await createCart({
+  const result = await createCart({
     productId,
     quantity,
     discountCode,
   });
 
+  if ("error" in result) {
+    return { error: result.error };
+  }
+
   // Redirect to Shopify checkout
-  return redirect(cart.checkoutUrl);
+  return redirect(result.checkoutUrl);
 }
 
 export default function TicketPage({ loaderData }: Route.ComponentProps) {
-  const { price, productId, discountCode } = loaderData.ticket;
+  const { price, productId, title, discountCode, imageSrc, faq } = loaderData;
 
   return (
     <>
@@ -70,7 +65,7 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
         <Title>
           <ScrambleText
             className="whitespace-nowrap"
-            text="friends & family"
+            text={title}
             delay={100}
             charDelay={70}
             cyclesToResolve={8}
@@ -81,101 +76,143 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
 
-        <div className="z-10 w-full max-w-[800px] overflow-hidden rounded-xl bg-gray-800">
-          {/* TODO: Replace with actual ticket component/image */}
-          <img
-            src={ticketSrc}
-            width={800}
-            height={280}
-            alt="Fake Remix Jam 2025 Event Ticket"
-          />
-        </div>
+        <Ticket imageSrc={imageSrc} />
 
         <TicketPurchase
           price={price}
           productId={productId}
           discountCode={discountCode}
+          availableForSale={loaderData.availableForSale}
         />
 
-        <InfoText>
-          You have been invited to purchase this ticket with a{" "}
-          <span className="font-bold">discount code*</span> before they are
-          available for the general public.
-        </InfoText>
+        {
+          // TODO: Remove this once we got to general ticket sales
+          discountCode ? (
+            <InfoText>
+              You have been invited to purchase this ticket with a{" "}
+              <span className="font-bold">discount code*</span> before they are
+              available for the general public.
+            </InfoText>
+          ) : null
+        }
       </main>
 
       <FAQ className="relative z-10">
-        <Question question="* Where do I find the promo code?">
-          Check your email, and if you can't find it, ask <BrooksLink />.
-        </Question>
-        <Question question="* Can I share the promo code?">
-          Please don't.
-        </Question>
+        {faq.map(({ question, answer }) => (
+          <Question key={question} question={question}>
+            {answer}
+          </Question>
+        ))}
       </FAQ>
     </>
   );
 }
 
-type TicketPurchaseProps = {
-  price: string;
-  productId: string;
-  discountCode?: string;
-};
+type TicketPurchaseProps = Pick<
+  Route.ComponentProps["loaderData"],
+  "price" | "productId" | "discountCode" | "availableForSale"
+>;
 
 function TicketPurchase({
   price,
   productId,
   discountCode,
+  availableForSale,
 }: TicketPurchaseProps) {
   const [quantity, setQuantity] = useState(1);
+  const isSoldOut = !availableForSale;
+  const fetcher = useFetcher();
+  const isSubmitting = fetcher.state === "submitting";
 
   return (
-    <Form method="post" className="z-10 flex w-[90%] items-center gap-3">
-      <input type="hidden" name="productId" value={productId} />
-      <input type="hidden" name="quantity" value={quantity} />
-      {discountCode && (
-        <input type="hidden" name="discountCode" value={discountCode} />
-      )}
-      <div className="flex grow items-center justify-between rounded-[48px] px-6 py-4 ring-4 ring-inset ring-white/30">
-        <span className="font-conf-mono text-xl font-normal text-white">
-          $ {price}
-        </span>
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            className="size-8 text-white/30 transition-colors hover:text-white disabled:opacity-30 disabled:hover:text-white/30"
-            aria-label="Decrease quantity"
-            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            disabled={quantity <= 1}
-          >
-            <svg aria-hidden viewBox="0 0 24 24">
-              <use href={`${iconsHref}#circle-minus`} />
-            </svg>
-          </button>
-          <input
-            type="number"
-            name="quantity"
-            value={quantity}
-            readOnly
-            className={clsx(
-              "bg-transparent text-center text-xl text-white outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
-              // hacky, but who cares, who is trying to order all of our tickets all at once anyway!?!
-              quantity > 9 ? "w-8" : "w-4",
-            )}
-          />
-          <button
-            type="button"
-            className="size-8 text-white/30 transition-colors hover:text-white disabled:opacity-30 disabled:hover:text-white/30"
-            aria-label="Increase quantity"
-            onClick={() => setQuantity(quantity + 1)}
-          >
-            <svg aria-hidden viewBox="0 0 24 24">
-              <use href={`${iconsHref}#circle-plus`} />
-            </svg>
-          </button>
+    <div className="z-10 flex w-[90%] flex-col items-center gap-3">
+      <fetcher.Form
+        method="post"
+        className="flex w-full flex-col items-center gap-3 text-base md:flex-row md:text-xl"
+      >
+        <input type="hidden" name="productId" value={productId} />
+        <input type="hidden" name="quantity" value={quantity} />
+        {discountCode && (
+          <input type="hidden" name="discountCode" value={discountCode} />
+        )}
+        <div className="flex w-full grow items-center justify-between rounded-[48px] px-4 py-2.5 ring-2 ring-inset ring-white/30 md:px-6 md:py-4 md:ring-4">
+          <span className="font-conf-mono font-normal text-white">
+            $ {price}
+          </span>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              className="size-6 text-white/30 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-white/30 md:size-8"
+              aria-label="Decrease quantity"
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              disabled={quantity <= 1 || isSoldOut || isSubmitting}
+            >
+              <svg aria-hidden viewBox="0 0 24 24">
+                <use href={`${iconsHref}#circle-minus`} />
+              </svg>
+            </button>
+            <input
+              type="number"
+              name="quantity"
+              value={quantity}
+              readOnly
+              className={clsx(
+                "bg-transparent text-center text-white outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+                quantity > 9 ? "w-8" : "w-4",
+              )}
+            />
+            <button
+              type="button"
+              className="size-6 text-white/30 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-white/30 md:size-8"
+              aria-label="Increase quantity"
+              onClick={() => setQuantity(quantity + 1)}
+              disabled={isSoldOut || isSubmitting}
+            >
+              <svg aria-hidden viewBox="0 0 24 24">
+                <use href={`${iconsHref}#circle-plus`} />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <JamButton
+          type="submit"
+          disabled={isSoldOut || isSubmitting}
+          className="w-full md:w-auto"
+        >
+          {isSoldOut ? "Sold Out" : isSubmitting ? "Processing..." : "Checkout"}
+        </JamButton>
+      </fetcher.Form>
+      {fetcher.data?.error ? (
+        <p className="text-sm font-semibold text-red-500 md:text-base">
+          {fetcher.data.error}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function Ticket({ imageSrc }: { imageSrc: string }) {
+  return (
+    <div className="z-10 w-[300px] overflow-hidden rounded-xl bg-gray-800 md:w-[800px]">
+      <div className="relative">
+        <img
+          src={imageSrc}
+          width={800}
+          height={280}
+          alt="Remix Jam 2025 Event Ticket"
+          className="w-full"
+        />
+        <div className="absolute bottom-0 left-[35%] pb-1 pl-2 text-left font-conf-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
+          <div className="flex flex-col gap-0 md:gap-2">
+            <p>OCTOBER 10 2025</p>
+            <div>
+              <p>YOUR NAME</p>
+              <p>YOUR COMPANY</p>
+            </div>
+            <p className="text-red-500">CONTRIBUTOR</p>
+          </div>
         </div>
       </div>
-      <JamButton type="submit">Checkout</JamButton>
-    </Form>
+    </div>
   );
 }

@@ -7,7 +7,7 @@ import { Link, type LinkProps } from "react-router";
 import { ButtonHTMLAttributes } from "react";
 
 const jamStyles =
-  "flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";
+  "flex items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";
 
 export function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -35,19 +35,6 @@ export function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-export function BrooksLink() {
-  return (
-    <address className="inline-block not-italic">
-      <a
-        className="text-blue-400 hover:underline"
-        href="mailto:brooks.lybrand@shopify.com"
-      >
-        Brooks
-      </a>
-    </address>
-  );
-}
-
 export function Address({ className }: { className?: string }) {
   return (
     <address className={clsx("inline-block not-italic", className)}>
@@ -69,10 +56,19 @@ export function JamLink({ className, children, ...props }: LinkProps) {
 export function JamButton({
   className,
   children,
+  disabled,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button className={clsx(jamStyles, className)} {...props}>
+    <button
+      className={clsx(
+        jamStyles,
+        "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-black",
+        className,
+      )}
+      disabled={disabled}
+      {...props}
+    >
       {children}
     </button>
   );
