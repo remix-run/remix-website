@@ -4,10 +4,12 @@ import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
 import { FAQ, Question } from "../faq";
 import { BrooksLink, JamButton } from "../utils";
 import ticketSrc from "../images/keepsakes/ticket.avif";
-import { Form } from "react-router";
+import { Form, redirect } from "react-router";
+import clsx from "clsx";
+import { getProduct, createCart } from "../storefront.server";
 
 import iconsHref from "~/icons.svg";
-import clsx from "clsx";
+import type { Route } from "./+types/2025.ticket";
 
 // TODO:
 // Hook up Shopify API to get ticket data
@@ -18,7 +20,48 @@ import clsx from "clsx";
 // Setup meta tags
 // Create real ticket component
 
-export default function TicketPage() {
+type TicketData = {
+  price: string;
+  productId: string;
+  discountCode?: string;
+};
+
+export async function loader({ request }: Route.LoaderArgs) {
+  // Get discount code from URL params
+  const url = new URL(request.url);
+  const discountCode = url.searchParams.get("discount") || undefined;
+
+  // Get product data
+  const product = await getProduct("remix-jam-2025");
+
+  return {
+    ticket: {
+      price: product.price,
+      productId: product.productId,
+      discountCode,
+    } as TicketData,
+  };
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const productId = formData.get("productId") as string;
+  const quantity = parseInt(formData.get("quantity") as string) || 1;
+  const discountCode = formData.get("discountCode") as string;
+
+  const cart = await createCart({
+    productId,
+    quantity,
+    discountCode,
+  });
+
+  // Redirect to Shopify checkout
+  return redirect(cart.checkoutUrl);
+}
+
+export default function TicketPage({ loaderData }: Route.ComponentProps) {
+  const { price, productId, discountCode } = loaderData.ticket;
+
   return (
     <>
       <Navbar className="z-40" />
@@ -48,7 +91,11 @@ export default function TicketPage() {
           />
         </div>
 
-        <TicketPurchase />
+        <TicketPurchase
+          price={price}
+          productId={productId}
+          discountCode={discountCode}
+        />
 
         <InfoText>
           You have been invited to purchase this ticket with a{" "}
@@ -69,14 +116,29 @@ export default function TicketPage() {
   );
 }
 
-function TicketPurchase() {
+type TicketPurchaseProps = {
+  price: string;
+  productId: string;
+  discountCode?: string;
+};
+
+function TicketPurchase({
+  price,
+  productId,
+  discountCode,
+}: TicketPurchaseProps) {
   const [quantity, setQuantity] = useState(1);
 
   return (
     <Form method="post" className="z-10 flex w-[90%] items-center gap-3">
+      <input type="hidden" name="productId" value={productId} />
+      <input type="hidden" name="quantity" value={quantity} />
+      {discountCode && (
+        <input type="hidden" name="discountCode" value={discountCode} />
+      )}
       <div className="flex grow items-center justify-between rounded-[48px] px-6 py-4 ring-4 ring-inset ring-white/30">
         <span className="font-conf-mono text-xl font-normal text-white">
-          $ 149.00
+          $ {price}
         </span>
         <div className="flex items-center gap-4">
           <button
@@ -113,12 +175,7 @@ function TicketPurchase() {
           </button>
         </div>
       </div>
-      <JamButton
-        type="submit"
-        className="rounded-full bg-gradient-to-b from-white/90 to-white/80 px-12 py-4 text-xl font-normal text-black hover:from-white hover:to-white/90"
-      >
-        Checkout
-      </JamButton>
+      <JamButton type="submit">Checkout</JamButton>
     </Form>
   );
 }

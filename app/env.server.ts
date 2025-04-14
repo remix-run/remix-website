@@ -42,6 +42,10 @@ const envSchema = z.object({
     .superRefine(requiredInDevelopment),
 
   NO_CACHE: z.coerce.boolean().default(false),
+
+  // Checks for Shopify keys happen in the tickets page loader
+  PUBLIC_STOREFRONT_API_TOKEN: z.string().optional(),
+  PRIVATE_STOREFRONT_API_TOKEN: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);
