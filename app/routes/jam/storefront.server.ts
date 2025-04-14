@@ -157,6 +157,10 @@ export type DiscountData = {
   discountCode: string;
   price: string;
   imageSrc: string;
+  badge: {
+    value: string;
+    color: "red" | "green";
+  };
   faq: Array<{
     question: string;
     answer: string;
@@ -175,12 +179,15 @@ export function getDiscountData(discountCode?: string): DiscountData {
   discountCode = (discountCode ?? "").trim().toUpperCase();
 
   if (discountCode === "CONTRIBUTOR") {
-    console.log("HERE");
     return {
       title: "Contributor",
       discountCode,
       price: "0",
       imageSrc: contributorTicketSrc,
+      badge: {
+        value: "contributor",
+        color: "red",
+      },
       faq: discountCodeFaq,
     };
   }
@@ -191,6 +198,10 @@ export function getDiscountData(discountCode?: string): DiscountData {
       discountCode,
       price: "149.00",
       imageSrc: vipTicketSrc,
+      badge: {
+        value: "Friends & Family",
+        color: "green",
+      },
       faq: discountCodeFaq,
     };
   }

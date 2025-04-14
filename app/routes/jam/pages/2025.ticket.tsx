@@ -3,8 +3,7 @@ import { Navbar } from "../navbar";
 import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
 import { FAQ, Question } from "../faq";
 import { JamButton } from "../utils";
-import ticketSrc from "../images/keepsakes/ticket.avif";
-import { Form, redirect, useFetcher } from "react-router";
+import { redirect, useFetcher } from "react-router";
 import clsx from "clsx";
 import { getProduct, createCart, getDiscountData } from "../storefront.server";
 
@@ -55,7 +54,8 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function TicketPage({ loaderData }: Route.ComponentProps) {
-  const { price, productId, title, discountCode, imageSrc, faq } = loaderData;
+  const { price, productId, title, discountCode, imageSrc, badge, faq } =
+    loaderData;
 
   return (
     <>
@@ -76,7 +76,7 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
 
-        <Ticket imageSrc={imageSrc} />
+        <Ticket imageSrc={imageSrc} badge={badge} />
 
         <TicketPurchase
           price={price}
@@ -191,7 +191,12 @@ function TicketPurchase({
   );
 }
 
-function Ticket({ imageSrc }: { imageSrc: string }) {
+type TicketProps = Pick<
+  Route.ComponentProps["loaderData"],
+  "imageSrc" | "badge"
+>;
+
+function Ticket({ imageSrc, badge }: TicketProps) {
   return (
     <div className="z-10 w-[300px] overflow-hidden rounded-xl bg-gray-800 md:w-[800px]">
       <div className="relative">
@@ -209,7 +214,14 @@ function Ticket({ imageSrc }: { imageSrc: string }) {
               <p>YOUR NAME</p>
               <p>YOUR COMPANY</p>
             </div>
-            <p className="text-red-500">CONTRIBUTOR</p>
+            <p
+              className={clsx("uppercase", {
+                "text-red-500": badge.color === "red",
+                "text-green-500": badge.color === "green",
+              })}
+            >
+              {badge.value}
+            </p>
           </div>
         </div>
       </div>
