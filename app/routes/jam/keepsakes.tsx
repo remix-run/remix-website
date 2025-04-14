@@ -9,7 +9,12 @@ import ticketSrc from "./images/keepsakes/ticket.avif";
 import boardingPassSrc from "./images/keepsakes/boarding-pass.avif";
 import stickerSrc from "./images/keepsakes/remix-logo-sticker.svg";
 
-const KEEPSAKES = [
+const KEEPSAKES: Array<
+  { id: string; src: string; alt: string } & Pick<
+    KeepsakeProps,
+    "hasBorder" | "shouldJiggle" | "jiggleDelay"
+  >
+> = [
   {
     id: "photo-1",
     src: photo1Src,
@@ -33,6 +38,8 @@ const KEEPSAKES = [
     src: pickSrc,
     alt: "Guitar pick with Remix logo and 'Remix Jam Toronto '25'",
     hasBorder: false,
+    shouldJiggle: true,
+    jiggleDelay: 1000,
   },
   {
     id: "ticket",
@@ -51,8 +58,10 @@ const KEEPSAKES = [
     src: stickerSrc,
     alt: "Remix Logo Sticker",
     hasBorder: false,
+    shouldJiggle: true,
+    jiggleDelay: 2500,
   },
-] as const;
+];
 
 type KeepsakeId = (typeof KEEPSAKES)[number]["id"];
 
@@ -96,6 +105,8 @@ export function Keepsakes() {
           order={order[keepsake.id]}
           onDragStart={() => moveToFront(keepsake.id)}
           hasBorder={keepsake.hasBorder}
+          shouldJiggle={keepsake.shouldJiggle}
+          jiggleDelay={keepsake.jiggleDelay}
         >
           <img src={keepsake.src} alt={keepsake.alt} draggable={false} />
         </Keepsake>
@@ -110,6 +121,8 @@ type KeepsakeProps = {
   onDragStart: () => void;
   order?: number;
   hasBorder?: boolean;
+  shouldJiggle?: boolean;
+  jiggleDelay?: number;
 };
 
 function Keepsake({
@@ -118,11 +131,17 @@ function Keepsake({
   onDragStart,
   order,
   hasBorder,
+  shouldJiggle = false,
+  jiggleDelay = 0,
 }: KeepsakeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const elementRef = useRef<HTMLDivElement>(null);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
-  useDrag(elementRef, onDragStart);
+  useDrag(elementRef, () => {
+    setHasInteracted(true);
+    onDragStart();
+  });
 
   return (
     <div
@@ -132,7 +151,12 @@ function Keepsake({
     >
       <div
         ref={elementRef}
-        className={clsx("keepsake cursor-grab select-none", className)}
+        className={clsx("keepsake cursor-grab select-none", className, {
+          "animate-jiggle": shouldJiggle && !hasInteracted,
+        })}
+        style={{
+          animationDelay: `${jiggleDelay}ms`,
+        }}
       >
         <div className="rotate">
           <div
