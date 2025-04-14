@@ -6,16 +6,21 @@ import { JamButton } from "../utils";
 import { redirect, useFetcher } from "react-router";
 import clsx from "clsx";
 import { getProduct, createCart, getDiscountData } from "../storefront.server";
+import { getMeta } from "~/lib/meta";
 
 import iconsHref from "~/icons.svg";
 import type { Route } from "./+types/2025.ticket";
 
-// TODO:
-// Setup logic to base ticket info displayed based on discount code in URL
-//   redirect if no discount code or incorrect one
-//   OR just say "coming soon"
-// Setup meta tags
-// Create real ticket component
+export function meta({ matches }: Route.MetaArgs) {
+  const [rootMatch] = matches;
+  const { siteUrl } = rootMatch.data;
+  return getMeta({
+    title: "Remix Jam 2025 Ticket",
+    description: "Get your ticket for Remix Jam 2025 in Toronto",
+    siteUrl: `${siteUrl}/jam/ticket`,
+    image: `${siteUrl}/jam/images/og-thumbnail-1.jpg`,
+  });
+}
 
 export async function loader({ request }: Route.LoaderArgs) {
   // Get discount code from URL params
