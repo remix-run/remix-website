@@ -7,6 +7,10 @@ import contributorTicketSrc from "./images/tickets/contributor.avif";
 import vipTicketSrc from "./images/tickets/vip.avif";
 // import generalTicketSrc from "./images/tickets/general.avif";
 
+// TEMPORARY: Discount code constants
+export const CONTRIBUTOR_DISCOUNT_CODE = "CONTRIBUTOR";
+export const VIP_EARLY_BIRD_DISCOUNT_CODE = "VIP_EARLY_BIRD";
+
 // Initialize the client as a singleton
 const client = createStorefrontApiClient({
   storeDomain: "https://jam.remix.run",
@@ -79,7 +83,13 @@ export async function createCart(params: {
   quantity: number;
   discountCode?: string;
 }): Promise<Cart | { error: string }> {
-  const { productId, quantity, discountCode } = params;
+  let { productId, quantity, discountCode } = params;
+
+  // TEMPORARY: Limit quantity based on discount type
+  if (discountCode) {
+    const discountData = getDiscountData(discountCode);
+    quantity = Math.min(quantity, discountData.maxQuantity);
+  }
 
   const createCartMutation = `
     mutation CartCreate($cartInput: CartInput!) {
@@ -126,7 +136,7 @@ export async function createCart(params: {
     .map((d: { code: string }) => d.code.toUpperCase());
 
   const hasValidDiscount = appliedCodes.some((code: string) =>
-    ["CONTRIBUTOR", "VIP_EARLY_BIRD"].includes(code),
+    [CONTRIBUTOR_DISCOUNT_CODE, VIP_EARLY_BIRD_DISCOUNT_CODE].includes(code),
   );
 
   if (!hasValidDiscount) {
@@ -165,6 +175,7 @@ export type DiscountData = {
     question: string;
     answer: string;
   }>;
+  maxQuantity: number;
 };
 
 /**
@@ -178,7 +189,7 @@ export type DiscountData = {
 export function getDiscountData(discountCode?: string): DiscountData {
   discountCode = (discountCode ?? "").trim().toUpperCase();
 
-  if (discountCode === "CONTRIBUTOR") {
+  if (discountCode === CONTRIBUTOR_DISCOUNT_CODE) {
     return {
       title: "Contributor",
       discountCode,
@@ -189,10 +200,11 @@ export function getDiscountData(discountCode?: string): DiscountData {
         color: "red",
       },
       faq: discountCodeFaq,
+      maxQuantity: 1, // TEMPORARY: Limit contributor tickets to 1
     };
   }
 
-  if (discountCode === "VIP_EARLY_BIRD") {
+  if (discountCode === VIP_EARLY_BIRD_DISCOUNT_CODE) {
     return {
       title: "Friends & Family",
       discountCode,
@@ -203,6 +215,7 @@ export function getDiscountData(discountCode?: string): DiscountData {
         color: "green",
       },
       faq: discountCodeFaq,
+      maxQuantity: 10, // TEMPORARY: Set a reasonable default max
     };
   }
 

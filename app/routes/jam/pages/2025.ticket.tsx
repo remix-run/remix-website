@@ -59,8 +59,16 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function TicketPage({ loaderData }: Route.ComponentProps) {
-  const { price, productId, title, discountCode, imageSrc, badge, faq } =
-    loaderData;
+  const {
+    price,
+    productId,
+    title,
+    discountCode,
+    imageSrc,
+    badge,
+    faq,
+    maxQuantity,
+  } = loaderData;
 
   return (
     <>
@@ -88,6 +96,7 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
           productId={productId}
           discountCode={discountCode}
           availableForSale={loaderData.availableForSale}
+          maxQuantity={maxQuantity}
         />
 
         {
@@ -115,7 +124,7 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
 
 type TicketPurchaseProps = Pick<
   Route.ComponentProps["loaderData"],
-  "price" | "productId" | "discountCode" | "availableForSale"
+  "price" | "productId" | "discountCode" | "availableForSale" | "maxQuantity"
 >;
 
 function TicketPurchase({
@@ -123,11 +132,14 @@ function TicketPurchase({
   productId,
   discountCode,
   availableForSale,
+  maxQuantity,
 }: TicketPurchaseProps) {
   const [quantity, setQuantity] = useState(1);
   const isSoldOut = !availableForSale;
   const fetcher = useFetcher();
-  const isSubmitting = fetcher.state === "submitting";
+  const isSubmitting = fetcher.state !== "idle";
+
+  const disabled = isSoldOut || isSubmitting;
 
   return (
     <div className="z-10 flex w-[90%] flex-col items-center gap-3">
@@ -150,7 +162,7 @@ function TicketPurchase({
               className="size-6 text-white/30 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-white/30 md:size-8"
               aria-label="Decrease quantity"
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              disabled={quantity <= 1 || isSoldOut || isSubmitting}
+              disabled={quantity <= 1 || disabled}
             >
               <svg aria-hidden viewBox="0 0 24 24">
                 <use href={`${iconsHref}#circle-minus`} />
@@ -171,7 +183,7 @@ function TicketPurchase({
               className="size-6 text-white/30 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-white/30 md:size-8"
               aria-label="Increase quantity"
               onClick={() => setQuantity(quantity + 1)}
-              disabled={isSoldOut || isSubmitting}
+              disabled={quantity >= maxQuantity || disabled}
             >
               <svg aria-hidden viewBox="0 0 24 24">
                 <use href={`${iconsHref}#circle-plus`} />
@@ -181,7 +193,7 @@ function TicketPurchase({
         </div>
         <JamButton
           type="submit"
-          disabled={isSoldOut || isSubmitting}
+          disabled={disabled}
           className="w-full md:w-auto"
         >
           {isSoldOut ? "Sold Out" : isSubmitting ? "Processing..." : "Checkout"}
