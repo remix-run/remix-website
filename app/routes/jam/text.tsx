@@ -9,7 +9,7 @@ import clsx from "clsx";
 export function Title({ children }: { children: React.ReactNode }) {
   return (
     <h1
-      className="flex flex-col gap-2 text-[2.75rem] font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none"
+      className="flex flex-col gap-2 text-[2.5rem] font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none"
       role="banner"
     >
       {children}

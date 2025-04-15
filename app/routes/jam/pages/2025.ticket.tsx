@@ -139,8 +139,6 @@ function TicketPurchase({
   const fetcher = useFetcher();
   const isSubmitting = fetcher.state !== "idle";
 
-  const disabled = isSoldOut || isSubmitting;
-
   return (
     <div className="z-10 flex w-[90%] flex-col items-center gap-3">
       <fetcher.Form
@@ -162,7 +160,7 @@ function TicketPurchase({
               className="size-6 text-white/30 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-white/30 md:size-8"
               aria-label="Decrease quantity"
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              disabled={quantity <= 1 || disabled}
+              disabled={quantity <= 1 || isSoldOut}
             >
               <svg aria-hidden viewBox="0 0 24 24">
                 <use href={`${iconsHref}#circle-minus`} />
@@ -183,7 +181,7 @@ function TicketPurchase({
               className="size-6 text-white/30 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-white/30 md:size-8"
               aria-label="Increase quantity"
               onClick={() => setQuantity(quantity + 1)}
-              disabled={quantity >= maxQuantity || disabled}
+              disabled={quantity >= maxQuantity || isSoldOut}
             >
               <svg aria-hidden viewBox="0 0 24 24">
                 <use href={`${iconsHref}#circle-plus`} />
@@ -193,7 +191,8 @@ function TicketPurchase({
         </div>
         <JamButton
           type="submit"
-          disabled={disabled}
+          disabled={isSoldOut}
+          active={isSubmitting}
           className="w-full md:w-auto"
         >
           {isSoldOut ? "Sold Out" : isSubmitting ? "Processing..." : "Checkout"}

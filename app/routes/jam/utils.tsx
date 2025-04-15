@@ -7,7 +7,7 @@ import { Link, type LinkProps } from "react-router";
 import { ButtonHTMLAttributes } from "react";
 
 const jamStyles =
-  "flex items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";
+  "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";
 
 export function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -57,13 +57,15 @@ export function JamButton({
   className,
   children,
   disabled,
+  active,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement>) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) {
   return (
     <button
       className={clsx(
         jamStyles,
         "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-black",
+        active ? "bg-blue-brand text-white" : "bg-white text-black",
         className,
       )}
       disabled={disabled}
