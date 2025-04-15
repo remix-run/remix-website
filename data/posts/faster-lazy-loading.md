@@ -12,7 +12,7 @@ authors:
 
 <!-- Diagrams, exported as PNG @ 2x scale: https://excalidraw.com/#json=vlUxqYtuQD20IjsupqbRx,f_SWu-qs-A_0ea0JS2rBGw -->
 
-With the release of [React Router v7.5](https://reactrouter.com/changelog#v750), we’ve introduced more granular way to lazy load route code in [Data Mode](https://reactrouter.com/start/modes). This new API is specifically designed to support the upcoming middleware API, but it also allows for some additional performance optimizations across the board.
+With the release of [React Router v7.5](https://reactrouter.com/changelog#v750), we’ve introduced a more granular way to lazy load route code in [Data Mode](https://reactrouter.com/start/modes). This new API is specifically designed to support the upcoming middleware API, but it also allows for some additional performance optimizations across the board.
 
 This post will look at React Router’s pre-existing approach to lazy loading routes, explain its limitations and the challenges it presented for middleware, and show how our new approach allows for much better lazy loading performance.
 
