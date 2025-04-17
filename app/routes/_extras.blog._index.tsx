@@ -40,7 +40,7 @@ export default function Blog({ loaderData }: Route.ComponentProps) {
                 />
               </div>
               <p className="text-sm lg:text-base">{latestPost.dateDisplay}</p>
-              <p className="py-2 text-2xl font-bold leading-snug lg:text-5xl lg:leading-snug">
+              <p className="py-4 text-2xl font-bold leading-[1.1] lg:text-5xl lg:leading-[1.1]">
                 {latestPost.title}
               </p>
               <p className="text-sm lg:text-base">{latestPost.summary}</p>
@@ -58,7 +58,9 @@ export default function Blog({ loaderData }: Route.ComponentProps) {
                     />
                   </div>
                   <p className="text-sm lg:text-base">{post.dateDisplay}</p>
-                  <p className="text-lg font-bold lg:text-xl">{post.title}</p>
+                  <p className="py-2 text-lg font-bold leading-snug lg:text-xl lg:leading-snug">
+                    {post.title}
+                  </p>
                   <p className="mb-12 text-sm lg:text-base">{post.summary}</p>
                 </Link>
               </div>
