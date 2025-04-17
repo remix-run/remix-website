@@ -2,9 +2,9 @@
 title: Faster Lazy Loading in React Router v7.5+
 summary: React Router v7.5’s data mode now supports a faster, more granular approach to lazy loading route code
 date: 2025-04-15
-image: /blog-images/headers/split-route-modules.jpg
-ogImage: /blog-images/headers/split-route-modules.jpg
-imageAlt: "A close-up of a stylized atom"
+image: /blog-images/headers/faster-lazy-loading.jpg
+ogImage: /blog-images/headers/faster-lazy-loading.jpg
+imageAlt: "A close-up of a abstract stylized colored tubes"
 imageDisableOverlay: true
 authors:
   - Mark Dalgleish
