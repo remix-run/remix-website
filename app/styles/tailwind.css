@@ -53,3 +53,23 @@
     opacity: 1;
   }
 }
+
+@keyframes jiggle {
+  0%,
+  91%,
+  100% {
+    transform: rotate(0deg);
+  }
+  94% {
+    transform: rotate(-3deg);
+  }
+  97% {
+    transform: rotate(3deg);
+  }
+}
+
+.animate-jiggle {
+  animation: jiggle 3s cubic-bezier(0.99, 0.78, 0.72, 1.04);
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+}

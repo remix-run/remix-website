@@ -1,0 +1,394 @@
+/*
+CSS Variables used in this file:
+--parallax-transform-percent: Controls how much elements move during parallax scrolling (0-1).
+  Lower values = more movement. Default is 0.75, meaning elements move 25% of scroll distance.
+
+--rotate: Base rotation angle for keepsake elements (in degrees)
+--hover-rotate: Additional rotation on hover (in degrees)
+*/
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  src: url("/font/jet-brains-mono.woff2") format("woff2");
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Kind of annoying, but need to apply this class to all layers that should be clickable */
+.top-layer {
+  @apply relative z-10;
+}
+
+/* Letter of Intent */
+
+.letter-of-intent {
+  --parallax-transform-percent: 0.75;
+  padding-top: 320px;
+  padding-bottom: 450px;
+}
+
+.letter-of-intent-container {
+  max-width: 1400px;
+  width: 85%;
+  padding-bottom: 200px;
+  @apply mx-auto pb-0 pt-0;
+}
+
+.seats-container {
+  aspect-ratio: 2.69;
+  width: 1824px;
+}
+
+/* Keepsakes */
+
+.keepsake {
+  position: absolute;
+}
+
+.keepsake .rotate {
+  width: 100%;
+  height: 100%;
+  transform: rotate(var(--rotate));
+  transition: transform 0.3s cubic-bezier(0, 1.5, 0.67, 1.06);
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .keepsake .rotate:hover {
+    transform: rotate(calc(var(--rotate) + var(--hover-rotate)));
+  }
+}
+
+/* Ensure images fill their containers properly */
+.keepsake img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Poster */
+.poster {
+  --rotate: -2deg;
+  --hover-rotate: 4deg;
+  top: 240px;
+  left: -260px;
+  width: 260px;
+  height: 375px;
+}
+
+@screen md {
+  .poster {
+    top: 235px;
+    left: -360px;
+    width: 415px;
+    height: 565px;
+  }
+}
+
+@screen xl {
+  .poster {
+    top: 300px;
+    left: -520px;
+    width: 580px;
+    height: 812px;
+  }
+}
+
+@screen 2xl {
+  .poster {
+    top: 300px;
+    left: -500px;
+    width: 700px;
+    height: 980px;
+  }
+}
+
+/* Photo 1 */
+.photo-1 {
+  --rotate: 6deg;
+  --hover-rotate: -3deg;
+  top: 300px;
+  right: -210px;
+  width: 220px;
+  height: 165px;
+}
+
+@screen md {
+  .photo-1 {
+    top: 250px;
+    right: -300px;
+    width: 350px;
+    height: 263px;
+  }
+}
+@screen xl {
+  .photo-1 {
+    top: 380px;
+    right: -440px;
+    width: 490px;
+    height: 368px;
+  }
+}
+
+@screen 2xl {
+  .photo-1 {
+    top: 280px;
+    right: -530px;
+    width: 590px;
+    height: 443px;
+  }
+}
+
+/* Photo 2 */
+.photo-2 {
+  --rotate: -6deg;
+  --hover-rotate: 3deg;
+  top: 820px;
+  left: -200px;
+  width: 220px;
+  height: 147px;
+}
+
+@screen md {
+  .photo-2 {
+    top: 700px;
+    left: -300px;
+    width: 350px;
+    height: 233px;
+  }
+}
+
+@screen xl {
+  .photo-2 {
+    top: 880px;
+    left: -440px;
+    width: 490px;
+    height: 327px;
+  }
+}
+
+@screen 2xl {
+  .photo-2 {
+    top: 1200px;
+    left: -400px;
+    width: 590px;
+    height: 394px;
+  }
+}
+
+/* Pick */
+.pick {
+  --rotate: -30deg;
+  --hover-rotate: 10deg;
+  top: 380px;
+  left: -30px;
+  width: 50px;
+  height: 58px;
+}
+
+@screen md {
+  .pick {
+    top: 260px;
+    left: 20px;
+    width: 80px;
+    height: 93px;
+  }
+}
+
+@screen xl {
+  .pick {
+    top: 340px;
+    left: 120px;
+    width: 100px;
+    height: 116px;
+  }
+}
+
+/* Ticket */
+.ticket {
+  --rotate: -10deg;
+  --hover-rotate: -4deg;
+  top: 650px;
+  right: -180px;
+  width: 240px;
+  height: 84px;
+}
+
+@screen md {
+  .ticket {
+    top: 850px;
+    right: -120px;
+    width: 375px;
+    height: 131px;
+  }
+}
+
+@screen xl {
+  .ticket {
+    top: 800px;
+    right: -400px;
+    width: 525px;
+    height: 184px;
+  }
+}
+
+@screen 2xl {
+  .ticket {
+    top: 830px;
+    right: -440px;
+    width: 630px;
+    height: 221px;
+  }
+}
+
+/* Boarding Pass */
+.boarding-pass {
+  --rotate: -6deg;
+  --hover-rotate: 3deg;
+  top: 1500px;
+  left: -220px;
+  width: 260px;
+  height: 97px;
+}
+
+@screen md {
+  .boarding-pass {
+    top: 1730px;
+    left: -300px;
+    width: 400px;
+    height: 149px;
+  }
+}
+
+@screen lg {
+  .boarding-pass {
+    top: 900px;
+    left: -200px;
+    width: 480px;
+    height: 179px;
+  }
+}
+
+@screen xl {
+  .boarding-pass {
+    top: 1220px;
+    left: -340px;
+    width: 560px;
+    height: 209px;
+  }
+}
+
+@screen 2xl {
+  .boarding-pass {
+    top: 1480px;
+    left: -270px;
+    width: 672px;
+    height: 251px;
+  }
+}
+
+/* Sticker */
+.sticker {
+  --rotate: -8deg;
+  --hover-rotate: 5deg;
+  top: 420px;
+  right: -80px;
+  width: 120px;
+  height: 36px;
+}
+
+@screen md {
+  .sticker {
+    top: 340px;
+    right: -100px;
+    width: 202px;
+    height: 60px;
+  }
+}
+
+@screen 2xl {
+  .sticker {
+    top: 340px;
+    right: -100px;
+    width: 242px;
+    height: 72px;
+  }
+}
+
+/* Responsive styles for other elements */
+@screen md {
+  .letter-of-intent {
+    padding-top: 480px;
+  }
+
+  .letter-of-intent-container {
+    width: 75%;
+    padding-bottom: 200px;
+  }
+}
+
+@screen lg {
+  .letter-of-intent-container {
+    width: 75%;
+    padding-bottom: 150px;
+    padding-top: 48px;
+  }
+
+  .seats-container {
+    width: 2016px;
+  }
+}
+
+@screen xl {
+  .letter-of-intent {
+    padding-bottom: 450px;
+  }
+
+  .seats-container {
+    width: 2344px;
+  }
+
+  .letter-of-intent-container {
+    width: 67%;
+    padding-bottom: 56px;
+    padding-top: 48px;
+  }
+}
+
+@screen 2xl {
+  .letter-of-intent {
+    padding-top: 600px;
+    padding-bottom: 450px;
+  }
+
+  .seats-container {
+    width: 2784px;
+  }
+
+  .letter-of-intent-container {
+    width: 67%;
+    padding-bottom: 110px;
+    padding-top: 96px;
+  }
+}
+
+@media (min-width: 120rem /* 1920px */) {
+  .letter-of-intent-container {
+    width: 60%;
+    @apply pb-0 pt-0;
+  }
+
+  .letter-of-intent h2 {
+    @apply text-8xl;
+  }
+}

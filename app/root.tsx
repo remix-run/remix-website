@@ -34,10 +34,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   let colorScheme = await parseColorScheme(request);
 
+  let requestUrl = new URL(request.url);
+  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
+
   return data(
     {
       colorScheme,
       host: url.host,
+      siteUrl,
       isProductionHost: !isDevHost,
       noIndex:
         isDevHost ||

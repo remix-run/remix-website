@@ -3,7 +3,7 @@ import { useFetcher } from "react-router";
 import type { FormProps } from "react-router";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
-import type { action } from "~/routes/[_]actions.newsletter";
+import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
 
 // TODO: look into if v3_fetcherPersist simplifies this component
 
@@ -31,7 +31,7 @@ function Subscribe({
 }
 
 function SubscribeProvider({ children }: { children: React.ReactNode }) {
-  let subscribe = useFetcher<typeof action>();
+  let subscribe = useFetcher<NewsletterActionData>();
   let inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -48,7 +48,7 @@ function SubscribeProvider({ children }: { children: React.ReactNode }) {
 }
 
 const SubscribeContext = React.createContext<null | {
-  fetcher: ReturnType<typeof useFetcher<typeof action>>;
+  fetcher: ReturnType<typeof useFetcher<NewsletterActionData>>;
   inputRef: React.RefObject<HTMLInputElement>;
 }>(null);
 
@@ -152,8 +152,9 @@ function SubscribeSubmit({
   );
 }
 
-function SubscribeStatus() {
-  let { fetcher: subscribe } = useSubscribeContext();
+export function getSubscribeStatus(
+  subscribe: ReturnType<typeof useFetcher<NewsletterActionData>>,
+) {
   let { isSuccessful } =
     subscribe.state === "idle" && subscribe.data?.ok
       ? { isSuccessful: true }
@@ -162,6 +163,14 @@ function SubscribeStatus() {
     subscribe.state === "idle" && subscribe.data?.error
       ? { isError: true, error: subscribe.data.error }
       : { isError: false, error: null };
+
+  return { isSuccessful, isError, error };
+}
+
+function SubscribeStatus() {
+  let { fetcher: subscribe } = useSubscribeContext();
+
+  let { isSuccessful, isError, error } = getSubscribeStatus(subscribe);
 
   return (
     <div aria-live="polite" className="py-2">

@@ -8,7 +8,6 @@ import { Wordmark } from "~/ui/logo";
 // https://www.jacobparis.com/content/remix-og
 
 let primaryTextColor = "#ffffff";
-let secondaryTextColor = "#d0d0d0";
 
 let primaryFont = "Inter";
 
@@ -57,7 +56,7 @@ export async function createOgImageSVG(request: Request) {
         <div
           style={{
             fontSize: 48,
-            color: secondaryTextColor,
+            color: primaryTextColor,
             margin: 0,
           }}
         >
@@ -222,7 +221,7 @@ function Authors({
               </div>
               <div
                 style={{
-                  color: secondaryTextColor,
+                  color: primaryTextColor,
                   fontSize: 40,
                 }}
               >

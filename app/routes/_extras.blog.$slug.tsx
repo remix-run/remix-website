@@ -91,9 +91,9 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
                   alt={post.imageAlt}
                 />
               </div>
-              <div className="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-12 lg:max-w-4xl">
+              <div className="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-10 lg:max-w-4xl">
                 <div className="flex-1">
-                  <div className="text-sm uppercase text-gray-200 md:text-base">
+                  <div className="text-sm uppercase text-white md:text-base">
                     {post.dateDisplay}
                   </div>
                   <div className="h-2" />
@@ -102,9 +102,9 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
                   </h1>
                   <div className="h-2" />
                 </div>
-                <div className="pb-4 md:pb-12">
+                <div className="pb-4 md:pb-10">
                   {post.authors.map((author) => (
-                    <div key={author.name} className="my-2 flex items-center">
+                    <div key={author.name} className="flex items-center">
                       <div>
                         <img
                           className="h-10 w-10 rounded-full md:h-14 md:w-14"
@@ -117,7 +117,7 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
                         <div className="font-display text-xl font-extrabold leading-none text-white md:text-3xl">
                           {author.name}
                         </div>
-                        <div className="text-base leading-tight text-gray-200 md:text-base">
+                        <div className="text-base leading-tight text-white md:text-base">
                           {author.title}
                         </div>
                       </div>
