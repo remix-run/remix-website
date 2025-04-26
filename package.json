@@ -60,6 +60,7 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
     "satori": "^0.10.14",
+    "search-insights": "^2.17.3",
     "semver": "^7.5.4",
     "shiki": "^0.14.7",
     "source-map-support": "^0.5.21",
