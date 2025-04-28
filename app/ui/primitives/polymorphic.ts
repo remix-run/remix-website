@@ -71,6 +71,7 @@ interface MemoComponent<IntrinsicElementString, OwnProps = {}>
 function forwardRef<OwnProps, TagName>(
   render: RenderFunction<OwnProps, TagName>,
 ) {
+  // @ts-expect-error - some wild types, not even sure why we have our own forwardRef
   return React_forwardRef(render) as ForwardRefComponent<TagName, OwnProps>;
 }
 
