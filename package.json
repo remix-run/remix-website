@@ -24,6 +24,7 @@
     "@docsearch/react": "^3.5.2",
     "@react-router/express": "^7.5.2",
     "@react-router/node": "^7.5.2",
+    "@shopify/storefront-api-client": "^1.0.7",
     "cheerio": "^1.0.0",
     "clsx": "^2.1.1",
     "compression": "^1.7.4",

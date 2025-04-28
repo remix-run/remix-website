@@ -3,6 +3,11 @@
  */
 import clsx from "clsx";
 import { useEffect, useState } from "react";
+import { Link, type LinkProps } from "react-router";
+import { ButtonHTMLAttributes } from "react";
+
+const jamStyles =
+  "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";
 
 export function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -30,19 +35,6 @@ export function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-export function BrooksLink() {
-  return (
-    <address className="inline-block not-italic">
-      <a
-        className="text-blue-400 hover:underline"
-        href="mailto:brooks.lybrand@shopify.com"
-      >
-        Brooks
-      </a>
-    </address>
-  );
-}
-
 export function Address({ className }: { className?: string }) {
   return (
     <address className={clsx("inline-block not-italic", className)}>
@@ -50,5 +42,49 @@ export function Address({ className }: { className?: string }) {
       <br />
       Toronto, ON M5V 1M7, Canada
     </address>
+  );
+}
+
+export function JamLink({
+  className,
+  children,
+  active = false,
+  ...props
+}: LinkProps & { active?: boolean }) {
+  return (
+    <Link
+      className={clsx(
+        jamStyles,
+        "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-black",
+        active ? "bg-blue-brand text-white" : "bg-white text-black",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </Link>
+  );
+}
+
+export function JamButton({
+  className,
+  children,
+  disabled,
+  active,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) {
+  return (
+    <button
+      className={clsx(
+        jamStyles,
+        "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-black",
+        active ? "bg-blue-brand text-white" : "bg-white text-black",
+        className,
+      )}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
   );
 }

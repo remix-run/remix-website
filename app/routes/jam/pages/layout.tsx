@@ -172,11 +172,13 @@ function Background({ children }: { children: React.ReactNode }) {
   );
 }
 
+const socialClassName = "size-6 transition-colors hover:text-white md:size-8";
+
 function Footer({ className }: { className?: string }) {
   return (
     <footer
       className={clsx(
-        "flex flex-col items-center gap-2 py-[160px] text-center font-conf-mono text-sm text-gray-400 md:text-base",
+        "flex flex-col items-center gap-2 py-[160px] text-center font-conf-mono text-xs text-gray-400 md:text-base",
         className,
       )}
     >
@@ -193,10 +195,7 @@ function Footer({ className }: { className?: string }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <GitHub
-            className="size-8 transition-colors hover:text-white"
-            aria-hidden
-          />
+          <GitHub className={socialClassName} aria-hidden />
         </a>
         <a
           href="https://twitter.com/remix_run"
@@ -204,10 +203,7 @@ function Footer({ className }: { className?: string }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Twitter
-            className="size-8 transition-colors hover:text-white"
-            aria-hidden
-          />
+          <Twitter className={socialClassName} aria-hidden />
         </a>
         <a
           href="https://youtube.com/remix_run"
@@ -215,10 +211,7 @@ function Footer({ className }: { className?: string }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <YouTube
-            className="size-8 transition-colors hover:text-white"
-            aria-hidden
-          />
+          <YouTube className={socialClassName} aria-hidden />
         </a>
         <a
           href="https://rmx.as/discord"
@@ -226,10 +219,7 @@ function Footer({ className }: { className?: string }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Discord
-            className="size-8 transition-colors hover:text-white"
-            aria-hidden
-          />
+          <Discord className={socialClassName} aria-hidden />
         </a>
       </div>
       <div className="flex flex-col items-center gap-2 uppercase leading-loose">

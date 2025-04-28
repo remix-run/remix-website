@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { Address, BrooksLink, usePrefersReducedMotion } from "./utils";
+import { Fragment, useEffect, useRef } from "react";
+import { Address, usePrefersReducedMotion } from "./utils";
 import clsx from "clsx";
 
 export function FAQ({
@@ -34,7 +34,7 @@ export function FAQ({
           <Address className="inline" />
         </Question>
         <Question question="Will there be a group discount?">
-          Ask <BrooksLink />!
+          Ask Brooks!
         </Question>
         <Question question="Where should I stay?">
           We are working with a few trusted partners to set something up. Stay
@@ -43,11 +43,9 @@ export function FAQ({
         <Question question="What's the refund policy?">
           There are no refunds, but tickets will be transferable.
         </Question>
-        <Question question="How do I transfer a ticket?">
-          Ask <BrooksLink />!
-        </Question>
+        <Question question="How do I transfer a ticket?">Ask Brooks!</Question>
         <Question question="What if I have other questions?">
-          You guessed it, ask <BrooksLink />!
+          You guessed it, ask Brooks!
         </Question>
       </div>
     </section>
@@ -154,8 +152,38 @@ export function Question({
         </div>
       </summary>
       <div>
-        <div className="p-5 pt-0 text-white/80">{children}</div>
+        <div className="p-5 pt-0 text-white/80">
+          {replaceBrooksWithLink(children)}
+        </div>
       </div>
     </details>
+  );
+}
+
+// Really wanting RSC right now
+function replaceBrooksWithLink(children: React.ReactNode): React.ReactNode {
+  if (typeof children !== "string") return children;
+
+  const parts = children.split("Brooks");
+  if (parts.length === 1) return children;
+
+  return (
+    <>
+      {parts.map((part, index) => (
+        <Fragment key={index}>
+          {part}
+          {index < parts.length - 1 ? (
+            <address className="inline-block not-italic">
+              <a
+                className="text-blue-400 hover:underline"
+                href="mailto:brooks.lybrand@shopify.com"
+              >
+                Brooks
+              </a>
+            </address>
+          ) : null}
+        </Fragment>
+      ))}
+    </>
   );
 }
