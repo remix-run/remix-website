@@ -224,7 +224,9 @@ export default function SpeakerRoute() {
                     </h3>
                     {startsAtISO ? (
                       <div className="text-gray-300">
-                        <time dateTime={startsAtISO}>{startsAtFormatted}</time>{" "}
+                        <time dateTime={startsAtISO}>
+                          {startsAtFormatted}
+                        </time>{" "}
                       </div>
                     ) : null}
                   </div>
