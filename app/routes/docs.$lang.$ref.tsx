@@ -927,7 +927,7 @@ function useCodeBlockCopyButton(ref: React.RefObject<HTMLDivElement>) {
       { listener: (event: MouseEvent) => void; to: number }
     >();
 
-    for (let codeBlock of codeBlocks) {
+    for (const codeBlock of codeBlocks) {
       let button = document.createElement("button");
       let label = document.createElement("span");
       button.type = "button";

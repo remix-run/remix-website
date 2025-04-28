@@ -6,7 +6,7 @@
       "@react-router/node",
       "vite/client",
       "vitest/globals",
-      "vite-plugin-arraybuffer/types",
+      "vite-plugin-arraybuffer/types"
     ],
     "esModuleInterop": true,
     "jsx": "react-jsx",
@@ -17,13 +17,13 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": ["./app/*"],
+      "~/*": ["./app/*"]
     },
     "noEmit": true,
     "baseUrl": ".",
     "allowJs": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "rootDirs": [".", "./.react-router/types"],
-  },
+    "rootDirs": [".", "./.react-router/types"]
+  }
 }
