@@ -1,4 +1,4 @@
-import { useEffect, useRef, Fragment } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { Address, usePrefersReducedMotion } from "./utils";
 import clsx from "clsx";
 
