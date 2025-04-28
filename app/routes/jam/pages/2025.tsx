@@ -16,11 +16,14 @@ import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
 export function meta({ matches }: Route.MetaArgs) {
   const [rootMatch] = matches;
   const { siteUrl } = rootMatch.data;
+
+  let image = `${siteUrl}${ogImageSrc}`;
+
   return getMeta({
     title: "Remix Jam 2025",
     description: "It's time to get the band back together",
     siteUrl: `${siteUrl}/jam`,
-    image: ogImageSrc,
+    image,
   });
 }
 
