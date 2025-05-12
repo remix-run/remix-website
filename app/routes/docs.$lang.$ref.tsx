@@ -35,8 +35,9 @@ import { octokit } from "~/lib/github.server";
 import { useColorScheme } from "~/lib/color-scheme";
 import { env } from "~/env.server";
 import { CACHE_CONTROL } from "~/lib/http.server";
+import type { Route } from "./+types/docs.$lang.$ref";
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: Route.LoaderArgs) => {
   let { lang = "en", ref = "main", "*": splat } = params;
 
   let branchesInMenu = ["main", "dev"];

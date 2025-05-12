@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Navbar } from "../navbar";
 import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
 import { FAQ, Question } from "../faq";
@@ -10,6 +10,7 @@ import { getMeta } from "~/lib/meta";
 
 import iconsHref from "~/icons.svg";
 import ogImageSrc from "../images/og-thumbnail-1.jpg";
+import ticketHolographic from "../images/tickets/ticket-holographic.avif";
 import type { Route } from "./+types/2025.ticket";
 
 export function meta({ matches }: Route.MetaArgs) {
@@ -78,8 +79,7 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <Navbar className="z-40" />
-
-      <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center">
+      <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]">
         <Title>
           <ScrambleText
             className="whitespace-nowrap"
@@ -212,17 +212,114 @@ type TicketProps = Pick<
 >;
 
 function Ticket({ imageSrc, badge }: TicketProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const ticketRef = useRef<HTMLDivElement>(null);
+
+  // Handle mouse move to track position for 3D effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ticketRef.current) return;
+
+    const rect = ticketRef.current.getBoundingClientRect();
+
+    // Calculate mouse position relative to the ticket (0-100%)
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    setMousePosition({ x, y });
+  };
+
   return (
-    <div className="z-10 w-[300px] overflow-hidden rounded-xl bg-gray-800 md:w-[800px]">
-      <div className="relative">
-        <img
-          src={imageSrc}
-          width={800}
-          height={280}
-          alt="Remix Jam 2025 Event Ticket"
-          className="w-full"
+    <div
+      className="z-10 w-[300px] md:w-[800px]"
+      style={{
+        perspective: "1500px",
+      }}
+      ref={ticketRef}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+    >
+      <div
+        className={clsx(
+          "relative isolate z-10 overflow-hidden rounded-xl border border-white/20 bg-gray-800 transition-transform duration-200 ease-out",
+        )}
+        style={{
+          transformStyle: "preserve-3d",
+          // Transform based on mouse position when hovered
+          transform: isHovered
+            ? `rotateY(${(mousePosition.x - 50) * 0.15}deg) rotateX(${(mousePosition.y - 50) * -0.15}deg)`
+            : "rotateY(0deg) rotateX(0deg)",
+        }}
+      >
+        {/* Holographic effect overlay */}
+        <div
+          className={clsx(
+            "pointer-events-none absolute inset-0 opacity-0 bg-blend-color-dodge mix-blend-color-dodge brightness-150 contrast-125 transition-opacity duration-300 ease-in-out",
+            isHovered && "opacity-20",
+          )}
+          style={{
+            backgroundImage: `url(${ticketHolographic})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
         />
-        <div className="absolute bottom-0 left-[35%] pb-1 pl-2 text-left font-conf-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
+
+        {/* Base ticket image */}
+        <div
+          style={{
+            filter: "contrast(1.05)",
+          }}
+        >
+          <img
+            src={imageSrc}
+            width={800}
+            height={280}
+            alt="Remix Jam 2025 Event Ticket"
+            className="relative w-full"
+          />
+        </div>
+
+        {/* Rainbow overlay */}
+        {/* <div
+          className={clsx(
+            "transition-bac absolute inset-0 opacity-0 transition-opacity duration-300 ease-in-out",
+            isHovered && "opacity-40",
+          )}
+          style={{
+            background:
+              "linear-gradient(135deg, rgb(255, 119, 115) 9.77442%, rgb(255, 237, 95) 25.3519%, rgb(168, 255, 95) 41.0807%, rgb(131, 255, 247) 54.2775%, rgb(119, 221, 223) 68.7043%, rgb(120, 148, 255) 80.1538%, rgb(216, 117, 255) 88.9358%, rgb(108, 143, 220) 89.6396%, rgb(255, 119, 115) 100%)",
+          }}
+        /> */}
+
+        <div
+          className={clsx(
+            "absolute inset-0 size-[160%] translate-x-[-20%] translate-y-[-20%] opacity-0 transition-opacity duration-300 ease-in-out",
+            isHovered && "opacity-40",
+          )}
+          style={{
+            background:
+              "linear-gradient(315deg, rgb(19, 20, 21) 0%, rgb(143, 163, 163) 6.03181%, rgb(162, 163, 163) 9.74451%, rgb(19, 20, 21) 25.0721%, rgb(143, 163, 163) 33.5357%, rgb(164, 166, 166) 35.2988%, rgb(19, 20, 21) 41.503%, rgb(161, 161, 161) 52.393%, rgb(102, 116, 120) 61.1346%, rgb(19, 20, 21) 66.269%, rgb(143, 163, 163) 74.4633%, rgb(163, 163, 163) 79.8986%, rgb(19, 20, 21) 85.7299%, rgb(161, 161, 161) 89.8948%, rgb(19, 20, 21) 100%)",
+          }}
+        />
+
+        {/* <div className={clsx("absolute inset-0 bg-black")} /> */}
+
+        {/* Radial highlight */}
+        {/* <div
+          className={clsx(
+            "pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-150 ease-in-out",
+            isHovered && "opacity-100",
+          )}
+          style={{
+            // background: `radial-gradient(circle at ${mousePosition.x / 2}% ${mousePosition.y / 2}%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 25%) 0 0/200% 200%`,
+
+            background: `radial-gradient(50% 50% at ${mousePosition.x}% ${mousePosition.y}%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.5) 43.6638%, rgba(255, 255, 255, 0.11) 80.5409%, rgba(255, 255, 255, 0) 100%)`,
+            filter: "blur(20px)",
+          }}
+        /> */}
+
+        {/* <div className="absolute bottom-0 left-[35%] z-40 pb-1 pl-2 text-left font-conf-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
           <div className="flex flex-col gap-0 md:gap-2">
             <p>OCTOBER 10 2025</p>
             <div>
@@ -238,7 +335,7 @@ function Ticket({ imageSrc, badge }: TicketProps) {
               {badge.value}
             </p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
