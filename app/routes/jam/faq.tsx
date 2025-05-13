@@ -34,8 +34,19 @@ export function FAQ({
           <Address className="inline" />.
         </Question>
         <Question question="Where should I stay?">
-          We are working with a few trusted partners to set something up. Stay
-          tuned for more on this soon!
+          We have a hotel block set up at the Hyatt Regency Toronto.
+          <br />
+          <br />
+          You can book a room{" "}
+          <a
+            href="https://www.hyatt.com/en-US/group-booking/TORRT/G-SH0F"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            using this link
+          </a>
+          .
         </Question>
         <Question question="What's the refund policy?">
           There are no refunds, but tickets will be transferable.
