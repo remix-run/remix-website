@@ -249,14 +249,11 @@ function Ticket({ imageSrc, badge }: TicketProps) {
   let ty = 0;
 
   if (ticketDimensions.width > 0 && ticketDimensions.height > 0) {
-    const ticketWidth = ticketDimensions.width;
-    const ticketHeight = ticketDimensions.height;
-
     const xOffsetFactor = mousePosition.x / 100 - 0.5;
     const yOffsetFactor = mousePosition.y / 100 - 0.5;
 
-    tx = ticketWidth * xOffsetFactor;
-    ty = ticketHeight * yOffsetFactor;
+    tx = ticketDimensions.width * xOffsetFactor;
+    ty = ticketDimensions.height * yOffsetFactor;
   }
 
   return (
