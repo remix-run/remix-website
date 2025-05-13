@@ -31,10 +31,7 @@ export function FAQ({
         </Question>
         <Question question="Where will the event be hosted?">
           The Remix team is hosting this event in conjunction with Shopify at{" "}
-          <Address className="inline" />
-        </Question>
-        <Question question="Will there be a group discount?">
-          Ask Brooks!
+          <Address className="inline" />.
         </Question>
         <Question question="Where should I stay?">
           We are working with a few trusted partners to set something up. Stay
