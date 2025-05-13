@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useLayoutEffect } from "~/ui/primitives/utils";
 import { Navbar } from "../navbar";
 import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
 import { FAQ, Question } from "../faq";
@@ -214,32 +215,43 @@ type TicketProps = Pick<
 function Ticket({ imageSrc, badge }: TicketProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const [ticketDimensions, setTicketDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
   const ticketRef = useRef<HTMLDivElement>(null);
 
-  // Handle mouse move to track position for 3D effect
+  useLayoutEffect(() => {
+    const updateDimensions = () => {
+      if (ticketRef.current) {
+        const rect = ticketRef.current.getBoundingClientRect();
+        setTicketDimensions({ width: rect.width, height: rect.height });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ticketRef.current) return;
 
     const rect = ticketRef.current.getBoundingClientRect();
 
-    // Calculate mouse position relative to the ticket (0-100%)
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
     setMousePosition({ x, y });
   };
 
-  const ticketEl = ticketRef.current;
   let tx = 0;
   let ty = 0;
 
-  if (ticketEl) {
-    const rect = ticketEl.getBoundingClientRect();
-    const ticketWidth = rect.width;
-    const ticketHeight = rect.height;
+  if (ticketDimensions.width > 0 && ticketDimensions.height > 0) {
+    const ticketWidth = ticketDimensions.width;
+    const ticketHeight = ticketDimensions.height;
 
-    // mousePosition.x and y are percentages from 0 to 100.
-    // Convert percentage to a factor from -0.5 to 0.5 (relative to center)
     const xOffsetFactor = mousePosition.x / 100 - 0.5;
     const yOffsetFactor = mousePosition.y / 100 - 0.5;
 
@@ -259,76 +271,53 @@ function Ticket({ imageSrc, badge }: TicketProps) {
       onMouseMove={handleMouseMove}
     >
       <div
-        className={clsx(
-          "relative isolate z-10 overflow-hidden rounded-xl border border-white/20 transition-transform duration-200 ease-out",
-        )}
+        className="relative isolate z-10 overflow-hidden rounded-xl border border-white/20 transition-transform duration-200 ease-out"
         style={{
           transformStyle: "preserve-3d",
-          // Transform based on mouse position when hovered
           transform: isHovered
             ? `rotateY(${(mousePosition.x - 50) * 0.15}deg) rotateX(${(mousePosition.y - 50) * -0.15}deg) scale(1.05)`
-            : "rotateY(0deg) rotateX(0deg)",
+            : "rotateY(0deg) rotateX(0deg) scale(1)",
         }}
       >
         {/* Holographic effect overlay */}
         <div className="absolute inset-0 z-10 opacity-0 mix-blend-color-dodge transition-opacity duration-300 ease-in-out group-hover:opacity-50">
           <div
-            className="absolute inset-0 opacity-20"
+            className="absolute inset-0 bg-cover bg-center opacity-20"
             style={{
               backgroundImage: `url(${ticketHolographic})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
             }}
           />
 
           {/* Rainbow overlay */}
           <div
-            className="absolute inset-0 opacity-20"
+            className="absolute inset-0 left-1/2 top-1/2 h-[160%] w-[160%] -translate-x-1/2 -translate-y-1/2 opacity-20 mix-blend-hue"
             style={{
-              width: "160%",
-              height: "160%",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
               background:
                 "linear-gradient(135deg, rgb(255, 119, 115) 2%, rgb(255, 237, 95) 12.9661%, rgb(168, 255, 95) 23.5922%, rgb(131, 255, 247) 39.1029%, rgb(119, 221, 223) 48.545%, rgb(120, 148, 255) 59.1618%, rgb(209, 124, 242) 62.9954%, rgb(255, 119, 115) 76.7431%)",
-              mixBlendMode: "hue",
             }}
           />
 
           {/* Diagonal gradient overlay` */}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 left-1/2 top-1/2 h-[160%] w-[160%] -translate-x-1/2 -translate-y-1/2 mix-blend-hard-light"
             style={{
-              width: "160%",
-              height: "160%",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
               background:
                 "linear-gradient(315deg, rgb(19, 20, 21) 0%, rgb(143, 163, 163) 6.03181%, rgb(162, 163, 163) 9.74451%, rgb(20, 20, 20) 25.0721%, rgb(143, 163, 163) 33.5357%, rgb(164, 166, 166) 35.2988%, rgb(37, 37, 38) 41.503%, rgb(161, 161, 161) 52.393%, rgb(124, 125, 125) 61.1346%, rgb(19, 20, 21) 66.269%, rgb(166, 166, 166) 74.4633%, rgb(163, 163, 163) 79.8987%, rgb(19, 20, 21) 85.7299%, rgb(161, 161, 161) 89.8948%, rgb(19, 20, 21) 100%)",
-              mixBlendMode: "hard-light",
             }}
           />
 
           {/* Radial highlight */}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 mix-blend-overlay blur-xl"
             style={{
               background:
                 "radial-gradient(50% 50% at 50% 50%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.5) 43.6638%, rgba(255, 255, 255, 0.11) 80.5409%, rgba(255, 255, 255, 0) 100%)",
-              filter: "blur(20px)",
-              transform: `matrix(1, 0, 0, 1, ${tx}, ${ty})`,
-              mixBlendMode: "overlay",
+              transform: `translate(${tx}px, ${ty}px)`,
             }}
           />
         </div>
 
-        <div
-          style={{
-            filter: "contrast(1.05)",
-          }}
-        >
+        <div className="contrast-[1.05]">
           <img
             src={imageSrc}
             width={800}
@@ -339,11 +328,11 @@ function Ticket({ imageSrc, badge }: TicketProps) {
         </div>
 
         <div className="absolute bottom-0 left-[35%] z-40 pb-1 pl-2 text-left font-conf-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
-          <div className="flex flex-col gap-0 md:gap-2">
-            <p>OCTOBER 10 2025</p>
+          <div className="flex flex-col gap-0 uppercase md:gap-2">
+            <p>october 10 2025</p>
             <div>
-              <p>YOUR NAME</p>
-              <p>YOUR COMPANY</p>
+              <p>your name</p>
+              <p>your company</p>
             </div>
             <p
               className={clsx("uppercase", {
