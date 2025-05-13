@@ -10,12 +10,18 @@ import tier2TicketSrc from "./images/tickets/tier2.avif";
 // TEMPORARY: Discount code constants
 export const { REMIX_JAM_DISCOUNT_TIER_1, REMIX_JAM_DISCOUNT_TIER_2 } = env;
 
-// Initialize the client as a singleton
-const client = createStorefrontApiClient({
-  storeDomain: "https://jam.remix.run",
-  apiVersion: "2025-04",
-  publicAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
-});
+// Initialize the client as a lazy singleton
+let client: ReturnType<typeof createStorefrontApiClient> | null = null;
+function getClient() {
+  if (!client) {
+    client = createStorefrontApiClient({
+      storeDomain: "https://jam.remix.run",
+      apiVersion: "2025-04",
+      publicAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+    });
+  }
+  return client;
+}
 
 const ProductSchema = z.object({
   id: z.string(),
@@ -52,7 +58,7 @@ export async function getProduct(handle: string): Promise<Product> {
     }
   `;
 
-  const { data, errors } = await client.request(productQuery, {
+  const { data, errors } = await getClient().request(productQuery, {
     variables: { handle },
   });
 
@@ -109,7 +115,7 @@ export async function createCart(params: {
     }
   `;
 
-  const { data, errors } = await client.request(createCartMutation, {
+  const { data, errors } = await getClient().request(createCartMutation, {
     variables: {
       cartInput: {
         lines: [

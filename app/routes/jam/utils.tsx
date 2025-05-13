@@ -37,11 +37,18 @@ export function usePrefersReducedMotion() {
 
 export function Address({ className }: { className?: string }) {
   return (
-    <address className={clsx("inline-block not-italic", className)}>
-      620 King St W
-      <br />
-      Toronto, ON M5V 1M7, Canada
-    </address>
+    <a
+      href="https://maps.app.goo.gl/GpacrBAJJMnctN9W7"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-400 hover:underline"
+    >
+      <address className={clsx("inline-block not-italic", className)}>
+        620 King St W
+        <br />
+        Toronto, ON M5V 1M7, Canada
+      </address>
+    </a>
   );
 }
 
