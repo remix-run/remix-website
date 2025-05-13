@@ -213,13 +213,13 @@ export function getDiscountData(discountCode?: string): DiscountData {
 
   if (discountCode === REMIX_JAM_DISCOUNT_TIER_2) {
     return {
-      title: "Friends & Family",
+      title: "Early Bird",
       text: "You have been personally invited to purchase a discounted ticket to Remix Jam 2025 with a discount code* before they are available for the general public.",
       discountCode,
       price: "149.00",
       imageSrc: tier2TicketSrc,
       badge: {
-        value: "Friends & Family",
+        value: "Early Bird",
         color: "green",
       },
       faq: discountCodeFaq,

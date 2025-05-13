@@ -229,9 +229,27 @@ function Ticket({ imageSrc, badge }: TicketProps) {
     setMousePosition({ x, y });
   };
 
+  const ticketEl = ticketRef.current;
+  let tx = 0;
+  let ty = 0;
+
+  if (ticketEl) {
+    const rect = ticketEl.getBoundingClientRect();
+    const ticketWidth = rect.width;
+    const ticketHeight = rect.height;
+
+    // mousePosition.x and y are percentages from 0 to 100.
+    // Convert percentage to a factor from -0.5 to 0.5 (relative to center)
+    const xOffsetFactor = mousePosition.x / 100 - 0.5;
+    const yOffsetFactor = mousePosition.y / 100 - 0.5;
+
+    tx = ticketWidth * xOffsetFactor;
+    ty = ticketHeight * yOffsetFactor;
+  }
+
   return (
     <div
-      className="z-10 w-[300px] md:w-[800px]"
+      className="group z-10 w-[300px] md:w-[800px]"
       style={{
         perspective: "1500px",
       }}
@@ -242,30 +260,70 @@ function Ticket({ imageSrc, badge }: TicketProps) {
     >
       <div
         className={clsx(
-          "relative isolate z-10 overflow-hidden rounded-xl border border-white/20 bg-gray-800 transition-transform duration-200 ease-out",
+          "relative isolate z-10 overflow-hidden rounded-xl border border-white/20 transition-transform duration-200 ease-out",
         )}
         style={{
           transformStyle: "preserve-3d",
           // Transform based on mouse position when hovered
           transform: isHovered
-            ? `rotateY(${(mousePosition.x - 50) * 0.15}deg) rotateX(${(mousePosition.y - 50) * -0.15}deg)`
+            ? `rotateY(${(mousePosition.x - 50) * 0.15}deg) rotateX(${(mousePosition.y - 50) * -0.15}deg) scale(1.05)`
             : "rotateY(0deg) rotateX(0deg)",
         }}
       >
         {/* Holographic effect overlay */}
-        <div
-          className={clsx(
-            "pointer-events-none absolute inset-0 opacity-0 bg-blend-color-dodge mix-blend-color-dodge brightness-150 contrast-125 transition-opacity duration-300 ease-in-out",
-            isHovered && "opacity-20",
-          )}
-          style={{
-            backgroundImage: `url(${ticketHolographic})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
+        <div className="absolute inset-0 z-10 opacity-0 mix-blend-color-dodge transition-opacity duration-300 ease-in-out group-hover:opacity-50">
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: `url(${ticketHolographic})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
 
-        {/* Base ticket image */}
+          {/* Rainbow overlay */}
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              width: "160%",
+              height: "160%",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              background:
+                "linear-gradient(135deg, rgb(255, 119, 115) 2%, rgb(255, 237, 95) 12.9661%, rgb(168, 255, 95) 23.5922%, rgb(131, 255, 247) 39.1029%, rgb(119, 221, 223) 48.545%, rgb(120, 148, 255) 59.1618%, rgb(209, 124, 242) 62.9954%, rgb(255, 119, 115) 76.7431%)",
+              mixBlendMode: "hue",
+            }}
+          />
+
+          {/* Diagonal gradient overlay` */}
+          <div
+            className="absolute inset-0"
+            style={{
+              width: "160%",
+              height: "160%",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              background:
+                "linear-gradient(315deg, rgb(19, 20, 21) 0%, rgb(143, 163, 163) 6.03181%, rgb(162, 163, 163) 9.74451%, rgb(20, 20, 20) 25.0721%, rgb(143, 163, 163) 33.5357%, rgb(164, 166, 166) 35.2988%, rgb(37, 37, 38) 41.503%, rgb(161, 161, 161) 52.393%, rgb(124, 125, 125) 61.1346%, rgb(19, 20, 21) 66.269%, rgb(166, 166, 166) 74.4633%, rgb(163, 163, 163) 79.8987%, rgb(19, 20, 21) 85.7299%, rgb(161, 161, 161) 89.8948%, rgb(19, 20, 21) 100%)",
+              mixBlendMode: "hard-light",
+            }}
+          />
+
+          {/* Radial highlight */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(50% 50% at 50% 50%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.5) 43.6638%, rgba(255, 255, 255, 0.11) 80.5409%, rgba(255, 255, 255, 0) 100%)",
+              filter: "blur(20px)",
+              transform: `matrix(1, 0, 0, 1, ${tx}, ${ty})`,
+              mixBlendMode: "overlay",
+            }}
+          />
+        </div>
+
         <div
           style={{
             filter: "contrast(1.05)",
@@ -280,46 +338,7 @@ function Ticket({ imageSrc, badge }: TicketProps) {
           />
         </div>
 
-        {/* Rainbow overlay */}
-        {/* <div
-          className={clsx(
-            "transition-bac absolute inset-0 opacity-0 transition-opacity duration-300 ease-in-out",
-            isHovered && "opacity-40",
-          )}
-          style={{
-            background:
-              "linear-gradient(135deg, rgb(255, 119, 115) 9.77442%, rgb(255, 237, 95) 25.3519%, rgb(168, 255, 95) 41.0807%, rgb(131, 255, 247) 54.2775%, rgb(119, 221, 223) 68.7043%, rgb(120, 148, 255) 80.1538%, rgb(216, 117, 255) 88.9358%, rgb(108, 143, 220) 89.6396%, rgb(255, 119, 115) 100%)",
-          }}
-        /> */}
-
-        <div
-          className={clsx(
-            "absolute inset-0 size-[160%] translate-x-[-20%] translate-y-[-20%] opacity-0 transition-opacity duration-300 ease-in-out",
-            isHovered && "opacity-40",
-          )}
-          style={{
-            background:
-              "linear-gradient(315deg, rgb(19, 20, 21) 0%, rgb(143, 163, 163) 6.03181%, rgb(162, 163, 163) 9.74451%, rgb(19, 20, 21) 25.0721%, rgb(143, 163, 163) 33.5357%, rgb(164, 166, 166) 35.2988%, rgb(19, 20, 21) 41.503%, rgb(161, 161, 161) 52.393%, rgb(102, 116, 120) 61.1346%, rgb(19, 20, 21) 66.269%, rgb(143, 163, 163) 74.4633%, rgb(163, 163, 163) 79.8986%, rgb(19, 20, 21) 85.7299%, rgb(161, 161, 161) 89.8948%, rgb(19, 20, 21) 100%)",
-          }}
-        />
-
-        {/* <div className={clsx("absolute inset-0 bg-black")} /> */}
-
-        {/* Radial highlight */}
-        {/* <div
-          className={clsx(
-            "pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-150 ease-in-out",
-            isHovered && "opacity-100",
-          )}
-          style={{
-            // background: `radial-gradient(circle at ${mousePosition.x / 2}% ${mousePosition.y / 2}%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 25%) 0 0/200% 200%`,
-
-            background: `radial-gradient(50% 50% at ${mousePosition.x}% ${mousePosition.y}%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.5) 43.6638%, rgba(255, 255, 255, 0.11) 80.5409%, rgba(255, 255, 255, 0) 100%)`,
-            filter: "blur(20px)",
-          }}
-        /> */}
-
-        {/* <div className="absolute bottom-0 left-[35%] z-40 pb-1 pl-2 text-left font-conf-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
+        <div className="absolute bottom-0 left-[35%] z-40 pb-1 pl-2 text-left font-conf-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
           <div className="flex flex-col gap-0 md:gap-2">
             <p>OCTOBER 10 2025</p>
             <div>
@@ -335,7 +354,7 @@ function Ticket({ imageSrc, badge }: TicketProps) {
               {badge.value}
             </p>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );
