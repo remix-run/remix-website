@@ -31,7 +31,7 @@ const KEEPSAKES: Array<
     id: "poster",
     src: posterSrc,
     alt: "Remix Jam event poster featuring a stylized aerial view of Toronto's CN Tower and downtown skyline in vibrant blues, pinks, and yellows. The Remix Jam logo with three circular icons appears at the top, and 'TORONTO' is prominently displayed at the bottom along with the date 'OCT 10 2025'. The artwork has a modern, digital aesthetic with the CN Tower's observation deck as the central focal point surrounded by abstract skyscrapers.",
-    hasBorder: true,
+    hasBorder: false,
   },
   {
     id: "pick",
