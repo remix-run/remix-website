@@ -44,10 +44,6 @@ const envSchema = z.object({
   NO_CACHE: z.coerce.boolean().default(false),
 
   PUBLIC_STOREFRONT_API_TOKEN: z.string().optional(),
-
-  // Temporary discount codes for Remix Jam 2025
-  REMIX_JAM_DISCOUNT_TIER_1: z.string().optional(),
-  REMIX_JAM_DISCOUNT_TIER_2: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);
