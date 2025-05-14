@@ -44,7 +44,8 @@ export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const productId = formData.get("productId") as string;
   const quantity = parseInt(formData.get("quantity") as string) || 1;
-  const discountCode = formData.get("discountCode") as string;
+  const url = new URL(request.url);
+  const discountCode = url.searchParams.get("discount") || undefined;
 
   const result = await createCart({
     productId,
@@ -61,8 +62,7 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function TicketPage({ loaderData }: Route.ComponentProps) {
-  const { price, productId, title, text, discountCode, imageSrc, maxQuantity } =
-    loaderData;
+  const { price, productId, title, text, imageSrc, maxQuantity } = loaderData;
 
   return (
     <>
@@ -87,15 +87,10 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
         <TicketPurchase
           price={price}
           productId={productId}
-          discountCode={discountCode}
           availableForSale={loaderData.availableForSale}
           maxQuantity={maxQuantity}
         />
-
-        {
-          // TODO: Remove this once we got to general ticket sales
-          discountCode ? <InfoText>{text}</InfoText> : null
-        }
+        <InfoText>{text}</InfoText>
       </main>
 
       <FAQ className="relative z-10" />
@@ -105,13 +100,12 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
 
 type TicketPurchaseProps = Pick<
   Route.ComponentProps["loaderData"],
-  "price" | "productId" | "discountCode" | "availableForSale" | "maxQuantity"
+  "price" | "productId" | "availableForSale" | "maxQuantity"
 >;
 
 function TicketPurchase({
   price,
   productId,
-  discountCode,
   availableForSale,
   maxQuantity,
 }: TicketPurchaseProps) {
@@ -128,9 +122,6 @@ function TicketPurchase({
       >
         <input type="hidden" name="productId" value={productId} />
         <input type="hidden" name="quantity" value={quantity} />
-        {discountCode && (
-          <input type="hidden" name="discountCode" value={discountCode} />
-        )}
         <div className="flex w-full grow items-center justify-between rounded-[48px] px-4 py-2.5 ring-2 ring-inset ring-white/30 md:px-6 md:py-4 md:ring-4">
           <span className="font-conf-mono font-normal text-white">
             $ <span className="line-through opacity-50">399.00</span> {price}

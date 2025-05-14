@@ -143,7 +143,6 @@ export function getDiscountData() {
   return {
     title: "Early Bird",
     text: "Join us in October and enjoy the lower cost of admission for purchasing the ticket earlier.",
-    discountCode: "EARLY_BIRD",
     price: "299.00",
     imageSrc: ticketSrc,
     maxQuantity: 10,
