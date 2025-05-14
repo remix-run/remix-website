@@ -230,7 +230,7 @@ function Ticket({ title, imageSrc }: TicketProps) {
 
   return (
     <div
-      className="group z-10 w-[300px] md:w-[800px]"
+      className="group z-10 w-[300px] select-none md:w-[800px]"
       style={{
         perspective: "1500px",
       }}
