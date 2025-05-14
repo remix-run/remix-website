@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useLayoutEffect } from "~/ui/primitives/utils";
 import { Navbar } from "../navbar";
 import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
-import { FAQ, Question } from "../faq";
+import { FAQ } from "../faq";
 import { JamButton } from "../utils";
 import { redirect, useFetcher } from "react-router";
 import clsx from "clsx";
@@ -28,14 +28,10 @@ export function meta({ matches }: Route.MetaArgs) {
   });
 }
 
-export async function loader({ request }: Route.LoaderArgs) {
-  // Get discount code from URL params
-  const url = new URL(request.url);
-  const discountCode = url.searchParams.get("discount") || undefined;
-
+export async function loader() {
   // Get product data
   const product = await getProduct("remix-jam-2025");
-  const discountData = getDiscountData(discountCode);
+  const discountData = getDiscountData();
 
   return {
     productId: product.productId,
@@ -65,17 +61,8 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function TicketPage({ loaderData }: Route.ComponentProps) {
-  const {
-    price,
-    productId,
-    title,
-    text,
-    discountCode,
-    imageSrc,
-    badge,
-    faq,
-    maxQuantity,
-  } = loaderData;
+  const { price, productId, title, text, discountCode, imageSrc, maxQuantity } =
+    loaderData;
 
   return (
     <>
@@ -95,7 +82,7 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
 
-        <Ticket imageSrc={imageSrc} badge={badge} />
+        <Ticket title={title} imageSrc={imageSrc} />
 
         <TicketPurchase
           price={price}
@@ -111,13 +98,7 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
         }
       </main>
 
-      <FAQ className="relative z-10">
-        {faq.map(({ question, answer }) => (
-          <Question key={question} question={question}>
-            {answer}
-          </Question>
-        ))}
-      </FAQ>
+      <FAQ className="relative z-10" />
     </>
   );
 }
@@ -152,7 +133,7 @@ function TicketPurchase({
         )}
         <div className="flex w-full grow items-center justify-between rounded-[48px] px-4 py-2.5 ring-2 ring-inset ring-white/30 md:px-6 md:py-4 md:ring-4">
           <span className="font-conf-mono font-normal text-white">
-            $ {price}
+            $ <span className="line-through opacity-50">399.00</span> {price}
           </span>
           <div className="flex items-center gap-4">
             <button
@@ -207,12 +188,12 @@ function TicketPurchase({
   );
 }
 
-type TicketProps = Pick<
-  Route.ComponentProps["loaderData"],
-  "imageSrc" | "badge"
->;
+type TicketProps = {
+  title: string;
+  imageSrc: string;
+};
 
-function Ticket({ imageSrc, badge }: TicketProps) {
+function Ticket({ title, imageSrc }: TicketProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
   const [ticketDimensions, setTicketDimensions] = useState({
@@ -331,14 +312,7 @@ function Ticket({ imageSrc, badge }: TicketProps) {
               <p>your name</p>
               <p>your company</p>
             </div>
-            <p
-              className={clsx("uppercase", {
-                "text-red-500": badge.color === "red",
-                "text-green-500": badge.color === "green",
-              })}
-            >
-              {badge.value}
-            </p>
+            <p className={clsx("uppercase text-[#36d3ff]")}>{title}</p>
           </div>
         </div>
       </div>
