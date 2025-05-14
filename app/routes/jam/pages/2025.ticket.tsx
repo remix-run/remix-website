@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useLayoutEffect } from "~/ui/primitives/utils";
 import { Navbar } from "../navbar";
 import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
 import { FAQ, Question } from "../faq";
@@ -10,6 +11,7 @@ import { getMeta } from "~/lib/meta";
 
 import iconsHref from "~/icons.svg";
 import ogImageSrc from "../images/og-thumbnail-1.jpg";
+import ticketHolographic from "../images/tickets/ticket-holographic.avif";
 import type { Route } from "./+types/2025.ticket";
 
 export function meta({ matches }: Route.MetaArgs) {
@@ -78,8 +80,7 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <Navbar className="z-40" />
-
-      <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center">
+      <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]">
         <Title>
           <ScrambleText
             className="whitespace-nowrap"
@@ -212,22 +213,123 @@ type TicketProps = Pick<
 >;
 
 function Ticket({ imageSrc, badge }: TicketProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const [ticketDimensions, setTicketDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+  const ticketRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const updateDimensions = () => {
+      if (ticketRef.current) {
+        const rect = ticketRef.current.getBoundingClientRect();
+        setTicketDimensions({ width: rect.width, height: rect.height });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ticketRef.current) return;
+
+    const rect = ticketRef.current.getBoundingClientRect();
+
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    setMousePosition({ x, y });
+  };
+
+  let tx = 0;
+  let ty = 0;
+
+  if (ticketDimensions.width > 0 && ticketDimensions.height > 0) {
+    const xOffsetFactor = mousePosition.x / 100 - 0.5;
+    const yOffsetFactor = mousePosition.y / 100 - 0.5;
+
+    tx = ticketDimensions.width * xOffsetFactor;
+    ty = ticketDimensions.height * yOffsetFactor;
+  }
+
   return (
-    <div className="z-10 w-[300px] overflow-hidden rounded-xl bg-gray-800 md:w-[800px]">
-      <div className="relative">
-        <img
-          src={imageSrc}
-          width={800}
-          height={280}
-          alt="Remix Jam 2025 Event Ticket"
-          className="w-full"
-        />
-        <div className="absolute bottom-0 left-[35%] pb-1 pl-2 text-left font-conf-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
-          <div className="flex flex-col gap-0 md:gap-2">
-            <p>OCTOBER 10 2025</p>
+    <div
+      className="group z-10 w-[300px] md:w-[800px]"
+      style={{
+        perspective: "1500px",
+      }}
+      ref={ticketRef}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+    >
+      <div
+        className="relative isolate z-10 overflow-hidden rounded-xl border border-white/20 transition-transform duration-200 ease-out"
+        style={{
+          transformStyle: "preserve-3d",
+          transform: isHovered
+            ? `rotateY(${(mousePosition.x - 50) * 0.15}deg) rotateX(${(mousePosition.y - 50) * -0.15}deg) scale(1.05)`
+            : "rotateY(0deg) rotateX(0deg) scale(1)",
+        }}
+      >
+        {/* Holographic effect overlay */}
+        <div className="absolute inset-0 z-10 opacity-0 mix-blend-color-dodge transition-opacity duration-300 ease-in-out group-hover:opacity-50">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-20"
+            style={{
+              backgroundImage: `url(${ticketHolographic})`,
+            }}
+          />
+
+          {/* Rainbow overlay */}
+          <div
+            className="absolute inset-0 left-1/2 top-1/2 h-[160%] w-[160%] -translate-x-1/2 -translate-y-1/2 opacity-20 mix-blend-hue"
+            style={{
+              background:
+                "linear-gradient(135deg, rgb(255, 119, 115) 2%, rgb(255, 237, 95) 12.9661%, rgb(168, 255, 95) 23.5922%, rgb(131, 255, 247) 39.1029%, rgb(119, 221, 223) 48.545%, rgb(120, 148, 255) 59.1618%, rgb(209, 124, 242) 62.9954%, rgb(255, 119, 115) 76.7431%)",
+            }}
+          />
+
+          {/* Diagonal gradient overlay` */}
+          <div
+            className="absolute inset-0 left-1/2 top-1/2 h-[160%] w-[160%] -translate-x-1/2 -translate-y-1/2 mix-blend-hard-light"
+            style={{
+              background:
+                "linear-gradient(315deg, rgb(19, 20, 21) 0%, rgb(143, 163, 163) 6.03181%, rgb(162, 163, 163) 9.74451%, rgb(20, 20, 20) 25.0721%, rgb(143, 163, 163) 33.5357%, rgb(164, 166, 166) 35.2988%, rgb(37, 37, 38) 41.503%, rgb(161, 161, 161) 52.393%, rgb(124, 125, 125) 61.1346%, rgb(19, 20, 21) 66.269%, rgb(166, 166, 166) 74.4633%, rgb(163, 163, 163) 79.8987%, rgb(19, 20, 21) 85.7299%, rgb(161, 161, 161) 89.8948%, rgb(19, 20, 21) 100%)",
+            }}
+          />
+
+          {/* Radial highlight */}
+          <div
+            className="absolute inset-0 mix-blend-overlay blur-xl"
+            style={{
+              background:
+                "radial-gradient(50% 50% at 50% 50%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.5) 43.6638%, rgba(255, 255, 255, 0.11) 80.5409%, rgba(255, 255, 255, 0) 100%)",
+              transform: `translate(${tx}px, ${ty}px)`,
+            }}
+          />
+        </div>
+
+        <div className="contrast-[1.05]">
+          <img
+            src={imageSrc}
+            width={800}
+            height={280}
+            alt="Remix Jam 2025 Event Ticket"
+            className="relative w-full"
+          />
+        </div>
+
+        <div className="absolute bottom-0 left-[35%] z-40 pb-1 pl-2 text-left font-conf-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
+          <div className="flex flex-col gap-0 uppercase md:gap-2">
+            <p>october 10 2025</p>
             <div>
-              <p>YOUR NAME</p>
-              <p>YOUR COMPANY</p>
+              <p>your name</p>
+              <p>your company</p>
             </div>
             <p
               className={clsx("uppercase", {
