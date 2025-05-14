@@ -83,7 +83,7 @@ html {
   top: 240px;
   left: -260px;
   width: 260px;
-  height: 375px;
+  height: 345px;
 }
 
 @screen md {
@@ -91,7 +91,7 @@ html {
     top: 235px;
     left: -360px;
     width: 415px;
-    height: 565px;
+    height: 550px;
   }
 }
 
@@ -100,7 +100,7 @@ html {
     top: 300px;
     left: -520px;
     width: 580px;
-    height: 812px;
+    height: 770px;
   }
 }
 
@@ -109,7 +109,7 @@ html {
     top: 300px;
     left: -500px;
     width: 700px;
-    height: 980px;
+    height: 930px;
   }
 }
 

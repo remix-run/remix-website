@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Link } from "react-router";
+import { href, Link } from "react-router";
 import { JamLink } from "./utils";
 
 export function Navbar({
@@ -31,7 +31,7 @@ export function Navbar({
       <div className="flex-1" />
 
       {showTicketLink ? (
-        <JamLink to="#newsletter">
+        <JamLink to={href("/jam/2025/ticket")}>
           <TicketLogo className="size-6 fill-current md:size-8" />
           <span>Ticket</span>
         </JamLink>
