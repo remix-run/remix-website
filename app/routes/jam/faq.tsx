@@ -46,7 +46,10 @@ export function FAQ({
           >
             using this link
           </a>
-          .
+          .{" "}
+          <strong className="font-bold">
+            You must select the dates Oct 9-11.
+          </strong>
         </Question>
         <Question question="What's the refund policy?">
           There are no refunds, but tickets will be transferable.
