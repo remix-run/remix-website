@@ -266,9 +266,9 @@ function Ticket({ title, imageSrc }: TicketProps) {
             }}
           />
 
-          {/* Diagonal gradient overlay` */}
+          {/* Diagonal gradient overlay */}
           <div
-            className="absolute inset-0 left-1/2 top-1/2 h-[160%] w-[160%] -translate-x-1/2 -translate-y-1/2 mix-blend-hard-light"
+            className="absolute inset-0 left-1/2 top-1/2 h-[160%] w-[160%] -translate-x-1/2 -translate-y-1/2 opacity-50 mix-blend-plus-lighter"
             style={{
               background:
                 "linear-gradient(315deg, rgb(19, 20, 21) 0%, rgb(143, 163, 163) 6.03181%, rgb(162, 163, 163) 9.74451%, rgb(20, 20, 20) 25.0721%, rgb(143, 163, 163) 33.5357%, rgb(164, 166, 166) 35.2988%, rgb(37, 37, 38) 41.503%, rgb(161, 161, 161) 52.393%, rgb(124, 125, 125) 61.1346%, rgb(19, 20, 21) 66.269%, rgb(166, 166, 166) 74.4633%, rgb(163, 163, 163) 79.8987%, rgb(19, 20, 21) 85.7299%, rgb(161, 161, 161) 89.8948%, rgb(19, 20, 21) 100%)",
