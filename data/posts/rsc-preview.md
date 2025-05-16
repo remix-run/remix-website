@@ -357,7 +357,9 @@ With less reliance on our own Vite plugin, and deeper integration with React, su
 
 ## What's Next? Official RSC Support in Vite
 
-You'll note that the preview template only supports Parcel. That's because Vite doesn't have RSC support yet. Work is on going between the Vite and React teams, and things are looking good. Instead of being blocked, we developed against Parcel. You'll note in the preview template there's a little Parcel plugin for `routes.ts` to button it all up and it's pretty small.
+You'll note that the preview template only supports Parcel. That's because Vite doesn't have RSC support yet. Work is ongoing between the Vite and React teams, and [things are looking good](https://github.com/facebook/react/pull/33152). In the meantime, we're leveraging [Parcel's RSC support](https://parceljs.org/recipes/rsc) to help us figure out what React Router looks like when RSC is a first-class bundler feature. You'll note in the preview template there's a little Parcel plugin for `routes.ts` to button it all up and it's pretty small. The effort to port to other RSC-native bundlers in the future should be equally minimal.
+
+By targeting RSC-native bundlers like Parcel, we're also helping to guide the direction of Vite's official RSC support. [Hiroshi Ogawa](https://github.com/hi-ogawa) is currently [working publicly on Vite RSC support](https://github.com/hi-ogawa/vite-plugins/tree/main/packages/rsc) and [using React Router's RSC APIs in Vite](https://github.com/hi-ogawa/vite-plugins/tree/main/packages/rsc/examples/react-router) to validate their approach. By sharing our early RSC work publicly, we can help ensure that we'll be ready once Vite RSC support finally lands.
 
 This is very exciting for us: both React's and React Router's full feature sets will soon be usable with very little effort with any bundler, any JavaScript runtime, and any server!
 
