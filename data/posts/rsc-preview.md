@@ -114,7 +114,7 @@ export async function ServerComponent({ params }) {
 
 React Router will no longer bundle this route for the client like it does other routes. The only code that will go to the browser for this route are any rendered `"use client"` modules.
 
-Note that a nested routes can be a mix of both server component routes so that you can use RSC where it makes sense or incrementally adopt it across the app.
+Note that nested routes can be a mix of both server component routes and existing client component routes so that you can use RSC where it makes sense or incrementally adopt it across the app.
 
 ### Server Routes + Loaders/Actions
 
