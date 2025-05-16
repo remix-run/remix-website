@@ -173,6 +173,12 @@
   initCommand: "npm install remix-auth-auth0"
   category: "libraries"
 
+- title: "Remix Auth Asgardeo Strategy"
+  repoUrl: "https://github.com/asgardeo/remix-auth-asgardeo"
+  imgSrc: "https://opengraph.githubassets.com/master/asgardeo/remix-auth-asgardeo"
+  initCommand: "npm install remix-auth-asgardeo"
+  category: "libraries"
+
 - title: "Remix Auth Microsoft Strategy"
   repoUrl: "https://github.com/juhanakristian/remix-auth-microsoft"
   imgSrc: "https://opengraph.githubassets.com/2d7dc3050538cff7d542584257cf746955a513bdfa1b65fbad2c8dddd86ce7e2/juhanakristian/remix-auth-microsoft"
