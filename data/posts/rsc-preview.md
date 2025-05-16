@@ -1,6 +1,6 @@
 ---
 title: React Router RSC Preview
-summary: React Router\'s preview support for React Server Components is now available
+summary: React Router's preview support for React Server Components is now available
 date: 2025-05-15
 authors:
   - Ryan Florence
@@ -29,7 +29,7 @@ imageAlt: "Stylized series of sci-fi movie poster designs featuring the text 'Re
 
 Before we dig in, I just need to take a moment to acknowledge the work of Jacob Ebey. He has been working on RSC support for Remix and React Router for ... years.
 
-He has probably built 12 versions of this. He figured out the best way to support all of React's API in a way that is incrementally adoptable by the millions of React Router apps in production today, but also feels great for a green-field React Router app.
+He has probably built 12 versions of this. He figured out the best way to support all of React's API in a way that is incrementally adoptable by the millions of React Router apps in production today, but also feels great for a greenfield React Router app.
 
 While the project is the work of our whole team and community, RSC in React Router absolutely would not have happened without Jacob. Thank you!
 
@@ -86,7 +86,7 @@ export default function Article({ loaderData }) {
 }
 ```
 
-This use case is particularly evident when backing your site with a CMS, shopify, or any kind of activity feed on dashboards and social media.
+This use case is particularly evident when backing your site with a CMS, Shopify, or any kind of activity feed on dashboards and social media.
 
 By returning RSC content from loaders, you can get this benefit without going "all in" on server components everywhere else.
 
@@ -185,7 +185,7 @@ export async function AddToFavoritesForm({ movieId }: { movieId: number }) {
 }
 ```
 
-Note that after server functions are called, React Router will automatically revalidate the route and update the UI with the new server content, you don't have to mess around with any cache invalidation.
+Note that after server functions are called, React Router will automatically revalidate the route and update the UI with the new server content. You don't have to mess around with any cache invalidation.
 
 ### Client Components
 
@@ -221,7 +221,7 @@ I built a little demo. Go easy on it, this is all still unstable and hasn't had 
 
 ### Batching and Caching
 
-A couple major concerns with the RSC architecture are N+1 queries and over-fetching. It's very easy to do when components can fetch their own data. We saw it happen in many Hydrogen v1 apps and it tanked performance to unacceptable levels.
+A couple major concerns with the RSC architecture are N+1 queries and over-fetching. Both are very easy to do when components can fetch their own data. We saw it happen in many Hydrogen v1 apps and it tanked performance to unacceptable levels.
 
 Here, check out one of the components in the demo:
 
@@ -282,7 +282,7 @@ The middleware is then plugged into the root route:
 export const unstable_middleware = [sessionMiddleware, dataMiddleware];
 ```
 
-Now any component (or any other server code) can import `load` and naively load movies and actors. Here's the MovieTile from the demo.
+Now any component (or any other server code) can import `load` and naively load movies and actors. Here's the `MovieTile` from the demo.
 
 ```tsx
 import { Link } from "react-router";
@@ -329,7 +329,7 @@ export async function MovieTile({ id }: { id: number }) {
 }
 ```
 
-You can render any random MovieTiles anywhere, that each render a bunch of ActorLinks, and only two queries will be made to the DB even though the component is only asking for one. Pretty cool!
+You can render any number of MovieTiles anywhere, each rendering a bunch of ActorLinks, and only two queries will be made to the DB, even though the component is only asking for one. Pretty cool!
 
 I think this is a pretty critical requirement for the RSC architecture to work and we're looking into making it an official part of React Router.
 
@@ -337,21 +337,21 @@ I think this is a pretty critical requirement for the RSC architecture to work a
 
 Something a little unexpected happened while we were working on this: a lot of code moved from our Vite plugin and "Framework mode" to our lower level "Data mode" runtime. This makes it significantly easier to bring your own bundler to React Router and use all of React 19's feature set.
 
-When Remix was first released (before it made its way into React Router v7) it provided answers to a lot of questions for production React apps, including:
+When Remix was first released (before it made its way into React Router v7), it provided answers to a lot of questions for production React apps, including:
 
 - How do I load code from the server into my React components?
 - How do I change data on the server from React components?
 - How do I pre-render my application to HTML on the server?
-- How do I know which client assets are needed to transition the HTML into a single page application?
+- How do I know which client assets are needed to transition the HTML into a single-page application?
 - How do I get the serialized server data into the components in the browser for it to be interactive?
 
 Our answers were loaders, actions, server runtimes, browser runtimes, and a bundler that connected the server and browser together (hydration) through build manifests and serialized data payloads. We called the whole thing Remix.
 
 With the release of React 19, React itself now has answers for all of those questions with async components, RSC streaming formats, and bundler integrations. Our job got much smaller!
 
-Even APIs like `clientLoader`, that today rely on our Vite plugin, are able to be sent through the RSC format at runtime to work with any bundler that supports RSC.
+Even APIs like `clientLoader` that today rely on our Vite plugin are able to be sent through the RSC format at runtime to work with any bundler that supports RSC.
 
-<small>Jacob blew my mind with that one</small>
+<small>Jacob blew my mind with that one.</small>
 
 With less reliance on our own Vite plugin, and deeper integration with React, supporting all of React Router's framework features should be much more realistic for bundlers besides Vite.
 
@@ -363,6 +363,6 @@ By targeting RSC-native bundlers like Parcel, we're also helping to guide the di
 
 This is very exciting for us: both React's and React Router's full feature sets will soon be usable with very little effort with any bundler, any JavaScript runtime, and any server!
 
-Also, there's still some work to do around optimizing revalidation. Currently the entire page is revalidated after server actions. Because server actions aren't tied to a specific route, our current `shouldRevalidate` approach feels awkward. We're working on a better page revalidation approach that feels great for all use cases.
+Also, there's still some work to do around optimizing revalidation. Currently, the entire page is revalidated after server actions. Because server actions aren't tied to a specific route, our current `shouldRevalidate` approach feels awkward. We're working on a better page revalidation approach that feels great for all use cases.
 
 Take it for a spin and let us know what you think!
