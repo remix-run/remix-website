@@ -211,13 +211,13 @@
   & li {
     word-wrap: break-all;
 
-    & > p {
+    /* & > p {
       @apply m-0;
-    }
+    } */
 
-    & > p + p {
-      @apply mt-4;
-    }
+    /* & > p + p {
+      @apply m-0;
+    } */
 
     & + li {
       @apply mt-1;
