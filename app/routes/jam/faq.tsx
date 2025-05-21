@@ -29,27 +29,55 @@ export function FAQ({
           topics. Be sure to sign up for the Remix Newsletter to get notified
           about them!
         </Question>
+        <Question question="Will there be a CFP?">
+          No, there will not be a CFP.
+          <br />
+          <br />
+          We are putting together a great "set list" of speakers and topics
+          exploring the past, present, and future of Remix and the web. You can
+          expect to hear from the founders, well known members of the community,
+          and other industry exports.
+          <br />
+          <br />
+          The full lineup will be announced in June.
+        </Question>
         <Question question="Where will the event be hosted?">
           The Remix team is hosting this event in conjunction with Shopify at{" "}
           <Address className="inline" />.
         </Question>
         <Question question="Where should I stay?">
-          We have a hotel block set up at the Hyatt Regency Toronto.
+          We have 2 hotel blocks for the event:
+          <ul className="list-disc pl-5 pt-4">
+            <li>
+              <a
+                href="https://reservation.germainhotels.com/ibe/details.aspx?propertyid=17522&nights=2&checkin=10/09/2025&group=2510SHOPIF&lang=en-us&adults=2"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:underline"
+              >
+                Le Germain Mercer
+              </a>{" "}
+              — $259/night
+            </li>
+            <li>
+              <a
+                href="https://www.hyatt.com/en-US/group-booking/TORRT/G-SH0F"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:underline"
+              >
+                Hyatt Regency Toronto
+              </a>{" "}
+              — $279/night
+            </li>
+          </ul>
           <br />
-          <br />
-          You can book a room{" "}
-          <a
-            href="https://www.hyatt.com/en-US/group-booking/TORRT/G-SH0F"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-400 hover:underline"
-          >
-            using this link
-          </a>
-          .{" "}
           <strong className="font-bold">
             You must select the dates Oct 9-11.
           </strong>
+        </Question>
+        <Question question="What airport should I fly into?">
+          The closest airport is Toronto Pearson International Airport (YYZ).
         </Question>
         <Question question="What's the refund policy?">
           There are no refunds, but tickets will be transferable.
