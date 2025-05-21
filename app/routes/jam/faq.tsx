@@ -27,7 +27,7 @@ export function FAQ({
         <Question question="Where can I find the event lineup?">
           Our lineup will be announced in June with a range of speakers and
           topics. Be sure to sign up for the Remix Newsletter to get notified
-          about them!
+          when it's announced!
         </Question>
         <Question question="Will there be a CFP?">
           No, there will not be a CFP.
@@ -36,7 +36,7 @@ export function FAQ({
           We are putting together a great "set list" of speakers and topics
           exploring the past, present, and future of Remix and the web. You can
           expect to hear from the founders, well known members of the community,
-          and other industry exports.
+          and other industry experts.
           <br />
           <br />
           The full lineup will be announced in June.
