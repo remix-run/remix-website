@@ -3,7 +3,7 @@ import { Wordmark } from "~/ui/logo";
 import { DetailsMenu, DetailsPopup } from "~/ui/details-menu";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
-import { useNavigate } from "react-router";
+import { href, useNavigate } from "react-router";
 
 export function Header({
   forceDark,
@@ -36,10 +36,14 @@ export function Header({
       </NavLink>
 
       <nav className="hidden gap-8 md:flex" aria-label="Main">
-        <HeaderLink to="/docs/en/main">Docs</HeaderLink>
-        <HeaderLink to="/blog">Blog</HeaderLink>
-        <HeaderLink to="/showcase">Showcase</HeaderLink>
-        <HeaderLink to="/resources">Resources</HeaderLink>
+        <HeaderLink to={href("/docs/:lang/:ref", { lang: "en", ref: "main" })}>
+          Docs
+        </HeaderLink>
+        <HeaderLink to={href("/blog")}>Blog</HeaderLink>
+        <HeaderLink to={href("/jam/2025")}>Jam</HeaderLink>
+        <HeaderLink to="https://shop.remix.run" external>
+          Store
+        </HeaderLink>
       </nav>
 
       <HeaderMenuMobile className="md:hidden" />
@@ -65,10 +69,16 @@ function HeaderMenuMobile({ className = "" }: { className: string }) {
       </summary>
       <DetailsPopup>
         <nav className="flex flex-col gap-2 px-2 py-2.5">
-          <HeaderLink to="/docs/en/main">Docs</HeaderLink>
-          <HeaderLink to="/blog">Blog</HeaderLink>
-          <HeaderLink to="/showcase">Showcase</HeaderLink>
-          <HeaderLink to="/resources">Resources</HeaderLink>
+          <HeaderLink
+            to={href("/docs/:lang/:ref", { lang: "en", ref: "main" })}
+          >
+            Docs
+          </HeaderLink>
+          <HeaderLink to={href("/blog")}>Blog</HeaderLink>
+          <HeaderLink to={href("/jam/2025")}>Jam</HeaderLink>
+          <HeaderLink to="https://shop.remix.run" external>
+            Store
+          </HeaderLink>
         </nav>
       </DetailsPopup>
     </DetailsMenu>
@@ -80,11 +90,13 @@ function HeaderLink({
   children,
   className = "",
   prefetch = "none",
+  external = false,
 }: {
   to: string;
   children: React.ReactNode;
   className?: string;
   prefetch?: "none" | "intent";
+  external?: boolean;
 }) {
   return (
     <NavLink
@@ -96,6 +108,7 @@ function HeaderLink({
       )}
       to={to}
       children={children}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     />
   );
 }
