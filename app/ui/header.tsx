@@ -89,7 +89,7 @@ function HeaderLink({
   to,
   children,
   className = "",
-  prefetch = "none",
+  prefetch = "intent",
   external = false,
 }: {
   to: string;

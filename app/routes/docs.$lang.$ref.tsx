@@ -12,6 +12,7 @@ import {
   matchPath,
   redirect,
   useNavigate,
+  href,
 } from "react-router";
 import type { LoaderFunctionArgs, HeadersFunction } from "react-router";
 import cx from "clsx";
@@ -211,10 +212,12 @@ function Header() {
           <VersionWarningDesktop />
           <div className="flex gap-8">
             <div className="hidden items-center md:flex">
-              <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
-              <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
-              <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
-              <HeaderMenuLink to="/resources">Resources</HeaderMenuLink>
+              <HeaderMenuLink to={href("/docs")}>Docs</HeaderMenuLink>
+              <HeaderMenuLink to={href("/blog")}>Blog</HeaderMenuLink>
+              <HeaderMenuLink to={href("/jam/2025")}>Jam</HeaderMenuLink>
+              <HeaderMenuLink to="https://shop.remix.run" external>
+                Store
+              </HeaderMenuLink>
             </div>
             <div className="flex items-center gap-2">
               <HeaderLink
@@ -530,10 +533,12 @@ function HeaderMenuLink({
   className = "",
   to,
   children,
+  external = false,
 }: {
   to: string;
   className?: string;
   children: React.ReactNode;
+  external?: boolean;
 }) {
   let isActive = useIsActivePath(to);
 
@@ -547,6 +552,9 @@ function HeaderMenuLink({
         isActive
           ? "text-black underline decoration-black dark:text-gray-200 dark:decoration-gray-200"
           : "text-gray-500 decoration-gray-200 dark:text-gray-300 dark:decoration-gray-500",
+        {
+          ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+        },
       )}
     >
       {children}
@@ -573,10 +581,12 @@ function HeaderMenuMobile({ className = "" }: { className: string }) {
       </summary>
       <DetailsPopup>
         <div className="flex flex-col">
-          <HeaderMenuLink to="/docs">Docs</HeaderMenuLink>
-          <HeaderMenuLink to="/blog">Blog</HeaderMenuLink>
-          <HeaderMenuLink to="/showcase">Showcase</HeaderMenuLink>
-          <HeaderMenuLink to="/resources">Resources</HeaderMenuLink>
+          <HeaderMenuLink to={href("/docs")}>Docs</HeaderMenuLink>
+          <HeaderMenuLink to={href("/blog")}>Blog</HeaderMenuLink>
+          <HeaderMenuLink to={href("/jam/2025")}>Jam</HeaderMenuLink>
+          <HeaderMenuLink to="https://shop.remix.run" external>
+            Store
+          </HeaderMenuLink>
         </div>
       </DetailsPopup>
     </DetailsMenu>
