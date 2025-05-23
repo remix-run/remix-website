@@ -33,7 +33,7 @@
     "dotenv": "^16.3.2",
     "emoji-regex": "^10.3.0",
     "escape-goat": "^4.0.0",
-    "express": "^4.18.2",
+    "express": "^4.21.2",
     "express-rate-limit": "^7.1.5",
     "fathom-client": "^3.6.0",
     "feed": "^4.2.2",
