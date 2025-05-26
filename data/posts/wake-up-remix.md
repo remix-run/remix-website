@@ -28,7 +28,7 @@ Thanks to the work on RSC support in React Router, we now have a smooth, increme
 
 If all your routes are server routes, React Router v7 already feels a lot like where Remix was headed. The differences are subtle, not structural.
 
-And it's not just technically solid—it's battle-tested. React Router now powers apps at Shopify, X.com, GitHub, ChatGPT, Linear, T3Chat, and countless others including nearly 11 million GitHub projects. It's just one minor release away from fully supporting the complete React architecture. It has a dedicated team, long-term backing, and an open governance model to keep it growing for years to come.
+And it's not just technically solid—it's battle-tested. React Router now powers apps at Shopify, X.com, GitHub, ChatGPT, Linear, T3Chat, and countless others including nearly 11 million GitHub projects. It's just one minor release away from fully supporting the complete React architecture. It has a dedicated team, long-term backing, and an [open governance model](https://github.com/remix-run/react-router/blob/main/GOVERNANCE.md) to keep it growing for years to come.
 
 So what does that mean for Remix?
 
