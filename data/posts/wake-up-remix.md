@@ -42,7 +42,7 @@ We've had ideas that felt too disruptive to pursue in the past. But with Remix n
 
 Remix v3 is a reimagining of what a web framework can be — a fresh foundation shaped by decades of experience building for the web. Our focus is on simplicity, clarity, and performance, without giving up the power developers need.
 
-It's a modular toolkit that works well together but can also stand on its own — from first-class database drivers to a built-in component library. (time to wake up Reach UI too!)
+It's a modular toolkit that works well together but can also stand on its own — from first-class database drivers to a built-in component library (time to wake up Reach UI too!).
 
 This isn't just a new version — it's a new direction. One that's faster, simpler, and closer to the web itself.
 
