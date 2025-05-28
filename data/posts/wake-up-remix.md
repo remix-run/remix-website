@@ -36,7 +36,7 @@ It means we're free to go build what comes next.
 
 ## A New Path
 
-Over the past few years, the web platform has made remarkable progress—and so have the tools we use to build on it. But as much as we've gained, we've also seen complexity grow in ways that feel… heavy. At times, modern web development can feel more like navigating a toolchain than building for the web.
+Over the past few years, the web platform has made remarkable progress — and so have the tools we use to build on it. But as much as we've gained, we've also seen complexity grow in ways that feel… heavy. At times, modern web development can feel more like navigating a toolchain than building for the web.
 
 We've had ideas that felt too disruptive to pursue in the past. But with Remix no longer tied to a specific paradigm, we have the freedom to explore them.
 
