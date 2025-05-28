@@ -44,7 +44,7 @@ Remix v3 is a reimagining of what a web framework can be — a fresh foundation 
 
 It's a modular toolkit that works well together but can also stand on its own—from first-class database drivers to a built-in component library. (time to wake up Reach UI too!)
 
-This isn't just a new version—it's a new direction. One that's faster, simpler, and closer to the web itself.
+This isn't just a new version — it's a new direction. One that's faster, simpler, and closer to the web itself.
 
 To do that, we need to own the full stack—without leaning on layers of abstraction we don't control. That means no critical dependencies, not even React.
 
