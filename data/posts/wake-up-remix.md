@@ -8,6 +8,7 @@ authors:
 image: /blog-images/headers/wake-up-remix.jpg
 ogImage: /blog-images/headers/wake-up-remix.jpg
 imageAlt: "Neon glowing compact disc coming up behind a hill as if it were the rising sun."
+featured: true
 ---
 
 At React Conf last summer we announced that Remix was going to "take a nap".

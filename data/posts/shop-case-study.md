@@ -1,7 +1,6 @@
 ---
 title: "Case Study: Building Shop with Remix"
 summary: A case study on how Shopify rapidly built a web version of their popular iOS/Android app Shop with Remix
-featured: true
 date: 2024-03-20
 # Reach out to Shop to see if they have any other branding
 image: /blog-images/headers/shop-case-study.png

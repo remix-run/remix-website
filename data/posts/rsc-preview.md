@@ -7,6 +7,7 @@ authors:
 image: /blog-images/headers/rsc-preview.jpg
 ogImage: /blog-images/headers/rsc-preview.jpg
 imageAlt: "Stylized series of sci-fi movie poster designs featuring the text 'React Router RSC Preview' with abstract human and robotic figures in dramatic compositions."
+featured: true
 ---
 
 ## tl;dr

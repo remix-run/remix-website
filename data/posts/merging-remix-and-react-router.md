@@ -1,7 +1,6 @@
 ---
 title: Merging Remix and React Router
 summary: We've been building a bridge from React Router to Remix, and we made it so good that we're going to merge the two projects.
-featured: true
 date: 2024-05-15
 image: /blog-images/posts/merging-remix-and-react-router/remix-to-react-router.jpeg
 imageAlt: Remix logo pointing to React Router logo

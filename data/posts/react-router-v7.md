@@ -6,6 +6,7 @@ image: /blog-images/headers/react-router-v7.jpg
 ogImage: /blog-images/headers/react-router-v7.jpg
 imageAlt: "The React Router logo"
 imageDisableOverlay: true
+featured: true
 authors:
   - Michael Jackson
 ---

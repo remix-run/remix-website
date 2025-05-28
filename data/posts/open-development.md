@@ -1,7 +1,6 @@
 ---
 title: "Open Development for Remix"
 summary: "We're completely opening up our development process, join us!"
-featured: true
 date: 2022-11-11
 image: /blog-images/headers/remix-conf.jpg
 imageAlt: Dozens of Remix Conf attendees in colorful remix shirts with their hands up in the air
