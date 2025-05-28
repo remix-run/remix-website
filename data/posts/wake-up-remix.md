@@ -20,7 +20,7 @@ It's time to go wake up Remix!
 
 ## React Router is Really Good
 
-When we set out to evolve Remix, we expected it to become a full-stack, RSC-first React framework—a fresh take on the full-stack React architecture.
+When we set out to evolve Remix, we expected it to become a full-stack, RSC-first React framework — a fresh take on the full-stack React architecture.
 
 But something unexpected happened along the way: React Router v7 became really, really good.
 
