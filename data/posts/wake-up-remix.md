@@ -24,7 +24,7 @@ When we set out to evolve Remix, we expected it to become a full-stack, RSC-firs
 
 But something unexpected happened along the way: React Router v7 became really, really good.
 
-Thanks to the work on RSC support in React Router, we now have a smooth, incremental adoption path that supports returning server components directly from loaders and actions. We even built a first-class story for server-only routes—something we originally imagined as part of Remix's next chapter.
+Thanks to the work on RSC support in React Router, we now have a smooth, incremental adoption path that supports returning server components directly from loaders and actions. We even built a first-class story for server-only routes — something we originally imagined as part of Remix's next chapter.
 
 If all your routes are server routes, React Router v7 already feels a lot like where Remix was headed. The differences are subtle, not structural.
 
