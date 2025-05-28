@@ -14,7 +14,7 @@ At React Conf last summer we announced that Remix was going to "take a nap".
 
 Remix v2 had become such a thin wrapper around React Router that an artificial separation developed between the two projects. We simplified the projects by moving the bundler and server runtime code from Remix directly into React Router v7, merging everything that made Remix great into React Router v7 “framework mode”. We also announced we'd be adding limited support for RSC in React Router.
 
-We finished that work, releasing v7 last Fall and previewing RSC support last week.
+We finished that work, releasing v7 last November and previewing RSC support last week.
 
 It's time to go wake up Remix!
 
