@@ -176,11 +176,11 @@ export function Question({
     >
       <summary
         onClick={handleSummaryClick}
-        className="_no-triangle flex cursor-pointer items-center justify-between gap-3 p-4 font-conf-mono font-normal text-white transition-colors hover:bg-black md:p-6"
+        className="_no-triangle flex cursor-pointer items-center justify-between gap-3 p-4 font-conf-mono font-normal text-white transition-colors hover:bg-black focus:bg-black md:p-6"
       >
         {question}
         {/* Plus/Minus Icon - relies solely on group-open state */}
-        <div className="relative size-4 shrink-0 rounded-full p-1 opacity-30 ring ring-white/80 group-open:opacity-100 group-hover:opacity-100 md:size-8">
+        <div className="relative size-4 shrink-0 rounded-full p-1 opacity-30 ring ring-white/80 group-open:opacity-100 group-hover:opacity-100 group-focus:opacity-100 md:size-8">
           <span className="absolute left-1/2 top-1/2 block h-[2px] w-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/80" />
           <span
             className={clsx(
