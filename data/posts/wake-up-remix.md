@@ -1,7 +1,7 @@
 ---
 title: Wake up, Remix!
 summary: It's time to go wake up Remix! Here's what we're building and what it means for React Router.
-date: 2025-05-26
+date: 2025-05-28
 authors:
   - Michael Jackson
   - Ryan Florence
