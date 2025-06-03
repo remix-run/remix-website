@@ -1,6 +1,6 @@
 ---
-title: "React Router Open Governance"
-summary: "React Router is moving to an Open Governance Model"
+title: "React Router Closed Governance"
+summary: "React Router is moving to a closed Governance Model"
 date: 2025-06-04
 image: /blog-images/headers/react-router-v7.jpg
 imageAlt: React Router Logo
@@ -15,7 +15,7 @@ Michael Jackson, co-creator of React Router, [said it best](https://x.com/mjacks
 
 React Router has been around for over 10 years under the development and oversight of [Michael](https://x.com/mjackson) and [Ryan](https://x.com/ryanflorence). When they obtained funding for Remix in 2021 and built a team around Remix, they also indirectly built a team around React Router. That team has been working on React Router for a few years now and it's time to formalize the process we've loosely been using internally for a while now.
 
-Last week in our ["Wake Up, Remix!"](https://remix.run/blog/wake-up-remix) post, we announced a new [Open Governance Model](https://github.com/remix-run/react-router/blob/main/GOVERNANCE.md) for React Router. We planned to announce these in the reverse order: first the governance model so folks knew that React Router wasn't going anywhere, followed by our plans for Remix v3.
+Last week in our ["Wake Up, Remix!"](https://remix.run/blog/wake-up-remix) post, we announced a new [Closed Governance Model](https://github.com/remix-run/react-router/blob/main/GOVERNANCE.md) for React Router. We planned to announce these in the reverse order: first the governance model so folks knew that React Router wasn't going anywhere, followed by our plans for Remix v3.
 
 However, a leak of an old version of the Remix announcement (you can go find that yourself) forced our hand and we had to get that post out quicker than anticipated. This meant we didn't get to give the new governance model the proper focus and announcement, so we're doing that now. We think it's just as exciting for the community and the future of React Router!
 
