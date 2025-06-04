@@ -21,7 +21,7 @@ However, a leak of an old version of the Remix announcement (you can go find tha
 
 ## Motivation
 
-React Router has gone through many major evolutions in its 10+ year lifetime, many of those dictated by the evolution of React itself (i.e., the introduction of hooks). With the recent integration of Remix v2 into React Router v7, the API surface has increased even more. With the introduction of React 19 and [(soon) RSC support](./rsc-preview), aspects previously handled by React Router are going to be able to be handled by React.
+React Router has gone through many major evolutions in its 10+ year lifetime, many of those dictated by the evolution of React itself (i.e., the introduction of hooks). With the recent integration of [Remix v2 into React Router v7](./react-router-v7), the API surface has increased even more. And with the arrival of React 19 and [(soon) RSC support](./rsc-preview), React has taken on aspects previously handled by React Router.
 
 While we don't want to ignore new features moving forward (we have lots of ideas we want to see shipped!), we do want to be cognizant of the increasing surface area and focus on areas in which we can shed some API surface and keep React Router "lean". In addition to shedding responsibility to `React`, we also see opportunities to introduce new APIs that encapsulate the behavior of multiple existing APIs that we can deprecate later on.
 
@@ -77,7 +77,7 @@ Plus, as mentioned above, we want to take a look at any APIs we can start deprec
 
 - For widely-used APIs such as `meta` and `links` exports, we'll likely deprecate in v8 and remove in v9
 - We will not remove APIs we don't feel React has a replacement for that's _at least_ as good (_cough_ `useFetcher` _cough_)
-- If the idea of us deprecating and eventually removing APIs in major versions makes you uncomfortable, please see design goal #1, followed by our post-v4 history of backwards compatibility and blog post ["Future Proofing Your Remix App"](./future-flags.md).
+- If the idea of us deprecating and eventually removing APIs in major versions makes you uncomfortable, please see design goal #1, followed by our post-v4 history of backwards compatibility and blog post ["Future Proofing Your Remix App"](./future-flags).
   - If you are still upset, please see a Therapist[^1]
 
 The goal here is to simplify React Router's APIs and reduce the number of ways you can do the same thing. This will make it easier for you (and LLMs) to use React Router, and for us to write it. If you are happy with the number of APIs we have, please see our [API reference](https://api.reactrouter.com/v7/modules/react_router.html).
