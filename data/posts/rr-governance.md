@@ -21,7 +21,7 @@ However, a leak of an old version of the Remix announcement (you can go find tha
 
 ## Motivation
 
-React Router has gone through many major evolutions in its 10+ year lifetime, many of those dictated by the evolution of React itself (i.e., the introduction of hooks). Recently, with the creation of the Remix framework and its integration into React Router "Framework Mode" in v7, the API surface has increased even more. With the introduction of React 19 and [(soon) RSC support](./rsc-preview), aspects previously handled by React Router are going to be able to be handled by React.
+React Router has gone through many major evolutions in its 10+ year lifetime, many of those dictated by the evolution of React itself (i.e., the introduction of hooks). With the recent integration of Remix v2 into React Router v7, the API surface has increased even more. With the introduction of React 19 and [(soon) RSC support](./rsc-preview), aspects previously handled by React Router are going to be able to be handled by React.
 
 While we don't want to ignore new features moving forward (we have lots of ideas we want to see shipped!), we do want to be cognizant of the increasing surface area and focus on areas in which we can shed some API surface and keep React Router "lean". In addition to shedding responsibility to `React`, we also see opportunities to introduce new APIs that encapsulate the behavior of multiple existing APIs that we can deprecate later on.
 
