@@ -2,7 +2,7 @@
 title: "React Router Open Governance"
 summary: "React Router is moving to an Open Governance Model"
 date: 2025-06-04
-image: /blog-images/headers/react-router-v7.jpg
+image: /blog-images/headers/react-router-open-governance.jpg
 imageAlt: React Router Logo
 authors:
   - Matt Brophy
