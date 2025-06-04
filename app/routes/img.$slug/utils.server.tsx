@@ -75,7 +75,25 @@ export async function createOgImageSVG(request: Request) {
         </div>
       </div>
 
-      <Authors authors={authors} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+        }}
+      >
+        <Authors authors={authors} />
+        {ogImage ? null : (
+          <Wordmark
+            style={{
+              width: 480,
+              height: 120,
+              opacity: 0.25,
+              marginBottom: authors.length * -32 + 96,
+            }}
+          />
+        )}
+      </div>
     </div>,
     {
       width: 2400,
@@ -175,70 +193,54 @@ function Authors({
   const picDimensions = authors.length * -40 + 280;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-end",
-      }}
-    >
-      <div style={{ display: "flex", flexDirection: "column", gap: 48 }}>
-        {authors.map(({ name, title, imgSrc }) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 48 }}>
+      {authors.map(({ name, title, imgSrc }) => (
+        <div
+          style={{
+            display: "flex",
+            width: 1600,
+            alignItems: "center",
+          }}
+          key={name + title}
+        >
+          <img
+            width={picDimensions}
+            height={picDimensions}
+            // No alt needed, this is all turning into an image
+            alt=""
+            src={imgSrc}
+            style={{
+              marginLeft: 0,
+              borderRadius: 9999,
+            }}
+          />
           <div
             style={{
               display: "flex",
-              width: 1600,
-              alignItems: "center",
+              flexDirection: "column",
+              gap: 8,
+              marginLeft: 48,
             }}
-            key={name + title}
           >
-            <img
-              width={picDimensions}
-              height={picDimensions}
-              // No alt needed, this is all turning into an image
-              alt=""
-              src={imgSrc}
-              style={{
-                marginLeft: 0,
-                borderRadius: 9999,
-              }}
-            />
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-                marginLeft: 48,
+                fontWeight: "bold",
+                fontSize: authors.length * -8 + 80,
               }}
             >
-              <div
-                style={{
-                  fontWeight: "bold",
-                  fontSize: authors.length * -8 + 80,
-                }}
-              >
-                {name}
-              </div>
-              <div
-                style={{
-                  color: primaryTextColor,
-                  fontSize: 40,
-                }}
-              >
-                {title}
-              </div>
+              {name}
+            </div>
+            <div
+              style={{
+                color: primaryTextColor,
+                fontSize: 40,
+              }}
+            >
+              {title}
             </div>
           </div>
-        ))}
-      </div>
-      <Wordmark
-        style={{
-          width: 480,
-          height: 120,
-          opacity: 0.25,
-          marginBottom: authors.length * -32 + 96,
-        }}
-      />
+        </div>
+      ))}
     </div>
   );
 }
