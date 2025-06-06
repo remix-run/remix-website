@@ -8,6 +8,7 @@ imageAlt: Robot hands passing a disc labeled with the React Router logo
 authors:
   - Matt Brophy
   - Brooks Lybrand
+featured: true
 ---
 
 Michael Jackson, co-creator of React Router, [said it best](https://x.com/mjackson/status/1927739177149382991):
