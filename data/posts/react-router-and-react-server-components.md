@@ -21,7 +21,7 @@ Building server-rendered React apps has always involved solving a few key challe
 - **How do you support streaming UI?** Users shouldn't wait for all data before seeing anything.
 - **How do you code split your routes?** Nobody wants to download your entire app on the first page load.
 
-Different tools have solved these problems in different ways. React Router's Framework Mode has one approach. React Server Components offer another. And now, React Router is bringing these worlds together.
+Different tools have solved these problems in different ways. React Router's Framework Mode provides one approach. React Server Components offer another. And now, React Router is bringing these worlds together.
 
 ## How We Handle Server Challenges Today
 
@@ -110,41 +110,40 @@ This approach has served us well, but it requires significant bundler integratio
 
 React Router RSC takes a different approach that's actually simpler:
 
-- Routes defined in app code like any other data structure (no more special `routes.ts` build-time generation required)
+- Routes defined in app code like any other data structure (no more special `routes.ts` bundler plugins or build-time generation required)
 - A function that handles routing HTML vs data requests
 - A function that generates RSC payloads that get rendered to HTML somewhere
 
-These two functions replace what previously required an entire bundler plugin and manifest generation system. The result? A simpler, more direct architecture that allows React Router to be a library again for complex full stack apps.
+Notice that these are now just plain data structures and function calls. These APIs replace what previously required an entire bundler plugin and manifest generation system. The result? A simpler, more direct architecture that allows React Router to be a library again for complex full stack apps, only possible thanks to RSC.
+
+It's worth calling out that this simplification is useful _even if you're not using server components_. Even if all of your routes are client components, as they are today, this new architecture means that advanced usage of React Router will no longer require a bundler-specific Framework Mode plugin.
 
 ## What This Means for You
 
-### If you're using Framework Mode
+- **If you're using React Router in Framework Mode:** Our intention is for the future of Framework Mode to be built on top of React Router RSC, but your existing code will continue to work. When the transition happens, it will be seamless from your perspective. _No migration necessary!_
 
-Good news: **no migration necessary!** The future of Framework Mode is being built on top of React Router RSC, but your existing code will continue to work. When the transition happens, it will be seamless from your perspective.
+- **If you're using React Router in Library Mode:** You can continue using our existing non-RSC library APIs to build more traditional SPAs and SSR apps, both now and into the future.
 
-### If you're using React Router today (Library Mode)
+- **If you're starting a new React Router project:** React Router RSC is still unstable, so we currently recommend using the existing Framework Mode or library APIs.
 
-React Router RSC is available as "Library Mode" only for now. This means you bring your own RSC-enabled bundler. It's a powerful option if you're already working with RSC infrastructure.
-
-### If you're starting a new React Router project
-
-React Router RSC is still unstable, so we recommend using the existing Framework Mode or browser APIs. But if you're feeling adventurous, we'd encourage you to try RSC mode and provide feedback, file issues, or even help fix any bugs you run into.
+- **If you're feeling adventurous:** We'd encourage you to try our initial unstable RSC APIs and provide feedback, file issues, or even help fix any bugs you run into. We'd love to hear what you think!
 
 ### What's Coming
 
-We are planning RSC-enabled Framework Mode for Vite. This depends on some low-level bundler work, but when it lands, framework mode becomes much simpler:
+We are planning RSC-enabled Framework Mode for Vite. This depends on some low-level bundler work, but when it lands, Framework Mode becomes much simpler:
 
 1. Create a real routes config from your `routes.ts` convention
 2. Split route modules into server and `"use client"` parts
+3. Smooth over any bundler-specific integrations that may be required
 
-That's it. No more manifest generation, no more complex server entries. Your route modules and logic stay exactly the same, with new `entry.xxx` modules aligning with browser, SSR, and react-server module graphs.
+That's it. No more manifest generation, no more complex server entries. Your route modules and logic stay exactly the same, with new `entry.browser.ts`, `entry.ssr.ts`, and `entry.rsc.ts` modules aligning with their respective module graphs.
 
 ## The Bottom Line
 
 React Router is getting simpler because React itself is doing more heavy lifting and expecting more from bundlers. RSC brings powerful patterns for data loading, streaming, and code splitting that complement what React Router already does well.
 
-This means that not only is React Router becoming more powerful, inheriting React's new abilities to render components purely on the server, but that React Router is now able to be used as a simple library from SPAs to complex SSR apps.
+Not only is React Router becoming more powerful — inheriting React's new abilities to render components purely on the server — but it's now able to be used as a simple library for even more use cases, from SPAs all the way up to complex code-split SSR apps.
 
-While we still intend to provide Framework Mode conveniences on top of RSC, these now become completely optional. We're confident that many of you will want to use React Router's RSC APIs directly to keep things more minimal and under your control. This also means that, unlike today, we'll be able to provide support for full stack SSR apps across all RSC-enabled bundlers, not just Vite.
+While we still intend to provide additional Framework Mode conveniences on top of RSC, these now become completely optional. We're confident that many of you will want to use React Router's RSC APIs directly to keep things more minimal and under your control. This also means that, unlike today, we'll much more easily be able to support full stack SSR apps across all RSC-enabled bundlers, not just Vite.
 
 The future of React Router is bright, and we're excited to build it with you.
