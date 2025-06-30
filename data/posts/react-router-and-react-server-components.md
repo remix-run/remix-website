@@ -18,7 +18,7 @@ If you're using React Router today, you're probably wondering what React Server 
 Building server-rendered React apps has always involved solving a few key challenges:
 
 - **How do you inline data?** You need to get your server data into your components efficiently.
-- **How do you support streaming UI?** Users shouldn't wait for all data before seeing anything.
+- **How do you support streaming UI?** Users shouldn't have to wait for all data before seeing something.
 - **How do you code split your routes?** Nobody wants to download your entire app on the first page load.
 
 Different tools have solved these problems in different ways. React Router's Framework Mode provides one approach. React Server Components offer another. And now, React Router is bringing these worlds together.
