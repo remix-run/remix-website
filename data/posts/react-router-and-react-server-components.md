@@ -120,7 +120,7 @@ It's worth calling out that this simplification is useful _even if you're not us
 
 ## What This Means for You
 
-- **If you're using React Router in Framework Mode:** Our intention is for the future of Framework Mode to be built on top of React Router RSC, but your existing code will continue to work. When the transition happens, it will be seamless from your perspective. _No migration necessary!_
+- **If you're using React Router in Framework Mode:** Our intention is for the future of Framework Mode to be built on top of React Router RSC, so your existing code will continue to work. When the transition happens, it will be seamless from your perspective. _No migration necessary!_
 
 - **If you're using React Router in Library Mode:** You can continue using our existing non-RSC library APIs to build more traditional SPAs and SSR apps, both now and into the future.
 
