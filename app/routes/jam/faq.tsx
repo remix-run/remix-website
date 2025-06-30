@@ -25,7 +25,7 @@ export function FAQ({
         </div>
         {children}
         <Question question="Where can I find the event lineup?">
-          Our lineup will be announced in June with a range of speakers and
+          Our lineup will be announced in July with a range of speakers and
           topics. Be sure to sign up for the Remix Newsletter to get notified
           when it's announced!
         </Question>
@@ -39,7 +39,7 @@ export function FAQ({
           and other industry experts.
           <br />
           <br />
-          The full lineup will be announced in June.
+          The full lineup will be announced in July.
         </Question>
         <Question question="Where will the event be hosted?">
           The Remix team is hosting this event in conjunction with Shopify at{" "}
