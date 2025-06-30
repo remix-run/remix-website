@@ -63,10 +63,11 @@ async function ProfileServer() {
 ```js
 // Framework Mode
 export function loader() {
-  return defer({
-    criticalData: getCriticalData(),
-    slowData: getSlowData(), // This is a promise
-  });
+  let slowDataPromise = getSlowData();
+  return {
+    criticalData: await getCriticalData(),
+    slowData: slowDataPromise,
+  };
 }
 
 export default function Page() {
