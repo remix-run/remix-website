@@ -125,7 +125,7 @@ It's worth calling out that this simplification is useful _even if you're not us
 
 - **If you're using React Router in Library Mode:** You can continue using our existing non-RSC library APIs to build more traditional SPAs and SSR apps, both now and into the future.
 
-- **If you're starting a new React Router project:** React Router RSC is still unstable, so we currently recommend using the existing Framework Mode or library APIs.
+- **If you're starting a new React Router project:** React Router RSC is still unstable, so we currently recommend using the existing Framework Mode or data/declarative APIs.
 
 - **If you're feeling adventurous:** We'd encourage you to try our initial unstable RSC APIs and provide feedback, file issues, or even help fix any bugs you run into. We'd love to hear what you think!
 
