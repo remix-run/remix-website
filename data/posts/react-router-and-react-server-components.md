@@ -110,9 +110,9 @@ This approach has served us well, but it requires significant bundler integratio
 
 React Router RSC takes a different approach that's actually simpler:
 
-- Routes defined in app code like any other data structure (no more special `routes.ts` bundler plugins or build-time generation required)
-- A function that handles routing HTML vs data requests
-- A function that generates RSC payloads that get rendered to HTML somewhere
+- You define routes in app code like any other data structure (no more special `routes.ts` bundler plugins or build-time generation required)
+- A function handles routing HTML vs data requests
+- A function generates RSC payloads that get rendered to HTML somewhere
 
 Notice that these are now just plain data structures and function calls. These APIs replace what previously required an entire bundler plugin and manifest generation system. The result? A simpler, more direct architecture that allows React Router to be a library again for complex full stack apps, only possible thanks to RSC.
 
