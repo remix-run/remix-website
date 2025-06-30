@@ -17,7 +17,7 @@ If you're using React Router today, you're probably wondering what React Server 
 
 Building server-rendered React apps has always involved solving a few key challenges:
 
-- **How do you inline data?** You need to get your server data into your components efficiently.
+- **How do you inline data?** You need to get your server data into your components in the browser efficiently.
 - **How do you support streaming UI?** Users shouldn't have to wait for all data before seeing something.
 - **How do you code split your routes?** Nobody wants to download your entire app on the first page load.
 
