@@ -2,10 +2,6 @@ import { createStorefrontApiClient } from "@shopify/storefront-api-client";
 import { env } from "~/env.server";
 import { z } from "zod";
 
-import ticketSrc from "./images/tickets/general.avif";
-
-const EARLY_BIRD_DISCOUNT_CODE = "EARLY_BIRD";
-
 // Initialize the client as a lazy singleton
 let client: ReturnType<typeof createStorefrontApiClient> | null = null;
 function getClient() {
@@ -63,7 +59,7 @@ export async function getProduct(handle: string): Promise<Product> {
   }
 
   const price =
-    data?.product?.variants?.edges[0]?.node?.price?.amount || "149.00";
+    data?.product?.variants?.edges[0]?.node?.price?.amount || "399.00";
   const formattedPrice = Number(price).toFixed(2);
   const productId = data?.product?.variants?.edges[0]?.node?.id;
   const availableForSale =
@@ -79,13 +75,15 @@ export async function getProduct(handle: string): Promise<Product> {
   return ProductSchema.parse(product);
 }
 
+export const MAX_QUANTITY = 10;
+
 export async function createCart(params: {
   productId: string;
   quantity: number;
   discountCode?: string;
 }): Promise<Cart | { error: string }> {
   let { productId, quantity, discountCode } = params;
-  quantity = Math.min(quantity, getDiscountData().maxQuantity);
+  quantity = Math.min(quantity, MAX_QUANTITY);
   discountCode = (discountCode ?? "").trim().toUpperCase();
 
   const createCartMutation = `
@@ -107,8 +105,7 @@ export async function createCart(params: {
     }
   `;
 
-  // Temporarily always the EARLY_BIRD discount code
-  let discountCodes = [EARLY_BIRD_DISCOUNT_CODE];
+  let discountCodes = [];
   if (discountCode) {
     discountCodes.push(discountCode);
   }
@@ -137,14 +134,4 @@ export async function createCart(params: {
   };
 
   return CartSchema.parse(cart);
-}
-
-export function getDiscountData() {
-  return {
-    title: "Early Bird",
-    text: "Join us in October and enjoy the lower cost of admission for purchasing the ticket earlier.",
-    price: "299.00",
-    imageSrc: ticketSrc,
-    maxQuantity: 10,
-  };
 }

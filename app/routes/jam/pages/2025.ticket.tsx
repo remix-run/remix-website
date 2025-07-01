@@ -6,12 +6,13 @@ import { FAQ } from "../faq";
 import { JamButton } from "../utils";
 import { redirect, useFetcher } from "react-router";
 import clsx from "clsx";
-import { getProduct, createCart, getDiscountData } from "../storefront.server";
+import { getProduct, createCart, MAX_QUANTITY } from "../storefront.server";
 import { getMeta } from "~/lib/meta";
 
 import iconsHref from "~/icons.svg";
 import ogImageSrc from "../images/og-thumbnail-1.jpg";
 import ticketHolographic from "../images/tickets/ticket-holographic.avif";
+import ticketSrc from "../images/tickets/general.avif";
 import type { Route } from "./+types/2025.ticket";
 
 export function meta({ matches }: Route.MetaArgs) {
@@ -31,12 +32,15 @@ export function meta({ matches }: Route.MetaArgs) {
 export async function loader() {
   // Get product data
   const product = await getProduct("remix-jam-2025");
-  const discountData = getDiscountData();
 
   return {
     productId: product.productId,
     availableForSale: product.availableForSale,
-    ...discountData,
+    price: product.price,
+    title: "General Admission",
+    text: "Join us in October to jam with the Remix team and learn more about what we've been up to.",
+    imageSrc: ticketSrc,
+    maxQuantity: MAX_QUANTITY,
   };
 }
 
@@ -124,7 +128,7 @@ function TicketPurchase({
         <input type="hidden" name="quantity" value={quantity} />
         <div className="flex w-full grow items-center justify-between rounded-[48px] px-4 py-2.5 ring-2 ring-inset ring-white/30 md:px-6 md:py-4 md:ring-4">
           <span className="font-conf-mono font-normal text-white">
-            $ <span className="line-through opacity-50">399.00</span> {price}
+            $ {price}
           </span>
           <div className="flex items-center gap-4">
             <button
@@ -303,7 +307,7 @@ function Ticket({ title, imageSrc }: TicketProps) {
               <p>your name</p>
               <p>your company</p>
             </div>
-            <p className={clsx("uppercase text-[#36d3ff]")}>{title}</p>
+            <p className={"uppercase text-green-brand"}>{title}</p>
           </div>
         </div>
       </div>
