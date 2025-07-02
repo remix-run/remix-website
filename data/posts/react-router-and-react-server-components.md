@@ -11,7 +11,13 @@ authors:
   - Mark Dalgleish
 ---
 
-If you're using React Router today, you're probably wondering what React Server Components (RSC) mean for your applications. The good news? React Router is getting simpler, not more complex. Let's dive into what's happening and what it means for you.
+In a recent blog post we shared a [preview of React Router with RSC support.](./rsc-preview) On the surface, it might look like this simply means that Server Components are coming to React Router.
+
+However, the implications are greater than you might expect.
+
+With RSC, so much of what's required to implement React Router's Framework Mode is now provided by React itself. Similar to the architectural shift we made when [Remixing React Router](./remixing-react-router), we're introducing a more powerful RSC-powered Data Mode that brings most of Framework Mode's features to our lower level library APIs.
+
+With this new architecture, Framework Mode becomes less coupled to any particular bundler while supporting even more features. In this blog post, we'll dive into some of the details of how this works and what it means for you.
 
 ## The Challenge of Server-Side React
 
