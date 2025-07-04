@@ -11,7 +11,7 @@ authors:
   - Mark Dalgleish
 ---
 
-In a recent blog post we shared a [preview of React Router with RSC support.](./rsc-preview) On the surface, it might look like this simply means that Server Components are coming to React Router.
+In a recent blog post we shared a [preview of React Router with RSC support](./rsc-preview). On the surface, it might look like this simply means that Server Components are coming to React Router.
 
 However, the implications are greater than you might expect.
 
