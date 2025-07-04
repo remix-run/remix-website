@@ -93,6 +93,31 @@ export default function Page() {
 
 **React RSC**: Pass promises as props and use `await` on the server and `use(promise)` on the client.
 
+```tsx
+// React RSC
+// page.tsx
+export async function Page() {
+  const slowData = getSlowData();
+  const criticalData = await getCriticalData();
+  return (
+    <>
+      <h1>{criticalData.title}</h1>
+      <Suspense fallback={<Spinner />}>
+        <PageClient slowDataPromise={slowDataPromise} />
+      </Suspense>
+    </>
+  );
+}
+
+// page.client.tsx
+"use client";
+
+export function PageClient({ slowDataPromise }) {
+  const slowData = use(slowDataPromise);
+  return <PageWidget data={slowData} />;
+}
+```
+
 **React Router RSC**: Again, both patterns are available to you.
 
 ### Code Splitting Routes
