@@ -93,6 +93,7 @@ export default function Page() {
 
 **React RSC**: Pass promises as props and use `await` on the server and `use(promise)` on the client.
 
+<!-- prettier-ignore -->
 ```tsx
 // React RSC
 // page.tsx
@@ -110,7 +111,7 @@ export async function Page() {
 }
 
 // page.client.tsx
-("use client");
+"use client";
 
 export function PageClient({ slowDataPromise }) {
   const slowData = use(slowDataPromise);
