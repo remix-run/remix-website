@@ -79,6 +79,45 @@ export function FAQ({
         <Question question="What airport should I fly into?">
           The closest airport is Toronto Pearson International Airport (YYZ).
         </Question>
+        <Question question="Do I need a visa to attend?">
+          <ul className="list-disc pl-5 pt-4">
+            <li>
+              Check{" "}
+              <a
+                href="https://ircc.canada.ca/english/visit/visas.asp"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:underline"
+              >
+                if you need a visa
+              </a>{" "}
+              (<i>select "attending meetings/conference"</i>)
+            </li>
+            <li>
+              Determine{" "}
+              <a
+                href="https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:underline"
+              >
+                visa processing times
+              </a>
+            </li>
+            <li>
+              Request a{" "}
+              <a
+                href="https://forms.gle/DdPs7rREJaFz8Pzf9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:underline"
+              >
+                letter of invitation
+              </a>{" "}
+              from Shopify
+            </li>
+          </ul>
+        </Question>
         <Question question="What's the refund policy?">
           There are no refunds, but tickets will be transferable.
         </Question>
