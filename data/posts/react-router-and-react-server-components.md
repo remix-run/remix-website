@@ -2,9 +2,9 @@
 title: "React Router and React Server Components: The Path Forward"
 summary: React Router's RSC support is more than just a new feature. It's a major architectural shift that makes it a much more powerful library while also making Framework Mode less coupled to any particular bundler.
 date: 2025-06-18
-image: /blog-images/headers/react-router-open-governance.jpg
-ogImage: /blog-images/headers/react-router-open-governance.jpg
-imageAlt: Robot hands passing a disc labeled with the React Router logo
+image: /blog-images/headers/rr-rsc-path-forward.jpg
+ogImage: /blog-images/headers/rr-rsc-path-forward.jpg
+imageAlt: Glowing tree
 imageDisableOverlay: true
 authors:
   - Jacob Ebey
