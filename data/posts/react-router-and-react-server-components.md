@@ -19,6 +19,8 @@ With RSC, so much of what's required to implement React Router's Framework Mode 
 
 With this new architecture, Framework Mode can add RSC support in an opt-in/non-breaking fashion, all while becoming simpler under the hood and less coupled to any particular bundler. In this blog post, we'll dive into some of the details of how this works and what it means for you.
 
+To learn more about how to setup React Server Components with React Router, check out our ["React Server Components" docs](https://reactrouter.com/how-to/react-server-components).
+
 ## The Challenge of Server-Side React
 
 Building server-rendered React apps has always involved solving a few key challenges:
