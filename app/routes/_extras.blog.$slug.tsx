@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 
 import { Subscribe } from "~/ui/subscribe";
-import cx from "clsx";
+import { clsx } from "clsx";
 import type { Route } from "./+types/_extras.blog.$slug";
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
@@ -83,7 +83,7 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
             <div className="relative h-[280px] bg-gray-900 md:mx-auto md:h-[400px] md:max-w-3xl md:rounded-xl xl:h-[480px]">
               <div className="absolute inset-0">
                 <img
-                  className={cx(
+                  className={clsx(
                     "h-full w-full object-cover object-top md:rounded-xl",
                     !post.imageDisableOverlay && "opacity-40",
                   )}
@@ -97,12 +97,17 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
                     {post.dateDisplay}
                   </div>
                   <div className="h-2" />
-                  <h1 className="font-display text-3xl font-extrabold text-white md:text-4xl">
+                  <h1
+                    className={clsx(
+                      "font-display font-extrabold text-white md:text-4xl",
+                      post.title.length > 50 ? "text-2xl" : "text-3xl",
+                    )}
+                  >
                     {post.title}
                   </h1>
                   <div className="h-2" />
                 </div>
-                <div className="pb-4 md:pb-10">
+                <div className="flex flex-col gap-1 pb-4 md:pb-10">
                   {post.authors.map((author) => (
                     <div key={author.name} className="flex items-center">
                       <div>
@@ -114,7 +119,7 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
                       </div>
                       <div className="w-6" />
                       <div>
-                        <div className="font-display text-xl font-extrabold leading-none text-white md:text-3xl">
+                        <div className="font-display text-lg font-extrabold leading-none text-white md:text-3xl">
                           {author.name}
                         </div>
                         <div className="text-base leading-tight text-white md:text-base">
