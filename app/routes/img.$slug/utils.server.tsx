@@ -65,7 +65,7 @@ export async function createOgImageSVG(request: Request) {
         <div
           style={{
             fontWeight: "bold",
-            fontSize: 144,
+            fontSize: title.length > 50 ? 110 : 144,
             lineHeight: 1.1,
             margin: 0,
             marginTop: 48,
