@@ -100,7 +100,7 @@ export default function Page() {
 // React RSC
 // page.tsx
 export async function Page() {
-  const slowData = getSlowData();
+  const slowDataPromise = getSlowData();
   const criticalData = await getCriticalData();
   return (
     <>
