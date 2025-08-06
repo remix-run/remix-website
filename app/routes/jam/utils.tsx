@@ -35,7 +35,17 @@ export function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-export function Address({ className }: { className?: string }) {
+export function AddressMain() {
+  return (
+    <address className="inline-block text-lg font-bold not-italic leading-relaxed text-white md:text-3xl">
+      620 King St W
+      <br />
+      Toronto, ON M5V 1M7, Canada
+    </address>
+  );
+}
+
+export function AddressLink() {
   return (
     <a
       href="https://maps.app.goo.gl/GpacrBAJJMnctN9W7"
@@ -43,10 +53,8 @@ export function Address({ className }: { className?: string }) {
       rel="noopener noreferrer"
       className="text-blue-400 hover:underline"
     >
-      <address className={clsx("inline-block not-italic", className)}>
-        620 King St W
-        <br />
-        Toronto, ON M5V 1M7, Canada
+      <address className="inline not-italic">
+        620 King St W Toronto, ON M5V 1M7, Canada
       </address>
     </a>
   );

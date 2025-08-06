@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef } from "react";
-import { Address, usePrefersReducedMotion } from "./utils";
+import { AddressLink, usePrefersReducedMotion } from "./utils";
 import clsx from "clsx";
 
 export function FAQ({
@@ -43,7 +43,7 @@ export function FAQ({
         </Question>
         <Question question="Where will the event be hosted?">
           The Remix team is hosting this event in conjunction with Shopify at{" "}
-          <Address className="inline" />.
+          <AddressLink />.
         </Question>
         <Question question="Where should I stay?">
           We have 2 hotel blocks for the event:

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import { getMeta } from "~/lib/meta";
 import { getSubscribeStatus } from "~/ui/subscribe";
-import { Address, usePrefersReducedMotion } from "../utils";
+import { AddressMain, usePrefersReducedMotion } from "../utils";
 import { clsx } from "clsx";
 import { Keepsakes } from "../keepsakes";
 import { Navbar } from "../navbar";
@@ -77,8 +77,8 @@ function EventDetails() {
       </InfoText>
 
       <SectionLabel>Location</SectionLabel>
-      <div className="flex flex-col items-center gap-6 md:gap-8">
-        <Address className="text-lg font-bold leading-relaxed text-white md:text-3xl" />
+      <div className="z-10 flex flex-col items-center gap-6 md:gap-8">
+        <AddressMain />
       </div>
     </main>
   );
