@@ -37,11 +37,18 @@ export function usePrefersReducedMotion() {
 
 export function AddressMain() {
   return (
-    <address className="inline-block text-lg font-bold not-italic leading-relaxed text-white md:text-3xl">
-      620 King St W
-      <br />
-      Toronto, ON M5V 1M7, Canada
-    </address>
+    <a
+      href="https://maps.app.goo.gl/GpacrBAJJMnctN9W7"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-400 hover:underline"
+    >
+      <address className="inline-block text-lg font-bold not-italic leading-relaxed text-white md:text-3xl">
+        620 King St W
+        <br />
+        Toronto, ON M5V 1M7, Canada
+      </address>
+    </a>
   );
 }
 
