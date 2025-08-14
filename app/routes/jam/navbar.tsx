@@ -1,10 +1,15 @@
 import clsx from "clsx";
-import { href, Link } from "react-router";
+import {
+  href,
+  Link,
+  NavLink as RRNavLink,
+  type NavLinkProps,
+} from "react-router";
 import { JamLink } from "./utils";
 
 export function Navbar({
   className,
-  showTicketLink = false,
+  showTicketLink = true,
 }: {
   className?: string;
   /**
@@ -23,12 +28,20 @@ export function Navbar({
         background: `linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)`,
       }}
     >
-      <Link to="/jam/2025" className="flex items-center">
+      <Link to="/jam/2025" className="flex items-center md:block">
         <JamLogo className="h-[48px] fill-white md:h-auto md:w-[200px]" />
       </Link>
 
-      {/* Placeholder for navigation links */}
-      <div className="flex-1" />
+      {/* Center navigation links */}
+      <div className="flex items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg">
+        <NavLink to="/jam/2025/setlist">Setlist</NavLink>
+        <NavLink className="text-white" to="/jam/2025/code-of-conduct">
+          Code of Conduct
+        </NavLink>
+        <NavLink className="text-white" to="/jam/2025/faq">
+          FAQ
+        </NavLink>
+      </div>
 
       {showTicketLink ? (
         <JamLink to={href("/jam/2025/ticket")}>
@@ -55,5 +68,24 @@ function TicketLogo({ className }: { className?: string }) {
     <svg viewBox="0 0 24 24" className={className}>
       <path d="M20.19 4H4c-1.1 0-1.99.9-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.81-2-1.81-2zm-2.46 9.3l-8.86 2.36-1.66-2.88.93-.25 1.26.99 2.39-.64-2.4-4.16 1.4-.38 4.01 3.74 2.44-.65c.51-.14 1.04.17 1.18.68.13.51-.17 1.04-.69 1.19z"></path>
     </svg>
+  );
+}
+
+function NavLink({ className, children, ...props }: NavLinkProps) {
+  return (
+    <RRNavLink
+      className={({ isActive }) =>
+        clsx(
+          "rounded-full border-2 px-5 py-0.5 text-base font-bold text-white/80 transition-colors duration-300 md:border-4 md:py-3 md:text-xl",
+          isActive
+            ? "border-white text-white"
+            : "border-transparent hover:border-white hover:text-white",
+          className,
+        )
+      }
+      {...props}
+    >
+      {children}
+    </RRNavLink>
   );
 }
