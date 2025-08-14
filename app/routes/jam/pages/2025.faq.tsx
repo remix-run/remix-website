@@ -40,7 +40,7 @@ export default function JamFAQPage() {
           <ScrambleText text="Questions" delay={300} color="green" />
         </Title>
 
-        <div className="relative z-10 mt-10 text-base text-white md:text-lg">
+        <div className="relative z-10 text-base text-white md:text-lg">
           <FAQSection
             question="Where can I find the event lineup?"
             answer="Our lineup will be announced in July with a range of speakers and topics. Be sure to sign up for the Remix Newsletter to get notified when it's announced!"
@@ -196,7 +196,7 @@ function FAQSection({
   return (
     <section
       id={id}
-      className="mt-10 scroll-mt-32 space-y-3 text-base text-white md:text-lg"
+      className="mt-5 scroll-mt-32 space-y-3 text-base text-white md:text-lg lg:mt-10"
     >
       <Subheader>
         <Link to={`#${id}`} className="hover:underline">
