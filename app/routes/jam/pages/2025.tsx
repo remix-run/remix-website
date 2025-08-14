@@ -7,7 +7,6 @@ import { clsx } from "clsx";
 import { Keepsakes } from "../keepsakes";
 import { Navbar } from "../navbar";
 import { ScrambleText, SectionLabel, Title, InfoText } from "../text";
-import { FAQ } from "../faq";
 import ogImageSrc from "../images/og-thumbnail-1.jpg";
 
 import type { Route } from "./+types/2025";
@@ -37,8 +36,6 @@ export default function RemixJam2025() {
       </div>
 
       <EventDetails />
-
-      <FAQ className="relative z-10" />
 
       {/* Spacer */}
       <div className="h-[100px] w-full" />

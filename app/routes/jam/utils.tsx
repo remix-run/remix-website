@@ -53,9 +53,7 @@ export function AddressLink() {
       rel="noopener noreferrer"
       className="text-blue-400 hover:underline"
     >
-      <address className="inline not-italic">
-        620 King St W Toronto, ON M5V 1M7, Canada
-      </address>
+      620 King St W Toronto, ON M5V 1M7, Canada
     </a>
   );
 }

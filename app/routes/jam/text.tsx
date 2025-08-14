@@ -6,10 +6,19 @@ import clsx from "clsx";
  * Main title component with three animated lines of text
  * Each line appears in sequence with a different color while scrambling
  */
-export function Title({ children }: { children: React.ReactNode }) {
+export function Title({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <h1
-      className="flex flex-col gap-2 text-[2.5rem] font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none"
+      className={clsx(
+        "flex flex-col gap-2 text-[2.5rem] font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none",
+        className,
+      )}
       role="banner"
     >
       {children}
@@ -208,4 +217,40 @@ export function InfoText({
       </p>
     </div>
   );
+}
+
+/**
+ * Standard subheading used within JAM pages (FAQ questions etc.)
+ * Automatically creates an anchor link - whole header is clickable
+ */
+export function Subheader({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <h2
+      className={clsx(
+        "text-2xl font-bold tracking-tight text-white md:text-3xl",
+        className,
+      )}
+    >
+      {children}
+    </h2>
+  );
+}
+
+/**
+ * Standard paragraph used within JAM pages.
+ */
+export function Paragraph({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <p className={clsx("text-white/80", className)}>{children}</p>;
 }

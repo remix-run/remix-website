@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { useLayoutEffect } from "~/ui/primitives/utils";
 import { Navbar } from "../navbar";
 import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
-import { FAQ } from "../faq";
 import { JamButton } from "../utils";
 import { redirect, useFetcher } from "react-router";
 import clsx from "clsx";
@@ -96,8 +95,6 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
         />
         <InfoText>{text}</InfoText>
       </main>
-
-      <FAQ className="relative z-10" />
     </>
   );
 }
