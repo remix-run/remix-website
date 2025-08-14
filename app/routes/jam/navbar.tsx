@@ -6,6 +6,8 @@ import {
   type NavLinkProps,
 } from "react-router";
 import { JamLink } from "./utils";
+import { DetailsMenu } from "~/ui/details-menu";
+import iconsHref from "~/icons.svg";
 
 export function Navbar({
   className,
@@ -32,8 +34,7 @@ export function Navbar({
         <JamLogo className="h-[48px] fill-white md:h-auto md:w-[200px]" />
       </Link>
 
-      {/* Center navigation links */}
-      <div className="flex items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg">
+      <div className="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg md:flex">
         <NavLink to="/jam/2025/setlist">Setlist</NavLink>
         <NavLink className="text-white" to="/jam/2025/code-of-conduct">
           Code of Conduct
@@ -44,12 +45,82 @@ export function Navbar({
       </div>
 
       {showTicketLink ? (
-        <JamLink to={href("/jam/2025/ticket")}>
+        <JamLink className="hidden md:flex" to={href("/jam/2025/ticket")}>
           <TicketLogo className="size-6 fill-current md:size-8" />
           <span>Ticket</span>
         </JamLink>
       ) : null}
+
+      {/* Mobile hamburger menu */}
+      <MobileMenu />
     </nav>
+  );
+}
+
+function MobileMenu() {
+  return (
+    <div className="md:hidden">
+      <DetailsMenu className="relative cursor-pointer">
+        <summary className="_no-triangle grid size-12 place-items-center rounded-full bg-white backdrop-blur-lg">
+          <svg className="size-6 text-black">
+            <use href={`${iconsHref}#menu`} />
+          </svg>
+        </summary>
+        <div className="absolute right-0 z-20 md:left-0">
+          <div className="top-1 p-1">
+            <nav className="flex flex-col gap-2 rounded-2xl bg-black/40 px-2 py-2.5 ring-1 ring-white/30 backdrop-blur-lg">
+              <MobileNavLink to="/jam/2025/setlist">Setlist</MobileNavLink>
+              <MobileNavLink to="/jam/2025/code-of-conduct">
+                Code of Conduct
+              </MobileNavLink>
+              <MobileNavLink to={href("/jam/2025/faq")}>FAQ</MobileNavLink>
+              <MobileNavLink to={href("/jam/2025/ticket")}>
+                Ticket
+              </MobileNavLink>
+            </nav>
+          </div>
+        </div>
+        {/* <DetailsPopup>
+          <nav className="flex flex-col gap-2 px-2 py-2.5">
+            <MobileNavLink to="/jam/2025/setlist">Setlist</MobileNavLink>
+            <MobileNavLink to="/jam/2025/code-of-conduct">
+              Code of Conduct
+            </MobileNavLink>
+            <MobileNavLink to={href("/jam/2025/faq")}>FAQ</MobileNavLink>
+            <MobileNavLink to={href("/jam/2025/ticket")}>
+              <div className="flex items-center gap-2">
+                <TicketLogo className="size-4 fill-current" />
+                <span>Ticket</span>
+              </div>
+            </MobileNavLink>
+          </nav>
+        </DetailsPopup> */}
+      </DetailsMenu>
+    </div>
+  );
+}
+
+function MobileNavLink({
+  to,
+  children,
+}: {
+  to: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <RRNavLink
+      to={to}
+      className={({ isActive }) =>
+        clsx(
+          "block min-w-max rounded-full border-2 px-4 py-2 text-lg font-bold text-white/80 transition-colors duration-300 focus-visible:border-white focus-visible:text-white focus-visible:outline-none",
+          isActive
+            ? "border-white text-white"
+            : "border-transparent hover:border-white hover:text-white",
+        )
+      }
+    >
+      {children}
+    </RRNavLink>
   );
 }
 
