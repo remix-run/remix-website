@@ -16,7 +16,7 @@ export function Title({
   return (
     <h1
       className={clsx(
-        "flex flex-col gap-2 text-3xl font-extrabold uppercase leading-none tracking-tight text-white md:text-8xl md:leading-none",
+        "flex flex-col gap-2 text-3xl font-extrabold uppercase leading-none tracking-tight text-white sm:text-5xl md:text-7xl md:leading-none lg:text-8xl",
         className,
       )}
       role="banner"

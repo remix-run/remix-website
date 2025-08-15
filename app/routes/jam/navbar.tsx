@@ -30,73 +30,56 @@ export function Navbar({
         background: `linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)`,
       }}
     >
-      <Link to="/jam/2025" className="flex items-center md:block">
+      <Link to={href("/jam/2025")} className="flex items-center md:block">
         <JamLogo className="h-[48px] fill-white md:h-auto md:w-[200px]" />
       </Link>
 
-      <div className="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg md:flex">
-        <NavLink to="/jam/2025/setlist">Setlist</NavLink>
-        <NavLink className="text-white" to="/jam/2025/code-of-conduct">
+      <div className="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg lg:flex">
+        <NavLink to={href("/jam/2025/lineup")}>Lineup</NavLink>
+        <NavLink className="text-white" to={href("/jam/2025/coc")}>
           Code of Conduct
         </NavLink>
-        <NavLink className="text-white" to="/jam/2025/faq">
+        <NavLink className="text-white" to={href("/jam/2025/faq")}>
           FAQ
         </NavLink>
       </div>
 
       {showTicketLink ? (
-        <JamLink className="hidden md:flex" to={href("/jam/2025/ticket")}>
+        <JamLink className="hidden lg:flex" to={href("/jam/2025/ticket")}>
           <TicketLogo className="size-6 fill-current md:size-8" />
           <span>Ticket</span>
         </JamLink>
       ) : null}
 
       {/* Mobile hamburger menu */}
-      <MobileMenu />
+      <div className="lg:hidden">
+        <MobileMenu />
+      </div>
     </nav>
   );
 }
 
 function MobileMenu() {
   return (
-    <div className="md:hidden">
-      <DetailsMenu className="relative cursor-pointer">
-        <summary className="_no-triangle grid size-12 place-items-center rounded-full bg-white backdrop-blur-lg">
-          <svg className="size-6 text-black">
-            <use href={`${iconsHref}#menu`} />
-          </svg>
-        </summary>
-        <div className="absolute right-0 z-20 md:left-0">
-          <div className="top-1 p-1">
-            <nav className="flex flex-col gap-2 rounded-2xl bg-black/40 px-2 py-2.5 ring-1 ring-white/30 backdrop-blur-lg">
-              <MobileNavLink to="/jam/2025/setlist">Setlist</MobileNavLink>
-              <MobileNavLink to="/jam/2025/code-of-conduct">
-                Code of Conduct
-              </MobileNavLink>
-              <MobileNavLink to={href("/jam/2025/faq")}>FAQ</MobileNavLink>
-              <MobileNavLink to={href("/jam/2025/ticket")}>
-                Ticket
-              </MobileNavLink>
-            </nav>
-          </div>
-        </div>
-        {/* <DetailsPopup>
-          <nav className="flex flex-col gap-2 px-2 py-2.5">
-            <MobileNavLink to="/jam/2025/setlist">Setlist</MobileNavLink>
-            <MobileNavLink to="/jam/2025/code-of-conduct">
+    <DetailsMenu className="relative cursor-pointer">
+      <summary className="_no-triangle grid size-12 place-items-center rounded-full bg-white text-black backdrop-blur-lg transition-colors duration-300 hover:bg-blue-brand hover:text-white [[open]>&]:bg-blue-brand [[open]>&]:text-white">
+        <svg className="size-6">
+          <use href={`${iconsHref}#menu`} />
+        </svg>
+      </summary>
+      <div className="absolute right-0 z-20 lg:left-0">
+        <div className="top-1 p-1">
+          <nav className="flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg">
+            <MobileNavLink to={href("/jam/2025/lineup")}>Lineup</MobileNavLink>
+            <MobileNavLink to={href("/jam/2025/coc")}>
               Code of Conduct
             </MobileNavLink>
             <MobileNavLink to={href("/jam/2025/faq")}>FAQ</MobileNavLink>
-            <MobileNavLink to={href("/jam/2025/ticket")}>
-              <div className="flex items-center gap-2">
-                <TicketLogo className="size-4 fill-current" />
-                <span>Ticket</span>
-              </div>
-            </MobileNavLink>
+            <MobileNavLink to={href("/jam/2025/ticket")}>Ticket</MobileNavLink>
           </nav>
-        </DetailsPopup> */}
-      </DetailsMenu>
-    </div>
+        </div>
+      </div>
+    </DetailsMenu>
   );
 }
 
@@ -112,10 +95,10 @@ function MobileNavLink({
       to={to}
       className={({ isActive }) =>
         clsx(
-          "block min-w-max rounded-full border-2 px-4 py-2 text-lg font-bold text-white/80 transition-colors duration-300 focus-visible:border-white focus-visible:text-white focus-visible:outline-none",
+          "block min-w-max rounded-full border-2 px-4 py-2 text-lg font-bold outline-none transition-colors duration-300",
           isActive
             ? "border-white text-white"
-            : "border-transparent hover:border-white hover:text-white",
+            : "border-transparent text-white/70 hover:border-white hover:text-white focus-visible:border-white focus-visible:text-white",
         )
       }
     >
@@ -147,10 +130,10 @@ function NavLink({ className, children, ...props }: NavLinkProps) {
     <RRNavLink
       className={({ isActive }) =>
         clsx(
-          "rounded-full border-2 px-5 py-0.5 text-base font-bold text-white/80 transition-colors duration-300 md:border-4 md:py-3 md:text-xl",
+          "rounded-full border-2 px-5 py-0.5 text-base font-bold outline-none transition-colors duration-300 md:border-4 md:py-3 md:text-xl",
           isActive
             ? "border-white text-white"
-            : "border-transparent hover:border-white hover:text-white",
+            : "border-transparent text-white/70 hover:border-white hover:text-white focus-visible:border-white focus-visible:text-white",
           className,
         )
       }
