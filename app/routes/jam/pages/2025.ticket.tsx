@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { useLayoutEffect } from "~/ui/primitives/utils";
-import { Navbar } from "../navbar";
 import { Title, SectionLabel, InfoText, ScrambleText } from "../text";
 import { JamButton } from "../utils";
 import { redirect, useFetcher } from "react-router";
@@ -68,34 +67,31 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
   const { price, productId, title, text, imageSrc, maxQuantity } = loaderData;
 
   return (
-    <>
-      <Navbar className="z-40" />
-      <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]">
-        <Title>
-          <ScrambleText
-            className="whitespace-nowrap"
-            text={title}
-            delay={100}
-            charDelay={70}
-            cyclesToResolve={8}
-            color="blue"
-          />
-          <ScrambleText text="ticket" delay={300} color="green" />
-        </Title>
-
-        <SectionLabel>this ticket for illustration purposes only</SectionLabel>
-
-        <Ticket title={title} imageSrc={imageSrc} />
-
-        <TicketPurchase
-          price={price}
-          productId={productId}
-          availableForSale={loaderData.availableForSale}
-          maxQuantity={maxQuantity}
+    <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]">
+      <Title>
+        <ScrambleText
+          className="whitespace-nowrap"
+          text={title}
+          delay={100}
+          charDelay={70}
+          cyclesToResolve={8}
+          color="blue"
         />
-        <InfoText>{text}</InfoText>
-      </main>
-    </>
+        <ScrambleText text="ticket" delay={300} color="green" />
+      </Title>
+
+      <SectionLabel>this ticket for illustration purposes only</SectionLabel>
+
+      <Ticket title={title} imageSrc={imageSrc} />
+
+      <TicketPurchase
+        price={price}
+        productId={productId}
+        availableForSale={loaderData.availableForSale}
+        maxQuantity={maxQuantity}
+      />
+      <InfoText>{text}</InfoText>
+    </main>
   );
 }
 

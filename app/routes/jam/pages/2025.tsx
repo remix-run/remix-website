@@ -5,7 +5,6 @@ import { getSubscribeStatus } from "~/ui/subscribe";
 import { AddressMain, usePrefersReducedMotion } from "../utils";
 import { clsx } from "clsx";
 import { Keepsakes } from "../keepsakes";
-import { Navbar } from "../navbar";
 import { ScrambleText, SectionLabel, Title, InfoText } from "../text";
 import ogImageSrc from "../images/og-thumbnail-1.jpg";
 
@@ -29,8 +28,6 @@ export function meta({ matches }: Route.MetaArgs) {
 export default function RemixJam2025() {
   return (
     <>
-      <Navbar className="z-40" showTicketLink />
-
       <div className="relative z-30">
         <Keepsakes />
       </div>

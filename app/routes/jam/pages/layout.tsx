@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { useId, useRef } from "react";
 import { clsx } from "clsx";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
+import { Navbar } from "../navbar";
 
 import type { Route } from "./+types/layout";
 
@@ -43,6 +44,7 @@ export default function JamLayout() {
   return (
     <div className="relative overflow-x-hidden px-6">
       <Background>
+        <Navbar className="z-40" />
         <Outlet />
         <Footer className="relative z-20" />
       </Background>

@@ -9,17 +9,7 @@ import { JamLink } from "./utils";
 import { DetailsMenu } from "~/ui/details-menu";
 import iconsHref from "~/icons.svg";
 
-export function Navbar({
-  className,
-  showTicketLink = true,
-}: {
-  className?: string;
-  /**
-   * boolean to show/hide the ticket link on the far left
-   * generally this is a bad API, but for this simple page difference it's fine
-   */
-  showTicketLink?: boolean;
-}) {
+export function Navbar({ className }: { className?: string }) {
   return (
     <nav
       className={clsx(
@@ -44,12 +34,10 @@ export function Navbar({
         </NavLink>
       </div>
 
-      {showTicketLink ? (
-        <JamLink className="hidden lg:flex" to={href("/jam/2025/ticket")}>
-          <TicketLogo className="size-6 fill-current md:size-8" />
-          <span>Ticket</span>
-        </JamLink>
-      ) : null}
+      <JamLink className="hidden lg:flex" to={href("/jam/2025/ticket")}>
+        <TicketLogo className="size-6 fill-current md:size-8" />
+        <span>Ticket</span>
+      </JamLink>
 
       {/* Mobile hamburger menu */}
       <div className="lg:hidden">
