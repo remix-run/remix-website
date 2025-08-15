@@ -50,51 +50,11 @@ export default function JamLayout() {
   );
 }
 
-// FIXME: the background animation is not very performant, so commented out until we have time to debug
-
 function Background({ children }: { children: React.ReactNode }) {
   // const prefersReducedMotion = usePrefersReducedMotion();
   let colorMatrixRef = useRef<SVGFEColorMatrixElement>(null);
   // let rafIdRef = useRef<number>(0);
   let filterId = useId();
-
-  // Effect runs once on mount to start an animation loop that continuously
-  // cycles the hue rotation of the SVG filter over 2500ms.
-  // useEffect(() => {
-  //   if (prefersReducedMotion) return; // Bail if user prefers reduced motion
-
-  //   let colorMatrix = colorMatrixRef.current;
-  //   if (!colorMatrix) return;
-
-  //   let startTime: number | null = null;
-  //   let duration = 2500;
-  //   let maxValue = 360;
-
-  //   // Animation frame handler: Calculates elapsed time, determines the current
-  //   // hue value (0-360) based on the 2500ms cycle, and directly updates the
-  //   // 'values' attribute of the feColorMatrix element.
-  //   let animate = (timestamp: number) => {
-  //     if (startTime === null) {
-  //       startTime = timestamp;
-  //     }
-
-  //     let elapsed = timestamp - startTime;
-  //     let progress = (elapsed % duration) / duration;
-  //     let currentValue = Math.floor(progress * maxValue);
-
-  //     if (colorMatrixRef.current) {
-  //       colorMatrixRef.current.setAttribute("values", String(currentValue));
-  //     }
-
-  //     rafIdRef.current = requestAnimationFrame(animate);
-  //   };
-
-  //   rafIdRef.current = requestAnimationFrame(animate);
-
-  //   return () => {
-  //     cancelAnimationFrame(rafIdRef.current);
-  //   };
-  // }, [prefersReducedMotion]);
 
   return (
     <>
