@@ -3,7 +3,7 @@ import { ScrambleText, Title, Subheader, Paragraph } from "../text";
 import { getMeta } from "~/lib/meta";
 import ogImageSrc from "../images/og-thumbnail-1.jpg";
 
-import type { Route } from "./+types/2025.faq";
+import type { Route } from "./+types/2025.coc";
 
 export function meta({ matches }: Route.MetaArgs) {
   const [rootMatch] = matches;
