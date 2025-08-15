@@ -21,7 +21,7 @@ export function meta({ matches }: Route.MetaArgs) {
   let image = `${siteUrl}${ogImageSrc}`;
 
   return getMeta({
-    title: "Remix Jam 2025 Ticket",
+    title: "Ticket | Remix Jam 2025",
     description: "Get your ticket for Remix Jam 2025 in Toronto",
     siteUrl: `${siteUrl}/jam/ticket`,
     image,

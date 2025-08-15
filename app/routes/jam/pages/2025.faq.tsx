@@ -16,7 +16,7 @@ export function meta({ matches }: Route.MetaArgs) {
   let image = `${siteUrl}${ogImageSrc}`;
 
   return getMeta({
-    title: "Remix Jam 2025",
+    title: "FAQ | Remix Jam 2025",
     description: "It's time to get the band back together",
     siteUrl: `${siteUrl}/jam`,
     image,
@@ -40,7 +40,7 @@ export default function JamFAQPage() {
           <ScrambleText text="Questions" delay={300} color="green" />
         </Title>
 
-        <div className="relative z-10 text-base text-white md:text-lg">
+        <div className="relative z-10 text-justify text-base text-white md:text-lg">
           <FAQSection
             question="Where can I find the event lineup?"
             answer="Our lineup will be announced in July with a range of speakers and topics. Be sure to sign up for the Remix Newsletter to get notified when it's announced!"
