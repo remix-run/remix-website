@@ -14,7 +14,6 @@ export function meta({ matches }: Route.MetaArgs) {
   return getMeta({
     title: "Code of Conduct | Remix Jam 2025",
     description: "Adapted from confcodeofconduct.com",
-
     siteUrl: `${siteUrl}/jam`,
     image,
   });
