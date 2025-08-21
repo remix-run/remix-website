@@ -47,7 +47,7 @@ jobs:
 
       - name: 🚀 Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: flyctl deploy --remote-only --config ./fly.production.toml --build-arg SOURCE_REPO="remix-run/remix" --build-arg RELEASE_PACKAGE="remix" --strategy rolling
+        run: flyctl deploy --remote-only --config ./fly.production.toml --strategy rolling
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 

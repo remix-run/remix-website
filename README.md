@@ -31,15 +31,11 @@ Now you should be good to go:
 npm run dev
 ```
 
-To preview local changes to the `docs` folder in the Remix repo, select "local" from the version dropdown menu on the site. Make sure you have the [remix repo](https://github.com/remix-run/remix) cloned locally and `LOCAL_REPO_RELATIVE_PATH` is pointed to the correct filepath.
-
 We leverage a number of LRUCache's to server-side cache various resources, such as processed markdown from GitHub, that expire at various times (usually after 5 minutes). If you want them to expire immediately for local development, set the `NO_CACHE` environment variable.
 
 ```sh
 NO_CACHE=1 npm run dev
 ```
-
-Note that by default this assumes the relative path to your local copy of the Remix docs is `../remix/docs`. This can be configured via `LOCAL_REPO_RELATIVE_PATH` in your `.env` file.
 
 ## Preview
 
@@ -114,9 +110,3 @@ We want to use Tailwind's default classes as much as possible to avoid a large C
 - Avoid changing anything but the theme in `tailwind.config.js`, no special classes, etc.
 - Avoid "inline rules" like `color-[#ccc]` as much as possible.
 - Silly HTML (like a wrapper div to add padding on a container) is better than one-off css rules.
-
-## Algolia Search
-
-We use [DocSearch](https://docsearch.algolia.com/) by Algolia for our documentation's search. The site is automatically scraped and indexed weekly by the [Algolia Crawler](https://crawler.algolia.com/).
-
-If the doc search results ever seem outdated or incorrect be sure to check that the crawler isn't blocked. If it is, it might just need to be canceled and restarted to kick things off again. There is also an editor in the Crawler admin that lets you adjust the crawler's script if needed.
