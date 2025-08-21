@@ -78,6 +78,22 @@ export const unstable_middleware: Route.unstable_MiddlewareFunction[] = [
   redirectOldDocs,
 ];
 
+import { redirect } from "react-router";
+import type { Route } from "./+types/root";
+
+const v2DocsMiddleware: Route.unstable_MiddlewareFunction = ({ request }) => {
+  const { pathname } = new URL(request.url);
+
+  const segments = pathname.split("/").slice(1);
+  if (segments[0] !== "docs") return;
+
+  throw redirect("https://v2.remix.run/docs");
+};
+
+export const unstable_middleware: Route.unstable_MiddlewareFunction[] = [
+  v2DocsMiddleware,
+];
+
 export async function loader({ request }: LoaderFunctionArgs) {
   removeTrailingSlashes(request);
 
