@@ -1,6 +1,5 @@
 import { handleRedirects } from "~/lib/http.server";
-import { data, redirect } from "react-router";
-import { getRepoDoc } from "~/lib/gh-docs";
+import { data } from "react-router";
 import type { Route } from "./+types/$";
 
 // We use the catch-all route to attempt to find a doc for the given path. If a
@@ -52,18 +51,6 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   // throw data({ butts: true }, { status: 401 });
   handleRedirects(new URL(request.url).pathname);
   handleStaticFileRequests(params["*"]);
-
-  try {
-    let ref = "main";
-    let lang = "en";
-    let doc = await getRepoDoc(ref, `docs/${params["*"]}`);
-    if (!doc) throw null;
-    // FIXME: This results in two fetches, as the loader for the docs page will
-    // repeat the request cycle. This isn't a problem if the doc is in the LRU
-    // cache but we should probably fix it anyway.
-    return redirect(`/docs/${lang}/${ref}/${params["*"]}`);
-    // eslint-disable-next-line no-empty -- should probably do something here
-  } catch {}
   throw data({}, { status: 404 });
 };
 
