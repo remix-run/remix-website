@@ -74,9 +74,15 @@ export function meta({ data, matches, params }: Route.MetaArgs) {
   let titleAppend =
     currentGitHubRef === releaseBranch || currentGitHubRef === latestVersion
       ? ""
-      : branches.includes(currentGitHubRef)
+      : // @ts-expect-error `routes/docs.ts` now handles all traffic to `/docs/*` via redirects
+        // causing `branches` to be typed as `never`.
+        // That's fine since this route isn't active and we plan to remove it soon anyway
+        branches.includes(currentGitHubRef)
         ? ` (${currentGitHubRef} branch)`
-        : currentGitHubRef.startsWith("v")
+        : // @ts-expect-error `routes/docs.ts` now handles all traffic to `/docs/*` via redirects
+          // causing `currentGitHubRef` to be typed as `never`.
+          // That's fine since this route isn't active and we plan to remove it soon anyway
+          currentGitHubRef.startsWith("v")
           ? ` (${currentGitHubRef})`
           : ` (v${currentGitHubRef})`;
 
