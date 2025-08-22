@@ -10,7 +10,6 @@ import {
   useMatches,
   useRouteError,
   data,
-  redirect,
 } from "react-router";
 import type { LoaderFunctionArgs } from "react-router";
 import {
@@ -26,69 +25,6 @@ import iconsHref from "~/icons.svg";
 import cx from "clsx";
 import { canUseDOM } from "./ui/primitives/utils";
 import { GlobalLoading } from "./ui/global-loading";
-import { Route } from "./+types/root";
-
-/**
- * In preparation for using `remix` repo's `main` branch for v3 development,
- * we've deployed the latest v2 docs at https://v2.remix.run/docs .
- * Docs for specific versions of v0, v1, and v2 can be found on the `remix` repo within the `docs/` folder at the corresponding GitHub tag for that version.
- *
- * This middleware redirects requests for specific v0,v1, or v2 versions of the docs to GitHub
- * and redirects requests for `main` and `dev` to the new static v2 docs site (https://v2.remix.run/docs).
- */
-const v2DocsMiddleware: Route.unstable_MiddlewareFunction = ({ request }) => {
-  // https://github.com/remix-run/remix/tree/remix%402.17.0/docs
-  const { pathname } = new URL(request.url);
-
-  const segments = pathname.split("/").slice(1);
-  if (segments[0] !== "docs") return;
-
-  const [lang, ref, ...path] = segments.slice(1);
-  const doc = path.length > 0 ? path.join("/") + ".md" : "";
-
-  if (lang === "en") {
-    // /docs/en/v0.x -> github
-    // /docs/en/v1.x -> github
-    if (ref.startsWith("v0.") || ref.startsWith("v1.")) {
-      // We switched from `vx.y.z` tags to `remix@x.y.z` after v1.6.4 release
-      // So here we use leading `v` in docs ref to detect that older tag format
-      //
-      // See:
-      // - https://remix.run/docs/en/v1.6.4
-      // - https://remix.run/docs/en/1.6.5
-      //
-      // - https://github.com/remix-run/remix/releases/tag/v1.6.4
-      // - https://github.com/remix-run/remix/releases/tag/remix%401.6.5
-
-      // todo: remove leading `v` from newer versions like v1.6.5??
-      throw redirect(
-        `https://github.com/remix-run/remix/tree/${ref}/docs/${doc}`,
-      );
-    }
-
-    // /docs/en/0.x -> github
-    // /docs/en/1.x -> github
-    // /docs/en/2.x -> github
-    if (ref.startsWith("0.") || ref.startsWith("1.") || ref.startsWith("2.")) {
-      throw redirect(
-        `https://github.com/remix-run/remix/tree/remix%40${ref}/docs/${doc}`,
-      );
-    }
-
-    // /docs/en/main -> v2.remix.run
-    // /docs/en/dev -> v2.remix.run
-    if (ref === "main" || ref === "dev") {
-      throw redirect(`https://v2.remix.run/docs/${doc}`);
-    }
-
-    // /docs/* -> v2.remix.run
-    throw redirect(`https://v2.remix.run${pathname}`);
-  }
-};
-
-export const unstable_middleware: Route.unstable_MiddlewareFunction[] = [
-  v2DocsMiddleware,
-];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   removeTrailingSlashes(request);
