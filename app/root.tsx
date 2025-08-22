@@ -10,12 +10,15 @@ import {
   useMatches,
   useRouteError,
   data,
+  redirect,
 } from "react-router";
 import type { LoaderFunctionArgs } from "react-router";
+import semver from "semver";
 import {
   load as loadFathom,
   type LoadOptions as FathomLoadOptions,
 } from "fathom-client";
+
 import "~/styles/tailwind.css";
 import "~/styles/bailwind.css";
 import { removeTrailingSlashes, isProductionHost } from "~/lib/http.server";
@@ -25,6 +28,55 @@ import iconsHref from "~/icons.svg";
 import cx from "clsx";
 import { canUseDOM } from "./ui/primitives/utils";
 import { GlobalLoading } from "./ui/global-loading";
+import { type Route } from "./+types/root";
+
+const redirectOldDocs: Route.unstable_MiddlewareFunction = ({ request }) => {
+  const { pathname } = new URL(request.url);
+
+  if (pathname === "/docs") {
+    throw redirect(`https://v2.remix.run/docs`);
+  }
+
+  if (!pathname.startsWith("/docs/")) {
+    return;
+  }
+
+  const fullPathWithoutDocs = pathname.split("/").slice(2);
+  const [lang, ref, ...path] = fullPathWithoutDocs;
+
+  if (lang === "en") {
+    // Redirect specific versions to GitHub docs at the corresponding tag
+    const version = semver.clean(ref);
+    if (version !== null) {
+      // We switched from `v.x.y.z` to `remix@x.y.z` GitHub tags starting at v1.6.5
+      const tag = semver.lte(version, "1.6.4")
+        ? `v${version}`
+        : `remix@${version}`;
+
+      const markdownDoc = path.length > 0 ? path.join("/") + ".md" : "";
+      throw redirect(
+        `https://github.com/remix-run/remix/tree/${encodeURIComponent(tag)}/docs/${markdownDoc}`,
+      );
+    }
+
+    // /docs/en/<branch>/* -> v2.remix.run/docs/*
+    if (ref === "main" || ref === "dev") {
+      throw redirect(`https://v2.remix.run/docs/${path.join("/")}`);
+    }
+
+    // Fallback: /docs/en/* -> v2.remix.run/docs/*
+    throw redirect(`https://v2.remix.run/docs/${ref}/${path.join("/")}`);
+  } else {
+    // Fallback /docs/* -> v2.remix.run/docs/*
+    throw redirect(
+      `https://v2.remix.run/docs/${fullPathWithoutDocs.join("/")}`,
+    );
+  }
+};
+
+export const unstable_middleware: Route.unstable_MiddlewareFunction[] = [
+  redirectOldDocs,
+];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   removeTrailingSlashes(request);
