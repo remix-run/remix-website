@@ -74,8 +74,17 @@ const redirectOldDocs: Route.unstable_MiddlewareFunction = ({ request }) => {
   }
 };
 
+const redirectResources: Route.unstable_MiddlewareFunction = ({ request }) => {
+  const { pathname, search } = new URL(request.url);
+
+  if (pathname === "/resources" || pathname.startsWith("/resources/")) {
+    throw redirect(`https://v2.remix.run/${pathname + search}`);
+  }
+};
+
 export const unstable_middleware: Route.unstable_MiddlewareFunction[] = [
   redirectOldDocs,
+  redirectResources,
 ];
 
 export async function loader({ request }: LoaderFunctionArgs) {
