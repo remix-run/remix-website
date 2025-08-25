@@ -15,9 +15,6 @@ const envSchema = z.object({
   // Get from https://app.convertkit.com/account_settings/advanced_settings
   CONVERTKIT_KEY: z.string().optional().superRefine(requiredInProduction),
 
-  // A token to increase the rate limiting from 60/hr to 1000/hr
-  GITHUB_TOKEN: z.string().optional().superRefine(requiredInProduction),
-
   NO_CACHE: z.coerce.boolean().default(false),
 
   PUBLIC_STOREFRONT_API_TOKEN: z.string().optional(),
