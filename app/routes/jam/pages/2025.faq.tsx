@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { Link } from "react-router";
 import { AddressLink } from "../utils";
 import { ScrambleText, Title, Subheader, Paragraph } from "../text";
@@ -159,17 +158,34 @@ export default function JamFAQPage() {
 
         <FAQSection
           question="What's the refund policy?"
-          answer="There are no refunds, but tickets will be transferable."
+          answer="There are no refunds, but tickets are transferable."
+        />
+
+        <FAQSection
+          question="How do I get an invoice for tax purposes?"
+          answer={
+            <Paragraph>
+              Please email <JamEmail /> for invoice requests.
+            </Paragraph>
+          }
         />
 
         <FAQSection
           question="How do I transfer a ticket?"
-          answer="Ask Brooks!"
+          answer={
+            <Paragraph>
+              Please email <JamEmail /> for ticket transfer requests.
+            </Paragraph>
+          }
         />
 
         <FAQSection
           question="What if I have other questions?"
-          answer="You guessed it, ask Brooks!"
+          answer={
+            <Paragraph>
+              You guessed it, email <JamEmail />.
+            </Paragraph>
+          }
         />
       </div>
     </main>
@@ -197,37 +213,15 @@ function FAQSection({
           {question}
         </Link>
       </Subheader>
-      {typeof answer === "string" ? (
-        <Paragraph>{replaceBrooksWithLink(answer)}</Paragraph>
-      ) : (
-        answer
-      )}
+      {typeof answer === "string" ? <Paragraph>{answer}</Paragraph> : answer}
     </section>
   );
 }
 
-// Really wanting RSC right now
-function replaceBrooksWithLink(children: React.ReactNode): React.ReactNode {
-  if (typeof children !== "string") return children;
-
-  const parts = children.split("Brooks");
-  if (parts.length === 1) return children;
-
+function JamEmail() {
   return (
-    <>
-      {parts.map((part, index) => (
-        <Fragment key={index}>
-          {part}
-          {index < parts.length - 1 ? (
-            <a
-              className="text-blue-400 hover:underline"
-              href="mailto:brooks.lybrand@shopify.com"
-            >
-              Brooks
-            </a>
-          ) : null}
-        </Fragment>
-      ))}
-    </>
+    <a href="mailto:jam@remix.run" className="text-blue-400 hover:underline">
+      jam@remix.run
+    </a>
   );
 }
