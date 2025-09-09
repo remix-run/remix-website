@@ -25,7 +25,7 @@ export function Navbar({ className }: { className?: string }) {
       </Link>
 
       <div className="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg lg:flex">
-        <NavLink to={href("/jam/2025/lineup")}>Lineup</NavLink>
+        <NavLink to={href("/jam/2025/lineup")}>Schedule & Lineup</NavLink>
         <NavLink className="text-white" to={href("/jam/2025/coc")}>
           Code of Conduct
         </NavLink>
