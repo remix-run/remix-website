@@ -13,18 +13,14 @@ const speakerImageModules = import.meta.glob(
   { eager: true, query: "?url", import: "default" },
 );
 
-function getFilename(path: string) {
-  let match = path.split("/").at(-1);
-  return match ?? "";
-}
-
 const imageUrlByKey = new Map(
   Object.entries(speakerImageModules).map(([path, url]) => {
     invariant(
       typeof url === "string",
       `Speaker image "${path}" is not a string. Please check the speakers file.`,
     );
-    return [getFilename(path), url];
+    let match = path.split("/").at(-1) ?? "";
+    return [match, url];
   }),
 );
 
@@ -44,45 +40,23 @@ const scheduleItemRawSchema = z.object({
   time: z.string(),
   title: z.string(),
   type: z.literal("talk").optional(),
-  content: z.string().optional(),
+  description: z.string().optional(),
 });
 
-const combinedDataSchema = z.object({
-  speakers: z.array(z.object({ name: z.string(), imgSrc: z.string() })),
-  talks: z.array(
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      descriptionHTML: z.string(),
-      bio: z.string().optional(),
-      bioHTML: z.string().optional(),
-      speakers: z.array(z.string()),
-    }),
-  ),
-  schedule: z.array(
-    z.union([
-      z.object({
-        type: z.literal("simple"),
-        time: z.string(),
-        titleHTML: z.string(),
-        contentHTML: z.string(),
-      }),
-      z.object({
-        type: z.literal("talk"),
-        time: z.string(),
-        titleHTML: z.string(),
-        contentHTML: z.string(),
-        bioHTML: z.string().optional(),
-        talkTitle: z.string(),
-        speakers: z.array(z.object({ name: z.string(), imgSrc: z.string() })),
-      }),
-    ]),
-  ),
-});
+type Schedule = Array<
+  | { type: "simple"; time: string; title: string; description: string }
+  | {
+      type: "talk";
+      time: string;
+      title: string;
+      description: string;
+      bio?: string;
+      talkTitle: string;
+      speakers: Array<{ name: string; imgSrc: string }>;
+    }
+>;
 
-type CombinedData = z.infer<typeof combinedDataSchema>;
-
-let cache = new LRUCache<string, CombinedData>({
+let cache = new LRUCache<string, Schedule>({
   max: 250,
   maxSize: 1024 * 1024 * 12, // 12 mb
   sizeCalculation(value, key) {
@@ -108,29 +82,21 @@ async function loadSpeakers() {
 async function loadTalks() {
   const rawUnknown = yaml.parse(talksYamlFileContents);
   const raw = z.array(talkRawSchema).parse(rawUnknown);
-  const talks: Array<{
-    title: string;
-    description: string;
-    descriptionHTML: string;
-    bio?: string;
-    bioHTML?: string;
-    speakers: Array<string>;
-  }> = [];
-  for (const t of raw) {
-    const [{ html: descriptionHTML }, { html: bioHTML }] = await Promise.all([
-      processMarkdown(t.description),
-      processMarkdown(t.bio ?? ""),
-    ]);
-    talks.push({
-      title: t.title,
-      description: t.description,
-      descriptionHTML,
-      bio: t.bio,
-      bioHTML: t.bio ? bioHTML : undefined,
-      speakers: t.speakers,
-    });
-  }
-  return talks;
+
+  return await Promise.all(
+    raw.map(async (t) => {
+      const [{ html: descriptionHTML }, { html: bio }] = await Promise.all([
+        processMarkdown(t.description),
+        processMarkdown(t.bio ?? ""),
+      ]);
+      return {
+        title: t.title,
+        description: descriptionHTML,
+        bio: t.bio ? bio : undefined,
+        speakers: t.speakers,
+      } as const;
+    }),
+  );
 }
 
 async function loadScheduleRaw() {
@@ -138,7 +104,7 @@ async function loadScheduleRaw() {
   return z.array(scheduleItemRawSchema).parse(rawUnknown);
 }
 
-export async function getSchedule(): Promise<CombinedData> {
+export async function getSchedule(): Promise<Schedule> {
   const cached = cache.get("jam:schedule");
   if (cached) return cached;
 
@@ -151,52 +117,47 @@ export async function getSchedule(): Promise<CombinedData> {
   const speakersByName = new Map(speakers.map((s) => [s.name, s]));
   const talksByTitle = new Map(talks.map((t) => [t.title, t]));
 
-  const schedule: CombinedData["schedule"] = [];
-
-  for (const item of scheduleRaw) {
-    if (item.type === "talk") {
-      const talk = talksByTitle.get(item.title);
-      invariant(
-        talk,
-        `schedule item references talk "${item.title}" which does not exist`,
-      );
-
-      const speakersExpanded = talk.speakers.map((name) => {
-        const s = speakersByName.get(name);
+  const schedule: Schedule = await Promise.all(
+    scheduleRaw.map(async (item) => {
+      if (item.type === "talk") {
+        const talk = talksByTitle.get(item.title);
         invariant(
-          s,
-          `Talk "${talk.title}" references speaker "${name}" which does not exist`,
+          talk,
+          `schedule item references talk "${item.title}" which does not exist`,
         );
-        return s;
-      });
 
-      const { html: titleHTML } = await processMarkdown(talk.title);
+        const speakersExpanded = talk.speakers.map((name) => {
+          const speaker = speakersByName.get(name);
+          invariant(
+            speaker,
+            `Talk "${talk.title}" references speaker "${name}" which does not exist`,
+          );
+          return speaker;
+        });
 
-      schedule.push({
-        type: "talk",
+        return {
+          type: "talk" as const,
+          time: item.time,
+          title: item.title,
+          description: talk.description,
+          bio: talk.bio,
+          talkTitle: talk.title,
+          speakers: speakersExpanded,
+        };
+      }
+
+      const { html: description } = await processMarkdown(
+        item.description ?? "",
+      );
+      return {
+        type: "simple" as const,
         time: item.time,
-        titleHTML,
-        contentHTML: talk.descriptionHTML,
-        bioHTML: talk.bioHTML,
-        talkTitle: talk.title,
-        speakers: speakersExpanded,
-      });
-      continue;
-    }
+        title: item.title,
+        description,
+      };
+    }),
+  );
 
-    const [{ html: titleHTML }, { html: contentHTML }] = await Promise.all([
-      processMarkdown(item.title),
-      processMarkdown(item.content ?? ""),
-    ]);
-    schedule.push({
-      type: "simple",
-      time: item.time,
-      titleHTML,
-      contentHTML,
-    });
-  }
-
-  const result = combinedDataSchema.parse({ speakers, talks, schedule });
-  cache.set("jam:schedule", result);
-  return result;
+  cache.set("jam:schedule", schedule);
+  return schedule;
 }

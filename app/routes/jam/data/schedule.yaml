@@ -1,6 +1,6 @@
 - time: "8:30 AM - 10:00 AM"
   title: "Registration/Breakfast"
-  content: You'll eat food
+  description: You'll eat food
 
 - time: "10:30 AM - 11:10 AM"
   title: "Interactive MCP with React Router"
@@ -20,4 +20,4 @@
 
 - time: "5:00 PM - 9:00 PM"
   title: "Social Hour"
-  content: You'll eat food
+  description: You'll eat food
