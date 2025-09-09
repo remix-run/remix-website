@@ -25,11 +25,11 @@ When we set out to evolve Remix, we expected it to become a full-stack, RSC-firs
 
 But something unexpected happened along the way: React Router v7 became really, really good.
 
-Thanks to the work on RSC support in React Router, we now have a smooth, incremental adoption path that supports returning server components directly from loaders and actions. We even built a first-class story for server-only routes — something we originally imagined as part of Remix's next chapter.
+Thanks to the work on RSC support in React Router, we now have a smooth, incremental adoption path that supports returning server components directly from loaders and actions. We even built a first-class story for server-only routes, which is something we originally imagined as part of Remix's next chapter.
 
 If all your routes are server routes, React Router v7 already feels a lot like where Remix was headed. The differences are subtle, not structural.
 
-And it's not just technically solid — it's battle-tested. React Router now powers apps at Shopify, X.com, GitHub, ChatGPT, Linear, T3Chat, and countless others, including nearly 11 million GitHub projects. It's just one minor release away from fully supporting the complete React architecture. It has a dedicated team, long-term backing, and an [open governance model](https://github.com/remix-run/react-router/blob/main/GOVERNANCE.md) to keep it growing for years to come.
+And it's not just technically solid, it's battle-tested! React Router now powers apps at Shopify, X.com, GitHub, ChatGPT, Linear, T3Chat, and countless others, including nearly 11 million GitHub projects. It's just one minor release away from fully supporting the complete React architecture. It has a dedicated team, long-term backing, and an [open governance model](https://github.com/remix-run/react-router/blob/main/GOVERNANCE.md) to keep it growing for years to come.
 
 So what does that mean for Remix?
 
@@ -37,19 +37,19 @@ It means we're free to go build what comes next.
 
 ## A New Path
 
-Over the past few years, the web platform has made remarkable progress — and so have the tools we use to build on it. But as much as we've gained, we've also seen complexity grow in ways that feel… heavy. At times, modern web development can feel more like navigating a toolchain than building for the web.
+Over the past few years, the web platform has made remarkable progress, and so have the tools we use to build on it. But as much as we've gained, we've also seen complexity grow in ways that feel… heavy. At times, modern web development can feel more like navigating a toolchain than building for the web.
 
 We've had ideas that felt too disruptive to pursue in the past. But with Remix no longer tied to a specific paradigm, we have the freedom to explore them.
 
-Remix v3 is a reimagining of what a web framework can be — a fresh foundation shaped by decades of experience building for the web. Our focus is on simplicity, clarity, and performance, without giving up the power developers need.
+Remix 3 is a reimagining of what a web framework can be; a fresh foundation shaped by decades of experience building for the web. Our focus is on simplicity, clarity, and performance, without giving up the power developers need.
 
-It's a modular toolkit that works well together but can also stand on its own — from first-class database drivers to a built-in component library (time to wake up Reach UI too!).
+It's a modular toolkit that works well together but can also stand on its own, from first-class database drivers to a built-in component library (time to wake up Reach UI too!).
 
-This isn't just a new version — it's a new direction. One that's faster, simpler, and closer to the web itself.
+This isn't just a new version, it's a new direction. One that's faster, simpler, and closer to the web itself.
 
-To do that, we need to own the full stack — without leaning on layers of abstraction we don't control. That means no critical dependencies, not even React. We're starting with a fork of Preact, a mature virtual DOM library already used heavily at Shopify, Google, and countless others.
+To do that, we need to own the full stack without leaning on layers of abstraction we don't control. That means no critical dependencies, not even React. ~~We're starting with a fork of Preact, a mature virtual DOM library already used heavily at Shopify, Google, and countless others.~~
 
-If you've ever wished for a development experience that feels lighter, faster, and more aligned with how the web works, Remix v3 is being built for you.
+If you've ever wished for a development experience that feels lighter, faster, and more aligned with how the web works, Remix 3 is being built for you.
 
 ## Principles
 
