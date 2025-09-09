@@ -47,7 +47,7 @@ It's a modular toolkit that works well together but can also stand on its own, f
 
 This isn't just a new version, it's a new direction. One that's faster, simpler, and closer to the web itself.
 
-To do that, we need to own the full stack without leaning on layers of abstraction we don't control. That means no critical dependencies, not even React. ~~We're starting with a fork of Preact, a mature virtual DOM library already used heavily at Shopify, Google, and countless others.~~
+To do that, we need to own the full stack without leaning on layers of abstraction we don't control. That means no critical dependencies, not even React. ~~We're starting with a fork of Preact, a mature virtual DOM library already used heavily at Shopify, Google, and countless others.~~ Instead, we're building our own component model that feels closer to the web than anything we've seen before.
 
 If you've ever wished for a development experience that feels lighter, faster, and more aligned with how the web works, Remix 3 is being built for you.
 
