@@ -7,6 +7,7 @@ import type { Route } from "./+types/2025.lineup";
 import { getSchedule } from "../schedule.server";
 import { ScrambleText, Title } from "../text";
 import { clsx } from "clsx";
+import iconsHref from "~/icons.svg";
 
 export async function loader() {
   let schedule = await getSchedule();
@@ -167,16 +168,10 @@ function ScheduleItem({
         </span>
         <div className="flex justify-end">
           <svg
-            className="h-5 w-5 text-white transition-transform group-open:rotate-180"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+            className="size-6 rotate-90 text-white transition-transform group-open:-rotate-90"
             aria-hidden="true"
           >
-            <path
-              fillRule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-              clipRule="evenodd"
-            />
+            <use href={`${iconsHref}#chevron-r`} />
           </svg>
         </div>
       </summary>
