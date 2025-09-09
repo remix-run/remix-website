@@ -51,7 +51,6 @@ type Schedule = Array<
       title: string;
       description: string;
       bio?: string;
-      talkTitle: string;
       speakers: Array<{ name: string; imgSrc: string }>;
     }
 >;
@@ -141,7 +140,6 @@ export async function getSchedule(): Promise<Schedule> {
           title: item.title,
           description: talk.description,
           bio: talk.bio,
-          talkTitle: talk.title,
           speakers: speakersExpanded,
         };
       }
