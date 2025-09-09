@@ -9,9 +9,11 @@
     pretty limited and bespoke because it's built case-by-case by ChatGPT 
     engineers.
 
+
     As we extend the model with more context and capabilities via MCP, we can 
     also extend it with a proper user interface using React Router and MCP UI 
     getting the best of both worlds. A powerful agent + a great UI.
+
 
     In this talk, Kent will demonstrate how to create an MCP server with React
     Router and expose great UI capabilities to the model. We're still early days
@@ -63,9 +65,9 @@
     a production-ready AI assistant that can fill forms, navigate workflows,
     generate content, create customer segments, and even edit themes.
 
+
     This talk takes you through the journey of building an AI assistant that
-    goes
-    far beyond text responses. We'll dive into the unique challenges of
+    goes far beyond text responses. We'll dive into the unique challenges of
     integrating conversational AI into a complex, mission-critical business
     platform where merchants rely on Sidekick to manage millions of dollars in
     commerce.
@@ -78,10 +80,12 @@
   description: >-
     Remix 3 is a look into the future of web development.
 
+
     The spirit of Remix has always been simplicity, elegance, and fun in
     programming. With Remix 3 we've rebuilt from the ground up, focusing on
     moving the web forward and helping you build faster and enjoy it more than
     ever, often with the help of AI.
+
 
     Modern web development has become fragile. Bundlers and extra layers of
     abstraction make it harder to understand what's really happening in your app
@@ -91,14 +95,17 @@
     server communication, hydration, and a complete toolkit for working across
     the network boundary.
 
+
     Michael and Ryan were some of the first to embrace and evangelize React back
     in 2014. Now we're excited to share what comes next.
   bio: >-
-    "Michael Jackson and Ryan Florence are the co-creators/co-founders of Remix. They started Remix in 2020 to help you build better web applications with React. In 2022 Remix was acquired by Shopify, supporting their work on Remix and React Router ever since.
+    Michael Jackson and Ryan Florence are the co-creators/co-founders of Remix. They started Remix in 2020 to help you build better web applications with React. In 2022 Remix was acquired by Shopify, supporting their work on Remix and React Router ever since.
+
 
     Michael Jackson is a prolific contributor to open source. He is the co-author of Remix and [React Router](https://reactrouter.com), and the creator of [unpkg.com](https://unpkg.com). He enjoys  system design, front-end architecture, and playing his guitar. Michael lives in Carlsbad, CA with his wife and 4 children.
 
-    Ryan Florence is co-creator of [React Router](https://reactrouter.com) and Remix. He's obsessed with finding better ways to build great user experiences on the open web. Outside of coding, he's a dad of three who loves guitar, tennis, soccer, snowboarding and spending time in the Utah outdoors."
+
+    Ryan Florence is co-creator of [React Router](https://reactrouter.com) and Remix. He's obsessed with finding better ways to build great user experiences on the open web. Outside of coding, he's a dad of three who loves guitar, tennis, soccer, snowboarding and spending time in the Utah outdoors.
 
   speakers:
     - "Ryan Florence"

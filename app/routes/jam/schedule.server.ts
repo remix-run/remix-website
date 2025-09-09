@@ -41,10 +41,17 @@ const scheduleItemRawSchema = z.object({
   title: z.string(),
   type: z.literal("talk").optional(),
   description: z.string().optional(),
+  speakers: z.array(z.string()).optional(),
 });
 
 type Schedule = Array<
-  | { type: "simple"; time: string; title: string; description: string }
+  | {
+      type: "simple";
+      time: string;
+      title: string;
+      description: string;
+      speakers: Array<string>;
+    }
   | {
       type: "talk";
       time: string;
@@ -88,6 +95,7 @@ async function loadTalks() {
         processMarkdown(t.description),
         processMarkdown(t.bio ?? ""),
       ]);
+
       return {
         title: t.title,
         description: descriptionHTML,
@@ -152,6 +160,7 @@ export async function getSchedule(): Promise<Schedule> {
         time: item.time,
         title: item.title,
         description,
+        speakers: item.speakers ?? [],
       };
     }),
   );
