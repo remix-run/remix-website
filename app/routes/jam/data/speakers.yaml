@@ -1,0 +1,14 @@
+- name: "Kent C. Dodds"
+  imgSrc: "/speakers/kent.webp"
+
+- name: "Craig Brunner"
+  imgSrc: "/speakers/craig.webp"
+
+- name: "Felipe Leusin"
+  imgSrc: "/speakers/felipe.webp"
+
+- name: "Ryan Florence"
+  imgSrc: "/speakers/ryan.webp"
+
+- name: "Michael Jackson"
+  imgSrc: "/speakers/michael.webp"

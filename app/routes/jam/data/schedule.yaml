@@ -1,0 +1,23 @@
+- time: "8:30 AM - 10:00 AM"
+  title: "Registration/Breakfast"
+  content: You'll eat food
+
+- time: "10:30 AM - 11:10 AM"
+  title: "Interactive MCP with React Router"
+  type: "talk"
+
+- time: "11:15 AM - 11:55 AM"
+  title: "Remixing Shopify's Admin"
+  type: "talk"
+
+- time: "1:00 PM - 1:40 PM"
+  title: "Building Sidekick: an AI assistant people actually use"
+  type: "talk"
+
+- time: "1:45 PM - 4:30 PM"
+  title: "Introducing Remix 3"
+  type: "talk"
+
+- time: "5:00 PM - 9:00 PM"
+  title: "Social Hour"
+  content: You'll eat food
