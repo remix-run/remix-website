@@ -1,8 +1,7 @@
 - time: "8:30 AM"
   title: "Registration & Breakfast"
   description: >-
-    A delicious hot breakfast to start your day. Get your badge, grab some coffee, 
-    and meet fellow developers before the talks begin.
+    Check in and grab your badge before heading upstairs for breakfast. Meet fellow developers from all over the world before the talks begin.
   imgFilename: "toronto-port-outside.webp"
   speaker: ☕️
 
@@ -70,7 +69,7 @@
     discuss the morning talks and make new connections.
   speaker: 🥪
 
-- time: "1:00 PM"
+- time: "1:30 PM"
   title: "Building Sidekick: An AI Assistant People Actually Use"
   description: >-
     Sidekick is Shopify's AI Assistant that lives inside the Shopify Admin,
@@ -92,7 +91,7 @@
     TODO
   imgFilename: "felipe.webp"
 
-- time: "1:45 PM"
+- time: "2:15 PM"
   title: "Introducing Remix 3 — Part 1"
   description: >-
     Remix 3 is a look into the future of web development.
@@ -124,14 +123,14 @@
     loves guitar, tennis, soccer, snowboarding and spending time in the Utah 
     outdoors.
 
-- time: "2:45 PM"
+- time: "3:15 PM"
   title: "Snacks & Coffee"
   description: >-
     Quick break to refuel with snacks and coffee before the final session.
   imgFilename: "toronto-port-nook.webp"
   speaker: 🍪
 
-- time: "3:15 PM"
+- time: "3:30 PM"
   title: "Introducing Remix 3 — Part 2"
   description: >-
     Remix 3 is a look into the future of web development.
@@ -163,7 +162,7 @@
     front-end architecture, and playing his guitar. Michael lives in Carlsbad, 
     CA with his wife and 4 children.
 
-- time: "4:15 PM"
+- time: "4:30 PM"
   title: "Q&A"
   description: >-
     Open Q&A session with all speakers. This is your chance to ask questions
@@ -171,10 +170,10 @@
     you most.
   speaker: 🎤
 
-- time: "4:30 PM"
+- time: "5:00 PM"
   title: "After Party / Social"
   description: >-
-    Join us for drinks and appetizers to wrap up an amazing day. Continue the
+    Join us for food, drinks, more giveaways, and a few other surprises to wrap up an amazing day. Continue the
     conversations, make new connections, and celebrate the future of web development.
   imgFilename: "toronto-port-stage.webp"
   speaker: 💿
