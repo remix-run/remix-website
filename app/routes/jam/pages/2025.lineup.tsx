@@ -153,19 +153,13 @@ function ScheduleItem({
       <summary
         onClick={handleSummaryClick}
         className={clsx(
-          "_no-triangle group cursor-pointer p-9 text-2xl font-bold text-white outline-none transition-colors duration-300 group-hover:bg-gray-900",
+          "_no-triangle group cursor-pointer select-none p-9 text-2xl font-bold text-white outline-none transition-colors duration-300 group-hover:bg-gray-900",
           gridColsClassName,
         )}
       >
         <span>{item.time}</span>
         <span>{item.title}</span>
-        <span>
-          {item.type === "talk" && item.speakers.length > 0
-            ? item.speakers[0].name
-            : item.type === "simple" && item.speakers.length > 0
-              ? item.speakers[0]
-              : ""}
-        </span>
+        <span>{item.speaker}</span>
         <div className="flex justify-end">
           <svg
             className="size-6 rotate-90 text-white transition-transform group-open:-rotate-90"
@@ -182,11 +176,11 @@ function ScheduleItem({
             dangerouslySetInnerHTML={{ __html: item.description }}
           />
 
-          {item.type === "talk" && item.speakers.length > 0 && (
+          {item.imgSrc && (
             <div className="col-start-3 flex flex-col">
               <img
-                src={item.speakers[0].imgSrc}
-                alt={item.speakers[0].name}
+                src={item.imgSrc}
+                alt={item.speaker}
                 className="mb-6 w-full rounded-2xl object-cover"
                 loading="lazy"
               />
