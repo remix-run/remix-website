@@ -7,7 +7,7 @@ import { LRUCache } from "lru-cache";
 import scheduleYamlFileContents from "./data/schedule.yaml?raw";
 
 const speakerImageModules = import.meta.glob(
-  "./images/speakers/*.{png,jpg,jpeg,webp,avif}",
+  "./images/schedule/*.{png,jpg,jpeg,webp,avif}",
   { eager: true, query: "?url", import: "default" },
 );
 

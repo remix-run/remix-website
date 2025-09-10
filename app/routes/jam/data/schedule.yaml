@@ -3,6 +3,7 @@
   description: >-
     A delicious hot breakfast to start your day. Get your badge, grab some coffee, 
     and meet fellow developers before the talks begin.
+  imgFilename: "toronto-port-outside.webp"
   speaker: ☕️
 
 - time: "10:30 AM"
@@ -63,10 +64,11 @@
 
 - time: "12:00 PM"
   title: "Lunch"
+  imgFilename: "toronto-port-nook.webp"
   description: >-
     Take a break and enjoy lunch with fellow attendees. This is a great time to
     discuss the morning talks and make new connections.
-  speaker: 🍕
+  speaker: 🥪
 
 - time: "1:00 PM"
   title: "Building Sidekick: An AI Assistant People Actually Use"
@@ -126,7 +128,8 @@
   title: "Snacks & Coffee"
   description: >-
     Quick break to refuel with snacks and coffee before the final session.
-  speaker: ☕️
+  imgFilename: "toronto-port-nook.webp"
+  speaker: 🍪
 
 - time: "3:15 PM"
   title: "Introducing Remix 3 — Part 2"
@@ -173,4 +176,5 @@
   description: >-
     Join us for drinks and appetizers to wrap up an amazing day. Continue the
     conversations, make new connections, and celebrate the future of web development.
-  speaker: 🥳
+  imgFilename: "toronto-port-stage.webp"
+  speaker: 💿

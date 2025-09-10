@@ -66,7 +66,7 @@ export default function JamLineupPage({ loaderData }: Route.ComponentProps) {
   );
 }
 
-let gridColsClassName = "grid grid-cols-[150px_1fr_1fr_auto] gap-8";
+let gridColsClassName = "grid grid-cols-[150px_1fr_1fr_24px] gap-8";
 
 function Schedule({
   items,
@@ -176,7 +176,7 @@ function ScheduleItem({
       <div className="transition-colors duration-300 group-hover:bg-gray-900">
         <div className={clsx("p-9", gridColsClassName)}>
           <div
-            className="col-start-2 flex flex-col gap-6 text-2xl text-white"
+            className="col-start-2 flex flex-col gap-6 text-2xl text-white [&_a:hover]:underline [&_a]:text-blue-400"
             dangerouslySetInnerHTML={{ __html: item.description }}
           />
 
@@ -190,7 +190,7 @@ function ScheduleItem({
               />
               {item.bio && (
                 <div
-                  className="flex flex-col gap-6 font-mono text-white"
+                  className="flex flex-col gap-6 font-mono text-white [&_a:hover]:underline [&_a]:text-blue-400"
                   dangerouslySetInnerHTML={{ __html: item.bio }}
                 />
               )}
