@@ -22,8 +22,8 @@ export function meta({ matches }: Route.MetaArgs) {
   let image = `${siteUrl}${ogImageSrc}`;
 
   return getMeta({
-    title: "Schedule & Lineup | Remix Jam 2025",
-    description: "Schedule & Speaker Lineup for Remix Jam 2025",
+    title: "Schedule and Lineup | Remix Jam 2025",
+    description: "Schedule and Speaker Lineup for Remix Jam 2025",
     siteUrl: `${siteUrl}/jam`,
     image,
   });
