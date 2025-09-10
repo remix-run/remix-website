@@ -1,0 +1,183 @@
+- time: "8:30 AM"
+  title: "Registration & Breakfast"
+  description: >-
+    Check in and grab your badge before heading upstairs for breakfast. Meet fellow developers from all over the world before the talks begin.
+
+
+    The entrance is on the west side of [620 King St West](https://maps.app.goo.gl/GpacrBAJJMnctN9W7) at the Waterloo Terrace. Look for the Remix Jam flag.
+  imgFilename: "toronto-port-outside.webp"
+  speaker: ☕️
+
+- time: "10:30 AM"
+  title: "Interactive MCP with React Router"
+  description: >-
+    Model Context Protocol is a powerful way to extend AI with context from the
+    outside world, but right now the interaction with an AI is mostly 
+    text-based. Text is fine for answering simple questions, but when it comes 
+    to things like "help me find a good shirt for my kid's spider-man themed 
+    birthday party" or "get me directions to the nearest taco stand," we need 
+    much more. Clients like ChatGPT do have UIs for maps and things, but it's 
+    pretty limited and bespoke because it's built case-by-case by ChatGPT 
+    engineers.
+
+
+    As we extend the model with more context and capabilities via MCP, we can 
+    also extend it with a proper user interface using React Router and MCP UI 
+    getting the best of both worlds. A powerful agent + a great UI.
+
+
+    In this talk, Kent will demonstrate how to create an MCP server with React
+    Router and expose great UI capabilities to the model. We're still early days
+    for this, but the future is going to be awesome.
+  speaker: "Kent C. Dodds"
+  imgFilename: "kent.webp"
+  bio: >-
+    Kent C. Dodds is a world renowned web development educator and engineer.
+    He's actively involved in the [open source community](https://github.com/kentcdodds).
+    He is the creator of [EpicWeb.dev](https://www.epicweb.dev/), [EpicAI.pro](https://www.epicai.pro/), [the Epic Stack](https://epicweb.dev/epic-stack),
+    [EpicReact.dev](https://epicreact.dev/), and [TestingJavaScript.com](https://testingjavascript.com/).
+    He's a [Microsoft MVP](https://kcd.im/mvp), instructor on [egghead.io](https://kcd.im/egghead)
+    and [Frontend Masters](https://kcd.im/fem), [live streamer](https://www.youtube.com/c/kentcdodds-vids),
+    and [podcaster](https://kentcdodds.com/calls). Kent is married and the 
+    father of five kids and he lives in Utah.
+
+- time: "11:15 AM"
+  title: "Remixing Shopify's Admin"
+  description: >-
+    A technical deep dive into how Shopify is transforming one of the world's
+    largest, most heavily contributed, and business-critical codebases by
+    adopting Remix. We'll explore the specific challenges we faced with our
+    legacy architecture, the problems Remix solved, and how this migration is
+    strategically positioning us for our technological evolution into AI-powered
+    experiences. Learn about the engineering decisions, performance
+    improvements, and architectural patterns that emerged from modernizing a
+    platform used by millions of merchants worldwide.
+  speaker: "Craig Brunner"
+  imgFilename: "craig.webp"
+  bio: >-
+    Craig Brunner is a Principal Engineer at Shopify, where he focuses on 
+    [admin.shopify.com](http://admin.shopify.com/).
+    Previously, he served as a Distinguished Engineer at ServiceNow and has 
+    held engineering roles across the spectrum from small startups to large 
+    tech companies like Apple and Amazon. As a full-stack enthusiast, Craig is 
+    passionate about building dynamic user interfaces that seamlessly integrate 
+    with large language models, bridging the gap between traditional web 
+    development and AI-powered experiences.
+
+- time: "12:00 PM"
+  title: "Lunch"
+  imgFilename: "toronto-port-nook.webp"
+  description: >-
+    Take a break and enjoy lunch with fellow attendees. This is a great time to
+    discuss the morning talks and make new connections.
+  speaker: 🥪
+
+- time: "1:30 PM"
+  title: "Building Sidekick: An AI Assistant People Actually Use"
+  description: >-
+    Sidekick is Shopify's AI Assistant that lives inside the Shopify Admin,
+    transforming how hundreds of thousands of merchants manage their businesses.
+    Building on the architectural remixing of the Admin, we'll explore how this
+    foundation allowed Sidekick to flourish as more than just another
+    chatbot—it's
+    a production-ready AI assistant that can fill forms, navigate workflows,
+    generate content, create customer segments, and even edit themes.
+
+
+    This talk takes you through the journey of building an AI assistant that
+    goes far beyond text responses. We'll dive into the unique challenges of
+    integrating conversational AI into a complex, mission-critical business
+    platform where merchants rely on Sidekick to manage millions of dollars in
+    commerce.
+  speaker: "Felipe Leusin"
+  bio: >-
+    Felipe is Senior Development Manager working on Sidekick for the past 2+ years. He started working on Sidekick as Senior Staff Developer focused on integrating Sidekick with the Admin, proposing a schema first form library targeting AI integrations and has been deeply involved in everything related to Sidekick since then. Prior to that he led engineering for Shopify Email. He's passionate about front-end architecture, scuba diving and lives in Rio de Janeiro, Brazil with his family and corgi.
+  imgFilename: "felipe.webp"
+
+- time: "2:15 PM"
+  title: "Introducing Remix 3 — Part 1"
+  description: >-
+    Remix 3 is a look into the future of web development.
+
+
+    The spirit of Remix has always been simplicity, elegance, and fun in
+    programming. With Remix 3 we've rebuilt from the ground up, focusing on
+    moving the web forward and helping you build faster and enjoy it more than
+    ever, often with the help of AI.
+
+
+    Modern web development has become fragile. Bundlers and extra layers of
+    abstraction make it harder to understand what's really happening in your app
+    and more complicated to deploy it. Remix 3 takes a different path. We're
+    rethinking what it should feel like to build full stack applications entirely
+    in JavaScript, with a unified story around state management, client and
+    server communication, hydration, and a complete toolkit for working across
+    the network boundary.
+
+
+    Michael and Ryan were some of the first to embrace and evangelize React back
+    in 2014. Now we're excited to share what comes next.
+  speaker: "Ryan Florence"
+  imgFilename: "ryan.webp"
+  bio: >-
+    Ryan Florence is co-creator of [React Router](https://reactrouter.com) and 
+    Remix. He's obsessed with finding better ways to build great user 
+    experiences on the open web. Outside of coding, he's a dad of three who 
+    loves guitar, tennis, soccer, snowboarding and spending time in the Utah 
+    outdoors.
+
+- time: "3:15 PM"
+  title: "Snacks & Coffee"
+  description: >-
+    Quick break to refuel with snacks and coffee before the final session.
+  imgFilename: "toronto-port-nook.webp"
+  speaker: 🍪
+
+- time: "3:30 PM"
+  title: "Introducing Remix 3 — Part 2"
+  description: >-
+    Remix 3 is a look into the future of web development.
+
+
+    The spirit of Remix has always been simplicity, elegance, and fun in
+    programming. With Remix 3 we've rebuilt from the ground up, focusing on
+    moving the web forward and helping you build faster and enjoy it more than
+    ever, often with the help of AI.
+
+
+    Modern web development has become fragile. Bundlers and extra layers of
+    abstraction make it harder to understand what's really happening in your app
+    and more complicated to deploy it. Remix 3 takes a different path. We're
+    rethinking what it should feel like to build full stack applications entirely
+    in JavaScript, with a unified story around state management, client and
+    server communication, hydration, and a complete toolkit for working across
+    the network boundary.
+
+
+    Michael and Ryan were some of the first to embrace and evangelize React back
+    in 2014. Now we're excited to share what comes next.
+  speaker: "Michael Jackson"
+  imgFilename: "michael.webp"
+  bio: >-
+    Michael Jackson is a prolific contributor to open source. He is the 
+    co-author of Remix and [React Router](https://reactrouter.com), and the 
+    creator of [unpkg.com](https://unpkg.com). He enjoys system design, 
+    front-end architecture, and playing his guitar. Michael lives in Carlsbad, 
+    CA with his wife and 4 children.
+
+- time: "4:30 PM"
+  title: "Q&A"
+  description: >-
+    Open Q&A session with all speakers. This is your chance to ask questions
+    about the talks, get advice, and dive deeper into the topics that interest
+    you most.
+  imgFilename: "toronto-port-stage-side.webp"
+  speaker: 🎤
+
+- time: "5:00 PM"
+  title: "After Party / Social"
+  description: >-
+    Join us for food, drinks, more giveaways, and a few other surprises to wrap up an amazing day. Continue the
+    conversations, make new connections, and celebrate the future of web development.
+  imgFilename: "toronto-port-stage-top.webp"
+  speaker: 💿

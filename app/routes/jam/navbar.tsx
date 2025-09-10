@@ -25,7 +25,7 @@ export function Navbar({ className }: { className?: string }) {
       </Link>
 
       <div className="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg lg:flex">
-        <NavLink to={href("/jam/2025/lineup")}>Lineup</NavLink>
+        <NavLink to={href("/jam/2025/lineup")}>Schedule & Lineup</NavLink>
         <NavLink className="text-white" to={href("/jam/2025/coc")}>
           Code of Conduct
         </NavLink>
@@ -58,7 +58,9 @@ function MobileMenu() {
       <div className="absolute right-0 z-20 lg:left-0">
         <div className="top-1 p-1">
           <nav className="flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg">
-            <MobileNavLink to={href("/jam/2025/lineup")}>Lineup</MobileNavLink>
+            <MobileNavLink to={href("/jam/2025/lineup")}>
+              Schedule & Lineup
+            </MobileNavLink>
             <MobileNavLink to={href("/jam/2025/coc")}>
               Code of Conduct
             </MobileNavLink>

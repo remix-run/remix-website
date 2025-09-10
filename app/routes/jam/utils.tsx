@@ -3,7 +3,7 @@
  */
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { Link, type LinkProps } from "react-router";
+import { Link, useMatches, type LinkProps } from "react-router";
 import { ButtonHTMLAttributes } from "react";
 
 const jamStyles =
@@ -100,4 +100,29 @@ export function JamButton({
       {children}
     </button>
   );
+}
+
+/**
+ * Check if the current route has the hideBackground handle
+ * @example
+ * ```tsx
+ * // routes/jam/pages/2025.lineup.tsx
+ * export let handle = {
+ *   hideBackground: true,
+ * };
+ *
+ * // routes/jam/pages/layout.tsx
+ * function Background({ children }: { children: React.ReactNode }) {
+ *   let hideBackground = useHideBackground();
+ * }
+ * ```
+ */
+export function useHideBackground() {
+  let matches = useMatches();
+  return matches.some(({ handle }) => {
+    if (handle && typeof handle === "object" && "hideBackground" in handle) {
+      return handle.hideBackground;
+    }
+    return false;
+  });
 }
