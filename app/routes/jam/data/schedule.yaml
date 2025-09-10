@@ -171,7 +171,7 @@
     Open Q&A session with all speakers. This is your chance to ask questions
     about the talks, get advice, and dive deeper into the topics that interest
     you most.
-  imgFilename: "toronto-port-stage.webp"
+  imgFilename: "toronto-port-stage-side.webp"
   speaker: 🎤
 
 - time: "5:00 PM"
@@ -179,5 +179,5 @@
   description: >-
     Join us for food, drinks, more giveaways, and a few other surprises to wrap up an amazing day. Continue the
     conversations, make new connections, and celebrate the future of web development.
-  imgFilename: "toronto-port-stage.webp"
+  imgFilename: "toronto-port-stage-top.webp"
   speaker: 💿
