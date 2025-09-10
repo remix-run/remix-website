@@ -40,6 +40,10 @@ type ScheduleItem = {
   bio?: string;
 };
 
+function addNonBreakingSpaces(text: string): string {
+  return text.replace(/Remix 3/g, "Remix\u00A03");
+}
+
 let cache = new LRUCache<string, ScheduleItem[]>({
   max: 250,
   maxSize: 1024 * 1024 * 12, // 12 mb
@@ -73,11 +77,11 @@ export async function getSchedule(): Promise<ScheduleItem[]> {
 
       return {
         time: item.time,
-        title: item.title,
-        description,
+        title: addNonBreakingSpaces(item.title),
+        description: addNonBreakingSpaces(description),
         speaker: item.speaker,
         imgSrc,
-        bio: bio || undefined,
+        bio: bio ? addNonBreakingSpaces(bio) : undefined,
       };
     }),
   );

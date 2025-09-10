@@ -37,7 +37,7 @@ export default function JamLineupPage({ loaderData }: Route.ComponentProps) {
   let { schedule } = loaderData;
 
   return (
-    <main className="mx-auto flex max-w-[1200px] flex-col items-center px-4 py-20 pt-[120px] md:pt-[180px] lg:pt-[200px]">
+    <main className="mx-auto flex max-w-[1200px] flex-col items-center py-20 pt-[120px] md:pt-[180px] lg:pt-[200px]">
       <Title className="text-center">
         <ScrambleText
           className="whitespace-nowrap"
@@ -56,7 +56,7 @@ export default function JamLineupPage({ loaderData }: Route.ComponentProps) {
         />
       </Title>
 
-      <div className="mt-16 flex w-full flex-col gap-1 py-6 sm:mt-24 sm:py-9 md:mt-32">
+      <div className="mt-16 flex w-full flex-col gap-1 py-6 sm:mt-24 sm:px-2 sm:py-9 md:mt-24">
         <h1 className="text-lg text-white sm:text-3xl">Friday</h1>
         <h2 className="text-xl font-bold text-white sm:text-4xl md:text-5xl">
           Oct 10 2025
@@ -69,7 +69,7 @@ export default function JamLineupPage({ loaderData }: Route.ComponentProps) {
 }
 
 let gridColsClassName =
-  "grid grid-cols-[80px_1fr_auto] gap-6 sm:grid-cols-[100px_1fr_1fr_24px] sm:gap-6 md:grid-cols-[120px_1fr_1fr_24px] md:gap-8 lg:grid-cols-[150px_1fr_1fr_24px] lg:gap-12";
+  "grid grid-cols-[65px_1fr_auto] gap-4 sm:grid-cols-[100px_1fr_1fr_24px] sm:gap-6 md:grid-cols-[120px_1fr_1fr_24px] md:gap-8 lg:grid-cols-[150px_1fr_1fr_24px] lg:gap-12";
 
 function Schedule({
   items,
@@ -80,7 +80,7 @@ function Schedule({
     <>
       {/* Mobile view */}
       <section className="z-10 w-full sm:hidden">
-        <div className="-mx-10 border-y-2 border-white/20">
+        <div className="-mx-10 border-y-2 border-white/20 px-4">
           <div
             className={clsx(
               "p-6 font-mono text-xs uppercase text-white/40",
@@ -100,7 +100,7 @@ function Schedule({
       </section>
 
       {/* Desktop view */}
-      <section className="z-10 hidden w-full sm:block">
+      <section className="z-10 hidden w-full px-4 sm:block">
         <div className="-mx-10 border-y-2 border-white/20">
           <div
             className={clsx(
