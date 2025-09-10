@@ -5,6 +5,7 @@ import { useId, useRef } from "react";
 import { clsx } from "clsx";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
 import { Navbar } from "../navbar";
+import { useHideBackground } from "../utils";
 
 import type { Route } from "./+types/layout";
 
@@ -53,10 +54,10 @@ export default function JamLayout() {
 }
 
 function Background({ children }: { children: React.ReactNode }) {
-  // const prefersReducedMotion = usePrefersReducedMotion();
   let colorMatrixRef = useRef<SVGFEColorMatrixElement>(null);
-  // let rafIdRef = useRef<number>(0);
   let filterId = useId();
+
+  let hideBackground = useHideBackground();
 
   return (
     <>
@@ -73,62 +74,64 @@ function Background({ children }: { children: React.ReactNode }) {
         {children}
 
         {/* Layer applying the animated SVG filter */}
-        <div
-          className="fixed -inset-11"
-          style={{
-            filter: `url(#${filterId}) blur(4px)`,
-          }}
-        >
-          {/* SVG containing the filter definition */}
-          <svg className="absolute">
-            <defs>
-              <filter id={filterId}>
-                <feTurbulence
-                  result="undulation"
-                  numOctaves="2"
-                  baseFrequency="0.000845,0.00338"
-                  seed="0"
-                  type="turbulence"
-                />
-                <feColorMatrix
-                  ref={colorMatrixRef}
-                  in="undulation"
-                  type="hueRotate"
-                  values="0"
-                />
-                <feColorMatrix
-                  in="dist"
-                  result="circulation"
-                  type="matrix"
-                  values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0"
-                />
-                <feDisplacementMap
-                  in="SourceGraphic"
-                  in2="circulation"
-                  scale="44.24242424242424"
-                  result="dist"
-                />
-                <feDisplacementMap
-                  in="dist"
-                  in2="undulation"
-                  scale="44.24242424242424"
-                  result="output"
-                />
-              </filter>
-            </defs>
-          </svg>
-          {/* Masked overlay image */}
+        {!hideBackground ? (
           <div
-            className="size-full"
+            className="fixed -inset-11"
             style={{
-              backgroundColor: "rgba(0, 0, 0, 0.3)",
-              maskImage: `url('${maskSrc}')`,
-              maskSize: "cover",
-              maskRepeat: "no-repeat",
-              maskPosition: "center",
+              filter: `url(#${filterId}) blur(4px)`,
             }}
-          />
-        </div>
+          >
+            {/* SVG containing the filter definition */}
+            <svg className="absolute">
+              <defs>
+                <filter id={filterId}>
+                  <feTurbulence
+                    result="undulation"
+                    numOctaves="2"
+                    baseFrequency="0.000845,0.00338"
+                    seed="0"
+                    type="turbulence"
+                  />
+                  <feColorMatrix
+                    ref={colorMatrixRef}
+                    in="undulation"
+                    type="hueRotate"
+                    values="0"
+                  />
+                  <feColorMatrix
+                    in="dist"
+                    result="circulation"
+                    type="matrix"
+                    values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0"
+                  />
+                  <feDisplacementMap
+                    in="SourceGraphic"
+                    in2="circulation"
+                    scale="44.24242424242424"
+                    result="dist"
+                  />
+                  <feDisplacementMap
+                    in="dist"
+                    in2="undulation"
+                    scale="44.24242424242424"
+                    result="output"
+                  />
+                </filter>
+              </defs>
+            </svg>
+            {/* Masked overlay image */}
+            <div
+              className="size-full"
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                maskImage: `url('${maskSrc}')`,
+                maskSize: "cover",
+                maskRepeat: "no-repeat",
+                maskPosition: "center",
+              }}
+            />
+          </div>
+        ) : null}
       </div>
     </>
   );
