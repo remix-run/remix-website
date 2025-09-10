@@ -151,7 +151,7 @@ function ScheduleItemMobile({ item }: ScheduleItemProps) {
             <img
               src={item.imgSrc}
               alt={item.speaker}
-              className="col-span-full w-full rounded-2xl object-cover"
+              className="col-span-full aspect-square w-full rounded-2xl object-cover"
               loading="lazy"
             />
           ) : null}
@@ -249,12 +249,11 @@ function ScheduleItemDesktop({ item }: ScheduleItemProps) {
           />
 
           {item.imgSrc && (
-            <div className="col-span-full flex flex-col sm:col-span-1 sm:col-start-3">
+            <div className="col-span-full flex flex-col gap-4 sm:col-span-1 sm:col-start-3">
               <img
                 src={item.imgSrc}
                 alt={item.speaker}
-                className="w-full rounded-2xl object-cover sm:max-w-none"
-                loading="lazy"
+                className="aspect-square w-full rounded-2xl object-cover sm:max-w-none"
               />
               {item.bio && (
                 <div
