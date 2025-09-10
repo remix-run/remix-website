@@ -56,9 +56,11 @@ export default function JamLineupPage({ loaderData }: Route.ComponentProps) {
         />
       </Title>
 
-      <div className="z-10 mt-32 flex w-full flex-col gap-2 py-9">
-        <h1 className="text-3xl text-white">Friday</h1>
-        <h2 className="text-5xl font-bold text-white">Oct 10 2025</h2>
+      <div className="mt-16 flex w-full flex-col gap-1 py-6 sm:mt-24 sm:py-9 md:mt-32">
+        <h1 className="text-lg text-white sm:text-3xl">Friday</h1>
+        <h2 className="text-xl font-bold text-white sm:text-4xl md:text-5xl">
+          Oct 10 2025
+        </h2>
       </div>
 
       <Schedule items={schedule} />
@@ -66,7 +68,8 @@ export default function JamLineupPage({ loaderData }: Route.ComponentProps) {
   );
 }
 
-let gridColsClassName = "grid grid-cols-[150px_1fr_1fr_24px] gap-8";
+let gridColsClassName =
+  "grid grid-cols-[80px_1fr_auto] gap-6 sm:grid-cols-[100px_1fr_1fr_24px] sm:gap-6 md:grid-cols-[120px_1fr_1fr_24px] md:gap-8 lg:grid-cols-[150px_1fr_1fr_24px] lg:gap-12";
 
 function Schedule({
   items,
@@ -74,33 +77,98 @@ function Schedule({
   items: Route.ComponentProps["loaderData"]["schedule"];
 }) {
   return (
-    <section className="z-10 w-full">
-      <div className="-mx-10 border-y-2 border-white/20">
-        <div
-          className={clsx(
-            "p-9 font-mono uppercase text-white/40",
-            gridColsClassName,
-          )}
-        >
-          <div>Time</div>
-          <div>Topic</div>
-          <div className="col-span-2">Speaker</div>
-        </div>
+    <>
+      {/* Mobile view */}
+      <section className="z-10 w-full sm:hidden">
+        <div className="-mx-10 border-y-2 border-white/20">
+          <div
+            className={clsx(
+              "p-6 font-mono text-xs uppercase text-white/40",
+              gridColsClassName,
+            )}
+          >
+            <div>Time</div>
+            <div>Topic</div>
+            <div>Speaker</div>
+          </div>
 
-        {items.map((item) => {
-          const key = `${item.time}-${item.title}`;
-          return <ScheduleItem key={key} item={item} />;
-        })}
-      </div>
-    </section>
+          {items.map((item) => {
+            const key = `${item.time}-${item.title}`;
+            return <ScheduleItemMobile key={key} item={item} />;
+          })}
+        </div>
+      </section>
+
+      {/* Desktop view */}
+      <section className="z-10 hidden w-full sm:block">
+        <div className="-mx-10 border-y-2 border-white/20">
+          <div
+            className={clsx(
+              "p-4 font-mono text-xs uppercase text-white/40 sm:p-6 sm:text-sm md:p-8 lg:p-9",
+              gridColsClassName,
+            )}
+          >
+            <div>Time</div>
+            <div>Topic</div>
+            <div>Speaker</div>
+          </div>
+
+          {items.map((item) => {
+            const key = `${item.time}-${item.title}`;
+            return <ScheduleItemDesktop key={key} item={item} />;
+          })}
+        </div>
+      </section>
+    </>
   );
 }
 
-function ScheduleItem({
-  item,
-}: {
+type ScheduleItemProps = {
   item: Route.ComponentProps["loaderData"]["schedule"][number];
-}) {
+};
+
+function ScheduleItemMobile({ item }: ScheduleItemProps) {
+  return (
+    <div className="overflow-hidden">
+      <div
+        className={clsx(
+          "my-2 border-t border-white/10 p-6 text-sm font-bold text-white",
+          gridColsClassName,
+        )}
+      >
+        <span className="font-normal text-white/60">{item.time}</span>
+        <span>{item.title}</span>
+        <span className="font-normal text-white/60">{item.speaker}</span>
+      </div>
+      <div className="pb-6">
+        <div className={clsx("px-6", gridColsClassName)}>
+          <div
+            className="col-span-full flex flex-col gap-4 text-sm text-white [&_a:hover]:underline [&_a]:text-blue-400"
+            dangerouslySetInnerHTML={{ __html: item.description }}
+          />
+
+          {item.imgSrc ? (
+            <img
+              src={item.imgSrc}
+              alt={item.speaker}
+              className="col-span-full w-full rounded-2xl object-cover"
+              loading="lazy"
+            />
+          ) : null}
+
+          {item.bio ? (
+            <div
+              className="col-span-full flex flex-col gap-4 font-mono text-xs leading-5 text-white [&_a:hover]:underline [&_a]:text-blue-400"
+              dangerouslySetInnerHTML={{ __html: item.bio }}
+            />
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ScheduleItemDesktop({ item }: ScheduleItemProps) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const animation = useRef<Animation | null>(null);
@@ -157,7 +225,7 @@ function ScheduleItem({
       <summary
         onClick={handleSummaryClick}
         className={clsx(
-          "_no-triangle group cursor-pointer select-none p-9 text-2xl font-bold text-white outline-none transition-colors duration-300 group-hover:bg-gray-900",
+          "_no-triangle group cursor-pointer select-none p-4 text-sm font-bold text-white outline-none transition-colors duration-300 group-hover:bg-gray-900 sm:p-6 sm:text-base md:p-8 md:text-lg lg:p-9 lg:text-2xl",
           gridColsClassName,
         )}
       >
@@ -166,7 +234,7 @@ function ScheduleItem({
         <span>{item.speaker}</span>
         <div className="flex justify-end">
           <svg
-            className="size-6 rotate-90 text-white transition-transform group-open:-rotate-90"
+            className="size-4 rotate-90 text-white transition-transform group-open:-rotate-90 sm:size-5 lg:size-6"
             aria-hidden="true"
           >
             <use href={`${iconsHref}#chevron-r`} />
@@ -174,23 +242,23 @@ function ScheduleItem({
         </div>
       </summary>
       <div className="transition-colors duration-300 group-hover:bg-gray-900">
-        <div className={clsx("p-9", gridColsClassName)}>
+        <div className={clsx("p-4 sm:p-6 md:p-8 lg:p-9", gridColsClassName)}>
           <div
-            className="col-start-2 flex flex-col gap-6 text-2xl text-white [&_a:hover]:underline [&_a]:text-blue-400"
+            className="col-span-full flex flex-col gap-4 text-sm text-white sm:col-span-1 sm:col-start-2 sm:gap-6 sm:text-base md:text-lg lg:text-xl [&_a:hover]:underline [&_a]:text-blue-400"
             dangerouslySetInnerHTML={{ __html: item.description }}
           />
 
           {item.imgSrc && (
-            <div className="col-start-3 flex flex-col">
+            <div className="col-span-full flex flex-col sm:col-span-1 sm:col-start-3">
               <img
                 src={item.imgSrc}
                 alt={item.speaker}
-                className="mb-6 w-full rounded-2xl object-cover"
+                className="w-full rounded-2xl object-cover sm:max-w-none"
                 loading="lazy"
               />
               {item.bio && (
                 <div
-                  className="flex flex-col gap-6 font-mono text-white [&_a:hover]:underline [&_a]:text-blue-400"
+                  className="flex flex-col gap-4 text-xs text-white sm:gap-6 sm:text-sm md:text-base lg:font-mono [&_a:hover]:underline [&_a]:text-blue-400"
                   dangerouslySetInnerHTML={{ __html: item.bio }}
                 />
               )}
