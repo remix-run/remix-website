@@ -1,6 +1,6 @@
 ---
 title: Middleware in React Router
-summary: "Middleware has landed as stable in React Router!"
+summary: "Middleware is now stable in React Router!"
 featured: false
 date: 2025-09-12
 image: /blog-images/headers/fog-of-war.png
@@ -11,7 +11,7 @@ authors:
   - Matt Brophy
 ---
 
-We've finally landed the long-awaited Middleware feature in React Router [7.9.0][release-notes-7-9-0] (behind a `future.v8_middleware` flag)! It's been a long road to get here, but we wanted to make sure we got this one right and we think the wait was worth it.
+The long-awaited middleware feature is now stable in React Router [7.9.0][release-notes-7-9-0] (behind a `future.v8_middleware` flag)! It's been a long road to get here, but we wanted to make sure we got this one right. We think it was worth the wait.
 
 ## Remix v1/v2 patterns
 
@@ -70,11 +70,11 @@ Middleware was needed as a way to run route logic sequentially, prior to (and af
 
 But then we realized that middleware in the existing data loading architecture wasn't actually as useful as it appeared. At the time, route loaders were fetched individually in parallel HTTP calls - one per loader. This meant that there was no shared request context between parent and child loaders because they were separate HTTP requests, so they couldn't actually share data.
 
-Instead, middleware would run on every request - so you wouldn't actually be reducing the number of requests to your DB as you'd still be checking the user on every request. So your code would clean up a bit without having to repeat your checks in the loaders, but functionally there wouldn't be any real change in runtime behavior. In the worst case, a parent middleware might even load data for a child request which would never even use the data.
+Instead, middleware would run on every request - so you wouldn't actually be reducing the number of requests to your DB as you'd still be checking the user on every request. So your code would clean up a bit without having to repeat your checks in the loaders, but **functionally there wouldn't be any real change in runtime behavior**. In the worst case, a parent middleware might even load data for a child request which would never even use the data.
 
-We had to make some other changes before we could ship a middleware API that made your code easier _and also_ lowered the # of times you needed to talk to your DB. We needed an architecture where parent and child loaders _shared_ a singular request context ... enter [Single Fetch][single-fetch]. The Single Fetch feature was a re-working of the way server loaders were called from the client, combining the parallel HTTP requests into a singular HTTP request for all loaders.
+We had to make some other changes before we could ship a middleware API that made your code easier _and also_ lowered the number of times you needed to talk to your DB. We needed an architecture where parent and child loaders _shared_ a singular request context... enter "[Single Fetch][single-fetch]". The Single Fetch feature was a re-working of the way server loaders were called from the client, combining the parallel HTTP requests into a singular HTTP request for all loaders.
 
-However - because this was specific to server-rendered apps - we couldn't just implement it in the core of React Router because it didn't make sense in SPA's where there was no HTTP request for loaders. We had to build an abstraction for React Router that would let an application override the mechanism in which loaders were executed. This landed as the [`dataStrategy`][data-strategy] API for Data Routers, which allowed Remix to implement the Single Fetch feature only for SSR apps.
+However, because this was specific to server-rendered apps, we couldn't just implement it in the core of React Router because it didn't make sense in SPA's where there is no HTTP request for loaders. We had to build an abstraction for React Router that would let an application override the mechanism in which loaders were executed. This landed as the [`dataStrategy`][data-strategy] API for Data Routers, which allowed Remix to implement the Single Fetch feature only for SSR apps.
 
 In the meantime, we were also iterating on a new type-safe Context API over in the [Remix the Web][remix-the-web] project (which has since moved into the [Remix][remix-repo] repo in preparation for Remix 3). This provided a much better type-story than the `AppLoadContext` interface we were using to provide data from your HTTP server into Remix at the time.
 
@@ -84,9 +84,9 @@ So, we haven't been dragging our feet since our original implementation in 2023!
 
 We landed our initial [unstable implementation][final-pr] of middleware behind a future flag in [7.3.0][unstable-release-7-3-0]. Since then, we've been iterating on the API/implementation and working closely with community members who adopted the unstable flag for alpha testing. We received a _ton_ of valuable feedback from those folks that helped us move the API to an even better spot in the end.
 
-We're exited to finally stabilize these APIs in [7.9.0][release-notes-7-9-0] behind the `future.v8_middleware` flag and can't wait to see the cool patterns folks come up with when using them (hint - session management should get _much_ easier).
+We're excited to finally stabilize these APIs in [7.9.0][release-notes-7-9-0] behind the `future.v8_middleware` flag and can't wait to see the interesting patterns folks come up with when using them (hint - session management should get _much_ easier).
 
-HEre's the two examples referenced above using the middleware APIs.
+Below are the two examples referenced above using the new middleware APIs.
 
 Providing data from a parent to a child:
 
