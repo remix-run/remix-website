@@ -2,7 +2,7 @@
 title: Middleware in React Router
 summary: "Middleware is now stable in React Router!"
 featured: false
-date: 2025-09-12
+date: 2025-09-17
 image: /blog-images/headers/fog-of-war.png
 ogImage: /blog-images/headers/fog-of-war.png
 imageAlt: React Router Middleware
@@ -11,7 +11,7 @@ authors:
   - Matt Brophy
 ---
 
-The long-awaited middleware feature is now stable in React Router [7.9.0][release-notes-7-9-0] (behind a `future.v8_middleware` flag)! It's been a long road to get here, but we wanted to make sure we got this one right. We think it was worth the wait.
+The long-awaited middleware feature is now stable in React Router [7.9.0][release-notes-7-9-0] via the `future.v8_middleware` flag! It's been a long road to get here, but we wanted to make sure we got this one right. We think it was worth the wait.
 
 ## Remix v1/v2 patterns
 
@@ -51,7 +51,7 @@ export async function loader({ request }) {
 }
 ```
 
-These were easy mistakes to make because nested routes could lead you to assume this would work - especially coming from the "load data in your component" patterns that were popular in React Router SPA's prior to Remix. We documented these behaviors clearly, but we always knew that it was a gap in our API.
+These were easy mistakes to make because nested routes could lead you to assume this would work - especially coming from the "load data in your component" patterns that were popular in React SPA's prior to Remix. We documented these behaviors clearly, but we always knew that it was a gap in our API.
 
 To avoid the above issues, you had a few options, none of which were ideal:
 
