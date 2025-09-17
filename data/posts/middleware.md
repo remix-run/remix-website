@@ -51,7 +51,7 @@ export async function loader({ request }) {
 }
 ```
 
-These were easy mistakes to make because nested routes could lead you to assume this would work - especially coming from the "load data in your component" patterns that were popular in React SPA's prior to Remix. We documented these behaviors clearly, but we always knew that it was a gap in our API.
+These were easy mistakes to make because nested routes could lead you to assume this would work - especially coming from the "load data in your component" patterns that were popular in React SPAs prior to Remix. We documented these behaviors clearly, but we always knew that it was a gap in our API.
 
 To avoid the above issues, you had a few options, none of which were ideal:
 
