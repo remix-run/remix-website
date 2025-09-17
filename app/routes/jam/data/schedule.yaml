@@ -130,7 +130,7 @@
   title: "Snacks & Coffee"
   description: >-
     Quick break to refuel with snacks and coffee before the final session.
-  imgFilename: "toronto-port-nook.webp"
+  imgFilename: "merchant-market.webp"
   speaker: 🍪
 
 - time: "3:30 PM"
@@ -179,5 +179,5 @@
   description: >-
     Join us for food, drinks, more giveaways, and a few other surprises to wrap up an amazing day. Continue the
     conversations, make new connections, and celebrate the future of web development.
-  imgFilename: "toronto-port-stage-top.webp"
+  imgFilename: "challenge-accepted.webp"
   speaker: 💿
