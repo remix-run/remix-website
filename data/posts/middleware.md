@@ -3,8 +3,8 @@ title: Middleware in React Router
 summary: "Middleware is now stable in React Router!"
 featured: false
 date: 2025-09-17
-image: /blog-images/headers/fog-of-war.png
-ogImage: /blog-images/headers/fog-of-war.png
+image: /blog-images/headers/middleware.png
+ogImage: /blog-images/headers/middleware.png
 imageAlt: React Router Middleware
 imageDisableOverlay: false
 authors:
