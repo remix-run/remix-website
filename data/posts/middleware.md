@@ -84,7 +84,7 @@ So, we haven't been dragging our feet since our original implementation in 2023!
 
 We landed our initial [unstable implementation][final-pr] of middleware behind a future flag in [7.3.0][unstable-release-7-3-0]. Since then, we've been iterating on the API/implementation and working closely with community members who adopted the unstable flag for alpha testing. We received a _ton_ of valuable feedback from those folks that helped us move the API to an even better spot in the end.
 
-We're excited to finally stabilize these APIs in [7.9.0][release-notes-7-9-0] behind the `future.v8_middleware` flag and can't wait to see the interesting patterns folks come up with when using them (hint - session management should get _much_ easier).
+We're excited to finally stabilize these APIs in [7.9.0][release-notes-7-9-0] behind the `future.v8_middleware` flag and can't wait to see the interesting patterns folks come up with when using them. There are already a handful of useful middlewares available in [remix-utils][remix-utils] that are worth checking out!
 
 Below are the two examples referenced above using the new middleware APIs.
 
@@ -134,7 +134,7 @@ export async function loader({ request }) {
 }
 ```
 
-For more information on using these APIs and examples of common use-cases, please check out the [decision doc][decision-doc] and the [Middleware documentation][docs]. As always, if you have any questions, please feel free to open issues or discussion on [Github][rr-repo] or reach out to us in [Discord][discord].
+For more information on using these APIs and examples of common use-cases, please check out the [decision doc][decision-doc] and the [Middleware documentation][docs]. As always, if you have any questions, please feel free to open an issue or discussion on [Github][rr-repo] or reach out to us in [Discord][discord].
 
 [rfc]: https://github.com/remix-run/react-router/discussions/9564
 [original-pr]: https://github.com/remix-run/react-router/pull/9975
@@ -152,3 +152,4 @@ For more information on using these APIs and examples of common use-cases, pleas
 [docs]: https://reactrouter.com/how-to/middleware
 [rr-repo]: https://github.com/remix-run/react-router
 [discord]: https://rmx.as/discord
+[remix-utils]: https://github.com/sergiodxa/remix-utils?tab=readme-ov-file#middleware
