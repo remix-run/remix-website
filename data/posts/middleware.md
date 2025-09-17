@@ -139,7 +139,7 @@ For more information on using these APIs and examples of common use-cases, pleas
 [rfc]: https://github.com/remix-run/react-router/discussions/9564
 [original-pr]: https://github.com/remix-run/react-router/pull/9975
 [final-pr]: https://github.com/remix-run/react-router/pull/12941
-[decision-doc]: https://github.com/remix-run/react-router/blob/release-next/decisions/0014-context-middleware.md
+[decision-doc]: https://github.com/remix-run/react-router/blob/main/decisions/0014-context-middleware.md
 [unstable-release-7-3-0]: https://github.com/remix-run/react-router/blob/main/CHANGELOG.md#v730
 [release-notes-7-9-0]: https://github.com/remix-run/react-router/blob/main/CHANGELOG.md#v790
 [data-strategy]: https://reactrouter.com/api/data-routers/createBrowserRouter#optsdatastrategy
