@@ -6,7 +6,7 @@ date: 2025-09-17
 image: /blog-images/headers/middleware.png
 ogImage: /blog-images/headers/middleware.png
 imageAlt: React Router Middleware
-imageDisableOverlay: false
+imageDisableOverlay: true
 authors:
   - Matt Brophy
 ---
