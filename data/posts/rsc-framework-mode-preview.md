@@ -104,7 +104,25 @@ What's changed is the content of `build/server/index.js`.
 
 In non-RSC Framework Mode, the exports from `build/server/index.js` form a React Router `ServerBuild` object. In order to make use of this, you need to pass it through an adapter to your desired runtime, e.g. `createRequestListener` from `@react-router/node`, or `createRequestHandler` from `@react-router/express`.
 
+```ts
+import { createRequestHandler } from "@react-router/express";
+import express from "express";
+
+const app = express();
+const build = await import("./build/server/index.js");
+app.all("*", createRequestHandler({ build }));
+```
+
 In RSC Framework Mode, `build/server/index.js` exports a plain old request handler function (`(request: Request) => Promise<Response>`) designed for handling document/data requests.
+
+```ts
+import { createRequestListener } from "@remix-run/node-fetch-server";
+import express from "express";
+
+const app = express();
+const build = await import("./build/server/index.js");
+app.all("*", createRequestListener(build.default));
+```
 
 Importantly, even though these new RSC features rely on having both an "RSC server" and "SSR server" set up, **the build output is still just a single server runtime.** That means it can be deployed just like any other non-RSC Framework Mode app today.
 
@@ -115,3 +133,7 @@ So, the obvious question is — if it's this straightforward to use RSC with Fra
 For more details on how to use RSC Framework Mode in React Router, check out our [React Server Components guide](https://reactrouter.com/how-to/react-server-components).
 
 Stay tuned for more updates to both RSC Data Mode and RSC Framework Mode as we work towards a stable release!
+
+```
+
+```
