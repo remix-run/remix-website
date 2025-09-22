@@ -14,9 +14,9 @@ Recently we shipped a [preview of React Router with support for React Server Com
 
 ## In short
 
-- React Router v7.10 has preview support for React Server Components in Framework Mode, provided as a new unstable Vite plugin.
-- Server rendered apps are supported in the initial preview release.
-- SPA Mode, pre-rendering and custom build entries will be supported in the future release.
+- React Router v7.9.2 has preview support for React Server Components in Framework Mode, provided as a new unstable Vite plugin.
+- Server-rendered apps are supported in the initial preview release.
+- SPA Mode, pre-rendering and custom build entries will be supported in a future release.
 
 ## Try it out
 
@@ -74,7 +74,7 @@ npm install @vitejs/plugin-rsc
 // vite.config.ts
 import { defineConfig } from "vite";
 import { unstable_reactRouterRSC } from "@react-router/dev/vite";
-import { rsc } from "@vitejs/plugin-react";
+import rsc from "@vitejs/plugin-rsc";
 
 export default defineConfig({
   plugins: [
@@ -133,7 +133,3 @@ So, the obvious question is — if it's this straightforward to use RSC with Fra
 For more details on how to use RSC Framework Mode in React Router, check out our [React Server Components guide](https://reactrouter.com/how-to/react-server-components).
 
 Stay tuned for more updates to both RSC Data Mode and RSC Framework Mode as we work towards a stable release!
-
-```
-
-```
