@@ -10,7 +10,7 @@ authors:
   - Mark Dalgleish
 ---
 
-Recently we shipped a [preview of React Router with support for React Server Components (RSC) in Data Mode](./rsc-preview). With the release of React Router v7.10, we're excited to announce that preview support for [RSC](https://react.dev/reference/rsc/server-components) is now also available in Framework Mode.
+Recently we shipped a [preview of React Router with support for React Server Components (RSC)](./rsc-preview) as well as low-level APIs for [RSC support in Data Mode](./react-router-and-react-server-components). With the release of React Router v7.10, we're excited to announce that preview support for [RSC](https://react.dev/reference/rsc/server-components) is now also available in Framework Mode.
 
 ## In short
 
@@ -30,11 +30,11 @@ npx create-react-router@latest --template remix-run/react-router-templates/unsta
 
 In case you're unfamiliar with React Router's Framework Mode and Data Mode, here's a quick overview.
 
-Data Mode provides the core APIs for routing, data loading and action handling. In this mode, you're responsible for the overall structure of your project, potentially managing multiple builds and the communication between them at runtime, wiring everything up to a bundler including HMR etc.
+**Data Mode** provides the core APIs for routing, data loading and action handling. In this mode, you're responsible for the overall structure of your project, potentially managing multiple builds and the communication between them at runtime, wiring everything up to a bundler including HMR etc.
 
 All of this can be tricky to get right. You're effectively building your own meta-framework on top of React Router.
 
-With Framework Mode, all of this build setup is handled for you via our official Vite plugin, including additional features like typegen and optional file system routing. For most people starting a new project, Framework Mode provides the most streamlined developer experience.
+With **Framework Mode**, all of this build setup is handled for you via our official Vite plugin, including additional features like typegen and optional file system routing. For most people starting a new project, Framework Mode provides the most streamlined developer experience.
 
 So, while many consumers were excited to see RSC support in Data Mode, we know that many more of you were instead patiently waiting for RSC support to land in Framework Mode.
 
@@ -44,7 +44,7 @@ When introducing RSC to React Router, it was important that we first started at 
 
 Now that RSC Data Mode is in place, we're able to provide an RSC-powered Vite plugin that compiles to these lower level APIs.
 
-As noted in our post on ["React Router and React Server Components: The Path Forward,"](./react-router-and-react-server-components) the great thing about RSC is that this new Framework Mode plugin is much simpler than our earlier non-RSC work. Most of the framework-level complexity is now implemented at a lower level in RSC Data Mode, with RSC Framework Mode being a more lightweight layer on top.
+As noted in our post on ["React Router and React Server Components: The Path Forward"](./react-router-and-react-server-components), the great thing about RSC is that this new Framework Mode plugin is much simpler than our earlier non-RSC work. Most of the framework-level complexity is now implemented at a lower level in RSC Data Mode, with RSC Framework Mode being a more lightweight layer on top.
 
 ## Getting started
 
@@ -84,7 +84,7 @@ export default defineConfig({
 });
 ```
 
-With these new plugins, all of the features described in our [RSC Data Mode preview blog post](./rsc-preview) will be available in your Framework Mode app:
+With these new plugins, all of the features described in our [RSC preview blog post](./rsc-preview) will be available in your Framework Mode app:
 
 - The ability to return RSC content from loaders/actions.
 - RSC-first "Server Component Routes" by exporting a `ServerComponent` instead of the usual `default` component export.
