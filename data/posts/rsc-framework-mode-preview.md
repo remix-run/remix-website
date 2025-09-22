@@ -2,8 +2,8 @@
 title: "React Router RSC Framework Mode Preview"
 summary: React Router's preview support for RSC Framework Mode is now available
 date: 2025-09-18
-image: /blog-images/headers/rr-rsc-path-forward.jpg
-ogImage: /blog-images/headers/rr-rsc-path-forward.jpg
+image: /blog-images/headers/rsc-framework-mode-preview.jpg
+ogImage: /blog-images/headers/rsc-framework-mode-preview.jpg
 imageAlt: Glowing tree
 imageDisableOverlay: true
 authors:
