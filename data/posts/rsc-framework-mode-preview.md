@@ -10,7 +10,7 @@ authors:
   - Mark Dalgleish
 ---
 
-Recently we shipped a [preview of React Router with support for React Server Components (RSC)](./rsc-preview) as well as low-level APIs for [RSC support in Data Mode](./react-router-and-react-server-components). With the release of React Router v7.10, we're excited to announce that preview support for [RSC](https://react.dev/reference/rsc/server-components) is now also available in Framework Mode.
+Recently we shipped a [preview of React Router with support for React Server Components (RSC)](./rsc-preview) as well as low-level APIs for [RSC support in Data Mode](./react-router-and-react-server-components). With the release of React Router v7.9.2, we're excited to announce that preview support for [RSC](https://react.dev/reference/rsc/server-components) is now also available in Framework Mode.
 
 ## In short
 
