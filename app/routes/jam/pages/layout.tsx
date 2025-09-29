@@ -1,4 +1,4 @@
-import { Outlet, redirect } from "react-router";
+import { Outlet, redirect, useMatches } from "react-router";
 import { CACHE_CONTROL } from "~/lib/http.server";
 import { Link } from "react-router";
 import { useId, useRef } from "react";
@@ -11,6 +11,7 @@ import type { Route } from "./+types/layout";
 
 import jamStyles from "../jam.css?url";
 import maskSrc from "../images/background-mask.avif";
+import seatsSrc from "../images/remix-color-seats.svg";
 
 export function headers() {
   return {
@@ -43,10 +44,12 @@ export function loader({ request }: Route.LoaderArgs) {
 
 export default function JamLayout() {
   return (
-    <div className="relative overflow-x-hidden px-6">
+    <div className="relative overflow-x-hidden">
       <Background>
         <Navbar className="z-40" />
-        <Outlet />
+        <div className="px-6">
+          <Outlet />
+        </div>
         <Footer className="relative z-20" />
       </Background>
     </div>
@@ -137,80 +140,125 @@ function Background({ children }: { children: React.ReactNode }) {
   );
 }
 
-const socialClassName = "size-6 transition-colors hover:text-white md:size-8";
+const socialClassName =
+  "size-6 transition-colors text-white/50 hover:text-white md:size-8";
 
 function Footer({ className }: { className?: string }) {
+  const showSeats = useShowSeats();
+
   return (
-    <footer
-      className={clsx(
-        "flex flex-col items-center gap-2 py-[160px] text-center font-conf-mono text-xs text-gray-400 md:text-base",
-        className,
+    <footer className={clsx("relative flex flex-col items-center", className)}>
+      {showSeats && (
+        <>
+          <div className="h-0 w-full md:h-28" />
+          <div className="flex w-screen justify-center overflow-hidden">
+            <img
+              loading="lazy"
+              src={seatsSrc}
+              alt=""
+              className="block min-w-[1400px] sm:min-w-[1600px] md:min-w-[1800px] lg:min-w-[2000px] xl:min-w-[2200px] 2xl:min-w-[110vw]"
+              aria-hidden="true"
+            />
+          </div>
+        </>
       )}
-    >
-      <div className="flex items-center gap-5">
-        <Link
-          to="/"
-          className="rounded-3xl border border-gray-400 px-4 py-1 uppercase text-white hover:text-blue-brand"
-        >
-          remix.run
-        </Link>
-        <a
-          href="https://github.com/remix-run"
-          aria-label="GitHub"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <GitHub className={socialClassName} aria-hidden />
-        </a>
-        <a
-          href="https://twitter.com/remix_run"
-          aria-label="Twitter"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Twitter className={socialClassName} aria-hidden />
-        </a>
-        <a
-          href="https://youtube.com/remix_run"
-          aria-label="YouTube"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <YouTube className={socialClassName} aria-hidden />
-        </a>
-        <a
-          href="https://rmx.as/discord"
-          aria-label="Discord"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Discord className={socialClassName} aria-hidden />
-        </a>
-      </div>
-      <div className="flex flex-col items-center gap-2 uppercase leading-loose">
-        <div>
-          docs and examples licensed under{" "}
+      <div
+        className={clsx(
+          "flex flex-col items-center gap-2 py-40 text-center font-conf-mono text-xs md:text-base 2xl:py-32",
+          showSeats
+            ? "w-full bg-gradient-to-b from-[rgb(255,51,0)] to-[rgb(186,37,0)] text-white"
+            : "text-gray-400",
+        )}
+      >
+        <div className="flex items-center gap-5">
+          <Link
+            to="/"
+            className={clsx(
+              "rounded-3xl border px-4 py-1 uppercase text-white",
+              showSeats
+                ? "border-white hover:underline"
+                : "border-gray-400 hover:text-blue-brand",
+            )}
+          >
+            remix.run
+          </Link>
           <a
-            href="https://opensource.org/licenses/MIT"
-            className="text-white hover:text-blue-brand"
+            href="https://github.com/remix-run"
+            aria-label="GitHub"
             target="_blank"
             rel="noopener noreferrer"
           >
-            MIT
+            <GitHub className={socialClassName} aria-hidden />
+          </a>
+          <a
+            href="https://twitter.com/remix_run"
+            aria-label="Twitter"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Twitter className={socialClassName} aria-hidden />
+          </a>
+          <a
+            href="https://youtube.com/remix_run"
+            aria-label="YouTube"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <YouTube className={socialClassName} aria-hidden />
+          </a>
+          <a
+            href="https://rmx.as/discord"
+            aria-label="Discord"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Discord className={socialClassName} aria-hidden />
           </a>
         </div>
-        <div>
-          ©2025{" "}
-          <a
-            href="https://shopify.com"
-            className="text-white hover:text-blue-brand"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Shopify, Inc.
-          </a>
+        <div className="flex flex-col items-center gap-2 uppercase leading-loose">
+          <div>
+            docs and examples licensed under{" "}
+            <a
+              href="https://opensource.org/licenses/MIT"
+              className={clsx(
+                "text-white",
+                showSeats ? "hover:underline" : "hover:text-blue-brand",
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              MIT
+            </a>
+          </div>
+          <div>
+            ©2025{" "}
+            <a
+              href="https://shopify.com"
+              className={clsx(
+                "text-white",
+                showSeats ? "hover:underline" : "hover:text-blue-brand",
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Shopify, Inc.
+            </a>
+          </div>
         </div>
       </div>
     </footer>
   );
+}
+
+function useShowSeats() {
+  const matches = useMatches();
+  return matches.some((match) => {
+    const handle = match.handle;
+    return (
+      handle &&
+      typeof handle === "object" &&
+      "showSeats" in handle &&
+      handle.showSeats === true
+    );
+  });
 }

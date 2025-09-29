@@ -31,6 +31,7 @@ export function meta({ matches }: Route.MetaArgs) {
 
 export let handle = {
   hideBackground: true,
+  showSeats: true,
 };
 
 export default function JamLineupPage({ loaderData }: Route.ComponentProps) {
