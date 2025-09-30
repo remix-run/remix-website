@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { href, Link } from "react-router";
 import { AddressLink } from "../utils";
 import { ScrambleText, Title, Subheader, Paragraph } from "../text";
 import { getMeta } from "~/lib/meta";
@@ -39,7 +39,42 @@ export default function JamFAQPage() {
       <div className="relative z-10 text-justify text-base text-white md:text-lg">
         <FAQSection
           question="Where can I find the event lineup?"
-          answer="Our lineup will be announced in July with a range of speakers and topics. Be sure to sign up for the Remix Newsletter to get notified when it's announced!"
+          answer={
+            <Paragraph>
+              Checkout our full{" "}
+              <Link to={href("/jam/2025/lineup")}>Schedule & Lineup</Link> for
+              the list of speakers and topics, as well as all the day-of
+              information you need.
+            </Paragraph>
+          }
+        />
+
+        <FAQSection
+          question="Where will the event be hosted?"
+          answer={
+            <>
+              <Paragraph>
+                The Remix team is hosting this event at the Shopify Toronto
+                office: <AddressLink />.
+              </Paragraph>
+              <Paragraph>
+                Check-in starts at{" "}
+                <strong className="font-bold text-white">8:30 AM</strong> in the
+                lobby. Enter on the west side of the building on Waterloo
+                Terrace.
+              </Paragraph>
+            </>
+          }
+        />
+
+        <FAQSection
+          question="Will there be a bag check?"
+          answer={
+            <Paragraph>
+              Yes, there will be bag and coat check available all day on L11
+              (the first floor you will go to after registration).
+            </Paragraph>
+          }
         />
 
         <FAQSection
@@ -59,18 +94,6 @@ export default function JamFAQPage() {
         />
 
         <FAQSection
-          question="Where will the event be hosted?"
-          answer={
-            <>
-              <Paragraph>
-                The Remix team is hosting this event in conjunction with Shopify
-                at <AddressLink />.
-              </Paragraph>
-            </>
-          }
-        />
-
-        <FAQSection
           question="Where should I stay?"
           answer={
             <>
@@ -81,7 +104,6 @@ export default function JamFAQPage() {
                     href="https://reservation.germainhotels.com/ibe/details.aspx?propertyid=17522&nights=2&checkin=10/09/2025&group=2510SHOPIF&lang=en-us&adults=2"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline"
                   >
                     Le Germain Mercer
                   </a>{" "}
@@ -92,7 +114,6 @@ export default function JamFAQPage() {
                     href="https://www.hyatt.com/en-US/group-booking/TORRT/G-SH0F"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline"
                   >
                     Hyatt Regency Toronto
                   </a>{" "}
@@ -101,7 +122,7 @@ export default function JamFAQPage() {
               </ul>
 
               <Paragraph className="font-bold text-white">
-                You must select the dates Oct 9-11.
+                <strong> You must select the dates Oct 9-11.</strong>
               </Paragraph>
             </>
           }
@@ -122,7 +143,6 @@ export default function JamFAQPage() {
                   href="https://ircc.canada.ca/english/visit/visas.asp"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:underline"
                 >
                   if you need a visa
                 </a>{" "}
@@ -134,7 +154,6 @@ export default function JamFAQPage() {
                   href="https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:underline"
                 >
                   visa processing times
                 </a>

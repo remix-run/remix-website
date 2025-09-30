@@ -252,5 +252,14 @@ export function Paragraph({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <p className={clsx("text-white/80", className)}>{children}</p>;
+  return (
+    <p
+      className={clsx(
+        "text-white/80 [&_a:hover]:underline [&_a]:text-blue-400",
+        className,
+      )}
+    >
+      {children}
+    </p>
+  );
 }
