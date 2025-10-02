@@ -70,7 +70,7 @@ export default function JamLineupPage({ loaderData }: Route.ComponentProps) {
 }
 
 let gridColsClassName =
-  "grid grid-cols-[65px_1fr_auto] gap-4 sm:grid-cols-[100px_1fr_1fr_24px] sm:gap-6 md:grid-cols-[120px_1fr_1fr_24px] md:gap-8 lg:grid-cols-[150px_1fr_1fr_24px] lg:gap-12";
+  "grid grid-cols-[75px_1fr_auto] gap-4 sm:grid-cols-[100px_1fr_1fr_24px] sm:gap-6 md:grid-cols-[120px_1fr_1fr_24px] md:gap-8 lg:grid-cols-[150px_1fr_1fr_24px] lg:gap-12";
 
 function Schedule({
   items,
@@ -109,7 +109,7 @@ function Schedule({
               gridColsClassName,
             )}
           >
-            <div>Time</div>
+            <div>Time (UTC-04:00)</div>
             <div>Topic</div>
             <div>Speaker</div>
           </div>
@@ -137,9 +137,13 @@ function ScheduleItemMobile({ item }: ScheduleItemProps) {
           gridColsClassName,
         )}
       >
-        <span className="font-normal text-white/60">{item.time}</span>
+        <span>
+          {item.time}
+          <br />
+          <span className="text-xs font-normal text-white/60">(UTC-04:00)</span>
+        </span>
         <span>{item.title}</span>
-        <span className="font-normal text-white/60">{item.speaker}</span>
+        <span>{item.speaker}</span>
       </div>
       <div className="pb-6">
         <div className={clsx("px-6", gridColsClassName)}>
