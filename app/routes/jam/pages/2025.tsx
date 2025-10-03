@@ -16,30 +16,29 @@ type EventStatus = "before" | "live" | "after";
 
 export function loader() {
   // Get current time in Toronto timezone
-  const now = new Date();
-  // const now = new Date("2025-10-10T04:00:00Z");
-  const torontoTime = new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/Toronto",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(now);
+  // const now = new Date();
+  const now = new Date("2025-10-10T22:00:00Z"); // 6 PM Toronto time
 
-  // Parse the formatted date (MM/DD/YYYY)
-  const [month, day, year] = torontoTime.split("/").map(Number);
-  const torontoDate = new Date(year, month - 1, day);
-  const eventDate = new Date(2025, 9, 10); // October 10, 2025 (month is 0-indexed)
+  // Get the current time in Toronto timezone as an ISO string
+  const torontoTimeString = now.toLocaleString("en-US", {
+    timeZone: "America/Toronto",
+  });
+  const torontoNow = new Date(torontoTimeString);
+
+  // Event is October 10, 2025
+  const eventStartDate = new Date(2025, 9, 10, 0, 0, 0); // Oct 10 at midnight
+  const eventEndDate = new Date(2025, 9, 10, 18, 0, 0); // Oct 10 at 6 PM
 
   let eventStatus: EventStatus;
-  if (torontoDate < eventDate) {
+  if (torontoNow < eventStartDate) {
     eventStatus = "before";
-  } else if (torontoDate.getTime() === eventDate.getTime()) {
+  } else if (torontoNow >= eventStartDate && torontoNow < eventEndDate) {
     eventStatus = "live";
   } else {
     eventStatus = "after";
   }
 
-  return { eventStatus, now };
+  return { eventStatus };
 }
 
 export function meta({ matches }: Route.MetaArgs) {
@@ -57,8 +56,6 @@ export function meta({ matches }: Route.MetaArgs) {
 }
 
 export default function RemixJam2025({ loaderData }: Route.ComponentProps) {
-  console.log(loaderData.now);
-
   return (
     <>
       <div className="relative z-30">
