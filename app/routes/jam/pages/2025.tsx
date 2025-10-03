@@ -39,7 +39,7 @@ export function loader() {
     eventStatus = "after";
   }
 
-  return { eventStatus };
+  return { eventStatus, now };
 }
 
 export function meta({ matches }: Route.MetaArgs) {
@@ -57,6 +57,8 @@ export function meta({ matches }: Route.MetaArgs) {
 }
 
 export default function RemixJam2025({ loaderData }: Route.ComponentProps) {
+  console.log(loaderData.now);
+
   return (
     <>
       <div className="relative z-30">
