@@ -16,8 +16,7 @@ type EventStatus = "before" | "live" | "after";
 
 export function loader() {
   // Get current time in Toronto timezone
-  // const now = new Date();
-  const now = new Date("2025-10-10T22:00:00Z"); // 6 PM Toronto time
+  const now = new Date();
 
   // Get the current time in Toronto timezone as an ISO string
   const torontoTimeString = now.toLocaleString("en-US", {
