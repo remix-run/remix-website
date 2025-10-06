@@ -5,11 +5,40 @@ import { getSubscribeStatus } from "~/ui/subscribe";
 import { AddressMain, usePrefersReducedMotion } from "../utils";
 import { clsx } from "clsx";
 import { Keepsakes } from "../keepsakes";
-import { ScrambleText, SectionLabel, Title, InfoText } from "../text";
+import { ScrambleText, SectionLabel, Title } from "../text";
 import ogImageSrc from "../images/og-thumbnail-1.jpg";
+import iconsHref from "~/icons.svg";
 
 import type { Route } from "./+types/2025";
 import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
+
+type EventStatus = "before" | "live" | "after";
+
+export function loader() {
+  // Get current time in Toronto timezone
+  const now = new Date();
+
+  // Get the current time in Toronto timezone as an ISO string
+  const torontoTimeString = now.toLocaleString("en-US", {
+    timeZone: "America/Toronto",
+  });
+  const torontoNow = new Date(torontoTimeString);
+
+  // Event is October 10, 2025
+  const eventStartDate = new Date(2025, 9, 10, 0, 0, 0); // Oct 10 at midnight
+  const eventEndDate = new Date(2025, 9, 10, 18, 0, 0); // Oct 10 at 6 PM
+
+  let eventStatus: EventStatus;
+  if (torontoNow < eventStartDate) {
+    eventStatus = "before";
+  } else if (torontoNow >= eventStartDate && torontoNow < eventEndDate) {
+    eventStatus = "live";
+  } else {
+    eventStatus = "after";
+  }
+
+  return { eventStatus };
+}
 
 export function meta({ matches }: Route.MetaArgs) {
   const [rootMatch] = matches;
@@ -25,14 +54,14 @@ export function meta({ matches }: Route.MetaArgs) {
   });
 }
 
-export default function RemixJam2025() {
+export default function RemixJam2025({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <div className="relative z-30">
         <Keepsakes />
       </div>
 
-      <EventDetails />
+      <EventDetails eventStatus={loaderData.eventStatus} />
 
       {/* Spacer */}
       <div className="h-[100px] w-full" />
@@ -42,38 +71,73 @@ export default function RemixJam2025() {
   );
 }
 
-function EventDetails() {
+const sectionLabelText: Record<EventStatus, string> = {
+  before: "Pack Your Bags",
+  live: "Streaming from Shopify Toronto",
+  after: "In Case You Missed It",
+};
+
+const badgeText: Record<EventStatus, React.ReactNode> = {
+  before: "Event",
+  live: "Live",
+  after: (
+    <>
+      Rewind
+      <svg
+        className="size-6 rotate-180 md:size-12 lg:size-14"
+        aria-hidden="true"
+      >
+        <use href={`${iconsHref}#fast-forward`} />
+      </svg>
+    </>
+  ),
+};
+
+function EventDetails({ eventStatus }: { eventStatus: EventStatus }) {
   return (
     <main className="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]">
-      <SectionLabel>Pack Your Bags</SectionLabel>
+      <SectionLabel>{sectionLabelText[eventStatus]}</SectionLabel>
 
       <Title>
         <ScrambleText text="Remix Jam" delay={100} color="blue" />
         <span className="flex items-center justify-center gap-3 md:gap-5">
           <ScrambleText text="Toronto" delay={400} color="green" />
-          <FadeInBadge delay={1200} />
+
+          <FadeInBadge
+            delay={1200}
+            className={clsx(
+              "flex items-center justify-center gap-2 md:gap-4",
+              eventStatus === "live"
+                ? "bg-red-brand text-white"
+                : "text-white ring-4 ring-inset ring-white md:ring-[6px]",
+            )}
+          >
+            {badgeText[eventStatus]}
+          </FadeInBadge>
         </span>
-        <ScrambleText
-          text="October 10 2025"
-          delay={700}
-          charDelay={80}
-          cyclesToResolve={8}
-          color="yellow"
-          className="whitespace-nowrap"
-        />
       </Title>
 
-      <SectionLabel>Overview</SectionLabel>
-      <InfoText>
-        Join us in person for a special event — to learn about our shared past,
-        present, and future — hosted by the Remix team & Shopify in the heart of
-        Toronto.
-      </InfoText>
-
-      <SectionLabel>Location</SectionLabel>
-      <div className="z-10 flex flex-col items-center gap-6 md:gap-8">
-        <AddressMain />
+      <div className="z-10 w-full">
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+          <iframe
+            className="absolute inset-0 h-full w-full"
+            src="https://www.youtube.com/embed/xt_iEOn2a6Y?si=paROll6GT5taxAdl"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        </div>
       </div>
+
+      {eventStatus === "before" ? (
+        <>
+          <SectionLabel>Location</SectionLabel>
+          <div className="z-10 flex flex-col items-center gap-6 md:gap-8">
+            <AddressMain />
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }
@@ -81,7 +145,15 @@ function EventDetails() {
 /**
  * Simple component that fades in after a delay
  */
-function FadeInBadge({ delay = 0 }: { delay?: number }) {
+function FadeInBadge({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -95,22 +167,19 @@ function FadeInBadge({ delay = 0 }: { delay?: number }) {
     return () => clearTimeout(timeout);
   }, [delay, prefersReducedMotion]);
 
-  const badgeClasses =
-    "rounded-full px-4 py-3 text-xl leading-none ring-4 ring-inset ring-white md:px-8 md:py-5 md:text-4xl md:ring-[6px]";
-
   return (
     <>
-      <span className="sr-only">Event</span>
       <span
         className={clsx(
-          badgeClasses,
+          "rounded-full px-4 py-3 text-xl leading-none md:px-8 md:py-5 md:text-4xl",
           !prefersReducedMotion && [
             "transition-opacity duration-500",
             isVisible ? "opacity-100" : "opacity-0",
           ],
+          className,
         )}
       >
-        Event
+        {children}
       </span>
     </>
   );
@@ -123,8 +192,7 @@ function NewsletterSignup({ className }: { className?: string }) {
   return (
     <aside id="newsletter" className="mx-auto max-w-2xl text-center text-base">
       <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
-        Sign up for our Newsletter to be stay up to date on any announcements,
-        lineup changes, or additional details about Remix Jam
+        Sign up for our Newsletter for the latest Remix Jam news and updates
       </h2>
 
       <subscribe.Form
