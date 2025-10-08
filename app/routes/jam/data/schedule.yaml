@@ -41,7 +41,7 @@
     and [podcaster](https://kentcdodds.com/calls). Kent is married and the 
     father of five kids and he lives in Utah.
 
-- time: "11:15 AM"
+- time: "11:00 AM"
   title: "Remixing Shopify's Admin"
   description: >-
     A technical deep dive into how Shopify is transforming one of the world's
@@ -64,15 +64,7 @@
     with large language models, bridging the gap between traditional web 
     development and AI-powered experiences.
 
-- time: "12:00 PM"
-  title: "Lunch"
-  imgFilename: "toronto-port-nook.webp"
-  description: >-
-    Take a break and enjoy lunch with fellow attendees. This is a great time to
-    discuss the morning talks and make new connections.
-  speaker: 🥪
-
-- time: "1:30 PM"
+- time: "11:30 AM"
   title: "Building Sidekick: An AI Assistant People Actually Use"
   description: >-
     Sidekick is Shopify's AI Assistant that lives inside the Shopify Admin,
@@ -94,7 +86,15 @@
     Felipe is Senior Development Manager working on Sidekick for the past 2+ years. He started working on Sidekick as Senior Staff Developer focused on integrating Sidekick with the Admin, proposing a schema first form library targeting AI integrations and has been deeply involved in everything related to Sidekick since then. Prior to that he led engineering for Shopify Email. He's passionate about front-end architecture, scuba diving and lives in Rio de Janeiro, Brazil with his family and corgi.
   imgFilename: "felipe.webp"
 
-- time: "2:15 PM"
+- time: "12:00 PM"
+  title: "Lunch"
+  imgFilename: "toronto-port-nook.webp"
+  description: >-
+    Take a break and enjoy lunch with fellow attendees. This is a great time to
+    discuss the morning talks and make new connections.
+  speaker: 🥪
+
+- time: "1:30 PM"
   title: "Introducing Remix 3 — Part 1"
   description: >-
     Remix 3 is a look into the future of web development.
