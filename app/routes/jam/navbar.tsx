@@ -56,8 +56,8 @@ function MobileMenu() {
         </svg>
       </summary>
       <div className="absolute right-0 z-20 min-w-fit lg:left-0">
-        <div className="top-1 p-1">
-          <nav className="flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg">
+        <div className="top-1 min-w-fit p-1">
+          <nav className="flex min-w-fit flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg">
             <MobileNavLink to={href("/jam/2025/lineup")}>
               Schedule & Lineup
             </MobileNavLink>
