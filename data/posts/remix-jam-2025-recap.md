@@ -26,7 +26,7 @@ _[The full livestream](https://youtu.be/xt_iEOn2a6Y?t=656) is still up on our Yo
 
 <iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/3cX2Zsr7jBQ?si=P0I3BFxBSiExF2i5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-The one and only Kent C. Dodds kicked off the day by arguing that it’s time to stop shoving chatbots into every app and instead wire our apps into agents. The shift is from “add a chat UI” to “give models real tools” with the Model Context Protocol (MCP) as the bridge.
+The one and only Kent C. Dodds kicked off the day by arguing that it’s time to stop "adding a chatbot to your app" and instead start "adding your app to the chatbot".  He talked about how to make your app agent friendly with the Model Context Protocol (MCP).
 
 Kent shared how Evan Bacon's ["Universal React Server Components"](https://www.youtube.com/watch?v=djhEgxQf3Kw) talk at React Conf 2024 started the gears turning for him, not because of RSC per se, but because Evan showed a model responding with UI. Kent saw the advent and proliferation of AI as our opportunity to build [JARVIS](https://en.wikipedia.org/wiki/J.A.R.V.I.S.). But now with companies like OpenAI allowing developers to leverage protocols like [MCP-UI](https://mcpui.dev/) Kent's takeaway is that we don't have to build JARVIS, we can just build JARVIS's hands.
 
