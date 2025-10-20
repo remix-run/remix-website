@@ -88,7 +88,7 @@ Ryan and Michael kicked off their 3.25 hours worth of demos by talking about the
 
 They were there from the very beginning with React. At the time React was such a breath of fresh air, with its declarative and composable API and component model, it allowed developers to create reusable and rich user interactions.
 
-Over the past decade+, working in the React ecosystem has felt like climbing a mountain. There's been a lot of cool things, and especially recently they've been inspired by the direction of more recent APIs like Suspense, Server Components, Server Actions, etc. But now that they're at what feels like the top of the mountain, and experiencing the complexity of modern React, they find themselves looking around from this new vista and they think they see a bigger, potentially better mountain.
+For more than a decade now, working in the React ecosystem has felt like climbing a mountain. There's been a lot of cool things, and especially recently they've been inspired by the direction of more recent APIs like Suspense, Server Components, Server Actions, etc. But now that they're at what feels like the top of the mountain, and experiencing the complexity of modern React, they find themselves looking around from this new vista and they think they see a bigger, potentially better mountain.
 
 Continuing with the metaphor, Michael and Ryan setup their talks saying they're hiking back down the mountain and taking stock of what the web and JavaScript gives us these days, things that were not true back when React first came around. Things like:
 
@@ -250,11 +250,11 @@ export default {
 } satisfies RouteHandlers<typeof routes.books>;
 ```
 
-Finally, Ryan joined Michael to tie it all together and showed 2 of the most exciting pieces:
+Finally, Ryan joined Michael to tie it all together and showed two of the most exciting pieces:
 
 `hydrated()` and `Frame`.
 
-There's a lot more that needs to be said about these 2 new APIs, but essentially:
+There's a lot more that needs to be said about these new APIs, but essentially:
 
 - `hydrated()` is the way to selectively hydrate a component to run JavaScript on the client-side (kind of like React's `"use client"`)
 - `Frame` is the primitive for async UI, heavily inspired by iframes (though not actually built on them)
