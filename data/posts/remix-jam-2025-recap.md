@@ -261,7 +261,7 @@ It's a simple model with powerful primitives and technology, inspired by the bes
 
 ## What's Next
 
-TODO: add image here
+![Remix Demo CDs in a display case with a hand reaching in to grab one](/blog-images/posts/remix-jam-2025-recap/remix-demo-cd.webp)
 
 You're probably wondering when we'll release Remix 3, what else we plan to include, and how to play with the code yourself.
 
