@@ -1,7 +1,7 @@
 ---
 title: "Remix Jam 2025 Recap"
 summary: Remix Jam was really good. In case you missed it, here's a recap.
-date: 2025-10-17
+date: 2025-10-20
 image: /blog-images/headers/remix-jam-2025-recap.jpg
 ogImage: /blog-images/headers/remix-jam-2025-recap.jpg
 imageAlt: Glowing tree
