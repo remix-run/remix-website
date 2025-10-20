@@ -38,7 +38,7 @@ We were especially glad to have Kent here with his eye on the future of developm
 
 <iframe style="width:100%;aspect-ratio:16/9;" src="https://www.youtube.com/embed/AHDqWjYcrYU?si=LfjUHUZNiQlgMlXk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-Craig Brunner, a Principal Engineer at Shopify, took us inside one of the largest TypeScript apps on the planet: Shopify Admin. He showed how his team leveraged Remix concepts, patterns, and tools to improve the developer experience and performance of the app.
+Craig Brunner, a Principal Engineer at Shopify, took us inside one of the largest TypeScript and React Router apps on the planet: Shopify Admin. He showed how his team leveraged Remix concepts, patterns, and tools to improve the developer experience and performance of the app.
 
 Shopify Admin has:
 
