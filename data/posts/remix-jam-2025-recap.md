@@ -165,11 +165,9 @@ It's definitely worth watching the full talk to see Michael walk through the cod
 
 ```ts
 // routes.ts
-import { route, formAction, resources } from "@remix-run/fetch-router";
+import { route } from "@remix-run/fetch-router";
 
 export let routes = route({
-  assets: "/assets/*path",
-  images: "/images/*path",
   uploads: "/uploads/*key",
 
   // Public book routes
@@ -187,25 +185,14 @@ Next, you need to define what happens at each route using your route handlers. E
 // router.ts
 
 import { createRouter } from "@remix-run/fetch-router";
-import { logger } from "@remix-run/fetch-router/logger-middleware";
 import { routes } from "../routes.ts";
 import { storeContext } from "./middleware/context.ts";
 import { uploadHandler } from "./utils/uploads.ts";
 import booksHandlers from "./books.tsx";
-import * as publicHandlers from "./public.ts";
-import { uploadsHandler } from "./uploads.tsx";
 
 export let router = createRouter({ uploadHandler });
 
 router.use(storeContext);
-
-if (process.env.NODE_ENV === "development") {
-  router.use(logger());
-}
-
-router.get(routes.assets, publicHandlers.assets);
-router.get(routes.images, publicHandlers.images);
-router.get(routes.uploads, uploadsHandler);
 
 router.map(routes.books, booksHandlers);
 ```
@@ -215,23 +202,10 @@ Then in each handler you can return a simple response or render Remix components
 ```tsx
 // books.tsx
 import type { RouteHandlers } from "@remix-run/fetch-router";
-import { Frame } from "@remix-run/dom";
 import { routes } from "../routes.ts";
 
 export default {
-  use: [loadAuth],
   handlers: {
-    index() {
-      let books = getAllBooks();
-
-      return render(
-        <Layout>
-          <h1>Browse Books</h1>
-          {/* ... search and filter UI ... */}
-        </Layout>,
-      );
-    },
-
     show({ params }) {
       let book = getBookBySlug(params.slug);
       if (!book) {
@@ -242,6 +216,8 @@ export default {
         <Layout>{/* ... book details and add to cart form ... */}</Layout>,
       );
     },
+
+    // ... more handlers ...
   },
 } satisfies RouteHandlers<typeof routes.books>;
 ```
