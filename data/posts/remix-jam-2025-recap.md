@@ -48,7 +48,7 @@ Shopify Admin has:
 - 350+ PRs merged every day
 - 1,000+ routes
 
-Craig shared how the team migrated to Vite and React Router, leveraged route manifests as the source of truth for routing, and leaned into `loaders`/`actions` to initialize data fetching as early as possible and keep data and mutations close to routes. His team did a lot of work to standardize patterns, such as lazy-loading code and assets, and replaced skeletons with [View Transitions](https://reactrouter.com/how-to/view-transitions) so the UI feels instant while avoiding any flickering or jank. Craig also demoed some cool internal devtools his team built to help with debugging, made possible by the consolidation of route definitions.
+Craig shared how the team migrated to Vite and React Router's Data Mode, leveraged route manifests as the source of truth for routing, and leaned into `loaders`/`actions` to initialize data fetching as early as possible and keep data and mutations close to routes. His team did a lot of work to standardize patterns, such as lazy-loading code and assets, and replaced skeletons with [View Transitions](https://reactrouter.com/how-to/view-transitions) so the UI feels instant while avoiding any flickering or jank. Craig also demoed some cool internal devtools his team built to help with debugging, made possible by the consolidation of route definitions.
 
 Craig wrapped up by showing off a brand new feature called _Intents_. Intents are a way to launch any page from anywhere inside Shopify Admin as a new router instance that stacks on top of the current UI. It’s a great abstraction for third-party app developers, as well as for an AI agent to interact with directly (see the next talk).
 
