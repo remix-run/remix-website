@@ -95,7 +95,7 @@ export async function loader() {
     };
   });
 
-  return { photos: optimizedPhotos.slice(0, 20) };
+  return { photos: optimizedPhotos };
 }
 
 function getPrevPhotoIndex(currentIndex: number, totalPhotos: number): number {
@@ -197,18 +197,6 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
         <div className="w-full columns-1 gap-4 md:columns-2 md:gap-6 lg:columns-3 2xl:columns-4">
           {photos.map((photo, index: number) => {
             // Progressive enhancement: regular link before hydration, modal after
-            let imageElement = (
-              <img
-                src={photo.src}
-                srcSet={photo.srcSet}
-                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw"
-                alt={photo.altText || ""}
-                loading="lazy"
-                width={photo.width}
-                height={photo.height}
-                className="w-full select-none transition-transform duration-300 hover:scale-105"
-              />
-            );
 
             if (!isHydrated) {
               // Before hydration: link directly to full resolution image
@@ -220,7 +208,7 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
                   rel="noopener noreferrer"
                   className="mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg bg-white/5 transition-opacity hover:opacity-80 md:mb-6"
                 >
-                  {imageElement}
+                  <Photo {...photo} />
                 </a>
               );
             }
@@ -232,14 +220,13 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
                 to={`?photo=${index}`}
                 className="mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg bg-white/5 transition-opacity hover:opacity-80 md:mb-6"
               >
-                {imageElement}
+                <Photo {...photo} />
               </Link>
             );
           })}
         </div>
       )}
 
-      {/* Only render modal when hydrated since it requires JavaScript */}
       {isHydrated && selectedPhoto && photoIndex !== null && (
         <dialog
           ref={dialogRef}
@@ -248,7 +235,7 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
           className="h-dvh w-dvw select-none bg-transparent p-0 backdrop:bg-black/60 backdrop:backdrop-blur"
         >
           <div className="relative flex h-full w-full flex-col gap-6 p-0 md:p-6">
-            {/* Top Controls */}
+            {" "}
             <div className="flex shrink-0 items-center justify-between">
               <IconLink to="." icon="x-mark" aria-label="Close modal" />
 
@@ -264,8 +251,6 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
                 aria-label="Download full resolution image"
               />
             </div>
-
-            {/* Image Container with Navigation */}
             <div
               className="relative flex flex-1 items-center justify-center overflow-hidden"
               onClick={handleBackdropClick}
@@ -287,7 +272,6 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
                 />
               </div>
 
-              {/* Image */}
               <img
                 src={selectedPhoto.modalSrc}
                 alt={selectedPhoto.altText || ""}
@@ -298,8 +282,6 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
                 onClick={(e) => e.stopPropagation()}
               />
             </div>
-
-            {/* Photo Counter */}
             <div className="flex shrink-0 justify-center">
               <div className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black">
                 {photoIndex + 1} / {photos.length}
@@ -345,5 +327,16 @@ function IconButton({
         <use href={`${iconsHref}#${icon}`} />
       </svg>
     </button>
+  );
+}
+
+function Photo(props: React.ImgHTMLAttributes<HTMLImageElement>) {
+  return (
+    <img
+      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw"
+      loading="lazy"
+      className="w-full select-none transition-transform duration-300 hover:scale-105"
+      {...props}
+    />
   );
 }
