@@ -1,19 +1,24 @@
+import { useEffect, useRef } from "react";
+import { clsx } from "clsx";
+import {
+  Link,
+  useNavigate,
+  useSearchParams,
+  type LinkProps,
+  type MetaFunction,
+  type ShouldRevalidateFunctionArgs,
+} from "react-router";
+
 import { getMeta } from "~/lib/meta";
-import { Title, ScrambleText } from "../text";
+import { useHydrated, useLayoutEffect } from "~/ui/primitives/utils";
+
 import { getPhotos } from "../storefront.server";
+import { Title, ScrambleText } from "../text";
 import { transformShopifyImageUrl } from "../utils";
 import ogImageSrc from "../images/og-gallery.jpg";
-import type {
-  LinkProps,
-  MetaFunction,
-  ShouldRevalidateFunctionArgs,
-} from "react-router";
-import { useSearchParams, useNavigate, Link } from "react-router";
-import { useEffect, useRef } from "react";
 import type { Route } from "./+types/2025.gallery";
-import { useHydrated, useLayoutEffect } from "~/ui/primitives/utils";
+
 import iconsHref from "~/icons.svg";
-import { clsx } from "clsx";
 
 export let handle = {
   hideBackground: true,
@@ -86,28 +91,21 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
         <p className="text-lg text-white/70">No photos available yet.</p>
       ) : (
         <div className="w-full columns-1 gap-4 md:columns-2 md:gap-6 lg:columns-3 2xl:columns-4">
-          {photos.map((photo, index: number) => {
-            // Progressive enhancement: regular link before hydration, modal after
-
-            // After hydration: open modal
-            return (
-              <Link
-                key={photo.url}
-                {...(!isHydrated
-                  ? {
-                      to: photo.url,
-                      target: "_blank",
-                      rel: "noopener noreferrer",
-                    }
-                  : {
-                      to: `?photo=${index}`,
-                    })}
-                className="focus-visible:outline-offset-3 mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-blue-300 md:mb-6"
-              >
-                <Photo {...photo} />
-              </Link>
-            );
-          })}
+          {photos.map((photo, index) => (
+            <Link
+              key={photo.url}
+              {...(!isHydrated
+                ? {
+                    to: photo.url,
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                  }
+                : { to: `?photo=${index}` })}
+              className="focus-visible:outline-offset-3 mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-blue-300 md:mb-6"
+            >
+              <Photo {...photo} />
+            </Link>
+          ))}
         </div>
       )}
 
@@ -131,7 +129,6 @@ function PhotoModal({ photos }: { photos: Photo[] }) {
 
   useDialogAccessibility(dialogRef, selectedPhoto !== null);
 
-  // Keyboard navigation (arrow keys)
   useEffect(() => {
     if (photoIndex === null) return;
 
@@ -195,7 +192,6 @@ function PhotoModal({ photos }: { photos: Photo[] }) {
       className="h-dvh w-dvw select-none bg-transparent p-0 backdrop:bg-black/60 backdrop:backdrop-blur"
     >
       <div className="relative flex h-full w-full flex-col gap-6 p-0 md:p-6">
-        {" "}
         <div className="flex shrink-0 items-center justify-between">
           <IconLink
             to="."
@@ -220,7 +216,6 @@ function PhotoModal({ photos }: { photos: Photo[] }) {
           className="relative flex flex-1 items-center justify-center overflow-hidden"
           onClick={handleBackdropClick}
         >
-          {/* Navigation Buttons */}
           <div className="absolute left-0 top-1/2 z-10 -translate-y-1/2">
             <IconLink
               to={`?photo=${prevPhotoIndex}`}
@@ -322,9 +317,6 @@ function Photo({ url, altText, width, height }: Photo) {
   );
 }
 
-/**
- * Modal image with preloading for adjacent photos
- */
 function ModalImage({
   photo,
   prevPhoto,
@@ -340,21 +332,19 @@ function ModalImage({
       format: "webp",
       quality: 75,
     });
+
   return (
     <>
-      {
-        // Preload adjacent images for instant navigation
-        [prevPhoto, nextPhoto].map(({ url }) => (
-          <img
-            key={url}
-            src={imgSrc(url)}
-            alt=""
-            loading="eager"
-            className="hidden"
-            aria-hidden="true"
-          />
-        ))
-      }
+      {[prevPhoto, nextPhoto].map(({ url }) => (
+        <img
+          key={url}
+          src={imgSrc(url)}
+          alt=""
+          loading="eager"
+          className="hidden"
+          aria-hidden="true"
+        />
+      ))}
 
       <img
         key={photo.url}
@@ -370,9 +360,6 @@ function ModalImage({
   );
 }
 
-/**
- * Manages dialog accessibility: scroll lock and focus trap
- */
 function useDialogAccessibility(
   dialogRef: React.RefObject<HTMLDialogElement>,
   isOpen: boolean,
@@ -382,20 +369,17 @@ function useDialogAccessibility(
     if (!dialogNode) return;
 
     let lockScroll = () => {
-      // Preserve current scroll position by fixing the body in place
       let y = window.scrollY;
       document.body.style.position = "fixed";
       document.body.style.top = `-${y}px`;
     };
 
     let unlockScroll = () => {
-      // Restore scroll position and clear styles
       let top = document.body.style.top;
       document.body.style.position = "";
       document.body.style.top = "";
       if (top) {
-        let y = -parseInt(top, 10) || 0;
-        window.scrollTo(0, y);
+        window.scrollTo(0, -parseInt(top, 10) || 0);
       }
     };
 
@@ -405,26 +389,20 @@ function useDialogAccessibility(
       Array.from(dialogNode.querySelectorAll<HTMLElement>(focusableSelector));
 
     let handleFocusTrap = (e: KeyboardEvent) => {
-      if (e.key === "Tab") {
-        let focusableElements = getFocusableElements();
-        if (focusableElements.length === 0) return;
+      if (e.key !== "Tab") return;
 
-        let firstElement = focusableElements[0];
-        let lastElement = focusableElements[focusableElements.length - 1];
+      let focusableElements = getFocusableElements();
+      if (focusableElements.length === 0) return;
 
-        if (e.shiftKey) {
-          // Shift+Tab: if on first element, wrap to last
-          if (document.activeElement === firstElement) {
-            e.preventDefault();
-            lastElement.focus();
-          }
-        } else {
-          // Tab: if on last element, wrap to first
-          if (document.activeElement === lastElement) {
-            e.preventDefault();
-            firstElement.focus();
-          }
-        }
+      let firstElement = focusableElements[0];
+      let lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
       }
     };
 
