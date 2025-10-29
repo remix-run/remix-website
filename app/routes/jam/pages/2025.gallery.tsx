@@ -8,11 +8,14 @@ import type {
   ShouldRevalidateFunctionArgs,
 } from "react-router";
 import { useSearchParams, useNavigate, Link } from "react-router";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { Route } from "./+types/2025.gallery";
-import { useHydrated } from "~/ui/primitives/utils";
+import { useHydrated, useLayoutEffect } from "~/ui/primitives/utils";
 import iconsHref from "~/icons.svg";
 import { clsx } from "clsx";
+
+// Add a pending loading navigation state when a new image is loading
+// Cleanup code, particularly moving useEffect and download logic down
 
 export let handle = {
   hideBackground: true,
@@ -122,18 +125,39 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
 
   // Combined effect: manage dialog state and body scroll
   useLayoutEffect(() => {
-    if (selectedPhoto && dialogRef.current) {
-      dialogRef.current.showModal();
-      document.body.style.overflow = "hidden";
-    } else if (dialogRef.current) {
-      dialogRef.current.close();
-      document.body.style.overflow = "";
+    let dialogNode = dialogRef.current;
+    if (!dialogNode) return;
+
+    let lock = () => {
+      // Preserve current scroll position by fixing the body in place
+      let y = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${y}px`;
+    };
+
+    let unlock = () => {
+      // Restore scroll position and clear styles
+      let top = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      if (top) {
+        let y = -parseInt(top, 10) || 0;
+        window.scrollTo(0, y);
+      }
+    };
+
+    if (selectedPhoto) {
+      dialogNode.showModal();
+      lock();
+    } else {
+      dialogNode.close();
+      unlock();
     }
 
     return () => {
-      document.body.style.overflow = "";
+      unlock();
     };
-  }, [selectedPhoto, isHydrated]);
+  }, [selectedPhoto]);
 
   // Keyboard navigation (arrow keys)
   useEffect(() => {
@@ -153,7 +177,8 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [photoIndex, photos.length, navigate]);
 
-  let closeModal = () => navigate(".", { replace: true });
+  let closeModal = () =>
+    navigate(".", { replace: true, preventScrollReset: true });
 
   let handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) closeModal();
@@ -227,7 +252,7 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
         </div>
       )}
 
-      {isHydrated && selectedPhoto && photoIndex !== null && (
+      {selectedPhoto && photoIndex !== null && (
         <dialog
           ref={dialogRef}
           onClose={closeModal}
@@ -237,7 +262,12 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
           <div className="relative flex h-full w-full flex-col gap-6 p-0 md:p-6">
             {" "}
             <div className="flex shrink-0 items-center justify-between">
-              <IconLink to="." icon="x-mark" aria-label="Close modal" />
+              <IconLink
+                to="."
+                icon="x-mark"
+                aria-label="Close modal"
+                preventScrollReset
+              />
 
               <IconButton
                 onClick={(e) => {
@@ -330,13 +360,23 @@ function IconButton({
   );
 }
 
-function Photo(props: React.ImgHTMLAttributes<HTMLImageElement>) {
+function Photo({
+  src,
+  srcSet,
+  altText,
+  width,
+  height,
+}: Route.ComponentProps["loaderData"]["photos"][0]) {
   return (
     <img
+      src={src}
+      srcSet={srcSet}
+      alt={altText || ""}
+      width={width}
+      height={height}
       sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw"
       loading="lazy"
       className="w-full select-none transition-transform duration-300 hover:scale-105"
-      {...props}
     />
   );
 }
