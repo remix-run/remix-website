@@ -350,8 +350,6 @@ function ModalImage({
         src={imgSrc(photo.url)}
         alt={photo.altText || ""}
         loading="eager"
-        width={photo.width}
-        height={photo.height}
         className="-mx-6 max-h-full max-w-full rounded-xl object-contain transition-opacity duration-200 md:mx-0"
         onClick={(e) => e.stopPropagation()}
       />
