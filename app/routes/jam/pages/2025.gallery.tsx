@@ -92,7 +92,7 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
             // After hydration: open modal
             return (
               <Link
-                key={index}
+                key={photo.url}
                 {...(!isHydrated
                   ? {
                       to: photo.url,
