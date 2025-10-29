@@ -33,11 +33,19 @@ export let meta: MetaFunction = ({ matches }) => {
 
   return getMeta({
     title: "Photo Gallery | Remix Jam 2025",
-    description: "Photos from Remix Jam 2025 in Toronto",
+    description: "Photos from Remix Jam 2025",
     siteUrl: `${siteUrl}/jam/2025/gallery`,
     image,
   });
 };
+
+export async function loader() {
+  let photos = await Promise.all([
+    getPhotos("remix-jam-2025-photos-1"),
+    getPhotos("remix-jam-2025-photos-2"),
+  ]).then((p) => p.flat());
+  return { photos };
+}
 
 export function shouldRevalidate({
   currentUrl,
@@ -49,15 +57,6 @@ export function shouldRevalidate({
   }
 
   return defaultShouldRevalidate;
-}
-
-export async function loader() {
-  let photos = await Promise.all([
-    getPhotos("remix-jam-2025-photos-1"),
-    getPhotos("remix-jam-2025-photos-2"),
-  ]).then((p) => p.flat());
-
-  return { photos };
 }
 
 type Photo = Route.ComponentProps["loaderData"]["photos"][0];
