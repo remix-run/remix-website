@@ -1,7 +1,8 @@
 import { getMeta } from "~/lib/meta";
 import { Title, ScrambleText } from "../text";
-import { getPhotos, transformShopifyImageUrl } from "../storefront.server";
-import ogImageSrc from "../images/og-thumbnail-1.jpg";
+import { getPhotos } from "../storefront.server";
+import { transformShopifyImageUrl } from "../utils";
+import ogImageSrc from "../images/og-gallery.jpg";
 import type {
   LinkProps,
   MetaFunction,
@@ -13,8 +14,6 @@ import type { Route } from "./+types/2025.gallery";
 import { useHydrated, useLayoutEffect } from "~/ui/primitives/utils";
 import iconsHref from "~/icons.svg";
 import { clsx } from "clsx";
-
-// Add a pending loading navigation state when a new image is loading
 
 export let handle = {
   hideBackground: true,
@@ -53,52 +52,10 @@ export async function loader() {
     getPhotos("remix-jam-2025-photos-2"),
   ]).then((p) => p.flat());
 
-  let optimizedPhotos = photos.map((photo) => {
-    // Generate responsive image URLs using Shopify CDN
-    let sizes = [400, 600, 800, 1200];
-    let srcSet = sizes
-      .map((size) => {
-        let url = transformShopifyImageUrl(photo.url, {
-          width: size,
-          format: "webp",
-          quality: 85,
-        });
-        return `${url} ${size}w`;
-      })
-      .join(", ");
-
-    let src = transformShopifyImageUrl(photo.url, {
-      width: 800,
-      format: "webp",
-      quality: 85,
-    });
-
-    // Generate high-res image for modal
-    let modalSrc = transformShopifyImageUrl(photo.url, {
-      width: 1920,
-      format: "webp",
-      quality: 90,
-    });
-
-    // Generate download URLs
-    let downloadSrc = transformShopifyImageUrl(photo.url, {
-      width: 1200,
-      format: "png",
-      quality: 85,
-    });
-
-    return {
-      ...photo,
-      src,
-      srcSet,
-      modalSrc,
-      downloadSrc,
-      fullResUrl: photo.url, // Original URL for full resolution
-    };
-  });
-
-  return { photos: optimizedPhotos };
+  return { photos };
 }
+
+type Photo = Route.ComponentProps["loaderData"]["photos"][0];
 
 function getPrevPhotoIndex(currentIndex: number, totalPhotos: number): number {
   return currentIndex > 0 ? currentIndex - 1 : totalPhotos - 1;
@@ -132,27 +89,20 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
           {photos.map((photo, index: number) => {
             // Progressive enhancement: regular link before hydration, modal after
 
-            if (!isHydrated) {
-              // Before hydration: link directly to full resolution image
-              return (
-                <a
-                  key={index}
-                  href={photo.fullResUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg bg-white/5 transition-opacity hover:opacity-80 md:mb-6"
-                >
-                  <Photo {...photo} />
-                </a>
-              );
-            }
-
             // After hydration: open modal
             return (
               <Link
                 key={index}
-                to={`?photo=${index}`}
-                className="focus-within:outline-offset-3 mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity focus-within:outline-2 focus-within:outline-blue-300 hover:opacity-80 md:mb-6"
+                {...(!isHydrated
+                  ? {
+                      to: photo.url,
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                    }
+                  : {
+                      to: `?photo=${index}`,
+                    })}
+                className="focus-visible:outline-offset-3 mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-blue-300 md:mb-6"
               >
                 <Photo {...photo} />
               </Link>
@@ -166,9 +116,7 @@ export default function GalleryPage({ loaderData }: Route.ComponentProps) {
   );
 }
 
-function PhotoModal({
-  photos,
-}: Pick<Route.ComponentProps["loaderData"], "photos">) {
+function PhotoModal({ photos }: { photos: Photo[] }) {
   let dialogRef = useRef<HTMLDialogElement>(null);
 
   let [searchParams] = useSearchParams();
@@ -214,7 +162,12 @@ function PhotoModal({
 
   let downloadImage = async (url: string, filename: string) => {
     try {
-      let response = await fetch(url);
+      let downloadUrl = transformShopifyImageUrl(url, {
+        width: 1200,
+        format: "png",
+        quality: 85,
+      });
+      let response = await fetch(downloadUrl);
       let blob = await response.blob();
       let blobUrl = URL.createObjectURL(blob);
 
@@ -230,6 +183,9 @@ function PhotoModal({
       window.open(url, "_blank");
     }
   };
+
+  let prevPhotoIndex = getPrevPhotoIndex(photoIndex, photos.length);
+  let nextPhotoIndex = getNextPhotoIndex(photoIndex, photos.length);
 
   return (
     <dialog
@@ -252,8 +208,8 @@ function PhotoModal({
             onClick={(e) => {
               e.stopPropagation();
               downloadImage(
-                selectedPhoto.fullResUrl,
-                `remix-jam-2025-photo-${photoIndex + 1}-full.jpg`,
+                selectedPhoto.url,
+                `remix-jam-2025-photo-${photoIndex + 1}.png`,
               );
             }}
             icon="download"
@@ -267,7 +223,7 @@ function PhotoModal({
           {/* Navigation Buttons */}
           <div className="absolute left-0 top-1/2 z-10 -translate-y-1/2">
             <IconLink
-              to={`?photo=${getPrevPhotoIndex(photoIndex, photos.length)}`}
+              to={`?photo=${prevPhotoIndex}`}
               aria-label="Previous photo"
               icon="chevron-r"
               className="[&>svg]:rotate-180"
@@ -275,20 +231,16 @@ function PhotoModal({
           </div>
           <div className="absolute right-0 top-1/2 z-10 -translate-y-1/2">
             <IconLink
-              to={`?photo=${getNextPhotoIndex(photoIndex, photos.length)}`}
+              to={`?photo=${nextPhotoIndex}`}
               aria-label="Next photo"
               icon="chevron-r"
             />
           </div>
 
-          <img
-            src={selectedPhoto.modalSrc}
-            alt={selectedPhoto.altText || ""}
-            loading="eager"
-            className={clsx(
-              "-mx-6 max-h-full max-w-full rounded-xl object-contain transition-opacity duration-200 md:mx-0",
-            )}
-            onClick={(e) => e.stopPropagation()}
+          <ModalImage
+            photo={selectedPhoto}
+            prevPhoto={photos[prevPhotoIndex]}
+            nextPhoto={photos[nextPhotoIndex]}
           />
         </div>
         <div className="flex shrink-0 justify-center">
@@ -302,7 +254,7 @@ function PhotoModal({
 }
 
 let ICON_BUTTON_STYLES =
-  "flex items-center justify-center rounded-full bg-white p-3 text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white outline-none focus-within:outline-2 focus-within:outline-offset-3 focus-within:outline-blue-brand m-1";
+  "flex items-center justify-center rounded-full bg-white p-3 text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white outline-none focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-blue-brand m-1";
 
 function IconLink({
   to,
@@ -337,13 +289,25 @@ function IconButton({
   );
 }
 
-function Photo({
-  src,
-  srcSet,
-  altText,
-  width,
-  height,
-}: Route.ComponentProps["loaderData"]["photos"][0]) {
+function Photo({ url, altText, width, height }: Photo) {
+  let sizes = [400, 600, 800, 1200];
+  let srcSet = sizes
+    .map((size) => {
+      let sizedUrl = transformShopifyImageUrl(url, {
+        width: size,
+        format: "webp",
+        quality: 85,
+      });
+      return `${sizedUrl} ${size}w`;
+    })
+    .join(", ");
+
+  let src = transformShopifyImageUrl(url, {
+    width: 800,
+    format: "webp",
+    quality: 85,
+  });
+
   return (
     <img
       src={src}
@@ -355,6 +319,54 @@ function Photo({
       loading="lazy"
       className="w-full select-none transition-transform duration-300 hover:scale-105"
     />
+  );
+}
+
+/**
+ * Modal image with preloading for adjacent photos
+ */
+function ModalImage({
+  photo,
+  prevPhoto,
+  nextPhoto,
+}: {
+  photo: Photo;
+  prevPhoto: Photo;
+  nextPhoto: Photo;
+}) {
+  let imgSrc = (src: string) =>
+    transformShopifyImageUrl(src, {
+      width: 1920,
+      format: "webp",
+      quality: 75,
+    });
+  return (
+    <>
+      {
+        // Preload adjacent images for instant navigation
+        [prevPhoto, nextPhoto].map(({ url }) => (
+          <img
+            key={url}
+            src={imgSrc(url)}
+            alt=""
+            loading="eager"
+            className="hidden"
+            aria-hidden="true"
+          />
+        ))
+      }
+
+      <img
+        key={photo.url}
+        src={imgSrc(photo.url)}
+        alt={photo.altText || ""}
+        loading="eager"
+        width={photo.width}
+        height={photo.height}
+        className="-mx-6 max-h-full max-w-full rounded-xl object-contain transition-opacity duration-200 md:mx-0"
+        onClick={(e) => e.stopPropagation()}
+      />
+    </>
   );
 }
 
