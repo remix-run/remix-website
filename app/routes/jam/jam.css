@@ -16,7 +16,6 @@ CSS Variables used in this file:
 
 html,
 body {
-  scrollbar-gutter: stable;
   scrollbar-color: theme(colors.gray.300) theme(colors.gray.800);
 }
 
