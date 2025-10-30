@@ -354,7 +354,7 @@ function ModalImage({
         />
       ))}
       <div
-        className="-mx-6 rounded-xl bg-white/5 md:mx-0"
+        className="-mx-6 bg-white/5 md:mx-0"
         style={{
           aspectRatio,
           ...(isLandscape
@@ -367,7 +367,7 @@ function ModalImage({
           src={imgSrc(photo.url)}
           alt={photo.altText || ""}
           loading="eager"
-          className="h-full w-full rounded-xl object-contain"
+          className="size-full object-contain"
           onClick={(e) => e.stopPropagation()}
         />
       </div>
