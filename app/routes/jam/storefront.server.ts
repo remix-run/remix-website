@@ -27,8 +27,16 @@ const CartSchema = z.object({
   checkoutUrl: z.string().url(),
 });
 
+const PhotoSchema = z.object({
+  url: z.string().url(),
+  altText: z.string().optional(),
+  width: z.number(),
+  height: z.number(),
+});
+
 type Product = z.infer<typeof ProductSchema>;
 type Cart = z.infer<typeof CartSchema>;
+type Photo = z.infer<typeof PhotoSchema>;
 
 export async function getProduct(handle: string): Promise<Product> {
   const productQuery = `
@@ -73,6 +81,68 @@ export async function getProduct(handle: string): Promise<Product> {
   };
 
   return ProductSchema.parse(product);
+}
+
+// Shopify limits the number of file references to 128
+const MAX_PHOTOS = 128;
+
+export async function getPhotos(handle: string): Promise<Photo[]> {
+  const metaobjectQuery = `
+    query MetaobjectQuery($handle: String!) {
+      metaobject(handle: { handle: $handle, type: "remix_jam_photos" }) {
+        fields {
+          key
+          references(first: ${MAX_PHOTOS}) {
+            edges {
+              node {
+                ... on MediaImage {
+                  image {
+                    url
+                    altText
+                    width
+                    height
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const { data, errors } = await getClient().request(metaobjectQuery, {
+    variables: { handle },
+  });
+
+  if (errors) {
+    throw new Error("Failed to fetch photos from metaobject");
+  }
+
+  // Find the photos field in the metaobject fields
+  const photosField = data?.metaobject?.fields?.find(
+    (field: any) => field.key === "photos",
+  );
+
+  let photos: Photo[] = [];
+
+  if (!photosField?.references?.edges) {
+    return [];
+  }
+
+  for (const edge of photosField.references.edges) {
+    const image = edge?.node?.image;
+    if (!image) continue;
+
+    photos.push({
+      url: image.url,
+      altText: image.altText || "",
+      width: image.width,
+      height: image.height,
+    });
+  }
+
+  return z.array(PhotoSchema).parse(photos);
 }
 
 export const MAX_QUANTITY = 10;

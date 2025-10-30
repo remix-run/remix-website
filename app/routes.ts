@@ -9,5 +9,6 @@ export default [
     route("2025/lineup", "routes/jam/pages/2025.lineup.tsx"),
     route("2025/faq", "routes/jam/pages/2025.faq.tsx"),
     route("2025/coc", "routes/jam/pages/2025.coc.tsx"),
+    route("2025/gallery", "routes/jam/pages/2025.gallery.tsx"),
   ]),
 ] satisfies RouteConfig;

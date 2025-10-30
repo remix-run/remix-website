@@ -103,6 +103,36 @@ export function JamButton({
 }
 
 /**
+ * Transform a Shopify image URL to use CDN optimizations
+ * @param url - Original Shopify image URL
+ * @param options - Transformation options (width, height, format, quality)
+ */
+export function transformShopifyImageUrl(
+  url: string,
+  options: {
+    width?: number;
+    height?: number;
+    format?: "webp" | "jpg" | "png";
+    quality?: number;
+  } = {},
+): string {
+  try {
+    const urlObj = new URL(url);
+    const params = new URLSearchParams(urlObj.search);
+
+    Object.entries(options).forEach(([key, value]) => {
+      params.set(key, value.toString());
+    });
+
+    urlObj.search = params.toString();
+    return urlObj.toString();
+  } catch {
+    // If URL parsing fails, return original
+    return url;
+  }
+}
+
+/**
  * Check if the current route has the hideBackground handle
  * @example
  * ```tsx

@@ -21,11 +21,14 @@ export function Navbar({ className }: { className?: string }) {
       }}
     >
       <Link to={href("/jam/2025")} className="flex items-center md:block">
-        <JamLogo className="h-[48px] fill-white md:h-auto md:w-[200px]" />
+        <JamLogo className="h-[48px] fill-white md:h-auto md:w-[200px] lg:w-[160px] xl:w-[200px]" />
       </Link>
 
       <div className="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg lg:flex">
         <NavLink to={href("/jam/2025/lineup")}>Schedule & Lineup</NavLink>
+        <NavLink className="text-white" to={href("/jam/2025/gallery")}>
+          Gallery
+        </NavLink>
         <NavLink className="text-white" to={href("/jam/2025/coc")}>
           Code of Conduct
         </NavLink>
@@ -35,7 +38,7 @@ export function Navbar({ className }: { className?: string }) {
       </div>
 
       <JamLink className="hidden lg:flex" to={href("/jam/2025/ticket")}>
-        <TicketLogo className="size-6 fill-current md:size-8" />
+        <TicketLogo className="size-6 fill-current md:size-8 lg:size-6 xl:size-8" />
         <span>Ticket</span>
       </JamLink>
 
@@ -56,10 +59,13 @@ function MobileMenu() {
         </svg>
       </summary>
       <div className="absolute right-0 z-20 lg:left-0">
-        <div className="top-1 p-1 w-max">
+        <div className="top-1 w-max p-1">
           <nav className="flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg">
             <MobileNavLink to={href("/jam/2025/lineup")}>
               Schedule & Lineup
+            </MobileNavLink>
+            <MobileNavLink to={href("/jam/2025/gallery")}>
+              Gallery
             </MobileNavLink>
             <MobileNavLink to={href("/jam/2025/coc")}>
               Code of Conduct
@@ -120,7 +126,7 @@ function NavLink({ className, children, ...props }: NavLinkProps) {
     <RRNavLink
       className={({ isActive }) =>
         clsx(
-          "rounded-full border-2 px-5 py-0.5 text-base font-bold outline-none transition-colors duration-300 md:border-4 md:py-3 md:text-xl",
+          "rounded-full border-2 px-5 py-0.5 text-base font-bold outline-none transition-colors duration-300 md:border-4 md:py-3 md:text-xl lg:border-2 lg:px-4 lg:py-2 lg:text-base xl:px-5 xl:py-3 xl:text-xl",
           isActive
             ? "border-white text-white"
             : "border-transparent text-white/70 hover:border-white hover:text-white focus-visible:border-white focus-visible:text-white",
