@@ -16,7 +16,21 @@ CSS Variables used in this file:
 
 html,
 body {
+  height: 100%;
+  min-height: 100%;
   scrollbar-color: theme(colors.gray.300) theme(colors.gray.800);
+}
+
+body {
+  background-color: rgb(26, 26, 26);
+  background-image: radial-gradient(
+    72% 63% at 50% 32%,
+    rgb(59, 59, 59),
+    rgb(26, 26, 26) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 @media (prefers-reduced-motion: reduce) {

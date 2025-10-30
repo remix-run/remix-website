@@ -65,13 +65,7 @@ function Background({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* Base radial gradient layer */}
-      <div
-        className="fixed -inset-11 z-0 select-none"
-        style={{
-          background:
-            "radial-gradient(72% 63% at 50% 32.300000000000004%,#3b3b3b .036346160613726086%,rgb(26,26,26) 100%)",
-        }}
-      />
+      <div className="fixed -inset-11 z-0 select-none" />
 
       <div className="isolate">
         {children}
