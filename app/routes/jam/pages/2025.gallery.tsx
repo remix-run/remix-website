@@ -251,7 +251,7 @@ function PhotoModal({ photos }: { photos: Photo[] }) {
 }
 
 let ICON_BUTTON_STYLES =
-  "flex items-center justify-center rounded-full bg-white p-3 text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white outline-none focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-blue-brand m-1";
+  "flex items-center justify-center rounded-full bg-white p-3 text-black transition-colors duration-300 hover:bg-blue-brand hover:text-white outline-none focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-blue-brand m-1 focus-visible:bg-blue-brand focus-visible:text-white";
 
 function IconLink({
   to,
