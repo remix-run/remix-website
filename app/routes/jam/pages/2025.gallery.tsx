@@ -190,7 +190,10 @@ function PhotoModal({ photos }: { photos: Photo[] }) {
       onClick={handleBackdropClick}
       className="h-dvh w-dvw select-none bg-transparent p-0 backdrop:bg-black/60 backdrop:backdrop-blur"
     >
-      <div className="relative flex h-full w-full flex-col gap-6 p-0 md:p-6">
+      <div
+        className="relative flex h-full w-full flex-col gap-6 p-0 md:p-6"
+        onClick={handleBackdropClick}
+      >
         <div className="flex shrink-0 items-center justify-between">
           <IconLink
             to="."
@@ -325,12 +328,18 @@ function ModalImage({
   prevPhoto: Photo;
   nextPhoto: Photo;
 }) {
+  let maxWidth = 1920;
+  let maxHeight = 1080;
   let imgSrc = (src: string) =>
     transformShopifyImageUrl(src, {
-      width: 1920,
+      width: maxWidth,
+      height: maxHeight,
       format: "webp",
-      quality: 75,
+      quality: 90,
     });
+
+  let aspectRatio = photo.width / photo.height;
+  let isLandscape = photo.width > photo.height;
 
   return (
     <>
@@ -344,15 +353,24 @@ function ModalImage({
           aria-hidden="true"
         />
       ))}
-
-      <img
-        key={photo.url}
-        src={imgSrc(photo.url)}
-        alt={photo.altText || ""}
-        loading="eager"
-        className="-mx-6 max-h-full max-w-full rounded-xl object-contain transition-opacity duration-200 md:mx-0"
-        onClick={(e) => e.stopPropagation()}
-      />
+      <div
+        className="-mx-6 rounded-xl bg-gradient-to-br from-white/10 via-white/5 to-transparent md:mx-0"
+        style={{
+          aspectRatio,
+          ...(isLandscape
+            ? { maxWidth, width: "100%" }
+            : { maxHeight, height: "100%" }),
+        }}
+      >
+        <img
+          key={photo.url}
+          src={imgSrc(photo.url)}
+          alt={photo.altText || ""}
+          loading="eager"
+          className="h-full w-full rounded-xl object-contain transition-opacity duration-200"
+          onClick={(e) => e.stopPropagation()}
+        />
+      </div>
     </>
   );
 }
