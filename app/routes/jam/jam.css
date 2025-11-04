@@ -19,6 +19,15 @@ body {
   scrollbar-color: theme(colors.gray.300) theme(colors.gray.800);
 }
 
+/* Overriding classname from root.tsx */
+body {
+  background: radial-gradient(
+    72% 63% at 50% 32.300000000000004%,
+    #3b3b3b 0.036346160613726086%,
+    rgb(26, 26, 26) 100%
+  ) !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
