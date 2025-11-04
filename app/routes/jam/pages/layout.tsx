@@ -31,6 +31,10 @@ export function links() {
   ];
 }
 
+export let handle = {
+  forceDark: true,
+};
+
 export function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   // Only redirect if we're at the index path (/jam or /jam/)
@@ -44,7 +48,7 @@ export function loader({ request }: Route.LoaderArgs) {
 
 export default function JamLayout() {
   return (
-    <div className="relative overflow-x-hidden">
+    <div className="relative overflow-hidden">
       <Background>
         <Navbar className="z-40" />
         <div className="px-6">
@@ -64,15 +68,6 @@ function Background({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {/* Base radial gradient layer */}
-      <div
-        className="fixed -inset-11 z-0 select-none"
-        style={{
-          background:
-            "radial-gradient(72% 63% at 50% 32.300000000000004%,#3b3b3b .036346160613726086%,rgb(26,26,26) 100%)",
-        }}
-      />
-
       <div className="isolate">
         {children}
 
