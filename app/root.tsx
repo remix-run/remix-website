@@ -144,7 +144,6 @@ interface DocumentProps {
   title?: string;
   forceDark?: boolean;
   darkBg?: string;
-  isDev?: boolean;
   noIndex: boolean;
   children: React.ReactNode;
 }
@@ -155,7 +154,6 @@ function Document({
   forceDark,
   darkBg,
   noIndex,
-  isDev,
 }: DocumentProps) {
   let colorScheme = useColorScheme();
   let matches = useMatches();
@@ -223,11 +221,7 @@ export default function App() {
   }
 
   return (
-    <Document
-      noIndex={noIndex}
-      forceDark={forceDark}
-      isDev={process.env.NODE_ENV === "development"}
-    >
+    <Document noIndex={noIndex} forceDark={forceDark}>
       <Outlet />
       <img
         src={iconsHref}

@@ -94,6 +94,7 @@ const SubscribeInput = React.forwardRef<
 >(
   (
     {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       children,
       className = "w-full sm:w-auto sm:flex-1 dark:placeholder-gray-500",
       ...props
