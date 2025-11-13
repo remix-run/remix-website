@@ -30,7 +30,7 @@ import { canUseDOM } from "./ui/primitives/utils";
 import { GlobalLoading } from "./ui/global-loading";
 import { type Route } from "./+types/root";
 
-const redirectOldDocs: Route.unstable_MiddlewareFunction = ({ request }) => {
+const redirectOldDocs: Route.MiddlewareFunction = ({ request }) => {
   const { pathname } = new URL(request.url);
 
   if (pathname === "/docs") {
@@ -74,7 +74,7 @@ const redirectOldDocs: Route.unstable_MiddlewareFunction = ({ request }) => {
   }
 };
 
-const redirectResources: Route.unstable_MiddlewareFunction = ({ request }) => {
+const redirectResources: Route.MiddlewareFunction = ({ request }) => {
   const { pathname, search } = new URL(request.url);
 
   if (pathname === "/resources" || pathname.startsWith("/resources/")) {
@@ -82,7 +82,7 @@ const redirectResources: Route.unstable_MiddlewareFunction = ({ request }) => {
   }
 };
 
-export const unstable_middleware: Route.unstable_MiddlewareFunction[] = [
+export const middleware: Route.MiddlewareFunction[] = [
   redirectOldDocs,
   redirectResources,
 ];

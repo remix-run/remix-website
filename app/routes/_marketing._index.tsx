@@ -99,13 +99,11 @@ function Hero({ sample, sampleSm }: { sample: Prose; sampleSm: Prose }) {
             <div className="h-9 xl:h-10" />
             <div className="xl: flex flex-col gap-4 xl:flex-row">
               <PrimaryButtonLink
-                prefetch="intent"
                 to="/docs/start/quickstart"
                 className="w-full xl:order-1 xl:w-60"
                 children="Get Started"
               />
               <OutlineButtonLink
-                prefetch="intent"
                 to="/docs"
                 className="w-full xl:w-60"
                 children="Read the Docs"
