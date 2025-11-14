@@ -1,7 +1,7 @@
 import { data } from "react-router";
 import { subscribeToNewsletter } from "~/lib/convertkit";
 import { requirePost } from "~/lib/http.server";
-import type { Route, Info } from "./+types/[_]actions.newsletter";
+import type { Route } from "./+types/[_]actions.newsletter";
 
 export async function action({ request }: Route.ActionArgs) {
   requirePost(request);
@@ -26,5 +26,3 @@ export async function action({ request }: Route.ActionArgs) {
 
   return { error: null, ok: true };
 }
-
-export type NewsletterActionData = Info["actionData"];

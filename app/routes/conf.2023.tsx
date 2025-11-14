@@ -66,7 +66,7 @@ export default function ConfTwentyTwentyThree() {
     <>
       {showTopBanner ? <TopBanner /> : null}
       <div className="__layout flex h-full flex-1 flex-col bg-black text-white">
-        <Header hasTopBanner={showTopBanner} />
+        <Header />
         <main className="flex flex-1 flex-col" tabIndex={-1}>
           <Outlet />
         </main>
@@ -128,7 +128,7 @@ function SignUp() {
   );
 }
 
-function Header({ hasTopBanner }: { hasTopBanner?: boolean }) {
+function Header() {
   let location = useLocation();
   let isConfHome =
     location.pathname === "/conf" || location.pathname === "/conf/2023";

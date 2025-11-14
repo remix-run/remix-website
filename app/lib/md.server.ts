@@ -100,7 +100,7 @@ export async function loadPlugins() {
   const remarkCodeBlocksShiki: InternalPlugin<
     UnistNode.Root,
     UnistNode.Root
-  > = (options) => {
+  > = () => {
     let theme: ReturnType<typeof toShikiTheme>;
     let highlighterPromise: ReturnType<typeof getHighlighter>;
 

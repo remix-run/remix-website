@@ -319,23 +319,11 @@ function MutationNetwork() {
       <div className="w-4/5 pb-10">
         <Network>
           <Resource name="POST new" start={0} size={40} />
-          <Resource
-            name="GET invoices"
-            start={40}
-            size={10}
-            cancel
-            hideUntilStart
-          />
-          <Resource
-            name="GET 102000"
-            start={40}
-            size={10}
-            cancel
-            hideUntilStart
-          />
-          <Resource name="POST new" start={50} size={20} hideUntilStart />
-          <Resource name="GET invoices" start={70} size={20} hideUntilStart />
-          <Resource name="GET 102000" start={70} size={15} hideUntilStart />
+          <Resource name="GET invoices" start={40} size={10} cancel />
+          <Resource name="GET 102000" start={40} size={10} cancel />
+          <Resource name="POST new" start={50} size={20} />
+          <Resource name="GET invoices" start={70} size={20} />
+          <Resource name="GET 102000" start={70} size={15} />
         </Network>
       </div>
     </div>
@@ -711,13 +699,11 @@ function Resource({
   size,
   start,
   cancel,
-  hideUntilStart,
 }: {
   name: string;
   size: number;
   start: number;
   cancel?: boolean;
-  hideUntilStart?: boolean;
 }) {
   let actor = useActor();
   let progress = actor.progress * 100;

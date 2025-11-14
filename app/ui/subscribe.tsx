@@ -3,7 +3,7 @@ import { useFetcher } from "react-router";
 import type { FormProps } from "react-router";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
-import type { NewsletterActionData } from "~/routes/[_]actions.newsletter";
+import type { action as newsletterAction } from "~/routes/[_]actions.newsletter";
 
 // TODO: look into if v3_fetcherPersist simplifies this component
 
@@ -31,7 +31,7 @@ function Subscribe({
 }
 
 function SubscribeProvider({ children }: { children: React.ReactNode }) {
-  let subscribe = useFetcher<NewsletterActionData>();
+  let subscribe = useFetcher<typeof newsletterAction>();
   let inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -48,7 +48,7 @@ function SubscribeProvider({ children }: { children: React.ReactNode }) {
 }
 
 const SubscribeContext = React.createContext<null | {
-  fetcher: ReturnType<typeof useFetcher<NewsletterActionData>>;
+  fetcher: ReturnType<typeof useFetcher<typeof newsletterAction>>;
   inputRef: React.RefObject<HTMLInputElement>;
 }>(null);
 
@@ -94,6 +94,7 @@ const SubscribeInput = React.forwardRef<
 >(
   (
     {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       children,
       className = "w-full sm:w-auto sm:flex-1 dark:placeholder-gray-500",
       ...props
@@ -153,7 +154,7 @@ function SubscribeSubmit({
 }
 
 export function getSubscribeStatus(
-  subscribe: ReturnType<typeof useFetcher<NewsletterActionData>>,
+  subscribe: ReturnType<typeof useFetcher<typeof newsletterAction>>,
 ) {
   let { isSuccessful } =
     subscribe.state === "idle" && subscribe.data?.ok

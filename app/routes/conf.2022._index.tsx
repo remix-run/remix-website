@@ -27,6 +27,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     .map(
       ({
         // @ts-expect-error -- type is typed wrong
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         bio,
         ...s
       }) => s,

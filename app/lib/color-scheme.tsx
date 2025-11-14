@@ -1,13 +1,12 @@
 import { useMemo } from "react";
-import { useNavigation, useRouteLoaderData } from "react-router";
-import type { loader as rootLoader } from "~/root";
+import { unstable_useRoute as useRoute, useNavigation } from "react-router";
 import { useLayoutEffect } from "~/ui/primitives/utils";
 
 export type ColorScheme = "dark" | "light" | "system";
 
 export function useColorScheme(): ColorScheme {
-  let rootLoaderData = useRouteLoaderData<typeof rootLoader>("root");
-  let rootColorScheme = rootLoaderData?.colorScheme ?? "system";
+  let rootRoute = useRoute("root");
+  let rootColorScheme = rootRoute.loaderData?.colorScheme ?? "system";
 
   let { formData } = useNavigation();
   let optimisticColorScheme = formData?.has("colorScheme")
