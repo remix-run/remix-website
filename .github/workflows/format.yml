@@ -18,7 +18,8 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.FORMAT_PAT }}
+          # checkout using a custom token so that we can push later on
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
