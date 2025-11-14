@@ -217,7 +217,9 @@ export default function Safety() {
                                   .filter(Boolean)
                                   .join("\n")
                                   .split("\n")
-                                  .map((line, i) => <p key={i}>{line}</p>)}
+                                  .map((line, i) => (
+                                    <p key={i}>{line}</p>
+                                  ))}
                               </div>
                             </td>
                           </tr>
