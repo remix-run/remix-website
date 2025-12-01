@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
+    "build:analyze": "ANALYZE=true react-router build",
     "dev": "node ./server.mjs",
     "format": "prettier --write ./",
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
@@ -81,7 +82,7 @@
     "@types/semver": "^7.7.0",
     "@types/tween-functions": "^1.2.2",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "@vitest/coverage-v8": "^3.1.2",
     "autoprefixer": "^10.4.21",
     "dotenv-cli": "^7.3.0",
@@ -96,9 +97,10 @@
     "postcss-import": "^16.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.4",
+    "rollup-plugin-visualizer": "^6.0.5",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.8.3",
-    "vite": "^5.4.19",
+    "vite": "^7.2.6",
     "vite-plugin-arraybuffer": "^0.0.2",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.2"

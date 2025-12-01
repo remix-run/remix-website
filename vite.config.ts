@@ -1,7 +1,8 @@
-import { defineConfig, splitVendorChunkPlugin } from "vite";
+import { defineConfig } from "vite";
 import { reactRouter } from "@react-router/dev/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import arraybuffer from "vite-plugin-arraybuffer";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
   build: {
@@ -13,8 +14,14 @@ export default defineConfig({
   optimizeDeps: { exclude: ["svg2img"] },
   plugins: [
     tsconfigPaths(),
-    splitVendorChunkPlugin(),
     arraybuffer(),
     reactRouter(),
+    visualizer({
+      filename: "./build/stats.html",
+      open: process.env.ANALYZE === "true",
+      gzipSize: true,
+      brotliSize: true,
+      template: "treemap", // or "sunburst", "network"
+    }),
   ],
 });
