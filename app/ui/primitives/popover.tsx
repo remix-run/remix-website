@@ -256,7 +256,7 @@ function useSimulateTabNavigationForReactTree<
       let elements = popoverRef.current && tabbable(popoverRef.current);
       return Boolean(
         elements &&
-          elements[elements.length - 1] === ownerDocument.activeElement,
+        elements[elements.length - 1] === ownerDocument.activeElement,
       );
     }
     return false;

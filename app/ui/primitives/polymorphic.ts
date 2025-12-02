@@ -53,10 +53,12 @@ interface ForwardRefComponent<
   ): React.ReactElement | null;
 }
 
-interface MemoComponent<IntrinsicElementString, OwnProps = {}>
-  extends React.MemoExoticComponent<
-    ForwardRefComponent<IntrinsicElementString, OwnProps>
-  > {
+interface MemoComponent<
+  IntrinsicElementString,
+  OwnProps = {},
+> extends React.MemoExoticComponent<
+  ForwardRefComponent<IntrinsicElementString, OwnProps>
+> {
   <As = IntrinsicElementString>(
     props: As extends ""
       ? { as: keyof JSX.IntrinsicElements }

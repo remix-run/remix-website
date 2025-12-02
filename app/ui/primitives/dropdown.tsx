@@ -294,7 +294,8 @@ const DropdownTrigger = React.forwardRef<
 interface DropdownTriggerOwnProps {}
 
 interface DropdownTriggerProps
-  extends DropdownTriggerOwnProps,
+  extends
+    DropdownTriggerOwnProps,
     Omit<
       React.ComponentPropsWithRef<"button">,
       keyof DropdownTriggerOwnProps
@@ -302,8 +303,8 @@ interface DropdownTriggerProps
 
 interface UseDropdownTriggerProps<
   Elem extends FocusableElement = FocusableElement,
-> extends DropdownTriggerOwnProps,
-    React.HTMLAttributes<Elem> {
+>
+  extends DropdownTriggerOwnProps, React.HTMLAttributes<Elem> {
   ref?: React.Ref<Elem>;
 }
 
@@ -616,11 +617,13 @@ interface DropdownItemOwnProps {
 }
 
 interface DropdownItemProps
-  extends DropdownItemOwnProps,
+  extends
+    DropdownItemOwnProps,
     Omit<React.ComponentPropsWithRef<"div">, keyof DropdownItemOwnProps> {}
 
 interface UseDropdownItemProps<Elem extends FocusableElement = FocusableElement>
-  extends DropdownItemOwnProps,
+  extends
+    DropdownItemOwnProps,
     Omit<React.HTMLAttributes<Elem>, keyof DropdownItemOwnProps> {
   ref?: React.Ref<Elem>;
 }
@@ -914,8 +917,8 @@ interface DropdownItemsProps extends DropdownItemsOwnProps {
 
 interface UseDropdownItemsProps<
   Elem extends FocusableElement = FocusableElement,
-> extends DropdownItemsOwnProps,
-    React.HTMLAttributes<Elem> {
+>
+  extends DropdownItemsOwnProps, React.HTMLAttributes<Elem> {
   ref?: React.Ref<Elem>;
 }
 
@@ -1042,7 +1045,8 @@ interface UseDropdownPopoverProps<
 }
 
 interface DropdownPopoverProps
-  extends DropdownPopoverOwnProps,
+  extends
+    DropdownPopoverOwnProps,
     Omit<
       React.ComponentPropsWithRef<"div">,
       keyof DropdownPopoverOwnProps | "children"

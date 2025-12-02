@@ -393,7 +393,8 @@ interface MenuPopoverOwnProps {
 }
 
 interface MenuPopoverProps
-  extends MenuPopoverOwnProps,
+  extends
+    MenuPopoverOwnProps,
     Omit<React.ComponentPropsWithRef<"div">, keyof MenuPopoverOwnProps> {}
 
 MenuPopover.displayName = "MenuPopover";

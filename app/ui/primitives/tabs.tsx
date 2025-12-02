@@ -735,13 +735,15 @@ function useTabsContext(): TabsContextValue {
 
 type FocusableElement = HTMLElement | SVGElement;
 
-interface TabCollectionItem<Elem extends FocusableElement>
-  extends CollectionItem<Elem> {
+interface TabCollectionItem<
+  Elem extends FocusableElement,
+> extends CollectionItem<Elem> {
   disabled: boolean;
 }
 
-interface TabPanelCollectionItem<Elem extends FocusableElement>
-  extends CollectionItem<Elem> {}
+interface TabPanelCollectionItem<
+  Elem extends FocusableElement,
+> extends CollectionItem<Elem> {}
 
 interface TabsContextValue {
   focusedIndex: number;
