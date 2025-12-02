@@ -18,15 +18,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
       });
     },
   );
-  if (error) {
-    return new Response(error.toString(), {
+  if (error || !data) {
+    return new Response(error?.toString() || "Failed to generate image", {
       status: 500,
       headers: {
         "Content-Type": "text/plain",
       },
     });
   }
-  return new Response(data, {
+  return new Response(new Uint8Array(data), {
     headers: {
       "Content-Type": "image/png",
       // starting with 1 day, may need to be longer as these images don't change often
