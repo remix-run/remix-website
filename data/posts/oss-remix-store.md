@@ -32,7 +32,7 @@ Before we dig into the technical bits, it's always good to put on our Product Ma
 
 Launching a swag store was one of the first things my manager (Michael Jackson) asked me to do when I first joined the Remix Team in 2023. In fact, this wasn't even the first attempt. Digging through some of our old, private repos, I stumbled across this beauty:
 
-![GitHub commit history page for remix-run/swag-store showing early development commits from August 2022, including form components, Dialog, CartItem, and various UI tweaks.](/blog-images/posts/oss-remix-store/old-remix-swag-store.png)
+![GitHub commit history page for remix-run/swag-store showing early development commits from August 2022, including form components, Dialog, CartItem, and various UI tweaks.][github-history-pic]
 
 To put things in context, this first store was started pre-Shopify acquisition, and well before I joined the team.
 
@@ -78,46 +78,115 @@ So [dig in][remix-store-github]!
 
 ## What it takes to launch a store
 
-- What it takes to launch a store
+In this section I want to give a bit of the history and share what I learned about running what is basically a mini business.
+
+### Using Shopify
+
+I was pretty ignorant about what it would take to launch a store when I first started. I was also honestly pretty ignorant about Shopify and it's capabilities. Despite being a Shopify employee, I was very much learning Shopify as I went.
+
+The good news is using Shopify's platform was probably the _easiest_ part of this whole process. For our store, Shopify handles:
+
+- Inventory management
+- Customer Management
+- Hosting (in our case though [Oxygen][oxygen])
+- Email marketing
+- Analytics
+
+And a ton more I won't dig into. Using Shopify's platform is probably the most uninteresting part of the journey, because it was the most straightforward. My experience with Shopify was always:
+
+1. Have a problem or need
+2. Look around in the admin to see if there's a tab for what I need
+3. If step 2 fails, ask [sidekick][sidekick-post]
+
+I am still far from a Shopify expert, and I solved 95% of my issues just doing this with no prior Shopify experience (besides the very basic Shopify store setup they make you do during orientation)
+
+### Adding Tim
+
+I joined Shopify in September of 2023. Despite the store being one of the first big initiatives Michael gave me, I didn't get meaningfully started on it until the Summer of 2024.
+
+The reason for this was pretty simple: I had no design support until then.
+
+With the Remix store, we wanted both our website and our products to be unique and well designed. Our launch video showcases the final product well:
+
+<div class="mx-auto max-w-fit">
+  <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Soft Wear update is available <a href="https://t.co/VhVbdVV8GN">pic.twitter.com/VhVbdVV8GN</a></p>&mdash; Remix 💿 (@remix_run) <a href="https://twitter.com/remix_run/status/1924558330225156190?ref_src=twsrc%5Etfw">May 19, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+Left to myself, the store would have ben generic and the t-shirts even more so. That would would have been passible, but it misses the mark of what we were trying to do with the store (see [the prior section](#who-this-is-for)).
+
+Enter our beloved design and brand extraordinaire, [Tim Quirino][tim-quirino]! Tim joined our team via [another acquisition][threads-acquisition]. Prior to us Tim had never worked with a developer-heavy, open source team. However, we couldn't have asked for a better fit. Tim already had a successful career doing Product Design at as the head of Brand at [Threads][threads-x]. Even more fortuitous, Tim's design career kicked of because he was designing merch for his friends' bands.
+
+I was stoked to have Tim on the team, and couldn't wait to start talking about the store with him. In fact, our first Slack messages were about the Remix Store.
+
+![Screenshot of a Slack DM conversation between Brooks Lybrand and Tim Quirino discussing the Remix Swag Store hack day project, with Tim expressing interest in collaborating.][tim-brooks-slack-pic]
+
+### Hack Days Project
+
+As hinted at in that Slack conversation, my first attempt to actually build the Remix Store centered largely around seeing if I could trick other people into doing all the work. That's what hackathons and Hack Days are for, right?
+
+I had 12 people sign up to be on my team to build the first version of the store, and I couldn't have been more pleased. This gave Tim very little time to gather the context he needed and design a first version of the store, but he's a professional, so it's fine (I have since grown in my appreciation for how much effort and inspiration goes into the design process).
+
+I'm incredibly grateful to all the Shopify folks who helped out with the project. With little more than the [Hydrogen starter template][hydrogen-skeleton], we divvied up tasks to see how much we could knock out in 2.5 days.
+
+Some challenges we faced:
+
+- Tim could not make it in person so we were basically just running with his Figma designs
+- The wifi did not work the first day and kind of worked the second and third day
+- We had a wide variety of skill sets on our team, and I did a terrible job providing structure for effective parallel work
+
+Despite all this, we actually got decently far.
+
+You can try to dig through the git commits if you want, or you can just checkout the old [Figma project][remix-store-graveyard-figma]. The first version of the store looked something like this:
+
+![Side-by-side dark and light mode views of v0 of The Remix Store website featuring a mini skateboard banner and six product listings including a jacket, hip pack, shirt, skateboard, notebook, and gel pen.][remix-store-v0-pic]
+
+The visual direction I gave Tim was something along the lines of "retro, digital, music, synth pads, drum machines, color". He did a great job for what I gave him, and I need to stress again, I gave him little and even less time.
+
+### Paying for the store
+
+After the Hack Days project I realized I would actually have to keep building the store on my own (for some reason people from other teams didn't want to endlessly donate extra time to me). I made good progress in implementing what Tim had initially designed while Tim noodled on different product ideas and designs.
+
+We got some feedback from Michael on the design, and went for a less chunky, more sleek feel. You can also check out those [Figma designs][remix-store-v1-figma].
+
+![Screenshot of v1 of The Remix Store website in dark mode, featuring a black t-shirt with a colorful Remix logo in the hero section and a shopping cart overlay on the right. The cart contains a shirt, a mini skateboard, and a gel pen, totaling $93.00.][remix-store-v1-pic]
+
+We were feeling pretty good about ourselves, and had some great product ideas in place (pretty much [everything currently listed on the store][remix-store-products]). The only thing we needed was some money from Shopify to get the store going.
+
+<img class="mx-auto" src="/blog-images/posts/oss-remix-store/money-pweaz.gif" alt="Mona-Lisa Saperstein from Parks and Reck saying 'Money pleeeease' why gesturing for money to be given to her." />
+
+Quite reasonably, big companies such as ours don't necessarily just write blank checks and actually want to know you intend to do with their resources and how it will go back to supporting the [underlying mission][shopify-mission]. In retrospect that's pretty reasonable, but it did require a bit more work internally on our end.
+
+Without boring you with all the inner workings of Shopify (or divulging information I'm probably not legally allowed to share), we basically had to setup an internal project in order to go through the proper procurement process. In general our team is super fortunate to get to run our [own roadmap][react-router-roadmap] and leverage [our own processes](./rr-governance), since all of the work we're doing is open source.
+
+With the internal project created and the justifying of our stores existence done, we were able to move forward with the vendor we had selected to run the production and fulfillment side of our store.
+
+### Feedback is a Gift
+
+With the Remix Store, we were asking for more resources, and we were also representing Shopify in a new way by putting out a storefront built on Shopify. Understandably there was a little more input needed.
+
+We setup the internal project and got procurement worked out in late October, 2024. However, when we showed off our nearly complete storefront, we received some hard, but needed feedback from one of the Shopify VPs:
+
+> Please push yourself to flex a little more and remember that you are the team that built remix.run which is one of my favorite dev marketing websites that does a great job of telling me what the Remix brand is.
+
+[The Remix homepage][remix-homepage] is such a delight to scroll through, and did such a fantastic job explaining what Remix was offering (we're planning for our next homepage to do just as good of a job with Remix 3). Basically what we had created didn't immediately show the value. It looked somewhat generic and simple, and in no way justified the need to build a it as a [custom storefront][shopify-custom-storefronts].
+
+So we went back to the drawing board.
+
+At this point Tim and I had a lot more experience working with each other, and instead of painstakingly describing and documenting everything in Figma, Tim was able to leverage another one of his favorite tools: [Framer][framer].
+
+Tim was able to make a much more [high fidelity prototype][remix-store-v2-framer] of the store, which I could then inspect, optimize, and build with Remix and Hydrogen.
+
+The end result is what you see now when you visit [shop.remix.run][remix-store].
+
+![Scrolling through the remix store with the spinning hoodie and large product photos][remix-store-gif]
+
+We iterated for another 6 months: finalizing contracts, selecting blanks, adding features, getting feedback, evaluating test prints, and planning our marketing strategy, all culminating in launching the Remix Store on [May 19, 2025][remix-store-launch-post].
 
 ## Some cool features
 
 - Features worth digging into
 
 ## Future improvements and contributing
-
-## Vault Project description
-
-What problem will we make go away with this project?
-tl;dr: this store will:
-
-- Help support the Remix community
-- Market Remix and Hydrogen
-- Provide an open-source production example to A/B new test features on
-
-**Remix Users**
-
-- Fans can purchase swag to rep their favorite framework (one of our most frequent requests) and organically advertise our software
-- Sending "thank you"s to contributors
-- Streamline sending swag to meetups and conferences
-
-**Hydrogen Users**
-
-- Real-world prod example of a Hydrogen store
-- Open-sourced for education purposes
-
-**Shopify Devs**
-
-- Real world app to dog-food new Remix and Hydrogen features
-- Cross collaborate between the Hydrogen and Remix teams to learn from one another
-- Educate and connect the Remix team better with the core of what Shopify
-
-**What does success look like?**
-
-- The store is launched and products can be shipped globally
-- The store and all design assets are open sourced for anyone to learn from
-- Revenue from the store is matching or exceeding the cost of production
-- We are selling unique and quality Remix-branded apparel, stickers, accessories, and much more
 
 ## features to highlight
 
@@ -128,31 +197,11 @@ tl;dr: this store will:
 - 404/500 glitchy text: https://shop.remix.run/blah
 - Progressive Enhancement (clicking the cart before JS loads takes you to the cart page)
 
-## timeline
-
-- July 26, 2022 -- First swag store started
-- September 11, 2023 -- Brooks joins Remix, is asked to build the remix merch store
-- June 13, 2024 -- Setup a Hack Day project
-- October 28, 2024 -- Setup internal project
-- November 10, 2024 -- Got feedback from Shopify VP to make it better
-- April 25, 2025 -- Received our first round of test prints
-- May 19, 2025 -- Launched the store
-
 ## unorganized notes, resources, images, etc.
 
 - Hack Days project had 12 team members
 
 Feedback from Shopify VP reviewing the project:
-
-> Please push yourself to flex a little more and remember that you are the team that built remix.run which is one of my favorite dev marketing websites that does a great job of telling me what the Remix brand is.
-
-![Screenshot of a Slack DM conversation between Brooks Lybrand and Tim Quirino discussing the Remix Swag Store hack day project, with Tim expressing interest in collaborating.](/blog-images/posts/oss-remix-store/tim-brooks-first-message.png)
-
-![Side-by-side dark and light mode views of v0 of The Remix Store website featuring a mini skateboard banner and six product listings including a jacket, hip pack, shirt, skateboard, notebook, and gel pen.](/blog-images/posts/oss-remix-store/v0-store-mockup.png)
-
-![Screenshot of v1 of The Remix Store website in dark mode, featuring a black t-shirt with a colorful Remix logo in the hero section and a shopping cart overlay on the right. The cart contains a shirt, a mini skateboard, and a gel pen, totaling $93.00.](/blog-images/posts/oss-remix-store/v1-store-mockup.png)
-
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Soft Wear update is available <a href="https://t.co/VhVbdVV8GN">pic.twitter.com/VhVbdVV8GN</a></p>&mdash; Remix 💿 (@remix_run) <a href="https://twitter.com/remix_run/status/1924558330225156190?ref_src=twsrc%5Etfw">May 19, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 [oss-remix-dot-run]: ./oss-remix-dot-run
 [react-router-github]: https://github.com/remix-run/react-router
@@ -163,8 +212,11 @@ Feedback from Shopify VP reviewing the project:
 [remix-store-launch-post]: https://x.com/remix_run/status/1924558330225156190
 [shopify-custom-storefronts]: https://shopify.dev/docs/storefronts/headless/getting-started
 [hydrogen]: https://hydrogen.shopify.dev/
+[oxygen]: https://shopify.dev/docs/storefronts/headless/hydrogen/deployments
 [remix-store]: https://shop.remix.run/
+[remix-store-graveyard-figma]: https://www.figma.com/design/fbPeXZehszfApKG9r2wbWa/-Deprecated--Remix-Store-V1?node-id=1327-24405&p=f
 [remix-store-v1-figma]: https://www.figma.com/design/fbPeXZehszfApKG9r2wbWa/-Deprecated--Remix-Store-V1?node-id=53-30243&p=f&t=aYzv2vTYd9olg6Bn-0
+[framer]: https://www.framer.com/
 [remix-store-v2-framer]: https://many-brand-728778.framer.app/
 [404-example]: https://shop.remix.run/blah
 [remix-merch-love-1]: https://x.com/MichelleBakels/status/1941558260898856982
@@ -176,3 +228,18 @@ Feedback from Shopify VP reviewing the project:
 [remix-store-middleware]: https://github.com/remix-run/remix-store/pull/198
 [remix-store-rsc]: https://github.com/jacob-ebey/react-router-rsc-ecommerce
 [remix-store-rsc-demo]: https://react-router-rsc-ecommerce.up.railway.app/
+[sidekick-post]: https://x.com/BrooksLybrand/status/1955288595507343516
+[jacob-ebey]: https://bsky.app/profile/ebey.dev
+[tim-quirino]: https://x.com/timquirino
+[threads-acquisition]: https://x.com/rousseaukazi/status/1798724339841319186
+[threads-x]: https://x.com/threads
+[hydrogen-skeleton]: https://github.com/Shopify/hydrogen/tree/main/templates/skeleton
+[remix-store-products]: https://shop.remix.run/collections/all
+[shopify-mission]: https://www.shopify.com/about#:~:text=Making%20commerce%20better%20for%20everyone
+[react-router-roadmap]: https://github.com/orgs/remix-run/projects/5
+[remix-homepage]: https://v2.remix.run/
+[github-history-pic]: /blog-images/posts/oss-remix-store/old-remix-swag-store.png
+[tim-brooks-slack-pic]: /blog-images/posts/oss-remix-store/tim-brooks-first-message.png
+[remix-store-v0-pic]: /blog-images/posts/oss-remix-store/v0-store-mockup.png
+[remix-store-v1-pic]: /blog-images/posts/oss-remix-store/v1-store-mockup.png
+[remix-store-gif]: /blog-images/posts/oss-remix-store/remix-store.gif
