@@ -191,35 +191,238 @@ There are a lot of little features and animation I'm particularly proud of in th
 ![3D hoodie spinning in the hero section][hero-gif]
 
 - [See it in action 👀](https://shop.remix.run/) (be sure to scroll)
-- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
+- [Check out the relevant code 💻][hero-code]
+
+The hero is one giant scroll-synced experience:
+
+- The 3D hoodie asset gloriously rotates as you scroll
+- The glowing "REMIX" light syncs up with the rotating hoodie and fades out
+- The highlight of "SOFTWARE ..." to "SOFT WEAR..." switches as the hoodie's back becomes visible
+
+The hook `useScrollPercentage` tracks and returns a value from 0 to 1, which is then used to drive the state of all the other elements.
+
+The hoodie itself is just 61 different images that we preload and swap out as you scroll, a method we stole from Apple's previous AirPod product page.
+
+```tsx
+// Pick the frame based on how far you've scrolled
+let frameIndex = Math.min(
+  Math.floor(scrollPercentage * 1.5 * assetImages.length),
+  assetImages.length - 1,
+);
+
+return (
+  <RotatingProduct
+    product={product}
+    assetImages={assetImages}
+    frameIndex={frameIndex}
+  />
+);
+
+// Inside RotatingProduct: swap frames instead of re-rendering a canvas
+{
+  assetImages.map((asset, index) => (
+    <img
+      key={asset.image.url}
+      src={asset.image.url}
+      className="absolute inset-0 mx-auto object-cover"
+      style={{ visibility: index === frameIndex ? "visible" : "hidden" }}
+    />
+  ));
+}
+```
 
 ### Collections exploder header
 
 ![Collection header text duplicating and expanding on the top and bottom as user scrolls][collections-exploder-header-gif]
 
 - [See it in action 👀](https://shop.remix.run/collections/all) (be sure to scroll)
-- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
+- [Check out the relevant code 💻][collections-exploder-header-code]
+
+The collection pages header “explodes” by duplicating the title in five stacked colors and sliding each layer at a different rate as you scroll (thanks again, `useScrollPercentage()`). It’s a tiny parallax that keeps the heading readable while giving the page motion without video or heavy assets.
+
+```tsx
+let translatePercent = Math.round(Math.min(scrollPercentage * 2, 1) * 80);
+
+return (
+  <div className="font-title relative w-full text-center uppercase">
+    <h1 className="relative z-50 bg-black text-white">{children}</h1>
+    {["pink", "red", "yellow", "green", "blue"].map((color, i) => (
+      <span
+        key={color}
+        aria-hidden
+        className={`text-${color}-brand absolute inset-0`}
+        style={{ transform: `translateY(${(i - 2) * translatePercent}%)` }}
+      >
+        {children}
+      </span>
+    ))}
+  </div>
+);
+```
 
 ### Product image blur loader
 
 ![Blurred product image on initial load, revealing the full image once it's loaded][product-image-blur-gif]
 
 - [See it in action 👀](https://shop.remix.run/products/remix-engineering-hoodie) (be sure to refresh the page)
-- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
+- [Check out the relevant code 💻][product-image-blur-code]
+
+On the product pages we request a 32px version of each product image for an instant, blurred preview, then crossfade to the full image once it finishes loading. Shopify’s image CDN makes it really is to request any version of an image you need, which Hydrogen's [`<Image />` component][hydrogen-image-component] takes advantage of to generate an appropriate [`srcset`][mdn-srcset] to deliver the appropriate image based on the user's screen size.
+
+```tsx
+const imageRef = useRef<HTMLImageElement>(null);
+const [loadState, setLoadState] = useState<"pending" | "loaded" | "error">(
+    "pending",
+  );
+
+const previewUrl = data.url.includes("?")
+  ? `${data.url}&width=32`
+  : `${data.url}?width=32`;
+
+useLayoutEffect(() => {
+  const node = imageRef.current;
+  if (!node) return;
+  if (loadState !== "pending") return;
+  if (node.complete) {
+    setLoadState("loaded");
+    return;
+  }
+  node.onload = () => setLoadState("loaded");
+  node.onerror = () => setLoadState("error");
+  return () => {
+    node.onload = null;
+    node.onerror = null;
+  };
+}, [loadState]);
+
+return (
+  <>
+    {/* Blurred preview image */}
+    <img
+      src={previewUrl}
+      alt={alt}
+      className={clsx(
+        "absolute inset-0 size-full object-cover blur-2xl transition-opacity duration-750",
+        loadState === "loaded" ? "opacity-0" : "opacity-100",
+      )}
+      draggable={false}
+      aria-hidden={true}
+    />
+    {/* Full image */}
+    <HydrogenImage
+      ref={imageRef}
+      data={data}
+      className={clsx(
+        "relative h-full w-full object-cover transition-all duration-750",
+        loadState === "loaded" ? "blur-none" : "blur-2xl",
+      )}
+    />
+  </div>
+);
+```
 
 ### Optimistic cart
 
 ![Optimistic cart UI showing items in the cart before they are added to the database][optimistic-cart-gif]
 
 - [See it in action 👀](https://shop.remix.run/products/load-in-parallel-t-shirt-black) (just add stuff to the cart)
-- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
+- [Check out the relevant code 💻][optimistic-cart-code]
+
+To make sure the cart experience feels snappy and pleasant we take advantage of Hydrogen’s [`useOptimisticCart` hook][hydrogen-use-optimistic-cart-hook]. The user can rapidly add/remove items from the cart and we show them the most likely end state. To indicate pending updates, we shade prices and update the checkout button's text to "Updating cart...", and then resolve once all `loader`s settle and the latest data is available.
+
+```tsx
+let cart = useOptimisticCart(rootData?.cart);
+let isOptimistic = Boolean(cart?.isOptimistic);
+let totalQuantity = cart.totalQuantity || 0;
+
+let lines = cart.lines.nodes;
+let isOptimistic = Boolean(cart.isOptimistic);
+
+let subtotalAmount = cart?.cost?.subtotalAmount;
+
+if (!cart) return <EmptyCart>;
+
+return (
+  <>
+    {/* ... */}
+    {lines.map((line) => (
+      <CartLineItem
+        key={line.id}
+        line={line}
+        isOptimistic={isOptimistic}
+        className="gap-4"
+      />
+    ))}
+    {/* ... */}
+    <Money
+      data={subtotalAmount}
+      className={clsx("text-base font-bold", isOptimistic && "text-white/50")}
+    />
+  </>
+);
+```
 
 ### 404/500 glitchy text
 
 ![Green "404" made up of numbers that are randomly changing][glitchy-text-gif]
 
 - [See it in action 👀](https://shop.remix.run/blah)
-- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
+- [Check out the relevant code 💻][glitchy-text-code]
+
+Our error pages render “404”/“500” as a matrix of hex digits. We convert a PNG sprite into a grid of numbers that randomly flip on a timer for a low-fi glitch.
+
+```tsx
+const textToImageMap = {
+  "404": error404Src,
+  "500": error500Src,
+  empty: emptySrc,
+};
+
+export function MatrixText({ text }: { text: TextId }) {
+  const { dataUrl, scale, matrixTextData } = useMatrixValues(text);
+  const glitchedText = useGlitchText(matrixTextData);
+
+  return (
+    <div>
+      {/* Blurred background layer */}
+      <div
+        className={clsx(wrapperCss, "blur-xl")}
+        style={{
+          transform: `translate(-50%, -50%) scale(${scale})`,
+          imageRendering: "pixelated",
+          backgroundImage: `url(${dataUrl})`,
+        }}
+      >
+        {matrixTextData?.text}
+      </div>
+      {/* Foreground glitched text layer */}
+      <div
+        className={wrapperCss}
+        style={{
+          transform: `translate(-50%, -50%) scale(${scale})`,
+          imageRendering: "pixelated",
+          backgroundImage: `url(${dataUrl})`,
+        }}
+      >
+        {glitchedText}
+      </div>
+    </div>
+  );
+}
+
+function useMatrixValues(text: TextId) {
+  // Loads the image, converts it to a canvas, then processes each pixel
+  // to generate a grid of hex characters representing the image brightness
+  // Also calculates the scale needed to fit the text to the viewport width
+  // Returns: { dataUrl, scale, matrixTextData }
+}
+
+function useGlitchText(matrixData: MatrixTextData) {
+  // Randomly flips ~8% of the active hex characters on a timer
+  // Uses requestAnimationFrame with setTimeout throttling for smooth animation
+  // Respects prefers-reduced-motion setting
+}
+```
 
 ## Future improvements and contributing
 
@@ -254,6 +457,9 @@ There are a lot of little features and animation I'm particularly proud of in th
 [threads-acquisition]: https://x.com/rousseaukazi/status/1798724339841319186
 [threads-x]: https://x.com/threads
 [hydrogen-skeleton]: https://github.com/Shopify/hydrogen/tree/main/templates/skeleton
+[hydrogen-image-component]: https://shopify.dev/docs/api/hydrogen/latest/components/media/image
+[hydrogen-use-optimistic-cart-hook]: https://shopify.dev/docs/api/hydrogen/latest/hooks/useoptimisticcart
+[mdn-srcset]: https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/srcset
 [remix-store-products]: https://shop.remix.run/collections/all
 [shopify-mission]: https://www.shopify.com/about#:~:text=Making%20commerce%20better%20for%20everyone
 [react-router-roadmap]: https://github.com/orgs/remix-run/projects/5
@@ -268,3 +474,8 @@ There are a lot of little features and animation I'm particularly proud of in th
 [product-image-blur-gif]: /blog-images/posts/oss-remix-store/product-image-blur-demo.gif
 [optimistic-cart-gif]: /blog-images/posts/oss-remix-store/optimistic-cart-demo.gif
 [glitchy-text-gif]: /blog-images/posts/oss-remix-store/glitchy-text-demo.gif
+[hero-code]: https://github.com/remix-run/remix-store/blob/96c15c44d2a99250133e89ca92ea016959dab5c7/app/routes/pages/(%24locale)._index.tsx#L101-L170
+[collections-exploder-header-code]: https://github.com/remix-run/remix-store/blob/96c15c44d2a99250133e89ca92ea016959dab5c7/app/components/page-title.tsx
+[product-image-blur-code]: https://github.com/remix-run/remix-store/blob/96c15c44d2a99250133e89ca92ea016959dab5c7/app/components/ui/blur-image.tsx
+[optimistic-cart-code]: https://github.com/remix-run/remix-store/blob/96c15c44d2a99250133e89ca92ea016959dab5c7/app/routes/pages/(%24locale).cart.tsx
+[glitchy-text-code]: https://github.com/remix-run/remix-store/blob/96c15c44d2a99250133e89ca92ea016959dab5c7/app/components/matrix-text.tsx
