@@ -12,7 +12,7 @@ Today we are open sourcing the [Remix Store][remix-store]. We think making the s
 
 The Remix Team is an open source team. We work on open source software like [react-router][react-router-github] and [remix][remix-github]. Sometimes we open source [our][react-router-website-github] [websites][remix-website-github] too.
 
-We launched out store [back in May][remix-store-launch-post], and the intention was always to open source it. I delayed because with something like a store where there are actual exchanges of money for goods (something open source folks rarely know much about), there's a lot more room for abuse if done wrong.
+We launched the store [back in May][remix-store-launch-post], and the intention was always to open source it. I delayed because with something like a store where there are actual exchanges of money for goods (something open source folks rarely know much about), there's a lot more room for abuse if done wrong.
 
 I think I've got everything sorted out to keep our store safe while also allowing anyone to run it locally and poke around/contribute.
 
@@ -114,7 +114,7 @@ With the Remix store, we wanted both our website and our products to be unique a
 
 Left to myself, the store would have ben generic and the t-shirts even more so. That would would have been passible, but it misses the mark of what we were trying to do with the store (see [the prior section](#who-this-is-for)).
 
-Enter our beloved design and brand extraordinaire, [Tim Quirino][tim-quirino]! Tim joined our team via [another acquisition][threads-acquisition]. Prior to us Tim had never worked with a developer-heavy, open source team. However, we couldn't have asked for a better fit. Tim already had a successful career doing Product Design at as the head of Brand at [Threads][threads-x]. Even more fortuitous, Tim's design career kicked of because he was designing merch for his friends' bands.
+Enter our beloved design and brand extraordinaire, [Tim Quirino][tim-quirino]! Tim joined our team via [another acquisition][threads-acquisition]. Prior to us Tim had never worked with a developer-heavy, open source team. However, we couldn't have asked for a better fit. Even though Tim has had considerable experience designing software products, brand, and merch at Meta & [Threads][threads-x], he started his career designing merch for bands and record labels.
 
 I was stoked to have Tim on the team, and couldn't wait to start talking about the store with him. In fact, our first Slack messages were about the Remix Store.
 
