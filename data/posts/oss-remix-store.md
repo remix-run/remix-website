@@ -3,6 +3,7 @@ title: Open Sourcing the Remix Store
 summary: We're open sourcing the Remix Store. A production-ready example for React Router developers and anyone building custom Shopify storefronts with Hydrogen.
 date: 2025-12-08
 image: /blog-images/headers/remix-store.jpg
+ogImage: /blog-images/headers/remix-store.jpg
 imageAlt: "Remix Website homepage"
 authors:
   - Brooks Lybrand
