@@ -1,8 +1,8 @@
 ---
 title: Open Sourcing the Remix Store
-summary: TODO
+summary: We're open sourcing the Remix Store. A production-ready example for React Router developers and anyone building custom Shopify storefronts with Hydrogen.
 date: 2025-12-08
-image: /blog-images/headers/remix-dot-run.png
+image: /blog-images/headers/remix-store.jpg
 imageAlt: "Remix Website homepage"
 authors:
   - Brooks Lybrand
@@ -184,24 +184,44 @@ We iterated for another 6 months: finalizing contracts, selecting blanks, adding
 
 ## Some cool features
 
-- Features worth digging into
+There are a lot of little features and animation I'm particularly proud of in this store. I wanted to highlight a few of the fun features and good user experiences we built. This is a not a comprehensive walk-through, just a high-level overview and glimpse at the relevant code. Feel free to explore more since, ya know, it's now open source.
+
+### Hero
+
+![3D hoodie spinning in the hero section][hero-gif]
+
+- [See it in action 👀](https://shop.remix.run/) (be sure to scroll)
+- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
+
+### Collections exploder header
+
+![Collection header text duplicating and expanding on the top and bottom as user scrolls][collections-exploder-header-gif]
+
+- [See it in action 👀](https://shop.remix.run/collections/all) (be sure to scroll)
+- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
+
+### Product image blur loader
+
+![Blurred product image on initial load, revealing the full image once it's loaded][product-image-blur-gif]
+
+- [See it in action 👀](https://shop.remix.run/products/remix-engineering-hoodie) (be sure to refresh the page)
+- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
+
+### Optimistic cart
+
+![Optimistic cart UI showing items in the cart before they are added to the database][optimistic-cart-gif]
+
+- [See it in action 👀](https://shop.remix.run/products/load-in-parallel-t-shirt-black) (just add stuff to the cart)
+- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
+
+### 404/500 glitchy text
+
+![Green "404" made up of numbers that are randomly changing][glitchy-text-gif]
+
+- [See it in action 👀](https://shop.remix.run/blah)
+- [Check out the relevant code 💻](https://github.com/remix-run/remix-store/tree/96c15c44d2a99250133e89ca92ea016959dab5c7/<file-path>)
 
 ## Future improvements and contributing
-
-## features to highlight
-
-- Hero
-- Collections exploder header
-- Product image blur loader
-- Optimistic cart
-- 404/500 glitchy text: https://shop.remix.run/blah
-- Progressive Enhancement (clicking the cart before JS loads takes you to the cart page)
-
-## unorganized notes, resources, images, etc.
-
-- Hack Days project had 12 team members
-
-Feedback from Shopify VP reviewing the project:
 
 [oss-remix-dot-run]: ./oss-remix-dot-run
 [react-router-github]: https://github.com/remix-run/react-router
@@ -243,3 +263,8 @@ Feedback from Shopify VP reviewing the project:
 [remix-store-v0-pic]: /blog-images/posts/oss-remix-store/v0-store-mockup.png
 [remix-store-v1-pic]: /blog-images/posts/oss-remix-store/v1-store-mockup.png
 [remix-store-gif]: /blog-images/posts/oss-remix-store/remix-store.gif
+[hero-gif]: /blog-images/posts/oss-remix-store/hero-demo.gif
+[collections-exploder-header-gif]: /blog-images/posts/oss-remix-store/collections-exploder-header-demo.gif
+[product-image-blur-gif]: /blog-images/posts/oss-remix-store/product-image-blur-demo.gif
+[optimistic-cart-gif]: /blog-images/posts/oss-remix-store/optimistic-cart-demo.gif
+[glitchy-text-gif]: /blog-images/posts/oss-remix-store/glitchy-text-demo.gif
