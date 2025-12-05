@@ -20,9 +20,9 @@ With the opening up of the repo, I wanted to take a moment to share:
 
 - Who this is for
 - What it takes to launch a store
-- Some cool feature worth digging into
+- Some cool features worth digging into
 
-If you just want to skip the backstory and dig into the recipe, [checkout the source code on GitHub][remix-store-github].
+If you just want to skip the backstory and dig into the recipe, [check out the source code on GitHub][remix-store-github].
 
 Otherwise, let's dig into the details of procurement requests, spinning hoodies, and the many iterations it took to get things right.
 
@@ -36,7 +36,7 @@ Launching a swag store was one of the first things my manager (Michael Jackson) 
 
 To put things in context, this first store was started pre-Shopify acquisition, and well before I joined the team.
 
-After Remix joined Shopify, the reasons to build a store increased, especially with [Hydrogen][hydrogen] being built on Remix v1-2 (and now React Router). As Michael and I discussed it, we realized that we essentially had 3 audiences. The following comes directly from the internal project I had to setup to convince Shopify to let use company resources to launch the store (more on that later):
+After Remix joined Shopify, the reasons to build a store increased, especially with [Hydrogen][hydrogen] being built on Remix v1-2 (and now React Router). As Michael and I discussed it, we realized that we essentially had 3 audiences. The following comes directly from the internal project I had to set up to convince Shopify to let us use company resources to launch the store (more on that later):
 
 **Remix Users**
 
@@ -61,7 +61,7 @@ We have also been able to use the store to test out new React Router things like
 
 <figure>
   <img alt="Remix Store built on React Server Components example" src="/blog-images/posts/oss-remix-store/remix-store-rsc-demo.gif" />
-  <figcaption class="pt-2">Jacob Ebey's <a href="https://react-router-rsc-ecommerce.up.railway.app/">reimagining of the Remix Store</a> React Server Components</figcaption>
+  <figcaption class="pt-2">Jacob Ebey's <a href="https://react-router-rsc-ecommerce.up.railway.app/">reimagining of the Remix Store</a> using React Server Components</figcaption>
 </figure>
 
 The only thing we haven't done is share the store's source code for React Router and Shopify developers to learn from.
@@ -82,13 +82,13 @@ In this section I want to give a bit of the history and share what I learned abo
 
 ### Using Shopify
 
-I was pretty ignorant about what it would take to launch a store when I first started. I was also honestly pretty ignorant about Shopify and it's capabilities. Despite being a Shopify employee, I was very much learning Shopify as I went.
+I was pretty ignorant about what it would take to launch a store when I first started. I was also honestly pretty ignorant about Shopify and its capabilities. Despite being a Shopify employee, I was very much learning Shopify as I went.
 
 The good news is using Shopify's platform was probably the _easiest_ part of this whole process. For our store, Shopify handles:
 
 - Inventory management
 - Customer Management
-- Hosting (in our case though [Oxygen][oxygen])
+- Hosting (in our case on [Oxygen][oxygen])
 - Email marketing
 - Analytics
 
@@ -112,9 +112,9 @@ With the Remix store, we wanted both our website and our products to be unique a
   <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Soft Wear update is available <a href="https://t.co/VhVbdVV8GN">pic.twitter.com/VhVbdVV8GN</a></p>&mdash; Remix 💿 (@remix_run) <a href="https://twitter.com/remix_run/status/1924558330225156190?ref_src=twsrc%5Etfw">May 19, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </div>
 
-Left to myself, the store would have ben generic and the t-shirts even more so. That would would have been passible, but it misses the mark of what we were trying to do with the store (see [the prior section](#who-this-is-for)).
+Left to myself, the store would have been generic and the t-shirts even more so. That would have been passable, but it would miss the mark of what we were trying to do with the store (see [the prior section](#who-this-is-for)).
 
-Enter our beloved design and brand extraordinaire, [Tim Quirino][tim-quirino]! Tim joined our team via [another acquisition][threads-acquisition]. Prior to us Tim had never worked with a developer-heavy, open source team. However, we couldn't have asked for a better fit. Even though Tim has had considerable experience designing software products, brand, and merch at Meta & [Threads][threads-x], he started his career designing merch for bands and record labels.
+Enter our beloved design and brand extraordinaire, [Tim Quirino][tim-quirino]! Tim joined our team via [another acquisition][threads-acquisition]. Prior to joining us, Tim had never worked with a developer-heavy, open source team. However, we couldn't have asked for a better fit. Even though Tim has considerable experience designing software products, brand, and merch at Meta & [Threads][threads-x], he started his career designing merch for bands and record labels.
 
 I was stoked to have Tim on the team, and couldn't wait to start talking about the store with him. In fact, our first Slack messages were about the Remix Store.
 
@@ -136,7 +136,7 @@ Some challenges we faced:
 
 Despite all this, we actually got decently far.
 
-You can try to dig through the git commits if you want, or you can just checkout the old [Figma project][remix-store-graveyard-figma]. The first version of the store looked something like this:
+You can try to dig through the git commits if you want, or you can just check out the old [Figma project][remix-store-graveyard-figma]. The first version of the store looked something like this:
 
 ![Side-by-side dark and light mode views of v0 of The Remix Store website featuring a mini skateboard banner and six product listings including a jacket, hip pack, shirt, skateboard, notebook, and gel pen.][remix-store-v0-pic]
 
@@ -152,23 +152,23 @@ We got some feedback from Michael on the design, and went for a less chunky, mor
 
 We were feeling pretty good about ourselves, and had some great product ideas in place (pretty much [everything currently listed on the store][remix-store-products]). The only thing we needed was some money from Shopify to get the store going.
 
-<img class="mx-auto" src="/blog-images/posts/oss-remix-store/money-pweaz.gif" alt="Mona-Lisa Saperstein from Parks and Reck saying 'Money pleeeease' why gesturing for money to be given to her." />
+<img class="mx-auto" src="/blog-images/posts/oss-remix-store/money-pweaz.gif" alt="Mona-Lisa Saperstein from Parks and Rec saying 'Money pleeeease' while gesturing for money to be given to her." />
 
-Quite reasonably, big companies such as ours don't necessarily just write blank checks and actually want to know you intend to do with their resources and how it will go back to supporting the [underlying mission][shopify-mission]. In retrospect that's pretty reasonable, but it did require a bit more work internally on our end.
+Quite reasonably, big companies such as ours don't necessarily just write blank checks and actually want to know what you intend to do with their resources and how it will go back to supporting the [underlying mission][shopify-mission]. In retrospect that's pretty reasonable, but it did require a bit more work internally on our end.
 
-Without boring you with all the inner workings of Shopify (or divulging information I'm probably not legally allowed to share), we basically had to setup an internal project in order to go through the proper procurement process. In general our team is super fortunate to get to run our [own roadmap][react-router-roadmap] and leverage [our own processes](./rr-governance), since all of the work we're doing is open source.
+Without boring you with all the inner workings of Shopify (or divulging information I'm probably not legally allowed to share), we basically had to set up an internal project in order to go through the proper procurement process. In general our team is super fortunate to get to run our [own roadmap][react-router-roadmap] and leverage [our own processes](./rr-governance), since all of the work we're doing is open source.
 
-With the internal project created and the justifying of our stores existence done, we were able to move forward with the vendor we had selected to run the production and fulfillment side of our store.
+With the internal project created and the justifying of our store's existence done, we were able to move forward with the vendor we had selected to run the production and fulfillment side of our store.
 
 ### Feedback is a Gift
 
 With the Remix Store, we were asking for more resources, and we were also representing Shopify in a new way by putting out a storefront built on Shopify. Understandably there was a little more input needed.
 
-We setup the internal project and got procurement worked out in late October, 2024. However, when we showed off our nearly complete storefront, we received some hard, but needed feedback from one of the Shopify VPs:
+We set up the internal project and got procurement worked out in late October, 2024. However, when we showed off our nearly complete storefront, we received some hard, but needed feedback from one of the Shopify VPs:
 
 > Please push yourself to flex a little more and remember that you are the team that built remix.run which is one of my favorite dev marketing websites that does a great job of telling me what the Remix brand is.
 
-[The Remix homepage][remix-homepage] is such a delight to scroll through, and did such a fantastic job explaining what Remix was offering (we're planning for our next homepage to do just as good of a job with Remix 3). Basically what we had created didn't immediately show the value. It looked somewhat generic and simple, and in no way justified the need to build a it as a [custom storefront][shopify-custom-storefronts].
+[The Remix homepage][remix-homepage] is such a delight to scroll through, and did such a fantastic job explaining what Remix was offering (we're planning for our next homepage to do just as good of a job with Remix 3). Basically what we had created didn't immediately show the value. It looked somewhat generic and simple, and in no way justified the need to build it as a [custom storefront][shopify-custom-storefronts].
 
 So we went back to the drawing board.
 
@@ -184,7 +184,7 @@ We iterated for another 6 months: finalizing contracts, selecting blanks, adding
 
 ## Some cool features
 
-There are a lot of little features and animation I'm particularly proud of in this store. I wanted to highlight a few of the fun features and good user experiences we built. This is a not a comprehensive walk-through, just a high-level overview and glimpse at the relevant code. Feel free to explore more since, ya know, it's now open source.
+There are a lot of little features and animations I'm particularly proud of in this store. I wanted to highlight a few of the fun features and good user experiences we built. This is not a comprehensive walk-through, just a high-level overview and glimpse at the relevant code. Feel free to explore more since, ya know, it's now open source.
 
 ### Hero
 
@@ -238,7 +238,7 @@ return (
 - [See it in action 👀](https://shop.remix.run/collections/all) (be sure to scroll)
 - [Check out the relevant code 💻][collections-exploder-header-code]
 
-The collection pages header “explodes” by duplicating the title in five stacked colors and sliding each layer at a different rate as you scroll (thanks again, `useScrollPercentage()`). It’s a tiny parallax that keeps the heading readable while giving the page motion without video or heavy assets.
+The collection pages header "explodes" by duplicating the title in five stacked colors and sliding each layer at a different rate as you scroll (thanks again, `useScrollPercentage()`). It's a tiny parallax effect that keeps the heading readable while giving the page motion without video or heavy assets.
 
 ```tsx
 let translatePercent = Math.round(Math.min(scrollPercentage * 2, 1) * 80);
@@ -267,7 +267,7 @@ return (
 - [See it in action 👀](https://shop.remix.run/products/remix-engineering-hoodie) (be sure to refresh the page)
 - [Check out the relevant code 💻][product-image-blur-code]
 
-On the product pages we request a 32px version of each product image for an instant, blurred preview, then crossfade to the full image once it finishes loading. Shopify’s image CDN makes it really is to request any version of an image you need, which Hydrogen's [`<Image />` component][hydrogen-image-component] takes advantage of to generate an appropriate [`srcset`][mdn-srcset] to deliver the appropriate image based on the user's screen size.
+On the product pages we request a 32px version of each product image for an instant, blurred preview, then crossfade to the full image once it finishes loading. Shopify's image CDN makes it really easy to request any version of an image you need, which Hydrogen's [`<Image />` component][hydrogen-image-component] takes advantage of to generate an appropriate [`srcset`][mdn-srcset] to deliver the appropriate image based on the user's screen size.
 
 ```tsx
 const imageRef = useRef<HTMLImageElement>(null);
@@ -328,7 +328,7 @@ return (
 - [See it in action 👀](https://shop.remix.run/products/load-in-parallel-t-shirt-black) (just add stuff to the cart)
 - [Check out the relevant code 💻][optimistic-cart-code]
 
-To make sure the cart experience feels snappy and pleasant we take advantage of Hydrogen’s [`useOptimisticCart` hook][hydrogen-use-optimistic-cart-hook]. The user can rapidly add/remove items from the cart and we show them the most likely end state. To indicate pending updates, we shade prices and update the checkout button's text to "Updating cart...", and then resolve once all `loader`s settle and the latest data is available.
+To make sure the cart experience feels snappy and pleasant, we take advantage of Hydrogen's [`useOptimisticCart` hook][hydrogen-use-optimistic-cart-hook]. The user can rapidly add/remove items from the cart and we show them the most likely end state. To indicate pending updates, we shade prices and update the checkout button's text to "Updating cart...", and then resolve once all `loader`s settle and the latest data is available.
 
 ```tsx
 let cart = useOptimisticCart(rootData?.cart);
@@ -426,6 +426,17 @@ function useGlitchText(matrixData: MatrixTextData) {
 
 ## Future improvements and contributing
 
+Like I've said a few times, we're pretty happy with what we've launched. There's still a lot we'd like to do to keep improving it, both in terms of user experience as well as customer experience. In no particular order, we are already planning to:
+
+- Drop some new products before the end of 2025
+- Update the home page
+- Offer more affordable shipping options for international orders
+- Rewrite the store in Remix 3
+
+That's pretty much it for the story of the Remix Store! If you notice any bugs please [open an issue][remix-store-issue] and/or [pull request][remix-store-pr].
+
+Oh also, if you made it this far, feel free to [take 15% off your next order][remix-store-discount] (code: `OPEN_SOURCE`, available until the end of 2025).
+
 [oss-remix-dot-run]: ./oss-remix-dot-run
 [react-router-github]: https://github.com/remix-run/react-router
 [remix-github]: https://github.com/remix-run/remix
@@ -468,6 +479,9 @@ function useGlitchText(matrixData: MatrixTextData) {
 [tim-brooks-slack-pic]: /blog-images/posts/oss-remix-store/tim-brooks-first-message.png
 [remix-store-v0-pic]: /blog-images/posts/oss-remix-store/v0-store-mockup.png
 [remix-store-v1-pic]: /blog-images/posts/oss-remix-store/v1-store-mockup.png
+[remix-store-issue]: https://github.com/remix-run/remix-store
+[remix-store-pr]: https://github.com/remix-run/remix-store/pulls
+[remix-store-discount]: https://shop.remix.run/discount/OPEN_SOURCE
 [remix-store-gif]: /blog-images/posts/oss-remix-store/remix-store.gif
 [hero-gif]: /blog-images/posts/oss-remix-store/hero-demo.gif
 [collections-exploder-header-gif]: /blog-images/posts/oss-remix-store/collections-exploder-header-demo.gif
