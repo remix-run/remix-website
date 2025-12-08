@@ -308,7 +308,7 @@ function BlurImage() {
         src={previewUrl}
         alt={alt}
         className={clsx(
-          "absolute inset-0 size-full object-cover blur-2xl transition-opacity duration-750",
+          "duration-750 absolute inset-0 size-full object-cover blur-2xl transition-opacity",
           loadState === "loaded" ? "opacity-0" : "opacity-100",
         )}
         draggable={false}
@@ -319,7 +319,7 @@ function BlurImage() {
         ref={imageRef}
         data={data}
         className={clsx(
-          "relative h-full w-full object-cover transition-all duration-750",
+          "duration-750 relative h-full w-full object-cover transition-all",
           loadState === "loaded" ? "blur-none" : "blur-2xl",
         )}
       />
