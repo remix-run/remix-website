@@ -485,10 +485,10 @@ Oh also, if you made it this far, feel free to [take 15% off your next order][re
 [shopify-mission]: https://www.shopify.com/about#:~:text=Making%20commerce%20better%20for%20everyone
 [react-router-roadmap]: https://github.com/orgs/remix-run/projects/5
 [remix-homepage]: https://v2.remix.run/
-[github-history-pic]: /blog-images/posts/oss-remix-store/old-remix-swag-store.png
-[tim-brooks-slack-pic]: /blog-images/posts/oss-remix-store/tim-brooks-first-message.png
-[remix-store-v0-pic]: /blog-images/posts/oss-remix-store/v0-store-mockup.png
-[remix-store-v1-pic]: /blog-images/posts/oss-remix-store/v1-store-mockup.png
+[github-history-pic]: /blog-images/posts/oss-remix-store/old-remix-swag-store.webp
+[tim-brooks-slack-pic]: /blog-images/posts/oss-remix-store/tim-brooks-first-message.webp
+[remix-store-v0-pic]: /blog-images/posts/oss-remix-store/v0-store-mockup.webp
+[remix-store-v1-pic]: /blog-images/posts/oss-remix-store/v1-store-mockup.webp
 [remix-store-issue]: https://github.com/remix-run/remix-store
 [remix-store-pr]: https://github.com/remix-run/remix-store/pulls
 [remix-store-discount]: https://shop.remix.run/discount/OPEN_SOURCE
