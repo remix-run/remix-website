@@ -37,22 +37,22 @@ To put things in context, this first store was started [pre-Shopify acquisition]
 
 After Remix joined Shopify, the reasons to build a store increased, especially with [Hydrogen][hydrogen] being built on Remix v1-2 (and now React Router). As Michael and I discussed it, we realized that we essentially had 3 audiences. The following comes directly from the internal project I had to set up to convince Shopify to let us use company resources to launch the store (more on that later):
 
-**Remix Users**
-
-- Fans can purchase swag to rep their favorite framework (one of our most frequent requests) and organically advertise our software
-- Sending "thank you"s to contributors
-- Streamline sending swag to meetups and conferences
-
-**Hydrogen Users**
-
-- Real-world prod example of a Hydrogen store
-- Open-sourced for education purposes
-
-**Shopify Devs**
-
-- Real world app to dog-food new Remix and Hydrogen features
-- Cross collaborate between the Hydrogen and Remix teams to learn from one another
-- Educate and connect the Remix team better with the core of what Shopify does
+> **Remix Users**
+>
+> - Fans can purchase swag to rep their favorite framework (one of our most frequent requests) and organically advertise our software
+> - Sending "thank you"s to contributors
+> - Streamline sending swag to meetups and conferences
+>
+> **Hydrogen Users**
+>
+> - Real-world prod example of a Hydrogen store
+> - Open-sourced for education purposes
+>
+> **Shopify Devs**
+>
+> - Real world app to dog-food new Remix and Hydrogen features
+> - Cross collaborate between the Hydrogen and Remix teams to learn from one another
+> - Educate and connect the Remix team better with the core of what Shopify does
 
 The store has now been up for over half a year and we've received and fulfilled over 200 orders. I love [seeing][remix-merch-love-1] [people][remix-merch-love-2] [enjoy][remix-merch-love-3] and [represent][remix-merch-love-4] [our][remix-merch-love-5] [merch][remix-merch-love-6]. We also have future drops designed and currently being produced, and further improvements planned for our customers (_cough cough_ more affordable international shipping _cough cough_).
 
