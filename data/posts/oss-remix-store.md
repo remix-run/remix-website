@@ -341,7 +341,7 @@ let isOptimistic = Boolean(cart.isOptimistic);
 
 let subtotalAmount = cart?.cost?.subtotalAmount;
 
-if (!cart) return <EmptyCart>;
+if (!cart) return <EmptyCart />;
 
 return (
   <>
