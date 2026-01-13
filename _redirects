@@ -5,6 +5,7 @@
 /api            /api/conventions                      302
 /podcast        https://remix.transistor.fm/          302
 /stacks         https://remix.run/pages/stacks        302
+/showcase       https://v2.remix.run/showcase         302
 
 # V2 docs reorganization
 /docs/file-conventions/route-files-v2 /docs/file-conventions/routes        302
