@@ -22,8 +22,6 @@ import {
 import "~/styles/tailwind.css";
 import "~/styles/bailwind.css";
 import { removeTrailingSlashes, isProductionHost } from "~/lib/http.server";
-import { ColorSchemeScript, useColorScheme } from "~/lib/color-scheme";
-import { parseColorScheme } from "~/lib/color-scheme.server";
 import iconsHref from "~/icons.svg";
 import cx from "clsx";
 import { canUseDOM } from "./ui/primitives/utils";
@@ -93,28 +91,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let isDevHost = !isProductionHost(request);
   let url = new URL(request.url);
 
-  let colorScheme = await parseColorScheme(request);
-
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return data(
-    {
-      colorScheme,
-      host: url.host,
-      siteUrl,
-      isProductionHost: !isDevHost,
-      noIndex:
-        isDevHost ||
-        url.pathname === "/docs/en/v1/api/remix" ||
-        url.pathname === "/docs/en/v1/api/conventions",
-    },
-    {
-      headers: {
-        Vary: "Cookie",
-      },
-    },
-  );
+  return data({
+    host: url.host,
+    siteUrl,
+    isProductionHost: !isDevHost,
+    noIndex:
+      isDevHost ||
+      url.pathname === "/docs/en/v1/api/remix" ||
+      url.pathname === "/docs/en/v1/api/conventions",
+  });
 }
 
 export function links() {
@@ -155,7 +143,6 @@ function Document({
   darkBg,
   noIndex,
 }: DocumentProps) {
-  let colorScheme = useColorScheme();
   let matches = useMatches();
   let isDocsPage = !!matches.find((match) =>
     match.id.startsWith("routes/docs"),
@@ -165,13 +152,11 @@ function Document({
     <html
       lang="en"
       className={cx({
-        dark: forceDark || colorScheme === "dark",
         "scroll-pt-[6rem] lg:scroll-pt-[4rem]": isDocsPage,
       })}
-      data-theme={forceDark ? "dark" : colorScheme}
+      data-theme={forceDark ? "dark" : undefined}
     >
       <head>
-        <ColorSchemeScript forceConsistentTheme={forceDark} />
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#121212" />
         <meta

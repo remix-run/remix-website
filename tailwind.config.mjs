@@ -6,7 +6,7 @@ import defaultTheme from "tailwindcss/defaultTheme";
 /** @type {TailwindConfig} */
 export default {
   content: ["./app/**/*.{ts,tsx}", "./data/**/*.md"],
-  darkMode: "class",
+  darkMode: "media",
   plugins: [selectedVariantPlugin, expandedVariantPlugin],
   theme: {
     extend: {
