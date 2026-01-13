@@ -12,8 +12,9 @@ export default [
     route("2025/coc", "routes/jam/pages/2025.coc.tsx"),
     route("2025/gallery", "routes/jam/pages/2025.gallery.tsx"),
   ]),
-  route("_actions/newsletter", "routes/resources/newsletter-subscribe.tsx"),
+  route("blog/rss.xml", "routes/resources/blog-rss.tsx"),
   route("img/:slug", "routes/resources/blog-og-image/route.tsx"),
+  route("_actions/newsletter", "routes/resources/newsletter-subscribe.tsx"),
   route("healthcheck", "routes/healthcheck.tsx"),
   route("*", "routes/catchall.tsx"),
 ] satisfies RouteConfig;
