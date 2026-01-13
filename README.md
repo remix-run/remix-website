@@ -81,24 +81,6 @@ When you're happy with it, merge your branch into `main` and push.
 
 When linking to other posts use `[name](article-slug)`, you don't need to do `[name](/blog/article-slug)`
 
-### Adding to Showcase
-
-[The Showcase](https://remix.run/showcase) page is a collection of sites built on Remix that are particularly impressive. If you think there is something missing from this list, feel free to open a PR for the team to review.
-
-- Record quick demo of the website (~6s)
-- Grab or screenshot the first frame of the video
-- Add both resources to `public/showcase-assets`
-- Run `cd public/showcase-assets && ./convert.sh` to convert images and videos to compressed formats
-  - Warning: this script was created hastily with ChatGPT and little concern for others running it. Feel free to offer improvements to the script and/or documentation
-- Remove/don't commit the original video and image
-- Add new showcase example data to [showcase.yaml](./data/showcase.yaml)
-
-### Adding to Resources
-
-[The Resources](https://remix.run/resources) page is a collection of templates and libraries that make building sites with Remix even easier. For now this data is driven by a yaml file, but eventually we anticipate replacing it with a database.
-
-If you would like to contribute a new resource to these pages, simply add it to [resources.yaml](./data/resources.yaml)
-
 ## CSS Notes
 
 You'll want the [tailwind VSCode plugin](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) for sure, the hints are amazing.
