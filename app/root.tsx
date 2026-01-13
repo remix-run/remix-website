@@ -7,7 +7,6 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  useMatches,
   useRouteError,
   data,
   redirect,
@@ -27,6 +26,7 @@ import cx from "clsx";
 import { canUseDOM } from "./ui/primitives/utils";
 import { GlobalLoading } from "./ui/global-loading";
 import { type Route } from "./+types/root";
+import { useForceDark } from "./lib/hooks";
 
 const redirectOldDocs: Route.MiddlewareFunction = ({ request }) => {
   const { pathname } = new URL(request.url);
@@ -143,19 +143,8 @@ function Document({
   darkBg,
   noIndex,
 }: DocumentProps) {
-  let matches = useMatches();
-  let isDocsPage = !!matches.find((match) =>
-    match.id.startsWith("routes/docs"),
-  );
-
   return (
-    <html
-      lang="en"
-      className={cx({
-        "scroll-pt-[6rem] lg:scroll-pt-[4rem]": isDocsPage,
-      })}
-      data-theme={forceDark ? "dark" : undefined}
-    >
+    <html lang="en" data-theme={forceDark ? "dark" : undefined}>
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#121212" />
@@ -187,14 +176,8 @@ function Document({
 }
 
 export default function App() {
-  let matches = useMatches();
   let { noIndex } = useLoaderData<typeof loader>();
-  let forceDark = matches.some(({ handle }) => {
-    if (handle && typeof handle === "object" && "forceDark" in handle) {
-      return handle.forceDark;
-    }
-    return false;
-  });
+  let forceDark = useForceDark();
 
   if (process.env.NODE_ENV !== "development") {
     // eslint-disable-next-line react-hooks/rules-of-hooks

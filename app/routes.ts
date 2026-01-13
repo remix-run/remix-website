@@ -1,9 +1,16 @@
-import { route, type RouteConfig } from "@react-router/dev/routes";
+import { route, layout, type RouteConfig } from "@react-router/dev/routes";
 import { flatRoutes } from "@react-router/fs-routes";
 
 export default [
-  ...(await flatRoutes({ rootDirectory: "routes/conf" })),
-  ...(await flatRoutes({ rootDirectory: "routes/marketing-extras" })),
+  layout("routes/marketing/layout.tsx", [
+    route("/", "routes/marketing/home.tsx"),
+    route("brand", "routes/marketing/brand.tsx"),
+    route("newsletter", "routes/marketing/newsletter.tsx"),
+    route("blog", "routes/marketing/blog-index.tsx"),
+    route("blog/:slug", "routes/marketing/blog-post.tsx"),
+    route("blog/rss.xml", "routes/resources/blog-rss.tsx"),
+  ]),
+
   route("jam", "routes/jam/pages/layout.tsx", [
     route("2025", "routes/jam/pages/2025.tsx"),
     route("2025/ticket", "routes/jam/pages/2025.ticket.tsx"),
@@ -12,9 +19,12 @@ export default [
     route("2025/coc", "routes/jam/pages/2025.coc.tsx"),
     route("2025/gallery", "routes/jam/pages/2025.gallery.tsx"),
   ]),
-  route("blog/rss.xml", "routes/resources/blog-rss.tsx"),
+
+  ...(await flatRoutes({ rootDirectory: "routes/conf" })),
+
   route("img/:slug", "routes/resources/blog-og-image/route.tsx"),
   route("_actions/newsletter", "routes/resources/newsletter-subscribe.tsx"),
   route("healthcheck", "routes/healthcheck.tsx"),
+
   route("*", "routes/catchall.tsx"),
 ] satisfies RouteConfig;

@@ -1,4 +1,4 @@
-import { type HeadersFunction, data } from "react-router";
+import { data } from "react-router";
 import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
 import { getMarkdownTutPage, type Prose } from "~/lib/mdtut.server";
 import "~/styles/index.css";
@@ -6,13 +6,11 @@ import { Red } from "~/ui/gradients";
 import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
 import { ScrollExperience } from "~/ui/homepage-scroll-experience";
 import invariant from "tiny-invariant";
-import { Fragment } from "react";
 import { getMeta } from "~/lib/meta";
-import { CACHE_CONTROL } from "~/lib/http.server";
-import type { Route } from "./+types/_marketing._index";
+import type { Route } from "./+types/home";
 
-export function meta({ data }: Route.MetaArgs) {
-  let { siteUrl } = data;
+export function meta({ loaderData }: Route.MetaArgs) {
+  let { siteUrl } = loaderData;
   let title = "Remix - Build Better Websites";
   let image = siteUrl ? `${siteUrl}/img/og.1.jpg` : undefined;
   let description =
@@ -20,6 +18,8 @@ export function meta({ data }: Route.MetaArgs) {
 
   return getMeta({ title, description, siteUrl, image });
 }
+
+export const handle = { forceDark: true };
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
@@ -37,21 +37,13 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   let requestUrl = new URL(request.url);
   let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
 
-  return data(
-    {
-      sample,
-      sampleSm,
-      siteUrl,
-      mutations,
-      errors,
-    },
-    { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
-  );
-};
-
-export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  // Inherit the caching headers from the loader so we don't cache 404s
-  return loaderHeaders;
+  return data({
+    sample,
+    sampleSm,
+    siteUrl,
+    mutations,
+    errors,
+  });
 };
 
 export default function Index({ loaderData }: Route.ComponentProps) {
@@ -75,7 +67,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
 function Hero({ sample, sampleSm }: { sample: Prose; sampleSm: Prose }) {
   return (
-    <Fragment>
+    <>
       <h1 className="sr-only">Welcome to Remix</h1>
       <section
         x-comp="Hero"
@@ -117,7 +109,7 @@ function Hero({ sample, sampleSm }: { sample: Prose; sampleSm: Prose }) {
           <Sample html={sampleSm.html} className="hidden sm:block" />
         </div>
       </section>
-    </Fragment>
+    </>
   );
 }
 

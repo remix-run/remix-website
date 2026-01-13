@@ -5,7 +5,7 @@ import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 
 import { Subscribe } from "~/ui/subscribe";
 import { clsx } from "clsx";
-import type { Route } from "./+types/_extras.blog.$slug";
+import type { Route } from "./+types/blog-post";
 import { href } from "react-router";
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
@@ -21,10 +21,10 @@ export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: mdStyles },
 ];
 
-export function meta({ data, params }: Route.MetaArgs) {
+export function meta({ loaderData, params }: Route.MetaArgs) {
   let { slug } = params;
 
-  let { siteUrl, post } = data || {};
+  let { siteUrl, post } = loaderData || {};
   if (!post) {
     return [{ title: "404 Not Found | Remix" }];
   }

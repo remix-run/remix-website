@@ -52,21 +52,6 @@ export function handleRedirects(pathname: string) {
   return null;
 }
 
-export function safeRedirect(
-  to: FormDataEntryValue | string | null | undefined,
-  init?: number | ResponseInit,
-) {
-  if (
-    !to ||
-    typeof to !== "string" ||
-    !to.startsWith("/") ||
-    to.startsWith("//")
-  ) {
-    to = "/";
-  }
-  return redirect(to, init);
-}
-
 export function removeTrailingSlashes(request: Request) {
   let url = new URL(request.url);
   if (url.pathname.endsWith("/") && url.pathname !== "/") {
