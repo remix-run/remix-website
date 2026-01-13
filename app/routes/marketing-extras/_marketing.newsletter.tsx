@@ -2,7 +2,7 @@ import { useNavigation, useActionData } from "react-router";
 import type { MetaFunction } from "react-router";
 import { useEffect, useRef } from "react";
 import { Subscribe } from "~/ui/subscribe";
-import type { action } from "~/routes/[_]actions.newsletter";
+import type { action } from "~/routes/resources/newsletter-subscribe";
 
 export const meta: MetaFunction = () => [
   {

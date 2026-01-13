@@ -3,7 +3,7 @@ import { useFetcher } from "react-router";
 import type { FormProps } from "react-router";
 import { Button, Input } from "./buttons";
 import cx from "clsx";
-import type { action as newsletterAction } from "~/routes/[_]actions.newsletter";
+import type { action as newsletterAction } from "~/routes/resources/newsletter-subscribe";
 
 // TODO: look into if v3_fetcherPersist simplifies this component
 

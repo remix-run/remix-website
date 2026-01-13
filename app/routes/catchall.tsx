@@ -1,6 +1,6 @@
 import { handleRedirects } from "~/lib/http.server";
 import { data } from "react-router";
-import type { Route } from "./+types/$";
+import type { Route } from "./+types/catchall";
 
 // We use the catch-all route to attempt to find a doc for the given path. If a
 // doc isn't found, we return a 404 as expected. However we also log those
@@ -48,7 +48,6 @@ function handleStaticFileRequests(param: string | undefined) {
 }
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
-  // throw data({ butts: true }, { status: 401 });
   handleRedirects(new URL(request.url).pathname);
   handleStaticFileRequests(params["*"]);
   throw data({}, { status: 404 });

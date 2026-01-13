@@ -10,7 +10,7 @@ import ogImageSrc from "../images/og-thumbnail-1.jpg";
 import iconsHref from "~/icons.svg";
 
 import type { Route } from "./+types/2025";
-import type { action as newsletterAction } from "~/routes/[_]actions.newsletter";
+import type { action as newsletterAction } from "~/routes/resources/newsletter-subscribe";
 
 type EventStatus = "before" | "live" | "after";
 
