@@ -6,6 +6,7 @@ import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 import { Subscribe } from "~/ui/subscribe";
 import { clsx } from "clsx";
 import type { Route } from "./+types/_extras.blog.$slug";
+import { href } from "react-router";
 
 export const loader = async ({ params, request }: Route.LoaderArgs) => {
   let requestUrl = new URL(request.url);
@@ -28,7 +29,10 @@ export function meta({ data, params }: Route.MetaArgs) {
     return [{ title: "404 Not Found | Remix" }];
   }
 
-  let ogImageUrl = siteUrl ? new URL(`${siteUrl}/img/${slug}`) : null;
+  let ogImageUrl = siteUrl
+    ? new URL(href("/img/:slug", { slug }), siteUrl)
+    : null;
+
   if (ogImageUrl) {
     ogImageUrl.searchParams.set("title", post.title);
     ogImageUrl.searchParams.set("date", post.dateDisplay);
@@ -43,6 +47,8 @@ export function meta({ data, params }: Route.MetaArgs) {
 
   let socialImageUrl = ogImageUrl?.toString();
   let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
+
+  console.log({ socialImageUrl });
 
   return [
     { title: post.title + " | Remix" },
