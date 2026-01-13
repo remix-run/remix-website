@@ -14,7 +14,7 @@ export const meta: MetaFunction = () => {
 export default function Brand() {
   return (
     <div className="prose container flex max-w-full flex-col gap-8 text-base sm:text-lg lg:max-w-4xl">
-      <h1 className="text-2xl font-extrabold dark:text-gray-200 md:text-5xl">
+      <h1 className="text-2xl font-extrabold md:text-5xl dark:text-gray-200">
         Remix Brand
       </h1>
       <p>
@@ -65,7 +65,7 @@ export default function Brand() {
 
 function AssetHeader({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-xl font-extrabold dark:text-gray-200 md:text-3xl">
+    <h2 className="text-xl font-extrabold md:text-3xl dark:text-gray-200">
       {children}
     </h2>
   );
