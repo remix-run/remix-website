@@ -121,7 +121,7 @@
   }
 
   & :not(pre) > code {
-    @apply rounded bg-gray-100/50 px-1.5 pb-0.5 pt-px text-sm text-gray-700 dark:bg-gray-800/50;
+    @apply rounded bg-gray-100/50 px-1.5 pb-0.5 pt-px text-sm dark:bg-gray-800/50;
   }
 
   & code {

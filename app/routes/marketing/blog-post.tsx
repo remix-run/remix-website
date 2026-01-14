@@ -48,8 +48,6 @@ export function meta({ loaderData, params }: Route.MetaArgs) {
   let socialImageUrl = ogImageUrl?.toString();
   let url = siteUrl ? `${siteUrl}/blog/${slug}` : null;
 
-  console.log({ socialImageUrl });
-
   return [
     { title: post.title + " | Remix" },
     { name: "description", content: post.summary },
