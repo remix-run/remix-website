@@ -14,13 +14,7 @@ export function Header({
 }) {
   let navigate = useNavigate();
   return (
-    <header
-      className={cx(
-        "px-6 py-8 md:px-8 lg:px-12",
-        "text-marketing-primary",
-        className,
-      )}
-    >
+    <header className={cx("p-12", "text-marketing-primary", className)}>
       <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between">
         <NavLink
           onContextMenu={(event) => {
