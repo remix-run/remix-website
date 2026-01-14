@@ -118,6 +118,7 @@ const SubscribeEmailInput = React.forwardRef<
       ref={ref}
       type="email"
       name="email"
+      autoComplete="email"
       placeholder={placeholder}
       {...props}
       aria-invalid={

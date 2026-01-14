@@ -2,7 +2,7 @@ import * as React from "react";
 import { Link } from "react-router";
 import { Subscribe } from "~/ui/subscribe";
 import { getBlogPostListings } from "~/lib/blog.server";
-import type { Route } from "./+types/_extras.blog._index";
+import type { Route } from "./+types/blog-index";
 
 export const loader = async () => {
   return { posts: await getBlogPostListings() };
@@ -24,10 +24,7 @@ export default function Blog({ loaderData }: Route.ComponentProps) {
   let featuredPosts = loaderData.posts.filter((post) => post.featured);
 
   return (
-    <main
-      className="mt-8 flex max-w-full flex-1 flex-col px-6 sm:container"
-      tabIndex={-1}
-    >
+    <div className="mt-8 flex max-w-full flex-1 flex-col px-6 sm:container">
       <div className="md:grid md:grid-cols-12">
         <div className="md:col-span-7">
           <div className="mb-14">
@@ -107,6 +104,6 @@ export default function Blog({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
