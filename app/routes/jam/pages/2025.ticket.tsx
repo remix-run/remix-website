@@ -120,9 +120,7 @@ function TicketPurchase({
         <input type="hidden" name="productId" value={productId} />
         <input type="hidden" name="quantity" value={quantity} />
         <div className="flex w-full grow items-center justify-between rounded-[48px] px-4 py-2.5 ring-2 ring-inset ring-white/30 md:px-6 md:py-4 md:ring-4">
-          <span className="font-conf-mono font-normal text-white">
-            $ {price}
-          </span>
+          <span className="font-mono font-normal text-white">$ {price}</span>
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -293,7 +291,7 @@ function Ticket({ title, imageSrc }: TicketProps) {
           />
         </div>
 
-        <div className="absolute bottom-0 left-[35%] z-40 pb-1 pl-2 text-left font-conf-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
+        <div className="absolute bottom-0 left-[35%] z-40 pb-1 pl-2 text-left font-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
           <div className="flex flex-col gap-0 uppercase md:gap-2">
             <p>october 10 2025</p>
             <div>

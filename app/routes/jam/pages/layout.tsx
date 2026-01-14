@@ -159,7 +159,7 @@ function Footer({ className }: { className?: string }) {
       )}
       <div
         className={clsx(
-          "flex flex-col items-center gap-2 py-40 text-center font-conf-mono text-xs md:text-base 2xl:py-32",
+          "flex flex-col items-center gap-2 py-40 text-center font-mono text-xs md:text-base 2xl:py-32",
           showSeats
             ? "w-full bg-gradient-to-b from-[rgb(255,51,0)] to-[rgb(186,37,0)] text-white"
             : "text-gray-400",

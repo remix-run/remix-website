@@ -52,7 +52,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
     <div x-comp="Index">
       <div className="h-8" />
       <Hero sample={sample} sampleSm={sampleSm} />
-      <div className="h-32" />
+      {/* <div className="h-32" />
       <section>
         <h2 className="sr-only">Testimonials</h2>
         <BigTweet tweet={tweets[0]} />
@@ -60,7 +60,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
         <TweetCarousel tweets={tweets.slice(1)} />
       </section>
       <div className="h-32" />
-      <ScrollExperience mutations={mutations} errors={errors} />
+      <ScrollExperience mutations={mutations} errors={errors} /> */}
     </div>
   );
 }

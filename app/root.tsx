@@ -19,7 +19,6 @@ import {
   type LoadOptions as FathomLoadOptions,
 } from "fathom-client";
 
-import "~/styles/fonts.css";
 import "~/styles/tailwind.css";
 import "~/styles/bailwind.css";
 import "~/styles/marketing.css";
@@ -111,8 +110,6 @@ export function links() {
   let preloadedFonts = [
     "inter-roman-latin-var.woff2",
     "inter-italic-latin-var.woff2",
-    "source-code-pro-roman-var.woff2",
-    "source-code-pro-italic-var.woff2",
     "jet-brains-mono.woff2",
   ];
   return [

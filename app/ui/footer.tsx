@@ -49,7 +49,7 @@ export function Footer({ className = "" }: { className?: string }) {
         </nav>
       </div>
 
-      <div className="text-marketing-muted flex flex-col items-center gap-4 font-conf-mono text-[10px] uppercase leading-[1.6] tracking-[0.05em]">
+      <div className="text-marketing-muted flex flex-col items-center gap-4 font-mono text-[10px] uppercase leading-[1.6] tracking-[0.05em]">
         <p>docs and examples licensed under mit</p>
         <p>©2026 Shopify, Inc.</p>
       </div>

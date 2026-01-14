@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global font-face declarations */
+@font-face {
+  font-family: "Inter";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+  src: url("/font/inter-roman-latin-var.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: italic;
+  src: url("/font/inter-italic-latin-var.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  src: url("/font/jet-brains-mono.woff2") format("woff2");
+}
+
 .dark {
   color-scheme: dark;
 }

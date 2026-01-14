@@ -17,8 +17,7 @@ export default {
     },
     fontFamily: {
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
-      "conf-mono": ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
-      mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
+      mono: ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
       xs: ["0.75rem", { lineHeight: "1.333" }], // 12px
