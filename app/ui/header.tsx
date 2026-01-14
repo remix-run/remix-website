@@ -16,40 +16,42 @@ export function Header({
   return (
     <header
       className={cx(
-        "flex items-center justify-between px-6 py-9 lg:px-12",
-        "text-gray-900 dark:text-white",
+        "px-6 py-8 md:px-8 lg:px-12",
+        "text-marketing-primary",
         className,
       )}
     >
-      <NavLink
-        onContextMenu={(event) => {
-          event.preventDefault();
-          navigate("/brand");
-        }}
-        to={to}
-        prefetch="intent"
-        aria-label="Remix"
-      >
-        <Wordmark aria-hidden />
-      </NavLink>
+      <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between">
+        <NavLink
+          onContextMenu={(event) => {
+            event.preventDefault();
+            navigate("/brand");
+          }}
+          to={to}
+          prefetch="intent"
+          aria-label="Remix"
+        >
+          <Wordmark aria-hidden />
+        </NavLink>
 
-      <nav className="hidden gap-8 md:flex" aria-label="Main">
-        <HeaderLink to="https://v2.remix.run/docs">Docs</HeaderLink>
-        <HeaderLink to={href("/blog")}>Blog</HeaderLink>
-        <HeaderLink to={href("/jam/2025")}>Jam</HeaderLink>
-        <HeaderLink to="https://shop.remix.run" external>
-          Store
-        </HeaderLink>
-      </nav>
+        <nav className="hidden gap-6 md:flex" aria-label="Main">
+          <HeaderLink to="https://v2.remix.run/docs">Docs</HeaderLink>
+          <HeaderLink to={href("/blog")}>Blog</HeaderLink>
+          <HeaderLink to={href("/jam/2025")}>Jam</HeaderLink>
+          <HeaderLink to="https://shop.remix.run" external>
+            Store
+          </HeaderLink>
+        </nav>
 
-      <HeaderMenuMobile className="md:hidden" />
+        <HeaderMenuMobile className="md:hidden" />
+      </div>
     </header>
   );
 }
 
 function HeaderMenuMobile({ className = "" }: { className: string }) {
   let baseClasses =
-    "bg-gray-100 hover:bg-gray-200 [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
+    "bg-gray-100 hover:bg-gray-200 shadow-sm text-marketing-primary [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
 
   return (
     <DetailsMenu className={cx("relative cursor-pointer", className)}>
@@ -95,7 +97,7 @@ function HeaderLink({
       prefetch={prefetch}
       x-comp="HeaderLink"
       className={cx(
-        "text-base font-semibold opacity-80 last:mr-0 hover:opacity-100",
+        "text-marketing-primary text-base font-semibold leading-6 tracking-[0.01em] opacity-80 last:mr-0 hover:opacity-100",
         className,
       )}
       to={to}

@@ -19,8 +19,10 @@ import {
   type LoadOptions as FathomLoadOptions,
 } from "fathom-client";
 
+import "~/styles/fonts.css";
 import "~/styles/tailwind.css";
 import "~/styles/bailwind.css";
+import "~/styles/marketing.css";
 import { removeTrailingSlashes, isProductionHost } from "~/lib/http.server";
 import iconsHref from "~/icons.svg";
 import cx from "clsx";
@@ -111,6 +113,7 @@ export function links() {
     "inter-italic-latin-var.woff2",
     "source-code-pro-roman-var.woff2",
     "source-code-pro-italic-var.woff2",
+    "jet-brains-mono.woff2",
   ];
   return [
     { rel: "icon", href: "/favicon-32.png", sizes: "32x32" },

@@ -84,7 +84,7 @@ function Schedule({
         <div className="-mx-10 border-y-2 border-white/20 px-4">
           <div
             className={clsx(
-              "p-6 font-mono text-xs uppercase text-white/40",
+              "p-6 font-conf-mono text-xs uppercase text-white/40",
               gridColsClassName,
             )}
           >
@@ -105,7 +105,7 @@ function Schedule({
         <div className="-mx-10 border-y-2 border-white/20">
           <div
             className={clsx(
-              "p-4 font-mono text-xs uppercase text-white/40 sm:p-6 sm:text-sm md:p-8 lg:p-9",
+              "p-4 font-conf-mono text-xs uppercase text-white/40 sm:p-6 sm:text-sm md:p-8 lg:p-9",
               gridColsClassName,
             )}
           >
@@ -163,7 +163,7 @@ function ScheduleItemMobile({ item }: ScheduleItemProps) {
 
           {item.bio ? (
             <div
-              className="col-span-full flex flex-col gap-4 font-mono text-xs leading-5 text-white [&_a:hover]:underline [&_a]:text-blue-400"
+              className="col-span-full flex flex-col gap-4 font-conf-mono text-xs leading-5 text-white [&_a:hover]:underline [&_a]:text-blue-400"
               dangerouslySetInnerHTML={{ __html: item.bio }}
             />
           ) : null}
@@ -262,7 +262,7 @@ function ScheduleItemDesktop({ item }: ScheduleItemProps) {
               />
               {item.bio && (
                 <div
-                  className="flex flex-col gap-4 text-xs text-white sm:gap-6 sm:text-sm md:text-base lg:font-mono [&_a:hover]:underline [&_a]:text-blue-400"
+                  className="flex flex-col gap-4 text-xs text-white sm:gap-6 sm:text-sm md:text-base lg:font-conf-mono [&_a:hover]:underline [&_a]:text-blue-400"
                   dangerouslySetInnerHTML={{ __html: item.bio }}
                 />
               )}

@@ -7,13 +7,6 @@ CSS Variables used in this file:
 --hover-rotate: Additional rotation on hover (in degrees)
 */
 
-@font-face {
-  font-family: "JetBrains Mono";
-  font-style: normal;
-  font-display: swap;
-  src: url("/font/jet-brains-mono.woff2") format("woff2");
-}
-
 html,
 body {
   scrollbar-color: theme(colors.gray.300) theme(colors.gray.800);
