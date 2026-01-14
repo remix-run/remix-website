@@ -6,11 +6,9 @@ import iconsHref from "~/icons.svg";
 import { href, useNavigate } from "react-router";
 
 export function Header({
-  forceDark,
   to = "/",
   className = "",
 }: {
-  forceDark?: boolean;
   to?: string;
   className?: string;
 }) {
@@ -19,7 +17,7 @@ export function Header({
     <header
       className={cx(
         "flex items-center justify-between px-6 py-9 lg:px-12",
-        forceDark ? "text-white" : "text-gray-900 dark:text-white",
+        "text-gray-900 dark:text-white",
         className,
       )}
     >

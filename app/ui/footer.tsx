@@ -2,19 +2,13 @@ import cx from "clsx";
 import { Discord, GitHub, Twitter, YouTube } from "./icons";
 import { Wordmark } from "./logo";
 
-export function Footer({
-  forceDark,
-  className = "",
-}: {
-  forceDark?: boolean;
-  className?: string;
-}) {
+export function Footer({ className = "" }: { className?: string }) {
   return (
     <footer
       x-comp="Footer"
       className={cx(
         "flex items-center justify-between px-6 py-9 text-base lg:px-12",
-        forceDark ? "text-white" : "text-black dark:text-white",
+        "text-black dark:text-white",
         className,
       )}
     >
@@ -22,10 +16,7 @@ export function Footer({
         <Wordmark height={16} aria-label="Remix logo" role="img" />
       </div>
       <nav
-        className={
-          "flex gap-6 " +
-          (forceDark ? "text-white" : "text-black dark:text-white")
-        }
+        className="flex gap-6 text-black dark:text-white"
         aria-label="Find us on the web"
       >
         <a href="https://github.com/remix-run" aria-label="GitHub">
