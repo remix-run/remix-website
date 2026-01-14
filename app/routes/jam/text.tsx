@@ -28,7 +28,7 @@ export function Title({
 
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-conf-mono text-xs uppercase tracking-widest text-white/50 md:text-base">
+    <p className="font-mono text-xs uppercase tracking-widest text-white/50 md:text-base">
       {children}
     </p>
   );

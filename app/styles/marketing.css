@@ -1,0 +1,22 @@
+/* Marketing-only tokens and small utilities
+   - Intentionally isolated so we can iterate on the marketing redesign without affecting other pages.
+*/
+
+:root {
+  --marketing-text-primary: #313539;
+  --marketing-text-muted: #94989c;
+}
+
+/* Dark-mode overrides for marketing text tokens */
+.dark {
+  --marketing-text-primary: #e5e7eb;
+  --marketing-text-muted: #9aa0a6;
+}
+
+.text-marketing-primary {
+  color: var(--marketing-text-primary);
+}
+
+.text-marketing-muted {
+  color: var(--marketing-text-muted);
+}

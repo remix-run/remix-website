@@ -19,19 +19,10 @@
 }
 
 @font-face {
-  font-family: "Source Code Pro";
-  font-weight: 100 900;
-  font-display: swap;
+  font-family: "JetBrains Mono";
   font-style: normal;
-  src: url("/font/source-code-pro-roman-var.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Source Code Pro";
-  font-weight: 100 900;
   font-display: swap;
-  font-style: italic;
-  src: url("/font/source-code-pro-italic-var.woff2") format("woff2");
+  src: url("/font/jet-brains-mono.woff2") format("woff2");
 }
 
 .dark {

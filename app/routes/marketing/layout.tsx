@@ -2,7 +2,6 @@ import { Outlet, type HeadersFunction } from "react-router";
 import { DocSearchModal } from "~/ui/docsearch";
 import { Header } from "~/ui/header";
 import { Footer } from "~/ui/footer";
-import { useForceDark } from "~/lib/hooks";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
 export const headers: HeadersFunction = () => {
@@ -12,15 +11,14 @@ export const headers: HeadersFunction = () => {
 };
 
 export default function Marketing() {
-  let forceDark = useForceDark();
   return (
     <>
       <DocSearchModal />
-      <Header forceDark={forceDark} />
+      <Header />
       <main className="flex flex-1 flex-col" tabIndex={-1}>
         <Outlet />
       </main>
-      <Footer forceDark={forceDark} />
+      <Footer />
     </>
   );
 }

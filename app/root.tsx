@@ -8,6 +8,7 @@ import {
   ScrollRestoration,
   useLoaderData,
   useRouteError,
+  useMatches,
   data,
   redirect,
 } from "react-router";
@@ -20,13 +21,13 @@ import {
 
 import "~/styles/tailwind.css";
 import "~/styles/bailwind.css";
+import "~/styles/marketing.css";
 import { removeTrailingSlashes, isProductionHost } from "~/lib/http.server";
 import iconsHref from "~/icons.svg";
 import cx from "clsx";
 import { canUseDOM, useLayoutEffect } from "./ui/primitives/utils";
 import { GlobalLoading } from "./ui/global-loading";
 import { type Route } from "./+types/root";
-import { useForceDark } from "./lib/hooks";
 
 const redirectOldDocs: Route.MiddlewareFunction = ({ request }) => {
   const { pathname } = new URL(request.url);
@@ -109,8 +110,7 @@ export function links() {
   let preloadedFonts = [
     "inter-roman-latin-var.woff2",
     "inter-italic-latin-var.woff2",
-    "source-code-pro-roman-var.woff2",
-    "source-code-pro-italic-var.woff2",
+    "jet-brains-mono.woff2",
   ];
   return [
     { rel: "icon", href: "/favicon-32.png", sizes: "32x32" },
@@ -204,7 +204,13 @@ function Document({
 
 export default function App() {
   let { noIndex } = useLoaderData<typeof loader>();
-  let forceDark = useForceDark();
+  let matches = useMatches();
+  let forceDark = matches.some(({ handle }) => {
+    if (handle && typeof handle === "object" && "forceDark" in handle) {
+      return handle.forceDark;
+    }
+    return false;
+  });
 
   if (process.env.NODE_ENV !== "development") {
     // eslint-disable-next-line react-hooks/rules-of-hooks
