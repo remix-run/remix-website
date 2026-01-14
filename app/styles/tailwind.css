@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global font-face declarations */
 @font-face {
   font-family: "Inter";
   font-weight: 100 900;

@@ -15,36 +15,20 @@ export function Footer({ className = "" }: { className?: string }) {
       <div className="text-marketing-muted flex items-center gap-6">
         <Wordmark height={16} aria-label="Remix logo" role="img" />
         <nav
-          className="flex items-center gap-6"
+          className="flex items-center gap-6 [&_a:hover]:opacity-100 [&_a]:opacity-80 [&_a]:transition [&_svg]:size-5"
           aria-label="Find us on the web"
         >
-          <a
-            className="opacity-80 transition hover:opacity-100"
-            href="https://github.com/remix-run"
-            aria-label="GitHub"
-          >
-            <GitHub aria-hidden className="size-5" />
+          <a href="https://github.com/remix-run" aria-label="GitHub">
+            <GitHub aria-hidden />
           </a>
-          <a
-            className="opacity-80 transition hover:opacity-100"
-            href="https://twitter.com/remix_run"
-            aria-label="Twitter"
-          >
-            <Twitter aria-hidden className="size-5" />
+          <a href="https://twitter.com/remix_run" aria-label="Twitter">
+            <Twitter aria-hidden />
           </a>
-          <a
-            className="opacity-80 transition hover:opacity-100"
-            href="https://youtube.com/remix_run"
-            aria-label="YouTube"
-          >
-            <YouTube aria-hidden className="size-5" />
+          <a href="https://youtube.com/remix_run" aria-label="YouTube">
+            <YouTube aria-hidden />
           </a>
-          <a
-            className="opacity-80 transition hover:opacity-100"
-            href="https://rmx.as/discord"
-            aria-label="Remix"
-          >
-            <Discord aria-hidden className="size-5" />
+          <a href="https://rmx.as/discord" aria-label="Remix">
+            <Discord aria-hidden />
           </a>
         </nav>
       </div>
