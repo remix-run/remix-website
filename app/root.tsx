@@ -23,7 +23,7 @@ import "~/styles/bailwind.css";
 import { removeTrailingSlashes, isProductionHost } from "~/lib/http.server";
 import iconsHref from "~/icons.svg";
 import cx from "clsx";
-import { canUseDOM } from "./ui/primitives/utils";
+import { canUseDOM, useLayoutEffect } from "./ui/primitives/utils";
 import { GlobalLoading } from "./ui/global-loading";
 import { type Route } from "./+types/root";
 import { useForceDark } from "./lib/hooks";
@@ -128,6 +128,28 @@ export function links() {
   ];
 }
 
+function ColorSchemeScript() {
+  let script = React.useMemo(
+    () => `
+      let media = window.matchMedia("(prefers-color-scheme: dark)");
+      if (media.matches) document.documentElement.classList.add("dark");
+    `,
+    [],
+  );
+
+  useLayoutEffect(() => {
+    let media = window.matchMedia("(prefers-color-scheme: dark)");
+    let sync = () => {
+      document.documentElement.classList.toggle("dark", media.matches);
+    };
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  return <script dangerouslySetInnerHTML={{ __html: script }} />;
+}
+
 interface DocumentProps {
   title?: string;
   forceDark?: boolean;
@@ -144,7 +166,11 @@ function Document({
   noIndex,
 }: DocumentProps) {
   return (
-    <html lang="en" data-theme={forceDark ? "dark" : undefined}>
+    <html
+      lang="en"
+      data-theme={forceDark ? "dark" : undefined}
+      className={forceDark ? "dark" : undefined}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#121212" />
@@ -156,6 +182,7 @@ function Document({
         <Links />
         <Meta />
         {title && <title data-title-override="">{title}</title>}
+        {!forceDark ? <ColorSchemeScript /> : null}
       </head>
 
       <body

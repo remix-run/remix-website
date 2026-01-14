@@ -34,11 +34,7 @@
   src: url("/font/source-code-pro-italic-var.woff2") format("woff2");
 }
 
-:root {
-  color-scheme: light dark;
-}
-
-html[data-theme="dark"] {
+.dark {
   color-scheme: dark;
 }
 
