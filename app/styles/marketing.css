@@ -60,12 +60,6 @@
   --rmx-text-muted: #7c8084;
 }
 
-.dark .marketing-home {
-  color-scheme: light;
-  --rmx-text-primary: #313539;
-  --rmx-text-muted: #7c8084;
-}
-
 .text-rmx-primary {
   color: var(--rmx-text-primary);
 }
@@ -100,4 +94,35 @@
 
 .rmx-shadow-mid {
   box-shadow: var(--rmx-shadow-mid);
+}
+
+.rmx-home-hero-bg {
+  background: linear-gradient(
+    180deg,
+    var(--rmx-neutral-200) 0%,
+    var(--rmx-neutral-100) 30%,
+    var(--rmx-neutral-50) 60%,
+    var(--rmx-white) 100%
+  );
+}
+
+.rmx-home-text-bg {
+  background: linear-gradient(
+    180deg,
+    var(--rmx-white) 0%,
+    var(--rmx-neutral-50) 100%
+  );
+}
+
+.rmx-home-timeline-bg {
+  background: linear-gradient(
+    180deg,
+    var(--rmx-neutral-950) 0%,
+    var(--rmx-neutral-950) 50%,
+    var(--rmx-neutral-750) 100%
+  );
+}
+
+.rmx-home-surface-bg {
+  background: var(--rmx-surface-3);
 }

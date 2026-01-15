@@ -2,8 +2,9 @@ import { route, layout, type RouteConfig } from "@react-router/dev/routes";
 import { flatRoutes } from "@react-router/fs-routes";
 
 export default [
+  route("/", "routes/marketing/home.tsx"),
+
   layout("routes/marketing/layout.tsx", [
-    route("/", "routes/marketing/home.tsx"),
     route("brand", "routes/marketing/brand.tsx"),
     route("newsletter", "routes/marketing/newsletter.tsx"),
     route("blog", "routes/marketing/blog-index.tsx"),

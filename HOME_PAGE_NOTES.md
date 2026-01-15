@@ -18,3 +18,13 @@ This file is **append-only**. Do not rewrite or reorganize existing entries—on
 - **Figma MCP quirk**: `get_variable_defs` only returns values for some nodes; if you see “nothing selected” it likely needs an actual layer/frame selected in Figma before running the tool.
 
 - **Token prefix convention**: Use `rmx-` as the prefix for CSS variables and Tailwind token namespaces (avoid `marketing-` and `mkt-`).
+
+- **Homepage background approach**: Prefer section-scoped backgrounds (each section sets its own gradient/background) rather than a fixed/absolute page-wide background layer.
+
+- **Section background gradients (Figma)**:
+  - **Section 1 (Hero)**: `linear-gradient(180deg, neutral-200 0%, neutral-100 30%, neutral-50 60%, white 100%)`
+  - **Section 2 (Text)**: `linear-gradient(180deg, white 0%, neutral-50 100%)`
+  - **Section 3 (Timeline)**: `linear-gradient(180deg, neutral-950 0%, neutral-950 50%, neutral-750 100%)`
+  - **Section 4 + Footer**: solid `surface/level 3` (`#f0f4f7`)
+
+- **Routing decision (homepage)**: `/` is defined as a top-level route in `app/routes.ts` (not nested under `routes/marketing/layout.tsx`) so the homepage can fully own its chrome/background. The homepage route renders `DocSearchModal`, `Header`, and `Footer` itself.

@@ -21,7 +21,16 @@ When you learn something new (routing/layout, assets, styling constraints, trick
   - **Tablet**: `Home - 800px` (node `93:695`)
   - **Mobile**: `Home - 380px` (node `112:832`)
 
-## Tasks
+## Completed (done)
+
+- **Notes workflow added**: `HOME_PAGE_NOTES.md` is append-only and must be read before changes.
+- **Homepage route scaffolded**: `/` is a top-level route in `app/routes.ts` and `app/routes/marketing/home.tsx` renders its own `Header`/`Footer` + `DocSearchModal`.
+- **Section components scaffolded**: `app/ui/marketing/home/*` exists with placeholder components for Intro/Hero/Pitch/Timeline/Stay-in-the-loop.
+- **Homepage background approach**: section-scoped backgrounds (no fixed/absolute page-wide background layer).
+- **Initial 2026 token set added**: `app/styles/marketing.css` includes `--rmx-*` variables and a small set of `rmx-*` utility classes; `.marketing-home` is forced light-only.
+- **Old homepage loader/UI deps removed from the marketing home route** (no markdown tutorial/tweets/scroll experience).
+
+## Remaining work (todo)
 
 ### Page structure (from Figma)
 
@@ -93,8 +102,6 @@ When you learn something new (routing/layout, assets, styling constraints, trick
 - **Build the intro overlay**
   - Full-viewport overlay that plays on initial page load, then unmounts (or becomes inert) once finished.
   - Should not block navigation/scroll after completion.
-- **Status**
-  - Placeholder component scaffolded: `app/ui/marketing/home/intro-mask-reveal.tsx` (not implemented yet).
 - **Animation behavior**
   - Run **on every visit** (no session management for now).
   - Start with small centered `remix-r-logo.svg` on black background (Mask Sequence 0).
@@ -118,14 +125,9 @@ When you learn something new (routing/layout, assets, styling constraints, trick
   - Replace `app/routes/marketing/home.tsx` with the new page markup.
   - Update `meta()` title/description/og image to match the new messaging.
   - Decide whether the homepage should force light mode or follow system theme (see questions).
-- **Status**
-  - Route rewritten with section scaffolding + minimal loader for `siteUrl`.
-  - Removed `handle.forceDark` so the page stays **light-only** by default.
 - **Remove old homepage dependencies**
   - Remove homepage-only loader data and markdown tutorial dependencies from the old homepage.
   - Follow-up cleanup: delete `app/ui/homepage-scroll-experience.tsx` once no longer referenced anywhere.
-- **Status**
-  - Old homepage loader dependencies removed from `app/routes/marketing/home.tsx`.
 
 ### Section 1 — Hero
 

@@ -3,7 +3,6 @@ export function IntroMaskReveal() {
     <div
       x-comp="IntroMaskReveal"
       aria-hidden="true"
-      // Placeholder: this will become the CSS-first 1s mask reveal overlay.
       className="pointer-events-none fixed inset-0 z-50 hidden"
     >
       <div className="grid h-full w-full place-items-center bg-black">
