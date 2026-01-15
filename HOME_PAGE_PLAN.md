@@ -56,6 +56,12 @@
 - Intro mask reveal animation (`app/ui/marketing/home/intro-mask-reveal.tsx`)
 - Section 1 — Hero (`app/ui/marketing/home/hero-section.tsx`)
 - Section 2 — Pitch + CTA (`app/ui/marketing/home/pitch-section.tsx`)
+- Section 4 — "Stay in the loop" (`app/ui/marketing/home/stay-in-the-loop-section.tsx`)
+  - Newsletter subscription card with form
+  - Discord community card with button
+  - Responsive layout (side-by-side desktop, stacked mobile)
+  - Button hover/active states
+  - Fixed alignment and mobile overflow issues
 - Footer (using existing `app/ui/footer.tsx`)
 
 ### Section 3 — Timeline ("The story so far")
@@ -66,13 +72,6 @@
 - Export desktop and mobile SVGs from Figma, embed inline
 - Use CSS variables for colors
 - Screen-reader-friendly milestone list
-
-### Section 4 — "Stay in the loop"
-
-- Section heading
-- Newsletter card: reuse `app/ui/subscribe.tsx` or `/_actions/newsletter` endpoint
-- Community/Discord card with button
-- Responsive layout: side-by-side on desktop, stacked on mobile
 
 ### Cleanup
 

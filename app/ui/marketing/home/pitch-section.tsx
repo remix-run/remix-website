@@ -25,7 +25,11 @@ export function PitchSection() {
           href="https://github.com/remix-run/remix"
           className={cx(
             "rmx-bg-button-primary rmx-text-button-primary rmx-shadow-mid",
-            "inline-flex h-14 w-full items-center justify-center gap-2 rounded-lg border border-black/10 px-4 py-4 text-xl font-semibold leading-none tracking-tight no-underline transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)] sm:w-auto sm:whitespace-nowrap",
+            "inline-flex h-14 w-full items-center justify-center gap-2 rounded-lg border border-black/10 px-4 py-4 text-xl font-semibold leading-none tracking-tight no-underline",
+            "transition-all hover:opacity-90",
+            "active:scale-[0.98] active:opacity-80",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",
+            "sm:w-auto sm:whitespace-nowrap",
           )}
         >
           <GitHub className="size-6 shrink-0" aria-hidden="true" />

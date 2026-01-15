@@ -1,27 +1,106 @@
+import cx from "clsx";
+import {
+  SubscribeProvider,
+  SubscribeForm,
+  SubscribeEmailInput,
+  SubscribeSubmit,
+  SubscribeStatus,
+} from "~/ui/subscribe";
+
 export function StayInTheLoopSection() {
   return (
-    <section className="px-6 py-16">
-      <div className="mx-auto w-full max-w-[1400px]">
-        <div className="rounded-2xl border border-black/10 p-8">
-          <h2 className="text-sm uppercase tracking-wide opacity-60">
-            TODO: Stay in the loop
-          </h2>
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            <div className="rounded-xl bg-black/5 p-6">
-              <div className="text-xs uppercase tracking-wide opacity-60">
-                TODO: Newsletter card
-              </div>
-              <div className="mt-4 h-10 w-full rounded bg-black/10" />
-            </div>
-            <div className="rounded-xl bg-black/5 p-6">
-              <div className="text-xs uppercase tracking-wide opacity-60">
-                TODO: Community / Discord card
-              </div>
-              <div className="mt-4 h-10 w-40 rounded bg-black/10" />
-            </div>
-          </div>
-        </div>
+    <section className="flex flex-col items-center gap-12 px-12 py-24 md:gap-12">
+      <h2 className="text-rmx-primary text-center text-4xl font-semibold leading-[1.4] tracking-tight">
+        Stay in the loop
+      </h2>
+
+      <div className="flex w-full max-w-[1032px] flex-col gap-8 lg:flex-row lg:items-stretch">
+        <NewsletterCard />
+        <DiscordCard />
       </div>
     </section>
+  );
+}
+
+function NewsletterCard() {
+  return (
+    <div
+      className={cx(
+        "rmx-bg-surface-4 rmx-shadow-mid",
+        "flex flex-[2] flex-col rounded-2xl p-8",
+      )}
+    >
+      <div className="flex flex-1 flex-col gap-8 pb-8">
+        <h3 className="rmx-text-secondary text-2xl font-bold leading-[1.4]">
+          Remix Newsletter
+        </h3>
+        <p className="text-rmx-primary text-base leading-[1.6] tracking-wide">
+          Once a month, we write about everything in the world of Remix. Sign up
+          to be notified about progress on Remix 3. No spam. Unsubscribe
+          anytime.
+        </p>
+      </div>
+      <div>
+        <SubscribeProvider>
+          <SubscribeForm className="flex flex-col gap-6 md:h-14 md:flex-row">
+            <SubscribeEmailInput
+              placeholder="name@example.com"
+              className={cx(
+                "rmx-bg-neutral-100",
+                "h-14 flex-1 rounded-lg border-0 px-6 text-base",
+                "placeholder:text-rmx-text-tertiary",
+              )}
+            />
+            <SubscribeSubmit
+              className={cx(
+                "rmx-bg-button-primary rmx-text-button-primary rmx-shadow-low",
+                "h-14 rounded-lg border border-black/10 px-6 text-base font-semibold leading-none tracking-tight",
+                "transition-all hover:opacity-90",
+                "active:scale-[0.98] active:opacity-80",
+                "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",
+                "md:w-auto md:whitespace-nowrap",
+              )}
+            >
+              Subscribe
+            </SubscribeSubmit>
+          </SubscribeForm>
+          <SubscribeStatus />
+        </SubscribeProvider>
+      </div>
+    </div>
+  );
+}
+
+function DiscordCard() {
+  return (
+    <div
+      className={cx(
+        "rmx-bg-surface-4 rmx-shadow-mid",
+        "flex flex-1 flex-col rounded-2xl p-8",
+      )}
+    >
+      <div className="flex flex-1 flex-col gap-8 pb-8">
+        <h3 className="rmx-text-secondary text-2xl font-bold leading-[1.4]">
+          Remix Community
+        </h3>
+        <p className="text-rmx-primary text-base leading-[1.6] tracking-wide">
+          Discuss, get help, or ask questions regarding Remix or React Router.
+        </p>
+      </div>
+      <div>
+        <a
+          href="https://rmx.as/discord"
+          className={cx(
+            "rmx-bg-button-secondary rmx-text-button-secondary rmx-shadow-low",
+            "inline-flex h-14 w-full items-center justify-center rounded-lg border border-black/10 px-6 text-base font-semibold leading-none tracking-tight no-underline",
+            "transition-all hover:opacity-90",
+            "active:scale-[0.98] active:brightness-95",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-secondary)]",
+          )}
+        >
+          Join Discord
+        </a>
+      </div>
+    </div>
   );
 }

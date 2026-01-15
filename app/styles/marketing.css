@@ -66,6 +66,10 @@
   background: var(--rmx-surface-3);
 }
 
+.rmx-bg-neutral-100 {
+  background: var(--rmx-neutral-100);
+}
+
 .rmx-bg-surface-4 {
   background: var(--rmx-surface-4);
 }
