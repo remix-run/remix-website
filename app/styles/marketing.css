@@ -1,10 +1,8 @@
 :root {
   --rmx-text-primary: #313539;
   --rmx-text-muted: #94989c;
-
-  --rmx-text-primary-rgb: 49 53 57; /* #313539 */
-  --rmx-text-secondary-rgb: 99 103 107; /* #63676b */
-  --rmx-text-tertiary-rgb: 124 128 132; /* #7c8084 */
+  --rmx-text-secondary: #63676b;
+  --rmx-text-tertiary: #7c8084;
 
   --rmx-neutral-50: #ebeff2;
   --rmx-neutral-100: #dee2e6;
@@ -50,16 +48,16 @@
   color: var(--rmx-text-muted);
 }
 
-.rmx-text-primary {
-  color: rgb(var(--rmx-text-primary-rgb));
+.text-rmx-secondary {
+  color: var(--rmx-text-secondary);
 }
 
-.rmx-text-secondary {
-  color: rgb(var(--rmx-text-secondary-rgb));
+.text-rmx-tertiary {
+  color: var(--rmx-text-tertiary);
 }
 
-.rmx-text-tertiary {
-  color: rgb(var(--rmx-text-tertiary-rgb));
+.text-rmx-neutral-100 {
+  color: var(--rmx-neutral-100);
 }
 
 .rmx-body {

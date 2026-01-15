@@ -4,12 +4,23 @@ export function TimelineSection() {
   return (
     <section className="px-12 py-16 text-white md:py-24">
       <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-12 md:gap-16">
-        <div className="mx-auto w-full max-w-[1024px]">
-          <h2 className="rmx-heading-lg">The story so far</h2>
-        </div>
+        <h2
+          className={cx(
+            "rmx-heading-xl",
+            "text-rmx-neutral-100",
+            "text-center",
+          )}
+        >
+          The story so far
+        </h2>
 
-        <div className="w-full rounded-2xl border border-white/10 bg-white/5 p-8">
-          <div className="h-56 w-full rounded-xl bg-white/5 md:h-72" />
+        <div className="w-full">
+          <div className="flex w-full justify-center xl:hidden">
+            <TimelineDiagramMobile />
+          </div>
+          <div className="hidden w-full rounded-2xl border border-white/10 bg-white/5 p-8 xl:block">
+            <TimelineDiagramDesktop />
+          </div>
         </div>
 
         <div
@@ -55,4 +66,12 @@ export function TimelineSection() {
       </div>
     </section>
   );
+}
+
+function TimelineDiagramMobile() {
+  return <div className="h-72 w-full rounded-xl bg-white/5" />;
+}
+
+function TimelineDiagramDesktop() {
+  return <div className="h-72 w-full rounded-xl bg-white/5" />;
 }

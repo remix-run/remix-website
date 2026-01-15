@@ -31,7 +31,7 @@ function NewsletterCard() {
       )}
     >
       <div className="flex flex-1 flex-col gap-8 pb-8">
-        <h3 className={cx("rmx-heading-sm", "rmx-text-secondary")}>
+        <h3 className={cx("rmx-heading-sm", "text-rmx-secondary")}>
           Remix Newsletter
         </h3>
         <p className={cx("rmx-body", "text-rmx-primary")}>
@@ -81,7 +81,7 @@ function DiscordCard() {
       )}
     >
       <div className="flex flex-1 flex-col gap-8 pb-8">
-        <h3 className={cx("rmx-heading-sm", "rmx-text-secondary")}>
+        <h3 className={cx("rmx-heading-sm", "text-rmx-secondary")}>
           Remix Community
         </h3>
         <p className={cx("rmx-body", "text-rmx-primary")}>
