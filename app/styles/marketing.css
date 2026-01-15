@@ -70,6 +70,22 @@
   background: var(--rmx-surface-4);
 }
 
+.rmx-bg-button-primary {
+  background: var(--rmx-button-surface-primary);
+}
+
+.rmx-bg-button-secondary {
+  background: var(--rmx-button-surface-secondary);
+}
+
+.rmx-text-button-primary {
+  color: var(--rmx-button-label-primary);
+}
+
+.rmx-text-button-secondary {
+  color: var(--rmx-button-label-secondary);
+}
+
 .rmx-shadow-low {
   box-shadow: var(--rmx-shadow-low);
 }
