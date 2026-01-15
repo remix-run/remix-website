@@ -63,10 +63,11 @@
   - Button hover/active states
   - Fixed alignment and mobile overflow issues
 - Footer (using existing `app/ui/footer.tsx`)
+- Typography helpers added in `app/styles/marketing.css` and applied to sections
 
 ### Section 3 — Timeline ("The story so far")
 
-- Heading + 3 explanatory text blocks
+- ✅ Heading + 3 explanatory text blocks
 - Year ticks row (2014–2027)
 - Multi-lane timeline track (React Router / Remix / Remix 3) with markers
 - Export desktop and mobile SVGs from Figma, embed inline

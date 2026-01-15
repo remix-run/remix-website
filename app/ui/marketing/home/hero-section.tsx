@@ -5,10 +5,10 @@ export function HeroSection() {
     <section className="flex min-h-[540px] flex-col items-center justify-end overflow-hidden px-12 pb-6 md:min-h-[920px] md:pb-12">
       <div className="flex w-full flex-col items-center gap-12 md:gap-24">
         <div className="text-rmx-primary flex w-full flex-col items-start gap-12 md:items-center md:gap-6 md:text-center">
-          <h1 className="text-2xl font-bold leading-[1.4] md:text-4xl md:font-semibold md:tracking-tight">
+          <h1 className="rmx-heading-hero">
             Remix 3 is under active development
           </h1>
-          <p className="text-base leading-[1.6] tracking-wide">
+          <p className="rmx-body">
             A new full stack framework built on Web APIs
           </p>
         </div>

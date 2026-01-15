@@ -7,7 +7,8 @@ export function PitchSection() {
       <div
         className={cx(
           "text-rmx-primary",
-          "flex w-full max-w-[1024px] flex-col items-center gap-12 text-base leading-[1.6] tracking-wide md:text-2xl md:leading-[1.4] md:tracking-normal xl:text-4xl xl:leading-[1.4] xl:tracking-tight",
+          "rmx-body-lg",
+          "flex w-full max-w-[1024px] flex-col items-center gap-12",
         )}
       >
         <p className="w-full">
@@ -25,7 +26,8 @@ export function PitchSection() {
           href="https://github.com/remix-run/remix"
           className={cx(
             "rmx-bg-button-primary rmx-text-button-primary rmx-shadow-mid",
-            "inline-flex h-14 w-full items-center justify-center gap-2 rounded-lg border border-black/10 px-4 py-4 text-xl font-semibold leading-none tracking-tight no-underline",
+            "rmx-button-text-lg",
+            "inline-flex h-14 w-full items-center justify-center gap-2 rounded-lg border border-black/10 px-4 py-4 no-underline",
             "transition-all hover:opacity-90",
             "active:scale-[0.98] active:opacity-80",
             "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",

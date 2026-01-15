@@ -41,3 +41,4 @@ This file is **append-only**. Do not rewrite or reorganize existing entries—on
 - **Code style**: Avoid adding comments unless something genuinely needs explanation. Keep code clean and self-documenting.
 
 - **Breakpoints**: Use Tailwind's default breakpoints (`sm:`, `md:`, `lg:`, etc.) instead of arbitrary breakpoints like `min-[800px]:`. The Figma frames use 800px but `md:` (768px) is close enough.
+- **Typography helpers (marketing)**: Shared text utility classes live in `app/styles/marketing.css` (e.g., `.rmx-body`, `.rmx-body-md`, `.rmx-body-lg`, `.rmx-heading-hero`, `.rmx-heading-lg`, `.rmx-heading-xl`, `.rmx-heading-sm`, `.rmx-button-text`, `.rmx-button-text-lg`, `.rmx-body-on-dark`).

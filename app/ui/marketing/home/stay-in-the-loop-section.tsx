@@ -10,7 +10,7 @@ import {
 export function StayInTheLoopSection() {
   return (
     <section className="flex flex-col items-center gap-12 px-12 py-24 md:gap-12">
-      <h2 className="text-rmx-primary text-center text-4xl font-semibold leading-[1.4] tracking-tight">
+      <h2 className={cx("rmx-heading-xl", "text-rmx-primary", "text-center")}>
         Stay in the loop
       </h2>
 
@@ -31,10 +31,10 @@ function NewsletterCard() {
       )}
     >
       <div className="flex flex-1 flex-col gap-8 pb-8">
-        <h3 className="rmx-text-secondary text-2xl font-bold leading-[1.4]">
+        <h3 className={cx("rmx-heading-sm", "rmx-text-secondary")}>
           Remix Newsletter
         </h3>
-        <p className="text-rmx-primary text-base leading-[1.6] tracking-wide">
+        <p className={cx("rmx-body", "text-rmx-primary")}>
           Once a month, we write about everything in the world of Remix. Sign up
           to be notified about progress on Remix 3. No spam. Unsubscribe
           anytime.
@@ -54,7 +54,8 @@ function NewsletterCard() {
             <SubscribeSubmit
               className={cx(
                 "rmx-bg-button-primary rmx-text-button-primary rmx-shadow-low",
-                "h-14 rounded-lg border border-black/10 px-6 text-base font-semibold leading-none tracking-tight",
+                "rmx-button-text",
+                "h-14 rounded-lg border border-black/10 px-6",
                 "transition-all hover:opacity-90",
                 "active:scale-[0.98] active:opacity-80",
                 "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",
@@ -80,10 +81,10 @@ function DiscordCard() {
       )}
     >
       <div className="flex flex-1 flex-col gap-8 pb-8">
-        <h3 className="rmx-text-secondary text-2xl font-bold leading-[1.4]">
+        <h3 className={cx("rmx-heading-sm", "rmx-text-secondary")}>
           Remix Community
         </h3>
-        <p className="text-rmx-primary text-base leading-[1.6] tracking-wide">
+        <p className={cx("rmx-body", "text-rmx-primary")}>
           Discuss, get help, or ask questions regarding Remix or React Router.
         </p>
       </div>
@@ -92,7 +93,8 @@ function DiscordCard() {
           href="https://rmx.as/discord"
           className={cx(
             "rmx-bg-button-secondary rmx-text-button-secondary rmx-shadow-low",
-            "inline-flex h-14 w-full items-center justify-center rounded-lg border border-black/10 px-6 text-base font-semibold leading-none tracking-tight no-underline",
+            "rmx-button-text",
+            "inline-flex h-14 w-full items-center justify-center rounded-lg border border-black/10 px-6 no-underline",
             "transition-all hover:opacity-90",
             "active:scale-[0.98] active:brightness-95",
             "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-secondary)]",
