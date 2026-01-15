@@ -1,6 +1,6 @@
 export function PitchSection() {
   return (
-    <section x-comp="PitchSection" className="px-6 py-16">
+    <section className="px-6 py-16">
       <div className="mx-auto w-full max-w-[1400px]">
         <div className="rounded-2xl border border-black/10 p-8">
           <h2 className="text-sm uppercase tracking-wide opacity-60">

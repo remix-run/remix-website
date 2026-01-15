@@ -1,6 +1,6 @@
 export function TimelineSection() {
   return (
-    <section x-comp="TimelineSection" className="px-6 py-16">
+    <section className="px-6 py-16">
       <div className="mx-auto w-full max-w-[1400px]">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-white">
           <h2 className="text-sm uppercase tracking-wide opacity-60">

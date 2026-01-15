@@ -29,14 +29,13 @@ When you learn something new (routing/layout, assets, styling constraints, trick
 - **Homepage background approach**: section-scoped backgrounds (no fixed/absolute page-wide background layer).
 - **Initial 2026 token set added**: `app/styles/marketing.css` includes `--rmx-*` variables and a small set of `rmx-*` utility classes; `.marketing-home` is forced light-only.
 - **Old homepage loader/UI deps removed from the marketing home route** (no markdown tutorial/tweets/scroll experience).
+- **Intro mask reveal animation**: Full CSS-first implementation in `app/ui/marketing/home/intro-mask-reveal.tsx`. SVG inlined (no external file). Animates via `transform: scale()` + `translate()` with fade-out at end. Respects `prefers-reduced-motion`. Uses `pointer-events: none` and `aria-hidden="true"` for accessibility.
 
 ## Remaining work (todo)
 
 ### Page structure (from Figma)
 
-- **Intro — Mask reveal sequence (plays on page load)**
-  - Centered “R” logo on black background
-  - Expands/reveals underlying homepage content over a few frames (Mask Sequence 0–4)
+- ~~**Intro — Mask reveal sequence (plays on page load)**~~ ✅
 - **Global header navigation** (instance in hero)
 - **Section 1 — Hero**
   - Primary headline + subhead
@@ -80,13 +79,14 @@ When you learn something new (routing/layout, assets, styling constraints, trick
 ## Decisions locked in (resolved)
 
 - **Hero image asset**: `public/racecar-teaser-hero.webp`
-- **Intro mask sequence**
+- **Intro mask sequence** ✅ IMPLEMENTED
   - Runs **every visit**
-  - Duration: **1s** (for now)
-  - **Not skippable** (for now)
-  - Implementation preference: **CSS-first**, avoid a “page is useless until JS loads” dependency
-  - Fidelity: use the provided `public/remix-r-logo.svg`; the animation is “just scale the SVG up” until the page is fully revealed
-  - Overlay background: **solid black for the whole 1s** (no fade)
+  - Duration: **~1.65s** (1500ms animation + 150ms delay)
+  - **Not skippable**
+  - **CSS-first** implementation (no JS required)
+  - SVG inlined in `app/ui/marketing/home/intro-mask-reveal.tsx` (Figma export with renamed IDs)
+  - Animation: `scale(1)` → `translate(-55%, 100%) scale(80)` with fade-out at end
+  - Easing: `cubic-bezier(0.78, 0.03, 1, 1)` for dramatic acceleration
 - **CTA button URL**: `https://github.com/remix-run/remix`
 - **Theme behavior**: **light-only** (do not support dark mode on the new homepage)
 - **Discord URL**: `https://rmx.as/discord`
@@ -97,27 +97,18 @@ When you learn something new (routing/layout, assets, styling constraints, trick
 
 ## Task breakdown
 
-### Intro — Mask reveal sequence (on-load animation)
+### ~~Intro — Mask reveal sequence (on-load animation)~~ ✅ DONE
 
-- **Build the intro overlay**
-  - Full-viewport overlay that plays on initial page load, then unmounts (or becomes inert) once finished.
-  - Should not block navigation/scroll after completion.
-- **Animation behavior**
-  - Run **on every visit** (no session management for now).
-  - Start with small centered `remix-r-logo.svg` on black background (Mask Sequence 0).
-  - Expand the logo/mask to reveal the underlying page until the full homepage is visible (Mask Sequences 1–4).
-  - Target duration: **1s** (adjust later once implemented).
-- **Implementation approach**
-  - **CSS-first / no-JS dependency**: the page should still become usable as soon as CSS loads; it should not require JS to “finish” or dismiss the intro.
-  - Use the provided `public/remix-r-logo.svg` (pixel-perfect) and animate via **CSS transforms** (e.g. `transform: scale(...)` with `transform-origin: center`).
-  - Keep the overlay background **solid black for the full duration** (no fade); hide/remove the overlay at the end of the animation.
-  - Make the overlay inert after the animation via CSS (`pointer-events: none`, and `visibility: hidden` at 100% keyframe; if using `opacity`, keep it `1` until the final frame and drop to `0` at 100% to avoid a “fade”).
-- **Accessibility & user preferences**
-  - Respect `prefers-reduced-motion`: skip animation and show the page immediately (or do a simple fade).
-  - Ensure focus/keyboard users aren’t trapped by the overlay.
-- **Performance**
-  - Avoid layout shift: the page should be laid out behind the overlay from the start.
-  - Keep CPU/GPU usage reasonable; avoid heavy reflows.
+Implemented in `app/ui/marketing/home/intro-mask-reveal.tsx` with CSS animations in `app/styles/marketing.css`.
+
+- ✅ Full-viewport overlay with `position: fixed; inset: 0; z-index: 9999`
+- ✅ SVG mask inlined (composite path: black canvas with "R" cutout + colorful stripes)
+- ✅ CSS-first animation: `transform: translate() scale()` from center
+- ✅ Fade-out at end (opacity 1→0 from 60%→100% of animation)
+- ✅ `visibility: hidden` + `pointer-events: none` after animation
+- ✅ `prefers-reduced-motion` respected (animation skipped entirely)
+- ✅ `aria-hidden="true"` for screen readers
+- ✅ Duration: ~1.5s with 150ms delay, custom easing
 
 ### Setup / plumbing
 
@@ -200,13 +191,12 @@ When you learn something new (routing/layout, assets, styling constraints, trick
   - `app/routes/marketing/home.tsx` (rewrite)
 - **CSS**
   - `app/styles/marketing.css` (add new home styles + tokens/utilities)
-- **Logo component (new)**
-  - Create a React component wrapper around `public/remix-r-logo.svg` (location TBD; likely `app/ui/remix-r-logo.tsx` or `app/ui/logo.tsx`).
+- **Intro mask component** ✅
+  - `app/ui/marketing/home/intro-mask-reveal.tsx` (SVG inlined, no external file needed)
 - **Potential new UI modules** (if we extract sections)
   - `app/ui/marketing/home/*` (new directory; now created)
 - **Assets**
   - `public/racecar-teaser-hero.webp` (hero image)
-  - `public/remix-r-logo.svg` (intro mask logo source)
   - `public/...` (timeline SVG export(s), any new icons)
 - **Cleanup**
   - `app/ui/homepage-scroll-experience.tsx` (delete once unused)

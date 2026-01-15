@@ -28,3 +28,7 @@ This file is **append-only**. Do not rewrite or reorganize existing entries—on
   - **Section 4 + Footer**: solid `surface/level 3` (`#f0f4f7`)
 
 - **Routing decision (homepage)**: `/` is defined as a top-level route in `app/routes.ts` (not nested under `routes/marketing/layout.tsx`) so the homepage can fully own its chrome/background. The homepage route renders `DocSearchModal`, `Header`, and `Footer` itself.
+
+- **Intro mask SVG implementation**: The mask SVG (`public/remix-logo-mask.svg`) uses a composite path where the outer black rectangle covers the canvas and the inner "R" shape is cut out (via SVG fill rule). The colorful stripes sit inside the "R" cutout. Animation works by scaling the SVG up from `scale(1)` to `scale(18)` over 1s—as the "R" cutout grows larger, it reveals more of the page beneath. The overlay uses `visibility: hidden` at 100% to instantly disappear (no fade). Reduced motion users skip the animation entirely.
+
+- **Intro mask SVG inlined**: The mask SVG is now inlined directly in `app/ui/marketing/home/intro-mask-reveal.tsx` (no external file). `public/remix-logo-mask.svg` was removed.

@@ -1,17 +1,7 @@
-/* Marketing-only tokens and small utilities
-   - Intentionally isolated so we can iterate on the marketing redesign without affecting other pages.
-   - Token naming convention: `--rmx-*` (preferred) for the 2026 rebuild work.
-*/
-
 :root {
   --rmx-text-primary: #313539;
   --rmx-text-muted: #94989c;
 
-  /* 2026 marketing tokens (prefer these for new homepage work)
-     - We keep these as CSS variables so we can iterate quickly without
-       re-generating Tailwind or touching global palettes.
-     - RGB triplets exist so Tailwind can do opacity via `<alpha-value>`.
-  */
   --rmx-text-primary-rgb: 49 53 57; /* #313539 */
   --rmx-text-secondary-rgb: 99 103 107; /* #63676b */
   --rmx-text-tertiary-rgb: 124 128 132; /* #7c8084 */
@@ -125,4 +115,61 @@
 
 .rmx-home-surface-bg {
   background: var(--rmx-surface-3);
+}
+
+.rmx-intro-mask-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+
+  animation: rmx-intro-reveal 1500ms cubic-bezier(0.78, 0.03, 1, 1) 150ms
+    forwards;
+}
+
+.rmx-intro-mask-svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+
+  animation: rmx-intro-scale 1500ms cubic-bezier(0.78, 0.03, 1, 1) 150ms
+    forwards;
+}
+
+@keyframes rmx-intro-scale {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(-55%, 100%) scale(80);
+  }
+}
+
+@keyframes rmx-intro-reveal {
+  0% {
+    visibility: visible;
+    opacity: 1;
+  }
+  65% {
+    visibility: visible;
+    opacity: 1;
+  }
+  100% {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rmx-intro-mask-overlay {
+    animation: none;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .rmx-intro-mask-svg {
+    animation: none;
+  }
 }
