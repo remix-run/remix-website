@@ -13,6 +13,8 @@ import { CACHE_CONTROL } from "~/lib/http.server";
 import type { Route } from "./+types/home";
 import type { HeadersFunction } from "react-router";
 
+export const handle = { forceTheme: "light" };
+
 export function meta({ matches }: Route.MetaArgs) {
   let { siteUrl } = matches[0].loaderData;
   let title = "Remix";

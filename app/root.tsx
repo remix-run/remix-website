@@ -152,7 +152,7 @@ function ColorSchemeScript() {
 
 interface DocumentProps {
   title?: string;
-  forceDark?: boolean;
+  forceTheme?: "dark" | "light";
   darkBg?: string;
   noIndex: boolean;
   children: React.ReactNode;
@@ -161,15 +161,15 @@ interface DocumentProps {
 function Document({
   children,
   title,
-  forceDark,
+  forceTheme,
   darkBg,
   noIndex,
 }: DocumentProps) {
   return (
     <html
       lang="en"
-      data-theme={forceDark ? "dark" : undefined}
-      className={forceDark ? "dark" : undefined}
+      data-theme={forceTheme ?? undefined}
+      className={forceTheme === "dark" ? "dark" : undefined}
     >
       <head>
         <meta charSet="utf-8" />
@@ -182,15 +182,17 @@ function Document({
         <Links />
         <Meta />
         {title && <title data-title-override="">{title}</title>}
-        {!forceDark ? <ColorSchemeScript /> : null}
+        {forceTheme === undefined ? <ColorSchemeScript /> : null}
       </head>
 
       <body
         className={cx(
           "flex min-h-screen w-full flex-col overflow-x-hidden antialiased selection:bg-blue-200 selection:text-black dark:selection:bg-blue-800 dark:selection:text-white",
-          forceDark
+          forceTheme === "dark"
             ? [darkBg || "bg-gray-900", "text-gray-200"]
-            : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200",
+            : forceTheme === "light"
+              ? "bg-white text-gray-900"
+              : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200",
         )}
       >
         <GlobalLoading />
@@ -205,12 +207,15 @@ function Document({
 export default function App() {
   let { noIndex } = useLoaderData<typeof loader>();
   let matches = useMatches();
-  let forceDark = matches.some(({ handle }) => {
-    if (handle && typeof handle === "object" && "forceDark" in handle) {
-      return handle.forceDark;
+  let forceTheme: "dark" | "light" | undefined;
+  for (let { handle } of matches) {
+    if (handle && typeof handle === "object" && "forceTheme" in handle) {
+      let theme = (handle as { forceTheme: unknown }).forceTheme;
+      if (theme === "dark" || theme === "light") {
+        forceTheme = theme;
+      }
     }
-    return false;
-  });
+  }
 
   if (process.env.NODE_ENV !== "development") {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -222,7 +227,7 @@ export default function App() {
   }
 
   return (
-    <Document noIndex={noIndex} forceDark={forceDark}>
+    <Document noIndex={noIndex} forceTheme={forceTheme}>
       <Outlet />
       <img
         src={iconsHref}
@@ -249,7 +254,7 @@ export function ErrorBoundary() {
       <Document
         noIndex
         title={error.statusText}
-        forceDark
+        forceTheme="dark"
         darkBg="bg-blue-brand"
       >
         <div className="flex flex-1 flex-col justify-center text-white">
@@ -268,7 +273,7 @@ export function ErrorBoundary() {
   }
 
   return (
-    <Document noIndex title="Error" forceDark darkBg="bg-red-brand">
+    <Document noIndex title="Error" forceTheme="dark" darkBg="bg-red-brand">
       <div className="flex flex-1 flex-col justify-center text-white">
         <div className="text-center leading-none">
           <h1 className="text-[25vw]">Error</h1>

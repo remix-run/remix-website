@@ -10,7 +10,7 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-export const handle = { forceDark: true };
+export const handle = { forceTheme: "dark" };
 
 export default function Newsletter() {
   let navigation = useNavigation();

@@ -28,7 +28,7 @@ import {
 import { CACHE_CONTROL } from "~/lib/http.server";
 import invariant from "tiny-invariant";
 
-export const handle = { forceDark: true };
+export const handle = { forceTheme: "dark" };
 
 // March 1 at 12:00am
 const EARLY_BIRD_ENDING_TIME = 1646121600000;

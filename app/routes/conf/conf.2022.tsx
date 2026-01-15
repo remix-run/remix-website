@@ -20,7 +20,7 @@ import {
   SubscribeSubmit,
 } from "~/ui/subscribe";
 
-export const handle = { forceDark: true };
+export const handle = { forceTheme: "dark" };
 
 const navItems: Array<HeaderLinkProps> = [
   {

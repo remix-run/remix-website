@@ -35,19 +35,11 @@
   --rmx-shadow-mid:
     0 2px 4px 0 #011d3940, 0 8px 12px 0 #01387014, 0 12px 16px 0 #0138700a,
     0 16px 20px 0 #0138700a, 0 20px 24px 0 #01387005;
-}
 
-/* Dark-mode overrides for marketing text tokens */
-.dark {
-  --rmx-text-primary: #e5e7eb;
-  --rmx-text-muted: #9aa0a6;
-}
-
-/* The 2026 homepage is light-only. Force its token values even if `.dark` is present. */
-.marketing-home {
-  color-scheme: light;
-  --rmx-text-primary: #313539;
-  --rmx-text-muted: #7c8084;
+  &:where(.dark) {
+    --rmx-text-primary: #e5e7eb;
+    --rmx-text-muted: #9aa0a6;
+  }
 }
 
 .text-rmx-primary {
