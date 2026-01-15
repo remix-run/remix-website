@@ -1,129 +1,30 @@
-import { data } from "react-router";
-import { OutlineButtonLink, PrimaryButtonLink } from "~/ui/buttons";
-import { getMarkdownTutPage, type Prose } from "~/lib/mdtut.server";
-import "~/styles/index.css";
-import { Red } from "~/ui/gradients";
-import { BigTweet, TweetCarousel, tweets } from "~/ui/twitter-cards";
-import { ScrollExperience } from "~/ui/homepage-scroll-experience";
-import invariant from "tiny-invariant";
 import { getMeta } from "~/lib/meta";
+import {
+  HeroSection,
+  IntroMaskReveal,
+  PitchSection,
+  StayInTheLoopSection,
+  TimelineSection,
+} from "~/ui/marketing/home";
 import type { Route } from "./+types/home";
 
-export function meta({ loaderData }: Route.MetaArgs) {
-  let { siteUrl } = loaderData;
-  let title = "Remix - Build Better Websites";
-  let image = siteUrl ? `${siteUrl}/img/og.1.jpg` : undefined;
-  let description =
-    "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.";
+export function meta({ matches }: Route.MetaArgs) {
+  let { siteUrl } = matches[0].loaderData;
+  let title = "Remix";
+  let image = undefined;
+  let description = "TODO: 2026 homepage meta description";
 
   return getMeta({ title, description, siteUrl, image });
 }
 
-export const handle = { forceDark: true };
-
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  let [[sample], [sampleSm], [, mutations], [, errors]] = await Promise.all([
-    getMarkdownTutPage("marketing/sample/sample.md"),
-    getMarkdownTutPage("marketing/sample-sm/sample.md"),
-    getMarkdownTutPage("marketing/mutations/mutations.md"),
-    getMarkdownTutPage("marketing/mutations/errors.md"),
-  ]);
-
-  invariant(sample.type === "prose", "sample.md should be prose");
-  invariant(sampleSm.type === "prose", "sample.md should be prose");
-  invariant(mutations.type === "sequence", "mutations.md should be a sequence");
-  invariant(errors.type === "sequence", "errors.md should be a sequence");
-
-  let requestUrl = new URL(request.url);
-  let siteUrl = requestUrl.protocol + "//" + requestUrl.host;
-
-  return data({
-    sample,
-    sampleSm,
-    siteUrl,
-    mutations,
-    errors,
-  });
-};
-
-export default function Index({ loaderData }: Route.ComponentProps) {
-  let { mutations, errors, sample, sampleSm } = loaderData;
+export default function HomePage() {
   return (
-    <div x-comp="Index">
-      <div className="h-8" />
-      <Hero sample={sample} sampleSm={sampleSm} />
-      <div className="h-32" />
-      <section>
-        <h2 className="sr-only">Testimonials</h2>
-        <BigTweet tweet={tweets[0]} />
-        <div className="h-10" />
-        <TweetCarousel tweets={tweets.slice(1)} />
-      </section>
-      <div className="h-32" />
-      <ScrollExperience mutations={mutations} errors={errors} />
+    <div className="marketing-home">
+      <IntroMaskReveal />
+      <HeroSection />
+      <PitchSection />
+      <TimelineSection />
+      <StayInTheLoopSection />
     </div>
-  );
-}
-
-function Hero({ sample, sampleSm }: { sample: Prose; sampleSm: Prose }) {
-  return (
-    <>
-      <h1 className="sr-only">Welcome to Remix</h1>
-      <section
-        x-comp="Hero"
-        className="px-6 sm:px-8 lg:flex lg:w-full lg:items-center lg:justify-between lg:gap-12"
-      >
-        <div className="lg:mb-10 lg:w-1/2">
-          <div className="lg:mx-auto lg:max-w-2xl">
-            <h2 className="text-3xl font-black text-white xs:text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl">
-              Focused on <span className="text-aqua-brand">web standards</span>{" "}
-              and <span className="text-green-brand">modern web app</span> UX,
-              you’re simply going to{" "}
-              <span className="text-yellow-brand">build better websites</span>
-            </h2>
-            <div className="h-6" />
-            <p className="xs:text-lg lg:text-xl xl:max-w-xl">
-              Remix is a full stack web framework that lets you focus on the
-              user interface and work back through web standards to deliver a
-              fast, slick, and resilient user experience. People are gonna love
-              using your stuff.
-            </p>
-            <div className="h-9 xl:h-10" />
-            <div className="xl: flex flex-col gap-4 xl:flex-row">
-              <PrimaryButtonLink
-                to="/docs/start/quickstart"
-                className="w-full xl:order-1 xl:w-60"
-                children="Get Started"
-              />
-              <OutlineButtonLink
-                to="/docs"
-                className="w-full xl:w-60"
-                children="Read the Docs"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="relative -mx-6 mt-6 overflow-hidden p-4 sm:-mx-8 sm:p-8 md:p-10 lg:mt-0 lg:h-[51rem] lg:w-1/2 lg:rounded-l-2xl lg:p-8">
-          <Red className="absolute left-0 top-0 h-full xl:rounded-3xl" />
-          <Sample html={sample.html} className="rounded-xl sm:hidden" />
-          <Sample html={sampleSm.html} className="hidden sm:block" />
-        </div>
-      </section>
-    </>
-  );
-}
-
-function Sample({ html, className }: { html: string; className?: string }) {
-  return (
-    <div
-      className={
-        "relative overflow-auto bg-[#252525] p-3 text-sm sm:rounded-lg sm:text-base md:max-w-full lg:max-w-max xl:rounded-xl xl:p-4" +
-        " " +
-        className
-      }
-      dangerouslySetInnerHTML={{
-        __html: html,
-      }}
-    />
   );
 }

@@ -1,22 +1,103 @@
 /* Marketing-only tokens and small utilities
    - Intentionally isolated so we can iterate on the marketing redesign without affecting other pages.
+   - Token naming convention: `--rmx-*` (preferred) for the 2026 rebuild work.
 */
 
 :root {
-  --marketing-text-primary: #313539;
-  --marketing-text-muted: #94989c;
+  --rmx-text-primary: #313539;
+  --rmx-text-muted: #94989c;
+
+  /* 2026 marketing tokens (prefer these for new homepage work)
+     - We keep these as CSS variables so we can iterate quickly without
+       re-generating Tailwind or touching global palettes.
+     - RGB triplets exist so Tailwind can do opacity via `<alpha-value>`.
+  */
+  --rmx-text-primary-rgb: 49 53 57; /* #313539 */
+  --rmx-text-secondary-rgb: 99 103 107; /* #63676b */
+  --rmx-text-tertiary-rgb: 124 128 132; /* #7c8084 */
+
+  --rmx-neutral-50: #ebeff2;
+  --rmx-neutral-100: #dee2e6;
+  --rmx-neutral-200: #c6cace;
+  --rmx-neutral-750: #3e4246;
+  --rmx-neutral-950: #0d1114;
+  --rmx-white: #ffffff;
+
+  --rmx-surface-3: #f0f4f7;
+  --rmx-surface-4: #f7fbff;
+
+  --rmx-highlight-blue: #259eef;
+  --rmx-highlight-green: #06ea8a;
+  --rmx-highlight-red: #d92c49;
+
+  --rmx-shade-blue: #0b2f48;
+  --rmx-shade-green: #024629;
+  --rmx-shade-red: #410d16;
+
+  --rmx-button-surface-primary: #259eef;
+  --rmx-button-label-primary: #f7fbff;
+  --rmx-button-surface-secondary: #ebeff2;
+  --rmx-button-label-secondary: #25292d;
+
+  /* Shadow recipes (from Figma) */
+  --rmx-shadow-low:
+    0 1px 1px 1px #00274f59, 0 2px 3px 0 #0138701a, 0 4px 4px 0 #0138700d;
+  --rmx-shadow-mid:
+    0 2px 4px 0 #011d3940, 0 8px 12px 0 #01387014, 0 12px 16px 0 #0138700a,
+    0 16px 20px 0 #0138700a, 0 20px 24px 0 #01387005;
 }
 
 /* Dark-mode overrides for marketing text tokens */
 .dark {
-  --marketing-text-primary: #e5e7eb;
-  --marketing-text-muted: #9aa0a6;
+  --rmx-text-primary: #e5e7eb;
+  --rmx-text-muted: #9aa0a6;
 }
 
-.text-marketing-primary {
-  color: var(--marketing-text-primary);
+/* The 2026 homepage is light-only. Force its token values even if `.dark` is present. */
+.marketing-home {
+  color-scheme: light;
+  --rmx-text-primary: #313539;
+  --rmx-text-muted: #7c8084;
 }
 
-.text-marketing-muted {
-  color: var(--marketing-text-muted);
+.dark .marketing-home {
+  color-scheme: light;
+  --rmx-text-primary: #313539;
+  --rmx-text-muted: #7c8084;
+}
+
+.text-rmx-primary {
+  color: var(--rmx-text-primary);
+}
+
+.text-rmx-muted {
+  color: var(--rmx-text-muted);
+}
+
+.rmx-text-primary {
+  color: rgb(var(--rmx-text-primary-rgb));
+}
+
+.rmx-text-secondary {
+  color: rgb(var(--rmx-text-secondary-rgb));
+}
+
+.rmx-text-tertiary {
+  color: rgb(var(--rmx-text-tertiary-rgb));
+}
+
+.rmx-bg-surface-3 {
+  background: var(--rmx-surface-3);
+}
+
+.rmx-bg-surface-4 {
+  background: var(--rmx-surface-4);
+}
+
+.rmx-shadow-low {
+  box-shadow: var(--rmx-shadow-low);
+}
+
+.rmx-shadow-mid {
+  box-shadow: var(--rmx-shadow-mid);
 }

@@ -6,6 +6,12 @@
 - **Keep marketing redesign styling isolated**: add new styles to `app/styles/marketing.css` (already imported in `app/root.tsx`).
 - **Replace the existing homepage implementation** in `app/routes/marketing/home.tsx` (and remove old homepage-specific UI as follow-up tasks).
 
+## Working notes (must-read, append-only)
+
+Before making changes, always read `HOME_PAGE_NOTES.md`.
+
+When you learn something new (routing/layout, assets, styling constraints, tricky implementation details), **append** a new bullet to the bottom of `HOME_PAGE_NOTES.md`. Do **not** rewrite or reorganize that file.
+
 ## Source of truth
 
 - **Figma file**: `https://www.figma.com/design/kqbELEmDUrQz9euN6mIjXB/Remix.run-2026?node-id=77-355`
@@ -15,7 +21,9 @@
   - **Tablet**: `Home - 800px` (node `93:695`)
   - **Mobile**: `Home - 380px` (node `112:832`)
 
-## Page structure (from Figma)
+## Tasks
+
+### Page structure (from Figma)
 
 - **Intro — Mask reveal sequence (plays on page load)**
   - Centered “R” logo on black background
@@ -85,6 +93,8 @@
 - **Build the intro overlay**
   - Full-viewport overlay that plays on initial page load, then unmounts (or becomes inert) once finished.
   - Should not block navigation/scroll after completion.
+- **Status**
+  - Placeholder component scaffolded: `app/ui/marketing/home/intro-mask-reveal.tsx` (not implemented yet).
 - **Animation behavior**
   - Run **on every visit** (no session management for now).
   - Start with small centered `remix-r-logo.svg` on black background (Mask Sequence 0).
@@ -108,9 +118,14 @@
   - Replace `app/routes/marketing/home.tsx` with the new page markup.
   - Update `meta()` title/description/og image to match the new messaging.
   - Decide whether the homepage should force light mode or follow system theme (see questions).
+- **Status**
+  - Route rewritten with section scaffolding + minimal loader for `siteUrl`.
+  - Removed `handle.forceDark` so the page stays **light-only** by default.
 - **Remove old homepage dependencies**
   - Remove homepage-only loader data and markdown tutorial dependencies from the old homepage.
   - Follow-up cleanup: delete `app/ui/homepage-scroll-experience.tsx` once no longer referenced anywhere.
+- **Status**
+  - Old homepage loader dependencies removed from `app/routes/marketing/home.tsx`.
 
 ### Section 1 — Hero
 
@@ -131,7 +146,7 @@
 
 - **Content block**
   - Implement two-paragraph copy block with max-width and spacing.
-  - Ensure consistent text color using marketing tokens (`text-marketing-primary` / muted).
+  - Ensure consistent text color using tokens (`text-rmx-primary` / `text-rmx-muted`).
 - **CTA button**
   - Implement the “Watch the repo” button style per design.
   - Wire to the final destination URL (GitHub/watch? docs? waitlist?) once confirmed.
@@ -186,7 +201,7 @@
 - **Logo component (new)**
   - Create a React component wrapper around `public/remix-r-logo.svg` (location TBD; likely `app/ui/remix-r-logo.tsx` or `app/ui/logo.tsx`).
 - **Potential new UI modules** (if we extract sections)
-  - `app/ui/marketing/home/*` (new directory; optional)
+  - `app/ui/marketing/home/*` (new directory; now created)
 - **Assets**
   - `public/racecar-teaser-hero.webp` (hero image)
   - `public/remix-r-logo.svg` (intro mask logo source)
