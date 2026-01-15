@@ -4,8 +4,6 @@ This file is **append-only**. Do not rewrite or reorganize existing entries—on
 
 - **Marketing home is nested under a layout**: `app/routes/marketing/layout.tsx` renders `Header` and `Footer`, so `app/routes/marketing/home.tsx` must not render its own header/footer or you’ll get duplicates.
 
-## 2026-01-14
-
 - **Figma variable tokens (from “Home - 1920px”)**:
   - **Text**: primary `#313539`, secondary `#63676b`, tertiary `#7c8084`
   - **Neutrals**: `neutral/50 #ebeff2`, `neutral/100 #dee2e6`, `neutral/200 #c6cace`, `neutral/750 #3e4246`, `neutral/950 #0d1114`, `white #ffffff`
@@ -32,3 +30,14 @@ This file is **append-only**. Do not rewrite or reorganize existing entries—on
 - **Intro mask SVG implementation**: The mask SVG (`public/remix-logo-mask.svg`) uses a composite path where the outer black rectangle covers the canvas and the inner "R" shape is cut out (via SVG fill rule). The colorful stripes sit inside the "R" cutout. Animation works by scaling the SVG up from `scale(1)` to `scale(18)` over 1s—as the "R" cutout grows larger, it reveals more of the page beneath. The overlay uses `visibility: hidden` at 100% to instantly disappear (no fade). Reduced motion users skip the animation entirely.
 
 - **Intro mask SVG inlined**: The mask SVG is now inlined directly in `app/ui/marketing/home/intro-mask-reveal.tsx` (no external file). `public/remix-logo-mask.svg` was removed.
+
+- **Hero section responsive breakpoints (from Figma)**:
+  - **Desktop (≥800px)**: min-height 920px, 96px gap between headline and image, headline 36px/semibold with -0.01em tracking, 24px gap between headline and subhead, text centered
+  - **Mobile (<800px)**: min-height 540px, 48px gap between headline and image, headline 24px/bold with line break after "Remix 3", 48px gap between headline and subhead, text left-aligned
+  - Hero image: max-width 1600px on desktop (aspect-ratio 1600:367), min-width 480px on mobile (aspect-ratio 480:110), bleeds off page edges on narrow viewports via negative margins and section `overflow: hidden`
+
+- **forceTheme route handle**: We now use `forceTheme: "dark" | "light"` instead of the old `forceDark: boolean` for route handles. The homepage uses `forceTheme: "light"` to always render in light mode.
+
+- **Code style**: Avoid adding comments unless something genuinely needs explanation. Keep code clean and self-documenting.
+
+- **Breakpoints**: Use Tailwind's default breakpoints (`sm:`, `md:`, `lg:`, etc.) instead of arbitrary breakpoints like `min-[800px]:`. The Figma frames use 800px but `md:` (768px) is close enough.
