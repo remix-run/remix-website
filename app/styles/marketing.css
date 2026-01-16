@@ -60,6 +60,12 @@
   color: var(--rmx-neutral-100);
 }
 
+.rmx-caption {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
 .rmx-body {
   font-size: 1rem;
   line-height: 1.6;

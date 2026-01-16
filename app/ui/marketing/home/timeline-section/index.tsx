@@ -25,8 +25,8 @@ export function TimelineSection() {
           <TimelineDiagramMobile />
         </div>
 
-        <div className="hidden overflow-visible xl:block">
-          <TimelineDiagramDesktop />
+        <div className="hidden overflow-visible xl:flex xl:justify-center">
+          <TimelineDiagramDesktop className="shrink-0" />
         </div>
 
         <div
