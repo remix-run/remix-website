@@ -197,8 +197,8 @@ function TrackSegments() {
   // Margin for horizontal segments to align with centered tracks
   // This is roughly (lane width - track width) / 2, adjusted for visual alignment
   const horizontalSegmentInset = 27;
-  // Vertical margin to align segment 3 with horizontal segments
-  const verticalSegmentMargin = ROW_HEIGHT - TRACK_WIDTH;
+  // Vertical margin to align with centered horizontal segments
+  const verticalSegmentMargin = (ROW_HEIGHT - TRACK_WIDTH) / 2;
 
   return (
     <>
@@ -222,7 +222,7 @@ function TrackSegments() {
           gridRow: "8 / 10", // 2020-2021
           borderRadius: "24px 24px 0 24px",
           background: "var(--rmx-highlight-blue)",
-          margin: "0 auto",
+          margin: `0 auto ${verticalSegmentMargin}px auto`,
           width: TRACK_WIDTH,
         }}
       />
@@ -234,7 +234,7 @@ function TrackSegments() {
           gridRow: 9, // 2021
           borderRadius: "0 24px 0 24px",
           background: "var(--rmx-highlight-blue)",
-          alignSelf: "end",
+          alignSelf: "center",
           height: TRACK_WIDTH,
           marginLeft: TRACK_WIDTH, // Start after React Router track
           marginRight: horizontalSegmentInset, // End at Remix track
@@ -260,7 +260,7 @@ function TrackSegments() {
           gridRow: 11, // 2023
           borderRadius: "24px 0 24px 0",
           background: "var(--rmx-highlight-blue)",
-          alignSelf: "start",
+          alignSelf: "center",
           height: TRACK_WIDTH,
           marginLeft: horizontalSegmentInset, // Start at React Router track
           marginRight: TRACK_WIDTH, // End before Remix track
@@ -275,7 +275,7 @@ function TrackSegments() {
           borderRadius: "48px 24px 0 0",
           background:
             "linear-gradient(180deg, var(--rmx-highlight-blue) 46.82%, var(--rmx-highlight-red) 100%)",
-          margin: "0 auto",
+          margin: `${verticalSegmentMargin}px auto 0 auto`,
           width: TRACK_WIDTH,
         }}
       />
