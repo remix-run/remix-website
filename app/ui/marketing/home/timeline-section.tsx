@@ -30,27 +30,36 @@ export function TimelineSection() {
           )}
         >
           <p>
-            <span className="text-[var(--rmx-highlight-blue)]">
+            <a
+              href="https://v2.remix.run/"
+              className="text-[var(--rmx-highlight-blue)] hover:underline"
+            >
               The first version of Remix was a feature branch of React Router
-            </span>
+            </a>
             : a full stack web framework that let you focus on the user
             interface and work back through web standards to deliver a fast,
             slick, and resilient user experience.
           </p>
           <p>
-            <span className="text-[var(--rmx-highlight-red)]">
+            <a
+              href="https://reactrouter.com/"
+              className="text-[var(--rmx-highlight-red)] hover:underline"
+            >
               We've now merged Remix's features directly into React Router
-            </span>
+            </a>
             . If you're looking for a full stack, React-based framework built on
             Web APIs, check out React Router. We think it's the best way to ship
             React applications.
           </p>
           <p>
-            <span className="text-[var(--rmx-highlight-green)]">
+            <a
+              href="https://github.com/remix-run/remix"
+              className="text-[var(--rmx-highlight-green)] hover:underline"
+            >
               Remix 3 is our latest full stack framework, built for immediate
               productivity whether you're using a fully agentic workflow or
               completely handwriting every line of code.
-            </span>{" "}
+            </a>{" "}
             Remix 3 is built on web APIs and composed of multiple single-purpose
             modules, packaged up to give you everything you need to build any
             kind of website. It's lightweight, simple to understand, and

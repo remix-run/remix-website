@@ -222,14 +222,48 @@
 }
 
 .rmx-intro-mask-overlay {
+  /* How long the screen stays black before fading */
+  --intro-black-hold: 150ms;
+  /* How long the black fade-out takes */
+  --intro-black-fade: 400ms;
+  /* Delay after black fade before logo starts animating */
+  --intro-logo-delay: calc(var(--intro-black-hold) + var(--intro-black-fade));
+  /* How long the logo scale/reveal animation takes */
+  --intro-logo-duration: 1500ms;
+  /* Easing for the logo animation */
+  --intro-logo-easing: cubic-bezier(0.85, 0, 0.15, 1);
+
+  /* Computed: total delay before logo animation starts */
+  --intro-logo-start: calc(var(--intro-black-hold) + var(--intro-logo-delay));
+
   position: fixed;
   inset: 0;
   z-index: 9999;
   overflow: hidden;
   pointer-events: none;
 
-  animation: rmx-intro-reveal 1500ms cubic-bezier(0.85, 0, 0.15, 1) 150ms
-    forwards;
+  animation: rmx-intro-reveal var(--intro-logo-duration)
+    var(--intro-logo-easing) var(--intro-logo-start) forwards;
+}
+
+/* Black cover that fades out before the logo animation starts */
+.rmx-intro-mask-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: black;
+  z-index: 1;
+  animation: rmx-intro-black-fade var(--intro-black-fade) ease-out
+    var(--intro-black-hold) forwards;
+}
+
+@keyframes rmx-intro-black-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .rmx-intro-mask-svg {
@@ -238,8 +272,8 @@
   height: 100%;
   transform-origin: center center;
 
-  animation: rmx-intro-scale 1500ms cubic-bezier(0.85, 0, 0.15, 1) 150ms
-    forwards;
+  animation: rmx-intro-scale var(--intro-logo-duration) var(--intro-logo-easing)
+    var(--intro-logo-start) forwards;
 }
 
 @keyframes rmx-intro-scale {
@@ -270,6 +304,11 @@
   .rmx-intro-mask-overlay {
     animation: none;
     visibility: hidden;
+    opacity: 0;
+  }
+
+  .rmx-intro-mask-overlay::before {
+    animation: none;
     opacity: 0;
   }
 
