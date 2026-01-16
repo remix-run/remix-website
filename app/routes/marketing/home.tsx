@@ -45,9 +45,7 @@ export default function HomePage() {
           <PitchSection />
         </div>
 
-        <div className="rmx-home-timeline-bg">
-          <TimelineSection />
-        </div>
+        <TimelineSection />
 
         <div className="rmx-home-surface-bg">
           <StayInTheLoopSection />
