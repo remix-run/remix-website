@@ -228,7 +228,7 @@
   overflow: hidden;
   pointer-events: none;
 
-  animation: rmx-intro-reveal 1500ms cubic-bezier(0.78, 0.03, 1, 1) 150ms
+  animation: rmx-intro-reveal 1500ms cubic-bezier(0.85, 0, 0.15, 1) 150ms
     forwards;
 }
 
@@ -238,7 +238,7 @@
   height: 100%;
   transform-origin: center center;
 
-  animation: rmx-intro-scale 1500ms cubic-bezier(0.78, 0.03, 1, 1) 150ms
+  animation: rmx-intro-scale 1500ms cubic-bezier(0.85, 0, 0.15, 1) 150ms
     forwards;
 }
 

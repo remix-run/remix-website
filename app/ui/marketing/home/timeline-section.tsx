@@ -74,6 +74,11 @@ export function TimelineSection() {
 
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);
 
+// Layout constants
+const CONTAINER_WIDTH = 380;
+const ROW_HEIGHT = 57;
+const TRACK_WIDTH = 48;
+
 // Cell config: string for label, or object with optional label and style overrides
 type CellConfig = string | { label?: string; style: React.CSSProperties };
 
@@ -82,6 +87,8 @@ const LANE_CELL_CONFIG: Record<string, Record<number, CellConfig>> = {
     2017: "v4",
     2019: "v5",
     2020: "v6",
+    2021: " ",
+    2023: " ",
     2024: "v7",
     2026: { style: { opacity: 1 } },
   },
@@ -104,10 +111,9 @@ function TimelineDiagramMobile() {
     <div
       style={{
         display: "grid",
-        width: "380px",
+        width: CONTAINER_WIDTH,
         gridTemplateColumns: `auto repeat(3, 1fr)`,
-
-        gridTemplateRows: `repeat(${YEARS.length + 1}, 57px)`,
+        gridTemplateRows: `repeat(${YEARS.length + 1}, ${ROW_HEIGHT}px)`,
         margin: "0 auto",
         position: "relative",
       }}
@@ -137,6 +143,8 @@ function TimelineDiagramMobile() {
             "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-green) 70%, var(--rmx-neutral-950) 100%)",
         }}
       />
+
+      <TrackSegments />
 
       {/* Year labels */}
       {YEARS.map((year, index) => (
@@ -173,6 +181,108 @@ function TimelineDiagramMobile() {
         </Fragment>
       ))}
     </div>
+  );
+}
+
+function TrackSegments() {
+  // Margin for horizontal segments to align with centered tracks
+  // This is roughly (lane width - track width) / 2, adjusted for visual alignment
+  const horizontalSegmentInset = 27;
+  // Vertical margin to align segment 3 with horizontal segments
+  const verticalSegmentMargin = ROW_HEIGHT - TRACK_WIDTH;
+
+  return (
+    <>
+      {/* React Router - red track from top to 2026 */}
+      <div
+        style={{
+          gridColumn: 2,
+          gridRow: "1 / -1",
+          borderRadius: "0 0 24px 24px",
+          background:
+            "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-highlight-red) 30%)",
+          margin: "0 auto",
+          width: TRACK_WIDTH,
+        }}
+      />
+
+      {/* Blue connector - Segment 1: Vertical in React Router (2020-2021) */}
+      <div
+        style={{
+          gridColumn: 2,
+          gridRow: "8 / 10", // 2020-2021
+          borderRadius: "24px 24px 0 24px",
+          background: "var(--rmx-highlight-blue)",
+          margin: "0 auto",
+          width: TRACK_WIDTH,
+        }}
+      />
+
+      {/* Blue connector - Segment 2: Horizontal from React Router to Remix (2021) */}
+      <div
+        style={{
+          gridColumn: "2 / 4", // React Router to Remix
+          gridRow: 9, // 2021
+          borderRadius: "0 24px 0 24px",
+          background: "var(--rmx-highlight-blue)",
+          alignSelf: "end",
+          height: TRACK_WIDTH,
+          marginLeft: TRACK_WIDTH, // Start after React Router track
+          marginRight: horizontalSegmentInset, // End at Remix track
+        }}
+      />
+
+      {/* Blue connector - Segment 3: Vertical in Remix (2021-2023) */}
+      <div
+        style={{
+          gridColumn: 3,
+          gridRow: "9 / 12", // 2021-2023
+          borderRadius: "0 24px 24px 0",
+          background: "var(--rmx-highlight-blue)",
+          margin: `${verticalSegmentMargin}px auto`,
+          width: TRACK_WIDTH,
+        }}
+      />
+
+      {/* Blue connector - Segment 4: Horizontal from Remix back to React Router (2023) */}
+      <div
+        style={{
+          gridColumn: "2 / 4", // React Router to Remix (spans both)
+          gridRow: 11, // 2023
+          borderRadius: "24px 0 24px 0",
+          background: "var(--rmx-highlight-blue)",
+          alignSelf: "start",
+          height: TRACK_WIDTH,
+          marginLeft: horizontalSegmentInset, // Start at React Router track
+          marginRight: TRACK_WIDTH, // End before Remix track
+        }}
+      />
+
+      {/* Blue connector - Segment 5: Merge back into React Router (2023-2024) */}
+      <div
+        style={{
+          gridColumn: 2,
+          gridRow: "11 / 13", // 2023-2024
+          borderRadius: "48px 24px 0 0",
+          background:
+            "linear-gradient(180deg, var(--rmx-highlight-blue) 46.82%, var(--rmx-highlight-red) 100%)",
+          margin: "0 auto",
+          width: TRACK_WIDTH,
+        }}
+      />
+
+      {/* Remix 3 - green pill for 2025-2026 */}
+      <div
+        style={{
+          gridColumn: 4,
+          gridRow: "13 / 15", // 2025-2026
+          borderRadius: 24,
+          background: "var(--rmx-highlight-green)",
+          margin: "0 auto",
+          width: TRACK_WIDTH,
+        }}
+      />
+    </>
   );
 }
 
