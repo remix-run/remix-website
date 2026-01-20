@@ -22,7 +22,7 @@ export function HeroSection() {
         <div className="relative aspect-[1600/367] w-full max-w-[1600px] max-md:-mx-12 max-md:aspect-[480/110] max-md:w-screen max-md:min-w-[480px] max-md:max-w-none">
           <img
             src={heroImageSrc}
-            alt=""
+            alt="Racecar under a black sheet with a Remix 3 logo"
             className="pointer-events-none absolute inset-0 size-full object-cover"
             width={1600}
             height={367}
