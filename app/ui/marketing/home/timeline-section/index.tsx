@@ -10,7 +10,7 @@ export function TimelineSection() {
         "overflow-x-clip bg-[var(--rmx-neutral-950)] text-white",
       )}
     >
-      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-12 px-12 pt-16 md:gap-16 md:px-12 md:pt-24">
+      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-12 pt-16 md:gap-16 md:pt-24">
         <h2
           className={cx(
             "rmx-heading-xl",
@@ -32,7 +32,7 @@ export function TimelineSection() {
         <div
           className={cx(
             "rmx-body-md rmx-body-on-dark",
-            "mx-auto w-full max-w-[1024px] space-y-8 pb-16 md:space-y-12 md:pb-24",
+            "mx-auto w-full max-w-[1024px] space-y-8 px-12 pb-16 md:space-y-12 md:pb-24",
           )}
         >
           <p>
