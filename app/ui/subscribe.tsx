@@ -175,7 +175,10 @@ function SubscribeStatus() {
   let { isSuccessful, isError, error } = getSubscribeStatus(subscribe);
 
   return (
-    <div aria-live="polite" className="py-2">
+    <div
+      aria-live="polite"
+      className={isSuccessful || isError ? "block py-2" : "hidden"}
+    >
       {isSuccessful && (
         <div>
           <b className="text-green-brand">Got it!</b> Please go{" "}

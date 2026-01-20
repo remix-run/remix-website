@@ -14,7 +14,7 @@ export function Header({
 }) {
   let navigate = useNavigate();
   return (
-    <header className={cx("p-12", "text-marketing-primary", className)}>
+    <header className={cx("p-12", "text-rmx-primary", className)}>
       <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between">
         <NavLink
           onContextMenu={(event) => {
@@ -45,7 +45,7 @@ export function Header({
 
 function HeaderMenuMobile({ className = "" }: { className: string }) {
   let baseClasses =
-    "bg-gray-100 hover:bg-gray-200 text-marketing-primary [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
+    "bg-gray-100 hover:bg-gray-200 text-rmx-primary [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
 
   return (
     <DetailsMenu className={cx("relative cursor-pointer", className)}>
@@ -91,7 +91,7 @@ function HeaderLink({
       prefetch={prefetch}
       x-comp="HeaderLink"
       className={cx(
-        "text-marketing-primary text-base font-semibold leading-6 tracking-[0.01em] opacity-80 last:mr-0 hover:opacity-100",
+        "text-rmx-primary text-base font-semibold leading-6 tracking-[0.01em] opacity-80 last:mr-0 hover:opacity-100",
         className,
       )}
       to={to}

@@ -1,22 +1,371 @@
-/* Marketing-only tokens and small utilities
-   - Intentionally isolated so we can iterate on the marketing redesign without affecting other pages.
-*/
-
 :root {
-  --marketing-text-primary: #313539;
-  --marketing-text-muted: #94989c;
+  --rmx-text-primary: #313539;
+  --rmx-text-muted: #94989c;
+  --rmx-text-secondary: #63676b;
+  --rmx-text-tertiary: #7c8084;
+
+  --rmx-neutral-50: #ebeff2;
+  --rmx-neutral-100: #dee2e6;
+  --rmx-neutral-200: #c6cace;
+  --rmx-neutral-750: #3e4246;
+  --rmx-neutral-950: #0d1114;
+  --rmx-white: #ffffff;
+
+  --rmx-surface-3: #f0f4f7;
+  --rmx-surface-4: #f7fbff;
+
+  --rmx-highlight-blue: #259eef;
+  --rmx-highlight-green: #06ea8a;
+  --rmx-highlight-red: #d92c49;
+
+  --rmx-shade-blue: #0b2f48;
+  --rmx-shade-green: #024629;
+  --rmx-shade-red: #410d16;
+
+  --rmx-button-surface-primary: #259eef;
+  --rmx-button-label-primary: #f7fbff;
+  --rmx-button-surface-secondary: #ebeff2;
+  --rmx-button-label-secondary: #25292d;
+
+  --rmx-shadow-low:
+    0 1px 1px 1px #00274f59, 0 2px 3px 0 #0138701a, 0 4px 4px 0 #0138700d;
+  --rmx-shadow-mid:
+    0 2px 4px 0 #011d3940, 0 8px 12px 0 #01387014, 0 12px 16px 0 #0138700a,
+    0 16px 20px 0 #0138700a, 0 20px 24px 0 #01387005;
+
+  --rmx-intro-black-hold: 150ms;
+  --rmx-intro-black-fade: 400ms;
+
+  --rmx-intro-logo-delay: calc(
+    var(--rmx-intro-black-hold) + var(--rmx-intro-black-fade)
+  );
+  --rmx-intro-logo-duration: 1500ms;
+  --rmx-intro-logo-easing: cubic-bezier(0.85, 0, 0.15, 1);
+  --rmx-intro-logo-start: calc(
+    var(--rmx-intro-black-hold) + var(--rmx-intro-logo-delay)
+  );
+
+  --rmx-intro-r-fade-duration: 600ms;
+
+  --rmx-hero-fade-delay: calc(
+    var(--rmx-intro-logo-start) + (var(--rmx-intro-logo-duration) / 2)
+  );
+  --rmx-hero-fade-duration: 750ms;
+
+  &:where(.dark) {
+    --rmx-text-primary: #e5e7eb;
+    --rmx-text-muted: #9aa0a6;
+  }
 }
 
-/* Dark-mode overrides for marketing text tokens */
-.dark {
-  --marketing-text-primary: #e5e7eb;
-  --marketing-text-muted: #9aa0a6;
+.text-rmx-primary {
+  color: var(--rmx-text-primary);
 }
 
-.text-marketing-primary {
-  color: var(--marketing-text-primary);
+.text-rmx-muted {
+  color: var(--rmx-text-muted);
 }
 
-.text-marketing-muted {
-  color: var(--marketing-text-muted);
+.text-rmx-secondary {
+  color: var(--rmx-text-secondary);
+}
+
+.text-rmx-tertiary {
+  color: var(--rmx-text-tertiary);
+}
+
+.text-rmx-neutral-100 {
+  color: var(--rmx-neutral-100);
+}
+
+.rmx-caption {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+.rmx-body {
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0.025em;
+}
+
+.rmx-body-md {
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0.025em;
+}
+
+.rmx-body-lg {
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0.025em;
+}
+
+.rmx-body-on-dark {
+  color: rgb(255 255 255 / 0.8);
+}
+
+.rmx-heading-hero {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.rmx-heading-lg {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+.rmx-heading-xl {
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.rmx-heading-sm {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.rmx-button-text {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.rmx-button-text-lg {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.rmx-bg-surface-3 {
+  background: var(--rmx-surface-3);
+}
+
+.rmx-bg-neutral-100 {
+  background: var(--rmx-neutral-100);
+}
+
+.rmx-bg-surface-4 {
+  background: var(--rmx-surface-4);
+}
+
+.rmx-bg-button-primary {
+  background: var(--rmx-button-surface-primary);
+}
+
+.rmx-bg-button-secondary {
+  background: var(--rmx-button-surface-secondary);
+}
+
+.rmx-text-button-primary {
+  color: var(--rmx-button-label-primary);
+}
+
+.rmx-text-button-secondary {
+  color: var(--rmx-button-label-secondary);
+}
+
+.rmx-shadow-low {
+  box-shadow: var(--rmx-shadow-low);
+}
+
+.rmx-shadow-mid {
+  box-shadow: var(--rmx-shadow-mid);
+}
+
+@media (min-width: 768px) {
+  .rmx-body-md {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .rmx-body-lg {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .rmx-heading-hero {
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  .rmx-heading-lg {
+    font-size: 2.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .rmx-body-lg {
+    font-size: 2.25rem;
+    line-height: 1.4;
+    letter-spacing: -0.025em;
+  }
+}
+
+.rmx-home-hero-bg {
+  background: linear-gradient(
+    180deg,
+    var(--rmx-neutral-200) 0%,
+    var(--rmx-neutral-100) 30%,
+    var(--rmx-neutral-50) 60%,
+    var(--rmx-white) 100%
+  );
+}
+
+.rmx-home-text-bg {
+  background: linear-gradient(
+    180deg,
+    var(--rmx-white) 0%,
+    var(--rmx-neutral-50) 100%
+  );
+}
+
+.rmx-home-timeline-bg {
+  background: linear-gradient(
+    180deg,
+    var(--rmx-neutral-950) 0%,
+    var(--rmx-neutral-950) 50%,
+    var(--rmx-neutral-750) 100%
+  );
+}
+
+.rmx-home-surface-bg {
+  background: var(--rmx-surface-3);
+}
+
+/* ========================================
+ * Intro & Hero Animations
+ * ========================================
+ *
+ * Animation sequence:
+ * 1. Black screen holds, then fades out
+ * 2. Logo scales up and reveals content behind
+ * 3. R fill fades out (so users can see the R shape first)
+ * 4. Hero text content fades in
+ *
+ * ======================================== */
+
+/* --- Keyframes --- */
+
+@keyframes rmx-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rmx-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes rmx-intro-scale {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-55%, 100%) scale(80);
+  }
+}
+
+@keyframes rmx-intro-reveal {
+  0% {
+    visibility: visible;
+    opacity: 1;
+  }
+  65% {
+    visibility: visible;
+    opacity: 1;
+  }
+  100% {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+.rmx-intro-mask-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+  animation: rmx-intro-reveal var(--rmx-intro-logo-duration)
+    var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards;
+}
+
+.rmx-intro-mask-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: black;
+  z-index: 1;
+  animation: rmx-fade-out var(--rmx-intro-black-fade) ease-out
+    var(--rmx-intro-black-hold) forwards;
+}
+
+/* SVG that scales up to reveal content */
+.rmx-intro-mask-svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  animation: rmx-intro-scale var(--rmx-intro-logo-duration)
+    var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards;
+}
+
+/* Solid fill behind the R that fades out so users can see the R shape first */
+.rmx-intro-r-fill {
+  animation: rmx-fade-out var(--rmx-intro-r-fade-duration) ease-out
+    var(--rmx-intro-logo-start) forwards;
+}
+
+.rmx-hero {
+  opacity: 0;
+  animation: rmx-fade-in var(--rmx-hero-fade-duration) ease-out
+    var(--rmx-hero-fade-delay) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rmx-intro-mask-overlay,
+  .rmx-intro-mask-overlay::before,
+  .rmx-intro-mask-svg,
+  .rmx-intro-r-fill {
+    animation: none;
+  }
+
+  .rmx-intro-mask-overlay {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .rmx-intro-mask-overlay::before {
+    opacity: 0;
+  }
+
+  .rmx-intro-r-fill {
+    opacity: 0;
+  }
+
+  .rmx-hero {
+    animation: none;
+    opacity: 1;
+  }
 }

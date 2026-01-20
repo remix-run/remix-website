@@ -32,7 +32,7 @@ export function links() {
 }
 
 export let handle = {
-  forceDark: true,
+  forceTheme: "dark",
 };
 
 export function loader({ request }: Route.LoaderArgs) {

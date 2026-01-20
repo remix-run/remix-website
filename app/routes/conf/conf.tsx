@@ -2,7 +2,7 @@ import { Outlet } from "react-router";
 import type { HeadersFunction } from "react-router";
 import { CACHE_CONTROL } from "~/lib/http.server";
 
-export const handle = { forceDark: true };
+export const handle = { forceTheme: "dark" };
 
 export const headers: HeadersFunction = () => {
   return {
