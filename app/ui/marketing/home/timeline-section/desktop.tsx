@@ -10,7 +10,7 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Year labels */}
+      {/* Year labels (non-interactive years) */}
       <g
         className={cx("rmx-caption", "fill-[var(--rmx-text-tertiary)]")}
         textAnchor="middle"
@@ -24,32 +24,11 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
         <text x="551" y="9" opacity="0.5">
           2016
         </text>
-        <text x="640" y="9">
-          2017
-        </text>
         <text x="728" y="9">
           2018
         </text>
-        <text x="817" y="9">
-          2019
-        </text>
-        <text x="906" y="9">
-          2020
-        </text>
-        <text x="997" y="9">
-          2021
-        </text>
         <text x="1086" y="9">
           2022
-        </text>
-        <text x="1177" y="9">
-          2023
-        </text>
-        <text x="1268" y="9">
-          2024
-        </text>
-        <text x="1360" y="9">
-          2025
         </text>
         <text x="1451" y="9" opacity="0.5">
           2026
@@ -58,6 +37,8 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
           2027
         </text>
       </g>
+
+      {/* React Router track (red) */}
       <rect
         y="64.494"
         width="1918.49"
@@ -70,26 +51,9 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
           fill="var(--rmx-highlight-red)"
         />
       </g>
-      <text
-        x="502"
-        y="87"
-        className={cx(
-          "rmx-caption",
-          "fill-[var(--rmx-neutral-100)] font-semibold tracking-wider",
-        )}
-        textAnchor="middle"
-      >
-        REACT ROUTER
-      </text>
-      <circle cx="639.269" cy="82.494" r="6" fill="var(--rmx-neutral-200)" />
-      <circle cx="822.615" cy="82.494" r="6" fill="var(--rmx-neutral-200)" />
-      <circle
-        cx="1450.7"
-        cy="82.494"
-        r="5"
-        stroke="var(--rmx-neutral-200)"
-        strokeWidth="2"
-      />
+      <TrackLabel x={502} y={87} label="REACT ROUTER" />
+
+      {/* Remix 3 track (green) */}
       <rect
         y="152.494"
         width="1918.49"
@@ -98,46 +62,22 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
       />
       <g filter="url(#glow-remix-3)">
         <path
-          d="M1348.4 170.494C1348.4 160.553 1356.46 152.494 1366.4 152.494H1454.2C1464.14 152.494 1472.2 160.553 1472.2 170.494C1472.2 180.435 1464.14 188.494 1454.2 188.494H1366.4C1356.46 188.494 1348.4 180.435 1348.4 170.494Z"
+          d="M1336 170.494C1336 160.553 1344 152.494 1354 152.494H1454.2C1464.14 152.494 1472.2 160.553 1472.2 170.494C1472.2 180.435 1464.14 188.494 1454.2 188.494H1354C1344 188.494 1336 180.435 1336 170.494Z"
           fill="var(--rmx-highlight-green)"
         />
       </g>
-      <text
-        x="478"
-        y="175"
-        className={cx(
-          "rmx-caption",
-          "fill-[var(--rmx-neutral-100)] font-semibold tracking-wider",
-        )}
-        textAnchor="middle"
-      >
-        REMIX 3
-      </text>
-      <circle cx="1369.4" cy="170.494" r="6" fill="var(--rmx-neutral-200)" />
-      <circle
-        cx="1450.7"
-        cy="170.494"
-        r="5"
-        stroke="var(--rmx-neutral-200)"
-        strokeWidth="2"
-      />
+      <TrackLabel x={478} y={175} label="REMIX 3" />
+
+      {/* Remix track (blue) */}
       <rect
         y="108.494"
         width="1918.49"
         height="36"
         fill="var(--rmx-shade-blue)"
       />
-      <text
-        x="473"
-        y="131"
-        className={cx(
-          "rmx-caption",
-          "fill-[var(--rmx-neutral-100)] font-semibold tracking-wider",
-        )}
-        textAnchor="middle"
-      >
-        REMIX
-      </text>
+      <TrackLabel x={473} y={131} label="REMIX" />
+
+      {/* Blue glow segments */}
       <g filter="url(#glow-blue)">
         <path
           d="M986.2 126.494C986.2 116.553 994.259 108.494 1004.2 108.494H1181.8C1191.74 108.494 1199.8 116.553 1199.8 126.494C1199.8 136.435 1191.74 144.494 1181.8 144.494H1004.2C994.259 144.494 986.2 136.435 986.2 126.494Z"
@@ -146,10 +86,12 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
       </g>
       <g filter="url(#glow-blue)">
         <path
-          d="M894.71 82.494C894.71 72.5529 902.769 64.494 912.71 64.494H955C964.941 64.494 973 72.5529 973 82.494C973 92.4351 964.941 100.494 955 100.494H912.71C902.769 100.494 894.71 92.4351 894.71 82.494Z"
+          d="M884 82.494C884 72.5529 892 64.494 902 64.494H955C964.941 64.494 973 72.5529 973 82.494C973 92.4351 964.941 100.494 955 100.494H902C892 100.494 884 92.4351 884 82.494Z"
           fill="var(--rmx-highlight-blue)"
         />
       </g>
+
+      {/* Gradient and diagonal connectors */}
       <path
         d="M1208.75 82.494C1208.75 72.5529 1216.81 64.494 1226.75 64.494H1368.75V100.494H1226.75C1216.81 100.494 1208.75 92.4351 1208.75 82.494Z"
         fill="url(#gradient-remix-to-router)"
@@ -166,10 +108,95 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
           fill="var(--rmx-highlight-blue)"
         />
       </g>
-      <circle cx="1004.2" cy="125.994" r="6" fill="var(--rmx-neutral-200)" />
-      <circle cx="1182.8" cy="125.994" r="6" fill="var(--rmx-neutral-200)" />
-      <circle cx="913.9" cy="82.494" r="6" fill="var(--rmx-neutral-200)" />
-      <circle cx="1274.95" cy="82.494" r="6" fill="var(--rmx-neutral-200)" />
+
+      {/* Track end circles */}
+      <TrackEndCircle cx={1450.7} cy={82.494} />
+      <TrackEndCircle cx={1450.7} cy={170.494} />
+
+      {/* Milestones */}
+      <Milestone
+        groupName="v4"
+        year="2017"
+        yearX={640}
+        nodeX={640}
+        nodeY={82.494}
+        lineY1={58}
+        label="v4"
+        labelY={87}
+        labelColor="var(--rmx-highlight-red)"
+      />
+      <Milestone
+        groupName="v5"
+        year="2019"
+        yearX={817}
+        nodeX={817}
+        nodeY={82.494}
+        lineY1={58}
+        label="v5"
+        labelY={87}
+        labelColor="var(--rmx-highlight-red)"
+        href="https://v5.reactrouter.com/"
+      />
+      <Milestone
+        groupName="remix-v1"
+        year="2021"
+        yearX={997}
+        nodeX={1004.2}
+        nodeY={125.994}
+        lineY1={102}
+        label="v1"
+        labelY={131}
+        labelColor="var(--rmx-highlight-blue)"
+      />
+      <Milestone
+        groupName="remix-v2"
+        year="2023"
+        yearX={1177}
+        nodeX={1182.8}
+        nodeY={125.994}
+        lineY1={102}
+        label="v2"
+        labelY={131}
+        labelColor="var(--rmx-highlight-blue)"
+        href="https://v2.remix.run/"
+      />
+      <Milestone
+        groupName="v6"
+        year="2020"
+        yearX={906}
+        nodeX={906}
+        nodeY={82.494}
+        lineY1={58}
+        label="v6"
+        labelY={87}
+        labelColor="var(--rmx-highlight-red)"
+        href="https://reactrouter.com/v6"
+      />
+      <Milestone
+        groupName="v7"
+        year="2024"
+        yearX={1268}
+        nodeX={1274.95}
+        nodeY={82.494}
+        lineY1={58}
+        label="v7"
+        labelY={87}
+        labelColor="var(--rmx-highlight-red)"
+        href="https://reactrouter.com/"
+      />
+      <Milestone
+        groupName="remix3"
+        year="2025"
+        yearX={1360}
+        nodeX={1360}
+        nodeY={170.494}
+        lineY1={146}
+        label="v3"
+        labelY={175}
+        labelColor="var(--rmx-highlight-green)"
+        href="https://github.com/remix-run/remix"
+      />
+
       <defs>
         <filter
           id="glow-react-router"
@@ -262,9 +289,9 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
         </filter>
         <filter
           id="glow-remix-3"
-          x="1328.4"
+          x="1302"
           y="132.494"
-          width="163.799"
+          width="188"
           height="76"
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
@@ -452,4 +479,236 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
       </defs>
     </svg>
   );
+}
+
+/** Track name label (e.g., "REACT ROUTER", "REMIX", "REMIX 3") */
+function TrackLabel({ x, y, label }: { x: number; y: number; label: string }) {
+  return (
+    <text
+      x={x}
+      y={y}
+      className={cx(
+        "rmx-caption",
+        "fill-[var(--rmx-neutral-100)] font-semibold tracking-wider",
+      )}
+      textAnchor="middle"
+    >
+      {label}
+    </text>
+  );
+}
+
+/** Open circle at the end of a track */
+function TrackEndCircle({ cx, cy }: { cx: number; cy: number }) {
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r="5"
+      stroke="var(--rmx-neutral-200)"
+      strokeWidth="2"
+      fill="none"
+    />
+  );
+}
+
+/**
+ * Pre-defined class mappings for each milestone group.
+ * Classes must be written out fully for Tailwind to discover them at build time.
+ */
+const MILESTONE_CLASSES = {
+  v4: {
+    group: "group/v4",
+    yearHover:
+      "group-hover/v4:fill-[var(--rmx-neutral-100)] group-hover/v4:font-bold",
+    yearFocus:
+      "group-focus-visible/v4:fill-[var(--rmx-neutral-100)] group-focus-visible/v4:font-bold",
+    showOnHover: "group-hover/v4:opacity-100",
+    showOnFocus: "group-focus-visible/v4:opacity-100",
+    hideOnHover: "group-hover/v4:opacity-0",
+    hideOnFocus: "group-focus-visible/v4:opacity-0",
+  },
+  v5: {
+    group: "group/v5",
+    yearHover:
+      "group-hover/v5:fill-[var(--rmx-neutral-100)] group-hover/v5:font-bold",
+    yearFocus:
+      "group-focus-visible/v5:fill-[var(--rmx-neutral-100)] group-focus-visible/v5:font-bold",
+    showOnHover: "group-hover/v5:opacity-100",
+    showOnFocus: "group-focus-visible/v5:opacity-100",
+    hideOnHover: "group-hover/v5:opacity-0",
+    hideOnFocus: "group-focus-visible/v5:opacity-0",
+  },
+  v6: {
+    group: "group/v6",
+    yearHover:
+      "group-hover/v6:fill-[var(--rmx-neutral-100)] group-hover/v6:font-bold",
+    yearFocus:
+      "group-focus-visible/v6:fill-[var(--rmx-neutral-100)] group-focus-visible/v6:font-bold",
+    showOnHover: "group-hover/v6:opacity-100",
+    showOnFocus: "group-focus-visible/v6:opacity-100",
+    hideOnHover: "group-hover/v6:opacity-0",
+    hideOnFocus: "group-focus-visible/v6:opacity-0",
+  },
+  v7: {
+    group: "group/v7",
+    yearHover:
+      "group-hover/v7:fill-[var(--rmx-neutral-100)] group-hover/v7:font-bold",
+    yearFocus:
+      "group-focus-visible/v7:fill-[var(--rmx-neutral-100)] group-focus-visible/v7:font-bold",
+    showOnHover: "group-hover/v7:opacity-100",
+    showOnFocus: "group-focus-visible/v7:opacity-100",
+    hideOnHover: "group-hover/v7:opacity-0",
+    hideOnFocus: "group-focus-visible/v7:opacity-0",
+  },
+  "remix-v1": {
+    group: "group/remix-v1",
+    yearHover:
+      "group-hover/remix-v1:fill-[var(--rmx-neutral-100)] group-hover/remix-v1:font-bold",
+    yearFocus:
+      "group-focus-visible/remix-v1:fill-[var(--rmx-neutral-100)] group-focus-visible/remix-v1:font-bold",
+    showOnHover: "group-hover/remix-v1:opacity-100",
+    showOnFocus: "group-focus-visible/remix-v1:opacity-100",
+    hideOnHover: "group-hover/remix-v1:opacity-0",
+    hideOnFocus: "group-focus-visible/remix-v1:opacity-0",
+  },
+  "remix-v2": {
+    group: "group/remix-v2",
+    yearHover:
+      "group-hover/remix-v2:fill-[var(--rmx-neutral-100)] group-hover/remix-v2:font-bold",
+    yearFocus:
+      "group-focus-visible/remix-v2:fill-[var(--rmx-neutral-100)] group-focus-visible/remix-v2:font-bold",
+    showOnHover: "group-hover/remix-v2:opacity-100",
+    showOnFocus: "group-focus-visible/remix-v2:opacity-100",
+    hideOnHover: "group-hover/remix-v2:opacity-0",
+    hideOnFocus: "group-focus-visible/remix-v2:opacity-0",
+  },
+  remix3: {
+    group: "group/remix3",
+    yearHover:
+      "group-hover/remix3:fill-[var(--rmx-neutral-100)] group-hover/remix3:font-bold",
+    yearFocus:
+      "group-focus-visible/remix3:fill-[var(--rmx-neutral-100)] group-focus-visible/remix3:font-bold",
+    showOnHover: "group-hover/remix3:opacity-100",
+    showOnFocus: "group-focus-visible/remix3:opacity-100",
+    hideOnHover: "group-hover/remix3:opacity-0",
+    hideOnFocus: "group-focus-visible/remix3:opacity-0",
+  },
+} as const;
+
+type MilestoneGroupName = keyof typeof MILESTONE_CLASSES;
+
+type MilestoneProps = {
+  groupName: MilestoneGroupName;
+  year: string;
+  yearX: number;
+  nodeX: number;
+  nodeY: number;
+  lineY1: number;
+  label: string;
+  labelY: number;
+  labelColor: string;
+  href?: string;
+};
+
+/** Interactive milestone marker with hover/focus states */
+function Milestone({
+  groupName,
+  year,
+  yearX,
+  nodeX,
+  nodeY,
+  lineY1,
+  label,
+  labelY,
+  labelColor,
+  href,
+}: MilestoneProps) {
+  const isLink = Boolean(href);
+  const classes = MILESTONE_CLASSES[groupName];
+
+  const content = (
+    <>
+      {/* Year label */}
+      <text
+        x={yearX}
+        y="9"
+        textAnchor="middle"
+        className={cx(
+          "rmx-caption",
+          "fill-[var(--rmx-text-tertiary)] transition-all duration-150",
+          classes.yearHover,
+          isLink && classes.yearFocus,
+        )}
+      >
+        {year}
+      </text>
+
+      {/* Hover hitbox */}
+      <circle cx={nodeX} cy={nodeY} r="24" fill="transparent" />
+
+      {/* Connecting line */}
+      <line
+        x1={nodeX}
+        y1={lineY1}
+        x2={nodeX}
+        y2="20"
+        stroke="var(--rmx-neutral-200)"
+        strokeWidth="2"
+        className={cx(
+          "opacity-0 transition-opacity duration-150",
+          classes.showOnHover,
+          isLink && classes.showOnFocus,
+        )}
+      />
+
+      {/* Default state: small dot */}
+      <circle
+        cx={nodeX}
+        cy={nodeY}
+        r="6"
+        fill="var(--rmx-neutral-200)"
+        className={cx(
+          "opacity-100 transition-opacity duration-150",
+          classes.hideOnHover,
+          isLink && classes.hideOnFocus,
+        )}
+      />
+
+      {/* Hover/focus state: white circle with colored label */}
+      <g
+        className={cx(
+          "opacity-0 transition-opacity duration-150",
+          classes.showOnHover,
+          isLink && classes.showOnFocus,
+        )}
+      >
+        <circle cx={nodeX} cy={nodeY} r="24" fill="white" />
+        <text
+          x={nodeX}
+          y={labelY}
+          textAnchor="middle"
+          className="rmx-caption font-semibold"
+          fill={labelColor}
+        >
+          {label}
+        </text>
+      </g>
+    </>
+  );
+
+  if (isLink) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cx(classes.group, "cursor-pointer")}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return <g className={classes.group}>{content}</g>;
 }
