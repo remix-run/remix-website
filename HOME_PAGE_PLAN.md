@@ -82,7 +82,7 @@
 
 ### Cleanup
 
-- Update `meta()` title/description/og image
+- ✅ Update `meta()` title/description (OG image TBD)
 - Delete `app/ui/homepage-scroll-experience.tsx` once unused
 - Remove `public/remix-logo-mask.svg` if still present (mask SVG is now inlined)
 

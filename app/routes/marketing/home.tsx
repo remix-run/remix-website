@@ -17,11 +17,13 @@ export const handle = { forceTheme: "light" };
 
 export function meta({ matches }: Route.MetaArgs) {
   let { siteUrl } = matches[0].loaderData;
-  let title = "Remix";
-  let image = undefined;
-  let description = "TODO: 2026 homepage meta description";
 
-  return getMeta({ title, description, siteUrl, image });
+  return getMeta({
+    title: "Remix - A Full Stack Framework Built on Web APIs",
+    description:
+      "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.",
+    siteUrl,
+  });
 }
 
 export const headers: HeadersFunction = () => {
