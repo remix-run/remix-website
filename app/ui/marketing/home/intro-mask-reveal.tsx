@@ -1,3 +1,6 @@
+const REMIX_R_PATH =
+  "M1757.07 884.025L1749.55 912.385H1889.4C1894.66 912.385 1898.3 914.76 1897.52 917.688H1897.52C1896.74 920.617 1891.84 922.991 1886.59 922.991H1746.73L1739.21 951.354H1819.06C1821.32 951.354 1823.54 952.008 1825.46 953.241L1881.68 990.322H1968.08L1909 951.354H1911.88C1940 951.354 1966.17 938.658 1970.33 922.995L1973.14 912.39C1977.3 896.727 1957.86 884.03 1929.73 884.03V884.027L1929.74 884.025H1757.07ZM1736.61 961.143L1728.88 990.318H1803.09L1809.47 966.268C1810.16 963.682 1808.23 961.143 1805.58 961.143H1736.61Z";
+
 export function IntroMaskReveal() {
   return (
     <div aria-hidden="true" className="rmx-intro-mask-overlay">
@@ -8,10 +11,39 @@ export function IntroMaskReveal() {
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="xMidYMid slice"
       >
+        <defs>
+          {/* Mask: white = visible, black = transparent */}
+          <mask id="r-cutout-mask">
+            <rect x="0" y="0" width="3600" height="1921" fill="white" />
+            <path d={REMIX_R_PATH} fill="black" />
+          </mask>
+          <clipPath id="color-stripes">
+            <rect
+              width="374"
+              height="134"
+              fill="white"
+              transform="translate(1613 856)"
+            />
+          </clipPath>
+        </defs>
+
+        {/* Solid R fill that fades out so users can see the shape first */}
         <path
-          d="M3600 1920.5H0V0.5H3600V1920.5ZM1757.07 884.025L1749.55 912.385H1889.4C1894.66 912.385 1898.3 914.76 1897.52 917.688H1897.52C1896.74 920.617 1891.84 922.991 1886.59 922.991H1746.73L1739.21 951.354H1819.06C1821.32 951.354 1823.54 952.008 1825.46 953.241L1881.68 990.322H1968.08L1909 951.354H1911.88C1940 951.354 1966.17 938.658 1970.33 922.995L1973.14 912.39C1977.3 896.727 1957.86 884.03 1929.73 884.03V884.027L1929.74 884.025H1757.07ZM1736.61 961.143L1728.88 990.318H1803.09L1809.47 966.268C1810.16 963.682 1808.23 961.143 1805.58 961.143H1736.61Z"
-          fill="black"
+          className="rmx-intro-r-fill"
+          d={REMIX_R_PATH}
+          fill="var(--rmx-neutral-200)"
         />
+
+        {/* Black overlay with R cutout */}
+        <rect
+          x="0"
+          y="0.5"
+          width="3600"
+          height="1920"
+          fill="black"
+          mask="url(#r-cutout-mask)"
+        />
+
         <g clipPath="url(#color-stripes)">
           <path
             d="M1690.45 960.945H1667.23L1659.48 990H1682.69L1690.45 960.945Z"
@@ -74,16 +106,6 @@ export function IntroMaskReveal() {
             fill="#F44250"
           />
         </g>
-        <defs>
-          <clipPath id="color-stripes">
-            <rect
-              width="374"
-              height="134"
-              fill="white"
-              transform="translate(1613 856)"
-            />
-          </clipPath>
-        </defs>
       </svg>
     </div>
   );

@@ -54,8 +54,18 @@
 ### ✅ Completed
 
 - Intro mask reveal animation (`app/ui/marketing/home/intro-mask-reveal.tsx`)
+  - R shape starts solid (visible) then fades out to reveal content behind
+  - Hero text content fades in after intro animation completes
+  - Animation timing driven by CSS variables in `:root`
+  - Reduced motion support
 - Section 1 — Hero (`app/ui/marketing/home/hero-section.tsx`)
 - Section 2 — Pitch + CTA (`app/ui/marketing/home/pitch-section.tsx`)
+- Section 3 — Timeline (`app/ui/marketing/home/timeline-section/`)
+  - Heading + 3 explanatory text blocks with colored links
+  - Desktop SVG diagram (`desktop.tsx`) with year labels, multi-lane tracks, glow effects
+  - Mobile grid-based diagram (`mobile.tsx`) with vertical layout
+  - Responsive breakpoint at `xl:` (1280px)
+  - CSS variables for all colors
 - Section 4 — "Stay in the loop" (`app/ui/marketing/home/stay-in-the-loop-section.tsx`)
   - Newsletter subscription card with form
   - Discord community card with button
@@ -65,19 +75,16 @@
 - Footer (using existing `app/ui/footer.tsx`)
 - Typography helpers added in `app/styles/marketing.css` and applied to sections
 
-### Section 3 — Timeline ("The story so far")
+### Remaining work
 
-- ✅ Heading + 3 explanatory text blocks
-- Year ticks row (2014–2027)
-- Multi-lane timeline track (React Router / Remix / Remix 3) with markers
-- Export desktop and mobile SVGs from Figma, embed inline
-- Use CSS variables for colors
-- Screen-reader-friendly milestone list
+- **Timeline hover effects (desktop)**: Add hover states for timeline track segments/markers
+- **SR-friendly milestone list**: Add visually-hidden list of milestones for screen readers (TODO in `timeline-section/index.tsx`)
 
 ### Cleanup
 
 - Update `meta()` title/description/og image
 - Delete `app/ui/homepage-scroll-experience.tsx` once unused
+- Remove `public/remix-logo-mask.svg` if still present (mask SVG is now inlined)
 
 ## Acceptance criteria
 
@@ -87,7 +94,7 @@
 - Accessible semantics (heading hierarchy, landmarks, form labels, SR-only timeline)
 - Styles scoped to `app/styles/marketing.css`
 
-## Questions
+## Questions (resolved)
 
-- **Timeline SVG export**: Store exports in `design-assets/` or just paste SVG markup into component?
-- **Timeline breakpoint**: Switch SVGs at `<768px` or align with Figma frame sizes (380 vs 800 vs 1400/1920)?
+- **Timeline SVG export**: ~~Store exports in `design-assets/` or just paste SVG markup into component?~~ → Inlined in components (`desktop.tsx` / `mobile.tsx`)
+- **Timeline breakpoint**: ~~Switch SVGs at `<768px` or align with Figma frame sizes?~~ → Switch at `xl:` (1280px) — desktop diagram on xl+, mobile grid below

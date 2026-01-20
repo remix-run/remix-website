@@ -27,12 +27,30 @@
   --rmx-button-surface-secondary: #ebeff2;
   --rmx-button-label-secondary: #25292d;
 
-  /* Shadow recipes (from Figma) */
   --rmx-shadow-low:
     0 1px 1px 1px #00274f59, 0 2px 3px 0 #0138701a, 0 4px 4px 0 #0138700d;
   --rmx-shadow-mid:
     0 2px 4px 0 #011d3940, 0 8px 12px 0 #01387014, 0 12px 16px 0 #0138700a,
     0 16px 20px 0 #0138700a, 0 20px 24px 0 #01387005;
+
+  --rmx-intro-black-hold: 150ms;
+  --rmx-intro-black-fade: 400ms;
+
+  --rmx-intro-logo-delay: calc(
+    var(--rmx-intro-black-hold) + var(--rmx-intro-black-fade)
+  );
+  --rmx-intro-logo-duration: 1500ms;
+  --rmx-intro-logo-easing: cubic-bezier(0.85, 0, 0.15, 1);
+  --rmx-intro-logo-start: calc(
+    var(--rmx-intro-black-hold) + var(--rmx-intro-logo-delay)
+  );
+
+  --rmx-intro-r-fade-duration: 600ms;
+
+  --rmx-hero-fade-delay: calc(
+    var(--rmx-intro-logo-start) + (var(--rmx-intro-logo-duration) / 2)
+  );
+  --rmx-hero-fade-duration: 750ms;
 
   &:where(.dark) {
     --rmx-text-primary: #e5e7eb;
@@ -227,66 +245,43 @@
   background: var(--rmx-surface-3);
 }
 
-.rmx-intro-mask-overlay {
-  /* How long the screen stays black before fading */
-  --intro-black-hold: 150ms;
-  /* How long the black fade-out takes */
-  --intro-black-fade: 400ms;
-  /* Delay after black fade before logo starts animating */
-  --intro-logo-delay: calc(var(--intro-black-hold) + var(--intro-black-fade));
-  /* How long the logo scale/reveal animation takes */
-  --intro-logo-duration: 1500ms;
-  /* Easing for the logo animation */
-  --intro-logo-easing: cubic-bezier(0.85, 0, 0.15, 1);
+/* ========================================
+ * Intro & Hero Animations
+ * ========================================
+ *
+ * Animation sequence:
+ * 1. Black screen holds, then fades out
+ * 2. Logo scales up and reveals content behind
+ * 3. R fill fades out (so users can see the R shape first)
+ * 4. Hero text content fades in
+ *
+ * ======================================== */
 
-  /* Computed: total delay before logo animation starts */
-  --intro-logo-start: calc(var(--intro-black-hold) + var(--intro-logo-delay));
+/* --- Keyframes --- */
 
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  overflow: hidden;
-  pointer-events: none;
-
-  animation: rmx-intro-reveal var(--intro-logo-duration)
-    var(--intro-logo-easing) var(--intro-logo-start) forwards;
-}
-
-/* Black cover that fades out before the logo animation starts */
-.rmx-intro-mask-overlay::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: black;
-  z-index: 1;
-  animation: rmx-intro-black-fade var(--intro-black-fade) ease-out
-    var(--intro-black-hold) forwards;
-}
-
-@keyframes rmx-intro-black-fade {
-  0% {
+@keyframes rmx-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
     opacity: 1;
   }
-  100% {
+}
+
+@keyframes rmx-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
     opacity: 0;
   }
 }
 
-.rmx-intro-mask-svg {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform-origin: center center;
-
-  animation: rmx-intro-scale var(--intro-logo-duration) var(--intro-logo-easing)
-    var(--intro-logo-start) forwards;
-}
-
 @keyframes rmx-intro-scale {
-  0% {
+  from {
     transform: translate(0, 0) scale(1);
   }
-  100% {
+  to {
     transform: translate(-55%, 100%) scale(80);
   }
 }
@@ -306,19 +301,71 @@
   }
 }
 
+.rmx-intro-mask-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+  animation: rmx-intro-reveal var(--rmx-intro-logo-duration)
+    var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards;
+}
+
+.rmx-intro-mask-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: black;
+  z-index: 1;
+  animation: rmx-fade-out var(--rmx-intro-black-fade) ease-out
+    var(--rmx-intro-black-hold) forwards;
+}
+
+/* SVG that scales up to reveal content */
+.rmx-intro-mask-svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  animation: rmx-intro-scale var(--rmx-intro-logo-duration)
+    var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards;
+}
+
+/* Solid fill behind the R that fades out so users can see the R shape first */
+.rmx-intro-r-fill {
+  animation: rmx-fade-out var(--rmx-intro-r-fade-duration) ease-out
+    var(--rmx-intro-logo-start) forwards;
+}
+
+.rmx-hero {
+  opacity: 0;
+  animation: rmx-fade-in var(--rmx-hero-fade-duration) ease-out
+    var(--rmx-hero-fade-delay) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .rmx-intro-mask-overlay {
+  .rmx-intro-mask-overlay,
+  .rmx-intro-mask-overlay::before,
+  .rmx-intro-mask-svg,
+  .rmx-intro-r-fill {
     animation: none;
+  }
+
+  .rmx-intro-mask-overlay {
     visibility: hidden;
     opacity: 0;
   }
 
   .rmx-intro-mask-overlay::before {
-    animation: none;
     opacity: 0;
   }
 
-  .rmx-intro-mask-svg {
+  .rmx-intro-r-fill {
+    opacity: 0;
+  }
+
+  .rmx-hero {
     animation: none;
+    opacity: 1;
   }
 }

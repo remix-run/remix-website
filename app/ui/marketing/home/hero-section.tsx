@@ -1,10 +1,16 @@
+import cx from "clsx";
 import heroImageSrc from "/racecar-teaser-hero.webp";
 
 export function HeroSection() {
   return (
     <section className="flex min-h-[540px] flex-col items-center justify-end overflow-hidden px-12 pb-6 md:min-h-[90vh] md:pb-12">
       <div className="flex w-full flex-col items-center gap-12 md:gap-24">
-        <div className="text-rmx-primary flex w-full flex-col items-start gap-12 md:items-center md:gap-6 md:text-center">
+        <div
+          className={cx(
+            "rmx-hero",
+            "text-rmx-primary flex w-full flex-col items-start gap-12 md:items-center md:gap-6 md:text-center",
+          )}
+        >
           <h1 className="rmx-heading-hero">
             Remix 3 is under active development
           </h1>

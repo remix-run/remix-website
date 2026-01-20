@@ -42,3 +42,15 @@ This file is **append-only**. Do not rewrite or reorganize existing entries—on
 
 - **Breakpoints**: Use Tailwind's default breakpoints (`sm:`, `md:`, `lg:`, etc.) instead of arbitrary breakpoints like `min-[800px]:`. The Figma frames use 800px but `md:` (768px) is close enough.
 - **Typography helpers (marketing)**: Shared text utility classes live in `app/styles/marketing.css` (e.g., `.rmx-body`, `.rmx-body-md`, `.rmx-body-lg`, `.rmx-heading-hero`, `.rmx-heading-lg`, `.rmx-heading-xl`, `.rmx-heading-sm`, `.rmx-button-text`, `.rmx-button-text-lg`, `.rmx-body-on-dark`).
+
+- **Intro animation timing variables**: All animation timing is driven by CSS variables in `:root` (not scoped to `.rmx-intro-mask-overlay`) so they can be referenced by any element. Variables: `--rmx-intro-black-hold`, `--rmx-intro-black-fade`, `--rmx-intro-logo-delay`, `--rmx-intro-logo-duration`, `--rmx-intro-logo-easing`, `--rmx-intro-logo-start`, `--rmx-intro-r-fade-duration`, `--rmx-hero-fade-delay`, `--rmx-hero-fade-duration`.
+
+- **Intro R fill fade**: The R shape in the intro mask starts with a solid fill (`--rmx-neutral-200`) that fades out, allowing users to recognize the R shape before content shows through. Implemented using an SVG `<mask>` element to avoid duplicating the R path data.
+
+- **Hero content fade-in**: The `.rmx-hero` class applies a fade-in animation with a delay calculated from the intro animation timing (`--rmx-hero-fade-delay`).
+
+- **Timeline section implementation**:
+  - Desktop (`xl:+`): Uses an inline SVG (`desktop.tsx`) with glow filters, gradient fills, and year labels
+  - Mobile/Tablet (`<xl:`): Uses a CSS grid-based layout (`mobile.tsx`) with colored track segments
+  - Breakpoint at `xl:` (1280px) to switch between layouts
+  - Both use CSS variables for colors (`--rmx-highlight-*`, `--rmx-shade-*`, `--rmx-neutral-*`)
