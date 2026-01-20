@@ -66,6 +66,10 @@
   - Mobile grid-based diagram (`mobile.tsx`) with vertical layout
   - Responsive breakpoint at `xl:` (1280px)
   - CSS variables for all colors
+  - Interactive milestone markers with hover/focus states (v4, v5, v6, v7, v1, v2, v3)
+  - Links to relevant docs/repos for clickable milestones
+  - Keyboard accessible (focus-visible states)
+  - Refactored with `Milestone`, `TrackLabel`, `TrackEndCircle` components
 - Section 4 — "Stay in the loop" (`app/ui/marketing/home/stay-in-the-loop-section.tsx`)
   - Newsletter subscription card with form
   - Discord community card with button
@@ -77,8 +81,8 @@
 
 ### Remaining work
 
-- **Timeline hover effects (desktop)**: Add hover states for timeline track segments/markers
-- **SR-friendly milestone list**: Add visually-hidden list of milestones for screen readers (TODO in `timeline-section/index.tsx`)
+- ✅ **Timeline hover effects (desktop)**: Added hover/focus states for all milestone markers
+- ✅ **SR-friendly milestone list**: Added visually-hidden list of milestones for screen readers
 
 ### Cleanup
 

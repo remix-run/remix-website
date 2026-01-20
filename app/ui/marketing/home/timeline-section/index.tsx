@@ -76,7 +76,19 @@ export function TimelineSection() {
         </div>
 
         <div className="sr-only">
-          TODO: accessible milestone list (for screen readers)
+          <h3>Timeline milestones</h3>
+          <ul>
+            <li>2017: React Router v4 released</li>
+            <li>2019: React Router v5 released</li>
+            <li>2020: React Router v6 released</li>
+            <li>2021: Remix v1 released</li>
+            <li>2023: Remix v2 released</li>
+            <li>
+              2024: React Router v7 released (Remix features merged into React
+              Router)
+            </li>
+            <li>2025: Remix 3 in development</li>
+          </ul>
         </div>
       </div>
     </section>
