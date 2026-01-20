@@ -10,7 +10,7 @@ export function TimelineSection() {
         "overflow-x-clip bg-[var(--rmx-neutral-950)] text-white",
       )}
     >
-      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-12 pt-16 md:gap-16 md:pt-24">
+      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-12 px-12 pt-16 md:gap-16 md:px-12 md:pt-24">
         <h2
           className={cx(
             "rmx-heading-xl",

@@ -236,9 +236,20 @@
   background: linear-gradient(
     180deg,
     var(--rmx-neutral-950) 0%,
-    var(--rmx-neutral-950) 50%,
+    var(--rmx-neutral-950) 70%,
     var(--rmx-neutral-750) 100%
   );
+}
+
+@media (min-width: 768px) {
+  .rmx-home-timeline-bg {
+    background: linear-gradient(
+      180deg,
+      var(--rmx-neutral-950) 0%,
+      var(--rmx-neutral-950) 50%,
+      var(--rmx-neutral-750) 100%
+    );
+  }
 }
 
 .rmx-home-surface-bg {
