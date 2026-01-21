@@ -87,7 +87,7 @@ export function TimelineDiagramMobile() {
       <LaneHeader style={{ gridColumn: 2, gridRow: 2 }}>
         React Router
       </LaneHeader>
-      <LaneHeader style={{ gridColumn: 3, gridRow: 2 }}>Remix</LaneHeader>
+      <LaneHeader style={{ gridColumn: 3, gridRow: 2 }}>Remix 1-2</LaneHeader>
       <LaneHeader style={{ gridColumn: 4, gridRow: 2 }}>Remix 3</LaneHeader>
 
       {/* Year markers or version labels for each lane - skip 2014 which has headers */}

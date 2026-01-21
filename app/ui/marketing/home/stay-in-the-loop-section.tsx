@@ -97,7 +97,7 @@ function DiscordCard() {
             "inline-flex h-14 w-full items-center justify-center rounded-lg border border-black/10 px-6 no-underline",
             "transition-all hover:opacity-90",
             "active:scale-[0.98] active:brightness-95",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-secondary)]",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",
           )}
         >
           Join Discord
