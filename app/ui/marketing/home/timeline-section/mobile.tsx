@@ -1,13 +1,12 @@
 import { Fragment } from "react";
+import cx from "clsx";
 
 // =============================================================================
 // Mobile Layout Constants
 // =============================================================================
 
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);
-const CONTAINER_WIDTH = 380;
 const ROW_HEIGHT = 57;
-const TRACK_WIDTH = 48;
 
 // Cell config: string for label, or object with optional label and style overrides
 type CellConfig = string | { label?: string; style: React.CSSProperties };
@@ -39,13 +38,10 @@ const LANE_CELL_CONFIG: Record<string, Record<number, CellConfig>> = {
 export function TimelineDiagramMobile() {
   return (
     <div
+      className="relative mx-auto grid w-[380px]"
       style={{
-        display: "grid",
-        width: CONTAINER_WIDTH,
         gridTemplateColumns: `auto repeat(3, 1fr)`,
         gridTemplateRows: `repeat(${YEARS.length + 1}, ${ROW_HEIGHT}px)`,
-        margin: "0 auto",
-        position: "relative",
       }}
     >
       {/* Lane background gradients - these span all rows */}
@@ -119,101 +115,97 @@ export function TimelineDiagramMobile() {
 // =============================================================================
 
 function TrackSegments() {
+  // Track width is 48px (w-12 in Tailwind)
+  const trackWidth = 48;
   // Margin for horizontal segments to align with centered tracks
   // This is roughly (lane width - track width) / 2, adjusted for visual alignment
   const horizontalSegmentInset = 27;
   // Vertical margin to align with centered horizontal segments
-  const verticalSegmentMargin = (ROW_HEIGHT - TRACK_WIDTH) / 2;
+  const verticalSegmentMargin = (ROW_HEIGHT - trackWidth) / 2;
 
   return (
     <>
       {/* React Router - red track from top to 2026 */}
       <div
+        className="mx-auto w-12"
         style={{
           gridColumn: 2,
           gridRow: "1 / -1",
           borderRadius: "0 0 24px 24px",
           background:
             "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-highlight-red) 30%)",
-          margin: "0 auto",
-          width: TRACK_WIDTH,
         }}
       />
 
       {/* Blue connector - Segment 1: Vertical in React Router (2020-2021) */}
       <div
+        className="mx-auto w-12"
         style={{
           gridColumn: 2,
           gridRow: "8 / 10", // 2020-2021
           borderRadius: "24px 24px 0 24px",
           background: "var(--rmx-highlight-blue)",
-          margin: `0 auto ${verticalSegmentMargin}px auto`,
-          width: TRACK_WIDTH,
+          marginBottom: verticalSegmentMargin,
         }}
       />
 
       {/* Blue connector - Segment 2: Horizontal from React Router to Remix (2021) */}
       <div
+        className="ml-12 h-12 self-center"
         style={{
           gridColumn: "2 / 4", // React Router to Remix
           gridRow: 9, // 2021
           borderRadius: "0 24px 0 24px",
           background: "var(--rmx-highlight-blue)",
-          alignSelf: "center",
-          height: TRACK_WIDTH,
-          marginLeft: TRACK_WIDTH, // Start after React Router track
           marginRight: horizontalSegmentInset, // End at Remix track
         }}
       />
 
       {/* Blue connector - Segment 3: Vertical in Remix (2021-2023) */}
       <div
+        className="mx-auto w-12"
         style={{
           gridColumn: 3,
           gridRow: "9 / 12", // 2021-2023
           borderRadius: "0 24px 24px 0",
           background: "var(--rmx-highlight-blue)",
-          margin: `${verticalSegmentMargin}px auto`,
-          width: TRACK_WIDTH,
+          marginTop: verticalSegmentMargin,
+          marginBottom: verticalSegmentMargin,
         }}
       />
 
       {/* Blue connector - Segment 4: Horizontal from Remix back to React Router (2023) */}
       <div
+        className="mr-12 h-12 self-center"
         style={{
           gridColumn: "2 / 4", // React Router to Remix (spans both)
           gridRow: 11, // 2023
           borderRadius: "24px 0 24px 0",
           background: "var(--rmx-highlight-blue)",
-          alignSelf: "center",
-          height: TRACK_WIDTH,
           marginLeft: horizontalSegmentInset, // Start at React Router track
-          marginRight: TRACK_WIDTH, // End before Remix track
         }}
       />
 
       {/* Blue connector - Segment 5: Merge back into React Router (2023-2024) */}
       <div
+        className="mx-auto w-12"
         style={{
           gridColumn: 2,
           gridRow: "11 / 13", // 2023-2024
           borderRadius: "48px 24px 0 0",
           background:
             "linear-gradient(180deg, var(--rmx-highlight-blue) 46.82%, var(--rmx-highlight-red) 100%)",
-          margin: `${verticalSegmentMargin}px auto 0 auto`,
-          width: TRACK_WIDTH,
+          marginTop: verticalSegmentMargin,
         }}
       />
 
       {/* Remix 3 - green pill for 2025-2026 */}
       <div
+        className="mx-auto w-12 rounded-3xl"
         style={{
           gridColumn: 4,
           gridRow: "13 / 15", // 2025-2026
-          borderRadius: 24,
           background: "var(--rmx-highlight-green)",
-          margin: "0 auto",
-          width: TRACK_WIDTH,
         }}
       />
     </>
@@ -229,19 +221,11 @@ function LaneHeader({
 }) {
   return (
     <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "12px",
-        fontWeight: 800,
-        lineHeight: 1.6,
-        letterSpacing: "0.6px",
-        color: "var(--rmx-neutral-100)",
-        textTransform: "uppercase",
-        whiteSpace: "nowrap",
-        ...style,
-      }}
+      className={cx(
+        "text-rmx-neutral-100",
+        "flex items-center justify-center whitespace-nowrap text-xs font-extrabold uppercase leading-[1.6] tracking-[0.6px]",
+      )}
+      style={style}
     >
       {children}
     </div>
@@ -264,19 +248,8 @@ function YearLabel({
 
   return (
     <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        padding: "0 24px",
-        fontSize: "12px",
-        fontWeight: 400,
-        lineHeight: 1.6,
-        letterSpacing: "0.01em",
-        color: "var(--rmx-text-tertiary)",
-        opacity,
-        ...style,
-      }}
+      className="rmx-caption text-rmx-tertiary flex items-center justify-end px-6"
+      style={{ opacity, ...style }}
     >
       {children}
     </div>
@@ -300,17 +273,11 @@ function LaneCell({
   if (label) {
     return (
       <div
-        style={{
-          alignSelf: "center",
-          justifySelf: "center",
-          fontSize: "12px",
-          fontWeight: 700,
-          lineHeight: 1.6,
-          letterSpacing: "0.12px",
-          color: "var(--rmx-neutral-100)",
-          ...style,
-          ...configStyle,
-        }}
+        className={cx(
+          "rmx-caption text-rmx-neutral-100",
+          "self-center justify-self-center font-bold",
+        )}
+        style={{ ...style, ...configStyle }}
       >
         {label}
       </div>
@@ -328,22 +295,10 @@ function YearMarker({
   markerStyle?: React.CSSProperties;
 }) {
   return (
-    <div
-      style={{
-        alignSelf: "center",
-        justifySelf: "center",
-        ...style,
-      }}
-    >
+    <div className="self-center justify-self-center" style={style}>
       <div
-        style={{
-          width: 9,
-          height: 9,
-          borderRadius: "50%",
-          border: "1px solid var(--rmx-neutral-100)",
-          opacity: 0.4,
-          ...markerStyle,
-        }}
+        className="size-[9px] rounded-full border border-[--rmx-neutral-100] opacity-40"
+        style={markerStyle}
       />
     </div>
   );
