@@ -1,5 +1,5 @@
 import cx from "clsx";
-import heroImageSrc from "/racecar-teaser-hero.webp";
+import heroImageSrc from "/marketing/racecar-teaser-hero.webp";
 
 export function HeroSection() {
   return (

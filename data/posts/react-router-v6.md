@@ -2,7 +2,7 @@
 title: React Router v6
 summary: After years of work and millions of monthly downloads, React Router v6 is finally here.
 date: 2021-11-03
-image: /react-router-v6.jpg
+image: /blog-images/headers/react-router-v6.jpg
 imageAlt: "A fork in the road in the middle of the woods"
 authors:
   - Michael Jackson

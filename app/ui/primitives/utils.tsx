@@ -153,12 +153,6 @@ export function isInputElement(
   return !!(element && "tagName" in element && element?.tagName === "INPUT");
 }
 
-export function isButtonElement(
-  element: Element | null | undefined,
-): element is HTMLButtonElement {
-  return !!(element && "tagName" in element && element?.tagName === "BUTTON");
-}
-
 /**
  * Detects right clicks
  *

@@ -2,7 +2,7 @@
 title: Remix v1
 summary: Remix is now production ready and completely free and open source.
 date: 2021-11-22
-image: /remix-v1.jpg
+image: /blog-images/headers/remix-v1.jpg
 imageAlt: "The Remix logo"
 authors:
   - Michael Jackson

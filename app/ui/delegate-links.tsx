@@ -39,32 +39,4 @@ function useDelegatedReactRouterLinks(nodeRef: React.RefObject<HTMLElement>) {
   }, [navigate, nodeRef]);
 }
 
-function PrefetchMarkdownLinks({ children }: { children: React.ReactNode }) {
-  let nodeRef = React.useRef<HTMLDivElement>(null);
-  let [page, setPage] = React.useState<null | string>(null);
-
-  React.useEffect(() => {
-    let node = nodeRef.current;
-    function handleMouseEnter(event: MouseEvent) {
-      if (!nodeRef.current) return;
-      let a = isLinkEvent(event);
-      if (a) {
-        let { pathname, search } = a;
-        setPage(pathname + search);
-      }
-    }
-    node?.addEventListener("mouseenter", handleMouseEnter, true);
-    return () => {
-      node?.removeEventListener("mouseenter", handleMouseEnter);
-    };
-  }, []);
-
-  return (
-    <div ref={nodeRef}>
-      {children}
-      {page && <PrefetchPageLinks page={page} />}
-    </div>
-  );
-}
-
-export { useDelegatedReactRouterLinks, PrefetchMarkdownLinks };
+export { useDelegatedReactRouterLinks };
