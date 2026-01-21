@@ -24,28 +24,6 @@ let docSearchProps = {
   apiKey: "dff56670dbec8494409989d6ec9c8ac2",
 } satisfies DocSearchProps;
 
-// TODO: Refactor a bit when we add Vite with css imports per component
-// This will allow us to have two versions of the component, one that has
-// the button with display: none, and the other with button styles
-export function DocSearch() {
-  let hydrated = useHydrated();
-
-  if (!hydrated) {
-    // The Algolia doc search container is hard-coded at 40px. It doesn't
-    // render anything on the server, so we get a mis-match after hydration.
-    // This placeholder prevents layout shift when the search appears.
-    return <div className="h-10" />;
-  }
-
-  return (
-    <Suspense fallback={<div className="h-10" />}>
-      <div className="animate-[fadeIn_100ms_ease-in_1]">
-        <OriginalDocSearch {...docSearchProps} />
-      </div>
-    </Suspense>
-  );
-}
-
 /**
  * DocSearch but only the modal accessible by keyboard command
  * Intended for people instinctively pressing cmd+k on a non-doc page

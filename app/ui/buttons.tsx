@@ -36,28 +36,6 @@ export const primaryButtonLinkClass = `${baseButtonLinkClass} bg-blue-600 text-w
 
 export const secondaryButtonLinkClass = `${baseButtonLinkClass} bg-pink-brand text-white hover:bg-pink-600 focus:ring-blue-200 transition-colors duration-200`;
 
-export function PrimaryButtonLink({
-  to,
-  children,
-  className,
-  prefetch = "intent",
-}: {
-  to: string;
-  children: React.ReactNode;
-  className?: string;
-  prefetch?: "intent" | "render";
-}) {
-  return (
-    <Link
-      x-comp="PrimaryButtonLink"
-      to={to}
-      prefetch={prefetch}
-      className={`${primaryButtonLinkClass} ${className}`}
-      children={children}
-    />
-  );
-}
-
 export const Button = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithRef<"button">
