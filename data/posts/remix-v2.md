@@ -2,7 +2,7 @@
 title: Remix v2
 summary: The second major release of Remix is stable today.
 date: 2023-09-15
-image: /remix-v1.jpg
+image: /blog-images/headers/remix-v1.jpg
 imageAlt: "The Remix logo"
 authors:
   - Michael Jackson

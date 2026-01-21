@@ -3,7 +3,7 @@ title: Remixing Shopify
 summary: Remix is joining Shopify
 date: 2022-10-31
 featured: true
-image: /remix-v1.jpg
+image: /blog-images/headers/remix-v1.jpg
 imageAlt: "The Remix logo"
 authors:
   - Michael Jackson

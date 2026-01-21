@@ -22,7 +22,7 @@ export function meta({ matches }: Route.MetaArgs) {
     title: "Remix - A Full Stack Framework Built on Web APIs",
     description:
       "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.",
-    image: siteUrl ? `${siteUrl}/img/og.1.jpg` : undefined,
+    image: siteUrl ? `${siteUrl}/marketing/remix-3-thumbnail.jpg` : undefined,
   });
 }
 
