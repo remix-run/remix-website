@@ -38,9 +38,9 @@ export function TimelineSection() {
           <p>
             <a
               href="https://v2.remix.run/"
-              className="text-[var(--rmx-highlight-blue)] hover:underline"
+              className="font-bold text-[var(--rmx-highlight-blue)] hover:underline"
             >
-              The first version of Remix
+              The first manifestation of Remix
             </a>{" "}
             was a feature branch of React Router: a full stack web framework
             that let you focus on the user interface and work back through web
@@ -50,7 +50,7 @@ export function TimelineSection() {
             We've now merged Remix's features directly into{" "}
             <a
               href="https://reactrouter.com/"
-              className="text-[var(--rmx-highlight-red)] hover:underline"
+              className="font-bold text-[var(--rmx-highlight-red)] hover:underline"
             >
               React Router
             </a>
@@ -61,7 +61,7 @@ export function TimelineSection() {
           <p>
             <a
               href="https://github.com/remix-run/remix"
-              className="text-[var(--rmx-highlight-green)] hover:underline"
+              className="font-bold text-[var(--rmx-highlight-green)] hover:underline"
             >
               Remix 3
             </a>{" "}

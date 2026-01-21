@@ -241,7 +241,7 @@
   );
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1280px) {
   .rmx-home-timeline-bg {
     background: linear-gradient(
       180deg,
