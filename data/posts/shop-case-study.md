@@ -25,7 +25,7 @@ We on the Remix team sat down with our colleagues [Sebastian Ekström][sebastian
   <img alt="Shop app on Apple Play Store. Title says 'Shop: All your favorite brands'" src="/blog-images/posts/shop-case-study/shop-app-ios.jpg" class="h-svh" />
 </div>
 
-Shop is an application that allows buyers to discover merchants and products, make purchases, and track orders. Shop automatically aggregates shipping information across various delivery services. Whether its through UPS, FedEx, or any other delivery method or company, Shop will automatically track all of your deliveries in one spot.
+Shop is an application that allows buyers to discover merchants and products, make purchases, and track orders. Shop automatically aggregates shipping information across various delivery services. Whether it's through UPS, FedEx, or any other delivery method or company, Shop will automatically track all of your deliveries in one spot.
 
 Shop's native app has millions of downloads from the Google Play and Apple App store. While Shop has served the needs of many customers for years, the website has only been used as marketing pages to redirect users to the native app.
 
@@ -67,7 +67,7 @@ In February of 2023, shortly before the Shop.app work began, the lead developers
 
 [Shop.ai][shop.ai] now redirects to [Shop.app][shop.app]. However, the initial version was a single webpage showing off a Shop chatbot built on top of OpenAI's newly released ChatGPT.
 
-The team had ~1 month to build this site. They were looking for a fast and adaptable framework to expedite this project. This was the perfect opportunity to try Remix. Even though they didn't use many of the features that makes it great (data fetching, routing, nested layouts, etc.), Remix proved to be straightforward and flexible enough to rapidly develop Shop.ai.
+The team had ~1 month to build this site. They were looking for a fast and adaptable framework to expedite this project. This was the perfect opportunity to try Remix. Even though they didn't use many of the features that make it great (data fetching, routing, nested layouts, etc.), Remix proved to be straightforward and flexible enough to rapidly develop Shop.ai.
 
 This positive experience gave them confidence to pick Remix when it came time to build Shop.app.
 
@@ -90,7 +90,7 @@ This positive experience gave them confidence to pick Remix when it came time to
 
 As mentioned, the Shop native app is built with React Native. To ease development between the iOS, Android, and web versions of Shop, the team uses a monorepo that contains the source code for all three.
 
-The monorepo setup simplified migrating the existing marketing version of Shop.app pages to the new experience. This also meant that the fundamental infrastructure for linting, testing, CI/CD, etc. were already setup.
+The monorepo setup simplified migrating the existing marketing version of Shop.app pages to the new experience. This also meant that the fundamental infrastructure for linting, testing, CI/CD, etc. were already set up.
 
 The Shop team was able to easily integrate Remix with the existing infrastructure due to the flexibility and level of control Remix offered. Because the team could integrate Remix into their existing system so easily, it allowed them to start rapidly developing Shop.app.
 
@@ -119,7 +119,7 @@ The team started building Shop.app in April, 2023. Beyond being flexible enough 
 
 **That's 3 months of _Getting Shit Done_**
 
-With Remix, the team was able use their existing backend, patterns, and libraries instead of being forced to rewrite their infrastructure in a "Remix-y" way. There are additional Remix-specific APIs Shop.app doesn't fully take advantage of, such as the Remix loading patterns and `defer`. Remix gives developers full control of their project and offers useful levers to pull when needed. This philosophy allowed the Shop team to easily hook in their own patterns and libraries, while incrementally leveraging and experimenting with Remix features as they went.
+With Remix, the team was able to use their existing backend, patterns, and libraries instead of being forced to rewrite their infrastructure in a "Remix-y" way. There are additional Remix-specific APIs Shop.app doesn't fully take advantage of, such as the Remix loading patterns and `defer`. Remix gives developers full control of their project and offers useful levers to pull when needed. This philosophy allowed the Shop team to easily hook in their own patterns and libraries, while incrementally leveraging and experimenting with Remix features as they went.
 
 Shipping the initial version of Shop.app to millions of people all around the world in such a short amount of time could not have been done without Remix.
 
@@ -127,7 +127,7 @@ Shipping the initial version of Shop.app to millions of people all around the wo
 
 One struggle the team did have with Remix was slow Hot Module Replacement (HMR). It took ~9s from the time a developer hit save to when they were able to see their changes reflected locally.
 
-Luckily we were already working on a solution. The Shop team was ecstatic when they learned that the Remix team was [changing the compiler to be a Vite plugin][vite-announcement]. They were so confident in the new Vite plugin and the DX benefits it would give their team they didn't hesitate to starting using it, even before [it was marked as stable][vite-stable-announcement].
+Luckily we were already working on a solution. The Shop team was ecstatic when they learned that the Remix team was [changing the compiler to be a Vite plugin][vite-announcement]. They were so confident in the new Vite plugin and the DX benefits it would give their team that they didn't hesitate to start using it, even before [it was marked as stable][vite-stable-announcement].
 
 Migrating to Vite immediately improved their HMR times to 2.3s.
 
@@ -139,7 +139,7 @@ These were just the initial numbers. The team was able to reduce HMR times even 
 
 The journey of building Shop.app with Remix is a testament to Remix's flexibility, DX, and scalability, as well as Shopify's focus on building good, useful software in quick and iterative fashion.
 
-By leveraging the advantages of a monorepo setup, building on top of existing infrastructure, and harnessing the rapid development capabilities of Remix, Shopify was able to successfully transformed Shop.app from a simple marketing site into a fully functional web application.
+By leveraging the advantages of a monorepo setup, building on top of existing infrastructure, and harnessing the rapid development capabilities of Remix, Shopify was able to successfully transform Shop.app from a simple marketing site into a fully functional web application.
 
 The move to Vite further accelerated the development process, drastically improving HMR times and boosting productivity. The team was able to accomplish this before Vite was stabilized due to Remix's continuous delivery with [unstable and future flags][future-proofing-blog].
 

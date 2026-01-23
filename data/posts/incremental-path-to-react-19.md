@@ -1,6 +1,6 @@
 ---
 title: "Incremental Path to React 19: React Conf Follow-Up"
-summary: React Router v7 will provide an incremental path to the entire, full stack feature set of React. Upgrading from to React Router v7 is non-breaking for both React Router v6 and Remix v2.
+summary: React Router v7 will provide an incremental path to the entire, full stack feature set of React. Upgrading to React Router v7 is non-breaking for both React Router v6 and Remix v2.
 date: 2024-05-21
 image: /blog-images/headers/reactconf-2024.jpg
 imageAlt: Ryan Florence presenting at React Conf
@@ -59,7 +59,7 @@ The model was different enough that it seemed like we should name it something e
 
 But we love Remix! The brand, the community, the ethos.
 
-When Remix apps upgrade to React Router v7, this opens up space in your package.json to run both current and future Remix in parallel for a future incremental upgrade path. It also let's us keep the name!
+When Remix apps upgrade to React Router v7, this opens up space in your package.json to run both current and future Remix in parallel for a future incremental upgrade path. It also lets us keep the name!
 
 So while it may look like needless package shuffling, the technical fact is that Remix today is just a wrapper and this shuffling enables the smoothest upgrade path into the future.
 

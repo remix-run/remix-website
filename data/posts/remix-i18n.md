@@ -17,9 +17,9 @@ I also talked about i18n with Remix in my Remix Conf 2023 talk. If you want to w
 
 ## What is i18n?
 
-i18n stands for internationalization: there are 18 characters between the first character, “i” and the last character, “n”. In short, i18n is about implementing the structures and features in your applications to deliver a localized version of your content for every one of your user.
+i18n stands for internationalization: there are 18 characters between the first character, “i” and the last character, “n”. In short, i18n is about implementing the structures and features in your applications to deliver a localized version of your content for every one of your users.
 
-There are many reasons why we should care about i18n. The most important reason is that it makes your application more accessible to people who speak different languages. There are interesting numbers and statistics that prove this. For example, 5.07 billion people used the internet in 2020. That's more than half of the world's population. Of the over 5 billion users, 74.1% accessed the content in another language than English.
+There are many reasons why we should care about i18n. The most important reason is that it makes your application more accessible to people who speak different languages. There are interesting numbers and statistics that prove this. For example, 5.07 billion people used the internet in 2020. That's more than half of the world's population. Of the over 5 billion users, 74.1% accessed content in a language other than English.
 
 You can find and explore the statistics for the above claim [on Statista][lang-statistics-on-the-internet].
 
@@ -53,7 +53,7 @@ Fortunately, Remix provides several practical and flexible options for implement
 
 ### 1. remix-18next
 
-[remix-i18next][remix-i18next] is a npm module created by [Sergio Xalambrí][sergio-github] for i18n with Remix. remix-i18next is built on top of i18n JavaScript library, [i18next][i18next]. i18next provides features to localize your product on web, mobile, and desktop, and comes with many standard i18n features.
+[remix-i18next][remix-i18next] is a npm module created by [Sergio Xalambrí][sergio-github] for i18n with Remix. remix-i18next is built on top of the i18n JavaScript library, [i18next][i18next]. i18next provides features to localize your product on web, mobile, and desktop, and comes with many standard i18n features.
 
 This approach takes a few steps to implement i18n with Remix, such as installing several npm modules, maintaining translation JSON files at the source code level, and using the `useTranslation` hook to translate the content.
 
@@ -353,7 +353,7 @@ This way, instead of getting all data with all languages for a single contact, w
 }
 ```
 
-Getting a contacs list for the sidebar works very similarly to what we saw in `($lang).contacts.$contactId.tsx` to get a single contact. Only the properties we want to get are different.
+Getting a contacts list for the sidebar works very similarly to what we saw in `($lang).contacts.$contactId.tsx` to get a single contact. Only the properties we want to get are different.
 
 ```jsx
 // ($lang).contacts.tsx

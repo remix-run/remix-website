@@ -16,7 +16,7 @@ Oftentimes you have to trade stability for stagnation: make the package better b
 
 React Router v6 is our best version yet thanks to React Hooks: better composition, more features, simpler APIs and smaller bundles! However, upgrading a mature app from v5 to v6 **all at once** is way too disruptive to your project 😞.
 
-That's why we've released a backwards compatibility package for React Router DOM. It lets you run the the new v6 APIs in parallel with your existing v5 code, enabling you to **upgrade incrementally**. The result is a bunch of tiny commits like this:
+That's why we've released a backwards compatibility package for React Router DOM. It lets you run the new v6 APIs in parallel with your existing v5 code, enabling you to **upgrade incrementally**. The result is a bunch of tiny commits like this:
 
 ```diff
 + import { useParams } from "react-router-dom-v5-compat";

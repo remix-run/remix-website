@@ -20,11 +20,11 @@ This came to be summarized in the phrase: “UI is a function of state”, or `u
 
 The rarely-acknowledged problem here, however, is that this “one-way data flow” is a bit of a misnomer. It’s really a one-way data flow _on the client._ But having data exclusively on the client is rarely practical. Most of the time you need to persist data—to sync it—which means you need data to flow two ways: between the client and the server.
 
-![Illustration of the flow “View -> Action -> State” framed in a browser on the left. On the right is an illustartion of a server with a database. Two arrows connect these two illustrations denoting network transfer.][img-2]
+![Illustration of the flow “View -> Action -> State” framed in a browser on the left. On the right is an illustration of a server with a database. Two arrows connect these two illustrations denoting network transfer.][img-2]
 
 A lot of state management tools only help you manage state on the client but they don’t help you effectively cross [the network chasm](https://kentcdodds.com/blog/remix-the-yang-to-react-s-yin): the gap between the state on the client and the state on the server.
 
-![Illustration of the flow “View -> Action -> State” framed in a browser on the left. On the right is an illustartion of a server with a database. Two arrows connect these two illustrations denoting network transfer. The visual emphasis is on the network part of the graphic with “?”s surrounding it.][img-3]
+![Illustration of the flow “View -> Action -> State” framed in a browser on the left. On the right is an illustration of a server with a database. Two arrows connect these two illustrations denoting network transfer. The visual emphasis is on the network part of the graphic with “?”s surrounding it.][img-3]
 
 [Enter Remix](https://remix.run/docs/en/v1/guides/data-loading): “one of the primary features of Remix is simplifying interactions with the server to get data into components.” Remix extends the flow of data across the network, making it truly one-way and cyclical: from the server (state), to the client (view), and back to the server (action).
 

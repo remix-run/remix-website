@@ -271,7 +271,7 @@ There's so, so much more to our routing API that I'd love to show you here, but 
 
 Feel free to [check out the rest of the v6 examples here](https://github.com/remix-run/react-router/tree/main/examples) and be sure to send us a PR if we missed one you'd like to see!
 
-One additional feature that we brought over from v3 is first-class support for layout routes in the form of a new `<Outlet>` element. You can read more about layouts [in the v6 overview](https://reactrouterdotcom.fly.dev/docs/en/v6/getting-started/overview#nested-routes).
+One additional feature that we brought over from v3 is first-class support for layout routes in the form of a new `<Outlet>` element. You can read more about layouts [in the v6 overview](https://reactrouter.com/docs/en/v6/getting-started/overview#nested-routes).
 
 This really is the most flexible and powerful routing API we've ever designed, and we are really excited about the kinds of apps it's going to let us build.
 

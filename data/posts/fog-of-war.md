@@ -77,7 +77,7 @@ Over time, as the user navigates around—more and more route implementations ar
 
 This approach works for most applications - since the manifest is pretty lightweight and compresses well since it's a repetitive key/value JSON structure. For example, the manifest for https://remix.run/ contains 50 routes, weighs 19.6Kb uncompressed, but only sends 2.6Kb over the wire after compression.
 
-However, Remix doesn't only want to to provide good performance for small-to-medium sized applications—we want _large_ and _extremely large_ applications to be fast by default too! Because we love dog-fooding React Router and Remix on the myriad of applications at Shopify, both internal and public-facing, we knew our current strategy was not cutting it for those larger applications.
+However, Remix doesn't only want to provide good performance for small-to-medium sized applications—we want _large_ and _extremely large_ applications to be fast by default too! Because we love dog-fooding React Router and Remix on the myriad of applications at Shopify, both internal and public-facing, we knew our current strategy was not cutting it for those larger applications.
 
 As we began rolling out Remix to https://www.shopify.com, we realized _just how big_ that site is. When you take into account all of the routes and their internationalized URLs (i.e., `/pricing`, `/en/pricing`, `/es/precios` and many more)—the app had over 1300 routes! And because Remix doesn't have a good solution for URL aliasing (yet!), many of the route entries were duplicates pointing to the same route module, and thus duplicating the module information (its path, its other module `imports`, etc.). This resulted in a manifest that was ~85Kb compressed, and ~10Mb uncompressed. On slower devices, this could have a noticeable impact on page load times for the device to decompress, parse, compile, and execute the JS module.
 
@@ -87,7 +87,7 @@ At Remix, we're big fans of the Retro vibes of our younger years: from old schoo
 
 A Remix route tree is not so different from a map in a video game. In a game, the map may be huge, but the player doesn't start with the ability to see the entire map. They start with only the initial portion of the map exposed. As they move around, more and more of the map loads in.
 
-Why can't the Remix manifest work this way? Why can't we just load only the matched initial routes on SSR and fill them in as the user navigates around? Well the simple answer is: it can and it did. Sort of.
+Why can't the Remix manifest work this way? Why can't we just load only the matched initial routes on SSR and fill them in as the user navigates around? Well, the simple answer is: it can and it did. Sort of.
 
 Prior to v1.0, Remix actually worked this way! Only the initial routes were included during SSR, and then when a link was clicked we would make a request to the server to get the new routes and fetch the data and route modules. It looked something like:
 
@@ -115,7 +115,7 @@ It's also worth noting that because this is all just an optimization, the applic
 
 ## Visual Explanation
 
-Let's take a step back and see how this looks from a more visual "route tree" standpoint. Let's look at the current state" of Remix today, where the full manifest is shipped on initial load.
+Let's take a step back and see how this looks from a more visual "route tree" standpoint. Let's look at the current state of Remix today, where the full manifest is shipped on initial load.
 
 In the below route tree, the red dots represent the actively rendered route, and the white area is the route manifest, which contains all possible routes:
 
@@ -135,7 +135,7 @@ Remix will discover those routes via a `fetch` call to the Remix server and patc
 
 As you can see - this type of "discovery" allows for the route manifest to start small and grow with the user's path through the app, thus allowing your app to scale to any number of routes without incurring a performance hit on the app's initial load.
 
-As mentioned earlier, we've been dog-fooding this on https://shopify.com and we're loving the results. Prior to Fog of War, their route manifest contained **1300 routes** and weighted over **10MB uncompressed**. Once Fog of War was enabled, their initial homepage manifest dropped to just **3 routes** and **1.9Kb uncompressed**.
+As mentioned earlier, we've been dog-fooding this on https://shopify.com and we're loving the results. Prior to Fog of War, their route manifest contained **1300 routes** and weighed over **10MB uncompressed**. Once Fog of War was enabled, their initial homepage manifest dropped to just **3 routes** and **1.9Kb uncompressed**.
 
 We've also deployed this to https://remix.run, dropping the uncompressed size of the initial manifest from **~20Kb** to **~4Kb**.
 

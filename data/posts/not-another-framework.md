@@ -74,7 +74,7 @@ export function loader({ request }) {
 }
 ```
 
-When you learn how to handle requests and send responses in Remix, you're actually learning the Web Fetch API that's in the browser already. The fetch API is also being adopted in emerging edge platforms like CloudFlare workers and Deno. This knowledge transfers!
+When you learn how to handle requests and send responses in Remix, you're actually learning the Web Fetch API that's in the browser already. The fetch API is also being adopted in emerging edge platforms like Cloudflare Workers and Deno. This knowledge transfers!
 
 This philosophy drives several other APIs in Remix, too:
 
@@ -89,6 +89,6 @@ The Remix API is mostly a pile of lifecycle hooks that eventually hand you somet
 
 ## Give Remix a Shot
 
-Web development changes fast. Collecting and purging all of that non-transferable knowledge **is** exhausting. We're confident that your time with Remix will provide transferable knowledge that will influence the rest of your web development career. Give it shot, and let us know how it goes 😁
+Web development changes fast. Collecting and purging all of that non-transferable knowledge **is** exhausting. We're confident that your time with Remix will provide transferable knowledge that will influence the rest of your web development career. Give it a shot, and let us know how it goes 😁
 
 [The quick start tutorial](/tutorials/blog) is a great place to start!

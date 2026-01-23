@@ -13,7 +13,7 @@ At Remix, we know first-hand just how painful it can be to go through a major ve
 
 ## Status Quo
 
-Every[^1] framework (or library) out there will _at some point_ have to introduce a breaking change. Something that will cause your code _as it's written today_ to break on the new version. This could result in a build-time (or even worse, a run-time) error. But these changes are good! It's how our frameworks evolve, get faster, adopt new platform features, implement community-driven feature requests, and so-on.
+Every[^1] framework (or library) out there will _at some point_ have to introduce a breaking change. Something that will cause your code _as it's written today_ to break on the new version. This could result in a build-time (or even worse, a run-time) error. But these changes are good! It's how our frameworks evolve, get faster, adopt new platform features, implement community-driven feature requests, and so on.
 
 Out of this inherent need for breaking changes came the [Semantic Versioning][semver] (SemVer) specification which defines that breaking changes dictate a new _major_ release version. This is great because it lets application developers know when they should expect their code to require changes on an upgrade, versus when they should expect the upgrade to "just work". Remember though, you should always be reading the release notes and not just blindly upgrading 😉.
 
@@ -27,7 +27,7 @@ Conveniently enough, the same day I started writing this article, `@devagrawal09
 
 It's clear from the thread that folks have varying interpretations of "major rewrites," and that frameworks have done this with varying degrees of success over the years. Part of why things are not cut-and-dry here is that while SemVer gives us a way to communicate _when_ breaking changes exist - we do not have a similar agreed-upon process of _how_ to introduce breaking changes in our frameworks and communicate them to application developers.
 
-Generally speaking the minimal bar for a major SemVer release is a set of release notes which outline the breaking changes in the major release. Ideally these also include instructions on how to go about changing your code to adopt the breaking changes. But that's really it - beyond that there's very little standardization around how to best prepare and help your users adopt breaking changes across major releases.
+Generally speaking, the minimal bar for a major SemVer release is a set of release notes which outline the breaking changes in the major release. Ideally these also include instructions on how to go about changing your code to adopt the breaking changes. But that's really it - beyond that there's very little standardization around how to best prepare and help your users adopt breaking changes across major releases.
 
 For that reason, we've seen a variety of different approaches over the years, including but not limited to:
 
@@ -41,7 +41,7 @@ These long-lived feature branches also tend to be very slow to move along. Our s
 
 ## Feature Branches
 
-If we look at the how some of the above approaches play out for the application developers, we often see that they all involve some form of a long-lived feature branch which incurs the downsides mentioned above. In all cases, the lifetime of the feature branch is dictated by the number of breaking changes, but even with only a few breaking changes - it can take a bit of time to address those changes in a large codebase.
+If we look at how some of the above approaches play out for the application developers, we often see that they all involve some form of a long-lived feature branch which incurs the downsides mentioned above. In all cases, the lifetime of the feature branch is dictated by the number of breaking changes, but even with only a few breaking changes - it can take a bit of time to address those changes in a large codebase.
 
 **Migration Guides** are generally followed and implemented in a feature branch.
 
@@ -49,7 +49,7 @@ If we look at the how some of the above approaches play out for the application 
 
 <figcaption class="my-2">Long-lived feature branch for a migration guide</figcaption>
 
-**Preparation Versions** tend to split the work into 2 feature branches - one to upgrade to the preparation version and another for the major version. This is a marginally better approach, but these individual branches still comes with the same downsides.
+**Preparation Versions** tend to split the work into 2 feature branches - one to upgrade to the preparation version and another for the major version. This is a marginally better approach, but these individual branches still come with the same downsides.
 
 <img alt="Diagram of 2 shorter-lived feature branches for implementing the changes from a preparation version" src="/blog-images/posts/future-flags/prep-version.png" class="border rounded-md p-3 shadow" />
 
@@ -78,7 +78,7 @@ At Remix, our goal introducing breaking changes in major versions is two-fold:
 1. _Eliminate_ the need for a long-lived feature branch
 2. Let you opt-into breaking changes _for the next version_ individually _as they are released in the current version_
 
-Said another way, most approaches we've seen try to give you an off-ramp from v1 to v2 _after v2 is released_. Instead, Remix aims to provide you a bunch of small on-ramps to _eventual_ v2 features as they are released _in v1 releases_. If all goes as plan and you stay up to date as new "on ramps" come out, then your code _as it's written today_ will "just work" when you upgrade to a new major version. This effectively makes major version upgrades no more painful than minor version upgrades 🤯.
+Said another way, most approaches we've seen try to give you an off-ramp from v1 to v2 _after v2 is released_. Instead, Remix aims to provide you a bunch of small on-ramps to _eventual_ v2 features as they are released _in v1 releases_. If all goes as planned and you stay up to date as new "on ramps" come out, then your code _as it's written today_ will "just work" when you upgrade to a new major version. This effectively makes major version upgrades no more painful than minor version upgrades 🤯.
 
 <img alt="Diagram of the lack of a feature branches for adopting v2 features via future flags" src="/blog-images/posts/future-flags/future-flags.png" class="border rounded-md p-3 shadow" />
 
@@ -90,7 +90,7 @@ Additionally, by introducing these features _over-time_ in v1 - we provide a muc
 
 <figcaption class="my-2">Features can be adopted gradually throughout the v1 lifetime</figcaption>
 
-We understand this is a lofty goal, and we know it may not work out exactly as we plan all the time, but we're serious about stability and want to makes sure that our process is considering the burden a major version upgrade can put on our application developers.
+We understand this is a lofty goal, and we know it may not work out exactly as we plan all the time, but we're serious about stability and want to make sure that our process is considering the burden a major version upgrade can put on our application developers.
 
 We plan to do this via what we're calling **future flags** in the `remix.config.js` file. Think of these as **feature flags for future features** (now say that 5 times fast 😉). As we implement new features, we always try to do them in a backwards-compatible way. But when we can't and decide a breaking change is warranted, we don't table that feature up for an _eventual_ v2 release. Instead, we add a **future flag** and implement the new feature alongside the current behavior in a v1 minor release. This allows users to start using the feature, providing feedback, and reporting bugs _immediately_.
 
@@ -131,7 +131,7 @@ Here's a list of the current flags in Remix v1 today:
 
 We're in the process of preparing for our v2 release, so all `future.unstable_` flags are being stabilized into `future.v2_` flags (except for those which are not breaking changes, like PostCSS/Tailwind/Vanilla Extract support). This includes adding deprecation warnings for apps still using the old way. Once we stabilize them all we'll do a final Remix 1.15.0 release and let that run for a bit to give folks time to opt into any flags they haven't yet added. Then we'll plan to release Remix 2.0.0 and start working on releasing flag-driven Remix v3 features.
 
-In the future, check out the [docs][future-flags-docs] on this strategy for an up -to-date listing of active future flags.
+In the future, check out the [docs][future-flags-docs] on this strategy for an up-to-date listing of active future flags.
 
 [future-flags-docs]: https://remix.run/docs/en/main/pages/api-development-strategy
 [semver]: https://semver.org/

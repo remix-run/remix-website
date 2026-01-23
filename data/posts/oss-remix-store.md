@@ -77,7 +77,7 @@ So [dig in][remix-store-github]!
 
 ## What it takes to launch a store
 
-In this section I want to give a bit of the store's history and share a what I learned running a mini business inside of a company.
+In this section I want to give a bit of the store's history and share what I learned running a mini business inside of a company.
 
 ### Using Shopify
 
