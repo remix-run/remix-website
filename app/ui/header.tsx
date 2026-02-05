@@ -1,9 +1,9 @@
+import { href, useNavigate } from "react-router";
 import { NavLink } from "~/ui/link";
 import { Wordmark } from "~/ui/logo";
 import { DetailsMenu, DetailsPopup } from "~/ui/details-menu";
 import cx from "clsx";
 import iconsHref from "~/icons.svg";
-import { href, useNavigate } from "react-router";
 
 export function Header({
   to = "/",
