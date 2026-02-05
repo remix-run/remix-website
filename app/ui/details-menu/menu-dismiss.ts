@@ -18,6 +18,12 @@ class MenuDismissEvent extends Event {
   }
 }
 
+/**
+ * Dismisses an open `<details>` menu when the user clicks outside, focuses
+ * outside, or presses Escape. Replaces the old React-based approach that used
+ * coordinated `clickRef`/`focusRef` flags with manual document-level event
+ * listeners inside a `useEffect`.
+ */
 function MenuDismiss(handle: Interaction) {
   if (!(handle.target instanceof HTMLDetailsElement)) return;
 
