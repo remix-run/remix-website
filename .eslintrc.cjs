@@ -43,6 +43,9 @@ module.exports = {
         "prettier",
       ],
       plugins: ["@typescript-eslint"],
+      rules: {
+        "react/display-name": "off",
+      },
     },
   ],
 };

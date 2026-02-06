@@ -35,11 +35,7 @@ export function Document() {
         <link rel="icon" href="/favicon-128.png" sizes="128x128" />
         <link rel="icon" href="/favicon-180.png" sizes="180x180" />
         <link rel="icon" href="/favicon-192.png" sizes="192x192" />
-        <link
-          rel="apple-touch-icon"
-          href="/favicon-180.png"
-          sizes="180x180"
-        />
+        <link rel="apple-touch-icon" href="/favicon-180.png" sizes="180x180" />
 
         {/* Font preloads */}
         <link
@@ -67,11 +63,7 @@ export function Document() {
         <link rel="stylesheet" href="/app/styles/marketing.css" />
 
         {/* RSS */}
-        <link
-          rel="alternate"
-          type="application/rss+xml"
-          href="/blog/rss.xml"
-        />
+        <link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" />
 
         {/* Dark-mode detection (mirrors root.tsx ColorSchemeScript) */}
         <script
@@ -79,7 +71,7 @@ export function Document() {
         />
       </head>
 
-      <body class="flex min-h-screen w-full flex-col overflow-x-hidden antialiased selection:bg-blue-200 selection:text-black dark:selection:bg-blue-800 dark:selection:text-white bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200">
+      <body class="flex min-h-screen w-full flex-col overflow-x-hidden bg-white text-gray-900 antialiased selection:bg-blue-200 selection:text-black dark:bg-gray-900 dark:text-gray-200 dark:selection:bg-blue-800 dark:selection:text-white">
         {children}
       </body>
     </html>
