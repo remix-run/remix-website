@@ -22,11 +22,13 @@ const viteDevServer =
         }),
       );
 
+// Variable import path so TypeScript doesn't try to resolve the build
+// output at typecheck time (it only exists after `pnpm run build`).
+const serverBuildPath = "./build/server/index.js";
 const build = viteDevServer
   ? () => viteDevServer.ssrLoadModule("virtual:react-router/server-build")
-  : await import("./build/server/index.js");
+  : await import(serverBuildPath);
 
-// @ts-expect-error - build types don't perfectly match ServerBuild
 const handleRequest = createRequestHandler(build, process.env.NODE_ENV);
 
 // Simple rate limiter middleware (replaces express-rate-limit)
