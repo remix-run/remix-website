@@ -107,7 +107,7 @@ const DropdownProvider_: React.FC<DropdownProviderProps> = ({
   // keyboard navigation is still possible.
   React.useEffect(() => {
     if (state.isExpanded) {
-      // @ts-ignore
+      // @ts-expect-error - window.__REACH_DISABLE_TOOLTIPS is not typed
       window.__REACH_DISABLE_TOOLTIPS = true;
       window.requestAnimationFrame(() => {
         dropdownRef.current?.focus();
@@ -116,7 +116,7 @@ const DropdownProvider_: React.FC<DropdownProviderProps> = ({
       // We want to ignore the immediate focus of a tooltip so it doesn't pop up
       // again when the dropdown closes, only pops up when focus returns again
       // to the tooltip (like native OS tooltips).
-      // @ts-ignore
+      // @ts-expect-error - window.__REACH_DISABLE_TOOLTIPS is not typed
       window.__REACH_DISABLE_TOOLTIPS = false;
     }
   }, [state.isExpanded]);

@@ -56,6 +56,8 @@ jobs:
 
       - name: 🎭 Run Playwright tests
         run: pnpm test:e2e
+        env:
+          PUBLIC_STOREFRONT_API_TOKEN: ${{ secrets.PUBLIC_STOREFRONT_API_TOKEN }}
 
       - name: 📤 Upload test results
         uses: actions/upload-artifact@v4
