@@ -22,11 +22,11 @@ const viteDevServer =
         }),
       );
 
-//
 const build = viteDevServer
   ? () => viteDevServer.ssrLoadModule("virtual:react-router/server-build")
   : await import("./build/server/index.js");
-// @ts-expect-error - Vite's ssrLoadModule returns Record<string, any>, not ServerBuild
+
+// @ts-expect-error - build types don't perfectly match ServerBuild
 const handleRequest = createRequestHandler(build, process.env.NODE_ENV);
 
 // Simple rate limiter middleware (replaces express-rate-limit)
