@@ -1,6 +1,6 @@
 {
   "include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
-  "exclude": ["node_modules", "references"],
+  "exclude": ["node_modules", "references", "app/remix"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": [
