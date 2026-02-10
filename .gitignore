@@ -13,4 +13,10 @@ yalc.lock
 **/gh-docs/__fixture__/tar.tgz
 /NOTES.md
 
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 .cursor/
