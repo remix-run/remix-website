@@ -1,8 +1,11 @@
+/** @jsxImportSource remix/component */
 import type { RemixNode } from "remix/component/jsx-runtime";
 
 interface DocumentProps {
   title: string;
+  description?: string;
   noIndex?: boolean;
+  head?: RemixNode;
   children?: RemixNode;
 }
 
@@ -18,7 +21,7 @@ interface DocumentProps {
  *   Production asset paths are TBD (see plan: asset-strategy).
  */
 export function Document() {
-  return ({ title, noIndex, children }: DocumentProps) => (
+  return ({ title, description, noIndex, head, children }: DocumentProps) => (
     <html lang="en">
       <head>
         <meta charset="utf-8" />
@@ -28,6 +31,7 @@ export function Document() {
         />
         <meta name="theme-color" content="#121212" />
         {noIndex ? <meta name="robots" content="noindex" /> : null}
+        {description ? <meta name="description" content={description} /> : null}
         <title>{title}</title>
 
         {/* Favicons */}
@@ -69,6 +73,9 @@ export function Document() {
         <script
           innerHTML={`let m=window.matchMedia("(prefers-color-scheme: dark)");if(m.matches)document.documentElement.classList.add("dark");`}
         />
+
+        {/* Route-specific head elements */}
+        {head}
       </head>
 
       <body class="flex min-h-screen w-full flex-col overflow-x-hidden bg-white text-gray-900 antialiased selection:bg-blue-200 selection:text-black dark:bg-gray-900 dark:text-gray-200 dark:selection:bg-blue-800 dark:selection:text-white">

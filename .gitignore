@@ -1,21 +1,12 @@
 .DS_Store
 node_modules
-/.cache
+.pnpm-store
 /build
-/public/build
 /coverage
 /.env
-/.yalc
-yalc.lock
 /.local.tgz
 .react-router/
-
-**/gh-docs/__fixture__/tar.tgz
 /NOTES.md
-
-.cursor/
-
-/references
 
 # Playwright
 /test-results/

@@ -1,3 +1,4 @@
+/** @jsxImportSource remix/component */
 import { renderToString } from "remix/component/server";
 import { Document } from "./document";
 

@@ -19,6 +19,7 @@
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "lint:fix": "npm run lint -- --fix",
     "test": "vitest",
+    "pretest:e2e": "playwright install chromium",
     "test:e2e": "playwright test",
     "typecheck": "react-router typegen && tsc"
   },
