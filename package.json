@@ -18,6 +18,8 @@
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "lint:fix": "npm run lint -- --fix",
     "test": "vitest",
+    "pretest:e2e": "playwright install chromium",
+    "test:e2e": "playwright test",
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
@@ -66,6 +68,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@react-router/dev": "7.12.0",
     "@react-router/fs-routes": "7.12.0",
     "@testing-library/jest-dom": "^6.9.1",
