@@ -1,16 +1,9 @@
 import { createPortal } from "react-dom";
 import type { DocSearchProps } from "@docsearch/react";
-import { useDocSearchKeyboardEvents } from "@docsearch/react/dist/esm/useDocSearchKeyboardEvents";
+import { useDocSearchKeyboardEvents } from "@docsearch/react";
 import "@docsearch/css/dist/style.css";
 import "~/styles/docsearch.css";
-import { useHydrated } from "./primitives/utils";
-import { Suspense, lazy, useCallback, useState } from "react";
-
-const OriginalDocSearch = lazy(() =>
-  import("@docsearch/react").then((module) => ({
-    default: module.DocSearch,
-  })),
-);
+import { Suspense, createRef, lazy, useCallback, useState } from "react";
 
 let OriginalDocSearchModal = lazy(() =>
   import("@docsearch/react").then((module) => ({
@@ -46,6 +39,8 @@ export function DocSearchModal() {
     isOpen,
     onOpen,
     onClose,
+    // This is silly, but whatever
+    searchButtonRef: createRef<HTMLButtonElement>(),
   });
 
   if (isOpen) {
