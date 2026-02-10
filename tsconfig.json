@@ -1,7 +1,15 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".react-router/types/**/*"
+  ],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
     "types": [
       "@react-router/node",
       "vite/client",
@@ -17,13 +25,23 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": [
+        "./app/*"
+      ]
     },
     "noEmit": true,
     "baseUrl": ".",
     "allowJs": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "rootDirs": [".", "./.react-router/types"]
-  }
+    "rootDirs": [
+      ".",
+      "./.react-router/types"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "references",
+    "app/remix"
+  ]
 }
