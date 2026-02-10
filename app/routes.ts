@@ -9,7 +9,7 @@ export default [
     route("newsletter", "routes/marketing/newsletter.tsx"),
     route("blog", "routes/marketing/blog-index.tsx"),
     route("blog/:slug", "routes/marketing/blog-post.tsx"),
-    route("blog/rss.xml", "routes/resources/blog-rss.tsx"),
+    // blog/rss.xml is now handled by fetch-router (app/remix/routes/blog-rss.ts)
   ]),
 
   route("jam", "routes/jam/pages/layout.tsx", [

@@ -1,10 +1,9 @@
-import type { LoaderFunction } from "react-router";
-import { getBlogPostListings } from "~/lib/blog.server";
+import { getBlogPostListings } from "../../lib/blog.server";
 import { Feed } from "feed";
-import { CACHE_CONTROL } from "~/lib/http.server";
+import { CACHE_CONTROL } from "../../lib/cache-control";
 
-export const loader: LoaderFunction = async () => {
-  const blogUrl = `https://remix.run/blog`;
+export default async function handler() {
+  const blogUrl = "https://remix.run/blog";
   const posts = await getBlogPostListings();
 
   const feed = new Feed({
@@ -36,4 +35,4 @@ export const loader: LoaderFunction = async () => {
       "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
   });
-};
+}

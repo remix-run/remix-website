@@ -143,6 +143,11 @@ router.map("/healthcheck", async (context) => {
   return mod.default(context);
 });
 
+router.map("/blog/rss.xml", async () => {
+  const mod = await loadRemixModule("./app/remix/routes/blog-rss.ts");
+  return mod.default();
+});
+
 // All remaining requests are handled by React Router
 router.map("*", (context) => handleRequest(context.request));
 
