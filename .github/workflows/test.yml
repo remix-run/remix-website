@@ -17,16 +17,20 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
 
       - name: 📥 Install deps
-        uses: bahmutov/npm-install@v1
+        run: pnpm install --frozen-lockfile
 
       - name: ⚡ Run vitest
-        run: npm run test -- --coverage
+        run: pnpm test -- --coverage
 
   e2e:
     name: 🎭 Playwright
@@ -35,19 +39,23 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
 
       - name: 📥 Install deps
-        uses: bahmutov/npm-install@v1
+        run: pnpm install --frozen-lockfile
 
       - name: 🎭 Install Playwright browsers
-        run: npm exec playwright install chromium
+        run: pnpm exec playwright install chromium
 
       - name: 🎭 Run Playwright tests
-        run: npm run test:e2e
+        run: pnpm test:e2e
         env:
           PUBLIC_STOREFRONT_API_TOKEN: ${{ secrets.PUBLIC_STOREFRONT_API_TOKEN }}
 
