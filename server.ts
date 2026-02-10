@@ -13,14 +13,21 @@ import sourceMapSupport from "source-map-support";
 
 sourceMapSupport.install();
 
-const viteDevServer =
-  process.env.NODE_ENV === "production"
-    ? undefined
-    : await import("vite").then((vite) =>
-        vite.createServer({
-          server: { middlewareMode: true },
-        }),
-      );
+const isProduction = process.env.NODE_ENV === "production";
+const port = Number(process.env.PORT ?? 3000);
+if (!Number.isFinite(port) || port <= 0) {
+  throw new Error(
+    `Invalid PORT value "${process.env.PORT ?? ""}". Expected a positive number.`,
+  );
+}
+
+const viteDevServer = isProduction
+  ? undefined
+  : await import("vite").then((vite) =>
+      vite.createServer({
+        server: { middlewareMode: true },
+      }),
+    );
 
 // Variable import path so TypeScript doesn't try to resolve the build
 // output at typecheck time (it only exists after `pnpm run build`).
@@ -31,9 +38,16 @@ const build = viteDevServer
 
 const handleRequest = createRequestHandler(build, process.env.NODE_ENV);
 
+function shouldSkipRateLimit(pathname: string) {
+  return (
+    pathname === "/healthcheck" ||
+    pathname === "/__manifest" ||
+    pathname.startsWith("/__manifest/")
+  );
+}
+
 const router = createRouter({
   middleware: [
-    rateLimit({ windowMs: 2 * 60 * 1000, max: 1000 }),
     compression(),
     // In dev, Vite serves static files via its own middleware.
     // In production, serve static files with appropriate caching.
@@ -49,6 +63,11 @@ const router = createRouter({
             cacheControl: "public, max-age=3600",
           }),
         ]),
+    rateLimit({
+      windowMs: 2 * 60 * 1000,
+      max: 1000,
+      skip: (context) => shouldSkipRateLimit(context.url.pathname),
+    }),
     filteredLogger(),
   ],
 });
@@ -56,7 +75,37 @@ const router = createRouter({
 // All requests are handled by React Router (Remix 3 routes added in later PRs)
 router.map("*", (context) => handleRequest(context.request));
 
-const port = process.env.PORT || 3000;
+async function handleNodeRequest(
+  req: http.IncomingMessage,
+  res: http.ServerResponse,
+) {
+  const request = createRequest(req, res);
+  const response = await router.fetch(request);
+  await sendResponse(res, response);
+}
+
+function installShutdownHandlers(server: http.Server) {
+  const shutdown = (signal: NodeJS.Signals) => {
+    console.log(`${signal} received, shutting down HTTP server...`);
+    const forceExitTimer = setTimeout(() => {
+      console.error("Timed out waiting for HTTP server to close");
+      process.exit(1);
+    }, 10_000);
+    forceExitTimer.unref();
+
+    server.close((error) => {
+      clearTimeout(forceExitTimer);
+      if (error) {
+        console.error("Error while closing HTTP server", error);
+        process.exit(1);
+      }
+      process.exit(0);
+    });
+  };
+
+  process.once("SIGINT", () => shutdown("SIGINT"));
+  process.once("SIGTERM", () => shutdown("SIGTERM"));
+}
 
 if (viteDevServer) {
   // In development, Vite's connect middleware handles HMR, module
@@ -65,9 +114,7 @@ if (viteDevServer) {
   const server = http.createServer((req, res) => {
     viteDevServer.middlewares(req, res, async () => {
       try {
-        const request = createRequest(req, res);
-        const response = await router.fetch(request);
-        await sendResponse(res, response);
+        await handleNodeRequest(req, res);
       } catch (error) {
         viteDevServer.ssrFixStacktrace(error as Error);
         console.error(error);
@@ -84,6 +131,7 @@ if (viteDevServer) {
       `Dev server listening on port ${port} (http://localhost:${port})`,
     );
   });
+  installShutdownHandlers(server);
 } else {
   // In production, all requests go through the fetch-based router.
   const server = http.createServer(
@@ -93,4 +141,5 @@ if (viteDevServer) {
   server.listen(port, () => {
     console.log(`Server listening on port ${port} (http://localhost:${port})`);
   });
+  installShutdownHandlers(server);
 }

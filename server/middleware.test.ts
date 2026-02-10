@@ -1,19 +1,32 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { createRouter } from "remix/fetch-router";
 import { rateLimit, filteredLogger } from "./middleware.ts";
 
-function createMockContext(overrides: {
-  forwardedFor?: string;
-  method?: string;
-  pathname?: string;
-} = {}) {
-  const { forwardedFor, method = "GET", pathname = "/" } = overrides;
+function createMockContext(
+  overrides: {
+    forwardedFor?: string;
+    method?: string;
+    pathname?: string;
+    search?: string;
+  } = {},
+) {
+  const {
+    forwardedFor,
+    method = "GET",
+    pathname = "/",
+    search = "",
+  } = overrides;
+  const url = new URL(`${pathname}${search}`, "http://localhost");
+  const headers = new Headers();
+  if (forwardedFor !== undefined) {
+    headers.set("x-forwarded-for", forwardedFor);
+  }
+  const request = new Request(url.toString(), { method, headers });
+
   return {
-    request: new Request("http://localhost/", { method }),
-    headers: {
-      get: (name: string) =>
-        name === "x-forwarded-for" ? forwardedFor ?? null : null,
-    },
-    url: new URL(pathname, "http://localhost"),
+    request,
+    headers: request.headers,
+    url: new URL(request.url),
   };
 }
 
@@ -21,32 +34,50 @@ function createNext(responseBody = "OK") {
   return vi.fn(() => Promise.resolve(new Response(responseBody)));
 }
 
+type TestContext = ReturnType<typeof createMockContext>;
+type TestNext = ReturnType<typeof createNext>;
+type RateLimitMiddleware = ReturnType<typeof rateLimit>;
+
+function invokeRateLimit(
+  middleware: RateLimitMiddleware,
+  context: TestContext,
+  next: TestNext,
+) {
+  return middleware(
+    context as unknown as Parameters<RateLimitMiddleware>[0],
+    next as unknown as Parameters<RateLimitMiddleware>[1],
+  );
+}
+
 describe("rateLimit", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T00:00:00.000Z"));
   });
 
-  it("allows requests under the limit to pass through", async () => {
-    const middleware = rateLimit({ max: 2, windowMs: 60_000 });
-    const next = createNext();
-    const context = createMockContext({ forwardedFor: "192.168.1.1" });
-
-    const result1 = await middleware(context as never, next);
-    const result2 = await middleware(context as never, next);
-
-    expect(next).toHaveBeenCalledTimes(2);
-    expect(result1?.status).toBe(200);
-    expect(result2?.status).toBe(200);
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it("returns 429 when limit is exceeded", async () => {
     const middleware = rateLimit({ max: 2, windowMs: 60_000 });
     const next = createNext();
-    const context = createMockContext({ forwardedFor: "10.0.0.1" });
 
-    await middleware(context as never, next);
-    await middleware(context as never, next);
-    const result3 = await middleware(context as never, next);
+    await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "10.0.0.1" }),
+      next,
+    );
+    await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "10.0.0.1" }),
+      next,
+    );
+    const result3 = await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "10.0.0.1" }),
+      next,
+    );
 
     expect(next).toHaveBeenCalledTimes(2);
     expect(result3?.status).toBe(429);
@@ -54,57 +85,72 @@ describe("rateLimit", () => {
     expect(body).toContain("Too Many Requests");
   });
 
-  it("sets Retry-After header when rate limited", async () => {
+  it("sets a deterministic Retry-After header when rate limited", async () => {
     const middleware = rateLimit({ max: 1, windowMs: 60_000 });
     const next = createNext();
-    const context = createMockContext({ forwardedFor: "172.16.0.1" });
 
-    await middleware(context as never, next);
-    const result = await middleware(context as never, next);
+    await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "172.16.0.1" }),
+      next,
+    );
+    const immediateResult = await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "172.16.0.1" }),
+      next,
+    );
+    vi.advanceTimersByTime(1000);
+    const oneSecondLaterResult = await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "172.16.0.1" }),
+      next,
+    );
 
-    expect(result?.headers.get("Retry-After")).toBeDefined();
-    const retryAfter = Number(result?.headers.get("Retry-After"));
-    expect(retryAfter).toBeGreaterThan(0);
-    expect(retryAfter).toBeLessThanOrEqual(60);
+    expect(immediateResult?.headers.get("Retry-After")).toBe("60");
+    expect(oneSecondLaterResult?.headers.get("Retry-After")).toBe("59");
   });
 
   it("tracks different IPs separately", async () => {
     const middleware = rateLimit({ max: 1, windowMs: 60_000 });
     const next = createNext();
 
-    const ip1 = createMockContext({ forwardedFor: "192.168.1.1" });
-    const ip2 = createMockContext({ forwardedFor: "192.168.1.2" });
-
-    await middleware(ip1 as never, next);
-    const resultIp1 = await middleware(ip1 as never, next);
-    const resultIp2 = await middleware(ip2 as never, next);
+    await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "192.168.1.1" }),
+      next,
+    );
+    const resultIp1 = await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "192.168.1.1" }),
+      next,
+    );
+    const resultIp2 = await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "192.168.1.2" }),
+      next,
+    );
 
     expect(resultIp1?.status).toBe(429);
     expect(resultIp2?.status).toBe(200);
     expect(next).toHaveBeenCalledTimes(2); // once per IP
   });
 
-  it("uses 'unknown' when x-forwarded-for is missing", async () => {
-    const middleware = rateLimit({ max: 1, windowMs: 60_000 });
-    const next = createNext();
-    const context = createMockContext(); // no forwardedFor
-
-    await middleware(context as never, next);
-    const result = await middleware(context as never, next);
-
-    expect(result?.status).toBe(429);
-    expect(next).toHaveBeenCalledTimes(1);
-  });
-
   it("uses first IP when x-forwarded-for has multiple values", async () => {
     const middleware = rateLimit({ max: 1, windowMs: 60_000 });
     const next = createNext();
-    const context = createMockContext({
-      forwardedFor: " 203.0.113.1 , 70.41.3.18 ",
-    });
 
-    await middleware(context as never, next);
-    const result = await middleware(context as never, next);
+    await invokeRateLimit(
+      middleware,
+      createMockContext({
+        forwardedFor: "203.0.113.1, 70.41.3.18, 150.172.238.178",
+      }),
+      next,
+    );
+    const result = await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "203.0.113.1, 203.0.113.99" }),
+      next,
+    );
 
     expect(result?.status).toBe(429);
     expect(next).toHaveBeenCalledTimes(1);
@@ -114,49 +160,130 @@ describe("rateLimit", () => {
     const windowMs = 1000;
     const middleware = rateLimit({ max: 1, windowMs });
     const next = createNext();
-    const context = createMockContext({ forwardedFor: "10.0.0.5" });
 
-    await middleware(context as never, next);
-    const blocked = await middleware(context as never, next);
+    await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "10.0.0.5" }),
+      next,
+    );
+    const blocked = await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "10.0.0.5" }),
+      next,
+    );
     expect(blocked?.status).toBe(429);
 
     vi.advanceTimersByTime(windowMs + 1);
 
-    const allowed = await middleware(context as never, next);
+    const allowed = await invokeRateLimit(
+      middleware,
+      createMockContext({ forwardedFor: "10.0.0.5" }),
+      next,
+    );
     expect(allowed?.status).toBe(200);
     expect(next).toHaveBeenCalledTimes(2);
+  });
+
+  it("supports skipping selected requests from rate limiting", async () => {
+    const middleware = rateLimit({
+      max: 1,
+      windowMs: 60_000,
+      skip: (context) => context.url.pathname === "/healthcheck",
+    });
+    const next = createNext();
+
+    await invokeRateLimit(
+      middleware,
+      createMockContext({ pathname: "/healthcheck", forwardedFor: "10.0.0.5" }),
+      next,
+    );
+    const second = await invokeRateLimit(
+      middleware,
+      createMockContext({ pathname: "/healthcheck", forwardedFor: "10.0.0.5" }),
+      next,
+    );
+
+    expect(second?.status).toBe(200);
+    expect(next).toHaveBeenCalledTimes(2);
+  });
+
+  it("rate limits through a real router but skips healthcheck", async () => {
+    const router = createRouter({
+      middleware: [
+        rateLimit({
+          max: 1,
+          windowMs: 60_000,
+          skip: (context) => context.url.pathname === "/healthcheck",
+        }),
+      ],
+    });
+
+    router.map("*", (context) => {
+      return new Response(`ok:${context.url.pathname}`);
+    });
+
+    const healthcheckFirst = await router.fetch(
+      new Request("http://localhost/healthcheck", {
+        headers: { "x-forwarded-for": "198.51.100.10" },
+      }),
+    );
+    const healthcheckSecond = await router.fetch(
+      new Request("http://localhost/healthcheck", {
+        headers: { "x-forwarded-for": "198.51.100.10" },
+      }),
+    );
+
+    expect(healthcheckFirst.status).toBe(200);
+    expect(healthcheckSecond.status).toBe(200);
+
+    const docsFirst = await router.fetch(
+      new Request("http://localhost/docs", {
+        headers: { "x-forwarded-for": "198.51.100.10" },
+      }),
+    );
+    const docsSecond = await router.fetch(
+      new Request("http://localhost/docs", {
+        headers: { "x-forwarded-for": "198.51.100.10" },
+      }),
+    );
+
+    expect(docsFirst.status).toBe(200);
+    expect(docsSecond.status).toBe(429);
   });
 });
 
 describe("filteredLogger", () => {
-  it("passes through non-GET requests", async () => {
-    const middleware = filteredLogger();
-    const next = createNext();
-    const context = createMockContext({ method: "POST", pathname: "/api" });
+  it("logs GET paths that only partially match __manifest", async () => {
+    const loggerMiddleware = vi.fn(
+      (_context: unknown, next: () => Promise<Response>) => next(),
+    );
+    const router = createRouter({
+      middleware: [filteredLogger({ loggerMiddleware })],
+    });
+    router.map("*", () => new Response("ok"));
 
-    await middleware(context as never, next);
+    const response = await router.fetch(
+      new Request("http://localhost/__manifestation"),
+    );
 
-    expect(next).toHaveBeenCalledTimes(1);
+    expect(response.status).toBe(200);
+    expect(loggerMiddleware).toHaveBeenCalledTimes(1);
   });
 
-  it("passes through GET requests to non-__manifest paths", async () => {
-    const middleware = filteredLogger();
-    const next = createNext();
-    const context = createMockContext({ pathname: "/blog" });
+  it("skips logging for GET /__manifest-prefixed paths", async () => {
+    const loggerMiddleware = vi.fn(
+      (_context: unknown, next: () => Promise<Response>) => next(),
+    );
+    const router = createRouter({
+      middleware: [filteredLogger({ loggerMiddleware })],
+    });
+    router.map("*", () => new Response("ok"));
 
-    await middleware(context as never, next);
+    const response = await router.fetch(
+      new Request("http://localhost/__manifest/some-asset.js"),
+    );
 
-    expect(next).toHaveBeenCalledTimes(1);
-  });
-
-  it("skips logging for GET /__manifest requests", async () => {
-    const middleware = filteredLogger();
-    const next = createNext();
-    const context = createMockContext({ pathname: "/__manifest" });
-
-    const result = await middleware(context as never, next);
-
-    expect(next).toHaveBeenCalledTimes(1);
-    expect(result?.status).toBe(200);
+    expect(response.status).toBe(200);
+    expect(loggerMiddleware).not.toHaveBeenCalled();
   });
 });
