@@ -1,20 +1,10 @@
 import { redirect } from "react-router";
 import redirectsFileContents from "../../_redirects?raw";
 
-export const CACHE_CONTROL = {
-  /**
-   * Keep it in the browser (and CDN) for 5 minutes so when they click
-   * back/forward/etc. it's super fast. SWR for 1 week on CDN so it stays fast,
-   * but people get typos/fixes and stuff too.
-   */
-  DEFAULT: "max-age=300, stale-while-revalidate=604800",
-  /**
-   * Keep it in the browser (and CDN) for 1 day, we won't be updating these as
-   * often until the conf is a bit closer, and we can prevent over-fetching from
-   * Sessionize which is pretty slow.
-   */
-  conf: `max-age=${60 * 60 * 24}, stale-while-revalidate=604800`,
-};
+// Re-export from the standalone module so existing consumers aren't affected.
+// Remix 3 routes should import directly from ~/lib/cache-control to avoid
+// pulling in react-router (and its global JSX types) transitively.
+export { CACHE_CONTROL } from "./cache-control";
 
 export function requirePost(request: Request) {
   if (request.method.toLowerCase() !== "post") {

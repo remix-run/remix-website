@@ -34,4 +34,18 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/ban-types": "off",
   },
+  overrides: [
+    {
+      files: ["app/remix/**"],
+      extends: [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
+      ],
+      plugins: ["@typescript-eslint"],
+      rules: {
+        "react/display-name": "off",
+      },
+    },
+  ],
 };

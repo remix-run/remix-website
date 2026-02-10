@@ -9,7 +9,6 @@ export default [
     route("newsletter", "routes/marketing/newsletter.tsx"),
     route("blog", "routes/marketing/blog-index.tsx"),
     route("blog/:slug", "routes/marketing/blog-post.tsx"),
-    route("blog/rss.xml", "routes/resources/blog-rss.tsx"),
   ]),
 
   route("jam", "routes/jam/pages/layout.tsx", [
@@ -25,7 +24,8 @@ export default [
 
   route("img/:slug", "routes/resources/blog-og-image/route.tsx"),
   route("_actions/newsletter", "routes/resources/newsletter-subscribe.tsx"),
-  route("healthcheck", "routes/healthcheck.tsx"),
+
+  // healthcheck is now handled by the fetch-router (app/remix/routes/healthcheck.ts)
 
   route("*", "routes/catchall.tsx"),
 ] satisfies RouteConfig;

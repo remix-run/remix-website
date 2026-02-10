@@ -229,7 +229,7 @@ export async function loadPlugins() {
             ],
           };
 
-          let data = node.data ?? {};
+          let data = (node.data ?? {}) as Record<string, unknown>;
           (node as any).type = "element";
           (node as any).tagName = "div";
           let properties =

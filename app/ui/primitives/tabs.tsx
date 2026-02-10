@@ -460,7 +460,7 @@ const Tab = React.forwardRef(
   (
     {
       // TODO: Remove in 1.0
-      // @ts-ignore
+      // @ts-expect-error - isSelected is not typed
       isSelected: _,
 
       children,

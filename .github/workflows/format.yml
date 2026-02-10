@@ -21,16 +21,20 @@ jobs:
           # checkout using a custom token so that we can push later on
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
 
       - name: 📥 Install deps
-        uses: bahmutov/npm-install@v1
+        run: pnpm install --frozen-lockfile
 
       - name: 💅 Format
-        run: npm run format --if-present
+        run: pnpm run format --if-present
 
       - name: 🗝️ Commit
         run: |
