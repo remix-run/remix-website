@@ -72,7 +72,28 @@ const router = createRouter({
   ],
 });
 
-// All requests are handled by React Router (Remix 3 routes added in later PRs)
+// ---------------------------------------------------------------------------
+// Remix 3 routes (remix/component) — explicit patterns win over the catch-all
+// ---------------------------------------------------------------------------
+async function loadRemixModule(path: string) {
+  if (viteDevServer) {
+    return viteDevServer.ssrLoadModule(path);
+  }
+  // Production: modules will be pre-compiled (TBD — see asset-strategy)
+  return import(path);
+}
+
+router.map("/remix-test", async () => {
+  const mod = await loadRemixModule("./app/remix/test-route.tsx");
+  return mod.default();
+});
+
+router.map("/healthcheck", async (context) => {
+  const mod = await loadRemixModule("./app/remix/routes/healthcheck.ts");
+  return mod.default(context);
+});
+
+// All remaining requests are handled by React Router
 router.map("*", (context) => handleRequest(context.request));
 
 async function handleNodeRequest(
