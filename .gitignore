@@ -13,4 +13,6 @@ yalc.lock
 **/gh-docs/__fixture__/tar.tgz
 /NOTES.md
 
+.pnpm-store
+
 .cursor/

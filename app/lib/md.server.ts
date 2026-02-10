@@ -229,7 +229,11 @@ export async function loadPlugins() {
             ],
           };
 
-          let data = node.data ?? {};
+          interface HastData extends Unist.Data {
+            hProperties?: Record<string, unknown>;
+            hChildren?: unknown[];
+          }
+          let data: HastData = (node.data ?? {}) as HastData;
           (node as any).type = "element";
           (node as any).tagName = "div";
           let properties =
