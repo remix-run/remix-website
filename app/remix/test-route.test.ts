@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 
 describe("remix/component rendering pipeline", () => {
   it("renders the test route to an HTML response", async () => {
-    const { default: handler } = await import("./test-route.tsx");
+    const { default: handler } = await import("./test-route");
     const response = await handler();
 
     expect(response).toBeInstanceOf(Response);

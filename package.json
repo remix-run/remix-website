@@ -50,7 +50,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "remix": "3.0.0-alpha.2",
+    "remix": "github:remix-run/remix#preview/main&path:packages/remix",
     "satori": "^0.10.14",
     "semver": "^7.7.3",
     "shiki": "^0.14.7",
