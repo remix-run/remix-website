@@ -6,6 +6,7 @@ import {
 } from "remix/node-fetch-server";
 import { createRequestHandler } from "react-router";
 import { createRouter } from "remix/fetch-router";
+import { route } from "remix/fetch-router/routes";
 import { compression } from "remix/compression-middleware";
 import { staticFiles } from "remix/static-middleware";
 import { rateLimit, filteredLogger } from "./server/middleware.ts";
@@ -75,6 +76,10 @@ const router = createRouter({
 // ---------------------------------------------------------------------------
 // Remix 3 routes (remix/component) — explicit patterns win over the catch-all
 // ---------------------------------------------------------------------------
+const remixRoutes = route({
+  healthcheck: "/healthcheck",
+});
+
 async function loadRemixModule(path: string) {
   if (viteDevServer) {
     return viteDevServer.ssrLoadModule(path);
@@ -83,15 +88,31 @@ async function loadRemixModule(path: string) {
   return import(path);
 }
 
-router.map("/remix-test", async () => {
-  const mod = await loadRemixModule("./app/remix/test-route.tsx");
-  return mod.default();
+// Keep healthcheck on a stable path during migration so deploy checks never
+// depend on the in-progress Remix route asset strategy.
+router.map(remixRoutes, {
+  healthcheck() {
+    return new Response("OK", {
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "text/plain; charset=utf-8",
+      },
+    });
+  },
 });
 
-router.map("/healthcheck", async (context) => {
-  const mod = await loadRemixModule("./app/remix/routes/healthcheck.ts");
-  return mod.default(context);
-});
+if (viteDevServer) {
+  const devRemixRoutes = route({
+    remixTest: "/remix-test",
+  });
+
+  router.map(devRemixRoutes, {
+    async remixTest() {
+      const mod = await loadRemixModule("./app/remix/test-route.tsx");
+      return mod.default();
+    },
+  });
+}
 
 // All remaining requests are handled by React Router
 router.map("*", (context) => handleRequest(context.request));
@@ -156,7 +177,15 @@ if (viteDevServer) {
 } else {
   // In production, all requests go through the fetch-based router.
   const server = http.createServer(
-    createRequestListener((request) => router.fetch(request)),
+    createRequestListener((request) =>
+      router.fetch(request).catch((error: unknown) => {
+        console.error("Unhandled fetch-router error", error);
+        return new Response("Internal Server Error", {
+          status: 500,
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+        });
+      }),
+    ),
   );
 
   server.listen(port, () => {
