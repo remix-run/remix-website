@@ -20,6 +20,7 @@
       "~/*": ["./app/*"]
     },
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "allowJs": true,
     "isolatedModules": true,
