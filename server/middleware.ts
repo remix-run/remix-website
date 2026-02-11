@@ -37,8 +37,7 @@ export function rateLimit({
       return next();
     }
 
-    const ip =
-      keyGenerator(context)?.trim() || "unknown";
+    const ip = keyGenerator(context)?.trim() || "unknown";
     const now = Date.now();
     requestsSinceCleanup++;
     if (requestsSinceCleanup >= 100) {
@@ -78,7 +77,10 @@ export function filteredLogger({
   loggerMiddleware = baseLogger,
 }: FilteredLoggerOptions = {}): Middleware {
   return (context, next) => {
-    if (context.request.method === "GET" && isManifestPath(context.url.pathname)) {
+    if (
+      context.request.method === "GET" &&
+      isManifestPath(context.url.pathname)
+    ) {
       return next();
     }
     return loggerMiddleware(context, next);
