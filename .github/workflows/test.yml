@@ -56,19 +56,34 @@ jobs:
 
       - name: 🚬 Smoke critical endpoints in preview
         run: |
-          pnpm run preview > /tmp/preview.log 2>&1 &
+          set -euo pipefail
+          pnpm run start > /tmp/preview.log 2>&1 &
           PREVIEW_PID=$!
-          trap 'kill $PREVIEW_PID || true' EXIT
+          trap 'kill "$PREVIEW_PID" 2>/dev/null || true' EXIT
 
-          for i in {1..30}; do
-            if curl -fsS http://localhost:3000/healthcheck > /tmp/healthcheck.out; then
+          for _ in $(seq 1 30); do
+            if curl -fsS http://localhost:3000/healthcheck >/tmp/healthcheck.out; then
               break
+            fi
+            if ! kill -0 "$PREVIEW_PID" 2>/dev/null; then
+              echo "Preview server exited before becoming ready"
+              cat /tmp/preview.log
+              exit 1
             fi
             sleep 1
           done
 
-          curl -fsS http://localhost:3000/healthcheck | rg "^OK$"
-          curl -fsS http://localhost:3000/blog/rss.xml | rg "<rss"
+          if ! curl -fsS http://localhost:3000/healthcheck | grep -qx "OK"; then
+            echo "Unexpected /healthcheck response"
+            cat /tmp/preview.log
+            exit 1
+          fi
+
+          if ! curl -fsS http://localhost:3000/blog/rss.xml | grep -q "<rss"; then
+            echo "Unexpected /blog/rss.xml response"
+            cat /tmp/preview.log
+            exit 1
+          fi
 
   e2e:
     name: 🎭 Playwright
