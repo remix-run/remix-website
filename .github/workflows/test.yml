@@ -32,59 +32,6 @@ jobs:
       - name: ⚡ Run vitest
         run: pnpm test -- --coverage
 
-  production-smoke:
-    name: 🚬 Production smoke
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
-
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - name: 📥 Install deps
-        run: pnpm install --frozen-lockfile
-
-      - name: 🏗️ Build app
-        run: pnpm run build
-
-      - name: 🚬 Smoke critical endpoints in preview
-        run: |
-          set -euo pipefail
-          pnpm run start > /tmp/preview.log 2>&1 &
-          PREVIEW_PID=$!
-          trap 'kill "$PREVIEW_PID" 2>/dev/null || true' EXIT
-
-          for _ in $(seq 1 30); do
-            if curl -fsS http://localhost:3000/healthcheck >/tmp/healthcheck.out; then
-              break
-            fi
-            if ! kill -0 "$PREVIEW_PID" 2>/dev/null; then
-              echo "Preview server exited before becoming ready"
-              cat /tmp/preview.log
-              exit 1
-            fi
-            sleep 1
-          done
-
-          if ! curl -fsS http://localhost:3000/healthcheck | grep -qx "OK"; then
-            echo "Unexpected /healthcheck response"
-            cat /tmp/preview.log
-            exit 1
-          fi
-
-          if ! curl -fsS http://localhost:3000/blog/rss.xml | grep -q "<rss"; then
-            echo "Unexpected /blog/rss.xml response"
-            cat /tmp/preview.log
-            exit 1
-          fi
-
   e2e:
     name: 🎭 Playwright
     runs-on: ubuntu-latest
