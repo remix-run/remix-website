@@ -7,6 +7,7 @@ Both systems run side-by-side in the same server during migration.
 ## Purpose
 
 This document is the migration playbook for:
+
 - route wiring conventions in `server.ts`
 - implementation constraints in `app/remix/`
 - guardrails that keep production stable while migration is in progress
@@ -37,6 +38,7 @@ app/remix/
 ```
 
 Current server wiring behavior:
+
 - `/healthcheck` is handled directly in `server.ts` (stable operational endpoint)
 - `/remix-test` is wired only in development as a Remix smoke test page
 - all remaining routes are handled by React Router via the catch-all
@@ -52,10 +54,12 @@ Current server wiring behavior:
 When a user-facing route is migrated to Remix, keep the equivalent React Router route in `app/routes.ts` until linking pages are also migrated.
 
 Why this is required:
+
 - React Router intercepts client-side `<Link>` navigation.
 - If a route is missing from the React Router manifest, client navigation can resolve through catch-all and produce incorrect behavior.
 
 Expected behavior during migration:
+
 - direct URL access: fetch-router can serve Remix route
 - client-side navigation from React Router pages: React Router serves its route module
 - links from Remix pages using plain `<a>`: full reload, then fetch-router serves Remix route
@@ -102,9 +106,7 @@ import { Document } from "../document";
 
 export default async function handler() {
   const html = await renderToString(
-    <Document title="Page Title">
-      {/* page content */}
-    </Document>,
+    <Document title="Page Title">{/* page content */}</Document>,
   );
 
   return new Response("<!DOCTYPE html>" + html, {
@@ -139,6 +141,7 @@ Current preferred pattern in this repo:
 ### HTML attributes
 
 `remix/component` uses HTML attributes, not React camelCase:
+
 - `class` not `className`
 - `innerHTML` not `dangerouslySetInnerHTML`
 - `fill-rule` not `fillRule`
@@ -172,10 +175,12 @@ Before opening a PR that changes `app/remix/` or fetch-router mappings:
 ## Migration status (living section)
 
 In progress:
+
 - `app/remix/` scaffolding (`document.tsx`, isolated tsconfig, smoke-test route)
 - server route map wiring pattern using fetch-router `route(...)`
 
 Not yet fully migrated:
+
 - user-facing Remix route modules wired in production
 - client asset/precompile strategy for production Remix route imports
 - blog pages (`/blog`, `/blog/:slug`)
