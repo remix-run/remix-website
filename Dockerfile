@@ -1,16 +1,13 @@
 # base node image
 FROM node:24-bullseye-slim as base
 
-# set for base and all layer that inherit from it
-ENV NODE_ENV production
-
 # Install all node_modules, including dev
 FROM base as deps
 
 WORKDIR /remixapp
 
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && pnpm install --frozen-lockfile
+RUN corepack enable && pnpm install --frozen-lockfile --prod=false
 
 # Setup production node_modules
 FROM base as production-deps
@@ -46,7 +43,6 @@ COPY --chown=node:node --from=build /remixapp/server /remixapp/server
 COPY --chown=node:node --from=build /remixapp/shared /remixapp/shared
 COPY --chown=node:node --from=build /remixapp/data /remixapp/data
 COPY --chown=node:node --from=build /remixapp/package.json /remixapp/package.json
-COPY --chown=node:node --from=build /remixapp/start.sh /remixapp/start.sh
 
 USER node
 CMD ["node", "server.ts"]
