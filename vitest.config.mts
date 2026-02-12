@@ -1,9 +1,8 @@
-/// <reference types="vitest" />
 /// <reference types="vite/client" />
 
 import fs from "node:fs";
 import path from "node:path";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import dotenv from "dotenv";

@@ -25,7 +25,6 @@ export default [
 
   route("img/:slug", "routes/resources/blog-og-image/route.tsx"),
   route("_actions/newsletter", "routes/resources/newsletter-subscribe.tsx"),
-  route("healthcheck", "routes/healthcheck.tsx"),
 
   route("*", "routes/catchall.tsx"),
 ] satisfies RouteConfig;
