@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { CACHE_CONTROL } from "../../app/lib/cache-control";
+import { CACHE_CONTROL } from "../../shared/cache-control";
 import { buildBlogRssResponse } from "./blog-rss";
 
 describe("blog RSS route handler", () => {

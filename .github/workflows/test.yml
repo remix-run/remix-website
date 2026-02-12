@@ -32,6 +32,44 @@ jobs:
       - name: ⚡ Run vitest
         run: pnpm test -- --coverage
 
+  production-smoke:
+    name: 🚬 Production smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: 📥 Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build app
+        run: pnpm run build
+
+      - name: 🚬 Smoke critical endpoints in preview
+        run: |
+          pnpm run preview > /tmp/preview.log 2>&1 &
+          PREVIEW_PID=$!
+          trap 'kill $PREVIEW_PID || true' EXIT
+
+          for i in {1..30}; do
+            if curl -fsS http://localhost:3000/healthcheck > /tmp/healthcheck.out; then
+              break
+            fi
+            sleep 1
+          done
+
+          curl -fsS http://localhost:3000/healthcheck | rg "^OK$"
+          curl -fsS http://localhost:3000/blog/rss.xml | rg "<rss"
+
   e2e:
     name: 🎭 Playwright
     runs-on: ubuntu-latest

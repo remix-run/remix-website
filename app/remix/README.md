@@ -150,6 +150,8 @@ Production-safe handler placement:
 
 - If a handler needs Node-only APIs (for example filesystem access), implement it in `server/routes/` and call it from `server.ts`.
 - Do not duplicate these handlers in `app/remix/`; keep a single source of truth in `server/routes/`.
+- Shared constants/utilities used by both app and server runtime code should live in `shared/` (not `app/`).
+- `server/**` production runtime modules must not import from `app/**`.
 
 Handler loading pattern (important):
 
