@@ -32,6 +32,7 @@ Current `app/remix/` contents:
 app/remix/
 |- document.tsx
 |- tsconfig.json
+|- blog-rss.test.ts
 |- test-route.tsx
 |- test-route.test.ts
 `- README.md
@@ -40,6 +41,7 @@ app/remix/
 Current server wiring behavior:
 
 - `/healthcheck` is handled directly in `server.ts` (stable operational endpoint)
+- `/blog/rss.xml` is handled directly in `server.ts` with a production-safe Remix handler
 - `/remix-test` is wired only in development as a Remix smoke test page
 - all remaining routes are handled by React Router via the catch-all
 
@@ -47,7 +49,8 @@ Current server wiring behavior:
 
 - Dynamic `.tsx` route imports are currently considered development-only.
 - Production use of dynamic Remix route modules depends on the precompile/asset strategy (still in progress).
-- Keep `/healthcheck` on a stable server handler until that strategy is finalized.
+- For production migrations today, prefer stable handlers that can be imported directly by `server.ts` (no Vite-only transforms like `import.meta.glob`).
+- Keep `/healthcheck` on a stable server handler until the dynamic asset strategy is finalized.
 
 ## Dual-route strategy
 
@@ -65,6 +68,10 @@ Expected behavior during migration:
 - links from Remix pages using plain `<a>`: full reload, then fetch-router serves Remix route
 
 Remove route entries from `app/routes.ts` only after inbound linking surfaces are migrated.
+
+Exception:
+
+- Non-navigated resource endpoints (for example RSS/robots/sitemap-style URLs) can be removed from `app/routes.ts` once they are mapped explicitly in `server.ts` for production.
 
 ## Conventions
 
@@ -134,9 +141,21 @@ Current preferred pattern in this repo:
 
 1. Define route map(s) with `route(...)` from `remix/fetch-router/routes`
 2. Register handlers with `router.map(routeMap, controller)`
-3. For development-only smoke routes, register only when Vite dev server is present
-4. Keep React Router entries in `app/routes.ts` for user-facing routes during dual-stack period
-5. Add a colocated Vitest test where possible
+3. Put production-ready Remix routes in the always-on route map (outside the Vite-only block)
+4. Reserve `if (viteDevServer)` route maps for smoke tests and dynamic dev-only module imports
+5. Keep React Router entries in `app/routes.ts` for user-facing routes during dual-stack period
+6. Add a colocated Vitest test where possible
+
+Production-safe handler placement:
+
+- If a handler needs Node-only APIs (for example filesystem access), implement it in `server/routes/` and call it from `server.ts`.
+- Do not duplicate these handlers in `app/remix/`; keep a single source of truth in `server/routes/`.
+
+Handler loading pattern (important):
+
+- In development, map Node-backed route handlers through `loadRemixModule(...)` so handler edits reload without restarting the dev server.
+- In production, map those same handlers with static imports from `server/routes/*` for boot-time validation and predictable runtime behavior.
+- Avoid dynamic `import()` on production request paths unless there is a specific need and monitoring/error handling is in place.
 
 ### HTML attributes
 
@@ -170,6 +189,7 @@ Before opening a PR that changes `app/remix/` or fetch-router mappings:
 - Do not import modules that pull in `react-router` types
 - Keep `/healthcheck` on stable server path unless migration strategy explicitly changes
 - Keep user-facing route entries in `app/routes.ts` until dual-route migration is complete
+- For production migrations, prefer handlers that can run from `server.ts` without Vite-only transforms
 - Add or update tests for new route handlers and server route wiring
 
 ## Migration status (living section)
@@ -178,6 +198,7 @@ In progress:
 
 - `app/remix/` scaffolding (`document.tsx`, isolated tsconfig, smoke-test route)
 - server route map wiring pattern using fetch-router `route(...)`
+- production Remix handler for `/blog/rss.xml` wired in `server.ts`
 
 Not yet fully migrated:
 
