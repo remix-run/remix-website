@@ -10,6 +10,7 @@ import { route } from "remix/fetch-router/routes";
 import { compression } from "remix/compression-middleware";
 import { staticFiles } from "remix/static-middleware";
 import { rateLimit, filteredLogger } from "./server/middleware.ts";
+import blogRssHandler from "./server/routes/blog-rss.ts";
 import sourceMapSupport from "source-map-support";
 
 sourceMapSupport.install();
@@ -78,6 +79,7 @@ const router = createRouter({
 // ---------------------------------------------------------------------------
 const remixRoutes = route({
   healthcheck: "/healthcheck",
+  blogRss: "/blog/rss.xml",
 });
 
 async function loadRemixModule(path: string) {
@@ -90,16 +92,23 @@ async function loadRemixModule(path: string) {
 
 // Keep healthcheck on a stable path during migration so deploy checks never
 // depend on the in-progress Remix route asset strategy.
-router.map(remixRoutes, {
-  healthcheck() {
-    return new Response("OK", {
-      headers: {
-        "Cache-Control": "no-store",
-        "Content-Type": "text/plain; charset=utf-8",
-      },
-    });
-  },
+router.map(remixRoutes.healthcheck, () => {
+  return new Response("OK", {
+    headers: {
+      "Cache-Control": "no-store",
+      "Content-Type": "text/plain; charset=utf-8",
+    },
+  });
 });
+
+if (viteDevServer) {
+  router.map(remixRoutes.blogRss, async () => {
+    const mod = await loadRemixModule("./server/routes/blog-rss.ts");
+    return mod.default();
+  });
+} else {
+  router.map(remixRoutes.blogRss, blogRssHandler);
+}
 
 if (viteDevServer) {
   const devRemixRoutes = route({
