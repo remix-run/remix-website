@@ -202,7 +202,6 @@ In progress:
 
 Not yet fully migrated:
 
-- user-facing Remix route modules wired in production
 - client asset/precompile strategy for production Remix route imports
 - blog pages (`/blog`, `/blog/:slug`)
 - OG image generation (`/img/:slug`)
