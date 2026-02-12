@@ -15,7 +15,7 @@ kill_timeout = 5
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
-    type = "requests"
+    type = "connections"
 
   [[services.ports]]
     force_https = true
