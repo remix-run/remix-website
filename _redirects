@@ -63,3 +63,11 @@
 /docs/future/server-bundles           /docs/guides/server-bundles          302
 /docs/future/spa-mode                 /docs/guides/spa-mode                302
 /docs/future/vite                     /docs/guides/vite                    302
+
+
+# Conf 2022 and 2023 moved to v2
+/conf              https://remix.run/jam                 302
+/conf/2022         https://v2.remix.run/conf/2022        302
+/conf/2022/*       https://v2.remix.run/conf/2022/:splat 302
+/conf/2023         https://v2.remix.run/conf/2023        302
+/conf/2023/*       https://v2.remix.run/conf/2023/:splat 302
