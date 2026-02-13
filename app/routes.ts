@@ -1,5 +1,4 @@
 import { route, layout, type RouteConfig } from "@react-router/dev/routes";
-import { flatRoutes } from "@react-router/fs-routes";
 
 export default [
   route("/", "routes/marketing/home.tsx"),
@@ -19,8 +18,6 @@ export default [
     route("2025/coc", "routes/jam/pages/2025.coc.tsx"),
     route("2025/gallery", "routes/jam/pages/2025.gallery.tsx"),
   ]),
-
-  ...(await flatRoutes({ rootDirectory: "routes/conf" })),
 
   route("img/:slug", "routes/resources/blog-og-image/route.tsx"),
   route("_actions/newsletter", "routes/resources/newsletter-subscribe.tsx"),
