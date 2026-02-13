@@ -10,7 +10,7 @@ interface BlogRssFrontmatter {
   draft?: boolean;
 }
 
-export interface BlogRssPost {
+interface BlogRssPost {
   slug: string;
   title: string;
   summary: string;
@@ -19,7 +19,7 @@ export interface BlogRssPost {
 
 const POSTS_DIRECTORY = new URL("../../data/posts/", import.meta.url);
 
-export async function getBlogRssPosts(): Promise<BlogRssPost[]> {
+async function getBlogRssPosts(): Promise<BlogRssPost[]> {
   const entries = await readdir(POSTS_DIRECTORY, { withFileTypes: true });
   const posts: BlogRssPost[] = [];
 

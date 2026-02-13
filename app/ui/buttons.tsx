@@ -1,40 +1,4 @@
 import * as React from "react";
-import { Link } from "~/ui/link";
-
-export const outlinePrimaryButtonLinkClass =
-  "inline-flex items-center justify-center xl:text-xl h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-blue-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2";
-
-export const outlineSecondaryButtonLinkClass =
-  "inline-flex items-center justify-center xl:text-xl h-14 xl:h-16 t box-border px-8 rounded bg-transparent text-white border-current hover:border-pink-brand focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-blue-200 focus:ring-opacity-80 font-semibold border-2";
-
-export function OutlineButtonLink({
-  to,
-  children,
-  className,
-  prefetch = "intent",
-}: {
-  to: string;
-  children: React.ReactNode;
-  className?: string;
-  prefetch?: "intent" | "render";
-}) {
-  return (
-    <Link
-      to={to}
-      prefetch={prefetch}
-      x-comp="OutlineButtonLink"
-      className={`${outlinePrimaryButtonLinkClass} ${className}`}
-      children={children}
-    />
-  );
-}
-
-export const baseButtonLinkClass =
-  "inline-flex items-center justify-center xl:text-xl h-14 xl:h-16 box-border px-8 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent font-semibold";
-
-export const primaryButtonLinkClass = `${baseButtonLinkClass} bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-200 transition-colors duration-200`;
-
-export const secondaryButtonLinkClass = `${baseButtonLinkClass} bg-pink-brand text-white hover:bg-pink-600 focus:ring-blue-200 transition-colors duration-200`;
 
 export const Button = React.forwardRef<
   HTMLButtonElement,
