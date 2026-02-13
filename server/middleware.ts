@@ -3,14 +3,14 @@ import type { Middleware } from "remix/fetch-router";
 
 // Simple rate limiter middleware (replaces express-rate-limit)
 // 1000 requests per 2 minutes per IP
-export interface RateLimitOptions {
+interface RateLimitOptions {
   windowMs?: number;
   max?: number;
   keyGenerator?: (context: Parameters<Middleware>[0]) => string;
   skip?: (context: Parameters<Middleware>[0]) => boolean;
 }
 
-export interface FilteredLoggerOptions {
+interface FilteredLoggerOptions {
   loggerMiddleware?: Middleware;
 }
 

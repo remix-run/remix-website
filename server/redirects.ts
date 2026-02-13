@@ -4,7 +4,7 @@ import { route } from "remix/fetch-router/routes";
 import { RoutePattern } from "remix/route-pattern";
 import { createRedirectResponse } from "remix/response/redirect";
 
-export const defaultRedirectsPath = path.join(process.cwd(), "_redirects");
+const defaultRedirectsPath = path.join(process.cwd(), "_redirects");
 
 function getValidRedirectCode(code: string | number | undefined): number {
   const defaultCode = 302;

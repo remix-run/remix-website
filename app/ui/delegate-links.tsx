@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PrefetchPageLinks, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 function isLinkEvent(event: MouseEvent) {
   if (!(event.target instanceof HTMLElement)) return;
