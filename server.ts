@@ -11,6 +11,10 @@ import { compression } from "remix/compression-middleware";
 import { staticFiles } from "remix/static-middleware";
 import { rateLimit, filteredLogger } from "./server/middleware.ts";
 import blogRssHandler from "./server/routes/blog-rss.ts";
+import {
+  createRedirectRoutes,
+  loadRedirectsFromFile,
+} from "./server/redirects.ts";
 import sourceMapSupport from "source-map-support";
 
 sourceMapSupport.install();
@@ -122,6 +126,12 @@ if (viteDevServer) {
     },
   });
 }
+
+// Redirects from _redirects (must be before * catchall)
+const redirects = loadRedirectsFromFile();
+const { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
+
+router.map(redirectRoutes, redirectController);
 
 // All remaining requests are handled by React Router
 router.map("*", (context) => handleRequest(context.request));
