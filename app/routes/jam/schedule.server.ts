@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import assert from "node:assert";
 import yaml from "yaml";
 import { processMarkdown } from "~/lib/md.server";
 import { z } from "zod";
@@ -13,7 +13,7 @@ const speakerImageModules = import.meta.glob(
 
 const imageUrlByKey = new Map(
   Object.entries(speakerImageModules).map(([path, url]) => {
-    invariant(
+    assert(
       typeof url === "string",
       `Speaker image "${path}" is not a string. Please check the schedule file.`,
     );
@@ -69,7 +69,7 @@ export async function getSchedule(): Promise<ScheduleItem[]> {
       let imgSrc: string | undefined;
       if (item.imgFilename) {
         imgSrc = imageUrlByKey.get(item.imgFilename);
-        invariant(
+        assert(
           imgSrc,
           `Speaker "${item.speaker}" has image filename "${item.imgFilename}" but no matching image file.`,
         );
