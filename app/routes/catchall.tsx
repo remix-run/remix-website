@@ -1,4 +1,3 @@
-import { handleRedirects } from "~/lib/http.server";
 import { data } from "react-router";
 import type { Route } from "./+types/catchall";
 
@@ -6,7 +5,7 @@ import type { Route } from "./+types/catchall";
 // doc isn't found, we return a 404 as expected. However we also log those
 // errors to get a good idea of what weird paths are requested often to identify
 // a block-list for bots and malicious actors.
-//
+
 // We can skip all of that if a request is made for a static file, which we know
 // doesn't exist by the time we get to the catch all route as our request
 // handler will hit the public directory first. It'll skip the logging and save
@@ -47,8 +46,7 @@ function handleStaticFileRequests(param: string | undefined) {
   }
 }
 
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
-  handleRedirects(new URL(request.url).pathname);
+export const loader = async ({ params }: Route.LoaderArgs) => {
   handleStaticFileRequests(params["*"]);
   throw data({}, { status: 404 });
 };
