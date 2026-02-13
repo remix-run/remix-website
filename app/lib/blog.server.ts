@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import invariant from "tiny-invariant";
 import { LRUCache } from "lru-cache";
 import yaml from "yaml";
@@ -100,15 +99,10 @@ function getValidAuthorNames(authorNames: string[]) {
 }
 
 function formatDate(date: Date) {
-  let offset = new Date().getTimezoneOffset();
-  return (
-    DateTime.fromJSDate(date)
-      // Necessary to set the offset for local development
-      .plus({ minutes: offset })
-      .toLocaleString(DateTime.DATE_FULL, {
-        locale: "en-US",
-      })
-  );
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "long",
+    timeZone: "America/New_York",
+  }).format(date);
 }
 
 /**
