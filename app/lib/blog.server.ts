@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import assert from "node:assert";
 import { LRUCache } from "lru-cache";
 import yaml from "yaml";
 import { processMarkdown } from "~/lib/md.server";
@@ -12,7 +12,7 @@ const postContentsBySlug = Object.fromEntries(
       eager: true,
     }),
   ).map(([filePath, contents]) => {
-    invariant(
+    assert(
       typeof contents === "string",
       `Expected ${filePath} to be a string, but got ${typeof contents}`,
     );
@@ -43,7 +43,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
 
   let result = await processMarkdown(contents);
   let { attributes, html } = result;
-  invariant(
+  assert(
     isMarkdownPostFrontmatter(attributes),
     `Invalid post frontmatter in ${slug}`,
   );
@@ -57,7 +57,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
   }
   attributes.authors = validatedAuthors;
 
-  invariant(
+  assert(
     isMarkdownPostFrontmatter(attributes),
     `Invalid post frontmatter in ${slug}`,
   );

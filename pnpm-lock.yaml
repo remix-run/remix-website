@@ -28,9 +28,6 @@ importers:
       cssnano:
         specifier: ^6.0.3
         version: 6.1.2(postcss@8.5.6)
-      dotenv:
-        specifier: ^16.6.1
-        version: 16.6.1
       emoji-regex:
         specifier: ^10.6.0
         version: 10.6.0
@@ -47,8 +44,8 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
       isbot:
-        specifier: ^4
-        version: 4.4.0
+        specifier: ^5
+        version: 5.1.34
       lru-cache:
         specifier: ^10.1.0
         version: 10.4.3
@@ -103,9 +100,6 @@ importers:
       svg2img:
         specifier: ^1.0.0-beta.2
         version: 1.0.0-beta.2
-      tiny-invariant:
-        specifier: ^1.3.3
-        version: 1.3.3
       unified:
         specifier: ^11.0.5
         version: 11.0.5
@@ -167,9 +161,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.24
         version: 10.4.24(postcss@8.5.6)
-      dotenv-cli:
-        specifier: ^7.4.4
-        version: 7.4.4
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -8556,17 +8547,6 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 5.0.3
 
-  dotenv-cli@7.4.4:
-    dependencies:
-      cross-spawn: 7.0.6
-      dotenv: 16.6.1
-      dotenv-expand: 10.0.0
-      minimist: 1.2.8
-
-  dotenv-expand@10.0.0: {}
-
-  dotenv@16.6.1: {}
-
   dunder-proto@1.0.1:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -9314,8 +9294,6 @@ snapshots:
       get-intrinsic: 1.3.0
 
   isarray@2.0.5: {}
-
-  isbot@4.4.0: {}
 
   isbot@5.1.34: {}
 
@@ -10758,8 +10736,6 @@ snapshots:
   timm@1.7.1: {}
 
   tiny-inflate@1.0.3: {}
-
-  tiny-invariant@1.3.3: {}
 
   tinybench@2.9.0: {}
 
