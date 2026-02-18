@@ -30,7 +30,6 @@ Current `app/remix/` contents:
 
 ```
 app/remix/
-|- assets/entry.ts
 |- document.tsx
 |- home-presentational.tsx
 |- render.ts
@@ -201,7 +200,6 @@ In progress:
 - server route map wiring pattern using fetch-router `route(...)`
 - production Remix handler for `/blog/rss.xml` wired in `server.ts`
 - phase-1 presentational home preview at `/remix-home-presentational` (hero, pitch, timeline copy, stay-in-the-loop, footer)
-- hydrated home header preview (wordmark + mobile menu) powered by `clientEntry`
 - phase-1 metadata parity for home preview (`og:*` and `twitter:*` tags via `Document.head`)
 
 Not yet fully migrated:
@@ -210,4 +208,4 @@ Not yet fully migrated:
 - blog pages (`/blog`, `/blog/:slug`)
 - OG image generation (`/img/:slug`)
 - newsletter action (`/_actions/newsletter`)
-- interactive/hydrated components (remaining header parity + subscribe)
+- interactive components (header behavior + subscribe)
