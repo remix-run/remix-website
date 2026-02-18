@@ -1,13 +1,13 @@
 /** @jsxImportSource remix/component */
-import { renderToString } from "remix/component/server";
 import { Document } from "./document";
+import { render } from "./render";
 
 /**
  * Temporary test route to verify the remix/component rendering pipeline.
  * Remove once real routes are migrated.
  */
 export default async function TestRoute() {
-  const html = await renderToString(
+  return render(
     <Document title="Remix 3 Test" noIndex>
       <main class="flex flex-1 flex-col items-center justify-center p-8">
         <h1 class="text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
@@ -20,7 +20,7 @@ export default async function TestRoute() {
           </code>{" "}
           +{" "}
           <code class="rounded bg-gray-100 px-2 py-1 font-mono text-sm dark:bg-gray-800">
-            renderToString
+            renderToStream
           </code>
         </p>
         <div class="mt-8 rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
@@ -39,8 +39,4 @@ export default async function TestRoute() {
       </main>
     </Document>,
   );
-
-  return new Response("<!DOCTYPE html>" + html, {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
-  });
 }

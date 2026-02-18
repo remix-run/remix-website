@@ -117,11 +117,16 @@ if (viteDevServer) {
 if (viteDevServer) {
   const devRemixRoutes = route({
     remixTest: "/remix-test",
+    remixHomePresentational: "/remix-home-presentational",
   });
 
   router.map(devRemixRoutes, {
     async remixTest() {
       const mod = await loadRemixModule("./app/remix/test-route.tsx");
+      return mod.default();
+    },
+    async remixHomePresentational() {
+      const mod = await loadRemixModule("./app/remix/home-presentational.tsx");
       return mod.default();
     },
   });
