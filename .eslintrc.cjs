@@ -45,6 +45,7 @@ module.exports = {
       plugins: ["@typescript-eslint"],
       rules: {
         "react/display-name": "off",
+        "prefer-const": "off",
       },
     },
   ],
