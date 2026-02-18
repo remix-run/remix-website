@@ -20,11 +20,14 @@ export default async function HomePresentationalRoute(context?: {
   const pageUrl = `${requestUrl.origin}/remix-home-presentational`;
   const previewImage = `${requestUrl.origin}/marketing/remix-3-thumbnail.jpg`;
 
-  return render(<HomePresentationalPage pageUrl={pageUrl} previewImage={previewImage} />, {
-    headers: {
-      "Cache-Control": "public, max-age=300",
+  return render(
+    <HomePresentationalPage pageUrl={pageUrl} previewImage={previewImage} />,
+    {
+      headers: {
+        "Cache-Control": "public, max-age=300",
+      },
     },
-  });
+  );
 }
 
 function HomePresentationalPage() {
@@ -35,11 +38,11 @@ function HomePresentationalPage() {
       noIndex
       head={
         <>
-          {/* TODO(remix-home): move this client entry script to shared document-level wiring. */}
-          <script type="module" async src="/app/remix/assets/entry.ts" />
-          {/* Preview-route metadata for migration parity checks. */}
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="Remix Home (Presentational Preview)" />
+          <meta
+            property="og:title"
+            content="Remix Home (Presentational Preview)"
+          />
           <meta
             property="og:description"
             content="Phase 1 presentational migration preview for Remix home."
@@ -47,7 +50,10 @@ function HomePresentationalPage() {
           <meta property="og:url" content={props.pageUrl} />
           <meta property="og:image" content={props.previewImage} />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Remix Home (Presentational Preview)" />
+          <meta
+            name="twitter:title"
+            content="Remix Home (Presentational Preview)"
+          />
           <meta
             name="twitter:description"
             content="Phase 1 presentational migration preview for Remix home."
