@@ -1,6 +1,7 @@
 /** @jsxImportSource remix/component */
 import cx from "clsx";
-import { Wordmark } from "./wordmark";
+import { WordmarkLink } from "../assets/wordmark-link";
+import { MobileMenu } from "../assets/mobile-menu";
 
 const LINKS: Array<{ to: string; label: string; external?: boolean }> = [
   { to: "/blog", label: "Blog" },
@@ -13,10 +14,7 @@ export function Header() {
   return () => (
     <header class={cx("p-12", "text-rmx-primary", "relative z-50")}>
       <div class="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-8">
-        <a href="/" aria-label="Remix" class="inline-flex items-center">
-          <Wordmark aria-hidden />
-          <span class="sr-only">Remix home</span>
-        </a>
+        <WordmarkLink href="/" brandHref="/brand" />
 
         <nav class="hidden items-center gap-6 md:flex" aria-label="Main">
           {LINKS.map((link) => (
@@ -25,6 +23,14 @@ export function Header() {
             </HeaderLink>
           ))}
         </nav>
+
+        <MobileMenu class="md:hidden">
+          {LINKS.map((link) => (
+            <HeaderLink key={link.to} to={link.to} external={link.external}>
+              {link.label}
+            </HeaderLink>
+          ))}
+        </MobileMenu>
       </div>
     </header>
   );

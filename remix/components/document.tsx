@@ -82,6 +82,28 @@ export function Document() {
           innerHTML={`let m=window.matchMedia("(prefers-color-scheme: dark)");if(m.matches)document.documentElement.classList.add("dark");`}
         />
 
+        {/*
+          Stub Vite's React fast-refresh preamble check.
+          @vitejs/plugin-react injects a guard into every .tsx file it transforms:
+            if (!window.__vite_plugin_react_preamble_installed__) throw ...
+          Normally Vite injects the real preamble via its HTML transform pipeline,
+          but SSR pages bypass that. Our app/remix/ components use remix/component
+          JSX (not React), so actual Fast Refresh isn't needed — this just satisfies
+          the guard so dynamically importing those modules doesn't throw.
+          A plain (non-module) script runs synchronously, before any deferred
+          module scripts, so the flag is guaranteed to be set in time.
+        */}
+        <script
+          innerHTML={`
+            window.$RefreshReg$ = () => {}
+            window.$RefreshSig$ = () => (type) => type
+            window.__vite_plugin_react_preamble_installed__ = true
+          `}
+        />
+
+        {/* Client hydration bootstrap — Vite serves .tsx in dev */}
+        <script type="module" src="/app/remix/assets/entry.tsx" />
+
         {/* Route-specific head elements */}
         {head}
       </head>
