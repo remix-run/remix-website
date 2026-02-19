@@ -6,7 +6,7 @@ const heroImageSrc = "/marketing/racecar-teaser-hero.webp";
 export function HeroSection() {
   return () => (
     <section class="flex min-h-[540px] flex-col items-center justify-end overflow-hidden px-12 pb-6 md:min-h-[70vh] md:pb-12 xl:min-h-[80vh]">
-      <div class="flex w-full max-w-[1400px] flex-col items-center gap-12 md:gap-24">
+      <div class="flex w-full flex-col items-center gap-12 md:gap-24">
         <div
           class={cx(
             "rmx-hero",

@@ -28,12 +28,16 @@ export function IntroMaskReveal() {
           </clipPath>
         </defs>
 
-        <path class="rmx-intro-r-fill" d={REMIX_R_PATH} fill="var(--rmx-neutral-200)" />
+        <path
+          class="rmx-intro-r-fill"
+          d={REMIX_R_PATH}
+          fill="var(--rmx-neutral-200)"
+        />
         <rect
           x="0"
-          y="0.5"
+          y="0"
           width="3600"
-          height="1920"
+          height="1921"
           fill="black"
           mask="url(#r-cutout-mask)"
         />
