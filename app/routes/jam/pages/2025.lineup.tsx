@@ -7,7 +7,6 @@ import type { Route } from "./+types/2025.lineup";
 import { getSchedule } from "../schedule.server";
 import { ScrambleText, Title } from "../text";
 import { clsx } from "clsx";
-import iconsHref from "~/icons.svg";
 
 export async function loader() {
   let schedule = await getSchedule();
@@ -242,7 +241,7 @@ function ScheduleItemDesktop({ item }: ScheduleItemProps) {
             className="size-4 rotate-90 text-white transition-transform group-open:-rotate-90 sm:size-5 lg:size-6"
             aria-hidden="true"
           >
-            <use href={`${iconsHref}#chevron-r`} />
+            <use href="/app/icons.svg#chevron-r" />
           </svg>
         </div>
       </summary>
