@@ -1,6 +1,16 @@
 /** @jsxImportSource remix/component */
 import type { RemixNode } from "remix/component/jsx-runtime";
 
+import clientAssets from "./client.ts?assets=client";
+import documentAssets from "./document.tsx?assets=ssr";
+
+import "../styles/tailwind.css";
+import "../styles/bailwind.css";
+import "../styles/marketing.css";
+
+const assets = clientAssets.merge(documentAssets);
+console.log(assets);
+
 interface DocumentProps {
   title: string;
   description?: string;
@@ -61,10 +71,10 @@ export function Document() {
           crossorigin="anonymous"
         />
 
-        {/* Stylesheets — served by Vite in dev */}
-        <link rel="stylesheet" href="/app/styles/tailwind.css" />
-        <link rel="stylesheet" href="/app/styles/bailwind.css" />
-        <link rel="stylesheet" href="/app/styles/marketing.css" />
+        {/* Styles */}
+        {assets.css.map(({ href }) => (
+          <link key={href} rel="stylesheet" href={href} />
+        ))}
 
         {/* RSS */}
         <link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" />
@@ -80,6 +90,10 @@ export function Document() {
 
       <body class="flex min-h-screen w-full flex-col overflow-x-hidden bg-white text-gray-900 antialiased selection:bg-blue-200 selection:text-black dark:bg-gray-900 dark:text-gray-200 dark:selection:bg-blue-800 dark:selection:text-white">
         {children}
+        {assets.js.map((asset) => (
+          <link key={asset.href} rel="modulepreload" href={asset.href} />
+        ))}
+        <script type="module" src={assets.entry} />
       </body>
     </html>
   );
