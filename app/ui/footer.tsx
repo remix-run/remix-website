@@ -1,5 +1,4 @@
 import cx from "clsx";
-import { Discord, GitHub, Twitter, YouTube } from "./icons";
 import { Wordmark } from "./logo";
 
 export function Footer({ className = "" }: { className?: string }) {
@@ -19,16 +18,24 @@ export function Footer({ className = "" }: { className?: string }) {
           aria-label="Find us on the web"
         >
           <a href="https://github.com/remix-run" aria-label="GitHub">
-            <GitHub aria-hidden />
+            <svg aria-hidden="true" fill="none">
+              <use href="/app/icons.svg#github" />
+            </svg>
           </a>
           <a href="https://twitter.com/remix_run" aria-label="Twitter">
-            <Twitter aria-hidden />
+            <svg aria-hidden="true" fill="none">
+              <use href="/app/icons.svg#twitter" />
+            </svg>
           </a>
           <a href="https://youtube.com/remix_run" aria-label="YouTube">
-            <YouTube aria-hidden />
+            <svg aria-hidden="true" fill="none">
+              <use href="/app/icons.svg#youtube" />
+            </svg>
           </a>
           <a href="https://rmx.as/discord" aria-label="Remix">
-            <Discord aria-hidden />
+            <svg aria-hidden="true" fill="none">
+              <use href="/app/icons.svg#discord" />
+            </svg>
           </a>
         </nav>
       </div>
