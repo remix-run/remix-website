@@ -37,7 +37,6 @@ export const MobileMenu = clientEntry(
         <details
           open={isOpen}
           class={cx("relative cursor-pointer", props.class)}
-          connect={(node) => console.log("node", node)}
           on={{
             toggle(e) {
               isOpen = e.currentTarget.open;

@@ -5,7 +5,9 @@ import type { RemixNode } from "remix/component/jsx-runtime";
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);
 const ROW_HEIGHT = 57;
 
-type CellConfig = string | { label?: string; style: Record<string, string | number> };
+type CellConfig =
+  | string
+  | { label?: string; style: Record<string, string | number> };
 
 const LANE_CELL_CONFIG: Record<string, Record<number, CellConfig>> = {
   "react-router": {
@@ -69,7 +71,9 @@ export function TimelineDiagramMobile() {
         </YearLabel>
       ))}
 
-      <LaneHeader style={{ gridColumn: 2, gridRow: 2 }}>React Router</LaneHeader>
+      <LaneHeader style={{ gridColumn: 2, gridRow: 2 }}>
+        React Router
+      </LaneHeader>
       <LaneHeader style={{ gridColumn: 3, gridRow: 2 }}>Remix 1-2</LaneHeader>
       <LaneHeader style={{ gridColumn: 4, gridRow: 2 }}>Remix 3</LaneHeader>
 
@@ -181,7 +185,10 @@ function TrackSegments() {
 }
 
 function LaneHeader() {
-  return (props: { children: RemixNode; style?: Record<string, string | number> }) => (
+  return (props: {
+    children: RemixNode;
+    style?: Record<string, string | number>;
+  }) => (
     <div
       class={cx(
         "text-rmx-neutral-100",
@@ -195,7 +202,10 @@ function LaneHeader() {
 }
 
 function YearLabel() {
-  return (props: { children: RemixNode; style?: Record<string, string | number> }) => {
+  return (props: {
+    children: RemixNode;
+    style?: Record<string, string | number>;
+  }) => {
     const year = Number(props.children);
     let opacity = 1;
     if (year === 2014) opacity = 0.25;
@@ -214,7 +224,11 @@ function YearLabel() {
 }
 
 function LaneCell() {
-  return (props: { lane: string; year: number; style?: Record<string, string | number> }) => {
+  return (props: {
+    lane: string;
+    year: number;
+    style?: Record<string, string | number>;
+  }) => {
     const config = LANE_CELL_CONFIG[props.lane]?.[props.year];
     const label = typeof config === "string" ? config : config?.label;
     const configStyle = typeof config === "object" ? config.style : undefined;
