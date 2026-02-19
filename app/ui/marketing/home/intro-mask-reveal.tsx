@@ -37,9 +37,9 @@ export function IntroMaskReveal() {
         {/* Black overlay with R cutout */}
         <rect
           x="0"
-          y="0.5"
+          y="0"
           width="3600"
-          height="1920"
+          height="1921"
           fill="black"
           mask="url(#r-cutout-mask)"
         />
