@@ -165,6 +165,14 @@ function Document({
   darkBg,
   noIndex,
 }: DocumentProps) {
+  useLayoutEffect(() => {
+    if (forceTheme === "light") {
+      document.documentElement.classList.remove("dark");
+    } else if (forceTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    }
+  }, [forceTheme]);
+
   return (
     <html
       lang="en"
