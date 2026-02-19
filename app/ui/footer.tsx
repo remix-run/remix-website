@@ -1,4 +1,5 @@
 import cx from "clsx";
+import iconsHref from "~/icons.svg";
 import { Wordmark } from "./logo";
 
 export function Footer({ className = "" }: { className?: string }) {
@@ -19,22 +20,22 @@ export function Footer({ className = "" }: { className?: string }) {
         >
           <a href="https://github.com/remix-run" aria-label="GitHub">
             <svg aria-hidden="true" fill="none">
-              <use href="/app/icons.svg#github" />
+              <use href={`${iconsHref}#github`} />
             </svg>
           </a>
           <a href="https://twitter.com/remix_run" aria-label="Twitter">
             <svg aria-hidden="true" fill="none">
-              <use href="/app/icons.svg#twitter" />
+              <use href={`${iconsHref}#twitter`} />
             </svg>
           </a>
           <a href="https://youtube.com/remix_run" aria-label="YouTube">
             <svg aria-hidden="true" fill="none">
-              <use href="/app/icons.svg#youtube" />
+              <use href={`${iconsHref}#youtube`} />
             </svg>
           </a>
           <a href="https://rmx.as/discord" aria-label="Remix">
             <svg aria-hidden="true" fill="none">
-              <use href="/app/icons.svg#discord" />
+              <use href={`${iconsHref}#discord`} />
             </svg>
           </a>
         </nav>
