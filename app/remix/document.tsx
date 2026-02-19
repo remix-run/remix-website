@@ -9,7 +9,6 @@ import "../styles/bailwind.css";
 import "../styles/marketing.css";
 
 const assets = clientAssets.merge(documentAssets);
-console.log(assets);
 
 interface DocumentProps {
   title: string;

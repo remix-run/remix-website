@@ -27,7 +27,7 @@ describe("remix/component rendering pipeline", () => {
     expect(html).toContain('name="robots" content="noindex"');
 
     // Has CSS links
-    expect(html).toContain("tailwind.css");
+    expect(html).toContain("mock-css");
 
     // Has the page content
     expect(html).toContain("Hello from Remix 3");

@@ -2,6 +2,7 @@
 
 import { defineConfig } from "vitest/config";
 import { loadEnv } from "vite";
+import fullstack from "@hiogawa/vite-plugin-fullstack";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -11,7 +12,24 @@ let env = loadEnv("test", process.cwd(), "");
 console.log({ env });
 
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    {
+      name: "mock-assets",
+      enforce: "pre",
+      resolveId(id) {
+        if (id.includes("?assets")) {
+          return "\0virtual:mock-asset";
+        }
+      },
+      load(id) {
+        if (id === "\0virtual:mock-asset") {
+          return 'export default { entry: "/mock-entry", js: [{href:"/mock-entry"}, {href:"/mock-chunk"}], css: [{href:"/mock-css"}], merge() { return this; } };';
+        }
+      },
+    },
+  ],
   test: {
     globals: true,
     environment: "happy-dom",
