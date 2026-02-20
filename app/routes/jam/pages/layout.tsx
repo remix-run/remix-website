@@ -202,7 +202,7 @@ function Footer({ className }: { className?: string }) {
             <YouTube className={socialClassName} aria-hidden />
           </a>
           <a
-            href="https://rmx.as/discord"
+            href="https://discord.gg/xwx7mMzVkA"
             aria-label="Discord"
             target="_blank"
             rel="noopener noreferrer"

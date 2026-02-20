@@ -90,7 +90,7 @@ function DiscordCard() {
       </div>
       <div>
         <a
-          href="https://rmx.as/discord"
+          href="https://discord.gg/xwx7mMzVkA"
           className={cx(
             "rmx-bg-button-secondary rmx-text-button-secondary rmx-shadow-low",
             "rmx-button-text",
