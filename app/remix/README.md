@@ -31,6 +31,8 @@ Current `app/remix/` contents:
 ```
 app/remix/
 |- document.tsx
+|- home-presentational.tsx
+|- render.ts
 |- tsconfig.json
 |- blog-rss.test.ts
 |- test-route.tsx
@@ -43,6 +45,7 @@ Current server wiring behavior:
 - `/healthcheck` is handled directly in `server.ts` (stable operational endpoint)
 - `/blog/rss.xml` is handled directly in `server.ts` with a production-safe Remix handler
 - `/remix-test` is wired only in development as a Remix smoke test page
+- `/remix-home-presentational` is wired only in development as a phase-1 home migration preview
 - all remaining routes are handled by React Router via the catch-all
 
 ## Production constraints
@@ -104,21 +107,16 @@ export function MyComponent() {
 
 ### Route handler pattern
 
-Route handlers return `Response` objects. Visual routes typically render to string:
+Route handlers return `Response` objects. Visual routes should use the shared
+`app/remix/render.ts` helper, which uses `renderToStream`:
 
 ```tsx
 /** @jsxImportSource remix/component */
-import { renderToString } from "remix/component/server";
+import { render } from "./render";
 import { Document } from "../document";
 
 export default async function handler() {
-  const html = await renderToString(
-    <Document title="Page Title">{/* page content */}</Document>,
-  );
-
-  return new Response("<!DOCTYPE html>" + html, {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
-  });
+  return render(<Document title="Page Title">{/* page content */}</Document>);
 }
 ```
 
@@ -201,6 +199,8 @@ In progress:
 - `app/remix/` scaffolding (`document.tsx`, isolated tsconfig, smoke-test route)
 - server route map wiring pattern using fetch-router `route(...)`
 - production Remix handler for `/blog/rss.xml` wired in `server.ts`
+- phase-1 presentational home preview at `/remix-home-presentational` (hero, pitch, timeline copy, stay-in-the-loop, footer)
+- phase-1 metadata parity for home preview (`og:*` and `twitter:*` tags via `Document.head`)
 
 Not yet fully migrated:
 
@@ -208,4 +208,4 @@ Not yet fully migrated:
 - blog pages (`/blog`, `/blog/:slug`)
 - OG image generation (`/img/:slug`)
 - newsletter action (`/_actions/newsletter`)
-- interactive/hydrated components (menu, DocSearch, subscribe)
+- interactive components (header behavior + subscribe)

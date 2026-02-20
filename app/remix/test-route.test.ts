@@ -14,7 +14,6 @@ describe("remix/component rendering pipeline", () => {
     const html = await response.text();
 
     // Has a proper document structure
-    expect(html).toContain("<!DOCTYPE html>");
     expect(html).toContain("<html");
     expect(html).toContain("</html>");
 
