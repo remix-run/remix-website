@@ -2,7 +2,6 @@
 
 import { defineConfig } from "vitest/config";
 import { loadEnv } from "vite";
-import fullstack from "@hiogawa/vite-plugin-fullstack";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 

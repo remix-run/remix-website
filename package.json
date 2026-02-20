@@ -20,7 +20,7 @@
     "test": "vitest",
     "pretest:e2e": "playwright install chromium",
     "test:e2e": "playwright test",
-    "typecheck": "react-router typegen && tsc && tsc -p app/remix/tsconfig.json"
+    "typecheck": "react-router typegen && tsc --noEmit -p remix/tsconfig.json && tsc --noEmit -p app/tsconfig.json"
   },
   "dependencies": {
     "@docsearch/css": "^3.5.2",
@@ -89,6 +89,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^3.4.19",
+    "tinyglobby": "^0.2.15",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-arraybuffer": "^0.1.4",

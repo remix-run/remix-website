@@ -1,12 +1,12 @@
 /** @jsxImportSource remix/component */
 import type { RemixNode } from "remix/component/jsx-runtime";
 
-import clientAssets from "./client.ts?assets=client";
+import clientAssets from "./entry.client.ts?assets=client";
 import documentAssets from "./document.tsx?assets=ssr";
 
-import "../styles/tailwind.css";
-import "../styles/bailwind.css";
-import "../styles/marketing.css";
+import "../../app/styles/tailwind.css";
+import "../../app/styles/bailwind.css";
+import "../../app/styles/marketing.css";
 
 const assets = clientAssets.merge(documentAssets);
 

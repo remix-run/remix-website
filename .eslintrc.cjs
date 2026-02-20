@@ -36,7 +36,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["app/remix/**"],
+      files: ["remix/**"],
       extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",

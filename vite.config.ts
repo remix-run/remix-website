@@ -3,6 +3,7 @@ import fullstack from "@hiogawa/vite-plugin-fullstack";
 import { reactRouter } from "@react-router/dev/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import arraybuffer from "vite-plugin-arraybuffer";
+import { globSync } from "tinyglobby";
 
 export default defineConfig({
   build: {
@@ -13,9 +14,8 @@ export default defineConfig({
       build: {
         rollupOptions: {
           input: [
-            "app/entry.client.tsx",
-            "app/remix/client.ts",
-            "app/remix/counter.tsx",
+            "./remix/lib/entry.client.ts",
+            ...globSync("./remix/assets/**/*.tsx"),
           ],
         },
       },
@@ -23,7 +23,7 @@ export default defineConfig({
     ssr: {
       build: {
         rollupOptions: {
-          input: "server/server.ts",
+          input: "remix/server.ts",
         },
       },
       resolve: {
@@ -40,10 +40,4 @@ export default defineConfig({
     }),
     reactRouter(),
   ],
-  // builder: {
-  //   async buildApp(builder) {
-  //     await builder.build(builder.environments.client);
-  //     await builder.build(builder.environments.ssr);
-  //   },
-  // },
 });

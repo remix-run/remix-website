@@ -86,7 +86,7 @@ const devRemixRoutes = route({
 
 router.map(devRemixRoutes, {
   async remixTest() {
-    const mod = await import("../app/remix/test-route.tsx");
+    const mod = await import("./routes/test-route.tsx");
     return mod.default();
   },
 });
@@ -101,6 +101,7 @@ router.map(redirectRoutes, redirectController);
 // All remaining requests are handled by React Router
 router.map("*", (context) => handleRequest(context.request));
 
+// vite fullstack plugin
 export default {
   fetch(request: Request) {
     return router.fetch(request.url, request);
