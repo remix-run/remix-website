@@ -1,9 +1,11 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
+  "include": ["**/*.ts", "**/*.tsx", "../.react-router/types/**/*"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": [
+      "@hiogawa/vite-plugin-fullstack/types",
       "@react-router/node",
+      "node",
       "vite/client",
       "vitest/globals",
       "vite-plugin-arraybuffer/types"
@@ -19,13 +21,12 @@
     "paths": {
       "~/*": ["./app/*"]
     },
-    "noEmit": true,
     "allowImportingTsExtensions": true,
-    "baseUrl": ".",
+    "baseUrl": "..",
     "allowJs": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "rootDirs": [".", "./.react-router/types"]
-  },
-  "exclude": ["node_modules", "references", "app/remix"]
+    "noEmit": true,
+    "rootDirs": ["..", "../.react-router/types"]
+  }
 }

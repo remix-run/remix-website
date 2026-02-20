@@ -11,7 +11,24 @@ let env = loadEnv("test", process.cwd(), "");
 console.log({ env });
 
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    {
+      name: "mock-assets",
+      enforce: "pre",
+      resolveId(id) {
+        if (id.includes("?assets")) {
+          return "\0virtual:mock-asset";
+        }
+      },
+      load(id) {
+        if (id === "\0virtual:mock-asset") {
+          return 'export default { entry: "/mock-entry", js: [{href:"/mock-entry"}, {href:"/mock-chunk"}], css: [{href:"/mock-css"}], merge() { return this; } };';
+        }
+      },
+    },
+  ],
   test: {
     globals: true,
     environment: "happy-dom",
