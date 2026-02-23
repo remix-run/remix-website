@@ -1,5 +1,4 @@
 import { getMeta } from "~/lib/meta";
-import { DocSearchModal } from "~/ui/docsearch";
 import { Footer } from "~/ui/footer";
 import { Header } from "~/ui/header";
 import {
@@ -35,7 +34,6 @@ export const headers: HeadersFunction = () => {
 export default function HomePage() {
   return (
     <div className="marketing-home">
-      <DocSearchModal />
       <div className="rmx-home-hero-bg">
         <IntroMaskReveal />
         <Header />
