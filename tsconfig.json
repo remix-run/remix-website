@@ -1,31 +1,8 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
-  "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": [
-      "@react-router/node",
-      "vite/client",
-      "vitest/globals",
-      "vite-plugin-arraybuffer/types"
-    ],
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ES2019",
-    "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "~/*": ["./app/*"]
-    },
-    "noEmit": true,
-    "allowImportingTsExtensions": true,
-    "baseUrl": ".",
-    "allowJs": true,
-    "isolatedModules": true,
-    "resolveJsonModule": true,
-    "rootDirs": [".", "./.react-router/types"]
-  },
-  "exclude": ["node_modules", "references", "app/remix"]
+  "files": [],
+  "references": [
+    { "path": "./app/tsconfig.json" },
+    { "path": "./remix/tsconfig.json" },
+    { "path": "./remix/tsconfig.server.json" }
+  ]
 }

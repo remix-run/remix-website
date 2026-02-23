@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.base.json",
+  "include": ["./server.ts", "../server.ts"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "remix/component",
+    "types": ["node", "@hiogawa/vite-plugin-fullstack/types", "vite/client"],
+    "paths": {
+      "react-router": ["./react-router-type-stub.d.ts"]
+    }
+  }
+}

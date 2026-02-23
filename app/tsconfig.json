@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.base.json",
+  "include": ["**/*.ts", "**/*.tsx", "../.react-router/types/**/*"],
+  "compilerOptions": {
+    "types": [
+      "@hiogawa/vite-plugin-fullstack/types",
+      "@react-router/node",
+      "node",
+      "vite/client",
+      "vitest/globals",
+      "vite-plugin-arraybuffer/types"
+    ],
+    "jsx": "react-jsx",
+    "paths": {
+      "~/*": ["./app/*"]
+    },
+    "baseUrl": "..",
+    "rootDirs": ["..", "../.react-router/types"]
+  }
+}

@@ -7,9 +7,9 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "react-router build",
+    "build": "vite build",
     "build:analyze": "ANALYZE=true react-router build",
-    "dev": "node ./server.ts",
+    "dev": "vite dev",
     "format": "prettier --write ./",
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
     "push:stage": "git tag -f stage && git push origin stage -f",
@@ -20,7 +20,10 @@
     "test": "vitest",
     "pretest:e2e": "playwright install chromium",
     "test:e2e": "playwright test",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && pnpm run --parallel \"/^typecheck:(app|remix|remix-server)$/\"",
+    "typecheck:app": "tsc --noEmit -p app/tsconfig.json",
+    "typecheck:remix": "tsc --noEmit -p remix/tsconfig.json",
+    "typecheck:remix-server": "tsc --noEmit -p remix/tsconfig.server.json"
   },
   "dependencies": {
     "@docsearch/css": "^3.5.2",
@@ -60,6 +63,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@hiogawa/vite-plugin-fullstack": "^0.0.11",
     "@playwright/test": "^1.58.2",
     "@react-router/dev": "7.12.0",
     "@testing-library/jest-dom": "^6.9.1",
@@ -88,6 +92,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^3.4.19",
+    "tinyglobby": "^0.2.15",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-arraybuffer": "^0.1.4",
@@ -97,5 +102,5 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@10.29.3"
+  "packageManager": "pnpm@10.30.1"
 }

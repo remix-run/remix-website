@@ -1,6 +1,7 @@
 /** @jsxImportSource remix/component */
 import { renderToString } from "remix/component/server";
-import { Document } from "./document";
+import { Document } from "../components/document";
+import { Counter } from "../assets/counter";
 
 /**
  * Temporary test route to verify the remix/component rendering pipeline.
@@ -30,6 +31,7 @@ export default async function TestRoute() {
             are all functional.
           </p>
         </div>
+        <Counter />
         <a
           href="/"
           class="mt-8 text-blue-600 underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
