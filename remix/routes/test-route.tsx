@@ -1,6 +1,6 @@
 /** @jsxImportSource remix/component */
 import { renderToString } from "remix/component/server";
-import { Document } from "../lib/document";
+import { Document } from "../components/document";
 import { Counter } from "../assets/counter";
 
 /**

@@ -1,7 +1,7 @@
 /** @jsxImportSource remix/component */
 import type { RemixNode } from "remix/component/jsx-runtime";
 
-import clientAssets from "./entry.client.ts?assets=client";
+import clientAssets from "../assets/entry.ts?assets=client";
 import documentAssets from "./document.tsx?assets=ssr";
 
 import "../../app/styles/tailwind.css";

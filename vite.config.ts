@@ -13,10 +13,7 @@ export default defineConfig({
     client: {
       build: {
         rollupOptions: {
-          input: [
-            "./remix/lib/entry.client.ts",
-            ...globSync("./remix/assets/**/*.tsx"),
-          ],
+          input: [...globSync("./remix/assets/**/*.{ts,tsx}")],
         },
       },
     },
