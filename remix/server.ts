@@ -2,13 +2,15 @@
 import * as build from "virtual:react-router/server-build";
 import { createRequestHandler } from "react-router";
 import { createRouter } from "remix/fetch-router";
-import { route } from "remix/fetch-router/routes";
 import { compression } from "remix/compression-middleware";
+import { formData } from "remix/form-data-middleware";
 import { staticFiles } from "remix/static-middleware";
 import { rateLimit, filteredLogger } from "./middleware.ts";
 import blogRssHandler from "./routes/blog-rss.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import sourceMapSupport from "source-map-support";
+import { routes } from "./routes";
+import actionsController from "./routes/actions";
 
 if (import.meta.env.PROD) {
   sourceMapSupport.install();
@@ -38,6 +40,7 @@ const router = createRouter({
             cacheControl: "public, max-age=3600",
           }),
         ]),
+    formData(),
     rateLimit({
       windowMs: 2 * 60 * 1000,
       max: 1000,
@@ -47,17 +50,9 @@ const router = createRouter({
   ],
 });
 
-// ---------------------------------------------------------------------------
-// Remix 3 routes (remix/component) — explicit patterns win over the catch-all
-// ---------------------------------------------------------------------------
-const remixRoutes = route({
-  healthcheck: "/healthcheck",
-  blogRss: "/blog/rss.xml",
-});
-
 // Keep healthcheck on a stable path during migration so deploy checks never
 // depend on the in-progress Remix route asset strategy.
-router.map(remixRoutes.healthcheck, () => {
+router.map(routes.healthcheck, () => {
   return new Response("OK", {
     headers: {
       "Cache-Control": "no-store",
@@ -66,25 +61,21 @@ router.map(remixRoutes.healthcheck, () => {
   });
 });
 
-router.map(remixRoutes.blogRss, blogRssHandler);
+router.map(routes.blogRss, blogRssHandler);
+router.map(routes.actions, actionsController);
 
-// if (isDev) {
-const devRemixRoutes = route({
-  remixTest: "/remix-test",
-  remixHome: "/remix-home",
-});
-
-router.map(devRemixRoutes, {
-  async remixTest() {
-    const mod = await import("./routes/test-route.tsx");
-    return mod.default();
-  },
-  async remixHome(context) {
-    const mod = await import("./routes/home.tsx");
-    return mod.default(context);
-  },
-});
-// }
+if (isDev) {
+  router.map(routes.dev, {
+    async remixTest() {
+      const mod = await import("./routes/test-route.tsx");
+      return mod.default();
+    },
+    async remixHome(context) {
+      const mod = await import("./routes/home.tsx");
+      return mod.default(context);
+    },
+  });
+}
 
 // Redirects from _redirects (must be before * catchall)
 const redirects = loadRedirectsFromFile();

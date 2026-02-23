@@ -47,9 +47,33 @@ Do not add new Remix migration code under `app/remix/**`.
 - Stable/always mapped:
   - `/healthcheck`
   - `/blog/rss.xml`
+  - `/_actions/newsletter`
 - Migration preview routes:
   - `/remix-test` (smoke test)
   - `/remix-home` (homepage migration preview)
+
+## Route + form best practices
+
+- Define internal URLs in `remix/routes.ts` and use `routes.*.href()` in components/assets/server mapping instead of hardcoded strings.
+- Group route handlers by concern when it helps composition (for example `remix/routes/actions.ts` for mutation/API-style handlers).
+- Parse request bodies with `formData()` middleware in `remix/server.ts` and read `context.formData` in actions.
+  - Avoid manual `URLSearchParams(await request.text())` parsing.
+- Use schema-based validation (for example `zod`) for server validation/coercion.
+  - Keep validation logic declarative and return explicit 400s for invalid payloads.
+- Keep newsletter-style UX state client-owned when server persistence is unnecessary:
+  - action returns JSON (`{ ok, error }`)
+  - client entry updates in-place status UI
+  - no cookie/session flash needed for ephemeral submit feedback
+
+## Home route migration notes
+
+- The Remix home route reuses split home sections under `remix/components/home/**` and interactive entries under `remix/assets/**`.
+- Interactive parity currently includes:
+  - wordmark right-click navigation (`remix/assets/wordmark-link.tsx`)
+  - mobile menu open/close interactions (`remix/assets/mobile-menu.tsx`)
+  - newsletter submit interaction (`remix/assets/newsletter-subscribe.tsx`)
+- `DocSearchModal` is intentionally not ported to the Remix home route yet.
+- Keep expanding home parity tests as migration confidence checks (metadata, key link targets, and interaction outcomes).
 
 ## Contributor checklist
 

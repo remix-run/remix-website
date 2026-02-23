@@ -1,4 +1,5 @@
 import cx from "clsx";
+import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe";
 
 export function StayInTheLoopSection() {
   return () => (
@@ -33,37 +34,23 @@ function NewsletterCard() {
           anytime.
         </p>
       </div>
-      {/* TODO(remix-home): replace this static form with the real subscribe provider/action flow. */}
-      <form
+      <NewsletterSubscribeForm
         class="m-0 flex flex-col gap-6 md:h-14 md:flex-row"
-        method="post"
-        action="#"
-      >
-        <input
-          type="email"
-          name="email"
-          placeholder="name@example.com"
-          class={cx(
-            "rmx-bg-neutral-100",
-            "box-border inline-block h-14 flex-1 appearance-none rounded-lg border-0 px-6 py-4 text-base",
-            "placeholder:text-rmx-text-tertiary",
-          )}
-        />
-        <button
-          type="submit"
-          class={cx(
-            "rmx-bg-button-primary rmx-text-button-primary rmx-shadow-low",
-            "rmx-button-text",
-            "box-border inline-flex h-14 appearance-none items-center justify-center rounded-lg border border-black/10 px-6 font-semibold",
-            "transition-all hover:opacity-90",
-            "active:scale-[0.98] active:opacity-80",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",
-            "md:w-auto md:whitespace-nowrap",
-          )}
-        >
-          Subscribe
-        </button>
-      </form>
+        inputClass={cx(
+          "rmx-bg-neutral-100",
+          "box-border inline-block h-14 flex-1 appearance-none rounded-lg border-0 px-6 py-4 text-base",
+          "placeholder:text-rmx-text-tertiary",
+        )}
+        buttonClass={cx(
+          "rmx-bg-button-primary rmx-text-button-primary rmx-shadow-low",
+          "rmx-button-text",
+          "box-border inline-flex h-14 appearance-none items-center justify-center rounded-lg border border-black/10 px-6 font-semibold",
+          "transition-all hover:opacity-90",
+          "active:scale-[0.98] active:opacity-80",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",
+          "md:w-auto md:whitespace-nowrap",
+        )}
+      />
     </div>
   );
 }
@@ -86,7 +73,7 @@ function DiscordCard() {
       </div>
       <div>
         <a
-          href="https://rmx.as/discord"
+          href="https://discord.gg/xwx7mMzVkA"
           class={cx(
             "rmx-bg-button-secondary rmx-text-button-secondary rmx-shadow-low",
             "rmx-button-text",

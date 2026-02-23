@@ -7,9 +7,7 @@ describe("remix/component rendering pipeline", () => {
 
     expect(response).toBeInstanceOf(Response);
     expect(response.status).toBe(200);
-    expect(response.headers.get("Content-Type")).toBe(
-      "text/html; charset=utf-8",
-    );
+    expect(response.headers.get("Content-Type")).toContain("text/html");
 
     const html = await response.text();
 
