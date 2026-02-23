@@ -1,4 +1,3 @@
-/** @jsxImportSource remix/component */
 import type { RemixNode } from "remix/component/jsx-runtime";
 
 import clientAssets from "../assets/entry.ts?assets=client";

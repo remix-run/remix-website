@@ -81,15 +81,11 @@ Exception:
 
 ## Conventions
 
-### JSX pragma (required)
+### JSX runtime
 
-Every `.tsx` file in `remix/` that contains JSX must start with:
+`remix/tsconfig.json` sets `"jsxImportSource": "remix/component"` for `remix/**`.
 
-```tsx
-/** @jsxImportSource remix/component */
-```
-
-The pragma is required for runtime JSX transform behavior in this repo.
+Per-file `/** @jsxImportSource remix/component */` pragmas are optional and generally unnecessary.
 
 ### Imports
 
@@ -113,9 +109,8 @@ export function MyComponent() {
 Route handlers return `Response` objects. Visual routes typically render to string:
 
 ```tsx
-/** @jsxImportSource remix/component */
 import { renderToString } from "remix/component/server";
-import { Document } from "../document";
+import { Document } from "../components/document";
 
 export default async function handler() {
   const html = await renderToString(
@@ -192,7 +187,6 @@ This split setup is temporary for the dual-runtime migration period. The target 
 
 Before opening a PR that changes `remix/**` or fetch-router mappings:
 
-- Add JSX pragma to every Remix `.tsx` file with JSX
 - Use relative imports in `remix/**`
 - Do not import modules that pull in `react-router` types
 - Keep `/healthcheck` on stable server path unless migration strategy explicitly changes
@@ -204,7 +198,7 @@ Before opening a PR that changes `remix/**` or fetch-router mappings:
 
 In progress:
 
-- `remix/` scaffolding (`lib/document.tsx`, isolated tsconfigs, smoke-test route)
+- `remix/` scaffolding (`components/document.tsx`, isolated tsconfigs, smoke-test route)
 - server route map wiring pattern using fetch-router `route(...)`
 - production Remix handler for `/blog/rss.xml` wired in `remix/server.ts`
 
