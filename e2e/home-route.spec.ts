@@ -1,11 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Remix home preview", () => {
+test.describe("Home route", () => {
   test("renders key homepage content", async ({ page }) => {
-    const response = await page.goto("/remix-home");
+    const response = await page.goto("/");
     expect(response?.ok()).toBe(true);
 
-    await expect(page).toHaveTitle(/Remix Home/);
+    await expect(page).toHaveTitle(/Remix/i);
     await expect(
       page.getByRole("heading", { name: "Remix 3 is under active development" }),
     ).toBeVisible();

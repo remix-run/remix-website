@@ -7,6 +7,7 @@ import { formData } from "remix/form-data-middleware";
 import { staticFiles } from "remix/static-middleware";
 import { rateLimit, filteredLogger } from "./middleware.ts";
 import blogRssHandler from "./routes/blog-rss.ts";
+import homeRoute from "./routes/home.tsx";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import sourceMapSupport from "source-map-support";
 import { routes } from "./routes";
@@ -63,16 +64,13 @@ router.map(routes.healthcheck, () => {
 
 router.map(routes.blogRss, blogRssHandler);
 router.map(routes.actions, actionsController);
+router.map(routes.home, homeRoute);
 
 if (isDev) {
   router.map(routes.dev, {
     async remixTest() {
       const mod = await import("./routes/test-route.tsx");
       return mod.default();
-    },
-    async remixHome(context) {
-      const mod = await import("./routes/home.tsx");
-      return mod.default(context);
     },
   });
 }

@@ -16,17 +16,16 @@ export function Header({
   return (
     <header className={cx("p-12", "text-rmx-primary", className)}>
       <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between">
-        <NavLink
+        <a
           onContextMenu={(event) => {
             event.preventDefault();
             navigate("/brand");
           }}
-          to={to}
-          prefetch="intent"
+          href={to}
           aria-label="Remix"
         >
           <Wordmark aria-hidden />
-        </NavLink>
+        </a>
 
         <nav className="hidden gap-6 md:flex" aria-label="Main">
           <HeaderLink to={href("/blog")}>Blog</HeaderLink>

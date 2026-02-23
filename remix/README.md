@@ -10,7 +10,7 @@ This repo runs two systems in parallel during migration:
 Request flow:
 
 1. `remix/server.ts` handles the request through `remix/fetch-router`.
-2. Explicit route mappings (like `/healthcheck`, `/blog/rss.xml`, `/remix-*`) run first.
+2. Explicit route mappings (like `/`, `/healthcheck`, `/blog/rss.xml`, `/remix-test`) run first.
 3. Everything else falls back to React Router via `createRequestHandler`.
 
 ## Directory conventions (important)
@@ -45,12 +45,12 @@ Do not add new Remix migration code under `app/remix/**`.
 ## Current migration routes
 
 - Stable/always mapped:
+  - `/`
   - `/healthcheck`
   - `/blog/rss.xml`
   - `/_actions/newsletter`
 - Migration preview routes:
   - `/remix-test` (smoke test)
-  - `/remix-home` (homepage migration preview)
 
 ## Route + form best practices
 
@@ -68,6 +68,7 @@ Do not add new Remix migration code under `app/remix/**`.
 ## Home route migration notes
 
 - The Remix home route reuses split home sections under `remix/components/home/**` and interactive entries under `remix/assets/**`.
+- The Remix home route now serves `/` directly from `remix/routes/home.tsx` before React Router fallback.
 - Interactive parity currently includes:
   - wordmark right-click navigation (`remix/assets/wordmark-link.tsx`)
   - mobile menu open/close interactions (`remix/assets/mobile-menu.tsx`)

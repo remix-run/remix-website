@@ -12,6 +12,5 @@ export const routes = route({
   }),
   dev: route({
     remixTest: "/remix-test",
-    remixHome: "/remix-home",
   }),
 });

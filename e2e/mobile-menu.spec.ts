@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Mobile menu", () => {
   test("opens and shows navigation links", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    const response = await page.goto("/remix-home");
+    const response = await page.goto("/");
     expect(response?.ok()).toBe(true);
 
     const menuToggle = page.locator("summary").filter({ hasText: "Open menu" });
