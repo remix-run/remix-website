@@ -19,9 +19,9 @@ import {
   type LoadOptions as FathomLoadOptions,
 } from "fathom-client";
 
-import "~/styles/tailwind.css";
-import "~/styles/bailwind.css";
-import "~/styles/marketing.css";
+import "../shared/tailwind.css";
+import "../shared/bailwind.css";
+import "../shared/marketing.css";
 import { removeTrailingSlashes, isProductionHost } from "~/lib/http.server";
 import iconsHref from "~/icons.svg";
 import cx from "clsx";

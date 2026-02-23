@@ -5,7 +5,7 @@ import defaultTheme from "tailwindcss/defaultTheme";
 
 /** @type {TailwindConfig} */
 export default {
-  content: ["./app/**/*.{ts,tsx}", "./data/**/*.md"],
+  content: ["./app/**/*.{ts,tsx}", "./remix/**/*.{ts,tsx}", "./data/**/*.md"],
   darkMode: "selector",
   plugins: [selectedVariantPlugin, expandedVariantPlugin],
   theme: {

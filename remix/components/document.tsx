@@ -3,9 +3,9 @@ import type { RemixNode } from "remix/component/jsx-runtime";
 import clientAssets from "../assets/entry.ts?assets=client";
 import documentAssets from "./document.tsx?assets=ssr";
 
-import "../../app/styles/tailwind.css";
-import "../../app/styles/bailwind.css";
-import "../../app/styles/marketing.css";
+import "../../shared/tailwind.css";
+import "../../shared/bailwind.css";
+import "../../shared/marketing.css";
 
 const assets = clientAssets.merge(documentAssets);
 const isDev = import.meta.env.DEV;
@@ -25,7 +25,7 @@ interface DocumentProps {
  * (app/root.tsx) so migrated pages look consistent.
  *
  * CSS strategy (dev only for now):
- *   Vite's dev middleware serves `/app/styles/*.css` with full
+ *   Vite's dev middleware serves `/shared/*.css` with full
  *   PostCSS/Tailwind processing, so plain <link> tags work.
  *   Production asset paths are TBD (see plan: asset-strategy).
  */
