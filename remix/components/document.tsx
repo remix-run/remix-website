@@ -87,7 +87,7 @@ export function Document() {
           @vitejs/plugin-react injects a guard into every .tsx file it transforms:
             if (!window.__vite_plugin_react_preamble_installed__) throw ...
           Normally Vite injects the real preamble via its HTML transform pipeline,
-          but SSR pages bypass that. Our app/remix/ components use remix/component
+          but SSR pages bypass that. Our remix/ components use remix/component
           JSX (not React), so actual Fast Refresh isn't needed — this just satisfies
           the guard so dynamically importing those modules doesn't throw.
           A plain (non-module) script runs synchronously, before any deferred
@@ -100,9 +100,6 @@ export function Document() {
             window.__vite_plugin_react_preamble_installed__ = true
           `}
         />
-
-        {/* Client hydration bootstrap — Vite serves .tsx in dev */}
-        <script type="module" src="/app/remix/assets/entry.tsx" />
 
         {/* Route-specific head elements */}
         {head}

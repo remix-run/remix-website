@@ -1,5 +1,3 @@
-/** @jsxImportSource remix/component */
-
 export function Wordmark() {
   return (props: {
     height?: number;

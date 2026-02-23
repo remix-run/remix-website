@@ -1,4 +1,3 @@
-/** @jsxImportSource remix/component */
 import cx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
 

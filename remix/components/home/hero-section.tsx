@@ -1,4 +1,3 @@
-/** @jsxImportSource remix/component */
 import cx from "clsx";
 
 const heroImageSrc = "/marketing/racecar-teaser-hero.webp";

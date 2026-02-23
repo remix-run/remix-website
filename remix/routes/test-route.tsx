@@ -1,4 +1,4 @@
-import { renderToString } from "remix/component/server";
+import { render } from "../utils/render";
 import { Document } from "../components/document";
 import { Counter } from "../assets/counter";
 
@@ -7,7 +7,7 @@ import { Counter } from "../assets/counter";
  * Remove once real routes are migrated.
  */
 export default async function TestRoute() {
-  const html = await renderToString(
+  return render(
     <Document title="Remix 3 Test" noIndex>
       <main class="flex flex-1 flex-col items-center justify-center p-8">
         <h1 class="text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
@@ -39,9 +39,8 @@ export default async function TestRoute() {
         </a>
       </main>
     </Document>,
+    {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    },
   );
-
-  return new Response("<!DOCTYPE html>" + html, {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
-  });
 }

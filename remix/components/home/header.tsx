@@ -1,7 +1,6 @@
-/** @jsxImportSource remix/component */
 import cx from "clsx";
-import { WordmarkLink } from "../assets/wordmark-link";
-import { MobileMenu } from "../assets/mobile-menu";
+import { MobileMenu } from "../../assets/mobile-menu";
+import { WordmarkLink } from "../../assets/wordmark-link";
 
 const LINKS: Array<{ to: string; label: string; external?: boolean }> = [
   { to: "/blog", label: "Blog" },

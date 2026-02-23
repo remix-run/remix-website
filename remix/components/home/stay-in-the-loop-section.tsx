@@ -1,4 +1,3 @@
-/** @jsxImportSource remix/component */
 import cx from "clsx";
 
 export function StayInTheLoopSection() {

@@ -1,23 +1,21 @@
-/** @jsxImportSource remix/component */
 import { clientEntry, type Handle } from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import cx from "clsx";
+import iconsHref from "../../app/icons.svg";
+import assets from "./mobile-menu.tsx?assets=client";
 
 export const MobileMenu = clientEntry(
-  "/app/remix/assets/mobile-menu.tsx#MobileMenu",
+  `${assets.entry}#MobileMenu`,
   (handle: Handle, setup?: { open?: boolean }) => {
     let isOpen = setup?.open ?? false;
 
     handle.queueTask(() => {
-      let closeMenu = () => {
+      const closeMenu = () => {
         if (isOpen) {
           isOpen = false;
           handle.update();
         }
       };
-      // Close when the user interacts outside the menu. Interactions inside
-      // stop propagation on the <details> element before reaching here, so
-      // these handlers only ever fire for outside interactions.
       handle.on(document, {
         mousedown: closeMenu,
         touchstart: closeMenu,
@@ -25,12 +23,12 @@ export const MobileMenu = clientEntry(
       });
     });
 
-    let stopPropagation = (e: UIEvent) => {
+    const stopPropagation = (e: UIEvent) => {
       e.stopPropagation();
     };
 
     return (props: { children: RemixNode; class?: string }) => {
-      let baseClasses =
+      const baseClasses =
         "bg-gray-100 hover:bg-gray-200 text-rmx-primary [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
 
       return (
@@ -54,8 +52,7 @@ export const MobileMenu = clientEntry(
             )}
           >
             <svg class="h-5 w-5" aria-hidden="true">
-              {/* /app/icons.svg is served by Vite in dev — same approach as CSS */}
-              <use href="/app/icons.svg#menu" />
+              <use href={`${iconsHref}#menu`} />
             </svg>
             <span class="sr-only">Open menu</span>
           </summary>

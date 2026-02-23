@@ -1,5 +1,5 @@
-/** @jsxImportSource remix/component */
 import cx from "clsx";
+import iconsHref from "../../../app/icons.svg";
 
 export function PitchSection() {
   return () => (
@@ -35,7 +35,7 @@ export function PitchSection() {
           )}
         >
           <svg class="size-6 shrink-0" fill="none" aria-hidden="true">
-            <use href="/app/icons.svg#github" />
+            <use href={`${iconsHref}#github`} />
           </svg>
           <span>Watch the repo</span>
         </a>

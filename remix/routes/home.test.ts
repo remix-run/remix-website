@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import HomePresentationalRoute from "./home-presentational";
+import HomeRoute from "./home";
 
-describe("Home presentational route", () => {
+describe("Home route preview", () => {
   it("renders expected content and metadata", async () => {
-    const response = await HomePresentationalRoute({
-      request: new Request("http://localhost:3000/remix-home-presentational"),
+    const response = await HomeRoute({
+      request: new Request("http://localhost:3000/remix-home"),
     });
 
     expect(response.status).toBe(200);
@@ -14,10 +14,9 @@ describe("Home presentational route", () => {
     const html = await response.text();
 
     expect(html).toContain("<html");
-    expect(html).toContain("Remix Home (Presentational Preview)");
-    expect(html).toContain("Remix 3 is under active development");
-    expect(html).toContain("The story so far");
-    expect(html).toContain("Timeline milestones");
+    expect(html).toContain("Remix Home (Preview)");
+    expect(html).toContain('class="marketing-home"');
+    expect(html).toContain("#github");
     expect(html).toContain("og:title");
     expect(html).toContain("twitter:card");
   });

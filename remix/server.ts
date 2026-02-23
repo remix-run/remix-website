@@ -71,12 +71,17 @@ router.map(remixRoutes.blogRss, blogRssHandler);
 // if (isDev) {
 const devRemixRoutes = route({
   remixTest: "/remix-test",
+  remixHome: "/remix-home",
 });
 
 router.map(devRemixRoutes, {
   async remixTest() {
     const mod = await import("./routes/test-route.tsx");
     return mod.default();
+  },
+  async remixHome(context) {
+    const mod = await import("./routes/home.tsx");
+    return mod.default(context);
   },
 });
 // }

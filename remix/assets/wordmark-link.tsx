@@ -1,9 +1,9 @@
-/** @jsxImportSource remix/component */
 import { clientEntry } from "remix/component";
-import { Wordmark } from "../home/wordmark";
+import { Wordmark } from "../components/home/wordmark";
+import assets from "./wordmark-link.tsx?assets=client";
 
 export const WordmarkLink = clientEntry(
-  "/app/remix/assets/wordmark-link.tsx#WordmarkLink",
+  `${assets.entry}#WordmarkLink`,
   () => {
     return (props: { href: string; brandHref: string }) => (
       <a

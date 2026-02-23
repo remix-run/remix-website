@@ -1,4 +1,3 @@
-/** @jsxImportSource remix/component */
 import cx from "clsx";
 import { TimelineDiagramDesktop } from "./desktop";
 import { TimelineDiagramMobile } from "./mobile";

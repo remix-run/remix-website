@@ -5,6 +5,6 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "remix/component",
-    "types": ["node", "@hiogawa/vite-plugin-fullstack/types"]
+    "types": ["node", "vite/client", "@hiogawa/vite-plugin-fullstack/types"]
   }
 }
