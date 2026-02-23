@@ -1,4 +1,5 @@
 import { clientEntry, type Handle } from "remix/component";
+import { escape } from "remix/interaction/keys";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import cx from "clsx";
 import iconsHref from "../../app/icons.svg";
@@ -16,10 +17,12 @@ export const MobileMenu = clientEntry(
           handle.update();
         }
       };
+
       handle.on(document, {
         mousedown: closeMenu,
         touchstart: closeMenu,
         focusin: closeMenu,
+        [escape]: closeMenu,
       });
     });
 
