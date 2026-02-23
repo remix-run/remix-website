@@ -33,7 +33,7 @@ export default defineConfig({
   },
   optimizeDeps: { exclude: ["svg2img"] },
   plugins: [
-    tsconfigPaths(),
+    tsconfigPaths({ projects: ["./app/tsconfig.json"] }),
     arraybuffer(),
     fullstack({
       serverEnvironments: ["ssr"],

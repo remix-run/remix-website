@@ -1,7 +1,7 @@
 {
+  "extends": "../tsconfig.base.json",
   "include": ["**/*.ts", "**/*.tsx", "../.react-router/types/**/*"],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": [
       "@hiogawa/vite-plugin-fullstack/types",
       "@react-router/node",
@@ -10,23 +10,11 @@
       "vitest/globals",
       "vite-plugin-arraybuffer/types"
     ],
-    "esModuleInterop": true,
     "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ES2019",
-    "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "paths": {
       "~/*": ["./app/*"]
     },
-    "allowImportingTsExtensions": true,
     "baseUrl": "..",
-    "allowJs": true,
-    "isolatedModules": true,
-    "resolveJsonModule": true,
-    "noEmit": true,
     "rootDirs": ["..", "../.react-router/types"]
   }
 }

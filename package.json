@@ -20,7 +20,10 @@
     "test": "vitest",
     "pretest:e2e": "playwright install chromium",
     "test:e2e": "playwright test",
-    "typecheck": "react-router typegen && tsc --noEmit -p remix/tsconfig.json && tsc --noEmit -p app/tsconfig.json"
+    "typecheck": "react-router typegen && pnpm run --parallel \"/^typecheck:(app|remix|remix-server)$/\"",
+    "typecheck:app": "tsc --noEmit -p app/tsconfig.json",
+    "typecheck:remix": "tsc --noEmit -p remix/tsconfig.json",
+    "typecheck:remix-server": "tsc --noEmit -p remix/tsconfig.server.json"
   },
   "dependencies": {
     "@docsearch/css": "^3.5.2",
@@ -99,5 +102,5 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@10.29.3"
+  "packageManager": "pnpm@10.30.1"
 }

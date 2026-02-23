@@ -1,6 +1,7 @@
 import * as http from "node:http";
 import { createRequestListener } from "remix/node-fetch-server";
 
+// @ts-expect-error - generated build artifact is not typed
 import build from "./build/server/index.js";
 
 const port = Number(process.env.PORT ?? 3000);

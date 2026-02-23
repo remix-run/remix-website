@@ -1,25 +1,10 @@
 {
+  "extends": "../tsconfig.base.json",
   "include": ["./**/*.ts", "./**/*.tsx"],
   "exclude": ["server.ts"],
   "compilerOptions": {
-    "outDir": ".output",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "jsx": "react-jsx",
     "jsxImportSource": "remix/component",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ES2019",
-    "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "resolveJsonModule": true,
-    "noEmit": true,
-    "allowImportingTsExtensions": true,
-    "types": ["node", "@hiogawa/vite-plugin-fullstack/types", "vite/client"]
-    // "paths": {
-    //   "react-router": ["./react-router-type-stub.d.ts"]
-    // }
+    "types": ["node", "@hiogawa/vite-plugin-fullstack/types"]
   }
 }

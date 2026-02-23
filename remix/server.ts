@@ -14,15 +14,8 @@ if (import.meta.env.PROD) {
   sourceMapSupport.install();
 }
 
-// const isProduction = process.env.NODE_ENV === "production";
-const port = Number(process.env.PORT ?? 3000);
-if (!Number.isFinite(port) || port <= 0) {
-  throw new Error(
-    `Invalid PORT value "${process.env.PORT ?? ""}". Expected a positive number.`,
-  );
-}
-
 const handleRequest = createRequestHandler(build, process.env.NODE_ENV);
+const isDev = import.meta.env.DEV;
 
 function shouldSkipRateLimit(pathname: string) {
   return (
@@ -35,16 +28,12 @@ function shouldSkipRateLimit(pathname: string) {
 const router = createRouter({
   middleware: [
     compression(),
-    // In dev, Vite serves static files via its own middleware.
-    // In production, serve static files with appropriate caching.
-    ...(import.meta.env.DEV
+    ...(isDev
       ? []
       : [
-          // Vite fingerprints its assets so we can cache forever.
           staticFiles("build/client/assets", {
             cacheControl: "public, max-age=31536000, immutable",
           }),
-          // Everything else (like favicon.ico) is cached for an hour.
           staticFiles("build/client", {
             cacheControl: "public, max-age=3600",
           }),
@@ -79,7 +68,7 @@ router.map(remixRoutes.healthcheck, () => {
 
 router.map(remixRoutes.blogRss, blogRssHandler);
 
-// if (import.meta.env.DEV) {
+// if (isDev) {
 const devRemixRoutes = route({
   remixTest: "/remix-test",
 });

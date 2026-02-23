@@ -1,6 +1,9 @@
-# Remix 3 Migration (`app/remix/`)
+# Remix 3 Migration (`remix/` + `app/`)
 
-This directory contains routes and components being incrementally migrated from React Router v7 framework-mode to Remix 3's `remix/component` + `remix/fetch-router` system.
+This repo currently runs two routing/rendering systems side-by-side:
+
+- `app/` contains the React Router v7 framework-mode app.
+- `remix/` contains Remix 3 handlers and `remix/component` rendering code used by `remix/server.ts`.
 
 Both systems run side-by-side in the same server during migration.
 
@@ -8,8 +11,8 @@ Both systems run side-by-side in the same server during migration.
 
 This document is the migration playbook for:
 
-- route wiring conventions in `server.ts`
-- implementation constraints in `app/remix/`
+- route wiring conventions in `remix/server.ts`
+- implementation constraints in `remix/`
 - guardrails that keep production stable while migration is in progress
 
 It is not the canonical source of truth for every shipped route. Keep the "Current state" section updated as changes land.
@@ -22,26 +25,29 @@ Request -> fetch-router
   `- catch-all "*"        -> React Router createRequestHandler
 ```
 
-Explicit fetch-router routes in `server.ts` take priority over the `*` catch-all.
+Explicit fetch-router routes in `remix/server.ts` take priority over the `*` catch-all.
 
 ## Current state
 
-Current `app/remix/` contents:
+Current `remix/` contents:
 
 ```
-app/remix/
-|- document.tsx
+remix/
+|- assets/
+|- lib/
+|- routes/
+|- middleware.ts
+|- redirects.ts
+|- react-router-type-stub.d.ts
+|- server.ts
 |- tsconfig.json
-|- blog-rss.test.ts
-|- test-route.tsx
-|- test-route.test.ts
-`- README.md
+`- tsconfig.server.json
 ```
 
 Current server wiring behavior:
 
-- `/healthcheck` is handled directly in `server.ts` (stable operational endpoint)
-- `/blog/rss.xml` is handled directly in `server.ts` with a production-safe Remix handler
+- `/healthcheck` is handled directly in `remix/server.ts` (stable operational endpoint)
+- `/blog/rss.xml` is handled directly in `remix/server.ts` with a production-safe Remix handler
 - `/remix-test` is wired only in development as a Remix smoke test page
 - all remaining routes are handled by React Router via the catch-all
 
@@ -49,7 +55,7 @@ Current server wiring behavior:
 
 - Dynamic `.tsx` route imports are currently considered development-only.
 - Production use of dynamic Remix route modules depends on the precompile/asset strategy (still in progress).
-- For production migrations today, prefer stable handlers that can be imported directly by `server.ts` (no Vite-only transforms like `import.meta.glob`).
+- For production migrations today, prefer stable handlers that can be imported directly by `remix/server.ts` (no Vite-only transforms like `import.meta.glob`).
 - Keep `/healthcheck` on a stable server handler until the dynamic asset strategy is finalized.
 
 ## Dual-route strategy
@@ -71,13 +77,13 @@ Remove route entries from `app/routes.ts` only after inbound linking surfaces ar
 
 Exception:
 
-- Non-navigated resource endpoints (for example RSS/robots/sitemap-style URLs) can be removed from `app/routes.ts` once they are mapped explicitly in `server.ts` for production.
+- Non-navigated resource endpoints (for example RSS/robots/sitemap-style URLs) can be removed from `app/routes.ts` once they are mapped explicitly in `remix/server.ts` for production.
 
 ## Conventions
 
 ### JSX pragma (required)
 
-Every `.tsx` file in `app/remix/` that contains JSX must start with:
+Every `.tsx` file in `remix/` that contains JSX must start with:
 
 ```tsx
 /** @jsxImportSource remix/component */
@@ -87,10 +93,10 @@ The pragma is required for runtime JSX transform behavior in this repo.
 
 ### Imports
 
-- Use relative imports inside `app/remix/`
-- Do not rely on `~/*` aliases in `app/remix/`
+- Use relative imports inside `remix/`
+- `~/*` alias usage is for the React Router app in `app/**`, not for `remix/**`
 - Avoid importing modules that transitively import `react-router` (can leak incompatible React JSX types)
-- Prefer `app/lib/cache-control.ts` for shared cache constants
+- Prefer `shared/**` for cross-runtime constants/utilities used by both `app/**` and `remix/**`
 
 ### Component pattern
 
@@ -135,28 +141,22 @@ export default async function handler(
 }
 ```
 
-### Wiring a route in `server.ts`
+### Wiring a route in `remix/server.ts`
 
 Current preferred pattern in this repo:
 
 1. Define route map(s) with `route(...)` from `remix/fetch-router/routes`
 2. Register handlers with `router.map(routeMap, controller)`
-3. Put production-ready Remix routes in the always-on route map (outside the Vite-only block)
-4. Reserve `if (viteDevServer)` route maps for smoke tests and dynamic dev-only module imports
+3. Put production-ready Remix routes in the always-on route map
+4. Reserve `if (import.meta.env.DEV)` route maps for smoke tests and dynamic dev-only module imports
 5. Keep React Router entries in `app/routes.ts` for user-facing routes during dual-stack period
 6. Add a colocated Vitest test where possible
 
-Production-safe handler placement:
+Server boundary:
 
-- If a handler needs Node-only APIs (for example filesystem access), implement it in `server/routes/` and call it from `server.ts`.
-- Do not duplicate these handlers in `app/remix/`; keep a single source of truth in `server/routes/`.
-- Shared constants/utilities used by both app and server runtime code should live in `shared/` (not `app/`).
-- `server/**` production runtime modules must not import from `app/**`.
-
-Handler loading pattern (important):
-
-- In development, map Node-backed route handlers through `loadRemixModule(...)` so handler edits reload without restarting the dev server.
-- In production, map those same handlers with static imports from `server/routes/*` for boot-time validation and predictable runtime behavior.
+- `remix/server.ts` should stay framework-agnostic and map request handlers.
+- Route handlers can live under `remix/routes/**` and return `Response`.
+- Shared constants/utilities used by both `app/**` and `remix/**` should live in `shared/**` (not `app/**`).
 - Avoid dynamic `import()` on production request paths unless there is a specific need and monitoring/error handling is in place.
 
 ### HTML attributes
@@ -170,9 +170,15 @@ Handler loading pattern (important):
 
 ### TypeScript isolation
 
-`app/remix/tsconfig.json` is standalone (no `extends`) and uses `"types": []` to prevent `@types/react` leakage.
+Typechecking is intentionally split by runtime surface:
 
-Do not add `extends` back.
+- `app/tsconfig.json`: React Router app code under `app/**`
+- `remix/tsconfig.json`: Remix route/component code under `remix/**` (excludes `remix/server.ts`)
+- `remix/tsconfig.server.json`: server-only check for `remix/server.ts`
+
+`remix/tsconfig.server.json` includes a local `react-router` type stub mapping so `createRequestHandler` can be typed without pulling React-oriented JSX types into Remix route/component checks.
+
+This split setup is temporary for the dual-runtime migration period. The target end-state is to collapse back to a single root TypeScript config once the React Router/Remix split is fully removed.
 
 ## Testing
 
@@ -184,23 +190,23 @@ Do not add `extends` back.
 
 ## LLM/contributor checklist
 
-Before opening a PR that changes `app/remix/` or fetch-router mappings:
+Before opening a PR that changes `remix/**` or fetch-router mappings:
 
 - Add JSX pragma to every Remix `.tsx` file with JSX
-- Use relative imports in `app/remix/`
+- Use relative imports in `remix/**`
 - Do not import modules that pull in `react-router` types
 - Keep `/healthcheck` on stable server path unless migration strategy explicitly changes
 - Keep user-facing route entries in `app/routes.ts` until dual-route migration is complete
-- For production migrations, prefer handlers that can run from `server.ts` without Vite-only transforms
+- For production migrations, prefer handlers that can run from `remix/server.ts` without Vite-only transforms
 - Add or update tests for new route handlers and server route wiring
 
 ## Migration status (living section)
 
 In progress:
 
-- `app/remix/` scaffolding (`document.tsx`, isolated tsconfig, smoke-test route)
+- `remix/` scaffolding (`lib/document.tsx`, isolated tsconfigs, smoke-test route)
 - server route map wiring pattern using fetch-router `route(...)`
-- production Remix handler for `/blog/rss.xml` wired in `server.ts`
+- production Remix handler for `/blog/rss.xml` wired in `remix/server.ts`
 
 Not yet fully migrated:
 
@@ -209,3 +215,4 @@ Not yet fully migrated:
 - OG image generation (`/img/:slug`)
 - newsletter action (`/_actions/newsletter`)
 - interactive/hydrated components (menu, DocSearch, subscribe)
+- tsconfig consolidation back to one root project config
