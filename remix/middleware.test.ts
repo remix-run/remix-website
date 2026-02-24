@@ -10,12 +10,7 @@ function createMockContext(
     search?: string;
   } = {},
 ) {
-  let {
-    forwardedFor,
-    method = "GET",
-    pathname = "/",
-    search = "",
-  } = overrides;
+  let { forwardedFor, method = "GET", pathname = "/", search = "" } = overrides;
   let url = new URL(`${pathname}${search}`, "http://localhost");
   let headers = new Headers();
   if (forwardedFor !== undefined) {

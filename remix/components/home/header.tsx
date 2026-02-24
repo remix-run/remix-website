@@ -14,7 +14,10 @@ export function Header() {
   return () => (
     <header class={cx("p-12", "text-rmx-primary", "relative z-50")}>
       <div class="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-8">
-        <WordmarkLink href={routes.home.href()} brandHref={routes.brand.href()} />
+        <WordmarkLink
+          href={routes.home.href()}
+          brandHref={routes.brand.href()}
+        />
 
         <nav class="hidden items-center gap-6 md:flex" aria-label="Main">
           {LINKS.map((link) => (

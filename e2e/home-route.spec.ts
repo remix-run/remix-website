@@ -7,7 +7,9 @@ test.describe("Home route", () => {
 
     await expect(page).toHaveTitle(/Remix/i);
     await expect(
-      page.getByRole("heading", { name: "Remix 3 is under active development" }),
+      page.getByRole("heading", {
+        name: "Remix 3 is under active development",
+      }),
     ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Stay in the loop" }),

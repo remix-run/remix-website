@@ -6,9 +6,9 @@ describe("submitNewsletterRequest", () => {
     let controller = new AbortController();
     controller.abort();
 
-    let fetchImpl = vi.fn<typeof fetch>().mockRejectedValue(
-      new DOMException("Aborted", "AbortError"),
-    );
+    let fetchImpl = vi
+      .fn<typeof fetch>()
+      .mockRejectedValue(new DOMException("Aborted", "AbortError"));
 
     let formData = new FormData();
     formData.set("email", "hello@example.com");
