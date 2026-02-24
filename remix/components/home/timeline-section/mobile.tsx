@@ -205,7 +205,7 @@ function YearLabel() {
     return (
       <div
         class="rmx-caption text-rmx-tertiary flex items-center justify-end px-6"
-        css={{ opacity, ...(props.css ?? {}) }}
+        css={{ opacity, ...props.css }}
       >
         {props.children}
       </div>
@@ -226,7 +226,7 @@ function LaneCell() {
             "rmx-caption text-rmx-neutral-100",
             "self-center justify-self-center font-bold",
           )}
-          css={{ ...(props.css ?? {}), ...(configStyle ?? {}) }}
+          css={{ ...props.css, ...configStyle }}
         >
           {label}
         </div>

@@ -1,0 +1,44 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "react", "unicorn", "oxc"],
+  "env": {
+    "node": true
+  },
+  "ignorePatterns": [
+    ".cache",
+    "build",
+    "public/build",
+    ".yalc",
+    "app/ui/primitives"
+  ],
+  "settings": {
+    "react": {
+      "version": "18.3.0"
+    }
+  },
+  "rules": {
+    "eslint/no-unused-vars": "off",
+    "eslint/no-inner-declarations": "off",
+    "eslint/no-var": "off",
+    "eslint/prefer-const": "off",
+    "eslint/no-unused-expressions": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
+    "react/no-children-prop": "off",
+    "react/no-unknown-property": "off",
+    "typescript/no-unused-vars": "warn",
+    "typescript/no-explicit-any": "off",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/ban-types": "off"
+  },
+  "overrides": [
+    {
+      "files": ["remix/**"],
+      "rules": {
+        "react/display-name": "off",
+        "eslint/prefer-const": "off"
+      }
+    }
+  ]
+}
