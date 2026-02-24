@@ -1,29 +1,33 @@
-import { z } from "zod";
+import * as s from "remix/data-schema";
+import * as c from "remix/data-schema/checks";
+import * as coerce from "remix/data-schema/coerce";
 import type { routes } from "../routes";
 import type { Controller } from "remix/fetch-router";
 
 type NewsletterResponse = { ok: boolean; error: string | null };
 
-// TODO: replace with remix/data-schema
-let newsletterSubmission = z.object({
-  email: z.string().email(),
-  tags: z.array(z.coerce.number()),
+let newsletterSubmission = s.object({
+  email: s.string().pipe(c.email()),
+  tags: s.array(coerce.number()),
 });
+
+function hasPath(issue: { path?: readonly unknown[] }, key: string): boolean {
+  const path = issue.path;
+  return Array.isArray(path) && path.some((p) => p === key);
+}
 
 export default {
   async newsletter(context) {
     let formData = context.formData ?? (await context.request.formData());
-    let result = newsletterSubmission.safeParse({
+    let result = s.parseSafe(newsletterSubmission, {
       email: formData.get("email"),
       tags: formData.getAll("tag"),
     });
     if (!result.success) {
-      let hasEmailIssue = result.error.issues.some((issue) =>
-        issue.path.includes("email"),
+      let hasEmailIssue = result.issues.some((issue) =>
+        hasPath(issue, "email"),
       );
-      let hasTagIssue = result.error.issues.some((issue) =>
-        issue.path.includes("tags"),
-      );
+      let hasTagIssue = result.issues.some((issue) => hasPath(issue, "tags"));
       return Response.json(
         {
           ok: false,
@@ -38,7 +42,7 @@ export default {
     }
 
     try {
-      await subscribeToNewsletter(result.data.email, result.data.tags);
+      await subscribeToNewsletter(result.value.email, result.value.tags);
       return Response.json({
         ok: true,
         error: null,
@@ -78,8 +82,11 @@ async function subscribeToNewsletter(email: string, tags: number[] = []) {
     }),
   });
 
-  let data = (await response.json()) as { error?: string };
-  if (data.error) {
-    throw new Error(data.error);
+  const result = s.parseSafe(
+    s.object({ error: s.optional(s.string()) }),
+    await response.json(),
+  );
+  if (result.success && result.value.error) {
+    throw new Error(result.value.error);
   }
 }

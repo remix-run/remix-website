@@ -1,23 +1,20 @@
-import { z } from "zod";
+import * as s from "remix/data-schema";
+import * as coerce from "remix/data-schema/coerce";
 
-const requiredInProduction: z.RefinementEffect<
-  string | undefined
->["refinement"] = (value, ctx) => {
-  if (process.env.NODE_ENV === "production" && !value) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Missing required environment variable " + ctx.path.join("."),
-    });
-  }
-};
+const envSchema = s
+  .object({
+    // Get from https://app.convertkit.com/account_settings/advanced_settings
+    CONVERTKIT_KEY: s.optional(s.string()),
+    NO_CACHE: s.defaulted(coerce.boolean(), false),
+    PUBLIC_STOREFRONT_API_TOKEN: s.optional(s.string()),
+  })
+  .refine(
+    (v) => process.env.NODE_ENV !== "production" || !!v.CONVERTKIT_KEY,
+    "Missing required environment variable",
+  );
 
-const envSchema = z.object({
-  // Get from https://app.convertkit.com/account_settings/advanced_settings
-  CONVERTKIT_KEY: z.string().optional().superRefine(requiredInProduction),
+export function parseEnv(input: Record<string, string | undefined>) {
+  return s.parse(envSchema, input);
+}
 
-  NO_CACHE: z.coerce.boolean().default(false),
-
-  PUBLIC_STOREFRONT_API_TOKEN: z.string().optional(),
-});
-
-export const env = envSchema.parse(process.env);
+export const env = parseEnv(process.env);

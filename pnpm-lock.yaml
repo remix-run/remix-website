@@ -109,9 +109,6 @@ importers:
       yaml:
         specifier: ^2.8.2
         version: 2.8.2
-      zod:
-        specifier: ^3.22.4
-        version: 3.25.76
     devDependencies:
       "@hiogawa/vite-plugin-fullstack":
         specifier: ^0.0.11
@@ -6763,12 +6760,6 @@ packages:
         integrity: sha512-N+d4UJSJbt/R3wqY7Coqs5pcV0aUj2j9IaQ3rNj9bVCLld8tTGKRa2USARjnvZJWVx1NDmQev8EknoczaOQDOA==,
       }
 
-  zod@3.25.76:
-    resolution:
-      {
-        integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==,
-      }
-
   zwitch@2.0.4:
     resolution:
       {
@@ -11197,7 +11188,5 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yoga-wasm-web@0.3.3: {}
-
-  zod@3.25.76: {}
 
   zwitch@2.0.4: {}

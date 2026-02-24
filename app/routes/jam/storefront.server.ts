@@ -1,6 +1,7 @@
 import { createStorefrontApiClient } from "@shopify/storefront-api-client";
 import { env } from "~/env.server";
-import { z } from "zod";
+import * as s from "remix/data-schema";
+import * as c from "remix/data-schema/checks";
 
 // Initialize the client as a lazy singleton
 let client: ReturnType<typeof createStorefrontApiClient> | null = null;
@@ -15,28 +16,40 @@ function getClient() {
   return client;
 }
 
-const ProductSchema = z.object({
-  id: z.string(),
-  price: z.string(),
-  productId: z.string(),
-  availableForSale: z.boolean(),
+const ProductSchema = s.object({
+  id: s.string(),
+  price: s.string(),
+  productId: s.string(),
+  availableForSale: s.boolean(),
 });
 
-const CartSchema = z.object({
-  id: z.string(),
-  checkoutUrl: z.string().url(),
+const CartSchema = s.object({
+  id: s.string(),
+  checkoutUrl: s.string().pipe(c.url()),
 });
 
-const PhotoSchema = z.object({
-  url: z.string().url(),
-  altText: z.string().optional(),
-  width: z.number(),
-  height: z.number(),
+const PhotoSchema = s.object({
+  url: s.string().pipe(c.url()),
+  altText: s.optional(s.string()),
+  width: s.number(),
+  height: s.number(),
 });
 
-type Product = z.infer<typeof ProductSchema>;
-type Cart = z.infer<typeof CartSchema>;
-type Photo = z.infer<typeof PhotoSchema>;
+type Product = s.InferOutput<typeof ProductSchema>;
+type Cart = s.InferOutput<typeof CartSchema>;
+type Photo = s.InferOutput<typeof PhotoSchema>;
+
+export function parseProduct(raw: unknown): Product {
+  return s.parse(ProductSchema, raw);
+}
+
+export function parseCart(raw: unknown): Cart {
+  return s.parse(CartSchema, raw);
+}
+
+export function parsePhotos(raw: unknown): Photo[] {
+  return s.parse(s.array(PhotoSchema), raw);
+}
 
 export async function getProduct(handle: string): Promise<Product> {
   const productQuery = `
@@ -80,7 +93,7 @@ export async function getProduct(handle: string): Promise<Product> {
     availableForSale,
   };
 
-  return ProductSchema.parse(product);
+  return parseProduct(product);
 }
 
 // Shopify limits the number of file references to 128
@@ -142,7 +155,7 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
     });
   }
 
-  return z.array(PhotoSchema).parse(photos);
+  return parsePhotos(photos);
 }
 
 export const MAX_QUANTITY = 10;
@@ -203,5 +216,5 @@ export async function createCart(params: {
     checkoutUrl: data.cartCreate.cart.checkoutUrl,
   };
 
-  return CartSchema.parse(cart);
+  return parseCart(cart);
 }
