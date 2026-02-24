@@ -12,7 +12,7 @@ let newsletterSubmission = s.object({
 });
 
 function hasPath(issue: { path?: readonly unknown[] }, key: string): boolean {
-  const path = issue.path;
+  let path = issue.path;
   return Array.isArray(path) && path.some((p) => p === key);
 }
 
@@ -82,11 +82,12 @@ async function subscribeToNewsletter(email: string, tags: number[] = []) {
     }),
   });
 
-  const result = s.parseSafe(
-    s.object({ error: s.optional(s.string()) }),
-    await response.json(),
-  );
-  if (result.success && result.value.error) {
+  let body = await response.json();
+  let result = s.parseSafe(s.object({ error: s.optional(s.string()) }), body);
+  if (!result.success) {
+    throw new Error("Unexpected response from ConvertKit API");
+  }
+  if (result.value.error) {
     throw new Error(result.value.error);
   }
 }
