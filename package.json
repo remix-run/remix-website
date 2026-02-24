@@ -59,8 +59,7 @@
     "svg2img": "^1.0.0-beta.2",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
-    "yaml": "^2.8.2",
-    "zod": "^3.22.4"
+    "yaml": "^2.8.2"
   },
   "devDependencies": {
     "@hiogawa/vite-plugin-fullstack": "^0.0.11",

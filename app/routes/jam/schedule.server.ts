@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import yaml from "yaml";
 import { processMarkdown } from "~/lib/md.server";
-import { z } from "zod";
+import * as s from "remix/data-schema";
 import { LRUCache } from "lru-cache";
 
 import scheduleYamlFileContents from "./data/schedule.yaml?raw";
@@ -22,14 +22,20 @@ const imageUrlByKey = new Map(
   }),
 );
 
-const scheduleItemSchema = z.object({
-  time: z.string(),
-  title: z.string(),
-  description: z.string(),
-  speaker: z.string(),
-  imgFilename: z.string().optional(),
-  bio: z.string().optional(),
+const scheduleItemSchema = s.object({
+  time: s.string(),
+  title: s.string(),
+  description: s.string(),
+  speaker: s.string(),
+  imgFilename: s.optional(s.string()),
+  bio: s.optional(s.string()),
 });
+
+const scheduleArraySchema = s.array(scheduleItemSchema);
+
+export function parseScheduleItems(raw: unknown) {
+  return s.parse(scheduleArraySchema, raw);
+}
 
 type ScheduleItem = {
   time: string;
@@ -57,7 +63,7 @@ export async function getSchedule(): Promise<ScheduleItem[]> {
   if (cached) return cached;
 
   const rawUnknown = yaml.parse(scheduleYamlFileContents);
-  const raw = z.array(scheduleItemSchema).parse(rawUnknown);
+  const raw = parseScheduleItems(rawUnknown);
 
   const schedule: ScheduleItem[] = await Promise.all(
     raw.map(async (item) => {

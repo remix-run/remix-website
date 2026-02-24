@@ -58,7 +58,7 @@ Do not add new Remix migration code under `app/remix/**`.
 - Group route handlers by concern when it helps composition (for example `remix/routes/actions.ts` for mutation/API-style handlers).
 - Parse request bodies with `formData()` middleware in `remix/server.ts` and read `context.formData` in actions.
   - Avoid manual `URLSearchParams(await request.text())` parsing.
-- Use schema-based validation (for example `zod`) for server validation/coercion.
+- Use schema-based validation with `remix/data-schema` for server validation/coercion.
   - Keep validation logic declarative and return explicit 400s for invalid payloads.
 - Keep newsletter-style UX state client-owned when server persistence is unnecessary:
   - action returns JSON (`{ ok, error }`)
