@@ -29,7 +29,7 @@ export function rateLimit({
     throw new Error("rateLimit options `windowMs` and `max` must be > 0");
   }
 
-  const hits = new Map<string, RateLimitEntry>();
+  let hits = new Map<string, RateLimitEntry>();
   let requestsSinceCleanup = 0;
 
   return (context, next) => {
@@ -37,8 +37,8 @@ export function rateLimit({
       return next();
     }
 
-    const ip = keyGenerator(context)?.trim() || "unknown";
-    const now = Date.now();
+    let ip = keyGenerator(context)?.trim() || "unknown";
+    let now = Date.now();
     requestsSinceCleanup++;
     if (requestsSinceCleanup >= 100) {
       cleanupExpiredEntries(hits, now);
@@ -54,7 +54,7 @@ export function rateLimit({
     data.count++;
 
     if (data.count > max) {
-      const retryAfterSeconds = Math.max(
+      let retryAfterSeconds = Math.max(
         1,
         Math.ceil((data.resetTime - now) / 1000),
       );
@@ -71,7 +71,7 @@ export function rateLimit({
 }
 
 // Logger middleware that skips GET requests to /__manifest
-const baseLogger = logger();
+let baseLogger = logger();
 
 export function filteredLogger({
   loggerMiddleware = baseLogger,
@@ -92,7 +92,7 @@ function isManifestPath(pathname: string) {
 }
 
 function cleanupExpiredEntries(hits: Map<string, RateLimitEntry>, now: number) {
-  for (const [key, data] of hits) {
+  for (let [key, data] of hits) {
     if (now > data.resetTime) {
       hits.delete(key);
     }
@@ -100,21 +100,21 @@ function cleanupExpiredEntries(hits: Map<string, RateLimitEntry>, now: number) {
 }
 
 function getClientIp(context: Parameters<Middleware>[0]) {
-  const headers = [
+  let headers = [
     "cf-connecting-ip",
     "true-client-ip",
     "x-real-ip",
     "x-forwarded-for",
   ];
 
-  for (const headerName of headers) {
-    const rawValue = context.headers.get(headerName);
+  for (let headerName of headers) {
+    let rawValue = context.headers.get(headerName);
     if (!rawValue) continue;
 
-    const firstValue = rawValue.split(",")[0]?.trim();
+    let firstValue = rawValue.split(",")[0]?.trim();
     if (!firstValue) continue;
 
-    const normalizedValue = normalizeClientIp(firstValue);
+    let normalizedValue = normalizeClientIp(firstValue);
     if (normalizedValue) return normalizedValue;
   }
 
@@ -122,7 +122,7 @@ function getClientIp(context: Parameters<Middleware>[0]) {
 }
 
 function normalizeClientIp(ip: string) {
-  const unquotedIp = ip.replace(/^"(.*)"$/, "$1").trim();
+  let unquotedIp = ip.replace(/^"(.*)"$/, "$1").trim();
   if (!unquotedIp) return "";
 
   if (unquotedIp.startsWith("[") && unquotedIp.includes("]")) {

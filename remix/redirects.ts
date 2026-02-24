@@ -4,10 +4,10 @@ import { route } from "remix/fetch-router/routes";
 import { RoutePattern } from "remix/route-pattern";
 import { createRedirectResponse } from "remix/response/redirect";
 
-const defaultRedirectsPath = path.join(process.cwd(), "_redirects");
+let defaultRedirectsPath = path.join(process.cwd(), "_redirects");
 
 function getValidRedirectCode(code: string | number | undefined): number {
-  const defaultCode = 302;
+  let defaultCode = 302;
   if (!code) return defaultCode;
   if (typeof code === "string") {
     try {
@@ -38,15 +38,15 @@ type RedirectConfig = { from: string; toPattern: RoutePattern; status: number };
 export function parseRedirectsFile(
   redirectsFileContents: string,
 ): RedirectConfig[] {
-  const configs: RedirectConfig[] = [];
+  let configs: RedirectConfig[] = [];
 
-  for (const line of redirectsFileContents.split("\n")) {
-    const trimmed = line.trim();
+  for (let line of redirectsFileContents.split("\n")) {
+    let trimmed = line.trim();
     if (!trimmed || trimmed.startsWith("#")) continue;
 
-    const [from, to, maybeCode] = trimmed.split(/\s+/);
+    let [from, to, maybeCode] = trimmed.split(/\s+/);
     if (!from || !to) continue;
-    const status = getValidRedirectCode(maybeCode);
+    let status = getValidRedirectCode(maybeCode);
     configs.push({
       from,
       toPattern: new RoutePattern(to),
@@ -60,7 +60,7 @@ export function parseRedirectsFile(
 export function loadRedirectsFromFile(
   redirectsPath: string = defaultRedirectsPath,
 ): RedirectConfig[] {
-  const redirectsFileContents = fs.readFileSync(redirectsPath, "utf-8");
+  let redirectsFileContents = fs.readFileSync(redirectsPath, "utf-8");
   return parseRedirectsFile(redirectsFileContents);
 }
 
@@ -85,7 +85,7 @@ function buildRedirectController(
     configs.map((c, i) => [
       `redirect${i}_${c.from.replaceAll("/", "_").replaceAll("*", "splat")}`,
       ({ params }: { params: Record<string, string | undefined> }) => {
-        const url = c.toPattern.href(params);
+        let url = c.toPattern.href(params);
         return createRedirectResponse(url, { status: c.status });
       },
     ]),

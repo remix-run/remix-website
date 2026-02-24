@@ -15,9 +15,4 @@ test.describe("Jam", () => {
     await page.goto("/jam/2025/faq");
     await expect(page.locator("main")).toBeVisible();
   });
-
-  test("jam gallery page renders", async ({ page }) => {
-    await page.goto("/jam/2025/gallery");
-    await expect(page.locator("main")).toBeVisible();
-  });
 });

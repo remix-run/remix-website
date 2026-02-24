@@ -3,11 +3,12 @@ import type { RemixNode } from "remix/component/jsx-runtime";
 import clientAssets from "../assets/entry.ts?assets=client";
 import documentAssets from "./document.tsx?assets=ssr";
 
-import "../../app/styles/tailwind.css";
-import "../../app/styles/bailwind.css";
-import "../../app/styles/marketing.css";
+import "../../shared/tailwind.css";
+import "../../shared/bailwind.css";
+import "../../shared/marketing.css";
 
-const assets = clientAssets.merge(documentAssets);
+let assets = clientAssets.merge(documentAssets);
+let isDev = import.meta.env.DEV;
 
 interface DocumentProps {
   title: string;
@@ -24,7 +25,7 @@ interface DocumentProps {
  * (app/root.tsx) so migrated pages look consistent.
  *
  * CSS strategy (dev only for now):
- *   Vite's dev middleware serves `/app/styles/*.css` with full
+ *   Vite's dev middleware serves `/shared/*.css` with full
  *   PostCSS/Tailwind processing, so plain <link> tags work.
  *   Production asset paths are TBD (see plan: asset-strategy).
  */
@@ -81,6 +82,25 @@ export function Document() {
         <script
           innerHTML={`let m=window.matchMedia("(prefers-color-scheme: dark)");if(m.matches)document.documentElement.classList.add("dark");`}
         />
+
+        {isDev ? (
+          <>
+            {/*
+              Dev-only stub for Vite's React fast-refresh preamble check.
+              @vitejs/plugin-react injects a guard into transformed .tsx modules:
+                if (!window.__vite_plugin_react_preamble_installed__) throw ...
+              Since this HTML is streamed outside Vite's HTML transform pipeline,
+              we set the flag manually in development.
+            */}
+            <script
+              innerHTML={`
+                window.$RefreshReg$ = () => {}
+                window.$RefreshSig$ = () => (type) => type
+                window.__vite_plugin_react_preamble_installed__ = true
+              `}
+            />
+          </>
+        ) : null}
 
         {/* Route-specific head elements */}
         {head}

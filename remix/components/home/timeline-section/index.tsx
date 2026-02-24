@@ -1,36 +1,30 @@
 import cx from "clsx";
-import { TimelineDiagramMobile } from "./mobile";
 import { TimelineDiagramDesktop } from "./desktop";
+import { TimelineDiagramMobile } from "./mobile";
 
 export function TimelineSection() {
-  return (
+  return () => (
     <section
-      className={cx(
+      class={cx(
         "rmx-home-timeline-bg",
         "overflow-x-clip bg-[var(--rmx-neutral-950)] text-white",
       )}
     >
-      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-12 pt-16 md:gap-16 md:pt-24">
-        <h2
-          className={cx(
-            "rmx-heading-xl",
-            "text-rmx-neutral-100",
-            "text-center",
-          )}
-        >
+      <div class="mx-auto flex w-full max-w-[1400px] flex-col gap-12 pt-16 md:gap-16 md:pt-24">
+        <h2 class={cx("rmx-heading-xl", "text-rmx-neutral-100", "text-center")}>
           The story so far
         </h2>
 
-        <div className="xl:hidden">
+        <div class="xl:hidden">
           <TimelineDiagramMobile />
         </div>
 
-        <div className="hidden overflow-visible xl:flex xl:justify-center">
-          <TimelineDiagramDesktop className="shrink-0" />
+        <div class="hidden overflow-visible xl:flex xl:justify-center">
+          <TimelineDiagramDesktop class="shrink-0" />
         </div>
 
         <div
-          className={cx(
+          class={cx(
             "rmx-body-md rmx-body-on-dark",
             "mx-auto w-full max-w-[1024px] space-y-8 px-12 pb-16 md:space-y-12 md:pb-24",
           )}
@@ -38,7 +32,7 @@ export function TimelineSection() {
           <p>
             <a
               href="https://v2.remix.run/"
-              className="font-bold text-[var(--rmx-highlight-blue)] hover:underline"
+              class="font-bold text-[var(--rmx-highlight-blue)] hover:underline"
             >
               The first manifestation of Remix
             </a>{" "}
@@ -47,36 +41,37 @@ export function TimelineSection() {
             standards to deliver a fast, slick, and resilient user experience.
           </p>
           <p>
-            We've now merged Remix's features directly into{" "}
+            We&apos;ve now merged Remix&apos;s features directly into{" "}
             <a
               href="https://reactrouter.com/"
-              className="font-bold text-[var(--rmx-highlight-red)] hover:underline"
+              class="font-bold text-[var(--rmx-highlight-red)] hover:underline"
             >
               React Router
             </a>
-            . If you're looking for a full stack, React-based framework built on
-            Web APIs, check out React Router. We think it's the best way to ship
-            React applications.
+            . If you&apos;re looking for a full stack, React-based framework
+            built on Web APIs, check out React Router. We think it&apos;s the
+            best way to ship React applications.
           </p>
           <p>
             <a
               href="https://github.com/remix-run/remix"
-              className="font-bold text-[var(--rmx-highlight-green)] hover:underline"
+              class="font-bold text-[var(--rmx-highlight-green)] hover:underline"
             >
               Remix 3
             </a>{" "}
             is our latest full stack framework, built for immediate productivity
-            whether you're using a fully agentic workflow or completely
+            whether you&apos;re using a fully agentic workflow or completely
             handwriting every line of code. Remix 3 is built on web APIs and
             composed of multiple single-purpose modules, packaged up to give you
-            everything you need to build any kind of website. It's lightweight,
-            simple to understand, and powerful to wield. If you've ever wished
-            for a development experience that feels lighter, faster, and more
-            aligned with how the web works, Remix 3 is being built for you.
+            everything you need to build any kind of website. It&apos;s
+            lightweight, simple to understand, and powerful to wield. If
+            you&apos;ve ever wished for a development experience that feels
+            lighter, faster, and more aligned with how the web works, Remix 3 is
+            being built for you.
           </p>
         </div>
 
-        <div className="sr-only">
+        <div class="sr-only">
           <h3>Timeline milestones</h3>
           <ul>
             <li>2017: React Router v4 released</li>

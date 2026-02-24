@@ -6,17 +6,17 @@ import {
   parseRedirectsFile,
 } from "./redirects";
 
-const redirects = loadRedirectsFromFile();
-const { redirectController, redirectRoutes } = createRedirectRoutes(redirects);
-const router = createRouter();
+let redirects = loadRedirectsFromFile();
+let { redirectController, redirectRoutes } = createRedirectRoutes(redirects);
+let router = createRouter();
 router.map(redirectRoutes, redirectController);
 
 async function getRedirectResult(
   pathname: string,
   targetRouter: ReturnType<typeof createRouter> = router,
 ) {
-  const url = `https://example.com${pathname || "/"}`;
-  const response = await targetRouter.fetch(url);
+  let url = `https://example.com${pathname || "/"}`;
+  let response = await targetRouter.fetch(url);
 
   if (response.status >= 300 && response.status < 400) {
     return {
@@ -31,7 +31,7 @@ async function getRedirectResult(
 describe("redirects (fetch-router)", () => {
   describe("parser", () => {
     it("skips invalid lines and defaults invalid status codes", () => {
-      const redirects = parseRedirectsFile(`
+      let redirects = parseRedirectsFile(`
         # comment
         /one /target 301
         /two /target-two not-a-code
@@ -46,28 +46,28 @@ describe("redirects (fetch-router)", () => {
 
   describe("exact matches", () => {
     it("redirects /login to the legacy app", async () => {
-      const { url, status } = await getRedirectResult("/login");
+      let { url, status } = await getRedirectResult("/login");
       expect(url).toBe("https://remix-run.web.app/login");
       expect(status).toBe(302);
     });
 
     it("redirects /features to root", async () => {
-      const { url, status } = await getRedirectResult("/features");
+      let { url, status } = await getRedirectResult("/features");
       expect(url).toBe("/");
       expect(status).toBe(302);
     });
   });
 
   describe("splat matches (* and :splat)", () => {
-    const splatRedirects = parseRedirectsFile(
+    let splatRedirects = parseRedirectsFile(
       "/conf/2023/* https://v2.remix.run/conf/2023/:splat 302",
     );
-    const splatModule = createRedirectRoutes(splatRedirects);
-    const splatRouter = createRouter();
+    let splatModule = createRedirectRoutes(splatRedirects);
+    let splatRouter = createRouter();
     splatRouter.map(splatModule.redirectRoutes, splatModule.redirectController);
 
     it("redirects /conf/2023/any/nested/path", async () => {
-      const { url } = await getRedirectResult(
+      let { url } = await getRedirectResult(
         "/conf/2023/any/nested/path",
         splatRouter,
       );
@@ -77,7 +77,7 @@ describe("redirects (fetch-router)", () => {
 
   describe("no redirect", () => {
     it("returns non-redirect for unmatched paths", async () => {
-      const result = await getRedirectResult("/some/random/path");
+      let result = await getRedirectResult("/some/random/path");
       expect(result.redirect).toBeNull();
       expect(result.url).toBeNull();
     });

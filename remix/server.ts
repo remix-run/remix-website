@@ -1,21 +1,26 @@
-// @ts-expect-error - no types
+// @ts-expect-error - react-router server build is not typed
 import * as build from "virtual:react-router/server-build";
 import { createRequestHandler } from "react-router";
 import { createRouter } from "remix/fetch-router";
-import { route } from "remix/fetch-router/routes";
+import { asyncContext } from "remix/async-context-middleware";
 import { compression } from "remix/compression-middleware";
+import { formData } from "remix/form-data-middleware";
 import { staticFiles } from "remix/static-middleware";
 import { rateLimit, filteredLogger } from "./middleware.ts";
 import blogRssHandler from "./routes/blog-rss.ts";
+import homeRoute from "./routes/home.tsx";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import sourceMapSupport from "source-map-support";
+import { routes } from "./routes";
+import actionsController from "./routes/actions";
+import { ROUTER_STORAGE_KEY } from "./utils/request-context";
 
 if (import.meta.env.PROD) {
   sourceMapSupport.install();
 }
 
-const handleRequest = createRequestHandler(build, process.env.NODE_ENV);
-const isDev = import.meta.env.DEV;
+let handleRequest = createRequestHandler(build, process.env.NODE_ENV);
+let isDev = import.meta.env.DEV;
 
 function shouldSkipRateLimit(pathname: string) {
   return (
@@ -25,7 +30,7 @@ function shouldSkipRateLimit(pathname: string) {
   );
 }
 
-const router = createRouter({
+let router = createRouter({
   middleware: [
     compression(),
     ...(isDev
@@ -38,6 +43,12 @@ const router = createRouter({
             cacheControl: "public, max-age=3600",
           }),
         ]),
+    formData(),
+    asyncContext(),
+    (context, next) => {
+      context.storage.set(ROUTER_STORAGE_KEY, router);
+      return next();
+    },
     rateLimit({
       windowMs: 2 * 60 * 1000,
       max: 1000,
@@ -47,17 +58,9 @@ const router = createRouter({
   ],
 });
 
-// ---------------------------------------------------------------------------
-// Remix 3 routes (remix/component) — explicit patterns win over the catch-all
-// ---------------------------------------------------------------------------
-const remixRoutes = route({
-  healthcheck: "/healthcheck",
-  blogRss: "/blog/rss.xml",
-});
-
 // Keep healthcheck on a stable path during migration so deploy checks never
 // depend on the in-progress Remix route asset strategy.
-router.map(remixRoutes.healthcheck, () => {
+router.map(routes.healthcheck, () => {
   return new Response("OK", {
     headers: {
       "Cache-Control": "no-store",
@@ -66,24 +69,22 @@ router.map(remixRoutes.healthcheck, () => {
   });
 });
 
-router.map(remixRoutes.blogRss, blogRssHandler);
+router.map(routes.blogRss, blogRssHandler);
+router.map(routes.actions, actionsController);
+router.map(routes.home, homeRoute);
 
-// if (isDev) {
-const devRemixRoutes = route({
-  remixTest: "/remix-test",
-});
-
-router.map(devRemixRoutes, {
-  async remixTest() {
-    const mod = await import("./routes/test-route.tsx");
-    return mod.default();
-  },
-});
-// }
+if (isDev) {
+  router.map(routes.dev, {
+    async remixTest() {
+      let mod = await import("./routes/test-route.tsx");
+      return mod.default();
+    },
+  });
+}
 
 // Redirects from _redirects (must be before * catchall)
-const redirects = loadRedirectsFromFile();
-const { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
+let redirects = loadRedirectsFromFile();
+let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
 
 router.map(redirectRoutes, redirectController);
 

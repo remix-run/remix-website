@@ -1,6 +1,5 @@
 import { Outlet, redirect, useMatches } from "react-router";
 import { CACHE_CONTROL } from "~/lib/http.server";
-import { Link } from "react-router";
 import { useId, useRef } from "react";
 import { clsx } from "clsx";
 import { Discord, GitHub, Twitter, YouTube } from "~/ui/icons";
@@ -9,7 +8,7 @@ import { useHideBackground } from "../utils";
 
 import type { Route } from "./+types/layout";
 
-import jamStyles from "../jam.css?url";
+import jamStyles from "../../../../shared/jam.css?url";
 import maskSrc from "../images/background-mask.avif";
 import seatsSrc from "../images/remix-color-seats.svg";
 
@@ -166,8 +165,8 @@ function Footer({ className }: { className?: string }) {
         )}
       >
         <div className="flex items-center gap-5">
-          <Link
-            to="/"
+          <a
+            href="/"
             className={clsx(
               "rounded-3xl border px-4 py-1 uppercase text-white",
               showSeats
@@ -176,7 +175,7 @@ function Footer({ className }: { className?: string }) {
             )}
           >
             remix.run
-          </Link>
+          </a>
           <a
             href="https://github.com/remix-run"
             aria-label="GitHub"

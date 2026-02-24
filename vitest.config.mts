@@ -8,8 +8,6 @@ import tsconfigPaths from "vite-tsconfig-paths";
 // Load all env vars (no prefix filter) from .env, .env.test, etc.
 let env = loadEnv("test", process.cwd(), "");
 
-console.log({ env });
-
 export default defineConfig({
   plugins: [
     react(),

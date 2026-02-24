@@ -1,9 +1,9 @@
 import cx from "clsx";
 
-export function TimelineDiagramDesktop({ className }: { className?: string }) {
-  return (
+export function TimelineDiagramDesktop() {
+  return (props: { class?: string }) => (
     <svg
-      className={className}
+      class={props.class}
       width="1919"
       height="209"
       viewBox="0 0 1919 209"
@@ -12,7 +12,7 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
     >
       {/* Year labels (non-interactive years) */}
       <g
-        className={cx("rmx-caption", "fill-[var(--rmx-text-tertiary)]")}
+        class={cx("rmx-caption", "fill-[var(--rmx-text-tertiary)]")}
         textAnchor="middle"
       >
         <text x="373" y="9" opacity="0.1">
@@ -475,12 +475,12 @@ export function TimelineDiagramDesktop({ className }: { className?: string }) {
 }
 
 /** Track name label (e.g., "REACT ROUTER", "REMIX", "REMIX 3") */
-function TrackLabel({ x, y, label }: { x: number; y: number; label: string }) {
-  return (
+function TrackLabel() {
+  return ({ x, y, label }: { x: number; y: number; label: string }) => (
     <text
       x={x}
       y={y}
-      className={cx(
+      class={cx(
         "rmx-caption",
         "fill-[var(--rmx-neutral-100)] font-semibold uppercase tracking-wider",
       )}
@@ -492,8 +492,8 @@ function TrackLabel({ x, y, label }: { x: number; y: number; label: string }) {
 }
 
 /** Open circle at the end of a track */
-function TrackEndCircle({ cx, cy }: { cx: number; cy: number }) {
-  return (
+function TrackEndCircle() {
+  return ({ cx, cy }: { cx: number; cy: number }) => (
     <circle
       cx={cx}
       cy={cy}
@@ -518,94 +518,96 @@ type MilestoneProps = {
 };
 
 /** Interactive milestone marker with hover/focus states */
-function Milestone({
-  year,
-  yearX,
-  nodeX,
-  nodeY,
-  lineY1,
-  label,
-  labelY,
-  labelColor,
-  href,
-}: MilestoneProps) {
-  const content = (
-    <>
-      {/* Year label */}
-      <text
-        x={yearX}
-        y="9"
-        textAnchor="middle"
-        className={cx(
-          "rmx-caption",
-          "fill-[var(--rmx-text-tertiary)] transition-all duration-150",
-          "group-hover:fill-[var(--rmx-neutral-100)] group-hover:font-bold",
-          "group-focus-visible:fill-[var(--rmx-neutral-100)] group-focus-visible:font-bold",
-        )}
-      >
-        {year}
-      </text>
-
-      {/* Hover hitbox */}
-      <circle cx={nodeX} cy={nodeY} r="24" fill="transparent" />
-
-      {/* Connecting line */}
-      <line
-        x1={nodeX}
-        y1={lineY1}
-        x2={nodeX}
-        y2="20"
-        stroke="var(--rmx-neutral-200)"
-        strokeWidth="2"
-        className="opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
-      />
-
-      {/* Default state: small dot */}
-      <circle
-        cx={nodeX}
-        cy={nodeY}
-        r="6"
-        fill="var(--rmx-neutral-200)"
-        className="opacity-100 transition-opacity duration-150 group-hover:opacity-0 group-focus-visible:opacity-0"
-      />
-
-      {/* Hover/focus state: white circle with colored label */}
-      <g className="opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
-        <circle cx={nodeX} cy={nodeY} r="24" fill="white" />
+function Milestone() {
+  return ({
+    year,
+    yearX,
+    nodeX,
+    nodeY,
+    lineY1,
+    label,
+    labelY,
+    labelColor,
+    href,
+  }: MilestoneProps) => {
+    let content = (
+      <>
+        {/* Year label */}
         <text
-          x={nodeX}
-          y={labelY}
+          x={yearX}
+          y="9"
           textAnchor="middle"
-          className="rmx-caption font-semibold"
-          fill={labelColor}
+          class={cx(
+            "rmx-caption",
+            "fill-[var(--rmx-text-tertiary)] transition-all duration-150",
+            "group-hover:fill-[var(--rmx-neutral-100)] group-hover:font-bold",
+            "group-focus-visible:fill-[var(--rmx-neutral-100)] group-focus-visible:font-bold",
+          )}
         >
-          {label}
+          {year}
         </text>
-      </g>
-    </>
-  );
 
-  if (href) {
+        {/* Hover hitbox */}
+        <circle cx={nodeX} cy={nodeY} r="24" fill="transparent" />
+
+        {/* Connecting line */}
+        <line
+          x1={nodeX}
+          y1={lineY1}
+          x2={nodeX}
+          y2="20"
+          stroke="var(--rmx-neutral-200)"
+          strokeWidth="2"
+          class="opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+        />
+
+        {/* Default state: small dot */}
+        <circle
+          cx={nodeX}
+          cy={nodeY}
+          r="6"
+          fill="var(--rmx-neutral-200)"
+          class="opacity-100 transition-opacity duration-150 group-hover:opacity-0 group-focus-visible:opacity-0"
+        />
+
+        {/* Hover/focus state: white circle with colored label */}
+        <g class="opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
+          <circle cx={nodeX} cy={nodeY} r="24" fill="white" />
+          <text
+            x={nodeX}
+            y={labelY}
+            textAnchor="middle"
+            class="rmx-caption font-semibold"
+            fill={labelColor}
+          >
+            {label}
+          </text>
+        </g>
+      </>
+    );
+
+    if (href) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group cursor-pointer"
+        >
+          {content}
+        </a>
+      );
+    }
+
     return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group cursor-pointer"
+      <g
+        tabIndex={0}
+        role="img"
+        aria-label={`${label} released in ${year}`}
+        class="group cursor-default"
       >
         {content}
-      </a>
+      </g>
     );
-  }
-
-  return (
-    <g
-      tabIndex={0}
-      role="img"
-      aria-label={`${label} released in ${year}`}
-      className="group cursor-default"
-    >
-      {content}
-    </g>
-  );
+  };
 }

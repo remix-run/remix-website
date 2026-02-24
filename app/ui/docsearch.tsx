@@ -2,7 +2,7 @@ import { createPortal } from "react-dom";
 import type { DocSearchProps } from "@docsearch/react";
 import { useDocSearchKeyboardEvents } from "@docsearch/react";
 import "@docsearch/css/dist/style.css";
-import "~/styles/docsearch.css";
+import "../../shared/docsearch.css";
 import { Suspense, createRef, lazy, useCallback, useState } from "react";
 
 let OriginalDocSearchModal = lazy(() =>

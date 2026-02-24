@@ -1,5 +1,5 @@
 import { getBlogPost } from "~/lib/blog.server";
-import mdStyles from "~/styles/md.css?url";
+import mdStyles from "../../../shared/md.css?url";
 import { useRef } from "react";
 import { useDelegatedReactRouterLinks } from "~/ui/delegate-links";
 

@@ -18,9 +18,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
+    command: "pnpm run dev",
     url: "http://localhost:5173",
     reuseExistingServer: true,
     timeout: 30_000,
+    stdout: "ignore",
+    stderr: process.env.PLAYWRIGHT_WEB_SERVER_LOGS === "1" ? "pipe" : "ignore",
   },
 });
