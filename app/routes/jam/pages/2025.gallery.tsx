@@ -5,7 +5,6 @@ import {
   useNavigate,
   useSearchParams,
   type LinkProps,
-  type MetaFunction,
   type ShouldRevalidateFunctionArgs,
 } from "react-router";
 
@@ -25,9 +24,9 @@ export let handle = {
   showSeats: false,
 };
 
-export let meta: MetaFunction = ({ matches }) => {
+export let meta: Route.MetaFunction = ({ matches }) => {
   let [rootMatch] = matches;
-  let { siteUrl } = rootMatch.data as { siteUrl: string };
+  let { siteUrl } = rootMatch.loaderData;
 
   let image = `${siteUrl}${ogImageSrc}`;
 

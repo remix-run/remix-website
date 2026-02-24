@@ -6,13 +6,12 @@ import { IntroMaskReveal } from "../components/home/intro-mask-reveal";
 import { PitchSection } from "../components/home/pitch-section";
 import { StayInTheLoopSection } from "../components/home/stay-in-the-loop-section";
 import { TimelineSection } from "../components/home/timeline-section";
+import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../../shared/cache-control.ts";
 
-export default async function HomeRoute(context?: { request?: Request }) {
-  const requestUrl = new URL(
-    context?.request?.url ?? "http://localhost:3000/",
-  );
+export default async function HomeRoute() {
+  const requestUrl = new URL(getRequestContext().request.url);
   const pageUrl = `${requestUrl.origin}/`;
   const previewImage = `${requestUrl.origin}/marketing/remix-3-thumbnail.jpg`;
 
@@ -23,7 +22,6 @@ export default async function HomeRoute(context?: { request?: Request }) {
         "Cache-Control": CACHE_CONTROL.DEFAULT,
       },
     },
-    context?.request,
   );
 }
 

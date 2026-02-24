@@ -1,6 +1,7 @@
 import { renderToStream } from "remix/component/server";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { createHtmlResponse } from "remix/response/html";
+import { getRequestContext } from "./request-context";
 
 export const render = {
   frame(node: RemixNode, init?: ResponseInit) {
@@ -11,9 +12,10 @@ export const render = {
     return new Response(renderToStream(node), { ...init, headers });
   },
 
-  document(node: RemixNode, init?: ResponseInit, request?: Request) {
+  document(node: RemixNode, init?: ResponseInit) {
+    const { request, router } = getRequestContext();
     const stream = renderToStream(node, {
-      resolveFrame: request ? (src) => resolveFrame(src, request) : undefined,
+      resolveFrame: (src) => resolveFrame(src, router, request),
       onError(error) {
         console.error(error);
       },
@@ -22,7 +24,11 @@ export const render = {
   },
 };
 
-async function resolveFrame(src: string, request: Request) {
+async function resolveFrame(
+  src: string,
+  router: ReturnType<typeof getRequestContext>["router"],
+  request: Request,
+) {
   const url = new URL(src, request.url);
 
   const headers = new Headers();
@@ -32,11 +38,13 @@ async function resolveFrame(src: string, request: Request) {
   if (cookie) headers.set("cookie", cookie);
 
   try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers,
-      signal: request.signal,
-    });
+    const response = await router.fetch(
+      new Request(url, {
+        method: "GET",
+        headers,
+        signal: request.signal,
+      }),
+    );
     if (!response.ok) {
       return `<pre>Frame error: ${response.status} ${response.statusText}</pre>`;
     }
