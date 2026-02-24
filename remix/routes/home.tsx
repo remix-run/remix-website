@@ -30,6 +30,7 @@ function HomePage() {
     <Document
       title="Remix - A Full Stack Framework Built on Web APIs"
       description="Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world."
+      forceTheme="light"
       head={
         <>
           <meta property="og:type" content="website" />

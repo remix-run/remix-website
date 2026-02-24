@@ -14,6 +14,7 @@ interface DocumentProps {
   title: string;
   description?: string;
   noIndex?: boolean;
+  forceTheme?: "dark" | "light";
   head?: RemixNode;
   children?: RemixNode;
 }
@@ -30,8 +31,19 @@ interface DocumentProps {
  *   Production asset paths are TBD (see plan: asset-strategy).
  */
 export function Document() {
-  return ({ title, description, noIndex, head, children }: DocumentProps) => (
-    <html lang="en">
+  return ({
+    title,
+    description,
+    noIndex,
+    forceTheme,
+    head,
+    children,
+  }: DocumentProps) => (
+    <html
+      lang="en"
+      data-theme={forceTheme ?? undefined}
+      class={forceTheme === "dark" ? "dark" : undefined}
+    >
       <head>
         <meta charset="utf-8" />
         <meta
@@ -79,9 +91,11 @@ export function Document() {
         <link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" />
 
         {/* Dark-mode detection (mirrors root.tsx ColorSchemeScript) */}
-        <script
-          innerHTML={`let m=window.matchMedia("(prefers-color-scheme: dark)");if(m.matches)document.documentElement.classList.add("dark");`}
-        />
+        {forceTheme === undefined ? (
+          <script
+            innerHTML={`let m=window.matchMedia("(prefers-color-scheme: dark)");if(m.matches)document.documentElement.classList.add("dark");`}
+          />
+        ) : null}
 
         {isDev ? (
           <>
@@ -106,7 +120,15 @@ export function Document() {
         {head}
       </head>
 
-      <body class="flex min-h-screen w-full flex-col overflow-x-hidden bg-white text-gray-900 antialiased selection:bg-blue-200 selection:text-black dark:bg-gray-900 dark:text-gray-200 dark:selection:bg-blue-800 dark:selection:text-white">
+      <body
+        class={`flex min-h-screen w-full flex-col overflow-x-hidden antialiased selection:bg-blue-200 selection:text-black dark:selection:bg-blue-800 dark:selection:text-white ${
+          forceTheme === "dark"
+            ? "bg-gray-900 text-gray-200"
+            : forceTheme === "light"
+              ? "bg-white text-gray-900"
+              : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200"
+        }`}
+      >
         {children}
         {assets.js.map((asset) => (
           <link key={asset.href} rel="modulepreload" href={asset.href} />
