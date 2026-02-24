@@ -226,7 +226,6 @@ export default function App() {
   }
 
   if (process.env.NODE_ENV !== "development") {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     useFathomClient("IRVDGCHK", {
       url: "https://cdn.usefathom.com/script.js",
       spa: "history",
@@ -244,7 +243,6 @@ export default function App() {
         // this img tag simply forces the icons to be loaded at a higher
         // priority than the scripts (chrome only for now)
         // @ts-expect-error -- silly React pretending this attribute doesn't exist
-        // eslint-disable-next-line react/no-unknown-property
         fetchpriority="high"
       />
     </Document>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
 /*!
  * Forked from https://github.com/ryanflorence/md/blob/master/index.ts
  *
