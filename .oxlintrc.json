@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "react", "unicorn", "oxc"],
+  "env": {
+    "node": true
+  },
+  "ignorePatterns": ["build"],
+  "settings": {
+    "react": {
+      "version": "18.3.0"
+    }
+  },
+  "rules": {
+    "eslint/no-unused-expressions": "off",
+    "react/no-children-prop": "off"
+  }
+}

@@ -10,7 +10,7 @@ const envSchema = s
   })
   .refine(
     (v) => process.env.NODE_ENV !== "production" || !!v.CONVERTKIT_KEY,
-    "Missing required environment variable",
+    "CONVERTKIT_KEY is required in production",
   );
 
 export function parseEnv(input: Record<string, string | undefined>) {
