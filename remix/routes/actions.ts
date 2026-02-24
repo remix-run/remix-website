@@ -1,4 +1,6 @@
 import { z } from "zod";
+import type { routes } from "../routes";
+import type { Controller } from "remix/fetch-router";
 
 type NewsletterResponse = { ok: boolean; error: string | null };
 
@@ -9,14 +11,7 @@ const newsletterSubmission = z.object({
 });
 
 export default {
-  async newsletter(context: { request: Request; formData?: FormData }) {
-    if (context.request.method.toUpperCase() !== "POST") {
-      return Response.json(
-        { ok: false, error: "Method Not Allowed" } satisfies NewsletterResponse,
-        { status: 405 },
-      );
-    }
-
+  async newsletter(context) {
     const formData = context.formData ?? (await context.request.formData());
     const result = newsletterSubmission.safeParse({
       email: formData.get("email"),
@@ -59,7 +54,7 @@ export default {
       );
     }
   },
-};
+} satisfies Controller<typeof routes.actions>;
 
 async function subscribeToNewsletter(email: string, tags: number[] = []) {
   const apiKey = process.env.CONVERTKIT_KEY;
@@ -67,7 +62,8 @@ async function subscribeToNewsletter(email: string, tags: number[] = []) {
     throw new Error("Missing CONVERTKIT_KEY");
   }
 
-  const apiUrl = process.env.CONVERTKIT_API_URL ?? "https://api.convertkit.com/v3";
+  const apiUrl =
+    process.env.CONVERTKIT_API_URL ?? "https://api.convertkit.com/v3";
   const formId = process.env.CONVERTKIT_FORM_ID ?? "1334747";
 
   const response = await fetch(`${apiUrl}/forms/${formId}/subscribe`, {

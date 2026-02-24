@@ -14,32 +14,28 @@ describe("Newsletter subscribe route", () => {
     process.env.CONVERTKIT_KEY = originalConvertKitKey;
   });
 
-  it("rejects non-POST methods", async () => {
-    const response = await actionsController.newsletter({
+  async function submitNewsletter(body: URLSearchParams) {
+    const formData = new FormData();
+    for (const [key, value] of body.entries()) {
+      formData.append(key, value);
+    }
+
+    type NewsletterContext = Parameters<typeof actionsController.newsletter>[0];
+    const context = {
       request: new Request(
         `http://localhost:3000${routes.actions.newsletter.href()}`,
-        {
-          method: "GET",
-        },
+        { method: "POST" },
       ),
-    });
-    expect(response.status).toBe(405);
-    await expect(response.json()).resolves.toEqual({
-      ok: false,
-      error: "Method Not Allowed",
-    });
-  });
+      formData,
+    } as NewsletterContext;
+
+    return actionsController.newsletter(context);
+  }
 
   it("rejects invalid emails", async () => {
-    const response = await actionsController.newsletter({
-      request: new Request(
-        `http://localhost:3000${routes.actions.newsletter.href()}`,
-        {
-          method: "POST",
-          body: new URLSearchParams({ email: "invalid-email" }),
-        },
-      ),
-    });
+    const response = await submitNewsletter(
+      new URLSearchParams({ email: "invalid-email" }),
+    );
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
       ok: false,
@@ -48,18 +44,12 @@ describe("Newsletter subscribe route", () => {
   });
 
   it("rejects invalid tags", async () => {
-    const response = await actionsController.newsletter({
-      request: new Request(
-        `http://localhost:3000${routes.actions.newsletter.href()}`,
-        {
-          method: "POST",
-          body: new URLSearchParams({
-            email: "hello@example.com",
-            tag: "not-a-number",
-          }),
-        },
-      ),
-    });
+    const response = await submitNewsletter(
+      new URLSearchParams({
+        email: "hello@example.com",
+        tag: "not-a-number",
+      }),
+    );
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
       ok: false,
@@ -72,18 +62,12 @@ describe("Newsletter subscribe route", () => {
       .spyOn(globalThis, "fetch")
       .mockResolvedValue(new Response(JSON.stringify({}), { status: 200 }));
 
-    const response = await actionsController.newsletter({
-      request: new Request(
-        `http://localhost:3000${routes.actions.newsletter.href()}`,
-        {
-          method: "POST",
-          body: new URLSearchParams({
-            email: "hello@example.com",
-            tag: "123",
-          }),
-        },
-      ),
-    });
+    const response = await submitNewsletter(
+      new URLSearchParams({
+        email: "hello@example.com",
+        tag: "123",
+      }),
+    );
 
     expect(fetchSpy).toHaveBeenCalledTimes(1);
     expect(response.status).toBe(200);
@@ -100,17 +84,11 @@ describe("Newsletter subscribe route", () => {
       }),
     );
 
-    const response = await actionsController.newsletter({
-      request: new Request(
-        `http://localhost:3000${routes.actions.newsletter.href()}`,
-        {
-          method: "POST",
-          body: new URLSearchParams({
-            email: "hello@example.com",
-          }),
-        },
-      ),
-    });
+    const response = await submitNewsletter(
+      new URLSearchParams({
+        email: "hello@example.com",
+      }),
+    );
 
     expect(response.status).toBe(500);
     await expect(response.json()).resolves.toEqual({
@@ -122,17 +100,11 @@ describe("Newsletter subscribe route", () => {
   it("returns a 500 when CONVERTKIT_KEY is missing", async () => {
     delete process.env.CONVERTKIT_KEY;
 
-    const response = await actionsController.newsletter({
-      request: new Request(
-        `http://localhost:3000${routes.actions.newsletter.href()}`,
-        {
-          method: "POST",
-          body: new URLSearchParams({
-            email: "hello@example.com",
-          }),
-        },
-      ),
-    });
+    const response = await submitNewsletter(
+      new URLSearchParams({
+        email: "hello@example.com",
+      }),
+    );
 
     expect(response.status).toBe(500);
     await expect(response.json()).resolves.toEqual({

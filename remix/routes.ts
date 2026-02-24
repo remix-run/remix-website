@@ -8,7 +8,7 @@ export const routes = route({
   healthcheck: "/healthcheck",
   blogRss: "/blog/rss.xml",
   actions: route("_actions", {
-    newsletter: "/newsletter",
+    newsletter: { method: "POST", pattern: "/newsletter" },
   }),
   dev: route({
     remixTest: "/remix-test",
