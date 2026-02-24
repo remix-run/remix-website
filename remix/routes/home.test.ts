@@ -21,13 +21,13 @@ describe("Home route", () => {
     });
     router.map(routes.home, HomeRoute);
 
-    const response = await router.fetch("http://localhost:3000/");
+    let response = await router.fetch("http://localhost:3000/");
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
 
-    const html = await response.text();
+    let html = await response.text();
 
     expect(html).toContain("<html");
     expect(html).toContain("Remix - A Full Stack Framework Built on Web APIs");

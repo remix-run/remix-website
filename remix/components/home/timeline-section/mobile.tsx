@@ -1,12 +1,11 @@
 import cx from "clsx";
-import type { RemixNode } from "remix/component/jsx-runtime";
+import type { Props, RemixNode } from "remix/component/jsx-runtime";
 
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);
 const ROW_HEIGHT = 57;
+type CssProps = Props<"div">["css"];
 
-type CellConfig =
-  | string
-  | { label?: string; style: Record<string, string | number> };
+type CellConfig = string | { label?: string; css: CssProps };
 
 const LANE_CELL_CONFIG: Record<string, Record<number, CellConfig>> = {
   "react-router": {
@@ -16,15 +15,15 @@ const LANE_CELL_CONFIG: Record<string, Record<number, CellConfig>> = {
     2021: " ",
     2023: " ",
     2024: "v7",
-    2026: { style: { opacity: 1 } },
+    2026: { css: { opacity: 1 } },
   },
   remix: {
     2021: "v1",
     2023: "v2",
   },
   "remix-3": {
-    2025: { label: "💿", style: { fontSize: "20px" } },
-    2026: { style: { opacity: 1 } },
+    2025: { label: "💿", css: { fontSize: "20px" } },
+    2026: { css: { opacity: 1 } },
   },
 };
 
@@ -32,13 +31,13 @@ export function TimelineDiagramMobile() {
   return () => (
     <div
       class="relative mx-auto grid w-[380px]"
-      style={{
+      css={{
         gridTemplateColumns: "auto repeat(3, 1fr)",
         gridTemplateRows: `repeat(${YEARS.length + 1}, ${ROW_HEIGHT}px)`,
       }}
     >
       <div
-        style={{
+        css={{
           gridColumn: 2,
           gridRow: "1 / -1",
           background:
@@ -46,7 +45,7 @@ export function TimelineDiagramMobile() {
         }}
       />
       <div
-        style={{
+        css={{
           gridColumn: 3,
           gridRow: "1 / -1",
           background:
@@ -54,7 +53,7 @@ export function TimelineDiagramMobile() {
         }}
       />
       <div
-        style={{
+        css={{
           gridColumn: 4,
           gridRow: "1 / -1",
           background:
@@ -65,35 +64,33 @@ export function TimelineDiagramMobile() {
       <TrackSegments />
 
       {YEARS.map((year, index) => (
-        <YearLabel key={year} style={{ gridColumn: 1, gridRow: index + 2 }}>
+        <YearLabel key={year} css={{ gridColumn: 1, gridRow: index + 2 }}>
           {year}
         </YearLabel>
       ))}
 
-      <LaneHeader style={{ gridColumn: 2, gridRow: 2 }}>
-        React Router
-      </LaneHeader>
-      <LaneHeader style={{ gridColumn: 3, gridRow: 2 }}>Remix 1-2</LaneHeader>
-      <LaneHeader style={{ gridColumn: 4, gridRow: 2 }}>Remix 3</LaneHeader>
+      <LaneHeader css={{ gridColumn: 2, gridRow: 2 }}>React Router</LaneHeader>
+      <LaneHeader css={{ gridColumn: 3, gridRow: 2 }}>Remix 1-2</LaneHeader>
+      <LaneHeader css={{ gridColumn: 4, gridRow: 2 }}>Remix 3</LaneHeader>
 
       {YEARS.slice(1).map((year, index) => [
         <LaneCell
           key={`rr-${year}`}
           lane="react-router"
           year={year}
-          style={{ gridColumn: 2, gridRow: index + 3 }}
+          css={{ gridColumn: 2, gridRow: index + 3 }}
         />,
         <LaneCell
           key={`rx-${year}`}
           lane="remix"
           year={year}
-          style={{ gridColumn: 3, gridRow: index + 3 }}
+          css={{ gridColumn: 3, gridRow: index + 3 }}
         />,
         <LaneCell
           key={`r3-${year}`}
           lane="remix-3"
           year={year}
-          style={{ gridColumn: 4, gridRow: index + 3 }}
+          css={{ gridColumn: 4, gridRow: index + 3 }}
         />,
       ])}
     </div>
@@ -102,15 +99,15 @@ export function TimelineDiagramMobile() {
 
 function TrackSegments() {
   return () => {
-    const trackWidth = 48;
-    const horizontalSegmentInset = 27;
-    const verticalSegmentMargin = (ROW_HEIGHT - trackWidth) / 2;
+    let trackWidth = 48;
+    let horizontalSegmentInset = 27;
+    let verticalSegmentMargin = (ROW_HEIGHT - trackWidth) / 2;
 
     return (
       <>
         <div
           class="mx-auto w-12"
-          style={{
+          css={{
             gridColumn: 2,
             gridRow: "1 / -1",
             borderRadius: "0 0 24px 24px",
@@ -120,7 +117,7 @@ function TrackSegments() {
         />
         <div
           class="mx-auto w-12"
-          style={{
+          css={{
             gridColumn: 2,
             gridRow: "8 / 10",
             borderRadius: "24px 24px 0 24px",
@@ -130,7 +127,7 @@ function TrackSegments() {
         />
         <div
           class="ml-12 h-12 self-center"
-          style={{
+          css={{
             gridColumn: "2 / 4",
             gridRow: 9,
             borderRadius: "0 24px 0 24px",
@@ -140,7 +137,7 @@ function TrackSegments() {
         />
         <div
           class="mx-auto w-12"
-          style={{
+          css={{
             gridColumn: 3,
             gridRow: "9 / 12",
             borderRadius: "0 24px 24px 0",
@@ -151,7 +148,7 @@ function TrackSegments() {
         />
         <div
           class="mr-12 h-12 self-center"
-          style={{
+          css={{
             gridColumn: "2 / 4",
             gridRow: 11,
             borderRadius: "24px 0 24px 0",
@@ -161,7 +158,7 @@ function TrackSegments() {
         />
         <div
           class="mx-auto w-12"
-          style={{
+          css={{
             gridColumn: 2,
             gridRow: "11 / 13",
             borderRadius: "48px 24px 0 0",
@@ -172,7 +169,7 @@ function TrackSegments() {
         />
         <div
           class="mx-auto w-12 rounded-3xl"
-          style={{
+          css={{
             gridColumn: 4,
             gridRow: "13 / 15",
             background: "var(--rmx-highlight-green)",
@@ -184,16 +181,13 @@ function TrackSegments() {
 }
 
 function LaneHeader() {
-  return (props: {
-    children: RemixNode;
-    style?: Record<string, string | number>;
-  }) => (
+  return (props: { children: RemixNode; css?: CssProps }) => (
     <div
       class={cx(
         "text-rmx-neutral-100",
         "flex items-center justify-center whitespace-nowrap text-xs font-extrabold uppercase leading-[1.6] tracking-[0.6px]",
       )}
-      style={props.style}
+      css={props.css}
     >
       {props.children}
     </div>
@@ -201,11 +195,8 @@ function LaneHeader() {
 }
 
 function YearLabel() {
-  return (props: {
-    children: RemixNode;
-    style?: Record<string, string | number>;
-  }) => {
-    const year = Number(props.children);
+  return (props: { children: RemixNode; css?: CssProps }) => {
+    let year = Number(props.children);
     let opacity = 1;
     if (year === 2014) opacity = 0.25;
     else if (year === 2015) opacity = 0.5;
@@ -214,7 +205,7 @@ function YearLabel() {
     return (
       <div
         class="rmx-caption text-rmx-tertiary flex items-center justify-end px-6"
-        style={{ opacity, ...(props.style ?? {}) }}
+        css={{ opacity, ...(props.css ?? {}) }}
       >
         {props.children}
       </div>
@@ -223,14 +214,10 @@ function YearLabel() {
 }
 
 function LaneCell() {
-  return (props: {
-    lane: string;
-    year: number;
-    style?: Record<string, string | number>;
-  }) => {
-    const config = LANE_CELL_CONFIG[props.lane]?.[props.year];
-    const label = typeof config === "string" ? config : config?.label;
-    const configStyle = typeof config === "object" ? config.style : undefined;
+  return (props: { lane: string; year: number; css?: CssProps }) => {
+    let config = LANE_CELL_CONFIG[props.lane]?.[props.year];
+    let label = typeof config === "string" ? config : config?.label;
+    let configStyle = typeof config === "object" ? config.css : undefined;
 
     if (label) {
       return (
@@ -239,7 +226,7 @@ function LaneCell() {
             "rmx-caption text-rmx-neutral-100",
             "self-center justify-self-center font-bold",
           )}
-          style={{ ...(props.style ?? {}), ...(configStyle ?? {}) }}
+          css={{ ...(props.css ?? {}), ...(configStyle ?? {}) }}
         >
           {label}
         </div>
@@ -247,10 +234,10 @@ function LaneCell() {
     }
 
     return (
-      <div class="self-center justify-self-center" style={props.style}>
+      <div class="self-center justify-self-center" css={props.css}>
         <div
           class="size-[9px] rounded-full border border-[--rmx-neutral-100] opacity-40"
-          style={configStyle}
+          css={configStyle}
         />
       </div>
     );

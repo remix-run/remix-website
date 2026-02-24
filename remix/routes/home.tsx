@@ -11,9 +11,9 @@ import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../../shared/cache-control.ts";
 
 export default async function HomeRoute() {
-  const requestUrl = new URL(getRequestContext().request.url);
-  const pageUrl = `${requestUrl.origin}/`;
-  const previewImage = `${requestUrl.origin}/marketing/remix-3-thumbnail.jpg`;
+  let requestUrl = new URL(getRequestContext().request.url);
+  let pageUrl = `${requestUrl.origin}/`;
+  let previewImage = `${requestUrl.origin}/marketing/remix-3-thumbnail.jpg`;
 
   return render.document(
     <HomePage pageUrl={pageUrl} previewImage={previewImage} />,

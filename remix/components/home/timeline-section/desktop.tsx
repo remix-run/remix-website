@@ -530,7 +530,7 @@ function Milestone() {
     labelColor,
     href,
   }: MilestoneProps) => {
-    const content = (
+    let content = (
       <>
         {/* Year label */}
         <text

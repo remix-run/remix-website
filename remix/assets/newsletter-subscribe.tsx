@@ -21,13 +21,13 @@ export async function submitNewsletterRequest({
   signal: AbortSignal;
   fetchImpl?: typeof fetch;
 }): Promise<SubscribeResult> {
-  const body = new URLSearchParams();
-  for (const [key, value] of formData.entries()) {
+  let body = new URLSearchParams();
+  for (let [key, value] of formData.entries()) {
     if (typeof value === "string") body.append(key, value);
   }
 
   try {
-    const response = await fetchImpl(action, {
+    let response = await fetchImpl(action, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -37,7 +37,7 @@ export async function submitNewsletterRequest({
       signal,
     });
 
-    const payload = (await response.json().catch(() => null)) as {
+    let payload = (await response.json().catch(() => null)) as {
       ok?: boolean;
       error?: string;
     } | null;
@@ -64,7 +64,7 @@ export async function submitNewsletterRequest({
   }
 }
 
-export const NewsletterSubscribeForm = clientEntry(
+export let NewsletterSubscribeForm = clientEntry(
   `${assets.entry}#NewsletterSubscribeForm`,
   (handle: Handle) => {
     let submitting = false;
@@ -86,14 +86,14 @@ export const NewsletterSubscribeForm = clientEntry(
               event.preventDefault();
               if (submitting) return;
 
-              const form = event.currentTarget as HTMLFormElement;
+              let form = event.currentTarget as HTMLFormElement;
               submitting = true;
               state = "idle";
               error = null;
               handle.update();
 
               try {
-                const result = await submitNewsletterRequest({
+                let result = await submitNewsletterRequest({
                   action: form.action,
                   formData: new FormData(form),
                   signal,

@@ -20,23 +20,23 @@ interface BlogRssPost {
 const POSTS_DIRECTORY = new URL("../../data/posts/", import.meta.url);
 
 async function getBlogRssPosts(): Promise<BlogRssPost[]> {
-  const entries = await readdir(POSTS_DIRECTORY, { withFileTypes: true });
-  const posts: BlogRssPost[] = [];
+  let entries = await readdir(POSTS_DIRECTORY, { withFileTypes: true });
+  let posts: BlogRssPost[] = [];
 
-  for (const entry of entries) {
+  for (let entry of entries) {
     if (!entry.isFile() || !entry.name.endsWith(".md")) {
       continue;
     }
 
-    const fileUrl = new URL(entry.name, POSTS_DIRECTORY);
-    const source = await readFile(fileUrl, "utf8");
-    const { attributes } = parseFrontMatter<BlogRssFrontmatter>(source);
+    let fileUrl = new URL(entry.name, POSTS_DIRECTORY);
+    let source = await readFile(fileUrl, "utf8");
+    let { attributes } = parseFrontMatter<BlogRssFrontmatter>(source);
 
     if (attributes.draft || !attributes.title || !attributes.summary) {
       continue;
     }
 
-    const parsedDate =
+    let parsedDate =
       attributes.date instanceof Date
         ? attributes.date
         : new Date(String(attributes.date ?? ""));
@@ -57,9 +57,9 @@ async function getBlogRssPosts(): Promise<BlogRssPost[]> {
 }
 
 export function buildBlogRssResponse(posts: BlogRssPost[]) {
-  const blogUrl = "https://remix.run/blog";
+  let blogUrl = "https://remix.run/blog";
 
-  const feed = new Feed({
+  let feed = new Feed({
     id: blogUrl,
     title: "Remix Blog",
     description:
@@ -71,8 +71,8 @@ export function buildBlogRssResponse(posts: BlogRssPost[]) {
     copyright: "© Shopify, Inc.",
   });
 
-  for (const post of posts) {
-    const postLink = `${blogUrl}/${post.slug}`;
+  for (let post of posts) {
+    let postLink = `${blogUrl}/${post.slug}`;
     feed.addItem({
       id: postLink,
       title: post.title,
@@ -91,6 +91,6 @@ export function buildBlogRssResponse(posts: BlogRssPost[]) {
 }
 
 export default async function blogRssHandler() {
-  const posts = await getBlogRssPosts();
+  let posts = await getBlogRssPosts();
   return buildBlogRssResponse(posts);
 }

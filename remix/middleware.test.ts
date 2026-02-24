@@ -10,18 +10,18 @@ function createMockContext(
     search?: string;
   } = {},
 ) {
-  const {
+  let {
     forwardedFor,
     method = "GET",
     pathname = "/",
     search = "",
   } = overrides;
-  const url = new URL(`${pathname}${search}`, "http://localhost");
-  const headers = new Headers();
+  let url = new URL(`${pathname}${search}`, "http://localhost");
+  let headers = new Headers();
   if (forwardedFor !== undefined) {
     headers.set("x-forwarded-for", forwardedFor);
   }
-  const request = new Request(url.toString(), { method, headers });
+  let request = new Request(url.toString(), { method, headers });
 
   return {
     request,
@@ -60,8 +60,8 @@ describe("rateLimit", () => {
   });
 
   it("returns 429 when limit is exceeded", async () => {
-    const middleware = rateLimit({ max: 2, windowMs: 60_000 });
-    const next = createNext();
+    let middleware = rateLimit({ max: 2, windowMs: 60_000 });
+    let next = createNext();
 
     await invokeRateLimit(
       middleware,
@@ -73,7 +73,7 @@ describe("rateLimit", () => {
       createMockContext({ forwardedFor: "10.0.0.1" }),
       next,
     );
-    const result3 = await invokeRateLimit(
+    let result3 = await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "10.0.0.1" }),
       next,
@@ -81,26 +81,26 @@ describe("rateLimit", () => {
 
     expect(next).toHaveBeenCalledTimes(2);
     expect(result3?.status).toBe(429);
-    const body = await result3?.text();
+    let body = await result3?.text();
     expect(body).toContain("Too Many Requests");
   });
 
   it("sets a deterministic Retry-After header when rate limited", async () => {
-    const middleware = rateLimit({ max: 1, windowMs: 60_000 });
-    const next = createNext();
+    let middleware = rateLimit({ max: 1, windowMs: 60_000 });
+    let next = createNext();
 
     await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "172.16.0.1" }),
       next,
     );
-    const immediateResult = await invokeRateLimit(
+    let immediateResult = await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "172.16.0.1" }),
       next,
     );
     vi.advanceTimersByTime(1000);
-    const oneSecondLaterResult = await invokeRateLimit(
+    let oneSecondLaterResult = await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "172.16.0.1" }),
       next,
@@ -111,20 +111,20 @@ describe("rateLimit", () => {
   });
 
   it("tracks different IPs separately", async () => {
-    const middleware = rateLimit({ max: 1, windowMs: 60_000 });
-    const next = createNext();
+    let middleware = rateLimit({ max: 1, windowMs: 60_000 });
+    let next = createNext();
 
     await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "192.168.1.1" }),
       next,
     );
-    const resultIp1 = await invokeRateLimit(
+    let resultIp1 = await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "192.168.1.1" }),
       next,
     );
-    const resultIp2 = await invokeRateLimit(
+    let resultIp2 = await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "192.168.1.2" }),
       next,
@@ -136,8 +136,8 @@ describe("rateLimit", () => {
   });
 
   it("uses first IP when x-forwarded-for has multiple values", async () => {
-    const middleware = rateLimit({ max: 1, windowMs: 60_000 });
-    const next = createNext();
+    let middleware = rateLimit({ max: 1, windowMs: 60_000 });
+    let next = createNext();
 
     await invokeRateLimit(
       middleware,
@@ -146,7 +146,7 @@ describe("rateLimit", () => {
       }),
       next,
     );
-    const result = await invokeRateLimit(
+    let result = await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "203.0.113.1, 203.0.113.99" }),
       next,
@@ -157,16 +157,16 @@ describe("rateLimit", () => {
   });
 
   it("resets count after window expires", async () => {
-    const windowMs = 1000;
-    const middleware = rateLimit({ max: 1, windowMs });
-    const next = createNext();
+    let windowMs = 1000;
+    let middleware = rateLimit({ max: 1, windowMs });
+    let next = createNext();
 
     await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "10.0.0.5" }),
       next,
     );
-    const blocked = await invokeRateLimit(
+    let blocked = await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "10.0.0.5" }),
       next,
@@ -175,7 +175,7 @@ describe("rateLimit", () => {
 
     vi.advanceTimersByTime(windowMs + 1);
 
-    const allowed = await invokeRateLimit(
+    let allowed = await invokeRateLimit(
       middleware,
       createMockContext({ forwardedFor: "10.0.0.5" }),
       next,
@@ -185,19 +185,19 @@ describe("rateLimit", () => {
   });
 
   it("supports skipping selected requests from rate limiting", async () => {
-    const middleware = rateLimit({
+    let middleware = rateLimit({
       max: 1,
       windowMs: 60_000,
       skip: (context) => context.url.pathname === "/healthcheck",
     });
-    const next = createNext();
+    let next = createNext();
 
     await invokeRateLimit(
       middleware,
       createMockContext({ pathname: "/healthcheck", forwardedFor: "10.0.0.5" }),
       next,
     );
-    const second = await invokeRateLimit(
+    let second = await invokeRateLimit(
       middleware,
       createMockContext({ pathname: "/healthcheck", forwardedFor: "10.0.0.5" }),
       next,
@@ -208,7 +208,7 @@ describe("rateLimit", () => {
   });
 
   it("rate limits through a real router but skips healthcheck", async () => {
-    const router = createRouter({
+    let router = createRouter({
       middleware: [
         rateLimit({
           max: 1,
@@ -222,12 +222,12 @@ describe("rateLimit", () => {
       return new Response(`ok:${context.url.pathname}`);
     });
 
-    const healthcheckFirst = await router.fetch(
+    let healthcheckFirst = await router.fetch(
       new Request("http://localhost/healthcheck", {
         headers: { "x-forwarded-for": "198.51.100.10" },
       }),
     );
-    const healthcheckSecond = await router.fetch(
+    let healthcheckSecond = await router.fetch(
       new Request("http://localhost/healthcheck", {
         headers: { "x-forwarded-for": "198.51.100.10" },
       }),
@@ -236,12 +236,12 @@ describe("rateLimit", () => {
     expect(healthcheckFirst.status).toBe(200);
     expect(healthcheckSecond.status).toBe(200);
 
-    const docsFirst = await router.fetch(
+    let docsFirst = await router.fetch(
       new Request("http://localhost/docs", {
         headers: { "x-forwarded-for": "198.51.100.10" },
       }),
     );
-    const docsSecond = await router.fetch(
+    let docsSecond = await router.fetch(
       new Request("http://localhost/docs", {
         headers: { "x-forwarded-for": "198.51.100.10" },
       }),
@@ -254,15 +254,15 @@ describe("rateLimit", () => {
 
 describe("filteredLogger", () => {
   it("logs GET paths that only partially match __manifest", async () => {
-    const loggerMiddleware = vi.fn(
+    let loggerMiddleware = vi.fn(
       (_context: unknown, next: () => Promise<Response>) => next(),
     );
-    const router = createRouter({
+    let router = createRouter({
       middleware: [filteredLogger({ loggerMiddleware })],
     });
     router.map("*", () => new Response("ok"));
 
-    const response = await router.fetch(
+    let response = await router.fetch(
       new Request("http://localhost/__manifestation"),
     );
 
@@ -271,15 +271,15 @@ describe("filteredLogger", () => {
   });
 
   it("skips logging for GET /__manifest-prefixed paths", async () => {
-    const loggerMiddleware = vi.fn(
+    let loggerMiddleware = vi.fn(
       (_context: unknown, next: () => Promise<Response>) => next(),
     );
-    const router = createRouter({
+    let router = createRouter({
       middleware: [filteredLogger({ loggerMiddleware })],
     });
     router.map("*", () => new Response("ok"));
 
-    const response = await router.fetch(
+    let response = await router.fetch(
       new Request("http://localhost/__manifest/some-asset.js"),
     );
 

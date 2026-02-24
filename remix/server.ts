@@ -19,8 +19,8 @@ if (import.meta.env.PROD) {
   sourceMapSupport.install();
 }
 
-const handleRequest = createRequestHandler(build, process.env.NODE_ENV);
-const isDev = import.meta.env.DEV;
+let handleRequest = createRequestHandler(build, process.env.NODE_ENV);
+let isDev = import.meta.env.DEV;
 
 function shouldSkipRateLimit(pathname: string) {
   return (
@@ -76,15 +76,15 @@ router.map(routes.home, homeRoute);
 if (isDev) {
   router.map(routes.dev, {
     async remixTest() {
-      const mod = await import("./routes/test-route.tsx");
+      let mod = await import("./routes/test-route.tsx");
       return mod.default();
     },
   });
 }
 
 // Redirects from _redirects (must be before * catchall)
-const redirects = loadRedirectsFromFile();
-const { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
+let redirects = loadRedirectsFromFile();
+let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
 
 router.map(redirectRoutes, redirectController);
 

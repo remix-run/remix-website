@@ -3,7 +3,7 @@ import actionsController from "./actions";
 import { routes } from "../routes";
 
 describe("Newsletter subscribe route", () => {
-  const originalConvertKitKey = process.env.CONVERTKIT_KEY;
+  let originalConvertKitKey = process.env.CONVERTKIT_KEY;
 
   beforeEach(() => {
     process.env.CONVERTKIT_KEY = "test-convertkit-key";
@@ -15,13 +15,13 @@ describe("Newsletter subscribe route", () => {
   });
 
   async function submitNewsletter(body: URLSearchParams) {
-    const formData = new FormData();
-    for (const [key, value] of body.entries()) {
+    let formData = new FormData();
+    for (let [key, value] of body.entries()) {
       formData.append(key, value);
     }
 
     type NewsletterContext = Parameters<typeof actionsController.newsletter>[0];
-    const context = {
+    let context = {
       request: new Request(
         `http://localhost:3000${routes.actions.newsletter.href()}`,
         { method: "POST" },
@@ -33,7 +33,7 @@ describe("Newsletter subscribe route", () => {
   }
 
   it("rejects invalid emails", async () => {
-    const response = await submitNewsletter(
+    let response = await submitNewsletter(
       new URLSearchParams({ email: "invalid-email" }),
     );
     expect(response.status).toBe(400);
@@ -44,7 +44,7 @@ describe("Newsletter subscribe route", () => {
   });
 
   it("rejects invalid tags", async () => {
-    const response = await submitNewsletter(
+    let response = await submitNewsletter(
       new URLSearchParams({
         email: "hello@example.com",
         tag: "not-a-number",
@@ -58,11 +58,11 @@ describe("Newsletter subscribe route", () => {
   });
 
   it("returns success for a valid submission when ConvertKit succeeds", async () => {
-    const fetchSpy = vi
+    let fetchSpy = vi
       .spyOn(globalThis, "fetch")
       .mockResolvedValue(new Response(JSON.stringify({}), { status: 200 }));
 
-    const response = await submitNewsletter(
+    let response = await submitNewsletter(
       new URLSearchParams({
         email: "hello@example.com",
         tag: "123",
@@ -84,7 +84,7 @@ describe("Newsletter subscribe route", () => {
       }),
     );
 
-    const response = await submitNewsletter(
+    let response = await submitNewsletter(
       new URLSearchParams({
         email: "hello@example.com",
       }),
@@ -100,7 +100,7 @@ describe("Newsletter subscribe route", () => {
   it("returns a 500 when CONVERTKIT_KEY is missing", async () => {
     delete process.env.CONVERTKIT_KEY;
 
-    const response = await submitNewsletter(
+    let response = await submitNewsletter(
       new URLSearchParams({
         email: "hello@example.com",
       }),

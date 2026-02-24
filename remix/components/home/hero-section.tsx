@@ -1,6 +1,6 @@
 import cx from "clsx";
 
-const heroImageSrc = "/marketing/racecar-teaser-hero.webp";
+let heroImageSrc = "/marketing/racecar-teaser-hero.webp";
 
 export function HeroSection() {
   return () => (

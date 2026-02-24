@@ -3,12 +3,12 @@ import { press } from "remix/interaction/press";
 
 import assets from "./counter.tsx?assets=client";
 
-export const Counter = clientEntry(
+export let Counter = clientEntry(
   `${assets.entry}#Counter`,
   function Counter(handle) {
     let count = 0;
 
-    const handlePress = () => {
+    let handlePress = () => {
       count++;
       handle.update();
     };

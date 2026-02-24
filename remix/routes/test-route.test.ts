@@ -7,7 +7,7 @@ import { ROUTER_STORAGE_KEY } from "../utils/request-context";
 
 describe("remix/component rendering pipeline", () => {
   it("renders the test route to an HTML response", async () => {
-    const { default: handler } = await import("./test-route");
+    let { default: handler } = await import("./test-route");
     let router: Router;
     router = createRouter({
       middleware: [
@@ -20,13 +20,13 @@ describe("remix/component rendering pipeline", () => {
     });
     router.map(routes.dev.remixTest, handler);
 
-    const response = await router.fetch("http://localhost:3000/remix-test");
+    let response = await router.fetch("http://localhost:3000/remix-test");
 
     expect(response).toBeInstanceOf(Response);
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
 
-    const html = await response.text();
+    let html = await response.text();
 
     // Has a proper document structure
     expect(html).toContain("<!DOCTYPE html>");

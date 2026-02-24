@@ -3,17 +3,17 @@ import { submitNewsletterRequest } from "./newsletter-subscribe";
 
 describe("submitNewsletterRequest", () => {
   it("returns idle state when the request is aborted", async () => {
-    const controller = new AbortController();
+    let controller = new AbortController();
     controller.abort();
 
-    const fetchImpl = vi.fn<typeof fetch>().mockRejectedValue(
+    let fetchImpl = vi.fn<typeof fetch>().mockRejectedValue(
       new DOMException("Aborted", "AbortError"),
     );
 
-    const formData = new FormData();
+    let formData = new FormData();
     formData.set("email", "hello@example.com");
 
-    const result = await submitNewsletterRequest({
+    let result = await submitNewsletterRequest({
       action: "/_actions/newsletter",
       formData,
       signal: controller.signal,
@@ -28,14 +28,14 @@ describe("submitNewsletterRequest", () => {
   });
 
   it("returns error state for non-abort failures", async () => {
-    const fetchImpl = vi
+    let fetchImpl = vi
       .fn<typeof fetch>()
       .mockRejectedValue(new Error("network down"));
 
-    const formData = new FormData();
+    let formData = new FormData();
     formData.set("email", "hello@example.com");
 
-    const result = await submitNewsletterRequest({
+    let result = await submitNewsletterRequest({
       action: "/_actions/newsletter",
       formData,
       signal: new AbortController().signal,

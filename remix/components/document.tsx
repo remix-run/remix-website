@@ -7,8 +7,8 @@ import "../../shared/tailwind.css";
 import "../../shared/bailwind.css";
 import "../../shared/marketing.css";
 
-const assets = clientAssets.merge(documentAssets);
-const isDev = import.meta.env.DEV;
+let assets = clientAssets.merge(documentAssets);
+let isDev = import.meta.env.DEV;
 
 interface DocumentProps {
   title: string;

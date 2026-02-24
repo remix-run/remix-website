@@ -4,7 +4,7 @@ import { buildBlogRssResponse } from "./blog-rss";
 
 describe("blog RSS route handler", () => {
   it("returns an RSS XML response with cache headers", async () => {
-    const response = buildBlogRssResponse([
+    let response = buildBlogRssResponse([
       {
         slug: "hello-world",
         title: "Hello World",
@@ -18,7 +18,7 @@ describe("blog RSS route handler", () => {
     expect(response.headers.get("Content-Type")).toBe("application/xml");
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
 
-    const xml = await response.text();
+    let xml = await response.text();
     expect(xml).toContain("<rss");
     expect(xml).toContain("<title>Remix Blog</title>");
     expect(xml).toContain(

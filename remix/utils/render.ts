@@ -3,9 +3,9 @@ import type { RemixNode } from "remix/component/jsx-runtime";
 import { createHtmlResponse } from "remix/response/html";
 import { getRequestContext } from "./request-context";
 
-export const render = {
+export let render = {
   frame(node: RemixNode, init?: ResponseInit) {
-    const headers = new Headers(init?.headers);
+    let headers = new Headers(init?.headers);
     if (!headers.has("Content-Type")) {
       headers.set("Content-Type", "text/html; charset=utf-8");
     }
@@ -13,8 +13,8 @@ export const render = {
   },
 
   document(node: RemixNode, init?: ResponseInit) {
-    const { request, router } = getRequestContext();
-    const stream = renderToStream(node, {
+    let { request, router } = getRequestContext();
+    let stream = renderToStream(node, {
       resolveFrame: (src) => resolveFrame(src, router, request),
       onError(error) {
         console.error(error);
@@ -29,16 +29,16 @@ async function resolveFrame(
   router: ReturnType<typeof getRequestContext>["router"],
   request: Request,
 ) {
-  const url = new URL(src, request.url);
+  let url = new URL(src, request.url);
 
-  const headers = new Headers();
+  let headers = new Headers();
   headers.set("accept", "text/html");
   headers.set("accept-encoding", "identity");
-  const cookie = request.headers.get("cookie");
+  let cookie = request.headers.get("cookie");
   if (cookie) headers.set("cookie", cookie);
 
   try {
-    const response = await router.fetch(
+    let response = await router.fetch(
       new Request(url, {
         method: "GET",
         headers,
@@ -51,7 +51,7 @@ async function resolveFrame(
     if (response.body) return response.body;
     return response.text();
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Unknown error";
+    let message = error instanceof Error ? error.message : "Unknown error";
     return `<pre>Frame error: ${message}</pre>`;
   }
 }

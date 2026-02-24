@@ -1,6 +1,6 @@
 import { route } from "remix/fetch-router/routes";
 
-export const routes = route({
+export let routes = route({
   home: "/",
   brand: "/brand",
   blog: "/blog",

@@ -5,8 +5,8 @@ import type { Router } from "remix/fetch-router";
 export const ROUTER_STORAGE_KEY = createStorageKey<Router>();
 
 export function getRequestContext() {
-  const context = getContext();
-  const router = context.storage.get(ROUTER_STORAGE_KEY);
+  let context = getContext();
+  let router = context.storage.get(ROUTER_STORAGE_KEY);
 
   if (!router) {
     throw new Error("Missing fetch-router in request context storage");

@@ -5,23 +5,23 @@ import type { Controller } from "remix/fetch-router";
 type NewsletterResponse = { ok: boolean; error: string | null };
 
 // TODO: replace with remix/data-schema
-const newsletterSubmission = z.object({
+let newsletterSubmission = z.object({
   email: z.string().email(),
   tags: z.array(z.coerce.number()),
 });
 
 export default {
   async newsletter(context) {
-    const formData = context.formData ?? (await context.request.formData());
-    const result = newsletterSubmission.safeParse({
+    let formData = context.formData ?? (await context.request.formData());
+    let result = newsletterSubmission.safeParse({
       email: formData.get("email"),
       tags: formData.getAll("tag"),
     });
     if (!result.success) {
-      const hasEmailIssue = result.error.issues.some((issue) =>
+      let hasEmailIssue = result.error.issues.some((issue) =>
         issue.path.includes("email"),
       );
-      const hasTagIssue = result.error.issues.some((issue) =>
+      let hasTagIssue = result.error.issues.some((issue) =>
         issue.path.includes("tags"),
       );
       return Response.json(
@@ -57,16 +57,16 @@ export default {
 } satisfies Controller<typeof routes.actions>;
 
 async function subscribeToNewsletter(email: string, tags: number[] = []) {
-  const apiKey = process.env.CONVERTKIT_KEY;
+  let apiKey = process.env.CONVERTKIT_KEY;
   if (!apiKey) {
     throw new Error("Missing CONVERTKIT_KEY");
   }
 
-  const apiUrl =
+  let apiUrl =
     process.env.CONVERTKIT_API_URL ?? "https://api.convertkit.com/v3";
-  const formId = process.env.CONVERTKIT_FORM_ID ?? "1334747";
+  let formId = process.env.CONVERTKIT_FORM_ID ?? "1334747";
 
-  const response = await fetch(`${apiUrl}/forms/${formId}/subscribe`, {
+  let response = await fetch(`${apiUrl}/forms/${formId}/subscribe`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json; charset=utf-8",
@@ -78,7 +78,7 @@ async function subscribeToNewsletter(email: string, tags: number[] = []) {
     }),
   });
 
-  const data = (await response.json()) as { error?: string };
+  let data = (await response.json()) as { error?: string };
   if (data.error) {
     throw new Error(data.error);
   }

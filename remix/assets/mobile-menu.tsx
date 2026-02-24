@@ -5,13 +5,13 @@ import cx from "clsx";
 import iconsHref from "../../app/icons.svg";
 import assets from "./mobile-menu.tsx?assets=client";
 
-export const MobileMenu = clientEntry(
+export let MobileMenu = clientEntry(
   `${assets.entry}#MobileMenu`,
   (handle: Handle, setup?: { open?: boolean }) => {
     let isOpen = setup?.open ?? false;
 
     handle.queueTask(() => {
-      const closeMenu = () => {
+      let closeMenu = () => {
         if (isOpen) {
           isOpen = false;
           handle.update();
@@ -26,12 +26,12 @@ export const MobileMenu = clientEntry(
       });
     });
 
-    const stopPropagation = (e: UIEvent) => {
+    let stopPropagation = (e: UIEvent) => {
       e.stopPropagation();
     };
 
     return (props: { children: RemixNode; class?: string }) => {
-      const baseClasses =
+      let baseClasses =
         "bg-gray-100 hover:bg-gray-200 text-rmx-primary [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
 
       return (
