@@ -1,89 +1,50 @@
-# Remix 3 Migration (`remix/` + `app/`)
+# Remix migration notes (`remix/` + `app/`)
 
-This repo runs two systems in parallel during migration:
+This file is the technical spec for code under `remix/**`.
+For contributor/agent workflow guidance, see `AGENTS.md`.
 
-- `app/` contains the React Router v7 framework-mode app.
-- `remix/` contains Remix 3 route handlers and `remix/component` UI rendered by `remix/server.ts`.
+## Runtime model
 
-## Architecture
+- `app/**` remains the React Router framework-mode app.
+- `remix/**` contains Remix 3 handlers and `remix/component` UI.
+- `remix/server.ts` handles requests via `remix/fetch-router`.
+- Explicit Remix mappings run before the catch-all.
+- Catch-all falls back to React Router `createRequestHandler`.
 
-Request flow:
+## Directory boundaries
 
-1. `remix/server.ts` handles the request through `remix/fetch-router`.
-2. Explicit route mappings (like `/`, `/healthcheck`, `/blog/rss.xml`, `/remix-test`) run first.
-3. Everything else falls back to React Router via `createRequestHandler`.
+- `remix/routes/**`: route handlers/controllers
+- `remix/components/**`: shared Remix UI
+- `remix/assets/**`: interactive `clientEntry` modules
+- Keep migration code in `remix/**`; do not add new `app/remix/**` files.
 
-## Directory conventions (important)
+## Routing and actions
 
-- Keep Remix migration code inside `remix/**` only.
-- Keep interactive/client-entry modules in `remix/assets/**`.
-- Keep shared Remix UI under `remix/components/**`.
-- Keep route handlers in `remix/routes/**`.
-- Keep route rendering helpers in `remix/lib/**`.
+- Define internal patterns in `remix/routes.ts`.
+- Use `routes.*.href()` for links and form actions.
+- Keep `remix/server.ts` mappings aligned with `remix/routes.ts`.
+- For form actions, use `formData()` middleware and read `context.formData`.
+- Prefer `remix/data-schema` + `parseSafe` for validation and return explicit 400s for invalid payloads.
 
-Do not add new Remix migration code under `app/remix/**`.
+## Assets and hydration
 
-## JSX and TypeScript
+- Resolve client modules with `?assets=client` and use `assets.entry` in `clientEntry(...)`.
+- Resolve document assets with `?assets=ssr` and render from `assets.css` / `assets.js` / `assets.entry`.
+- Do not hardcode module script paths (for example `/remix/assets/entry.ts`).
+- For SVG sprites, import the asset URL and append fragment ids.
 
-- `remix/tsconfig.json` sets:
-  - `"jsx": "react-jsx"`
-  - `"jsxImportSource": "remix/component"`
-  - `"types": ["node", "vite/client", "@hiogawa/vite-plugin-fullstack/types"]`
-- Per-file `/** @jsxImportSource remix/component */` pragmas are optional when files are covered by `remix/tsconfig.json`.
+## TypeScript/JSX config
 
-## Asset + hydration learnings
+`remix/tsconfig.json` defines:
 
-- In `Document`, use `?assets=client` / `?assets=ssr` resolved assets and render scripts via `assets.entry` / `assets.js`.
-- Do not hardcode a direct script path like `/remix/assets/entry.ts`; it can 404 in runtime environments.
-- For `clientEntry(...)`, use asset-resolved module URLs:
-  - `import assets from "./file.tsx?assets=client"`
-  - `clientEntry(\`${assets.entry}#ExportName\`, ...)`
-- Do not hardcode `/app/icons.svg` in Remix components; import the asset URL and append fragment IDs:
-  - `import iconsHref from "../../app/icons.svg"`
-  - `<use href={\`${iconsHref}#icon-id\`} />`
+- `"jsx": "react-jsx"`
+- `"jsxImportSource": "remix/component"`
+- `"types": ["node", "vite/client", "@hiogawa/vite-plugin-fullstack/types"]`
 
-## Current migration routes
+## Current mapped routes
 
-- Stable/always mapped:
-  - `/`
-  - `/healthcheck`
-  - `/blog/rss.xml`
-  - `/_actions/newsletter`
-- Migration preview routes:
-  - `/remix-test` (smoke test)
-
-## Route + form best practices
-
-- Define internal URLs in `remix/routes.ts` and use `routes.*.href()` in components/assets/server mapping instead of hardcoded strings.
-- Group route handlers by concern when it helps composition (for example `remix/routes/actions.ts` for mutation/API-style handlers).
-- Parse request bodies with `formData()` middleware in `remix/server.ts` and read `context.formData` in actions.
-  - Avoid manual `URLSearchParams(await request.text())` parsing.
-- Use schema-based validation with `remix/data-schema` for server validation/coercion.
-  - Keep validation logic declarative and return explicit 400s for invalid payloads.
-- Keep newsletter-style UX state client-owned when server persistence is unnecessary:
-  - action returns JSON (`{ ok, error }`)
-  - client entry updates in-place status UI
-  - no cookie/session flash needed for ephemeral submit feedback
-
-## Home route migration notes
-
-- The Remix home route reuses split home sections under `remix/components/home/**` and interactive entries under `remix/assets/**`.
-- The Remix home route now serves `/` directly from `remix/routes/home.tsx` before React Router fallback.
-- Interactive parity currently includes:
-  - wordmark right-click navigation (`remix/assets/wordmark-link.tsx`)
-  - mobile menu open/close interactions (`remix/assets/mobile-menu.tsx`)
-  - newsletter submit interaction (`remix/assets/newsletter-subscribe.tsx`)
-- `DocSearchModal` is intentionally not ported to the Remix home route yet.
-- Keep expanding home parity tests as migration confidence checks (metadata, key link targets, and interaction outcomes).
-
-## Contributor checklist
-
-Before opening a PR that changes `remix/**`:
-
-- Keep code in `remix/**` (no new `app/remix/**` files).
-- Use relative imports and avoid React Router type leakage.
-- Put interactive Remix entries in `remix/assets/**`.
-- Use `?assets=client` for `clientEntry` module resolution.
-- Run:
-  - `pnpm run typecheck:remix`
-  - `pnpm vitest run remix/routes/home.test.ts`
+- `/`
+- `/healthcheck`
+- `/blog/rss.xml`
+- `/_actions/newsletter`
+- `/remix-test` (dev only)
