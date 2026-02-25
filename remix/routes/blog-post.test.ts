@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createRouter } from "remix/fetch-router";
 import type { Router } from "remix/fetch-router";
 import { asyncContext } from "remix/async-context-middleware";
-import BlogPostRoute from "./blog-post";
+import { blogPostHandler } from "./blog-post";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 import { getBlogPost } from "../lib/blog.server";
 import { routes } from "../routes";
@@ -21,7 +21,7 @@ describe("Blog post route", () => {
         },
       ],
     });
-    router.map(routes.blogPost, BlogPostRoute);
+    router.map(routes.blogPost, blogPostHandler);
 
     let response = await router.fetch("http://localhost:3000/blog/remix-v2");
 
@@ -48,7 +48,7 @@ describe("Blog post route", () => {
         },
       ],
     });
-    router.map(routes.blogPost, BlogPostRoute);
+    router.map(routes.blogPost, blogPostHandler);
 
     let response = await router.fetch(
       "http://localhost:3000/blog/this-slug-does-not-exist",

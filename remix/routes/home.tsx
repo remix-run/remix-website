@@ -10,7 +10,7 @@ import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../../shared/cache-control.ts";
 
-export default async function HomeRoute() {
+export async function homeHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/`;
   let previewImage = `${requestUrl.origin}/marketing/remix-3-thumbnail.jpg`;

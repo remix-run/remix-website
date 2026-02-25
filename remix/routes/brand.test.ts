@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createRouter } from "remix/fetch-router";
 import type { Router } from "remix/fetch-router";
 import { asyncContext } from "remix/async-context-middleware";
-import BrandRoute from "./brand";
+import { brandHandler } from "./brand";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 import { routes } from "../routes";
 import { ROUTER_STORAGE_KEY } from "../utils/request-context";
@@ -19,7 +19,7 @@ describe("Brand route", () => {
         },
       ],
     });
-    router.map(routes.brand, BrandRoute);
+    router.map(routes.brand, brandHandler);
 
     let response = await router.fetch("http://localhost:3000/brand");
 

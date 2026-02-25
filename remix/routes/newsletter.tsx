@@ -6,7 +6,7 @@ import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 
-export default async function NewsletterRoute() {
+export async function newsletterHandler() {
   return render.document(<Page />, {
     headers: {
       "Cache-Control": CACHE_CONTROL.DEFAULT,

@@ -14,7 +14,7 @@ type BlogPostContext = {
   request: Request;
 };
 
-export default async function BlogPostRoute(context: BlogPostContext) {
+export async function blogPostHandler(context: BlogPostContext) {
   let slug = context.params.slug;
   if (!slug) {
     return new Response("Not Found", { status: 404 });

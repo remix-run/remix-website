@@ -19,7 +19,7 @@ interface BlogRssPost {
 
 const POSTS_DIRECTORY = new URL("../../data/posts/", import.meta.url);
 
-export default async function BlogRssRoute() {
+export async function blogRssHandler() {
   let posts = await getBlogRssPosts();
   return buildBlogRssResponse(posts);
 }

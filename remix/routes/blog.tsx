@@ -7,7 +7,7 @@ import { render } from "../utils/render";
 import { getBlogPostListings } from "../lib/blog.server";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 
-export default async function BlogRoute() {
+export async function blogHandler() {
   let posts = await getBlogPostListings();
   return render.document(<Page posts={posts} />, {
     headers: {

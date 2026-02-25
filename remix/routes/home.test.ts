@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createRouter } from "remix/fetch-router";
 import type { Router } from "remix/fetch-router";
 import { asyncContext } from "remix/async-context-middleware";
-import HomeRoute from "./home";
+import { homeHandler } from "./home";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 import { routes } from "../routes";
 import { ROUTER_STORAGE_KEY } from "../utils/request-context";
@@ -19,7 +19,7 @@ describe("Home route", () => {
         },
       ],
     });
-    router.map(routes.home, HomeRoute);
+    router.map(routes.home, homeHandler);
 
     let response = await router.fetch("http://localhost:3000/");
 
