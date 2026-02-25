@@ -47,4 +47,3 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - `/healthcheck`
 - `/blog/rss.xml`
 - `/_actions/newsletter`
-- `/remix-test` (dev only)
