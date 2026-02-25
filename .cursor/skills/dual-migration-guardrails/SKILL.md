@@ -5,41 +5,11 @@ description: Enforces repository-specific guardrails for the Remix 3 and React R
 
 # Dual Migration Guardrails
 
-## Apply these defaults
+## Defaults
 
-- Keep new migration work in `remix/**`.
-- Keep `app/**` behavior stable unless the migration explicitly requires changes.
-- Do not add new files under `app/remix/**`.
-
-## Request flow contract
-
-When editing request handling:
-
-1. Keep explicit route mappings in `remix/server.ts` before the catch-all.
-2. Keep `router.map("*", ...)` fallback to React Router last.
-3. Ensure route mappings stay aligned with `remix/routes.ts`.
-
-## Directory ownership
-
-- `remix/routes/**`: route handlers/controllers
-- `remix/components/**`: shared Remix UI
-- `remix/assets/**`: client interactivity via `clientEntry`
-
-## Routing rules
-
-- Add/update internal route patterns in `remix/routes.ts`.
-- Use `routes.*.href()` for internal links and form actions.
-- Avoid hardcoded internal URL strings.
-- In `remix/routes/**` files, keep the exported route handler/controller at the top and helper details below.
-
-## Validation + forms
-
-- Use `formData()` middleware in `remix/server.ts`.
-- Read request body data from `context.formData` in actions.
-- Use `remix/data-schema` with `parseSafe` for validation/coercion.
-- Return explicit 400 responses for invalid request-derived input where applicable.
-
-## Verification
-
-- Run targeted tests for edited Remix routes/assets.
-- For substantial `remix/**` changes, run `typecheck:remix` and `typecheck:remix-server`.
+- Keep migration work in `remix/**`; keep `app/**` stable unless removal is intentional.
+- Keep route patterns in `remix/routes.ts` and mappings in `remix/server.ts` aligned.
+- Keep explicit Remix mappings before the `router.map("*", ...)` fallback.
+- In `remix/routes/**`, keep exported route handler/controller first and helpers below.
+- Use `routes.*.href()` for internal links/actions.
+- Validate request-derived input with `remix/data-schema` + `parseSafe` where applicable and return explicit `400` on invalid input.
