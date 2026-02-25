@@ -88,7 +88,6 @@ function HeaderLink({
   return (
     <NavLink
       prefetch={prefetch}
-      x-comp="HeaderLink"
       className={cx(
         "text-rmx-primary text-base font-semibold leading-6 tracking-[0.01em] opacity-80 last:mr-0 hover:opacity-100",
         className,

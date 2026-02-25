@@ -33,7 +33,6 @@ function Page() {
 function NewsletterPageContent() {
   return () => (
     <div
-      x-comp="Newsletter"
       class={cx(
         "container flex flex-1 flex-col justify-center md:max-w-2xl",
       )}

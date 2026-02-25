@@ -7,7 +7,6 @@ export const Button = React.forwardRef<
   return (
     <button
       ref={ref}
-      x-comp="Button"
       className={
         "box-border inline-flex items-center justify-center rounded bg-blue-600 px-8 py-4 font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-2 focus:ring-offset-transparent " +
         className
@@ -28,7 +27,6 @@ export const Input = React.forwardRef<
   return (
     <input
       ref={ref}
-      x-comp="Input"
       className={
         "box-border inline-block rounded border border-solid border-gray-300 bg-white px-5 py-4 text-gray-900 dark:border-none dark:bg-gray-800 dark:text-white " +
         className
