@@ -44,6 +44,7 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 ## Current mapped routes
 
 - `/`
+- `/newsletter`
 - `/healthcheck`
 - `/blog/rss.xml`
 - `/_actions/newsletter`
