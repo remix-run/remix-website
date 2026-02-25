@@ -21,7 +21,6 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
     }
     return (
       <RemixLink
-        x-comp="Link"
         {...props}
         ref={ref}
         to={to}
@@ -83,7 +82,6 @@ const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
     }
     return (
       <RemixNavLink
-        x-comp="NavLink"
         {...props}
         ref={ref}
         caseSensitive={caseSensitive}

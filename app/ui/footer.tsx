@@ -5,7 +5,6 @@ import { Wordmark } from "./logo";
 export function Footer({ className = "" }: { className?: string }) {
   return (
     <footer
-      x-comp="Footer"
       className={cx(
         "flex flex-col items-center justify-center gap-6 px-6 py-12 pb-36 lg:px-12",
         "text-rmx-muted",

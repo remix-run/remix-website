@@ -15,6 +15,7 @@ import actionsController from "./routes/actions";
 import blogRssHandler from "./routes/blog-rss.ts";
 import brandRoute from "./routes/brand.tsx";
 import homeRoute from "./routes/home.tsx";
+import newsletterRoute from "./routes/newsletter.tsx";
 import { routes } from "./routes";
 import { ROUTER_STORAGE_KEY } from "./utils/request-context";
 
@@ -75,6 +76,7 @@ router.map(routes.healthcheck, () => {
 router.map(routes.blogRss, blogRssHandler);
 router.map(routes.actions, actionsController);
 router.map(routes.brand, brandRoute);
+router.map(routes.newsletter, newsletterRoute);
 router.map(routes.home, homeRoute);
 
 // Redirects from _redirects (must be before * catchall)

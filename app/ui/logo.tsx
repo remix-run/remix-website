@@ -4,7 +4,6 @@ export function Wordmark({
 }: React.ComponentPropsWithoutRef<"svg">) {
   return (
     <svg
-      x-comp="Wordmark"
       height={height}
       viewBox="0 0 659 165"
       fill="none"

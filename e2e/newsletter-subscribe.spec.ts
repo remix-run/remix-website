@@ -85,3 +85,38 @@ test.describe("Newsletter subscribe", () => {
     await expect(page.getByText("Got it!")).toBeVisible();
   });
 });
+
+test.describe("Newsletter page (/newsletter)", () => {
+  test("renders the newsletter page with form", async ({ page }) => {
+    await page.goto("/newsletter");
+
+    await expect(page.getByText("Newsletter").first()).toBeVisible();
+    await expect(
+      page.getByText(/Stay up-to-date with news, announcements/i),
+    ).toBeVisible();
+    await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Subscribe" })).toBeVisible();
+  });
+
+  test("newsletter page form submits to /_actions/newsletter and shows success", async ({
+    page,
+  }) => {
+    await page.route("**/_actions/newsletter", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true, error: null }),
+      });
+    });
+
+    await page.goto("/newsletter");
+    await page.waitForLoadState("networkidle");
+
+    const emailInput = page.getByPlaceholder("name@example.com");
+    await emailInput.fill("hello@example.com");
+    await page.getByRole("button", { name: "Subscribe" }).click();
+
+    await expect(page.getByText("Got it!")).toBeVisible();
+    await expect(page.getByText(/check your email/i)).toBeVisible();
+  });
+});
