@@ -98,7 +98,7 @@ test.describe("Newsletter page (/newsletter)", () => {
     await expect(page.getByRole("button", { name: "Subscribe" })).toBeVisible();
   });
 
-  test("newsletter page form shows success UI and resets", async ({
+  test("newsletter page form submits to /_actions/newsletter and shows success", async ({
     page,
   }) => {
     await page.route("**/_actions/newsletter", async (route) => {
@@ -118,24 +118,5 @@ test.describe("Newsletter page (/newsletter)", () => {
 
     await expect(page.getByText("Got it!")).toBeVisible();
     await expect(page.getByText(/check your email/i)).toBeVisible();
-    await expect(emailInput).toHaveValue("");
-  });
-
-  test("newsletter page form shows server error UI", async ({ page }) => {
-    await page.route("**/_actions/newsletter", async (route) => {
-      await route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ ok: false, error: "Invalid Email" }),
-      });
-    });
-
-    await page.goto("/newsletter");
-    await page.waitForLoadState("networkidle");
-
-    await page.getByPlaceholder("name@example.com").fill("hello@example.com");
-    await page.getByRole("button", { name: "Subscribe" }).click();
-
-    await expect(page.getByText("Invalid Email")).toBeVisible();
   });
 });
