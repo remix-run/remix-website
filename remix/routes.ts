@@ -10,7 +10,4 @@ export let routes = route({
   actions: route("_actions", {
     newsletter: { method: "POST", pattern: "/newsletter" },
   }),
-  dev: route({
-    remixTest: "/remix-test",
-  }),
 });

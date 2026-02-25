@@ -77,15 +77,6 @@ router.map(routes.actions, actionsController);
 router.map(routes.brand, brandRoute);
 router.map(routes.home, homeRoute);
 
-if (isDev) {
-  router.map(routes.dev, {
-    async remixTest() {
-      let mod = await import("./routes/test-route.tsx");
-      return mod.default();
-    },
-  });
-}
-
 // Redirects from _redirects (must be before * catchall)
 let redirects = loadRedirectsFromFile();
 let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
