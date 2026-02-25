@@ -12,7 +12,9 @@ import * as build from "virtual:react-router/server-build";
 import { filteredLogger, rateLimit } from "./middleware.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import actionsController from "./routes/actions";
+import blogPostRoute from "./routes/blog-post.tsx";
 import blogRssHandler from "./routes/blog-rss.ts";
+import blogRoute from "./routes/blog.tsx";
 import brandRoute from "./routes/brand.tsx";
 import homeRoute from "./routes/home.tsx";
 import newsletterRoute from "./routes/newsletter.tsx";
@@ -74,6 +76,8 @@ router.map(routes.healthcheck, () => {
 });
 
 router.map(routes.blogRss, blogRssHandler);
+router.map(routes.blogPost, blogPostRoute);
+router.map(routes.blog, blogRoute);
 router.map(routes.actions, actionsController);
 router.map(routes.brand, brandRoute);
 router.map(routes.newsletter, newsletterRoute);
