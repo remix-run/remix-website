@@ -6,11 +6,11 @@ import { Header } from "../components/home/header";
 import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
 import { routes } from "../routes";
 import { render } from "../utils/render";
-import { getBlogPost } from "../lib/blog.server";
+import { getBlogPost, getRawBlogPostMarkdown } from "../lib/blog.server";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 
 type BlogPostContext = {
-  params: { slug?: string };
+  params: { slug?: string; ext?: string };
   request: Request;
 };
 
@@ -18,6 +18,25 @@ export async function blogPostHandler(context: BlogPostContext) {
   let slug = context.params.slug;
   if (!slug) {
     return new Response("Not Found", { status: 404 });
+  }
+
+  let requestUrl = new URL(context.request.url);
+  let isMarkdownRequest = context.params.ext === "md";
+  if (isMarkdownRequest) {
+    try {
+      let markdown = getRawBlogPostMarkdown(slug);
+      return new Response(markdown, {
+        headers: {
+          "Cache-Control": CACHE_CONTROL.DEFAULT,
+          "Content-Type": "text/markdown; charset=utf-8",
+        },
+      });
+    } catch (error) {
+      if (error instanceof Response && error.status === 404) {
+        return error;
+      }
+      throw error;
+    }
   }
 
   let post;
@@ -30,7 +49,6 @@ export async function blogPostHandler(context: BlogPostContext) {
     throw error;
   }
 
-  let requestUrl = new URL(context.request.url);
   let siteUrl = requestUrl.origin;
   let ogImageUrl = new URL(routes.blogOgImage.href({ slug }), siteUrl);
   ogImageUrl.searchParams.set("title", post.title);
@@ -47,6 +65,7 @@ export async function blogPostHandler(context: BlogPostContext) {
 
   return render.document(
     <Page
+      slug={slug}
       post={post}
       pageUrl={`${siteUrl}${pageUrl}`}
       socialImageUrl={ogImageUrl.toString()}
@@ -61,6 +80,7 @@ export async function blogPostHandler(context: BlogPostContext) {
 
 function Page() {
   return (props: {
+    slug: string;
     post: Awaited<ReturnType<typeof getBlogPost>>;
     pageUrl: string;
     socialImageUrl: string;
@@ -68,23 +88,24 @@ function Page() {
     <Document
       title={`${props.post.title} | Remix`}
       description={props.post.summary}
-      head={
-        <>
-          <link rel="stylesheet" href={mdStyles} />
-          <meta property="og:url" content={props.pageUrl} />
-          <meta property="og:title" content={props.post.title} />
-          <meta property="og:image" content={props.socialImageUrl} />
-          <meta property="og:description" content={props.post.summary} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:creator" content="@remix_run" />
-          <meta name="twitter:site" content="@remix_run" />
-          <meta name="twitter:title" content={props.post.title} />
-          <meta name="twitter:description" content={props.post.summary} />
-          <meta name="twitter:image" content={props.socialImageUrl} />
-          <meta name="twitter:image:alt" content={props.post.imageAlt} />
-        </>
-      }
     >
+      <link rel="stylesheet" href={mdStyles} />
+      <link
+        rel="alternate"
+        type="text/markdown"
+        href={routes.blogPost.href({ slug: props.slug, ext: "md" })}
+      />
+      <meta property="og:url" content={props.pageUrl} />
+      <meta property="og:title" content={props.post.title} />
+      <meta property="og:image" content={props.socialImageUrl} />
+      <meta property="og:description" content={props.post.summary} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:creator" content="@remix_run" />
+      <meta name="twitter:site" content="@remix_run" />
+      <meta name="twitter:title" content={props.post.title} />
+      <meta name="twitter:description" content={props.post.summary} />
+      <meta name="twitter:image" content={props.socialImageUrl} />
+      <meta name="twitter:image:alt" content={props.post.imageAlt} />
       <Header />
       <main class="flex flex-1 flex-col" tabIndex={-1}>
         <BlogPostContent post={props.post} />

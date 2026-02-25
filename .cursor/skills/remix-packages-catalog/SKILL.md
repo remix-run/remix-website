@@ -22,7 +22,7 @@ Examples:
 
 1. Open `package-catalog.md` in this skill.
 2. Pick the package by use case.
-3. Read the linked package README if API details are needed.
+3. Read the linked package README/docs if API details are needed.
 4. Normalize all imports to `remix/<package-name>`.
 
 ## High-signal package picks

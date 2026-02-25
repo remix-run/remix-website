@@ -55,6 +55,7 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - `/brand`
 - `/blog`
 - `/blog/:slug`
+- `/blog/:slug.md`
 - `/newsletter`
 - `/healthcheck`
 - `/blog/rss.xml`

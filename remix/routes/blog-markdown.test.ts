@@ -4,13 +4,11 @@ import type { Router } from "remix/fetch-router";
 import { asyncContext } from "remix/async-context-middleware";
 import { blogPostHandler } from "./blog-post";
 import { CACHE_CONTROL } from "../../shared/cache-control";
-import { getBlogPost } from "../lib/blog.server";
 import { routes } from "../routes";
 import { ROUTER_STORAGE_KEY } from "../utils/request-context";
 
-describe("Blog post route", () => {
-  it("renders a post for a valid slug", async () => {
-    let post = await getBlogPost("remix-v2");
+describe("Blog markdown routes", () => {
+  it("serves source markdown for a valid slug at /blog/:slug.md", async () => {
     let router: Router;
     router = createRouter({
       middleware: [
@@ -21,29 +19,23 @@ describe("Blog post route", () => {
         },
       ],
     });
+
     router.map(routes.blogPost, blogPostHandler);
 
-    let response = await router.fetch("http://localhost:3000/blog/remix-v2");
+    let response = await router.fetch("http://localhost:3000/blog/remix-v2.md");
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Content-Type")).toContain("text/html");
+    expect(response.headers.get("Content-Type")).toBe(
+      "text/markdown; charset=utf-8",
+    );
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
 
-    let html = await response.text();
-    expect(html).toContain(`<title>${post.title} | Remix</title>`);
-    expect(html).toContain(post.summary);
-    expect(html).toContain('class="md-prose"');
-    expect(html).toContain("twitter:card");
-    expect(html).toContain('action="/_actions/newsletter"');
-    expect(html).toContain(
-      'rel="alternate" type="text/markdown"',
-    );
-    expect(html).toContain(
-      `href="${routes.blogPost.href({ slug: "remix-v2", ext: "md" })}"`,
-    );
+    let markdown = await response.text();
+    expect(markdown).toContain("title:");
+    expect(markdown).toContain("summary:");
   });
 
-  it("returns 404 for a non-existent slug", async () => {
+  it("returns 404 for missing markdown slug", async () => {
     let router: Router;
     router = createRouter({
       middleware: [
@@ -54,10 +46,11 @@ describe("Blog post route", () => {
         },
       ],
     });
+
     router.map(routes.blogPost, blogPostHandler);
 
     let response = await router.fetch(
-      "http://localhost:3000/blog/this-slug-does-not-exist",
+      "http://localhost:3000/blog/this-slug-does-not-exist.md",
     );
 
     expect(response.status).toBe(404);

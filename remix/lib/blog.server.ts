@@ -90,6 +90,14 @@ export async function getBlogPostListings(): Promise<
     .map(({ ...listing }) => listing);
 }
 
+export function getRawBlogPostMarkdown(slug: string): string {
+  let contents = postContentsBySlug[slug];
+  if (!contents) {
+    throw new Response("Not Found", { status: 404, statusText: "Not Found" });
+  }
+  return contents;
+}
+
 function getAuthor(name: string): BlogAuthor | undefined {
   return AUTHORS.find((a) => a.name === name);
 }
