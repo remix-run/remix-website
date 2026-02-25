@@ -19,6 +19,11 @@ interface BlogRssPost {
 
 const POSTS_DIRECTORY = new URL("../../data/posts/", import.meta.url);
 
+export default async function BlogRssRoute() {
+  let posts = await getBlogRssPosts();
+  return buildBlogRssResponse(posts);
+}
+
 async function getBlogRssPosts(): Promise<BlogRssPost[]> {
   let entries = await readdir(POSTS_DIRECTORY, { withFileTypes: true });
   let posts: BlogRssPost[] = [];
@@ -88,9 +93,4 @@ export function buildBlogRssResponse(posts: BlogRssPost[]) {
       "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
   });
-}
-
-export default async function blogRssHandler() {
-  let posts = await getBlogRssPosts();
-  return buildBlogRssResponse(posts);
 }

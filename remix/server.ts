@@ -1,18 +1,21 @@
-// @ts-expect-error - react-router server build is not typed
-import * as build from "virtual:react-router/server-build";
+import sourceMapSupport from "source-map-support";
 import { createRequestHandler } from "react-router";
-import { createRouter } from "remix/fetch-router";
 import { asyncContext } from "remix/async-context-middleware";
 import { compression } from "remix/compression-middleware";
+import { createRouter } from "remix/fetch-router";
 import { formData } from "remix/form-data-middleware";
 import { staticFiles } from "remix/static-middleware";
-import { rateLimit, filteredLogger } from "./middleware.ts";
-import blogRssHandler from "./routes/blog-rss.ts";
-import homeRoute from "./routes/home.tsx";
+
+// @ts-expect-error - react-router server build is not typed
+import * as build from "virtual:react-router/server-build";
+
+import { filteredLogger, rateLimit } from "./middleware.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
-import sourceMapSupport from "source-map-support";
-import { routes } from "./routes";
 import actionsController from "./routes/actions";
+import blogRssHandler from "./routes/blog-rss.ts";
+import brandRoute from "./routes/brand.tsx";
+import homeRoute from "./routes/home.tsx";
+import { routes } from "./routes";
 import { ROUTER_STORAGE_KEY } from "./utils/request-context";
 
 if (import.meta.env.PROD) {
@@ -71,6 +74,7 @@ router.map(routes.healthcheck, () => {
 
 router.map(routes.blogRss, blogRssHandler);
 router.map(routes.actions, actionsController);
+router.map(routes.brand, brandRoute);
 router.map(routes.home, homeRoute);
 
 if (isDev) {

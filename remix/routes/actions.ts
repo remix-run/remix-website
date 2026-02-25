@@ -6,16 +6,6 @@ import type { Controller } from "remix/fetch-router";
 
 type NewsletterResponse = { ok: boolean; error: string | null };
 
-let newsletterSubmission = s.object({
-  email: s.string().pipe(c.email()),
-  tags: s.array(coerce.number()),
-});
-
-function hasPath(issue: { path?: readonly unknown[] }, key: string): boolean {
-  let path = issue.path;
-  return Array.isArray(path) && path.some((p) => p === key);
-}
-
 export default {
   async newsletter(context) {
     let formData = context.formData ?? (await context.request.formData());
@@ -59,6 +49,16 @@ export default {
     }
   },
 } satisfies Controller<typeof routes.actions>;
+
+let newsletterSubmission = s.object({
+  email: s.string().pipe(c.email()),
+  tags: s.array(coerce.number()),
+});
+
+function hasPath(issue: { path?: readonly unknown[] }, key: string): boolean {
+  let path = issue.path;
+  return Array.isArray(path) && path.some((p) => p === key);
+}
 
 async function subscribeToNewsletter(email: string, tags: number[] = []) {
   let apiKey = process.env.CONVERTKIT_KEY;
