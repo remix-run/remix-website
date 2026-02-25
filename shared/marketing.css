@@ -315,6 +315,7 @@
 .rmx-intro-mask-overlay {
   position: fixed;
   inset: 0;
+  bottom: -2px; /* Overshoot to prevent subpixel white line at bottom */
   z-index: 9999;
   overflow: hidden;
   pointer-events: none;
