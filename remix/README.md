@@ -52,7 +52,22 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 ## Current mapped routes
 
 - `/`
+- `/brand`
+- `/blog`
+- `/blog/:slug`
 - `/newsletter`
 - `/healthcheck`
 - `/blog/rss.xml`
 - `/_actions/newsletter`
+
+## Feature parity gaps
+
+Track known migration gaps here so each item can become a focused follow-up PR.
+
+- **Client-side navigation baseline**: Remix pages currently rely on regular document navigations in most places (for example blog list/post links and markdown body links) rather than app-wide client-side routing behavior.
+- **Link prefetch parity**: React Router `Link` + `prefetch="intent"` behavior is not generally replicated yet on migrated Remix pages.
+- **404 rendering parity**: Some migrated handlers still return plain `404` `Response`s; align with a consistent, themed HTML 404 experience and metadata behavior.
+- **`/img/:slug` migration**: OG image generation is still served by React Router fallback. Follow-up should:
+  - update/verify `satori` compatibility with current Remix setup,
+  - test whether Remix JSX runtime can be used directly, and
+  - if not, implement the route using Satori's object-based element config (no JSX) and keep output/cache behavior equivalent.
