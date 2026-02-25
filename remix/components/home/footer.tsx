@@ -41,7 +41,7 @@ export function Footer() {
 
       <div class="text-rmx-muted flex flex-col items-center gap-4 font-mono text-[10px] uppercase leading-[1.6] tracking-[0.05em]">
         <p>docs and examples licensed under mit</p>
-        <p>©${new Date().getFullYear()} Shopify, Inc.</p>
+        <p>©{new Date().getFullYear()} Shopify, Inc.</p>
       </div>
     </footer>
   );
