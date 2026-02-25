@@ -9,6 +9,8 @@ description: Applies project-specific Remix asset and hydration patterns to avoi
 
 - Resolve client modules with `?assets=client`.
 - Resolve server-rendered asset lists with `?assets=ssr`.
+- Use `?assets=ssr` for module manifests (for example `*.tsx`), not plain `*.css` files.
+- For standalone CSS assets, use `?url` and render a `<link rel="stylesheet" href={...}>`.
 - Use `assets.entry`/`assets.js` from resolved assets; do not hardcode script paths.
 
 ## Client entry pattern
