@@ -31,7 +31,7 @@ export function Footer() {
               <use href={`${iconsHref}#youtube`} />
             </svg>
           </a>
-          <a href="https://rmx.as/discord" aria-label="Remix">
+          <a href="https://discord.gg/xwx7mMzVkA" aria-label="Remix">
             <svg aria-hidden="true" fill="none">
               <use href={`${iconsHref}#discord`} />
             </svg>
