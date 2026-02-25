@@ -9,10 +9,13 @@ description: Provides a concise step-by-step process for migrating a page from a
 
 - [ ] Define or update the route pattern in `remix/routes.ts`.
 - [ ] Create the handler in `remix/routes/**`.
+- [ ] Keep the exported route handler/controller at the top of the route module; place helpers/details below.
 - [ ] Extract/share UI under `remix/components/**`.
 - [ ] Move client behavior into `remix/assets/**` using `clientEntry`.
 - [ ] Map the route in `remix/server.ts` before the catch-all fallback.
 - [ ] Add focused tests for route behavior and key interactions.
+- [ ] Validate request-derived inputs with `remix/data-schema` + `parseSafe` where applicable.
+- [ ] After verification passes, ask the user if they want the legacy `app/routes/**` page/resources removed now.
 
 ## Implementation notes
 
@@ -34,3 +37,4 @@ For mutation routes:
 - Route is served by Remix mapping in `remix/server.ts`.
 - No new migration code is added under `app/remix/**`.
 - Tests cover metadata/link targets/interactions relevant to the migrated page.
+- Agent explicitly prompts the user about removing the old React Router page/resources after the migration is in a good state.

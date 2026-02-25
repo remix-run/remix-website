@@ -30,12 +30,14 @@ When editing request handling:
 - Add/update internal route patterns in `remix/routes.ts`.
 - Use `routes.*.href()` for internal links and form actions.
 - Avoid hardcoded internal URL strings.
+- In `remix/routes/**` files, keep the exported route handler/controller at the top and helper details below.
 
 ## Validation + forms
 
 - Use `formData()` middleware in `remix/server.ts`.
 - Read request body data from `context.formData` in actions.
 - Use `remix/data-schema` with `parseSafe` for validation/coercion.
+- Return explicit 400 responses for invalid request-derived input where applicable.
 
 ## Verification
 

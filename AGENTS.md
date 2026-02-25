@@ -28,6 +28,7 @@ Migrate pages from React Router framework mode (`app/**`) to Remix 3 (`remix/**`
 - Define internal URLs in `remix/routes.ts`.
 - Use `routes.*.href()` instead of hardcoded internal paths.
 - Keep server mappings in `remix/server.ts` aligned with `remix/routes.ts`.
+- In each `remix/routes/**` module, keep the exported route handler/controller at the top and place helper/details below it.
 
 ## Forms And Validation
 
@@ -51,6 +52,12 @@ Migrate pages from React Router framework mode (`app/**`) to Remix 3 (`remix/**`
 4. Move interaction logic to `remix/assets/**` via `clientEntry`.
 5. Map route in `remix/server.ts` before catch-all fallback.
 6. Add/adjust focused tests under `remix/routes/**` or `remix/assets/**`.
+7. After verification, explicitly ask the user whether to remove the legacy React Router page/resources for the migrated route.
+
+## Route Input Validation
+
+- Validate request-derived inputs (form data, params, query/body payloads) with `remix/data-schema` + `parseSafe` where applicable.
+- Return explicit 400 responses for invalid user input; avoid implicit coercion without validation.
 
 ## Minimal Verification
 
