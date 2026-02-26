@@ -6,7 +6,7 @@ import { Header } from "../components/home/header";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 
-export default async function BrandRoute() {
+export async function brandHandler() {
   return render.document(<Page />, {
     headers: {
       "Cache-Control": CACHE_CONTROL.DEFAULT,

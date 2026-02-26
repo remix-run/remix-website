@@ -6,6 +6,7 @@ Use this as a quick chooser. Import from `remix/<package-name>` in app code.
 
 - `remix/component` - Component runtime for server render + selective hydration.  
   README: https://raw.githubusercontent.com/remix-run/remix/refs/heads/main/packages/component/README.md
+  Docs: https://github.com/remix-run/remix/tree/main/packages/component/docs
 - `remix/interaction` - Event system used by component interactivity.  
   README: https://raw.githubusercontent.com/remix-run/remix/refs/heads/main/packages/interaction/README.md
 - `remix/response` - Fetch `Response` helpers.  

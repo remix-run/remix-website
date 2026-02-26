@@ -12,10 +12,12 @@ import * as build from "virtual:react-router/server-build";
 import { filteredLogger, rateLimit } from "./middleware.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import actionsController from "./routes/actions";
-import blogRssHandler from "./routes/blog-rss.ts";
-import brandRoute from "./routes/brand.tsx";
-import homeRoute from "./routes/home.tsx";
-import newsletterRoute from "./routes/newsletter.tsx";
+import { blogPostHandler } from "./routes/blog-post.tsx";
+import { blogRssHandler } from "./routes/blog-rss.ts";
+import { blogHandler } from "./routes/blog.tsx";
+import { brandHandler } from "./routes/brand.tsx";
+import { homeHandler } from "./routes/home.tsx";
+import { newsletterHandler } from "./routes/newsletter.tsx";
 import { routes } from "./routes";
 import { ROUTER_STORAGE_KEY } from "./utils/request-context";
 
@@ -74,10 +76,12 @@ router.map(routes.healthcheck, () => {
 });
 
 router.map(routes.blogRss, blogRssHandler);
+router.map(routes.blogPost, blogPostHandler);
+router.map(routes.blog, blogHandler);
 router.map(routes.actions, actionsController);
-router.map(routes.brand, brandRoute);
-router.map(routes.newsletter, newsletterRoute);
-router.map(routes.home, homeRoute);
+router.map(routes.brand, brandHandler);
+router.map(routes.newsletter, newsletterHandler);
+router.map(routes.home, homeHandler);
 
 // Redirects from _redirects (must be before * catchall)
 let redirects = loadRedirectsFromFile();

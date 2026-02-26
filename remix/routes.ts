@@ -5,9 +5,11 @@ export let routes = route({
   brand: "/brand",
   newsletter: "/newsletter",
   blog: "/blog",
+  blogPost: "/blog/:slug(.:ext)",
   jam2025: "/jam/2025",
   healthcheck: "/healthcheck",
   blogRss: "/blog/rss.xml",
+  blogOgImage: "/img/:slug",
   actions: route("_actions", {
     newsletter: { method: "POST", pattern: "/newsletter" },
   }),

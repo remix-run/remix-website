@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { brandHandler } from "./brand";
+import { blogHandler } from "./blog";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 import { routes } from "../routes";
 import { createRouteTestRouter } from "../test-utils/create-route-test-router";
 
-describe("Brand route", () => {
+describe("Blog route", () => {
   it("renders expected content and metadata", async () => {
     let router = createRouteTestRouter();
-    router.map(routes.brand, brandHandler);
+    router.map(routes.blog, blogHandler);
 
-    let response = await router.fetch("http://localhost:3000/brand");
+    let response = await router.fetch("http://localhost:3000/blog");
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
@@ -18,10 +18,11 @@ describe("Brand route", () => {
     let html = await response.text();
 
     expect(html).toContain("<html");
-    expect(html).toContain("Remix Assets and Branding Guidelines");
-    expect(html).toContain("Remix Brand");
-    expect(html).toContain("Trademark Usage Agreement");
-    expect(html).toContain('href="/_brand/remix-light.svg"');
-    expect(html).toContain("#github");
+    expect(html).toContain("<title>Remix Blog</title>");
+    expect(html).toContain(
+      "Thoughts about building excellent user experiences with Remix.",
+    );
+    expect(html).toContain("Featured Articles");
+    expect(html).toContain('action="/_actions/newsletter"');
   });
 });
