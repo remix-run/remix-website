@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import mdStyles from "../../shared/md.css?url";
+import mdStyles from "../../shared/styles/md.css?url";
 import { Document } from "../components/document";
 import { Footer } from "../components/home/footer";
 import { Header } from "../components/home/header";

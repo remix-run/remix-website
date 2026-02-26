@@ -1,5 +1,5 @@
 import cx from "clsx";
-import iconsHref from "../../../app/icons.svg";
+import iconsHref from "../../../shared/icons.svg";
 
 export function PitchSection() {
   return () => (

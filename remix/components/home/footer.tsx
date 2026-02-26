@@ -1,6 +1,6 @@
 import cx from "clsx";
 import { Wordmark } from "./wordmark";
-import iconsHref from "../../../app/icons.svg";
+import iconsHref from "../../../shared/icons.svg";
 
 export function Footer() {
   return () => (

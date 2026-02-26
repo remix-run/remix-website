@@ -31,7 +31,7 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - Resolve client modules with `?assets=client` and use `assets.entry` in `clientEntry(...)`.
 - Resolve document assets with `?assets=ssr` and render from `assets.css` / `assets.js` / `assets.entry`.
 - Use `?assets=ssr` for module manifests (for example `*.tsx`), not for plain stylesheets.
-- For standalone CSS files (for example `shared/md.css`), import with `?url` and render a stylesheet `<link>`.
+- For standalone CSS files (for example `shared/styles/md.css`), import with `?url` and render a stylesheet `<link>`.
 - Do not hardcode module script paths (for example `/remix/assets/entry.ts`).
 - For SVG sprites, import the asset URL and append fragment ids.
 
@@ -77,5 +77,7 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 Track known migration gaps here so each item can become a focused follow-up PR.
 
 - **Client-side navigation baseline**: Remix pages currently rely on regular document navigations in most places (for example blog list/post links and markdown body links) rather than app-wide client-side routing behavior.
+- **Delegated internal blog links**: Intentional temporary gap. Legacy delegated click interception for internal `<a>` links in blog content (`app/ui/delegate-links.tsx`) was removed; reintroduce equivalent behavior for blog-post content when client-side routing is implemented.
 - **Link prefetch parity**: React Router `Link` + `prefetch="intent"` behavior is not generally replicated yet on migrated Remix pages.
 - **404 rendering parity**: Some migrated handlers still return plain `404` `Response`s; align with a consistent, themed HTML 404 experience and metadata behavior.
+- **Marketing DocSearch shortcut**: Intentional non-parity. Legacy `Cmd/Ctrl+K` DocSearch modal behavior (from `app/ui/docsearch.tsx` + old marketing layout wiring) is not being carried over to Remix pages.
