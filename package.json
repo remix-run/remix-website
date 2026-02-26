@@ -35,7 +35,7 @@
     "cssnano": "^6.0.3",
     "emoji-regex": "^10.6.0",
     "escape-goat": "^4.0.0",
-    "fathom-client": "^3.6.0",
+    "fathom-client": "^3.7.2",
     "feed": "^4.2.2",
     "front-matter": "^4.0.2",
     "isbot": "^5",
