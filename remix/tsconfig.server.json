@@ -6,7 +6,8 @@
     "jsxImportSource": "remix/component",
     "types": ["node", "@hiogawa/vite-plugin-fullstack/types", "vite/client"],
     "paths": {
-      "react-router": ["./react-router-type-stub.d.ts"]
+      "react-router": ["./react-router-type-stub.d.ts"],
+      "satori": ["./satori-type-stub.d.ts"]
     }
   }
 }

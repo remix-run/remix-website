@@ -28,7 +28,6 @@ export default defineConfig({
       },
     },
   },
-  optimizeDeps: { exclude: ["svg2img"] },
   plugins: [
     tsconfigPaths({ projects: ["./app/tsconfig.json"] }),
     arraybuffer(),
