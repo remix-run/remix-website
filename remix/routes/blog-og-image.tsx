@@ -1,15 +1,12 @@
 import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
+import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
-import svg2img from "svg2img";
 import interBlack from "./inter-black-basic-latin.woff?arraybuffer";
 import interRegular from "./inter-regular-basic-latin.woff?arraybuffer";
 import socialBackground from "./social-background.png?arraybuffer";
-
-type BlogOgImageContext = {
-  params: { slug?: string };
-  request: Request;
-};
+import type { BuildAction } from "remix/fetch-router";
+import type { routes } from "../routes";
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }
@@ -24,28 +21,34 @@ type OgNode = {
   };
 };
 
-export async function blogOgImageHandler(context: BlogOgImageContext) {
-  let parsedQuery = parseOgImageQuery(context.request);
+export let blogOgImageHandler: BuildAction<
+  "GET",
+  typeof routes.blogOgImage
+> = async ({ request }) => {
+  let parsedQuery = parseOgImageQuery(request);
   if (!parsedQuery.success) {
     return Response.json({ error: parsedQuery.error }, { status: 400 });
   }
 
-  let svg = await createOgImageSVG(context.request, parsedQuery.value);
-  let { data, error } = await svgToPng(svg);
-  if (error || !data) {
-    return new Response(error?.toString() || "Failed to generate image", {
+  let svg = await createOgImageSVG(request, parsedQuery.value);
+  let pngData;
+  try {
+    pngData = renderSvgToPng(svg);
+  } catch (error) {
+    let message = error instanceof Error ? error.message : String(error);
+    return new Response(message || "Failed to generate image", {
       status: 500,
       headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   }
 
-  return new Response(new Uint8Array(data), {
+  return new Response(Uint8Array.from(pngData), {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": `max-age=${60 * 60 * 24}`,
     },
   });
-}
+};
 
 export function parseOgImageQuery(request: Request): ParsedOgImageQuery {
   let requestUrl = new URL(request.url);
@@ -255,18 +258,9 @@ function createAuthorsNode(authors: OgImageAuthor[]): OgNode {
   };
 }
 
-async function svgToPng(svg: string) {
-  return new Promise<{ data: Buffer | null; error: Error | null }>(
-    (resolve) => {
-      svg2img(svg, (error, buffer) => {
-        if (error) {
-          resolve({ data: null, error });
-        } else {
-          resolve({ data: buffer, error: null });
-        }
-      });
-    },
-  );
+function renderSvgToPng(svg: string): Uint8Array {
+  let resvg = new Resvg(svg);
+  return resvg.render().asPng();
 }
 
 function stripEmojis(value: string): string {
