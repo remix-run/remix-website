@@ -5,6 +5,9 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "remix/component",
-    "types": ["node", "vite/client", "@hiogawa/vite-plugin-fullstack/types"]
+    "types": ["node", "vite/client", "@hiogawa/vite-plugin-fullstack/types"],
+    "paths": {
+      "satori": ["./satori-type-stub.d.ts"]
+    }
   }
 }
