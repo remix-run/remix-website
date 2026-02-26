@@ -35,10 +35,20 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - Do not hardcode module script paths (for example `/remix/assets/entry.ts`).
 - For SVG sprites, import the asset URL and append fragment ids.
 
+## Analytics parity
+
+- Preserve Fathom analytics behavior from `app/entry.client.tsx` when migrating pages/shells to `remix/**`.
+- Load Fathom only outside development (`process.env.NODE_ENV !== "development"`).
+- Keep the current site id/options aligned with production behavior (`IRVDGCHK`, `spa: "history"`, `excludedDomains: ["localhost"]`, and the existing script URL).
+- Treat analytics loading as migration parity, not an optional enhancement.
+- If/when client-side navigations are introduced for Remix pages, explicitly validate pageview tracking for those transitions (not just hard reloads), including any navigation path that uses APIs other than History (for example, the Navigation API).
+
 ## Pre-PR verification
 
 - Run focused tests for changed routes/components.
 - Run relevant typechecks.
+- Verify Fathom analytics still loads on migrated Remix pages in production mode.
+- When shipping client-side navigation changes, verify Fathom pageviews fire once per navigation and continue working for both initial document loads and in-app transitions.
 - Always run `pnpm run build` before opening or shipping a PR.
 
 ## TypeScript/JSX config
