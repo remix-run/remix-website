@@ -9,6 +9,18 @@ import "../../shared/styles/marketing.css";
 
 let assets = clientAssets.merge(documentAssets);
 let isDev = import.meta.env.DEV;
+let colorSchemeScript = `
+  let media = window.matchMedia("(prefers-color-scheme: dark)");
+  let sync = () => {
+    document.documentElement.classList.toggle("dark", media.matches);
+  };
+  sync();
+  if (typeof media.addEventListener === "function") {
+    media.addEventListener("change", sync);
+  } else if (typeof media.addListener === "function") {
+    media.addListener(sync);
+  }
+`;
 
 interface DocumentProps {
   title: string;
@@ -92,9 +104,7 @@ export function Document() {
 
         {/* Dark-mode detection (mirrors root.tsx ColorSchemeScript) */}
         {forceTheme === undefined ? (
-          <script
-            innerHTML={`let m=window.matchMedia("(prefers-color-scheme: dark)");if(m.matches)document.documentElement.classList.add("dark");`}
-          />
+          <script innerHTML={colorSchemeScript} />
         ) : null}
 
         {isDev ? (
