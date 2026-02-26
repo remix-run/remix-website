@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { LRUCache } from "lru-cache";
 import yaml from "yaml";
-import { processMarkdown } from "../../app/lib/md.server";
+import { processMarkdown } from "../../shared/lib/md.server";
 import authorsYamlFileContents from "../../data/authors.yml?raw";
 
 const postContentsBySlug = Object.fromEntries(

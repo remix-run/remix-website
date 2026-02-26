@@ -17,7 +17,7 @@ Migrate pages from React Router framework mode (`app/**`) to Remix 3 (`remix/**`
 - For route-local, single-use UI, keep it in the route file; extract to `remix/components/**` only when shared.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
 - Use `?assets=client` and `?assets=ssr` asset resolution patterns; never hardcode entry module paths.
-- Use `?assets=ssr` only for module assets (for example `*.tsx` manifests). For plain stylesheet files (for example `shared/*.css`), import with `?url` and render a `<link rel="stylesheet" ...>`.
+- Use `?assets=ssr` only for module assets (for example `*.tsx` manifests). For plain stylesheet files (for example `shared/styles/*.css`), import with `?url` and render a `<link rel="stylesheet" ...>`.
 
 ## Per-Route Done Checklist
 

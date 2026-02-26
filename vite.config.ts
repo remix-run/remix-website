@@ -23,9 +23,6 @@ export default defineConfig({
           input: "remix/server.ts",
         },
       },
-      resolve: {
-        noExternal: ["@docsearch/react"],
-      },
     },
   },
   plugins: [

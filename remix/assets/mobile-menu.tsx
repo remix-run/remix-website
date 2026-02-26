@@ -2,7 +2,7 @@ import { clientEntry, type Handle } from "remix/component";
 import { escape } from "remix/interaction/keys";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import cx from "clsx";
-import iconsHref from "../../app/icons.svg";
+import iconsHref from "../../shared/icons.svg";
 import assets from "./mobile-menu.tsx?assets=client";
 
 export let MobileMenu = clientEntry(

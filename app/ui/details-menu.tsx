@@ -76,13 +76,3 @@ export const DetailsMenu = forwardRef<
   );
 });
 DetailsMenu.displayName = "DetailsMenu";
-
-export function DetailsPopup({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="absolute right-0 z-20 md:left-0">
-      <div className="relative top-1 w-40 rounded-md border border-gray-100 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        {children}
-      </div>
-    </div>
-  );
-}

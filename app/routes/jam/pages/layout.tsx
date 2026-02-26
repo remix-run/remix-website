@@ -8,7 +8,7 @@ import { useHideBackground } from "../utils";
 
 import type { Route } from "./+types/layout";
 
-import jamStyles from "../../../../shared/jam.css?url";
+import jamStyles from "../../../../shared/styles/jam.css?url";
 import maskSrc from "../images/background-mask.avif";
 import seatsSrc from "../images/remix-color-seats.svg";
 
