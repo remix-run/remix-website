@@ -13,7 +13,8 @@
     "jsx": "react-jsx",
     "paths": {
       "~/lib/md.server": ["./shared/lib/md.server.ts"],
-      "~/*": ["./app/*"]
+      "~/icons.svg": ["./shared/icons.svg"],
+      "~/*": ["./app/*", "./shared/*"]
     },
     "baseUrl": "..",
     "rootDirs": ["..", "../.react-router/types"]
