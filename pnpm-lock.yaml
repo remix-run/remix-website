@@ -795,10 +795,6 @@ packages:
     resolution: {path: packages/headers, tarball: https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68}
     version: 0.19.0
 
-  '@remix-run/html-template@git+https://git@github.com:remix-run/remix.git#b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68&path:packages/html-template':
-    resolution: {commit: b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68, path: packages/html-template, repo: git@github.com:remix-run/remix.git, type: git}
-    version: 0.3.0
-
   '@remix-run/html-template@https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68#path:packages/html-template':
     resolution: {path: packages/html-template, tarball: https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68}
     version: 0.3.0
@@ -3361,8 +3357,6 @@ snapshots:
 
   '@remix-run/headers@https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68#path:packages/headers': {}
 
-  '@remix-run/html-template@git+https://git@github.com:remix-run/remix.git#b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68&path:packages/html-template': {}
-
   '@remix-run/html-template@https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68#path:packages/html-template': {}
 
   '@remix-run/interaction@https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68#path:packages/interaction': {}
@@ -3409,7 +3403,7 @@ snapshots:
     dependencies:
       '@remix-run/fetch-router': https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68#path:packages/fetch-router
       '@remix-run/fs': https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68#path:packages/fs
-      '@remix-run/html-template': git+https://git@github.com:remix-run/remix.git#b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68&path:packages/html-template
+      '@remix-run/html-template': https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68#path:packages/html-template
       '@remix-run/mime': https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68#path:packages/mime
       '@remix-run/response': https://codeload.github.com/remix-run/remix/tar.gz/b3b46dbf3f50f78c0e7c0a83a5291e0b78be7a68#path:packages/response
 

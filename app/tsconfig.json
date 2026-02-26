@@ -12,7 +12,6 @@
     ],
     "jsx": "react-jsx",
     "paths": {
-      "~/icons.svg": ["./shared/icons.svg"],
       "~/lib/md.server": ["./shared/lib/md.server.ts"],
       "~/*": ["./app/*"]
     },
