@@ -10,7 +10,6 @@ export default [
     route("2025/gallery", "routes/jam/pages/2025.gallery.tsx"),
   ]),
 
-  route("img/:slug", "routes/resources/blog-og-image/route.tsx"),
   route("_actions/newsletter", "routes/resources/newsletter-subscribe.tsx"),
 
   route("*", "routes/catchall.tsx"),
