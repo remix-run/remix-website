@@ -28,7 +28,6 @@
   "dependencies": {
     "@docsearch/css": "^3.5.2",
     "@docsearch/react": "^3.5.2",
-    "@fontsource/inter": "^5.2.8",
     "@react-router/node": "7.12.0",
     "@shopify/storefront-api-client": "^1.0.7",
     "clsx": "^2.1.1",

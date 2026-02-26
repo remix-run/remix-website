@@ -256,15 +256,17 @@ function createAuthorsNode(authors: OgImageAuthor[]): OgNode {
 }
 
 async function svgToPng(svg: string) {
-  return new Promise<{ data: Buffer | null; error: Error | null }>((resolve) => {
-    svg2img(svg, (error, buffer) => {
-      if (error) {
-        resolve({ data: null, error });
-      } else {
-        resolve({ data: buffer, error: null });
-      }
-    });
-  });
+  return new Promise<{ data: Buffer | null; error: Error | null }>(
+    (resolve) => {
+      svg2img(svg, (error, buffer) => {
+        if (error) {
+          resolve({ data: null, error });
+        } else {
+          resolve({ data: buffer, error: null });
+        }
+      });
+    },
+  );
 }
 
 function stripEmojis(value: string): string {
@@ -306,12 +308,10 @@ type OgImageQuery = s.InferOutput<typeof ogImageQuerySchema>;
 async function getInterFontData() {
   if (!interFontDataPromise) {
     interFontDataPromise = (async () => {
-      let regularPath = require.resolve(
-        "@fontsource/inter/files/inter-latin-400-normal.woff",
-      );
-      let blackPath = require.resolve(
-        "@fontsource/inter/files/inter-latin-900-normal.woff",
-      );
+      let regularPath =
+        require.resolve("@fontsource/inter/files/inter-latin-400-normal.woff");
+      let blackPath =
+        require.resolve("@fontsource/inter/files/inter-latin-900-normal.woff");
 
       let [regularBuffer, blackBuffer] = await Promise.all([
         readFile(regularPath),

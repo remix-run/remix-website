@@ -14,9 +14,6 @@ importers:
       '@docsearch/react':
         specifier: ^3.5.2
         version: 3.9.0(@algolia/client-search@5.48.0)(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)
-      '@fontsource/inter':
-        specifier: ^5.2.8
-        version: 5.2.8
       '@react-router/node':
         specifier: 7.12.0
         version: 7.12.0(react-router@7.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.9.3)
@@ -615,9 +612,6 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
-
-  '@fontsource/inter@5.2.8':
-    resolution: {integrity: sha512-P6r5WnJoKiNVV+zvW2xM13gNdFhAEpQ9dQJHt3naLvfg+LkF2ldgSLiF4T41lf1SQCM9QmkqPTn4TH568IRagg==}
 
   '@hiogawa/vite-plugin-fullstack@0.0.11':
     resolution: {integrity: sha512-PEA5TmioqP0aqbWUA2upmgmjap7sqrHFo3+xx2+/B15vBD3uWeeWvJbCeaxjRGbnjPXpxJTZstZv8m0UB8FUQw==}
@@ -3737,8 +3731,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.3':
     optional: true
-
-  '@fontsource/inter@5.2.8': {}
 
   '@hiogawa/vite-plugin-fullstack@0.0.11(vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(yaml@2.8.2))':
     dependencies:
