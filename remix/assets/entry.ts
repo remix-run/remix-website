@@ -1,4 +1,7 @@
 import { run } from "remix/component";
+import { initFathomAnalytics } from "./fathom";
+
+initFathomAnalytics();
 
 let app = run(document, {
   async loadModule(src, exportName) {
