@@ -1,26 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { createRouter } from "remix/fetch-router";
-import type { Router } from "remix/fetch-router";
-import { asyncContext } from "remix/async-context-middleware";
 import { blogPostHandler } from "./blog-post";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 import { getBlogPost } from "../lib/blog.server";
 import { routes } from "../routes";
-import { ROUTER_STORAGE_KEY } from "../utils/request-context";
+import { createRouteTestRouter } from "../test-utils/create-route-test-router";
 
 describe("Blog post route", () => {
   it("renders a post for a valid slug", async () => {
     let post = await getBlogPost("remix-v2");
-    let router: Router;
-    router = createRouter({
-      middleware: [
-        asyncContext(),
-        (context, next) => {
-          context.storage.set(ROUTER_STORAGE_KEY, router);
-          return next();
-        },
-      ],
-    });
+    let router = createRouteTestRouter();
     router.map(routes.blogPost, blogPostHandler);
 
     let response = await router.fetch("http://localhost:3000/blog/remix-v2");
@@ -35,25 +23,14 @@ describe("Blog post route", () => {
     expect(html).toContain('class="md-prose"');
     expect(html).toContain("twitter:card");
     expect(html).toContain('action="/_actions/newsletter"');
-    expect(html).toContain(
-      'rel="alternate" type="text/markdown"',
-    );
+    expect(html).toContain('rel="alternate" type="text/markdown"');
     expect(html).toContain(
       `href="${routes.blogPost.href({ slug: "remix-v2", ext: "md" })}"`,
     );
   });
 
   it("returns 404 for a non-existent slug", async () => {
-    let router: Router;
-    router = createRouter({
-      middleware: [
-        asyncContext(),
-        (context, next) => {
-          context.storage.set(ROUTER_STORAGE_KEY, router);
-          return next();
-        },
-      ],
-    });
+    let router = createRouteTestRouter();
     router.map(routes.blogPost, blogPostHandler);
 
     let response = await router.fetch(
