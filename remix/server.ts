@@ -14,6 +14,7 @@ import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import actionsController from "./routes/actions";
 import { blogPostHandler } from "./routes/blog-post.tsx";
 import { blogRssHandler } from "./routes/blog-rss.ts";
+import { blogOgImageHandler } from "./routes/blog-og-image";
 import { blogHandler } from "./routes/blog.tsx";
 import { brandHandler } from "./routes/brand.tsx";
 import { homeHandler } from "./routes/home.tsx";
@@ -76,6 +77,7 @@ router.map(routes.healthcheck, () => {
 });
 
 router.map(routes.blogRss, blogRssHandler);
+router.map(routes.blogOgImage, blogOgImageHandler);
 router.map(routes.blogPost, blogPostHandler);
 router.map(routes.blog, blogHandler);
 router.map(routes.actions, actionsController);
