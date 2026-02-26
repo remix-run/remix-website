@@ -1,9 +1,10 @@
-import { readFile } from "node:fs/promises";
-import { createRequire } from "node:module";
 import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
 import satori from "satori";
 import svg2img from "svg2img";
+import interBlack from "./inter-black-basic-latin.woff?arraybuffer";
+import interRegular from "./inter-regular-basic-latin.woff?arraybuffer";
+import socialBackground from "./social-background.png?arraybuffer";
 
 type BlogOgImageContext = {
   params: { slug?: string };
@@ -91,12 +92,11 @@ export function parseOgImageQuery(request: Request): ParsedOgImageQuery {
 }
 
 async function createOgImageSVG(request: Request, data: OgImageQuery) {
-  let { interRegular, interBlack } = await getInterFontData();
   let rootNode = createOgRootNode(request, data);
-  return satori(rootNode as any, {
+  return satori(rootNode, {
     width: 2400,
     height: 1256,
-    // satori supports TTF/OTF/WOFF. We load local WOFFs from @fontsource/inter.
+    // satori supports TTF/OTF/WOFF. We keep local WOFFs in this route folder.
     fonts: [
       {
         name: PRIMARY_FONT,
@@ -125,9 +125,9 @@ function createOgRootNode(request: Request, data: OgImageQuery): OgNode {
           backgroundRepeat: "no-repeat",
         }
       : {
-          backgroundColor: "#111827",
-          backgroundImage:
-            "linear-gradient(160deg, rgba(11,17,32,1) 0%, rgba(26,25,53,1) 45%, rgba(56,31,77,1) 100%)",
+          backgroundImage: `url("data:image/png;base64,${arrayBufferToBase64(socialBackground)}")`,
+          backgroundSize: "100% 100%",
+          backgroundRepeat: "no-repeat",
         };
 
   return {
@@ -284,10 +284,6 @@ function getAuthorImgSrc(siteUrl: string, name: string) {
 
 let PRIMARY_TEXT_COLOR = "#ffffff";
 let PRIMARY_FONT = "Inter";
-let require = createRequire(import.meta.url);
-let interFontDataPromise:
-  | Promise<{ interRegular: ArrayBuffer; interBlack: ArrayBuffer }>
-  | undefined;
 
 let ogImageAuthorSchema = s.object({
   name: s.string(),
@@ -305,28 +301,12 @@ let ogImageQuerySchema = s.object({
 type OgImageAuthor = s.InferOutput<typeof ogImageAuthorSchema>;
 type OgImageQuery = s.InferOutput<typeof ogImageQuerySchema>;
 
-async function getInterFontData() {
-  if (!interFontDataPromise) {
-    interFontDataPromise = (async () => {
-      let regularPath =
-        require.resolve("@fontsource/inter/files/inter-latin-400-normal.woff");
-      let blackPath =
-        require.resolve("@fontsource/inter/files/inter-latin-900-normal.woff");
-
-      let [regularBuffer, blackBuffer] = await Promise.all([
-        readFile(regularPath),
-        readFile(blackPath),
-      ]);
-
-      return {
-        interRegular: toArrayBuffer(regularBuffer),
-        interBlack: toArrayBuffer(blackBuffer),
-      };
-    })();
+// Keep parity with the old OG route, which embedded social-background.png.
+function arrayBufferToBase64(buffer: ArrayBuffer) {
+  let binary = "";
+  let bytes = new Uint8Array(buffer);
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
   }
-  return interFontDataPromise;
-}
-
-function toArrayBuffer(buffer: Buffer): ArrayBuffer {
-  return Uint8Array.from(buffer).buffer;
+  return btoa(binary);
 }
