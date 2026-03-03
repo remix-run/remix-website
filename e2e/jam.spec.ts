@@ -1,6 +1,29 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Jam", () => {
+  test("jam mobile menu opens and shows jam links", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/jam/2025");
+
+    let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
+    await expect(menuToggle).toBeVisible();
+    await menuToggle.click();
+
+    let mobileNav = page.getByRole("navigation", { name: "Mobile" });
+    await expect(mobileNav).toBeVisible();
+    await expect(
+      mobileNav.getByRole("link", { name: "Schedule & Lineup" }),
+    ).toBeVisible();
+    await expect(
+      mobileNav.getByRole("link", { name: "Gallery" }),
+    ).toBeVisible();
+    await expect(
+      mobileNav.getByRole("link", { name: "Code of Conduct" }),
+    ).toBeVisible();
+    await expect(mobileNav.getByRole("link", { name: "FAQ" })).toBeVisible();
+    await expect(mobileNav.getByRole("link", { name: "Ticket" })).toBeVisible();
+  });
+
   test("jam root redirects to jam 2025", async ({ page }) => {
     await page.goto("/jam");
     await page.waitForURL("**/jam/2025");

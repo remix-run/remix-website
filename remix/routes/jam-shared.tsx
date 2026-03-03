@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
+import { MobileMenu } from "../assets/mobile-menu";
 import { Document } from "../components/document";
 import { routes } from "../routes";
 import jamStylesHref from "../../shared/styles/jam.css?url";
@@ -13,9 +14,14 @@ import ticketSrc from "../../app/routes/jam/images/keepsakes/ticket.avif";
 import boardingPassSrc from "../../app/routes/jam/images/keepsakes/boarding-pass.avif";
 import stickerSrc from "../../app/routes/jam/images/keepsakes/remix-logo-sticker.svg";
 
-const iconsHref = "/icons.svg";
 const jamButtonClassName =
   "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 md:px-6 md:py-4 md:text-xl";
+const jamMobileMenuSummaryClass =
+  "_no-triangle grid size-12 place-items-center rounded-full bg-white text-black backdrop-blur-lg outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand [[open]>&]:bg-blue-brand [[open]>&]:text-white [&_svg]:size-6";
+const jamMobileMenuPositionClass = "absolute right-0 z-20 lg:left-0";
+const jamMobileMenuWrapperClass = "relative top-1 w-max p-1";
+const jamMobileMenuNavClass =
+  "flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg";
 
 export function JamDocument() {
   return (props: {
@@ -167,22 +173,44 @@ function Navbar() {
         <TicketLogo class="size-6 fill-current md:size-8 lg:size-6 xl:size-8" />
         <span>Ticket</span>
       </a>
-      <div class="lg:hidden">
-        {/* TODO(remix-jam-interactions): Restore mobile menu disclosure interaction parity. */}
-        <button
-          type="button"
-          class="_no-triangle grid size-12 place-items-center rounded-full bg-white text-black backdrop-blur-lg"
-          aria-label="Open navigation menu"
-          disabled
+      <MobileMenu
+        class="lg:hidden"
+        summaryClass={jamMobileMenuSummaryClass}
+        menuPositionClass={jamMobileMenuPositionClass}
+        menuWrapperClass={jamMobileMenuWrapperClass}
+        navClass={jamMobileMenuNavClass}
+      >
+        <MobileNavLink
+          href={routes.jam2025Lineup.href()}
+          active={props.activePath === routes.jam2025Lineup.href()}
         >
-          <svg class="size-6" aria-hidden="true" viewBox="0 0 24 24">
-            <path
-              fill="currentColor"
-              d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
-            />
-          </svg>
-        </button>
-      </div>
+          Schedule & Lineup
+        </MobileNavLink>
+        <MobileNavLink
+          href={routes.jam2025Gallery.href()}
+          active={props.activePath === routes.jam2025Gallery.href()}
+        >
+          Gallery
+        </MobileNavLink>
+        <MobileNavLink
+          href={routes.jam2025Coc.href()}
+          active={props.activePath === routes.jam2025Coc.href()}
+        >
+          Code of Conduct
+        </MobileNavLink>
+        <MobileNavLink
+          href={routes.jam2025Faq.href()}
+          active={props.activePath === routes.jam2025Faq.href()}
+        >
+          FAQ
+        </MobileNavLink>
+        <MobileNavLink
+          href={routes.jam2025Ticket.href()}
+          active={props.activePath === routes.jam2025Ticket.href()}
+        >
+          Ticket
+        </MobileNavLink>
+      </MobileMenu>
     </nav>
   );
 }
@@ -195,7 +223,23 @@ function NavLink() {
         "rounded-full border-2 px-5 py-0.5 text-base font-bold outline-none transition-colors duration-300 md:border-4 md:py-3 md:text-xl lg:border-2 lg:px-4 lg:py-2 lg:text-base xl:px-5 xl:py-3 xl:text-xl",
         props.active
           ? "border-white text-white"
-          : "border-transparent text-white/70 hover:border-white hover:text-white",
+          : "border-transparent text-white/70 hover:border-white hover:text-white focus-visible:border-white focus-visible:text-white",
+      )}
+    >
+      {props.children}
+    </a>
+  );
+}
+
+function MobileNavLink() {
+  return (props: { href: string; active: boolean; children: RemixNode }) => (
+    <a
+      href={props.href}
+      class={clsx(
+        "block min-w-max rounded-full border-2 px-4 py-2 text-lg font-bold outline-none transition-colors duration-300",
+        props.active
+          ? "border-white text-white"
+          : "border-transparent text-white/70 hover:border-white hover:text-white focus-visible:border-white focus-visible:text-white",
       )}
     >
       {props.children}
