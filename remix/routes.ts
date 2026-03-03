@@ -13,6 +13,7 @@ export let routes = route({
   jam2025Faq: "/jam/2025/faq",
   jam2025Coc: "/jam/2025/coc",
   jam2025Gallery: "/jam/2025/gallery",
+  jam2025GalleryDownload: "/jam/2025/gallery/download",
   healthcheck: "/healthcheck",
   blogRss: "/blog/rss.xml",
   blogOgImage: "/img/:slug",

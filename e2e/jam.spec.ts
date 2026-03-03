@@ -176,6 +176,31 @@ test.describe("Jam", () => {
     await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
   });
 
+  test("jam gallery download link returns attachment response", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2025/gallery");
+
+    let noPhotosMessage = page.getByText("No photos available yet.");
+    if (await noPhotosMessage.isVisible()) {
+      test.skip(true, "No gallery photos available in this environment");
+    }
+
+    await page.goto("/jam/2025/gallery?photo=0");
+    let downloadLink = page.getByRole("link", {
+      name: "Download full resolution image",
+    });
+    await expect(downloadLink).toBeVisible();
+
+    let downloadHref = await downloadLink.getAttribute("href");
+    expect(downloadHref).toMatch(/^\/jam\/2025\/gallery\/download\?photo=\d+$/);
+
+    let response = await page.request.get(downloadHref!);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-disposition"]).toContain("attachment;");
+  });
+
   test("jam gallery keyboard navigation moves and closes modal", async ({
     page,
   }) => {
