@@ -109,11 +109,7 @@ export let JamTicketPurchase = clientEntry(
             <p class="mt-1 text-sm font-semibold text-red-brand md:text-base">
               {props.error}
             </p>
-          ) : (
-            <p class="text-sm font-semibold text-white/60 md:text-base">
-              Maximum {props.maxQuantity} tickets per checkout.
-            </p>
-          )}
+          ) : null}
         </div>
       );
     };

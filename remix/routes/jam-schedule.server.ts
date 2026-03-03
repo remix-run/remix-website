@@ -33,6 +33,10 @@ const scheduleItemSchema = s.object({
 
 const scheduleArraySchema = s.array(scheduleItemSchema);
 
+export function parseScheduleItems(raw: unknown) {
+  return s.parse(scheduleArraySchema, raw);
+}
+
 type ScheduleItem = {
   time: string;
   title: string;
@@ -59,7 +63,7 @@ export async function getSchedule(): Promise<ScheduleItem[]> {
   if (cached) return cached;
 
   const rawUnknown = yaml.parse(scheduleYamlFileContents);
-  const raw = s.parse(scheduleArraySchema, rawUnknown);
+  const raw = parseScheduleItems(rawUnknown);
 
   const schedule: ScheduleItem[] = await Promise.all(
     raw.map(async (item) => {

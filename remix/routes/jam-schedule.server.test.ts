@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseScheduleItems } from "./schedule.server";
+import { parseScheduleItems } from "./jam-schedule.server";
 
 describe("parseScheduleItems", () => {
   it("parses valid schedule items", () => {
