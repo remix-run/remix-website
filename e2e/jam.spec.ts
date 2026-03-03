@@ -35,6 +35,15 @@ test.describe("Jam", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
+  test("jam 2025 after-event badge shows rewind icon", async ({ page }) => {
+    await page.goto("/jam/2025");
+
+    let badge = page.locator("[data-jam-event-badge]");
+    await expect(badge).toBeVisible();
+    await expect(badge).toContainText("Rewind");
+    await expect(badge.locator('use[href$="#fast-forward"]')).toHaveCount(1);
+  });
+
   test("jam 2025 newsletter submits and shows success state", async ({ page }) => {
     let submittedEmail: string | null = null;
     let submittedTag: string | null = null;

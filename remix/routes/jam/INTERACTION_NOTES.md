@@ -5,16 +5,17 @@ This migration intentionally ships visual parity first for Jam pages while defer
 ## Deferred items
 
 - `Mobile nav disclosure`
-  - Current: mobile menu button is present but disabled.
-  - Re-enable in: `remix/routes/jam-shared.tsx` (`Navbar`).
+  - Status: done.
+  - Delivered in: `remix/routes/jam-shared.tsx` (`Navbar`) + `remix/assets/mobile-menu.tsx` with disclosure open/close behavior and focus restoration.
+  - Covered by: `e2e/jam.spec.ts` (`jam mobile menu opens and shows jam links`).
 
 - `Keepsakes drag and jiggle behavior`
   - Current: keepsakes render as static layers in the same visual positions.
   - Re-enable in: `remix/routes/jam-2025.tsx` + shared keepsake implementation.
 
 - `Scramble text and badge entrance animations`
-  - Current: title text and badge render in final static state.
-  - Re-enable in: `remix/routes/jam-shared.tsx` (`ScrambleText`) and `remix/routes/jam-2025.tsx`.
+  - Status: done.
+  - Delivered in: `remix/assets/jam-scramble-text.tsx`, `remix/routes/jam-shared.tsx`, `remix/assets/jam-fade-in-badge.tsx`, and `remix/routes/jam-2025.tsx` (plus updated scramble timing/color props across Jam page titles).
 
 - `Newsletter subscribe flow`
   - Status: done.

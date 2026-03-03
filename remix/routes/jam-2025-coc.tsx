@@ -25,7 +25,12 @@ export async function jam2025CocHandler() {
     >
       <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]">
         <Title className="text-center">
-          <ScrambleText className="whitespace-nowrap" text="Code of Conduct" />
+          <ScrambleText
+            className="whitespace-nowrap"
+            text="Code of Conduct"
+            delay={100}
+            color="blue"
+          />
         </Title>
 
         <div class="relative z-10 space-y-8 text-justify text-base text-white md:text-lg">

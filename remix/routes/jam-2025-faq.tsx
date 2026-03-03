@@ -36,8 +36,13 @@ export async function jam2025FaqHandler() {
     >
       <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]">
         <Title className="text-center">
-          <ScrambleText className="whitespace-nowrap" text="Frequently Asked" />
-          <ScrambleText text="Questions" />
+          <ScrambleText
+            className="whitespace-nowrap"
+            text="Frequently Asked"
+            delay={100}
+            color="blue"
+          />
+          <ScrambleText text="Questions" delay={300} color="green" />
         </Title>
 
         <div class="relative z-10 text-justify text-base text-white md:text-lg">

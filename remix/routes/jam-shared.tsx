@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
+import { JamScrambleText } from "../assets/jam-scramble-text";
 import { MobileMenu } from "../assets/mobile-menu";
 import { Document } from "../components/document";
 import { routes } from "../routes";
@@ -334,13 +335,7 @@ export function Title() {
   );
 }
 
-export function ScrambleText() {
-  return (props: { text: string; className?: string }) => (
-    <span class={clsx("text-white", props.className)} aria-hidden="true">
-      {props.text}
-    </span>
-  );
-}
+export let ScrambleText = JamScrambleText;
 
 export function SectionLabel() {
   return (props: { children: RemixNode }) => (

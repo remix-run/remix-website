@@ -64,8 +64,10 @@ export async function jam2025TicketHandler() {
           <ScrambleText
             className="whitespace-nowrap"
             text="General Admission"
+            delay={100}
+            color="blue"
           />
-          <ScrambleText text="ticket" />
+          <ScrambleText text="ticket" delay={300} color="green" />
         </Title>
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>

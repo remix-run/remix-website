@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { RemixNode } from "remix/component/jsx-runtime";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../../shared/cache-control";
@@ -10,8 +11,10 @@ import {
   SectionLabel,
   Title,
 } from "./jam-shared";
+import { JamFadeInBadge } from "../assets/jam-fade-in-badge";
 import { JamNewsletterSubscribeForm } from "../assets/jam-newsletter-subscribe";
 import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
+import iconsHref from "../../shared/icons.svg";
 
 type EventStatus = "before" | "live" | "after";
 
@@ -59,10 +62,17 @@ const sectionLabelText: Record<EventStatus, string> = {
   after: "In Case You Missed It",
 };
 
-const badgeText: Record<EventStatus, string> = {
+const badgeText: Record<EventStatus, RemixNode> = {
   before: "Event",
   live: "Live",
-  after: "Rewind",
+  after: (
+    <>
+      Rewind
+      <svg class="size-6 rotate-180 md:size-12 lg:size-14" aria-hidden="true">
+        <use href={`${iconsHref}#fast-forward`} />
+      </svg>
+    </>
+  ),
 };
 
 function Jam2025Page() {
@@ -76,14 +86,13 @@ function Jam2025Page() {
       <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]">
         <SectionLabel>{sectionLabelText[eventStatus]}</SectionLabel>
         <Title>
-          {/* TODO(remix-jam-interactions): Restore scramble text animation sequencing. */}
-          <ScrambleText text="Remix Jam" />
+          <ScrambleText text="Remix Jam" delay={100} color="blue" />
           <span class="flex items-center justify-center gap-3 md:gap-5">
-            <ScrambleText text="Toronto" />
-            {/* TODO(remix-jam-interactions): Restore delayed badge fade-in and icon variant behavior. */}
-            <span
+            <ScrambleText text="Toronto" delay={400} color="green" />
+            <JamFadeInBadge
+              delay={1200}
+              data-jam-event-badge
               class={clsx(
-                "rounded-full px-4 py-3 text-xl leading-none md:px-8 md:py-5 md:text-4xl",
                 "flex items-center justify-center gap-2 md:gap-4",
                 eventStatus === "live"
                   ? "bg-red-brand text-white"
@@ -91,7 +100,7 @@ function Jam2025Page() {
               )}
             >
               {badgeText[eventStatus]}
-            </span>
+            </JamFadeInBadge>
           </span>
         </Title>
 

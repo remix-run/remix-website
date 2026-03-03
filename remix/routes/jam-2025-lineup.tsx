@@ -30,8 +30,8 @@ export async function jam2025LineupHandler() {
     >
       <main class="mx-auto flex max-w-[1200px] flex-col items-center py-20 pt-[120px] md:pt-[180px] lg:pt-[200px]">
         <Title className="text-center">
-          <ScrambleText text="Schedule" />
-          <ScrambleText text="& Lineup" />
+          <ScrambleText text="Schedule" delay={100} color="blue" />
+          <ScrambleText text="& Lineup" delay={300} color="green" />
         </Title>
 
         <div class="mt-16 flex w-full flex-col gap-1 py-6 sm:mt-24 sm:px-2 sm:py-9 md:mt-24">
