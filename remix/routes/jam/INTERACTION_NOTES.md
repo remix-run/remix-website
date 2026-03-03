@@ -10,8 +10,8 @@ This migration intentionally ships visual parity first for Jam pages while defer
   - Covered by: `e2e/jam.spec.ts` (`jam mobile menu opens and shows jam links`).
 
 - `Keepsakes drag and jiggle behavior`
-  - Current: keepsakes render as static layers in the same visual positions.
-  - Re-enable in: `remix/routes/jam-2025.tsx` + shared keepsake implementation.
+  - Status: done.
+  - Delivered in: `remix/routes/jam-2025.tsx` + `remix/assets/jam-keepsakes.tsx` with drag-to-reorder, touch support, and jiggle animation (pick, sticker) that stops after first interaction.
 
 - `Scramble text and badge entrance animations`
   - Status: done.
@@ -26,8 +26,8 @@ This migration intentionally ships visual parity first for Jam pages while defer
   - Delivered in: `remix/routes/jam-2025-ticket.tsx` + `remix/assets/jam-ticket-purchase.tsx` with quantity controls, checkout submit state, and inline error feedback backed by `createCart`.
 
 - `Ticket hover holographic tilt`
-  - Current: static visual ticket treatment.
-  - Re-enable in: `remix/routes/jam-2025-ticket.tsx`.
+  - Status: done.
+  - Delivered in: `remix/routes/jam-2025-ticket.tsx` + `remix/assets/jam-ticket-card.tsx` with 3D tilt on hover, holographic overlay, rainbow/diagonal gradients, and radial highlight that follows the cursor.
 
 - `Lineup desktop accordion interaction`
   - Status: done.

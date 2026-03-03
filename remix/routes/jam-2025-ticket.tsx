@@ -10,6 +10,7 @@ import {
   SectionLabel,
   Title,
 } from "./jam-shared";
+import { JamTicketCard } from "../assets/jam-ticket-card";
 import { JamTicketPurchase } from "../assets/jam-ticket-purchase";
 import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
 import ticketSrc from "../../app/routes/jam/images/tickets/general.avif";
@@ -72,42 +73,11 @@ export async function jam2025TicketHandler() {
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
 
-        {/* TODO(remix-jam-interactions): Restore interactive 3D hover/tilt holographic ticket effect. */}
-        <div
-          class="group z-10 w-[300px] select-none md:w-[800px]"
-          style={{ perspective: "1500px" }}
-        >
-          <div
-            class="relative isolate z-10 overflow-hidden rounded-xl border border-white/20"
-            style={{ transformStyle: "preserve-3d" }}
-          >
-            <div class="absolute inset-0 z-10 opacity-30 mix-blend-color-dodge">
-              <div
-                class="absolute inset-0 bg-cover bg-center opacity-20"
-                style={{ backgroundImage: `url(${ticketHolographic})` }}
-              />
-            </div>
-            <div class="contrast-[1.05]">
-              <img
-                src={ticketSrc}
-                width={800}
-                height={280}
-                alt="Remix Jam 2025 Event Ticket"
-                class="relative w-full"
-              />
-            </div>
-            <div class="absolute bottom-0 left-[35%] z-40 pb-1 pl-2 text-left font-mono text-[8px] text-white md:pb-4 md:pl-6 md:text-base">
-              <div class="flex flex-col gap-0 uppercase md:gap-2">
-                <p>october 10 2025</p>
-                <div>
-                  <p>your name</p>
-                  <p>your company</p>
-                </div>
-                <p class="uppercase text-green-brand">General Admission</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <JamTicketCard
+          ticketSrc={ticketSrc}
+          ticketHolographic={ticketHolographic}
+          title="General Admission"
+        />
 
         <JamTicketPurchase
           class="z-10 flex w-[90%] flex-col items-center gap-3"

@@ -6,11 +6,11 @@ import { CACHE_CONTROL } from "../../shared/cache-control";
 import {
   AddressMain,
   JamDocument,
-  KeepsakesStatic,
   ScrambleText,
   SectionLabel,
   Title,
 } from "./jam-shared";
+import { JamKeepsakes } from "../assets/jam-keepsakes";
 import { JamFadeInBadge } from "../assets/jam-fade-in-badge";
 import { JamNewsletterSubscribeForm } from "../assets/jam-newsletter-subscribe";
 import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
@@ -79,8 +79,7 @@ function Jam2025Page() {
   return ({ eventStatus }: { eventStatus: EventStatus }) => (
     <>
       <div class="relative z-30">
-        {/* TODO(remix-jam-interactions): Re-enable draggable keepsakes and jiggle affordances. */}
-        <KeepsakesStatic />
+        <JamKeepsakes />
       </div>
 
       <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]">
