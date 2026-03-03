@@ -36,7 +36,8 @@ export async function jam2025GalleryHandler() {
     >
       <main class="mx-auto flex max-w-[1920px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[200px] lg:pt-[210px]">
         <Title>
-          <ScrambleText text="Photo Gallery" delay={100} color="blue" />
+          <ScrambleText text="Photo" delay={100} color="blue" />
+          <ScrambleText text="Gallery" delay={300} color="green" />
         </Title>
 
         {photos.length === 0 ? (
@@ -107,7 +108,8 @@ export async function jam2025GalleryDownloadHandler() {
     });
   }
 
-  let contentType = upstreamResponse.headers.get("Content-Type") ?? "image/jpeg";
+  let contentType =
+    upstreamResponse.headers.get("Content-Type") ?? "image/jpeg";
   let extension = getFileExtensionFromContentType(contentType);
 
   return new Response(upstreamResponse.body, {
@@ -151,11 +153,7 @@ function GalleryModal() {
         />
         <div class="relative z-10 flex h-full w-full flex-col gap-6 p-4 md:p-9">
           <div class="flex shrink-0 items-center justify-between">
-            <IconLink
-              href={closeHref}
-              icon="x-mark"
-              label="Close modal"
-            />
+            <IconLink href={closeHref} icon="x-mark" label="Close modal" />
             <IconLink
               href={downloadHref}
               icon="download"
@@ -237,7 +235,7 @@ function IconLink() {
       download={props.download}
       target={props.target}
       rel={props.rel}
-      class={`m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-blue-brand ${props.className ?? ""}`}
+      class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
     >
       <svg class="size-6" aria-hidden="true">
         <use href={`${iconsHref}#${props.icon}`} />

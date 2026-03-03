@@ -20,7 +20,10 @@ export let JamTicketPurchase = clientEntry(
       class?: string;
     }) => {
       if (!initialized) {
-        quantity = normalizeQuantity(props.initialQuantity ?? 1, props.maxQuantity);
+        quantity = normalizeQuantity(
+          props.initialQuantity ?? 1,
+          props.maxQuantity,
+        );
         initialized = true;
       }
 
@@ -43,7 +46,9 @@ export let JamTicketPurchase = clientEntry(
             <input type="hidden" name="productId" value={props.productId} />
             <input type="hidden" name="quantity" value={String(quantity)} />
             <div class="flex w-full grow items-center justify-between rounded-[48px] px-4 py-2.5 ring-2 ring-inset ring-white/30 md:px-6 md:py-4 md:ring-4">
-              <span class="font-mono font-normal text-white">$ {props.price}</span>
+              <span class="font-mono font-normal text-white">
+                $ {props.price}
+              </span>
               <div class="flex items-center gap-4">
                 <button
                   type="button"
@@ -93,11 +98,17 @@ export let JamTicketPurchase = clientEntry(
               active={submitting}
               className="w-full md:w-auto"
             >
-              {props.isSoldOut ? "Sold Out" : submitting ? "Processing..." : "Checkout"}
+              {props.isSoldOut
+                ? "Sold Out"
+                : submitting
+                  ? "Processing..."
+                  : "Checkout"}
             </JamButton>
           </form>
           {props.error ? (
-            <p class="mt-1 text-sm font-semibold text-red-brand md:text-base">{props.error}</p>
+            <p class="mt-1 text-sm font-semibold text-red-brand md:text-base">
+              {props.error}
+            </p>
           ) : (
             <p class="text-sm font-semibold text-white/60 md:text-base">
               Maximum {props.maxQuantity} tickets per checkout.

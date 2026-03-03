@@ -120,8 +120,8 @@ export async function jam2025TicketHandler() {
         />
 
         <InfoText>
-          Join us in October to jam with the Remix team and learn more about what
-          we&apos;ve been up to.
+          Join us in October to jam with the Remix team and learn more about
+          what we&apos;ve been up to.
         </InfoText>
       </main>
     </JamDocument>,

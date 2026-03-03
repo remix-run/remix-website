@@ -64,7 +64,10 @@ export function JamDocument() {
         <Background hideBackground={props.hideBackground ?? false}>
           <Navbar activePath={props.activePath} className="z-40" />
           <div class="px-6">{props.children}</div>
-          <Footer showSeats={props.showSeats ?? false} className="relative z-20" />
+          <Footer
+            showSeats={props.showSeats ?? false}
+            className="relative z-20"
+          />
         </Background>
       </div>
     </Document>
@@ -148,24 +151,33 @@ function Navbar() {
         <JamLogo class="h-[48px] fill-white md:h-auto md:w-[200px] lg:w-[160px] xl:w-[200px]" />
       </a>
       <div class="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg lg:flex">
-        <NavLink href={routes.jam2025Lineup.href()} active={props.activePath === routes.jam2025Lineup.href()}>
+        <NavLink
+          href={routes.jam2025Lineup.href()}
+          active={props.activePath === routes.jam2025Lineup.href()}
+        >
           Schedule & Lineup
         </NavLink>
-        <NavLink href={routes.jam2025Gallery.href()} active={props.activePath === routes.jam2025Gallery.href()}>
+        <NavLink
+          href={routes.jam2025Gallery.href()}
+          active={props.activePath === routes.jam2025Gallery.href()}
+        >
           Gallery
         </NavLink>
-        <NavLink href={routes.jam2025Coc.href()} active={props.activePath === routes.jam2025Coc.href()}>
+        <NavLink
+          href={routes.jam2025Coc.href()}
+          active={props.activePath === routes.jam2025Coc.href()}
+        >
           Code of Conduct
         </NavLink>
-        <NavLink href={routes.jam2025Faq.href()} active={props.activePath === routes.jam2025Faq.href()}>
+        <NavLink
+          href={routes.jam2025Faq.href()}
+          active={props.activePath === routes.jam2025Faq.href()}
+        >
           FAQ
         </NavLink>
       </div>
       <a
-        class={clsx(
-          jamButtonClassName,
-          "hidden bg-white text-black lg:flex",
-        )}
+        class={clsx(jamButtonClassName, "hidden bg-white text-black lg:flex")}
         href={routes.jam2025Ticket.href()}
       >
         <TicketLogo class="size-6 fill-current md:size-8 lg:size-6 xl:size-8" />
@@ -247,7 +259,9 @@ function MobileNavLink() {
 
 function Footer() {
   return (props: { showSeats: boolean; className?: string }) => (
-    <footer class={clsx("relative flex flex-col items-center", props.className)}>
+    <footer
+      class={clsx("relative flex flex-col items-center", props.className)}
+    >
       {props.showSeats ? (
         <>
           <div class="h-0 w-full md:h-28" />
@@ -282,10 +296,38 @@ function Footer() {
           >
             remix.run
           </a>
-          <a href="https://github.com/remix-run" target="_blank" rel="noopener noreferrer" class="text-white/50 hover:text-white">GitHub</a>
-          <a href="https://twitter.com/remix_run" target="_blank" rel="noopener noreferrer" class="text-white/50 hover:text-white">Twitter</a>
-          <a href="https://youtube.com/remix_run" target="_blank" rel="noopener noreferrer" class="text-white/50 hover:text-white">YouTube</a>
-          <a href="https://discord.gg/xwx7mMzVkA" target="_blank" rel="noopener noreferrer" class="text-white/50 hover:text-white">Discord</a>
+          <a
+            href="https://github.com/remix-run"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/50 hover:text-white"
+          >
+            GitHub
+          </a>
+          <a
+            href="https://twitter.com/remix_run"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/50 hover:text-white"
+          >
+            Twitter
+          </a>
+          <a
+            href="https://youtube.com/remix_run"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/50 hover:text-white"
+          >
+            YouTube
+          </a>
+          <a
+            href="https://discord.gg/xwx7mMzVkA"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white/50 hover:text-white"
+          >
+            Discord
+          </a>
         </div>
         <div class="flex flex-col items-center gap-2 uppercase leading-loose">
           <div>
@@ -357,7 +399,12 @@ export function InfoText() {
 
 export function Subheader() {
   return (props: { children: RemixNode; className?: string }) => (
-    <h2 class={clsx("text-2xl font-bold tracking-tight text-white md:text-3xl", props.className)}>
+    <h2
+      class={clsx(
+        "text-2xl font-bold tracking-tight text-white md:text-3xl",
+        props.className,
+      )}
+    >
       {props.children}
     </h2>
   );
@@ -443,7 +490,8 @@ function Keepsake() {
         <div class="rotate">
           <div
             class={clsx("h-full w-full", {
-              "rounded border-[6px] border-white md:border-[16px]": props.hasBorder,
+              "rounded border-[6px] border-white md:border-[16px]":
+                props.hasBorder,
             })}
           >
             <img src={props.src} alt="" draggable={false} />

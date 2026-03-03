@@ -44,7 +44,9 @@ test.describe("Jam", () => {
     await expect(badge.locator('use[href$="#fast-forward"]')).toHaveCount(1);
   });
 
-  test("jam 2025 newsletter submits and shows success state", async ({ page }) => {
+  test("jam 2025 newsletter submits and shows success state", async ({
+    page,
+  }) => {
     let submittedEmail: string | null = null;
     let submittedTag: string | null = null;
     await page.route("**/_actions/newsletter", async (route) => {
@@ -152,7 +154,9 @@ test.describe("Jam", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam lineup desktop accordion toggles open and closed", async ({ page }) => {
+  test("jam lineup desktop accordion toggles open and closed", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/jam/2025/lineup");
 

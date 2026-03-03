@@ -129,7 +129,10 @@ function Jam2025Page() {
 
       <div class="h-[100px] w-full" />
 
-      <aside id="newsletter" class="relative z-10 mx-auto max-w-2xl text-center text-base">
+      <aside
+        id="newsletter"
+        class="relative z-10 mx-auto max-w-2xl text-center text-base"
+      >
         <h2 class="text-2xl font-bold tracking-tight text-white md:text-3xl">
           Sign up for our Newsletter for the latest Remix Jam news and updates
         </h2>
