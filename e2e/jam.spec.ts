@@ -152,4 +152,54 @@ test.describe("Jam", () => {
     await page.goto("/jam/2025/gallery");
     await expect(page.locator("main")).toBeVisible();
   });
+
+  test("jam gallery modal opens with query param and closes via controls", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2025/gallery");
+
+    let noPhotosMessage = page.getByText("No photos available yet.");
+    if (await noPhotosMessage.isVisible()) {
+      test.skip(true, "No gallery photos available in this environment");
+    }
+
+    await page.goto("/jam/2025/gallery?photo=0");
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+
+    await page.getByRole("link", { name: "Next photo" }).click();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=\d+/);
+
+    await page.getByRole("link", { name: "Close modal" }).click();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
+    await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+  });
+
+  test("jam gallery keyboard navigation moves and closes modal", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2025/gallery");
+
+    let noPhotosMessage = page.getByText("No photos available yet.");
+    if (await noPhotosMessage.isVisible()) {
+      test.skip(true, "No gallery photos available in this environment");
+    }
+
+    await page.goto("/jam/2025/gallery?photo=0");
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+
+    await page.keyboard.press("ArrowRight");
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
+    await page.waitForLoadState("networkidle");
+
+    await page.keyboard.press("ArrowLeft");
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
+    await page.waitForLoadState("networkidle");
+
+    await page.keyboard.press("Escape");
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
+    await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+  });
 });
