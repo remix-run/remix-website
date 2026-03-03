@@ -29,8 +29,8 @@ This migration intentionally ships visual parity first for Jam pages while defer
   - Re-enable in: `remix/routes/jam-2025-ticket.tsx`.
 
 - `Lineup desktop accordion interaction`
-  - Current: desktop details render expanded as static content.
-  - Re-enable in: `remix/routes/jam-2025-lineup.tsx`.
+  - Status: done.
+  - Delivered in: `remix/routes/jam-2025-lineup.tsx` with desktop `<details>` accordion rows and expand/collapse affordances.
 
 - `Gallery modal and keyboard/query param navigation`
   - Current: masonry gallery renders static images only.

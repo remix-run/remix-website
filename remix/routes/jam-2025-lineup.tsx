@@ -5,6 +5,7 @@ import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 import { JamDocument, ScrambleText, Title } from "./jam-shared";
 import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
+import iconsHref from "../../shared/icons.svg";
 
 let gridColsClassName =
   "grid grid-cols-[75px_1fr_auto] gap-4 sm:grid-cols-[100px_1fr_1fr_24px] sm:gap-6 md:grid-cols-[120px_1fr_1fr_24px] md:gap-8 lg:grid-cols-[150px_1fr_1fr_24px] lg:gap-12";
@@ -126,50 +127,60 @@ function ScheduleTable() {
             <div>Speaker</div>
             <div />
           </div>
-          {/* TODO(remix-jam-interactions): Restore interactive desktop accordion expand/collapse behavior. */}
           {items.map((item) => {
             let key = `${item.time}-${item.title}`;
-            return (
-              <section key={key} class="overflow-hidden border-t border-white/10">
-                <div
-                  class={clsx(
-                    "p-4 text-sm font-bold text-white sm:p-6 sm:text-base md:p-8 md:text-lg lg:p-9 lg:text-2xl",
-                    gridColsClassName,
-                  )}
-                >
-                  <span>{item.time}</span>
-                  <span>{item.title}</span>
-                  <span>{item.speaker}</span>
-                  <div />
-                </div>
-                <div class="pb-8 transition-colors duration-300">
-                  <div class={clsx("p-4 sm:p-6 md:p-8 lg:p-9", gridColsClassName)}>
-                    <div
-                      class="col-span-full flex flex-col gap-4 text-sm text-white sm:col-span-1 sm:col-start-2 sm:gap-6 sm:text-base md:text-lg lg:text-xl [&_a:hover]:underline [&_a]:text-blue-400"
-                      innerHTML={item.description}
-                    />
-                    {item.imgSrc ? (
-                      <div class="col-span-full flex flex-col gap-4 sm:col-span-1 sm:col-start-3">
-                        <img
-                          src={item.imgSrc}
-                          alt={item.speaker}
-                          class="aspect-square w-full rounded-2xl object-cover sm:max-w-none"
-                        />
-                        {item.bio ? (
-                          <div
-                            class="flex flex-col gap-4 text-xs text-white sm:gap-6 sm:text-sm md:text-base lg:font-mono [&_a:hover]:underline [&_a]:text-blue-400"
-                            innerHTML={item.bio}
-                          />
-                        ) : null}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              </section>
-            );
+            return <DesktopScheduleItem key={key} item={item} />;
           })}
         </div>
       </section>
     </>
+  );
+}
+
+function DesktopScheduleItem() {
+  return ({ item }: { item: Schedule[number] }) => (
+    <details class="group overflow-hidden border-t border-white/10" data-accordion-item>
+      <summary
+        class={clsx(
+          "_no-triangle grid cursor-pointer select-none p-4 text-sm font-bold text-white outline-none transition-colors duration-300 hover:bg-gray-900 sm:p-6 sm:text-base md:p-8 md:text-lg lg:p-9 lg:text-2xl",
+          gridColsClassName,
+        )}
+      >
+        <span>{item.time}</span>
+        <span>{item.title}</span>
+        <span>{item.speaker}</span>
+        <div class="flex justify-end">
+          <svg
+            class="size-4 rotate-90 text-white transition-transform group-open:-rotate-90 sm:size-5 lg:size-6"
+            aria-hidden="true"
+          >
+            <use href={`${iconsHref}#chevron-r`} />
+          </svg>
+        </div>
+      </summary>
+      <div class="pb-8 transition-colors duration-300 group-hover:bg-gray-900">
+        <div class={clsx("p-4 sm:p-6 md:p-8 lg:p-9", gridColsClassName)}>
+          <div
+            class="col-span-full flex flex-col gap-4 text-sm text-white sm:col-span-1 sm:col-start-2 sm:gap-6 sm:text-base md:text-lg lg:text-xl [&_a:hover]:underline [&_a]:text-blue-400"
+            innerHTML={item.description}
+          />
+          {item.imgSrc ? (
+            <div class="col-span-full flex flex-col gap-4 sm:col-span-1 sm:col-start-3">
+              <img
+                src={item.imgSrc}
+                alt={item.speaker}
+                class="aspect-square w-full rounded-2xl object-cover sm:max-w-none"
+              />
+              {item.bio ? (
+                <div
+                  class="flex flex-col gap-4 text-xs text-white sm:gap-6 sm:text-sm md:text-base lg:font-mono [&_a:hover]:underline [&_a]:text-blue-400"
+                  innerHTML={item.bio}
+                />
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </details>
   );
 }
