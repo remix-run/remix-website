@@ -21,8 +21,8 @@ This migration intentionally ships visual parity first for Jam pages while defer
   - Delivered in: `remix/routes/jam-2025.tsx` + `remix/assets/jam-newsletter-subscribe.tsx` posting to `routes.actions.newsletter.href()` with success/error/loading states.
 
 - `Ticket purchase interaction`
-  - Current: quantity controls and checkout CTA are rendered but disabled.
-  - Re-enable in: `remix/routes/jam-2025-ticket.tsx` with cart action handling and submit state/error feedback.
+  - Status: done.
+  - Delivered in: `remix/routes/jam-2025-ticket.tsx` + `remix/assets/jam-ticket-purchase.tsx` with quantity controls, checkout submit state, and inline error feedback backed by `createCart`.
 
 - `Ticket hover holographic tilt`
   - Current: static visual ticket treatment.

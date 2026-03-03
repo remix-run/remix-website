@@ -23,6 +23,11 @@ const ProductSchema = s.object({
   availableForSale: s.boolean(),
 });
 
+const CartSchema = s.object({
+  id: s.string(),
+  checkoutUrl: s.string().pipe(c.url()),
+});
+
 const PhotoSchema = s.object({
   url: s.string().pipe(c.url()),
   altText: s.optional(s.string()),
@@ -31,6 +36,7 @@ const PhotoSchema = s.object({
 });
 
 type Product = s.InferOutput<typeof ProductSchema>;
+type Cart = s.InferOutput<typeof CartSchema>;
 type Photo = s.InferOutput<typeof PhotoSchema>;
 
 export function parseProduct(raw: unknown): Product {
@@ -39,6 +45,10 @@ export function parseProduct(raw: unknown): Product {
 
 export function parsePhotos(raw: unknown): Photo[] {
   return s.parse(s.array(PhotoSchema), raw);
+}
+
+export function parseCart(raw: unknown): Cart {
+  return s.parse(CartSchema, raw);
 }
 
 export async function getProduct(handle: string): Promise<Product> {
@@ -130,3 +140,60 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
 }
 
 export const MAX_QUANTITY = 10;
+
+export async function createCart(params: {
+  productId: string;
+  quantity: number;
+  discountCode?: string;
+}): Promise<Cart | { error: string }> {
+  let { productId, quantity, discountCode } = params;
+  quantity = Math.min(quantity, MAX_QUANTITY);
+  discountCode = (discountCode ?? "").trim().toUpperCase();
+
+  const createCartMutation = `
+    mutation CartCreate($cartInput: CartInput!) {
+      cartCreate(input: $cartInput) {
+        cart {
+          id
+          checkoutUrl
+          discountCodes {
+            code
+            applicable
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  let discountCodes = [];
+  if (discountCode) {
+    discountCodes.push(discountCode);
+  }
+
+  const { data, errors } = await getClient().request(createCartMutation, {
+    variables: {
+      cartInput: {
+        lines: [
+          {
+            merchandiseId: productId,
+            quantity,
+          },
+        ],
+        discountCodes,
+      },
+    },
+  });
+
+  if (errors || !data?.cartCreate?.cart?.checkoutUrl) {
+    return { error: "Failed to create cart" };
+  }
+
+  return parseCart({
+    id: data.cartCreate.cart.id,
+    checkoutUrl: data.cartCreate.cart.checkoutUrl,
+  });
+}

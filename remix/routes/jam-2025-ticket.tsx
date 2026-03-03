@@ -1,24 +1,55 @@
-import { getProduct, MAX_QUANTITY } from "./jam-storefront.server";
+import * as s from "remix/data-schema";
+import { createCart, getProduct, MAX_QUANTITY } from "./jam-storefront.server";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 import {
   InfoText,
-  JamButton,
   JamDocument,
   ScrambleText,
   SectionLabel,
   Title,
 } from "./jam-shared";
+import { JamTicketPurchase } from "../assets/jam-ticket-purchase";
 import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
 import ticketSrc from "../../app/routes/jam/images/tickets/general.avif";
 import ticketHolographic from "../../app/routes/jam/images/tickets/ticket-holographic.avif";
 
 export async function jam2025TicketHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+  let request = getRequestContext().request;
+  let requestUrl = new URL(request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/ticket`;
   let previewImage = `${requestUrl.origin}${ogImageSrc}`;
   let product = await getProduct("remix-jam-2025");
+  let cacheControl =
+    request.method === "POST" ? "no-store" : CACHE_CONTROL.DEFAULT;
+  let formError: string | undefined;
+  let initialQuantity = 1;
+
+  if (request.method === "POST") {
+    let submission = await parseTicketPurchaseSubmission(request);
+    if (!submission.success) {
+      formError = submission.error;
+    } else {
+      initialQuantity = submission.value.quantity;
+      if (submission.value.productId !== product.productId) {
+        formError = "Invalid ticket selection";
+      } else {
+        let discountCode = requestUrl.searchParams.get("discount") ?? undefined;
+        let cart = await createCart({
+          productId: submission.value.productId,
+          quantity: submission.value.quantity,
+          discountCode,
+        });
+
+        if ("error" in cart) {
+          formError = cart.error;
+        } else {
+          return Response.redirect(cart.checkoutUrl, 302);
+        }
+      }
+    }
+  }
 
   return render.document(
     <JamDocument
@@ -76,46 +107,15 @@ export async function jam2025TicketHandler() {
           </div>
         </div>
 
-        {/* TODO(remix-jam-interactions): Re-enable quantity controls, checkout action, and error states. */}
-        <div class="z-10 flex w-[90%] flex-col items-center gap-3">
-          <form class="flex w-full flex-col items-center gap-3 text-base md:flex-row md:text-xl">
-            <input type="hidden" name="productId" value={product.productId} />
-            <input type="hidden" name="quantity" value="1" />
-            <div class="flex w-full grow items-center justify-between rounded-[48px] px-4 py-2.5 ring-2 ring-inset ring-white/30 md:px-6 md:py-4 md:ring-4">
-              <span class="font-mono font-normal text-white">$ {product.price}</span>
-              <div class="flex items-center gap-4">
-                <button
-                  type="button"
-                  class="size-6 text-white/30 md:size-8"
-                  aria-label="Decrease quantity"
-                  disabled
-                >
-                  -
-                </button>
-                <input
-                  type="number"
-                  value="1"
-                  readOnly
-                  class="w-4 bg-transparent text-center text-white outline-none [appearance:textfield]"
-                />
-                <button
-                  type="button"
-                  class="size-6 text-white/30 md:size-8"
-                  aria-label="Increase quantity"
-                  disabled
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            <JamButton className="w-full md:w-auto" disabled>
-              {product.availableForSale ? "Checkout" : "Sold Out"}
-            </JamButton>
-          </form>
-          <p class="text-sm font-semibold text-white/60 md:text-base">
-            Maximum {MAX_QUANTITY} tickets per checkout.
-          </p>
-        </div>
+        <JamTicketPurchase
+          class="z-10 flex w-[90%] flex-col items-center gap-3"
+          price={product.price}
+          productId={product.productId}
+          maxQuantity={MAX_QUANTITY}
+          isSoldOut={!product.availableForSale}
+          error={formError}
+          initialQuantity={initialQuantity}
+        />
 
         <InfoText>
           Join us in October to jam with the Remix team and learn more about what
@@ -125,8 +125,40 @@ export async function jam2025TicketHandler() {
     </JamDocument>,
     {
       headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
+        "Cache-Control": cacheControl,
       },
     },
   );
 }
+
+async function parseTicketPurchaseSubmission(request: Request) {
+  let formData = await request.formData();
+  let quantity = Number.parseInt(String(formData.get("quantity") ?? "1"), 10);
+  let result = s.parseSafe(ticketPurchaseSubmissionSchema, {
+    productId: formData.get("productId"),
+    quantity,
+  });
+  if (!result.success) {
+    return { success: false as const, error: "Invalid ticket request" };
+  }
+
+  if (!Number.isInteger(result.value.quantity)) {
+    return { success: false as const, error: "Invalid quantity" };
+  }
+  if (result.value.quantity < 1 || result.value.quantity > MAX_QUANTITY) {
+    return { success: false as const, error: "Invalid quantity" };
+  }
+
+  return {
+    success: true as const,
+    value: {
+      productId: result.value.productId,
+      quantity: result.value.quantity,
+    },
+  };
+}
+
+let ticketPurchaseSubmissionSchema = s.object({
+  productId: s.string(),
+  quantity: s.number(),
+});

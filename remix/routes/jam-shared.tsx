@@ -15,7 +15,7 @@ import boardingPassSrc from "../../app/routes/jam/images/keepsakes/boarding-pass
 import stickerSrc from "../../app/routes/jam/images/keepsakes/remix-logo-sticker.svg";
 
 const jamButtonClassName =
-  "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 md:px-6 md:py-4 md:text-xl";
+  "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";
 const jamMobileMenuSummaryClass =
   "_no-triangle grid size-12 place-items-center rounded-full bg-white text-black backdrop-blur-lg outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand [[open]>&]:bg-blue-brand [[open]>&]:text-white [&_svg]:size-6";
 const jamMobileMenuPositionClass = "absolute right-0 z-20 lg:left-0";
@@ -164,9 +164,6 @@ function Navbar() {
         class={clsx(
           jamButtonClassName,
           "hidden bg-white text-black lg:flex",
-          props.activePath === routes.jam2025Ticket.href()
-            ? "bg-blue-brand text-white"
-            : "",
         )}
         href={routes.jam2025Ticket.href()}
       >
@@ -408,13 +405,20 @@ export function AddressLink() {
 }
 
 export function JamButton() {
-  return (props: { children: RemixNode; className?: string; disabled?: boolean }) => (
+  return (props: {
+    children: RemixNode;
+    className?: string;
+    disabled?: boolean;
+    type?: "button" | "submit";
+    active?: boolean;
+  }) => (
     <button
-      type="button"
+      type={props.type ?? "button"}
       disabled={props.disabled}
       class={clsx(
         jamButtonClassName,
-        "bg-white text-black disabled:cursor-not-allowed disabled:opacity-50",
+        "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-black",
+        props.active ? "bg-blue-brand text-white" : "bg-white text-black",
         props.className,
       )}
     >
