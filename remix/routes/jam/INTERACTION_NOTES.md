@@ -17,8 +17,8 @@ This migration intentionally ships visual parity first for Jam pages while defer
   - Re-enable in: `remix/routes/jam-shared.tsx` (`ScrambleText`) and `remix/routes/jam-2025.tsx`.
 
 - `Newsletter subscribe flow`
-  - Current: form is rendered but disabled.
-  - Re-enable in: `remix/routes/jam-2025.tsx` with `routes.actions.newsletter.href()` posting and response handling.
+  - Status: done.
+  - Delivered in: `remix/routes/jam-2025.tsx` + `remix/assets/jam-newsletter-subscribe.tsx` posting to `routes.actions.newsletter.href()` with success/error/loading states.
 
 - `Ticket purchase interaction`
   - Current: quantity controls and checkout CTA are rendered but disabled.

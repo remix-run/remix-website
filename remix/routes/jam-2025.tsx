@@ -4,13 +4,13 @@ import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../../shared/cache-control";
 import {
   AddressMain,
-  JamButton,
   JamDocument,
   KeepsakesStatic,
   ScrambleText,
   SectionLabel,
   Title,
 } from "./jam-shared";
+import { JamNewsletterSubscribeForm } from "../assets/jam-newsletter-subscribe";
 import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
 
 type EventStatus = "before" | "live" | "after";
@@ -124,25 +124,7 @@ function Jam2025Page() {
         <h2 class="text-2xl font-bold tracking-tight text-white md:text-3xl">
           Sign up for our Newsletter for the latest Remix Jam news and updates
         </h2>
-        {/* TODO(remix-jam-interactions): Re-enable newsletter submission flow and status messaging. */}
-        <form class="top-layer mt-12 flex flex-col items-center" action="#" method="post">
-          <input type="hidden" name="tag" value="6280341" />
-          <SectionLabel>
-            <label htmlFor="email">email</label>
-          </SectionLabel>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            placeholder="your@email.com"
-            class="mt-[10px] w-full max-w-sm rounded-full border-0 bg-black px-6 py-4 text-center text-lg text-white ring-inset placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-brand sm:leading-6"
-            disabled
-          />
-          <JamButton className="mt-5 w-full max-w-sm" disabled>
-            Sign Up
-          </JamButton>
-        </form>
+        <JamNewsletterSubscribeForm class="top-layer mt-12 flex flex-col items-center" />
       </aside>
     </>
   );

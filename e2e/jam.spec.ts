@@ -35,6 +35,84 @@ test.describe("Jam", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
+  test("jam 2025 newsletter submits and shows success state", async ({ page }) => {
+    let submittedEmail: string | null = null;
+    let submittedTag: string | null = null;
+    await page.route("**/_actions/newsletter", async (route) => {
+      let submittedBody = new URLSearchParams(route.request().postData() ?? "");
+      submittedEmail = submittedBody.get("email");
+      submittedTag = submittedBody.get("tag");
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true, error: null }),
+      });
+    });
+
+    await page.goto("/jam/2025");
+    await page.waitForLoadState("networkidle");
+
+    let emailInput = page.getByPlaceholder("your@email.com");
+    await emailInput.fill("hello@example.com");
+    await page.getByRole("button", { name: "Sign Up" }).click();
+
+    await expect(page.getByText(/You're good to go/i)).toBeVisible();
+    await expect(emailInput).toHaveValue("");
+    expect(submittedEmail).toBe("hello@example.com");
+    expect(submittedTag).toBe("6280341");
+  });
+
+  test("jam 2025 newsletter shows error state for failed submissions", async ({
+    page,
+  }) => {
+    await page.route("**/_actions/newsletter", async (route) => {
+      await route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: false, error: "Something went wrong" }),
+      });
+    });
+
+    await page.goto("/jam/2025");
+    await page.waitForLoadState("networkidle");
+
+    await page.getByPlaceholder("your@email.com").fill("hello@example.com");
+    await page.getByRole("button", { name: "Sign Up" }).click();
+
+    await expect(page.getByText("Something went wrong")).toBeVisible();
+    await expect(page.getByText(/please try again\./i)).toBeVisible();
+  });
+
+  test("jam 2025 newsletter shows loading state while submitting", async ({
+    page,
+  }) => {
+    let resolveRequest: (() => void) | undefined;
+    let requestReleased = new Promise<void>((resolve) => {
+      resolveRequest = resolve;
+    });
+    await page.route("**/_actions/newsletter", async (route) => {
+      await requestReleased;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true, error: null }),
+      });
+    });
+
+    await page.goto("/jam/2025");
+    await page.waitForLoadState("networkidle");
+
+    await page.getByPlaceholder("your@email.com").fill("hello@example.com");
+    await page.getByRole("button", { name: "Sign Up" }).click();
+
+    let pendingButton = page.getByRole("button", { name: "Signing Up..." });
+    await expect(pendingButton).toBeVisible();
+    await expect(pendingButton).toBeDisabled();
+
+    resolveRequest?.();
+    await expect(page.getByText(/You're good to go/i)).toBeVisible();
+  });
+
   test("jam ticket page renders", async ({ page }) => {
     await page.goto("/jam/2025/ticket");
     await expect(page.locator("main")).toBeVisible();

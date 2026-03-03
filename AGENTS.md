@@ -27,3 +27,11 @@ Migrate pages from React Router framework mode (`app/**`) to Remix 3 (`remix/**`
 4. Add focused tests and run targeted verification (+ Remix typechecks for substantial changes).
 5. Run `pnpm run build` before shipping a PR to catch asset-pipeline regressions.
 6. After parity is verified, explicitly ask whether to remove legacy `app/routes/**` page/resources.
+
+## E2E Gotchas (Playwright)
+
+- In sandboxed runs, Playwright may not reach `localhost:5173` and may fail to download browsers.
+- For reliable local runs, install and run with project-local browsers:
+  - `PLAYWRIGHT_BROWSERS_PATH=0 pnpm exec playwright install chromium`
+  - `PLAYWRIGHT_BROWSERS_PATH=0 pnpm exec playwright test e2e/jam.spec.ts --grep newsletter`
+- If a dev server is already running, prefer reusing it; otherwise Playwright may try to start another `pnpm run dev` and hit `EMFILE` (too many file watchers).

@@ -10,7 +10,8 @@ import ogImageSrc from "../images/og-thumbnail-1.jpg";
 import iconsHref from "~/icons.svg";
 
 import type { Route } from "./+types/2025";
-import type { action as newsletterAction } from "~/routes/resources/newsletter-subscribe";
+
+type NewsletterActionData = { ok: boolean; error: string | null };
 
 type EventStatus = "before" | "live" | "after";
 
@@ -186,7 +187,7 @@ function FadeInBadge({
 }
 
 function NewsletterSignup({ className }: { className?: string }) {
-  const subscribe = useFetcher<typeof newsletterAction>();
+  const subscribe = useFetcher<NewsletterActionData>();
   const { isSuccessful, isError, error } = getSubscribeStatus(subscribe);
 
   return (

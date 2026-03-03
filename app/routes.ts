@@ -10,7 +10,5 @@ export default [
     route("2025/gallery", "routes/jam/pages/2025.gallery.tsx"),
   ]),
 
-  route("_actions/newsletter", "routes/resources/newsletter-subscribe.tsx"),
-
   route("*", "routes/catchall.tsx"),
 ] satisfies RouteConfig;
