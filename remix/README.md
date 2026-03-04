@@ -33,19 +33,17 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - Do not hardcode module script paths (for example `/remix/assets/entry.ts`).
 - For SVG sprites, import the asset URL and append fragment ids.
 
-## Analytics parity
+## Analytics
 
-- Preserve Fathom analytics behavior from `app/entry.client.tsx` when migrating pages/shells to `remix/**`.
 - Load Fathom only outside development (`process.env.NODE_ENV !== "development"`).
 - Keep the current site id/options aligned with production behavior (`IRVDGCHK`, `spa: "history"`, `excludedDomains: ["localhost"]`, and the existing script URL).
-- Treat analytics loading as migration parity, not an optional enhancement.
 - If/when client-side navigations are introduced for Remix pages, explicitly validate pageview tracking for those transitions (not just hard reloads), including any navigation path that uses APIs other than History (for example, the Navigation API).
 
 ## Pre-PR verification
 
 - Run focused tests for changed routes/components.
 - Run relevant typechecks.
-- Verify Fathom analytics still loads on migrated Remix pages in production mode.
+- Verify Fathom analytics still loads on Remix pages in production mode.
 - When shipping client-side navigation changes, verify Fathom pageviews fire once per navigation and continue working for both initial document loads and in-app transitions.
 - Always run `pnpm run build` before opening or shipping a PR.
 
@@ -70,12 +68,12 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - `/img/:slug`
 - `/_actions/newsletter`
 
-## Feature parity gaps
+## Feature gaps
 
-Track known migration gaps here so each item can become a focused follow-up PR.
+Track known gaps here so each item can become a focused follow-up PR.
 
-- **Client-side navigation baseline**: Remix pages currently rely on regular document navigations in most places (for example blog list/post links and markdown body links) rather than app-wide client-side routing behavior.
-- **Delegated internal blog links**: Intentional temporary gap. Legacy delegated click interception for internal `<a>` links in blog content was removed; reintroduce equivalent behavior for blog-post content when client-side routing is implemented.
-- **Link prefetch parity**: React Router `Link` + `prefetch="intent"` behavior is not generally replicated yet on migrated Remix pages.
-- **404 rendering parity**: Some migrated handlers still return plain `404` `Response`s; align with a consistent, themed HTML 404 experience and metadata behavior.
-- **Marketing DocSearch shortcut**: Intentional non-parity. Legacy `Cmd/Ctrl+K` DocSearch modal behavior is not being carried over to Remix pages.
+- **Client-side navigation**: Pages rely on full document navigations; no app-wide client-side routing.
+- **Delegated internal blog links**: Internal `<a>` links in blog content do not use client-side routing; reintroduce when client-side routing exists.
+- **Link prefetch**: No `prefetch="intent"`-style behavior on links.
+- **404 rendering**: Some handlers return plain `404`; align with a consistent, themed HTML 404 experience.
+- **DocSearch shortcut**: `Cmd/Ctrl+K` DocSearch modal is not implemented.

@@ -35,7 +35,7 @@ Avoid:
 
 - Import sprite URL from the source file.
 - Append fragment ids in markup (`${iconsHref}#icon-id`).
-- Do not hardcode `/app/icons.svg` in Remix components.
+- Do not hardcode icon sprite paths in Remix components.
 
 ## Quick verification
 

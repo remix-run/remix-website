@@ -1,9 +1,9 @@
 ---
-name: remix-route-migration-playbook
-description: Provides a concise step-by-step process for migrating a page from app/ to remix/routes with current project patterns. Use when implementing a new migrated page or route.
+name: remix-route-playbook
+description: Step-by-step process for adding a new route in remix/routes. Use when implementing a new page or route.
 ---
 
-# Remix Route Migration Playbook
+# Remix Route Playbook
 
 ## Checklist
 
@@ -14,4 +14,3 @@ description: Provides a concise step-by-step process for migrating a page from a
 - [ ] Map the route in `remix/server.ts` before the catch-all fallback.
 - [ ] Add focused tests for route behavior and key interactions.
 - [ ] Validate request-derived inputs with `remix/data-schema` + `parseSafe` where applicable.
-- [ ] After verification passes, ask the user if they want the legacy `app/routes/**` page/resources removed now.
