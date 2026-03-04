@@ -5,14 +5,23 @@ initFathomAnalytics();
 
 let app = run(document, {
   async loadModule(src, exportName) {
-    let modPromise = import(/* @vite-ignore */ src);
-    let mod = await modPromise;
+    let mod = await import(/* @vite-ignore */ src);
 
     let exp = (mod as Record<string, unknown>)[exportName];
-    if (typeof exp !== "function") {
-      throw new Error(`Export "${exportName}" from "${src}" is not a function`);
+    if (typeof exp === "function") return exp;
+
+    // Minified builds may rename exports (e.g. NewsletterSubscribeForm -> N).
+    // Fallback: find a function with clientEntry metadata.
+    for (let value of Object.values(mod as object)) {
+      if (
+        typeof value === "function" &&
+        (value as { $entry?: boolean }).$entry === true
+      ) {
+        return value;
+      }
     }
-    return exp;
+
+    throw new Error(`Export "${exportName}" from "${src}" is not a function`);
   },
   async resolveFrame(src, signal) {
     let res = await fetch(src, { headers: { accept: "text/html" }, signal });

@@ -9,6 +9,8 @@ export let MobileMenu = clientEntry(
   `${assets.entry}#MobileMenu`,
   (handle: Handle, setup?: { open?: boolean }) => {
     let isOpen = setup?.open ?? false;
+    let pendingSummaryFocusRestore: HTMLElement | null = null;
+    let openSummaryElement: HTMLElement | null = null;
 
     handle.queueTask(() => {
       let closeMenu = () => {
@@ -22,47 +24,89 @@ export let MobileMenu = clientEntry(
         mousedown: closeMenu,
         touchstart: closeMenu,
         focusin: closeMenu,
-        [escape]: closeMenu,
+        [escape]() {
+          if (!isOpen) return;
+          if (openSummaryElement) {
+            pendingSummaryFocusRestore = openSummaryElement;
+          }
+          closeMenu();
+        },
       });
     });
 
     let stopPropagation = (e: UIEvent) => {
       e.stopPropagation();
     };
+    let onToggle = (e: Event & { currentTarget: HTMLDetailsElement }) => {
+      isOpen = e.currentTarget.open;
+      let summary = e.currentTarget.querySelector("summary");
+      if (summary instanceof HTMLElement) {
+        openSummaryElement = isOpen ? summary : null;
+      }
+      handle.update();
+      if (!isOpen && pendingSummaryFocusRestore) {
+        let focusTarget = pendingSummaryFocusRestore;
+        pendingSummaryFocusRestore = null;
+        handle.queueTask(() => {
+          focusTarget.focus();
+        });
+      }
+    };
+    let onFocusOut = (
+      e: FocusEvent & { currentTarget: HTMLDetailsElement },
+    ) => {
+      let next = e.relatedTarget;
+      if (!next || !(next instanceof Node) || !e.currentTarget.contains(next)) {
+        isOpen = false;
+        handle.update();
+      }
+    };
 
-    return (props: { children: RemixNode; class?: string }) => {
-      let baseClasses =
+    return (props: {
+      children: RemixNode;
+      class?: string;
+      summaryClass?: string;
+      menuPositionClass?: string;
+      menuWrapperClass?: string;
+      navClass?: string;
+    }) => {
+      let defaultSummaryClasses =
         "bg-gray-100 hover:bg-gray-200 text-rmx-primary [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
+      let summaryClass =
+        props.summaryClass ??
+        cx(
+          defaultSummaryClasses,
+          "_no-triangle grid h-10 w-10 place-items-center rounded-full",
+        );
+      let menuWrapperClass =
+        props.menuWrapperClass ??
+        "relative top-1 w-40 rounded-md border border-gray-100 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-gray-900";
+      let menuPositionClass =
+        props.menuPositionClass ?? "absolute right-0 z-20 md:left-0";
+      let navClass = props.navClass ?? "flex flex-col gap-2 px-2 py-2.5";
 
       return (
         <details
           open={isOpen}
           class={cx("relative cursor-pointer", props.class)}
           on={{
-            toggle(e) {
-              isOpen = e.currentTarget.open;
-              handle.update();
-            },
+            toggle: onToggle,
             mousedown: stopPropagation,
             touchstart: stopPropagation,
             focusin: stopPropagation,
+            focusout: onFocusOut,
           }}
         >
-          <summary
-            class={cx(
-              baseClasses,
-              "_no-triangle grid h-10 w-10 place-items-center rounded-full",
-            )}
-          >
+          <summary class={summaryClass} aria-label="Open menu">
             <svg class="h-5 w-5" aria-hidden="true">
               <use href={`${iconsHref}#menu`} />
             </svg>
             <span class="sr-only">Open menu</span>
           </summary>
 
-          <div class="absolute right-0 z-20 md:left-0">
-            <div class="relative top-1 w-40 rounded-md border border-gray-100 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-              <nav class="flex flex-col gap-2 px-2 py-2.5" aria-label="Mobile">
+          <div class={menuPositionClass}>
+            <div class={menuWrapperClass}>
+              <nav class={navClass} aria-label="Mobile">
                 {props.children}
               </nav>
             </div>

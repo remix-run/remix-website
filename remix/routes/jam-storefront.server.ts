@@ -1,10 +1,10 @@
 import { createStorefrontApiClient } from "@shopify/storefront-api-client";
-import { env } from "~/env.server";
 import * as s from "remix/data-schema";
 import * as c from "remix/data-schema/checks";
+import { env } from "../../app/env.server";
 
-// Initialize the client as a lazy singleton
 let client: ReturnType<typeof createStorefrontApiClient> | null = null;
+
 function getClient() {
   if (!client) {
     client = createStorefrontApiClient({
@@ -43,12 +43,12 @@ export function parseProduct(raw: unknown): Product {
   return s.parse(ProductSchema, raw);
 }
 
-export function parseCart(raw: unknown): Cart {
-  return s.parse(CartSchema, raw);
-}
-
 export function parsePhotos(raw: unknown): Photo[] {
   return s.parse(s.array(PhotoSchema), raw);
+}
+
+export function parseCart(raw: unknown): Cart {
+  return s.parse(CartSchema, raw);
 }
 
 export async function getProduct(handle: string): Promise<Product> {
@@ -75,28 +75,20 @@ export async function getProduct(handle: string): Promise<Product> {
     variables: { handle },
   });
 
-  if (errors) {
-    throw new Error("Failed to fetch product data");
-  }
+  if (errors) throw new Error("Failed to fetch product data");
 
-  const price =
-    data?.product?.variants?.edges[0]?.node?.price?.amount || "399.00";
-  const formattedPrice = Number(price).toFixed(2);
-  const productId = data?.product?.variants?.edges[0]?.node?.id;
-  const availableForSale =
-    data?.product?.variants?.edges[0]?.node?.availableForSale || false;
-
+  const price = data?.product?.variants?.edges[0]?.node?.price?.amount || "399.00";
   const product = {
     id: data?.product?.id,
-    price: formattedPrice,
-    productId,
-    availableForSale,
+    price: Number(price).toFixed(2),
+    productId: data?.product?.variants?.edges[0]?.node?.id,
+    availableForSale:
+      data?.product?.variants?.edges[0]?.node?.availableForSale || false,
   };
 
   return parseProduct(product);
 }
 
-// Shopify limits the number of file references to 128
 const MAX_PHOTOS = 128;
 
 export async function getPhotos(handle: string): Promise<Photo[]> {
@@ -128,25 +120,15 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
     variables: { handle },
   });
 
-  if (errors) {
-    throw new Error("Failed to fetch photos from metaobject");
-  }
+  if (errors) throw new Error("Failed to fetch photos from metaobject");
 
-  // Find the photos field in the metaobject fields
-  const photosField = data?.metaobject?.fields?.find(
-    (field: any) => field.key === "photos",
-  );
+  const photosField = data?.metaobject?.fields?.find((field: any) => field.key === "photos");
+  if (!photosField?.references?.edges) return [];
 
   let photos: Photo[] = [];
-
-  if (!photosField?.references?.edges) {
-    return [];
-  }
-
   for (const edge of photosField.references.edges) {
     const image = edge?.node?.image;
     if (!image) continue;
-
     photos.push({
       url: image.url,
       altText: image.altText || "",
@@ -154,7 +136,6 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
       height: image.height,
     });
   }
-
   return parsePhotos(photos);
 }
 
@@ -211,10 +192,8 @@ export async function createCart(params: {
     return { error: "Failed to create cart" };
   }
 
-  const cart = {
+  return parseCart({
     id: data.cartCreate.cart.id,
     checkoutUrl: data.cartCreate.cart.checkoutUrl,
-  };
-
-  return parseCart(cart);
+  });
 }

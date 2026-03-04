@@ -1,13 +1,13 @@
 import assert from "node:assert";
 import yaml from "yaml";
-import { processMarkdown } from "~/lib/md.server";
 import * as s from "remix/data-schema";
 import { LRUCache } from "lru-cache";
+import { processMarkdown } from "../../shared/lib/md.server";
 
-import scheduleYamlFileContents from "./data/schedule.yaml?raw";
+import scheduleYamlFileContents from "../../app/routes/jam/data/schedule.yaml?raw";
 
 const speakerImageModules = import.meta.glob(
-  "./images/schedule/*.{png,jpg,jpeg,webp,avif}",
+  "../../app/routes/jam/images/schedule/*.{png,jpg,jpeg,webp,avif}",
   { eager: true, query: "?url", import: "default" },
 );
 
@@ -52,7 +52,7 @@ function addNonBreakingSpaces(text: string): string {
 
 let cache = new LRUCache<string, ScheduleItem[]>({
   max: 250,
-  maxSize: 1024 * 1024 * 12, // 12 mb
+  maxSize: 1024 * 1024 * 12,
   sizeCalculation(value, key) {
     return JSON.stringify(value).length + (key ? key.length : 0);
   },
