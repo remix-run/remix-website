@@ -160,22 +160,32 @@ export let JamKeepsakes = clientEntry(
         setupDocumentListeners();
       };
 
-      handle.on(document, {
-        mousedown(e: MouseEvent) {
-          let el = (e.target as HTMLElement).closest(
-            "[data-keepsake-id]",
-          ) as HTMLElement | null;
-          if (!el) return;
-          handleStart(e, el);
+      let onMouseDown = (e: MouseEvent) => {
+        let el = (e.target as HTMLElement).closest(
+          "[data-keepsake-id]",
+        ) as HTMLElement | null;
+        if (!el) return;
+        handleStart(e, el);
+      };
+      let onTouchStart = (e: TouchEvent) => {
+        let el = (e.target as HTMLElement).closest(
+          "[data-keepsake-id]",
+        ) as HTMLElement | null;
+        if (!el) return;
+        handleStart(e, el);
+      };
+
+      document.addEventListener("mousedown", onMouseDown);
+      document.addEventListener("touchstart", onTouchStart);
+      handle.signal.addEventListener(
+        "abort",
+        () => {
+          document.removeEventListener("mousedown", onMouseDown);
+          document.removeEventListener("touchstart", onTouchStart);
+          handleEnd();
         },
-        touchstart(e: TouchEvent) {
-          let el = (e.target as HTMLElement).closest(
-            "[data-keepsake-id]",
-          ) as HTMLElement | null;
-          if (!el) return;
-          handleStart(e, el);
-        },
-      });
+        { once: true },
+      );
     });
 
     return () => (

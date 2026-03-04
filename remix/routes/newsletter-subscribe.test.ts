@@ -20,16 +20,20 @@ describe("Newsletter subscribe route", () => {
       formData.append(key, value);
     }
 
-    type NewsletterContext = Parameters<typeof actionsController.newsletter>[0];
+    type NewsletterContext = Parameters<
+      typeof actionsController.actions.newsletter
+    >[0];
     let context = {
       request: new Request(
         `http://localhost:3000${routes.actions.newsletter.href()}`,
         { method: "POST" },
       ),
-      formData,
+      get(key: unknown) {
+        return key === FormData ? formData : undefined;
+      },
     } as NewsletterContext;
 
-    return actionsController.newsletter(context);
+    return actionsController.actions.newsletter(context);
   }
 
   it("rejects invalid emails", async () => {

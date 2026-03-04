@@ -1,4 +1,4 @@
-import { clientEntry, type Handle } from "remix/component";
+import { clientEntry, on, type Handle } from "remix/component";
 import assets from "./jam-ticket-card.tsx?assets=client";
 
 export let JamTicketCard = clientEntry(
@@ -19,7 +19,14 @@ export let JamTicketCard = clientEntry(
         }
       };
 
-      handle.on(window, { resize: updateDimensions });
+      window.addEventListener("resize", updateDimensions);
+      handle.signal.addEventListener(
+        "abort",
+        () => {
+          window.removeEventListener("resize", updateDimensions);
+        },
+        { once: true },
+      );
     });
 
     return (props: {
@@ -41,16 +48,16 @@ export let JamTicketCard = clientEntry(
           data-jam-ticket-card
           class="group z-10 w-[300px] select-none md:w-[800px]"
           style={{ perspective: "1500px" }}
-          on={{
-            mouseenter() {
+          mix={[
+            on("mouseenter", () => {
               isHovered = true;
               handle.update();
-            },
-            mouseleave() {
+            }),
+            on("mouseleave", () => {
               isHovered = false;
               handle.update();
-            },
-            mousemove(e: MouseEvent & { currentTarget: HTMLElement }) {
+            }),
+            on("mousemove", (e) => {
               let rect = e.currentTarget.getBoundingClientRect();
               ticketWidth = rect.width;
               ticketHeight = rect.height;
@@ -59,8 +66,8 @@ export let JamTicketCard = clientEntry(
                 y: ((e.clientY - rect.top) / rect.height) * 100,
               };
               handle.update();
-            },
-          }}
+            }),
+          ]}
         >
           <div
             class="relative isolate z-10 overflow-hidden rounded-xl border border-white/20 transition-transform duration-200 ease-out"

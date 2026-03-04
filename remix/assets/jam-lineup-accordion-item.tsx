@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import { clientEntry, type Handle } from "remix/component";
+import { clientEntry, on, ref, type Handle } from "remix/component";
 import iconsHref from "../shared/icons.svg";
 import assets from "./jam-lineup-accordion-item.tsx?assets=client";
 
@@ -98,7 +98,7 @@ export let JamLineupAccordionItem = clientEntry(
         data-accordion-item
       >
         <summary
-          on={{ click: onSummaryClick }}
+          mix={[on<HTMLElement, "click">("click", onSummaryClick)]}
           class={clsx(
             "_no-triangle grid cursor-pointer select-none p-4 text-sm font-bold text-white outline-none transition-colors duration-300 hover:bg-gray-900 focus-visible:bg-gray-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-brand sm:p-6 sm:text-base md:p-8 md:text-lg lg:p-9 lg:text-2xl",
             props.gridColsClassName,
@@ -122,15 +122,15 @@ export let JamLineupAccordionItem = clientEntry(
 
         <div
           class="block"
-          connect={(node) => {
+          mix={[ref((node) => {
             panel = node;
             if (!isOpen) {
               node.style.height = "0px";
               node.style.overflow = "hidden";
             }
-          }}
+          })]}
         >
-          <div connect={(node) => (panelInner = node)}>
+          <div mix={[ref((node) => (panelInner = node))]}>
             <div class="pb-8 transition-colors duration-300 group-hover:bg-gray-900">
               <div
                 class={clsx(

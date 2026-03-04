@@ -32,11 +32,18 @@ export let JamFadeInBadge = clientEntry(
             handle.update();
           }, props.delay ?? 0);
 
-          handle.on(window, {
-            pagehide() {
+          let clearTimeoutOnPageHide = () => {
+            window.clearTimeout(timeout);
+          };
+          window.addEventListener("pagehide", clearTimeoutOnPageHide);
+          handle.signal.addEventListener(
+            "abort",
+            () => {
+              window.removeEventListener("pagehide", clearTimeoutOnPageHide);
               window.clearTimeout(timeout);
             },
-          });
+            { once: true },
+          );
         });
       }
 

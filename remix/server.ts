@@ -27,7 +27,6 @@ import { jam2025Handler } from "./routes/jam-2025.tsx";
 import { jamHandler } from "./routes/jam.ts";
 import { newsletterHandler } from "./routes/newsletter.tsx";
 import { routes } from "./routes";
-import { ROUTER_STORAGE_KEY } from "./utils/request-context";
 
 if (import.meta.env.PROD) {
   sourceMapSupport.install();
@@ -58,10 +57,6 @@ let router = createRouter({
         ]),
     formData(),
     asyncContext(),
-    (context, next) => {
-      context.storage.set(ROUTER_STORAGE_KEY, router);
-      return next();
-    },
     rateLimit({
       windowMs: 2 * 60 * 1000,
       max: 1000,
