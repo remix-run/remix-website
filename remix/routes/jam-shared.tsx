@@ -4,6 +4,7 @@ import { JamScrambleText } from "../assets/jam-scramble-text";
 import { MobileMenu } from "../assets/mobile-menu";
 import { Document } from "../components/document";
 import { routes } from "../routes";
+import iconsHref from "../../shared/icons.svg";
 import jamStylesHref from "../../shared/styles/jam.css?url";
 import maskSrc from "../../app/routes/jam/images/background-mask.avif";
 import seatsSrc from "../../app/routes/jam/images/remix-color-seats.svg";
@@ -60,6 +61,14 @@ export function JamDocument() {
         </>
       }
     >
+      <img
+        src={iconsHref}
+        alt=""
+        hidden
+        // Preload icons sprite so <use href> references resolve before footer renders (matches app/root.tsx)
+        // @ts-expect-error -- fetchpriority not in DOM types
+        fetchpriority="high"
+      />
       <div class="relative overflow-hidden">
         <Background hideBackground={props.hideBackground ?? false}>
           <Navbar activePath={props.activePath} className="z-40" />
@@ -300,33 +309,45 @@ function Footer() {
             href="https://github.com/remix-run"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-white/50 hover:text-white"
+            aria-label="GitHub"
+            class="inline-flex size-6 shrink-0 items-center justify-center transition-colors text-white/50 hover:text-white md:size-8 [&>svg]:size-full"
           >
-            GitHub
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+              <use href={`${iconsHref}#github`} />
+            </svg>
           </a>
           <a
             href="https://twitter.com/remix_run"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-white/50 hover:text-white"
+            aria-label="Twitter"
+            class="inline-flex size-6 shrink-0 items-center justify-center transition-colors text-white/50 hover:text-white md:size-8 [&>svg]:size-full"
           >
-            Twitter
+            <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
+              <use href={`${iconsHref}#twitter`} />
+            </svg>
           </a>
           <a
             href="https://youtube.com/remix_run"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-white/50 hover:text-white"
+            aria-label="YouTube"
+            class="inline-flex size-6 shrink-0 items-center justify-center transition-colors text-white/50 hover:text-white md:size-8 [&>svg]:size-full"
           >
-            YouTube
+            <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
+              <use href={`${iconsHref}#youtube`} />
+            </svg>
           </a>
           <a
             href="https://discord.gg/xwx7mMzVkA"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-white/50 hover:text-white"
+            aria-label="Discord"
+            class="inline-flex size-6 shrink-0 items-center justify-center transition-colors text-white/50 hover:text-white md:size-8 [&>svg]:size-full"
           >
-            Discord
+            <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
+              <use href={`${iconsHref}#discord`} />
+            </svg>
           </a>
         </div>
         <div class="flex flex-col items-center gap-2 uppercase leading-loose">

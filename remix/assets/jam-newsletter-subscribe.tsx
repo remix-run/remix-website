@@ -63,7 +63,7 @@ export let JamNewsletterSubscribeForm = clientEntry(
         <button
           type="submit"
           disabled={submitting}
-          class="mt-5 min-w-fit w-full max-w-sm rounded-full bg-white px-4 py-3 text-sm font-semibold text-black transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50 md:px-6 md:py-4 md:text-xl"
+          class="mt-5 min-w-fit w-full max-w-sm rounded-full bg-black px-4 py-3 text-sm font-semibold text-white transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50 md:px-6 md:py-4 md:text-xl"
         >
           {submitting ? "Signing Up..." : "Sign Up"}
         </button>
