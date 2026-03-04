@@ -1,7 +1,6 @@
 {
   "files": [],
   "references": [
-    { "path": "./remix/tsconfig.json" },
-    { "path": "./remix/tsconfig.server.json" }
+    { "path": "./remix/tsconfig.json" }
   ]
 }

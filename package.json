@@ -20,9 +20,8 @@
     "test": "vitest",
     "pretest:e2e": "playwright install chromium",
     "test:e2e": "playwright test",
-    "typecheck": "pnpm run --parallel \"/^typecheck:(remix|remix-server)$/\"",
-    "typecheck:remix": "tsc --noEmit -p remix/tsconfig.json",
-    "typecheck:remix-server": "tsc --noEmit -p remix/tsconfig.server.json"
+    "typecheck": "tsc --noEmit -p remix/tsconfig.json",
+    "typecheck:remix": "tsc --noEmit -p remix/tsconfig.json"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
