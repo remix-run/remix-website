@@ -6,15 +6,15 @@ import { Document } from "../components/document";
 import { routes } from "../routes";
 import iconsHref from "../../shared/icons.svg";
 import jamStylesHref from "../../shared/styles/jam.css?url";
-import maskSrc from "../../app/routes/jam/images/background-mask.avif";
-import seatsSrc from "../../app/routes/jam/images/remix-color-seats.svg";
-import photo1Src from "../../app/routes/jam/images/keepsakes/photo-1.avif";
-import photo2Src from "../../app/routes/jam/images/keepsakes/photo-2.avif";
-import posterSrc from "../../app/routes/jam/images/keepsakes/poster.avif";
-import pickSrc from "../../app/routes/jam/images/keepsakes/remix-pick.avif";
-import ticketSrc from "../../app/routes/jam/images/keepsakes/ticket.avif";
-import boardingPassSrc from "../../app/routes/jam/images/keepsakes/boarding-pass.avif";
-import stickerSrc from "../../app/routes/jam/images/keepsakes/remix-logo-sticker.svg";
+import maskSrc from "./jam/images/background-mask.avif";
+import seatsSrc from "./jam/images/remix-color-seats.svg";
+import photo1Src from "./jam/images/keepsakes/photo-1.avif";
+import photo2Src from "./jam/images/keepsakes/photo-2.avif";
+import posterSrc from "./jam/images/keepsakes/poster.avif";
+import pickSrc from "./jam/images/keepsakes/remix-pick.avif";
+import ticketSrc from "./jam/images/keepsakes/ticket.avif";
+import boardingPassSrc from "./jam/images/keepsakes/boarding-pass.avif";
+import stickerSrc from "./jam/images/keepsakes/remix-logo-sticker.svg";
 
 const jamButtonClassName =
   "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";

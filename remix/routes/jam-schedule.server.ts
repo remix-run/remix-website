@@ -4,10 +4,10 @@ import * as s from "remix/data-schema";
 import { LRUCache } from "lru-cache";
 import { processMarkdown } from "../../shared/lib/md.server";
 
-import scheduleYamlFileContents from "../../app/routes/jam/data/schedule.yaml?raw";
+import scheduleYamlFileContents from "./jam/data/schedule.yaml?raw";
 
 const speakerImageModules = import.meta.glob(
-  "../../app/routes/jam/images/schedule/*.{png,jpg,jpeg,webp,avif}",
+  "./jam/images/schedule/*.{png,jpg,jpeg,webp,avif}",
   { eager: true, query: "?url", import: "default" },
 );
 

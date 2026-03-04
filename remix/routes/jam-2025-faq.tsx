@@ -11,7 +11,7 @@ import {
   Title,
 } from "./jam-shared";
 import { routes } from "../routes";
-import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
+import ogImageSrc from "./jam/images/og-thumbnail-1.jpg";
 
 function slugify(input: string) {
   return input

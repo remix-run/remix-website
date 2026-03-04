@@ -11,7 +11,7 @@ import {
 } from "./jam-shared";
 import { JamGalleryModalControls } from "../assets/jam-gallery-modal-controls";
 import { JamGalleryFocusRestore } from "../assets/jam-gallery-focus-restore";
-import ogImageSrc from "../../app/routes/jam/images/og-gallery.jpg";
+import ogImageSrc from "./jam/images/og-gallery.jpg";
 import iconsHref from "../../shared/icons.svg";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];

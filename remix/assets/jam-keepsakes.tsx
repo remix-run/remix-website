@@ -1,13 +1,13 @@
 import clsx from "clsx";
 import { clientEntry, type Handle } from "remix/component";
 import assets from "./jam-keepsakes.tsx?assets=client";
-import photo1Src from "../../app/routes/jam/images/keepsakes/photo-1.avif";
-import photo2Src from "../../app/routes/jam/images/keepsakes/photo-2.avif";
-import posterSrc from "../../app/routes/jam/images/keepsakes/poster.avif";
-import pickSrc from "../../app/routes/jam/images/keepsakes/remix-pick.avif";
-import ticketSrc from "../../app/routes/jam/images/keepsakes/ticket.avif";
-import boardingPassSrc from "../../app/routes/jam/images/keepsakes/boarding-pass.avif";
-import stickerSrc from "../../app/routes/jam/images/keepsakes/remix-logo-sticker.svg";
+import photo1Src from "../routes/jam/images/keepsakes/photo-1.avif";
+import photo2Src from "../routes/jam/images/keepsakes/photo-2.avif";
+import posterSrc from "../routes/jam/images/keepsakes/poster.avif";
+import pickSrc from "../routes/jam/images/keepsakes/remix-pick.avif";
+import ticketSrc from "../routes/jam/images/keepsakes/ticket.avif";
+import boardingPassSrc from "../routes/jam/images/keepsakes/boarding-pass.avif";
+import stickerSrc from "../routes/jam/images/keepsakes/remix-logo-sticker.svg";
 
 const KEEPSAKES = [
   {

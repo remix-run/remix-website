@@ -12,9 +12,9 @@ import {
 } from "./jam-shared";
 import { JamTicketCard } from "../assets/jam-ticket-card";
 import { JamTicketPurchase } from "../assets/jam-ticket-purchase";
-import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
-import ticketSrc from "../../app/routes/jam/images/tickets/general.avif";
-import ticketHolographic from "../../app/routes/jam/images/tickets/ticket-holographic.avif";
+import ogImageSrc from "./jam/images/og-thumbnail-1.jpg";
+import ticketSrc from "./jam/images/tickets/general.avif";
+import ticketHolographic from "./jam/images/tickets/ticket-holographic.avif";
 
 export async function jam2025TicketHandler() {
   let request = getRequestContext().request;
