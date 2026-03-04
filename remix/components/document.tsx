@@ -2,6 +2,7 @@ import type { RemixNode } from "remix/component/jsx-runtime";
 
 import clientAssets from "../assets/entry.ts?assets=client";
 import documentAssets from "./document.tsx?assets=ssr";
+import iconsHref from "../../shared/icons.svg";
 
 import "../../shared/styles/tailwind.css";
 import "../../shared/styles/bailwind.css";
@@ -139,6 +140,13 @@ export function Document() {
               : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200"
         }`}
       >
+        <img
+          src={iconsHref}
+          alt=""
+          hidden
+          // Preload icons sprite so <use href> references resolve (matches app/root.tsx)
+          fetchpriority="high"
+        />
         {children}
         {assets.js.map((asset) => (
           <link key={asset.href} rel="modulepreload" href={asset.href} />

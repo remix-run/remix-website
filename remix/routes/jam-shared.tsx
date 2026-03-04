@@ -61,14 +61,6 @@ export function JamDocument() {
         </>
       }
     >
-      <img
-        src={iconsHref}
-        alt=""
-        hidden
-        // Preload icons sprite so <use href> references resolve before footer renders (matches app/root.tsx)
-        // @ts-expect-error -- fetchpriority not in DOM types
-        fetchpriority="high"
-      />
       <div class="relative overflow-hidden">
         <Background hideBackground={props.hideBackground ?? false}>
           <Navbar activePath={props.activePath} className="z-40" />
@@ -310,7 +302,7 @@ function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            class="inline-flex size-6 shrink-0 items-center justify-center transition-colors text-white/50 hover:text-white md:size-8 [&>svg]:size-full"
+            class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
               <use href={`${iconsHref}#github`} />
@@ -321,7 +313,7 @@ function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Twitter"
-            class="inline-flex size-6 shrink-0 items-center justify-center transition-colors text-white/50 hover:text-white md:size-8 [&>svg]:size-full"
+            class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
             <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
               <use href={`${iconsHref}#twitter`} />
@@ -332,7 +324,7 @@ function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="YouTube"
-            class="inline-flex size-6 shrink-0 items-center justify-center transition-colors text-white/50 hover:text-white md:size-8 [&>svg]:size-full"
+            class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
             <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
               <use href={`${iconsHref}#youtube`} />
@@ -343,7 +335,7 @@ function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Discord"
-            class="inline-flex size-6 shrink-0 items-center justify-center transition-colors text-white/50 hover:text-white md:size-8 [&>svg]:size-full"
+            class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
             <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
               <use href={`${iconsHref}#discord`} />
