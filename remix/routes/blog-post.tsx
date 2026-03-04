@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import mdStyles from "../../shared/styles/md.css?url";
+import mdStyles from "../shared/styles/md.css?url";
 import { Document } from "../components/document";
 import { Footer } from "../components/home/footer";
 import { Header } from "../components/home/header";
@@ -7,7 +7,7 @@ import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
 import { routes } from "../routes";
 import { render } from "../utils/render";
 import { getBlogPost, getRawBlogPostMarkdown } from "../lib/blog.server";
-import { CACHE_CONTROL } from "../../shared/cache-control";
+import { CACHE_CONTROL } from "../shared/cache-control";
 
 type BlogPostContext = {
   params: { slug?: string; ext?: string };

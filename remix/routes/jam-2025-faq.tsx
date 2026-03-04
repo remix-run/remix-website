@@ -1,7 +1,7 @@
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../../shared/cache-control";
+import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   AddressLink,
   JamDocument,

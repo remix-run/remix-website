@@ -1,6 +1,6 @@
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../../shared/cache-control";
+import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   JamDocument,
   Paragraph,

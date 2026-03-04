@@ -1,7 +1,7 @@
 import { getPhotos } from "./jam-storefront.server";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../../shared/cache-control";
+import { CACHE_CONTROL } from "../shared/cache-control";
 import { routes } from "../routes";
 import {
   JamDocument,
@@ -12,7 +12,7 @@ import {
 import { JamGalleryModalControls } from "../assets/jam-gallery-modal-controls";
 import { JamGalleryFocusRestore } from "../assets/jam-gallery-focus-restore";
 import ogImageSrc from "../assets/jam/images/og-gallery.jpg";
-import iconsHref from "../../shared/icons.svg";
+import iconsHref from "../shared/icons.svg";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
