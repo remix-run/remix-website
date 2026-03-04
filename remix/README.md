@@ -1,22 +1,21 @@
-# Remix migration notes (`remix/` + `app/`)
+# Remix notes (`remix/`)
 
 This file is the technical spec for code under `remix/**`.
 For contributor/agent workflow guidance, see `AGENTS.md`.
 
 ## Runtime model
 
-- `app/**` remains the React Router framework-mode app.
 - `remix/**` contains Remix 3 handlers and `remix/component` UI.
 - `remix/server.ts` handles requests via `remix/fetch-router`.
 - Explicit Remix mappings run before the catch-all.
-- Catch-all falls back to React Router `createRequestHandler`.
+- Catch-all is handled in `remix/routes/catchall.ts`.
 
 ## Directory boundaries
 
 - `remix/routes/**`: route handlers/controllers
 - `remix/components/**`: shared Remix UI
 - `remix/assets/**`: interactive `clientEntry` modules
-- Keep migration code in `remix/**`; do not add new `app/remix/**` files.
+- Keep runtime code in `remix/**`.
 
 ## Routing and actions
 

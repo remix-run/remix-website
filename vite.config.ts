@@ -1,7 +1,5 @@
 import { defineConfig } from "vite";
 import fullstack from "@hiogawa/vite-plugin-fullstack";
-import { reactRouter } from "@react-router/dev/vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import arraybuffer from "vite-plugin-arraybuffer";
 import { globSync } from "tinyglobby";
 
@@ -28,11 +26,9 @@ export default defineConfig({
     },
   },
   plugins: [
-    tsconfigPaths({ projects: ["./app/tsconfig.json"] }),
     arraybuffer(),
     fullstack({
       serverEnvironments: ["ssr"],
     }),
-    reactRouter(),
   ],
 });

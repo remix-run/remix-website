@@ -19,12 +19,11 @@ describe("parseEnv", () => {
     });
 
     expect(result.CONVERTKIT_KEY).toBe("test-key");
-    expect(result.NO_CACHE).toBe(false); // default when omitted
+    expect(result.NO_CACHE).toBe(false);
     expect(result.PUBLIC_STOREFRONT_API_TOKEN).toBe("token");
   });
 
   it("coerces NO_CACHE string to boolean", () => {
-    // remix/data-schema coerce.boolean() accepts "true"/"false" strings
     expect(parseEnv({ CONVERTKIT_KEY: "k", NO_CACHE: "true" }).NO_CACHE).toBe(
       true,
     );
