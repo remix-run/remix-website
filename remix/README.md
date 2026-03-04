@@ -1,22 +1,20 @@
-# Remix migration notes (`remix/` + `app/`)
+# Remix (`remix/`)
 
 This file is the technical spec for code under `remix/**`.
 For contributor/agent workflow guidance, see `AGENTS.md`.
 
 ## Runtime model
 
-- `app/**` remains the React Router framework-mode app.
 - `remix/**` contains Remix 3 handlers and `remix/component` UI.
 - `remix/server.ts` handles requests via `remix/fetch-router`.
 - Explicit Remix mappings run before the catch-all.
-- Catch-all falls back to React Router `createRequestHandler`.
+- Catch-all returns 404 for unmatched paths.
 
 ## Directory boundaries
 
 - `remix/routes/**`: route handlers/controllers
 - `remix/components/**`: shared Remix UI
 - `remix/assets/**`: interactive `clientEntry` modules
-- Keep migration code in `remix/**`; do not add new `app/remix/**` files.
 
 ## Routing and actions
 
@@ -77,7 +75,7 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 Track known migration gaps here so each item can become a focused follow-up PR.
 
 - **Client-side navigation baseline**: Remix pages currently rely on regular document navigations in most places (for example blog list/post links and markdown body links) rather than app-wide client-side routing behavior.
-- **Delegated internal blog links**: Intentional temporary gap. Legacy delegated click interception for internal `<a>` links in blog content (`app/ui/delegate-links.tsx`) was removed; reintroduce equivalent behavior for blog-post content when client-side routing is implemented.
+- **Delegated internal blog links**: Intentional temporary gap. Legacy delegated click interception for internal `<a>` links in blog content was removed; reintroduce equivalent behavior for blog-post content when client-side routing is implemented.
 - **Link prefetch parity**: React Router `Link` + `prefetch="intent"` behavior is not generally replicated yet on migrated Remix pages.
 - **404 rendering parity**: Some migrated handlers still return plain `404` `Response`s; align with a consistent, themed HTML 404 experience and metadata behavior.
-- **Marketing DocSearch shortcut**: Intentional non-parity. Legacy `Cmd/Ctrl+K` DocSearch modal behavior (from `app/ui/docsearch.tsx` + old marketing layout wiring) is not being carried over to Remix pages.
+- **Marketing DocSearch shortcut**: Intentional non-parity. Legacy `Cmd/Ctrl+K` DocSearch modal behavior is not being carried over to Remix pages.

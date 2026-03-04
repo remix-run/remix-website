@@ -2,7 +2,7 @@
 
 ## Goal
 
-Migrate pages from React Router framework mode (`app/**`) to Remix 3 (`remix/**`) incrementally without breaking production behavior.
+The site runs on Remix 3 (`remix/**`). All routes are in `remix/routes.ts` and `remix/server.ts`.
 
 ## Source Of Truth
 
@@ -12,7 +12,7 @@ Migrate pages from React Router framework mode (`app/**`) to Remix 3 (`remix/**`
 ## Keep These Non-Obvious Invariants
 
 - Route declarations live in `remix/routes.ts`; server mappings in `remix/server.ts`; keep them aligned.
-- Map explicit Remix routes before the `router.map("*", ...)` React Router fallback.
+- Map explicit Remix routes before the `router.map("*", ...)` catchall.
 - In `remix/routes/**`, keep exported route handler/controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `remix/components/**` only when shared.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
@@ -26,7 +26,6 @@ Migrate pages from React Router framework mode (`app/**`) to Remix 3 (`remix/**`
 3. Wire mapping in `remix/server.ts` before catch-all fallback.
 4. Add focused tests and run targeted verification (+ Remix typechecks for substantial changes).
 5. Run `pnpm run build` before shipping a PR to catch asset-pipeline regressions.
-6. After parity is verified, explicitly ask whether to remove legacy `app/routes/**` page/resources.
 
 ## E2E Gotchas (Playwright)
 

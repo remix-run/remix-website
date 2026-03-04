@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "build:analyze": "ANALYZE=true react-router build",
+    "build:analyze": "ANALYZE=true vite build",
     "dev": "vite dev",
     "format": "prettier --write ./",
     "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
@@ -20,8 +20,7 @@
     "test": "vitest",
     "pretest:e2e": "playwright install chromium",
     "test:e2e": "playwright test",
-    "typecheck": "react-router typegen && pnpm run --parallel \"/^typecheck:(app|remix|remix-server)$/\"",
-    "typecheck:app": "tsc --noEmit -p app/tsconfig.json",
+    "typecheck": "pnpm run --parallel \"/^typecheck:(remix|remix-server)$/\"",
     "typecheck:remix": "tsc --noEmit -p remix/tsconfig.json",
     "typecheck:remix-server": "tsc --noEmit -p remix/tsconfig.server.json"
   },
