@@ -151,6 +151,20 @@ test.describe("Jam", () => {
     await expect(firstAccordion).not.toHaveAttribute("open", "");
   });
 
+  test("jam lineup desktop accordion settles correctly after rapid toggles", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2025/lineup");
+
+    let firstAccordion = page.locator("[data-accordion-item]").first();
+    let firstSummary = firstAccordion.locator("summary");
+
+    await firstSummary.click();
+    await firstSummary.click();
+    await expect(firstAccordion).not.toHaveAttribute("open", "");
+  });
+
   test("jam faq page renders", async ({ page }) => {
     await page.goto("/jam/2025/faq");
     await expect(page.locator("main")).toBeVisible();
