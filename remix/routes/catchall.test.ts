@@ -1,5 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { catchallHandler } from "./catchall";
+import { renderNotFoundPage } from "./not-found";
+
+vi.mock("./not-found", () => ({
+  renderNotFoundPage: vi.fn(() => new Response("", { status: 404 })),
+}));
 
 function createContext(pathname: string) {
   return {
@@ -8,6 +13,10 @@ function createContext(pathname: string) {
 }
 
 describe("catchall route", () => {
+  beforeEach(() => {
+    vi.mocked(renderNotFoundPage).mockClear();
+  });
+
   it("redirects trailing slash paths", async () => {
     let response = catchallHandler(createContext("/docs/"));
     expect(response.status).toBe(302);
@@ -33,5 +42,6 @@ describe("catchall route", () => {
   it("returns 404 for unknown paths", async () => {
     let response = catchallHandler(createContext("/not-real"));
     expect(response.status).toBe(404);
+    expect(renderNotFoundPage).toHaveBeenCalledTimes(1);
   });
 });
