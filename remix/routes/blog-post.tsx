@@ -5,6 +5,7 @@ import { Footer } from "../components/home/footer";
 import { Header } from "../components/home/header";
 import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
 import { routes } from "../routes";
+import { renderNotFoundPage } from "./not-found";
 import { render } from "../utils/render";
 import { getBlogPost, getRawBlogPostMarkdown } from "../lib/blog.server";
 import { CACHE_CONTROL } from "../shared/cache-control";
@@ -17,7 +18,7 @@ type BlogPostContext = {
 export async function blogPostHandler(context: BlogPostContext) {
   let slug = context.params.slug;
   if (!slug) {
-    return new Response("Not Found", { status: 404 });
+    return renderNotFoundPage(context.request);
   }
 
   let requestUrl = new URL(context.request.url);
@@ -44,7 +45,7 @@ export async function blogPostHandler(context: BlogPostContext) {
     post = await getBlogPost(slug);
   } catch (error) {
     if (error instanceof Response && error.status === 404) {
-      return error;
+      return renderNotFoundPage(context.request);
     }
     throw error;
   }

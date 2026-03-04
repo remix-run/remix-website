@@ -1,4 +1,5 @@
 import semver from "semver";
+import { renderNotFoundPage } from "./not-found";
 
 const SAFE_STATIC_FILE_EXTENSIONS = [
   ".html",
@@ -34,8 +35,11 @@ export function catchallHandler(context: { request: Request }) {
   if (redirectUrl) {
     return Response.redirect(redirectUrl, 302);
   }
+  if (isLikelyStaticFileRequest(url.pathname)) {
+    return new Response("", { status: 404, statusText: "Not Found" });
+  }
 
-  return new Response("", { status: 404, statusText: "Not Found" });
+  return renderNotFoundPage(context.request);
 }
 
 function normalizeLegacyRedirect(url: URL): string | null {
@@ -55,14 +59,6 @@ function normalizeLegacyRedirect(url: URL): string | null {
 
   if (url.pathname === "/resources" || url.pathname.startsWith("/resources/")) {
     return `https://v2.remix.run${url.pathname}${url.search}`;
-  }
-
-  let trailingSegment = url.pathname.split("/").pop();
-  if (
-    trailingSegment &&
-    SAFE_STATIC_FILE_EXTENSIONS.some((ext) => trailingSegment.endsWith(ext))
-  ) {
-    return null;
   }
 
   return null;
@@ -90,4 +86,12 @@ function getDocsRedirect(pathname: string): string {
   }
 
   return `https://v2.remix.run/docs/${fullPathWithoutDocs.join("/")}`;
+}
+
+function isLikelyStaticFileRequest(pathname: string) {
+  let trailingSegment = pathname.split("/").pop();
+  return !!(
+    trailingSegment &&
+    SAFE_STATIC_FILE_EXTENSIONS.some((ext) => trailingSegment.endsWith(ext))
+  );
 }

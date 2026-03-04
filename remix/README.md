@@ -57,5 +57,4 @@ Each line item should be small enough to ship as a focused PR.
 - **Client-side navigation baseline**: Most links still do full document navigations instead of app-wide in-app navigation behavior.
 - **Blog internal-link delegation**: No delegated interception for internal links inside rendered markdown content yet.
 - **Link prefetch parity**: Intent/predictive prefetch behavior is not yet mirrored across Remix pages.
-- **404 page parity**: Some handlers still return plain `404` responses instead of a consistent themed not-found document.
 - **Analytics on in-app transitions**: When client-side navigation is added, explicitly verify one pageview per navigation.
