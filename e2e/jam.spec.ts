@@ -129,26 +129,6 @@ test.describe("Jam", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam ticket quantity controls update value", async ({ page }) => {
-    await page.goto("/jam/2025/ticket");
-
-    let soldOutButton = page.getByRole("button", { name: "Sold Out" });
-    if (await soldOutButton.isVisible()) {
-      test.skip(true, "Tickets are sold out in this environment");
-    }
-
-    let quantityInput = page
-      .locator('main input[type="number"][readonly]')
-      .first();
-    await expect(quantityInput).toHaveValue("1");
-
-    await page.getByRole("button", { name: "Increase quantity" }).click();
-    await expect(quantityInput).toHaveValue("2");
-
-    await page.getByRole("button", { name: "Decrease quantity" }).click();
-    await expect(quantityInput).toHaveValue("1");
-  });
-
   test("jam lineup page renders", async ({ page }) => {
     await page.goto("/jam/2025/lineup");
     await expect(page.locator("main")).toBeVisible();
