@@ -6,12 +6,20 @@ import { env } from "../env.server";
 let client: ReturnType<typeof createStorefrontApiClient> | null = null;
 
 function getClient() {
+  if (!env.PUBLIC_STOREFRONT_API_TOKEN) {
+    return null;
+  }
+
   if (!client) {
-    client = createStorefrontApiClient({
-      storeDomain: "https://jam.remix.run",
-      apiVersion: "2025-04",
-      publicAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
-    });
+    try {
+      client = createStorefrontApiClient({
+        storeDomain: "https://jam.remix.run",
+        apiVersion: "2025-04",
+        publicAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+      });
+    } catch {
+      return null;
+    }
   }
   return client;
 }
@@ -52,6 +60,16 @@ export function parseCart(raw: unknown): Cart {
 }
 
 export async function getProduct(handle: string): Promise<Product> {
+  let storefrontClient = getClient();
+  if (!storefrontClient) {
+    return parseProduct({
+      id: "unavailable",
+      price: "399.00",
+      productId: "unavailable",
+      availableForSale: false,
+    });
+  }
+
   const productQuery = `
     query ProductQuery($handle: String) {
       product(handle: $handle) {
@@ -71,7 +89,7 @@ export async function getProduct(handle: string): Promise<Product> {
     }
   `;
 
-  const { data, errors } = await getClient().request(productQuery, {
+  const { data, errors } = await storefrontClient.request(productQuery, {
     variables: { handle },
   });
 
@@ -93,6 +111,9 @@ export async function getProduct(handle: string): Promise<Product> {
 const MAX_PHOTOS = 128;
 
 export async function getPhotos(handle: string): Promise<Photo[]> {
+  let storefrontClient = getClient();
+  if (!storefrontClient) return [];
+
   const metaobjectQuery = `
     query MetaobjectQuery($handle: String!) {
       metaobject(handle: { handle: $handle, type: "remix_jam_photos" }) {
@@ -117,7 +138,7 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
     }
   `;
 
-  const { data, errors } = await getClient().request(metaobjectQuery, {
+  const { data, errors } = await storefrontClient.request(metaobjectQuery, {
     variables: { handle },
   });
 
@@ -149,6 +170,11 @@ export async function createCart(params: {
   quantity: number;
   discountCode?: string;
 }): Promise<Cart | { error: string }> {
+  let storefrontClient = getClient();
+  if (!storefrontClient) {
+    return { error: "Ticket checkout is unavailable right now" };
+  }
+
   let { productId, quantity, discountCode } = params;
   quantity = Math.min(quantity, MAX_QUANTITY);
   discountCode = (discountCode ?? "").trim().toUpperCase();
@@ -177,7 +203,7 @@ export async function createCart(params: {
     discountCodes.push(discountCode);
   }
 
-  const { data, errors } = await getClient().request(createCartMutation, {
+  const { data, errors } = await storefrontClient.request(createCartMutation, {
     variables: {
       cartInput: {
         lines: [

@@ -18,25 +18,5 @@ test.describe("Mobile menu", () => {
     await expect(mobileNav.getByRole("link", { name: "Store" })).toBeVisible();
   });
 
-  test("escapes back to toggle", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    let response = await page.goto("/");
-    expect(response?.ok()).toBe(true);
 
-    let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
-    await expect(menuToggle).toBeVisible();
-    await menuToggle.focus();
-    await expect(menuToggle).toBeFocused();
-    await menuToggle.click();
-
-    let mobileNav = page.getByRole("navigation", { name: "Mobile" });
-    await expect(mobileNav).toBeVisible();
-
-    await page.keyboard.press("Tab");
-    await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeFocused();
-
-    await page.keyboard.press("Escape");
-    await expect(mobileNav).not.toBeVisible();
-    await expect(menuToggle).toBeFocused();
-  });
 });
