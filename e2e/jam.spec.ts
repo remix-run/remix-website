@@ -203,6 +203,28 @@ test.describe("Jam", () => {
     await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
   });
 
+  test("jam gallery escape closes modal and restores focus to opened photo", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2025/gallery");
+
+    let noPhotosMessage = page.getByText("No photos available yet.");
+    if (await noPhotosMessage.isVisible()) {
+      test.skip(true, "No gallery photos available in this environment");
+    }
+
+    let firstPhotoLink = page.locator("[data-gallery-photo-link]").first();
+    await firstPhotoLink.focus();
+    await firstPhotoLink.press("Enter");
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
+    await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+    await expect(firstPhotoLink).toBeFocused();
+  });
+
   test("jam gallery download link returns attachment response", async ({
     page,
   }) => {

@@ -5,9 +5,11 @@ import assets from "./jam-gallery-modal-controls.tsx?assets=client";
 export let JamGalleryModalControls = clientEntry(
   `${assets.entry}#JamGalleryModalControls`,
   (handle: Handle) => {
+    let FOCUS_RESTORE_KEY = "jam-gallery-focus-index";
     let closeHref = "";
     let previousHref = "";
     let nextHref = "";
+    let focusPhotoIndex: number | null = null;
 
     handle.queueTask(() => {
       let FOCUSABLE =
@@ -49,6 +51,12 @@ export let JamGalleryModalControls = clientEntry(
         keydown(event) {
           if (event.key === "Escape") {
             event.preventDefault();
+            if (focusPhotoIndex !== null) {
+              window.sessionStorage.setItem(
+                FOCUS_RESTORE_KEY,
+                String(focusPhotoIndex),
+              );
+            }
             navigate(closeHref);
             return;
           }
@@ -90,12 +98,14 @@ export let JamGalleryModalControls = clientEntry(
       closeHref: string;
       previousHref: string;
       nextHref: string;
+      focusPhotoIndex: number;
       class?: string;
       children: RemixNode;
     }) => {
       closeHref = props.closeHref;
       previousHref = props.previousHref;
       nextHref = props.nextHref;
+      focusPhotoIndex = props.focusPhotoIndex;
 
       return (
         <div data-gallery-modal class={props.class}>

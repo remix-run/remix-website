@@ -10,6 +10,7 @@ import {
   transformShopifyImageUrl,
 } from "./jam-shared";
 import { JamGalleryModalControls } from "../assets/jam-gallery-modal-controls";
+import { JamGalleryFocusRestore } from "../assets/jam-gallery-focus-restore";
 import ogImageSrc from "../../app/routes/jam/images/og-gallery.jpg";
 import iconsHref from "../../shared/icons.svg";
 
@@ -53,6 +54,7 @@ export async function jam2025GalleryHandler() {
                   <a
                     href={`${routes.jam2025Gallery.href()}?photo=${index}`}
                     data-gallery-photo-link
+                    data-gallery-photo-index={index}
                     class="block overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity duration-300 hover:opacity-85 focus-visible:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand"
                   >
                     <PhotoImage {...photo} />
@@ -60,6 +62,7 @@ export async function jam2025GalleryHandler() {
                 </div>
               ))}
             </div>
+            <JamGalleryFocusRestore />
             {selectedPhotoIndex !== null ? (
               <GalleryModal
                 photos={photos}
@@ -144,6 +147,7 @@ function GalleryModal() {
         closeHref={closeHref}
         previousHref={previousHref}
         nextHref={nextHref}
+        focusPhotoIndex={selectedPhotoIndex}
         class="fixed inset-0 z-50 size-full select-none bg-black/70 backdrop-blur"
       >
         <a

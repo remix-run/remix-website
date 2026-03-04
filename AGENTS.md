@@ -35,3 +35,8 @@ Migrate pages from React Router framework mode (`app/**`) to Remix 3 (`remix/**`
   - `PLAYWRIGHT_BROWSERS_PATH=0 pnpm exec playwright install chromium`
   - `PLAYWRIGHT_BROWSERS_PATH=0 pnpm exec playwright test e2e/jam.spec.ts --grep newsletter`
 - If a dev server is already running, prefer reusing it; otherwise Playwright may try to start another `pnpm run dev` and hit `EMFILE` (too many file watchers).
+
+## Deploying to staging
+
+- To push the current commit to staging, run `pnpm run push:stage`.
+- Do not use `flyctl deploy` for staging unless explicitly requested.
