@@ -4,7 +4,7 @@ import { Footer } from "../components/home/footer";
 import { Header } from "../components/home/header";
 import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
 import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../../shared/cache-control";
+import { CACHE_CONTROL } from "../shared/cache-control";
 
 export async function newsletterHandler() {
   return render.document(<Page />, {

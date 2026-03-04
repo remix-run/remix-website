@@ -1,13 +1,9 @@
 import sourceMapSupport from "source-map-support";
-import { createRequestHandler } from "react-router";
 import { asyncContext } from "remix/async-context-middleware";
 import { compression } from "remix/compression-middleware";
 import { createRouter } from "remix/fetch-router";
 import { formData } from "remix/form-data-middleware";
 import { staticFiles } from "remix/static-middleware";
-
-// @ts-expect-error - react-router server build is not typed
-import * as build from "virtual:react-router/server-build";
 
 import { filteredLogger, rateLimit } from "./middleware.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
@@ -17,6 +13,7 @@ import { blogRssHandler } from "./routes/blog-rss.ts";
 import { blogOgImageHandler } from "./routes/blog-og-image";
 import { blogHandler } from "./routes/blog.tsx";
 import { brandHandler } from "./routes/brand.tsx";
+import { catchallHandler } from "./routes/catchall";
 import { homeHandler } from "./routes/home.tsx";
 import { jam2025CocHandler } from "./routes/jam-2025-coc.tsx";
 import { jam2025FaqHandler } from "./routes/jam-2025-faq.tsx";
@@ -36,7 +33,6 @@ if (import.meta.env.PROD) {
   sourceMapSupport.install();
 }
 
-let handleRequest = createRequestHandler(build, process.env.NODE_ENV);
 let isDev = import.meta.env.DEV;
 
 function shouldSkipRateLimit(pathname: string) {
@@ -109,8 +105,8 @@ let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
 
 router.map(redirectRoutes, redirectController);
 
-// All remaining requests are handled by React Router
-router.map("*", (context) => handleRequest(context.request));
+// All remaining requests are handled by Remix catch-all.
+router.map("*", catchallHandler);
 
 // vite fullstack plugin
 export default {

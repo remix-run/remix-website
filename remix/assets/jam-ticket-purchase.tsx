@@ -1,5 +1,5 @@
 import { clientEntry, type Handle } from "remix/component";
-import iconsHref from "../../shared/icons.svg";
+import iconsHref from "../shared/icons.svg";
 import { JamButton } from "../routes/jam-shared";
 import assets from "./jam-ticket-purchase.tsx?assets=client";
 

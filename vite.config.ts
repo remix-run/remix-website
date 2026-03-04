@@ -1,17 +1,17 @@
 import { defineConfig } from "vite";
 import fullstack from "@hiogawa/vite-plugin-fullstack";
-import { reactRouter } from "@react-router/dev/vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import arraybuffer from "vite-plugin-arraybuffer";
 import { globSync } from "tinyglobby";
 
 export default defineConfig({
   build: {
+    outDir: "build/client",
     sourcemap: true,
   },
   environments: {
     client: {
       build: {
+        outDir: "build/client",
         rollupOptions: {
           input: globSync("./remix/assets/**/*.{ts,tsx}").filter(
             (f) => !f.endsWith(".test.ts") && !f.endsWith(".test.tsx"),
@@ -21,18 +21,30 @@ export default defineConfig({
     },
     ssr: {
       build: {
+        outDir: "build/server",
         rollupOptions: {
-          input: "remix/server.ts",
+          input: {
+            index: "remix/server.ts",
+          },
+          output: {
+            entryFileNames: "index.js",
+          },
         },
       },
     },
   },
   plugins: [
-    tsconfigPaths({ projects: ["./app/tsconfig.json"] }),
     arraybuffer(),
     fullstack({
       serverEnvironments: ["ssr"],
     }),
-    reactRouter(),
   ],
+  builder: {
+    async buildApp(builder) {
+      // fullstack plugin requires ssr -> client order to emit its assets manifest.
+      await builder.build(builder.environments.ssr!);
+      await builder.build(builder.environments.client!);
+      await builder.writeAssetsManifest();
+    },
+  },
 });

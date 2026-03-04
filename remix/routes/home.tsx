@@ -8,7 +8,7 @@ import { StayInTheLoopSection } from "../components/home/stay-in-the-loop-sectio
 import { TimelineSection } from "../components/home/timeline-section";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../../shared/cache-control.ts";
+import { CACHE_CONTROL } from "../shared/cache-control.ts";
 
 export async function homeHandler() {
   let requestUrl = new URL(getRequestContext().request.url);

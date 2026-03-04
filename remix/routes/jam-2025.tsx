@@ -2,7 +2,7 @@ import clsx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../../shared/cache-control";
+import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   AddressMain,
   JamDocument,
@@ -13,8 +13,8 @@ import {
 import { JamKeepsakes } from "../assets/jam-keepsakes";
 import { JamFadeInBadge } from "../assets/jam-fade-in-badge";
 import { JamNewsletterSubscribeForm } from "../assets/jam-newsletter-subscribe";
-import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
-import iconsHref from "../../shared/icons.svg";
+import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
+import iconsHref from "../shared/icons.svg";
 
 type EventStatus = "before" | "live" | "after";
 

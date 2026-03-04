@@ -2,7 +2,6 @@
 
 import { defineConfig } from "vitest/config";
 import { loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // Load all env vars (no prefix filter) from .env, .env.test, etc.
@@ -10,7 +9,6 @@ let env = loadEnv("test", process.cwd(), "");
 
 export default defineConfig({
   plugins: [
-    react(),
     tsconfigPaths(),
     {
       name: "mock-assets",

@@ -20,7 +20,7 @@ export default defineConfig({
   webServer: {
     command: "pnpm run dev",
     url: "http://localhost:5173",
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 30_000,
     stdout: "ignore",
     stderr: process.env.PLAYWRIGHT_WEB_SERVER_LOGS === "1" ? "pipe" : "ignore",

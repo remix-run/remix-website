@@ -5,7 +5,7 @@ import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
 import { routes } from "../routes";
 import { render } from "../utils/render";
 import { getBlogPostListings } from "../lib/blog.server";
-import { CACHE_CONTROL } from "../../shared/cache-control";
+import { CACHE_CONTROL } from "../shared/cache-control";
 
 export async function blogHandler() {
   let posts = await getBlogPostListings();

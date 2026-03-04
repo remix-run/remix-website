@@ -4,7 +4,7 @@ import { Document } from "../components/document";
 import { Footer } from "../components/home/footer";
 import { Header } from "../components/home/header";
 import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../../shared/cache-control";
+import { CACHE_CONTROL } from "../shared/cache-control";
 
 export async function brandHandler() {
   return render.document(<Page />, {

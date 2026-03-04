@@ -1,6 +1,8 @@
 import * as s from "remix/data-schema";
 import * as coerce from "remix/data-schema/coerce";
 
+loadEnvFiles();
+
 const envSchema = s
   .object({
     // Get from https://app.convertkit.com/account_settings/advanced_settings
@@ -18,3 +20,16 @@ export function parseEnv(input: Record<string, string | undefined>) {
 }
 
 export const env = parseEnv(process.env);
+
+function loadEnvFiles() {
+  // React Router framework mode loaded `.env` during dev; after removing that
+  // integration we need to load env files explicitly for server-only handlers.
+  if (typeof process.loadEnvFile !== "function") return;
+
+  try {
+    process.loadEnvFile(".env");
+    process.loadEnvFile(".env.local");
+  } catch {
+    // Ignore missing/invalid local env files and rely on existing process.env.
+  }
+}

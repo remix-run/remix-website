@@ -1,6 +1,6 @@
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../../shared/cache-control";
+import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   JamDocument,
   Paragraph,
@@ -8,7 +8,7 @@ import {
   Subheader,
   Title,
 } from "./jam-shared";
-import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
+import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
 
 export async function jam2025CocHandler() {
   let requestUrl = new URL(getRequestContext().request.url);

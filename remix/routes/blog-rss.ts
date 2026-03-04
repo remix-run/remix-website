@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { Feed } from "feed";
 import parseFrontMatter from "front-matter";
-import { CACHE_CONTROL } from "../../shared/cache-control.ts";
+import { CACHE_CONTROL } from "../shared/cache-control.ts";
 
 interface BlogRssFrontmatter {
   title?: string;

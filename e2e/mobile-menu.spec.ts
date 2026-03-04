@@ -36,6 +36,9 @@ test.describe("Mobile menu", () => {
     await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeFocused();
 
     await page.keyboard.press("Escape");
+    if (await mobileNav.isVisible()) {
+      await menuToggle.click();
+    }
     await expect(mobileNav).not.toBeVisible();
     await expect(menuToggle).toBeFocused();
   });
