@@ -93,11 +93,13 @@ export async function jam2025FaqHandler() {
                 <Paragraph>No, there will not be a CFP.</Paragraph>
                 <Paragraph>
                   We are putting together a great "set list" of speakers and
-                  topics exploring the past, present, and future of Remix and the
-                  web. You can expect to hear from the founders, well known
+                  topics exploring the past, present, and future of Remix and
+                  the web. You can expect to hear from the founders, well known
                   members of the community, and other industry experts.
                 </Paragraph>
-                <Paragraph>The full lineup will be announced in July.</Paragraph>
+                <Paragraph>
+                  The full lineup will be announced in July.
+                </Paragraph>
               </>
             }
           />

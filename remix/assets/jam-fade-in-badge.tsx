@@ -42,7 +42,9 @@ export let JamFadeInBadge = clientEntry(
 
       return (
         <span
-          data-jam-event-badge={props["data-jam-event-badge"] ? "true" : undefined}
+          data-jam-event-badge={
+            props["data-jam-event-badge"] ? "true" : undefined
+          }
           class={clsx(
             "rounded-full px-4 py-3 text-xl leading-none md:px-8 md:py-5 md:text-4xl",
             "transition-opacity duration-500",

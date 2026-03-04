@@ -35,10 +35,11 @@ export async function jam2025CocHandler() {
 
         <div class="relative z-10 space-y-8 text-justify text-base text-white md:text-lg">
           <Paragraph>
-            All attendees, speakers, and volunteers at our conference are required
-            to agree with the following code of conduct. Organizers will enforce
-            this code throughout the event. We are expecting cooperation from all
-            participants to help ensuring a safe environment for everybody.
+            All attendees, speakers, and volunteers at our conference are
+            required to agree with the following code of conduct. Organizers
+            will enforce this code throughout the event. We are expecting
+            cooperation from all participants to help ensuring a safe
+            environment for everybody.
           </Paragraph>
 
           <section class="space-y-4">
@@ -49,8 +50,8 @@ export async function jam2025CocHandler() {
               identity and expression, age, sexual orientation, disability,
               physical appearance, body size, race, ethnicity, religion (or lack
               thereof), or technology choices. We do not tolerate harassment of
-              conference participants in any form. Sexual language and imagery is
-              not appropriate for any conference venue, including talks,
+              conference participants in any form. Sexual language and imagery
+              is not appropriate for any conference venue, including talks,
               workshops, parties, X and other online media. Conference
               participants violating these rules may be sanctioned or expelled
               from the conference <em>without a refund</em> at the discretion of
@@ -63,12 +64,13 @@ export async function jam2025CocHandler() {
 
             <Paragraph>
               Harassment includes offensive verbal comments related to gender,
-              gender identity and expression, age, sexual orientation, disability,
-              physical appearance, body size, race, ethnicity, religion,
-              technology choices, sexual images in public spaces, deliberate
-              intimidation, stalking, following, harassing photography or
-              recording, sustained disruption of talks or other events,
-              inappropriate physical contact, and unwelcome sexual attention.
+              gender identity and expression, age, sexual orientation,
+              disability, physical appearance, body size, race, ethnicity,
+              religion, technology choices, sexual images in public spaces,
+              deliberate intimidation, stalking, following, harassing
+              photography or recording, sustained disruption of talks or other
+              events, inappropriate physical contact, and unwelcome sexual
+              attention.
             </Paragraph>
 
             <Paragraph>
@@ -86,9 +88,12 @@ export async function jam2025CocHandler() {
             <Paragraph>
               If you are being harassed, notice that someone else is being
               harassed, or have any other concerns, please contact a member of
-              conference staff immediately. Conference staff can be identified as
-              they&apos;ll be wearing branded t-shirts. Or email{" "}
-              <a class="text-blue-400 hover:underline" href="mailto:jam@remix.run">
+              conference staff immediately. Conference staff can be identified
+              as they&apos;ll be wearing branded t-shirts. Or email{" "}
+              <a
+                class="text-blue-400 hover:underline"
+                href="mailto:jam@remix.run"
+              >
                 jam@remix.run
               </a>
               .
@@ -97,8 +102,8 @@ export async function jam2025CocHandler() {
             <Paragraph>
               Conference staff will be happy to help participants contact
               hotel/venue security or local law enforcement, provide escorts, or
-              otherwise assist those experiencing harassment to feel safe for the
-              duration of the conference. We value your attendance.
+              otherwise assist those experiencing harassment to feel safe for
+              the duration of the conference. We value your attendance.
             </Paragraph>
 
             <Paragraph>

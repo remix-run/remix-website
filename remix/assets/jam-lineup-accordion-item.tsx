@@ -92,7 +92,11 @@ export let JamLineupAccordionItem = clientEntry(
     };
 
     return (props: { item: LineupItem; gridColsClassName: string }) => (
-      <details class="group overflow-hidden border-t border-white/10" open={isOpen} data-accordion-item>
+      <details
+        class="group overflow-hidden border-t border-white/10"
+        open={isOpen}
+        data-accordion-item
+      >
         <summary
           on={{ click: onSummaryClick }}
           class={clsx(
@@ -128,7 +132,12 @@ export let JamLineupAccordionItem = clientEntry(
         >
           <div connect={(node) => (panelInner = node)}>
             <div class="pb-8 transition-colors duration-300 group-hover:bg-gray-900">
-              <div class={clsx("p-4 sm:p-6 md:p-8 lg:p-9", props.gridColsClassName)}>
+              <div
+                class={clsx(
+                  "p-4 sm:p-6 md:p-8 lg:p-9",
+                  props.gridColsClassName,
+                )}
+              >
                 <div
                   class="col-span-full flex flex-col gap-4 text-sm text-white sm:col-span-1 sm:col-start-2 sm:gap-6 sm:text-base md:text-lg lg:text-xl [&_a:hover]:underline [&_a]:text-blue-400"
                   innerHTML={props.item.description}

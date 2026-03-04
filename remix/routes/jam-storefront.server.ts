@@ -77,7 +77,8 @@ export async function getProduct(handle: string): Promise<Product> {
 
   if (errors) throw new Error("Failed to fetch product data");
 
-  const price = data?.product?.variants?.edges[0]?.node?.price?.amount || "399.00";
+  const price =
+    data?.product?.variants?.edges[0]?.node?.price?.amount || "399.00";
   const product = {
     id: data?.product?.id,
     price: Number(price).toFixed(2),
@@ -122,7 +123,9 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
 
   if (errors) throw new Error("Failed to fetch photos from metaobject");
 
-  const photosField = data?.metaobject?.fields?.find((field: any) => field.key === "photos");
+  const photosField = data?.metaobject?.fields?.find(
+    (field: any) => field.key === "photos",
+  );
   if (!photosField?.references?.edges) return [];
 
   let photos: Photo[] = [];

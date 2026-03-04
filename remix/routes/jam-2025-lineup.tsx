@@ -81,7 +81,9 @@ function ScheduleTable() {
                   <span>
                     {item.time}
                     <br />
-                    <span class="text-xs font-normal text-white/60">(UTC-04:00)</span>
+                    <span class="text-xs font-normal text-white/60">
+                      (UTC-04:00)
+                    </span>
                   </span>
                   <span>{item.title}</span>
                   <span>{item.speaker}</span>

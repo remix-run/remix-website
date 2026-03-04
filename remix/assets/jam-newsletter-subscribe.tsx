@@ -63,13 +63,17 @@ export let JamNewsletterSubscribeForm = clientEntry(
         <button
           type="submit"
           disabled={submitting}
-          class="mt-5 min-w-fit w-full max-w-sm rounded-full bg-black px-4 py-3 text-sm font-semibold text-white transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50 md:px-6 md:py-4 md:text-xl"
+          class="mt-5 w-full min-w-fit max-w-sm rounded-full bg-black px-4 py-3 text-sm font-semibold text-white transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50 md:px-6 md:py-4 md:text-xl"
         >
           {submitting ? "Signing Up..." : "Sign Up"}
         </button>
         <div
           aria-live="polite"
-          class={state === "success" || state === "error" ? "mt-4 text-sm text-white" : "hidden"}
+          class={
+            state === "success" || state === "error"
+              ? "mt-4 text-sm text-white"
+              : "hidden"
+          }
         >
           {state === "success" ? (
             <p>
@@ -77,7 +81,9 @@ export let JamNewsletterSubscribeForm = clientEntry(
               when ticket sales are available.
             </p>
           ) : state === "error" ? (
-            <p class="text-red-brand">{error ?? "Something went wrong"} Please try again.</p>
+            <p class="text-red-brand">
+              {error ?? "Something went wrong"} Please try again.
+            </p>
           ) : null}
         </div>
       </form>

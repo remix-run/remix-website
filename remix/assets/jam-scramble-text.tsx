@@ -72,45 +72,49 @@ export let JamScrambleText = clientEntry(
       handle.update();
 
       for (let charIndex = 0; charIndex < config.text.length; charIndex++) {
-        let revealTimer = window.setTimeout(() => {
-          if (!state[charIndex]) return;
-
-          state[charIndex] = {
-            visible: true,
-            iteration: 0,
-            resolved: false,
-          };
-          handle.update();
-
-          let iteration = 0;
-          let cycleTimer = window.setInterval(() => {
-            iteration += 1;
-
-            let canProgress =
-              charIndex === 0 || state.slice(0, charIndex).every((item) => item.resolved);
-            if (!canProgress) return;
-
+        let revealTimer = window.setTimeout(
+          () => {
             if (!state[charIndex]) return;
 
-            if (iteration >= config.cyclesToResolve) {
-              window.clearInterval(cycleTimer);
-              state[charIndex] = {
-                visible: true,
-                iteration,
-                resolved: true,
-              };
-            } else {
-              state[charIndex] = {
-                visible: true,
-                iteration,
-                resolved: false,
-              };
-            }
+            state[charIndex] = {
+              visible: true,
+              iteration: 0,
+              resolved: false,
+            };
             handle.update();
-          }, config.cycleDelay);
 
-          timers.push(cycleTimer);
-        }, config.delay + charIndex * config.charDelay);
+            let iteration = 0;
+            let cycleTimer = window.setInterval(() => {
+              iteration += 1;
+
+              let canProgress =
+                charIndex === 0 ||
+                state.slice(0, charIndex).every((item) => item.resolved);
+              if (!canProgress) return;
+
+              if (!state[charIndex]) return;
+
+              if (iteration >= config.cyclesToResolve) {
+                window.clearInterval(cycleTimer);
+                state[charIndex] = {
+                  visible: true,
+                  iteration,
+                  resolved: true,
+                };
+              } else {
+                state[charIndex] = {
+                  visible: true,
+                  iteration,
+                  resolved: false,
+                };
+              }
+              handle.update();
+            }, config.cycleDelay);
+
+            timers.push(cycleTimer);
+          },
+          config.delay + charIndex * config.charDelay,
+        );
 
         timers.push(revealTimer);
       }

@@ -182,8 +182,7 @@ export let JamKeepsakes = clientEntry(
       <div class="isolate">
         {KEEPSAKES.map((keepsake) => {
           const t = translate[keepsake.id] ?? { x: 0, y: 0 };
-          const showJiggle =
-            keepsake.shouldJiggle && !interacted[keepsake.id];
+          const showJiggle = keepsake.shouldJiggle && !interacted[keepsake.id];
           return (
             <div
               key={keepsake.id}
@@ -193,7 +192,7 @@ export let JamKeepsakes = clientEntry(
               <div
                 data-keepsake-id={keepsake.id}
                 class={clsx(
-                  "keepsake cursor-grab select-none touch-none",
+                  "keepsake cursor-grab touch-none select-none",
                   keepsake.id,
                   showJiggle && "animate-jiggle",
                 )}
