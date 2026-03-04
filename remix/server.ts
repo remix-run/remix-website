@@ -1,13 +1,9 @@
 import sourceMapSupport from "source-map-support";
-import { createRequestHandler } from "react-router";
 import { asyncContext } from "remix/async-context-middleware";
 import { compression } from "remix/compression-middleware";
 import { createRouter } from "remix/fetch-router";
 import { formData } from "remix/form-data-middleware";
 import { staticFiles } from "remix/static-middleware";
-
-// @ts-expect-error - react-router server build is not typed
-import * as build from "virtual:react-router/server-build";
 
 import { filteredLogger, rateLimit } from "./middleware.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
@@ -36,8 +32,23 @@ if (import.meta.env.PROD) {
   sourceMapSupport.install();
 }
 
-let handleRequest = createRequestHandler(build, process.env.NODE_ENV);
 let isDev = import.meta.env.DEV;
+
+// Static file extensions: skip extra processing for known static requests that
+// have already missed static middleware (return 404 quickly, no doc lookup).
+const SAFE_STATIC_FILE_EXTENSIONS = [
+  ".html", ".css", ".js", ".txt", ".json", ".ico", ".svg", ".png", ".jpg",
+  ".jpeg", ".gif", ".woff", ".woff2", ".ttf", ".eot", ".otf", ".mp4", ".webm",
+  ".ogg", ".mp3", ".wav", ".flac", ".aac", ".m4a", ".mov",
+];
+
+function catchall404Handler(context: { url: URL }) {
+  const pathname = context.url.pathname;
+  if (SAFE_STATIC_FILE_EXTENSIONS.some((ext) => pathname.endsWith(ext))) {
+    return new Response(null, { status: 404 });
+  }
+  return new Response(null, { status: 404 });
+}
 
 function shouldSkipRateLimit(pathname: string) {
   return (
@@ -109,8 +120,8 @@ let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
 
 router.map(redirectRoutes, redirectController);
 
-// All remaining requests are handled by React Router
-router.map("*", (context) => handleRequest(context.request));
+// Catchall: 404 for unmatched paths (static file shortcut avoids extra processing)
+router.map("*", catchall404Handler);
 
 // vite fullstack plugin
 export default {
