@@ -23,7 +23,7 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - Define internal patterns in `remix/routes.ts`.
 - Use `routes.*.href()` for links and form actions.
 - Keep `remix/server.ts` mappings aligned with `remix/routes.ts`.
-- For form actions, use `formData()` middleware and read `context.formData`.
+- For form actions, use `formData()` middleware and read `context.get(FormData)`.
 - Prefer `remix/data-schema` + `parseSafe` for validation and return explicit 400s for invalid payloads.
 
 ## Assets and hydration

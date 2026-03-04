@@ -77,11 +77,13 @@ function buildRedirectRouteMap(
 
 function buildRedirectController(
   configs: RedirectConfig[],
-): Record<
-  string,
-  (context: { params: Record<string, string | undefined> }) => Response
-> {
-  return Object.fromEntries(
+): {
+  actions: Record<
+    string,
+    (context: { params: Record<string, string | undefined> }) => Response
+  >;
+} {
+  let actions = Object.fromEntries(
     configs.map((c, i) => [
       `redirect${i}_${c.from.replaceAll("/", "_").replaceAll("*", "splat")}`,
       ({ params }: { params: Record<string, string | undefined> }) => {
@@ -90,6 +92,7 @@ function buildRedirectController(
       },
     ]),
   );
+  return { actions };
 }
 
 export function createRedirectRoutes(configs: RedirectConfig[]) {

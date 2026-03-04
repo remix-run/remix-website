@@ -47,51 +47,58 @@ export let JamGalleryModalControls = clientEntry(
       lockScroll();
       getFocusable()[0]?.focus();
 
-      handle.on(window, {
-        keydown(event) {
-          if (event.key === "Escape") {
-            event.preventDefault();
-            if (focusPhotoIndex !== null) {
-              window.sessionStorage.setItem(
-                FOCUS_RESTORE_KEY,
-                String(focusPhotoIndex),
-              );
+      let onKeydown = (event: KeyboardEvent) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          if (focusPhotoIndex !== null) {
+            window.sessionStorage.setItem(
+              FOCUS_RESTORE_KEY,
+              String(focusPhotoIndex),
+            );
+          }
+          navigate(closeHref);
+          return;
+        }
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          navigate(previousHref);
+          return;
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          navigate(nextHref);
+          return;
+        }
+        if (event.key === "Tab") {
+          let focusable = getFocusable();
+          if (focusable.length === 0) return;
+          let first = focusable[0];
+          let last = focusable[focusable.length - 1];
+          let modal = document.querySelector("[data-gallery-modal]");
+          let outsideModal = !modal || !modal.contains(document.activeElement);
+          if (event.shiftKey) {
+            if (outsideModal || document.activeElement === first) {
+              event.preventDefault();
+              last.focus();
             }
-            navigate(closeHref);
-            return;
-          }
-          if (event.key === "ArrowLeft") {
-            event.preventDefault();
-            navigate(previousHref);
-            return;
-          }
-          if (event.key === "ArrowRight") {
-            event.preventDefault();
-            navigate(nextHref);
-            return;
-          }
-          if (event.key === "Tab") {
-            let focusable = getFocusable();
-            if (focusable.length === 0) return;
-            let first = focusable[0];
-            let last = focusable[focusable.length - 1];
-            let modal = document.querySelector("[data-gallery-modal]");
-            let outsideModal =
-              !modal || !modal.contains(document.activeElement);
-            if (event.shiftKey) {
-              if (outsideModal || document.activeElement === first) {
-                event.preventDefault();
-                last.focus();
-              }
-            } else {
-              if (outsideModal || document.activeElement === last) {
-                event.preventDefault();
-                first.focus();
-              }
+          } else {
+            if (outsideModal || document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
             }
           }
+        }
+      };
+
+      window.addEventListener("keydown", onKeydown);
+      handle.signal.addEventListener(
+        "abort",
+        () => {
+          window.removeEventListener("keydown", onKeydown);
+          unlockScroll();
         },
-      });
+        { once: true },
+      );
     });
 
     return (props: {

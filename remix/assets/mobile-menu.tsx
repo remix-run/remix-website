@@ -1,5 +1,4 @@
-import { clientEntry, type Handle } from "remix/component";
-import { escape } from "remix/interaction/keys";
+import { clientEntry, on, type Handle } from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import cx from "clsx";
 import iconsHref from "../shared/icons.svg";
@@ -19,22 +18,32 @@ export let MobileMenu = clientEntry(
           handle.update();
         }
       };
+      let onEscape = (event: KeyboardEvent) => {
+        if (event.key !== "Escape" || !isOpen) return;
+        if (openSummaryElement) {
+          pendingSummaryFocusRestore = openSummaryElement;
+        }
+        closeMenu();
+      };
 
-      handle.on(document, {
-        mousedown: closeMenu,
-        touchstart: closeMenu,
-        focusin: closeMenu,
-        [escape]() {
-          if (!isOpen) return;
-          if (openSummaryElement) {
-            pendingSummaryFocusRestore = openSummaryElement;
-          }
-          closeMenu();
+      document.addEventListener("mousedown", closeMenu);
+      document.addEventListener("touchstart", closeMenu);
+      document.addEventListener("focusin", closeMenu);
+      document.addEventListener("keydown", onEscape);
+
+      handle.signal.addEventListener(
+        "abort",
+        () => {
+          document.removeEventListener("mousedown", closeMenu);
+          document.removeEventListener("touchstart", closeMenu);
+          document.removeEventListener("focusin", closeMenu);
+          document.removeEventListener("keydown", onEscape);
         },
-      });
+        { once: true },
+      );
     });
 
-    let stopPropagation = (e: UIEvent) => {
+    let stopPropagation = (e: Event) => {
       e.stopPropagation();
     };
     let onToggle = (e: Event & { currentTarget: HTMLDetailsElement }) => {
@@ -89,13 +98,13 @@ export let MobileMenu = clientEntry(
         <details
           open={isOpen}
           class={cx("relative cursor-pointer", props.class)}
-          on={{
-            toggle: onToggle,
-            mousedown: stopPropagation,
-            touchstart: stopPropagation,
-            focusin: stopPropagation,
-            focusout: onFocusOut,
-          }}
+          mix={[
+            on<HTMLDetailsElement, "toggle">("toggle", onToggle),
+            on<HTMLDetailsElement, "mousedown">("mousedown", stopPropagation),
+            on<HTMLDetailsElement, "touchstart">("touchstart", stopPropagation),
+            on<HTMLDetailsElement, "focusin">("focusin", stopPropagation),
+            on<HTMLDetailsElement, "focusout">("focusout", onFocusOut),
+          ]}
         >
           <summary class={summaryClass} aria-label="Open menu">
             <svg class="h-5 w-5" aria-hidden="true">

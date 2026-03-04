@@ -1,4 +1,4 @@
-import { clientEntry, type Handle } from "remix/component";
+import { clientEntry, on, type Handle } from "remix/component";
 import cx from "clsx";
 import assets from "./newsletter-subscribe.tsx?assets=client";
 import { routes } from "../routes";
@@ -81,8 +81,8 @@ export let NewsletterSubscribeForm = clientEntry(
           action={routes.actions.newsletter.href()}
           method="post"
           class={cx(props.class, { "opacity-50": submitting })}
-          on={{
-            async submit(event, signal) {
+          mix={[
+            on("submit", async (event, signal) => {
               event.preventDefault();
               if (submitting) return;
 
@@ -107,8 +107,8 @@ export let NewsletterSubscribeForm = clientEntry(
                 submitting = false;
                 handle.update();
               }
-            },
-          }}
+            }),
+          ]}
         >
           <input
             type="email"

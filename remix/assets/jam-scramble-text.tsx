@@ -121,11 +121,16 @@ export let JamScrambleText = clientEntry(
     };
 
     handle.queueTask(() => {
-      handle.on(window, {
-        pagehide() {
+      let cleanupOnPageHide = () => cleanupTimers();
+      window.addEventListener("pagehide", cleanupOnPageHide);
+      handle.signal.addEventListener(
+        "abort",
+        () => {
+          window.removeEventListener("pagehide", cleanupOnPageHide);
           cleanupTimers();
         },
-      });
+        { once: true },
+      );
     });
 
     return (props: {
