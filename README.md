@@ -1,94 +1,55 @@
 # Remix Website
 
-## Contributing
-
-If you want to make a contribution
-
-- [Fork and clone](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) this repo
-- Create a branch
-- Push any changes you make to your branch
-- Open up a PR in this Repo
-
 ## Setup
-
-First setup your `.env` file, use `.env.example` to know what to set.
 
 ```sh
 cp .env.example .env
-```
-
-Install dependencies
-
-```sh
-npm i
+pnpm install
 ```
 
 ## Local Development
 
-Now you should be good to go:
-
 ```sh
-npm run dev
+pnpm run dev
 ```
 
-We leverage a number of LRUCache's to server-side cache various resources, such as processed markdown from GitHub, that expire at various times (usually after 5 minutes). If you want them to expire immediately for local development, set the `NO_CACHE` environment variable.
+If you need cache-busting while developing server-rendered content:
 
 ```sh
-NO_CACHE=1 npm run dev
+NO_CACHE=1 pnpm run dev
 ```
 
-## Preview
-
-To preview the production build locally:
+## Build and Preview
 
 ```sh
-npm run build
-npm run preview
+pnpm run typecheck
+pnpm run build
+pnpm run preview
 ```
 
 ## Deployment
 
-The production server is always in sync with `main`
+- Production deploys from `main`.
+- Staging deploys from the `stage` tag via:
 
 ```sh
-git push origin main
-open https://remix.run
+pnpm run push:stage
 ```
 
-Pushing the "stage" tag will deploy to [staging](https://remixdotrunstage.fly.dev/blog).
+## Contributing
 
-```sh
-git checkout my/branch
+- Create a branch from the latest target branch.
+- Push your branch and open a PR.
+- Run `pnpm run build` before shipping a PR.
 
-# This command moves the stage tag and pushes it to trigger a deployment.
-npm run push:stage
-```
-
-When you're happy with it, merge your branch into `main` and push.
+Repo-specific implementation rules live in `AGENTS.md` and `remix/README.md`.
 
 ## Content
 
-### Authoring Blog Articles
+### Authoring Blog Posts
 
-- Put a markdown file in `data/posts/{your-post-slug}.md`
-- Follow the conventions found in other blog articles for author/meta
-  - Make sure your author name in the post is the same as the one in `data/authors.yml`
-  - If you don't have an author photo yet, create one ([the template is in Figma](https://www.figma.com/file/6G68ZVNbR6bMHl2p8727xi/www.remix.run?node-id=6%3A2))
-- Create and optimize any inline blog post image(s) and put them in `/public/blog-images/posts/{your-post-slug}/{image-name}.{format}`
-  - @TODO convention for ensuring images are large enough for 1x/2x?
-- Create a featured image for the post that shows up on the blog’s index page as well as at the top of each post. Put it in `/public/blog-images/headers/{your-post-slug}.{format}` (this gets referenced in the YAML front-matter for each post).
-  - @TODO what is, or should be, the difference between this image and the social share image?
-
-When linking to other posts use `[name](article-slug)`, you don't need to do `[name](/blog/article-slug)`
-
-## CSS Notes
-
-You'll want the [tailwind VSCode plugin](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) for sure, the hints are amazing.
-
-The color scheme has various shades but we also have a special "brand" rule for each of our brand colors so we don't have to know the specific number of that color like this: `<div className="text-pink-brand" />`.
-
-We want to use Tailwind's default classes as much as possible to avoid a large CSS file. A few things you can do to keep the styles shared:
-
-- Avoid changing anything but the theme in `tailwind.config.js`, no special classes, etc.
-- Avoid "inline rules" like `color-[#ccc]` as much as possible.
-- Silly HTML (like a wrapper div to add padding on a container) is better than one-off css rules.
+- Add a markdown file at `data/posts/{slug}.md`.
+- Keep post author names aligned with `data/authors.yml`.
+- Put post images under `public/blog-images/posts/{slug}/`.
+- Put featured header images under `public/blog-images/headers/`.
+- Use relative blog links like `[Title](post-slug)` (not `/blog/post-slug`).
