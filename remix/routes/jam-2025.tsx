@@ -13,7 +13,7 @@ import {
 import { JamKeepsakes } from "../assets/jam-keepsakes";
 import { JamFadeInBadge } from "../assets/jam-fade-in-badge";
 import { JamNewsletterSubscribeForm } from "../assets/jam-newsletter-subscribe";
-import ogImageSrc from "../../app/routes/jam/images/og-thumbnail-1.jpg";
+import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
 import iconsHref from "../../shared/icons.svg";
 
 type EventStatus = "before" | "live" | "after";
