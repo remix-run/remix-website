@@ -22,11 +22,7 @@ export function renderNotFoundPage(
 
 function StatusErrorDocument() {
   return (props: { status: number; statusText: string }) => (
-    <Document
-      title={props.statusText}
-      noIndex
-      forceTheme="dark"
-    >
+    <Document title={props.statusText} noIndex forceTheme="dark">
       <div
         class={cx(
           "flex flex-1 flex-col justify-center text-white",
