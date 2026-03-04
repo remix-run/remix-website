@@ -13,7 +13,9 @@ export default defineConfig({
     client: {
       build: {
         rollupOptions: {
-          input: [...globSync("./remix/assets/**/*.{ts,tsx}")],
+          input: globSync("./remix/assets/**/*.{ts,tsx}").filter(
+            (f) => !f.endsWith(".test.ts") && !f.endsWith(".test.tsx"),
+          ),
         },
       },
     },
