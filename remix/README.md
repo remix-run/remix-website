@@ -51,7 +51,7 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 
 ## TypeScript/JSX config
 
-`remix/tsconfig.json` defines:
+`tsconfig.json` defines the TypeScript config for the Remix runtime:
 
 - `"jsx": "react-jsx"`
 - `"jsxImportSource": "remix/component"`
