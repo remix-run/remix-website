@@ -1,6 +1,7 @@
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { getRequestContext } from "../utils/request-context";
 import { CACHE_CONTROL } from "../shared/cache-control";
+import { AppLink } from "../components/app-link";
 import {
   AddressLink,
   Paragraph,
@@ -55,7 +56,10 @@ export async function jam2025FaqHandler() {
             answer={
               <Paragraph>
                 Checkout our full{" "}
-                <a href={routes.jam2025Lineup.href()}>Schedule & Lineup</a> for
+                <AppLink href={routes.jam2025Lineup.href()}>
+                  Schedule & Lineup
+                </AppLink>{" "}
+                for
                 the list of speakers and topics, as well as all the day-of
                 information you need.
               </Paragraph>
