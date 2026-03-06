@@ -9,10 +9,12 @@ import { TimelineSection } from "../components/home/timeline-section";
 import { getRequestContext } from "../utils/request-context";
 import { isAppFrameRequest, render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control.ts";
+import { DOCUMENT_THEME_META_NAME } from "../shared/document-theme";
 
 const HOME_TITLE = "Remix - A Full Stack Framework Built on Web APIs";
 const HOME_DESCRIPTION =
   "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.";
+const HOME_DOCUMENT_THEME = "light";
 
 export async function homeHandler() {
   let request = getRequestContext().request;
@@ -38,6 +40,7 @@ export async function homeHandler() {
 function HomePageFrame() {
   return (props: { pageUrl: string; previewImage: string }) => (
     <>
+      <meta name={DOCUMENT_THEME_META_NAME} content={HOME_DOCUMENT_THEME} />
       <title>{HOME_TITLE}</title>
       <meta name="description" content={HOME_DESCRIPTION} />
       <meta property="og:type" content="website" />

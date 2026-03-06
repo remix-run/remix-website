@@ -40,6 +40,7 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - See `remix/client-navigation.md` for the current top-frame navigation architecture.
 - Full-document and frame-fragment HTML for the same URL must vary on `x-remix-target`.
 - Keep route-local active state inside the fragment that gets re-rendered.
+- Keep shell-level concerns that live outside the frame, such as document theme, synchronized via head metadata consumed by the persistent navigation controller.
 - Prefer the Navigation API as the primary client navigation mechanism; degrade to normal browser navigations when it is unavailable.
 
 ## Pre-PR verification

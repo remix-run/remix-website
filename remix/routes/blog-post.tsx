@@ -10,8 +10,10 @@ import { isAppFrameRequest, render } from "../utils/render";
 import { getBlogPost, getRawBlogPostMarkdown } from "../lib/blog.server";
 import { CACHE_CONTROL } from "../shared/cache-control";
 import { APP_NAV_SCOPE_ATTRIBUTE } from "../shared/app-navigation";
+import { DOCUMENT_THEME_META_NAME } from "../shared/document-theme";
 
 const APP_NAV_SCOPE_PROPS = { [APP_NAV_SCOPE_ATTRIBUTE]: "" };
+const BLOG_POST_DOCUMENT_THEME = "system";
 
 type BlogPostContext = {
   params: { slug?: string; ext?: string };
@@ -98,6 +100,10 @@ function BlogPostFrame() {
     socialImageUrl: string;
   }) => (
     <>
+      <meta
+        name={DOCUMENT_THEME_META_NAME}
+        content={BLOG_POST_DOCUMENT_THEME}
+      />
       <title>{`${props.post.title} | Remix`}</title>
       <meta name="description" content={props.post.summary} />
       <link rel="stylesheet" href={mdStyles} />

@@ -6,6 +6,7 @@ import {
   APP_NAV_LINK_ATTRIBUTE,
   APP_NAV_SCOPE_ATTRIBUTE,
 } from "../shared/app-navigation";
+import { syncDocumentThemeFromHead } from "../shared/document-theme";
 
 type BrowserNavigationEvent = Event & {
   canIntercept?: boolean;
@@ -214,6 +215,7 @@ export let AppNavigation = clientEntry(
       if (requestId !== latestRequest) return;
 
       syncHeadAfterFrameNavigation();
+      syncDocumentThemeFromHead();
       if (options?.resetScroll) {
         window.scrollTo(0, 0);
       }
@@ -224,6 +226,7 @@ export let AppNavigation = clientEntry(
 
     if (typeof window !== "undefined") {
       syncHeadAfterFrameNavigation();
+      syncDocumentThemeFromHead();
 
       if (!browserNavigation?.addEventListener || !browserNavigation.navigate) {
         return () => <div hidden data-app-navigation="" />;

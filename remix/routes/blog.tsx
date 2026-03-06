@@ -9,11 +9,13 @@ import { isAppFrameRequest, render } from "../utils/render";
 import { getBlogPostListings } from "../lib/blog.server";
 import { CACHE_CONTROL } from "../shared/cache-control";
 import { APP_NAV_SCOPE_ATTRIBUTE } from "../shared/app-navigation";
+import { DOCUMENT_THEME_META_NAME } from "../shared/document-theme";
 
 const BLOG_TITLE = "Remix Blog";
 const BLOG_DESCRIPTION =
   "Thoughts about building excellent user experiences with Remix.";
 const APP_NAV_SCOPE_PROPS = { [APP_NAV_SCOPE_ATTRIBUTE]: "" };
+const BLOG_DOCUMENT_THEME = "system";
 
 export async function blogHandler() {
   let request = getRequestContext().request;
@@ -39,6 +41,7 @@ function BlogPageFrame() {
     posts: Awaited<ReturnType<typeof getBlogPostListings>>;
   }) => (
     <>
+      <meta name={DOCUMENT_THEME_META_NAME} content={BLOG_DOCUMENT_THEME} />
       <title>{BLOG_TITLE}</title>
       <meta name="description" content={BLOG_DESCRIPTION} />
       <Header />

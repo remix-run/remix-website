@@ -23,6 +23,8 @@ The current pilot surface is centered on the blog flow, with shared header links
   Splits HTML responses into full-document and frame-fragment variants and marks them with `Vary: x-remix-target`.
 - `remix/shared/app-navigation.ts`
   Defines the shared frame/header/attribute constants.
+- `remix/shared/document-theme.ts`
+  Defines the shell theme contract used by `Document` and by frame navigations.
 - `remix/routes/blog.tsx`
   Returns either a full document or a frame fragment for the blog index.
 - `remix/routes/blog-post.tsx`
@@ -69,10 +71,11 @@ return render.document(<Document appFrameSrc={request.url} />, {
 Requests with `x-remix-target: app` return only the frame fragment:
 
 - route-local `<title>`, `<meta>`, and `<link>` tags
+- shell-level theme metadata via `meta[name="remix-theme"]`
 - page body content
 - any nested client entries within that fragment
 
-The `Frame` runtime hoists head-managed elements from the fragment into `document.head`, then diffs the new frame content into the DOM.
+The `Frame` runtime hoists head-managed elements from the fragment into `document.head`, then diffs the new frame content into the DOM. The persistent `AppNavigation` controller then re-synchronizes shell state like the document theme from the hoisted head metadata.
 
 Because the same URL has both a full-document and fragment representation, all HTML responses rendered through `remix/utils/render.ts` must vary on `x-remix-target`.
 
@@ -121,6 +124,7 @@ The client controller lives in `remix/assets/app-navigation.tsx`.
    - reloads the target `Frame`
 5. The frame request is re-fetched with `x-remix-target: app`.
 6. Remix diffs the returned fragment into the existing DOM and hoists head elements.
+7. The client controller syncs shell concerns that live outside the frame, such as the active document theme.
 
 Minimal client flow:
 
@@ -213,6 +217,7 @@ Implemented now:
 - Blog index and blog post routes support both document and fragment rendering.
 - Blog markdown content emits stable same-origin URLs, so rendered post links can participate in navigation.
 - Cache safety for document vs fragment HTML variants.
+- Shell theme transitions stay in sync across frame navigations via `meta[name="remix-theme"]`.
 - Playwright regression coverage for blog back/forward behavior.
 
 ## Known limitations and follow-up work

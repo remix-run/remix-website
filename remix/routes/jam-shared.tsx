@@ -5,6 +5,7 @@ import { MobileMenu } from "../assets/mobile-menu";
 import { Document } from "../components/document";
 import { routes } from "../routes";
 import iconsHref from "../shared/icons.svg";
+import { DOCUMENT_THEME_META_NAME } from "../shared/document-theme";
 import jamStylesHref from "../shared/styles/jam.css?url";
 import maskSrc from "../assets/jam/images/background-mask.avif";
 import seatsSrc from "../assets/jam/images/remix-color-seats.svg";
@@ -24,6 +25,7 @@ const jamMobileMenuPositionClass = "absolute right-0 z-20 lg:left-0";
 const jamMobileMenuWrapperClass = "relative top-1 w-max p-1";
 const jamMobileMenuNavClass =
   "flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg";
+const JAM_DOCUMENT_THEME = "dark";
 
 interface JamPageProps {
   title: string;
@@ -51,6 +53,7 @@ export function JamDocument() {
 export function JamPageFrame() {
   return (props: JamPageProps) => (
     <>
+      <meta name={DOCUMENT_THEME_META_NAME} content={JAM_DOCUMENT_THEME} />
       <title>{props.title}</title>
       <meta name="description" content={props.description} />
       <meta property="og:type" content="website" />
