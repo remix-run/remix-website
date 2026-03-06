@@ -2,6 +2,7 @@ import assert from "node:assert";
 import { LRUCache } from "lru-cache";
 import yaml from "yaml";
 import { processMarkdown } from "../shared/lib/md.server";
+import { routes } from "../routes";
 import authorsYamlFileContents from "../../data/authors.yml?raw";
 
 const postContentsBySlug = Object.fromEntries(
@@ -41,7 +42,11 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
     throw new Response("Not Found", { status: 404, statusText: "Not Found" });
   }
 
-  let result = await processMarkdown(contents);
+  let result = await processMarkdown(contents, {
+    resolveHref(href) {
+      return resolveBlogHref(slug, href);
+    },
+  });
   let { attributes, html } = result;
   assert(
     isMarkdownPostFrontmatter(attributes),
@@ -100,6 +105,12 @@ export function getRawBlogPostMarkdown(slug: string): string {
 
 function getAuthor(name: string): BlogAuthor | undefined {
   return AUTHORS.find((a) => a.name === name);
+}
+
+function resolveBlogHref(slug: string, href: string) {
+  let currentPostPath = routes.blogPost.href({ slug });
+  let resolved = new URL(href, `https://remix.run${currentPostPath}`);
+  return `${resolved.pathname}${resolved.search}${resolved.hash}`;
 }
 
 function getValidAuthorNames(authorNames: string[]) {

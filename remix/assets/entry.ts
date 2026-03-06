@@ -1,5 +1,6 @@
 import { run } from "remix/component";
 import { initFathomAnalytics } from "./fathom";
+import { APP_FRAME_HEADER, APP_FRAME_NAME } from "../shared/app-navigation";
 
 initFathomAnalytics();
 
@@ -24,7 +25,13 @@ let app = run(document, {
     throw new Error(`Export "${exportName}" from "${src}" is not a function`);
   },
   async resolveFrame(src, signal) {
-    let res = await fetch(src, { headers: { accept: "text/html" }, signal });
+    let res = await fetch(src, {
+      headers: {
+        accept: "text/html",
+        [APP_FRAME_HEADER]: APP_FRAME_NAME,
+      },
+      signal,
+    });
     if (!res.ok) {
       return `<pre>Frame error: ${res.status} ${res.statusText}</pre>`;
     }

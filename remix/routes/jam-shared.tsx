@@ -25,42 +25,50 @@ const jamMobileMenuWrapperClass = "relative top-1 w-max p-1";
 const jamMobileMenuNavClass =
   "flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg";
 
+interface JamPageProps {
+  title: string;
+  description: string;
+  pageUrl: string;
+  previewImage: string;
+  activePath: string;
+  hideBackground?: boolean;
+  showSeats?: boolean;
+  children: RemixNode;
+}
+
 export function JamDocument() {
-  return (props: {
-    title: string;
-    description: string;
-    pageUrl: string;
-    previewImage: string;
-    activePath: string;
-    hideBackground?: boolean;
-    showSeats?: boolean;
-    children: RemixNode;
-  }) => (
+  return (props: JamPageProps) => (
     <Document
       title={props.title}
       description={props.description}
       forceTheme="dark"
-      head={
-        <>
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content={props.title} />
-          <meta property="og:description" content={props.description} />
-          <meta property="og:url" content={props.pageUrl} />
-          <meta property="og:image" content={props.previewImage} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content={props.title} />
-          <meta name="twitter:description" content={props.description} />
-          <meta name="twitter:image" content={props.previewImage} />
-          <link rel="stylesheet" href={jamStylesHref} />
-          <link
-            rel="preload"
-            as="font"
-            href="/font/jet-brains-mono.woff2"
-            crossorigin="anonymous"
-          />
-        </>
-      }
     >
+      <JamPageFrame {...props} />
+    </Document>
+  );
+}
+
+export function JamPageFrame() {
+  return (props: JamPageProps) => (
+    <>
+      <title>{props.title}</title>
+      <meta name="description" content={props.description} />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content={props.title} />
+      <meta property="og:description" content={props.description} />
+      <meta property="og:url" content={props.pageUrl} />
+      <meta property="og:image" content={props.previewImage} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={props.title} />
+      <meta name="twitter:description" content={props.description} />
+      <meta name="twitter:image" content={props.previewImage} />
+      <link rel="stylesheet" href={jamStylesHref} />
+      <link
+        rel="preload"
+        as="font"
+        href="/font/jet-brains-mono.woff2"
+        crossorigin="anonymous"
+      />
       <div class="relative overflow-hidden">
         <Background hideBackground={props.hideBackground ?? false}>
           <Navbar activePath={props.activePath} className="z-40" />
@@ -71,7 +79,7 @@ export function JamDocument() {
           />
         </Background>
       </div>
-    </Document>
+    </>
   );
 }
 

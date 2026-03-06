@@ -35,6 +35,13 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - Do not hardcode module script paths (for example `/remix/assets/entry.ts`).
 - For SVG sprites, import the asset URL and append fragment ids.
 
+## Navigation
+
+- See `remix/client-navigation.md` for the current top-frame navigation architecture.
+- Full-document and frame-fragment HTML for the same URL must vary on `x-remix-target`.
+- Keep route-local active state inside the fragment that gets re-rendered.
+- Prefer the Navigation API as the primary client navigation mechanism; degrade to normal browser navigations when it is unavailable.
+
 ## Pre-PR verification
 
 - Run focused tests for changed routes/components.
@@ -54,7 +61,8 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 Track any remaining behavior differences from the previous production site here.
 Each line item should be small enough to ship as a focused PR.
 
-- **Client-side navigation baseline**: Most links still do full document navigations instead of app-wide in-app navigation behavior.
-- **Blog internal-link delegation**: No delegated interception for internal links inside rendered markdown content yet.
+- **Client-side navigation rollout**: The top-frame navigation baseline exists, but it is not app-wide yet and nested frame targeting is still unimplemented.
 - **Link prefetch parity**: Intent/predictive prefetch behavior is not yet mirrored across Remix pages.
-- **Analytics on in-app transitions**: When client-side navigation is added, explicitly verify one pageview per navigation.
+- **Head deduping on repeated navigations**: Route-local head elements such as stylesheet links can accumulate across repeated frame navigations and should be deduped.
+- **DOM-state preservation on frame reloads**: Reflected/native UI state such as `details[open]`, dialogs, and popovers may still need explicit preservation work.
+- **Analytics on in-app transitions**: Explicitly verify one pageview per in-app navigation.

@@ -24,14 +24,19 @@ export async function processMarkdown(
   content: string,
   options?: ProcessorOptions,
 ) {
-  processor = processor || (await getProcessor(options));
+  processor = processor || (await getProcessor());
   let { attributes, body: raw } = parseFrontMatter(content);
-  let vfile = await processor.process(raw);
+  let vfile = await processor.process({
+    value: raw,
+    data: {
+      resolveHref: options?.resolveHref,
+    },
+  });
   let html = vfile.value.toString();
   return { attributes, raw, html };
 }
 
-async function getProcessor(options?: ProcessorOptions) {
+async function getProcessor() {
   let [
     { unified },
     { default: remarkGfm },
@@ -54,8 +59,8 @@ async function getProcessor(options?: ProcessorOptions) {
 
   return unified()
     .use(remarkParse)
-    .use(plugins.stripLinkExtPlugin, options)
-    .use(plugins.remarkCodeBlocksShiki, options)
+    .use(plugins.stripLinkExtPlugin)
+    .use(plugins.remarkCodeBlocksShiki)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
@@ -74,20 +79,24 @@ async function loadPlugins() {
     import("escape-goat"),
   ]);
 
-  const stripLinkExtPlugin: InternalPlugin<UnistNode.Root, UnistNode.Root> = (
-    options = {},
-  ) => {
-    return async function transformer(tree: UnistNode.Root) {
+  const stripLinkExtPlugin: InternalPlugin<UnistNode.Root, UnistNode.Root> = () => {
+    return async function transformer(
+      tree: UnistNode.Root,
+      file: any,
+    ) {
+      let resolveHref = file?.data?.resolveHref as
+        | ((href: string) => string)
+        | undefined;
       visit(tree, "link", (node, index, parent) => {
         if (
-          options.resolveHref &&
+          resolveHref &&
           typeof node.url === "string" &&
           isRelativeUrl(node.url)
         ) {
           if (parent && index != null) {
             parent.children[index] = {
               ...node,
-              url: options.resolveHref(node.url),
+              url: resolveHref(node.url),
             };
             return SKIP;
           }

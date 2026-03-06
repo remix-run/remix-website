@@ -6,9 +6,12 @@ import { Header } from "../components/home/header";
 import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
 import { routes } from "../routes";
 import { renderNotFoundPage } from "./not-found";
-import { render } from "../utils/render";
+import { isAppFrameRequest, render } from "../utils/render";
 import { getBlogPost, getRawBlogPostMarkdown } from "../lib/blog.server";
 import { CACHE_CONTROL } from "../shared/cache-control";
+import { APP_NAV_SCOPE_ATTRIBUTE } from "../shared/app-navigation";
+
+const APP_NAV_SCOPE_PROPS = { [APP_NAV_SCOPE_ATTRIBUTE]: "" };
 
 type BlogPostContext = {
   params: { slug?: string; ext?: string };
@@ -64,32 +67,39 @@ export async function blogPostHandler(context: BlogPostContext) {
 
   let pageUrl = routes.blogPost.href({ slug });
 
-  return render.document(
-    <Page
-      slug={slug}
-      post={post}
-      pageUrl={`${siteUrl}${pageUrl}`}
-      socialImageUrl={ogImageUrl.toString()}
-    />,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
+  if (isAppFrameRequest(context.request)) {
+    return render.frame(
+      <BlogPostFrame
+        slug={slug}
+        post={post}
+        pageUrl={`${siteUrl}${pageUrl}`}
+        socialImageUrl={ogImageUrl.toString()}
+      />,
+      {
+        headers: {
+          "Cache-Control": CACHE_CONTROL.DEFAULT,
+        },
       },
+    );
+  }
+
+  return render.document(<Document appFrameSrc={context.request.url} />, {
+    headers: {
+      "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
-  );
+  });
 }
 
-function Page() {
+function BlogPostFrame() {
   return (props: {
     slug: string;
     post: Awaited<ReturnType<typeof getBlogPost>>;
     pageUrl: string;
     socialImageUrl: string;
   }) => (
-    <Document
-      title={`${props.post.title} | Remix`}
-      description={props.post.summary}
-    >
+    <>
+      <title>{`${props.post.title} | Remix`}</title>
+      <meta name="description" content={props.post.summary} />
       <link rel="stylesheet" href={mdStyles} />
       <link
         rel="alternate"
@@ -108,11 +118,15 @@ function Page() {
       <meta name="twitter:image" content={props.socialImageUrl} />
       <meta name="twitter:image:alt" content={props.post.imageAlt} />
       <Header />
-      <main class="flex flex-1 flex-col" tabIndex={-1}>
+      <main
+        class="flex flex-1 flex-col"
+        tabIndex={-1}
+        {...APP_NAV_SCOPE_PROPS}
+      >
         <BlogPostContent post={props.post} />
       </main>
       <Footer />
-    </Document>
+    </>
   );
 }
 

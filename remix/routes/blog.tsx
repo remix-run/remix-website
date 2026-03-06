@@ -1,35 +1,56 @@
+import { AppLink } from "../components/app-link";
 import { Document } from "../components/document";
 import { Footer } from "../components/home/footer";
 import { Header } from "../components/home/header";
 import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
 import { routes } from "../routes";
-import { render } from "../utils/render";
+import { getRequestContext } from "../utils/request-context";
+import { isAppFrameRequest, render } from "../utils/render";
 import { getBlogPostListings } from "../lib/blog.server";
 import { CACHE_CONTROL } from "../shared/cache-control";
+import { APP_NAV_SCOPE_ATTRIBUTE } from "../shared/app-navigation";
+
+const BLOG_TITLE = "Remix Blog";
+const BLOG_DESCRIPTION =
+  "Thoughts about building excellent user experiences with Remix.";
+const APP_NAV_SCOPE_PROPS = { [APP_NAV_SCOPE_ATTRIBUTE]: "" };
 
 export async function blogHandler() {
+  let request = getRequestContext().request;
   let posts = await getBlogPostListings();
-  return render.document(<Page posts={posts} />, {
+
+  if (isAppFrameRequest(request)) {
+    return render.frame(<BlogPageFrame posts={posts} />, {
+      headers: {
+        "Cache-Control": CACHE_CONTROL.DEFAULT,
+      },
+    });
+  }
+
+  return render.document(<Document appFrameSrc={request.url} />, {
     headers: {
       "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
   });
 }
 
-function Page() {
+function BlogPageFrame() {
   return (props: {
     posts: Awaited<ReturnType<typeof getBlogPostListings>>;
   }) => (
-    <Document
-      title="Remix Blog"
-      description="Thoughts about building excellent user experiences with Remix."
-    >
+    <>
+      <title>{BLOG_TITLE}</title>
+      <meta name="description" content={BLOG_DESCRIPTION} />
       <Header />
-      <main class="flex flex-1 flex-col" tabIndex={-1}>
+      <main
+        class="flex flex-1 flex-col"
+        tabIndex={-1}
+        {...APP_NAV_SCOPE_PROPS}
+      >
         <BlogPageContent posts={props.posts} />
       </main>
       <Footer />
-    </Document>
+    </>
   );
 }
 
@@ -47,7 +68,9 @@ function BlogPageContent() {
             <div class="md:col-span-7">
               {latestPost ? (
                 <div class="mb-14">
-                  <a href={routes.blogPost.href({ slug: latestPost.slug })}>
+                  <AppLink
+                    href={routes.blogPost.href({ slug: latestPost.slug })}
+                  >
                     <div class="mb-6 aspect-[16/9]">
                       <img
                         class="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
@@ -60,14 +83,16 @@ function BlogPageContent() {
                       {latestPost.title}
                     </p>
                     <p class="text-sm lg:text-base">{latestPost.summary}</p>
-                  </a>
+                  </AppLink>
                 </div>
               ) : null}
 
               <div class="mt-12 lg:grid lg:grid-cols-2 lg:gap-6">
                 {posts.map((post) => (
                   <div key={post.slug}>
-                    <a href={routes.blogPost.href({ slug: post.slug })}>
+                    <AppLink
+                      href={routes.blogPost.href({ slug: post.slug })}
+                    >
                       <div class="mb-6 aspect-[16/9]">
                         <img
                           class="h-full w-full object-cover object-top shadow md:rounded-md"
@@ -80,7 +105,7 @@ function BlogPageContent() {
                         {post.title}
                       </p>
                       <p class="mb-12 text-sm lg:text-base">{post.summary}</p>
-                    </a>
+                    </AppLink>
                   </div>
                 ))}
               </div>
@@ -97,12 +122,12 @@ function BlogPageContent() {
                       <div key={post.slug}>
                         <div class="flex flex-col">
                           <div class="flex flex-col">
-                            <a
+                            <AppLink
                               href={routes.blogPost.href({ slug: post.slug })}
                               class="text-sm lg:text-base"
                             >
                               {post.title}
-                            </a>
+                            </AppLink>
                           </div>
                         </div>
                         {index !== array.length - 1 ? (

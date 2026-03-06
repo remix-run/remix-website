@@ -1,7 +1,10 @@
 import type { RemixNode } from "remix/component/jsx-runtime";
+import { Frame } from "remix/component";
 
 import clientAssets from "../assets/entry.ts?assets=client";
+import { AppNavigation } from "../assets/app-navigation";
 import documentAssets from "./document.tsx?assets=ssr";
+import { APP_FRAME_NAME } from "../shared/app-navigation";
 import iconsHref from "../shared/icons.svg";
 
 import "../shared/styles/tailwind.css";
@@ -24,11 +27,12 @@ let colorSchemeScript = `
 `;
 
 interface DocumentProps {
-  title: string;
+  title?: string;
   description?: string;
   noIndex?: boolean;
   forceTheme?: "dark" | "light";
   head?: RemixNode;
+  appFrameSrc?: string;
   children?: RemixNode;
 }
 
@@ -50,6 +54,7 @@ export function Document() {
     noIndex,
     forceTheme,
     head,
+    appFrameSrc,
     children,
   }: DocumentProps) => (
     <html
@@ -66,7 +71,7 @@ export function Document() {
         <meta name="theme-color" content="#121212" />
         {noIndex ? <meta name="robots" content="noindex" /> : null}
         {description ? <meta name="description" content={description} /> : null}
-        <title>{title}</title>
+        {title ? <title>{title}</title> : null}
 
         {/* Favicons */}
         <link rel="icon" href="/favicon-32.png" sizes="32x32" />
@@ -147,7 +152,14 @@ export function Document() {
           // Preload icons sprite so <use href> references resolve (matches app/root.tsx)
           fetchpriority="high"
         />
-        {children}
+        {appFrameSrc ? (
+          <>
+            <AppNavigation setup={{ frameName: APP_FRAME_NAME }} />
+            <Frame name={APP_FRAME_NAME} src={appFrameSrc} />
+          </>
+        ) : (
+          children
+        )}
         {assets.js.map((asset) => (
           <link key={asset.href} rel="modulepreload" href={asset.href} />
         ))}

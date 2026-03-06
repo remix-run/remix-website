@@ -9,13 +9,36 @@ test.describe("Blog", () => {
     await expect(postLinks.first()).toBeVisible();
   });
 
-  test("clicking a blog post navigates to the post", async ({ page }) => {
+  test("back and forward preserve blog navigation state", async ({ page }) => {
     await page.goto("/blog");
-    const firstPost = page.locator('a[href^="/blog/"]').first();
+
+    await expect(page.getByRole("heading", { name: "Featured Articles" })).toBeVisible();
+
+    const firstPost = page
+      .locator('a[href^="/blog/"]:not([href="/blog/rss.xml"])')
+      .first();
     const href = await firstPost.getAttribute("href");
+    expect(href).toBeTruthy();
+
     await firstPost.click();
     await page.waitForURL(`**${href}`);
-    // Post page should have an article or main content
-    await expect(page.locator("main")).toBeVisible();
+    await expect(page.locator(".md-prose")).toBeVisible();
+
+    await page.goBack();
+    await page.waitForURL("**/blog");
+    await expect(page.getByRole("heading", { name: "Featured Articles" })).toBeVisible();
+
+    await page.goForward();
+    await page.waitForURL(`**${href}`);
+    await expect(page.locator(".md-prose")).toBeVisible();
+
+    await page.goBack();
+    await page.waitForURL("**/blog");
+    await expect(page.getByRole("heading", { name: "Featured Articles" })).toBeVisible();
+
+    await page.goForward();
+    await page.waitForURL(`**${href}`);
+    await expect(page.locator(".md-prose")).toBeVisible();
+    await expect(page.locator('link[href*="md.css"]')).toHaveCount(1);
   });
 });
