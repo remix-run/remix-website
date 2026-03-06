@@ -16,7 +16,6 @@ import "../shared/styles/bailwind.css";
 import "../shared/styles/marketing.css";
 
 let assets = clientAssets.merge(documentAssets);
-let isDev = import.meta.env.DEV;
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
   let sync = () => {
@@ -122,25 +121,6 @@ export function Document() {
           {/* Dark-mode detection (mirrors root.tsx ColorSchemeScript) */}
           {documentTheme.usesSystemThemeScript ? (
             <script innerHTML={colorSchemeScript} />
-          ) : null}
-
-          {isDev ? (
-            <>
-              {/*
-              Dev-only stub for Vite's React fast-refresh preamble check.
-              @vitejs/plugin-react injects a guard into transformed .tsx modules:
-                if (!window.__vite_plugin_react_preamble_installed__) throw ...
-              Since this HTML is streamed outside Vite's HTML transform pipeline,
-              we set the flag manually in development.
-            */}
-              <script
-                innerHTML={`
-                window.$RefreshReg$ = () => {}
-                window.$RefreshSig$ = () => (type) => type
-                window.__vite_plugin_react_preamble_installed__ = true
-              `}
-              />
-            </>
           ) : null}
 
           {/* Route-specific head elements */}

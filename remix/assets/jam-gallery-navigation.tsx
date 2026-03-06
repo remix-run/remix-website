@@ -140,17 +140,8 @@ export let JamGalleryNavigation = clientEntry(
 
     let navigate = (href: string) => {
       if (!href) return;
-      let browserNavigation = window.navigation as
-        | {
-            navigate?: (
-              url: string,
-              options?: {
-                history?: "auto" | "push" | "replace";
-                state?: unknown;
-              },
-            ) => unknown;
-          }
-        | undefined;
+      let browserNavigation =
+        "navigation" in window ? window.navigation : undefined;
       if (browserNavigation?.navigate) {
         browserNavigation.navigate(href, {
           state: {

@@ -10,53 +10,9 @@ import {
 import { resolveAppNavigationHandler } from "../shared/app-navigation-handlers";
 import { syncDocumentThemeFromHead } from "../shared/document-theme";
 
-type BrowserNavigationEvent = Event & {
-  canIntercept?: boolean;
-  downloadRequest?: string | null;
-  formData?: FormData | null;
-  hashChange?: boolean;
-  navigationType?: string;
-  destination?: {
-    url: string;
-    getState?: () => unknown;
-  };
-  intercept?: (options: { handler: () => Promise<void> | void }) => void;
-};
-
-type BrowserNavigation = EventTarget & {
-  addEventListener(
-    type: "navigate",
-    listener: (event: BrowserNavigationEvent) => void,
-  ): void;
-  removeEventListener(
-    type: "navigate",
-    listener: (event: BrowserNavigationEvent) => void,
-  ): void;
-  currentEntry?: {
-    getState?: () => unknown;
-  };
-  navigate?: (
-    url: string,
-    options?: {
-      history?: "auto" | "push" | "replace";
-      state?: unknown;
-    },
-  ) => {
-    committed: Promise<unknown>;
-    finished: Promise<unknown>;
-  };
-  updateCurrentEntry?: (options: { state?: unknown }) => void;
-};
-
 interface ReloadFrameOptions {
   resetScroll?: boolean;
   focusContent?: boolean;
-}
-
-declare global {
-  interface Window {
-    navigation?: BrowserNavigation;
-  }
 }
 
 function hasAppNavState(state: unknown) {
@@ -203,7 +159,10 @@ export let AppNavigation = clientEntry(
     let frameName = setup?.frameName ?? APP_FRAME_NAME;
     let latestRequest = 0;
     let pendingFrameName: string | null = null;
-    let browserNavigation = typeof window !== "undefined" ? window.navigation : undefined;
+    let browserNavigation =
+      typeof window !== "undefined" && "navigation" in window
+        ? window.navigation
+        : undefined;
 
     let reloadFrame = async (
       url: URL,
@@ -278,7 +237,7 @@ export let AppNavigation = clientEntry(
         { once: true },
       );
 
-      let onNavigate = (event: BrowserNavigationEvent) => {
+      let onNavigate = (event: NavigateEvent) => {
         if (!event.canIntercept || event.hashChange) return;
         if (event.downloadRequest || event.formData) return;
         if (!event.destination?.url) return;
