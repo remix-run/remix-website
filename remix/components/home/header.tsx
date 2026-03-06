@@ -1,6 +1,7 @@
 import cx from "clsx";
 import { MobileMenu } from "../../assets/mobile-menu";
 import { WordmarkLink } from "../../assets/wordmark-link";
+import { AppLink } from "../app-link";
 import { routes } from "../../routes";
 
 const LINKS: Array<{ to: string; label: string; external?: boolean }> = [
@@ -41,16 +42,14 @@ export function Header() {
 
 function HeaderLink() {
   return (props: { to: string; children: string; external?: boolean }) => (
-    <a
+    <AppLink
       href={props.to}
+      external={props.external}
       class={cx(
         "text-rmx-primary text-base font-semibold leading-6 tracking-[0.01em] opacity-80 hover:opacity-100",
       )}
-      {...(props.external
-        ? { target: "_blank", rel: "noopener noreferrer" }
-        : {})}
     >
       {props.children}
-    </a>
+    </AppLink>
   );
 }

@@ -1,4 +1,29 @@
 {
-  "files": [],
-  "references": [{ "path": "./remix/tsconfig.json" }]
+  "include": ["./remix/**/*.ts", "./remix/**/*.tsx", "./server.ts"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["DOM", "DOM.Iterable", "ES2024"],
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "remix/component",
+    "types": [
+      "node",
+      "vite/client",
+      "@hiogawa/vite-plugin-fullstack/types",
+      "dom-navigation"
+    ],
+    "paths": {
+      "satori": ["./remix/satori-type-stub.d.ts"]
+    }
+  }
 }

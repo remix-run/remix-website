@@ -1,6 +1,7 @@
 import { createStorefrontApiClient } from "@shopify/storefront-api-client";
 import * as s from "remix/data-schema";
 import * as c from "remix/data-schema/checks";
+import { LRUCache } from "lru-cache";
 import { env } from "../env.server";
 
 let client: ReturnType<typeof createStorefrontApiClient> | null = null;
@@ -46,6 +47,15 @@ const PhotoSchema = s.object({
 type Product = s.InferOutput<typeof ProductSchema>;
 type Cart = s.InferOutput<typeof CartSchema>;
 type Photo = s.InferOutput<typeof PhotoSchema>;
+
+let photosCache = new LRUCache<string, Photo[]>({
+  max: 16,
+  ttl: 1000 * 60 * 5,
+  maxSize: 1024 * 1024 * 2,
+  sizeCalculation(value, key) {
+    return JSON.stringify(value).length + key.length;
+  },
+});
 
 export function parseProduct(raw: unknown): Product {
   return s.parse(ProductSchema, raw);
@@ -111,6 +121,9 @@ export async function getProduct(handle: string): Promise<Product> {
 const MAX_PHOTOS = 128;
 
 export async function getPhotos(handle: string): Promise<Photo[]> {
+  let cached = photosCache.get(handle);
+  if (cached) return cached;
+
   let storefrontClient = getClient();
   if (!storefrontClient) return [];
 
@@ -160,7 +173,9 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
       height: image.height,
     });
   }
-  return parsePhotos(photos);
+  let parsedPhotos = parsePhotos(photos);
+  photosCache.set(handle, parsedPhotos);
+  return parsedPhotos;
 }
 
 export const MAX_QUANTITY = 10;

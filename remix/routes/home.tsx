@@ -7,56 +7,51 @@ import { PitchSection } from "../components/home/pitch-section";
 import { StayInTheLoopSection } from "../components/home/stay-in-the-loop-section";
 import { TimelineSection } from "../components/home/timeline-section";
 import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
+import { isAppFrameRequest, render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control.ts";
+import { DOCUMENT_THEME_META_NAME } from "../shared/document-theme";
+
+const HOME_TITLE = "Remix - A Full Stack Framework Built on Web APIs";
+const HOME_DESCRIPTION =
+  "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.";
+const HOME_DOCUMENT_THEME = "light";
 
 export async function homeHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+  let request = getRequestContext().request;
+  let requestUrl = new URL(request.url);
   let pageUrl = `${requestUrl.origin}/`;
   let previewImage = `${requestUrl.origin}/marketing/remix-3-thumbnail.jpg`;
 
-  return render.document(
-    <HomePage pageUrl={pageUrl} previewImage={previewImage} />,
-    {
+  if (isAppFrameRequest(request)) {
+    return render.frame(<HomePageFrame pageUrl={pageUrl} previewImage={previewImage} />, {
       headers: {
         "Cache-Control": CACHE_CONTROL.DEFAULT,
       },
+    });
+  }
+
+  return render.document(<Document forceTheme="light" appFrameSrc={request.url} />, {
+    headers: {
+      "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
-  );
+  });
 }
 
-function HomePage() {
+function HomePageFrame() {
   return (props: { pageUrl: string; previewImage: string }) => (
-    <Document
-      title="Remix - A Full Stack Framework Built on Web APIs"
-      description="Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world."
-      forceTheme="light"
-      head={
-        <>
-          <meta property="og:type" content="website" />
-          <meta
-            property="og:title"
-            content="Remix - A Full Stack Framework Built on Web APIs"
-          />
-          <meta
-            property="og:description"
-            content="Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world."
-          />
-          <meta property="og:url" content={props.pageUrl} />
-          <meta property="og:image" content={props.previewImage} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta
-            name="twitter:title"
-            content="Remix - A Full Stack Framework Built on Web APIs"
-          />
-          <meta
-            name="twitter:description"
-            content="Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world."
-          />
-          <meta name="twitter:image" content={props.previewImage} />
-        </>
-      }
-    >
+    <>
+      <meta name={DOCUMENT_THEME_META_NAME} content={HOME_DOCUMENT_THEME} />
+      <title>{HOME_TITLE}</title>
+      <meta name="description" content={HOME_DESCRIPTION} />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content={HOME_TITLE} />
+      <meta property="og:description" content={HOME_DESCRIPTION} />
+      <meta property="og:url" content={props.pageUrl} />
+      <meta property="og:image" content={props.previewImage} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={HOME_TITLE} />
+      <meta name="twitter:description" content={HOME_DESCRIPTION} />
+      <meta name="twitter:image" content={props.previewImage} />
       <div class="marketing-home">
         <div class="rmx-home-hero-bg">
           <IntroMaskReveal />
@@ -77,6 +72,6 @@ function HomePage() {
           </div>
         </main>
       </div>
-    </Document>
+    </>
   );
 }

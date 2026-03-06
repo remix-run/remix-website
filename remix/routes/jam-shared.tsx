@@ -3,8 +3,12 @@ import type { RemixNode } from "remix/component/jsx-runtime";
 import { JamScrambleText } from "../assets/jam-scramble-text";
 import { MobileMenu } from "../assets/mobile-menu";
 import { Document } from "../components/document";
+import { AppLink } from "../components/app-link";
 import { routes } from "../routes";
+import { APP_NAV_SCOPE_ATTRIBUTE } from "../shared/app-navigation";
+import { transformShopifyImageUrl } from "../shared/jam-images";
 import iconsHref from "../shared/icons.svg";
+import { DOCUMENT_THEME_META_NAME } from "../shared/document-theme";
 import jamStylesHref from "../shared/styles/jam.css?url";
 import maskSrc from "../assets/jam/images/background-mask.avif";
 import seatsSrc from "../assets/jam/images/remix-color-seats.svg";
@@ -24,54 +28,67 @@ const jamMobileMenuPositionClass = "absolute right-0 z-20 lg:left-0";
 const jamMobileMenuWrapperClass = "relative top-1 w-max p-1";
 const jamMobileMenuNavClass =
   "flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg";
+const JAM_DOCUMENT_THEME = "dark";
+const APP_NAV_SCOPE_PROPS = { [APP_NAV_SCOPE_ATTRIBUTE]: "" };
+
+interface JamPageProps {
+  title: string;
+  description: string;
+  pageUrl: string;
+  previewImage: string;
+  activePath: string;
+  hideBackground?: boolean;
+  showSeats?: boolean;
+  children: RemixNode;
+}
 
 export function JamDocument() {
-  return (props: {
-    title: string;
-    description: string;
-    pageUrl: string;
-    previewImage: string;
-    activePath: string;
-    hideBackground?: boolean;
-    showSeats?: boolean;
-    children: RemixNode;
-  }) => (
+  return (props: JamPageProps) => (
     <Document
       title={props.title}
       description={props.description}
       forceTheme="dark"
-      head={
-        <>
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content={props.title} />
-          <meta property="og:description" content={props.description} />
-          <meta property="og:url" content={props.pageUrl} />
-          <meta property="og:image" content={props.previewImage} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content={props.title} />
-          <meta name="twitter:description" content={props.description} />
-          <meta name="twitter:image" content={props.previewImage} />
-          <link rel="stylesheet" href={jamStylesHref} />
-          <link
-            rel="preload"
-            as="font"
-            href="/font/jet-brains-mono.woff2"
-            crossorigin="anonymous"
-          />
-        </>
-      }
     >
+      <JamPageFrame {...props} />
+    </Document>
+  );
+}
+
+export function JamPageFrame() {
+  return (props: JamPageProps) => (
+    <>
+      <meta name={DOCUMENT_THEME_META_NAME} content={JAM_DOCUMENT_THEME} />
+      <title>{props.title}</title>
+      <meta name="description" content={props.description} />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content={props.title} />
+      <meta property="og:description" content={props.description} />
+      <meta property="og:url" content={props.pageUrl} />
+      <meta property="og:image" content={props.previewImage} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={props.title} />
+      <meta name="twitter:description" content={props.description} />
+      <meta name="twitter:image" content={props.previewImage} />
+      <link rel="stylesheet" href={jamStylesHref} />
+      <link
+        rel="preload"
+        as="font"
+        href="/font/jet-brains-mono.woff2"
+        crossorigin="anonymous"
+      />
       <div class="relative overflow-hidden">
         <Background hideBackground={props.hideBackground ?? false}>
           <Navbar activePath={props.activePath} className="z-40" />
-          <div class="px-6">{props.children}</div>
+          <div class="px-6" {...APP_NAV_SCOPE_PROPS}>
+            {props.children}
+          </div>
           <Footer
             showSeats={props.showSeats ?? false}
             className="relative z-20"
           />
         </Background>
       </div>
-    </Document>
+    </>
   );
 }
 
@@ -148,9 +165,9 @@ function Navbar() {
           "linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)",
       }}
     >
-      <a href={routes.jam2025.href()} class="flex items-center md:block">
+      <AppLink href={routes.jam2025.href()} class="flex items-center md:block">
         <JamLogo class="h-[48px] fill-white md:h-auto md:w-[200px] lg:w-[160px] xl:w-[200px]" />
-      </a>
+      </AppLink>
       <div class="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg lg:flex">
         <NavLink
           href={routes.jam2025Lineup.href()}
@@ -177,13 +194,13 @@ function Navbar() {
           FAQ
         </NavLink>
       </div>
-      <a
+      <AppLink
         class={clsx(jamButtonClassName, "hidden bg-white text-black lg:flex")}
         href={routes.jam2025Ticket.href()}
       >
         <TicketLogo class="size-6 fill-current md:size-8 lg:size-6 xl:size-8" />
         <span>Ticket</span>
-      </a>
+      </AppLink>
       <MobileMenu
         class="lg:hidden"
         summaryClass={jamMobileMenuSummaryClass}
@@ -228,7 +245,7 @@ function Navbar() {
 
 function NavLink() {
   return (props: { href: string; active: boolean; children: RemixNode }) => (
-    <a
+    <AppLink
       href={props.href}
       class={clsx(
         "rounded-full border-2 px-5 py-0.5 text-base font-bold outline-none transition-colors duration-300 md:border-4 md:py-3 md:text-xl lg:border-2 lg:px-4 lg:py-2 lg:text-base xl:px-5 xl:py-3 xl:text-xl",
@@ -238,13 +255,13 @@ function NavLink() {
       )}
     >
       {props.children}
-    </a>
+    </AppLink>
   );
 }
 
 function MobileNavLink() {
   return (props: { href: string; active: boolean; children: RemixNode }) => (
-    <a
+    <AppLink
       href={props.href}
       class={clsx(
         "block min-w-max rounded-full border-2 px-4 py-2 text-lg font-bold outline-none transition-colors duration-300",
@@ -254,7 +271,7 @@ function MobileNavLink() {
       )}
     >
       {props.children}
-    </a>
+    </AppLink>
   );
 }
 
@@ -286,7 +303,7 @@ function Footer() {
         )}
       >
         <div class="flex items-center gap-5">
-          <a
+          <AppLink
             href="/"
             class={clsx(
               "rounded-3xl border px-4 py-1 uppercase text-white",
@@ -296,7 +313,7 @@ function Footer() {
             )}
           >
             remix.run
-          </a>
+          </AppLink>
           <a
             href="https://github.com/remix-run"
             target="_blank"
@@ -515,27 +532,7 @@ function Keepsake() {
   );
 }
 
-export function transformShopifyImageUrl(
-  url: string,
-  options: {
-    width?: number;
-    height?: number;
-    format?: "webp" | "jpg" | "png";
-    quality?: number;
-  } = {},
-) {
-  try {
-    let urlObj = new URL(url);
-    let params = new URLSearchParams(urlObj.search);
-    for (let [key, value] of Object.entries(options)) {
-      if (value !== undefined) params.set(key, value.toString());
-    }
-    urlObj.search = params.toString();
-    return urlObj.toString();
-  } catch {
-    return url;
-  }
-}
+export { transformShopifyImageUrl };
 
 function JamLogo() {
   return (props: { class?: string }) => (

@@ -1,15 +1,15 @@
 import clsx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   AddressMain,
-  JamDocument,
+  JamPageFrame,
   ScrambleText,
   SectionLabel,
   Title,
 } from "./jam-shared";
+import { renderJamPage } from "./jam-render";
 import { JamKeepsakes } from "../assets/jam-keepsakes";
 import { JamFadeInBadge } from "../assets/jam-fade-in-badge";
 import { JamNewsletterSubscribeForm } from "../assets/jam-newsletter-subscribe";
@@ -19,27 +19,22 @@ import iconsHref from "../shared/icons.svg";
 type EventStatus = "before" | "live" | "after";
 
 export async function jam2025Handler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+  let request = getRequestContext().request;
+  let requestUrl = new URL(request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025`;
   let previewImage = `${requestUrl.origin}${ogImageSrc}`;
   let eventStatus = getEventStatus();
 
-  return render.document(
-    <JamDocument
-      title="Remix Jam 2025"
-      description="It's time to get the band back together"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
-      activePath="/jam/2025"
-    >
-      <Jam2025Page eventStatus={eventStatus} />
-    </JamDocument>,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    },
-  );
+  return renderJamPage({
+    request,
+    cacheControl: CACHE_CONTROL.DEFAULT,
+    title: "Remix Jam 2025",
+    description: "It's time to get the band back together",
+    pageUrl,
+    previewImage,
+    activePath: "/jam/2025",
+    children: <Jam2025Page eventStatus={eventStatus} />,
+  });
 }
 
 function getEventStatus(): EventStatus {
@@ -82,7 +77,10 @@ function Jam2025Page() {
         <JamKeepsakes />
       </div>
 
-      <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]">
+      <main
+        class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]"
+        tabIndex={-1}
+      >
         <SectionLabel>{sectionLabelText[eventStatus]}</SectionLabel>
         <Title>
           <ScrambleText text="Remix Jam" delay={100} color="blue" />
