@@ -10,6 +10,7 @@ import {
   SectionLabel,
   Title,
 } from "./jam-shared";
+import { renderJamPage } from "./jam-render";
 import { JamTicketCard } from "../assets/jam-ticket-card";
 import { JamTicketPurchase } from "../assets/jam-ticket-purchase";
 import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
@@ -24,6 +25,13 @@ export async function jam2025TicketHandler() {
   let product = await getProduct("remix-jam-2025");
   let cacheControl =
     request.method === "POST" ? "no-store" : CACHE_CONTROL.DEFAULT;
+  let pageProps = {
+    title: "Ticket | Remix Jam 2025",
+    description: "Get your ticket for Remix Jam 2025 in Toronto",
+    pageUrl,
+    previewImage,
+    activePath: "/jam/2025/ticket",
+  };
   let formError: string | undefined;
   let initialQuantity = 1;
 
@@ -52,55 +60,63 @@ export async function jam2025TicketHandler() {
     }
   }
 
-  return render.document(
-    <JamDocument
-      title="Ticket | Remix Jam 2025"
-      description="Get your ticket for Remix Jam 2025 in Toronto"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
-      activePath="/jam/2025/ticket"
+  let page = (
+    <main
+      class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]"
+      tabIndex={-1}
     >
-      <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]">
-        <Title>
-          <ScrambleText
-            className="whitespace-nowrap"
-            text="General Admission"
-            delay={100}
-            color="blue"
-          />
-          <ScrambleText text="ticket" delay={300} color="green" />
-        </Title>
-
-        <SectionLabel>this ticket for illustration purposes only</SectionLabel>
-
-        <JamTicketCard
-          ticketSrc={ticketSrc}
-          ticketHolographic={ticketHolographic}
-          title="General Admission"
+      <Title>
+        <ScrambleText
+          className="whitespace-nowrap"
+          text="General Admission"
+          delay={100}
+          color="blue"
         />
+        <ScrambleText text="ticket" delay={300} color="green" />
+      </Title>
 
-        <JamTicketPurchase
-          class="z-10 flex w-[90%] flex-col items-center gap-3"
-          price={product.price}
-          productId={product.productId}
-          maxQuantity={MAX_QUANTITY}
-          isSoldOut={!product.availableForSale}
-          error={formError}
-          initialQuantity={initialQuantity}
-        />
+      <SectionLabel>this ticket for illustration purposes only</SectionLabel>
 
-        <InfoText>
-          Join us in October to jam with the Remix team and learn more about
-          what we&apos;ve been up to.
-        </InfoText>
-      </main>
-    </JamDocument>,
-    {
-      headers: {
-        "Cache-Control": cacheControl,
-      },
-    },
+      <JamTicketCard
+        ticketSrc={ticketSrc}
+        ticketHolographic={ticketHolographic}
+        title="General Admission"
+      />
+
+      <JamTicketPurchase
+        class="z-10 flex w-[90%] flex-col items-center gap-3"
+        price={product.price}
+        productId={product.productId}
+        maxQuantity={MAX_QUANTITY}
+        isSoldOut={!product.availableForSale}
+        error={formError}
+        initialQuantity={initialQuantity}
+      />
+
+      <InfoText>
+        Join us in October to jam with the Remix team and learn more about what
+        we&apos;ve been up to.
+      </InfoText>
+    </main>
   );
+
+  if (request.method === "POST") {
+    return render.document(
+      <JamDocument {...pageProps}>{page}</JamDocument>,
+      {
+        headers: {
+          "Cache-Control": cacheControl,
+        },
+      },
+    );
+  }
+
+  return renderJamPage({
+    request,
+    cacheControl,
+    ...pageProps,
+    children: page,
+  });
 }
 
 async function parseTicketPurchaseSubmission(request: Request) {

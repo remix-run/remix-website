@@ -1,29 +1,33 @@
 import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control";
 import {
-  JamDocument,
   Paragraph,
   ScrambleText,
   Subheader,
   Title,
 } from "./jam-shared";
+import { renderJamPage } from "./jam-render";
 import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
 
 export async function jam2025CocHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+  let request = getRequestContext().request;
+  let requestUrl = new URL(request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/coc`;
   let previewImage = `${requestUrl.origin}${ogImageSrc}`;
 
-  return render.document(
-    <JamDocument
-      title="Code of Conduct | Remix Jam 2025"
-      description="Adapted from confcodeofconduct.com"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
-      activePath="/jam/2025/coc"
-    >
-      <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]">
+  return renderJamPage({
+    request,
+    cacheControl: CACHE_CONTROL.DEFAULT,
+    title: "Code of Conduct | Remix Jam 2025",
+    description: "Adapted from confcodeofconduct.com",
+    pageUrl,
+    previewImage,
+    activePath: "/jam/2025/coc",
+    children: (
+      <main
+        class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]"
+        tabIndex={-1}
+      >
         <Title className="text-center">
           <ScrambleText
             className="whitespace-nowrap"
@@ -126,11 +130,6 @@ export async function jam2025CocHandler() {
           </div>
         </div>
       </main>
-    </JamDocument>,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    },
-  );
+    ),
+  });
 }

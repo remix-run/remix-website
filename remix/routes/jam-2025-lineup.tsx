@@ -1,9 +1,9 @@
 import { clsx } from "clsx";
 import { getSchedule } from "./jam-schedule.server";
 import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control";
-import { JamDocument, ScrambleText, Title } from "./jam-shared";
+import { ScrambleText, Title } from "./jam-shared";
+import { renderJamPage } from "./jam-render";
 import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
 import { JamLineupAccordionItem } from "../assets/jam-lineup-accordion-item";
 
@@ -13,22 +13,27 @@ let gridColsClassName =
 type Schedule = Awaited<ReturnType<typeof getSchedule>>;
 
 export async function jam2025LineupHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+  let request = getRequestContext().request;
+  let requestUrl = new URL(request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/lineup`;
   let previewImage = `${requestUrl.origin}${ogImageSrc}`;
   let schedule = await getSchedule();
 
-  return render.document(
-    <JamDocument
-      title="Schedule and Lineup | Remix Jam 2025"
-      description="Schedule and Speaker Lineup for Remix Jam 2025"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
-      activePath="/jam/2025/lineup"
-      hideBackground
-      showSeats
-    >
-      <main class="mx-auto flex max-w-[1200px] flex-col items-center py-20 pt-[120px] md:pt-[180px] lg:pt-[200px]">
+  return renderJamPage({
+    request,
+    cacheControl: CACHE_CONTROL.DEFAULT,
+    title: "Schedule and Lineup | Remix Jam 2025",
+    description: "Schedule and Speaker Lineup for Remix Jam 2025",
+    pageUrl,
+    previewImage,
+    activePath: "/jam/2025/lineup",
+    hideBackground: true,
+    showSeats: true,
+    children: (
+      <main
+        class="mx-auto flex max-w-[1200px] flex-col items-center py-20 pt-[120px] md:pt-[180px] lg:pt-[200px]"
+        tabIndex={-1}
+      >
         <Title className="text-center">
           <ScrambleText text="Schedule" delay={100} color="blue" />
           <ScrambleText text="& Lineup" delay={300} color="green" />
@@ -43,13 +48,8 @@ export async function jam2025LineupHandler() {
 
         <ScheduleTable items={schedule} />
       </main>
-    </JamDocument>,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    },
-  );
+    ),
+  });
 }
 
 function ScheduleTable() {

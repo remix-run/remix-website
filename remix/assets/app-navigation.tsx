@@ -5,7 +5,9 @@ import {
   APP_NAV_HISTORY_STATE,
   APP_NAV_LINK_ATTRIBUTE,
   APP_NAV_SCOPE_ATTRIBUTE,
+  resolveAppNavFrameTarget,
 } from "../shared/app-navigation";
+import { resolveAppNavigationHandler } from "../shared/app-navigation-handlers";
 import { syncDocumentThemeFromHead } from "../shared/document-theme";
 
 type BrowserNavigationEvent = Event & {
@@ -182,6 +184,19 @@ function shouldResetScrollAndFocus(navigationType: string | undefined) {
   return navigationType !== "traverse";
 }
 
+function isAbortedNavigation(error: unknown) {
+  if (error instanceof DOMException) {
+    return error.name === "AbortError";
+  }
+
+  if (error instanceof Error) {
+    let message = error.message.toLowerCase();
+    return message.includes("abort") || message.includes("cancel");
+  }
+
+  return false;
+}
+
 export let AppNavigation = clientEntry(
   `${assets.entry}#AppNavigation`,
   (handle: Handle, setup?: { frameName?: string }) => {
@@ -207,7 +222,10 @@ export let AppNavigation = clientEntry(
 
       try {
         await frame.reload();
-      } catch {
+      } catch (error) {
+        if (requestId !== latestRequest || isAbortedNavigation(error)) {
+          return;
+        }
         window.location.assign(url.toString());
         return;
       }
@@ -265,14 +283,44 @@ export let AppNavigation = clientEntry(
         if (event.downloadRequest || event.formData) return;
         if (!event.destination?.url) return;
 
+        let currentUrl = new URL(window.location.href);
         let nextUrl = new URL(event.destination.url);
-        if (nextUrl.origin !== window.location.origin) return;
-        let stateFrameName = getAppNavFrameName(event.destination.getState?.());
-        let isTraversal = event.navigationType === "traverse";
-        let nextFrameName = isTraversal
-          ? stateFrameName ?? frameName
-          : stateFrameName ?? pendingFrameName;
+        let pendingFrameNameForEvent = pendingFrameName;
         pendingFrameName = null;
+        if (nextUrl.origin !== window.location.origin) return;
+        let localNavigationHandler = resolveAppNavigationHandler({
+          currentUrl,
+          nextUrl,
+          navigationType: event.navigationType,
+        });
+        if (localNavigationHandler) {
+          event.intercept?.({
+            handler: async () => {
+              browserNavigation.updateCurrentEntry?.({
+                state: mergeAppNavState(
+                  browserNavigation.currentEntry?.getState?.(),
+                  frameName,
+                ),
+              });
+              await localNavigationHandler.handle({
+                currentUrl,
+                nextUrl,
+                navigationType: event.navigationType,
+              });
+            },
+          });
+          return;
+        }
+
+        let stateFrameName = getAppNavFrameName(event.destination.getState?.());
+        let frameTarget = resolveAppNavFrameTarget({
+          navigationType: event.navigationType,
+          currentFrameName: frameName,
+          stateFrameName,
+          pendingFrameName: pendingFrameNameForEvent,
+        });
+        pendingFrameName = frameTarget.pendingFrameName;
+        let nextFrameName = frameTarget.nextFrameName;
         if (!nextFrameName) return;
 
         event.intercept?.({

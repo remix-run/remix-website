@@ -1,15 +1,14 @@
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   AddressLink,
-  JamDocument,
   Paragraph,
   ScrambleText,
   Subheader,
   Title,
 } from "./jam-shared";
+import { renderJamPage } from "./jam-render";
 import { routes } from "../routes";
 import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
 
@@ -22,19 +21,24 @@ function slugify(input: string) {
 }
 
 export async function jam2025FaqHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+  let request = getRequestContext().request;
+  let requestUrl = new URL(request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/faq`;
   let previewImage = `${requestUrl.origin}${ogImageSrc}`;
 
-  return render.document(
-    <JamDocument
-      title="FAQ | Remix Jam 2025"
-      description="It's time to get the band back together"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
-      activePath="/jam/2025/faq"
-    >
-      <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]">
+  return renderJamPage({
+    request,
+    cacheControl: CACHE_CONTROL.DEFAULT,
+    title: "FAQ | Remix Jam 2025",
+    description: "It's time to get the band back together",
+    pageUrl,
+    previewImage,
+    activePath: "/jam/2025/faq",
+    children: (
+      <main
+        class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]"
+        tabIndex={-1}
+      >
         <Title className="text-center">
           <ScrambleText
             className="whitespace-nowrap"
@@ -219,13 +223,8 @@ export async function jam2025FaqHandler() {
           />
         </div>
       </main>
-    </JamDocument>,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    },
-  );
+    ),
+  });
 }
 
 function FAQSection() {

@@ -11,7 +11,7 @@ The app now uses a top-frame navigation model for selected same-origin navigatio
 - The browser's [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API) is the primary client-side routing primitive.
 - When the Navigation API is unavailable, the app degrades to normal browser navigations.
 
-The current pilot surface is centered on the blog flow, with shared header links also participating.
+The current pilot surface is centered on the blog flow and the Remix Jam route family, with shared header links also participating.
 
 ## Core pieces
 
@@ -19,16 +19,22 @@ The current pilot surface is centered on the blog flow, with shared header links
   Hosts the top-level `Frame name="app"` and the persistent `AppNavigation` client entry.
 - `remix/assets/app-navigation.tsx`
   Owns same-origin navigation interception and frame reloads.
+- `remix/shared/app-navigation-handlers.ts`
+  Provides a small route-local override hook so specific flows can handle URL changes without forcing a frame reload.
 - `remix/utils/render.ts`
   Splits HTML responses into full-document and frame-fragment variants and marks them with `Vary: x-remix-target`.
 - `remix/shared/app-navigation.ts`
   Defines the shared frame/header/attribute constants.
 - `remix/shared/document-theme.ts`
   Defines the shell theme contract used by `Document` and by frame navigations.
+- `remix/assets/jam-gallery-navigation.tsx`
+  Handles gallery-modal URL transitions locally so `?photo=` changes stay on the same page and preserve history.
 - `remix/routes/blog.tsx`
   Returns either a full document or a frame fragment for the blog index.
 - `remix/routes/blog-post.tsx`
   Returns either a full document or a frame fragment for a blog post.
+- `remix/routes/jam-shared.tsx`
+  Defines the Jam shell and shared frame/document rendering helper used across Jam routes.
 - `remix/lib/blog.server.ts`
   Normalizes relative markdown links so blog content emits stable same-origin URLs.
 
@@ -114,7 +120,7 @@ The client controller lives in `remix/assets/app-navigation.tsx`.
 
 ### Normal forward navigation
 
-1. A user clicks a same-origin link marked with `data-app-nav`, or a link inside a container marked with `data-app-nav-scope`.
+1. A user clicks a same-origin link marked with `data-app-nav`, or a link inside a route-content container marked with `data-app-nav-scope`.
 2. The click handler records that the next navigation should target the `app` frame.
 3. The browser performs a same-document navigation, which triggers `window.navigation`'s `navigate` event.
 4. The `navigate` handler:
@@ -215,10 +221,13 @@ Implemented now:
 - Top-frame same-origin navigation for selected links.
 - Shared header links participate.
 - Blog index and blog post routes support both document and fragment rendering.
+- The Jam 2025 route family supports both document and fragment rendering.
+- Jam-local navigation, including gallery modal URL transitions, participates in top-frame navigation.
 - Blog markdown content emits stable same-origin URLs, so rendered post links can participate in navigation.
 - Cache safety for document vs fragment HTML variants.
 - Shell theme transitions stay in sync across frame navigations via `meta[name="remix-theme"]`.
 - Playwright regression coverage for blog back/forward behavior.
+- Shared render coverage for the Jam shell opt-in.
 
 ## Known limitations and follow-up work
 
@@ -240,22 +249,15 @@ Potential follow-up:
 - add route-aware prefetch for likely next navigations
 - mirror any previous intent/prefetch behavior the legacy site relied on
 
-### 3. Head deduping still needs work
+### 3. Head syncing is intentionally basic
 
-Repeated navigations can accumulate duplicate head-managed elements such as route-local stylesheet links.
+After a frame reload, the controller performs a small dedupe pass for common head-managed elements:
 
-This is not currently breaking the user-visible flow, but it is a cleanup/perf concern and should eventually be deduped.
+- `<title>`
+- `<meta>` entries keyed by `charset`, `name`, `property`, or `http-equiv`
+- `<link>` entries keyed by `rel` + `href` (plus `as`/`type`)
 
-Example of the kind of fragment output that can currently accumulate:
-
-```tsx
-<>
-  <title>{`${post.title} | Remix`}</title>
-  <link rel="stylesheet" href={mdStyles} />
-  <meta name="description" content={post.summary} />
-  {/* ... */}
-</>
-```
+That keeps repeated route-local titles, meta tags, and stylesheet links from accumulating during normal navigation, but the logic is still conservative and hand-rolled. If we broaden fragment output later, this area is worth revisiting.
 
 ### 4. DOM-state preservation is still imperfect
 
@@ -282,7 +284,11 @@ This keeps the code simpler, but means the enhanced experience is not universal.
 Current coverage:
 
 - Route tests for the core blog/home handlers
+- Shared render tests for Jam frame navigation markup in `remix/routes/jam-shared.test.tsx`
+- Shared handler/helper tests in `remix/shared/app-navigation-handlers.test.ts` and `remix/shared/jam-gallery-navigation.test.ts`
+- Gallery client-entry render coverage in `remix/assets/jam-gallery-navigation.test.tsx`
 - Playwright regression for blog back/forward behavior in `e2e/blog.spec.ts`
+- Playwright regression for Jam gallery modal history and keyboard behavior in `e2e/jam.spec.ts`
 
 The most useful future e2e additions would be:
 

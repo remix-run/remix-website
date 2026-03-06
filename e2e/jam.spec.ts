@@ -1,4 +1,7 @@
 import { test, expect } from "@playwright/test";
+import { JAM_GALLERY_HYDRATION_READY_ATTRIBUTE } from "../remix/shared/jam-gallery-navigation";
+
+let jamGalleryHydrationReadySelector = `[${JAM_GALLERY_HYDRATION_READY_ATTRIBUTE}]`;
 
 test.describe("Jam", () => {
   test("jam mobile menu opens and shows jam links", async ({ page }) => {
@@ -203,6 +206,72 @@ test.describe("Jam", () => {
     await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
   });
 
+  test("jam gallery modal navigation stays local while preserving history", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2025/gallery");
+
+    let noPhotosMessage = page.getByText("No photos available yet.");
+    if (await noPhotosMessage.isVisible()) {
+      test.skip(true, "No gallery photos available in this environment");
+    }
+
+    let photoCount = await page.locator("[data-gallery-photo-link]").count();
+    if (photoCount < 2) {
+      test.skip(true, "Gallery needs at least two photos for navigation coverage");
+    }
+
+    await page
+      .locator(jamGalleryHydrationReadySelector)
+      .waitFor({ state: "attached" });
+
+    let galleryFrameRequests = 0;
+    page.on("request", (request) => {
+      let headers = request.headers();
+      let url = new URL(request.url());
+      if (
+        url.pathname === "/jam/2025/gallery" &&
+        headers["x-remix-target"] === "app"
+      ) {
+        galleryFrameRequests += 1;
+      }
+    });
+
+    let firstPhotoLink = page.locator("[data-gallery-photo-link]").first();
+    await firstPhotoLink.click();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+
+    await page.getByRole("link", { name: "Next photo" }).click();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
+    await expect(
+      page.getByRole("link", { name: "Previous photo" }),
+    ).toHaveAttribute("href", /\/jam\/2025\/gallery\?photo=0$/);
+
+    await page.getByRole("link", { name: "Previous photo" }).click();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
+
+    await page.getByRole("link", { name: "Close modal" }).click();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
+    await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+
+    await page.goForward();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+
+    await page.waitForTimeout(200);
+    expect(galleryFrameRequests).toBe(0);
+  });
+
   test("jam gallery escape closes modal and restores focus to opened photo", async ({
     page,
   }) => {
@@ -273,6 +342,9 @@ test.describe("Jam", () => {
 
     await page.goto("/jam/2025/gallery?photo=0");
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await page
+      .locator(jamGalleryHydrationReadySelector)
+      .waitFor({ state: "attached" });
 
     await page.keyboard.press("ArrowRight");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
