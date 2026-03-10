@@ -42,7 +42,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "remix": "github:remix-run/remix#preview/pr-11121&path:packages/remix",
+    "remix": "github:remix-run/remix#preview/pr-11133&path:packages/remix",
     "satori": "^0.19.2",
     "semver": "^7.7.3",
     "shiki": "^0.14.7",

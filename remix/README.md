@@ -54,7 +54,6 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 Track any remaining behavior differences from the previous production site here.
 Each line item should be small enough to ship as a focused PR.
 
-- **Client-side navigation baseline**: Most links still do full document navigations instead of app-wide in-app navigation behavior.
-- **Blog internal-link delegation**: No delegated interception for internal links inside rendered markdown content yet.
+- **Nested gallery/modal navigation**: Jam gallery modal flows still need a nested-frame strategy instead of relying on full document transitions.
 - **Link prefetch parity**: Intent/predictive prefetch behavior is not yet mirrored across Remix pages.
 - **Analytics on in-app transitions**: When client-side navigation is added, explicitly verify one pageview per navigation.
