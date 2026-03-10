@@ -24,7 +24,7 @@ let colorSchemeScript = `
 `;
 
 interface DocumentProps {
-  title: string;
+  title?: string;
   description?: string;
   noIndex?: boolean;
   forceTheme?: "dark" | "light";
@@ -66,7 +66,7 @@ export function Document() {
         <meta name="theme-color" content="#121212" />
         {noIndex ? <meta name="robots" content="noindex" /> : null}
         {description ? <meta name="description" content={description} /> : null}
-        <title>{title}</title>
+        {title ? <title>{title}</title> : null}
 
         {/* Favicons */}
         <link rel="icon" href="/favicon-32.png" sizes="32x32" />

@@ -5,10 +5,12 @@ import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   AddressLink,
   JamDocument,
+  JamFramePage,
   Paragraph,
   ScrambleText,
   Subheader,
   Title,
+  isJamInfoFrameRequest,
 } from "./jam-shared";
 import { routes } from "../routes";
 import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
@@ -22,12 +24,12 @@ function slugify(input: string) {
 }
 
 export async function jam2025FaqHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+  let request = getRequestContext().request;
+  let requestUrl = new URL(request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/faq`;
   let previewImage = `${requestUrl.origin}${ogImageSrc}`;
-
-  return render.document(
-    <JamDocument
+  let page = (
+    <JamFramePage
       title="FAQ | Remix Jam 2025"
       description="It's time to get the band back together"
       pageUrl={pageUrl}
@@ -219,7 +221,26 @@ export async function jam2025FaqHandler() {
           />
         </div>
       </main>
-    </JamDocument>,
+    </JamFramePage>
+  );
+
+  if (isJamInfoFrameRequest(request)) {
+    return render.frame(page, {
+      headers: {
+        "Cache-Control": CACHE_CONTROL.DEFAULT,
+      },
+    });
+  }
+
+  return render.document(
+    <JamDocument
+      title="FAQ | Remix Jam 2025"
+      description="It's time to get the band back together"
+      pageUrl={pageUrl}
+      previewImage={previewImage}
+      activePath="/jam/2025/faq"
+      frameSrc={request.url}
+    />,
     {
       headers: {
         "Cache-Control": CACHE_CONTROL.DEFAULT,

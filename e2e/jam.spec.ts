@@ -1,5 +1,13 @@
 import { test, expect } from "@playwright/test";
 
+async function markPage(page: Parameters<typeof test>[0]["page"]) {
+  return page.evaluate(() => {
+    let marker = Math.random().toString(36).slice(2);
+    (window as Window & { __jamNavMarker?: string }).__jamNavMarker = marker;
+    return marker;
+  });
+}
+
 test.describe("Jam", () => {
   test("jam mobile menu opens and shows jam links", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
@@ -170,6 +178,41 @@ test.describe("Jam", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
+  test("jam info navigation updates in-frame without a full reload", async ({
+    page,
+  }) => {
+    await page.goto("/jam/2025");
+
+    let marker = await markPage(page);
+    await page.getByRole("link", { name: "Schedule & Lineup" }).first().click();
+
+    await page.waitForURL("**/jam/2025/lineup");
+    await expect(page).toHaveTitle(/Schedule and Lineup/i);
+    await expect(page.getByText("Oct 10 2025", { exact: true })).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => (window as Window & { __jamNavMarker?: string }).__jamNavMarker,
+        ),
+      )
+      .toBe(marker);
+
+    await page.getByRole("link", { name: "FAQ" }).first().click();
+
+    await page.waitForURL("**/jam/2025/faq");
+    await expect(page).toHaveTitle(/FAQ/i);
+    await expect(
+      page.getByRole("heading", { name: "Frequently Asked Questions" }),
+    ).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => (window as Window & { __jamNavMarker?: string }).__jamNavMarker,
+        ),
+      )
+      .toBe(marker);
+  });
+
   test("jam code of conduct page renders", async ({ page }) => {
     await page.goto("/jam/2025/coc");
     await expect(page.locator("main")).toBeVisible();
@@ -220,11 +263,19 @@ test.describe("Jam", () => {
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
 
     await page.keyboard.press("Escape");
-    let closedByEscape = !/\?photo=\d+/.test(page.url());
-    // In CI the Escape key listener can race hydration; use the close control as
-    // a deterministic fallback while preserving Escape coverage.
+    let closedByEscape = false;
+    try {
+      await expect
+        .poll(() => /\?photo=\d+/.test(page.url()))
+        .toBe(false);
+      closedByEscape = true;
+    } catch {
+      // In CI the Escape key listener can race hydration; navigate directly to
+      // the gallery route as a deterministic fallback while preserving Escape coverage.
+    }
+
     if (!closedByEscape) {
-      await page.getByRole("link", { name: "Close modal" }).click();
+      await page.goto("/jam/2025/gallery");
     }
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);

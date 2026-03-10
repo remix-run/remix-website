@@ -1,5 +1,9 @@
 import { route } from "remix/fetch-router/routes";
 
+export let frames = {
+  jamInfo: "jam-info",
+} as const;
+
 export let routes = route({
   home: "/",
   brand: "/brand",

@@ -50,14 +50,14 @@ Current migration state:
 
 - Step 2 is complete.
 - The simple part of Step 6 is effectively complete for top-level navigation.
-- Named-frame work has not started yet.
+- The first named-frame slice is implemented for the Jam info routes.
 - Jam gallery/modal flows are intentionally deferred because they likely need nested-frame behavior.
 
 Recommended next task for the next agent:
 
 1. Decide whether to formalize Step 6 as complete in repo docs/tests or keep the wordmark caveat called out as an open follow-up.
-2. Pick the first named-frame candidate instead of expanding more top-level nav work.
-3. The best deferred candidate is likely a Jam sub-route region, but not the gallery modal.
+2. Treat the Jam info frame as the reference implementation for future frame work.
+3. The best deferred candidate is still likely a Jam sub-route region with nested behavior, but not the gallery modal until that nesting is intentionally designed.
 
 Suggested verification commands for this repo:
 
@@ -65,6 +65,7 @@ Suggested verification commands for this repo:
 pnpm run typecheck:remix
 pnpm exec playwright test e2e/navigation.spec.ts --project chromium
 pnpm exec playwright test e2e/blog.spec.ts --project chromium
+pnpm exec playwright test e2e/jam.spec.ts --project chromium
 ```
 
 If Playwright is run locally while `pnpm run dev` is already running:
@@ -97,6 +98,32 @@ pnpm exec playwright test e2e/blog.spec.ts --project chromium
 ```
 
 - When asking for Playwright results, remind the user that reusing an already-running local dev server is preferred and `CI=1` should not be forced for local verification.
+
+Named-frame implementation notes from this repo:
+
+- The first implemented frame is the Jam info frame, defined in `remix/routes.ts` as `frames.jamInfo`.
+- Keep frame name constants next to route definitions, matching the upstream frame-navigation demo pattern.
+- The current Jam frame-backed routes are:
+  - `/jam/2025`
+  - `/jam/2025/lineup`
+  - `/jam/2025/faq`
+  - `/jam/2025/coc`
+- The current non-frame Jam routes are still top-level navigations:
+  - `/jam/2025/gallery`
+  - `/jam/2025/ticket`
+- The shared shell and frame wiring live in:
+  - `remix/routes.ts`
+  - `remix/routes/jam-shared.tsx`
+  - `remix/assets/jam-frame-head-sync.tsx`
+- The implemented pattern is:
+  - normal request: `render.document(<JamDocument ... frameSrc={request.url} />)`
+  - targeted frame request: `render.frame(<JamFramePage ...>{content}</JamFramePage>)`
+- The Jam frame fragment intentionally starts with the scaffold root element, not with a leading zero-DOM client entry. Changing that shape caused client-side reconcile issues during development.
+- Jam head updates during frame navigations are handled by the `JamFrameHeadSync` client entry instead of relying on frame-managed `<title>` replacement alone.
+- The targeted Jam Playwright coverage currently lives in `e2e/jam.spec.ts` under:
+  - `jam info navigation updates in-frame without a full reload`
+- The gallery Escape test has a deterministic fallback path for cases where Escape races hydration in CI/dev.
+- During local development, Vite may log `Internal server error: aborted` during frame or document navigations. So far this has behaved like a canceled in-flight request rather than a functional bug. Treat it as noteworthy only if it corresponds to broken UI behavior.
 
 ## 1. Decide what should stay full-page vs frame-targeted
 

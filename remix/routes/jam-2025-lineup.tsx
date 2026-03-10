@@ -3,7 +3,13 @@ import { getSchedule } from "./jam-schedule.server";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control";
-import { JamDocument, ScrambleText, Title } from "./jam-shared";
+import {
+  JamDocument,
+  JamFramePage,
+  ScrambleText,
+  Title,
+  isJamInfoFrameRequest,
+} from "./jam-shared";
 import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
 import { JamLineupAccordionItem } from "../assets/jam-lineup-accordion-item";
 
@@ -13,13 +19,13 @@ let gridColsClassName =
 type Schedule = Awaited<ReturnType<typeof getSchedule>>;
 
 export async function jam2025LineupHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+  let request = getRequestContext().request;
+  let requestUrl = new URL(request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/lineup`;
   let previewImage = `${requestUrl.origin}${ogImageSrc}`;
   let schedule = await getSchedule();
-
-  return render.document(
-    <JamDocument
+  let page = (
+    <JamFramePage
       title="Schedule and Lineup | Remix Jam 2025"
       description="Schedule and Speaker Lineup for Remix Jam 2025"
       pageUrl={pageUrl}
@@ -43,7 +49,28 @@ export async function jam2025LineupHandler() {
 
         <ScheduleTable items={schedule} />
       </main>
-    </JamDocument>,
+    </JamFramePage>
+  );
+
+  if (isJamInfoFrameRequest(request)) {
+    return render.frame(page, {
+      headers: {
+        "Cache-Control": CACHE_CONTROL.DEFAULT,
+      },
+    });
+  }
+
+  return render.document(
+    <JamDocument
+      title="Schedule and Lineup | Remix Jam 2025"
+      description="Schedule and Speaker Lineup for Remix Jam 2025"
+      pageUrl={pageUrl}
+      previewImage={previewImage}
+      activePath="/jam/2025/lineup"
+      hideBackground
+      showSeats
+      frameSrc={request.url}
+    />,
     {
       headers: {
         "Cache-Control": CACHE_CONTROL.DEFAULT,
