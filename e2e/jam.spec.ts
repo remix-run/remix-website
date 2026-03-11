@@ -211,6 +211,21 @@ test.describe("Jam", () => {
         ),
       )
       .toBe(marker);
+
+    await page.getByRole("link", { name: "Ticket" }).first().click();
+
+    await page.waitForURL("**/jam/2025/ticket");
+    await expect(page).toHaveTitle(/Ticket/i);
+    await expect(
+      page.getByRole("heading", { name: /General Admission/i }),
+    ).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => (window as Window & { __jamNavMarker?: string }).__jamNavMarker,
+        ),
+      )
+      .toBe(marker);
   });
 
   test("jam code of conduct page renders", async ({ page }) => {
@@ -265,9 +280,7 @@ test.describe("Jam", () => {
     await page.keyboard.press("Escape");
     let closedByEscape = false;
     try {
-      await expect
-        .poll(() => /\?photo=\d+/.test(page.url()))
-        .toBe(false);
+      await expect.poll(() => /\?photo=\d+/.test(page.url())).toBe(false);
       closedByEscape = true;
     } catch {
       // In CI the Escape key listener can race hydration; navigate directly to

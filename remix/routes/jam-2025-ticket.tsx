@@ -1,4 +1,5 @@
 import * as s from "remix/data-schema";
+import { getContext } from "remix/async-context-middleware";
 import { createCart, getProduct, MAX_QUANTITY } from "./jam-storefront.server";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
@@ -6,9 +7,11 @@ import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   InfoText,
   JamDocument,
+  JamFramePage,
   ScrambleText,
   SectionLabel,
   Title,
+  isJamInfoFrameRequest,
 } from "./jam-shared";
 import { JamTicketCard } from "../assets/jam-ticket-card";
 import { JamTicketPurchase } from "../assets/jam-ticket-purchase";
@@ -28,7 +31,8 @@ export async function jam2025TicketHandler() {
   let initialQuantity = 1;
 
   if (request.method === "POST") {
-    let submission = await parseTicketPurchaseSubmission(request);
+    let formData = getContext().get(FormData);
+    let submission = parseTicketPurchaseSubmission(formData);
     if (!submission.success) {
       formError = submission.error;
     } else {
@@ -52,8 +56,8 @@ export async function jam2025TicketHandler() {
     }
   }
 
-  return render.document(
-    <JamDocument
+  let page = (
+    <JamFramePage
       title="Ticket | Remix Jam 2025"
       description="Get your ticket for Remix Jam 2025 in Toronto"
       pageUrl={pageUrl}
@@ -94,6 +98,27 @@ export async function jam2025TicketHandler() {
           what we&apos;ve been up to.
         </InfoText>
       </main>
+    </JamFramePage>
+  );
+
+  if (request.method === "GET" && isJamInfoFrameRequest(request)) {
+    return render.frame(page, {
+      headers: {
+        "Cache-Control": cacheControl,
+      },
+    });
+  }
+
+  return render.document(
+    <JamDocument
+      title="Ticket | Remix Jam 2025"
+      description="Get your ticket for Remix Jam 2025 in Toronto"
+      pageUrl={pageUrl}
+      previewImage={previewImage}
+      activePath="/jam/2025/ticket"
+      frameSrc={request.method === "GET" ? request.url : undefined}
+    >
+      {request.method === "POST" ? page : undefined}
     </JamDocument>,
     {
       headers: {
@@ -103,8 +128,7 @@ export async function jam2025TicketHandler() {
   );
 }
 
-async function parseTicketPurchaseSubmission(request: Request) {
-  let formData = await request.formData();
+function parseTicketPurchaseSubmission(formData: FormData) {
   let quantity = Number.parseInt(String(formData.get("quantity") ?? "1"), 10);
   let result = s.parseSafe(ticketPurchaseSubmissionSchema, {
     productId: formData.get("productId"),

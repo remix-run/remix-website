@@ -251,6 +251,8 @@ function Navbar() {
       <a
         class={clsx(jamButtonClassName, "hidden bg-white text-black lg:flex")}
         href={routes.jam2025Ticket.href()}
+        rmx-target={frames.jamInfo}
+        rmx-src={routes.jam2025Ticket.href()}
       >
         <TicketLogo class="size-6 fill-current md:size-8 lg:size-6 xl:size-8" />
         <span>Ticket</span>
@@ -292,6 +294,7 @@ function Navbar() {
         <MobileNavLink
           href={routes.jam2025Ticket.href()}
           active={props.activePath === routes.jam2025Ticket.href()}
+          targetFrame={frames.jamInfo}
         >
           Ticket
         </MobileNavLink>

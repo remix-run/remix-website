@@ -49,15 +49,21 @@ Important repo-specific note:
 Current migration state:
 
 - Step 2 is complete.
-- The simple part of Step 6 is effectively complete for top-level navigation.
+- Step 6 is complete for this repo's current top-level navigation scope.
+- Step 12 is decided for this repo: no browser fallback will be added for environments without the Navigation API.
 - The first named-frame slice is implemented for the Jam info routes.
 - Jam gallery/modal flows are intentionally deferred because they likely need nested-frame behavior.
 
+Step 6 closeout note:
+
+- Treat top-level client navigation as complete in this repo.
+- Keep the wordmark `pointer-events-none` wrapper as a known preview-runtime workaround, not as an open migration blocker.
+
 Recommended next task for the next agent:
 
-1. Decide whether to formalize Step 6 as complete in repo docs/tests or keep the wordmark caveat called out as an open follow-up.
-2. Treat the Jam info frame as the reference implementation for future frame work.
-3. The best deferred candidate is still likely a Jam sub-route region with nested behavior, but not the gallery modal until that nesting is intentionally designed.
+1. Treat the Jam info frame as the reference implementation for future frame work.
+2. The best deferred candidate is still likely a Jam sub-route region with nested behavior, but not the gallery modal until that nesting is intentionally designed.
+3. Keep the wordmark caveat documented as preview-runtime follow-up context unless upstream click interception changes.
 
 Suggested verification commands for this repo:
 
@@ -108,9 +114,10 @@ Named-frame implementation notes from this repo:
   - `/jam/2025/lineup`
   - `/jam/2025/faq`
   - `/jam/2025/coc`
+  - `/jam/2025/ticket`
 - The current non-frame Jam routes are still top-level navigations:
   - `/jam/2025/gallery`
-  - `/jam/2025/ticket`
+- The ticket purchase form still uses a normal browser POST/redirect flow even though the GET route is now frame-backed.
 - The shared shell and frame wiring live in:
   - `remix/routes.ts`
   - `remix/routes/jam-shared.tsx`
@@ -133,14 +140,29 @@ Upstream feedback from this repo:
   - forced theme state on `<html>` / `<body>`
   - route-scoped stylesheet links such as the Jam CSS asset
   - page metadata when a frame-targeted navigation wanted to update document title/meta without a full document replacement
+- Route-scoped stylesheets also do not currently get a built-in preload/prefetch story during client navigation in this repo's setup.
+- In practice, that means a cold navigation into a route like Jam can still flash unstyled content if `jam.css` is not already warm by the time the new UI renders.
 - This repo currently works around that with explicit client entries:
   - `remix/assets/document-head-sync.tsx`
   - `remix/assets/jam-frame-head-sync.tsx`
+- A small local mitigation now exists at the document level:
+  - `remix/components/document.tsx`
+  - This preloads `jam.css` globally so the asset is usually warm before users navigate into the Jam pages.
 - That workaround seems justified for the current preview branch, but it would be better if Remix Component exposed a more declarative built-in story for:
   - document head reconciliation on top-level client navigation
   - html/body attribute and class updates during navigation
   - frame-aware head updates when a named frame changes the active sub-route
-- The click interception path also appears brittle for anchors whose event target is an inner SVG node. In this repo, `remix/assets/wordmark-link.tsx` still needs a `pointer-events-none` wrapper around the SVG so the anchor click is intercepted reliably.
+  - route-asset prefetch/preload semantics for styles and other navigation-critical assets so apps do not need to hand-roll intent prefetching for each route family
+- The click interception path also appears brittle for anchors whose event target is an inner SVG node.
+- In this repo, `remix/assets/wordmark-link.tsx` still needs a `pointer-events-none` wrapper around the SVG so the anchor click is intercepted reliably.
+- Treat that as upstream product feedback, not just local implementation trivia: a top-level client navigation runtime should reliably intercept clicks on normal anchors even when the actual event target is nested SVG content inside the anchor.
+- If this behavior is intentional, the framework docs should call it out explicitly; if not, it looks like a bug or limitation in the current interception implementation.
+
+Repo decision for now:
+
+- Do not build a generic asset-prefetch layer yet.
+- The broad version is possible, but it is app-specific, easy to overbuild, and not clearly worth the complexity until there are more routes with route-local assets that materially regress navigation quality.
+- Keep the global Jam stylesheet preload as a focused mitigation and treat broader route-asset prefetching as future work unless Remix exposes a cleaner built-in mechanism.
 
 ## 1. Decide what should stay full-page vs frame-targeted
 
@@ -447,6 +469,12 @@ Handoff to implementor:
 
 - Confirm the production browser matrix.
 - Decide whether to feature-gate the client navigation boot, ship a fallback, or limit this feature to supported environments.
+
+Decision for this repo:
+
+- Do not add a custom fallback for browsers without the Navigation API.
+- Treat Navigation API support as a requirement for the hydrated Remix 3 experience on this branch.
+- This is intentional because `run()` boot currently wires both hydration and client navigation together; skipping it would degrade more than just link interception.
 
 ## Suggested implementation order
 
