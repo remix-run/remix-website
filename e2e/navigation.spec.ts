@@ -38,6 +38,25 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Blog/i);
   });
 
+  test("blog to home clears dark mode when home forces light theme", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.goto("/blog");
+
+    await expect(page.locator('html[data-theme="light"]')).toHaveCount(0);
+    await expect(page.locator("html.dark")).toHaveCount(1);
+
+    await expectClientNavigation(
+      page,
+      () => page.locator('header a[aria-label="Remix"]').first().click(),
+      "**/",
+    );
+
+    await expect(page.locator('html[data-theme="light"]')).toHaveCount(1);
+    await expect(page.locator("html.dark")).toHaveCount(0);
+  });
+
   test("blog header jam link uses client navigation", async ({ page }) => {
     await page.goto("/blog");
 
@@ -50,7 +69,35 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Jam/i);
   });
 
-  test("header wordmark uses client navigation for home and brand", async ({ page }) => {
+  test("home to jam applies jam head styles and forced dark theme", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await expectClientNavigation(
+      page,
+      () => page.locator('header a[href="/jam/2025"]').first().click(),
+      "**/jam/2025",
+    );
+
+    await expect(page.locator('html[data-theme="dark"]')).toHaveCount(1);
+    await expect(page.locator("html.dark")).toHaveCount(1);
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          Array.from(
+            document.head.querySelectorAll('link[rel="stylesheet"]'),
+          ).some((element) =>
+            element.getAttribute("href")?.includes("jam.css"),
+          ),
+        ),
+      )
+      .toBe(true);
+  });
+
+  test("header wordmark uses client navigation for home and brand", async ({
+    page,
+  }) => {
     await page.goto("/blog");
 
     let homeLink = page.locator('header a[aria-label="Remix"]').first();

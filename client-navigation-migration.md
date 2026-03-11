@@ -125,6 +125,23 @@ Named-frame implementation notes from this repo:
 - The gallery Escape test has a deterministic fallback path for cases where Escape races hydration in CI/dev.
 - During local development, Vite may log `Internal server error: aborted` during frame or document navigations. So far this has behaved like a canceled in-flight request rather than a functional bug. Treat it as noteworthy only if it corresponds to broken UI behavior.
 
+Upstream feedback from this repo:
+
+- `packages/component/docs/server-rendering.md` says SSR hoists `<title>`, `<meta>`, `<link>`, and `<style>` into `<head>`, and that does match the server-rendered output here.
+- The main gap we hit was not SSR hoisting but client-side reconciliation after in-app navigation.
+- Top-level client navigations in this repo did not automatically clear or replace route-scoped head state such as:
+  - forced theme state on `<html>` / `<body>`
+  - route-scoped stylesheet links such as the Jam CSS asset
+  - page metadata when a frame-targeted navigation wanted to update document title/meta without a full document replacement
+- This repo currently works around that with explicit client entries:
+  - `remix/assets/document-head-sync.tsx`
+  - `remix/assets/jam-frame-head-sync.tsx`
+- That workaround seems justified for the current preview branch, but it would be better if Remix Component exposed a more declarative built-in story for:
+  - document head reconciliation on top-level client navigation
+  - html/body attribute and class updates during navigation
+  - frame-aware head updates when a named frame changes the active sub-route
+- The click interception path also appears brittle for anchors whose event target is an inner SVG node. In this repo, `remix/assets/wordmark-link.tsx` still needs a `pointer-events-none` wrapper around the SVG so the anchor click is intercepted reliably.
+
 ## 1. Decide what should stay full-page vs frame-targeted
 
 Before changing code, inventory the application's navigation model.

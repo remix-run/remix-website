@@ -44,15 +44,45 @@ export function JamDocument() {
       title={props.title}
       description={props.description}
       forceTheme="dark"
-      head={
-        <JamDocumentHead
-          title={props.title}
-          description={props.description}
-          pageUrl={props.pageUrl}
-          previewImage={props.previewImage}
-          includeRouteMeta
-        />
-      }
+      headTags={[
+        { kind: "meta", property: "og:type", content: "website" },
+        { kind: "meta", property: "og:title", content: props.title },
+        {
+          kind: "meta",
+          property: "og:description",
+          content: props.description,
+        },
+        { kind: "meta", property: "og:url", content: props.pageUrl },
+        {
+          kind: "meta",
+          property: "og:image",
+          content: props.previewImage,
+        },
+        {
+          kind: "meta",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        { kind: "meta", name: "twitter:title", content: props.title },
+        {
+          kind: "meta",
+          name: "twitter:description",
+          content: props.description,
+        },
+        {
+          kind: "meta",
+          name: "twitter:image",
+          content: props.previewImage,
+        },
+        { kind: "link", rel: "stylesheet", href: jamStylesHref },
+        {
+          kind: "link",
+          rel: "preload",
+          href: "/font/jet-brains-mono.woff2",
+          as: "font",
+          crossorigin: "anonymous",
+        },
+      ]}
     >
       {props.frameSrc ? (
         <Frame name={frames.jamInfo} src={props.frameSrc} />
@@ -89,39 +119,6 @@ export function JamFramePage() {
 
 export function isJamInfoFrameRequest(request: Request) {
   return request.headers.get("x-remix-target") === frames.jamInfo;
-}
-
-function JamDocumentHead() {
-  return (props: {
-    title: string;
-    description: string;
-    pageUrl: string;
-    previewImage: string;
-    includeRouteMeta: boolean;
-  }) => (
-    <>
-      {props.includeRouteMeta ? (
-        <>
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content={props.title} />
-          <meta property="og:description" content={props.description} />
-          <meta property="og:url" content={props.pageUrl} />
-          <meta property="og:image" content={props.previewImage} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content={props.title} />
-          <meta name="twitter:description" content={props.description} />
-          <meta name="twitter:image" content={props.previewImage} />
-        </>
-      ) : null}
-      <link rel="stylesheet" href={jamStylesHref} />
-      <link
-        rel="preload"
-        as="font"
-        href="/font/jet-brains-mono.woff2"
-        crossorigin="anonymous"
-      />
-    </>
-  );
 }
 
 function JamPageScaffold() {

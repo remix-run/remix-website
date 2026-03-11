@@ -31,31 +31,47 @@ function HomePage() {
       title="Remix - A Full Stack Framework Built on Web APIs"
       description="Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world."
       forceTheme="light"
-      head={
-        <>
-          <meta property="og:type" content="website" />
-          <meta
-            property="og:title"
-            content="Remix - A Full Stack Framework Built on Web APIs"
-          />
-          <meta
-            property="og:description"
-            content="Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world."
-          />
-          <meta property="og:url" content={props.pageUrl} />
-          <meta property="og:image" content={props.previewImage} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta
-            name="twitter:title"
-            content="Remix - A Full Stack Framework Built on Web APIs"
-          />
-          <meta
-            name="twitter:description"
-            content="Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world."
-          />
-          <meta name="twitter:image" content={props.previewImage} />
-        </>
-      }
+      headTags={[
+        { kind: "meta", property: "og:type", content: "website" },
+        {
+          kind: "meta",
+          property: "og:title",
+          content: "Remix - A Full Stack Framework Built on Web APIs",
+        },
+        {
+          kind: "meta",
+          property: "og:description",
+          content:
+            "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.",
+        },
+        { kind: "meta", property: "og:url", content: props.pageUrl },
+        {
+          kind: "meta",
+          property: "og:image",
+          content: props.previewImage,
+        },
+        {
+          kind: "meta",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          kind: "meta",
+          name: "twitter:title",
+          content: "Remix - A Full Stack Framework Built on Web APIs",
+        },
+        {
+          kind: "meta",
+          name: "twitter:description",
+          content:
+            "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.",
+        },
+        {
+          kind: "meta",
+          name: "twitter:image",
+          content: props.previewImage,
+        },
+      ]}
     >
       <div class="marketing-home">
         <div class="rmx-home-hero-bg">

@@ -1,4 +1,6 @@
 import { clientEntry, type Handle } from "remix/component";
+import { syncManagedHeadTags, syncTitle } from "../components/document-head";
+import jamStylesHref from "../shared/styles/jam.css?url";
 import assets from "./jam-frame-head-sync.tsx?assets=client";
 
 type HeadProps = {
@@ -7,19 +9,6 @@ type HeadProps = {
   pageUrl: string;
   previewImage: string;
 };
-
-let META_FIELDS = [
-  ["name", "description"],
-  ["property", "og:type"],
-  ["property", "og:title"],
-  ["property", "og:description"],
-  ["property", "og:url"],
-  ["property", "og:image"],
-  ["name", "twitter:card"],
-  ["name", "twitter:title"],
-  ["name", "twitter:description"],
-  ["name", "twitter:image"],
-] as const;
 
 export let JamFrameHeadSync = clientEntry(
   `${assets.entry}#JamFrameHeadSync`,
@@ -32,16 +21,50 @@ export let JamFrameHeadSync = clientEntry(
       if (!latestProps) return;
 
       syncTitle(latestProps.title);
-      syncMeta("name", "description", latestProps.description);
-      syncMeta("property", "og:type", "website");
-      syncMeta("property", "og:title", latestProps.title);
-      syncMeta("property", "og:description", latestProps.description);
-      syncMeta("property", "og:url", latestProps.pageUrl);
-      syncMeta("property", "og:image", latestProps.previewImage);
-      syncMeta("name", "twitter:card", "summary_large_image");
-      syncMeta("name", "twitter:title", latestProps.title);
-      syncMeta("name", "twitter:description", latestProps.description);
-      syncMeta("name", "twitter:image", latestProps.previewImage);
+      syncManagedHeadTags([
+        { kind: "meta", name: "description", content: latestProps.description },
+        { kind: "meta", property: "og:type", content: "website" },
+        { kind: "meta", property: "og:title", content: latestProps.title },
+        {
+          kind: "meta",
+          property: "og:description",
+          content: latestProps.description,
+        },
+        { kind: "meta", property: "og:url", content: latestProps.pageUrl },
+        {
+          kind: "meta",
+          property: "og:image",
+          content: latestProps.previewImage,
+        },
+        {
+          kind: "meta",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          kind: "meta",
+          name: "twitter:title",
+          content: latestProps.title,
+        },
+        {
+          kind: "meta",
+          name: "twitter:description",
+          content: latestProps.description,
+        },
+        {
+          kind: "meta",
+          name: "twitter:image",
+          content: latestProps.previewImage,
+        },
+        { kind: "link", rel: "stylesheet", href: jamStylesHref },
+        {
+          kind: "link",
+          rel: "preload",
+          href: "/font/jet-brains-mono.woff2",
+          as: "font",
+          crossorigin: "anonymous",
+        },
+      ]);
     };
 
     handle.signal.addEventListener(
@@ -63,30 +86,3 @@ export let JamFrameHeadSync = clientEntry(
     };
   },
 );
-
-function syncTitle(title: string) {
-  let titles = document.head.querySelectorAll("title");
-  let current = titles[0] ?? document.head.appendChild(document.createElement("title"));
-  current.textContent = title;
-  for (let index = 1; index < titles.length; index++) {
-    titles[index]?.remove();
-  }
-}
-
-function syncMeta(
-  attribute: "name" | "property",
-  key: string,
-  content: string,
-) {
-  let selector = `meta[${attribute}="${key}"]`;
-  let matches = Array.from(document.head.querySelectorAll<HTMLMetaElement>(selector));
-  let current =
-    matches[0] ?? document.head.appendChild(document.createElement("meta"));
-
-  current.setAttribute(attribute, key);
-  current.setAttribute("content", content);
-
-  for (let index = 1; index < matches.length; index++) {
-    matches[index]?.remove();
-  }
-}
