@@ -1,3 +1,4 @@
+import type { Router } from "remix/fetch-router";
 import { renderToStream } from "remix/component/server";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { createHtmlResponse } from "remix/response/html";
@@ -46,7 +47,7 @@ async function resolveFrame(
   src: string,
   target: string | undefined,
   context: FrameRenderContext | undefined,
-  router: ReturnType<typeof getRequestContext>["router"],
+  router: Router,
   request: Request,
 ) {
   let frameSrc = context?.currentFrameSrc ?? request.url;
@@ -63,13 +64,7 @@ async function resolveFrame(
   if (cookie) headers.set("cookie", cookie);
 
   try {
-    let response = await router.fetch(
-      new Request(url, {
-        method: "GET",
-        headers,
-        signal: request.signal,
-      }),
-    );
+    let response = await followFrameRedirects(router, request, url, headers);
     if (!response.ok) {
       return `<pre>Frame error: ${response.status} ${response.statusText}</pre>`;
     }
@@ -78,6 +73,37 @@ async function resolveFrame(
   } catch (error: unknown) {
     let message = error instanceof Error ? error.message : "Unknown error";
     return `<pre>Frame error: ${message}</pre>`;
+  }
+}
+
+export async function followFrameRedirects(
+  router: Router,
+  request: Request,
+  url: URL,
+  headers: Headers,
+) {
+  let currentUrl = url;
+  let redirectsRemaining = 10;
+
+  while (true) {
+    let response = await router.fetch(
+      new Request(currentUrl, {
+        method: "GET",
+        headers,
+        signal: request.signal,
+      }),
+    );
+
+    let location = response.headers.get("location");
+    if (!location || response.status < 300 || response.status >= 400) {
+      return response;
+    }
+
+    if (redirectsRemaining-- <= 0) {
+      throw new Error("Too many frame redirects");
+    }
+
+    currentUrl = new URL(location, currentUrl);
   }
 }
 

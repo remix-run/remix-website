@@ -23,12 +23,13 @@ Completed in this repo:
 
 - Browser boot migrated in `remix/assets/entry.ts`:
   - Uses `run({ loadModule, resolveFrame })`
-  - Sends `x-remix-frame`, `x-remix-top-frame-src`, and optional `x-remix-target`
+  - Sends `x-remix-frame` and optional `x-remix-target`
+  - Also forwards `x-remix-top-frame-src` in this repo so frame-targeted requests can preserve outer-document frame context
   - Uses `app.addEventListener('error', ...)` and `await app.ready()`
 - SSR frame context migrated in `remix/utils/render.ts`:
   - Passes `frameSrc` and `topFrameSrc` to `renderToStream()`
   - Uses `resolveFrame(src, target, context)`
-  - Preserves cookies and forwards frame headers on internal fetches
+  - Preserves cookies, forwards frame headers on internal fetches, and follows internal redirects during frame resolution
 - Existing document shell already loads the browser entry in `remix/components/document.tsx`
 
 Verified in this repo:
@@ -49,6 +50,7 @@ Important repo-specific note:
 Current migration state:
 
 - Step 2 is complete.
+- Step 5 now matches the PR 11147 server-side redirect-following pattern.
 - Step 6 is complete for this repo's current top-level navigation scope.
 - Step 12 is decided for this repo: no browser fallback will be added for environments without the Navigation API.
 - The first named-frame slice is implemented for the Jam info routes.
@@ -81,12 +83,12 @@ If Playwright is run locally while `pnpm run dev` is already running:
 
 Agent workflow notes for this repo:
 
-- For upstream client-navigation details, inspect the local `remix` checkout at `~/code/remix`.
+- For upstream client-navigation details, inspect the local `remix` checkout at `~/remix/code` or `~/code/remix`, depending on which local clone exists.
 - The most useful searches so far have been:
 
 ```sh
 cd ~/code/remix
-rg -n "rmx-target|rmx-src|<Frame|matchController|run\(" demos/frame-navigation demos/frames packages/component -g '!**/dist/**'
+rg -n "rmx-target|rmx-src|rmx-document|navigate\(|<Frame|matchController|run\(" demos/frame-navigation demos/frames packages/component -g '!**/dist/**'
 ```
 
 - The upstream files that were most useful for understanding the intended app-side pattern were:
@@ -134,8 +136,8 @@ Named-frame implementation notes from this repo:
 
 Upstream feedback from this repo:
 
-- `packages/component/docs/server-rendering.md` says SSR hoists `<title>`, `<meta>`, `<link>`, and `<style>` into `<head>`, and that does match the server-rendered output here.
-- The main gap we hit was not SSR hoisting but client-side reconciliation after in-app navigation.
+- PR 11147 removes automatic head hoisting. Server-rendered pages should use an explicit `<head>` in the document tree instead of relying on route-level hoisting behavior.
+- The main gap we hit was not initial SSR head output but client-side reconciliation after in-app navigation.
 - Top-level client navigations in this repo did not automatically clear or replace route-scoped head state such as:
   - forced theme state on `<html>` / `<body>`
   - route-scoped stylesheet links such as the Jam CSS asset
@@ -157,6 +159,22 @@ Upstream feedback from this repo:
 - In this repo, `remix/assets/wordmark-link.tsx` still needs a `pointer-events-none` wrapper around the SVG so the anchor click is intercepted reliably.
 - Treat that as upstream product feedback, not just local implementation trivia: a top-level client navigation runtime should reliably intercept clicks on normal anchors even when the actual event target is nested SVG content inside the anchor.
 - If this behavior is intentional, the framework docs should call it out explicitly; if not, it looks like a bug or limitation in the current interception implementation.
+
+What PR 11147 adds or clarifies beyond the older preview branch:
+
+- `navigate(href, { src, target, history })` is now part of the public runtime API for app-driven navigations.
+- Intercepted anchors and areas now have three distinct attributes:
+  - `rmx-target` to target a mounted named frame
+  - `rmx-src` to override the fetched frame source
+  - `rmx-document` to opt out and force a full document navigation
+- The server-side `resolveFrame(src, target, context)` contract remains the right integration point, but the current upstream demo also follows internal redirects instead of treating `30x` responses as frame errors.
+- Client `resolveFrame()` can now return Remix node content in addition to streamed or string HTML, though fetching trusted HTML remains the simplest app integration path.
+- The runtime tightened several diff/reload edge cases:
+  - live form control state is preserved more reliably during frame diffs
+  - nested frame subtrees are disposed more reliably when removed
+  - streamed frame updates wait for balanced markers before patching
+  - runtime failures are forwarded through app error events
+- Automatic head hoisting was removed, so document structure should be explicit and any frame-scoped document head updates remain app-owned.
 
 Repo decision for now:
 
@@ -201,7 +219,6 @@ let app = run({
     let headers = new Headers();
     headers.set("accept", "text/html");
     headers.set("x-remix-frame", "true");
-    headers.set("x-remix-top-frame-src", window.location.href);
     if (target) headers.set("x-remix-target", target);
 
     let response = await fetch(src, { headers, signal });
@@ -226,6 +243,8 @@ Notes:
 - `run(document, ...)` from older call sites becomes `run(...)`.
 - The runtime now forwards initialization, hydration, and frame reload failures through `app` error events.
 - Even if the app does not use named frames yet, `resolveFrame()` still needs to exist if the document contains `<Frame>`.
+- If the app needs targeted frame requests to preserve the outer document URL on the server, it can also send `x-remix-top-frame-src` as an app-level convention. This repo still does that.
+- Client `resolveFrame()` can now return Remix node content, but using `fetch()` and returning trusted HTML is still the most direct migration path.
 
 ## 3. Ensure the document loads the browser entry
 
@@ -245,7 +264,7 @@ Handoff to implementor:
 
 ## 4. Update server rendering to preserve frame context
 
-If the app renders with `renderToStream()`, pass `frameSrc` and preserve `topFrameSrc`.
+If the app renders with `renderToStream()`, pass `frameSrc`. Also preserve `topFrameSrc` when nested frame SSR or frame-targeted server renders need the outer document URL to remain stable.
 
 Target shape:
 
@@ -268,7 +287,7 @@ let stream = renderToStream(<App />, {
 Why this matters:
 
 - `frameSrc` tells SSR what frame is being rendered right now.
-- `topFrameSrc` preserves the outer document URL across nested frame renders.
+- `topFrameSrc` preserves the outer document URL across nested frame renders and any app-specific server logic that wants to keep `handle.frames.top.src` stable.
 - The branch relies on that distinction so `handle.frame.src` and `handle.frames.top.src` remain accurate during SSR and client updates.
 
 ## 5. Implement server-side frame resolution
@@ -280,29 +299,18 @@ Target shape:
 ```tsx
 async function resolveFrame(router, request, src, target, context) {
   let frameSrc = context?.currentFrameSrc ?? request.url;
-  let topFrameSrc =
-    context?.topFrameSrc ??
-    request.headers.get("x-remix-top-frame-src") ??
-    request.url;
   let url = new URL(src, frameSrc);
 
   let headers = new Headers();
   headers.set("accept", "text/html");
   headers.set("accept-encoding", "identity");
   headers.set("x-remix-frame", "true");
-  headers.set("x-remix-top-frame-src", topFrameSrc);
   if (target) headers.set("x-remix-target", target);
 
   let cookie = request.headers.get("cookie");
   if (cookie) headers.set("cookie", cookie);
 
-  let response = await router.fetch(
-    new Request(url, {
-      method: "GET",
-      headers,
-      signal: request.signal,
-    }),
-  );
+  let response = await followFrameRedirects(router, request, url, headers);
 
   if (!response.ok) {
     return `<pre>Frame error: ${response.status} ${response.statusText}</pre>`;
@@ -310,13 +318,46 @@ async function resolveFrame(router, request, src, target, context) {
 
   return response.body ?? response.text();
 }
+
+async function followFrameRedirects(router, request, url, headers) {
+  let currentUrl = url;
+  let redirectsRemaining = 10;
+
+  while (true) {
+    let response = await router.fetch(
+      new Request(currentUrl, {
+        method: "GET",
+        headers,
+        signal: request.signal,
+      }),
+    );
+
+    let location = response.headers.get("location");
+    if (!location || response.status < 300 || response.status >= 400) {
+      return response;
+    }
+
+    if (redirectsRemaining-- <= 0) {
+      throw new Error("Too many frame redirects");
+    }
+
+    currentUrl = new URL(location, currentUrl);
+  }
+}
 ```
 
 Why these headers exist:
 
 - `x-remix-frame`: identifies the request as a frame fetch.
 - `x-remix-target`: tells the server which named frame this fetch is intended for.
-- `x-remix-top-frame-src`: keeps the outer document URL stable across nested frame renders.
+
+Optional app-level header:
+
+- `x-remix-top-frame-src`: if the app wants frame-targeted requests to preserve the outer document URL on the server, forward this too. It is still useful in this repo because `render.frame()` and `render.document()` preserve `topFrameSrc` for SSR.
+
+Redirect handling note:
+
+- Following internal `30x` responses during server-side frame resolution is now part of the practical integration pattern. Without that, app-owned redirects can surface as frame errors instead of resolving to the redirected content.
 
 ## 6. Turn top-level links into client navigations
 
@@ -333,6 +374,7 @@ Requirements:
 - Links must be real anchors with `href`.
 - Do not replace links with custom click handlers on `div` or `span` elements.
 - Audit any existing code that calls `event.preventDefault()` on anchors, because it may suppress the runtime's interception.
+- Mark any link that must stay a full document navigation with `rmx-document`.
 
 Important limitation:
 
@@ -417,6 +459,8 @@ What they do:
 
 For top-level client navigations, do not set either attribute.
 
+If a link must bypass interception entirely, use `rmx-document` instead.
+
 Recommended implementation approach:
 
 - If the app already has a shared link component, add optional props such as `targetFrame` and `frameSrc` there.
@@ -455,6 +499,7 @@ Specific behaviors worth testing because this branch changed them:
 - Inputs and textareas keep user-entered values across frame diffs.
 - Select state is preserved when server HTML changes serialized `selected` attributes.
 - Removing framed subtrees does not leave stale client behavior behind.
+- App-owned redirects reached during frame resolution still land on the intended content.
 
 ## 12. Decide browser support for the Navigation API
 
