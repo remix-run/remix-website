@@ -6,11 +6,9 @@ import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   AddressMain,
   JamDocument,
-  JamFramePage,
   ScrambleText,
   SectionLabel,
   Title,
-  isJamInfoFrameRequest,
 } from "./jam-shared";
 import { JamKeepsakes } from "../assets/jam-keepsakes";
 import { JamFadeInBadge } from "../assets/jam-fade-in-badge";
@@ -21,30 +19,10 @@ import iconsHref from "../shared/icons.svg";
 type EventStatus = "before" | "live" | "after";
 
 export async function jam2025Handler() {
-  let request = getRequestContext().request;
-  let requestUrl = new URL(request.url);
+  let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025`;
   let previewImage = `${requestUrl.origin}${ogImageSrc}`;
   let eventStatus = getEventStatus();
-  let page = (
-    <JamFramePage
-      title="Remix Jam 2025"
-      description="It's time to get the band back together"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
-      activePath="/jam/2025"
-    >
-      <Jam2025Page eventStatus={eventStatus} />
-    </JamFramePage>
-  );
-
-  if (isJamInfoFrameRequest(request)) {
-    return render.frame(page, {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    });
-  }
 
   return render.document(
     <JamDocument
@@ -53,8 +31,9 @@ export async function jam2025Handler() {
       pageUrl={pageUrl}
       previewImage={previewImage}
       activePath="/jam/2025"
-      frameSrc={request.url}
-    />,
+    >
+      <Jam2025Page eventStatus={eventStatus} />
+    </JamDocument>,
     {
       headers: {
         "Cache-Control": CACHE_CONTROL.DEFAULT,

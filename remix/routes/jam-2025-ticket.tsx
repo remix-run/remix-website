@@ -7,11 +7,9 @@ import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   InfoText,
   JamDocument,
-  JamFramePage,
   ScrambleText,
   SectionLabel,
   Title,
-  isJamInfoFrameRequest,
 } from "./jam-shared";
 import { JamTicketCard } from "../assets/jam-ticket-card";
 import { JamTicketPurchase } from "../assets/jam-ticket-purchase";
@@ -56,8 +54,8 @@ export async function jam2025TicketHandler() {
     }
   }
 
-  let page = (
-    <JamFramePage
+  return render.document(
+    <JamDocument
       title="Ticket | Remix Jam 2025"
       description="Get your ticket for Remix Jam 2025 in Toronto"
       pageUrl={pageUrl}
@@ -98,27 +96,6 @@ export async function jam2025TicketHandler() {
           what we&apos;ve been up to.
         </InfoText>
       </main>
-    </JamFramePage>
-  );
-
-  if (request.method === "GET" && isJamInfoFrameRequest(request)) {
-    return render.frame(page, {
-      headers: {
-        "Cache-Control": cacheControl,
-      },
-    });
-  }
-
-  return render.document(
-    <JamDocument
-      title="Ticket | Remix Jam 2025"
-      description="Get your ticket for Remix Jam 2025 in Toronto"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
-      activePath="/jam/2025/ticket"
-      frameSrc={request.method === "GET" ? request.url : undefined}
-    >
-      {request.method === "POST" ? page : undefined}
     </JamDocument>,
     {
       headers: {

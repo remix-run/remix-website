@@ -3,22 +3,20 @@ import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control";
 import {
   JamDocument,
-  JamFramePage,
   Paragraph,
   ScrambleText,
   Subheader,
   Title,
-  isJamInfoFrameRequest,
 } from "./jam-shared";
 import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
 
 export async function jam2025CocHandler() {
-  let request = getRequestContext().request;
-  let requestUrl = new URL(request.url);
+  let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/coc`;
   let previewImage = `${requestUrl.origin}${ogImageSrc}`;
-  let page = (
-    <JamFramePage
+
+  return render.document(
+    <JamDocument
       title="Code of Conduct | Remix Jam 2025"
       description="Adapted from confcodeofconduct.com"
       pageUrl={pageUrl}
@@ -128,26 +126,7 @@ export async function jam2025CocHandler() {
           </div>
         </div>
       </main>
-    </JamFramePage>
-  );
-
-  if (isJamInfoFrameRequest(request)) {
-    return render.frame(page, {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    });
-  }
-
-  return render.document(
-    <JamDocument
-      title="Code of Conduct | Remix Jam 2025"
-      description="Adapted from confcodeofconduct.com"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
-      activePath="/jam/2025/coc"
-      frameSrc={request.url}
-    />,
+    </JamDocument>,
     {
       headers: {
         "Cache-Control": CACHE_CONTROL.DEFAULT,

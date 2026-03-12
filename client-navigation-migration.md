@@ -53,8 +53,7 @@ Current migration state:
 - Step 5 now matches the PR 11147 server-side redirect-following pattern.
 - Step 6 is complete for this repo's current top-level navigation scope.
 - Step 12 is decided for this repo: no browser fallback will be added for environments without the Navigation API.
-- The first named-frame slice is implemented for the Jam info routes.
-- Jam gallery/modal flows are intentionally deferred because they likely need nested-frame behavior.
+- Jam routes now use top-level client navigation only; no nested-frame follow-up is planned.
 
 Step 6 closeout note:
 
@@ -63,9 +62,8 @@ Step 6 closeout note:
 
 Recommended next task for the next agent:
 
-1. Treat the Jam info frame as the reference implementation for future frame work.
-2. The best deferred candidate is still likely a Jam sub-route region with nested behavior, but not the gallery modal until that nesting is intentionally designed.
-3. Keep the wordmark caveat documented as preview-runtime follow-up context unless upstream click interception changes.
+1. Keep Jam routes on top-level client navigation unless a future route reveals a clear need for an independently updating region.
+2. Keep the wordmark caveat documented as preview-runtime follow-up context unless upstream click interception changes.
 
 Suggested verification commands for this repo:
 
@@ -107,32 +105,22 @@ pnpm exec playwright test e2e/blog.spec.ts --project chromium
 
 - When asking for Playwright results, remind the user that reusing an already-running local dev server is preferred and `CI=1` should not be forced for local verification.
 
-Named-frame implementation notes from this repo:
+Jam navigation notes from this repo:
 
-- The first implemented frame is the Jam info frame, defined in `remix/routes.ts` as `frames.jamInfo`.
-- Keep frame name constants next to route definitions, matching the upstream frame-navigation demo pattern.
-- The current Jam frame-backed routes are:
+- All current Jam routes use top-level client navigation:
   - `/jam/2025`
   - `/jam/2025/lineup`
   - `/jam/2025/faq`
   - `/jam/2025/coc`
   - `/jam/2025/ticket`
-- The current non-frame Jam routes are still top-level navigations:
   - `/jam/2025/gallery`
-- The ticket purchase form still uses a normal browser POST/redirect flow even though the GET route is now frame-backed.
-- The shared shell and frame wiring live in:
-  - `remix/routes.ts`
-  - `remix/routes/jam-shared.tsx`
-  - `remix/assets/jam-frame-head-sync.tsx`
-- The implemented pattern is:
-  - normal request: `render.document(<JamDocument ... frameSrc={request.url} />)`
-  - targeted frame request: `render.frame(<JamFramePage ...>{content}</JamFramePage>)`
-- The Jam frame fragment intentionally starts with the scaffold root element, not with a leading zero-DOM client entry. Changing that shape caused client-side reconcile issues during development.
-- Jam head updates during frame navigations are handled by the `JamFrameHeadSync` client entry instead of relying on frame-managed `<title>` replacement alone.
+- The ticket purchase form still uses a normal browser POST/redirect flow.
+- The shared Jam shell and navigation wiring live in `remix/routes/jam-shared.tsx`.
+- Jam route handlers now render documents directly and let the client-navigation runtime reconcile the full-page diff.
 - The targeted Jam Playwright coverage currently lives in `e2e/jam.spec.ts` under:
-  - `jam info navigation updates in-frame without a full reload`
+  - `jam info navigation stays client-side without a full reload`
 - The gallery Escape test has a deterministic fallback path for cases where Escape races hydration in CI/dev.
-- During local development, Vite may log `Internal server error: aborted` during frame or document navigations. So far this has behaved like a canceled in-flight request rather than a functional bug. Treat it as noteworthy only if it corresponds to broken UI behavior.
+- During local development, Vite may log `Internal server error: aborted` during document navigations. So far this has behaved like a canceled in-flight request rather than a functional bug. Treat it as noteworthy only if it corresponds to broken UI behavior.
 
 Upstream feedback from this repo:
 
@@ -141,19 +129,17 @@ Upstream feedback from this repo:
 - Top-level client navigations in this repo did not automatically clear or replace route-scoped head state such as:
   - forced theme state on `<html>` / `<body>`
   - route-scoped stylesheet links such as the Jam CSS asset
-  - page metadata when a frame-targeted navigation wanted to update document title/meta without a full document replacement
+  - page metadata during in-app navigation
 - Route-scoped stylesheets also do not currently get a built-in preload/prefetch story during client navigation in this repo's setup.
 - In practice, that means a cold navigation into a route like Jam can still flash unstyled content if `jam.css` is not already warm by the time the new UI renders.
 - This repo currently works around that with explicit client entries:
   - `remix/assets/document-head-sync.tsx`
-  - `remix/assets/jam-frame-head-sync.tsx`
 - A small local mitigation now exists at the document level:
   - `remix/components/document.tsx`
   - This preloads `jam.css` globally so the asset is usually warm before users navigate into the Jam pages.
 - That workaround seems justified for the current preview branch, but it would be better if Remix Component exposed a more declarative built-in story for:
   - document head reconciliation on top-level client navigation
   - html/body attribute and class updates during navigation
-  - frame-aware head updates when a named frame changes the active sub-route
   - route-asset prefetch/preload semantics for styles and other navigation-critical assets so apps do not need to hand-roll intent prefetching for each route family
 - The click interception path also appears brittle for anchors whose event target is an inner SVG node.
 - In this repo, `remix/assets/wordmark-link.tsx` still needs a `pointer-events-none` wrapper around the SVG so the anchor click is intercepted reliably.
@@ -538,8 +524,8 @@ For this repo specifically, that order is now effectively:
 1. Browser boot completed.
 2. SSR frame context completed.
 3. Top-level nav baseline completed for the simple routes already verified.
-4. Pick the first named-frame route.
-5. Avoid the Jam gallery modal until nested-frame behavior is intentionally designed.
+4. Keep Jam routes on top-level client navigation.
+5. Do not pursue nested-frame gallery modal work unless the product requirements materially change.
 
 ## Deliverables for the implementor
 

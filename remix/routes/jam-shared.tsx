@@ -1,11 +1,9 @@
 import clsx from "clsx";
-import { Frame } from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
-import { JamFrameHeadSync } from "../assets/jam-frame-head-sync";
 import { JamScrambleText } from "../assets/jam-scramble-text";
 import { MobileMenu } from "../assets/mobile-menu";
 import { Document } from "../components/document";
-import { frames, routes } from "../routes";
+import { routes } from "../routes";
 import iconsHref from "../shared/icons.svg";
 import jamStylesHref from "../shared/styles/jam.css?url";
 import maskSrc from "../assets/jam/images/background-mask.avif";
@@ -39,7 +37,7 @@ type JamPageProps = {
 };
 
 export function JamDocument() {
-  return (props: JamPageProps & { frameSrc?: string }) => (
+  return (props: JamPageProps) => (
     <Document
       title={props.title}
       description={props.description}
@@ -84,41 +82,15 @@ export function JamDocument() {
         },
       ]}
     >
-      {props.frameSrc ? (
-        <Frame name={frames.jamInfo} src={props.frameSrc} />
-      ) : (
-        <JamPageScaffold
-          activePath={props.activePath}
-          hideBackground={props.hideBackground ?? false}
-          showSeats={props.showSeats ?? false}
-        >
-          {props.children}
-        </JamPageScaffold>
-      )}
+      <JamPageScaffold
+        activePath={props.activePath}
+        hideBackground={props.hideBackground ?? false}
+        showSeats={props.showSeats ?? false}
+      >
+        {props.children}
+      </JamPageScaffold>
     </Document>
   );
-}
-
-export function JamFramePage() {
-  return (props: JamPageProps) => (
-    <JamPageScaffold
-      activePath={props.activePath}
-      hideBackground={props.hideBackground ?? false}
-      showSeats={props.showSeats ?? false}
-    >
-      <JamFrameHeadSync
-        title={props.title}
-        description={props.description}
-        pageUrl={props.pageUrl}
-        previewImage={props.previewImage}
-      />
-      {props.children}
-    </JamPageScaffold>
-  );
-}
-
-export function isJamInfoFrameRequest(request: Request) {
-  return request.headers.get("x-remix-target") === frames.jamInfo;
 }
 
 function JamPageScaffold() {
@@ -213,8 +185,6 @@ function Navbar() {
     >
       <a
         href={routes.jam2025.href()}
-        rmx-target={frames.jamInfo}
-        rmx-src={routes.jam2025.href()}
         class="flex items-center md:block"
       >
         <JamLogo class="h-[48px] fill-white md:h-auto md:w-[200px] lg:w-[160px] xl:w-[200px]" />
@@ -223,7 +193,6 @@ function Navbar() {
         <NavLink
           href={routes.jam2025Lineup.href()}
           active={props.activePath === routes.jam2025Lineup.href()}
-          targetFrame={frames.jamInfo}
         >
           Schedule & Lineup
         </NavLink>
@@ -236,14 +205,12 @@ function Navbar() {
         <NavLink
           href={routes.jam2025Coc.href()}
           active={props.activePath === routes.jam2025Coc.href()}
-          targetFrame={frames.jamInfo}
         >
           Code of Conduct
         </NavLink>
         <NavLink
           href={routes.jam2025Faq.href()}
           active={props.activePath === routes.jam2025Faq.href()}
-          targetFrame={frames.jamInfo}
         >
           FAQ
         </NavLink>
@@ -251,8 +218,6 @@ function Navbar() {
       <a
         class={clsx(jamButtonClassName, "hidden bg-white text-black lg:flex")}
         href={routes.jam2025Ticket.href()}
-        rmx-target={frames.jamInfo}
-        rmx-src={routes.jam2025Ticket.href()}
       >
         <TicketLogo class="size-6 fill-current md:size-8 lg:size-6 xl:size-8" />
         <span>Ticket</span>
@@ -267,7 +232,6 @@ function Navbar() {
         <MobileNavLink
           href={routes.jam2025Lineup.href()}
           active={props.activePath === routes.jam2025Lineup.href()}
-          targetFrame={frames.jamInfo}
         >
           Schedule & Lineup
         </MobileNavLink>
@@ -280,21 +244,18 @@ function Navbar() {
         <MobileNavLink
           href={routes.jam2025Coc.href()}
           active={props.activePath === routes.jam2025Coc.href()}
-          targetFrame={frames.jamInfo}
         >
           Code of Conduct
         </MobileNavLink>
         <MobileNavLink
           href={routes.jam2025Faq.href()}
           active={props.activePath === routes.jam2025Faq.href()}
-          targetFrame={frames.jamInfo}
         >
           FAQ
         </MobileNavLink>
         <MobileNavLink
           href={routes.jam2025Ticket.href()}
           active={props.activePath === routes.jam2025Ticket.href()}
-          targetFrame={frames.jamInfo}
         >
           Ticket
         </MobileNavLink>
@@ -307,13 +268,10 @@ function NavLink() {
   return (props: {
     href: string;
     active: boolean;
-    targetFrame?: string;
     children: RemixNode;
   }) => (
     <a
       href={props.href}
-      rmx-target={props.targetFrame}
-      rmx-src={props.targetFrame ? props.href : undefined}
       class={clsx(
         "rounded-full border-2 px-5 py-0.5 text-base font-bold outline-none transition-colors duration-300 md:border-4 md:py-3 md:text-xl lg:border-2 lg:px-4 lg:py-2 lg:text-base xl:px-5 xl:py-3 xl:text-xl",
         props.active
@@ -330,13 +288,10 @@ function MobileNavLink() {
   return (props: {
     href: string;
     active: boolean;
-    targetFrame?: string;
     children: RemixNode;
   }) => (
     <a
       href={props.href}
-      rmx-target={props.targetFrame}
-      rmx-src={props.targetFrame ? props.href : undefined}
       class={clsx(
         "block min-w-max rounded-full border-2 px-4 py-2 text-lg font-bold outline-none transition-colors duration-300",
         props.active

@@ -1,6 +1,6 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
-async function markPage(page: Parameters<typeof test>[0]["page"]) {
+async function markPage(page: Page) {
   return page.evaluate(() => {
     let marker = Math.random().toString(36).slice(2);
     (window as Window & { __jamNavMarker?: string }).__jamNavMarker = marker;
@@ -178,7 +178,7 @@ test.describe("Jam", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam info navigation updates in-frame without a full reload", async ({
+  test("jam info navigation stays client-side without a full reload", async ({
     page,
   }) => {
     await page.goto("/jam/2025");
@@ -216,9 +216,7 @@ test.describe("Jam", () => {
 
     await page.waitForURL("**/jam/2025/ticket");
     await expect(page).toHaveTitle(/Ticket/i);
-    await expect(
-      page.getByRole("heading", { name: /General Admission/i }),
-    ).toBeVisible();
+    await expect(page.locator("[data-jam-ticket-card]")).toBeVisible();
     await expect
       .poll(() =>
         page.evaluate(
