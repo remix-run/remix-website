@@ -201,8 +201,9 @@ test.describe("Jam", () => {
 
     await page.waitForURL("**/jam/2025/faq");
     await expect(page).toHaveTitle(/FAQ/i);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Frequently Asked Questions" }),
+      page.getByText("Where can I find the event lineup?", { exact: true }),
     ).toBeVisible();
     await expect
       .poll(() =>
@@ -271,37 +272,22 @@ test.describe("Jam", () => {
     }
 
     let firstPhotoLink = page.locator("[data-gallery-photo-link]").first();
-    await firstPhotoLink.focus();
-    await firstPhotoLink.press("Enter");
+    await firstPhotoLink.click();
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
+      1,
+    );
 
     await page.keyboard.press("Escape");
-    let closedByEscape = false;
-    try {
-      await expect.poll(() => /\?photo=\d+/.test(page.url())).toBe(false);
-      closedByEscape = true;
-    } catch {
-      // In CI the Escape key listener can race hydration; navigate directly to
-      // the gallery route as a deterministic fallback while preserving Escape coverage.
-    }
-
-    if (!closedByEscape) {
-      await page.goto("/jam/2025/gallery");
-    }
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
-    if (closedByEscape) {
-      await expect(firstPhotoLink).toBeFocused();
-    } else {
-      await expect(firstPhotoLink).toBeVisible();
-    }
+    await expect(firstPhotoLink).toBeFocused();
   });
 
   test("jam gallery download link returns attachment response", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/gallery");
 
     let noPhotosMessage = page.getByText("No photos available yet.");
     if (await noPhotosMessage.isVisible()) {
@@ -322,7 +308,7 @@ test.describe("Jam", () => {
     expect(response.headers()["content-disposition"]).toContain("attachment;");
   });
 
-  test("jam gallery keyboard navigation moves and closes modal", async ({
+  test("jam gallery keyboard navigation moves between photos", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
@@ -335,17 +321,69 @@ test.describe("Jam", () => {
 
     await page.goto("/jam/2025/gallery?photo=0");
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
+      1,
+    );
 
     await page.keyboard.press("ArrowRight");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
     await page.waitForLoadState("networkidle");
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
+      1,
+    );
 
     await page.keyboard.press("ArrowLeft");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
     await page.waitForLoadState("networkidle");
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
+      1,
+    );
 
-    await page.keyboard.press("Escape");
+    await page.getByRole("link", { name: "Close modal" }).click();
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+  });
+
+  test("jam gallery modal traps focus while open", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2025/gallery");
+
+    let noPhotosMessage = page.getByText("No photos available yet.");
+    if (await noPhotosMessage.isVisible()) {
+      test.skip(true, "No gallery photos available in this environment");
+    }
+
+    let firstPhotoLink = page.locator("[data-gallery-photo-link]").first();
+    await firstPhotoLink.click();
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
+      1,
+    );
+
+    let closeLink = page.getByRole("link", { name: "Close modal" });
+    let downloadLink = page.getByRole("link", {
+      name: "Download full resolution image",
+    });
+    let previousLink = page.getByRole("link", { name: "Previous photo" });
+    let nextLink = page.getByRole("link", { name: "Next photo" });
+
+    await expect(closeLink).toBeFocused();
+
+    await page.keyboard.press("Tab");
+    await expect(downloadLink).toBeFocused();
+
+    await page.keyboard.press("Tab");
+    await expect(previousLink).toBeFocused();
+
+    await page.keyboard.press("Tab");
+    await expect(nextLink).toBeFocused();
+
+    await page.keyboard.press("Tab");
+    await expect(closeLink).toBeFocused();
+
+    await page.keyboard.press("Shift+Tab");
+    await expect(nextLink).toBeFocused();
   });
 });
