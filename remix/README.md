@@ -64,7 +64,6 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
   - `/jam/2025/gallery`
 - Do not pursue nested-frame Jam/gallery work unless product requirements materially change.
 - The ticket purchase form still uses a normal browser POST/redirect flow.
-- `remix/assets/wordmark-link.tsx` still uses a `pointer-events-none` wrapper around the inner SVG as a temporary workaround for the current preview runtime's click interception behavior.
 - Navigation API support is a requirement for the hydrated Remix 3 experience on this branch; do not add a custom browser fallback unless product requirements change.
 - During local development, Vite may log `Internal server error: aborted` during document navigations. Treat it as noteworthy only if it corresponds to broken UI behavior.
 

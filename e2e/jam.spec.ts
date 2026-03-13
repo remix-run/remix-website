@@ -288,13 +288,13 @@ test.describe("Jam", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2025/gallery?photo=0");
 
     let noPhotosMessage = page.getByText("No photos available yet.");
     if (await noPhotosMessage.isVisible()) {
       test.skip(true, "No gallery photos available in this environment");
     }
 
-    await page.goto("/jam/2025/gallery?photo=0");
     let downloadLink = page.getByRole("link", {
       name: "Download full resolution image",
     });

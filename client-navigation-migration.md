@@ -41,12 +41,6 @@ Verified in this repo:
 - Relative internal links inside rendered blog markdown also perform client navigation
 - The targeted Playwright check for the wordmark path now passes locally
 
-Important repo-specific note:
-
-- `remix/assets/wordmark-link.tsx` currently wraps the SVG in a `pointer-events-none` container.
-- This is a temporary workaround for the preview runtime's click interception path, which currently misses clicks when the event target is the inner SVG instead of the anchor.
-- Keep this in mind before treating the wordmark implementation as finished.
-
 Current migration state:
 
 - Step 2 is complete.
@@ -58,12 +52,10 @@ Current migration state:
 Step 6 closeout note:
 
 - Treat top-level client navigation as complete in this repo.
-- Keep the wordmark `pointer-events-none` wrapper as a known preview-runtime workaround, not as an open migration blocker.
 
 Recommended next task for the next agent:
 
 1. Keep Jam routes on top-level client navigation unless a future route reveals a clear need for an independently updating region.
-2. Keep the wordmark caveat documented as preview-runtime follow-up context unless upstream click interception changes.
 
 Suggested verification commands for this repo:
 
@@ -141,10 +133,6 @@ Upstream feedback from this repo:
   - document head reconciliation on top-level client navigation
   - html/body attribute and class updates during navigation
   - route-asset prefetch/preload semantics for styles and other navigation-critical assets so apps do not need to hand-roll intent prefetching for each route family
-- The click interception path also appears brittle for anchors whose event target is an inner SVG node.
-- In this repo, `remix/assets/wordmark-link.tsx` still needs a `pointer-events-none` wrapper around the SVG so the anchor click is intercepted reliably.
-- Treat that as upstream product feedback, not just local implementation trivia: a top-level client navigation runtime should reliably intercept clicks on normal anchors even when the actual event target is nested SVG content inside the anchor.
-- If this behavior is intentional, the framework docs should call it out explicitly; if not, it looks like a bug or limitation in the current interception implementation.
 
 What PR 11147 adds or clarifies beyond the older preview branch:
 

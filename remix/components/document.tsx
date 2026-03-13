@@ -5,6 +5,7 @@ import { DocumentHeadSync } from "../assets/document-head-sync";
 import documentAssets from "./document.tsx?assets=ssr";
 import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head";
 import iconsHref from "../shared/icons.svg";
+import mdStylesHref from "../shared/styles/md.css?url";
 import jamStylesHref from "../shared/styles/jam.css?url";
 
 import "../shared/styles/tailwind.css";
@@ -131,6 +132,7 @@ export function Document() {
             href="/font/jet-brains-mono.woff2"
             crossorigin="anonymous"
           />
+          <link rel="preload" as="style" href={mdStylesHref} />
           <link rel="preload" as="style" href={jamStylesHref} />
 
           {/* Styles */}

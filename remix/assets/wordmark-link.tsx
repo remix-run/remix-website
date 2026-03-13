@@ -15,14 +15,8 @@ export let WordmarkLink = clientEntry(`${assets.entry}#WordmarkLink`, () => {
         }),
       ]}
     >
-      {/*
-        TODO: Revisit this wrapper. It currently forces pointer events onto the
-        anchor because the preview runtime's document-level click interception
-        misses clicks whose event.target is the inner SVG tree.
-      */}
-      <span class="pointer-events-none">
-        <Wordmark aria-hidden />
-      </span>
+      <Wordmark aria-hidden />
+
       <span class="sr-only">Remix home</span>
     </a>
   );
