@@ -6,6 +6,10 @@ test.describe("Mobile menu", () => {
     let response = await page.goto("/");
     expect(response?.ok()).toBe(true);
 
+    await expect(
+      page.locator('[data-mobile-menu-ready="true"]').first(),
+    ).toHaveCount(1);
+
     let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
     await expect(menuToggle).toBeVisible();
     await menuToggle.focus();
@@ -23,6 +27,10 @@ test.describe("Mobile menu", () => {
     let response = await page.goto("/");
     expect(response?.ok()).toBe(true);
 
+    await expect(
+      page.locator('[data-mobile-menu-ready="true"]').first(),
+    ).toHaveCount(1);
+
     let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
     await expect(menuToggle).toBeVisible();
     await menuToggle.focus();
@@ -36,9 +44,6 @@ test.describe("Mobile menu", () => {
     await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeFocused();
 
     await page.keyboard.press("Escape");
-    if (await mobileNav.isVisible()) {
-      await menuToggle.click();
-    }
     await expect(mobileNav).not.toBeVisible();
     await expect(menuToggle).toBeFocused();
   });

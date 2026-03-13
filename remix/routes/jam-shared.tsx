@@ -25,53 +25,88 @@ const jamMobileMenuWrapperClass = "relative top-1 w-max p-1";
 const jamMobileMenuNavClass =
   "flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg";
 
+type JamPageProps = {
+  title: string;
+  description: string;
+  pageUrl: string;
+  previewImage: string;
+  activePath: string;
+  hideBackground?: boolean;
+  showSeats?: boolean;
+  children?: RemixNode;
+};
+
 export function JamDocument() {
-  return (props: {
-    title: string;
-    description: string;
-    pageUrl: string;
-    previewImage: string;
-    activePath: string;
-    hideBackground?: boolean;
-    showSeats?: boolean;
-    children: RemixNode;
-  }) => (
+  return (props: JamPageProps) => (
     <Document
       title={props.title}
       description={props.description}
       forceTheme="dark"
-      head={
-        <>
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content={props.title} />
-          <meta property="og:description" content={props.description} />
-          <meta property="og:url" content={props.pageUrl} />
-          <meta property="og:image" content={props.previewImage} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content={props.title} />
-          <meta name="twitter:description" content={props.description} />
-          <meta name="twitter:image" content={props.previewImage} />
-          <link rel="stylesheet" href={jamStylesHref} />
-          <link
-            rel="preload"
-            as="font"
-            href="/font/jet-brains-mono.woff2"
-            crossorigin="anonymous"
-          />
-        </>
-      }
+      headTags={[
+        { kind: "meta", property: "og:type", content: "website" },
+        { kind: "meta", property: "og:title", content: props.title },
+        {
+          kind: "meta",
+          property: "og:description",
+          content: props.description,
+        },
+        { kind: "meta", property: "og:url", content: props.pageUrl },
+        {
+          kind: "meta",
+          property: "og:image",
+          content: props.previewImage,
+        },
+        {
+          kind: "meta",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        { kind: "meta", name: "twitter:title", content: props.title },
+        {
+          kind: "meta",
+          name: "twitter:description",
+          content: props.description,
+        },
+        {
+          kind: "meta",
+          name: "twitter:image",
+          content: props.previewImage,
+        },
+        { kind: "link", rel: "stylesheet", href: jamStylesHref },
+        {
+          kind: "link",
+          rel: "preload",
+          href: "/font/jet-brains-mono.woff2",
+          as: "font",
+          crossorigin: "anonymous",
+        },
+      ]}
     >
-      <div class="relative overflow-hidden">
-        <Background hideBackground={props.hideBackground ?? false}>
-          <Navbar activePath={props.activePath} className="z-40" />
-          <div class="px-6">{props.children}</div>
-          <Footer
-            showSeats={props.showSeats ?? false}
-            className="relative z-20"
-          />
-        </Background>
-      </div>
+      <JamPageScaffold
+        activePath={props.activePath}
+        hideBackground={props.hideBackground ?? false}
+        showSeats={props.showSeats ?? false}
+      >
+        {props.children}
+      </JamPageScaffold>
     </Document>
+  );
+}
+
+function JamPageScaffold() {
+  return (props: {
+    activePath: string;
+    hideBackground: boolean;
+    showSeats: boolean;
+    children?: RemixNode;
+  }) => (
+    <div class="relative overflow-hidden">
+      <Background hideBackground={props.hideBackground}>
+        <Navbar activePath={props.activePath} className="z-40" />
+        <div class="px-6">{props.children}</div>
+        <Footer showSeats={props.showSeats} className="relative z-20" />
+      </Background>
+    </div>
   );
 }
 

@@ -1,45 +1,51 @@
 import clsx from "clsx";
-import { clientEntry, type Handle } from "remix/component";
+import { addEventListeners, clientEntry, type Handle } from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import assets from "./jam-fade-in-badge.tsx?assets=client";
 
 export let JamFadeInBadge = clientEntry(
   `${assets.entry}#JamFadeInBadge`,
-  (handle: Handle) => {
+  (handle: Handle, setup?: number) => {
     let isVisible = false;
-    let initialized = false;
+    let delay = setup ?? 0;
+
+    handle.queueTask((signal) => {
+      if (signal.aborted) return;
+      let prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (prefersReducedMotion) {
+        isVisible = true;
+        handle.update();
+        return;
+      }
+
+      let timeout = window.setTimeout(() => {
+        if (signal.aborted) return;
+        isVisible = true;
+        handle.update();
+      }, delay);
+
+      let clearTimeoutOnPageHide = () => {
+        window.clearTimeout(timeout);
+      };
+      addEventListeners(window, handle.signal, {
+        pagehide: clearTimeoutOnPageHide,
+      });
+      handle.signal.addEventListener(
+        "abort",
+        () => {
+          window.clearTimeout(timeout);
+        },
+        { once: true },
+      );
+    });
 
     return (props: {
       children: RemixNode;
-      delay?: number;
       class?: string;
       "data-jam-event-badge"?: boolean;
     }) => {
-      if (!initialized) {
-        initialized = true;
-        handle.queueTask(() => {
-          let prefersReducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)",
-          ).matches;
-          if (prefersReducedMotion) {
-            isVisible = true;
-            handle.update();
-            return;
-          }
-
-          let timeout = window.setTimeout(() => {
-            isVisible = true;
-            handle.update();
-          }, props.delay ?? 0);
-
-          handle.on(window, {
-            pagehide() {
-              window.clearTimeout(timeout);
-            },
-          });
-        });
-      }
-
       return (
         <span
           data-jam-event-badge={

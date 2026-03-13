@@ -3,7 +3,7 @@ import { initFathomAnalytics } from "./fathom";
 
 initFathomAnalytics();
 
-let app = run(document, {
+let app = run({
   async loadModule(src, exportName) {
     let mod = await import(/* @vite-ignore */ src);
 
@@ -23,14 +23,24 @@ let app = run(document, {
 
     throw new Error(`Export "${exportName}" from "${src}" is not a function`);
   },
-  async resolveFrame(src, signal) {
-    let res = await fetch(src, { headers: { accept: "text/html" }, signal });
+  async resolveFrame(src, signal, target) {
+    let headers = new Headers();
+    headers.set("accept", "text/html");
+    headers.set("x-remix-frame", "true");
+    headers.set("x-remix-top-frame-src", window.location.href);
+    if (target) headers.set("x-remix-target", target);
+
+    let res = await fetch(src, { headers, signal });
     if (!res.ok) {
-      return `<pre>Frame error: ${res.status} ${res.statusText}</pre>`;
+      throw new Error(`Frame request failed: ${res.status} ${res.statusText}`);
     }
     if (res.body) return res.body;
     return await res.text();
   },
 });
 
-app.ready().catch((error: unknown) => console.error(error));
+app.addEventListener("error", (event) => {
+  console.error(event.error);
+});
+
+await app.ready();

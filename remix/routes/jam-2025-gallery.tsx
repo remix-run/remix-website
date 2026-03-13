@@ -9,10 +9,11 @@ import {
   Title,
   transformShopifyImageUrl,
 } from "./jam-shared";
-import { JamGalleryModalControls } from "../assets/jam-gallery-modal-controls";
 import { JamGalleryFocusRestore } from "../assets/jam-gallery-focus-restore";
+import { JamGalleryKeyboardNavigation } from "../assets/jam-gallery-keyboard-navigation";
 import ogImageSrc from "../assets/jam/images/og-gallery.jpg";
 import iconsHref from "../shared/icons.svg";
+import type { RemixNode } from "remix/component/jsx-runtime";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
@@ -37,8 +38,8 @@ export async function jam2025GalleryHandler() {
     >
       <main class="mx-auto flex max-w-[1920px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[200px] lg:pt-[210px]">
         <Title>
-          <ScrambleText text="Photo" delay={100} color="blue" />
-          <ScrambleText text="Gallery" delay={300} color="green" />
+          <ScrambleText setup={{ text: "Photo", delay: 100, color: "blue" }} />
+          <ScrambleText setup={{ text: "Gallery", delay: 300, color: "green" }} />
         </Title>
 
         {photos.length === 0 ? (
@@ -51,14 +52,14 @@ export async function jam2025GalleryHandler() {
                   key={photo.url}
                   class="mb-4 w-full break-inside-avoid md:mb-6"
                 >
-                  <a
+                  <JamGalleryDocumentLink
                     href={`${routes.jam2025Gallery.href()}?photo=${index}`}
-                    data-gallery-photo-link
-                    data-gallery-photo-index={index}
+                    dataGalleryPhotoLink
+                    dataGalleryPhotoIndex={index}
                     class="block overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity duration-300 hover:opacity-85 focus-visible:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand"
                   >
                     <PhotoImage {...photo} />
-                  </a>
+                  </JamGalleryDocumentLink>
                 </div>
               ))}
             </div>
@@ -150,9 +151,17 @@ function GalleryModal() {
         focusPhotoIndex={selectedPhotoIndex}
         class="fixed inset-0 z-50 size-full select-none bg-black/70 backdrop-blur"
       >
-        <a
+        <JamGalleryKeyboardNavigation
+          closeHref={closeHref}
+          previousHref={previousHref}
+          nextHref={nextHref}
+          focusPhotoIndex={selectedPhotoIndex}
+        />
+        <JamGalleryDocumentLink
           href={closeHref}
-          aria-label="Close gallery backdrop"
+          dataGalleryBackdrop
+          tabindex={-1}
+          ariaLabel="Close gallery backdrop"
           class="absolute inset-0 z-0 block"
         />
         <div class="relative z-10 flex h-full w-full flex-col gap-6 p-4 md:p-9">
@@ -188,6 +197,59 @@ function GalleryModal() {
       </JamGalleryModalControls>
     );
   };
+}
+
+function JamGalleryModalControls() {
+  return (props: {
+    closeHref: string;
+    previousHref: string;
+    nextHref: string;
+    focusPhotoIndex: number;
+    class?: string;
+    children: RemixNode;
+  }) => {
+    return (
+      <div
+        data-gallery-modal
+        role="dialog"
+        aria-modal="true"
+        tabindex={-1}
+        class={props.class}
+      >
+        {props.children}
+      </div>
+    );
+  };
+}
+
+function JamGalleryDocumentLink() {
+  return (props: {
+    href: string;
+    class?: string;
+    ariaLabel?: string;
+    dataGalleryBackdrop?: boolean;
+    dataGalleryPhotoLink?: boolean;
+    dataGalleryPhotoIndex?: number;
+    tabindex?: number;
+    target?: string;
+    rel?: string;
+    children?: RemixNode;
+  }) => (
+    <a
+      href={props.href}
+      rmx-document
+      aria-label={props.ariaLabel}
+      data-gallery-backdrop={props.dataGalleryBackdrop || undefined}
+      data-gallery-photo-link={props.dataGalleryPhotoLink || undefined}
+      data-gallery-photo-index={props.dataGalleryPhotoIndex}
+      tabindex={props.tabindex}
+      target={props.target}
+      rel={props.rel}
+      class={props.class}
+    >
+      {props.children}
+    </a>
+  );
 }
 
 function ModalImage() {
@@ -232,20 +294,33 @@ function IconLink() {
     download?: string;
     target?: string;
     rel?: string;
-  }) => (
-    <a
-      href={props.href}
-      aria-label={props.label}
-      download={props.download}
-      target={props.target}
-      rel={props.rel}
-      class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
-    >
-      <svg class="size-6" aria-hidden="true">
-        <use href={`${iconsHref}#${props.icon}`} />
-      </svg>
-    </a>
-  );
+  }) =>
+    props.download ? (
+      <a
+        href={props.href}
+        aria-label={props.label}
+        download={props.download}
+        target={props.target}
+        rel={props.rel}
+        class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
+      >
+        <svg class="pointer-events-none size-6" aria-hidden="true">
+          <use href={`${iconsHref}#${props.icon}`} />
+        </svg>
+      </a>
+    ) : (
+      <JamGalleryDocumentLink
+        href={props.href}
+        ariaLabel={props.label}
+        target={props.target}
+        rel={props.rel}
+        class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
+      >
+        <svg class="pointer-events-none size-6" aria-hidden="true">
+          <use href={`${iconsHref}#${props.icon}`} />
+        </svg>
+      </JamGalleryDocumentLink>
+    );
 }
 
 function getSelectedPhotoIndex(

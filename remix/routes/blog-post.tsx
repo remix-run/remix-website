@@ -89,24 +89,56 @@ function Page() {
     <Document
       title={`${props.post.title} | Remix`}
       description={props.post.summary}
+      headTags={[
+        { kind: "link", rel: "stylesheet", href: mdStyles },
+        {
+          kind: "link",
+          rel: "alternate",
+          href: routes.blogPost.href({ slug: props.slug, ext: "md" }),
+          type: "text/markdown",
+        },
+        { kind: "meta", property: "og:type", content: "website" },
+        { kind: "meta", property: "og:title", content: props.post.title },
+        {
+          kind: "meta",
+          property: "og:description",
+          content: props.post.summary,
+        },
+        { kind: "meta", property: "og:url", content: props.pageUrl },
+        {
+          kind: "meta",
+          property: "og:image",
+          content: props.socialImageUrl,
+        },
+        {
+          kind: "meta",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          kind: "meta",
+          name: "twitter:creator",
+          content: "@remix_run",
+        },
+        { kind: "meta", name: "twitter:site", content: "@remix_run" },
+        { kind: "meta", name: "twitter:title", content: props.post.title },
+        {
+          kind: "meta",
+          name: "twitter:description",
+          content: props.post.summary,
+        },
+        {
+          kind: "meta",
+          name: "twitter:image",
+          content: props.socialImageUrl,
+        },
+        {
+          kind: "meta",
+          name: "twitter:image:alt",
+          content: props.post.imageAlt,
+        },
+      ]}
     >
-      <link rel="stylesheet" href={mdStyles} />
-      <link
-        rel="alternate"
-        type="text/markdown"
-        href={routes.blogPost.href({ slug: props.slug, ext: "md" })}
-      />
-      <meta property="og:url" content={props.pageUrl} />
-      <meta property="og:title" content={props.post.title} />
-      <meta property="og:image" content={props.socialImageUrl} />
-      <meta property="og:description" content={props.post.summary} />
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:creator" content="@remix_run" />
-      <meta name="twitter:site" content="@remix_run" />
-      <meta name="twitter:title" content={props.post.title} />
-      <meta name="twitter:description" content={props.post.summary} />
-      <meta name="twitter:image" content={props.socialImageUrl} />
-      <meta name="twitter:image:alt" content={props.post.imageAlt} />
       <Header />
       <main class="flex flex-1 flex-col" tabIndex={-1}>
         <BlogPostContent post={props.post} />

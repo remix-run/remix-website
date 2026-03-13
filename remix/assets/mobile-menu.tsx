@@ -1,5 +1,11 @@
-import { clientEntry, type Handle } from "remix/component";
-import { escape } from "remix/interaction/keys";
+import {
+  addEventListeners,
+  clientEntry,
+  keysEvents,
+  on,
+  ref,
+  type Handle,
+} from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import cx from "clsx";
 import iconsHref from "../shared/icons.svg";
@@ -9,32 +15,33 @@ export let MobileMenu = clientEntry(
   `${assets.entry}#MobileMenu`,
   (handle: Handle, setup?: { open?: boolean }) => {
     let isOpen = setup?.open ?? false;
+    let detailsElement: HTMLDetailsElement | null = null;
     let pendingSummaryFocusRestore: HTMLElement | null = null;
     let openSummaryElement: HTMLElement | null = null;
 
-    handle.queueTask(() => {
-      let closeMenu = () => {
-        if (isOpen) {
-          isOpen = false;
-          handle.update();
-        }
-      };
+    let closeMenu = () => {
+      if (detailsElement?.open || isOpen) {
+        isOpen = false;
+        handle.update();
+      }
+    };
+    let onEscape = () => {
+      if (!detailsElement?.open) return;
+      if (openSummaryElement) {
+        pendingSummaryFocusRestore = openSummaryElement;
+      }
+      closeMenu();
+    };
 
-      handle.on(document, {
+    if (typeof document !== "undefined") {
+      addEventListeners(document, handle.signal, {
         mousedown: closeMenu,
         touchstart: closeMenu,
         focusin: closeMenu,
-        [escape]() {
-          if (!isOpen) return;
-          if (openSummaryElement) {
-            pendingSummaryFocusRestore = openSummaryElement;
-          }
-          closeMenu();
-        },
       });
-    });
+    }
 
-    let stopPropagation = (e: UIEvent) => {
+    let stopPropagation = (e: Event) => {
       e.stopPropagation();
     };
     let onToggle = (e: Event & { currentTarget: HTMLDetailsElement }) => {
@@ -47,7 +54,8 @@ export let MobileMenu = clientEntry(
       if (!isOpen && pendingSummaryFocusRestore) {
         let focusTarget = pendingSummaryFocusRestore;
         pendingSummaryFocusRestore = null;
-        handle.queueTask(() => {
+        handle.queueTask((signal) => {
+          if (signal.aborted) return;
           focusTarget.focus();
         });
       }
@@ -88,14 +96,20 @@ export let MobileMenu = clientEntry(
       return (
         <details
           open={isOpen}
+          data-mobile-menu-ready={
+            typeof document !== "undefined" ? "true" : undefined
+          }
           class={cx("relative cursor-pointer", props.class)}
-          on={{
-            toggle: onToggle,
-            mousedown: stopPropagation,
-            touchstart: stopPropagation,
-            focusin: stopPropagation,
-            focusout: onFocusOut,
-          }}
+          mix={[
+            ref((node) => {
+              detailsElement = node;
+            }),
+            on("toggle", onToggle),
+            on<HTMLDetailsElement>("mousedown", stopPropagation),
+            on<HTMLDetailsElement>("touchstart", stopPropagation),
+            on<HTMLDetailsElement>("focusin", stopPropagation),
+            on("focusout", onFocusOut),
+          ]}
         >
           <summary class={summaryClass} aria-label="Open menu">
             <svg class="h-5 w-5" aria-hidden="true">
@@ -106,7 +120,11 @@ export let MobileMenu = clientEntry(
 
           <div class={menuPositionClass}>
             <div class={menuWrapperClass}>
-              <nav class={navClass} aria-label="Mobile">
+              <nav
+                class={navClass}
+                aria-label="Mobile"
+                mix={[keysEvents(), on(keysEvents.escape, onEscape)]}
+              >
                 {props.children}
               </nav>
             </div>
