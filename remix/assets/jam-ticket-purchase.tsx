@@ -5,10 +5,15 @@ import assets from "./jam-ticket-purchase.tsx?assets=client";
 
 export let JamTicketPurchase = clientEntry(
   `${assets.entry}#JamTicketPurchase`,
-  (handle: Handle) => {
-    let quantity = 1;
+  (
+    handle: Handle,
+    setup?: { initialQuantity?: number; maxQuantity: number },
+  ) => {
+    let quantity = normalizeQuantity(
+      setup?.initialQuantity ?? 1,
+      setup?.maxQuantity ?? 1,
+    );
     let submitting = false;
-    let initialized = false;
 
     return (props: {
       price: string;
@@ -16,17 +21,8 @@ export let JamTicketPurchase = clientEntry(
       maxQuantity: number;
       isSoldOut: boolean;
       error?: string;
-      initialQuantity?: number;
       class?: string;
     }) => {
-      if (!initialized) {
-        quantity = normalizeQuantity(
-          props.initialQuantity ?? 1,
-          props.maxQuantity,
-        );
-        initialized = true;
-      }
-
       let decrementDisabled = props.isSoldOut || quantity <= 1;
       let incrementDisabled = props.isSoldOut || quantity >= props.maxQuantity;
 

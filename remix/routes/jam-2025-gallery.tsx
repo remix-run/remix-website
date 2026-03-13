@@ -38,8 +38,8 @@ export async function jam2025GalleryHandler() {
     >
       <main class="mx-auto flex max-w-[1920px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[200px] lg:pt-[210px]">
         <Title>
-          <ScrambleText text="Photo" delay={100} color="blue" />
-          <ScrambleText text="Gallery" delay={300} color="green" />
+          <ScrambleText setup={{ text: "Photo", delay: 100, color: "blue" }} />
+          <ScrambleText setup={{ text: "Gallery", delay: 300, color: "green" }} />
         </Title>
 
         {photos.length === 0 ? (

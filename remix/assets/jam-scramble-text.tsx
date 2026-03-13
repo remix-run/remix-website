@@ -19,6 +19,15 @@ type ScrambleState = {
   resolved: boolean;
 };
 
+type ScrambleSetup = {
+  text: string;
+  delay?: number;
+  color?: ScrambleColor;
+  cyclesToResolve?: number;
+  charDelay?: number;
+  cycleDelay?: number;
+};
+
 function getScrambledLetter(
   targetChar: string,
   iteration: number,
@@ -46,10 +55,15 @@ function getResolvedState(text: string): ScrambleState[] {
 
 export let JamScrambleText = clientEntry(
   `${assets.entry}#JamScrambleText`,
-  (handle: Handle) => {
-    let state: ScrambleState[] = [];
-    let sequenceKey = "";
-    let started = false;
+  (handle: Handle, setup: ScrambleSetup) => {
+    let text = setup.text;
+    let textChars = text.split("");
+    let delay = setup.delay ?? 0;
+    let color = setup.color ?? "blue";
+    let cyclesToResolve = setup.cyclesToResolve ?? 10;
+    let charDelay = setup.charDelay ?? 100;
+    let cycleDelay = setup.cycleDelay ?? 50;
+    let state = getInitialState(text);
     let timers: number[] = [];
 
     let cleanupTimers = () => {
@@ -60,19 +74,13 @@ export let JamScrambleText = clientEntry(
       timers = [];
     };
 
-    let startAnimation = (config: {
-      text: string;
-      delay: number;
-      cyclesToResolve: number;
-      charDelay: number;
-      cycleDelay: number;
-    }) => {
+    let startAnimation = () => {
       cleanupTimers();
       if (handle.signal.aborted) return;
-      state = getInitialState(config.text);
+      state = getInitialState(text);
       handle.update();
 
-      for (let charIndex = 0; charIndex < config.text.length; charIndex++) {
+      for (let charIndex = 0; charIndex < text.length; charIndex++) {
         let revealTimer = window.setTimeout(
           () => {
             if (handle.signal.aborted) return;
@@ -100,7 +108,7 @@ export let JamScrambleText = clientEntry(
 
               if (!state[charIndex]) return;
 
-              if (iteration >= config.cyclesToResolve) {
+              if (iteration >= cyclesToResolve) {
                 window.clearInterval(cycleTimer);
                 state[charIndex] = {
                   visible: true,
@@ -115,11 +123,11 @@ export let JamScrambleText = clientEntry(
                 };
               }
               handle.update();
-            }, config.cycleDelay);
+            }, cycleDelay);
 
             timers.push(cycleTimer);
           },
-          config.delay + charIndex * config.charDelay,
+          delay + charIndex * charDelay,
         );
 
         timers.push(revealTimer);
@@ -140,64 +148,26 @@ export let JamScrambleText = clientEntry(
       );
     });
 
-    return (props: {
-      text: string;
-      delay?: number;
-      color?: ScrambleColor;
-      className?: string;
-      cyclesToResolve?: number;
-      charDelay?: number;
-      cycleDelay?: number;
-    }) => {
-      let delay = props.delay ?? 0;
-      let color = props.color ?? "blue";
-      let cyclesToResolve = props.cyclesToResolve ?? 10;
-      let charDelay = props.charDelay ?? 100;
-      let cycleDelay = props.cycleDelay ?? 50;
-      let key = [
-        props.text,
-        delay,
-        color,
-        cyclesToResolve,
-        charDelay,
-        cycleDelay,
-      ].join("|");
-
-      if (key !== sequenceKey) {
-        sequenceKey = key;
-        started = false;
-        state = getInitialState(props.text);
+    handle.queueTask((signal) => {
+      if (signal.aborted || handle.signal.aborted) return;
+      let prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (prefersReducedMotion) {
+        cleanupTimers();
+        state = getResolvedState(text);
+        handle.update();
+        return;
       }
+      startAnimation();
+    });
 
-      if (!started) {
-        started = true;
-        let config = {
-          text: props.text,
-          delay,
-          cyclesToResolve,
-          charDelay,
-          cycleDelay,
-        };
-        handle.queueTask((signal) => {
-          if (signal.aborted || handle.signal.aborted) return;
-          let prefersReducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)",
-          ).matches;
-          if (prefersReducedMotion) {
-            cleanupTimers();
-            state = getResolvedState(config.text);
-            handle.update();
-            return;
-          }
-          startAnimation(config);
-        });
-      }
-
+    return (props: { className?: string }) => {
       return (
         <>
-          <span class="sr-only">{props.text}</span>
+          <span class="sr-only">{text}</span>
           <span class={props.className} aria-hidden="true">
-            {props.text.split("").map((char, index) => {
+            {textChars.map((char, index) => {
               let current = state[index];
               let visible = current?.visible ?? false;
               let resolved = current?.resolved ?? false;

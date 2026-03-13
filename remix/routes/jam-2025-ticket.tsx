@@ -65,12 +65,10 @@ export async function jam2025TicketHandler() {
       <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]">
         <Title>
           <ScrambleText
+            setup={{ text: "General Admission", delay: 100, color: "blue" }}
             className="whitespace-nowrap"
-            text="General Admission"
-            delay={100}
-            color="blue"
           />
-          <ScrambleText text="ticket" delay={300} color="green" />
+          <ScrambleText setup={{ text: "ticket", delay: 300, color: "green" }} />
         </Title>
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
@@ -82,13 +80,13 @@ export async function jam2025TicketHandler() {
         />
 
         <JamTicketPurchase
+          setup={{ initialQuantity, maxQuantity: MAX_QUANTITY }}
           class="z-10 flex w-[90%] flex-col items-center gap-3"
           price={product.price}
           productId={product.productId}
           maxQuantity={MAX_QUANTITY}
           isSoldOut={!product.availableForSale}
           error={formError}
-          initialQuantity={initialQuantity}
         />
 
         <InfoText>
