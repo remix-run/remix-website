@@ -29,7 +29,7 @@ export let MobileMenu = clientEntry(
       document.addEventListener("mousedown", closeMenu);
       document.addEventListener("touchstart", closeMenu);
       document.addEventListener("focusin", closeMenu);
-      document.addEventListener("keydown", onEscape);
+      document.addEventListener("keydown", onEscape, true);
 
       handle.signal.addEventListener(
         "abort",
@@ -37,7 +37,7 @@ export let MobileMenu = clientEntry(
           document.removeEventListener("mousedown", closeMenu);
           document.removeEventListener("touchstart", closeMenu);
           document.removeEventListener("focusin", closeMenu);
-          document.removeEventListener("keydown", onEscape);
+          document.removeEventListener("keydown", onEscape, true);
         },
         { once: true },
       );

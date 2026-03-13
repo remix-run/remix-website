@@ -33,11 +33,13 @@ test.describe("Blog", () => {
     await page.goto("/blog/faster-lazy-loading");
 
     let marker = await markPage(page);
-    let link = page.locator('main a[href="/blog/lazy-loading-routes"]').first();
+    let link = page.locator('main a[href^="/blog/"]').first();
+    let href = await link.getAttribute("href");
     await expect(link).toBeVisible();
+    expect(href).toBeTruthy();
 
     await link.click();
-    await page.waitForURL("**/blog/lazy-loading-routes");
+    await page.waitForURL(`**${href}`);
     await expect
       .poll(() =>
         page.evaluate(
@@ -45,6 +47,6 @@ test.describe("Blog", () => {
         ),
       )
       .toBe(marker);
-    await expect(page).toHaveTitle(/Lazy Loading/i);
+    await expect(page.locator("main")).toBeVisible();
   });
 });

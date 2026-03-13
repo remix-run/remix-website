@@ -1,22 +1,10 @@
-import { test, expect, type Page } from "@playwright/test";
-
-async function dismissAbortedOverlay(page: Page) {
-  let overlay = page.locator("vite-error-overlay");
-  if (!(await overlay.count())) return;
-
-  let abortedMessage = page.getByText("aborted").last();
-  if (!(await abortedMessage.isVisible())) return;
-
-  await page.keyboard.press("Escape");
-  await expect(overlay).toHaveCount(0);
-}
+import { test, expect } from "@playwright/test";
 
 test.describe("Mobile menu", () => {
   test("opens and shows navigation links", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     let response = await page.goto("/");
     expect(response?.ok()).toBe(true);
-    await dismissAbortedOverlay(page);
 
     let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
     await expect(menuToggle).toBeVisible();
@@ -34,7 +22,6 @@ test.describe("Mobile menu", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     let response = await page.goto("/");
     expect(response?.ok()).toBe(true);
-    await dismissAbortedOverlay(page);
 
     let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
     await expect(menuToggle).toBeVisible();
@@ -49,9 +36,6 @@ test.describe("Mobile menu", () => {
     await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeFocused();
 
     await page.keyboard.press("Escape");
-    if (await mobileNav.isVisible()) {
-      await menuToggle.click();
-    }
     await expect(mobileNav).not.toBeVisible();
     await expect(menuToggle).toBeFocused();
   });

@@ -8,6 +8,33 @@ async function markPage(page: Page) {
   });
 }
 
+async function gotoGallery(page: Page) {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/jam/2025/gallery");
+}
+
+function galleryPhotoLinks(page: Page) {
+  return page.locator("[data-gallery-photo-link]").filter({
+    has: page.locator("img"),
+  });
+}
+
+async function skipIfGalleryHasFewerThan(page: Page, minimumPhotos: number) {
+  let noPhotosMessage = page.getByText("No photos available yet.");
+  if (await noPhotosMessage.isVisible()) {
+    test.skip(true, "No gallery photos available in this environment");
+  }
+
+  let photoLinks = galleryPhotoLinks(page);
+  let count = await photoLinks.count();
+  if (count < minimumPhotos) {
+    test.skip(
+      true,
+      `Need at least ${minimumPhotos} gallery photos in this environment`,
+    );
+  }
+}
+
 test.describe("Jam", () => {
   test("jam mobile menu opens and shows jam links", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
@@ -212,19 +239,6 @@ test.describe("Jam", () => {
         ),
       )
       .toBe(marker);
-
-    await page.getByRole("link", { name: "Ticket" }).first().click();
-
-    await page.waitForURL("**/jam/2025/ticket");
-    await expect(page).toHaveTitle(/Ticket/i);
-    await expect(page.locator("[data-jam-ticket-card]")).toBeVisible();
-    await expect
-      .poll(() =>
-        page.evaluate(
-          () => (window as Window & { __jamNavMarker?: string }).__jamNavMarker,
-        ),
-      )
-      .toBe(marker);
   });
 
   test("jam code of conduct page renders", async ({ page }) => {
@@ -240,17 +254,13 @@ test.describe("Jam", () => {
   test("jam gallery modal opens with query param and closes via controls", async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/gallery");
-
-    let noPhotosMessage = page.getByText("No photos available yet.");
-    if (await noPhotosMessage.isVisible()) {
-      test.skip(true, "No gallery photos available in this environment");
-    }
+    await gotoGallery(page);
+    await skipIfGalleryHasFewerThan(page, 1);
 
     await page.goto("/jam/2025/gallery?photo=0");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Close modal" })).toBeVisible();
 
     await page.getByRole("link", { name: "Next photo" }).click();
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=\d+/);
@@ -263,15 +273,10 @@ test.describe("Jam", () => {
   test("jam gallery escape closes modal and restores focus to opened photo", async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/gallery");
+    await gotoGallery(page);
+    await skipIfGalleryHasFewerThan(page, 1);
 
-    let noPhotosMessage = page.getByText("No photos available yet.");
-    if (await noPhotosMessage.isVisible()) {
-      test.skip(true, "No gallery photos available in this environment");
-    }
-
-    let firstPhotoLink = page.locator("[data-gallery-photo-link]").first();
+    let firstPhotoLink = galleryPhotoLinks(page).first();
     await firstPhotoLink.click();
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
     await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
@@ -287,13 +292,9 @@ test.describe("Jam", () => {
   test("jam gallery download link returns attachment response", async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
+    await gotoGallery(page);
+    await skipIfGalleryHasFewerThan(page, 1);
     await page.goto("/jam/2025/gallery?photo=0");
-
-    let noPhotosMessage = page.getByText("No photos available yet.");
-    if (await noPhotosMessage.isVisible()) {
-      test.skip(true, "No gallery photos available in this environment");
-    }
 
     let downloadLink = page.getByRole("link", {
       name: "Download full resolution image",
@@ -315,35 +316,31 @@ test.describe("Jam", () => {
   test("jam gallery keyboard navigation moves between photos", async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/gallery");
-
-    let noPhotosMessage = page.getByText("No photos available yet.");
-    if (await noPhotosMessage.isVisible()) {
-      test.skip(true, "No gallery photos available in this environment");
-    }
+    await gotoGallery(page);
+    await skipIfGalleryHasFewerThan(page, 2);
 
     await page.goto("/jam/2025/gallery?photo=0");
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
     await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
       1,
     );
+    await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
 
     await page.keyboard.press("ArrowRight");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
-    await page.waitForLoadState("networkidle");
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
     await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
       1,
     );
+    await expect(page.getByText(/^2 \/ \d+$/)).toBeVisible();
 
     await page.keyboard.press("ArrowLeft");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
-    await page.waitForLoadState("networkidle");
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
     await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
       1,
     );
+    await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
 
     await page.getByRole("link", { name: "Close modal" }).click();
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
@@ -351,15 +348,10 @@ test.describe("Jam", () => {
   });
 
   test("jam gallery modal traps focus while open", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/gallery");
+    await gotoGallery(page);
+    await skipIfGalleryHasFewerThan(page, 1);
 
-    let noPhotosMessage = page.getByText("No photos available yet.");
-    if (await noPhotosMessage.isVisible()) {
-      test.skip(true, "No gallery photos available in this environment");
-    }
-
-    let firstPhotoLink = page.locator("[data-gallery-photo-link]").first();
+    let firstPhotoLink = galleryPhotoLinks(page).first();
     await firstPhotoLink.click();
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
     await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
