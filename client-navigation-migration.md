@@ -60,7 +60,7 @@ Recommended next task for the next agent:
 Suggested verification commands for this repo:
 
 ```sh
-pnpm run typecheck:remix
+pnpm run typecheck
 pnpm exec playwright test e2e/navigation.spec.ts --project chromium
 pnpm exec playwright test e2e/blog.spec.ts --project chromium
 pnpm exec playwright test e2e/jam.spec.ts --project chromium

@@ -43,7 +43,7 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 
 ## TypeScript/JSX config
 
-`remix/tsconfig.json` defines:
+`tsconfig.json` defines:
 
 - `"jsx": "react-jsx"`
 - `"jsxImportSource": "remix/component"`
