@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { clientEntry, type Handle } from "remix/component";
+import { addEventListeners, clientEntry, type Handle } from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import assets from "./jam-fade-in-badge.tsx?assets=client";
 
@@ -17,7 +17,8 @@ export let JamFadeInBadge = clientEntry(
     }) => {
       if (!initialized) {
         initialized = true;
-        handle.queueTask(() => {
+        handle.queueTask((signal) => {
+          if (signal.aborted) return;
           let prefersReducedMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)",
           ).matches;
@@ -28,6 +29,7 @@ export let JamFadeInBadge = clientEntry(
           }
 
           let timeout = window.setTimeout(() => {
+            if (signal.aborted) return;
             isVisible = true;
             handle.update();
           }, props.delay ?? 0);
@@ -35,11 +37,12 @@ export let JamFadeInBadge = clientEntry(
           let clearTimeoutOnPageHide = () => {
             window.clearTimeout(timeout);
           };
-          window.addEventListener("pagehide", clearTimeoutOnPageHide);
+          addEventListeners(window, handle.signal, {
+            pagehide: clearTimeoutOnPageHide,
+          });
           handle.signal.addEventListener(
             "abort",
             () => {
-              window.removeEventListener("pagehide", clearTimeoutOnPageHide);
               window.clearTimeout(timeout);
             },
             { once: true },

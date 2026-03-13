@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { clientEntry, type Handle } from "remix/component";
+import { addEventListeners, clientEntry, type Handle } from "remix/component";
 import assets from "./jam-scramble-text.tsx?assets=client";
 
 const SCRAMBLE_CHARS =
@@ -68,12 +68,14 @@ export let JamScrambleText = clientEntry(
       cycleDelay: number;
     }) => {
       cleanupTimers();
+      if (handle.signal.aborted) return;
       state = getInitialState(config.text);
       handle.update();
 
       for (let charIndex = 0; charIndex < config.text.length; charIndex++) {
         let revealTimer = window.setTimeout(
           () => {
+            if (handle.signal.aborted) return;
             if (!state[charIndex]) return;
 
             state[charIndex] = {
@@ -85,6 +87,10 @@ export let JamScrambleText = clientEntry(
 
             let iteration = 0;
             let cycleTimer = window.setInterval(() => {
+              if (handle.signal.aborted) {
+                window.clearInterval(cycleTimer);
+                return;
+              }
               iteration += 1;
 
               let canProgress =
@@ -122,11 +128,12 @@ export let JamScrambleText = clientEntry(
 
     handle.queueTask(() => {
       let cleanupOnPageHide = () => cleanupTimers();
-      window.addEventListener("pagehide", cleanupOnPageHide);
+      addEventListeners(window, handle.signal, {
+        pagehide: cleanupOnPageHide,
+      });
       handle.signal.addEventListener(
         "abort",
         () => {
-          window.removeEventListener("pagehide", cleanupOnPageHide);
           cleanupTimers();
         },
         { once: true },
@@ -171,7 +178,8 @@ export let JamScrambleText = clientEntry(
           charDelay,
           cycleDelay,
         };
-        handle.queueTask(() => {
+        handle.queueTask((signal) => {
+          if (signal.aborted || handle.signal.aborted) return;
           let prefersReducedMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)",
           ).matches;

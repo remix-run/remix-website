@@ -1,4 +1,11 @@
-import { clientEntry, on, type Handle } from "remix/component";
+import {
+  addEventListeners,
+  clientEntry,
+  keysEvents,
+  on,
+  ref,
+  type Handle,
+} from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import cx from "clsx";
 import iconsHref from "../shared/icons.svg";
@@ -8,40 +15,31 @@ export let MobileMenu = clientEntry(
   `${assets.entry}#MobileMenu`,
   (handle: Handle, setup?: { open?: boolean }) => {
     let isOpen = setup?.open ?? false;
+    let detailsElement: HTMLDetailsElement | null = null;
     let pendingSummaryFocusRestore: HTMLElement | null = null;
     let openSummaryElement: HTMLElement | null = null;
 
-    handle.queueTask(() => {
-      let closeMenu = () => {
-        if (isOpen) {
-          isOpen = false;
-          handle.update();
-        }
-      };
-      let onEscape = (event: KeyboardEvent) => {
-        if (event.key !== "Escape" || !isOpen) return;
-        if (openSummaryElement) {
-          pendingSummaryFocusRestore = openSummaryElement;
-        }
-        closeMenu();
-      };
+    let closeMenu = () => {
+      if (detailsElement?.open || isOpen) {
+        isOpen = false;
+        handle.update();
+      }
+    };
+    let onEscape = () => {
+      if (!detailsElement?.open) return;
+      if (openSummaryElement) {
+        pendingSummaryFocusRestore = openSummaryElement;
+      }
+      closeMenu();
+    };
 
-      document.addEventListener("mousedown", closeMenu);
-      document.addEventListener("touchstart", closeMenu);
-      document.addEventListener("focusin", closeMenu);
-      document.addEventListener("keydown", onEscape, true);
-
-      handle.signal.addEventListener(
-        "abort",
-        () => {
-          document.removeEventListener("mousedown", closeMenu);
-          document.removeEventListener("touchstart", closeMenu);
-          document.removeEventListener("focusin", closeMenu);
-          document.removeEventListener("keydown", onEscape, true);
-        },
-        { once: true },
-      );
-    });
+    if (typeof document !== "undefined") {
+      addEventListeners(document, handle.signal, {
+        mousedown: closeMenu,
+        touchstart: closeMenu,
+        focusin: closeMenu,
+      });
+    }
 
     let stopPropagation = (e: Event) => {
       e.stopPropagation();
@@ -56,7 +54,8 @@ export let MobileMenu = clientEntry(
       if (!isOpen && pendingSummaryFocusRestore) {
         let focusTarget = pendingSummaryFocusRestore;
         pendingSummaryFocusRestore = null;
-        handle.queueTask(() => {
+        handle.queueTask((signal) => {
+          if (signal.aborted) return;
           focusTarget.focus();
         });
       }
@@ -97,13 +96,19 @@ export let MobileMenu = clientEntry(
       return (
         <details
           open={isOpen}
+          data-mobile-menu-ready={
+            typeof document !== "undefined" ? "true" : undefined
+          }
           class={cx("relative cursor-pointer", props.class)}
           mix={[
-            on<HTMLDetailsElement, "toggle">("toggle", onToggle),
-            on<HTMLDetailsElement, "mousedown">("mousedown", stopPropagation),
-            on<HTMLDetailsElement, "touchstart">("touchstart", stopPropagation),
-            on<HTMLDetailsElement, "focusin">("focusin", stopPropagation),
-            on<HTMLDetailsElement, "focusout">("focusout", onFocusOut),
+            ref((node) => {
+              detailsElement = node;
+            }),
+            on("toggle", onToggle),
+            on<HTMLDetailsElement>("mousedown", stopPropagation),
+            on<HTMLDetailsElement>("touchstart", stopPropagation),
+            on<HTMLDetailsElement>("focusin", stopPropagation),
+            on("focusout", onFocusOut),
           ]}
         >
           <summary class={summaryClass} aria-label="Open menu">
@@ -115,7 +120,11 @@ export let MobileMenu = clientEntry(
 
           <div class={menuPositionClass}>
             <div class={menuWrapperClass}>
-              <nav class={navClass} aria-label="Mobile">
+              <nav
+                class={navClass}
+                aria-label="Mobile"
+                mix={[keysEvents(), on(keysEvents.escape, onEscape)]}
+              >
                 {props.children}
               </nav>
             </div>

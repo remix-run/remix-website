@@ -28,15 +28,19 @@ Build interactive UIs with Remix Component using the current mixin-based API, ex
 3. Use plain JS state in setup scope plus `handle.update()`.
 4. Prefer real DOM events on elements via `mix={[on(...)]}`.
 5. Prefer `addEventListeners(target, handle.signal, listeners)` for global listeners.
-6. Use `queueTask(...)` for post-render DOM work, reactive effects, or hydration-sensitive setup.
-7. Keep `<head>` explicit in document/layout code; do not rely on head hoisting.
-8. Test with real interactions and `root.flush()` where unit tests need synchronous assertions.
+6. Prefer built-in Remix helpers such as `keysEvents()`, `pressEvents()`, and `link(...)` before writing custom keyboard, press, or navigation normalization.
+7. Use `queueTask(...)` for post-render DOM work, reactive effects, or hydration-sensitive setup.
+8. Keep `<head>` explicit in document/layout code; do not rely on head hoisting.
+9. Test with real interactions and `root.flush()` where unit tests need synchronous assertions.
 
 ## Current Guardrails
 
 - Prefer:
   - `mix={[on(...)]}`
   - `mix={[css(...)]}`
+  - `mix={[keysEvents()]}` for host-element key normalization
+  - `mix={[pressEvents()]}` for pointer/keyboard press normalization
+  - `mix={[link(href, options)]}` for non-anchor client navigation behavior
   - `mix={[animateEntrance(), animateExit(), animateLayout()]}`
   - `mix={[ref(...)]}`
 - `@remix-run/interaction` is gone.
@@ -69,6 +73,7 @@ Read these only when the curated references are not enough:
 ## Common Mistakes
 
 - Using host `on`, `css`, `animate`, or `connect` props instead of mixins
+- Re-implementing keyboard, press, or link behavior that already exists as a Remix helper mixin
 - Using component state for transient event data or CSS-driven hover/focus behavior
 - Using stylesheet-style APIs for dynamic values that should live in `style`
 - Using implementation-only hooks in tests when user-observable assertions would do

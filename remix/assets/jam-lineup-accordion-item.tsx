@@ -76,7 +76,7 @@ export let JamLineupAccordionItem = clientEntry(
       panel.style.overflow = isOpen ? "visible" : "hidden";
     });
 
-    let onSummaryClick = (event: MouseEvent) => {
+    let onSummaryClick = (event: Event) => {
       event.preventDefault();
 
       if (isOpen) {
@@ -86,7 +86,8 @@ export let JamLineupAccordionItem = clientEntry(
 
       isOpen = true;
       handle.update();
-      handle.queueTask(() => {
+      handle.queueTask((signal) => {
+        if (signal.aborted) return;
         animatePanel(true);
       });
     };
@@ -98,7 +99,7 @@ export let JamLineupAccordionItem = clientEntry(
         data-accordion-item
       >
         <summary
-          mix={[on<HTMLElement, "click">("click", onSummaryClick)]}
+          mix={[on<HTMLElement>("click", onSummaryClick)]}
           class={clsx(
             "_no-triangle grid cursor-pointer select-none p-4 text-sm font-bold text-white outline-none transition-colors duration-300 hover:bg-gray-900 focus-visible:bg-gray-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-brand sm:p-6 sm:text-base md:p-8 md:text-lg lg:p-9 lg:text-2xl",
             props.gridColsClassName,

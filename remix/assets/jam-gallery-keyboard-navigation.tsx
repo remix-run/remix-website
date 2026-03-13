@@ -1,4 +1,4 @@
-import { clientEntry, type Handle } from "remix/component";
+import { addEventListeners, clientEntry, type Handle } from "remix/component";
 import assets from "./jam-gallery-keyboard-navigation.tsx?assets=client";
 
 let FOCUS_RESTORE_KEY = "jam-gallery-focus-index";
@@ -126,13 +126,13 @@ export let JamGalleryKeyboardNavigation = clientEntry(
         focusBoundary("start");
       };
 
-      document.addEventListener("keydown", onKeydown);
-      document.addEventListener("focusin", onFocusin);
+      addEventListeners(document, handle.signal, {
+        keydown: onKeydown,
+        focusin: onFocusin,
+      });
       handle.signal.addEventListener(
         "abort",
         () => {
-          document.removeEventListener("keydown", onKeydown);
-          document.removeEventListener("focusin", onFocusin);
           document.body.style.overflow = previousBodyOverflow;
         },
         { once: true },

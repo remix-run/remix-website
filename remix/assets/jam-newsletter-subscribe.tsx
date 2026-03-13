@@ -34,6 +34,7 @@ export let JamNewsletterSubscribeForm = clientEntry(
                 formData: new FormData(form),
                 signal,
               });
+              if (signal.aborted) return;
               state = result.state;
               error = result.error;
               if (result.shouldReset) {

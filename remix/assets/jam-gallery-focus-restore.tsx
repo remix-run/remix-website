@@ -6,14 +6,15 @@ let FOCUS_RESTORE_KEY = "jam-gallery-focus-index";
 export let JamGalleryFocusRestore = clientEntry(
   `${assets.entry}#JamGalleryFocusRestore`,
   (handle: Handle) => {
-    handle.queueTask(() => {
+    handle.queueTask((signal) => {
+      if (signal.aborted) return;
       let storedIndex = window.sessionStorage.getItem(FOCUS_RESTORE_KEY);
       if (storedIndex === null) return;
       window.sessionStorage.removeItem(FOCUS_RESTORE_KEY);
 
       let selector = `[data-gallery-photo-index="${storedIndex}"]`;
       let target = document.querySelector<HTMLElement>(selector);
-      if (!target) return;
+      if (signal.aborted || !target) return;
 
       target.focus();
       target.scrollIntoView({ block: "nearest", inline: "nearest" });

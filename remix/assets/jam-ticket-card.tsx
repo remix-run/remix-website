@@ -1,4 +1,10 @@
-import { clientEntry, on, type Handle } from "remix/component";
+import {
+  addEventListeners,
+  clientEntry,
+  on,
+  ref,
+  type Handle,
+} from "remix/component";
 import assets from "./jam-ticket-card.tsx?assets=client";
 
 export let JamTicketCard = clientEntry(
@@ -8,25 +14,18 @@ export let JamTicketCard = clientEntry(
     let mousePosition = { x: 50, y: 50 };
     let ticketWidth = 0;
     let ticketHeight = 0;
+    let ticketElement: HTMLElement | null = null;
+
+    let updateDimensions = () => {
+      if (!ticketElement) return;
+
+      let rect = ticketElement.getBoundingClientRect();
+      ticketWidth = rect.width;
+      ticketHeight = rect.height;
+    };
 
     handle.queueTask(() => {
-      let updateDimensions = () => {
-        let el = document.querySelector("[data-jam-ticket-card]");
-        if (el) {
-          let rect = el.getBoundingClientRect();
-          ticketWidth = rect.width;
-          ticketHeight = rect.height;
-        }
-      };
-
-      window.addEventListener("resize", updateDimensions);
-      handle.signal.addEventListener(
-        "abort",
-        () => {
-          window.removeEventListener("resize", updateDimensions);
-        },
-        { once: true },
-      );
+      addEventListeners(window, handle.signal, { resize: updateDimensions });
     });
 
     return (props: {
@@ -49,6 +48,10 @@ export let JamTicketCard = clientEntry(
           class="group z-10 w-[300px] select-none md:w-[800px]"
           style={{ perspective: "1500px" }}
           mix={[
+            ref((node) => {
+              ticketElement = node;
+              updateDimensions();
+            }),
             on("mouseenter", () => {
               isHovered = true;
               handle.update();

@@ -6,6 +6,10 @@ test.describe("Mobile menu", () => {
     let response = await page.goto("/");
     expect(response?.ok()).toBe(true);
 
+    await expect(
+      page.locator('[data-mobile-menu-ready="true"]').first(),
+    ).toHaveCount(1);
+
     let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
     await expect(menuToggle).toBeVisible();
     await menuToggle.focus();
@@ -22,6 +26,10 @@ test.describe("Mobile menu", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     let response = await page.goto("/");
     expect(response?.ok()).toBe(true);
+
+    await expect(
+      page.locator('[data-mobile-menu-ready="true"]').first(),
+    ).toHaveCount(1);
 
     let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
     await expect(menuToggle).toBeVisible();

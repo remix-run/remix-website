@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { clientEntry, type Handle } from "remix/component";
+import { addEventListeners, clientEntry, type Handle } from "remix/component";
 import assets from "./jam-keepsakes.tsx?assets=client";
 import photo1Src from "./jam/images/keepsakes/photo-1.avif";
 import photo2Src from "./jam/images/keepsakes/photo-2.avif";
@@ -175,13 +175,13 @@ export let JamKeepsakes = clientEntry(
         handleStart(e, el);
       };
 
-      document.addEventListener("mousedown", onMouseDown);
-      document.addEventListener("touchstart", onTouchStart);
+      addEventListeners(document, handle.signal, {
+        mousedown: onMouseDown,
+        touchstart: onTouchStart,
+      });
       handle.signal.addEventListener(
         "abort",
         () => {
-          document.removeEventListener("mousedown", onMouseDown);
-          document.removeEventListener("touchstart", onTouchStart);
           handleEnd();
         },
         { once: true },

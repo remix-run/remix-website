@@ -9,12 +9,11 @@ import {
   Title,
   transformShopifyImageUrl,
 } from "./jam-shared";
-import { JamGalleryDocumentLink } from "../assets/jam-gallery-document-link";
 import { JamGalleryFocusRestore } from "../assets/jam-gallery-focus-restore";
 import { JamGalleryKeyboardNavigation } from "../assets/jam-gallery-keyboard-navigation";
-import { JamGalleryModalControls } from "../assets/jam-gallery-modal-controls";
 import ogImageSrc from "../assets/jam/images/og-gallery.jpg";
 import iconsHref from "../shared/icons.svg";
+import type { RemixNode } from "remix/component/jsx-runtime";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
@@ -198,6 +197,59 @@ function GalleryModal() {
       </JamGalleryModalControls>
     );
   };
+}
+
+function JamGalleryModalControls() {
+  return (props: {
+    closeHref: string;
+    previousHref: string;
+    nextHref: string;
+    focusPhotoIndex: number;
+    class?: string;
+    children: RemixNode;
+  }) => {
+    return (
+      <div
+        data-gallery-modal
+        role="dialog"
+        aria-modal="true"
+        tabindex={-1}
+        class={props.class}
+      >
+        {props.children}
+      </div>
+    );
+  };
+}
+
+function JamGalleryDocumentLink() {
+  return (props: {
+    href: string;
+    class?: string;
+    ariaLabel?: string;
+    dataGalleryBackdrop?: boolean;
+    dataGalleryPhotoLink?: boolean;
+    dataGalleryPhotoIndex?: number;
+    tabindex?: number;
+    target?: string;
+    rel?: string;
+    children?: RemixNode;
+  }) => (
+    <a
+      href={props.href}
+      rmx-document
+      aria-label={props.ariaLabel}
+      data-gallery-backdrop={props.dataGalleryBackdrop || undefined}
+      data-gallery-photo-link={props.dataGalleryPhotoLink || undefined}
+      data-gallery-photo-index={props.dataGalleryPhotoIndex}
+      tabindex={props.tabindex}
+      target={props.target}
+      rel={props.rel}
+      class={props.class}
+    >
+      {props.children}
+    </a>
+  );
 }
 
 function ModalImage() {

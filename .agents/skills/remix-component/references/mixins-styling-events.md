@@ -14,6 +14,12 @@ Common mixins exported from `remix/component`:
 - `animateExit(...)`
 - `animateLayout(...)`
 
+Prefer these built-ins before custom normalization code:
+
+- `keysEvents()` for host-element key-specific events like `keysEvents.escape`
+- `pressEvents()` when you need one interaction path across pointer and keyboard input
+- `link(href, options)` when a non-anchor element should behave like a Remix client-navigation link
+
 ## Events
 
 Use `mix={[on(type, handler)]}` for DOM event listeners.
