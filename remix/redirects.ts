@@ -75,9 +75,7 @@ function buildRedirectRouteMap(
   );
 }
 
-function buildRedirectController(
-  configs: RedirectConfig[],
-): {
+function buildRedirectController(configs: RedirectConfig[]): {
   actions: Record<
     string,
     (context: { params: Record<string, string | undefined> }) => Response

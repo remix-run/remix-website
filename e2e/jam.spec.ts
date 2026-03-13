@@ -302,6 +302,10 @@ test.describe("Jam", () => {
 
     let downloadHref = await downloadLink.getAttribute("href");
     expect(downloadHref).toMatch(/^\/jam\/2025\/gallery\/download\?photo=\d+$/);
+    await expect(downloadLink).toHaveAttribute(
+      "download",
+      /remix-jam-2025-photo-\d+\.jpg/,
+    );
 
     let response = await page.request.get(downloadHref!);
     expect(response.status()).toBe(200);

@@ -3,11 +3,7 @@ import { getSchedule } from "./jam-schedule.server";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control";
-import {
-  JamDocument,
-  ScrambleText,
-  Title,
-} from "./jam-shared";
+import { JamDocument, ScrambleText, Title } from "./jam-shared";
 import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
 import { JamLineupAccordionItem } from "../assets/jam-lineup-accordion-item";
 

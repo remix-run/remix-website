@@ -183,10 +183,7 @@ function Navbar() {
           "linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)",
       }}
     >
-      <a
-        href={routes.jam2025.href()}
-        class="flex items-center md:block"
-      >
+      <a href={routes.jam2025.href()} class="flex items-center md:block">
         <JamLogo class="h-[48px] fill-white md:h-auto md:w-[200px] lg:w-[160px] xl:w-[200px]" />
       </a>
       <div class="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg lg:flex">
@@ -265,11 +262,7 @@ function Navbar() {
 }
 
 function NavLink() {
-  return (props: {
-    href: string;
-    active: boolean;
-    children: RemixNode;
-  }) => (
+  return (props: { href: string; active: boolean; children: RemixNode }) => (
     <a
       href={props.href}
       class={clsx(
@@ -285,11 +278,7 @@ function NavLink() {
 }
 
 function MobileNavLink() {
-  return (props: {
-    href: string;
-    active: boolean;
-    children: RemixNode;
-  }) => (
+  return (props: { href: string; active: boolean; children: RemixNode }) => (
     <a
       href={props.href}
       class={clsx(

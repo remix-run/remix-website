@@ -122,13 +122,15 @@ export let JamLineupAccordionItem = clientEntry(
 
         <div
           class="block"
-          mix={[ref((node) => {
-            panel = node;
-            if (!isOpen) {
-              node.style.height = "0px";
-              node.style.overflow = "hidden";
-            }
-          })]}
+          mix={[
+            ref((node) => {
+              panel = node;
+              if (!isOpen) {
+                node.style.height = "0px";
+                node.style.overflow = "hidden";
+              }
+            }),
+          ]}
         >
           <div mix={[ref((node) => (panelInner = node))]}>
             <div class="pb-8 transition-colors duration-300 group-hover:bg-gray-900">

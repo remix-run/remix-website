@@ -27,7 +27,9 @@ test.describe("Blog", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("relative internal links in rendered markdown use client navigation", async ({ page }) => {
+  test("relative internal links in rendered markdown use client navigation", async ({
+    page,
+  }) => {
     await page.goto("/blog/faster-lazy-loading");
 
     let marker = await markPage(page);

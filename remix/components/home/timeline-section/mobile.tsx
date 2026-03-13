@@ -69,7 +69,9 @@ export function TimelineDiagramMobile() {
         </YearLabel>
       ))}
 
-      <LaneHeader style={{ gridColumn: 2, gridRow: 2 }}>React Router</LaneHeader>
+      <LaneHeader style={{ gridColumn: 2, gridRow: 2 }}>
+        React Router
+      </LaneHeader>
       <LaneHeader style={{ gridColumn: 3, gridRow: 2 }}>Remix 1-2</LaneHeader>
       <LaneHeader style={{ gridColumn: 4, gridRow: 2 }}>Remix 3</LaneHeader>
 
@@ -207,7 +209,9 @@ function YearLabel() {
         class="rmx-caption text-rmx-tertiary flex items-center justify-end px-6"
         style={{
           opacity,
-          ...(typeof props.style === "object" && props.style ? props.style : {}),
+          ...(typeof props.style === "object" && props.style
+            ? props.style
+            : {}),
         }}
       >
         {props.children}
