@@ -134,7 +134,6 @@ export function Document() {
           />
           <link rel="preload" as="style" href={mdStylesHref} />
           <link rel="preload" as="style" href={jamStylesHref} />
-
           {/* Styles */}
           {assets.css.map(({ href }) => (
             <link key={href} rel="stylesheet" href={href} />
