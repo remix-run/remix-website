@@ -289,6 +289,25 @@ test.describe("Jam", () => {
     await expect(firstPhotoLink).toBeFocused();
   });
 
+  test("jam gallery close button restores focus to opened photo", async ({
+    page,
+  }) => {
+    await gotoGallery(page);
+    await skipIfGalleryHasFewerThan(page, 1);
+
+    let firstPhotoLink = galleryPhotoLinks(page).first();
+    await firstPhotoLink.click();
+    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.locator("[data-gallery-modal-ready='true']")).toHaveCount(
+      1,
+    );
+
+    await page.getByRole("link", { name: "Close modal" }).click();
+    await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
+    await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+    await expect(firstPhotoLink).toBeFocused();
+  });
+
   test("jam gallery download link returns attachment response", async ({
     page,
   }) => {

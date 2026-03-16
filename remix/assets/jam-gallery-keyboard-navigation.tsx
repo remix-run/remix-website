@@ -126,9 +126,22 @@ export let JamGalleryKeyboardNavigation = clientEntry(
         focusBoundary("start");
       };
 
+      let onClick = (event: MouseEvent) => {
+        let target = event.target;
+        if (!(target instanceof Element)) return;
+
+        let closeTarget = target.closest(
+          "[data-gallery-backdrop], [data-gallery-close-link]",
+        );
+        if (!closeTarget || !modal.contains(closeTarget)) return;
+
+        window.sessionStorage.setItem(FOCUS_RESTORE_KEY, String(focusPhotoIndex));
+      };
+
       addEventListeners(document, handle.signal, {
         keydown: onKeydown,
         focusin: onFocusin,
+        click: onClick,
       });
       handle.signal.addEventListener(
         "abort",

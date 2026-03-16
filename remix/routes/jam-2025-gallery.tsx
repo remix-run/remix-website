@@ -166,7 +166,12 @@ function GalleryModal() {
         />
         <div class="relative z-10 flex h-full w-full flex-col gap-6 p-4 md:p-9">
           <div class="flex shrink-0 items-center justify-between">
-            <IconLink href={closeHref} icon="x-mark" label="Close modal" />
+            <IconLink
+              href={closeHref}
+              icon="x-mark"
+              label="Close modal"
+              dataGalleryCloseLink
+            />
             <IconLink
               href={downloadHref}
               icon="download"
@@ -228,6 +233,7 @@ function JamGalleryDocumentLink() {
     class?: string;
     ariaLabel?: string;
     dataGalleryBackdrop?: boolean;
+    dataGalleryCloseLink?: boolean;
     dataGalleryPhotoLink?: boolean;
     dataGalleryPhotoIndex?: number;
     tabindex?: number;
@@ -240,6 +246,7 @@ function JamGalleryDocumentLink() {
       rmx-document
       aria-label={props.ariaLabel}
       data-gallery-backdrop={props.dataGalleryBackdrop || undefined}
+      data-gallery-close-link={props.dataGalleryCloseLink || undefined}
       data-gallery-photo-link={props.dataGalleryPhotoLink || undefined}
       data-gallery-photo-index={props.dataGalleryPhotoIndex}
       tabindex={props.tabindex}
@@ -292,6 +299,7 @@ function IconLink() {
     label: string;
     className?: string;
     download?: string;
+    dataGalleryCloseLink?: boolean;
     target?: string;
     rel?: string;
   }) =>
@@ -312,6 +320,7 @@ function IconLink() {
       <JamGalleryDocumentLink
         href={props.href}
         ariaLabel={props.label}
+        dataGalleryCloseLink={props.dataGalleryCloseLink}
         target={props.target}
         rel={props.rel}
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
