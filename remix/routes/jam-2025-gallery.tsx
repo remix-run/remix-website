@@ -22,6 +22,9 @@ type GalleryFrameState = {
   height: string;
   maxHeight: string;
 };
+type GalleryPhotoState = GalleryFrameState & {
+  imageSrc: string;
+};
 
 export async function jam2025GalleryHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
@@ -56,7 +59,7 @@ export async function jam2025GalleryHandler() {
               class="w-full columns-1 gap-4 md:columns-2 md:gap-6 lg:columns-3 2xl:columns-4"
             >
               {photos.map((photo, index) => {
-                let frame = getGalleryFrameState(photo);
+                let photoState = getGalleryPhotoState(photo);
 
                 return (
                   <div
@@ -67,11 +70,12 @@ export async function jam2025GalleryHandler() {
                       href={`${routes.jam2025Gallery.href()}?photo=${index}`}
                       dataGalleryPhotoLink
                       dataGalleryPhotoIndex={index}
-                      dataGalleryAspectRatio={frame.aspectRatio}
-                      dataGalleryWidth={frame.width}
-                      dataGalleryMaxWidth={frame.maxWidth}
-                      dataGalleryHeight={frame.height}
-                      dataGalleryMaxHeight={frame.maxHeight}
+                      dataGalleryAspectRatio={photoState.aspectRatio}
+                      dataGalleryWidth={photoState.width}
+                      dataGalleryMaxWidth={photoState.maxWidth}
+                      dataGalleryHeight={photoState.height}
+                      dataGalleryMaxHeight={photoState.maxHeight}
+                      dataGalleryImageSrc={photoState.imageSrc}
                       class="block overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity duration-300 hover:opacity-85 focus-visible:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand"
                     >
                       <PhotoImage {...photo} />
@@ -158,8 +162,8 @@ function GalleryModal() {
     let previousHref = `${routes.jam2025Gallery.href()}?photo=${previousPhotoIndex}`;
     let nextHref = `${routes.jam2025Gallery.href()}?photo=${nextPhotoIndex}`;
     let downloadHref = `${routes.jam2025GalleryDownload.href()}?photo=${selectedPhotoIndex}`;
-    let previousFrame = getGalleryFrameState(photos[previousPhotoIndex]);
-    let nextFrame = getGalleryFrameState(photos[nextPhotoIndex]);
+    let previousPhotoState = getGalleryPhotoState(photos[previousPhotoIndex]);
+    let nextPhotoState = getGalleryPhotoState(photos[nextPhotoIndex]);
 
     return (
       <JamGalleryModalControls
@@ -167,8 +171,8 @@ function GalleryModal() {
         previousHref={previousHref}
         nextHref={nextHref}
         focusPhotoIndex={selectedPhotoIndex}
-        previousFrame={previousFrame}
-        nextFrame={nextFrame}
+        previousPhotoState={previousPhotoState}
+        nextPhotoState={nextPhotoState}
         class="fixed inset-0 z-50 size-full select-none bg-black/70 backdrop-blur"
       >
         <JamGalleryKeyboardNavigation
@@ -176,8 +180,8 @@ function GalleryModal() {
           previousHref={previousHref}
           nextHref={nextHref}
           focusPhotoIndex={selectedPhotoIndex}
-          previousFrame={previousFrame}
-          nextFrame={nextFrame}
+          previousPhotoState={previousPhotoState}
+          nextPhotoState={nextPhotoState}
         />
         <JamGalleryLink
           href={closeHref}
@@ -207,7 +211,7 @@ function GalleryModal() {
                 href={previousHref}
                 icon="chevron-r"
                 label="Previous photo"
-                frame={previousFrame}
+                photoState={previousPhotoState}
                 className="[&_svg]:rotate-180"
               />
             </div>
@@ -216,10 +220,10 @@ function GalleryModal() {
                 href={nextHref}
                 icon="chevron-r"
                 label="Next photo"
-                frame={nextFrame}
+                photoState={nextPhotoState}
               />
             </div>
-            <ModalImage photo={selectedPhoto} />
+            <ModalImage key={selectedPhoto.url} photo={selectedPhoto} />
           </div>
           <div class="flex shrink-0 justify-center">
             <div class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black">
@@ -238,8 +242,8 @@ function JamGalleryModalControls() {
     previousHref: string;
     nextHref: string;
     focusPhotoIndex: number;
-    previousFrame: GalleryFrameState;
-    nextFrame: GalleryFrameState;
+    previousPhotoState: GalleryPhotoState;
+    nextPhotoState: GalleryPhotoState;
     class?: string;
     children: RemixNode;
   }) => {
@@ -271,6 +275,7 @@ function JamGalleryLink() {
     dataGalleryMaxWidth?: string;
     dataGalleryHeight?: string;
     dataGalleryMaxHeight?: string;
+    dataGalleryImageSrc?: string;
     tabindex?: number;
     target?: string;
     rel?: string;
@@ -289,6 +294,7 @@ function JamGalleryLink() {
       data-gallery-max-width={props.dataGalleryMaxWidth}
       data-gallery-height={props.dataGalleryHeight}
       data-gallery-max-height={props.dataGalleryMaxHeight}
+      data-gallery-image-src={props.dataGalleryImageSrc}
       tabindex={props.tabindex}
       target={props.target}
       rel={props.rel}
@@ -303,12 +309,7 @@ function ModalImage() {
   return ({ photo }: { photo: Photo }) => {
     let maxWidth = 1920;
     let maxHeight = 1080;
-    let imageSrc = transformShopifyImageUrl(photo.url, {
-      width: maxWidth,
-      height: maxHeight,
-      format: "webp",
-      quality: 90,
-    });
+    let imageSrc = getGalleryModalImageSrc(photo);
     let aspectRatio = photo.width / photo.height;
     let isLandscape = photo.width > photo.height;
 
@@ -344,7 +345,7 @@ function IconLink() {
     className?: string;
     download?: string;
     dataGalleryCloseLink?: boolean;
-    frame?: GalleryFrameState;
+    photoState?: GalleryPhotoState;
     target?: string;
     rel?: string;
   }) =>
@@ -366,11 +367,12 @@ function IconLink() {
         href={props.href}
         ariaLabel={props.label}
         dataGalleryCloseLink={props.dataGalleryCloseLink}
-        dataGalleryAspectRatio={props.frame?.aspectRatio}
-        dataGalleryWidth={props.frame?.width}
-        dataGalleryMaxWidth={props.frame?.maxWidth}
-        dataGalleryHeight={props.frame?.height}
-        dataGalleryMaxHeight={props.frame?.maxHeight}
+        dataGalleryAspectRatio={props.photoState?.aspectRatio}
+        dataGalleryWidth={props.photoState?.width}
+        dataGalleryMaxWidth={props.photoState?.maxWidth}
+        dataGalleryHeight={props.photoState?.height}
+        dataGalleryMaxHeight={props.photoState?.maxHeight}
+        dataGalleryImageSrc={props.photoState?.imageSrc}
         target={props.target}
         rel={props.rel}
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
@@ -382,7 +384,7 @@ function IconLink() {
     );
 }
 
-function getGalleryFrameState(photo: Photo): GalleryFrameState {
+function getGalleryPhotoState(photo: Photo): GalleryPhotoState {
   let maxWidth = 1920;
   let maxHeight = 1080;
   let isLandscape = photo.width > photo.height;
@@ -393,7 +395,17 @@ function getGalleryFrameState(photo: Photo): GalleryFrameState {
     maxWidth: isLandscape ? `${maxWidth}px` : "none",
     height: isLandscape ? "auto" : "100%",
     maxHeight: isLandscape ? "none" : `${maxHeight}px`,
+    imageSrc: getGalleryModalImageSrc(photo),
   };
+}
+
+function getGalleryModalImageSrc(photo: Photo) {
+  return transformShopifyImageUrl(photo.url, {
+    width: 1920,
+    height: 1080,
+    format: "webp",
+    quality: 90,
+  });
 }
 
 function getSelectedPhotoIndex(

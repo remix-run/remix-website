@@ -29,6 +29,7 @@ type GalleryFrameState = {
   maxWidth: string;
   height: string;
   maxHeight: string;
+  imageSrc: string;
 };
 
 export let JamGalleryKeyboardNavigation = clientEntry(
@@ -170,13 +171,6 @@ export let JamGalleryKeyboardNavigation = clientEntry(
         let target = event.target;
         if (!(target instanceof Element)) return;
 
-        let pendingTarget = target.closest(
-          "[data-gallery-photo-link], [aria-label='Previous photo'], [aria-label='Next photo']",
-        );
-        if (pendingTarget && modal.contains(pendingTarget)) {
-          setGalleryImagePending(true, getGalleryFrameFromElement(pendingTarget));
-        }
-
         let closeTarget = target.closest(
           "[data-gallery-backdrop], [data-gallery-close-link]",
         );
@@ -196,10 +190,23 @@ export let JamGalleryKeyboardNavigation = clientEntry(
         void closeGallery();
       };
 
+      let onPointerdown = (event: PointerEvent) => {
+        let target = event.target;
+        if (!(target instanceof Element)) return;
+
+        let pendingTarget = target.closest(
+          "[data-gallery-photo-link], [aria-label='Previous photo'], [aria-label='Next photo']",
+        );
+        if (!pendingTarget || !modal.contains(pendingTarget)) return;
+
+        setGalleryImagePending(true, getGalleryFrameFromElement(pendingTarget));
+      };
+
       addEventListeners(document, handle.signal, {
         keydown: onKeydown,
         focusin: onFocusin,
         click: onClick,
+        pointerdown: onPointerdown,
       });
       handle.signal.addEventListener(
         "abort",
@@ -215,15 +222,15 @@ export let JamGalleryKeyboardNavigation = clientEntry(
       previousHref: string;
       nextHref: string;
       focusPhotoIndex: number;
-      previousFrame: GalleryFrameState;
-      nextFrame: GalleryFrameState;
+      previousPhotoState: GalleryFrameState;
+      nextPhotoState: GalleryFrameState;
     }) => {
       closeHref = props.closeHref;
       previousHref = props.previousHref;
       nextHref = props.nextHref;
       focusPhotoIndex = props.focusPhotoIndex;
-      previousFrame = props.previousFrame;
-      nextFrame = props.nextFrame;
+      previousFrame = props.previousPhotoState;
+      nextFrame = props.nextPhotoState;
       queueSyncPendingState();
 
       return null;
@@ -242,10 +249,16 @@ function setGalleryImagePending(
     modal.setAttribute("data-gallery-image-state", "pending");
     modal.style.setProperty("--gallery-photo-visibility", "hidden");
     applyGalleryFrameState(modal, frame);
+    if (frame?.imageSrc) {
+      modal.setAttribute("data-gallery-pending-src", frame.imageSrc);
+    } else {
+      modal.removeAttribute("data-gallery-pending-src");
+    }
     return;
   }
 
   modal.removeAttribute("data-gallery-image-state");
+  modal.removeAttribute("data-gallery-pending-src");
   modal.style.removeProperty("--gallery-photo-visibility");
   clearGalleryFrameState(modal);
 }
@@ -256,13 +269,33 @@ function syncGalleryImagePendingState(signal: AbortSignal) {
   if (!modal || !image) return;
 
   if (!modal.hasAttribute("data-gallery-image-state")) {
+    modal.removeAttribute("data-gallery-pending-src");
     modal.style.removeProperty("--gallery-photo-visibility");
     clearGalleryFrameState(modal);
     return;
   }
 
+  let pendingSrc = modal.getAttribute("data-gallery-pending-src");
+  if (pendingSrc) {
+    let resolvedPendingSrc = new URL(pendingSrc, window.location.href).href;
+    let currentImageSrc = image.currentSrc || image.src;
+    if (currentImageSrc !== resolvedPendingSrc) {
+      window.requestAnimationFrame(() => {
+        if (signal.aborted) return;
+        syncGalleryImagePendingState(signal);
+      });
+      return;
+    }
+  }
+
   if (image.complete) {
-    setGalleryImagePending(false);
+    void image
+      .decode()
+      .catch(() => {})
+      .then(() => {
+        if (signal.aborted) return;
+        setGalleryImagePending(false);
+      });
     return;
   }
 
@@ -281,12 +314,13 @@ function getGalleryFrameFromElement(element: Element) {
   let maxWidth = element.getAttribute("data-gallery-max-width");
   let height = element.getAttribute("data-gallery-height");
   let maxHeight = element.getAttribute("data-gallery-max-height");
+  let imageSrc = element.getAttribute("data-gallery-image-src");
 
-  if (!aspectRatio || !width || !maxWidth || !height || !maxHeight) {
+  if (!aspectRatio || !width || !maxWidth || !height || !maxHeight || !imageSrc) {
     return null;
   }
 
-  return { aspectRatio, width, maxWidth, height, maxHeight };
+  return { aspectRatio, width, maxWidth, height, maxHeight, imageSrc };
 }
 
 function applyGalleryFrameState(

@@ -35,6 +35,29 @@ async function dismissViteAbortOverlay(page: Page) {
   await expect(overlay).toHaveCount(0);
 }
 
+async function clickWithViteAbortOverlayRetry(
+  page: Page,
+  locator: ReturnType<Page["locator"]>,
+) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await dismissViteAbortOverlay(page);
+
+    try {
+      await locator.click({ timeout: 1_000 });
+      return;
+    } catch (error) {
+      let overlay = page.locator("vite-error-overlay");
+      let overlayText = (await overlay.textContent()) ?? "";
+      if (!(await overlay.count()) || !overlayText.includes("aborted")) {
+        throw error;
+      }
+    }
+  }
+
+  await dismissViteAbortOverlay(page);
+  await locator.click();
+}
+
 function galleryPhotoLinks(page: Page) {
   return page.locator("[data-gallery-photo-link]").filter({
     has: page.locator("img"),
@@ -332,8 +355,10 @@ test.describe("Jam", () => {
       1,
     );
     await expectMarkerToStay(page, marker);
-
-    await page.getByRole("link", { name: "Close modal" }).click();
+    await clickWithViteAbortOverlayRetry(
+      page,
+      page.getByRole("link", { name: "Close modal" }),
+    );
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
