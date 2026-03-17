@@ -265,7 +265,9 @@ function setGalleryImagePending(
 
 function syncGalleryImagePendingState(signal: AbortSignal) {
   let modal = document.querySelector<HTMLElement>("[data-gallery-modal]");
-  let image = document.querySelector<HTMLImageElement>("[data-gallery-modal-photo]");
+  let image = document.querySelector<HTMLImageElement>(
+    "[data-gallery-modal-photo]",
+  );
   if (!modal || !image) return;
 
   if (!modal.hasAttribute("data-gallery-image-state")) {
@@ -316,7 +318,14 @@ function getGalleryFrameFromElement(element: Element) {
   let maxHeight = element.getAttribute("data-gallery-max-height");
   let imageSrc = element.getAttribute("data-gallery-image-src");
 
-  if (!aspectRatio || !width || !maxWidth || !height || !maxHeight || !imageSrc) {
+  if (
+    !aspectRatio ||
+    !width ||
+    !maxWidth ||
+    !height ||
+    !maxHeight ||
+    !imageSrc
+  ) {
     return null;
   }
 

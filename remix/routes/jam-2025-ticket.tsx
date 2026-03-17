@@ -68,7 +68,9 @@ export async function jam2025TicketHandler() {
             setup={{ text: "General Admission", delay: 100, color: "blue" }}
             className="whitespace-nowrap"
           />
-          <ScrambleText setup={{ text: "ticket", delay: 300, color: "green" }} />
+          <ScrambleText
+            setup={{ text: "ticket", delay: 300, color: "green" }}
+          />
         </Title>
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>

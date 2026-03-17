@@ -3,17 +3,24 @@
 Use `clientEntry()` to mark interactive islands and `run()` to hydrate them.
 
 ```tsx
-export let Counter = clientEntry(`${assets.entry}#Counter`, (handle: Handle) => {
-  let count = 0;
-  return () => (
-    <button mix={[on("click", () => {
-      count++;
-      handle.update();
-    })]}>
-      {count}
-    </button>
-  );
-});
+export let Counter = clientEntry(
+  `${assets.entry}#Counter`,
+  (handle: Handle) => {
+    let count = 0;
+    return () => (
+      <button
+        mix={[
+          on("click", () => {
+            count++;
+            handle.update();
+          }),
+        ]}
+      >
+        {count}
+      </button>
+    );
+  },
+);
 ```
 
 ```tsx

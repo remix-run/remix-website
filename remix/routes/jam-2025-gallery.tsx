@@ -48,16 +48,16 @@ export async function jam2025GalleryHandler() {
       <main class="mx-auto flex max-w-[1920px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[200px] lg:pt-[210px]">
         <Title>
           <ScrambleText setup={{ text: "Photo", delay: 100, color: "blue" }} />
-          <ScrambleText setup={{ text: "Gallery", delay: 300, color: "green" }} />
+          <ScrambleText
+            setup={{ text: "Gallery", delay: 300, color: "green" }}
+          />
         </Title>
 
         {photos.length === 0 ? (
           <p class="text-lg text-white/70">No photos available yet.</p>
         ) : (
           <div class="w-full">
-            <div
-              class="w-full columns-1 gap-4 md:columns-2 md:gap-6 lg:columns-3 2xl:columns-4"
-            >
+            <div class="w-full columns-1 gap-4 md:columns-2 md:gap-6 lg:columns-3 2xl:columns-4">
               {photos.map((photo, index) => {
                 let photoState = getGalleryPhotoState(photo);
 

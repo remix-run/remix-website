@@ -85,9 +85,13 @@ function Jam2025Page() {
       <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]">
         <SectionLabel>{sectionLabelText[eventStatus]}</SectionLabel>
         <Title>
-          <ScrambleText setup={{ text: "Remix Jam", delay: 100, color: "blue" }} />
+          <ScrambleText
+            setup={{ text: "Remix Jam", delay: 100, color: "blue" }}
+          />
           <span class="flex items-center justify-center gap-3 md:gap-5">
-            <ScrambleText setup={{ text: "Toronto", delay: 400, color: "green" }} />
+            <ScrambleText
+              setup={{ text: "Toronto", delay: 400, color: "green" }}
+            />
             <JamFadeInBadge
               setup={1200}
               data-jam-event-badge
