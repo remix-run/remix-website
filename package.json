@@ -20,8 +20,7 @@
     "test": "vitest",
     "pretest:e2e": "playwright install chromium",
     "test:e2e": "playwright test",
-    "typecheck": "tsc --noEmit -p remix/tsconfig.json",
-    "typecheck:remix": "tsc --noEmit -p remix/tsconfig.json"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
@@ -42,7 +41,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "remix": "3.0.0-alpha.3",
+    "remix": "github:remix-run/remix#preview/main&path:packages/remix",
     "satori": "^0.19.2",
     "semver": "^7.7.3",
     "shiki": "^0.14.7",

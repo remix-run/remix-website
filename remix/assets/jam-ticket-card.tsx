@@ -1,4 +1,10 @@
-import { clientEntry, type Handle } from "remix/component";
+import {
+  addEventListeners,
+  clientEntry,
+  on,
+  ref,
+  type Handle,
+} from "remix/component";
 import assets from "./jam-ticket-card.tsx?assets=client";
 
 export let JamTicketCard = clientEntry(
@@ -8,18 +14,18 @@ export let JamTicketCard = clientEntry(
     let mousePosition = { x: 50, y: 50 };
     let ticketWidth = 0;
     let ticketHeight = 0;
+    let ticketElement: HTMLElement | null = null;
+
+    let updateDimensions = () => {
+      if (!ticketElement) return;
+
+      let rect = ticketElement.getBoundingClientRect();
+      ticketWidth = rect.width;
+      ticketHeight = rect.height;
+    };
 
     handle.queueTask(() => {
-      let updateDimensions = () => {
-        let el = document.querySelector("[data-jam-ticket-card]");
-        if (el) {
-          let rect = el.getBoundingClientRect();
-          ticketWidth = rect.width;
-          ticketHeight = rect.height;
-        }
-      };
-
-      handle.on(window, { resize: updateDimensions });
+      addEventListeners(window, handle.signal, { resize: updateDimensions });
     });
 
     return (props: {
@@ -41,16 +47,20 @@ export let JamTicketCard = clientEntry(
           data-jam-ticket-card
           class="group z-10 w-[300px] select-none md:w-[800px]"
           style={{ perspective: "1500px" }}
-          on={{
-            mouseenter() {
+          mix={[
+            ref((node) => {
+              ticketElement = node;
+              updateDimensions();
+            }),
+            on("mouseenter", () => {
               isHovered = true;
               handle.update();
-            },
-            mouseleave() {
+            }),
+            on("mouseleave", () => {
               isHovered = false;
               handle.update();
-            },
-            mousemove(e: MouseEvent & { currentTarget: HTMLElement }) {
+            }),
+            on("mousemove", (e) => {
               let rect = e.currentTarget.getBoundingClientRect();
               ticketWidth = rect.width;
               ticketHeight = rect.height;
@@ -59,8 +69,8 @@ export let JamTicketCard = clientEntry(
                 y: ((e.clientY - rect.top) / rect.height) * 100,
               };
               handle.update();
-            },
-          }}
+            }),
+          ]}
         >
           <div
             class="relative isolate z-10 overflow-hidden rounded-xl border border-white/20 transition-transform duration-200 ease-out"

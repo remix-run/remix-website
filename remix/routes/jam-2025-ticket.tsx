@@ -1,4 +1,5 @@
 import * as s from "remix/data-schema";
+import { getContext } from "remix/async-context-middleware";
 import { createCart, getProduct, MAX_QUANTITY } from "./jam-storefront.server";
 import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
@@ -28,7 +29,8 @@ export async function jam2025TicketHandler() {
   let initialQuantity = 1;
 
   if (request.method === "POST") {
-    let submission = await parseTicketPurchaseSubmission(request);
+    let formData = getContext().get(FormData);
+    let submission = parseTicketPurchaseSubmission(formData);
     if (!submission.success) {
       formError = submission.error;
     } else {
@@ -63,12 +65,10 @@ export async function jam2025TicketHandler() {
       <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]">
         <Title>
           <ScrambleText
+            setup={{ text: "General Admission", delay: 100, color: "blue" }}
             className="whitespace-nowrap"
-            text="General Admission"
-            delay={100}
-            color="blue"
           />
-          <ScrambleText text="ticket" delay={300} color="green" />
+          <ScrambleText setup={{ text: "ticket", delay: 300, color: "green" }} />
         </Title>
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
@@ -80,13 +80,13 @@ export async function jam2025TicketHandler() {
         />
 
         <JamTicketPurchase
+          setup={{ initialQuantity, maxQuantity: MAX_QUANTITY }}
           class="z-10 flex w-[90%] flex-col items-center gap-3"
           price={product.price}
           productId={product.productId}
           maxQuantity={MAX_QUANTITY}
           isSoldOut={!product.availableForSale}
           error={formError}
-          initialQuantity={initialQuantity}
         />
 
         <InfoText>
@@ -103,8 +103,7 @@ export async function jam2025TicketHandler() {
   );
 }
 
-async function parseTicketPurchaseSubmission(request: Request) {
-  let formData = await request.formData();
+function parseTicketPurchaseSubmission(formData: FormData) {
   let quantity = Number.parseInt(String(formData.get("quantity") ?? "1"), 10);
   let result = s.parseSafe(ticketPurchaseSubmissionSchema, {
     productId: formData.get("productId"),

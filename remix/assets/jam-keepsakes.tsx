@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { clientEntry, type Handle } from "remix/component";
+import { addEventListeners, clientEntry, type Handle } from "remix/component";
 import assets from "./jam-keepsakes.tsx?assets=client";
 import photo1Src from "./jam/images/keepsakes/photo-1.avif";
 import photo2Src from "./jam/images/keepsakes/photo-2.avif";
@@ -160,22 +160,32 @@ export let JamKeepsakes = clientEntry(
         setupDocumentListeners();
       };
 
-      handle.on(document, {
-        mousedown(e: MouseEvent) {
-          let el = (e.target as HTMLElement).closest(
-            "[data-keepsake-id]",
-          ) as HTMLElement | null;
-          if (!el) return;
-          handleStart(e, el);
-        },
-        touchstart(e: TouchEvent) {
-          let el = (e.target as HTMLElement).closest(
-            "[data-keepsake-id]",
-          ) as HTMLElement | null;
-          if (!el) return;
-          handleStart(e, el);
-        },
+      let onMouseDown = (e: MouseEvent) => {
+        let el = (e.target as HTMLElement).closest(
+          "[data-keepsake-id]",
+        ) as HTMLElement | null;
+        if (!el) return;
+        handleStart(e, el);
+      };
+      let onTouchStart = (e: TouchEvent) => {
+        let el = (e.target as HTMLElement).closest(
+          "[data-keepsake-id]",
+        ) as HTMLElement | null;
+        if (!el) return;
+        handleStart(e, el);
+      };
+
+      addEventListeners(document, handle.signal, {
+        mousedown: onMouseDown,
+        touchstart: onTouchStart,
       });
+      handle.signal.addEventListener(
+        "abort",
+        () => {
+          handleEnd();
+        },
+        { once: true },
+      );
     });
 
     return () => (

@@ -7,46 +7,49 @@ import type { Controller } from "remix/fetch-router";
 type NewsletterResponse = { ok: boolean; error: string | null };
 
 export default {
-  async newsletter(context) {
-    let formData = context.formData ?? (await context.request.formData());
-    let result = s.parseSafe(newsletterSubmission, {
-      email: formData.get("email"),
-      tags: formData.getAll("tag"),
-    });
-    if (!result.success) {
-      let hasEmailIssue = result.issues.some((issue) =>
-        hasPath(issue, "email"),
-      );
-      let hasTagIssue = result.issues.some((issue) => hasPath(issue, "tags"));
-      return Response.json(
-        {
-          ok: false,
-          error: hasEmailIssue
-            ? "Invalid Email"
-            : hasTagIssue
-              ? "Invalid Tag"
-              : "Invalid Submission",
-        } satisfies NewsletterResponse,
-        { status: 400 },
-      );
-    }
+  actions: {
+    async newsletter(context) {
+      let formData =
+        context.get(FormData) ?? (await context.request.formData());
+      let result = s.parseSafe(newsletterSubmission, {
+        email: formData.get("email"),
+        tags: formData.getAll("tag"),
+      });
+      if (!result.success) {
+        let hasEmailIssue = result.issues.some((issue) =>
+          hasPath(issue, "email"),
+        );
+        let hasTagIssue = result.issues.some((issue) => hasPath(issue, "tags"));
+        return Response.json(
+          {
+            ok: false,
+            error: hasEmailIssue
+              ? "Invalid Email"
+              : hasTagIssue
+                ? "Invalid Tag"
+                : "Invalid Submission",
+          } satisfies NewsletterResponse,
+          { status: 400 },
+        );
+      }
 
-    try {
-      await subscribeToNewsletter(result.value.email, result.value.tags);
-      return Response.json({
-        ok: true,
-        error: null,
-      } satisfies NewsletterResponse);
-    } catch (error: unknown) {
-      return Response.json(
-        {
-          ok: false,
-          error:
-            error instanceof Error ? error.message : "Something went wrong",
-        } satisfies NewsletterResponse,
-        { status: 500 },
-      );
-    }
+      try {
+        await subscribeToNewsletter(result.value.email, result.value.tags);
+        return Response.json({
+          ok: true,
+          error: null,
+        } satisfies NewsletterResponse);
+      } catch (error: unknown) {
+        return Response.json(
+          {
+            ok: false,
+            error:
+              error instanceof Error ? error.message : "Something went wrong",
+          } satisfies NewsletterResponse,
+          { status: 500 },
+        );
+      }
+    },
   },
 } satisfies Controller<typeof routes.actions>;
 

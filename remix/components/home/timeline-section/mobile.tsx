@@ -3,9 +3,9 @@ import type { Props, RemixNode } from "remix/component/jsx-runtime";
 
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);
 const ROW_HEIGHT = 57;
-type CssProps = Props<"div">["css"];
+type StyleProps = Props<"div">["style"];
 
-type CellConfig = string | { label?: string; css: CssProps };
+type CellConfig = string | { label?: string; style: StyleProps };
 
 const LANE_CELL_CONFIG: Record<string, Record<number, CellConfig>> = {
   "react-router": {
@@ -15,15 +15,15 @@ const LANE_CELL_CONFIG: Record<string, Record<number, CellConfig>> = {
     2021: " ",
     2023: " ",
     2024: "v7",
-    2026: { css: { opacity: 1 } },
+    2026: { style: { opacity: 1 } },
   },
   remix: {
     2021: "v1",
     2023: "v2",
   },
   "remix-3": {
-    2025: { label: "💿", css: { fontSize: "20px" } },
-    2026: { css: { opacity: 1 } },
+    2025: { label: "💿", style: { fontSize: "20px" } },
+    2026: { style: { opacity: 1 } },
   },
 };
 
@@ -31,13 +31,13 @@ export function TimelineDiagramMobile() {
   return () => (
     <div
       class="relative mx-auto grid w-[380px]"
-      css={{
+      style={{
         gridTemplateColumns: "auto repeat(3, 1fr)",
         gridTemplateRows: `repeat(${YEARS.length + 1}, ${ROW_HEIGHT}px)`,
       }}
     >
       <div
-        css={{
+        style={{
           gridColumn: 2,
           gridRow: "1 / -1",
           background:
@@ -45,7 +45,7 @@ export function TimelineDiagramMobile() {
         }}
       />
       <div
-        css={{
+        style={{
           gridColumn: 3,
           gridRow: "1 / -1",
           background:
@@ -53,7 +53,7 @@ export function TimelineDiagramMobile() {
         }}
       />
       <div
-        css={{
+        style={{
           gridColumn: 4,
           gridRow: "1 / -1",
           background:
@@ -64,33 +64,35 @@ export function TimelineDiagramMobile() {
       <TrackSegments />
 
       {YEARS.map((year, index) => (
-        <YearLabel key={year} css={{ gridColumn: 1, gridRow: index + 2 }}>
+        <YearLabel key={year} style={{ gridColumn: 1, gridRow: index + 2 }}>
           {year}
         </YearLabel>
       ))}
 
-      <LaneHeader css={{ gridColumn: 2, gridRow: 2 }}>React Router</LaneHeader>
-      <LaneHeader css={{ gridColumn: 3, gridRow: 2 }}>Remix 1-2</LaneHeader>
-      <LaneHeader css={{ gridColumn: 4, gridRow: 2 }}>Remix 3</LaneHeader>
+      <LaneHeader style={{ gridColumn: 2, gridRow: 2 }}>
+        React Router
+      </LaneHeader>
+      <LaneHeader style={{ gridColumn: 3, gridRow: 2 }}>Remix 1-2</LaneHeader>
+      <LaneHeader style={{ gridColumn: 4, gridRow: 2 }}>Remix 3</LaneHeader>
 
       {YEARS.slice(1).map((year, index) => [
         <LaneCell
           key={`rr-${year}`}
           lane="react-router"
           year={year}
-          css={{ gridColumn: 2, gridRow: index + 3 }}
+          style={{ gridColumn: 2, gridRow: index + 3 }}
         />,
         <LaneCell
           key={`rx-${year}`}
           lane="remix"
           year={year}
-          css={{ gridColumn: 3, gridRow: index + 3 }}
+          style={{ gridColumn: 3, gridRow: index + 3 }}
         />,
         <LaneCell
           key={`r3-${year}`}
           lane="remix-3"
           year={year}
-          css={{ gridColumn: 4, gridRow: index + 3 }}
+          style={{ gridColumn: 4, gridRow: index + 3 }}
         />,
       ])}
     </div>
@@ -107,7 +109,7 @@ function TrackSegments() {
       <>
         <div
           class="mx-auto w-12"
-          css={{
+          style={{
             gridColumn: 2,
             gridRow: "1 / -1",
             borderRadius: "0 0 24px 24px",
@@ -117,7 +119,7 @@ function TrackSegments() {
         />
         <div
           class="mx-auto w-12"
-          css={{
+          style={{
             gridColumn: 2,
             gridRow: "8 / 10",
             borderRadius: "24px 24px 0 24px",
@@ -127,7 +129,7 @@ function TrackSegments() {
         />
         <div
           class="ml-12 h-12 self-center"
-          css={{
+          style={{
             gridColumn: "2 / 4",
             gridRow: 9,
             borderRadius: "0 24px 0 24px",
@@ -137,7 +139,7 @@ function TrackSegments() {
         />
         <div
           class="mx-auto w-12"
-          css={{
+          style={{
             gridColumn: 3,
             gridRow: "9 / 12",
             borderRadius: "0 24px 24px 0",
@@ -148,7 +150,7 @@ function TrackSegments() {
         />
         <div
           class="mr-12 h-12 self-center"
-          css={{
+          style={{
             gridColumn: "2 / 4",
             gridRow: 11,
             borderRadius: "24px 0 24px 0",
@@ -158,7 +160,7 @@ function TrackSegments() {
         />
         <div
           class="mx-auto w-12"
-          css={{
+          style={{
             gridColumn: 2,
             gridRow: "11 / 13",
             borderRadius: "48px 24px 0 0",
@@ -169,7 +171,7 @@ function TrackSegments() {
         />
         <div
           class="mx-auto w-12 rounded-3xl"
-          css={{
+          style={{
             gridColumn: 4,
             gridRow: "13 / 15",
             background: "var(--rmx-highlight-green)",
@@ -181,13 +183,13 @@ function TrackSegments() {
 }
 
 function LaneHeader() {
-  return (props: { children: RemixNode; css?: CssProps }) => (
+  return (props: { children: RemixNode; style?: StyleProps }) => (
     <div
       class={cx(
         "text-rmx-neutral-100",
         "flex items-center justify-center whitespace-nowrap text-xs font-extrabold uppercase leading-[1.6] tracking-[0.6px]",
       )}
-      css={props.css}
+      style={props.style}
     >
       {props.children}
     </div>
@@ -195,7 +197,7 @@ function LaneHeader() {
 }
 
 function YearLabel() {
-  return (props: { children: RemixNode; css?: CssProps }) => {
+  return (props: { children: RemixNode; style?: StyleProps }) => {
     let year = Number(props.children);
     let opacity = 1;
     if (year === 2014) opacity = 0.25;
@@ -205,7 +207,12 @@ function YearLabel() {
     return (
       <div
         class="rmx-caption text-rmx-tertiary flex items-center justify-end px-6"
-        css={{ opacity, ...props.css }}
+        style={{
+          opacity,
+          ...(typeof props.style === "object" && props.style
+            ? props.style
+            : {}),
+        }}
       >
         {props.children}
       </div>
@@ -214,10 +221,10 @@ function YearLabel() {
 }
 
 function LaneCell() {
-  return (props: { lane: string; year: number; css?: CssProps }) => {
+  return (props: { lane: string; year: number; style?: StyleProps }) => {
     let config = LANE_CELL_CONFIG[props.lane]?.[props.year];
     let label = typeof config === "string" ? config : config?.label;
-    let configStyle = typeof config === "object" ? config.css : undefined;
+    let configStyle = typeof config === "object" ? config.style : undefined;
 
     if (label) {
       return (
@@ -226,7 +233,14 @@ function LaneCell() {
             "rmx-caption text-rmx-neutral-100",
             "self-center justify-self-center font-bold",
           )}
-          css={{ ...props.css, ...configStyle }}
+          style={{
+            ...(typeof props.style === "object" && props.style
+              ? props.style
+              : {}),
+            ...(typeof configStyle === "object" && configStyle
+              ? configStyle
+              : {}),
+          }}
         >
           {label}
         </div>
@@ -234,10 +248,10 @@ function LaneCell() {
     }
 
     return (
-      <div class="self-center justify-self-center" css={props.css}>
+      <div class="self-center justify-self-center" style={props.style}>
         <div
           class="size-[9px] rounded-full border border-[--rmx-neutral-100] opacity-40"
-          css={configStyle}
+          style={configStyle}
         />
       </div>
     );

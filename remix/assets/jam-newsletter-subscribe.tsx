@@ -1,4 +1,4 @@
-import { clientEntry, type Handle } from "remix/component";
+import { clientEntry, on, type Handle } from "remix/component";
 import assets from "./jam-newsletter-subscribe.tsx?assets=client";
 import { routes } from "../routes";
 import { submitNewsletterRequest } from "./newsletter-subscribe";
@@ -17,8 +17,8 @@ export let JamNewsletterSubscribeForm = clientEntry(
         action={routes.actions.newsletter.href()}
         method="post"
         class={props.class}
-        on={{
-          async submit(event, signal) {
+        mix={[
+          on("submit", async (event, signal) => {
             event.preventDefault();
             if (submitting) return;
 
@@ -34,6 +34,7 @@ export let JamNewsletterSubscribeForm = clientEntry(
                 formData: new FormData(form),
                 signal,
               });
+              if (signal.aborted) return;
               state = result.state;
               error = result.error;
               if (result.shouldReset) {
@@ -43,8 +44,8 @@ export let JamNewsletterSubscribeForm = clientEntry(
               submitting = false;
               handle.update();
             }
-          },
-        }}
+          }),
+        ]}
       >
         <input type="hidden" name="tag" value="6280341" />
         <p class="font-mono text-xs uppercase tracking-widest text-white/50 md:text-base">
