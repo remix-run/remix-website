@@ -9,13 +9,19 @@ import {
   Title,
   transformShopifyImageUrl,
 } from "./jam-shared";
-import { JamGalleryFocusRestore } from "../assets/jam-gallery-focus-restore";
 import { JamGalleryKeyboardNavigation } from "../assets/jam-gallery-keyboard-navigation";
 import ogImageSrc from "../assets/jam/images/og-gallery.jpg";
 import iconsHref from "../shared/icons.svg";
 import type { RemixNode } from "remix/component/jsx-runtime";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
+type GalleryFrameState = {
+  aspectRatio: string;
+  width: string;
+  maxWidth: string;
+  height: string;
+  maxHeight: string;
+};
 
 export async function jam2025GalleryHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
@@ -45,32 +51,42 @@ export async function jam2025GalleryHandler() {
         {photos.length === 0 ? (
           <p class="text-lg text-white/70">No photos available yet.</p>
         ) : (
-          <>
-            <div class="w-full columns-1 gap-4 md:columns-2 md:gap-6 lg:columns-3 2xl:columns-4">
-              {photos.map((photo, index) => (
-                <div
-                  key={photo.url}
-                  class="mb-4 w-full break-inside-avoid md:mb-6"
-                >
-                  <JamGalleryDocumentLink
-                    href={`${routes.jam2025Gallery.href()}?photo=${index}`}
-                    dataGalleryPhotoLink
-                    dataGalleryPhotoIndex={index}
-                    class="block overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity duration-300 hover:opacity-85 focus-visible:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand"
+          <div class="w-full">
+            <div
+              class="w-full columns-1 gap-4 md:columns-2 md:gap-6 lg:columns-3 2xl:columns-4"
+            >
+              {photos.map((photo, index) => {
+                let frame = getGalleryFrameState(photo);
+
+                return (
+                  <div
+                    key={photo.url}
+                    class="mb-4 w-full break-inside-avoid md:mb-6"
                   >
-                    <PhotoImage {...photo} />
-                  </JamGalleryDocumentLink>
-                </div>
-              ))}
+                    <JamGalleryLink
+                      href={`${routes.jam2025Gallery.href()}?photo=${index}`}
+                      dataGalleryPhotoLink
+                      dataGalleryPhotoIndex={index}
+                      dataGalleryAspectRatio={frame.aspectRatio}
+                      dataGalleryWidth={frame.width}
+                      dataGalleryMaxWidth={frame.maxWidth}
+                      dataGalleryHeight={frame.height}
+                      dataGalleryMaxHeight={frame.maxHeight}
+                      class="block overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity duration-300 hover:opacity-85 focus-visible:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand"
+                    >
+                      <PhotoImage {...photo} />
+                    </JamGalleryLink>
+                  </div>
+                );
+              })}
             </div>
-            <JamGalleryFocusRestore />
             {selectedPhotoIndex !== null ? (
               <GalleryModal
                 photos={photos}
                 selectedPhotoIndex={selectedPhotoIndex}
               />
             ) : null}
-          </>
+          </div>
         )}
       </main>
     </JamDocument>,
@@ -142,6 +158,8 @@ function GalleryModal() {
     let previousHref = `${routes.jam2025Gallery.href()}?photo=${previousPhotoIndex}`;
     let nextHref = `${routes.jam2025Gallery.href()}?photo=${nextPhotoIndex}`;
     let downloadHref = `${routes.jam2025GalleryDownload.href()}?photo=${selectedPhotoIndex}`;
+    let previousFrame = getGalleryFrameState(photos[previousPhotoIndex]);
+    let nextFrame = getGalleryFrameState(photos[nextPhotoIndex]);
 
     return (
       <JamGalleryModalControls
@@ -149,6 +167,8 @@ function GalleryModal() {
         previousHref={previousHref}
         nextHref={nextHref}
         focusPhotoIndex={selectedPhotoIndex}
+        previousFrame={previousFrame}
+        nextFrame={nextFrame}
         class="fixed inset-0 z-50 size-full select-none bg-black/70 backdrop-blur"
       >
         <JamGalleryKeyboardNavigation
@@ -156,8 +176,10 @@ function GalleryModal() {
           previousHref={previousHref}
           nextHref={nextHref}
           focusPhotoIndex={selectedPhotoIndex}
+          previousFrame={previousFrame}
+          nextFrame={nextFrame}
         />
-        <JamGalleryDocumentLink
+        <JamGalleryLink
           href={closeHref}
           dataGalleryBackdrop
           tabindex={-1}
@@ -185,11 +207,17 @@ function GalleryModal() {
                 href={previousHref}
                 icon="chevron-r"
                 label="Previous photo"
+                frame={previousFrame}
                 className="[&_svg]:rotate-180"
               />
             </div>
             <div class="absolute right-0 top-1/2 z-10 -translate-y-1/2">
-              <IconLink href={nextHref} icon="chevron-r" label="Next photo" />
+              <IconLink
+                href={nextHref}
+                icon="chevron-r"
+                label="Next photo"
+                frame={nextFrame}
+              />
             </div>
             <ModalImage photo={selectedPhoto} />
           </div>
@@ -210,6 +238,8 @@ function JamGalleryModalControls() {
     previousHref: string;
     nextHref: string;
     focusPhotoIndex: number;
+    previousFrame: GalleryFrameState;
+    nextFrame: GalleryFrameState;
     class?: string;
     children: RemixNode;
   }) => {
@@ -227,7 +257,7 @@ function JamGalleryModalControls() {
   };
 }
 
-function JamGalleryDocumentLink() {
+function JamGalleryLink() {
   return (props: {
     href: string;
     class?: string;
@@ -236,6 +266,11 @@ function JamGalleryDocumentLink() {
     dataGalleryCloseLink?: boolean;
     dataGalleryPhotoLink?: boolean;
     dataGalleryPhotoIndex?: number;
+    dataGalleryAspectRatio?: string;
+    dataGalleryWidth?: string;
+    dataGalleryMaxWidth?: string;
+    dataGalleryHeight?: string;
+    dataGalleryMaxHeight?: string;
     tabindex?: number;
     target?: string;
     rel?: string;
@@ -243,12 +278,17 @@ function JamGalleryDocumentLink() {
   }) => (
     <a
       href={props.href}
-      rmx-document
+      rmx-reset-scroll="false"
       aria-label={props.ariaLabel}
       data-gallery-backdrop={props.dataGalleryBackdrop || undefined}
       data-gallery-close-link={props.dataGalleryCloseLink || undefined}
       data-gallery-photo-link={props.dataGalleryPhotoLink || undefined}
       data-gallery-photo-index={props.dataGalleryPhotoIndex}
+      data-gallery-aspect-ratio={props.dataGalleryAspectRatio}
+      data-gallery-width={props.dataGalleryWidth}
+      data-gallery-max-width={props.dataGalleryMaxWidth}
+      data-gallery-height={props.dataGalleryHeight}
+      data-gallery-max-height={props.dataGalleryMaxHeight}
       tabindex={props.tabindex}
       target={props.target}
       rel={props.rel}
@@ -274,18 +314,22 @@ function ModalImage() {
 
     return (
       <div
+        data-gallery-modal-image
         class="-mx-6 bg-white/5 md:mx-0"
         style={{
-          aspectRatio,
-          ...(isLandscape
-            ? { maxWidth, width: "100%" }
-            : { maxHeight, height: "100%" }),
+          aspectRatio: `var(--gallery-modal-aspect-ratio, ${aspectRatio})`,
+          width: `var(--gallery-modal-width, ${isLandscape ? "100%" : "auto"})`,
+          maxWidth: `var(--gallery-modal-max-width, ${isLandscape ? `${maxWidth}px` : "none"})`,
+          height: `var(--gallery-modal-height, ${isLandscape ? "auto" : "100%"})`,
+          maxHeight: `var(--gallery-modal-max-height, ${isLandscape ? "none" : `${maxHeight}px`})`,
         }}
       >
         <img
+          data-gallery-modal-photo
           src={imageSrc}
           alt={photo.altText || ""}
           class="size-full object-contain"
+          style={{ visibility: "var(--gallery-photo-visibility, visible)" }}
         />
       </div>
     );
@@ -300,6 +344,7 @@ function IconLink() {
     className?: string;
     download?: string;
     dataGalleryCloseLink?: boolean;
+    frame?: GalleryFrameState;
     target?: string;
     rel?: string;
   }) =>
@@ -317,10 +362,15 @@ function IconLink() {
         </svg>
       </a>
     ) : (
-      <JamGalleryDocumentLink
+      <JamGalleryLink
         href={props.href}
         ariaLabel={props.label}
         dataGalleryCloseLink={props.dataGalleryCloseLink}
+        dataGalleryAspectRatio={props.frame?.aspectRatio}
+        dataGalleryWidth={props.frame?.width}
+        dataGalleryMaxWidth={props.frame?.maxWidth}
+        dataGalleryHeight={props.frame?.height}
+        dataGalleryMaxHeight={props.frame?.maxHeight}
         target={props.target}
         rel={props.rel}
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
@@ -328,8 +378,22 @@ function IconLink() {
         <svg class="pointer-events-none size-6" aria-hidden="true">
           <use href={`${iconsHref}#${props.icon}`} />
         </svg>
-      </JamGalleryDocumentLink>
+      </JamGalleryLink>
     );
+}
+
+function getGalleryFrameState(photo: Photo): GalleryFrameState {
+  let maxWidth = 1920;
+  let maxHeight = 1080;
+  let isLandscape = photo.width > photo.height;
+
+  return {
+    aspectRatio: String(photo.width / photo.height),
+    width: isLandscape ? "100%" : "auto",
+    maxWidth: isLandscape ? `${maxWidth}px` : "none",
+    height: isLandscape ? "auto" : "100%",
+    maxHeight: isLandscape ? "none" : `${maxHeight}px`,
+  };
 }
 
 function getSelectedPhotoIndex(

@@ -1,7 +1,15 @@
-import { addEventListeners, clientEntry, type Handle } from "remix/component";
+import {
+  addEventListeners,
+  clientEntry,
+  navigate,
+  type Handle,
+} from "remix/component";
 import assets from "./jam-gallery-keyboard-navigation.tsx?assets=client";
+import {
+  restoreGalleryFocus,
+  storeGalleryFocus,
+} from "./jam-gallery-focus-restore";
 
-let FOCUS_RESTORE_KEY = "jam-gallery-focus-index";
 let FOCUSABLE_SELECTOR =
   'a[href]:not([data-gallery-backdrop]), button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -15,6 +23,14 @@ function isFocusable(element: HTMLElement) {
   return element.getClientRects().length > 0;
 }
 
+type GalleryFrameState = {
+  aspectRatio: string;
+  width: string;
+  maxWidth: string;
+  height: string;
+  maxHeight: string;
+};
+
 export let JamGalleryKeyboardNavigation = clientEntry(
   `${assets.entry}#JamGalleryKeyboardNavigation`,
   (handle: Handle) => {
@@ -22,12 +38,40 @@ export let JamGalleryKeyboardNavigation = clientEntry(
     let previousHref = "";
     let nextHref = "";
     let focusPhotoIndex = 0;
+    let syncPendingQueued = false;
+    let previousFrame: GalleryFrameState | null = null;
+    let nextFrame: GalleryFrameState | null = null;
+
+    let navigateGallery = (href: string, frame?: GalleryFrameState | null) => {
+      setGalleryImagePending(true, frame);
+      void navigate(href, { resetScroll: false });
+    };
+
+    let closeGallery = async () => {
+      storeGalleryFocus(focusPhotoIndex);
+      await navigate(closeHref, { resetScroll: false });
+      await new Promise<void>((resolve) => {
+        window.requestAnimationFrame(() => resolve());
+      });
+      restoreGalleryFocus();
+    };
+
+    let queueSyncPendingState = () => {
+      if (syncPendingQueued) return;
+      syncPendingQueued = true;
+      handle.queueTask((signal) => {
+        syncPendingQueued = false;
+        if (signal.aborted) return;
+        syncGalleryImagePendingState(signal);
+      });
+    };
 
     handle.queueTask(() => {
       let modal = document.querySelector<HTMLElement>("[data-gallery-modal]");
       if (!modal) return;
 
       modal.setAttribute("data-gallery-modal-ready", "true");
+      queueSyncPendingState();
 
       let previousBodyOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -93,23 +137,19 @@ export let JamGalleryKeyboardNavigation = clientEntry(
 
         if (event.key === "Escape") {
           event.preventDefault();
-          window.sessionStorage.setItem(
-            FOCUS_RESTORE_KEY,
-            String(focusPhotoIndex),
-          );
-          window.location.assign(closeHref);
+          void closeGallery();
           return;
         }
 
         if (event.key === "ArrowLeft") {
           event.preventDefault();
-          window.location.assign(previousHref);
+          navigateGallery(previousHref, previousFrame);
           return;
         }
 
         if (event.key === "ArrowRight") {
           event.preventDefault();
-          window.location.assign(nextHref);
+          navigateGallery(nextHref, nextFrame);
           return;
         }
 
@@ -130,12 +170,30 @@ export let JamGalleryKeyboardNavigation = clientEntry(
         let target = event.target;
         if (!(target instanceof Element)) return;
 
+        let pendingTarget = target.closest(
+          "[data-gallery-photo-link], [aria-label='Previous photo'], [aria-label='Next photo']",
+        );
+        if (pendingTarget && modal.contains(pendingTarget)) {
+          setGalleryImagePending(true, getGalleryFrameFromElement(pendingTarget));
+        }
+
         let closeTarget = target.closest(
           "[data-gallery-backdrop], [data-gallery-close-link]",
         );
         if (!closeTarget || !modal.contains(closeTarget)) return;
+        if (
+          event.defaultPrevented ||
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return;
+        }
 
-        window.sessionStorage.setItem(FOCUS_RESTORE_KEY, String(focusPhotoIndex));
+        event.preventDefault();
+        void closeGallery();
       };
 
       addEventListeners(document, handle.signal, {
@@ -157,13 +215,97 @@ export let JamGalleryKeyboardNavigation = clientEntry(
       previousHref: string;
       nextHref: string;
       focusPhotoIndex: number;
+      previousFrame: GalleryFrameState;
+      nextFrame: GalleryFrameState;
     }) => {
       closeHref = props.closeHref;
       previousHref = props.previousHref;
       nextHref = props.nextHref;
       focusPhotoIndex = props.focusPhotoIndex;
+      previousFrame = props.previousFrame;
+      nextFrame = props.nextFrame;
+      queueSyncPendingState();
 
       return null;
     };
   },
 );
+
+function setGalleryImagePending(
+  isPending: boolean,
+  frame?: GalleryFrameState | null,
+) {
+  let modal = document.querySelector<HTMLElement>("[data-gallery-modal]");
+  if (!modal) return;
+
+  if (isPending) {
+    modal.setAttribute("data-gallery-image-state", "pending");
+    modal.style.setProperty("--gallery-photo-visibility", "hidden");
+    applyGalleryFrameState(modal, frame);
+    return;
+  }
+
+  modal.removeAttribute("data-gallery-image-state");
+  modal.style.removeProperty("--gallery-photo-visibility");
+  clearGalleryFrameState(modal);
+}
+
+function syncGalleryImagePendingState(signal: AbortSignal) {
+  let modal = document.querySelector<HTMLElement>("[data-gallery-modal]");
+  let image = document.querySelector<HTMLImageElement>("[data-gallery-modal-photo]");
+  if (!modal || !image) return;
+
+  if (!modal.hasAttribute("data-gallery-image-state")) {
+    modal.style.removeProperty("--gallery-photo-visibility");
+    clearGalleryFrameState(modal);
+    return;
+  }
+
+  if (image.complete) {
+    setGalleryImagePending(false);
+    return;
+  }
+
+  let clearPending = () => {
+    if (signal.aborted) return;
+    setGalleryImagePending(false);
+  };
+
+  image.addEventListener("load", clearPending, { once: true, signal });
+  image.addEventListener("error", clearPending, { once: true, signal });
+}
+
+function getGalleryFrameFromElement(element: Element) {
+  let aspectRatio = element.getAttribute("data-gallery-aspect-ratio");
+  let width = element.getAttribute("data-gallery-width");
+  let maxWidth = element.getAttribute("data-gallery-max-width");
+  let height = element.getAttribute("data-gallery-height");
+  let maxHeight = element.getAttribute("data-gallery-max-height");
+
+  if (!aspectRatio || !width || !maxWidth || !height || !maxHeight) {
+    return null;
+  }
+
+  return { aspectRatio, width, maxWidth, height, maxHeight };
+}
+
+function applyGalleryFrameState(
+  modal: HTMLElement,
+  frame?: GalleryFrameState | null,
+) {
+  if (!frame) return;
+
+  modal.style.setProperty("--gallery-modal-aspect-ratio", frame.aspectRatio);
+  modal.style.setProperty("--gallery-modal-width", frame.width);
+  modal.style.setProperty("--gallery-modal-max-width", frame.maxWidth);
+  modal.style.setProperty("--gallery-modal-height", frame.height);
+  modal.style.setProperty("--gallery-modal-max-height", frame.maxHeight);
+}
+
+function clearGalleryFrameState(modal: HTMLElement) {
+  modal.style.removeProperty("--gallery-modal-aspect-ratio");
+  modal.style.removeProperty("--gallery-modal-width");
+  modal.style.removeProperty("--gallery-modal-max-width");
+  modal.style.removeProperty("--gallery-modal-height");
+  modal.style.removeProperty("--gallery-modal-max-height");
+}
