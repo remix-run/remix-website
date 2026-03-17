@@ -28,6 +28,23 @@ type ScrambleSetup = {
   cycleDelay?: number;
 };
 
+let playedAnimations = new Set<string>();
+let activePathname: string | null = null;
+
+function syncPlayedAnimationsPathname() {
+  if (typeof window === "undefined") return;
+  if (activePathname === window.location.pathname) return;
+
+  activePathname = window.location.pathname;
+  playedAnimations.clear();
+}
+
+function getAnimationKey(text: string) {
+  if (typeof window === "undefined") return text;
+  syncPlayedAnimationsPathname();
+  return `${window.location.pathname}::${text}`;
+}
+
 function getScrambledLetter(
   targetChar: string,
   iteration: number,
@@ -57,13 +74,16 @@ export let JamScrambleText = clientEntry(
   `${assets.entry}#JamScrambleText`,
   (handle: Handle, setup: ScrambleSetup) => {
     let text = setup.text;
+    let animationKey = getAnimationKey(text);
     let textChars = text.split("");
     let delay = setup.delay ?? 0;
     let color = setup.color ?? "blue";
     let cyclesToResolve = setup.cyclesToResolve ?? 10;
     let charDelay = setup.charDelay ?? 100;
     let cycleDelay = setup.cycleDelay ?? 50;
-    let state = getInitialState(text);
+    let state = playedAnimations.has(animationKey)
+      ? getResolvedState(text)
+      : getInitialState(text);
     let timers: number[] = [];
 
     let cleanupTimers = () => {
@@ -77,6 +97,7 @@ export let JamScrambleText = clientEntry(
     let startAnimation = () => {
       cleanupTimers();
       if (handle.signal.aborted) return;
+      playedAnimations.add(animationKey);
       state = getInitialState(text);
       handle.update();
 
@@ -155,6 +176,13 @@ export let JamScrambleText = clientEntry(
       ).matches;
       if (prefersReducedMotion) {
         cleanupTimers();
+        playedAnimations.add(animationKey);
+        state = getResolvedState(text);
+        handle.update();
+        return;
+      }
+      if (playedAnimations.has(animationKey)) {
+        cleanupTimers();
         state = getResolvedState(text);
         handle.update();
         return;
@@ -172,9 +200,11 @@ export let JamScrambleText = clientEntry(
               let visible = current?.visible ?? false;
               let resolved = current?.resolved ?? false;
               let iteration = current?.iteration ?? 0;
-              let displayChar = visible
-                ? getScrambledLetter(char, iteration, cyclesToResolve)
-                : char;
+              let displayChar = resolved
+                ? char
+                : visible
+                  ? getScrambledLetter(char, iteration, cyclesToResolve)
+                  : char;
 
               return (
                 <span
