@@ -46,7 +46,7 @@ Current migration state:
 - Step 2 is complete.
 - Step 5 now matches the PR 11147 server-side redirect-following pattern.
 - Step 6 is complete for this repo's current top-level navigation scope.
-- Step 12 is decided for this repo: browsers without the Navigation API skip the Remix client boot and fall back to normal document navigations.
+- Step 12 is decided for this repo: no browser fallback will be added for environments without the Navigation API.
 - Jam routes now use top-level client navigation only; no nested-frame follow-up is planned.
 
 Step 6 closeout note:
@@ -491,9 +491,9 @@ Handoff to implementor:
 
 Decision for this repo:
 
-- Feature-gate the Remix client boot on Navigation API support.
-- Browsers without the Navigation API fall back to normal document navigations.
-- This is intentional because `run()` boot currently wires both hydration and client navigation together, so unsupported browsers should degrade explicitly instead of partially booting.
+- Do not add a custom fallback for browsers without the Navigation API.
+- Treat Navigation API support as a requirement for the hydrated Remix 3 experience on this branch.
+- This is intentional because `run()` boot currently wires both hydration and client navigation together; skipping it would degrade more than just link interception.
 
 ## Suggested implementation order
 

@@ -28,13 +28,6 @@ let colorSchemeScript = `
     media.addListener(sync);
   }
 `;
-let clientBootScript = `
-  if ("navigation" in window) {
-    import(${JSON.stringify(assets.entry)}).catch((error) => {
-      console.error(error);
-    });
-  }
-`;
 
 interface DocumentProps {
   title?: string;
@@ -198,7 +191,7 @@ export function Document() {
           {assets.js.map((asset) => (
             <link key={asset.href} rel="modulepreload" href={asset.href} />
           ))}
-          <script type="module" innerHTML={clientBootScript} />
+          <script type="module" src={assets.entry} />
         </body>
       </html>
     );
