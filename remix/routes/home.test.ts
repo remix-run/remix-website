@@ -25,5 +25,6 @@ describe("Home route", () => {
     expect(html).toContain("#github");
     expect(html).toContain("og:title");
     expect(html).toContain("twitter:card");
+    expect(html).toContain('"navigation" in window');
   });
 });

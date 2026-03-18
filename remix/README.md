@@ -64,7 +64,8 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
   - `/jam/2025/gallery`
 - Do not pursue nested-frame Jam/gallery work unless product requirements materially change.
 - The ticket purchase form still uses a normal browser POST/redirect flow.
-- Navigation API support is a requirement for the hydrated Remix 3 experience on this branch; do not add a custom browser fallback unless product requirements change.
+- Browsers with Navigation API support boot the Remix client runtime for hydration and in-app navigation.
+- Browsers without Navigation API support fall back to normal document navigation by skipping the Remix client boot.
 - During local development, Vite may log `Internal server error: aborted` during document navigations. Treat it as noteworthy only if it corresponds to broken UI behavior.
 
 ## Parity backlog
