@@ -3,8 +3,9 @@ import { test, expect, type Page } from "@playwright/test";
 async function markPage(page: Page) {
   return page.evaluate(() => {
     let marker = Math.random().toString(36).slice(2);
-    (window as Window & { __mobileMenuNavMarker?: string }).__mobileMenuNavMarker =
-      marker;
+    (
+      window as Window & { __mobileMenuNavMarker?: string }
+    ).__mobileMenuNavMarker = marker;
     return marker;
   });
 }
@@ -68,9 +69,12 @@ test.describe("Mobile menu", () => {
     await expect(menuToggle).toBeVisible();
     await menuToggle.click();
 
-    await page.getByRole("navigation", { name: "Mobile" }).getByRole("link", {
-      name: "Blog",
-    }).click();
+    await page
+      .getByRole("navigation", { name: "Mobile" })
+      .getByRole("link", {
+        name: "Blog",
+      })
+      .click();
 
     await page.waitForURL("**/blog");
     await expect(page).toHaveTitle(/Blog/i);
