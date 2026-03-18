@@ -64,7 +64,10 @@ export let MobileMenu = clientEntry(
       e: FocusEvent & { currentTarget: HTMLDetailsElement },
     ) => {
       let next = e.relatedTarget;
-      if (!next || !(next instanceof Node) || !e.currentTarget.contains(next)) {
+      if (!next) {
+        return;
+      }
+      if (!(next instanceof Node) || !e.currentTarget.contains(next)) {
         isOpen = false;
         handle.update();
       }
