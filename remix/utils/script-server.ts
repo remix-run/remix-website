@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { createFsFileStorage } from "remix/file-storage/fs";
@@ -24,6 +25,21 @@ function scriptServerCachePath(): string {
  */
 let scriptServerEntryGlobs = ["remix/assets/*.{ts,tsx}"];
 
+/**
+ * Must be identical on every Fly machine. `local-${Date.now()}` breaks hydration:
+ * each VM fingerprints internal modules differently, so `import()` from the entry
+ * bundle 404s on other instances.
+ */
+function scriptServerBuildId(): string {
+  if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA;
+  try {
+    let raw = readFileSync(path.join(root, "package.json"), "utf8");
+    return JSON.parse(raw).version as string;
+  } catch {
+    return "remix-website";
+  }
+}
+
 export let scriptServer = createScriptServer({
   root,
   routes: [
@@ -38,7 +54,7 @@ export let scriptServer = createScriptServer({
     ? {
         fingerprint: "source",
         entryPoints: scriptServerEntryGlobs,
-        buildId: process.env.GITHUB_SHA ?? `local-${Date.now()}`,
+        buildId: scriptServerBuildId(),
         fileStorage: createFsFileStorage(scriptServerCachePath()),
       }
     : undefined,
