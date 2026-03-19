@@ -3,18 +3,20 @@ import type { RemixNode } from "remix/component/jsx-runtime";
 import { JamScrambleText } from "../assets/jam-scramble-text";
 import { MobileMenu } from "../assets/mobile-menu";
 import { Document } from "../components/document";
+import {
+  ICONS_SPRITE_HREF,
+  JAM_BACKGROUND_MASK_AVIF,
+  JAM_COLOR_SEATS_SVG,
+  JAM_CSS_HREF,
+  JAM_KEEPSAKE_BOARDING_PASS_AVIF,
+  JAM_KEEPSAKE_PHOTO_1_AVIF,
+  JAM_KEEPSAKE_PHOTO_2_AVIF,
+  JAM_KEEPSAKE_PICK_AVIF,
+  JAM_KEEPSAKE_POSTER_AVIF,
+  JAM_KEEPSAKE_STICKER_SVG,
+  JAM_KEEPSAKE_TICKET_AVIF,
+} from "../constants/static-assets.ts";
 import { routes } from "../routes";
-import iconsHref from "../shared/icons.svg";
-import jamStylesHref from "../shared/styles/jam.css?url";
-import maskSrc from "../assets/jam/images/background-mask.avif";
-import seatsSrc from "../assets/jam/images/remix-color-seats.svg";
-import photo1Src from "../assets/jam/images/keepsakes/photo-1.avif";
-import photo2Src from "../assets/jam/images/keepsakes/photo-2.avif";
-import posterSrc from "../assets/jam/images/keepsakes/poster.avif";
-import pickSrc from "../assets/jam/images/keepsakes/remix-pick.avif";
-import ticketSrc from "../assets/jam/images/keepsakes/ticket.avif";
-import boardingPassSrc from "../assets/jam/images/keepsakes/boarding-pass.avif";
-import stickerSrc from "../assets/jam/images/keepsakes/remix-logo-sticker.svg";
 
 const jamButtonClassName =
   "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";
@@ -72,7 +74,7 @@ export function JamDocument() {
           name: "twitter:image",
           content: props.previewImage,
         },
-        { kind: "link", rel: "stylesheet", href: jamStylesHref },
+        { kind: "link", rel: "stylesheet", href: JAM_CSS_HREF },
         {
           kind: "link",
           rel: "preload",
@@ -158,7 +160,7 @@ function Background() {
               class="size-full"
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
-                maskImage: `url('${maskSrc}')`,
+                maskImage: `url('${JAM_BACKGROUND_MASK_AVIF}')`,
                 maskSize: "cover",
                 maskRepeat: "no-repeat",
                 maskPosition: "center",
@@ -304,7 +306,7 @@ function Footer() {
           <div class="flex w-screen justify-center overflow-hidden">
             <img
               loading="lazy"
-              src={seatsSrc}
+              src={JAM_COLOR_SEATS_SVG}
               alt=""
               class="block min-w-[1400px] sm:min-w-[1600px] md:min-w-[1800px] lg:min-w-[2000px] xl:min-w-[2200px] 2xl:min-w-[110vw]"
               aria-hidden="true"
@@ -340,7 +342,7 @@ function Footer() {
             class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
-              <use href={`${iconsHref}#github`} />
+              <use href={`${ICONS_SPRITE_HREF}#github`} />
             </svg>
           </a>
           <a
@@ -351,7 +353,7 @@ function Footer() {
             class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
             <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
-              <use href={`${iconsHref}#twitter`} />
+              <use href={`${ICONS_SPRITE_HREF}#twitter`} />
             </svg>
           </a>
           <a
@@ -362,7 +364,7 @@ function Footer() {
             class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
             <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
-              <use href={`${iconsHref}#youtube`} />
+              <use href={`${ICONS_SPRITE_HREF}#youtube`} />
             </svg>
           </a>
           <a
@@ -373,7 +375,7 @@ function Footer() {
             class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
             <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
-              <use href={`${iconsHref}#discord`} />
+              <use href={`${ICONS_SPRITE_HREF}#discord`} />
             </svg>
           </a>
         </div>
@@ -520,13 +522,13 @@ export function JamButton() {
 export function KeepsakesStatic() {
   return () => (
     <div class="isolate">
-      <Keepsake className="photo-1" hasBorder src={photo1Src} />
-      <Keepsake className="photo-2" hasBorder src={photo2Src} />
-      <Keepsake className="poster" src={posterSrc} />
-      <Keepsake className="pick" src={pickSrc} />
-      <Keepsake className="ticket" src={ticketSrc} />
-      <Keepsake className="boarding-pass" src={boardingPassSrc} />
-      <Keepsake className="sticker" src={stickerSrc} />
+      <Keepsake className="photo-1" hasBorder src={JAM_KEEPSAKE_PHOTO_1_AVIF} />
+      <Keepsake className="photo-2" hasBorder src={JAM_KEEPSAKE_PHOTO_2_AVIF} />
+      <Keepsake className="poster" src={JAM_KEEPSAKE_POSTER_AVIF} />
+      <Keepsake className="pick" src={JAM_KEEPSAKE_PICK_AVIF} />
+      <Keepsake className="ticket" src={JAM_KEEPSAKE_TICKET_AVIF} />
+      <Keepsake className="boarding-pass" src={JAM_KEEPSAKE_BOARDING_PASS_AVIF} />
+      <Keepsake className="sticker" src={JAM_KEEPSAKE_STICKER_SVG} />
     </div>
   );
 }

@@ -13,9 +13,15 @@ import {
 } from "./jam-shared";
 import { JamTicketCard } from "../assets/jam-ticket-card";
 import { JamTicketPurchase } from "../assets/jam-ticket-purchase";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
-import ticketSrc from "../assets/jam/images/tickets/general.avif";
-import ticketHolographic from "../assets/jam/images/tickets/ticket-holographic.avif";
+import {
+  JAM_OG_THUMB_JPG,
+  JAM_TICKET_GENERAL_AVIF,
+  JAM_TICKET_HOLOGRAPHIC_AVIF,
+} from "../constants/static-assets.ts";
+
+let ogImageSrc = JAM_OG_THUMB_JPG;
+let ticketSrc = JAM_TICKET_GENERAL_AVIF;
+let ticketHolographic = JAM_TICKET_HOLOGRAPHIC_AVIF;
 
 export async function jam2025TicketHandler() {
   let request = getRequestContext().request;

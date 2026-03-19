@@ -1,4 +1,4 @@
-import { route } from "remix/fetch-router/routes";
+import { get, route } from "remix/fetch-router/routes";
 
 export let routes = route({
   home: "/",
@@ -17,6 +17,8 @@ export let routes = route({
   healthcheck: "/healthcheck",
   blogRss: "/blog/rss.xml",
   blogOgImage: "/img/:slug",
+  scriptsRemix: get("/scripts/remix/*path"),
+  scriptsNpm: get("/scripts/npm/*path"),
   actions: route("_actions", {
     newsletter: { method: "POST", pattern: "/newsletter" },
   }),

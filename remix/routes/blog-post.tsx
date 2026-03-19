@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import mdStyles from "../shared/styles/md.css?url";
+import { MD_CSS_HREF } from "../constants/static-assets.ts";
 import { Document } from "../components/document";
 import { Footer } from "../components/home/footer";
 import { Header } from "../components/home/header";
@@ -90,7 +90,7 @@ function Page() {
       title={`${props.post.title} | Remix`}
       description={props.post.summary}
       headTags={[
-        { kind: "link", rel: "stylesheet", href: mdStyles },
+        { kind: "link", rel: "stylesheet", href: MD_CSS_HREF },
         {
           kind: "link",
           rel: "alternate",

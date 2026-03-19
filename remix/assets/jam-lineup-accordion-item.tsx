@@ -1,7 +1,10 @@
 import { clsx } from "clsx";
 import { clientEntry, on, ref, type Handle } from "remix/component";
-import iconsHref from "../shared/icons.svg";
-import assets from "./jam-lineup-accordion-item.tsx?assets=client";
+import { ICONS_SPRITE_HREF } from "../constants/static-assets.ts";
+import { scriptModuleHref } from "../utils/script-href.ts";
+
+let iconsHref = ICONS_SPRITE_HREF;
+let entry = scriptModuleHref("remix/assets/jam-lineup-accordion-item.tsx");
 
 type LineupItem = {
   time: string;
@@ -13,7 +16,7 @@ type LineupItem = {
 };
 
 export let JamLineupAccordionItem = clientEntry(
-  `${assets.entry}#JamLineupAccordionItem`,
+  `${entry}#JamLineupAccordionItem`,
   (handle: Handle) => {
     let isOpen = false;
     let panel: HTMLDivElement | null = null;

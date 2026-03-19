@@ -4,7 +4,9 @@ import {
   syncTitle,
   type ManagedHeadTag,
 } from "../components/document-head";
-import assets from "./document-head-sync.tsx?assets=client";
+import { scriptModuleHref } from "../utils/script-href.ts";
+
+let entry = scriptModuleHref("remix/assets/document-head-sync.tsx");
 
 type DocumentHeadSyncProps = {
   title?: string;
@@ -20,7 +22,7 @@ declare global {
 }
 
 export let DocumentHeadSync = clientEntry(
-  `${assets.entry}#DocumentHeadSync`,
+  `${entry}#DocumentHeadSync`,
   (handle: Handle) => {
     let latestProps: DocumentHeadSyncProps | null = null;
     let isQueued = false;

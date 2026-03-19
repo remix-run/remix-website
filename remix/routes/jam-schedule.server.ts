@@ -1,26 +1,28 @@
 import assert from "node:assert";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import yaml from "yaml";
 import * as s from "remix/data-schema";
 import { LRUCache } from "lru-cache";
 import { processMarkdown } from "../shared/lib/md.server";
+import { getRepoRoot } from "../utils/repo-root.server.ts";
 
-import scheduleYamlFileContents from "../assets/jam/data/schedule.yaml?raw";
-
-const speakerImageModules = import.meta.glob(
-  "../assets/jam/images/schedule/*.{png,jpg,jpeg,webp,avif}",
-  { eager: true, query: "?url", import: "default" },
+let scheduleYamlFileContents = fs.readFileSync(
+  path.join(getRepoRoot(), "remix/assets/jam/data/schedule.yaml"),
+  "utf8",
 );
 
-const imageUrlByKey = new Map(
-  Object.entries(speakerImageModules).map(([path, url]) => {
-    assert(
-      typeof url === "string",
-      `Speaker image "${path}" is not a string. Please check the schedule file.`,
-    );
-    let match = path.split("/").at(-1) ?? "";
-    return [match, url];
-  }),
+let scheduleImagesDir = path.join(
+  getRepoRoot(),
+  "remix/assets/jam/images/schedule",
 );
+
+const imageUrlByKey = new Map<string, string>();
+if (fs.existsSync(scheduleImagesDir)) {
+  for (let name of fs.readdirSync(scheduleImagesDir)) {
+    imageUrlByKey.set(name, `/assets/jam/images/schedule/${name}`);
+  }
+}
 
 const scheduleItemSchema = s.object({
   time: s.string(),

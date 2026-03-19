@@ -11,7 +11,9 @@ import {
   Title,
 } from "./jam-shared";
 import { routes } from "../routes";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
+import { JAM_OG_THUMB_JPG } from "../constants/static-assets.ts";
+
+let ogImageSrc = JAM_OG_THUMB_JPG;
 
 function slugify(input: string) {
   return input

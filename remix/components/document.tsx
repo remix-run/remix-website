@@ -1,18 +1,16 @@
 import type { RemixNode } from "remix/component/jsx-runtime";
+import { getContext } from "remix/async-context-middleware";
 
-import clientAssets from "../assets/entry.ts?assets=client";
 import { DocumentHeadSync } from "../assets/document-head-sync";
-import documentAssets from "./document.tsx?assets=ssr";
+import {
+  ICONS_SPRITE_HREF,
+  MD_CSS_HREF,
+  SITE_CSS_HREF,
+} from "../constants/static-assets.ts";
 import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head";
-import iconsHref from "../shared/icons.svg";
-import mdStylesHref from "../shared/styles/md.css?url";
-import jamStylesHref from "../shared/styles/jam.css?url";
+import { scriptEntryContextKey } from "../middleware/script-entry.ts";
+import { scriptModuleHref } from "../utils/script-href.ts";
 
-import "../shared/styles/tailwind.css";
-import "../shared/styles/bailwind.css";
-import "../shared/styles/marketing.css";
-
-let assets = clientAssets.merge(documentAssets);
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
   let sync = () => {
@@ -44,16 +42,28 @@ declare global {
   }
 }
 
+function readScriptEntry() {
+  try {
+    let context = getContext();
+    if (context.has(scriptEntryContextKey)) {
+      return context.get(scriptEntryContextKey);
+    }
+  } catch {
+    // No async request context (e.g. some test setups).
+  }
+  return {
+    entrySrc: scriptModuleHref("remix/assets/entry.ts"),
+    preloadHrefs: [] as string[],
+  };
+}
+
 /**
  * Shared document shell for Remix 3 (remix/component) routes.
  *
- * Mirrors the essential <head> setup from the React Router root
- * (app/root.tsx) so migrated pages look consistent.
- *
- * CSS strategy (dev only for now):
- *   Vite's dev middleware serves `/remix/shared/styles/*.css` with full
- *   PostCSS/Tailwind processing, so plain <link> tags work.
- *   Production asset paths are TBD (see plan: asset-strategy).
+ * Global styles come from `pnpm run build:css` (`/site.css`, `/md.css`). Jam routes
+ * add `/jam.css` via `JamDocument` only — it overrides `body` background and must not
+ * load on marketing/blog pages.
+ * Interactive bundles are served by script-server (`/scripts/...`).
  */
 export function Document() {
   return ({
@@ -64,6 +74,8 @@ export function Document() {
     headTags = [],
     children,
   }: DocumentProps) => {
+    let { entrySrc, preloadHrefs } = readScriptEntry();
+
     let managedHeadTags: ManagedHeadTag[] = [
       ...(noIndex
         ? [{ kind: "meta" as const, name: "robots", content: "noindex" }]
@@ -132,12 +144,9 @@ export function Document() {
             href="/font/jet-brains-mono.woff2"
             crossorigin="anonymous"
           />
-          <link rel="preload" as="style" href={mdStylesHref} />
-          <link rel="preload" as="style" href={jamStylesHref} />
-          {/* Styles */}
-          {assets.css.map(({ href }) => (
-            <link key={href} rel="stylesheet" href={href} />
-          ))}
+          <link rel="preload" as="style" href={MD_CSS_HREF} />
+          <link rel="stylesheet" href={SITE_CSS_HREF} />
+          <link rel="stylesheet" href={MD_CSS_HREF} />
 
           {/* RSS */}
           <link
@@ -181,17 +190,17 @@ export function Document() {
             headTags={managedHeadTags}
           />
           <img
-            src={iconsHref}
+            src={ICONS_SPRITE_HREF}
             alt=""
             hidden
             // Preload icons sprite so <use href> references resolve (matches app/root.tsx)
             fetchpriority="high"
           />
           {children}
-          {assets.js.map((asset) => (
-            <link key={asset.href} rel="modulepreload" href={asset.href} />
+          {preloadHrefs.map((href) => (
+            <link key={href} rel="modulepreload" href={href} />
           ))}
-          <script type="module" src={assets.entry} />
+          <script type="module" src={entrySrc} />
         </body>
       </html>
     );

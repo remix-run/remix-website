@@ -10,8 +10,13 @@ import {
   transformShopifyImageUrl,
 } from "./jam-shared";
 import { JamGalleryKeyboardNavigation } from "../assets/jam-gallery-keyboard-navigation";
-import ogImageSrc from "../assets/jam/images/og-gallery.jpg";
-import iconsHref from "../shared/icons.svg";
+import {
+  ICONS_SPRITE_HREF,
+  JAM_OG_GALLERY_JPG,
+} from "../constants/static-assets.ts";
+
+let ogImageSrc = JAM_OG_GALLERY_JPG;
+let iconsHref = ICONS_SPRITE_HREF;
 import type { RemixNode } from "remix/component/jsx-runtime";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];

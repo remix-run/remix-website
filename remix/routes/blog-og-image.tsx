@@ -1,12 +1,23 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
-import interBlack from "./inter-black-basic-latin.woff?arraybuffer";
-import interRegular from "./inter-regular-basic-latin.woff?arraybuffer";
-import socialBackground from "./social-background.png?arraybuffer";
 import type { BuildAction } from "remix/fetch-router";
 import type { routes } from "../routes";
+import { getRepoRoot } from "../utils/repo-root.server.ts";
+
+let ogAssetsDir = path.join(getRepoRoot(), "remix/routes");
+
+function readBinaryAsset(fileName: string): ArrayBuffer {
+  let buf = fs.readFileSync(path.join(ogAssetsDir, fileName));
+  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+}
+
+let interBlack = readBinaryAsset("inter-black-basic-latin.woff");
+let interRegular = readBinaryAsset("inter-regular-basic-latin.woff");
+let socialBackground = readBinaryAsset("social-background.png");
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }

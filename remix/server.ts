@@ -5,6 +5,7 @@ import { createRouter } from "remix/fetch-router";
 import { formData } from "remix/form-data-middleware";
 import { staticFiles } from "remix/static-middleware";
 
+import { loadScriptEntry } from "./middleware/script-entry.ts";
 import { filteredLogger, rateLimit } from "./middleware.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import actionsController from "./routes/actions";
@@ -27,36 +28,39 @@ import { jam2025Handler } from "./routes/jam-2025.tsx";
 import { jamHandler } from "./routes/jam.ts";
 import { newsletterHandler } from "./routes/newsletter.tsx";
 import { routes } from "./routes";
+import { scriptServer } from "./utils/script-server.ts";
 
-if (import.meta.env.PROD) {
+let isProd = process.env.NODE_ENV === "production";
+
+if (isProd) {
   sourceMapSupport.install();
 }
-
-let isDev = import.meta.env.DEV;
 
 function shouldSkipRateLimit(pathname: string) {
   return (
     pathname === "/healthcheck" ||
     pathname === "/__manifest" ||
-    pathname.startsWith("/__manifest/")
+    pathname.startsWith("/__manifest/") ||
+    pathname.startsWith("/scripts/")
   );
 }
 
 let router = createRouter({
   middleware: [
     compression(),
-    ...(isDev
-      ? []
-      : [
-          staticFiles("build/client/assets", {
-            cacheControl: "public, max-age=31536000, immutable",
-          }),
-          staticFiles("build/client", {
-            cacheControl: "public, max-age=3600",
-          }),
-        ]),
+    staticFiles("public", {
+      cacheControl: isProd
+        ? "public, max-age=3600"
+        : "public, max-age=0, must-revalidate",
+    }),
+    staticFiles("build/static", {
+      cacheControl: isProd
+        ? "public, max-age=31536000, immutable"
+        : "public, max-age=0, must-revalidate",
+    }),
     formData(),
     asyncContext(),
+    loadScriptEntry(),
     rateLimit({
       windowMs: 2 * 60 * 1000,
       max: 1000,
@@ -65,6 +69,14 @@ let router = createRouter({
     filteredLogger(),
   ],
 });
+
+let scriptServerHandler = async ({ request }: { request: Request }) => {
+  let res = await scriptServer.fetch(request);
+  return res ?? new Response("Not Found", { status: 404 });
+};
+
+router.map(routes.scriptsRemix, scriptServerHandler);
+router.map(routes.scriptsNpm, scriptServerHandler);
 
 // Keep healthcheck on a stable path during migration so deploy checks never
 // depend on the in-progress Remix route asset strategy.
@@ -103,7 +115,6 @@ router.map(redirectRoutes, redirectController);
 // All remaining requests are handled by Remix catch-all.
 router.map("*", catchallHandler);
 
-// vite fullstack plugin
 export default {
   fetch(request: Request) {
     return router.fetch(request.url, request);

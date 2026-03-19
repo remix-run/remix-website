@@ -1,10 +1,13 @@
 import { clientEntry, on, type Handle } from "remix/component";
-import iconsHref from "../shared/icons.svg";
+import { ICONS_SPRITE_HREF } from "../constants/static-assets.ts";
 import { JamButton } from "../routes/jam-shared";
-import assets from "./jam-ticket-purchase.tsx?assets=client";
+import { scriptModuleHref } from "../utils/script-href.ts";
+
+let iconsHref = ICONS_SPRITE_HREF;
+let entry = scriptModuleHref("remix/assets/jam-ticket-purchase.tsx");
 
 export let JamTicketPurchase = clientEntry(
-  `${assets.entry}#JamTicketPurchase`,
+  `${entry}#JamTicketPurchase`,
   (
     handle: Handle,
     setup?: { initialQuantity?: number; maxQuantity: number },
