@@ -40,3 +40,4 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 - To push the current commit to staging, run `pnpm run push:stage`.
 - Do not use `flyctl deploy` for staging unless explicitly requested.
+- Production script-server disk cache lives under `os.tmpdir()/remix-script-server` (not under the repo root), so Fly’s image can stay read-only aside from `/tmp`. Override with `SCRIPT_SERVER_CACHE_DIR` if needed.
