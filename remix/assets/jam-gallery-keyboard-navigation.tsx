@@ -4,7 +4,9 @@ import {
   navigate,
   type Handle,
 } from "remix/component";
-import assets from "./jam-gallery-keyboard-navigation.tsx?assets=client";
+import { scriptModuleHref } from "../utils/script-href.ts";
+
+let entry = scriptModuleHref("remix/assets/jam-gallery-keyboard-navigation.tsx");
 import {
   restoreGalleryFocus,
   storeGalleryFocus,
@@ -33,7 +35,7 @@ type GalleryFrameState = {
 };
 
 export let JamGalleryKeyboardNavigation = clientEntry(
-  `${assets.entry}#JamGalleryKeyboardNavigation`,
+  `${entry}#JamGalleryKeyboardNavigation`,
   (handle: Handle) => {
     let closeHref = "";
     let previousHref = "";

@@ -16,8 +16,8 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - In `remix/routes/**`, keep exported route handler/controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `remix/components/**` only when shared.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
-- Use `?assets=client` and `?assets=ssr` asset resolution patterns; never hardcode entry module paths.
-- Use `?assets=ssr` only for module assets (for example `*.tsx` manifests). For plain stylesheet files (for example `remix/shared/styles/*.css`), import with `?url` and render a `<link rel="stylesheet" ...>`.
+- Use `scriptModuleHref('remix/assets/....tsx')` + `#Export` for `clientEntry` URLs (script-server); do not hardcode `/scripts/...` paths.
+- Global CSS is served from `/site.css`, `/md.css`, `/jam.css` after `pnpm run build:css`; use `remix/constants/static-assets.ts` href constants in route `headTags` when needed.
 
 ## Done Checklist (Route/Feature Changes)
 
@@ -40,3 +40,4 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 - To push the current commit to staging, run `pnpm run push:stage`.
 - Do not use `flyctl deploy` for staging unless explicitly requested.
+- Production script-server disk cache lives under `os.tmpdir()/remix-script-server` (not under the repo root), so Fly’s image can stay read-only aside from `/tmp`. Override with `SCRIPT_SERVER_CACHE_DIR` if needed.

@@ -1,6 +1,8 @@
 import cx from "clsx";
+import { ICONS_SPRITE_HREF } from "../../constants/static-assets.ts";
 import { Wordmark } from "./wordmark";
-import iconsHref from "../../shared/icons.svg";
+
+let iconsHref = ICONS_SPRITE_HREF;
 
 export function Footer() {
   return () => (

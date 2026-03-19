@@ -1,12 +1,14 @@
 import { clientEntry, on, type Handle } from "remix/component";
-import assets from "./jam-newsletter-subscribe.tsx?assets=client";
 import { routes } from "../routes";
 import { submitNewsletterRequest } from "./newsletter-subscribe";
+import { scriptModuleHref } from "../utils/script-href.ts";
 
 type SubscribeState = "idle" | "success" | "error";
 
+let entry = scriptModuleHref("remix/assets/jam-newsletter-subscribe.tsx");
+
 export let JamNewsletterSubscribeForm = clientEntry(
-  `${assets.entry}#JamNewsletterSubscribeForm`,
+  `${entry}#JamNewsletterSubscribeForm`,
   (handle: Handle) => {
     let submitting = false;
     let state: SubscribeState = "idle";

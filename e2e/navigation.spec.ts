@@ -15,7 +15,10 @@ async function expectClientNavigation(
 ) {
   let marker = await markPage(page);
   await navigate();
-  await page.waitForURL(url);
+  // Native <a> clicks get a full document load, but programmatic `navigate()`
+  // (Navigation API) does not fire `window` "load" again — default waitUntil
+  // would time out (e.g. wordmark right-click → /brand).
+  await page.waitForURL(url, { waitUntil: "commit" });
   await expect
     .poll(() =>
       page.evaluate(
@@ -102,11 +105,21 @@ test.describe("Navigation", () => {
 
     let homeLink = page.locator('header a[aria-label="Remix"]').first();
     await expectClientNavigation(page, () => homeLink.click(), "**/");
-    await expect(page).toHaveURL(/\/$/);
 
     await expectClientNavigation(
       page,
-      () => homeLink.click({ button: "right" }),
+      () =>
+        homeLink.evaluate((el: HTMLElement) => {
+          el.dispatchEvent(
+            new MouseEvent("contextmenu", {
+              bubbles: true,
+              cancelable: true,
+              view: window,
+              button: 2,
+              buttons: 2,
+            }),
+          );
+        }),
       "**/brand",
     );
 

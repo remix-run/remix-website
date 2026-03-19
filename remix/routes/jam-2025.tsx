@@ -13,8 +13,13 @@ import {
 import { JamKeepsakes } from "../assets/jam-keepsakes";
 import { JamFadeInBadge } from "../assets/jam-fade-in-badge";
 import { JamNewsletterSubscribeForm } from "../assets/jam-newsletter-subscribe";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
-import iconsHref from "../shared/icons.svg";
+import {
+  ICONS_SPRITE_HREF,
+  JAM_OG_THUMB_JPG,
+} from "../constants/static-assets.ts";
+
+let ogImageSrc = JAM_OG_THUMB_JPG;
+let iconsHref = ICONS_SPRITE_HREF;
 
 type EventStatus = "before" | "live" | "after";
 

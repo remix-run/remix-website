@@ -1,8 +1,10 @@
 import { clientEntry, on, navigate } from "remix/component";
 import { Wordmark } from "../components/home/wordmark";
-import assets from "./wordmark-link.tsx?assets=client";
+import { scriptModuleHref } from "../utils/script-href.ts";
 
-export let WordmarkLink = clientEntry(`${assets.entry}#WordmarkLink`, () => {
+let entry = scriptModuleHref("remix/assets/wordmark-link.tsx");
+
+export let WordmarkLink = clientEntry(`${entry}#WordmarkLink`, () => {
   return (props: { href: string; brandHref: string }) => (
     <a
       href={props.href}

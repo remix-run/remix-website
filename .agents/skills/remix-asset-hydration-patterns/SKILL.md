@@ -7,29 +7,26 @@ description: Applies project-specific Remix asset and hydration patterns to avoi
 
 ## Apply these defaults
 
-- Resolve interactive client modules with `?assets=client`.
-- Resolve document asset manifests with `?assets=ssr`.
-- Use `?assets=ssr` only for module assets such as `*.tsx`, not plain stylesheet files.
-- For standalone stylesheets, import with `?url` and render a `<link rel="stylesheet" href={...}>`.
-- Render scripts and preload links from `assets.entry` / `assets.js`; do not hardcode module paths.
+- Resolve interactive client module URLs with `scriptModuleHref("remix/assets/…")` from `remix/utils/script-href.ts` (script-server URLs under `/scripts/remix/*`).
+- For npm packages served via script-server, use `scriptModuleHref("node_modules/…")` (`/scripts/npm/*`).
+- `remix/assets/entry.ts` resolves non-absolute `moduleUrl` values against `import.meta.url` so bare filenames still load next to the entry (avoids 404s on `/foo.tsx` at the site root).
+- For standalone stylesheets built to `public/`, use normal static paths (for example `/site.css`) and `<link rel="stylesheet" href={…}>`.
+- Document shell script tags and `modulepreload` links come from middleware (`scriptEntryContextKey`: entry + preloads from `scriptServer.preloads()`).
 
 ## Client entry pattern
 
 Use:
 
-- `import assets from "./feature.tsx?assets=client"`
-- `clientEntry(\`${assets.entry}#ExportName\`, ...)`
+- `let entry = scriptModuleHref("remix/assets/feature.tsx");`
+- `clientEntry(\`${entry}#ExportName\`, …)`
 
 Avoid:
 
-- `clientEntry("/remix/assets/feature.tsx#ExportName", ...)`
+- Vite-only `?assets=client` / `?assets=ssr` imports (no Vite in this app): they yield bare filenames in hydration and break `import()`.
 
 ## Document shell pattern
 
-- Import SSR assets from the module that owns the rendered UI.
-- Render stylesheet links from `assets.css`.
-- Render `modulepreload` links from `assets.js`.
-- Render the module script from `assets.entry`.
+- Script `src` / `rel="modulepreload"` hrefs from `loadScriptEntry` middleware and `document.tsx` (not hand-rolled duplicates).
 
 ## SVG sprites
 

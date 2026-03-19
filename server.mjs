@@ -1,7 +1,5 @@
 import * as http from "node:http";
 import { createRequestListener } from "remix/node-fetch-server";
-
-// @ts-expect-error - generated build artifact is not typed
 import build from "./build/server/index.js";
 
 const port = Number(process.env.PORT ?? 3000);
@@ -19,8 +17,8 @@ server.listen(port, () => {
 
 installShutdownHandlers(server);
 
-function installShutdownHandlers(server: http.Server) {
-  const shutdown = (signal: NodeJS.Signals) => {
+function installShutdownHandlers(server) {
+  const shutdown = (signal) => {
     console.log(`${signal} received, shutting down HTTP server...`);
     const forceExitTimer = setTimeout(() => {
       console.error("Timed out waiting for HTTP server to close");

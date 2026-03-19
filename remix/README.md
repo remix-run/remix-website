@@ -28,12 +28,12 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 
 ## Assets and hydration
 
-- Resolve client modules with `?assets=client` and use `assets.entry` in `clientEntry(...)`.
-- Resolve document assets with `?assets=ssr` and render from `assets.css` / `assets.js` / `assets.entry`.
-- Use `?assets=ssr` for module manifests (for example `*.tsx`), not for plain stylesheets.
-- For standalone CSS files (for example `remix/shared/styles/md.css`), import with `?url` and render a stylesheet `<link>`.
-- Do not hardcode module script paths (for example `/remix/assets/entry.ts`).
-- For SVG sprites, import the asset URL and append fragment ids.
+- Browser modules are compiled on demand by **script-server** (`remix/script-server`) at `routes.scriptsRemix` / `routes.scriptsNpm` (`/scripts/remix/...` and `/scripts/npm/...`).
+- Use `scriptModuleHref('remix/assets/foo.tsx')` plus `#ExportName` in `clientEntry(...)`.
+- Global CSS is built to `/site.css` and `/md.css` (`pnpm run build:css`); `/jam.css` is built the same way but linked only from Jam routes (`JamDocument`), not the main document shell.
+- Static images used in SSR are copied to `public/assets/jam/images/**` via `pnpm run copy:assets`; reference `/assets/jam/...` URLs.
+- The icons sprite is at `/icons.svg` (same copy step).
+- `loadScriptEntry` middleware fills `scriptEntryContextKey` for `Document` preloads + the main entry script.
 
 ## Pre-PR verification
 

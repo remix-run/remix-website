@@ -1,29 +1,27 @@
 import assert from "node:assert";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { LRUCache } from "lru-cache";
 import yaml from "yaml";
 import { processMarkdown } from "../shared/lib/md.server";
-import authorsYamlFileContents from "../../data/authors.yml?raw";
+import { getRepoRoot } from "../utils/repo-root.server.ts";
 
-const postContentsBySlug = Object.fromEntries(
-  Object.entries(
-    import.meta.glob("../../data/posts/*.md", {
-      query: "?raw",
-      import: "default",
-      eager: true,
-    }),
-  ).map(([filePath, contents]) => {
-    assert(
-      typeof contents === "string",
-      `Expected ${filePath} to be a string, but got ${typeof contents}`,
-    );
-    return [
-      filePath.replace("../../data/posts/", "").replace(/\.md$/, ""),
-      contents,
-    ];
-  }),
+function loadPostContentsBySlug(): Record<string, string> {
+  let postsDir = path.join(getRepoRoot(), "data/posts");
+  let map: Record<string, string> = {};
+  for (let name of fs.readdirSync(postsDir)) {
+    if (!name.endsWith(".md")) continue;
+    let slug = name.replace(/\.md$/, "");
+    map[slug] = fs.readFileSync(path.join(postsDir, name), "utf8");
+  }
+  return map;
+}
+
+const postContentsBySlug = loadPostContentsBySlug();
+
+const AUTHORS: BlogAuthor[] = yaml.parse(
+  fs.readFileSync(path.join(getRepoRoot(), "data/authors.yml"), "utf8"),
 );
-
-const AUTHORS: BlogAuthor[] = yaml.parse(authorsYamlFileContents);
 const AUTHOR_NAMES = AUTHORS.map((a) => a.name);
 
 const postsCache = new LRUCache<string, BlogPost>({

@@ -8,7 +8,9 @@ import {
   Subheader,
   Title,
 } from "./jam-shared";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
+import { JAM_OG_THUMB_JPG } from "../constants/static-assets.ts";
+
+let ogImageSrc = JAM_OG_THUMB_JPG;
 
 export async function jam2025CocHandler() {
   let requestUrl = new URL(getRequestContext().request.url);

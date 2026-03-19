@@ -3,9 +3,18 @@ import { initFathomAnalytics } from "./fathom";
 
 initFathomAnalytics();
 
+/** Hydration passes `moduleUrl` from the server; resolve bare filenames against this module. */
+function resolveHydrationModuleSpecifier(src: string): string {
+  if (src.startsWith("/")) return src;
+  if (src.startsWith("//")) return src;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(src)) return src;
+  return new URL(src, import.meta.url).href;
+}
+
 let app = run({
   async loadModule(src, exportName) {
-    let mod = await import(/* @vite-ignore */ src);
+    let specifier = resolveHydrationModuleSpecifier(src);
+    let mod = await import(/* @vite-ignore */ specifier);
 
     let exp = (mod as Record<string, unknown>)[exportName];
     if (typeof exp === "function") return exp;
@@ -21,7 +30,9 @@ let app = run({
       }
     }
 
-    throw new Error(`Export "${exportName}" from "${src}" is not a function`);
+    throw new Error(
+      `Export "${exportName}" from "${specifier}" (raw: "${src}") is not a function`,
+    );
   },
   async resolveFrame(src, signal, target) {
     let headers = new Headers();

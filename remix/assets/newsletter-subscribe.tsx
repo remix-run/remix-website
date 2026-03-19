@@ -1,7 +1,9 @@
 import { clientEntry, on, type Handle } from "remix/component";
 import cx from "clsx";
-import assets from "./newsletter-subscribe.tsx?assets=client";
 import { routes } from "../routes";
+import { scriptModuleHref } from "../utils/script-href.ts";
+
+let entry = scriptModuleHref("remix/assets/newsletter-subscribe.tsx");
 
 type SubscribeState = "idle" | "success" | "error";
 type SubscribeResult = {
@@ -65,7 +67,7 @@ export async function submitNewsletterRequest({
 }
 
 export let NewsletterSubscribeForm = clientEntry(
-  `${assets.entry}#NewsletterSubscribeForm`,
+  `${entry}#NewsletterSubscribeForm`,
   (handle: Handle) => {
     let submitting = false;
     let state: SubscribeState = "idle";

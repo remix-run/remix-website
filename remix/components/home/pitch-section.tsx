@@ -1,5 +1,7 @@
 import cx from "clsx";
-import iconsHref from "../../shared/icons.svg";
+import { ICONS_SPRITE_HREF } from "../../constants/static-assets.ts";
+
+let iconsHref = ICONS_SPRITE_HREF;
 
 export function PitchSection() {
   return () => (

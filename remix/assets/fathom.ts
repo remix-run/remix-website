@@ -3,6 +3,8 @@ import {
   type LoadOptions as FathomLoadOptions,
 } from "fathom-client";
 
+import { isDevEnvironment } from "../utils/is-dev.ts";
+
 declare global {
   interface Window {
     __remixFathomLoaded?: boolean;
@@ -15,7 +17,7 @@ interface InitFathomAnalyticsOptions {
 }
 
 export function initFathomAnalytics({
-  isDevelopment = import.meta.env.DEV,
+  isDevelopment = isDevEnvironment(),
   loadImpl = loadFathom,
 }: InitFathomAnalyticsOptions = {}) {
   if (isDevelopment || typeof window === "undefined") return;

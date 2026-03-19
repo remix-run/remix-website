@@ -4,7 +4,9 @@ import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control";
 import { JamDocument, ScrambleText, Title } from "./jam-shared";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
+import { JAM_OG_THUMB_JPG } from "../constants/static-assets.ts";
+
+let ogImageSrc = JAM_OG_THUMB_JPG;
 import { JamLineupAccordionItem } from "../assets/jam-lineup-accordion-item";
 
 let gridColsClassName =

@@ -5,10 +5,12 @@ import {
   ref,
   type Handle,
 } from "remix/component";
-import assets from "./jam-ticket-card.tsx?assets=client";
+import { scriptModuleHref } from "../utils/script-href.ts";
+
+let entry = scriptModuleHref("remix/assets/jam-ticket-card.tsx");
 
 export let JamTicketCard = clientEntry(
-  `${assets.entry}#JamTicketCard`,
+  `${entry}#JamTicketCard`,
   (handle: Handle) => {
     let isHovered = false;
     let mousePosition = { x: 50, y: 50 };

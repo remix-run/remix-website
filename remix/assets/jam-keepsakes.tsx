@@ -1,13 +1,15 @@
 import clsx from "clsx";
 import { addEventListeners, clientEntry, type Handle } from "remix/component";
-import assets from "./jam-keepsakes.tsx?assets=client";
-import photo1Src from "./jam/images/keepsakes/photo-1.avif";
-import photo2Src from "./jam/images/keepsakes/photo-2.avif";
-import posterSrc from "./jam/images/keepsakes/poster.avif";
-import pickSrc from "./jam/images/keepsakes/remix-pick.avif";
-import ticketSrc from "./jam/images/keepsakes/ticket.avif";
-import boardingPassSrc from "./jam/images/keepsakes/boarding-pass.avif";
-import stickerSrc from "./jam/images/keepsakes/remix-logo-sticker.svg";
+import { scriptModuleHref } from "../utils/script-href.ts";
+
+let entry = scriptModuleHref("remix/assets/jam-keepsakes.tsx");
+let photo1Src = "/assets/jam/images/keepsakes/photo-1.avif";
+let photo2Src = "/assets/jam/images/keepsakes/photo-2.avif";
+let posterSrc = "/assets/jam/images/keepsakes/poster.avif";
+let pickSrc = "/assets/jam/images/keepsakes/remix-pick.avif";
+let ticketSrc = "/assets/jam/images/keepsakes/ticket.avif";
+let boardingPassSrc = "/assets/jam/images/keepsakes/boarding-pass.avif";
+let stickerSrc = "/assets/jam/images/keepsakes/remix-logo-sticker.svg";
 
 const KEEPSAKES = [
   {
@@ -66,7 +68,7 @@ function getEventPos(e: MouseEvent | TouchEvent) {
 }
 
 export let JamKeepsakes = clientEntry(
-  `${assets.entry}#JamKeepsakes`,
+  `${entry}#JamKeepsakes`,
   (handle: Handle) => {
     let order: Record<KeepsakeId, number> = KEEPSAKES.reduce(
       (acc, k, i) => {

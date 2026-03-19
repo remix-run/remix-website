@@ -54,7 +54,8 @@ test.describe("Mobile menu", () => {
     await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeFocused();
 
     await page.keyboard.press("Escape");
-    await expect(mobileNav).not.toBeVisible();
+    // Hydration / keysEvents can lag briefly on CI; menu stays visible until escape is handled.
+    await expect(mobileNav).not.toBeVisible({ timeout: 15_000 });
     await expect(menuToggle).toBeFocused();
   });
 

@@ -8,11 +8,14 @@ import {
 } from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import cx from "clsx";
-import iconsHref from "../shared/icons.svg";
-import assets from "./mobile-menu.tsx?assets=client";
+import { ICONS_SPRITE_HREF } from "../constants/static-assets.ts";
+import { scriptModuleHref } from "../utils/script-href.ts";
+
+let iconsHref = ICONS_SPRITE_HREF;
+let mobileMenuEntry = scriptModuleHref("remix/assets/mobile-menu.tsx");
 
 export let MobileMenu = clientEntry(
-  `${assets.entry}#MobileMenu`,
+  `${mobileMenuEntry}#MobileMenu`,
   (handle: Handle, setup?: { open?: boolean }) => {
     let isOpen = setup?.open ?? false;
     let detailsElement: HTMLDetailsElement | null = null;

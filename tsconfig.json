@@ -1,5 +1,5 @@
 {
-  "include": ["./remix/**/*.ts", "./remix/**/*.tsx", "./server.ts"],
+  "include": ["./remix/**/*.ts", "./remix/**/*.tsx"],
   "compilerOptions": {
     "target": "ES2019",
     "module": "ESNext",
@@ -15,9 +15,6 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "remix/component",
-    "types": ["node", "vite/client", "@hiogawa/vite-plugin-fullstack/types"],
-    "paths": {
-      "satori": ["./remix/satori-type-stub.d.ts"]
-    }
+    "types": ["node"]
   }
 }

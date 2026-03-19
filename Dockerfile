@@ -38,11 +38,14 @@ WORKDIR /remixapp
 
 COPY --chown=node:node --from=production-deps /remixapp/node_modules /remixapp/node_modules
 COPY --chown=node:node --from=build /remixapp/build /remixapp/build
-COPY --chown=node:node --from=build /remixapp/server.ts /remixapp/server.ts
+COPY --chown=node:node --from=build /remixapp/server.mjs /remixapp/server.mjs
 COPY --chown=node:node --from=build /remixapp/_redirects /remixapp/_redirects
-COPY --chown=node:node --from=build /remixapp/remix/shared /remixapp/remix/shared
+COPY --chown=node:node --from=build /remixapp/remix /remixapp/remix
+COPY --chown=node:node --from=build /remixapp/public /remixapp/public
 COPY --chown=node:node --from=build /remixapp/data /remixapp/data
 COPY --chown=node:node --from=build /remixapp/package.json /remixapp/package.json
+# Script-server compiles TSX on the fly; without this, esbuild omits jsxImportSource and emits `React.createElement` (no React import) → hydration silently fails.
+COPY --chown=node:node --from=build /remixapp/tsconfig.json /remixapp/tsconfig.json
 
 USER node
-CMD ["node", "server.ts"]
+CMD ["node", "server.mjs"]
