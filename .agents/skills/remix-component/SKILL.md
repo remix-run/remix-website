@@ -1,81 +1,62 @@
 ---
-name: remix-component
-description: "Build or update UIs with Remix Component. Use when creating Remix Component pages or client entries, handling state and events, composing mixins, styling, hydration, frames, navigation, context, or writing tests for Remix Component code."
+name: ui
+description: Build the UI of a Remix app. Use when creating pages, layouts, client entries, interactions, stateful UI, navigation, hydration, styling, animations, reusable mixins, or UI tests.
 ---
 
-# Remix Component
+# Build UI
 
-Build interactive UIs with Remix Component using the current mixin-based API, explicit updates, and selective hydration.
+Use this skill when building the UI of a Remix app.
+
+This skill uses Remix Component as the UI model behind the app's pages, layouts, interactions, and
+client behavior.
 
 ## When to Use
 
-- Creating new Remix components or pages
-- Updating existing Remix Component code to the current API
-- Implementing state management, event handling, or data loading
-- Adding or refactoring `clientEntry(...)`, `run(...)`, frames, or navigation
-- Styling with `css(...)` mixins and `style`
-- Setting up context, `TypedEventTarget`, or DOM refs
-- Using or authoring mixins
-- Writing component tests with `root.flush()`
-- Implementing animation or link semantics with mixins
+- Creating or updating pages, layouts, and presentational components
+- Adding interactivity, state, event handling, or reactive DOM work
+- Styling with `css(...)`, `style`, refs, keyboard helpers, or press helpers
+- Adding or refactoring `clientEntry(...)`, `run(...)`, frames, or UI navigation
+- Implementing enter/exit/layout animations
+- Authoring reusable mixins with `createMixin(...)`
+- Writing or updating UI-focused component tests
 
 ## Procedure
 
-1. Read [./references/source-priority.md](./references/source-priority.md) first.
-2. Follow the two-phase component shape:
+1. Follow the two-phase component shape:
    - setup runs once
    - returned render function runs on every update
-3. Use plain JS state in setup scope plus `handle.update()`.
-4. Prefer real DOM events on elements via `mix={[on(...)]}`.
-5. Prefer `addEventListeners(target, handle.signal, listeners)` for global listeners.
-6. Prefer built-in Remix helpers such as `keysEvents()`, `pressEvents()`, and `link(...)` before writing custom keyboard, press, or navigation normalization.
-7. Use `queueTask(...)` for post-render DOM work, reactive effects, or hydration-sensitive setup.
-8. Keep `<head>` explicit in document/layout code; do not rely on head hoisting.
-9. Test with real interactions and `root.flush()` where unit tests need synchronous assertions.
-
-## Current Guardrails
-
-- Prefer:
-  - `mix={[on(...)]}`
-  - `mix={[css(...)]}`
-  - `mix={[keysEvents()]}` for host-element key normalization
-  - `mix={[pressEvents()]}` for pointer/keyboard press normalization
-  - `mix={[link(href, options)]}` for non-anchor client navigation behavior
-  - `mix={[animateEntrance(), animateExit(), animateLayout()]}`
-  - `mix={[ref(...)]}`
-- `@remix-run/interaction` is gone.
-- `run()` uses `run({ loadModule, resolveFrame })`, not `run(document, ...)`.
-- `app.addEventListener("error", ...)` is the top-level error surface for hydrated runtime failures.
+2. Keep state in setup scope as plain JavaScript variables and call `handle.update()` explicitly.
+3. Prefer host-element mixins over legacy host props:
+   - `mix={[on(...)]}`
+   - `mix={[css(...)]}`
+   - `mix={[ref(...)]}`
+   - `mix={[keysEvents()]}`
+   - `mix={[pressEvents()]}`
+   - `mix={[link(href, options)]}`
+4. Use `addEventListeners(target, handle.signal, listeners)` for global listeners.
+5. Use `queueTask(...)` for post-render DOM work, reactive effects, or hydration-sensitive setup.
+6. Keep `<head>` explicit in document or layout code.
+7. Test with real interactions and `root.flush()` when unit tests need synchronous assertions.
 
 ## Load These References As Needed
 
 - [./references/component-model.md](./references/component-model.md)
-  Use for component shape, state, handle usage, and global listeners.
+  Use for component shape, state, `handle` usage, and global listeners.
 - [./references/mixins-styling-events.md](./references/mixins-styling-events.md)
-  Use for host-element event handling, refs, styling, and animation mixins.
+  Use for host-element events, refs, styling, and built-in behavior helpers. Prefer these helpers
+  over re-implementing keyboard, press, link, or animation behavior yourself.
 - [./references/hydration-frames-navigation.md](./references/hydration-frames-navigation.md)
-  Use for `clientEntry`, `run`, frames, SSR frame context, and navigation APIs.
+  Use for `clientEntry`, `run`, frames, SSR frame context, navigation APIs, and explicit `<head>`
+  management.
 - [./references/testing-patterns.md](./references/testing-patterns.md)
   Use for component tests, `root.flush()`, and high-value testing heuristics.
-
-## Upstream Deep Dives
-
-Read these only when the curated references are not enough:
-
-- `references/remix/packages/component/AGENTS.md`
-- `references/remix/packages/component/docs/components.md`
-- `references/remix/packages/component/docs/handle.md`
-- `references/remix/packages/component/docs/patterns.md`
-- `references/remix/packages/component/docs/testing.md`
-- `references/remix/packages/component/docs/hydration.md`
-- `references/remix/packages/component/docs/frames.md`
-
-## Common Mistakes
-
-- Using host `on`, `css`, `animate`, or `connect` props instead of mixins
-- Re-implementing keyboard, press, or link behavior that already exists as a Remix helper mixin
-- Using component state for transient event data or CSS-driven hover/focus behavior
-- Using stylesheet-style APIs for dynamic values that should live in `style`
-- Using implementation-only hooks in tests when user-observable assertions would do
-- Forgetting `root.flush()` in tests after events
-- Forgetting explicit document head handling during client navigation work
+- [./references/animate-elements.md](./references/animate-elements.md)
+  Use when the task is about enter/exit transitions, FLIP reordering, shared-layout swaps, or
+  animation-heavy interactions in app code.
+- [./references/create-mixins.md](./references/create-mixins.md)
+  Use when authoring or reviewing reusable mixins, touching `createMixin(...)`, using
+  `handle.addEventListener('insert' | 'remove', ...)`, or reasoning about mixin lifecycle
+  semantics and type flow.
+- [packages/component/docs](https://github.com/remix-run/remix/tree/main/packages/component/docs)
+  Use as the general upstream docs directory when the local references here are not enough and you
+  need to choose the most relevant Component docs to open.
