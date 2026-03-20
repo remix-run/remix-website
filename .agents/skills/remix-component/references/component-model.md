@@ -33,6 +33,9 @@ function Counter(handle: Handle, initialCount = 0) {
 - Derive computed values in render.
 - Do not mirror input state unless you truly need controlled behavior.
 - Use `setup` only for one-time initialization inputs.
+- Prefer the smallest state shape that matches the real interaction model.
+- When several locals only exist for one active interaction, consider grouping them into a single session object instead of scattering them across setup scope.
+- If data is only needed by an immediate child, prefer props over `handle.context`.
 
 ## Handle Usage
 
@@ -70,3 +73,9 @@ function ResizeTracker(handle: Handle) {
   return () => <div>{width}</div>;
 }
 ```
+
+## Behavior Boundaries
+
+- Use `mix={[on(...)]}` for stable host behavior that should exist for the element's whole mounted lifetime.
+- Use imperative `addEventListener(..., { signal })` when listeners should only exist for a short-lived session, such as an active drag.
+- If a visible UI change can be derived from component state, prefer rendering it via `class` or `style` instead of imperatively mutating the DOM.

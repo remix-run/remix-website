@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { addEventListeners, clientEntry, type Handle } from "remix/component";
+import { clientEntry, on, type Dispatched, type Handle } from "remix/component";
 import assets from "./jam-keepsakes.tsx?assets=client";
 import photo1Src from "./jam/images/keepsakes/photo-1.avif";
 import photo2Src from "./jam/images/keepsakes/photo-2.avif";
@@ -11,25 +11,25 @@ import stickerSrc from "./jam/images/keepsakes/remix-logo-sticker.svg";
 
 const KEEPSAKES = [
   {
-    id: "photo-1" as const,
+    id: "photo-1",
     src: photo1Src,
     alt: "A modern interior space featuring tiered wooden stadium-style seating",
     hasBorder: true,
   },
   {
-    id: "photo-2" as const,
+    id: "photo-2",
     src: photo2Src,
     alt: "A street view in downtown Toronto featuring the historic Gooderham Building",
     hasBorder: true,
   },
   {
-    id: "poster" as const,
+    id: "poster",
     src: posterSrc,
     alt: "Remix Jam event poster featuring Toronto's CN Tower",
     hasBorder: false,
   },
   {
-    id: "pick" as const,
+    id: "pick",
     src: pickSrc,
     alt: "Guitar pick with Remix logo",
     hasBorder: false,
@@ -37,162 +37,128 @@ const KEEPSAKES = [
     jiggleDelay: 1000,
   },
   {
-    id: "ticket" as const,
+    id: "ticket",
     src: ticketSrc,
     alt: "Fake Remix Jam 2025 Event Ticket",
     hasBorder: false,
   },
   {
-    id: "boarding-pass" as const,
+    id: "boarding-pass",
     src: boardingPassSrc,
     alt: "Fake Remix Jam 2025 Boarding Pass",
     hasBorder: false,
   },
   {
-    id: "sticker" as const,
+    id: "sticker",
     src: stickerSrc,
     alt: "Remix Logo Sticker",
     hasBorder: false,
     shouldJiggle: true,
     jiggleDelay: 2500,
   },
-];
+] as const;
 
 type KeepsakeId = (typeof KEEPSAKES)[number]["id"];
 
-function getEventPos(e: MouseEvent | TouchEvent) {
-  const pos = "touches" in e ? e.touches[0] : (e as MouseEvent);
-  return { x: pos.clientX, y: pos.clientY };
-}
+type DragSession = {
+  id: KeepsakeId;
+  element: HTMLElement;
+  pointerId: number;
+  start: { x: number; y: number };
+  abort: AbortController;
+};
 
 export let JamKeepsakes = clientEntry(
   `${assets.entry}#JamKeepsakes`,
-  (handle: Handle) => {
-    let order: Record<KeepsakeId, number> = KEEPSAKES.reduce(
-      (acc, k, i) => {
-        acc[k.id] = i + 1;
-        return acc;
-      },
-      {} as Record<KeepsakeId, number>,
-    );
-    let interacted: Record<KeepsakeId, boolean> = {} as Record<
-      KeepsakeId,
-      boolean
-    >;
-    let translate: Record<KeepsakeId, { x: number; y: number }> = {} as Record<
-      KeepsakeId,
-      { x: number; y: number }
-    >;
-    let isDragging = false;
-    let draggingId: KeepsakeId | null = null;
-    let startPos = { x: 0, y: 0 };
-    let draggingElement: HTMLElement | null = null;
 
-    let moveToFront = (id: KeepsakeId) => {
-      const currentIndex = order[id];
-      const newOrder = { ...order };
-      for (let key in newOrder) {
-        if (newOrder[key as KeepsakeId] > currentIndex) {
-          newOrder[key as KeepsakeId]--;
-        }
+  (handle: Handle) => {
+    let order = {} as Record<KeepsakeId, number>;
+    for (let [index, keepsake] of KEEPSAKES.entries()) {
+      order[keepsake.id] = index + 1;
+    }
+    let interacted: Partial<Record<KeepsakeId, boolean>> = {};
+    let translate: Partial<Record<KeepsakeId, { x: number; y: number }>> = {};
+    let drag: DragSession | null = null;
+
+    let getTranslate = (id: KeepsakeId) => translate[id] ?? { x: 0, y: 0 };
+
+    let endDragSession = () => {
+      if (!drag) return;
+      try {
+        drag.element.releasePointerCapture(drag.pointerId);
+      } catch {
+        /* already released or capture never applied */
       }
-      newOrder[id] = KEEPSAKES.length;
-      order = newOrder;
+      drag.abort.abort();
+      drag = null;
+      handle.update();
     };
 
-    handle.queueTask(() => {
-      let handleMove = (e: MouseEvent | TouchEvent) => {
-        if (!isDragging || !draggingId || !draggingElement) return;
-        if ("touches" in e) e.preventDefault();
+    let handleMove = (e: PointerEvent) => {
+      if (!drag || e.pointerId !== drag.pointerId) {
+        return;
+      }
 
-        const pos = getEventPos(e);
-        const tx = pos.x - startPos.x;
-        const ty = pos.y - startPos.y;
-        translate[draggingId] = { x: tx, y: ty };
-        draggingElement.style.transform = `translate(${tx}px, ${ty}px)`;
+      let tx = e.clientX - drag.start.x;
+      let ty = e.clientY - drag.start.y;
+      translate[drag.id] = { x: tx, y: ty };
+      drag.element.style.transform = `translate(${tx}px, ${ty}px)`;
+    };
+
+    let handleStart = (
+      e: Dispatched<PointerEvent, HTMLDivElement>,
+      id: KeepsakeId,
+    ) => {
+      let el = e.currentTarget;
+      let t = getTranslate(id);
+      drag = {
+        id,
+        element: el,
+        pointerId: e.pointerId,
+        start: { x: e.clientX - t.x, y: e.clientY - t.y },
+        abort: new AbortController(),
       };
 
-      let handleEnd = () => {
-        if (draggingElement) {
-          draggingElement.style.cursor = "grab";
+      try {
+        el.setPointerCapture(e.pointerId);
+      } catch {
+        /* element may not support capture in edge cases */
+      }
+
+      interacted[id] = true;
+      // Move the keepsake to the front of the list
+      let currentIndex = order[id];
+      for (let k of KEEPSAKES) {
+        if (order[k.id] > currentIndex) {
+          order[k.id]--;
         }
-        isDragging = false;
-        draggingId = null;
-        draggingElement = null;
+      }
+      order[id] = KEEPSAKES.length;
+      handle.update();
 
-        document.removeEventListener("mousemove", handleMove);
-        document.removeEventListener("mouseup", handleEnd);
-        document.removeEventListener("touchmove", handleMove, {
-          passive: false,
-        } as EventListenerOptions);
-        document.removeEventListener("touchend", handleEnd);
-        document.removeEventListener("touchcancel", handleEnd);
-      };
+      let { signal } = drag.abort;
+      el.addEventListener("pointermove", handleMove, { signal });
+      el.addEventListener("pointerup", endDragSession, { signal });
+      el.addEventListener("pointercancel", endDragSession, { signal });
+    };
 
-      let setupDocumentListeners = () => {
-        document.addEventListener("mousemove", handleMove);
-        document.addEventListener("mouseup", handleEnd);
-        document.addEventListener("touchmove", handleMove, {
-          passive: false,
-        } as EventListenerOptions);
-        document.addEventListener("touchend", handleEnd);
-        document.addEventListener("touchcancel", handleEnd);
-      };
-
-      let handleStart = (e: MouseEvent | TouchEvent, el: HTMLElement) => {
-        let id = el.dataset.keepsakeId as KeepsakeId;
-        if (!id) return;
-
-        const pos = getEventPos(e);
-        const t = translate[id] ?? { x: 0, y: 0 };
-        startPos = { x: pos.x - t.x, y: pos.y - t.y };
-
-        isDragging = true;
-        draggingId = id;
-        draggingElement = el;
-        el.style.cursor = "grabbing";
-
-        moveToFront(id);
-        if (!interacted[id]) {
-          interacted[id] = true;
-        }
-        handle.update();
-        setupDocumentListeners();
-      };
-
-      let onMouseDown = (e: MouseEvent) => {
-        let el = (e.target as HTMLElement).closest(
-          "[data-keepsake-id]",
-        ) as HTMLElement | null;
-        if (!el) return;
-        handleStart(e, el);
-      };
-      let onTouchStart = (e: TouchEvent) => {
-        let el = (e.target as HTMLElement).closest(
-          "[data-keepsake-id]",
-        ) as HTMLElement | null;
-        if (!el) return;
-        handleStart(e, el);
-      };
-
-      addEventListeners(document, handle.signal, {
-        mousedown: onMouseDown,
-        touchstart: onTouchStart,
-      });
-      handle.signal.addEventListener(
-        "abort",
-        () => {
-          handleEnd();
-        },
-        { once: true },
-      );
-    });
+    handle.signal.addEventListener(
+      "abort",
+      () => {
+        endDragSession();
+      },
+      { once: true },
+    );
 
     return () => (
       <div class="isolate">
         {KEEPSAKES.map((keepsake) => {
-          const t = translate[keepsake.id] ?? { x: 0, y: 0 };
-          const showJiggle = keepsake.shouldJiggle && !interacted[keepsake.id];
+          let t = getTranslate(keepsake.id);
+          let isActiveDrag = drag?.id === keepsake.id;
+          let showJiggle =
+            "shouldJiggle" in keepsake &&
+            keepsake.shouldJiggle &&
+            !interacted[keepsake.id];
           return (
             <div
               key={keepsake.id}
@@ -200,18 +166,27 @@ export let JamKeepsakes = clientEntry(
               style={{ zIndex: order[keepsake.id] }}
             >
               <div
-                data-keepsake-id={keepsake.id}
                 class={clsx(
-                  "keepsake cursor-grab touch-none select-none",
+                  "keepsake touch-none select-none",
                   keepsake.id,
+                  isActiveDrag ? "cursor-grabbing" : "cursor-grab",
                   showJiggle && "animate-jiggle",
                 )}
                 style={{
                   transform: `translate(${t.x}px, ${t.y}px)`,
-                  animationDelay: keepsake.jiggleDelay
-                    ? `${keepsake.jiggleDelay}ms`
-                    : undefined,
+                  animationDelay:
+                    "jiggleDelay" in keepsake && keepsake.jiggleDelay
+                      ? `${keepsake.jiggleDelay}ms`
+                      : undefined,
                 }}
+                mix={[
+                  on("pointerdown", (event) => {
+                    if (!event.isPrimary) return;
+                    if (event.pointerType === "mouse" && event.button !== 0)
+                      return;
+                    handleStart(event, keepsake.id);
+                  }),
+                ]}
               >
                 <div class="rotate">
                   <div

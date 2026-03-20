@@ -27,10 +27,10 @@ Use `mix={[on(type, handler)]}` for DOM listeners.
 ```tsx
 <form
   mix={[
-    on('submit', async (event, signal) => {
-      event.preventDefault()
-      let formData = new FormData(event.currentTarget)
-      await submit(formData, { signal })
+    on("submit", async (event, signal) => {
+      event.preventDefault();
+      let formData = new FormData(event.currentTarget);
+      await submit(formData, { signal });
     }),
   ]}
 />
@@ -41,6 +41,7 @@ Rules:
 - Event handlers may receive `signal`.
 - Pass `signal` to async work when possible.
 - Check `signal.aborted` after async work if the API cannot cancel itself.
+- Prefer `on(...)` for persistent host behavior. If listeners should only exist for one active session, attach them imperatively with `addEventListener(..., { signal })` and tear them down by aborting that session signal.
 
 ## Refs
 
@@ -58,10 +59,10 @@ Prefer the `css(...)` mixin for static stylesheet-like rules and `style` for dyn
 <button
   mix={[
     css({
-      color: 'white',
-      backgroundColor: 'blue',
-      '&:hover': { backgroundColor: 'darkblue' },
-      '@media (max-width: 768px)': { width: '100%' },
+      color: "white",
+      backgroundColor: "blue",
+      "&:hover": { backgroundColor: "darkblue" },
+      "@media (max-width: 768px)": { width: "100%" },
     }),
   ]}
   style={{ opacity: disabled ? 0.5 : 1 }}
@@ -79,7 +80,7 @@ Use animation mixins instead of the removed `animate` prop:
 <div
   key={item.id}
   mix={[
-    animateEntrance({ opacity: 0, transform: 'scale(0.98)' }),
+    animateEntrance({ opacity: 0, transform: "scale(0.98)" }),
     animateExit({ opacity: 0 }),
     animateLayout(),
   ]}

@@ -26,17 +26,26 @@ client behavior.
    - setup runs once
    - returned render function runs on every update
 2. Keep state in setup scope as plain JavaScript variables and call `handle.update()` explicitly.
-3. Prefer host-element mixins over legacy host props:
+3. Prefer the simplest shape that clearly matches ownership:
+   - inline one-use logic instead of extracting tiny helpers that are only called once
+   - prefer props for direct parent-to-child coordination
+   - use `handle.context` only for real ancestor/descendant communication, not callback plumbing to an immediate child
+   - extract wrapper components or custom mixins only when they clarify ownership or are likely to be reused
+4. Prefer host-element mixins over legacy host props:
    - `mix={[on(...)]}`
    - `mix={[css(...)]}`
    - `mix={[ref(...)]}`
    - `mix={[keysEvents()]}`
    - `mix={[pressEvents()]}`
    - `mix={[link(href, options)]}`
-4. Use `addEventListeners(target, handle.signal, listeners)` for global listeners.
-5. Use `queueTask(...)` for post-render DOM work, reactive effects, or hydration-sensitive setup.
-6. Keep `<head>` explicit in document or layout code.
-7. Test with real interactions and `root.flush()` when unit tests need synchronous assertions.
+5. Use `addEventListeners(target, handle.signal, listeners)` for global listeners.
+6. Split persistent host behavior from short-lived interaction sessions:
+   - use `mix={[on(...)]}` for stable host behavior
+   - use imperative `addEventListener(..., { signal })` when listeners should only exist for an active session like a drag
+7. Prefer render-driven classes and `style` for visible UI state when it can be derived from component state. Avoid imperative DOM writes for things like cursor, classes, or inline styles unless the DOM change is truly transient and non-rendered.
+8. Use `queueTask(...)` for post-render DOM work, reactive effects, or hydration-sensitive setup.
+9. Keep `<head>` explicit in document or layout code.
+10. Test with real interactions and `root.flush()` when unit tests need synchronous assertions.
 
 ## Load These References As Needed
 

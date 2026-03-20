@@ -10,29 +10,28 @@ Last audited: March 20, 2026
 
 ## Quick Reference Table
 
-| Attribute | File(s) | Purpose | Consumers |
-|-----------|---------|---------|-----------|
-| `data-gallery-modal` | `jam-2025-gallery.tsx` | Marks modal dialog container | `jam-gallery-keyboard-navigation.tsx` (queries for keyboard nav, focus management) |
-| `data-gallery-modal-image` | `jam-2025-gallery.tsx` | Marks image container | CSS styling only |
-| `data-gallery-modal-photo` | `jam-2025-gallery.tsx` | Marks actual `<img>` element | `jam-gallery-keyboard-navigation.tsx` (checks loading state) |
-| `data-gallery-backdrop` | `jam-2025-gallery.tsx` | Marks backdrop click-to-close area | `jam-gallery-keyboard-navigation.tsx` (excludes from focusable, click handler) |
-| `data-gallery-close-link` | `jam-2025-gallery.tsx` | Marks explicit close button/link | `jam-gallery-keyboard-navigation.tsx` (click handler for closing) |
-| `data-gallery-photo-link` | `jam-2025-gallery.tsx` | Marks grid photo links | `jam-gallery-keyboard-navigation.tsx` (preloading trigger) |
-| `data-gallery-photo-index` | `jam-2025-gallery.tsx` | Stores photo index (0-based) | `jam-gallery-focus-restore.tsx` (queries for focus restoration) |
-| `data-gallery-aspect-ratio` | `jam-2025-gallery.tsx` | Precomputed aspect ratio | `jam-gallery-keyboard-navigation.tsx` (reads for transition) |
-| `data-gallery-width` | `jam-2025-gallery.tsx` | Precomputed width value | `jam-gallery-keyboard-navigation.tsx` |
-| `data-gallery-max-width` | `jam-2025-gallery.tsx` | Precomputed max-width value | `jam-gallery-keyboard-navigation.tsx` |
-| `data-gallery-height` | `jam-2025-gallery.tsx` | Precomputed height value | `jam-gallery-keyboard-navigation.tsx` |
-| `data-gallery-max-height` | `jam-2025-gallery.tsx` | Precomputed max-height value | `jam-gallery-keyboard-navigation.tsx` |
-| `data-gallery-image-src` | `jam-2025-gallery.tsx` | Precomputed image src URL | `jam-gallery-keyboard-navigation.tsx` (preloading) |
-| `data-gallery-image-state` | `jam-gallery-keyboard-navigation.tsx` | "pending" during navigation | Internal state during transitions |
-| `data-gallery-pending-src` | `jam-gallery-keyboard-navigation.tsx` | Src being preloaded | Internal state for image sync |
-| `data-mobile-menu-ready` | `mobile-menu.tsx` | Signals hydration complete | `mobile-menu.spec.ts` (asserts) |
-| `data-keepsake-id` | `jam-keepsakes.tsx` | Stores keepsake identifier | Same file (`dataset.keepsakeId` for drag identification) |
-| `data-jam-event-badge` | `jam-fade-in-badge.tsx` | Boolean marker | CSS hook (no JS queries found) |
-| `data-theme` | `document.tsx` | "dark" / "light" override | `document.tsx` script, `document-head-sync.tsx`, `navigation.spec.ts` |
-| `data-remix-managed-head` | `document.tsx` | Marks managed meta/link tags | `document-head.ts` (reconciliation) |
-| `data-highlight` | `md.css`, `bailwind.css` | Marks highlighted code lines | CSS only (`::after` pseudo-element styling) |
+| Attribute                   | File(s)                               | Purpose                            | Consumers                                                                          |
+| --------------------------- | ------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------- |
+| `data-gallery-modal`        | `jam-2025-gallery.tsx`                | Marks modal dialog container       | `jam-gallery-keyboard-navigation.tsx` (queries for keyboard nav, focus management) |
+| `data-gallery-modal-image`  | `jam-2025-gallery.tsx`                | Marks image container              | CSS styling only                                                                   |
+| `data-gallery-modal-photo`  | `jam-2025-gallery.tsx`                | Marks actual `<img>` element       | `jam-gallery-keyboard-navigation.tsx` (checks loading state)                       |
+| `data-gallery-backdrop`     | `jam-2025-gallery.tsx`                | Marks backdrop click-to-close area | `jam-gallery-keyboard-navigation.tsx` (excludes from focusable, click handler)     |
+| `data-gallery-close-link`   | `jam-2025-gallery.tsx`                | Marks explicit close button/link   | `jam-gallery-keyboard-navigation.tsx` (click handler for closing)                  |
+| `data-gallery-photo-link`   | `jam-2025-gallery.tsx`                | Marks grid photo links             | `jam-gallery-keyboard-navigation.tsx` (preloading trigger)                         |
+| `data-gallery-photo-index`  | `jam-2025-gallery.tsx`                | Stores photo index (0-based)       | `jam-gallery-focus-restore.tsx` (queries for focus restoration)                    |
+| `data-gallery-aspect-ratio` | `jam-2025-gallery.tsx`                | Precomputed aspect ratio           | `jam-gallery-keyboard-navigation.tsx` (reads for transition)                       |
+| `data-gallery-width`        | `jam-2025-gallery.tsx`                | Precomputed width value            | `jam-gallery-keyboard-navigation.tsx`                                              |
+| `data-gallery-max-width`    | `jam-2025-gallery.tsx`                | Precomputed max-width value        | `jam-gallery-keyboard-navigation.tsx`                                              |
+| `data-gallery-height`       | `jam-2025-gallery.tsx`                | Precomputed height value           | `jam-gallery-keyboard-navigation.tsx`                                              |
+| `data-gallery-max-height`   | `jam-2025-gallery.tsx`                | Precomputed max-height value       | `jam-gallery-keyboard-navigation.tsx`                                              |
+| `data-gallery-image-src`    | `jam-2025-gallery.tsx`                | Precomputed image src URL          | `jam-gallery-keyboard-navigation.tsx` (preloading)                                 |
+| `data-gallery-image-state`  | `jam-gallery-keyboard-navigation.tsx` | "pending" during navigation        | Internal state during transitions                                                  |
+| `data-gallery-pending-src`  | `jam-gallery-keyboard-navigation.tsx` | Src being preloaded                | Internal state for image sync                                                      |
+| `data-mobile-menu-ready`    | `mobile-menu.tsx`                     | Signals hydration complete         | `mobile-menu.spec.ts` (asserts)                                                    |
+| `data-jam-event-badge`      | `jam-fade-in-badge.tsx`               | Boolean marker                     | CSS hook (no JS queries found)                                                     |
+| `data-theme`                | `document.tsx`                        | "dark" / "light" override          | `document.tsx` script, `document-head-sync.tsx`, `navigation.spec.ts`              |
+| `data-remix-managed-head`   | `document.tsx`                        | Marks managed meta/link tags       | `document-head.ts` (reconciliation)                                                |
+| `data-highlight`            | `md.css`, `bailwind.css`              | Marks highlighted code lines       | CSS only (`::after` pseudo-element styling)                                        |
 
 ---
 
@@ -74,25 +73,19 @@ Used by `querySelector` to find elements for event handling and focus management
 
 - `data-mobile-menu-ready` - E2E test marker for hydration complete
 
-### 3. Keepsakes (Draggable Items)
-
-**Location:** `remix/assets/jam-keepsakes.tsx`
-
-- `data-keepsake-id` - Element identification for drag-and-drop (read via `dataset.keepsakeId`)
-
-### 4. Theme System
+### 3. Theme System
 
 **Location:** `remix/components/document.tsx`, `remix/assets/document-head-sync.tsx`
 
 - `data-theme` - Stores "dark" or "light" override. Works before hydration via inline script.
 
-### 5. Head Tag Management
+### 4. Head Tag Management
 
 **Location:** `remix/components/document.tsx`, `remix/components/document-head.ts`
 
 - `data-remix-managed-head` - Marks `<meta>` and `<link>` tags controlled by Remix for reconciliation
 
-### 6. CSS-Only Hooks
+### 5. CSS-Only Hooks
 
 **Location:** `remix/shared/styles/md.css`, `remix/shared/styles/bailwind.css`
 
@@ -104,6 +97,7 @@ Used by `querySelector` to find elements for event handling and focus management
 ## Usage Patterns
 
 ### Pattern 1: Server-to-Client State Transfer
+
 **Example:** Gallery dimension attributes (`data-gallery-aspect-ratio`, etc.)
 
 Server renders computed values as data attributes, client JS reads them with `getAttribute()` during navigation transitions to apply CSS custom properties for smooth image transitions.
@@ -117,20 +111,17 @@ const aspectRatio = element.getAttribute('data-gallery-aspect-ratio');
 ```
 
 ### Pattern 2: DOM Element Queries
-**Example:** `data-gallery-modal`, `data-keepsake-id`
+
+**Example:** `data-gallery-modal`
 
 Used when elements need to be found without relying on CSS classes (which may change) or when multiple elements need similar behavior:
 
 ```tsx
-// Querying:
-const modal = document.querySelector('[data-gallery-modal]');
-
-// Or event delegation:
-const el = (e.target as HTMLElement).closest('[data-keepsake-id]');
-const id = el?.dataset.keepsakeId;
+const modal = document.querySelector("[data-gallery-modal]");
 ```
 
 ### Pattern 3: E2E Test Markers
+
 **Example:** `data-mobile-menu-ready`
 
 Playwright tests assert on these to know when hydration/initialization is complete:
@@ -140,6 +131,7 @@ await expect(page.locator('[data-mobile-menu-ready="true"]')).toHaveCount(1);
 ```
 
 ### Pattern 4: Pre-Hydration State
+
 **Example:** `data-theme`
 
 Inline script reads this immediately (before any JS loads), enabling theme to work during SSR:
@@ -149,6 +141,7 @@ let theme = document.documentElement.dataset.theme;
 ```
 
 ### Pattern 5: Framework Internal Markers
+
 **Example:** `data-remix-managed-head`
 
 Framework uses to identify which head tags it controls for reconciliation during navigation.
@@ -158,6 +151,7 @@ Framework uses to identify which head tags it controls for reconciliation during
 ## When to Use Data Attributes
 
 **Appropriate uses:**
+
 - E2E test markers (stable selectors that aren't user-facing)
 - Pre-hydration state that inline scripts need
 - Passing server-computed values to client behavior
@@ -165,6 +159,7 @@ Framework uses to identify which head tags it controls for reconciliation during
 - Framework internal reconciliation markers
 
 **Consider alternatives when:**
+
 - State is React/Remix Component state → use component state/context
 - Values are purely for styling → use CSS custom properties
 - Element refs are needed → use `ref` callbacks
@@ -174,19 +169,18 @@ Framework uses to identify which head tags it controls for reconciliation during
 
 ## File Locations
 
-| File | Data Attributes Used |
-|------|---------------------|
-| `remix/routes/jam-2025-gallery.tsx` | Defines most gallery attributes |
+| File                                               | Data Attributes Used                                        |
+| -------------------------------------------------- | ----------------------------------------------------------- |
+| `remix/routes/jam-2025-gallery.tsx`                | Defines most gallery attributes                             |
 | `remix/assets/jam-gallery-keyboard-navigation.tsx` | Consumes gallery attributes, sets internal state attributes |
-| `remix/assets/jam-gallery-focus-restore.tsx` | Queries `data-gallery-photo-index` |
-| `remix/assets/mobile-menu.tsx` | Sets `data-mobile-menu-ready` |
-| `remix/assets/jam-keepsakes.tsx` | Defines/consumes `data-keepsake-id` |
-| `remix/assets/jam-fade-in-badge.tsx` | Defines `data-jam-event-badge` |
-| `remix/components/document.tsx` | Defines `data-theme`, `data-remix-managed-head` |
-| `remix/components/document-head.ts` | Queries `data-remix-managed-head` |
-| `remix/assets/document-head-sync.tsx` | Sets `data-theme` |
-| `remix/shared/styles/md.css` | Styles `data-highlight` |
-| `remix/shared/styles/bailwind.css` | Styles `data-highlight` |
-| `e2e/jam.spec.ts` | Asserts on `data-gallery-modal` |
-| `e2e/mobile-menu.spec.ts` | Asserts on `data-mobile-menu-ready` |
-| `e2e/navigation.spec.ts` | Asserts on `data-theme` |
+| `remix/assets/jam-gallery-focus-restore.tsx`       | Queries `data-gallery-photo-index`                          |
+| `remix/assets/mobile-menu.tsx`                     | Sets `data-mobile-menu-ready`                               |
+| `remix/assets/jam-fade-in-badge.tsx`               | Defines `data-jam-event-badge`                              |
+| `remix/components/document.tsx`                    | Defines `data-theme`, `data-remix-managed-head`             |
+| `remix/components/document-head.ts`                | Queries `data-remix-managed-head`                           |
+| `remix/assets/document-head-sync.tsx`              | Sets `data-theme`                                           |
+| `remix/shared/styles/md.css`                       | Styles `data-highlight`                                     |
+| `remix/shared/styles/bailwind.css`                 | Styles `data-highlight`                                     |
+| `e2e/jam.spec.ts`                                  | Asserts on `data-gallery-modal`                             |
+| `e2e/mobile-menu.spec.ts`                          | Asserts on `data-mobile-menu-ready`                         |
+| `e2e/navigation.spec.ts`                           | Asserts on `data-theme`                                     |

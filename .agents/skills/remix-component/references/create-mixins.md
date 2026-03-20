@@ -21,26 +21,35 @@ Treat these as constraints, not suggestions:
 
 ```tsx
 createMixin<NodeType>((handle) => {
-  handle.addEventListener('insert', (event) => {
+  handle.addEventListener("insert", (event) => {
     // event.node is the mounted host node for this lifecycle.
-  })
+  });
 
-  handle.addEventListener('remove', () => {
+  handle.addEventListener("remove", () => {
     // Clean up listeners, timers, observers, and async work here.
-  })
+  });
 
   return (props) => {
     handle.queueTask((node) => {
       // Post-commit work that needs the concrete host node.
-    })
+    });
 
-    return <handle.element {...props} />
-  }
-})
+    return <handle.element {...props} />;
+  };
+});
 ```
 
 If your implementation assumes semantics that do not exist (node swapping, repeated `insert` for
 the same handle, or extra host lifecycles hidden behind one handle), remove that logic.
+
+Before writing a custom mixin, ask whether you actually need one:
+
+- If the behavior is only used once and a local `on(...)` plus setup-scope state is clearer, prefer
+  the local implementation.
+- Reach for `createMixin(...)` when it clarifies ownership at the host boundary or when the behavior
+  is likely to be reused.
+- Do not introduce a mixin just to make code feel "more Remix-like" if it adds indirection without
+  paying for itself.
 
 ## Authoring Rules
 
@@ -62,30 +71,32 @@ the same handle, or extra host lifecycles hidden behind one handle), remove that
 ### Pure prop transform
 
 ```tsx
-let withTitle = createMixin((handle) => (title: string, props: { title?: string }) => (
-  <handle.element {...props} title={title} />
-))
+let withTitle = createMixin(
+  (handle) => (title: string, props: { title?: string }) => (
+    <handle.element {...props} title={title} />
+  ),
+);
 ```
 
 ### Lifecycle-managed imperative setup
 
 ```tsx
 let withFocus = createMixin<HTMLElement>((handle) => {
-  handle.addEventListener('insert', (event) => {
-    event.node.focus()
-  })
+  handle.addEventListener("insert", (event) => {
+    event.node.focus();
+  });
 
-  return (props) => <handle.element {...props} />
-})
+  return (props) => <handle.element {...props} />;
+});
 ```
 
 ### Post-commit DOM work
 
 ```tsx
 handle.queueTask((node) => {
-  node.removeEventListener(prevType, stableHandler, prevCapture)
-  node.addEventListener(nextType, stableHandler, nextCapture)
-})
+  node.removeEventListener(prevType, stableHandler, prevCapture);
+  node.addEventListener(nextType, stableHandler, nextCapture);
+});
 ```
 
 ## Avoid
@@ -95,6 +106,7 @@ handle.queueTask((node) => {
 - Setup/cleanup side effects inside render-only code paths
 - Boilerplate `signal.aborted` checks for purely synchronous work
 - Hiding semantic uncertainty with casts instead of fixing types or contracts
+- One-off mixins that only wrap a single call site without improving reuse or ownership
 
 ## Checklist
 
