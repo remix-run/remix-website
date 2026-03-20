@@ -315,7 +315,6 @@ function ModalImage() {
 
     return (
       <div
-        data-gallery-modal-image
         class="-mx-6 bg-white/5 md:mx-0"
         style={{
           aspectRatio: `var(--gallery-modal-aspect-ratio, ${aspectRatio})`,

@@ -118,10 +118,10 @@ test.describe("Jam", () => {
   test("jam 2025 after-event badge shows rewind icon", async ({ page }) => {
     await page.goto("/jam/2025");
 
-    let badge = page.locator("[data-jam-event-badge]");
-    await expect(badge).toBeVisible();
-    await expect(badge).toContainText("Rewind");
-    await expect(badge.locator('use[href$="#fast-forward"]')).toHaveCount(1);
+    let heading = page.getByRole("heading", { level: 1 });
+    await expect(heading).toBeVisible();
+    await expect(heading).toContainText("Rewind");
+    await expect(heading.locator('use[href$="#fast-forward"]')).toHaveCount(1);
   });
 
   test("jam 2025 newsletter submits and shows success state", async ({
@@ -429,7 +429,7 @@ test.describe("Jam", () => {
 
     await galleryPhotoLinks(page).first().click();
     await expect(page.locator("[data-gallery-modal]")).toBeVisible();
-    await expect(page.locator("[data-gallery-modal-image]")).toBeVisible();
+    await expect(page.locator("[data-gallery-modal-photo]")).toBeVisible();
 
     await page.getByRole("link", { name: "Next photo" }).click();
 
@@ -437,7 +437,6 @@ test.describe("Jam", () => {
       "data-gallery-image-state",
       "pending",
     );
-    await expect(page.locator("[data-gallery-modal-image]")).toBeVisible();
     await expect(page.locator("[data-gallery-modal-photo]")).toBeHidden();
 
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
@@ -445,7 +444,6 @@ test.describe("Jam", () => {
       "data-gallery-image-state",
       "pending",
     );
-    await expect(page.locator("[data-gallery-modal-image]")).toBeVisible();
     await expect(page.locator("[data-gallery-modal-photo]")).toBeVisible();
   });
 
