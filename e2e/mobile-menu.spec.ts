@@ -10,15 +10,16 @@ async function markPage(page: Page) {
   });
 }
 
+async function gotoMobileMenuPage(page: Page) {
+  await page.setViewportSize({ width: 390, height: 844 });
+  let response = await page.goto("/");
+  expect(response?.ok()).toBe(true);
+  await page.waitForLoadState("networkidle");
+}
+
 test.describe("Mobile menu", () => {
   test("opens and shows navigation links", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    let response = await page.goto("/");
-    expect(response?.ok()).toBe(true);
-
-    await expect(
-      page.locator('[data-mobile-menu-ready="true"]').first(),
-    ).toHaveCount(1);
+    await gotoMobileMenuPage(page);
 
     let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
     await expect(menuToggle).toBeVisible();
@@ -33,13 +34,7 @@ test.describe("Mobile menu", () => {
   });
 
   test("escapes back to toggle", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    let response = await page.goto("/");
-    expect(response?.ok()).toBe(true);
-
-    await expect(
-      page.locator('[data-mobile-menu-ready="true"]').first(),
-    ).toHaveCount(1);
+    await gotoMobileMenuPage(page);
 
     let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
     await expect(menuToggle).toBeVisible();
@@ -59,9 +54,7 @@ test.describe("Mobile menu", () => {
   });
 
   test("mobile menu links navigate", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    let response = await page.goto("/");
-    expect(response?.ok()).toBe(true);
+    await gotoMobileMenuPage(page);
 
     let marker = await markPage(page);
 

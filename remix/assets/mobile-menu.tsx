@@ -99,9 +99,6 @@ export let MobileMenu = clientEntry(
       return (
         <details
           open={isOpen}
-          data-mobile-menu-ready={
-            typeof document !== "undefined" ? "true" : undefined
-          }
           class={cx("relative cursor-pointer", props.class)}
           mix={[
             ref((node) => {

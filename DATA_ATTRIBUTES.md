@@ -28,9 +28,7 @@ Last audited: March 20, 2026
 | `data-gallery-image-src`    | `jam-2025-gallery.tsx`                | Precomputed image src URL          | `jam-gallery-keyboard-navigation.tsx` (preloading)                                 |
 | `data-gallery-image-state`  | `jam-gallery-keyboard-navigation.tsx` | "pending" during navigation        | Internal state during transitions                                                  |
 | `data-gallery-pending-src`  | `jam-gallery-keyboard-navigation.tsx` | Src being preloaded                | Internal state for image sync                                                      |
-| `data-mobile-menu-ready`    | `mobile-menu.tsx`                     | Signals hydration complete         | `mobile-menu.spec.ts` (asserts)                                                    |
 | `data-remix-managed-head`   | `document.tsx`                        | Marks managed meta/link tags       | `document-head.ts` (reconciliation)                                                |
-| `data-highlight`            | `md.css`, `bailwind.css`              | Marks highlighted code lines       | CSS only (`::after` pseudo-element styling)                                        |
 
 ---
 
@@ -65,23 +63,11 @@ Used by `querySelector` to find elements for event handling and focus management
 - `data-gallery-image-state` - Internal "pending" state
 - `data-gallery-pending-src` - Internal preloading state
 
-### 2. Mobile Menu
-
-**Location:** `remix/assets/mobile-menu.tsx`
-
-- `data-mobile-menu-ready` - E2E test marker for hydration complete
-
-### 3. Head Tag Management
+### 2. Head Tag Management
 
 **Location:** `remix/components/document.tsx`, `remix/components/document-head.ts`
 
 - `data-remix-managed-head` - Marks `<meta>` and `<link>` tags controlled by Remix for reconciliation
-
-### 4. CSS-Only Hooks
-
-**Location:** `remix/shared/styles/md.css`, `remix/shared/styles/bailwind.css`
-
-- `data-highlight="true"` - Code line highlighting (CSS `::after` pseudo-element)
 
 ---
 
@@ -111,17 +97,7 @@ Used when elements need to be found without relying on CSS classes (which may ch
 const modal = document.querySelector("[data-gallery-modal]");
 ```
 
-### Pattern 3: E2E Test Markers
-
-**Example:** `data-mobile-menu-ready`
-
-Playwright tests assert on these to know when hydration/initialization is complete:
-
-```ts
-await expect(page.locator('[data-mobile-menu-ready="true"]')).toHaveCount(1);
-```
-
-### Pattern 4: Framework Internal Markers
+### Pattern 3: Framework Internal Markers
 
 **Example:** `data-remix-managed-head`
 
@@ -155,10 +131,6 @@ Framework uses to identify which head tags it controls for reconciliation during
 | `remix/routes/jam-2025-gallery.tsx`                | Defines most gallery attributes                             |
 | `remix/assets/jam-gallery-keyboard-navigation.tsx` | Consumes gallery attributes, sets internal state attributes |
 | `remix/assets/jam-gallery-focus-restore.tsx`       | Queries `data-gallery-photo-index`                          |
-| `remix/assets/mobile-menu.tsx`                     | Sets `data-mobile-menu-ready`                               |
 | `remix/components/document.tsx`                    | Defines `data-remix-managed-head`                           |
 | `remix/components/document-head.ts`                | Queries `data-remix-managed-head`                           |
-| `remix/shared/styles/md.css`                       | Styles `data-highlight`                                     |
-| `remix/shared/styles/bailwind.css`                 | Styles `data-highlight`                                     |
 | `e2e/jam.spec.ts`                                  | Asserts on `data-gallery-modal`                             |
-| `e2e/mobile-menu.spec.ts`                          | Asserts on `data-mobile-menu-ready`                         |
