@@ -71,7 +71,6 @@ export let JamGalleryKeyboardNavigation = clientEntry(
       let modal = document.querySelector<HTMLElement>("[data-gallery-modal]");
       if (!modal) return;
 
-      modal.setAttribute("data-gallery-modal-ready", "true");
       queueSyncPendingState();
 
       let previousBodyOverflow = document.body.style.overflow;
