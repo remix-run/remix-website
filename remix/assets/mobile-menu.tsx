@@ -11,26 +11,28 @@ import cx from "clsx";
 import iconsHref from "../shared/icons.svg";
 import assets from "./mobile-menu.tsx?assets=client";
 
+const mobileMenuStyles = {
+  summary: cx(
+    "bg-gray-100 hover:bg-gray-200 text-rmx-primary [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700",
+    "_no-triangle grid h-10 w-10 place-items-center rounded-full",
+  ),
+  menuWrapper:
+    "relative top-1 w-40 rounded-md border border-gray-100 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-gray-900",
+  menuPosition: "absolute right-0 z-20 md:left-0",
+  nav: "flex flex-col gap-2 px-2 py-2.5",
+};
+
 export let MobileMenu = clientEntry(
   `${assets.entry}#MobileMenu`,
   (handle: Handle, setup?: { open?: boolean }) => {
     let isOpen = setup?.open ?? false;
     let detailsElement: HTMLDetailsElement | null = null;
-    let pendingSummaryFocusRestore: HTMLElement | null = null;
-    let openSummaryElement: HTMLElement | null = null;
 
     let closeMenu = () => {
       if (detailsElement?.open || isOpen) {
         isOpen = false;
         handle.update();
       }
-    };
-    let onEscape = () => {
-      if (!detailsElement?.open) return;
-      if (openSummaryElement) {
-        pendingSummaryFocusRestore = openSummaryElement;
-      }
-      closeMenu();
     };
 
     if (typeof document !== "undefined") {
@@ -46,30 +48,30 @@ export let MobileMenu = clientEntry(
     };
     let onToggle = (e: Event & { currentTarget: HTMLDetailsElement }) => {
       isOpen = e.currentTarget.open;
-      let summary = e.currentTarget.querySelector("summary");
-      if (summary instanceof HTMLElement) {
-        openSummaryElement = isOpen ? summary : null;
-      }
       handle.update();
-      if (!isOpen && pendingSummaryFocusRestore) {
-        let focusTarget = pendingSummaryFocusRestore;
-        pendingSummaryFocusRestore = null;
-        handle.queueTask((signal) => {
-          if (signal.aborted) return;
-          focusTarget.focus();
-        });
-      }
     };
     let onFocusOut = (
       e: FocusEvent & { currentTarget: HTMLDetailsElement },
     ) => {
       let next = e.relatedTarget;
-      if (!next) {
-        return;
-      }
+      if (!next) return;
       if (!(next instanceof Node) || !e.currentTarget.contains(next)) {
         isOpen = false;
         handle.update();
+      }
+    };
+    let onDetailsKeyDown = (
+      e: KeyboardEvent & { currentTarget: HTMLDetailsElement },
+    ) => {
+      if (!detailsElement?.open) return;
+      let summary = e.currentTarget.querySelector("summary");
+      closeMenu();
+      e.preventDefault();
+      if (summary instanceof HTMLElement) {
+        handle.queueTask((signal) => {
+          if (signal.aborted) return;
+          summary.focus();
+        });
       }
     };
 
@@ -81,20 +83,12 @@ export let MobileMenu = clientEntry(
       menuWrapperClass?: string;
       navClass?: string;
     }) => {
-      let defaultSummaryClasses =
-        "bg-gray-100 hover:bg-gray-200 text-rmx-primary [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700";
-      let summaryClass =
-        props.summaryClass ??
-        cx(
-          defaultSummaryClasses,
-          "_no-triangle grid h-10 w-10 place-items-center rounded-full",
-        );
+      let summaryClass = props.summaryClass ?? mobileMenuStyles.summary;
       let menuWrapperClass =
-        props.menuWrapperClass ??
-        "relative top-1 w-40 rounded-md border border-gray-100 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-gray-900";
+        props.menuWrapperClass ?? mobileMenuStyles.menuWrapper;
       let menuPositionClass =
-        props.menuPositionClass ?? "absolute right-0 z-20 md:left-0";
-      let navClass = props.navClass ?? "flex flex-col gap-2 px-2 py-2.5";
+        props.menuPositionClass ?? mobileMenuStyles.menuPosition;
+      let navClass = props.navClass ?? mobileMenuStyles.nav;
 
       return (
         <details
@@ -104,6 +98,7 @@ export let MobileMenu = clientEntry(
             ref((node) => {
               detailsElement = node;
             }),
+            on("keydown:Escape", onDetailsKeyDown),
             on("toggle", onToggle),
             on<HTMLDetailsElement>("mousedown", stopPropagation),
             on<HTMLDetailsElement>("touchstart", stopPropagation),
@@ -111,7 +106,7 @@ export let MobileMenu = clientEntry(
             on("focusout", onFocusOut),
           ]}
         >
-          <summary class={summaryClass} aria-label="Open menu">
+          <summary class={summaryClass}>
             <svg class="h-5 w-5" aria-hidden="true">
               <use href={`${iconsHref}#menu`} />
             </svg>
@@ -120,11 +115,7 @@ export let MobileMenu = clientEntry(
 
           <div class={menuPositionClass}>
             <div class={menuWrapperClass}>
-              <nav
-                class={navClass}
-                aria-label="Mobile"
-                mix={[keysEvents(), on(keysEvents.escape, onEscape)]}
-              >
+              <nav class={navClass} aria-label="Mobile">
                 {props.children}
               </nav>
             </div>
