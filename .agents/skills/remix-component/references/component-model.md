@@ -6,7 +6,7 @@ Every component has two phases:
 2. Render phase: returned function runs on initial render and every update
 
 ```tsx
-import { on, type Handle } from "remix/component";
+import type { Handle } from "remix/component";
 
 function Counter(handle: Handle, initialCount = 0) {
   let count = initialCount;
@@ -28,37 +28,35 @@ function Counter(handle: Handle, initialCount = 0) {
 
 ## State Rules
 
-- Keep state in setup scope as plain JavaScript variables.
+- Keep state in setup scope as plain JS variables.
 - Store only what affects rendering.
 - Derive computed values in render.
 - Do not mirror input state unless you truly need controlled behavior.
 - Use `setup` only for one-time initialization inputs.
-- Prefer the smallest state shape that matches the real interaction model.
-- When several locals only exist for one active interaction, consider grouping them into a single session object instead of scattering them across setup scope.
-- If data is only needed by an immediate child, prefer props over `handle.context`.
 
 ## Handle Usage
 
-- `handle.update()`
-  - schedules a rerender
-  - await it when you need updated DOM before follow-up work
-- `handle.queueTask(task)`
-  - use for post-render DOM work, reactive loading, focus, scroll, or measurement
-- `handle.signal`
+- `handle.update()`:
+  - schedule a rerender
+  - await it when you need DOM to exist before follow-up work
+- `handle.queueTask(task)`:
+  - use for post-render DOM work, reactive loading, focus, scroll, measurement
+  - receives an `AbortSignal`
+- `handle.signal`:
   - aborted when the component disconnects
-- `handle.id`
+- `handle.id`:
   - stable per instance
-- `handle.context`
-  - ancestor or descendant communication
-- `handle.frame` and `handle.frames`
+- `handle.context`:
+  - ancestor/descendant communication
+- `handle.frame` / `handle.frames`:
   - frame-aware behavior for client entries rendered inside frames
 
 ## Global Events
 
-Prefer:
+In the current package direction, prefer:
 
 ```tsx
-import { addEventListeners, type Handle } from "remix/component";
+import { addEventListeners } from "remix/component";
 
 function ResizeTracker(handle: Handle) {
   let width = window.innerWidth;
@@ -73,9 +71,3 @@ function ResizeTracker(handle: Handle) {
   return () => <div>{width}</div>;
 }
 ```
-
-## Behavior Boundaries
-
-- Use `mix={[on(...)]}` for stable host behavior that should exist for the element's whole mounted lifetime.
-- Use imperative `addEventListener(..., { signal })` when listeners should only exist for a short-lived session, such as an active drag.
-- If a visible UI change can be derived from component state, prefer rendering it via `class` or `style` instead of imperatively mutating the DOM.

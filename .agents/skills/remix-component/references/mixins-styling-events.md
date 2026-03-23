@@ -16,13 +16,13 @@ Common mixins exported from `remix/component`:
 
 Prefer these built-ins before custom normalization code:
 
-- `keysEvents()` for key-specific host events
+- `keysEvents()` for host-element key-specific events like `keysEvents.escape`
 - `pressEvents()` when you need one interaction path across pointer and keyboard input
-- `link(href, options)` when a non-anchor element should behave like a Remix navigation link
+- `link(href, options)` when a non-anchor element should behave like a Remix client-navigation link
 
 ## Events
 
-Use `mix={[on(type, handler)]}` for DOM listeners.
+Use `mix={[on(type, handler)]}` for DOM event listeners.
 
 ```tsx
 <form
@@ -41,7 +41,8 @@ Rules:
 - Event handlers may receive `signal`.
 - Pass `signal` to async work when possible.
 - Check `signal.aborted` after async work if the API cannot cancel itself.
-- Prefer `on(...)` for persistent host behavior. If listeners should only exist for one active session, attach them imperatively with `addEventListener(..., { signal })` and tear them down by aborting that session signal.
+- Prefer semantic press behavior over raw click when accessibility or touch behavior matters:
+  - use `pressEvents(...)` or the package animation/interaction skills when relevant
 
 ## Refs
 
@@ -53,7 +54,7 @@ Use `ref(...)` for DOM node access:
 
 ## Styling
 
-Prefer the `css(...)` mixin for static stylesheet-like rules and `style` for dynamic values.
+Current package direction prefers the `css(...)` mixin for static stylesheet-like rules and `style={...}` for dynamic values.
 
 ```tsx
 <button
@@ -69,8 +70,17 @@ Prefer the `css(...)` mixin for static stylesheet-like rules and `style` for dyn
 />
 ```
 
-Use `css(...)` for selectors, nested rules, and media queries. Use `style` for dynamic numeric or
-string values that change often.
+Use `css(...)` for:
+
+- pseudo selectors
+- nested selectors
+- media queries
+- static styles that should not regenerate every update
+
+Use `style` for:
+
+- dynamic numeric/string values
+- frequently changing transforms, sizes, positions, opacity, etc.
 
 ## Animation
 
@@ -87,7 +97,7 @@ Use animation mixins instead of the removed `animate` prop:
 />
 ```
 
-For deeper guidance, also read:
+For deeper animation guidance, also read:
 
-- [./animate-elements.md](./animate-elements.md)
-- [./create-mixins.md](./create-mixins.md)
+- `references/remix/packages/component/skills/animate-elements/SKILL.md`
+- `references/remix/packages/component/skills/create-mixins/SKILL.md` when authoring new mixins
