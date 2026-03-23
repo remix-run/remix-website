@@ -53,20 +53,6 @@ function Counter(handle: Handle, initialCount = 0) {
 - `handle.frame` and `handle.frames`
   - frame-aware behavior for client entries rendered inside frames
 
-## Practical Demos
-
-If you want concrete examples beyond the API docs, these demos are especially useful:
-
-- [`readme/entry.tsx`](https://github.com/remix-run/remix/blob/main/packages/component/demos/readme/entry.tsx)
-  - practical examples of `handle.queueTask(...)`, `await handle.update()`, focus after state
-    changes, scroll coordination, refs, and local state ownership
-- [`controlled-uncontrolled-values/entry.tsx`](https://github.com/remix-run/remix/blob/main/packages/component/demos/controlled-uncontrolled-values/entry.tsx)
-  - useful for input ownership, controlled vs uncontrolled tradeoffs, and when remounting is the
-    simplest reset strategy
-- [`drummer/app.tsx`](https://github.com/remix-run/remix/blob/main/packages/component/demos/drummer/app.tsx)
-  - useful as a larger multi-file example of component organization, with both good patterns and a
-    few older patterns worth scrutinizing
-
 ## Global Events
 
 Prefer:
