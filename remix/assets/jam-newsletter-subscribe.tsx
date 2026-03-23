@@ -1,9 +1,10 @@
 import { clientEntry, on, type Handle } from "remix/component";
 import assets from "./jam-newsletter-subscribe.tsx?assets=client";
 import { routes } from "../routes";
-import { submitNewsletterRequest } from "./newsletter-subscribe";
-
-type SubscribeState = "idle" | "success" | "error";
+import {
+  submitNewsletterRequest,
+  type SubscribeState,
+} from "./newsletter-subscribe";
 
 export let JamNewsletterSubscribeForm = clientEntry(
   `${assets.entry}#JamNewsletterSubscribeForm`,

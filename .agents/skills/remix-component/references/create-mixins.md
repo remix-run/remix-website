@@ -99,6 +99,20 @@ handle.queueTask((node) => {
 });
 ```
 
+## Practical Demos
+
+If you want examples of mixins that are worth studying in real code, these demos are the best
+starting points:
+
+- [`draggable/draggable.tsx`](https://github.com/remix-run/remix/blob/main/packages/component/demos/draggable/draggable.tsx)
+  - reusable drag behavior with lifecycle-managed setup, pointer session state, and custom events
+- [`spring/drag-release.ts`](https://github.com/remix-run/remix/blob/main/packages/component/demos/spring/drag-release.ts)
+  - a focused example of a reusable interaction mixin that turns low-level pointer tracking into
+    semantic output
+- [`animation/hold-to-confirm.tsx`](https://github.com/remix-run/remix/blob/main/packages/component/demos/animation/hold-to-confirm.tsx)
+  - good example of a more complex reusable press/hold interaction and where a host-behavior
+    abstraction actually pays for itself
+
 ## Avoid
 
 - State for hypothetical runtime scenarios

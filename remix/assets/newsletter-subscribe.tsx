@@ -3,7 +3,7 @@ import cx from "clsx";
 import assets from "./newsletter-subscribe.tsx?assets=client";
 import { routes } from "../routes";
 
-type SubscribeState = "idle" | "success" | "error";
+export type SubscribeState = "idle" | "success" | "error";
 type SubscribeResult = {
   state: SubscribeState;
   error: string | null;
@@ -86,7 +86,7 @@ export let NewsletterSubscribeForm = clientEntry(
               event.preventDefault();
               if (submitting) return;
 
-              let form = event.currentTarget as HTMLFormElement;
+              let form = event.currentTarget;
               submitting = true;
               state = "idle";
               error = null;

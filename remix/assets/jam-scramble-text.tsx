@@ -155,7 +155,9 @@ export let JamScrambleText = clientEntry(
       }
     };
 
-    handle.queueTask(() => {
+    handle.queueTask((signal) => {
+      if (signal.aborted || handle.signal.aborted) return;
+
       let cleanupOnPageHide = () => cleanupTimers();
       addEventListeners(window, handle.signal, {
         pagehide: cleanupOnPageHide,
@@ -167,10 +169,6 @@ export let JamScrambleText = clientEntry(
         },
         { once: true },
       );
-    });
-
-    handle.queueTask((signal) => {
-      if (signal.aborted || handle.signal.aborted) return;
       let prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;

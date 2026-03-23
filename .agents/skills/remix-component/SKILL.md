@@ -29,8 +29,11 @@ client behavior.
 3. Prefer the simplest shape that clearly matches ownership:
    - inline one-use logic instead of extracting tiny helpers that are only called once
    - prefer props for direct parent-to-child coordination
+   - if components only share an async helper or request helper, share that helper first instead of abstracting the whole interaction
+   - keep form-local `submitting` / `success` / `error` state in the form component unless the full UI and ownership are genuinely shared
    - use `handle.context` only for real ancestor/descendant communication, not callback plumbing to an immediate child
-   - extract wrapper components or custom mixins only when they clarify ownership or are likely to be reused
+   - extract wrapper components only when they clarify ownership or are likely to be reused
+   - extract custom mixins only when the reused thing is host behavior, not just generic shared stateful logic
 4. Prefer host-element mixins over legacy host props:
    - `mix={[on(...)]}`
    - `mix={[css(...)]}`
@@ -38,14 +41,30 @@ client behavior.
    - `mix={[keysEvents()]}`
    - `mix={[pressEvents()]}`
    - `mix={[link(href, options)]}`
-5. Use `addEventListeners(target, handle.signal, listeners)` for global listeners.
+5. Use `addEventListeners(target, handle.signal, listeners)` for persistent global listeners.
 6. Split persistent host behavior from short-lived interaction sessions:
    - use `mix={[on(...)]}` for stable host behavior
    - use imperative `addEventListener(..., { signal })` when listeners should only exist for an active session like a drag
-7. Prefer render-driven classes and `style` for visible UI state when it can be derived from component state. Avoid imperative DOM writes for things like cursor, classes, or inline styles unless the DOM change is truly transient and non-rendered.
+7. Prefer render-driven classes and `style` for visible UI state when it can be derived from component state. Avoid imperative DOM writes for things like cursor, classes, or inline styles unless the DOM change is truly transient, pointer-driven, or only needed during an active interaction session.
 8. Use `queueTask(...)` for post-render DOM work, reactive effects, or hydration-sensitive setup.
+   - when state changes what exists in the DOM, do focus, scroll, and measurement work in `handle.queueTask(...)` or after `await handle.update()`
+   - attach document/window work that depends on the hydrated tree in queued setup instead of inline environment checks
 9. Keep `<head>` explicit in document or layout code.
 10. Test with real interactions and `root.flush()` when unit tests need synchronous assertions.
+
+## When To Reach For `createMixin(...)`
+
+Use `createMixin(...)` when:
+
+- You are packaging reusable host behavior that composes low-level DOM events into one semantic interaction.
+- The interaction keeps timing / pointer / gesture state that belongs to the host element.
+- You want to dispatch custom events or attach reusable behavior to different elements.
+
+Do not reach for `createMixin(...)` when:
+
+- The logic is local submit state or other component-owned render state.
+- The shared part is really just an async helper, request helper, or small state transition.
+- The behavior is only used once and does not become clearer as a host abstraction.
 
 ## Load These References As Needed
 
