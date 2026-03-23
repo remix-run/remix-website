@@ -63,6 +63,7 @@ export let MobileMenu = clientEntry(
     let onDetailsKeyDown = (
       e: KeyboardEvent & { currentTarget: HTMLDetailsElement },
     ) => {
+      if (e.key !== "Escape") return;
       if (!detailsElement?.open) return;
       let summary = e.currentTarget.querySelector("summary");
       closeMenu();
@@ -98,7 +99,7 @@ export let MobileMenu = clientEntry(
             ref((node) => {
               detailsElement = node;
             }),
-            on("keydown:Escape", onDetailsKeyDown),
+            on("keydown", onDetailsKeyDown),
             on("toggle", onToggle),
             on<HTMLDetailsElement>("mousedown", stopPropagation),
             on<HTMLDetailsElement>("touchstart", stopPropagation),

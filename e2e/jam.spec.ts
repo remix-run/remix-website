@@ -85,7 +85,9 @@ test.describe("Jam", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/jam/2025");
 
-    let menuToggle = page.locator('summary[aria-label="Open menu"]').first();
+    let menuToggle = page
+      .locator('details:has(nav[aria-label="Mobile"]) > summary')
+      .first();
     await expect(menuToggle).toBeVisible();
     await menuToggle.click();
 
