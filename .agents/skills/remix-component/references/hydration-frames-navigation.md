@@ -3,10 +3,13 @@
 Use `clientEntry()` to mark interactive islands and `run()` to hydrate them.
 
 ```tsx
+import { clientEntry, on, run, type Handle } from "remix/component";
+
 export let Counter = clientEntry(
-  `${assets.entry}#Counter`,
+  "/assets/entry.js#Counter",
   (handle: Handle) => {
     let count = 0;
+
     return () => (
       <button
         mix={[
@@ -21,9 +24,7 @@ export let Counter = clientEntry(
     );
   },
 );
-```
 
-```tsx
 let app = run({
   async loadModule(moduleUrl, exportName) {
     let mod = await import(moduleUrl);
@@ -32,6 +33,7 @@ let app = run({
   async resolveFrame(src, signal, target) {
     let headers = new Headers({ accept: "text/html" });
     if (target) headers.set("x-remix-target", target);
+
     let response = await fetch(src, { headers, signal });
     return response.body ?? (await response.text());
   },
@@ -46,7 +48,7 @@ await app.ready();
 
 Rules:
 
-- `run()` now takes only the init object.
+- `run()` takes only the init object.
 - `app.ready()` waits for initial hydration.
 - `app` emits top-level runtime errors.
 - Client entry props must be serializable.
@@ -55,18 +57,19 @@ Rules:
 
 Use `<Frame>` for server-rendered regions that should load or reload independently.
 
-Server rendering shape:
-
 ```tsx
 import { renderToStream } from "remix/component/server";
 
 let stream = renderToStream(<App />, {
   frameSrc: request.url,
-  topFrameSrc: request.headers.get("x-remix-top-frame-src") ?? request.url,
-  resolveFrame(src, target, context) {
+  resolveFrame(src, _target, context) {
     let currentFrameSrc = context?.currentFrameSrc ?? request.url;
     let url = new URL(src, currentFrameSrc);
-    return fetch(url).then((response) => response.text());
+    return renderToStream(<FrameRoute url={url} />, {
+      frameSrc: url,
+      topFrameSrc: context?.topFrameSrc ?? request.url,
+      resolveFrame,
+    });
   },
 });
 ```
@@ -93,8 +96,36 @@ Attributes understood by the runtime:
 - `rmx-src`
 - `rmx-document`
 
-## Explicit Head
+## Head Management
 
-Head hoisting is gone.
+Manage document head state with an explicit `<head>` in your document or layout structure.
 
-Do not rely on route-local bare `title`, `meta`, `link`, `style`, or JSON-LD tags being hoisted automatically. Render an explicit `<head>` in your document/layout structure and manage reconciliation intentionally when client navigation changes document state.
+```tsx
+function App() {
+  return () => (
+    <html>
+      <head>
+        <title>Dashboard</title>
+        <meta name="description" content="Team dashboard" />
+        <link rel="stylesheet" href="/styles/app.css" />
+      </head>
+      <body>
+        <main>...</main>
+      </body>
+    </html>
+  );
+}
+```
+
+Use this pattern when title, metadata, stylesheets, or other document-level head content should
+change as the UI changes.
+
+Rules:
+
+- Put document-level `title`, `meta`, `link`, and `style` tags inside an explicit `<head>`.
+- Treat `<head>` as part of the rendered UI tree and update it intentionally during navigation or
+  layout changes.
+- Keep JSON-LD or other content-bearing scripts where they semantically belong. They are rendered in
+  place unless you explicitly place them inside `<head>`.
+- Bare head-like tags rendered outside `<head>` stay where they are rendered; they are not moved
+  into the document head for you.
