@@ -93,11 +93,7 @@ export let JamLineupAccordionItem = clientEntry(
     };
 
     return (props: { item: LineupItem; gridColsClassName: string }) => (
-      <details
-        class="group overflow-hidden border-t border-white/10"
-        open={isOpen}
-        data-accordion-item
-      >
+      <details class="group overflow-hidden border-t border-white/10" open={isOpen}>
         <summary
           mix={[on<HTMLElement>("click", onSummaryClick)]}
           class={clsx(

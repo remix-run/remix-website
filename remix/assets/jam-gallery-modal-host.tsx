@@ -6,11 +6,14 @@ import {
   type Handle,
 } from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
-import { restoreGalleryFocus, storeGalleryFocus } from "./jam-gallery-focus-restore";
+import {
+  restoreGalleryFocus,
+  storeGalleryFocus,
+} from "./jam-gallery-focus-restore";
 import assets from "./jam-gallery-modal-host.tsx?assets=client";
 
 let FOCUSABLE_SELECTOR =
-  'a[href]:not([data-gallery-backdrop]), button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 /** Which chevron to focus after keyboard prev/next (URL updates before the new modal paints). */
 let PENDING_KEYBOARD_CHEVRON_KEY = "jam-gallery-pending-chevron-focus";
@@ -22,9 +25,7 @@ export type JamGalleryModalNav = {
   nextHref: string;
 };
 
-/**
- * Gallery modal shell: `[data-gallery-modal]` host + focus trap, keyboard nav, and backdrop close.
- */
+/** Gallery modal shell with focus trap, keyboard nav, and backdrop close. */
 export let JamGalleryModalHost = clientEntry(
   `${assets.entry}#JamGalleryModalHost`,
   (_handle: Handle, setup: { photoCount: number }) => {
@@ -36,7 +37,6 @@ export let JamGalleryModalHost = clientEntry(
       nav: JamGalleryModalNav;
     }) => (
       <div
-        data-gallery-modal
         role="dialog"
         aria-modal="true"
         tabindex={-1}
@@ -53,6 +53,8 @@ function createJamGalleryModalNavigation() {
   return createMixin<HTMLElement, [nav: JamGalleryModalNav, photoCount: number]>(
     (handle) => {
       let closeHref = "";
+      let previousHref = "";
+      let nextHref = "";
       let photoCount = 0;
       let galleryPathname = "";
       let modal: HTMLElement | null = null;
@@ -111,7 +113,7 @@ function createJamGalleryModalNavigation() {
 
       let closeGallery = async () => {
         clearKeyboardGalleryChevron();
-        storeGalleryFocus(currentPhotoIndexFromLocation());
+        storeGalleryFocus(`${closeHref}?photo=${currentPhotoIndexFromLocation()}`);
         await navigate(closeHref, { resetScroll: false });
         await new Promise<void>((resolve) => {
           window.requestAnimationFrame(() => resolve());
@@ -132,11 +134,10 @@ function createJamGalleryModalNavigation() {
 
         let pendingChevron = peekKeyboardGalleryChevron();
         if (pendingChevron) {
-          let selector =
-            pendingChevron === "previous"
-              ? "[data-gallery-nav-previous]"
-              : "[data-gallery-nav-next]";
-          let chevron = modal.querySelector<HTMLElement>(selector);
+          let chevron = findLinkByHref(
+            modal,
+            pendingChevron === "previous" ? previousHref : nextHref,
+          );
           if (!chevron || !isFocusable(chevron)) {
             return;
           }
@@ -237,10 +238,9 @@ function createJamGalleryModalNavigation() {
           let host = modal;
           if (!host) return;
 
-          let closeTarget = target.closest(
-            "[data-gallery-backdrop], [data-gallery-close-link]",
-          );
+          let closeTarget = target.closest<HTMLAnchorElement>("a[href]");
           if (!closeTarget || !host.contains(closeTarget)) return;
+          if (closeTarget.getAttribute("href") !== closeHref) return;
           if (
             event.defaultPrevented ||
             event.button !== 0 ||
@@ -316,6 +316,8 @@ function createJamGalleryModalNavigation() {
 
       return (nextNav, nextPhotoCount) => {
         closeHref = nextNav.closeHref;
+        previousHref = nextNav.previousHref;
+        nextHref = nextNav.nextHref;
         photoCount = nextPhotoCount;
         galleryPathname = nextNav.closeHref.split("?")[0];
       };
@@ -346,4 +348,10 @@ function isFocusable(element: HTMLElement) {
   if (style.display === "none" || style.visibility === "hidden") return false;
 
   return element.getClientRects().length > 0;
+}
+
+function findLinkByHref(root: ParentNode, href: string) {
+  return Array.from(root.querySelectorAll<HTMLAnchorElement>('a[href]')).find(
+    (element) => element.getAttribute("href") === href,
+  );
 }

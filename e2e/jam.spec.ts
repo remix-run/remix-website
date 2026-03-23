@@ -59,7 +59,7 @@ async function clickWithViteAbortOverlayRetry(
 }
 
 function galleryPhotoLinks(page: Page) {
-  return page.locator("[data-gallery-photo-link]").filter({
+  return page.locator('main a[href^="/jam/2025/gallery?photo="]').filter({
     has: page.locator("img"),
   });
 }
@@ -222,7 +222,7 @@ test.describe("Jam", () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/jam/2025/lineup");
 
-    let firstAccordion = page.locator("[data-accordion-item]").first();
+    let firstAccordion = page.locator("main details").first();
     let firstSummary = firstAccordion.locator("summary");
     await expect(firstAccordion).not.toHaveAttribute("open", "");
 
@@ -239,7 +239,7 @@ test.describe("Jam", () => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/jam/2025/lineup");
 
-    let firstAccordion = page.locator("[data-accordion-item]").first();
+    let firstAccordion = page.locator("main details").first();
     let firstSummary = firstAccordion.locator("summary");
 
     await firstSummary.click();
@@ -307,7 +307,7 @@ test.describe("Jam", () => {
     let marker = await markPage(page);
     await galleryPhotoLinks(page).first().click();
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
-    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeVisible();
     await expectMarkerToStay(page, marker);
 
@@ -317,7 +317,7 @@ test.describe("Jam", () => {
 
     await page.getByRole("link", { name: "Close modal" }).click();
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
-    await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
   });
 
@@ -330,13 +330,13 @@ test.describe("Jam", () => {
     let firstPhotoLink = galleryPhotoLinks(page).first();
     let marker = await markPage(page);
     await firstPhotoLink.click();
-    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
     await expectMarkerToStay(page, marker);
 
     await page.keyboard.press("Escape");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
-    await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
     await expect(firstPhotoLink).toBeFocused();
   });
@@ -350,7 +350,7 @@ test.describe("Jam", () => {
     let firstPhotoLink = galleryPhotoLinks(page).first();
     let marker = await markPage(page);
     await firstPhotoLink.click();
-    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
     await expectMarkerToStay(page, marker);
     await clickWithViteAbortOverlayRetry(
@@ -358,7 +358,7 @@ test.describe("Jam", () => {
       page.getByRole("link", { name: "Close modal" }),
     );
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
-    await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
     await expect(firstPhotoLink).toBeFocused();
   });
@@ -396,7 +396,7 @@ test.describe("Jam", () => {
     let marker = await markPage(page);
     await galleryPhotoLinks(page).first().click();
     await expectMarkerToStay(page, marker);
-    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.getByRole("dialog")).toBeVisible();
     let previousLink = page.getByRole("link", { name: "Previous photo" });
     let nextLink = page.getByRole("link", { name: "Next photo" });
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
@@ -404,21 +404,21 @@ test.describe("Jam", () => {
 
     await page.keyboard.press("ArrowRight");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
-    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText(/^2 \/ \d+$/)).toBeVisible();
     await expect(nextLink).toBeFocused();
     await expectMarkerToStay(page, marker);
 
     await page.keyboard.press("ArrowLeft");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
-    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
     await expect(previousLink).toBeFocused();
     await expectMarkerToStay(page, marker);
 
     await page.getByRole("link", { name: "Close modal" }).click();
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
-    await expect(page.locator("[data-gallery-modal]")).toHaveCount(0);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
   });
 
@@ -428,7 +428,7 @@ test.describe("Jam", () => {
 
     let firstPhotoLink = galleryPhotoLinks(page).first();
     await firstPhotoLink.click();
-    await expect(page.locator("[data-gallery-modal]")).toBeVisible();
+    await expect(page.getByRole("dialog")).toBeVisible();
     let closeLink = page.getByRole("link", { name: "Close modal" });
     let downloadLink = page.getByRole("link", {
       name: "Download full resolution image",

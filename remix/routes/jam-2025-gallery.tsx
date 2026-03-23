@@ -58,8 +58,6 @@ export async function jam2025GalleryHandler() {
                 >
                   <JamGalleryLink
                     href={`${routes.jam2025Gallery.href()}?photo=${index}`}
-                    dataGalleryPhotoLink
-                    dataGalleryPhotoIndex={index}
                     class="block overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity duration-300 hover:opacity-85 focus-visible:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand"
                   >
                     <PhotoImage {...photo} />
@@ -143,7 +141,6 @@ function GalleryModal() {
       >
         <JamGalleryLink
           href={nav.closeHref}
-          dataGalleryBackdrop
           tabindex={-1}
           ariaLabel="Close gallery backdrop"
           class="absolute inset-0 z-0 block"
@@ -154,7 +151,6 @@ function GalleryModal() {
               href={nav.closeHref}
               icon="x-mark"
               label="Close modal"
-              dataGalleryCloseLink
             />
             <IconLink
               href={downloadHref}
@@ -169,7 +165,6 @@ function GalleryModal() {
                 href={nav.previousHref}
                 icon="chevron-r"
                 label="Previous photo"
-                dataGalleryNavPrevious
                 className="[&_svg]:rotate-180"
               />
             </div>
@@ -178,7 +173,6 @@ function GalleryModal() {
                 href={nav.nextHref}
                 icon="chevron-r"
                 label="Next photo"
-                dataGalleryNavNext
               />
             </div>
             <ModalImage key={selectedPhoto.url} photo={selectedPhoto} />
@@ -199,12 +193,6 @@ function JamGalleryLink() {
     href: string;
     class?: string;
     ariaLabel?: string;
-    dataGalleryBackdrop?: boolean;
-    dataGalleryCloseLink?: boolean;
-    dataGalleryNavPrevious?: boolean;
-    dataGalleryNavNext?: boolean;
-    dataGalleryPhotoLink?: boolean;
-    dataGalleryPhotoIndex?: number;
     tabindex?: number;
     target?: string;
     rel?: string;
@@ -214,12 +202,6 @@ function JamGalleryLink() {
       href={props.href}
       rmx-reset-scroll="false"
       aria-label={props.ariaLabel}
-      data-gallery-backdrop={props.dataGalleryBackdrop || undefined}
-      data-gallery-close-link={props.dataGalleryCloseLink || undefined}
-      data-gallery-nav-previous={props.dataGalleryNavPrevious || undefined}
-      data-gallery-nav-next={props.dataGalleryNavNext || undefined}
-      data-gallery-photo-link={props.dataGalleryPhotoLink || undefined}
-      data-gallery-photo-index={props.dataGalleryPhotoIndex}
       tabindex={props.tabindex}
       target={props.target}
       rel={props.rel}
@@ -248,7 +230,6 @@ function ModalImage() {
         }}
       >
         <img
-          data-gallery-modal-photo
           src={imageSrc}
           alt={photo.altText || ""}
           class="size-full object-contain"
@@ -265,9 +246,6 @@ function IconLink() {
     label: string;
     className?: string;
     download?: string;
-    dataGalleryCloseLink?: boolean;
-    dataGalleryNavPrevious?: boolean;
-    dataGalleryNavNext?: boolean;
     target?: string;
     rel?: string;
   }) =>
@@ -288,9 +266,6 @@ function IconLink() {
       <JamGalleryLink
         href={props.href}
         ariaLabel={props.label}
-        dataGalleryCloseLink={props.dataGalleryCloseLink}
-        dataGalleryNavPrevious={props.dataGalleryNavPrevious}
-        dataGalleryNavNext={props.dataGalleryNavNext}
         target={props.target}
         rel={props.rel}
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
