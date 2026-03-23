@@ -1,7 +1,6 @@
 import {
   addEventListeners,
   clientEntry,
-  keysEvents,
   on,
   ref,
   type Handle,
@@ -35,13 +34,13 @@ export let MobileMenu = clientEntry(
       }
     };
 
-    if (typeof document !== "undefined") {
+    handle.queueTask(() => {
       addEventListeners(document, handle.signal, {
         mousedown: closeMenu,
         touchstart: closeMenu,
         focusin: closeMenu,
       });
-    }
+    });
 
     let stopPropagation = (e: Event) => {
       e.stopPropagation();
@@ -49,16 +48,6 @@ export let MobileMenu = clientEntry(
     let onToggle = (e: Event & { currentTarget: HTMLDetailsElement }) => {
       isOpen = e.currentTarget.open;
       handle.update();
-    };
-    let onFocusOut = (
-      e: FocusEvent & { currentTarget: HTMLDetailsElement },
-    ) => {
-      let next = e.relatedTarget;
-      if (!next) return;
-      if (!(next instanceof Node) || !e.currentTarget.contains(next)) {
-        isOpen = false;
-        handle.update();
-      }
     };
     let onDetailsKeyDown = (
       e: KeyboardEvent & { currentTarget: HTMLDetailsElement },
@@ -104,7 +93,6 @@ export let MobileMenu = clientEntry(
             on<HTMLDetailsElement>("mousedown", stopPropagation),
             on<HTMLDetailsElement>("touchstart", stopPropagation),
             on<HTMLDetailsElement>("focusin", stopPropagation),
-            on("focusout", onFocusOut),
           ]}
         >
           <summary class={summaryClass}>

@@ -9,6 +9,24 @@ import ticketSrc from "./jam/images/keepsakes/ticket.avif";
 import boardingPassSrc from "./jam/images/keepsakes/boarding-pass.avif";
 import stickerSrc from "./jam/images/keepsakes/remix-logo-sticker.svg";
 
+type KeepsakeId =
+  | "photo-1"
+  | "photo-2"
+  | "poster"
+  | "pick"
+  | "ticket"
+  | "boarding-pass"
+  | "sticker";
+
+type Keepsake = {
+  id: KeepsakeId;
+  src: string;
+  alt: string;
+  hasBorder: boolean;
+  shouldJiggle?: boolean;
+  jiggleDelay?: number;
+};
+
 const KEEPSAKES = [
   {
     id: "photo-1",
@@ -56,9 +74,7 @@ const KEEPSAKES = [
     shouldJiggle: true,
     jiggleDelay: 2500,
   },
-] as const;
-
-type KeepsakeId = (typeof KEEPSAKES)[number]["id"];
+] satisfies Keepsake[];
 
 type DragSession = {
   id: KeepsakeId;
@@ -126,14 +142,7 @@ export let JamKeepsakes = clientEntry(
       }
 
       interacted[id] = true;
-      // Move the keepsake to the front of the list
-      let currentIndex = order[id];
-      for (let k of KEEPSAKES) {
-        if (order[k.id] > currentIndex) {
-          order[k.id]--;
-        }
-      }
-      order[id] = KEEPSAKES.length;
+      moveKeepsakeToFront(id, order);
       handle.update();
 
       let { signal } = drag.abort;
@@ -155,10 +164,7 @@ export let JamKeepsakes = clientEntry(
         {KEEPSAKES.map((keepsake) => {
           let t = getTranslate(keepsake.id);
           let isActiveDrag = drag?.id === keepsake.id;
-          let showJiggle =
-            "shouldJiggle" in keepsake &&
-            keepsake.shouldJiggle &&
-            !interacted[keepsake.id];
+          let showJiggle = keepsake.shouldJiggle && !interacted[keepsake.id];
           return (
             <div
               key={keepsake.id}
@@ -174,10 +180,9 @@ export let JamKeepsakes = clientEntry(
                 )}
                 style={{
                   transform: `translate(${t.x}px, ${t.y}px)`,
-                  animationDelay:
-                    "jiggleDelay" in keepsake && keepsake.jiggleDelay
-                      ? `${keepsake.jiggleDelay}ms`
-                      : undefined,
+                  animationDelay: keepsake.jiggleDelay
+                    ? `${keepsake.jiggleDelay}ms`
+                    : undefined,
                 }}
                 mix={[
                   on("pointerdown", (event) => {
@@ -210,3 +215,16 @@ export let JamKeepsakes = clientEntry(
     );
   },
 );
+
+function moveKeepsakeToFront(
+  id: KeepsakeId,
+  order: Record<KeepsakeId, number>,
+) {
+  let currentIndex = order[id];
+  for (let keepsake of KEEPSAKES) {
+    if (order[keepsake.id] > currentIndex) {
+      order[keepsake.id]--;
+    }
+  }
+  order[id] = KEEPSAKES.length;
+}
