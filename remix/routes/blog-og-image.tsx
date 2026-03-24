@@ -1,5 +1,6 @@
 import getEmojiRegex from "emoji-regex";
 import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
@@ -7,13 +8,13 @@ import type { BuildAction } from "remix/fetch-router";
 import type { routes } from "../routes";
 
 let interBlack = toArrayBuffer(
-  readFileSync(new URL("./inter-black-basic-latin.woff", import.meta.url)),
+  readFileSync(resolve("remix/routes/inter-black-basic-latin.woff")),
 );
 let interRegular = toArrayBuffer(
-  readFileSync(new URL("./inter-regular-basic-latin.woff", import.meta.url)),
+  readFileSync(resolve("remix/routes/inter-regular-basic-latin.woff")),
 );
 let socialBackground = readFileSync(
-  new URL("../../public/blog-images/social-background.png", import.meta.url),
+  resolve("public/blog-images/social-background.png"),
 );
 
 type ParsedOgImageQuery =
