@@ -23,20 +23,5 @@ export const assetPaths = {
       lanyard: "/jam/2025/images/keepsakes/remix-lanyard.avif",
       torontoPostcard: "/jam/2025/images/keepsakes/toronto-postcard.avif",
     },
-    schedule: {
-      torontoPortStageTop:
-        "/jam/2025/images/schedule/toronto-port-stage-top.webp",
-      torontoPortStageSide:
-        "/jam/2025/images/schedule/toronto-port-stage-side.webp",
-      torontoPortOutside: "/jam/2025/images/schedule/toronto-port-outside.webp",
-      torontoPortNook: "/jam/2025/images/schedule/toronto-port-nook.webp",
-      ryan: "/jam/2025/images/schedule/ryan.webp",
-      kent: "/jam/2025/images/schedule/kent.webp",
-      merchantMarket: "/jam/2025/images/schedule/merchant-market.webp",
-      michael: "/jam/2025/images/schedule/michael.webp",
-      felipe: "/jam/2025/images/schedule/felipe.webp",
-      challengeAccepted: "/jam/2025/images/schedule/challenge-accepted.webp",
-      craig: "/jam/2025/images/schedule/craig.webp",
-    },
   },
 } as const;

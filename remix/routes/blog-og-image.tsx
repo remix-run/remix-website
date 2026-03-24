@@ -1,14 +1,11 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
 import type { BuildAction } from "remix/fetch-router";
 import type { routes } from "../routes";
-import {
-  interBlack,
-  interRegular,
-  socialBackgroundBase64,
-} from "./blog-og-image-assets";
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }
@@ -32,9 +29,9 @@ export let blogOgImageHandler: BuildAction<
     return Response.json({ error: parsedQuery.error }, { status: 400 });
   }
 
-  let svg = await createOgImageSVG(request, parsedQuery.value);
   let pngData;
   try {
+    let svg = await createOgImageSVG(request, parsedQuery.value);
     pngData = renderSvgToPng(svg);
   } catch (error) {
     let message = error instanceof Error ? error.message : String(error);
@@ -97,21 +94,21 @@ export function parseOgImageQuery(request: Request): ParsedOgImageQuery {
 }
 
 async function createOgImageSVG(request: Request, data: OgImageQuery) {
-  let rootNode = createOgRootNode(request, data);
+  let ogImageAssets = await getOgImageAssets();
+  let rootNode = createOgRootNode(request, data, ogImageAssets);
   return satori(rootNode, {
     width: 2400,
     height: 1256,
-    // satori supports TTF/OTF/WOFF. We keep local WOFFs in this route folder.
     fonts: [
       {
         name: PRIMARY_FONT,
-        data: interRegular,
+        data: ogImageAssets.interRegular,
         weight: 400,
         style: "normal",
       },
       {
         name: PRIMARY_FONT,
-        data: interBlack,
+        data: ogImageAssets.interBlack,
         weight: 900,
         style: "normal",
       },
@@ -119,7 +116,11 @@ async function createOgImageSVG(request: Request, data: OgImageQuery) {
   });
 }
 
-function createOgRootNode(request: Request, data: OgImageQuery): OgNode {
+function createOgRootNode(
+  request: Request,
+  data: OgImageQuery,
+  ogImageAssets: OgImageAssets,
+): OgNode {
   let titleSize = data.title.length > 50 ? 110 : 144;
   let siteUrl = new URL(request.url).origin;
   let backgroundStyles =
@@ -130,7 +131,7 @@ function createOgRootNode(request: Request, data: OgImageQuery): OgNode {
           backgroundRepeat: "no-repeat",
         }
       : {
-          backgroundImage: `url("data:image/png;base64,${socialBackgroundBase64}")`,
+          backgroundImage: `url("data:image/png;base64,${ogImageAssets.socialBackgroundBase64}")`,
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
         };
@@ -272,6 +273,40 @@ function renderSvgToPng(svg: string): Uint8Array {
   return resvg.render().asPng();
 }
 
+async function getOgImageAssets(): Promise<OgImageAssets> {
+  if (!ogImageAssetsPromise) {
+    ogImageAssetsPromise = loadOgImageAssets();
+  }
+  return ogImageAssetsPromise;
+}
+
+async function loadOgImageAssets(): Promise<OgImageAssets> {
+  let [interBlackBuffer, interRegularBuffer, socialBackgroundBuffer] =
+    await Promise.all([
+      readFile(
+        path.join(
+          process.cwd(),
+          "public/blog-images/og-fonts/inter-black-basic-latin.woff",
+        ),
+      ),
+      readFile(
+        path.join(
+          process.cwd(),
+          "public/blog-images/og-fonts/inter-regular-basic-latin.woff",
+        ),
+      ),
+      readFile(
+        path.join(process.cwd(), "public/blog-images/social-background.png"),
+      ),
+    ]);
+
+  return {
+    interBlack: toArrayBuffer(interBlackBuffer),
+    interRegular: toArrayBuffer(interRegularBuffer),
+    socialBackgroundBase64: socialBackgroundBuffer.toString("base64"),
+  };
+}
+
 function stripEmojis(value: string): string {
   return value.replace(getEmojiRegex(), "").replace(/\s+/g, " ").trim();
 }
@@ -287,6 +322,7 @@ function getAuthorImgSrc(siteUrl: string, name: string) {
 
 let PRIMARY_TEXT_COLOR = "#ffffff";
 let PRIMARY_FONT = "Inter";
+let ogImageAssetsPromise: Promise<OgImageAssets> | undefined;
 
 let ogImageAuthorSchema = s.object({
   name: s.string(),
@@ -303,3 +339,9 @@ let ogImageQuerySchema = s.object({
 
 type OgImageAuthor = s.InferOutput<typeof ogImageAuthorSchema>;
 type OgImageQuery = s.InferOutput<typeof ogImageQuerySchema>;
+
+type OgImageAssets = {
+  interBlack: ArrayBuffer;
+  interRegular: ArrayBuffer;
+  socialBackgroundBase64: string;
+};
