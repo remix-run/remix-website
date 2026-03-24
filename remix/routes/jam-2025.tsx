@@ -94,7 +94,6 @@ function Jam2025Page() {
             />
             <JamFadeInBadge
               setup={1200}
-              data-jam-event-badge
               class={clsx(
                 "flex items-center justify-center gap-2 md:gap-4",
                 eventStatus === "live"

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { addEventListeners, clientEntry, type Handle } from "remix/component";
+import { clientEntry, on, type Dispatched, type Handle } from "remix/component";
 import assets from "./jam-keepsakes.tsx?assets=client";
 import photo1Src from "./jam/images/keepsakes/photo-1.avif";
 import photo2Src from "./jam/images/keepsakes/photo-2.avif";
@@ -9,190 +9,162 @@ import ticketSrc from "./jam/images/keepsakes/ticket.avif";
 import boardingPassSrc from "./jam/images/keepsakes/boarding-pass.avif";
 import stickerSrc from "./jam/images/keepsakes/remix-logo-sticker.svg";
 
+type KeepsakeId =
+  | "photo-1"
+  | "photo-2"
+  | "poster"
+  | "pick"
+  | "ticket"
+  | "boarding-pass"
+  | "sticker";
+
+type Keepsake = {
+  id: KeepsakeId;
+  src: string;
+  alt: string;
+  hasBorder: boolean;
+  shouldJiggle?: boolean;
+  jiggleDelay?: number;
+};
+
 const KEEPSAKES = [
   {
-    id: "photo-1" as const,
+    id: "photo-1",
     src: photo1Src,
-    alt: "A modern interior space featuring tiered wooden stadium-style seating",
+    alt: "A modern interior space featuring tiered wooden stadium-style seating with grey cushions arranged in ascending steps. The seating area is flanked by black metal railings and has an industrial-style exposed ceiling with visible ductwork and lighting. A large potted plant with broad green leaves sits in the foreground. The space has a minimalist design with concrete flooring and transitions into what appears to be a bar or counter area visible in the background. The overall aesthetic combines warm wood tones with industrial elements and natural accents.",
     hasBorder: true,
   },
   {
-    id: "photo-2" as const,
+    id: "photo-2",
     src: photo2Src,
-    alt: "A street view in downtown Toronto featuring the historic Gooderham Building",
+    alt: "A street view in downtown Toronto featuring the historic Gooderham Building, a distinctive red-brick flatiron building with a green copper turret, set against modern glass skyscrapers and condos. The intersection shows traffic lights, parked cars, and pedestrians under a bright blue sky. The architectural contrast highlights Toronto's blend of historic and contemporary buildings.",
     hasBorder: true,
   },
   {
-    id: "poster" as const,
+    id: "poster",
     src: posterSrc,
-    alt: "Remix Jam event poster featuring Toronto's CN Tower",
+    alt: "Remix Jam event poster featuring a stylized aerial view of Toronto's CN Tower and downtown skyline in vibrant blues, pinks, and yellows. The Remix Jam logo with three circular icons appears at the top, and 'TORONTO' is prominently displayed at the bottom along with the date 'OCT 10 2025'. The artwork has a modern, digital aesthetic with the CN Tower's observation deck as the central focal point surrounded by abstract skyscrapers.",
     hasBorder: false,
   },
   {
-    id: "pick" as const,
+    id: "pick",
     src: pickSrc,
-    alt: "Guitar pick with Remix logo",
+    alt: "Guitar pick with Remix logo and 'Remix Jam Toronto '25'",
     hasBorder: false,
     shouldJiggle: true,
     jiggleDelay: 1000,
   },
   {
-    id: "ticket" as const,
+    id: "ticket",
     src: ticketSrc,
     alt: "Fake Remix Jam 2025 Event Ticket",
     hasBorder: false,
   },
   {
-    id: "boarding-pass" as const,
+    id: "boarding-pass",
     src: boardingPassSrc,
     alt: "Fake Remix Jam 2025 Boarding Pass",
     hasBorder: false,
   },
   {
-    id: "sticker" as const,
+    id: "sticker",
     src: stickerSrc,
     alt: "Remix Logo Sticker",
     hasBorder: false,
     shouldJiggle: true,
     jiggleDelay: 2500,
   },
-];
+] satisfies Keepsake[];
 
-type KeepsakeId = (typeof KEEPSAKES)[number]["id"];
-
-function getEventPos(e: MouseEvent | TouchEvent) {
-  const pos = "touches" in e ? e.touches[0] : (e as MouseEvent);
-  return { x: pos.clientX, y: pos.clientY };
-}
+type DragSession = {
+  id: KeepsakeId;
+  element: HTMLElement;
+  pointerId: number;
+  start: { x: number; y: number };
+  abort: AbortController;
+};
 
 export let JamKeepsakes = clientEntry(
   `${assets.entry}#JamKeepsakes`,
-  (handle: Handle) => {
-    let order: Record<KeepsakeId, number> = KEEPSAKES.reduce(
-      (acc, k, i) => {
-        acc[k.id] = i + 1;
-        return acc;
-      },
-      {} as Record<KeepsakeId, number>,
-    );
-    let interacted: Record<KeepsakeId, boolean> = {} as Record<
-      KeepsakeId,
-      boolean
-    >;
-    let translate: Record<KeepsakeId, { x: number; y: number }> = {} as Record<
-      KeepsakeId,
-      { x: number; y: number }
-    >;
-    let isDragging = false;
-    let draggingId: KeepsakeId | null = null;
-    let startPos = { x: 0, y: 0 };
-    let draggingElement: HTMLElement | null = null;
 
-    let moveToFront = (id: KeepsakeId) => {
-      const currentIndex = order[id];
-      const newOrder = { ...order };
-      for (let key in newOrder) {
-        if (newOrder[key as KeepsakeId] > currentIndex) {
-          newOrder[key as KeepsakeId]--;
-        }
+  (handle: Handle) => {
+    let order = {} as Record<KeepsakeId, number>;
+    for (let [index, keepsake] of KEEPSAKES.entries()) {
+      order[keepsake.id] = index + 1;
+    }
+    let interacted: Partial<Record<KeepsakeId, boolean>> = {};
+    let translate: Partial<Record<KeepsakeId, { x: number; y: number }>> = {};
+    let drag: DragSession | null = null;
+
+    let getTranslate = (id: KeepsakeId) => translate[id] ?? { x: 0, y: 0 };
+
+    let endDragSession = () => {
+      if (!drag) return;
+      try {
+        drag.element.releasePointerCapture(drag.pointerId);
+      } catch {
+        /* already released or capture never applied */
       }
-      newOrder[id] = KEEPSAKES.length;
-      order = newOrder;
+      drag.abort.abort();
+      drag = null;
+      handle.update();
     };
 
-    handle.queueTask(() => {
-      let handleMove = (e: MouseEvent | TouchEvent) => {
-        if (!isDragging || !draggingId || !draggingElement) return;
-        if ("touches" in e) e.preventDefault();
+    let handleMove = (e: PointerEvent) => {
+      if (!drag || e.pointerId !== drag.pointerId) {
+        return;
+      }
 
-        const pos = getEventPos(e);
-        const tx = pos.x - startPos.x;
-        const ty = pos.y - startPos.y;
-        translate[draggingId] = { x: tx, y: ty };
-        draggingElement.style.transform = `translate(${tx}px, ${ty}px)`;
+      let tx = e.clientX - drag.start.x;
+      let ty = e.clientY - drag.start.y;
+      translate[drag.id] = { x: tx, y: ty };
+      drag.element.style.transform = `translate(${tx}px, ${ty}px)`;
+    };
+
+    let handleStart = (
+      e: Dispatched<PointerEvent, HTMLDivElement>,
+      id: KeepsakeId,
+    ) => {
+      let el = e.currentTarget;
+      let t = getTranslate(id);
+      drag = {
+        id,
+        element: el,
+        pointerId: e.pointerId,
+        start: { x: e.clientX - t.x, y: e.clientY - t.y },
+        abort: new AbortController(),
       };
 
-      let handleEnd = () => {
-        if (draggingElement) {
-          draggingElement.style.cursor = "grab";
-        }
-        isDragging = false;
-        draggingId = null;
-        draggingElement = null;
+      try {
+        el.setPointerCapture(e.pointerId);
+      } catch {
+        /* element may not support capture in edge cases */
+      }
 
-        document.removeEventListener("mousemove", handleMove);
-        document.removeEventListener("mouseup", handleEnd);
-        document.removeEventListener("touchmove", handleMove, {
-          passive: false,
-        } as EventListenerOptions);
-        document.removeEventListener("touchend", handleEnd);
-        document.removeEventListener("touchcancel", handleEnd);
-      };
+      interacted[id] = true;
+      moveKeepsakeToFront(id, order);
+      handle.update();
 
-      let setupDocumentListeners = () => {
-        document.addEventListener("mousemove", handleMove);
-        document.addEventListener("mouseup", handleEnd);
-        document.addEventListener("touchmove", handleMove, {
-          passive: false,
-        } as EventListenerOptions);
-        document.addEventListener("touchend", handleEnd);
-        document.addEventListener("touchcancel", handleEnd);
-      };
+      let { signal } = drag.abort;
+      el.addEventListener("pointermove", handleMove, { signal });
+      el.addEventListener("pointerup", endDragSession, { signal });
+      el.addEventListener("pointercancel", endDragSession, { signal });
+    };
 
-      let handleStart = (e: MouseEvent | TouchEvent, el: HTMLElement) => {
-        let id = el.dataset.keepsakeId as KeepsakeId;
-        if (!id) return;
-
-        const pos = getEventPos(e);
-        const t = translate[id] ?? { x: 0, y: 0 };
-        startPos = { x: pos.x - t.x, y: pos.y - t.y };
-
-        isDragging = true;
-        draggingId = id;
-        draggingElement = el;
-        el.style.cursor = "grabbing";
-
-        moveToFront(id);
-        if (!interacted[id]) {
-          interacted[id] = true;
-        }
-        handle.update();
-        setupDocumentListeners();
-      };
-
-      let onMouseDown = (e: MouseEvent) => {
-        let el = (e.target as HTMLElement).closest(
-          "[data-keepsake-id]",
-        ) as HTMLElement | null;
-        if (!el) return;
-        handleStart(e, el);
-      };
-      let onTouchStart = (e: TouchEvent) => {
-        let el = (e.target as HTMLElement).closest(
-          "[data-keepsake-id]",
-        ) as HTMLElement | null;
-        if (!el) return;
-        handleStart(e, el);
-      };
-
-      addEventListeners(document, handle.signal, {
-        mousedown: onMouseDown,
-        touchstart: onTouchStart,
-      });
-      handle.signal.addEventListener(
-        "abort",
-        () => {
-          handleEnd();
-        },
-        { once: true },
-      );
-    });
+    handle.signal.addEventListener(
+      "abort",
+      () => {
+        endDragSession();
+      },
+      { once: true },
+    );
 
     return () => (
       <div class="isolate">
         {KEEPSAKES.map((keepsake) => {
-          const t = translate[keepsake.id] ?? { x: 0, y: 0 };
-          const showJiggle = keepsake.shouldJiggle && !interacted[keepsake.id];
+          let t = getTranslate(keepsake.id);
+          let isActiveDrag = drag?.id === keepsake.id;
+          let showJiggle = keepsake.shouldJiggle && !interacted[keepsake.id];
           return (
             <div
               key={keepsake.id}
@@ -200,10 +172,10 @@ export let JamKeepsakes = clientEntry(
               style={{ zIndex: order[keepsake.id] }}
             >
               <div
-                data-keepsake-id={keepsake.id}
                 class={clsx(
-                  "keepsake cursor-grab touch-none select-none",
+                  "keepsake touch-none select-none",
                   keepsake.id,
+                  isActiveDrag ? "cursor-grabbing" : "cursor-grab",
                   showJiggle && "animate-jiggle",
                 )}
                 style={{
@@ -212,6 +184,14 @@ export let JamKeepsakes = clientEntry(
                     ? `${keepsake.jiggleDelay}ms`
                     : undefined,
                 }}
+                mix={[
+                  on("pointerdown", (event) => {
+                    if (!event.isPrimary) return;
+                    if (event.pointerType === "mouse" && event.button !== 0)
+                      return;
+                    handleStart(event, keepsake.id);
+                  }),
+                ]}
               >
                 <div class="rotate">
                   <div
@@ -235,3 +215,16 @@ export let JamKeepsakes = clientEntry(
     );
   },
 );
+
+function moveKeepsakeToFront(
+  id: KeepsakeId,
+  order: Record<KeepsakeId, number>,
+) {
+  let currentIndex = order[id];
+  for (let keepsake of KEEPSAKES) {
+    if (order[keepsake.id] > currentIndex) {
+      order[keepsake.id]--;
+    }
+  }
+  order[id] = KEEPSAKES.length;
+}

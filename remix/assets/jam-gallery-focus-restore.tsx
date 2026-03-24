@@ -1,17 +1,18 @@
 let FOCUS_RESTORE_KEY = "jam-gallery-focus-index";
 
-export function storeGalleryFocus(index: number) {
-  window.sessionStorage.setItem(FOCUS_RESTORE_KEY, String(index));
+export function storeGalleryFocus(href: string) {
+  window.sessionStorage.setItem(FOCUS_RESTORE_KEY, href);
 }
 
 export function restoreGalleryFocus() {
-  let storedIndex = window.sessionStorage.getItem(FOCUS_RESTORE_KEY);
-  if (storedIndex === null) return;
+  let storedHref = window.sessionStorage.getItem(FOCUS_RESTORE_KEY);
+  if (storedHref === null) return;
 
   window.sessionStorage.removeItem(FOCUS_RESTORE_KEY);
 
-  let selector = `[data-gallery-photo-index="${storedIndex}"]`;
-  let target = document.querySelector<HTMLElement>(selector);
+  let target = Array.from(
+    document.querySelectorAll<HTMLElement>('main a[href]'),
+  ).find((element) => element.getAttribute("href") === storedHref);
   if (!target) return;
 
   target.focus();

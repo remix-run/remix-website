@@ -7,24 +7,22 @@ export let JamTicketPurchase = clientEntry(
   `${assets.entry}#JamTicketPurchase`,
   (
     handle: Handle,
-    setup?: { initialQuantity?: number; maxQuantity: number },
+    setup: { initialQuantity?: number; maxQuantity: number },
   ) => {
-    let quantity = normalizeQuantity(
-      setup?.initialQuantity ?? 1,
-      setup?.maxQuantity ?? 1,
-    );
+    let initialQuantity = setup?.initialQuantity ?? 1;
+    let maxQuantity = setup.maxQuantity;
+    let quantity = normalizeQuantity(initialQuantity, maxQuantity);
     let submitting = false;
 
     return (props: {
       price: string;
       productId: string;
-      maxQuantity: number;
       isSoldOut: boolean;
       error?: string;
       class?: string;
     }) => {
       let decrementDisabled = props.isSoldOut || quantity <= 1;
-      let incrementDisabled = props.isSoldOut || quantity >= props.maxQuantity;
+      let incrementDisabled = props.isSoldOut || quantity >= maxQuantity;
 
       return (
         <div class={props.class}>
@@ -77,7 +75,7 @@ export let JamTicketPurchase = clientEntry(
                   mix={[
                     on("click", () => {
                       if (incrementDisabled) return;
-                      quantity = Math.min(props.maxQuantity, quantity + 1);
+                      quantity = Math.min(maxQuantity, quantity + 1);
                       handle.update();
                     }),
                   ]}

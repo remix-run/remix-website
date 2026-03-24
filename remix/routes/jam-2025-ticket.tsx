@@ -86,7 +86,6 @@ export async function jam2025TicketHandler() {
           class="z-10 flex w-[90%] flex-col items-center gap-3"
           price={product.price}
           productId={product.productId}
-          maxQuantity={MAX_QUANTITY}
           isSoldOut={!product.availableForSale}
           error={formError}
         />
