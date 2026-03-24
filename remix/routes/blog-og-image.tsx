@@ -1,10 +1,9 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
-import interBlack from "./inter-black-basic-latin.woff?arraybuffer";
-import interRegular from "./inter-regular-basic-latin.woff?arraybuffer";
-import socialBackground from "./social-background.png?arraybuffer";
 import type { BuildAction } from "remix/fetch-router";
 import type { routes } from "../routes";
 
@@ -30,9 +29,9 @@ export let blogOgImageHandler: BuildAction<
     return Response.json({ error: parsedQuery.error }, { status: 400 });
   }
 
-  let svg = await createOgImageSVG(request, parsedQuery.value);
   let pngData;
   try {
+    let svg = await createOgImageSVG(request, parsedQuery.value);
     pngData = renderSvgToPng(svg);
   } catch (error) {
     let message = error instanceof Error ? error.message : String(error);
@@ -95,21 +94,21 @@ export function parseOgImageQuery(request: Request): ParsedOgImageQuery {
 }
 
 async function createOgImageSVG(request: Request, data: OgImageQuery) {
-  let rootNode = createOgRootNode(request, data);
+  let ogImageAssets = await getOgImageAssets();
+  let rootNode = createOgRootNode(request, data, ogImageAssets);
   return satori(rootNode, {
     width: 2400,
     height: 1256,
-    // satori supports TTF/OTF/WOFF. We keep local WOFFs in this route folder.
     fonts: [
       {
         name: PRIMARY_FONT,
-        data: interRegular,
+        data: ogImageAssets.interRegular,
         weight: 400,
         style: "normal",
       },
       {
         name: PRIMARY_FONT,
-        data: interBlack,
+        data: ogImageAssets.interBlack,
         weight: 900,
         style: "normal",
       },
@@ -117,7 +116,11 @@ async function createOgImageSVG(request: Request, data: OgImageQuery) {
   });
 }
 
-function createOgRootNode(request: Request, data: OgImageQuery): OgNode {
+function createOgRootNode(
+  request: Request,
+  data: OgImageQuery,
+  ogImageAssets: OgImageAssets,
+): OgNode {
   let titleSize = data.title.length > 50 ? 110 : 144;
   let siteUrl = new URL(request.url).origin;
   let backgroundStyles =
@@ -128,7 +131,7 @@ function createOgRootNode(request: Request, data: OgImageQuery): OgNode {
           backgroundRepeat: "no-repeat",
         }
       : {
-          backgroundImage: `url("data:image/png;base64,${arrayBufferToBase64(socialBackground)}")`,
+          backgroundImage: `url("data:image/png;base64,${ogImageAssets.socialBackgroundBase64}")`,
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
         };
@@ -258,9 +261,50 @@ function createAuthorsNode(authors: OgImageAuthor[]): OgNode {
   };
 }
 
+function toArrayBuffer(buffer: Buffer): ArrayBuffer {
+  return buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength,
+  ) as ArrayBuffer;
+}
+
 function renderSvgToPng(svg: string): Uint8Array {
   let resvg = new Resvg(svg);
   return resvg.render().asPng();
+}
+
+async function getOgImageAssets(): Promise<OgImageAssets> {
+  if (!ogImageAssetsPromise) {
+    ogImageAssetsPromise = loadOgImageAssets();
+  }
+  return ogImageAssetsPromise;
+}
+
+async function loadOgImageAssets(): Promise<OgImageAssets> {
+  let [interBlackBuffer, interRegularBuffer, socialBackgroundBuffer] =
+    await Promise.all([
+      readFile(
+        path.join(
+          process.cwd(),
+          "public/blog-images/og-fonts/inter-black-basic-latin.woff",
+        ),
+      ),
+      readFile(
+        path.join(
+          process.cwd(),
+          "public/blog-images/og-fonts/inter-regular-basic-latin.woff",
+        ),
+      ),
+      readFile(
+        path.join(process.cwd(), "public/blog-images/social-background.png"),
+      ),
+    ]);
+
+  return {
+    interBlack: toArrayBuffer(interBlackBuffer),
+    interRegular: toArrayBuffer(interRegularBuffer),
+    socialBackgroundBase64: socialBackgroundBuffer.toString("base64"),
+  };
 }
 
 function stripEmojis(value: string): string {
@@ -278,6 +322,7 @@ function getAuthorImgSrc(siteUrl: string, name: string) {
 
 let PRIMARY_TEXT_COLOR = "#ffffff";
 let PRIMARY_FONT = "Inter";
+let ogImageAssetsPromise: Promise<OgImageAssets> | undefined;
 
 let ogImageAuthorSchema = s.object({
   name: s.string(),
@@ -295,12 +340,8 @@ let ogImageQuerySchema = s.object({
 type OgImageAuthor = s.InferOutput<typeof ogImageAuthorSchema>;
 type OgImageQuery = s.InferOutput<typeof ogImageQuerySchema>;
 
-// Keep parity with the old OG route, which embedded social-background.png.
-function arrayBufferToBase64(buffer: ArrayBuffer) {
-  let binary = "";
-  let bytes = new Uint8Array(buffer);
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
+type OgImageAssets = {
+  interBlack: ArrayBuffer;
+  interRegular: ArrayBuffer;
+  socialBackgroundBase64: string;
+};

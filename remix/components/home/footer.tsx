@@ -1,6 +1,6 @@
 import cx from "clsx";
 import { Wordmark } from "./wordmark";
-import iconsHref from "../../shared/icons.svg";
+import { assetPaths } from "../../shared/asset-paths";
 
 export function Footer() {
   return () => (
@@ -18,22 +18,22 @@ export function Footer() {
         >
           <a href="https://github.com/remix-run" aria-label="GitHub">
             <svg aria-hidden="true" fill="none">
-              <use href={`${iconsHref}#github`} />
+              <use href={`${assetPaths.iconsSprite}#github`} />
             </svg>
           </a>
           <a href="https://twitter.com/remix_run" aria-label="Twitter">
             <svg aria-hidden="true" fill="none">
-              <use href={`${iconsHref}#twitter`} />
+              <use href={`${assetPaths.iconsSprite}#twitter`} />
             </svg>
           </a>
           <a href="https://youtube.com/remix_run" aria-label="YouTube">
             <svg aria-hidden="true" fill="none">
-              <use href={`${iconsHref}#youtube`} />
+              <use href={`${assetPaths.iconsSprite}#youtube`} />
             </svg>
           </a>
           <a href="https://discord.gg/xwx7mMzVkA" aria-label="Remix">
             <svg aria-hidden="true" fill="none">
-              <use href={`${iconsHref}#discord`} />
+              <use href={`${assetPaths.iconsSprite}#discord`} />
             </svg>
           </a>
         </nav>

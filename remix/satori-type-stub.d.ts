@@ -17,13 +17,3 @@ declare module "satori" {
     options: SatoriOptions,
   ): Promise<string>;
 }
-
-declare module "*.woff?arraybuffer" {
-  let data: ArrayBuffer;
-  export default data;
-}
-
-declare module "*.png?arraybuffer" {
-  let data: ArrayBuffer;
-  export default data;
-}

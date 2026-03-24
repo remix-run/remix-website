@@ -8,12 +8,12 @@ import {
   Subheader,
   Title,
 } from "./jam-shared";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
+import { assetPaths } from "../shared/asset-paths";
 
 export async function jam2025CocHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/coc`;
-  let previewImage = `${requestUrl.origin}${ogImageSrc}`;
+  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogThumbnail1}`;
 
   return render.document(
     <JamDocument

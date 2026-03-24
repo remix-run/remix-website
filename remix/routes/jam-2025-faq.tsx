@@ -11,7 +11,7 @@ import {
   Title,
 } from "./jam-shared";
 import { routes } from "../routes";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
+import { assetPaths } from "../shared/asset-paths";
 
 function slugify(input: string) {
   return input
@@ -24,7 +24,7 @@ function slugify(input: string) {
 export async function jam2025FaqHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/faq`;
-  let previewImage = `${requestUrl.origin}${ogImageSrc}`;
+  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogThumbnail1}`;
 
   return render.document(
     <JamDocument

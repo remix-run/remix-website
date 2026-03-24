@@ -1,5 +1,5 @@
 import cx from "clsx";
-import iconsHref from "../../shared/icons.svg";
+import { assetPaths } from "../../shared/asset-paths";
 
 export function PitchSection() {
   return () => (
@@ -35,7 +35,7 @@ export function PitchSection() {
           )}
         >
           <svg class="size-6 shrink-0" fill="none" aria-hidden="true">
-            <use href={`${iconsHref}#github`} />
+            <use href={`${assetPaths.iconsSprite}#github`} />
           </svg>
           <span>Watch the repo</span>
         </a>

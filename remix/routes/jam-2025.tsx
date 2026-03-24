@@ -13,15 +13,14 @@ import {
 import { JamKeepsakes } from "../assets/jam-keepsakes";
 import { JamFadeInBadge } from "../assets/jam-fade-in-badge";
 import { JamNewsletterSubscribeForm } from "../assets/jam-newsletter-subscribe";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
-import iconsHref from "../shared/icons.svg";
+import { assetPaths } from "../shared/asset-paths";
 
 type EventStatus = "before" | "live" | "after";
 
 export async function jam2025Handler() {
   let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025`;
-  let previewImage = `${requestUrl.origin}${ogImageSrc}`;
+  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogThumbnail1}`;
   let eventStatus = getEventStatus();
 
   return render.document(
@@ -69,7 +68,7 @@ const badgeText: Record<EventStatus, RemixNode> = {
     <>
       Rewind
       <svg class="size-6 rotate-180 md:size-12 lg:size-14" aria-hidden="true">
-        <use href={`${iconsHref}#fast-forward`} />
+        <use href={`${assetPaths.iconsSprite}#fast-forward`} />
       </svg>
     </>
   ),

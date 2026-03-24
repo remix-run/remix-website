@@ -13,8 +13,7 @@ import {
   JamGalleryModalHost,
   type JamGalleryModalNav,
 } from "../assets/jam-gallery-modal-host";
-import ogImageSrc from "../assets/jam/images/og-gallery.jpg";
-import iconsHref from "../shared/icons.svg";
+import { assetPaths } from "../shared/asset-paths";
 import type { RemixNode } from "remix/component/jsx-runtime";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
@@ -22,7 +21,7 @@ type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 export async function jam2025GalleryHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/gallery`;
-  let previewImage = `${requestUrl.origin}${ogImageSrc}`;
+  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogGallery}`;
   let photos = await getGalleryPhotos();
   let selectedPhotoIndex = getSelectedPhotoIndex(
     requestUrl.searchParams.get("photo"),
@@ -259,7 +258,7 @@ function IconLink() {
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
       >
         <svg class="pointer-events-none size-6" aria-hidden="true">
-          <use href={`${iconsHref}#${props.icon}`} />
+          <use href={`${assetPaths.iconsSprite}#${props.icon}`} />
         </svg>
       </a>
     ) : (
@@ -271,7 +270,7 @@ function IconLink() {
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
       >
         <svg class="pointer-events-none size-6" aria-hidden="true">
-          <use href={`${iconsHref}#${props.icon}`} />
+          <use href={`${assetPaths.iconsSprite}#${props.icon}`} />
         </svg>
       </JamGalleryLink>
     );

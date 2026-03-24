@@ -4,7 +4,7 @@ import clientAssets from "../assets/entry.ts?assets=client";
 import { DocumentHeadSync } from "../assets/document-head-sync";
 import documentAssets from "./document.tsx?assets=ssr";
 import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head";
-import iconsHref from "../shared/icons.svg";
+import { assetPaths } from "../shared/asset-paths";
 import mdStylesHref from "../shared/styles/md.css?url";
 import jamStylesHref from "../shared/styles/jam.css?url";
 
@@ -187,7 +187,7 @@ export function Document() {
             headTags={managedHeadTags}
           />
           <img
-            src={iconsHref}
+            src={assetPaths.iconsSprite}
             alt=""
             hidden
             // Preload icons sprite so <use href> references resolve (matches app/root.tsx)
