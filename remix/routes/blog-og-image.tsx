@@ -1,16 +1,19 @@
 import getEmojiRegex from "emoji-regex";
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
-import interBlack from "./inter-black-basic-latin.woff?arraybuffer";
-import interRegular from "./inter-regular-basic-latin.woff?arraybuffer";
 import type { BuildAction } from "remix/fetch-router";
 import type { routes } from "../routes";
 
+let interBlack = toArrayBuffer(
+  readFileSync(new URL("./inter-black-basic-latin.woff", import.meta.url)),
+);
+let interRegular = toArrayBuffer(
+  readFileSync(new URL("./inter-regular-basic-latin.woff", import.meta.url)),
+);
 let socialBackground = readFileSync(
-  resolve("public/blog-images/social-background.png"),
+  new URL("../../public/blog-images/social-background.png", import.meta.url),
 );
 
 type ParsedOgImageQuery =
@@ -261,6 +264,13 @@ function createAuthorsNode(authors: OgImageAuthor[]): OgNode {
       })),
     },
   };
+}
+
+function toArrayBuffer(buffer: Buffer): ArrayBuffer {
+  return buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength,
+  ) as ArrayBuffer;
 }
 
 function renderSvgToPng(svg: string): Uint8Array {
