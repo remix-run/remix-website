@@ -13,15 +13,13 @@ import {
 } from "./jam-shared";
 import { JamTicketCard } from "../assets/jam-ticket-card";
 import { JamTicketPurchase } from "../assets/jam-ticket-purchase";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
-import ticketSrc from "../assets/jam/images/tickets/general.avif";
-import ticketHolographic from "../assets/jam/images/tickets/ticket-holographic.avif";
+import { assetPaths } from "../shared/asset-paths";
 
 export async function jam2025TicketHandler() {
   let request = getRequestContext().request;
   let requestUrl = new URL(request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/ticket`;
-  let previewImage = `${requestUrl.origin}${ogImageSrc}`;
+  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogThumbnail1}`;
   let product = await getProduct("remix-jam-2025");
   let cacheControl =
     request.method === "POST" ? "no-store" : CACHE_CONTROL.DEFAULT;
@@ -76,8 +74,8 @@ export async function jam2025TicketHandler() {
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
 
         <JamTicketCard
-          ticketSrc={ticketSrc}
-          ticketHolographic={ticketHolographic}
+          ticketSrc={assetPaths.jam2025.tickets.general}
+          ticketHolographic={assetPaths.jam2025.tickets.ticketHolographic}
           title="General Admission"
         />
 

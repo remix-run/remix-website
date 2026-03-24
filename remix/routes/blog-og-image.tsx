@@ -1,12 +1,17 @@
 import getEmojiRegex from "emoji-regex";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
 import interBlack from "./inter-black-basic-latin.woff?arraybuffer";
 import interRegular from "./inter-regular-basic-latin.woff?arraybuffer";
-import socialBackground from "./social-background.png?arraybuffer";
 import type { BuildAction } from "remix/fetch-router";
 import type { routes } from "../routes";
+
+let socialBackground = readFileSync(
+  resolve("public/blog-images/social-background.png"),
+);
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }
@@ -128,7 +133,7 @@ function createOgRootNode(request: Request, data: OgImageQuery): OgNode {
           backgroundRepeat: "no-repeat",
         }
       : {
-          backgroundImage: `url("data:image/png;base64,${arrayBufferToBase64(socialBackground)}")`,
+          backgroundImage: `url("data:image/png;base64,${socialBackground.toString("base64")}")`,
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
         };
@@ -294,13 +299,3 @@ let ogImageQuerySchema = s.object({
 
 type OgImageAuthor = s.InferOutput<typeof ogImageAuthorSchema>;
 type OgImageQuery = s.InferOutput<typeof ogImageQuerySchema>;
-
-// Keep parity with the old OG route, which embedded social-background.png.
-function arrayBufferToBase64(buffer: ArrayBuffer) {
-  let binary = "";
-  let bytes = new Uint8Array(buffer);
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}

@@ -1,13 +1,7 @@
 import clsx from "clsx";
 import { clientEntry, on, type Dispatched, type Handle } from "remix/component";
 import assets from "./jam-keepsakes.tsx?assets=client";
-import photo1Src from "./jam/images/keepsakes/photo-1.avif";
-import photo2Src from "./jam/images/keepsakes/photo-2.avif";
-import posterSrc from "./jam/images/keepsakes/poster.avif";
-import pickSrc from "./jam/images/keepsakes/remix-pick.avif";
-import ticketSrc from "./jam/images/keepsakes/ticket.avif";
-import boardingPassSrc from "./jam/images/keepsakes/boarding-pass.avif";
-import stickerSrc from "./jam/images/keepsakes/remix-logo-sticker.svg";
+import { assetPaths } from "../shared/asset-paths";
 
 type KeepsakeId =
   | "photo-1"
@@ -30,25 +24,25 @@ type Keepsake = {
 const KEEPSAKES = [
   {
     id: "photo-1",
-    src: photo1Src,
+    src: assetPaths.jam2025.keepsakes.photo1,
     alt: "A modern interior space featuring tiered wooden stadium-style seating with grey cushions arranged in ascending steps. The seating area is flanked by black metal railings and has an industrial-style exposed ceiling with visible ductwork and lighting. A large potted plant with broad green leaves sits in the foreground. The space has a minimalist design with concrete flooring and transitions into what appears to be a bar or counter area visible in the background. The overall aesthetic combines warm wood tones with industrial elements and natural accents.",
     hasBorder: true,
   },
   {
     id: "photo-2",
-    src: photo2Src,
+    src: assetPaths.jam2025.keepsakes.photo2,
     alt: "A street view in downtown Toronto featuring the historic Gooderham Building, a distinctive red-brick flatiron building with a green copper turret, set against modern glass skyscrapers and condos. The intersection shows traffic lights, parked cars, and pedestrians under a bright blue sky. The architectural contrast highlights Toronto's blend of historic and contemporary buildings.",
     hasBorder: true,
   },
   {
     id: "poster",
-    src: posterSrc,
+    src: assetPaths.jam2025.keepsakes.poster,
     alt: "Remix Jam event poster featuring a stylized aerial view of Toronto's CN Tower and downtown skyline in vibrant blues, pinks, and yellows. The Remix Jam logo with three circular icons appears at the top, and 'TORONTO' is prominently displayed at the bottom along with the date 'OCT 10 2025'. The artwork has a modern, digital aesthetic with the CN Tower's observation deck as the central focal point surrounded by abstract skyscrapers.",
     hasBorder: false,
   },
   {
     id: "pick",
-    src: pickSrc,
+    src: assetPaths.jam2025.keepsakes.pick,
     alt: "Guitar pick with Remix logo and 'Remix Jam Toronto '25'",
     hasBorder: false,
     shouldJiggle: true,
@@ -56,19 +50,19 @@ const KEEPSAKES = [
   },
   {
     id: "ticket",
-    src: ticketSrc,
+    src: assetPaths.jam2025.keepsakes.ticket,
     alt: "Fake Remix Jam 2025 Event Ticket",
     hasBorder: false,
   },
   {
     id: "boarding-pass",
-    src: boardingPassSrc,
+    src: assetPaths.jam2025.keepsakes.boardingPass,
     alt: "Fake Remix Jam 2025 Boarding Pass",
     hasBorder: false,
   },
   {
     id: "sticker",
-    src: stickerSrc,
+    src: assetPaths.jam2025.keepsakes.sticker,
     alt: "Remix Logo Sticker",
     hasBorder: false,
     shouldJiggle: true,

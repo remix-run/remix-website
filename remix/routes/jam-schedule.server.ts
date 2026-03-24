@@ -3,23 +3,15 @@ import yaml from "yaml";
 import * as s from "remix/data-schema";
 import { LRUCache } from "lru-cache";
 import { processMarkdown } from "../shared/lib/md.server";
+import { assetPaths } from "../shared/asset-paths";
 
 import scheduleYamlFileContents from "../assets/jam/data/schedule.yaml?raw";
 
-const speakerImageModules = import.meta.glob(
-  "../assets/jam/images/schedule/*.{png,jpg,jpeg,webp,avif}",
-  { eager: true, query: "?url", import: "default" },
-);
-
 const imageUrlByKey = new Map(
-  Object.entries(speakerImageModules).map(([path, url]) => {
-    assert(
-      typeof url === "string",
-      `Speaker image "${path}" is not a string. Please check the schedule file.`,
-    );
-    let match = path.split("/").at(-1) ?? "";
-    return [match, url];
-  }),
+  Object.values(assetPaths.jam2025.schedule).map((url) => [
+    url.split("/").at(-1) ?? "",
+    url,
+  ]),
 );
 
 const scheduleItemSchema = s.object({

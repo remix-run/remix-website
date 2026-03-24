@@ -1,5 +1,5 @@
 import { clientEntry, on, type Handle } from "remix/component";
-import iconsHref from "../shared/icons.svg";
+import { assetPaths } from "../shared/asset-paths";
 import { JamButton } from "../routes/jam-shared";
 import assets from "./jam-ticket-purchase.tsx?assets=client";
 
@@ -58,7 +58,7 @@ export let JamTicketPurchase = clientEntry(
                   ]}
                 >
                   <svg aria-hidden="true" viewBox="0 0 24 24">
-                    <use href={`${iconsHref}#circle-minus`} />
+                    <use href={`${assetPaths.iconsSprite}#circle-minus`} />
                   </svg>
                 </button>
                 <input
@@ -81,7 +81,7 @@ export let JamTicketPurchase = clientEntry(
                   ]}
                 >
                   <svg aria-hidden="true" viewBox="0 0 24 24">
-                    <use href={`${iconsHref}#circle-plus`} />
+                    <use href={`${assetPaths.iconsSprite}#circle-plus`} />
                   </svg>
                 </button>
               </div>

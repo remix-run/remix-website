@@ -4,7 +4,7 @@ import { getRequestContext } from "../utils/request-context";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../shared/cache-control";
 import { JamDocument, ScrambleText, Title } from "./jam-shared";
-import ogImageSrc from "../assets/jam/images/og-thumbnail-1.jpg";
+import { assetPaths } from "../shared/asset-paths";
 import { JamLineupAccordionItem } from "../assets/jam-lineup-accordion-item";
 
 let gridColsClassName =
@@ -15,7 +15,7 @@ type Schedule = Awaited<ReturnType<typeof getSchedule>>;
 export async function jam2025LineupHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/jam/2025/lineup`;
-  let previewImage = `${requestUrl.origin}${ogImageSrc}`;
+  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogThumbnail1}`;
   let schedule = await getSchedule();
 
   return render.document(

@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { clientEntry, on, ref, type Handle } from "remix/component";
-import iconsHref from "../shared/icons.svg";
+import { assetPaths } from "../shared/asset-paths";
 import assets from "./jam-lineup-accordion-item.tsx?assets=client";
 
 type LineupItem = {
@@ -115,7 +115,7 @@ export let JamLineupAccordionItem = clientEntry(
               )}
               aria-hidden="true"
             >
-              <use href={`${iconsHref}#chevron-r`} />
+              <use href={`${assetPaths.iconsSprite}#chevron-r`} />
             </svg>
           </div>
         </summary>

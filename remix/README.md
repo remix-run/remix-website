@@ -32,8 +32,9 @@ For contributor/agent workflow guidance, see `AGENTS.md`.
 - Resolve document assets with `?assets=ssr` and render from `assets.css` / `assets.js` / `assets.entry`.
 - Use `?assets=ssr` for module manifests (for example `*.tsx`), not for plain stylesheets.
 - For standalone CSS files (for example `remix/shared/styles/md.css`), import with `?url` and render a stylesheet `<link>`.
+- For static images/icons, prefer literal URLs from `public/` and centralize shared paths in `remix/shared/asset-paths.ts` instead of importing files.
 - Do not hardcode module script paths (for example `/remix/assets/entry.ts`).
-- For SVG sprites, import the asset URL and append fragment ids.
+- For SVG sprites, use the public URL and append fragment ids.
 
 ## Pre-PR verification
 
