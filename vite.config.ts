@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import fullstack from "@hiogawa/vite-plugin-fullstack";
-import arraybuffer from "vite-plugin-arraybuffer";
 import { globSync } from "tinyglobby";
 
 export default defineConfig({
@@ -34,7 +33,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    arraybuffer(),
     fullstack({
       serverEnvironments: ["ssr"],
     }),
