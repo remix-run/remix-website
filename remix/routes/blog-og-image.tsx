@@ -8,10 +8,14 @@ import type { BuildAction } from "remix/fetch-router";
 import type { routes } from "../routes";
 
 let interBlack = toArrayBuffer(
-  readFileSync(resolve("remix/routes/inter-black-basic-latin.woff")),
+  readFileSync(
+    resolve("public/blog-images/og-fonts/inter-black-basic-latin.woff"),
+  ),
 );
 let interRegular = toArrayBuffer(
-  readFileSync(resolve("remix/routes/inter-regular-basic-latin.woff")),
+  readFileSync(
+    resolve("public/blog-images/og-fonts/inter-regular-basic-latin.woff"),
+  ),
 );
 let socialBackground = readFileSync(
   resolve("public/blog-images/social-background.png"),
