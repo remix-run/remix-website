@@ -111,7 +111,11 @@ export let NewsletterSubscribeForm = clientEntry(
             }),
           ]}
         >
+          <label htmlFor="newsletter-email" class="sr-only">
+            Email address
+          </label>
           <input
+            id="newsletter-email"
             type="email"
             name="email"
             autoComplete="email"

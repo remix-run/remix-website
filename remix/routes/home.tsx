@@ -80,7 +80,7 @@ function HomePage() {
           <HeroSection />
         </div>
 
-        <main class="flex flex-1 flex-col" tabIndex={-1}>
+        <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
           <div class="rmx-home-text-bg">
             <PitchSection />
           </div>
