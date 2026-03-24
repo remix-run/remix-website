@@ -1,25 +1,14 @@
 import getEmojiRegex from "emoji-regex";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
 import type { BuildAction } from "remix/fetch-router";
 import type { routes } from "../routes";
-
-let interBlack = toArrayBuffer(
-  readFileSync(
-    resolve("public/blog-images/og-fonts/inter-black-basic-latin.woff"),
-  ),
-);
-let interRegular = toArrayBuffer(
-  readFileSync(
-    resolve("public/blog-images/og-fonts/inter-regular-basic-latin.woff"),
-  ),
-);
-let socialBackground = readFileSync(
-  resolve("public/blog-images/social-background.png"),
-);
+import {
+  interBlack,
+  interRegular,
+  socialBackgroundBase64,
+} from "./blog-og-image-assets";
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }
@@ -141,7 +130,7 @@ function createOgRootNode(request: Request, data: OgImageQuery): OgNode {
           backgroundRepeat: "no-repeat",
         }
       : {
-          backgroundImage: `url("data:image/png;base64,${socialBackground.toString("base64")}")`,
+          backgroundImage: `url("data:image/png;base64,${socialBackgroundBase64}")`,
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
         };
