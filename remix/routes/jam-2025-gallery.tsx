@@ -38,7 +38,11 @@ export async function jam2025GalleryHandler() {
       activePath="/jam/2025/gallery"
       hideBackground
     >
-      <main class="mx-auto flex max-w-[1920px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[200px] lg:pt-[210px]">
+      <main
+        id="main-content"
+        class="mx-auto flex max-w-[1920px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[200px] lg:pt-[210px]"
+        tabIndex={-1}
+      >
         <Title>
           <ScrambleText setup={{ text: "Photo", delay: 100, color: "blue" }} />
           <ScrambleText

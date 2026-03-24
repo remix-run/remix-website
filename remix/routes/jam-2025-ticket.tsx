@@ -62,7 +62,11 @@ export async function jam2025TicketHandler() {
       previewImage={previewImage}
       activePath="/jam/2025/ticket"
     >
-      <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]">
+      <main
+        id="main-content"
+        class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]"
+        tabIndex={-1}
+      >
         <Title>
           <ScrambleText
             setup={{ text: "General Admission", delay: 100, color: "blue" }}

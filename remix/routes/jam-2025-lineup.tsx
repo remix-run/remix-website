@@ -28,7 +28,11 @@ export async function jam2025LineupHandler() {
       hideBackground
       showSeats
     >
-      <main class="mx-auto flex max-w-[1200px] flex-col items-center py-20 pt-[120px] md:pt-[180px] lg:pt-[200px]">
+      <main
+        id="main-content"
+        class="mx-auto flex max-w-[1200px] flex-col items-center py-20 pt-[120px] md:pt-[180px] lg:pt-[200px]"
+        tabIndex={-1}
+      >
         <Title className="text-center">
           <ScrambleText
             setup={{ text: "Schedule", delay: 100, color: "blue" }}

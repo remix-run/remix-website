@@ -34,7 +34,11 @@ export async function jam2025FaqHandler() {
       previewImage={previewImage}
       activePath="/jam/2025/faq"
     >
-      <main class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]">
+      <main
+        id="main-content"
+        class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]"
+        tabIndex={-1}
+      >
         <Title className="text-center">
           <ScrambleText
             setup={{ text: "Frequently Asked", delay: 100, color: "blue" }}

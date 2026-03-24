@@ -25,7 +25,7 @@ function Page() {
       description="Thoughts about building excellent user experiences with Remix."
     >
       <Header />
-      <main class="flex flex-1 flex-col" tabIndex={-1}>
+      <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
         <BlogPageContent posts={props.posts} />
       </main>
       <Footer />
