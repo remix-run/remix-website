@@ -41,10 +41,7 @@ export let JamFadeInBadge = clientEntry(
       );
     });
 
-    return (props: {
-      children: RemixNode;
-      class?: string;
-    }) => {
+    return (props: { children: RemixNode; class?: string }) => {
       return (
         <span
           class={clsx(

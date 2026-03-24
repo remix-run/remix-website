@@ -147,11 +147,7 @@ function GalleryModal() {
         />
         <div class="relative z-10 flex h-full w-full flex-col gap-6 p-4 md:p-9">
           <div class="flex shrink-0 items-center justify-between">
-            <IconLink
-              href={nav.closeHref}
-              icon="x-mark"
-              label="Close modal"
-            />
+            <IconLink href={nav.closeHref} icon="x-mark" label="Close modal" />
             <IconLink
               href={downloadHref}
               icon="download"
@@ -342,16 +338,14 @@ function getFileExtensionFromContentType(contentType: string) {
 
 function PhotoImage() {
   return ({ url, altText, width, height }: Photo) => {
-    let srcSet = GALLERY_GRID_IMAGE_WIDTHS
-      .map((size) => {
-        let sizedUrl = transformShopifyImageUrl(url, {
-          width: size,
-          format: "webp",
-          quality: 85,
-        });
-        return `${sizedUrl} ${size}w`;
-      })
-      .join(", ");
+    let srcSet = GALLERY_GRID_IMAGE_WIDTHS.map((size) => {
+      let sizedUrl = transformShopifyImageUrl(url, {
+        width: size,
+        format: "webp",
+        quality: 85,
+      });
+      return `${sizedUrl} ${size}w`;
+    }).join(", ");
 
     let src = transformShopifyImageUrl(url, {
       width: GALLERY_GRID_DEFAULT_WIDTH,

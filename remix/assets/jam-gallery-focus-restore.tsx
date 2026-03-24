@@ -11,7 +11,7 @@ export function restoreGalleryFocus() {
   window.sessionStorage.removeItem(FOCUS_RESTORE_KEY);
 
   let target = Array.from(
-    document.querySelectorAll<HTMLElement>('main a[href]'),
+    document.querySelectorAll<HTMLElement>("main a[href]"),
   ).find((element) => element.getAttribute("href") === storedHref);
   if (!target) return;
 
