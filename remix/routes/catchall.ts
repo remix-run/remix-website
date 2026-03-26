@@ -64,25 +64,52 @@ function normalizeLegacyRedirect(url: URL): string | null {
   return null;
 }
 
+function getVersionedDocsTag(ref: string): string | null {
+  if (ref === "v1") {
+    return "remix@1.19.3";
+  }
+
+  let version = semver.clean(ref);
+  if (version === null) {
+    return null;
+  }
+
+  return semver.lte(version, "1.6.4") ? `v${version}` : `remix@${version}`;
+}
+
+function getGitHubDocsUrl(tag: string, path: string[]): string {
+  let docsPath = path.length > 0 ? `/docs/${path.join("/")}.md` : "/docs";
+  let view = path.length > 0 ? "blob" : "tree";
+  return `https://github.com/remix-run/remix/${view}/${encodeURIComponent(tag)}${docsPath}`;
+}
+
 function getDocsRedirect(pathname: string): string {
   let fullPathWithoutDocs = pathname.split("/").slice(2);
-  let [lang, ref, ...path] = fullPathWithoutDocs;
+  let [langOrRef, refOrPath, ...rest] = fullPathWithoutDocs;
 
-  if (lang === "en") {
-    let version = semver.clean(ref);
-    if (version !== null) {
-      let tag = semver.lte(version, "1.6.4")
-        ? `v${version}`
-        : `remix@${version}`;
-      let markdownDoc = path.length > 0 ? path.join("/") + ".md" : "";
-      return `https://github.com/remix-run/remix/tree/${encodeURIComponent(tag)}/docs/${markdownDoc}`;
+  if (langOrRef === "en") {
+    let ref = refOrPath;
+    let path = rest;
+
+    if (ref) {
+      let tag = getVersionedDocsTag(ref);
+      if (tag !== null) {
+        return getGitHubDocsUrl(tag, path);
+      }
     }
 
     if (ref === "main" || ref === "dev") {
       return `https://v2.remix.run/docs/${path.join("/")}`;
     }
 
-    return `https://v2.remix.run/docs/${ref}/${path.join("/")}`;
+    return `https://v2.remix.run/docs/${[ref, ...path].filter(Boolean).join("/")}`;
+  }
+
+  if (langOrRef) {
+    let tag = getVersionedDocsTag(langOrRef);
+    if (tag !== null) {
+      return getGitHubDocsUrl(tag, [refOrPath, ...rest].filter(Boolean));
+    }
   }
 
   return `https://v2.remix.run/docs/${fullPathWithoutDocs.join("/")}`;
