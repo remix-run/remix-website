@@ -12,7 +12,7 @@ export default defineConfig({
       build: {
         outDir: "build/client",
         rollupOptions: {
-          input: globSync("./remix/assets/**/*.{ts,tsx}").filter(
+          input: globSync("./app/assets/**/*.{ts,tsx}").filter(
             (f) => !f.endsWith(".test.ts") && !f.endsWith(".test.tsx"),
           ),
         },
@@ -23,7 +23,7 @@ export default defineConfig({
         outDir: "build/server",
         rollupOptions: {
           input: {
-            index: "remix/server.ts",
+            index: "app/router.ts",
           },
           output: {
             entryFileNames: "index.js",

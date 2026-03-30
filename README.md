@@ -41,8 +41,13 @@ pnpm run push:stage
 - Create a branch from the latest target branch.
 - Push your branch and open a PR.
 - Run `pnpm run build` before shipping a PR.
+- See `AGENTS.md` for repo-specific rules (routes, assets, tests). Remix framework patterns live under `.agents/skills/` (start with `remix-overview`).
 
-Repo-specific implementation rules live in `AGENTS.md` and `remix/README.md`.
+## Codebase
+
+- **`app/`** — Remix 3 site: `routes.ts` (URL contract), `router.ts` (Vite SSR entry, middleware, route wiring), `controllers/`, `ui/`, `assets/`, `data/`, etc.
+- **`server.ts` (repo root)** — Node HTTP server in production; serves the built app from `build/server/`.
+- **`data/`** — Blog posts and author metadata (separate from `app/data/`, which holds app-layer server modules such as blog queries).
 
 ## Content
 

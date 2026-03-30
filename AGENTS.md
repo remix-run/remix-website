@@ -6,27 +6,41 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 ## Source Of Truth
 
-- Follow `remix/README.md` for repo-specific Remix rules.
-- Use `references/remix/**` for API semantics when local usage is unclear.
+- **Framework conventions** match the Remix skills in `.agents/skills/` — start with `remix-overview/SKILL.md`, then use `remix-project-layout`, `remix-routing`, `remix-server`, and `remix-ui` as needed. Do not treat this file as a second copy of those rules; it only records **repo-specific** invariants.
+- **`references/remix/**`** — local API semantics when package usage is unclear.
+
+## Server runtime (same model as `remix-server` skill)
+
+- **Root `server.ts`** — Node HTTP process entry. Uses `createRequestListener` from `remix/node-fetch-server` and forwards each request to the app `fetch` handler.
+- **`app/router.ts`** — `createRouter`, root middleware stack, and `router.map(...)` wiring. Vite SSR entry (`vite.config.ts`); its default export is the app `fetch` handler.
+- **Production / `pnpm run preview`** — root `server.ts` loads `fetch` from the compiled bundle at `build/server/index.js` (built from `app/router.ts`), not by importing `app/router.ts` directly.
 
 ## Keep These Non-Obvious Invariants
 
-- Route declarations live in `remix/routes.ts`; server mappings in `remix/server.ts`; keep them aligned.
+- Route declarations live in `app/routes.ts`; router mappings in `app/router.ts`; keep them aligned.
 - Map explicit routes before the `router.map("*", ...)` catch-all.
-- In `remix/routes/**`, keep exported route handler/controller first and helper/details below.
-- For route-local, single-use UI, keep it in the route file; extract to `remix/components/**` only when shared.
+- In `app/controllers/**`, keep exported route handler/controller first and helper/details below.
+- For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
 - Use `?assets=client` and `?assets=ssr` asset resolution patterns; never hardcode entry module paths.
-- Use `?assets=ssr` only for module assets (for example `*.tsx` manifests). For plain stylesheet files (for example `remix/shared/styles/*.css`), import with `?url` and render a `<link rel="stylesheet" ...>`.
+- Use `?assets=ssr` only for module assets (for example `*.tsx` manifests). For plain stylesheet files (for example `app/shared/styles/*.css`), import with `?url` and render a `<link rel="stylesheet" ...>`.
 
 ## Done Checklist (Route/Feature Changes)
 
-1. Add/update route pattern in `remix/routes.ts`.
-2. Implement route/controller in `remix/routes/**`.
-3. Wire mapping in `remix/server.ts` before catch-all fallback.
+1. Add/update route pattern in `app/routes.ts`.
+2. Implement route/controller in `app/controllers/**`.
+3. Wire mapping in `app/router.ts` before catch-all fallback.
 4. Add focused tests and run targeted verification (+ Remix typechecks for substantial changes).
 5. Run `pnpm run build` before shipping a PR to catch asset-pipeline regressions.
-6. If behavior changes, update the parity backlog in `remix/README.md`.
+6. If behavior changes, update the parity backlog below.
+
+## Parity backlog
+
+Remaining differences vs the previous production site (small, shippable items):
+
+- **Link prefetch parity**: Intent/predictive prefetch is not yet mirrored across Remix pages.
+- **Analytics on in-app transitions**: Verify one pageview per navigation when using client-side navigation.
+- **Client navigation shape**: Keep Jam on top-level client navigation unless a future route needs an independently updating region.
 
 ## E2E Gotchas (Playwright)
 
