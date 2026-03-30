@@ -2,11 +2,11 @@
 
 Use these sources in this order when working with Remix Component in this repo:
 
-1. `references/remix/packages/component/src/index.ts`
-2. `references/remix/packages/component/.changes/*.md`
-3. `references/remix/packages/component/AGENTS.md`
-4. `references/remix/packages/component/docs/*.md`
-5. `references/remix/packages/component/README.md`
+1. `AGENTS.md`
+2. `.agents/skills/remix-component/SKILL.md`
+3. Sibling docs in `.agents/skills/remix-component/references/*.md`
+4. Nearby application code under `app/**`
+5. Installed package source only when local repo guidance is insufficient
 
 ## Current API Deltas
 
