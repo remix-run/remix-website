@@ -1,10 +1,10 @@
 import cx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { Document } from "../ui/document";
-import { Footer } from "../ui/home/footer";
-import { Header } from "../ui/home/header";
+import { Footer } from "../ui/footer";
+import { Header } from "../ui/header";
 import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../shared/cache-control";
+import { CACHE_CONTROL } from "../utils/cache-control";
 
 export async function brandHandler() {
   return render.document(<Page />, {

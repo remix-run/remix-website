@@ -1,5 +1,5 @@
-import { routes } from "../routes";
-import { getRequestContext } from "../utils/request-context";
+import { routes } from "../../routes";
+import { getRequestContext } from "../../utils/request-context";
 
 export async function jamHandler() {
   let requestUrl = getRequestContext().request.url;

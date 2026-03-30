@@ -1,14 +1,14 @@
-import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../shared/cache-control";
+import { getRequestContext } from "../../utils/request-context";
+import { render } from "../../utils/render";
+import { CACHE_CONTROL } from "../../utils/cache-control";
 import {
   JamDocument,
   Paragraph,
   ScrambleText,
   Subheader,
   Title,
-} from "./jam-shared";
-import { assetPaths } from "../shared/asset-paths";
+} from "./shared";
+import { assetPaths } from "../../utils/asset-paths";
 
 export async function jam2025CocHandler() {
   let requestUrl = new URL(getRequestContext().request.url);

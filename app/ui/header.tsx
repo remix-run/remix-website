@@ -1,7 +1,7 @@
 import cx from "clsx";
-import { MobileMenu } from "../../assets/mobile-menu";
-import { WordmarkLink } from "../../assets/wordmark-link";
-import { routes } from "../../routes";
+import { MobileMenu } from "../assets/mobile-menu";
+import { WordmarkLink } from "../assets/wordmark-link";
+import { routes } from "../routes";
 
 const LINKS: Array<{ to: string; label: string; external?: boolean }> = [
   { to: routes.blog.href(), label: "Blog" },

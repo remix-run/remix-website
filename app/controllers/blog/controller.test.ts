@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { blogHandler } from "./blog";
-import { CACHE_CONTROL } from "../shared/cache-control";
-import { routes } from "../routes";
-import { createRouteTestRouter } from "../test-utils/create-route-test-router";
+import { blogHandler } from "./controller";
+import { CACHE_CONTROL } from "../../utils/cache-control";
+import { routes } from "../../routes";
+import { createRouteTestRouter } from "../../../test/create-route-test-router";
 
 describe("Blog route", () => {
   it("renders expected content and metadata", async () => {

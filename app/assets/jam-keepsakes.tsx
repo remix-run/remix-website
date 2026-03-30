@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { clientEntry, on, type Dispatched, type Handle } from "remix/component";
 import assets from "./jam-keepsakes.tsx?assets=client";
-import { assetPaths } from "../shared/asset-paths";
+import { assetPaths } from "../utils/asset-paths";
 
 type KeepsakeId =
   | "photo-1"

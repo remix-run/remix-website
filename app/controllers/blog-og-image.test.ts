@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { routes } from "../routes";
-import { createRouteTestRouter } from "../test-utils/create-route-test-router";
+import { createRouteTestRouter } from "../../test/create-route-test-router";
 import { blogOgImageHandler, parseOgImageQuery } from "./blog-og-image";
 
 describe("Blog OG image route", () => {

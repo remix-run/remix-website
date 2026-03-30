@@ -5,28 +5,28 @@ import { createRouter } from "remix/fetch-router";
 import { formData } from "remix/form-data-middleware";
 import { staticFiles } from "remix/static-middleware";
 
-import { filteredLogger, rateLimit } from "./middleware.ts";
+import { filteredLogger } from "./middleware/filtered-logger.ts";
+import { rateLimit } from "./middleware/rate-limit.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
+import { routes } from "./routes";
+
 import actionsController from "./controllers/actions";
-import { blogPostHandler } from "./controllers/blog-post.tsx";
-import { blogRssHandler } from "./controllers/blog-rss.ts";
+import { blogHandler } from "./controllers/blog/controller.tsx";
 import { blogOgImageHandler } from "./controllers/blog-og-image";
-import { blogHandler } from "./controllers/blog.tsx";
+import { blogPostHandler } from "./controllers/blog/post.tsx";
+import { blogRssHandler } from "./controllers/blog/rss.ts";
 import { brandHandler } from "./controllers/brand.tsx";
 import { catchallHandler } from "./controllers/catchall";
-import { homeHandler } from "./controllers/home.tsx";
-import { jam2025CocHandler } from "./controllers/jam-2025-coc.tsx";
-import { jam2025FaqHandler } from "./controllers/jam-2025-faq.tsx";
-import {
-  jam2025GalleryDownloadHandler,
-  jam2025GalleryHandler,
-} from "./controllers/jam-2025-gallery.tsx";
-import { jam2025LineupHandler } from "./controllers/jam-2025-lineup.tsx";
-import { jam2025TicketHandler } from "./controllers/jam-2025-ticket.tsx";
-import { jam2025Handler } from "./controllers/jam-2025.tsx";
-import { jamHandler } from "./controllers/jam.ts";
+import { homeHandler } from "./controllers/home/controller.tsx";
+import { jam2025CocHandler } from "./controllers/jam/2025-coc.tsx";
+import { jam2025FaqHandler } from "./controllers/jam/2025-faq.tsx";
+import { jam2025GalleryHandler } from "./controllers/jam/2025-gallery/controller.tsx";
+import { jam2025GalleryDownloadHandler } from "./controllers/jam/2025-gallery/download.ts";
+import { jam2025LineupHandler } from "./controllers/jam/2025-lineup.tsx";
+import { jam2025TicketHandler } from "./controllers/jam/2025-ticket.tsx";
+import { jam2025Handler } from "./controllers/jam/2025.tsx";
+import { jamHandler } from "./controllers/jam/controller.ts";
 import { newsletterHandler } from "./controllers/newsletter.tsx";
-import { routes } from "./routes";
 
 if (import.meta.env.PROD) {
   sourceMapSupport.install();

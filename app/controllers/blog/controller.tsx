@@ -1,11 +1,11 @@
-import { Document } from "../ui/document";
-import { Footer } from "../ui/home/footer";
-import { Header } from "../ui/home/header";
-import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
-import { routes } from "../routes";
-import { render } from "../utils/render";
-import { getBlogPostListings } from "../data/blog.server";
-import { CACHE_CONTROL } from "../shared/cache-control";
+import { Document } from "../../ui/document";
+import { Footer } from "../../ui/footer";
+import { Header } from "../../ui/header";
+import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe";
+import { routes } from "../../routes";
+import { render } from "../../utils/render";
+import { getBlogPostListings } from "../../data/blog.server";
+import { CACHE_CONTROL } from "../../utils/cache-control";
 
 export async function blogHandler() {
   let posts = await getBlogPostListings();

@@ -1,7 +1,7 @@
 import type { RemixNode } from "remix/component/jsx-runtime";
-import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../shared/cache-control";
+import { getRequestContext } from "../../utils/request-context";
+import { render } from "../../utils/render";
+import { CACHE_CONTROL } from "../../utils/cache-control";
 import {
   AddressLink,
   JamDocument,
@@ -9,9 +9,9 @@ import {
   ScrambleText,
   Subheader,
   Title,
-} from "./jam-shared";
-import { routes } from "../routes";
-import { assetPaths } from "../shared/asset-paths";
+} from "./shared";
+import { routes } from "../../routes";
+import { assetPaths } from "../../utils/asset-paths";
 
 function slugify(input: string) {
   return input

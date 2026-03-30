@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { blogPostHandler } from "./blog-post";
-import { CACHE_CONTROL } from "../shared/cache-control";
-import { getBlogPost } from "../data/blog.server";
-import { routes } from "../routes";
-import { createRouteTestRouter } from "../test-utils/create-route-test-router";
+import { blogPostHandler } from "./post";
+import { CACHE_CONTROL } from "../../utils/cache-control";
+import { getBlogPost } from "../../data/blog.server";
+import { routes } from "../../routes";
+import { createRouteTestRouter } from "../../../test/create-route-test-router";
 
 describe("Blog post route", () => {
   it("renders a post for a valid slug", async () => {

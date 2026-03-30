@@ -1,19 +1,19 @@
-import { getPhotos } from "./jam-storefront.server";
-import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../shared/cache-control";
-import { routes } from "../routes";
+import { getPhotos } from "../../../data/jam-storefront.server";
+import { getRequestContext } from "../../../utils/request-context";
+import { render } from "../../../utils/render";
+import { CACHE_CONTROL } from "../../../utils/cache-control";
+import { routes } from "../../../routes";
 import {
   JamDocument,
   ScrambleText,
   Title,
   transformShopifyImageUrl,
-} from "./jam-shared";
+} from "../shared";
 import {
   JamGalleryModalHost,
   type JamGalleryModalNav,
-} from "../assets/jam-gallery-modal-host";
-import { assetPaths } from "../shared/asset-paths";
+} from "../../../assets/jam-gallery-modal-host";
+import { assetPaths } from "../../../utils/asset-paths";
 import type { RemixNode } from "remix/component/jsx-runtime";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
@@ -86,44 +86,9 @@ export async function jam2025GalleryHandler() {
   );
 }
 
-export async function jam2025GalleryDownloadHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
-  let photos = await getGalleryPhotos();
-  let selectedPhotoIndex = getSelectedPhotoIndex(
-    requestUrl.searchParams.get("photo"),
-    photos.length,
-  );
-
-  if (selectedPhotoIndex === null) {
-    return new Response("Invalid photo index", {
-      status: 400,
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
-    });
-  }
-
-  let selectedPhoto = photos[selectedPhotoIndex];
-  let downloadSrc = getGalleryDownloadSrc(selectedPhoto);
-
-  let upstreamResponse = await fetch(downloadSrc);
-  if (!upstreamResponse.ok || !upstreamResponse.body) {
-    return new Response("Unable to download photo", {
-      status: 502,
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
-    });
-  }
-
-  let contentType =
-    upstreamResponse.headers.get("Content-Type") ?? "image/jpeg";
-  let extension = getFileExtensionFromContentType(contentType);
-
-  return new Response(upstreamResponse.body, {
-    headers: {
-      "Cache-Control": CACHE_CONTROL.DEFAULT,
-      "Content-Type": contentType,
-      "Content-Disposition": `attachment; filename="remix-jam-2025-photo-${selectedPhotoIndex + 1}.${extension}"`,
-    },
-  });
-}
+export { transformShopifyImageUrl };
+export { getSelectedPhotoIndex };
+export { getGalleryPhotos };
 
 function GalleryModal() {
   return ({
@@ -294,7 +259,6 @@ function getJamGalleryModalNav(
 
 let GALLERY_MODAL_MAX_WIDTH = 1920;
 let GALLERY_MODAL_MAX_HEIGHT = 1080;
-let GALLERY_DOWNLOAD_WIDTH = 1920;
 let GALLERY_GRID_IMAGE_WIDTHS = [400, 600, 800, 1200];
 let GALLERY_GRID_DEFAULT_WIDTH = 800;
 
@@ -327,16 +291,10 @@ async function getGalleryPhotos() {
 
 function getGalleryDownloadSrc(photo: Photo) {
   return transformShopifyImageUrl(photo.url, {
-    width: GALLERY_DOWNLOAD_WIDTH,
+    width: 1920,
     format: "jpg",
     quality: 90,
   });
-}
-
-function getFileExtensionFromContentType(contentType: string) {
-  if (contentType.includes("image/png")) return "png";
-  if (contentType.includes("image/webp")) return "webp";
-  return "jpg";
 }
 
 function PhotoImage() {

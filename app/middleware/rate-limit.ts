@@ -1,17 +1,10 @@
-import { logger } from "remix/logger-middleware";
 import type { Middleware } from "remix/fetch-router";
 
-// Simple rate limiter middleware (replaces express-rate-limit)
-// 1000 requests per 2 minutes per IP
 interface RateLimitOptions {
   windowMs?: number;
   max?: number;
   keyGenerator?: (context: Parameters<Middleware>[0]) => string;
   skip?: (context: Parameters<Middleware>[0]) => boolean;
-}
-
-interface FilteredLoggerOptions {
-  loggerMiddleware?: Middleware;
 }
 
 interface RateLimitEntry {
@@ -70,27 +63,6 @@ export function rateLimit({
   };
 }
 
-// Logger middleware that skips GET requests to /__manifest
-let baseLogger = logger();
-
-export function filteredLogger({
-  loggerMiddleware = baseLogger,
-}: FilteredLoggerOptions = {}): Middleware {
-  return (context, next) => {
-    if (
-      context.request.method === "GET" &&
-      isManifestPath(context.url.pathname)
-    ) {
-      return next();
-    }
-    return loggerMiddleware(context, next);
-  };
-}
-
-function isManifestPath(pathname: string) {
-  return pathname === "/__manifest" || pathname.startsWith("/__manifest/");
-}
-
 function cleanupExpiredEntries(hits: Map<string, RateLimitEntry>, now: number) {
   for (let [key, data] of hits) {
     if (now > data.resetTime) {
@@ -133,7 +105,6 @@ function normalizeClientIp(ip: string) {
     return unquotedIp.slice("::ffff:".length);
   }
 
-  // Some proxies append port to IPv4 addresses.
   if (unquotedIp.includes(".") && unquotedIp.includes(":")) {
     return unquotedIp.split(":")[0];
   }

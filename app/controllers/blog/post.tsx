@@ -1,14 +1,14 @@
 import { clsx } from "clsx";
-import mdStyles from "../shared/styles/md.css?url";
-import { Document } from "../ui/document";
-import { Footer } from "../ui/home/footer";
-import { Header } from "../ui/home/header";
-import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
-import { routes } from "../routes";
-import { renderNotFoundPage } from "./not-found";
-import { render } from "../utils/render";
-import { getBlogPost, getRawBlogPostMarkdown } from "../data/blog.server";
-import { CACHE_CONTROL } from "../shared/cache-control";
+import mdStyles from "../../styles/md.css?url";
+import { Document } from "../../ui/document";
+import { Footer } from "../../ui/footer";
+import { Header } from "../../ui/header";
+import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe";
+import { routes } from "../../routes";
+import { renderNotFoundPage } from "../not-found";
+import { render } from "../../utils/render";
+import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.server";
+import { CACHE_CONTROL } from "../../utils/cache-control";
 
 type BlogPostContext = {
   params: { slug?: string; ext?: string };

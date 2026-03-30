@@ -1,11 +1,11 @@
 import clsx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
-import { JamScrambleText } from "../assets/jam-scramble-text";
-import { MobileMenu } from "../assets/mobile-menu";
-import { Document } from "../ui/document";
-import { routes } from "../routes";
-import { assetPaths } from "../shared/asset-paths";
-import jamStylesHref from "../shared/styles/jam.css?url";
+import { JamScrambleText } from "../../assets/jam-scramble-text";
+import { MobileMenu } from "../../assets/mobile-menu";
+import { Document } from "../../ui/document";
+import { routes } from "../../routes";
+import { assetPaths } from "../../utils/asset-paths";
+import jamStylesHref from "../../styles/jam.css?url";
 
 const jamButtonClassName =
   "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";

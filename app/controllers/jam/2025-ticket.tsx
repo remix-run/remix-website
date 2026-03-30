@@ -1,19 +1,23 @@
 import * as s from "remix/data-schema";
 import { getContext } from "remix/async-context-middleware";
-import { createCart, getProduct, MAX_QUANTITY } from "./jam-storefront.server";
-import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../shared/cache-control";
+import {
+  createCart,
+  getProduct,
+  MAX_QUANTITY,
+} from "../../data/jam-storefront.server";
+import { getRequestContext } from "../../utils/request-context";
+import { render } from "../../utils/render";
+import { CACHE_CONTROL } from "../../utils/cache-control";
 import {
   InfoText,
   JamDocument,
   ScrambleText,
   SectionLabel,
   Title,
-} from "./jam-shared";
-import { JamTicketCard } from "../assets/jam-ticket-card";
-import { JamTicketPurchase } from "../assets/jam-ticket-purchase";
-import { assetPaths } from "../shared/asset-paths";
+} from "./shared";
+import { JamTicketCard } from "../../assets/jam-ticket-card";
+import { JamTicketPurchase } from "../../assets/jam-ticket-purchase";
+import { assetPaths } from "../../utils/asset-paths";
 
 export async function jam2025TicketHandler() {
   let request = getRequestContext().request;

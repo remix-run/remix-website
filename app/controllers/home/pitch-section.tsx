@@ -1,5 +1,5 @@
 import cx from "clsx";
-import { assetPaths } from "../../shared/asset-paths";
+import { assetPaths } from "../../utils/asset-paths";
 
 export function PitchSection() {
   return () => (

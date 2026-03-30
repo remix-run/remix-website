@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { clientEntry, on, ref, type Handle } from "remix/component";
-import { assetPaths } from "../shared/asset-paths";
+import { assetPaths } from "../utils/asset-paths";
 import assets from "./jam-lineup-accordion-item.tsx?assets=client";
 
 type LineupItem = {

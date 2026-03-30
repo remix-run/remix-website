@@ -1,6 +1,6 @@
 import { clientEntry, on, type Handle } from "remix/component";
-import { assetPaths } from "../shared/asset-paths";
-import { JamButton } from "../controllers/jam-shared";
+import { assetPaths } from "../utils/asset-paths";
+import { JamButton } from "../controllers/jam/shared";
 import assets from "./jam-ticket-purchase.tsx?assets=client";
 
 export let JamTicketPurchase = clientEntry(

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { blogPostHandler } from "./blog-post";
-import { CACHE_CONTROL } from "../shared/cache-control";
-import { routes } from "../routes";
-import { createRouteTestRouter } from "../test-utils/create-route-test-router";
+import { blogPostHandler } from "./post";
+import { CACHE_CONTROL } from "../../utils/cache-control";
+import { routes } from "../../routes";
+import { createRouteTestRouter } from "../../../test/create-route-test-router";
 
 describe("Blog markdown routes", () => {
   it("serves source markdown for a valid slug at /blog/:slug.md", async () => {

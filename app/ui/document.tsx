@@ -4,13 +4,13 @@ import clientAssets from "../assets/entry.ts?assets=client";
 import { DocumentHeadSync } from "../assets/document-head-sync";
 import documentAssets from "./document.tsx?assets=ssr";
 import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head";
-import { assetPaths } from "../shared/asset-paths";
-import mdStylesHref from "../shared/styles/md.css?url";
-import jamStylesHref from "../shared/styles/jam.css?url";
+import { assetPaths } from "../utils/asset-paths";
+import mdStylesHref from "../styles/md.css?url";
+import jamStylesHref from "../styles/jam.css?url";
 
-import "../shared/styles/tailwind.css";
-import "../shared/styles/bailwind.css";
-import "../shared/styles/marketing.css";
+import "../styles/tailwind.css";
+import "../styles/bailwind.css";
+import "../styles/marketing.css";
 
 let assets = clientAssets.merge(documentAssets);
 let colorSchemeScript = `

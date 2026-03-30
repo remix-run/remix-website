@@ -1,5 +1,5 @@
 import { clientEntry, on, navigate } from "remix/component";
-import { Wordmark } from "../ui/home/wordmark";
+import { Wordmark } from "../ui/wordmark";
 import assets from "./wordmark-link.tsx?assets=client";
 
 export let WordmarkLink = clientEntry(`${assets.entry}#WordmarkLink`, () => {

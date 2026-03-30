@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { Feed } from "feed";
 import parseFrontMatter from "front-matter";
-import { CACHE_CONTROL } from "../shared/cache-control.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 
 interface BlogRssFrontmatter {
   title?: string;
@@ -17,7 +17,7 @@ interface BlogRssPost {
   date: Date;
 }
 
-const POSTS_DIRECTORY = new URL("../../data/posts/", import.meta.url);
+const POSTS_DIRECTORY = new URL("../../../data/posts/", import.meta.url);
 
 export async function blogRssHandler() {
   let posts = await getBlogRssPosts();

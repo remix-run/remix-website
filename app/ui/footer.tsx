@@ -1,6 +1,6 @@
 import cx from "clsx";
 import { Wordmark } from "./wordmark";
-import { assetPaths } from "../../shared/asset-paths";
+import { assetPaths } from "../utils/asset-paths";
 
 export function Footer() {
   return () => (

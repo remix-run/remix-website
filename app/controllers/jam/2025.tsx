@@ -1,19 +1,19 @@
 import clsx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
-import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../shared/cache-control";
+import { getRequestContext } from "../../utils/request-context";
+import { render } from "../../utils/render";
+import { CACHE_CONTROL } from "../../utils/cache-control";
 import {
   AddressMain,
   JamDocument,
   ScrambleText,
   SectionLabel,
   Title,
-} from "./jam-shared";
-import { JamKeepsakes } from "../assets/jam-keepsakes";
-import { JamFadeInBadge } from "../assets/jam-fade-in-badge";
-import { JamNewsletterSubscribeForm } from "../assets/jam-newsletter-subscribe";
-import { assetPaths } from "../shared/asset-paths";
+} from "./shared";
+import { JamKeepsakes } from "../../assets/jam-keepsakes";
+import { JamFadeInBadge } from "../../assets/jam-fade-in-badge";
+import { JamNewsletterSubscribeForm } from "../../assets/jam-newsletter-subscribe";
+import { assetPaths } from "../../utils/asset-paths";
 
 type EventStatus = "before" | "live" | "after";
 

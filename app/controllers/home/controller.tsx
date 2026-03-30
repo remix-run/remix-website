@@ -1,14 +1,14 @@
-import { Document } from "../ui/document";
-import { Footer } from "../ui/home/footer";
-import { Header } from "../ui/home/header";
-import { HeroSection } from "../ui/home/hero-section";
-import { IntroMaskReveal } from "../ui/home/intro-mask-reveal";
-import { PitchSection } from "../ui/home/pitch-section";
-import { StayInTheLoopSection } from "../ui/home/stay-in-the-loop-section";
-import { TimelineSection } from "../ui/home/timeline-section";
-import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../shared/cache-control.ts";
+import { Document } from "../../ui/document";
+import { Footer } from "../../ui/footer";
+import { Header } from "../../ui/header";
+import { HeroSection } from "./hero-section";
+import { IntroMaskReveal } from "./intro-mask-reveal";
+import { PitchSection } from "./pitch-section";
+import { StayInTheLoopSection } from "./stay-in-the-loop-section";
+import { TimelineSection } from "./timeline-section";
+import { getRequestContext } from "../../utils/request-context";
+import { render } from "../../utils/render";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 
 export async function homeHandler() {
   let requestUrl = new URL(getRequestContext().request.url);

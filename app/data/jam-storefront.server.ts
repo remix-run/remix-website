@@ -1,7 +1,7 @@
 import { createStorefrontApiClient } from "@shopify/storefront-api-client";
 import * as s from "remix/data-schema";
 import * as c from "remix/data-schema/checks";
-import { env } from "../env.server";
+import { env } from "../utils/env.server";
 
 let client: ReturnType<typeof createStorefrontApiClient> | null = null;
 

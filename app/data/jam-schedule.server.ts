@@ -6,7 +6,7 @@ import * as s from "remix/data-schema";
 import { LRUCache } from "lru-cache";
 import { processMarkdown } from "../data/md.server";
 
-import scheduleYamlFileContents from "../assets/jam/data/schedule.yaml?raw";
+import scheduleYamlFileContents from "./jam-schedule.yaml?raw";
 
 const SCHEDULE_IMAGES_DIRECTORY = path.join(
   process.cwd(),
