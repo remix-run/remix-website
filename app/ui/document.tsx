@@ -50,10 +50,8 @@ declare global {
  * Mirrors the essential <head> setup from the React Router root
  * (app/root.tsx) so migrated pages look consistent.
  *
- * CSS strategy (dev only for now):
- *   Vite's dev middleware serves `/app/shared/styles/*.css` with full
- *   PostCSS/Tailwind processing, so plain <link> tags work.
- *   Production asset paths are TBD (see plan: asset-strategy).
+ * Plain stylesheet assets live under `app/styles/*.css`.
+ * Import them with `?url` when a route needs an explicit stylesheet `<link>`.
  */
 export function Document() {
   return ({

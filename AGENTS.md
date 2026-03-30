@@ -23,7 +23,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
 - Use `?assets=client` and `?assets=ssr` asset resolution patterns; never hardcode entry module paths.
-- Use `?assets=ssr` only for module assets (for example `*.tsx` manifests). For plain stylesheet files (for example `app/shared/styles/*.css`), import with `?url` and render a `<link rel="stylesheet" ...>`.
+- Use `?assets=ssr` only for module assets (for example `*.tsx` manifests). For plain stylesheet files (for example `app/styles/*.css`), import with `?url` and render a `<link rel="stylesheet" ...>`.
 
 ## Done Checklist (Route/Feature Changes)
 

@@ -41,7 +41,6 @@ COPY --chown=node:node --from=build /remixapp/build /remixapp/build
 COPY --chown=node:node --from=build /remixapp/public /remixapp/public
 COPY --chown=node:node --from=build /remixapp/server.ts /remixapp/server.ts
 COPY --chown=node:node --from=build /remixapp/_redirects /remixapp/_redirects
-COPY --chown=node:node --from=build /remixapp/app/shared /remixapp/app/shared
 COPY --chown=node:node --from=build /remixapp/data /remixapp/data
 COPY --chown=node:node --from=build /remixapp/package.json /remixapp/package.json
 

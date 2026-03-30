@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import actionsController from "./actions";
-import { routes } from "../routes";
+
+import { routes } from "../../routes";
+import actionsController from "./controller";
 
 describe("Newsletter subscribe route", () => {
   let originalConvertKitKey = process.env.CONVERTKIT_KEY;

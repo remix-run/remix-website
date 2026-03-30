@@ -10,7 +10,7 @@ import { rateLimit } from "./middleware/rate-limit.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes";
 
-import actionsController from "./controllers/actions";
+import actionsController from "./controllers/actions/controller.tsx";
 import { blogHandler } from "./controllers/blog/controller.tsx";
 import { blogOgImageHandler } from "./controllers/blog-og-image";
 import { blogPostHandler } from "./controllers/blog/post.tsx";
