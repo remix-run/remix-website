@@ -1,11 +1,11 @@
 ---
 name: remix-project-layout
-description: Describe the ideal layout of a Remix application, including canonical directories, route ownership, naming conventions, and file locations on disk. When asked to bootstrap that layout in a new directory, run the bundled TypeScript script.
+description: Describe the ideal layout of a Remix application, including canonical directories, route ownership, naming conventions, and file locations on disk.
 ---
 
 # Remix Project Layout
 
-Use this skill when defining, reviewing, or bootstrapping the on-disk layout of a Remix
+Use this skill when defining or reviewing the on-disk layout of a Remix
 application.
 
 This skill is about structure and conventions. It defines where code belongs, how route ownership
@@ -151,23 +151,6 @@ Use predictable file names so route ownership is obvious without opening files:
 - colocated tests named after the route owner, such as `home.test.ts` or `controller.test.ts`
 
 Do not invent one-off naming schemes when an existing convention already fits.
-
-## Bootstrap
-
-When the user wants this layout scaffolded into a new directory, run:
-
-```sh
-node skills/remix-project-layout/scripts/bootstrap_remix_application.ts <target-dir>
-```
-
-Optional flags:
-
-- `--app-name <name>` to override the generated app name
-- `--remix-version <version>` to override the default `remix` version
-- `--force` to write into a non-empty target directory
-
-The script generates the starter app, including `README.md`, route handlers, shared UI, test
-helpers, and the root directory structure described in this skill.
 
 ## Anti-Patterns
 
