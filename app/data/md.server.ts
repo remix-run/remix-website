@@ -341,7 +341,7 @@ function isRelativeUrl(test: string) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-export namespace UnistNode {
+namespace UnistNode {
   export type Content = Flow | Phrasing | Html;
   export interface Root extends Unist.Parent {
     type: "root";
