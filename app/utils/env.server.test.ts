@@ -19,22 +19,7 @@ describe("parseEnv", () => {
     });
 
     expect(result.CONVERTKIT_KEY).toBe("test-key");
-    expect(result.NO_CACHE).toBe(false);
     expect(result.PUBLIC_STOREFRONT_API_TOKEN).toBe("token");
-  });
-
-  it("coerces NO_CACHE string to boolean", () => {
-    expect(parseEnv({ CONVERTKIT_KEY: "k", NO_CACHE: "true" }).NO_CACHE).toBe(
-      true,
-    );
-    expect(parseEnv({ CONVERTKIT_KEY: "k", NO_CACHE: "false" }).NO_CACHE).toBe(
-      false,
-    );
-  });
-
-  it("defaults NO_CACHE to false when undefined", () => {
-    let result = parseEnv({});
-    expect(result.NO_CACHE).toBe(false);
   });
 
   it("accepts missing CONVERTKIT_KEY in development", () => {

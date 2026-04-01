@@ -13,12 +13,6 @@ pnpm install
 pnpm run dev
 ```
 
-If you need cache-busting while developing server-rendered content:
-
-```sh
-NO_CACHE=1 pnpm run dev
-```
-
 ## Build and Preview
 
 ```sh
