@@ -22,7 +22,7 @@ Use:
 
 Avoid:
 
-- `clientEntry("/remix/assets/feature.tsx#ExportName", ...)`
+- `clientEntry("/app/assets/feature.tsx#ExportName", ...)`
 
 ## Document shell pattern
 

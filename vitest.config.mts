@@ -29,7 +29,7 @@ export default defineConfig({
     globals: true,
     environment: "happy-dom",
     setupFiles: ["./test/setup-test-env.ts"],
-    include: ["remix/**/*.test.{ts,tsx,mts}"],
+    include: ["app/**/*.test.{ts,tsx,mts}"],
     exclude: ["e2e/**", "node_modules/**"],
     env,
   },

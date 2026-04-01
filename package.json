@@ -18,6 +18,7 @@
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "test": "vitest",
+    "test:coverage": "vitest run --coverage",
     "pretest:e2e": "playwright install chromium",
     "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit"
@@ -59,7 +60,7 @@
     "@types/semver": "^7.7.1",
     "@types/source-map-support": "^0.5.10",
     "@types/unist": "^3.0.3",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/coverage-v8": "^4.0.18",
     "autoprefixer": "^10.4.24",
     "happy-dom": "^20.6.1",
     "oxlint": "^1.50.0",
