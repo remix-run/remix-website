@@ -7,7 +7,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 ## Source Of Truth
 
 - **Framework conventions** match the Remix skills in `.agents/skills/` — start with `remix-overview/SKILL.md`, then use `remix-project-layout`, `remix-routing`, `remix-server`, and `remix-ui` as needed. Do not treat this file as a second copy of those rules; it only records **repo-specific** invariants.
-- **`references/remix/**`** — local API semantics when package usage is unclear.
+- **`references/remix/**`\*\* — local API semantics when package usage is unclear.
 
 ## Server runtime (same model as `remix-server` skill)
 

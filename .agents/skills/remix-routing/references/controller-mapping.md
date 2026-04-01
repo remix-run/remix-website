@@ -5,10 +5,10 @@ Keep the route contract in `app/routes.ts` and the registration in `app/router.t
 The router should read like a map from route ownership to controller ownership:
 
 ```ts
-router.map(routes.home, home)
-router.map(routes.contact, contactController)
-router.map(routes.books, booksController)
-router.map(routes.account, accountController)
+router.map(routes.home, home);
+router.map(routes.contact, contactController);
+router.map(routes.books, booksController);
+router.map(routes.account, accountController);
 ```
 
 ## Leaf Routes
@@ -16,15 +16,15 @@ router.map(routes.account, accountController)
 Use a `BuildAction` for a simple leaf route when one handler owns that route:
 
 ```ts
-import type { BuildAction } from 'remix/fetch-router'
+import type { BuildAction } from "remix/fetch-router";
 
-import { routes } from '../routes.ts'
+import { routes } from "../routes.ts";
 
-export const home: BuildAction<'GET', typeof routes.home> = {
+export const home: BuildAction<"GET", typeof routes.home> = {
   async handler(context) {
-    return new Response('home')
+    return new Response("home");
   },
-}
+};
 ```
 
 This is a good fit for standalone pages, simple uploads, or one-off endpoints.
@@ -34,27 +34,27 @@ This is a good fit for standalone pages, simple uploads, or one-off endpoints.
 Use `Controller<typeof routes.section>` when a feature owns multiple related routes:
 
 ```ts
-import type { Controller } from 'remix/fetch-router'
+import type { Controller } from "remix/fetch-router";
 
-import type { routes } from '../../routes.ts'
+import type { routes } from "../../routes.ts";
 
 export default {
   actions: {
     index() {
-      return new Response('account')
+      return new Response("account");
     },
     settings: {
       actions: {
         index() {
-          return new Response('settings form')
+          return new Response("settings form");
         },
         update() {
-          return new Response('updated')
+          return new Response("updated");
         },
       },
     },
   },
-} satisfies Controller<typeof routes.account>
+} satisfies Controller<typeof routes.account>;
 ```
 
 The `actions` shape should mirror the route subtree. If it does not, the route contract and the

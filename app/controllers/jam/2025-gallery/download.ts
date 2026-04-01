@@ -1,10 +1,7 @@
 import { getRequestContext } from "../../../utils/request-context";
 import { CACHE_CONTROL } from "../../../utils/cache-control";
 import { transformShopifyImageUrl } from "../shared";
-import {
-  getGalleryPhotos,
-  getSelectedPhotoIndex,
-} from "./controller";
+import { getGalleryPhotos, getSelectedPhotoIndex } from "./controller";
 
 export async function jam2025GalleryDownloadHandler() {
   let requestUrl = new URL(getRequestContext().request.url);

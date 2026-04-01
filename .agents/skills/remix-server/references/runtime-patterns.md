@@ -15,21 +15,21 @@ Keep `server.ts` small:
 In Node, the usual entrypoint shape is:
 
 ```ts
-import * as http from 'node:http'
-import { createRequestListener } from 'remix/node-fetch-server'
+import * as http from "node:http";
+import { createRequestListener } from "remix/node-fetch-server";
 
-let router = createAppRouter()
+let router = createAppRouter();
 
 let server = http.createServer(
   createRequestListener(async (request) => {
     try {
-      return await router.fetch(request)
+      return await router.fetch(request);
     } catch (error) {
-      console.error(error)
-      return new Response('Internal Server Error', { status: 500 })
+      console.error(error);
+      return new Response("Internal Server Error", { status: 500 });
     }
   }),
-)
+);
 ```
 
 ## Typed App Context
@@ -38,19 +38,24 @@ Define one app-local context contract from the root middleware tuple and build r
 on top of it.
 
 ```ts
-import { createRouter, type AnyParams, type MiddlewareContext, type WithParams } from 'remix/fetch-router'
+import {
+  createRouter,
+  type AnyParams,
+  type MiddlewareContext,
+  type WithParams,
+} from "remix/fetch-router";
 
 type RootMiddleware = [
   ReturnType<typeof formData>,
   ReturnType<typeof session>,
   ReturnType<typeof loadDatabase>,
   ReturnType<typeof loadAuth>,
-]
+];
 
 export type AppContext<params extends AnyParams = AnyParams> = WithParams<
   MiddlewareContext<RootMiddleware>,
   params
->
+>;
 ```
 
 This keeps middleware and controllers aligned on the same request-scoped values. Add stronger

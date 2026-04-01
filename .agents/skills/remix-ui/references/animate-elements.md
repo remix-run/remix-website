@@ -8,18 +8,32 @@ authoring reusable animation mixins instead of applying built-in mixins in app c
 ## Quick Start
 
 ```tsx
-import { animateEntrance, animateExit, animateLayout, spring } from 'remix/component'
+import {
+  animateEntrance,
+  animateExit,
+  animateLayout,
+  spring,
+} from "remix/component";
 
 let el = (
   <div
     key="card"
     mix={[
-      animateEntrance({ opacity: 0, transform: 'scale(0.95)', ...spring('snappy') }),
-      animateExit({ opacity: 0, transform: 'scale(0.98)', duration: 120, easing: 'ease-in' }),
-      animateLayout({ duration: 220, easing: 'ease-out' }),
+      animateEntrance({
+        opacity: 0,
+        transform: "scale(0.95)",
+        ...spring("snappy"),
+      }),
+      animateExit({
+        opacity: 0,
+        transform: "scale(0.98)",
+        duration: 120,
+        easing: "ease-in",
+      }),
+      animateLayout({ duration: 220, easing: "ease-out" }),
     ]}
   />
-)
+);
 ```
 
 ## Core Patterns
@@ -31,9 +45,9 @@ let el = (
   mix={[
     animateEntrance({
       opacity: 0,
-      transform: 'translateY(8px)',
+      transform: "translateY(8px)",
       duration: 180,
-      easing: 'ease-out',
+      easing: "ease-out",
     }),
   ]}
 />
@@ -47,11 +61,20 @@ let el = (
     <div
       key="panel"
       mix={[
-        animateEntrance({ opacity: 0, transform: 'scale(0.98)', duration: 180 }),
-        animateExit({ opacity: 0, transform: 'scale(0.98)', duration: 120, easing: 'ease-in' }),
+        animateEntrance({
+          opacity: 0,
+          transform: "scale(0.98)",
+          duration: 180,
+        }),
+        animateExit({
+          opacity: 0,
+          transform: "scale(0.98)",
+          duration: 120,
+          easing: "ease-in",
+        }),
       ]}
     />
-  )
+  );
 }
 ```
 
@@ -68,28 +91,34 @@ let el = (
         }),
       ]}
     />
-  ))
+  ));
 }
 ```
 
 ### Shared-layout swap
 
 ```tsx
-import { animateEntrance, animateExit, css } from 'remix/component'
-;<div
+import { animateEntrance, animateExit, css } from "remix/component";
+<div
   mix={[
     css({
-      display: 'grid',
-      '& > *': { gridArea: '1 / 1' },
+      display: "grid",
+      "& > *": { gridArea: "1 / 1" },
     }),
   ]}
 >
   {state ? (
-    <div key="a" mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]} />
+    <div
+      key="a"
+      mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]}
+    />
   ) : (
-    <div key="b" mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]} />
+    <div
+      key="b"
+      mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]}
+    />
   )}
-</div>
+</div>;
 ```
 
 ## Practical Guidance

@@ -11,12 +11,12 @@ a `Response` or a promise for one.
 Conceptually:
 
 ```ts
-import type { Middleware } from 'remix/fetch-router'
+import type { Middleware } from "remix/fetch-router";
 
 function example(): Middleware {
   return async (context, next) => {
-    return next()
-  }
+    return next();
+  };
 }
 ```
 
@@ -65,16 +65,16 @@ Typical uses:
 Use this when the middleware surrounds downstream work:
 
 ```ts
-import type { Middleware } from 'remix/fetch-router'
+import type { Middleware } from "remix/fetch-router";
 
 function requestTiming(): Middleware {
   return async (context, next) => {
-    let startedAt = Date.now()
-    let response = await next()
-    let mutable = new Response(response.body, response)
-    mutable.headers.set('X-Response-Time', `${Date.now() - startedAt}ms`)
-    return mutable
-  }
+    let startedAt = Date.now();
+    let response = await next();
+    let mutable = new Response(response.body, response);
+    mutable.headers.set("X-Response-Time", `${Date.now() - startedAt}ms`);
+    return mutable;
+  };
 }
 ```
 
@@ -83,16 +83,16 @@ function requestTiming(): Middleware {
 Use this when the middleware should reject or redirect before the route runs:
 
 ```ts
-import type { Middleware } from 'remix/fetch-router'
+import type { Middleware } from "remix/fetch-router";
 
 function requireHeader(name: string): Middleware {
   return (context, next) => {
     if (context.request.headers.has(name) === false) {
-      return new Response('Missing header', { status: 400 })
+      return new Response("Missing header", { status: 400 });
     }
 
-    return next()
-  }
+    return next();
+  };
 }
 ```
 
@@ -113,30 +113,28 @@ import {
   type MergeContext,
   type Middleware,
   type RequestContext,
-} from 'remix/fetch-router'
+} from "remix/fetch-router";
 
-type CurrentUser = { id: string; role: 'admin' | 'user' } | null
+type CurrentUser = { id: string; role: "admin" | "user" } | null;
 
-export const CurrentUserKey = createContextKey<CurrentUser>()
+export const CurrentUserKey = createContextKey<CurrentUser>();
 
-export type WithCurrentUser<context extends RequestContext<any, any>> = MergeContext<
-  context,
-  [readonly [typeof CurrentUserKey, CurrentUser]]
->
+export type WithCurrentUser<context extends RequestContext<any, any>> =
+  MergeContext<context, [readonly [typeof CurrentUserKey, CurrentUser]]>;
 
 export function loadCurrentUser(): Middleware {
   return async (context, next) => {
-    let user = await resolveCurrentUser(context.request)
-    context.set(CurrentUserKey, user)
-    return next()
-  }
+    let user = await resolveCurrentUser(context.request);
+    context.set(CurrentUserKey, user);
+    return next();
+  };
 }
 ```
 
 Downstream handlers can then read:
 
 ```ts
-let user = context.get(CurrentUserKey)
+let user = context.get(CurrentUserKey);
 ```
 
 ## Global Vs Route-Local
