@@ -14,18 +14,18 @@ That keeps navigation, redirects, and handler registration aligned with one rout
 Dynamic segments become typed params:
 
 ```ts
-routes.books.show.href({ slug: 'the-left-hand-of-darkness' })
-routes.account.orders.show.href({ orderId: '42' })
-routes.auth.resetPassword.index.href({ token: 'abc123' })
+routes.books.show.href({ slug: "the-left-hand-of-darkness" });
+routes.account.orders.show.href({ orderId: "42" });
+routes.auth.resetPassword.index.href({ token: "abc123" });
 ```
 
 If a resource route would otherwise generate a vague `:id`, use `param` so call sites stay clear:
 
 ```ts
-resources('users', {
-  only: ['show', 'edit', 'update'],
-  param: 'userId',
-})
+resources("users", {
+  only: ["show", "edit", "update"],
+  param: "userId",
+});
 ```
 
 ## Search Params
@@ -34,8 +34,8 @@ Pass search params as the second `href()` argument when the redirect or link nee
 
 ```ts
 routes.auth.login.index.href(undefined, {
-  returnTo: '/account/orders/42',
-})
+  returnTo: "/account/orders/42",
+});
 ```
 
 Use this for values such as `returnTo`, filters, or tab state when the route contract should own the

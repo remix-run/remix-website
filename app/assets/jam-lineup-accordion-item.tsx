@@ -135,10 +135,7 @@ export let JamLineupAccordionItem = clientEntry(
           <div mix={[ref((node) => (panelInner = node))]}>
             <div class="pb-8 transition-colors duration-300 group-hover:bg-gray-900">
               <div
-                class={cx(
-                  "p-4 sm:p-6 md:p-8 lg:p-9",
-                  props.gridColsClassName,
-                )}
+                class={cx("p-4 sm:p-6 md:p-8 lg:p-9", props.gridColsClassName)}
               >
                 <div
                   class="col-span-full flex flex-col gap-4 text-sm text-white sm:col-span-1 sm:col-start-2 sm:gap-6 sm:text-base md:text-lg lg:text-xl [&_a:hover]:underline [&_a]:text-blue-400"

@@ -174,7 +174,10 @@ function Navbar() {
           "linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)",
       }}
     >
-      <a href={routes.jam.y2025.index.href()} class="flex items-center md:block">
+      <a
+        href={routes.jam.y2025.index.href()}
+        class="flex items-center md:block"
+      >
         <JamLogo class="h-[48px] fill-white md:h-auto md:w-[200px] lg:w-[160px] xl:w-[200px]" />
       </a>
       <div class="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg lg:flex">
@@ -286,9 +289,7 @@ function MobileNavLink() {
 
 function Footer() {
   return (props: { showSeats: boolean; className?: string }) => (
-    <footer
-      class={cx("relative flex flex-col items-center", props.className)}
-    >
+    <footer class={cx("relative flex flex-col items-center", props.className)}>
       {props.showSeats ? (
         <>
           <div class="h-0 w-full md:h-28" />

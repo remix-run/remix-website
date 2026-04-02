@@ -10,19 +10,19 @@ Import route definition helpers from `remix/fetch-router/routes`, not from
 Export one named `routes` object for the app, even if it contains multiple top-level sections:
 
 ```ts
-import { form, get, post, route } from 'remix/fetch-router/routes'
+import { form, get, post, route } from "remix/fetch-router/routes";
 
 export const routes = route({
-  home: get('/'),
-  auth: route('auth', {
-    login: form('login'),
-    logout: post('logout'),
+  home: get("/"),
+  auth: route("auth", {
+    login: form("login"),
+    logout: post("logout"),
   }),
-  account: route('account', {
-    index: get('/'),
-    settings: form('settings'),
+  account: route("account", {
+    index: get("/"),
+    settings: form("settings"),
   }),
-})
+});
 ```
 
 This route tree is the contract that UI, redirects, and controllers all depend on.
