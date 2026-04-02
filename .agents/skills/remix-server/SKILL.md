@@ -34,32 +34,32 @@ This skill is not the place to design route contracts or render UI. Use
 
 ```ts
 // server.ts
-import * as http from "node:http";
-import { createRequestListener } from "remix/node-fetch-server";
-import { router } from "./app/router.ts";
+import * as http from 'node:http'
+import { createRequestListener } from 'remix/node-fetch-server'
+import { router } from './app/router.ts'
 
 let server = http.createServer(
   createRequestListener((request) => {
-    return router.fetch(request);
+    return router.fetch(request)
   }),
-);
+)
 ```
 
 ```ts
 // app/router.ts
-import { createRouter } from "remix/fetch-router";
-import { formData } from "remix/form-data-middleware";
-import { session } from "remix/session-middleware";
-import { staticFiles } from "remix/static-middleware";
+import { createRouter } from 'remix/fetch-router'
+import { formData } from 'remix/form-data-middleware'
+import { session } from 'remix/session-middleware'
+import { staticFiles } from 'remix/static-middleware'
 
 export let router = createRouter({
   middleware: [
-    staticFiles("./public"),
+    staticFiles('./public'),
     formData(),
     session(sessionCookie, sessionStorage),
     loadAuth(),
   ],
-});
+})
 ```
 
 ## Default Ownership

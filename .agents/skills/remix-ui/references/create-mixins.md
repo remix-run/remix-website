@@ -21,22 +21,22 @@ Treat these as constraints, not suggestions:
 
 ```tsx
 createMixin<NodeType>((handle) => {
-  handle.addEventListener("insert", (event) => {
+  handle.addEventListener('insert', (event) => {
     // event.node is the mounted host node for this lifecycle.
-  });
+  })
 
-  handle.addEventListener("remove", () => {
+  handle.addEventListener('remove', () => {
     // Clean up listeners, timers, observers, and async work here.
-  });
+  })
 
   return (props) => {
     handle.queueTask((node) => {
       // Post-commit work that needs the concrete host node.
-    });
+    })
 
-    return <handle.element {...props} />;
-  };
-});
+    return <handle.element {...props} />
+  }
+})
 ```
 
 If your implementation assumes semantics that do not exist (node swapping, repeated `insert` for
@@ -62,32 +62,30 @@ the same handle, or extra host lifecycles hidden behind one handle), remove that
 ### Pure prop transform
 
 ```tsx
-let withTitle = createMixin(
-  (handle) => (title: string, props: { title?: string }) => (
-    <handle.element {...props} title={title} />
-  ),
-);
+let withTitle = createMixin((handle) => (title: string, props: { title?: string }) => (
+  <handle.element {...props} title={title} />
+))
 ```
 
 ### Lifecycle-managed imperative setup
 
 ```tsx
 let withFocus = createMixin<HTMLElement>((handle) => {
-  handle.addEventListener("insert", (event) => {
-    event.node.focus();
-  });
+  handle.addEventListener('insert', (event) => {
+    event.node.focus()
+  })
 
-  return (props) => <handle.element {...props} />;
-});
+  return (props) => <handle.element {...props} />
+})
 ```
 
 ### Post-commit DOM work
 
 ```tsx
 handle.queueTask((node) => {
-  node.removeEventListener(prevType, stableHandler, prevCapture);
-  node.addEventListener(nextType, stableHandler, nextCapture);
-});
+  node.removeEventListener(prevType, stableHandler, prevCapture)
+  node.addEventListener(nextType, stableHandler, nextCapture)
+})
 ```
 
 ## Avoid

@@ -3,18 +3,18 @@
 For component unit tests, use `createRoot(...)` and `root.flush()`.
 
 ```tsx
-import { createRoot } from "remix/component";
+import { createRoot } from 'remix/component'
 
-let container = document.createElement("div");
-let root = createRoot(container);
+let container = document.createElement('div')
+let root = createRoot(container)
 
-root.render(<Counter />);
-root.flush();
+root.render(<Counter />)
+root.flush()
 
-container.querySelector("button")?.click();
-root.flush();
+container.querySelector('button')?.click()
+root.flush()
 
-expect(container.textContent).toContain("1");
+expect(container.textContent).toContain('1')
 ```
 
 Guidelines:

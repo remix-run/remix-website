@@ -6,23 +6,23 @@ Every component has two phases:
 2. Render phase: returned function runs on initial render and every update
 
 ```tsx
-import { on, type Handle } from "remix/component";
+import { on, type Handle } from 'remix/component'
 
 function Counter(handle: Handle, initialCount = 0) {
-  let count = initialCount;
+  let count = initialCount
 
   return (props: { label: string }) => (
     <button
       mix={[
-        on("click", () => {
-          count++;
-          handle.update();
+        on('click', () => {
+          count++
+          handle.update()
         }),
       ]}
     >
       {props.label}: {count}
     </button>
-  );
+  )
 }
 ```
 
@@ -55,18 +55,18 @@ function Counter(handle: Handle, initialCount = 0) {
 Prefer:
 
 ```tsx
-import { addEventListeners, type Handle } from "remix/component";
+import { addEventListeners, type Handle } from 'remix/component'
 
 function ResizeTracker(handle: Handle) {
-  let width = window.innerWidth;
+  let width = window.innerWidth
 
   addEventListeners(window, handle.signal, {
     resize() {
-      width = window.innerWidth;
-      handle.update();
+      width = window.innerWidth
+      handle.update()
     },
-  });
+  })
 
-  return () => <div>{width}</div>;
+  return () => <div>{width}</div>
 }
 ```

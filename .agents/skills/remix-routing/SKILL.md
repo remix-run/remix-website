@@ -34,38 +34,38 @@ middleware, and `../remix-ui/SKILL.md` for rendering and client-side navigation 
 
 ```ts
 // app/routes.ts
-import { form, get, resources, route } from "remix/fetch-router/routes";
+import { form, get, resources, route } from 'remix/fetch-router/routes'
 
 export const routes = route({
-  home: get("/"),
-  contact: form("contact"),
-  books: resources("books", { only: ["index", "show"], param: "bookId" }),
-  account: route("account", {
-    index: get("/"),
-    settings: form("settings", {
-      formMethod: "PUT",
-      names: { action: "update" },
+  home: get('/'),
+  contact: form('contact'),
+  books: resources('books', { only: ['index', 'show'], param: 'bookId' }),
+  account: route('account', {
+    index: get('/'),
+    settings: form('settings', {
+      formMethod: 'PUT',
+      names: { action: 'update' },
     }),
   }),
-});
+})
 ```
 
 ```ts
 // app/router.ts
-import { createRouter } from "remix/fetch-router";
+import { createRouter } from 'remix/fetch-router'
 
-import accountController from "./controllers/account/controller.tsx";
-import booksController from "./controllers/books/controller.tsx";
-import contactController from "./controllers/contact/controller.tsx";
-import { home } from "./controllers/home.tsx";
-import { routes } from "./routes.ts";
+import accountController from './controllers/account/controller.tsx'
+import booksController from './controllers/books/controller.tsx'
+import contactController from './controllers/contact/controller.tsx'
+import { home } from './controllers/home.tsx'
+import { routes } from './routes.ts'
 
-export const router = createRouter();
+export const router = createRouter()
 
-router.map(routes.home, home);
-router.map(routes.contact, contactController);
-router.map(routes.books, booksController);
-router.map(routes.account, accountController);
+router.map(routes.home, home)
+router.map(routes.contact, contactController)
+router.map(routes.books, booksController)
+router.map(routes.account, accountController)
 ```
 
 ## Load These References As Needed

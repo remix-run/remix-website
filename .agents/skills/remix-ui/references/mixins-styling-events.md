@@ -52,7 +52,8 @@ Use `ref(...)` for DOM node access:
 
 ## Styling
 
-Prefer the `css(...)` mixin for static stylesheet-like rules and `style` for dynamic values.
+Use `css(...)` as the default for all static styles. Only use `style` for dynamic values that change
+at render time.
 
 ```tsx
 <button
