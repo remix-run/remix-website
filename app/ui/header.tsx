@@ -5,7 +5,7 @@ import { routes } from "../routes";
 
 const LINKS: Array<{ to: string; label: string; external?: boolean }> = [
   { to: routes.blog.href(), label: "Blog" },
-  { to: routes.jam2025.href(), label: "Jam" },
+  { to: routes.jam.y2025.index.href(), label: "Jam" },
   { to: "https://shop.remix.run", label: "Store", external: true },
   { to: "https://v2.remix.run/docs", label: "V2 Docs" },
 ];

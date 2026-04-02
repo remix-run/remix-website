@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import cx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { JamScrambleText } from "../../assets/jam-scramble-text";
 import { MobileMenu } from "../../assets/mobile-menu";
@@ -165,7 +165,7 @@ function Background() {
 function Navbar() {
   return (props: { className?: string; activePath: string }) => (
     <nav
-      class={clsx(
+      class={cx(
         "fixed left-0 right-0 top-0 flex items-center justify-between p-4 md:p-9",
         props.className,
       )}
@@ -174,38 +174,38 @@ function Navbar() {
           "linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)",
       }}
     >
-      <a href={routes.jam2025.href()} class="flex items-center md:block">
+      <a href={routes.jam.y2025.index.href()} class="flex items-center md:block">
         <JamLogo class="h-[48px] fill-white md:h-auto md:w-[200px] lg:w-[160px] xl:w-[200px]" />
       </a>
       <div class="hidden items-center justify-center gap-2 rounded-full bg-black/40 p-2 backdrop-blur-lg lg:flex">
         <NavLink
-          href={routes.jam2025Lineup.href()}
-          active={props.activePath === routes.jam2025Lineup.href()}
+          href={routes.jam.y2025.lineup.href()}
+          active={props.activePath === routes.jam.y2025.lineup.href()}
         >
           Schedule & Lineup
         </NavLink>
         <NavLink
-          href={routes.jam2025Gallery.href()}
-          active={props.activePath === routes.jam2025Gallery.href()}
+          href={routes.jam.y2025.gallery.index.href()}
+          active={props.activePath === routes.jam.y2025.gallery.index.href()}
         >
           Gallery
         </NavLink>
         <NavLink
-          href={routes.jam2025Coc.href()}
-          active={props.activePath === routes.jam2025Coc.href()}
+          href={routes.jam.y2025.coc.href()}
+          active={props.activePath === routes.jam.y2025.coc.href()}
         >
           Code of Conduct
         </NavLink>
         <NavLink
-          href={routes.jam2025Faq.href()}
-          active={props.activePath === routes.jam2025Faq.href()}
+          href={routes.jam.y2025.faq.href()}
+          active={props.activePath === routes.jam.y2025.faq.href()}
         >
           FAQ
         </NavLink>
       </div>
       <a
-        class={clsx(jamButtonClassName, "hidden bg-white text-black lg:flex")}
-        href={routes.jam2025Ticket.href()}
+        class={cx(jamButtonClassName, "hidden bg-white text-black lg:flex")}
+        href={routes.jam.y2025.ticket.href()}
       >
         <TicketLogo class="size-6 fill-current md:size-8 lg:size-6 xl:size-8" />
         <span>Ticket</span>
@@ -218,32 +218,32 @@ function Navbar() {
         navClass={jamMobileMenuNavClass}
       >
         <MobileNavLink
-          href={routes.jam2025Lineup.href()}
-          active={props.activePath === routes.jam2025Lineup.href()}
+          href={routes.jam.y2025.lineup.href()}
+          active={props.activePath === routes.jam.y2025.lineup.href()}
         >
           Schedule & Lineup
         </MobileNavLink>
         <MobileNavLink
-          href={routes.jam2025Gallery.href()}
-          active={props.activePath === routes.jam2025Gallery.href()}
+          href={routes.jam.y2025.gallery.index.href()}
+          active={props.activePath === routes.jam.y2025.gallery.index.href()}
         >
           Gallery
         </MobileNavLink>
         <MobileNavLink
-          href={routes.jam2025Coc.href()}
-          active={props.activePath === routes.jam2025Coc.href()}
+          href={routes.jam.y2025.coc.href()}
+          active={props.activePath === routes.jam.y2025.coc.href()}
         >
           Code of Conduct
         </MobileNavLink>
         <MobileNavLink
-          href={routes.jam2025Faq.href()}
-          active={props.activePath === routes.jam2025Faq.href()}
+          href={routes.jam.y2025.faq.href()}
+          active={props.activePath === routes.jam.y2025.faq.href()}
         >
           FAQ
         </MobileNavLink>
         <MobileNavLink
-          href={routes.jam2025Ticket.href()}
-          active={props.activePath === routes.jam2025Ticket.href()}
+          href={routes.jam.y2025.ticket.href()}
+          active={props.activePath === routes.jam.y2025.ticket.href()}
         >
           Ticket
         </MobileNavLink>
@@ -256,7 +256,7 @@ function NavLink() {
   return (props: { href: string; active: boolean; children: RemixNode }) => (
     <a
       href={props.href}
-      class={clsx(
+      class={cx(
         "rounded-full border-2 px-5 py-0.5 text-base font-bold outline-none transition-colors duration-300 md:border-4 md:py-3 md:text-xl lg:border-2 lg:px-4 lg:py-2 lg:text-base xl:px-5 xl:py-3 xl:text-xl",
         props.active
           ? "border-white text-white"
@@ -272,7 +272,7 @@ function MobileNavLink() {
   return (props: { href: string; active: boolean; children: RemixNode }) => (
     <a
       href={props.href}
-      class={clsx(
+      class={cx(
         "block min-w-max rounded-full border-2 px-4 py-2 text-lg font-bold outline-none transition-colors duration-300",
         props.active
           ? "border-white text-white"
@@ -287,7 +287,7 @@ function MobileNavLink() {
 function Footer() {
   return (props: { showSeats: boolean; className?: string }) => (
     <footer
-      class={clsx("relative flex flex-col items-center", props.className)}
+      class={cx("relative flex flex-col items-center", props.className)}
     >
       {props.showSeats ? (
         <>
@@ -304,7 +304,7 @@ function Footer() {
         </>
       ) : null}
       <div
-        class={clsx(
+        class={cx(
           "flex flex-col items-center gap-2 py-40 text-center font-mono text-xs md:text-base 2xl:py-32",
           props.showSeats
             ? "w-full bg-gradient-to-b from-[rgb(255,51,0)] to-[rgb(186,37,0)] text-white"
@@ -314,7 +314,7 @@ function Footer() {
         <div class="flex items-center gap-5">
           <a
             href="/"
-            class={clsx(
+            class={cx(
               "rounded-3xl border px-4 py-1 uppercase text-white",
               props.showSeats
                 ? "border-white hover:underline"
@@ -373,7 +373,7 @@ function Footer() {
             docs and examples licensed under{" "}
             <a
               href="https://opensource.org/licenses/MIT"
-              class={clsx(
+              class={cx(
                 "text-white",
                 props.showSeats ? "hover:underline" : "hover:text-blue-brand",
               )}
@@ -387,7 +387,7 @@ function Footer() {
             ©2025{" "}
             <a
               href="https://shopify.com"
-              class={clsx(
+              class={cx(
                 "text-white",
                 props.showSeats ? "hover:underline" : "hover:text-blue-brand",
               )}
@@ -406,7 +406,7 @@ function Footer() {
 export function Title() {
   return (props: { children: RemixNode; className?: string }) => (
     <h1
-      class={clsx(
+      class={cx(
         "flex flex-col gap-2 text-3xl font-extrabold uppercase leading-none tracking-tight text-white sm:text-5xl md:text-7xl md:leading-none",
         props.className,
       )}
@@ -428,7 +428,7 @@ export function SectionLabel() {
 
 export function InfoText() {
   return (props: { children: RemixNode; className?: string }) => (
-    <div class={clsx("text-center", props.className)}>
+    <div class={cx("text-center", props.className)}>
       <p class="text-lg font-bold leading-[1.4] text-white md:text-3xl">
         {props.children}
       </p>
@@ -439,7 +439,7 @@ export function InfoText() {
 export function Subheader() {
   return (props: { children: RemixNode; className?: string }) => (
     <h2
-      class={clsx(
+      class={cx(
         "text-2xl font-bold tracking-tight text-white md:text-3xl",
         props.className,
       )}
@@ -452,7 +452,7 @@ export function Subheader() {
 export function Paragraph() {
   return (props: { children: RemixNode; className?: string }) => (
     <p
-      class={clsx(
+      class={cx(
         "text-white/80 [&_a:hover]:underline [&_a]:text-blue-400",
         props.className,
       )}
@@ -496,7 +496,7 @@ export function JamButton() {
     <button
       type={props.type ?? "button"}
       disabled={props.disabled}
-      class={clsx(
+      class={cx(
         jamButtonClassName,
         "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-black",
         props.active ? "bg-blue-brand text-white" : "bg-white text-black",
@@ -539,10 +539,10 @@ export function KeepsakesStatic() {
 function Keepsake() {
   return (props: { className: string; src: string; hasBorder?: boolean }) => (
     <div class="keepsake-container relative">
-      <div class={clsx("keepsake select-none", props.className)}>
+      <div class={cx("keepsake select-none", props.className)}>
         <div class="rotate">
           <div
-            class={clsx("h-full w-full", {
+            class={cx("h-full w-full", {
               "rounded border-[6px] border-white md:border-[16px]":
                 props.hasBorder,
             })}

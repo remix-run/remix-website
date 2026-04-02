@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import cx from "clsx";
 import { clientEntry, on, type Dispatched, type Handle } from "remix/component";
 import assets from "./jam-keepsakes.tsx?assets=client";
 import { assetPaths } from "../utils/asset-paths";
@@ -166,7 +166,7 @@ export let JamKeepsakes = clientEntry(
               style={{ zIndex: order[keepsake.id] }}
             >
               <div
-                class={clsx(
+                class={cx(
                   "keepsake touch-none select-none",
                   keepsake.id,
                   isActiveDrag ? "cursor-grabbing" : "cursor-grab",
@@ -189,7 +189,7 @@ export let JamKeepsakes = clientEntry(
               >
                 <div class="rotate">
                   <div
-                    class={clsx("h-full w-full", {
+                    class={cx("h-full w-full", {
                       "rounded border-[6px] border-white md:border-[16px]":
                         keepsake.hasBorder,
                     })}

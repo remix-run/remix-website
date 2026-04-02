@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { catchallHandler } from "./catchall";
-import { renderNotFoundPage } from "./not-found";
+import { renderNotFoundPage } from "../ui/not-found-page";
 
-vi.mock("./not-found", () => ({
+vi.mock("../ui/not-found-page", () => ({
   renderNotFoundPage: vi.fn(() => new Response("", { status: 404 })),
 }));
 

@@ -1,11 +1,8 @@
 import cx from "clsx";
-import { Document } from "../ui/document";
+import { Document } from "./document";
 import { render } from "../utils/render";
 
-export function renderNotFoundPage(
-  _request: Request,
-  options?: { statusText?: string },
-) {
+export function renderNotFoundPage(options?: { statusText?: string }) {
   let statusText = options?.statusText ?? "Not Found";
 
   return render.document(

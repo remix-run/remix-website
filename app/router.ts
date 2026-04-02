@@ -8,15 +8,15 @@ import { staticFiles } from "remix/static-middleware";
 
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
-import { routes } from "./routes";
+import { routes } from "./routes.ts";
 
 import actionsController from "./controllers/actions/controller.tsx";
 import { blogHandler } from "./controllers/blog/controller.tsx";
-import { blogOgImageHandler } from "./controllers/blog-og-image";
+import { blogOgImageHandler } from "./controllers/blog-og-image.tsx";
 import { blogPostHandler } from "./controllers/blog/post.tsx";
 import { blogRssHandler } from "./controllers/blog/rss.ts";
 import { brandHandler } from "./controllers/brand.tsx";
-import { catchallHandler } from "./controllers/catchall";
+import { catchallHandler } from "./controllers/catchall.ts";
 import { homeHandler } from "./controllers/home/controller.tsx";
 import { jam2025CocHandler } from "./controllers/jam/2025-coc.tsx";
 import { jam2025FaqHandler } from "./controllers/jam/2025-faq.tsx";
@@ -99,14 +99,14 @@ function createAppRouter() {
   router.map(routes.actions, actionsController);
   router.map(routes.brand, brandHandler);
   router.map(routes.newsletter, newsletterHandler);
-  router.map(routes.jam, jamHandler);
-  router.map(routes.jam2025, jam2025Handler);
-  router.map(routes.jam2025Ticket, jam2025TicketHandler);
-  router.map(routes.jam2025Lineup, jam2025LineupHandler);
-  router.map(routes.jam2025Faq, jam2025FaqHandler);
-  router.map(routes.jam2025Coc, jam2025CocHandler);
-  router.map(routes.jam2025GalleryDownload, jam2025GalleryDownloadHandler);
-  router.map(routes.jam2025Gallery, jam2025GalleryHandler);
+  router.map(routes.jam.index, jamHandler);
+  router.map(routes.jam.y2025.index, jam2025Handler);
+  router.map(routes.jam.y2025.ticket, jam2025TicketHandler);
+  router.map(routes.jam.y2025.lineup, jam2025LineupHandler);
+  router.map(routes.jam.y2025.faq, jam2025FaqHandler);
+  router.map(routes.jam.y2025.coc, jam2025CocHandler);
+  router.map(routes.jam.y2025.gallery.download, jam2025GalleryDownloadHandler);
+  router.map(routes.jam.y2025.gallery.index, jam2025GalleryHandler);
   router.map(routes.home, homeHandler);
 
   // Redirects from _redirects (must be before * catchall)

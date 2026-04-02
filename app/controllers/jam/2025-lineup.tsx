@@ -1,4 +1,4 @@
-import { clsx } from "clsx";
+import cx from "clsx";
 import { getSchedule } from "../../data/jam-schedule.server";
 import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
@@ -66,7 +66,7 @@ function ScheduleTable() {
       <section class="z-10 w-full sm:hidden">
         <div class="-mx-10 border-y-2 border-white/20 px-4">
           <div
-            class={clsx(
+            class={cx(
               "p-6 font-mono text-xs uppercase text-white/40",
               gridColsClassName,
             )}
@@ -81,7 +81,7 @@ function ScheduleTable() {
             return (
               <div key={key} class="overflow-hidden">
                 <div
-                  class={clsx(
+                  class={cx(
                     "my-2 border-t border-white/10 p-6 text-sm font-bold text-white",
                     gridColsClassName,
                   )}
@@ -97,7 +97,7 @@ function ScheduleTable() {
                   <span>{item.speaker}</span>
                 </div>
                 <div class="pb-6">
-                  <div class={clsx("px-6", gridColsClassName)}>
+                  <div class={cx("px-6", gridColsClassName)}>
                     <div
                       class="col-span-full flex flex-col gap-4 text-sm text-white [&_a:hover]:underline [&_a]:text-blue-400"
                       innerHTML={item.description}
@@ -127,7 +127,7 @@ function ScheduleTable() {
       <section class="z-10 hidden w-full px-4 sm:block">
         <div class="-mx-10 border-y-2 border-white/20">
           <div
-            class={clsx(
+            class={cx(
               "p-4 font-mono text-xs uppercase text-white/40 sm:p-6 sm:text-sm md:p-8 lg:p-9",
               gridColsClassName,
             )}

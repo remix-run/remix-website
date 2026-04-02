@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import cx from "clsx";
 import { addEventListeners, clientEntry, type Handle } from "remix/component";
 import assets from "./jam-scramble-text.tsx?assets=client";
 
@@ -207,7 +207,7 @@ export let JamScrambleText = clientEntry(
               return (
                 <span
                   key={index}
-                  class={clsx(
+                  class={cx(
                     visible ? "opacity-100" : "opacity-0",
                     resolved ? "text-white" : colorMap[color],
                   )}

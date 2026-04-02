@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import cx from "clsx";
 import { addEventListeners, clientEntry, type Handle } from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import assets from "./jam-fade-in-badge.tsx?assets=client";
@@ -44,7 +44,7 @@ export let JamFadeInBadge = clientEntry(
     return (props: { children: RemixNode; class?: string }) => {
       return (
         <span
-          class={clsx(
+          class={cx(
             "rounded-full px-4 py-3 text-xl leading-none md:px-8 md:py-5 md:text-4xl",
             "transition-opacity duration-500",
             isVisible ? "opacity-100" : "opacity-0",

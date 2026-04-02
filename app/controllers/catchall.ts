@@ -1,5 +1,5 @@
 import semver from "semver";
-import { renderNotFoundPage } from "./not-found";
+import { renderNotFoundPage } from "../ui/not-found-page";
 
 const SAFE_STATIC_FILE_EXTENSIONS = [
   ".html",
@@ -39,7 +39,7 @@ export function catchallHandler(context: { request: Request }) {
     return new Response("", { status: 404, statusText: "Not Found" });
   }
 
-  return renderNotFoundPage(context.request);
+  return renderNotFoundPage();
 }
 
 function normalizeLegacyRedirect(url: URL): string | null {

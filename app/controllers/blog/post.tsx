@@ -1,11 +1,11 @@
-import { clsx } from "clsx";
+import cx from "clsx";
 import mdStyles from "../../styles/md.css?url";
 import { Document } from "../../ui/document";
 import { Footer } from "../../ui/footer";
 import { Header } from "../../ui/header";
 import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe";
 import { routes } from "../../routes";
-import { renderNotFoundPage } from "../not-found";
+import { renderNotFoundPage } from "../../ui/not-found-page";
 import { render } from "../../utils/render";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.server";
 import { CACHE_CONTROL } from "../../utils/cache-control";
@@ -18,7 +18,7 @@ type BlogPostContext = {
 export async function blogPostHandler(context: BlogPostContext) {
   let slug = context.params.slug;
   if (!slug) {
-    return renderNotFoundPage(context.request);
+    return renderNotFoundPage();
   }
 
   let requestUrl = new URL(context.request.url);
@@ -45,7 +45,7 @@ export async function blogPostHandler(context: BlogPostContext) {
     post = await getBlogPost(slug);
   } catch (error) {
     if (error instanceof Response && error.status === 404) {
-      return renderNotFoundPage(context.request);
+      return renderNotFoundPage();
     }
     throw error;
   }
@@ -163,7 +163,7 @@ function BlogPostContent() {
             <div class="relative h-[280px] bg-gray-900 md:mx-auto md:h-[400px] md:max-w-3xl md:rounded-xl xl:h-[480px]">
               <div class="absolute inset-0">
                 <img
-                  class={clsx(
+                  class={cx(
                     "h-full w-full object-cover object-top md:rounded-xl",
                     !props.post.imageDisableOverlay && "opacity-40",
                   )}
@@ -178,7 +178,7 @@ function BlogPostContent() {
                   </div>
                   <div class="h-2" />
                   <h1
-                    class={clsx(
+                    class={cx(
                       "font-display font-extrabold text-white md:text-4xl",
                       props.post.title.length > 50 ? "text-2xl" : "text-3xl",
                     )}

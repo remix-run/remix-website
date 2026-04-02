@@ -1,4 +1,4 @@
-import { clsx } from "clsx";
+import cx from "clsx";
 import { clientEntry, on, ref, type Handle } from "remix/component";
 import { assetPaths } from "../utils/asset-paths";
 import assets from "./jam-lineup-accordion-item.tsx?assets=client";
@@ -99,7 +99,7 @@ export let JamLineupAccordionItem = clientEntry(
       >
         <summary
           mix={[on<HTMLElement>("click", onSummaryClick)]}
-          class={clsx(
+          class={cx(
             "_no-triangle grid cursor-pointer select-none p-4 text-sm font-bold text-white outline-none transition-colors duration-300 hover:bg-gray-900 focus-visible:bg-gray-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-brand sm:p-6 sm:text-base md:p-8 md:text-lg lg:p-9 lg:text-2xl",
             props.gridColsClassName,
           )}
@@ -109,7 +109,7 @@ export let JamLineupAccordionItem = clientEntry(
           <span>{props.item.speaker}</span>
           <div class="flex justify-end">
             <svg
-              class={clsx(
+              class={cx(
                 "size-4 text-white transition-transform sm:size-5 lg:size-6",
                 isOpen ? "-rotate-90" : "rotate-90",
               )}
@@ -135,7 +135,7 @@ export let JamLineupAccordionItem = clientEntry(
           <div mix={[ref((node) => (panelInner = node))]}>
             <div class="pb-8 transition-colors duration-300 group-hover:bg-gray-900">
               <div
-                class={clsx(
+                class={cx(
                   "p-4 sm:p-6 md:p-8 lg:p-9",
                   props.gridColsClassName,
                 )}

@@ -60,7 +60,7 @@ export async function jam2025GalleryHandler() {
                   class="mb-4 w-full break-inside-avoid md:mb-6"
                 >
                   <JamGalleryLink
-                    href={`${routes.jam2025Gallery.href()}?photo=${index}`}
+                    href={`${routes.jam.y2025.gallery.index.href()}?photo=${index}`}
                     class="block overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity duration-300 hover:opacity-85 focus-visible:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand"
                   >
                     <PhotoImage {...photo} />
@@ -100,7 +100,7 @@ function GalleryModal() {
   }) => {
     let selectedPhoto = photos[selectedPhotoIndex];
     let nav = getJamGalleryModalNav(selectedPhotoIndex, photos.length);
-    let downloadHref = `${routes.jam2025GalleryDownload.href()}?photo=${selectedPhotoIndex}`;
+    let downloadHref = `${routes.jam.y2025.gallery.download.href()}?photo=${selectedPhotoIndex}`;
     return (
       <JamGalleryModalHost
         setup={{ photoCount: photos.length }}
@@ -245,7 +245,7 @@ function getJamGalleryModalNav(
   selectedPhotoIndex: number,
   photosLength: number,
 ): JamGalleryModalNav {
-  let base = routes.jam2025Gallery.href();
+  let base = routes.jam.y2025.gallery.index.href();
   let previousPhotoIndex =
     selectedPhotoIndex > 0 ? selectedPhotoIndex - 1 : photosLength - 1;
   let nextPhotoIndex =

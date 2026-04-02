@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import cx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
@@ -97,7 +97,7 @@ function Jam2025Page() {
             />
             <JamFadeInBadge
               setup={1200}
-              class={clsx(
+              class={cx(
                 "flex items-center justify-center gap-2 md:gap-4",
                 eventStatus === "live"
                   ? "bg-red-brand text-white"

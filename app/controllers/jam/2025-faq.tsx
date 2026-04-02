@@ -55,7 +55,7 @@ export async function jam2025FaqHandler() {
             answer={
               <Paragraph>
                 Checkout our full{" "}
-                <a href={routes.jam2025Lineup.href()}>Schedule & Lineup</a> for
+                <a href={routes.jam.y2025.lineup.href()}>Schedule & Lineup</a> for
                 the list of speakers and topics, as well as all the day-of
                 information you need.
               </Paragraph>

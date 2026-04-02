@@ -1,23 +1,29 @@
-import { post, route } from "remix/fetch-router/routes";
+import { get, post, route } from "remix/fetch-router/routes";
 
 export let routes = route({
   actions: route("_actions", {
     newsletter: post("/newsletter"),
   }),
-  blog: "/blog",
-  blogOgImage: "/img/:slug",
-  blogPost: "/blog/:slug(.:ext)",
-  blogRss: "/blog/rss.xml",
-  brand: "/brand",
-  healthcheck: "/healthcheck",
-  home: "/",
-  jam: "/jam",
-  jam2025: "/jam/2025",
-  jam2025Coc: "/jam/2025/coc",
-  jam2025Faq: "/jam/2025/faq",
-  jam2025Gallery: "/jam/2025/gallery",
-  jam2025GalleryDownload: "/jam/2025/gallery/download",
-  jam2025Lineup: "/jam/2025/lineup",
-  jam2025Ticket: "/jam/2025/ticket",
-  newsletter: "/newsletter",
+  blog: get("/blog"),
+  blogOgImage: get("/img/:slug"),
+  blogPost: get("/blog/:slug(.:ext)"),
+  blogRss: get("/blog/rss.xml"),
+  brand: get("/brand"),
+  healthcheck: get("/healthcheck"),
+  home: get("/"),
+  jam: route("jam", {
+    index: get("/"),
+    y2025: route("2025", {
+      index: get("/"),
+      coc: get("coc"),
+      faq: get("faq"),
+      gallery: route("gallery", {
+        index: get("/"),
+        download: get("download"),
+      }),
+      lineup: get("lineup"),
+      ticket: get("ticket"),
+    }),
+  }),
+  newsletter: get("/newsletter"),
 });
