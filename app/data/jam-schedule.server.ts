@@ -14,7 +14,7 @@ const SCHEDULE_IMAGES_DIRECTORY = path.join(
 const SCHEDULE_IMAGE_PUBLIC_PREFIX = "/jam/2025/images/schedule";
 const SCHEDULE_FILE_PATH = path.join(
   process.cwd(),
-  "app/data/jam-schedule.yaml",
+  "data/jam-schedule.yaml",
 );
 
 const scheduleItemSchema = s.object({
