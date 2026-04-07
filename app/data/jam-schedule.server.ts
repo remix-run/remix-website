@@ -1,4 +1,5 @@
 import assert from "node:assert";
+import { readFileSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 import yaml from "yaml";
@@ -6,13 +7,15 @@ import * as s from "remix/data-schema";
 import { LRUCache } from "lru-cache";
 import { processMarkdown } from "../data/md.server";
 
-import scheduleYamlFileContents from "./jam-schedule.yaml?raw";
-
 const SCHEDULE_IMAGES_DIRECTORY = path.join(
   process.cwd(),
   "public/jam/2025/images/schedule",
 );
 const SCHEDULE_IMAGE_PUBLIC_PREFIX = "/jam/2025/images/schedule";
+const SCHEDULE_FILE_PATH = path.join(
+  process.cwd(),
+  "app/data/jam-schedule.yaml",
+);
 
 const scheduleItemSchema = s.object({
   time: s.string(),
@@ -57,7 +60,7 @@ export async function getSchedule(): Promise<ScheduleItem[]> {
   if (cached) return cached;
 
   const imageUrlByKey = await getScheduleImageUrlByKey();
-  const rawUnknown = yaml.parse(scheduleYamlFileContents);
+  const rawUnknown = yaml.parse(readFileSync(SCHEDULE_FILE_PATH, "utf8"));
   const raw = parseScheduleItems(rawUnknown);
 
   const schedule: ScheduleItem[] = await Promise.all(

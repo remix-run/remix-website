@@ -1,29 +1,26 @@
 import assert from "node:assert";
+import { readdirSync, readFileSync } from "node:fs";
+import path from "node:path";
 import { LRUCache } from "lru-cache";
 import yaml from "yaml";
 import { processMarkdown } from "./md.server";
-import authorsYamlFileContents from "../../data/authors.yml?raw";
+
+const DATA_DIRECTORY = path.join(process.cwd(), "data");
+const POSTS_DIRECTORY = path.join(DATA_DIRECTORY, "posts");
+const AUTHORS_FILE_PATH = path.join(DATA_DIRECTORY, "authors.yml");
 
 const postContentsBySlug = Object.fromEntries(
-  Object.entries(
-    import.meta.glob("../../data/posts/*.md", {
-      query: "?raw",
-      import: "default",
-      eager: true,
-    }),
-  ).map(([filePath, contents]) => {
-    assert(
-      typeof contents === "string",
-      `Expected ${filePath} to be a string, but got ${typeof contents}`,
-    );
-    return [
-      filePath.replace("../../data/posts/", "").replace(/\.md$/, ""),
-      contents,
-    ];
-  }),
+  readdirSync(POSTS_DIRECTORY, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => [
+      entry.name.replace(/\.md$/, ""),
+      readFileSync(path.join(POSTS_DIRECTORY, entry.name), "utf8"),
+    ]),
 );
 
-const AUTHORS: BlogAuthor[] = yaml.parse(authorsYamlFileContents);
+const AUTHORS: BlogAuthor[] = yaml.parse(
+  readFileSync(AUTHORS_FILE_PATH, "utf8"),
+);
 const AUTHOR_NAMES = AUTHORS.map((a) => a.name);
 
 const postsCache = new LRUCache<string, BlogPost>({
