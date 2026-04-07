@@ -1,5 +1,4 @@
 import cx from "clsx";
-import mdStyles from "../../styles/md.css?url";
 import { Document } from "../../ui/document";
 import { Footer } from "../../ui/footer";
 import { Header } from "../../ui/header";
@@ -9,6 +8,7 @@ import { renderNotFoundPage } from "../../ui/not-found-page";
 import { render } from "../../utils/render";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.server";
 import { CACHE_CONTROL } from "../../utils/cache-control";
+import { styleHrefs } from "../../utils/style-hrefs";
 
 type BlogPostContext = {
   params: { slug?: string; ext?: string };
@@ -90,7 +90,7 @@ function Page() {
       title={`${props.post.title} | Remix`}
       description={props.post.summary}
       headTags={[
-        { kind: "link", rel: "stylesheet", href: mdStyles },
+        { kind: "link", rel: "stylesheet", href: styleHrefs.md },
         {
           kind: "link",
           rel: "alternate",

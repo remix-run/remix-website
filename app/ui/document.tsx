@@ -5,12 +5,7 @@ import { DocumentHeadSync } from "../assets/document-head-sync";
 import documentAssets from "./document.tsx?assets=ssr";
 import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head";
 import { assetPaths } from "../utils/asset-paths";
-import mdStylesHref from "../styles/md.css?url";
-import jamStylesHref from "../styles/jam.css?url";
-
-import "../styles/tailwind.css";
-import "../styles/bailwind.css";
-import "../styles/marketing.css";
+import { styleHrefs } from "../utils/style-hrefs";
 
 let assets = clientAssets.merge(documentAssets);
 let colorSchemeScript = `
@@ -50,8 +45,8 @@ declare global {
  * Mirrors the essential <head> setup from the React Router root
  * (app/root.tsx) so migrated pages look consistent.
  *
- * Plain stylesheet assets live under `app/styles/*.css`.
- * Import them with `?url` when a route needs an explicit stylesheet `<link>`.
+ * Plain stylesheet assets are compiled into `public/styles`.
+ * Route code links to them through `app/utils/style-hrefs.ts`.
  */
 export function Document() {
   return ({
@@ -130,12 +125,11 @@ export function Document() {
             href="/font/jet-brains-mono.woff2"
             crossorigin="anonymous"
           />
-          <link rel="preload" as="style" href={mdStylesHref} />
-          <link rel="preload" as="style" href={jamStylesHref} />
+          <link rel="preload" as="style" href={styleHrefs.app} />
+          <link rel="preload" as="style" href={styleHrefs.md} />
+          <link rel="preload" as="style" href={styleHrefs.jam} />
           {/* Styles */}
-          {assets.css.map(({ href }) => (
-            <link key={href} rel="stylesheet" href={href} />
-          ))}
+          <link rel="stylesheet" href={styleHrefs.app} />
 
           {/* RSS */}
           <link

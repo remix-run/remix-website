@@ -20,6 +20,7 @@ describe("Home route", () => {
     expect(html).toContain("<html");
     expect(html).toContain("Remix - A Full Stack Framework Built on Web APIs");
     expect(html).toContain("Remix 3 is under active development.");
+    expect(html).toContain('href="/styles/app.css"');
     expect(html).toContain('class="marketing-home"');
     expect(html).toContain('content="http://localhost:3000/"');
     expect(html).toContain("#github");
