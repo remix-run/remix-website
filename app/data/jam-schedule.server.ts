@@ -12,10 +12,7 @@ const SCHEDULE_IMAGES_DIRECTORY = path.join(
   "public/jam/2025/images/schedule",
 );
 const SCHEDULE_IMAGE_PUBLIC_PREFIX = "/jam/2025/images/schedule";
-const SCHEDULE_FILE_PATH = path.join(
-  process.cwd(),
-  "data/jam-schedule.yaml",
-);
+const SCHEDULE_FILE_PATH = path.join(process.cwd(), "data/jam-schedule.yaml");
 
 const scheduleItemSchema = s.object({
   time: s.string(),
