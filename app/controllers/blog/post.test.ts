@@ -24,6 +24,7 @@ describe("Blog post route", () => {
     expect(html).toContain("twitter:card");
     expect(html).toContain('action="/_actions/newsletter"');
     expect(html).toContain('rel="alternate"');
+    expect(html).toContain('href="/styles/md.css"');
     expect(html).toContain('type="text/markdown"');
     expect(html).toContain(
       `href="${routes.blogPost.href({ slug: "remix-v2", ext: "md" })}"`,
