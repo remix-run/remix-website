@@ -7,29 +7,29 @@ description: Applies project-specific Remix asset and hydration patterns to avoi
 
 ## Apply these defaults
 
-- Resolve interactive client modules with `?assets=client`.
-- Resolve document asset manifests with `?assets=ssr`.
-- Use `?assets=ssr` only for module assets such as `*.tsx`, not plain stylesheet files.
-- For standalone stylesheets, import with `?url` and render a `<link rel="stylesheet" href={...}>`.
-- Render scripts and preload links from `assets.entry` / `assets.js`; do not hardcode module paths.
+- Use `clientEntry(\`${import.meta.url}#ExportName\`, ...)` for hydrated browser modules.
+- Let server rendering resolve client entries through `resolveClientEntry(...)` in `app/utils/render.ts`.
+- Resolve the root browser entry and preload links through `app/middleware/asset-entry.ts`.
+- Keep plain stylesheet links on `public/styles` via `app/utils/style-hrefs.ts`.
+- Render `<link rel="modulepreload">` tags and the root `<script type="module">` from request-scoped asset entry data; do not hardcode module paths.
 
 ## Client entry pattern
 
 Use:
 
-- `import assets from "./feature.tsx?assets=client"`
-- `clientEntry(\`${assets.entry}#ExportName\`, ...)`
+- `clientEntry(\`${import.meta.url}#ExportName\`, ...)`
 
 Avoid:
 
 - `clientEntry("/app/assets/feature.tsx#ExportName", ...)`
+- `import assets from "./feature.tsx?assets=client"`
 
 ## Document shell pattern
 
-- Import SSR assets from the module that owns the rendered UI.
-- Render stylesheet links from `assets.css`.
-- Render `modulepreload` links from `assets.js`.
-- Render the module script from `assets.entry`.
+- Read the request-scoped asset entry from `app/middleware/asset-entry.ts`.
+- Render stylesheet links from `app/utils/style-hrefs.ts`.
+- Render `modulepreload` links from `assetEntry.preloads`.
+- Render the root module script from `assetEntry.src`.
 
 ## SVG sprites
 
@@ -40,4 +40,4 @@ Avoid:
 ## Quick verification
 
 - Hydrated components become interactive in dev and production builds.
-- Browser output shows no 404s for entry scripts or sprite assets.
+- Browser output shows no 404s for `/assets/*` modules or sprite assets.

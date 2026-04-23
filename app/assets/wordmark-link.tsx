@@ -1,8 +1,7 @@
 import { clientEntry, on, navigate } from "remix/component";
 import { Wordmark } from "../ui/wordmark";
-import assets from "./wordmark-link.tsx?assets=client";
 
-export let WordmarkLink = clientEntry(`${assets.entry}#WordmarkLink`, () => {
+export let WordmarkLink = clientEntry(import.meta.url, function WordmarkLink() {
   return (props: { href: string; brandHref: string }) => (
     <a
       href={props.href}

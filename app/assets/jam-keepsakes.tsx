@@ -1,6 +1,5 @@
 import cx from "clsx";
 import { clientEntry, on, type Dispatched, type Handle } from "remix/component";
-import assets from "./jam-keepsakes.tsx?assets=client";
 import { assetPaths } from "../utils/asset-paths";
 
 type KeepsakeId =
@@ -79,9 +78,8 @@ type DragSession = {
 };
 
 export let JamKeepsakes = clientEntry(
-  `${assets.entry}#JamKeepsakes`,
-
-  (handle: Handle) => {
+  import.meta.url,
+  function JamKeepsakes(handle: Handle) {
     let order = {} as Record<KeepsakeId, number>;
     for (let [index, keepsake] of KEEPSAKES.entries()) {
       order[keepsake.id] = index + 1;

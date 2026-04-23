@@ -8,7 +8,6 @@ import {
 import type { RemixNode } from "remix/component/jsx-runtime";
 import cx from "clsx";
 import { assetPaths } from "../utils/asset-paths";
-import assets from "./mobile-menu.tsx?assets=client";
 
 const mobileMenuStyles = {
   summary: cx(
@@ -22,8 +21,8 @@ const mobileMenuStyles = {
 };
 
 export let MobileMenu = clientEntry(
-  `${assets.entry}#MobileMenu`,
-  (handle: Handle, setup?: { open?: boolean }) => {
+  import.meta.url,
+  function MobileMenu(handle: Handle, setup?: { open?: boolean }) {
     let isOpen = setup?.open ?? false;
     let detailsElement: HTMLDetailsElement | null = null;
 

@@ -11,9 +11,9 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 ## Server runtime (same model as `remix-server` skill)
 
-- **Root `server.ts`** — Node HTTP process entry. Uses `createRequestListener` from `remix/node-fetch-server` and forwards each request to the app `fetch` handler.
-- **`app/router.ts`** — `createRouter`, root middleware stack, and `router.map(...)` wiring. Vite SSR entry (`vite.config.ts`); its default export is the app `fetch` handler.
-- **Production / `pnpm run preview`** — root `server.ts` loads `fetch` from the compiled bundle at `build/server/index.js` (built from `app/router.ts`), not by importing `app/router.ts` directly.
+- **Root `server.ts`** — Node HTTP process entry. Uses `createRequestListener` from `remix/node-fetch-server`, imports the live app router, and closes the asset server during shutdown.
+- **`app/router.ts`** — `createRouter`, root middleware stack, `router.map(...)` wiring, and the `GET /assets/*` route that delegates to `app/utils/assets.server.ts`.
+- **Production / `pnpm run preview`** — runs the same TypeScript server entry as development (`server.ts`) through `tsx`; there is no separate Vite SSR bundle.
 
 ## Keep These Non-Obvious Invariants
 
@@ -22,8 +22,9 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - In `app/controllers/**`, keep exported route handler/controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
-- Use `?assets=client` and `?assets=ssr` asset resolution patterns; never hardcode entry module paths.
-- Use `?assets=ssr` only for module assets (for example `*.tsx` manifests). For plain stylesheet files (for example `app/styles/*.css`), import with `?url` and render a `<link rel="stylesheet" ...>`.
+- Use `clientEntry(\`${import.meta.url}#ExportName\`, ...)` for hydrated asset modules so server rendering can resolve them through `resolveClientEntry(...)`.
+- Resolve the root browser entry and preload links through `app/middleware/asset-entry.ts` + `app/utils/assets.server.ts`; do not hardcode build output paths.
+- Plain stylesheets still come from `public/styles` via `app/utils/style-hrefs.ts`; `remix/assets` only owns browser JS/TS modules.
 
 ## Done Checklist (Route/Feature Changes)
 
@@ -31,7 +32,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 2. Implement route/controller in `app/controllers/**`.
 3. Wire mapping in `app/router.ts` before catch-all fallback.
 4. Add focused tests and run targeted verification (+ Remix typechecks for substantial changes).
-5. Run `pnpm run build` before shipping a PR to catch asset-pipeline regressions.
+5. Run `pnpm run build` before shipping a PR to catch CSS/runtime regressions.
 6. If behavior changes, update the parity backlog below.
 
 ## Parity backlog

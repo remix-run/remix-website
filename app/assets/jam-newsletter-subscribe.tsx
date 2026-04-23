@@ -1,5 +1,4 @@
 import { clientEntry, on, type Handle } from "remix/component";
-import assets from "./jam-newsletter-subscribe.tsx?assets=client";
 import { routes } from "../routes";
 import {
   submitNewsletterRequest,
@@ -7,8 +6,8 @@ import {
 } from "./newsletter-subscribe";
 
 export let JamNewsletterSubscribeForm = clientEntry(
-  `${assets.entry}#JamNewsletterSubscribeForm`,
-  (handle: Handle) => {
+  import.meta.url,
+  function JamNewsletterSubscribeForm(handle: Handle) {
     let submitting = false;
     let state: SubscribeState = "idle";
     let error: string | null = null;

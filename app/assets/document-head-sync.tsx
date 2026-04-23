@@ -4,7 +4,6 @@ import {
   syncTitle,
   type ManagedHeadTag,
 } from "../ui/document-head";
-import assets from "./document-head-sync.tsx?assets=client";
 
 type DocumentHeadSyncProps = {
   title?: string;
@@ -20,8 +19,8 @@ declare global {
 }
 
 export let DocumentHeadSync = clientEntry(
-  `${assets.entry}#DocumentHeadSync`,
-  (handle: Handle) => {
+  import.meta.url,
+  function DocumentHeadSync(handle: Handle) {
     let latestProps: DocumentHeadSyncProps | null = null;
     let isQueued = false;
 

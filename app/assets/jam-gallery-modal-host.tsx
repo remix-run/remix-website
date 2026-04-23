@@ -10,7 +10,6 @@ import {
   restoreGalleryFocus,
   storeGalleryFocus,
 } from "./jam-gallery-focus-restore";
-import assets from "./jam-gallery-modal-host.tsx?assets=client";
 
 let FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -27,8 +26,8 @@ export type JamGalleryModalNav = {
 
 /** Gallery modal shell with focus trap, keyboard nav, and backdrop close. */
 export let JamGalleryModalHost = clientEntry(
-  `${assets.entry}#JamGalleryModalHost`,
-  (_handle: Handle, setup: { photoCount: number }) => {
+  import.meta.url,
+  function JamGalleryModalHost(_handle: Handle, setup: { photoCount: number }) {
     let galleryPhotoCount = setup.photoCount;
     let modalNavigation = createJamGalleryModalNavigation();
     return (props: {

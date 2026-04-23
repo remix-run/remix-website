@@ -1,14 +1,13 @@
 import { clientEntry, on, type Handle } from "remix/component";
 import { assetPaths } from "../utils/asset-paths";
 import { JamButton } from "../controllers/jam/shared";
-import assets from "./jam-ticket-purchase.tsx?assets=client";
 
 export let JamTicketPurchase = clientEntry(
-  `${assets.entry}#JamTicketPurchase`,
-  (
+  import.meta.url,
+  function JamTicketPurchase(
     handle: Handle,
     setup: { initialQuantity?: number; maxQuantity: number },
-  ) => {
+  ) {
     let initialQuantity = setup?.initialQuantity ?? 1;
     let maxQuantity = setup.maxQuantity;
     let quantity = normalizeQuantity(initialQuantity, maxQuantity);

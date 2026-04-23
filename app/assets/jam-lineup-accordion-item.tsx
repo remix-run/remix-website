@@ -1,7 +1,6 @@
 import cx from "clsx";
 import { clientEntry, on, ref, type Handle } from "remix/component";
 import { assetPaths } from "../utils/asset-paths";
-import assets from "./jam-lineup-accordion-item.tsx?assets=client";
 
 type LineupItem = {
   time: string;
@@ -13,8 +12,8 @@ type LineupItem = {
 };
 
 export let JamLineupAccordionItem = clientEntry(
-  `${assets.entry}#JamLineupAccordionItem`,
-  (handle: Handle) => {
+  import.meta.url,
+  function JamLineupAccordionItem(handle: Handle) {
     let isOpen = false;
     let panel: HTMLDivElement | null = null;
     let panelInner: HTMLDivElement | null = null;

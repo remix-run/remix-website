@@ -15,7 +15,7 @@ interface InitFathomAnalyticsOptions {
 }
 
 export function initFathomAnalytics({
-  isDevelopment = import.meta.env.DEV,
+  isDevelopment = process.env.NODE_ENV !== "production",
   loadImpl = loadFathom,
 }: InitFathomAnalyticsOptions = {}) {
   if (isDevelopment || typeof window === "undefined") return;

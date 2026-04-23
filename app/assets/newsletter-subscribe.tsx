@@ -1,6 +1,5 @@
 import { clientEntry, on, type Handle } from "remix/component";
 import cx from "clsx";
-import assets from "./newsletter-subscribe.tsx?assets=client";
 import { routes } from "../routes";
 
 export type SubscribeState = "idle" | "success" | "error";
@@ -65,8 +64,8 @@ export async function submitNewsletterRequest({
 }
 
 export let NewsletterSubscribeForm = clientEntry(
-  `${assets.entry}#NewsletterSubscribeForm`,
-  (handle: Handle) => {
+  import.meta.url,
+  function NewsletterSubscribeForm(handle: Handle) {
     let submitting = false;
     let state: SubscribeState = "idle";
     let error: string | null = null;

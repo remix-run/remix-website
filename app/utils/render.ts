@@ -3,6 +3,7 @@ import { renderToStream } from "remix/component/server";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { createHtmlResponse } from "remix/response/html";
 import { getRequestContext } from "./request-context";
+import { assetServer } from "./assets.server";
 
 type FrameRenderContext = {
   currentFrameSrc?: string;
@@ -35,6 +36,8 @@ export let render = {
       topFrameSrc: getTopFrameSrc(request),
       resolveFrame: (src, target, context) =>
         resolveFrame(src, target, context, router, request),
+      resolveClientEntry: (entryId, component) =>
+        resolveClientEntry(entryId, component.name),
       onError(error) {
         console.error(error);
       },
@@ -105,6 +108,23 @@ export async function followFrameRedirects(
 
     currentUrl = new URL(location, currentUrl);
   }
+}
+
+async function resolveClientEntry(entryId: string, componentName?: string) {
+  let entryUrl = new URL(entryId);
+  let exportName = entryUrl.hash.slice(1) || componentName;
+  entryUrl.hash = "";
+
+  if (!exportName) {
+    throw new Error(
+      `Unable to resolve export name for client entry "${entryId}"`,
+    );
+  }
+
+  return {
+    href: await assetServer.getHref(entryUrl.toString()),
+    exportName,
+  };
 }
 
 function getTopFrameSrc(request: Request) {

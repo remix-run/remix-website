@@ -1,6 +1,5 @@
 import cx from "clsx";
 import { addEventListeners, clientEntry, type Handle } from "remix/component";
-import assets from "./jam-scramble-text.tsx?assets=client";
 
 const SCRAMBLE_CHARS =
   "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -71,8 +70,8 @@ function getResolvedState(text: string): ScrambleState[] {
 }
 
 export let JamScrambleText = clientEntry(
-  `${assets.entry}#JamScrambleText`,
-  (handle: Handle, setup: ScrambleSetup) => {
+  import.meta.url,
+  function JamScrambleText(handle: Handle, setup: ScrambleSetup) {
     let text = setup.text;
     let animationKey = getAnimationKey(text);
     let textChars = text.split("");

@@ -11,7 +11,6 @@ async function markPage(page: Page) {
 async function gotoGallery(page: Page) {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/jam/2025/gallery");
-  await dismissViteAbortOverlay(page);
 }
 
 async function expectMarkerToStay(page: Page, marker: string) {
@@ -61,7 +60,6 @@ async function clickWithViteAbortOverlayRetry(
     element.click();
   });
 }
-
 function galleryPhotoLinks(page: Page) {
   return page.locator('main a[href^="/jam/2025/gallery?photo="]').filter({
     has: page.locator("img"),
@@ -376,10 +374,7 @@ test.describe("Jam", () => {
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
     await expectMarkerToStay(page, marker);
-    await clickWithViteAbortOverlayRetry(
-      page,
-      page.getByRole("link", { name: "Close modal" }),
-    );
+    await page.getByRole("link", { name: "Close modal" }).click();
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
