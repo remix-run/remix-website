@@ -27,10 +27,14 @@ export let MobileMenu = clientEntry(
     let detailsElement: HTMLDetailsElement | null = null;
 
     let closeMenu = () => {
-      if (detailsElement?.open || isOpen) {
-        isOpen = false;
-        handle.update();
+      let wasOpen = detailsElement?.open || isOpen;
+      if (!wasOpen) return;
+
+      if (detailsElement) {
+        detailsElement.open = false;
       }
+      isOpen = false;
+      handle.update();
     };
 
     handle.queueTask(() => {

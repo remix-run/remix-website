@@ -22,7 +22,7 @@
     "lint:fix": "oxlint . --fix",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "pretest:e2e": "playwright install chromium",
+    "pretest:e2e": "pnpm run build:css && playwright install chromium",
     "test:e2e": "cross-env PLAYWRIGHT_TEST=1 playwright test",
     "typecheck": "tsc --noEmit"
   },
