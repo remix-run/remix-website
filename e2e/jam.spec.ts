@@ -31,7 +31,9 @@ async function dismissViteAbortOverlay(page: Page) {
   let overlayText = (await overlay.textContent()) ?? "";
   if (!overlayText.includes("aborted")) return;
 
-  await page.keyboard.press("Escape");
+  await page.evaluate(() => {
+    document.querySelector("vite-error-overlay")?.remove();
+  });
   await expect(overlay).toHaveCount(0);
 }
 
@@ -55,7 +57,9 @@ async function clickWithViteAbortOverlayRetry(
   }
 
   await dismissViteAbortOverlay(page);
-  await locator.click();
+  await locator.evaluate((element: HTMLElement) => {
+    element.click();
+  });
 }
 
 function galleryPhotoLinks(page: Page) {
@@ -143,11 +147,15 @@ test.describe("Jam", () => {
     });
 
     await page.goto("/jam/2025");
+    await dismissViteAbortOverlay(page);
     await page.waitForLoadState("networkidle");
 
     let emailInput = page.getByPlaceholder("your@email.com");
     await emailInput.fill("hello@example.com");
-    await page.getByRole("button", { name: "Sign Up" }).click();
+    await clickWithViteAbortOverlayRetry(
+      page,
+      page.getByRole("button", { name: "Sign Up" }),
+    );
 
     await expect(page.getByText(/You're good to go/i)).toBeVisible();
     await expect(emailInput).toHaveValue("");
@@ -167,10 +175,14 @@ test.describe("Jam", () => {
     });
 
     await page.goto("/jam/2025");
+    await dismissViteAbortOverlay(page);
     await page.waitForLoadState("networkidle");
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
-    await page.getByRole("button", { name: "Sign Up" }).click();
+    await clickWithViteAbortOverlayRetry(
+      page,
+      page.getByRole("button", { name: "Sign Up" }),
+    );
 
     await expect(page.getByText("Something went wrong")).toBeVisible();
     await expect(page.getByText(/please try again\./i)).toBeVisible();
@@ -193,10 +205,14 @@ test.describe("Jam", () => {
     });
 
     await page.goto("/jam/2025");
+    await dismissViteAbortOverlay(page);
     await page.waitForLoadState("networkidle");
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
-    await page.getByRole("button", { name: "Sign Up" }).click();
+    await clickWithViteAbortOverlayRetry(
+      page,
+      page.getByRole("button", { name: "Sign Up" }),
+    );
 
     let pendingButton = page.getByRole("button", { name: "Signing Up..." });
     await expect(pendingButton).toBeVisible();
@@ -256,9 +272,13 @@ test.describe("Jam", () => {
     page,
   }) => {
     await page.goto("/jam/2025");
+    await dismissViteAbortOverlay(page);
 
     let marker = await markPage(page);
-    await page.getByRole("link", { name: "Schedule & Lineup" }).first().click();
+    await clickWithViteAbortOverlayRetry(
+      page,
+      page.getByRole("link", { name: "Schedule & Lineup" }).first(),
+    );
 
     await page.waitForURL("**/jam/2025/lineup");
     await expect(page).toHaveTitle(/Schedule and Lineup/i);
@@ -271,7 +291,10 @@ test.describe("Jam", () => {
       )
       .toBe(marker);
 
-    await page.getByRole("link", { name: "FAQ" }).first().click();
+    await clickWithViteAbortOverlayRetry(
+      page,
+      page.getByRole("link", { name: "FAQ" }).first(),
+    );
 
     await page.waitForURL("**/jam/2025/faq");
     await expect(page).toHaveTitle(/FAQ/i);

@@ -125,15 +125,17 @@ function createJamGalleryModalNavigation() {
       restoreGalleryFocus();
     };
 
-    let tryInitialFocus = () => {
-      if (!modal || didInitialFocus) return;
+    let tryInitialFocus = (): boolean => {
+      if (!modal) return false;
+      if (didInitialFocus) return true;
+
       let focusableElements = getFocusableElements();
-      if (focusableElements.length === 0) return;
+      if (focusableElements.length === 0) return false;
 
       let active = document.activeElement;
       if (active instanceof HTMLElement && modal.contains(active)) {
         didInitialFocus = true;
-        return;
+        return true;
       }
 
       let pendingChevron = peekKeyboardGalleryChevron();
@@ -142,17 +144,16 @@ function createJamGalleryModalNavigation() {
           modal,
           pendingChevron === "previous" ? previousHref : nextHref,
         );
-        if (!chevron || !isFocusable(chevron)) {
-          return;
-        }
+        if (!chevron || !isFocusable(chevron)) return false;
         chevron.focus();
         clearKeyboardGalleryChevron();
         didInitialFocus = true;
-        return;
+        return true;
       }
 
       focusBoundary("start");
       didInitialFocus = true;
+      return true;
     };
 
     handle.addEventListener("insert", (event) => {
@@ -266,50 +267,34 @@ function createJamGalleryModalNavigation() {
         click: onClick,
       });
 
+      // `insert` can run before descendants are committed or before layout (see `isFocusable` +
+      // getClientRects). Try once right away, then wait one paint before falling back to subtree
+      // observation for late descendants.
       let focusWatchRaf = 0;
       let subtreeObserver: MutationObserver | null = null;
-
-      let stopWatchingForFocusables = () => {
-        subtreeObserver?.disconnect();
-        subtreeObserver = null;
-        window.cancelAnimationFrame(focusWatchRaf);
-      };
-
-      let attemptInitialFocus = () => {
-        if (!modal || didInitialFocus) {
-          stopWatchingForFocusables();
-          return;
-        }
-        tryInitialFocus();
-        if (didInitialFocus) stopWatchingForFocusables();
-      };
 
       handle.signal.addEventListener(
         "abort",
         () => {
           document.body.style.overflow = previousBodyOverflow;
-          stopWatchingForFocusables();
+          window.cancelAnimationFrame(focusWatchRaf);
+          subtreeObserver?.disconnect();
         },
         { once: true },
       );
 
-      // `insert` can run before descendants are committed or before layout (see `isFocusable` +
-      // getClientRects). Prefer post-commit work + one paint, then watch subtree mutations instead
-      // of polling many animation frames.
-      handle.queueTask(() => {
-        if (handle.signal.aborted) return;
-        attemptInitialFocus();
-        focusWatchRaf = window.requestAnimationFrame(() => {
-          if (handle.signal.aborted) return;
-          attemptInitialFocus();
-          if (didInitialFocus || !modal) return;
+      if (tryInitialFocus()) return;
 
-          subtreeObserver = new MutationObserver(() => {
-            if (handle.signal.aborted) return;
-            attemptInitialFocus();
-          });
-          subtreeObserver.observe(modal, { childList: true, subtree: true });
+      focusWatchRaf = window.requestAnimationFrame(() => {
+        if (handle.signal.aborted || !modal) return;
+        if (tryInitialFocus()) return;
+
+        subtreeObserver = new MutationObserver(() => {
+          if (handle.signal.aborted || tryInitialFocus()) {
+            subtreeObserver?.disconnect();
+          }
         });
+        subtreeObserver.observe(modal, { childList: true, subtree: true });
       });
     });
 
