@@ -35,9 +35,15 @@ if (process.env.NODE_ENV === "production") {
 }
 
 let isDev = process.env.NODE_ENV !== "production";
+let shouldBypassLoopbackRateLimit =
+  isDev || process.env.PLAYWRIGHT_TEST === "1";
 
 function shouldSkipRateLimit(pathname: string) {
-  return pathname === "/healthcheck";
+  return (
+    pathname === "/healthcheck" ||
+    pathname === "/assets" ||
+    pathname.startsWith("/assets/")
+  );
 }
 
 function createAppRouter() {
@@ -78,6 +84,7 @@ function createAppRouter() {
     rateLimit({
       windowMs: 2 * 60 * 1000,
       max: 1000,
+      skipLocalhost: shouldBypassLoopbackRateLimit,
       skip: (context) => shouldSkipRateLimit(context.url.pathname),
     }),
   );

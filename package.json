@@ -23,7 +23,7 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "pretest:e2e": "playwright install chromium",
-    "test:e2e": "playwright test",
+    "test:e2e": "cross-env PLAYWRIGHT_TEST=1 playwright test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
