@@ -21,5 +21,5 @@ export let assetServer = createAssetServer({
       ),
     },
   },
-  watch: isDevelopment,
+  watch: false,
 });
