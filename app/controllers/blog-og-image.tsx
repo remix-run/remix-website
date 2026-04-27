@@ -3,7 +3,7 @@ import path from "node:path";
 import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
-import satori from "satori/standalone";
+import satori from "satori";
 import type { BuildAction } from "remix/fetch-router";
 import type { routes } from "../routes";
 
