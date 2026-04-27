@@ -26,8 +26,10 @@ async function expectClientNavigation(
 }
 
 test.describe("Navigation", () => {
-  test("root route header links use client navigation", async ({ page }) => {
-    await page.goto("/");
+  test("active development route header links use client navigation", async ({
+    page,
+  }) => {
+    await page.goto("/remix-3-active-development");
 
     await expectClientNavigation(
       page,
@@ -50,7 +52,7 @@ test.describe("Navigation", () => {
     await expectClientNavigation(
       page,
       () => page.locator('header a[aria-label="Remix"]').first().click(),
-      "**/",
+      "**/remix-3-active-development",
     );
 
     await expect(page.locator('html[data-theme="light"]')).toHaveCount(1);
@@ -72,7 +74,7 @@ test.describe("Navigation", () => {
   test("Remix 3 active development page to jam applies jam head styles and forced dark theme", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
 
     await expectClientNavigation(
       page,

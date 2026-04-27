@@ -4,7 +4,7 @@ test.describe("Newsletter subscribe", () => {
   test("renders the newsletter form in the Remix 3 active development section", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
 
     await expect(
       page.getByRole("heading", { name: "Stay in the loop" }),
@@ -25,7 +25,7 @@ test.describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
     await page.waitForLoadState("networkidle");
 
     const emailInput = page.getByPlaceholder("name@example.com");
@@ -46,7 +46,7 @@ test.describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
     await page.waitForLoadState("networkidle");
 
     await page.getByPlaceholder("name@example.com").fill("hello@example.com");
@@ -70,7 +70,7 @@ test.describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
     await page.waitForLoadState("networkidle");
 
     await page.getByPlaceholder("name@example.com").fill("hello@example.com");

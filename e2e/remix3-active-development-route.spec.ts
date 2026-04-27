@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Remix 3 active development route", () => {
   test("renders key active-development content", async ({ page }) => {
-    const response = await page.goto("/");
+    const response = await page.goto("/remix-3-active-development");
     expect(response?.ok()).toBe(true);
 
     await expect(page).toHaveTitle(/Remix/i);
