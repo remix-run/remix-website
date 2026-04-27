@@ -16,7 +16,7 @@ export let WordmarkLink = clientEntry(import.meta.url, function WordmarkLink() {
     >
       <Wordmark aria-hidden />
 
-      <span class="sr-only">Remix home</span>
+      <span class="sr-only">Remix</span>
     </a>
   );
 });

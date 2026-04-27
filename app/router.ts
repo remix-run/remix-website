@@ -18,7 +18,7 @@ import { blogPostHandler } from "./controllers/blog/post.tsx";
 import { blogRssHandler } from "./controllers/blog/rss.ts";
 import { brandHandler } from "./controllers/brand.tsx";
 import { catchallHandler } from "./controllers/catchall.ts";
-import { homeHandler } from "./controllers/home/controller.tsx";
+import { remix3ActiveDevelopmentHandler } from "./controllers/remix3-active-development/controller.tsx";
 import { jam2025CocHandler } from "./controllers/jam/2025-coc.tsx";
 import { jam2025FaqHandler } from "./controllers/jam/2025-faq.tsx";
 import { jam2025GalleryHandler } from "./controllers/jam/2025-gallery/controller.tsx";
@@ -120,7 +120,7 @@ function createAppRouter() {
   router.map(routes.jam.y2025.coc, jam2025CocHandler);
   router.map(routes.jam.y2025.gallery.download, jam2025GalleryDownloadHandler);
   router.map(routes.jam.y2025.gallery.index, jam2025GalleryHandler);
-  router.map(routes.home, homeHandler);
+  router.map(routes.remix3ActiveDevelopment, remix3ActiveDevelopmentHandler);
 
   // Redirects from _redirects (must be before * catchall)
   let redirects = loadRedirectsFromFile();

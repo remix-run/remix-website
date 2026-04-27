@@ -10,13 +10,16 @@ import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 
-export async function homeHandler() {
+export async function remix3ActiveDevelopmentHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/`;
   let previewImage = `${requestUrl.origin}/marketing/remix-3-thumbnail.jpg`;
 
   return render.document(
-    <HomePage pageUrl={pageUrl} previewImage={previewImage} />,
+    <Remix3ActiveDevelopmentPage
+      pageUrl={pageUrl}
+      previewImage={previewImage}
+    />,
     {
       headers: {
         "Cache-Control": CACHE_CONTROL.DEFAULT,
@@ -25,7 +28,7 @@ export async function homeHandler() {
   );
 }
 
-function HomePage() {
+function Remix3ActiveDevelopmentPage() {
   return (props: { pageUrl: string; previewImage: string }) => (
     <Document
       title="Remix - A Full Stack Framework Built on Web APIs"
@@ -73,21 +76,21 @@ function HomePage() {
         },
       ]}
     >
-      <div class="marketing-home">
-        <div class="rmx-home-hero-bg">
+      <div class="marketing-remix3-active-development">
+        <div class="rmx-remix3-active-development-hero-bg">
           <IntroMaskReveal />
           <Header />
           <HeroSection />
         </div>
 
         <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-          <div class="rmx-home-text-bg">
+          <div class="rmx-remix3-active-development-text-bg">
             <PitchSection />
           </div>
 
           <TimelineSection />
 
-          <div class="rmx-home-surface-bg">
+          <div class="rmx-remix3-active-development-surface-bg">
             <StayInTheLoopSection />
             <Footer />
           </div>

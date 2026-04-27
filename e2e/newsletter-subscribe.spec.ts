@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Newsletter subscribe", () => {
-  test("renders the newsletter form in the home page section", async ({
+  test("renders the newsletter form in the Remix 3 active development section", async ({
     page,
   }) => {
     await page.goto("/");

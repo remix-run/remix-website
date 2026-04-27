@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Home route", () => {
-  test("renders key homepage content", async ({ page }) => {
+test.describe("Remix 3 active development route", () => {
+  test("renders key active-development content", async ({ page }) => {
     const response = await page.goto("/");
     expect(response?.ok()).toBe(true);
 

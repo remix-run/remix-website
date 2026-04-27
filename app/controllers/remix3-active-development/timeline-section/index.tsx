@@ -6,7 +6,7 @@ export function TimelineSection() {
   return () => (
     <section
       class={cx(
-        "rmx-home-timeline-bg",
+        "rmx-remix3-active-development-timeline-bg",
         "overflow-x-clip bg-[var(--rmx-neutral-950)] text-white",
       )}
     >

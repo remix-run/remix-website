@@ -26,7 +26,7 @@ async function expectClientNavigation(
 }
 
 test.describe("Navigation", () => {
-  test("homepage header links use client navigation", async ({ page }) => {
+  test("root route header links use client navigation", async ({ page }) => {
     await page.goto("/");
 
     await expectClientNavigation(
@@ -38,7 +38,7 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Blog/i);
   });
 
-  test("blog to home clears dark mode when home forces light theme", async ({
+  test("blog to Remix 3 active development page clears dark mode", async ({
     page,
   }) => {
     await page.emulateMedia({ colorScheme: "dark" });
@@ -69,7 +69,7 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Jam/i);
   });
 
-  test("home to jam applies jam head styles and forced dark theme", async ({
+  test("Remix 3 active development page to jam applies jam head styles and forced dark theme", async ({
     page,
   }) => {
     await page.goto("/");
@@ -95,18 +95,18 @@ test.describe("Navigation", () => {
       .toBe(true);
   });
 
-  test("header wordmark uses client navigation for home and brand", async ({
+  test("header wordmark uses client navigation for root and brand", async ({
     page,
   }) => {
     await page.goto("/blog");
 
-    let homeLink = page.locator('header a[aria-label="Remix"]').first();
-    await expectClientNavigation(page, () => homeLink.click(), "**/");
+    let remixLink = page.locator('header a[aria-label="Remix"]').first();
+    await expectClientNavigation(page, () => remixLink.click(), "**/");
     await expect(page).toHaveURL(/\/$/);
 
     await expectClientNavigation(
       page,
-      () => homeLink.click({ button: "right" }),
+      () => remixLink.click({ button: "right" }),
       "**/brand",
     );
 
