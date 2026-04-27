@@ -1,4 +1,3 @@
-import sourceMapSupport from "source-map-support";
 import { asyncContext } from "remix/async-context-middleware";
 import { compression } from "remix/compression-middleware";
 import { createRouter, type RequestContext } from "remix/fetch-router";
@@ -29,10 +28,6 @@ import { jam2025TicketHandler } from "./controllers/jam/2025-ticket.tsx";
 import { jam2025Handler } from "./controllers/jam/2025.tsx";
 import { jamHandler } from "./controllers/jam/controller.ts";
 import { newsletterHandler } from "./controllers/newsletter.tsx";
-
-if (process.env.NODE_ENV === "production") {
-  sourceMapSupport.install();
-}
 
 let isDev = process.env.NODE_ENV !== "production";
 let shouldBypassLoopbackRateLimit =
