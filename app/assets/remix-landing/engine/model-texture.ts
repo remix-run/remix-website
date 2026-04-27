@@ -1,0 +1,32 @@
+import * as THREE from "three";
+import type { ModelData } from "./model-loader";
+
+const TEX_WIDTH = 512;
+const TEX_HEIGHT = 256;
+
+export function createModelTexture(model: ModelData): THREE.DataTexture {
+  const data = new Float32Array(TEX_WIDTH * TEX_HEIGHT * 4);
+  const count = Math.min(model.positions.length / 3, TEX_WIDTH * TEX_HEIGHT);
+  for (let i = 0; i < count; i++) {
+    const si = i * 3;
+    const di = i * 4;
+    data[di] = model.positions[si];
+    data[di + 1] = model.positions[si + 1];
+    data[di + 2] = model.positions[si + 2];
+    data[di + 3] = 0;
+  }
+  const tex = new THREE.DataTexture(data, TEX_WIDTH, TEX_HEIGHT, THREE.RGBAFormat, THREE.FloatType);
+  tex.minFilter = THREE.NearestFilter;
+  tex.magFilter = THREE.NearestFilter;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+export function createDummyTexture(): THREE.DataTexture {
+  const data = new Float32Array(4);
+  const tex = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat, THREE.FloatType);
+  tex.minFilter = THREE.NearestFilter;
+  tex.magFilter = THREE.NearestFilter;
+  tex.needsUpdate = true;
+  return tex;
+}

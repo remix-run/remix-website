@@ -40,7 +40,7 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Blog/i);
   });
 
-  test("blog to Remix 3 active development page clears dark mode", async ({
+  test("blog to home page applies forced dark mode", async ({
     page,
   }) => {
     await page.emulateMedia({ colorScheme: "dark" });
@@ -52,11 +52,11 @@ test.describe("Navigation", () => {
     await expectClientNavigation(
       page,
       () => page.locator('header a[aria-label="Remix"]').first().click(),
-      "**/remix-3-active-development",
+      "**/",
     );
 
-    await expect(page.locator('html[data-theme="light"]')).toHaveCount(1);
-    await expect(page.locator("html.dark")).toHaveCount(0);
+    await expect(page.locator('html[data-theme="dark"]')).toHaveCount(1);
+    await expect(page.locator("html.dark")).toHaveCount(1);
   });
 
   test("blog header jam link uses client navigation", async ({ page }) => {

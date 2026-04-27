@@ -11,6 +11,7 @@ export let routes = route({
   blogRss: get("/blog/rss.xml"),
   brand: get("/brand"),
   healthcheck: get("/healthcheck"),
+  home: get("/"),
   remix3ActiveDevelopment: get("/remix-3-active-development"),
   jam: route("jam", {
     index: get("/"),
