@@ -3,12 +3,8 @@ import { getRequestContext } from "../../../utils/request-context";
 import { render } from "../../../utils/render";
 import { CACHE_CONTROL } from "../../../utils/cache-control";
 import { routes } from "../../../routes";
-import {
-  JamDocument,
-  ScrambleText,
-  Title,
-  transformShopifyImageUrl,
-} from "../shared";
+import { JamDocument } from "../document";
+import { ScrambleText, Title, transformShopifyImageUrl } from "../shared";
 import {
   JamGalleryModalHost,
   type JamGalleryModalNav,

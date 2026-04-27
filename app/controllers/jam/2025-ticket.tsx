@@ -8,13 +8,8 @@ import {
 import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control";
-import {
-  InfoText,
-  JamDocument,
-  ScrambleText,
-  SectionLabel,
-  Title,
-} from "./shared";
+import { JamDocument } from "./document";
+import { InfoText, ScrambleText, SectionLabel, Title } from "./shared";
 import { JamTicketCard } from "../../assets/jam-ticket-card";
 import { JamTicketPurchase } from "../../assets/jam-ticket-purchase";
 import { assetPaths } from "../../utils/asset-paths";

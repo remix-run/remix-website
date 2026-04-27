@@ -88,7 +88,10 @@ function createAppRouter() {
   let router = createRouter({ middleware });
 
   router.map(routes.assets, async ({ request }) => {
-    return (await assetServer.fetch(request)) ?? new Response("Not found", { status: 404 });
+    return (
+      (await assetServer.fetch(request)) ??
+      new Response("Not found", { status: 404 })
+    );
   });
 
   // Keep healthcheck on a stable path during migration so deploy checks never

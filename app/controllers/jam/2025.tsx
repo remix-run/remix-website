@@ -3,13 +3,8 @@ import type { RemixNode } from "remix/component/jsx-runtime";
 import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control";
-import {
-  AddressMain,
-  JamDocument,
-  ScrambleText,
-  SectionLabel,
-  Title,
-} from "./shared";
+import { JamDocument } from "./document";
+import { AddressMain, ScrambleText, SectionLabel, Title } from "./shared";
 import { JamKeepsakes } from "../../assets/jam-keepsakes";
 import { JamFadeInBadge } from "../../assets/jam-fade-in-badge";
 import { JamNewsletterSubscribeForm } from "../../assets/jam-newsletter-subscribe";
