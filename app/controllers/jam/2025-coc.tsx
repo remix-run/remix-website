@@ -1,8 +1,8 @@
 import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control";
+import { JamDocument } from "./document";
 import {
-  JamDocument,
   Paragraph,
   ScrambleText,
   Subheader,

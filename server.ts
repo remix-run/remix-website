@@ -1,8 +1,7 @@
 import * as http from "node:http";
 import { createRequestListener } from "remix/node-fetch-server";
-
-// @ts-expect-error - generated build artifact is not typed
-import build from "./build/server/index.js";
+import { router } from "./app/router.ts";
+import { assetServer } from "./app/utils/assets.server.ts";
 
 const port = Number(process.env.PORT ?? 3000);
 if (!Number.isFinite(port) || port <= 0) {
@@ -11,7 +10,16 @@ if (!Number.isFinite(port) || port <= 0) {
   );
 }
 
-const server = http.createServer(createRequestListener(build.fetch));
+const server = http.createServer(
+  createRequestListener(async (request) => {
+    try {
+      return await router.fetch(request);
+    } catch (error) {
+      console.error(error);
+      return new Response("Internal Server Error", { status: 500 });
+    }
+  }),
+);
 
 server.listen(port, () => {
   console.log(`Server listening on port ${port} (http://localhost:${port})`);
@@ -20,7 +28,11 @@ server.listen(port, () => {
 installShutdownHandlers(server);
 
 function installShutdownHandlers(server: http.Server) {
-  const shutdown = (signal: NodeJS.Signals) => {
+  let shuttingDown = false;
+
+  const shutdown = async (signal: NodeJS.Signals) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
     console.log(`${signal} received, shutting down HTTP server...`);
     const forceExitTimer = setTimeout(() => {
       console.error("Timed out waiting for HTTP server to close");
@@ -28,6 +40,7 @@ function installShutdownHandlers(server: http.Server) {
     }, 10_000);
     forceExitTimer.unref();
 
+    await assetServer.close();
     server.close((error) => {
       clearTimeout(forceExitTimer);
       if (error) {
@@ -36,8 +49,13 @@ function installShutdownHandlers(server: http.Server) {
       }
       process.exit(0);
     });
+    server.closeAllConnections();
   };
 
-  process.once("SIGINT", () => shutdown("SIGINT"));
-  process.once("SIGTERM", () => shutdown("SIGTERM"));
+  process.once("SIGINT", () => {
+    void shutdown("SIGINT");
+  });
+  process.once("SIGTERM", () => {
+    void shutdown("SIGTERM");
+  });
 }

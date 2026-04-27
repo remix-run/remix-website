@@ -5,6 +5,7 @@ interface RateLimitOptions {
   max?: number;
   keyGenerator?: (context: Parameters<Middleware>[0]) => string;
   skip?: (context: Parameters<Middleware>[0]) => boolean;
+  skipLocalhost?: boolean;
 }
 
 interface RateLimitEntry {
@@ -17,6 +18,7 @@ export function rateLimit({
   max = 1000,
   keyGenerator = getClientIp,
   skip,
+  skipLocalhost = false,
 }: RateLimitOptions = {}): Middleware {
   if (windowMs <= 0 || max <= 0) {
     throw new Error("rateLimit options `windowMs` and `max` must be > 0");
@@ -26,7 +28,7 @@ export function rateLimit({
   let requestsSinceCleanup = 0;
 
   return (context, next) => {
-    if (skip?.(context)) {
+    if (skip?.(context) || (skipLocalhost && isLoopbackRequest(context))) {
       return next();
     }
 
@@ -54,7 +56,10 @@ export function rateLimit({
       return new Response("Too Many Requests", {
         status: 429,
         headers: {
+          "Cache-Control": "no-store",
+          "Content-Type": "text/plain; charset=utf-8",
           "Retry-After": String(retryAfterSeconds),
+          "X-Remix-Response": "yes",
         },
       });
     }
@@ -110,4 +115,14 @@ function normalizeClientIp(ip: string) {
   }
 
   return unquotedIp;
+}
+
+function isLoopbackRequest(context: Parameters<Middleware>[0]) {
+  let hostname = context.url.hostname.toLowerCase();
+  return (
+    hostname === "localhost" ||
+    hostname === "::1" ||
+    hostname === "[::1]" ||
+    hostname.startsWith("127.")
+  );
 }

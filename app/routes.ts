@@ -4,6 +4,7 @@ export let routes = route({
   actions: route("_actions", {
     newsletter: post("/newsletter"),
   }),
+  assets: get("/assets/*path"),
   blog: get("/blog"),
   blogOgImage: get("/img/:slug"),
   blogPost: get("/blog/:slug(.:ext)"),

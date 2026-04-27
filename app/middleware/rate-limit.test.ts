@@ -5,13 +5,20 @@ import { rateLimit } from "./rate-limit.ts";
 function createMockContext(
   overrides: {
     forwardedFor?: string;
+    hostname?: string;
     method?: string;
     pathname?: string;
     search?: string;
   } = {},
 ) {
-  let { forwardedFor, method = "GET", pathname = "/", search = "" } = overrides;
-  let url = new URL(`${pathname}${search}`, "http://localhost");
+  let {
+    forwardedFor,
+    hostname = "localhost",
+    method = "GET",
+    pathname = "/",
+    search = "",
+  } = overrides;
+  let url = new URL(`${pathname}${search}`, `http://${hostname}`);
   let headers = new Headers();
   if (forwardedFor !== undefined) {
     headers.set("x-forwarded-for", forwardedFor);
@@ -103,6 +110,11 @@ describe("rateLimit", () => {
 
     expect(immediateResult?.headers.get("Retry-After")).toBe("60");
     expect(oneSecondLaterResult?.headers.get("Retry-After")).toBe("59");
+    expect(immediateResult?.headers.get("Cache-Control")).toBe("no-store");
+    expect(immediateResult?.headers.get("Content-Type")).toBe(
+      "text/plain; charset=utf-8",
+    );
+    expect(immediateResult?.headers.get("X-Remix-Response")).toBe("yes");
   });
 
   it("tracks different IPs separately", async () => {
@@ -202,13 +214,54 @@ describe("rateLimit", () => {
     expect(next).toHaveBeenCalledTimes(2);
   });
 
-  it("rate limits through a real router but skips healthcheck", async () => {
+  it("supports skipping localhost requests from rate limiting", async () => {
+    let middleware = rateLimit({
+      max: 1,
+      windowMs: 60_000,
+      skipLocalhost: true,
+    });
+    let next = createNext();
+
+    await invokeRateLimit(middleware, createMockContext(), next);
+    let second = await invokeRateLimit(middleware, createMockContext(), next);
+
+    expect(second?.status).toBe(200);
+    expect(next).toHaveBeenCalledTimes(2);
+  });
+
+  it("still rate limits non-localhost requests when localhost skipping is enabled", async () => {
+    let middleware = rateLimit({
+      max: 1,
+      windowMs: 60_000,
+      skipLocalhost: true,
+    });
+    let next = createNext();
+
+    await invokeRateLimit(
+      middleware,
+      createMockContext({ hostname: "example.com" }),
+      next,
+    );
+    let second = await invokeRateLimit(
+      middleware,
+      createMockContext({ hostname: "example.com" }),
+      next,
+    );
+
+    expect(second?.status).toBe(429);
+    expect(next).toHaveBeenCalledTimes(1);
+  });
+
+  it("rate limits through a real router but skips healthcheck and assets", async () => {
     let router = createRouter({
       middleware: [
         rateLimit({
           max: 1,
           windowMs: 60_000,
-          skip: (context) => context.url.pathname === "/healthcheck",
+          skip: (context) =>
+            context.url.pathname === "/healthcheck" ||
+            context.url.pathname === "/assets" ||
+            context.url.pathname.startsWith("/assets/"),
         }),
       ],
     });
@@ -230,6 +283,20 @@ describe("rateLimit", () => {
 
     expect(healthcheckFirst.status).toBe(200);
     expect(healthcheckSecond.status).toBe(200);
+
+    let assetsFirst = await router.fetch(
+      new Request("http://localhost/assets/app.js", {
+        headers: { "x-forwarded-for": "198.51.100.10" },
+      }),
+    );
+    let assetsSecond = await router.fetch(
+      new Request("http://localhost/assets/app.js", {
+        headers: { "x-forwarded-for": "198.51.100.10" },
+      }),
+    );
+
+    expect(assetsFirst.status).toBe(200);
+    expect(assetsSecond.status).toBe(200);
 
     let docsFirst = await router.fetch(
       new Request("http://localhost/docs", {

@@ -1,11 +1,10 @@
 import cx from "clsx";
 import { addEventListeners, clientEntry, type Handle } from "remix/component";
 import type { RemixNode } from "remix/component/jsx-runtime";
-import assets from "./jam-fade-in-badge.tsx?assets=client";
 
 export let JamFadeInBadge = clientEntry(
-  `${assets.entry}#JamFadeInBadge`,
-  (handle: Handle, setup?: number) => {
+  import.meta.url,
+  function JamFadeInBadge(handle: Handle, setup?: number) {
     let isVisible = false;
     let delay = setup ?? 0;
 

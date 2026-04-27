@@ -3,7 +3,8 @@ import { getSchedule } from "../../data/jam-schedule.server";
 import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control";
-import { JamDocument, ScrambleText, Title } from "./shared";
+import { JamDocument } from "./document";
+import { ScrambleText, Title } from "./shared";
 import { assetPaths } from "../../utils/asset-paths";
 import { JamLineupAccordionItem } from "../../assets/jam-lineup-accordion-item";
 

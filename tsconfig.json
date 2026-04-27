@@ -15,9 +15,6 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "remix/component",
-    "types": ["node", "vite/client", "@hiogawa/vite-plugin-fullstack/types"],
-    "paths": {
-      "satori": ["./app/satori-type-stub.d.ts"]
-    }
+    "types": ["node"]
   }
 }

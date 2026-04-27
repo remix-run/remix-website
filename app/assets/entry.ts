@@ -5,7 +5,7 @@ initFathomAnalytics();
 
 let app = run({
   async loadModule(src, exportName) {
-    let mod = await import(/* @vite-ignore */ src);
+    let mod = await import(src);
 
     let exp = (mod as Record<string, unknown>)[exportName];
     if (typeof exp === "function") return exp;

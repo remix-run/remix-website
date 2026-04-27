@@ -1,13 +1,11 @@
 import type { RemixNode } from "remix/component/jsx-runtime";
 
-import clientAssets from "../assets/entry.ts?assets=client";
 import { DocumentHeadSync } from "../assets/document-head-sync";
-import documentAssets from "./document.tsx?assets=ssr";
+import { getAssetEntry } from "../middleware/asset-entry";
 import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head";
 import { assetPaths } from "../utils/asset-paths";
 import { styleHrefs } from "../utils/style-hrefs";
 
-let assets = clientAssets.merge(documentAssets);
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
   let sync = () => {
@@ -57,6 +55,7 @@ export function Document() {
     headTags = [],
     children,
   }: DocumentProps) => {
+    let assetEntry = getAssetEntry();
     let managedHeadTags: ManagedHeadTag[] = [
       ...(noIndex
         ? [{ kind: "meta" as const, name: "robots", content: "noindex" }]
@@ -161,6 +160,11 @@ export function Document() {
             ),
           )}
 
+          {assetEntry.preloads.map((href) => (
+            <link key={href} rel="modulepreload" href={href} />
+          ))}
+          <script type="module" async src={assetEntry.src} />
+
           {/* Dark-mode detection (mirrors root.tsx ColorSchemeScript) */}
           <script innerHTML={colorSchemeScript} />
         </head>
@@ -186,10 +190,6 @@ export function Document() {
             fetchpriority="high"
           />
           {children}
-          {assets.js.map((asset) => (
-            <link key={asset.href} rel="modulepreload" href={asset.href} />
-          ))}
-          <script type="module" src={assets.entry} />
         </body>
       </html>
     );

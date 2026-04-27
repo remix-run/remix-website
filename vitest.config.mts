@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 import { defineConfig } from "vitest/config";
 import { loadEnv } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -8,23 +6,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 let env = loadEnv("test", process.cwd(), "");
 
 export default defineConfig({
-  plugins: [
-    tsconfigPaths(),
-    {
-      name: "mock-assets",
-      enforce: "pre",
-      resolveId(id) {
-        if (id.includes("?assets")) {
-          return "\0virtual:mock-asset";
-        }
-      },
-      load(id) {
-        if (id === "\0virtual:mock-asset") {
-          return 'export default { entry: "/mock-entry", js: [{href:"/mock-entry"}, {href:"/mock-chunk"}], css: [{href:"/mock-css"}], merge() { return this; } };';
-        }
-      },
-    },
-  ],
+  plugins: [tsconfigPaths()],
   test: {
     globals: true,
     environment: "happy-dom",

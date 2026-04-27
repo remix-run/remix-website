@@ -1,4 +1,3 @@
-import sourceMapSupport from "source-map-support";
 import { asyncContext } from "remix/async-context-middleware";
 import { compression } from "remix/compression-middleware";
 import { createRouter, type RequestContext } from "remix/fetch-router";
@@ -7,8 +6,10 @@ import { logger } from "remix/logger-middleware";
 import { staticFiles } from "remix/static-middleware";
 
 import { rateLimit } from "./middleware/rate-limit.ts";
+import { loadAssetEntry } from "./middleware/asset-entry.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes.ts";
+import { assetServer } from "./utils/assets.server.ts";
 
 import actionsController from "./controllers/actions/controller.tsx";
 import { blogHandler } from "./controllers/blog/controller.tsx";
@@ -28,14 +29,16 @@ import { jam2025Handler } from "./controllers/jam/2025.tsx";
 import { jamHandler } from "./controllers/jam/controller.ts";
 import { newsletterHandler } from "./controllers/newsletter.tsx";
 
-if (import.meta.env.PROD) {
-  sourceMapSupport.install();
-}
-
-let isDev = import.meta.env.DEV;
+let isDev = process.env.NODE_ENV !== "production";
+let shouldBypassLoopbackRateLimit =
+  isDev || process.env.PLAYWRIGHT_TEST === "1";
 
 function shouldSkipRateLimit(pathname: string) {
-  return pathname === "/healthcheck";
+  return (
+    pathname === "/healthcheck" ||
+    pathname === "/assets" ||
+    pathname.startsWith("/assets/")
+  );
 }
 
 function createAppRouter() {
@@ -57,29 +60,39 @@ function createAppRouter() {
 
   if (!isDev) {
     middleware.push(
-      staticFiles("build/client/assets", {
-        cacheControl: "public, max-age=31536000, immutable",
+      staticFiles("public", {
+        cacheControl: "public, max-age=3600",
       }),
     );
+  } else {
     middleware.push(
-      staticFiles("build/client", {
-        cacheControl: "public, max-age=3600",
+      staticFiles("public", {
+        cacheControl: "no-store, must-revalidate",
       }),
     );
   }
 
   middleware.push(formData());
   middleware.push(asyncContext());
+  middleware.push(loadAssetEntry());
   middleware.push(
     rateLimit({
       windowMs: 2 * 60 * 1000,
       max: 1000,
+      skipLocalhost: shouldBypassLoopbackRateLimit,
       skip: (context) => shouldSkipRateLimit(context.url.pathname),
     }),
   );
   middleware.push(logger());
 
   let router = createRouter({ middleware });
+
+  router.map(routes.assets, async ({ request }) => {
+    return (
+      (await assetServer.fetch(request)) ??
+      new Response("Not found", { status: 404 })
+    );
+  });
 
   // Keep healthcheck on a stable path during migration so deploy checks never
   // depend on the in-progress Remix route asset strategy.
@@ -121,11 +134,4 @@ function createAppRouter() {
   return router;
 }
 
-let router = createAppRouter();
-
-// vite fullstack plugin
-export default {
-  fetch(request: Request) {
-    return router.fetch(request.url, request);
-  },
-};
+export let router = createAppRouter();

@@ -2,10 +2,8 @@ import cx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
 import { JamScrambleText } from "../../assets/jam-scramble-text";
 import { MobileMenu } from "../../assets/mobile-menu";
-import { Document } from "../../ui/document";
 import { routes } from "../../routes";
 import { assetPaths } from "../../utils/asset-paths";
-import { styleHrefs } from "../../utils/style-hrefs";
 
 const jamButtonClassName =
   "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";
@@ -16,75 +14,7 @@ const jamMobileMenuWrapperClass = "relative top-1 w-max p-1";
 const jamMobileMenuNavClass =
   "flex flex-col gap-2 overflow-hidden rounded-[2rem] bg-black/40 px-2 py-2.5 backdrop-blur-lg";
 
-type JamPageProps = {
-  title: string;
-  description: string;
-  pageUrl: string;
-  previewImage: string;
-  activePath: string;
-  hideBackground?: boolean;
-  showSeats?: boolean;
-  children?: RemixNode;
-};
-
-export function JamDocument() {
-  return (props: JamPageProps) => (
-    <Document
-      title={props.title}
-      description={props.description}
-      forceTheme="dark"
-      headTags={[
-        { kind: "meta", property: "og:type", content: "website" },
-        { kind: "meta", property: "og:title", content: props.title },
-        {
-          kind: "meta",
-          property: "og:description",
-          content: props.description,
-        },
-        { kind: "meta", property: "og:url", content: props.pageUrl },
-        {
-          kind: "meta",
-          property: "og:image",
-          content: props.previewImage,
-        },
-        {
-          kind: "meta",
-          name: "twitter:card",
-          content: "summary_large_image",
-        },
-        { kind: "meta", name: "twitter:title", content: props.title },
-        {
-          kind: "meta",
-          name: "twitter:description",
-          content: props.description,
-        },
-        {
-          kind: "meta",
-          name: "twitter:image",
-          content: props.previewImage,
-        },
-        { kind: "link", rel: "stylesheet", href: styleHrefs.jam },
-        {
-          kind: "link",
-          rel: "preload",
-          href: "/font/jet-brains-mono.woff2",
-          as: "font",
-          crossorigin: "anonymous",
-        },
-      ]}
-    >
-      <JamPageScaffold
-        activePath={props.activePath}
-        hideBackground={props.hideBackground ?? false}
-        showSeats={props.showSeats ?? false}
-      >
-        {props.children}
-      </JamPageScaffold>
-    </Document>
-  );
-}
-
-function JamPageScaffold() {
+export function JamPageScaffold() {
   return (props: {
     activePath: string;
     hideBackground: boolean;
