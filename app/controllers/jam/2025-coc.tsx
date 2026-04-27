@@ -2,12 +2,7 @@ import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control";
 import { JamDocument } from "./document";
-import {
-  Paragraph,
-  ScrambleText,
-  Subheader,
-  Title,
-} from "./shared";
+import { Paragraph, ScrambleText, Subheader, Title } from "./shared";
 import { assetPaths } from "../../utils/asset-paths";
 
 export async function jam2025CocHandler() {

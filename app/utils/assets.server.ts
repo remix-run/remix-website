@@ -11,7 +11,12 @@ export let assetServer = createAssetServer({
     "/assets/npm/*path": "node_modules/*path",
   },
   allow: [path.join(rootDir, "app"), path.join(rootDir, "node_modules")],
-  deny: ["app/**/*.server.*", "app/**/*.test.*", "app/data/**", "app/middleware/**"],
+  deny: [
+    "app/**/*.server.*",
+    "app/**/*.test.*",
+    "app/data/**",
+    "app/middleware/**",
+  ],
   scripts: {
     sourceMaps: isDevelopment ? "external" : undefined,
     minify: !isDevelopment,

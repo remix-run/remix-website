@@ -52,10 +52,7 @@ async function discoverBrowserAssetModules() {
 
   // The asset compiler can tree-shake unused exports, so also validate app
   // modules that browser entrypoints may import and serve directly.
-  return collectRuntimeAppModules([
-    rootBrowserEntry,
-    ...clientEntryModules,
-  ]);
+  return collectRuntimeAppModules([rootBrowserEntry, ...clientEntryModules]);
 }
 
 async function collectRuntimeAppModules(seeds: string[]) {
