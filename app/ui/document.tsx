@@ -160,6 +160,11 @@ export function Document() {
             ),
           )}
 
+          {assetEntry.preloads.map((href) => (
+            <link key={href} rel="modulepreload" href={href} />
+          ))}
+          <script type="module" async src={assetEntry.src} />
+
           {/* Dark-mode detection (mirrors root.tsx ColorSchemeScript) */}
           <script innerHTML={colorSchemeScript} />
         </head>
@@ -185,10 +190,6 @@ export function Document() {
             fetchpriority="high"
           />
           {children}
-          {assetEntry.preloads.map((href) => (
-            <link key={href} rel="modulepreload" href={href} />
-          ))}
-          <script type="module" src={assetEntry.src} />
         </body>
       </html>
     );
