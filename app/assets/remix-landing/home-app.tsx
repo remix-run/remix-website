@@ -34,7 +34,7 @@ export let RemixLandingApp = clientEntry(
     let landingRoot: ReturnType<typeof createRoot> | undefined;
 
     handle.queueTask((signal) => {
-      void import("./App")
+      void import("./app")
         .then(({ App }) => {
           if (signal.aborted || handle.signal.aborted || !mountNode) return;
 

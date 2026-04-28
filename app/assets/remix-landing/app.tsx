@@ -1,15 +1,15 @@
 import { addEventListeners, css, type Handle } from "remix/component";
-import { FpsCounter } from "./components/FpsCounter";
-import { PresetGlow } from "./components/PresetGlow";
-import { LandingHero } from "./components/LandingHero";
-import { LandingNav } from "./components/LandingNav";
-import { FeatureSection } from "./components/FeatureSection";
-import { LabelOverlay } from "./components/LabelOverlay";
-import { LandingFooter } from "./components/LandingFooter";
-import { LoadingScreen } from "./components/LoadingScreen";
-import { PackageLogos } from "./components/PackageLogos";
-import { ScrollLogo } from "./components/ScrollLogo";
-import { SectionNav } from "./components/SectionNav";
+import { FpsCounter } from "./components/fps-counter";
+import { PresetGlow } from "./components/preset-glow";
+import { LandingHero } from "./components/landing-hero";
+import { LandingNav } from "./components/landing-nav";
+import { FeatureSection } from "./components/feature-section";
+import { LabelOverlay } from "./components/label-overlay";
+import { LandingFooter } from "./components/landing-footer";
+import { LoadingScreen } from "./components/loading-screen";
+import { PackageLogos } from "./components/package-logos";
+import { ScrollLogo } from "./components/scroll-logo";
+import { SectionNav } from "./components/section-nav";
 import type { ProjectedLabel } from "./engine/label-projection";
 import { loadModelPoints, type ModelData } from "./engine/model-loader";
 import { presets } from "./engine/presets";
@@ -18,7 +18,7 @@ import { setKonamiNavProgress } from "./konami-nav";
 import { colors } from "./styles/tokens";
 
 type ParticleCanvasFactory =
-  typeof import("./components/ParticleCanvas").ParticleCanvas;
+  typeof import("./components/particle-canvas").ParticleCanvas;
 
 const appStyles = css({
   position: "relative",
@@ -385,7 +385,7 @@ export function App(handle: Handle) {
     });
   });
 
-  void import("./components/ParticleCanvas")
+  void import("./components/particle-canvas")
     .then((module) => {
       if (handle.signal.aborted) return;
       ParticleCanvasComponent = module.ParticleCanvas;

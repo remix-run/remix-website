@@ -9,6 +9,7 @@ const shellStyles = css({
   padding: "120px 0",
   display: "grid",
   alignItems: "center",
+  alignContent: "center",
 });
 
 const rowStyles = css({
