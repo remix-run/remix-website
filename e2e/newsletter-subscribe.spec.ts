@@ -86,6 +86,36 @@ test.describe("Newsletter subscribe", () => {
   });
 });
 
+test.describe("Homepage newsletter", () => {
+  test("submits the start-building form through the newsletter action", async ({
+    page,
+  }) => {
+    let submittedEmail: string | null = null;
+
+    await page.route("**/_actions/newsletter", async (route) => {
+      let body = new URLSearchParams(route.request().postData() ?? "");
+      submittedEmail = body.get("email");
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true, error: null }),
+      });
+    });
+
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+
+    let startBuilding = page.locator("#start-building");
+    let emailInput = startBuilding.getByPlaceholder("name@example.com");
+    await emailInput.fill("hello@example.com");
+    await startBuilding.getByRole("button", { name: "Subscribe" }).click();
+
+    expect(submittedEmail).toBe("hello@example.com");
+    await expect(startBuilding.getByText("Got it!")).toBeVisible();
+    await expect(emailInput).toHaveValue("");
+  });
+});
+
 test.describe("Newsletter page (/newsletter)", () => {
   test("renders the newsletter page with form", async ({ page }) => {
     await page.goto("/newsletter");

@@ -15,7 +15,6 @@ import type { ProjectedLabel } from "./engine/label-projection";
 import { loadModelPoints, type ModelData } from "./engine/model-loader";
 import { presets } from "./engine/presets";
 import { DEFAULT_SETTINGS, type SystemSettings } from "./engine/types";
-import { setKonamiNavProgress } from "./konami-nav";
 import { colors } from "./styles/tokens";
 import { clamp } from "./utils/math";
 
@@ -268,7 +267,6 @@ export let RemixLandingEnhancements = clientEntry(
       konamiIdleTimer = setTimeout(() => {
         konamiIdleTimer = null;
         konamiIndex = 0;
-        setKonamiNavProgress(0);
       }, KONAMI_IDLE_MS);
     }
 
@@ -304,15 +302,12 @@ export let RemixLandingEnhancements = clientEntry(
             colorMode: konamiBrandMode ? 2 : 0,
           };
           konamiIndex = 0;
-          setKonamiNavProgress(0);
           handle.update();
         } else {
-          setKonamiNavProgress(konamiIndex);
           armKonamiIdle();
         }
       } else {
         konamiIndex = konamiKeyMatches(event, KONAMI_KEYS[0]) ? 1 : 0;
-        setKonamiNavProgress(konamiIndex);
         if (konamiIndex > 0) armKonamiIdle();
         else clearKonamiIdleTimer();
       }
@@ -353,7 +348,6 @@ export let RemixLandingEnhancements = clientEntry(
         window.cancelAnimationFrame(scrollFrame);
         clearKonamiIdleTimer();
         konamiIndex = 0;
-        setKonamiNavProgress(0);
       });
 
       handle.update();
@@ -391,6 +385,7 @@ export let RemixLandingEnhancements = clientEntry(
             totalSections={presets.length}
             onJump={jumpToPreset}
             scrollY={currentScrollY}
+            shouldBlockBlogShortcut={() => konamiIndex > 0}
           />
           <SectionNav
             activeIndex={nearestIndex}

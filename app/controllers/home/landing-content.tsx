@@ -2,6 +2,7 @@ import { FeatureSection } from "../../assets/remix-landing/components/feature-se
 import { LandingFooter } from "../../assets/remix-landing/components/landing-footer";
 import { LandingHero } from "../../assets/remix-landing/components/landing-hero";
 
+// TODO: consider how to cleanup this config mess
 const storySections = [
   {
     id: "full-stack",
@@ -87,7 +88,7 @@ function CopyToClipboard(handle: Handle) {
       kicker: "Subscribe to our newsletter",
       title: "Stay in the loop",
       body: "Once a month, we write about everything in the world of Remix. Sign up to be notified about progress on Remix 3. No spam. Unsubscribe anytime.",
-      newsletterAction: "https://remix.run/_actions/newsletter",
+      newsletter: true,
       newsletterPlaceholder: "name@example.com",
       newsletterButtonLabel: "Subscribe",
     },

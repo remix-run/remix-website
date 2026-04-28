@@ -16,6 +16,7 @@ export default {
         email: formData.get("email"),
         tags: formData.getAll("tag"),
       });
+
       if (!result.success) {
         let hasEmailIssue = result.issues.some((issue) =>
           hasPath(issue, "email"),

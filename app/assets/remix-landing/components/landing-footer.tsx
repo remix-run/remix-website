@@ -1,4 +1,5 @@
 import { css, type Handle } from "remix/component";
+import { Wordmark } from "../../../ui/wordmark";
 import { colors } from "../styles/tokens";
 
 const SOCIAL_LINKS = [
@@ -47,17 +48,7 @@ const brandRowStyles = css({
 
 const wordmarkStyles = css({
   display: "block",
-  width: "81.386px",
-  height: "8px",
-  background: colors.fg,
-  maskImage: 'url("/landing/remix-wordmark.svg")',
-  maskSize: "contain",
-  maskRepeat: "no-repeat",
-  maskPosition: "center",
-  WebkitMaskImage: 'url("/landing/remix-wordmark.svg")',
-  WebkitMaskSize: "contain",
-  WebkitMaskRepeat: "no-repeat",
-  WebkitMaskPosition: "center",
+  color: colors.fg,
   flexShrink: "0",
 });
 
@@ -115,7 +106,12 @@ export function LandingFooter(_handle: Handle) {
     <footer mix={[footerShellStyles]}>
       <div mix={[footerContentStyles]}>
         <div mix={[brandRowStyles]}>
-          <span role="img" aria-label="Remix" mix={[wordmarkStyles]} />
+          <Wordmark
+            role="img"
+            aria-label="Remix"
+            height={8}
+            mix={[wordmarkStyles]}
+          />
           <div mix={[socialLinksStyles]}>
             {SOCIAL_LINKS.map((link) => (
               <a
@@ -149,7 +145,7 @@ export function LandingFooter(_handle: Handle) {
             </a>
           </p>
           <p mix={[legalTextStyles]}>
-            ©2026{" "}
+            ©{new Date().getFullYear()}{" "}
             <a
               href="https://www.shopify.com/"
               target="_blank"

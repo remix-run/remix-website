@@ -1,4 +1,9 @@
-import { css, type Handle } from "remix/component";
+import { clientEntry, css, on, type Handle } from "remix/component";
+import { routes } from "../../../routes";
+import {
+  submitNewsletterRequest,
+  type SubscribeState,
+} from "../../newsletter-subscribe";
 import { colors, glowWhite, pageMaxWidth } from "../styles/tokens";
 
 // Vertically center the inner row inside each section's `min-height: 100vh`
@@ -420,6 +425,33 @@ const subscribeButtonStyles = css({
   "&:hover": {
     background: `color-mix(in srgb, var(--brand-cycle, ${colors.accent}) 18%, rgba(255, 255, 255, 0.08))`,
   },
+  "&:disabled": {
+    cursor: "not-allowed",
+    opacity: "0.55",
+  },
+});
+
+const subscribeMessageStyles = css({
+  marginTop: "12px",
+  fontFamily: "'Inter Variable', 'Inter', sans-serif",
+  fontSize: "14px",
+  lineHeight: "1.45",
+  letterSpacing: "-0.008px",
+  color: "rgba(255, 255, 255, 0.76)",
+});
+
+const subscribeMessageHiddenStyles = css({
+  display: "none",
+});
+
+const subscribeSuccessStyles = css({
+  display: "block",
+  color: "#7ce95a",
+});
+
+const subscribeErrorStyles = css({
+  display: "block",
+  color: "#ff6b6b",
 });
 
 const PRIMARY_PANEL_STYLES_BY_ID: Record<
@@ -454,11 +486,103 @@ type FeatureSectionProps = {
     kicker: string;
     title: string;
     body: string;
-    newsletterAction?: string;
+    newsletter?: boolean;
     newsletterPlaceholder?: string;
     newsletterButtonLabel?: string;
   };
 };
+
+export let LandingNewsletterSubscribeForm = clientEntry(
+  import.meta.url,
+  function LandingNewsletterSubscribeForm(handle: Handle) {
+    let submitting = false;
+    let state: SubscribeState = "idle";
+    let error: string | null = null;
+
+    return (props: { placeholder?: string; buttonLabel?: string }) => (
+      <>
+        <form
+          action={routes.actions.newsletter.href()}
+          method="post"
+          mix={[
+            subscribeFormStyles,
+            on("submit", async (event, signal) => {
+              event.preventDefault();
+              if (submitting) return;
+
+              let form = event.currentTarget as HTMLFormElement;
+              submitting = true;
+              state = "idle";
+              error = null;
+              handle.update();
+
+              try {
+                let result = await submitNewsletterRequest({
+                  action: form.action,
+                  formData: new FormData(form),
+                  signal,
+                });
+                if (signal.aborted) return;
+                state = result.state;
+                error = result.error;
+                if (result.shouldReset) {
+                  form.reset();
+                }
+              } finally {
+                submitting = false;
+                handle.update();
+              }
+            }),
+          ]}
+        >
+          <label for="landing-newsletter-email" mix={[subscribeLabelStyles]}>
+            Email address
+          </label>
+          <input
+            id="landing-newsletter-email"
+            type="email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder={props.placeholder ?? "name@example.com"}
+            aria-invalid={state === "error" ? true : undefined}
+            aria-describedby={
+              state === "idle" ? undefined : "landing-newsletter-message"
+            }
+            mix={[subscribeInputStyles]}
+          />
+          <button
+            type="submit"
+            disabled={submitting}
+            mix={[subscribeButtonStyles]}
+          >
+            {submitting
+              ? "Subscribing..."
+              : (props.buttonLabel ?? "Subscribe")}
+          </button>
+        </form>
+        <div
+          id="landing-newsletter-message"
+          aria-live="polite"
+          mix={[
+            subscribeMessageStyles,
+            state === "success"
+              ? subscribeSuccessStyles
+              : state === "error"
+                ? subscribeErrorStyles
+                : subscribeMessageHiddenStyles,
+          ]}
+        >
+          {state === "success"
+            ? "Got it! Please check your email to confirm your subscription."
+            : state === "error"
+              ? (error ?? "Something went wrong")
+              : null}
+        </div>
+      </>
+    );
+  },
+);
 
 export function FeatureSection(_handle: Handle) {
   return (props: FeatureSectionProps) => {
@@ -516,30 +640,11 @@ export function FeatureSection(_handle: Handle) {
               <p mix={[kickerStyles]}>{props.secondary.kicker}</p>
               <h2 mix={[titleStyles]}>{props.secondary.title}</h2>
               <p mix={[bodyStyles]}>{props.secondary.body}</p>
-              {props.secondary.newsletterAction ? (
-                <form
-                  action={props.secondary.newsletterAction}
-                  method="post"
-                  target="_blank"
-                  mix={[subscribeFormStyles]}
-                >
-                  <label for="newsletter-email" mix={[subscribeLabelStyles]}>
-                    Email address
-                  </label>
-                  <input
-                    id="newsletter-email"
-                    type="email"
-                    name="email"
-                    autocomplete="email"
-                    placeholder={
-                      props.secondary.newsletterPlaceholder ?? "name@example.com"
-                    }
-                    mix={[subscribeInputStyles]}
-                  />
-                  <button type="submit" mix={[subscribeButtonStyles]}>
-                    {props.secondary.newsletterButtonLabel ?? "Subscribe"}
-                  </button>
-                </form>
+              {props.secondary.newsletter ? (
+                <LandingNewsletterSubscribeForm
+                  placeholder={props.secondary.newsletterPlaceholder}
+                  buttonLabel={props.secondary.newsletterButtonLabel}
+                />
               ) : null}
             </div>
           ) : null}

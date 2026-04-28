@@ -7,7 +7,6 @@ import {
   type Handle,
 } from "remix/component";
 import { routes } from "../../../routes";
-import { shouldBlockNavLetterB } from "../konami-nav";
 import { colors } from "../styles/tokens";
 import { clamp01 } from "../utils/math";
 
@@ -173,6 +172,7 @@ export function LandingNav(handle: Handle) {
   let totalSections = 1;
   let menuOpen = false;
   let mobileContainerEl: HTMLElement | null = null;
+  let shouldBlockBlogShortcut = () => false;
 
   function setMenuOpen(next: boolean) {
     if (menuOpen === next) return;
@@ -214,7 +214,7 @@ export function LandingNav(handle: Handle) {
         (n) => n.key.toLowerCase() === e.key.toLowerCase(),
       );
       if (item) {
-        if (item.key === "B" && shouldBlockNavLetterB()) return;
+        if (item.key === "B" && shouldBlockBlogShortcut()) return;
         e.preventDefault();
         openNavItem(item);
       }
@@ -241,10 +241,12 @@ export function LandingNav(handle: Handle) {
     totalSections: number;
     onJump: (index: number) => void;
     scrollY: number;
+    shouldBlockBlogShortcut: () => boolean;
   }) => {
     activeIndex = props.activeIndex;
     totalSections = props.totalSections;
     onJump = props.onJump;
+    shouldBlockBlogShortcut = props.shouldBlockBlogShortcut;
 
     const hintOpacity = clamp01(1 - props.scrollY / 80);
     const toggleLabel = menuOpen ? "close" : "menu";
