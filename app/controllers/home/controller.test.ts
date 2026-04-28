@@ -49,5 +49,8 @@ describe("home route", () => {
     expect(html).toContain(
       '<script type="module" async src="/assets/app/assets/entry.ts"',
     );
+
+    expect(html).toMatch(/class="loading-screen-overlay\b/);
+    expect(html).not.toContain("@keyframes loading-screen-dismiss");
   });
 });

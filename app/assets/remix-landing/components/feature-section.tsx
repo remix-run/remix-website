@@ -1,6 +1,10 @@
 import { css, type Handle } from "remix/component";
 import { colors, glowWhite, pageMaxWidth } from "../styles/tokens";
 
+// Vertically center the inner row inside each section's `min-height: 100vh`
+// box. `align-items: center` handles grid-cell alignment, but this single
+// auto-sized row also needs `align-content: center` so the leftover section
+// height is distributed above and below the content.
 const shellStyles = css({
   width: pageMaxWidth,
   minHeight: "100vh",
@@ -418,6 +422,24 @@ const subscribeButtonStyles = css({
   },
 });
 
+const PRIMARY_PANEL_STYLES_BY_ID: Record<
+  string,
+  ReturnType<typeof css> | undefined
+> = {
+  "full-stack": leftPanelFullStackStyles,
+  "start-building": leftPanelStartBuildingStyles,
+  "ai-ready": leftPanelAiReadyStyles,
+  "powerful-components": leftPanelPowerfulComponentsStyles,
+  "use-cases": rightPanelUseCasesStyles,
+};
+
+const SECONDARY_PANEL_STYLES_BY_ID: Record<
+  string,
+  ReturnType<typeof css> | undefined
+> = {
+  "start-building": rightPanelNewsletterStyles,
+};
+
 type FeatureSectionProps = {
   id: string;
   kicker: string;
@@ -439,27 +461,16 @@ type FeatureSectionProps = {
 };
 
 function renderFeatureSection(props: FeatureSectionProps) {
+  const primaryPanelStyles =
+    PRIMARY_PANEL_STYLES_BY_ID[props.id] ??
+    (props.align === "right" ? rightPanelStyles : leftPanelStyles);
+
   return (
     <section id={props.id} mix={[shellStyles]}>
       <div mix={[rowStyles]}>
         <div
           id={props.id === "full-stack" ? "full-stack-panel" : undefined}
-          mix={[
-            panelStyles,
-            props.id === "full-stack"
-              ? leftPanelFullStackStyles
-              : props.id === "start-building"
-                ? leftPanelStartBuildingStyles
-                : props.id === "ai-ready"
-                  ? leftPanelAiReadyStyles
-                  : props.id === "powerful-components"
-                    ? leftPanelPowerfulComponentsStyles
-                    : props.id === "use-cases"
-                      ? rightPanelUseCasesStyles
-                      : props.align === "right"
-                        ? rightPanelStyles
-                        : leftPanelStyles,
-          ]}
+          mix={[panelStyles, primaryPanelStyles]}
         >
           <p mix={[kickerStyles]}>{props.kicker}</p>
           <h2 mix={[titleStyles]}>{props.title}</h2>
@@ -498,9 +509,7 @@ function renderFeatureSection(props: FeatureSectionProps) {
           <div
             mix={[
               panelStyles,
-              props.id === "start-building"
-                ? rightPanelNewsletterStyles
-                : rightPanelStyles,
+              SECONDARY_PANEL_STYLES_BY_ID[props.id] ?? rightPanelStyles,
             ]}
           >
             <p mix={[kickerStyles]}>{props.secondary.kicker}</p>

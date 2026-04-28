@@ -71,11 +71,9 @@ export interface SystemSettings {
   dofAmount: number;
   dofFocus: number;
   cameraFov: number;
-  glowIntensity: number;
   hdrIntensity: number;
   cursorRepulsion: number;
   morphEase: number;
-  showFps: boolean;
   colorMode: number;
   trailIntensity: number;
 }
@@ -89,11 +87,9 @@ export const DEFAULT_SETTINGS: SystemSettings = {
   dofAmount: 0,
   dofFocus: 80,
   cameraFov: 60,
-  glowIntensity: 0.4,
   hdrIntensity: 1.0,
   cursorRepulsion: 0.2,
   morphEase: 2.3,
-  showFps: true,
   colorMode: 0,
   trailIntensity: 0.23,
 };

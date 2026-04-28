@@ -7,9 +7,10 @@ import { ParticleSystem } from "../engine/particles";
 import { getMorphBlend } from "../engine/morph";
 import { createModelTexture } from "../engine/model-texture";
 import type { ModelData } from "../engine/model-loader";
-import { PARTICLE_INTRO_DELAY_S } from "../loading-timing";
 import type { Preset, ShaderId, SystemSettings } from "../engine/types";
 
+// Must match the `1000ms` start delay on `.loading-screen-overlay` in `home.css`.
+const PARTICLE_INTRO_DELAY_S = 1;
 const DEFAULT_CAM_POS: [number, number, number] = [0, 30, 80];
 const DEFAULT_CAM_TARGET: [number, number, number] = [0, 0, 0];
 const CAM_LERP_SPEED = 0.025;

@@ -29,10 +29,6 @@ const shellStyles = css({
   pointerEvents: "none",
 });
 
-const svgBaseStyles = css({
-  display: "block",
-});
-
 const mainSvgStyles = css({
   display: "block",
   color: `var(--brand-cycle, #EBEFF2)`,

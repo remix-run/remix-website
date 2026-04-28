@@ -1,3 +1,0 @@
-export const LOADING_SCREEN_MIN_DISPLAY_MS = 1000;
-export const LOADING_SCREEN_FADE_MS = 600;
-export const PARTICLE_INTRO_DELAY_S = 1;

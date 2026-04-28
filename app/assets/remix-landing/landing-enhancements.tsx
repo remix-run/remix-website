@@ -100,6 +100,7 @@ export let RemixLandingEnhancements = clientEntry(
     let morphValue = 0;
     let currentScrollY = 0;
     let scrollFrame = 0;
+    let sectionScrollStops: number[] | null = null;
     const projectedLabelsRef = { current: [] as ProjectedLabel[] };
     const labelOpacityRef = { current: 0 };
     const morphValueRef = { current: 0 };
@@ -114,6 +115,55 @@ export let RemixLandingEnhancements = clientEntry(
         document.documentElement.scrollHeight - window.innerHeight,
         1,
       );
+    }
+
+    function clampScrollY(scrollY: number) {
+      return Math.max(0, Math.min(getScrollRange(), scrollY));
+    }
+
+    function getSectionScrollStop(index: number): number | undefined {
+      if (index === 0) return 0;
+      const id = LANDING_SECTION_IDS[index];
+      if (!id) return undefined;
+      const el = document.getElementById(id);
+      if (!el) return undefined;
+      const sectionCenter = el.offsetTop + el.offsetHeight / 2;
+      return clampScrollY(sectionCenter - window.innerHeight / 2);
+    }
+
+    function getSectionScrollStops(): number[] | undefined {
+      if (sectionScrollStops) return sectionScrollStops;
+
+      const stops: number[] = [];
+      for (let index = 0; index < presets.length; index++) {
+        const stop = getSectionScrollStop(index);
+        if (stop === undefined) return undefined;
+        stops.push(stop);
+      }
+      sectionScrollStops = stops;
+      return stops;
+    }
+
+    function getMorphValueForScroll(scrollY: number) {
+      const maxValue = presets.length - 1;
+      const stops = getSectionScrollStops();
+      if (!stops) {
+        return (clampScrollY(scrollY) / getScrollRange()) * maxValue;
+      }
+
+      const clampedScrollY = clampScrollY(scrollY);
+      if (clampedScrollY <= stops[0]) return 0;
+
+      for (let index = 0; index < maxValue; index++) {
+        const from = stops[index];
+        const to = stops[index + 1];
+        if (clampedScrollY > to) continue;
+        const span = to - from;
+        if (span <= 1) return index + 1;
+        return index + (clampedScrollY - from) / span;
+      }
+
+      return maxValue;
     }
 
     function assignModelData(url: string, data: ModelData) {
@@ -167,10 +217,7 @@ export let RemixLandingEnhancements = clientEntry(
     }
 
     function syncMorphToScroll() {
-      const maxValue = presets.length - 1;
-      const scrollRange = getScrollRange();
-      const progress = Math.max(0, Math.min(1, window.scrollY / scrollRange));
-      morphValue = progress * maxValue;
+      morphValue = getMorphValueForScroll(window.scrollY);
       morphValueRef.current = morphValue;
       currentScrollY = window.scrollY;
       requestNearbyModels();
@@ -182,13 +229,9 @@ export let RemixLandingEnhancements = clientEntry(
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
-      const id = LANDING_SECTION_IDS[index];
-      if (!id) return;
-      const el = document.getElementById(id);
-      if (!el) return;
-      const elCenter = el.offsetTop + el.offsetHeight / 2;
-      const targetY = elCenter - window.innerHeight / 2;
-      window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
+      const targetY = getSectionScrollStop(index);
+      if (targetY === undefined) return;
+      window.scrollTo({ top: targetY, behavior: "smooth" });
     }
 
     function scheduleMorphSync() {
@@ -252,30 +295,22 @@ export let RemixLandingEnhancements = clientEntry(
       }
     }
 
+    // Body styles (margin/background/color/font-family) live in `home.css`;
+    // don't re-apply them here.
     handle.queueTask((signal) => {
       if (signal.aborted || handle.signal.aborted) return;
 
       isHydrated = true;
-
-      const previous = {
-        margin: document.body.style.margin,
-        background: document.body.style.background,
-        color: document.body.style.color,
-        fontFamily: document.body.style.fontFamily,
-      };
-
-      document.body.style.margin = "0";
-      document.body.style.background = colors.bg;
-      document.body.style.color = colors.fg;
-      document.body.style.fontFamily =
-        'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
 
       syncMorphToScroll();
       requestNearbyModels();
 
       addEventListeners(window, handle.signal, {
         scroll: () => scheduleMorphSync(),
-        resize: () => scheduleMorphSync(),
+        resize: () => {
+          sectionScrollStops = null;
+          scheduleMorphSync();
+        },
         keydown: onKonamiKeydown,
       });
 
@@ -284,10 +319,6 @@ export let RemixLandingEnhancements = clientEntry(
         clearKonamiIdleTimer();
         konamiIndex = 0;
         setKonamiNavProgress(0);
-        document.body.style.margin = previous.margin;
-        document.body.style.background = previous.background;
-        document.body.style.color = previous.color;
-        document.body.style.fontFamily = previous.fontFamily;
       });
 
       handle.update();

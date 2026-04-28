@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
@@ -12,11 +11,27 @@ function screenScale(width: number): number {
   return Math.min(width / ref, 1);
 }
 
+// Stand-in for `three/addons/controls/OrbitControls`. We only need the
+// look-at target and an enabled flag; the real addon pulled in pointer/touch/
+// wheel gesture handlers and damping logic that the landing never used.
+class CameraTargetControls {
+  target = new THREE.Vector3();
+  enabled = true;
+
+  constructor(private camera: THREE.PerspectiveCamera) {}
+
+  update() {
+    this.camera.lookAt(this.target);
+  }
+
+  dispose() {}
+}
+
 export class Engine {
   renderer!: THREE.WebGLRenderer;
   scene!: THREE.Scene;
   camera!: THREE.PerspectiveCamera;
-  controls!: OrbitControls;
+  controls!: CameraTargetControls;
   composer!: EffectComposer;
   afterImagePass!: AfterimagePass;
   bloomPass!: UnrealBloomPass;
@@ -50,14 +65,7 @@ export class Engine {
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.renderer.setClearColor(new THREE.Color(settings.backgroundColor));
 
-    this.controls = new OrbitControls(this.camera, canvas);
-    this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.05;
-    this.controls.enableRotate = false;
-    this.controls.enablePan = false;
-    this.controls.enableZoom = false;
-    this.controls.minDistance = 5;
-    this.controls.maxDistance = 500;
+    this.controls = new CameraTargetControls(this.camera);
 
     this.composer = new EffectComposer(this.renderer);
 

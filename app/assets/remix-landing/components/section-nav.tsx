@@ -1,5 +1,5 @@
 import { css, on, type Handle } from "remix/component";
-import { colors, glowBlue } from "../styles/tokens";
+import { colors } from "../styles/tokens";
 
 const TRACK_WIDTH = 11;
 const ITEM_HEIGHT = 16;
