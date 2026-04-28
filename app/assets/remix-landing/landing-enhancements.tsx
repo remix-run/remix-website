@@ -4,7 +4,6 @@ import {
   css,
   type Handle,
 } from "remix/component";
-import { FpsCounter } from "./components/fps-counter";
 import { PresetGlow } from "./components/preset-glow";
 import { LandingNav } from "./components/landing-nav";
 import { LabelOverlay } from "./components/label-overlay";
@@ -82,10 +81,22 @@ const LANDING_SECTION_IDS = [
   "start-building",
 ] as const;
 
+type FpsCounterComponent = typeof import("./components/fps-counter").FpsCounter;
+
 function konamiKeyMatches(event: KeyboardEvent, expected: string): boolean {
   if (expected.startsWith("Arrow")) return event.key === expected;
   if (expected === "Enter") return event.key === "Enter";
   return event.key.length === 1 && event.key.toLowerCase() === expected;
+}
+
+function isEditableKeyTarget(event: KeyboardEvent): boolean {
+  const el = event.target as HTMLElement | null;
+  return Boolean(
+    el &&
+      (el.tagName === "INPUT" ||
+        el.tagName === "TEXTAREA" ||
+        el.isContentEditable),
+  );
 }
 
 export let RemixLandingEnhancements = clientEntry(
@@ -101,6 +112,9 @@ export let RemixLandingEnhancements = clientEntry(
     let currentScrollY = 0;
     let scrollFrame = 0;
     let sectionScrollStops: number[] | null = null;
+    let fpsCounterVisible = false;
+    let FpsCounter: FpsCounterComponent | null = null;
+    let fpsCounterLoad: Promise<void> | null = null;
     const projectedLabelsRef = { current: [] as ProjectedLabel[] };
     const labelOpacityRef = { current: 0 };
     const morphValueRef = { current: 0 };
@@ -198,8 +212,7 @@ export let RemixLandingEnhancements = clientEntry(
         console.error(error);
       } finally {
         pendingModelUrls.delete(url);
-        if (handle.signal.aborted) return;
-        handle.update();
+        if (!handle.signal.aborted) handle.update();
       }
     }
 
@@ -258,17 +271,26 @@ export let RemixLandingEnhancements = clientEntry(
       }, KONAMI_IDLE_MS);
     }
 
-    function onKonamiKeydown(event: KeyboardEvent) {
-      const el = event.target as HTMLElement | null;
-      if (
-        el &&
-        (el.tagName === "INPUT" ||
-          el.tagName === "TEXTAREA" ||
-          el.isContentEditable)
-      ) {
-        return;
-      }
+    function loadFpsCounter() {
+      fpsCounterLoad ??= import("./components/fps-counter").then((module) => {
+        if (handle.signal.aborted) return;
+        FpsCounter = module.FpsCounter;
+      });
+      return fpsCounterLoad;
+    }
 
+    function toggleFpsCounter() {
+      fpsCounterVisible = !fpsCounterVisible;
+      if (fpsCounterVisible && !FpsCounter) {
+        void loadFpsCounter().then(() => {
+          if (handle.signal.aborted) return;
+          handle.update();
+        });
+      }
+      handle.update();
+    }
+
+    function onKonamiKeydown(event: KeyboardEvent) {
       const expected = KONAMI_KEYS[konamiIndex];
       if (konamiKeyMatches(event, expected)) {
         konamiIndex += 1;
@@ -295,6 +317,18 @@ export let RemixLandingEnhancements = clientEntry(
       }
     }
 
+    function onKeydown(event: KeyboardEvent) {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isEditableKeyTarget(event)) return;
+
+      if (event.key.toLowerCase() === "f") {
+        toggleFpsCounter();
+        return;
+      }
+
+      onKonamiKeydown(event);
+    }
+
     // Body styles (margin/background/color/font-family) live in `home.css`;
     // don't re-apply them here.
     handle.queueTask((signal) => {
@@ -311,7 +345,7 @@ export let RemixLandingEnhancements = clientEntry(
           sectionScrollStops = null;
           scheduleMorphSync();
         },
-        keydown: onKonamiKeydown,
+        keydown: onKeydown,
       });
 
       handle.signal.addEventListener("abort", () => {
@@ -330,6 +364,7 @@ export let RemixLandingEnhancements = clientEntry(
       const nearestIndex = Math.round(
         Math.max(0, Math.min(presets.length - 1, morphValue)),
       );
+
       return (
         <div mix={[appStyles]}>
           <PackageLogos morphValue={morphValue} />
@@ -365,7 +400,7 @@ export let RemixLandingEnhancements = clientEntry(
             onJump={jumpToPreset}
           />
 
-          <FpsCounter />
+          {fpsCounterVisible && FpsCounter ? <FpsCounter /> : null}
         </div>
       );
     };

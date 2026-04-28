@@ -460,141 +460,91 @@ type FeatureSectionProps = {
   };
 };
 
-function renderFeatureSection(props: FeatureSectionProps) {
-  const primaryPanelStyles =
-    PRIMARY_PANEL_STYLES_BY_ID[props.id] ??
-    (props.align === "right" ? rightPanelStyles : leftPanelStyles);
+export function FeatureSection(_handle: Handle) {
+  return (props: FeatureSectionProps) => {
+    const primaryPanelStyles =
+      PRIMARY_PANEL_STYLES_BY_ID[props.id] ??
+      (props.align === "right" ? rightPanelStyles : leftPanelStyles);
 
-  return (
-    <section id={props.id} mix={[shellStyles]}>
-      <div mix={[rowStyles]}>
-        <div
-          id={props.id === "full-stack" ? "full-stack-panel" : undefined}
-          mix={[panelStyles, primaryPanelStyles]}
-        >
-          <p mix={[kickerStyles]}>{props.kicker}</p>
-          <h2 mix={[titleStyles]}>{props.title}</h2>
-          <p mix={[bodyStyles]}>{props.body}</p>
-          {props.ctaLabel && props.ctaHref ? (
-            <a
-              href={props.ctaHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              mix={[ctaStyles]}
-            >
-              {props.ctaIcon === "eye" ? (
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  mix={[ctaIconStyles]}
-                >
-                  <path
-                    fill="currentColor"
-                    d="M12 5C6.5 5 2.1 8.3.5 12c1.6 3.7 6 7 11.5 7s9.9-3.3 11.5-7c-1.6-3.7-6-7-11.5-7Zm0 11.2A4.2 4.2 0 1 1 12 7.8a4.2 4.2 0 0 1 0 8.4Zm0-2.1a2.1 2.1 0 1 0 0-4.2 2.1 2.1 0 0 0 0 4.2Z"
-                  />
-                </svg>
-              ) : null}
-              {props.ctaLabel}
-            </a>
-          ) : null}
-        </div>
-        {props.codeSnippet ? (
-          <div mix={[codeContainerStyles]}>
-            <pre mix={[codePreStyles]}>
-              <code>{renderHighlightedCode(props.codeSnippet)}</code>
-            </pre>
-          </div>
-        ) : null}
-        {props.secondary ? (
+    return (
+      <section id={props.id} mix={[shellStyles]}>
+        <div mix={[rowStyles]}>
           <div
-            mix={[
-              panelStyles,
-              SECONDARY_PANEL_STYLES_BY_ID[props.id] ?? rightPanelStyles,
-            ]}
+            id={props.id === "full-stack" ? "full-stack-panel" : undefined}
+            mix={[panelStyles, primaryPanelStyles]}
           >
-            <p mix={[kickerStyles]}>{props.secondary.kicker}</p>
-            <h2 mix={[titleStyles]}>{props.secondary.title}</h2>
-            <p mix={[bodyStyles]}>{props.secondary.body}</p>
-            {props.secondary.newsletterAction ? (
-              <form
-                action={props.secondary.newsletterAction}
-                method="post"
+            <p mix={[kickerStyles]}>{props.kicker}</p>
+            <h2 mix={[titleStyles]}>{props.title}</h2>
+            <p mix={[bodyStyles]}>{props.body}</p>
+            {props.ctaLabel && props.ctaHref ? (
+              <a
+                href={props.ctaHref}
                 target="_blank"
-                mix={[subscribeFormStyles]}
+                rel="noopener noreferrer"
+                mix={[ctaStyles]}
               >
-                <label for="newsletter-email" mix={[subscribeLabelStyles]}>
-                  Email address
-                </label>
-                <input
-                  id="newsletter-email"
-                  type="email"
-                  name="email"
-                  autocomplete="email"
-                  placeholder={
-                    props.secondary.newsletterPlaceholder ?? "name@example.com"
-                  }
-                  mix={[subscribeInputStyles]}
-                />
-                <button type="submit" mix={[subscribeButtonStyles]}>
-                  {props.secondary.newsletterButtonLabel ?? "Subscribe"}
-                </button>
-              </form>
+                {props.ctaIcon === "eye" ? (
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    mix={[ctaIconStyles]}
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M12 5C6.5 5 2.1 8.3.5 12c1.6 3.7 6 7 11.5 7s9.9-3.3 11.5-7c-1.6-3.7-6-7-11.5-7Zm0 11.2A4.2 4.2 0 1 1 12 7.8a4.2 4.2 0 0 1 0 8.4Zm0-2.1a2.1 2.1 0 1 0 0-4.2 2.1 2.1 0 0 0 0 4.2Z"
+                    />
+                  </svg>
+                ) : null}
+                {props.ctaLabel}
+              </a>
             ) : null}
           </div>
-        ) : null}
-      </div>
-    </section>
-  );
-}
-
-function secondaryEqual(
-  a: FeatureSectionProps["secondary"],
-  b: FeatureSectionProps["secondary"],
-): boolean {
-  if (a === b) return true;
-  if (!a || !b) return false;
-  return (
-    a.kicker === b.kicker &&
-    a.title === b.title &&
-    a.body === b.body &&
-    a.newsletterAction === b.newsletterAction &&
-    a.newsletterPlaceholder === b.newsletterPlaceholder &&
-    a.newsletterButtonLabel === b.newsletterButtonLabel
-  );
-}
-
-function propsEqual(a: FeatureSectionProps, b: FeatureSectionProps): boolean {
-  return (
-    a.id === b.id &&
-    a.kicker === b.kicker &&
-    a.title === b.title &&
-    a.body === b.body &&
-    a.align === b.align &&
-    a.ctaLabel === b.ctaLabel &&
-    a.ctaHref === b.ctaHref &&
-    a.ctaIcon === b.ctaIcon &&
-    a.codeSnippet === b.codeSnippet &&
-    secondaryEqual(a.secondary, b.secondary)
-  );
-}
-
-// Keep this component stable if it is ever rendered under a reactive parent.
-// The homepage now server-renders these sections, but the prop-level cache is
-// still cheap and protects the large code-snippet subtree from redundant diffs.
-export function FeatureSection(_handle: Handle) {
-  let cachedProps: FeatureSectionProps | null = null;
-  let cachedOutput: ReturnType<typeof renderFeatureSection> | null = null;
-
-  return (props: FeatureSectionProps) => {
-    if (
-      cachedProps !== null &&
-      cachedOutput !== null &&
-      propsEqual(cachedProps, props)
-    ) {
-      return cachedOutput;
-    }
-    cachedProps = props;
-    cachedOutput = renderFeatureSection(props);
-    return cachedOutput;
+          {props.codeSnippet ? (
+            <div mix={[codeContainerStyles]}>
+              <pre mix={[codePreStyles]}>
+                <code>{renderHighlightedCode(props.codeSnippet)}</code>
+              </pre>
+            </div>
+          ) : null}
+          {props.secondary ? (
+            <div
+              mix={[
+                panelStyles,
+                SECONDARY_PANEL_STYLES_BY_ID[props.id] ?? rightPanelStyles,
+              ]}
+            >
+              <p mix={[kickerStyles]}>{props.secondary.kicker}</p>
+              <h2 mix={[titleStyles]}>{props.secondary.title}</h2>
+              <p mix={[bodyStyles]}>{props.secondary.body}</p>
+              {props.secondary.newsletterAction ? (
+                <form
+                  action={props.secondary.newsletterAction}
+                  method="post"
+                  target="_blank"
+                  mix={[subscribeFormStyles]}
+                >
+                  <label for="newsletter-email" mix={[subscribeLabelStyles]}>
+                    Email address
+                  </label>
+                  <input
+                    id="newsletter-email"
+                    type="email"
+                    name="email"
+                    autocomplete="email"
+                    placeholder={
+                      props.secondary.newsletterPlaceholder ?? "name@example.com"
+                    }
+                    mix={[subscribeInputStyles]}
+                  />
+                  <button type="submit" mix={[subscribeButtonStyles]}>
+                    {props.secondary.newsletterButtonLabel ?? "Subscribe"}
+                  </button>
+                </form>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </section>
+    );
   };
 }

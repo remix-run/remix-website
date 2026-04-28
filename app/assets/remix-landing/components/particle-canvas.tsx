@@ -4,7 +4,7 @@ import { ControlManager } from "../engine/controls";
 import { Engine } from "../engine/engine";
 import { projectLabels, type ProjectedLabel } from "../engine/label-projection";
 import { ParticleSystem } from "../engine/particles";
-import { getMorphBlend } from "../engine/morph";
+import { getMorphBlend, type MorphBlend } from "../engine/morph";
 import { createModelTexture } from "../engine/model-texture";
 import type { ModelData } from "../engine/model-loader";
 import type { Preset, ShaderId, SystemSettings } from "../engine/types";
@@ -45,10 +45,25 @@ const canvasStyles = css({
   height: "100%",
 });
 
-function getDesiredCamera(
+type PresetRuntimeData = {
+  presets: Preset[];
+  controls: number[][];
+  shaderInts: number[];
+  racetrackIndex: number;
+  driveIndex: number;
+  driveCarPosY: number;
+};
+
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
+
+function setDesiredCameraInto(
   presets: Preset[],
   morphValue: number,
-): { pos: THREE.Vector3; target: THREE.Vector3 } {
+  outPos: THREE.Vector3,
+  outTarget: THREE.Vector3,
+) {
   const maxIdx = presets.length - 1;
   const clamped = Math.max(0, Math.min(maxIdx, morphValue));
   const fromIdx = Math.min(Math.floor(clamped), maxIdx);
@@ -60,34 +75,64 @@ function getDesiredCamera(
   const toPos = presets[toIdx].cameraPosition ?? DEFAULT_CAM_POS;
   const toTarget = presets[toIdx].cameraTarget ?? DEFAULT_CAM_TARGET;
 
-  return {
-    pos: new THREE.Vector3().lerpVectors(
-      new THREE.Vector3(...fromPos),
-      new THREE.Vector3(...toPos),
-      blend,
-    ),
-    target: new THREE.Vector3().lerpVectors(
-      new THREE.Vector3(...fromTarget),
-      new THREE.Vector3(...toTarget),
-      blend,
-    ),
-  };
+  outPos.set(
+    lerp(fromPos[0], toPos[0], blend),
+    lerp(fromPos[1], toPos[1], blend),
+    lerp(fromPos[2], toPos[2], blend),
+  );
+  outTarget.set(
+    lerp(fromTarget[0], toTarget[0], blend),
+    lerp(fromTarget[1], toTarget[1], blend),
+    lerp(fromTarget[2], toTarget[2], blend),
+  );
 }
 
-function padCtrl(arr: number[]): number[] {
-  const out = [0, 0, 0, 0, 0, 0, 0, 0];
-  for (let i = 0; i < Math.min(arr.length, 8); i++) out[i] = arr[i];
-  return out;
+function copyControlsInto(source: number[], target: number[]) {
+  for (let i = 0; i < 8; i++) {
+    target[i] = source[i] ?? 0;
+  }
 }
 
-function initialControls(preset: Preset): number[] {
-  return preset.controls.map((control) => control.initial);
+function copyManagedControlsInto(
+  preset: Preset,
+  controlMgr: ControlManager,
+  target: number[],
+) {
+  for (let i = 0; i < 8; i++) {
+    const control = preset.controls[i];
+    target[i] = control
+      ? (controlMgr.controls.get(control.id)?.value ?? control.initial)
+      : 0;
+  }
+}
+
+function buildInitialControls(preset: Preset): number[] {
+  const controls = [0, 0, 0, 0, 0, 0, 0, 0];
+  for (let i = 0; i < Math.min(preset.controls.length, 8); i++) {
+    controls[i] = preset.controls[i].initial;
+  }
+  return controls;
 }
 
 function getControlInitial(preset: Preset, id: string, fallback = 0): number {
   return (
     preset.controls.find((control) => control.id === id)?.initial ?? fallback
   );
+}
+
+function buildPresetRuntimeData(presets: Preset[]): PresetRuntimeData {
+  const driveIndex = presets.findIndex((preset) => preset.name === "Drive");
+  return {
+    presets,
+    controls: presets.map(buildInitialControls),
+    shaderInts: presets.map(resolveShaderInt),
+    racetrackIndex: presets.findIndex((preset) => preset.name === "Racetrack"),
+    driveIndex,
+    driveCarPosY:
+      driveIndex >= 0
+        ? getControlInitial(presets[driveIndex], "_carPosY", 0)
+        : 0,
+  };
 }
 
 export function ParticleCanvas(handle: Handle) {
@@ -100,6 +145,13 @@ export function ParticleCanvas(handle: Handle) {
   let startTime = 0;
   let previousNearest = -1;
   const labelControlMgr = new ControlManager();
+  const desiredCameraPos = new THREE.Vector3();
+  const desiredCameraTarget = new THREE.Vector3();
+  const scratchControlsA = [0, 0, 0, 0, 0, 0, 0, 0];
+  const scratchControlsB = [0, 0, 0, 0, 0, 0, 0, 0];
+  const scratchLabelControls = [0, 0, 0, 0, 0, 0, 0, 0];
+  const morphBlend: MorphBlend = { fromIndex: 0, toIndex: 0, blend: 0 };
+  let presetRuntimeData: PresetRuntimeData | null = null;
   let currentProps:
     | {
         settings: SystemSettings;
@@ -130,6 +182,12 @@ export function ParticleCanvas(handle: Handle) {
       mouseNormY = (event.clientY / window.innerHeight) * 2 - 1;
     },
   });
+
+  function getPresetRuntimeData(presets: Preset[]) {
+    if (presetRuntimeData?.presets === presets) return presetRuntimeData;
+    presetRuntimeData = buildPresetRuntimeData(presets);
+    return presetRuntimeData;
+  }
 
   function disposeScene() {
     cancelAnimationFrame(frameId);
@@ -185,12 +243,14 @@ export function ParticleCanvas(handle: Handle) {
     syncModelTextures();
 
     startTime = performance.now() / 1000;
-    const initialCamera = getDesiredCamera(
+    setDesiredCameraInto(
       currentProps.presets,
       currentProps.morphValue,
+      desiredCameraPos,
+      desiredCameraTarget,
     );
-    engine.camera.position.copy(initialCamera.pos);
-    engine.controls.target.copy(initialCamera.target);
+    engine.camera.position.copy(desiredCameraPos);
+    engine.controls.target.copy(desiredCameraTarget);
 
     const animate = () => {
       if (!engine || !particles || !currentProps) return;
@@ -198,6 +258,7 @@ export function ParticleCanvas(handle: Handle) {
       const now = performance.now();
       const time = now / 1000 - startTime;
       const presets = currentProps.presets;
+      const presetData = getPresetRuntimeData(presets);
       const morphValue = currentProps.morphValue;
 
       engine.updateSettings(currentProps.settings);
@@ -219,44 +280,48 @@ export function ParticleCanvas(handle: Handle) {
       particles.setTime(time);
 
       const maxValue = presets.length - 1;
-      const { fromIndex, toIndex, blend } = getMorphBlend(morphValue, maxValue);
+      getMorphBlend(morphValue, maxValue, morphBlend);
+      const { fromIndex, toIndex, blend } = morphBlend;
 
-      let ctrlA: number[];
-      let ctrlB: number[];
       let separation: number;
 
       if (blend < 0.001) {
-        ctrlA = initialControls(presets[fromIndex]);
-        ctrlB = ctrlA;
+        copyControlsInto(presetData.controls[fromIndex], scratchControlsA);
+        copyControlsInto(presetData.controls[fromIndex], scratchControlsB);
         separation = presets[fromIndex].separation;
       } else {
-        ctrlA = initialControls(presets[fromIndex]);
-        ctrlB = initialControls(presets[toIndex]);
+        copyControlsInto(presetData.controls[fromIndex], scratchControlsA);
+        copyControlsInto(presetData.controls[toIndex], scratchControlsB);
         const easedBlend = blend * blend * (3 - 2 * blend);
         separation =
           presets[fromIndex].separation * (1 - easedBlend) +
           presets[toIndex].separation * easedBlend;
       }
 
-      const racetrackIndex = presets.findIndex(
-        (preset) => preset.name === "Racetrack",
-      );
+      const racetrackIndex = presetData.racetrackIndex;
       const racetrackDist =
         racetrackIndex >= 0 ? Math.abs(morphValue - racetrackIndex) : 0;
       const departingRacetrack = racetrackDist > 0.01 && racetrackDist < 1.0;
 
       if (departingRacetrack) {
         const surge = racetrackDist * racetrackDist * 32;
-        if (fromIndex === racetrackIndex) ctrlA[7] = surge;
-        if (toIndex === racetrackIndex) ctrlB[7] = surge;
+        if (blend < 0.001) {
+          if (fromIndex === racetrackIndex || toIndex === racetrackIndex) {
+            scratchControlsA[7] = surge;
+            scratchControlsB[7] = surge;
+          }
+        } else {
+          if (fromIndex === racetrackIndex) scratchControlsA[7] = surge;
+          if (toIndex === racetrackIndex) scratchControlsB[7] = surge;
+        }
       }
 
       particles.setPresets(
-        resolveShaderInt(presets[fromIndex]),
-        resolveShaderInt(presets[toIndex]),
+        presetData.shaderInts[fromIndex],
+        presetData.shaderInts[toIndex],
         blend,
       );
-      particles.setControls(padCtrl(ctrlA), padCtrl(ctrlB));
+      particles.setControls(scratchControlsA, scratchControlsB);
       particles.setSeparation(separation);
 
       const overridesA = presets[fromIndex].systemOverrides;
@@ -285,7 +350,7 @@ export function ParticleCanvas(handle: Handle) {
         0.97,
       );
 
-      const driveIndex = presets.findIndex((preset) => preset.name === "Drive");
+      const driveIndex = presetData.driveIndex;
       const racetrackFogDist =
         racetrackIndex >= 0 ? Math.abs(morphValue - racetrackIndex) : Infinity;
       const driveFogDist =
@@ -317,17 +382,19 @@ export function ParticleCanvas(handle: Handle) {
       particles.setCarLaneActivity(laneActivity * driveProximity);
 
       if (driveIndex >= 0) {
-        const drivePreset = presets[driveIndex];
-        particles.setCarPosY(
-          getControlInitial(drivePreset, "_carPosY", 0) * driveProximity,
-        );
+        particles.setCarPosY(presetData.driveCarPosY * driveProximity);
       }
 
       engine.controls.enabled = driveProximity < 0.5;
 
-      const desiredCamera = getDesiredCamera(presets, morphValue);
-      engine.camera.position.lerp(desiredCamera.pos, CAM_LERP_SPEED);
-      engine.controls.target.lerp(desiredCamera.target, CAM_LERP_SPEED);
+      setDesiredCameraInto(
+        presets,
+        morphValue,
+        desiredCameraPos,
+        desiredCameraTarget,
+      );
+      engine.camera.position.lerp(desiredCameraPos, CAM_LERP_SPEED);
+      engine.controls.target.lerp(desiredCameraTarget, CAM_LERP_SPEED);
 
       const parallaxScale = 1 - driveProximity;
       smoothMouseOffsetX +=
@@ -346,10 +413,15 @@ export function ParticleCanvas(handle: Handle) {
         nearestPreset.labels.length > 0 &&
         containerEl
       ) {
-        const activeCtrls =
-          blend < 0.001
-            ? labelControlMgr.getControlValues(nearestPreset)
-            : initialControls(nearestPreset);
+        let activeCtrls = presetData.controls[nearest];
+        if (blend < 0.001) {
+          copyManagedControlsInto(
+            nearestPreset,
+            labelControlMgr,
+            scratchLabelControls,
+          );
+          activeCtrls = scratchLabelControls;
+        }
 
         currentProps.labelsRef.current = projectLabels(
           nearestPreset,

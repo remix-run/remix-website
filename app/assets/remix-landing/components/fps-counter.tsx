@@ -1,4 +1,4 @@
-import { addEventListeners, css, ref, type Handle } from "remix/component";
+import { css, ref, type Handle } from "remix/component";
 
 const containerStyles = css({
   position: "fixed",
@@ -22,7 +22,6 @@ const containerStyles = css({
 });
 
 export function FpsCounter(handle: Handle) {
-  let visible = false;
   let el: HTMLDivElement | undefined;
   let frameId = 0;
   let frames = 0;
@@ -67,30 +66,9 @@ export function FpsCounter(handle: Handle) {
     frameId = 0;
   }
 
-  addEventListeners(window, handle.signal, {
-    keydown: (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const target = e.target as HTMLElement | null;
-      if (
-        target &&
-        (target.tagName === "INPUT" ||
-          target.tagName === "TEXTAREA" ||
-          target.isContentEditable)
-      ) {
-        return;
-      }
-      if (e.key.toLowerCase() !== "f") return;
-
-      visible = !visible;
-      if (!visible) stopLoop();
-      handle.update();
-    },
-  });
-
   handle.signal.addEventListener("abort", stopLoop);
 
   return () => {
-    if (!visible) return null;
     return (
       <div
         mix={[
