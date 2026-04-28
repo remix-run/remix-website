@@ -94,15 +94,12 @@ export function Document() {
           <meta name="theme-color" content="#121212" />
           {title ? <title>{title}</title> : null}
 
-          {/* Favicons */}
-          <link rel="icon" href="/favicon-32.png" sizes="32x32" />
-          <link rel="icon" href="/favicon-128.png" sizes="128x128" />
-          <link rel="icon" href="/favicon-180.png" sizes="180x180" />
-          <link rel="icon" href="/favicon-192.png" sizes="192x192" />
+          <link rel="icon" href="/favicon.ico" sizes="32x32" />
           <link
-            rel="apple-touch-icon"
-            href="/favicon-180.png"
-            sizes="180x180"
+            rel="icon"
+            href="/favicon.svg"
+            type="image/svg+xml"
+            sizes="any"
           />
 
           {/* Font preloads */}
