@@ -1,31 +1,35 @@
-import { Document } from "../ui/document";
-import { RemixLandingApp } from "../assets/remix-landing/home-app";
-import { CACHE_CONTROL } from "../utils/cache-control";
-import { getRequestContext } from "../utils/request-context";
-import { render } from "../utils/render";
-import { styleHrefs } from "../utils/style-hrefs";
+import { css } from "remix/component";
+import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements";
+import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen";
+import { colors } from "../../assets/remix-landing/styles/tokens";
+import { Document } from "../../ui/document";
+import { styleHrefs } from "../../utils/style-hrefs";
+import { LandingContent } from "./landing-content";
+
+type HomePageProps = {
+  pageUrl: string;
+  previewImage: string;
+};
 
 const HOME_TITLE = "Remix - A Web Framework for Building Anything";
 const HOME_DESCRIPTION =
   "Remix gives you the power and tools to build anything you can dream of.";
 
-export async function homeHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
-  let pageUrl = `${requestUrl.origin}/`;
-  let previewImage = `${requestUrl.origin}/blog-images/social-background.png`;
+const landingShellStyles = css({
+  position: "relative",
+  minHeight: "100vh",
+  background: colors.bg,
+  color: colors.fg,
+  overflowX: "clip",
+});
 
-  return render.document(
-    <HomePage pageUrl={pageUrl} previewImage={previewImage} />,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    },
-  );
-}
+const landingContentStyles = css({
+  position: "relative",
+  zIndex: "10",
+});
 
-function HomePage() {
-  return (props: { pageUrl: string; previewImage: string }) => (
+export function HomePage() {
+  return (props: HomePageProps) => (
     <Document
       title={HOME_TITLE}
       description={HOME_DESCRIPTION}
@@ -71,7 +75,13 @@ function HomePage() {
         },
       ]}
     >
-      <RemixLandingApp />
+      <div id="remix-landing-app" mix={[landingShellStyles]}>
+        <RemixLandingEnhancements />
+        <main id="main-content" tabIndex={-1} mix={[landingContentStyles]}>
+          <LandingContent />
+        </main>
+        <LoadingScreen />
+      </div>
     </Document>
   );
 }

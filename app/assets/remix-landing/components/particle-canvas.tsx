@@ -105,7 +105,6 @@ export function ParticleCanvas(handle: Handle) {
         presets: Preset[];
         morphValue: number;
         modelData: (ModelData | undefined)[];
-        canInit: boolean;
         labelsRef: { current: ProjectedLabel[] };
         labelOpacityRef: { current: number };
       }
@@ -171,7 +170,7 @@ export function ParticleCanvas(handle: Handle) {
   }
 
   function maybeInit() {
-    if (engine || !containerEl || !canvasEl || !currentProps?.canInit) return;
+    if (engine || !containerEl || !canvasEl || !currentProps) return;
 
     engine = new Engine();
     engine.init(canvasEl, containerEl, currentProps.settings);
@@ -383,7 +382,6 @@ export function ParticleCanvas(handle: Handle) {
     presets: Preset[];
     morphValue: number;
     modelData: (ModelData | undefined)[];
-    canInit: boolean;
     labelsRef: { current: ProjectedLabel[] };
     labelOpacityRef: { current: number };
   }) => {
@@ -393,7 +391,7 @@ export function ParticleCanvas(handle: Handle) {
       syncModelTextures();
     }
 
-    if (props.canInit && !engine) {
+    if (!engine) {
       handle.queueTask(() => {
         maybeInit();
       });

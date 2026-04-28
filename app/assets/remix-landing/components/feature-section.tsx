@@ -256,11 +256,9 @@ function tokenizeCode(code: string): SyntaxToken[] {
   return tokens;
 }
 
-// `FeatureSection` re-renders on every scroll frame (App calls `handle.update`
-// via rAF on scroll), so tokenizing a long snippet each frame is wasted work.
-// Snippets come from a static module-level array, so the set of unique
-// strings seen here is tiny and bounded — a plain Map keyed by the snippet
-// string is fine.
+// Snippets come from a static route-owned array, so the set of unique strings
+// seen here is tiny and bounded. Keep the tokenizer cache local and keyed by
+// the snippet string instead of rebuilding the highlighted tree repeatedly.
 const highlightedSnippetCache = new Map<
   string,
   ReturnType<typeof buildHighlightedCode>
@@ -571,13 +569,9 @@ function propsEqual(a: FeatureSectionProps, b: FeatureSectionProps): boolean {
   );
 }
 
-// App calls `handle.update()` on every scroll frame, which walks its entire
-// render output — including every FeatureSection. None of a FeatureSection's
-// props depend on scroll state (they come from the static `storySections`
-// module constant), so we cache the rendered tree per instance and return
-// the same element reference on subsequent updates. That keeps remix from
-// re-diffing the (now much larger) code-snippet subtree at 60Hz during
-// scroll, which was starving the particle-canvas rAF loop.
+// Keep this component stable if it is ever rendered under a reactive parent.
+// The homepage now server-renders these sections, but the prop-level cache is
+// still cheap and protects the large code-snippet subtree from redundant diffs.
 export function FeatureSection(_handle: Handle) {
   let cachedProps: FeatureSectionProps | null = null;
   let cachedOutput: ReturnType<typeof renderFeatureSection> | null = null;

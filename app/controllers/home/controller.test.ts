@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { homeHandler } from "./home";
-import { CACHE_CONTROL } from "../utils/cache-control";
-import { routes } from "../routes";
-import { createRouteTestRouter } from "../../test/create-route-test-router";
+import { homeHandler } from "./controller";
+import { routes } from "../../routes";
+import { CACHE_CONTROL } from "../../utils/cache-control";
+import { createRouteTestRouter } from "../../../test/create-route-test-router";
 
 describe("home route", () => {
   it("renders the landing document shell", async () => {
@@ -21,6 +21,9 @@ describe("home route", () => {
     expect(html).toContain("Remix - A Web Framework for Building Anything");
     expect(html).toContain('id="main-content"');
     expect(html).toContain('id="remix-landing-app"');
+    expect(html).toContain("A web framework for building anything");
+    expect(html).toContain("Closing the gap between the initial spark");
+    expect(html).toContain("High-performance components in plain");
     expect(html).toContain('src="/landing/remix-runner.gif"');
     expect(html).toContain("Loading Remix homepage");
     expect(html).toContain('content="http://localhost:3000/"');

@@ -35,7 +35,7 @@ export function LoadingScreen(_handle: Handle) {
       >
         <img
           src="/landing/remix-runner.gif"
-          alt="Loading"
+          alt="Loading Remix homepage"
           mix={[runnerStyles]}
         />
       </div>

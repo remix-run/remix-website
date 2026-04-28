@@ -19,7 +19,7 @@ import { blogRssHandler } from "./controllers/blog/rss.ts";
 import { brandHandler } from "./controllers/brand.tsx";
 import { catchallHandler } from "./controllers/catchall.ts";
 import { remix3ActiveDevelopmentHandler } from "./controllers/remix3-active-development/controller.tsx";
-import { homeHandler } from "./controllers/home.tsx";
+import { homeHandler } from "./controllers/home/controller.tsx";
 import { jam2025CocHandler } from "./controllers/jam/2025-coc.tsx";
 import { jam2025FaqHandler } from "./controllers/jam/2025-faq.tsx";
 import { jam2025GalleryHandler } from "./controllers/jam/2025-gallery/controller.tsx";
