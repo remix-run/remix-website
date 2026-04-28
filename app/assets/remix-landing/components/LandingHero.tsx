@@ -78,8 +78,8 @@ export function LandingHero(_handle: Handle) {
         <h1 mix={[headingStyles]}>A web framework for building anything</h1>
         <p mix={[bodyStyles]}>
           Remix gives you the power and tools to build anything you can dream
-          of. To get started, just <CodeSnippet>npm create remix</CodeSnippet>{" "}
-          and you're off to the races.
+          of. To get started, just <CodeSnippet>npx remix run</CodeSnippet> and
+          you're off to the races.
         </p>
       </div>
     </section>

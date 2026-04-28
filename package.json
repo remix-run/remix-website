@@ -9,7 +9,7 @@
   "scripts": {
     "build": "pnpm run build:css && pnpm run typecheck",
     "build:analyze": "pnpm run build",
-    "build:css": "postcss app/styles/app.css app/styles/md.css app/styles/jam.css --dir public/styles",
+    "build:css": "postcss app/styles/app.css app/styles/home.css app/styles/md.css app/styles/jam.css --dir public/styles",
     "dev": "concurrently -k --names css,app \"pnpm run dev:css\" \"pnpm run dev:server\"",
     "dev:css": "pnpm run build:css --watch",
     "dev:server": "cross-env NODE_ENV=development PORT=44100 tsx watch server.ts",

@@ -82,8 +82,8 @@ function Page() {
     <Document
       title={`${props.post.title} | Remix`}
       description={props.post.summary}
+      stylesheets={[styleHrefs.app, styleHrefs.md]}
       headTags={[
-        { kind: "link", rel: "stylesheet", href: styleHrefs.md },
         {
           kind: "link",
           rel: "alternate",

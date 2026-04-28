@@ -23,18 +23,23 @@ describe("home route", () => {
     expect(html).toContain('id="remix-landing-app"');
     expect(html).toContain('src="/landing/remix-runner.gif"');
     expect(html).toContain("Loading Remix homepage");
-    expect(html).toContain("@property --brand-cycle");
-    expect(html).toContain("color-scheme: dark");
     expect(html).toContain('content="http://localhost:3000/"');
     expect(html).toContain(
       'content="http://localhost:3000/blog-images/social-background.png"',
     );
     expect(html).toContain('content="summary_large_image"');
-    expect(html).toContain('href="/landing/favicon-dark-mode.svg"');
+    expect(html).toContain('rel="icon" href="/favicon.ico" sizes="32x32"');
     expect(html).toContain(
-      'href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap"',
+      'rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any"',
     );
-    expect(html).not.toContain('href="/styles/app.css"');
+    expect(html).toContain('rel="preload" as="style" href="/styles/app.css"');
+    expect(html).toContain('rel="preload" as="style" href="/styles/home.css"');
+    expect(html).toContain('rel="preload" as="style" href="/styles/md.css"');
+    expect(html).toContain('rel="preload" as="style" href="/styles/jam.css"');
+    expect(html).toContain('rel="stylesheet" href="/styles/home.css"');
+    expect(html).not.toContain('rel="stylesheet" href="/styles/app.css"');
+    expect(html).not.toContain("fonts.googleapis.com");
+    expect(html).not.toContain("fonts.gstatic.com");
     expect(html).toContain(
       '<link rel="modulepreload" href="/assets/app/assets/entry.ts"',
     );

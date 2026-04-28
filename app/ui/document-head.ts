@@ -87,34 +87,6 @@ export function syncManagedHeadTags(headTags: ManagedHeadTag[]) {
   document.head.appendChild(fragment);
 }
 
-export function syncManagedHeadStyles(styles: string[]) {
-  let existingNodes = Array.from(
-    document.head.querySelectorAll<HTMLStyleElement>(
-      "style[data-remix-managed-style]",
-    ),
-  );
-
-  if (
-    existingNodes.length === styles.length &&
-    existingNodes.every((node, index) => node.textContent === styles[index])
-  ) {
-    return;
-  }
-
-  for (let node of existingNodes) {
-    node.remove();
-  }
-
-  let fragment = document.createDocumentFragment();
-  for (let style of styles) {
-    let element = document.createElement("style");
-    element.setAttribute("data-remix-managed-style", "true");
-    element.textContent = style;
-    fragment.appendChild(element);
-  }
-  document.head.appendChild(fragment);
-}
-
 function getManagedHeadNodeKey(node: HTMLElement, index: number) {
   if (node.tagName === "META") {
     return getManagedHeadTagKey(

@@ -39,6 +39,42 @@ test.describe("Navigation", () => {
     await expect(page.locator("main#main-content")).toHaveCount(1);
   });
 
+  test("home page blog keyboard shortcut uses client navigation", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("heading", {
+        name: "A web framework for building anything",
+      }),
+    ).toBeVisible();
+
+    await expectClientNavigation(
+      page,
+      () => page.keyboard.press("b"),
+      "**/blog",
+    );
+    await expect(page).toHaveTitle(/Blog/i);
+  });
+
+  test("home page jam keyboard shortcut uses client navigation", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("heading", {
+        name: "A web framework for building anything",
+      }),
+    ).toBeVisible();
+
+    await expectClientNavigation(
+      page,
+      () => page.keyboard.press("j"),
+      "**/jam/2025",
+    );
+    await expect(page).toHaveTitle(/Jam/i);
+  });
+
   test("active development route header links use client navigation", async ({
     page,
   }) => {

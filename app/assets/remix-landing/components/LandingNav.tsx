@@ -1,4 +1,12 @@
-import { css, addEventListeners, on, ref, type Handle } from "remix/component";
+import {
+  css,
+  addEventListeners,
+  navigate,
+  on,
+  ref,
+  type Handle,
+} from "remix/component";
+import { routes } from "../../../routes";
 import { shouldBlockNavLetterB } from "../konami-nav";
 import { colors } from "../styles/tokens";
 
@@ -110,12 +118,53 @@ const mobileMenuStyles = css({
 });
 
 const NAV_ITEMS = [
-  { key: "G", label: "github", href: "https://github.com/remix-run/remix" },
-  { key: "D", label: "docs", href: "https://v2.remix.run/docs" },
-  { key: "B", label: "blog", href: "https://remix.run/blog" },
-  { key: "J", label: "jam", href: "https://remix.run/jam/2025" },
-  { key: "S", label: "store", href: "https://shop.remix.run/" },
+  {
+    key: "G",
+    label: "github",
+    href: "https://github.com/remix-run/remix",
+    external: true,
+  },
+  {
+    key: "D",
+    label: "docs",
+    href: "https://api.remix.run/",
+    external: true,
+  },
+  { key: "B", label: "blog", href: routes.blog.href() },
+  { key: "J", label: "jam", href: routes.jam.y2025.index.href() },
+  { key: "S", label: "store", href: "https://shop.remix.run/", external: true },
 ];
+
+type NavItem = (typeof NAV_ITEMS)[number];
+
+function isModifiedClick(event: MouseEvent) {
+  return event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+}
+
+function openNavItem(item: NavItem) {
+  if (item.external) {
+    window.open(item.href, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  void navigate(item.href);
+}
+
+function navItemClick(item: NavItem, afterClick?: () => void) {
+  return on<HTMLAnchorElement>("click", (event) => {
+    if (
+      !item.external &&
+      event instanceof MouseEvent &&
+      event.button === 0 &&
+      !isModifiedClick(event)
+    ) {
+      event.preventDefault();
+      void navigate(item.href);
+    }
+
+    afterClick?.();
+  });
+}
 
 export function LandingNav(handle: Handle) {
   let onJump: ((index: number) => void) | null = null;
@@ -165,7 +214,8 @@ export function LandingNav(handle: Handle) {
       );
       if (item) {
         if (item.key === "B" && shouldBlockNavLetterB()) return;
-        window.open(item.href, "_blank");
+        e.preventDefault();
+        openNavItem(item);
       }
     },
     resize: () => {
@@ -208,9 +258,9 @@ export function LandingNav(handle: Handle) {
             <a
               key={item.key}
               href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              mix={[navItemStyles]}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+              mix={[navItemStyles, navItemClick(item)]}
             >
               [{item.key}] {item.label}
             </a>
@@ -240,6 +290,7 @@ export function LandingNav(handle: Handle) {
           >
             {toggleLabel}
           </button>
+          {/* TODO: either use existing menu component or remix/ui component */}
           {menuOpen ? (
             <div id="mobile-nav-menu" role="menu" mix={[mobileMenuStyles]}>
               {NAV_ITEMS.map((item) => (
@@ -247,14 +298,12 @@ export function LandingNav(handle: Handle) {
                   key={item.key}
                   role="menuitem"
                   href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
                   mix={[
                     navItemStyles,
                     mobileMenuItemStyles,
-                    on<HTMLAnchorElement>("click", () => {
-                      setMenuOpen(false);
-                    }),
+                    navItemClick(item, () => setMenuOpen(false)),
                   ]}
                 >
                   {item.label}

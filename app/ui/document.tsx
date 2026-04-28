@@ -28,8 +28,7 @@ interface DocumentProps {
   noIndex?: boolean;
   forceTheme?: "dark" | "light";
   headTags?: ManagedHeadTag[];
-  headStyles?: string[];
-  includeDefaultStyles?: boolean;
+  stylesheets?: string[];
   children?: RemixNode;
 }
 
@@ -55,11 +54,11 @@ export function Document() {
     noIndex,
     forceTheme,
     headTags = [],
-    headStyles = [],
-    includeDefaultStyles = true,
+    stylesheets,
     children,
   }: DocumentProps) => {
     let assetEntry = getAssetEntry();
+    let appliedStylesheets = stylesheets ?? [styleHrefs.app];
     let managedHeadTags: ManagedHeadTag[] = [
       ...(noIndex
         ? [{ kind: "meta" as const, name: "robots", content: "noindex" }]
@@ -73,6 +72,11 @@ export function Document() {
             },
           ]
         : []),
+      ...appliedStylesheets.map((href) => ({
+        kind: "link" as const,
+        rel: "stylesheet",
+        href,
+      })),
       ...headTags,
     ];
     let bodyClassName = `flex min-h-screen w-full flex-col overflow-x-hidden antialiased selection:bg-blue-200 selection:text-black dark:selection:bg-blue-800 dark:selection:text-white ${
@@ -125,15 +129,9 @@ export function Document() {
             href="/font/jet-brains-mono.woff2"
             crossorigin="anonymous"
           />
-          {includeDefaultStyles ? (
-            <>
-              <link rel="preload" as="style" href={styleHrefs.app} />
-              <link rel="preload" as="style" href={styleHrefs.md} />
-              <link rel="preload" as="style" href={styleHrefs.jam} />
-              {/* Styles */}
-              <link rel="stylesheet" href={styleHrefs.app} />
-            </>
-          ) : null}
+          {Object.values(styleHrefs).map((href) => (
+            <link key={href} rel="preload" as="style" href={href} />
+          ))}
 
           {/* RSS */}
           <link
@@ -165,14 +163,6 @@ export function Document() {
             ),
           )}
 
-          {headStyles.map((style, index) => (
-            <style
-              key={index}
-              data-remix-managed-style="true"
-              innerHTML={style}
-            />
-          ))}
-
           {assetEntry.preloads.map((href) => (
             <link key={href} rel="modulepreload" href={href} />
           ))}
@@ -194,7 +184,6 @@ export function Document() {
             forceTheme={forceTheme}
             bodyClassName={bodyClassName}
             headTags={managedHeadTags}
-            headStyles={headStyles}
           />
           <img
             src={assetPaths.iconsSprite}
