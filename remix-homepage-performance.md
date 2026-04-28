@@ -1,0 +1,77 @@
+# Remix Homepage Performance Follow-Ups
+
+This note tracks performance work for the Remix 3 homepage. It focuses on changes that are likely to improve load time, scroll smoothness, or main-thread stability without changing the visual direction of the page.
+
+## Recently Completed
+
+- Reduced per-frame allocations in `app/assets/remix-landing/components/particle-canvas.tsx` by reusing camera vectors, control arrays, morph blend output, shader indexes, and preset lookup data.
+- Removed the dead prop-level cache in `app/assets/remix-landing/components/feature-section.tsx` while keeping the code snippet tokenization cache.
+- Lazy-loaded `FpsCounter` so the production bundle only imports it after the user presses `F`.
+- Optimized `public/landing/remix-runner.gif` from 39 KB to 11 KB by resizing it to the displayed scale and reducing the palette.
+- Moved `ScrollLogo` scroll tracking into its own RAF, hoisted static SVG path nodes, and shared the brand-page context-menu behavior with `WordmarkLink`.
+
+## Highest-Value Remaining Ideas
+
+### 1. Narrow scroll-linked re-render scope
+
+`app/assets/remix-landing/landing-enhancements.tsx` updates `morphValue`, `currentScrollY`, model loading, nav state, section nav, logo state, package logos, labels, and particle props from one scroll RAF.
+
+That is convenient, but it means a scroll tick re-renders the whole enhancement tree. The next meaningful scroll perf win is to split responsibilities so only the parts that actually depend on each value update:
+
+- Keep `ParticleCanvas` driven by `morphValue`.
+- Keep `ScrollLogo` responsible for its own local scroll progress.
+- Keep nav components driven by the rounded active section.
+- Consider using small refs or direct DOM/CSS variable writes for purely visual scroll effects that do not need a full component diff.
+
+This is more architectural than the earlier allocation cleanup, but it is probably the largest remaining main-thread opportunity.
+
+### 2. Lazy-load heavier visual islands
+
+`ParticleCanvas` statically imports `three` and postprocessing code through the landing enhancement entry. That makes the initial interactive module graph expensive even though the loading overlay is present for the first second.
+
+Possible approach:
+
+- Keep the route-rendered HTML and loading overlay immediate.
+- Dynamically import the WebGL-heavy island after hydration or after the loading overlay starts.
+- Render a minimal placeholder state until the module arrives.
+- Preserve eager model loading only for assets needed by the first visible preset.
+
+This needs careful visual testing because the particle canvas is part of the page identity, but it is likely a bigger byte-level win than further micro-optimizing small components.
+
+### 3. Reduce label projection allocations
+
+`app/assets/remix-landing/engine/label-projection.ts` still allocates while labels are active:
+
+- A fresh result array.
+- A cloned projected vector per label via `worldPos.clone().project(camera)`.
+- Fresh projected label objects.
+
+The label count is small, so this is not urgent. If profiling shows label-heavy frames contributing to GC, change `projectLabels` to write into a caller-owned array and reuse scratch vectors.
+
+### 4. Revisit the loading media format
+
+The runner GIF is now much smaller, but GIF is still not an ideal animated image format. If we want to push further:
+
+- Try animated WebP or AVIF alongside the GIF fallback.
+- Keep the current GIF as the compatibility fallback.
+- Use a `<picture>` only if the added markup and test surface are worth the extra savings.
+
+Because the optimized GIF is only 11 KB, this is no longer urgent.
+
+## Smaller Cleanup Candidates
+
+- Move the `package-logos` to `feature-section` coupling away from `id="full-stack-panel"` and toward explicit ownership of the measured panel element or rect.
+- Consider caching `LANDING_SECTION_IDS` element references after hydration and invalidating them only when layout changes, rather than repeatedly using `document.getElementById`.
+- Re-check blur layers and frosted panels in Chrome Performance after the current CSS changes. More `backdrop-filter` reductions are possible, but should be driven by paint evidence rather than guesswork.
+- Consider converting repeated keyboard target checks into a shared local helper across `LandingNav` and `RemixLandingEnhancements` if those modules continue to grow.
+
+## Verification Plan
+
+For each substantial follow-up:
+
+- Run `pnpm run typecheck`.
+- Run focused `oxlint` on touched files.
+- Check the homepage in the dev server for hydration errors.
+- Test scroll from top to bottom and back.
+- Test keyboard paths: section arrows, nav shortcuts, Konami sequence, and `F` for FPS.
+- For performance-sensitive changes, capture before/after Chrome Performance traces with CPU throttling and watch for long tasks, GC pauses, and raster/paint spikes.

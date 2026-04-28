@@ -111,6 +111,9 @@ const linkActiveStyles = css({
   height: `${ITEM_HEIGHT}px`,
 });
 
+// TODO:
+// - lots of duplicated strings throughout the application
+// - navigating from an anchor to blog then back results in a bug
 const SECTIONS = [
   { label: "The Framework", anchor: "the-framework" },
   { label: "Full Stack", anchor: "full-stack" },
