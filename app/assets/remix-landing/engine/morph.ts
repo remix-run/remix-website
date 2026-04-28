@@ -1,3 +1,5 @@
+import { clamp } from "../utils/math";
+
 export type MorphBlend = {
   fromIndex: number;
   toIndex: number;
@@ -9,7 +11,7 @@ export function getMorphBlend(
   maxValue: number,
   out: MorphBlend = { fromIndex: 0, toIndex: 0, blend: 0 },
 ): MorphBlend {
-  const clamped = Math.max(0, Math.min(maxValue, morphValue));
+  const clamped = clamp(morphValue, 0, maxValue);
   const fromIndex = Math.min(Math.floor(clamped), maxValue - 1);
   const toIndex = fromIndex + 1;
   const blend = clamped - fromIndex;

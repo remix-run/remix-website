@@ -1,10 +1,15 @@
 import { css, addEventListeners, on, type Handle } from "remix/component";
+import { routes } from "../../../routes";
+import { brandContextMenu } from "../../brand-context-menu";
+import { clamp01, lerp } from "../utils/math";
 
 const SMALL_HEIGHT = 16;
 const LARGE_TOP = 92;
 const SMALL_TOP = 24;
 const LEFT = 24;
 const SCROLL_PX = 120;
+const SVG_RATIO = 440 / 43;
+const SMALL_WIDTH = SMALL_HEIGHT * SVG_RATIO;
 
 const BRAND_COLORS = ["#2dacf9", "#7ce95a", "#ffdf5f", "#fa73da", "#ff3c32"];
 
@@ -16,8 +21,11 @@ const SVG_PATHS = [
   "M190.38 0.333679L187.379 11.6452H138.588C138.568 11.6452 138.548 11.6461 138.528 11.6462H131.452L130.339 15.8698H130.354L130.352 15.8786H186.193L183.191 27.2595H127.28L127.211 27.6061C126.583 29.7573 129.305 31.4927 133.283 31.4929H182.004L178.933 42.8044H116.671C103.549 42.8043 94.4745 36.9746 96.4289 29.8268L100.826 13.3806C100.924 13.0184 101.049 12.6599 101.197 12.3054V12.3063L104.353 0.333679H190.38Z",
 ];
 
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
+function getScrollProgress(scrollY: number) {
+  const linear = clamp01(scrollY / SCROLL_PX);
+  return linear < 0.5
+    ? 4 * linear * linear * linear
+    : 1 - Math.pow(-2 * linear + 2, 3) / 2;
 }
 
 const shellStyles = css({
@@ -59,15 +67,30 @@ const ghostSvgStyles = css({
   mixBlendMode: "screen",
 });
 
-function svgPaths() {
-  return SVG_PATHS.map((d, i) => <path key={i} d={d} fill="currentColor" />);
-}
+const logoPaths = SVG_PATHS.map((d, i) => (
+  <path key={i} d={d} fill="currentColor" />
+));
 
 export function ScrollLogo(handle: Handle) {
   let largeWidth = window.innerWidth - LEFT * 2;
-  let prevT = 0;
+  let scrollY = window.scrollY;
+  let prevT = getScrollProgress(scrollY);
   let velocity = 0;
+  let scrollFrame = 0;
   let decayFrame = 0;
+  const brandMenu = brandContextMenu(routes.brand.href());
+  const scrollToTop = on<HTMLButtonElement>("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  function scheduleScrollSync() {
+    scrollY = window.scrollY;
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = 0;
+      handle.update();
+    });
+  }
 
   function scheduleDecay() {
     if (decayFrame) return;
@@ -83,23 +106,21 @@ export function ScrollLogo(handle: Handle) {
   }
 
   addEventListeners(window, handle.signal, {
+    scroll: () => scheduleScrollSync(),
     resize: () => {
       largeWidth = window.innerWidth - LEFT * 2;
+      scrollY = window.scrollY;
       handle.update();
     },
   });
 
   handle.signal.addEventListener("abort", () => {
+    if (scrollFrame) cancelAnimationFrame(scrollFrame);
     if (decayFrame) cancelAnimationFrame(decayFrame);
   });
 
-  return (props: { scrollY: number }) => {
-    const linear = Math.min(1, Math.max(0, props.scrollY / SCROLL_PX));
-    const t =
-      linear < 0.5
-        ? 4 * linear * linear * linear
-        : 1 - Math.pow(-2 * linear + 2, 3) / 2;
-
+  return () => {
+    const t = getScrollProgress(scrollY);
     const rawVelocity = t - prevT;
     if (Math.abs(rawVelocity) > 0.0001) {
       velocity += (rawVelocity - velocity) * 0.15;
@@ -112,25 +133,20 @@ export function ScrollLogo(handle: Handle) {
       scheduleDecay();
     }
 
-    const svgRatio = 440 / 43;
-    const smallWidth = SMALL_HEIGHT * svgRatio;
-    const width = lerp(largeWidth, smallWidth, t);
+    const width = lerp(largeWidth, SMALL_WIDTH, t);
     const top = lerp(LARGE_TOP, SMALL_TOP, t);
 
     const absV = Math.abs(velocity);
-    const ghostIntensity = Math.min(1, absV * 60);
-    const paths = svgPaths();
+    const ghostIntensity = clamp01(absV * 60);
+    const isCollapsed = t >= 1;
 
     return (
       <div mix={[shellStyles]} style={{ top: `${top}px` }}>
         {ghostIntensity > 0.01 &&
           BRAND_COLORS.map((color, i) => {
             const delay = (i + 1) * 0.04;
-            const ghostT = Math.min(
-              1,
-              Math.max(0, t - delay * Math.sign(velocity)),
-            );
-            const ghostWidth = lerp(largeWidth, smallWidth, ghostT);
+            const ghostT = clamp01(t - delay * Math.sign(velocity));
+            const ghostWidth = lerp(largeWidth, SMALL_WIDTH, ghostT);
             const ghostOpacity = ghostIntensity * (0.6 - i * 0.08);
             if (ghostOpacity <= 0) return null;
             return (
@@ -147,19 +163,14 @@ export function ScrollLogo(handle: Handle) {
                   opacity: `${ghostOpacity}`,
                 }}
               >
-                {paths}
+                {logoPaths}
               </svg>
             );
           })}
         <button
           type="button"
           aria-label="Scroll to top"
-          mix={[
-            logoButtonStyles,
-            on("click", () => {
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }),
-          ]}
+          mix={[logoButtonStyles, isCollapsed ? brandMenu : null, scrollToTop]}
           style={{ width: `${width}px` }}
         >
           <svg
@@ -169,7 +180,7 @@ export function ScrollLogo(handle: Handle) {
             mix={[mainSvgStyles]}
             style={{ width: `${width}px`, height: "auto" }}
           >
-            {paths}
+            {logoPaths}
           </svg>
         </button>
       </div>

@@ -17,6 +17,7 @@ import { presets } from "./engine/presets";
 import { DEFAULT_SETTINGS, type SystemSettings } from "./engine/types";
 import { setKonamiNavProgress } from "./konami-nav";
 import { colors } from "./styles/tokens";
+import { clamp } from "./utils/math";
 
 const appStyles = css({
   position: "relative",
@@ -132,7 +133,7 @@ export let RemixLandingEnhancements = clientEntry(
     }
 
     function clampScrollY(scrollY: number) {
-      return Math.max(0, Math.min(getScrollRange(), scrollY));
+      return clamp(scrollY, 0, getScrollRange());
     }
 
     function getSectionScrollStop(index: number): number | undefined {
@@ -361,9 +362,7 @@ export let RemixLandingEnhancements = clientEntry(
     return () => {
       if (!isHydrated) return null;
 
-      const nearestIndex = Math.round(
-        Math.max(0, Math.min(presets.length - 1, morphValue)),
-      );
+      const nearestIndex = Math.round(clamp(morphValue, 0, presets.length - 1));
 
       return (
         <div mix={[appStyles]}>
@@ -384,7 +383,7 @@ export let RemixLandingEnhancements = clientEntry(
             morphValueRef={morphValueRef}
             brandGradientMode={konamiBrandMode}
           />
-          <ScrollLogo scrollY={currentScrollY} />
+          <ScrollLogo />
           <div mix={[blurShellStyles]} />
           <div mix={[topFadeGradientStyles]} />
           <LandingNav

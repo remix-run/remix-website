@@ -1,5 +1,6 @@
 import { css, ref, type Handle } from "remix/component";
 import { presets } from "../engine/presets";
+import { clamp, lerp } from "../utils/math";
 
 const glowStyles = css({
   position: "fixed",
@@ -16,16 +17,16 @@ function buildGradient(morphValue: number, brandGradientMode: boolean): string {
   if (brandGradientMode) return BRAND_GRADIENT;
 
   const maxIdx = presets.length - 1;
-  const clamped = Math.max(0, Math.min(maxIdx, morphValue));
+  const clamped = clamp(morphValue, 0, maxIdx);
   const fromIndex = Math.floor(clamped);
   const toIndex = Math.min(fromIndex + 1, maxIdx);
   const blend = clamped - fromIndex;
   const fallback: [number, number, number] = [0.3, 0.3, 0.3];
   const a = presets[fromIndex]?.glowColor ?? fallback;
   const b = presets[toIndex]?.glowColor ?? fallback;
-  const r = Math.round((a[0] + (b[0] - a[0]) * blend) * 255);
-  const g = Math.round((a[1] + (b[1] - a[1]) * blend) * 255);
-  const bl = Math.round((a[2] + (b[2] - a[2]) * blend) * 255);
+  const r = Math.round(lerp(a[0], b[0], blend) * 255);
+  const g = Math.round(lerp(a[1], b[1], blend) * 255);
+  const bl = Math.round(lerp(a[2], b[2], blend) * 255);
 
   return `radial-gradient(ellipse at 50% 50%, rgba(${r},${g},${bl},0.40) 0%, rgba(${r},${g},${bl},0.12) 40%, transparent 70%)`;
 }

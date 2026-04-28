@@ -1,4 +1,5 @@
 import { addEventListeners, css, type Handle } from "remix/component";
+import { clamp01 } from "../utils/math";
 
 const LOGOS = [
   { src: "/landing/remix-package-auth.svg", alt: "Auth", ratio: "904 / 245" },
@@ -75,10 +76,9 @@ const SEQUENCE_TOTAL_MS =
 
 function logoOpacity(morph: number, index: number): number {
   const inStart = ARRIVE + index * STAGGER;
-  const fadeIn = Math.min(1, Math.max(0, (morph - inStart) / FADE_IN));
-  const fadeOut = Math.min(
-    1,
-    Math.max(0, (FADE_OUT_END - morph) / (FADE_OUT_END - FADE_OUT_START)),
+  const fadeIn = clamp01((morph - inStart) / FADE_IN);
+  const fadeOut = clamp01(
+    (FADE_OUT_END - morph) / (FADE_OUT_END - FADE_OUT_START),
   );
   return fadeIn * fadeOut;
 }
@@ -96,7 +96,7 @@ function sequenceFade(
   const elapsed = now - sequenceStartMs;
   const start = index * SEQUENCE_STAGGER_MS;
   if (elapsed < start) return 0;
-  return Math.min(1, (elapsed - start) / PER_LOGO_FADE_MS);
+  return clamp01((elapsed - start) / PER_LOGO_FADE_MS);
 }
 
 export function PackageLogos(handle: Handle) {

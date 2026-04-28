@@ -9,6 +9,7 @@ import {
 import { routes } from "../../../routes";
 import { shouldBlockNavLetterB } from "../konami-nav";
 import { colors } from "../styles/tokens";
+import { clamp01 } from "../utils/math";
 
 const MOBILE_BREAKPOINT_PX = 720;
 
@@ -245,7 +246,7 @@ export function LandingNav(handle: Handle) {
     totalSections = props.totalSections;
     onJump = props.onJump;
 
-    const hintOpacity = Math.max(0, 1 - props.scrollY / 80);
+    const hintOpacity = clamp01(1 - props.scrollY / 80);
     const toggleLabel = menuOpen ? "close" : "menu";
 
     return (

@@ -1,5 +1,6 @@
 import cx from "clsx";
-import { clientEntry, on, navigate } from "remix/ui";
+import { clientEntry } from "remix/ui";
+import { brandContextMenu } from "./brand-context-menu";
 import { Wordmark } from "../ui/wordmark";
 
 export let WordmarkLink = clientEntry(import.meta.url, function WordmarkLink() {
@@ -14,12 +15,7 @@ export let WordmarkLink = clientEntry(import.meta.url, function WordmarkLink() {
       href={props.href}
       aria-label="Remix"
       class={cx("inline-flex items-center", props.class)}
-      mix={[
-        on("contextmenu", (event) => {
-          event.preventDefault();
-          navigate(props.brandHref);
-        }),
-      ]}
+      mix={[brandContextMenu(props.brandHref)]}
     >
       <Wordmark width={props.width} height={props.height} aria-hidden />
 

@@ -8,6 +8,7 @@ import { getMorphBlend, type MorphBlend } from "../engine/morph";
 import { createModelTexture } from "../engine/model-texture";
 import type { ModelData } from "../engine/model-loader";
 import type { Preset, ShaderId, SystemSettings } from "../engine/types";
+import { clamp, clamp01, lerp } from "../utils/math";
 
 // Must match the `1000ms` start delay on `.loading-screen-overlay` in `home.css`.
 const PARTICLE_INTRO_DELAY_S = 1;
@@ -54,10 +55,6 @@ type PresetRuntimeData = {
   driveCarPosY: number;
 };
 
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
-}
-
 function setDesiredCameraInto(
   presets: Preset[],
   morphValue: number,
@@ -65,7 +62,7 @@ function setDesiredCameraInto(
   outTarget: THREE.Vector3,
 ) {
   const maxIdx = presets.length - 1;
-  const clamped = Math.max(0, Math.min(maxIdx, morphValue));
+  const clamped = clamp(morphValue, 0, maxIdx);
   const fromIdx = Math.min(Math.floor(clamped), maxIdx);
   const toIdx = Math.min(fromIdx + 1, maxIdx);
   const blend = clamped - fromIdx;
@@ -362,9 +359,7 @@ export function ParticleCanvas(handle: Handle) {
       particles.setFog(fogProximity, 10, 180);
 
       const driveProximity =
-        driveIndex >= 0
-          ? Math.max(0, 1 - Math.abs(morphValue - driveIndex))
-          : 0;
+        driveIndex >= 0 ? clamp01(1 - Math.abs(morphValue - driveIndex)) : 0;
       if (driveProximity > 0) {
         smoothCarLane += (mouseNormX - smoothCarLane) * CAR_LANE_LERP;
       } else {
@@ -376,7 +371,7 @@ export function ParticleCanvas(handle: Handle) {
       const laneDelta = Math.abs(smoothCarLane - prevCarLane);
       laneActivity = Math.max(
         laneActivity * ACTIVITY_DECAY,
-        Math.min(laneDelta * ACTIVITY_GAIN, 1.0),
+        clamp01(laneDelta * ACTIVITY_GAIN),
       );
       prevCarLane = smoothCarLane;
       particles.setCarLaneActivity(laneActivity * driveProximity);
@@ -401,7 +396,7 @@ export function ParticleCanvas(handle: Handle) {
         (mouseNormX * MOUSE_RANGE - smoothMouseOffsetX) * MOUSE_LERP;
       engine.camera.position.x += smoothMouseOffsetX * parallaxScale;
 
-      const nearest = Math.round(Math.max(0, Math.min(maxValue, morphValue)));
+      const nearest = Math.round(clamp(morphValue, 0, maxValue));
       if (nearest !== previousNearest) {
         previousNearest = nearest;
         labelControlMgr.loadPreset(presets[nearest]);

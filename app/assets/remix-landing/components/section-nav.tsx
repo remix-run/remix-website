@@ -1,5 +1,6 @@
 import { css, on, type Handle } from "remix/component";
 import { colors } from "../styles/tokens";
+import { clamp } from "../utils/math";
 
 const TRACK_WIDTH = 11;
 const ITEM_HEIGHT = 16;
@@ -133,8 +134,8 @@ export function SectionNav(_handle: Handle) {
     const maxMorph = count - 1;
     const step = ITEM_HEIGHT + ITEM_GAP;
     const trackHeight = (count - 1) * step + ITEM_HEIGHT;
-    const morph = Math.max(0, Math.min(maxMorph, props.morphValue));
-    const activeIndex = Math.max(0, Math.min(maxMorph, props.activeIndex));
+    const morph = clamp(props.morphValue, 0, maxMorph);
+    const activeIndex = clamp(props.activeIndex, 0, maxMorph);
     const dotCenterY = (index: number) => index * step + ITEM_HEIGHT / 2;
     const scrollFillPx =
       maxMorph > 0
