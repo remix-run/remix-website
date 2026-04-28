@@ -1,11 +1,3 @@
-export interface MorphState {
-  value: number;
-}
-
-export function createMorphState(): MorphState {
-  return { value: 0 };
-}
-
 export function getMorphBlend(
   morphValue: number,
   maxValue: number,
@@ -24,8 +16,4 @@ export function getMorphBlend(
   }
 
   return { fromIndex, toIndex, blend };
-}
-
-export function getNearestStop(morphValue: number, maxValue: number): number {
-  return Math.round(Math.max(0, Math.min(maxValue, morphValue)));
 }

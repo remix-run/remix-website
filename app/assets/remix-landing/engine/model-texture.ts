@@ -27,18 +27,3 @@ export function createModelTexture(model: ModelData): THREE.DataTexture {
   tex.needsUpdate = true;
   return tex;
 }
-
-export function createDummyTexture(): THREE.DataTexture {
-  const data = new Float32Array(4);
-  const tex = new THREE.DataTexture(
-    data,
-    1,
-    1,
-    THREE.RGBAFormat,
-    THREE.FloatType,
-  );
-  tex.minFilter = THREE.NearestFilter;
-  tex.magFilter = THREE.NearestFilter;
-  tex.needsUpdate = true;
-  return tex;
-}
