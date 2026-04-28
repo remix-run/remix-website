@@ -17,7 +17,8 @@ import { DEFAULT_SETTINGS, type SystemSettings } from "./engine/types";
 import { setKonamiNavProgress } from "./konami-nav";
 import { colors } from "./styles/tokens";
 
-type ParticleCanvasFactory = typeof import("./components/ParticleCanvas").ParticleCanvas;
+type ParticleCanvasFactory =
+  typeof import("./components/ParticleCanvas").ParticleCanvas;
 
 const appStyles = css({
   position: "relative",
@@ -49,8 +50,10 @@ const blurShellStyles = css({
   pointerEvents: "none",
   backdropFilter: "blur(16px)",
   WebkitBackdropFilter: "blur(16px)",
-  maskImage: "linear-gradient(to bottom, black 0%, black 25%, transparent 100%)",
-  WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 25%, transparent 100%)",
+  maskImage:
+    "linear-gradient(to bottom, black 0%, black 25%, transparent 100%)",
+  WebkitMaskImage:
+    "linear-gradient(to bottom, black 0%, black 25%, transparent 100%)",
 });
 
 const topFadeGradientStyles = css({
@@ -154,7 +157,8 @@ function CopyToClipboard(handle: Handle) {
   {
     id: "use-cases",
     kicker: "One framework for any kind of project",
-    title: "A store overnight.\nA business in a weekend. The app you always wanted to ship.",
+    title:
+      "A store overnight.\nA business in a weekend. The app you always wanted to ship.",
     body: "Whatever you want to build, Remix can meet the project where it is. Start something new, grow it into a business, or bring Remix into an app that already exists. One technology, used in whatever way the project needs.",
     align: "right" as const,
   },
@@ -199,7 +203,10 @@ export function App(handle: Handle) {
     .filter((index) => index >= 0);
 
   function getScrollRange() {
-    return Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    return Math.max(
+      document.documentElement.scrollHeight - window.innerHeight,
+      1,
+    );
   }
 
   function assignModelData(url: string, data: ModelData) {
@@ -214,7 +221,12 @@ export function App(handle: Handle) {
     const preset = presets[index];
     const url = preset?.modelUrl;
 
-    if (!url || modelData[index] !== undefined || pendingModelUrls.has(url) || failedModelUrls.has(url)) {
+    if (
+      !url ||
+      modelData[index] !== undefined ||
+      pendingModelUrls.has(url) ||
+      failedModelUrls.has(url)
+    ) {
       return;
     }
 
@@ -229,9 +241,8 @@ export function App(handle: Handle) {
       console.error(error);
     } finally {
       pendingModelUrls.delete(url);
-      if (!handle.signal.aborted) {
-        handle.update();
-      }
+      if (handle.signal.aborted) return;
+      handle.update();
     }
   }
 
@@ -303,7 +314,9 @@ export function App(handle: Handle) {
     const el = event.target as HTMLElement | null;
     if (
       el &&
-      (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)
+      (el.tagName === "INPUT" ||
+        el.tagName === "TEXTAREA" ||
+        el.isContentEditable)
     ) {
       return;
     }
@@ -388,7 +401,9 @@ export function App(handle: Handle) {
     });
 
   return () => {
-    const nearestIndex = Math.round(Math.max(0, Math.min(presets.length - 1, morphValue)));
+    const nearestIndex = Math.round(
+      Math.max(0, Math.min(presets.length - 1, morphValue)),
+    );
     const LoadedParticleCanvas = ParticleCanvasComponent;
     return (
       <div mix={[appStyles]}>
@@ -404,15 +419,31 @@ export function App(handle: Handle) {
             labelOpacityRef={labelOpacityRef}
           />
         ) : null}
-        <LabelOverlay labelsRef={projectedLabelsRef} opacityRef={labelOpacityRef} />
-        <PresetGlow morphValueRef={morphValueRef} brandGradientMode={konamiBrandMode} />
+        <LabelOverlay
+          labelsRef={projectedLabelsRef}
+          opacityRef={labelOpacityRef}
+        />
+        <PresetGlow
+          morphValueRef={morphValueRef}
+          brandGradientMode={konamiBrandMode}
+        />
         <ScrollLogo scrollY={currentScrollY} />
         <div mix={[blurShellStyles]} />
         <div mix={[topFadeGradientStyles]} />
-        <LandingNav activeIndex={nearestIndex} totalSections={presets.length} onJump={jumpToPreset} scrollY={currentScrollY} />
-        <SectionNav activeIndex={nearestIndex} morphValue={morphValue} totalSections={presets.length} onJump={jumpToPreset} />
+        <LandingNav
+          activeIndex={nearestIndex}
+          totalSections={presets.length}
+          onJump={jumpToPreset}
+          scrollY={currentScrollY}
+        />
+        <SectionNav
+          activeIndex={nearestIndex}
+          morphValue={morphValue}
+          totalSections={presets.length}
+          onJump={jumpToPreset}
+        />
 
-        <main mix={[contentStyles]}>
+        <main id="main-content" tabIndex={-1} mix={[contentStyles]}>
           <LandingHero />
           {storySections.map((section) => (
             <FeatureSection

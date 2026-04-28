@@ -7,7 +7,8 @@ const shellStyles = css({
   position: "relative",
   display: "flex",
   alignItems: "flex-start",
-  paddingTop: "calc(clamp(128px, 92px + 7vw, 188px) + (100vw - 48px) * 43 / 440)",
+  paddingTop:
+    "calc(clamp(128px, 92px + 7vw, 188px) + (100vw - 48px) * 43 / 440)",
 });
 
 const textGroupStyles = css({
@@ -74,11 +75,11 @@ export function LandingHero(_handle: Handle) {
   return () => (
     <section id="the-framework" mix={[shellStyles]}>
       <div mix={[textGroupStyles]}>
-        <h1 mix={[headingStyles]}>
-          A web framework for building anything
-        </h1>
+        <h1 mix={[headingStyles]}>A web framework for building anything</h1>
         <p mix={[bodyStyles]}>
-          Remix gives you the power and tools to build anything you can dream of. To get started, just <CodeSnippet>npm create remix</CodeSnippet> and you're off to the races.
+          Remix gives you the power and tools to build anything you can dream
+          of. To get started, just <CodeSnippet>npm create remix</CodeSnippet>{" "}
+          and you're off to the races.
         </p>
       </div>
     </section>

@@ -145,26 +145,72 @@ const codePreStyles = css({
 // Remix brand cycle colors, used to syntax-highlight the code snippet.
 const SYNTAX_COLORS = {
   keyword: "#2dacf9", // blue
-  string: "#7ce95a",  // green
-  number: "#ffdf5f",  // yellow
-  jsxTag: "#fa73da",  // pink
-  type: "#ff3c32",    // red
+  string: "#7ce95a", // green
+  number: "#ffdf5f", // yellow
+  jsxTag: "#fa73da", // pink
+  type: "#ff3c32", // red
   default: "inherit",
 } as const;
 
 type SyntaxKind = keyof typeof SYNTAX_COLORS;
 
 const SYNTAX_KEYWORDS = new Set([
-  "import", "from", "export", "default",
-  "function", "return", "let", "const", "var",
-  "type", "interface", "enum", "class", "extends", "implements",
-  "if", "else", "switch", "case", "break", "continue",
-  "for", "while", "do", "try", "catch", "finally", "throw",
-  "new", "await", "async", "typeof", "instanceof", "in", "of",
-  "this", "super", "as", "satisfies",
-  "true", "false", "null", "undefined",
-  "void", "number", "string", "boolean", "any", "never", "unknown",
-  "public", "private", "protected", "readonly", "static", "abstract",
+  "import",
+  "from",
+  "export",
+  "default",
+  "function",
+  "return",
+  "let",
+  "const",
+  "var",
+  "type",
+  "interface",
+  "enum",
+  "class",
+  "extends",
+  "implements",
+  "if",
+  "else",
+  "switch",
+  "case",
+  "break",
+  "continue",
+  "for",
+  "while",
+  "do",
+  "try",
+  "catch",
+  "finally",
+  "throw",
+  "new",
+  "await",
+  "async",
+  "typeof",
+  "instanceof",
+  "in",
+  "of",
+  "this",
+  "super",
+  "as",
+  "satisfies",
+  "true",
+  "false",
+  "null",
+  "undefined",
+  "void",
+  "number",
+  "string",
+  "boolean",
+  "any",
+  "never",
+  "unknown",
+  "public",
+  "private",
+  "protected",
+  "readonly",
+  "static",
+  "abstract",
 ]);
 
 type SyntaxToken = { text: string; kind: SyntaxKind };
@@ -214,7 +260,10 @@ function tokenizeCode(code: string): SyntaxToken[] {
 // Snippets come from a static module-level array, so the set of unique
 // strings seen here is tiny and bounded — a plain Map keyed by the snippet
 // string is fine.
-const highlightedSnippetCache = new Map<string, ReturnType<typeof buildHighlightedCode>>();
+const highlightedSnippetCache = new Map<
+  string,
+  ReturnType<typeof buildHighlightedCode>
+>();
 
 function buildHighlightedCode(code: string) {
   return tokenizeCode(code).map((token, i) =>
@@ -235,7 +284,6 @@ function renderHighlightedCode(code: string) {
   highlightedSnippetCache.set(code, rendered);
   return rendered;
 }
-
 
 const kickerStyles = css({
   margin: "0 0 20px",
@@ -297,7 +345,8 @@ const ctaStyles = css({
   lineHeight: "1.4",
   letterSpacing: "-0.008px",
   textDecoration: "none",
-  transition: "background 150ms ease, border-color 150ms ease, color 150ms ease",
+  transition:
+    "background 150ms ease, border-color 150ms ease, color 150ms ease",
   "&:hover": {
     background: `color-mix(in srgb, var(--brand-cycle, ${colors.accent}) 18%, rgba(255, 255, 255, 0.08))`,
   },
@@ -403,23 +452,32 @@ function renderFeatureSection(props: FeatureSectionProps) {
               : props.id === "start-building"
                 ? leftPanelStartBuildingStyles
                 : props.id === "ai-ready"
-                ? leftPanelAiReadyStyles
-                : props.id === "powerful-components"
-                  ? leftPanelPowerfulComponentsStyles
-                  : props.id === "use-cases"
-                    ? rightPanelUseCasesStyles
-                    : props.align === "right"
-                      ? rightPanelStyles
-                      : leftPanelStyles,
+                  ? leftPanelAiReadyStyles
+                  : props.id === "powerful-components"
+                    ? leftPanelPowerfulComponentsStyles
+                    : props.id === "use-cases"
+                      ? rightPanelUseCasesStyles
+                      : props.align === "right"
+                        ? rightPanelStyles
+                        : leftPanelStyles,
           ]}
         >
           <p mix={[kickerStyles]}>{props.kicker}</p>
           <h2 mix={[titleStyles]}>{props.title}</h2>
           <p mix={[bodyStyles]}>{props.body}</p>
           {props.ctaLabel && props.ctaHref ? (
-            <a href={props.ctaHref} target="_blank" rel="noopener noreferrer" mix={[ctaStyles]}>
+            <a
+              href={props.ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              mix={[ctaStyles]}
+            >
               {props.ctaIcon === "eye" ? (
-                <svg viewBox="0 0 24 24" aria-hidden="true" mix={[ctaIconStyles]}>
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  mix={[ctaIconStyles]}
+                >
                   <path
                     fill="currentColor"
                     d="M12 5C6.5 5 2.1 8.3.5 12c1.6 3.7 6 7 11.5 7s9.9-3.3 11.5-7c-1.6-3.7-6-7-11.5-7Zm0 11.2A4.2 4.2 0 1 1 12 7.8a4.2 4.2 0 0 1 0 8.4Zm0-2.1a2.1 2.1 0 1 0 0-4.2 2.1 2.1 0 0 0 0 4.2Z"
@@ -432,11 +490,20 @@ function renderFeatureSection(props: FeatureSectionProps) {
         </div>
         {props.codeSnippet ? (
           <div mix={[codeContainerStyles]}>
-            <pre mix={[codePreStyles]}><code>{renderHighlightedCode(props.codeSnippet)}</code></pre>
+            <pre mix={[codePreStyles]}>
+              <code>{renderHighlightedCode(props.codeSnippet)}</code>
+            </pre>
           </div>
         ) : null}
         {props.secondary ? (
-          <div mix={[panelStyles, props.id === "start-building" ? rightPanelNewsletterStyles : rightPanelStyles]}>
+          <div
+            mix={[
+              panelStyles,
+              props.id === "start-building"
+                ? rightPanelNewsletterStyles
+                : rightPanelStyles,
+            ]}
+          >
             <p mix={[kickerStyles]}>{props.secondary.kicker}</p>
             <h2 mix={[titleStyles]}>{props.secondary.title}</h2>
             <p mix={[bodyStyles]}>{props.secondary.body}</p>
@@ -447,13 +514,17 @@ function renderFeatureSection(props: FeatureSectionProps) {
                 target="_blank"
                 mix={[subscribeFormStyles]}
               >
-                <label for="newsletter-email" mix={[subscribeLabelStyles]}>Email address</label>
+                <label for="newsletter-email" mix={[subscribeLabelStyles]}>
+                  Email address
+                </label>
                 <input
                   id="newsletter-email"
                   type="email"
                   name="email"
                   autocomplete="email"
-                  placeholder={props.secondary.newsletterPlaceholder ?? "name@example.com"}
+                  placeholder={
+                    props.secondary.newsletterPlaceholder ?? "name@example.com"
+                  }
                   mix={[subscribeInputStyles]}
                 />
                 <button type="submit" mix={[subscribeButtonStyles]}>
@@ -511,7 +582,11 @@ export function FeatureSection(_handle: Handle) {
   let cachedOutput: ReturnType<typeof renderFeatureSection> | null = null;
 
   return (props: FeatureSectionProps) => {
-    if (cachedProps !== null && cachedOutput !== null && propsEqual(cachedProps, props)) {
+    if (
+      cachedProps !== null &&
+      cachedOutput !== null &&
+      propsEqual(cachedProps, props)
+    ) {
       return cachedOutput;
     }
     cachedProps = props;

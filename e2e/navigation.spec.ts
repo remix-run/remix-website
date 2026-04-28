@@ -26,6 +26,19 @@ async function expectClientNavigation(
 }
 
 test.describe("Navigation", () => {
+  test("home page renders landing content and keeps the skip target", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await expect(
+      page.getByRole("heading", {
+        name: "A web framework for building anything",
+      }),
+    ).toBeVisible();
+    await expect(page.locator("main#main-content")).toHaveCount(1);
+  });
+
   test("active development route header links use client navigation", async ({
     page,
   }) => {
@@ -40,9 +53,7 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Blog/i);
   });
 
-  test("blog to home page applies forced dark mode", async ({
-    page,
-  }) => {
+  test("blog to home page applies forced dark mode", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/blog");
 

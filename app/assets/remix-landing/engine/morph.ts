@@ -6,7 +6,10 @@ export function createMorphState(): MorphState {
   return { value: 0 };
 }
 
-export function getMorphBlend(morphValue: number, maxValue: number): {
+export function getMorphBlend(
+  morphValue: number,
+  maxValue: number,
+): {
   fromIndex: number;
   toIndex: number;
   blend: number;

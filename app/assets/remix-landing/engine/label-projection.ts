@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { Preset } from "./types";
+import type { Preset, PresetLabelDef } from "./types";
 import type { ControlManager } from "./controls";
 
 export interface ProjectedLabel {
@@ -30,20 +30,26 @@ function transformSlot0(
   let py = anchor[1] * scale;
   let pz = anchor[2] * scale;
 
-  const cx = Math.cos(rX), sx = Math.sin(rX);
+  const cx = Math.cos(rX),
+    sx = Math.sin(rX);
   const t1y = py * cx - pz * sx;
   const t1z = py * sx + pz * cx;
-  py = t1y; pz = t1z;
+  py = t1y;
+  pz = t1z;
 
-  const cy = Math.cos(rY), sy = Math.sin(rY);
+  const cy = Math.cos(rY),
+    sy = Math.sin(rY);
   const t2x = px * cy + pz * sy;
   const t2z = -px * sy + pz * cy;
-  px = t2x; pz = t2z;
+  px = t2x;
+  pz = t2z;
 
-  const cz = Math.cos(rZ), sz = Math.sin(rZ);
+  const cz = Math.cos(rZ),
+    sz = Math.sin(rZ);
   const t3x = px * cz - py * sz;
   const t3y = px * sz + py * cz;
-  px = t3x; py = t3y;
+  px = t3x;
+  py = t3y;
 
   return _v.set(px, py, pz);
 }
@@ -56,7 +62,8 @@ function transformSpinY(
   const scale = ctrls[0] ?? 48;
   const spin = ctrls[1] ?? 0.23;
   const angle = time * spin;
-  const cosA = Math.cos(angle), sinA = Math.sin(angle);
+  const cosA = Math.cos(angle),
+    sinA = Math.sin(angle);
 
   const mx = anchor[0] * scale;
   const my = anchor[1] * scale;
@@ -67,7 +74,8 @@ function transformSpinY(
   const pz = mx * sinA + mz * cosA;
 
   const rotZ = (ctrls[3] ?? 0) * DEG2RAD;
-  const cz = Math.cos(rotZ), sz = Math.sin(rotZ);
+  const cz = Math.cos(rotZ),
+    sz = Math.sin(rotZ);
   const qx = px * cz - py * sz;
   const qy = px * sz + py * cz;
 
@@ -99,9 +107,12 @@ export function projectLabels(
   const results: ProjectedLabel[] = [];
 
   for (const lbl of labels) {
-    const ax = controlMgr.controls.get(`label_${lbl.id}_X`)?.value ?? lbl.anchor[0];
-    const ay = controlMgr.controls.get(`label_${lbl.id}_Y`)?.value ?? lbl.anchor[1];
-    const az = controlMgr.controls.get(`label_${lbl.id}_Z`)?.value ?? lbl.anchor[2];
+    const ax =
+      controlMgr.controls.get(`label_${lbl.id}_X`)?.value ?? lbl.anchor[0];
+    const ay =
+      controlMgr.controls.get(`label_${lbl.id}_Y`)?.value ?? lbl.anchor[1];
+    const az =
+      controlMgr.controls.get(`label_${lbl.id}_Z`)?.value ?? lbl.anchor[2];
 
     const worldPos = transform([ax, ay, az], ctrls, time);
 

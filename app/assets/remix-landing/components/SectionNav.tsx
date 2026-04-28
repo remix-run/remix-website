@@ -1,5 +1,5 @@
 import { css, on, type Handle } from "remix/component";
-import { colors } from "../styles/tokens";
+import { colors, glowBlue } from "../styles/tokens";
 
 const TRACK_WIDTH = 11;
 const ITEM_HEIGHT = 16;
@@ -143,21 +143,14 @@ export function SectionNav(_handle: Handle) {
     // Scroll-based length (continuous morph) and at least to the active section's
     // marker — rounded activeIndex can be ahead of morph after jump-to-section,
     // which left the bar short of the highlighted label.
-    const fillPx = Math.max(
-      TRACK_WIDTH,
-      scrollFillPx,
-      dotCenterY(activeIndex),
-    );
+    const fillPx = Math.max(TRACK_WIDTH, scrollFillPx, dotCenterY(activeIndex));
 
     return (
       <aside mix={[shellStyles]}>
         <div mix={[layoutStyles]}>
           <div mix={[trackContainerStyles]}>
             <div mix={[trackBgStyles]} />
-            <div
-              mix={[trackFillStyles]}
-              style={{ height: `${fillPx}px` }}
-            />
+            <div mix={[trackFillStyles]} style={{ height: `${fillPx}px` }} />
           </div>
           <ul mix={[listStyles]}>
             {SECTIONS.map((section, i) => {
@@ -167,7 +160,11 @@ export function SectionNav(_handle: Handle) {
               return (
                 <li key={section.anchor} mix={[itemStyles]}>
                   <div
-                    mix={covered ? [bulletStyles, bulletHiddenStyles] : [bulletStyles]}
+                    mix={
+                      covered
+                        ? [bulletStyles, bulletHiddenStyles]
+                        : [bulletStyles]
+                    }
                     style={{ top: `${bulletCenter - 2}px` }}
                   />
                   <a

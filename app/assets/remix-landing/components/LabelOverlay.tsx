@@ -34,7 +34,10 @@ export function LabelOverlay(handle: Handle) {
 
   handle.signal.addEventListener("abort", cleanup);
 
-  function tick(labelsRef: { current: ProjectedLabel[] }, opacityRef: { current: number }) {
+  function tick(
+    labelsRef: { current: ProjectedLabel[] },
+    opacityRef: { current: number },
+  ) {
     if (!containerEl || !svgEl) {
       frameId = requestAnimationFrame(() => tick(labelsRef, opacityRef));
       return;
@@ -113,14 +116,19 @@ export function LabelOverlay(handle: Handle) {
     frameId = requestAnimationFrame(() => tick(labelsRef, opacityRef));
   }
 
-  return (props: { labelsRef: { current: ProjectedLabel[] }; opacityRef: { current: number } }) => (
+  return (props: {
+    labelsRef: { current: ProjectedLabel[] };
+    opacityRef: { current: number };
+  }) => (
     <div
       mix={[
         shellStyles,
         ref((node) => {
           containerEl = node;
           if (!frameId) {
-            frameId = requestAnimationFrame(() => tick(props.labelsRef, props.opacityRef));
+            frameId = requestAnimationFrame(() =>
+              tick(props.labelsRef, props.opacityRef),
+            );
           }
         }),
       ]}

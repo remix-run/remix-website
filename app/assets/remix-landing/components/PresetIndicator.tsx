@@ -41,7 +41,11 @@ export function PresetIndicator(_handle: Handle) {
       {props.presets.map((preset, index) => (
         <div
           key={preset.name}
-          mix={index === props.activeIndex ? [itemStyles, activeStyles] : [itemStyles]}
+          mix={
+            index === props.activeIndex
+              ? [itemStyles, activeStyles]
+              : [itemStyles]
+          }
         >
           {preset.name}
         </div>

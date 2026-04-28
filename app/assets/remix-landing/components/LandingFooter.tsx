@@ -126,7 +126,12 @@ export function LandingFooter(_handle: Handle) {
                 rel="noopener noreferrer"
                 mix={[socialLinkStyles]}
               >
-                <img src={link.iconSrc} alt="" aria-hidden="true" mix={[socialIconStyles]} />
+                <img
+                  src={link.iconSrc}
+                  alt=""
+                  aria-hidden="true"
+                  mix={[socialIconStyles]}
+                />
               </a>
             ))}
           </div>
@@ -145,7 +150,12 @@ export function LandingFooter(_handle: Handle) {
           </p>
           <p mix={[legalTextStyles]}>
             ©2026{" "}
-            <a href="https://www.shopify.com/" target="_blank" rel="noopener noreferrer" mix={[legalLinkStyles]}>
+            <a
+              href="https://www.shopify.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              mix={[legalLinkStyles]}
+            >
               Shopify, Inc.
             </a>
           </p>

@@ -28,6 +28,8 @@ interface DocumentProps {
   noIndex?: boolean;
   forceTheme?: "dark" | "light";
   headTags?: ManagedHeadTag[];
+  headStyles?: string[];
+  includeDefaultStyles?: boolean;
   children?: RemixNode;
 }
 
@@ -53,6 +55,8 @@ export function Document() {
     noIndex,
     forceTheme,
     headTags = [],
+    headStyles = [],
+    includeDefaultStyles = true,
     children,
   }: DocumentProps) => {
     let assetEntry = getAssetEntry();
@@ -121,11 +125,15 @@ export function Document() {
             href="/font/jet-brains-mono.woff2"
             crossorigin="anonymous"
           />
-          <link rel="preload" as="style" href={styleHrefs.app} />
-          <link rel="preload" as="style" href={styleHrefs.md} />
-          <link rel="preload" as="style" href={styleHrefs.jam} />
-          {/* Styles */}
-          <link rel="stylesheet" href={styleHrefs.app} />
+          {includeDefaultStyles ? (
+            <>
+              <link rel="preload" as="style" href={styleHrefs.app} />
+              <link rel="preload" as="style" href={styleHrefs.md} />
+              <link rel="preload" as="style" href={styleHrefs.jam} />
+              {/* Styles */}
+              <link rel="stylesheet" href={styleHrefs.app} />
+            </>
+          ) : null}
 
           {/* RSS */}
           <link
@@ -157,6 +165,14 @@ export function Document() {
             ),
           )}
 
+          {headStyles.map((style, index) => (
+            <style
+              key={index}
+              data-remix-managed-style="true"
+              innerHTML={style}
+            />
+          ))}
+
           {assetEntry.preloads.map((href) => (
             <link key={href} rel="modulepreload" href={href} />
           ))}
@@ -178,6 +194,7 @@ export function Document() {
             forceTheme={forceTheme}
             bodyClassName={bodyClassName}
             headTags={managedHeadTags}
+            headStyles={headStyles}
           />
           <img
             src={assetPaths.iconsSprite}

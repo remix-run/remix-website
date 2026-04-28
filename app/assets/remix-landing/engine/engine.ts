@@ -26,14 +26,18 @@ export class Engine {
   private containerWidth = 1440;
   private startTime = 0;
 
-  init(canvas: HTMLCanvasElement, container: HTMLElement, settings: SystemSettings) {
+  init(
+    canvas: HTMLCanvasElement,
+    container: HTMLElement,
+    settings: SystemSettings,
+  ) {
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(
       settings.cameraFov,
       container.clientWidth / container.clientHeight,
       0.1,
-      2000
+      2000,
     );
     this.camera.position.set(0, 30, 80);
 
@@ -73,13 +77,23 @@ export class Engine {
 
     this.containerWidth = container.clientWidth;
     const s = screenScale(this.containerWidth);
-    const bloomSize = new THREE.Vector2(container.clientWidth, container.clientHeight);
-    this.bloomPass = new UnrealBloomPass(bloomSize, settings.bloomStrength * s, 0.4, settings.bloomThreshold);
+    const bloomSize = new THREE.Vector2(
+      container.clientWidth,
+      container.clientHeight,
+    );
+    this.bloomPass = new UnrealBloomPass(
+      bloomSize,
+      settings.bloomStrength * s,
+      0.4,
+      settings.bloomThreshold,
+    );
     this.composer.addPass(this.bloomPass);
 
     this.startTime = performance.now() / 1000;
 
-    this.resizeObserver = new ResizeObserver(() => this.handleResize(container));
+    this.resizeObserver = new ResizeObserver(() =>
+      this.handleResize(container),
+    );
     this.resizeObserver.observe(container);
   }
 
@@ -101,7 +115,7 @@ export class Engine {
   updateSettings(settings: SystemSettings) {
     const s = screenScale(this.containerWidth);
     this.renderer.setClearColor(new THREE.Color(settings.backgroundColor));
-    this.afterImagePass.uniforms['damp'].value = settings.trailIntensity;
+    this.afterImagePass.uniforms["damp"].value = settings.trailIntensity;
     this.bloomPass.strength = settings.bloomStrength * s;
     this.bloomPass.threshold = settings.bloomThreshold;
 

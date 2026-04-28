@@ -733,10 +733,16 @@ export class ParticleSystem {
     }
 
     this.geometry = new THREE.BufferGeometry();
-    this.geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    this.geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(positions, 3),
+    );
     this.geometry.setAttribute("aIndex", new THREE.BufferAttribute(indices, 1));
     this.geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
-    this.geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 1));
+    this.geometry.setAttribute(
+      "aRandom",
+      new THREE.BufferAttribute(randoms, 1),
+    );
 
     this.material = new THREE.ShaderMaterial({
       vertexShader: VERTEX_SHADER,
@@ -770,10 +776,42 @@ export class ParticleSystem {
         uModelCount1: { value: 0 },
         uModelCount2: { value: 0 },
         uModelCount3: { value: 0 },
-        uModelTex0: { value: new THREE.DataTexture(new Float32Array(4), 1, 1, THREE.RGBAFormat, THREE.FloatType) },
-        uModelTex1: { value: new THREE.DataTexture(new Float32Array(4), 1, 1, THREE.RGBAFormat, THREE.FloatType) },
-        uModelTex2: { value: new THREE.DataTexture(new Float32Array(4), 1, 1, THREE.RGBAFormat, THREE.FloatType) },
-        uModelTex3: { value: new THREE.DataTexture(new Float32Array(4), 1, 1, THREE.RGBAFormat, THREE.FloatType) },
+        uModelTex0: {
+          value: new THREE.DataTexture(
+            new Float32Array(4),
+            1,
+            1,
+            THREE.RGBAFormat,
+            THREE.FloatType,
+          ),
+        },
+        uModelTex1: {
+          value: new THREE.DataTexture(
+            new Float32Array(4),
+            1,
+            1,
+            THREE.RGBAFormat,
+            THREE.FloatType,
+          ),
+        },
+        uModelTex2: {
+          value: new THREE.DataTexture(
+            new Float32Array(4),
+            1,
+            1,
+            THREE.RGBAFormat,
+            THREE.FloatType,
+          ),
+        },
+        uModelTex3: {
+          value: new THREE.DataTexture(
+            new Float32Array(4),
+            1,
+            1,
+            THREE.RGBAFormat,
+            THREE.FloatType,
+          ),
+        },
       },
       transparent: true,
       blending: THREE.AdditiveBlending,
@@ -869,7 +907,11 @@ export class ParticleSystem {
     }
   }
 
-  setModelTexture(slot: number, texture: THREE.DataTexture, pointCount: number) {
+  setModelTexture(
+    slot: number,
+    texture: THREE.DataTexture,
+    pointCount: number,
+  ) {
     if (!this.material) return;
     if (slot === 0) {
       this.material.uniforms.uModelTex0.value = texture;

@@ -29,6 +29,10 @@ const shellStyles = css({
   pointerEvents: "none",
 });
 
+const svgBaseStyles = css({
+  display: "block",
+});
+
 const mainSvgStyles = css({
   display: "block",
   color: `var(--brand-cycle, #EBEFF2)`,
@@ -95,9 +99,10 @@ export function ScrollLogo(handle: Handle) {
 
   return (props: { scrollY: number }) => {
     const linear = Math.min(1, Math.max(0, props.scrollY / SCROLL_PX));
-    const t = linear < 0.5
-      ? 4 * linear * linear * linear
-      : 1 - Math.pow(-2 * linear + 2, 3) / 2;
+    const t =
+      linear < 0.5
+        ? 4 * linear * linear * linear
+        : 1 - Math.pow(-2 * linear + 2, 3) / 2;
 
     const rawVelocity = t - prevT;
     if (Math.abs(rawVelocity) > 0.0001) {
@@ -125,7 +130,10 @@ export function ScrollLogo(handle: Handle) {
         {ghostIntensity > 0.01 &&
           BRAND_COLORS.map((color, i) => {
             const delay = (i + 1) * 0.04;
-            const ghostT = Math.min(1, Math.max(0, t - delay * Math.sign(velocity)));
+            const ghostT = Math.min(
+              1,
+              Math.max(0, t - delay * Math.sign(velocity)),
+            );
             const ghostWidth = lerp(largeWidth, smallWidth, ghostT);
             const ghostOpacity = ghostIntensity * (0.6 - i * 0.08);
             if (ghostOpacity <= 0) return null;

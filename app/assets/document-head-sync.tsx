@@ -1,5 +1,6 @@
 import { clientEntry, type Handle } from "remix/ui";
 import {
+  syncManagedHeadStyles,
   syncManagedHeadTags,
   syncTitle,
   type ManagedHeadTag,
@@ -10,6 +11,7 @@ type DocumentHeadSyncProps = {
   forceTheme?: "dark" | "light";
   bodyClassName: string;
   headTags: ManagedHeadTag[];
+  headStyles: string[];
 };
 
 declare global {
@@ -32,6 +34,7 @@ export let DocumentHeadSync = clientEntry(
       syncTheme(latestProps.forceTheme);
       syncBodyClassName(latestProps.bodyClassName);
       syncManagedHeadTags(latestProps.headTags);
+      syncManagedHeadStyles(latestProps.headStyles);
     };
 
     handle.signal.addEventListener(

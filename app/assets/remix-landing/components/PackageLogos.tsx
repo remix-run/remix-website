@@ -28,11 +28,11 @@ const LOGOS = [
  * shrinks with the copy.
  */
 const ROWS: { topFraction: number; heightFraction: number }[] = [
-  { topFraction: 0.0, heightFraction: 0.1786 },     // Auth
-  { topFraction: 0.2656, heightFraction: 0.1786 },  // Routing
-  { topFraction: 0.5, heightFraction: 0.1607 },     // Data (row 3, left of Session)
-  { topFraction: 0.5, heightFraction: 0.1607 },     // Session (row 3, right-aligned)
-  { topFraction: 0.75, heightFraction: 0.25 },      // Component
+  { topFraction: 0.0, heightFraction: 0.1786 }, // Auth
+  { topFraction: 0.2656, heightFraction: 0.1786 }, // Routing
+  { topFraction: 0.5, heightFraction: 0.1607 }, // Data (row 3, left of Session)
+  { topFraction: 0.5, heightFraction: 0.1607 }, // Session (row 3, right-aligned)
+  { topFraction: 0.75, heightFraction: 0.25 }, // Component
 ];
 
 const VIEWPORT_GUTTER_PX = 24;
@@ -42,7 +42,7 @@ const shellStyles = css({
   position: "absolute",
   left: "0",
   right: "0",
-  zIndex: "3",
+  zIndex: "7",
   pointerEvents: "none",
   transition: "opacity 300ms ease",
 });
@@ -76,7 +76,10 @@ const SEQUENCE_TOTAL_MS =
 function logoOpacity(morph: number, index: number): number {
   const inStart = ARRIVE + index * STAGGER;
   const fadeIn = Math.min(1, Math.max(0, (morph - inStart) / FADE_IN));
-  const fadeOut = Math.min(1, Math.max(0, (FADE_OUT_END - morph) / (FADE_OUT_END - FADE_OUT_START)));
+  const fadeOut = Math.min(
+    1,
+    Math.max(0, (FADE_OUT_END - morph) / (FADE_OUT_END - FADE_OUT_START)),
+  );
   return fadeIn * fadeOut;
 }
 
@@ -84,7 +87,11 @@ function morphInLogoSection(morph: number): boolean {
   return morph >= MORPH_SECTION_MIN && morph <= MORPH_SECTION_MAX;
 }
 
-function sequenceFade(index: number, sequenceStartMs: number | null, now: number): number {
+function sequenceFade(
+  index: number,
+  sequenceStartMs: number | null,
+  now: number,
+): number {
   if (sequenceStartMs === null) return 0;
   const elapsed = now - sequenceStartMs;
   const start = index * SEQUENCE_STAGGER_MS;
@@ -116,7 +123,9 @@ export function PackageLogos(handle: Handle) {
 
   function locatePanel() {
     if (panelElement && panelElement.isConnected) return;
-    panelElement = document.getElementById("full-stack-panel") as HTMLElement | null;
+    panelElement = document.getElementById(
+      "full-stack-panel",
+    ) as HTMLElement | null;
     if (!panelElement) return;
     if (typeof ResizeObserver !== "undefined") {
       resizeObserver?.disconnect();
@@ -198,7 +207,8 @@ export function PackageLogos(handle: Handle) {
     // height. Data sits to its left, so its right offset grows with Session's width.
     const sessionHeightPx = panelHeight * ROWS[3].heightFraction;
     const sessionWidthPx = sessionHeightPx * (797 / 288);
-    const dataRightPx = VIEWPORT_GUTTER_PX + DATA_SESSION_GAP_PX + sessionWidthPx;
+    const dataRightPx =
+      VIEWPORT_GUTTER_PX + DATA_SESSION_GAP_PX + sessionWidthPx;
 
     return (
       <div
@@ -211,7 +221,8 @@ export function PackageLogos(handle: Handle) {
         {LOGOS.map((logo, i) => {
           const row = ROWS[i];
           const seq = sequenceFade(i, sequenceStartMs, now);
-          const right = i === 2 ? `${dataRightPx}px` : `${VIEWPORT_GUTTER_PX}px`;
+          const right =
+            i === 2 ? `${dataRightPx}px` : `${VIEWPORT_GUTTER_PX}px`;
           return (
             <div
               key={logo.alt}

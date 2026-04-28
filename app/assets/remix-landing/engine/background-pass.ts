@@ -162,9 +162,9 @@ function hexToOklab(hex: string): [number, number, number] {
   const mc = Math.cbrt(m);
   const sc = Math.cbrt(s);
   return [
-    0.2104542553 * lc + 0.7936177850 * mc - 0.0040720468 * sc,
-    1.9779984951 * lc - 2.4285922050 * mc + 0.4505937099 * sc,
-    0.0259040371 * lc + 0.7827717662 * mc - 0.8086757660 * sc,
+    0.2104542553 * lc + 0.793617785 * mc - 0.0040720468 * sc,
+    1.9779984951 * lc - 2.428592205 * mc + 0.4505937099 * sc,
+    0.0259040371 * lc + 0.7827717662 * mc - 0.808675766 * sc,
   ];
 }
 
@@ -187,17 +187,17 @@ interface BlobDef {
   pos: [number, number];
   sigma: [number, number];
   color: string; // sRGB hex
-  gain: number;  // relative weight multiplier
+  gain: number; // relative weight multiplier
 }
 
 const DEFAULT_BLOBS: BlobDef[] = [
-  { pos: [ 0.62, 0.48], sigma: [0.38, 0.34], color: "#5d778f", gain: 1.00 }, // main diffuse highlight (brighter)
-  { pos: [ 0.74, 0.44], sigma: [0.16, 0.20], color: "#88a2bc", gain: 0.55 }, // tight accent on the right (peak highlight)
-  { pos: [ 0.30, 0.70], sigma: [0.32, 0.30], color: "#2b3a4c", gain: 0.90 }, // cool upper band
-  { pos: [ 0.18, 0.26], sigma: [0.26, 0.26], color: "#3a3230", gain: 0.65 }, // subtly warmer lower-left hint
-  { pos: [ 0.08, 0.52], sigma: [0.22, 0.28], color: "#0c111a", gain: 0.55 }, // mid-left shadow (deeper)
-  { pos: [ 0.50, 0.06], sigma: [0.40, 0.16], color: "#0e1420", gain: 0.65 }, // bottom rim falloff (deeper)
-  { pos: [ 0.90, 0.92], sigma: [0.32, 0.30], color: "#010204", gain: 0.90 }, // pull the top-right to dead black (harder)
+  { pos: [0.62, 0.48], sigma: [0.38, 0.34], color: "#5d778f", gain: 1.0 }, // main diffuse highlight (brighter)
+  { pos: [0.74, 0.44], sigma: [0.16, 0.2], color: "#88a2bc", gain: 0.55 }, // tight accent on the right (peak highlight)
+  { pos: [0.3, 0.7], sigma: [0.32, 0.3], color: "#2b3a4c", gain: 0.9 }, // cool upper band
+  { pos: [0.18, 0.26], sigma: [0.26, 0.26], color: "#3a3230", gain: 0.65 }, // subtly warmer lower-left hint
+  { pos: [0.08, 0.52], sigma: [0.22, 0.28], color: "#0c111a", gain: 0.55 }, // mid-left shadow (deeper)
+  { pos: [0.5, 0.06], sigma: [0.4, 0.16], color: "#0e1420", gain: 0.65 }, // bottom rim falloff (deeper)
+  { pos: [0.9, 0.92], sigma: [0.32, 0.3], color: "#010204", gain: 0.9 }, // pull the top-right to dead black (harder)
 ];
 
 const BASE_HEX = "#020407";
@@ -209,8 +209,12 @@ export class BackgroundPass extends Pass {
   constructor() {
     super();
 
-    const positions = DEFAULT_BLOBS.map((b) => new THREE.Vector2(b.pos[0], b.pos[1]));
-    const sigmas = DEFAULT_BLOBS.map((b) => new THREE.Vector2(b.sigma[0], b.sigma[1]));
+    const positions = DEFAULT_BLOBS.map(
+      (b) => new THREE.Vector2(b.pos[0], b.pos[1]),
+    );
+    const sigmas = DEFAULT_BLOBS.map(
+      (b) => new THREE.Vector2(b.sigma[0], b.sigma[1]),
+    );
     const colors = DEFAULT_BLOBS.map((b) => {
       const [l, a, bb] = hexToOklab(b.color);
       return new THREE.Vector3(l, a, bb);
@@ -224,7 +228,9 @@ export class BackgroundPass extends Pass {
       uniforms: {
         uTime: { value: 0 },
         uResolution: { value: new THREE.Vector2(1, 1) },
-        uBaseColor: { value: new THREE.Vector3(baseOk[0], baseOk[1], baseOk[2]) },
+        uBaseColor: {
+          value: new THREE.Vector3(baseOk[0], baseOk[1], baseOk[2]),
+        },
         uBlobPos: { value: positions },
         uBlobSigma: { value: sigmas },
         uBlobColor: { value: colors },
@@ -247,11 +253,11 @@ export class BackgroundPass extends Pass {
   }
 
   setSize(width: number, height: number): void {
-    this.material.uniforms['uResolution'].value.set(width, height);
+    this.material.uniforms["uResolution"].value.set(width, height);
   }
 
   setTime(time: number): void {
-    this.material.uniforms['uTime'].value = time;
+    this.material.uniforms["uTime"].value = time;
   }
 
   render(

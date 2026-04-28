@@ -15,7 +15,13 @@ export function createModelTexture(model: ModelData): THREE.DataTexture {
     data[di + 2] = model.positions[si + 2];
     data[di + 3] = 0;
   }
-  const tex = new THREE.DataTexture(data, TEX_WIDTH, TEX_HEIGHT, THREE.RGBAFormat, THREE.FloatType);
+  const tex = new THREE.DataTexture(
+    data,
+    TEX_WIDTH,
+    TEX_HEIGHT,
+    THREE.RGBAFormat,
+    THREE.FloatType,
+  );
   tex.minFilter = THREE.NearestFilter;
   tex.magFilter = THREE.NearestFilter;
   tex.needsUpdate = true;
@@ -24,7 +30,13 @@ export function createModelTexture(model: ModelData): THREE.DataTexture {
 
 export function createDummyTexture(): THREE.DataTexture {
   const data = new Float32Array(4);
-  const tex = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat, THREE.FloatType);
+  const tex = new THREE.DataTexture(
+    data,
+    1,
+    1,
+    THREE.RGBAFormat,
+    THREE.FloatType,
+  );
   tex.minFilter = THREE.NearestFilter;
   tex.magFilter = THREE.NearestFilter;
   tex.needsUpdate = true;

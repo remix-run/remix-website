@@ -10,7 +10,8 @@ const containerStyles = css({
   background: "rgba(0, 0, 0, 0.55)",
   border: "1px solid rgba(255, 255, 255, 0.12)",
   color: "rgba(255, 255, 255, 0.92)",
-  fontFamily: '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
+  fontFamily:
+    '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
   fontSize: "12px",
   fontVariantNumeric: "tabular-nums",
   letterSpacing: "0.02em",
@@ -37,7 +38,10 @@ export function FpsCounter(handle: Handle) {
     const elapsed = now - lastSampleMs;
     if (elapsed >= 500) {
       const instantaneous = (frames * 1000) / elapsed;
-      displayFps = displayFps === 0 ? instantaneous : displayFps * 0.6 + instantaneous * 0.4;
+      displayFps =
+        displayFps === 0
+          ? instantaneous
+          : displayFps * 0.6 + instantaneous * 0.4;
       frames = 0;
       lastSampleMs = now;
       if (el) el.textContent = `${displayFps.toFixed(1)} fps`;

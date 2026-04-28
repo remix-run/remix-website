@@ -134,7 +134,12 @@ export function LandingNav(handle: Handle) {
     keydown: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const target = e.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      )
+        return;
 
       if (e.key === "Escape" && menuOpen) {
         e.preventDefault();
@@ -155,7 +160,9 @@ export function LandingNav(handle: Handle) {
         return;
       }
 
-      const item = NAV_ITEMS.find((n) => n.key.toLowerCase() === e.key.toLowerCase());
+      const item = NAV_ITEMS.find(
+        (n) => n.key.toLowerCase() === e.key.toLowerCase(),
+      );
       if (item) {
         if (item.key === "B" && shouldBlockNavLetterB()) return;
         window.open(item.href, "_blank");
@@ -172,12 +179,18 @@ export function LandingNav(handle: Handle) {
     pointerdown: (e: PointerEvent) => {
       if (!menuOpen) return;
       const target = e.target as Node | null;
-      if (target && mobileContainerEl && mobileContainerEl.contains(target)) return;
+      if (target && mobileContainerEl && mobileContainerEl.contains(target))
+        return;
       setMenuOpen(false);
     },
   });
 
-  return (props: { activeIndex: number; totalSections: number; onJump: (index: number) => void; scrollY: number }) => {
+  return (props: {
+    activeIndex: number;
+    totalSections: number;
+    onJump: (index: number) => void;
+    scrollY: number;
+  }) => {
     activeIndex = props.activeIndex;
     totalSections = props.totalSections;
     onJump = props.onJump;
@@ -187,10 +200,18 @@ export function LandingNav(handle: Handle) {
 
     return (
       <header mix={[headerStyles]}>
-        <span mix={[hintStyles]} style={{ opacity: `${hintOpacity}` }}>scroll or press ↓ and ↑</span>
+        <span mix={[hintStyles]} style={{ opacity: `${hintOpacity}` }}>
+          scroll or press ↓ and ↑
+        </span>
         <nav mix={[desktopNavStyles]} aria-label="Primary">
           {NAV_ITEMS.map((item) => (
-            <a key={item.key} href={item.href} target="_blank" rel="noopener noreferrer" mix={[navItemStyles]}>
+            <a
+              key={item.key}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              mix={[navItemStyles]}
+            >
               [{item.key}] {item.label}
             </a>
           ))}

@@ -8,13 +8,17 @@ const modelCache = new Map<string, Promise<ModelData>>();
 
 async function fetchModelPoints(url: string): Promise<ModelData> {
   const response = await fetch(url);
-  if (!response.ok) throw new Error(`Failed to fetch model: ${url} (${response.status})`);
+  if (!response.ok)
+    throw new Error(`Failed to fetch model: ${url} (${response.status})`);
 
   const buf = await response.arrayBuffer();
   const view = new DataView(buf);
 
   const magic = String.fromCharCode(
-    view.getUint8(0), view.getUint8(1), view.getUint8(2), view.getUint8(3),
+    view.getUint8(0),
+    view.getUint8(1),
+    view.getUint8(2),
+    view.getUint8(3),
   );
   if (magic !== "PTS1") throw new Error(`Unknown model format: ${url}`);
 
@@ -35,10 +39,13 @@ async function fetchModelPoints(url: string): Promise<ModelData> {
   let offset = PTS_HEADER;
   for (let i = 0; i < count; i++) {
     const idx = i * 3;
-    const qx = view.getInt16(offset, true); offset += 2;
-    const qy = view.getInt16(offset, true); offset += 2;
-    const qz = view.getInt16(offset, true); offset += 2;
-    positions[idx]     = minX + ((qx + 32767) / 65534) * rangeX;
+    const qx = view.getInt16(offset, true);
+    offset += 2;
+    const qy = view.getInt16(offset, true);
+    offset += 2;
+    const qz = view.getInt16(offset, true);
+    offset += 2;
+    positions[idx] = minX + ((qx + 32767) / 65534) * rangeX;
     positions[idx + 1] = minY + ((qy + 32767) / 65534) * rangeY;
     positions[idx + 2] = minZ + ((qz + 32767) / 65534) * rangeZ;
   }

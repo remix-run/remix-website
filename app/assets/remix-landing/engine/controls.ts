@@ -20,7 +20,11 @@ export class ControlManager {
     }
     if (preset.labels) {
       for (const lbl of preset.labels) {
-        const axes: [string, number][] = [["X", lbl.anchor[0]], ["Y", lbl.anchor[1]], ["Z", lbl.anchor[2]]];
+        const axes: [string, number][] = [
+          ["X", lbl.anchor[0]],
+          ["Y", lbl.anchor[1]],
+          ["Z", lbl.anchor[2]],
+        ];
         for (const [axis, val] of axes) {
           const id = `label_${lbl.id}_${axis}`;
           this.controls.set(id, {

@@ -84,7 +84,9 @@ function initialControls(preset: Preset): number[] {
 }
 
 function getControlInitial(preset: Preset, id: string, fallback = 0): number {
-  return preset.controls.find((control) => control.id === id)?.initial ?? fallback;
+  return (
+    preset.controls.find((control) => control.id === id)?.initial ?? fallback
+  );
 }
 
 export function ParticleCanvas(handle: Handle) {
@@ -148,12 +150,22 @@ export function ParticleCanvas(handle: Handle) {
     if (!particles || !currentProps) return;
 
     for (const preset of currentProps.presets) {
-      if (preset.modelUrl == null || preset.modelSlot == null || appliedModelSlots.has(preset.modelSlot)) continue;
+      if (
+        preset.modelUrl == null ||
+        preset.modelSlot == null ||
+        appliedModelSlots.has(preset.modelSlot)
+      )
+        continue;
 
-      const model = currentProps.modelData[currentProps.presets.indexOf(preset)];
+      const model =
+        currentProps.modelData[currentProps.presets.indexOf(preset)];
       if (!model) continue;
 
-      particles.setModelTexture(preset.modelSlot, createModelTexture(model), model.positions.length / 3);
+      particles.setModelTexture(
+        preset.modelSlot,
+        createModelTexture(model),
+        model.positions.length / 3,
+      );
       appliedModelSlots.add(preset.modelSlot);
     }
   }
@@ -165,11 +177,18 @@ export function ParticleCanvas(handle: Handle) {
     engine.init(canvasEl, containerEl, currentProps.settings);
 
     particles = new ParticleSystem();
-    particles.init(engine.scene, currentProps.settings.particleCount, currentProps.settings.pointSize);
+    particles.init(
+      engine.scene,
+      currentProps.settings.particleCount,
+      currentProps.settings.pointSize,
+    );
     syncModelTextures();
 
     startTime = performance.now() / 1000;
-    const initialCamera = getDesiredCamera(currentProps.presets, currentProps.morphValue);
+    const initialCamera = getDesiredCamera(
+      currentProps.presets,
+      currentProps.morphValue,
+    );
     engine.camera.position.copy(initialCamera.pos);
     engine.controls.target.copy(initialCamera.target);
 
@@ -185,11 +204,16 @@ export function ParticleCanvas(handle: Handle) {
 
       const screenScale = engine.getScreenScale();
       particles.setPointSize(currentProps.settings.pointSize);
-      particles.setHdrIntensity(currentProps.settings.hdrIntensity * screenScale);
+      particles.setHdrIntensity(
+        currentProps.settings.hdrIntensity * screenScale,
+      );
       particles.setMousePos(mouseNormX, -mouseNormY);
       particles.setMorphEase(currentProps.settings.morphEase);
       particles.setColorMode(currentProps.settings.colorMode);
-      particles.setDof(currentProps.settings.dofAmount, currentProps.settings.dofFocus);
+      particles.setDof(
+        currentProps.settings.dofAmount,
+        currentProps.settings.dofFocus,
+      );
       const introTime = Math.max(0, time - PARTICLE_INTRO_DELAY_S);
       particles.setIntroProgress(Math.min(introTime / 3.5, 1.5));
       particles.setTime(time);
@@ -210,11 +234,15 @@ export function ParticleCanvas(handle: Handle) {
         ctrlB = initialControls(presets[toIndex]);
         const easedBlend = blend * blend * (3 - 2 * blend);
         separation =
-          presets[fromIndex].separation * (1 - easedBlend) + presets[toIndex].separation * easedBlend;
+          presets[fromIndex].separation * (1 - easedBlend) +
+          presets[toIndex].separation * easedBlend;
       }
 
-      const racetrackIndex = presets.findIndex((preset) => preset.name === "Racetrack");
-      const racetrackDist = racetrackIndex >= 0 ? Math.abs(morphValue - racetrackIndex) : 0;
+      const racetrackIndex = presets.findIndex(
+        (preset) => preset.name === "Racetrack",
+      );
+      const racetrackDist =
+        racetrackIndex >= 0 ? Math.abs(morphValue - racetrackIndex) : 0;
       const departingRacetrack = racetrackDist > 0.01 && racetrackDist < 1.0;
 
       if (departingRacetrack) {
@@ -235,24 +263,43 @@ export function ParticleCanvas(handle: Handle) {
       const overridesB = presets[toIndex].systemOverrides;
       const easedBlend = blend * blend * (3 - 2 * blend);
       const effectiveTrail =
-        (1 - easedBlend) * (overridesA?.trailIntensity ?? currentProps.settings.trailIntensity) +
-        easedBlend * (overridesB?.trailIntensity ?? currentProps.settings.trailIntensity);
+        (1 - easedBlend) *
+          (overridesA?.trailIntensity ?? currentProps.settings.trailIntensity) +
+        easedBlend *
+          (overridesB?.trailIntensity ?? currentProps.settings.trailIntensity);
       const effectiveRepulsion =
-        (1 - easedBlend) * (overridesA?.cursorRepulsion ?? currentProps.settings.cursorRepulsion) +
-        easedBlend * (overridesB?.cursorRepulsion ?? currentProps.settings.cursorRepulsion);
+        (1 - easedBlend) *
+          (overridesA?.cursorRepulsion ??
+            currentProps.settings.cursorRepulsion) +
+        easedBlend *
+          (overridesB?.cursorRepulsion ??
+            currentProps.settings.cursorRepulsion);
 
       particles.setCursorRepulsion(effectiveRepulsion);
 
-      const trailBoost = departingRacetrack ? Math.sin(racetrackDist * Math.PI) * 0.75 : 0;
-      engine.afterImagePass.uniforms.damp.value = Math.min(effectiveTrail + trailBoost, 0.97);
+      const trailBoost = departingRacetrack
+        ? Math.sin(racetrackDist * Math.PI) * 0.75
+        : 0;
+      engine.afterImagePass.uniforms.damp.value = Math.min(
+        effectiveTrail + trailBoost,
+        0.97,
+      );
 
       const driveIndex = presets.findIndex((preset) => preset.name === "Drive");
-      const racetrackFogDist = racetrackIndex >= 0 ? Math.abs(morphValue - racetrackIndex) : Infinity;
-      const driveFogDist = driveIndex >= 0 ? Math.abs(morphValue - driveIndex) : Infinity;
-      const fogProximity = Math.max(0, 1 - Math.min(racetrackFogDist, driveFogDist));
+      const racetrackFogDist =
+        racetrackIndex >= 0 ? Math.abs(morphValue - racetrackIndex) : Infinity;
+      const driveFogDist =
+        driveIndex >= 0 ? Math.abs(morphValue - driveIndex) : Infinity;
+      const fogProximity = Math.max(
+        0,
+        1 - Math.min(racetrackFogDist, driveFogDist),
+      );
       particles.setFog(fogProximity, 10, 180);
 
-      const driveProximity = driveIndex >= 0 ? Math.max(0, 1 - Math.abs(morphValue - driveIndex)) : 0;
+      const driveProximity =
+        driveIndex >= 0
+          ? Math.max(0, 1 - Math.abs(morphValue - driveIndex))
+          : 0;
       if (driveProximity > 0) {
         smoothCarLane += (mouseNormX - smoothCarLane) * CAR_LANE_LERP;
       } else {
@@ -262,13 +309,18 @@ export function ParticleCanvas(handle: Handle) {
       particles.setCarLaneOffset(smoothCarLane * driveProximity);
 
       const laneDelta = Math.abs(smoothCarLane - prevCarLane);
-      laneActivity = Math.max(laneActivity * ACTIVITY_DECAY, Math.min(laneDelta * ACTIVITY_GAIN, 1.0));
+      laneActivity = Math.max(
+        laneActivity * ACTIVITY_DECAY,
+        Math.min(laneDelta * ACTIVITY_GAIN, 1.0),
+      );
       prevCarLane = smoothCarLane;
       particles.setCarLaneActivity(laneActivity * driveProximity);
 
       if (driveIndex >= 0) {
         const drivePreset = presets[driveIndex];
-        particles.setCarPosY(getControlInitial(drivePreset, "_carPosY", 0) * driveProximity);
+        particles.setCarPosY(
+          getControlInitial(drivePreset, "_carPosY", 0) * driveProximity,
+        );
       }
 
       engine.controls.enabled = driveProximity < 0.5;
@@ -278,7 +330,8 @@ export function ParticleCanvas(handle: Handle) {
       engine.controls.target.lerp(desiredCamera.target, CAM_LERP_SPEED);
 
       const parallaxScale = 1 - driveProximity;
-      smoothMouseOffsetX += (mouseNormX * MOUSE_RANGE - smoothMouseOffsetX) * MOUSE_LERP;
+      smoothMouseOffsetX +=
+        (mouseNormX * MOUSE_RANGE - smoothMouseOffsetX) * MOUSE_LERP;
       engine.camera.position.x += smoothMouseOffsetX * parallaxScale;
 
       const nearest = Math.round(Math.max(0, Math.min(maxValue, morphValue)));
@@ -288,9 +341,15 @@ export function ParticleCanvas(handle: Handle) {
       }
 
       const nearestPreset = presets[nearest];
-      if (nearestPreset?.labels && nearestPreset.labels.length > 0 && containerEl) {
+      if (
+        nearestPreset?.labels &&
+        nearestPreset.labels.length > 0 &&
+        containerEl
+      ) {
         const activeCtrls =
-          blend < 0.001 ? labelControlMgr.getControlValues(nearestPreset) : initialControls(nearestPreset);
+          blend < 0.001
+            ? labelControlMgr.getControlValues(nearestPreset)
+            : initialControls(nearestPreset);
 
         currentProps.labelsRef.current = projectLabels(
           nearestPreset,
@@ -303,7 +362,10 @@ export function ParticleCanvas(handle: Handle) {
         );
 
         const distFromNearest = Math.abs(morphValue - nearest);
-        currentProps.labelOpacityRef.current = Math.max(0, 1 - distFromNearest * 4);
+        currentProps.labelOpacityRef.current = Math.max(
+          0,
+          1 - distFromNearest * 4,
+        );
       } else {
         currentProps.labelsRef.current = [];
         currentProps.labelOpacityRef.current = 0;
