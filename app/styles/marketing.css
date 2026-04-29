@@ -78,6 +78,43 @@
   color: var(--rmx-neutral-100);
 }
 
+.rmx-page-title {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--rmx-page-title-size, clamp(30px, 4vw, 56px));
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: pre-line;
+}
+
+.rmx-page-title-sm {
+  --rmx-page-title-size: clamp(1.5rem, 2.5vw, 1.875rem);
+}
+
+.rmx-page-title-xs {
+  --rmx-page-title-size: clamp(1.125rem, 2vw, 1.25rem);
+}
+
+.rmx-page-body {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--rmx-page-body-size, 1rem);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.008px;
+}
+
+.rmx-page-body-sm {
+  --rmx-page-body-size: 0.875rem;
+}
+
+@supports (text-box-trim: trim-both) {
+  .rmx-page-title,
+  .rmx-page-body {
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+}
+
 .rmx-caption {
   font-size: 0.75rem;
   line-height: 1.6;

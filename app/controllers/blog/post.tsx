@@ -9,6 +9,7 @@ import { render } from "../../utils/render";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.server";
 import { CACHE_CONTROL } from "../../utils/cache-control";
 import { styleHrefs } from "../../utils/style-hrefs";
+import { getSocialHeadTags } from "../../utils/social-head-tags.server";
 
 type BlogPostContext = {
   params: { slug?: string; ext?: string };
@@ -62,15 +63,8 @@ export async function blogPostHandler(context: BlogPostContext) {
     ogImageUrl.searchParams.set("ogImage", post.ogImage);
   }
 
-  let pageUrl = routes.blogPost.href({ slug });
-
   return render.document(
-    <Page
-      slug={slug}
-      post={post}
-      pageUrl={`${siteUrl}${pageUrl}`}
-      socialImageUrl={ogImageUrl.toString()}
-    />,
+    <Page slug={slug} post={post} socialImageUrl={ogImageUrl.toString()} />,
     {
       headers: {
         "Cache-Control": CACHE_CONTROL.DEFAULT,
@@ -83,7 +77,6 @@ function Page() {
   return (props: {
     slug: string;
     post: Awaited<ReturnType<typeof getBlogPost>>;
-    pageUrl: string;
     socialImageUrl: string;
   }) => (
     <Document
@@ -97,46 +90,14 @@ function Page() {
           href: routes.blogPost.href({ slug: props.slug, ext: "md" }),
           type: "text/markdown",
         },
-        { kind: "meta", property: "og:type", content: "website" },
-        { kind: "meta", property: "og:title", content: props.post.title },
-        {
-          kind: "meta",
-          property: "og:description",
-          content: props.post.summary,
-        },
-        { kind: "meta", property: "og:url", content: props.pageUrl },
-        {
-          kind: "meta",
-          property: "og:image",
-          content: props.socialImageUrl,
-        },
-        {
-          kind: "meta",
-          name: "twitter:card",
-          content: "summary_large_image",
-        },
-        {
-          kind: "meta",
-          name: "twitter:creator",
-          content: "@remix_run",
-        },
-        { kind: "meta", name: "twitter:site", content: "@remix_run" },
-        { kind: "meta", name: "twitter:title", content: props.post.title },
-        {
-          kind: "meta",
-          name: "twitter:description",
-          content: props.post.summary,
-        },
-        {
-          kind: "meta",
-          name: "twitter:image",
-          content: props.socialImageUrl,
-        },
-        {
-          kind: "meta",
-          name: "twitter:image:alt",
-          content: props.post.imageAlt,
-        },
+        ...getSocialHeadTags({
+          title: props.post.title,
+          description: props.post.summary,
+          image: props.socialImageUrl,
+          imageAlt: props.post.imageAlt,
+          twitterCreator: "@remix_run",
+          twitterSite: "@remix_run",
+        }),
       ]}
     >
       <Header />
@@ -173,14 +134,14 @@ function BlogPostContent() {
               </div>
               <div class="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-10 lg:max-w-4xl">
                 <div class="flex-1">
-                  <div class="text-sm uppercase text-white md:text-base">
+                  <div class="rmx-page-body rmx-page-body-sm uppercase text-white">
                     {props.post.dateDisplay}
                   </div>
                   <div class="h-2" />
                   <h1
                     class={cx(
-                      "font-display font-extrabold text-white md:text-4xl",
-                      props.post.title.length > 50 ? "text-2xl" : "text-3xl",
+                      "rmx-page-title text-white",
+                      props.post.title.length > 50 && "rmx-page-title-sm",
                     )}
                   >
                     {props.post.title}
@@ -198,11 +159,11 @@ function BlogPostContent() {
                         />
                       </div>
                       <div class="w-6" />
-                      <div>
-                        <div class="font-display text-lg font-extrabold leading-none text-white md:text-3xl">
+                      <div class="flex flex-col gap-2">
+                        <div class="rmx-page-title rmx-page-title-xs text-white">
                           {author.name}
                         </div>
-                        <div class="text-base leading-tight text-white md:text-base">
+                        <div class="rmx-page-body text-white">
                           {author.title}
                         </div>
                       </div>
@@ -221,10 +182,10 @@ function BlogPostContent() {
       </div>
 
       <div class="container m-auto mb-12 mt-24 max-w-lg">
-        <h3 class="mb-6 text-xl font-bold lg:text-3xl">
+        <h3 class="rmx-page-title rmx-page-title-sm mb-6">
           Get updates on the latest Remix news
         </h3>
-        <div class="mb-6" id="newsletter-text">
+        <div class="rmx-page-body mb-6" id="newsletter-text">
           Be the first to learn about new Remix features, community events, and
           tutorials.
         </div>

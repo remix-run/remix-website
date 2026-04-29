@@ -5,6 +5,7 @@ import { Footer } from "../ui/footer";
 import { Header } from "../ui/header";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../utils/cache-control";
+import { getSocialHeadTags } from "../utils/social-head-tags.server";
 
 export async function brandHandler() {
   return render.document(<Page />, {
@@ -19,6 +20,11 @@ function Page() {
     <Document
       title="Remix Assets and Branding Guidelines"
       description="Remix brand assets and guidelines for using the Remix name and logos."
+      headTags={getSocialHeadTags({
+        title: "Remix Assets and Branding Guidelines",
+        description:
+          "Remix brand assets and guidelines for using the Remix name and logos.",
+      })}
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
@@ -31,77 +37,139 @@ function Page() {
 
 function AssetHeader() {
   return (props: { children: RemixNode }) => (
-    <h2 class="text-xl font-extrabold md:text-3xl dark:text-gray-200">
+    <h2 class="rmx-page-title rmx-page-title-sm dark:text-gray-200">
       {props.children}
     </h2>
   );
 }
 
-let variants = {
+const BRAND_ASSETS_ZIP = "/_brand/remix-brand-assets.zip";
+
+type BrandAssetFormat = "svg" | "png";
+
+type BrandAsset = {
+  title: string;
+  fileBase: string;
+  previewTheme: "light" | "dark";
+  formats: readonly [BrandAssetFormat, ...BrandAssetFormat[]];
+};
+
+let previewThemes = {
   light: {
-    bg: "bg-white",
-    border: "border-gray-50 dark:border-transparent",
-  },
-  "light-outline": {
-    bg: "bg-white",
+    bg: "__asset_checker __asset_checker_light",
     border: "border-gray-50 dark:border-transparent",
   },
   dark: {
-    bg: "bg-gray-900",
-    border: "border-transparent dark:border-gray-800",
-  },
-  "dark-outline": {
-    bg: "bg-gray-900",
-    border: "border-transparent dark:border-gray-800",
-  },
-  glowing: {
-    bg: "bg-gray-900",
+    bg: "__asset_checker __asset_checker_dark",
     border: "border-transparent dark:border-gray-800",
   },
 } as const;
 
-function LogoBox() {
-  return (props: { name: "remix-letter" | "remix" }) => (
-    <div class="grid grid-cols-1 grid-rows-2 gap-4 gap-x-6 sm:grid-cols-2">
-      {Object.entries(variants).map(([variant, { bg, border }]) => (
-        <div class="flex flex-col" key={variant}>
-          <div
-            class={cx(
-              "flex h-40 items-center justify-center rounded-lg border-[3px] p-4 md:h-48",
-              bg,
-              border,
-            )}
-          >
-            <img
-              class="h-full max-w-full object-contain"
-              src={`/_brand/${props.name}-${variant}.svg`}
-              alt={`Remix ${props.name} ${variant}`}
-            />
+let logoAssets = [
+  {
+    title: "Logo, light mode",
+    fileBase: "remix-logo-light-mode",
+    previewTheme: "light",
+    formats: ["svg", "png"],
+  },
+  {
+    title: "Logo, dark mode",
+    fileBase: "remix-logo-dark-mode",
+    previewTheme: "dark",
+    formats: ["svg", "png"],
+  },
+  {
+    title: "Racing logo, light mode",
+    fileBase: "remix-logo-racing-light-mode",
+    previewTheme: "light",
+    formats: ["svg", "png"],
+  },
+  {
+    title: "Racing logo, dark mode",
+    fileBase: "remix-logo-racing-dark-mode",
+    previewTheme: "dark",
+    formats: ["svg", "png"],
+  },
+] satisfies BrandAsset[];
+
+let wordmarkAssets = [
+  {
+    title: "Wordmark, light mode",
+    fileBase: "remix-wordmark-light-mode",
+    previewTheme: "light",
+    formats: ["svg", "png"],
+  },
+  {
+    title: "Wordmark, dark mode",
+    fileBase: "remix-wordmark-dark-mode",
+    previewTheme: "dark",
+    formats: ["svg", "png"],
+  },
+  {
+    title: "Racing wordmark, light mode",
+    fileBase: "remix-wordmark-racing-light-mode",
+    previewTheme: "light",
+    formats: ["svg", "png"],
+  },
+  {
+    title: "Racing wordmark, dark mode",
+    fileBase: "remix-wordmark-racing-dark-mode",
+    previewTheme: "dark",
+    formats: ["png"],
+  },
+  {
+    title: "Color wordmark",
+    fileBase: "remix-wordmark-color",
+    previewTheme: "light",
+    formats: ["svg", "png"],
+  },
+] satisfies BrandAsset[];
+
+function AssetGrid() {
+  return (props: { assets: readonly BrandAsset[] }) => (
+    <div class="not-prose grid grid-cols-1 gap-4 gap-x-6 sm:grid-cols-2">
+      {props.assets.map((asset) => {
+        let { bg, border } = previewThemes[asset.previewTheme];
+        let primaryFormat = asset.formats[0];
+
+        return (
+          <div class="flex flex-col" key={asset.fileBase}>
+            <div
+              class={cx(
+                "flex h-40 items-center justify-center rounded-lg border-[3px] p-8 md:h-48 md:p-10",
+                bg,
+                border,
+              )}
+            >
+              <img
+                class="h-full max-w-full object-contain"
+                src={`/_brand/${asset.fileBase}.${primaryFormat}`}
+                alt={`Remix ${asset.title}`}
+              />
+            </div>
+            <div class="mt-1 flex items-end gap-4 text-sm text-gray-800 dark:text-gray-100">
+              {asset.formats.map((format) => (
+                <a
+                  class="uppercase underline opacity-50 hover:opacity-100"
+                  href={`/_brand/${asset.fileBase}.${format}`}
+                  download
+                  key={format}
+                >
+                  {format}
+                </a>
+              ))}
+            </div>
           </div>
-          <div class="mt-1 flex items-end gap-4 text-sm text-gray-800 dark:text-gray-100">
-            {["svg", "png"].map((format) => (
-              <a
-                class="uppercase underline opacity-50 hover:opacity-100"
-                href={`/_brand/${props.name}-${variant}.${format}`}
-                download
-                key={format}
-              >
-                {format}
-              </a>
-            ))}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
 function BrandPage() {
   return () => (
-    <div class="prose container flex max-w-full flex-col gap-8 text-base sm:text-lg lg:max-w-4xl">
-      <h1 class="text-2xl font-extrabold md:text-5xl dark:text-gray-200">
-        Remix Brand
-      </h1>
+    <div class="rmx-page-body prose container mt-8 flex max-w-full flex-col gap-8 lg:max-w-4xl">
+      <h1 class="rmx-page-title dark:text-gray-200">Remix Brand</h1>
       <p>
         These assets are provided for use in situations like articles and video
         tutorials.
@@ -118,31 +186,31 @@ function BrandPage() {
         Additionally, you may not use our trademarks for t-shirts, stickers, or
         other merchandise without explicit written consent.
       </p>
+      <AssetHeader>Download Assets</AssetHeader>
+      <p>You can download a zip file containing all the Remix brand assets:</p>
       <p>
-        You may also{" "}
         <a
-          href="https://drive.google.com/drive/u/0/folders/1pbHnJqg8Y1ATs0Oi8gARH7wccJGv4I2c"
-          class="text-blue-brand hover:underline"
-          target="_blank"
-          rel="noopener noreferrer"
+          href={BRAND_ASSETS_ZIP}
+          class="underline hover:text-red-brand"
+          download
         >
-          download all image files for Remix Logo's in bulk through Google
-          Drive.
+          Remix Brand Assets
         </a>
       </p>
       <AssetHeader>Logo</AssetHeader>
       <p>
-        Please use the logo with appropriate background. On dark backgrounds use
-        the light or glowing logo, and on light backgrounds use the dark logo.
+        Please use the logo with an appropriate background. The light-mode
+        assets are designed for light backgrounds, and the dark-mode assets are
+        designed for dark backgrounds.
       </p>
-      <LogoBox name="remix-letter" />
-      <AssetHeader>Logo Word</AssetHeader>
+      <AssetGrid assets={logoAssets} />
+      <AssetHeader>Wordmark</AssetHeader>
       <p>
         You can also use the full "Remix" logo. This is useful for things like
         hero images, Open Graph images, and other places where you want to use
         the full wordmark.
       </p>
-      <LogoBox name="remix" />
+      <AssetGrid assets={wordmarkAssets} />
     </div>
   );
 }

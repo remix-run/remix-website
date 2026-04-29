@@ -5,6 +5,7 @@ import { Header } from "../ui/header";
 import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../utils/cache-control";
+import { getSocialHeadTags } from "../utils/social-head-tags.server";
 
 export async function newsletterHandler() {
   return render.document(<Page />, {
@@ -20,6 +21,11 @@ function Page() {
       title="Remix Newsletter"
       description="Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. We respect your privacy, unsubscribe at any time."
       forceTheme="dark"
+      headTags={getSocialHeadTags({
+        title: "Remix Newsletter",
+        description:
+          "Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. We respect your privacy, unsubscribe at any time.",
+      })}
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>

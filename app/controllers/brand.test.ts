@@ -21,7 +21,12 @@ describe("Brand route", () => {
     expect(html).toContain("Remix Assets and Branding Guidelines");
     expect(html).toContain("Remix Brand");
     expect(html).toContain("Trademark Usage Agreement");
-    expect(html).toContain('href="/_brand/remix-light.svg"');
+    expect(html).toContain('href="/_brand/remix-brand-assets.zip"');
+    expect(html).toContain('href="/_brand/remix-logo-light-mode.svg"');
+    expect(html).toContain('href="/_brand/remix-wordmark-color.svg"');
+    expect(html).toContain(
+      'content="http://localhost:3000/marketing/remix-run-share-thumbnail.png"',
+    );
     expect(html).toContain("#github");
   });
 });

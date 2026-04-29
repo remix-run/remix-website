@@ -1,5 +1,8 @@
 export const assetPaths = {
   iconsSprite: "/icons.svg",
+  marketing: {
+    defaultOgImage: "/marketing/remix-run-share-thumbnail.png",
+  },
   jam2025: {
     backgroundMask: "/jam/2025/images/background-mask.avif",
     colorSeats: "/jam/2025/images/remix-color-seats.svg",

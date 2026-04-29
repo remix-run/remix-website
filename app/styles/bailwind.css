@@ -21,6 +21,31 @@
   scroll-snap-align: start;
 }
 
+.__asset_checker {
+  background-color: var(--checker-bg);
+  background-image:
+    linear-gradient(45deg, var(--checker-square) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--checker-square) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--checker-square) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--checker-square) 75%);
+  background-position:
+    0 0,
+    0 12px,
+    12px -12px,
+    -12px 0;
+  background-size: 24px 24px;
+}
+
+.__asset_checker_light {
+  --checker-bg: #fff;
+  --checker-square: #e8e8e8;
+}
+
+.__asset_checker_dark {
+  --checker-bg: #181818;
+  --checker-square: #242424;
+}
+
 .__mutation_code {
   @apply bg-[#252525];
   position: relative; /* Required for data-highlight to render behind code */

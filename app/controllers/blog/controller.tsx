@@ -6,6 +6,7 @@ import { routes } from "../../routes";
 import { render } from "../../utils/render";
 import { getBlogPostListings } from "../../data/blog.server";
 import { CACHE_CONTROL } from "../../utils/cache-control";
+import { getSocialHeadTags } from "../../utils/social-head-tags.server";
 
 export async function blogHandler() {
   let posts = await getBlogPostListings();
@@ -23,6 +24,11 @@ function Page() {
     <Document
       title="Remix Blog"
       description="Thoughts about building excellent user experiences with Remix."
+      headTags={getSocialHeadTags({
+        title: "Remix Blog",
+        description:
+          "Thoughts about building excellent user experiences with Remix.",
+      })}
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
@@ -41,7 +47,7 @@ function BlogPageContent() {
     let featuredPosts = props.posts.filter((post) => post.featured);
 
     return (
-      <div class="mt-8 flex flex-1 flex-col px-12">
+      <div class="rmx-page-body mt-8 flex flex-1 flex-col px-12">
         <div class="mx-auto w-full max-w-[1400px]">
           <div class="md:grid md:grid-cols-12">
             <div class="md:col-span-7">
@@ -55,11 +61,15 @@ function BlogPageContent() {
                         alt={latestPost.imageAlt}
                       />
                     </div>
-                    <p class="text-sm lg:text-base">{latestPost.dateDisplay}</p>
-                    <p class="py-4 text-2xl font-bold leading-[1.1] lg:text-5xl lg:leading-[1.1]">
-                      {latestPost.title}
-                    </p>
-                    <p class="text-sm lg:text-base">{latestPost.summary}</p>
+                    <div class="flex flex-col gap-5">
+                      <p class="rmx-page-body rmx-page-body-sm">
+                        {latestPost.dateDisplay}
+                      </p>
+                      <p class="rmx-page-title !leading-[1.1]">
+                        {latestPost.title}
+                      </p>
+                      <p class="rmx-page-body">{latestPost.summary}</p>
+                    </div>
                   </a>
                 </div>
               ) : null}
@@ -75,11 +85,15 @@ function BlogPageContent() {
                           alt={post.imageAlt}
                         />
                       </div>
-                      <p class="text-sm lg:text-base">{post.dateDisplay}</p>
-                      <p class="py-2 text-lg font-bold leading-snug lg:text-xl lg:leading-snug">
-                        {post.title}
-                      </p>
-                      <p class="mb-12 text-sm lg:text-base">{post.summary}</p>
+                      <div class="mb-12 flex flex-col gap-4">
+                        <p class="rmx-page-body rmx-page-body-sm">
+                          {post.dateDisplay}
+                        </p>
+                        <p class="rmx-page-title rmx-page-title-xs !leading-[1.4]">
+                          {post.title}
+                        </p>
+                        <p class="rmx-page-body">{post.summary}</p>
+                      </div>
                     </a>
                   </div>
                 ))}
@@ -89,7 +103,7 @@ function BlogPageContent() {
             <div class="md:col-span-4 md:col-start-9">
               {featuredPosts.length ? (
                 <>
-                  <h3 class="mb-8 text-xl font-bold lg:text-3xl">
+                  <h3 class="rmx-page-title rmx-page-title-sm mb-8">
                     Featured Articles
                   </h3>
                   <div class="grid grid-cols-1 gap-4">
@@ -99,7 +113,7 @@ function BlogPageContent() {
                           <div class="flex flex-col">
                             <a
                               href={routes.blogPost.href({ slug: post.slug })}
-                              class="text-sm lg:text-base"
+                              class="rmx-page-body"
                             >
                               {post.title}
                             </a>
@@ -116,10 +130,10 @@ function BlogPageContent() {
               ) : null}
 
               <div>
-                <h3 class="mb-6 text-xl font-bold lg:text-3xl">
+                <h3 class="rmx-page-title rmx-page-title-sm mb-6">
                   Get updates on the latest Remix news
                 </h3>
-                <div class="mb-6" id="newsletter-text">
+                <div class="rmx-page-body mb-6" id="newsletter-text">
                   Be the first to learn about new Remix features, community
                   events, and tutorials.
                 </div>

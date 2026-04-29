@@ -6,75 +6,29 @@ import { IntroMaskReveal } from "./intro-mask-reveal";
 import { PitchSection } from "./pitch-section";
 import { StayInTheLoopSection } from "./stay-in-the-loop-section";
 import { TimelineSection } from "./timeline-section";
-import { getRequestContext } from "../../utils/request-context";
+import { getSocialHeadTags } from "../../utils/social-head-tags.server";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 
 export async function remix3ActiveDevelopmentHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
-  let pageUrl = `${requestUrl.origin}/`;
-  let previewImage = `${requestUrl.origin}/marketing/remix-3-thumbnail.jpg`;
-
-  return render.document(
-    <Remix3ActiveDevelopmentPage
-      pageUrl={pageUrl}
-      previewImage={previewImage}
-    />,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
+  return render.document(<Remix3ActiveDevelopmentPage />, {
+    headers: {
+      "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
-  );
+  });
 }
 
 function Remix3ActiveDevelopmentPage() {
-  return (props: { pageUrl: string; previewImage: string }) => (
+  return () => (
     <Document
-      title="Remix - A Full Stack Framework Built on Web APIs"
-      description="Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world."
+      title="Remix - A Web Framework for Building Anything"
+      description="Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world."
       forceTheme="light"
-      headTags={[
-        { kind: "meta", property: "og:type", content: "website" },
-        {
-          kind: "meta",
-          property: "og:title",
-          content: "Remix - A Full Stack Framework Built on Web APIs",
-        },
-        {
-          kind: "meta",
-          property: "og:description",
-          content:
-            "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.",
-        },
-        { kind: "meta", property: "og:url", content: props.pageUrl },
-        {
-          kind: "meta",
-          property: "og:image",
-          content: props.previewImage,
-        },
-        {
-          kind: "meta",
-          name: "twitter:card",
-          content: "summary_large_image",
-        },
-        {
-          kind: "meta",
-          name: "twitter:title",
-          content: "Remix - A Full Stack Framework Built on Web APIs",
-        },
-        {
-          kind: "meta",
-          name: "twitter:description",
-          content:
-            "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.",
-        },
-        {
-          kind: "meta",
-          name: "twitter:image",
-          content: props.previewImage,
-        },
-      ]}
+      headTags={getSocialHeadTags({
+        title: "Remix - A Web Framework for Building Anything",
+        description:
+          "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.",
+      })}
     >
       <div class="marketing-remix3-active-development">
         <div class="rmx-remix3-active-development-hero-bg">

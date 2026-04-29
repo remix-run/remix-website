@@ -17,8 +17,6 @@ import { assetPaths } from "../../utils/asset-paths";
 export async function jam2025TicketHandler() {
   let request = getRequestContext().request;
   let requestUrl = new URL(request.url);
-  let pageUrl = `${requestUrl.origin}/jam/2025/ticket`;
-  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogThumbnail1}`;
   let product = await getProduct("remix-jam-2025");
   let cacheControl =
     request.method === "POST" ? "no-store" : CACHE_CONTROL.DEFAULT;
@@ -55,8 +53,7 @@ export async function jam2025TicketHandler() {
     <JamDocument
       title="Ticket | Remix Jam 2025"
       description="Get your ticket for Remix Jam 2025 in Toronto"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
+      previewImage={assetPaths.jam2025.ogThumbnail1}
       activePath="/jam/2025/ticket"
     >
       <main
