@@ -12,11 +12,13 @@ const LINKS: Array<{ to: string; label: string; external?: boolean }> = [
 
 export function Header() {
   return () => (
-    <header class={cx("p-12", "text-rmx-primary", "relative z-50")}>
-      <div class="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-8">
+    <header class={cx("p-6", "text-rmx-primary", "relative z-50")}>
+      <div class="flex w-full items-start justify-between gap-8">
         <WordmarkLink
           href={routes.remix3ActiveDevelopment.href()}
           brandHref={routes.brand.href()}
+          width={164}
+          height={16}
         />
 
         <nav class="hidden items-center gap-6 md:flex" aria-label="Main">
@@ -44,7 +46,7 @@ function HeaderLink() {
     <a
       href={props.to}
       class={cx(
-        "text-rmx-primary text-base font-semibold leading-6 tracking-[0.01em] opacity-80 hover:opacity-100",
+        "text-rmx-primary text-sm font-semibold leading-4 tracking-[0.01em] opacity-80 hover:opacity-100",
       )}
       {...(props.external
         ? { target: "_blank", rel: "noopener noreferrer" }

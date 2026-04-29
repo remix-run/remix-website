@@ -2,7 +2,12 @@ import { clientEntry, on, navigate } from "remix/component";
 import { Wordmark } from "../ui/wordmark";
 
 export let WordmarkLink = clientEntry(import.meta.url, function WordmarkLink() {
-  return (props: { href: string; brandHref: string }) => (
+  return (props: {
+    href: string;
+    brandHref: string;
+    width?: number | string;
+    height?: number | string;
+  }) => (
     <a
       href={props.href}
       aria-label="Remix"
@@ -14,7 +19,7 @@ export let WordmarkLink = clientEntry(import.meta.url, function WordmarkLink() {
         }),
       ]}
     >
-      <Wordmark aria-hidden />
+      <Wordmark width={props.width} height={props.height} aria-hidden />
 
       <span class="sr-only">Remix</span>
     </a>

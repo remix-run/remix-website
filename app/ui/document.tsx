@@ -4,6 +4,7 @@ import { DocumentHeadSync } from "../assets/document-head-sync";
 import { getAssetEntry } from "../middleware/asset-entry";
 import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head";
 import { assetPaths } from "../utils/asset-paths";
+import { getRequestContext } from "../utils/request-context";
 import { styleHrefs } from "../utils/style-hrefs";
 
 let colorSchemeScript = `
@@ -25,6 +26,7 @@ let colorSchemeScript = `
 interface DocumentProps {
   title?: string;
   description?: string;
+  previewImage?: string;
   noIndex?: boolean;
   forceTheme?: "dark" | "light";
   headTags?: ManagedHeadTag[];
@@ -50,12 +52,14 @@ export function Document() {
   return ({
     title,
     description,
+    previewImage = assetPaths.brand.defaultOgImage,
     noIndex,
     forceTheme,
     headTags = [],
     children,
   }: DocumentProps) => {
     let assetEntry = getAssetEntry();
+    let resolvedPreviewImage = resolvePreviewImage(previewImage);
     let managedHeadTags: ManagedHeadTag[] = [
       ...(noIndex
         ? [{ kind: "meta" as const, name: "robots", content: "noindex" }]
@@ -69,6 +73,12 @@ export function Document() {
             },
           ]
         : []),
+      ...(noIndex
+        ? []
+        : getDefaultSocialHeadTags(
+            { title, description, previewImage: resolvedPreviewImage },
+            headTags,
+          )),
       ...headTags,
     ];
     let bodyClassName = `flex min-h-screen w-full flex-col overflow-x-hidden antialiased selection:bg-blue-200 selection:text-black dark:selection:bg-blue-800 dark:selection:text-white ${
@@ -191,4 +201,91 @@ export function Document() {
       </html>
     );
   };
+}
+
+function resolvePreviewImage(previewImage: string) {
+  if (/^https?:\/\//.test(previewImage)) return previewImage;
+
+  let { request } = getRequestContext();
+  return new URL(previewImage, request.url).toString();
+}
+
+function getDefaultSocialHeadTags(
+  props: Pick<DocumentProps, "title" | "description" | "previewImage">,
+  headTags: ManagedHeadTag[],
+): ManagedHeadTag[] {
+  let tags: ManagedHeadTag[] = [];
+
+  if (!hasManagedMeta(headTags, "property", "og:type")) {
+    tags.push({ kind: "meta", property: "og:type", content: "website" });
+  }
+
+  if (props.title && !hasManagedMeta(headTags, "property", "og:title")) {
+    tags.push({ kind: "meta", property: "og:title", content: props.title });
+  }
+
+  if (
+    props.description &&
+    !hasManagedMeta(headTags, "property", "og:description")
+  ) {
+    tags.push({
+      kind: "meta",
+      property: "og:description",
+      content: props.description,
+    });
+  }
+
+  if (props.previewImage && !hasManagedMeta(headTags, "property", "og:image")) {
+    tags.push(
+      { kind: "meta", property: "og:image", content: props.previewImage },
+      { kind: "meta", property: "og:image:width", content: "1200" },
+      { kind: "meta", property: "og:image:height", content: "630" },
+    );
+  }
+
+  if (!hasManagedMeta(headTags, "name", "twitter:card")) {
+    tags.push({
+      kind: "meta",
+      name: "twitter:card",
+      content: "summary_large_image",
+    });
+  }
+
+  if (props.title && !hasManagedMeta(headTags, "name", "twitter:title")) {
+    tags.push({ kind: "meta", name: "twitter:title", content: props.title });
+  }
+
+  if (
+    props.description &&
+    !hasManagedMeta(headTags, "name", "twitter:description")
+  ) {
+    tags.push({
+      kind: "meta",
+      name: "twitter:description",
+      content: props.description,
+    });
+  }
+
+  if (
+    props.previewImage &&
+    !hasManagedMeta(headTags, "name", "twitter:image")
+  ) {
+    tags.push({
+      kind: "meta",
+      name: "twitter:image",
+      content: props.previewImage,
+    });
+  }
+
+  return tags;
+}
+
+function hasManagedMeta(
+  headTags: ManagedHeadTag[],
+  attribute: "name" | "property",
+  value: string,
+) {
+  return headTags.some(
+    (tag) => tag.kind === "meta" && tag[attribute] === value,
+  );
 }
