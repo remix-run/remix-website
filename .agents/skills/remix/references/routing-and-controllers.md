@@ -27,34 +27,34 @@ call (when you want a shared URL prefix) or a plain object literal (when each le
 its absolute path).
 
 ```typescript
-import { route, get, post } from 'remix/fetch-router/routes'
+import { route, get, post } from "remix/fetch-router/routes";
 
 export const routes = route({
-  home: '/',
+  home: "/",
 
   // Plain object — no shared prefix, each leaf has an absolute path.
   books: {
-    index: '/books',
-    show: '/books/:slug',
+    index: "/books",
+    show: "/books/:slug",
   },
 
   // route('auth', ...) — every leaf is prefixed with /auth.
-  auth: route('auth', {
-    login: get('login'),
-    logout: post('logout'),
+  auth: route("auth", {
+    login: get("login"),
+    logout: post("logout"),
   }),
-})
+});
 ```
 
 ### Leaf route builders
 
-| Builder | HTTP method | Example |
-|---------|-------------|---------|
-| `get(path)` | GET | `get('/search')` |
-| `post(path)` | POST | `post('/logout')` |
-| `put(path)` | PUT | `put('/api/update')` |
-| `del(path)` | DELETE | `del('/api/remove')` |
-| String literal | ANY | `'/about'` |
+| Builder        | HTTP method | Example              |
+| -------------- | ----------- | -------------------- |
+| `get(path)`    | GET         | `get('/search')`     |
+| `post(path)`   | POST        | `post('/logout')`    |
+| `put(path)`    | PUT         | `put('/api/update')` |
+| `del(path)`    | DELETE      | `del('/api/remove')` |
+| String literal | ANY         | `'/about'`           |
 
 ### `form(path, options?)` — form route
 
@@ -62,10 +62,10 @@ Creates a GET + POST pair for HTML form workflows. Expands to an `index` (GET) a
 (POST) by default.
 
 ```typescript
-contact: form('contact')
+contact: form("contact");
 // Produces routes.contact.index (GET /contact) and routes.contact.action (POST /contact)
 
-settings: form('settings', { formMethod: 'PUT', names: { action: 'update' } })
+settings: form("settings", { formMethod: "PUT", names: { action: "update" } });
 // Produces routes.settings.index (GET) and routes.settings.update (PUT)
 ```
 
@@ -74,10 +74,10 @@ settings: form('settings', { formMethod: 'PUT', names: { action: 'update' } })
 Expands to conventional CRUD routes: `index`, `new`, `create`, `show`, `edit`, `update`, `destroy`.
 
 ```typescript
-books: resources('books', { param: 'bookId' })
+books: resources("books", { param: "bookId" });
 // GET /books, GET /books/new, POST /books, GET /books/:bookId, ...
 
-orders: resources('orders', { only: ['index', 'show'], param: 'orderId' })
+orders: resources("orders", { only: ["index", "show"], param: "orderId" });
 // GET /orders, GET /orders/:orderId
 ```
 
@@ -86,8 +86,8 @@ orders: resources('orders', { only: ['index', 'show'], param: 'orderId' })
 Route objects expose `.href()` for type-safe URL generation:
 
 ```typescript
-redirect(routes.home.href())
-redirect(routes.account.orders.show.href({ orderId: '42' }))
+redirect(routes.home.href());
+redirect(routes.account.orders.show.href({ orderId: "42" }));
 ```
 
 ## Actions
@@ -116,12 +116,12 @@ The handler receives a context object with:
 Actions with inline middleware:
 
 ```typescript
-import { requireAuth } from 'remix/auth-middleware'
+import { requireAuth } from "remix/auth-middleware";
 
 router.get(routes.account, {
   middleware: [requireAuth()],
   handler: accountAction.handler,
-})
+});
 ```
 
 ## Returning Responses
@@ -199,14 +199,14 @@ APIs, inter-service calls), return a JSON `Response`. Use `remix/headers` for ca
 instead of hand-formatting strings:
 
 ```typescript
-import { CacheControl } from 'remix/headers'
+import { CacheControl } from "remix/headers";
 
 return new Response(JSON.stringify({ results }), {
   headers: {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': new CacheControl({ noStore: true }).toString(),
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": new CacheControl({ noStore: true }).toString(),
   },
-})
+});
 ```
 
 If you find yourself returning JSON for what is really a browser form submission, prefer the
@@ -278,8 +278,10 @@ middleware:
 ```typescript
 export default {
   middleware: [requireAuth(), requireAdmin()],
-  actions: { /* all actions require auth + admin */ },
-} satisfies Controller<typeof routes.admin, AppContext>
+  actions: {
+    /* all actions require auth + admin */
+  },
+} satisfies Controller<typeof routes.admin, AppContext>;
 ```
 
 ## Registering Routes
@@ -287,16 +289,16 @@ export default {
 Use `router.map` for route maps (controllers) and verb methods for leaf routes:
 
 ```typescript
-let router = createRouter({ middleware })
+let router = createRouter({ middleware });
 
 // Route map → controller
-router.map(routes.auth, authController)
-router.map(routes.admin, adminController)
+router.map(routes.auth, authController);
+router.map(routes.admin, adminController);
 
 // Leaf route → action
-router.map(routes.home, home)
-router.get(routes.search, searchAction)
-router.post(routes.logout, logoutAction)
+router.map(routes.home, home);
+router.get(routes.search, searchAction);
+router.post(routes.logout, logoutAction);
 ```
 
 ## Typed Context
@@ -304,19 +306,23 @@ router.post(routes.logout, logoutAction)
 Define an `AppContext` type from your middleware stack for use in actions and controllers:
 
 ```typescript
-import type { MiddlewareContext, WithParams, AnyParams } from 'remix/fetch-router'
+import type {
+  MiddlewareContext,
+  WithParams,
+  AnyParams,
+} from "remix/fetch-router";
 
 type RootMiddleware = [
   ReturnType<typeof formData>,
   ReturnType<typeof session>,
   ReturnType<typeof loadDatabase>,
   ReturnType<typeof loadAuth>,
-]
+];
 
 export type AppContext<params extends AnyParams = AnyParams> = WithParams<
   MiddlewareContext<RootMiddleware>,
   params
->
+>;
 ```
 
 This gives typed `context.get(Database)`, `context.get(Session)`, `context.get(Auth)`, etc.

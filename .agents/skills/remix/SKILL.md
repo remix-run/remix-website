@@ -354,24 +354,24 @@ what it exports. Open the linked reference file when you need full examples.
 ### Define routes first
 
 ```typescript
-import { form, get, post, resources, route } from 'remix/fetch-router/routes'
+import { form, get, post, resources, route } from "remix/fetch-router/routes";
 
 export const routes = route({
-  home: '/',
-  contact: form('contact'),
+  home: "/",
+  contact: form("contact"),
   books: {
-    index: '/books',
-    show: '/books/:slug',
+    index: "/books",
+    show: "/books/:slug",
   },
-  auth: route('auth', {
-    login: form('login'),
-    logout: post('logout'),
+  auth: route("auth", {
+    login: form("login"),
+    logout: post("logout"),
   }),
-  admin: route('admin', {
-    index: get('/'),
-    books: resources('books', { param: 'bookId' }),
+  admin: route("admin", {
+    index: get("/"),
+    books: resources("books", { param: "bookId" }),
   }),
-})
+});
 ```
 
 ### Type controllers against the route contract
@@ -407,36 +407,36 @@ import {
   type AnyParams,
   type MiddlewareContext,
   type WithParams,
-} from 'remix/fetch-router'
+} from "remix/fetch-router";
 
 export type RootMiddleware = [
   ReturnType<typeof formData>,
   ReturnType<typeof session>,
   ReturnType<typeof loadDatabase>,
   ReturnType<typeof loadAuth>,
-]
+];
 
 export type AppContext<params extends AnyParams = AnyParams> = WithParams<
   MiddlewareContext<RootMiddleware>,
   params
->
+>;
 
-let middleware = []
+let middleware = [];
 
-if (process.env.NODE_ENV === 'development') {
-  middleware.push(logger())
+if (process.env.NODE_ENV === "development") {
+  middleware.push(logger());
 }
 
-middleware.push(compression())
-middleware.push(staticFiles('./public'))
-middleware.push(formData())
-middleware.push(methodOverride())
-middleware.push(session(cookie, storage))
-middleware.push(asyncContext())
-middleware.push(loadDatabase())
-middleware.push(loadAuth())
+middleware.push(compression());
+middleware.push(staticFiles("./public"));
+middleware.push(formData());
+middleware.push(methodOverride());
+middleware.push(session(cookie, storage));
+middleware.push(asyncContext());
+middleware.push(loadDatabase());
+middleware.push(loadAuth());
 
-let router = createRouter({ middleware })
+let router = createRouter({ middleware });
 ```
 
 ### Mutate, validate, and respond
@@ -479,21 +479,21 @@ This shape works without JavaScript, returns a `Response` for every outcome, and
 ### Build UI from handle props plus render
 
 ```tsx
-import { on, type Handle } from 'remix/ui'
+import { on, type Handle } from "remix/ui";
 
 function Counter(handle: Handle<{ initialCount?: number; label: string }>) {
-  let count = handle.props.initialCount ?? 0
+  let count = handle.props.initialCount ?? 0;
 
   return () => (
     <button
-      mix={on('click', () => {
-        count++
-        handle.update()
+      mix={on("click", () => {
+        count++;
+        handle.update();
       })}
     >
       {handle.props.label}: {count}
     </button>
-  )
+  );
 }
 ```
 

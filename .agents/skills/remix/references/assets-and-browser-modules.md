@@ -26,34 +26,36 @@ preloads, sourcemaps, or fingerprinted URLs.
 ## Default Pattern
 
 ```typescript
-import * as path from 'node:path'
+import * as path from "node:path";
 
-import { createAssetServer } from 'remix/assets'
-import { createRouter } from 'remix/fetch-router'
+import { createAssetServer } from "remix/assets";
+import { createRouter } from "remix/fetch-router";
 
 let assetServer = createAssetServer({
-  rootDir: path.resolve(import.meta.dirname, '..'),
+  rootDir: path.resolve(import.meta.dirname, ".."),
   fileMap: {
-    '/assets/app/*path': 'app/*path',
-    '/assets/packages/*path': '../packages/*path',
+    "/assets/app/*path": "app/*path",
+    "/assets/packages/*path": "../packages/*path",
   },
-  allow: ['app/assets/**', '../packages/**'],
-  deny: ['app/**/*.server.*'],
-  target: { es: '2020', chrome: '109', safari: '16.4' },
-  sourceMaps: process.env.NODE_ENV === 'development' ? 'external' : undefined,
-  minify: process.env.NODE_ENV === 'production',
+  allow: ["app/assets/**", "../packages/**"],
+  deny: ["app/**/*.server.*"],
+  target: { es: "2020", chrome: "109", safari: "16.4" },
+  sourceMaps: process.env.NODE_ENV === "development" ? "external" : undefined,
+  minify: process.env.NODE_ENV === "production",
   scripts: {
     define: {
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
+      "process.env.NODE_ENV": JSON.stringify(
+        process.env.NODE_ENV ?? "development",
+      ),
     },
   },
-})
+});
 
-let router = createRouter()
+let router = createRouter();
 
-router.get('/assets/*path', ({ request }) => {
-  return assetServer.fetch(request)
-})
+router.get("/assets/*path", ({ request }) => {
+  return assetServer.fetch(request);
+});
 ```
 
 ## Rules
@@ -76,11 +78,16 @@ Use `getHref()` when you need the public URL for one module, and `getPreloads()`
 dependencies.
 
 ```typescript
-let entryHref = await assetServer.getHref('app/assets/entry.ts')
-let preloads = await assetServer.getPreloads(['app/assets/entry.ts'])
+let entryHref = await assetServer.getHref("app/assets/entry.ts");
+let preloads = await assetServer.getPreloads(["app/assets/entry.ts"]);
 ```
 
 Use this when rendering documents or layouts that boot browser behavior with a known client entry.
+
+When resolving hydrated client entries during server rendering, pass the source entry ID from
+`clientEntry(import.meta.url, ...)` to `getHref()` inside `resolveClientEntry`. Keep export-name
+resolution in that render helper, and avoid hard-coding public asset URLs in source-owned component
+modules.
 
 ## Development vs Deployment
 

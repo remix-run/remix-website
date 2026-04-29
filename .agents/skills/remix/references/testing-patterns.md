@@ -31,21 +31,23 @@ per test (or per suite) so middleware state — sessions, in-memory storage, the
 isolated.
 
 ```ts
-import * as assert from 'remix/assert'
-import { describe, it } from 'remix/test'
+import * as assert from "remix/assert";
+import { describe, it } from "remix/test";
 
-import { createBookstoreRouter } from '../app/router.ts'
-import { routes } from '../app/routes.ts'
+import { createBookstoreRouter } from "../app/router.ts";
+import { routes } from "../app/routes.ts";
 
-describe('home', () => {
-  it('responds 200 with the home page', async () => {
-    let router = createBookstoreRouter()
-    let response = await router.fetch(new Request('http://localhost' + routes.home.href()))
+describe("home", () => {
+  it("responds 200 with the home page", async () => {
+    let router = createBookstoreRouter();
+    let response = await router.fetch(
+      new Request("http://localhost" + routes.home.href()),
+    );
 
-    assert.equal(response.status, 200)
-    assert.match(await response.text(), /Welcome to the Bookstore/)
-  })
-})
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /Welcome to the Bookstore/);
+  });
+});
 ```
 
 Use `routes.<name>.href(...)` to build URLs in tests so they stay in sync with the route
@@ -54,13 +56,13 @@ a known session, swap in `createMemorySessionStorage()` and a test cookie when c
 router.
 
 ```ts
-import { createMemorySessionStorage } from 'remix/session/memory-storage'
-import { createCookie } from 'remix/cookie'
+import { createMemorySessionStorage } from "remix/session/memory-storage";
+import { createCookie } from "remix/cookie";
 
 let router = createBookstoreRouter({
-  sessionCookie: createCookie('session', { secrets: ['test'] }),
+  sessionCookie: createCookie("session", { secrets: ["test"] }),
   sessionStorage: createMemorySessionStorage(),
-})
+});
 ```
 
 ## Test Runner Config
@@ -70,20 +72,20 @@ Configure discovery and coverage in `remix-test.config.ts` or with CLI flags:
 ```ts
 export default {
   glob: {
-    test: '**/*.test{,.e2e}.{ts,tsx}',
-    e2e: '**/*.test.e2e.{ts,tsx}',
-    exclude: 'node_modules/**',
+    test: "**/*.test{,.e2e}.{ts,tsx}",
+    e2e: "**/*.test.e2e.{ts,tsx}",
+    exclude: "node_modules/**",
   },
   coverage: {
-    dir: '.coverage',
-    include: ['app/**/*.{ts,tsx}'],
-    exclude: ['app/**/*.test.{ts,tsx}'],
+    dir: ".coverage",
+    include: ["app/**/*.{ts,tsx}"],
+    exclude: ["app/**/*.test.{ts,tsx}"],
     statements: 80,
     lines: 80,
     branches: 70,
     functions: 80,
   },
-}
+};
 ```
 
 Use `remix test --coverage` to enable coverage with defaults. Use `glob.exclude` when discovery
@@ -100,16 +102,16 @@ over root rendering, flushing, or disposal.
 ### Basic pattern
 
 ```tsx
-import * as assert from 'remix/assert'
-import { render } from 'remix/ui/test'
+import * as assert from "remix/assert";
+import { render } from "remix/ui/test";
 
-let result = render(<Counter />)
+let result = render(<Counter />);
 
-let button = result.$('button')!
-await result.act(() => button.click())
+let button = result.$("button")!;
+await result.act(() => button.click());
 
-assert.match(result.container.textContent ?? '', /1/)
-result.cleanup()
+assert.match(result.container.textContent ?? "", /1/);
+result.cleanup();
 ```
 
 ### Why act / flush
@@ -124,14 +126,14 @@ result.cleanup()
 For components with async operations in `queueTask`, use `act(...)` after each async step:
 
 ```tsx
-let result = render(<AsyncLoader />)
+let result = render(<AsyncLoader />);
 
-assert.equal(result.container.textContent, 'Loading...')
+assert.equal(result.container.textContent, "Loading...");
 
-await waitForFetch()
-await result.act(() => {})
+await waitForFetch();
+await result.act(() => {});
 
-assert.equal(result.container.textContent, 'Expected data')
+assert.equal(result.container.textContent, "Expected data");
 ```
 
 ### Component removal
@@ -140,12 +142,12 @@ Use `result.cleanup()` or `root.dispose()` to remove the component tree and veri
 behavior:
 
 ```tsx
-let result = render(<MyComponent />)
+let result = render(<MyComponent />);
 
-assert.ok(result.$('.content'))
+assert.ok(result.$(".content"));
 
-result.cleanup()
-assert.throws(() => result.$('.content'), /cleaned up/)
+result.cleanup();
+assert.throws(() => result.$(".content"), /cleaned up/);
 ```
 
 ### Guidelines

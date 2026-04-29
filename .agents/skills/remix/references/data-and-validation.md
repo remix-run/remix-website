@@ -18,11 +18,11 @@ or identity-bound writes, see `auth-and-sessions.md`.
 Define tables with typed columns, relations, and optional validation hooks:
 
 ```typescript
-import { belongsTo, column as c, hasMany, table } from 'remix/data-table'
-import type { TableRow, TableRowWith } from 'remix/data-table'
+import { belongsTo, column as c, hasMany, table } from "remix/data-table";
+import type { TableRow, TableRowWith } from "remix/data-table";
 
 export const books = table({
-  name: 'books',
+  name: "books",
   columns: {
     id: c.integer().primaryKey().autoIncrement(),
     slug: c.text().notNull().unique(),
@@ -32,38 +32,38 @@ export const books = table({
     genre: c.text().notNull(),
     in_stock: c.boolean(),
   },
-})
+});
 
 export const orders = table({
-  name: 'orders',
+  name: "orders",
   columns: {
     id: c.integer().primaryKey().autoIncrement(),
-    user_id: c.integer().notNull().references('users', 'id'),
+    user_id: c.integer().notNull().references("users", "id"),
     total: c.decimal(10, 2).notNull(),
     created_at: c.integer().notNull(),
   },
   relations: {
-    user: belongsTo('users', 'user_id'),
-    items: hasMany('order_items', 'order_id'),
+    user: belongsTo("users", "user_id"),
+    items: hasMany("order_items", "order_id"),
   },
-})
+});
 
-export type Book = TableRow<typeof books>
-export type Order = TableRow<typeof orders>
-export type OrderWithItems = TableRowWith<typeof orders, 'items'>
+export type Book = TableRow<typeof books>;
+export type Order = TableRow<typeof orders>;
+export type OrderWithItems = TableRowWith<typeof orders, "items">;
 ```
 
 ### Column types
 
-| Method | SQL type |
-|--------|----------|
-| `c.integer()` | INTEGER |
-| `c.text()` | TEXT |
-| `c.boolean()` | BOOLEAN |
-| `c.decimal(precision, scale)` | DECIMAL |
-| `c.enum([...])` | TEXT (string enum) |
-| `c.uuid()` | UUID / TEXT |
-| `c.varchar(length)` | VARCHAR |
+| Method                        | SQL type           |
+| ----------------------------- | ------------------ |
+| `c.integer()`                 | INTEGER            |
+| `c.text()`                    | TEXT               |
+| `c.boolean()`                 | BOOLEAN            |
+| `c.decimal(precision, scale)` | DECIMAL            |
+| `c.enum([...])`               | TEXT (string enum) |
+| `c.uuid()`                    | UUID / TEXT        |
+| `c.varchar(length)`           | VARCHAR            |
 
 Column modifiers: `.primaryKey()`, `.autoIncrement()`, `.notNull()`, `.unique()`,
 `.references(table, column, fkName?)`, `.onDelete(action)`, `.default(value)`.
@@ -90,16 +90,18 @@ Tables can define `validate`, `beforeWrite`, and `afterRead` hooks:
 
 ```typescript
 export const books = table({
-  name: 'books',
-  columns: { /* ... */ },
-  validate({ operation, value }) {
-    let issues = []
-    if (operation === 'create' && !value.slug) {
-      issues.push({ message: 'Slug is required.', path: ['slug'] })
-    }
-    return issues.length > 0 ? { issues } : { value }
+  name: "books",
+  columns: {
+    /* ... */
   },
-})
+  validate({ operation, value }) {
+    let issues = [];
+    if (operation === "create" && !value.slug) {
+      issues.push({ message: "Slug is required.", path: ["slug"] });
+    }
+    return issues.length > 0 ? { issues } : { value };
+  },
+});
 ```
 
 ## Database Setup
@@ -107,14 +109,14 @@ export const books = table({
 Create a database with an adapter and expose it via middleware:
 
 ```typescript
-import BetterSqlite3 from 'better-sqlite3'
-import { createDatabase, Database } from 'remix/data-table'
-import { createSqliteDatabaseAdapter } from 'remix/data-table-sqlite'
+import BetterSqlite3 from "better-sqlite3";
+import { createDatabase, Database } from "remix/data-table";
+import { createSqliteDatabaseAdapter } from "remix/data-table-sqlite";
 
-let sqlite = new BetterSqlite3('./db/app.db')
-sqlite.pragma('foreign_keys = ON')
-let adapter = createSqliteDatabaseAdapter(sqlite)
-export let db = createDatabase(adapter)
+let sqlite = new BetterSqlite3("./db/app.db");
+sqlite.pragma("foreign_keys = ON");
+let adapter = createSqliteDatabaseAdapter(sqlite);
+export let db = createDatabase(adapter);
 ```
 
 `createSqliteDatabaseAdapter` accepts synchronous SQLite clients with a shared `prepare`/`exec`
@@ -124,55 +126,63 @@ client fits the runtime instead of assuming `better-sqlite3` is required.
 ### Database middleware
 
 ```typescript
-import type { Middleware } from 'remix/fetch-router'
-import { Database } from 'remix/data-table'
+import type { Middleware } from "remix/fetch-router";
+import { Database } from "remix/data-table";
 
 export function loadDatabase(): Middleware {
   return async (context, next) => {
-    context.set(Database, db)
-    return next()
-  }
+    context.set(Database, db);
+    return next();
+  };
 }
 ```
 
 ### Querying
 
 ```typescript
-let db = get(Database)
+let db = get(Database);
 
 // Find by primary key
-let book = await db.find(books, id)
+let book = await db.find(books, id);
 
 // Find one by condition
-let user = await db.findOne(users, { where: { email } })
+let user = await db.findOne(users, { where: { email } });
 
 // Find many with ordering
-let allBooks = await db.findMany(books, { orderBy: ['id', 'asc'] })
+let allBooks = await db.findMany(books, { orderBy: ["id", "asc"] });
 
 // Count
-let total = await db.count(orders, { where: { user_id: userId } })
+let total = await db.count(orders, { where: { user_id: userId } });
 
 // Query builder
-let genres = await db.query(books).select('genre').distinct().orderBy('genre', 'asc').all()
+let genres = await db
+  .query(books)
+  .select("genre")
+  .distinct()
+  .orderBy("genre", "asc")
+  .all();
 
 // Create
-let newBook = await db.create(books, { slug: 'new-book', title: 'New Book', /* ... */ })
+let newBook = await db.create(books, {
+  slug: "new-book",
+  title: "New Book" /* ... */,
+});
 
 // Update
-await db.update(books, bookId, { title: 'Updated Title' })
+await db.update(books, bookId, { title: "Updated Title" });
 
 // Delete
-await db.delete(books, bookId)
+await db.delete(books, bookId);
 ```
 
 ### Operators
 
 ```typescript
-import { inList } from 'remix/data-table/operators'
+import { inList } from "remix/data-table/operators";
 
 let featured = await db.findMany(books, {
-  where: inList('slug', ['book-a', 'book-b', 'book-c']),
-})
+  where: inList("slug", ["book-a", "book-b", "book-c"]),
+});
 ```
 
 ## Migrations
@@ -180,52 +190,55 @@ let featured = await db.findMany(books, {
 ### Writing migrations
 
 ```typescript
-import { column as c, createMigration } from 'remix/data-table/migrations'
-import { table } from 'remix/data-table'
+import { column as c, createMigration } from "remix/data-table/migrations";
+import { table } from "remix/data-table";
 
 export default createMigration({
   async up({ schema }) {
     let users = table({
-      name: 'users',
+      name: "users",
       columns: {
         id: c.integer().primaryKey().autoIncrement(),
         email: c.text().notNull().unique(),
         name: c.text().notNull(),
       },
-    })
-    await schema.createTable(users)
-    await schema.createIndex(users, 'email', { name: 'users_email_idx', unique: true })
+    });
+    await schema.createTable(users);
+    await schema.createIndex(users, "email", {
+      name: "users_email_idx",
+      unique: true,
+    });
   },
 
   async down({ schema }) {
-    await schema.dropTable('users')
+    await schema.dropTable("users");
   },
-})
+});
 ```
 
 Migrations can also import table definitions from the app schema to avoid duplication:
 
 ```typescript
-import { createMigration } from 'remix/data-table/migrations'
-import { users, authAccounts } from '../../app/data/schema.ts'
+import { createMigration } from "remix/data-table/migrations";
+import { users, authAccounts } from "../../app/data/schema.ts";
 
 export default createMigration({
   async up({ schema }) {
-    await schema.createTable(users)
-    await schema.createTable(authAccounts)
+    await schema.createTable(users);
+    await schema.createTable(authAccounts);
   },
-})
+});
 ```
 
 ### Running migrations
 
 ```typescript
-import { createMigrationRunner } from 'remix/data-table/migrations'
-import { loadMigrations } from 'remix/data-table/migrations/node'
+import { createMigrationRunner } from "remix/data-table/migrations";
+import { loadMigrations } from "remix/data-table/migrations/node";
 
-let migrations = await loadMigrations('./db/migrations')
-let runner = createMigrationRunner(adapter, migrations)
-await runner.up()
+let migrations = await loadMigrations("./db/migrations");
+let runner = createMigrationRunner(adapter, migrations);
+await runner.up();
 ```
 
 ### Migration file naming
@@ -241,16 +254,16 @@ table-level `validate` hooks which run at persistence.
 ### Schema builders
 
 ```typescript
-import * as s from 'remix/data-schema'
-import { email, minLength, maxLength } from 'remix/data-schema/checks'
+import * as s from "remix/data-schema";
+import { email, minLength, maxLength } from "remix/data-schema/checks";
 
 let userSchema = s.object({
   name: s.string().pipe(minLength(1)),
   email: s.string().pipe(email()),
   age: s.optional(s.number()),
-})
+});
 
-let result = s.parse(userSchema, data)
+let result = s.parse(userSchema, data);
 ```
 
 ### FormData validation
@@ -258,19 +271,19 @@ let result = s.parse(userSchema, data)
 Use `remix/data-schema/form-data` to validate `FormData` directly:
 
 ```typescript
-import * as s from 'remix/data-schema'
-import * as f from 'remix/data-schema/form-data'
-import { email, minLength } from 'remix/data-schema/checks'
+import * as s from "remix/data-schema";
+import * as f from "remix/data-schema/form-data";
+import { email, minLength } from "remix/data-schema/checks";
 
 let signupSchema = f.object({
   name: f.field(s.string().pipe(minLength(1))),
   email: f.field(s.string().pipe(email())),
   password: f.field(s.string().pipe(minLength(8))),
-})
+});
 
 // In a controller action:
-let formData = get(FormData)
-let { name, email, password } = s.parse(signupSchema, formData)
+let formData = get(FormData);
+let { name, email, password } = s.parse(signupSchema, formData);
 ```
 
 ### Reading FormData: middleware vs `request.formData()`
@@ -282,14 +295,14 @@ The recommended way: register `formData()` middleware in the root stack and read
 the context system. This also lets `methodOverride()` and CSRF middleware work uniformly.
 
 ```typescript
-import { formData } from 'remix/form-data-middleware'
+import { formData } from "remix/form-data-middleware";
 
 let router = createRouter({
-  middleware: [/* ... */, formData(), /* ... */],
-})
+  middleware: [, /* ... */ formData() /* ... */],
+});
 
 // In an action:
-let parsed = s.parseSafe(signupSchema, get(FormData))
+let parsed = s.parseSafe(signupSchema, get(FormData));
 ```
 
 The fallback: `await request.formData()` directly. This works without middleware and is fine for
@@ -319,18 +332,19 @@ Use `.transform(...)` when a schema should validate one shape but return another
 type. Transforms run after validation and compose with `.pipe(...)` and `.refine(...)`:
 
 ```typescript
-import * as coerce from 'remix/data-schema/coerce'
+import * as coerce from "remix/data-schema/coerce";
 
-let slugSchema = s.string()
+let slugSchema = s
+  .string()
   .pipe(minLength(1))
-  .transform((value) => value.trim().toLowerCase().replace(/\s+/g, '-'))
+  .transform((value) => value.trim().toLowerCase().replace(/\s+/g, "-"));
 
 let pageSchema = f.object({
   page: f.field(s.defaulted(coerce.coerceNumber(), 1).refine(Number.isInteger)),
-  q: f.field(s.defaulted(s.string(), '').transform((value) => value.trim())),
-})
+  q: f.field(s.defaulted(s.string(), "").transform((value) => value.trim())),
+});
 
-let { page, q } = s.parse(pageSchema, formData)
+let { page, q } = s.parse(pageSchema, formData);
 ```
 
 ### Anti-patterns
@@ -350,11 +364,15 @@ Avoid these shapes when reading and validating input:
 
 ```typescript
 // Optional with default
-let limitSchema = f.field(s.defaulted(s.string(), '10'))
+let limitSchema = f.field(s.defaulted(s.string(), "10"));
 
 // Union types
-let methodSchema = s.union([s.literal('credentials'), s.literal('google'), s.literal('github')])
+let methodSchema = s.union([
+  s.literal("credentials"),
+  s.literal("google"),
+  s.literal("github"),
+]);
 
 // Refinements
-let idSchema = s.number().refine(Number.isInteger, 'Expected an integer')
+let idSchema = s.number().refine(Number.isInteger, "Expected an integer");
 ```
