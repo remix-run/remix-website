@@ -30,10 +30,17 @@ const rowStyles = css({
   },
 });
 
+const rowPowerfulComponentsStyles = css({
+  transform: "translateY(clamp(48px, 7dvh, 88px))",
+  "@media (max-width: 880px)": {
+    transform: "none",
+  },
+});
+
 // Option A perf pass: reduce blur radius from 18px → 10px (blur cost is
 // ~quadratic in radius, so this cuts this section's backdrop-filter work
 // to ~31% of its previous per-frame cost) and compensate the slight loss
-// of diffusion with a marginally more opaque local tint so the frosted-glass
+// of diffusion with a more opaque local tint so the frosted-glass
 // read holds up. The shared `colors.sectionNavBg` token is intentionally
 // left alone — `SectionNav` and `PresetIndicator` don't need the same bump.
 // `contain: paint` gives the compositor a bounded invalidation region so
@@ -46,7 +53,7 @@ const panelStyles = css({
   borderRadius: "24px",
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
-  background: "rgba(0, 0, 0, 0.32)",
+  background: "rgba(0, 0, 0, 0.44)",
   contain: "paint",
 });
 
@@ -131,7 +138,7 @@ const codeContainerStyles = css({
   borderRadius: "24px",
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
-  background: "rgba(0, 0, 0, 0.32)",
+  background: "rgba(0, 0, 0, 0.38)",
   overflow: "hidden",
   contain: "paint",
   "@media (max-width: 880px)": {
@@ -472,6 +479,10 @@ const SECONDARY_PANEL_STYLES_BY_ID: Record<
   "start-building": rightPanelNewsletterStyles,
 };
 
+const ROW_STYLES_BY_ID: Record<string, ReturnType<typeof css> | undefined> = {
+  "powerful-components": rowPowerfulComponentsStyles,
+};
+
 type FeatureSectionProps = {
   id: string;
   kicker: string;
@@ -556,9 +567,7 @@ export let LandingNewsletterSubscribeForm = clientEntry(
             disabled={submitting}
             mix={[subscribeButtonStyles]}
           >
-            {submitting
-              ? "Subscribing..."
-              : (props.buttonLabel ?? "Subscribe")}
+            {submitting ? "Subscribing..." : (props.buttonLabel ?? "Subscribe")}
           </button>
         </form>
         <div
@@ -592,7 +601,7 @@ export function FeatureSection(_handle: Handle) {
 
     return (
       <section id={props.id} mix={[shellStyles]}>
-        <div mix={[rowStyles]}>
+        <div mix={[rowStyles, ROW_STYLES_BY_ID[props.id]]}>
           <div
             id={props.id === "full-stack" ? "full-stack-panel" : undefined}
             mix={[panelStyles, primaryPanelStyles]}

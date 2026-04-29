@@ -26,14 +26,14 @@ const appStyles = css({
 // pane forced the browser to run a separate Gaussian blur pass against the
 // scrolling content underneath on every frame — five stacked blurs over a
 // mix-blend-mode WebGL canvas. That was the dominant cost during scroll. A
-// single moderate blur with a linear mask gives visually similar "softest at
-// top, clean at bottom" behaviour at ~1/5 the raster cost.
+// single moderate blur with a shorter dynamic viewport height gives visually
+// similar "softest at top, clean at bottom" behavior with less content covered.
 const blurShellStyles = css({
   position: "fixed",
   top: "0",
   left: "0",
   right: "0",
-  height: "20vh",
+  height: "15dvh",
   zIndex: "20",
   pointerEvents: "none",
   backdropFilter: "blur(16px)",
