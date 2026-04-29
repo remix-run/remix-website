@@ -6,6 +6,7 @@ import { routes } from "../../routes";
 import { render } from "../../utils/render";
 import { getBlogPostListings } from "../../data/blog.server";
 import { CACHE_CONTROL } from "../../utils/cache-control";
+import { getSocialHeadTags } from "../../utils/social-head-tags.server";
 
 export async function blogHandler() {
   let posts = await getBlogPostListings();
@@ -23,6 +24,11 @@ function Page() {
     <Document
       title="Remix Blog"
       description="Thoughts about building excellent user experiences with Remix."
+      headTags={getSocialHeadTags({
+        title: "Remix Blog",
+        description:
+          "Thoughts about building excellent user experiences with Remix.",
+      })}
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>

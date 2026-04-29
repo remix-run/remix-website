@@ -9,6 +9,7 @@ import { render } from "../../utils/render";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.server";
 import { CACHE_CONTROL } from "../../utils/cache-control";
 import { styleHrefs } from "../../utils/style-hrefs";
+import { getSocialHeadTags } from "../../utils/social-head-tags.server";
 
 type BlogPostContext = {
   params: { slug?: string; ext?: string };
@@ -62,15 +63,8 @@ export async function blogPostHandler(context: BlogPostContext) {
     ogImageUrl.searchParams.set("ogImage", post.ogImage);
   }
 
-  let pageUrl = routes.blogPost.href({ slug });
-
   return render.document(
-    <Page
-      slug={slug}
-      post={post}
-      pageUrl={`${siteUrl}${pageUrl}`}
-      socialImageUrl={ogImageUrl.toString()}
-    />,
+    <Page slug={slug} post={post} socialImageUrl={ogImageUrl.toString()} />,
     {
       headers: {
         "Cache-Control": CACHE_CONTROL.DEFAULT,
@@ -83,7 +77,6 @@ function Page() {
   return (props: {
     slug: string;
     post: Awaited<ReturnType<typeof getBlogPost>>;
-    pageUrl: string;
     socialImageUrl: string;
   }) => (
     <Document
@@ -97,46 +90,14 @@ function Page() {
           href: routes.blogPost.href({ slug: props.slug, ext: "md" }),
           type: "text/markdown",
         },
-        { kind: "meta", property: "og:type", content: "website" },
-        { kind: "meta", property: "og:title", content: props.post.title },
-        {
-          kind: "meta",
-          property: "og:description",
-          content: props.post.summary,
-        },
-        { kind: "meta", property: "og:url", content: props.pageUrl },
-        {
-          kind: "meta",
-          property: "og:image",
-          content: props.socialImageUrl,
-        },
-        {
-          kind: "meta",
-          name: "twitter:card",
-          content: "summary_large_image",
-        },
-        {
-          kind: "meta",
-          name: "twitter:creator",
-          content: "@remix_run",
-        },
-        { kind: "meta", name: "twitter:site", content: "@remix_run" },
-        { kind: "meta", name: "twitter:title", content: props.post.title },
-        {
-          kind: "meta",
-          name: "twitter:description",
-          content: props.post.summary,
-        },
-        {
-          kind: "meta",
-          name: "twitter:image",
-          content: props.socialImageUrl,
-        },
-        {
-          kind: "meta",
-          name: "twitter:image:alt",
-          content: props.post.imageAlt,
-        },
+        ...getSocialHeadTags({
+          title: props.post.title,
+          description: props.post.summary,
+          image: props.socialImageUrl,
+          imageAlt: props.post.imageAlt,
+          twitterCreator: "@remix_run",
+          twitterSite: "@remix_run",
+        }),
       ]}
     >
       <Header />

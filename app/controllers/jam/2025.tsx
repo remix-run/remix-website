@@ -1,6 +1,5 @@
 import cx from "clsx";
 import type { RemixNode } from "remix/component/jsx-runtime";
-import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control";
 import { JamDocument } from "./document";
@@ -13,17 +12,13 @@ import { assetPaths } from "../../utils/asset-paths";
 type EventStatus = "before" | "live" | "after";
 
 export async function jam2025Handler() {
-  let requestUrl = new URL(getRequestContext().request.url);
-  let pageUrl = `${requestUrl.origin}/jam/2025`;
-  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogThumbnail1}`;
   let eventStatus = getEventStatus();
 
   return render.document(
     <JamDocument
       title="Remix Jam 2025"
       description="It's time to get the band back together"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
+      previewImage={assetPaths.jam2025.ogThumbnail1}
       activePath="/jam/2025"
     >
       <Jam2025Page eventStatus={eventStatus} />

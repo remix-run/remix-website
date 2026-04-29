@@ -5,6 +5,7 @@ import { Footer } from "../ui/footer";
 import { Header } from "../ui/header";
 import { render } from "../utils/render";
 import { CACHE_CONTROL } from "../utils/cache-control";
+import { getSocialHeadTags } from "../utils/social-head-tags.server";
 
 export async function brandHandler() {
   return render.document(<Page />, {
@@ -19,6 +20,11 @@ function Page() {
     <Document
       title="Remix Assets and Branding Guidelines"
       description="Remix brand assets and guidelines for using the Remix name and logos."
+      headTags={getSocialHeadTags({
+        title: "Remix Assets and Branding Guidelines",
+        description:
+          "Remix brand assets and guidelines for using the Remix name and logos.",
+      })}
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
@@ -183,7 +189,11 @@ function BrandPage() {
       <AssetHeader>Download Assets</AssetHeader>
       <p>You can download a zip file containing all the Remix brand assets:</p>
       <p>
-        <a href={BRAND_ASSETS_ZIP} class="underline hover:text-red-brand" download>
+        <a
+          href={BRAND_ASSETS_ZIP}
+          class="underline hover:text-red-brand"
+          download
+        >
           Remix Brand Assets
         </a>
       </p>

@@ -1,6 +1,5 @@
 import cx from "clsx";
 import { getSchedule } from "../../data/jam-schedule.server";
-import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control";
 import { JamDocument } from "./document";
@@ -14,17 +13,13 @@ let gridColsClassName =
 type Schedule = Awaited<ReturnType<typeof getSchedule>>;
 
 export async function jam2025LineupHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
-  let pageUrl = `${requestUrl.origin}/jam/2025/lineup`;
-  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogThumbnail1}`;
   let schedule = await getSchedule();
 
   return render.document(
     <JamDocument
       title="Schedule and Lineup | Remix Jam 2025"
       description="Schedule and Speaker Lineup for Remix Jam 2025"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
+      previewImage={assetPaths.jam2025.ogThumbnail1}
       activePath="/jam/2025/lineup"
       hideBackground
       showSeats

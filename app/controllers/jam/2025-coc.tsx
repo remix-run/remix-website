@@ -1,4 +1,3 @@
-import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control";
 import { JamDocument } from "./document";
@@ -6,16 +5,11 @@ import { Paragraph, ScrambleText, Subheader, Title } from "./shared";
 import { assetPaths } from "../../utils/asset-paths";
 
 export async function jam2025CocHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
-  let pageUrl = `${requestUrl.origin}/jam/2025/coc`;
-  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogThumbnail1}`;
-
   return render.document(
     <JamDocument
       title="Code of Conduct | Remix Jam 2025"
       description="Adapted from confcodeofconduct.com"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
+      previewImage={assetPaths.jam2025.ogThumbnail1}
       activePath="/jam/2025/coc"
     >
       <main

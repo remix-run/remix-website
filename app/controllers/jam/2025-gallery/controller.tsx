@@ -16,8 +16,6 @@ type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
 export async function jam2025GalleryHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
-  let pageUrl = `${requestUrl.origin}/jam/2025/gallery`;
-  let previewImage = `${requestUrl.origin}${assetPaths.jam2025.ogGallery}`;
   let photos = await getGalleryPhotos();
   let selectedPhotoIndex = getSelectedPhotoIndex(
     requestUrl.searchParams.get("photo"),
@@ -28,8 +26,7 @@ export async function jam2025GalleryHandler() {
     <JamDocument
       title="Photo Gallery | Remix Jam 2025"
       description="Photos from Remix Jam 2025"
-      pageUrl={pageUrl}
-      previewImage={previewImage}
+      previewImage={assetPaths.jam2025.ogGallery}
       activePath="/jam/2025/gallery"
       hideBackground
     >
