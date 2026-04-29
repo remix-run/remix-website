@@ -13,7 +13,7 @@ type HomePageProps = {
 
 const HOME_TITLE = "Remix - A Web Framework for Building Anything";
 const HOME_DESCRIPTION =
-  "Remix gives you the power and tools to build anything you can dream of.";
+  "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.";
 const RUNNER_GIF_SRC = "/landing/remix-runner.gif";
 
 const landingShellStyles = css({

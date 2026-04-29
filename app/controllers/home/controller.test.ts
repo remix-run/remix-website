@@ -19,6 +19,9 @@ describe("home route", () => {
 
     expect(html).toContain("<html");
     expect(html).toContain("Remix - A Web Framework for Building Anything");
+    expect(html).toContain(
+      "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.",
+    );
     expect(html).toContain('id="main-content"');
     expect(html).toContain('id="remix-landing-app"');
     expect(html).toContain("A web framework for building anything");
