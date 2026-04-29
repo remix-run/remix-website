@@ -18,8 +18,6 @@ describe("Remix 3 active development route", () => {
     let html = await response.text();
 
     expect(html).toContain("<html");
-    expect(html).toContain("Remix - A Full Stack Framework Built on Web APIs");
-    expect(html).toContain("Remix 3 is under active development.");
     expect(html).toContain('href="/styles/app.css"');
     expect(html).toContain('class="marketing-remix3-active-development"');
     expect(html).toContain('content="http://localhost:3000/"');

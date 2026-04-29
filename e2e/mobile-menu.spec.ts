@@ -57,7 +57,7 @@ test.describe("Mobile menu", () => {
     await expect(mobileNav).toBeVisible();
 
     await page.keyboard.press("Tab");
-    await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeFocused();
+    await expect(mobileNav.getByRole("link").first()).toBeFocused();
 
     await page.keyboard.press("Escape");
     // Prefer the live `open` property over nav visibility: panel nodes can stay

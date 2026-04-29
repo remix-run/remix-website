@@ -11,6 +11,10 @@ import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { assetPaths } from "../../utils/asset-paths";
 
+const HOME_TITLE = "Remix - A Web Framework for Building Anything";
+const HOME_DESCRIPTION =
+  "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.";
+
 export async function remix3ActiveDevelopmentHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/`;
@@ -32,21 +36,20 @@ export async function remix3ActiveDevelopmentHandler() {
 function Remix3ActiveDevelopmentPage() {
   return (props: { pageUrl: string; previewImage: string }) => (
     <Document
-      title="Remix - A Full Stack Framework Built on Web APIs"
-      description="Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world."
+      title={HOME_TITLE}
+      description={HOME_DESCRIPTION}
       forceTheme="light"
       headTags={[
         { kind: "meta", property: "og:type", content: "website" },
         {
           kind: "meta",
           property: "og:title",
-          content: "Remix - A Full Stack Framework Built on Web APIs",
+          content: HOME_TITLE,
         },
         {
           kind: "meta",
           property: "og:description",
-          content:
-            "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.",
+          content: HOME_DESCRIPTION,
         },
         { kind: "meta", property: "og:url", content: props.pageUrl },
         {
@@ -62,13 +65,12 @@ function Remix3ActiveDevelopmentPage() {
         {
           kind: "meta",
           name: "twitter:title",
-          content: "Remix - A Full Stack Framework Built on Web APIs",
+          content: HOME_TITLE,
         },
         {
           kind: "meta",
           name: "twitter:description",
-          content:
-            "Remix 3 is under active development. Remix is a batteries-included, ultra-productive, zero dependency framework ready to use in a model-first world.",
+          content: HOME_DESCRIPTION,
         },
         {
           kind: "meta",
