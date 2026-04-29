@@ -37,6 +37,8 @@ function AssetHeader() {
   );
 }
 
+const BRAND_ASSETS_ZIP = "/_brand/remix-brand-assets.zip";
+
 type BrandAssetFormat = "svg" | "png";
 
 type BrandAsset = {
@@ -48,11 +50,11 @@ type BrandAsset = {
 
 let previewThemes = {
   light: {
-    bg: "bg-white",
+    bg: "__asset_checker __asset_checker_light",
     border: "border-gray-50 dark:border-transparent",
   },
   dark: {
-    bg: "bg-gray-900",
+    bg: "__asset_checker __asset_checker_dark",
     border: "border-transparent dark:border-gray-800",
   },
 } as const;
@@ -117,15 +119,6 @@ let wordmarkAssets = [
   },
 ] satisfies BrandAsset[];
 
-let socialAssets = [
-  {
-    title: "Default Open Graph image",
-    fileBase: "remix-run-share-thumbnail",
-    previewTheme: "light",
-    formats: ["png"],
-  },
-] satisfies BrandAsset[];
-
 function AssetGrid() {
   return (props: { assets: readonly BrandAsset[] }) => (
     <div class="not-prose grid grid-cols-1 gap-4 gap-x-6 sm:grid-cols-2">
@@ -137,7 +130,7 @@ function AssetGrid() {
           <div class="flex flex-col" key={asset.fileBase}>
             <div
               class={cx(
-                "flex h-40 items-center justify-center rounded-lg border-[3px] p-4 md:h-48",
+                "flex h-40 items-center justify-center rounded-lg border-[3px] p-8 md:h-48 md:p-10",
                 bg,
                 border,
               )}
@@ -149,7 +142,6 @@ function AssetGrid() {
               />
             </div>
             <div class="mt-1 flex items-end gap-4 text-sm text-gray-800 dark:text-gray-100">
-              <span class="mr-auto font-medium">{asset.title}</span>
               {asset.formats.map((format) => (
                 <a
                   class="uppercase underline opacity-50 hover:opacity-100"
@@ -190,6 +182,13 @@ function BrandPage() {
         Additionally, you may not use our trademarks for t-shirts, stickers, or
         other merchandise without explicit written consent.
       </p>
+      <AssetHeader>Download Assets</AssetHeader>
+      <p>You can download a zip file containing all the Remix brand assets:</p>
+      <p>
+        <a href={BRAND_ASSETS_ZIP} class="underline hover:text-red-brand" download>
+          Remix Brand Assets
+        </a>
+      </p>
       <AssetHeader>Logo</AssetHeader>
       <p>
         Please use the logo with an appropriate background. The light-mode
@@ -204,12 +203,6 @@ function BrandPage() {
         the full wordmark.
       </p>
       <AssetGrid assets={wordmarkAssets} />
-      <AssetHeader>Share Image</AssetHeader>
-      <p>
-        Use the default Open Graph image for social previews when a page does
-        not have a more specific image.
-      </p>
-      <AssetGrid assets={socialAssets} />
     </div>
   );
 }

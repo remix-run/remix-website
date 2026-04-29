@@ -29,7 +29,7 @@ export function Header() {
           ))}
         </nav>
 
-        <MobileMenu class="md:hidden">
+        <MobileMenu class="-mt-3 md:hidden">
           {LINKS.map((link) => (
             <HeaderLink key={link.to} to={link.to} external={link.external}>
               {link.label}

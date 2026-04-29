@@ -52,7 +52,7 @@ export function Document() {
   return ({
     title,
     description,
-    previewImage = assetPaths.brand.defaultOgImage,
+    previewImage = assetPaths.marketing.defaultOgImage,
     noIndex,
     forceTheme,
     headTags = [],

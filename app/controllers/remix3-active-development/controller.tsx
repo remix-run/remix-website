@@ -9,11 +9,12 @@ import { TimelineSection } from "./timeline-section";
 import { getRequestContext } from "../../utils/request-context";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { assetPaths } from "../../utils/asset-paths";
 
 export async function remix3ActiveDevelopmentHandler() {
   let requestUrl = new URL(getRequestContext().request.url);
   let pageUrl = `${requestUrl.origin}/`;
-  let previewImage = `${requestUrl.origin}/marketing/remix-3-thumbnail.jpg`;
+  let previewImage = `${requestUrl.origin}${assetPaths.marketing.defaultOgImage}`;
 
   return render.document(
     <Remix3ActiveDevelopmentPage
