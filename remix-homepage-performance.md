@@ -2,15 +2,6 @@
 
 This note tracks performance work for the Remix 3 homepage. It focuses on changes that are likely to improve load time, scroll smoothness, or main-thread stability without changing the visual direction of the page.
 
-## Recently Completed
-
-- Reduced per-frame allocations in `app/assets/remix-landing/components/particle-canvas.tsx` by reusing camera vectors, control arrays, morph blend output, shader indexes, and preset lookup data.
-- Removed the dead prop-level cache in `app/assets/remix-landing/components/feature-section.tsx` while keeping the code snippet tokenization cache.
-- Lazy-loaded `FpsCounter` so the production bundle only imports it after the user presses `F`.
-- Optimized `public/landing/remix-runner.gif` from 39 KB to 11 KB by resizing it to the displayed scale and reducing the palette.
-- Moved `ScrollLogo` scroll tracking into its own RAF, hoisted static SVG path nodes, and shared the brand-page context-menu behavior with `WordmarkLink`.
-- Lazy-loaded the Three.js particle canvas and kept the runner overlay visible until both the minimum display time and the first WebGL frame are ready.
-
 ## Highest-Value Remaining Ideas
 
 ### 1. Narrow scroll-linked re-render scope
@@ -26,17 +17,7 @@ That is convenient, but it means a scroll tick re-renders the whole enhancement 
 
 This is more architectural than the earlier allocation cleanup, but it is probably the largest remaining main-thread opportunity.
 
-### 2. Reduce label projection allocations
-
-`app/assets/remix-landing/engine/label-projection.ts` still allocates while labels are active:
-
-- A fresh result array.
-- A cloned projected vector per label via `worldPos.clone().project(camera)`.
-- Fresh projected label objects.
-
-The label count is small, so this is not urgent. If profiling shows label-heavy frames contributing to GC, change `projectLabels` to write into a caller-owned array and reuse scratch vectors.
-
-### 3. Revisit the loading media format
+### 2. Revisit the loading media format
 
 The runner GIF is now much smaller, but GIF is still not an ideal animated image format. If we want to push further:
 
@@ -50,7 +31,6 @@ Because the optimized GIF is only 11 KB, this is no longer urgent.
 
 - Move the `package-logos` to `feature-section` coupling away from `id="full-stack-panel"` and toward explicit ownership of the measured panel element or rect.
 - Consider caching `LANDING_SECTION_IDS` element references after hydration and invalidating them only when layout changes, rather than repeatedly using `document.getElementById`.
-- Re-check blur layers and frosted panels in Chrome Performance after the current CSS changes. More `backdrop-filter` reductions are possible, but should be driven by paint evidence rather than guesswork.
 - Consider converting repeated keyboard target checks into a shared local helper across `LandingNav` and `RemixLandingEnhancements` if those modules continue to grow.
 
 ## Verification Plan

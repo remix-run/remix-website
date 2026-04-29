@@ -111,9 +111,6 @@ const linkActiveStyles = css({
   height: `${ITEM_HEIGHT}px`,
 });
 
-// TODO:
-// - lots of duplicated strings throughout the application
-// - navigating from an anchor to blog then back results in a bug
 const SECTIONS = [
   { label: "The Framework", anchor: "the-framework" },
   { label: "Full Stack", anchor: "full-stack" },
@@ -125,6 +122,45 @@ const SECTIONS = [
 
 // Note: "The Framework" points to the Hero section (id="the-framework"),
 // while the remaining 5 map to the FeatureSection panels.
+
+type NavigateEventWithManualScroll = NavigateEvent & {
+  intercept(options: {
+    handler: () => Promise<void>;
+    scroll?: "manual" | "after-transition";
+  }): void;
+};
+
+async function replaceHash(anchor: string) {
+  const state = window.navigation.currentEntry?.getState();
+  const url = new URL(window.location.href);
+  url.hash = anchor;
+
+  const preventNativeHashScroll = (event: NavigateEvent) => {
+    if (!event.canIntercept || event.destination.url !== url.href) return;
+    (event as NavigateEventWithManualScroll).intercept({
+      scroll: "manual",
+      async handler() {},
+    });
+  };
+
+  window.navigation.addEventListener("navigate", preventNativeHashScroll, {
+    capture: true,
+    once: true,
+  });
+
+  const transition = window.navigation.navigate(url.href, {
+    history: "replace",
+  });
+
+  try {
+    await transition.committed;
+    window.navigation.updateCurrentEntry({ state });
+  } finally {
+    window.navigation.removeEventListener("navigate", preventNativeHashScroll, {
+      capture: true,
+    });
+  }
+}
 
 export function SectionNav(_handle: Handle) {
   return (props: {
@@ -178,8 +214,10 @@ export function SectionNav(_handle: Handle) {
                       ...(isActive ? [linkActiveStyles] : []),
                       on("click", (e) => {
                         e.preventDefault();
-                        history.replaceState(null, "", `#${section.anchor}`);
-                        props.onJump(i);
+                        void replaceHash(section.anchor).then(
+                          () => props.onJump(i),
+                          () => props.onJump(i),
+                        );
                       }),
                     ]}
                   >

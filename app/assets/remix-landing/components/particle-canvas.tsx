@@ -2,7 +2,10 @@ import { css, ref, addEventListeners, type Handle } from "remix/component";
 import * as THREE from "three";
 import { ControlManager } from "../engine/controls";
 import { Engine } from "../engine/engine";
-import { projectLabels, type ProjectedLabel } from "../engine/label-projection";
+import {
+  projectLabelsInto,
+  type ProjectedLabel,
+} from "../engine/label-projection";
 import { ParticleSystem } from "../engine/particles";
 import { getMorphBlend, type MorphBlend } from "../engine/morph";
 import { createModelTexture } from "../engine/model-texture";
@@ -15,6 +18,13 @@ const PARTICLE_INTRO_DELAY_S = 1;
 const DEFAULT_CAM_POS: [number, number, number] = [0, 30, 80];
 const DEFAULT_CAM_TARGET: [number, number, number] = [0, 0, 0];
 const CAM_LERP_SPEED = 0.025;
+const TILT_MAX_DEGREES = 28;
+const TILT_DEADZONE = 0.04;
+const TILT_ACTIVE_MS = 1200;
+
+type DeviceOrientationEventWithPermission = typeof DeviceOrientationEvent & {
+  requestPermission?: () => Promise<"granted" | "denied" | "prompt">;
+};
 
 /**
  * Maps each `ShaderId` to the integer expected by the `computePreset` switch
@@ -117,6 +127,32 @@ function getControlInitial(preset: Preset, id: string, fallback = 0): number {
   );
 }
 
+function getScreenOrientationAngle(): number {
+  const legacyOrientation = (window as Window & { orientation?: number })
+    .orientation;
+  const angle = window.screen.orientation?.angle ?? legacyOrientation ?? 0;
+  return ((angle % 360) + 360) % 360;
+}
+
+function normalizeTilt(value: number): number {
+  const normalized = clamp(value / TILT_MAX_DEGREES, -1, 1);
+  return Math.abs(normalized) < TILT_DEADZONE ? 0 : normalized;
+}
+
+function getTiltLaneOffset(event: DeviceOrientationEvent): number | undefined {
+  const angle = getScreenOrientationAngle();
+  if (angle === 90) {
+    return event.beta == null ? undefined : normalizeTilt(event.beta);
+  }
+  if (angle === 270) {
+    return event.beta == null ? undefined : normalizeTilt(-event.beta);
+  }
+
+  const gamma = event.gamma;
+  if (gamma == null) return undefined;
+  return normalizeTilt(angle === 180 ? -gamma : gamma);
+}
+
 function buildPresetRuntimeData(presets: Preset[]): PresetRuntimeData {
   const driveIndex = presets.findIndex((preset) => preset.name === "Drive");
   return {
@@ -166,6 +202,9 @@ export function ParticleCanvas(handle: Handle) {
 
   let mouseNormX = 0;
   let mouseNormY = 0;
+  let tiltNormX = 0;
+  let tiltLastInputAt = 0;
+  let orientationPermissionRequested = false;
   let smoothMouseOffsetX = 0;
   let smoothCarLane = 0;
   let prevCarLane = 0;
@@ -177,10 +216,65 @@ export function ParticleCanvas(handle: Handle) {
   const ACTIVITY_DECAY = 0.97;
   const ACTIVITY_GAIN = 20.0;
 
+  function hasTouchInput() {
+    return (
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia("(pointer: coarse)").matches
+    );
+  }
+
+  function getDeviceOrientationEvent():
+    | DeviceOrientationEventWithPermission
+    | undefined {
+    if (typeof DeviceOrientationEvent === "undefined") return undefined;
+    return DeviceOrientationEvent as DeviceOrientationEventWithPermission;
+  }
+
+  function requestOrientationPermission() {
+    if (orientationPermissionRequested || !hasTouchInput()) return;
+
+    const orientationEvent = getDeviceOrientationEvent();
+    const requestPermission = orientationEvent?.requestPermission;
+    if (!requestPermission) return;
+
+    orientationPermissionRequested = true;
+    void requestPermission
+      .call(orientationEvent)
+      .then((state) => {
+        if (state === "prompt") orientationPermissionRequested = false;
+      })
+      .catch(() => {
+        orientationPermissionRequested = false;
+        // The car still works with pointer input if motion access is unavailable.
+      });
+  }
+
+  function getDriveInputX() {
+    if (performance.now() - tiltLastInputAt < TILT_ACTIVE_MS) {
+      return tiltNormX;
+    }
+    return mouseNormX;
+  }
+
   addEventListeners(window, handle.signal, {
+    pointerdown: (event) => {
+      if (event.pointerType !== "mouse") requestOrientationPermission();
+    },
+    touchstart: () => {
+      requestOrientationPermission();
+    },
     mousemove: (event) => {
       mouseNormX = (event.clientX / window.innerWidth) * 2 - 1;
       mouseNormY = (event.clientY / window.innerHeight) * 2 - 1;
+    },
+    deviceorientation: (event) => {
+      if (!hasTouchInput()) return;
+
+      const laneOffset = getTiltLaneOffset(event);
+      if (laneOffset == null) return;
+
+      tiltNormX = laneOffset;
+      tiltLastInputAt = performance.now();
     },
   });
 
@@ -373,8 +467,9 @@ export function ParticleCanvas(handle: Handle) {
 
       const driveProximity =
         driveIndex >= 0 ? clamp01(1 - Math.abs(morphValue - driveIndex)) : 0;
+      const driveInputX = getDriveInputX();
       if (driveProximity > 0) {
-        smoothCarLane += (mouseNormX - smoothCarLane) * CAR_LANE_LERP;
+        smoothCarLane += (driveInputX - smoothCarLane) * CAR_LANE_LERP;
       } else {
         smoothCarLane += (0 - smoothCarLane) * CAR_LANE_LERP;
       }
@@ -431,7 +526,8 @@ export function ParticleCanvas(handle: Handle) {
           activeCtrls = scratchLabelControls;
         }
 
-        currentProps.labelsRef.current = projectLabels(
+        projectLabelsInto(
+          currentProps.labelsRef.current,
           nearestPreset,
           labelControlMgr,
           activeCtrls,
@@ -447,7 +543,7 @@ export function ParticleCanvas(handle: Handle) {
           1 - distFromNearest * 4,
         );
       } else {
-        currentProps.labelsRef.current = [];
+        currentProps.labelsRef.current.length = 0;
         currentProps.labelOpacityRef.current = 0;
       }
 

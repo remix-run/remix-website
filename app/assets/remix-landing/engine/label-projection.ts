@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { Preset, PresetLabelDef } from "./types";
+import type { Preset } from "./types";
 import type { ControlManager } from "./controls";
 
 export interface ProjectedLabel {
@@ -16,8 +16,18 @@ export interface ProjectedLabel {
 const DEG2RAD = Math.PI / 180;
 const _v = new THREE.Vector3();
 
+type LabelTransform = (
+  x: number,
+  y: number,
+  z: number,
+  ctrls: number[],
+  time: number,
+) => THREE.Vector3;
+
 function transformSlot0(
-  anchor: [number, number, number],
+  x: number,
+  y: number,
+  z: number,
   ctrls: number[],
   time: number,
 ): THREE.Vector3 {
@@ -26,9 +36,9 @@ function transformSlot0(
   const rY = (ctrls[2] ?? 0) * DEG2RAD - time * (ctrls[4] ?? 0);
   const rZ = (ctrls[3] ?? 0) * DEG2RAD;
 
-  let px = anchor[0] * scale;
-  let py = anchor[1] * scale;
-  let pz = anchor[2] * scale;
+  let px = x * scale;
+  let py = y * scale;
+  let pz = z * scale;
 
   const cx = Math.cos(rX),
     sx = Math.sin(rX);
@@ -55,7 +65,9 @@ function transformSlot0(
 }
 
 function transformSpinY(
-  anchor: [number, number, number],
+  x: number,
+  y: number,
+  z: number,
   ctrls: number[],
   time: number,
 ): THREE.Vector3 {
@@ -65,9 +77,9 @@ function transformSpinY(
   const cosA = Math.cos(angle),
     sinA = Math.sin(angle);
 
-  const mx = anchor[0] * scale;
-  const my = anchor[1] * scale;
-  const mz = anchor[2] * scale;
+  const mx = x * scale;
+  const my = y * scale;
+  const mz = z * scale;
 
   let px = mx * cosA - mz * sinA;
   let py = my;
@@ -82,14 +94,15 @@ function transformSpinY(
   return _v.set(qx, qy, pz);
 }
 
-function getTransform(preset: Preset) {
+function getTransform(preset: Preset): LabelTransform | null {
   const slot = preset.modelSlot;
   if (slot === 0) return transformSlot0;
   if (slot === 1 || slot === 2) return transformSpinY;
   return null;
 }
 
-export function projectLabels(
+export function projectLabelsInto(
+  results: ProjectedLabel[],
   preset: Preset,
   controlMgr: ControlManager,
   ctrls: number[],
@@ -99,14 +112,19 @@ export function projectLabels(
   height: number,
 ): ProjectedLabel[] {
   const labels = preset.labels;
-  if (!labels || labels.length === 0) return [];
+  if (!labels || labels.length === 0) {
+    results.length = 0;
+    return results;
+  }
 
   const transform = getTransform(preset);
-  if (!transform) return [];
+  if (!transform) {
+    results.length = 0;
+    return results;
+  }
 
-  const results: ProjectedLabel[] = [];
-
-  for (const lbl of labels) {
+  for (let index = 0; index < labels.length; index++) {
+    const lbl = labels[index]!;
     const ax =
       controlMgr.controls.get(`label_${lbl.id}_X`)?.value ?? lbl.anchor[0];
     const ay =
@@ -114,25 +132,34 @@ export function projectLabels(
     const az =
       controlMgr.controls.get(`label_${lbl.id}_Z`)?.value ?? lbl.anchor[2];
 
-    const worldPos = transform([ax, ay, az], ctrls, time);
-
-    const projected = worldPos.clone().project(camera);
+    const projected = transform(ax, ay, az, ctrls, time).project(camera);
     const visible = projected.z >= -1 && projected.z <= 1;
 
     const screenX = (projected.x * 0.5 + 0.5) * width;
     const screenY = (-projected.y * 0.5 + 0.5) * height;
 
-    results.push({
-      id: lbl.id,
-      text: lbl.text,
-      anchorX: screenX,
-      anchorY: screenY,
-      labelX: screenX + lbl.offset[0],
-      labelY: screenY + lbl.offset[1],
-      visible,
-      color: preset.labelColor,
-    });
+    const result =
+      results[index] ??
+      (results[index] = {
+        id: lbl.id,
+        text: lbl.text,
+        anchorX: screenX,
+        anchorY: screenY,
+        labelX: screenX + lbl.offset[0],
+        labelY: screenY + lbl.offset[1],
+        visible,
+        color: preset.labelColor,
+      });
+    result.id = lbl.id;
+    result.text = lbl.text;
+    result.anchorX = screenX;
+    result.anchorY = screenY;
+    result.labelX = screenX + lbl.offset[0];
+    result.labelY = screenY + lbl.offset[1];
+    result.visible = visible;
+    result.color = preset.labelColor;
   }
 
+  results.length = labels.length;
   return results;
 }
