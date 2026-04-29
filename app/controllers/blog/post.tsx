@@ -198,7 +198,7 @@ function BlogPostContent() {
                         />
                       </div>
                       <div class="w-6" />
-                      <div>
+                      <div class="flex flex-col gap-2">
                         <div class="rmx-page-title rmx-page-title-xs text-white">
                           {author.name}
                         </div>

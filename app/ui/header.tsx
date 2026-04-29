@@ -20,6 +20,7 @@ export function Header() {
           brandHref={routes.brand.href()}
           width={164}
           height={16}
+          class="text-gray-900 dark:text-gray-200"
         />
 
         <nav class="hidden items-center gap-6 md:flex" aria-label="Main">

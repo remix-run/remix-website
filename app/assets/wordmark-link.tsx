@@ -1,3 +1,4 @@
+import cx from "clsx";
 import { clientEntry, on, navigate } from "remix/component";
 import { Wordmark } from "../ui/wordmark";
 
@@ -7,11 +8,12 @@ export let WordmarkLink = clientEntry(import.meta.url, function WordmarkLink() {
     brandHref: string;
     width?: number | string;
     height?: number | string;
+    class?: string;
   }) => (
     <a
       href={props.href}
       aria-label="Remix"
-      class="inline-flex items-center"
+      class={cx("inline-flex items-center", props.class)}
       mix={[
         on("contextmenu", (event) => {
           event.preventDefault();
