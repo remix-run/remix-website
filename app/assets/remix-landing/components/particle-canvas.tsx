@@ -20,11 +20,17 @@ const DEFAULT_CAM_TARGET: [number, number, number] = [0, 0, 0];
 const CAM_LERP_SPEED = 0.025;
 const TILT_MAX_DEGREES = 28;
 const TILT_DEADZONE = 0.04;
-const TILT_ACTIVE_MS = 1200;
+const GRAVITY_TILT_RANGE = 7;
 
 type DeviceOrientationEventWithPermission = typeof DeviceOrientationEvent & {
   requestPermission?: () => Promise<"granted" | "denied" | "prompt">;
 };
+
+type DeviceMotionEventWithPermission = typeof DeviceMotionEvent & {
+  requestPermission?: () => Promise<"granted" | "denied" | "prompt">;
+};
+
+type SensorPermissionStatus = "idle" | "pending" | "granted" | "denied";
 
 /**
  * Maps each `ShaderId` to the integer expected by the `computePreset` switch
@@ -139,6 +145,11 @@ function normalizeTilt(value: number): number {
   return Math.abs(normalized) < TILT_DEADZONE ? 0 : normalized;
 }
 
+function normalizeGravityTilt(value: number): number {
+  const normalized = clamp(value / GRAVITY_TILT_RANGE, -1, 1);
+  return Math.abs(normalized) < TILT_DEADZONE ? 0 : normalized;
+}
+
 function getTiltLaneOffset(event: DeviceOrientationEvent): number | undefined {
   const angle = getScreenOrientationAngle();
   if (angle === 90) {
@@ -151,6 +162,22 @@ function getTiltLaneOffset(event: DeviceOrientationEvent): number | undefined {
   const gamma = event.gamma;
   if (gamma == null) return undefined;
   return normalizeTilt(angle === 180 ? -gamma : gamma);
+}
+
+function getMotionLaneOffset(event: DeviceMotionEvent): number | undefined {
+  const gravity = event.accelerationIncludingGravity;
+  if (!gravity) return undefined;
+
+  const angle = getScreenOrientationAngle();
+  if (angle === 90) {
+    return gravity.y == null ? undefined : normalizeGravityTilt(-gravity.y);
+  }
+  if (angle === 270) {
+    return gravity.y == null ? undefined : normalizeGravityTilt(gravity.y);
+  }
+
+  if (gravity.x == null) return undefined;
+  return normalizeGravityTilt(angle === 180 ? -gravity.x : gravity.x);
 }
 
 function buildPresetRuntimeData(presets: Preset[]): PresetRuntimeData {
@@ -203,8 +230,9 @@ export function ParticleCanvas(handle: Handle) {
   let mouseNormX = 0;
   let mouseNormY = 0;
   let tiltNormX = 0;
+  let mouseLastInputAt = 0;
   let tiltLastInputAt = 0;
-  let orientationPermissionRequested = false;
+  let sensorPermissionStatus: SensorPermissionStatus = "idle";
   let smoothMouseOffsetX = 0;
   let smoothCarLane = 0;
   let prevCarLane = 0;
@@ -216,13 +244,6 @@ export function ParticleCanvas(handle: Handle) {
   const ACTIVITY_DECAY = 0.97;
   const ACTIVITY_GAIN = 20.0;
 
-  function hasTouchInput() {
-    return (
-      navigator.maxTouchPoints > 0 ||
-      window.matchMedia("(pointer: coarse)").matches
-    );
-  }
-
   function getDeviceOrientationEvent():
     | DeviceOrientationEventWithPermission
     | undefined {
@@ -230,47 +251,86 @@ export function ParticleCanvas(handle: Handle) {
     return DeviceOrientationEvent as DeviceOrientationEventWithPermission;
   }
 
-  function requestOrientationPermission() {
-    if (orientationPermissionRequested || !hasTouchInput()) return;
+  function getDeviceMotionEvent(): DeviceMotionEventWithPermission | undefined {
+    if (typeof DeviceMotionEvent === "undefined") return undefined;
+    return DeviceMotionEvent as DeviceMotionEventWithPermission;
+  }
 
+  function requestSensorPermissions() {
+    if (sensorPermissionStatus !== "idle") return;
     const orientationEvent = getDeviceOrientationEvent();
-    const requestPermission = orientationEvent?.requestPermission;
-    if (!requestPermission) return;
+    const motionEvent = getDeviceMotionEvent();
+    const requests: Array<Promise<"granted" | "denied" | "prompt">> = [];
 
-    orientationPermissionRequested = true;
-    void requestPermission
-      .call(orientationEvent)
-      .then((state) => {
-        if (state === "prompt") orientationPermissionRequested = false;
+    if (orientationEvent?.requestPermission) {
+      requests.push(orientationEvent.requestPermission.call(orientationEvent));
+    }
+    if (motionEvent?.requestPermission) {
+      requests.push(motionEvent.requestPermission.call(motionEvent));
+    }
+    if (requests.length === 0) return;
+
+    sensorPermissionStatus = "pending";
+    void Promise.allSettled(requests)
+      .then((results) => {
+        const states = results.map((result) =>
+          result.status === "fulfilled" ? result.value : "prompt",
+        );
+        if (states.includes("granted")) {
+          sensorPermissionStatus = "granted";
+        } else if (states.includes("prompt")) {
+          sensorPermissionStatus = "idle";
+        } else {
+          sensorPermissionStatus = "denied";
+        }
       })
       .catch(() => {
-        orientationPermissionRequested = false;
-        // The car still works with pointer input if motion access is unavailable.
+        sensorPermissionStatus = "idle";
       });
   }
 
   function getDriveInputX() {
-    if (performance.now() - tiltLastInputAt < TILT_ACTIVE_MS) {
-      return tiltNormX;
-    }
-    return mouseNormX;
+    return tiltLastInputAt > mouseLastInputAt ? tiltNormX : mouseNormX;
   }
 
   addEventListeners(window, handle.signal, {
+    click: () => {
+      requestSensorPermissions();
+    },
     pointerdown: (event) => {
-      if (event.pointerType !== "mouse") requestOrientationPermission();
+      if (event.pointerType !== "mouse") requestSensorPermissions();
     },
     touchstart: () => {
-      requestOrientationPermission();
+      requestSensorPermissions();
     },
-    mousemove: (event) => {
+    pointermove: (event) => {
+      if (event.pointerType !== "mouse") return;
+
       mouseNormX = (event.clientX / window.innerWidth) * 2 - 1;
       mouseNormY = (event.clientY / window.innerHeight) * 2 - 1;
+      mouseLastInputAt = performance.now();
+    },
+    mousemove: (event) => {
+      if (window.PointerEvent) return;
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        return;
+      }
+
+      mouseNormX = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseNormY = (event.clientY / window.innerHeight) * 2 - 1;
+      mouseLastInputAt = performance.now();
     },
     deviceorientation: (event) => {
-      if (!hasTouchInput()) return;
-
       const laneOffset = getTiltLaneOffset(event);
+      if (laneOffset == null) return;
+
+      tiltNormX = laneOffset;
+      tiltLastInputAt = performance.now();
+    },
+    devicemotion: (event) => {
+      if (tiltLastInputAt > 0) return;
+
+      const laneOffset = getMotionLaneOffset(event);
       if (laneOffset == null) return;
 
       tiltNormX = laneOffset;
