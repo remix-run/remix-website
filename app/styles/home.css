@@ -35,6 +35,8 @@
 :root {
   color-scheme: dark;
   animation: brand-cycle 10s linear infinite;
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
 }
 
 html,

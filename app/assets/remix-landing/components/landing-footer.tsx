@@ -19,7 +19,7 @@ const SOCIAL_LINKS = [
     iconSrc: "/landing/social-youtube.svg",
   },
   {
-    href: "https://discord.gg/5UE5TETb",
+    href: "https://discord.gg/xwx7mMzVkA",
     label: "Discord",
     iconSrc: "/landing/social-discord.svg",
   },
