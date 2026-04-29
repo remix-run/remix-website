@@ -31,7 +31,7 @@ function Page() {
 
 function AssetHeader() {
   return (props: { children: RemixNode }) => (
-    <h2 class="text-xl font-extrabold md:text-3xl dark:text-gray-200">
+    <h2 class="rmx-page-title rmx-page-title-sm dark:text-gray-200">
       {props.children}
     </h2>
   );
@@ -162,10 +162,8 @@ function AssetGrid() {
 
 function BrandPage() {
   return () => (
-    <div class="prose container flex max-w-full flex-col gap-8 text-base sm:text-lg lg:max-w-4xl">
-      <h1 class="text-2xl font-extrabold md:text-5xl dark:text-gray-200">
-        Remix Brand
-      </h1>
+    <div class="rmx-page-body prose container mt-8 flex max-w-full flex-col gap-8 lg:max-w-4xl">
+      <h1 class="rmx-page-title dark:text-gray-200">Remix Brand</h1>
       <p>
         These assets are provided for use in situations like articles and video
         tutorials.

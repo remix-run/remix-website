@@ -173,14 +173,14 @@ function BlogPostContent() {
               </div>
               <div class="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-10 lg:max-w-4xl">
                 <div class="flex-1">
-                  <div class="text-sm uppercase text-white md:text-base">
+                  <div class="rmx-page-body rmx-page-body-sm uppercase text-white">
                     {props.post.dateDisplay}
                   </div>
                   <div class="h-2" />
                   <h1
                     class={cx(
-                      "font-display font-extrabold text-white md:text-4xl",
-                      props.post.title.length > 50 ? "text-2xl" : "text-3xl",
+                      "rmx-page-title text-white",
+                      props.post.title.length > 50 && "rmx-page-title-sm",
                     )}
                   >
                     {props.post.title}
@@ -199,10 +199,10 @@ function BlogPostContent() {
                       </div>
                       <div class="w-6" />
                       <div>
-                        <div class="font-display text-lg font-extrabold leading-none text-white md:text-3xl">
+                        <div class="rmx-page-title rmx-page-title-xs text-white">
                           {author.name}
                         </div>
-                        <div class="text-base leading-tight text-white md:text-base">
+                        <div class="rmx-page-body text-white">
                           {author.title}
                         </div>
                       </div>
@@ -221,10 +221,10 @@ function BlogPostContent() {
       </div>
 
       <div class="container m-auto mb-12 mt-24 max-w-lg">
-        <h3 class="mb-6 text-xl font-bold lg:text-3xl">
+        <h3 class="rmx-page-title rmx-page-title-sm mb-6">
           Get updates on the latest Remix news
         </h3>
-        <div class="mb-6" id="newsletter-text">
+        <div class="rmx-page-body mb-6" id="newsletter-text">
           Be the first to learn about new Remix features, community events, and
           tutorials.
         </div>
