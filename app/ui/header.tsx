@@ -4,10 +4,11 @@ import { WordmarkLink } from "../assets/wordmark-link";
 import { routes } from "../routes";
 
 const LINKS: Array<{ to: string; label: string; external?: boolean }> = [
+  { to: "https://github.com/remix-run/remix", label: "GitHub", external: true },
+  { to: "https://api.remix.run", label: "Docs", external: true },
   { to: routes.blog.href(), label: "Blog" },
   { to: routes.jam.y2025.index.href(), label: "Jam" },
   { to: "https://shop.remix.run", label: "Store", external: true },
-  { to: "https://v2.remix.run/docs", label: "V2 Docs" },
 ];
 
 export function Header() {
