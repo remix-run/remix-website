@@ -1,5 +1,5 @@
 import cx from "clsx";
-import { addEventListeners, clientEntry, type Handle } from "remix/component";
+import { addEventListeners, clientEntry, type Handle } from "remix/ui";
 
 const SCRAMBLE_CHARS =
   "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -25,6 +25,11 @@ type ScrambleSetup = {
   cyclesToResolve?: number;
   charDelay?: number;
   cycleDelay?: number;
+};
+
+type JamScrambleTextProps = {
+  setup: ScrambleSetup;
+  className?: string;
 };
 
 let playedAnimations = new Set<string>();
@@ -70,8 +75,9 @@ function getResolvedState(text: string): ScrambleState[] {
 }
 
 export let JamScrambleText = clientEntry(
-  import.meta.url,
-  function JamScrambleText(handle: Handle, setup: ScrambleSetup) {
+  `${import.meta.url}#JamScrambleText`,
+  function JamScrambleText(handle: Handle<JamScrambleTextProps>) {
+    let setup = handle.props.setup;
     let text = setup.text;
     let animationKey = getAnimationKey(text);
     let textChars = text.split("");
@@ -187,11 +193,11 @@ export let JamScrambleText = clientEntry(
       startAnimation();
     });
 
-    return (props: { className?: string }) => {
+    return () => {
       return (
         <>
           <span class="sr-only">{text}</span>
-          <span class={props.className} aria-hidden="true">
+          <span class={handle.props.className} aria-hidden="true">
             {textChars.map((char, index) => {
               let current = state[index];
               let visible = current?.visible ?? false;

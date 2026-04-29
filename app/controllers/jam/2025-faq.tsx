@@ -1,4 +1,4 @@
-import type { RemixNode } from "remix/component/jsx-runtime";
+import type { RemixNode } from "remix/ui";
 import { render } from "../../utils/render";
 import { CACHE_CONTROL } from "../../utils/cache-control";
 import { JamDocument } from "./document";

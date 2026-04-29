@@ -1,6 +1,6 @@
 import type { Router } from "remix/fetch-router";
-import { renderToStream } from "remix/component/server";
-import type { RemixNode } from "remix/component/jsx-runtime";
+import { renderToStream } from "remix/ui/server";
+import type { RemixNode } from "remix/ui";
 import { createHtmlResponse } from "remix/response/html";
 import { getRequestContext } from "./request-context";
 import { assetServer } from "./assets.server";

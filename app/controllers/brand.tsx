@@ -1,5 +1,5 @@
 import cx from "clsx";
-import type { RemixNode } from "remix/component/jsx-runtime";
+import type { RemixNode } from "remix/ui";
 import { Document } from "../ui/document";
 import { Footer } from "../ui/footer";
 import { Header } from "../ui/header";

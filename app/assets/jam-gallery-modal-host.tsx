@@ -4,8 +4,8 @@ import {
   createMixin,
   navigate,
   type Handle,
-} from "remix/component";
-import type { RemixNode } from "remix/component/jsx-runtime";
+  type RemixNode,
+} from "remix/ui";
 import {
   restoreGalleryFocus,
   storeGalleryFocus,
@@ -24,27 +24,33 @@ export type JamGalleryModalNav = {
   nextHref: string;
 };
 
+type JamGalleryModalHostProps = {
+  setup: { photoCount: number };
+  class?: string;
+  children: RemixNode;
+  nav: JamGalleryModalNav;
+};
+
 /** Gallery modal shell with focus trap, keyboard nav, and backdrop close. */
 export let JamGalleryModalHost = clientEntry(
-  import.meta.url,
-  function JamGalleryModalHost(_handle: Handle, setup: { photoCount: number }) {
-    let galleryPhotoCount = setup.photoCount;
+  `${import.meta.url}#JamGalleryModalHost`,
+  function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
+    let galleryPhotoCount = handle.props.setup.photoCount;
     let modalNavigation = createJamGalleryModalNavigation();
-    return (props: {
-      class?: string;
-      children: RemixNode;
-      nav: JamGalleryModalNav;
-    }) => (
-      <div
-        role="dialog"
-        aria-modal="true"
-        tabindex={-1}
-        class={props.class}
-        mix={[modalNavigation(props.nav, galleryPhotoCount)]}
-      >
-        {props.children}
-      </div>
-    );
+    return () => {
+      galleryPhotoCount = handle.props.setup.photoCount;
+      return (
+        <div
+          role="dialog"
+          aria-modal="true"
+          tabindex={-1}
+          class={handle.props.class}
+          mix={[modalNavigation(handle.props.nav, galleryPhotoCount)]}
+        >
+          {handle.props.children}
+        </div>
+      );
+    };
   },
 );
 

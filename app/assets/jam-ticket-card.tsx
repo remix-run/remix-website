@@ -1,13 +1,7 @@
-import {
-  addEventListeners,
-  clientEntry,
-  on,
-  ref,
-  type Handle,
-} from "remix/component";
+import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
 
 export let JamTicketCard = clientEntry(
-  import.meta.url,
+  `${import.meta.url}#JamTicketCard`,
   function JamTicketCard(handle: Handle) {
     let isHovered = false;
     let mousePosition = { x: 50, y: 50 };

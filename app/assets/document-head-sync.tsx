@@ -1,4 +1,4 @@
-import { clientEntry, type Handle } from "remix/component";
+import { clientEntry, type Handle } from "remix/ui";
 import {
   syncManagedHeadTags,
   syncTitle,
@@ -19,7 +19,7 @@ declare global {
 }
 
 export let DocumentHeadSync = clientEntry(
-  import.meta.url,
+  `${import.meta.url}#DocumentHeadSync`,
   function DocumentHeadSync(handle: Handle) {
     let latestProps: DocumentHeadSyncProps | null = null;
     let isQueued = false;

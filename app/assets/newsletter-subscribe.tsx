@@ -1,4 +1,4 @@
-import { clientEntry, on, type Handle } from "remix/component";
+import { clientEntry, on, type Handle } from "remix/ui";
 import cx from "clsx";
 import { routes } from "../routes";
 
@@ -64,7 +64,7 @@ export async function submitNewsletterRequest({
 }
 
 export let NewsletterSubscribeForm = clientEntry(
-  import.meta.url,
+  `${import.meta.url}#NewsletterSubscribeForm`,
   function NewsletterSubscribeForm(handle: Handle) {
     let submitting = false;
     let state: SubscribeState = "idle";

@@ -1,4 +1,4 @@
-import type { RemixNode } from "remix/component";
+import type { RemixNode } from "remix/ui";
 import { Document } from "../../ui/document";
 import { styleHrefs } from "../../utils/style-hrefs";
 import { getSocialHeadTags } from "../../utils/social-head-tags.server";

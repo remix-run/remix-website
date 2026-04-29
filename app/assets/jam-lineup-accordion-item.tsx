@@ -1,5 +1,5 @@
 import cx from "clsx";
-import { clientEntry, on, ref, type Handle } from "remix/component";
+import { clientEntry, on, ref, type Handle } from "remix/ui";
 import { assetPaths } from "../utils/asset-paths";
 
 type LineupItem = {
@@ -12,7 +12,7 @@ type LineupItem = {
 };
 
 export let JamLineupAccordionItem = clientEntry(
-  import.meta.url,
+  `${import.meta.url}#JamLineupAccordionItem`,
   function JamLineupAccordionItem(handle: Handle) {
     let isOpen = false;
     let panel: HTMLDivElement | null = null;
