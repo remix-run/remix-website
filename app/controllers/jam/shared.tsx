@@ -266,14 +266,14 @@ function Footer() {
             </svg>
           </a>
           <a
-            href="https://twitter.com/remix_run"
+            href="https://x.com/remix_run"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Twitter"
+            aria-label="X"
             class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
-            <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
-              <use href={`${assetPaths.iconsSprite}#twitter`} />
+            <svg aria-hidden="true" viewBox="0 0 300 271" fill="currentColor">
+              <use href={`${assetPaths.iconsSprite}#x`} />
             </svg>
           </a>
           <a

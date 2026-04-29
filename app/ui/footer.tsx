@@ -28,9 +28,9 @@ export function Footer() {
               <use href={`${assetPaths.iconsSprite}#github`} />
             </svg>
           </a>
-          <a href="https://twitter.com/remix_run" aria-label="Twitter">
+          <a href="https://x.com/remix_run" aria-label="X">
             <svg aria-hidden="true" fill="none">
-              <use href={`${assetPaths.iconsSprite}#twitter`} />
+              <use href={`${assetPaths.iconsSprite}#x`} />
             </svg>
           </a>
           <a href="https://youtube.com/remix_run" aria-label="YouTube">
