@@ -141,9 +141,9 @@ export class Engine {
 
   dispose() {
     this.resizeObserver?.disconnect();
-    this.controls.dispose();
-    this.renderer.dispose();
-    this.composer.dispose();
-    this.backgroundPass.dispose();
+    this.controls?.dispose();
+    this.renderer?.dispose();
+    this.composer?.dispose();
+    this.backgroundPass?.dispose();
   }
 }

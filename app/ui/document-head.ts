@@ -15,6 +15,7 @@ export type ManagedLinkTag = {
   sizes?: string;
   as?: string;
   crossorigin?: "anonymous" | "use-credentials";
+  fetchpriority?: "high" | "low" | "auto";
 };
 
 export function getManagedHeadTagKey(tag: ManagedHeadTag, index: number) {
@@ -22,7 +23,7 @@ export function getManagedHeadTagKey(tag: ManagedHeadTag, index: number) {
     return `meta:${tag.name ?? tag.property ?? index}:${tag.content}`;
   }
 
-  return `link:${tag.rel}:${tag.href}:${tag.type ?? ""}:${tag.sizes ?? ""}:${tag.as ?? ""}:${tag.crossorigin ?? ""}`;
+  return `link:${tag.rel}:${tag.href}:${tag.type ?? ""}:${tag.sizes ?? ""}:${tag.as ?? ""}:${tag.crossorigin ?? ""}:${tag.fetchpriority ?? ""}`;
 }
 
 export function syncTitle(title?: string) {
@@ -113,6 +114,12 @@ function getManagedHeadNodeKey(node: HTMLElement, index: number) {
           | "anonymous"
           | "use-credentials"
           | null) ?? undefined,
+      fetchpriority:
+        (node.getAttribute("fetchpriority") as
+          | "high"
+          | "low"
+          | "auto"
+          | null) ?? undefined,
     },
     index,
   );
@@ -134,6 +141,9 @@ function createManagedHeadElement(tag: ManagedHeadTag) {
     if (tag.as) element.setAttribute("as", tag.as);
     if (tag.crossorigin) {
       element.setAttribute("crossorigin", tag.crossorigin);
+    }
+    if (tag.fetchpriority) {
+      element.setAttribute("fetchpriority", tag.fetchpriority);
     }
   }
 

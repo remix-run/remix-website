@@ -24,7 +24,14 @@ describe("home route", () => {
     expect(html).toContain("A web framework for building anything");
     expect(html).toContain("Closing the gap between the initial spark");
     expect(html).toContain("High-performance components in plain");
+    expect(html).toContain(
+      'rel="preload" href="/landing/remix-runner.gif" type="image/gif" as="image" fetchpriority="high"',
+    );
     expect(html).toContain('src="/landing/remix-runner.gif"');
+    expect(html).toContain('width="384"');
+    expect(html).toContain('height="384"');
+    expect(html).toContain('loading="eager"');
+    expect(html).toContain('fetchpriority="high"');
     expect(html).toContain("Loading Remix homepage");
     expect(html).toContain('content="http://localhost:3000/"');
     expect(html).toContain(

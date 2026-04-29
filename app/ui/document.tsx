@@ -159,6 +159,7 @@ export function Document() {
                 sizes={tag.sizes}
                 as={tag.as}
                 crossorigin={tag.crossorigin}
+                fetchpriority={tag.fetchpriority}
               />
             ),
           )}

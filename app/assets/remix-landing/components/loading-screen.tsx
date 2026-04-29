@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/component";
+import { css } from "remix/component";
 
 const overlayStyles = css({
   position: "fixed",
@@ -22,6 +22,10 @@ export function LoadingScreen() {
       <img
         src="/landing/remix-runner.gif"
         alt="Loading Remix homepage"
+        width="384"
+        height="384"
+        loading="eager"
+        fetchpriority="high"
         mix={[runnerStyles]}
       />
     </div>

@@ -38,6 +38,8 @@ const ROWS: { topFraction: number; heightFraction: number }[] = [
 
 const VIEWPORT_GUTTER_PX = 24;
 const DATA_SESSION_GAP_PX = 30;
+const STACKED_LOGO_BREAKPOINT_PX = 880;
+const STACKED_LOGO_GAP_PX = 24;
 
 const shellStyles = css({
   position: "absolute",
@@ -106,7 +108,10 @@ export function PackageLogos(handle: Handle) {
   let rafId = 0;
 
   let panelTop = 0;
+  let panelLeft = 0;
+  let panelWidth = 0;
   let panelHeight = 0;
+  let viewportWidth = 0;
   let panelElement: HTMLElement | null = null;
   let resizeObserver: ResizeObserver | null = null;
 
@@ -114,10 +119,24 @@ export function PackageLogos(handle: Handle) {
     if (!panelElement) return false;
     const rect = panelElement.getBoundingClientRect();
     const nextTop = rect.top + window.scrollY;
+    const nextLeft = rect.left + window.scrollX;
+    const nextWidth = rect.width;
     const nextHeight = rect.height;
-    if (nextTop === panelTop && nextHeight === panelHeight) return false;
+    const nextViewportWidth = window.innerWidth;
+    if (
+      nextTop === panelTop &&
+      nextLeft === panelLeft &&
+      nextWidth === panelWidth &&
+      nextHeight === panelHeight &&
+      nextViewportWidth === viewportWidth
+    ) {
+      return false;
+    }
     panelTop = nextTop;
+    panelLeft = nextLeft;
+    panelWidth = nextWidth;
     panelHeight = nextHeight;
+    viewportWidth = nextViewportWidth;
     return true;
   }
 
@@ -203,6 +222,8 @@ export function PackageLogos(handle: Handle) {
     }
     wasInSection = inSection;
 
+    const stackBelowPanel = viewportWidth <= STACKED_LOGO_BREAKPOINT_PX;
+
     // Session width derives from its row height, which is a fraction of the panel
     // height. Data sits to its left, so its right offset grows with Session's width.
     const sessionHeightPx = panelHeight * ROWS[3].heightFraction;
@@ -214,7 +235,10 @@ export function PackageLogos(handle: Handle) {
       <div
         mix={[shellStyles]}
         style={{
-          top: `${panelTop}px`,
+          top: `${stackBelowPanel ? panelTop + panelHeight + STACKED_LOGO_GAP_PX : panelTop}px`,
+          left: stackBelowPanel ? `${panelLeft}px` : "0",
+          right: stackBelowPanel ? "auto" : "0",
+          width: stackBelowPanel ? `${panelWidth}px` : "auto",
           height: `${panelHeight}px`,
         }}
       >

@@ -91,8 +91,8 @@ body > a[href="#main-content"]:focus {
   background: var(--brand-cycle);
 }
 
-/* The `1000ms` start delay must match `PARTICLE_INTRO_DELAY_S` in
- * `particle-canvas.tsx` so the particles morph in as the splash fades out. */
+/* `landing-enhancements.tsx` adds this class after the runner has shown for
+ * its minimum duration and the WebGL background has rendered its first frame. */
 @keyframes loading-screen-dismiss {
   from {
     opacity: 1;
@@ -103,6 +103,6 @@ body > a[href="#main-content"]:focus {
   }
 }
 
-.loading-screen-overlay {
-  animation: loading-screen-dismiss 600ms ease-out 1000ms forwards;
+.loading-screen-overlay.is-dismissed {
+  animation: loading-screen-dismiss 600ms ease-out forwards;
 }

@@ -9,6 +9,7 @@ This note tracks performance work for the Remix 3 homepage. It focuses on change
 - Lazy-loaded `FpsCounter` so the production bundle only imports it after the user presses `F`.
 - Optimized `public/landing/remix-runner.gif` from 39 KB to 11 KB by resizing it to the displayed scale and reducing the palette.
 - Moved `ScrollLogo` scroll tracking into its own RAF, hoisted static SVG path nodes, and shared the brand-page context-menu behavior with `WordmarkLink`.
+- Lazy-loaded the Three.js particle canvas and kept the runner overlay visible until both the minimum display time and the first WebGL frame are ready.
 
 ## Highest-Value Remaining Ideas
 
@@ -25,20 +26,7 @@ That is convenient, but it means a scroll tick re-renders the whole enhancement 
 
 This is more architectural than the earlier allocation cleanup, but it is probably the largest remaining main-thread opportunity.
 
-### 2. Lazy-load heavier visual islands
-
-`ParticleCanvas` statically imports `three` and postprocessing code through the landing enhancement entry. That makes the initial interactive module graph expensive even though the loading overlay is present for the first second.
-
-Possible approach:
-
-- Keep the route-rendered HTML and loading overlay immediate.
-- Dynamically import the WebGL-heavy island after hydration or after the loading overlay starts.
-- Render a minimal placeholder state until the module arrives.
-- Preserve eager model loading only for assets needed by the first visible preset.
-
-This needs careful visual testing because the particle canvas is part of the page identity, but it is likely a bigger byte-level win than further micro-optimizing small components.
-
-### 3. Reduce label projection allocations
+### 2. Reduce label projection allocations
 
 `app/assets/remix-landing/engine/label-projection.ts` still allocates while labels are active:
 
@@ -48,7 +36,7 @@ This needs careful visual testing because the particle canvas is part of the pag
 
 The label count is small, so this is not urgent. If profiling shows label-heavy frames contributing to GC, change `projectLabels` to write into a caller-owned array and reuse scratch vectors.
 
-### 4. Revisit the loading media format
+### 3. Revisit the loading media format
 
 The runner GIF is now much smaller, but GIF is still not an ideal animated image format. If we want to push further:
 

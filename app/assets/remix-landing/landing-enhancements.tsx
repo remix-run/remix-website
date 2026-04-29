@@ -8,7 +8,6 @@ import { PresetGlow } from "./components/preset-glow";
 import { LandingNav } from "./components/landing-nav";
 import { LabelOverlay } from "./components/label-overlay";
 import { PackageLogos } from "./components/package-logos";
-import { ParticleCanvas } from "./components/particle-canvas";
 import { ScrollLogo } from "./components/scroll-logo";
 import { SectionNav } from "./components/section-nav";
 import type { ProjectedLabel } from "./engine/label-projection";
@@ -72,6 +71,13 @@ const KONAMI_KEYS = [
 ] as const;
 
 const KONAMI_IDLE_MS = 4000;
+const LOADING_SCREEN_MIN_MS = 1000;
+const LOADING_SCREEN_SELECTOR = ".loading-screen-overlay";
+const LOADING_SCREEN_DISMISSED_CLASS = "is-dismissed";
+const BRAND_MODE_SETTINGS: SystemSettings = {
+  ...DEFAULT_SETTINGS,
+  colorMode: 2,
+};
 const LANDING_SECTION_IDS = [
   "the-framework",
   "full-stack",
@@ -82,6 +88,13 @@ const LANDING_SECTION_IDS = [
 ] as const;
 
 type FpsCounterComponent = typeof import("./components/fps-counter").FpsCounter;
+type ParticleCanvasComponent =
+  typeof import("./components/particle-canvas").ParticleCanvas;
+type LazyComponent<T> = {
+  Component: T | null;
+  load: Promise<void> | null;
+};
+type ParticleCanvasStatus = "idle" | "loaded" | "ready" | "failed";
 
 function konamiKeyMatches(event: KeyboardEvent, expected: string): boolean {
   if (expected.startsWith("Arrow")) return event.key === expected;
@@ -91,11 +104,9 @@ function konamiKeyMatches(event: KeyboardEvent, expected: string): boolean {
 
 function isEditableKeyTarget(event: KeyboardEvent): boolean {
   const el = event.target as HTMLElement | null;
-  return Boolean(
-    el &&
-      (el.tagName === "INPUT" ||
-        el.tagName === "TEXTAREA" ||
-        el.isContentEditable),
+  if (!el) return false;
+  return (
+    el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable
   );
 }
 
@@ -103,23 +114,44 @@ export let RemixLandingEnhancements = clientEntry(
   import.meta.url,
   function RemixLandingEnhancements(handle: Handle) {
     let isHydrated = false;
-    let settings: SystemSettings = { ...DEFAULT_SETTINGS };
-    let konamiIndex = 0;
-    let konamiIdleTimer: ReturnType<typeof setTimeout> | null = null;
-    let konamiBrandMode = false;
-    let modelData: (ModelData | undefined)[] = presets.map(() => undefined);
-    let morphValue = 0;
-    let currentScrollY = 0;
-    let scrollFrame = 0;
-    let sectionScrollStops: number[] | null = null;
-    let fpsCounterVisible = false;
-    let FpsCounter: FpsCounterComponent | null = null;
-    let fpsCounterLoad: Promise<void> | null = null;
+    const konami = {
+      index: 0,
+      idleTimer: null as ReturnType<typeof setTimeout> | null,
+      brandMode: false,
+    };
+    const modelData: (ModelData | undefined)[] = presets.map(() => undefined);
+    const modelLoads = {
+      pendingUrls: new Set<string>(),
+      failedUrls: new Set<string>(),
+    };
+    const scroll = {
+      morphValue: 0,
+      currentY: 0,
+      frame: 0,
+      sectionStops: null as number[] | null,
+    };
+    const fpsCounter: LazyComponent<FpsCounterComponent> & {
+      visible: boolean;
+    } = {
+      Component: null,
+      load: null,
+      visible: false,
+    };
+    const particleCanvas: LazyComponent<ParticleCanvasComponent> & {
+      status: ParticleCanvasStatus;
+    } = {
+      Component: null,
+      load: null,
+      status: "idle",
+    };
+    const loadingScreen = {
+      minElapsed: false,
+      dismissed: false,
+      minTimer: null as ReturnType<typeof setTimeout> | null,
+    };
     const projectedLabelsRef = { current: [] as ProjectedLabel[] };
     const labelOpacityRef = { current: 0 };
     const morphValueRef = { current: 0 };
-    const pendingModelUrls = new Set<string>();
-    const failedModelUrls = new Set<string>();
     const eagerModelIndexes = presets
       .map((preset, index) => (preset.preloadEager ? index : -1))
       .filter((index) => index >= 0);
@@ -146,7 +178,7 @@ export let RemixLandingEnhancements = clientEntry(
     }
 
     function getSectionScrollStops(): number[] | undefined {
-      if (sectionScrollStops) return sectionScrollStops;
+      if (scroll.sectionStops) return scroll.sectionStops;
 
       const stops: number[] = [];
       for (let index = 0; index < presets.length; index++) {
@@ -154,7 +186,7 @@ export let RemixLandingEnhancements = clientEntry(
         if (stop === undefined) return undefined;
         stops.push(stop);
       }
-      sectionScrollStops = stops;
+      scroll.sectionStops = stops;
       return stops;
     }
 
@@ -195,23 +227,23 @@ export let RemixLandingEnhancements = clientEntry(
       if (
         !url ||
         modelData[index] !== undefined ||
-        pendingModelUrls.has(url) ||
-        failedModelUrls.has(url)
+        modelLoads.pendingUrls.has(url) ||
+        modelLoads.failedUrls.has(url)
       ) {
         return;
       }
 
-      pendingModelUrls.add(url);
+      modelLoads.pendingUrls.add(url);
 
       try {
         const data = await loadModelPoints(url);
         if (handle.signal.aborted) return;
         assignModelData(url, data);
       } catch (error) {
-        failedModelUrls.add(url);
+        modelLoads.failedUrls.add(url);
         console.error(error);
       } finally {
-        pendingModelUrls.delete(url);
+        modelLoads.pendingUrls.delete(url);
         if (!handle.signal.aborted) handle.update();
       }
     }
@@ -223,16 +255,16 @@ export let RemixLandingEnhancements = clientEntry(
 
       presets.forEach((preset, index) => {
         if (!preset.modelUrl) return;
-        if (Math.abs(morphValue - index) < 1.1) {
+        if (Math.abs(scroll.morphValue - index) < 1.1) {
           void requestModel(index);
         }
       });
     }
 
     function syncMorphToScroll() {
-      morphValue = getMorphValueForScroll(window.scrollY);
-      morphValueRef.current = morphValue;
-      currentScrollY = window.scrollY;
+      scroll.morphValue = getMorphValueForScroll(window.scrollY);
+      morphValueRef.current = scroll.morphValue;
+      scroll.currentY = window.scrollY;
       requestNearbyModels();
       handle.update();
     }
@@ -248,39 +280,95 @@ export let RemixLandingEnhancements = clientEntry(
     }
 
     function scheduleMorphSync() {
-      if (scrollFrame) return;
-      scrollFrame = window.requestAnimationFrame(() => {
-        scrollFrame = 0;
+      if (scroll.frame) return;
+      scroll.frame = window.requestAnimationFrame(() => {
+        scroll.frame = 0;
         syncMorphToScroll();
       });
     }
 
     function clearKonamiIdleTimer() {
-      if (konamiIdleTimer) {
-        clearTimeout(konamiIdleTimer);
-        konamiIdleTimer = null;
+      if (konami.idleTimer) {
+        clearTimeout(konami.idleTimer);
+        konami.idleTimer = null;
       }
     }
 
     function armKonamiIdle() {
       clearKonamiIdleTimer();
-      konamiIdleTimer = setTimeout(() => {
-        konamiIdleTimer = null;
-        konamiIndex = 0;
+      konami.idleTimer = setTimeout(() => {
+        konami.idleTimer = null;
+        konami.index = 0;
       }, KONAMI_IDLE_MS);
     }
 
     function loadFpsCounter() {
-      fpsCounterLoad ??= import("./components/fps-counter").then((module) => {
+      fpsCounter.load ??= import("./components/fps-counter").then((module) => {
         if (handle.signal.aborted) return;
-        FpsCounter = module.FpsCounter;
+        fpsCounter.Component = module.FpsCounter;
       });
-      return fpsCounterLoad;
+      return fpsCounter.load;
+    }
+
+    function particleCanvasHasSettled() {
+      return (
+        particleCanvas.status === "ready" || particleCanvas.status === "failed"
+      );
+    }
+
+    function canDismissLoadingScreen() {
+      return loadingScreen.minElapsed && particleCanvasHasSettled();
+    }
+
+    function syncLoadingScreenDismissal() {
+      if (loadingScreen.dismissed || !canDismissLoadingScreen()) return;
+
+      const overlay = document.querySelector<HTMLElement>(
+        LOADING_SCREEN_SELECTOR,
+      );
+      overlay?.classList.add(LOADING_SCREEN_DISMISSED_CLASS);
+      loadingScreen.dismissed = true;
+    }
+
+    function startLoadingScreenMinimumTimer() {
+      loadingScreen.minTimer = setTimeout(() => {
+        loadingScreen.minTimer = null;
+        loadingScreen.minElapsed = true;
+        syncLoadingScreenDismissal();
+      }, LOADING_SCREEN_MIN_MS);
+    }
+
+    function loadParticleCanvas() {
+      particleCanvas.load ??= import("./components/particle-canvas")
+        .then((module) => {
+          if (handle.signal.aborted) return;
+          particleCanvas.Component = module.ParticleCanvas;
+          particleCanvas.status = "loaded";
+        })
+        .catch((error: unknown) => {
+          particleCanvas.status = "failed";
+          console.error(error);
+        });
+      return particleCanvas.load;
+    }
+
+    function markParticleCanvasReady() {
+      if (particleCanvas.status === "ready") return;
+      particleCanvas.status = "ready";
+      syncLoadingScreenDismissal();
+    }
+
+    function markParticleCanvasFailed(error: unknown) {
+      if (particleCanvas.status === "failed") return;
+      particleCanvas.status = "failed";
+      console.error(error);
+      syncLoadingScreenDismissal();
+      handle.update();
     }
 
     function toggleFpsCounter() {
-      fpsCounterVisible = !fpsCounterVisible;
-      if (fpsCounterVisible && !FpsCounter) {
+      fpsCounter.visible = !fpsCounter.visible;
+      if (fpsCounter.visible && !fpsCounter.Component) {
         void loadFpsCounter().then(() => {
           if (handle.signal.aborted) return;
           handle.update();
@@ -290,25 +378,21 @@ export let RemixLandingEnhancements = clientEntry(
     }
 
     function onKonamiKeydown(event: KeyboardEvent) {
-      const expected = KONAMI_KEYS[konamiIndex];
+      const expected = KONAMI_KEYS[konami.index];
       if (konamiKeyMatches(event, expected)) {
-        konamiIndex += 1;
-        if (konamiIndex >= KONAMI_KEYS.length) {
+        konami.index += 1;
+        if (konami.index >= KONAMI_KEYS.length) {
           event.preventDefault();
           clearKonamiIdleTimer();
-          konamiBrandMode = !konamiBrandMode;
-          settings = {
-            ...DEFAULT_SETTINGS,
-            colorMode: konamiBrandMode ? 2 : 0,
-          };
-          konamiIndex = 0;
+          konami.brandMode = !konami.brandMode;
+          konami.index = 0;
           handle.update();
         } else {
           armKonamiIdle();
         }
       } else {
-        konamiIndex = konamiKeyMatches(event, KONAMI_KEYS[0]) ? 1 : 0;
-        if (konamiIndex > 0) armKonamiIdle();
+        konami.index = konamiKeyMatches(event, KONAMI_KEYS[0]) ? 1 : 0;
+        if (konami.index > 0) armKonamiIdle();
         else clearKonamiIdleTimer();
       }
     }
@@ -331,23 +415,30 @@ export let RemixLandingEnhancements = clientEntry(
       if (signal.aborted || handle.signal.aborted) return;
 
       isHydrated = true;
+      startLoadingScreenMinimumTimer();
 
       syncMorphToScroll();
       requestNearbyModels();
+      void loadParticleCanvas().then(() => {
+        if (handle.signal.aborted) return;
+        syncLoadingScreenDismissal();
+        handle.update();
+      });
 
       addEventListeners(window, handle.signal, {
         scroll: () => scheduleMorphSync(),
         resize: () => {
-          sectionScrollStops = null;
+          scroll.sectionStops = null;
           scheduleMorphSync();
         },
         keydown: onKeydown,
       });
 
       handle.signal.addEventListener("abort", () => {
-        window.cancelAnimationFrame(scrollFrame);
+        window.cancelAnimationFrame(scroll.frame);
+        if (loadingScreen.minTimer) clearTimeout(loadingScreen.minTimer);
         clearKonamiIdleTimer();
-        konamiIndex = 0;
+        konami.index = 0;
       });
 
       handle.update();
@@ -356,26 +447,37 @@ export let RemixLandingEnhancements = clientEntry(
     return () => {
       if (!isHydrated) return null;
 
-      const nearestIndex = Math.round(clamp(morphValue, 0, presets.length - 1));
+      const nearestIndex = Math.round(
+        clamp(scroll.morphValue, 0, presets.length - 1),
+      );
+      const settings = konami.brandMode
+        ? BRAND_MODE_SETTINGS
+        : DEFAULT_SETTINGS;
+      const ParticleCanvas = particleCanvas.Component;
+      const FpsCounter = fpsCounter.Component;
 
       return (
         <div mix={[appStyles]}>
-          <PackageLogos morphValue={morphValue} />
-          <ParticleCanvas
-            settings={settings}
-            presets={presets}
-            morphValue={morphValue}
-            modelData={modelData}
-            labelsRef={projectedLabelsRef}
-            labelOpacityRef={labelOpacityRef}
-          />
+          <PackageLogos morphValue={scroll.morphValue} />
+          {ParticleCanvas ? (
+            <ParticleCanvas
+              settings={settings}
+              presets={presets}
+              morphValue={scroll.morphValue}
+              modelData={modelData}
+              labelsRef={projectedLabelsRef}
+              labelOpacityRef={labelOpacityRef}
+              onReady={markParticleCanvasReady}
+              onError={markParticleCanvasFailed}
+            />
+          ) : null}
           <LabelOverlay
             labelsRef={projectedLabelsRef}
             opacityRef={labelOpacityRef}
           />
           <PresetGlow
             morphValueRef={morphValueRef}
-            brandGradientMode={konamiBrandMode}
+            brandGradientMode={konami.brandMode}
           />
           <ScrollLogo />
           <div mix={[blurShellStyles]} />
@@ -384,17 +486,17 @@ export let RemixLandingEnhancements = clientEntry(
             activeIndex={nearestIndex}
             totalSections={presets.length}
             onJump={jumpToPreset}
-            scrollY={currentScrollY}
-            shouldBlockBlogShortcut={() => konamiIndex > 0}
+            scrollY={scroll.currentY}
+            shouldBlockBlogShortcut={() => konami.index > 0}
           />
           <SectionNav
             activeIndex={nearestIndex}
-            morphValue={morphValue}
+            morphValue={scroll.morphValue}
             totalSections={presets.length}
             onJump={jumpToPreset}
           />
 
-          {fpsCounterVisible && FpsCounter ? <FpsCounter /> : null}
+          {fpsCounter.visible && FpsCounter ? <FpsCounter /> : null}
         </div>
       );
     };

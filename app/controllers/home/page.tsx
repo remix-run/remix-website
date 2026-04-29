@@ -14,6 +14,7 @@ type HomePageProps = {
 const HOME_TITLE = "Remix - A Web Framework for Building Anything";
 const HOME_DESCRIPTION =
   "Remix gives you the power and tools to build anything you can dream of.";
+const RUNNER_GIF_SRC = "/landing/remix-runner.gif";
 
 const landingShellStyles = css({
   position: "relative",
@@ -36,6 +37,14 @@ export function HomePage() {
       forceTheme="dark"
       stylesheets={[styleHrefs.home]}
       headTags={[
+        {
+          kind: "link",
+          rel: "preload",
+          as: "image",
+          href: RUNNER_GIF_SRC,
+          type: "image/gif",
+          fetchpriority: "high",
+        },
         { kind: "meta", property: "og:type", content: "website" },
         {
           kind: "meta",

@@ -10,7 +10,7 @@ import type { ModelData } from "../engine/model-loader";
 import type { Preset, ShaderId, SystemSettings } from "../engine/types";
 import { clamp, clamp01, lerp } from "../utils/math";
 
-// Must match the `1000ms` start delay on `.loading-screen-overlay` in `home.css`.
+// Must match `LOADING_SCREEN_MIN_MS` in `landing-enhancements.tsx`.
 const PARTICLE_INTRO_DELAY_S = 1;
 const DEFAULT_CAM_POS: [number, number, number] = [0, 30, 80];
 const DEFAULT_CAM_TARGET: [number, number, number] = [0, 0, 0];
@@ -141,6 +141,8 @@ export function ParticleCanvas(handle: Handle) {
   let frameId = 0;
   let startTime = 0;
   let previousNearest = -1;
+  let hasReportedReady = false;
+  let initFailed = false;
   const labelControlMgr = new ControlManager();
   const desiredCameraPos = new THREE.Vector3();
   const desiredCameraTarget = new THREE.Vector3();
@@ -157,6 +159,8 @@ export function ParticleCanvas(handle: Handle) {
         modelData: (ModelData | undefined)[];
         labelsRef: { current: ProjectedLabel[] };
         labelOpacityRef: { current: number };
+        onReady: () => void;
+        onError: (error: unknown) => void;
       }
     | undefined;
 
@@ -226,28 +230,37 @@ export function ParticleCanvas(handle: Handle) {
   }
 
   function maybeInit() {
-    if (engine || !containerEl || !canvasEl || !currentProps) return;
+    if (initFailed || engine || !containerEl || !canvasEl || !currentProps) {
+      return;
+    }
 
-    engine = new Engine();
-    engine.init(canvasEl, containerEl, currentProps.settings);
+    try {
+      engine = new Engine();
+      engine.init(canvasEl, containerEl, currentProps.settings);
 
-    particles = new ParticleSystem();
-    particles.init(
-      engine.scene,
-      currentProps.settings.particleCount,
-      currentProps.settings.pointSize,
-    );
-    syncModelTextures();
+      particles = new ParticleSystem();
+      particles.init(
+        engine.scene,
+        currentProps.settings.particleCount,
+        currentProps.settings.pointSize,
+      );
+      syncModelTextures();
 
-    startTime = performance.now() / 1000;
-    setDesiredCameraInto(
-      currentProps.presets,
-      currentProps.morphValue,
-      desiredCameraPos,
-      desiredCameraTarget,
-    );
-    engine.camera.position.copy(desiredCameraPos);
-    engine.controls.target.copy(desiredCameraTarget);
+      startTime = performance.now() / 1000;
+      setDesiredCameraInto(
+        currentProps.presets,
+        currentProps.morphValue,
+        desiredCameraPos,
+        desiredCameraTarget,
+      );
+      engine.camera.position.copy(desiredCameraPos);
+      engine.controls.target.copy(desiredCameraTarget);
+    } catch (error) {
+      initFailed = true;
+      disposeScene();
+      currentProps.onError(error);
+      return;
+    }
 
     const animate = () => {
       if (!engine || !particles || !currentProps) return;
@@ -439,6 +452,10 @@ export function ParticleCanvas(handle: Handle) {
       }
 
       engine.render();
+      if (!hasReportedReady) {
+        hasReportedReady = true;
+        currentProps.onReady();
+      }
       frameId = requestAnimationFrame(animate);
     };
 
@@ -452,6 +469,8 @@ export function ParticleCanvas(handle: Handle) {
     modelData: (ModelData | undefined)[];
     labelsRef: { current: ProjectedLabel[] };
     labelOpacityRef: { current: number };
+    onReady: () => void;
+    onError: (error: unknown) => void;
   }) => {
     currentProps = props;
 
@@ -459,7 +478,7 @@ export function ParticleCanvas(handle: Handle) {
       syncModelTextures();
     }
 
-    if (!engine) {
+    if (!engine && !initFailed) {
       handle.queueTask(() => {
         maybeInit();
       });
