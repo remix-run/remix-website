@@ -1,27 +1,28 @@
 import { css, type Handle } from "remix/component";
 import { Wordmark } from "../../../ui/wordmark";
+import { assetPaths } from "../../../utils/asset-paths";
 import { colors } from "../styles/tokens";
 
 const SOCIAL_LINKS = [
   {
     href: "https://github.com/remix-run/remix",
     label: "GitHub",
-    iconSrc: "/landing/social-github.svg",
+    icon: "github",
   },
   {
     href: "https://x.com/remix_run",
     label: "X",
-    iconSrc: "/landing/social-x.svg",
+    icon: "x",
   },
   {
     href: "https://www.youtube.com/c/Remix-Run/streams",
     label: "YouTube",
-    iconSrc: "/landing/social-youtube.svg",
+    icon: "youtube",
   },
   {
     href: "https://discord.gg/xwx7mMzVkA",
     label: "Discord",
-    iconSrc: "/landing/social-discord.svg",
+    icon: "discord",
   },
 ] as const;
 
@@ -65,14 +66,14 @@ const socialLinkStyles = css({
   justifyContent: "center",
   width: "20px",
   height: "20px",
+  color: colors.fg,
   opacity: 1,
 });
 
 const socialIconStyles = css({
   display: "block",
   width: "20px",
-  height: "auto",
-  maxHeight: "20px",
+  height: "20px",
 });
 
 const legalStyles = css({
@@ -122,12 +123,9 @@ export function LandingFooter(_handle: Handle) {
                 rel="noopener noreferrer"
                 mix={[socialLinkStyles]}
               >
-                <img
-                  src={link.iconSrc}
-                  alt=""
-                  aria-hidden="true"
-                  mix={[socialIconStyles]}
-                />
+                <svg aria-hidden="true" mix={[socialIconStyles]}>
+                  <use href={`${assetPaths.iconsSprite}#${link.icon}`} />
+                </svg>
               </a>
             ))}
           </div>
