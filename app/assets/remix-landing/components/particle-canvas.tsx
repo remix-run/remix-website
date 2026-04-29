@@ -18,19 +18,6 @@ const PARTICLE_INTRO_DELAY_S = 1;
 const DEFAULT_CAM_POS: [number, number, number] = [0, 30, 80];
 const DEFAULT_CAM_TARGET: [number, number, number] = [0, 0, 0];
 const CAM_LERP_SPEED = 0.025;
-const TILT_MAX_DEGREES = 28;
-const TILT_DEADZONE = 0.04;
-const GRAVITY_TILT_RANGE = 7;
-
-type DeviceOrientationEventWithPermission = typeof DeviceOrientationEvent & {
-  requestPermission?: () => Promise<"granted" | "denied" | "prompt">;
-};
-
-type DeviceMotionEventWithPermission = typeof DeviceMotionEvent & {
-  requestPermission?: () => Promise<"granted" | "denied" | "prompt">;
-};
-
-type SensorPermissionStatus = "idle" | "pending" | "granted" | "denied";
 
 /**
  * Maps each `ShaderId` to the integer expected by the `computePreset` switch
@@ -133,53 +120,6 @@ function getControlInitial(preset: Preset, id: string, fallback = 0): number {
   );
 }
 
-function getScreenOrientationAngle(): number {
-  const legacyOrientation = (window as Window & { orientation?: number })
-    .orientation;
-  const angle = window.screen.orientation?.angle ?? legacyOrientation ?? 0;
-  return ((angle % 360) + 360) % 360;
-}
-
-function normalizeTilt(value: number): number {
-  const normalized = clamp(value / TILT_MAX_DEGREES, -1, 1);
-  return Math.abs(normalized) < TILT_DEADZONE ? 0 : normalized;
-}
-
-function normalizeGravityTilt(value: number): number {
-  const normalized = clamp(value / GRAVITY_TILT_RANGE, -1, 1);
-  return Math.abs(normalized) < TILT_DEADZONE ? 0 : normalized;
-}
-
-function getTiltLaneOffset(event: DeviceOrientationEvent): number | undefined {
-  const angle = getScreenOrientationAngle();
-  if (angle === 90) {
-    return event.beta == null ? undefined : normalizeTilt(event.beta);
-  }
-  if (angle === 270) {
-    return event.beta == null ? undefined : normalizeTilt(-event.beta);
-  }
-
-  const gamma = event.gamma;
-  if (gamma == null) return undefined;
-  return normalizeTilt(angle === 180 ? -gamma : gamma);
-}
-
-function getMotionLaneOffset(event: DeviceMotionEvent): number | undefined {
-  const gravity = event.accelerationIncludingGravity;
-  if (!gravity) return undefined;
-
-  const angle = getScreenOrientationAngle();
-  if (angle === 90) {
-    return gravity.y == null ? undefined : normalizeGravityTilt(-gravity.y);
-  }
-  if (angle === 270) {
-    return gravity.y == null ? undefined : normalizeGravityTilt(gravity.y);
-  }
-
-  if (gravity.x == null) return undefined;
-  return normalizeGravityTilt(angle === 180 ? -gravity.x : gravity.x);
-}
-
 function buildPresetRuntimeData(presets: Preset[]): PresetRuntimeData {
   const driveIndex = presets.findIndex((preset) => preset.name === "Drive");
   return {
@@ -229,10 +169,6 @@ export function ParticleCanvas(handle: Handle) {
 
   let mouseNormX = 0;
   let mouseNormY = 0;
-  let tiltNormX = 0;
-  let mouseLastInputAt = 0;
-  let tiltLastInputAt = 0;
-  let sensorPermissionStatus: SensorPermissionStatus = "idle";
   let smoothMouseOffsetX = 0;
   let smoothCarLane = 0;
   let prevCarLane = 0;
@@ -244,71 +180,15 @@ export function ParticleCanvas(handle: Handle) {
   const ACTIVITY_DECAY = 0.97;
   const ACTIVITY_GAIN = 20.0;
 
-  function getDeviceOrientationEvent():
-    | DeviceOrientationEventWithPermission
-    | undefined {
-    if (typeof DeviceOrientationEvent === "undefined") return undefined;
-    return DeviceOrientationEvent as DeviceOrientationEventWithPermission;
-  }
-
-  function getDeviceMotionEvent(): DeviceMotionEventWithPermission | undefined {
-    if (typeof DeviceMotionEvent === "undefined") return undefined;
-    return DeviceMotionEvent as DeviceMotionEventWithPermission;
-  }
-
-  function requestSensorPermissions() {
-    if (sensorPermissionStatus !== "idle") return;
-    const orientationEvent = getDeviceOrientationEvent();
-    const motionEvent = getDeviceMotionEvent();
-    const requests: Array<Promise<"granted" | "denied" | "prompt">> = [];
-
-    if (orientationEvent?.requestPermission) {
-      requests.push(orientationEvent.requestPermission.call(orientationEvent));
-    }
-    if (motionEvent?.requestPermission) {
-      requests.push(motionEvent.requestPermission.call(motionEvent));
-    }
-    if (requests.length === 0) return;
-
-    sensorPermissionStatus = "pending";
-    void Promise.allSettled(requests)
-      .then((results) => {
-        const states = results.map((result) =>
-          result.status === "fulfilled" ? result.value : "prompt",
-        );
-        if (states.includes("granted")) {
-          sensorPermissionStatus = "granted";
-        } else if (states.includes("prompt")) {
-          sensorPermissionStatus = "idle";
-        } else {
-          sensorPermissionStatus = "denied";
-        }
-      })
-      .catch(() => {
-        sensorPermissionStatus = "idle";
-      });
-  }
-
-  function getDriveInputX() {
-    return tiltLastInputAt > mouseLastInputAt ? tiltNormX : mouseNormX;
+  function setMousePosition(clientX: number, clientY: number) {
+    mouseNormX = (clientX / window.innerWidth) * 2 - 1;
+    mouseNormY = (clientY / window.innerHeight) * 2 - 1;
   }
 
   addEventListeners(window, handle.signal, {
-    click: () => {
-      requestSensorPermissions();
-    },
-    pointerdown: (event) => {
-      if (event.pointerType !== "mouse") requestSensorPermissions();
-    },
-    touchstart: () => {
-      requestSensorPermissions();
-    },
     pointermove: (event) => {
       if (event.pointerType !== "mouse") return;
-
-      mouseNormX = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseNormY = (event.clientY / window.innerHeight) * 2 - 1;
-      mouseLastInputAt = performance.now();
+      setMousePosition(event.clientX, event.clientY);
     },
     mousemove: (event) => {
       if (window.PointerEvent) return;
@@ -316,25 +196,7 @@ export function ParticleCanvas(handle: Handle) {
         return;
       }
 
-      mouseNormX = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseNormY = (event.clientY / window.innerHeight) * 2 - 1;
-      mouseLastInputAt = performance.now();
-    },
-    deviceorientation: (event) => {
-      const laneOffset = getTiltLaneOffset(event);
-      if (laneOffset == null) return;
-
-      tiltNormX = laneOffset;
-      tiltLastInputAt = performance.now();
-    },
-    devicemotion: (event) => {
-      if (tiltLastInputAt > 0) return;
-
-      const laneOffset = getMotionLaneOffset(event);
-      if (laneOffset == null) return;
-
-      tiltNormX = laneOffset;
-      tiltLastInputAt = performance.now();
+      setMousePosition(event.clientX, event.clientY);
     },
   });
 
@@ -527,9 +389,8 @@ export function ParticleCanvas(handle: Handle) {
 
       const driveProximity =
         driveIndex >= 0 ? clamp01(1 - Math.abs(morphValue - driveIndex)) : 0;
-      const driveInputX = getDriveInputX();
       if (driveProximity > 0) {
-        smoothCarLane += (driveInputX - smoothCarLane) * CAR_LANE_LERP;
+        smoothCarLane += (mouseNormX - smoothCarLane) * CAR_LANE_LERP;
       } else {
         smoothCarLane += (0 - smoothCarLane) * CAR_LANE_LERP;
       }
