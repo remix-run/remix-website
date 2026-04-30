@@ -2,7 +2,6 @@
 title: Remix 3 Beta Preview
 summary: Remix 3 is ready for you to kick the tires and start prompting your next big idea into existence.
 date: 2026-04-30
-draft: true
 authors:
   - Michael Jackson
 image: /blog-images/headers/remix-3-beta-preview.png
@@ -40,8 +39,9 @@ Remix components follow the same pattern: plain JavaScript variables for state, 
 Here's a small example:
 
 ```tsx
-import { type Handle, Glyph, on, ui } from "remix/ui";
-import { tooltip } from "remix/ui/tooltip";
+import { type Handle, on } from "remix/ui";
+import { Glyph } from "remix/ui/glyph";
+import * as btn from "remix/ui/button";
 
 function CopyToClipboard(handle: Handle<{ url: string }>) {
   let state: "idle" | "copied" | "error" = "idle";
@@ -59,12 +59,11 @@ function CopyToClipboard(handle: Handle<{ url: string }>) {
         aria-label={label}
         aria-live="polite"
         mix={[
-          ui.button,
-          tooltip(label),
-          on("click", async () => {
+          btn.secondaryStyle,
+          on("click", async (_, signal) => {
             try {
               await navigator.clipboard.writeText(handle.props.url);
-              if (handle.signal.aborted) return;
+              if (signal.aborted) return;
             } catch (error) {
               state = "error";
               handle.update();
@@ -74,7 +73,7 @@ function CopyToClipboard(handle: Handle<{ url: string }>) {
             state = "copied";
             handle.update();
             setTimeout(() => {
-              if (handle.signal.aborted) return;
+              if (signal.aborted) return;
               state = "idle";
               handle.update();
             }, 2000);
