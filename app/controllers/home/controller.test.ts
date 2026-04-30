@@ -28,7 +28,13 @@ describe("home route", () => {
     expect(html).toContain("Closing the gap between the initial spark");
     expect(html).toContain("High-performance components in plain");
     expect(html).toContain(
-      'rel="preload" href="/landing/remix-runner.gif" type="image/gif" as="image" fetchpriority="high"',
+      'rel="preload" href="/landing/remix-runner.avif" type="image/avif" as="image" fetchpriority="high"',
+    );
+    expect(html).toContain(
+      '<source srcset="/landing/remix-runner.avif" type="image/avif"',
+    );
+    expect(html).toContain(
+      '<source srcset="/landing/remix-runner.webp" type="image/webp"',
     );
     expect(html).toContain('src="/landing/remix-runner.gif"');
     expect(html).toContain('width="384"');

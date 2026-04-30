@@ -8,6 +8,7 @@ import {
 } from "remix/ui";
 import { routes } from "../../../routes";
 import { colors } from "../styles/tokens";
+import { isEditableKeyTarget } from "../utils/keyboard";
 import { clamp01 } from "../utils/math";
 
 const MOBILE_BREAKPOINT_PX = 720;
@@ -168,10 +169,12 @@ function navItemClick(item: NavItem, afterClick?: () => void) {
 
 export function LandingNav(handle: Handle) {
   let onJump: ((index: number) => void) | null = null;
-  let activeIndex = 0;
   let totalSections = 1;
   let menuOpen = false;
   let mobileContainerEl: HTMLElement | null = null;
+  let scrollFrame = 0;
+  let activeIndexRef: { current: number } = { current: 0 };
+  let scrollYRef: { current: number } = { current: 0 };
   let shouldBlockBlogShortcut = () => false;
 
   function setMenuOpen(next: boolean) {
@@ -180,16 +183,18 @@ export function LandingNav(handle: Handle) {
     handle.update();
   }
 
+  function scheduleScrollUpdate() {
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = 0;
+      handle.update();
+    });
+  }
+
   addEventListeners(window, handle.signal, {
     keydown: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const target = e.target as HTMLElement;
-      if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable
-      )
-        return;
+      if (isEditableKeyTarget(e)) return;
 
       if (e.key === "Escape" && menuOpen) {
         e.preventDefault();
@@ -199,13 +204,13 @@ export function LandingNav(handle: Handle) {
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        const next = Math.min(activeIndex + 1, totalSections - 1);
+        const next = Math.min(activeIndexRef.current + 1, totalSections - 1);
         onJump?.(next);
         return;
       }
       if (e.key === "ArrowUp") {
         e.preventDefault();
-        const prev = Math.max(activeIndex - 1, 0);
+        const prev = Math.max(activeIndexRef.current - 1, 0);
         onJump?.(prev);
         return;
       }
@@ -219,6 +224,7 @@ export function LandingNav(handle: Handle) {
         openNavItem(item);
       }
     },
+    scroll: scheduleScrollUpdate,
     resize: () => {
       if (menuOpen && window.innerWidth > MOBILE_BREAKPOINT_PX) {
         setMenuOpen(false);
@@ -236,19 +242,24 @@ export function LandingNav(handle: Handle) {
     },
   });
 
+  handle.signal.addEventListener("abort", () => {
+    if (scrollFrame) cancelAnimationFrame(scrollFrame);
+  });
+
   return (props: {
-    activeIndex: number;
+    activeIndexRef: { current: number };
     totalSections: number;
     onJump: (index: number) => void;
-    scrollY: number;
+    scrollYRef: { current: number };
     shouldBlockBlogShortcut: () => boolean;
   }) => {
-    activeIndex = props.activeIndex;
+    activeIndexRef = props.activeIndexRef;
     totalSections = props.totalSections;
     onJump = props.onJump;
+    scrollYRef = props.scrollYRef;
     shouldBlockBlogShortcut = props.shouldBlockBlogShortcut;
 
-    const hintOpacity = clamp01(1 - props.scrollY / 80);
+    const hintOpacity = clamp01(1 - scrollYRef.current / 80);
     const toggleLabel = menuOpen ? "close" : "menu";
 
     return (

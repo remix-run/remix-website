@@ -1,6 +1,7 @@
 import { css } from "remix/ui";
 import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements";
 import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen";
+import { RUNNER_AVIF_SRC } from "../../assets/remix-landing/runner-media";
 import { colors } from "../../assets/remix-landing/styles/tokens";
 import { Document } from "../../ui/document";
 import { styleHrefs } from "../../utils/style-hrefs";
@@ -14,7 +15,6 @@ type HomePageProps = {
 const HOME_TITLE = "Remix - A Web Framework for Building Anything";
 const HOME_DESCRIPTION =
   "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.";
-const RUNNER_GIF_SRC = "/landing/remix-runner.gif";
 
 const landingShellStyles = css({
   position: "relative",
@@ -41,8 +41,8 @@ export function HomePage() {
           kind: "link",
           rel: "preload",
           as: "image",
-          href: RUNNER_GIF_SRC,
-          type: "image/gif",
+          href: RUNNER_AVIF_SRC,
+          type: "image/avif",
           fetchpriority: "high",
         },
         { kind: "meta", property: "og:type", content: "website" },

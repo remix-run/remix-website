@@ -40,6 +40,7 @@ const VIEWPORT_GUTTER_PX = 24;
 const DATA_SESSION_GAP_PX = 30;
 const STACKED_LOGO_BREAKPOINT_PX = 880;
 const STACKED_LOGO_GAP_PX = 24;
+const PANEL_SELECTOR = "[data-package-logos-panel]";
 
 const shellStyles = css({
   position: "absolute",
@@ -106,6 +107,8 @@ export function PackageLogos(handle: Handle) {
   let sequenceStartMs: number | null = null;
   let delayTimer: ReturnType<typeof setTimeout> | null = null;
   let rafId = 0;
+  let scrollFrameId = 0;
+  let morphValueRef: { current: number } = { current: 0 };
 
   let panelTop = 0;
   let panelLeft = 0;
@@ -142,9 +145,7 @@ export function PackageLogos(handle: Handle) {
 
   function locatePanel() {
     if (panelElement && panelElement.isConnected) return;
-    panelElement = document.getElementById(
-      "full-stack-panel",
-    ) as HTMLElement | null;
+    panelElement = document.querySelector<HTMLElement>(PANEL_SELECTOR);
     if (!panelElement) return;
     if (typeof ResizeObserver !== "undefined") {
       resizeObserver?.disconnect();
@@ -172,7 +173,16 @@ export function PackageLogos(handle: Handle) {
     }
   }
 
+  function scheduleScrollUpdate() {
+    if (scrollFrameId) return;
+    scrollFrameId = requestAnimationFrame(() => {
+      scrollFrameId = 0;
+      handle.update();
+    });
+  }
+
   addEventListeners(window, handle.signal, {
+    scroll: scheduleScrollUpdate,
     resize: () => {
       if (measurePanel()) handle.update();
     },
@@ -189,15 +199,21 @@ export function PackageLogos(handle: Handle) {
       delayTimer = null;
     }
     stopSequenceLoop();
+    if (scrollFrameId) {
+      cancelAnimationFrame(scrollFrameId);
+      scrollFrameId = 0;
+    }
     resizeObserver?.disconnect();
     resizeObserver = null;
     panelElement = null;
   });
 
-  return (props: { morphValue: number }) => {
+  return (props: { morphValueRef: { current: number } }) => {
+    morphValueRef = props.morphValueRef;
     if (!panelElement || !panelElement.isConnected) locatePanel();
 
-    const inSection = morphInLogoSection(props.morphValue);
+    const morphValue = morphValueRef.current;
+    const inSection = morphInLogoSection(morphValue);
     const now = performance.now();
 
     if (inSection) {
@@ -259,7 +275,7 @@ export function PackageLogos(handle: Handle) {
                 aspectRatio: logo.ratio,
                 maskImage: `url(${logo.src})`,
                 WebkitMaskImage: `url(${logo.src})`,
-                opacity: `${logoOpacity(props.morphValue, i) * seq}`,
+                opacity: `${logoOpacity(morphValue, i) * seq}`,
               }}
             />
           );

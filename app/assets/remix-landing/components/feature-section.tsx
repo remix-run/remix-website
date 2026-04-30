@@ -488,6 +488,7 @@ type FeatureSectionProps = {
   title: string;
   body: string;
   align: "left" | "right";
+  packageLogosAnchor?: boolean;
   ctaLabel?: string;
   ctaHref?: string;
   ctaIcon?: "eye";
@@ -602,7 +603,9 @@ export function FeatureSection(_handle: Handle) {
       <section id={props.id} mix={[shellStyles]}>
         <div mix={[rowStyles, ROW_STYLES_BY_ID[props.id]]}>
           <div
-            id={props.id === "full-stack" ? "full-stack-panel" : undefined}
+            data-package-logos-panel={
+              props.packageLogosAnchor ? "true" : undefined
+            }
             mix={[panelStyles, primaryPanelStyles]}
           >
             <p mix={[kickerStyles]}>{props.kicker}</p>

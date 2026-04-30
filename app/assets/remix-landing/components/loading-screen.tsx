@@ -1,4 +1,9 @@
 import { css } from "remix/ui";
+import {
+  RUNNER_AVIF_SRC,
+  RUNNER_GIF_SRC,
+  RUNNER_WEBP_SRC,
+} from "../runner-media";
 
 const overlayStyles = css({
   position: "fixed",
@@ -19,15 +24,19 @@ const runnerStyles = css({
 export function LoadingScreen() {
   return () => (
     <div mix={[overlayStyles]} class="loading-screen-overlay">
-      <img
-        src="/landing/remix-runner.gif"
-        alt="Loading Remix homepage"
-        width="384"
-        height="384"
-        loading="eager"
-        fetchpriority="high"
-        mix={[runnerStyles]}
-      />
+      <picture>
+        <source srcset={RUNNER_AVIF_SRC} type="image/avif" />
+        <source srcset={RUNNER_WEBP_SRC} type="image/webp" />
+        <img
+          src={RUNNER_GIF_SRC}
+          alt="Loading Remix homepage"
+          width="384"
+          height="384"
+          loading="eager"
+          fetchpriority="high"
+          mix={[runnerStyles]}
+        />
+      </picture>
     </div>
   );
 }

@@ -158,7 +158,7 @@ export function ParticleCanvas(handle: Handle) {
     | {
         settings: SystemSettings;
         presets: Preset[];
-        morphValue: number;
+        morphValueRef: { current: number };
         modelData: (ModelData | undefined)[];
         labelsRef: { current: ProjectedLabel[] };
         labelOpacityRef: { current: number };
@@ -265,7 +265,7 @@ export function ParticleCanvas(handle: Handle) {
       startTime = performance.now() / 1000;
       setDesiredCameraInto(
         currentProps.presets,
-        currentProps.morphValue,
+        currentProps.morphValueRef.current,
         desiredCameraPos,
         desiredCameraTarget,
       );
@@ -285,7 +285,7 @@ export function ParticleCanvas(handle: Handle) {
       const time = now / 1000 - startTime;
       const presets = currentProps.presets;
       const presetData = getPresetRuntimeData(presets);
-      const morphValue = currentProps.morphValue;
+      const morphValue = currentProps.morphValueRef.current;
 
       engine.updateSettings(currentProps.settings);
 
@@ -482,7 +482,7 @@ export function ParticleCanvas(handle: Handle) {
   return (props: {
     settings: SystemSettings;
     presets: Preset[];
-    morphValue: number;
+    morphValueRef: { current: number };
     modelData: (ModelData | undefined)[];
     labelsRef: { current: ProjectedLabel[] };
     labelOpacityRef: { current: number };

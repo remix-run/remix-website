@@ -10,6 +10,7 @@ const storySections = [
     title: "Closing the gap between the initial spark and shipping",
     body: "Remix is the world's first truly full-stack JavaScript framework. It includes a server, router, data layer, UI components, testing, and much more. Everything you need to go from idea to launch in a single dependency.",
     align: "left" as const,
+    packageLogosAnchor: true,
   },
   {
     id: "ai-ready",
@@ -107,6 +108,11 @@ export function LandingContent() {
           title={section.title}
           body={section.body}
           align={section.align}
+          packageLogosAnchor={
+            "packageLogosAnchor" in section
+              ? section.packageLogosAnchor
+              : undefined
+          }
           ctaLabel={section.ctaLabel}
           ctaHref={section.ctaHref}
           ctaIcon={section.ctaIcon}

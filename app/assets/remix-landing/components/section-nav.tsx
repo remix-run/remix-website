@@ -1,4 +1,4 @@
-import { css, on, type Handle } from "remix/ui";
+import { addEventListeners, css, on, type Handle } from "remix/ui";
 import { colors } from "../styles/tokens";
 import { clamp } from "../utils/math";
 
@@ -162,19 +162,40 @@ async function replaceHash(anchor: string) {
   }
 }
 
-export function SectionNav(_handle: Handle) {
+export function SectionNav(handle: Handle) {
+  let scrollFrame = 0;
+  let activeIndexRef: { current: number } = { current: 0 };
+  let morphValueRef: { current: number } = { current: 0 };
+
+  function scheduleScrollUpdate() {
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = 0;
+      handle.update();
+    });
+  }
+
+  addEventListeners(window, handle.signal, {
+    scroll: scheduleScrollUpdate,
+  });
+  handle.signal.addEventListener("abort", () => {
+    if (scrollFrame) cancelAnimationFrame(scrollFrame);
+  });
+
   return (props: {
-    activeIndex: number;
-    morphValue: number;
+    activeIndexRef: { current: number };
+    morphValueRef: { current: number };
     totalSections: number;
     onJump: (index: number) => void;
   }) => {
+    activeIndexRef = props.activeIndexRef;
+    morphValueRef = props.morphValueRef;
     const count = SECTIONS.length;
     const maxMorph = count - 1;
     const step = ITEM_HEIGHT + ITEM_GAP;
     const trackHeight = (count - 1) * step + ITEM_HEIGHT;
-    const morph = clamp(props.morphValue, 0, maxMorph);
-    const activeIndex = clamp(props.activeIndex, 0, maxMorph);
+    const morph = clamp(morphValueRef.current, 0, maxMorph);
+    const activeIndex = clamp(activeIndexRef.current, 0, maxMorph);
     const dotCenterY = (index: number) => index * step + ITEM_HEIGHT / 2;
     const scrollFillPx =
       maxMorph > 0
@@ -196,7 +217,7 @@ export function SectionNav(_handle: Handle) {
             {SECTIONS.map((section, i) => {
               const bulletCenter = i * step + ITEM_HEIGHT / 2;
               const covered = fillPx >= bulletCenter;
-              const isActive = i === props.activeIndex;
+              const isActive = i === activeIndex;
               return (
                 <li key={section.anchor} mix={[itemStyles]}>
                   <div

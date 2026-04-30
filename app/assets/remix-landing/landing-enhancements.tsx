@@ -15,6 +15,7 @@ import { loadModelPoints, type ModelData } from "./engine/model-loader";
 import { presets } from "./engine/presets";
 import { DEFAULT_SETTINGS, type SystemSettings } from "./engine/types";
 import { colors } from "./styles/tokens";
+import { isEditableKeyTarget } from "./utils/keyboard";
 import { clamp } from "./utils/math";
 
 const appStyles = css({
@@ -102,14 +103,6 @@ function konamiKeyMatches(event: KeyboardEvent, expected: string): boolean {
   return event.key.length === 1 && event.key.toLowerCase() === expected;
 }
 
-function isEditableKeyTarget(event: KeyboardEvent): boolean {
-  const el = event.target as HTMLElement | null;
-  if (!el) return false;
-  return (
-    el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable
-  );
-}
-
 export let RemixLandingEnhancements = clientEntry(
   import.meta.url,
   function RemixLandingEnhancements(handle: Handle) {
@@ -152,6 +145,8 @@ export let RemixLandingEnhancements = clientEntry(
     const projectedLabelsRef = { current: [] as ProjectedLabel[] };
     const labelOpacityRef = { current: 0 };
     const morphValueRef = { current: 0 };
+    const scrollYRef = { current: 0 };
+    const activeIndexRef = { current: 0 };
     const eagerModelIndexes = presets
       .map((preset, index) => (preset.preloadEager ? index : -1))
       .filter((index) => index >= 0);
@@ -268,8 +263,11 @@ export let RemixLandingEnhancements = clientEntry(
       scroll.morphValue = getMorphValueForScroll(window.scrollY);
       morphValueRef.current = scroll.morphValue;
       scroll.currentY = window.scrollY;
+      scrollYRef.current = scroll.currentY;
+      activeIndexRef.current = Math.round(
+        clamp(scroll.morphValue, 0, presets.length - 1),
+      );
       requestNearbyModels();
-      handle.update();
     }
 
     function jumpToPreset(index: number) {
@@ -421,7 +419,6 @@ export let RemixLandingEnhancements = clientEntry(
       startLoadingScreenMinimumTimer();
 
       syncMorphToScroll();
-      requestNearbyModels();
       void loadParticleCanvas().then(() => {
         if (handle.signal.aborted) return;
         syncLoadingScreenDismissal();
@@ -450,9 +447,6 @@ export let RemixLandingEnhancements = clientEntry(
     return () => {
       if (!isHydrated) return null;
 
-      const nearestIndex = Math.round(
-        clamp(scroll.morphValue, 0, presets.length - 1),
-      );
       const settings = konami.brandMode
         ? BRAND_MODE_SETTINGS
         : DEFAULT_SETTINGS;
@@ -461,12 +455,12 @@ export let RemixLandingEnhancements = clientEntry(
 
       return (
         <div mix={[appStyles]}>
-          <PackageLogos morphValue={scroll.morphValue} />
+          <PackageLogos morphValueRef={morphValueRef} />
           {ParticleCanvas ? (
             <ParticleCanvas
               settings={settings}
               presets={presets}
-              morphValue={scroll.morphValue}
+              morphValueRef={morphValueRef}
               modelData={modelData}
               labelsRef={projectedLabelsRef}
               labelOpacityRef={labelOpacityRef}
@@ -486,15 +480,15 @@ export let RemixLandingEnhancements = clientEntry(
           <div mix={[blurShellStyles]} />
           <div mix={[topFadeGradientStyles]} />
           <LandingNav
-            activeIndex={nearestIndex}
+            activeIndexRef={activeIndexRef}
             totalSections={presets.length}
             onJump={jumpToPreset}
-            scrollY={scroll.currentY}
+            scrollYRef={scrollYRef}
             shouldBlockBlogShortcut={() => konami.index > 0}
           />
           <SectionNav
-            activeIndex={nearestIndex}
-            morphValue={scroll.morphValue}
+            activeIndexRef={activeIndexRef}
+            morphValueRef={morphValueRef}
             totalSections={presets.length}
             onJump={jumpToPreset}
           />
