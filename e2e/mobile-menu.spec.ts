@@ -12,7 +12,7 @@ async function markPage(page: Page) {
 
 async function gotoMobileMenuPage(page: Page) {
   await page.setViewportSize({ width: 390, height: 844 });
-  let response = await page.goto("/");
+  let response = await page.goto("/remix-3-active-development");
   expect(response?.ok()).toBe(true);
   await page.waitForLoadState("networkidle");
 }

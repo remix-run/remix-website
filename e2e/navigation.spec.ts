@@ -25,9 +25,89 @@ async function expectClientNavigation(
     .toBe(marker);
 }
 
+async function expectHydratedClientNavigation(
+  page: Page,
+  navigate: () => Promise<void>,
+  url: string,
+) {
+  let marker = await markPage(page);
+
+  await expect(async () => {
+    await navigate();
+    await page.waitForURL(url, { timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (window as Window & { __navMarker?: string }).__navMarker,
+      ),
+    )
+    .toBe(marker);
+}
+
+async function expectLandingNavReady(page: Page) {
+  await expect(
+    page.locator('nav[aria-label="Primary"] a[href="/blog"]').first(),
+  ).toBeVisible();
+}
+
 test.describe("Navigation", () => {
-  test("root route header links use client navigation", async ({ page }) => {
+  test("home page renders landing content and keeps the skip target", async ({
+    page,
+  }) => {
     await page.goto("/");
+
+    await expect(
+      page.getByRole("heading", {
+        name: "A web framework for building anything",
+      }),
+    ).toBeVisible();
+    await expect(page.locator("main#main-content")).toHaveCount(1);
+  });
+
+  test("home page blog keyboard shortcut uses client navigation", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("heading", {
+        name: "A web framework for building anything",
+      }),
+    ).toBeVisible();
+    await expectLandingNavReady(page);
+
+    await expectClientNavigation(
+      page,
+      () => page.keyboard.press("b"),
+      "**/blog",
+    );
+    await expect(page).toHaveTitle(/Blog/i);
+  });
+
+  test("home page jam keyboard shortcut uses client navigation", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("heading", {
+        name: "A web framework for building anything",
+      }),
+    ).toBeVisible();
+    await expectLandingNavReady(page);
+
+    await expectClientNavigation(
+      page,
+      () => page.keyboard.press("j"),
+      "**/jam/2025",
+    );
+    await expect(page).toHaveTitle(/Jam/i);
+  });
+
+  test("active development route header links use client navigation", async ({
+    page,
+  }) => {
+    await page.goto("/remix-3-active-development");
 
     await expectClientNavigation(
       page,
@@ -38,9 +118,7 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Blog/i);
   });
 
-  test("blog to Remix 3 active development page clears dark mode", async ({
-    page,
-  }) => {
+  test("blog to home page applies forced dark mode", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/blog");
 
@@ -53,8 +131,8 @@ test.describe("Navigation", () => {
       "**/",
     );
 
-    await expect(page.locator('html[data-theme="light"]')).toHaveCount(1);
-    await expect(page.locator("html.dark")).toHaveCount(0);
+    await expect(page.locator('html[data-theme="dark"]')).toHaveCount(1);
+    await expect(page.locator("html.dark")).toHaveCount(1);
   });
 
   test("blog header jam link uses client navigation", async ({ page }) => {
@@ -72,7 +150,7 @@ test.describe("Navigation", () => {
   test("Remix 3 active development page to jam applies jam head styles and forced dark theme", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
 
     await expectClientNavigation(
       page,
@@ -95,16 +173,13 @@ test.describe("Navigation", () => {
       .toBe(true);
   });
 
-  test("header wordmark uses client navigation for root and brand", async ({
+  test("header wordmark context menu uses client navigation for brand", async ({
     page,
   }) => {
     await page.goto("/blog");
 
     let remixLink = page.locator('header a[aria-label="Remix"]').first();
-    await expectClientNavigation(page, () => remixLink.click(), "**/");
-    await expect(page).toHaveURL(/\/$/);
-
-    await expectClientNavigation(
+    await expectHydratedClientNavigation(
       page,
       () => remixLink.click({ button: "right" }),
       "**/brand",

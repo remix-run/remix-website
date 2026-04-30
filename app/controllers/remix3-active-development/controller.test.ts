@@ -9,7 +9,9 @@ describe("Remix 3 active development route", () => {
     let router = createRouteTestRouter();
     router.map(routes.remix3ActiveDevelopment, remix3ActiveDevelopmentHandler);
 
-    let response = await router.fetch("http://localhost:3000/");
+    let response = await router.fetch(
+      "http://localhost:3000/remix-3-active-development",
+    );
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
@@ -20,7 +22,9 @@ describe("Remix 3 active development route", () => {
     expect(html).toContain("<html");
     expect(html).toContain('href="/styles/app.css"');
     expect(html).toContain('class="marketing-remix3-active-development"');
-    expect(html).toContain('content="http://localhost:3000/"');
+    expect(html).toContain(
+      'content="http://localhost:3000/remix-3-active-development"',
+    );
     expect(html).toContain("#github");
     expect(html).toContain("og:title");
     expect(html).toContain("twitter:card");

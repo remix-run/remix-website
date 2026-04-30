@@ -4,7 +4,7 @@ test.describe("Newsletter subscribe", () => {
   test("renders the newsletter form in the Remix 3 active development section", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
 
     await expect(
       page.getByRole("heading", { name: "Stay in the loop" }),
@@ -25,7 +25,7 @@ test.describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
     await page.waitForLoadState("networkidle");
 
     const emailInput = page.getByPlaceholder("name@example.com");
@@ -46,7 +46,7 @@ test.describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
     await page.waitForLoadState("networkidle");
 
     await page.getByPlaceholder("name@example.com").fill("hello@example.com");
@@ -70,7 +70,7 @@ test.describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/remix-3-active-development");
     await page.waitForLoadState("networkidle");
 
     await page.getByPlaceholder("name@example.com").fill("hello@example.com");
@@ -83,6 +83,36 @@ test.describe("Newsletter subscribe", () => {
     resolveRequest?.();
 
     await expect(page.getByText("Got it!")).toBeVisible();
+  });
+});
+
+test.describe("Homepage newsletter", () => {
+  test("submits the start-building form through the newsletter action", async ({
+    page,
+  }) => {
+    let submittedEmail: string | null = null;
+
+    await page.route("**/_actions/newsletter", async (route) => {
+      let body = new URLSearchParams(route.request().postData() ?? "");
+      submittedEmail = body.get("email");
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true, error: null }),
+      });
+    });
+
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+
+    let startBuilding = page.locator("#start-building");
+    let emailInput = startBuilding.getByPlaceholder("name@example.com");
+    await emailInput.fill("hello@example.com");
+    await startBuilding.getByRole("button", { name: "Subscribe" }).click();
+
+    expect(submittedEmail).toBe("hello@example.com");
+    await expect(startBuilding.getByText("Got it!")).toBeVisible();
+    await expect(emailInput).toHaveValue("");
   });
 });
 

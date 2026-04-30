@@ -1,0 +1,100 @@
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  src: url("/font/jet-brains-mono.woff2") format("woff2");
+}
+
+@property --brand-cycle {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #2dacf9;
+}
+
+@keyframes brand-cycle {
+  0% {
+    --brand-cycle: #2dacf9;
+  }
+  20% {
+    --brand-cycle: #7ce95a;
+  }
+  40% {
+    --brand-cycle: #ffdf5f;
+  }
+  60% {
+    --brand-cycle: #fa73da;
+  }
+  80% {
+    --brand-cycle: #ff3c32;
+  }
+  100% {
+    --brand-cycle: #2dacf9;
+  }
+}
+
+:root {
+  color-scheme: dark;
+  animation: brand-cycle 10s linear infinite;
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  background: #000;
+  color: #dee2e6;
+}
+
+body {
+  overflow-x: hidden;
+  font-family:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  color: #000;
+  background: var(--brand-cycle);
+}
+
+/* `landing-enhancements.tsx` adds this class after the runner has shown for
+ * its minimum duration and the WebGL background has rendered its first frame. */
+@keyframes loading-screen-dismiss {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.loading-screen-overlay.is-dismissed {
+  animation: loading-screen-dismiss 600ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --brand-cycle: #2dacf9;
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .loading-screen-overlay.is-dismissed {
+    visibility: hidden;
+    opacity: 0;
+    animation: none;
+  }
+}

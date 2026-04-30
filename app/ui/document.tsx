@@ -28,6 +28,7 @@ interface DocumentProps {
   noIndex?: boolean;
   forceTheme?: "dark" | "light";
   headTags?: ManagedHeadTag[];
+  stylesheets?: string[];
   children?: RemixNode;
 }
 
@@ -53,9 +54,11 @@ export function Document() {
     noIndex,
     forceTheme,
     headTags = [],
+    stylesheets,
     children,
   }: DocumentProps) => {
     let assetEntry = getAssetEntry();
+    let appliedStylesheets = stylesheets ?? [styleHrefs.app];
     let managedHeadTags: ManagedHeadTag[] = [
       ...(noIndex
         ? [{ kind: "meta" as const, name: "robots", content: "noindex" }]
@@ -69,6 +72,11 @@ export function Document() {
             },
           ]
         : []),
+      ...appliedStylesheets.map((href) => ({
+        kind: "link" as const,
+        rel: "stylesheet",
+        href,
+      })),
       ...headTags,
     ];
     let bodyClassName = `flex min-h-screen w-full flex-col overflow-x-hidden antialiased selection:bg-blue-200 selection:text-black dark:selection:bg-blue-800 dark:selection:text-white ${
@@ -121,11 +129,9 @@ export function Document() {
             href="/font/jet-brains-mono.woff2"
             crossorigin="anonymous"
           />
-          <link rel="preload" as="style" href={styleHrefs.app} />
-          <link rel="preload" as="style" href={styleHrefs.md} />
-          <link rel="preload" as="style" href={styleHrefs.jam} />
-          {/* Styles */}
-          <link rel="stylesheet" href={styleHrefs.app} />
+          {Object.values(styleHrefs).map((href) => (
+            <link key={href} rel="preload" as="style" href={href} />
+          ))}
 
           {/* RSS */}
           <link
@@ -153,6 +159,7 @@ export function Document() {
                 sizes={tag.sizes}
                 as={tag.as}
                 crossorigin={tag.crossorigin}
+                fetchpriority={tag.fetchpriority}
               />
             ),
           )}
@@ -167,12 +174,6 @@ export function Document() {
         </head>
 
         <body class={bodyClassName}>
-          <a
-            href="#main-content"
-            class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:inline-flex focus:h-12 focus:items-center focus:rounded-lg focus:border focus:border-black/10 focus:bg-white focus:px-5 focus:text-black focus:shadow-sm focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)] dark:focus:border-white/10 dark:focus:bg-gray-900 dark:focus:text-white"
-          >
-            Skip to main content
-          </a>
           <DocumentHeadSync
             title={title}
             forceTheme={forceTheme}

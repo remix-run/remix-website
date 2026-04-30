@@ -16,7 +16,7 @@ export function Header() {
     <header class={cx("p-6", "text-rmx-primary", "relative z-50")}>
       <div class="flex w-full items-start justify-between gap-8">
         <WordmarkLink
-          href={routes.remix3ActiveDevelopment.href()}
+          href={routes.home.href()}
           brandHref={routes.brand.href()}
           width={164}
           height={16}

@@ -20,13 +20,13 @@ export function JamDocument() {
       title={props.title}
       description={props.description}
       forceTheme="dark"
+      stylesheets={[styleHrefs.app, styleHrefs.jam]}
       headTags={[
         ...getSocialHeadTags({
           title: props.title,
           description: props.description,
           image: props.previewImage,
         }),
-        { kind: "link", rel: "stylesheet", href: styleHrefs.jam },
         {
           kind: "link",
           rel: "preload",
