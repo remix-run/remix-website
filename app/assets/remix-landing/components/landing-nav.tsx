@@ -5,7 +5,7 @@ import {
   on,
   ref,
   type Handle,
-} from "remix/component";
+} from "remix/ui";
 import { routes } from "../../../routes";
 import { colors } from "../styles/tokens";
 import { clamp01 } from "../utils/math";

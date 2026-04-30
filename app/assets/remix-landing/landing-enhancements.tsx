@@ -3,7 +3,7 @@ import {
   clientEntry,
   css,
   type Handle,
-} from "remix/component";
+} from "remix/ui";
 import { PresetGlow } from "./components/preset-glow";
 import { LandingNav } from "./components/landing-nav";
 import { LabelOverlay } from "./components/label-overlay";

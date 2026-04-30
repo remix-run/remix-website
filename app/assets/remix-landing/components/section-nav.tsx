@@ -1,4 +1,4 @@
-import { css, on, type Handle } from "remix/component";
+import { css, on, type Handle } from "remix/ui";
 import { colors } from "../styles/tokens";
 import { clamp } from "../utils/math";
 

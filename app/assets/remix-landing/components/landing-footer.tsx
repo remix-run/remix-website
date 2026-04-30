@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/component";
+import { css, type Handle } from "remix/ui";
 import { Wordmark } from "../../../ui/wordmark";
 import { assetPaths } from "../../../utils/asset-paths";
 import { colors } from "../styles/tokens";

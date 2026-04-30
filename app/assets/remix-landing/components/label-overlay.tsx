@@ -1,4 +1,4 @@
-import { css, ref, type Handle } from "remix/component";
+import { css, ref, type Handle } from "remix/ui";
 import type { ProjectedLabel } from "../engine/label-projection";
 
 const shellStyles = css({

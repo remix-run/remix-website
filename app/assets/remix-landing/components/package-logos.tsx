@@ -1,4 +1,4 @@
-import { addEventListeners, css, type Handle } from "remix/component";
+import { addEventListeners, css, type Handle } from "remix/ui";
 import { clamp01 } from "../utils/math";
 
 const LOGOS = [

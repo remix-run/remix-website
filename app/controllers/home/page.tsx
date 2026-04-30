@@ -1,4 +1,4 @@
-import { css } from "remix/component";
+import { css } from "remix/ui";
 import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements";
 import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen";
 import { colors } from "../../assets/remix-landing/styles/tokens";

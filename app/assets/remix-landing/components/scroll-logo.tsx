@@ -1,4 +1,4 @@
-import { css, addEventListeners, on, type Handle } from "remix/component";
+import { css, addEventListeners, on, type Handle } from "remix/ui";
 import { routes } from "../../../routes";
 import { Wordmark } from "../../../ui/wordmark";
 import { brandContextMenu } from "../../brand-context-menu";

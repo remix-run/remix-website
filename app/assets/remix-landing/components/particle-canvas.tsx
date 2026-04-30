@@ -1,4 +1,4 @@
-import { css, ref, addEventListeners, type Handle } from "remix/component";
+import { css, ref, addEventListeners, type Handle } from "remix/ui";
 import * as THREE from "three";
 import { ControlManager } from "../engine/controls";
 import { Engine } from "../engine/engine";

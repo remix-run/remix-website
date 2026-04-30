@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/component";
+import { css, type Handle } from "remix/ui";
 import { colors, glowWhite } from "../styles/tokens";
 import { CodeSnippet } from "./code-snippet";
 

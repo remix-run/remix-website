@@ -1,4 +1,4 @@
-import { css, type Handle, type RemixNode } from "remix/component";
+import { css, type Handle, type RemixNode } from "remix/ui";
 import { colors } from "../styles/tokens";
 
 const codeStyles = css({
