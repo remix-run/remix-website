@@ -2,7 +2,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
-import { assetServer } from "./assets.server";
+import { assetServer, createAppAssetServer } from "./assets.server";
 
 let rootDir = path.resolve(import.meta.dirname, "../..");
 let appDir = path.join(rootDir, "app");
@@ -24,6 +24,37 @@ describe("browser asset module graph", () => {
     }
 
     expect(failures).toEqual([]);
+  });
+
+  it("fingerprints production asset URLs for immutable caching", async () => {
+    let server = createAppAssetServer({
+      buildId: "test-build",
+      isDevelopment: false,
+    });
+
+    try {
+      let href = await server.getHref(rootBrowserEntry);
+      expect(href).toMatch(
+        /^\/assets\/app\/assets\/entry\.@[A-Za-z0-9_-]{6}\.ts$/,
+      );
+
+      let response = await server.fetch(
+        new Request(new URL(href, "http://localhost")),
+      );
+      expect(response?.status).toBe(200);
+      expect(response?.headers.get("Cache-Control")).toBe(
+        "public, max-age=31536000, immutable",
+      );
+
+      let stableResponse = await server.fetch(
+        new Request(
+          new URL("/assets/app/assets/entry.ts", "http://localhost"),
+        ),
+      );
+      expect(stableResponse).toBeNull();
+    } finally {
+      await server.close();
+    }
   });
 });
 

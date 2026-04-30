@@ -30,9 +30,11 @@ RUN corepack enable && pnpm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
+ARG ASSET_BUILD_ID=local-build
 
 ENV PORT="8080"
 ENV NODE_ENV="production"
+ENV ASSET_BUILD_ID="${ASSET_BUILD_ID}"
 
 WORKDIR /remixapp
 
