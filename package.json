@@ -14,7 +14,7 @@
     "dev:css": "pnpm run build:css --watch",
     "dev:server": "cross-env NODE_ENV=development PORT=44100 tsx watch server.ts",
     "format": "prettier --write ./",
-    "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
+    "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN} --build-arg ASSET_BUILD_ID=$(git rev-parse HEAD)",
     "push:stage": "git tag -f stage && git push origin stage -f",
     "start": "cross-env NODE_ENV=production node --import tsx server.ts",
     "preview": "cross-env NODE_ENV=production node --env-file=.env --import tsx server.ts",

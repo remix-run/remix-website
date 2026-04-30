@@ -51,7 +51,7 @@ jobs:
 
       - name: 🚀 Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: flyctl deploy --remote-only --config ./fly.production.toml --strategy rolling
+        run: flyctl deploy --remote-only --config ./fly.production.toml --strategy rolling --build-arg ASSET_BUILD_ID=${{ github.sha }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
