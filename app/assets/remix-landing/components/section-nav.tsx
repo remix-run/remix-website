@@ -50,6 +50,9 @@ const trackFillStyles = css({
   background: `var(--brand-cycle, ${colors.accent})`,
   boxShadow: `0 0 2px var(--brand-cycle, ${colors.accent}), 0 0 8px var(--brand-cycle, ${colors.accent})`,
   transition: "height 120ms ease-out",
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+  },
 });
 
 const listStyles = css({
@@ -99,6 +102,9 @@ const linkStyles = css({
   textDecoration: "none",
   cursor: "pointer",
   transition: "color 150ms ease",
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+  },
   "&:hover": {
     color: `var(--brand-cycle, ${colors.accent})`,
   },

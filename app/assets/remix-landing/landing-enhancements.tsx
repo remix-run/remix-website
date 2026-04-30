@@ -17,6 +17,11 @@ import { DEFAULT_SETTINGS, type SystemSettings } from "./engine/types";
 import { colors } from "./styles/tokens";
 import { isEditableKeyTarget } from "./utils/keyboard";
 import { clamp } from "./utils/math";
+import {
+  initReducedMotion,
+  motionScrollBehavior,
+  reducedMotion,
+} from "./utils/reduced-motion";
 
 const appStyles = css({
   position: "relative",
@@ -260,24 +265,26 @@ export let RemixLandingEnhancements = clientEntry(
     }
 
     function syncMorphToScroll() {
-      scroll.morphValue = getMorphValueForScroll(window.scrollY);
+      const rawMorphValue = getMorphValueForScroll(window.scrollY);
+      const activeIndex = Math.round(
+        clamp(rawMorphValue, 0, presets.length - 1),
+      );
+      scroll.morphValue = reducedMotion.current ? activeIndex : rawMorphValue;
       morphValueRef.current = scroll.morphValue;
       scroll.currentY = window.scrollY;
       scrollYRef.current = scroll.currentY;
-      activeIndexRef.current = Math.round(
-        clamp(scroll.morphValue, 0, presets.length - 1),
-      );
+      activeIndexRef.current = activeIndex;
       requestNearbyModels();
     }
 
     function jumpToPreset(index: number) {
       if (index === 0) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: motionScrollBehavior() });
         return;
       }
       const targetY = getSectionScrollStop(index);
       if (targetY === undefined) return;
-      window.scrollTo({ top: targetY, behavior: "smooth" });
+      window.scrollTo({ top: targetY, behavior: motionScrollBehavior() });
     }
 
     function scheduleMorphSync() {
@@ -416,6 +423,10 @@ export let RemixLandingEnhancements = clientEntry(
       if (signal.aborted || handle.signal.aborted) return;
 
       isHydrated = true;
+      initReducedMotion(handle.signal, () => {
+        syncMorphToScroll();
+        handle.update();
+      });
       startLoadingScreenMinimumTimer();
 
       syncMorphToScroll();

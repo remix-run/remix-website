@@ -12,6 +12,7 @@ import { createModelTexture } from "../engine/model-texture";
 import type { ModelData } from "../engine/model-loader";
 import type { Preset, ShaderId, SystemSettings } from "../engine/types";
 import { clamp, clamp01, lerp } from "../utils/math";
+import { reducedMotion } from "../utils/reduced-motion";
 
 // Must match `LOADING_SCREEN_MIN_MS` in `landing-enhancements.tsx`.
 const PARTICLE_INTRO_DELAY_S = 1;
@@ -143,6 +144,7 @@ export function ParticleCanvas(handle: Handle) {
   const appliedModelSlots = new Set<number>();
   let frameId = 0;
   let startTime = 0;
+  let frozenTime: number | null = null;
   let previousNearest = -1;
   let hasReportedReady = false;
   let initFailed = false;
@@ -286,6 +288,14 @@ export function ParticleCanvas(handle: Handle) {
       const presets = currentProps.presets;
       const presetData = getPresetRuntimeData(presets);
       const morphValue = currentProps.morphValueRef.current;
+      const reduceMotion = reducedMotion.current;
+
+      if (reduceMotion) {
+        frozenTime ??= Math.max(time, PARTICLE_INTRO_DELAY_S + 3.5);
+      } else {
+        frozenTime = null;
+      }
+      const visualTime = frozenTime ?? time;
 
       engine.updateSettings(currentProps.settings);
 
@@ -294,16 +304,20 @@ export function ParticleCanvas(handle: Handle) {
       particles.setHdrIntensity(
         currentProps.settings.hdrIntensity * screenScale,
       );
-      particles.setMousePos(mouseNormX, -mouseNormY);
+      const effectiveMouseNormX = reduceMotion ? 0 : mouseNormX;
+      const effectiveMouseNormY = reduceMotion ? 0 : mouseNormY;
+      particles.setMousePos(effectiveMouseNormX, -effectiveMouseNormY);
       particles.setMorphEase(currentProps.settings.morphEase);
       particles.setColorMode(currentProps.settings.colorMode);
       particles.setDof(
         currentProps.settings.dofAmount,
         currentProps.settings.dofFocus,
       );
-      const introTime = Math.max(0, time - PARTICLE_INTRO_DELAY_S);
-      particles.setIntroProgress(Math.min(introTime / 3.5, 1.5));
-      particles.setTime(time);
+      const introTime = Math.max(0, visualTime - PARTICLE_INTRO_DELAY_S);
+      particles.setIntroProgress(
+        reduceMotion ? 1.5 : Math.min(introTime / 3.5, 1.5),
+      );
+      particles.setTime(visualTime);
 
       const maxValue = presets.length - 1;
       getMorphBlend(morphValue, maxValue, morphBlend);
@@ -327,7 +341,8 @@ export function ParticleCanvas(handle: Handle) {
       const racetrackIndex = presetData.racetrackIndex;
       const racetrackDist =
         racetrackIndex >= 0 ? Math.abs(morphValue - racetrackIndex) : 0;
-      const departingRacetrack = racetrackDist > 0.01 && racetrackDist < 1.0;
+      const departingRacetrack =
+        !reduceMotion && racetrackDist > 0.01 && racetrackDist < 1.0;
 
       if (departingRacetrack) {
         const surge = racetrackDist * racetrackDist * 32;
@@ -371,10 +386,9 @@ export function ParticleCanvas(handle: Handle) {
       const trailBoost = departingRacetrack
         ? Math.sin(racetrackDist * Math.PI) * 0.75
         : 0;
-      engine.afterImagePass.uniforms.damp.value = Math.min(
-        effectiveTrail + trailBoost,
-        0.97,
-      );
+      engine.afterImagePass.uniforms.damp.value = reduceMotion
+        ? 0
+        : Math.min(effectiveTrail + trailBoost, 0.97);
 
       const driveIndex = presetData.driveIndex;
       const racetrackFogDist =
@@ -389,8 +403,8 @@ export function ParticleCanvas(handle: Handle) {
 
       const driveProximity =
         driveIndex >= 0 ? clamp01(1 - Math.abs(morphValue - driveIndex)) : 0;
-      if (driveProximity > 0) {
-        smoothCarLane += (mouseNormX - smoothCarLane) * CAR_LANE_LERP;
+      if (!reduceMotion && driveProximity > 0) {
+        smoothCarLane += (effectiveMouseNormX - smoothCarLane) * CAR_LANE_LERP;
       } else {
         smoothCarLane += (0 - smoothCarLane) * CAR_LANE_LERP;
       }
@@ -409,7 +423,7 @@ export function ParticleCanvas(handle: Handle) {
         particles.setCarPosY(presetData.driveCarPosY * driveProximity);
       }
 
-      engine.controls.enabled = driveProximity < 0.5;
+      engine.controls.enabled = !reduceMotion && driveProximity < 0.5;
 
       setDesiredCameraInto(
         presets,
@@ -417,13 +431,20 @@ export function ParticleCanvas(handle: Handle) {
         desiredCameraPos,
         desiredCameraTarget,
       );
-      engine.camera.position.lerp(desiredCameraPos, CAM_LERP_SPEED);
-      engine.controls.target.lerp(desiredCameraTarget, CAM_LERP_SPEED);
+      if (reduceMotion) {
+        engine.camera.position.copy(desiredCameraPos);
+        engine.controls.target.copy(desiredCameraTarget);
+      } else {
+        engine.camera.position.lerp(desiredCameraPos, CAM_LERP_SPEED);
+        engine.controls.target.lerp(desiredCameraTarget, CAM_LERP_SPEED);
+      }
 
       const parallaxScale = 1 - driveProximity;
       smoothMouseOffsetX +=
-        (mouseNormX * MOUSE_RANGE - smoothMouseOffsetX) * MOUSE_LERP;
-      engine.camera.position.x += smoothMouseOffsetX * parallaxScale;
+        (effectiveMouseNormX * MOUSE_RANGE - smoothMouseOffsetX) * MOUSE_LERP;
+      if (!reduceMotion) {
+        engine.camera.position.x += smoothMouseOffsetX * parallaxScale;
+      }
 
       const nearest = Math.round(clamp(morphValue, 0, maxValue));
       if (nearest !== previousNearest) {
@@ -452,7 +473,7 @@ export function ParticleCanvas(handle: Handle) {
           nearestPreset,
           labelControlMgr,
           activeCtrls,
-          time,
+          visualTime,
           engine.camera,
           containerEl.clientWidth,
           containerEl.clientHeight,

@@ -36,6 +36,9 @@ describe("home route", () => {
     expect(html).toContain(
       '<source srcset="/landing/remix-runner.webp" type="image/webp"',
     );
+    expect(html).toContain(
+      '<source media="(prefers-reduced-motion: reduce)" srcset="/landing/remix-runner-static.png" type="image/png"',
+    );
     expect(html).toContain('src="/landing/remix-runner.gif"');
     expect(html).toContain('width="384"');
     expect(html).toContain('height="384"');

@@ -3,6 +3,7 @@ import { routes } from "../../../routes";
 import { Wordmark } from "../../../ui/wordmark";
 import { brandContextMenu } from "../../brand-context-menu";
 import { clamp01, lerp } from "../utils/math";
+import { motionScrollBehavior, reducedMotion } from "../utils/reduced-motion";
 
 const SMALL_HEIGHT = 16;
 const LARGE_TOP = 92;
@@ -69,7 +70,7 @@ export function ScrollLogo(handle: Handle) {
   let decayFrame = 0;
   const brandMenu = brandContextMenu(routes.brand.href());
   const scrollToTop = on<HTMLButtonElement>("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: motionScrollBehavior() });
   });
 
   function scheduleScrollSync() {
@@ -82,6 +83,7 @@ export function ScrollLogo(handle: Handle) {
   }
 
   function scheduleDecay() {
+    if (reducedMotion.current) return;
     if (decayFrame) return;
     decayFrame = requestAnimationFrame(() => {
       decayFrame = 0;
@@ -111,12 +113,12 @@ export function ScrollLogo(handle: Handle) {
   return () => {
     const t = getScrollProgress(scrollY);
     const rawVelocity = t - prevT;
-    if (Math.abs(rawVelocity) > 0.0001) {
+    if (!reducedMotion.current && Math.abs(rawVelocity) > 0.0001) {
       velocity += (rawVelocity - velocity) * 0.15;
     }
     prevT = t;
 
-    if (Math.abs(velocity) < 0.001) {
+    if (reducedMotion.current || Math.abs(velocity) < 0.001) {
       velocity = 0;
     } else {
       scheduleDecay();

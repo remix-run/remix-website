@@ -2,6 +2,7 @@ import { css } from "remix/ui";
 import {
   RUNNER_AVIF_SRC,
   RUNNER_GIF_SRC,
+  RUNNER_STATIC_SRC,
   RUNNER_WEBP_SRC,
 } from "../runner-media";
 
@@ -25,6 +26,11 @@ export function LoadingScreen() {
   return () => (
     <div mix={[overlayStyles]} class="loading-screen-overlay">
       <picture>
+        <source
+          media="(prefers-reduced-motion: reduce)"
+          srcset={RUNNER_STATIC_SRC}
+          type="image/png"
+        />
         <source srcset={RUNNER_AVIF_SRC} type="image/avif" />
         <source srcset={RUNNER_WEBP_SRC} type="image/webp" />
         <img

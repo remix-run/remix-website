@@ -108,3 +108,25 @@ body > a[href="#main-content"]:focus {
 .loading-screen-overlay.is-dismissed {
   animation: loading-screen-dismiss 600ms ease-out forwards;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --brand-cycle: #2dacf9;
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .loading-screen-overlay.is-dismissed {
+    visibility: hidden;
+    opacity: 0;
+    animation: none;
+  }
+}

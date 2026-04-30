@@ -1,5 +1,6 @@
 import { addEventListeners, css, type Handle } from "remix/ui";
 import { clamp01 } from "../utils/math";
+import { reducedMotion } from "../utils/reduced-motion";
 
 const LOGOS = [
   { src: "/landing/remix-package-auth.svg", alt: "Auth", ratio: "904 / 245" },
@@ -214,9 +215,17 @@ export function PackageLogos(handle: Handle) {
 
     const morphValue = morphValueRef.current;
     const inSection = morphInLogoSection(morphValue);
+    const reduceMotion = reducedMotion.current;
     const now = performance.now();
 
-    if (inSection) {
+    if (reduceMotion) {
+      if (delayTimer) {
+        clearTimeout(delayTimer);
+        delayTimer = null;
+      }
+      stopSequenceLoop();
+      sequenceStartMs = null;
+    } else if (inSection) {
       if (!wasInSection) {
         sequenceStartMs = null;
         stopSequenceLoop();
@@ -260,7 +269,11 @@ export function PackageLogos(handle: Handle) {
       >
         {LOGOS.map((logo, i) => {
           const row = ROWS[i];
-          const seq = sequenceFade(i, sequenceStartMs, now);
+          const seq = reduceMotion
+            ? inSection
+              ? 1
+              : 0
+            : sequenceFade(i, sequenceStartMs, now);
           const right =
             i === 2 ? `${dataRightPx}px` : `${VIEWPORT_GUTTER_PX}px`;
           return (
