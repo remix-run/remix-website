@@ -47,7 +47,7 @@ describe("home route", () => {
     expect(html).toContain("Loading Remix homepage");
     expect(html).toContain('content="http://localhost:3000/"');
     expect(html).toContain(
-      'content="http://localhost:3000/blog-images/social-background.png"',
+      'content="http://localhost:3000/marketing/remix-run-share-thumbnail.png"',
     );
     expect(html).toContain('content="summary_large_image"');
     expect(html).toContain('rel="icon" href="/favicon.ico" sizes="32x32"');
