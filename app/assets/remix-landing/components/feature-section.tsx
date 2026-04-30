@@ -55,6 +55,9 @@ const panelStyles = css({
   WebkitBackdropFilter: "blur(10px)",
   background: "rgba(0, 0, 0, 0.44)",
   contain: "paint",
+  "@media (max-width: 880px)": {
+    background: "rgba(0, 0, 0, 0.55)",
+  },
 });
 
 const rightPanelStyles = css({
@@ -143,6 +146,7 @@ const codeContainerStyles = css({
   contain: "paint",
   "@media (max-width: 880px)": {
     gridColumn: "1 / -1",
+    background: "rgba(0, 0, 0, 0.72)",
   },
 });
 

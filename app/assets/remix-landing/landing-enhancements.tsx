@@ -54,6 +54,10 @@ const topFadeGradientStyles = css({
   zIndex: "21",
   pointerEvents: "none",
   background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.65) 38%, rgba(0, 0, 0, 0.12) 72%, transparent 100%)`,
+  "@media (max-width: 880px)": {
+    height: "min(24vh, 180px)",
+    background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.48) 32%, rgba(0, 0, 0, 0.08) 68%, transparent 100%)`,
+  },
 });
 
 /** Konami (↑↑↓↓←→←→BA Enter): toggles particle `colorMode` 2 (shader brand gradient on all presets). */
