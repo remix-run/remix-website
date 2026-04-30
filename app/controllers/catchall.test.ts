@@ -23,6 +23,12 @@ describe("catchall route", () => {
     expect(response.headers.get("Location")).toBe("https://remix.run/docs");
   });
 
+  it("redirects the docs root to api docs", async () => {
+    let response = catchallHandler(createContext("/docs"));
+    expect(response.status).toBe(302);
+    expect(response.headers.get("Location")).toBe("https://api.remix.run/");
+  });
+
   it("redirects docs paths to v2", async () => {
     let response = catchallHandler(createContext("/docs/en/main/guides"));
     expect(response.status).toBe(302);

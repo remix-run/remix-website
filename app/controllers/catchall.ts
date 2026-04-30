@@ -50,7 +50,7 @@ function normalizeLegacyRedirect(url: URL): string | null {
   }
 
   if (url.pathname === "/docs") {
-    return "https://v2.remix.run/docs";
+    return "https://api.remix.run/";
   }
 
   if (url.pathname.startsWith("/docs/")) {
