@@ -173,6 +173,9 @@ export let RemixLandingEnhancements = clientEntry(
       if (!id) return undefined;
       const el = document.getElementById(id);
       if (!el) return undefined;
+      if (el.offsetHeight > window.innerHeight) {
+        return clampScrollY(el.offsetTop);
+      }
       const sectionCenter = el.offsetTop + el.offsetHeight / 2;
       return clampScrollY(sectionCenter - window.innerHeight / 2);
     }

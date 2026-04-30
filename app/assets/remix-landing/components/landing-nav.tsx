@@ -143,7 +143,7 @@ function isModifiedClick(event: MouseEvent) {
 
 function openNavItem(item: NavItem) {
   if (item.external) {
-    window.open(item.href, "_blank", "noopener,noreferrer");
+    window.location.assign(item.href);
     return;
   }
 
@@ -261,8 +261,6 @@ export function LandingNav(handle: Handle) {
             <a
               key={item.key}
               href={item.href}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
               mix={[navItemStyles, navItemClick(item)]}
             >
               [{item.key}] {item.label}
@@ -301,8 +299,6 @@ export function LandingNav(handle: Handle) {
                   key={item.key}
                   role="menuitem"
                   href={item.href}
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
                   mix={[
                     navItemStyles,
                     mobileMenuItemStyles,

@@ -28,10 +28,10 @@ const storySections = [
 import { ui, Glyph } from 'remix/ui'
 import { tooltip } from 'remix/ui/tooltip'
 
-function CopyToClipboard(handle: Handle) {
+function CopyToClipboard(handle: Handle<{ url: string }>) {
   let state: 'idle' | 'copied' | 'error' = 'idle'
 
-  return (props: { url: string }) => {
+  return () => {
     let label = state === 'idle' ? 'Copy to clipboard' : state === 'copied' ? 'Copied' : 'Error'
 
     return (
@@ -41,9 +41,9 @@ function CopyToClipboard(handle: Handle) {
         mix={[
           ui.button,
           tooltip(label),
-          on('click', async (event) => {
+          on('click', async () => {
             try {
-              await navigator.clipboard.writeText(props.url)
+              await navigator.clipboard.writeText(handle.props.url)
               if (handle.signal.aborted) return
             } catch (error) {
               state = 'error'

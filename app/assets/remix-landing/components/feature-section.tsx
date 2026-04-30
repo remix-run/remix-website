@@ -122,10 +122,10 @@ const leftPanelPowerfulComponentsStyles = css({
   },
 });
 
-// The shell stays static (no overflow) so its backdrop-filter layer doesn't
-// get re-rasterized on every scroll — which was pinning the main thread and
-// starving the particle canvas / scroll-linked logo animation. The inner
-// <pre> is the thing that actually scrolls when a snippet is long.
+// The shell stays static so its backdrop-filter layer doesn't get
+// re-rasterized on every scroll — which was pinning the main thread and
+// starving the particle canvas / scroll-linked logo animation. The snippet
+// expands vertically with its content to avoid trapping page scroll.
 //
 // Option A perf pass (see matching note on `panelStyles`): reduced blur from
 // 18px → 10px with a slightly more opaque local tint; added `contain: paint`
@@ -154,8 +154,7 @@ const codePreStyles = css({
   letterSpacing: "0",
   color: "#ffffff",
   whiteSpace: "pre",
-  maxHeight: "calc(80vh - 48px)",
-  overflow: "auto",
+  overflowX: "auto",
   tabSize: "2",
 });
 
