@@ -16,9 +16,9 @@ This is still a pre-release. It is not production ready yet, and there is still 
 
 When we started [talking publicly about Remix waking up](https://remix.run/blog/wake-up-remix), we said we wanted to build something simpler, faster, and closer to the web itself. Today's beta preview is a concrete step in that direction.
 
-The idea is simple: what would it look like if a framework owned the full stack?
+All prior versions of Remix (and React Router) were "center stack". We owned the routing and rendering layers, but we left everything else to you. Remix 3 is a different approach: what would it look like to build the full stack?
 
-Not just routing. Not just rendering. Not just a dev server. The whole thing: routes, request handlers, responses, middleware, sessions, auth, forms, uploads, assets, data and database management, UI components, theming, networking, tests ... everything.
+Not just routing. Not just rendering. Not just data. The whole thing: routes, request handlers, responses, middleware, sessions, auth, forms, uploads, assets, data and database management, UI components, theming, networking, tests ... everything.
 
 All under one `remix` umbrella.
 
@@ -26,7 +26,7 @@ That does not mean every piece is welded together in a giant monolith. Remix 3 i
 
 You should be able to install Remix and start building.
 
-## Features You Can Feel
+## Built For The Web
 
 Remix 3 routes are Fetch API routes. Controllers return responses. Middleware owns the request lifecycle. Forms submit to URLs. Sessions and auth share context with your data and UI. Tests exercise the same router your server uses.
 
