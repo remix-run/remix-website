@@ -108,8 +108,8 @@ async function createOgImageSVG(request: Request, data: OgImageQuery) {
       },
       {
         name: PRIMARY_FONT,
-        data: ogImageAssets.interBlack,
-        weight: 900,
+        data: ogImageAssets.interBold,
+        weight: 700,
         style: "normal",
       },
     ],
@@ -165,8 +165,9 @@ function createOgRootNode(
                 props: {
                   style: {
                     fontSize: 48,
-                    color: PRIMARY_TEXT_COLOR,
+                    ...PAGE_BODY_TYPOGRAPHY,
                     margin: 0,
+                    textTransform: "uppercase",
                   },
                   children: data.displayDate,
                 },
@@ -175,9 +176,8 @@ function createOgRootNode(
                 type: "div",
                 props: {
                   style: {
-                    fontWeight: "bold",
+                    ...PAGE_TITLE_TYPOGRAPHY,
                     fontSize: titleSize,
-                    lineHeight: 1.1,
                     margin: 0,
                     marginTop: 48,
                   },
@@ -235,7 +235,7 @@ function createAuthorsNode(authors: OgImageAuthor[]): OgNode {
                     type: "div",
                     props: {
                       style: {
-                        fontWeight: "bold",
+                        ...PAGE_TITLE_TYPOGRAPHY,
                         fontSize: authors.length * -8 + 80,
                       },
                       children: name,
@@ -245,7 +245,7 @@ function createAuthorsNode(authors: OgImageAuthor[]): OgNode {
                     type: "div",
                     props: {
                       style: {
-                        color: PRIMARY_TEXT_COLOR,
+                        ...PAGE_BODY_TYPOGRAPHY,
                         fontSize: 40,
                       },
                       children: title,
@@ -281,12 +281,12 @@ async function getOgImageAssets(): Promise<OgImageAssets> {
 }
 
 async function loadOgImageAssets(): Promise<OgImageAssets> {
-  let [interBlackBuffer, interRegularBuffer, socialBackgroundBuffer] =
+  let [interBoldBuffer, interRegularBuffer, socialBackgroundBuffer] =
     await Promise.all([
       readFile(
         path.join(
           process.cwd(),
-          "public/blog-images/og-fonts/inter-black-basic-latin.woff",
+          "public/blog-images/og-fonts/inter-bold-basic-latin.woff",
         ),
       ),
       readFile(
@@ -301,7 +301,7 @@ async function loadOgImageAssets(): Promise<OgImageAssets> {
     ]);
 
   return {
-    interBlack: toArrayBuffer(interBlackBuffer),
+    interBold: toArrayBuffer(interBoldBuffer),
     interRegular: toArrayBuffer(interRegularBuffer),
     socialBackgroundBase64: socialBackgroundBuffer.toString("base64"),
   };
@@ -322,6 +322,18 @@ function getAuthorImgSrc(siteUrl: string, name: string) {
 
 let PRIMARY_TEXT_COLOR = "#ffffff";
 let PRIMARY_FONT = "Inter";
+let PAGE_TITLE_TYPOGRAPHY = {
+  fontWeight: 700,
+  lineHeight: 1,
+  letterSpacing: "-0.02em",
+  color: PRIMARY_TEXT_COLOR,
+};
+let PAGE_BODY_TYPOGRAPHY = {
+  fontWeight: 400,
+  lineHeight: 1.4,
+  letterSpacing: "-0.008px",
+  color: PRIMARY_TEXT_COLOR,
+};
 let ogImageAssetsPromise: Promise<OgImageAssets> | undefined;
 
 let ogImageAuthorSchema = s.object({
@@ -341,7 +353,7 @@ type OgImageAuthor = s.InferOutput<typeof ogImageAuthorSchema>;
 type OgImageQuery = s.InferOutput<typeof ogImageQuerySchema>;
 
 type OgImageAssets = {
-  interBlack: ArrayBuffer;
+  interBold: ArrayBuffer;
   interRegular: ArrayBuffer;
   socialBackgroundBase64: string;
 };
