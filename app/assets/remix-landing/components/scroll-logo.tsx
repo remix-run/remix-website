@@ -36,7 +36,7 @@ const mainSvgStyles = css({
   color: `var(--brand-cycle, #EBEFF2)`,
 });
 
-const logoButtonStyles = css({
+const logoLinkStyles = css({
   display: "block",
   padding: "0",
   margin: "0",
@@ -61,6 +61,20 @@ const ghostSvgStyles = css({
   mixBlendMode: "screen",
 });
 
+async function replaceCurrentUrl(href: string) {
+  const navigation = window.navigation;
+
+  if (!navigation) {
+    window.history.replaceState(window.history.state, "", href);
+    return;
+  }
+
+  const state = navigation.currentEntry?.getState();
+  const transition = navigation.navigate(href, { history: "replace" });
+  await transition.committed;
+  navigation.updateCurrentEntry({ state });
+}
+
 export function ScrollLogo(handle: Handle) {
   let largeWidth = window.innerWidth - LEFT * 2;
   let scrollY = window.scrollY;
@@ -69,8 +83,19 @@ export function ScrollLogo(handle: Handle) {
   let scrollFrame = 0;
   let decayFrame = 0;
   const brandMenu = brandContextMenu(routes.brand.href());
-  const scrollToTop = on<HTMLButtonElement>("click", () => {
-    window.scrollTo({ top: 0, behavior: motionScrollBehavior() });
+  const scrollHomeToTop = on<HTMLAnchorElement>("click", (event) => {
+    if (
+      event instanceof MouseEvent &&
+      event.button === 0 &&
+      !event.metaKey &&
+      !event.ctrlKey &&
+      !event.shiftKey &&
+      !event.altKey
+    ) {
+      event.preventDefault();
+      void replaceCurrentUrl(routes.home.href());
+      window.scrollTo({ top: 0, behavior: motionScrollBehavior() });
+    }
   });
 
   function scheduleScrollSync() {
@@ -155,19 +180,28 @@ export function ScrollLogo(handle: Handle) {
               />
             );
           })}
-        <button
-          type="button"
-          aria-label="Scroll to top"
-          mix={[logoButtonStyles, isCollapsed ? brandMenu : null, scrollToTop]}
-          style={{ width: `${width}px` }}
-        >
+        {isCollapsed ? (
+          <a
+            href={routes.home.href()}
+            aria-label="Remix home"
+            mix={[logoLinkStyles, brandMenu, scrollHomeToTop]}
+            style={{ width: `${width}px` }}
+          >
+            <Wordmark
+              aria-hidden
+              width={width}
+              height={width / SVG_RATIO}
+              mix={[mainSvgStyles]}
+            />
+          </a>
+        ) : (
           <Wordmark
             aria-hidden
             width={width}
             height={width / SVG_RATIO}
             mix={[mainSvgStyles]}
           />
-        </button>
+        )}
       </div>
     );
   };

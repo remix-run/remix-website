@@ -524,6 +524,7 @@ export function ParticleCanvas(handle: Handle) {
 
     return (
       <div
+        aria-hidden="true"
         mix={[
           shellStyles,
           ref((node) => {

@@ -137,9 +137,16 @@ type NavigateEventWithManualScroll = NavigateEvent & {
 };
 
 async function replaceHash(anchor: string) {
-  const state = window.navigation.currentEntry?.getState();
+  const navigation = window.navigation;
   const url = new URL(window.location.href);
   url.hash = anchor;
+
+  if (!navigation) {
+    window.history.replaceState(window.history.state, "", url);
+    return;
+  }
+
+  const state = navigation.currentEntry?.getState();
 
   const preventNativeHashScroll = (event: NavigateEvent) => {
     if (!event.canIntercept || event.destination.url !== url.href) return;
@@ -149,20 +156,20 @@ async function replaceHash(anchor: string) {
     });
   };
 
-  window.navigation.addEventListener("navigate", preventNativeHashScroll, {
+  navigation.addEventListener("navigate", preventNativeHashScroll, {
     capture: true,
     once: true,
   });
 
-  const transition = window.navigation.navigate(url.href, {
+  const transition = navigation.navigate(url.href, {
     history: "replace",
   });
 
   try {
     await transition.committed;
-    window.navigation.updateCurrentEntry({ state });
+    navigation.updateCurrentEntry({ state });
   } finally {
-    window.navigation.removeEventListener("navigate", preventNativeHashScroll, {
+    navigation.removeEventListener("navigate", preventNativeHashScroll, {
       capture: true,
     });
   }

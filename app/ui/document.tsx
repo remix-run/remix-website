@@ -174,12 +174,6 @@ export function Document() {
         </head>
 
         <body class={bodyClassName}>
-          <a
-            href="#main-content"
-            class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:inline-flex focus:h-12 focus:items-center focus:rounded-lg focus:border focus:border-black/10 focus:bg-white focus:px-5 focus:text-black focus:shadow-sm focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)] dark:focus:border-white/10 dark:focus:bg-gray-900 dark:focus:text-white"
-          >
-            Skip to main content
-          </a>
           <DocumentHeadSync
             title={title}
             forceTheme={forceTheme}

@@ -121,6 +121,7 @@ export function LabelOverlay(handle: Handle) {
     opacityRef: { current: number };
   }) => (
     <div
+      aria-hidden="true"
       mix={[
         shellStyles,
         ref((node) => {

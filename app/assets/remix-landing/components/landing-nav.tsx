@@ -1,11 +1,5 @@
-import {
-  css,
-  addEventListeners,
-  navigate,
-  on,
-  ref,
-  type Handle,
-} from "remix/ui";
+import { css, addEventListeners, navigate, on, type Handle } from "remix/ui";
+import * as popover from "remix/ui/popover";
 import { routes } from "../../../routes";
 import { colors } from "../styles/tokens";
 import { isEditableKeyTarget } from "../utils/keyboard";
@@ -109,13 +103,27 @@ const mobileMenuItemStyles = css({
 });
 
 const mobileMenuStyles = css({
-  position: "absolute",
-  top: "calc(100% + 8px)",
-  right: "0",
-  display: "flex",
+  position: "fixed",
+  inset: "auto",
+  display: "none",
   flexDirection: "column",
   alignItems: "stretch",
   gap: "4px",
+  margin: "0",
+  padding: "0",
+  border: "none",
+  background: "transparent",
+  color: "inherit",
+  overflow: "visible",
+  "&::backdrop": {
+    background: "transparent",
+  },
+  "&:popover-open": {
+    display: "flex",
+  },
+  "&:not(:popover-open)": {
+    pointerEvents: "none",
+  },
 });
 
 const NAV_ITEMS = [
@@ -171,7 +179,6 @@ export function LandingNav(handle: Handle) {
   let onJump: ((index: number) => void) | null = null;
   let totalSections = 1;
   let menuOpen = false;
-  let mobileContainerEl: HTMLElement | null = null;
   let scrollFrame = 0;
   let activeIndexRef: { current: number } = { current: 0 };
   let scrollYRef: { current: number } = { current: 0 };
@@ -232,16 +239,6 @@ export function LandingNav(handle: Handle) {
     },
   });
 
-  addEventListeners(document, handle.signal, {
-    pointerdown: (e: PointerEvent) => {
-      if (!menuOpen) return;
-      const target = e.target as Node | null;
-      if (target && mobileContainerEl && mobileContainerEl.contains(target))
-        return;
-      setMenuOpen(false);
-    },
-  });
-
   handle.signal.addEventListener("abort", () => {
     if (scrollFrame) cancelAnimationFrame(scrollFrame);
   });
@@ -278,37 +275,41 @@ export function LandingNav(handle: Handle) {
             </a>
           ))}
         </nav>
-        <div
-          mix={[
-            mobileContainerStyles,
-            ref((node) => {
-              mobileContainerEl = node;
-            }),
-          ]}
-        >
-          <button
-            type="button"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen ? "true" : "false"}
-            aria-controls="mobile-nav-menu"
-            mix={[
-              navItemStyles,
-              mobileToggleStyles,
-              on<HTMLButtonElement>("click", (e) => {
-                e.stopPropagation();
-                setMenuOpen(!menuOpen);
-              }),
-            ]}
-          >
-            {toggleLabel}
-          </button>
-          {/* TODO: either use existing menu component or remix/ui component */}
-          {menuOpen ? (
-            <div id="mobile-nav-menu" role="menu" mix={[mobileMenuStyles]}>
+        <popover.Context>
+          <div mix={[mobileContainerStyles]}>
+            <button
+              type="button"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen ? "true" : "false"}
+              aria-controls="mobile-nav-menu"
+              mix={[
+                navItemStyles,
+                mobileToggleStyles,
+                popover.focusOnHide(),
+                popover.anchor({ placement: "bottom-end", offset: 8 }),
+                on<HTMLButtonElement>("click", (e) => {
+                  e.stopPropagation();
+                  setMenuOpen(!menuOpen);
+                }),
+              ]}
+            >
+              {toggleLabel}
+            </button>
+            <nav
+              id="mobile-nav-menu"
+              aria-label="Primary"
+              mix={[
+                mobileMenuStyles,
+                popover.surface({
+                  open: menuOpen,
+                  closeOnAnchorClick: false,
+                  onHide: () => setMenuOpen(false),
+                }),
+              ]}
+            >
               {NAV_ITEMS.map((item) => (
                 <a
                   key={item.key}
-                  role="menuitem"
                   href={item.href}
                   mix={[
                     navItemStyles,
@@ -319,9 +320,9 @@ export function LandingNav(handle: Handle) {
                   {item.label}
                 </a>
               ))}
-            </div>
-          ) : null}
-        </div>
+            </nav>
+          </div>
+        </popover.Context>
       </header>
     );
   };
