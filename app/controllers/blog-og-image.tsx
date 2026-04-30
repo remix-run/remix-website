@@ -179,7 +179,6 @@ function createOgRootNode(
                     ...PAGE_TITLE_TYPOGRAPHY,
                     fontSize: titleSize,
                     margin: 0,
-                    marginTop: 48,
                   },
                   children: data.title,
                 },
@@ -227,7 +226,6 @@ function createAuthorsNode(authors: OgImageAuthor[]): OgNode {
                 style: {
                   display: "flex",
                   flexDirection: "column",
-                  gap: 8,
                   marginLeft: 48,
                 },
                 children: [
@@ -322,6 +320,7 @@ function getAuthorImgSrc(siteUrl: string, name: string) {
 
 let PRIMARY_TEXT_COLOR = "#ffffff";
 let PRIMARY_FONT = "Inter";
+
 let PAGE_TITLE_TYPOGRAPHY = {
   fontWeight: 700,
   lineHeight: 1,

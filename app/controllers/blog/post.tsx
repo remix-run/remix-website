@@ -134,18 +134,19 @@ function BlogPostContent() {
               </div>
               <div class="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-10 lg:max-w-4xl">
                 <div class="flex-1">
-                  <div class="rmx-page-body rmx-page-body-sm uppercase text-white">
-                    {props.post.dateDisplay}
+                  <div class="flex flex-col gap-3">
+                    <div class="rmx-page-body rmx-page-body-sm uppercase text-white">
+                      {props.post.dateDisplay}
+                    </div>
+                    <h1
+                      class={cx(
+                        "rmx-page-title text-white",
+                        props.post.title.length > 50 && "rmx-page-title-sm",
+                      )}
+                    >
+                      {props.post.title}
+                    </h1>
                   </div>
-                  <div class="h-2" />
-                  <h1
-                    class={cx(
-                      "rmx-page-title text-white",
-                      props.post.title.length > 50 && "rmx-page-title-sm",
-                    )}
-                  >
-                    {props.post.title}
-                  </h1>
                   <div class="h-2" />
                 </div>
                 <div class="flex flex-col gap-1 pb-4 md:pb-10">
