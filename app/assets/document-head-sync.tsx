@@ -19,7 +19,7 @@ declare global {
 }
 
 export let DocumentHeadSync = clientEntry(
-  `${import.meta.url}#DocumentHeadSync`,
+  import.meta.url,
   function DocumentHeadSync(handle: Handle) {
     let latestProps: DocumentHeadSyncProps | null = null;
     let isQueued = false;

@@ -64,7 +64,7 @@ export async function submitNewsletterRequest({
 }
 
 export let NewsletterSubscribeForm = clientEntry(
-  `${import.meta.url}#NewsletterSubscribeForm`,
+  import.meta.url,
   function NewsletterSubscribeForm(handle: Handle) {
     let submitting = false;
     let state: SubscribeState = "idle";

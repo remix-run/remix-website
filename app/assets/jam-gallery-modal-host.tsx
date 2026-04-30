@@ -33,7 +33,7 @@ type JamGalleryModalHostProps = {
 
 /** Gallery modal shell with focus trap, keyboard nav, and backdrop close. */
 export let JamGalleryModalHost = clientEntry(
-  `${import.meta.url}#JamGalleryModalHost`,
+  import.meta.url,
   function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
     let galleryPhotoCount = handle.props.setup.photoCount;
     let modalNavigation = createJamGalleryModalNavigation();

@@ -22,7 +22,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - In `app/controllers/**`, keep exported route handler/controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
-- Use `clientEntry(\`${import.meta.url}#ExportName\`, ...)`for hydrated asset modules so server rendering can resolve them through`resolveClientEntry(...)`.
+- Use named functions with `clientEntry(import.meta.url, ...)` for hydrated asset modules so server rendering can resolve them through `resolveClientEntry(...)`.
 - Resolve the root browser entry and preload links through `app/middleware/asset-entry.ts` + `app/utils/assets.server.ts`; do not hardcode build output paths.
 - Plain stylesheets still come from `public/styles` via `app/utils/style-hrefs.ts`; this app uses `remix/assets` for hydrated browser modules.
 

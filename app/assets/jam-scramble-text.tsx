@@ -75,7 +75,7 @@ function getResolvedState(text: string): ScrambleState[] {
 }
 
 export let JamScrambleText = clientEntry(
-  `${import.meta.url}#JamScrambleText`,
+  import.meta.url,
   function JamScrambleText(handle: Handle<JamScrambleTextProps>) {
     let setup = handle.props.setup;
     let text = setup.text;

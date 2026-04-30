@@ -13,7 +13,7 @@ type JamFadeInBadgeProps = {
 };
 
 export let JamFadeInBadge = clientEntry(
-  `${import.meta.url}#JamFadeInBadge`,
+  import.meta.url,
   function JamFadeInBadge(handle: Handle<JamFadeInBadgeProps>) {
     let isVisible = false;
     let delay = handle.props.setup ?? 0;

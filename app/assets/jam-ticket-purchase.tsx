@@ -12,7 +12,7 @@ type JamTicketPurchaseProps = {
 };
 
 export let JamTicketPurchase = clientEntry(
-  `${import.meta.url}#JamTicketPurchase`,
+  import.meta.url,
   function JamTicketPurchase(handle: Handle<JamTicketPurchaseProps>) {
     let setup = handle.props.setup;
     let initialQuantity = setup?.initialQuantity ?? 1;

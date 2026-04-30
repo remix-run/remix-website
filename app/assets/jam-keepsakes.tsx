@@ -78,7 +78,7 @@ type DragSession = {
 };
 
 export let JamKeepsakes = clientEntry(
-  `${import.meta.url}#JamKeepsakes`,
+  import.meta.url,
   function JamKeepsakes(handle: Handle) {
     let order = {} as Record<KeepsakeId, number>;
     for (let [index, keepsake] of KEEPSAKES.entries()) {

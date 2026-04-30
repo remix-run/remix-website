@@ -31,7 +31,7 @@ type MobileMenuProps = {
 };
 
 export let MobileMenu = clientEntry(
-  `${import.meta.url}#MobileMenu`,
+  import.meta.url,
   function MobileMenu(handle: Handle<MobileMenuProps>) {
     let isOpen = handle.props.setup?.open ?? false;
     let detailsElement: HTMLDetailsElement | null = null;

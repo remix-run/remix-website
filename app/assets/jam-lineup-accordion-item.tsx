@@ -12,7 +12,7 @@ type LineupItem = {
 };
 
 export let JamLineupAccordionItem = clientEntry(
-  `${import.meta.url}#JamLineupAccordionItem`,
+  import.meta.url,
   function JamLineupAccordionItem(handle: Handle) {
     let isOpen = false;
     let panel: HTMLDivElement | null = null;

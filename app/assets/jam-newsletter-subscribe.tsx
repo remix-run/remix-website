@@ -6,7 +6,7 @@ import {
 } from "./newsletter-subscribe";
 
 export let JamNewsletterSubscribeForm = clientEntry(
-  `${import.meta.url}#JamNewsletterSubscribeForm`,
+  import.meta.url,
   function JamNewsletterSubscribeForm(handle: Handle) {
     let submitting = false;
     let state: SubscribeState = "idle";
