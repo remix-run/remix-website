@@ -53,7 +53,7 @@ const panelStyles = css({
   borderRadius: "24px",
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
-  background: "rgba(0, 0, 0, 0.44)",
+  background: "rgba(0, 0, 0, 0.50)",
   contain: "paint",
   "@media (max-width: 880px)": {
     background: "rgba(0, 0, 0, 0.55)",

@@ -5,10 +5,11 @@ let isDevelopment = process.env.NODE_ENV !== "production";
 let rootDir = path.resolve(import.meta.dirname, "../..");
 
 export let assetServer = createAssetServer({
+  basePath: "/assets",
   rootDir,
   fileMap: {
-    "/assets/app/*path": "app/*path",
-    "/assets/npm/*path": "node_modules/*path",
+    "/app/*path": "app/*path",
+    "/npm/*path": "node_modules/*path",
   },
   allow: [path.join(rootDir, "app"), path.join(rootDir, "node_modules")],
   deny: [
