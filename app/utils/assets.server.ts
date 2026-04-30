@@ -4,9 +4,13 @@ import { createAssetServer } from "remix/assets";
 let isDevelopment = process.env.NODE_ENV !== "production";
 let rootDir = path.resolve(import.meta.dirname, "../..");
 let buildId =
-  process.env.ASSET_BUILD_ID ??
-  process.env.GITHUB_SHA ??
-  new Date().toISOString();
+  process.env.ASSET_BUILD_ID ?? process.env.GITHUB_SHA ?? String(Date.now());
+
+console.log({
+  assetBuildId: process.env.ASSET_BUILD_ID,
+  githubSha: process.env.GITHUB_SHA,
+  buildId: buildId,
+});
 
 export let assetServer = createAppAssetServer({ buildId, isDevelopment });
 
