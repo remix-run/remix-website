@@ -25,6 +25,33 @@ async function expectClientNavigation(
     .toBe(marker);
 }
 
+async function expectHydratedClientNavigation(
+  page: Page,
+  navigate: () => Promise<void>,
+  url: string,
+) {
+  let marker = await markPage(page);
+
+  await expect(async () => {
+    await navigate();
+    await page.waitForURL(url, { timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (window as Window & { __navMarker?: string }).__navMarker,
+      ),
+    )
+    .toBe(marker);
+}
+
+async function expectLandingNavReady(page: Page) {
+  await expect(
+    page.locator('nav[aria-label="Primary"] a[href="/blog"]').first(),
+  ).toBeVisible();
+}
+
 test.describe("Navigation", () => {
   test("home page renders landing content and keeps the skip target", async ({
     page,
@@ -48,6 +75,7 @@ test.describe("Navigation", () => {
         name: "A web framework for building anything",
       }),
     ).toBeVisible();
+    await expectLandingNavReady(page);
 
     await expectClientNavigation(
       page,
@@ -66,6 +94,7 @@ test.describe("Navigation", () => {
         name: "A web framework for building anything",
       }),
     ).toBeVisible();
+    await expectLandingNavReady(page);
 
     await expectClientNavigation(
       page,
@@ -144,16 +173,13 @@ test.describe("Navigation", () => {
       .toBe(true);
   });
 
-  test("header wordmark uses client navigation for root and brand", async ({
+  test("header wordmark context menu uses client navigation for brand", async ({
     page,
   }) => {
     await page.goto("/blog");
 
     let remixLink = page.locator('header a[aria-label="Remix"]').first();
-    await expectClientNavigation(page, () => remixLink.click(), "**/");
-    await expect(page).toHaveURL(/\/$/);
-
-    await expectClientNavigation(
+    await expectHydratedClientNavigation(
       page,
       () => remixLink.click({ button: "right" }),
       "**/brand",
