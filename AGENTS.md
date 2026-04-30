@@ -6,10 +6,10 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 ## Source Of Truth
 
-- **Framework conventions** match the Remix skills in `.agents/skills/` — start with `remix-overview/SKILL.md`, then use `remix-project-layout`, `remix-routing`, `remix-server`, and `remix-ui` as needed. Do not treat this file as a second copy of those rules; it only records **repo-specific** invariants.
+- **Framework conventions** match the consolidated Remix skill in `.agents/skills/remix/SKILL.md`. Do not treat this file as a second copy of those rules; it only records **repo-specific** invariants.
 - **`references/remix/**`\*\* — local API semantics when package usage is unclear.
 
-## Server runtime (same model as `remix-server` skill)
+## Server runtime
 
 - **Root `server.ts`** — Node HTTP process entry. Uses `createRequestListener` from `remix/node-fetch-server`, imports the live app router, and closes the asset server during shutdown.
 - **`app/router.ts`** — `createRouter`, root middleware stack, `router.map(...)` wiring, and the `GET /assets/*` route that delegates to `app/utils/assets.server.ts`.
@@ -22,9 +22,9 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - In `app/controllers/**`, keep exported route handler/controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
-- Use `clientEntry(\`${import.meta.url}#ExportName\`, ...)`for hydrated asset modules so server rendering can resolve them through`resolveClientEntry(...)`.
+- Use named functions with `clientEntry(import.meta.url, ...)` for hydrated asset modules so server rendering can resolve them through `resolveClientEntry(...)`.
 - Resolve the root browser entry and preload links through `app/middleware/asset-entry.ts` + `app/utils/assets.server.ts`; do not hardcode build output paths.
-- Plain stylesheets still come from `public/styles` via `app/utils/style-hrefs.ts`; `remix/assets` only owns browser JS/TS modules.
+- Plain stylesheets still come from `public/styles` via `app/utils/style-hrefs.ts`; this app uses `remix/assets` for hydrated browser modules.
 
 ## Done Checklist (Route/Feature Changes)
 

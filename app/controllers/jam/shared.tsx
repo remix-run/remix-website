@@ -1,5 +1,5 @@
 import cx from "clsx";
-import type { RemixNode } from "remix/component/jsx-runtime";
+import type { RemixNode } from "remix/ui";
 import { JamScrambleText } from "../../assets/jam-scramble-text";
 import { MobileMenu } from "../../assets/mobile-menu";
 import { routes } from "../../routes";

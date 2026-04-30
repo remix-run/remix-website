@@ -1,5 +1,5 @@
 import cx from "clsx";
-import { clientEntry, on, type Dispatched, type Handle } from "remix/component";
+import { clientEntry, on, type Dispatched, type Handle } from "remix/ui";
 import { assetPaths } from "../utils/asset-paths";
 
 type KeepsakeId =

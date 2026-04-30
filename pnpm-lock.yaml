@@ -62,8 +62,8 @@ importers:
         specifier: ^11.1.2
         version: 11.1.2
       remix:
-        specifier: 3.0.0-alpha.5
-        version: 3.0.0-alpha.5(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+        specifier: 3.0.0-alpha.6
+        version: 3.0.0-alpha.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       satori:
         specifier: ^0.26.0
         version: 0.26.0
@@ -106,7 +106,7 @@ importers:
         version: 3.0.3
       "@vitest/coverage-v8":
         specifier: ^4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.0.18(vitest@4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2))
       autoprefixer:
         specifier: ^10.4.24
         version: 10.4.24(postcss@8.5.6)
@@ -142,13 +142,13 @@ importers:
         version: 5.9.3
       vite:
         specifier: ^7.3.1
-        version: 7.3.1(@types/node@24.10.13)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2)
+        version: 7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2)
       vite-tsconfig-paths:
         specifier: ^5.1.4
-        version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2))
+        version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2))
       vitest:
         specifier: ^4.0.18
-        version: 4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2)
+        version: 4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2)
 
 packages:
   "@adobe/css-tools@4.4.4":
@@ -1441,10 +1441,10 @@ packages:
         integrity: sha512-O1iWBv1W+q996h2WvxumWddOdLWwuE+FNYHOGNWGcoa0JJ3WS7WmGbeA6NkrAmMhzwkkNS2/9ezkFBSlDiLmvw==,
       }
 
-  "@remix-run/assets@0.1.0":
+  "@remix-run/assets@0.2.0":
     resolution:
       {
-        integrity: sha512-uDHdabZZS5frhh1FQL0fr4kMF/4SOX5wU1Dqk7bn08lup5zAjbnbtGqqjWSzC7FuUDkjpla/QYWFt2hf9WH/Vg==,
+        integrity: sha512-nGqZATiB/24b4ZGY7vdDk5o3gtyqj29b86XOIJeSZPmGSNhCsFf+pDZ/MWmeBmG2tBlbjWIxGUYhGByvVgBTOg==,
       }
 
   "@remix-run/async-context-middleware@0.2.1":
@@ -1459,22 +1459,23 @@ packages:
         integrity: sha512-20oucaqUhAymi/0NkD7Nr0ONCQyNM6EZf9rlCQrpxK8TjvyRjIS0jlnvljPTnvSXy0WVMaoG+e3E/Ayq2TiToQ==,
       }
 
-  "@remix-run/auth@0.1.1":
+  "@remix-run/auth@0.2.0":
     resolution:
       {
-        integrity: sha512-lpbkwq3E6AHBVXVPCHD14wvFLnTVL9i6iMuTS2paebfkg8ZbfoClCbOvusyYDObWRGYE5m74HJK8YTsT4axPAg==,
+        integrity: sha512-sdjH4MUEOLundh37V0exO0nwFATjOKrBRKyK9xogOYTSddiXxij1WYuhdd2Xhsv+q5uMA83BVUhhN2heUE8l7w==,
       }
 
-  "@remix-run/component@0.7.0":
+  "@remix-run/cli@0.1.0":
     resolution:
       {
-        integrity: sha512-yiJlRP9rMaQC/m/AoByhMgG9GE8Q/1DQpzcjqZJom/C1aBggzPrfhTw/8id7Xar07SGyWpOwKCvAqnYUOUZ7RQ==,
+        integrity: sha512-omBHXeikUPJvlDbbSYklVjsxJSnMWqXcpzEDa63ktIlExg6DQiwR9oXUTfoNkhddVqJrL3L8rjSwIZrwFAD3KQ==,
       }
+    engines: { node: ">=24.3.0" }
 
-  "@remix-run/compression-middleware@0.1.5":
+  "@remix-run/compression-middleware@0.1.6":
     resolution:
       {
-        integrity: sha512-eAqRlOJLaTKQcQA2+lId5yQeQpVY/BvCqnR9v2ZAReUP+HTCtdoEEWhynXmMTrjs/iKSc45hJsfx9Vf/nG/jRg==,
+        integrity: sha512-tVqxMwMRkMVMRnE7rGWnxd8bSPjESOOerWW+yfzdlQhVyk2+SW/8RbJjXyD3nuchqys6CDKbnCcw4fR8+PQ6cA==,
       }
 
   "@remix-run/cookie@0.5.1":
@@ -1501,10 +1502,10 @@ packages:
         integrity: sha512-ipty4+cJIZ7pJqohy6ureErqEvbDwuKMauLHyHO0XYcGx9dQYa6WF88Njap8AHz3AbpaJjxeUYMhs/UunMljjA==,
       }
 
-  "@remix-run/data-schema@0.2.0":
+  "@remix-run/data-schema@0.3.0":
     resolution:
       {
-        integrity: sha512-bXgdWcWZS6TkbVO9Piwn035iw0LczfSTFrCW4Vd1k57x/4j3eWZwfHBr3lXdw5whefacs3m3pVZ8RUiu8NtBeA==,
+        integrity: sha512-rjGaFJduzO3iMFOKwA5URpZDuGbUxgBwcX9myBglfqbax8dBlhRcxurydepq+xi+XBE+bPrT9V57Jur6p1igow==,
       }
 
   "@remix-run/data-table-mysql@0.3.0":
@@ -1529,16 +1530,11 @@ packages:
       pg:
         optional: true
 
-  "@remix-run/data-table-sqlite@0.3.0":
+  "@remix-run/data-table-sqlite@0.4.0":
     resolution:
       {
-        integrity: sha512-KTVYCfmdXdktjewkY88Y2MjQqJCLRdrJ2R5Uw3hg9rKlG5g7Ix6F2ZN7vxSCqT/+kInfVk5ntWFVlTQnZWY5fw==,
+        integrity: sha512-tNgEuBN/H9UW4J8Zu6Y2uydUVr3rbyYKRgfzFS/Sg6XOxetYDZYp+o6XaeGQEmupACPHJ+CtNtHoyinfU1eOaQ==,
       }
-    peerDependencies:
-      better-sqlite3: ^12.4.1
-    peerDependenciesMeta:
-      better-sqlite3:
-        optional: true
 
   "@remix-run/data-table@0.2.0":
     resolution:
@@ -1546,10 +1542,10 @@ packages:
         integrity: sha512-6QbdlKER0F0rX3XkTHC7ZPBgu/dyGvvgrKRbraBD9iGHTE7AED1emo3/YWsDJUeFzy7INNJaUIpNm9jNcgL8Kg==,
       }
 
-  "@remix-run/fetch-proxy@0.7.1":
+  "@remix-run/fetch-proxy@0.8.0":
     resolution:
       {
-        integrity: sha512-rPLfOpAaCXtm1dLI45uIPKERNbXbrh0P9AJc1sliz8pWd/McaFYjdr5KzB4QrFSfPvEt/Wmy6F2521qB1kK0ug==,
+        integrity: sha512-kUBHz1ykwpS9eiWWeakdsvyIRyNSxKqFJCX2dwceUMOFuGtHkdN96gF1fyv9f6oxhRZCApgm4sjrdL67VpOfhA==,
       }
 
   "@remix-run/fetch-router@0.18.1":
@@ -1558,34 +1554,34 @@ packages:
         integrity: sha512-pmVNDkgmEYJ+Ugw6PuThcOzesG3ksnlY4gIm8w4fxWf+vqyWrBtjezINiMGEiJNml+tayktngrHPeLY3jYaLDw==,
       }
 
-  "@remix-run/file-storage-s3@0.1.0":
+  "@remix-run/file-storage-s3@0.1.1":
     resolution:
       {
-        integrity: sha512-r80An7nSFidK/0xn9O9/HxfUcgxVpM4kprnTGr6pGhKdgbaTCEtA+U5ETYGfeedFxhDcT+7ue+4Fv/VxeIvFwQ==,
+        integrity: sha512-ylE9w6A6mrX4OystdNbIRNqozADgnnnEly9m53VDb3yO+CDYc+izFQZ93R3uPqC7jUenuG4Jc07Yv709J8Z/SA==,
       }
 
-  "@remix-run/file-storage@0.13.3":
+  "@remix-run/file-storage@0.13.4":
     resolution:
       {
-        integrity: sha512-HBDz9RRsFRvI6EoeasklxH/NleGy0QZBXBcA4gQBW8ueucop21TQI4wvGlhZmXcnJ3nP4RkhdF2Gff2/HD5eiA==,
+        integrity: sha512-DunIIfs5/qpxQRvlxs5OT1I8TMiZqf7zbCOzKz6LJconD5lC97P58UKOfwS69hfxhg3NyBGFqhBuQ+QhYUCAOQ==,
       }
 
-  "@remix-run/form-data-middleware@0.2.1":
+  "@remix-run/form-data-middleware@0.2.2":
     resolution:
       {
-        integrity: sha512-W+srsZcGNpCD8CwJbqtGD9BTPEQsodR/H3bU1V8PHwV0UjLA7CD4FaTwOdWZflOkC095Hz2MIjpi+71c686fbg==,
+        integrity: sha512-KG0ZZfnE6SDe4oPMX/X3wZliycbBWlgXnE1b6LWH2V+LzHgJRs3JPX3CjqGBIOlmunhPxb1mmkDC9Raqj+vw0g==,
       }
 
-  "@remix-run/form-data-parser@0.16.0":
+  "@remix-run/form-data-parser@0.17.0":
     resolution:
       {
-        integrity: sha512-k4QCgCyPURpqe+9Rual1GBJ8Ab6ri82Clfh5ooxq03jKQ1TyQZT5xh+XP0R05+Bqg5bzAZl7r2BpmDEvfoRTWw==,
+        integrity: sha512-012VyeBYzqHxg/c6n882qDdHgR/hLk+bT+Eh9nb2CCfzt5OtkhAIuQOCj1Me9KZs3x23Rfe06ybZZ8k/dp3cxw==,
       }
 
-  "@remix-run/fs@0.4.2":
+  "@remix-run/fs@0.4.3":
     resolution:
       {
-        integrity: sha512-z3W2L+iUwgZ7i0S379SYQ8veOe2Weqs+JajmyTCqSVzbmMUniH3qQ6SAYr3FjbrKtLLWHN3SpK4XtFv57VzbLA==,
+        integrity: sha512-4fT/28oF8VR99eJRK6jFw1YQ3X3KlKBt6fhfS/jFMq4OMQ2KOTUfLwLOTVGY3/utf1Am9mX359WBKYxdsIGoJA==,
       }
 
   "@remix-run/headers@0.19.0":
@@ -1600,16 +1596,16 @@ packages:
         integrity: sha512-aAMx68udtIk0fmCpCXHYscVeCDsRVEmEgh4XvtusPr3vkHu3jn4gx5oAxgsPXPdDmmD/d75SYyI0m/F+aLz5iQ==,
       }
 
-  "@remix-run/lazy-file@5.0.2":
+  "@remix-run/lazy-file@5.0.3":
     resolution:
       {
-        integrity: sha512-52Bo5dTV+EDwrUMS3mjeR+Sly85aHeN3fnNTeaflqzlCMWJwr2pX+y6/3mTDtRdxmTWF1MGQAoeayzfPb4zZJg==,
+        integrity: sha512-3NIp4xRaxAwcDtRSXKm6qYeGX/DjFGNY4FVm0tdvvW2TFyuFbzBoYDQxo4PyEiLtlqkEaqqHTZTIe2SD+Dau+w==,
       }
 
-  "@remix-run/logger-middleware@0.1.5":
+  "@remix-run/logger-middleware@0.2.0":
     resolution:
       {
-        integrity: sha512-KJq9PQrp67AsRy15fuwdqSQeCEcK2+fRdojfkWcBx3sTI4gYeugJuGpgCUcCGEAjV4AVSI11KqE/uDTDGpLTUg==,
+        integrity: sha512-U241xb3F/nk3tE6oaDNpYwyzKSlCtd4jR99LOQuj4y6Be9U/D0/1DQtkmDkC9FrpBmUl14cTZ/n6L5ZgN3L61A==,
       }
 
   "@remix-run/method-override-middleware@0.1.6":
@@ -1618,16 +1614,16 @@ packages:
         integrity: sha512-leaTLMtg/XvW3BqMjLeMTEkHz5YrlTbAAauCICZOmB9s+UPgj+G0CoXsR6VmxCi++xXjNbAq7c+X/ehp4mZmGQ==,
       }
 
-  "@remix-run/mime@0.4.0":
+  "@remix-run/mime@0.4.1":
     resolution:
       {
-        integrity: sha512-O6TcTL6CtuX82Q8BHqAere5O+0hYcrzSgY9whsDOBuqbW753Rczprs2jYw3qCDSo0kLxykW4ys3qgZcdgZ+chw==,
+        integrity: sha512-n0DUUwpHiDrtHCSw6YFbjeMjajj7STqwzK9PMJkQOHbvOarfPdQdRRMkRqYPBmhu6ABzb6sAdYRSrxPx50I5VQ==,
       }
 
-  "@remix-run/multipart-parser@0.15.0":
+  "@remix-run/multipart-parser@0.16.0":
     resolution:
       {
-        integrity: sha512-/Ugo6k2bN7gh7Ybyhe7R/NrkD075fHrEfVf17P+NNC9rlWHBQCOSyJ4V8n4wtoG8umeImagU/AuHuUuTwzvHww==,
+        integrity: sha512-RZqdkP+jOW3sQSsv/kC9OwaA0eifMEvTwlaIw/VC3HOHgebKgvQO/+gBJsBgH7YecFSbvaZq1/iB5J+1jVhDpg==,
       }
 
   "@remix-run/node-fetch-server@0.13.0":
@@ -1636,10 +1632,10 @@ packages:
         integrity: sha512-1EsNo0ZpgXu/90AWoRZf/oE3RVTUS80tiTUpt+hv5pjtAkw7icN4WskDwz/KdAw5ARbJLMhZBrO1NqThmy/McA==,
       }
 
-  "@remix-run/response@0.3.2":
+  "@remix-run/response@0.3.3":
     resolution:
       {
-        integrity: sha512-GkFqVq5E7Do6rMKTBjgoNyJlrsLrqYg+TDlCDrXoZ3v8O2RlSI14+bCF8lGQHy15DWX2pizVj6R0e6NmjcuLuA==,
+        integrity: sha512-hgqYDk557dYjLJ0W5Oa6cj5jtNc/5HpAV+jCYlW8+PvoO0gkQzwOJihaFbePCuGW7jhOAFeD4L+SlvV1TxvWpQ==,
       }
 
   "@remix-run/route-pattern@0.20.1":
@@ -1677,29 +1673,42 @@ packages:
         integrity: sha512-Bm6aKYgutb/raHZ3laloz8g/Qu7f3CeK3o4gUVDMxtEiAdWCzJamwHoTpGOc5+g1Kuy7z85v4M6nGrF06MFDSg==,
       }
 
-  "@remix-run/static-middleware@0.4.6":
+  "@remix-run/static-middleware@0.4.7":
     resolution:
       {
-        integrity: sha512-0D9eiaYofEJN3CTSeAr9zmMIgNfPCbAX1yPwxSVcFRELBKQvMYHjvFRqnqroEM4rHN5nVu3gzSVyLi8WtCqcsg==,
+        integrity: sha512-9CM8Q6Glrxp55YoHNEFlECQpDlORWWEz9lbxKAi99jpr6gSc755ZjyYM2hunuO9wENvXRppRQt0uSiX/vUNrdQ==,
       }
 
-  "@remix-run/tar-parser@0.7.0":
+  "@remix-run/tar-parser@0.7.1":
     resolution:
       {
-        integrity: sha512-PW8JxEUzaGcnqxC5hBI8L9lK/Qz3oad6IGKZ+NExI3L7urVJUux+yCBrsme79DMBgS6hL+lgd/5LPFA5fSwF9A==,
+        integrity: sha512-NZKTuA66rj0zqpljWAb6v147cNu5BtRCiv8FY5kn64ZPvLmoI62Ehm2hoUh0g0wJHeCNmgS5QZg1xhw6FX67SA==,
       }
 
-  "@remix-run/test@0.1.0":
+  "@remix-run/terminal@0.1.0":
     resolution:
       {
-        integrity: sha512-SS7ikDqlc8GsLUmpZuTd87ZNgGCxRIuO6ujzUvupxgqWnMgjCWiXyH6q8ejdeHmlNBRa/ODKT3aynJoJ7gaVjA==,
+        integrity: sha512-vxiiCm3yQTBeG4j9Lm4PVZElEdD7gBNm+Q2rqTGMlE4ImrWFoq7h2Jk1y3BMylNZYz0m3pzihQ5G2sbY1XtdLg==,
       }
+
+  "@remix-run/test@0.2.0":
+    resolution:
+      {
+        integrity: sha512-H1rXtk1YRTJqKJfYN9C2FXcByG9gm9wyzBfRmiofZxI9pK+S1ba1r/oMCxHoJjuLqTHksIB8hKCxtBVhvmfrfg==,
+      }
+    engines: { node: ">=24.3.0" }
     hasBin: true
     peerDependencies:
       playwright: ^1.59.0
     peerDependenciesMeta:
       playwright:
         optional: true
+
+  "@remix-run/ui@0.1.0":
+    resolution:
+      {
+        integrity: sha512-XU1h9n6eKjAgUjM/FlNQCfPMuqxcELcKHCp4/PdcKBkAeewLZuMNb5XAWCdTTKx6jKv15uwJBWcfeiloTHfE6w==,
+      }
 
   "@resvg/resvg-js-android-arm-eabi@2.6.2":
     resolution:
@@ -2115,6 +2124,12 @@ packages:
         integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==,
       }
 
+  "@types/istanbul-lib-coverage@2.0.6":
+    resolution:
+      {
+        integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==,
+      }
+
   "@types/mdast@4.0.4":
     resolution:
       {
@@ -2492,6 +2507,12 @@ packages:
     engines: { node: ">=18" }
     hasBin: true
 
+  convert-source-map@2.0.0:
+    resolution:
+      {
+        integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==,
+      }
+
   cross-env@10.1.0:
     resolution:
       {
@@ -2654,6 +2675,13 @@ packages:
         integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==,
       }
     engines: { node: ">=6" }
+
+  detect-libc@2.1.2:
+    resolution:
+      {
+        integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==,
+      }
+    engines: { node: ">=8" }
 
   devlop@1.1.0:
     resolution:
@@ -3138,6 +3166,116 @@ packages:
       {
         integrity: sha512-FGuPw30AdOIUTRMC2OMRtQV+jkVj2cfPqSeWXv1NEAJ1qZ5zb1X6z1mFhbfOB/iy3ssJCD+3KuZ8r8C3uVFlAg==,
       }
+
+  lightningcss-android-arm64@1.32.0:
+    resolution:
+      {
+        integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [arm64]
+    os: [android]
+
+  lightningcss-darwin-arm64@1.32.0:
+    resolution:
+      {
+        integrity: sha512-RzeG9Ju5bag2Bv1/lwlVJvBE3q6TtXskdZLLCyfg5pt+HLz9BqlICO7LZM7VHNTTn/5PRhHFBSjk5lc4cmscPQ==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [arm64]
+    os: [darwin]
+
+  lightningcss-darwin-x64@1.32.0:
+    resolution:
+      {
+        integrity: sha512-U+QsBp2m/s2wqpUYT/6wnlagdZbtZdndSmut/NJqlCcMLTWp5muCrID+K5UJ6jqD2BFshejCYXniPDbNh73V8w==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [x64]
+    os: [darwin]
+
+  lightningcss-freebsd-x64@1.32.0:
+    resolution:
+      {
+        integrity: sha512-JCTigedEksZk3tHTTthnMdVfGf61Fky8Ji2E4YjUTEQX14xiy/lTzXnu1vwiZe3bYe0q+SpsSH/CTeDXK6WHig==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [x64]
+    os: [freebsd]
+
+  lightningcss-linux-arm-gnueabihf@1.32.0:
+    resolution:
+      {
+        integrity: sha512-x6rnnpRa2GL0zQOkt6rts3YDPzduLpWvwAF6EMhXFVZXD4tPrBkEFqzGowzCsIWsPjqSK+tyNEODUBXeeVHSkw==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [arm]
+    os: [linux]
+
+  lightningcss-linux-arm64-gnu@1.32.0:
+    resolution:
+      {
+        integrity: sha512-0nnMyoyOLRJXfbMOilaSRcLH3Jw5z9HDNGfT/gwCPgaDjnx0i8w7vBzFLFR1f6CMLKF8gVbebmkUN3fa/kQJpQ==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  lightningcss-linux-arm64-musl@1.32.0:
+    resolution:
+      {
+        integrity: sha512-UpQkoenr4UJEzgVIYpI80lDFvRmPVg6oqboNHfoH4CQIfNA+HOrZ7Mo7KZP02dC6LjghPQJeBsvXhJod/wnIBg==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  lightningcss-linux-x64-gnu@1.32.0:
+    resolution:
+      {
+        integrity: sha512-V7Qr52IhZmdKPVr+Vtw8o+WLsQJYCTd8loIfpDaMRWGUZfBOYEJeyJIkqGIDMZPwPx24pUMfwSxxI8phr/MbOA==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  lightningcss-linux-x64-musl@1.32.0:
+    resolution:
+      {
+        integrity: sha512-bYcLp+Vb0awsiXg/80uCRezCYHNg1/l3mt0gzHnWV9XP1W5sKa5/TCdGWaR/zBM2PeF/HbsQv/j2URNOiVuxWg==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  lightningcss-win32-arm64-msvc@1.32.0:
+    resolution:
+      {
+        integrity: sha512-8SbC8BR40pS6baCM8sbtYDSwEVQd4JlFTOlaD3gWGHfThTcABnNDBda6eTZeqbofalIJhFx0qKzgHJmcPTnGdw==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [arm64]
+    os: [win32]
+
+  lightningcss-win32-x64-msvc@1.32.0:
+    resolution:
+      {
+        integrity: sha512-Amq9B/SoZYdDi1kFrojnoqPLxYhQ4Wo5XiL8EVJrVsB8ARoC1PWW6VGtT0WKCemjy8aC+louJnjS7U18x3b06Q==,
+      }
+    engines: { node: ">= 12.0.0" }
+    cpu: [x64]
+    os: [win32]
+
+  lightningcss@1.32.0:
+    resolution:
+      {
+        integrity: sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ==,
+      }
+    engines: { node: ">= 12.0.0" }
 
   lilconfig@3.1.3:
     resolution:
@@ -3633,6 +3771,13 @@ packages:
     resolution:
       {
         integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==,
+      }
+    engines: { node: ">=12" }
+
+  picomatch@4.0.4:
+    resolution:
+      {
+        integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==,
       }
     engines: { node: ">=12" }
 
@@ -4177,11 +4322,12 @@ packages:
         integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==,
       }
 
-  remix@3.0.0-alpha.5:
+  remix@3.0.0-alpha.6:
     resolution:
       {
-        integrity: sha512-bp7yWVieN63rh6ZmMp2RO4h1RoSMAASavLuIAr8Byc4f6IhgHq2p4CoP+d5SUE+dOIK0D0K14MtMqlsRGJ6Zxg==,
+        integrity: sha512-n5ZDuLgEBrGSmKdOAHy7MgBHUxuef8+EAwNxpvcJGcLf+9PM/yEkk+inpLU7It8M0Ew7/bPkdsCJ4LQBgAq7Zg==,
       }
+    engines: { node: ">=24.3.0" }
     hasBin: true
 
   require-directory@2.1.1:
@@ -4600,6 +4746,13 @@ packages:
       {
         integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==,
       }
+
+  v8-to-istanbul@9.3.0:
+    resolution:
+      {
+        integrity: sha512-kiGUalWN+rgBJ/1OHZsBtU4rXZOfj/7rKQxULKlIzwzQSvMJUUNgPwJEEh7gU6xEVxC0ahoOBvN2YI8GH6FNgA==,
+      }
+    engines: { node: ">=10.12.0" }
 
   vfile-message@4.0.3:
     resolution:
@@ -5283,18 +5436,20 @@ snapshots:
 
   "@remix-run/assert@0.1.0": {}
 
-  "@remix-run/assets@0.1.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)":
+  "@remix-run/assets@0.2.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)":
     dependencies:
       "@remix-run/headers": 0.19.0
       "@remix-run/route-pattern": 0.20.1
       chokidar: 5.0.0
       es-module-lexer: 2.0.0
       get-tsconfig: 4.14.0
+      lightningcss: 1.32.0
       magic-string: 0.30.21
       oxc-minify: 0.121.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       oxc-parser: 0.121.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       oxc-resolver: 11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       oxc-transform: 0.121.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      picomatch: 4.0.4
       source-map-js: 1.2.1
     transitivePeerDependencies:
       - "@emnapi/core"
@@ -5309,20 +5464,25 @@ snapshots:
       "@remix-run/fetch-router": 0.18.1
       "@remix-run/session": 0.4.1
 
-  "@remix-run/auth@0.1.1":
+  "@remix-run/auth@0.2.0":
     dependencies:
       "@remix-run/fetch-router": 0.18.1
       "@remix-run/session": 0.4.1
 
-  "@remix-run/component@0.7.0":
+  "@remix-run/cli@0.1.0":
     dependencies:
-      "@types/dom-navigation": 1.0.7
+      "@remix-run/tar-parser": 0.7.1
+      "@remix-run/terminal": 0.1.0
+      "@remix-run/test": 0.2.0
+      semver: 7.7.4
+    transitivePeerDependencies:
+      - playwright
 
-  "@remix-run/compression-middleware@0.1.5":
+  "@remix-run/compression-middleware@0.1.6":
     dependencies:
       "@remix-run/fetch-router": 0.18.1
-      "@remix-run/mime": 0.4.0
-      "@remix-run/response": 0.3.2
+      "@remix-run/mime": 0.4.1
+      "@remix-run/response": 0.3.3
 
   "@remix-run/cookie@0.5.1":
     dependencies:
@@ -5342,7 +5502,7 @@ snapshots:
       "@remix-run/fetch-router": 0.18.1
       "@remix-run/session": 0.4.1
 
-  "@remix-run/data-schema@0.2.0":
+  "@remix-run/data-schema@0.3.0":
     dependencies:
       "@standard-schema/spec": 1.1.0
 
@@ -5354,13 +5514,13 @@ snapshots:
     dependencies:
       "@remix-run/data-table": 0.2.0
 
-  "@remix-run/data-table-sqlite@0.3.0":
+  "@remix-run/data-table-sqlite@0.4.0":
     dependencies:
       "@remix-run/data-table": 0.2.0
 
   "@remix-run/data-table@0.2.0": {}
 
-  "@remix-run/fetch-proxy@0.7.1":
+  "@remix-run/fetch-proxy@0.8.0":
     dependencies:
       "@remix-run/headers": 0.19.0
 
@@ -5368,59 +5528,60 @@ snapshots:
     dependencies:
       "@remix-run/route-pattern": 0.20.1
 
-  "@remix-run/file-storage-s3@0.1.0":
+  "@remix-run/file-storage-s3@0.1.1":
     dependencies:
-      "@remix-run/file-storage": 0.13.3
+      "@remix-run/file-storage": 0.13.4
       aws4fetch: 1.0.20
 
-  "@remix-run/file-storage@0.13.3":
+  "@remix-run/file-storage@0.13.4":
     dependencies:
-      "@remix-run/fs": 0.4.2
-      "@remix-run/lazy-file": 5.0.2
+      "@remix-run/fs": 0.4.3
+      "@remix-run/lazy-file": 5.0.3
 
-  "@remix-run/form-data-middleware@0.2.1":
+  "@remix-run/form-data-middleware@0.2.2":
     dependencies:
       "@remix-run/fetch-router": 0.18.1
-      "@remix-run/form-data-parser": 0.16.0
+      "@remix-run/form-data-parser": 0.17.0
 
-  "@remix-run/form-data-parser@0.16.0":
+  "@remix-run/form-data-parser@0.17.0":
     dependencies:
-      "@remix-run/multipart-parser": 0.15.0
+      "@remix-run/multipart-parser": 0.16.0
 
-  "@remix-run/fs@0.4.2":
+  "@remix-run/fs@0.4.3":
     dependencies:
-      "@remix-run/lazy-file": 5.0.2
-      "@remix-run/mime": 0.4.0
+      "@remix-run/lazy-file": 5.0.3
+      "@remix-run/mime": 0.4.1
 
   "@remix-run/headers@0.19.0": {}
 
   "@remix-run/html-template@0.3.0": {}
 
-  "@remix-run/lazy-file@5.0.2":
+  "@remix-run/lazy-file@5.0.3":
     dependencies:
-      "@remix-run/mime": 0.4.0
+      "@remix-run/mime": 0.4.1
 
-  "@remix-run/logger-middleware@0.1.5":
+  "@remix-run/logger-middleware@0.2.0":
     dependencies:
       "@remix-run/fetch-router": 0.18.1
+      "@remix-run/terminal": 0.1.0
 
   "@remix-run/method-override-middleware@0.1.6":
     dependencies:
       "@remix-run/fetch-router": 0.18.1
 
-  "@remix-run/mime@0.4.0": {}
+  "@remix-run/mime@0.4.1": {}
 
-  "@remix-run/multipart-parser@0.15.0":
+  "@remix-run/multipart-parser@0.16.0":
     dependencies:
       "@remix-run/headers": 0.19.0
 
   "@remix-run/node-fetch-server@0.13.0": {}
 
-  "@remix-run/response@0.3.2":
+  "@remix-run/response@0.3.3":
     dependencies:
       "@remix-run/headers": 0.19.0
       "@remix-run/html-template": 0.3.0
-      "@remix-run/mime": 0.4.0
+      "@remix-run/mime": 0.4.1
 
   "@remix-run/route-pattern@0.20.1": {}
 
@@ -5440,22 +5601,35 @@ snapshots:
 
   "@remix-run/session@0.4.1": {}
 
-  "@remix-run/static-middleware@0.4.6":
+  "@remix-run/static-middleware@0.4.7":
     dependencies:
       "@remix-run/fetch-router": 0.18.1
-      "@remix-run/fs": 0.4.2
+      "@remix-run/fs": 0.4.3
       "@remix-run/html-template": 0.3.0
-      "@remix-run/mime": 0.4.0
-      "@remix-run/response": 0.3.2
+      "@remix-run/mime": 0.4.1
+      "@remix-run/response": 0.3.3
 
-  "@remix-run/tar-parser@0.7.0": {}
+  "@remix-run/tar-parser@0.7.1": {}
 
-  "@remix-run/test@0.1.0":
+  "@remix-run/terminal@0.1.0": {}
+
+  "@remix-run/test@0.2.0":
     dependencies:
-      "@remix-run/component": 0.7.0
-      "@remix-run/fetch-router": 0.18.1
-      "@remix-run/node-fetch-server": 0.13.0
+      "@remix-run/terminal": 0.1.0
+      es-module-lexer: 2.0.0
+      esbuild: 0.27.3
+      get-tsconfig: 4.14.0
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-reports: 3.2.0
+      magic-string: 0.30.21
+      source-map-js: 1.2.1
       tsx: 4.21.0
+      v8-to-istanbul: 9.3.0
+
+  "@remix-run/ui@0.1.0":
+    dependencies:
+      "@types/dom-navigation": 1.0.7
 
   "@resvg/resvg-js-android-arm-eabi@2.6.2":
     optional: true
@@ -5631,6 +5805,8 @@ snapshots:
     dependencies:
       "@types/unist": 3.0.3
 
+  "@types/istanbul-lib-coverage@2.0.6": {}
+
   "@types/mdast@4.0.4":
     dependencies:
       "@types/unist": 3.0.3
@@ -5653,7 +5829,7 @@ snapshots:
 
   "@ungap/structured-clone@1.3.0": {}
 
-  "@vitest/coverage-v8@4.0.18(vitest@4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2))":
+  "@vitest/coverage-v8@4.0.18(vitest@4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2))":
     dependencies:
       "@bcoe/v8-coverage": 1.0.2
       "@vitest/utils": 4.0.18
@@ -5665,7 +5841,7 @@ snapshots:
       obug: 2.1.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2)
 
   "@vitest/expect@4.0.18":
     dependencies:
@@ -5676,13 +5852,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  "@vitest/mocker@4.0.18(vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2))":
+  "@vitest/mocker@4.0.18(vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2))":
     dependencies:
       "@vitest/spy": 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.1(@types/node@24.10.13)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2)
 
   "@vitest/pretty-format@4.0.18":
     dependencies:
@@ -5845,6 +6021,8 @@ snapshots:
       tree-kill: 1.2.2
       yargs: 17.7.2
 
+  convert-source-map@2.0.0: {}
+
   cross-env@10.1.0:
     dependencies:
       "@epic-web/invariant": 1.0.0
@@ -5957,6 +6135,8 @@ snapshots:
   dependency-graph@1.0.0: {}
 
   dequal@2.0.3: {}
+
+  detect-libc@2.1.2: {}
 
   devlop@1.1.0:
     dependencies:
@@ -6224,6 +6404,55 @@ snapshots:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
+
+  lightningcss-android-arm64@1.32.0:
+    optional: true
+
+  lightningcss-darwin-arm64@1.32.0:
+    optional: true
+
+  lightningcss-darwin-x64@1.32.0:
+    optional: true
+
+  lightningcss-freebsd-x64@1.32.0:
+    optional: true
+
+  lightningcss-linux-arm-gnueabihf@1.32.0:
+    optional: true
+
+  lightningcss-linux-arm64-gnu@1.32.0:
+    optional: true
+
+  lightningcss-linux-arm64-musl@1.32.0:
+    optional: true
+
+  lightningcss-linux-x64-gnu@1.32.0:
+    optional: true
+
+  lightningcss-linux-x64-musl@1.32.0:
+    optional: true
+
+  lightningcss-win32-arm64-msvc@1.32.0:
+    optional: true
+
+  lightningcss-win32-x64-msvc@1.32.0:
+    optional: true
+
+  lightningcss@1.32.0:
+    dependencies:
+      detect-libc: 2.1.2
+    optionalDependencies:
+      lightningcss-android-arm64: 1.32.0
+      lightningcss-darwin-arm64: 1.32.0
+      lightningcss-darwin-x64: 1.32.0
+      lightningcss-freebsd-x64: 1.32.0
+      lightningcss-linux-arm-gnueabihf: 1.32.0
+      lightningcss-linux-arm64-gnu: 1.32.0
+      lightningcss-linux-arm64-musl: 1.32.0
+      lightningcss-linux-x64-gnu: 1.32.0
+      lightningcss-linux-x64-musl: 1.32.0
+      lightningcss-win32-arm64-msvc: 1.32.0
+      lightningcss-win32-x64-msvc: 1.32.0
 
   lilconfig@3.1.3: {}
 
@@ -6749,6 +6978,8 @@ snapshots:
 
   picomatch@4.0.3: {}
 
+  picomatch@4.0.4: {}
+
   pify@2.3.0: {}
 
   pirates@4.0.7: {}
@@ -7071,52 +7302,53 @@ snapshots:
       mdast-util-to-markdown: 2.1.2
       unified: 11.0.5
 
-  remix@3.0.0-alpha.5(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
+  remix@3.0.0-alpha.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
     dependencies:
       "@remix-run/assert": 0.1.0
-      "@remix-run/assets": 0.1.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      "@remix-run/assets": 0.2.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       "@remix-run/async-context-middleware": 0.2.1
-      "@remix-run/auth": 0.1.1
+      "@remix-run/auth": 0.2.0
       "@remix-run/auth-middleware": 0.1.1
-      "@remix-run/component": 0.7.0
-      "@remix-run/compression-middleware": 0.1.5
+      "@remix-run/cli": 0.1.0
+      "@remix-run/compression-middleware": 0.1.6
       "@remix-run/cookie": 0.5.1
       "@remix-run/cop-middleware": 0.1.1
       "@remix-run/cors-middleware": 0.1.1
       "@remix-run/csrf-middleware": 0.1.1
-      "@remix-run/data-schema": 0.2.0
+      "@remix-run/data-schema": 0.3.0
       "@remix-run/data-table": 0.2.0
       "@remix-run/data-table-mysql": 0.3.0
       "@remix-run/data-table-postgres": 0.3.0
-      "@remix-run/data-table-sqlite": 0.3.0
-      "@remix-run/fetch-proxy": 0.7.1
+      "@remix-run/data-table-sqlite": 0.4.0
+      "@remix-run/fetch-proxy": 0.8.0
       "@remix-run/fetch-router": 0.18.1
-      "@remix-run/file-storage": 0.13.3
-      "@remix-run/file-storage-s3": 0.1.0
-      "@remix-run/form-data-middleware": 0.2.1
-      "@remix-run/form-data-parser": 0.16.0
-      "@remix-run/fs": 0.4.2
+      "@remix-run/file-storage": 0.13.4
+      "@remix-run/file-storage-s3": 0.1.1
+      "@remix-run/form-data-middleware": 0.2.2
+      "@remix-run/form-data-parser": 0.17.0
+      "@remix-run/fs": 0.4.3
       "@remix-run/headers": 0.19.0
       "@remix-run/html-template": 0.3.0
-      "@remix-run/lazy-file": 5.0.2
-      "@remix-run/logger-middleware": 0.1.5
+      "@remix-run/lazy-file": 5.0.3
+      "@remix-run/logger-middleware": 0.2.0
       "@remix-run/method-override-middleware": 0.1.6
-      "@remix-run/mime": 0.4.0
-      "@remix-run/multipart-parser": 0.15.0
+      "@remix-run/mime": 0.4.1
+      "@remix-run/multipart-parser": 0.16.0
       "@remix-run/node-fetch-server": 0.13.0
-      "@remix-run/response": 0.3.2
+      "@remix-run/response": 0.3.3
       "@remix-run/route-pattern": 0.20.1
       "@remix-run/session": 0.4.1
       "@remix-run/session-middleware": 0.2.1
       "@remix-run/session-storage-memcache": 0.1.0
       "@remix-run/session-storage-redis": 0.1.0
-      "@remix-run/static-middleware": 0.4.6
-      "@remix-run/tar-parser": 0.7.0
-      "@remix-run/test": 0.1.0
+      "@remix-run/static-middleware": 0.4.7
+      "@remix-run/tar-parser": 0.7.1
+      "@remix-run/terminal": 0.1.0
+      "@remix-run/test": 0.2.0
+      "@remix-run/ui": 0.1.0
     transitivePeerDependencies:
       - "@emnapi/core"
       - "@emnapi/runtime"
-      - better-sqlite3
       - mysql2
       - pg
       - playwright
@@ -7405,6 +7637,12 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
+  v8-to-istanbul@9.3.0:
+    dependencies:
+      "@jridgewell/trace-mapping": 0.3.31
+      "@types/istanbul-lib-coverage": 2.0.6
+      convert-source-map: 2.0.0
+
   vfile-message@4.0.3:
     dependencies:
       "@types/unist": 3.0.3
@@ -7415,18 +7653,18 @@ snapshots:
       "@types/unist": 3.0.3
       vfile-message: 4.0.3
 
-  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2)):
+  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2)):
     dependencies:
       debug: 4.4.3
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.9.3)
     optionalDependencies:
-      vite: 7.3.1(@types/node@24.10.13)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2):
+  vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       esbuild: 0.27.3
       fdir: 6.5.0(picomatch@4.0.3)
@@ -7438,13 +7676,14 @@ snapshots:
       "@types/node": 24.10.13
       fsevents: 2.3.3
       jiti: 1.21.7
+      lightningcss: 1.32.0
       tsx: 4.21.0
       yaml: 2.8.2
 
-  vitest@4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2):
+  vitest@4.0.18(@types/node@24.10.13)(happy-dom@20.6.1)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       "@vitest/expect": 4.0.18
-      "@vitest/mocker": 4.0.18(vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2))
+      "@vitest/mocker": 4.0.18(vite@7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2))
       "@vitest/pretty-format": 4.0.18
       "@vitest/runner": 4.0.18
       "@vitest/snapshot": 4.0.18
@@ -7461,7 +7700,7 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.3.1(@types/node@24.10.13)(jiti@1.21.7)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
       "@types/node": 24.10.13

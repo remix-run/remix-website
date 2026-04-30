@@ -1,4 +1,4 @@
-import { clientEntry, type Handle } from "remix/component";
+import { clientEntry, type Handle } from "remix/ui";
 import {
   syncManagedHeadTags,
   syncTitle,

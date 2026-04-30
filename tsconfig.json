@@ -14,7 +14,7 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "remix/component",
+    "jsxImportSource": "remix/ui",
     "types": ["node"]
   }
 }

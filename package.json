@@ -45,7 +45,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "remix": "3.0.0-alpha.5",
+    "remix": "3.0.0-alpha.6",
     "satori": "^0.26.0",
     "semver": "^7.7.3",
     "shiki": "^0.14.7",

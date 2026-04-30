@@ -1,25 +1,27 @@
-import { clientEntry, on, type Handle } from "remix/component";
+import { clientEntry, on, type Handle } from "remix/ui";
 import { assetPaths } from "../utils/asset-paths";
 import { JamButton } from "../controllers/jam/shared";
 
+type JamTicketPurchaseProps = {
+  setup: { initialQuantity?: number; maxQuantity: number };
+  price: string;
+  productId: string;
+  isSoldOut: boolean;
+  error?: string;
+  class?: string;
+};
+
 export let JamTicketPurchase = clientEntry(
   import.meta.url,
-  function JamTicketPurchase(
-    handle: Handle,
-    setup: { initialQuantity?: number; maxQuantity: number },
-  ) {
+  function JamTicketPurchase(handle: Handle<JamTicketPurchaseProps>) {
+    let setup = handle.props.setup;
     let initialQuantity = setup?.initialQuantity ?? 1;
     let maxQuantity = setup.maxQuantity;
     let quantity = normalizeQuantity(initialQuantity, maxQuantity);
     let submitting = false;
 
-    return (props: {
-      price: string;
-      productId: string;
-      isSoldOut: boolean;
-      error?: string;
-      class?: string;
-    }) => {
+    return () => {
+      let props = handle.props;
       let decrementDisabled = props.isSoldOut || quantity <= 1;
       let incrementDisabled = props.isSoldOut || quantity >= maxQuantity;
 

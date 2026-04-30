@@ -1,4 +1,4 @@
-import type { RemixNode } from "remix/component/jsx-runtime";
+import type { RemixNode } from "remix/ui";
 
 import { DocumentHeadSync } from "../assets/document-head-sync";
 import { getAssetEntry } from "../middleware/asset-entry";
@@ -38,7 +38,7 @@ declare global {
 }
 
 /**
- * Shared document shell for Remix 3 (remix/component) routes.
+ * Shared document shell for Remix 3 UI routes.
  *
  * Mirrors the essential <head> setup from the React Router root
  * (app/root.tsx) so migrated pages look consistent.

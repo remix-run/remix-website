@@ -1,4 +1,4 @@
-import type { Props } from "remix/component/jsx-runtime";
+import type { Props } from "remix/ui";
 
 type WordmarkProps = Props<"svg"> & {
   height?: number | string;

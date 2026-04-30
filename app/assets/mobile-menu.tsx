@@ -4,8 +4,8 @@ import {
   on,
   ref,
   type Handle,
-} from "remix/component";
-import type { RemixNode } from "remix/component/jsx-runtime";
+  type RemixNode,
+} from "remix/ui";
 import cx from "clsx";
 import { assetPaths } from "../utils/asset-paths";
 
@@ -20,10 +20,20 @@ const mobileMenuStyles = {
   nav: "flex flex-col gap-2 px-2 py-2.5",
 };
 
+type MobileMenuProps = {
+  setup?: { open?: boolean };
+  children: RemixNode;
+  class?: string;
+  summaryClass?: string;
+  menuPositionClass?: string;
+  menuWrapperClass?: string;
+  navClass?: string;
+};
+
 export let MobileMenu = clientEntry(
   import.meta.url,
-  function MobileMenu(handle: Handle, setup?: { open?: boolean }) {
-    let isOpen = setup?.open ?? false;
+  function MobileMenu(handle: Handle<MobileMenuProps>) {
+    let isOpen = handle.props.setup?.open ?? false;
     let detailsElement: HTMLDetailsElement | null = null;
 
     let closeMenu = () => {
@@ -68,14 +78,8 @@ export let MobileMenu = clientEntry(
       }
     };
 
-    return (props: {
-      children: RemixNode;
-      class?: string;
-      summaryClass?: string;
-      menuPositionClass?: string;
-      menuWrapperClass?: string;
-      navClass?: string;
-    }) => {
+    return () => {
+      let props = handle.props;
       let summaryClass = props.summaryClass ?? mobileMenuStyles.summary;
       let menuWrapperClass =
         props.menuWrapperClass ?? mobileMenuStyles.menuWrapper;

@@ -1,5 +1,5 @@
 import cx from "clsx";
-import type { Props, RemixNode } from "remix/component/jsx-runtime";
+import type { Props, RemixNode } from "remix/ui";
 
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);
 const ROW_HEIGHT = 57;

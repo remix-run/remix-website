@@ -1,5 +1,5 @@
 import cx from "clsx";
-import { clientEntry, on, navigate } from "remix/component";
+import { clientEntry, on, navigate } from "remix/ui";
 import { Wordmark } from "../ui/wordmark";
 
 export let WordmarkLink = clientEntry(import.meta.url, function WordmarkLink() {

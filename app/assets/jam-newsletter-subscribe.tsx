@@ -1,4 +1,4 @@
-import { clientEntry, on, type Handle } from "remix/component";
+import { clientEntry, on, type Handle } from "remix/ui";
 import { routes } from "../routes";
 import {
   submitNewsletterRequest,

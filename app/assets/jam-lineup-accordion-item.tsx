@@ -1,5 +1,5 @@
 import cx from "clsx";
-import { clientEntry, on, ref, type Handle } from "remix/component";
+import { clientEntry, on, ref, type Handle } from "remix/ui";
 import { assetPaths } from "../utils/asset-paths";
 
 type LineupItem = {

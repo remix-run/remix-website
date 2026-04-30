@@ -17,9 +17,9 @@ export let assetServer = createAssetServer({
     "app/data/**",
     "app/middleware/**",
   ],
+  sourceMaps: isDevelopment ? "external" : undefined,
+  minify: !isDevelopment,
   scripts: {
-    sourceMaps: isDevelopment ? "external" : undefined,
-    minify: !isDevelopment,
     define: {
       "process.env.NODE_ENV": JSON.stringify(
         process.env.NODE_ENV ?? "development",

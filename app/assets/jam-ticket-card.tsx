@@ -1,10 +1,4 @@
-import {
-  addEventListeners,
-  clientEntry,
-  on,
-  ref,
-  type Handle,
-} from "remix/component";
+import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
 
 export let JamTicketCard = clientEntry(
   import.meta.url,

@@ -10,7 +10,7 @@ import {
   type JamGalleryModalNav,
 } from "../../../assets/jam-gallery-modal-host";
 import { assetPaths } from "../../../utils/asset-paths";
-import type { RemixNode } from "remix/component/jsx-runtime";
+import type { RemixNode } from "remix/ui";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
@@ -280,14 +280,6 @@ async function getGalleryPhotos() {
     getPhotos("remix-jam-2025-photos-1"),
     getPhotos("remix-jam-2025-photos-2"),
   ]).then((p) => p.flat());
-}
-
-function getGalleryDownloadSrc(photo: Photo) {
-  return transformShopifyImageUrl(photo.url, {
-    width: 1920,
-    format: "jpg",
-    quality: 90,
-  });
 }
 
 function PhotoImage() {
