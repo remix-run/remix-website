@@ -25,46 +25,56 @@ const storySections = [
     title: "High-performance components in plain, beautiful JavaScript",
     body: "Remix components build on web primitives like EventTarget and avoid the runtime semantics of React hooks, giving you back normal JavaScript control flow and execution. This works seamlessly with the web, including web components and third-party libraries. Remix also provides native mixins for the DOM that make it easier than ever to compose and apply complex behavior on native platform elements.",
     align: "left" as const,
-    codeSnippet: `import { type Handle, Glyph, on, ui } from 'remix/ui'
-import { tooltip } from 'remix/ui/tooltip'
+    codeSnippet: `import { type Handle, on } from 'remix/ui'
+import { Glyph } from 'remix/ui/glyph'
+import * as btn from 'remix/ui/button'
+
 
 function CopyToClipboard(handle: Handle<{ url: string }>) {
-  let state: 'idle' | 'copied' | 'error' = 'idle'
+  let state: "idle" | "copied" | "error" = "idle";
 
   return () => {
-    let label = state === 'idle' ? 'Copy to clipboard' : state === 'copied' ? 'Copied' : 'Error'
+    let label =
+      state === "idle"
+        ? "Copy to clipboard"
+        : state === "copied"
+          ? "Copied"
+          : "Error";
 
     return (
       <button
         aria-label={label}
         aria-live="polite"
         mix={[
-          ui.button,
-          tooltip(label),
-          on('click', async () => {
+          btn.secondaryStyle,
+          on("click", async (_, signal) => {
             try {
-              await navigator.clipboard.writeText(handle.props.url)
-              if (handle.signal.aborted) return
+              await navigator.clipboard.writeText(handle.props.url);
+              if (signal.aborted) return;
             } catch (error) {
-              state = 'error'
-              handle.update()
-              return
+              state = "error";
+              handle.update();
+              return;
             }
 
-            state = 'copied'
-            handle.update()
+            state = "copied";
+            handle.update();
             setTimeout(() => {
-              if (handle.signal.aborted) return
-              state = 'idle'
-              handle.update()
-            }, 2000)
+              if (signal.aborted) return;
+              state = "idle";
+              handle.update();
+            }, 2000);
           }),
         ]}
       >
-        {state === 'copied' ? <Glyph name="check" /> : <Glyph name="clipboard" />}
+        {state === "copied" ? (
+          <Glyph name="check" />
+        ) : (
+          <Glyph name="clipboard" />
+        )}
       </button>
-    )
-  }
+    );
+  };
 }`,
   },
   {
