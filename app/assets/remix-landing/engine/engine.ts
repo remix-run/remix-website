@@ -1,10 +1,12 @@
 import {
   Color,
+  HalfFloatType,
   PerspectiveCamera,
   Scene,
   Vector2,
   Vector3,
   WebGLRenderer,
+  WebGLRenderTarget,
 } from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -70,6 +72,13 @@ export class Engine {
       canvas,
       antialias: false,
       alpha: false,
+      // The composer pipeline is fully alpha-blended with `depthWrite: false`
+      // and never reads/writes the stencil buffer, so we can drop both
+      // attachments to save bandwidth on the default framebuffer.
+      depth: false,
+      stencil: false,
+      // Hint dual-GPU laptops to use the discrete GPU.
+      powerPreference: "high-performance",
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(container.clientWidth, container.clientHeight);
@@ -78,7 +87,15 @@ export class Engine {
 
     this.controls = new CameraTargetControls(this.camera);
 
-    this.composer = new EffectComposer(this.renderer);
+    // Match Three's default render-target type (HalfFloat) so tone reproduction
+    // through bloom/afterimage stays identical, but drop depth/stencil since
+    // no pass uses them.
+    const composerTarget = new WebGLRenderTarget(1, 1, {
+      type: HalfFloatType,
+      depthBuffer: false,
+      stencilBuffer: false,
+    });
+    this.composer = new EffectComposer(this.renderer, composerTarget);
 
     // Background pass draws the mesh gradient into the composer's read
     // buffer first. RenderPass then runs with `clear = false` so particles
