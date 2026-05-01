@@ -7,17 +7,26 @@ import {
   GLSL3,
   Points,
   RGBAFormat,
+  RawShaderMaterial,
   Scene,
-  ShaderMaterial,
 } from "three";
 
 const MODEL_TEX_W = 512;
 const MODEL_TEX_H = 256;
 
-const VERTEX_SHADER = /* glsl */ `
-  in float aRandom;
+const VERTEX_SHADER = /* glsl */ `#version 300 es
 
-  out vec3 vColor;
+precision highp float;
+precision highp int;
+precision highp sampler2D;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+in vec3 position;
+in float aRandom;
+
+out vec3 vColor;
   out float vAlpha;
   out float vViewDist;
   out float vIntro;
@@ -624,6 +633,9 @@ const VERTEX_SHADER = /* glsl */ `
     finalPos.x += sin(h) * uSeparation;
     finalPos.y += cos(h * 1.731) * uSeparation;
     finalPos.z += sin(h * 2.419) * uSeparation;
+    // Unused position attribute is kept so the linker keeps it active
+    // (computePreset uses gl_VertexID only); scale avoids affecting the scene.
+    finalPos.xy += position.xy * 1e-7;
 
     if (uCursorRepulsion > 0.0) {
       vec4 clipPos = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
@@ -681,8 +693,12 @@ const VERTEX_SHADER = /* glsl */ `
   }
 `;
 
-const FRAGMENT_SHADER = /* glsl */ `
-  in vec3 vColor;
+const FRAGMENT_SHADER = /* glsl */ `#version 300 es
+
+precision highp float;
+precision highp int;
+
+in vec3 vColor;
   in float vAlpha;
   in float vViewDist;
   in float vIntro;
@@ -722,7 +738,7 @@ const FRAGMENT_SHADER = /* glsl */ `
 export class ParticleSystem {
   private points: Points | null = null;
   private geometry: BufferGeometry | null = null;
-  private material: ShaderMaterial | null = null;
+  private material: RawShaderMaterial | null = null;
   private count = 0;
   // Per-frame setter caches. NaN sentinels guarantee the first call after
   // init() always writes, since `NaN !== anything` is always true.
@@ -778,22 +794,14 @@ export class ParticleSystem {
     }
 
     this.geometry = new BufferGeometry();
-    this.geometry.setAttribute(
-      "position",
-      new BufferAttribute(positions, 3),
-    );
-    this.geometry.setAttribute(
-      "aRandom",
-      new BufferAttribute(randoms, 1),
-    );
+    this.geometry.setAttribute("position", new BufferAttribute(positions, 3));
+    this.geometry.setAttribute("aRandom", new BufferAttribute(randoms, 1));
 
-    this.material = new ShaderMaterial({
-      // GLSL3 lets us drop the `aIndex` attribute in favour of the built-in
-      // `gl_VertexID`, saving `count * 4` bytes of VBO memory and one upload
-      // at init. Three's GLSL3 path for ShaderMaterial does NOT inject the
-      // attribute/varying/texture2D/gl_FragColor compatibility shims (only
-      // built-in materials get those), so the source above uses native
-      // GLSL ES 3.00 syntax: `in`/`out` and an explicit `out vec4 fragColor;`.
+    this.material = new RawShaderMaterial({
+      // RawShaderMaterial: no Three prefix chunks (lights, fog, map, etc.).
+      // Shaders carry their own `#version 300 es`, precisions, `position`
+      // attribute (kept active via `_keepVertexAttribsActive`), and matrix
+      // uniforms. `gl_VertexID` still drives particle identity (no index VBO).
       glslVersion: GLSL3,
       vertexShader: VERTEX_SHADER,
       fragmentShader: FRAGMENT_SHADER,
@@ -831,8 +839,8 @@ export class ParticleSystem {
             new Float32Array(4),
             1,
             1,
-RGBAFormat,
-FloatType,
+            RGBAFormat,
+            FloatType,
           ),
         },
         uModelTex1: {
@@ -840,8 +848,8 @@ FloatType,
             new Float32Array(4),
             1,
             1,
-RGBAFormat,
-FloatType,
+            RGBAFormat,
+            FloatType,
           ),
         },
         uModelTex2: {
@@ -849,8 +857,8 @@ FloatType,
             new Float32Array(4),
             1,
             1,
-RGBAFormat,
-FloatType,
+            RGBAFormat,
+            FloatType,
           ),
         },
         uModelTex3: {
@@ -858,8 +866,8 @@ FloatType,
             new Float32Array(4),
             1,
             1,
-RGBAFormat,
-FloatType,
+            RGBAFormat,
+            FloatType,
           ),
         },
       },
@@ -999,11 +1007,7 @@ FloatType,
     }
   }
 
-  setModelTexture(
-    slot: number,
-    texture: DataTexture,
-    pointCount: number,
-  ) {
+  setModelTexture(slot: number, texture: DataTexture, pointCount: number) {
     if (!this.material) return;
     if (slot === 0) {
       this.material.uniforms.uModelTex0.value = texture;
