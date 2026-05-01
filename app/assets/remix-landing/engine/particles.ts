@@ -1,4 +1,14 @@
-import * as THREE from "three";
+import {
+  AdditiveBlending,
+  BufferAttribute,
+  BufferGeometry,
+  DataTexture,
+  FloatType,
+  Points,
+  RGBAFormat,
+  Scene,
+  ShaderMaterial,
+} from "three";
 
 const MODEL_TEX_W = 512;
 const MODEL_TEX_H = 256;
@@ -713,12 +723,12 @@ const FRAGMENT_SHADER = /* glsl */ `
 `;
 
 export class ParticleSystem {
-  private points: THREE.Points | null = null;
-  private geometry: THREE.BufferGeometry | null = null;
-  private material: THREE.ShaderMaterial | null = null;
+  private points: Points | null = null;
+  private geometry: BufferGeometry | null = null;
+  private material: ShaderMaterial | null = null;
   private count = 0;
 
-  init(scene: THREE.Scene, count: number, pointSize: number) {
+  init(scene: Scene, count: number, pointSize: number) {
     this.dispose(scene);
     this.count = count;
 
@@ -732,19 +742,19 @@ export class ParticleSystem {
       randoms[i] = Math.random();
     }
 
-    this.geometry = new THREE.BufferGeometry();
+    this.geometry = new BufferGeometry();
     this.geometry.setAttribute(
       "position",
-      new THREE.BufferAttribute(positions, 3),
+      new BufferAttribute(positions, 3),
     );
-    this.geometry.setAttribute("aIndex", new THREE.BufferAttribute(indices, 1));
-    this.geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
+    this.geometry.setAttribute("aIndex", new BufferAttribute(indices, 1));
+    this.geometry.setAttribute("aSize", new BufferAttribute(sizes, 1));
     this.geometry.setAttribute(
       "aRandom",
-      new THREE.BufferAttribute(randoms, 1),
+      new BufferAttribute(randoms, 1),
     );
 
-    this.material = new THREE.ShaderMaterial({
+    this.material = new ShaderMaterial({
       vertexShader: VERTEX_SHADER,
       fragmentShader: FRAGMENT_SHADER,
       uniforms: {
@@ -777,48 +787,48 @@ export class ParticleSystem {
         uModelCount2: { value: 0 },
         uModelCount3: { value: 0 },
         uModelTex0: {
-          value: new THREE.DataTexture(
+          value: new DataTexture(
             new Float32Array(4),
             1,
             1,
-            THREE.RGBAFormat,
-            THREE.FloatType,
+RGBAFormat,
+FloatType,
           ),
         },
         uModelTex1: {
-          value: new THREE.DataTexture(
+          value: new DataTexture(
             new Float32Array(4),
             1,
             1,
-            THREE.RGBAFormat,
-            THREE.FloatType,
+RGBAFormat,
+FloatType,
           ),
         },
         uModelTex2: {
-          value: new THREE.DataTexture(
+          value: new DataTexture(
             new Float32Array(4),
             1,
             1,
-            THREE.RGBAFormat,
-            THREE.FloatType,
+RGBAFormat,
+FloatType,
           ),
         },
         uModelTex3: {
-          value: new THREE.DataTexture(
+          value: new DataTexture(
             new Float32Array(4),
             1,
             1,
-            THREE.RGBAFormat,
-            THREE.FloatType,
+RGBAFormat,
+FloatType,
           ),
         },
       },
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: AdditiveBlending,
       depthWrite: false,
     });
 
-    this.points = new THREE.Points(this.geometry, this.material);
+    this.points = new Points(this.geometry, this.material);
     this.points.frustumCulled = false;
     scene.add(this.points);
   }
@@ -909,7 +919,7 @@ export class ParticleSystem {
 
   setModelTexture(
     slot: number,
-    texture: THREE.DataTexture,
+    texture: DataTexture,
     pointCount: number,
   ) {
     if (!this.material) return;
@@ -928,7 +938,7 @@ export class ParticleSystem {
     }
   }
 
-  dispose(scene?: THREE.Scene) {
+  dispose(scene?: Scene) {
     if (this.points && scene) scene.remove(this.points);
     this.geometry?.dispose();
     this.material?.dispose();

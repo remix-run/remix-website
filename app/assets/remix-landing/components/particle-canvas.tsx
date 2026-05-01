@@ -1,5 +1,5 @@
 import { css, ref, addEventListeners, type Handle } from "remix/ui";
-import * as THREE from "three";
+import { Vector3 } from "three";
 import { ControlManager } from "../engine/controls";
 import { Engine } from "../engine/engine";
 import {
@@ -62,8 +62,8 @@ type PresetRuntimeData = {
 function setDesiredCameraInto(
   presets: Preset[],
   morphValue: number,
-  outPos: THREE.Vector3,
-  outTarget: THREE.Vector3,
+  outPos: Vector3,
+  outTarget: Vector3,
 ) {
   const maxIdx = presets.length - 1;
   const clamped = clamp(morphValue, 0, maxIdx);
@@ -149,8 +149,8 @@ export function ParticleCanvas(handle: Handle) {
   let hasReportedReady = false;
   let initFailed = false;
   const labelControlMgr = new ControlManager();
-  const desiredCameraPos = new THREE.Vector3();
-  const desiredCameraTarget = new THREE.Vector3();
+  const desiredCameraPos = new Vector3();
+  const desiredCameraTarget = new Vector3();
   const scratchControlsA = [0, 0, 0, 0, 0, 0, 0, 0];
   const scratchControlsB = [0, 0, 0, 0, 0, 0, 0, 0];
   const scratchLabelControls = [0, 0, 0, 0, 0, 0, 0, 0];
