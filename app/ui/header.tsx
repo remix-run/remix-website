@@ -25,11 +25,7 @@ export function Header() {
 
         <nav class="hidden items-center gap-6 md:flex" aria-label="Main">
           {LINKS.map((link) => (
-            <HeaderLink
-              key={link.to}
-              to={link.to}
-              document={link.document}
-            >
+            <HeaderLink key={link.to} to={link.to} document={link.document}>
               {link.label}
             </HeaderLink>
           ))}
@@ -37,11 +33,7 @@ export function Header() {
 
         <MobileMenu class="-mt-3 md:hidden">
           {LINKS.map((link) => (
-            <HeaderLink
-              key={link.to}
-              to={link.to}
-              document={link.document}
-            >
+            <HeaderLink key={link.to} to={link.to} document={link.document}>
               {link.label}
             </HeaderLink>
           ))}
