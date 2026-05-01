@@ -1,11 +1,11 @@
 import cx from "clsx";
-import { getSchedule } from "../../data/jam-schedule.server";
-import { render } from "../../utils/render";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { JamDocument } from "./document";
-import { ScrambleText, Title } from "./shared";
-import { assetPaths } from "../../utils/asset-paths";
-import { JamLineupAccordionItem } from "../../assets/jam-lineup-accordion-item";
+import { getSchedule } from "../../data/jam-schedule.server.ts";
+import { render } from "../../utils/render.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { JamDocument } from "./document.tsx";
+import { ScrambleText, Title } from "./shared.tsx";
+import { assetPaths } from "../../utils/asset-paths.ts";
+import { JamLineupAccordionItem } from "../../assets/jam-lineup-accordion-item.tsx";
 
 let gridColsClassName =
   "grid grid-cols-[75px_1fr_auto] gap-4 sm:grid-cols-[100px_1fr_1fr_24px] sm:gap-6 md:grid-cols-[120px_1fr_1fr_24px] md:gap-8 lg:grid-cols-[150px_1fr_1fr_24px] lg:gap-12";

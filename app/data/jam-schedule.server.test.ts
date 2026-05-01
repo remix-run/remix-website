@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
-import { parseScheduleItems } from "./jam-schedule.server";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { parseScheduleItems } from "./jam-schedule.server.ts";
 
 describe("parseScheduleItems", () => {
   it("parses valid schedule items", () => {
@@ -22,13 +23,11 @@ describe("parseScheduleItems", () => {
 
     let result = parseScheduleItems(raw);
     expect(result).toHaveLength(2);
-    expect(result[0]).toEqual({
+    expect(result[0]).toMatchObject({
       time: "9:00 AM",
       title: "Keynote",
       description: "Opening talk",
       speaker: "Jane Doe",
-      imgFilename: undefined,
-      bio: undefined,
     });
     expect(result[1].imgFilename).toBe("john.webp");
     expect(result[1].bio).toBe("Developer");

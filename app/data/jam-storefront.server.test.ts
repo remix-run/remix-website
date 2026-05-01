@@ -1,5 +1,10 @@
-import { describe, expect, it } from "vitest";
-import { parseCart, parsePhotos, parseProduct } from "./jam-storefront.server";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import {
+  parseCart,
+  parsePhotos,
+  parseProduct,
+} from "./jam-storefront.server.ts";
 
 describe("parseProduct", () => {
   it("parses valid product data", () => {

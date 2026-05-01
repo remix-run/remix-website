@@ -1,8 +1,9 @@
-import { describe, expect, it } from "vitest";
-import { remix3ActiveDevelopmentHandler } from "./controller";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { routes } from "../../routes";
-import { createRouteTestRouter } from "../../../test/create-route-test-router";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { remix3ActiveDevelopmentHandler } from "./controller.tsx";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { routes } from "../../routes.ts";
+import { createRouteTestRouter } from "../../../test/create-route-test-router.ts";
 
 describe("Remix 3 active development route", () => {
   it("renders expected content and metadata", async () => {

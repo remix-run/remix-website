@@ -1,7 +1,7 @@
 import { css, type Handle } from "remix/ui";
-import { Wordmark } from "../../../ui/wordmark";
-import { assetPaths } from "../../../utils/asset-paths";
-import { colors } from "../styles/tokens";
+import { Wordmark } from "../../../ui/wordmark.tsx";
+import { assetPaths } from "../../../utils/asset-paths.ts";
+import { colors } from "../styles/tokens.ts";
 
 const SOCIAL_LINKS = [
   {

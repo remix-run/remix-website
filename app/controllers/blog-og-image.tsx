@@ -5,7 +5,7 @@ import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
 import type { BuildAction } from "remix/fetch-router";
-import type { routes } from "../routes";
+import type { routes } from "../routes.ts";
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }

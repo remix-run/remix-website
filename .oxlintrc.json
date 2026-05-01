@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["eslint", "typescript", "react", "unicorn", "oxc"],
+  "plugins": ["eslint", "typescript", "react", "unicorn", "oxc", "import"],
   "env": {
     "node": true
   },
@@ -12,6 +12,7 @@
   },
   "rules": {
     "eslint/no-unused-expressions": "off",
+    "import/extensions": ["error", "ignorePackages", "always"],
     "react/no-children-prop": "off"
   }
 }

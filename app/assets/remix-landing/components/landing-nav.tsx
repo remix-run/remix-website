@@ -1,10 +1,10 @@
 import { css, addEventListeners, navigate, on, type Handle } from "remix/ui";
 import * as popover from "remix/ui/popover";
-import { routes } from "../../../routes";
-import { assetPaths } from "../../../utils/asset-paths";
-import { colors } from "../styles/tokens";
-import { isEditableKeyTarget } from "../utils/keyboard";
-import { clamp01 } from "../utils/math";
+import { routes } from "../../../routes.ts";
+import { assetPaths } from "../../../utils/asset-paths.ts";
+import { colors } from "../styles/tokens.ts";
+import { isEditableKeyTarget } from "../utils/keyboard.ts";
+import { clamp01 } from "../utils/math.ts";
 
 const MOBILE_BREAKPOINT_PX = 720;
 

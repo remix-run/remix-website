@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
-import { getMorphBlend } from "./morph";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { getMorphBlend } from "./morph.ts";
 
 describe("getMorphBlend", () => {
   it("returns the first preset with no blend at the start", () => {

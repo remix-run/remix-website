@@ -1,6 +1,6 @@
 import cx from "clsx";
 import { clientEntry, on, ref, type Handle } from "remix/ui";
-import { assetPaths } from "../utils/asset-paths";
+import { assetPaths } from "../utils/asset-paths.ts";
 
 type LineupItem = {
   time: string;

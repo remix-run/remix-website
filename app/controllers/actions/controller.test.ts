@@ -1,7 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, it } from "remix/test";
+import { expect } from "remix/assert";
 
-import { routes } from "../../routes";
-import actionsController from "./controller";
+import { routes } from "../../routes.ts";
+import actionsController from "./controller.tsx";
 
 describe("Newsletter subscribe route", () => {
   let originalConvertKitKey = process.env.CONVERTKIT_KEY;
@@ -11,7 +12,6 @@ describe("Newsletter subscribe route", () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
     process.env.CONVERTKIT_KEY = originalConvertKitKey;
   });
 
@@ -62,10 +62,10 @@ describe("Newsletter subscribe route", () => {
     });
   });
 
-  it("returns success for a valid submission when ConvertKit succeeds", async () => {
-    let fetchSpy = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(new Response(JSON.stringify({}), { status: 200 }));
+  it("returns success for a valid submission when ConvertKit succeeds", async (t) => {
+    let fetchSpy = t.mock.method(globalThis, "fetch", () =>
+      Promise.resolve(new Response(JSON.stringify({}), { status: 200 })),
+    );
 
     let response = await submitNewsletter(
       new URLSearchParams({
@@ -82,11 +82,13 @@ describe("Newsletter subscribe route", () => {
     });
   });
 
-  it("returns a 500 when ConvertKit responds with an error", async () => {
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ error: "ConvertKit says no" }), {
-        status: 200,
-      }),
+  it("returns a 500 when ConvertKit responds with an error", async (t) => {
+    t.mock.method(globalThis, "fetch", () =>
+      Promise.resolve(
+        new Response(JSON.stringify({ error: "ConvertKit says no" }), {
+          status: 200,
+        }),
+      ),
     );
 
     let response = await submitNewsletter(

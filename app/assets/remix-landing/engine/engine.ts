@@ -3,8 +3,8 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { AfterimagePass } from "three/addons/postprocessing/AfterimagePass.js";
-import { BackgroundPass } from "./background-pass";
-import type { SystemSettings } from "./types";
+import { BackgroundPass } from "./background-pass.ts";
+import type { SystemSettings } from "./types.ts";
 
 function screenScale(width: number): number {
   const ref = 1440;

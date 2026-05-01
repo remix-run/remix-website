@@ -1,8 +1,9 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import ts from "typescript";
-import { describe, expect, it } from "vitest";
-import { assetServer } from "./assets.server";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { assetServer } from "./assets.server.ts";
 
 let rootDir = path.resolve(import.meta.dirname, "../..");
 let appDir = path.join(rootDir, "app");

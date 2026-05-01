@@ -1,9 +1,12 @@
 import { css, addEventListeners, on, type Handle } from "remix/ui";
-import { routes } from "../../../routes";
-import { Wordmark } from "../../../ui/wordmark";
-import { brandContextMenu } from "../../brand-context-menu";
-import { clamp01, lerp } from "../utils/math";
-import { motionScrollBehavior, reducedMotion } from "../utils/reduced-motion";
+import { routes } from "../../../routes.ts";
+import { Wordmark } from "../../../ui/wordmark.tsx";
+import { brandContextMenu } from "../../brand-context-menu.ts";
+import { clamp01, lerp } from "../utils/math.ts";
+import {
+  motionScrollBehavior,
+  reducedMotion,
+} from "../utils/reduced-motion.ts";
 
 const SMALL_HEIGHT = 16;
 const LARGE_TOP = 92;

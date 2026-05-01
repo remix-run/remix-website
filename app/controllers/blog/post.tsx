@@ -1,15 +1,15 @@
 import cx from "clsx";
-import { Document } from "../../ui/document";
-import { Footer } from "../../ui/footer";
-import { Header } from "../../ui/header";
-import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe";
-import { routes } from "../../routes";
-import { renderNotFoundPage } from "../../ui/not-found-page";
-import { render } from "../../utils/render";
-import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.server";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { styleHrefs } from "../../utils/style-hrefs";
-import { getSocialHeadTags } from "../../utils/social-head-tags.server";
+import { Document } from "../../ui/document.tsx";
+import { Footer } from "../../ui/footer.tsx";
+import { Header } from "../../ui/header.tsx";
+import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe.tsx";
+import { routes } from "../../routes.ts";
+import { renderNotFoundPage } from "../../ui/not-found-page.tsx";
+import { render } from "../../utils/render.ts";
+import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.server.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { styleHrefs } from "../../utils/style-hrefs.ts";
+import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
 
 type BlogPostContext = {
   params: { slug?: string; ext?: string };

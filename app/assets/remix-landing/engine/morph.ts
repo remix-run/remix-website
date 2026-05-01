@@ -1,4 +1,4 @@
-import { clamp } from "../utils/math";
+import { clamp } from "../utils/math.ts";
 
 export type MorphBlend = {
   fromIndex: number;
