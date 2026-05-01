@@ -10,6 +10,11 @@ import {
 } from "three";
 import { BAKE_TEX_W, computeBakeTexHeight } from "./rest-baker";
 
+// ~7% of particles get gl_PointSize scaled in [SIZE_BOOST_MIN, SIZE_BOOST_MAX].
+const SIZE_BOOST_FRACTION = 0.03;
+const SIZE_BOOST_MIN = 1.32;
+const SIZE_BOOST_MAX = 3.05;
+
 // Built per-init() so the bake-texture height (which depends on particleCount)
 // can be inlined as a literal — saves a uniform fetch per vertex and keeps the
 // uv math constant-foldable by the GLSL compiler.
@@ -24,6 +29,7 @@ uniform mat4 projectionMatrix;
 
 in vec3 position;
 in float aRandom;
+in float aSizeBoost;
 
 out vec3 vColor;
 out float vAlpha;
@@ -152,7 +158,7 @@ void main() {
     : 0.0;
   vCoc = clamp(coc, 0.0, 1.0);
 
-  gl_PointSize = clamp(baseSize + coc * 12.0, 1.0, 128.0);
+  gl_PointSize = clamp((baseSize + coc * 12.0) * aSizeBoost, 1.0, 128.0);
   gl_Position = projectionMatrix * mvPosition;
   vAlpha = smoothstep(500.0, 50.0, dist);
 }
@@ -243,13 +249,19 @@ export class ParticleSystem {
 
     const positions = new Float32Array(count * 3);
     const randoms = new Float32Array(count);
+    const sizeBoost = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       randoms[i] = Math.random();
+      sizeBoost[i] =
+        Math.random() < SIZE_BOOST_FRACTION
+          ? SIZE_BOOST_MIN + Math.random() * (SIZE_BOOST_MAX - SIZE_BOOST_MIN)
+          : 1.0;
     }
 
     this.geometry = new BufferGeometry();
     this.geometry.setAttribute("position", new BufferAttribute(positions, 3));
     this.geometry.setAttribute("aRandom", new BufferAttribute(randoms, 1));
+    this.geometry.setAttribute("aSizeBoost", new BufferAttribute(sizeBoost, 1));
 
     this.material = new RawShaderMaterial({
       // Draw-only material: rest pose comes from textures filled by the bake
