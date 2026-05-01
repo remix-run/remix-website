@@ -1,6 +1,6 @@
 import { addEventListeners, css, on, type Handle } from "remix/ui";
-import { colors } from "../styles/tokens";
-import { clamp } from "../utils/math";
+import { colors } from "../styles/tokens.ts";
+import { clamp } from "../utils/math.ts";
 
 const TRACK_WIDTH = 11;
 const ITEM_HEIGHT = 16;

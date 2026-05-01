@@ -1,6 +1,6 @@
 import cx from "clsx";
-import { Document } from "./document";
-import { render } from "../utils/render";
+import { Document } from "./document.tsx";
+import { render } from "../utils/render.ts";
 
 export function renderNotFoundPage(options?: { statusText?: string }) {
   let statusText = options?.statusText ?? "Not Found";

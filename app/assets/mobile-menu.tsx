@@ -7,7 +7,7 @@ import {
   type RemixNode,
 } from "remix/ui";
 import cx from "clsx";
-import { assetPaths } from "../utils/asset-paths";
+import { assetPaths } from "../utils/asset-paths.ts";
 
 const mobileMenuStyles = {
   summary: cx(

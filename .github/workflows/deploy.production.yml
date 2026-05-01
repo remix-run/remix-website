@@ -17,7 +17,7 @@ env:
 
 jobs:
   test:
-    name: ⚡ Vitest
+    name: ⚡ Remix Test
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -35,8 +35,8 @@ jobs:
       - name: 📥 Install deps
         run: pnpm install --frozen-lockfile
 
-      - name: ⚡ Run vitest
-        run: pnpm test -- --coverage
+      - name: ⚡ Run Remix tests
+        run: pnpm run test:coverage
 
   deploy:
     name: 🚀 Deploy

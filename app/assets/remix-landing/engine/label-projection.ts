@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import type { Preset } from "./types";
-import type { ControlManager } from "./controls";
+import type { Preset } from "./types.ts";
+import type { ControlManager } from "./controls.ts";
 
 export interface ProjectedLabel {
   id: string;

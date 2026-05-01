@@ -1,5 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { parseEnv } from "./env.server";
+import { afterEach, beforeEach, describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { parseEnv } from "./env.server.ts";
 
 describe("parseEnv", () => {
   let originalNodeEnv: string | undefined;

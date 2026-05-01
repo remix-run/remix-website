@@ -1,4 +1,4 @@
-import type { ControlDef, InfoState, Preset } from "./types";
+import type { ControlDef, InfoState, Preset } from "./types.ts";
 
 export class ControlManager {
   controls = new Map<string, ControlDef>();

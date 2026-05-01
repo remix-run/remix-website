@@ -1,14 +1,15 @@
-import { describe, expect, it, vi } from "vitest";
-import { submitNewsletterRequest } from "./newsletter-subscribe";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { submitNewsletterRequest } from "./newsletter-subscribe.tsx";
 
 describe("submitNewsletterRequest", () => {
-  it("returns idle state when the request is aborted", async () => {
+  it("returns idle state when the request is aborted", async (t) => {
     let controller = new AbortController();
     controller.abort();
 
-    let fetchImpl = vi
-      .fn<typeof fetch>()
-      .mockRejectedValue(new DOMException("Aborted", "AbortError"));
+    let fetchImpl = t.mock.fn<typeof fetch>(() =>
+      Promise.reject(new DOMException("Aborted", "AbortError")),
+    );
 
     let formData = new FormData();
     formData.set("email", "hello@example.com");
@@ -27,10 +28,10 @@ describe("submitNewsletterRequest", () => {
     });
   });
 
-  it("returns error state for non-abort failures", async () => {
-    let fetchImpl = vi
-      .fn<typeof fetch>()
-      .mockRejectedValue(new Error("network down"));
+  it("returns error state for non-abort failures", async (t) => {
+    let fetchImpl = t.mock.fn<typeof fetch>(() =>
+      Promise.reject(new Error("network down")),
+    );
 
     let formData = new FormData();
     formData.set("email", "hello@example.com");

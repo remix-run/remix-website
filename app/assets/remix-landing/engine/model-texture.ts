@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { ModelData } from "./model-loader";
+import type { ModelData } from "./model-loader.ts";
 
 const TEX_WIDTH = 512;
 const TEX_HEIGHT = 256;

@@ -1,15 +1,19 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { initFathomAnalytics } from "./fathom";
+import { afterEach, describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { initFathomAnalytics } from "./fathom.ts";
 
 let originalWindow = globalThis.window;
+type FathomLoad = NonNullable<
+  NonNullable<Parameters<typeof initFathomAnalytics>[0]>["loadImpl"]
+>;
 
 afterEach(() => {
   globalThis.window = originalWindow;
 });
 
 describe("initFathomAnalytics", () => {
-  it("does not load Fathom in development", () => {
-    let loadImpl = vi.fn();
+  it("does not load Fathom in development", (t) => {
+    let loadImpl = t.mock.fn<FathomLoad>();
     globalThis.window = {} as Window & typeof globalThis;
 
     initFathomAnalytics({ isDevelopment: true, loadImpl });
@@ -17,8 +21,8 @@ describe("initFathomAnalytics", () => {
     expect(loadImpl).not.toHaveBeenCalled();
   });
 
-  it("loads Fathom once outside development", () => {
-    let loadImpl = vi.fn();
+  it("loads Fathom once outside development", (t) => {
+    let loadImpl = t.mock.fn<FathomLoad>();
     globalThis.window = {} as Window & typeof globalThis;
 
     initFathomAnalytics({ isDevelopment: false, loadImpl });

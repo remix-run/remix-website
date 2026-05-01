@@ -1,18 +1,18 @@
 import { css, ref, addEventListeners, type Handle } from "remix/ui";
 import * as THREE from "three";
-import { ControlManager } from "../engine/controls";
-import { Engine } from "../engine/engine";
+import { ControlManager } from "../engine/controls.ts";
+import { Engine } from "../engine/engine.ts";
 import {
   projectLabelsInto,
   type ProjectedLabel,
-} from "../engine/label-projection";
-import { ParticleSystem } from "../engine/particles";
-import { getMorphBlend, type MorphBlend } from "../engine/morph";
-import { createModelTexture } from "../engine/model-texture";
-import type { ModelData } from "../engine/model-loader";
-import type { Preset, ShaderId, SystemSettings } from "../engine/types";
-import { clamp, clamp01, lerp } from "../utils/math";
-import { reducedMotion } from "../utils/reduced-motion";
+} from "../engine/label-projection.ts";
+import { ParticleSystem } from "../engine/particles.ts";
+import { getMorphBlend, type MorphBlend } from "../engine/morph.ts";
+import { createModelTexture } from "../engine/model-texture.ts";
+import type { ModelData } from "../engine/model-loader.ts";
+import type { Preset, ShaderId, SystemSettings } from "../engine/types.ts";
+import { clamp, clamp01, lerp } from "../utils/math.ts";
+import { reducedMotion } from "../utils/reduced-motion.ts";
 
 // Must match `LOADING_SCREEN_MIN_MS` in `landing-enhancements.tsx`.
 const PARTICLE_INTRO_DELAY_S = 1;

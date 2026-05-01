@@ -1,7 +1,7 @@
 import cx from "clsx";
 import { clientEntry } from "remix/ui";
-import { brandContextMenu } from "./brand-context-menu";
-import { Wordmark } from "../ui/wordmark";
+import { brandContextMenu } from "./brand-context-menu.ts";
+import { Wordmark } from "../ui/wordmark.tsx";
 
 export let WordmarkLink = clientEntry(import.meta.url, function WordmarkLink() {
   return (props: {

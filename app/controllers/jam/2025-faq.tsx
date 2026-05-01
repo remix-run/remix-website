@@ -1,16 +1,16 @@
 import type { RemixNode } from "remix/ui";
-import { render } from "../../utils/render";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { JamDocument } from "./document";
+import { render } from "../../utils/render.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { JamDocument } from "./document.tsx";
 import {
   AddressLink,
   Paragraph,
   ScrambleText,
   Subheader,
   Title,
-} from "./shared";
-import { routes } from "../../routes";
-import { assetPaths } from "../../utils/asset-paths";
+} from "./shared.tsx";
+import { routes } from "../../routes.ts";
+import { assetPaths } from "../../utils/asset-paths.ts";
 
 function slugify(input: string) {
   return input

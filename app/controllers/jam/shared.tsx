@@ -1,9 +1,9 @@
 import cx from "clsx";
 import type { RemixNode } from "remix/ui";
-import { JamScrambleText } from "../../assets/jam-scramble-text";
-import { MobileMenu } from "../../assets/mobile-menu";
-import { routes } from "../../routes";
-import { assetPaths } from "../../utils/asset-paths";
+import { JamScrambleText } from "../../assets/jam-scramble-text.tsx";
+import { MobileMenu } from "../../assets/mobile-menu.tsx";
+import { routes } from "../../routes.ts";
+import { assetPaths } from "../../utils/asset-paths.ts";
 
 const jamButtonClassName =
   "min-w-fit flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-300 hover:bg-blue-brand hover:text-white md:px-6 md:py-4 md:text-xl";

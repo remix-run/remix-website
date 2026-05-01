@@ -3,7 +3,7 @@ import * as c from "remix/data-schema/checks";
 import * as coerce from "remix/data-schema/coerce";
 import type { Controller } from "remix/fetch-router";
 
-import type { routes } from "../../routes";
+import type { routes } from "../../routes.ts";
 
 type NewsletterResponse = { ok: boolean; error: string | null };
 

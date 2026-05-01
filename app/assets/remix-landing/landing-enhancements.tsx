@@ -1,22 +1,22 @@
 import { addEventListeners, clientEntry, css, type Handle } from "remix/ui";
-import { PresetGlow } from "./components/preset-glow";
-import { LandingNav } from "./components/landing-nav";
-import { LabelOverlay } from "./components/label-overlay";
-import { PackageLogos } from "./components/package-logos";
-import { ScrollLogo } from "./components/scroll-logo";
-import { SectionNav } from "./components/section-nav";
-import type { ProjectedLabel } from "./engine/label-projection";
-import { loadModelPoints, type ModelData } from "./engine/model-loader";
-import { presets } from "./engine/presets";
-import { DEFAULT_SETTINGS, type SystemSettings } from "./engine/types";
-import { colors } from "./styles/tokens";
-import { isEditableKeyTarget } from "./utils/keyboard";
-import { clamp } from "./utils/math";
+import { PresetGlow } from "./components/preset-glow.tsx";
+import { LandingNav } from "./components/landing-nav.tsx";
+import { LabelOverlay } from "./components/label-overlay.tsx";
+import { PackageLogos } from "./components/package-logos.tsx";
+import { ScrollLogo } from "./components/scroll-logo.tsx";
+import { SectionNav } from "./components/section-nav.tsx";
+import type { ProjectedLabel } from "./engine/label-projection.ts";
+import { loadModelPoints, type ModelData } from "./engine/model-loader.ts";
+import { presets } from "./engine/presets.ts";
+import { DEFAULT_SETTINGS, type SystemSettings } from "./engine/types.ts";
+import { colors } from "./styles/tokens.ts";
+import { isEditableKeyTarget } from "./utils/keyboard.ts";
+import { clamp } from "./utils/math.ts";
 import {
   initReducedMotion,
   motionScrollBehavior,
   reducedMotion,
-} from "./utils/reduced-motion";
+} from "./utils/reduced-motion.ts";
 
 const appStyles = css({
   position: "relative",
@@ -92,9 +92,10 @@ const LANDING_SECTION_IDS = [
   "start-building",
 ] as const;
 
-type FpsCounterComponent = typeof import("./components/fps-counter").FpsCounter;
+type FpsCounterComponent =
+  typeof import("./components/fps-counter.tsx").FpsCounter;
 type ParticleCanvasComponent =
-  typeof import("./components/particle-canvas").ParticleCanvas;
+  typeof import("./components/particle-canvas.tsx").ParticleCanvas;
 type LazyComponent<T> = {
   Component: T | null;
   load: Promise<void> | null;
@@ -310,10 +311,12 @@ export let RemixLandingEnhancements = clientEntry(
     }
 
     function loadFpsCounter() {
-      fpsCounter.load ??= import("./components/fps-counter").then((module) => {
-        if (handle.signal.aborted) return;
-        fpsCounter.Component = module.FpsCounter;
-      });
+      fpsCounter.load ??= import("./components/fps-counter.tsx").then(
+        (module) => {
+          if (handle.signal.aborted) return;
+          fpsCounter.Component = module.FpsCounter;
+        },
+      );
       return fpsCounter.load;
     }
 
@@ -346,7 +349,7 @@ export let RemixLandingEnhancements = clientEntry(
     }
 
     function loadParticleCanvas() {
-      particleCanvas.load ??= import("./components/particle-canvas")
+      particleCanvas.load ??= import("./components/particle-canvas.tsx")
         .then((module) => {
           if (handle.signal.aborted) return;
           particleCanvas.Component = module.ParticleCanvas;

@@ -1,13 +1,13 @@
-import { Document } from "../../ui/document";
-import { Footer } from "../../ui/footer";
-import { Header } from "../../ui/header";
-import { HeroSection } from "./hero-section";
-import { IntroMaskReveal } from "./intro-mask-reveal";
-import { PitchSection } from "./pitch-section";
-import { StayInTheLoopSection } from "./stay-in-the-loop-section";
-import { TimelineSection } from "./timeline-section";
-import { getSocialHeadTags } from "../../utils/social-head-tags.server";
-import { render } from "../../utils/render";
+import { Document } from "../../ui/document.tsx";
+import { Footer } from "../../ui/footer.tsx";
+import { Header } from "../../ui/header.tsx";
+import { HeroSection } from "./hero-section.tsx";
+import { IntroMaskReveal } from "./intro-mask-reveal.tsx";
+import { PitchSection } from "./pitch-section.tsx";
+import { StayInTheLoopSection } from "./stay-in-the-loop-section.tsx";
+import { TimelineSection } from "./timeline-section/index.tsx";
+import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
+import { render } from "../../utils/render.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 
 export async function remix3ActiveDevelopmentHandler() {

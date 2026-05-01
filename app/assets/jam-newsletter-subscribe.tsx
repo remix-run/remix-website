@@ -1,9 +1,9 @@
 import { clientEntry, on, type Handle } from "remix/ui";
-import { routes } from "../routes";
+import { routes } from "../routes.ts";
 import {
   submitNewsletterRequest,
   type SubscribeState,
-} from "./newsletter-subscribe";
+} from "./newsletter-subscribe.tsx";
 
 export let JamNewsletterSubscribeForm = clientEntry(
   import.meta.url,
