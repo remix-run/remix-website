@@ -18,6 +18,31 @@ import {
   reducedMotion,
 } from "./utils/reduced-motion";
 
+/** More scroll distance stays at integer morph presets between sections (0–1). */
+const SCROLL_MORPH_PLATEAU = 0.34;
+
+function morphPlateauWithinUnitSpan(t: number, plateau: number): number {
+  if (plateau <= 1e-6) return t;
+  const lo = plateau * 0.5;
+  const hi = 1 - lo;
+  if (t <= lo) return 0;
+  if (t >= hi) return 1;
+  return (t - lo) / (hi - lo);
+}
+
+function morphPlateauAcrossIndices(
+  linearMorph: number,
+  maxValue: number,
+  plateau: number,
+): number {
+  const clamped = clamp(linearMorph, 0, maxValue);
+  if (plateau <= 1e-6) return clamped;
+  const base = Math.floor(clamped);
+  if (base >= maxValue) return maxValue;
+  const frac = clamped - base;
+  return base + morphPlateauWithinUnitSpan(frac, plateau);
+}
+
 const appStyles = css({
   position: "relative",
 });
@@ -196,7 +221,13 @@ export let RemixLandingEnhancements = clientEntry(
       const maxValue = presets.length - 1;
       const stops = getSectionScrollStops();
       if (!stops) {
-        return (clampScrollY(scrollY) / getScrollRange()) * maxValue;
+        const linearMorph =
+          (clampScrollY(scrollY) / getScrollRange()) * maxValue;
+        return morphPlateauAcrossIndices(
+          linearMorph,
+          maxValue,
+          SCROLL_MORPH_PLATEAU,
+        );
       }
 
       const clampedScrollY = clampScrollY(scrollY);
@@ -208,7 +239,11 @@ export let RemixLandingEnhancements = clientEntry(
         if (clampedScrollY > to) continue;
         const span = to - from;
         if (span <= 1) return index + 1;
-        return index + (clampedScrollY - from) / span;
+        const t = (clampedScrollY - from) / span;
+        return (
+          index +
+          morphPlateauWithinUnitSpan(t, SCROLL_MORPH_PLATEAU)
+        );
       }
 
       return maxValue;
