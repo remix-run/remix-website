@@ -40,8 +40,6 @@ uniform float uDofFocus;
 uniform float uTime;
 uniform float uBlend;
 uniform float uSeparation;
-uniform vec2 uMousePos;
-uniform float uCursorRepulsion;
 uniform float uMorphT;
 uniform float uColorMode;
 
@@ -51,6 +49,10 @@ uniform sampler2D uPosA;
 uniform sampler2D uPosB;
 uniform sampler2D uColA;
 uniform sampler2D uColB;
+
+// Per-particle displacement (offset from rest pose) produced by MouseSim.
+// xyz = world-space offset; w unused. Zero means "use rest pose as-is".
+uniform sampler2D uDispTex;
 
 vec3 hsl2rgb(float h, float s, float l) {
   float c = (1.0 - abs(2.0 * l - 1.0)) * s;
@@ -106,16 +108,10 @@ void main() {
   // (rest pose comes from textures); scale avoids affecting the scene.
   finalPos.xy += position.xy * 1e-7;
 
-  if (uCursorRepulsion > 0.0) {
-    vec4 clipPos = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
-    vec2 ndc = clipPos.xy / clipPos.w;
-    vec2 diff = ndc - uMousePos;
-    float d2 = dot(diff, diff);
-    float radius = 0.15;
-    float falloff = exp(-d2 / (radius * radius));
-    vec2 push = normalize(diff + vec2(0.0001)) * falloff * uCursorRepulsion * 8.0;
-    finalPos += transpose(mat3(modelViewMatrix)) * vec3(push, 0.0);
-  }
+  // GPGPU-driven cursor distortion: the sim writes a world-space offset into
+  // uDispTex each frame (spring-back to rest + cursor push + damping). When
+  // the strength is zero the disp settles to ~0 and this becomes a no-op.
+  finalPos += texture(uDispTex, uv).xyz;
 
   if (uColorMode > 1.5) {
     float spatialRatio = fract(dot(finalPos, vec3(0.018, 0.014, 0.012)));
@@ -218,7 +214,6 @@ export class ParticleSystem {
   private lastDofAmount = NaN;
   private lastDofFocus = NaN;
   private lastSeparation = NaN;
-  private lastCursorRepulsion = NaN;
   private lastColorMode = NaN;
   private lastMorphT = NaN;
   private lastFogIntensity = NaN;
@@ -233,7 +228,6 @@ export class ParticleSystem {
     this.lastDofAmount = NaN;
     this.lastDofFocus = NaN;
     this.lastSeparation = NaN;
-    this.lastCursorRepulsion = NaN;
     this.lastColorMode = NaN;
     this.lastMorphT = NaN;
     this.lastFogIntensity = NaN;
@@ -277,14 +271,13 @@ export class ParticleSystem {
         uTime: { value: 0.0 },
         uBlend: { value: 0.0 },
         uSeparation: { value: 0.0 },
-        uMousePos: { value: [0, 0] },
-        uCursorRepulsion: { value: 0 },
         uColorMode: { value: 0.0 },
         uMorphT: { value: 0 },
         uPosA: { value: null as Texture | null },
         uPosB: { value: null as Texture | null },
         uColA: { value: null as Texture | null },
         uColB: { value: null as Texture | null },
+        uDispTex: { value: null as Texture | null },
       },
       transparent: true,
       blending: AdditiveBlending,
@@ -365,18 +358,14 @@ export class ParticleSystem {
     this.material.uniforms.uSeparation.value = value;
   }
 
-  setMousePos(x: number, y: number) {
-    if (this.material) {
-      const v = this.material.uniforms.uMousePos.value as number[];
-      v[0] = x;
-      v[1] = y;
-    }
-  }
-
-  setCursorRepulsion(value: number) {
-    if (!this.material || value === this.lastCursorRepulsion) return;
-    this.lastCursorRepulsion = value;
-    this.material.uniforms.uCursorRepulsion.value = value;
+  /**
+   * Bind the displacement texture from MouseSim. The sim ping-pongs between
+   * two textures, so this must be called every frame with the latest one;
+   * Three updates the sampler binding lazily on the next draw.
+   */
+  setDispTexture(disp: Texture) {
+    if (!this.material) return;
+    this.material.uniforms.uDispTex.value = disp;
   }
 
   setColorMode(value: number) {
