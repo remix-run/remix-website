@@ -72,6 +72,8 @@ const mobileContainerStyles = css({
   [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
     display: "block",
     marginLeft: "auto",
+    marginTop: "-12px",
+    marginRight: "-12px",
   },
 });
 
@@ -100,6 +102,7 @@ const mobileToggleStyles = css({
 
 const mobileMenuItemStyles = css({
   padding: "12px 16px",
+  justifyContent: "flex-end",
 });
 
 const mobileMenuStyles = css({
@@ -257,7 +260,6 @@ export function LandingNav(handle: Handle) {
     shouldBlockBlogShortcut = props.shouldBlockBlogShortcut;
 
     const hintOpacity = clamp01(1 - scrollYRef.current / 80);
-    const toggleLabel = menuOpen ? "close" : "menu";
 
     return (
       <header mix={[headerStyles]}>
@@ -287,14 +289,30 @@ export function LandingNav(handle: Handle) {
                 navItemStyles,
                 mobileToggleStyles,
                 popover.focusOnHide(),
-                popover.anchor({ placement: "bottom-end", offset: 8 }),
+                popover.anchor({ placement: "bottom-end", offset: 4 }),
                 on<HTMLButtonElement>("click", (e) => {
                   e.stopPropagation();
                   setMenuOpen(!menuOpen);
                 }),
               ]}
             >
-              {toggleLabel}
+              {menuOpen ? (
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 12 12"
+                  width="1em"
+                  height="1em"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  style={{ display: "block" }}
+                >
+                  <path d="M2 2l8 8M10 2l-8 8" />
+                </svg>
+              ) : (
+                "menu"
+              )}
             </button>
             <nav
               id="mobile-nav-menu"
