@@ -90,16 +90,15 @@ const VERTEX_SHADER = /* glsl */ `
     return hsl2rgb(hue, clamp(sat, 0.5, 1.0), clamp(lum, 0.2, 0.85));
   }
 
-  vec3 sampleModel(int slot, float fi) {
-    float cnt = (slot == 0) ? uModelCount0 : (slot == 1) ? uModelCount1 : (slot == 2) ? uModelCount2 : uModelCount3;
+  // Each preset binds a fixed model slot (Logo→0, Racecar→1, Runner→2,
+  // RacetrackCar→3), so callers pass the matching sampler+count directly
+  // instead of routing through a runtime if-cascade. This avoids two
+  // dynamic-uniform branches per particle for every model-driven preset.
+  vec3 sampleModelTex(sampler2D tex, float cnt, float fi) {
     float idx = (cnt > 0.0) ? mod(fi, cnt) : 0.0;
     float u = (mod(idx, ${MODEL_TEX_W}.0) + 0.5) / ${MODEL_TEX_W}.0;
     float v = (floor(idx / ${MODEL_TEX_W}.0) + 0.5) / ${MODEL_TEX_H}.0;
-    vec2 uv = vec2(u, v);
-    if (slot == 0) return texture(uModelTex0, uv).xyz;
-    else if (slot == 1) return texture(uModelTex1, uv).xyz;
-    else if (slot == 2) return texture(uModelTex2, uv).xyz;
-    else           return texture(uModelTex3, uv).xyz;
+    return texture(tex, vec2(u, v)).xyz;
   }
 
   /* ── preset 0: Remix Logo ─────────────────────────────── */
@@ -114,7 +113,7 @@ const VERTEX_SHADER = /* glsl */ `
     float rY = c2 * 0.01745329 - time * c4;
     float rZ = c3 * 0.01745329;
 
-    vec3 mp = sampleModel(0, fi);
+    vec3 mp = sampleModelTex(uModelTex0, uModelCount0, fi);
     float px = mp.x * scale;
     float py = mp.y * scale;
     float pz = mp.z * scale;
@@ -157,7 +156,7 @@ const VERTEX_SHADER = /* glsl */ `
     float angle = time * spin;
     float cosA = cos(angle), sinA = sin(angle);
 
-    vec3 mp = sampleModel(1, fi);
+    vec3 mp = sampleModelTex(uModelTex1, uModelCount1, fi);
     float mx = mp.x * scale;
     float my = mp.y * scale;
     float mz = mp.z * scale;
@@ -342,7 +341,7 @@ const VERTEX_SHADER = /* glsl */ `
     float angle = time * spin;
     float cosA = cos(angle), sinA = sin(angle);
 
-    vec3 mp = sampleModel(2, fi);
+    vec3 mp = sampleModelTex(uModelTex2, uModelCount2, fi);
     float mx = mp.x * scale;
     float my = mp.y * scale;
     float mz = mp.z * scale;
@@ -512,7 +511,7 @@ const VERTEX_SHADER = /* glsl */ `
     } else if (int(fi) >= carStart) {
       float carFi = float(int(fi) - carStart);
       float spreadFi = floor(fract(carFi * 0.6180339887) * uModelCount3);
-      vec3 mp = sampleModel(3, spreadFi);
+      vec3 mp = sampleModelTex(uModelTex3, uModelCount3, spreadFi);
 
       float mx = mp.x * carScale;
       float my = mp.y * carScale;
