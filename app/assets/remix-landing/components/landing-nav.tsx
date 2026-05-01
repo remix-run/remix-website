@@ -130,6 +130,12 @@ const mobileMenuStyles = css({
   },
 });
 
+const svgIconStyles = css({
+  height: "20px",
+  width: "20px",
+  display: "block",
+});
+
 const NAV_ITEMS = [
   {
     key: "G",
@@ -298,13 +304,7 @@ export function LandingNav(handle: Handle) {
               ]}
             >
               {menuOpen ? (
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 14 14"
-                  width="1em"
-                  height="1em"
-                  mix={css({ display: "block" })}
-                >
+                <svg aria-hidden="true" viewBox="0 0 12 12" mix={svgIconStyles}>
                   <use href={`${assetPaths.iconsSprite}#x-mark`} />
                 </svg>
               ) : (
