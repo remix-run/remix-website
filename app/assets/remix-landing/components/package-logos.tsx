@@ -30,7 +30,7 @@ const LOGOS = [
  * shrinks with the copy.
  */
 const ROWS: { topFraction: number; heightFraction: number }[] = [
-  { topFraction: 0.0, heightFraction: 0.1786 }, // Auth
+  { topFraction: 0.0, heightFraction: 0.242 }, // Auth (sized to match Routing's width)
   { topFraction: 0.2656, heightFraction: 0.1786 }, // Routing
   { topFraction: 0.5, heightFraction: 0.1607 }, // Data (row 3, left of Session)
   { topFraction: 0.5, heightFraction: 0.1607 }, // Session (row 3, right-aligned)
@@ -41,7 +41,23 @@ const VIEWPORT_GUTTER_PX = 24;
 const DATA_SESSION_GAP_PX = 30;
 const STACKED_LOGO_BREAKPOINT_PX = 880;
 const STACKED_LOGO_GAP_PX = 24;
+const MOBILE_LOGO_VIEWPORT_GUTTER_PX = 40;
 const PANEL_SELECTOR = "[data-package-logos-panel]";
+
+// On mobile the panel anchors the logo group's container width, but logo widths
+// derive from container *height* (heightFraction × containerHeight × aspectRatio).
+// Compute the widest logo's width-as-a-fraction-of-containerHeight so we can
+// scale the container vertically to make that widest logo span the panel.
+const WIDEST_LOGO_WIDTH_FRACTION = Math.max(
+  ...LOGOS.map((logo, i) => {
+    const [w, h] = logo.ratio.split("/").map((s) => parseFloat(s.trim()));
+    return ROWS[i].heightFraction * (w / h);
+  }),
+);
+
+// Sum of the Data and Session aspect ratios — used on mobile to size them so
+// their combined width (plus the fixed inter-logo gap) matches the row above.
+const DATA_SESSION_ASPECT_SUM = 577 / 290 + 797 / 288;
 
 const shellStyles = css({
   position: "absolute",
@@ -249,12 +265,40 @@ export function PackageLogos(handle: Handle) {
 
     const stackBelowPanel = viewportWidth <= STACKED_LOGO_BREAKPOINT_PX;
 
-    // Session width derives from its row height, which is a fraction of the panel
-    // height. Data sits to its left, so its right offset grows with Session's width.
-    const sessionHeightPx = panelHeight * ROWS[3].heightFraction;
+    // On mobile we want the logo group inset MOBILE_LOGO_VIEWPORT_GUTTER_PX
+    // from each viewport edge. The container is already anchored to the
+    // panel (which is itself inset by `panelLeft` from the viewport), so the
+    // remaining gutter we need to apply *within* the container is the
+    // difference between the desired viewport gutter and `panelLeft`.
+    const gutterPx = stackBelowPanel
+      ? Math.max(0, MOBILE_LOGO_VIEWPORT_GUTTER_PX - panelLeft)
+      : VIEWPORT_GUTTER_PX;
+
+    // Scale the container's logical height so the widest logo spans the
+    // available width (panelWidth − 2 × gutter on mobile, full viewport −
+    // gutter on desktop). All other logos scale with it and the existing
+    // scattered layout is preserved.
+    const stackedHeight = stackBelowPanel
+      ? (panelWidth - 2 * gutterPx) / WIDEST_LOGO_WIDTH_FRACTION
+      : panelHeight;
+
+    // Scale the Data + Session row up so their combined width (with the
+    // fixed inter-logo gap) matches the widest single logo, so the row lines
+    // up vertically with the rows above and below it. The Math.max floor
+    // keeps us at or above the original ROWS[2].heightFraction so we never
+    // shrink the row.
+    const dataSessionHeightFraction = Math.max(
+      ROWS[2].heightFraction,
+      (WIDEST_LOGO_WIDTH_FRACTION * stackedHeight - DATA_SESSION_GAP_PX) /
+        (stackedHeight * DATA_SESSION_ASPECT_SUM),
+    );
+
+    // Session width derives from its row height, which is a fraction of the
+    // logo container height. Data sits to its left, so its right offset grows
+    // with Session's width.
+    const sessionHeightPx = stackedHeight * dataSessionHeightFraction;
     const sessionWidthPx = sessionHeightPx * (797 / 288);
-    const dataRightPx =
-      VIEWPORT_GUTTER_PX + DATA_SESSION_GAP_PX + sessionWidthPx;
+    const dataRightPx = gutterPx + DATA_SESSION_GAP_PX + sessionWidthPx;
 
     return (
       <div
@@ -264,7 +308,7 @@ export function PackageLogos(handle: Handle) {
           left: stackBelowPanel ? `${panelLeft}px` : "0",
           right: stackBelowPanel ? "auto" : "0",
           width: stackBelowPanel ? `${panelWidth}px` : "auto",
-          height: `${panelHeight}px`,
+          height: `${stackedHeight}px`,
         }}
       >
         {LOGOS.map((logo, i) => {
@@ -274,17 +318,22 @@ export function PackageLogos(handle: Handle) {
               ? 1
               : 0
             : sequenceFade(i, sequenceStartMs, now);
-          const right =
-            i === 2 ? `${dataRightPx}px` : `${VIEWPORT_GUTTER_PX}px`;
+          const right = i === 2 ? `${dataRightPx}px` : `${gutterPx}px`;
+          const heightFraction =
+            i === 2 || i === 3 ? dataSessionHeightFraction : row.heightFraction;
+          const top =
+            i === 4
+              ? `calc(${row.topFraction * 100}% - 8px)`
+              : `${row.topFraction * 100}%`;
           return (
             <div
               key={logo.alt}
               mix={[logoStyles]}
               style={{
-                top: `${row.topFraction * 100}%`,
+                top,
                 left: "auto",
                 right,
-                height: `${row.heightFraction * 100}%`,
+                height: `${heightFraction * 100}%`,
                 aspectRatio: logo.ratio,
                 maskImage: `url(${logo.src})`,
                 WebkitMaskImage: `url(${logo.src})`,
