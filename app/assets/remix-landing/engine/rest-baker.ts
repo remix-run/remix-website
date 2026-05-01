@@ -20,10 +20,10 @@ import { PRESET_GLSL, PRESET_UNIFORMS_GLSL } from "./preset-glsl";
 // One slot per morph endpoint (A, B). Each slot owns a render target with
 // `count: 2` color attachments: textures[0] = pos.xyz, textures[1] = col.xyz.
 //
-// Sized 512×512 so a single texel maps 1:1 to one particle for any reasonable
-// `particleCount` (current default is 160k; this gives 262k headroom). Width
-// stays at 512 to keep the `(fi mod 512, fi / 512)` mapping cheap and aligned
-// with the model-texture grid the presets sample internally.
+// One texel per particle. Width stays at 512 so the `(fi mod 512, fi / 512)`
+// mapping is cheap, and height is sized just big enough for the current
+// particleCount (rounded to a multiple of 16 for clean alignment). Keeps the
+// bake pass from running fragments outside the active range.
 //
 // FloatType (not HalfFloatType): half-float gives ~10 bits of mantissa, which
 // quantizes positions to a step proportional to magnitude (~0.1 at ±100 units).
@@ -32,7 +32,17 @@ import { PRESET_GLSL, PRESET_UNIFORMS_GLSL } from "./preset-glsl";
 // it automatically.
 
 export const BAKE_TEX_W = 512;
-export const BAKE_TEX_H = 512;
+
+/**
+ * Smallest bake-target height (in texels) that fits `count` particles in a
+ * 512-wide grid, rounded up to a multiple of 16. Shared between RestBaker
+ * (allocates the targets, runs the bake pass) and ParticleSystem (samples
+ * them from the draw VS) so the layout always matches.
+ */
+export function computeBakeTexHeight(count: number): number {
+  const rows = Math.ceil(Math.max(count, 1) / BAKE_TEX_W);
+  return Math.max(16, Math.ceil(rows / 16) * 16);
+}
 
 const BAKE_VS = /* glsl */ `
 precision highp float;
@@ -110,9 +120,11 @@ export class RestBaker {
   private mesh: Mesh;
   private cacheA = initCache();
   private cacheB = initCache();
+  readonly bakeTexHeight: number;
 
-  constructor(renderer: WebGLRenderer) {
+  constructor(renderer: WebGLRenderer, count: number) {
     this.renderer = renderer;
+    this.bakeTexHeight = computeBakeTexHeight(count);
 
     const targetOptions = {
       count: 2,
@@ -126,8 +138,16 @@ export class RestBaker {
       wrapS: ClampToEdgeWrapping,
       wrapT: ClampToEdgeWrapping,
     } as const;
-    this.slotA = new WebGLRenderTarget(BAKE_TEX_W, BAKE_TEX_H, targetOptions);
-    this.slotB = new WebGLRenderTarget(BAKE_TEX_W, BAKE_TEX_H, targetOptions);
+    this.slotA = new WebGLRenderTarget(
+      BAKE_TEX_W,
+      this.bakeTexHeight,
+      targetOptions,
+    );
+    this.slotB = new WebGLRenderTarget(
+      BAKE_TEX_W,
+      this.bakeTexHeight,
+      targetOptions,
+    );
 
     this.scene = new Scene();
     this.camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);

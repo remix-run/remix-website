@@ -260,7 +260,10 @@ export function ParticleCanvas(handle: Handle) {
       engine = new Engine();
       engine.init(canvasEl, containerEl, currentProps.settings);
 
-      restBaker = new RestBaker(engine.renderer);
+      restBaker = new RestBaker(
+        engine.renderer,
+        currentProps.settings.particleCount,
+      );
       restBaker.setCount(currentProps.settings.particleCount);
 
       particles = new ParticleSystem();
