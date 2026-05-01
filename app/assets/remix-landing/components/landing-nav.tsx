@@ -1,6 +1,7 @@
 import { css, addEventListeners, navigate, on, type Handle } from "remix/ui";
 import * as popover from "remix/ui/popover";
 import { routes } from "../../../routes";
+import { assetPaths } from "../../../utils/asset-paths";
 import { colors } from "../styles/tokens";
 import { isEditableKeyTarget } from "../utils/keyboard";
 import { clamp01 } from "../utils/math";
@@ -72,6 +73,8 @@ const mobileContainerStyles = css({
   [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
     display: "block",
     marginLeft: "auto",
+    marginTop: "-12px",
+    marginRight: "-12px",
   },
 });
 
@@ -100,6 +103,7 @@ const mobileToggleStyles = css({
 
 const mobileMenuItemStyles = css({
   padding: "12px 16px",
+  justifyContent: "flex-end",
 });
 
 const mobileMenuStyles = css({
@@ -124,6 +128,12 @@ const mobileMenuStyles = css({
   "&:not(:popover-open)": {
     pointerEvents: "none",
   },
+});
+
+const svgIconStyles = css({
+  height: "20px",
+  width: "20px",
+  display: "block",
 });
 
 const NAV_ITEMS = [
@@ -257,7 +267,6 @@ export function LandingNav(handle: Handle) {
     shouldBlockBlogShortcut = props.shouldBlockBlogShortcut;
 
     const hintOpacity = clamp01(1 - scrollYRef.current / 80);
-    const toggleLabel = menuOpen ? "close" : "menu";
 
     return (
       <header mix={[headerStyles]}>
@@ -287,14 +296,20 @@ export function LandingNav(handle: Handle) {
                 navItemStyles,
                 mobileToggleStyles,
                 popover.focusOnHide(),
-                popover.anchor({ placement: "bottom-end", offset: 8 }),
+                popover.anchor({ placement: "bottom-end", offset: 4 }),
                 on<HTMLButtonElement>("click", (e) => {
                   e.stopPropagation();
                   setMenuOpen(!menuOpen);
                 }),
               ]}
             >
-              {toggleLabel}
+              {menuOpen ? (
+                <svg aria-hidden="true" viewBox="0 0 12 12" mix={svgIconStyles}>
+                  <use href={`${assetPaths.iconsSprite}#x-mark`} />
+                </svg>
+              ) : (
+                "menu"
+              )}
             </button>
             <nav
               id="mobile-nav-menu"

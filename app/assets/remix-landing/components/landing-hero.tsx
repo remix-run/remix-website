@@ -61,9 +61,7 @@ const bodyStyles = css({
   textWrap: "pretty",
   "@media (max-width: 880px)": {
     maxWidth: "480px",
-    textAlign: "justify",
-    textAlignLast: "left",
-    hyphens: "auto",
+    textAlign: "left",
   },
   "@supports (text-box-trim: trim-both)": {
     textBoxTrim: "trim-both",
