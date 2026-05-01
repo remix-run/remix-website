@@ -7,6 +7,7 @@ import {
   type ProjectedLabel,
 } from "../engine/label-projection";
 import { ParticleSystem } from "../engine/particles";
+import { RestBaker } from "../engine/rest-baker";
 import { getMorphBlend, type MorphBlend } from "../engine/morph";
 import { createModelTexture } from "../engine/model-texture";
 import type { ModelData } from "../engine/model-loader";
@@ -141,6 +142,7 @@ export function ParticleCanvas(handle: Handle) {
   let canvasEl: HTMLCanvasElement | undefined;
   let engine: Engine | null = null;
   let particles: ParticleSystem | null = null;
+  let restBaker: RestBaker | null = null;
   const appliedModelSlots = new Set<number>();
   let frameId = 0;
   let startTime = 0;
@@ -213,9 +215,11 @@ export function ParticleCanvas(handle: Handle) {
     if (particles && engine) {
       particles.dispose(engine.scene);
     }
+    restBaker?.dispose();
     appliedModelSlots.clear();
     engine?.dispose();
     particles = null;
+    restBaker = null;
     engine = null;
   }
 
@@ -224,7 +228,7 @@ export function ParticleCanvas(handle: Handle) {
   });
 
   function syncModelTextures() {
-    if (!particles || !currentProps) return;
+    if (!restBaker || !currentProps) return;
 
     for (const preset of currentProps.presets) {
       if (
@@ -238,7 +242,7 @@ export function ParticleCanvas(handle: Handle) {
         currentProps.modelData[currentProps.presets.indexOf(preset)];
       if (!model) continue;
 
-      particles.setModelTexture(
+      restBaker.setModelTexture(
         preset.modelSlot,
         createModelTexture(model),
         model.positions.length / 3,
@@ -256,11 +260,23 @@ export function ParticleCanvas(handle: Handle) {
       engine = new Engine();
       engine.init(canvasEl, containerEl, currentProps.settings);
 
+      restBaker = new RestBaker(engine.renderer);
+      restBaker.setCount(currentProps.settings.particleCount);
+
       particles = new ParticleSystem();
       particles.init(
         engine.scene,
         currentProps.settings.particleCount,
         currentProps.settings.pointSize,
+      );
+      // Bind the baker's MRT texture refs to the draw material once. Three
+      // caches the references; subsequent bake() calls update the GL backing
+      // in place.
+      particles.setRestTextures(
+        restBaker.getPosTexture(0),
+        restBaker.getColTexture(0),
+        restBaker.getPosTexture(1),
+        restBaker.getColTexture(1),
       );
       syncModelTextures();
 
@@ -273,6 +289,25 @@ export function ParticleCanvas(handle: Handle) {
       );
       engine.camera.position.copy(desiredCameraPos);
       engine.controls.target.copy(desiredCameraTarget);
+      // Pre-bake slot A using the starting preset so the very first render
+      // samples populated rest textures. This also forces the baker's
+      // RawShaderMaterial to compile here, hiding the link/upload cost from
+      // the first animate() frame.
+      const initialPresetData = getPresetRuntimeData(currentProps.presets);
+      const initialIndex = Math.min(
+        Math.max(0, Math.floor(currentProps.morphValueRef.current)),
+        initialPresetData.presets.length - 1,
+      );
+      copyControlsInto(
+        initialPresetData.controls[initialIndex],
+        scratchControlsA,
+      );
+      restBaker.bake(
+        0,
+        initialPresetData.shaderInts[initialIndex],
+        scratchControlsA,
+        0,
+      );
       // Compile the particle RawShaderMaterial up front so the first
       // `composer.render()` doesn't pay for the GLSL3 link/upload during
       // the intro frame. Three otherwise compiles materials lazily on first
@@ -286,7 +321,7 @@ export function ParticleCanvas(handle: Handle) {
     }
 
     const animate = () => {
-      if (!engine || !particles || !currentProps) return;
+      if (!engine || !particles || !restBaker || !currentProps) return;
 
       const now = performance.now();
       const time = now / 1000 - startTime;
@@ -357,11 +392,6 @@ export function ParticleCanvas(handle: Handle) {
         }
       }
 
-      particles.setPresets(
-        presetData.shaderInts[fromIndex],
-        presetData.shaderInts[toIndex],
-        blend,
-      );
       // Hoisted from the vertex shader: when blending, t is constant across all
       // particles, so do the pow()/divide once per frame on the CPU instead of
       // per vertex on the GPU. When blend < 0.001 the shader takes the
@@ -372,8 +402,8 @@ export function ParticleCanvas(handle: Handle) {
         const tk = Math.pow(blend, ease);
         morphT = tk / (tk + Math.pow(1 - blend, ease));
       }
+      particles.setBlend(blend);
       particles.setMorphT(morphT);
-      particles.setControls(scratchControlsA, scratchControlsB);
       particles.setSeparation(separation);
 
       const overridesA = presets[fromIndex].systemOverrides;
@@ -417,18 +447,35 @@ export function ParticleCanvas(handle: Handle) {
         smoothCarLane += (0 - smoothCarLane) * CAR_LANE_LERP;
       }
 
-      particles.setCarLaneOffset(smoothCarLane * driveProximity);
-
       const laneDelta = Math.abs(smoothCarLane - prevCarLane);
       laneActivity = Math.max(
         laneActivity * ACTIVITY_DECAY,
         clamp01(laneDelta * ACTIVITY_GAIN),
       );
       prevCarLane = smoothCarLane;
-      particles.setCarLaneActivity(laneActivity * driveProximity);
 
-      if (driveIndex >= 0) {
-        particles.setCarPosY(presetData.driveCarPosY * driveProximity);
+      // Car uniforms feed the baker (used only by the racetrackCar preset).
+      const carLaneOffset = smoothCarLane * driveProximity;
+      const carLaneActivity = laneActivity * driveProximity;
+      const carPosY =
+        driveIndex >= 0 ? presetData.driveCarPosY * driveProximity : 0;
+      restBaker.setCarUniforms(carLaneOffset, carLaneActivity, carPosY);
+
+      // Bake the active endpoint(s). Slot B is skipped when the draw shader
+      // would ignore it (matches the `if (uBlend > 0.001)` gate in the VS).
+      restBaker.bake(
+        0,
+        presetData.shaderInts[fromIndex],
+        scratchControlsA,
+        visualTime,
+      );
+      if (blend > 0.001) {
+        restBaker.bake(
+          1,
+          presetData.shaderInts[toIndex],
+          scratchControlsB,
+          visualTime,
+        );
       }
 
       engine.controls.enabled = !reduceMotion && driveProximity < 0.5;
