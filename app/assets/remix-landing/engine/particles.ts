@@ -819,6 +819,7 @@ FloatType,
       transparent: true,
       blending: AdditiveBlending,
       depthWrite: false,
+      depthTest: false,
     });
 
     this.points = new Points(this.geometry, this.material);
