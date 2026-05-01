@@ -4,6 +4,7 @@ import {
   BufferGeometry,
   DataTexture,
   FloatType,
+  GLSL3,
   Points,
   RGBAFormat,
   Scene,
@@ -14,15 +15,14 @@ const MODEL_TEX_W = 512;
 const MODEL_TEX_H = 256;
 
 const VERTEX_SHADER = /* glsl */ `
-  attribute float aIndex;
-  attribute float aRandom;
+  in float aRandom;
 
-  varying vec3 vColor;
-  varying float vAlpha;
-  varying float vViewDist;
-  varying float vIntro;
-  varying float vPulse;
-  varying float vCoc;
+  out vec3 vColor;
+  out float vAlpha;
+  out float vViewDist;
+  out float vIntro;
+  out float vPulse;
+  out float vCoc;
 
   uniform float uPointSize;
   uniform float uPixelRatio;
@@ -96,10 +96,10 @@ const VERTEX_SHADER = /* glsl */ `
     float u = (mod(idx, ${MODEL_TEX_W}.0) + 0.5) / ${MODEL_TEX_W}.0;
     float v = (floor(idx / ${MODEL_TEX_W}.0) + 0.5) / ${MODEL_TEX_H}.0;
     vec2 uv = vec2(u, v);
-    if (slot == 0) return texture2D(uModelTex0, uv).xyz;
-    else if (slot == 1) return texture2D(uModelTex1, uv).xyz;
-    else if (slot == 2) return texture2D(uModelTex2, uv).xyz;
-    else           return texture2D(uModelTex3, uv).xyz;
+    if (slot == 0) return texture(uModelTex0, uv).xyz;
+    else if (slot == 1) return texture(uModelTex1, uv).xyz;
+    else if (slot == 2) return texture(uModelTex2, uv).xyz;
+    else           return texture(uModelTex3, uv).xyz;
   }
 
   /* ── preset 0: Remix Logo ─────────────────────────────── */
@@ -597,8 +597,8 @@ const VERTEX_SHADER = /* glsl */ `
   /* ── main ─────────────────────────────────────────────── */
 
   void main() {
-    float fi = aIndex;
-    int i = int(fi);
+    float fi = float(gl_VertexID);
+    int i = gl_VertexID;
     int cnt = int(uCount);
 
     vec3 posA, colA;
@@ -683,16 +683,18 @@ const VERTEX_SHADER = /* glsl */ `
 `;
 
 const FRAGMENT_SHADER = /* glsl */ `
-  varying vec3 vColor;
-  varying float vAlpha;
-  varying float vViewDist;
-  varying float vIntro;
-  varying float vPulse;
-  varying float vCoc;
+  in vec3 vColor;
+  in float vAlpha;
+  in float vViewDist;
+  in float vIntro;
+  in float vPulse;
+  in float vCoc;
   uniform float uFogEnabled;
   uniform float uFogNear;
   uniform float uFogFar;
   uniform float uHdrIntensity;
+
+  out vec4 fragColor;
 
   void main() {
     float d = length(gl_PointCoord - vec2(0.5));
@@ -714,7 +716,7 @@ const FRAGMENT_SHADER = /* glsl */ `
 
     col *= uHdrIntensity;
 
-    gl_FragColor = vec4(col, alpha);
+    fragColor = vec4(col, alpha);
   }
 `;
 
@@ -771,10 +773,8 @@ export class ParticleSystem {
     this.resetSetterCaches();
 
     const positions = new Float32Array(count * 3);
-    const indices = new Float32Array(count);
     const randoms = new Float32Array(count);
     for (let i = 0; i < count; i++) {
-      indices[i] = i;
       randoms[i] = Math.random();
     }
 
@@ -783,13 +783,19 @@ export class ParticleSystem {
       "position",
       new BufferAttribute(positions, 3),
     );
-    this.geometry.setAttribute("aIndex", new BufferAttribute(indices, 1));
     this.geometry.setAttribute(
       "aRandom",
       new BufferAttribute(randoms, 1),
     );
 
     this.material = new ShaderMaterial({
+      // GLSL3 lets us drop the `aIndex` attribute in favour of the built-in
+      // `gl_VertexID`, saving `count * 4` bytes of VBO memory and one upload
+      // at init. Three's GLSL3 path for ShaderMaterial does NOT inject the
+      // attribute/varying/texture2D/gl_FragColor compatibility shims (only
+      // built-in materials get those), so the source above uses native
+      // GLSL ES 3.00 syntax: `in`/`out` and an explicit `out vec4 fragColor;`.
+      glslVersion: GLSL3,
       vertexShader: VERTEX_SHADER,
       fragmentShader: FRAGMENT_SHADER,
       uniforms: {
