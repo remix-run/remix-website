@@ -2,8 +2,8 @@ import type { Router } from "remix/fetch-router";
 import { renderToStream } from "remix/ui/server";
 import type { RemixNode } from "remix/ui";
 import { createHtmlResponse } from "remix/response/html";
-import { getRequestContext } from "./request-context";
-import { assetServer } from "./assets.server";
+import { getRequestContext } from "./request-context.ts";
+import { assetServer } from "./assets.server.ts";
 
 type FrameRenderContext = {
   currentFrameSrc?: string;

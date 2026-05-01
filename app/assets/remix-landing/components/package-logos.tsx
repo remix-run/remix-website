@@ -1,6 +1,6 @@
 import { addEventListeners, css, type Handle } from "remix/ui";
-import { clamp01 } from "../utils/math";
-import { reducedMotion } from "../utils/reduced-motion";
+import { clamp01 } from "../utils/math.ts";
+import { reducedMotion } from "../utils/reduced-motion.ts";
 
 const LOGOS = [
   { src: "/landing/remix-package-auth.svg", alt: "Auth", ratio: "904 / 245" },

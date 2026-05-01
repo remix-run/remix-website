@@ -1,9 +1,9 @@
-import { routes } from "../../routes";
-import { assetPaths } from "../../utils/asset-paths";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { getRequestContext } from "../../utils/request-context";
-import { render } from "../../utils/render";
-import { HomePage } from "./page";
+import { routes } from "../../routes.ts";
+import { assetPaths } from "../../utils/asset-paths.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { getRequestContext } from "../../utils/request-context.ts";
+import { render } from "../../utils/render.ts";
+import { HomePage } from "./page.tsx";
 
 export async function homeHandler() {
   let requestUrl = new URL(getRequestContext().request.url);

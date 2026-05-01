@@ -1,6 +1,7 @@
-import { describe, it, expect } from "vitest";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { buildBlogRssResponse } from "./rss";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { buildBlogRssResponse } from "./rss.ts";
 
 describe("blog RSS route handler", () => {
   it("returns an RSS XML response with cache headers", async () => {

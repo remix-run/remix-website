@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { LRUCache } from "lru-cache";
 import yaml from "yaml";
-import { processMarkdown } from "./md.server";
+import { processMarkdown } from "./md.server.ts";
 
 const DATA_DIRECTORY = path.join(process.cwd(), "data");
 const POSTS_DIRECTORY = path.join(DATA_DIRECTORY, "posts");

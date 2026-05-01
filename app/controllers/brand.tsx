@@ -1,11 +1,11 @@
 import cx from "clsx";
 import type { RemixNode } from "remix/ui";
-import { Document } from "../ui/document";
-import { Footer } from "../ui/footer";
-import { Header } from "../ui/header";
-import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../utils/cache-control";
-import { getSocialHeadTags } from "../utils/social-head-tags.server";
+import { Document } from "../ui/document.tsx";
+import { Footer } from "../ui/footer.tsx";
+import { Header } from "../ui/header.tsx";
+import { render } from "../utils/render.ts";
+import { CACHE_CONTROL } from "../utils/cache-control.ts";
+import { getSocialHeadTags } from "../utils/social-head-tags.server.ts";
 
 export async function brandHandler() {
   return render.document(<Page />, {

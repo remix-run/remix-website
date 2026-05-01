@@ -1,10 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { catchallHandler } from "./catchall";
-import { renderNotFoundPage } from "../ui/not-found-page";
-
-vi.mock("../ui/not-found-page", () => ({
-  renderNotFoundPage: vi.fn(() => new Response("", { status: 404 })),
-}));
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { catchallHandler } from "./catchall.ts";
+import { router } from "../router.ts";
 
 function createContext(pathname: string) {
   return {
@@ -13,10 +10,6 @@ function createContext(pathname: string) {
 }
 
 describe("catchall route", () => {
-  beforeEach(() => {
-    vi.mocked(renderNotFoundPage).mockClear();
-  });
-
   it("redirects trailing slash paths", async () => {
     let response = catchallHandler(createContext("/docs/"));
     expect(response.status).toBe(302);
@@ -86,8 +79,9 @@ describe("catchall route", () => {
   });
 
   it("returns 404 for unknown paths", async () => {
-    let response = catchallHandler(createContext("/not-real"));
+    let response = await router.fetch(
+      new Request("https://remix.run/not-real"),
+    );
     expect(response.status).toBe(404);
-    expect(renderNotFoundPage).toHaveBeenCalledTimes(1);
   });
 });

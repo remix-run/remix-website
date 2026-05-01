@@ -1,7 +1,7 @@
 import cx from "clsx";
-import { MobileMenu } from "../assets/mobile-menu";
-import { WordmarkLink } from "../assets/wordmark-link";
-import { routes } from "../routes";
+import { MobileMenu } from "../assets/mobile-menu.tsx";
+import { WordmarkLink } from "../assets/wordmark-link.tsx";
+import { routes } from "../routes.ts";
 
 const LINKS: Array<{ to: string; label: string; document?: boolean }> = [
   { to: "https://github.com/remix-run/remix", label: "GitHub", document: true },

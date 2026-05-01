@@ -1,20 +1,20 @@
 import { css, ref, addEventListeners, type Handle } from "remix/ui";
-import { Matrix4, Vector3 } from "three";
-import { ControlManager } from "../engine/controls";
-import { Engine } from "../engine/engine";
+import * as THREE from "three";
+import { ControlManager } from "../engine/controls.ts";
+import { Engine } from "../engine/engine.ts";
 import {
   projectLabelsInto,
   type ProjectedLabel,
-} from "../engine/label-projection";
-import { MouseSim } from "../engine/mouse-sim";
-import { ParticleSystem } from "../engine/particles";
-import { RestBaker } from "../engine/rest-baker";
-import { getMorphBlend, type MorphBlend } from "../engine/morph";
-import { createModelTexture } from "../engine/model-texture";
-import type { ModelData } from "../engine/model-loader";
-import type { Preset, ShaderId, SystemSettings } from "../engine/types";
-import { clamp, clamp01, lerp } from "../utils/math";
-import { reducedMotion } from "../utils/reduced-motion";
+} from "../engine/label-projection.ts";
+import { MouseSim } from "../engine/mouse-sim.ts";
+import { ParticleSystem } from "../engine/particles.ts";
+import { RestBaker } from "../engine/rest-baker.ts";
+import { getMorphBlend, type MorphBlend } from "../engine/morph.ts";
+import { createModelTexture } from "../engine/model-texture.ts";
+import type { ModelData } from "../engine/model-loader.ts";
+import type { Preset, ShaderId, SystemSettings } from "../engine/types.ts";
+import { clamp, clamp01, lerp } from "../utils/math.ts";
+import { reducedMotion } from "../utils/reduced-motion.ts";
 
 // Must match `LOADING_SCREEN_MIN_MS` in `landing-enhancements.tsx`.
 const PARTICLE_INTRO_DELAY_S = 1;
@@ -64,8 +64,8 @@ type PresetRuntimeData = {
 function setDesiredCameraInto(
   presets: Preset[],
   morphValue: number,
-  outPos: Vector3,
-  outTarget: Vector3,
+  outPos: THREE.Vector3,
+  outTarget: THREE.Vector3,
 ) {
   const maxIdx = presets.length - 1;
   const clamped = clamp(morphValue, 0, maxIdx);
@@ -153,11 +153,11 @@ export function ParticleCanvas(handle: Handle) {
   let hasReportedReady = false;
   let initFailed = false;
   const labelControlMgr = new ControlManager();
-  const desiredCameraPos = new Vector3();
-  const desiredCameraTarget = new Vector3();
-  const scratchViewProj = new Matrix4();
-  const scratchCamRight = new Vector3();
-  const scratchCamUp = new Vector3();
+  const desiredCameraPos = new THREE.Vector3();
+  const desiredCameraTarget = new THREE.Vector3();
+  const scratchViewProj = new THREE.Matrix4();
+  const scratchCamRight = new THREE.Vector3();
+  const scratchCamUp = new THREE.Vector3();
   let lastFrameNow = 0;
   const scratchControlsA = [0, 0, 0, 0, 0, 0, 0, 0];
   const scratchControlsB = [0, 0, 0, 0, 0, 0, 0, 0];

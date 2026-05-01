@@ -1,6 +1,6 @@
 import cx from "clsx";
-import { TimelineDiagramDesktop } from "./desktop";
-import { TimelineDiagramMobile } from "./mobile";
+import { TimelineDiagramDesktop } from "./desktop.tsx";
+import { TimelineDiagramMobile } from "./mobile.tsx";
 
 export function TimelineSection() {
   return () => (

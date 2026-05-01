@@ -1,4 +1,4 @@
-import type { Preset } from "./types";
+import type { Preset } from "./types.ts";
 
 const websiteMockups: Preset = {
   name: "Website Mockups",

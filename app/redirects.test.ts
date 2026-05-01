@@ -1,10 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
 import { createRouter } from "remix/fetch-router";
 import {
   createRedirectRoutes,
   loadRedirectsFromFile,
   parseRedirectsFile,
-} from "./redirects";
+} from "./redirects.ts";
 
 let redirects = loadRedirectsFromFile();
 let { redirectController, redirectRoutes } = createRedirectRoutes(redirects);

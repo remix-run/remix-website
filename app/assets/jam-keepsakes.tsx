@@ -1,6 +1,6 @@
 import cx from "clsx";
 import { clientEntry, on, type Dispatched, type Handle } from "remix/ui";
-import { assetPaths } from "../utils/asset-paths";
+import { assetPaths } from "../utils/asset-paths.ts";
 
 type KeepsakeId =
   | "photo-1"

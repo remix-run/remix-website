@@ -1,7 +1,7 @@
 import cx from "clsx";
-import { routes } from "../routes";
-import { assetPaths } from "../utils/asset-paths";
-import { Wordmark } from "./wordmark";
+import { routes } from "../routes.ts";
+import { assetPaths } from "../utils/asset-paths.ts";
+import { Wordmark } from "./wordmark.tsx";
 
 export function Footer() {
   return () => (

@@ -1,9 +1,10 @@
-import { describe, expect, it } from "vitest";
-import { blogPostHandler } from "./post";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { getBlogPost } from "../../data/blog.server";
-import { routes } from "../../routes";
-import { createRouteTestRouter } from "../../../test/create-route-test-router";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { blogPostHandler } from "./post.tsx";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { getBlogPost } from "../../data/blog.server.ts";
+import { routes } from "../../routes.ts";
+import { createRouteTestRouter } from "../../../test/create-route-test-router.ts";
 
 describe("Blog post route", () => {
   it("renders a post for a valid slug", async () => {

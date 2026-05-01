@@ -1,5 +1,5 @@
 import { css, ref, type Handle } from "remix/ui";
-import type { ProjectedLabel } from "../engine/label-projection";
+import type { ProjectedLabel } from "../engine/label-projection.ts";
 
 const shellStyles = css({
   position: "fixed",

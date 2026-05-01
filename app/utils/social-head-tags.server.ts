@@ -1,6 +1,6 @@
-import type { ManagedHeadTag } from "../ui/document-head";
-import { assetPaths } from "./asset-paths";
-import { getRequestContext } from "./request-context";
+import type { ManagedHeadTag } from "../ui/document-head.ts";
+import { assetPaths } from "./asset-paths.ts";
+import { getRequestContext } from "./request-context.ts";
 
 type SocialHeadTagsProps = {
   title?: string;

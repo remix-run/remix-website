@@ -5,7 +5,7 @@ import path from "node:path";
 import yaml from "yaml";
 import * as s from "remix/data-schema";
 import { LRUCache } from "lru-cache";
-import { processMarkdown } from "../data/md.server";
+import { processMarkdown } from "../data/md.server.ts";
 
 const SCHEDULE_IMAGES_DIRECTORY = path.join(
   process.cwd(),

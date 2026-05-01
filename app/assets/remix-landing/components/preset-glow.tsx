@@ -1,6 +1,6 @@
 import { css, ref, type Handle } from "remix/ui";
-import { presets } from "../engine/presets";
-import { clamp, lerp } from "../utils/math";
+import { presets } from "../engine/presets.ts";
+import { clamp, lerp } from "../utils/math.ts";
 
 const glowStyles = css({
   position: "fixed",

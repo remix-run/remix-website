@@ -1,5 +1,5 @@
 import { run } from "remix/ui";
-import { initFathomAnalytics } from "./fathom";
+import { initFathomAnalytics } from "./fathom.ts";
 
 initFathomAnalytics();
 
