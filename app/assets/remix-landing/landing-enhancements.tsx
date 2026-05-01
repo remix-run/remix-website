@@ -18,7 +18,11 @@ import {
   reducedMotion,
 } from "./utils/reduced-motion";
 
-/** More scroll distance stays at integer morph presets between sections (0–1). */
+/**
+ * Fraction of each *middle* scroll segment spent pinned at integer morph presets
+ * (clearer hold at integer presets in the center of the page). First and last segments stay linear so
+ * hero and footer transitions remain responsive.
+ */
 const SCROLL_MORPH_PLATEAU = 0.34;
 
 function morphPlateauWithinUnitSpan(t: number, plateau: number): number {
@@ -30,17 +34,34 @@ function morphPlateauWithinUnitSpan(t: number, plateau: number): number {
   return (t - lo) / (hi - lo);
 }
 
+/** `segmentIndex` is the morph integer at the start of the segment (0 for 0→1, …). */
+function scrollMorphPlateauForSegment(
+  segmentIndex: number,
+  maxMorph: number,
+  plateau: number,
+): number {
+  if (
+    plateau <= 1e-6 ||
+    segmentIndex === 0 ||
+    segmentIndex === maxMorph - 1
+  ) {
+    return 0;
+  }
+  return plateau;
+}
+
 function morphPlateauAcrossIndices(
   linearMorph: number,
   maxValue: number,
   plateau: number,
 ): number {
   const clamped = clamp(linearMorph, 0, maxValue);
-  if (plateau <= 1e-6) return clamped;
+  if (maxValue < 1) return clamped;
   const base = Math.floor(clamped);
   if (base >= maxValue) return maxValue;
   const frac = clamped - base;
-  return base + morphPlateauWithinUnitSpan(frac, plateau);
+  const p = scrollMorphPlateauForSegment(base, maxValue, plateau);
+  return base + morphPlateauWithinUnitSpan(frac, p);
 }
 
 const appStyles = css({
@@ -240,10 +261,12 @@ export let RemixLandingEnhancements = clientEntry(
         const span = to - from;
         if (span <= 1) return index + 1;
         const t = (clampedScrollY - from) / span;
-        return (
-          index +
-          morphPlateauWithinUnitSpan(t, SCROLL_MORPH_PLATEAU)
+        const plateau = scrollMorphPlateauForSegment(
+          index,
+          maxValue,
+          SCROLL_MORPH_PLATEAU,
         );
+        return index + morphPlateauWithinUnitSpan(t, plateau);
       }
 
       return maxValue;
