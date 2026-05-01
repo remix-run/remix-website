@@ -1,4 +1,13 @@
-import * as THREE from "three";
+import {
+  Color,
+  HalfFloatType,
+  PerspectiveCamera,
+  Scene,
+  Vector2,
+  Vector3,
+  WebGLRenderer,
+  WebGLRenderTarget,
+} from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
@@ -15,10 +24,10 @@ function screenScale(width: number): number {
 // look-at target and an enabled flag; the real addon pulled in pointer/touch/
 // wheel gesture handlers and damping logic that the landing never used.
 class CameraTargetControls {
-  target = new THREE.Vector3();
+  target = new Vector3();
   enabled = true;
 
-  constructor(private camera: THREE.PerspectiveCamera) {}
+  constructor(private camera: PerspectiveCamera) {}
 
   update() {
     this.camera.lookAt(this.target);
@@ -28,9 +37,9 @@ class CameraTargetControls {
 }
 
 export class Engine {
-  renderer!: THREE.WebGLRenderer;
-  scene!: THREE.Scene;
-  camera!: THREE.PerspectiveCamera;
+  renderer!: WebGLRenderer;
+  scene!: Scene;
+  camera!: PerspectiveCamera;
   controls!: CameraTargetControls;
   composer!: EffectComposer;
   afterImagePass!: AfterimagePass;
@@ -39,16 +48,18 @@ export class Engine {
 
   private resizeObserver: ResizeObserver | null = null;
   private containerWidth = 1440;
-  private startTime = 0;
+  private lastAppliedSettings: SystemSettings | null = null;
+  private lastAppliedWidth = -1;
+  private clearColor = new Color();
 
   init(
     canvas: HTMLCanvasElement,
     container: HTMLElement,
     settings: SystemSettings,
   ) {
-    this.scene = new THREE.Scene();
+    this.scene = new Scene();
 
-    this.camera = new THREE.PerspectiveCamera(
+    this.camera = new PerspectiveCamera(
       settings.cameraFov,
       container.clientWidth / container.clientHeight,
       0.1,
@@ -56,18 +67,34 @@ export class Engine {
     );
     this.camera.position.set(0, 30, 80);
 
-    this.renderer = new THREE.WebGLRenderer({
+    this.renderer = new WebGLRenderer({
       canvas,
       antialias: false,
       alpha: false,
+      // The composer pipeline is fully alpha-blended with `depthWrite: false`
+      // and never reads/writes the stencil buffer, so we can drop both
+      // attachments to save bandwidth on the default framebuffer.
+      depth: false,
+      stencil: false,
+      // Hint dual-GPU laptops to use the discrete GPU.
+      powerPreference: "high-performance",
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(container.clientWidth, container.clientHeight);
-    this.renderer.setClearColor(new THREE.Color(settings.backgroundColor));
+    this.clearColor.set(settings.backgroundColor);
+    this.renderer.setClearColor(this.clearColor);
 
     this.controls = new CameraTargetControls(this.camera);
 
-    this.composer = new EffectComposer(this.renderer);
+    // Match Three's default render-target type (HalfFloat) so tone reproduction
+    // through bloom/afterimage stays identical, but drop depth/stencil since
+    // no pass uses them.
+    const composerTarget = new WebGLRenderTarget(1, 1, {
+      type: HalfFloatType,
+      depthBuffer: false,
+      stencilBuffer: false,
+    });
+    this.composer = new EffectComposer(this.renderer, composerTarget);
 
     // Background pass draws the mesh gradient into the composer's read
     // buffer first. RenderPass then runs with `clear = false` so particles
@@ -85,7 +112,7 @@ export class Engine {
 
     this.containerWidth = container.clientWidth;
     const s = screenScale(this.containerWidth);
-    const bloomSize = new THREE.Vector2(
+    const bloomSize = new Vector2(
       container.clientWidth,
       container.clientHeight,
     );
@@ -96,8 +123,6 @@ export class Engine {
       settings.bloomThreshold,
     );
     this.composer.addPass(this.bloomPass);
-
-    this.startTime = performance.now() / 1000;
 
     this.resizeObserver = new ResizeObserver(() =>
       this.handleResize(container),
@@ -121,9 +146,25 @@ export class Engine {
   }
 
   updateSettings(settings: SystemSettings) {
+    // Called every frame from the animate loop. Most frames see the same
+    // settings reference and the same container width, so guard the body to
+    // skip a per-frame Color allocation, a `setClearColor` round-trip and a
+    // few uniform writes. The afterimage `damp` uniform is intentionally not
+    // touched here: the animate loop overrides it every frame with a value
+    // that blends in trail boost and reduce-motion, so any value written here
+    // would be immediately clobbered.
+    if (
+      settings === this.lastAppliedSettings &&
+      this.containerWidth === this.lastAppliedWidth
+    ) {
+      return;
+    }
+    this.lastAppliedSettings = settings;
+    this.lastAppliedWidth = this.containerWidth;
+
     const s = screenScale(this.containerWidth);
-    this.renderer.setClearColor(new THREE.Color(settings.backgroundColor));
-    this.afterImagePass.uniforms["damp"].value = settings.trailIntensity;
+    this.clearColor.set(settings.backgroundColor);
+    this.renderer.setClearColor(this.clearColor);
     this.bloomPass.strength = settings.bloomStrength * s;
     this.bloomPass.threshold = settings.bloomThreshold;
 
@@ -133,9 +174,9 @@ export class Engine {
     }
   }
 
-  render() {
+  render(time: number) {
     this.controls.update();
-    this.backgroundPass.setTime(performance.now() / 1000 - this.startTime);
+    this.backgroundPass.setTime(time);
     this.composer.render();
   }
 

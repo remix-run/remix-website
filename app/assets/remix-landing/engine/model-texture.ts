@@ -1,10 +1,15 @@
-import * as THREE from "three";
+import {
+  DataTexture,
+  FloatType,
+  NearestFilter,
+  RGBAFormat,
+} from "three";
 import type { ModelData } from "./model-loader";
 
 const TEX_WIDTH = 512;
 const TEX_HEIGHT = 256;
 
-export function createModelTexture(model: ModelData): THREE.DataTexture {
+export function createModelTexture(model: ModelData): DataTexture {
   const data = new Float32Array(TEX_WIDTH * TEX_HEIGHT * 4);
   const count = Math.min(model.positions.length / 3, TEX_WIDTH * TEX_HEIGHT);
   for (let i = 0; i < count; i++) {
@@ -15,15 +20,15 @@ export function createModelTexture(model: ModelData): THREE.DataTexture {
     data[di + 2] = model.positions[si + 2];
     data[di + 3] = 0;
   }
-  const tex = new THREE.DataTexture(
+  const tex = new DataTexture(
     data,
     TEX_WIDTH,
     TEX_HEIGHT,
-    THREE.RGBAFormat,
-    THREE.FloatType,
+    RGBAFormat,
+    FloatType,
   );
-  tex.minFilter = THREE.NearestFilter;
-  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = NearestFilter;
+  tex.magFilter = NearestFilter;
   tex.needsUpdate = true;
   return tex;
 }
