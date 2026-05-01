@@ -273,6 +273,11 @@ export function ParticleCanvas(handle: Handle) {
       );
       engine.camera.position.copy(desiredCameraPos);
       engine.controls.target.copy(desiredCameraTarget);
+      // Compile the particle ShaderMaterial up front so the first
+      // `composer.render()` doesn't pay for the GLSL3 link/upload during
+      // the intro frame. Three otherwise compiles materials lazily on first
+      // draw, which can show up as a hitch on lower-end GPUs.
+      engine.renderer.compile(engine.scene, engine.camera);
     } catch (error) {
       initFailed = true;
       disposeScene();
