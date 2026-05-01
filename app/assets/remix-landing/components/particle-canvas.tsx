@@ -194,6 +194,13 @@ export function ParticleCanvas(handle: Handle) {
   const CAR_LANE_LERP = 0.06;
   const ACTIVITY_DECAY = 0.97;
   const ACTIVITY_GAIN = 20.0;
+  /**
+   * Racetrack (no car): parallax uses the same base as other slides, multiplied
+   * by RACETRACK_MOUSE_STRAFE_ATTENUATION (less lateral drift), then clamped to
+   * ±(trackW × RACETRACK_MOUSE_STRAFE_OF_TRACKW) so it can never exceed road width.
+   */
+  const RACETRACK_MOUSE_STRAFE_ATTENUATION = 0.4;
+  const RACETRACK_MOUSE_STRAFE_OF_TRACKW = 0.18;
 
   // Mouse sim: screen-space falloff (NDC) + camera right/up → tracks the pointer
   // through preset cameras. Peak offset @ ref repulsion:
@@ -543,6 +550,12 @@ export function ParticleCanvas(handle: Handle) {
 
       const driveProximity =
         driveIndex >= 0 ? clamp01(1 - Math.abs(morphValue - driveIndex)) : 0;
+      // Racetrack (no car): scale/cap lateral camera follow from live track width;
+      // × (1 − driveProximity) so Drive keeps uncapped parallax for steering context.
+      const racetrackRoadLock =
+        racetrackIndex >= 0
+          ? clamp01(1 - racetrackDist) * (1 - driveProximity)
+          : 0;
       if (!reduceMotion && driveProximity > 0) {
         smoothCarLane += (effectiveMouseNormX - smoothCarLane) * CAR_LANE_LERP;
       } else {
@@ -600,7 +613,19 @@ export function ParticleCanvas(handle: Handle) {
       smoothMouseOffsetX +=
         (effectiveMouseNormX * MOUSE_RANGE - smoothMouseOffsetX) * MOUSE_LERP;
       if (!reduceMotion) {
-        engine.camera.position.x += smoothMouseOffsetX * parallaxScale;
+        const parallaxUncapped = smoothMouseOffsetX * parallaxScale;
+        let parallaxX = parallaxUncapped;
+        if (racetrackIndex >= 0 && racetrackRoadLock > 0) {
+          const trackW = presetData.controls[racetrackIndex][1] ?? 40;
+          const strafeCap = trackW * RACETRACK_MOUSE_STRAFE_OF_TRACKW;
+          const parallaxRacetrack = clamp(
+            parallaxUncapped * RACETRACK_MOUSE_STRAFE_ATTENUATION,
+            -strafeCap,
+            strafeCap,
+          );
+          parallaxX = lerp(parallaxUncapped, parallaxRacetrack, racetrackRoadLock);
+        }
+        engine.camera.position.x += parallaxX;
       }
 
       // Run look-at once before reading view/proj so MouseSim matrices match
