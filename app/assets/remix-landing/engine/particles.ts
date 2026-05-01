@@ -1,19 +1,37 @@
-import * as THREE from "three";
+import {
+  AdditiveBlending,
+  BufferAttribute,
+  BufferGeometry,
+  DataTexture,
+  FloatType,
+  GLSL3,
+  Points,
+  RGBAFormat,
+  RawShaderMaterial,
+  Scene,
+} from "three";
 
 const MODEL_TEX_W = 512;
 const MODEL_TEX_H = 256;
 
-const VERTEX_SHADER = /* glsl */ `
-  attribute float aIndex;
-  attribute float aSize;
-  attribute float aRandom;
+const VERTEX_SHADER = /* glsl */ `#version 300 es
 
-  varying vec3 vColor;
-  varying float vAlpha;
-  varying float vViewDist;
-  varying float vIntro;
-  varying float vPulse;
-  varying float vCoc;
+precision highp float;
+precision highp int;
+precision highp sampler2D;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+in vec3 position;
+in float aRandom;
+
+out vec3 vColor;
+  out float vAlpha;
+  out float vViewDist;
+  out float vIntro;
+  out float vPulse;
+  out float vCoc;
 
   uniform float uPointSize;
   uniform float uPixelRatio;
@@ -31,7 +49,7 @@ const VERTEX_SHADER = /* glsl */ `
   uniform float uCarLaneOffset;
   uniform float uCarLaneActivity;
   uniform float uCarPosY;
-  uniform float uMorphEase;
+  uniform float uMorphT;
   uniform float uColorMode;
   uniform float uCtrlA[8];
   uniform float uCtrlB[8];
@@ -81,16 +99,15 @@ const VERTEX_SHADER = /* glsl */ `
     return hsl2rgb(hue, clamp(sat, 0.5, 1.0), clamp(lum, 0.2, 0.85));
   }
 
-  vec3 sampleModel(int slot, float fi) {
-    float cnt = (slot == 0) ? uModelCount0 : (slot == 1) ? uModelCount1 : (slot == 2) ? uModelCount2 : uModelCount3;
+  // Each preset binds a fixed model slot (Logo→0, Racecar→1, Runner→2,
+  // RacetrackCar→3), so callers pass the matching sampler+count directly
+  // instead of routing through a runtime if-cascade. This avoids two
+  // dynamic-uniform branches per particle for every model-driven preset.
+  vec3 sampleModelTex(sampler2D tex, float cnt, float fi) {
     float idx = (cnt > 0.0) ? mod(fi, cnt) : 0.0;
     float u = (mod(idx, ${MODEL_TEX_W}.0) + 0.5) / ${MODEL_TEX_W}.0;
     float v = (floor(idx / ${MODEL_TEX_W}.0) + 0.5) / ${MODEL_TEX_H}.0;
-    vec2 uv = vec2(u, v);
-    if (slot == 0) return texture2D(uModelTex0, uv).xyz;
-    else if (slot == 1) return texture2D(uModelTex1, uv).xyz;
-    else if (slot == 2) return texture2D(uModelTex2, uv).xyz;
-    else           return texture2D(uModelTex3, uv).xyz;
+    return texture(tex, vec2(u, v)).xyz;
   }
 
   /* ── preset 0: Remix Logo ─────────────────────────────── */
@@ -105,7 +122,7 @@ const VERTEX_SHADER = /* glsl */ `
     float rY = c2 * 0.01745329 - time * c4;
     float rZ = c3 * 0.01745329;
 
-    vec3 mp = sampleModel(0, fi);
+    vec3 mp = sampleModelTex(uModelTex0, uModelCount0, fi);
     float px = mp.x * scale;
     float py = mp.y * scale;
     float pz = mp.z * scale;
@@ -148,7 +165,7 @@ const VERTEX_SHADER = /* glsl */ `
     float angle = time * spin;
     float cosA = cos(angle), sinA = sin(angle);
 
-    vec3 mp = sampleModel(1, fi);
+    vec3 mp = sampleModelTex(uModelTex1, uModelCount1, fi);
     float mx = mp.x * scale;
     float my = mp.y * scale;
     float mz = mp.z * scale;
@@ -333,7 +350,7 @@ const VERTEX_SHADER = /* glsl */ `
     float angle = time * spin;
     float cosA = cos(angle), sinA = sin(angle);
 
-    vec3 mp = sampleModel(2, fi);
+    vec3 mp = sampleModelTex(uModelTex2, uModelCount2, fi);
     float mx = mp.x * scale;
     float my = mp.y * scale;
     float mz = mp.z * scale;
@@ -503,7 +520,7 @@ const VERTEX_SHADER = /* glsl */ `
     } else if (int(fi) >= carStart) {
       float carFi = float(int(fi) - carStart);
       float spreadFi = floor(fract(carFi * 0.6180339887) * uModelCount3);
-      vec3 mp = sampleModel(3, spreadFi);
+      vec3 mp = sampleModelTex(uModelTex3, uModelCount3, spreadFi);
 
       float mx = mp.x * carScale;
       float my = mp.y * carScale;
@@ -588,8 +605,8 @@ const VERTEX_SHADER = /* glsl */ `
   /* ── main ─────────────────────────────────────────────── */
 
   void main() {
-    float fi = aIndex;
-    int i = int(fi);
+    float fi = float(gl_VertexID);
+    int i = gl_VertexID;
     int cnt = int(uCount);
 
     vec3 posA, colA;
@@ -605,10 +622,8 @@ const VERTEX_SHADER = /* glsl */ `
         uCtrlB[0], uCtrlB[1], uCtrlB[2], uCtrlB[3],
         uCtrlB[4], uCtrlB[5], uCtrlB[6], uCtrlB[7],
         posB, colB);
-      float tk = pow(uBlend, uMorphEase);
-      float t = tk / (tk + pow(1.0 - uBlend, uMorphEase));
-      finalPos = mix(posA, posB, t);
-      finalCol = mix(colA, colB, t);
+      finalPos = mix(posA, posB, uMorphT);
+      finalCol = mix(colA, colB, uMorphT);
     } else {
       finalPos = posA;
       finalCol = colA;
@@ -618,6 +633,9 @@ const VERTEX_SHADER = /* glsl */ `
     finalPos.x += sin(h) * uSeparation;
     finalPos.y += cos(h * 1.731) * uSeparation;
     finalPos.z += sin(h * 2.419) * uSeparation;
+    // Unused position attribute is kept so the linker keeps it active
+    // (computePreset uses gl_VertexID only); scale avoids affecting the scene.
+    finalPos.xy += position.xy * 1e-7;
 
     if (uCursorRepulsion > 0.0) {
       vec4 clipPos = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
@@ -627,8 +645,7 @@ const VERTEX_SHADER = /* glsl */ `
       float radius = 0.15;
       float falloff = exp(-d2 / (radius * radius));
       vec2 push = normalize(diff + vec2(0.0001)) * falloff * uCursorRepulsion * 8.0;
-      vec4 invMV = inverse(modelViewMatrix) * vec4(push, 0.0, 0.0);
-      finalPos += invMV.xyz;
+      finalPos += transpose(mat3(modelViewMatrix)) * vec3(push, 0.0);
     }
 
     if (uColorMode > 1.5) {
@@ -664,7 +681,7 @@ const VERTEX_SHADER = /* glsl */ `
     float dist = -mvPosition.z;
     vViewDist = dist;
 
-    float baseSize = aSize * uPointSize * uPixelRatio * (300.0 / dist);
+    float baseSize = uPointSize * uPixelRatio * (300.0 / dist);
     float coc = uDofAmount > 0.0
       ? abs(dist - uDofFocus) * uDofAmount * 0.01
       : 0.0;
@@ -676,17 +693,23 @@ const VERTEX_SHADER = /* glsl */ `
   }
 `;
 
-const FRAGMENT_SHADER = /* glsl */ `
-  varying vec3 vColor;
-  varying float vAlpha;
-  varying float vViewDist;
-  varying float vIntro;
-  varying float vPulse;
-  varying float vCoc;
+const FRAGMENT_SHADER = /* glsl */ `#version 300 es
+
+precision highp float;
+precision highp int;
+
+in vec3 vColor;
+  in float vAlpha;
+  in float vViewDist;
+  in float vIntro;
+  in float vPulse;
+  in float vCoc;
   uniform float uFogEnabled;
   uniform float uFogNear;
   uniform float uFogFar;
   uniform float uHdrIntensity;
+
+  out vec4 fragColor;
 
   void main() {
     float d = length(gl_PointCoord - vec2(0.5));
@@ -708,43 +731,78 @@ const FRAGMENT_SHADER = /* glsl */ `
 
     col *= uHdrIntensity;
 
-    gl_FragColor = vec4(col, alpha);
+    fragColor = vec4(col, alpha);
   }
 `;
 
 export class ParticleSystem {
-  private points: THREE.Points | null = null;
-  private geometry: THREE.BufferGeometry | null = null;
-  private material: THREE.ShaderMaterial | null = null;
+  private points: Points | null = null;
+  private geometry: BufferGeometry | null = null;
+  private material: RawShaderMaterial | null = null;
   private count = 0;
+  // Per-frame setter caches. NaN sentinels guarantee the first call after
+  // init() always writes, since `NaN !== anything` is always true.
+  private lastPointSize = NaN;
+  private lastIntroProgress = NaN;
+  private lastHdrIntensity = NaN;
+  private lastDofAmount = NaN;
+  private lastDofFocus = NaN;
+  private lastSeparation = NaN;
+  private lastCursorRepulsion = NaN;
+  private lastCarLaneOffset = NaN;
+  private lastCarLaneActivity = NaN;
+  private lastCarPosY = NaN;
+  private lastColorMode = NaN;
+  private lastMorphT = NaN;
+  private lastFogIntensity = NaN;
+  private lastFogNear = NaN;
+  private lastFogFar = NaN;
+  private lastPresetA = NaN;
+  private lastPresetB = NaN;
+  private lastBlend = NaN;
 
-  init(scene: THREE.Scene, count: number, pointSize: number) {
+  private resetSetterCaches() {
+    this.lastPointSize = NaN;
+    this.lastIntroProgress = NaN;
+    this.lastHdrIntensity = NaN;
+    this.lastDofAmount = NaN;
+    this.lastDofFocus = NaN;
+    this.lastSeparation = NaN;
+    this.lastCursorRepulsion = NaN;
+    this.lastCarLaneOffset = NaN;
+    this.lastCarLaneActivity = NaN;
+    this.lastCarPosY = NaN;
+    this.lastColorMode = NaN;
+    this.lastMorphT = NaN;
+    this.lastFogIntensity = NaN;
+    this.lastFogNear = NaN;
+    this.lastFogFar = NaN;
+    this.lastPresetA = NaN;
+    this.lastPresetB = NaN;
+    this.lastBlend = NaN;
+  }
+
+  init(scene: Scene, count: number, pointSize: number) {
     this.dispose(scene);
     this.count = count;
+    this.resetSetterCaches();
 
     const positions = new Float32Array(count * 3);
-    const indices = new Float32Array(count);
-    const sizes = new Float32Array(count);
     const randoms = new Float32Array(count);
-    sizes.fill(1.0);
     for (let i = 0; i < count; i++) {
-      indices[i] = i;
       randoms[i] = Math.random();
     }
 
-    this.geometry = new THREE.BufferGeometry();
-    this.geometry.setAttribute(
-      "position",
-      new THREE.BufferAttribute(positions, 3),
-    );
-    this.geometry.setAttribute("aIndex", new THREE.BufferAttribute(indices, 1));
-    this.geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
-    this.geometry.setAttribute(
-      "aRandom",
-      new THREE.BufferAttribute(randoms, 1),
-    );
+    this.geometry = new BufferGeometry();
+    this.geometry.setAttribute("position", new BufferAttribute(positions, 3));
+    this.geometry.setAttribute("aRandom", new BufferAttribute(randoms, 1));
 
-    this.material = new THREE.ShaderMaterial({
+    this.material = new RawShaderMaterial({
+      // RawShaderMaterial: no Three prefix chunks (lights, fog, map, etc.).
+      // Shaders carry their own `#version 300 es`, precisions, `position`
+      // attribute (kept active via `_keepVertexAttribsActive`), and matrix
+      // uniforms. `gl_VertexID` still drives particle identity (no index VBO).
+      glslVersion: GLSL3,
       vertexShader: VERTEX_SHADER,
       fragmentShader: FRAGMENT_SHADER,
       uniforms: {
@@ -769,7 +827,7 @@ export class ParticleSystem {
         uCarLaneActivity: { value: 0 },
         uCarPosY: { value: 0 },
         uColorMode: { value: 0.0 },
-        uMorphEase: { value: 2.0 },
+        uMorphT: { value: 0 },
         uCtrlA: { value: [0, 0, 0, 0, 0, 0, 0, 0] },
         uCtrlB: { value: [0, 0, 0, 0, 0, 0, 0, 0] },
         uModelCount0: { value: 0 },
@@ -777,81 +835,109 @@ export class ParticleSystem {
         uModelCount2: { value: 0 },
         uModelCount3: { value: 0 },
         uModelTex0: {
-          value: new THREE.DataTexture(
+          value: new DataTexture(
             new Float32Array(4),
             1,
             1,
-            THREE.RGBAFormat,
-            THREE.FloatType,
+            RGBAFormat,
+            FloatType,
           ),
         },
         uModelTex1: {
-          value: new THREE.DataTexture(
+          value: new DataTexture(
             new Float32Array(4),
             1,
             1,
-            THREE.RGBAFormat,
-            THREE.FloatType,
+            RGBAFormat,
+            FloatType,
           ),
         },
         uModelTex2: {
-          value: new THREE.DataTexture(
+          value: new DataTexture(
             new Float32Array(4),
             1,
             1,
-            THREE.RGBAFormat,
-            THREE.FloatType,
+            RGBAFormat,
+            FloatType,
           ),
         },
         uModelTex3: {
-          value: new THREE.DataTexture(
+          value: new DataTexture(
             new Float32Array(4),
             1,
             1,
-            THREE.RGBAFormat,
-            THREE.FloatType,
+            RGBAFormat,
+            FloatType,
           ),
         },
       },
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: AdditiveBlending,
       depthWrite: false,
+      depthTest: false,
     });
 
-    this.points = new THREE.Points(this.geometry, this.material);
+    this.points = new Points(this.geometry, this.material);
     this.points.frustumCulled = false;
     scene.add(this.points);
   }
 
   setPointSize(size: number) {
-    if (this.material) this.material.uniforms.uPointSize.value = size;
+    if (!this.material || size === this.lastPointSize) return;
+    this.lastPointSize = size;
+    this.material.uniforms.uPointSize.value = size;
   }
 
   setIntroProgress(value: number) {
-    if (this.material) this.material.uniforms.uIntroProgress.value = value;
+    if (!this.material || value === this.lastIntroProgress) return;
+    this.lastIntroProgress = value;
+    this.material.uniforms.uIntroProgress.value = value;
   }
 
   setFog(intensity: number, near: number, far: number) {
-    if (this.material) {
-      this.material.uniforms.uFogEnabled.value = intensity;
-      this.material.uniforms.uFogNear.value = near;
-      this.material.uniforms.uFogFar.value = far;
+    if (!this.material) return;
+    if (
+      intensity === this.lastFogIntensity &&
+      near === this.lastFogNear &&
+      far === this.lastFogFar
+    ) {
+      return;
     }
+    this.lastFogIntensity = intensity;
+    this.lastFogNear = near;
+    this.lastFogFar = far;
+    this.material.uniforms.uFogEnabled.value = intensity;
+    this.material.uniforms.uFogNear.value = near;
+    this.material.uniforms.uFogFar.value = far;
   }
 
   setHdrIntensity(value: number) {
-    if (this.material) this.material.uniforms.uHdrIntensity.value = value;
+    if (!this.material || value === this.lastHdrIntensity) return;
+    this.lastHdrIntensity = value;
+    this.material.uniforms.uHdrIntensity.value = value;
   }
 
   setDof(amount: number, focus: number) {
-    if (this.material) {
-      this.material.uniforms.uDofAmount.value = amount;
-      this.material.uniforms.uDofFocus.value = focus;
-    }
+    if (!this.material) return;
+    if (amount === this.lastDofAmount && focus === this.lastDofFocus) return;
+    this.lastDofAmount = amount;
+    this.lastDofFocus = focus;
+    this.material.uniforms.uDofAmount.value = amount;
+    this.material.uniforms.uDofFocus.value = focus;
   }
 
   setPresets(presetA: number, presetB: number, blend: number) {
     if (!this.material) return;
+    if (
+      presetA === this.lastPresetA &&
+      presetB === this.lastPresetB &&
+      blend === this.lastBlend
+    ) {
+      return;
+    }
+    this.lastPresetA = presetA;
+    this.lastPresetB = presetB;
+    this.lastBlend = blend;
     this.material.uniforms.uPresetA.value = presetA;
     this.material.uniforms.uPresetB.value = presetB;
     this.material.uniforms.uBlend.value = blend;
@@ -862,7 +948,9 @@ export class ParticleSystem {
   }
 
   setSeparation(value: number) {
-    if (this.material) this.material.uniforms.uSeparation.value = value;
+    if (!this.material || value === this.lastSeparation) return;
+    this.lastSeparation = value;
+    this.material.uniforms.uSeparation.value = value;
   }
 
   setMousePos(x: number, y: number) {
@@ -874,27 +962,39 @@ export class ParticleSystem {
   }
 
   setCursorRepulsion(value: number) {
-    if (this.material) this.material.uniforms.uCursorRepulsion.value = value;
+    if (!this.material || value === this.lastCursorRepulsion) return;
+    this.lastCursorRepulsion = value;
+    this.material.uniforms.uCursorRepulsion.value = value;
   }
 
   setCarLaneOffset(value: number) {
-    if (this.material) this.material.uniforms.uCarLaneOffset.value = value;
+    if (!this.material || value === this.lastCarLaneOffset) return;
+    this.lastCarLaneOffset = value;
+    this.material.uniforms.uCarLaneOffset.value = value;
   }
 
   setCarLaneActivity(value: number) {
-    if (this.material) this.material.uniforms.uCarLaneActivity.value = value;
+    if (!this.material || value === this.lastCarLaneActivity) return;
+    this.lastCarLaneActivity = value;
+    this.material.uniforms.uCarLaneActivity.value = value;
   }
 
   setCarPosY(value: number) {
-    if (this.material) this.material.uniforms.uCarPosY.value = value;
+    if (!this.material || value === this.lastCarPosY) return;
+    this.lastCarPosY = value;
+    this.material.uniforms.uCarPosY.value = value;
   }
 
   setColorMode(value: number) {
-    if (this.material) this.material.uniforms.uColorMode.value = value;
+    if (!this.material || value === this.lastColorMode) return;
+    this.lastColorMode = value;
+    this.material.uniforms.uColorMode.value = value;
   }
 
-  setMorphEase(value: number) {
-    if (this.material) this.material.uniforms.uMorphEase.value = value;
+  setMorphT(value: number) {
+    if (!this.material || value === this.lastMorphT) return;
+    this.lastMorphT = value;
+    this.material.uniforms.uMorphT.value = value;
   }
 
   setControls(ctrlA: number[], ctrlB: number[]) {
@@ -907,11 +1007,7 @@ export class ParticleSystem {
     }
   }
 
-  setModelTexture(
-    slot: number,
-    texture: THREE.DataTexture,
-    pointCount: number,
-  ) {
+  setModelTexture(slot: number, texture: DataTexture, pointCount: number) {
     if (!this.material) return;
     if (slot === 0) {
       this.material.uniforms.uModelTex0.value = texture;
@@ -928,7 +1024,7 @@ export class ParticleSystem {
     }
   }
 
-  dispose(scene?: THREE.Scene) {
+  dispose(scene?: Scene) {
     if (this.points && scene) scene.remove(this.points);
     this.geometry?.dispose();
     this.material?.dispose();
