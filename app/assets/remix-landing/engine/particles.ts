@@ -796,10 +796,10 @@ export class ParticleSystem {
     this.geometry.setAttribute("aRandom", new BufferAttribute(randoms, 1));
 
     this.material = new RawShaderMaterial({
-      // RawShaderMaterial: no Three prefix chunks (lights, fog, map, etc.).
-      // Three emits the GLSL version directive from `glslVersion: GLSL3`;
-      // shaders define their own precisions, `position` attribute, and matrix
-      // uniforms. `gl_VertexID` still drives particle identity (no index VBO).
+      // RawShaderMaterial: no default prefix chunks (lights, fog, maps). With
+      // `glslVersion: GLSL3`, Three still prepends `#version 300 es` and a few
+      // defines — do not repeat `#version` in the sources. Precisions + matrix
+      // uniforms stay explicit here; gl_VertexID drives particle identity.
       glslVersion: GLSL3,
       vertexShader: VERTEX_SHADER,
       fragmentShader: FRAGMENT_SHADER,
