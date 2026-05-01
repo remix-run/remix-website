@@ -14,8 +14,7 @@ import {
 const MODEL_TEX_W = 512;
 const MODEL_TEX_H = 256;
 
-const VERTEX_SHADER = /* glsl */ `#version 300 es
-
+const VERTEX_SHADER = /* glsl */ `
 precision highp float;
 precision highp int;
 precision highp sampler2D;
@@ -693,8 +692,7 @@ out vec3 vColor;
   }
 `;
 
-const FRAGMENT_SHADER = /* glsl */ `#version 300 es
-
+const FRAGMENT_SHADER = /* glsl */ `
 precision highp float;
 precision highp int;
 
@@ -798,10 +796,10 @@ export class ParticleSystem {
     this.geometry.setAttribute("aRandom", new BufferAttribute(randoms, 1));
 
     this.material = new RawShaderMaterial({
-      // RawShaderMaterial: no Three prefix chunks (lights, fog, map, etc.).
-      // Shaders carry their own `#version 300 es`, precisions, `position`
-      // attribute (kept active via `_keepVertexAttribsActive`), and matrix
-      // uniforms. `gl_VertexID` still drives particle identity (no index VBO).
+      // RawShaderMaterial: no default prefix chunks (lights, fog, maps). With
+      // `glslVersion: GLSL3`, Three still prepends `#version 300 es` and a few
+      // defines — do not repeat `#version` in the sources. Precisions + matrix
+      // uniforms stay explicit here; gl_VertexID drives particle identity.
       glslVersion: GLSL3,
       vertexShader: VERTEX_SHADER,
       fragmentShader: FRAGMENT_SHADER,
