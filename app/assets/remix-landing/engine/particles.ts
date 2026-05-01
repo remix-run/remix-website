@@ -723,10 +723,52 @@ export class ParticleSystem {
   private geometry: BufferGeometry | null = null;
   private material: ShaderMaterial | null = null;
   private count = 0;
+  // Per-frame setter caches. NaN sentinels guarantee the first call after
+  // init() always writes, since `NaN !== anything` is always true.
+  private lastPointSize = NaN;
+  private lastIntroProgress = NaN;
+  private lastHdrIntensity = NaN;
+  private lastDofAmount = NaN;
+  private lastDofFocus = NaN;
+  private lastSeparation = NaN;
+  private lastCursorRepulsion = NaN;
+  private lastCarLaneOffset = NaN;
+  private lastCarLaneActivity = NaN;
+  private lastCarPosY = NaN;
+  private lastColorMode = NaN;
+  private lastMorphT = NaN;
+  private lastFogIntensity = NaN;
+  private lastFogNear = NaN;
+  private lastFogFar = NaN;
+  private lastPresetA = NaN;
+  private lastPresetB = NaN;
+  private lastBlend = NaN;
+
+  private resetSetterCaches() {
+    this.lastPointSize = NaN;
+    this.lastIntroProgress = NaN;
+    this.lastHdrIntensity = NaN;
+    this.lastDofAmount = NaN;
+    this.lastDofFocus = NaN;
+    this.lastSeparation = NaN;
+    this.lastCursorRepulsion = NaN;
+    this.lastCarLaneOffset = NaN;
+    this.lastCarLaneActivity = NaN;
+    this.lastCarPosY = NaN;
+    this.lastColorMode = NaN;
+    this.lastMorphT = NaN;
+    this.lastFogIntensity = NaN;
+    this.lastFogNear = NaN;
+    this.lastFogFar = NaN;
+    this.lastPresetA = NaN;
+    this.lastPresetB = NaN;
+    this.lastBlend = NaN;
+  }
 
   init(scene: Scene, count: number, pointSize: number) {
     this.dispose(scene);
     this.count = count;
+    this.resetSetterCaches();
 
     const positions = new Float32Array(count * 3);
     const indices = new Float32Array(count);
@@ -828,34 +870,61 @@ FloatType,
   }
 
   setPointSize(size: number) {
-    if (this.material) this.material.uniforms.uPointSize.value = size;
+    if (!this.material || size === this.lastPointSize) return;
+    this.lastPointSize = size;
+    this.material.uniforms.uPointSize.value = size;
   }
 
   setIntroProgress(value: number) {
-    if (this.material) this.material.uniforms.uIntroProgress.value = value;
+    if (!this.material || value === this.lastIntroProgress) return;
+    this.lastIntroProgress = value;
+    this.material.uniforms.uIntroProgress.value = value;
   }
 
   setFog(intensity: number, near: number, far: number) {
-    if (this.material) {
-      this.material.uniforms.uFogEnabled.value = intensity;
-      this.material.uniforms.uFogNear.value = near;
-      this.material.uniforms.uFogFar.value = far;
+    if (!this.material) return;
+    if (
+      intensity === this.lastFogIntensity &&
+      near === this.lastFogNear &&
+      far === this.lastFogFar
+    ) {
+      return;
     }
+    this.lastFogIntensity = intensity;
+    this.lastFogNear = near;
+    this.lastFogFar = far;
+    this.material.uniforms.uFogEnabled.value = intensity;
+    this.material.uniforms.uFogNear.value = near;
+    this.material.uniforms.uFogFar.value = far;
   }
 
   setHdrIntensity(value: number) {
-    if (this.material) this.material.uniforms.uHdrIntensity.value = value;
+    if (!this.material || value === this.lastHdrIntensity) return;
+    this.lastHdrIntensity = value;
+    this.material.uniforms.uHdrIntensity.value = value;
   }
 
   setDof(amount: number, focus: number) {
-    if (this.material) {
-      this.material.uniforms.uDofAmount.value = amount;
-      this.material.uniforms.uDofFocus.value = focus;
-    }
+    if (!this.material) return;
+    if (amount === this.lastDofAmount && focus === this.lastDofFocus) return;
+    this.lastDofAmount = amount;
+    this.lastDofFocus = focus;
+    this.material.uniforms.uDofAmount.value = amount;
+    this.material.uniforms.uDofFocus.value = focus;
   }
 
   setPresets(presetA: number, presetB: number, blend: number) {
     if (!this.material) return;
+    if (
+      presetA === this.lastPresetA &&
+      presetB === this.lastPresetB &&
+      blend === this.lastBlend
+    ) {
+      return;
+    }
+    this.lastPresetA = presetA;
+    this.lastPresetB = presetB;
+    this.lastBlend = blend;
     this.material.uniforms.uPresetA.value = presetA;
     this.material.uniforms.uPresetB.value = presetB;
     this.material.uniforms.uBlend.value = blend;
@@ -866,7 +935,9 @@ FloatType,
   }
 
   setSeparation(value: number) {
-    if (this.material) this.material.uniforms.uSeparation.value = value;
+    if (!this.material || value === this.lastSeparation) return;
+    this.lastSeparation = value;
+    this.material.uniforms.uSeparation.value = value;
   }
 
   setMousePos(x: number, y: number) {
@@ -878,27 +949,39 @@ FloatType,
   }
 
   setCursorRepulsion(value: number) {
-    if (this.material) this.material.uniforms.uCursorRepulsion.value = value;
+    if (!this.material || value === this.lastCursorRepulsion) return;
+    this.lastCursorRepulsion = value;
+    this.material.uniforms.uCursorRepulsion.value = value;
   }
 
   setCarLaneOffset(value: number) {
-    if (this.material) this.material.uniforms.uCarLaneOffset.value = value;
+    if (!this.material || value === this.lastCarLaneOffset) return;
+    this.lastCarLaneOffset = value;
+    this.material.uniforms.uCarLaneOffset.value = value;
   }
 
   setCarLaneActivity(value: number) {
-    if (this.material) this.material.uniforms.uCarLaneActivity.value = value;
+    if (!this.material || value === this.lastCarLaneActivity) return;
+    this.lastCarLaneActivity = value;
+    this.material.uniforms.uCarLaneActivity.value = value;
   }
 
   setCarPosY(value: number) {
-    if (this.material) this.material.uniforms.uCarPosY.value = value;
+    if (!this.material || value === this.lastCarPosY) return;
+    this.lastCarPosY = value;
+    this.material.uniforms.uCarPosY.value = value;
   }
 
   setColorMode(value: number) {
-    if (this.material) this.material.uniforms.uColorMode.value = value;
+    if (!this.material || value === this.lastColorMode) return;
+    this.lastColorMode = value;
+    this.material.uniforms.uColorMode.value = value;
   }
 
   setMorphT(value: number) {
-    if (this.material) this.material.uniforms.uMorphT.value = value;
+    if (!this.material || value === this.lastMorphT) return;
+    this.lastMorphT = value;
+    this.material.uniforms.uMorphT.value = value;
   }
 
   setControls(ctrlA: number[], ctrlB: number[]) {
