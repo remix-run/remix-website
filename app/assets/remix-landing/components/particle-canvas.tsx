@@ -307,7 +307,6 @@ export function ParticleCanvas(handle: Handle) {
       const effectiveMouseNormX = reduceMotion ? 0 : mouseNormX;
       const effectiveMouseNormY = reduceMotion ? 0 : mouseNormY;
       particles.setMousePos(effectiveMouseNormX, -effectiveMouseNormY);
-      particles.setMorphEase(currentProps.settings.morphEase);
       particles.setColorMode(currentProps.settings.colorMode);
       particles.setDof(
         currentProps.settings.dofAmount,
@@ -362,6 +361,17 @@ export function ParticleCanvas(handle: Handle) {
         presetData.shaderInts[toIndex],
         blend,
       );
+      // Hoisted from the vertex shader: when blending, t is constant across all
+      // particles, so do the pow()/divide once per frame on the CPU instead of
+      // per vertex on the GPU. When blend < 0.001 the shader takes the
+      // early-exit branch and ignores uMorphT, so any value is safe.
+      let morphT = 0;
+      if (blend > 0.001) {
+        const ease = currentProps.settings.morphEase;
+        const tk = Math.pow(blend, ease);
+        morphT = tk / (tk + Math.pow(1 - blend, ease));
+      }
+      particles.setMorphT(morphT);
       particles.setControls(scratchControlsA, scratchControlsB);
       particles.setSeparation(separation);
 

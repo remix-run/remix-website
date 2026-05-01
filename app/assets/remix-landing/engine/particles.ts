@@ -41,7 +41,7 @@ const VERTEX_SHADER = /* glsl */ `
   uniform float uCarLaneOffset;
   uniform float uCarLaneActivity;
   uniform float uCarPosY;
-  uniform float uMorphEase;
+  uniform float uMorphT;
   uniform float uColorMode;
   uniform float uCtrlA[8];
   uniform float uCtrlB[8];
@@ -615,10 +615,8 @@ const VERTEX_SHADER = /* glsl */ `
         uCtrlB[0], uCtrlB[1], uCtrlB[2], uCtrlB[3],
         uCtrlB[4], uCtrlB[5], uCtrlB[6], uCtrlB[7],
         posB, colB);
-      float tk = pow(uBlend, uMorphEase);
-      float t = tk / (tk + pow(1.0 - uBlend, uMorphEase));
-      finalPos = mix(posA, posB, t);
-      finalCol = mix(colA, colB, t);
+      finalPos = mix(posA, posB, uMorphT);
+      finalCol = mix(colA, colB, uMorphT);
     } else {
       finalPos = posA;
       finalCol = colA;
@@ -637,8 +635,7 @@ const VERTEX_SHADER = /* glsl */ `
       float radius = 0.15;
       float falloff = exp(-d2 / (radius * radius));
       vec2 push = normalize(diff + vec2(0.0001)) * falloff * uCursorRepulsion * 8.0;
-      vec4 invMV = inverse(modelViewMatrix) * vec4(push, 0.0, 0.0);
-      finalPos += invMV.xyz;
+      finalPos += transpose(mat3(modelViewMatrix)) * vec3(push, 0.0);
     }
 
     if (uColorMode > 1.5) {
@@ -779,7 +776,7 @@ export class ParticleSystem {
         uCarLaneActivity: { value: 0 },
         uCarPosY: { value: 0 },
         uColorMode: { value: 0.0 },
-        uMorphEase: { value: 2.0 },
+        uMorphT: { value: 0 },
         uCtrlA: { value: [0, 0, 0, 0, 0, 0, 0, 0] },
         uCtrlB: { value: [0, 0, 0, 0, 0, 0, 0, 0] },
         uModelCount0: { value: 0 },
@@ -903,8 +900,8 @@ FloatType,
     if (this.material) this.material.uniforms.uColorMode.value = value;
   }
 
-  setMorphEase(value: number) {
-    if (this.material) this.material.uniforms.uMorphEase.value = value;
+  setMorphT(value: number) {
+    if (this.material) this.material.uniforms.uMorphT.value = value;
   }
 
   setControls(ctrlA: number[], ctrlB: number[]) {
