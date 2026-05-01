@@ -8,9 +8,13 @@ import {
   Scene,
   type Texture,
 } from "three";
-import { BAKE_TEX_H, BAKE_TEX_W } from "./rest-baker";
+import { BAKE_TEX_W, computeBakeTexHeight } from "./rest-baker";
 
-const VERTEX_SHADER = /* glsl */ `
+// Built per-init() so the bake-texture height (which depends on particleCount)
+// can be inlined as a literal — saves a uniform fetch per vertex and keeps the
+// uv math constant-foldable by the GLSL compiler.
+function buildVertexShader(bakeTexHeight: number): string {
+  return /* glsl */ `
 precision highp float;
 precision highp int;
 precision highp sampler2D;
@@ -77,7 +81,7 @@ void main() {
   // layout the bake FS writes via gl_FragCoord.
   vec2 uv = vec2(
     (mod(fi, ${BAKE_TEX_W}.0) + 0.5) / ${BAKE_TEX_W}.0,
-    (floor(fi / ${BAKE_TEX_W}.0) + 0.5) / ${BAKE_TEX_H}.0
+    (floor(fi / ${BAKE_TEX_W}.0) + 0.5) / ${bakeTexHeight}.0
   );
 
   vec3 posA = texture(uPosA, uv).xyz;
@@ -157,6 +161,7 @@ void main() {
   vAlpha = smoothstep(500.0, 50.0, dist);
 }
 `;
+}
 
 const FRAGMENT_SHADER = /* glsl */ `
 precision highp float;
@@ -257,7 +262,7 @@ export class ParticleSystem {
       // pass (see RestBaker). No preset code, no model-texture sampling, no
       // car/control uniforms — just sample two MRT textures and mix.
       glslVersion: GLSL3,
-      vertexShader: VERTEX_SHADER,
+      vertexShader: buildVertexShader(computeBakeTexHeight(count)),
       fragmentShader: FRAGMENT_SHADER,
       uniforms: {
         uPointSize: { value: pointSize },
