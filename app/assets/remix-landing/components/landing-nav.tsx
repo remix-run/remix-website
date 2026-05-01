@@ -1,6 +1,7 @@
 import { css, addEventListeners, navigate, on, type Handle } from "remix/ui";
 import * as popover from "remix/ui/popover";
 import { routes } from "../../../routes";
+import { assetPaths } from "../../../utils/asset-paths";
 import { colors } from "../styles/tokens";
 import { isEditableKeyTarget } from "../utils/keyboard";
 import { clamp01 } from "../utils/math";
@@ -299,16 +300,12 @@ export function LandingNav(handle: Handle) {
               {menuOpen ? (
                 <svg
                   aria-hidden="true"
-                  viewBox="0 0 12 12"
+                  viewBox="0 0 14 14"
                   width="1em"
                   height="1em"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  style={{ display: "block" }}
+                  mix={css({ display: "block" })}
                 >
-                  <path d="M2 2l8 8M10 2l-8 8" />
+                  <use href={`${assetPaths.iconsSprite}#x-mark`} />
                 </svg>
               ) : (
                 "menu"
