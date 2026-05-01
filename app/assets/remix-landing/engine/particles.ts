@@ -15,7 +15,6 @@ const MODEL_TEX_H = 256;
 
 const VERTEX_SHADER = /* glsl */ `
   attribute float aIndex;
-  attribute float aSize;
   attribute float aRandom;
 
   varying vec3 vColor;
@@ -671,7 +670,7 @@ const VERTEX_SHADER = /* glsl */ `
     float dist = -mvPosition.z;
     vViewDist = dist;
 
-    float baseSize = aSize * uPointSize * uPixelRatio * (300.0 / dist);
+    float baseSize = uPointSize * uPixelRatio * (300.0 / dist);
     float coc = uDofAmount > 0.0
       ? abs(dist - uDofFocus) * uDofAmount * 0.01
       : 0.0;
@@ -731,9 +730,7 @@ export class ParticleSystem {
 
     const positions = new Float32Array(count * 3);
     const indices = new Float32Array(count);
-    const sizes = new Float32Array(count);
     const randoms = new Float32Array(count);
-    sizes.fill(1.0);
     for (let i = 0; i < count; i++) {
       indices[i] = i;
       randoms[i] = Math.random();
@@ -745,7 +742,6 @@ export class ParticleSystem {
       new BufferAttribute(positions, 3),
     );
     this.geometry.setAttribute("aIndex", new BufferAttribute(indices, 1));
-    this.geometry.setAttribute("aSize", new BufferAttribute(sizes, 1));
     this.geometry.setAttribute(
       "aRandom",
       new BufferAttribute(randoms, 1),
