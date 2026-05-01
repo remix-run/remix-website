@@ -26,6 +26,8 @@ const SOCIAL_LINKS = [
   },
 ] as const;
 
+const MOBILE_BREAKPOINT_PX = 880;
+
 const footerShellStyles = css({
   padding: "40px 24px 24px",
 });
@@ -36,6 +38,9 @@ const footerContentStyles = css({
   alignItems: "flex-end",
   justifyContent: "flex-end",
   gap: "12px",
+  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    alignItems: "center",
+  },
 });
 
 const brandRowStyles = css({
@@ -45,6 +50,9 @@ const brandRowStyles = css({
   gap: "24px",
   width: "100%",
   flexWrap: "wrap",
+  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    justifyContent: "center",
+  },
 });
 
 const wordmarkStyles = css({
@@ -58,6 +66,9 @@ const socialLinksStyles = css({
   alignItems: "center",
   justifyContent: "flex-end",
   gap: "16px",
+  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    justifyContent: "center",
+  },
 });
 
 const socialLinkStyles = css({
@@ -91,6 +102,10 @@ const legalStyles = css({
   textTransform: "uppercase",
   color: colors.fg,
   whiteSpace: "nowrap",
+  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+    alignItems: "center",
+    textAlign: "center",
+  },
 });
 
 const legalTextStyles = css({

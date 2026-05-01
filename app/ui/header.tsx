@@ -3,12 +3,12 @@ import { MobileMenu } from "../assets/mobile-menu";
 import { WordmarkLink } from "../assets/wordmark-link";
 import { routes } from "../routes";
 
-const LINKS: Array<{ to: string; label: string }> = [
-  { to: "https://github.com/remix-run/remix", label: "GitHub" },
-  { to: "https://api.remix.run", label: "Docs" },
+const LINKS: Array<{ to: string; label: string; document?: boolean }> = [
+  { to: "https://github.com/remix-run/remix", label: "GitHub", document: true },
+  { to: "https://api.remix.run", label: "Docs", document: true },
   { to: routes.blog.href(), label: "Blog" },
   { to: routes.jam.y2025.index.href(), label: "Jam" },
-  { to: "https://shop.remix.run", label: "Store" },
+  { to: "https://shop.remix.run", label: "Store", document: true },
 ];
 
 export function Header() {
@@ -25,7 +25,7 @@ export function Header() {
 
         <nav class="hidden items-center gap-6 md:flex" aria-label="Main">
           {LINKS.map((link) => (
-            <HeaderLink key={link.to} to={link.to}>
+            <HeaderLink key={link.to} to={link.to} document={link.document}>
               {link.label}
             </HeaderLink>
           ))}
@@ -33,7 +33,7 @@ export function Header() {
 
         <MobileMenu class="-mt-3 md:hidden">
           {LINKS.map((link) => (
-            <HeaderLink key={link.to} to={link.to}>
+            <HeaderLink key={link.to} to={link.to} document={link.document}>
               {link.label}
             </HeaderLink>
           ))}
@@ -44,9 +44,10 @@ export function Header() {
 }
 
 function HeaderLink() {
-  return (props: { to: string; children: string }) => (
+  return (props: { to: string; document?: boolean; children: string }) => (
     <a
       href={props.to}
+      rmx-document={props.document ? "" : undefined}
       class={cx(
         "text-rmx-primary text-sm font-semibold leading-4 tracking-[0.01em] opacity-80 hover:opacity-100",
       )}
