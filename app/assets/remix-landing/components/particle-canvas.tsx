@@ -285,6 +285,7 @@ export function ParticleCanvas(handle: Handle) {
 
       const now = performance.now();
       const time = now / 1000 - startTime;
+      const settings = currentProps.settings;
       const presets = currentProps.presets;
       const presetData = getPresetRuntimeData(presets);
       const morphValue = currentProps.morphValueRef.current;
@@ -297,21 +298,16 @@ export function ParticleCanvas(handle: Handle) {
       }
       const visualTime = frozenTime ?? time;
 
-      engine.updateSettings(currentProps.settings);
+      engine.updateSettings(settings);
 
       const screenScale = engine.getScreenScale();
-      particles.setPointSize(currentProps.settings.pointSize);
-      particles.setHdrIntensity(
-        currentProps.settings.hdrIntensity * screenScale,
-      );
+      particles.setPointSize(settings.pointSize);
+      particles.setHdrIntensity(settings.hdrIntensity * screenScale);
       const effectiveMouseNormX = reduceMotion ? 0 : mouseNormX;
       const effectiveMouseNormY = reduceMotion ? 0 : mouseNormY;
       particles.setMousePos(effectiveMouseNormX, -effectiveMouseNormY);
-      particles.setColorMode(currentProps.settings.colorMode);
-      particles.setDof(
-        currentProps.settings.dofAmount,
-        currentProps.settings.dofFocus,
-      );
+      particles.setColorMode(settings.colorMode);
+      particles.setDof(settings.dofAmount, settings.dofFocus);
       const introTime = Math.max(0, visualTime - PARTICLE_INTRO_DELAY_S);
       particles.setIntroProgress(
         reduceMotion ? 1.5 : Math.min(introTime / 3.5, 1.5),
@@ -367,7 +363,7 @@ export function ParticleCanvas(handle: Handle) {
       // early-exit branch and ignores uMorphT, so any value is safe.
       let morphT = 0;
       if (blend > 0.001) {
-        const ease = currentProps.settings.morphEase;
+        const ease = settings.morphEase;
         const tk = Math.pow(blend, ease);
         morphT = tk / (tk + Math.pow(1 - blend, ease));
       }
@@ -380,16 +376,13 @@ export function ParticleCanvas(handle: Handle) {
       const easedBlend = blend * blend * (3 - 2 * blend);
       const effectiveTrail =
         (1 - easedBlend) *
-          (overridesA?.trailIntensity ?? currentProps.settings.trailIntensity) +
-        easedBlend *
-          (overridesB?.trailIntensity ?? currentProps.settings.trailIntensity);
+          (overridesA?.trailIntensity ?? settings.trailIntensity) +
+        easedBlend * (overridesB?.trailIntensity ?? settings.trailIntensity);
       const effectiveRepulsion =
         (1 - easedBlend) *
-          (overridesA?.cursorRepulsion ??
-            currentProps.settings.cursorRepulsion) +
+          (overridesA?.cursorRepulsion ?? settings.cursorRepulsion) +
         easedBlend *
-          (overridesB?.cursorRepulsion ??
-            currentProps.settings.cursorRepulsion);
+          (overridesB?.cursorRepulsion ?? settings.cursorRepulsion);
 
       particles.setCursorRepulsion(effectiveRepulsion);
 
