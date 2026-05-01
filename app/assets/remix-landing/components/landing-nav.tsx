@@ -269,6 +269,7 @@ export function LandingNav(handle: Handle) {
             <a
               key={item.key}
               href={item.href}
+              rmx-document={item.external ? "" : undefined}
               mix={[navItemStyles, navItemClick(item)]}
             >
               [{item.key}] {item.label}
@@ -311,6 +312,7 @@ export function LandingNav(handle: Handle) {
                 <a
                   key={item.key}
                   href={item.href}
+                  rmx-document={item.external ? "" : undefined}
                   mix={[
                     navItemStyles,
                     mobileMenuItemStyles,
