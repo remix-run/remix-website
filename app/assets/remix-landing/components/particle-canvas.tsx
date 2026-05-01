@@ -623,7 +623,11 @@ export function ParticleCanvas(handle: Handle) {
             -strafeCap,
             strafeCap,
           );
-          parallaxX = lerp(parallaxUncapped, parallaxRacetrack, racetrackRoadLock);
+          parallaxX = lerp(
+            parallaxUncapped,
+            parallaxRacetrack,
+            racetrackRoadLock,
+          );
         }
         engine.camera.position.x += parallaxX;
       }
