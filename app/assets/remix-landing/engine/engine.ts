@@ -1,4 +1,11 @@
-import * as THREE from "three";
+import {
+  Color,
+  PerspectiveCamera,
+  Scene,
+  Vector2,
+  Vector3,
+  WebGLRenderer,
+} from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
@@ -15,10 +22,10 @@ function screenScale(width: number): number {
 // look-at target and an enabled flag; the real addon pulled in pointer/touch/
 // wheel gesture handlers and damping logic that the landing never used.
 class CameraTargetControls {
-  target = new THREE.Vector3();
+  target = new Vector3();
   enabled = true;
 
-  constructor(private camera: THREE.PerspectiveCamera) {}
+  constructor(private camera: PerspectiveCamera) {}
 
   update() {
     this.camera.lookAt(this.target);
@@ -28,9 +35,9 @@ class CameraTargetControls {
 }
 
 export class Engine {
-  renderer!: THREE.WebGLRenderer;
-  scene!: THREE.Scene;
-  camera!: THREE.PerspectiveCamera;
+  renderer!: WebGLRenderer;
+  scene!: Scene;
+  camera!: PerspectiveCamera;
   controls!: CameraTargetControls;
   composer!: EffectComposer;
   afterImagePass!: AfterimagePass;
@@ -46,9 +53,9 @@ export class Engine {
     container: HTMLElement,
     settings: SystemSettings,
   ) {
-    this.scene = new THREE.Scene();
+    this.scene = new Scene();
 
-    this.camera = new THREE.PerspectiveCamera(
+    this.camera = new PerspectiveCamera(
       settings.cameraFov,
       container.clientWidth / container.clientHeight,
       0.1,
@@ -56,14 +63,14 @@ export class Engine {
     );
     this.camera.position.set(0, 30, 80);
 
-    this.renderer = new THREE.WebGLRenderer({
+    this.renderer = new WebGLRenderer({
       canvas,
       antialias: false,
       alpha: false,
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(container.clientWidth, container.clientHeight);
-    this.renderer.setClearColor(new THREE.Color(settings.backgroundColor));
+    this.renderer.setClearColor(new Color(settings.backgroundColor));
 
     this.controls = new CameraTargetControls(this.camera);
 
@@ -85,7 +92,7 @@ export class Engine {
 
     this.containerWidth = container.clientWidth;
     const s = screenScale(this.containerWidth);
-    const bloomSize = new THREE.Vector2(
+    const bloomSize = new Vector2(
       container.clientWidth,
       container.clientHeight,
     );
@@ -122,7 +129,7 @@ export class Engine {
 
   updateSettings(settings: SystemSettings) {
     const s = screenScale(this.containerWidth);
-    this.renderer.setClearColor(new THREE.Color(settings.backgroundColor));
+    this.renderer.setClearColor(new Color(settings.backgroundColor));
     this.afterImagePass.uniforms["damp"].value = settings.trailIntensity;
     this.bloomPass.strength = settings.bloomStrength * s;
     this.bloomPass.threshold = settings.bloomThreshold;
