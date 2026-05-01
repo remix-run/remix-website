@@ -47,6 +47,9 @@ export class Engine {
   private resizeObserver: ResizeObserver | null = null;
   private containerWidth = 1440;
   private startTime = 0;
+  private lastAppliedSettings: SystemSettings | null = null;
+  private lastAppliedWidth = -1;
+  private clearColor = new Color();
 
   init(
     canvas: HTMLCanvasElement,
@@ -70,7 +73,8 @@ export class Engine {
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(container.clientWidth, container.clientHeight);
-    this.renderer.setClearColor(new Color(settings.backgroundColor));
+    this.clearColor.set(settings.backgroundColor);
+    this.renderer.setClearColor(this.clearColor);
 
     this.controls = new CameraTargetControls(this.camera);
 
@@ -128,9 +132,25 @@ export class Engine {
   }
 
   updateSettings(settings: SystemSettings) {
+    // Called every frame from the animate loop. Most frames see the same
+    // settings reference and the same container width, so guard the body to
+    // skip a per-frame Color allocation, a `setClearColor` round-trip and a
+    // few uniform writes. The afterimage `damp` uniform is intentionally not
+    // touched here: the animate loop overrides it every frame with a value
+    // that blends in trail boost and reduce-motion, so any value written here
+    // would be immediately clobbered.
+    if (
+      settings === this.lastAppliedSettings &&
+      this.containerWidth === this.lastAppliedWidth
+    ) {
+      return;
+    }
+    this.lastAppliedSettings = settings;
+    this.lastAppliedWidth = this.containerWidth;
+
     const s = screenScale(this.containerWidth);
-    this.renderer.setClearColor(new Color(settings.backgroundColor));
-    this.afterImagePass.uniforms["damp"].value = settings.trailIntensity;
+    this.clearColor.set(settings.backgroundColor);
+    this.renderer.setClearColor(this.clearColor);
     this.bloomPass.strength = settings.bloomStrength * s;
     this.bloomPass.threshold = settings.bloomThreshold;
 
