@@ -48,7 +48,6 @@ export class Engine {
 
   private resizeObserver: ResizeObserver | null = null;
   private containerWidth = 1440;
-  private startTime = 0;
   private lastAppliedSettings: SystemSettings | null = null;
   private lastAppliedWidth = -1;
   private clearColor = new Color();
@@ -125,8 +124,6 @@ export class Engine {
     );
     this.composer.addPass(this.bloomPass);
 
-    this.startTime = performance.now() / 1000;
-
     this.resizeObserver = new ResizeObserver(() =>
       this.handleResize(container),
     );
@@ -177,9 +174,9 @@ export class Engine {
     }
   }
 
-  render() {
+  render(time: number) {
     this.controls.update();
-    this.backgroundPass.setTime(performance.now() / 1000 - this.startTime);
+    this.backgroundPass.setTime(time);
     this.composer.render();
   }
 

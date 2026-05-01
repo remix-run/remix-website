@@ -499,7 +499,7 @@ export function ParticleCanvas(handle: Handle) {
         currentProps.labelOpacityRef.current = 0;
       }
 
-      engine.render();
+      engine.render(time);
       if (!hasReportedReady) {
         hasReportedReady = true;
         currentProps.onReady();
