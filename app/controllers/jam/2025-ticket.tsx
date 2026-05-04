@@ -4,15 +4,15 @@ import {
   createCart,
   getProduct,
   MAX_QUANTITY,
-} from "../../data/jam-storefront.server";
-import { getRequestContext } from "../../utils/request-context";
-import { render } from "../../utils/render";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { JamDocument } from "./document";
-import { InfoText, ScrambleText, SectionLabel, Title } from "./shared";
-import { JamTicketCard } from "../../assets/jam-ticket-card";
-import { JamTicketPurchase } from "../../assets/jam-ticket-purchase";
-import { assetPaths } from "../../utils/asset-paths";
+} from "../../data/jam-storefront.server.ts";
+import { getRequestContext } from "../../utils/request-context.ts";
+import { render } from "../../utils/render.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { JamDocument } from "./document.tsx";
+import { InfoText, ScrambleText, SectionLabel, Title } from "./shared.tsx";
+import { JamTicketCard } from "../../assets/jam-ticket-card.tsx";
+import { JamTicketPurchase } from "../../assets/jam-ticket-purchase.tsx";
+import { assetPaths } from "../../utils/asset-paths.ts";
 
 export async function jam2025TicketHandler() {
   let request = getRequestContext().request;

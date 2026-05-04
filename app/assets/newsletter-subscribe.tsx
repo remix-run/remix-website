@@ -1,6 +1,6 @@
 import { clientEntry, on, type Handle } from "remix/ui";
 import cx from "clsx";
-import { routes } from "../routes";
+import { routes } from "../routes.ts";
 
 export type SubscribeState = "idle" | "success" | "error";
 type SubscribeResult = {

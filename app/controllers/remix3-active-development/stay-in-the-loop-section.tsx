@@ -1,5 +1,5 @@
 import cx from "clsx";
-import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe";
+import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe.tsx";
 
 export function StayInTheLoopSection() {
   return () => (

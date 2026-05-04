@@ -4,7 +4,7 @@ import {
   RUNNER_GIF_SRC,
   RUNNER_STATIC_SRC,
   RUNNER_WEBP_SRC,
-} from "../runner-media";
+} from "../runner-media.ts";
 
 const overlayStyles = css({
   position: "fixed",

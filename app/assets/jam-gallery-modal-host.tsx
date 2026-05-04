@@ -9,7 +9,7 @@ import {
 import {
   restoreGalleryFocus,
   storeGalleryFocus,
-} from "./jam-gallery-focus-restore";
+} from "./jam-gallery-focus-restore.tsx";
 
 let FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';

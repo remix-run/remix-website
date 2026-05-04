@@ -1,6 +1,6 @@
-import { FeatureSection } from "../../assets/remix-landing/components/feature-section";
-import { LandingFooter } from "../../assets/remix-landing/components/landing-footer";
-import { LandingHero } from "../../assets/remix-landing/components/landing-hero";
+import { FeatureSection } from "../../assets/remix-landing/components/feature-section.tsx";
+import { LandingFooter } from "../../assets/remix-landing/components/landing-footer.tsx";
+import { LandingHero } from "../../assets/remix-landing/components/landing-hero.tsx";
 
 // TODO: consider how to cleanup this config mess
 const storySections = [

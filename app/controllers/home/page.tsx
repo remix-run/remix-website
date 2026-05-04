@@ -1,11 +1,11 @@
 import { css } from "remix/ui";
-import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements";
-import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen";
-import { RUNNER_AVIF_SRC } from "../../assets/remix-landing/runner-media";
-import { colors } from "../../assets/remix-landing/styles/tokens";
-import { Document } from "../../ui/document";
-import { styleHrefs } from "../../utils/style-hrefs";
-import { LandingContent } from "./landing-content";
+import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements.tsx";
+import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen.tsx";
+import { RUNNER_AVIF_SRC } from "../../assets/remix-landing/runner-media.ts";
+import { colors } from "../../assets/remix-landing/styles/tokens.ts";
+import { Document } from "../../ui/document.tsx";
+import { styleHrefs } from "../../utils/style-hrefs.ts";
+import { LandingContent } from "./landing-content.tsx";
 
 type HomePageProps = {
   pageUrl: string;

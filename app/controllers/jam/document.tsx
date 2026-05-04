@@ -1,8 +1,8 @@
 import type { RemixNode } from "remix/ui";
-import { Document } from "../../ui/document";
-import { styleHrefs } from "../../utils/style-hrefs";
-import { getSocialHeadTags } from "../../utils/social-head-tags.server";
-import { JamPageScaffold } from "./shared";
+import { Document } from "../../ui/document.tsx";
+import { styleHrefs } from "../../utils/style-hrefs.ts";
+import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
+import { JamPageScaffold } from "./shared.tsx";
 
 type JamPageProps = {
   title: string;

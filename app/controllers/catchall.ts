@@ -1,5 +1,5 @@
 import semver from "semver";
-import { renderNotFoundPage } from "../ui/not-found-page";
+import { renderNotFoundPage } from "../ui/not-found-page.tsx";
 
 const SAFE_STATIC_FILE_EXTENSIONS = [
   ".html",

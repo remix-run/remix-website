@@ -1,8 +1,9 @@
-import { describe, expect, it } from "vitest";
-import { homeHandler } from "./controller";
-import { routes } from "../../routes";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { createRouteTestRouter } from "../../../test/create-route-test-router";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { homeHandler } from "./controller.tsx";
+import { routes } from "../../routes.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { createRouteTestRouter } from "../../../test/create-route-test-router.ts";
 
 describe("home route", () => {
   it("renders the landing document shell", async () => {

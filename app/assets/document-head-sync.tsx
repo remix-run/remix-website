@@ -3,7 +3,7 @@ import {
   syncManagedHeadTags,
   syncTitle,
   type ManagedHeadTag,
-} from "../ui/document-head";
+} from "../ui/document-head.ts";
 
 type DocumentHeadSyncProps = {
   title?: string;

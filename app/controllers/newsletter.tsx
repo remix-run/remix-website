@@ -1,11 +1,11 @@
 import cx from "clsx";
-import { Document } from "../ui/document";
-import { Footer } from "../ui/footer";
-import { Header } from "../ui/header";
-import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe";
-import { render } from "../utils/render";
-import { CACHE_CONTROL } from "../utils/cache-control";
-import { getSocialHeadTags } from "../utils/social-head-tags.server";
+import { Document } from "../ui/document.tsx";
+import { Footer } from "../ui/footer.tsx";
+import { Header } from "../ui/header.tsx";
+import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe.tsx";
+import { render } from "../utils/render.ts";
+import { CACHE_CONTROL } from "../utils/cache-control.ts";
+import { getSocialHeadTags } from "../utils/social-head-tags.server.ts";
 
 export async function newsletterHandler() {
   return render.document(<Page />, {

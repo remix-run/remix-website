@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
-import { routes } from "../routes";
-import { createRouteTestRouter } from "../../test/create-route-test-router";
-import { blogOgImageHandler, parseOgImageQuery } from "./blog-og-image";
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { routes } from "../routes.ts";
+import { createRouteTestRouter } from "../../test/create-route-test-router.ts";
+import { blogOgImageHandler, parseOgImageQuery } from "./blog-og-image.tsx";
 
 describe("Blog OG image route", () => {
   it("returns 400 when required params are missing", async () => {

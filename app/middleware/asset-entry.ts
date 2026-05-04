@@ -1,7 +1,7 @@
 import * as path from "node:path";
 import { getContext } from "remix/async-context-middleware";
 import { createContextKey, type Middleware } from "remix/fetch-router";
-import { assetServer } from "../utils/assets.server";
+import { assetServer } from "../utils/assets.server.ts";
 
 export interface AssetEntry {
   src: string;

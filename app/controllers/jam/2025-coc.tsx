@@ -1,8 +1,8 @@
-import { render } from "../../utils/render";
-import { CACHE_CONTROL } from "../../utils/cache-control";
-import { JamDocument } from "./document";
-import { Paragraph, ScrambleText, Subheader, Title } from "./shared";
-import { assetPaths } from "../../utils/asset-paths";
+import { render } from "../../utils/render.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { JamDocument } from "./document.tsx";
+import { Paragraph, ScrambleText, Subheader, Title } from "./shared.tsx";
+import { assetPaths } from "../../utils/asset-paths.ts";
 
 export async function jam2025CocHandler() {
   return render.document(

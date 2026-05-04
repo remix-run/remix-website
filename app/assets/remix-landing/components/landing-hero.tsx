@@ -1,6 +1,6 @@
 import { css, type Handle } from "remix/ui";
-import { colors, glowWhite } from "../styles/tokens";
-import { CodeSnippet } from "./code-snippet";
+import { colors, glowWhite } from "../styles/tokens.ts";
+import { CodeSnippet } from "./code-snippet.tsx";
 
 const shellStyles = css({
   minHeight: "100vh",

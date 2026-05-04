@@ -1,10 +1,10 @@
 import { clientEntry, css, on, type Handle } from "remix/ui";
-import { routes } from "../../../routes";
+import { routes } from "../../../routes.ts";
 import {
   submitNewsletterRequest,
   type SubscribeState,
-} from "../../newsletter-subscribe";
-import { colors, glowWhite, pageMaxWidth } from "../styles/tokens";
+} from "../../newsletter-subscribe.tsx";
+import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
 
 // Vertically center the inner row inside each section's `min-height: 100vh`
 // box. `align-items: center` handles grid-cell alignment, but this single
