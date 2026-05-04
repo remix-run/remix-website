@@ -2,6 +2,7 @@ import cx from "clsx";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
+import { BlogLightbox } from "../../assets/blog-lightbox.tsx";
 import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe.tsx";
 import { routes } from "../../routes.ts";
 import { renderNotFoundPage } from "../../ui/not-found-page.tsx";
@@ -105,6 +106,7 @@ function Page() {
         <BlogPostContent post={props.post} />
       </main>
       <Footer />
+      <BlogLightbox />
     </Document>
   );
 }
