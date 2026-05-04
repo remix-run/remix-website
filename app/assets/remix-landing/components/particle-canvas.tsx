@@ -1,5 +1,5 @@
 import { css, ref, addEventListeners, type Handle } from "remix/ui";
-import * as THREE from "three";
+import { Vector3 } from "three";
 import { ControlManager } from "../engine/controls";
 import { Engine } from "../engine/engine";
 import {
@@ -62,8 +62,8 @@ type PresetRuntimeData = {
 function setDesiredCameraInto(
   presets: Preset[],
   morphValue: number,
-  outPos: THREE.Vector3,
-  outTarget: THREE.Vector3,
+  outPos: Vector3,
+  outTarget: Vector3,
 ) {
   const maxIdx = presets.length - 1;
   const clamped = clamp(morphValue, 0, maxIdx);
@@ -149,8 +149,8 @@ export function ParticleCanvas(handle: Handle) {
   let hasReportedReady = false;
   let initFailed = false;
   const labelControlMgr = new ControlManager();
-  const desiredCameraPos = new THREE.Vector3();
-  const desiredCameraTarget = new THREE.Vector3();
+  const desiredCameraPos = new Vector3();
+  const desiredCameraTarget = new Vector3();
   const scratchControlsA = [0, 0, 0, 0, 0, 0, 0, 0];
   const scratchControlsB = [0, 0, 0, 0, 0, 0, 0, 0];
   const scratchLabelControls = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -273,6 +273,11 @@ export function ParticleCanvas(handle: Handle) {
       );
       engine.camera.position.copy(desiredCameraPos);
       engine.controls.target.copy(desiredCameraTarget);
+      // Compile the particle RawShaderMaterial up front so the first
+      // `composer.render()` doesn't pay for the GLSL3 link/upload during
+      // the intro frame. Three otherwise compiles materials lazily on first
+      // draw, which can show up as a hitch on lower-end GPUs.
+      engine.renderer.compile(engine.scene, engine.camera);
     } catch (error) {
       initFailed = true;
       disposeScene();
@@ -285,6 +290,7 @@ export function ParticleCanvas(handle: Handle) {
 
       const now = performance.now();
       const time = now / 1000 - startTime;
+      const settings = currentProps.settings;
       const presets = currentProps.presets;
       const presetData = getPresetRuntimeData(presets);
       const morphValue = currentProps.morphValueRef.current;
@@ -297,22 +303,16 @@ export function ParticleCanvas(handle: Handle) {
       }
       const visualTime = frozenTime ?? time;
 
-      engine.updateSettings(currentProps.settings);
+      engine.updateSettings(settings);
 
       const screenScale = engine.getScreenScale();
-      particles.setPointSize(currentProps.settings.pointSize);
-      particles.setHdrIntensity(
-        currentProps.settings.hdrIntensity * screenScale,
-      );
+      particles.setPointSize(settings.pointSize);
+      particles.setHdrIntensity(settings.hdrIntensity * screenScale);
       const effectiveMouseNormX = reduceMotion ? 0 : mouseNormX;
       const effectiveMouseNormY = reduceMotion ? 0 : mouseNormY;
       particles.setMousePos(effectiveMouseNormX, -effectiveMouseNormY);
-      particles.setMorphEase(currentProps.settings.morphEase);
-      particles.setColorMode(currentProps.settings.colorMode);
-      particles.setDof(
-        currentProps.settings.dofAmount,
-        currentProps.settings.dofFocus,
-      );
+      particles.setColorMode(settings.colorMode);
+      particles.setDof(settings.dofAmount, settings.dofFocus);
       const introTime = Math.max(0, visualTime - PARTICLE_INTRO_DELAY_S);
       particles.setIntroProgress(
         reduceMotion ? 1.5 : Math.min(introTime / 3.5, 1.5),
@@ -362,6 +362,17 @@ export function ParticleCanvas(handle: Handle) {
         presetData.shaderInts[toIndex],
         blend,
       );
+      // Hoisted from the vertex shader: when blending, t is constant across all
+      // particles, so do the pow()/divide once per frame on the CPU instead of
+      // per vertex on the GPU. When blend < 0.001 the shader takes the
+      // early-exit branch and ignores uMorphT, so any value is safe.
+      let morphT = 0;
+      if (blend > 0.001) {
+        const ease = settings.morphEase;
+        const tk = Math.pow(blend, ease);
+        morphT = tk / (tk + Math.pow(1 - blend, ease));
+      }
+      particles.setMorphT(morphT);
       particles.setControls(scratchControlsA, scratchControlsB);
       particles.setSeparation(separation);
 
@@ -370,16 +381,13 @@ export function ParticleCanvas(handle: Handle) {
       const easedBlend = blend * blend * (3 - 2 * blend);
       const effectiveTrail =
         (1 - easedBlend) *
-          (overridesA?.trailIntensity ?? currentProps.settings.trailIntensity) +
-        easedBlend *
-          (overridesB?.trailIntensity ?? currentProps.settings.trailIntensity);
+          (overridesA?.trailIntensity ?? settings.trailIntensity) +
+        easedBlend * (overridesB?.trailIntensity ?? settings.trailIntensity);
       const effectiveRepulsion =
         (1 - easedBlend) *
-          (overridesA?.cursorRepulsion ??
-            currentProps.settings.cursorRepulsion) +
+          (overridesA?.cursorRepulsion ?? settings.cursorRepulsion) +
         easedBlend *
-          (overridesB?.cursorRepulsion ??
-            currentProps.settings.cursorRepulsion);
+          (overridesB?.cursorRepulsion ?? settings.cursorRepulsion);
 
       particles.setCursorRepulsion(effectiveRepulsion);
 
@@ -489,7 +497,7 @@ export function ParticleCanvas(handle: Handle) {
         currentProps.labelOpacityRef.current = 0;
       }
 
-      engine.render();
+      engine.render(time);
       if (!hasReportedReady) {
         hasReportedReady = true;
         currentProps.onReady();

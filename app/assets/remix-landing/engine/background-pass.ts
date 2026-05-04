@@ -1,4 +1,10 @@
-import * as THREE from "three";
+import {
+  ShaderMaterial,
+  Vector2,
+  Vector3,
+  WebGLRenderer,
+  WebGLRenderTarget,
+} from "three";
 import { Pass, FullScreenQuad } from "three/addons/postprocessing/Pass.js";
 
 /**
@@ -203,33 +209,33 @@ const DEFAULT_BLOBS: BlobDef[] = [
 const BASE_HEX = "#020407";
 
 export class BackgroundPass extends Pass {
-  private material: THREE.ShaderMaterial;
+  private material: ShaderMaterial;
   private fsQuad: FullScreenQuad;
 
   constructor() {
     super();
 
     const positions = DEFAULT_BLOBS.map(
-      (b) => new THREE.Vector2(b.pos[0], b.pos[1]),
+      (b) => new Vector2(b.pos[0], b.pos[1]),
     );
     const sigmas = DEFAULT_BLOBS.map(
-      (b) => new THREE.Vector2(b.sigma[0], b.sigma[1]),
+      (b) => new Vector2(b.sigma[0], b.sigma[1]),
     );
     const colors = DEFAULT_BLOBS.map((b) => {
       const [l, a, bb] = hexToOklab(b.color);
-      return new THREE.Vector3(l, a, bb);
+      return new Vector3(l, a, bb);
     });
     const gains = DEFAULT_BLOBS.map((b) => b.gain);
     const baseOk = hexToOklab(BASE_HEX);
 
-    this.material = new THREE.ShaderMaterial({
+    this.material = new ShaderMaterial({
       vertexShader: VERTEX_SHADER,
       fragmentShader: FRAGMENT_SHADER,
       uniforms: {
         uTime: { value: 0 },
-        uResolution: { value: new THREE.Vector2(1, 1) },
+        uResolution: { value: new Vector2(1, 1) },
         uBaseColor: {
-          value: new THREE.Vector3(baseOk[0], baseOk[1], baseOk[2]),
+          value: new Vector3(baseOk[0], baseOk[1], baseOk[2]),
         },
         uBlobPos: { value: positions },
         uBlobSigma: { value: sigmas },
@@ -261,9 +267,9 @@ export class BackgroundPass extends Pass {
   }
 
   render(
-    renderer: THREE.WebGLRenderer,
-    _writeBuffer: THREE.WebGLRenderTarget,
-    readBuffer: THREE.WebGLRenderTarget,
+    renderer: WebGLRenderer,
+    _writeBuffer: WebGLRenderTarget,
+    readBuffer: WebGLRenderTarget,
   ): void {
     const previousTarget = renderer.getRenderTarget();
     if (this.renderToScreen) {

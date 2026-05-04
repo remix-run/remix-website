@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { PerspectiveCamera, Vector3 } from "three";
 import type { Preset } from "./types";
 import type { ControlManager } from "./controls";
 
@@ -14,7 +14,7 @@ export interface ProjectedLabel {
 }
 
 const DEG2RAD = Math.PI / 180;
-const _v = new THREE.Vector3();
+const _v = new Vector3();
 
 type LabelTransform = (
   x: number,
@@ -22,7 +22,7 @@ type LabelTransform = (
   z: number,
   ctrls: number[],
   time: number,
-) => THREE.Vector3;
+) => Vector3;
 
 function transformSlot0(
   x: number,
@@ -30,7 +30,7 @@ function transformSlot0(
   z: number,
   ctrls: number[],
   time: number,
-): THREE.Vector3 {
+): Vector3 {
   const scale = ctrls[0] ?? 55;
   const rX = (ctrls[1] ?? 0) * DEG2RAD;
   const rY = (ctrls[2] ?? 0) * DEG2RAD - time * (ctrls[4] ?? 0);
@@ -70,7 +70,7 @@ function transformSpinY(
   z: number,
   ctrls: number[],
   time: number,
-): THREE.Vector3 {
+): Vector3 {
   const scale = ctrls[0] ?? 48;
   const spin = ctrls[1] ?? 0.23;
   const angle = time * spin;
@@ -107,7 +107,7 @@ export function projectLabelsInto(
   controlMgr: ControlManager,
   ctrls: number[],
   time: number,
-  camera: THREE.PerspectiveCamera,
+  camera: PerspectiveCamera,
   width: number,
   height: number,
 ): ProjectedLabel[] {
