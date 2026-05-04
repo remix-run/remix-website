@@ -18,6 +18,52 @@ import {
   reducedMotion,
 } from "./utils/reduced-motion";
 
+/**
+ * Fraction of each *middle* scroll segment spent pinned at integer morph presets
+ * (clearer hold at integer presets in the center of the page). First and last segments stay linear so
+ * hero and footer transitions remain responsive.
+ */
+const SCROLL_MORPH_PLATEAU = 0.34;
+
+function morphPlateauWithinUnitSpan(t: number, plateau: number): number {
+  if (plateau <= 1e-6) return t;
+  const lo = plateau * 0.5;
+  const hi = 1 - lo;
+  if (t <= lo) return 0;
+  if (t >= hi) return 1;
+  return (t - lo) / (hi - lo);
+}
+
+/** `segmentIndex` is the morph integer at the start of the segment (0 for 0→1, …). */
+function scrollMorphPlateauForSegment(
+  segmentIndex: number,
+  maxMorph: number,
+  plateau: number,
+): number {
+  if (
+    plateau <= 1e-6 ||
+    segmentIndex === 0 ||
+    segmentIndex === maxMorph - 1
+  ) {
+    return 0;
+  }
+  return plateau;
+}
+
+function morphPlateauAcrossIndices(
+  linearMorph: number,
+  maxValue: number,
+  plateau: number,
+): number {
+  const clamped = clamp(linearMorph, 0, maxValue);
+  if (maxValue < 1) return clamped;
+  const base = Math.floor(clamped);
+  if (base >= maxValue) return maxValue;
+  const frac = clamped - base;
+  const p = scrollMorphPlateauForSegment(base, maxValue, plateau);
+  return base + morphPlateauWithinUnitSpan(frac, p);
+}
+
 const appStyles = css({
   position: "relative",
 });
@@ -196,7 +242,13 @@ export let RemixLandingEnhancements = clientEntry(
       const maxValue = presets.length - 1;
       const stops = getSectionScrollStops();
       if (!stops) {
-        return (clampScrollY(scrollY) / getScrollRange()) * maxValue;
+        const linearMorph =
+          (clampScrollY(scrollY) / getScrollRange()) * maxValue;
+        return morphPlateauAcrossIndices(
+          linearMorph,
+          maxValue,
+          SCROLL_MORPH_PLATEAU,
+        );
       }
 
       const clampedScrollY = clampScrollY(scrollY);
@@ -208,7 +260,13 @@ export let RemixLandingEnhancements = clientEntry(
         if (clampedScrollY > to) continue;
         const span = to - from;
         if (span <= 1) return index + 1;
-        return index + (clampedScrollY - from) / span;
+        const t = (clampedScrollY - from) / span;
+        const plateau = scrollMorphPlateauForSegment(
+          index,
+          maxValue,
+          SCROLL_MORPH_PLATEAU,
+        );
+        return index + morphPlateauWithinUnitSpan(t, plateau);
       }
 
       return maxValue;
