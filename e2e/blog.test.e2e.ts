@@ -1,4 +1,7 @@
-import { test, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { describe, it } from "remix/test";
+
+import { createE2EPage } from "../test/e2e.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -8,8 +11,9 @@ async function markPage(page: Page) {
   });
 }
 
-test.describe("Blog", () => {
-  test("blog index loads and shows posts", async ({ page }) => {
+describe("Blog", () => {
+  it("blog index loads and shows posts", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/blog");
     await expect(page).toHaveTitle(/Blog/i);
     // Should have at least one blog post link
@@ -17,7 +21,8 @@ test.describe("Blog", () => {
     await expect(postLinks.first()).toBeVisible();
   });
 
-  test("clicking a blog post navigates to the post", async ({ page }) => {
+  it("clicking a blog post navigates to the post", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/blog");
     const firstPost = page.locator('a[href^="/blog/"]').first();
     const href = await firstPost.getAttribute("href");
@@ -27,9 +32,8 @@ test.describe("Blog", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("relative internal links in rendered markdown use client navigation", async ({
-    page,
-  }) => {
+  it("relative internal links in rendered markdown use client navigation", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/blog/faster-lazy-loading");
 
     let marker = await markPage(page);

@@ -1,4 +1,7 @@
-import { test, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { describe, it } from "remix/test";
+
+import { createE2EPage } from "../test/e2e.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -52,10 +55,9 @@ async function expectLandingNavReady(page: Page) {
   ).toBeVisible();
 }
 
-test.describe("Navigation", () => {
-  test("home page renders landing content and keeps the skip target", async ({
-    page,
-  }) => {
+describe("Navigation", () => {
+  it("home page renders landing content and keeps the skip target", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/");
 
     await expect(
@@ -66,9 +68,8 @@ test.describe("Navigation", () => {
     await expect(page.locator("main#main-content")).toHaveCount(1);
   });
 
-  test("home page blog keyboard shortcut uses client navigation", async ({
-    page,
-  }) => {
+  it("home page blog keyboard shortcut uses client navigation", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/");
     await expect(
       page.getByRole("heading", {
@@ -85,9 +86,8 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Blog/i);
   });
 
-  test("home page jam keyboard shortcut uses client navigation", async ({
-    page,
-  }) => {
+  it("home page jam keyboard shortcut uses client navigation", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/");
     await expect(
       page.getByRole("heading", {
@@ -104,9 +104,8 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Jam/i);
   });
 
-  test("active development route header links use client navigation", async ({
-    page,
-  }) => {
+  it("active development route header links use client navigation", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/remix-3-active-development");
 
     await expectClientNavigation(
@@ -118,7 +117,8 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Blog/i);
   });
 
-  test("blog to home page applies forced dark mode", async ({ page }) => {
+  it("blog to home page applies forced dark mode", async (t) => {
+    let page = await createE2EPage(t);
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/blog");
 
@@ -135,7 +135,8 @@ test.describe("Navigation", () => {
     await expect(page.locator("html.dark")).toHaveCount(1);
   });
 
-  test("blog header jam link uses client navigation", async ({ page }) => {
+  it("blog header jam link uses client navigation", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/blog");
 
     await expectClientNavigation(
@@ -147,9 +148,8 @@ test.describe("Navigation", () => {
     await expect(page).toHaveTitle(/Jam/i);
   });
 
-  test("Remix 3 active development page to jam applies jam head styles and forced dark theme", async ({
-    page,
-  }) => {
+  it("Remix 3 active development page to jam applies jam head styles and forced dark theme", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/remix-3-active-development");
 
     await expectClientNavigation(
@@ -173,9 +173,8 @@ test.describe("Navigation", () => {
       .toBe(true);
   });
 
-  test("header wordmark context menu uses client navigation for brand", async ({
-    page,
-  }) => {
+  it("header wordmark context menu uses client navigation for brand", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/blog");
 
     let remixLink = page.locator('header a[aria-label="Remix"]').first();

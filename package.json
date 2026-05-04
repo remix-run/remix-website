@@ -23,7 +23,7 @@
     "test": "remix test",
     "test:coverage": "remix test --coverage",
     "pretest:e2e": "pnpm run build:css && playwright install chromium",
-    "test:e2e": "cross-env PLAYWRIGHT_TEST=1 playwright test",
+    "test:e2e": "cross-env PLAYWRIGHT_TEST=1 remix test --type e2e",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -1,4 +1,7 @@
-import { test, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { describe, it } from "remix/test";
+
+import { createE2EPage } from "../test/e2e.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -66,24 +69,20 @@ function galleryPhotoLinks(page: Page) {
   });
 }
 
-async function skipIfGalleryHasFewerThan(page: Page, minimumPhotos: number) {
+async function galleryHasAtLeast(page: Page, minimumPhotos: number) {
   let noPhotosMessage = page.getByText("No photos available yet.");
   if (await noPhotosMessage.isVisible()) {
-    test.skip(true, "No gallery photos available in this environment");
+    return false;
   }
 
   let photoLinks = galleryPhotoLinks(page);
   let count = await photoLinks.count();
-  if (count < minimumPhotos) {
-    test.skip(
-      true,
-      `Need at least ${minimumPhotos} gallery photos in this environment`,
-    );
-  }
+  return count >= minimumPhotos;
 }
 
-test.describe("Jam", () => {
-  test("jam mobile menu opens and shows jam links", async ({ page }) => {
+describe("Jam", () => {
+  it("jam mobile menu opens and shows jam links", async (t) => {
+    let page = await createE2EPage(t);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/jam/2025");
 
@@ -108,18 +107,21 @@ test.describe("Jam", () => {
     await expect(mobileNav.getByRole("link", { name: "Ticket" })).toBeVisible();
   });
 
-  test("jam root redirects to jam 2025", async ({ page }) => {
+  it("jam root redirects to jam 2025", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/jam");
     await page.waitForURL("**/jam/2025");
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam 2025 page renders", async ({ page }) => {
+  it("jam 2025 page renders", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/jam/2025");
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam 2025 after-event badge shows rewind icon", async ({ page }) => {
+  it("jam 2025 after-event badge shows rewind icon", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/jam/2025");
 
     let heading = page.getByRole("heading", { level: 1 });
@@ -128,9 +130,8 @@ test.describe("Jam", () => {
     await expect(heading.locator('use[href$="#fast-forward"]')).toHaveCount(1);
   });
 
-  test("jam 2025 newsletter submits and shows success state", async ({
-    page,
-  }) => {
+  it("jam 2025 newsletter submits and shows success state", async (t) => {
+    let page = await createE2EPage(t);
     let submittedEmail: string | null = null;
     let submittedTag: string | null = null;
     await page.route("**/_actions/newsletter", async (route) => {
@@ -161,9 +162,8 @@ test.describe("Jam", () => {
     expect(submittedTag).toBe("6280341");
   });
 
-  test("jam 2025 newsletter shows error state for failed submissions", async ({
-    page,
-  }) => {
+  it("jam 2025 newsletter shows error state for failed submissions", async (t) => {
+    let page = await createE2EPage(t);
     await page.route("**/_actions/newsletter", async (route) => {
       await route.fulfill({
         status: 500,
@@ -186,9 +186,8 @@ test.describe("Jam", () => {
     await expect(page.getByText(/please try again\./i)).toBeVisible();
   });
 
-  test("jam 2025 newsletter shows loading state while submitting", async ({
-    page,
-  }) => {
+  it("jam 2025 newsletter shows loading state while submitting", async (t) => {
+    let page = await createE2EPage(t);
     let resolveRequest: (() => void) | undefined;
     let requestReleased = new Promise<void>((resolve) => {
       resolveRequest = resolve;
@@ -220,19 +219,20 @@ test.describe("Jam", () => {
     await expect(page.getByText(/You're good to go/i)).toBeVisible();
   });
 
-  test("jam ticket page renders", async ({ page }) => {
+  it("jam ticket page renders", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/jam/2025/ticket");
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam lineup page renders", async ({ page }) => {
+  it("jam lineup page renders", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/jam/2025/lineup");
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam lineup desktop accordion toggles open and closed", async ({
-    page,
-  }) => {
+  it("jam lineup desktop accordion toggles open and closed", async (t) => {
+    let page = await createE2EPage(t);
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/jam/2025/lineup");
 
@@ -247,9 +247,8 @@ test.describe("Jam", () => {
     await expect(firstAccordion).not.toHaveAttribute("open", "");
   });
 
-  test("jam lineup desktop accordion settles correctly after rapid toggles", async ({
-    page,
-  }) => {
+  it("jam lineup desktop accordion settles correctly after rapid toggles", async (t) => {
+    let page = await createE2EPage(t);
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/jam/2025/lineup");
 
@@ -261,14 +260,14 @@ test.describe("Jam", () => {
     await expect(firstAccordion).not.toHaveAttribute("open", "");
   });
 
-  test("jam faq page renders", async ({ page }) => {
+  it("jam faq page renders", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/jam/2025/faq");
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam info navigation stays client-side without a full reload", async ({
-    page,
-  }) => {
+  it("jam info navigation stays client-side without a full reload", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/jam/2025");
     await dismissViteAbortOverlay(page);
 
@@ -309,21 +308,22 @@ test.describe("Jam", () => {
       .toBe(marker);
   });
 
-  test("jam code of conduct page renders", async ({ page }) => {
+  it("jam code of conduct page renders", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/jam/2025/coc");
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam gallery page renders", async ({ page }) => {
+  it("jam gallery page renders", async (t) => {
+    let page = await createE2EPage(t);
     await page.goto("/jam/2025/gallery");
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("jam gallery modal opens with query param and closes via controls", async ({
-    page,
-  }) => {
+  it("jam gallery modal opens with query param and closes via controls", async (t) => {
+    let page = await createE2EPage(t);
     await gotoGallery(page);
-    await skipIfGalleryHasFewerThan(page, 1);
+    if (!(await galleryHasAtLeast(page, 1))) return;
 
     let marker = await markPage(page);
     await galleryPhotoLinks(page).first().click();
@@ -342,11 +342,10 @@ test.describe("Jam", () => {
     await expectMarkerToStay(page, marker);
   });
 
-  test("jam gallery escape closes modal and restores focus to opened photo", async ({
-    page,
-  }) => {
+  it("jam gallery escape closes modal and restores focus to opened photo", async (t) => {
+    let page = await createE2EPage(t);
     await gotoGallery(page);
-    await skipIfGalleryHasFewerThan(page, 1);
+    if (!(await galleryHasAtLeast(page, 1))) return;
 
     let firstPhotoLink = galleryPhotoLinks(page).first();
     let marker = await markPage(page);
@@ -362,11 +361,10 @@ test.describe("Jam", () => {
     await expect(firstPhotoLink).toBeFocused();
   });
 
-  test("jam gallery close button restores focus to opened photo", async ({
-    page,
-  }) => {
+  it("jam gallery close button restores focus to opened photo", async (t) => {
+    let page = await createE2EPage(t);
     await gotoGallery(page);
-    await skipIfGalleryHasFewerThan(page, 1);
+    if (!(await galleryHasAtLeast(page, 1))) return;
 
     let firstPhotoLink = galleryPhotoLinks(page).first();
     let marker = await markPage(page);
@@ -381,11 +379,10 @@ test.describe("Jam", () => {
     await expect(firstPhotoLink).toBeFocused();
   });
 
-  test("jam gallery download link returns attachment response", async ({
-    page,
-  }) => {
+  it("jam gallery download link returns attachment response", async (t) => {
+    let page = await createE2EPage(t);
     await gotoGallery(page);
-    await skipIfGalleryHasFewerThan(page, 1);
+    if (!(await galleryHasAtLeast(page, 1))) return;
     await page.goto("/jam/2025/gallery?photo=0");
 
     let downloadLink = page.getByRole("link", {
@@ -405,11 +402,10 @@ test.describe("Jam", () => {
     expect(response.headers()["content-disposition"]).toContain("attachment;");
   });
 
-  test("jam gallery keyboard navigation moves between photos", async ({
-    page,
-  }) => {
+  it("jam gallery keyboard navigation moves between photos", async (t) => {
+    let page = await createE2EPage(t);
     await gotoGallery(page);
-    await skipIfGalleryHasFewerThan(page, 2);
+    if (!(await galleryHasAtLeast(page, 2))) return;
 
     let marker = await markPage(page);
     await galleryPhotoLinks(page).first().click();
@@ -440,9 +436,10 @@ test.describe("Jam", () => {
     await expectMarkerToStay(page, marker);
   });
 
-  test("jam gallery modal traps focus while open", async ({ page }) => {
+  it("jam gallery modal traps focus while open", async (t) => {
+    let page = await createE2EPage(t);
     await gotoGallery(page);
-    await skipIfGalleryHasFewerThan(page, 1);
+    if (!(await galleryHasAtLeast(page, 1))) return;
 
     let firstPhotoLink = galleryPhotoLinks(page).first();
     await firstPhotoLink.click();

@@ -1,4 +1,7 @@
-import { test, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { describe, it } from "remix/test";
+
+import { createE2EPage } from "../test/e2e.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -28,8 +31,9 @@ function mobileMenuToggle(page: Page) {
   return mobileMenuDetails(page).locator("> summary");
 }
 
-test.describe("Mobile menu", () => {
-  test("opens and shows navigation links", async ({ page }) => {
+describe("Mobile menu", () => {
+  it("opens and shows navigation links", async (t) => {
+    let page = await createE2EPage(t);
     await gotoMobileMenuPage(page);
 
     let menuToggle = mobileMenuToggle(page);
@@ -44,7 +48,8 @@ test.describe("Mobile menu", () => {
     await expect(mobileNav.getByRole("link", { name: "Store" })).toBeVisible();
   });
 
-  test("escapes back to toggle", async ({ page }) => {
+  it("escapes back to toggle", async (t) => {
+    let page = await createE2EPage(t);
     await gotoMobileMenuPage(page);
 
     let menuToggle = mobileMenuToggle(page);
@@ -66,7 +71,8 @@ test.describe("Mobile menu", () => {
     await expect(menuToggle).toBeFocused();
   });
 
-  test("mobile menu links navigate", async ({ page }) => {
+  it("mobile menu links navigate", async (t) => {
+    let page = await createE2EPage(t);
     await gotoMobileMenuPage(page);
 
     let marker = await markPage(page);

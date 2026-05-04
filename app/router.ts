@@ -42,7 +42,7 @@ function shouldSkipRateLimit(pathname: string) {
   );
 }
 
-function createAppRouter() {
+export function createAppRouter() {
   let middleware = [];
 
   middleware.push(compression());
