@@ -14,7 +14,7 @@ import {
   WebGLRenderTarget,
   type WebGLRenderer,
 } from "three";
-import { PRESET_GLSL, PRESET_UNIFORMS_GLSL } from "./preset-glsl";
+import { PRESET_GLSL, PRESET_UNIFORMS_GLSL } from "./preset-glsl.ts";
 
 // MRT bake of "rest" particle state (position + color) into RGBA32F textures.
 // One slot per morph endpoint (A, B). Each slot owns a render target with
@@ -161,7 +161,7 @@ export class RestBaker {
         uTime: { value: 0 },
         uPresetId: { value: 0 },
         uCount: { value: 0 },
-        uCtrl: { value: new Array(8).fill(0) as number[] },
+        uCtrl: { value: Array.from({ length: 8 }, () => 0) },
         uCarLaneOffset: { value: 0 },
         uCarLaneActivity: { value: 0 },
         uCarPosY: { value: 0 },

@@ -8,7 +8,7 @@ import {
   Scene,
   type Texture,
 } from "three";
-import { BAKE_TEX_W, computeBakeTexHeight } from "./rest-baker";
+import { BAKE_TEX_W, computeBakeTexHeight } from "./rest-baker.ts";
 
 // ~7% of particles get gl_PointSize scaled in [SIZE_BOOST_MIN, SIZE_BOOST_MAX].
 const SIZE_BOOST_FRACTION = 0.03;

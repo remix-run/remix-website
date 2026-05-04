@@ -16,7 +16,7 @@ import {
   WebGLRenderTarget,
   type WebGLRenderer,
 } from "three";
-import { BAKE_TEX_W, computeBakeTexHeight } from "./rest-baker";
+import { BAKE_TEX_W, computeBakeTexHeight } from "./rest-baker.ts";
 
 // Reused so the constructor's clear-pass doesn't allocate.
 const _scratchClearColor = new Color();
