@@ -150,11 +150,16 @@ describe("Jam", () => {
     await page.waitForLoadState("networkidle");
 
     let emailInput = page.getByPlaceholder("your@email.com");
-    await emailInput.fill("hello@example.com");
-    await clickWithViteAbortOverlayRetry(
-      page,
-      page.getByRole("button", { name: "Sign Up" }),
-    );
+    await expect(async () => {
+      await emailInput.fill("hello@example.com");
+      await clickWithViteAbortOverlayRetry(
+        page,
+        page.getByRole("button", { name: "Sign Up" }),
+      );
+      await expect(page.getByText(/You're good to go/i)).toBeVisible({
+        timeout: 1_000,
+      });
+    }).toPass({ timeout: 10_000 });
 
     await expect(page.getByText(/You're good to go/i)).toBeVisible();
     await expect(emailInput).toHaveValue("");

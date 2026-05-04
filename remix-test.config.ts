@@ -5,7 +5,6 @@ export default {
     echo: false,
     open: false,
   },
-  concurrency: 1,
   glob: {
     test: "**/*.test{,.browser,.e2e}.{ts,tsx}",
     e2e: "e2e/**/*.test.e2e.{ts,tsx}",

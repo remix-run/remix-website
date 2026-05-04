@@ -78,7 +78,7 @@ describe("Navigation", () => {
     ).toBeVisible();
     await expectLandingNavReady(page);
 
-    await expectClientNavigation(
+    await expectHydratedClientNavigation(
       page,
       () => page.keyboard.press("b"),
       "**/blog",
@@ -96,7 +96,7 @@ describe("Navigation", () => {
     ).toBeVisible();
     await expectLandingNavReady(page);
 
-    await expectClientNavigation(
+    await expectHydratedClientNavigation(
       page,
       () => page.keyboard.press("j"),
       "**/jam/2025",
