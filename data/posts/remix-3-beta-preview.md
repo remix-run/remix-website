@@ -32,7 +32,7 @@ Remix 3 routes are Fetch API routes. Controllers return responses. Middleware ow
 
 Frames are one of my favorite examples of the direction we're heading. A frame is server-rendered UI with a `src`. The client can load it, navigate it, or reload it independently while the server keeps rendering HTML. It's server/client communication that feels like the web: URLs, requests, responses, and markup instead of a separate RPC layer.
 
-You can [see how frames work in the bookstore demo](https://github.com/remix-run/remix/blob/main/demos/bookstore/app/controllers/cart/page.tsx), where the cart page renders a server-owned cart fragment that can update independently from the rest of the page.
+You can [see how frames work in the bookstore demo](https://github.com/remix-run/remix/blob/main/demos/bookstore/app/actions/cart/page.tsx), where the cart page renders a server-owned cart fragment that can update independently from the rest of the page.
 
 Remix components follow the same pattern: plain JavaScript variables for state, explicit updates, abortable async work, and reusable behavior composed with mixins. Component code is written in a procedural style that is easy to follow. First do this, then do that.
 
