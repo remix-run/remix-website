@@ -215,9 +215,7 @@ export class BackgroundPass extends Pass {
   constructor() {
     super();
 
-    const positions = DEFAULT_BLOBS.map(
-      (b) => new Vector2(b.pos[0], b.pos[1]),
-    );
+    const positions = DEFAULT_BLOBS.map((b) => new Vector2(b.pos[0], b.pos[1]));
     const sigmas = DEFAULT_BLOBS.map(
       (b) => new Vector2(b.sigma[0], b.sigma[1]),
     );

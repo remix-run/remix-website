@@ -1,9 +1,4 @@
-import {
-  DataTexture,
-  FloatType,
-  NearestFilter,
-  RGBAFormat,
-} from "three";
+import { DataTexture, FloatType, NearestFilter, RGBAFormat } from "three";
 import type { ModelData } from "./model-loader";
 
 const TEX_WIDTH = 512;

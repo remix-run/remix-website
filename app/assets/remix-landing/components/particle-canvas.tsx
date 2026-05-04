@@ -386,8 +386,7 @@ export function ParticleCanvas(handle: Handle) {
       const effectiveRepulsion =
         (1 - easedBlend) *
           (overridesA?.cursorRepulsion ?? settings.cursorRepulsion) +
-        easedBlend *
-          (overridesB?.cursorRepulsion ?? settings.cursorRepulsion);
+        easedBlend * (overridesB?.cursorRepulsion ?? settings.cursorRepulsion);
 
       particles.setCursorRepulsion(effectiveRepulsion);
 
