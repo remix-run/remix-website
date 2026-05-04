@@ -40,11 +40,7 @@ function scrollMorphPlateauForSegment(
   maxMorph: number,
   plateau: number,
 ): number {
-  if (
-    plateau <= 1e-6 ||
-    segmentIndex === 0 ||
-    segmentIndex === maxMorph - 1
-  ) {
+  if (plateau <= 1e-6 || segmentIndex === 0 || segmentIndex === maxMorph - 1) {
     return 0;
   }
   return plateau;
