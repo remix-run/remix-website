@@ -146,8 +146,8 @@ export let BlogLightbox = clientEntry(
 
     return () => {
       let isOpen = lightbox.open;
-      let src = isOpen ? lightbox.src : "";
-      let alt = isOpen ? lightbox.alt : "";
+      let src = lightbox.open ? lightbox.src : "";
+      let alt = lightbox.open ? lightbox.alt : "";
       return (
         <div
           role="dialog"
