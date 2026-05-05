@@ -1,27 +1,14 @@
 import { expect } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
-import { afterAll, beforeAll, describe, it } from "remix/test";
+import { describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
-let server!: { baseUrl: string; close: () => Promise<void> };
-let closeServer: () => Promise<void>;
-
-beforeAll(async () => {
-  let handler = swallowAbortErrors(router);
-  let realServer = await createTestServer(handler);
-  server = { baseUrl: realServer.baseUrl, close: async () => {} };
-  closeServer = () => realServer.close();
-});
-
-afterAll(async () => {
-  await closeServer();
-});
-
 describe("Newsletter subscribe", () => {
   it("renders the newsletter form in the Remix 3 active development section", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/remix-3-active-development");
 
     await expect(
@@ -35,7 +22,8 @@ describe("Newsletter subscribe", () => {
   });
 
   it("shows success UI and resets the form", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.route("**/_actions/newsletter", async (route) => {
       await route.fulfill({
         status: 200,
@@ -59,7 +47,8 @@ describe("Newsletter subscribe", () => {
   });
 
   it("shows server error UI when submission fails", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.route("**/_actions/newsletter", async (route) => {
       await route.fulfill({
         status: 500,
@@ -80,7 +69,8 @@ describe("Newsletter subscribe", () => {
   });
 
   it("shows pending state while request is in flight", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     let resolveRequest: (() => void) | undefined;
     const requestReleased = new Promise<void>((resolve) => {
       resolveRequest = resolve;
@@ -115,7 +105,8 @@ describe("Newsletter subscribe", () => {
 
 describe("Homepage newsletter", () => {
   it("submits the start-building form through the newsletter action", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     let submittedEmail: string | null = null;
 
     await page.route("**/_actions/newsletter", async (route) => {
@@ -144,7 +135,8 @@ describe("Homepage newsletter", () => {
 
 describe("Newsletter page (/newsletter)", () => {
   it("renders the newsletter page with form", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/newsletter");
 
     await expect(page.getByText("Newsletter").first()).toBeVisible();
@@ -156,7 +148,8 @@ describe("Newsletter page (/newsletter)", () => {
   });
 
   it("newsletter page form submits to /_actions/newsletter and shows success", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.route("**/_actions/newsletter", async (route) => {
       await route.fulfill({
         status: 200,

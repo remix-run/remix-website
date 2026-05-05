@@ -1,23 +1,9 @@
 import { expect, type Page } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
-import { afterAll, beforeAll, describe, it } from "remix/test";
+import { describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
-
-let server!: { baseUrl: string; close: () => Promise<void> };
-let closeServer: () => Promise<void>;
-
-beforeAll(async () => {
-  let handler = swallowAbortErrors(router);
-  let realServer = await createTestServer(handler);
-  server = { baseUrl: realServer.baseUrl, close: async () => {} };
-  closeServer = () => realServer.close();
-});
-
-afterAll(async () => {
-  await closeServer();
-});
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -53,7 +39,8 @@ async function expectLandingNavReady(page: Page) {
 
 describe("Navigation", () => {
   it("home page renders landing content and keeps the skip target", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/");
 
     await expect(
@@ -65,7 +52,8 @@ describe("Navigation", () => {
   });
 
   it("home page blog keyboard shortcut uses client navigation", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/", { waitUntil: "networkidle" });
     await expect(
       page.getByRole("heading", {
@@ -83,7 +71,8 @@ describe("Navigation", () => {
   });
 
   it("home page jam keyboard shortcut uses client navigation", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/", { waitUntil: "networkidle" });
     await expect(
       page.getByRole("heading", {
@@ -103,7 +92,8 @@ describe("Navigation", () => {
   });
 
   it("active development route header links use client navigation", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/remix-3-active-development", {
       waitUntil: "networkidle",
     });
@@ -118,7 +108,8 @@ describe("Navigation", () => {
   });
 
   it("blog to home page applies forced dark mode", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/blog", { waitUntil: "networkidle" });
 
@@ -136,7 +127,8 @@ describe("Navigation", () => {
   });
 
   it("blog header jam link uses client navigation", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/blog", { waitUntil: "networkidle" });
 
     await expectClientNavigation(
@@ -151,7 +143,8 @@ describe("Navigation", () => {
   });
 
   it("Remix 3 active development page to jam applies jam head styles and forced dark theme", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/remix-3-active-development", {
       waitUntil: "networkidle",
     });
@@ -178,7 +171,8 @@ describe("Navigation", () => {
   });
 
   it("header wordmark context menu uses client navigation for brand", async (t) => {
-    let page = await t.serve(server);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/blog", { waitUntil: "networkidle" });
 
     let remixLink = page.locator('header a[aria-label="Remix"]').first();
