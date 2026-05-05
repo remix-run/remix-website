@@ -16,7 +16,7 @@ Brands typically change to signal a shift in thinking or reflect a changing audi
 
 ![Brand evolution board mapping Remix's Past, Present, and Future across three rows of context cards.](/blog-images/posts/brand-new/frames-brand-thinking.avif)
 
-Ultimately, the trigger — the moment we decided we needed a new brand — was when we established [our philosophy for building Remix 3](https://github.com/remix-run/remix/blob/main/README.md) and beyond.
+Ultimately, the trigger — the moment we decided we needed a new brand — was when we established [our philosophy for building Remix 3](/blog/wake-up-remix) and beyond.
 
 Since our work is always intentional (and open source), I'm sharing the Figma frames as a way of providing transparency. Any good brand encapsulates the philosophies and ideals of the thing it represents, so in order to arrive at the right solution I needed to recontextualize the problem. In this case, I wanted to see the past, present, and future of Remix from a bird's-eye point of view.
 
