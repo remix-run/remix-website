@@ -32,43 +32,6 @@ async function expectMarkerToStay(page: Page, marker: string) {
     .toBe(marker);
 }
 
-async function dismissViteAbortOverlay(page: Page) {
-  let overlay = page.locator("vite-error-overlay");
-  if ((await overlay.count()) === 0) return;
-
-  let overlayText = (await overlay.textContent()) ?? "";
-  if (!overlayText.includes("aborted")) return;
-
-  await page.evaluate(() => {
-    document.querySelector("vite-error-overlay")?.remove();
-  });
-  await expect(overlay).toHaveCount(0);
-}
-
-async function clickWithViteAbortOverlayRetry(
-  page: Page,
-  locator: ReturnType<Page["locator"]>,
-) {
-  for (let attempt = 0; attempt < 3; attempt++) {
-    await dismissViteAbortOverlay(page);
-
-    try {
-      await locator.click({ timeout: 1_000 });
-      return;
-    } catch (error) {
-      let overlay = page.locator("vite-error-overlay");
-      let overlayText = (await overlay.textContent()) ?? "";
-      if (!(await overlay.count()) || !overlayText.includes("aborted")) {
-        throw error;
-      }
-    }
-  }
-
-  await dismissViteAbortOverlay(page);
-  await locator.evaluate((element: HTMLElement) => {
-    element.click();
-  });
-}
 function galleryPhotoLinks(page: Page) {
   return page.locator('main a[href^="/jam/2025/gallery?photo="]').filter({
     has: page.locator("img"),
@@ -153,15 +116,11 @@ describe("Jam", () => {
     });
 
     await gotoRemixPage(page, "/jam/2025");
-    await dismissViteAbortOverlay(page);
     await waitForRemixReady(page);
 
     let emailInput = page.getByPlaceholder("your@email.com");
     await emailInput.fill("hello@example.com");
-    await clickWithViteAbortOverlayRetry(
-      page,
-      page.getByRole("button", { name: "Sign Up" }),
-    );
+    await page.getByRole("button", { name: "Sign Up" }).click();
 
     await expect(page.getByText(/You're good to go/i)).toBeVisible();
     await expect(emailInput).toHaveValue("");
@@ -180,14 +139,10 @@ describe("Jam", () => {
     });
 
     await gotoRemixPage(page, "/jam/2025");
-    await dismissViteAbortOverlay(page);
     await waitForRemixReady(page);
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
-    await clickWithViteAbortOverlayRetry(
-      page,
-      page.getByRole("button", { name: "Sign Up" }),
-    );
+    await page.getByRole("button", { name: "Sign Up" }).click();
 
     await expect(page.getByText("Something went wrong")).toBeVisible();
     await expect(page.getByText(/please try again\./i)).toBeVisible();
@@ -209,14 +164,10 @@ describe("Jam", () => {
     });
 
     await gotoRemixPage(page, "/jam/2025");
-    await dismissViteAbortOverlay(page);
     await waitForRemixReady(page);
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
-    await clickWithViteAbortOverlayRetry(
-      page,
-      page.getByRole("button", { name: "Sign Up" }),
-    );
+    await page.getByRole("button", { name: "Sign Up" }).click();
 
     let pendingButton = page.getByRole("button", { name: "Signing Up..." });
     await expect(pendingButton).toBeVisible();
@@ -283,15 +234,11 @@ describe("Jam", () => {
   it("jam info navigation stays client-side without a full reload", async (t) => {
     let page = await createE2EPage(t);
     await gotoRemixPage(page, "/jam/2025");
-    await dismissViteAbortOverlay(page);
     await waitForRemixReady(page);
 
     let marker = await markPage(page);
     await waitForRemixNavigation(page, () =>
-      clickWithViteAbortOverlayRetry(
-        page,
-        page.getByRole("link", { name: "Schedule & Lineup" }).first(),
-      ),
+      page.getByRole("link", { name: "Schedule & Lineup" }).first().click(),
     );
 
     await page.waitForURL("**/jam/2025/lineup");
@@ -306,10 +253,7 @@ describe("Jam", () => {
       .toBe(marker);
 
     await waitForRemixNavigation(page, () =>
-      clickWithViteAbortOverlayRetry(
-        page,
-        page.getByRole("link", { name: "FAQ" }).first(),
-      ),
+      page.getByRole("link", { name: "FAQ" }).first().click(),
     );
 
     await page.waitForURL("**/jam/2025/faq");
