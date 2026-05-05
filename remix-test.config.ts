@@ -1,19 +1,9 @@
 import type { RemixTestConfig } from "remix/test";
 
 export default {
-  browser: {
-    echo: false,
-    open: false,
-  },
-  glob: {
-    test: "**/*.test{,.browser,.e2e}.{ts,tsx}",
-    e2e: "e2e/**/*.test.e2e.{ts,tsx}",
-    exclude: ["node_modules/**", "e2e/**/*.spec.ts"],
-  },
+  coverage: process.env.NODE_ENV === "test",
   playwrightConfig: {
     projects: [{ name: "chromium", use: { browserName: "chromium" } }],
   },
-  project: "chromium",
   setup: "./test/setup-test-env.ts",
-  type: ["server"],
 } satisfies RemixTestConfig;

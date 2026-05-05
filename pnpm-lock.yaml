@@ -64,7 +64,7 @@ importers:
         version: 11.1.2
       remix:
         specifier: 3.0.0-beta.0
-        version: 3.0.0-beta.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+        version: 3.0.0-beta.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(playwright@1.59.1)
       satori:
         specifier: ^0.26.0
         version: 0.26.0
@@ -91,8 +91,8 @@ importers:
         version: 2.8.2
     devDependencies:
       '@playwright/test':
-        specifier: ^1.58.2
-        version: 1.58.2
+        specifier: ^1.59.1
+        version: 1.59.1
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
@@ -968,8 +968,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@playwright/test@1.58.2':
-    resolution: {integrity: sha512-akea+6bHYBBfA9uQqSYmlJXn61cTa+jbO87xVLCWbTqbWadRVmhxlXATaOjOgcBaWU4ePo0wB41KMFv3o35IXA==}
+  '@playwright/test@1.59.1':
+    resolution: {integrity: sha512-PG6q63nQg5c9rIi4/Z5lR5IVF7yU5MqmKaPOe0HSc0O2cX1fPi96sUQu5j7eo4gKCkB2AnNGoWt7y4/Xx3Kcqg==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -2215,13 +2215,13 @@ packages:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
     engines: {node: '>= 6'}
 
-  playwright-core@1.58.2:
-    resolution: {integrity: sha512-yZkEtftgwS8CsfYo7nm0KE8jsvm6i/PTgVtB8DL726wNf6H2IMsDuxCpJj59KDaxCtSnrWan2AeDqM7JBaultg==}
+  playwright-core@1.59.1:
+    resolution: {integrity: sha512-HBV/RJg81z5BiiZ9yPzIiClYV/QMsDCKUyogwH9p3MCP6IYjUFu/MActgYAvK0oWyV9NlwM3GLBjADyWgydVyg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.58.2:
-    resolution: {integrity: sha512-vA30H8Nvkq/cPBnNw4Q8TWz1EJyqgpuinBcHET0YVJVFldr8JDNiU9LaWAE1KqSkRYazuaBhTpB5ZzShOezQ6A==}
+  playwright@1.59.1:
+    resolution: {integrity: sha512-C8oWjPR3F81yljW9o5OxcWzfh6avkVwDD2VYdwIGqTkl+OGFISgypqzfu7dOe4QNLL2aqcWBmI3PMtLIK233lw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -3344,9 +3344,9 @@ snapshots:
   '@oxlint/binding-win32-x64-msvc@1.50.0':
     optional: true
 
-  '@playwright/test@1.58.2':
+  '@playwright/test@1.59.1':
     dependencies:
-      playwright: 1.58.2
+      playwright: 1.59.1
 
   '@remix-run/assert@0.2.0': {}
 
@@ -3384,10 +3384,10 @@ snapshots:
       '@remix-run/fetch-router': 0.18.2
       '@remix-run/session': 0.4.1
 
-  '@remix-run/cli@0.2.0':
+  '@remix-run/cli@0.2.0(playwright@1.59.1)':
     dependencies:
       '@remix-run/terminal': 0.1.0
-      '@remix-run/test': 0.3.0
+      '@remix-run/test': 0.3.0(playwright@1.59.1)
       semver: 7.7.4
     transitivePeerDependencies:
       - playwright
@@ -3531,7 +3531,7 @@ snapshots:
 
   '@remix-run/terminal@0.1.0': {}
 
-  '@remix-run/test@0.3.0':
+  '@remix-run/test@0.3.0(playwright@1.59.1)':
     dependencies:
       '@remix-run/terminal': 0.1.0
       es-module-lexer: 2.0.0
@@ -3544,6 +3544,8 @@ snapshots:
       source-map-js: 1.2.1
       tsx: 4.21.0
       v8-to-istanbul: 9.3.0
+    optionalDependencies:
+      playwright: 1.59.1
 
   '@remix-run/ui@0.1.1':
     dependencies:
@@ -4790,11 +4792,11 @@ snapshots:
 
   pirates@4.0.7: {}
 
-  playwright-core@1.58.2: {}
+  playwright-core@1.59.1: {}
 
-  playwright@1.58.2:
+  playwright@1.59.1:
     dependencies:
-      playwright-core: 1.58.2
+      playwright-core: 1.59.1
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -5103,14 +5105,14 @@ snapshots:
       mdast-util-to-markdown: 2.1.2
       unified: 11.0.5
 
-  remix@3.0.0-beta.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
+  remix@3.0.0-beta.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(playwright@1.59.1):
     dependencies:
       '@remix-run/assert': 0.2.0
       '@remix-run/assets': 0.3.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       '@remix-run/async-context-middleware': 0.2.2
       '@remix-run/auth': 0.2.1
       '@remix-run/auth-middleware': 0.1.2
-      '@remix-run/cli': 0.2.0
+      '@remix-run/cli': 0.2.0(playwright@1.59.1)
       '@remix-run/compression-middleware': 0.1.7
       '@remix-run/cookie': 0.5.1
       '@remix-run/cop-middleware': 0.1.2
@@ -5146,8 +5148,10 @@ snapshots:
       '@remix-run/static-middleware': 0.4.8
       '@remix-run/tar-parser': 0.7.1
       '@remix-run/terminal': 0.1.0
-      '@remix-run/test': 0.3.0
+      '@remix-run/test': 0.3.0(playwright@1.59.1)
       '@remix-run/ui': 0.1.1
+    optionalDependencies:
+      playwright: 1.59.1
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
