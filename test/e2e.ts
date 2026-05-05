@@ -10,8 +10,19 @@ export async function createE2EPage(t: TestContext): Promise<Page> {
   suppressExpectedServerAbortLogs();
 
   let server = await createTestServer(router.fetch);
+  let page = await t.serve(server);
 
-  return t.serve(server);
+  await page.addInitScript(() => {
+    window.addEventListener(
+      "remix:ready",
+      () => {
+        (window as Window & { __remixReady?: boolean }).__remixReady = true;
+      },
+      { once: true },
+    );
+  });
+
+  return page;
 }
 
 export async function gotoRemixPage(page: Page, url: string) {
@@ -19,9 +30,9 @@ export async function gotoRemixPage(page: Page, url: string) {
 }
 
 export async function waitForRemixReady(page: Page) {
-  await page.waitForFunction(
-    () => document.documentElement.dataset.remixReady === "true",
-  );
+  await page.waitForFunction(() => {
+    return (window as Window & { __remixReady?: boolean }).__remixReady === true;
+  });
 }
 
 export async function waitForRemixNavigation(

@@ -1,5 +1,3 @@
-import * as path from "node:path";
-
 import { asyncContext } from "remix/async-context-middleware";
 import { compression } from "remix/compression-middleware";
 import { createRouter, type RequestContext } from "remix/fetch-router";
@@ -34,11 +32,7 @@ import { newsletterHandler } from "./controllers/newsletter.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
 let isTest = process.env.NODE_ENV === "test";
-let isPlaywrightTest = process.env.PLAYWRIGHT_TEST === "1";
 let shouldBypassLoopbackRateLimit = isDev;
-let browserEntry = isPlaywrightTest
-  ? path.resolve(import.meta.dirname, "./assets/entry.e2e.ts")
-  : undefined;
 
 function shouldSkipRateLimit(pathname: string) {
   return (
@@ -81,7 +75,7 @@ export function createAppRouter() {
 
   middleware.push(formData());
   middleware.push(asyncContext());
-  middleware.push(loadAssetEntry(browserEntry));
+  middleware.push(loadAssetEntry());
   middleware.push(
     rateLimit({
       windowMs: 2 * 60 * 1000,
