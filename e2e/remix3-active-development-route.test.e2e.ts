@@ -6,9 +6,7 @@ import { createE2EPage } from "../test/e2e.ts";
 describe("Remix 3 active development route", () => {
   it("renders key active-development content", async (t) => {
     let page = await createE2EPage(t);
-    const response = await page.goto("/remix-3-active-development", {
-      waitUntil: "domcontentloaded",
-    });
+    const response = await page.goto("/remix-3-active-development");
     expect(response?.ok()).toBe(true);
 
     await expect(page).toHaveTitle(/Remix/i);

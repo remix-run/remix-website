@@ -6,9 +6,7 @@ import { createE2EPage, waitForRemixReady } from "../test/e2e.ts";
 describe("Newsletter subscribe", () => {
   it("renders the newsletter form in the Remix 3 active development section", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/remix-3-active-development", {
-      waitUntil: "domcontentloaded",
-    });
+    await page.goto("/remix-3-active-development");
 
     await expect(
       page.getByRole("heading", { name: "Stay in the loop" }),
@@ -30,9 +28,7 @@ describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/remix-3-active-development", {
-      waitUntil: "domcontentloaded",
-    });
+    await page.goto("/remix-3-active-development");
     await waitForRemixReady(page);
 
     let emailInput = page.getByPlaceholder("name@example.com");
@@ -55,9 +51,7 @@ describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/remix-3-active-development", {
-      waitUntil: "domcontentloaded",
-    });
+    await page.goto("/remix-3-active-development");
     await waitForRemixReady(page);
 
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
@@ -83,9 +77,7 @@ describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/remix-3-active-development", {
-      waitUntil: "domcontentloaded",
-    });
+    await page.goto("/remix-3-active-development");
     await waitForRemixReady(page);
 
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
@@ -117,7 +109,7 @@ describe("Homepage newsletter", () => {
       });
     });
 
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/");
     await waitForRemixReady(page);
 
     let startBuilding = page.locator("#start-building");
@@ -135,7 +127,7 @@ describe("Homepage newsletter", () => {
 describe("Newsletter page (/newsletter)", () => {
   it("renders the newsletter page with form", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/newsletter", { waitUntil: "domcontentloaded" });
+    await page.goto("/newsletter");
 
     await expect(page.getByText("Newsletter").first()).toBeVisible();
     await expect(
@@ -155,7 +147,7 @@ describe("Newsletter page (/newsletter)", () => {
       });
     });
 
-    await page.goto("/newsletter", { waitUntil: "domcontentloaded" });
+    await page.goto("/newsletter");
     await waitForRemixReady(page);
 
     let emailInput = page.getByPlaceholder("name@example.com");
