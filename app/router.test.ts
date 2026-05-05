@@ -1,11 +1,11 @@
 import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 
-import { testRouter } from "./router.ts";
+import { router } from "./router.ts";
 
 describe("app router", () => {
   it("serves the healthcheck route", async () => {
-    let response = await testRouter.fetch("http://localhost/healthcheck");
+    let response = await router.fetch("http://localhost/healthcheck");
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe(
@@ -16,7 +16,7 @@ describe("app router", () => {
   });
 
   it("serves the blog RSS route", async () => {
-    let response = await testRouter.fetch("http://localhost/blog/rss.xml");
+    let response = await router.fetch("http://localhost/blog/rss.xml");
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("application/xml");

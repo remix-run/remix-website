@@ -1,3 +1,5 @@
+import * as path from "node:path";
+
 import { asyncContext } from "remix/async-context-middleware";
 import { compression } from "remix/compression-middleware";
 import { createRouter, type RequestContext } from "remix/fetch-router";
@@ -31,13 +33,12 @@ import { jamHandler } from "./controllers/jam/controller.ts";
 import { newsletterHandler } from "./controllers/newsletter.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
-let shouldBypassLoopbackRateLimit =
-  isDev || process.env.PLAYWRIGHT_TEST === "1";
-
-type AppRouterOptions = {
-  assetEntry?: string;
-  logRequests?: boolean;
-};
+let isPlaywrightTest = process.env.PLAYWRIGHT_TEST === "1";
+let isTest = process.env.REMIX_WEBSITE_TEST === "1" || isPlaywrightTest;
+let shouldBypassLoopbackRateLimit = isDev || isPlaywrightTest;
+let browserEntry = isPlaywrightTest
+  ? path.resolve(import.meta.dirname, "./assets/entry.e2e.ts")
+  : undefined;
 
 function shouldSkipRateLimit(pathname: string) {
   return (
@@ -47,8 +48,7 @@ function shouldSkipRateLimit(pathname: string) {
   );
 }
 
-export function createAppRouter(options: AppRouterOptions = {}) {
-  let { assetEntry, logRequests = true } = options;
+export function createAppRouter() {
   let middleware = [];
 
   middleware.push(compression());
@@ -81,7 +81,7 @@ export function createAppRouter(options: AppRouterOptions = {}) {
 
   middleware.push(formData());
   middleware.push(asyncContext());
-  middleware.push(loadAssetEntry(assetEntry));
+  middleware.push(loadAssetEntry(browserEntry));
   middleware.push(
     rateLimit({
       windowMs: 2 * 60 * 1000,
@@ -90,7 +90,7 @@ export function createAppRouter(options: AppRouterOptions = {}) {
       skip: (context) => shouldSkipRateLimit(context.url.pathname),
     }),
   );
-  if (logRequests) {
+  if (!isTest) {
     middleware.push(logger());
   }
 
@@ -145,4 +145,3 @@ export function createAppRouter(options: AppRouterOptions = {}) {
 }
 
 export let router = createAppRouter();
-export let testRouter = createAppRouter({ logRequests: false });
