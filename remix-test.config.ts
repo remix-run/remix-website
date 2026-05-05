@@ -1,6 +1,7 @@
 import type { RemixTestConfig } from "remix/test";
 
 export default {
+  concurrency: 1,
   coverage: process.env.NODE_ENV === "test",
   playwrightConfig: {
     projects: [{ name: "chromium", use: { browserName: "chromium" } }],
