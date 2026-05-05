@@ -26,7 +26,7 @@ Building *with* the web rather than against it meant the shape of our work was m
 
 ![Logo evolution board grouped into three rows: Evolving the Logo, Preserving the DNA, and Logo in use, showing wordmark explorations and applications.](/blog-images/posts/brand-new/frames-logo-evolution.avif)
 
-The new identity was meant to have a clear lineage from its predecessor, and it came quite naturally as we were putting together the [demo for last year's Remix Jam](https://remix.run/jam/2025/gallery?photo=46). Customizing letterforms from the Kanada typeface also seemed like a nice reference to our parent company's Canadian roots. Speaking of which, this was the first substantial shift in the brand since Remix joined Shopify, so I felt that it was necessary for the two brands to work together in harmony. Our racing theme already nudged the logo and wordmark into an italicized direction, so this worked in our favor.
+The new identity was meant to have a clear lineage from its predecessor, and it came quite naturally as we were putting together the [demo for last year's Remix Jam](/jam/2025/gallery?photo=46). Customizing letterforms from the Kanada typeface also seemed like a nice reference to our parent company's Canadian roots. Speaking of which, this was the first substantial shift in the brand since Remix joined Shopify, so I felt that it was necessary for the two brands to work together in harmony. Our racing theme already nudged the logo and wordmark into an italicized direction, so this worked in our favor.
 
 ## Creating a New Website
 
@@ -45,7 +45,7 @@ To announce a new brand and release Remix 3 Beta, realistic photography or illus
 
 ## Under the Hood
 
-[The site](https://remix.run/) is built on Remix 3 (alpha) — notably without React, using plain TypeScript and the framework's native component model. 
+[The site](/) is built on Remix 3 (alpha) — notably without React, using plain TypeScript and the framework's native component model. 
 
 The centerpiece is that morphing particle cloud that reshapes as you scroll between sections: it's a WebGL scene rendered with Three.js, driven by custom GLSL shaders so the heavy lifting happens on the GPU rather than the CPU. Scroll position is mapped to a continuous morph value that interpolates between preset shapes, with the anchor points tied to each section's center so the nav lands you exactly on a preset's "peak." 
 

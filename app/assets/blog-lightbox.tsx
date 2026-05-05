@@ -1,17 +1,10 @@
-import {
-  addEventListeners,
-  clientEntry,
-  on,
-  ref,
-  type Handle,
-} from "remix/ui";
+import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
 import cx from "clsx";
+import { focusTrap } from "../ui/focus-trap.ts";
 
 const PROSE_SELECTOR = ".md-prose";
 
-type LightboxState =
-  | { open: false }
-  | { open: true; src: string; alt: string };
+type LightboxState = { open: false } | { open: true; src: string; alt: string };
 
 /**
  * Mounts a fullscreen image lightbox for any `<img>` inside an element
@@ -23,6 +16,7 @@ export let BlogLightbox = clientEntry(
   import.meta.url,
   function BlogLightbox(handle: Handle<{}>) {
     let lightbox: LightboxState = { open: false };
+    let lightboxEl: HTMLDivElement | null = null;
     let closeButtonEl: HTMLButtonElement | null = null;
     let lastFocused: HTMLElement | null = null;
     let previousBodyOverflow = "";
@@ -38,7 +32,7 @@ export let BlogLightbox = clientEntry(
       handle.update();
       handle.queueTask((signal) => {
         if (signal.aborted) return;
-        closeButtonEl?.focus();
+        (closeButtonEl ?? lightboxEl)?.focus();
       });
     };
 
@@ -75,7 +69,7 @@ export let BlogLightbox = clientEntry(
       }
     };
 
-    let decoratePose = () => {
+    let decorateProse = () => {
       let proses = document.querySelectorAll<HTMLElement>(PROSE_SELECTOR);
       for (let prose of proses) {
         let images = prose.querySelectorAll<HTMLImageElement>("img");
@@ -95,9 +89,9 @@ export let BlogLightbox = clientEntry(
     };
 
     handle.queueTask(() => {
-      decoratePose();
+      decorateProse();
 
-      proseObserver = new MutationObserver(() => decoratePose());
+      proseObserver = new MutationObserver(() => decorateProse());
       proseObserver.observe(document.body, {
         childList: true,
         subtree: true,
@@ -153,12 +147,19 @@ export let BlogLightbox = clientEntry(
           role="dialog"
           aria-modal="true"
           aria-label="Image preview"
+          tabIndex={-1}
           hidden={!isOpen}
           class={cx(
             "fixed inset-0 z-50 items-center justify-center bg-black/90 p-4 backdrop-blur-sm",
             isOpen ? "flex" : "hidden",
           )}
-          mix={[on("click", onBackdropClick)]}
+          mix={[
+            ref((node) => {
+              lightboxEl = node;
+            }),
+            focusTrap(isOpen),
+            on("click", onBackdropClick),
+          ]}
         >
           <img
             src={src}

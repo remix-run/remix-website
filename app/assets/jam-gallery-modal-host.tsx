@@ -10,9 +10,11 @@ import {
   restoreGalleryFocus,
   storeGalleryFocus,
 } from "./jam-gallery-focus-restore.tsx";
-
-let FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+import {
+  focusTrap,
+  getFocusableElementsWithin,
+  isFocusable,
+} from "../ui/focus-trap.ts";
 
 /** Which chevron to focus after keyboard prev/next (URL updates before the new modal paints). */
 let PENDING_KEYBOARD_CHEVRON_KEY = "jam-gallery-pending-chevron-focus";
@@ -45,7 +47,10 @@ export let JamGalleryModalHost = clientEntry(
           aria-modal="true"
           tabindex={-1}
           class={handle.props.class}
-          mix={[modalNavigation(handle.props.nav, galleryPhotoCount)]}
+          mix={[
+            focusTrap(),
+            modalNavigation(handle.props.nav, galleryPhotoCount),
+          ]}
         >
           {handle.props.children}
         </div>
@@ -70,9 +75,7 @@ function createJamGalleryModalNavigation() {
 
     let getFocusableElements = () => {
       if (!modal) return [];
-      return Array.from(
-        modal.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-      ).filter(isFocusable);
+      return getFocusableElementsWithin(modal);
     };
 
     let focusBoundary = (direction: "start" | "end") => {
@@ -176,39 +179,6 @@ function createJamGalleryModalNavigation() {
         let isModified = event.metaKey || event.ctrlKey || event.altKey;
 
         switch (key) {
-          case "Tab": {
-            let focusableElements = getFocusableElements();
-            if (focusableElements.length === 0) {
-              event.preventDefault();
-              host.focus();
-              break;
-            }
-
-            let firstFocusable = focusableElements[0];
-            let lastFocusable = focusableElements[focusableElements.length - 1];
-            let activeElement = document.activeElement;
-            let isActiveInsideModal =
-              activeElement instanceof HTMLElement &&
-              host.contains(activeElement);
-
-            if (!isActiveInsideModal) {
-              event.preventDefault();
-              focusBoundary(event.shiftKey ? "end" : "start");
-              break;
-            }
-
-            if (!event.shiftKey && activeElement === lastFocusable) {
-              event.preventDefault();
-              firstFocusable.focus();
-              break;
-            }
-
-            if (event.shiftKey && activeElement === firstFocusable) {
-              event.preventDefault();
-              lastFocusable.focus();
-            }
-            break;
-          }
           case "Escape":
             event.preventDefault();
             void closeGallery();
@@ -231,15 +201,6 @@ function createJamGalleryModalNavigation() {
           default:
             break;
         }
-      };
-
-      let onFocusin = (event: FocusEvent) => {
-        let target = event.target;
-        if (!(target instanceof HTMLElement)) return;
-        let host = modal;
-        if (!host || host.contains(target)) return;
-
-        focusBoundary("start");
       };
 
       let onClick = (event: MouseEvent) => {
@@ -268,7 +229,6 @@ function createJamGalleryModalNavigation() {
 
       addEventListeners(document, handle.signal, {
         keydown: onKeydown,
-        focusin: onFocusin,
         click: onClick,
       });
 
@@ -332,16 +292,6 @@ function peekKeyboardGalleryChevron(): "previous" | "next" | null {
 
 function clearKeyboardGalleryChevron() {
   window.sessionStorage.removeItem(PENDING_KEYBOARD_CHEVRON_KEY);
-}
-
-function isFocusable(element: HTMLElement) {
-  if (element.matches("[disabled], [aria-hidden='true']")) return false;
-  if (element.tabIndex < 0) return false;
-
-  let style = window.getComputedStyle(element);
-  if (style.display === "none" || style.visibility === "hidden") return false;
-
-  return element.getClientRects().length > 0;
 }
 
 function findLinkByHref(root: ParentNode, href: string) {
