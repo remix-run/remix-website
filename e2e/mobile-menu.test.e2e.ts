@@ -4,6 +4,7 @@ import { describe, it } from "remix/test";
 import {
   createE2EPage,
   gotoRemixPage,
+  waitForRemixNavigation,
   waitForRemixReady,
 } from "../test/e2e.ts";
 
@@ -86,12 +87,14 @@ describe("Mobile menu", () => {
     await expect(menuToggle).toBeVisible();
     await menuToggle.click();
 
-    await page
-      .getByRole("navigation", { name: "Mobile" })
-      .getByRole("link", {
-        name: "Blog",
-      })
-      .click();
+    await waitForRemixNavigation(page, () =>
+      page
+        .getByRole("navigation", { name: "Mobile" })
+        .getByRole("link", {
+          name: "Blog",
+        })
+        .click(),
+    );
 
     await page.waitForURL("**/blog");
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();

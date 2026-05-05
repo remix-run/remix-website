@@ -4,6 +4,7 @@ import { describe, it } from "remix/test";
 import {
   createE2EPage,
   gotoRemixPage,
+  waitForRemixNavigation,
   waitForRemixReady,
 } from "../test/e2e.ts";
 
@@ -240,29 +241,36 @@ describe("Jam", () => {
     let page = await createE2EPage(t);
     await page.setViewportSize({ width: 1280, height: 900 });
     await gotoRemixPage(page, "/jam/2025/lineup");
+    await waitForRemixReady(page);
 
     let firstAccordion = page.locator("main details").first();
     let firstSummary = firstAccordion.locator("summary");
-    await expect(firstAccordion).not.toHaveAttribute("open", "");
+    let initiallyOpen = await firstAccordion.evaluate(
+      (element: HTMLDetailsElement) => element.open,
+    );
 
     await firstSummary.click();
-    await expect(firstAccordion).toHaveAttribute("open", "");
+    await expect(firstAccordion).toHaveJSProperty("open", !initiallyOpen);
 
     await firstSummary.click();
-    await expect(firstAccordion).not.toHaveAttribute("open", "");
+    await expect(firstAccordion).toHaveJSProperty("open", initiallyOpen);
   });
 
   it("jam lineup desktop accordion settles correctly after rapid toggles", async (t) => {
     let page = await createE2EPage(t);
     await page.setViewportSize({ width: 1280, height: 900 });
     await gotoRemixPage(page, "/jam/2025/lineup");
+    await waitForRemixReady(page);
 
     let firstAccordion = page.locator("main details").first();
     let firstSummary = firstAccordion.locator("summary");
+    let initiallyOpen = await firstAccordion.evaluate(
+      (element: HTMLDetailsElement) => element.open,
+    );
 
     await firstSummary.click();
     await firstSummary.click();
-    await expect(firstAccordion).not.toHaveAttribute("open", "");
+    await expect(firstAccordion).toHaveJSProperty("open", initiallyOpen);
   });
 
   it("jam faq page renders", async (t) => {
@@ -278,9 +286,11 @@ describe("Jam", () => {
     await waitForRemixReady(page);
 
     let marker = await markPage(page);
-    await clickWithViteAbortOverlayRetry(
-      page,
-      page.getByRole("link", { name: "Schedule & Lineup" }).first(),
+    await waitForRemixNavigation(page, () =>
+      clickWithViteAbortOverlayRetry(
+        page,
+        page.getByRole("link", { name: "Schedule & Lineup" }).first(),
+      ),
     );
 
     await page.waitForURL("**/jam/2025/lineup");
@@ -294,9 +304,11 @@ describe("Jam", () => {
       )
       .toBe(marker);
 
-    await clickWithViteAbortOverlayRetry(
-      page,
-      page.getByRole("link", { name: "FAQ" }).first(),
+    await waitForRemixNavigation(page, () =>
+      clickWithViteAbortOverlayRetry(
+        page,
+        page.getByRole("link", { name: "FAQ" }).first(),
+      ),
     );
 
     await page.waitForURL("**/jam/2025/faq");
@@ -332,17 +344,23 @@ describe("Jam", () => {
     if (!(await galleryHasAtLeast(page, 1))) return;
 
     let marker = await markPage(page);
-    await galleryPhotoLinks(page).first().click();
+    await waitForRemixNavigation(page, () =>
+      galleryPhotoLinks(page).first().click(),
+    );
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeVisible();
     await expectMarkerToStay(page, marker);
 
-    await page.getByRole("link", { name: "Next photo" }).click();
+    await waitForRemixNavigation(page, () =>
+      page.getByRole("link", { name: "Next photo" }).click(),
+    );
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=\d+/);
     await expectMarkerToStay(page, marker);
 
-    await page.getByRole("link", { name: "Close modal" }).click();
+    await waitForRemixNavigation(page, () =>
+      page.getByRole("link", { name: "Close modal" }).click(),
+    );
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
@@ -355,12 +373,12 @@ describe("Jam", () => {
 
     let firstPhotoLink = galleryPhotoLinks(page).first();
     let marker = await markPage(page);
-    await firstPhotoLink.click();
+    await waitForRemixNavigation(page, () => firstPhotoLink.click());
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
     await expectMarkerToStay(page, marker);
 
-    await page.keyboard.press("Escape");
+    await waitForRemixNavigation(page, () => page.keyboard.press("Escape"));
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
@@ -374,11 +392,13 @@ describe("Jam", () => {
 
     let firstPhotoLink = galleryPhotoLinks(page).first();
     let marker = await markPage(page);
-    await firstPhotoLink.click();
+    await waitForRemixNavigation(page, () => firstPhotoLink.click());
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
     await expectMarkerToStay(page, marker);
-    await page.getByRole("link", { name: "Close modal" }).click();
+    await waitForRemixNavigation(page, () =>
+      page.getByRole("link", { name: "Close modal" }).click(),
+    );
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
@@ -414,7 +434,9 @@ describe("Jam", () => {
     if (!(await galleryHasAtLeast(page, 2))) return;
 
     let marker = await markPage(page);
-    await galleryPhotoLinks(page).first().click();
+    await waitForRemixNavigation(page, () =>
+      galleryPhotoLinks(page).first().click(),
+    );
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toBeVisible();
     let previousLink = page.getByRole("link", { name: "Previous photo" });
@@ -422,21 +444,23 @@ describe("Jam", () => {
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
     await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
 
-    await page.keyboard.press("ArrowRight");
+    await waitForRemixNavigation(page, () => page.keyboard.press("ArrowRight"));
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText(/^2 \/ \d+$/)).toBeVisible();
     await expect(nextLink).toBeFocused();
     await expectMarkerToStay(page, marker);
 
-    await page.keyboard.press("ArrowLeft");
+    await waitForRemixNavigation(page, () => page.keyboard.press("ArrowLeft"));
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
     await expect(previousLink).toBeFocused();
     await expectMarkerToStay(page, marker);
 
-    await page.getByRole("link", { name: "Close modal" }).click();
+    await waitForRemixNavigation(page, () =>
+      page.getByRole("link", { name: "Close modal" }).click(),
+    );
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);

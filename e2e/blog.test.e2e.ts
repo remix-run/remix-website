@@ -4,6 +4,7 @@ import { describe, it } from "remix/test";
 import {
   createE2EPage,
   gotoRemixPage,
+  waitForRemixNavigation,
   waitForRemixReady,
 } from "../test/e2e.ts";
 
@@ -47,7 +48,7 @@ describe("Blog", () => {
     await expect(link).toBeVisible();
     expect(href).toBeTruthy();
 
-    await link.click();
+    await waitForRemixNavigation(page, () => link.click());
     await page.waitForURL(`**${href}`);
     await expect
       .poll(() =>

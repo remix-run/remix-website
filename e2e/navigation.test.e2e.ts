@@ -4,6 +4,7 @@ import { describe, it } from "remix/test";
 import {
   createE2EPage,
   gotoRemixPage,
+  waitForRemixNavigation,
   waitForRemixReady,
 } from "../test/e2e.ts";
 
@@ -21,7 +22,7 @@ async function expectClientNavigation(
   url: string,
 ) {
   let marker = await markPage(page);
-  await navigate();
+  await waitForRemixNavigation(page, navigate);
   await page.waitForURL(url);
   await expect
     .poll(() =>
@@ -87,7 +88,7 @@ describe("Navigation", () => {
       "**/jam/2025",
     );
     await expect(
-      page.getByRole("heading", { name: /Remix Jam/i }),
+      page.getByRole("heading", { level: 1, name: /Remix Jam/i }),
     ).toBeVisible();
   });
 
@@ -136,7 +137,7 @@ describe("Navigation", () => {
     );
 
     await expect(
-      page.getByRole("heading", { name: /Remix Jam/i }),
+      page.getByRole("heading", { level: 1, name: /Remix Jam/i }),
     ).toBeVisible();
   });
 
