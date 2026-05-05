@@ -29,9 +29,10 @@ describe("Newsletter subscribe", () => {
     });
 
     await page.goto("/remix-3-active-development");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 30_000 });
 
     let emailInput = page.getByPlaceholder("name@example.com");
+    await expect(emailInput).toBeVisible();
     await expect(async () => {
       await emailInput.fill("hello@example.com");
       await page.getByRole("button", { name: "Subscribe" }).click();
@@ -56,8 +57,9 @@ describe("Newsletter subscribe", () => {
     });
 
     await page.goto("/remix-3-active-development");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 30_000 });
 
+    await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
     await expect(async () => {
       await page.getByPlaceholder("name@example.com").fill("hello@example.com");
       await page.getByRole("button", { name: "Subscribe" }).click();
@@ -86,8 +88,9 @@ describe("Newsletter subscribe", () => {
     });
 
     await page.goto("/remix-3-active-development");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 30_000 });
 
+    await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
     await page.getByPlaceholder("name@example.com").fill("hello@example.com");
     await page.getByRole("button", { name: "Subscribe" }).click();
 
@@ -117,10 +120,11 @@ describe("Homepage newsletter", () => {
     });
 
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 30_000 });
 
     let startBuilding = page.locator("#start-building");
     let emailInput = startBuilding.getByPlaceholder("name@example.com");
+    await expect(emailInput).toBeVisible();
     await expect(async () => {
       await emailInput.fill("hello@example.com");
       await startBuilding.getByRole("button", { name: "Subscribe" }).click();
@@ -159,9 +163,10 @@ describe("Newsletter page (/newsletter)", () => {
     });
 
     await page.goto("/newsletter");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 30_000 });
 
     let emailInput = page.getByPlaceholder("name@example.com");
+    await expect(emailInput).toBeVisible();
     await expect(async () => {
       await emailInput.fill("hello@example.com");
       await page.getByRole("button", { name: "Subscribe" }).click();

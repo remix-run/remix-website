@@ -1,7 +1,7 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import { catchallHandler } from "./catchall.ts";
-import { router } from "../router.ts";
+import { testRouter } from "../router.ts";
 
 function createContext(pathname: string) {
   return {
@@ -79,7 +79,7 @@ describe("catchall route", () => {
   });
 
   it("returns 404 for unknown paths", async () => {
-    let response = await router.fetch(
+    let response = await testRouter.fetch(
       new Request("https://remix.run/not-real"),
     );
     expect(response.status).toBe(404);

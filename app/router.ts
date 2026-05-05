@@ -34,6 +34,10 @@ let isDev = process.env.NODE_ENV !== "production";
 let shouldBypassLoopbackRateLimit =
   isDev || process.env.PLAYWRIGHT_TEST === "1";
 
+type AppRouterOptions = {
+  logRequests?: boolean;
+};
+
 function shouldSkipRateLimit(pathname: string) {
   return (
     pathname === "/healthcheck" ||
@@ -42,7 +46,8 @@ function shouldSkipRateLimit(pathname: string) {
   );
 }
 
-export function createAppRouter() {
+export function createAppRouter(options: AppRouterOptions = {}) {
+  let { logRequests = true } = options;
   let middleware = [];
 
   middleware.push(compression());
@@ -84,7 +89,9 @@ export function createAppRouter() {
       skip: (context) => shouldSkipRateLimit(context.url.pathname),
     }),
   );
-  middleware.push(logger());
+  if (logRequests) {
+    middleware.push(logger());
+  }
 
   let router = createRouter({ middleware });
 
@@ -137,3 +144,4 @@ export function createAppRouter() {
 }
 
 export let router = createAppRouter();
+export let testRouter = createAppRouter({ logRequests: false });

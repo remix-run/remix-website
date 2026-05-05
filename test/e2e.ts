@@ -9,7 +9,7 @@ let hasPatchedAbortLogging = false;
 export async function createE2EPage(t: TestContext): Promise<Page> {
   suppressExpectedServerAbortLogs();
 
-  let router = createAppRouter();
+  let router = createAppRouter({ logRequests: false });
   let server = await createTestServer(router.fetch);
 
   return t.serve(server);

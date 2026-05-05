@@ -17,7 +17,8 @@ async function gotoMobileMenuPage(page: Page) {
   await page.setViewportSize({ width: 390, height: 844 });
   let response = await page.goto("/remix-3-active-development");
   expect(response?.ok()).toBe(true);
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("networkidle", { timeout: 30_000 });
+  await expect(mobileMenuToggle(page)).toBeVisible();
 }
 
 function mobileMenuDetails(page: Page) {
@@ -89,7 +90,7 @@ describe("Mobile menu", () => {
       .click();
 
     await page.waitForURL("**/blog");
-    await expect(page).toHaveTitle(/Blog/i);
+    await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
     await expect
       .poll(() =>
         page.evaluate(

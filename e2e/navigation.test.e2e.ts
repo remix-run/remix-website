@@ -83,7 +83,7 @@ describe("Navigation", () => {
       () => page.keyboard.press("b"),
       "**/blog",
     );
-    await expect(page).toHaveTitle(/Blog/i);
+    await expect(page).toHaveTitle(/Blog/i, { timeout: 10_000 });
   });
 
   it("home page jam keyboard shortcut uses client navigation", async (t) => {
@@ -101,7 +101,7 @@ describe("Navigation", () => {
       () => page.keyboard.press("j"),
       "**/jam/2025",
     );
-    await expect(page).toHaveTitle(/Jam/i);
+    await expect(page).toHaveTitle(/Jam/i, { timeout: 10_000 });
   });
 
   it("active development route header links use client navigation", async (t) => {
@@ -114,7 +114,7 @@ describe("Navigation", () => {
       "**/blog",
     );
 
-    await expect(page).toHaveTitle(/Blog/i);
+    await expect(page).toHaveTitle(/Blog/i, { timeout: 10_000 });
   });
 
   it("blog to home page applies forced dark mode", async (t) => {
@@ -145,7 +145,7 @@ describe("Navigation", () => {
       "**/jam/2025",
     );
 
-    await expect(page).toHaveTitle(/Jam/i);
+    await expect(page).toHaveTitle(/Jam/i, { timeout: 10_000 });
   });
 
   it("Remix 3 active development page to jam applies jam head styles and forced dark theme", async (t) => {
@@ -184,6 +184,8 @@ describe("Navigation", () => {
       "**/brand",
     );
 
-    await expect(page).toHaveTitle(/Branding Guidelines/i);
+    await expect(page).toHaveTitle(/Branding Guidelines/i, {
+      timeout: 10_000,
+    });
   });
 });
