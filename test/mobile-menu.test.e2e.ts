@@ -1,11 +1,9 @@
 import { expect, type Page } from "@playwright/test";
+import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
-import {
-  createE2EPage,
-  waitForRemixNavigation,
-  waitForRemixReady,
-} from "../test/e2e.ts";
+import { router } from "../app/router.ts";
+import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -19,9 +17,10 @@ async function markPage(page: Page) {
 
 async function gotoMobileMenuPage(page: Page) {
   await page.setViewportSize({ width: 390, height: 844 });
-  let response = await page.goto("/remix-3-active-development");
+  let response = await page.goto("/remix-3-active-development", {
+    waitUntil: "networkidle",
+  });
   expect(response?.ok()).toBe(true);
-  await waitForRemixReady(page);
   await expect(mobileMenuToggle(page)).toBeVisible();
 }
 
@@ -38,7 +37,8 @@ function mobileMenuToggle(page: Page) {
 
 describe("Mobile menu", () => {
   it("opens and shows navigation links", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);
 
     let menuToggle = mobileMenuToggle(page);
@@ -54,7 +54,8 @@ describe("Mobile menu", () => {
   });
 
   it("escapes back to toggle", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);
 
     let menuToggle = mobileMenuToggle(page);
@@ -77,7 +78,8 @@ describe("Mobile menu", () => {
   });
 
   it("mobile menu links navigate", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);
 
     let marker = await markPage(page);
@@ -86,14 +88,13 @@ describe("Mobile menu", () => {
     await expect(menuToggle).toBeVisible();
     await menuToggle.click();
 
-    await waitForRemixNavigation(page, () =>
-      page
-        .getByRole("navigation", { name: "Mobile" })
-        .getByRole("link", {
-          name: "Blog",
-        })
-        .click(),
-    );
+    await page
+      .getByRole("navigation", { name: "Mobile" })
+      .getByRole("link", {
+        name: "Blog",
+      })
+      .click();
+    await page.waitForLoadState("networkidle");
 
     await page.waitForURL("**/blog");
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();

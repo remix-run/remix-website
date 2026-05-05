@@ -5,5 +5,5 @@ export default {
   playwrightConfig: {
     projects: [{ name: "chromium", use: { browserName: "chromium" } }],
   },
-  setup: "./test/setup-test-env.ts",
+  setup: "./test/setup.ts",
 } satisfies RemixTestConfig;

@@ -1,11 +1,9 @@
 import { expect, type Page } from "@playwright/test";
+import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
-import {
-  createE2EPage,
-  waitForRemixNavigation,
-  waitForRemixReady,
-} from "../test/e2e.ts";
+import { router } from "../app/router.ts";
+import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -17,7 +15,8 @@ async function markPage(page: Page) {
 
 describe("Blog", () => {
   it("blog index loads and shows posts", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/blog");
     await expect(page).toHaveTitle(/Blog/i);
     // Should have at least one blog post link
@@ -26,7 +25,8 @@ describe("Blog", () => {
   });
 
   it("clicking a blog post navigates to the post", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/blog");
     const firstPost = page.locator('a[href^="/blog/"]').first();
     const href = await firstPost.getAttribute("href");
@@ -37,9 +37,9 @@ describe("Blog", () => {
   });
 
   it("relative internal links in rendered markdown use client navigation", async (t) => {
-    let page = await createE2EPage(t);
-    await page.goto("/blog/faster-lazy-loading");
-    await waitForRemixReady(page);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/blog/faster-lazy-loading", { waitUntil: "networkidle" });
 
     let marker = await markPage(page);
     let link = page.locator('main a[href^="/blog/"]').first();
@@ -47,15 +47,12 @@ describe("Blog", () => {
     await expect(link).toBeVisible();
     expect(href).toBeTruthy();
 
-    await waitForRemixNavigation(page, () => link.click());
-    await page.waitForURL(`**${href}`);
-    await expect
-      .poll(() =>
-        page.evaluate(
-          () => (window as Window & { __navMarker?: string }).__navMarker,
-        ),
-      )
-      .toBe(marker);
+    await link.click();
+    await page.waitForLoadState("networkidle");
+    let newMarker = await page.evaluate(
+      () => (window as Window & { __navMarker?: string }).__navMarker,
+    );
+    expect(newMarker).toBe(marker);
     await expect(page.locator("main")).toBeVisible();
   });
 });

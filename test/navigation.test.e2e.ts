@@ -1,11 +1,9 @@
 import { expect, type Page } from "@playwright/test";
+import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
-import {
-  createE2EPage,
-  waitForRemixNavigation,
-  waitForRemixReady,
-} from "../test/e2e.ts";
+import { router } from "../app/router.ts";
+import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -21,7 +19,8 @@ async function expectClientNavigation(
   url: string,
 ) {
   let marker = await markPage(page);
-  await waitForRemixNavigation(page, navigate);
+  await navigate();
+  await page.waitForLoadState("networkidle");
   await page.waitForURL(url);
   await expect
     .poll(() =>
@@ -40,7 +39,8 @@ async function expectLandingNavReady(page: Page) {
 
 describe("Navigation", () => {
   it("home page renders landing content and keeps the skip target", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/");
 
     await expect(
@@ -52,14 +52,14 @@ describe("Navigation", () => {
   });
 
   it("home page blog keyboard shortcut uses client navigation", async (t) => {
-    let page = await createE2EPage(t);
-    await page.goto("/");
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/", { waitUntil: "networkidle" });
     await expect(
       page.getByRole("heading", {
         name: "A web framework for building anything",
       }),
     ).toBeVisible();
-    await waitForRemixReady(page);
     await expectLandingNavReady(page);
 
     await expectClientNavigation(
@@ -71,14 +71,14 @@ describe("Navigation", () => {
   });
 
   it("home page jam keyboard shortcut uses client navigation", async (t) => {
-    let page = await createE2EPage(t);
-    await page.goto("/");
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/", { waitUntil: "networkidle" });
     await expect(
       page.getByRole("heading", {
         name: "A web framework for building anything",
       }),
     ).toBeVisible();
-    await waitForRemixReady(page);
     await expectLandingNavReady(page);
 
     await expectClientNavigation(
@@ -92,9 +92,11 @@ describe("Navigation", () => {
   });
 
   it("active development route header links use client navigation", async (t) => {
-    let page = await createE2EPage(t);
-    await page.goto("/remix-3-active-development");
-    await waitForRemixReady(page);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/remix-3-active-development", {
+      waitUntil: "networkidle",
+    });
 
     await expectClientNavigation(
       page,
@@ -106,10 +108,10 @@ describe("Navigation", () => {
   });
 
   it("blog to home page applies forced dark mode", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ colorScheme: "dark" });
-    await page.goto("/blog");
-    await waitForRemixReady(page);
+    await page.goto("/blog", { waitUntil: "networkidle" });
 
     await expect(page.locator('html[data-theme="light"]')).toHaveCount(0);
     await expect(page.locator("html.dark")).toHaveCount(1);
@@ -125,9 +127,9 @@ describe("Navigation", () => {
   });
 
   it("blog header jam link uses client navigation", async (t) => {
-    let page = await createE2EPage(t);
-    await page.goto("/blog");
-    await waitForRemixReady(page);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/blog", { waitUntil: "networkidle" });
 
     await expectClientNavigation(
       page,
@@ -141,9 +143,11 @@ describe("Navigation", () => {
   });
 
   it("Remix 3 active development page to jam applies jam head styles and forced dark theme", async (t) => {
-    let page = await createE2EPage(t);
-    await page.goto("/remix-3-active-development");
-    await waitForRemixReady(page);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/remix-3-active-development", {
+      waitUntil: "networkidle",
+    });
 
     await expectClientNavigation(
       page,
@@ -167,9 +171,9 @@ describe("Navigation", () => {
   });
 
   it("header wordmark context menu uses client navigation for brand", async (t) => {
-    let page = await createE2EPage(t);
-    await page.goto("/blog");
-    await waitForRemixReady(page);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/blog", { waitUntil: "networkidle" });
 
     let remixLink = page.locator('header a[aria-label="Remix"]').first();
     await expectClientNavigation(

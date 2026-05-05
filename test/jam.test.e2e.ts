@@ -1,11 +1,9 @@
 import { expect, type Page } from "@playwright/test";
+import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
-import {
-  createE2EPage,
-  waitForRemixNavigation,
-  waitForRemixReady,
-} from "../test/e2e.ts";
+import { router } from "../app/router.ts";
+import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -17,8 +15,7 @@ async function markPage(page: Page) {
 
 async function gotoGallery(page: Page) {
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/jam/2025/gallery");
-  await waitForRemixReady(page);
+  await page.goto("/jam/2025/gallery", { waitUntil: "networkidle" });
 }
 
 async function expectMarkerToStay(page: Page, marker: string) {
@@ -50,10 +47,10 @@ async function galleryHasAtLeast(page: Page, minimumPhotos: number) {
 
 describe("Jam", () => {
   it("jam mobile menu opens and shows jam links", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/jam/2025");
-    await waitForRemixReady(page);
+    await page.goto("/jam/2025", { waitUntil: "networkidle" });
 
     let menuToggle = page
       .locator('details:has(nav[aria-label="Mobile"]) > summary')
@@ -77,20 +74,23 @@ describe("Jam", () => {
   });
 
   it("jam root redirects to jam 2025", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/jam");
     await page.waitForURL("**/jam/2025");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam 2025 page renders", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/jam/2025");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam 2025 after-event badge shows rewind icon", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/jam/2025");
 
     let heading = page.getByRole("heading", { level: 1 });
@@ -100,7 +100,8 @@ describe("Jam", () => {
   });
 
   it("jam 2025 newsletter submits and shows success state", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     let submittedEmail: string | null = null;
     let submittedTag: string | null = null;
     await page.route("**/_actions/newsletter", async (route) => {
@@ -114,8 +115,7 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto("/jam/2025");
-    await waitForRemixReady(page);
+    await page.goto("/jam/2025", { waitUntil: "networkidle" });
 
     let emailInput = page.getByPlaceholder("your@email.com");
     await emailInput.fill("hello@example.com");
@@ -128,7 +128,8 @@ describe("Jam", () => {
   });
 
   it("jam 2025 newsletter shows error state for failed submissions", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.route("**/_actions/newsletter", async (route) => {
       await route.fulfill({
         status: 500,
@@ -137,8 +138,7 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto("/jam/2025");
-    await waitForRemixReady(page);
+    await page.goto("/jam/2025", { waitUntil: "networkidle" });
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
     await page.getByRole("button", { name: "Sign Up" }).click();
@@ -148,7 +148,8 @@ describe("Jam", () => {
   });
 
   it("jam 2025 newsletter shows loading state while submitting", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     let resolveRequest: (() => void) | undefined;
     let requestReleased = new Promise<void>((resolve) => {
       resolveRequest = resolve;
@@ -162,8 +163,7 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto("/jam/2025");
-    await waitForRemixReady(page);
+    await page.goto("/jam/2025", { waitUntil: "networkidle" });
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
     await page.getByRole("button", { name: "Sign Up" }).click();
@@ -177,22 +177,24 @@ describe("Jam", () => {
   });
 
   it("jam ticket page renders", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/jam/2025/ticket");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam lineup page renders", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/jam/2025/lineup");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam lineup desktop accordion toggles open and closed", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/lineup");
-    await waitForRemixReady(page);
+    await page.goto("/jam/2025/lineup", { waitUntil: "networkidle" });
 
     let firstAccordion = page.locator("main details").first();
     let firstSummary = firstAccordion.locator("summary");
@@ -208,10 +210,10 @@ describe("Jam", () => {
   });
 
   it("jam lineup desktop accordion settles correctly after rapid toggles", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/lineup");
-    await waitForRemixReady(page);
+    await page.goto("/jam/2025/lineup", { waitUntil: "networkidle" });
 
     let firstAccordion = page.locator("main details").first();
     let firstSummary = firstAccordion.locator("summary");
@@ -225,20 +227,20 @@ describe("Jam", () => {
   });
 
   it("jam faq page renders", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/jam/2025/faq");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam info navigation stays client-side without a full reload", async (t) => {
-    let page = await createE2EPage(t);
-    await page.goto("/jam/2025");
-    await waitForRemixReady(page);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/jam/2025", { waitUntil: "networkidle" });
 
     let marker = await markPage(page);
-    await waitForRemixNavigation(page, () =>
-      page.getByRole("link", { name: "Schedule & Lineup" }).first().click(),
-    );
+    await page.getByRole("link", { name: "Schedule & Lineup" }).first().click();
+    await page.waitForLoadState("networkidle");
 
     await page.waitForURL("**/jam/2025/lineup");
     await expect(page).toHaveTitle(/Schedule and Lineup/i);
@@ -251,9 +253,8 @@ describe("Jam", () => {
       )
       .toBe(marker);
 
-    await waitForRemixNavigation(page, () =>
-      page.getByRole("link", { name: "FAQ" }).first().click(),
-    );
+    await page.getByRole("link", { name: "FAQ" }).first().click();
+    await page.waitForLoadState("networkidle");
 
     await page.waitForURL("**/jam/2025/faq");
     await expect(page).toHaveTitle(/FAQ/i);
@@ -271,58 +272,61 @@ describe("Jam", () => {
   });
 
   it("jam code of conduct page renders", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/jam/2025/coc");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam gallery page renders", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await page.goto("/jam/2025/gallery");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam gallery modal opens with query param and closes via controls", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoGallery(page);
     if (!(await galleryHasAtLeast(page, 1))) return;
 
     let marker = await markPage(page);
-    await waitForRemixNavigation(page, () =>
-      galleryPhotoLinks(page).first().click(),
-    );
+    await galleryPhotoLinks(page).first().click();
+    await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeVisible();
     await expectMarkerToStay(page, marker);
 
-    await waitForRemixNavigation(page, () =>
-      page.getByRole("link", { name: "Next photo" }).click(),
-    );
+    await page.getByRole("link", { name: "Next photo" }).click();
+    await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=\d+/);
     await expectMarkerToStay(page, marker);
 
-    await waitForRemixNavigation(page, () =>
-      page.getByRole("link", { name: "Close modal" }).click(),
-    );
+    await page.getByRole("link", { name: "Close modal" }).click();
+    await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
   });
 
   it("jam gallery escape closes modal and restores focus to opened photo", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoGallery(page);
     if (!(await galleryHasAtLeast(page, 1))) return;
 
     let firstPhotoLink = galleryPhotoLinks(page).first();
     let marker = await markPage(page);
-    await waitForRemixNavigation(page, () => firstPhotoLink.click());
+    await firstPhotoLink.click();
+    await page.waitForLoadState("networkidle");
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
     await expectMarkerToStay(page, marker);
 
-    await waitForRemixNavigation(page, () => page.keyboard.press("Escape"));
+    await page.keyboard.press("Escape");
+    await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
@@ -330,19 +334,20 @@ describe("Jam", () => {
   });
 
   it("jam gallery close button restores focus to opened photo", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoGallery(page);
     if (!(await galleryHasAtLeast(page, 1))) return;
 
     let firstPhotoLink = galleryPhotoLinks(page).first();
     let marker = await markPage(page);
-    await waitForRemixNavigation(page, () => firstPhotoLink.click());
+    await firstPhotoLink.click();
+    await page.waitForLoadState("networkidle");
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
     await expectMarkerToStay(page, marker);
-    await waitForRemixNavigation(page, () =>
-      page.getByRole("link", { name: "Close modal" }).click(),
-    );
+    await page.getByRole("link", { name: "Close modal" }).click();
+    await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
@@ -350,7 +355,8 @@ describe("Jam", () => {
   });
 
   it("jam gallery download link returns attachment response", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoGallery(page);
     if (!(await galleryHasAtLeast(page, 1))) return;
     await page.goto("/jam/2025/gallery?photo=0");
@@ -373,14 +379,14 @@ describe("Jam", () => {
   });
 
   it("jam gallery keyboard navigation moves between photos", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoGallery(page);
     if (!(await galleryHasAtLeast(page, 2))) return;
 
     let marker = await markPage(page);
-    await waitForRemixNavigation(page, () =>
-      galleryPhotoLinks(page).first().click(),
-    );
+    await galleryPhotoLinks(page).first().click();
+    await page.waitForLoadState("networkidle");
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toBeVisible();
     let previousLink = page.getByRole("link", { name: "Previous photo" });
@@ -388,30 +394,32 @@ describe("Jam", () => {
     await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
     await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
 
-    await waitForRemixNavigation(page, () => page.keyboard.press("ArrowRight"));
+    await page.keyboard.press("ArrowRight");
+    await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText(/^2 \/ \d+$/)).toBeVisible();
     await expect(nextLink).toBeFocused();
     await expectMarkerToStay(page, marker);
 
-    await waitForRemixNavigation(page, () => page.keyboard.press("ArrowLeft"));
+    await page.keyboard.press("ArrowLeft");
+    await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
     await expect(previousLink).toBeFocused();
     await expectMarkerToStay(page, marker);
 
-    await waitForRemixNavigation(page, () =>
-      page.getByRole("link", { name: "Close modal" }).click(),
-    );
+    await page.getByRole("link", { name: "Close modal" }).click();
+    await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
   });
 
   it("jam gallery modal traps focus while open", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoGallery(page);
     if (!(await galleryHasAtLeast(page, 1))) return;
 

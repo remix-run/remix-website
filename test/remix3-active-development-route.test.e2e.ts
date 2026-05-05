@@ -1,11 +1,14 @@
 import { expect } from "@playwright/test";
+import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
-import { createE2EPage } from "../test/e2e.ts";
+import { router } from "../app/router.ts";
+import { swallowAbortErrors } from "../test/setup.ts";
 
 describe("Remix 3 active development route", () => {
   it("renders key active-development content", async (t) => {
-    let page = await createE2EPage(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     const response = await page.goto("/remix-3-active-development");
     expect(response?.ok()).toBe(true);
 

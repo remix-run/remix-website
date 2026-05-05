@@ -3,7 +3,7 @@ import { expect } from "remix/assert";
 import { jam2025LineupHandler } from "./2025-lineup.tsx";
 import { routes } from "../../routes.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-import { createRouteTestRouter } from "../../../test/create-route-test-router.ts";
+import { createRouteTestRouter } from "../../../test/setup.ts";
 
 describe("Jam lineup route", () => {
   it("renders the schedule with Jam page assets", async () => {
