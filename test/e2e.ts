@@ -40,36 +40,16 @@ export async function waitForRemixNavigation(
   page: Page,
   navigate: () => Promise<void>,
 ) {
-  let navigationFinished = page.evaluate(() => {
-    return new Promise<void>((resolve, reject) => {
-      let navigation = (
-        window as Window & {
-          navigation: EventTarget;
-        }
-      ).navigation;
-
-      let cleanup = () => {
-        navigation.removeEventListener("navigatesuccess", onSuccess);
-        navigation.removeEventListener("navigateerror", onError);
-      };
-      let onSuccess = () => {
-        cleanup();
-        resolve();
-      };
-      let onError = () => {
-        cleanup();
-        reject(new Error("Remix navigation failed"));
-      };
-
-      navigation.addEventListener("navigatesuccess", onSuccess, {
-        once: true,
-      });
-      navigation.addEventListener("navigateerror", onError, { once: true });
-    });
-  });
-
   await navigate();
-  await navigationFinished;
+  await page.waitForFunction(() => {
+    let navigation = (
+      window as Window & {
+        navigation?: { transition?: unknown };
+      }
+    ).navigation;
+
+    return !navigation?.transition;
+  });
 }
 
 function suppressExpectedServerAbortLogs() {
