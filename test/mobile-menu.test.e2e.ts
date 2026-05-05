@@ -1,9 +1,23 @@
 import { expect, type Page } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
-import { describe, it } from "remix/test";
+import { afterAll, beforeAll, describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
+
+let server!: { baseUrl: string; close: () => Promise<void> };
+let closeServer: () => Promise<void>;
+
+beforeAll(async () => {
+  let handler = swallowAbortErrors(router);
+  let realServer = await createTestServer(handler);
+  server = { baseUrl: realServer.baseUrl, close: async () => {} };
+  closeServer = () => realServer.close();
+});
+
+afterAll(async () => {
+  await closeServer();
+});
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -37,8 +51,7 @@ function mobileMenuToggle(page: Page) {
 
 describe("Mobile menu", () => {
   it("opens and shows navigation links", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
+    let page = await t.serve(server);
     await gotoMobileMenuPage(page);
 
     let menuToggle = mobileMenuToggle(page);
@@ -54,8 +67,7 @@ describe("Mobile menu", () => {
   });
 
   it("escapes back to toggle", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
+    let page = await t.serve(server);
     await gotoMobileMenuPage(page);
 
     let menuToggle = mobileMenuToggle(page);
@@ -78,8 +90,7 @@ describe("Mobile menu", () => {
   });
 
   it("mobile menu links navigate", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
+    let page = await t.serve(server);
     await gotoMobileMenuPage(page);
 
     let marker = await markPage(page);
