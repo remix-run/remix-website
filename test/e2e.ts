@@ -25,13 +25,11 @@ export async function createE2EPage(t: TestContext): Promise<Page> {
   return page;
 }
 
-export async function gotoRemixPage(page: Page, url: string) {
-  return page.goto(url, { waitUntil: "domcontentloaded" });
-}
-
 export async function waitForRemixReady(page: Page) {
   await page.waitForFunction(() => {
-    return (window as Window & { __remixReady?: boolean }).__remixReady === true;
+    return (
+      (window as Window & { __remixReady?: boolean }).__remixReady === true
+    );
   });
 }
 

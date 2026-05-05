@@ -3,7 +3,6 @@ import { describe, it } from "remix/test";
 
 import {
   createE2EPage,
-  gotoRemixPage,
   waitForRemixNavigation,
   waitForRemixReady,
 } from "../test/e2e.ts";
@@ -18,7 +17,7 @@ async function markPage(page: Page) {
 
 async function gotoGallery(page: Page) {
   await page.setViewportSize({ width: 1280, height: 900 });
-  await gotoRemixPage(page, "/jam/2025/gallery");
+  await page.goto("/jam/2025/gallery", { waitUntil: "domcontentloaded" });
   await waitForRemixReady(page);
 }
 
@@ -53,7 +52,7 @@ describe("Jam", () => {
   it("jam mobile menu opens and shows jam links", async (t) => {
     let page = await createE2EPage(t);
     await page.setViewportSize({ width: 390, height: 844 });
-    await gotoRemixPage(page, "/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "domcontentloaded" });
     await waitForRemixReady(page);
 
     let menuToggle = page
@@ -79,20 +78,20 @@ describe("Jam", () => {
 
   it("jam root redirects to jam 2025", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/jam");
+    await page.goto("/jam", { waitUntil: "domcontentloaded" });
     await page.waitForURL("**/jam/2025");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam 2025 page renders", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "domcontentloaded" });
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam 2025 after-event badge shows rewind icon", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "domcontentloaded" });
 
     let heading = page.getByRole("heading", { level: 1 });
     await expect(heading).toBeVisible();
@@ -115,7 +114,7 @@ describe("Jam", () => {
       });
     });
 
-    await gotoRemixPage(page, "/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "domcontentloaded" });
     await waitForRemixReady(page);
 
     let emailInput = page.getByPlaceholder("your@email.com");
@@ -138,7 +137,7 @@ describe("Jam", () => {
       });
     });
 
-    await gotoRemixPage(page, "/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "domcontentloaded" });
     await waitForRemixReady(page);
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
@@ -163,7 +162,7 @@ describe("Jam", () => {
       });
     });
 
-    await gotoRemixPage(page, "/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "domcontentloaded" });
     await waitForRemixReady(page);
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
@@ -179,20 +178,20 @@ describe("Jam", () => {
 
   it("jam ticket page renders", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/jam/2025/ticket");
+    await page.goto("/jam/2025/ticket", { waitUntil: "domcontentloaded" });
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam lineup page renders", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/jam/2025/lineup");
+    await page.goto("/jam/2025/lineup", { waitUntil: "domcontentloaded" });
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam lineup desktop accordion toggles open and closed", async (t) => {
     let page = await createE2EPage(t);
     await page.setViewportSize({ width: 1280, height: 900 });
-    await gotoRemixPage(page, "/jam/2025/lineup");
+    await page.goto("/jam/2025/lineup", { waitUntil: "domcontentloaded" });
     await waitForRemixReady(page);
 
     let firstAccordion = page.locator("main details").first();
@@ -211,7 +210,7 @@ describe("Jam", () => {
   it("jam lineup desktop accordion settles correctly after rapid toggles", async (t) => {
     let page = await createE2EPage(t);
     await page.setViewportSize({ width: 1280, height: 900 });
-    await gotoRemixPage(page, "/jam/2025/lineup");
+    await page.goto("/jam/2025/lineup", { waitUntil: "domcontentloaded" });
     await waitForRemixReady(page);
 
     let firstAccordion = page.locator("main details").first();
@@ -227,13 +226,13 @@ describe("Jam", () => {
 
   it("jam faq page renders", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/jam/2025/faq");
+    await page.goto("/jam/2025/faq", { waitUntil: "domcontentloaded" });
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam info navigation stays client-side without a full reload", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "domcontentloaded" });
     await waitForRemixReady(page);
 
     let marker = await markPage(page);
@@ -273,13 +272,13 @@ describe("Jam", () => {
 
   it("jam code of conduct page renders", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/jam/2025/coc");
+    await page.goto("/jam/2025/coc", { waitUntil: "domcontentloaded" });
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam gallery page renders", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/jam/2025/gallery");
+    await page.goto("/jam/2025/gallery", { waitUntil: "domcontentloaded" });
     await expect(page.locator("main")).toBeVisible();
   });
 
@@ -354,7 +353,9 @@ describe("Jam", () => {
     let page = await createE2EPage(t);
     await gotoGallery(page);
     if (!(await galleryHasAtLeast(page, 1))) return;
-    await gotoRemixPage(page, "/jam/2025/gallery?photo=0");
+    await page.goto("/jam/2025/gallery?photo=0", {
+      waitUntil: "domcontentloaded",
+    });
 
     let downloadLink = page.getByRole("link", {
       name: "Download full resolution image",

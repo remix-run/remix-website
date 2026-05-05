@@ -3,7 +3,6 @@ import { describe, it } from "remix/test";
 
 import {
   createE2EPage,
-  gotoRemixPage,
   waitForRemixNavigation,
   waitForRemixReady,
 } from "../test/e2e.ts";
@@ -20,7 +19,9 @@ async function markPage(page: Page) {
 
 async function gotoMobileMenuPage(page: Page) {
   await page.setViewportSize({ width: 390, height: 844 });
-  let response = await gotoRemixPage(page, "/remix-3-active-development");
+  let response = await page.goto("/remix-3-active-development", {
+    waitUntil: "domcontentloaded",
+  });
   expect(response?.ok()).toBe(true);
   await waitForRemixReady(page);
   await expect(mobileMenuToggle(page)).toBeVisible();

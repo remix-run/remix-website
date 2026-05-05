@@ -3,7 +3,6 @@ import { describe, it } from "remix/test";
 
 import {
   createE2EPage,
-  gotoRemixPage,
   waitForRemixNavigation,
   waitForRemixReady,
 } from "../test/e2e.ts";
@@ -19,7 +18,7 @@ async function markPage(page: Page) {
 describe("Blog", () => {
   it("blog index loads and shows posts", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/blog");
+    await page.goto("/blog", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveTitle(/Blog/i);
     // Should have at least one blog post link
     const postLinks = page.locator('a[href^="/blog/"]');
@@ -28,7 +27,7 @@ describe("Blog", () => {
 
   it("clicking a blog post navigates to the post", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/blog");
+    await page.goto("/blog", { waitUntil: "domcontentloaded" });
     const firstPost = page.locator('a[href^="/blog/"]').first();
     const href = await firstPost.getAttribute("href");
     await firstPost.click();
@@ -39,7 +38,9 @@ describe("Blog", () => {
 
   it("relative internal links in rendered markdown use client navigation", async (t) => {
     let page = await createE2EPage(t);
-    await gotoRemixPage(page, "/blog/faster-lazy-loading");
+    await page.goto("/blog/faster-lazy-loading", {
+      waitUntil: "domcontentloaded",
+    });
     await waitForRemixReady(page);
 
     let marker = await markPage(page);
