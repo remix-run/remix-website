@@ -76,15 +76,15 @@ function createAppRouter() {
   middleware.push(formData());
   middleware.push(asyncContext());
   middleware.push(loadAssetEntry());
-  middleware.push(
-    rateLimit({
-      windowMs: 2 * 60 * 1000,
-      max: 1000,
-      skipLocalhost: shouldBypassLoopbackRateLimit,
-      skip: (context) => shouldSkipRateLimit(context.url.pathname),
-    }),
-  );
   if (!isTest) {
+    middleware.push(
+      rateLimit({
+        windowMs: 2 * 60 * 1000,
+        max: 1000,
+        skipLocalhost: shouldBypassLoopbackRateLimit,
+        skip: (context) => shouldSkipRateLimit(context.url.pathname),
+      }),
+    );
     middleware.push(logger());
   }
 
