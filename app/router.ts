@@ -35,6 +35,7 @@ let shouldBypassLoopbackRateLimit =
   isDev || process.env.PLAYWRIGHT_TEST === "1";
 
 type AppRouterOptions = {
+  assetEntry?: string;
   logRequests?: boolean;
 };
 
@@ -47,7 +48,7 @@ function shouldSkipRateLimit(pathname: string) {
 }
 
 export function createAppRouter(options: AppRouterOptions = {}) {
-  let { logRequests = true } = options;
+  let { assetEntry, logRequests = true } = options;
   let middleware = [];
 
   middleware.push(compression());
@@ -80,7 +81,7 @@ export function createAppRouter(options: AppRouterOptions = {}) {
 
   middleware.push(formData());
   middleware.push(asyncContext());
-  middleware.push(loadAssetEntry());
+  middleware.push(loadAssetEntry(assetEntry));
   middleware.push(
     rateLimit({
       windowMs: 2 * 60 * 1000,

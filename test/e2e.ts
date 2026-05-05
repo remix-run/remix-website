@@ -1,3 +1,4 @@
+import * as path from "node:path";
 import { createTestServer } from "remix/node-fetch-server/test";
 import type { TestContext } from "remix/test";
 import type { Page } from "playwright";
@@ -5,24 +6,15 @@ import type { Page } from "playwright";
 import { createAppRouter } from "../app/router.ts";
 
 let hasPatchedAbortLogging = false;
-
-declare global {
-  interface Window {
-    __remixE2EAppReady?: Promise<void>;
-  }
-}
+let e2eEntry = path.resolve(import.meta.dirname, "../app/assets/entry.e2e.ts");
 
 export async function createE2EPage(t: TestContext): Promise<Page> {
   suppressExpectedServerAbortLogs();
 
-  let router = createAppRouter({ logRequests: false });
+  let router = createAppRouter({ assetEntry: e2eEntry, logRequests: false });
   let server = await createTestServer(router.fetch);
 
-  let page = await t.serve(server);
-  await page.addInitScript(() => {
-    window.__remixE2EAppReady = undefined;
-  });
-  return page;
+  return t.serve(server);
 }
 
 export async function gotoRemixPage(page: Page, url: string) {
@@ -30,10 +22,9 @@ export async function gotoRemixPage(page: Page, url: string) {
 }
 
 export async function waitForRemixReady(page: Page) {
-  await page.waitForFunction(() => Boolean(window.__remixE2EAppReady));
-  await page.evaluate(() => {
-    return window.__remixE2EAppReady;
-  });
+  await page.waitForFunction(
+    () => document.documentElement.dataset.remixReady === "true",
+  );
 }
 
 export async function waitForRemixNavigation(
