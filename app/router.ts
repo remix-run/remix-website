@@ -33,9 +33,9 @@ import { jamHandler } from "./controllers/jam/controller.ts";
 import { newsletterHandler } from "./controllers/newsletter.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
+let isTest = process.env.NODE_ENV === "test";
 let isPlaywrightTest = process.env.PLAYWRIGHT_TEST === "1";
-let isTest = process.env.REMIX_WEBSITE_TEST === "1" || isPlaywrightTest;
-let shouldBypassLoopbackRateLimit = isDev || isPlaywrightTest;
+let shouldBypassLoopbackRateLimit = isDev;
 let browserEntry = isPlaywrightTest
   ? path.resolve(import.meta.dirname, "./assets/entry.e2e.ts")
   : undefined;
