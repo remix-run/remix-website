@@ -1,10 +1,14 @@
 import type { RemixTestConfig } from "remix/test";
 
 export default {
-  glob: {
-    test: "app/**/*.test.{ts,tsx,mts}",
-    exclude: ["e2e/**", "node_modules/**"],
+  concurrency: process.env.CI ? 1 : undefined,
+  coverage: process.env.NODE_ENV === "test",
+  playwrightConfig: {
+    projects: [{ name: "chromium", use: { browserName: "chromium" } }],
+    use: {
+      actionTimeout: 10_000,
+      navigationTimeout: 10_000,
+    },
   },
-  setup: "./test/setup-test-env.ts",
-  type: ["server"],
+  setup: "./test/setup.ts",
 } satisfies RemixTestConfig;

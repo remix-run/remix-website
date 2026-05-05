@@ -3,7 +3,7 @@ import { expect } from "remix/assert";
 import { remix3ActiveDevelopmentHandler } from "./controller.tsx";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { routes } from "../../routes.ts";
-import { createRouteTestRouter } from "../../../test/create-route-test-router.ts";
+import { createRouteTestRouter } from "../../../test/setup.ts";
 
 describe("Remix 3 active development route", () => {
   it("renders expected content and metadata", async () => {

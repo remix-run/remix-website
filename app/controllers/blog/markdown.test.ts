@@ -3,7 +3,7 @@ import { expect } from "remix/assert";
 import { blogPostHandler } from "./post.tsx";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { routes } from "../../routes.ts";
-import { createRouteTestRouter } from "../../../test/create-route-test-router.ts";
+import { createRouteTestRouter } from "../../../test/setup.ts";
 
 describe("Blog markdown routes", () => {
   it("serves source markdown for a valid slug at /blog/:slug.md", async () => {

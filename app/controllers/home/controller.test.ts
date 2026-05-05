@@ -3,7 +3,7 @@ import { expect } from "remix/assert";
 import { homeHandler } from "./controller.tsx";
 import { routes } from "../../routes.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-import { createRouteTestRouter } from "../../../test/create-route-test-router.ts";
+import { createRouteTestRouter } from "../../../test/setup.ts";
 
 describe("home route", () => {
   it("renders the landing document shell", async () => {

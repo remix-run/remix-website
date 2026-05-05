@@ -1,7 +1,7 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import { routes } from "../routes.ts";
-import { createRouteTestRouter } from "../../test/create-route-test-router.ts";
+import { createRouteTestRouter } from "../../test/setup.ts";
 import { blogOgImageHandler, parseOgImageQuery } from "./blog-og-image.tsx";
 
 describe("Blog OG image route", () => {

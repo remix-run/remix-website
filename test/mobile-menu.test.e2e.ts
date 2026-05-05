@@ -1,4 +1,9 @@
-import { test, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { createTestServer } from "remix/node-fetch-server/test";
+import { describe, it } from "remix/test";
+
+import { router } from "../app/router.ts";
+import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -12,9 +17,11 @@ async function markPage(page: Page) {
 
 async function gotoMobileMenuPage(page: Page) {
   await page.setViewportSize({ width: 390, height: 844 });
-  let response = await page.goto("/remix-3-active-development");
+  let response = await page.goto("/remix-3-active-development", {
+    waitUntil: "networkidle",
+  });
   expect(response?.ok()).toBe(true);
-  await page.waitForLoadState("networkidle");
+  await expect(mobileMenuToggle(page)).toBeVisible();
 }
 
 function mobileMenuDetails(page: Page) {
@@ -28,8 +35,10 @@ function mobileMenuToggle(page: Page) {
   return mobileMenuDetails(page).locator("> summary");
 }
 
-test.describe("Mobile menu", () => {
-  test("opens and shows navigation links", async ({ page }) => {
+describe("Mobile menu", () => {
+  it("opens and shows navigation links", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);
 
     let menuToggle = mobileMenuToggle(page);
@@ -44,7 +53,9 @@ test.describe("Mobile menu", () => {
     await expect(mobileNav.getByRole("link", { name: "Store" })).toBeVisible();
   });
 
-  test("escapes back to toggle", async ({ page }) => {
+  it("escapes back to toggle", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);
 
     let menuToggle = mobileMenuToggle(page);
@@ -66,7 +77,9 @@ test.describe("Mobile menu", () => {
     await expect(menuToggle).toBeFocused();
   });
 
-  test("mobile menu links navigate", async ({ page }) => {
+  it("mobile menu links navigate", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);
 
     let marker = await markPage(page);
@@ -81,9 +94,10 @@ test.describe("Mobile menu", () => {
         name: "Blog",
       })
       .click();
+    await page.waitForLoadState("networkidle");
 
     await page.waitForURL("**/blog");
-    await expect(page).toHaveTitle(/Blog/i);
+    await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
     await expect
       .poll(() =>
         page.evaluate(

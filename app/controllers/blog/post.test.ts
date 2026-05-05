@@ -4,7 +4,7 @@ import { blogPostHandler } from "./post.tsx";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { getBlogPost } from "../../data/blog.server.ts";
 import { routes } from "../../routes.ts";
-import { createRouteTestRouter } from "../../../test/create-route-test-router.ts";
+import { createRouteTestRouter } from "../../../test/setup.ts";
 
 describe("Blog post route", () => {
   it("renders a post for a valid slug", async () => {

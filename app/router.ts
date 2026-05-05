@@ -31,8 +31,8 @@ import { jamHandler } from "./controllers/jam/controller.ts";
 import { newsletterHandler } from "./controllers/newsletter.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
-let shouldBypassLoopbackRateLimit =
-  isDev || process.env.PLAYWRIGHT_TEST === "1";
+let isTest = process.env.NODE_ENV === "test";
+let shouldBypassLoopbackRateLimit = isDev;
 
 function shouldSkipRateLimit(pathname: string) {
   return (
@@ -84,7 +84,9 @@ function createAppRouter() {
       skip: (context) => shouldSkipRateLimit(context.url.pathname),
     }),
   );
-  middleware.push(logger());
+  if (!isTest) {
+    middleware.push(logger());
+  }
 
   let router = createRouter({ middleware });
 
