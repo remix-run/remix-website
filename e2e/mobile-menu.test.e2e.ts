@@ -1,7 +1,11 @@
 import { expect, type Page } from "@playwright/test";
 import { describe, it } from "remix/test";
 
-import { createE2EPage } from "../test/e2e.ts";
+import {
+  createE2EPage,
+  gotoRemixPage,
+  waitForRemixReady,
+} from "../test/e2e.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -15,9 +19,9 @@ async function markPage(page: Page) {
 
 async function gotoMobileMenuPage(page: Page) {
   await page.setViewportSize({ width: 390, height: 844 });
-  let response = await page.goto("/remix-3-active-development");
+  let response = await gotoRemixPage(page, "/remix-3-active-development");
   expect(response?.ok()).toBe(true);
-  await page.waitForLoadState("networkidle", { timeout: 30_000 });
+  await waitForRemixReady(page);
   await expect(mobileMenuToggle(page)).toBeVisible();
 }
 

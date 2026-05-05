@@ -1,6 +1,12 @@
 import { run } from "remix/ui";
 import { initFathomAnalytics } from "./fathom.ts";
 
+declare global {
+  interface Window {
+    __remixE2EAppReady?: Promise<void>;
+  }
+}
+
 initFathomAnalytics();
 
 let app = run({
@@ -43,4 +49,10 @@ app.addEventListener("error", (event) => {
   console.error(event.error);
 });
 
-await app.ready();
+let ready = app.ready();
+
+if ("__remixE2EAppReady" in window) {
+  window.__remixE2EAppReady = ready;
+}
+
+await ready;

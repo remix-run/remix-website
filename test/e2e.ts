@@ -6,13 +6,34 @@ import { createAppRouter } from "../app/router.ts";
 
 let hasPatchedAbortLogging = false;
 
+declare global {
+  interface Window {
+    __remixE2EAppReady?: Promise<void>;
+  }
+}
+
 export async function createE2EPage(t: TestContext): Promise<Page> {
   suppressExpectedServerAbortLogs();
 
   let router = createAppRouter({ logRequests: false });
   let server = await createTestServer(router.fetch);
 
-  return t.serve(server);
+  let page = await t.serve(server);
+  await page.addInitScript(() => {
+    window.__remixE2EAppReady = undefined;
+  });
+  return page;
+}
+
+export async function gotoRemixPage(page: Page, url: string) {
+  return page.goto(url, { waitUntil: "domcontentloaded" });
+}
+
+export async function waitForRemixReady(page: Page) {
+  await page.waitForFunction(() => Boolean(window.__remixE2EAppReady));
+  await page.evaluate(() => {
+    return window.__remixE2EAppReady;
+  });
 }
 
 function suppressExpectedServerAbortLogs() {

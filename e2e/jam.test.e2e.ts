@@ -1,7 +1,11 @@
 import { expect, type Page } from "@playwright/test";
 import { describe, it } from "remix/test";
 
-import { createE2EPage } from "../test/e2e.ts";
+import {
+  createE2EPage,
+  gotoRemixPage,
+  waitForRemixReady,
+} from "../test/e2e.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -13,7 +17,8 @@ async function markPage(page: Page) {
 
 async function gotoGallery(page: Page) {
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/jam/2025/gallery");
+  await gotoRemixPage(page, "/jam/2025/gallery");
+  await waitForRemixReady(page);
 }
 
 async function expectMarkerToStay(page: Page, marker: string) {
@@ -84,7 +89,7 @@ describe("Jam", () => {
   it("jam mobile menu opens and shows jam links", async (t) => {
     let page = await createE2EPage(t);
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/jam/2025");
+    await gotoRemixPage(page, "/jam/2025");
 
     let menuToggle = page
       .locator('details:has(nav[aria-label="Mobile"]) > summary')
@@ -109,20 +114,20 @@ describe("Jam", () => {
 
   it("jam root redirects to jam 2025", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/jam");
+    await gotoRemixPage(page, "/jam");
     await page.waitForURL("**/jam/2025");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam 2025 page renders", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/jam/2025");
+    await gotoRemixPage(page, "/jam/2025");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam 2025 after-event badge shows rewind icon", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/jam/2025");
+    await gotoRemixPage(page, "/jam/2025");
 
     let heading = page.getByRole("heading", { level: 1 });
     await expect(heading).toBeVisible();
@@ -145,21 +150,16 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto("/jam/2025");
+    await gotoRemixPage(page, "/jam/2025");
     await dismissViteAbortOverlay(page);
-    await page.waitForLoadState("networkidle");
+    await waitForRemixReady(page);
 
     let emailInput = page.getByPlaceholder("your@email.com");
-    await expect(async () => {
-      await emailInput.fill("hello@example.com");
-      await clickWithViteAbortOverlayRetry(
-        page,
-        page.getByRole("button", { name: "Sign Up" }),
-      );
-      await expect(page.getByText(/You're good to go/i)).toBeVisible({
-        timeout: 1_000,
-      });
-    }).toPass({ timeout: 10_000 });
+    await emailInput.fill("hello@example.com");
+    await clickWithViteAbortOverlayRetry(
+      page,
+      page.getByRole("button", { name: "Sign Up" }),
+    );
 
     await expect(page.getByText(/You're good to go/i)).toBeVisible();
     await expect(emailInput).toHaveValue("");
@@ -177,9 +177,9 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto("/jam/2025");
+    await gotoRemixPage(page, "/jam/2025");
     await dismissViteAbortOverlay(page);
-    await page.waitForLoadState("networkidle");
+    await waitForRemixReady(page);
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
     await clickWithViteAbortOverlayRetry(
@@ -206,9 +206,9 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto("/jam/2025");
+    await gotoRemixPage(page, "/jam/2025");
     await dismissViteAbortOverlay(page);
-    await page.waitForLoadState("networkidle");
+    await waitForRemixReady(page);
 
     await page.getByPlaceholder("your@email.com").fill("hello@example.com");
     await clickWithViteAbortOverlayRetry(
@@ -226,20 +226,20 @@ describe("Jam", () => {
 
   it("jam ticket page renders", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/jam/2025/ticket");
+    await gotoRemixPage(page, "/jam/2025/ticket");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam lineup page renders", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/jam/2025/lineup");
+    await gotoRemixPage(page, "/jam/2025/lineup");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam lineup desktop accordion toggles open and closed", async (t) => {
     let page = await createE2EPage(t);
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/lineup");
+    await gotoRemixPage(page, "/jam/2025/lineup");
 
     let firstAccordion = page.locator("main details").first();
     let firstSummary = firstAccordion.locator("summary");
@@ -255,7 +255,7 @@ describe("Jam", () => {
   it("jam lineup desktop accordion settles correctly after rapid toggles", async (t) => {
     let page = await createE2EPage(t);
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/lineup");
+    await gotoRemixPage(page, "/jam/2025/lineup");
 
     let firstAccordion = page.locator("main details").first();
     let firstSummary = firstAccordion.locator("summary");
@@ -267,14 +267,15 @@ describe("Jam", () => {
 
   it("jam faq page renders", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/jam/2025/faq");
+    await gotoRemixPage(page, "/jam/2025/faq");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam info navigation stays client-side without a full reload", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/jam/2025");
+    await gotoRemixPage(page, "/jam/2025");
     await dismissViteAbortOverlay(page);
+    await waitForRemixReady(page);
 
     let marker = await markPage(page);
     await clickWithViteAbortOverlayRetry(
@@ -315,13 +316,13 @@ describe("Jam", () => {
 
   it("jam code of conduct page renders", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/jam/2025/coc");
+    await gotoRemixPage(page, "/jam/2025/coc");
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam gallery page renders", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/jam/2025/gallery");
+    await gotoRemixPage(page, "/jam/2025/gallery");
     await expect(page.locator("main")).toBeVisible();
   });
 
@@ -388,7 +389,7 @@ describe("Jam", () => {
     let page = await createE2EPage(t);
     await gotoGallery(page);
     if (!(await galleryHasAtLeast(page, 1))) return;
-    await page.goto("/jam/2025/gallery?photo=0");
+    await gotoRemixPage(page, "/jam/2025/gallery?photo=0");
 
     let downloadLink = page.getByRole("link", {
       name: "Download full resolution image",

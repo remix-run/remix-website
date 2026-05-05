@@ -1,12 +1,16 @@
 import { expect } from "@playwright/test";
 import { describe, it } from "remix/test";
 
-import { createE2EPage } from "../test/e2e.ts";
+import {
+  createE2EPage,
+  gotoRemixPage,
+  waitForRemixReady,
+} from "../test/e2e.ts";
 
 describe("Newsletter subscribe", () => {
   it("renders the newsletter form in the Remix 3 active development section", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/remix-3-active-development");
+    await gotoRemixPage(page, "/remix-3-active-development");
 
     await expect(
       page.getByRole("heading", { name: "Stay in the loop" }),
@@ -28,18 +32,13 @@ describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/remix-3-active-development");
-    await page.waitForLoadState("networkidle", { timeout: 30_000 });
+    await gotoRemixPage(page, "/remix-3-active-development");
+    await waitForRemixReady(page);
 
     let emailInput = page.getByPlaceholder("name@example.com");
     await expect(emailInput).toBeVisible();
-    await expect(async () => {
-      await emailInput.fill("hello@example.com");
-      await page.getByRole("button", { name: "Subscribe" }).click();
-      await expect(page.getByText("Got it!")).toBeVisible({
-        timeout: 1_000,
-      });
-    }).toPass({ timeout: 10_000 });
+    await emailInput.fill("hello@example.com");
+    await page.getByRole("button", { name: "Subscribe" }).click();
 
     await expect(page.getByText("Got it!")).toBeVisible();
     await expect(page.getByText(/check your email/i)).toBeVisible();
@@ -56,17 +55,12 @@ describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/remix-3-active-development");
-    await page.waitForLoadState("networkidle", { timeout: 30_000 });
+    await gotoRemixPage(page, "/remix-3-active-development");
+    await waitForRemixReady(page);
 
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
-    await expect(async () => {
-      await page.getByPlaceholder("name@example.com").fill("hello@example.com");
-      await page.getByRole("button", { name: "Subscribe" }).click();
-      await expect(page.getByText("Something went wrong")).toBeVisible({
-        timeout: 1_000,
-      });
-    }).toPass({ timeout: 10_000 });
+    await page.getByPlaceholder("name@example.com").fill("hello@example.com");
+    await page.getByRole("button", { name: "Subscribe" }).click();
 
     await expect(page.getByText("Something went wrong")).toBeVisible();
   });
@@ -87,8 +81,8 @@ describe("Newsletter subscribe", () => {
       });
     });
 
-    await page.goto("/remix-3-active-development");
-    await page.waitForLoadState("networkidle", { timeout: 30_000 });
+    await gotoRemixPage(page, "/remix-3-active-development");
+    await waitForRemixReady(page);
 
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
     await page.getByPlaceholder("name@example.com").fill("hello@example.com");
@@ -119,19 +113,14 @@ describe("Homepage newsletter", () => {
       });
     });
 
-    await page.goto("/");
-    await page.waitForLoadState("networkidle", { timeout: 30_000 });
+    await gotoRemixPage(page, "/");
+    await waitForRemixReady(page);
 
     let startBuilding = page.locator("#start-building");
     let emailInput = startBuilding.getByPlaceholder("name@example.com");
     await expect(emailInput).toBeVisible();
-    await expect(async () => {
-      await emailInput.fill("hello@example.com");
-      await startBuilding.getByRole("button", { name: "Subscribe" }).click();
-      await expect(startBuilding.getByText("Got it!")).toBeVisible({
-        timeout: 1_000,
-      });
-    }).toPass({ timeout: 10_000 });
+    await emailInput.fill("hello@example.com");
+    await startBuilding.getByRole("button", { name: "Subscribe" }).click();
 
     expect(submittedEmail).toBe("hello@example.com");
     await expect(startBuilding.getByText("Got it!")).toBeVisible();
@@ -142,7 +131,7 @@ describe("Homepage newsletter", () => {
 describe("Newsletter page (/newsletter)", () => {
   it("renders the newsletter page with form", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/newsletter");
+    await gotoRemixPage(page, "/newsletter");
 
     await expect(page.getByText("Newsletter").first()).toBeVisible();
     await expect(
@@ -162,18 +151,13 @@ describe("Newsletter page (/newsletter)", () => {
       });
     });
 
-    await page.goto("/newsletter");
-    await page.waitForLoadState("networkidle", { timeout: 30_000 });
+    await gotoRemixPage(page, "/newsletter");
+    await waitForRemixReady(page);
 
     let emailInput = page.getByPlaceholder("name@example.com");
     await expect(emailInput).toBeVisible();
-    await expect(async () => {
-      await emailInput.fill("hello@example.com");
-      await page.getByRole("button", { name: "Subscribe" }).click();
-      await expect(page.getByText("Got it!")).toBeVisible({
-        timeout: 1_000,
-      });
-    }).toPass({ timeout: 10_000 });
+    await emailInput.fill("hello@example.com");
+    await page.getByRole("button", { name: "Subscribe" }).click();
 
     await expect(page.getByText("Got it!")).toBeVisible();
     await expect(page.getByText(/check your email/i)).toBeVisible();

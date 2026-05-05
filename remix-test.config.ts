@@ -12,10 +12,6 @@ export default {
   },
   playwrightConfig: {
     projects: [{ name: "chromium", use: { browserName: "chromium" } }],
-    use: {
-      navigationTimeout: 10_000,
-      actionTimeout: 10_000,
-    },
   },
   project: "chromium",
   setup: "./test/setup-test-env.ts",

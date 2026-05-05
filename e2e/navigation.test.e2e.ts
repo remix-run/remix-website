@@ -1,7 +1,11 @@
 import { expect, type Page } from "@playwright/test";
 import { describe, it } from "remix/test";
 
-import { createE2EPage } from "../test/e2e.ts";
+import {
+  createE2EPage,
+  gotoRemixPage,
+  waitForRemixReady,
+} from "../test/e2e.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -28,27 +32,6 @@ async function expectClientNavigation(
     .toBe(marker);
 }
 
-async function expectHydratedClientNavigation(
-  page: Page,
-  navigate: () => Promise<void>,
-  url: string,
-) {
-  let marker = await markPage(page);
-
-  await expect(async () => {
-    await navigate();
-    await page.waitForURL(url, { timeout: 1_000 });
-  }).toPass({ timeout: 10_000 });
-
-  await expect
-    .poll(() =>
-      page.evaluate(
-        () => (window as Window & { __navMarker?: string }).__navMarker,
-      ),
-    )
-    .toBe(marker);
-}
-
 async function expectLandingNavReady(page: Page) {
   await expect(
     page.locator('nav[aria-label="Primary"] a[href="/blog"]').first(),
@@ -58,7 +41,7 @@ async function expectLandingNavReady(page: Page) {
 describe("Navigation", () => {
   it("home page renders landing content and keeps the skip target", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/");
+    await gotoRemixPage(page, "/");
 
     await expect(
       page.getByRole("heading", {
@@ -70,43 +53,48 @@ describe("Navigation", () => {
 
   it("home page blog keyboard shortcut uses client navigation", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/");
+    await gotoRemixPage(page, "/");
     await expect(
       page.getByRole("heading", {
         name: "A web framework for building anything",
       }),
     ).toBeVisible();
+    await waitForRemixReady(page);
     await expectLandingNavReady(page);
 
-    await expectHydratedClientNavigation(
+    await expectClientNavigation(
       page,
       () => page.keyboard.press("b"),
       "**/blog",
     );
-    await expect(page).toHaveTitle(/Blog/i, { timeout: 10_000 });
+    await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
   });
 
   it("home page jam keyboard shortcut uses client navigation", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/");
+    await gotoRemixPage(page, "/");
     await expect(
       page.getByRole("heading", {
         name: "A web framework for building anything",
       }),
     ).toBeVisible();
+    await waitForRemixReady(page);
     await expectLandingNavReady(page);
 
-    await expectHydratedClientNavigation(
+    await expectClientNavigation(
       page,
       () => page.keyboard.press("j"),
       "**/jam/2025",
     );
-    await expect(page).toHaveTitle(/Jam/i, { timeout: 10_000 });
+    await expect(
+      page.getByRole("heading", { name: /Remix Jam/i }),
+    ).toBeVisible();
   });
 
   it("active development route header links use client navigation", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/remix-3-active-development");
+    await gotoRemixPage(page, "/remix-3-active-development");
+    await waitForRemixReady(page);
 
     await expectClientNavigation(
       page,
@@ -114,13 +102,14 @@ describe("Navigation", () => {
       "**/blog",
     );
 
-    await expect(page).toHaveTitle(/Blog/i, { timeout: 10_000 });
+    await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
   });
 
   it("blog to home page applies forced dark mode", async (t) => {
     let page = await createE2EPage(t);
     await page.emulateMedia({ colorScheme: "dark" });
-    await page.goto("/blog");
+    await gotoRemixPage(page, "/blog");
+    await waitForRemixReady(page);
 
     await expect(page.locator('html[data-theme="light"]')).toHaveCount(0);
     await expect(page.locator("html.dark")).toHaveCount(1);
@@ -137,7 +126,8 @@ describe("Navigation", () => {
 
   it("blog header jam link uses client navigation", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/blog");
+    await gotoRemixPage(page, "/blog");
+    await waitForRemixReady(page);
 
     await expectClientNavigation(
       page,
@@ -145,12 +135,15 @@ describe("Navigation", () => {
       "**/jam/2025",
     );
 
-    await expect(page).toHaveTitle(/Jam/i, { timeout: 10_000 });
+    await expect(
+      page.getByRole("heading", { name: /Remix Jam/i }),
+    ).toBeVisible();
   });
 
   it("Remix 3 active development page to jam applies jam head styles and forced dark theme", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/remix-3-active-development");
+    await gotoRemixPage(page, "/remix-3-active-development");
+    await waitForRemixReady(page);
 
     await expectClientNavigation(
       page,
@@ -175,17 +168,18 @@ describe("Navigation", () => {
 
   it("header wordmark context menu uses client navigation for brand", async (t) => {
     let page = await createE2EPage(t);
-    await page.goto("/blog");
+    await gotoRemixPage(page, "/blog");
+    await waitForRemixReady(page);
 
     let remixLink = page.locator('header a[aria-label="Remix"]').first();
-    await expectHydratedClientNavigation(
+    await expectClientNavigation(
       page,
       () => remixLink.click({ button: "right" }),
       "**/brand",
     );
 
-    await expect(page).toHaveTitle(/Branding Guidelines/i, {
-      timeout: 10_000,
-    });
+    await expect(
+      page.getByRole("heading", { name: "Remix Brand" }),
+    ).toBeVisible();
   });
 });
