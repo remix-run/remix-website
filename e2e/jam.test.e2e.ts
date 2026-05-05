@@ -91,6 +91,7 @@ describe("Jam", () => {
     let page = await createE2EPage(t);
     await page.setViewportSize({ width: 390, height: 844 });
     await gotoRemixPage(page, "/jam/2025");
+    await waitForRemixReady(page);
 
     let menuToggle = page
       .locator('details:has(nav[aria-label="Mobile"]) > summary')
