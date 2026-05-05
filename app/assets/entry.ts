@@ -44,5 +44,3 @@ app.addEventListener("error", (event) => {
 });
 
 await app.ready();
-
-window.dispatchEvent(new Event("remix:ready"));
