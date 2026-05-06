@@ -22,9 +22,7 @@ describe("submitNewsletterRequest", () => {
     });
 
     expect(result).toEqual({
-      state: "idle",
-      error: null,
-      shouldReset: false,
+      status: "idle",
     });
   });
 
@@ -44,9 +42,8 @@ describe("submitNewsletterRequest", () => {
     });
 
     expect(result).toEqual({
-      state: "error",
-      error: "Something went wrong",
-      shouldReset: false,
+      status: "error",
+      message: "Something went wrong",
     });
   });
 });

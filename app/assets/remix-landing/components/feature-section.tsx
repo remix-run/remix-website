@@ -510,9 +510,7 @@ type FeatureSectionProps = {
 export let LandingNewsletterSubscribeForm = clientEntry(
   import.meta.url,
   function LandingNewsletterSubscribeForm(handle: Handle) {
-    let submitting = false;
-    let state: SubscribeState = "idle";
-    let error: string | null = null;
+    let state: SubscribeState = { status: "idle" };
 
     return (props: { placeholder?: string; buttonLabel?: string }) => (
       <>
@@ -523,12 +521,10 @@ export let LandingNewsletterSubscribeForm = clientEntry(
             subscribeFormStyles,
             on("submit", async (event, signal) => {
               event.preventDefault();
-              if (submitting) return;
+              if (state.status === "submitting") return;
 
               let form = event.currentTarget as HTMLFormElement;
-              submitting = true;
-              state = "idle";
-              error = null;
+              state = { status: "submitting" };
               handle.update();
 
               try {
@@ -538,13 +534,14 @@ export let LandingNewsletterSubscribeForm = clientEntry(
                   signal,
                 });
                 if (signal.aborted) return;
-                state = result.state;
-                error = result.error;
-                if (result.shouldReset) {
+                state = result;
+                if (result.status === "success" && result.shouldReset) {
                   form.reset();
                 }
               } finally {
-                submitting = false;
+                if (state.status === "submitting") {
+                  state = { status: "idle" };
+                }
                 handle.update();
               }
             }),
@@ -560,18 +557,20 @@ export let LandingNewsletterSubscribeForm = clientEntry(
             required
             autocomplete="email"
             placeholder={props.placeholder ?? "name@example.com"}
-            aria-invalid={state === "error" ? true : undefined}
+            aria-invalid={state.status === "error" ? true : undefined}
             aria-describedby={
-              state === "idle" ? undefined : "landing-newsletter-message"
+              state.status === "idle" ? undefined : "landing-newsletter-message"
             }
             mix={[subscribeInputStyles]}
           />
           <button
             type="submit"
-            disabled={submitting}
+            disabled={state.status === "submitting"}
             mix={[subscribeButtonStyles]}
           >
-            {submitting ? "Subscribing..." : (props.buttonLabel ?? "Subscribe")}
+            {state.status === "submitting"
+              ? "Subscribing..."
+              : (props.buttonLabel ?? "Subscribe")}
           </button>
         </form>
         <div
@@ -579,17 +578,17 @@ export let LandingNewsletterSubscribeForm = clientEntry(
           aria-live="polite"
           mix={[
             subscribeMessageStyles,
-            state === "success"
+            state.status === "success"
               ? subscribeSuccessStyles
-              : state === "error"
+              : state.status === "error"
                 ? subscribeErrorStyles
                 : subscribeMessageHiddenStyles,
           ]}
         >
-          {state === "success"
+          {state.status === "success"
             ? "Got it! Please check your email to confirm your subscription."
-            : state === "error"
-              ? (error ?? "Something went wrong")
+            : state.status === "error"
+              ? state.message
               : null}
         </div>
       </>
