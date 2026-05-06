@@ -1,7 +1,7 @@
 ---
 title: A Brand New Remix
 summary: The thinking and intentionality behind our latest brand evolution, website, and what it says about the future of Remix.
-date: 2026-05-04
+date: 2026-05-06
 authors:
   - Tim Quirino
 image: /blog-images/headers/brand-new.jpg

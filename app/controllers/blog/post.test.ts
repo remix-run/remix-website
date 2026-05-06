@@ -42,4 +42,10 @@ describe("Blog post route", () => {
 
     expect(response.status).toBe(404);
   });
+
+  it("renders frontmatter date-only values without timezone offset", async () => {
+    let post = await getBlogPost("brand-new");
+
+    expect(post.dateDisplay).toBe("May 6, 2026");
+  });
 });

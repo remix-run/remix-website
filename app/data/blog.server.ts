@@ -106,7 +106,7 @@ function getValidAuthorNames(authorNames: string[]) {
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "long",
-    timeZone: "America/New_York",
+    timeZone: "UTC",
   }).format(date);
 }
 
