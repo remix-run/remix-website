@@ -40,7 +40,7 @@
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
   font-size: 1rem;
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.6;
   letter-spacing: -0.008px;
 
   & p {
@@ -327,6 +327,6 @@
     @apply md:rounded-xl;
   }
   > p:has(img) {
-    @apply -mx-6 md:-mx-8 lg:-mx-12;
+    @apply -mx-6 md:-mx-8 lg:-mx-10;
   }
 }
