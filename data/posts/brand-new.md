@@ -20,7 +20,7 @@ Ultimately, the trigger — the moment we decided we needed a new brand — was 
 
 Since our work is always intentional (and open source), I'm sharing the Figma frames as a way of providing transparency. Any good brand encapsulates the philosophies and ideals of the thing it represents, so in order to arrive at the right solution I needed to recontextualize the problem. In this case, I wanted to see the past, present, and future of Remix from a bird's-eye point of view.
 
-Building *with* the web rather than against it meant the shape of our work was more aerodynamic. Powerful single-purpose modules (or packages) seemed equivalent to precision parts. Since we've always valued the efficiency of lightweight and powerful architectural decisions, performance has always been a priority. The thematic analogy was clear. It was as if our engineering team was building all of the parts to create a new vehicle for building apps and websites. If we were a racing team, then Remix 3 was meant to be a race car, and every kind of builder would be the driver.
+Building _with_ the web rather than against it meant the shape of our work was more aerodynamic. Powerful single-purpose modules (or packages) seemed equivalent to precision parts. Since we've always valued the efficiency of lightweight and powerful architectural decisions, performance has always been a priority. The thematic analogy was clear. It was as if our engineering team was building all of the parts to create a new vehicle for building apps and websites. If we were a racing team, then Remix 3 was meant to be a race car, and every kind of builder would be the driver.
 
 ## Evolving the Logo
 
@@ -32,12 +32,13 @@ The new identity was meant to have a clear lineage from its predecessor, and it 
 
 As I mentioned earlier, the landscape has shifted. With software engineers and web developers no longer being our only audience, we wanted to address builders of all kinds. In a way, we were also building Remix for designers like me. Instead of just talking about building with agents, I wanted to live the experience of building a Remix website alongside an agent. I wanted to vibe code something that would have previously been way too ambitious, and far outside of my comfort zone.
 
-In the past, I would have designed every aspect of this layout in Figma. For the first time in my career, I started with a handful of markdown files in Obsidian to jot down our goals, then went straight to Cursor and got to work using an Alpha build of Remix. 
+In the past, I would have designed every aspect of this layout in Figma. For the first time in my career, I started with a handful of markdown files in Obsidian to jot down our goals, then went straight to Cursor and got to work using an Alpha build of Remix.
 
 These were my explicit goals:
+
 - Generate a new content strategy for the way we talk about Remix: who it's for, why it's built this way, and why this is the right call now
 - Design a new website with visuals that walk the line between technical abstractions and futuristic visualizations
-- Develop a muscle for using the new Remix brand in a way that extends the racing metaphor *just enough*
+- Develop a muscle for using the new Remix brand in a way that extends the racing metaphor _just enough_
 
 ![A browser window showing the finished Remix website, scrolled down to the second section that highlights a particle model of a racecar, with text that talks about closing the gap between the initial spark and shipping the idea](/blog-images/posts/brand-new/safari-remix-run.avif)
 
@@ -45,9 +46,9 @@ To announce a new brand and release Remix 3 Beta, realistic photography or illus
 
 ## Under the Hood
 
-[The site](/) is built on Remix 3 (alpha) — notably without React, using plain TypeScript and the framework's native component model. 
+[The site](/) is built on Remix 3 (alpha) — notably without React, using plain TypeScript and the framework's native component model.
 
-The centerpiece is that morphing particle cloud that reshapes as you scroll between sections: it's a WebGL scene rendered with Three.js, driven by custom GLSL shaders so the heavy lifting happens on the GPU rather than the CPU. Scroll position is mapped to a continuous morph value that interpolates between preset shapes, with the anchor points tied to each section's center so the nav lands you exactly on a preset's "peak." 
+The centerpiece is that morphing particle cloud that reshapes as you scroll between sections: it's a WebGL scene rendered with Three.js, driven by custom GLSL shaders so the heavy lifting happens on the GPU rather than the CPU. Scroll position is mapped to a continuous morph value that interpolates between preset shapes, with the anchor points tied to each section's center so the nav lands you exactly on a preset's "peak."
 
 ![A browser window featuring the Remix Particle Visualizer tool, with configuration and debug panels.](/blog-images/posts/brand-new/safari-remix-particle-visualizer.avif)
 
