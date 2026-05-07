@@ -21,7 +21,7 @@ const mobileMenuStyles = {
 };
 
 type MobileMenuProps = {
-  setup?: { open?: boolean };
+  open?: boolean;
   children: RemixNode;
   class?: string;
   summaryClass?: string;
@@ -30,20 +30,26 @@ type MobileMenuProps = {
   navClass?: string;
 };
 
+type MenuState = { status: "open" } | { status: "closed" };
+
 export let MobileMenu = clientEntry(
   import.meta.url,
   function MobileMenu(handle: Handle<MobileMenuProps>) {
-    let isOpen = handle.props.setup?.open ?? false;
+    let state: MenuState = handle.props.open
+      ? { status: "open" }
+      : { status: "closed" };
     let detailsElement: HTMLDetailsElement | null = null;
 
-    let closeMenu = () => {
-      let wasOpen = detailsElement?.open || isOpen;
-      if (!wasOpen) return;
+    let syncDetailsElement = () => {
+      if (!detailsElement) return;
+      detailsElement.open = state.status === "open";
+    };
 
-      if (detailsElement) {
-        detailsElement.open = false;
-      }
-      isOpen = false;
+    let closeMenu = () => {
+      if (state.status === "closed" && !detailsElement?.open) return;
+
+      state = { status: "closed" };
+      syncDetailsElement();
       handle.update();
     };
 
@@ -59,14 +65,14 @@ export let MobileMenu = clientEntry(
       e.stopPropagation();
     };
     let onToggle = (e: Event & { currentTarget: HTMLDetailsElement }) => {
-      isOpen = e.currentTarget.open;
+      state = e.currentTarget.open ? { status: "open" } : { status: "closed" };
       handle.update();
     };
     let onDetailsKeyDown = (
       e: KeyboardEvent & { currentTarget: HTMLDetailsElement },
     ) => {
       if (e.key !== "Escape") return;
-      if (!detailsElement?.open) return;
+      if (state.status !== "open" && !e.currentTarget.open) return;
       let summary = e.currentTarget.querySelector("summary");
       closeMenu();
       e.preventDefault();
@@ -89,11 +95,12 @@ export let MobileMenu = clientEntry(
 
       return (
         <details
-          open={isOpen}
+          open={state.status === "open"}
           class={cx("relative cursor-pointer", props.class)}
           mix={[
             ref((node) => {
               detailsElement = node;
+              syncDetailsElement();
             }),
             on("keydown", onDetailsKeyDown),
             on("toggle", onToggle),

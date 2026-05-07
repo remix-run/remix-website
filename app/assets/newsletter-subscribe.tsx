@@ -2,12 +2,11 @@ import { clientEntry, on, type Handle } from "remix/ui";
 import cx from "clsx";
 import { routes } from "../routes.ts";
 
-export type SubscribeState = "idle" | "success" | "error";
-type SubscribeResult = {
-  state: SubscribeState;
-  error: string | null;
-  shouldReset: boolean;
-};
+export type SubscribeState =
+  | { status: "idle" }
+  | { status: "submitting" }
+  | { status: "success"; shouldReset: true }
+  | { status: "error"; message: string };
 
 export async function submitNewsletterRequest({
   action,
@@ -19,7 +18,7 @@ export async function submitNewsletterRequest({
   formData: FormData;
   signal: AbortSignal;
   fetchImpl?: typeof fetch;
-}): Promise<SubscribeResult> {
+}): Promise<SubscribeState> {
   let body = new URLSearchParams();
   for (let [key, value] of formData.entries()) {
     if (typeof value === "string") body.append(key, value);
@@ -42,23 +41,21 @@ export async function submitNewsletterRequest({
     } | null;
 
     if (response.ok && payload?.ok) {
-      return { state: "success", error: null, shouldReset: true };
+      return { status: "success", shouldReset: true };
     }
 
     return {
-      state: "error",
-      error: payload?.error ?? "Something went wrong",
-      shouldReset: false,
+      status: "error",
+      message: payload?.error ?? "Something went wrong",
     };
   } catch (error: unknown) {
     if (signal.aborted || isAbortError(error)) {
-      return { state: "idle", error: null, shouldReset: false };
+      return { status: "idle" };
     }
 
     return {
-      state: "error",
-      error: "Something went wrong",
-      shouldReset: false,
+      status: "error",
+      message: "Something went wrong",
     };
   }
 }
@@ -66,9 +63,7 @@ export async function submitNewsletterRequest({
 export let NewsletterSubscribeForm = clientEntry(
   import.meta.url,
   function NewsletterSubscribeForm(handle: Handle) {
-    let submitting = false;
-    let state: SubscribeState = "idle";
-    let error: string | null = null;
+    let state: SubscribeState = { status: "idle" };
 
     return (props: {
       class?: string;
@@ -79,16 +74,16 @@ export let NewsletterSubscribeForm = clientEntry(
         <form
           action={routes.actions.newsletter.href()}
           method="post"
-          class={cx(props.class, { "opacity-50": submitting })}
+          class={cx(props.class, {
+            "opacity-50": state.status === "submitting",
+          })}
           mix={[
             on("submit", async (event, signal) => {
               event.preventDefault();
-              if (submitting) return;
+              if (state.status === "submitting") return;
 
               let form = event.currentTarget;
-              submitting = true;
-              state = "idle";
-              error = null;
+              state = { status: "submitting" };
               handle.update();
 
               try {
@@ -98,13 +93,14 @@ export let NewsletterSubscribeForm = clientEntry(
                   signal,
                 });
                 if (signal.aborted) return;
-                state = result.state;
-                error = result.error;
-                if (result.shouldReset) {
+                state = result;
+                if (result.status === "success" && result.shouldReset) {
                   form.reset();
                 }
               } finally {
-                submitting = false;
+                if (state.status === "submitting") {
+                  state = { status: "idle" };
+                }
                 handle.update();
               }
             }),
@@ -120,26 +116,32 @@ export let NewsletterSubscribeForm = clientEntry(
             autoComplete="email"
             placeholder="name@example.com"
             class={props.inputClass}
-            aria-invalid={state === "error" ? true : undefined}
+            aria-invalid={state.status === "error" ? true : undefined}
           />
-          <button type="submit" class={props.buttonClass} disabled={submitting}>
-            {submitting ? "Subscribing..." : "Subscribe"}
+          <button
+            type="submit"
+            class={props.buttonClass}
+            disabled={state.status === "submitting"}
+          >
+            {state.status === "submitting" ? "Subscribing..." : "Subscribe"}
           </button>
         </form>
         <div
           aria-live="polite"
           class={
-            state === "success" || state === "error" ? "block py-2" : "hidden"
+            state.status === "success" || state.status === "error"
+              ? "block py-2"
+              : "hidden"
           }
         >
-          {state === "success" ? (
+          {state.status === "success" ? (
             <div>
               <b class="text-green-brand">Got it!</b> Please go{" "}
               <b class="text-red-brand">check your email</b> to confirm your
               subscription, otherwise you won&apos;t get our email.
             </div>
-          ) : state === "error" ? (
-            <div class="text-red-brand">{error ?? "Something went wrong"}</div>
+          ) : state.status === "error" ? (
+            <div class="text-red-brand">{state.message}</div>
           ) : null}
         </div>
       </>
