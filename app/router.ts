@@ -8,7 +8,7 @@ import { staticFiles } from "remix/static-middleware";
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
-import { routes } from "./routes.ts";
+import { enabledRoutes, routes } from "./routes.ts";
 import { assetServer } from "./utils/assets.server.ts";
 
 import actionsController from "./controllers/actions/controller.tsx";
@@ -20,14 +20,7 @@ import { brandHandler } from "./controllers/brand.tsx";
 import { catchallHandler } from "./controllers/catchall.ts";
 import { remix3ActiveDevelopmentHandler } from "./controllers/remix3-active-development/controller.tsx";
 import { homeHandler } from "./controllers/home/controller.tsx";
-import { jam2025CocHandler } from "./controllers/jam/2025-coc.tsx";
-import { jam2025FaqHandler } from "./controllers/jam/2025-faq.tsx";
-import { jam2025GalleryHandler } from "./controllers/jam/2025-gallery/controller.tsx";
-import { jam2025GalleryDownloadHandler } from "./controllers/jam/2025-gallery/download.ts";
-import { jam2025LineupHandler } from "./controllers/jam/2025-lineup.tsx";
-import { jam2025TicketHandler } from "./controllers/jam/2025-ticket.tsx";
-import { jam2025Handler } from "./controllers/jam/2025.tsx";
-import { jamHandler } from "./controllers/jam/controller.ts";
+import { jamController } from "./controllers/jam/controller.ts";
 import { newsletterHandler } from "./controllers/newsletter.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
@@ -116,14 +109,7 @@ function createAppRouter() {
   router.map(routes.brand, brandHandler);
   router.map(routes.home, homeHandler);
   router.map(routes.newsletter, newsletterHandler);
-  router.map(routes.jam.index, jamHandler);
-  router.map(routes.jam.y2025.index, jam2025Handler);
-  router.map(routes.jam.y2025.ticket, jam2025TicketHandler);
-  router.map(routes.jam.y2025.lineup, jam2025LineupHandler);
-  router.map(routes.jam.y2025.faq, jam2025FaqHandler);
-  router.map(routes.jam.y2025.coc, jam2025CocHandler);
-  router.map(routes.jam.y2025.gallery.download, jam2025GalleryDownloadHandler);
-  router.map(routes.jam.y2025.gallery.index, jam2025GalleryHandler);
+  router.map(enabledRoutes.jam, jamController);
   router.map(routes.remix3ActiveDevelopment, remix3ActiveDevelopmentHandler);
 
   // Redirects from _redirects (must be before * catchall)
