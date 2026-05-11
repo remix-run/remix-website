@@ -4,7 +4,8 @@
 import { parseArgs } from "util";
 
 // src/agent-skills/scripts/instrumentation.ts
-var SHOPIFY_DEV_BASE_URL = process.env.SHOPIFY_DEV_INSTRUMENTATION_URL || "https://shopify.dev/";
+var SHOPIFY_DEV_BASE_URL =
+  process.env.SHOPIFY_DEV_INSTRUMENTATION_URL || "https://shopify.dev/";
 function isInstrumentationDisabled() {
   try {
     return process.env.OPT_OUT_INSTRUMENTATION === "true";
@@ -14,7 +15,8 @@ function isInstrumentationDisabled() {
 }
 async function reportValidation(toolName, result, context) {
   if (isInstrumentationDisabled()) return;
-  const { model, clientName, clientVersion, ...remainingContext } = context ?? {};
+  const { model, clientName, clientVersion, ...remainingContext } =
+    context ?? {};
   try {
     const url = new URL("/mcp/usage", SHOPIFY_DEV_BASE_URL);
     const headers = {
@@ -23,7 +25,7 @@ async function reportValidation(toolName, result, context) {
       "Cache-Control": "no-cache",
       "X-Shopify-Surface": "skills",
       "X-Shopify-MCP-Version": "1.8.0",
-      "X-Shopify-Timestamp": (/* @__PURE__ */ new Date()).toISOString()
+      "X-Shopify-Timestamp": /* @__PURE__ */ new Date().toISOString(),
     };
     if (clientName) headers["X-Shopify-Client-Name"] = String(clientName);
     if (clientVersion)
@@ -37,13 +39,12 @@ async function reportValidation(toolName, result, context) {
         parameters: {
           skill: "shopify-storefront-graphql",
           skillVersion: "1.8.0",
-          ...remainingContext
+          ...remainingContext,
         },
-        result
-      })
+        result,
+      }),
     });
-  } catch {
-  }
+  } catch {}
 }
 
 // src/agent-skills/scripts/search_docs.ts
@@ -51,14 +52,14 @@ var { values, positionals } = parseArgs({
   options: {
     model: { type: "string" },
     "client-name": { type: "string" },
-    "client-version": { type: "string" }
+    "client-version": { type: "string" },
   },
-  allowPositionals: true
+  allowPositionals: true,
 });
 var query = positionals[0];
 if (!query) {
   console.error(
-    "Usage: search_docs.js <query> [--model <id>] [--client-name <name>]"
+    "Usage: search_docs.js <query> [--model <id>] [--client-name <name>]",
   );
   process.exit(1);
 }
@@ -72,14 +73,16 @@ async function performSearch(query2, apiName) {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      "X-Shopify-Surface": "skills"
+      "X-Shopify-Surface": "skills",
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   });
   if (!response.ok) {
     const errorBody = await response.text().catch(() => "");
     throw new Error(
-      errorBody ? `HTTP ${response.status}: ${errorBody}` : `HTTP error! status: ${response.status}`
+      errorBody
+        ? `HTTP ${response.status}: ${errorBody}`
+        : `HTTP error! status: ${response.status}`,
     );
   }
   const responseText = await response.text();
@@ -98,7 +101,7 @@ try {
     model: values.model,
     clientName: values["client-name"],
     clientVersion: values["client-version"],
-    query
+    query,
   });
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error);
@@ -107,7 +110,7 @@ try {
     model: values.model,
     clientName: values["client-name"],
     clientVersion: values["client-version"],
-    query
+    query,
   });
   process.exit(1);
 }

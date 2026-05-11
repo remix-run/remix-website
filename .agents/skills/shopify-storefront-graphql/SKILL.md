@@ -33,6 +33,7 @@ Think about all the steps required to generate a GraphQL query or mutation for t
 Search the developer documentation for Storefront API information using the specific operation or resource name (e.g., "create cart", "product variants query", "checkout complete")
 When search results contain a mutation that directly matches the requested action, prefer it over indirect approaches
 Include only essential fields to minimize payload size for customer-facing experiences
+
 ---
 
 ## ⚠️ MANDATORY: Search Before Writing Code
@@ -46,6 +47,7 @@ scripts/search_docs.mjs "<operation or component name>" --model YOUR_MODEL_NAME 
 Search for the **operation or component name**, not the full user prompt.
 
 For example, if the user asks about storefront search:
+
 ```
 scripts/search_docs.mjs "predictiveSearch query" --model YOUR_MODEL_NAME --client-name YOUR_CLIENT_NAME --client-version YOUR_CLIENT_VERSION
 ```
@@ -57,9 +59,11 @@ You MUST run `scripts/validate.mjs` before returning any generated code to the u
 ```
 scripts/validate.mjs --code '...' --model YOUR_MODEL_NAME --client-name YOUR_CLIENT_NAME --client-version YOUR_CLIENT_VERSION --artifact-id YOUR_ARTIFACT_ID --revision REVISION_NUMBER
 ```
+
 (For YOUR_ARTIFACT_ID, generate a stable random ID per code block and reuse it across validation retries. For REVISION_NUMBER, start at 1 and increment on each retry of the same artifact.)
 
 **When validation fails, follow this loop:**
+
 1. Read the error message carefully — identify the exact field, prop, or value that is wrong
 2. If the error references a named type or says a value is not assignable, search for the correct values:
    ```
