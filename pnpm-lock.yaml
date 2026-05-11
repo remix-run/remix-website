@@ -11,8 +11,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       "@shopify/storefront-api-client":
-        specifier: ^1.0.7
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -2010,16 +2010,16 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  "@shopify/graphql-client@1.4.1":
+  "@shopify/graphql-client@1.4.2":
     resolution:
       {
-        integrity: sha512-/w4Uchx8ueI8gwmJd1ZbbIGndsjfMEFlzmay3P7rya5zj7K308xne/ggIvWDweueIut2qf1A8lI58xQl9Pu22w==,
+        integrity: sha512-C/fEyx6BZmTGeJv0HSsduhfn5ZbkXk0nePkyo0+xXxorP1I+uvx9pobdFxTfiPnOrh+P6QiKzBgIviksnSo4YA==,
       }
 
-  "@shopify/storefront-api-client@1.0.9":
+  "@shopify/storefront-api-client@1.0.10":
     resolution:
       {
-        integrity: sha512-vgc0ZczMvrbsQQFYcIIONnIiqiafpcMyq5osI8X6PB65DhnmCQEp3kSlXKOjBPzyAWYvp28nLHS0+r4xsp4yQA==,
+        integrity: sha512-A0ItFW58L5+y/jnnJDEsmt2YcQSt2BG+pNoQOYRpPBJaOLpTj7A13q1QVrE5XYVGZCA6ZQ6FqAtgosHHrkut0Q==,
       }
 
   "@shuding/opentype.js@1.4.0-beta.0":
@@ -5429,11 +5429,11 @@ snapshots:
   "@rollup/rollup-win32-x64-msvc@4.57.1":
     optional: true
 
-  "@shopify/graphql-client@1.4.1": {}
+  "@shopify/graphql-client@1.4.2": {}
 
-  "@shopify/storefront-api-client@1.0.9":
+  "@shopify/storefront-api-client@1.0.10":
     dependencies:
-      "@shopify/graphql-client": 1.4.1
+      "@shopify/graphql-client": 1.4.2
 
   "@shuding/opentype.js@1.4.0-beta.0":
     dependencies:

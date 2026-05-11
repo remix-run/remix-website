@@ -14,7 +14,7 @@ function getClient() {
     try {
       client = createStorefrontApiClient({
         storeDomain: "https://jam.remix.run",
-        apiVersion: "2025-04",
+        apiVersion: "2026-04",
         publicAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
       });
     } catch {
