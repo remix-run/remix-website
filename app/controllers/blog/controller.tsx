@@ -7,6 +7,7 @@ import { render } from "../../utils/render.ts";
 import { getBlogPostListings } from "../../data/blog.server.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
+import { styleHrefs } from "../../utils/style-hrefs.ts";
 
 export async function blogHandler() {
   let posts = await getBlogPostListings();
@@ -24,6 +25,7 @@ function Page() {
     <Document
       title="Remix Blog"
       description="Thoughts about building excellent user experiences with Remix."
+      stylesheets={[styleHrefs.app]}
       headTags={getSocialHeadTags({
         title: "Remix Blog",
         description:

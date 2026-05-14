@@ -1,10 +1,12 @@
-import type { RemixNode } from "remix/ui";
+import { css, type Handle, type RemixNode } from "remix/ui";
+import { theme } from "remix/ui/theme";
 
 import { DocumentHeadSync } from "../assets/document-head-sync.tsx";
 import { getAssetEntry } from "../middleware/asset-entry.ts";
 import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head.ts";
 import { assetPaths } from "../utils/asset-paths.ts";
 import { styleHrefs } from "../utils/style-hrefs.ts";
+import { RemixTheme } from "./theme.ts";
 
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -47,18 +49,20 @@ declare global {
  * Plain stylesheet assets are compiled into `public/styles`.
  * Route code links to them through `app/utils/style-hrefs.ts`.
  */
-export function Document() {
-  return ({
-    title,
-    description,
-    noIndex,
-    forceTheme,
-    headTags = [],
-    stylesheets,
-    children,
-  }: DocumentProps) => {
+export function Document(handle: Handle<DocumentProps>) {
+  return () => {
+    let {
+      title,
+      description,
+      noIndex,
+      forceTheme,
+      headTags = [],
+      stylesheets = [],
+      children,
+    } = handle.props;
     let assetEntry = getAssetEntry();
-    let appliedStylesheets = stylesheets ?? [styleHrefs.app];
+
+    stylesheets = [...new Set([styleHrefs.fonts, ...stylesheets])];
     let managedHeadTags: ManagedHeadTag[] = [
       ...(noIndex
         ? [{ kind: "meta" as const, name: "robots", content: "noindex" }]
@@ -72,26 +76,19 @@ export function Document() {
             },
           ]
         : []),
-      ...appliedStylesheets.map((href) => ({
+      ...stylesheets.map((href) => ({
         kind: "link" as const,
         rel: "stylesheet",
         href,
       })),
       ...headTags,
     ];
-    let bodyClassName = `flex min-h-screen w-full flex-col overflow-x-hidden antialiased selection:bg-blue-200 selection:text-black dark:selection:bg-blue-800 dark:selection:text-white ${
-      forceTheme === "dark"
-        ? "bg-gray-900 text-gray-200"
-        : forceTheme === "light"
-          ? "bg-white text-gray-900"
-          : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200"
-    }`;
-
     return (
       <html
         lang="en"
         data-theme={forceTheme ?? undefined}
         class={forceTheme === "dark" ? "dark" : undefined}
+        style={{ colorScheme: forceTheme ?? "light dark" }}
       >
         <head>
           <meta charset="utf-8" />
@@ -100,6 +97,7 @@ export function Document() {
             content="width=device-width,initial-scale=1,viewport-fit=cover"
           />
           <meta name="theme-color" content="#121212" />
+          <RemixTheme.Style />
           {title ? <title>{title}</title> : null}
 
           <link rel="icon" href="/favicon.ico" sizes="32x32" />
@@ -110,25 +108,6 @@ export function Document() {
             sizes="any"
           />
 
-          {/* Font preloads */}
-          <link
-            rel="preload"
-            as="font"
-            href="/font/inter-roman-latin-var.woff2"
-            crossorigin="anonymous"
-          />
-          <link
-            rel="preload"
-            as="font"
-            href="/font/inter-italic-latin-var.woff2"
-            crossorigin="anonymous"
-          />
-          <link
-            rel="preload"
-            as="font"
-            href="/font/jet-brains-mono.woff2"
-            crossorigin="anonymous"
-          />
           {Object.values(styleHrefs).map((href) => (
             <link key={href} rel="preload" as="style" href={href} />
           ))}
@@ -173,18 +152,19 @@ export function Document() {
           <script innerHTML={colorSchemeScript} />
         </head>
 
-        <body class={bodyClassName}>
+        <body mix={documentBodyStyle}>
           <DocumentHeadSync
             title={title}
             forceTheme={forceTheme}
-            bodyClassName={bodyClassName}
             headTags={managedHeadTags}
           />
           <img
             src={assetPaths.iconsSprite}
             alt=""
             hidden
-            // Preload icons sprite so <use href> references resolve (matches app/root.tsx)
+            // Inline so route-local theme resets emitted later cannot reveal the sprite.
+            style={{ display: "none" }}
+            // Preload icons sprite so <use href> references resolve.
             fetchpriority="high"
           />
           {children}
@@ -193,3 +173,21 @@ export function Document() {
     );
   };
 }
+
+// These values intentionally mirror the old Tailwind body utilities so shared
+// document chrome does not depend on app.css being loaded.
+let documentBodyStyle = css({
+  display: "flex",
+  minHeight: "100vh",
+  width: "100%",
+  flexDirection: "column",
+  overflowX: "hidden",
+  backgroundColor: theme.surface.lvl0,
+  color: theme.colors.text.primary,
+  WebkitFontSmoothing: "antialiased",
+  MozOsxFontSmoothing: "grayscale",
+  "&::selection": {
+    backgroundColor: "light-dark(#bce0ff, #1747b6)",
+    color: "light-dark(#000000, #ffffff)",
+  },
+});

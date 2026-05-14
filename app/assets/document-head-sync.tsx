@@ -8,7 +8,6 @@ import {
 type DocumentHeadSyncProps = {
   title?: string;
   forceTheme?: "dark" | "light";
-  bodyClassName: string;
   headTags: ManagedHeadTag[];
 };
 
@@ -30,7 +29,6 @@ export let DocumentHeadSync = clientEntry(
 
       syncTitle(latestProps.title);
       syncTheme(latestProps.forceTheme);
-      syncBodyClassName(latestProps.bodyClassName);
       syncManagedHeadTags(latestProps.headTags);
     };
 
@@ -59,8 +57,10 @@ function syncTheme(forceTheme?: "dark" | "light") {
 
   if (forceTheme) {
     root.dataset.theme = forceTheme;
+    root.style.colorScheme = forceTheme;
   } else {
     delete root.dataset.theme;
+    root.style.colorScheme = "light dark";
   }
 
   if (typeof window.__remixSyncColorScheme === "function") {
@@ -74,10 +74,4 @@ function syncTheme(forceTheme?: "dark" | "light") {
       (forceTheme == null &&
         window.matchMedia("(prefers-color-scheme: dark)").matches),
   );
-}
-
-function syncBodyClassName(bodyClassName: string) {
-  if (document.body.className !== bodyClassName) {
-    document.body.className = bodyClassName;
-  }
 }

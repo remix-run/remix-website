@@ -1,6 +1,7 @@
 import cx from "clsx";
 import { Document } from "./document.tsx";
 import { render } from "../utils/render.ts";
+import { styleHrefs } from "../utils/style-hrefs.ts";
 
 export function renderNotFoundPage(options?: { statusText?: string }) {
   let statusText = options?.statusText ?? "Not Found";
@@ -19,7 +20,12 @@ export function renderNotFoundPage(options?: { statusText?: string }) {
 
 function StatusErrorDocument() {
   return (props: { status: number; statusText: string }) => (
-    <Document title={props.statusText} noIndex forceTheme="dark">
+    <Document
+      title={props.statusText}
+      noIndex
+      forceTheme="dark"
+      stylesheets={[styleHrefs.app]}
+    >
       <main
         id="main-content"
         tabIndex={-1}
