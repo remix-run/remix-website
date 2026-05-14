@@ -163,7 +163,7 @@ describe("Navigation", () => {
           Array.from(
             document.head.querySelectorAll('link[rel="stylesheet"]'),
           ).some((element) =>
-            element.getAttribute("href")?.includes("jam.css"),
+            element.getAttribute("href")?.includes("jam-2025.css"),
           ),
         ),
       )
