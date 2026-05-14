@@ -57,8 +57,10 @@ function syncTheme(forceTheme?: "dark" | "light") {
 
   if (forceTheme) {
     root.dataset.theme = forceTheme;
+    root.style.colorScheme = forceTheme;
   } else {
     delete root.dataset.theme;
+    root.style.colorScheme = "light dark";
   }
 
   if (typeof window.__remixSyncColorScheme === "function") {

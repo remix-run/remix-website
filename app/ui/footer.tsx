@@ -74,9 +74,6 @@ let footerStyle = css({
   "@media (min-width: 1024px)": {
     paddingInline: "48px",
   },
-  ".dark &": {
-    color: "#9aa0a6",
-  },
 });
 
 let footerTopStyle = css({
@@ -92,10 +89,10 @@ let footerBrandLinkStyle = css({
   color: "inherit",
   opacity: 0.6,
   transition: "opacity 150ms ease",
-  ":hover": {
+  "&:hover": {
     opacity: 1,
   },
-  ":focus-visible": {
+  "&:focus-visible": {
     outline: "2px solid currentColor",
     outlineOffset: "4px",
   },
@@ -114,10 +111,10 @@ let footerSocialLinkStyle = css({
   color: "inherit",
   opacity: 0.8,
   transition: "opacity 150ms ease",
-  ":hover": {
+  "&:hover": {
     opacity: 1,
   },
-  ":focus-visible": {
+  "&:focus-visible": {
     outline: "2px solid currentColor",
     outlineOffset: "4px",
   },
@@ -134,12 +131,9 @@ let footerLegalStyle = css({
   alignItems: "center",
   gap: "8px",
   color: "inherit",
-  fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+  fontFamily: theme.fontFamily.mono,
   fontSize: "10px",
   lineHeight: "1.6",
   letterSpacing: "0.05em",
   textTransform: "uppercase",
-  "p": {
-    margin: 0,
-  },
 });

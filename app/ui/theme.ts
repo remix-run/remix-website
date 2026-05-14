@@ -21,8 +21,7 @@ export let RemixTheme = createTheme(
       full: "9999px",
     },
     fontFamily: {
-      sans:
-        '"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+      sans: '"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
       mono: '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     },
     fontSize: {
@@ -60,7 +59,7 @@ export let RemixTheme = createTheme(
       },
     },
     surface: {
-      lvl0: "#ffffff",
+      lvl0: "light-dark(#ffffff, #121212)",
       lvl1: "#f7f7f7",
       lvl2: "#e3e3e3",
       lvl3: "#c8c8c8",
@@ -75,9 +74,9 @@ export let RemixTheme = createTheme(
     },
     colors: {
       text: {
-        primary: "#121212",
+        primary: "light-dark(#121212, #c8c8c8)",
         secondary: "#515151",
-        muted: "#a4a4a4",
+        muted: "light-dark(#94989c, #9aa0a6)",
         link: "#3992ff",
       },
       border: {

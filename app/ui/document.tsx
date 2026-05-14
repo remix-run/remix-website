@@ -1,4 +1,5 @@
 import { css, type Handle, type RemixNode } from "remix/ui";
+import { theme } from "remix/ui/theme";
 
 import { DocumentHeadSync } from "../assets/document-head-sync.tsx";
 import { getAssetEntry } from "../middleware/asset-entry.ts";
@@ -87,6 +88,7 @@ export function Document(handle: Handle<DocumentProps>) {
         lang="en"
         data-theme={forceTheme ?? undefined}
         class={forceTheme === "dark" ? "dark" : undefined}
+        style={{ colorScheme: forceTheme ?? "light dark" }}
       >
         <head>
           <meta charset="utf-8" />
@@ -180,20 +182,12 @@ let documentBodyStyle = css({
   width: "100%",
   flexDirection: "column",
   overflowX: "hidden",
-  backgroundColor: "#ffffff",
-  color: "#121212",
+  backgroundColor: theme.surface.lvl0,
+  color: theme.colors.text.primary,
   WebkitFontSmoothing: "antialiased",
   MozOsxFontSmoothing: "grayscale",
   "&::selection": {
-    backgroundColor: "#bce0ff",
-    color: "#000000",
-  },
-  ":root.dark &": {
-    backgroundColor: "#121212",
-    color: "#c8c8c8",
-  },
-  ":root.dark &::selection": {
-    backgroundColor: "#1747b6",
-    color: "#ffffff",
+    backgroundColor: "light-dark(#bce0ff, #1747b6)",
+    color: "light-dark(#000000, #ffffff)",
   },
 });
