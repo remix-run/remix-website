@@ -14,10 +14,7 @@ export function Jam2026Header() {
           <a href="#faq" mix={navLinkStyle}>
             FAQ
           </a>
-          <a
-            href={routes.jam.y2026.tickets.index.href()}
-            mix={ticketLinkStyle}
-          >
+          <a href={routes.jam.y2026.tickets.index.href()} mix={ticketLinkStyle}>
             Get tickets
           </a>
         </nav>

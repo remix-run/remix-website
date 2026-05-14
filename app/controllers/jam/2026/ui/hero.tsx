@@ -7,9 +7,7 @@ export function Jam2026Hero() {
   return () => (
     <section aria-labelledby="jam-2026-heading" mix={heroStyle}>
       <div mix={heroInnerStyle}>
-        <p mix={heroMetaStyle}>
-          October 1-2, 2026 / Toronto, Ontario, Canada
-        </p>
+        <p mix={heroMetaStyle}>October 1-2, 2026 / Toronto, Ontario, Canada</p>
         <div>
           <div mix={placeholderStyle}>
             <h1 id="jam-2026-heading" mix={headingStyle}>
