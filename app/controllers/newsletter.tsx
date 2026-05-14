@@ -6,6 +6,7 @@ import { NewsletterSubscribeForm } from "../assets/newsletter-subscribe.tsx";
 import { render } from "../utils/render.ts";
 import { CACHE_CONTROL } from "../utils/cache-control.ts";
 import { getSocialHeadTags } from "../utils/social-head-tags.server.ts";
+import { styleHrefs } from "../utils/style-hrefs.ts";
 
 export async function newsletterHandler() {
   return render.document(<Page />, {
@@ -21,6 +22,7 @@ function Page() {
       title="Remix Newsletter"
       description="Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. We respect your privacy, unsubscribe at any time."
       forceTheme="dark"
+      stylesheets={[styleHrefs.app]}
       headTags={getSocialHeadTags({
         title: "Remix Newsletter",
         description:

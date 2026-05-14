@@ -1,55 +1,145 @@
-import cx from "clsx";
+import { css } from "remix/ui";
+import { theme } from "remix/ui/theme";
 import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/asset-paths.ts";
 import { Wordmark } from "./wordmark.tsx";
 
 export function Footer() {
   return () => (
-    <footer
-      class={cx(
-        "flex flex-col items-center justify-center gap-4 px-6 py-12 pb-36 lg:px-12",
-        "text-rmx-muted",
-      )}
-    >
-      <div class="text-rmx-muted flex items-center gap-6">
+    <footer mix={footerStyle}>
+      <div mix={footerTopStyle}>
         <a
           href={routes.remix3ActiveDevelopment.href()}
           aria-label="Remix"
-          class="inline-flex items-center opacity-60 transition hover:opacity-100"
+          mix={footerBrandLinkStyle}
         >
           <Wordmark height={12} aria-hidden />
         </a>
-        <nav
-          class="flex items-center gap-6 [&_a:hover]:opacity-100 [&_a]:opacity-80 [&_a]:transition [&_svg]:size-5"
-          aria-label="Find us on the web"
-        >
-          <a href="https://github.com/remix-run" aria-label="GitHub">
-            <svg aria-hidden="true" fill="none">
+        <nav aria-label="Find us on the web" mix={footerSocialNavStyle}>
+          <a
+            href="https://github.com/remix-run"
+            aria-label="GitHub"
+            mix={footerSocialLinkStyle}
+          >
+            <svg aria-hidden="true" fill="none" mix={footerSocialIconStyle}>
               <use href={`${assetPaths.iconsSprite}#github`} />
             </svg>
           </a>
-          <a href="https://x.com/remix_run" aria-label="X">
-            <svg aria-hidden="true" fill="none">
+          <a
+            href="https://x.com/remix_run"
+            aria-label="X"
+            mix={footerSocialLinkStyle}
+          >
+            <svg aria-hidden="true" fill="none" mix={footerSocialIconStyle}>
               <use href={`${assetPaths.iconsSprite}#x`} />
             </svg>
           </a>
-          <a href="https://youtube.com/remix_run" aria-label="YouTube">
-            <svg aria-hidden="true" fill="none">
+          <a
+            href="https://youtube.com/remix_run"
+            aria-label="YouTube"
+            mix={footerSocialLinkStyle}
+          >
+            <svg aria-hidden="true" fill="none" mix={footerSocialIconStyle}>
               <use href={`${assetPaths.iconsSprite}#youtube`} />
             </svg>
           </a>
-          <a href="https://discord.gg/xwx7mMzVkA" aria-label="Remix">
-            <svg aria-hidden="true" fill="none">
+          <a
+            href="https://discord.gg/xwx7mMzVkA"
+            aria-label="Remix"
+            mix={footerSocialLinkStyle}
+          >
+            <svg aria-hidden="true" fill="none" mix={footerSocialIconStyle}>
               <use href={`${assetPaths.iconsSprite}#discord`} />
             </svg>
           </a>
         </nav>
       </div>
 
-      <div class="text-rmx-muted flex flex-col items-center gap-2 font-mono text-[10px] uppercase leading-[1.6] tracking-[0.05em]">
+      <div mix={footerLegalStyle}>
         <p>docs and examples licensed under mit</p>
         <p>©{new Date().getFullYear()} Shopify, Inc.</p>
       </div>
     </footer>
   );
 }
+
+let footerStyle = css({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "16px",
+  padding: "48px 24px 144px",
+  color: theme.colors.text.muted,
+  "@media (min-width: 1024px)": {
+    paddingInline: "48px",
+  },
+  ".dark &": {
+    color: "#9aa0a6",
+  },
+});
+
+let footerTopStyle = css({
+  display: "flex",
+  alignItems: "center",
+  gap: "24px",
+  color: "inherit",
+});
+
+let footerBrandLinkStyle = css({
+  display: "inline-flex",
+  alignItems: "center",
+  color: "inherit",
+  opacity: 0.6,
+  transition: "opacity 150ms ease",
+  ":hover": {
+    opacity: 1,
+  },
+  ":focus-visible": {
+    outline: "2px solid currentColor",
+    outlineOffset: "4px",
+  },
+});
+
+let footerSocialNavStyle = css({
+  display: "flex",
+  alignItems: "center",
+  gap: "24px",
+});
+
+let footerSocialLinkStyle = css({
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "inherit",
+  opacity: 0.8,
+  transition: "opacity 150ms ease",
+  ":hover": {
+    opacity: 1,
+  },
+  ":focus-visible": {
+    outline: "2px solid currentColor",
+    outlineOffset: "4px",
+  },
+});
+
+let footerSocialIconStyle = css({
+  width: "20px",
+  height: "20px",
+});
+
+let footerLegalStyle = css({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "8px",
+  color: "inherit",
+  fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+  fontSize: "10px",
+  lineHeight: "1.6",
+  letterSpacing: "0.05em",
+  textTransform: "uppercase",
+  "p": {
+    margin: 0,
+  },
+});
