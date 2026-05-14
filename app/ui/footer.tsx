@@ -1,12 +1,16 @@
-import { css } from "remix/ui";
+import { css, type Handle, type MixInput } from "remix/ui";
 import { theme } from "remix/ui/theme";
 import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/asset-paths.ts";
 import { Wordmark } from "./wordmark.tsx";
 
-export function Footer() {
+type FooterProps = {
+  mix?: MixInput<HTMLElement>;
+};
+
+export function Footer(handle: Handle<FooterProps>) {
   return () => (
-    <footer mix={footerStyle}>
+    <footer aria-label="Site footer" mix={[footerStyle, handle.props.mix]}>
       <div mix={footerTopStyle}>
         <a
           href={routes.remix3ActiveDevelopment.href()}
@@ -71,6 +75,19 @@ let footerStyle = css({
   gap: "16px",
   padding: "48px 24px 144px",
   color: theme.colors.text.muted,
+  "& a": {
+    color: "inherit",
+    opacity: 0.8,
+    textDecoration: "none",
+    transition: "opacity 150ms ease",
+  },
+  "& a:hover": {
+    opacity: 1,
+  },
+  "& a:focus-visible": {
+    outline: "2px solid currentColor",
+    outlineOffset: "4px",
+  },
   "@media (min-width: 1024px)": {
     paddingInline: "48px",
   },
@@ -80,22 +97,11 @@ let footerTopStyle = css({
   display: "flex",
   alignItems: "center",
   gap: "24px",
-  color: "inherit",
 });
 
 let footerBrandLinkStyle = css({
   display: "inline-flex",
   alignItems: "center",
-  color: "inherit",
-  opacity: 0.6,
-  transition: "opacity 150ms ease",
-  "&:hover": {
-    opacity: 1,
-  },
-  "&:focus-visible": {
-    outline: "2px solid currentColor",
-    outlineOffset: "4px",
-  },
 });
 
 let footerSocialNavStyle = css({
@@ -108,16 +114,6 @@ let footerSocialLinkStyle = css({
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  color: "inherit",
-  opacity: 0.8,
-  transition: "opacity 150ms ease",
-  "&:hover": {
-    opacity: 1,
-  },
-  "&:focus-visible": {
-    outline: "2px solid currentColor",
-    outlineOffset: "4px",
-  },
 });
 
 let footerSocialIconStyle = css({
@@ -130,7 +126,6 @@ let footerLegalStyle = css({
   flexDirection: "column",
   alignItems: "center",
   gap: "8px",
-  color: "inherit",
   fontFamily: theme.fontFamily.mono,
   fontSize: "10px",
   lineHeight: "1.6",
