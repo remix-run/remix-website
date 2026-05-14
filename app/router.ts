@@ -52,19 +52,13 @@ function createAppRouter() {
     });
   }
 
-  if (!isDev) {
-    middleware.push(
-      staticFiles("public", {
-        cacheControl: "public, max-age=3600",
-      }),
-    );
-  } else {
-    middleware.push(
-      staticFiles("public", {
-        cacheControl: "no-store, must-revalidate",
-      }),
-    );
-  }
+  middleware.push(
+    staticFiles("public", {
+      cacheControl: isDev
+        ? "no-store, must-revalidate"
+        : "public, max-age=3600",
+    }),
+  );
 
   middleware.push(formData());
   middleware.push(asyncContext());

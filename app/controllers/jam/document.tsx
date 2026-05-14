@@ -27,13 +27,6 @@ export function JamDocument() {
           description: props.description,
           image: props.previewImage,
         }),
-        {
-          kind: "link",
-          rel: "preload",
-          href: "/font/jet-brains-mono.woff2",
-          as: "font",
-          crossorigin: "anonymous",
-        },
       ]}
     >
       <JamPageScaffold
