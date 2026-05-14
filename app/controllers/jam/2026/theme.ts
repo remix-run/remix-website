@@ -1,18 +1,20 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
 
-let jamInk = "var(--jam-2026-ink)";
-let jamInkMuted = "var(--jam-2026-ink-muted)";
-let jamAccent = "var(--jam-2026-accent)";
-let jamAccentHover = "var(--jam-2026-accent-hover)";
-let jamAccentActive = "var(--jam-2026-accent-active)";
-let jamBorderSubtle = "var(--jam-2026-border-subtle)";
-let jamBorderDefault = "var(--jam-2026-border-default)";
-let jamSurface = "var(--jam-2026-surface)";
-let jamSurfaceRaised = "var(--jam-2026-surface-raised)";
-let jamSky = "var(--jam-2026-sky)";
-let jamSkySoft = "var(--jam-2026-sky-soft)";
-let jamSkyPale = "var(--jam-2026-sky-pale)";
+let jam = {
+  ink: "var(--jam-2026-ink)",
+  inkMuted: "var(--jam-2026-ink-muted)",
+  accent: "var(--jam-2026-accent)",
+  accentHover: "var(--jam-2026-accent-hover)",
+  accentActive: "var(--jam-2026-accent-active)",
+  borderSubtle: "var(--jam-2026-border-subtle)",
+  borderDefault: "var(--jam-2026-border-default)",
+  surface: "var(--jam-2026-surface)",
+  surfaceRaised: "var(--jam-2026-surface-raised)",
+  sky: "var(--jam-2026-sky)",
+  skySoft: "var(--jam-2026-sky-soft)",
+  skyPale: "var(--jam-2026-sky-pale)",
+};
 
 export let jam2026PageStyle = css({
   "--jam-2026-ink": "#082845",
@@ -31,8 +33,8 @@ export let jam2026PageStyle = css({
   display: "flex",
   minHeight: "100svh",
   flexDirection: "column",
-  backgroundColor: jamSurface,
-  color: jamInk,
+  backgroundColor: jam.surface,
+  color: jam.ink,
   fontFamily: theme.fontFamily.sans,
 });
 
@@ -51,7 +53,7 @@ export let jam2026PlaceholderStyle = css({
 
 export let jam2026HeadingStyle = css({
   margin: 0,
-  color: jamInk,
+  color: jam.ink,
   fontFamily: theme.fontFamily.sans,
   fontSize: "clamp(2.25rem, 7vw, 4rem)",
   fontWeight: theme.fontWeight.bold,
@@ -61,7 +63,7 @@ export let jam2026HeadingStyle = css({
 
 export let jam2026CopyStyle = css({
   marginBlock: `${theme.space.lg} 0`,
-  color: jamInkMuted,
+  color: jam.inkMuted,
   fontFamily: theme.fontFamily.sans,
   fontSize: "1.125rem",
   lineHeight: theme.lineHeight.relaxed,
@@ -71,7 +73,7 @@ export let jam2026HeaderStyle = css({
   position: "sticky",
   top: 0,
   zIndex: 10,
-  borderBlockEnd: `1px solid ${jamBorderSubtle}`,
+  borderBlockEnd: `1px solid ${jam.borderSubtle}`,
   backgroundColor: "rgba(255, 255, 255, 0.76)",
   backdropFilter: "blur(18px)",
 });
@@ -88,7 +90,7 @@ export let jam2026HeaderInnerStyle = css({
 });
 
 export let jam2026BrandStyle = css({
-  color: jamInk,
+  color: jam.ink,
   fontFamily: theme.fontFamily.sans,
   fontSize: theme.fontSize.sm,
   fontWeight: theme.fontWeight.bold,
@@ -105,7 +107,7 @@ export let jam2026NavStyle = css({
 
 export let jam2026NavLinkStyle = css({
   borderRadius: theme.radius.full,
-  color: jamInk,
+  color: jam.ink,
   fontFamily: theme.fontFamily.sans,
   fontSize: theme.fontSize.sm,
   fontWeight: theme.fontWeight.semibold,
@@ -117,14 +119,14 @@ export let jam2026NavLinkStyle = css({
     backgroundColor: "rgb(var(--jam-2026-ink-rgb) / 0.06)",
   },
   ":focus-visible": {
-    outline: `2px solid ${jamAccent}`,
+    outline: `2px solid ${jam.accent}`,
     outlineOffset: "3px",
   },
 });
 
 export let jam2026TicketLinkStyle = css({
   borderRadius: theme.radius.full,
-  backgroundColor: jamAccent,
+  backgroundColor: jam.accent,
   color: "#ffffff",
   fontFamily: theme.fontFamily.sans,
   fontSize: theme.fontSize.sm,
@@ -134,14 +136,14 @@ export let jam2026TicketLinkStyle = css({
   paddingInline: theme.space.lg,
   textDecoration: "none",
   ":hover": {
-    backgroundColor: jamAccentHover,
+    backgroundColor: jam.accentHover,
   },
   ":focus-visible": {
-    outline: `2px solid ${jamAccent}`,
+    outline: `2px solid ${jam.accent}`,
     outlineOffset: "3px",
   },
   ":active": {
-    backgroundColor: jamAccentActive,
+    backgroundColor: jam.accentActive,
   },
 });
 
@@ -151,8 +153,8 @@ export let jam2026HeroStyle = css({
   paddingInline: "clamp(1.5rem, 4vw, 4rem)",
   display: "grid",
   alignItems: "center",
-  backgroundColor: jamSky,
-  backgroundImage: `linear-gradient(180deg, ${jamSky}, ${jamSkySoft})`,
+  backgroundColor: jam.sky,
+  backgroundImage: `linear-gradient(180deg, ${jam.sky}, ${jam.skySoft})`,
 });
 
 export let jam2026HeroInnerStyle = css({
@@ -162,7 +164,7 @@ export let jam2026HeroInnerStyle = css({
 
 export let jam2026HeroMetaStyle = css({
   marginBlock: `0 ${theme.space.xl}`,
-  color: jamInk,
+  color: jam.ink,
   fontFamily: theme.fontFamily.mono,
   fontSize: theme.fontSize.xs,
   fontWeight: theme.fontWeight.bold,
@@ -179,10 +181,10 @@ export let jam2026HeroActionsStyle = css({
 });
 
 export let jam2026SecondaryActionStyle = css({
-  border: `1px solid ${jamBorderDefault}`,
+  border: `1px solid ${jam.borderDefault}`,
   borderRadius: theme.radius.full,
-  backgroundColor: jamSurfaceRaised,
-  color: jamInk,
+  backgroundColor: jam.surfaceRaised,
+  color: jam.ink,
   fontFamily: theme.fontFamily.sans,
   fontSize: theme.fontSize.sm,
   fontWeight: theme.fontWeight.semibold,
@@ -194,7 +196,7 @@ export let jam2026SecondaryActionStyle = css({
     backgroundColor: "rgb(255 255 255 / 0.7)",
   },
   ":focus-visible": {
-    outline: `2px solid ${jamAccent}`,
+    outline: `2px solid ${jam.accent}`,
     outlineOffset: "3px",
   },
 });
@@ -202,7 +204,7 @@ export let jam2026SecondaryActionStyle = css({
 export let jam2026FaqStyle = css({
   paddingBlock: "clamp(4rem, 10vw, 8rem)",
   paddingInline: "clamp(1.5rem, 4vw, 4rem)",
-  backgroundColor: jamSkyPale,
+  backgroundColor: jam.skyPale,
 });
 
 export let jam2026FaqInnerStyle = css({
@@ -217,9 +219,9 @@ export let jam2026FaqListStyle = css({
 });
 
 export let jam2026FaqItemStyle = css({
-  borderBlockStart: `1px solid ${jamBorderSubtle}`,
+  borderBlockStart: `1px solid ${jam.borderSubtle}`,
   paddingBlock: theme.space.lg,
-  color: jamInk,
+  color: jam.ink,
   fontFamily: theme.fontFamily.sans,
   summary: {
     cursor: "pointer",
@@ -232,12 +234,12 @@ export let jam2026FaqItemStyle = css({
   },
   p: {
     marginBlock: `${theme.space.md} 0`,
-    color: jamInkMuted,
+    color: jam.inkMuted,
     fontSize: theme.fontSize.md,
     lineHeight: theme.lineHeight.relaxed,
   },
   ":focus-within": {
-    outline: `2px solid ${jamAccent}`,
+    outline: `2px solid ${jam.accent}`,
     outlineOffset: "4px",
   },
 });

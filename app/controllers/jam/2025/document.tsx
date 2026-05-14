@@ -1,7 +1,7 @@
 import type { RemixNode } from "remix/ui";
-import { Document } from "../../ui/document.tsx";
-import { styleHrefs } from "../../utils/style-hrefs.ts";
-import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
+import { Document } from "../../../ui/document.tsx";
+import { styleHrefs } from "../../../utils/style-hrefs.ts";
+import { getSocialHeadTags } from "../../../utils/social-head-tags.server.ts";
 import { JamPageScaffold } from "./shared.tsx";
 
 type JamPageProps = {
@@ -20,7 +20,7 @@ export function JamDocument() {
       title={props.title}
       description={props.description}
       forceTheme="dark"
-      stylesheets={[styleHrefs.app, styleHrefs.jam]}
+      stylesheets={[styleHrefs.app, styleHrefs.jam2025]}
       headTags={[
         ...getSocialHeadTags({
           title: props.title,

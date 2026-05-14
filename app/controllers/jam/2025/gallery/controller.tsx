@@ -1,15 +1,15 @@
-import { getPhotos } from "../../../data/jam-storefront.server.ts";
-import { getRequestContext } from "../../../utils/request-context.ts";
-import { render } from "../../../utils/render.ts";
-import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
-import { routes } from "../../../routes.ts";
+import { getPhotos } from "../../../../data/jam-storefront.server.ts";
+import { getRequestContext } from "../../../../utils/request-context.ts";
+import { render } from "../../../../utils/render.ts";
+import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
+import { routes } from "../../../../routes.ts";
 import { JamDocument } from "../document.tsx";
 import { ScrambleText, Title, transformShopifyImageUrl } from "../shared.tsx";
 import {
   JamGalleryModalHost,
   type JamGalleryModalNav,
-} from "../../../assets/jam-gallery-modal-host.tsx";
-import { assetPaths } from "../../../utils/asset-paths.ts";
+} from "../../../../assets/jam-gallery-modal-host.tsx";
+import { assetPaths } from "../../../../utils/asset-paths.ts";
 import type { RemixNode } from "remix/ui";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];

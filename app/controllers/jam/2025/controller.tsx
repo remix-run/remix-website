@@ -1,13 +1,13 @@
 import cx from "clsx";
 import type { RemixNode } from "remix/ui";
-import { render } from "../../utils/render.ts";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { render } from "../../../utils/render.ts";
+import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
 import { AddressMain, ScrambleText, SectionLabel, Title } from "./shared.tsx";
-import { JamKeepsakes } from "../../assets/jam-keepsakes.tsx";
-import { JamFadeInBadge } from "../../assets/jam-fade-in-badge.tsx";
-import { JamNewsletterSubscribeForm } from "../../assets/jam-newsletter-subscribe.tsx";
-import { assetPaths } from "../../utils/asset-paths.ts";
+import { JamKeepsakes } from "../../../assets/jam-keepsakes.tsx";
+import { JamFadeInBadge } from "../../../assets/jam-fade-in-badge.tsx";
+import { JamNewsletterSubscribeForm } from "../../../assets/jam-newsletter-subscribe.tsx";
+import { assetPaths } from "../../../utils/asset-paths.ts";
 
 type EventStatus = "before" | "live" | "after";
 
