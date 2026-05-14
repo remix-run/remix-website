@@ -62,7 +62,7 @@ export function Document(handle: Handle<DocumentProps>) {
     } = handle.props;
     let assetEntry = getAssetEntry();
 
-    stylesheets = [...new Set([styleHrefs.fonts, ...stylesheets])];
+    stylesheets = [...new Set([styleHrefs.global, ...stylesheets])];
     let managedHeadTags: ManagedHeadTag[] = [
       ...(noIndex
         ? [{ kind: "meta" as const, name: "robots", content: "noindex" }]
