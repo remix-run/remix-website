@@ -55,7 +55,9 @@ describe("home route", () => {
     expect(html).toContain(
       'rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any"',
     );
-    expect(html).toContain('rel="preload" as="style" href="/styles/global.css"');
+    expect(html).toContain(
+      'rel="preload" as="style" href="/styles/global.css"',
+    );
     expect(html).toContain('rel="preload" as="style" href="/styles/app.css"');
     expect(html).toContain('rel="preload" as="style" href="/styles/home.css"');
     expect(html).toContain('rel="preload" as="style" href="/styles/md.css"');
