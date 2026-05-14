@@ -1,5 +1,5 @@
-import { getRequestContext } from "../../../utils/request-context.ts";
-import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
+import { getRequestContext } from "../../../../utils/request-context.ts";
+import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
 import { transformShopifyImageUrl } from "../shared.tsx";
 import { getGalleryPhotos, getSelectedPhotoIndex } from "./controller.tsx";
 

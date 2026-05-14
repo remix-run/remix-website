@@ -1,9 +1,9 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
-import { jam2025LineupHandler } from "./2025-lineup.tsx";
-import { routes } from "../../routes.ts";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-import { createRouteTestRouter } from "../../../test/setup.ts";
+import { jam2025LineupHandler } from "./lineup.tsx";
+import { routes } from "../../../routes.ts";
+import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
+import { createRouteTestRouter } from "../../../../test/setup.ts";
 
 describe("Jam lineup route", () => {
   it("renders the schedule with Jam page assets", async () => {
@@ -18,7 +18,7 @@ describe("Jam lineup route", () => {
 
     let html = await response.text();
     expect(html).toContain("Schedule and Lineup | Remix Jam 2025");
-    expect(html).toContain('href="/styles/jam.css"');
+    expect(html).toContain('href="/styles/jam-2025.css"');
     expect(html).toContain("Interactive MCP with React Router");
     expect(html).toContain("Kent C. Dodds");
     expect(html).toContain("Introducing Remix\u00A03 — Part 1");

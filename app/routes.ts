@@ -1,4 +1,6 @@
-import { get, post, route } from "remix/fetch-router/routes";
+import { form, get, post, route } from "remix/fetch-router/routes";
+
+export let showJam2026 = process.env.NODE_ENV !== "production";
 
 export let routes = route({
   actions: route("_actions", {
@@ -26,6 +28,20 @@ export let routes = route({
       lineup: get("lineup"),
       ticket: get("ticket"),
     }),
+    y2026: route("2026", {
+      index: get("/"),
+      tickets: form("tickets"),
+    }),
   }),
   newsletter: get("/newsletter"),
 });
+
+export let enabledRoutes = {
+  ...routes,
+  jam: showJam2026
+    ? routes.jam
+    : {
+        index: routes.jam.index,
+        y2025: routes.jam.y2025,
+      },
+};
