@@ -1,6 +1,6 @@
 # Remix Jam 2026 Implementation Plan
 
-This is the working plan for building the Remix Jam 2026 site from the ground up in Remix 3. The proof of concept in `poc.html` is directional design input, not implementation source. The 2025 Jam pages are useful requirements research, but the 2026 pages should avoid carrying forward accidental structure from the React Router migration.
+This is the working plan for building the Remix Jam 2026 site from the ground up in Remix 3. The proof of concept to inspect is `../remix-jam-2026`; treat it as directional design input, not implementation source. The 2025 Jam pages are useful requirements research, but the 2026 pages should avoid carrying forward accidental structure from the React Router migration.
 
 ## Current Shape
 
@@ -10,7 +10,7 @@ This is the working plan for building the Remix Jam 2026 site from the ground up
 
 The first pass should stay server-rendered. Add hydrated browser modules only for real browser-only behavior: live countdown, enhanced ticket quantity controls, canvas/WebGL background, focus management, or animated visual polish that cannot be expressed with CSS/details/links.
 
-## Design Input To Extract From The POC
+## Design Input To Extract From `../remix-jam-2026`
 
 - Toronto remains the event location.
 - Event dates are October 1-2, 2026.

@@ -2,7 +2,6 @@ import { Document } from "../../../ui/document.tsx";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { render } from "../../../utils/render.ts";
 import {
-  Jam2026Theme,
   jam2026CopyStyle,
   jam2026HeadingStyle,
   jam2026MainStyle,
@@ -41,7 +40,6 @@ function RemixJam2026TicketsPage() {
       title="Remix Jam 2026 Tickets"
       description="Remix Jam 2026 tickets are not available yet."
     >
-      <Jam2026Theme.Style />
       <div class="jam-2026-page" mix={jam2026PageStyle}>
         <main id="main-content" tabIndex={-1} mix={jam2026MainStyle}>
           <div mix={jam2026PlaceholderStyle}>
