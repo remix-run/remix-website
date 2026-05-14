@@ -61,7 +61,9 @@ describe("home route", () => {
     expect(html).toContain('rel="preload" as="style" href="/styles/app.css"');
     expect(html).toContain('rel="preload" as="style" href="/styles/home.css"');
     expect(html).toContain('rel="preload" as="style" href="/styles/md.css"');
-    expect(html).toContain('rel="preload" as="style" href="/styles/jam-2025.css"');
+    expect(html).toContain(
+      'rel="preload" as="style" href="/styles/jam-2025.css"',
+    );
     expect(html).toContain('rel="stylesheet" href="/styles/global.css"');
     expect(html).toContain('rel="stylesheet" href="/styles/home.css"');
     expect(html).not.toContain('rel="stylesheet" href="/styles/app.css"');
