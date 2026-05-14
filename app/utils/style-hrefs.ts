@@ -1,5 +1,5 @@
 export const styleHrefs = {
-  fonts: "/styles/fonts.css",
+  global: "/styles/global.css",
   app: "/styles/app.css",
   home: "/styles/home.css",
   md: "/styles/md.css",
