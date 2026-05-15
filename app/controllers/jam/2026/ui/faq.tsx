@@ -32,6 +32,7 @@ let faqStyle = css({
   paddingBlock: "clamp(4rem, 10vw, 8rem)",
   paddingInline: "clamp(1.5rem, 4vw, 4rem)",
   backgroundColor: jamTheme.skyPale,
+  scrollMarginBlockStart: "48px",
 });
 
 let faqInnerStyle = css({

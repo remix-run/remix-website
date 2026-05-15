@@ -5,14 +5,12 @@ import { jamTheme } from "../theme.ts";
 
 export function Jam2026Hero() {
   return () => (
-    <section aria-labelledby="jam-2026-heading" mix={heroStyle}>
+    <section mix={heroStyle}>
       <div mix={heroInnerStyle}>
         <p mix={heroMetaStyle}>October 1-2, 2026 / Toronto, Ontario, Canada</p>
         <div>
           <div mix={placeholderStyle}>
-            <h1 id="jam-2026-heading" mix={headingStyle}>
-              Remix Jam 2026
-            </h1>
+            <h1 mix={headingStyle}>Remix Jam 2026</h1>
             <p mix={copyStyle}>
               The Remix team's annual conference returns to Toronto to show off
               Remix 3.

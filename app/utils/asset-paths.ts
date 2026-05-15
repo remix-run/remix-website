@@ -27,4 +27,8 @@ export const assetPaths = {
       torontoPostcard: "/jam/2025/images/keepsakes/toronto-postcard.avif",
     },
   },
+  jam2026: {
+    horizontalLockup: "/jam/2026/remix-jam-2026-horizontal-lockup.svg",
+    shopifyGlyph: "/jam/2026/landing-assets/shopify-glyph.svg",
+  },
 } as const;

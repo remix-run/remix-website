@@ -1,5 +1,6 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
+import { Jam2026Header } from "../../../../assets/jam-2026-header.tsx";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
 import { jamTheme, jamThemeStyle } from "../theme.ts";
@@ -11,6 +12,7 @@ export function Jam2026TicketsPage() {
       description="Remix Jam 2026 tickets are not available yet."
     >
       <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
+        <Jam2026Header />
         <main id="main-content" tabIndex={-1} mix={mainStyle}>
           <div mix={placeholderStyle}>
             <h1 mix={headingStyle}>Remix Jam 2026 Tickets</h1>

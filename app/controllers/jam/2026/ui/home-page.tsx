@@ -1,10 +1,10 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
+import { Jam2026Header } from "../../../../assets/jam-2026-header.tsx";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
 import { jamTheme, jamThemeStyle } from "../theme.ts";
 import { Jam2026Faq } from "./faq.tsx";
-import { Jam2026Header } from "./header.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 
 export function Jam2026HomePage() {

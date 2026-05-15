@@ -1,5 +1,25 @@
 import { createTheme } from "remix/ui/theme";
 
+export let breakpoints = {
+  "2xs": "320px",
+  xs: "480px",
+  sm: "640px",
+  md: "768px",
+  lg: "1024px",
+  xl: "1280px",
+  "2xl": "1536px",
+} as const;
+
+export let breakpointMedia = {
+  "2xs": `@media (min-width: ${breakpoints["2xs"]})`,
+  xs: `@media (min-width: ${breakpoints.xs})`,
+  sm: `@media (min-width: ${breakpoints.sm})`,
+  md: `@media (min-width: ${breakpoints.md})`,
+  lg: `@media (min-width: ${breakpoints.lg})`,
+  xl: `@media (min-width: ${breakpoints.xl})`,
+  "2xl": `@media (min-width: ${breakpoints["2xl"]})`,
+} as const;
+
 export let RemixTheme = createTheme(
   {
     space: {
