@@ -4,6 +4,7 @@ import { CodeSnippet } from "./code-snippet.tsx";
 
 const shellStyles = css({
   minHeight: "100vh",
+  boxSizing: "content-box",
   position: "relative",
   display: "flex",
   alignItems: "flex-start",
