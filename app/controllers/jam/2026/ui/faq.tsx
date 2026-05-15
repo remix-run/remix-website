@@ -1,6 +1,43 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
+import { Jam2026FaqAccordion } from "../../../../assets/jam-2026-faq-accordion.tsx";
+import { breakpoints } from "../../../../ui/theme.ts";
 import { jamTheme } from "../theme.ts";
+
+let faqs = [
+  {
+    id: "event-hosted",
+    question: "Where will the event be hosted?",
+    answer:
+      "Venue details are still being finalized, but the event will take place in Toronto, Ontario.",
+  },
+  {
+    id: "schedule",
+    question: "What does the schedule look like?",
+    answer:
+      "The first day is planned as the main Remix showcase, with an additional day set aside for a hands-on workshop.",
+  },
+  {
+    id: "cfp",
+    question: "Will there be a CFP?",
+    answer:
+      "The final programming model is still in progress. For now, the event is focused on a core Remix team showcase.",
+  },
+  {
+    id: "where-to-stay",
+    question: "Where should I stay?",
+    answer:
+      "Hotel recommendations will be added once the Toronto venue is confirmed.",
+  },
+  {
+    id: "airport",
+    question: "What airport should I fly into?",
+    answer:
+      "Toronto Pearson is the easiest default for international travel. Billy Bishop can be convenient for downtown arrivals.",
+  },
+];
+
+let smMaxMedia = `@media (max-width: ${breakpoints.sm})` as const;
 
 export function Jam2026Faq() {
   return () => (
@@ -9,75 +46,46 @@ export function Jam2026Faq() {
         <h2 id="faq-heading" mix={headingStyle}>
           FAQ
         </h2>
-        <div mix={faqListStyle}>
-          <details mix={faqItemStyle}>
-            <summary>Where will the event be hosted?</summary>
-            <p>Venue details are coming soon.</p>
-          </details>
-          <details mix={faqItemStyle}>
-            <summary>What does the schedule look like?</summary>
-            <p>The launch schedule will be added here.</p>
-          </details>
-          <details mix={faqItemStyle}>
-            <summary>When will tickets be available?</summary>
-            <p>Ticket details are coming soon.</p>
-          </details>
-        </div>
+        <Jam2026FaqAccordion faqs={faqs} />
       </div>
     </section>
   );
 }
 
 let faqStyle = css({
-  paddingBlock: "clamp(4rem, 10vw, 8rem)",
-  paddingInline: "clamp(1.5rem, 4vw, 4rem)",
+  paddingBlock: "max(32px, 4.8vw)",
   backgroundColor: jamTheme.skyPale,
   scrollMarginBlockStart: "48px",
+  [smMaxMedia]: {
+    paddingBlock: "120px 88px",
+  },
 });
 
 let faqInnerStyle = css({
-  width: "min(100%, 72rem)",
+  width: "100%",
+  maxWidth: "1920px",
   marginInline: "auto",
 });
 
 let headingStyle = css({
   margin: 0,
+  marginInlineStart: "max(32px, 4.8vw)",
+  maxWidth: "730px",
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
-  fontSize: "clamp(2.25rem, 7vw, 4rem)",
-  fontWeight: theme.fontWeight.bold,
-  letterSpacing: theme.letterSpacing.tight,
-  lineHeight: theme.lineHeight.tight,
-});
-
-let faqListStyle = css({
-  marginBlockStart: theme.space.xl,
-  display: "grid",
-  gap: theme.space.sm,
-});
-
-let faqItemStyle = css({
-  borderBlockStart: `1px solid ${jamTheme.borderSubtle}`,
-  paddingBlock: theme.space.lg,
-  color: jamTheme.ink,
-  fontFamily: theme.fontFamily.sans,
-  "& summary": {
-    cursor: "pointer",
-    fontFamily: theme.fontFamily.mono,
-    fontSize: theme.fontSize.xs,
-    fontWeight: theme.fontWeight.bold,
-    letterSpacing: theme.letterSpacing.meta,
-    lineHeight: theme.lineHeight.normal,
-    textTransform: "uppercase",
+  fontSize: "clamp(48px, 4.07vw, 57px)",
+  fontWeight: 700,
+  letterSpacing: "-0.03em",
+  lineHeight: "clamp(56px, 4.71vw, 66px)",
+  textAlign: "left",
+  textTransform: "none",
+  "@supports (text-box-trim: trim-both)": {
+    textBoxTrim: "trim-both",
+    textBoxEdge: "cap alphabetic",
   },
-  "& p": {
-    marginBlock: `${theme.space.md} 0`,
-    color: jamTheme.inkMuted,
-    fontSize: theme.fontSize.md,
-    lineHeight: theme.lineHeight.relaxed,
-  },
-  "&:focus-within": {
-    outline: `2px solid ${jamTheme.accent}`,
-    outlineOffset: "4px",
+  "@media (max-width: 900px)": {
+    fontSize: "clamp(28px, 5.5vw, 40px)",
+    lineHeight: 1.1,
+    marginInlineStart: "24px",
   },
 });

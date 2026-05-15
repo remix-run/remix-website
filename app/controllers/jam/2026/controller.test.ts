@@ -35,6 +35,11 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain('href="/icons.svg#moon"');
     expect(html).toContain('href="#faq"');
     expect(html).toContain('href="/jam/2026/tickets"');
+    expect(html).toContain("Will there be a CFP?");
+    expect(html).toContain("Where should I stay?");
+    expect(html).toContain("What airport should I fly into?");
+    expect(html).toContain('id="event-hosted"');
+    expect(html).toContain('id="where-to-stay"');
     expect(html).toContain('aria-label="Site footer"');
     expect(html).toContain("https://github.com/remix-run");
     expect(html).toContain("docs and examples licensed under mit");

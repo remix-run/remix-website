@@ -21,10 +21,21 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - Map explicit routes before the `router.map("*", ...)` catch-all.
 - In `app/controllers/**`, keep exported route handler/controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
+- For route-local hydrated UI in `app/assets/**`, keep component/rendering code first and put styles below the components.
+- Let components own their own state and implementation details. If a parent imports a long list of child constants/helpers, that is a boundary smell; extract a child component/module instead.
+- Prefer direct code over tiny wrappers/constants that do not add meaning. Inline one-off helpers, values, and derived constants at their use site when that reads clearly.
+- Use shared theme tokens such as `theme.fontFamily.*` and route theme objects instead of hardcoded repeated values.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
 - Use `clientEntry(import.meta.url, function ExportName(...) { ... })` for hydrated asset modules so server rendering can resolve them through `resolveClientEntry(...)` using the component function name.
 - Resolve the root browser entry and preload links through `app/middleware/asset-entry.ts` + `app/utils/assets.server.ts`; do not hardcode build output paths.
 - Plain stylesheets still come from `public/styles` via `app/utils/style-hrefs.ts`; this app uses `remix/assets` for hydrated browser modules.
+
+## UI Behavior Defaults
+
+- Prefer CSS for visual states and animations. Use `remix/ui/animation` helpers for CSS transitions when they fit; keep JavaScript for state/timing rather than frame-by-frame styling.
+- Treat `prefers-reduced-motion` as its own behavior path. Avoid churny intro animations, large hover expansions, and motion-heavy effects; provide a simple static hover/focus state instead of removing feedback entirely.
+- Keep accessible labels stable when visual text updates frequently. For animated counters/timers, prefer a stable label that states the event/date and hide the decorative changing digits from assistive tech.
+- Add focused tests around public behavior. Prefer component/browser tests for interactive UI when feasible; avoid testing internal helpers just because they are easy to import.
 
 ## Done Checklist (Route/Feature Changes)
 
