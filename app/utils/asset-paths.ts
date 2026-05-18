@@ -29,8 +29,6 @@ export const assetPaths = {
   },
   jam2026: {
     horizontalLockup: "/jam/2026/remix-jam-2026-horizontal-lockup.svg",
-    remixWordmark: "/jam/2026/remix-wordmark.svg",
-    yearBadge: "/jam/2026/landing-assets/year-2026.svg",
     shopifyGlyph: "/jam/2026/landing-assets/shopify-glyph.svg",
     favicons: {
       appleTouchIcon: "/jam/2026/favicons/apple-touch-icon.png",

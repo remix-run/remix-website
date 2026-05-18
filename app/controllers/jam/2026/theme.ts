@@ -7,6 +7,7 @@ let jamThemeVars = {
   accent: "--jam-2026-accent",
   accentHover: "--jam-2026-accent-hover",
   accentActive: "--jam-2026-accent-active",
+  highlight: "--jam-2026-highlight",
   brandRed: "--jam-2026-brand-red",
   onAccent: "--jam-2026-on-accent",
   borderSubtle: "--jam-2026-border-subtle",
@@ -18,9 +19,10 @@ let jamThemeVars = {
   surfaceRaisedHover: "--jam-2026-surface-raised-hover",
   headerSurface: "--jam-2026-header-surface",
   navBg: "--jam-2026-nav-bg",
-  sky: "--jam-2026-sky",
-  skySoft: "--jam-2026-sky-soft",
-  skyPale: "--jam-2026-sky-pale",
+  skyTop: "--jam-2026-sky-top",
+  skyMiddle: "--jam-2026-sky-middle",
+  skyHorizon: "--jam-2026-sky-horizon",
+  skyGround: "--jam-2026-sky-ground",
 };
 
 export let jamTheme = {
@@ -30,6 +32,7 @@ export let jamTheme = {
   accent: `var(${jamThemeVars.accent})`,
   accentHover: `var(${jamThemeVars.accentHover})`,
   accentActive: `var(${jamThemeVars.accentActive})`,
+  highlight: `var(${jamThemeVars.highlight})`,
   brandRed: `var(${jamThemeVars.brandRed})`,
   onAccent: `var(${jamThemeVars.onAccent})`,
   borderSubtle: `var(${jamThemeVars.borderSubtle})`,
@@ -41,12 +44,13 @@ export let jamTheme = {
   surfaceRaisedHover: `var(${jamThemeVars.surfaceRaisedHover})`,
   headerSurface: `var(${jamThemeVars.headerSurface})`,
   navBg: `var(${jamThemeVars.navBg})`,
-  sky: `var(${jamThemeVars.sky})`,
-  skySoft: `var(${jamThemeVars.skySoft})`,
-  skyPale: `var(${jamThemeVars.skyPale})`,
+  skyTop: `var(${jamThemeVars.skyTop})`,
+  skyMiddle: `var(${jamThemeVars.skyMiddle})`,
+  skyHorizon: `var(${jamThemeVars.skyHorizon})`,
+  skyGround: `var(${jamThemeVars.skyGround})`,
 };
 
-export let jamThemeStyle = css({
+let jamThemeVarsStyle = css({
   [jamThemeVars.ink]: "light-dark(#082845, #ffffff)",
   [jamThemeVars.inkMuted]:
     "light-dark(rgb(8 40 69 / 0.62), rgb(255 255 255 / 0.64))",
@@ -55,6 +59,7 @@ export let jamThemeStyle = css({
   [jamThemeVars.accent]: "light-dark(#ff3c32, #ff5a45)",
   [jamThemeVars.accentHover]: "light-dark(#e6352d, #ff745f)",
   [jamThemeVars.accentActive]: "light-dark(#c92d27, #e94732)",
+  [jamThemeVars.highlight]: "#ff3c32",
   [jamThemeVars.brandRed]: "light-dark(#ff3c32, #ff5a45)",
   [jamThemeVars.onAccent]: "#ffffff",
   [jamThemeVars.borderSubtle]:
@@ -72,7 +77,25 @@ export let jamThemeStyle = css({
   [jamThemeVars.headerSurface]:
     "light-dark(rgb(255 255 255 / 0.76), rgb(10 29 39 / 0.76))",
   [jamThemeVars.navBg]: "light-dark(#ffffff, #0a1d27)",
-  [jamThemeVars.sky]: "light-dark(#9fc5f5, #07112c)",
-  [jamThemeVars.skySoft]: "light-dark(#ecf7ff, #182851)",
-  [jamThemeVars.skyPale]: "light-dark(#eaf6ff, #0a1d27)",
+  [jamThemeVars.skyTop]:
+    "light-dark(color-mix(in srgb, #1174ff 62%, white), #020512)",
+  [jamThemeVars.skyMiddle]:
+    "light-dark(color-mix(in srgb, #64c6ff 58%, white), #07112c)",
+  [jamThemeVars.skyHorizon]:
+    "light-dark(color-mix(in srgb, #b7ebff 52%, white), #182851)",
+  [jamThemeVars.skyGround]:
+    "light-dark(color-mix(in srgb, #f7f4ea 46%, white), #030816)",
 });
+
+let jamSelectionStyle = css({
+  "&::selection": {
+    backgroundColor: jamTheme.highlight,
+    color: "#ffffff",
+  },
+  "& *::selection": {
+    backgroundColor: jamTheme.highlight,
+    color: "#ffffff",
+  },
+});
+
+export let jamThemeStyle = [jamThemeVarsStyle, jamSelectionStyle];

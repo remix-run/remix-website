@@ -2,6 +2,8 @@
 
 This plan tracks remaining work only. The app already has gated `/jam/2026` and `/jam/2026/tickets` routes, route/controller wiring, a shared Jam 2026 header, countdown, theme toggle, FAQ accordion, shared footer, global font loading, route tests, and core assets under `public/jam/2026`.
 
+The prototype/POC lives in the sibling repo at `../remix-jam-2026`.
+
 ## Build Rules
 
 - Keep 2026 route UI in `app/controllers/jam/2026/` until there is real cross-year reuse.
@@ -12,16 +14,7 @@ This plan tracks remaining work only. The app already has gated `/jam/2026` and 
 
 ## Tasks
 
-### 1. Finalize Landing Hero
-
-Build the first viewport from the prototype direction, not the current placeholder. It should show the Remix wordmark, Jam mark or lockup, 2026 badge, October 1-2 dates, Toronto location, and ticket CTA.
-
-- Use existing Jam 2026 assets or add missing final static assets in `public/jam/2026`.
-- Keep one accessible `h1` and real text for image-backed branding.
-- Support light/dark theme and mobile without overlapping the fixed header.
-- Cover reduced-motion and non-WebGL fallback if the visual treatment moves.
-
-### 2. Add Cloud And Sky Background
+### Add Cloud And Sky Background
 
 Translate the prototype cloud/racing energy into a production-safe background layer.
 
@@ -31,7 +24,7 @@ Translate the prototype cloud/racing energy into a production-safe background la
 - Reduce or disable motion for `prefers-reduced-motion`.
 - Keep FPS and tuning controls out of production UI.
 
-### 3. Add Photo Moments
+### Add Photo Moments
 
 Use the migrated Toronto and Jam photos as visual accents inspired by the prototype photo windows.
 
@@ -40,7 +33,7 @@ Use the migrated Toronto and Jam photos as visual accents inspired by the protot
 - Keep images decorative unless they communicate content, then provide useful alt text.
 - Verify they do not crowd hero text on mobile.
 
-### 4. Build Event Story And Workshop Sections
+### Build Event Story And Workshop Sections
 
 Replace the bare homepage body with the prototype content flow.
 
@@ -49,7 +42,7 @@ Replace the bare homepage body with the prototype content flow.
 - Mention Michael Jackson and Ryan Florence only if final event copy approves it.
 - Keep content server-rendered and route-local.
 
-### 5. Add Floating Ticket CTA
+### Add Floating Ticket CTA
 
 Implement the prototype floating ticket affordance as a real link.
 
@@ -58,7 +51,7 @@ Implement the prototype floating ticket affordance as a real link.
 - Make focus visible and target size comfortable.
 - Use static hover/focus behavior under reduced motion.
 
-### 6. Harden FAQ
+### Harden FAQ
 
 The accordion and stable item IDs exist. Finish the no-JS and deep-link behavior.
 
@@ -67,7 +60,7 @@ The accordion and stable item IDs exist. Finish the no-JS and deep-link behavior
 - Opening one item at a time is acceptable as a hydrated enhancement.
 - Add browser/component coverage for fragment navigation or no-JS markup if the implementation changes.
 
-### 7. Add Code Of Conduct Surface
+### Add Code Of Conduct Surface
 
 Create the 2026 code of conduct content before ticket launch.
 
@@ -75,7 +68,7 @@ Create the 2026 code of conduct content before ticket launch.
 - Keep copy complete enough to publish before sales open.
 - Add route/controller/tests if it becomes a standalone page.
 
-### 8. Fill Event Logistics
+### Fill Event Logistics
 
 Replace placeholder logistics once confirmed.
 
@@ -84,7 +77,7 @@ Replace placeholder logistics once confirmed.
 - Airport and transit guidance.
 - Refund, transfer, accessibility, and contact copy that support ticket sales.
 
-### 9. Build Ticket Selection UI
+### Build Ticket Selection UI
 
 Replace the placeholder tickets page with the prototype ticket options translated to a server-first form.
 
@@ -95,7 +88,7 @@ Replace the placeholder tickets page with the prototype ticket options translate
 - Hydration can enhance option switching, quantity controls, pending state, and visual polish.
 - Skip the old 3D ticket scene unless final design explicitly needs it.
 
-### 10. Add In-Page Ticket Enhancement
+### Add In-Page Ticket Enhancement
 
 After the server ticket page works, add the prototype-style homepage enhancement if it remains in scope.
 
@@ -104,7 +97,7 @@ After the server ticket page works, add the prototype-style homepage enhancement
 - If using a dialog/modal, implement focus restore, Escape close, scroll lock, inert background, and browser history cleanup.
 - Pause heavy background effects while the ticket surface is open.
 
-### 11. Wire Shopify Checkout
+### Wire Shopify Checkout
 
 Implement the real POST action for `/jam/2026/tickets`.
 
@@ -114,7 +107,7 @@ Implement the real POST action for `/jam/2026/tickets`.
 - Return clear errors for invalid input, unavailable storefront, sold out/unpublished products, quantity limits, and cart creation failures.
 - Use `no-store` for POST responses and checkout-error states.
 
-### 12. Ticket Tests
+### Ticket Tests
 
 Add focused coverage before enabling checkout.
 
@@ -124,7 +117,7 @@ Add focused coverage before enabling checkout.
 - POST redirects on successful cart creation.
 - Hydrated controls preserve form values and pending state.
 
-### 13. Social Metadata And Share Assets
+### Social Metadata And Share Assets
 
 Finish the document head for 2026 pages.
 
@@ -134,7 +127,7 @@ Finish the document head for 2026 pages.
 - Keep title/description distinct for each page.
 - Add or adjust tests for social tags.
 
-### 14. Browser QA
+### Browser QA
 
 Run a focused browser pass once landing and ticket UI are in place.
 
@@ -143,7 +136,7 @@ Run a focused browser pass once landing and ticket UI are in place.
 - Reduced-motion pass for countdown, cloud layer, CTA, FAQ, and ticket animations.
 - Check color contrast and text overlap in light and dark themes.
 
-### 15. Production Launch Switch
+### Production Launch Switch
 
 Do this only when the 2026 pages are ready to publish.
 
@@ -152,7 +145,7 @@ Do this only when the 2026 pages are ready to publish.
 - Update global header/footer/blog/newsletter links that should point to 2026.
 - Keep 2025 archive routes live but out of primary navigation unless intentionally linked.
 
-### 16. Launch Verification
+### Launch Verification
 
 Final checks before opening sales.
 

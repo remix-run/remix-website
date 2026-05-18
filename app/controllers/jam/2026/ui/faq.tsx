@@ -54,7 +54,7 @@ export function Jam2026Faq() {
 
 let faqStyle = css({
   paddingBlock: "max(32px, 4.8vw)",
-  backgroundColor: jamTheme.skyPale,
+  backgroundColor: "light-dark(rgb(255 255 255 / 0.5), rgb(0 38 68 / 0.5))",
   scrollMarginBlockStart: "48px",
   [smMaxMedia]: {
     paddingBlock: "120px 88px",

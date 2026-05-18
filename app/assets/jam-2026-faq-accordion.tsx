@@ -130,7 +130,7 @@ let faqTriggerStyle = css({
 let faqIconStyle = css({
   alignItems: "center",
   backgroundColor: jamTheme.ink,
-  backgroundImage: `linear-gradient(${jamTheme.skyPale}, ${jamTheme.skyPale}), linear-gradient(${jamTheme.skyPale}, ${jamTheme.skyPale})`,
+  backgroundImage: `linear-gradient(${jamTheme.skyGround}, ${jamTheme.skyGround}), linear-gradient(${jamTheme.skyGround}, ${jamTheme.skyGround})`,
   backgroundPosition: "center",
   backgroundRepeat: "no-repeat",
   backgroundSize: "9px 2px, 2px 9px",

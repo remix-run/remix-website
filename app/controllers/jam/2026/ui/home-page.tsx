@@ -28,12 +28,21 @@ export function Jam2026HomePage() {
 }
 
 let pageStyle = css({
+  position: "relative",
+  isolation: "isolate",
   display: "flex",
   minHeight: "100svh",
   flexDirection: "column",
-  backgroundColor: jamTheme.surface,
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
+  "&::before": {
+    content: '""',
+    position: "fixed",
+    inset: 0,
+    zIndex: -1,
+    pointerEvents: "none",
+    background: `linear-gradient(180deg, ${jamTheme.skyTop} 0%, ${jamTheme.skyMiddle} 43%, ${jamTheme.skyHorizon} 72%, ${jamTheme.skyGround} 100%)`,
+  },
 });
 
 let mainStyle = css({

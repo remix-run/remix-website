@@ -1,134 +1,453 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
-import { routes } from "../../../../routes.ts";
+import { visuallyHiddenStyle } from "../../../../ui/css-mixins.ts";
+import { breakpointMedia } from "../../../../ui/theme.ts";
+import { Wordmark } from "../../../../ui/wordmark.tsx";
 import { jamTheme } from "../theme.ts";
 
 export function Jam2026Hero() {
   return () => (
     <section mix={heroStyle}>
-      <div mix={heroInnerStyle}>
-        <p mix={heroMetaStyle}>October 1-2, 2026 / Toronto, Ontario, Canada</p>
-        <div>
-          <div mix={placeholderStyle}>
-            <h1 mix={headingStyle}>Remix Jam 2026</h1>
-            <p mix={copyStyle}>
-              The Remix team's annual conference returns to Toronto to show off
-              Remix 3.
+      <div mix={heroVisualStyle}>
+        <div mix={heroStackStyle}>
+          <div mix={brandStackStyle}>
+            <Wordmark
+              aria-hidden
+              mix={[
+                remixWordmarkStyle,
+                heroLineEntranceStyle,
+                heroLineEntranceDelayStyle(120),
+              ]}
+            />
+            <JamMark />
+          </div>
+
+          <h1 mix={visuallyHiddenStyle}>Remix Jam 2026</h1>
+
+          <div
+            mix={[
+              eventDetailsStyle,
+              heroLineEntranceStyle,
+              heroLineEntranceDelayStyle(430),
+            ]}
+          >
+            <p mix={[eventDetailStyle, eventDetailLeftStyle]}>
+              Start your engines
+              <br />
+              October 1 - October 2
+            </p>
+            <YearBadge />
+            <p mix={eventDetailStyle}>
+              For a grand Remix showcase
+              <br />
+              Toronto - Ontario, Canada
             </p>
           </div>
-          <div mix={heroActionsStyle}>
-            <a
-              href={routes.jam.y2026.tickets.index.href()}
-              mix={ticketLinkStyle}
-            >
-              Get tickets
-            </a>
-            <a href="#faq" mix={secondaryActionStyle}>
-              Read FAQ
-            </a>
+        </div>
+      </div>
+
+      <div mix={storyStyle}>
+        <h2 mix={[storyHeadingStyle, conferenceHeadingStyle]}>
+          The Remix team's annual conference returns to Toronto to show off
+          Remix 3.
+        </h2>
+
+        <div mix={[storyNoteStyle, readmeNoteStyle]}>
+          <p mix={storyNoteTitleStyle}>README.MD</p>
+          <div mix={storyNoteBodyStyle}>
+            <p mix={storyCopyStyle}>
+              Remix Jam is back, and we're putting Remix 3 through its paces.
+              <br />
+              <br />
+              Come hear from the team about the features, modules, and ideas
+              that make Remix our favorite all-in-one JavaScript framework.
+            </p>
           </div>
         </div>
+
+        <div mix={[storyNoteStyle, workshopNoteStyle]}>
+          <p mix={storyNoteTitleStyle}>ABOUT-WORKSHOP.MD</p>
+          <div mix={storyNoteBodyStyle}>
+            <p mix={storyCopyStyle}>
+              Come learn from and build with the creators of Remix. In this
+              interactive workshop you'll hear from seasoned Open Source
+              maintainers and Remix founders Michael Jackson and Ryan Florence
+              as they share how to get the most out of Remix.
+            </p>
+          </div>
+        </div>
+
+        <h2 mix={[storyHeadingStyle, workshopHeadingStyle]}>
+          This year, we've set aside an additional day to host a workshop.
+        </h2>
       </div>
     </section>
   );
 }
 
+function JamMark() {
+  return () => (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 1119 284"
+      xmlns="http://www.w3.org/2000/svg"
+      mix={[
+        jamMarkStyle,
+        heroLineEntranceStyle,
+        heroLineEntranceDelayStyle(260),
+      ]}
+    >
+      <path
+        d="M406.298 0L394.532 54.7714H361.361C358.053 54.7714 355.196 57.0879 354.512 60.325L322.011 214.217C312.679 257.223 279.411 284 235.999 284H41.4128C11.7956 284 -4.83868 264.12 1.24704 234.503L10.1728 193.526C16.2585 163.909 42.2242 143.623 71.4356 143.623H168.503L156.737 198.394H77.927C72.6527 198.394 69.407 201.234 68.1899 206.509L64.9442 221.114C63.727 226.389 66.1613 229.229 71.4356 229.229H247.765C247.765 229.229 257.908 228.417 260.342 218.274C262.433 209.565 286.361 95.2543 293.082 63.1217C293.991 58.7738 290.656 54.7714 286.214 54.7714H197.535L209.301 0L406.298 0Z"
+        mix={jamPathStyle}
+      />
+      <path
+        d="M374.449 283.189C344.832 283.189 327.792 263.309 334.283 233.691L355.381 132.669C361.872 103.051 387.432 82.7657 417.049 82.7657H550.661C585.552 82.7657 607.461 100.211 615.169 130.64L635.455 216.651C637.078 221.926 640.323 224.36 646.003 224.36H646.815C654.523 224.36 658.581 219.491 657.363 212.594L624.906 62.48C623.689 57.2057 620.443 54.7714 614.763 54.7714H412.181L423.946 0H622.878C655.335 0 678.055 15.0114 686.169 50.7143L720.655 199.206C731.609 245.051 696.718 283.189 647.626 283.189H635.861C607.866 283.189 582.306 272.234 575.003 238.56L554.312 145.246C553.095 139.971 549.443 137.537 543.763 137.537H425.569C419.078 137.537 414.615 141.189 413.398 147.68L398.386 218.274C396.763 224.766 399.603 228.417 406.095 228.417H564.151L552.791 283.189H374.449Z"
+        mix={jamPathStyle}
+      />
+      <path
+        d="M756.887 284H820.279L766.015 64.1029C764.798 58.8286 766.827 55.9886 772.101 55.9886C775.752 55.9886 779.404 58.4229 781.432 62.8857L814.295 133.48C833.364 174.457 857.706 195.96 897.061 195.554H927.097C966.451 195.554 981.868 174.457 983.896 133.48L986.736 61.6686C987.142 56.8 989.982 54.7714 994.851 54.7714C998.908 54.7714 1001.75 57.6114 1002.97 62.8857L1055.1 284H1118.49L1060.98 49.9029C1054.9 20.2857 1028.93 0 999.719 0H966.856C942.514 0 927.502 12.5772 925.879 42.6L923.039 123.337C922.634 134.697 916.142 140.783 904.376 140.783H897.467C885.701 140.783 876.369 134.697 871.095 123.337L833.364 43.4114C818.352 12.9829 797.661 1.21715 774.941 1.21715H742.484C712.866 1.21715 695.826 21.5029 702.318 51.12L756.887 284Z"
+        mix={jamPathStyle}
+      />
+    </svg>
+  );
+}
+
+function YearBadge() {
+  return () => (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 151.494 29.424"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      mix={yearBadgeStyle}
+    >
+      <path
+        d="M142.566 10.752C146.934 10.752 149.478 14.304 148.326 18.624L147.558 21.552C146.358 25.872 141.942 29.424 137.574 29.424H120.006C115.014 29.424 112.086 25.344 113.382 20.4L116.454 9.024C117.798 4.032 122.886 0 127.878 0H151.494L149.382 7.824H130.902C129.414 7.824 127.878 9.072 127.494 10.56L127.398 10.752H142.566ZM126.006 21.552H134.646C135.462 21.552 136.278 20.88 136.518 20.064C136.71 19.296 136.23 18.624 135.414 18.624H125.286L124.902 20.064C124.71 20.88 125.19 21.552 126.006 21.552Z"
+        mix={yearBadgePathStyle}
+      />
+      <path
+        d="M88.0215 21.552H109.382L107.27 29.376H74.4375L77.3175 18.624C78.4695 14.304 82.9335 10.752 87.3015 10.752H99.1095C99.9255 10.752 100.79 10.128 100.982 9.312C101.222 8.496 100.741 7.824 99.9255 7.824H80.1975L82.3095 0H107.077C111.398 0 113.99 3.504 112.838 7.824L112.021 10.752C110.87 15.12 106.406 18.624 102.086 18.624H90.2775C89.4615 18.624 88.6455 19.296 88.4535 20.112L88.4055 20.064L88.0215 21.552Z"
+        mix={yearBadgePathStyle}
+      />
+      <path
+        d="M55.2657 0H67.5057C73.6017 0 77.2497 4.992 75.6177 11.136L73.6977 18.288C72.0657 24.432 65.7297 29.424 59.5857 29.424H47.3937C41.2497 29.424 37.6017 24.432 39.2817 18.288L41.2017 11.136C42.8337 4.992 49.1217 0 55.2657 0ZM62.5617 17.232L63.9057 12.144C64.5297 9.792 63.1377 7.824 60.7377 7.824H57.8097C55.4097 7.824 52.9617 9.792 52.3377 12.144L50.9937 17.232C50.3217 19.632 51.7617 21.552 54.1617 21.552H57.0897C59.4417 21.552 61.8897 19.632 62.5617 17.232Z"
+        mix={yearBadgePathStyle}
+      />
+      <path
+        d="M13.584 21.552H34.944L32.832 29.376H0L2.88 18.624C4.032 14.304 8.496 10.752 12.864 10.752H24.672C25.488 10.752 26.352 10.128 26.544 9.312C26.784 8.496 26.304 7.824 25.488 7.824H5.76L7.872 0H32.64C36.96 0 39.552 3.504 38.4 7.824L37.584 10.752C36.432 15.12 31.968 18.624 27.648 18.624H15.84C15.024 18.624 14.208 19.296 14.016 20.112L13.968 20.064L13.584 21.552Z"
+        mix={yearBadgePathStyle}
+      />
+    </svg>
+  );
+}
+
+function heroLineEntranceDelayStyle(delay: number) {
+  return css({ animationDelay: `${delay}ms` });
+}
+
+let heroLineEntranceStyle = css({
+  animation:
+    "jam-2026-hero-line-fade-up 980ms cubic-bezier(0.16, 1, 0.3, 1) both",
+  position: "relative",
+  willChange: "opacity, transform",
+  "@keyframes jam-2026-hero-line-fade-up": {
+    "0%": {
+      opacity: 0,
+      transform: "translateY(26px)",
+    },
+    "100%": {
+      opacity: 1,
+      transform: "translateY(0)",
+    },
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    animation: "none",
+    opacity: 1,
+    transform: "none",
+  },
+});
+
 let heroStyle = css({
-  minHeight: "min(48rem, calc(100svh - 4.5rem))",
-  paddingBlock: "clamp(5rem, 12vw, 10rem)",
-  paddingInline: "clamp(1.5rem, 4vw, 4rem)",
-  display: "grid",
-  alignItems: "center",
-  backgroundColor: jamTheme.sky,
-  backgroundImage: `linear-gradient(180deg, ${jamTheme.sky}, ${jamTheme.skySoft})`,
-});
-
-let heroInnerStyle = css({
-  width: "min(100%, 76rem)",
-  marginInline: "auto",
-});
-
-let heroMetaStyle = css({
-  marginBlock: `0 ${theme.space.xl}`,
+  overflow: "clip",
   color: jamTheme.ink,
+});
+
+let heroVisualStyle = css({
+  display: "flex",
+  alignItems: "flex-start",
+  justifyContent: "center",
+  minHeight: "560px",
+  paddingBlock: "96px 40px",
+  paddingInline: "14px",
+  [breakpointMedia.sm]: {
+    minHeight: "640px",
+    paddingInline: "32px",
+  },
+  [breakpointMedia.lg]: {
+    minHeight: 0,
+    paddingInline: "max(32px, 5vw)",
+  },
+  [breakpointMedia.xl]: {
+    height: "760px",
+    paddingBlock: "96px 72px",
+  },
+});
+
+let heroStackStyle = css({
+  width: "100%",
+  maxWidth: "1920px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "48px",
+});
+
+let brandStackStyle = css({
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "48px",
+});
+
+let remixWordmarkStyle = css({
+  width: "clamp(8.75rem, 17vw, 15.25rem)",
+  height: "clamp(0.875rem, 1.7vw, 1.5rem)",
+  color: jamTheme.ink,
+  [breakpointMedia.sm]: {
+    transform: "none",
+  },
+});
+
+let jamMarkStyle = css({
+  display: "block",
+  width: "620px",
+  maxWidth: "none",
+  height: "auto",
+  overflow: "visible",
+  [breakpointMedia.sm]: {
+    width: "100%",
+  },
+});
+
+let jamPathStyle = css({
+  fill: jamTheme.ink,
+});
+
+let eventDetailsStyle = css({
+  display: "grid",
+  gridTemplateColumns: "1fr",
+  alignItems: "center",
+  justifyContent: "center",
+  justifyItems: "center",
+  gap: "22px",
+  color: jamTheme.ink,
+  textAlign: "center",
+  zIndex: 3,
+  [breakpointMedia.lg]: {
+    gridTemplateColumns: "240px auto 240px",
+    gap: "48px",
+    justifyItems: "stretch",
+    textAlign: "left",
+  },
+});
+
+let eventDetailStyle = css({
+  display: "inline-block",
+  justifySelf: "center",
+  margin: 0,
   fontFamily: theme.fontFamily.mono,
-  fontSize: theme.fontSize.xs,
+  fontSize: "12px",
   fontWeight: theme.fontWeight.bold,
-  letterSpacing: theme.letterSpacing.wide,
-  lineHeight: theme.lineHeight.normal,
+  letterSpacing: "0.06em",
+  lineHeight: 1.6,
   textTransform: "uppercase",
+  whiteSpace: "nowrap",
+  [breakpointMedia.lg]: {
+    justifySelf: "start",
+    fontSize: "14px",
+    textAlign: "justify",
+    textAlignLast: "justify",
+  },
 });
 
-let placeholderStyle = css({
-  maxWidth: "42rem",
-  paddingBlock: "clamp(4rem, 12vw, 8rem)",
+let eventDetailLeftStyle = css({
+  [breakpointMedia.lg]: {
+    justifySelf: "end",
+  },
 });
 
-let headingStyle = css({
+let yearBadgeStyle = css({
+  display: "inline-flex",
+  boxSizing: "content-box",
+  border: `6px solid ${jamTheme.ink}`,
+  borderRadius: "1rem",
+  padding: "1rem",
+  overflow: "visible",
+  color: jamTheme.ink,
+  width: "8rem",
+  height: "1.55rem",
+  [breakpointMedia.lg]: {
+    width: "151px",
+    height: "29px",
+  },
+});
+
+let yearBadgePathStyle = css({
+  fill: "currentColor",
+});
+
+let storyStyle = css({
+  width: "min(100%, 120rem)",
+  marginInline: "auto",
+  display: "block",
+  minHeight: 0,
+  paddingBlock: "64px",
+  paddingInline: "24px",
+  [breakpointMedia.sm]: {
+    display: "grid",
+    gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+    gridTemplateRows: "auto auto",
+    columnGap: "24px",
+    rowGap: "48px",
+    paddingInline: "24px",
+  },
+  [breakpointMedia.lg]: {
+    gridTemplateColumns:
+      "minmax(32px, 0.47fr) minmax(0, 2.12fr) minmax(24px, 0.71fr) minmax(0, 2.53fr) minmax(24px, 0.71fr) minmax(0, 2.12fr) minmax(32px, 0.47fr)",
+    rowGap: "80px",
+    paddingBlock: "88px 96px",
+    paddingInline: 0,
+  },
+});
+
+let storyHeadingStyle = css({
   margin: 0,
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
-  fontSize: "clamp(2.25rem, 7vw, 4rem)",
+  fontSize: "clamp(28px, 5.5vw, 40px)",
   fontWeight: theme.fontWeight.bold,
-  letterSpacing: theme.letterSpacing.tight,
-  lineHeight: theme.lineHeight.tight,
+  letterSpacing: "-0.03em",
+  lineHeight: 1.1,
+  textAlign: "left",
+  textTransform: "none",
+  [breakpointMedia.lg]: {
+    fontSize: "clamp(48px, 4vw, 57px)",
+    lineHeight: "clamp(56px, 5vw, 66px)",
+  },
 });
 
-let copyStyle = css({
-  marginBlock: `${theme.space.lg} 0`,
-  color: jamTheme.inkMuted,
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "1.125rem",
-  lineHeight: theme.lineHeight.relaxed,
+let conferenceHeadingStyle = css({
+  [breakpointMedia.sm]: {
+    gridColumn: 1,
+    gridRow: 1,
+  },
+  [breakpointMedia.lg]: {
+    gridColumn: "2 / 6",
+  },
 });
 
-let heroActionsStyle = css({
-  marginBlockStart: theme.space.xl,
+let workshopHeadingStyle = css({
+  alignSelf: "start",
+  marginBlockStart: "48px",
+  [breakpointMedia.sm]: {
+    gridColumn: 2,
+    gridRow: 2,
+    marginBlockStart: 0,
+  },
+  [breakpointMedia.lg]: {
+    gridColumn: "4 / 7",
+  },
+});
+
+let storyNoteShadow =
+  "0 1px 2px rgb(8 40 69 / 0.06), 0 3px 6px rgb(8 40 69 / 0.05), 0 10px 18px rgb(8 40 69 / 0.05), 0 24px 48px rgb(8 40 69 / 0.07)";
+let storyNoteShadowDark =
+  "0 1px 2px rgb(0 0 0 / 0.2), 0 3px 6px rgb(0 0 0 / 0.22), 0 10px 18px rgb(0 0 0 / 0.24), 0 24px 48px rgb(0 0 0 / 0.3)";
+
+let storyNoteStyle = css({
+  alignSelf: "start",
   display: "flex",
-  flexWrap: "wrap",
-  gap: theme.space.md,
-});
-
-let ticketLinkStyle = css({
-  borderRadius: theme.radius.full,
-  backgroundColor: jamTheme.accent,
-  color: jamTheme.onAccent,
-  fontFamily: theme.fontFamily.sans,
-  fontSize: theme.fontSize.sm,
-  fontWeight: theme.fontWeight.bold,
-  lineHeight: theme.lineHeight.tight,
-  paddingBlock: theme.space.sm,
-  paddingInline: theme.space.lg,
-  textDecoration: "none",
-  "&:hover": {
-    backgroundColor: jamTheme.accentHover,
+  flexDirection: "column",
+  gap: "0.5rem",
+  maxWidth: "520px",
+  marginBlockStart: "32px",
+  borderRadius: "0.5rem",
+  background: "light-dark(rgb(255 255 255 / 0.9), rgb(10 29 39 / 0.82))",
+  boxShadow: storyNoteShadow,
+  color: jamTheme.ink,
+  padding: "0.5rem",
+  "@media (prefers-color-scheme: dark)": {
+    boxShadow: storyNoteShadowDark,
   },
-  "&:focus-visible": {
-    outline: `2px solid ${jamTheme.accent}`,
-    outlineOffset: "3px",
+  ':root[data-theme="light"] &': {
+    boxShadow: storyNoteShadow,
   },
-  "&:active": {
-    backgroundColor: jamTheme.accentActive,
+  ':root[data-theme="dark"] &': {
+    boxShadow: storyNoteShadowDark,
+  },
+  [breakpointMedia.sm]: {
+    maxWidth: "none",
+    marginBlockStart: 0,
   },
 });
 
-let secondaryActionStyle = css({
-  border: `1px solid ${jamTheme.borderDefault}`,
-  borderRadius: theme.radius.full,
-  backgroundColor: jamTheme.surfaceRaised,
+let readmeNoteStyle = css({
+  [breakpointMedia.sm]: {
+    gridColumn: 2,
+    gridRow: 1,
+  },
+  [breakpointMedia.lg]: {
+    gridColumn: 6,
+    marginBlockStart: "-48px",
+  },
+});
+
+let workshopNoteStyle = css({
+  [breakpointMedia.sm]: {
+    gridColumn: 1,
+    gridRow: 2,
+  },
+  [breakpointMedia.lg]: {
+    gridColumn: 2,
+    marginBlockStart: "-48px",
+  },
+});
+
+let storyNoteTitleStyle = css({
+  minWidth: 0,
+  margin: 0,
+  overflow: "hidden",
+  color: jamTheme.ink,
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "0.625rem",
+  fontWeight: theme.fontWeight.normal,
+  letterSpacing: "0.02em",
+  lineHeight: 1.2,
+  textOverflow: "ellipsis",
+  textTransform: "uppercase",
+  whiteSpace: "nowrap",
+});
+
+let storyNoteBodyStyle = css({
+  minWidth: 0,
+  borderRadius: "0.25rem",
+  background: "light-dark(rgb(0 0 0 / 0.05), rgb(0 0 0 / 0.15))",
+  padding: "1rem",
+});
+
+let storyCopyStyle = css({
+  margin: 0,
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
-  fontSize: theme.fontSize.sm,
-  fontWeight: theme.fontWeight.semibold,
-  lineHeight: theme.lineHeight.tight,
-  paddingBlock: theme.space.sm,
-  paddingInline: theme.space.lg,
-  textDecoration: "none",
-  "&:hover": {
-    backgroundColor: jamTheme.surfaceRaisedHover,
-  },
-  "&:focus-visible": {
-    outline: `2px solid ${jamTheme.accent}`,
-    outlineOffset: "3px",
+  fontSize: "12px",
+  fontWeight: theme.fontWeight.normal,
+  letterSpacing: "-0.01em",
+  lineHeight: "1.6em",
+  textAlign: "left",
+  textTransform: "none",
+  [breakpointMedia.lg]: {
+    fontSize: "16px",
   },
 });
