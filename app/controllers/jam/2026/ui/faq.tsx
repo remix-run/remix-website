@@ -63,8 +63,6 @@ let faqStyle = css({
 
 let faqInnerStyle = css({
   width: "100%",
-  maxWidth: "1920px",
-  marginInline: "auto",
 });
 
 let headingStyle = css({

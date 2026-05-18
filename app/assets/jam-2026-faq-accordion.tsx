@@ -67,11 +67,13 @@ export let Jam2026FaqAccordion = clientEntry(
 let faqListStyle = css({
   marginBlockStart: "27px",
   display: "grid",
+  width: "100%",
 });
 
 let faqItemStyle = css({
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
+  width: "100%",
   scrollMarginBlockStart: "5rem",
   transition: "background 180ms ease",
   "&:hover, &:focus-within, &[data-state='open']": {

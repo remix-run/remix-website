@@ -1,126 +1,172 @@
-# Remix Jam 2026 Implementation Plan
+# Remix Jam 2026 Remaining Task Plan
 
-This is the working plan for building the Remix Jam 2026 site from the ground up in Remix 3. The proof of concept to inspect is `../remix-jam-2026`; treat it as directional design input, not implementation source. The 2025 Jam pages are useful requirements research, but the 2026 pages should avoid carrying forward accidental structure from the React Router migration.
+This plan tracks remaining work only. The app already has gated `/jam/2026` and `/jam/2026/tickets` routes, route/controller wiring, a shared Jam 2026 header, countdown, theme toggle, FAQ accordion, shared footer, global font loading, route tests, and core assets under `public/jam/2026`.
 
-## Current Shape
+## Build Rules
 
-- **Homepage brochure:** `/jam/2026`
-- **Ticket experience:** `/jam/2026/tickets`
-- **Jam root:** keep `/jam` pointing at the existing production 2025 page until we intentionally switch the default event.
+- Keep 2026 route UI in `app/controllers/jam/2026/` until there is real cross-year reuse.
+- Keep the server route/form contract correct before adding hydrated behavior.
+- Use route-local Remix UI styles and local assets. Do not depend on Tailwind route markup.
+- Use `clientEntry(import.meta.url, function ExportName(...) { ... })` only for browser-only behavior.
+- Validate ticket POST data with `remix/data-schema` and return explicit status codes.
 
-The first pass should stay server-rendered. Add hydrated browser modules only for real browser-only behavior: live countdown, enhanced ticket quantity controls, canvas/WebGL background, focus management, or animated visual polish that cannot be expressed with CSS/details/links.
+## Tasks
 
-## Design Input To Extract From `../remix-jam-2026`
+### 1. Finalize Landing Hero
 
-- Toronto remains the event location.
-- Event dates are October 1-2, 2026.
-- The first viewport should clearly signal "Remix Jam 2026" with the Remix wordmark, custom Jam lockup, date, location, and ticket CTA.
-- The visual direction is bright sky/racing/showcase energy, with a possible cloud/canvas background and a more dimensional hero than 2025.
-- A compact fixed header likely needs home, FAQ, code of conduct, and ticket affordances.
-- FAQ should work without JavaScript first. If final design requires animated accordion behavior, layer it onto native `details` or a small route-local client entry.
-- The floating ticket CTA is a strong design idea, but it should be implemented as an accessible link with clear focus and reduced-motion behavior.
-- The FPS readout in the POC should be treated as a development diagnostic only, not a public page element.
+Build the first viewport from the prototype direction, not the current placeholder. It should show the Remix wordmark, Jam mark or lockup, 2026 badge, October 1-2 dates, Toronto location, and ticket CTA.
 
-## Requirements Learned From Remix Jam 2025
+- Use existing Jam 2026 assets or add missing final static assets in `public/jam/2026`.
+- Keep one accessible `h1` and real text for image-backed branding.
+- Support light/dark theme and mobile without overlapping the fixed header.
+- Cover reduced-motion and non-WebGL fallback if the visual treatment moves.
 
-- Each page needs complete document metadata, social tags, cache headers, and a stable canonical URL story.
-- Ticketing needs server-first POST behavior, input validation with `remix/data-schema`, clear unavailable/sold-out/error states, and no-JS fallback before hydration.
-- Storefront integration should keep using the existing Shopify helper pattern unless ticket data moves somewhere else. The repo currently targets Storefront API `2026-04`, the latest stable API version available during this scaffold.
-- Shopify provides first-party AI support that should be useful while wiring ticketing: `@shopify/dev-mcp` for Dev MCP access, plus official `shopify/shopify-ai-toolkit` skills such as `shopify-dev` and `shopify-storefront-graphql`.
-- Newsletter signup may still be needed; if it stays, it should reuse the shared newsletter action and tag the submission for Jam 2026.
-- Client-side navigation should preserve the top-level Jam document experience and avoid full reloads where possible.
-- Mobile navigation and focus states need explicit test coverage.
-- Code of conduct content must be present before ticket launch.
-- FAQ content needs stable fragment links so support emails and docs can point to individual answers.
-- If schedule/lineup/gallery return later, they should be added as deliberate route additions rather than hidden in the initial two-page scaffold.
+### 2. Add Cloud And Sky Background
 
-## Build Principles
+Translate the prototype cloud/racing energy into a production-safe background layer.
 
-- Define URL contracts first in `app/routes.ts`, then wire controllers in `app/router.ts`.
-- Keep 2026 route-local UI under `app/controllers/jam/2026/` until there is real cross-year reuse.
-- Prefer semantic HTML and CSS over client JavaScript for brochure content.
-- Keep 2026 pages independent from the shared Tailwind/app stylesheet. Use route-local Remix UI mixins plus the shared global font stylesheet.
-- Load fonts from local `/font/*.woff2` files only. The approved families are Inter and JetBrains Mono.
-- Use `clientEntry(import.meta.url, function ExportName(...) { ... })` only for interactive modules that need browser state.
-- Keep asset paths centralized once final assets exist. Do not hardcode build output filenames or copied Figma export paths.
-- Avoid copying Figma-generated class names. Translate the design into named components, content data, and a small CSS surface.
-- Keep the ticket page a normal document/form workflow. Hydration should enhance quantity and checkout feedback, not define the checkout contract.
+- Prefer CSS or static imagery if it carries the design.
+- Use a hydrated module only for canvas/WebGL behavior.
+- Provide a static fallback when WebGL is unavailable.
+- Reduce or disable motion for `prefers-reduced-motion`.
+- Keep FPS and tuning controls out of production UI.
 
-## Initial File Areas
+### 3. Add Photo Moments
 
-- `app/routes.ts`: add `jam.y2026.index` and `jam.y2026.tickets`.
-- `app/router.ts`: map 2026 routes before the catch-all.
-- `app/controllers/jam/2026/`: route handlers, document shell, shared UI, and route-local content.
-- `app/styles/fonts.css`: shared global font declarations for all document routes.
-- `app/utils/style-hrefs.ts` and `package.json`: expose and build shared stylesheets without wiring Tailwind styles into 2026 routes.
-- `app/controllers/jam/2026/controller.test.ts`: focused server-render route coverage.
-- `public/jam/2026/**`: final static images, OG images, and ticket artwork when design assets are ready.
-- `app/assets/jam-2026-*.tsx`: hydrated modules only after the server-rendered behavior is correct.
+Use the migrated Toronto and Jam photos as visual accents inspired by the prototype photo windows.
 
-## Homepage Checklist
+- Start with static or CSS-hover windows unless close/drag behavior is required.
+- If interactive, implement as `clientEntry` with keyboard close and focus handling.
+- Keep images decorative unless they communicate content, then provide useful alt text.
+- Verify they do not crowd hero text on mobile.
 
-- Hero lockup with Remix brand, Jam mark, year, date, location, and ticket CTA.
-- Header navigation that works on desktop/mobile and does not obscure content.
-- Event overview explaining the Remix 3 showcase.
-- Workshop/day-two section with clear distinction from the main showcase day.
-- FAQ section with accessible controls and fragment-friendly IDs.
-- Code of conduct section or summary with a clear full policy surface.
-- Newsletter/update capture if the event team wants pre-ticket communication.
-- Venue/travel section once venue and hotel blocks are confirmed.
-- Social share image and metadata.
-- Reduced-motion treatment for animated/canvas/cloud/racing elements.
+### 4. Build Event Story And Workshop Sections
 
-## Ticket Checklist
+Replace the bare homepage body with the prototype content flow.
 
-- Product handle and Storefront source for the 2026 ticket.
-- Server-rendered GET page with availability, ticket type, quantity rules, and refund/transfer policy.
-- POST route with boundary validation via `remix/data-schema` + `parseSafe`.
-- Shopify cart creation with explicit errors for unavailable checkout, invalid product, sold out, and quantity limits.
-- No-store cache headers for POST responses and checkout-error states.
-- Progressive enhancement for quantity controls and pending checkout state.
-- Tests for invalid submissions, unavailable storefront fallback, and successful checkout redirect.
+- Event overview: Remix Jam returns to Toronto to show Remix 3.
+- Workshop: separate the additional workshop day from the main showcase day.
+- Mention Michael Jackson and Ryan Florence only if final event copy approves it.
+- Keep content server-rendered and route-local.
 
-## Accessibility And Quality Checklist
+### 5. Add Floating Ticket CTA
 
-- One visible `h1` per document and useful section headings.
-- Keyboard-accessible header, FAQ, ticket controls, and floating CTA.
-- Focus visible on all links/buttons, including image-based controls.
-- No text baked into images unless the same text exists accessibly.
-- Layout remains stable across mobile, tablet, and desktop.
-- No overlapping text/controls at narrow widths.
-- Reduced-motion path for canvas, parallax, countdown ticks, and scroll effects.
-- Color contrast checked against final palette.
-- No external font dependencies. 2026 pages should use local Inter and JetBrains Mono font files only.
-- No Tailwind utility classes or shared Tailwind/app stylesheet dependency in 2026 route markup.
-- No hardcoded `/assets/*` build filenames.
+Implement the prototype floating ticket affordance as a real link.
 
-## Verification Checklist
+- Link to `routes.jam.y2026.tickets.index.href()`.
+- Use the keyring/ticket art from `public/jam/2026/landing-assets`.
+- Make focus visible and target size comfortable.
+- Use static hover/focus behavior under reduced motion.
 
-- Route tests for `/jam/2026` and `/jam/2026/tickets`.
-- Ticket action tests before enabling checkout.
-- E2E coverage for mobile nav, FAQ interaction, and ticket checkout states.
-- Visual/browser pass for desktop and mobile once final designs land.
-- `pnpm run build` before PR handoff.
+### 6. Harden FAQ
 
-## Pre-Launch Checklist
+The accordion and stable item IDs exist. Finish the no-JS and deep-link behavior.
 
-- Remove the production route gate in `app/router.ts` so `/jam/2026` and `/jam/2026/tickets` are mapped in production.
-- Change the Jam index redirect in `app/controllers/jam/controller.ts` from `/jam/2025` to `/jam/2026`.
-- Check site navigation, footer links, blog/newsletter CTAs, and social metadata for any remaining links that should point at Jam 2026 instead of Jam 2025.
-- Keep the 2025 Jam routes live for canonical/archive purposes, but remove them from primary navigation unless intentionally linking to the archive.
-- Verify the 2026 ticket product is published and purchasable in Shopify Admin for the correct sales channel.
-- Verify Shopify inventory, sale timing, checkout settings, and refund/transfer copy before opening sales.
-- Submit a real low-quantity checkout test in production or staging, then cancel/refund it in Shopify.
-- Confirm unavailable/sold-out states render correctly if Shopify marks the product unavailable after launch.
-- Run `pnpm run build` and the Jam route/e2e checks before removing the production gate.
+- Answers must remain reachable without JavaScript.
+- Each FAQ item needs a stable fragment target.
+- Opening one item at a time is acceptable as a hydrated enhancement.
+- Add browser/component coverage for fragment navigation or no-JS markup if the implementation changes.
 
-## Open Decisions
+### 7. Add Code Of Conduct Surface
 
-- Exact venue, address, and map link.
-- Whether `/jam` should switch to `/jam/2026` before tickets open or at launch.
-- Whether FAQ and code of conduct stay on the homepage only or get dedicated deep-link pages later.
-- Whether schedule/lineup belongs on the homepage, in a later route, or outside the two-page launch scope.
-- Final ticket product handle, max quantity, and sale opening time.
-- Newsletter tag/list ID for Remix Jam 2026.
-- Final OG artwork and static asset naming.
-- Whether the cloud/racing background is CSS, canvas, Three.js, video, or static imagery.
+Create the 2026 code of conduct content before ticket launch.
+
+- It can be a homepage section or a dedicated route, but the ticket flow must link to it.
+- Keep copy complete enough to publish before sales open.
+- Add route/controller/tests if it becomes a standalone page.
+
+### 8. Fill Event Logistics
+
+Replace placeholder logistics once confirmed.
+
+- Venue name, address, and map link.
+- Recommended hotels or hotel block details.
+- Airport and transit guidance.
+- Refund, transfer, accessibility, and contact copy that support ticket sales.
+
+### 9. Build Ticket Selection UI
+
+Replace the placeholder tickets page with the prototype ticket options translated to a server-first form.
+
+- Two-day ticket: Oct 1 and Oct 2, workshop, main event, afterparty, food/drinks, early bird $699 from $899.
+- One-day ticket: Oct 2, main event and afterparty, food/drinks, early bird $299 from $399.
+- Quantity starts at 1 and caps at 6 unless Shopify/product policy changes.
+- GET should render selected/default ticket, quantity, subtotal, availability, and policies without JavaScript.
+- Hydration can enhance option switching, quantity controls, pending state, and visual polish.
+- Skip the old 3D ticket scene unless final design explicitly needs it.
+
+### 10. Add In-Page Ticket Enhancement
+
+After the server ticket page works, add the prototype-style homepage enhancement if it remains in scope.
+
+- Ticket links should still work as normal links without JavaScript.
+- Hydrated navigation may open the ticket surface without a full reload and keep `/jam/2026/tickets` deep-linkable.
+- If using a dialog/modal, implement focus restore, Escape close, scroll lock, inert background, and browser history cleanup.
+- Pause heavy background effects while the ticket surface is open.
+
+### 11. Wire Shopify Checkout
+
+Implement the real POST action for `/jam/2026/tickets`.
+
+- Add final product handles/variant mapping for the two ticket types.
+- Validate ticket type, product/variant id, and quantity with `parseSafe`.
+- Create a Shopify cart and redirect to checkout on success.
+- Return clear errors for invalid input, unavailable storefront, sold out/unpublished products, quantity limits, and cart creation failures.
+- Use `no-store` for POST responses and checkout-error states.
+
+### 12. Ticket Tests
+
+Add focused coverage before enabling checkout.
+
+- GET renders available, unavailable, and sold-out states.
+- POST rejects invalid submissions with `400`.
+- POST rejects mismatched product/variant ids.
+- POST redirects on successful cart creation.
+- Hydrated controls preserve form values and pending state.
+
+### 13. Social Metadata And Share Assets
+
+Finish the document head for 2026 pages.
+
+- Add Jam 2026 OG/share image under `public/jam/2026`.
+- Use `getSocialHeadTags` with stable canonical URLs for homepage and tickets.
+- Add canonical links for `/jam/2026` and `/jam/2026/tickets`.
+- Keep title/description distinct for each page.
+- Add or adjust tests for social tags.
+
+### 14. Browser QA
+
+Run a focused browser pass once landing and ticket UI are in place.
+
+- Desktop and mobile screenshots for hero, story, FAQ, ticket page, and footer.
+- Keyboard pass for header, theme toggle, FAQ, floating CTA, ticket controls, and modal/dialog behavior if used.
+- Reduced-motion pass for countdown, cloud layer, CTA, FAQ, and ticket animations.
+- Check color contrast and text overlap in light and dark themes.
+
+### 15. Production Launch Switch
+
+Do this only when the 2026 pages are ready to publish.
+
+- Remove the production route gate for `routes.jam.y2026`.
+- Change `/jam` redirect from `/jam/2025` to `/jam/2026`.
+- Update global header/footer/blog/newsletter links that should point to 2026.
+- Keep 2025 archive routes live but out of primary navigation unless intentionally linked.
+
+### 16. Launch Verification
+
+Final checks before opening sales.
+
+- Verify Shopify products, inventory, sales channel, sale timing, and checkout settings.
+- Submit a low-quantity checkout test in staging or production, then cancel/refund it.
+- Confirm unavailable and sold-out states by toggling product availability.
+- Run Jam route tests, ticket tests, E2E checks, and `pnpm run build`.
+
+## Open Inputs
+
+- Final venue/address/map.
+- Final Shopify product handles and variant IDs.
+- Sale opening time and any discount behavior beyond early bird display.
+- Final code of conduct copy.
+- Final OG/share artwork.
+- Whether the in-page ticket enhancement is launch-blocking or a follow-up.
+- Whether newsletter capture is needed for 2026.
