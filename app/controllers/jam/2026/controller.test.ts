@@ -21,6 +21,12 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(html).toContain("<title>Remix Jam 2026</title>");
     expect(html).toContain(
+      'rel="apple-touch-icon" href="/jam/2026/favicons/apple-touch-icon.png"',
+    );
+    expect(html).toContain(
+      'rel="icon" href="/jam/2026/favicons/favicon-32x32.png" type="image/png" sizes="32x32"',
+    );
+    expect(html).toContain(
       'aria-label="Remix Jam starts October 1, 2026 at 9:00 AM Eastern time"',
     );
     expect(html).toContain('href="https://shopify.com"');
@@ -28,6 +34,15 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain(
       'src="/jam/2026/remix-jam-2026-horizontal-lockup.svg"',
     );
+    expect(html).toContain("Remix Jam 2026");
+    expect(html).toContain("October 1-2, 2026");
+    expect(html).toContain("Toronto - Ontario, Canada");
+    expect(html).toContain("annual conference returns to Toronto");
+    expect(html).toContain("Start your engines");
+    expect(html).toContain("For a grand Remix showcase");
+    expect(html).toContain("set aside an additional day to host a workshop");
+    expect(html).toContain("README.MD");
+    expect(html).toContain("ABOUT-WORKSHOP.MD");
     expect(html).toContain('aria-label="Color theme"');
     expect(html).toContain("Light");
     expect(html).toContain("Dark");
@@ -59,6 +74,9 @@ describe("Remix Jam 2026 routes", () => {
     let html = await response.text();
 
     expect(html).toContain("<title>Remix Jam 2026 Tickets</title>");
+    expect(html).toContain(
+      'rel="icon" href="/jam/2026/favicons/favicon.ico" sizes="any"',
+    );
     expect(html).toContain(
       'aria-label="Remix Jam starts October 1, 2026 at 9:00 AM Eastern time"',
     );
