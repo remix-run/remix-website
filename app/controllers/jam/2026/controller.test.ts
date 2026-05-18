@@ -36,13 +36,11 @@ describe("Remix Jam 2026 routes", () => {
     );
     expect(html).toContain("Remix Jam 2026");
     expect(html).toContain("October 1-2, 2026");
-    expect(html).toContain("Toronto - Ontario, Canada");
+    expect(html).toContain("Toronto, Ontario, Canada");
     expect(html).toContain("annual conference returns to Toronto");
-    expect(html).toContain("Start your engines");
-    expect(html).toContain("For a grand Remix showcase");
-    expect(html).toContain("set aside an additional day to host a workshop");
-    expect(html).toContain("README.MD");
-    expect(html).toContain("ABOUT-WORKSHOP.MD");
+    expect(html).toContain("show off Remix 3");
+    expect(html).toContain("main Remix showcase");
+    expect(html).toContain("hands-on workshop");
     expect(html).toContain('aria-label="Color theme"');
     expect(html).toContain("Light");
     expect(html).toContain("Dark");
