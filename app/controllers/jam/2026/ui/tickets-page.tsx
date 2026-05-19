@@ -1,6 +1,6 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
-import { Jam2026Header } from "../../../../assets/jam-2026-header.tsx";
+import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
 import { jam2026HeadTags } from "../head.ts";

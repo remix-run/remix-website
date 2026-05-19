@@ -10,8 +10,8 @@ import { render } from "../../../utils/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
 import { InfoText, ScrambleText, SectionLabel, Title } from "./shared.tsx";
-import { JamTicketCard } from "../../../assets/jam-ticket-card.tsx";
-import { JamTicketPurchase } from "../../../assets/jam-ticket-purchase.tsx";
+import { JamTicketCard } from "../../../assets/jam/2025/ticket-card.tsx";
+import { JamTicketPurchase } from "../../../assets/jam/2025/ticket-purchase.tsx";
 import { assetPaths } from "../../../utils/asset-paths.ts";
 
 export async function jam2025TicketHandler() {

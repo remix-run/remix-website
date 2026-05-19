@@ -9,12 +9,12 @@ import {
 import {
   restoreGalleryFocus,
   storeGalleryFocus,
-} from "./jam-gallery-focus-restore.tsx";
+} from "./gallery-focus-restore.tsx";
 import {
   focusTrap,
   getFocusableElementsWithin,
   isFocusable,
-} from "../ui/focus-trap.ts";
+} from "../../../ui/focus-trap.ts";
 
 /** Which chevron to focus after keyboard prev/next (URL updates before the new modal paints). */
 let PENDING_KEYBOARD_CHEVRON_KEY = "jam-gallery-pending-chevron-focus";

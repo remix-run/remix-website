@@ -2,7 +2,7 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 import { render } from "remix/ui/test";
 
-import { Jam2026FaqAccordion } from "./jam-2026-faq-accordion.tsx";
+import { Jam2026FaqAccordion } from "./faq-accordion.tsx";
 
 describe("Jam2026FaqAccordion", () => {
   it("keeps only one FAQ item open at a time", async (t) => {

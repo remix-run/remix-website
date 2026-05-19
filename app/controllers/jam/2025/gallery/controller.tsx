@@ -8,7 +8,7 @@ import { ScrambleText, Title, transformShopifyImageUrl } from "../shared.tsx";
 import {
   JamGalleryModalHost,
   type JamGalleryModalNav,
-} from "../../../../assets/jam-gallery-modal-host.tsx";
+} from "../../../../assets/jam/2025/gallery-modal-host.tsx";
 import { assetPaths } from "../../../../utils/asset-paths.ts";
 import type { RemixNode } from "remix/ui";
 

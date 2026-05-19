@@ -1,7 +1,7 @@
 import { css, type Handle } from "remix/ui";
 import { theme } from "remix/ui/theme";
 
-import { jamTheme } from "../controllers/jam/2026/theme.ts";
+import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
 
 const EVENT_START = new Date("2026-10-01T09:00:00-04:00").getTime();
 const SECOND = 1000;

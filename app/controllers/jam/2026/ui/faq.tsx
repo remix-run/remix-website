@@ -1,6 +1,6 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
-import { Jam2026FaqAccordion } from "../../../../assets/jam-2026-faq-accordion.tsx";
+import { Jam2026FaqAccordion } from "../../../../assets/jam/2026/faq-accordion.tsx";
 import { breakpoints } from "../../../../ui/theme.ts";
 import { jamTheme } from "../theme.ts";
 

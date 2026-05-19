@@ -1,6 +1,6 @@
 import cx from "clsx";
 import type { RemixNode } from "remix/ui";
-import { JamScrambleText } from "../../../assets/jam-scramble-text.tsx";
+import { JamScrambleText } from "../../../assets/jam/2025/scramble-text.tsx";
 import { MobileMenu } from "../../../assets/mobile-menu.tsx";
 import { routes } from "../../../routes.ts";
 import { assetPaths } from "../../../utils/asset-paths.ts";

@@ -1,7 +1,7 @@
 import cx from "clsx";
 import { clientEntry, on, ref, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
-import { assetPaths } from "../utils/asset-paths.ts";
+import { assetPaths } from "../../../utils/asset-paths.ts";
 
 type LineupItem = {
   time: string;

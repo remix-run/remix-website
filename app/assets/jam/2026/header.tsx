@@ -1,10 +1,10 @@
 import { addEventListeners, clientEntry, css, on, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
 
-import { Jam2026Countdown } from "./jam-2026-countdown.tsx";
-import { jamTheme } from "../controllers/jam/2026/theme.ts";
-import { routes } from "../routes.ts";
-import { assetPaths } from "../utils/asset-paths.ts";
+import { Jam2026Countdown } from "./countdown.tsx";
+import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
+import { routes } from "../../../routes.ts";
+import { assetPaths } from "../../../utils/asset-paths.ts";
 
 const THEME_STORAGE_KEY = "remix-jam-2026-theme";
 const LIGHT_LOGO_FILTER =
