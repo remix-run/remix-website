@@ -1,6 +1,7 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
 import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
+import { Jam2026PhotoMoments } from "../../../../assets/jam/2026/photo-moments.tsx";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
 import { jam2026HeadTags } from "../head.ts";
@@ -19,6 +20,7 @@ export function Jam2026HomePage() {
         <Jam2026Header />
         <main id="main-content" tabIndex={-1} mix={mainStyle}>
           <Jam2026Hero />
+          <Jam2026PhotoMoments />
           <Jam2026Faq />
         </main>
         <Footer mix={footerStyle} />

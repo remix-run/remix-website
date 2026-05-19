@@ -41,7 +41,6 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain("show off Remix 3");
     expect(html).toContain("main Remix showcase");
     expect(html).toContain("hands-on workshop");
-    expect(html).toContain('aria-label="Color theme"');
     expect(html).toContain("Light");
     expect(html).toContain("Dark");
     expect(html).toContain('href="/icons.svg#sun"');

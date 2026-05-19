@@ -1,6 +1,6 @@
 # Remix Jam 2026 Remaining Task Plan
 
-This plan tracks remaining work only. The app already has gated `/jam/2026` and `/jam/2026/tickets` routes, route/controller wiring, a shared Jam 2026 header, countdown, theme toggle, FAQ accordion, shared footer, global font loading, route tests, and core assets under `public/jam/2026`.
+This plan tracks remaining work only. The app already has gated `/jam/2026` and `/jam/2026/tickets` routes, route/controller wiring, a shared Jam 2026 header, countdown, theme toggle, interactive photo moments, FAQ accordion, shared footer, global font loading, route tests, and core assets under `public/jam/2026`.
 
 The prototype/POC lives in the sibling repo at `../remix-jam-2026`.
 
@@ -24,24 +24,6 @@ Translate the prototype cloud/racing energy into a production-safe background la
 - Reduce or disable motion for `prefers-reduced-motion`.
 - Keep FPS and tuning controls out of production UI.
 
-### Add Photo Moments
-
-Use the migrated Toronto and Jam photos as visual accents inspired by the prototype photo windows.
-
-- Start with static or CSS-hover windows unless close/drag behavior is required.
-- If interactive, implement as `clientEntry` with keyboard close and focus handling.
-- Keep images decorative unless they communicate content, then provide useful alt text.
-- Verify they do not crowd hero text on mobile.
-
-### Build Event Story And Workshop Sections
-
-Replace the bare homepage body with the prototype content flow.
-
-- Event overview: Remix Jam returns to Toronto to show Remix 3.
-- Workshop: separate the additional workshop day from the main showcase day.
-- Mention Michael Jackson and Ryan Florence only if final event copy approves it.
-- Keep content server-rendered and route-local.
-
 ### Add Floating Ticket CTA
 
 Implement the prototype floating ticket affordance as a real link.
@@ -59,6 +41,15 @@ The accordion and stable item IDs exist. Finish the no-JS and deep-link behavior
 - Each FAQ item needs a stable fragment target.
 - Opening one item at a time is acceptable as a hydrated enhancement.
 - Add browser/component coverage for fragment navigation or no-JS markup if the implementation changes.
+
+### Move Theme Preference To Cookie Session
+
+Replace the Jam 2026 header's `sessionStorage` theme persistence with a server-readable cookie session.
+
+- Read the saved theme on the server so first paint uses the chosen `data-theme` and `color-scheme`.
+- Keep the header's hydrated toggle as the enhancement that updates the cookie-backed preference.
+- Preserve system-theme fallback when no saved preference exists.
+- Avoid a flash or mismatch between server-rendered theme state and hydrated header state.
 
 ### Add Code Of Conduct Surface
 
@@ -153,13 +144,3 @@ Final checks before opening sales.
 - Submit a low-quantity checkout test in staging or production, then cancel/refund it.
 - Confirm unavailable and sold-out states by toggling product availability.
 - Run Jam route tests, ticket tests, E2E checks, and `pnpm run build`.
-
-## Open Inputs
-
-- Final venue/address/map.
-- Final Shopify product handles and variant IDs.
-- Sale opening time and any discount behavior beyond early bird display.
-- Final code of conduct copy.
-- Final OG/share artwork.
-- Whether the in-page ticket enhancement is launch-blocking or a follow-up.
-- Whether newsletter capture is needed for 2026.

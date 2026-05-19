@@ -1,5 +1,6 @@
 import { addEventListeners, clientEntry, css, on, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
+import { theme } from "remix/ui/theme";
 
 import { Jam2026Countdown } from "./countdown.tsx";
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
@@ -161,22 +162,14 @@ export let Jam2026Header = clientEntry(
           </div>
 
           <nav aria-label="Page navigation" mix={jam2026NavActionsStyle}>
-            <div
-              aria-label="Color theme"
-              data-theme={theme}
-              mix={jam2026ThemeToggleStyle}
-              role="group"
-            >
-              <button
-                aria-pressed={theme === "light" ? "true" : "false"}
-                mix={[
-                  jam2026ThemeOptionStyle,
-                  on<HTMLButtonElement>("click", () => setTheme("light")),
-                ]}
-                type="button"
+            <div data-theme={theme} mix={jam2026ThemeToggleStyle}>
+              <span
+                aria-hidden="true"
+                data-active={theme === "light" ? "true" : "false"}
+                mix={jam2026ThemeOptionStyle}
               >
-                <span>Light</span>
-              </button>
+                Light
+              </span>
               <button
                 aria-label={`Switch to ${nextTheme} mode`}
                 mix={[
@@ -202,16 +195,13 @@ export let Jam2026Header = clientEntry(
                   </svg>
                 </span>
               </button>
-              <button
-                aria-pressed={theme === "dark" ? "true" : "false"}
-                mix={[
-                  jam2026ThemeOptionStyle,
-                  on<HTMLButtonElement>("click", () => setTheme("dark")),
-                ]}
-                type="button"
+              <span
+                aria-hidden="true"
+                data-active={theme === "dark" ? "true" : "false"}
+                mix={jam2026ThemeOptionStyle}
               >
-                <span>Dark</span>
-              </button>
+                Dark
+              </span>
             </div>
             <a
               href="#faq"
@@ -322,7 +312,20 @@ let jam2026NavLogoStyle = css({
 });
 
 let jam2026LogoLinkStyle = css({
-  display: "contents",
+  alignItems: "center",
+  display: "grid",
+  height: "100%",
+  justifyItems: "start",
+  outline: "none",
+  textDecoration: "none",
+  width: "100%",
+  "&:focus-visible": {
+    outline: `2px solid ${jamTheme.brandRed}`,
+    outlineOffset: "-6px",
+  },
+  "@media (min-width: 980px)": {
+    justifyItems: "center",
+  },
 });
 
 let jam2026LogoFilterStyle = css({
@@ -383,7 +386,7 @@ let jam2026NavLinkStyle = css({
   display: "inline-flex",
   fontFamily: '"JetBrains Mono", ui-monospace, monospace',
   fontSize: "11px",
-  fontWeight: 700,
+  fontWeight: theme.fontWeight.bold,
   height: "100%",
   lineHeight: 1,
   padding: "0 16px",
@@ -415,7 +418,7 @@ let jam2026TicketLinkStyle = css({
   display: "inline-flex",
   fontFamily: '"JetBrains Mono", ui-monospace, monospace',
   fontSize: "11px",
-  fontWeight: 700,
+  fontWeight: theme.fontWeight.bold,
   height: "100%",
   isolation: "isolate",
   lineHeight: 1,
@@ -424,13 +427,14 @@ let jam2026TicketLinkStyle = css({
   textDecoration: "none",
   textTransform: "uppercase",
   whiteSpace: "nowrap",
-  "&:hover, &:focus-visible": {
+  "&:hover": {
     "--jam-2026-ticket-fill-delay": "200ms",
     "--jam-2026-ticket-fill-width": "100vw",
   },
-  "&:focus-visible": {
-    outline: `2px solid ${jamTheme.brandRed}`,
-    outlineOffset: "-2px",
+  "&:focus, &:focus-visible": {
+    boxShadow: "inset 0 0 0 1px rgb(8 40 69 / 0.35)",
+    outline: "2px solid #ffffff",
+    outlineOffset: "-4px",
   },
   "@media (max-width: 640px)": {
     padding: "0 12px",
@@ -440,7 +444,7 @@ let jam2026TicketLinkStyle = css({
   },
   "@media (prefers-reduced-motion: reduce)": {
     background: jamTheme.brandRed,
-    "&:hover, &:focus-visible": {
+    "&:hover": {
       "--jam-2026-ticket-fill-delay": "0ms",
       "--jam-2026-ticket-fill-width": "100%",
       background: jamTheme.accentActive,
@@ -484,32 +488,20 @@ let jam2026ThemeToggleStyle = css({
 });
 
 let jam2026ThemeOptionStyle = css({
-  appearance: "none",
-  background: "transparent",
-  border: 0,
-  cursor: "pointer",
-  padding: 0,
-  "& > span": {
-    color: jamTheme.ink,
-    display: "block",
-    fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-    fontSize: "11px",
-    fontWeight: 700,
-    letterSpacing: "0.06em",
-    lineHeight: 1,
-    textTransform: "uppercase",
-    transition: "color 160ms ease",
-  },
-  '&[aria-pressed="false"] > span': {
+  color: jamTheme.ink,
+  display: "block",
+  fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+  fontSize: "11px",
+  fontWeight: theme.fontWeight.bold,
+  letterSpacing: "0.06em",
+  lineHeight: 1,
+  textTransform: "uppercase",
+  transition: "color 160ms ease",
+  '&[data-active="false"]': {
     color: jamTheme.textMuted,
   },
-  "&:hover > span, &:focus-visible > span": {
-    color: jamTheme.brandRed,
-  },
   "@media (max-width: 640px)": {
-    "& > span": {
-      fontSize: "10px",
-    },
+    fontSize: "10px",
   },
   "@media (max-width: 520px)": {
     clip: "rect(0 0 0 0)",
@@ -535,7 +527,19 @@ let jam2026ThemeSwitchStyle = css({
   display: "inline-flex",
   flexShrink: 0,
   height: "24px",
+  outline: "none",
+  transition: "background-color 140ms ease",
   width: "48px",
+  "&:hover": {
+    background: "light-dark(rgb(8 40 69 / 0.06), rgb(255 255 255 / 0.12))",
+  },
+  "&:focus-visible": {
+    outline: `2px solid ${jamTheme.brandRed}`,
+    outlineOffset: "3px",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+  },
   "@media (max-width: 640px)": {
     height: "22px",
     width: "38px",

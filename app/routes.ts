@@ -1,6 +1,7 @@
 import { form, get, post, route } from "remix/fetch-router/routes";
 
-export let showJam2026 = process.env.NODE_ENV !== "production";
+export let showJam2026 =
+  typeof process === "undefined" || process.env?.NODE_ENV !== "production";
 
 export let routes = route({
   actions: route("_actions", {

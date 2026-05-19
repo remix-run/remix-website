@@ -24,7 +24,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - For route-local hydrated UI in `app/assets/**`, keep component/rendering code first and put styles below the components.
 - Let components own their own state and implementation details. If a parent imports a long list of child constants/helpers, that is a boundary smell; extract a child component/module instead.
 - Prefer direct code over tiny wrappers/constants that do not add meaning. Inline one-off helpers, values, and derived constants at their use site when that reads clearly.
-- Use shared theme tokens such as `theme.fontFamily.*` and route theme objects instead of hardcoded repeated values.
+- Use shared theme tokens such as `theme.fontFamily.*`, `theme.fontWeight.*`, and route theme objects instead of hardcoded repeated values. Never hardcode custom `fontWeight` numbers or strings.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
 - Use `clientEntry(import.meta.url, function ExportName(...) { ... })` for hydrated asset modules so server rendering can resolve them through `resolveClientEntry(...)` using the component function name.
 - Resolve the root browser entry and preload links through `app/middleware/asset-entry.ts` + `app/utils/assets.server.ts`; do not hardcode build output paths.

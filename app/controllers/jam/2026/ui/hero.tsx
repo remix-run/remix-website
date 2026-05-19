@@ -4,6 +4,11 @@ import { visuallyHiddenStyle } from "../../../../ui/css-mixins.ts";
 import { breakpointMedia } from "../../../../ui/theme.ts";
 import { Wordmark } from "../../../../ui/wordmark.tsx";
 import { jamTheme } from "../theme.ts";
+import {
+  jam2026WindowBodyStyle,
+  jam2026WindowSurfaceStyle,
+  jam2026WindowTitleStyle,
+} from "./window-styles.ts";
 
 export function Jam2026Hero() {
   return () => (
@@ -52,9 +57,9 @@ export function Jam2026Hero() {
           Remix 3.
         </h2>
 
-        <div mix={[storyNoteStyle, readmeNoteStyle]}>
-          <p mix={storyNoteTitleStyle}>README.MD</p>
-          <div mix={storyNoteBodyStyle}>
+        <div mix={[storyNoteStyle, jam2026WindowSurfaceStyle, readmeNoteStyle]}>
+          <p mix={jam2026WindowTitleStyle}>README.MD</p>
+          <div mix={jam2026WindowBodyStyle}>
             <p mix={storyCopyStyle}>
               Remix Jam is back, and we're putting Remix 3 through its paces.
               <br />
@@ -65,9 +70,11 @@ export function Jam2026Hero() {
           </div>
         </div>
 
-        <div mix={[storyNoteStyle, workshopNoteStyle]}>
-          <p mix={storyNoteTitleStyle}>ABOUT-WORKSHOP.MD</p>
-          <div mix={storyNoteBodyStyle}>
+        <div
+          mix={[storyNoteStyle, jam2026WindowSurfaceStyle, workshopNoteStyle]}
+        >
+          <p mix={jam2026WindowTitleStyle}>ABOUT-WORKSHOP.MD</p>
+          <div mix={jam2026WindowBodyStyle}>
             <p mix={storyCopyStyle}>
               Come learn from and build with the creators of Remix. In this
               interactive workshop you'll hear from seasoned Open Source
@@ -212,8 +219,8 @@ let brandStackStyle = css({
 });
 
 let remixWordmarkStyle = css({
-  width: "clamp(8.75rem, 17vw, 15.25rem)",
-  height: "clamp(0.875rem, 1.7vw, 1.5rem)",
+  width: "clamp(12.5rem, 22vw, 19.5rem)",
+  height: "clamp(1.25rem, 2.2vw, 1.92rem)",
   color: jamTheme.ink,
   [breakpointMedia.sm]: {
     transform: "none",
@@ -244,7 +251,7 @@ let eventDetailsStyle = css({
   gap: "22px",
   color: jamTheme.ink,
   textAlign: "center",
-  zIndex: 3,
+  zIndex: 1,
   [breakpointMedia.lg]: {
     gridTemplateColumns: "240px auto 240px",
     gap: "48px",
@@ -286,11 +293,11 @@ let yearBadgeStyle = css({
   padding: "1rem",
   overflow: "visible",
   color: jamTheme.ink,
-  width: "8rem",
-  height: "1.55rem",
+  width: "9rem",
+  height: "1.75rem",
   [breakpointMedia.lg]: {
-    width: "151px",
-    height: "29px",
+    width: "165px",
+    height: "32px",
   },
 });
 
@@ -298,27 +305,32 @@ let yearBadgePathStyle = css({
   fill: "currentColor",
 });
 
+let storyNarrowMedia = "@media (max-width: 980px)" as const;
+let storyTabletMedia =
+  "@media (min-width: 601px) and (max-width: 980px)" as const;
+
 let storyStyle = css({
-  width: "min(100%, 120rem)",
-  marginInline: "auto",
-  display: "block",
+  position: "relative",
+  zIndex: 1,
+  width: "100%",
+  maxWidth: "1920px",
   minHeight: 0,
-  paddingBlock: "64px",
-  paddingInline: "24px",
-  [breakpointMedia.sm]: {
-    display: "grid",
-    gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-    gridTemplateRows: "auto auto",
-    columnGap: "24px",
-    rowGap: "48px",
-    paddingInline: "24px",
+  marginInline: "auto",
+  display: "grid",
+  gridTemplateColumns:
+    "minmax(32px, 0.47fr) minmax(0, 2.12fr) minmax(24px, 0.71fr) minmax(0, 2.53fr) minmax(24px, 0.71fr) minmax(0, 2.12fr) minmax(32px, 0.47fr)",
+  gridTemplateRows: "auto auto",
+  rowGap: "80px",
+  paddingBlock: "88px 96px",
+  [storyNarrowMedia]: {
+    display: "block",
+    padding: "64px 24px",
   },
-  [breakpointMedia.lg]: {
-    gridTemplateColumns:
-      "minmax(32px, 0.47fr) minmax(0, 2.12fr) minmax(24px, 0.71fr) minmax(0, 2.53fr) minmax(24px, 0.71fr) minmax(0, 2.12fr) minmax(32px, 0.47fr)",
-    rowGap: "80px",
-    paddingBlock: "88px 96px",
-    paddingInline: 0,
+  [storyTabletMedia]: {
+    display: "grid",
+    columnGap: "24px",
+    gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+    rowGap: "48px",
   },
 });
 
@@ -326,128 +338,100 @@ let storyHeadingStyle = css({
   margin: 0,
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
-  fontSize: "clamp(28px, 5.5vw, 40px)",
+  fontSize: "clamp(48px, 4.07vw, 57px)",
   fontWeight: theme.fontWeight.bold,
   letterSpacing: "-0.03em",
-  lineHeight: 1.1,
+  lineHeight: "clamp(56px, 4.71vw, 66px)",
   textAlign: "left",
   textTransform: "none",
-  [breakpointMedia.lg]: {
-    fontSize: "clamp(48px, 4vw, 57px)",
-    lineHeight: "clamp(56px, 5vw, 66px)",
+  "@supports (text-box-trim: trim-both)": {
+    textBoxTrim: "trim-both",
+    textBoxEdge: "cap alphabetic",
+  },
+  [storyNarrowMedia]: {
+    fontSize: "clamp(28px, 5.5vw, 40px)",
+    lineHeight: 1.1,
   },
 });
 
 let conferenceHeadingStyle = css({
-  [breakpointMedia.sm]: {
+  gridColumn: "2 / 6",
+  gridRow: 1,
+  [storyTabletMedia]: {
     gridColumn: 1,
     gridRow: 1,
-  },
-  [breakpointMedia.lg]: {
-    gridColumn: "2 / 6",
   },
 });
 
 let workshopHeadingStyle = css({
   alignSelf: "start",
-  marginBlockStart: "48px",
-  [breakpointMedia.sm]: {
+  gridColumn: "4 / 7",
+  gridRow: 2,
+  [storyNarrowMedia]: {
+    marginBlockStart: "48px",
+  },
+  [storyTabletMedia]: {
     gridColumn: 2,
     gridRow: 2,
     marginBlockStart: 0,
   },
-  [breakpointMedia.lg]: {
-    gridColumn: "4 / 7",
-  },
 });
-
-let storyNoteShadow =
-  "0 1px 2px rgb(8 40 69 / 0.06), 0 3px 6px rgb(8 40 69 / 0.05), 0 10px 18px rgb(8 40 69 / 0.05), 0 24px 48px rgb(8 40 69 / 0.07)";
-let storyNoteShadowDark =
-  "0 1px 2px rgb(0 0 0 / 0.2), 0 3px 6px rgb(0 0 0 / 0.22), 0 10px 18px rgb(0 0 0 / 0.24), 0 24px 48px rgb(0 0 0 / 0.3)";
 
 let storyNoteStyle = css({
   alignSelf: "start",
   display: "flex",
   flexDirection: "column",
   gap: "0.5rem",
-  maxWidth: "520px",
-  marginBlockStart: "32px",
-  borderRadius: "0.5rem",
-  background: "light-dark(rgb(255 255 255 / 0.9), rgb(10 29 39 / 0.82))",
-  boxShadow: storyNoteShadow,
-  color: jamTheme.ink,
-  padding: "0.5rem",
-  "@media (prefers-color-scheme: dark)": {
-    boxShadow: storyNoteShadowDark,
+  [storyNarrowMedia]: {
+    maxWidth: "520px",
+    marginBlockStart: "32px",
   },
-  ':root[data-theme="light"] &': {
-    boxShadow: storyNoteShadow,
-  },
-  ':root[data-theme="dark"] &': {
-    boxShadow: storyNoteShadowDark,
-  },
-  [breakpointMedia.sm]: {
+  [storyTabletMedia]: {
     maxWidth: "none",
     marginBlockStart: 0,
   },
 });
 
 let readmeNoteStyle = css({
-  [breakpointMedia.sm]: {
+  gridColumn: 6,
+  gridRow: 1,
+  marginBlockStart: "-48px",
+  [storyNarrowMedia]: {
+    marginBlockStart: "32px",
+  },
+  [storyTabletMedia]: {
     gridColumn: 2,
     gridRow: 1,
-  },
-  [breakpointMedia.lg]: {
-    gridColumn: 6,
-    marginBlockStart: "-48px",
+    marginBlockStart: 0,
   },
 });
 
 let workshopNoteStyle = css({
-  [breakpointMedia.sm]: {
+  gridColumn: 2,
+  gridRow: 2,
+  marginBlockStart: "-48px",
+  [storyNarrowMedia]: {
+    marginBlockStart: "32px",
+  },
+  [storyTabletMedia]: {
     gridColumn: 1,
     gridRow: 2,
+    marginBlockStart: 0,
   },
-  [breakpointMedia.lg]: {
-    gridColumn: 2,
-    marginBlockStart: "-48px",
-  },
-});
-
-let storyNoteTitleStyle = css({
-  minWidth: 0,
-  margin: 0,
-  overflow: "hidden",
-  color: jamTheme.ink,
-  fontFamily: theme.fontFamily.mono,
-  fontSize: "0.625rem",
-  fontWeight: theme.fontWeight.normal,
-  letterSpacing: "0.02em",
-  lineHeight: 1.2,
-  textOverflow: "ellipsis",
-  textTransform: "uppercase",
-  whiteSpace: "nowrap",
-});
-
-let storyNoteBodyStyle = css({
-  minWidth: 0,
-  borderRadius: "0.25rem",
-  background: "light-dark(rgb(0 0 0 / 0.05), rgb(0 0 0 / 0.15))",
-  padding: "1rem",
 });
 
 let storyCopyStyle = css({
   margin: 0,
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
-  fontSize: "12px",
+  fontSize: "16px",
   fontWeight: theme.fontWeight.normal,
   letterSpacing: "-0.01em",
   lineHeight: "1.6em",
   textAlign: "left",
   textTransform: "none",
-  [breakpointMedia.lg]: {
-    fontSize: "16px",
+  "@supports (text-box-trim: trim-both)": {
+    textBoxTrim: "trim-both",
+    textBoxEdge: "cap alphabetic",
   },
 });

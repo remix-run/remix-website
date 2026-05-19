@@ -30,6 +30,13 @@ export const assetPaths = {
   jam2026: {
     horizontalLockup: "/jam/2026/remix-jam-2026-horizontal-lockup.svg",
     shopifyGlyph: "/jam/2026/landing-assets/shopify-glyph.svg",
+    photos: {
+      michael: "/jam/2026/photos/remix-jam-2025-michael.avif",
+      racingShirt: "/jam/2026/photos/remix-racing-shirt.avif",
+      ryan: "/jam/2026/photos/remix-jam-2025-ryan.avif",
+      shoppy: "/jam/2026/photos/remix-jam-2025-shoppy.avif",
+      torontoCnTower: "/jam/2026/photos/toronto-cn-tower.avif",
+    },
     favicons: {
       appleTouchIcon: "/jam/2026/favicons/apple-touch-icon.png",
       favicon16: "/jam/2026/favicons/favicon-16x16.png",
