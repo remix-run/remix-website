@@ -7,6 +7,7 @@ import { Footer } from "../../../../ui/footer.tsx";
 import { jam2026HeadTags } from "../head.ts";
 import { jamTheme, jamThemeStyle } from "../theme.ts";
 import { Jam2026Faq } from "./faq.tsx";
+import { Jam2026FloatingTicketCta } from "./floating-ticket-cta.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 
 export function Jam2026HomePage() {
@@ -21,6 +22,7 @@ export function Jam2026HomePage() {
         <main id="main-content" tabIndex={-1} mix={mainStyle}>
           <Jam2026Hero />
           <Jam2026PhotoMoments />
+          <Jam2026FloatingTicketCta />
           <Jam2026Faq />
         </main>
         <Footer mix={footerStyle} />

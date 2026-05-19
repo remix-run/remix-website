@@ -47,6 +47,13 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain('href="/icons.svg#moon"');
     expect(html).toContain('href="#faq"');
     expect(html).toContain('href="/jam/2026/tickets"');
+    expect(html).toContain(">Get Remix Jam 2026 tickets</span>");
+    expect(html).toContain(
+      'src="/jam/2026/landing-assets/floating-ticket-cta.svg"',
+    );
+    expect(html).toContain(
+      'src="/jam/2026/landing-assets/remix-keyring-workshop.webp"',
+    );
     expect(html).toContain("Will there be a CFP?");
     expect(html).toContain("Where should I stay?");
     expect(html).toContain("What airport should I fly into?");

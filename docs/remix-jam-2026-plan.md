@@ -1,8 +1,14 @@
 # Remix Jam 2026 Remaining Task Plan
 
-This plan tracks remaining work only. The app already has gated `/jam/2026` and `/jam/2026/tickets` routes, route/controller wiring, a shared Jam 2026 header, countdown, theme toggle, interactive photo moments, FAQ accordion, shared footer, global font loading, route tests, and core assets under `public/jam/2026`.
+This plan tracks remaining work only. Delete completed or stale items instead of expanding this
+file. When asked to clean up this doc, that means delete things.
 
 The prototype/POC lives in the sibling repo at `../remix-jam-2026`.
+
+Important implementation note: prototype styles do not always map one-to-one into this repo.
+The production site has global CSS/reset rules that can change rendered sizing and positioning.
+For example, `img { max-width: 100%; }` will cap oversized decorative images inside a smaller
+parent unless the route-local style explicitly opts out with `max-width: none`.
 
 ## Build Rules
 
@@ -23,15 +29,6 @@ Translate the prototype cloud/racing energy into a production-safe background la
 - Provide a static fallback when WebGL is unavailable.
 - Reduce or disable motion for `prefers-reduced-motion`.
 - Keep FPS and tuning controls out of production UI.
-
-### Add Floating Ticket CTA
-
-Implement the prototype floating ticket affordance as a real link.
-
-- Link to `routes.jam.y2026.tickets.index.href()`.
-- Use the keyring/ticket art from `public/jam/2026/landing-assets`.
-- Make focus visible and target size comfortable.
-- Use static hover/focus behavior under reduced motion.
 
 ### Harden FAQ
 
@@ -78,6 +75,7 @@ Replace the placeholder tickets page with the prototype ticket options translate
 - GET should render selected/default ticket, quantity, subtotal, availability, and policies without JavaScript.
 - Hydration can enhance option switching, quantity controls, pending state, and visual polish.
 - Skip the old 3D ticket scene unless final design explicitly needs it.
+- Cover available, unavailable, sold-out, invalid POST, and successful checkout redirect states.
 
 ### Add In-Page Ticket Enhancement
 
@@ -98,16 +96,6 @@ Implement the real POST action for `/jam/2026/tickets`.
 - Return clear errors for invalid input, unavailable storefront, sold out/unpublished products, quantity limits, and cart creation failures.
 - Use `no-store` for POST responses and checkout-error states.
 
-### Ticket Tests
-
-Add focused coverage before enabling checkout.
-
-- GET renders available, unavailable, and sold-out states.
-- POST rejects invalid submissions with `400`.
-- POST rejects mismatched product/variant ids.
-- POST redirects on successful cart creation.
-- Hydrated controls preserve form values and pending state.
-
 ### Social Metadata And Share Assets
 
 Finish the document head for 2026 pages.
@@ -123,8 +111,8 @@ Finish the document head for 2026 pages.
 Run a focused browser pass once landing and ticket UI are in place.
 
 - Desktop and mobile screenshots for hero, story, FAQ, ticket page, and footer.
-- Keyboard pass for header, theme toggle, FAQ, floating CTA, ticket controls, and modal/dialog behavior if used.
-- Reduced-motion pass for countdown, cloud layer, CTA, FAQ, and ticket animations.
+- Keyboard pass for header, theme toggle, FAQ, ticket controls, and modal/dialog behavior if used.
+- Reduced-motion pass for countdown, cloud layer, FAQ, and ticket animations.
 - Check color contrast and text overlap in light and dark themes.
 
 ### Production Launch Switch
