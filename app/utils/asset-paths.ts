@@ -29,6 +29,7 @@ export const assetPaths = {
   },
   jam2026: {
     horizontalLockup: "/jam/2026/remix-jam-2026-horizontal-lockup.svg",
+    shareImage: "/jam/2026/remix-jam-2026-share.jpg",
     floatingTicketCta: "/jam/2026/landing-assets/floating-ticket-cta.svg",
     workshopKeyring: "/jam/2026/landing-assets/remix-keyring-workshop.webp",
     shopifyGlyph: "/jam/2026/landing-assets/shopify-glyph.svg",

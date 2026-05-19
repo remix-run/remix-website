@@ -4,18 +4,21 @@ import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
 import { Jam2026PhotoMoments } from "../../../../assets/jam/2026/photo-moments.tsx";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
-import { jam2026HeadTags } from "../head.ts";
+import { getJam2026HeadTags } from "../head.ts";
 import { jamTheme, jamThemeStyle } from "../theme.ts";
 import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026FloatingTicketCta } from "./floating-ticket-cta.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 
 export function Jam2026HomePage() {
+  let title = "Remix Jam 2026";
+  let description = "Remix Jam returns to Toronto on October 1-2, 2026.";
+
   return () => (
     <Document
-      title="Remix Jam 2026"
-      description="Remix Jam returns to Toronto on October 1-2, 2026."
-      headTags={jam2026HeadTags}
+      title={title}
+      description={description}
+      headTags={getJam2026HeadTags({ title, description })}
     >
       <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
         <Jam2026Header />

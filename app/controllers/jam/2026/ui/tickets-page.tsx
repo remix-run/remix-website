@@ -3,15 +3,18 @@ import { theme } from "remix/ui/theme";
 import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
-import { jam2026HeadTags } from "../head.ts";
+import { getJam2026HeadTags } from "../head.ts";
 import { jamTheme, jamThemeStyle } from "../theme.ts";
 
 export function Jam2026TicketsPage() {
+  let title = "Remix Jam 2026 Tickets";
+  let description = "Remix Jam 2026 tickets are not available yet.";
+
   return () => (
     <Document
-      title="Remix Jam 2026 Tickets"
-      description="Remix Jam 2026 tickets are not available yet."
-      headTags={jam2026HeadTags}
+      title={title}
+      description={description}
+      headTags={getJam2026HeadTags({ title, description })}
     >
       <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
         <Jam2026Header />

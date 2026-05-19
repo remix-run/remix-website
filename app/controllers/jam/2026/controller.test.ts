@@ -21,6 +21,12 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(html).toContain("<title>Remix Jam 2026</title>");
     expect(html).toContain(
+      'property="og:image" content="http://localhost:3000/jam/2026/remix-jam-2026-share.jpg"',
+    );
+    expect(html).toContain(
+      'name="twitter:image" content="http://localhost:3000/jam/2026/remix-jam-2026-share.jpg"',
+    );
+    expect(html).toContain(
       'rel="apple-touch-icon" href="/jam/2026/favicons/apple-touch-icon.png"',
     );
     expect(html).toContain(
@@ -78,6 +84,9 @@ describe("Remix Jam 2026 routes", () => {
     let html = await response.text();
 
     expect(html).toContain("<title>Remix Jam 2026 Tickets</title>");
+    expect(html).toContain(
+      'property="og:image" content="http://localhost:3000/jam/2026/remix-jam-2026-share.jpg"',
+    );
     expect(html).toContain(
       'rel="icon" href="/jam/2026/favicons/favicon.ico" sizes="any"',
     );
