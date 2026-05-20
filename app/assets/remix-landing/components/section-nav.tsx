@@ -183,7 +183,6 @@ export function SectionNav(
     onJump: (index: number) => void;
   }>,
 ) {
-  let { props } = handle;
   let scrollFrame = 0;
   let activeIndexRef: { current: number } = { current: 0 };
   let morphValueRef: { current: number } = { current: 0 };
@@ -204,8 +203,8 @@ export function SectionNav(
   });
 
   return () => {
-    activeIndexRef = props.activeIndexRef;
-    morphValueRef = props.morphValueRef;
+    activeIndexRef = handle.props.activeIndexRef;
+    morphValueRef = handle.props.morphValueRef;
     const count = SECTIONS.length;
     const maxMorph = count - 1;
     const step = ITEM_HEIGHT + ITEM_GAP;
@@ -252,8 +251,8 @@ export function SectionNav(
                       on("click", (e) => {
                         e.preventDefault();
                         void replaceHash(section.anchor).then(
-                          () => props.onJump(i),
-                          () => props.onJump(i),
+                          () => handle.props.onJump(i),
+                          () => handle.props.onJump(i),
                         );
                       }),
                     ]}

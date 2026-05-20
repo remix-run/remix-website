@@ -35,12 +35,12 @@ export async function jam2025FaqHandler() {
       >
         <Title className="text-center">
           <ScrambleText
-            setup={{ text: "Frequently Asked", delay: 100, color: "blue" }}
+            text="Frequently Asked"
+            delay={100}
+            color="blue"
             className="whitespace-nowrap"
           />
-          <ScrambleText
-            setup={{ text: "Questions", delay: 300, color: "green" }}
-          />
+          <ScrambleText text="Questions" delay={300} color="green" />
         </Title>
 
         <div class="relative z-10 text-justify text-base text-white md:text-lg">
@@ -227,9 +227,8 @@ export async function jam2025FaqHandler() {
 }
 
 function FAQSection(handle: Handle<{ question: string; answer: RemixNode }>) {
-  let { props } = handle;
   return () => {
-    let id = slugify(props.question);
+    let id = slugify(handle.props.question);
     return (
       <section
         id={id}
@@ -237,13 +236,13 @@ function FAQSection(handle: Handle<{ question: string; answer: RemixNode }>) {
       >
         <Subheader>
           <a href={`#${id}`} class="hover:underline">
-            {props.question}
+            {handle.props.question}
           </a>
         </Subheader>
-        {typeof props.answer === "string" ? (
-          <Paragraph>{props.answer}</Paragraph>
+        {typeof handle.props.answer === "string" ? (
+          <Paragraph>{handle.props.answer}</Paragraph>
         ) : (
-          props.answer
+          handle.props.answer
         )}
       </section>
     );

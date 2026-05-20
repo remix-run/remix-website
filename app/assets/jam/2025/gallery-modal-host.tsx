@@ -27,7 +27,7 @@ export type JamGalleryModalNav = {
 };
 
 type JamGalleryModalHostProps = {
-  setup: { photoCount: number };
+  photoCount: number;
   class?: string;
   children: RemixNode;
   nav: JamGalleryModalNav;
@@ -37,20 +37,22 @@ type JamGalleryModalHostProps = {
 export let JamGalleryModalHost = clientEntry(
   import.meta.url,
   function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
-    let { props } = handle;
-    let galleryPhotoCount = props.setup.photoCount;
+    let galleryPhotoCount = handle.props.photoCount;
     let modalNavigation = createJamGalleryModalNavigation();
     return () => {
-      galleryPhotoCount = props.setup.photoCount;
+      galleryPhotoCount = handle.props.photoCount;
       return (
         <div
           role="dialog"
           aria-modal="true"
           tabindex={-1}
-          class={props.class}
-          mix={[focusTrap(), modalNavigation(props.nav, galleryPhotoCount)]}
+          class={handle.props.class}
+          mix={[
+            focusTrap(),
+            modalNavigation(handle.props.nav, galleryPhotoCount),
+          ]}
         >
-          {props.children}
+          {handle.props.children}
         </div>
       );
     };

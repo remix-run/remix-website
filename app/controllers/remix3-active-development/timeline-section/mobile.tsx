@@ -185,16 +185,15 @@ function TrackSegments() {
 function LaneHeader(
   handle: Handle<{ children: RemixNode; style?: StyleProps }>,
 ) {
-  let { props } = handle;
   return () => (
     <div
       class={cx(
         "text-rmx-neutral-100",
         "flex items-center justify-center whitespace-nowrap text-xs font-extrabold uppercase leading-[1.6] tracking-[0.6px]",
       )}
-      style={props.style}
+      style={handle.props.style}
     >
-      {props.children}
+      {handle.props.children}
     </div>
   );
 }
@@ -202,9 +201,8 @@ function LaneHeader(
 function YearLabel(
   handle: Handle<{ children: RemixNode; style?: StyleProps }>,
 ) {
-  let { props } = handle;
   return () => {
-    let year = Number(props.children);
+    let year = Number(handle.props.children);
     let opacity = 1;
     if (year === 2014) opacity = 0.25;
     else if (year === 2015) opacity = 0.5;
@@ -215,12 +213,12 @@ function YearLabel(
         class="rmx-caption text-rmx-tertiary flex items-center justify-end px-6"
         style={{
           opacity,
-          ...(typeof props.style === "object" && props.style
-            ? props.style
+          ...(typeof handle.props.style === "object" && handle.props.style
+            ? handle.props.style
             : {}),
         }}
       >
-        {props.children}
+        {handle.props.children}
       </div>
     );
   };
@@ -229,9 +227,8 @@ function YearLabel(
 function LaneCell(
   handle: Handle<{ lane: string; year: number; style?: StyleProps }>,
 ) {
-  let { props } = handle;
   return () => {
-    let config = LANE_CELL_CONFIG[props.lane]?.[props.year];
+    let config = LANE_CELL_CONFIG[handle.props.lane]?.[handle.props.year];
     let label = typeof config === "string" ? config : config?.label;
     let configStyle = typeof config === "object" ? config.style : undefined;
 
@@ -243,8 +240,8 @@ function LaneCell(
             "self-center justify-self-center font-bold",
           )}
           style={{
-            ...(typeof props.style === "object" && props.style
-              ? props.style
+            ...(typeof handle.props.style === "object" && handle.props.style
+              ? handle.props.style
               : {}),
             ...(typeof configStyle === "object" && configStyle
               ? configStyle
@@ -257,7 +254,7 @@ function LaneCell(
     }
 
     return (
-      <div class="self-center justify-self-center" style={props.style}>
+      <div class="self-center justify-self-center" style={handle.props.style}>
         <div
           class="size-[9px] rounded-full border border-[--rmx-neutral-100] opacity-40"
           style={configStyle}

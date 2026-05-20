@@ -23,7 +23,6 @@ export function LabelOverlay(
     opacityRef: { current: number };
   }>,
 ) {
-  let { props } = handle;
   let containerEl: HTMLDivElement | undefined;
   let svgEl: SVGSVGElement | undefined;
   let frameId = 0;
@@ -131,7 +130,7 @@ export function LabelOverlay(
           containerEl = node;
           if (!frameId) {
             frameId = requestAnimationFrame(() =>
-              tick(props.labelsRef, props.opacityRef),
+              tick(handle.props.labelsRef, handle.props.opacityRef),
             );
           }
         }),

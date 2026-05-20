@@ -26,7 +26,6 @@ export let JamLineupAccordionItem = clientEntry(
   function JamLineupAccordionItem(
     handle: Handle<{ item: LineupItem; gridColsClassName: string }>,
   ) {
-    let { props } = handle;
     let state: AccordionState = { status: "closed" };
     let panel: HTMLDivElement | null = null;
     let panelInner: HTMLDivElement | null = null;
@@ -138,12 +137,12 @@ export let JamLineupAccordionItem = clientEntry(
             mix={[on<HTMLElement>("click", onSummaryClick)]}
             class={cx(
               "_no-triangle grid cursor-pointer select-none p-4 text-sm font-bold text-white outline-none transition-colors duration-300 hover:bg-gray-900 focus-visible:bg-gray-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-brand sm:p-6 sm:text-base md:p-8 md:text-lg lg:p-9 lg:text-2xl",
-              props.gridColsClassName,
+              handle.props.gridColsClassName,
             )}
           >
-            <span>{props.item.time}</span>
-            <span>{props.item.title}</span>
-            <span>{props.item.speaker}</span>
+            <span>{handle.props.item.time}</span>
+            <span>{handle.props.item.title}</span>
+            <span>{handle.props.item.speaker}</span>
             <div class="flex justify-end">
               <svg
                 class={cx(
@@ -186,24 +185,24 @@ export let JamLineupAccordionItem = clientEntry(
                 <div
                   class={cx(
                     "p-4 sm:p-6 md:p-8 lg:p-9",
-                    props.gridColsClassName,
+                    handle.props.gridColsClassName,
                   )}
                 >
                   <div
                     class="col-span-full flex flex-col gap-4 text-sm text-white sm:col-span-1 sm:col-start-2 sm:gap-6 sm:text-base md:text-lg lg:text-xl [&_a:hover]:underline [&_a]:text-blue-400"
-                    innerHTML={props.item.description}
+                    innerHTML={handle.props.item.description}
                   />
-                  {props.item.imgSrc ? (
+                  {handle.props.item.imgSrc ? (
                     <div class="col-span-full flex flex-col gap-4 sm:col-span-1 sm:col-start-3">
                       <img
-                        src={props.item.imgSrc}
-                        alt={props.item.speaker}
+                        src={handle.props.item.imgSrc}
+                        alt={handle.props.item.speaker}
                         class="aspect-square w-full rounded-2xl object-cover sm:max-w-none"
                       />
-                      {props.item.bio ? (
+                      {handle.props.item.bio ? (
                         <div
                           class="flex flex-col gap-4 text-xs text-white sm:gap-6 sm:text-sm md:text-base lg:font-mono [&_a:hover]:underline [&_a]:text-blue-400"
-                          innerHTML={props.item.bio}
+                          innerHTML={handle.props.item.bio}
                         />
                       ) : null}
                     </div>

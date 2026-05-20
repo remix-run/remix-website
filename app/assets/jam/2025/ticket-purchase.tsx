@@ -3,7 +3,8 @@ import { assetPaths } from "../../../utils/asset-paths.ts";
 import { JamButton } from "../../../controllers/jam/2025/shared.tsx";
 
 type JamTicketPurchaseProps = {
-  setup: { initialQuantity?: number; maxQuantity: number };
+  initialQuantity?: number;
+  maxQuantity: number;
   price: string;
   productId: string;
   isSoldOut: boolean;
@@ -14,35 +15,37 @@ type JamTicketPurchaseProps = {
 export let JamTicketPurchase = clientEntry(
   import.meta.url,
   function JamTicketPurchase(handle: Handle<JamTicketPurchaseProps>) {
-    let { props } = handle;
-    let setup = props.setup;
-    let initialQuantity = setup?.initialQuantity ?? 1;
-    let maxQuantity = setup.maxQuantity;
+    let initialQuantity = handle.props.initialQuantity ?? 1;
+    let maxQuantity = handle.props.maxQuantity;
     let quantity = normalizeQuantity(initialQuantity, maxQuantity);
     let submitting = false;
 
     return () => {
-      let decrementDisabled = props.isSoldOut || quantity <= 1;
-      let incrementDisabled = props.isSoldOut || quantity >= maxQuantity;
+      let decrementDisabled = handle.props.isSoldOut || quantity <= 1;
+      let incrementDisabled = handle.props.isSoldOut || quantity >= maxQuantity;
 
       return (
-        <div class={props.class}>
+        <div class={handle.props.class}>
           <form
             method="post"
             class="flex w-full flex-col items-center gap-3 text-base md:flex-row md:text-xl"
             mix={[
               on("submit", () => {
-                if (props.isSoldOut || submitting) return;
+                if (handle.props.isSoldOut || submitting) return;
                 submitting = true;
                 handle.update();
               }),
             ]}
           >
-            <input type="hidden" name="productId" value={props.productId} />
+            <input
+              type="hidden"
+              name="productId"
+              value={handle.props.productId}
+            />
             <input type="hidden" name="quantity" value={String(quantity)} />
             <div class="flex w-full grow items-center justify-between rounded-[48px] px-4 py-2.5 ring-2 ring-inset ring-white/30 md:px-6 md:py-4 md:ring-4">
               <span class="font-mono font-normal text-white">
-                $ {props.price}
+                $ {handle.props.price}
               </span>
               <div class="flex items-center gap-4">
                 <button
@@ -89,20 +92,20 @@ export let JamTicketPurchase = clientEntry(
             </div>
             <JamButton
               type="submit"
-              disabled={props.isSoldOut || submitting}
+              disabled={handle.props.isSoldOut || submitting}
               active={submitting}
               className="w-full md:w-auto"
             >
-              {props.isSoldOut
+              {handle.props.isSoldOut
                 ? "Sold Out"
                 : submitting
                   ? "Processing..."
                   : "Checkout"}
             </JamButton>
           </form>
-          {props.error ? (
+          {handle.props.error ? (
             <p class="mt-1 text-sm font-semibold text-red-brand md:text-base">
-              {props.error}
+              {handle.props.error}
             </p>
           ) : null}
         </div>

@@ -150,7 +150,6 @@ export function ParticleCanvas(
     onError: (error: unknown) => void;
   }>,
 ) {
-  let { props } = handle;
   let containerEl: HTMLDivElement | undefined;
   let canvasEl: HTMLCanvasElement | undefined;
   let engine: Engine | null = null;
@@ -722,7 +721,7 @@ export function ParticleCanvas(
   }
 
   return () => {
-    currentProps = props;
+    currentProps = handle.props;
 
     if (engine) {
       syncModelTextures();

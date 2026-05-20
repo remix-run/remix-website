@@ -19,7 +19,9 @@ export async function jam2025CocHandler() {
       >
         <Title className="text-center">
           <ScrambleText
-            setup={{ text: "Code of Conduct", delay: 100, color: "blue" }}
+            text="Code of Conduct"
+            delay={100}
+            color="blue"
             className="whitespace-nowrap"
           />
         </Title>

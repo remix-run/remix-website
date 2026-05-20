@@ -31,12 +31,8 @@ export async function jam2025LineupHandler() {
         tabIndex={-1}
       >
         <Title className="text-center">
-          <ScrambleText
-            setup={{ text: "Schedule", delay: 100, color: "blue" }}
-          />
-          <ScrambleText
-            setup={{ text: "& Lineup", delay: 300, color: "green" }}
-          />
+          <ScrambleText text="Schedule" delay={100} color="blue" />
+          <ScrambleText text="& Lineup" delay={300} color="green" />
         </Title>
 
         <div class="mt-16 flex w-full flex-col gap-1 py-6 sm:mt-24 sm:px-2 sm:py-9 md:mt-24">
@@ -58,7 +54,6 @@ export async function jam2025LineupHandler() {
 }
 
 function ScheduleTable(handle: Handle<{ items: Schedule }>) {
-  let { props } = handle;
   return () => (
     <>
       <section class="z-10 w-full sm:hidden">
@@ -74,7 +69,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
             <div>Speaker</div>
           </div>
 
-          {props.items.map((item) => {
+          {handle.props.items.map((item) => {
             let key = `${item.time}-${item.title}`;
             return (
               <div key={key} class="overflow-hidden">
@@ -135,7 +130,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
             <div>Speaker</div>
             <div />
           </div>
-          {props.items.map((item) => {
+          {handle.props.items.map((item) => {
             let key = `${item.time}-${item.title}`;
             return <DesktopScheduleItem key={key} item={item} />;
           })}
@@ -146,10 +141,9 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
 }
 
 function DesktopScheduleItem(handle: Handle<{ item: Schedule[number] }>) {
-  let { props } = handle;
   return () => (
     <JamLineupAccordionItem
-      item={props.item}
+      item={handle.props.item}
       gridColsClassName={gridColsClassName}
     />
   );

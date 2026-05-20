@@ -22,10 +22,9 @@ export function renderNotFoundPage(options?: { statusText?: string }) {
 function StatusErrorDocument(
   handle: Handle<{ status: number; statusText: string }>,
 ) {
-  let { props } = handle;
   return () => (
     <Document
-      title={props.statusText}
+      title={handle.props.statusText}
       noIndex
       forceTheme="dark"
       stylesheets={[styleHrefs.app]}
@@ -39,12 +38,12 @@ function StatusErrorDocument(
         )}
       >
         <div class="text-center leading-none">
-          <h1 class="font-mono text-[25vw]">{props.status}</h1>
+          <h1 class="font-mono text-[25vw]">{handle.props.status}</h1>
           <a
             class="inline-block text-[8vw] underline"
-            href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${props.status}`}
+            href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${handle.props.status}`}
           >
-            {props.statusText}
+            {handle.props.statusText}
           </a>
         </div>
       </main>

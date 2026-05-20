@@ -21,7 +21,6 @@ type Jam2026FaqAccordionProps = {
 export let Jam2026FaqAccordion = clientEntry(
   import.meta.url,
   function Jam2026FaqAccordion(handle: Handle<Jam2026FaqAccordionProps>) {
-    let { props } = handle;
     let openFaqId: string | null = null;
 
     return () => (
@@ -36,7 +35,7 @@ export let Jam2026FaqAccordion = clientEntry(
         }}
         mix={faqListStyle}
       >
-        {props.faqs.map((faq) => (
+        {handle.props.faqs.map((faq) => (
           <AccordionItem
             key={faq.id}
             value={faq.id}

@@ -82,24 +82,23 @@ function Page(
     socialImageUrl: string;
   }>,
 ) {
-  let { props } = handle;
   return () => (
     <Document
-      title={`${props.post.title} | Remix`}
-      description={props.post.summary}
+      title={`${handle.props.post.title} | Remix`}
+      description={handle.props.post.summary}
       stylesheets={[styleHrefs.app, styleHrefs.md]}
       headTags={[
         {
           kind: "link",
           rel: "alternate",
-          href: routes.blogPost.href({ slug: props.slug, ext: "md" }),
+          href: routes.blogPost.href({ slug: handle.props.slug, ext: "md" }),
           type: "text/markdown",
         },
         ...getSocialHeadTags({
-          title: props.post.title,
-          description: props.post.summary,
-          image: props.socialImageUrl,
-          imageAlt: props.post.imageAlt,
+          title: handle.props.post.title,
+          description: handle.props.post.summary,
+          image: handle.props.socialImageUrl,
+          imageAlt: handle.props.post.imageAlt,
           twitterCreator: "@remix_run",
           twitterSite: "@remix_run",
         }),
@@ -107,7 +106,7 @@ function Page(
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <BlogPostContent post={props.post} />
+        <BlogPostContent post={handle.props.post} />
       </main>
       <Footer />
       <BlogLightbox />
@@ -118,10 +117,9 @@ function Page(
 function BlogPostContent(
   handle: Handle<{ post: Awaited<ReturnType<typeof getBlogPost>> }>,
 ) {
-  let { props } = handle;
   return () => (
     <>
-      {props.post.draft ? (
+      {handle.props.post.draft ? (
         <div class="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 px-5 py-3 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">
           🚨 This is a draft, please do not share this page until it&apos;s
           officially published 🚨
@@ -135,31 +133,32 @@ function BlogPostContent(
                 <img
                   class={cx(
                     "h-full w-full object-cover object-top md:rounded-xl",
-                    !props.post.imageDisableOverlay && "opacity-40",
+                    !handle.props.post.imageDisableOverlay && "opacity-40",
                   )}
-                  src={props.post.image}
-                  alt={props.post.imageAlt}
+                  src={handle.props.post.image}
+                  alt={handle.props.post.imageAlt}
                 />
               </div>
               <div class="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-10 lg:max-w-4xl">
                 <div class="flex-1">
                   <div class="flex flex-col gap-3">
                     <div class="rmx-page-body rmx-page-body-sm uppercase text-white">
-                      {props.post.dateDisplay}
+                      {handle.props.post.dateDisplay}
                     </div>
                     <h1
                       class={cx(
                         "rmx-page-title text-white",
-                        props.post.title.length > 50 && "rmx-page-title-sm",
+                        handle.props.post.title.length > 50 &&
+                          "rmx-page-title-sm",
                       )}
                     >
-                      {props.post.title}
+                      {handle.props.post.title}
                     </h1>
                   </div>
                   <div class="h-2" />
                 </div>
                 <div class="flex flex-col gap-1 pb-4 md:pb-10">
-                  {props.post.authors.map((author) => (
+                  {handle.props.post.authors.map((author) => (
                     <div key={author.name} class="flex items-center">
                       <div>
                         <img
@@ -184,7 +183,7 @@ function BlogPostContent(
             </div>
             <div class="h-6 sm:h-12" />
             <div class="container max-w-full lg:max-w-3xl">
-              <div class="md-prose" innerHTML={props.post.html} />
+              <div class="md-prose" innerHTML={handle.props.post.html} />
               <hr />
             </div>
           </div>

@@ -30,7 +30,6 @@ const landingContentStyles = css({
 });
 
 export function HomePage(handle: Handle<HomePageProps>) {
-  let { props } = handle;
   return () => (
     <Document
       title={HOME_TITLE}
@@ -57,11 +56,11 @@ export function HomePage(handle: Handle<HomePageProps>) {
           property: "og:description",
           content: HOME_DESCRIPTION,
         },
-        { kind: "meta", property: "og:url", content: props.pageUrl },
+        { kind: "meta", property: "og:url", content: handle.props.pageUrl },
         {
           kind: "meta",
           property: "og:image",
-          content: props.previewImage,
+          content: handle.props.previewImage,
         },
         {
           kind: "meta",
@@ -81,7 +80,7 @@ export function HomePage(handle: Handle<HomePageProps>) {
         {
           kind: "meta",
           name: "twitter:image",
-          content: props.previewImage,
+          content: handle.props.previewImage,
         },
       ]}
     >

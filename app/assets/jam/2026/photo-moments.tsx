@@ -109,7 +109,6 @@ type DragSession = {
 export let Jam2026PhotoMoments = clientEntry(
   import.meta.url,
   function Jam2026PhotoMoments(handle: Handle<Jam2026PhotoMomentsProps>) {
-    let { props } = handle;
     let runtime = {} as Record<PhotoMomentId, PhotoMomentRuntime>;
     let nextZIndex = PHOTO_MOMENTS.length;
     let drag: DragSession | null = null;
@@ -258,7 +257,7 @@ export let Jam2026PhotoMoments = clientEntry(
               <div
                 mix={photoMomentEntranceStyle}
                 style={{
-                  animationDelay: `${getPopInDelay(moment.id, props)}ms`,
+                  animationDelay: `${getPopInDelay(moment.id, handle.props)}ms`,
                 }}
               >
                 <div mix={[jam2026WindowSurfaceStyle, photoMomentSurfaceStyle]}>

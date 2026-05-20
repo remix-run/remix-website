@@ -47,16 +47,15 @@ export function Header() {
 function HeaderLink(
   handle: Handle<{ to: string; document?: boolean; children: string }>,
 ) {
-  let { props } = handle;
   return () => (
     <a
-      href={props.to}
-      rmx-document={props.document ? "" : undefined}
+      href={handle.props.to}
+      rmx-document={handle.props.document ? "" : undefined}
       class={cx(
         "text-rmx-primary text-sm font-semibold leading-4 tracking-[0.01em] opacity-80 hover:opacity-100",
       )}
     >
-      {props.children}
+      {handle.props.children}
     </a>
   );
 }

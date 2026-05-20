@@ -17,6 +17,5 @@ const codeStyles = css({
 });
 
 export function CodeSnippet(handle: Handle<{ children: RemixNode }>) {
-  let { props } = handle;
-  return () => <code mix={[codeStyles]}>{props.children}</code>;
+  return () => <code mix={[codeStyles]}>{handle.props.children}</code>;
 }

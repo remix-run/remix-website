@@ -122,7 +122,6 @@ function sequenceFade(
 export function PackageLogos(
   handle: Handle<{ morphValueRef: { current: number } }>,
 ) {
-  let { props } = handle;
   let wasInSection = false;
   let sequenceStartMs: number | null = null;
   let delayTimer: ReturnType<typeof setTimeout> | null = null;
@@ -229,7 +228,7 @@ export function PackageLogos(
   });
 
   return () => {
-    morphValueRef = props.morphValueRef;
+    morphValueRef = handle.props.morphValueRef;
     if (!panelElement || !panelElement.isConnected) locatePanel();
 
     const morphValue = morphValueRef.current;

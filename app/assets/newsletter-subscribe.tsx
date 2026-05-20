@@ -69,7 +69,6 @@ export let NewsletterSubscribeForm = clientEntry(
       buttonClass?: string;
     }>,
   ) {
-    let { props } = handle;
     let state: SubscribeState = { status: "idle" };
 
     return () => (
@@ -77,7 +76,7 @@ export let NewsletterSubscribeForm = clientEntry(
         <form
           action={routes.actions.newsletter.href()}
           method="post"
-          class={cx(props.class, {
+          class={cx(handle.props.class, {
             "opacity-50": state.status === "submitting",
           })}
           mix={[
@@ -118,12 +117,12 @@ export let NewsletterSubscribeForm = clientEntry(
             name="email"
             autoComplete="email"
             placeholder="name@example.com"
-            class={props.inputClass}
+            class={handle.props.inputClass}
             aria-invalid={state.status === "error" ? true : undefined}
           />
           <button
             type="submit"
-            class={props.buttonClass}
+            class={handle.props.buttonClass}
             disabled={state.status === "submitting"}
           >
             {state.status === "submitting" ? "Subscribing..." : "Subscribe"}

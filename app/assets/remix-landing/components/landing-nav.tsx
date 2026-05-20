@@ -194,7 +194,6 @@ export function LandingNav(
     shouldBlockBlogShortcut: () => boolean;
   }>,
 ) {
-  let { props } = handle;
   let onJump: ((index: number) => void) | null = null;
   let totalSections = 1;
   let menuOpen = false;
@@ -263,11 +262,11 @@ export function LandingNav(
   });
 
   return () => {
-    activeIndexRef = props.activeIndexRef;
-    totalSections = props.totalSections;
-    onJump = props.onJump;
-    scrollYRef = props.scrollYRef;
-    shouldBlockBlogShortcut = props.shouldBlockBlogShortcut;
+    activeIndexRef = handle.props.activeIndexRef;
+    totalSections = handle.props.totalSections;
+    onJump = handle.props.onJump;
+    scrollYRef = handle.props.scrollYRef;
+    shouldBlockBlogShortcut = handle.props.shouldBlockBlogShortcut;
 
     const hintOpacity = clamp01(1 - scrollYRef.current / 80);
 

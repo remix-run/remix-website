@@ -24,7 +24,6 @@ function Page(
     posts: Awaited<ReturnType<typeof getBlogPostListings>>;
   }>,
 ) {
-  let { props } = handle;
   return () => (
     <Document
       title="Remix Blog"
@@ -38,7 +37,7 @@ function Page(
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <BlogPageContent posts={props.posts} />
+        <BlogPageContent posts={handle.props.posts} />
       </main>
       <Footer />
     </Document>
@@ -50,10 +49,9 @@ function BlogPageContent(
     posts: Awaited<ReturnType<typeof getBlogPostListings>>;
   }>,
 ) {
-  let { props } = handle;
   return () => {
-    let [latestPost, ...posts] = props.posts;
-    let featuredPosts = props.posts.filter((post) => post.featured);
+    let [latestPost, ...posts] = handle.props.posts;
+    let featuredPosts = handle.props.posts.filter((post) => post.featured);
 
     return (
       <div class="rmx-page-body mt-8 flex flex-1 flex-col px-12">

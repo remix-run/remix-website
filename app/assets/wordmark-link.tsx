@@ -14,15 +14,18 @@ export let WordmarkLink = clientEntry(
       class?: string;
     }>,
   ) {
-    let { props } = handle;
     return () => (
       <a
-        href={props.href}
+        href={handle.props.href}
         aria-label="Remix"
-        class={cx("inline-flex items-center", props.class)}
-        mix={[brandContextMenu(props.brandHref)]}
+        class={cx("inline-flex items-center", handle.props.class)}
+        mix={[brandContextMenu(handle.props.brandHref)]}
       >
-        <Wordmark width={props.width} height={props.height} aria-hidden />
+        <Wordmark
+          width={handle.props.width}
+          height={handle.props.height}
+          aria-hidden
+        />
 
         <span class="sr-only">Remix</span>
       </a>

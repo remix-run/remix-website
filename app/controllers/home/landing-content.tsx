@@ -31,7 +31,6 @@ import * as btn from 'remix/ui/button'
 
 
 function CopyToClipboard(handle: Handle<{ url: string }>) {
-  let { props } = handle;
   let state: "idle" | "copied" | "error" = "idle";
 
   return () => {
@@ -50,7 +49,7 @@ function CopyToClipboard(handle: Handle<{ url: string }>) {
           btn.secondaryStyle,
           on("click", async (_, signal) => {
             try {
-              await navigator.clipboard.writeText(props.url);
+              await navigator.clipboard.writeText(handle.props.url);
               if (signal.aborted) return;
             } catch (error) {
               state = "error";

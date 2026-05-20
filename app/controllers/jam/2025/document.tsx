@@ -15,27 +15,26 @@ type JamPageProps = {
 };
 
 export function JamDocument(handle: Handle<JamPageProps>) {
-  let { props } = handle;
   return () => (
     <Document
-      title={props.title}
-      description={props.description}
+      title={handle.props.title}
+      description={handle.props.description}
       forceTheme="dark"
       stylesheets={[styleHrefs.app, styleHrefs.jam2025]}
       headTags={[
         ...getSocialHeadTags({
-          title: props.title,
-          description: props.description,
-          image: props.previewImage,
+          title: handle.props.title,
+          description: handle.props.description,
+          image: handle.props.previewImage,
         }),
       ]}
     >
       <JamPageScaffold
-        activePath={props.activePath}
-        hideBackground={props.hideBackground ?? false}
-        showSeats={props.showSeats ?? false}
+        activePath={handle.props.activePath}
+        hideBackground={handle.props.hideBackground ?? false}
+        showSeats={handle.props.showSeats ?? false}
       >
-        {props.children}
+        {handle.props.children}
       </JamPageScaffold>
     </Document>
   );

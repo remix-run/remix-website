@@ -6,20 +6,19 @@ type WordmarkProps = Props<"svg"> & {
 };
 
 export function Wordmark(handle: Handle<WordmarkProps>) {
-  let { props } = handle;
   return () => (
     <svg
-      width={props.width}
-      height={props.height ?? 24}
+      width={handle.props.width}
+      height={handle.props.height ?? 24}
       viewBox="0 0 440 43"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      role={props.role}
-      class={props.class}
-      style={props.style}
-      mix={props.mix}
-      aria-hidden={props["aria-hidden"]}
-      aria-label={props["aria-label"]}
+      role={handle.props.role}
+      class={handle.props.class}
+      style={handle.props.style}
+      mix={handle.props.mix}
+      aria-hidden={handle.props["aria-hidden"]}
+      aria-label={handle.props["aria-label"]}
     >
       <path
         d="M81.5098 0.0492554L81.5088 0.0502319V0.0512085C92.8976 0.0512085 100.766 5.13219 99.084 11.4008L97.9443 15.6459C96.2619 21.9146 85.6671 26.9964 74.2783 26.9965H73.1123L97.0352 42.5922H58.627L39.2881 27.7514C38.5139 27.2578 37.6147 26.9955 36.6963 26.9955H4.36816L7.41406 15.644H64.0391C66.1678 15.644 68.1501 14.6941 68.4648 13.5219H68.4658C68.7805 12.3497 67.3085 11.3989 65.1787 11.3989H8.55371L11.5996 0.0492554H81.5098ZM31.2402 30.9135C32.313 30.9136 33.0943 31.9304 32.8164 32.9653L30.2334 42.5912H0.183594L3.31738 30.9135H31.2402Z"

@@ -38,10 +38,9 @@ function Page() {
 }
 
 function AssetHeader(handle: Handle<{ children: RemixNode }>) {
-  let { props } = handle;
   return () => (
     <h2 class="rmx-page-title rmx-page-title-sm dark:text-gray-200">
-      {props.children}
+      {handle.props.children}
     </h2>
   );
 }
@@ -129,10 +128,9 @@ let wordmarkAssets = [
 ] satisfies BrandAsset[];
 
 function AssetGrid(handle: Handle<{ assets: readonly BrandAsset[] }>) {
-  let { props } = handle;
   return () => (
     <div class="not-prose grid grid-cols-1 gap-4 gap-x-6 sm:grid-cols-2">
-      {props.assets.map((asset) => {
+      {handle.props.assets.map((asset) => {
         let { bg, border } = previewThemes[asset.previewTheme];
         let primaryFormat = asset.formats[0];
 

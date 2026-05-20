@@ -47,7 +47,6 @@ export function PresetGlow(
     brandGradientMode: boolean;
   }>,
 ) {
-  let { props } = handle;
   let glowEl: HTMLDivElement | undefined;
   let frameId = 0;
   let lastBackground = "";
@@ -84,11 +83,11 @@ export function PresetGlow(
   });
 
   return () => {
-    morphValueRef = props.morphValueRef;
+    morphValueRef = handle.props.morphValueRef;
     // Force an immediate re-evaluation next frame when brand mode flips so
     // we don't wait on a morphValue change to pick it up.
-    if (brandGradientMode !== props.brandGradientMode) {
-      brandGradientMode = props.brandGradientMode;
+    if (brandGradientMode !== handle.props.brandGradientMode) {
+      brandGradientMode = handle.props.brandGradientMode;
       lastBackground = "";
     }
 
