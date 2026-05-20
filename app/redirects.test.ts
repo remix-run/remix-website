@@ -1,6 +1,6 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
-import { createRouter } from "remix/fetch-router";
+import { createRouter } from "remix/router";
 import {
   createRedirectRoutes,
   loadRedirectsFromFile,

@@ -1,4 +1,4 @@
-import { form, get, post, route } from "remix/fetch-router/routes";
+import { form, get, post, route } from "remix/routes";
 
 export let showJam2026 =
   typeof process === "undefined" || process.env?.NODE_ENV !== "production";
@@ -27,7 +27,7 @@ export let routes = route({
         download: get("download"),
       }),
       lineup: get("lineup"),
-      ticket: get("ticket"),
+      ticket: form("ticket"),
     }),
     y2026: route("2026", {
       index: get("/"),

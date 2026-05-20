@@ -1,4 +1,4 @@
-import { getContext } from "remix/async-context-middleware";
+import { getContext } from "remix/middleware/async-context";
 
 export function getRequestContext() {
   let context = getContext();

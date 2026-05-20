@@ -145,7 +145,7 @@ function Navbar(handle: Handle<{ className?: string; activePath: string }>) {
       </div>
       <a
         class={cx(jamButtonClassName, "hidden bg-white text-black lg:flex")}
-        href={routes.jam.y2025.ticket.href()}
+        href={routes.jam.y2025.ticket.index.href()}
       >
         <TicketLogo class="size-6 fill-current md:size-8 lg:size-6 xl:size-8" />
         <span>Ticket</span>
@@ -182,8 +182,8 @@ function Navbar(handle: Handle<{ className?: string; activePath: string }>) {
           FAQ
         </MobileNavLink>
         <MobileNavLink
-          href={routes.jam.y2025.ticket.href()}
-          active={props.activePath === routes.jam.y2025.ticket.href()}
+          href={routes.jam.y2025.ticket.index.href()}
+          active={props.activePath === routes.jam.y2025.ticket.index.href()}
         >
           Ticket
         </MobileNavLink>
