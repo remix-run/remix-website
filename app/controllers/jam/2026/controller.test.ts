@@ -4,10 +4,7 @@ import { expect } from "remix/assert";
 import { routes } from "../../../routes.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
-import {
-  jam2026Controller,
-  jam2026TicketsController,
-} from "../controller.ts";
+import { jam2026Controller, jam2026TicketsController } from "../controller.ts";
 
 describe("Remix Jam 2026 routes", () => {
   it("renders the homepage with the Jam 2026 header controls and Jam footer", async () => {
