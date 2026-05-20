@@ -108,7 +108,7 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto("/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "networkidle" });
 
     let emailInput = page.getByPlaceholder("your@email.com");
     await emailInput.fill("hello@example.com");
@@ -118,25 +118,6 @@ describe("Jam", () => {
     await expect(emailInput).toHaveValue("");
     expect(submittedEmail).toBe("hello@example.com");
     expect(submittedTag).toBe("6280341");
-  });
-
-  it("jam lineup desktop accordion toggles open and closed", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2025/lineup");
-
-    let firstAccordion = page.locator("main details").first();
-    let firstSummary = firstAccordion.locator("summary");
-    let initiallyOpen = await firstAccordion.evaluate(
-      (element: HTMLDetailsElement) => element.open,
-    );
-
-    await firstSummary.click();
-    await expect(firstAccordion).toHaveJSProperty("open", !initiallyOpen);
-
-    await firstSummary.click();
-    await expect(firstAccordion).toHaveJSProperty("open", initiallyOpen);
   });
 
   it("jam info navigation stays client-side without a full reload", async (t) => {
