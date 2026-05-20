@@ -21,34 +21,32 @@ export async function jam2025RedirectHandler() {
   return Response.redirect(location, 302);
 }
 
-export let jamController = {
+export let jam2025Controller = {
   actions: {
-    index: jam2025RedirectHandler,
-    y2025: {
-      actions: {
-        index: jam2025Handler,
-        ticket: jam2025TicketHandler,
-        lineup: jam2025LineupHandler,
-        faq: jam2025FaqHandler,
-        coc: jam2025CocHandler,
-        gallery: {
-          actions: {
-            index: jam2025GalleryHandler,
-            download: jam2025GalleryDownloadHandler,
-          },
-        },
-      },
-    },
-    y2026: {
-      actions: {
-        index: jam2026Handler,
-        tickets: {
-          actions: {
-            index: jam2026TicketsHandler,
-            action: jam2026TicketsActionHandler,
-          },
-        },
-      },
-    },
+    index: jam2025Handler,
+    ticket: jam2025TicketHandler,
+    lineup: jam2025LineupHandler,
+    faq: jam2025FaqHandler,
+    coc: jam2025CocHandler,
   },
-} satisfies Controller<typeof routes.jam>;
+} satisfies Controller<typeof routes.jam.y2025>;
+
+export let jam2025GalleryController = {
+  actions: {
+    index: jam2025GalleryHandler,
+    download: jam2025GalleryDownloadHandler,
+  },
+} satisfies Controller<typeof routes.jam.y2025.gallery>;
+
+export let jam2026Controller = {
+  actions: {
+    index: jam2026Handler,
+  },
+} satisfies Controller<typeof routes.jam.y2026>;
+
+export let jam2026TicketsController = {
+  actions: {
+    index: jam2026TicketsHandler,
+    action: jam2026TicketsActionHandler,
+  },
+} satisfies Controller<typeof routes.jam.y2026.tickets>;

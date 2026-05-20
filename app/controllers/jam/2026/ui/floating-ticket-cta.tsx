@@ -26,7 +26,6 @@ export function Jam2026FloatingTicketCta() {
         </span>
         <img
           alt=""
-          // @ts-expect-error boolean doesn't work in Remix (yet)
           draggable="false"
           height={1024}
           width={1024}

@@ -8,7 +8,7 @@ import { staticFiles } from "remix/static-middleware";
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
-import { enabledRoutes, routes } from "./routes.ts";
+import { routes, showJam2026 } from "./routes.ts";
 import { assetServer } from "./utils/assets.server.ts";
 
 import actionsController from "./controllers/actions/controller.tsx";
@@ -20,7 +20,13 @@ import { brandHandler } from "./controllers/brand.tsx";
 import { catchallHandler } from "./controllers/catchall.ts";
 import { remix3ActiveDevelopmentHandler } from "./controllers/remix3-active-development/controller.tsx";
 import { homeHandler } from "./controllers/home/controller.tsx";
-import { jamController } from "./controllers/jam/controller.ts";
+import {
+  jam2025Controller,
+  jam2025GalleryController,
+  jam2025RedirectHandler,
+  jam2026Controller,
+  jam2026TicketsController,
+} from "./controllers/jam/controller.ts";
 import { newsletterHandler } from "./controllers/newsletter.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
@@ -103,7 +109,13 @@ function createAppRouter() {
   router.map(routes.brand, brandHandler);
   router.map(routes.home, homeHandler);
   router.map(routes.newsletter, newsletterHandler);
-  router.map(enabledRoutes.jam, jamController);
+  router.map(routes.jam.index, jam2025RedirectHandler);
+  router.map(routes.jam.y2025.gallery, jam2025GalleryController);
+  router.map(routes.jam.y2025, jam2025Controller);
+  if (showJam2026) {
+    router.map(routes.jam.y2026.tickets, jam2026TicketsController);
+    router.map(routes.jam.y2026, jam2026Controller);
+  }
   router.map(routes.remix3ActiveDevelopment, remix3ActiveDevelopmentHandler);
 
   // Redirects from _redirects (must be before * catchall)

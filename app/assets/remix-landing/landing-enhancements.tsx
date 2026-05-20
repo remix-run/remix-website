@@ -61,7 +61,7 @@ function morphPlateauAcrossIndices(
 }
 
 const appStyles = css({
-  position: "relative",
+  display: "contents",
 });
 
 // The previous implementation stacked five `backdrop-filter: blur()` panes of

@@ -4,7 +4,7 @@ import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
-import type { BuildAction } from "remix/fetch-router";
+import type { Action } from "remix/fetch-router";
 import type { routes } from "../routes.ts";
 
 type ParsedOgImageQuery =
@@ -20,10 +20,9 @@ type OgNode = {
   };
 };
 
-export let blogOgImageHandler: BuildAction<
-  "GET",
-  typeof routes.blogOgImage
-> = async ({ request }) => {
+export let blogOgImageHandler: Action<typeof routes.blogOgImage> = async ({
+  request,
+}) => {
   let parsedQuery = parseOgImageQuery(request);
   if (!parsedQuery.success) {
     return Response.json({ error: parsedQuery.error }, { status: 400 });

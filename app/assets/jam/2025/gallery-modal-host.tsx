@@ -133,6 +133,23 @@ function createJamGalleryModalNavigation() {
       restoreGalleryFocus();
     };
 
+    let focusPendingKeyboardChevron = (): boolean => {
+      if (!modal) return false;
+
+      let pendingChevron = peekKeyboardGalleryChevron();
+      if (!pendingChevron) return false;
+
+      let chevron = findLinkByHref(
+        modal,
+        pendingChevron === "previous" ? previousHref : nextHref,
+      );
+      if (!chevron || !isFocusable(chevron)) return false;
+
+      chevron.focus();
+      clearKeyboardGalleryChevron();
+      return true;
+    };
+
     let tryInitialFocus = (): boolean => {
       if (!modal) return false;
       if (didInitialFocus) return true;
@@ -140,21 +157,13 @@ function createJamGalleryModalNavigation() {
       let focusableElements = getFocusableElements();
       if (focusableElements.length === 0) return false;
 
-      let active = document.activeElement;
-      if (active instanceof HTMLElement && modal.contains(active)) {
+      if (focusPendingKeyboardChevron()) {
         didInitialFocus = true;
         return true;
       }
 
-      let pendingChevron = peekKeyboardGalleryChevron();
-      if (pendingChevron) {
-        let chevron = findLinkByHref(
-          modal,
-          pendingChevron === "previous" ? previousHref : nextHref,
-        );
-        if (!chevron || !isFocusable(chevron)) return false;
-        chevron.focus();
-        clearKeyboardGalleryChevron();
+      let active = document.activeElement;
+      if (active instanceof HTMLElement && modal.contains(active)) {
         didInitialFocus = true;
         return true;
       }
@@ -266,6 +275,10 @@ function createJamGalleryModalNavigation() {
     handle.addEventListener("remove", () => {
       modal = null;
       didInitialFocus = false;
+    });
+
+    handle.addEventListener("commit", () => {
+      focusPendingKeyboardChevron();
     });
 
     return (nextNav, nextPhotoCount) => {
