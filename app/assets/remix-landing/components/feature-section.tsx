@@ -509,10 +509,13 @@ type FeatureSectionProps = {
 
 export let LandingNewsletterSubscribeForm = clientEntry(
   import.meta.url,
-  function LandingNewsletterSubscribeForm(handle: Handle) {
+  function LandingNewsletterSubscribeForm(
+    handle: Handle<{ placeholder?: string; buttonLabel?: string }>,
+  ) {
+    let { props } = handle;
     let state: SubscribeState = { status: "idle" };
 
-    return (props: { placeholder?: string; buttonLabel?: string }) => (
+    return () => (
       <>
         <form
           action={routes.actions.newsletter.href()}
@@ -596,8 +599,9 @@ export let LandingNewsletterSubscribeForm = clientEntry(
   },
 );
 
-export function FeatureSection(_handle: Handle) {
-  return (props: FeatureSectionProps) => {
+export function FeatureSection(handle: Handle<FeatureSectionProps>) {
+  let { props } = handle;
+  return () => {
     const primaryPanelStyles =
       PRIMARY_PANEL_STYLES_BY_ID[props.id] ??
       (props.align === "right" ? rightPanelStyles : leftPanelStyles);

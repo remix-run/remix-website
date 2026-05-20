@@ -1,4 +1,5 @@
 import cx from "clsx";
+import type { Handle } from "remix/ui";
 import { getSchedule } from "../../../data/jam-schedule.server.ts";
 import { render } from "../../../utils/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
@@ -56,8 +57,9 @@ export async function jam2025LineupHandler() {
   );
 }
 
-function ScheduleTable() {
-  return ({ items }: { items: Schedule }) => (
+function ScheduleTable(handle: Handle<{ items: Schedule }>) {
+  let { props } = handle;
+  return () => (
     <>
       <section class="z-10 w-full sm:hidden">
         <div class="-mx-10 border-y-2 border-white/20 px-4">
@@ -72,7 +74,7 @@ function ScheduleTable() {
             <div>Speaker</div>
           </div>
 
-          {items.map((item) => {
+          {props.items.map((item) => {
             let key = `${item.time}-${item.title}`;
             return (
               <div key={key} class="overflow-hidden">
@@ -133,7 +135,7 @@ function ScheduleTable() {
             <div>Speaker</div>
             <div />
           </div>
-          {items.map((item) => {
+          {props.items.map((item) => {
             let key = `${item.time}-${item.title}`;
             return <DesktopScheduleItem key={key} item={item} />;
           })}
@@ -143,8 +145,12 @@ function ScheduleTable() {
   );
 }
 
-function DesktopScheduleItem() {
-  return ({ item }: { item: Schedule[number] }) => (
-    <JamLineupAccordionItem item={item} gridColsClassName={gridColsClassName} />
+function DesktopScheduleItem(handle: Handle<{ item: Schedule[number] }>) {
+  let { props } = handle;
+  return () => (
+    <JamLineupAccordionItem
+      item={props.item}
+      gridColsClassName={gridColsClassName}
+    />
   );
 }

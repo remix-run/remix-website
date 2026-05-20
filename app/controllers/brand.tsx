@@ -1,5 +1,5 @@
 import cx from "clsx";
-import type { RemixNode } from "remix/ui";
+import type { Handle, RemixNode } from "remix/ui";
 import { Document } from "../ui/document.tsx";
 import { Footer } from "../ui/footer.tsx";
 import { Header } from "../ui/header.tsx";
@@ -37,8 +37,9 @@ function Page() {
   );
 }
 
-function AssetHeader() {
-  return (props: { children: RemixNode }) => (
+function AssetHeader(handle: Handle<{ children: RemixNode }>) {
+  let { props } = handle;
+  return () => (
     <h2 class="rmx-page-title rmx-page-title-sm dark:text-gray-200">
       {props.children}
     </h2>
@@ -127,8 +128,9 @@ let wordmarkAssets = [
   },
 ] satisfies BrandAsset[];
 
-function AssetGrid() {
-  return (props: { assets: readonly BrandAsset[] }) => (
+function AssetGrid(handle: Handle<{ assets: readonly BrandAsset[] }>) {
+  let { props } = handle;
+  return () => (
     <div class="not-prose grid grid-cols-1 gap-4 gap-x-6 sm:grid-cols-2">
       {props.assets.map((asset) => {
         let { bg, border } = previewThemes[asset.previewTheme];

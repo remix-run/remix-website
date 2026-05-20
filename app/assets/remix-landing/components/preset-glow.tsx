@@ -41,7 +41,13 @@ function buildGradient(morphValue: number, brandGradientMode: boolean): string {
 // the parent (so App.handle.update() doesn't have to walk through us),
 // quantize the value to avoid writing unchanged backgrounds, and write
 // directly to the DOM.
-export function PresetGlow(handle: Handle) {
+export function PresetGlow(
+  handle: Handle<{
+    morphValueRef: { current: number };
+    brandGradientMode: boolean;
+  }>,
+) {
+  let { props } = handle;
   let glowEl: HTMLDivElement | undefined;
   let frameId = 0;
   let lastBackground = "";
@@ -77,10 +83,7 @@ export function PresetGlow(handle: Handle) {
     }
   });
 
-  return (props: {
-    morphValueRef: { current: number };
-    brandGradientMode: boolean;
-  }) => {
+  return () => {
     morphValueRef = props.morphValueRef;
     // Force an immediate re-evaluation next frame when brand mode flips so
     // we don't wait on a morphValue change to pick it up.

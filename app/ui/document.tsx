@@ -50,6 +50,7 @@ declare global {
  * Route code links to them through `app/utils/style-hrefs.ts`.
  */
 export function Document(handle: Handle<DocumentProps>) {
+  let { props } = handle;
   return () => {
     let {
       title,
@@ -59,7 +60,7 @@ export function Document(handle: Handle<DocumentProps>) {
       headTags = [],
       stylesheets = [],
       children,
-    } = handle.props;
+    } = props;
     let assetEntry = getAssetEntry();
 
     stylesheets = [...new Set([styleHrefs.global, ...stylesheets])];

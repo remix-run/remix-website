@@ -1,4 +1,4 @@
-import type { RemixNode } from "remix/ui";
+import type { Handle, RemixNode } from "remix/ui";
 import { Document } from "../../../ui/document.tsx";
 import { styleHrefs } from "../../../utils/style-hrefs.ts";
 import { getSocialHeadTags } from "../../../utils/social-head-tags.server.ts";
@@ -14,8 +14,9 @@ type JamPageProps = {
   children?: RemixNode;
 };
 
-export function JamDocument() {
-  return (props: JamPageProps) => (
+export function JamDocument(handle: Handle<JamPageProps>) {
+  let { props } = handle;
+  return () => (
     <Document
       title={props.title}
       description={props.description}

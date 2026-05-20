@@ -9,8 +9,9 @@ type FooterProps = {
 };
 
 export function Footer(handle: Handle<FooterProps>) {
+  let { props } = handle;
   return () => (
-    <footer aria-label="Site footer" mix={[footerStyle, handle.props.mix]}>
+    <footer aria-label="Site footer" mix={[footerStyle, props.mix]}>
       <div mix={footerTopStyle}>
         <a
           href={routes.remix3ActiveDevelopment.href()}

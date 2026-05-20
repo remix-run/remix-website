@@ -2,7 +2,14 @@ import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
 
 export let JamTicketCard = clientEntry(
   import.meta.url,
-  function JamTicketCard(handle: Handle) {
+  function JamTicketCard(
+    handle: Handle<{
+      ticketSrc: string;
+      ticketHolographic: string;
+      title?: string;
+    }>,
+  ) {
+    let { props } = handle;
     let isHovered = false;
     let mousePosition = { x: 50, y: 50 };
     let ticketWidth = 0;
@@ -21,11 +28,7 @@ export let JamTicketCard = clientEntry(
       addEventListeners(window, handle.signal, { resize: updateDimensions });
     });
 
-    return (props: {
-      ticketSrc: string;
-      ticketHolographic: string;
-      title?: string;
-    }) => {
+    return () => {
       let tx = 0;
       let ty = 0;
       if (ticketWidth > 0 && ticketHeight > 0) {

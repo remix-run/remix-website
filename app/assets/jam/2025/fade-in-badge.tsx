@@ -15,8 +15,9 @@ type JamFadeInBadgeProps = {
 export let JamFadeInBadge = clientEntry(
   import.meta.url,
   function JamFadeInBadge(handle: Handle<JamFadeInBadgeProps>) {
+    let { props } = handle;
     let isVisible = false;
-    let delay = handle.props.setup ?? 0;
+    let delay = props.setup ?? 0;
 
     handle.queueTask((signal) => {
       if (signal.aborted) return;
@@ -57,10 +58,10 @@ export let JamFadeInBadge = clientEntry(
             "rounded-full px-4 py-3 text-xl leading-none md:px-8 md:py-5 md:text-4xl",
             "transition-opacity duration-500",
             isVisible ? "opacity-100" : "opacity-0",
-            handle.props.class,
+            props.class,
           )}
         >
-          {handle.props.children}
+          {props.children}
         </span>
       );
     };

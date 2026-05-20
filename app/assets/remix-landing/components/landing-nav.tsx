@@ -185,7 +185,16 @@ function navItemClick(item: NavItem, afterClick?: () => void) {
   });
 }
 
-export function LandingNav(handle: Handle) {
+export function LandingNav(
+  handle: Handle<{
+    activeIndexRef: { current: number };
+    totalSections: number;
+    onJump: (index: number) => void;
+    scrollYRef: { current: number };
+    shouldBlockBlogShortcut: () => boolean;
+  }>,
+) {
+  let { props } = handle;
   let onJump: ((index: number) => void) | null = null;
   let totalSections = 1;
   let menuOpen = false;
@@ -253,13 +262,7 @@ export function LandingNav(handle: Handle) {
     if (scrollFrame) cancelAnimationFrame(scrollFrame);
   });
 
-  return (props: {
-    activeIndexRef: { current: number };
-    totalSections: number;
-    onJump: (index: number) => void;
-    scrollYRef: { current: number };
-    shouldBlockBlogShortcut: () => boolean;
-  }) => {
+  return () => {
     activeIndexRef = props.activeIndexRef;
     totalSections = props.totalSections;
     onJump = props.onJump;

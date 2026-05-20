@@ -10,7 +10,7 @@ import {
   type JamGalleryModalNav,
 } from "../../../../assets/jam/2025/gallery-modal-host.tsx";
 import { assetPaths } from "../../../../utils/asset-paths.ts";
-import type { RemixNode } from "remix/ui";
+import type { Handle, RemixNode } from "remix/ui";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
@@ -83,20 +83,23 @@ export { transformShopifyImageUrl };
 export { getSelectedPhotoIndex };
 export { getGalleryPhotos };
 
-function GalleryModal() {
-  return ({
-    photos,
-    selectedPhotoIndex,
-  }: {
+function GalleryModal(
+  handle: Handle<{
     photos: Photo[];
     selectedPhotoIndex: number;
-  }) => {
-    let selectedPhoto = photos[selectedPhotoIndex];
-    let nav = getJamGalleryModalNav(selectedPhotoIndex, photos.length);
-    let downloadHref = `${routes.jam.y2025.gallery.download.href()}?photo=${selectedPhotoIndex}`;
+  }>,
+) {
+  let { props } = handle;
+  return () => {
+    let selectedPhoto = props.photos[props.selectedPhotoIndex];
+    let nav = getJamGalleryModalNav(
+      props.selectedPhotoIndex,
+      props.photos.length,
+    );
+    let downloadHref = `${routes.jam.y2025.gallery.download.href()}?photo=${props.selectedPhotoIndex}`;
     return (
       <JamGalleryModalHost
-        setup={{ photoCount: photos.length }}
+        setup={{ photoCount: props.photos.length }}
         nav={nav}
         class="fixed inset-0 z-50 size-full select-none bg-black/70 backdrop-blur"
       >
@@ -113,7 +116,7 @@ function GalleryModal() {
               href={downloadHref}
               icon="download"
               label="Download full resolution image"
-              download={`remix-jam-2025-photo-${selectedPhotoIndex + 1}.jpg`}
+              download={`remix-jam-2025-photo-${props.selectedPhotoIndex + 1}.jpg`}
             />
           </div>
           <div class="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
@@ -136,7 +139,7 @@ function GalleryModal() {
           </div>
           <div class="flex shrink-0 justify-center">
             <div class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black">
-              {selectedPhotoIndex + 1} / {photos.length}
+              {props.selectedPhotoIndex + 1} / {props.photos.length}
             </div>
           </div>
         </div>
@@ -145,8 +148,8 @@ function GalleryModal() {
   };
 }
 
-function JamGalleryLink() {
-  return (props: {
+function JamGalleryLink(
+  handle: Handle<{
     href: string;
     class?: string;
     ariaLabel?: string;
@@ -154,7 +157,10 @@ function JamGalleryLink() {
     target?: string;
     rel?: string;
     children?: RemixNode;
-  }) => (
+  }>,
+) {
+  let { props } = handle;
+  return () => (
     <a
       href={props.href}
       rmx-reset-scroll="false"
@@ -169,11 +175,12 @@ function JamGalleryLink() {
   );
 }
 
-function ModalImage() {
-  return ({ photo }: { photo: Photo }) => {
-    let imageSrc = getGalleryModalImageSrc(photo);
-    let aspectRatio = photo.width / photo.height;
-    let isLandscape = photo.width > photo.height;
+function ModalImage(handle: Handle<{ photo: Photo }>) {
+  let { props } = handle;
+  return () => {
+    let imageSrc = getGalleryModalImageSrc(props.photo);
+    let aspectRatio = props.photo.width / props.photo.height;
+    let isLandscape = props.photo.width > props.photo.height;
 
     return (
       <div
@@ -188,7 +195,7 @@ function ModalImage() {
       >
         <img
           src={imageSrc}
-          alt={photo.altText || ""}
+          alt={props.photo.altText || ""}
           class="size-full object-contain"
         />
       </div>
@@ -196,8 +203,8 @@ function ModalImage() {
   };
 }
 
-function IconLink() {
-  return (props: {
+function IconLink(
+  handle: Handle<{
     href: string;
     icon: "chevron-r" | "x-mark" | "download";
     label: string;
@@ -205,7 +212,10 @@ function IconLink() {
     download?: string;
     target?: string;
     rel?: string;
-  }) =>
+  }>,
+) {
+  let { props } = handle;
+  return () =>
     props.download ? (
       <a
         href={props.href}
@@ -282,10 +292,11 @@ async function getGalleryPhotos() {
   ]).then((p) => p.flat());
 }
 
-function PhotoImage() {
-  return ({ url, altText, width, height }: Photo) => {
+function PhotoImage(handle: Handle<Photo>) {
+  let { props } = handle;
+  return () => {
     let srcSet = GALLERY_GRID_IMAGE_WIDTHS.map((size) => {
-      let sizedUrl = transformShopifyImageUrl(url, {
+      let sizedUrl = transformShopifyImageUrl(props.url, {
         width: size,
         format: "webp",
         quality: 85,
@@ -293,7 +304,7 @@ function PhotoImage() {
       return `${sizedUrl} ${size}w`;
     }).join(", ");
 
-    let src = transformShopifyImageUrl(url, {
+    let src = transformShopifyImageUrl(props.url, {
       width: GALLERY_GRID_DEFAULT_WIDTH,
       format: "webp",
       quality: 85,
@@ -303,9 +314,9 @@ function PhotoImage() {
       <img
         src={src}
         srcSet={srcSet}
-        alt={altText || ""}
-        width={width}
-        height={height}
+        alt={props.altText || ""}
+        width={props.width}
+        height={props.height}
         sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw"
         loading="lazy"
         class="w-full select-none transition-transform duration-300 hover:scale-105"

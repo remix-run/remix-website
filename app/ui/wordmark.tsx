@@ -1,12 +1,13 @@
-import type { Props } from "remix/ui";
+import type { Handle, Props } from "remix/ui";
 
 type WordmarkProps = Props<"svg"> & {
   height?: number | string;
   width?: number | string;
 };
 
-export function Wordmark() {
-  return (props: WordmarkProps) => (
+export function Wordmark(handle: Handle<WordmarkProps>) {
+  let { props } = handle;
+  return () => (
     <svg
       width={props.width}
       height={props.height ?? 24}

@@ -1,7 +1,9 @@
+import type { Handle } from "remix/ui";
 import cx from "clsx";
 
-export function TimelineDiagramDesktop() {
-  return (props: { class?: string }) => (
+export function TimelineDiagramDesktop(handle: Handle<{ class?: string }>) {
+  let { props } = handle;
+  return () => (
     <svg
       class={props.class}
       width="1919"
@@ -475,28 +477,30 @@ export function TimelineDiagramDesktop() {
 }
 
 /** Track name label (e.g., "REACT ROUTER", "REMIX", "REMIX 3") */
-function TrackLabel() {
-  return ({ x, y, label }: { x: number; y: number; label: string }) => (
+function TrackLabel(handle: Handle<{ x: number; y: number; label: string }>) {
+  let { props } = handle;
+  return () => (
     <text
-      x={x}
-      y={y}
+      x={props.x}
+      y={props.y}
       class={cx(
         "rmx-caption",
         "fill-[var(--rmx-neutral-100)] font-semibold uppercase tracking-wider",
       )}
       textAnchor="middle"
     >
-      {label}
+      {props.label}
     </text>
   );
 }
 
 /** Open circle at the end of a track */
-function TrackEndCircle() {
-  return ({ cx, cy }: { cx: number; cy: number }) => (
+function TrackEndCircle(handle: Handle<{ cx: number; cy: number }>) {
+  let { props } = handle;
+  return () => (
     <circle
-      cx={cx}
-      cy={cy}
+      cx={props.cx}
+      cy={props.cy}
       r="5"
       stroke="var(--rmx-neutral-200)"
       strokeWidth="2"
@@ -518,23 +522,14 @@ type MilestoneProps = {
 };
 
 /** Interactive milestone marker with hover/focus states */
-function Milestone() {
-  return ({
-    year,
-    yearX,
-    nodeX,
-    nodeY,
-    lineY1,
-    label,
-    labelY,
-    labelColor,
-    href,
-  }: MilestoneProps) => {
+function Milestone(handle: Handle<MilestoneProps>) {
+  let { props } = handle;
+  return () => {
     let content = (
       <>
         {/* Year label */}
         <text
-          x={yearX}
+          x={props.yearX}
           y="9"
           textAnchor="middle"
           class={cx(
@@ -544,17 +539,17 @@ function Milestone() {
             "group-focus-visible:fill-[var(--rmx-neutral-100)] group-focus-visible:font-bold",
           )}
         >
-          {year}
+          {props.year}
         </text>
 
         {/* Hover hitbox */}
-        <circle cx={nodeX} cy={nodeY} r="24" fill="transparent" />
+        <circle cx={props.nodeX} cy={props.nodeY} r="24" fill="transparent" />
 
         {/* Connecting line */}
         <line
-          x1={nodeX}
-          y1={lineY1}
-          x2={nodeX}
+          x1={props.nodeX}
+          y1={props.lineY1}
+          x2={props.nodeX}
           y2="20"
           stroke="var(--rmx-neutral-200)"
           strokeWidth="2"
@@ -563,8 +558,8 @@ function Milestone() {
 
         {/* Default state: small dot */}
         <circle
-          cx={nodeX}
-          cy={nodeY}
+          cx={props.nodeX}
+          cy={props.nodeY}
           r="6"
           fill="var(--rmx-neutral-200)"
           class="opacity-100 transition-opacity duration-150 group-hover:opacity-0 group-focus-visible:opacity-0"
@@ -572,24 +567,24 @@ function Milestone() {
 
         {/* Hover/focus state: white circle with colored label */}
         <g class="opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
-          <circle cx={nodeX} cy={nodeY} r="24" fill="white" />
+          <circle cx={props.nodeX} cy={props.nodeY} r="24" fill="white" />
           <text
-            x={nodeX}
-            y={labelY}
+            x={props.nodeX}
+            y={props.labelY}
             textAnchor="middle"
             class="rmx-caption font-semibold"
-            fill={labelColor}
+            fill={props.labelColor}
           >
-            {label}
+            {props.label}
           </text>
         </g>
       </>
     );
 
-    if (href) {
+    if (props.href) {
       return (
         <a
-          href={href}
+          href={props.href}
           target="_blank"
           rel="noopener noreferrer"
           class="group cursor-pointer"
@@ -603,7 +598,7 @@ function Milestone() {
       <g
         tabIndex={0}
         role="img"
-        aria-label={`${label} released in ${year}`}
+        aria-label={`${props.label} released in ${props.year}`}
         class="group cursor-default"
       >
         {content}

@@ -1,4 +1,4 @@
-import { css } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements.tsx";
 import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen.tsx";
 import { RUNNER_AVIF_SRC } from "../../assets/remix-landing/runner-media.ts";
@@ -29,8 +29,9 @@ const landingContentStyles = css({
   zIndex: "10",
 });
 
-export function HomePage() {
-  return (props: HomePageProps) => (
+export function HomePage(handle: Handle<HomePageProps>) {
+  let { props } = handle;
+  return () => (
     <Document
       title={HOME_TITLE}
       description={HOME_DESCRIPTION}

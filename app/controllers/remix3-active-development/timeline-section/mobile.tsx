@@ -1,5 +1,5 @@
 import cx from "clsx";
-import type { Props, RemixNode } from "remix/ui";
+import type { Handle, Props, RemixNode } from "remix/ui";
 
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);
 const ROW_HEIGHT = 57;
@@ -182,8 +182,11 @@ function TrackSegments() {
   };
 }
 
-function LaneHeader() {
-  return (props: { children: RemixNode; style?: StyleProps }) => (
+function LaneHeader(
+  handle: Handle<{ children: RemixNode; style?: StyleProps }>,
+) {
+  let { props } = handle;
+  return () => (
     <div
       class={cx(
         "text-rmx-neutral-100",
@@ -196,8 +199,11 @@ function LaneHeader() {
   );
 }
 
-function YearLabel() {
-  return (props: { children: RemixNode; style?: StyleProps }) => {
+function YearLabel(
+  handle: Handle<{ children: RemixNode; style?: StyleProps }>,
+) {
+  let { props } = handle;
+  return () => {
     let year = Number(props.children);
     let opacity = 1;
     if (year === 2014) opacity = 0.25;
@@ -220,8 +226,11 @@ function YearLabel() {
   };
 }
 
-function LaneCell() {
-  return (props: { lane: string; year: number; style?: StyleProps }) => {
+function LaneCell(
+  handle: Handle<{ lane: string; year: number; style?: StyleProps }>,
+) {
+  let { props } = handle;
+  return () => {
     let config = LANE_CELL_CONFIG[props.lane]?.[props.year];
     let label = typeof config === "string" ? config : config?.label;
     let configStyle = typeof config === "object" ? config.style : undefined;

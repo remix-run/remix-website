@@ -1,3 +1,4 @@
+import type { Handle } from "remix/ui";
 import cx from "clsx";
 import { Document } from "./document.tsx";
 import { render } from "../utils/render.ts";
@@ -18,8 +19,11 @@ export function renderNotFoundPage(options?: { statusText?: string }) {
   );
 }
 
-function StatusErrorDocument() {
-  return (props: { status: number; statusText: string }) => (
+function StatusErrorDocument(
+  handle: Handle<{ status: number; statusText: string }>,
+) {
+  let { props } = handle;
+  return () => (
     <Document
       title={props.statusText}
       noIndex

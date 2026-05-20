@@ -1,3 +1,4 @@
+import type { Handle } from "remix/ui";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
@@ -18,10 +19,13 @@ export async function blogHandler() {
   });
 }
 
-function Page() {
-  return (props: {
+function Page(
+  handle: Handle<{
     posts: Awaited<ReturnType<typeof getBlogPostListings>>;
-  }) => (
+  }>,
+) {
+  let { props } = handle;
+  return () => (
     <Document
       title="Remix Blog"
       description="Thoughts about building excellent user experiences with Remix."
@@ -41,10 +45,13 @@ function Page() {
   );
 }
 
-function BlogPageContent() {
-  return (props: {
+function BlogPageContent(
+  handle: Handle<{
     posts: Awaited<ReturnType<typeof getBlogPostListings>>;
-  }) => {
+  }>,
+) {
+  let { props } = handle;
+  return () => {
     let [latestPost, ...posts] = props.posts;
     let featuredPosts = props.posts.filter((post) => post.featured);
 

@@ -23,7 +23,10 @@ const accordionMotion = spring("smooth", { duration: 150 });
 
 export let JamLineupAccordionItem = clientEntry(
   import.meta.url,
-  function JamLineupAccordionItem(handle: Handle) {
+  function JamLineupAccordionItem(
+    handle: Handle<{ item: LineupItem; gridColsClassName: string }>,
+  ) {
+    let { props } = handle;
     let state: AccordionState = { status: "closed" };
     let panel: HTMLDivElement | null = null;
     let panelInner: HTMLDivElement | null = null;
@@ -119,7 +122,7 @@ export let JamLineupAccordionItem = clientEntry(
       });
     };
 
-    return (props: { item: LineupItem; gridColsClassName: string }) => {
+    return () => {
       let mountedOpen = state.status !== "closed";
       let visuallyOpen =
         state.status === "measuring-open" ||

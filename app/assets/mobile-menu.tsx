@@ -35,7 +35,8 @@ type MenuState = { status: "open" } | { status: "closed" };
 export let MobileMenu = clientEntry(
   import.meta.url,
   function MobileMenu(handle: Handle<MobileMenuProps>) {
-    let state: MenuState = handle.props.open
+    let { props } = handle;
+    let state: MenuState = props.open
       ? { status: "open" }
       : { status: "closed" };
     let detailsElement: HTMLDetailsElement | null = null;
@@ -85,7 +86,6 @@ export let MobileMenu = clientEntry(
     };
 
     return () => {
-      let props = handle.props;
       let summaryClass = props.summaryClass ?? mobileMenuStyles.summary;
       let menuWrapperClass =
         props.menuWrapperClass ?? mobileMenuStyles.menuWrapper;

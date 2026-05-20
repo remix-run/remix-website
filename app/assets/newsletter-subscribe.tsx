@@ -62,14 +62,17 @@ export async function submitNewsletterRequest({
 
 export let NewsletterSubscribeForm = clientEntry(
   import.meta.url,
-  function NewsletterSubscribeForm(handle: Handle) {
-    let state: SubscribeState = { status: "idle" };
-
-    return (props: {
+  function NewsletterSubscribeForm(
+    handle: Handle<{
       class?: string;
       inputClass?: string;
       buttonClass?: string;
-    }) => (
+    }>,
+  ) {
+    let { props } = handle;
+    let state: SubscribeState = { status: "idle" };
+
+    return () => (
       <>
         <form
           action={routes.actions.newsletter.href()}

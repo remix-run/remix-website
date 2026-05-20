@@ -1,4 +1,4 @@
-import type { RemixNode } from "remix/ui";
+import type { Handle, RemixNode } from "remix/ui";
 import { render } from "../../../utils/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
@@ -226,8 +226,9 @@ export async function jam2025FaqHandler() {
   );
 }
 
-function FAQSection() {
-  return (props: { question: string; answer: RemixNode }) => {
+function FAQSection(handle: Handle<{ question: string; answer: RemixNode }>) {
+  let { props } = handle;
+  return () => {
     let id = slugify(props.question);
     return (
       <section

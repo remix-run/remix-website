@@ -175,7 +175,15 @@ async function replaceHash(anchor: string) {
   }
 }
 
-export function SectionNav(handle: Handle) {
+export function SectionNav(
+  handle: Handle<{
+    activeIndexRef: { current: number };
+    morphValueRef: { current: number };
+    totalSections: number;
+    onJump: (index: number) => void;
+  }>,
+) {
+  let { props } = handle;
   let scrollFrame = 0;
   let activeIndexRef: { current: number } = { current: 0 };
   let morphValueRef: { current: number } = { current: 0 };
@@ -195,12 +203,7 @@ export function SectionNav(handle: Handle) {
     if (scrollFrame) cancelAnimationFrame(scrollFrame);
   });
 
-  return (props: {
-    activeIndexRef: { current: number };
-    morphValueRef: { current: number };
-    totalSections: number;
-    onJump: (index: number) => void;
-  }) => {
+  return () => {
     activeIndexRef = props.activeIndexRef;
     morphValueRef = props.morphValueRef;
     const count = SECTIONS.length;

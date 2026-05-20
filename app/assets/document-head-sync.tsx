@@ -19,7 +19,8 @@ declare global {
 
 export let DocumentHeadSync = clientEntry(
   import.meta.url,
-  function DocumentHeadSync(handle: Handle) {
+  function DocumentHeadSync(handle: Handle<DocumentHeadSyncProps>) {
+    let { props } = handle;
     let latestProps: DocumentHeadSyncProps | null = null;
     let isQueued = false;
 
@@ -41,7 +42,7 @@ export let DocumentHeadSync = clientEntry(
       { once: true },
     );
 
-    return (props: DocumentHeadSyncProps) => {
+    return () => {
       latestProps = props;
       if (!isQueued) {
         isQueued = true;

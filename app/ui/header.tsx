@@ -1,3 +1,4 @@
+import type { Handle } from "remix/ui";
 import cx from "clsx";
 import { MobileMenu } from "../assets/mobile-menu.tsx";
 import { WordmarkLink } from "../assets/wordmark-link.tsx";
@@ -43,8 +44,11 @@ export function Header() {
   );
 }
 
-function HeaderLink() {
-  return (props: { to: string; document?: boolean; children: string }) => (
+function HeaderLink(
+  handle: Handle<{ to: string; document?: boolean; children: string }>,
+) {
+  let { props } = handle;
+  return () => (
     <a
       href={props.to}
       rmx-document={props.document ? "" : undefined}

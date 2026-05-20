@@ -1,3 +1,4 @@
+import type { Handle } from "remix/ui";
 import cx from "clsx";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
@@ -74,12 +75,15 @@ export async function blogPostHandler(context: BlogPostContext) {
   );
 }
 
-function Page() {
-  return (props: {
+function Page(
+  handle: Handle<{
     slug: string;
     post: Awaited<ReturnType<typeof getBlogPost>>;
     socialImageUrl: string;
-  }) => (
+  }>,
+) {
+  let { props } = handle;
+  return () => (
     <Document
       title={`${props.post.title} | Remix`}
       description={props.post.summary}
@@ -111,8 +115,11 @@ function Page() {
   );
 }
 
-function BlogPostContent() {
-  return (props: { post: Awaited<ReturnType<typeof getBlogPost>> }) => (
+function BlogPostContent(
+  handle: Handle<{ post: Awaited<ReturnType<typeof getBlogPost>> }>,
+) {
+  let { props } = handle;
+  return () => (
     <>
       {props.post.draft ? (
         <div class="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 px-5 py-3 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">

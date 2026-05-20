@@ -16,8 +16,7 @@ const codeStyles = css({
   whiteSpace: "nowrap",
 });
 
-export function CodeSnippet(_handle: Handle) {
-  return (props: { children: RemixNode }) => (
-    <code mix={[codeStyles]}>{props.children}</code>
-  );
+export function CodeSnippet(handle: Handle<{ children: RemixNode }>) {
+  let { props } = handle;
+  return () => <code mix={[codeStyles]}>{props.children}</code>;
 }

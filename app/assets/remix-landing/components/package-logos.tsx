@@ -119,7 +119,10 @@ function sequenceFade(
   return clamp01((elapsed - start) / PER_LOGO_FADE_MS);
 }
 
-export function PackageLogos(handle: Handle) {
+export function PackageLogos(
+  handle: Handle<{ morphValueRef: { current: number } }>,
+) {
+  let { props } = handle;
   let wasInSection = false;
   let sequenceStartMs: number | null = null;
   let delayTimer: ReturnType<typeof setTimeout> | null = null;
@@ -225,7 +228,7 @@ export function PackageLogos(handle: Handle) {
     panelElement = null;
   });
 
-  return (props: { morphValueRef: { current: number } }) => {
+  return () => {
     morphValueRef = props.morphValueRef;
     if (!panelElement || !panelElement.isConnected) locatePanel();
 
