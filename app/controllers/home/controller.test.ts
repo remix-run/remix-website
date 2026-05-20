@@ -25,6 +25,8 @@ describe("home route", () => {
     );
     expect(html).toContain('id="main-content"');
     expect(html).toContain('id="remix-landing-app"');
+    expect(html).toContain('id="start-building"');
+    expect(html).toContain('action="/_actions/newsletter"');
     expect(html).toContain("A web framework for building anything");
     expect(html).toContain("Closing the gap between the initial spark");
     expect(html).toContain("High-performance components in plain");

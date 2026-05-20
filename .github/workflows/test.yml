@@ -29,6 +29,9 @@ jobs:
       - name: 📥 Install deps
         run: pnpm install --frozen-lockfile
 
+      - name: 🎭 Install Playwright browsers
+        run: pnpm run test:install-browsers
+
       - name: ⚡ Run Remix tests
         run: pnpm run test
         env:

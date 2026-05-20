@@ -20,8 +20,9 @@
     "preview": "cross-env NODE_ENV=production node --env-file=.env --import tsx server.ts",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
-    "pretest": "pnpm run build:css && playwright install chromium",
+    "pretest": "pnpm run build:css",
     "test": "cross-env NODE_ENV=test remix test",
+    "test:install-browsers": "playwright install chromium",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
