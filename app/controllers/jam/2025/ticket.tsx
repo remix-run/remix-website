@@ -25,25 +25,30 @@ export async function jam2025TicketHandler() {
 
   if (request.method === "POST") {
     let formData = getContext().get(FormData);
-    let submission = parseTicketPurchaseSubmission(formData);
-    if (!submission.success) {
-      formError = submission.error;
+    if (!formData) {
+      formError = "Missing form data";
     } else {
-      initialQuantity = submission.value.quantity;
-      if (submission.value.productId !== product.productId) {
-        formError = "Invalid ticket selection";
+      let submission = parseTicketPurchaseSubmission(formData);
+      if (!submission.success) {
+        formError = submission.error;
       } else {
-        let discountCode = requestUrl.searchParams.get("discount") ?? undefined;
-        let cart = await createCart({
-          productId: submission.value.productId,
-          quantity: submission.value.quantity,
-          discountCode,
-        });
-
-        if ("error" in cart) {
-          formError = cart.error;
+        initialQuantity = submission.value.quantity;
+        if (submission.value.productId !== product.productId) {
+          formError = "Invalid ticket selection";
         } else {
-          return Response.redirect(cart.checkoutUrl, 302);
+          let discountCode =
+            requestUrl.searchParams.get("discount") ?? undefined;
+          let cart = await createCart({
+            productId: submission.value.productId,
+            quantity: submission.value.quantity,
+            discountCode,
+          });
+
+          if ("error" in cart) {
+            formError = cart.error;
+          } else {
+            return Response.redirect(cart.checkoutUrl, 302);
+          }
         }
       }
     }

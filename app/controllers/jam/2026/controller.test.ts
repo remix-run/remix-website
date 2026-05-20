@@ -4,12 +4,16 @@ import { expect } from "remix/assert";
 import { routes } from "../../../routes.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
-import { jamController } from "../controller.ts";
+import {
+  jam2026Controller,
+  jam2026TicketsController,
+} from "../controller.ts";
 
 describe("Remix Jam 2026 routes", () => {
   it("renders the homepage with the Jam 2026 header controls and Jam footer", async () => {
     let router = createRouteTestRouter();
-    router.map(routes.jam, jamController);
+    router.map(routes.jam.y2026.tickets, jam2026TicketsController);
+    router.map(routes.jam.y2026, jam2026Controller);
 
     let response = await router.fetch("http://localhost:3000/jam/2026");
 
@@ -73,7 +77,8 @@ describe("Remix Jam 2026 routes", () => {
 
   it("renders the ticket page with the shared Jam header and footer", async () => {
     let router = createRouteTestRouter();
-    router.map(routes.jam, jamController);
+    router.map(routes.jam.y2026.tickets, jam2026TicketsController);
+    router.map(routes.jam.y2026, jam2026Controller);
 
     let response = await router.fetch("http://localhost:3000/jam/2026/tickets");
 

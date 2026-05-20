@@ -36,5 +36,9 @@ export function setAssetEntry(
 }
 
 export function getAssetEntry() {
-  return getContext().get(assetEntryKey);
+  let assetEntry = getContext().get(assetEntryKey);
+  if (!assetEntry) {
+    throw new Error("Missing asset entry on request context");
+  }
+  return assetEntry;
 }
