@@ -1,0 +1,33 @@
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { remix3ActiveDevelopmentHandler } from "./remix3-active-development.tsx";
+import { CACHE_CONTROL } from "../utils/cache-control.ts";
+import { routes } from "../routes.ts";
+import { createRouteTestRouter } from "../../test/setup.ts";
+
+describe("Remix 3 active development route", () => {
+  it("renders expected content and metadata", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.remix3ActiveDevelopment, remix3ActiveDevelopmentHandler);
+
+    let response = await router.fetch(
+      "http://localhost:3000/remix-3-active-development",
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toContain("text/html");
+    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+
+    let html = await response.text();
+
+    expect(html).toContain("<html");
+    expect(html).toContain('href="/styles/app.css"');
+    expect(html).toContain('class="marketing-remix3-active-development"');
+    expect(html).toContain(
+      'content="http://localhost:3000/remix-3-active-development"',
+    );
+    expect(html).toContain("#github");
+    expect(html).toContain("og:title");
+    expect(html).toContain("twitter:card");
+  });
+});

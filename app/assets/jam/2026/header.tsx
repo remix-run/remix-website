@@ -3,7 +3,7 @@ import { spring } from "remix/ui/animation";
 import { theme } from "remix/ui/theme";
 
 import { Jam2026Countdown } from "./countdown.tsx";
-import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
+import { jamTheme } from "../../../actions/jam/y2026/theme.ts";
 import { routes } from "../../../routes.ts";
 import { assetPaths } from "../../../utils/asset-paths.ts";
 

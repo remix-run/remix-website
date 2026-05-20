@@ -17,7 +17,7 @@ data is `data-and-validation.md`. For request lifecycle and middleware ordering,
 
 ## Route Builders
 
-Import all route builders from `remix/fetch-router/routes`.
+Import all route builders from `remix/routes`.
 
 ### `route(prefix, map)` — nested route group
 
@@ -27,23 +27,23 @@ call (when you want a shared URL prefix) or a plain object literal (when each le
 its absolute path).
 
 ```typescript
-import { route, get, post } from "remix/fetch-router/routes";
+import { route, get, post } from 'remix/routes'
 
 export const routes = route({
-  home: "/",
+  home: '/',
 
   // Plain object — no shared prefix, each leaf has an absolute path.
   books: {
-    index: "/books",
-    show: "/books/:slug",
+    index: '/books',
+    show: '/books/:slug',
   },
 
   // route('auth', ...) — every leaf is prefixed with /auth.
-  auth: route("auth", {
-    login: get("login"),
-    logout: post("logout"),
+  auth: route('auth', {
+    login: get('login'),
+    logout: post('logout'),
   }),
-});
+})
 ```
 
 ### Leaf route builders
@@ -62,10 +62,10 @@ Creates a GET + POST pair for HTML form workflows. Expands to an `index` (GET) a
 (POST) by default.
 
 ```typescript
-contact: form("contact");
+contact: form('contact')
 // Produces routes.contact.index (GET /contact) and routes.contact.action (POST /contact)
 
-settings: form("settings", { formMethod: "PUT", names: { action: "update" } });
+settings: form('settings', { formMethod: 'PUT', names: { action: 'update' } })
 // Produces routes.settings.index (GET) and routes.settings.update (PUT)
 ```
 
@@ -74,10 +74,10 @@ settings: form("settings", { formMethod: "PUT", names: { action: "update" } });
 Expands to conventional CRUD routes: `index`, `new`, `create`, `show`, `edit`, `update`, `destroy`.
 
 ```typescript
-books: resources("books", { param: "bookId" });
+books: resources('books', { param: 'bookId' })
 // GET /books, GET /books/new, POST /books, GET /books/:bookId, ...
 
-orders: resources("orders", { only: ["index", "show"], param: "orderId" });
+orders: resources('orders', { only: ['index', 'show'], param: 'orderId' })
 // GET /orders, GET /orders/:orderId
 ```
 
@@ -86,24 +86,28 @@ orders: resources("orders", { only: ["index", "show"], param: "orderId" });
 Route objects expose `.href()` for type-safe URL generation:
 
 ```typescript
-redirect(routes.home.href());
-redirect(routes.account.orders.show.href({ orderId: "42" }));
+redirect(routes.home.href())
+redirect(routes.account.orders.show.href({ orderId: '42' }))
 ```
 
 ## Actions
 
-An action is a handler for a single leaf route. Type it with `BuildAction`:
+An action is the handler for one leaf route. In Remix app code, actions should live in controllers.
+Use `Action` only when a reusable helper needs to type one action before it is added to a
+controller or when you are doing low-level router wiring outside the `app/actions` convention:
 
 ```typescript
-import type { BuildAction } from 'remix/fetch-router'
+import { createAction } from 'remix/router'
 
-export const search: BuildAction<'GET', typeof routes.search> = {
+import { routes } from '../routes.ts'
+
+export const search = createAction(routes.search, {
   async handler({ url }) {
     let query = url.searchParams.get('q') ?? ''
     let results = await searchIndex(query)
     return render(<SearchPage query={query} results={results} />)
   },
-}
+})
 ```
 
 The handler receives a context object with:
@@ -116,12 +120,12 @@ The handler receives a context object with:
 Actions with inline middleware:
 
 ```typescript
-import { requireAuth } from "remix/auth-middleware";
+import { requireAuth } from 'remix/middleware/auth'
 
-router.get(routes.account, {
+router.get(routes.account.index, {
   middleware: [requireAuth()],
   handler: accountAction.handler,
-});
+})
 ```
 
 ## Returning Responses
@@ -195,18 +199,19 @@ if (!parsed.success) {
 ### Return JSON
 
 For routes consumed by client code rather than rendered as a page (autocomplete endpoints, polling
-APIs, inter-service calls), return a JSON `Response`. Use `remix/headers` for cache headers
-instead of hand-formatting strings:
+APIs, inter-service calls), return a JSON `Response`. Use `SuperHeaders` from `remix/headers` when
+typed header accessors make the response clearer:
 
 ```typescript
-import { CacheControl } from "remix/headers";
+import Headers from 'remix/headers'
+
+let headers = new Headers()
+headers.contentType = { mediaType: 'application/json', charset: 'utf-8' }
+headers.cacheControl = { noStore: true }
 
 return new Response(JSON.stringify({ results }), {
-  headers: {
-    "Content-Type": "application/json; charset=utf-8",
-    "Cache-Control": new CacheControl({ noStore: true }).toString(),
-  },
-});
+  headers,
+})
 ```
 
 If you find yourself returning JSON for what is really a browser form submission, prefer the
@@ -216,15 +221,20 @@ with the server.
 
 ## Controllers
 
-A controller mirrors a route map. Each key in `actions` matches a key in the route definition.
-Pass `AppContext` as the second generic to `Controller` so `get(Database)`, `get(Session)`,
-`get(Auth)`, etc. are typed against your middleware stack.
+A controller owns the direct leaf routes in one route map. Each key in `actions` matches a direct
+leaf route key in the route definition passed to `router.map(...)`. Nested route-map keys do not
+belong inside a controller's `actions`; map those route maps with their own controllers.
+
+Configure `RouterTypes.context` with your app context in the router module, then use
+`createController()` so `get(Database)`, `get(Session)`, `get(Auth)`, etc. are typed against your
+middleware stack without repeating a type clause on every controller.
 
 ```typescript
-import type { Controller } from 'remix/fetch-router'
-import type { AppContext } from '../router.ts'
+import { createController } from 'remix/router'
 
-export default {
+import { routes } from '../routes.ts'
+
+export default createController(routes.books, {
   actions: {
     async index({ get }) {
       let db = get(Database)
@@ -239,90 +249,143 @@ export default {
       return render(<ShowPage book={book} />)
     },
   },
-} satisfies Controller<typeof routes.books, AppContext>
+})
 ```
 
-### Nested controllers
+### Root controller
 
-When a route map contains nested maps, the controller nests too:
+The root route map uses `app/actions/controller.tsx` and owns only top-level leaf routes:
 
 ```typescript
 // routes.ts
 export const routes = route({
+  assets: get('/assets/*path'),
+  home: '/',
   account: route('account', {
     index: '/',
     settings: form('settings', { formMethod: 'PUT', names: { action: 'update' } }),
-    orders: resources('orders', { only: ['index', 'show'], param: 'orderId' }),
   }),
 })
 
-// controllers/account/controller.tsx
-import settingsController from './settings/controller.tsx'
-import ordersController from './orders/controller.tsx'
+// app/actions/controller.tsx
+export default createController(routes, {
+  actions: {
+    async assets({ request }) {
+      return (await assetServer.fetch(request)) ?? new Response('Not Found', { status: 404 })
+    },
+    home() {
+      return render(<HomePage />)
+    },
+  },
+})
+```
 
-export default {
+Because `account` is a nested route map, it is not an action key in the root controller.
+
+### Nested route maps
+
+Nested route maps use their own controllers under `app/actions/<route-key>/controller.tsx`.
+Directory names under `app/actions/` are route-map keys, not URL path segments.
+
+```typescript
+// app/actions/account/controller.tsx
+export default createController(routes.account, {
   middleware: [requireAuth()],
   actions: {
-    index() { return render(<AccountPage />) },
-    settings: settingsController,
-    orders: ordersController,
+    index() {
+      return render(<AccountPage />)
+    },
   },
-} satisfies Controller<typeof routes.account, AppContext>
+})
+
+// app/actions/account/settings/controller.tsx
+export default createController(routes.account.settings, {
+  middleware: [requireAuth()],
+  actions: {
+    index() {
+      return render(<SettingsPage />)
+    },
+    update() {
+      return redirect(routes.account.index.href(), 303)
+    },
+  },
+})
+```
+
+Then map each route map explicitly:
+
+```typescript
+import rootController from './actions/controller.tsx'
+import accountController from './actions/account/controller.tsx'
+import accountSettingsController from './actions/account/settings/controller.tsx'
+
+let router = createRouter({ middleware })
+
+router.map(routes, rootController)
+router.map(routes.account, accountController)
+router.map(routes.account.settings, accountSettingsController)
 ```
 
 ### Controller middleware
 
-The `middleware` array on a controller runs for every action in that subtree, before action-level
-middleware:
+The `middleware` array on a controller runs only for the direct actions in that controller, before
+action-level middleware. It does not apply to other controllers.
 
 ```typescript
-export default {
+export default createController(routes.admin, {
   middleware: [requireAuth(), requireAdmin()],
   actions: {
     /* all actions require auth + admin */
   },
-} satisfies Controller<typeof routes.admin, AppContext>;
+})
 ```
 
 ## Registering Routes
 
-Use `router.map` for route maps (controllers) and verb methods for leaf routes:
+Use `router.map` for route maps and controllers. Map each nested route map explicitly. Use verb
+methods only for low-level router wiring outside the `app/actions` controller convention.
 
 ```typescript
-let router = createRouter({ middleware });
+let router = createRouter({ middleware })
 
-// Route map → controller
-router.map(routes.auth, authController);
-router.map(routes.admin, adminController);
+// Route maps → controllers
+router.map(routes, rootController)
+router.map(routes.contact, contactController)
+router.map(routes.auth, authController)
+router.map(routes.auth.login, authLoginController)
+router.map(routes.admin, adminController)
+router.map(routes.admin.books, adminBooksController)
 
-// Leaf route → action
-router.map(routes.home, home);
-router.get(routes.search, searchAction);
-router.post(routes.logout, logoutAction);
+// Leaf route → one-off action
+router.get(routes.search, searchAction)
+router.post(routes.logout, logoutAction)
 ```
 
 ## Typed Context
 
-Define an `AppContext` type from your middleware stack for use in actions and controllers:
+Define an `AppContext` type from your middleware stack, then make it the default context used by
+`createAction()` and `createController()`:
 
 ```typescript
-import type {
-  MiddlewareContext,
-  WithParams,
-  AnyParams,
-} from "remix/fetch-router";
+import type { MiddlewareContext, ContextWithParams, AnyParams } from 'remix/router'
 
 type RootMiddleware = [
   ReturnType<typeof formData>,
   ReturnType<typeof session>,
   ReturnType<typeof loadDatabase>,
   ReturnType<typeof loadAuth>,
-];
+]
 
-export type AppContext<params extends AnyParams = AnyParams> = WithParams<
+export type AppContext<params extends AnyParams = {}> = ContextWithParams<
   MiddlewareContext<RootMiddleware>,
   params
->;
+>
+
+declare module 'remix/router' {
+  interface RouterTypes {
+    context: AppContext
+  }
+}
 ```
 
 This gives typed `context.get(Database)`, `context.get(Session)`, `context.get(Auth)`, etc.

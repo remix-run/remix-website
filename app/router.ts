@@ -1,27 +1,23 @@
-import { asyncContext } from "remix/async-context-middleware";
-import { compression } from "remix/compression-middleware";
-import { createRouter, type RequestContext } from "remix/fetch-router";
-import { formData } from "remix/form-data-middleware";
-import { logger } from "remix/logger-middleware";
-import { staticFiles } from "remix/static-middleware";
+import { asyncContext } from "remix/middleware/async-context";
+import { compression } from "remix/middleware/compression";
+import { createRouter, type RequestContext } from "remix/router";
+import { formData } from "remix/middleware/form-data";
+import { logger } from "remix/middleware/logger";
+import { staticFiles } from "remix/middleware/static";
 
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
-import { enabledRoutes, routes } from "./routes.ts";
-import { assetServer } from "./utils/assets.server.ts";
+import { routes, showJam2026 } from "./routes.ts";
 
-import actionsController from "./controllers/actions/controller.tsx";
-import { blogHandler } from "./controllers/blog/controller.tsx";
-import { blogOgImageHandler } from "./controllers/blog-og-image.tsx";
-import { blogPostHandler } from "./controllers/blog/post.tsx";
-import { blogRssHandler } from "./controllers/blog/rss.ts";
-import { brandHandler } from "./controllers/brand.tsx";
-import { catchallHandler } from "./controllers/catchall.ts";
-import { remix3ActiveDevelopmentHandler } from "./controllers/remix3-active-development/controller.tsx";
-import { homeHandler } from "./controllers/home/controller.tsx";
-import { jamController } from "./controllers/jam/controller.ts";
-import { newsletterHandler } from "./controllers/newsletter.tsx";
+import rootController from "./actions/controller.tsx";
+import actionsController from "./actions/actions/controller.tsx";
+import { catchallHandler } from "./actions/catchall.ts";
+import { jamController } from "./actions/jam/controller.ts";
+import { jam2025Controller } from "./actions/jam/y2025/controller.tsx";
+import { jam2025GalleryController } from "./actions/jam/y2025/gallery/controller.tsx";
+import { jam2026Controller } from "./actions/jam/y2026/controller.tsx";
+import { jam2026TicketsController } from "./actions/jam/y2026/tickets/controller.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
 let isTest = process.env.NODE_ENV === "test";
@@ -77,34 +73,15 @@ function createAppRouter() {
 
   let router = createRouter({ middleware });
 
-  router.map(routes.assets, async ({ request }) => {
-    return (
-      (await assetServer.fetch(request)) ??
-      new Response("Not found", { status: 404 })
-    );
-  });
-
-  // Keep healthcheck on a stable path during migration so deploy checks never
-  // depend on the in-progress Remix route asset strategy.
-  router.map(routes.healthcheck, () => {
-    return new Response("OK", {
-      headers: {
-        "Cache-Control": "no-store",
-        "Content-Type": "text/plain; charset=utf-8",
-      },
-    });
-  });
-
-  router.map(routes.blogRss, blogRssHandler);
-  router.map(routes.blogOgImage, blogOgImageHandler);
-  router.map(routes.blogPost, blogPostHandler);
-  router.map(routes.blog, blogHandler);
+  router.map(routes, rootController);
   router.map(routes.actions, actionsController);
-  router.map(routes.brand, brandHandler);
-  router.map(routes.home, homeHandler);
-  router.map(routes.newsletter, newsletterHandler);
-  router.map(enabledRoutes.jam, jamController);
-  router.map(routes.remix3ActiveDevelopment, remix3ActiveDevelopmentHandler);
+  router.map(routes.jam, jamController);
+  router.map(routes.jam.y2025, jam2025Controller);
+  router.map(routes.jam.y2025.gallery, jam2025GalleryController);
+  if (showJam2026) {
+    router.map(routes.jam.y2026, jam2026Controller);
+    router.map(routes.jam.y2026.tickets, jam2026TicketsController);
+  }
 
   // Redirects from _redirects (must be before * catchall)
   let redirects = loadRedirectsFromFile();

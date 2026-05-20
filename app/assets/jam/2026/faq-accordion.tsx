@@ -6,7 +6,7 @@ import {
   AccordionTrigger,
 } from "remix/ui/accordion";
 import { theme } from "remix/ui/theme";
-import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
+import { jamTheme } from "../../../actions/jam/y2026/theme.ts";
 
 type Faq = {
   id: string;

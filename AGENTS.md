@@ -19,7 +19,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 - Route declarations live in `app/routes.ts`; router mappings in `app/router.ts`; keep them aligned.
 - Map explicit routes before the `router.map("*", ...)` catch-all.
-- In `app/controllers/**`, keep exported route handler/controller first and helper/details below.
+- In `app/actions/**`, keep exported route handler/controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
 - For route-local hydrated UI in `app/assets/**`, keep component/rendering code first and put styles below the components.
 - Let components own their own state and implementation details. If a parent imports a long list of child constants/helpers, that is a boundary smell; extract a child component/module instead.
@@ -40,7 +40,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 ## Done Checklist (Route/Feature Changes)
 
 1. Add/update route pattern in `app/routes.ts`.
-2. Implement route/controller in `app/controllers/**`.
+2. Implement route/controller in `app/actions/**`.
 3. Wire mapping in `app/router.ts` before catch-all fallback.
 4. Add focused tests and run targeted verification (+ Remix typechecks for substantial changes).
 5. Run `pnpm run build` before shipping a PR to catch CSS/runtime regressions.

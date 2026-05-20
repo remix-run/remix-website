@@ -1,6 +1,6 @@
 import * as path from "node:path";
-import { getContext } from "remix/async-context-middleware";
-import { createContextKey, type Middleware } from "remix/fetch-router";
+import { getContext } from "remix/middleware/async-context";
+import { createContextKey, type Middleware } from "remix/router";
 import { assetServer } from "../utils/assets.server.ts";
 
 export interface AssetEntry {
@@ -36,5 +36,9 @@ export function setAssetEntry(
 }
 
 export function getAssetEntry() {
-  return getContext().get(assetEntryKey);
+  let assetEntry = getContext().get(assetEntryKey);
+  if (!assetEntry) {
+    throw new Error("Missing asset entry on request context");
+  }
+  return assetEntry;
 }

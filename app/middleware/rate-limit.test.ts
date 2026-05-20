@@ -1,7 +1,7 @@
 import { describe, it } from "remix/test";
 import type { TestContext as RemixTestContext } from "remix/test";
 import { expect } from "remix/assert";
-import { createRouter } from "remix/fetch-router";
+import { createRouter } from "remix/router";
 import { rateLimit } from "./rate-limit.ts";
 
 function createMockContext(

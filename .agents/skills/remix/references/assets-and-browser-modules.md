@@ -4,7 +4,8 @@
 
 How to serve browser scripts and styles from source. Read this when the task involves:
 
-- Configuring `createAssetServer` (`fileMap`, `allow`, `deny`, fingerprinting, compiler options)
+- Configuring `createAssetServer` (`basePath`, `fileMap`, `allow`, `deny`, fingerprinting,
+  compiler options)
 - Choosing between `staticFiles()` for already-built files and `createAssetServer()` for source
   assets that need import rewriting, preloads, or fingerprinted URLs
 - Generating script URLs or `<link rel="modulepreload">` tags for a client entry
@@ -26,36 +27,40 @@ preloads, sourcemaps, or fingerprinted URLs.
 ## Default Pattern
 
 ```typescript
-import * as path from "node:path";
+import { createAssetServer } from 'remix/assets'
+import { createController } from 'remix/router'
+import { get, route } from 'remix/routes'
 
-import { createAssetServer } from "remix/assets";
-import { createRouter } from "remix/fetch-router";
+export const routes = route({
+  assets: get('/assets/*path'),
+})
 
 let assetServer = createAssetServer({
-  rootDir: path.resolve(import.meta.dirname, ".."),
+  basePath: '/assets',
+  rootDir: process.cwd(),
   fileMap: {
-    "/assets/app/*path": "app/*path",
-    "/assets/packages/*path": "../packages/*path",
+    'app/*path': 'app/*path',
+    'node_modules/*path': 'node_modules/*path',
   },
-  allow: ["app/assets/**", "../packages/**"],
-  deny: ["app/**/*.server.*"],
-  target: { es: "2020", chrome: "109", safari: "16.4" },
-  sourceMaps: process.env.NODE_ENV === "development" ? "external" : undefined,
-  minify: process.env.NODE_ENV === "production",
+  allow: ['app/assets/**', 'node_modules/**'],
+  deny: ['app/**/*.server.*'],
+  target: { es: '2020', chrome: '109', safari: '16.4' },
+  sourceMaps: process.env.NODE_ENV === 'development' ? 'external' : undefined,
+  minify: process.env.NODE_ENV === 'production',
   scripts: {
     define: {
-      "process.env.NODE_ENV": JSON.stringify(
-        process.env.NODE_ENV ?? "development",
-      ),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
     },
   },
-});
+})
 
-let router = createRouter();
-
-router.get("/assets/*path", ({ request }) => {
-  return assetServer.fetch(request);
-});
+export default createController(routes, {
+  actions: {
+    async assets({ request }) {
+      return (await assetServer.fetch(request)) ?? new Response('Not Found', { status: 404 })
+    },
+  },
+})
 ```
 
 ## Rules
@@ -64,8 +69,9 @@ router.get("/assets/*path", ({ request }) => {
 - Add a `deny` list for server-only modules such as `*.server.*`, private config, or other files
   that should never be exposed.
 - Set `rootDir` explicitly in monorepos so relative paths resolve from the intended project root.
-- `fileMap` keys are public URL patterns and values are root-relative file path patterns. They use
-  `route-pattern` syntax on both sides.
+- `basePath` is the public URL namespace handled by the asset server.
+- `fileMap` keys are URL patterns relative to `basePath`, and values are root-relative file path
+  patterns. They use `route-pattern` syntax on both sides.
 - Keep the same wildcard params on both sides of a `fileMap` entry so import rewriting can map
   source files back to public URLs.
 - CSS files are compiled and served alongside scripts. Local CSS `@import` rules are rewritten and
@@ -78,8 +84,8 @@ Use `getHref()` when you need the public URL for one module, and `getPreloads()`
 dependencies.
 
 ```typescript
-let entryHref = await assetServer.getHref("app/assets/entry.ts");
-let preloads = await assetServer.getPreloads(["app/assets/entry.ts"]);
+let entryHref = await assetServer.getHref('app/assets/entry.ts')
+let preloads = await assetServer.getPreloads(['app/assets/entry.ts'])
 ```
 
 Use this when rendering documents or layouts that boot browser behavior with a known client entry.

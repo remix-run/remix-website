@@ -5,8 +5,21 @@ description: Build and review Remix 3 applications using the `remix` npm package
 
 # Build a Remix App
 
-Use this skill for end-to-end Remix app work. It should help the agent choose the right layer
+Use this skill for end-to-end Remix app work. This skill helps you choose the right layer
 first, reach for the right package, and avoid the most common Remix-specific mistakes.
+
+## Full Package Documentation
+
+This skill is the quick guide. When you need fuller API documentation, examples, or package-specific
+details for a `remix/*` subpath, first look for a README next to the relevant generated source file
+in the published `remix` package:
+`node_modules/remix/src/<subpath>/README.md`. If that README does not exist, look for the nearest
+parent README because some subpaths share their parent package documentation.
+
+Examples:
+
+- `remix/router` -> `node_modules/remix/src/fetch-router/README.md`
+- `remix/ui/button` -> `node_modules/remix/src/ui/button/README.md`
 
 ## What Remix Is
 
@@ -17,7 +30,7 @@ subpath. There is no top-level `remix` import.
 A Remix app has four main pieces:
 
 - **Routes** in `app/routes.ts` define the typed URL contract and power `href()` generation.
-- **Controllers and actions** implement that contract and return `Response` objects.
+- **Controllers** in `app/actions` implement that contract and return `Response` objects.
 - **Middleware** composes request lifecycle behavior and populates typed context via
   `context.set(Key, value)`.
 - **Components** render UI with `remix/ui`. This is not React. A component receives a
@@ -101,7 +114,8 @@ Use these root directories consistently:
 Inside `app/`, organize by responsibility:
 
 - `assets/` for client entrypoints and client-owned browser behavior
-- `controllers/` for route-owned handlers and route-local UI
+- `actions/` for controller-owned route handlers, route-local response rendering, and route-local
+  UI/helpers that are not shared across route areas
 - `data/` for schema, queries, persistence setup, migrations, and runtime data initialization
 - `middleware/` for request lifecycle concerns such as auth, sessions, uploads, and database
   injection
@@ -123,31 +137,56 @@ When code could live in multiple places:
 
 ### Route Ownership
 
-- Use a flat file in `app/controllers/` for a simple leaf action, such as `app/controllers/home.tsx`
-- Use a folder with `controller.tsx` when a route owns nested routes or multiple actions, such as
-  `app/controllers/account/controller.tsx`
-- Mirror nested route structure on disk, such as `app/controllers/auth/login/controller.tsx`
-- Keep route-local UI next to its owner, such as `app/controllers/contact/page.tsx`
-- Move shared UI to `app/ui/`
-- If a flat leaf grows child routes or multiple actions, promote it to a controller folder
+- Put top-level leaf actions in `app/actions/controller.tsx`
+- A controller's `actions` object contains only direct leaf route keys from the route map passed to
+  `router.map(...)`
+- Add `app/actions/<route-key>/controller.tsx` for each nested route map that needs actions or
+  middleware, and map it explicitly with `router.map(routes.<routeKey>, controller)`
+- Name directories under `app/actions/` after route-map keys, not URL path segments
+- Keep route-local UI and helpers next to the controller that owns them
+- Move shared cross-route UI to `app/ui/`
+- If a top-level leaf grows into a route map, move its handler into the nested route-key
+  controller and update `app/router.ts` to map that route map explicitly
+
+### Response Rendering And Utilities
+
+- Treat response rendering as action-layer code: modules that return `Response`, choose HTTP status
+  or headers, call `redirect(...)`, or call the local `render(...)` helper belong in `app/actions`
+- Keep `app/actions/render.tsx` small; it should adapt `remix/ui/server` output to
+  `createHtmlResponse(...)`. Route-specific response assembly can live in flat action modules, but
+  directories under `app/actions/` must still match route-map keys
+- Put pure support code in focused `app/utils/<topic>.ts` modules. Formatting, MIME
+  classification, path parsing, sorting, and normalization should be testable without a router,
+  request context, or `Response`, and should not import from `app/actions`, `remix/ui/server`, or
+  `remix/response/*`
+- Do not introduce page-data intermediary shapes only to keep route-specific renderers away from
+  `render(...)`; keep response assembly in actions and extract only the pure helpers
 
 ### Layout Anti-Patterns
 
 - Do not create `app/lib/` as a generic dumping ground
 - Do not create `app/components/` as a second shared UI bucket when `app/ui/` already owns that
   role
-- Do not put shared cross-route UI in `app/controllers/`
+- Do not create `app/controllers/`; Remix app route handlers live under `app/actions/`
+- Do not put shared cross-route UI in `app/actions/`
+- Do not create standalone root action files; put root route actions in `app/actions/controller.tsx`
+- Do not put nested route-map keys in a controller's `actions`
+- Do not register normal app leaf routes directly in `app/router.ts` when they belong in a
+  controller
+- Do not rely on middleware from one controller to protect another controller; map middleware
+  explicitly in each controller that needs it
 - Do not put middleware or persistence helpers in `app/utils/` when they have a clearer home
-- Do not create folders for simple leaf actions unless they are real controllers
 
 ## Core Remix Rules
 
 - Import from `remix/<subpath>`, never `import { ... } from 'remix'`
 - Treat `app/routes.ts` as the source of truth for URLs. Use `routes.<name>.href(...)` for
   redirects, links, tests, and internal URL construction
-- Controllers and actions should return explicit `Response` objects, including redirects, 404s, and
+- Controllers should return explicit `Response` objects, including redirects, 404s, and
   validation failures. At the route boundary, prefer returning a `Response` for expected outcomes
   (validation errors, conflicts, not found) over throwing for control flow
+- `router.map(routes, controller)` maps only the direct leaf routes in `routes`; nested route maps
+  must be mapped with their own explicit controllers
 - Model HTTP behavior explicitly. Status codes, headers, redirects, cache rules, and content types
   are part of the route contract
 - Make the server route correct first. A POST should already return the right HTML, redirect, or
@@ -185,11 +224,16 @@ When code could live in multiple places:
 
 - Prefer server and router tests first. Drive the app with `router.fetch(new Request(...))` and
   assert on the returned `Response`
+- Keep controller tests shaped like controllers: root route behavior belongs in
+  `app/actions/controller.test.ts(x)`, and nested route-map behavior belongs beside that route-key
+  controller
 - Build a fresh router per test or per suite so sessions, in-memory storage, and database state
   stay isolated
 - Use `routes.<name>.href(...)` in tests so URLs stay coupled to the route contract
 - For auth or session scenarios, use a test cookie and `createMemorySessionStorage()` instead of
   production storage
+- Co-locate tests for pure `app/utils` helpers beside their modules. Test response behavior through
+  router or controller tests
 - Use component tests only for interactive or DOM-specific behavior. Render with `createRoot(...)`,
   interact with the real DOM, and call `root.flush()` between steps
 - Prefer one representative behavior test over many repetitive assertion variants
@@ -216,6 +260,13 @@ When code could live in multiple places:
 - Assuming authentication is enough without per-resource authorization checks
 - Dropping shared code into vague buckets like `utils.ts`, `helpers.ts`, or `common.ts` when
   ownership is known
+- Recreating the old `app/controllers` or standalone root action file layout instead of using
+  controllers under `app/actions`
+- Putting nested route-map keys inside a controller `actions` object. Map nested route maps
+  explicitly in `app/router.ts`
+- Treating direct `router.get(...)`/`router.post(...)` registrations as the default app structure
+  instead of using controllers
+- Assuming controller middleware applies to controllers registered for nested route maps
 - Writing only component tests for a feature whose main behavior is really an HTTP route concern
 
 ## Package Map
@@ -225,17 +276,22 @@ what it exports. Open the linked reference file when you need full examples.
 
 ### Routing, Server, and Responses
 
-- `remix/fetch-router` — the router itself. Use for `createRouter`, controller and middleware
+- `remix/router` — the router itself. Use for `createRouter`, controller and middleware
   types, and registering routes
-- `remix/fetch-router/routes` — declarative route builders. Use for `route`, `get`, `post`, `put`,
-  `del`, `form`, `resources` when defining `app/routes.ts`
-- `remix/node-fetch-server` — adapter from Node's `http` module to a Fetch-style router. Use for
-  `createRequestListener` in `server.ts`
+- `remix/routes` — declarative route builders. Use for `route`, `get`, `post`, `put`, `del`,
+  `form`, `resources` when defining `app/routes.ts`
+- `remix/node-fetch-server` — default Node adapter for new apps. Use `createRequestListener` with
+  `node:http`, `node:https`, or `node:http2` in `server.ts` when booting the template-style app
+- `remix/node-serve` — managed high-performance Node server. Use `serve` when you want Remix to
+  manage the server lifecycle, TLS options, or uWebSockets.js setup around a Fetch handler
 - `remix/assets` — browser asset server. Use for `createAssetServer` when serving compiled
-  scripts and styles, getting public hrefs, and emitting preloads. Shared compiler options such as
-  `target`, `sourceMaps`, `sourceMapSourcePaths`, and `minify` live at the top level
-- `remix/headers` — typed header parsers and builders. Use when reading `Accept`, `Cookie`, or
-  setting `CacheControl`, `Vary`, etc., instead of hand-formatting strings
+  scripts and styles, getting public hrefs, and emitting preloads. Configure a `basePath`, and
+  keep `fileMap` URL patterns relative to it. Shared compiler options such as `target`,
+  `sourceMaps`, `sourceMapSourcePaths`, and `minify` live at the top level
+- `remix/headers` — `SuperHeaders` plus typed header parsers and builders. Use the default export
+  when you want a `Headers` subclass with typed accessors like `headers.contentType`,
+  `headers.cacheControl`, and `headers.setCookie`; use named classes such as `CacheControl`,
+  `ContentDisposition`, and `Vary` when working with individual header values
 - `remix/response/redirect` — `redirect(href, status?)`. Use for the canonical "POST then redirect"
   pattern and other location changes
 - `remix/response/html` — `createHtmlResponse`. Use when you need an HTML `Response` from a string
@@ -244,10 +300,14 @@ what it exports. Open the linked reference file when you need full examples.
   the global `compression()` middleware
 - `remix/response/file` — file-download responses. Use for `Content-Disposition: attachment`
   responses
-- `remix/route-pattern` — low-level URL matching and generation. Use when working with raw
-  patterns outside the router (custom matchers, scripts)
+- `remix/route-pattern` — low-level URL matching and generation. Use `RoutePattern` or
+  `createMatcher` when working with raw patterns outside the router. `href(...)` encodes pathname
+  and search params for you, and `match(...)` returns decoded params
+- `remix/route-pattern/specificity` — pattern ranking helpers. Use only when building custom
+  matcher or reporting logic outside the normal router/matcher APIs
 - `remix/fetch-proxy` — Fetch-based HTTP proxying. Use to forward a request to another origin; pass
-  `xForwardedHeaders` when the upstream needs forwarded proto, host, and port
+  `xForwardedHeaders` when the upstream needs forwarded proto, host, and port. It also rewrites
+  proxied `Set-Cookie` domain/path attributes by default
 
 ### Data, Validation, and Persistence
 
@@ -260,9 +320,11 @@ what it exports. Open the linked reference file when you need full examples.
   Use when input arrives as a string but should be a typed value
 - `remix/data-schema/form-data` — `f.object` and `f.field` for parsing `FormData` directly. Use
   in actions that read browser forms
+- `remix/data-schema/lazy` — recursive or mutually-referential schemas. Use when a schema needs to
+  refer to itself or another schema that is declared later
 - `remix/data-table` — typed tables and a `Database` interface. Use for `table`, `column`,
   `createDatabase` when modeling persisted data
-- `remix/data-table-sqlite`, `remix/data-table-postgres`, `remix/data-table-mysql` — adapters.
+- `remix/data-table/sqlite`, `remix/data-table/postgres`, `remix/data-table/mysql` — adapters.
   Use to back `createDatabase` with a real engine. SQLite accepts Node, Bun, and compatible
   synchronous clients with the shared `prepare`/`exec` surface
 - `remix/data-table/migrations` — migration authoring and runners. Use for `createMigration`,
@@ -271,27 +333,29 @@ what it exports. Open the linked reference file when you need full examples.
   apply migrations
 - `remix/data-table/operators` — query operators such as `inList(...)`. Use when `where` clauses
   need set or comparison logic
+- `remix/data-table/sql-helpers` — SQL helper utilities for adapter or advanced query work. Avoid
+  this in normal app code unless you are intentionally working below the table/query API
 
 ### Auth, Sessions, and Cookies
 
 - `remix/session` — the `Session` object: `get`, `set`, `flash`, `unset`, `regenerateId`. Use for
   any per-browser state where tampering would be a bug (login, "I submitted this form already",
   cart, flash messages)
-- `remix/session-middleware` — `session(cookie, storage)`. Use to wire a session cookie and
+- `remix/middleware/session` — `session(cookie, storage)`. Use to wire a session cookie and
   storage backend into the root middleware stack
-- `remix/session/fs-storage`, `remix/session/memory-storage`, `remix/session/cookie-storage` —
+- `remix/session-storage/fs`, `remix/session-storage/memory`, `remix/session-storage/cookie` —
   storage backends. Use `fs-storage` for single-process apps, `memory-storage` for tests,
   `cookie-storage` for stateless deployments where data fits in a cookie
-- `remix/session-storage-redis` — Redis-backed storage. Use for multi-process or multi-host
+- `remix/session-storage/redis` — Redis-backed storage. Use for multi-process or multi-host
   deployments
-- `remix/session-storage-memcache` — Memcache-backed storage. Same multi-host use case as Redis
+- `remix/session-storage/memcache` — Memcache-backed storage. Same multi-host use case as Redis
 - `remix/cookie` — `createCookie` for plain signed/unsigned cookies. Use for non-sensitive
   preferences where the client is allowed to control the value (theme, locale, dismissed banner).
   For state where tampering matters, prefer `remix/session`
 - `remix/auth` — credentials, OAuth, OIDC, and Atmosphere providers. Use to define how identity is
   verified, start/finish external login, and refresh stored OAuth/OIDC token bundles with
   `refreshExternalAuth(...)`
-- `remix/auth-middleware` — `auth({ schemes })`, `requireAuth`, the `Auth` context key. Use to
+- `remix/middleware/auth` — `auth({ schemes })`, `requireAuth`, the `Auth` context key. Use to
   resolve identity into the request context and to gate routes
 
 ### UI, Hydration, and Browser Behavior
@@ -299,90 +363,102 @@ what it exports. Open the linked reference file when you need full examples.
 - `remix/ui` — the component runtime: components, core mixins, `clientEntry`, `run`, `<Frame>`,
   navigation helpers, and `createRoot`. Use for app UI behavior
 - `remix/ui/server` — server rendering: `renderToStream`, `renderToString`. Use in the
-  `render(...)` helper that returns HTML responses
+  `app/actions/render.tsx` helper that returns HTML responses
 - `remix/ui/animation` — animation APIs: `animateEntrance`, `animateExit`, `animateLayout`,
   `spring`, `tween`, and `easings`
-- `remix/ui/<primitive>` — UI primitives, mixins, glyphs, and theme helpers. Import from
-  `remix/ui/accordion`, `remix/ui/button`, `remix/ui/select`, etc.
+- `remix/ui/<primitive>` — UI primitives, mixins, glyphs, and theme helpers. Current subpaths
+  include `remix/ui/accordion`, `remix/ui/anchor`, `remix/ui/breadcrumbs`, `remix/ui/button`,
+  `remix/ui/combobox`, `remix/ui/glyph`, `remix/ui/listbox`, `remix/ui/menu`,
+  `remix/ui/popover`, `remix/ui/scroll-lock`, `remix/ui/select`, `remix/ui/separator`, and
+  `remix/ui/theme`
 - `remix/ui/test` — component test rendering helpers such as `render`
-- `remix/ui/jsx-runtime` — JSX transform target. Configured in `tsconfig.json`, rarely
-  imported directly
+- `remix/ui/jsx-runtime` and `remix/ui/jsx-dev-runtime` — JSX transform targets. Configured in
+  `tsconfig.json`, rarely imported directly
 - `remix/html-template` — escaped HTML template literals. Use when generating HTML outside the
   component system (RSS feeds, email bodies, error pages)
 - `remix/file-storage` — backend-agnostic `File` storage interface. Use as the type bound for
   upload destinations
-- `remix/file-storage/fs`, `remix/file-storage/memory`, `remix/file-storage-s3` — storage
+- `remix/file-storage/fs`, `remix/file-storage/memory`, `remix/file-storage/s3` — storage
   backends. Use to implement an upload destination
 
 ### Middleware
 
-- `remix/static-middleware` — `staticFiles(dir)`. Use to serve files from `public/` exactly as
+- `remix/middleware/static` — `staticFiles(dir)`. Use to serve files from `public/` exactly as
   they exist on disk
-- `remix/form-data-middleware` — `formData()`. Use to parse `FormData` once and expose it via
+- `remix/middleware/form-data` — `formData()`. Use to parse `FormData` once and expose it via
   `get(FormData)` instead of calling `await request.formData()` in each action
 - `remix/form-data-parser` — lower-level `parseFormData`, `FileUpload`. Use when implementing
   custom upload handlers. Upload handler errors propagate directly
 - `remix/multipart-parser` and `remix/multipart-parser/node` — low-level multipart stream parsing.
   `MultipartPart.headers` is a plain object keyed by lower-case header name; read values with
   bracket notation such as `part.headers['content-type']`
-- `remix/compression-middleware` — `compression()`. Use globally for text-like responses
-- `remix/logger-middleware` — `logger()`. Use in development for request logs; pass `colors` to
+- `remix/middleware/compression` — `compression()`. Use globally for text-like responses
+- `remix/middleware/logger` — `logger()`. Use in development for request logs; pass `colors` to
   force terminal color output on or off
-- `remix/method-override-middleware` — `methodOverride()`. Use when HTML forms need `PUT`,
+- `remix/middleware/method-override` — `methodOverride()`. Use when HTML forms need `PUT`,
   `PATCH`, or `DELETE`
-- `remix/async-context-middleware` — `asyncContext()`, `getContext()`. Use when helpers outside
+- `remix/middleware/async-context` — `asyncContext()`, `getContext()`. Use when helpers outside
   actions need request context without threading it through every call
-- `remix/cors-middleware` — `cors(opts?)`. Use for endpoints called cross-origin
-- `remix/csrf-middleware` — `csrf(opts?)`. Use when session-backed forms mutate state and need
+- `remix/middleware/cors` — `cors(opts?)`. Use for endpoints called cross-origin
+- `remix/middleware/csrf` — `csrf(opts?)`. Use when session-backed forms mutate state and need
   synchronizer-token CSRF protection
-- `remix/cop-middleware` — cross-origin protection. Use to reject unsafe cross-origin browser
+- `remix/middleware/cop` — cross-origin protection. Use to reject unsafe cross-origin browser
   requests
 
 ### Test
 
 - `remix/test` — `describe`, `it`, and lifecycle hooks. Use as the test framework
 - `remix/test/cli` — programmatic test runner APIs such as `runRemixTest`
+- `remix/node-fetch-server/test` — `createTestServer` for end-to-end tests that need a real local
+  HTTP server around a Fetch handler
 - `remix/cli` — programmatic Remix CLI API. Use the `remix` executable for project commands such
-  as `remix test`, `remix routes`, `remix skills`, and `remix doctor`
+  as `remix test`, `remix routes`, `remix doctor`, and `remix version`
 - `remix/assert` — assertion helpers. Use in place of `node:assert` so messages render cleanly
   in the runner
 - `remix/terminal` — ANSI styles, color detection, style factories, and testable terminal streams.
   Use for CLIs and terminal output instead of hand-rolled escape sequences
+- `remix/fs` — small filesystem helpers such as `openLazyFile` and `writeFile`. Use in Node-only
+  app or tooling code when you need lazy file responses or safe file writes
+- `remix/lazy-file` — `LazyFile` primitives and byte-range helpers. Use when implementing file or
+  range responses below the higher-level response/file helpers
+- `remix/mime` — content-type and MIME detection helpers. Use instead of maintaining app-local
+  extension maps
+- `remix/tar-parser` — streaming tar parsing. Use for import/export tooling that consumes tar
+  archives
 
 ## Canonical Patterns
 
 ### Define routes first
 
 ```typescript
-import { form, get, post, resources, route } from "remix/fetch-router/routes";
+import { form, get, post, resources, route } from 'remix/routes'
 
 export const routes = route({
-  home: "/",
-  contact: form("contact"),
+  home: '/',
+  contact: form('contact'),
   books: {
-    index: "/books",
-    show: "/books/:slug",
+    index: '/books',
+    show: '/books/:slug',
   },
-  auth: route("auth", {
-    login: form("login"),
-    logout: post("logout"),
+  auth: route('auth', {
+    login: form('login'),
+    logout: post('logout'),
   }),
-  admin: route("admin", {
-    index: get("/"),
-    books: resources("books", { param: "bookId" }),
+  admin: route('admin', {
+    index: get('/'),
+    books: resources('books', { param: 'bookId' }),
   }),
-});
+})
 ```
 
 ### Type controllers against the route contract
 
 ```typescript
-import type { Controller } from 'remix/fetch-router'
+import { createController } from 'remix/router'
 
-import type { AppContext } from '../router.ts'
 import { routes } from '../routes.ts'
 
-export default {
+export default createController(routes.books, {
   actions: {
     async index({ get }) {
       let db = get(Database)
@@ -396,64 +472,75 @@ export default {
       return render(<BookShowPage book={book} />)
     },
   },
-} satisfies Controller<typeof routes.books, AppContext>
+})
+```
+
+### Register Controllers Explicitly
+
+```typescript
+import { createRouter } from 'remix/router'
+
+import rootController from './actions/controller.tsx'
+import adminController from './actions/admin/controller.tsx'
+import adminBooksController from './actions/admin/books/controller.tsx'
+import authController from './actions/auth/controller.tsx'
+import authLoginController from './actions/auth/login/controller.tsx'
+import booksController from './actions/books/controller.tsx'
+import contactController from './actions/contact/controller.tsx'
+import { routes } from './routes.ts'
+
+export const router = createRouter({ middleware })
+
+router.map(routes, rootController)
+router.map(routes.contact, contactController)
+router.map(routes.books, booksController)
+router.map(routes.auth, authController)
+router.map(routes.auth.login, authLoginController)
+router.map(routes.admin, adminController)
+router.map(routes.admin.books, adminBooksController)
 ```
 
 ### Compose middleware deliberately
 
 ```typescript
-import {
-  createRouter,
-  type AnyParams,
-  type MiddlewareContext,
-  type WithParams,
-} from "remix/fetch-router";
+import { createRouter } from 'remix/router'
 
-export type RootMiddleware = [
-  ReturnType<typeof formData>,
-  ReturnType<typeof session>,
-  ReturnType<typeof loadDatabase>,
-  ReturnType<typeof loadAuth>,
-];
+let middleware = []
 
-export type AppContext<params extends AnyParams = AnyParams> = WithParams<
-  MiddlewareContext<RootMiddleware>,
-  params
->;
-
-let middleware = [];
-
-if (process.env.NODE_ENV === "development") {
-  middleware.push(logger());
+if (process.env.NODE_ENV === 'development') {
+  middleware.push(logger())
 }
 
-middleware.push(compression());
-middleware.push(staticFiles("./public"));
-middleware.push(formData());
-middleware.push(methodOverride());
-middleware.push(session(cookie, storage));
-middleware.push(asyncContext());
-middleware.push(loadDatabase());
-middleware.push(loadAuth());
+middleware.push(compression())
+middleware.push(staticFiles('./public'))
+middleware.push(formData())
+middleware.push(methodOverride())
+middleware.push(session(cookie, storage))
+middleware.push(asyncContext())
+middleware.push(loadDatabase())
+middleware.push(loadAuth())
 
-let router = createRouter({ middleware });
+let router = createRouter({ middleware })
 ```
 
-### Mutate, validate, and respond
+### Validate, mutate, and respond
 
 ```typescript
+import { createController } from 'remix/router'
 import { redirect } from 'remix/response/redirect'
 import * as s from 'remix/data-schema'
 import * as f from 'remix/data-schema/form-data'
 import { Session } from 'remix/session'
 import { Database } from 'remix/data-table'
 
+import { routes } from '../routes.ts'
+
 let bookSchema = f.object({
   slug: f.field(s.string()),
   title: f.field(s.string()),
 })
 
-export default {
+export default createController(routes.books, {
   actions: {
     async create({ get }) {
       let parsed = s.parseSafe(bookSchema, get(FormData))
@@ -470,7 +557,7 @@ export default {
       return redirect(routes.books.show.href({ slug: book.slug }))
     },
   },
-} satisfies Controller<typeof routes.books, AppContext>
+})
 ```
 
 This shape works without JavaScript, returns a `Response` for every outcome, and is ready for
@@ -479,21 +566,21 @@ This shape works without JavaScript, returns a `Response` for every outcome, and
 ### Build UI from handle props plus render
 
 ```tsx
-import { on, type Handle } from "remix/ui";
+import { on, type Handle } from 'remix/ui'
 
 function Counter(handle: Handle<{ initialCount?: number; label: string }>) {
-  let count = handle.props.initialCount ?? 0;
+  let count = handle.props.initialCount ?? 0
 
   return () => (
     <button
-      mix={on("click", () => {
-        count++;
-        handle.update();
+      mix={on('click', () => {
+        count++
+        handle.update()
       })}
     >
       {handle.props.label}: {count}
     </button>
-  );
+  )
 }
 ```
 

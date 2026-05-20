@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { route } from "remix/fetch-router/routes";
-import { RoutePattern } from "remix/route-pattern";
+import { createHref } from "remix/route-pattern/href";
+import { route } from "remix/routes";
 import { createRedirectResponse } from "remix/response/redirect";
 
 let defaultRedirectsPath = path.join(process.cwd(), "_redirects");
@@ -33,7 +33,7 @@ function toFetchRouterPattern(from: string): string {
   return from || "/";
 }
 
-type RedirectConfig = { from: string; toPattern: RoutePattern; status: number };
+type RedirectConfig = { from: string; toPattern: string; status: number };
 
 export function parseRedirectsFile(
   redirectsFileContents: string,
@@ -49,7 +49,7 @@ export function parseRedirectsFile(
     let status = getValidRedirectCode(maybeCode);
     configs.push({
       from,
-      toPattern: new RoutePattern(to),
+      toPattern: to,
       status,
     });
   }
@@ -85,7 +85,7 @@ function buildRedirectController(configs: RedirectConfig[]): {
     configs.map((c, i) => [
       `redirect${i}_${c.from.replaceAll("/", "_").replaceAll("*", "splat")}`,
       ({ params }: { params: Record<string, string | undefined> }) => {
-        let url = c.toPattern.href(params);
+        let url = createHref(c.toPattern, params);
         return createRedirectResponse(url, { status: c.status });
       },
     ]),

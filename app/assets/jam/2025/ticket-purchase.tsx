@@ -1,6 +1,6 @@
 import { clientEntry, on, type Handle } from "remix/ui";
 import { assetPaths } from "../../../utils/asset-paths.ts";
-import { JamButton } from "../../../controllers/jam/2025/shared.tsx";
+import { JamButton } from "../../../actions/jam/y2025/shared.tsx";
 
 type JamTicketPurchaseProps = {
   setup: { initialQuantity?: number; maxQuantity: number };

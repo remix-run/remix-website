@@ -1,0 +1,13 @@
+diff --git a/dist/lib/load-module.js b/dist/lib/load-module.js
+index 6a5e847b173e31f52488d2756f85652b6a29c205..62b926ba778cdc3ae4a496d27c9220cd5de5b9d7 100644
+--- a/dist/lib/load-module.js
++++ b/dist/lib/load-module.js
+@@ -16,7 +16,7 @@ export async function loadModule(specifier, parent) {
+     let parentURL = toParentURL(parent);
+     let resolvedSpecifier = path.isAbsolute(specifier) ? pathToFileURL(specifier).href : specifier;
+     process.setSourceMapsEnabled(true);
+-    register(new URL(`./register-hooks.ts?namespace=${encodeURIComponent(namespace)}`, import.meta.url), {
++    register(new URL(`./register-hooks.js?namespace=${encodeURIComponent(namespace)}`, import.meta.url), {
+         data: { namespace },
+         parentURL: import.meta.url,
+     });
