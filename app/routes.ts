@@ -4,9 +4,7 @@ export let showJam2026 =
   typeof process === "undefined" || process.env?.NODE_ENV !== "production";
 
 export let routes = route({
-  actions: route("_actions", {
-    newsletter: post("/newsletter"),
-  }),
+  newsletterSubscribe: post("/_actions/newsletter"),
   assets: get("/assets/*path"),
   blog: get("/blog"),
   blogOgImage: get("/img/:slug"),

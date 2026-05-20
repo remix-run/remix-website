@@ -10,6 +10,7 @@ import { brandHandler } from "./brand.tsx";
 import { remix3ActiveDevelopmentHandler } from "./remix3-active-development.tsx";
 import { homeHandler } from "./home.tsx";
 import { newsletterHandler } from "./newsletter.tsx";
+import { newsletterSubscribeHandler } from "./newsletter-subscribe.tsx";
 
 export default createController(routes, {
   actions: {
@@ -38,6 +39,7 @@ export default createController(routes, {
     brand: brandHandler,
     home: homeHandler,
     newsletter: newsletterHandler,
+    newsletterSubscribe: newsletterSubscribeHandler,
     remix3ActiveDevelopment: remix3ActiveDevelopmentHandler,
   },
 });

@@ -515,7 +515,7 @@ export let LandingNewsletterSubscribeForm = clientEntry(
     return (props: { placeholder?: string; buttonLabel?: string }) => (
       <>
         <form
-          action={routes.actions.newsletter.href()}
+          action={routes.newsletterSubscribe.href()}
           method="post"
           mix={[
             subscribeFormStyles,

@@ -27,23 +27,23 @@ call (when you want a shared URL prefix) or a plain object literal (when each le
 its absolute path).
 
 ```typescript
-import { route, get, post } from 'remix/routes'
+import { route, get, post } from "remix/routes";
 
 export const routes = route({
-  home: '/',
+  home: "/",
 
   // Plain object — no shared prefix, each leaf has an absolute path.
   books: {
-    index: '/books',
-    show: '/books/:slug',
+    index: "/books",
+    show: "/books/:slug",
   },
 
   // route('auth', ...) — every leaf is prefixed with /auth.
-  auth: route('auth', {
-    login: get('login'),
-    logout: post('logout'),
+  auth: route("auth", {
+    login: get("login"),
+    logout: post("logout"),
   }),
-})
+});
 ```
 
 ### Leaf route builders
@@ -62,10 +62,10 @@ Creates a GET + POST pair for HTML form workflows. Expands to an `index` (GET) a
 (POST) by default.
 
 ```typescript
-contact: form('contact')
+contact: form("contact");
 // Produces routes.contact.index (GET /contact) and routes.contact.action (POST /contact)
 
-settings: form('settings', { formMethod: 'PUT', names: { action: 'update' } })
+settings: form("settings", { formMethod: "PUT", names: { action: "update" } });
 // Produces routes.settings.index (GET) and routes.settings.update (PUT)
 ```
 
@@ -74,10 +74,10 @@ settings: form('settings', { formMethod: 'PUT', names: { action: 'update' } })
 Expands to conventional CRUD routes: `index`, `new`, `create`, `show`, `edit`, `update`, `destroy`.
 
 ```typescript
-books: resources('books', { param: 'bookId' })
+books: resources("books", { param: "bookId" });
 // GET /books, GET /books/new, POST /books, GET /books/:bookId, ...
 
-orders: resources('orders', { only: ['index', 'show'], param: 'orderId' })
+orders: resources("orders", { only: ["index", "show"], param: "orderId" });
 // GET /orders, GET /orders/:orderId
 ```
 
@@ -86,8 +86,8 @@ orders: resources('orders', { only: ['index', 'show'], param: 'orderId' })
 Route objects expose `.href()` for type-safe URL generation:
 
 ```typescript
-redirect(routes.home.href())
-redirect(routes.account.orders.show.href({ orderId: '42' }))
+redirect(routes.home.href());
+redirect(routes.account.orders.show.href({ orderId: "42" }));
 ```
 
 ## Actions
@@ -120,12 +120,12 @@ The handler receives a context object with:
 Actions with inline middleware:
 
 ```typescript
-import { requireAuth } from 'remix/middleware/auth'
+import { requireAuth } from "remix/middleware/auth";
 
 router.get(routes.account.index, {
   middleware: [requireAuth()],
   handler: accountAction.handler,
-})
+});
 ```
 
 ## Returning Responses
@@ -203,15 +203,15 @@ APIs, inter-service calls), return a JSON `Response`. Use `SuperHeaders` from `r
 typed header accessors make the response clearer:
 
 ```typescript
-import Headers from 'remix/headers'
+import Headers from "remix/headers";
 
-let headers = new Headers()
-headers.contentType = { mediaType: 'application/json', charset: 'utf-8' }
-headers.cacheControl = { noStore: true }
+let headers = new Headers();
+headers.contentType = { mediaType: "application/json", charset: "utf-8" };
+headers.cacheControl = { noStore: true };
 
 return new Response(JSON.stringify({ results }), {
   headers,
-})
+});
 ```
 
 If you find yourself returning JSON for what is really a browser form submission, prefer the
@@ -315,15 +315,15 @@ export default createController(routes.account.settings, {
 Then map each route map explicitly:
 
 ```typescript
-import rootController from './actions/controller.tsx'
-import accountController from './actions/account/controller.tsx'
-import accountSettingsController from './actions/account/settings/controller.tsx'
+import rootController from "./actions/controller.tsx";
+import accountController from "./actions/account/controller.tsx";
+import accountSettingsController from "./actions/account/settings/controller.tsx";
 
-let router = createRouter({ middleware })
+let router = createRouter({ middleware });
 
-router.map(routes, rootController)
-router.map(routes.account, accountController)
-router.map(routes.account.settings, accountSettingsController)
+router.map(routes, rootController);
+router.map(routes.account, accountController);
+router.map(routes.account.settings, accountSettingsController);
 ```
 
 ### Controller middleware
@@ -337,7 +337,7 @@ export default createController(routes.admin, {
   actions: {
     /* all actions require auth + admin */
   },
-})
+});
 ```
 
 ## Registering Routes
@@ -346,19 +346,19 @@ Use `router.map` for route maps and controllers. Map each nested route map expli
 methods only for low-level router wiring outside the `app/actions` controller convention.
 
 ```typescript
-let router = createRouter({ middleware })
+let router = createRouter({ middleware });
 
 // Route maps → controllers
-router.map(routes, rootController)
-router.map(routes.contact, contactController)
-router.map(routes.auth, authController)
-router.map(routes.auth.login, authLoginController)
-router.map(routes.admin, adminController)
-router.map(routes.admin.books, adminBooksController)
+router.map(routes, rootController);
+router.map(routes.contact, contactController);
+router.map(routes.auth, authController);
+router.map(routes.auth.login, authLoginController);
+router.map(routes.admin, adminController);
+router.map(routes.admin.books, adminBooksController);
 
 // Leaf route → one-off action
-router.get(routes.search, searchAction)
-router.post(routes.logout, logoutAction)
+router.get(routes.search, searchAction);
+router.post(routes.logout, logoutAction);
 ```
 
 ## Typed Context
@@ -367,23 +367,27 @@ Define an `AppContext` type from your middleware stack, then make it the default
 `createAction()` and `createController()`:
 
 ```typescript
-import type { MiddlewareContext, ContextWithParams, AnyParams } from 'remix/router'
+import type {
+  MiddlewareContext,
+  ContextWithParams,
+  AnyParams,
+} from "remix/router";
 
 type RootMiddleware = [
   ReturnType<typeof formData>,
   ReturnType<typeof session>,
   ReturnType<typeof loadDatabase>,
   ReturnType<typeof loadAuth>,
-]
+];
 
 export type AppContext<params extends AnyParams = {}> = ContextWithParams<
   MiddlewareContext<RootMiddleware>,
   params
->
+>;
 
-declare module 'remix/router' {
+declare module "remix/router" {
   interface RouterTypes {
-    context: AppContext
+    context: AppContext;
   }
 }
 ```

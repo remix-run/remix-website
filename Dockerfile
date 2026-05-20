@@ -7,6 +7,7 @@ FROM base as deps
 WORKDIR /remixapp
 
 COPY package.json pnpm-lock.yaml ./
+COPY patches ./patches
 RUN corepack enable && pnpm install --frozen-lockfile --prod=false
 
 # Setup production node_modules
@@ -16,6 +17,7 @@ WORKDIR /remixapp
 
 COPY --from=deps /remixapp/node_modules /remixapp/node_modules
 COPY package.json pnpm-lock.yaml ./
+COPY patches ./patches
 RUN corepack enable && pnpm prune --prod
 
 # Build the app
@@ -46,4 +48,4 @@ COPY --chown=node:node --from=build /remixapp/data /remixapp/data
 COPY --chown=node:node --from=build /remixapp/package.json /remixapp/package.json
 
 USER node
-CMD ["node", "--import", "tsx", "server.ts"]
+CMD ["node", "--import", "remix/node-tsx", "server.ts"]

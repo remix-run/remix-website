@@ -11,7 +11,6 @@ import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes, showJam2026 } from "./routes.ts";
 
 import rootController from "./actions/controller.tsx";
-import actionsController from "./actions/actions/controller.tsx";
 import { catchallHandler } from "./actions/catchall.ts";
 import { jamController } from "./actions/jam/controller.ts";
 import { jam2025Controller } from "./actions/jam/y2025/controller.tsx";
@@ -74,7 +73,6 @@ function createAppRouter() {
   let router = createRouter({ middleware });
 
   router.map(routes, rootController);
-  router.map(routes.actions, actionsController);
   router.map(routes.jam, jamController);
   router.map(routes.jam.y2025, jam2025Controller);
   router.map(routes.jam.y2025.gallery, jam2025GalleryController);

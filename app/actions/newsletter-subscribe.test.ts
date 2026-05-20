@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
-import { routes } from "../../routes.ts";
-import actionsController from "./controller.tsx";
+import { routes } from "../routes.ts";
+import { newsletterSubscribeHandler } from "./newsletter-subscribe.tsx";
 
 describe("Newsletter subscribe route", () => {
   let originalConvertKitKey = process.env.CONVERTKIT_KEY;
@@ -21,12 +21,10 @@ describe("Newsletter subscribe route", () => {
       formData.append(key, value);
     }
 
-    type NewsletterContext = Parameters<
-      typeof actionsController.actions.newsletter
-    >[0];
+    type NewsletterContext = Parameters<typeof newsletterSubscribeHandler>[0];
     let context = {
       request: new Request(
-        `http://localhost:3000${routes.actions.newsletter.href()}`,
+        `http://localhost:3000${routes.newsletterSubscribe.href()}`,
         { method: "POST" },
       ),
       get(key: unknown) {
@@ -34,7 +32,7 @@ describe("Newsletter subscribe route", () => {
       },
     } as NewsletterContext;
 
-    return actionsController.actions.newsletter(context);
+    return newsletterSubscribeHandler(context);
   }
 
   it("rejects invalid emails", async () => {

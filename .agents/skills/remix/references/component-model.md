@@ -23,21 +23,21 @@ A component has two phases:
 2. **Render phase** — returned function runs on initial render and every update
 
 ```tsx
-import { on, type Handle } from 'remix/ui'
+import { on, type Handle } from "remix/ui";
 
 function Counter(handle: Handle<{ initialCount?: number; label: string }>) {
-  let count = handle.props.initialCount ?? 0
+  let count = handle.props.initialCount ?? 0;
 
   return () => (
     <button
-      mix={on('click', () => {
-        count++
-        handle.update()
+      mix={on("click", () => {
+        count++;
+        handle.update();
       })}
     >
       {handle.props.label}: {count}
     </button>
-  )
+  );
 }
 ```
 
@@ -49,9 +49,9 @@ normal JSX props and read them from `handle.props`:
 
 ```tsx
 function Timer(handle: Handle<{ initialSeconds: number; paused?: boolean }>) {
-  let seconds = handle.props.initialSeconds
+  let seconds = handle.props.initialSeconds;
 
-  return () => <div>Time remaining: {seconds}s</div>
+  return () => <div>Time remaining: {seconds}s</div>;
 }
 
 // Usage: <Timer initialSeconds={60} paused={false} />
@@ -71,12 +71,12 @@ to read current values later. Destructuring individual prop values is only a sna
 ```tsx
 // Derive computed values in render
 function TodoList(handle: Handle) {
-  let todos: Array<{ text: string; completed: boolean }> = []
+  let todos: Array<{ text: string; completed: boolean }> = [];
 
   return () => {
-    let completedCount = todos.filter((t) => t.completed).length
-    return <div>Completed: {completedCount}</div>
-  }
+    let completedCount = todos.filter((t) => t.completed).length;
+    return <div>Completed: {completedCount}</div>;
+  };
 }
 ```
 
@@ -88,12 +88,12 @@ Schedules a rerender. Returns a promise that resolves with an `AbortSignal` afte
 completes. Await it when you need the updated DOM before follow-up work:
 
 ```tsx
-on('click', async () => {
-  isPlaying = true
-  let signal = await handle.update()
+on("click", async () => {
+  isPlaying = true;
+  let signal = await handle.update();
   // DOM is now updated, safe to focus or measure
-  stopButton.focus()
-})
+  stopButton.focus();
+});
 ```
 
 ### `handle.queueTask(task)`
@@ -103,36 +103,36 @@ the component re-renders or is removed. Use for post-render DOM work, reactive d
 hydration-sensitive setup:
 
 ```tsx
-let data = null
-let requestedUrl: string | null = null
+let data = null;
+let requestedUrl: string | null = null;
 
 // Post-render DOM work in an event handler
-on('click', () => {
-  showDetails = true
-  handle.update()
+on("click", () => {
+  showDetails = true;
+  handle.update();
   handle.queueTask(() => {
-    detailsSection.scrollIntoView({ behavior: 'smooth' })
-  })
-})
+    detailsSection.scrollIntoView({ behavior: "smooth" });
+  });
+});
 
 // Reactive data loading keyed by props.url
 return () => {
   if (requestedUrl !== handle.props.url) {
-    let nextUrl = handle.props.url
-    requestedUrl = nextUrl
-    data = null
+    let nextUrl = handle.props.url;
+    requestedUrl = nextUrl;
+    data = null;
 
     handle.queueTask(async (signal) => {
-      let response = await fetch(nextUrl, { signal })
-      let json = await response.json()
-      if (signal.aborted || requestedUrl !== nextUrl) return
-      data = json
-      handle.update()
-    })
+      let response = await fetch(nextUrl, { signal });
+      let json = await response.json();
+      if (signal.aborted || requestedUrl !== nextUrl) return;
+      data = json;
+      handle.update();
+    });
   }
 
-  return <div>{data ?? 'Loading...'}</div>
-}
+  return <div>{data ?? "Loading..."}</div>;
+};
 ```
 
 Avoid creating intermediate state just to trigger `queueTask`. Do the work directly in the handler
@@ -144,10 +144,10 @@ An `AbortSignal` aborted when the component disconnects. Use for cleanup:
 
 ```tsx
 function Clock(handle: Handle) {
-  let interval = setInterval(handle.update, 1000)
-  handle.signal.addEventListener('abort', () => clearInterval(interval))
+  let interval = setInterval(handle.update, 1000);
+  handle.signal.addEventListener("abort", () => clearInterval(interval));
 
-  return () => <span>{new Date().toString()}</span>
+  return () => <span>{new Date().toString()}</span>;
 }
 ```
 
@@ -162,7 +162,7 @@ function LabeledInput(handle: Handle) {
       <label htmlFor={handle.id}>Name</label>
       <input id={handle.id} type="text" />
     </div>
-  )
+  );
 }
 ```
 
@@ -178,7 +178,9 @@ Frame-aware behavior for client entries rendered inside frames:
 
 ```tsx
 function RefreshButton(handle: Handle) {
-  return () => <button mix={on('click', () => handle.frame.reload())}>Refresh</button>
+  return () => (
+    <button mix={on("click", () => handle.frame.reload())}>Refresh</button>
+  );
 }
 ```
 
@@ -192,70 +194,76 @@ Use `handle.context.set()` to provide values and `handle.context.get(Provider)` 
 `set()` does **not** trigger updates — call `handle.update()` if the tree needs to rerender.
 
 ```tsx
-function ThemeProvider(handle: Handle<{ children?: RemixNode }, { theme: 'light' | 'dark' }>) {
-  let theme: 'light' | 'dark' = 'light'
-  handle.context.set({ theme })
+function ThemeProvider(
+  handle: Handle<{ children?: RemixNode }, { theme: "light" | "dark" }>,
+) {
+  let theme: "light" | "dark" = "light";
+  handle.context.set({ theme });
 
   return () => (
     <div>
       <button
-        mix={on('click', () => {
-          theme = theme === 'light' ? 'dark' : 'light'
-          handle.context.set({ theme })
-          handle.update()
+        mix={on("click", () => {
+          theme = theme === "light" ? "dark" : "light";
+          handle.context.set({ theme });
+          handle.update();
         })}
       >
         Toggle
       </button>
       {handle.props.children}
     </div>
-  )
+  );
 }
 
 function ThemedContent(handle: Handle) {
-  let { theme } = handle.context.get(ThemeProvider)
-  return () => <div>Current theme: {theme}</div>
+  let { theme } = handle.context.get(ThemeProvider);
+  return () => <div>Current theme: {theme}</div>;
 }
 ```
 
 For granular updates without re-rendering the full subtree, use `TypedEventTarget`:
 
 ```tsx
-import { TypedEventTarget, addEventListeners } from 'remix/ui'
+import { TypedEventTarget, addEventListeners } from "remix/ui";
 
 class Theme extends TypedEventTarget<{ change: Event }> {
-  #value: 'light' | 'dark' = 'light'
+  #value: "light" | "dark" = "light";
   get value() {
-    return this.#value
+    return this.#value;
   }
-  setValue(value: 'light' | 'dark') {
-    this.#value = value
-    this.dispatchEvent(new Event('change'))
+  setValue(value: "light" | "dark") {
+    this.#value = value;
+    this.dispatchEvent(new Event("change"));
   }
 }
 
 function ThemeProvider(handle: Handle<{ children?: RemixNode }, Theme>) {
-  let theme = new Theme()
-  handle.context.set(theme)
+  let theme = new Theme();
+  handle.context.set(theme);
 
   return () => (
     <div>
-      <button mix={on('click', () => theme.setValue(theme.value === 'light' ? 'dark' : 'light'))}>
+      <button
+        mix={on("click", () =>
+          theme.setValue(theme.value === "light" ? "dark" : "light"),
+        )}
+      >
         Toggle
       </button>
       {handle.props.children}
     </div>
-  )
+  );
 }
 
 function ThemedContent(handle: Handle) {
-  let theme = handle.context.get(ThemeProvider)
+  let theme = handle.context.get(ThemeProvider);
   addEventListeners(theme, handle.signal, {
     change() {
-      handle.update()
+      handle.update();
     },
-  })
-  return () => <div>Theme: {theme.value}</div>
+  });
+  return () => <div>Theme: {theme.value}</div>;
 }
 ```
 
@@ -265,18 +273,18 @@ Use `addEventListeners(target, handle.signal, listeners)` to listen to global ta
 automatic cleanup when the component disconnects:
 
 ```tsx
-import { addEventListeners, type Handle } from 'remix/ui'
+import { addEventListeners, type Handle } from "remix/ui";
 
 function ResizeTracker(handle: Handle) {
-  let width = window.innerWidth
+  let width = window.innerWidth;
 
   addEventListeners(window, handle.signal, {
     resize() {
-      width = window.innerWidth
-      handle.update()
+      width = window.innerWidth;
+      handle.update();
     },
-  })
+  });
 
-  return () => <div>{width}</div>
+  return () => <div>{width}</div>;
 }
 ```

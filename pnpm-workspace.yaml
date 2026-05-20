@@ -2,7 +2,7 @@ minimumReleaseAge: 10800
 
 minimumReleaseAgeExclude:
   - remix
-  - '@remix-run/*'
+  - "@remix-run/*"
 
 patchedDependencies:
-  '@remix-run/node-tsx@0.1.0': patches/@remix-run__node-tsx@0.1.0.patch
+  "@remix-run/node-tsx@0.1.0": patches/@remix-run__node-tsx@0.1.0.patch
