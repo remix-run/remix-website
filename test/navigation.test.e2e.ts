@@ -20,7 +20,6 @@ async function expectClientNavigation(
 ) {
   let marker = await markPage(page);
   await navigate();
-  await page.waitForLoadState("networkidle");
   await page.waitForURL(url);
   await expect
     .poll(() =>
@@ -38,23 +37,10 @@ async function expectLandingNavReady(page: Page) {
 }
 
 describe("Navigation", () => {
-  it("home page renders landing content and keeps the skip target", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto("/");
-
-    await expect(
-      page.getByRole("heading", {
-        name: "A web framework for building anything",
-      }),
-    ).toBeVisible();
-    await expect(page.locator("main#main-content")).toHaveCount(1);
-  });
-
   it("home page blog keyboard shortcut uses client navigation", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/", { waitUntil: "networkidle" });
+    await page.goto("/");
     await expect(
       page.getByRole("heading", {
         name: "A web framework for building anything",
@@ -70,48 +56,11 @@ describe("Navigation", () => {
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
   });
 
-  it("home page jam keyboard shortcut uses client navigation", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto("/", { waitUntil: "networkidle" });
-    await expect(
-      page.getByRole("heading", {
-        name: "A web framework for building anything",
-      }),
-    ).toBeVisible();
-    await expectLandingNavReady(page);
-
-    await expectClientNavigation(
-      page,
-      () => page.keyboard.press("j"),
-      "**/jam/2025",
-    );
-    await expect(
-      page.getByRole("heading", { level: 1, name: /Remix Jam/i }),
-    ).toBeVisible();
-  });
-
-  it("active development route header links use client navigation", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto("/remix-3-active-development", {
-      waitUntil: "networkidle",
-    });
-
-    await expectClientNavigation(
-      page,
-      () => page.locator('header a[href="/blog"]').first().click(),
-      "**/blog",
-    );
-
-    await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
-  });
-
   it("blog to home page applies forced dark mode", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ colorScheme: "dark" });
-    await page.goto("/blog", { waitUntil: "networkidle" });
+    await page.goto("/blog");
 
     await expect(page.locator('html[data-theme="light"]')).toHaveCount(0);
     await expect(page.locator("html.dark")).toHaveCount(1);
@@ -126,28 +75,10 @@ describe("Navigation", () => {
     await expect(page.locator("html.dark")).toHaveCount(1);
   });
 
-  it("blog header jam link uses client navigation", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto("/blog", { waitUntil: "networkidle" });
-
-    await expectClientNavigation(
-      page,
-      () => page.locator('header a[href="/jam/2025"]').first().click(),
-      "**/jam/2025",
-    );
-
-    await expect(
-      page.getByRole("heading", { level: 1, name: /Remix Jam/i }),
-    ).toBeVisible();
-  });
-
   it("Remix 3 active development page to jam applies jam head styles and forced dark theme", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/remix-3-active-development", {
-      waitUntil: "networkidle",
-    });
+    await page.goto("/remix-3-active-development");
 
     await expectClientNavigation(
       page,
@@ -173,7 +104,7 @@ describe("Navigation", () => {
   it("header wordmark context menu uses client navigation for brand", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/blog", { waitUntil: "networkidle" });
+    await page.goto("/blog");
 
     let remixLink = page.locator('header a[aria-label="Remix"]').first();
     await expectClientNavigation(

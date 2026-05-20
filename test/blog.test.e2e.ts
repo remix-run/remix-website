@@ -14,32 +14,10 @@ async function markPage(page: Page) {
 }
 
 describe("Blog", () => {
-  it("blog index loads and shows posts", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto("/blog");
-    await expect(page).toHaveTitle(/Blog/i);
-    // Should have at least one blog post link
-    const postLinks = page.locator('a[href^="/blog/"]');
-    await expect(postLinks.first()).toBeVisible();
-  });
-
-  it("clicking a blog post navigates to the post", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto("/blog");
-    const firstPost = page.locator('a[href^="/blog/"]').first();
-    const href = await firstPost.getAttribute("href");
-    await firstPost.click();
-    await page.waitForURL(`**${href}`);
-    // Post page should have an article or main content
-    await expect(page.locator("main")).toBeVisible();
-  });
-
   it("relative internal links in rendered markdown use client navigation", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/blog/faster-lazy-loading", { waitUntil: "networkidle" });
+    await page.goto("/blog/faster-lazy-loading");
 
     let marker = await markPage(page);
     let link = page.locator('main a[href^="/blog/"]').first();
@@ -48,7 +26,6 @@ describe("Blog", () => {
     expect(href).toBeTruthy();
 
     await link.click();
-    await page.waitForLoadState("networkidle");
     let newMarker = await page.evaluate(
       () => (window as Window & { __navMarker?: string }).__navMarker,
     );

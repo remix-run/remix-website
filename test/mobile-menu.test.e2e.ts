@@ -17,9 +17,7 @@ async function markPage(page: Page) {
 
 async function gotoMobileMenuPage(page: Page) {
   await page.setViewportSize({ width: 390, height: 844 });
-  let response = await page.goto("/remix-3-active-development", {
-    waitUntil: "networkidle",
-  });
+  let response = await page.goto("/remix-3-active-development");
   expect(response?.ok()).toBe(true);
   await expect(mobileMenuToggle(page)).toBeVisible();
 }
@@ -36,7 +34,7 @@ function mobileMenuToggle(page: Page) {
 }
 
 describe("Mobile menu", () => {
-  it("opens and shows navigation links", async (t) => {
+  it("opens, shows navigation links, and escapes back to toggle", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);
@@ -51,21 +49,6 @@ describe("Mobile menu", () => {
     await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeVisible();
     await expect(mobileNav.getByRole("link", { name: "Jam" })).toBeVisible();
     await expect(mobileNav.getByRole("link", { name: "Store" })).toBeVisible();
-  });
-
-  it("escapes back to toggle", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await gotoMobileMenuPage(page);
-
-    let menuToggle = mobileMenuToggle(page);
-    await expect(menuToggle).toBeVisible();
-    await menuToggle.focus();
-    await expect(menuToggle).toBeFocused();
-    await menuToggle.click();
-
-    let mobileNav = page.getByRole("navigation", { name: "Mobile" });
-    await expect(mobileNav).toBeVisible();
 
     await page.keyboard.press("Tab");
     await expect(mobileNav.getByRole("link").first()).toBeFocused();
@@ -94,7 +77,6 @@ describe("Mobile menu", () => {
         name: "Blog",
       })
       .click();
-    await page.waitForLoadState("networkidle");
 
     await page.waitForURL("**/blog");
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();

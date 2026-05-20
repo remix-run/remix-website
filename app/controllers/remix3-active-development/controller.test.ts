@@ -27,6 +27,10 @@ describe("Remix 3 active development route", () => {
       'content="http://localhost:3000/remix-3-active-development"',
     );
     expect(html).toContain("#github");
+    expect(html).toContain("Stay in the loop");
+    expect(html).toContain("Remix Newsletter");
+    expect(html).toContain('placeholder="name@example.com"');
+    expect(html).toContain('action="/_actions/newsletter"');
     expect(html).toContain("og:title");
     expect(html).toContain("twitter:card");
   });
