@@ -4,14 +4,11 @@ export const JAM_2026_PAGE_BACKGROUND_ID = "jam-2026-page-background";
 export const JAM_2026_TICKETS_PARAM = "tickets";
 export const JAM_2026_TICKETS_FRAME_NAME = "jam-2026-tickets-modal";
 export const JAM_2026_TICKETS_FRAME_OPEN_PARAM = "open";
-export const JAM_2026_TICKETS_OPEN_ATTRIBUTE =
-  "data-jam-2026-tickets-open";
-export const JAM_2026_TICKETS_CLOSE_ATTRIBUTE =
-  "data-jam-2026-tickets-close";
+export const JAM_2026_TICKETS_OPEN_ATTRIBUTE = "data-jam-2026-tickets-open";
+export const JAM_2026_TICKETS_CLOSE_ATTRIBUTE = "data-jam-2026-tickets-close";
 export const JAM_2026_TICKETS_BACKDROP_ATTRIBUTE =
   "data-jam-2026-tickets-backdrop";
-export const JAM_2026_TICKETS_MODAL_ATTRIBUTE =
-  "data-jam-2026-tickets-modal";
+export const JAM_2026_TICKETS_MODAL_ATTRIBUTE = "data-jam-2026-tickets-modal";
 
 export function getJam2026HomeHref() {
   return routes.jam.y2026.index.href();
