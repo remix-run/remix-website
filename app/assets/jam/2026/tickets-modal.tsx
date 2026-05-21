@@ -21,7 +21,10 @@ type Jam2026TicketsModalProps = {
 
 function shouldAnimateEntrance(animateEntrance = true) {
   if (!animateEntrance) return false;
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+  if (
+    typeof window === "undefined" ||
+    typeof window.matchMedia !== "function"
+  ) {
     return true;
   }
   return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;

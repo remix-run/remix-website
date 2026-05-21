@@ -20,7 +20,9 @@ let faqs: Faq[] = [
     answer: [
       {
         type: "paragraph",
-        content: ["The Remix team is hosting this event at the Shopify Toronto office:"],
+        content: [
+          "The Remix team is hosting this event at the Shopify Toronto office:",
+        ],
       },
       {
         type: "paragraph",
