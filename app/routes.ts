@@ -31,7 +31,7 @@ export let routes = route({
     }),
     y2026: route("2026", {
       index: get("/"),
-      tickets: form("tickets"),
+      ticket: get("ticket"),
     }),
   }),
   newsletter: get("/newsletter"),

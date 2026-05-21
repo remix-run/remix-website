@@ -1,6 +1,7 @@
 import type { ManagedHeadTag } from "../ui/document-head.ts";
 import { assetPaths } from "./asset-paths.ts";
 import { getRequestContext } from "./request-context.ts";
+import { createSocialHeadTags } from "./social-head-tags.ts";
 
 type SocialHeadTagsProps = {
   title?: string;
@@ -15,71 +16,16 @@ type SocialHeadTagsProps = {
 export function getSocialHeadTags(props: SocialHeadTagsProps) {
   let pageUrl = props.url ?? getCurrentPageUrl();
   let imageUrl = resolveUrl(props.image ?? assetPaths.marketing.defaultOgImage);
-  let tags: ManagedHeadTag[] = [
-    { kind: "meta", property: "og:type", content: "website" },
-  ];
 
-  if (props.title) {
-    tags.push({ kind: "meta", property: "og:title", content: props.title });
-  }
-
-  if (props.description) {
-    tags.push({
-      kind: "meta",
-      property: "og:description",
-      content: props.description,
-    });
-  }
-
-  tags.push(
-    { kind: "meta", property: "og:url", content: pageUrl },
-    { kind: "meta", property: "og:image", content: imageUrl },
-    {
-      kind: "meta",
-      name: "twitter:card",
-      content: "summary_large_image",
-    },
-  );
-
-  if (props.title) {
-    tags.push({ kind: "meta", name: "twitter:title", content: props.title });
-  }
-
-  if (props.description) {
-    tags.push({
-      kind: "meta",
-      name: "twitter:description",
-      content: props.description,
-    });
-  }
-
-  tags.push({ kind: "meta", name: "twitter:image", content: imageUrl });
-
-  if (props.imageAlt) {
-    tags.push({
-      kind: "meta",
-      name: "twitter:image:alt",
-      content: props.imageAlt,
-    });
-  }
-
-  if (props.twitterCreator) {
-    tags.push({
-      kind: "meta",
-      name: "twitter:creator",
-      content: props.twitterCreator,
-    });
-  }
-
-  if (props.twitterSite) {
-    tags.push({
-      kind: "meta",
-      name: "twitter:site",
-      content: props.twitterSite,
-    });
-  }
-
-  return tags;
+  return createSocialHeadTags({
+    title: props.title,
+    description: props.description,
+    url: pageUrl,
+    imageUrl,
+    imageAlt: props.imageAlt,
+    twitterCreator: props.twitterCreator,
+    twitterSite: props.twitterSite,
+  }) satisfies ManagedHeadTag[];
 }
 
 function getCurrentPageUrl() {

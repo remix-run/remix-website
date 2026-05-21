@@ -1,37 +1,61 @@
-import { css } from "remix/ui";
+import { css, Frame, type Handle } from "remix/ui";
 import { theme } from "remix/ui/theme";
 import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
 import { Jam2026PhotoMoments } from "../../../../assets/jam/2026/photo-moments.tsx";
+import { routes } from "../../../../routes.ts";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
+import { getJam2026HeadContent } from "../head-content.ts";
 import { getJam2026HeadTags } from "../head.ts";
 import { jamTheme, jamThemeStyle } from "../theme.ts";
+import { ticketModalConfig } from "../tickets-modal-contract.ts";
 import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026FloatingTicketCta } from "./floating-ticket-cta.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 
-export function Jam2026HomePage() {
-  let title = "Remix Jam 2026";
-  let description = "Remix Jam returns to Toronto on October 1-2, 2026.";
+type Jam2026HomePageProps = {
+  ticketsModalOpen?: boolean;
+};
 
-  return () => (
-    <Document
-      title={title}
-      description={description}
-      headTags={getJam2026HeadTags({ title, description })}
-    >
-      <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
-        <Jam2026Header />
-        <main id="main-content" tabIndex={-1} mix={mainStyle}>
-          <Jam2026Hero />
-          <Jam2026PhotoMoments />
-          <Jam2026FloatingTicketCta />
-          <Jam2026Faq />
-        </main>
-        <Footer mix={footerStyle} />
-      </div>
-    </Document>
-  );
+export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
+  return () => {
+    let { ticketsModalOpen = false } = handle.props;
+    let head = getJam2026HeadContent({ ticketsModalOpen });
+
+    return (
+      <Document
+        title={head.title}
+        description={head.description}
+        headTags={getJam2026HeadTags(head)}
+      >
+        <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
+          <div
+            id={ticketModalConfig.pageBackgroundId}
+            aria-hidden={ticketsModalOpen ? "true" : undefined}
+            inert={ticketsModalOpen || undefined}
+            mix={pageBackgroundStyle}
+          >
+            <Jam2026Header />
+            <main id="main-content" tabIndex={-1} mix={mainStyle}>
+              <Jam2026Hero />
+              <Jam2026PhotoMoments />
+              <Jam2026FloatingTicketCta />
+              <Jam2026Faq />
+            </main>
+            <Footer mix={footerStyle} />
+          </div>
+          <Frame
+            name={ticketModalConfig.frameName}
+            src={
+              ticketsModalOpen
+                ? routes.jam.y2026.ticket.href()
+                : routes.jam.y2026.index.href()
+            }
+          />
+        </div>
+      </Document>
+    );
+  };
 }
 
 let pageStyle = css({
@@ -50,6 +74,13 @@ let pageStyle = css({
     pointerEvents: "none",
     background: `linear-gradient(180deg, ${jamTheme.skyTop} 0%, ${jamTheme.skyMiddle} 43%, ${jamTheme.skyHorizon} 72%, ${jamTheme.skyGround} 100%)`,
   },
+});
+
+let pageBackgroundStyle = css({
+  display: "flex",
+  minHeight: "100svh",
+  flex: "1 1 auto",
+  flexDirection: "column",
 });
 
 let mainStyle = css({

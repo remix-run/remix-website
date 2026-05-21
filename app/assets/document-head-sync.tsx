@@ -5,7 +5,7 @@ import {
   type ManagedHeadTag,
 } from "../ui/document-head.ts";
 
-type DocumentHeadSyncProps = {
+export type DocumentHeadSyncProps = {
   title?: string;
   forceTheme?: "dark" | "light";
   headTags: ManagedHeadTag[];
@@ -27,9 +27,7 @@ export let DocumentHeadSync = clientEntry(
       isQueued = false;
       if (!latestProps) return;
 
-      syncTitle(latestProps.title);
-      syncTheme(latestProps.forceTheme);
-      syncManagedHeadTags(latestProps.headTags);
+      syncDocumentHead(latestProps);
     };
 
     handle.signal.addEventListener(
@@ -51,6 +49,15 @@ export let DocumentHeadSync = clientEntry(
     };
   },
 );
+
+export function syncDocumentHead(
+  props: DocumentHeadSyncProps,
+  options: { syncTheme?: boolean } = {},
+) {
+  syncTitle(props.title);
+  if (options.syncTheme ?? true) syncTheme(props.forceTheme);
+  syncManagedHeadTags(props.headTags);
+}
 
 function syncTheme(forceTheme?: "dark" | "light") {
   let root = document.documentElement;

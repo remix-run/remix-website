@@ -7,7 +7,6 @@ import { assetServer } from "./assets.server.ts";
 
 type FrameRenderContext = {
   currentFrameSrc?: string;
-  topFrameSrc?: string;
 };
 
 export let render = {
@@ -20,7 +19,8 @@ export let render = {
     return new Response(
       renderToStream(node, {
         frameSrc: request.url,
-        topFrameSrc: getTopFrameSrc(request),
+        resolveClientEntry: (entryId, component) =>
+          resolveClientEntry(entryId, component.name),
         onError(error) {
           console.error(error);
         },
@@ -33,7 +33,6 @@ export let render = {
     let { request, router } = getRequestContext();
     let stream = renderToStream(node, {
       frameSrc: request.url,
-      topFrameSrc: getTopFrameSrc(request),
       resolveFrame: (src, target, context) =>
         resolveFrame(src, target, context, router, request),
       resolveClientEntry: (entryId, component) =>
@@ -54,14 +53,12 @@ async function resolveFrame(
   request: Request,
 ) {
   let frameSrc = context?.currentFrameSrc ?? request.url;
-  let topFrameSrc = context?.topFrameSrc ?? getTopFrameSrc(request);
   let url = new URL(src, frameSrc);
 
   let headers = new Headers();
   headers.set("accept", "text/html");
   headers.set("accept-encoding", "identity");
   headers.set("x-remix-frame", "true");
-  headers.set("x-remix-top-frame-src", topFrameSrc);
   if (target) headers.set("x-remix-target", target);
   let cookie = request.headers.get("cookie");
   if (cookie) headers.set("cookie", cookie);
@@ -125,8 +122,4 @@ async function resolveClientEntry(entryId: string, componentName?: string) {
     href: await assetServer.getHref(entryUrl.toString()),
     exportName,
   };
-}
-
-function getTopFrameSrc(request: Request) {
-  return request.headers.get("x-remix-top-frame-src") ?? request.url;
 }

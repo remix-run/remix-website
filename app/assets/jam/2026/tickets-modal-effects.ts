@@ -1,13 +1,8 @@
 import { addEventListeners, navigate, type Handle } from "remix/ui";
 import { lockScroll } from "remix/ui/scroll-lock";
 
-import {
-  JAM_2026_PAGE_BACKGROUND_ID,
-  JAM_2026_TICKETS_FRAME_NAME,
-  JAM_2026_TICKETS_MODAL_ATTRIBUTE,
-  getJam2026HomeHref,
-  getJam2026TicketsFrameHref,
-} from "../../../controllers/jam/2026/tickets-modal-contract.ts";
+import { ticketModalConfig } from "../../../controllers/jam/2026/tickets-modal-contract.ts";
+import { routes } from "../../../routes.ts";
 import { getFocusableElementsWithin } from "../../../ui/focus-trap.ts";
 
 type Jam2026TicketsModalHandle = Handle<{
@@ -28,12 +23,16 @@ export function createJam2026TicketsModalEffects(
 
   function getModalRoot() {
     return document.querySelector<HTMLElement>(
-      `[${JAM_2026_TICKETS_MODAL_ATTRIBUTE}]`,
+      `[${ticketModalConfig.attributes.modal}]`,
     );
   }
 
   function setBackgroundInert(nextInert: boolean) {
-    let background = document.getElementById(JAM_2026_PAGE_BACKGROUND_ID);
+    // The modal frame is hydrated separately from the page background, so this
+    // document-level effect keeps the unhydrated page content inaccessible.
+    let background = document.getElementById(
+      ticketModalConfig.pageBackgroundId,
+    );
     if (!background) return;
 
     if (nextInert) {
@@ -109,9 +108,8 @@ export function createJam2026TicketsModalEffects(
   }
 
   function closeModal() {
-    void navigate(getJam2026HomeHref(), {
-      target: JAM_2026_TICKETS_FRAME_NAME,
-      src: getJam2026TicketsFrameHref(),
+    void navigate(routes.jam.y2026.index.href(), {
+      target: ticketModalConfig.frameName,
       history: "replace",
       resetScroll: false,
     });

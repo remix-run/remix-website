@@ -8,11 +8,8 @@ import {
   getJam2026HeadContent,
 } from "../../../controllers/jam/2026/head-content.ts";
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
-import {
-  getJam2026TicketsBackdropLinkProps,
-  getJam2026TicketsCloseLinkProps,
-  getJam2026TicketsModalRootProps,
-} from "../../../controllers/jam/2026/tickets-modal-contract.ts";
+import { ticketModalConfig } from "../../../controllers/jam/2026/tickets-modal-contract.ts";
+import { routes } from "../../../routes.ts";
 import { createJam2026TicketsModalEffects } from "./tickets-modal-effects.ts";
 
 type Jam2026TicketsModalProps = {
@@ -51,22 +48,29 @@ export let Jam2026TicketsModalFrame = clientEntry(
       modalEffects.queueStateSync();
       queueHeadSync();
 
-      return ticketsModalOpen ? <Jam2026TicketsModalContent /> : null;
+      // The frame runtime needs a stable child when toggling between empty
+      // frame content and the hydrated modal.
+      return (
+        <div>{ticketsModalOpen ? <Jam2026TicketsModalContent /> : null}</div>
+      );
     };
   },
 );
 
 export function Jam2026TicketsModalContent() {
-  let backdropLinkProps = getJam2026TicketsBackdropLinkProps();
-  let closeLinkProps = getJam2026TicketsCloseLinkProps();
-
   return () => (
-    <div {...getJam2026TicketsModalRootProps()} mix={ticketsModalScrimStyle}>
+    <div
+      {...{ [ticketModalConfig.attributes.modal]: "" }}
+      mix={ticketsModalScrimStyle}
+    >
       <a
         aria-label="Close tickets"
-        {...backdropLinkProps}
-        tabIndex={-1}
+        {...{ [ticketModalConfig.attributes.backdrop]: "" }}
+        href={routes.jam.y2026.index.href()}
         mix={ticketsModalBackdropStyle}
+        rmx-reset-scroll="false"
+        rmx-target={ticketModalConfig.frameName}
+        tabIndex={-1}
       />
       <section
         aria-labelledby="tickets-modal-title"
@@ -78,8 +82,10 @@ export function Jam2026TicketsModalContent() {
         <div mix={ticketsModalTitlebarStyle}>
           <a
             aria-label="Close tickets"
-            {...closeLinkProps}
+            href={routes.jam.y2026.index.href()}
             mix={ticketsModalCloseStyle}
+            rmx-reset-scroll="false"
+            rmx-target={ticketModalConfig.frameName}
           >
             <svg
               aria-hidden="true"

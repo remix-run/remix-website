@@ -1,6 +1,5 @@
-import type { ManagedHeadTag } from "../../../ui/document-head.ts";
-import { assetPaths } from "../../../utils/asset-paths.ts";
-import { getSocialHeadTags } from "../../../utils/social-head-tags.server.ts";
+import { getRequestContext } from "../../../utils/request-context.ts";
+import { getJam2026ServerHeadTags } from "./head-content.ts";
 
 type Jam2026HeadTagsProps = {
   title: string;
@@ -8,41 +7,8 @@ type Jam2026HeadTagsProps = {
 };
 
 export function getJam2026HeadTags(props: Jam2026HeadTagsProps) {
-  return [
-    ...getSocialHeadTags({
-      title: props.title,
-      description: props.description,
-      image: assetPaths.jam2026.shareImage,
-      imageAlt: "Remix Jam 2026 in Toronto",
-    }),
-    ...jam2026IconHeadTags,
-  ];
+  return getJam2026ServerHeadTags({
+    ...props,
+    requestUrl: getRequestContext().request.url,
+  });
 }
-
-let jam2026IconHeadTags: ManagedHeadTag[] = [
-  {
-    kind: "link",
-    rel: "apple-touch-icon",
-    href: assetPaths.jam2026.favicons.appleTouchIcon,
-  },
-  {
-    kind: "link",
-    rel: "icon",
-    href: assetPaths.jam2026.favicons.favicon32,
-    sizes: "32x32",
-    type: "image/png",
-  },
-  {
-    kind: "link",
-    rel: "icon",
-    href: assetPaths.jam2026.favicons.favicon16,
-    sizes: "16x16",
-    type: "image/png",
-  },
-  {
-    kind: "link",
-    rel: "icon",
-    href: assetPaths.jam2026.favicons.faviconIco,
-    sizes: "any",
-  },
-];

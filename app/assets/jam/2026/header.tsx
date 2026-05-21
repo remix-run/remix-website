@@ -4,6 +4,7 @@ import { theme } from "remix/ui/theme";
 
 import { Jam2026Countdown } from "./countdown.tsx";
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
+import { ticketModalConfig } from "../../../controllers/jam/2026/tickets-modal-contract.ts";
 import { routes } from "../../../routes.ts";
 import { assetPaths } from "../../../utils/asset-paths.ts";
 
@@ -118,7 +119,6 @@ export let Jam2026Header = clientEntry(
 
     return () => {
       let homeHref = routes.jam.y2026.index.href();
-      let ticketsHref = routes.jam.y2026.tickets.index.href();
       let nextTheme: ThemeMode = theme === "light" ? "dark" : "light";
       let logoHref = eventLockupVisible ? homeHref : "https://shopify.com";
       let logoExternal = !eventLockupVisible;
@@ -210,7 +210,12 @@ export let Jam2026Header = clientEntry(
             >
               FAQ
             </a>
-            <a href={ticketsHref} mix={jam2026TicketLinkStyle}>
+            <a
+              href={routes.jam.y2026.ticket.href()}
+              mix={jam2026TicketLinkStyle}
+              rmx-reset-scroll="false"
+              rmx-target={ticketModalConfig.frameName}
+            >
               <span aria-hidden="true" mix={jam2026TicketLinkFillStyle} />
               <span mix={jam2026TicketLinkLabelStyle}>Get tickets</span>
             </a>

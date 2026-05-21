@@ -27,7 +27,6 @@ let app = run({
     let headers = new Headers();
     headers.set("accept", "text/html");
     headers.set("x-remix-frame", "true");
-    headers.set("x-remix-top-frame-src", window.location.href);
     if (target) headers.set("x-remix-target", target);
 
     let res = await fetch(src, { headers, signal });

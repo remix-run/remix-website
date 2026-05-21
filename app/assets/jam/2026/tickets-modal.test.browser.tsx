@@ -4,23 +4,18 @@ import { describe, it } from "remix/test";
 import { render } from "remix/ui/test";
 
 import { Jam2026TicketsModalFrame } from "./tickets-modal.tsx";
-import {
-  JAM_2026_PAGE_BACKGROUND_ID,
-  JAM_2026_TICKETS_FRAME_NAME,
-  getJam2026TicketsFrameHref,
-  getJam2026TicketsHref,
-} from "../../../controllers/jam/2026/tickets-modal-contract.ts";
+import { ticketModalConfig } from "../../../controllers/jam/2026/tickets-modal-contract.ts";
+import { routes } from "../../../routes.ts";
 
 describe("Jam2026TicketsModal", () => {
   it("applies modal effects and renders frame navigation controls", async (t) => {
-    let homeHref = "/jam/2026";
-    let ticketsHref = getJam2026TicketsHref();
-    let frameHref = getJam2026TicketsFrameHref();
+    let homeHref = routes.jam.y2026.index.href();
+    let ticketHref = routes.jam.y2026.ticket.href();
     let previousOverflow = document.documentElement.style.overflow;
     let previousScrollbarGutter =
       document.documentElement.style.scrollbarGutter;
 
-    window.history.replaceState(window.history.state, "", ticketsHref);
+    window.history.replaceState(window.history.state, "", ticketHref);
 
     t.after(() => {
       document.documentElement.style.overflow = previousOverflow;
@@ -30,7 +25,7 @@ describe("Jam2026TicketsModal", () => {
 
     let result = render(
       <div>
-        <main id={JAM_2026_PAGE_BACKGROUND_ID}>Page content</main>
+        <main id={ticketModalConfig.pageBackgroundId}>Page content</main>
         <Jam2026TicketsModalFrame open />
       </div>,
     );
@@ -41,22 +36,20 @@ describe("Jam2026TicketsModal", () => {
     let dialog = result.container.querySelector('[role="dialog"]');
     expect(Boolean(dialog)).toBe(true);
     expect(dialog?.getAttribute("aria-modal")).toBe("true");
-    expect(window.location.pathname + window.location.search).toBe(ticketsHref);
     expect(document.documentElement.style.overflow).toBe("hidden");
     expect(
       result.container
-        .querySelector(`#${JAM_2026_PAGE_BACKGROUND_ID}`)
+        .querySelector(`#${ticketModalConfig.pageBackgroundId}`)
         ?.hasAttribute("inert"),
     ).toBe(true);
 
     let backdrop = result.container.querySelector<HTMLAnchorElement>(
-      "[data-jam-2026-tickets-backdrop]",
+      `[${ticketModalConfig.attributes.backdrop}]`,
     )!;
     expect(backdrop.getAttribute("href")).toBe(homeHref);
     expect(backdrop.getAttribute("rmx-reset-scroll")).toBe("false");
-    expect(backdrop.getAttribute("rmx-src")).toBe(frameHref);
     expect(backdrop.getAttribute("rmx-target")).toBe(
-      JAM_2026_TICKETS_FRAME_NAME,
+      ticketModalConfig.frameName,
     );
 
     let close = result.container.querySelector<HTMLAnchorElement>(
@@ -64,7 +57,6 @@ describe("Jam2026TicketsModal", () => {
     )!;
     expect(close.getAttribute("href")).toBe(homeHref);
     expect(close.getAttribute("rmx-reset-scroll")).toBe("false");
-    expect(close.getAttribute("rmx-src")).toBe(frameHref);
-    expect(close.getAttribute("rmx-target")).toBe(JAM_2026_TICKETS_FRAME_NAME);
+    expect(close.getAttribute("rmx-target")).toBe(ticketModalConfig.frameName);
   });
 });

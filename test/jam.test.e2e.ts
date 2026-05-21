@@ -3,6 +3,7 @@ import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
+import { ticketModalConfig } from "../app/controllers/jam/2026/tickets-modal-contract.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
@@ -26,6 +27,13 @@ async function expectMarkerToStay(page: Page, marker: string) {
       ),
     )
     .toBe(marker);
+}
+
+async function clickJam2026TicketNavLink(page: Page) {
+  await page
+    .getByRole("navigation", { name: "Page navigation" })
+    .getByRole("link", { name: "Get tickets" })
+    .click();
 }
 
 function galleryPhotoLinks(page: Page) {
@@ -79,6 +87,64 @@ describe("Jam", () => {
     await page.goto("/jam");
     await page.waitForURL("**/jam/2025");
     await expect(page.locator("main")).toBeVisible();
+  });
+
+  it("jam 2025 page renders", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/jam/2025");
+    await expect(page.locator("main")).toBeVisible();
+  });
+
+  it("jam 2026 ticket modal navigates in place and closes from backdrop and escape", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2026", { waitUntil: "networkidle" });
+    await page.locator("#faq").scrollIntoViewIfNeeded();
+
+    let marker = await markPage(page);
+    await clickJam2026TicketNavLink(page);
+    await page.waitForURL("**/jam/2026/ticket");
+    await expectMarkerToStay(page, marker);
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(page).toHaveTitle("Remix Jam 2026 Tickets");
+
+    await page.locator(`[${ticketModalConfig.attributes.backdrop}]`).click({
+      position: { x: 8, y: 8 },
+    });
+    await page.waitForURL("**/jam/2026");
+    await expectMarkerToStay(page, marker);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page).toHaveTitle("Remix Jam 2026");
+
+    await clickJam2026TicketNavLink(page);
+    await page.waitForURL("**/jam/2026/ticket");
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await page.waitForURL("**/jam/2026");
+    await expectMarkerToStay(page, marker);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page).toHaveTitle("Remix Jam 2026");
+  });
+
+  it("jam 2026 mobile layout does not create horizontal document overflow", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/jam/2026", { waitUntil: "networkidle" });
+
+    let overflow = await page.evaluate(() => {
+      return (
+        Math.max(
+          document.documentElement.scrollWidth,
+          document.body.scrollWidth,
+        ) - window.innerWidth
+      );
+    });
+
+    expect(overflow).toBeLessThanOrEqual(1);
   });
 
   it("jam 2025 after-event badge shows rewind icon", async (t) => {

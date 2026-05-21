@@ -1,6 +1,7 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
 
+import { ticketModalConfig } from "../tickets-modal-contract.ts";
 import { routes } from "../../../../routes.ts";
 import { visuallyHiddenStyle } from "../../../../ui/css-mixins.ts";
 import { breakpointMedia } from "../../../../ui/theme.ts";
@@ -11,8 +12,10 @@ export function Jam2026FloatingTicketCta() {
   return () => (
     <div mix={floatingCtaRegionStyle}>
       <a
-        href={routes.jam.y2026.tickets.index.href()}
+        href={routes.jam.y2026.ticket.href()}
         mix={floatingCtaLinkStyle}
+        rmx-reset-scroll="false"
+        rmx-target={ticketModalConfig.frameName}
       >
         <span mix={visuallyHiddenStyle}>Get Remix Jam 2026 tickets</span>
         <span aria-hidden="true" mix={floatingCtaRingFrameStyle}>
@@ -47,12 +50,13 @@ let floatingCtaRegionStyle = css({
 
 let floatingCtaLinkStyle = css({
   "--ticket-ring-animation-play-state": "running",
+  cursor: "pointer",
   display: "block",
   height: "260px",
   outline: "none",
   pointerEvents: "auto",
   position: "absolute",
-  right: theme.space.xl,
+  right: `calc(${theme.space.xl} + 28px)`,
   top: "-84px",
   transform: "scale(0.82)",
   transformOrigin: "top right",

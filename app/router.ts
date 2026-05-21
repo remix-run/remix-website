@@ -26,7 +26,6 @@ import {
   jam2025RedirectHandler,
   jam2025TicketController,
   jam2026Controller,
-  jam2026TicketsController,
 } from "./controllers/jam/controller.ts";
 import { newsletterHandler } from "./controllers/newsletter.tsx";
 
@@ -115,7 +114,6 @@ function createAppRouter() {
   router.map(routes.jam.y2025.ticket, jam2025TicketController);
   router.map(routes.jam.y2025, jam2025Controller);
   if (showJam2026) {
-    router.map(routes.jam.y2026.tickets, jam2026TicketsController);
     router.map(routes.jam.y2026, jam2026Controller);
   }
   router.map(routes.remix3ActiveDevelopment, remix3ActiveDevelopmentHandler);

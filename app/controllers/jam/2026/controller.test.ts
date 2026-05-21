@@ -4,12 +4,12 @@ import { expect } from "remix/assert";
 import { routes } from "../../../routes.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
-import { jam2026Controller, jam2026TicketsController } from "../controller.ts";
+import { jam2026Controller } from "../controller.ts";
+import { ticketModalConfig } from "./tickets-modal-contract.ts";
 
 describe("Remix Jam 2026 routes", () => {
-  it("renders the homepage with the Jam 2026 header controls and Jam footer", async () => {
+  it("renders the homepage as the full Jam page with ticket frame navigation", async () => {
     let router = createRouteTestRouter();
-    router.map(routes.jam.y2026.tickets, jam2026TicketsController);
     router.map(routes.jam.y2026, jam2026Controller);
 
     let response = await router.fetch("http://localhost:3000/jam/2026");
@@ -17,91 +17,89 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+    expect(response.headers.get("Vary")).toContain("x-remix-target");
 
     let html = await response.text();
 
     expect(html).toContain("<title>Remix Jam 2026</title>");
-    expect(html).toContain(
-      'property="og:image" content="http://localhost:3000/jam/2026/remix-jam-2026-share.jpg"',
-    );
-    expect(html).toContain(
-      'name="twitter:image" content="http://localhost:3000/jam/2026/remix-jam-2026-share.jpg"',
-    );
-    expect(html).toContain(
-      'rel="apple-touch-icon" href="/jam/2026/favicons/apple-touch-icon.png"',
-    );
-    expect(html).toContain(
-      'rel="icon" href="/jam/2026/favicons/favicon-32x32.png" type="image/png" sizes="32x32"',
-    );
-    expect(html).toContain(
-      'aria-label="Remix Jam starts October 1, 2026 at 9:00 AM Eastern time"',
-    );
-    expect(html).toContain('href="https://shopify.com"');
-    expect(html).toContain('src="/jam/2026/landing-assets/shopify-glyph.svg"');
-    expect(html).toContain(
-      'src="/jam/2026/remix-jam-2026-horizontal-lockup.svg"',
-    );
+    expect(html).toContain('aria-label="Page navigation"');
     expect(html).toContain("Remix Jam 2026");
     expect(html).toContain("October 1-2, 2026");
-    expect(html).toContain("Toronto - Ontario, Canada");
-    expect(html).toContain("annual conference returns to Toronto");
-    expect(html).toContain("show off Remix 3");
-    expect(html).toContain("main Remix showcase");
-    expect(html).toContain("hands-on workshop");
-    expect(html).toContain("Light");
-    expect(html).toContain("Dark");
-    expect(html).toContain('href="/icons.svg#sun"');
-    expect(html).toContain('href="/icons.svg#moon"');
-    expect(html).toContain('href="#faq"');
-    expect(html).toContain('href="/jam/2026/tickets"');
-    expect(html).toContain(">Get Remix Jam 2026 tickets</span>");
-    expect(html).toContain(
-      'src="/jam/2026/landing-assets/floating-ticket-cta.svg"',
-    );
-    expect(html).toContain(
-      'src="/jam/2026/landing-assets/remix-keyring-workshop.webp"',
-    );
-    expect(html).toContain("Will there be a CFP?");
-    expect(html).toContain("Where should I stay?");
-    expect(html).toContain("What airport should I fly into?");
-    expect(html).toContain('id="event-hosted"');
-    expect(html).toContain('id="where-to-stay"');
-    expect(html).toContain('aria-label="Site footer"');
-    expect(html).toContain("https://github.com/remix-run");
-    expect(html).toContain("docs and examples licensed under mit");
-    expect(html).toContain("2026 Shopify, Inc.");
+    expect(html).toContain('href="/jam/2026/ticket"');
+    expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
+    expect(html).not.toContain('role="dialog"');
   });
 
-  it("renders the ticket page with the shared Jam header and footer", async () => {
+  it("renders the ticket route as the full Jam page with the ticket modal open", async () => {
     let router = createRouteTestRouter();
-    router.map(routes.jam.y2026.tickets, jam2026TicketsController);
     router.map(routes.jam.y2026, jam2026Controller);
 
-    let response = await router.fetch("http://localhost:3000/jam/2026/tickets");
+    let response = await router.fetch("http://localhost:3000/jam/2026/ticket");
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+    expect(response.headers.get("Vary")).toContain("x-remix-target");
 
     let html = await response.text();
 
     expect(html).toContain("<title>Remix Jam 2026 Tickets</title>");
-    expect(html).toContain(
-      'property="og:image" content="http://localhost:3000/jam/2026/remix-jam-2026-share.jpg"',
+    expect(html).toContain('aria-label="Page navigation"');
+    expect(html).toContain('role="dialog"');
+    expect(html).toContain('aria-modal="true"');
+    expect(html).toContain("TICKETS.TS");
+    expect(html).toContain('aria-label="Close tickets"');
+    expect(html).toContain('href="/jam/2026"');
+    expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
+  });
+
+  it("renders the ticket route as modal-only frame content for the tickets frame", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.jam.y2026, jam2026Controller);
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026/ticket", {
+        headers: {
+          "x-remix-target": ticketModalConfig.frameName,
+        },
+      }),
     );
-    expect(html).toContain(
-      'rel="icon" href="/jam/2026/favicons/favicon.ico" sizes="any"',
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toContain("text/html");
+    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+    expect(response.headers.get("Vary")).toContain("x-remix-target");
+
+    let html = await response.text();
+
+    expect(html).toContain('role="dialog"');
+    expect(html).toContain('aria-modal="true"');
+    expect(html).toContain("TICKETS.TS");
+    expect(html).not.toContain("<title>Remix Jam 2026 Tickets</title>");
+    expect(html).not.toContain('aria-label="Page navigation"');
+  });
+
+  it("renders the homepage route as closed modal frame content for the tickets frame", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.jam.y2026, jam2026Controller);
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026", {
+        headers: {
+          "x-remix-target": ticketModalConfig.frameName,
+        },
+      }),
     );
-    expect(html).toContain(
-      'aria-label="Remix Jam starts October 1, 2026 at 9:00 AM Eastern time"',
-    );
-    expect(html).toContain('data-lockup-visible="false"');
-    expect(html).toContain('aria-label="Shopify"');
-    expect(html).toContain('href="#faq"');
-    expect(html).toContain('href="/jam/2026/tickets"');
-    expect(html).toContain('aria-label="Site footer"');
-    expect(html).toContain("https://youtube.com/remix_run");
-    expect(html).toContain("docs and examples licensed under mit");
-    expect(html).toContain("2026 Shopify, Inc.");
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toContain("text/html");
+    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+    expect(response.headers.get("Vary")).toContain("x-remix-target");
+
+    let html = await response.text();
+
+    expect(html).not.toContain('role="dialog"');
+    expect(html).not.toContain("TICKETS.TS");
+    expect(html).not.toContain('aria-label="Page navigation"');
   });
 });

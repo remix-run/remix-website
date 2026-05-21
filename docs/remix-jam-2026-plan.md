@@ -67,7 +67,7 @@ Replace placeholder logistics once confirmed.
 
 ### Build Ticket Selection UI
 
-Replace the placeholder tickets page with the prototype ticket options translated to a server-first form.
+Build the prototype ticket options as a server-first ticket surface.
 
 - Two-day ticket: Oct 1 and Oct 2, workshop, main event, afterparty, food/drinks, early bird $699 from $899.
 - One-day ticket: Oct 2, main event and afterparty, food/drinks, early bird $299 from $399.
@@ -77,18 +77,9 @@ Replace the placeholder tickets page with the prototype ticket options translate
 - Skip the old 3D ticket scene unless final design explicitly needs it.
 - Cover available, unavailable, sold-out, invalid POST, and successful checkout redirect states.
 
-### Add In-Page Ticket Enhancement
-
-After the server ticket page works, add the prototype-style homepage enhancement if it remains in scope.
-
-- Ticket links should still work as normal links without JavaScript.
-- Hydrated navigation may open the ticket surface without a full reload and keep `/jam/2026/tickets` deep-linkable.
-- If using a dialog/modal, implement focus restore, Escape close, scroll lock, inert background, and browser history cleanup.
-- Pause heavy background effects while the ticket surface is open.
-
 ### Wire Shopify Checkout
 
-Implement the real POST action for `/jam/2026/tickets`.
+Implement the real POST action for `/jam/2026/ticket`.
 
 - Add final product handles/variant mapping for the two ticket types.
 - Validate ticket type, product/variant id, and quantity with `parseSafe`.
@@ -96,15 +87,9 @@ Implement the real POST action for `/jam/2026/tickets`.
 - Return clear errors for invalid input, unavailable storefront, sold out/unpublished products, quantity limits, and cart creation failures.
 - Use `no-store` for POST responses and checkout-error states.
 
-### Social Metadata And Share Assets
+### Add Canonical Links
 
-Finish the document head for 2026 pages.
-
-- Add Jam 2026 OG/share image under `public/jam/2026`.
-- Use `getSocialHeadTags` with stable canonical URLs for homepage and tickets.
-- Add canonical links for `/jam/2026` and `/jam/2026/tickets`.
-- Keep title/description distinct for each page.
-- Add or adjust tests for social tags.
+- Add canonical links for `/jam/2026` and `/jam/2026/ticket`.
 
 ### Browser QA
 
