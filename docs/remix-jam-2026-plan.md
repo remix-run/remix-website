@@ -23,13 +23,6 @@ parent unless the route-local style explicitly opts out with `max-width: none`.
 
 ## Tasks
 
-### Harden FAQ
-
-Finish the no-JS and deep-link behavior.
-
-- Answers must remain reachable without JavaScript.
-- Add browser/component coverage for fragment navigation or no-JS markup if the implementation changes.
-
 ### Move Theme Preference To Cookie Session
 
 Replace the Jam 2026 header's `sessionStorage` theme persistence with a server-readable cookie session.
@@ -66,10 +59,6 @@ Implement the real POST action for `/jam/2026/ticket`.
 - Create a Shopify cart and redirect to checkout on success.
 - Return clear errors for invalid input, unavailable storefront, sold out/unpublished products, quantity limits, and cart creation failures.
 - Use `no-store` for POST responses and checkout-error states.
-
-### Add Canonical Links
-
-- Add canonical links for `/jam/2026` and `/jam/2026/ticket`.
 
 ### Browser QA
 

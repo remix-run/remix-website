@@ -37,15 +37,17 @@ export function Jam2026Hero() {
             ]}
           >
             <p mix={[eventDetailStyle, eventDetailLeftStyle]}>
-              Start your engines
-              <br />
-              October 1 - October 2
+              <span mix={eventDetailPlainLineStyle}>Start your engines</span>
+              <span mix={eventDetailPlainLineStyle}>October 2</span>
             </p>
             <YearBadge />
-            <p mix={eventDetailStyle}>
-              For a grand Remix showcase
-              <br />
-              Toronto - Ontario, Canada
+            <p mix={[eventDetailStyle, eventDetailRightStyle]}>
+              <span mix={eventDetailJustifiedLineStyle}>
+                For a grand Remix showcase
+              </span>
+              <span mix={eventDetailJustifiedLineStyle}>
+                Toronto - Ontario, Canada
+              </span>
             </p>
           </div>
         </div>
@@ -69,24 +71,6 @@ export function Jam2026Hero() {
             </p>
           </div>
         </div>
-
-        <div
-          mix={[storyNoteStyle, jam2026WindowSurfaceStyle, workshopNoteStyle]}
-        >
-          <p mix={jam2026WindowTitleStyle}>ABOUT-WORKSHOP.MD</p>
-          <div mix={jam2026WindowBodyStyle}>
-            <p mix={storyCopyStyle}>
-              Come learn from and build with the creators of Remix. In this
-              interactive workshop you'll hear from seasoned Open Source
-              maintainers and Remix founders Michael Jackson and Ryan Florence
-              as they share how to get the most out of Remix.
-            </p>
-          </div>
-        </div>
-
-        <h2 mix={[storyHeadingStyle, workshopHeadingStyle]}>
-          This year, we've set aside an additional day to host a workshop.
-        </h2>
       </div>
     </section>
   );
@@ -259,15 +243,15 @@ let eventDetailsStyle = css({
   textAlign: "center",
   zIndex: 1,
   [breakpointMedia.lg]: {
-    gridTemplateColumns: "240px auto 240px",
-    gap: "48px",
+    gridTemplateColumns: "190px auto 240px",
+    gap: "44px",
     justifyItems: "stretch",
-    textAlign: "left",
   },
 });
 
 let eventDetailStyle = css({
-  display: "inline-block",
+  display: "flex",
+  flexDirection: "column",
   justifySelf: "center",
   margin: 0,
   fontFamily: theme.fontFamily.mono,
@@ -280,14 +264,35 @@ let eventDetailStyle = css({
   [breakpointMedia.lg]: {
     justifySelf: "start",
     fontSize: "14px",
-    textAlign: "justify",
-    textAlignLast: "justify",
+    width: "190px",
   },
 });
 
 let eventDetailLeftStyle = css({
   [breakpointMedia.lg]: {
     justifySelf: "end",
+    transform: "translateX(32px)",
+  },
+});
+
+let eventDetailRightStyle = css({
+  [breakpointMedia.lg]: {
+    width: "240px",
+  },
+});
+
+let eventDetailJustifiedLineStyle = css({
+  display: "block",
+  [breakpointMedia.lg]: {
+    textAlign: "justify",
+    textAlignLast: "justify",
+  },
+});
+
+let eventDetailPlainLineStyle = css({
+  display: "block",
+  [breakpointMedia.lg]: {
+    textAlign: "left",
   },
 });
 
@@ -325,8 +330,6 @@ let storyStyle = css({
   display: "grid",
   gridTemplateColumns:
     "minmax(32px, 0.47fr) minmax(0, 2.12fr) minmax(24px, 0.71fr) minmax(0, 2.53fr) minmax(24px, 0.71fr) minmax(0, 2.12fr) minmax(32px, 0.47fr)",
-  gridTemplateRows: "auto auto",
-  rowGap: "80px",
   paddingBlock: "88px 96px",
   [storyNarrowMedia]: {
     display: "block",
@@ -369,20 +372,6 @@ let conferenceHeadingStyle = css({
   },
 });
 
-let workshopHeadingStyle = css({
-  alignSelf: "start",
-  gridColumn: "4 / 7",
-  gridRow: 2,
-  [storyNarrowMedia]: {
-    marginBlockStart: "48px",
-  },
-  [storyTabletMedia]: {
-    gridColumn: 2,
-    gridRow: 2,
-    marginBlockStart: 0,
-  },
-});
-
 let storyNoteStyle = css({
   alignSelf: "start",
   display: "flex",
@@ -408,20 +397,6 @@ let readmeNoteStyle = css({
   [storyTabletMedia]: {
     gridColumn: 2,
     gridRow: 1,
-    marginBlockStart: 0,
-  },
-});
-
-let workshopNoteStyle = css({
-  gridColumn: 2,
-  gridRow: 2,
-  marginBlockStart: "-48px",
-  [storyNarrowMedia]: {
-    marginBlockStart: "32px",
-  },
-  [storyTabletMedia]: {
-    gridColumn: 1,
-    gridRow: 2,
     marginBlockStart: 0,
   },
 });

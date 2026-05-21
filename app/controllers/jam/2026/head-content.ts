@@ -26,12 +26,13 @@ export function getJam2026HeadContent(props: Jam2026HeadContentProps = {}) {
       }
     : {
         title: "Remix Jam 2026",
-        description: "Remix Jam returns to Toronto on October 1-2, 2026.",
+        description: "Remix Jam returns to Toronto on October 2, 2026.",
       };
 }
 
 export function getJam2026HeadTags(props: Jam2026HeadTagsProps) {
   return [
+    { kind: "link", rel: "canonical", href: props.pageUrl },
     ...createSocialHeadTags({
       title: props.title,
       description: props.description,
@@ -40,7 +41,7 @@ export function getJam2026HeadTags(props: Jam2026HeadTagsProps) {
       imageAlt: JAM_2026_SHARE_IMAGE_ALT,
     }),
     ...jam2026IconHeadTags,
-  ];
+  ] satisfies ManagedHeadTag[];
 }
 
 export function getJam2026ManagedHeadTags(props: Jam2026HeadTagsProps) {

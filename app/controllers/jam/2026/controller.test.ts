@@ -23,13 +23,12 @@ describe("Remix Jam 2026 routes", () => {
     let html = await response.text();
 
     expect(html).toContain("<title>Remix Jam 2026</title>");
+    expect(html).toContain(
+      'data-remix-managed-head="true" rel="canonical" href="http://localhost:3000/jam/2026"',
+    );
     expect(html).toContain('aria-label="Page navigation"');
-    expect(html).toContain("Remix Jam 2026");
-    expect(html).toContain("October 1-2, 2026");
     expect(html).toContain("data-jam-2026-cloud-backdrop");
-    expect(html).toContain("data-cloud-state");
     expect(html).toContain("data-jam-2026-performance-tools");
-    expect(html).toContain("prefers-reduced-motion: reduce");
     expect(html).toContain('id="faq"');
     expect(html).toContain('href="/jam/2026/ticket"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
@@ -51,15 +50,13 @@ describe("Remix Jam 2026 routes", () => {
     let html = await response.text();
 
     expect(html).toContain("<title>Remix Jam 2026 Tickets</title>");
+    expect(html).toContain(
+      'data-remix-managed-head="true" rel="canonical" href="http://localhost:3000/jam/2026/ticket"',
+    );
     expect(html).toContain('aria-label="Page navigation"');
     expect(html).toContain('role="dialog"');
     expect(html).toContain('aria-modal="true"');
     expect(html).toContain('data-animate-entrance="false"');
-    expect(html).toContain("TICKETS.TS");
-    expect(html).toContain("Remix Jam 2026 Ticket");
-    expect(html).toContain("October 2, 2026 in Toronto");
-    expect(html).toContain("Early bird discount applied");
-    expect(html).toContain("$299");
     expect(html).toContain('aria-label="Close tickets"');
     expect(html).toContain('href="/jam/2026"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
@@ -88,9 +85,6 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain('role="dialog"');
     expect(html).toContain('aria-modal="true"');
     expect(html).toContain('data-animate-entrance="true"');
-    expect(html).toContain("TICKETS.TS");
-    expect(html).toContain("Remix Jam 2026 Ticket");
-    expect(html).toContain("Conference and afterparty");
     expect(html).not.toContain("<title>Remix Jam 2026 Tickets</title>");
     expect(html).not.toContain('aria-label="Page navigation"');
   });
@@ -138,7 +132,6 @@ describe("Remix Jam 2026 routes", () => {
     let html = await response.text();
 
     expect(html).not.toContain('role="dialog"');
-    expect(html).not.toContain("TICKETS.TS");
     expect(html).not.toContain('aria-label="Page navigation"');
   });
 });

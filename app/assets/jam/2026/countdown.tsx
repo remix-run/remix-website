@@ -3,7 +3,7 @@ import { theme } from "remix/ui/theme";
 
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
 
-const EVENT_START = new Date("2026-10-01T09:00:00-04:00").getTime();
+const EVENT_START = new Date("2026-10-02T09:00:00-04:00").getTime();
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
@@ -193,7 +193,7 @@ export function Jam2026Countdown(handle: Handle) {
 
   return () => (
     <div
-      aria-label="Remix Jam starts October 1, 2026 at 9:00 AM Eastern time"
+      aria-label="Remix Jam starts October 2, 2026 at 9:00 AM Eastern time"
       mix={jam2026CountdownStyle}
     >
       <span aria-hidden="true" mix={jam2026CountdownDisplayStyle}>

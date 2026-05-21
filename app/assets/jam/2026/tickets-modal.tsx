@@ -221,7 +221,7 @@ export function Jam2026TicketsModalContent(
                 <img
                   alt=""
                   draggable={false}
-                  src={assetPaths.jam2026.workshopKeyring}
+                  src={assetPaths.jam2026.keyring}
                   mix={keyringMix}
                 />
               </div>

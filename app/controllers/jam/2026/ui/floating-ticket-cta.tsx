@@ -32,7 +32,7 @@ export function Jam2026FloatingTicketCta() {
           draggable="false"
           height={1024}
           width={1024}
-          src={assetPaths.jam2026.workshopKeyring}
+          src={assetPaths.jam2026.keyring}
           mix={floatingCtaKeysStyle}
         />
       </a>

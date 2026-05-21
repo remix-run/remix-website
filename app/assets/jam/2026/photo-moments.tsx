@@ -73,14 +73,14 @@ const PHOTO_MOMENTS = [
     yCompact: 520,
   },
   {
-    id: "workshop-michael",
+    id: "speaker-ryan",
     src: assetPaths.jam2026.photos.ryan,
     filename: "REMIX-JAM-2025-RYAN.AVIF",
     anchor: "left",
     x: 647,
     xCompact: 168,
-    y: 1253,
-    yCompact: 1120,
+    y: 1096,
+    yCompact: 980,
   },
 ] as const satisfies readonly PhotoMoment[];
 
