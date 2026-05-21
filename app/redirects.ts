@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { route } from "remix/fetch-router/routes";
+import { route } from "remix/routes";
 import { RoutePattern } from "remix/route-pattern";
 import { createHref } from "remix/route-pattern/href";
 import { createRedirectResponse } from "remix/response/redirect";

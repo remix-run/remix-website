@@ -2,7 +2,13 @@ import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
 
 export let JamTicketCard = clientEntry(
   import.meta.url,
-  function JamTicketCard(handle: Handle) {
+  function JamTicketCard(
+    handle: Handle<{
+      ticketSrc: string;
+      ticketHolographic: string;
+      title?: string;
+    }>,
+  ) {
     let isHovered = false;
     let mousePosition = { x: 50, y: 50 };
     let ticketWidth = 0;
@@ -21,11 +27,7 @@ export let JamTicketCard = clientEntry(
       addEventListeners(window, handle.signal, { resize: updateDimensions });
     });
 
-    return (props: {
-      ticketSrc: string;
-      ticketHolographic: string;
-      title?: string;
-    }) => {
+    return () => {
       let tx = 0;
       let ty = 0;
       if (ticketWidth > 0 && ticketHeight > 0) {
@@ -83,7 +85,9 @@ export let JamTicketCard = clientEntry(
             >
               <div
                 class="absolute inset-0 bg-cover bg-center opacity-20"
-                style={{ backgroundImage: `url(${props.ticketHolographic})` }}
+                style={{
+                  backgroundImage: `url(${handle.props.ticketHolographic})`,
+                }}
               />
               {/* Rainbow overlay */}
               <div
@@ -114,7 +118,7 @@ export let JamTicketCard = clientEntry(
 
             <div class="contrast-[1.05]">
               <img
-                src={props.ticketSrc}
+                src={handle.props.ticketSrc}
                 width={800}
                 height={280}
                 alt="Remix Jam 2025 Event Ticket"
@@ -130,7 +134,7 @@ export let JamTicketCard = clientEntry(
                   <p>your company</p>
                 </div>
                 <p class="uppercase text-green-brand">
-                  {props.title ?? "General Admission"}
+                  {handle.props.title ?? "General Admission"}
                 </p>
               </div>
             </div>

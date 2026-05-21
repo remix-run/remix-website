@@ -1,5 +1,5 @@
 import cx from "clsx";
-import type { RemixNode } from "remix/ui";
+import type { Handle, RemixNode } from "remix/ui";
 import { render } from "../../../utils/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
@@ -64,8 +64,8 @@ const badgeText: Record<EventStatus, RemixNode> = {
   ),
 };
 
-function Jam2025Page() {
-  return ({ eventStatus }: { eventStatus: EventStatus }) => (
+function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
+  return () => (
     <>
       <div class="relative z-30">
         <JamKeepsakes />
@@ -76,25 +76,23 @@ function Jam2025Page() {
         class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]"
         tabIndex={-1}
       >
-        <SectionLabel>{sectionLabelText[eventStatus]}</SectionLabel>
+        <SectionLabel>
+          {sectionLabelText[handle.props.eventStatus]}
+        </SectionLabel>
         <Title>
-          <ScrambleText
-            setup={{ text: "Remix Jam", delay: 100, color: "blue" }}
-          />
+          <ScrambleText text="Remix Jam" delay={100} color="blue" />
           <span class="flex items-center justify-center gap-3 md:gap-5">
-            <ScrambleText
-              setup={{ text: "Toronto", delay: 400, color: "green" }}
-            />
+            <ScrambleText text="Toronto" delay={400} color="green" />
             <JamFadeInBadge
-              setup={1200}
+              delay={1200}
               class={cx(
                 "flex items-center justify-center gap-2 md:gap-4",
-                eventStatus === "live"
+                handle.props.eventStatus === "live"
                   ? "bg-red-brand text-white"
                   : "text-white ring-4 ring-inset ring-white md:ring-[6px]",
               )}
             >
-              {badgeText[eventStatus]}
+              {badgeText[handle.props.eventStatus]}
             </JamFadeInBadge>
           </span>
         </Title>
@@ -112,7 +110,7 @@ function Jam2025Page() {
           </div>
         </div>
 
-        {eventStatus === "before" ? (
+        {handle.props.eventStatus === "before" ? (
           <>
             <SectionLabel>Location</SectionLabel>
             <div class="z-10 flex flex-col items-center gap-6 md:gap-8">

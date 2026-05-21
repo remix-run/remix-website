@@ -1,3 +1,4 @@
+import type { Handle } from "remix/ui";
 import cx from "clsx";
 import { Document } from "./document.tsx";
 import { render } from "../utils/render.ts";
@@ -18,10 +19,12 @@ export function renderNotFoundPage(options?: { statusText?: string }) {
   );
 }
 
-function StatusErrorDocument() {
-  return (props: { status: number; statusText: string }) => (
+function StatusErrorDocument(
+  handle: Handle<{ status: number; statusText: string }>,
+) {
+  return () => (
     <Document
-      title={props.statusText}
+      title={handle.props.statusText}
       noIndex
       forceTheme="dark"
       stylesheets={[styleHrefs.app]}
@@ -35,12 +38,12 @@ function StatusErrorDocument() {
         )}
       >
         <div class="text-center leading-none">
-          <h1 class="font-mono text-[25vw]">{props.status}</h1>
+          <h1 class="font-mono text-[25vw]">{handle.props.status}</h1>
           <a
             class="inline-block text-[8vw] underline"
-            href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${props.status}`}
+            href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${handle.props.status}`}
           >
-            {props.statusText}
+            {handle.props.statusText}
           </a>
         </div>
       </main>

@@ -1,4 +1,4 @@
-import type { Controller } from "remix/fetch-router";
+import { createController } from "remix/router";
 
 import { routes } from "../../routes.ts";
 import { getRequestContext } from "../../utils/request-context.ts";
@@ -21,32 +21,44 @@ export async function jam2025RedirectHandler() {
   return Response.redirect(location, 302);
 }
 
-export let jam2025Controller = {
+export let jam2025Controller = createController(routes.jam.y2025, {
   actions: {
     index: jam2025Handler,
-    ticket: jam2025TicketHandler,
     lineup: jam2025LineupHandler,
     faq: jam2025FaqHandler,
     coc: jam2025CocHandler,
   },
-} satisfies Controller<typeof routes.jam.y2025>;
+});
 
-export let jam2025GalleryController = {
-  actions: {
-    index: jam2025GalleryHandler,
-    download: jam2025GalleryDownloadHandler,
+export let jam2025GalleryController = createController(
+  routes.jam.y2025.gallery,
+  {
+    actions: {
+      index: jam2025GalleryHandler,
+      download: jam2025GalleryDownloadHandler,
+    },
   },
-} satisfies Controller<typeof routes.jam.y2025.gallery>;
+);
 
-export let jam2026Controller = {
+export let jam2025TicketController = createController(routes.jam.y2025.ticket, {
+  actions: {
+    index: jam2025TicketHandler,
+    action: jam2025TicketHandler,
+  },
+});
+
+export let jam2026Controller = createController(routes.jam.y2026, {
   actions: {
     index: jam2026Handler,
   },
-} satisfies Controller<typeof routes.jam.y2026>;
+});
 
-export let jam2026TicketsController = {
-  actions: {
-    index: jam2026TicketsHandler,
-    action: jam2026TicketsActionHandler,
+export let jam2026TicketsController = createController(
+  routes.jam.y2026.tickets,
+  {
+    actions: {
+      index: jam2026TicketsHandler,
+      action: jam2026TicketsActionHandler,
+    },
   },
-} satisfies Controller<typeof routes.jam.y2026.tickets>;
+);

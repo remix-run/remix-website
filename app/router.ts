@@ -1,9 +1,9 @@
-import { asyncContext } from "remix/async-context-middleware";
-import { compression } from "remix/compression-middleware";
-import { createRouter, type RequestContext } from "remix/fetch-router";
-import { formData } from "remix/form-data-middleware";
-import { logger } from "remix/logger-middleware";
-import { staticFiles } from "remix/static-middleware";
+import { asyncContext } from "remix/middleware/async-context";
+import { compression } from "remix/middleware/compression";
+import { createRouter, type RequestContext } from "remix/router";
+import { formData } from "remix/middleware/form-data";
+import { logger } from "remix/middleware/logger";
+import { staticFiles } from "remix/middleware/static";
 
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
@@ -24,6 +24,7 @@ import {
   jam2025Controller,
   jam2025GalleryController,
   jam2025RedirectHandler,
+  jam2025TicketController,
   jam2026Controller,
   jam2026TicketsController,
 } from "./controllers/jam/controller.ts";
@@ -111,6 +112,7 @@ function createAppRouter() {
   router.map(routes.newsletter, newsletterHandler);
   router.map(routes.jam.index, jam2025RedirectHandler);
   router.map(routes.jam.y2025.gallery, jam2025GalleryController);
+  router.map(routes.jam.y2025.ticket, jam2025TicketController);
   router.map(routes.jam.y2025, jam2025Controller);
   if (showJam2026) {
     router.map(routes.jam.y2026.tickets, jam2026TicketsController);

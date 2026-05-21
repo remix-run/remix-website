@@ -1,4 +1,5 @@
 import cx from "clsx";
+import type { Handle } from "remix/ui";
 import { getSchedule } from "../../../data/jam-schedule.server.ts";
 import { render } from "../../../utils/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
@@ -30,12 +31,8 @@ export async function jam2025LineupHandler() {
         tabIndex={-1}
       >
         <Title className="text-center">
-          <ScrambleText
-            setup={{ text: "Schedule", delay: 100, color: "blue" }}
-          />
-          <ScrambleText
-            setup={{ text: "& Lineup", delay: 300, color: "green" }}
-          />
+          <ScrambleText text="Schedule" delay={100} color="blue" />
+          <ScrambleText text="& Lineup" delay={300} color="green" />
         </Title>
 
         <div class="mt-16 flex w-full flex-col gap-1 py-6 sm:mt-24 sm:px-2 sm:py-9 md:mt-24">
@@ -56,8 +53,8 @@ export async function jam2025LineupHandler() {
   );
 }
 
-function ScheduleTable() {
-  return ({ items }: { items: Schedule }) => (
+function ScheduleTable(handle: Handle<{ items: Schedule }>) {
+  return () => (
     <>
       <section class="z-10 w-full sm:hidden">
         <div class="-mx-10 border-y-2 border-white/20 px-4">
@@ -72,7 +69,7 @@ function ScheduleTable() {
             <div>Speaker</div>
           </div>
 
-          {items.map((item) => {
+          {handle.props.items.map((item) => {
             let key = `${item.time}-${item.title}`;
             return (
               <div key={key} class="overflow-hidden">
@@ -133,7 +130,7 @@ function ScheduleTable() {
             <div>Speaker</div>
             <div />
           </div>
-          {items.map((item) => {
+          {handle.props.items.map((item) => {
             let key = `${item.time}-${item.title}`;
             return <DesktopScheduleItem key={key} item={item} />;
           })}
@@ -143,8 +140,11 @@ function ScheduleTable() {
   );
 }
 
-function DesktopScheduleItem() {
-  return ({ item }: { item: Schedule[number] }) => (
-    <JamLineupAccordionItem item={item} gridColsClassName={gridColsClassName} />
+function DesktopScheduleItem(handle: Handle<{ item: Schedule[number] }>) {
+  return () => (
+    <JamLineupAccordionItem
+      item={handle.props.item}
+      gridColsClassName={gridColsClassName}
+    />
   );
 }

@@ -85,18 +85,17 @@ export let MobileMenu = clientEntry(
     };
 
     return () => {
-      let props = handle.props;
-      let summaryClass = props.summaryClass ?? mobileMenuStyles.summary;
+      let summaryClass = handle.props.summaryClass ?? mobileMenuStyles.summary;
       let menuWrapperClass =
-        props.menuWrapperClass ?? mobileMenuStyles.menuWrapper;
+        handle.props.menuWrapperClass ?? mobileMenuStyles.menuWrapper;
       let menuPositionClass =
-        props.menuPositionClass ?? mobileMenuStyles.menuPosition;
-      let navClass = props.navClass ?? mobileMenuStyles.nav;
+        handle.props.menuPositionClass ?? mobileMenuStyles.menuPosition;
+      let navClass = handle.props.navClass ?? mobileMenuStyles.nav;
 
       return (
         <details
           open={state.status === "open"}
-          class={cx("relative cursor-pointer", props.class)}
+          class={cx("relative cursor-pointer", handle.props.class)}
           mix={[
             ref((node) => {
               detailsElement = node;
@@ -119,7 +118,7 @@ export let MobileMenu = clientEntry(
           <div class={menuPositionClass}>
             <div class={menuWrapperClass}>
               <nav class={navClass} aria-label="Mobile">
-                {props.children}
+                {handle.props.children}
               </nav>
             </div>
           </div>

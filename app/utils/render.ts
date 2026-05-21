@@ -1,4 +1,4 @@
-import type { Router } from "remix/fetch-router";
+import type { Router } from "remix/router";
 import { renderToStream } from "remix/ui/server";
 import type { RemixNode } from "remix/ui";
 import { createHtmlResponse } from "remix/response/html";

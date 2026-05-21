@@ -17,7 +17,12 @@ const svgStyles = css({
   overflow: "visible",
 });
 
-export function LabelOverlay(handle: Handle) {
+export function LabelOverlay(
+  handle: Handle<{
+    labelsRef: { current: ProjectedLabel[] };
+    opacityRef: { current: number };
+  }>,
+) {
   let containerEl: HTMLDivElement | undefined;
   let svgEl: SVGSVGElement | undefined;
   let frameId = 0;
@@ -116,10 +121,7 @@ export function LabelOverlay(handle: Handle) {
     frameId = requestAnimationFrame(() => tick(labelsRef, opacityRef));
   }
 
-  return (props: {
-    labelsRef: { current: ProjectedLabel[] };
-    opacityRef: { current: number };
-  }) => (
+  return () => (
     <div
       aria-hidden="true"
       mix={[
@@ -128,7 +130,7 @@ export function LabelOverlay(handle: Handle) {
           containerEl = node;
           if (!frameId) {
             frameId = requestAnimationFrame(() =>
-              tick(props.labelsRef, props.opacityRef),
+              tick(handle.props.labelsRef, handle.props.opacityRef),
             );
           }
         }),

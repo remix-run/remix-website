@@ -27,8 +27,7 @@ type ScrambleSetup = {
   cycleDelay?: number;
 };
 
-type JamScrambleTextProps = {
-  setup: ScrambleSetup;
+type JamScrambleTextProps = ScrambleSetup & {
   className?: string;
 };
 
@@ -77,15 +76,13 @@ function getResolvedState(text: string): ScrambleState[] {
 export let JamScrambleText = clientEntry(
   import.meta.url,
   function JamScrambleText(handle: Handle<JamScrambleTextProps>) {
-    let setup = handle.props.setup;
-    let text = setup.text;
+    let text = handle.props.text;
     let animationKey = getAnimationKey(text);
     let textChars = text.split("");
-    let delay = setup.delay ?? 0;
-    let color = setup.color ?? "blue";
-    let cyclesToResolve = setup.cyclesToResolve ?? 10;
-    let charDelay = setup.charDelay ?? 100;
-    let cycleDelay = setup.cycleDelay ?? 50;
+    let delay = handle.props.delay ?? 0;
+    let cyclesToResolve = handle.props.cyclesToResolve ?? 10;
+    let charDelay = handle.props.charDelay ?? 100;
+    let cycleDelay = handle.props.cycleDelay ?? 50;
     let state = playedAnimations.has(animationKey)
       ? getResolvedState(text)
       : getInitialState(text);
@@ -214,7 +211,9 @@ export let JamScrambleText = clientEntry(
                   key={index}
                   class={cx(
                     visible ? "opacity-100" : "opacity-0",
-                    resolved ? "text-white" : colorMap[color],
+                    resolved
+                      ? "text-white"
+                      : colorMap[handle.props.color ?? "blue"],
                   )}
                 >
                   {displayChar}

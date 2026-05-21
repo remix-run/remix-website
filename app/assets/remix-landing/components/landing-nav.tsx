@@ -185,7 +185,15 @@ function navItemClick(item: NavItem, afterClick?: () => void) {
   });
 }
 
-export function LandingNav(handle: Handle) {
+export function LandingNav(
+  handle: Handle<{
+    activeIndexRef: { current: number };
+    totalSections: number;
+    onJump: (index: number) => void;
+    scrollYRef: { current: number };
+    shouldBlockBlogShortcut: () => boolean;
+  }>,
+) {
   let onJump: ((index: number) => void) | null = null;
   let totalSections = 1;
   let menuOpen = false;
@@ -253,18 +261,12 @@ export function LandingNav(handle: Handle) {
     if (scrollFrame) cancelAnimationFrame(scrollFrame);
   });
 
-  return (props: {
-    activeIndexRef: { current: number };
-    totalSections: number;
-    onJump: (index: number) => void;
-    scrollYRef: { current: number };
-    shouldBlockBlogShortcut: () => boolean;
-  }) => {
-    activeIndexRef = props.activeIndexRef;
-    totalSections = props.totalSections;
-    onJump = props.onJump;
-    scrollYRef = props.scrollYRef;
-    shouldBlockBlogShortcut = props.shouldBlockBlogShortcut;
+  return () => {
+    activeIndexRef = handle.props.activeIndexRef;
+    totalSections = handle.props.totalSections;
+    onJump = handle.props.onJump;
+    scrollYRef = handle.props.scrollYRef;
+    shouldBlockBlogShortcut = handle.props.shouldBlockBlogShortcut;
 
     const hintOpacity = clamp01(1 - scrollYRef.current / 80);
 

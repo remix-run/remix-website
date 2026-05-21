@@ -1,3 +1,4 @@
+import type { Handle } from "remix/ui";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
@@ -18,10 +19,12 @@ export async function blogHandler() {
   });
 }
 
-function Page() {
-  return (props: {
+function Page(
+  handle: Handle<{
     posts: Awaited<ReturnType<typeof getBlogPostListings>>;
-  }) => (
+  }>,
+) {
+  return () => (
     <Document
       title="Remix Blog"
       description="Thoughts about building excellent user experiences with Remix."
@@ -34,19 +37,21 @@ function Page() {
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <BlogPageContent posts={props.posts} />
+        <BlogPageContent posts={handle.props.posts} />
       </main>
       <Footer />
     </Document>
   );
 }
 
-function BlogPageContent() {
-  return (props: {
+function BlogPageContent(
+  handle: Handle<{
     posts: Awaited<ReturnType<typeof getBlogPostListings>>;
-  }) => {
-    let [latestPost, ...posts] = props.posts;
-    let featuredPosts = props.posts.filter((post) => post.featured);
+  }>,
+) {
+  return () => {
+    let [latestPost, ...posts] = handle.props.posts;
+    let featuredPosts = handle.props.posts.filter((post) => post.featured);
 
     return (
       <div class="rmx-page-body mt-8 flex flex-1 flex-col px-12">

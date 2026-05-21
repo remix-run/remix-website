@@ -1,4 +1,4 @@
-import { css } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements.tsx";
 import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen.tsx";
 import { RUNNER_AVIF_SRC } from "../../assets/remix-landing/runner-media.ts";
@@ -29,8 +29,8 @@ const landingContentStyles = css({
   zIndex: "10",
 });
 
-export function HomePage() {
-  return (props: HomePageProps) => (
+export function HomePage(handle: Handle<HomePageProps>) {
+  return () => (
     <Document
       title={HOME_TITLE}
       description={HOME_DESCRIPTION}
@@ -56,11 +56,11 @@ export function HomePage() {
           property: "og:description",
           content: HOME_DESCRIPTION,
         },
-        { kind: "meta", property: "og:url", content: props.pageUrl },
+        { kind: "meta", property: "og:url", content: handle.props.pageUrl },
         {
           kind: "meta",
           property: "og:image",
-          content: props.previewImage,
+          content: handle.props.previewImage,
         },
         {
           kind: "meta",
@@ -80,7 +80,7 @@ export function HomePage() {
         {
           kind: "meta",
           name: "twitter:image",
-          content: props.previewImage,
+          content: handle.props.previewImage,
         },
       ]}
     >

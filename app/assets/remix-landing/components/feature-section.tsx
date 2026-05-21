@@ -509,10 +509,12 @@ type FeatureSectionProps = {
 
 export let LandingNewsletterSubscribeForm = clientEntry(
   import.meta.url,
-  function LandingNewsletterSubscribeForm(handle: Handle) {
+  function LandingNewsletterSubscribeForm(
+    handle: Handle<{ placeholder?: string; buttonLabel?: string }>,
+  ) {
     let state: SubscribeState = { status: "idle" };
 
-    return (props: { placeholder?: string; buttonLabel?: string }) => (
+    return () => (
       <>
         <form
           action={routes.actions.newsletter.href()}
@@ -556,7 +558,7 @@ export let LandingNewsletterSubscribeForm = clientEntry(
             name="email"
             required
             autocomplete="email"
-            placeholder={props.placeholder ?? "name@example.com"}
+            placeholder={handle.props.placeholder ?? "name@example.com"}
             aria-invalid={state.status === "error" ? true : undefined}
             aria-describedby={
               state.status === "idle" ? undefined : "landing-newsletter-message"
@@ -570,7 +572,7 @@ export let LandingNewsletterSubscribeForm = clientEntry(
           >
             {state.status === "submitting"
               ? "Subscribing..."
-              : (props.buttonLabel ?? "Subscribe")}
+              : (handle.props.buttonLabel ?? "Subscribe")}
           </button>
         </form>
         <div
@@ -596,32 +598,32 @@ export let LandingNewsletterSubscribeForm = clientEntry(
   },
 );
 
-export function FeatureSection(_handle: Handle) {
-  return (props: FeatureSectionProps) => {
+export function FeatureSection(handle: Handle<FeatureSectionProps>) {
+  return () => {
     const primaryPanelStyles =
-      PRIMARY_PANEL_STYLES_BY_ID[props.id] ??
-      (props.align === "right" ? rightPanelStyles : leftPanelStyles);
+      PRIMARY_PANEL_STYLES_BY_ID[handle.props.id] ??
+      (handle.props.align === "right" ? rightPanelStyles : leftPanelStyles);
 
     return (
-      <section id={props.id} mix={[shellStyles]}>
-        <div mix={[rowStyles, ROW_STYLES_BY_ID[props.id]]}>
+      <section id={handle.props.id} mix={[shellStyles]}>
+        <div mix={[rowStyles, ROW_STYLES_BY_ID[handle.props.id]]}>
           <div
             data-package-logos-panel={
-              props.packageLogosAnchor ? "true" : undefined
+              handle.props.packageLogosAnchor ? "true" : undefined
             }
             mix={[panelStyles, primaryPanelStyles]}
           >
-            <p mix={[kickerStyles]}>{props.kicker}</p>
-            <h2 mix={[titleStyles]}>{props.title}</h2>
-            <p mix={[bodyStyles]}>{props.body}</p>
-            {props.ctaLabel && props.ctaHref ? (
+            <p mix={[kickerStyles]}>{handle.props.kicker}</p>
+            <h2 mix={[titleStyles]}>{handle.props.title}</h2>
+            <p mix={[bodyStyles]}>{handle.props.body}</p>
+            {handle.props.ctaLabel && handle.props.ctaHref ? (
               <a
-                href={props.ctaHref}
+                href={handle.props.ctaHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 mix={[ctaStyles]}
               >
-                {props.ctaIcon === "eye" ? (
+                {handle.props.ctaIcon === "eye" ? (
                   <svg
                     viewBox="0 0 24 24"
                     aria-hidden="true"
@@ -633,31 +635,32 @@ export function FeatureSection(_handle: Handle) {
                     />
                   </svg>
                 ) : null}
-                {props.ctaLabel}
+                {handle.props.ctaLabel}
               </a>
             ) : null}
           </div>
-          {props.codeSnippet ? (
+          {handle.props.codeSnippet ? (
             <div mix={[codeContainerStyles]}>
               <pre mix={[codePreStyles]}>
-                <code>{renderHighlightedCode(props.codeSnippet)}</code>
+                <code>{renderHighlightedCode(handle.props.codeSnippet)}</code>
               </pre>
             </div>
           ) : null}
-          {props.secondary ? (
+          {handle.props.secondary ? (
             <div
               mix={[
                 panelStyles,
-                SECONDARY_PANEL_STYLES_BY_ID[props.id] ?? rightPanelStyles,
+                SECONDARY_PANEL_STYLES_BY_ID[handle.props.id] ??
+                  rightPanelStyles,
               ]}
             >
-              <p mix={[kickerStyles]}>{props.secondary.kicker}</p>
-              <h2 mix={[titleStyles]}>{props.secondary.title}</h2>
-              <p mix={[bodyStyles]}>{props.secondary.body}</p>
-              {props.secondary.newsletter ? (
+              <p mix={[kickerStyles]}>{handle.props.secondary.kicker}</p>
+              <h2 mix={[titleStyles]}>{handle.props.secondary.title}</h2>
+              <p mix={[bodyStyles]}>{handle.props.secondary.body}</p>
+              {handle.props.secondary.newsletter ? (
                 <LandingNewsletterSubscribeForm
-                  placeholder={props.secondary.newsletterPlaceholder}
-                  buttonLabel={props.secondary.newsletterButtonLabel}
+                  placeholder={handle.props.secondary.newsletterPlaceholder}
+                  buttonLabel={handle.props.secondary.newsletterButtonLabel}
                 />
               ) : null}
             </div>

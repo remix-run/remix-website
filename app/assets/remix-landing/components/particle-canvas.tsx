@@ -138,7 +138,18 @@ function buildPresetRuntimeData(presets: Preset[]): PresetRuntimeData {
   };
 }
 
-export function ParticleCanvas(handle: Handle) {
+export function ParticleCanvas(
+  handle: Handle<{
+    settings: SystemSettings;
+    presets: Preset[];
+    morphValueRef: { current: number };
+    modelData: (ModelData | undefined)[];
+    labelsRef: { current: ProjectedLabel[] };
+    labelOpacityRef: { current: number };
+    onReady: () => void;
+    onError: (error: unknown) => void;
+  }>,
+) {
   let containerEl: HTMLDivElement | undefined;
   let canvasEl: HTMLCanvasElement | undefined;
   let engine: Engine | null = null;
@@ -709,17 +720,8 @@ export function ParticleCanvas(handle: Handle) {
     frameId = requestAnimationFrame(animate);
   }
 
-  return (props: {
-    settings: SystemSettings;
-    presets: Preset[];
-    morphValueRef: { current: number };
-    modelData: (ModelData | undefined)[];
-    labelsRef: { current: ProjectedLabel[] };
-    labelOpacityRef: { current: number };
-    onReady: () => void;
-    onError: (error: unknown) => void;
-  }) => {
-    currentProps = props;
+  return () => {
+    currentProps = handle.props;
 
     if (engine) {
       syncModelTextures();

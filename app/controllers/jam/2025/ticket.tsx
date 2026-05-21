@@ -1,5 +1,5 @@
 import * as s from "remix/data-schema";
-import { getContext } from "remix/async-context-middleware";
+import { getContext } from "remix/middleware/async-context";
 import {
   createCart,
   getProduct,
@@ -22,19 +22,23 @@ export async function jam2025TicketHandler() {
     request.method === "POST" ? "no-store" : CACHE_CONTROL.DEFAULT;
   let formError: string | undefined;
   let initialQuantity = 1;
+  let status = 200;
 
   if (request.method === "POST") {
     let formData = getContext().get(FormData);
     if (!formData) {
       formError = "Missing form data";
+      status = 400;
     } else {
       let submission = parseTicketPurchaseSubmission(formData);
       if (!submission.success) {
         formError = submission.error;
+        status = 400;
       } else {
         initialQuantity = submission.value.quantity;
         if (submission.value.productId !== product.productId) {
           formError = "Invalid ticket selection";
+          status = 400;
         } else {
           let discountCode =
             requestUrl.searchParams.get("discount") ?? undefined;
@@ -46,8 +50,9 @@ export async function jam2025TicketHandler() {
 
           if ("error" in cart) {
             formError = cart.error;
+            status = 400;
           } else {
-            return Response.redirect(cart.checkoutUrl, 302);
+            return Response.redirect(cart.checkoutUrl, 303);
           }
         }
       }
@@ -68,12 +73,12 @@ export async function jam2025TicketHandler() {
       >
         <Title>
           <ScrambleText
-            setup={{ text: "General Admission", delay: 100, color: "blue" }}
+            text="General Admission"
+            delay={100}
+            color="blue"
             className="whitespace-nowrap"
           />
-          <ScrambleText
-            setup={{ text: "ticket", delay: 300, color: "green" }}
-          />
+          <ScrambleText text="ticket" delay={300} color="green" />
         </Title>
 
         <SectionLabel>this ticket for illustration purposes only</SectionLabel>
@@ -85,7 +90,8 @@ export async function jam2025TicketHandler() {
         />
 
         <JamTicketPurchase
-          setup={{ initialQuantity, maxQuantity: MAX_QUANTITY }}
+          initialQuantity={initialQuantity}
+          maxQuantity={MAX_QUANTITY}
           class="z-10 flex w-[90%] flex-col items-center gap-3"
           price={product.price}
           productId={product.productId}
@@ -100,6 +106,7 @@ export async function jam2025TicketHandler() {
       </main>
     </JamDocument>,
     {
+      status,
       headers: {
         "Cache-Control": cacheControl,
       },

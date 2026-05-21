@@ -175,10 +175,14 @@ async function replaceHash(anchor: string) {
   }
 }
 
-export function SectionNav(handle: Handle) {
+export function SectionNav(
+  handle: Handle<{
+    activeIndexRef: { current: number };
+    morphValueRef: { current: number };
+    onJump: (index: number) => void;
+  }>,
+) {
   let scrollFrame = 0;
-  let activeIndexRef: { current: number } = { current: 0 };
-  let morphValueRef: { current: number } = { current: 0 };
 
   function scheduleScrollUpdate() {
     if (scrollFrame) return;
@@ -195,20 +199,13 @@ export function SectionNav(handle: Handle) {
     if (scrollFrame) cancelAnimationFrame(scrollFrame);
   });
 
-  return (props: {
-    activeIndexRef: { current: number };
-    morphValueRef: { current: number };
-    totalSections: number;
-    onJump: (index: number) => void;
-  }) => {
-    activeIndexRef = props.activeIndexRef;
-    morphValueRef = props.morphValueRef;
+  return () => {
     const count = SECTIONS.length;
     const maxMorph = count - 1;
     const step = ITEM_HEIGHT + ITEM_GAP;
     const trackHeight = (count - 1) * step + ITEM_HEIGHT;
-    const morph = clamp(morphValueRef.current, 0, maxMorph);
-    const activeIndex = clamp(activeIndexRef.current, 0, maxMorph);
+    const morph = clamp(handle.props.morphValueRef.current, 0, maxMorph);
+    const activeIndex = clamp(handle.props.activeIndexRef.current, 0, maxMorph);
     const dotCenterY = (index: number) => index * step + ITEM_HEIGHT / 2;
     const scrollFillPx =
       maxMorph > 0
@@ -249,8 +246,8 @@ export function SectionNav(handle: Handle) {
                       on("click", (e) => {
                         e.preventDefault();
                         void replaceHash(section.anchor).then(
-                          () => props.onJump(i),
-                          () => props.onJump(i),
+                          () => handle.props.onJump(i),
+                          () => handle.props.onJump(i),
                         );
                       }),
                     ]}

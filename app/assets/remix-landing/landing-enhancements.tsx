@@ -556,7 +556,6 @@ export let RemixLandingEnhancements = clientEntry(
           <SectionNav
             activeIndexRef={activeIndexRef}
             morphValueRef={morphValueRef}
-            totalSections={presets.length}
             onJump={jumpToPreset}
           />
 

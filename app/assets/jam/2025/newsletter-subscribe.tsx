@@ -7,14 +7,14 @@ import {
 
 export let JamNewsletterSubscribeForm = clientEntry(
   import.meta.url,
-  function JamNewsletterSubscribeForm(handle: Handle) {
+  function JamNewsletterSubscribeForm(handle: Handle<{ class?: string }>) {
     let state: SubscribeState = { status: "idle" };
 
-    return (props: { class?: string }) => (
+    return () => (
       <form
         action={routes.actions.newsletter.href()}
         method="post"
-        class={props.class}
+        class={handle.props.class}
         mix={[
           on("submit", async (event, signal) => {
             event.preventDefault();

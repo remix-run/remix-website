@@ -1,13 +1,13 @@
 import * as s from "remix/data-schema";
 import * as c from "remix/data-schema/checks";
 import * as coerce from "remix/data-schema/coerce";
-import type { Controller } from "remix/fetch-router";
+import { createController } from "remix/router";
 
-import type { routes } from "../../routes.ts";
+import { routes } from "../../routes.ts";
 
 type NewsletterResponse = { ok: boolean; error: string | null };
 
-export default {
+export default createController(routes.actions, {
   actions: {
     async newsletter(context) {
       let formData =
@@ -53,7 +53,7 @@ export default {
       }
     },
   },
-} satisfies Controller<typeof routes.actions>;
+});
 
 let newsletterSubmission = s.object({
   email: s.string().pipe(c.email()),

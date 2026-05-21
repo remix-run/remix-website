@@ -1,6 +1,6 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
-import type { Router } from "remix/fetch-router";
+import type { Router } from "remix/router";
 import { followFrameRedirects } from "./render.ts";
 
 type RouterFetch = Router["fetch"];

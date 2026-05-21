@@ -4,8 +4,8 @@ import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
-import type { Action } from "remix/fetch-router";
-import type { routes } from "../routes.ts";
+import { createAction } from "remix/router";
+import { routes } from "../routes.ts";
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }
@@ -20,33 +20,34 @@ type OgNode = {
   };
 };
 
-export let blogOgImageHandler: Action<typeof routes.blogOgImage> = async ({
-  request,
-}) => {
-  let parsedQuery = parseOgImageQuery(request);
-  if (!parsedQuery.success) {
-    return Response.json({ error: parsedQuery.error }, { status: 400 });
-  }
+export let blogOgImageHandler = createAction(
+  routes.blogOgImage,
+  async ({ request }) => {
+    let parsedQuery = parseOgImageQuery(request);
+    if (!parsedQuery.success) {
+      return Response.json({ error: parsedQuery.error }, { status: 400 });
+    }
 
-  let pngData;
-  try {
-    let svg = await createOgImageSVG(request, parsedQuery.value);
-    pngData = renderSvgToPng(svg);
-  } catch (error) {
-    let message = error instanceof Error ? error.message : String(error);
-    return new Response(message || "Failed to generate image", {
-      status: 500,
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    let pngData;
+    try {
+      let svg = await createOgImageSVG(request, parsedQuery.value);
+      pngData = renderSvgToPng(svg);
+    } catch (error) {
+      let message = error instanceof Error ? error.message : String(error);
+      return new Response(message || "Failed to generate image", {
+        status: 500,
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      });
+    }
+
+    return new Response(Uint8Array.from(pngData), {
+      headers: {
+        "Content-Type": "image/png",
+        "Cache-Control": `max-age=${60 * 60 * 24}`,
+      },
     });
-  }
-
-  return new Response(Uint8Array.from(pngData), {
-    headers: {
-      "Content-Type": "image/png",
-      "Cache-Control": `max-age=${60 * 60 * 24}`,
-    },
-  });
-};
+  },
+);
 
 export function parseOgImageQuery(request: Request): ParsedOgImageQuery {
   let requestUrl = new URL(request.url);

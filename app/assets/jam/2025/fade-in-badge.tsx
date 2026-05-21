@@ -7,7 +7,7 @@ import {
 } from "remix/ui";
 
 type JamFadeInBadgeProps = {
-  setup?: number;
+  delay?: number;
   children: RemixNode;
   class?: string;
 };
@@ -16,7 +16,7 @@ export let JamFadeInBadge = clientEntry(
   import.meta.url,
   function JamFadeInBadge(handle: Handle<JamFadeInBadgeProps>) {
     let isVisible = false;
-    let delay = handle.props.setup ?? 0;
+    let delay = handle.props.delay ?? 0;
 
     handle.queueTask((signal) => {
       if (signal.aborted) return;

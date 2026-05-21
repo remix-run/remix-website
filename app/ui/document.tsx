@@ -51,28 +51,21 @@ declare global {
  */
 export function Document(handle: Handle<DocumentProps>) {
   return () => {
-    let {
-      title,
-      description,
-      noIndex,
-      forceTheme,
-      headTags = [],
-      stylesheets = [],
-      children,
-    } = handle.props;
     let assetEntry = getAssetEntry();
+    let stylesheets = [
+      ...new Set([styleHrefs.global, ...(handle.props.stylesheets ?? [])]),
+    ];
 
-    stylesheets = [...new Set([styleHrefs.global, ...stylesheets])];
     let managedHeadTags: ManagedHeadTag[] = [
-      ...(noIndex
+      ...(handle.props.noIndex
         ? [{ kind: "meta" as const, name: "robots", content: "noindex" }]
         : []),
-      ...(description
+      ...(handle.props.description
         ? [
             {
               kind: "meta" as const,
               name: "description",
-              content: description,
+              content: handle.props.description,
             },
           ]
         : []),
@@ -81,14 +74,14 @@ export function Document(handle: Handle<DocumentProps>) {
         rel: "stylesheet",
         href,
       })),
-      ...headTags,
+      ...(handle.props.headTags ?? []),
     ];
     return (
       <html
         lang="en"
-        data-theme={forceTheme ?? undefined}
-        class={forceTheme === "dark" ? "dark" : undefined}
-        style={{ colorScheme: forceTheme ?? "light dark" }}
+        data-theme={handle.props.forceTheme ?? undefined}
+        class={handle.props.forceTheme === "dark" ? "dark" : undefined}
+        style={{ colorScheme: handle.props.forceTheme ?? "light dark" }}
       >
         <head>
           <meta charset="utf-8" />
@@ -98,7 +91,7 @@ export function Document(handle: Handle<DocumentProps>) {
           />
           <meta name="theme-color" content="#121212" />
           <RemixTheme.Style />
-          {title ? <title>{title}</title> : null}
+          {handle.props.title ? <title>{handle.props.title}</title> : null}
 
           <link rel="icon" href="/favicon.ico" sizes="32x32" />
           <link
@@ -154,8 +147,8 @@ export function Document(handle: Handle<DocumentProps>) {
 
         <body mix={documentBodyStyle}>
           <DocumentHeadSync
-            title={title}
-            forceTheme={forceTheme}
+            title={handle.props.title}
+            forceTheme={handle.props.forceTheme}
             headTags={managedHeadTags}
           />
           <img
@@ -167,7 +160,7 @@ export function Document(handle: Handle<DocumentProps>) {
             // Preload icons sprite so <use href> references resolve.
             fetchpriority="high"
           />
-          {children}
+          {handle.props.children}
         </body>
       </html>
     );

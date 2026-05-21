@@ -10,7 +10,7 @@ import {
   type JamGalleryModalNav,
 } from "../../../../assets/jam/2025/gallery-modal-host.tsx";
 import { assetPaths } from "../../../../utils/asset-paths.ts";
-import type { RemixNode } from "remix/ui";
+import type { Handle, RemixNode } from "remix/ui";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
@@ -36,10 +36,8 @@ export async function jam2025GalleryHandler() {
         tabIndex={-1}
       >
         <Title>
-          <ScrambleText setup={{ text: "Photo", delay: 100, color: "blue" }} />
-          <ScrambleText
-            setup={{ text: "Gallery", delay: 300, color: "green" }}
-          />
+          <ScrambleText text="Photo" delay={100} color="blue" />
+          <ScrambleText text="Gallery" delay={300} color="green" />
         </Title>
 
         {photos.length === 0 ? (
@@ -83,20 +81,22 @@ export { transformShopifyImageUrl };
 export { getSelectedPhotoIndex };
 export { getGalleryPhotos };
 
-function GalleryModal() {
-  return ({
-    photos,
-    selectedPhotoIndex,
-  }: {
+function GalleryModal(
+  handle: Handle<{
     photos: Photo[];
     selectedPhotoIndex: number;
-  }) => {
-    let selectedPhoto = photos[selectedPhotoIndex];
-    let nav = getJamGalleryModalNav(selectedPhotoIndex, photos.length);
-    let downloadHref = `${routes.jam.y2025.gallery.download.href()}?photo=${selectedPhotoIndex}`;
+  }>,
+) {
+  return () => {
+    let selectedPhoto = handle.props.photos[handle.props.selectedPhotoIndex];
+    let nav = getJamGalleryModalNav(
+      handle.props.selectedPhotoIndex,
+      handle.props.photos.length,
+    );
+    let downloadHref = `${routes.jam.y2025.gallery.download.href()}?photo=${handle.props.selectedPhotoIndex}`;
     return (
       <JamGalleryModalHost
-        setup={{ photoCount: photos.length }}
+        photoCount={handle.props.photos.length}
         nav={nav}
         class="fixed inset-0 z-50 size-full select-none bg-black/70 backdrop-blur"
       >
@@ -113,7 +113,7 @@ function GalleryModal() {
               href={downloadHref}
               icon="download"
               label="Download full resolution image"
-              download={`remix-jam-2025-photo-${selectedPhotoIndex + 1}.jpg`}
+              download={`remix-jam-2025-photo-${handle.props.selectedPhotoIndex + 1}.jpg`}
             />
           </div>
           <div class="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
@@ -136,7 +136,8 @@ function GalleryModal() {
           </div>
           <div class="flex shrink-0 justify-center">
             <div class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black">
-              {selectedPhotoIndex + 1} / {photos.length}
+              {handle.props.selectedPhotoIndex + 1} /{" "}
+              {handle.props.photos.length}
             </div>
           </div>
         </div>
@@ -145,8 +146,8 @@ function GalleryModal() {
   };
 }
 
-function JamGalleryLink() {
-  return (props: {
+function JamGalleryLink(
+  handle: Handle<{
     href: string;
     class?: string;
     ariaLabel?: string;
@@ -154,26 +155,28 @@ function JamGalleryLink() {
     target?: string;
     rel?: string;
     children?: RemixNode;
-  }) => (
+  }>,
+) {
+  return () => (
     <a
-      href={props.href}
+      href={handle.props.href}
       rmx-reset-scroll="false"
-      aria-label={props.ariaLabel}
-      tabindex={props.tabindex}
-      target={props.target}
-      rel={props.rel}
-      class={props.class}
+      aria-label={handle.props.ariaLabel}
+      tabindex={handle.props.tabindex}
+      target={handle.props.target}
+      rel={handle.props.rel}
+      class={handle.props.class}
     >
-      {props.children}
+      {handle.props.children}
     </a>
   );
 }
 
-function ModalImage() {
-  return ({ photo }: { photo: Photo }) => {
-    let imageSrc = getGalleryModalImageSrc(photo);
-    let aspectRatio = photo.width / photo.height;
-    let isLandscape = photo.width > photo.height;
+function ModalImage(handle: Handle<{ photo: Photo }>) {
+  return () => {
+    let imageSrc = getGalleryModalImageSrc(handle.props.photo);
+    let aspectRatio = handle.props.photo.width / handle.props.photo.height;
+    let isLandscape = handle.props.photo.width > handle.props.photo.height;
 
     return (
       <div
@@ -188,7 +191,7 @@ function ModalImage() {
       >
         <img
           src={imageSrc}
-          alt={photo.altText || ""}
+          alt={handle.props.photo.altText || ""}
           class="size-full object-contain"
         />
       </div>
@@ -196,8 +199,8 @@ function ModalImage() {
   };
 }
 
-function IconLink() {
-  return (props: {
+function IconLink(
+  handle: Handle<{
     href: string;
     icon: "chevron-r" | "x-mark" | "download";
     label: string;
@@ -205,30 +208,32 @@ function IconLink() {
     download?: string;
     target?: string;
     rel?: string;
-  }) =>
-    props.download ? (
+  }>,
+) {
+  return () =>
+    handle.props.download ? (
       <a
-        href={props.href}
-        aria-label={props.label}
-        download={props.download}
-        target={props.target}
-        rel={props.rel}
-        class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
+        href={handle.props.href}
+        aria-label={handle.props.label}
+        download={handle.props.download}
+        target={handle.props.target}
+        rel={handle.props.rel}
+        class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${handle.props.className ?? ""}`}
       >
         <svg class="pointer-events-none size-6" aria-hidden="true">
-          <use href={`${assetPaths.iconsSprite}#${props.icon}`} />
+          <use href={`${assetPaths.iconsSprite}#${handle.props.icon}`} />
         </svg>
       </a>
     ) : (
       <JamGalleryLink
-        href={props.href}
-        ariaLabel={props.label}
-        target={props.target}
-        rel={props.rel}
-        class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${props.className ?? ""}`}
+        href={handle.props.href}
+        ariaLabel={handle.props.label}
+        target={handle.props.target}
+        rel={handle.props.rel}
+        class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${handle.props.className ?? ""}`}
       >
         <svg class="pointer-events-none size-6" aria-hidden="true">
-          <use href={`${assetPaths.iconsSprite}#${props.icon}`} />
+          <use href={`${assetPaths.iconsSprite}#${handle.props.icon}`} />
         </svg>
       </JamGalleryLink>
     );
@@ -282,10 +287,10 @@ async function getGalleryPhotos() {
   ]).then((p) => p.flat());
 }
 
-function PhotoImage() {
-  return ({ url, altText, width, height }: Photo) => {
+function PhotoImage(handle: Handle<Photo>) {
+  return () => {
     let srcSet = GALLERY_GRID_IMAGE_WIDTHS.map((size) => {
-      let sizedUrl = transformShopifyImageUrl(url, {
+      let sizedUrl = transformShopifyImageUrl(handle.props.url, {
         width: size,
         format: "webp",
         quality: 85,
@@ -293,7 +298,7 @@ function PhotoImage() {
       return `${sizedUrl} ${size}w`;
     }).join(", ");
 
-    let src = transformShopifyImageUrl(url, {
+    let src = transformShopifyImageUrl(handle.props.url, {
       width: GALLERY_GRID_DEFAULT_WIDTH,
       format: "webp",
       quality: 85,
@@ -303,9 +308,9 @@ function PhotoImage() {
       <img
         src={src}
         srcSet={srcSet}
-        alt={altText || ""}
-        width={width}
-        height={height}
+        alt={handle.props.altText || ""}
+        width={handle.props.width}
+        height={handle.props.height}
         sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw"
         loading="lazy"
         class="w-full select-none transition-transform duration-300 hover:scale-105"
