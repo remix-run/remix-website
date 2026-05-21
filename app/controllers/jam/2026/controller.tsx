@@ -14,19 +14,17 @@ export async function jam2026Handler() {
     request.headers.get("x-remix-target") === ticketModalConfig.frameName;
   let isServerResolvedFrame =
     request.headers.get("x-remix-ssr-frame") === "true";
-  let prefersReducedMotion =
-    request.headers.get("x-remix-reduced-motion") === "true";
   let responseInit = {
     headers: {
       "Cache-Control": CACHE_CONTROL.DEFAULT,
-      Vary: "x-remix-target, x-remix-ssr-frame, x-remix-reduced-motion",
+      Vary: "x-remix-target, x-remix-ssr-frame",
     },
   };
 
   if (isTicketsFrameRequest) {
     return render.frame(
       <Jam2026TicketsModalFrame
-        animateEntrance={!isServerResolvedFrame && !prefersReducedMotion}
+        animateEntrance={!isServerResolvedFrame}
         open={ticketsModalOpen}
       />,
       responseInit,

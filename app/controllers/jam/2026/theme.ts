@@ -23,6 +23,8 @@ let jamThemeVars = {
   skyMiddle: "--jam-2026-sky-middle",
   skyHorizon: "--jam-2026-sky-horizon",
   skyGround: "--jam-2026-sky-ground",
+  cloudOpacity: "--jam-2026-cloud-opacity",
+  cloudFilter: "--jam-2026-cloud-filter",
 };
 
 export let jamTheme = {
@@ -48,6 +50,8 @@ export let jamTheme = {
   skyMiddle: `var(${jamThemeVars.skyMiddle})`,
   skyHorizon: `var(${jamThemeVars.skyHorizon})`,
   skyGround: `var(${jamThemeVars.skyGround})`,
+  cloudOpacity: `var(${jamThemeVars.cloudOpacity})`,
+  cloudFilter: `var(${jamThemeVars.cloudFilter})`,
 };
 
 let jamThemeVarsStyle = css({
@@ -85,6 +89,23 @@ let jamThemeVarsStyle = css({
     "light-dark(color-mix(in srgb, #b7ebff 52%, white), #182851)",
   [jamThemeVars.skyGround]:
     "light-dark(color-mix(in srgb, #f7f4ea 46%, white), #030816)",
+  [jamThemeVars.cloudOpacity]: "0.9",
+  [jamThemeVars.cloudFilter]: "saturate(105%) contrast(103%)",
+});
+
+let jamThemeModeVarsStyle = css({
+  ":root.dark &": {
+    [jamThemeVars.cloudOpacity]: "0.6",
+    [jamThemeVars.cloudFilter]: "saturate(72%) brightness(0.55) contrast(110%)",
+  },
+  ":root[data-theme='light'] &": {
+    [jamThemeVars.cloudOpacity]: "0.9",
+    [jamThemeVars.cloudFilter]: "saturate(105%) contrast(103%)",
+  },
+  ":root[data-theme='dark'] &": {
+    [jamThemeVars.cloudOpacity]: "0.6",
+    [jamThemeVars.cloudFilter]: "saturate(72%) brightness(0.55) contrast(110%)",
+  },
 });
 
 let jamSelectionStyle = css({
@@ -98,4 +119,8 @@ let jamSelectionStyle = css({
   },
 });
 
-export let jamThemeStyle = [jamThemeVarsStyle, jamSelectionStyle];
+export let jamThemeStyle = [
+  jamThemeVarsStyle,
+  jamThemeModeVarsStyle,
+  jamSelectionStyle,
+];

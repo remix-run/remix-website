@@ -4,6 +4,7 @@ import { describe, it } from "remix/test";
 import { render } from "remix/ui/test";
 
 import { Jam2026TicketsModalFrame } from "./tickets-modal.tsx";
+import { remixJam2026Ticket } from "../../../controllers/jam/2026/ticket-data.ts";
 import { ticketModalConfig } from "../../../controllers/jam/2026/tickets-modal-contract.ts";
 import { routes } from "../../../routes.ts";
 
@@ -83,6 +84,35 @@ describe("Jam2026TicketsModal", () => {
     );
   });
 
+  it("does not apply entrance motion for reduced-motion users", async (t) => {
+    let originalMatchMedia = window.matchMedia;
+    window.matchMedia = (query) =>
+      ({
+        matches: query === "(prefers-reduced-motion: reduce)",
+        media: query,
+        onchange: null,
+        addListener() {},
+        removeListener() {},
+        addEventListener() {},
+        removeEventListener() {},
+        dispatchEvent: () => false,
+      }) as MediaQueryList;
+    t.after(() => {
+      window.matchMedia = originalMatchMedia;
+    });
+
+    let result = render(<Jam2026TicketsModalFrame open />);
+    t.after(result.cleanup);
+
+    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+
+    expect(
+      result.container
+        .querySelector(`[${ticketModalConfig.attributes.modal}]`)
+        ?.getAttribute("data-animate-entrance"),
+    ).toBe("false");
+  });
+
   it("updates ticket quantity and subtotal in the hydrated modal", async (t) => {
     let result = render(<Jam2026TicketsModalFrame open />);
     t.after(result.cleanup);
@@ -108,8 +138,12 @@ describe("Jam2026TicketsModal", () => {
     )!;
 
     expect(result.container.textContent).toContain("Remix Jam 2026 Ticket");
-    expect(result.container.textContent).toContain("$299");
-    expect(result.container.textContent).toContain("$399");
+    expect(result.container.textContent).toContain(
+      `$${remixJam2026Ticket.price}`,
+    );
+    expect(result.container.textContent).toContain(
+      `$${remixJam2026Ticket.originalPrice}`,
+    );
     expect(checkoutButton.disabled).toBe(true);
     expect(getQuantityValue()).toBe("1");
     expect(getQuantityInput().value).toBe("1");
@@ -119,16 +153,22 @@ describe("Jam2026TicketsModal", () => {
 
     expect(getQuantityValue()).toBe("2");
     expect(getQuantityInput().value).toBe("2");
-    expect(result.container.textContent).toContain("$598");
-    expect(result.container.textContent).toContain("$798");
+    expect(result.container.textContent).toContain(
+      `$${remixJam2026Ticket.price * 2}`,
+    );
+    expect(result.container.textContent).toContain(
+      `$${remixJam2026Ticket.originalPrice * 2}`,
+    );
     expect(getDecreaseButton().disabled).toBe(false);
 
-    for (let index = 0; index < 4; index++) {
+    for (let index = 2; index < remixJam2026Ticket.maxQuantity; index++) {
       await result.act(() => getIncreaseButton().click());
     }
 
-    expect(getQuantityValue()).toBe("6");
-    expect(getQuantityInput().value).toBe("6");
+    expect(getQuantityValue()).toBe(String(remixJam2026Ticket.maxQuantity));
+    expect(getQuantityInput().value).toBe(
+      String(remixJam2026Ticket.maxQuantity),
+    );
     expect(getIncreaseButton().disabled).toBe(true);
   });
 

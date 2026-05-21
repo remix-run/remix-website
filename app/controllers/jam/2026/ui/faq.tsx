@@ -53,6 +53,8 @@ export function Jam2026Faq() {
 }
 
 let faqStyle = css({
+  position: "relative",
+  zIndex: 1,
   paddingBlock: "max(32px, 4.8vw)",
   backgroundColor: "light-dark(rgb(255 255 255 / 0.5), rgb(0 38 68 / 0.5))",
   scrollMarginBlockStart: "48px",

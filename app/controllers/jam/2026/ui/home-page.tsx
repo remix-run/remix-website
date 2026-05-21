@@ -1,5 +1,7 @@
 import { css, Frame, type Handle } from "remix/ui";
 import { theme } from "remix/ui/theme";
+import { FpsCounterToggle } from "../../../../assets/fps-counter-toggle.tsx";
+import { Jam2026CloudBackdrop } from "../../../../assets/jam/2026/cloud-backdrop.tsx";
 import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
 import { Jam2026PhotoMoments } from "../../../../assets/jam/2026/photo-moments.tsx";
 import { routes } from "../../../../routes.ts";
@@ -29,6 +31,8 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
         headTags={getJam2026HeadTags(head)}
       >
         <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
+          <Jam2026CloudBackdrop />
+          <FpsCounterToggle dataAttribute="data-jam-2026-performance-tools" />
           <div
             id={ticketModalConfig.pageBackgroundId}
             aria-hidden={ticketsModalOpen ? "true" : undefined}
@@ -66,11 +70,12 @@ let pageStyle = css({
   flexDirection: "column",
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
+  overflowX: "clip",
   "&::before": {
     content: '""',
     position: "fixed",
     inset: 0,
-    zIndex: -1,
+    zIndex: -3,
     pointerEvents: "none",
     background: `linear-gradient(180deg, ${jamTheme.skyTop} 0%, ${jamTheme.skyMiddle} 43%, ${jamTheme.skyHorizon} 72%, ${jamTheme.skyGround} 100%)`,
   },
@@ -92,6 +97,8 @@ let mainStyle = css({
 });
 
 let footerStyle = css({
+  position: "relative",
+  zIndex: 1,
   backgroundColor: jamTheme.surfaceRaised,
   color: jamTheme.ink,
 });

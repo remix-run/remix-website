@@ -176,6 +176,7 @@ let heroLineEntranceStyle = css({
 });
 
 let heroStyle = css({
+  position: "relative",
   overflow: "clip",
   color: jamTheme.ink,
 });
@@ -219,8 +220,10 @@ let brandStackStyle = css({
 });
 
 let remixWordmarkStyle = css({
-  width: "clamp(12.5rem, 22vw, 19.5rem)",
-  height: "clamp(1.25rem, 2.2vw, 1.92rem)",
+  position: "relative",
+  zIndex: 1,
+  width: "clamp(10.75rem, 15.25vw, 15.25rem)",
+  height: "clamp(1.06rem, 1.5vw, 1.5rem)",
   color: jamTheme.ink,
   [breakpointMedia.sm]: {
     transform: "none",
@@ -228,6 +231,8 @@ let remixWordmarkStyle = css({
 });
 
 let jamMarkStyle = css({
+  position: "relative",
+  zIndex: -1,
   display: "block",
   width: "620px",
   maxWidth: "none",
@@ -243,6 +248,7 @@ let jamPathStyle = css({
 });
 
 let eventDetailsStyle = css({
+  position: "relative",
   display: "grid",
   gridTemplateColumns: "1fr",
   alignItems: "center",

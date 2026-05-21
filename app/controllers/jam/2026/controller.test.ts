@@ -19,7 +19,6 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(response.headers.get("Vary")).toContain("x-remix-target");
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
-    expect(response.headers.get("Vary")).toContain("x-remix-reduced-motion");
 
     let html = await response.text();
 
@@ -27,6 +26,10 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain('aria-label="Page navigation"');
     expect(html).toContain("Remix Jam 2026");
     expect(html).toContain("October 1-2, 2026");
+    expect(html).toContain("data-jam-2026-cloud-backdrop");
+    expect(html).toContain("data-cloud-state");
+    expect(html).toContain("data-jam-2026-performance-tools");
+    expect(html).toContain("prefers-reduced-motion: reduce");
     expect(html).toContain('href="/jam/2026/ticket"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
     expect(html).not.toContain('role="dialog"');
@@ -43,7 +46,6 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(response.headers.get("Vary")).toContain("x-remix-target");
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
-    expect(response.headers.get("Vary")).toContain("x-remix-reduced-motion");
 
     let html = await response.text();
 
@@ -79,7 +81,6 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(response.headers.get("Vary")).toContain("x-remix-target");
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
-    expect(response.headers.get("Vary")).toContain("x-remix-reduced-motion");
 
     let html = await response.text();
 
@@ -93,21 +94,21 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).not.toContain('aria-label="Page navigation"');
   });
 
-  it("skips ticket modal entrance animation for reduced-motion frame requests", async () => {
+  it("skips ticket modal entrance animation for server-resolved frame requests", async () => {
     let router = createRouteTestRouter();
     router.map(routes.jam.y2026, jam2026Controller);
 
     let response = await router.fetch(
       new Request("http://localhost:3000/jam/2026/ticket", {
         headers: {
-          "x-remix-reduced-motion": "true",
+          "x-remix-ssr-frame": "true",
           "x-remix-target": ticketModalConfig.frameName,
         },
       }),
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Vary")).toContain("x-remix-reduced-motion");
+    expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
 
     let html = await response.text();
 
@@ -132,7 +133,6 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(response.headers.get("Vary")).toContain("x-remix-target");
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
-    expect(response.headers.get("Vary")).toContain("x-remix-reduced-motion");
 
     let html = await response.text();
 

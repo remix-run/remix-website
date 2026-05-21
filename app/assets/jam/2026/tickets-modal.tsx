@@ -19,6 +19,14 @@ type Jam2026TicketsModalProps = {
   open?: boolean;
 };
 
+function shouldAnimateEntrance(animateEntrance = true) {
+  if (!animateEntrance) return false;
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return true;
+  }
+  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export let Jam2026TicketsModalFrame = clientEntry(
   import.meta.url,
   function Jam2026TicketsModalFrame(handle: Handle<Jam2026TicketsModalProps>) {
@@ -122,8 +130,8 @@ export function Jam2026TicketsModalContent(
   }
 
   return () => {
-    let shouldAnimateEntrance = handle.props.animateEntrance ?? true;
-    let scrimMix = shouldAnimateEntrance
+    let useEntranceMotion = shouldAnimateEntrance(handle.props.animateEntrance);
+    let scrimMix = useEntranceMotion
       ? [
           ticketsModalScrimStyle,
           animateEntrance({
@@ -133,7 +141,7 @@ export function Jam2026TicketsModalContent(
           }),
         ]
       : ticketsModalScrimStyle;
-    let windowMix = shouldAnimateEntrance
+    let windowMix = useEntranceMotion
       ? [
           ticketsModalWindowStyle,
           animateEntrance({
@@ -142,14 +150,14 @@ export function Jam2026TicketsModalContent(
           }),
         ]
       : ticketsModalWindowStyle;
-    let keyringMix = shouldAnimateEntrance
+    let keyringMix = useEntranceMotion
       ? [ticketsModalFigureImageStyle, ticketsModalFigureImageEntranceStyle]
       : ticketsModalFigureImageStyle;
 
     return (
       <div
         {...{ [ticketModalConfig.attributes.modal]: "" }}
-        data-animate-entrance={String(shouldAnimateEntrance)}
+        data-animate-entrance={String(useEntranceMotion)}
         data-state={handle.props.closing ? "closing" : "open"}
         mix={scrimMix}
       >

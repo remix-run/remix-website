@@ -23,16 +23,6 @@ parent unless the route-local style explicitly opts out with `max-width: none`.
 
 ## Tasks
 
-### Add Cloud And Sky Background
-
-Translate the prototype cloud/racing energy into a production-safe background layer.
-
-- Prefer CSS or static imagery if it carries the design.
-- Use a hydrated module only for canvas/WebGL behavior.
-- Provide a static fallback when WebGL is unavailable.
-- Reduce or disable motion for `prefers-reduced-motion`.
-- Keep FPS and tuning controls out of production UI.
-
 ### Harden FAQ
 
 Finish the no-JS and deep-link behavior.

@@ -5,12 +5,12 @@ import { LabelOverlay } from "./components/label-overlay.tsx";
 import { PackageLogos } from "./components/package-logos.tsx";
 import { ScrollLogo } from "./components/scroll-logo.tsx";
 import { SectionNav } from "./components/section-nav.tsx";
+import { isEditableKeyTarget } from "../keyboard.ts";
 import type { ProjectedLabel } from "./engine/label-projection.ts";
 import { loadModelPoints, type ModelData } from "./engine/model-loader.ts";
 import { presets } from "./engine/presets.ts";
 import { DEFAULT_SETTINGS, type SystemSettings } from "./engine/types.ts";
 import { colors } from "./styles/tokens.ts";
-import { isEditableKeyTarget } from "./utils/keyboard.ts";
 import { clamp } from "./utils/math.ts";
 import {
   initReducedMotion,
@@ -134,14 +134,8 @@ const LANDING_SECTION_IDS = [
   "start-building",
 ] as const;
 
-type FpsCounterComponent =
-  typeof import("./components/fps-counter.tsx").FpsCounter;
 type ParticleCanvasComponent =
   typeof import("./components/particle-canvas.tsx").ParticleCanvas;
-type LazyComponent<T> = {
-  Component: T | null;
-  load: Promise<void> | null;
-};
 type ParticleCanvasStatus = "idle" | "loaded" | "ready" | "failed";
 
 function konamiKeyMatches(event: KeyboardEvent, expected: string): boolean {
@@ -170,14 +164,9 @@ export let RemixLandingEnhancements = clientEntry(
       frame: 0,
       sectionStops: null as number[] | null,
     };
-    const fpsCounter: LazyComponent<FpsCounterComponent> & {
-      visible: boolean;
-    } = {
-      Component: null,
-      load: null,
-      visible: false,
-    };
-    const particleCanvas: LazyComponent<ParticleCanvasComponent> & {
+    const particleCanvas: {
+      Component: ParticleCanvasComponent | null;
+      load: Promise<void> | null;
       status: ParticleCanvasStatus;
     } = {
       Component: null,
@@ -364,16 +353,6 @@ export let RemixLandingEnhancements = clientEntry(
       }, KONAMI_IDLE_MS);
     }
 
-    function loadFpsCounter() {
-      fpsCounter.load ??= import("./components/fps-counter.tsx").then(
-        (module) => {
-          if (handle.signal.aborted) return;
-          fpsCounter.Component = module.FpsCounter;
-        },
-      );
-      return fpsCounter.load;
-    }
-
     function particleCanvasHasSettled() {
       return (
         particleCanvas.status === "ready" || particleCanvas.status === "failed"
@@ -430,17 +409,6 @@ export let RemixLandingEnhancements = clientEntry(
       handle.update();
     }
 
-    function toggleFpsCounter() {
-      fpsCounter.visible = !fpsCounter.visible;
-      if (fpsCounter.visible && !fpsCounter.Component) {
-        void loadFpsCounter().then(() => {
-          if (handle.signal.aborted) return;
-          handle.update();
-        });
-      }
-      handle.update();
-    }
-
     function onKonamiKeydown(event: KeyboardEvent) {
       const expected = KONAMI_KEYS[konami.index];
       if (konamiKeyMatches(event, expected)) {
@@ -464,11 +432,6 @@ export let RemixLandingEnhancements = clientEntry(
     function onKeydown(event: KeyboardEvent) {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (isEditableKeyTarget(event)) return;
-
-      if (event.key.toLowerCase() === "f") {
-        toggleFpsCounter();
-        return;
-      }
 
       onKonamiKeydown(event);
     }
@@ -518,7 +481,6 @@ export let RemixLandingEnhancements = clientEntry(
         ? BRAND_MODE_SETTINGS
         : DEFAULT_SETTINGS;
       const ParticleCanvas = particleCanvas.Component;
-      const FpsCounter = fpsCounter.Component;
 
       return (
         <div mix={[appStyles]}>
@@ -558,8 +520,6 @@ export let RemixLandingEnhancements = clientEntry(
             morphValueRef={morphValueRef}
             onJump={jumpToPreset}
           />
-
-          {fpsCounter.visible && FpsCounter ? <FpsCounter /> : null}
         </div>
       );
     };

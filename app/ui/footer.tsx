@@ -13,7 +13,7 @@ export function Footer(handle: Handle<FooterProps>) {
     <footer aria-label="Site footer" mix={[footerStyle, handle.props.mix]}>
       <div mix={footerTopStyle}>
         <a
-          href={routes.remix3ActiveDevelopment.href()}
+          href={routes.home.href()}
           aria-label="Remix"
           mix={footerBrandLinkStyle}
         >

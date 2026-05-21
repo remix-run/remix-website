@@ -1,4 +1,5 @@
 import { css, type Handle } from "remix/ui";
+import { FpsCounterToggle } from "../../assets/fps-counter-toggle.tsx";
 import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements.tsx";
 import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen.tsx";
 import { RUNNER_AVIF_SRC } from "../../assets/remix-landing/runner-media.ts";
@@ -86,6 +87,7 @@ export function HomePage(handle: Handle<HomePageProps>) {
     >
       <div id="remix-landing-app" mix={[landingShellStyles]}>
         <RemixLandingEnhancements />
+        <FpsCounterToggle />
         <main id="main-content" tabIndex={-1} mix={[landingContentStyles]}>
           <LandingContent />
         </main>

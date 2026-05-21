@@ -56,7 +56,7 @@ export function FpsCounter(handle: Handle) {
     frames = 0;
     lastSampleMs = 0;
     displayFps = 0;
-    if (el) el.textContent = "— fps";
+    if (el) el.textContent = "-- fps";
     frameId = requestAnimationFrame(tick);
   }
 
