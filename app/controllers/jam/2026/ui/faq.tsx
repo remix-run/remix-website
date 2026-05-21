@@ -1,39 +1,186 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
-import { Jam2026FaqAccordion } from "../../../../assets/jam/2026/faq-accordion.tsx";
+import {
+  Jam2026FaqAccordion,
+  type Faq,
+} from "../../../../assets/jam/2026/faq-accordion.tsx";
 import { breakpoints } from "../../../../ui/theme.ts";
 import { jamTheme } from "../theme.ts";
 
-let faqs = [
+let faqs: Faq[] = [
+  {
+    id: "schedule",
+    question: "Where can I find the event lineup and schedule?",
+    answer:
+      "The Remix Jam 2026 schedule is coming soon. We'll share the full lineup and session times when they're ready.",
+  },
   {
     id: "event-hosted",
     question: "Where will the event be hosted?",
-    answer:
-      "Venue details are still being finalized, but the event will take place in Toronto, Ontario.",
+    answer: [
+      {
+        type: "paragraph",
+        content: ["The Remix team is hosting this event at the Shopify Toronto office:"],
+      },
+      {
+        type: "paragraph",
+        content: [
+          {
+            text: "620 King St W Toronto, ON M5V 1M7, Canada",
+            href: "https://maps.app.goo.gl/GpacrBAJJMnctN9W7",
+          },
+        ],
+      },
+    ],
   },
   {
-    id: "schedule",
-    question: "What does the schedule look like?",
+    id: "bag-check",
+    question: "Will there be a bag check?",
     answer:
-      "The first day is planned as the main Remix showcase, with an additional day set aside for a hands-on workshop.",
+      "Yes, there will be bag and coat check available all day on L11 (the first floor you will go to after registration).",
   },
   {
     id: "cfp",
     question: "Will there be a CFP?",
-    answer:
-      "The final programming model is still in progress. For now, the event is focused on a core Remix team showcase.",
+    answer: [
+      {
+        type: "paragraph",
+        content: ["No, there will not be a CFP."],
+      },
+      {
+        type: "paragraph",
+        content: [
+          "You'll hear talks focused on Remix 3 and real-world web development, with perspective from the core team, product builders, and experts working on modern web application architecture.",
+        ],
+      },
+      {
+        type: "paragraph",
+        content: ["The full lineup and schedule are coming."],
+      },
+    ],
   },
   {
     id: "where-to-stay",
     question: "Where should I stay?",
     answer:
-      "Hotel recommendations will be added once the Toronto venue is confirmed.",
+      "Hotel blocks are coming. We'll notify ticket holders as soon as booking links are ready.",
   },
   {
     id: "airport",
     question: "What airport should I fly into?",
     answer:
-      "Toronto Pearson is the easiest default for international travel. Billy Bishop can be convenient for downtown arrivals.",
+      "Toronto Pearson International Airport (YYZ) is the best option for most flights, especially international travel. Billy Bishop Toronto City Airport (YTZ) is closer to downtown and can be a convenient option if it serves your route.",
+  },
+  {
+    id: "visa",
+    question: "Do I need a visa to attend?",
+    answer: [
+      {
+        type: "list",
+        items: [
+          [
+            "Check ",
+            {
+              text: "if you need a visa",
+              href: "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/entry-requirements-country.html",
+            },
+            ' and select "attending meetings/conference".',
+          ],
+          [
+            "Determine ",
+            {
+              text: "visa processing times",
+              href: "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html",
+            },
+            ".",
+          ],
+          [
+            "Request a ",
+            {
+              text: "letter of invitation",
+              href: "https://docs.google.com/forms/d/e/1FAIpQLSeDtvOEjHsVY19nsYbpWahSbpEugsrOQ_H7QIWdDRjvUXECNQ/viewform?usp=dialog",
+            },
+            " from Shopify.",
+          ],
+        ],
+      },
+    ],
+  },
+  {
+    id: "refund-policy",
+    question: "What's the refund policy?",
+    answer: "There are no refunds, but tickets are transferable.",
+  },
+  {
+    id: "invoice",
+    question: "How do I get an invoice for tax purposes?",
+    answer: [
+      {
+        type: "paragraph",
+        content: [
+          "Please email ",
+          { text: "jam@remix.run", href: "mailto:jam@remix.run" },
+          " for invoice requests.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "transfer-ticket",
+    question: "How do I transfer a ticket?",
+    answer: [
+      {
+        type: "paragraph",
+        content: [
+          "Please email ",
+          { text: "jam@remix.run", href: "mailto:jam@remix.run" },
+          " for ticket transfer requests.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "livestream",
+    question: "Will the event be livestreamed?",
+    answer: [
+      {
+        type: "paragraph",
+        content: [
+          "Yes. Remix Jam will be livestreamed on the ",
+          {
+            text: "Remix YouTube channel",
+            href: "https://www.youtube.com/@remix-run",
+          },
+          ". By attending Remix Jam, you agree to appear as part of the livestream audience.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "photos",
+    question: "Will photos be taken at the event?",
+    answer: [
+      {
+        type: "paragraph",
+        content: [
+          "Yes. Photos will be taken during Remix Jam. By attending the event, you agree to be photographed. We will post event photos on this website after the event.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "other-questions",
+    question: "What if I have other questions?",
+    answer: [
+      {
+        type: "paragraph",
+        content: [
+          "You guessed it, email ",
+          { text: "jam@remix.run", href: "mailto:jam@remix.run" },
+          ".",
+        ],
+      },
+    ],
   },
 ];
 
@@ -74,7 +221,7 @@ let headingStyle = css({
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.sans,
   fontSize: "clamp(48px, 4.07vw, 57px)",
-  fontWeight: 700,
+  fontWeight: theme.fontWeight.bold,
   letterSpacing: "-0.03em",
   lineHeight: "clamp(56px, 4.71vw, 66px)",
   textAlign: "left",

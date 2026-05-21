@@ -30,6 +30,7 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain("data-cloud-state");
     expect(html).toContain("data-jam-2026-performance-tools");
     expect(html).toContain("prefers-reduced-motion: reduce");
+    expect(html).toContain('id="faq"');
     expect(html).toContain('href="/jam/2026/ticket"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
     expect(html).not.toContain('role="dialog"');

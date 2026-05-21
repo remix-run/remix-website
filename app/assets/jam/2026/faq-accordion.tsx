@@ -8,15 +8,33 @@ import {
 import { theme } from "remix/ui/theme";
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
 
-type Faq = {
+export type Faq = {
   id: string;
   question: string;
-  answer: string;
+  answer:
+    | string
+    | (
+        | {
+            type: "paragraph";
+            content: FaqInline[];
+          }
+        | {
+            type: "list";
+            items: FaqInline[][];
+          }
+      )[];
 };
 
 type Jam2026FaqAccordionProps = {
   faqs: Faq[];
 };
+
+type FaqInline =
+  | string
+  | {
+      text: string;
+      href: string;
+    };
 
 export let Jam2026FaqAccordion = clientEntry(
   import.meta.url,
@@ -55,7 +73,7 @@ export let Jam2026FaqAccordion = clientEntry(
               {faq.question}
             </AccordionTrigger>
             <AccordionContent mix={faqPanelStyle}>
-              <p mix={faqAnswerStyle}>{faq.answer}</p>
+              <div mix={faqAnswerStyle}>{renderAnswer(faq.answer)}</div>
             </AccordionContent>
           </AccordionItem>
         ))}
@@ -63,6 +81,50 @@ export let Jam2026FaqAccordion = clientEntry(
     );
   },
 );
+
+function renderAnswer(answer: Faq["answer"]) {
+  if (typeof answer === "string") {
+    return <p mix={faqAnswerTextStyle}>{answer}</p>;
+  }
+
+  return answer.map((block, index) => {
+    if (block.type === "list") {
+      return (
+        <ul key={index} mix={faqAnswerListStyle}>
+          {block.items.map((item, itemIndex) => (
+            <li key={itemIndex}>{renderInline(item)}</li>
+          ))}
+        </ul>
+      );
+    }
+
+    return (
+      <p key={index} mix={faqAnswerTextStyle}>
+        {renderInline(block.content)}
+      </p>
+    );
+  });
+}
+
+function renderInline(content: FaqInline[]) {
+  return content.map((part, index) => {
+    if (typeof part === "string") {
+      return part;
+    }
+
+    return (
+      <a
+        key={index}
+        href={part.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        mix={faqAnswerLinkStyle}
+      >
+        {part.text}
+      </a>
+    );
+  });
+}
 
 let faqListStyle = css({
   marginBlockStart: "27px",
@@ -172,6 +234,12 @@ let faqAnswerStyle = css({
   padding: "12px 0 24px",
   textAlign: "left",
   textTransform: "none",
+  "& > :first-child": {
+    marginBlockStart: 0,
+  },
+  "& > :last-child": {
+    marginBlockEnd: 0,
+  },
   "@supports (text-box-trim: trim-both)": {
     textBoxTrim: "trim-both",
     textBoxEdge: "cap alphabetic",
@@ -182,5 +250,23 @@ let faqAnswerStyle = css({
   "@media (max-width: 520px)": {
     marginBlockStart: "-4px",
     marginInline: "40px 24px",
+  },
+});
+
+let faqAnswerTextStyle = css({
+  margin: "0 0 12px",
+});
+
+let faqAnswerListStyle = css({
+  margin: "0 0 12px",
+  paddingInlineStart: "1.25em",
+});
+
+let faqAnswerLinkStyle = css({
+  color: jamTheme.accent,
+  textDecoration: "underline",
+  textUnderlineOffset: "0.16em",
+  "&:hover": {
+    textDecorationThickness: "2px",
   },
 });
