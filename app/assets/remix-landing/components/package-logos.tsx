@@ -127,7 +127,6 @@ export function PackageLogos(
   let delayTimer: ReturnType<typeof setTimeout> | null = null;
   let rafId = 0;
   let scrollFrameId = 0;
-  let morphValueRef: { current: number } = { current: 0 };
 
   let panelTop = 0;
   let panelLeft = 0;
@@ -228,10 +227,9 @@ export function PackageLogos(
   });
 
   return () => {
-    morphValueRef = handle.props.morphValueRef;
     if (!panelElement || !panelElement.isConnected) locatePanel();
 
-    const morphValue = morphValueRef.current;
+    const morphValue = handle.props.morphValueRef.current;
     const inSection = morphInLogoSection(morphValue);
     const reduceMotion = reducedMotion.current;
     const now = performance.now();

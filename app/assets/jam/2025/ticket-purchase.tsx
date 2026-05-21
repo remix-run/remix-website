@@ -15,12 +15,14 @@ type JamTicketPurchaseProps = {
 export let JamTicketPurchase = clientEntry(
   import.meta.url,
   function JamTicketPurchase(handle: Handle<JamTicketPurchaseProps>) {
-    let initialQuantity = handle.props.initialQuantity ?? 1;
-    let maxQuantity = handle.props.maxQuantity;
-    let quantity = normalizeQuantity(initialQuantity, maxQuantity);
+    let quantity = normalizeQuantity(
+      handle.props.initialQuantity ?? 1,
+      handle.props.maxQuantity,
+    );
     let submitting = false;
 
     return () => {
+      let maxQuantity = handle.props.maxQuantity;
       let decrementDisabled = handle.props.isSoldOut || quantity <= 1;
       let incrementDisabled = handle.props.isSoldOut || quantity >= maxQuantity;
 

@@ -80,7 +80,6 @@ export let JamScrambleText = clientEntry(
     let animationKey = getAnimationKey(text);
     let textChars = text.split("");
     let delay = handle.props.delay ?? 0;
-    let color = handle.props.color ?? "blue";
     let cyclesToResolve = handle.props.cyclesToResolve ?? 10;
     let charDelay = handle.props.charDelay ?? 100;
     let cycleDelay = handle.props.cycleDelay ?? 50;
@@ -212,7 +211,9 @@ export let JamScrambleText = clientEntry(
                   key={index}
                   class={cx(
                     visible ? "opacity-100" : "opacity-0",
-                    resolved ? "text-white" : colorMap[color],
+                    resolved
+                      ? "text-white"
+                      : colorMap[handle.props.color ?? "blue"],
                   )}
                 >
                   {displayChar}

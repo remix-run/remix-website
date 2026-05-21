@@ -37,10 +37,8 @@ type JamGalleryModalHostProps = {
 export let JamGalleryModalHost = clientEntry(
   import.meta.url,
   function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
-    let galleryPhotoCount = handle.props.photoCount;
     let modalNavigation = createJamGalleryModalNavigation();
     return () => {
-      galleryPhotoCount = handle.props.photoCount;
       return (
         <div
           role="dialog"
@@ -49,7 +47,7 @@ export let JamGalleryModalHost = clientEntry(
           class={handle.props.class}
           mix={[
             focusTrap(),
-            modalNavigation(handle.props.nav, galleryPhotoCount),
+            modalNavigation(handle.props.nav, handle.props.photoCount),
           ]}
         >
           {handle.props.children}

@@ -179,13 +179,10 @@ export function SectionNav(
   handle: Handle<{
     activeIndexRef: { current: number };
     morphValueRef: { current: number };
-    totalSections: number;
     onJump: (index: number) => void;
   }>,
 ) {
   let scrollFrame = 0;
-  let activeIndexRef: { current: number } = { current: 0 };
-  let morphValueRef: { current: number } = { current: 0 };
 
   function scheduleScrollUpdate() {
     if (scrollFrame) return;
@@ -203,14 +200,12 @@ export function SectionNav(
   });
 
   return () => {
-    activeIndexRef = handle.props.activeIndexRef;
-    morphValueRef = handle.props.morphValueRef;
     const count = SECTIONS.length;
     const maxMorph = count - 1;
     const step = ITEM_HEIGHT + ITEM_GAP;
     const trackHeight = (count - 1) * step + ITEM_HEIGHT;
-    const morph = clamp(morphValueRef.current, 0, maxMorph);
-    const activeIndex = clamp(activeIndexRef.current, 0, maxMorph);
+    const morph = clamp(handle.props.morphValueRef.current, 0, maxMorph);
+    const activeIndex = clamp(handle.props.activeIndexRef.current, 0, maxMorph);
     const dotCenterY = (index: number) => index * step + ITEM_HEIGHT / 2;
     const scrollFillPx =
       maxMorph > 0
