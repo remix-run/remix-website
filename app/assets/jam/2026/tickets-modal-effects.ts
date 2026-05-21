@@ -1,24 +1,29 @@
-import { addEventListeners, navigate, type Handle } from "remix/ui";
+import { addEventListeners, type Handle } from "remix/ui";
 import { lockScroll } from "remix/ui/scroll-lock";
 
 import { ticketModalConfig } from "../../../controllers/jam/2026/tickets-modal-contract.ts";
-import { routes } from "../../../routes.ts";
 import { getFocusableElementsWithin } from "../../../ui/focus-trap.ts";
 
 type Jam2026TicketsModalHandle = Handle<{
   open?: boolean;
 }>;
 
+type Jam2026TicketsModalEffectsOptions = {
+  isActive: () => boolean;
+  requestClose: () => void;
+};
+
 export function createJam2026TicketsModalEffects(
   handle: Jam2026TicketsModalHandle,
+  options: Jam2026TicketsModalEffectsOptions,
 ) {
   let modalEffectsOpen = false;
   let previousFocus: HTMLElement | null = null;
   let unlockScroll = () => {};
   let syncQueued = false;
 
-  function isOpen() {
-    return Boolean(handle.props.open);
+  function isActive() {
+    return options.isActive();
   }
 
   function getModalRoot() {
@@ -77,12 +82,12 @@ export function createJam2026TicketsModalEffects(
 
   function syncModalState() {
     let modal = getModalRoot();
-    let nextOpen = Boolean(modal);
+    let nextOpen = isActive() && Boolean(modal);
     if (modalEffectsOpen === nextOpen) return;
 
     modalEffectsOpen = nextOpen;
 
-    if (!modal) {
+    if (!nextOpen || !modal) {
       restorePageState();
       return;
     }
@@ -107,16 +112,8 @@ export function createJam2026TicketsModalEffects(
     });
   }
 
-  function closeModal() {
-    void navigate(routes.jam.y2026.index.href(), {
-      target: ticketModalConfig.frameName,
-      history: "replace",
-      resetScroll: false,
-    });
-  }
-
   function keepFocusInModal(event: FocusEvent) {
-    if (!isOpen()) return;
+    if (!isActive()) return;
 
     let modal = getModalRoot();
     let target = event.target;
@@ -127,7 +124,7 @@ export function createJam2026TicketsModalEffects(
   }
 
   function handleTab(event: KeyboardEvent) {
-    if (!isOpen() || event.defaultPrevented || event.key !== "Tab") {
+    if (!isActive() || event.defaultPrevented || event.key !== "Tab") {
       return;
     }
 
@@ -172,12 +169,12 @@ export function createJam2026TicketsModalEffects(
     addEventListeners(document, handle.signal, {
       keydown(event) {
         handleTab(event);
-        if (!isOpen() || event.defaultPrevented || event.key !== "Escape") {
+        if (!isActive() || event.defaultPrevented || event.key !== "Escape") {
           return;
         }
 
         event.preventDefault();
-        closeModal();
+        options.requestClose();
       },
       focusin: keepFocusInModal,
     });
@@ -192,7 +189,6 @@ export function createJam2026TicketsModalEffects(
   });
 
   return {
-    isOpen,
     queueStateSync,
   };
 }

@@ -59,6 +59,7 @@ async function resolveFrame(
   headers.set("accept", "text/html");
   headers.set("accept-encoding", "identity");
   headers.set("x-remix-frame", "true");
+  headers.set("x-remix-ssr-frame", "true");
   if (target) headers.set("x-remix-target", target);
   let cookie = request.headers.get("cookie");
   if (cookie) headers.set("cookie", cookie);

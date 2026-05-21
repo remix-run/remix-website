@@ -17,6 +17,9 @@ parent unless the route-local style explicitly opts out with `max-width: none`.
 - Use route-local Remix UI styles and local assets. Do not depend on Tailwind route markup.
 - Use `clientEntry(import.meta.url, function ExportName(...) { ... })` only for browser-only behavior.
 - Validate ticket POST data with `remix/data-schema` and return explicit status codes.
+- Before starting a dev server, try the user's existing server at `http://localhost:44100`.
+  Reuse it when it responds. Only start another server when `44100` is not responding, and use a
+  different port if `44100` is occupied.
 
 ## Tasks
 
@@ -32,11 +35,9 @@ Translate the prototype cloud/racing energy into a production-safe background la
 
 ### Harden FAQ
 
-The accordion and stable item IDs exist. Finish the no-JS and deep-link behavior.
+Finish the no-JS and deep-link behavior.
 
 - Answers must remain reachable without JavaScript.
-- Each FAQ item needs a stable fragment target.
-- Opening one item at a time is acceptable as a hydrated enhancement.
 - Add browser/component coverage for fragment navigation or no-JS markup if the implementation changes.
 
 ### Move Theme Preference To Cookie Session
@@ -65,24 +66,13 @@ Replace placeholder logistics once confirmed.
 - Airport and transit guidance.
 - Refund, transfer, accessibility, and contact copy that support ticket sales.
 
-### Build Ticket Selection UI
-
-Build the prototype ticket options as a server-first ticket surface.
-
-- Two-day ticket: Oct 1 and Oct 2, workshop, main event, afterparty, food/drinks, early bird $699 from $899.
-- One-day ticket: Oct 2, main event and afterparty, food/drinks, early bird $299 from $399.
-- Quantity starts at 1 and caps at 6 unless Shopify/product policy changes.
-- GET should render selected/default ticket, quantity, subtotal, availability, and policies without JavaScript.
-- Hydration can enhance option switching, quantity controls, pending state, and visual polish.
-- Skip the old 3D ticket scene unless final design explicitly needs it.
-- Cover available, unavailable, sold-out, invalid POST, and successful checkout redirect states.
-
 ### Wire Shopify Checkout
 
 Implement the real POST action for `/jam/2026/ticket`.
 
-- Add final product handles/variant mapping for the two ticket types.
+- Add final product handle/variant mapping for the Remix Jam 2026 ticket.
 - Validate ticket type, product/variant id, and quantity with `parseSafe`.
+- Enable the ticket modal checkout button when the POST flow is wired.
 - Create a Shopify cart and redirect to checkout on success.
 - Return clear errors for invalid input, unavailable storefront, sold out/unpublished products, quantity limits, and cart creation failures.
 - Use `no-store` for POST responses and checkout-error states.
@@ -100,13 +90,13 @@ Run a focused browser pass once landing and ticket UI are in place.
 - Reduced-motion pass for countdown, cloud layer, FAQ, and ticket animations.
 - Check color contrast and text overlap in light and dark themes.
 
-### Production Launch Switch
+### Production Launch Cleanup
 
 Do this only when the 2026 pages are ready to publish.
 
-- Remove the production route gate for `routes.jam.y2026`.
+- Delete the leftover `showJam2026` flag, conditional router mapping, and commented production gate.
 - Change `/jam` redirect from `/jam/2025` to `/jam/2026`.
-- Update global header/footer/blog/newsletter links that should point to 2026.
+- Update global header and landing nav links that should point to 2026.
 - Keep 2025 archive routes live but out of primary navigation unless intentionally linked.
 
 ### Launch Verification
