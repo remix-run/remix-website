@@ -27,6 +27,15 @@ describe("app router", () => {
     expect(xml).toContain("<link>https://remix.run/blog</link>");
   });
 
+  it("redirects the Jam index to the 2026 archive", async () => {
+    let response = await router.fetch("http://localhost/jam", {
+      redirect: "manual",
+    });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.get("Location")).toBe("http://localhost/jam/2026");
+  });
+
   it("allows same-origin browser form posts", async () => {
     let formData = new FormData();
     formData.set("theme", "dark");

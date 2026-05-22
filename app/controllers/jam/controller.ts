@@ -11,9 +11,9 @@ import { jam2025TicketHandler } from "./2025/ticket.tsx";
 import { jam2025Handler } from "./2025/controller.tsx";
 import { jam2026Handler, jam2026ThemeAction } from "./2026/controller.tsx";
 
-export async function jam2025RedirectHandler() {
+export async function jamRedirectHandler() {
   let requestUrl = getRequestContext().request.url;
-  let location = new URL(routes.jam.y2025.index.href(), requestUrl);
+  let location = new URL(routes.jam.y2026.index.href(), requestUrl);
   return Response.redirect(location, 302);
 }
 

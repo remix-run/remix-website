@@ -75,30 +75,27 @@ describe("Navigation", () => {
     await expect(page.locator("html.dark")).toHaveCount(1);
   });
 
-  it("Remix 3 active development page to jam applies jam head styles and forced dark theme", async (t) => {
+  it("Remix 3 active development page to Jam 2026 applies Jam head content", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.goto("/remix-3-active-development");
 
     await expectClientNavigation(
       page,
-      () => page.locator('header a[href="/jam/2025"]').first().click(),
-      "**/jam/2025",
+      () => page.locator('header a[href="/jam/2026"]').first().click(),
+      "**/jam/2026",
     );
 
-    await expect(page.locator('html[data-theme="dark"]')).toHaveCount(1);
-    await expect(page.locator("html.dark")).toHaveCount(1);
+    await expect(page).toHaveTitle("Remix Jam 2026");
     await expect
       .poll(() =>
-        page.evaluate(() =>
-          Array.from(
-            document.head.querySelectorAll('link[rel="stylesheet"]'),
-          ).some((element) =>
-            element.getAttribute("href")?.includes("jam-2025.css"),
-          ),
-        ),
+        page.evaluate(() => {
+          return document
+            .querySelector('link[rel="canonical"]')
+            ?.getAttribute("href");
+        }),
       )
-      .toBe(true);
+      .toBe(`${page.url()}`);
   });
 
   it("header wordmark context menu uses client navigation for brand", async (t) => {

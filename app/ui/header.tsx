@@ -8,7 +8,7 @@ const LINKS: Array<{ to: string; label: string; document?: boolean }> = [
   { to: "https://github.com/remix-run/remix", label: "GitHub", document: true },
   { to: "https://api.remix.run", label: "Docs", document: true },
   { to: routes.blog.href(), label: "Blog" },
-  { to: routes.jam.y2025.index.href(), label: "Jam" },
+  { to: routes.jam.y2026.index.href(), label: "Jam" },
   { to: "https://shop.remix.run", label: "Store", document: true },
 ];
 

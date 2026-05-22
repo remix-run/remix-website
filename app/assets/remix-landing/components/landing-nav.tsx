@@ -150,7 +150,7 @@ const NAV_ITEMS = [
     external: true,
   },
   { key: "B", label: "blog", href: routes.blog.href() },
-  { key: "J", label: "jam", href: routes.jam.y2025.index.href() },
+  { key: "J", label: "jam", href: routes.jam.y2026.index.href() },
   { key: "S", label: "store", href: "https://shop.remix.run/", external: true },
 ];
 

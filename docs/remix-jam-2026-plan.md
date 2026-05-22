@@ -59,14 +59,6 @@ Run a focused browser pass once landing and ticket UI are in place.
 - Reduced-motion pass for countdown, cloud layer, FAQ, and ticket animations.
 - Check color contrast and text overlap in light and dark themes.
 
-### Production Launch Cleanup
-
-Do this only when the 2026 pages are ready to publish.
-
-- Change `/jam` redirect from `/jam/2025` to `/jam/2026`.
-- Update global header and landing nav links that should point to 2026.
-- Keep 2025 archive routes live but out of primary navigation unless intentionally linked.
-
 ### Launch Verification
 
 Final checks before opening sales.
