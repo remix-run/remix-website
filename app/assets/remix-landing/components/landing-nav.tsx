@@ -150,7 +150,15 @@ const NAV_ITEMS = [
     external: true,
   },
   { key: "B", label: "blog", href: routes.blog.href() },
-  { key: "J", label: "jam", href: routes.jam.y2026.index.href() },
+  // Jam 2026 owns a nested ticket frame and WebGL backdrop. Keep this as a
+  // document navigation so Back returns to the landing page with a clean
+  // lifecycle instead of restoring through a top-frame diff.
+  {
+    key: "J",
+    label: "jam",
+    href: routes.jam.y2026.index.href(),
+    document: true,
+  },
   { key: "S", label: "store", href: "https://shop.remix.run/", external: true },
 ];
 
@@ -161,7 +169,7 @@ function isModifiedClick(event: MouseEvent) {
 }
 
 function openNavItem(item: NavItem) {
-  if (item.external) {
+  if (item.external || item.document) {
     window.location.assign(item.href);
     return;
   }
@@ -173,6 +181,7 @@ function navItemClick(item: NavItem, afterClick?: () => void) {
   return on<HTMLAnchorElement>("click", (event) => {
     if (
       !item.external &&
+      !item.document &&
       event instanceof MouseEvent &&
       event.button === 0 &&
       !isModifiedClick(event)
@@ -280,7 +289,7 @@ export function LandingNav(
             <a
               key={item.key}
               href={item.href}
-              rmx-document={item.external ? "" : undefined}
+              rmx-document={item.external || item.document ? "" : undefined}
               mix={[navItemStyles, navItemClick(item)]}
             >
               [{item.key}] {item.label}
@@ -329,7 +338,7 @@ export function LandingNav(
                 <a
                   key={item.key}
                   href={item.href}
-                  rmx-document={item.external ? "" : undefined}
+                  rmx-document={item.external || item.document ? "" : undefined}
                   mix={[
                     navItemStyles,
                     mobileMenuItemStyles,
