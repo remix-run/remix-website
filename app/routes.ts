@@ -1,8 +1,5 @@
 import { form, get, post, route } from "remix/routes";
 
-export let showJam2026 =
-  typeof process === "undefined" || process.env?.NODE_ENV !== "production";
-
 export let routes = route({
   actions: route("_actions", {
     newsletter: post("/newsletter"),
@@ -37,13 +34,3 @@ export let routes = route({
   }),
   newsletter: get("/newsletter"),
 });
-
-export let enabledRoutes = {
-  ...routes,
-  jam: showJam2026
-    ? routes.jam
-    : {
-        index: routes.jam.index,
-        y2025: routes.jam.y2025,
-      },
-};

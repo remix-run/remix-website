@@ -63,7 +63,6 @@ Run a focused browser pass once landing and ticket UI are in place.
 
 Do this only when the 2026 pages are ready to publish.
 
-- Delete the leftover `showJam2026` flag, conditional router mapping, and commented production gate.
 - Change `/jam` redirect from `/jam/2025` to `/jam/2026`.
 - Update global header and landing nav links that should point to 2026.
 - Keep 2025 archive routes live but out of primary navigation unless intentionally linked.

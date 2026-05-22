@@ -9,7 +9,7 @@ import { staticFiles } from "remix/middleware/static";
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
-import { routes, showJam2026 } from "./routes.ts";
+import { routes } from "./routes.ts";
 import { assetServer } from "./utils/assets.server.ts";
 
 import actionsController from "./controllers/actions/controller.tsx";
@@ -115,9 +115,7 @@ function createAppRouter() {
   router.map(routes.jam.y2025.gallery, jam2025GalleryController);
   router.map(routes.jam.y2025.ticket, jam2025TicketController);
   router.map(routes.jam.y2025, jam2025Controller);
-  if (showJam2026) {
-    router.map(routes.jam.y2026, jam2026Controller);
-  }
+  router.map(routes.jam.y2026, jam2026Controller);
   router.map(routes.remix3ActiveDevelopment, remix3ActiveDevelopmentHandler);
 
   // Redirects from _redirects (must be before * catchall)
