@@ -6,6 +6,10 @@ import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import { jam2026Controller } from "../controller.ts";
 import { ticketModalConfig } from "./tickets-modal-contract.ts";
+import {
+  getJam2026ThemePreference,
+  serializeJam2026ThemePreference,
+} from "./theme-preference.server.ts";
 
 describe("Remix Jam 2026 routes", () => {
   it("renders the homepage as the full Jam page with ticket frame navigation", async () => {
@@ -60,6 +64,74 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain('aria-label="Close tickets"');
     expect(html).toContain('href="/jam/2026"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
+  });
+
+  it("renders the saved theme on the first document paint", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.jam.y2026, jam2026Controller);
+    let cookie = await serializeJam2026ThemePreference("dark");
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026", {
+        headers: {
+          cookie: cookie.split(";")[0],
+        },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Vary")).toContain("cookie");
+
+    let html = await response.text();
+
+    expect(html).toContain('data-theme="dark"');
+    expect(html).toContain('style="color-scheme: dark;"');
+  });
+
+  it("sets the theme preference through the server action", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.jam.y2026, jam2026Controller);
+    let formData = new FormData();
+    formData.set("theme", "dark");
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026/theme", {
+        body: formData,
+        method: "POST",
+        redirect: "manual",
+      }),
+    );
+
+    expect(response.status).toBe(303);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Location")).toBe(
+      "http://localhost:3000/jam/2026",
+    );
+
+    let setCookie = response.headers.get("Set-Cookie");
+    expect(setCookie).not.toBe(null);
+    expect(setCookie).toContain("HttpOnly");
+    expect(setCookie).toContain("Path=/jam/2026");
+    expect(setCookie).toContain("SameSite=Lax");
+    expect(await getJam2026ThemePreference(setCookie!.split(";")[0])).toBe(
+      "dark",
+    );
+  });
+
+  it("rejects invalid theme preference submissions", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.jam.y2026, jam2026Controller);
+    let formData = new FormData();
+    formData.set("theme", "system");
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026/theme", {
+        body: formData,
+        method: "POST",
+      }),
+    );
+
+    expect(response.status).toBe(400);
   });
 
   it("renders the ticket route as modal-only frame content for the tickets frame", async () => {

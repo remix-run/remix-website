@@ -15,7 +15,6 @@ let colorSchemeScript = `
     let isDark = theme === "dark" || (theme == null && media.matches);
     document.documentElement.classList.toggle("dark", isDark);
   };
-  window.__remixSyncColorScheme = sync;
   sync();
   if (typeof media.addEventListener === "function") {
     media.addEventListener("change", sync);
@@ -32,12 +31,6 @@ interface DocumentProps {
   headTags?: ManagedHeadTag[];
   stylesheets?: string[];
   children?: RemixNode;
-}
-
-declare global {
-  interface Window {
-    __remixSyncColorScheme?: () => void;
-  }
 }
 
 /**

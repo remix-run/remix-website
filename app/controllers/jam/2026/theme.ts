@@ -1,5 +1,7 @@
 import { css } from "remix/ui";
 
+export type Jam2026ThemeMode = "light" | "dark";
+
 let jamThemeVars = {
   ink: "--jam-2026-ink",
   inkMuted: "--jam-2026-ink-muted",

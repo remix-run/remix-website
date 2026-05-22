@@ -23,15 +23,6 @@ parent unless the route-local style explicitly opts out with `max-width: none`.
 
 ## Tasks
 
-### Move Theme Preference To Cookie Session
-
-Replace the Jam 2026 header's `sessionStorage` theme persistence with a server-readable cookie session.
-
-- Read the saved theme on the server so first paint uses the chosen `data-theme` and `color-scheme`.
-- Keep the header's hydrated toggle as the enhancement that updates the cookie-backed preference.
-- Preserve system-theme fallback when no saved preference exists.
-- Avoid a flash or mismatch between server-rendered theme state and hydrated header state.
-
 ### Add Code Of Conduct Surface
 
 Create the 2026 code of conduct content before ticket launch.
@@ -39,15 +30,6 @@ Create the 2026 code of conduct content before ticket launch.
 - It can be a homepage section or a dedicated route, but the ticket flow must link to it.
 - Keep copy complete enough to publish before sales open.
 - Add route/controller/tests if it becomes a standalone page.
-
-### Fill Event Logistics
-
-Replace placeholder logistics once confirmed.
-
-- Venue name, address, and map link.
-- Recommended hotels or hotel block details.
-- Airport and transit guidance.
-- Refund, transfer, accessibility, and contact copy that support ticket sales.
 
 ### Wire Shopify Checkout
 

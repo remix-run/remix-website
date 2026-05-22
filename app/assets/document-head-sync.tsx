@@ -11,12 +11,6 @@ export type DocumentHeadSyncProps = {
   headTags: ManagedHeadTag[];
 };
 
-declare global {
-  interface Window {
-    __remixSyncColorScheme?: () => void;
-  }
-}
-
 export let DocumentHeadSync = clientEntry(
   import.meta.url,
   function DocumentHeadSync(handle: Handle<DocumentHeadSyncProps>) {
@@ -55,11 +49,11 @@ export function syncDocumentHead(
   options: { syncTheme?: boolean } = {},
 ) {
   syncTitle(props.title);
-  if (options.syncTheme ?? true) syncTheme(props.forceTheme);
+  if (options.syncTheme ?? true) syncDocumentTheme(props.forceTheme);
   syncManagedHeadTags(props.headTags);
 }
 
-function syncTheme(forceTheme?: "dark" | "light") {
+export function syncDocumentTheme(forceTheme?: "dark" | "light") {
   let root = document.documentElement;
 
   if (forceTheme) {
@@ -68,11 +62,6 @@ function syncTheme(forceTheme?: "dark" | "light") {
   } else {
     delete root.dataset.theme;
     root.style.colorScheme = "light dark";
-  }
-
-  if (typeof window.__remixSyncColorScheme === "function") {
-    window.__remixSyncColorScheme();
-    return;
   }
 
   root.classList.toggle(

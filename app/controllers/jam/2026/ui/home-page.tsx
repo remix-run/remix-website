@@ -8,8 +8,8 @@ import { routes } from "../../../../routes.ts";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
 import { getJam2026HeadContent } from "../head-content.ts";
-import { getJam2026HeadTags } from "../head.ts";
-import { jamTheme, jamThemeStyle } from "../theme.ts";
+import { getJam2026HeadTags } from "../head.server.ts";
+import { jamTheme, jamThemeStyle, type Jam2026ThemeMode } from "../theme.ts";
 import { ticketModalConfig } from "../tickets-modal-contract.ts";
 import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026FloatingTicketCta } from "./floating-ticket-cta.tsx";
@@ -17,6 +17,7 @@ import { Jam2026Hero } from "./hero.tsx";
 
 type Jam2026HomePageProps = {
   ticketsModalOpen?: boolean;
+  theme?: Jam2026ThemeMode;
 };
 
 export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
@@ -28,6 +29,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
       <Document
         title={head.title}
         description={head.description}
+        forceTheme={handle.props.theme}
         headTags={getJam2026HeadTags(head)}
       >
         <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
@@ -39,7 +41,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
             inert={ticketsModalOpen || undefined}
             mix={pageBackgroundStyle}
           >
-            <Jam2026Header />
+            <Jam2026Header initialTheme={handle.props.theme} />
             <main id="main-content" tabIndex={-1} mix={mainStyle}>
               <Jam2026Hero />
               <Jam2026PhotoMoments />

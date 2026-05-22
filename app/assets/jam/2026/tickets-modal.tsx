@@ -19,6 +19,12 @@ type Jam2026TicketsModalProps = {
   open?: boolean;
 };
 
+let usdFormatter = new Intl.NumberFormat("en-US", {
+  currency: "USD",
+  maximumFractionDigits: 0,
+  style: "currency",
+});
+
 function shouldAnimateEntrance(animateEntrance = true) {
   if (!animateEntrance) return false;
   if (
@@ -216,9 +222,6 @@ export function Jam2026TicketsModalContent(
                   src={assetPaths.jam2026.horizontalLockup}
                   mix={ticketsModalLockupStyle}
                 />
-                <p mix={ticketsModalSubtitleStyle}>
-                  October 2, 2026 in Toronto
-                </p>
               </div>
               <div aria-hidden="true" mix={ticketsModalFigureStyle}>
                 <img
@@ -240,7 +243,7 @@ export function Jam2026TicketsModalContent(
                       {formatCurrency(ticket.price)}
                     </span>
                   </span>
-                  <span mix={ticketCardDateStyle}>Oct 2</span>
+                  <span mix={ticketCardDateStyle}>October 2, 2026</span>
                   <span mix={ticketCardDescriptionStyle}>
                     Conference and afterparty. Food and drinks included.
                   </span>
@@ -337,7 +340,7 @@ export function Jam2026TicketsModalContent(
 }
 
 function formatCurrency(value: number) {
-  return `$${value.toLocaleString("en-US")}`;
+  return usdFormatter.format(value);
 }
 
 let ticketsModalScrimStyle = css({
@@ -492,15 +495,6 @@ let ticketsModalLockupStyle = css({
   },
 });
 
-let ticketsModalSubtitleStyle = css({
-  color: jamTheme.ink,
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "16px",
-  fontWeight: theme.fontWeight.normal,
-  lineHeight: 1.2,
-  margin: 0,
-});
-
 let ticketsModalFigureStyle = css({
   alignItems: "center",
   aspectRatio: "1 / 1",
@@ -565,7 +559,6 @@ let ticketsModalBottomStyle = css({
 let ticketCardStyle = css({
   background: "light-dark(rgb(255 255 255), rgb(255 255 255 / 0.12))",
   borderRadius: "8px",
-  boxShadow: "0 0 0 6px light-dark(rgb(8 40 69), rgb(255 255 255))",
   color: jamTheme.ink,
   display: "flex",
   flexDirection: "column",

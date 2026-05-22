@@ -2,29 +2,76 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 import { render } from "remix/ui/test";
 
+import { routes } from "../../../routes.ts";
 import { Jam2026Header } from "./header.tsx";
 
 describe("Jam2026Header", () => {
-  it("toggles the page theme with one switch", async (t) => {
+  it("uses the system theme without forcing a saved theme", async (t) => {
     let originalMatchMedia = window.matchMedia;
-    let originalStoredTheme = sessionStorage.getItem("remix-jam-2026-theme");
     let root = document.documentElement;
 
-    window.matchMedia = (query) => mediaQueryList(query, false);
-    sessionStorage.removeItem("remix-jam-2026-theme");
+    window.matchMedia = (query) => mediaQueryList(query, true);
+    root.dataset.theme = "light";
+    root.style.colorScheme = "light";
 
     t.after(() => {
       window.matchMedia = originalMatchMedia;
-      if (originalStoredTheme == null) {
-        sessionStorage.removeItem("remix-jam-2026-theme");
-      } else {
-        sessionStorage.setItem("remix-jam-2026-theme", originalStoredTheme);
-      }
+      delete root.dataset.theme;
+      root.style.colorScheme = "";
+      root.classList.remove("dark");
+    });
+
+    let result = render(<Jam2026Header />);
+    t.after(result.cleanup);
+
+    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+
+    expect(root.dataset.theme).toBe(undefined);
+    expect(root.style.colorScheme).toBe("light dark");
+    expect(root.classList.contains("dark")).toBe(true);
+    expect(result.container.querySelector("header")?.dataset.theme).toBe(
+      undefined,
+    );
+    expect(
+      result.container.querySelector(
+        'button[aria-label="Switch to light mode"]',
+      ),
+    ).not.toBe(null);
+  });
+
+  it("toggles the page theme with one switch", async (t) => {
+    let originalMatchMedia = window.matchMedia;
+    let originalFetch = window.fetch;
+    let root = document.documentElement;
+    let themeSubmission:
+      | { method?: string; theme?: FormDataEntryValue | null; url: string }
+      | undefined;
+    let formSubmitted = false;
+    let onSubmit = () => {
+      formSubmitted = true;
+    };
+
+    window.matchMedia = (query) => mediaQueryList(query, false);
+    window.fetch = async (input, init) => {
+      let body = init?.body;
+      themeSubmission = {
+        method: init?.method,
+        theme: body instanceof FormData ? body.get("theme") : undefined,
+        url: String(input),
+      };
+      return new Response(null, { status: 204 });
+    };
+    document.addEventListener("submit", onSubmit);
+
+    t.after(() => {
+      window.matchMedia = originalMatchMedia;
+      window.fetch = originalFetch;
+      document.removeEventListener("submit", onSubmit);
       delete root.dataset.theme;
       root.style.colorScheme = "";
     });
 
-    let result = render(<Jam2026Header />);
+    let result = render(<Jam2026Header initialTheme="light" />);
     t.after(result.cleanup);
 
     await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
@@ -41,6 +88,7 @@ describe("Jam2026Header", () => {
     )!;
 
     await result.act(() => themeSwitch.click());
+    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
 
     expect(root.dataset.theme).toBe("dark");
     expect(root.style.colorScheme).toBe("dark");
@@ -49,7 +97,10 @@ describe("Jam2026Header", () => {
         'button[aria-label="Switch to light mode"]',
       ),
     ).not.toBe(null);
-    expect(sessionStorage.getItem("remix-jam-2026-theme")).toBe("dark");
+    expect(formSubmitted).toBe(false);
+    expect(themeSubmission?.url).toBe(routes.jam.y2026.theme.href());
+    expect(themeSubmission?.method).toBe("POST");
+    expect(themeSubmission?.theme).toBe("dark");
   });
 });
 
