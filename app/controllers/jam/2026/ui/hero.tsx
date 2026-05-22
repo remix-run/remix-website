@@ -218,7 +218,7 @@ let jamMarkStyle = css({
   position: "relative",
   zIndex: -1,
   display: "block",
-  width: "620px",
+  width: "calc(100vw - 48px)",
   maxWidth: "none",
   height: "auto",
   overflow: "visible",

@@ -591,7 +591,6 @@ let jam2026ThemeSwitchStyle = css({
     transition: "none",
   },
   "@media (max-width: 640px)": {
-    height: "22px",
     width: "38px",
   },
 });
@@ -621,13 +620,13 @@ let jam2026ThemeIndicatorStyle = css({
     height: "14px",
     width: "14px",
     ":root.dark &": {
-      transform: "translateX(16px)",
+      transform: "translateX(14px)",
     },
     '[data-theme="light"] &': {
       transform: "translateX(0)",
     },
     '[data-theme="dark"] &': {
-      transform: "translateX(16px)",
+      transform: "translateX(14px)",
     },
   },
 });
