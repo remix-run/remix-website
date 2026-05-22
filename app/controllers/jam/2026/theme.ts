@@ -84,29 +84,29 @@ let jamThemeVarsStyle = css({
     "light-dark(rgb(255 255 255 / 0.76), rgb(10 29 39 / 0.76))",
   [jamThemeVars.navBg]: "light-dark(#ffffff, #0a1d27)",
   [jamThemeVars.skyTop]:
-    "light-dark(color-mix(in srgb, #1174ff 62%, white), #020512)",
+    "light-dark(color-mix(in srgb, #1174ff 62%, white), #071522)",
   [jamThemeVars.skyMiddle]:
-    "light-dark(color-mix(in srgb, #64c6ff 58%, white), #07112c)",
+    "light-dark(color-mix(in srgb, #64c6ff 58%, white), #102b38)",
   [jamThemeVars.skyHorizon]:
-    "light-dark(color-mix(in srgb, #b7ebff 52%, white), #182851)",
+    "light-dark(color-mix(in srgb, #b7ebff 52%, white), #25424d)",
   [jamThemeVars.skyGround]:
-    "light-dark(color-mix(in srgb, #f7f4ea 46%, white), #030816)",
+    "light-dark(color-mix(in srgb, #f7f4ea 46%, white), #425963)",
   [jamThemeVars.cloudOpacity]: "0.9",
-  [jamThemeVars.cloudFilter]: "saturate(105%) contrast(103%)",
+  [jamThemeVars.cloudFilter]: "contrast(106%) saturate(92%)",
 });
 
 let jamThemeModeVarsStyle = css({
   ":root.dark &": {
-    [jamThemeVars.cloudOpacity]: "0.6",
-    [jamThemeVars.cloudFilter]: "saturate(72%) brightness(0.55) contrast(110%)",
+    [jamThemeVars.cloudOpacity]: "1",
+    [jamThemeVars.cloudFilter]: "contrast(106%) saturate(92%)",
   },
   ":root[data-theme='light'] &": {
     [jamThemeVars.cloudOpacity]: "0.9",
-    [jamThemeVars.cloudFilter]: "saturate(105%) contrast(103%)",
+    [jamThemeVars.cloudFilter]: "contrast(106%) saturate(92%)",
   },
   ":root[data-theme='dark'] &": {
-    [jamThemeVars.cloudOpacity]: "0.6",
-    [jamThemeVars.cloudFilter]: "saturate(72%) brightness(0.55) contrast(110%)",
+    [jamThemeVars.cloudOpacity]: "1",
+    [jamThemeVars.cloudFilter]: "contrast(106%) saturate(92%)",
   },
 });
 
