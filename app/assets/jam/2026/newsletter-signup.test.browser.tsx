@@ -2,6 +2,7 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 import { render } from "remix/ui/test";
 
+import { newsletterTagIds } from "../../../utils/newsletter-tags.ts";
 import { Jam2026NewsletterSignup } from "./newsletter-signup.tsx";
 
 describe("Jam2026NewsletterSignup", () => {
@@ -27,7 +28,9 @@ describe("Jam2026NewsletterSignup", () => {
 
     expect(fetchSpy).toHaveBeenCalledTimes(1);
     expect(submittedBody.get("email")).toBe("hello@example.com");
-    expect(submittedBody.get("tag")).toBe("19736081");
+    expect(submittedBody.get("tag")).toBe(
+      String(newsletterTagIds.jam2026Updates),
+    );
     expect(getEmailInput(result).getAttribute("aria-describedby")).toBe(
       "jam-2026-newsletter-message",
     );

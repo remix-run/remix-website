@@ -8,8 +8,7 @@ import {
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
 import { routes } from "../../../routes.ts";
 import { breakpointMedia } from "../../../ui/theme.ts";
-
-const REMIX_JAM_UPDATES_TAG_ID = "19736081";
+import { newsletterTagIds } from "../../../utils/newsletter-tags.ts";
 
 export let Jam2026NewsletterSignup = clientEntry(
   import.meta.url,
@@ -64,7 +63,11 @@ export let Jam2026NewsletterSignup = clientEntry(
               }),
             ]}
           >
-            <input type="hidden" name="tag" value={REMIX_JAM_UPDATES_TAG_ID} />
+            <input
+              type="hidden"
+              name="tag"
+              value={String(newsletterTagIds.jam2026Updates)}
+            />
             <label htmlFor="jam-2026-newsletter-email" mix={labelStyle}>
               Email address
             </label>

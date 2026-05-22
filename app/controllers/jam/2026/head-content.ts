@@ -16,6 +16,7 @@ type Jam2026HeadTagsProps = {
 };
 
 const JAM_2026_SHARE_IMAGE_ALT = "Remix Jam 2026 in Toronto";
+const JAM_2026_CANONICAL_ORIGIN = "https://remix.run";
 
 export function getJam2026HeadContent(props: Jam2026HeadContentProps = {}) {
   let { ticketsModalOpen = false } = props;
@@ -44,14 +45,6 @@ export function getJam2026HeadTags(props: Jam2026HeadTagsProps) {
   ] satisfies ManagedHeadTag[];
 }
 
-export function getJam2026ManagedHeadTags(props: Jam2026HeadTagsProps) {
-  return [
-    { kind: "meta", name: "description", content: props.description },
-    { kind: "link", rel: "stylesheet", href: styleHrefs.global },
-    ...getJam2026HeadTags(props),
-  ] satisfies ManagedHeadTag[];
-}
-
 export function getJam2026ClientManagedHeadTags(head: {
   title: string;
   description: string;
@@ -60,16 +53,21 @@ export function getJam2026ClientManagedHeadTags(head: {
   let imageUrl: string = assetPaths.jam2026.shareImage;
 
   if (typeof window !== "undefined") {
-    pageUrl = `${window.location.origin}${window.location.pathname}`;
-    imageUrl = new URL(assetPaths.jam2026.shareImage, window.location.href)
-      .href;
+    let currentUrl = new URL(window.location.href);
+    let trustedOrigin = getJam2026TrustedOrigin(currentUrl);
+    pageUrl = `${trustedOrigin}${currentUrl.pathname}`;
+    imageUrl = new URL(assetPaths.jam2026.shareImage, trustedOrigin).href;
   }
 
-  return getJam2026ManagedHeadTags({
-    ...head,
-    pageUrl,
-    imageUrl,
-  });
+  return [
+    { kind: "meta", name: "description", content: head.description },
+    { kind: "link", rel: "stylesheet", href: styleHrefs.global },
+    ...getJam2026HeadTags({
+      ...head,
+      pageUrl,
+      imageUrl,
+    }),
+  ] satisfies ManagedHeadTag[];
 }
 
 export function getJam2026ServerHeadTags(props: {
@@ -78,13 +76,25 @@ export function getJam2026ServerHeadTags(props: {
   requestUrl: string;
 }) {
   let requestUrl = new URL(props.requestUrl);
+  let trustedOrigin = getJam2026TrustedOrigin(requestUrl);
 
   return getJam2026HeadTags({
     title: props.title,
     description: props.description,
-    pageUrl: `${requestUrl.origin}${requestUrl.pathname}`,
-    imageUrl: new URL(assetPaths.jam2026.shareImage, requestUrl).toString(),
+    pageUrl: `${trustedOrigin}${requestUrl.pathname}`,
+    imageUrl: new URL(assetPaths.jam2026.shareImage, trustedOrigin).toString(),
   });
+}
+
+function getJam2026TrustedOrigin(url: URL) {
+  if (
+    url.hostname === "localhost" ||
+    url.hostname === "127.0.0.1" ||
+    url.hostname === "[::1]"
+  ) {
+    return url.origin;
+  }
+  return JAM_2026_CANONICAL_ORIGIN;
 }
 
 let jam2026IconHeadTags: ManagedHeadTag[] = [

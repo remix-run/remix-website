@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
+import { newsletterTagIds } from "../../utils/newsletter-tags.ts";
 import actionsController from "./controller.tsx";
 
 describe("Newsletter subscribe route", () => {
@@ -62,6 +63,20 @@ describe("Newsletter subscribe route", () => {
     });
   });
 
+  it("rejects unknown newsletter tags", async () => {
+    let response = await submitNewsletter(
+      new URLSearchParams({
+        email: "hello@example.com",
+        tag: "123",
+      }),
+    );
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      ok: false,
+      error: "Invalid Tag",
+    });
+  });
+
   it("returns success for a valid submission when ConvertKit succeeds", async (t) => {
     let fetchSpy = t.mock.method(globalThis, "fetch", () =>
       Promise.resolve(new Response(JSON.stringify({}), { status: 200 })),
@@ -70,7 +85,7 @@ describe("Newsletter subscribe route", () => {
     let response = await submitNewsletter(
       new URLSearchParams({
         email: "hello@example.com",
-        tag: "123",
+        tag: String(newsletterTagIds.jam2026Updates),
       }),
     );
 
@@ -100,7 +115,7 @@ describe("Newsletter subscribe route", () => {
     expect(response.status).toBe(500);
     await expect(response.json()).resolves.toEqual({
       ok: false,
-      error: "ConvertKit says no",
+      error: "Something went wrong",
     });
   });
 
@@ -116,7 +131,7 @@ describe("Newsletter subscribe route", () => {
     expect(response.status).toBe(500);
     await expect(response.json()).resolves.toEqual({
       ok: false,
-      error: "Missing CONVERTKIT_KEY",
+      error: "Something went wrong",
     });
   });
 });

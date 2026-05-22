@@ -137,7 +137,7 @@ export async function jam2026ThemeAction() {
 
   let headers = new SuperHeaders({
     cacheControl: "no-store",
-    location: new URL(routes.jam.y2026.index.href(), request.url).toString(),
+    location: routes.jam.y2026.index.href(),
     setCookie: await serializeJam2026ThemePreference(result.value.theme),
   });
 
@@ -284,7 +284,7 @@ function createTicketCheckoutState({
     error,
     initialQuantity: Math.min(Math.max(1, initialQuantity), maxQuantity),
     maxQuantity,
-    productId: product?.productId === "unavailable" ? "" : product?.productId,
+    productId: product?.unavailableReason ? undefined : product?.productId,
   };
 }
 

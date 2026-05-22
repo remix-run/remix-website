@@ -51,6 +51,21 @@ describe("Remix Jam 2026 routes", () => {
     );
   });
 
+  it("does not reflect untrusted request hosts into social head tags", async () => {
+    let router = createJam2026TestRouter();
+
+    let response = await router.fetch("https://example.com/jam/2026");
+
+    expect(response.status).toBe(200);
+
+    let html = await response.text();
+
+    expect(html).toContain(
+      'data-remix-managed-head="true" rel="canonical" href="https://remix.run/jam/2026"',
+    );
+    expect(html).not.toContain("example.com");
+  });
+
   it("renders the ticket route as the full Jam page with the ticket modal open", async () => {
     let router = createJam2026TestRouter();
 
@@ -114,9 +129,7 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(response.status).toBe(303);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
-    expect(response.headers.get("Location")).toBe(
-      "http://localhost:3000/jam/2026",
-    );
+    expect(response.headers.get("Location")).toBe("/jam/2026");
 
     let setCookie = response.headers.get("Set-Cookie");
     expect(setCookie).not.toBe(null);

@@ -43,8 +43,11 @@ describe("Mobile menu", () => {
     await expect(menuToggle).toBeVisible();
     await menuToggle.focus();
     await menuToggle.press("Enter");
+    await expect(mobileMenuDetails(page)).toHaveJSProperty("open", true);
 
-    let mobileNav = page.getByRole("navigation", { name: "Mobile" });
+    let mobileNav = mobileMenuDetails(page).getByRole("navigation", {
+      name: "Mobile",
+    });
     await expect(mobileNav).toBeVisible();
     await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeVisible();
     await expect(mobileNav.getByRole("link", { name: "Jam" })).toBeVisible();
@@ -70,8 +73,9 @@ describe("Mobile menu", () => {
     let menuToggle = mobileMenuToggle(page);
     await expect(menuToggle).toBeVisible();
     await menuToggle.click();
+    await expect(mobileMenuDetails(page)).toHaveJSProperty("open", true);
 
-    await page
+    await mobileMenuDetails(page)
       .getByRole("navigation", { name: "Mobile" })
       .getByRole("link", {
         name: "Blog",

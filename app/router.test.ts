@@ -33,7 +33,7 @@ describe("app router", () => {
     });
 
     expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).toBe("http://localhost/jam/2026");
+    expect(response.headers.get("Location")).toBe("/jam/2026");
   });
 
   it("allows same-origin browser form posts", async () => {

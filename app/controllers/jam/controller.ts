@@ -1,7 +1,6 @@
 import { createController } from "remix/router";
 
 import { routes } from "../../routes.ts";
-import { getRequestContext } from "../../utils/request-context.ts";
 import { jam2025CocHandler } from "./2025/coc.tsx";
 import { jam2025FaqHandler } from "./2025/faq.tsx";
 import { jam2025GalleryHandler } from "./2025/gallery/controller.tsx";
@@ -16,9 +15,12 @@ import {
 } from "./2026/controller.tsx";
 
 export async function jamRedirectHandler() {
-  let requestUrl = getRequestContext().request.url;
-  let location = new URL(routes.jam.y2026.index.href(), requestUrl);
-  return Response.redirect(location, 302);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: routes.jam.y2026.index.href(),
+    },
+  });
 }
 
 export let jam2025Controller = createController(routes.jam.y2025, {

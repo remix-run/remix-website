@@ -4,6 +4,7 @@ import * as coerce from "remix/data-schema/coerce";
 import { createController } from "remix/router";
 
 import { routes } from "../../routes.ts";
+import { isAllowedNewsletterTagId } from "../../utils/newsletter-tags.ts";
 
 type NewsletterResponse = { ok: boolean; error: string | null };
 
@@ -18,18 +19,19 @@ export default createController(routes.actions, {
       });
 
       if (!result.success) {
-        let hasEmailIssue = result.issues.some((issue) =>
-          hasPath(issue, "email"),
-        );
-        let hasTagIssue = result.issues.some((issue) => hasPath(issue, "tags"));
+        let error = "Invalid Submission";
+        if (result.issues.some((issue) => issue.path?.includes("email"))) {
+          error = "Invalid Email";
+        } else if (
+          result.issues.some((issue) => issue.path?.includes("tags"))
+        ) {
+          error = "Invalid Tag";
+        }
+
         return Response.json(
           {
             ok: false,
-            error: hasEmailIssue
-              ? "Invalid Email"
-              : hasTagIssue
-                ? "Invalid Tag"
-                : "Invalid Submission",
+            error,
           } satisfies NewsletterResponse,
           { status: 400 },
         );
@@ -41,12 +43,11 @@ export default createController(routes.actions, {
           ok: true,
           error: null,
         } satisfies NewsletterResponse);
-      } catch (error: unknown) {
+      } catch {
         return Response.json(
           {
             ok: false,
-            error:
-              error instanceof Error ? error.message : "Something went wrong",
+            error: "Something went wrong",
           } satisfies NewsletterResponse,
           { status: 500 },
         );
@@ -57,15 +58,12 @@ export default createController(routes.actions, {
 
 let newsletterSubmission = s.object({
   email: s.string().pipe(c.email()),
-  tags: s.array(coerce.number()),
+  tags: s
+    .array(coerce.number())
+    .refine((tags) => tags.every(isAllowedNewsletterTagId), "Invalid Tag"),
 });
 
-function hasPath(issue: { path?: readonly unknown[] }, key: string): boolean {
-  let path = issue.path;
-  return Array.isArray(path) && path.some((p) => p === key);
-}
-
-async function subscribeToNewsletter(email: string, tags: number[] = []) {
+async function subscribeToNewsletter(email: string, tags: number[]) {
   let apiKey = process.env.CONVERTKIT_KEY;
   if (!apiKey) {
     throw new Error("Missing CONVERTKIT_KEY");

@@ -41,7 +41,10 @@ const ProductSchema = s.object({
 
 const CartSchema = s.object({
   id: s.string(),
-  checkoutUrl: s.string().pipe(c.url()),
+  checkoutUrl: s
+    .string()
+    .pipe(c.url())
+    .refine(isTrustedCheckoutUrl, "Expected trusted checkout URL"),
 });
 
 const PhotoSchema = s.object({
@@ -189,6 +192,7 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
 }
 
 export const MAX_QUANTITY = 10;
+const STOREFRONT_ORIGIN = "https://jam.remix.run";
 
 export async function createCart(params: {
   productId: string;
@@ -273,4 +277,13 @@ function createUnavailableProduct(
     availableForSale: false,
     unavailableReason,
   });
+}
+
+function isTrustedCheckoutUrl(value: string) {
+  try {
+    let url = new URL(value);
+    return url.protocol === "https:" && url.origin === STOREFRONT_ORIGIN;
+  } catch {
+    return false;
+  }
 }

@@ -60,6 +60,22 @@ describe("parseCart", () => {
       }),
     ).toThrow();
   });
+
+  it("rejects checkoutUrl outside the Jam storefront", () => {
+    expect(() =>
+      parseCart({
+        id: "cart-id",
+        checkoutUrl: "https://example.com/checkout/abc",
+      }),
+    ).toThrow();
+
+    expect(() =>
+      parseCart({
+        id: "cart-id",
+        checkoutUrl: "http://jam.remix.run/checkout/abc",
+      }),
+    ).toThrow();
+  });
 });
 
 describe("parsePhotos", () => {
