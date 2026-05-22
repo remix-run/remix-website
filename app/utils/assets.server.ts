@@ -1,10 +1,11 @@
 import * as path from "node:path";
 import { createAssetServer } from "remix/assets";
+import { applyTemporaryPnpmAssetDuplicationFix } from "./temporary-pnpm-asset-duplication-fix.server.ts";
 
 let isDevelopment = process.env.NODE_ENV !== "production";
 let rootDir = path.resolve(import.meta.dirname, "../..");
 
-export let assetServer = createAssetServer({
+let rawAssetServer = createAssetServer({
   basePath: "/assets",
   rootDir,
   fileMap: {
@@ -28,4 +29,16 @@ export let assetServer = createAssetServer({
     },
   },
   watch: false,
+});
+
+/*
+ * TEMPORARY REMIX BUG WORKAROUND.
+ *
+ * Delete this wrapper after upgrading to a Remix release that fixes:
+ * https://github.com/remix-run/remix/issues/11458
+ */
+export let assetServer = applyTemporaryPnpmAssetDuplicationFix(rawAssetServer, {
+  basePath: "/assets",
+  packagePathPrefix: "/npm",
+  rootDir,
 });
