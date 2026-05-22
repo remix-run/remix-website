@@ -20,7 +20,7 @@ describe("Jam2026Countdown", () => {
   it("renders the live countdown immediately for reduced motion", async (t) => {
     let originalDateNow = Date.now;
     let originalMatchMedia = window.matchMedia;
-    Date.now = () => new Date("2026-09-30T09:00:00-04:00").getTime();
+    Date.now = () => new Date("2026-10-01T09:00:00-04:00").getTime();
     window.matchMedia = (query) =>
       ({
         matches: query === "(prefers-reduced-motion: reduce)",

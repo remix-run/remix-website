@@ -1,5 +1,6 @@
 import { asyncContext } from "remix/middleware/async-context";
 import { compression } from "remix/middleware/compression";
+import { cop } from "remix/middleware/cop";
 import { createRouter, type RequestContext } from "remix/router";
 import { formData } from "remix/middleware/form-data";
 import { logger } from "remix/middleware/logger";
@@ -66,6 +67,7 @@ function createAppRouter() {
     }),
   );
 
+  middleware.push(cop());
   middleware.push(formData());
   middleware.push(asyncContext());
   middleware.push(loadAssetEntry());
