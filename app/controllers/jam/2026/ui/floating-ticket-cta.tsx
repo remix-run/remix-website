@@ -50,6 +50,7 @@ let floatingCtaRegionStyle = css({
 
 let floatingCtaLinkStyle = css({
   "--ticket-ring-animation-play-state": "running",
+  "--ticket-ring-scale": "1",
   cursor: "pointer",
   display: "block",
   height: "170px",
@@ -68,6 +69,9 @@ let floatingCtaLinkStyle = css({
   "&:hover, &:focus-visible": {
     "--ticket-ring-animation-play-state": "paused",
   },
+  "&:hover": {
+    "--ticket-ring-scale": "1.05",
+  },
   [breakpointMedia.lg]: {
     right: "10.2%",
     transform: "none",
@@ -81,6 +85,9 @@ let floatingCtaRingFrameStyle = css({
   position: "absolute",
   right: 0,
   top: 0,
+  transform: "scale(var(--ticket-ring-scale))",
+  transformOrigin: "center",
+  transition: "transform 180ms ease",
   width: "170px",
 });
 

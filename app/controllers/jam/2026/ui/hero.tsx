@@ -324,10 +324,11 @@ let storyStyle = css({
   display: "grid",
   gridTemplateColumns:
     "minmax(32px, 0.47fr) minmax(0, 2.12fr) minmax(24px, 0.71fr) minmax(0, 2.53fr) minmax(24px, 0.71fr) minmax(0, 2.12fr) minmax(32px, 0.47fr)",
-  paddingBlock: "88px 96px",
+  paddingBlock: "88px 120px",
   [storyNarrowMedia]: {
     display: "block",
-    padding: "64px 24px",
+    paddingBlock: "64px 88px",
+    paddingInline: "24px",
   },
   [storyTabletMedia]: {
     display: "grid",

@@ -103,6 +103,7 @@ let mainStyle = css({
 let footerStyle = css({
   position: "relative",
   zIndex: 1,
+  paddingTop: "40px",
   backgroundColor: jamTheme.surfaceRaised,
   color: jamTheme.ink,
 });

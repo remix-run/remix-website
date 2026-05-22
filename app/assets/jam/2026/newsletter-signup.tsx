@@ -7,6 +7,7 @@ import {
 } from "../../newsletter-request.ts";
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
 import { routes } from "../../../routes.ts";
+import { breakpointMedia } from "../../../ui/theme.ts";
 
 const REMIX_JAM_UPDATES_TAG_ID = "19736081";
 
@@ -23,8 +24,12 @@ export let Jam2026NewsletterSignup = clientEntry(
       >
         <div mix={newsletterContentStyle}>
           <h2 id="newsletter-heading" mix={newsletterHeadingStyle}>
-            Sign up for our newsletter for the latest Remix Jam news and updates
+            Get notified
           </h2>
+          <p>
+            Sign up for our newsletter to receive any updates, announcements,
+            and speaker line up for Remix Jam 2026.
+          </p>
           <form
             action={routes.actions.newsletter.href()}
             method="post"
@@ -114,7 +119,7 @@ export let Jam2026NewsletterSignup = clientEntry(
 let newsletterSectionStyle = css({
   position: "relative",
   zIndex: 1,
-  paddingBlock: "clamp(64px, 9vw, 120px) 48px",
+  paddingBlock: "36px",
   paddingInline: theme.space.lg,
   backgroundColor: jamTheme.surfaceRaised,
   color: jamTheme.ink,
@@ -124,29 +129,52 @@ let newsletterContentStyle = css({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  gap: "40px",
-  maxWidth: "640px",
+  gap: "20px",
+  width: "100%",
   marginInline: "auto",
+  [breakpointMedia.md]: {
+    width: "35%",
+  },
+  "& > p": {
+    margin: 0,
+    color: jamTheme.ink,
+    fontFamily: theme.fontFamily.sans,
+    fontSize: "16px",
+    fontWeight: theme.fontWeight.normal,
+    letterSpacing: "-0.01em",
+    lineHeight: "1.6em",
+    textAlign: "center",
+    textWrap: "balance",
+    "@supports (text-box-trim: trim-both)": {
+      textBoxTrim: "trim-both",
+      textBoxEdge: "cap alphabetic",
+    },
+  },
 });
 
 let newsletterHeadingStyle = css({
   margin: 0,
-  maxWidth: "620px",
   color: jamTheme.ink,
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "clamp(28px, 4.2vw, 40px)",
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "16px",
   fontWeight: theme.fontWeight.bold,
-  letterSpacing: 0,
-  lineHeight: 1.12,
+  letterSpacing: "0.48px",
+  lineHeight: "normal",
   textAlign: "center",
+  textTransform: "uppercase",
+  "@supports (text-box-trim: trim-both)": {
+    textBoxTrim: "trim-both",
+    textBoxEdge: "cap alphabetic",
+  },
 });
 
 let newsletterFormStyle = css({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  gap: "14px",
-  width: "100%",
+  gap: "9px",
+  width: "240px",
+  maxWidth: "100%",
   minWidth: 0,
   transition: "opacity 160ms ease",
   "&[data-state='submitting']": {
@@ -157,26 +185,31 @@ let newsletterFormStyle = css({
 let labelStyle = css({
   color: jamTheme.brandRed,
   fontFamily: theme.fontFamily.mono,
-  fontSize: "0.78rem",
-  fontWeight: theme.fontWeight.bold,
-  letterSpacing: 0,
-  lineHeight: 1,
+  fontSize: "11px",
+  fontWeight: theme.fontWeight.normal,
+  letterSpacing: "0.24px",
+  lineHeight: "normal",
   textTransform: "uppercase",
+  "@supports (text-box-trim: trim-both)": {
+    textBoxTrim: "trim-both",
+    textBoxEdge: "cap alphabetic",
+  },
 });
 
 let newsletterInputStyle = css({
   width: "100%",
-  maxWidth: "420px",
-  minHeight: "56px",
+  minHeight: 0,
   minWidth: 0,
   border: 0,
-  borderRadius: "8px",
-  backgroundColor: jamTheme.surface,
-  color: jamTheme.ink,
-  font: "inherit",
-  fontSize: "1rem",
-  lineHeight: 1.2,
-  padding: "0 18px",
+  borderRadius: "6px",
+  backgroundColor: jamTheme.inkWash,
+  color: jamTheme.inkMuted,
+  fontFamily: theme.fontFamily.sans,
+  fontSize: "16px",
+  fontWeight: theme.fontWeight.normal,
+  letterSpacing: "-0.01em",
+  lineHeight: "1.6em",
+  padding: "12px 16px",
   textAlign: "center",
   "&::placeholder": {
     color: jamTheme.textMuted,
@@ -193,18 +226,19 @@ let newsletterInputStyle = css({
 
 let newsletterButtonStyle = css({
   width: "100%",
-  maxWidth: "420px",
-  minHeight: "56px",
+  minHeight: 0,
   border: 0,
-  borderRadius: "8px",
+  borderRadius: "6px",
   backgroundColor: jamTheme.accent,
   color: jamTheme.onAccent,
   cursor: "pointer",
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "1rem",
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "11px",
   fontWeight: theme.fontWeight.bold,
-  lineHeight: 1,
-  paddingInline: "24px",
+  letterSpacing: "0.33px",
+  lineHeight: "normal",
+  padding: "12px 16px",
+  textTransform: "uppercase",
   transition: "background-color 160ms ease, transform 160ms ease",
   whiteSpace: "nowrap",
   "&:hover": {
@@ -231,10 +265,10 @@ let newsletterButtonStyle = css({
 });
 
 let newsletterMessageStyle = css({
-  maxWidth: "420px",
+  maxWidth: "240px",
   minHeight: "24px",
   color: jamTheme.brandRed,
-  fontSize: "0.95rem",
+  fontSize: "12px",
   lineHeight: 1.4,
   textAlign: "center",
   "& p": {
