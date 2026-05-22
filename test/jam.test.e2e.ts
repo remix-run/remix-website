@@ -86,11 +86,11 @@ describe("Jam", () => {
     await expect(mobileNav.getByRole("link", { name: "Ticket" })).toBeVisible();
   });
 
-  it("jam root redirects to jam 2025", async (t) => {
+  it("jam root redirects to jam 2026", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.goto("/jam");
-    await page.waitForURL("**/jam/2025");
+    await page.waitForURL("**/jam/2026");
     await expect(page.locator("main")).toBeVisible();
   });
 
