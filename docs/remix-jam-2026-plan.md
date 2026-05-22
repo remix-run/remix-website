@@ -17,6 +17,8 @@ parent unless the route-local style explicitly opts out with `max-width: none`.
 - Use route-local Remix UI styles and local assets. Do not depend on Tailwind route markup.
 - Use `clientEntry(import.meta.url, function ExportName(...) { ... })` only for browser-only behavior.
 - Validate ticket POST data with `remix/data-schema` and return explicit status codes.
+- Keep checkout error rendering working without JavaScript; the POST action should be able to
+  re-render the ticket modal with a clear error.
 - Before starting a dev server, try the user's existing server at `http://localhost:44100`.
   Reuse it when it responds. Only start another server when `44100` is not responding, and use a
   different port if `44100` is occupied.
@@ -39,31 +41,21 @@ Make early bird pricing more prominent before tickets are shared widely.
 - Surface the early bird offer outside the ticket modal.
 - Keep pricing language aligned with the Shopify product and checkout state.
 
-### Wire Shopify Checkout
-
-Implement the real POST action for `/jam/2026/ticket`.
-
-- Add final product handle/variant mapping for the Remix Jam 2026 ticket.
-- Validate ticket type, product/variant id, and quantity with `parseSafe`.
-- Enable the ticket modal checkout button when the POST flow is wired.
-- Create a Shopify cart and redirect to checkout on success.
-- Return clear errors for invalid input, unavailable storefront, sold out/unpublished products, quantity limits, and cart creation failures.
-- Use `no-store` for POST responses and checkout-error states.
-
 ### Browser QA
 
 Run a focused browser pass once landing and ticket UI are in place.
 
 - Desktop and mobile screenshots for hero, story, FAQ, ticket page, and footer.
-- Keyboard pass for header, theme toggle, FAQ, ticket controls, and modal/dialog behavior if used.
+- Keyboard pass for header, theme toggle, FAQ, ticket controls, and modal/dialog behavior.
 - Reduced-motion pass for countdown, cloud layer, FAQ, and ticket animations.
 - Check color contrast and text overlap in light and dark themes.
+- Confirm ticket modal browser Back/reopen behavior and checkout pending state in a real browser.
 
 ### Launch Verification
 
 Final checks before opening sales.
 
-- Verify Shopify products, inventory, sales channel, sale timing, and checkout settings.
+- Verify Shopify product handle, variant id, inventory, sales channel, sale timing, and checkout settings.
 - Submit a low-quantity checkout test in staging or production, then cancel/refund it.
-- Confirm unavailable and sold-out states by toggling product availability.
+- Confirm unavailable, unpublished, sold-out, quantity-limit, and cart-error states against Shopify.
 - Run Jam route tests, ticket tests, E2E checks, and `pnpm run build`.

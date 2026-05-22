@@ -65,13 +65,14 @@ describe("Jam", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/jam/2025");
 
-    let menuToggle = page
-      .locator('details:has(nav[aria-label="Mobile"]) > summary')
-      .first();
+    let menu = page.locator('details:has(nav[aria-label="Mobile"])').filter({
+      has: page.locator('a[href="/jam/2025/lineup"]'),
+    });
+    let menuToggle = menu.locator("summary");
     await expect(menuToggle).toBeVisible();
     await menuToggle.click();
 
-    let mobileNav = page.locator('nav[aria-label="Mobile"]').first();
+    let mobileNav = menu.locator('nav[aria-label="Mobile"]');
     await expect(mobileNav).toBeVisible();
     await expect(
       mobileNav.getByRole("link", { name: "Schedule & Lineup" }),
