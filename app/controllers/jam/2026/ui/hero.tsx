@@ -42,12 +42,10 @@ export function Jam2026Hero() {
             </p>
             <YearBadge />
             <p mix={[eventDetailStyle, eventDetailRightStyle]}>
-              <span mix={eventDetailJustifiedLineStyle}>
+              <span mix={eventDetailPlainLineStyle}>
                 For a grand Remix showcase
               </span>
-              <span mix={eventDetailJustifiedLineStyle}>
-                Toronto - Ontario, Canada
-              </span>
+              <span mix={eventDetailPlainLineStyle}>Toronto</span>
             </p>
           </div>
         </div>
@@ -243,9 +241,10 @@ let eventDetailsStyle = css({
   textAlign: "center",
   zIndex: 1,
   [breakpointMedia.lg]: {
-    gridTemplateColumns: "190px auto 240px",
-    gap: "44px",
+    gridTemplateColumns: "minmax(0, 320px) auto minmax(0, 320px)",
+    gap: "clamp(28px, 2.4vw, 44px)",
     justifyItems: "stretch",
+    width: "min(100%, 920px)",
   },
 });
 
@@ -262,37 +261,32 @@ let eventDetailStyle = css({
   textTransform: "uppercase",
   whiteSpace: "nowrap",
   [breakpointMedia.lg]: {
-    justifySelf: "start",
     fontSize: "14px",
-    width: "190px",
+    letterSpacing: "0.18em",
+    lineHeight: 1.85,
   },
 });
 
 let eventDetailLeftStyle = css({
   [breakpointMedia.lg]: {
+    alignItems: "flex-end",
     justifySelf: "end",
-    transform: "translateX(32px)",
+    textAlign: "right",
   },
 });
 
 let eventDetailRightStyle = css({
   [breakpointMedia.lg]: {
-    width: "240px",
-  },
-});
-
-let eventDetailJustifiedLineStyle = css({
-  display: "block",
-  [breakpointMedia.lg]: {
-    textAlign: "justify",
-    textAlignLast: "justify",
+    alignItems: "flex-start",
+    justifySelf: "start",
+    textAlign: "left",
   },
 });
 
 let eventDetailPlainLineStyle = css({
   display: "block",
   [breakpointMedia.lg]: {
-    textAlign: "left",
+    textAlign: "inherit",
   },
 });
 

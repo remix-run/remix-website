@@ -3,6 +3,7 @@ import { theme } from "remix/ui/theme";
 import { FpsCounterToggle } from "../../../../assets/fps-counter-toggle.tsx";
 import { Jam2026CloudBackdrop } from "../../../../assets/jam/2026/cloud-backdrop.tsx";
 import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
+import { Jam2026NewsletterSignup } from "../../../../assets/jam/2026/newsletter-signup.tsx";
 import { Jam2026PhotoMoments } from "../../../../assets/jam/2026/photo-moments.tsx";
 import { routes } from "../../../../routes.ts";
 import { Document } from "../../../../ui/document.tsx";
@@ -47,6 +48,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
               <Jam2026PhotoMoments />
               <Jam2026FloatingTicketCta />
               <Jam2026Faq />
+              <Jam2026NewsletterSignup />
             </main>
             <Footer mix={footerStyle} />
           </div>

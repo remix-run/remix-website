@@ -3,7 +3,7 @@ import { routes } from "../../../routes.ts";
 import {
   submitNewsletterRequest,
   type SubscribeState,
-} from "../../newsletter-subscribe.tsx";
+} from "../../newsletter-request.ts";
 
 export let JamNewsletterSubscribeForm = clientEntry(
   import.meta.url,

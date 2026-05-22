@@ -1,6 +1,6 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
-import { submitNewsletterRequest } from "./newsletter-subscribe.tsx";
+import { submitNewsletterRequest } from "./newsletter-request.ts";
 
 describe("submitNewsletterRequest", () => {
   it("returns idle state when the request is aborted", async (t) => {

@@ -3,7 +3,7 @@ import { routes } from "../../../routes.ts";
 import {
   submitNewsletterRequest,
   type SubscribeState,
-} from "../../newsletter-subscribe.tsx";
+} from "../../newsletter-request.ts";
 import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
 
 // Vertically center the inner row inside each section's `min-height: 100vh`

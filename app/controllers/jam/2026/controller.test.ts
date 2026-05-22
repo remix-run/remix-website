@@ -34,9 +34,13 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain("data-jam-2026-cloud-backdrop");
     expect(html).toContain("data-jam-2026-performance-tools");
     expect(html).toContain('id="faq"');
+    expect(html).toContain('id="newsletter"');
     expect(html).toContain('href="/jam/2026/ticket"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
     expect(html).not.toContain('role="dialog"');
+    expect(html.indexOf('id="newsletter"')).toBeGreaterThan(
+      html.indexOf('id="faq"'),
+    );
   });
 
   it("renders the ticket route as the full Jam page with the ticket modal open", async () => {

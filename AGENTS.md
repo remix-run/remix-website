@@ -46,6 +46,10 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 5. Run `pnpm run build` before shipping a PR to catch CSS/runtime regressions.
 6. If behavior changes, update the parity backlog below.
 
+## Commit / Push Hygiene
+
+- Before any commit or push, run the formatter on the changed files.
+
 ## Parity backlog
 
 Remaining differences vs the previous production site (small, shippable items):

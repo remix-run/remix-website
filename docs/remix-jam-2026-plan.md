@@ -32,14 +32,6 @@ Create the 2026 code of conduct content before ticket launch.
 - Link to it from the ticket flow.
 - Add route/controller tests.
 
-### Add Newsletter Signup
-
-Add a newsletter signup surface for people who want Remix Jam updates.
-
-- Reuse the existing newsletter action unless a different list/tag is needed.
-- Confirm the correct ConvertKit tag/list before wiring submissions.
-- Include focused tests for success and error states.
-
 ### Highlight Early Bird Pricing
 
 Make early bird pricing more prominent before tickets are shared widely.
