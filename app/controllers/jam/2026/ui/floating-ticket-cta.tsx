@@ -12,7 +12,7 @@ export function Jam2026FloatingTicketCta() {
   return () => (
     <div mix={floatingCtaRegionStyle}>
       <a
-        href={routes.jam.y2026.ticket.href()}
+        href={routes.jam.y2026.ticket.index.href()}
         mix={floatingCtaLinkStyle}
         rmx-reset-scroll="false"
         rmx-target={ticketModalConfig.frameName}

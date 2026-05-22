@@ -29,7 +29,7 @@ export let routes = route({
     y2026: route("2026", {
       index: get("/"),
       theme: post("theme"),
-      ticket: get("ticket"),
+      ticket: form("ticket"),
     }),
   }),
   newsletter: get("/newsletter"),

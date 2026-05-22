@@ -133,6 +133,29 @@ describe("Jam", () => {
     await expect(page).toHaveTitle("Remix Jam 2026");
   });
 
+  it("jam 2026 ticket modal closes with browser back without remounting the page", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/jam/2026", { waitUntil: "networkidle" });
+
+    let marker = await markPage(page);
+    await clickJam2026TicketNavLink(page);
+    await page.waitForURL("**/jam/2026/ticket");
+    await expectMarkerToStay(page, marker);
+    await expect(page.getByRole("dialog")).toBeVisible();
+
+    await page.goBack();
+    await page.waitForURL("**/jam/2026");
+    await expectMarkerToStay(page, marker);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+
+    await clickJam2026TicketNavLink(page);
+    await page.waitForURL("**/jam/2026/ticket");
+    await expectMarkerToStay(page, marker);
+    await expect(page.getByRole("dialog")).toBeVisible();
+  });
+
   it("jam 2026 mobile layout does not create horizontal document overflow", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));

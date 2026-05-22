@@ -11,17 +11,13 @@ import { routes } from "../../../routes.ts";
 describe("Jam2026TicketsModal", () => {
   it("applies modal effects and renders frame navigation controls", async (t) => {
     let homeHref = routes.jam.y2026.index.href();
-    let ticketHref = routes.jam.y2026.ticket.href();
     let previousOverflow = document.documentElement.style.overflow;
     let previousScrollbarGutter =
       document.documentElement.style.scrollbarGutter;
 
-    window.history.replaceState(window.history.state, "", ticketHref);
-
     t.after(() => {
       document.documentElement.style.overflow = previousOverflow;
       document.documentElement.style.scrollbarGutter = previousScrollbarGutter;
-      window.history.replaceState(window.history.state, "", homeHref);
     });
 
     let result = render(
@@ -125,6 +121,11 @@ describe("Jam2026TicketsModal", () => {
       result.container.querySelector<HTMLInputElement>(
         "input[name='quantity']",
       )!;
+    let getProductInput = () =>
+      result.container.querySelector<HTMLInputElement>(
+        "input[name='productId']",
+      )!;
+    let form = result.container.querySelector<HTMLFormElement>("form")!;
     let getIncreaseButton = () =>
       result.container.querySelector<HTMLButtonElement>(
         "button[aria-label='Increase quantity']",
@@ -144,6 +145,15 @@ describe("Jam2026TicketsModal", () => {
     expect(result.container.textContent).toContain(
       `$${remixJam2026Ticket.originalPrice}`,
     );
+    expect(form.getAttribute("action")).toBe(
+      routes.jam.y2026.ticket.action.href(),
+    );
+    expect(
+      result.container.querySelector<HTMLInputElement>(
+        "input[name='ticketType']",
+      )?.value,
+    ).toBe(remixJam2026Ticket.type);
+    expect(getProductInput().value).toBe("");
     expect(checkoutButton.disabled).toBe(true);
     expect(getQuantityValue()).toBe("1");
     expect(getQuantityInput().value).toBe("1");
@@ -170,6 +180,83 @@ describe("Jam2026TicketsModal", () => {
       String(remixJam2026Ticket.maxQuantity),
     );
     expect(getIncreaseButton().disabled).toBe(true);
+  });
+
+  it("enables checkout when the server provides an available ticket variant", async (t) => {
+    let result = render(
+      <Jam2026TicketsModalFrame
+        open
+        ticketCheckout={{
+          availableForSale: true,
+          initialQuantity: 1,
+          maxQuantity: remixJam2026Ticket.maxQuantity,
+          productId: "gid://shopify/ProductVariant/2026",
+        }}
+      />,
+    );
+    t.after(result.cleanup);
+
+    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+
+    let checkoutButton = result.container.querySelector<HTMLButtonElement>(
+      "button[type='submit']",
+    )!;
+    let productInput = result.container.querySelector<HTMLInputElement>(
+      "input[name='productId']",
+    )!;
+
+    expect(checkoutButton.disabled).toBe(false);
+    expect(checkoutButton.textContent).toBe("Check out");
+    expect(productInput.value).toBe("gid://shopify/ProductVariant/2026");
+  });
+
+  it("shows a pending checkout state after submit", async (t) => {
+    let result = render(
+      <Jam2026TicketsModalFrame
+        open
+        ticketCheckout={{
+          availableForSale: true,
+          initialQuantity: 1,
+          maxQuantity: remixJam2026Ticket.maxQuantity,
+          productId: "gid://shopify/ProductVariant/2026",
+        }}
+      />,
+    );
+    t.after(result.cleanup);
+
+    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+
+    let form = result.container.querySelector<HTMLFormElement>("form")!;
+    form.addEventListener("submit", (event) => event.preventDefault());
+
+    let checkoutButton = result.container.querySelector<HTMLButtonElement>(
+      "button[type='submit']",
+    )!;
+    let increaseButton = result.container.querySelector<HTMLButtonElement>(
+      "button[aria-label='Increase quantity']",
+    )!;
+
+    await result.act(() => checkoutButton.click());
+
+    expect(form.getAttribute("aria-busy")).toBe("true");
+    expect(form.getAttribute("data-pending")).toBe("true");
+    expect(checkoutButton.disabled).toBe(true);
+    expect(checkoutButton.textContent).toBe("Checking out...");
+    expect(increaseButton.disabled).toBe(true);
+
+    await result.act(() => {
+      window.dispatchEvent(
+        new PageTransitionEvent("pageshow", {
+          persisted: true,
+        }),
+      );
+    });
+
+    expect(form.hasAttribute("aria-busy")).toBe(false);
+    expect(form.getAttribute("data-pending")).toBe("false");
+    expect(checkoutButton.disabled).toBe(false);
+    expect(checkoutButton.textContent).toBe("Check out");
+    expect(increaseButton.disabled).toBe(false);
   });
 
   it("releases modal page effects when closing animation starts", async (t) => {

@@ -250,7 +250,7 @@ export let Jam2026Header = clientEntry(
               FAQ
             </a>
             <a
-              href={routes.jam.y2026.ticket.href()}
+              href={routes.jam.y2026.ticket.index.href()}
               mix={jam2026TicketLinkStyle}
               rmx-reset-scroll="false"
               rmx-target={ticketModalConfig.frameName}

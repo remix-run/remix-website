@@ -29,6 +29,14 @@ const ProductSchema = s.object({
   price: s.string(),
   productId: s.string(),
   availableForSale: s.boolean(),
+  quantityRule: s.optional(
+    s.object({
+      minimum: s.number(),
+      maximum: s.optional(s.number()),
+      increment: s.number(),
+    }),
+  ),
+  unavailableReason: s.optional(s.enum_(["storefront", "product"])),
 });
 
 const CartSchema = s.object({
@@ -62,12 +70,7 @@ export function parseCart(raw: unknown): Cart {
 export async function getProduct(handle: string): Promise<Product> {
   let storefrontClient = getClient();
   if (!storefrontClient) {
-    return parseProduct({
-      id: "unavailable",
-      price: "399.00",
-      productId: "unavailable",
-      availableForSale: false,
-    });
+    return createUnavailableProduct("storefront");
   }
 
   const productQuery = `
@@ -82,6 +85,11 @@ export async function getProduct(handle: string): Promise<Product> {
                 amount
               }
               availableForSale
+              quantityRule {
+                minimum
+                maximum
+                increment
+              }
             }
           }
         }
@@ -89,20 +97,37 @@ export async function getProduct(handle: string): Promise<Product> {
     }
   `;
 
-  const { data, errors } = await storefrontClient.request(productQuery, {
-    variables: { handle },
-  });
+  let response;
+  try {
+    response = await storefrontClient.request(productQuery, {
+      variables: { handle },
+    });
+  } catch {
+    return createUnavailableProduct("storefront");
+  }
 
-  if (errors) throw new Error("Failed to fetch product data");
+  const { data, errors } = response;
 
-  const price =
-    data?.product?.variants?.edges[0]?.node?.price?.amount || "399.00";
+  if (errors) return createUnavailableProduct("storefront");
+
+  let variant = data?.product?.variants?.edges[0]?.node;
+  if (!data?.product?.id || !variant?.id) {
+    return createUnavailableProduct("product");
+  }
+
+  const price = variant.price?.amount || "399.00";
   const product = {
-    id: data?.product?.id,
+    id: data.product.id,
     price: Number(price).toFixed(2),
-    productId: data?.product?.variants?.edges[0]?.node?.id,
-    availableForSale:
-      data?.product?.variants?.edges[0]?.node?.availableForSale || false,
+    productId: variant.id,
+    availableForSale: variant.availableForSale || false,
+    quantityRule: variant.quantityRule
+      ? {
+          minimum: variant.quantityRule.minimum,
+          maximum: variant.quantityRule.maximum ?? undefined,
+          increment: variant.quantityRule.increment,
+        }
+      : undefined,
   };
 
   return parseProduct(product);
@@ -176,7 +201,6 @@ export async function createCart(params: {
   }
 
   let { productId, quantity, discountCode } = params;
-  quantity = Math.min(quantity, MAX_QUANTITY);
   discountCode = (discountCode ?? "").trim().toUpperCase();
 
   const createCartMutation = `
@@ -194,28 +218,40 @@ export async function createCart(params: {
           field
           message
         }
+        warnings {
+          code
+          message
+          target
+        }
       }
     }
   `;
 
-  let discountCodes = [];
-  if (discountCode) {
-    discountCodes.push(discountCode);
+  let response;
+  try {
+    response = await storefrontClient.request(createCartMutation, {
+      variables: {
+        cartInput: {
+          lines: [
+            {
+              merchandiseId: productId,
+              quantity,
+            },
+          ],
+          discountCodes: discountCode ? [discountCode] : [],
+        },
+      },
+    });
+  } catch {
+    return { error: "Ticket checkout is unavailable right now" };
   }
 
-  const { data, errors } = await storefrontClient.request(createCartMutation, {
-    variables: {
-      cartInput: {
-        lines: [
-          {
-            merchandiseId: productId,
-            quantity,
-          },
-        ],
-        discountCodes,
-      },
-    },
-  });
+  const { data, errors } = response;
+
+  let userError = data?.cartCreate?.userErrors?.[0]?.message;
+  if (userError) {
+    return { error: userError };
+  }
 
   if (errors || !data?.cartCreate?.cart?.checkoutUrl) {
     return { error: "Failed to create cart" };
@@ -224,5 +260,17 @@ export async function createCart(params: {
   return parseCart({
     id: data.cartCreate.cart.id,
     checkoutUrl: data.cartCreate.cart.checkoutUrl,
+  });
+}
+
+function createUnavailableProduct(
+  unavailableReason: "storefront" | "product",
+): Product {
+  return parseProduct({
+    id: "unavailable",
+    price: "399.00",
+    productId: "unavailable",
+    availableForSale: false,
+    unavailableReason,
   });
 }

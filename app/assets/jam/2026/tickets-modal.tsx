@@ -1,4 +1,11 @@
-import { clientEntry, css, navigate, on, type Handle } from "remix/ui";
+import {
+  addEventListeners,
+  clientEntry,
+  css,
+  navigate,
+  on,
+  type Handle,
+} from "remix/ui";
 import { animateEntrance, spring } from "remix/ui/animation";
 import { theme } from "remix/ui/theme";
 
@@ -17,6 +24,15 @@ import { createJam2026TicketsModalEffects } from "./tickets-modal-effects.ts";
 type Jam2026TicketsModalProps = {
   animateEntrance?: boolean;
   open?: boolean;
+  ticketCheckout?: Jam2026TicketCheckoutState;
+};
+
+type Jam2026TicketCheckoutState = {
+  availableForSale: boolean;
+  error?: string;
+  initialQuantity: number;
+  maxQuantity: number;
+  productId?: string;
 };
 
 let usdFormatter = new Intl.NumberFormat("en-US", {
@@ -42,14 +58,19 @@ export let Jam2026TicketsModalFrame = clientEntry(
     let modalClosing = false;
     let closeNavigationTimer: ReturnType<typeof setTimeout> | undefined;
     let modalEffects = createJam2026TicketsModalEffects(handle, {
-      isActive: () => Boolean(handle.props.open) && !modalClosing,
+      isActive: () => isOpen() && !modalClosing,
       requestClose,
     });
     let headSyncQueued = false;
+    let navigationEntrySyncQueued = false;
+
+    function isOpen() {
+      return Boolean(handle.props.open);
+    }
 
     function requestClose(event?: Event) {
       event?.preventDefault();
-      if (modalClosing || !handle.props.open) return;
+      if (modalClosing || !isOpen()) return;
 
       modalClosing = true;
       handle.update();
@@ -85,7 +106,7 @@ export let Jam2026TicketsModalFrame = clientEntry(
       handle.queueTask(() => {
         headSyncQueued = false;
         let head = getJam2026HeadContent({
-          ticketsModalOpen: Boolean(handle.props.open),
+          ticketsModalOpen: isOpen(),
         });
 
         syncDocumentHead(
@@ -98,21 +119,36 @@ export let Jam2026TicketsModalFrame = clientEntry(
       });
     }
 
+    function queueNavigationEntrySync(open: boolean) {
+      if (navigationEntrySyncQueued) return;
+      navigationEntrySyncQueued = true;
+
+      handle.queueTask(() => {
+        navigationEntrySyncQueued = false;
+        if (handle.frame === handle.frames.top) return;
+        syncTicketModalNavigationEntry(open);
+      });
+    }
+
     return () => {
-      if (!handle.props.open) modalClosing = false;
+      let open = isOpen();
+
+      if (!open) modalClosing = false;
 
       modalEffects.queueStateSync();
+      queueNavigationEntrySync(open);
       queueHeadSync();
 
       // The frame runtime needs a stable child when toggling between empty
       // frame content and the hydrated modal.
       return (
         <div>
-          {handle.props.open ? (
+          {open ? (
             <Jam2026TicketsModalContent
               animateEntrance={handle.props.animateEntrance ?? true}
               closing={modalClosing}
               onRequestClose={requestClose}
+              ticketCheckout={handle.props.ticketCheckout}
             />
           ) : null}
         </div>
@@ -121,24 +157,88 @@ export let Jam2026TicketsModalFrame = clientEntry(
   },
 );
 
+function syncTicketModalNavigationEntry(open: boolean) {
+  let navigation = window.navigation;
+  if (!navigation?.currentEntry) return;
+
+  let homeHref = routes.jam.y2026.index.href();
+  let ticketHref = routes.jam.y2026.ticket.index.href();
+  let pathname = window.location.pathname;
+
+  if (pathname !== homeHref && pathname !== ticketHref) return;
+
+  // Direct document loads start with top-frame history state. Once the named
+  // modal frame hydrates, mark Jam ticket entries as frame-owned so browser
+  // Back closes the modal without remounting the animated page.
+  let state = {
+    $rmx: true,
+    resetScroll: false,
+    src: new URL(open ? ticketHref : homeHref, window.location.href).href,
+    target: ticketModalConfig.frameName,
+  };
+  let currentState = navigation.currentEntry.getState();
+
+  if (
+    isRecord(currentState) &&
+    currentState.$rmx === state.$rmx &&
+    currentState.resetScroll === state.resetScroll &&
+    currentState.src === state.src &&
+    currentState.target === state.target
+  ) {
+    return;
+  }
+
+  navigation.updateCurrentEntry({ state });
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
 type Jam2026TicketsModalContentProps = {
   animateEntrance?: boolean;
   closing?: boolean;
   onRequestClose: (event: Event) => void;
+  ticketCheckout?: Jam2026TicketCheckoutState;
 };
 
 export function Jam2026TicketsModalContent(
   handle: Handle<Jam2026TicketsModalContentProps>,
 ) {
   let ticket = remixJam2026Ticket;
-  let quantity = 1;
+  let quantity = handle.props.ticketCheckout?.initialQuantity ?? 1;
+  let submitting = false;
 
-  function setQuantity(nextQuantity: number) {
-    quantity = Math.min(ticket.maxQuantity, Math.max(1, nextQuantity));
+  function resetSubmitting() {
+    if (!submitting) return;
+    submitting = false;
     handle.update();
   }
 
+  handle.queueTask(() => {
+    addEventListeners(window, handle.signal, {
+      pageshow(event) {
+        if (event.persisted) resetSubmitting();
+      },
+    });
+  });
+
+  function setQuantity(nextQuantity: number) {
+    quantity = Math.min(getMaxQuantity(), Math.max(1, nextQuantity));
+    handle.update();
+  }
+
+  function getMaxQuantity() {
+    return handle.props.ticketCheckout?.maxQuantity ?? ticket.maxQuantity;
+  }
+
   return () => {
+    let ticketCheckout = handle.props.ticketCheckout;
+    let maxQuantity = getMaxQuantity();
+    let checkoutEnabled = Boolean(
+      ticketCheckout?.availableForSale && ticketCheckout.productId,
+    );
+    let checkoutDisabled = !checkoutEnabled || submitting;
     let useEntranceMotion = shouldAnimateEntrance(handle.props.animateEntrance);
     let scrimMix = useEntranceMotion
       ? [
@@ -248,8 +348,30 @@ export function Jam2026TicketsModalContent(
                     Conference and afterparty. Food and drinks included.
                   </span>
                 </article>
-                <form method="post" mix={ticketsModalCheckoutStyle}>
-                  <input type="hidden" name="ticket" value={ticket.handle} />
+                <form
+                  aria-busy={submitting ? "true" : undefined}
+                  action={routes.jam.y2026.ticket.action.href()}
+                  data-pending={String(submitting)}
+                  method="post"
+                  mix={[
+                    ticketsModalCheckoutStyle,
+                    on("submit", (event) => {
+                      if (!checkoutEnabled || submitting) {
+                        event.preventDefault();
+                        return;
+                      }
+
+                      submitting = true;
+                      handle.update();
+                    }),
+                  ]}
+                >
+                  <input type="hidden" name="ticketType" value={ticket.type} />
+                  <input
+                    type="hidden"
+                    name="productId"
+                    value={ticketCheckout?.productId ?? ""}
+                  />
                   <input
                     type="hidden"
                     name="quantity"
@@ -260,7 +382,7 @@ export function Jam2026TicketsModalContent(
                     <div mix={ticketsModalQuantityStyle}>
                       <button
                         aria-label="Decrease quantity"
-                        disabled={quantity <= 1}
+                        disabled={submitting || quantity <= 1}
                         type="button"
                         mix={[
                           ticketsModalQuantityButtonStyle,
@@ -289,12 +411,12 @@ export function Jam2026TicketsModalContent(
                       </span>
                       <button
                         aria-label="Increase quantity"
-                        disabled={quantity >= ticket.maxQuantity}
+                        disabled={submitting || quantity >= maxQuantity}
                         type="button"
                         mix={[
                           ticketsModalQuantityButtonStyle,
                           on("click", () => {
-                            if (quantity >= ticket.maxQuantity) return;
+                            if (quantity >= maxQuantity) return;
                             setQuantity(quantity + 1);
                           }),
                         ]}
@@ -323,12 +445,29 @@ export function Jam2026TicketsModalContent(
                     </div>
                   </div>
                   <button
-                    disabled
+                    disabled={checkoutDisabled}
                     type="submit"
                     mix={ticketsModalCheckoutButtonStyle}
                   >
-                    Check out
+                    {submitting ? (
+                      <>
+                        <span
+                          aria-hidden="true"
+                          mix={ticketsModalBusyDotStyle}
+                        />
+                        <span>Checking out...</span>
+                      </>
+                    ) : checkoutEnabled ? (
+                      "Check out"
+                    ) : (
+                      "Unavailable"
+                    )}
                   </button>
+                  {ticketCheckout?.error ? (
+                    <p role="alert" mix={ticketsModalCheckoutErrorStyle}>
+                      {ticketCheckout.error}
+                    </p>
+                  ) : null}
                 </form>
               </div>
             </div>
@@ -725,14 +864,18 @@ let ticketsModalSubtotalCurrencyStyle = css({
 
 let ticketsModalCheckoutButtonStyle = css({
   appearance: "none",
+  alignItems: "center",
   background: jamTheme.brandRed,
   border: 0,
   borderRadius: "6px",
   color: jamTheme.onAccent,
   cursor: "pointer",
+  display: "inline-flex",
   fontFamily: theme.fontFamily.mono,
   fontSize: "11px",
   fontWeight: theme.fontWeight.bold,
+  gap: "8px",
+  justifyContent: "center",
   justifySelf: "end",
   letterSpacing: "0.06em",
   lineHeight: 1,
@@ -767,4 +910,40 @@ let ticketsModalCheckoutButtonStyle = css({
     minWidth: 0,
     width: "100%",
   },
+});
+
+let ticketsModalBusyDotStyle = css({
+  animation: "jam-2026-ticket-checkout-pulse 720ms ease-in-out infinite",
+  background: "currentColor",
+  borderRadius: "50%",
+  display: "inline-block",
+  flexShrink: 0,
+  height: "7px",
+  opacity: 0.78,
+  width: "7px",
+  "@keyframes jam-2026-ticket-checkout-pulse": {
+    "0%, 100%": {
+      opacity: 0.4,
+      transform: "scale(0.72)",
+    },
+    "50%": {
+      opacity: 1,
+      transform: "scale(1)",
+    },
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    animation: "none",
+    opacity: 1,
+  },
+});
+
+let ticketsModalCheckoutErrorStyle = css({
+  color: jamTheme.brandRed,
+  fontFamily: theme.fontFamily.sans,
+  fontSize: "12px",
+  fontWeight: theme.fontWeight.bold,
+  gridColumn: "1 / -1",
+  lineHeight: 1.35,
+  margin: 0,
+  width: "100%",
 });

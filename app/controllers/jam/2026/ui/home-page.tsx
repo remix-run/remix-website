@@ -5,6 +5,7 @@ import { Jam2026CloudBackdrop } from "../../../../assets/jam/2026/cloud-backdrop
 import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
 import { Jam2026NewsletterSignup } from "../../../../assets/jam/2026/newsletter-signup.tsx";
 import { Jam2026PhotoMoments } from "../../../../assets/jam/2026/photo-moments.tsx";
+import { Jam2026TicketsModalFrame } from "../../../../assets/jam/2026/tickets-modal.tsx";
 import { routes } from "../../../../routes.ts";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
@@ -18,6 +19,13 @@ import { Jam2026Hero } from "./hero.tsx";
 
 type Jam2026HomePageProps = {
   ticketsModalOpen?: boolean;
+  ticketCheckout?: {
+    availableForSale: boolean;
+    error?: string;
+    initialQuantity: number;
+    maxQuantity: number;
+    productId?: string;
+  };
   theme?: Jam2026ThemeMode;
 };
 
@@ -52,14 +60,22 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
             </main>
             <Footer mix={footerStyle} />
           </div>
-          <Frame
-            name={ticketModalConfig.frameName}
-            src={
-              ticketsModalOpen
-                ? routes.jam.y2026.ticket.href()
-                : routes.jam.y2026.index.href()
-            }
-          />
+          {ticketsModalOpen && handle.props.ticketCheckout?.error ? (
+            <Jam2026TicketsModalFrame
+              animateEntrance={false}
+              open
+              ticketCheckout={handle.props.ticketCheckout}
+            />
+          ) : (
+            <Frame
+              name={ticketModalConfig.frameName}
+              src={
+                ticketsModalOpen
+                  ? routes.jam.y2026.ticket.index.href()
+                  : routes.jam.y2026.index.href()
+              }
+            />
+          )}
         </div>
       </Document>
     );
