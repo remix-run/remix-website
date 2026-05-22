@@ -27,9 +27,25 @@ parent unless the route-local style explicitly opts out with `max-width: none`.
 
 Create the 2026 code of conduct content before ticket launch.
 
-- It can be a homepage section or a dedicated route, but the ticket flow must link to it.
+- Add a dedicated `/jam/2026/coc` route/controller.
 - Keep copy complete enough to publish before sales open.
-- Add route/controller/tests if it becomes a standalone page.
+- Link to it from the ticket flow.
+- Add route/controller tests.
+
+### Add Newsletter Signup
+
+Add a newsletter signup surface for people who want Remix Jam updates.
+
+- Reuse the existing newsletter action unless a different list/tag is needed.
+- Confirm the correct ConvertKit tag/list before wiring submissions.
+- Include focused tests for success and error states.
+
+### Highlight Early Bird Pricing
+
+Make early bird pricing more prominent before tickets are shared widely.
+
+- Surface the early bird offer outside the ticket modal.
+- Keep pricing language aligned with the Shopify product and checkout state.
 
 ### Wire Shopify Checkout
 

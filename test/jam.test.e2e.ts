@@ -30,10 +30,15 @@ async function expectMarkerToStay(page: Page, marker: string) {
 }
 
 async function clickJam2026TicketNavLink(page: Page) {
-  await page
+  let ticketLink = page
     .getByRole("navigation", { name: "Page navigation" })
-    .getByRole("link", { name: "Get tickets" })
-    .click();
+    .getByRole("link", { name: "Get tickets" });
+  await expect(ticketLink).toBeVisible();
+
+  let box = await ticketLink.boundingBox();
+  if (!box) throw new Error("Expected Jam 2026 ticket link to have a box");
+
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
 }
 
 function galleryPhotoLinks(page: Page) {
@@ -66,7 +71,7 @@ describe("Jam", () => {
     await expect(menuToggle).toBeVisible();
     await menuToggle.click();
 
-    let mobileNav = page.getByRole("navigation", { name: "Mobile" });
+    let mobileNav = page.locator('nav[aria-label="Mobile"]').first();
     await expect(mobileNav).toBeVisible();
     await expect(
       mobileNav.getByRole("link", { name: "Schedule & Lineup" }),
@@ -101,7 +106,6 @@ describe("Jam", () => {
     let page = await t.serve(await createTestServer(handler));
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/jam/2026", { waitUntil: "networkidle" });
-    await page.locator("#faq").scrollIntoViewIfNeeded();
 
     let marker = await markPage(page);
     await clickJam2026TicketNavLink(page);

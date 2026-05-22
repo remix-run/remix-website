@@ -78,7 +78,7 @@ const PHOTO_MOMENTS = [
     filename: "REMIX-JAM-2025-RYAN.AVIF",
     anchor: "left",
     x: 647,
-    xCompact: 168,
+    xCompact: 30,
     y: 1096,
     yCompact: 980,
   },
@@ -323,7 +323,7 @@ let photoLayerStyle = css({
   inset: "0 auto auto 0",
   minHeight: "100%",
   width: "100%",
-  zIndex: 2,
+  zIndex: 4,
 });
 
 let photoMomentPositionStyle = css({
