@@ -24,6 +24,26 @@ describe("Jam2026Countdown", () => {
     };
   }
 
+  function mockIntroIntervals(t: { after(cleanup: () => void): void }) {
+    let originalSetInterval = window.setInterval;
+    let originalClearInterval = window.clearInterval;
+    let nextIntervalId = 1;
+
+    window.setInterval = ((handler: TimerHandler, timeout?: number) => {
+      let intervalId = nextIntervalId++;
+      if (typeof handler === "function" && timeout === 150) {
+        for (let tick = 0; tick < 8; tick++) handler();
+      }
+      return intervalId;
+    }) as typeof window.setInterval;
+    window.clearInterval = (() => {}) as typeof window.clearInterval;
+
+    t.after(() => {
+      window.setInterval = originalSetInterval;
+      window.clearInterval = originalClearInterval;
+    });
+  }
+
   it("renders a stable zeroed countdown before the intro animation starts", () => {
     let result = render(<Jam2026Countdown />);
 
@@ -43,13 +63,12 @@ describe("Jam2026Countdown", () => {
       Date.now = originalDateNow;
     });
     t.after(mockMatchMedia(false));
+    mockIntroIntervals(t);
 
     let result = render(<Jam2026Countdown />);
     t.after(result.cleanup);
 
-    await result.act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1250));
-    });
+    await result.act(() => {});
 
     expect(result.container.textContent).toContain("001days");
     expect(result.container.textContent).toContain("00hrs");

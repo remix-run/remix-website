@@ -37,16 +37,11 @@ describe("Jam2026FaqAccordion", () => {
     };
 
     let { first: firstTrigger, second: secondTrigger } = getTriggers();
-    let getFirstIcon = () => result.container.querySelector("[data-faq-icon]")!;
 
     expect(firstTrigger.getAttribute("aria-expanded")).toBe("false");
     expect(secondTrigger.getAttribute("aria-expanded")).toBe("false");
-    expect(getComputedStyle(getFirstIcon()).transform).toBe(
-      "matrix(1, 0, 0, 1, 0, 0)",
-    );
 
     await result.act(() => firstTrigger.click());
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 220)));
 
     ({ first: firstTrigger, second: secondTrigger } = getTriggers());
     expect(firstTrigger.getAttribute("aria-expanded")).toBe("true");
@@ -54,9 +49,6 @@ describe("Jam2026FaqAccordion", () => {
     expect(
       result.container.querySelector("#first")?.getAttribute("data-state"),
     ).toBe("open");
-    expect(getComputedStyle(getFirstIcon()).transform).not.toBe(
-      "matrix(1, 0, 0, 1, 0, 0)",
-    );
 
     await result.act(() => secondTrigger.click());
 

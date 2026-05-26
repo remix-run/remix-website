@@ -12,19 +12,18 @@ let rootBrowserEntry = path.join(appDir, "assets/entry.ts");
 describe("browser asset module graph", () => {
   it("serves every module reachable from browser entrypoints", async () => {
     let modules = await discoverBrowserAssetModules();
-    let failures: string[] = [];
+    let results = await Promise.all(
+      modules.map(async (modulePath) => {
+        try {
+          await assertServableBrowserAsset(modulePath);
+          return null;
+        } catch (error) {
+          return `${path.relative(rootDir, modulePath)}\n${formatError(error)}`;
+        }
+      }),
+    );
 
-    for (let modulePath of modules) {
-      try {
-        await assertServableBrowserAsset(modulePath);
-      } catch (error) {
-        failures.push(
-          `${path.relative(rootDir, modulePath)}\n${formatError(error)}`,
-        );
-      }
-    }
-
-    expect(failures).toEqual([]);
+    expect(results.filter(Boolean)).toEqual([]);
   });
 });
 

@@ -1,5 +1,6 @@
 import { clientEntry, on, type Handle } from "remix/ui";
 import { routes } from "../../../routes.ts";
+import { newsletterTagIds } from "../../../utils/newsletter-tags.ts";
 import {
   submitNewsletterRequest,
   type SubscribeState,
@@ -44,7 +45,11 @@ export let JamNewsletterSubscribeForm = clientEntry(
           }),
         ]}
       >
-        <input type="hidden" name="tag" value="6280341" />
+        <input
+          type="hidden"
+          name="tag"
+          value={String(newsletterTagIds.jam2025Updates)}
+        />
         <p class="font-mono text-xs uppercase tracking-widest text-white/50 md:text-base">
           <label htmlFor="jam-newsletter-email">email</label>
         </p>
