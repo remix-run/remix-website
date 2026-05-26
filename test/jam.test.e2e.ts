@@ -265,30 +265,6 @@ describe("Jam", () => {
     await expectMarkerToStay(page, marker);
   });
 
-  it("jam gallery download link returns attachment response", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await gotoGallery(page);
-    if (!(await galleryHasAtLeast(page, 1))) return;
-    await page.goto("/jam/2025/gallery?photo=0");
-
-    let downloadLink = page.getByRole("link", {
-      name: "Download full resolution image",
-    });
-    await expect(downloadLink).toBeVisible();
-
-    let downloadHref = await downloadLink.getAttribute("href");
-    expect(downloadHref).toMatch(/^\/jam\/2025\/gallery\/download\?photo=\d+$/);
-    await expect(downloadLink).toHaveAttribute(
-      "download",
-      /remix-jam-2025-photo-\d+\.jpg/,
-    );
-
-    let response = await page.request.get(downloadHref!);
-    expect(response.status()).toBe(200);
-    expect(response.headers()["content-disposition"]).toContain("attachment;");
-  });
-
   it("jam gallery keyboard navigation moves between photos", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));

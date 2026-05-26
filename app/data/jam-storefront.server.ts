@@ -16,6 +16,7 @@ function getClient() {
         storeDomain: "https://jam.remix.run",
         apiVersion: "2026-04",
         publicAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+        customFetchApi: (...args) => fetch(...args),
       });
     } catch {
       return null;
