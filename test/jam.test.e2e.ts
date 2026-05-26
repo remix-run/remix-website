@@ -194,7 +194,7 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto("/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "networkidle" });
 
     let emailInput = page.getByPlaceholder("your@email.com");
     await emailInput.fill("hello@example.com");
