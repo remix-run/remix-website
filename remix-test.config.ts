@@ -2,7 +2,7 @@ import type { RemixTestConfig } from "remix/test";
 
 export default {
   concurrency: process.env.CI ? 1 : undefined,
-  coverage: process.env.NODE_ENV === "test",
+  coverage: process.env.COVERAGE === "1" || process.argv.includes("--coverage"),
   playwrightConfig: {
     projects: [{ name: "chromium", use: { browserName: "chromium" } }],
     use: {

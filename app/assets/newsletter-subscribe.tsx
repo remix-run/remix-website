@@ -1,5 +1,5 @@
 import { clientEntry, on, type Handle } from "remix/ui";
-import cx from "clsx";
+import { cx } from "../utils/cx.ts";
 import { routes } from "../routes.ts";
 import {
   submitNewsletterRequest,

@@ -1,4 +1,4 @@
-import cx from "clsx";
+import { cx } from "../utils/cx.ts";
 import type { Handle, RemixNode } from "remix/ui";
 import { Document } from "../ui/document.tsx";
 import { Footer } from "../ui/footer.tsx";

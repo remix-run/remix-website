@@ -1,4 +1,4 @@
-import cx from "clsx";
+import { cx } from "../../utils/cx.ts";
 import { assetPaths } from "../../utils/asset-paths.ts";
 
 export function PitchSection() {

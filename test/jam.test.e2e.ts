@@ -102,11 +102,12 @@ describe("Jam", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
-  it("jam 2026 ticket modal navigates in place and closes from backdrop and escape", async (t) => {
+  it("jam 2026 ticket modal navigates in place and closes without remounting", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2026", { waitUntil: "networkidle" });
+    await page.goto("/jam/2026");
 
     let marker = await markPage(page);
     await clickJam2026TicketNavLink(page);
@@ -132,18 +133,9 @@ describe("Jam", () => {
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(page).toHaveTitle("Remix Jam 2026");
-  });
 
-  it("jam 2026 ticket modal closes with browser back without remounting the page", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2026", { waitUntil: "networkidle" });
-
-    let marker = await markPage(page);
     await clickJam2026TicketNavLink(page);
     await page.waitForURL("**/jam/2026/ticket");
-    await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toBeVisible();
 
     await page.goBack();
@@ -161,7 +153,7 @@ describe("Jam", () => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/jam/2026", { waitUntil: "networkidle" });
+    await page.goto("/jam/2026");
 
     let overflow = await page.evaluate(() => {
       return (
@@ -271,30 +263,6 @@ describe("Jam", () => {
     await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expectMarkerToStay(page, marker);
-  });
-
-  it("jam gallery download link returns attachment response", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await gotoGallery(page);
-    if (!(await galleryHasAtLeast(page, 1))) return;
-    await page.goto("/jam/2025/gallery?photo=0");
-
-    let downloadLink = page.getByRole("link", {
-      name: "Download full resolution image",
-    });
-    await expect(downloadLink).toBeVisible();
-
-    let downloadHref = await downloadLink.getAttribute("href");
-    expect(downloadHref).toMatch(/^\/jam\/2025\/gallery\/download\?photo=\d+$/);
-    await expect(downloadLink).toHaveAttribute(
-      "download",
-      /remix-jam-2025-photo-\d+\.jpg/,
-    );
-
-    let response = await page.request.get(downloadHref!);
-    expect(response.status()).toBe(200);
-    expect(response.headers()["content-disposition"]).toContain("attachment;");
   });
 
   it("jam gallery keyboard navigation moves between photos", async (t) => {

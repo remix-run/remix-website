@@ -1,4 +1,4 @@
-import cx from "clsx";
+import { cx } from "../../../utils/cx.ts";
 import { clientEntry, on, ref, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
 import { assetPaths } from "../../../utils/asset-paths.ts";

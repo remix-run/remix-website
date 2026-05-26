@@ -37,9 +37,10 @@ async function expectLandingNavReady(page: Page) {
 }
 
 describe("Navigation", () => {
-  it("home page blog keyboard shortcut uses client navigation", async (t) => {
+  it("home/blog navigation stays client-side and applies forced dark mode", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
+    await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/");
     await expect(
       page.getByRole("heading", {
@@ -54,14 +55,6 @@ describe("Navigation", () => {
       "**/blog",
     );
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
-  });
-
-  it("blog to home page applies forced dark mode", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.emulateMedia({ colorScheme: "dark" });
-    await page.goto("/blog");
-
     await expect(page.locator('html[data-theme="light"]')).toHaveCount(0);
     await expect(page.locator("html.dark")).toHaveCount(1);
 

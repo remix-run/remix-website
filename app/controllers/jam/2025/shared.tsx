@@ -1,4 +1,4 @@
-import cx from "clsx";
+import { cx } from "../../../utils/cx.ts";
 import type { Handle, RemixNode } from "remix/ui";
 import { JamScrambleText } from "../../../assets/jam/2025/scramble-text.tsx";
 import { MobileMenu } from "../../../assets/mobile-menu.tsx";

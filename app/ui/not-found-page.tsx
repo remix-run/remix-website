@@ -1,5 +1,5 @@
 import type { Handle } from "remix/ui";
-import cx from "clsx";
+import { cx } from "../utils/cx.ts";
 import { Document } from "./document.tsx";
 import { render } from "../utils/render.ts";
 import { styleHrefs } from "../utils/style-hrefs.ts";

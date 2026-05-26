@@ -1,4 +1,4 @@
-import cx from "clsx";
+import { cx } from "../../../utils/cx.ts";
 import type { Handle, RemixNode } from "remix/ui";
 import { render } from "../../../utils/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";

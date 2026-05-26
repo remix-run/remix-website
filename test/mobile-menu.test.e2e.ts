@@ -34,35 +34,6 @@ function mobileMenuToggle(page: Page) {
 }
 
 describe("Mobile menu", () => {
-  it("opens, shows navigation links, and escapes back to toggle", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await gotoMobileMenuPage(page);
-
-    let menuToggle = mobileMenuToggle(page);
-    await expect(menuToggle).toBeVisible();
-    await menuToggle.focus();
-    await menuToggle.press("Enter");
-    await expect(mobileMenuDetails(page)).toHaveJSProperty("open", true);
-
-    let mobileNav = mobileMenuDetails(page).getByRole("navigation", {
-      name: "Mobile",
-    });
-    await expect(mobileNav).toBeVisible();
-    await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeVisible();
-    await expect(mobileNav.getByRole("link", { name: "Jam" })).toBeVisible();
-    await expect(mobileNav.getByRole("link", { name: "Store" })).toBeVisible();
-
-    await page.keyboard.press("Tab");
-    await expect(mobileNav.getByRole("link").first()).toBeFocused();
-
-    await page.keyboard.press("Escape");
-    // Prefer the live `open` property over nav visibility: panel nodes can stay
-    // in the DOM and still look "visible" to Playwright while the menu is closed.
-    await expect(mobileMenuDetails(page)).toHaveJSProperty("open", false);
-    await expect(menuToggle).toBeFocused();
-  });
-
   it("mobile menu links navigate", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));

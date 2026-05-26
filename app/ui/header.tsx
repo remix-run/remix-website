@@ -1,5 +1,5 @@
 import type { Handle } from "remix/ui";
-import cx from "clsx";
+import { cx } from "../utils/cx.ts";
 import { MobileMenu } from "../assets/mobile-menu.tsx";
 import { WordmarkLink } from "../assets/wordmark-link.tsx";
 import { routes } from "../routes.ts";

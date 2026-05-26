@@ -11,18 +11,16 @@ let landingEnhancementsEntry = path.join(
   rootDir,
   "app/assets/remix-landing/landing-enhancements.tsx",
 );
-let servedAssetHrefPattern = /\/assets\/(?:app|npm)\/[^\s"'<>`)]+/g;
-
 describe("TEMPORARY pnpm asset duplication fix", () => {
   it("canonicalizes duplicated pnpm URLs for top-level packages in the app graph", async () => {
-    let hrefs = await collectServedAssetHrefs([landingEnhancementsEntry]);
-    let pnpmThreeHrefs = hrefs.filter(
+    let preloads = await assetServer.getPreloads(landingEnhancementsEntry);
+    let pnpmThreeHrefs = preloads.filter(
       (href) =>
         href.includes("/.pnpm/three@") && href.includes("/node_modules/three/"),
     );
 
-    expect(hrefs).toContain("/assets/npm/three/build/three.core.js");
-    expect(hrefs).toContain("/assets/npm/three/build/three.module.js");
+    expect(preloads).toContain("/assets/npm/three/build/three.core.js");
+    expect(preloads).toContain("/assets/npm/three/build/three.module.js");
     expect(pnpmThreeHrefs).toEqual([]);
   });
 
@@ -100,42 +98,6 @@ describe("TEMPORARY pnpm asset duplication fix", () => {
   });
 });
 
-async function collectServedAssetHrefs(modulePaths: string[]) {
-  let hrefs = new Set<string>();
-  let queue = await Promise.all(
-    modulePaths.map((modulePath) => assetServer.getHref(modulePath)),
-  );
-
-  while (queue.length > 0) {
-    let href = queue.shift();
-    if (!href || hrefs.has(href)) continue;
-
-    hrefs.add(href);
-
-    let response = await assetServer.fetch(
-      new Request(new URL(href, "http://localhost")),
-    );
-    if (!response) continue;
-
-    let location = response.headers.get("location");
-    if (location && response.status >= 300 && response.status < 400) {
-      let redirectHref = formatAssetHref(new URL(location, "http://localhost"));
-      if (!hrefs.has(redirectHref)) queue.push(redirectHref);
-      continue;
-    }
-
-    let contentType = response.headers.get("content-type") ?? "";
-    if (!contentType.includes("javascript")) continue;
-
-    let source = await response.text();
-    for (let match of source.matchAll(servedAssetHrefPattern)) {
-      if (!hrefs.has(match[0])) queue.push(match[0]);
-    }
-  }
-
-  return Array.from(hrefs).sort();
-}
-
 function createWrappedAssetServer(
   fixtureRootDir: string,
   response: {
@@ -193,8 +155,4 @@ async function symlinkDirectory(target: string, link: string) {
     link,
     process.platform === "win32" ? "junction" : "dir",
   );
-}
-
-function formatAssetHref(url: URL) {
-  return `${url.pathname}${url.search}${url.hash}`;
 }
