@@ -1,4 +1,4 @@
-import cx from "clsx";
+import { cx } from "../../../utils/cx.ts";
 import type { Handle } from "remix/ui";
 import { getSchedule } from "../../../data/jam-schedule.server.ts";
 import { render } from "../../../utils/render.ts";

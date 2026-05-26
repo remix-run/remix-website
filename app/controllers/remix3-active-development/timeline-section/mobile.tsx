@@ -1,4 +1,4 @@
-import cx from "clsx";
+import { cx } from "../../../utils/cx.ts";
 import type { Handle, Props, RemixNode } from "remix/ui";
 
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);

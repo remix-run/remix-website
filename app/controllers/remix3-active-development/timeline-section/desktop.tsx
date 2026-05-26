@@ -1,5 +1,5 @@
 import type { Handle } from "remix/ui";
-import cx from "clsx";
+import { cx } from "../../../utils/cx.ts";
 
 export function TimelineDiagramDesktop(handle: Handle<{ class?: string }>) {
   return () => (

@@ -1,4 +1,4 @@
-import cx from "clsx";
+import { cx } from "../utils/cx.ts";
 import { Document } from "../ui/document.tsx";
 import { Footer } from "../ui/footer.tsx";
 import { Header } from "../ui/header.tsx";

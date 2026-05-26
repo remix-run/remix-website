@@ -1,5 +1,5 @@
 import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
-import cx from "clsx";
+import { cx } from "../utils/cx.ts";
 import { focusTrap } from "../ui/focus-trap.ts";
 
 const PROSE_SELECTOR = ".md-prose";

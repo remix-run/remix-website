@@ -1,4 +1,4 @@
-import cx from "clsx";
+import { cx } from "../utils/cx.ts";
 import { clientEntry, type Handle } from "remix/ui";
 import { brandContextMenu } from "./brand-context-menu.ts";
 import { Wordmark } from "../ui/wordmark.tsx";

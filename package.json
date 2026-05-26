@@ -30,7 +30,6 @@
   "dependencies": {
     "@resvg/resvg-js": "2.6.2",
     "@shopify/storefront-api-client": "1.0.10",
-    "clsx": "2.1.1",
     "cross-env": "10.1.0",
     "cssnano": "6.1.2",
     "emoji-regex": "10.6.0",
