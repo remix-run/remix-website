@@ -31,7 +31,7 @@ export function getJam2026HeadContent(props: Jam2026HeadContentProps = {}) {
       };
 }
 
-export function getJam2026HeadTags(props: Jam2026HeadTagsProps) {
+function buildJam2026HeadTags(props: Jam2026HeadTagsProps) {
   return [
     { kind: "link", rel: "canonical", href: props.pageUrl },
     ...createSocialHeadTags({
@@ -62,7 +62,7 @@ export function getJam2026ClientManagedHeadTags(head: {
   return [
     { kind: "meta", name: "description", content: head.description },
     { kind: "link", rel: "stylesheet", href: styleHrefs.global },
-    ...getJam2026HeadTags({
+    ...buildJam2026HeadTags({
       ...head,
       pageUrl,
       imageUrl,
@@ -78,7 +78,7 @@ export function getJam2026ServerHeadTags(props: {
   let requestUrl = new URL(props.requestUrl);
   let trustedOrigin = getJam2026TrustedOrigin(requestUrl);
 
-  return getJam2026HeadTags({
+  return buildJam2026HeadTags({
     title: props.title,
     description: props.description,
     pageUrl: `${trustedOrigin}${requestUrl.pathname}`,
