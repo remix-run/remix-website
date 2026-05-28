@@ -1,6 +1,6 @@
 import { css } from "remix/ui";
 import { theme } from "remix/ui/theme";
-import { visuallyHiddenStyle } from "../../../../ui/css-mixins.ts";
+import { textBoxTrim, visuallyHiddenStyle } from "../../../../ui/css-mixins.ts";
 import { breakpointMedia } from "../../../../ui/theme.ts";
 import { Wordmark } from "../../../../ui/wordmark.tsx";
 import { jamTheme } from "../theme.ts";
@@ -348,10 +348,7 @@ let storyHeadingStyle = css({
   lineHeight: "clamp(56px, 4.71vw, 66px)",
   textAlign: "left",
   textTransform: "none",
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
   [storyNarrowMedia]: {
     fontSize: "clamp(28px, 5.5vw, 40px)",
     lineHeight: 1.1,
@@ -406,8 +403,5 @@ let storyCopyStyle = css({
   lineHeight: "1.6em",
   textAlign: "left",
   textTransform: "none",
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
 });

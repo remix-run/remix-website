@@ -1,19 +1,17 @@
-import { clientEntry, css, on, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/ui";
 import { theme } from "remix/ui/theme";
 
-import {
-  submitNewsletterRequest,
-  type SubscribeState,
-} from "../../newsletter-request.ts";
+import { createNewsletterForm } from "../../newsletter-request.ts";
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
 import { routes } from "../../../routes.ts";
+import { textBoxTrim } from "../../../ui/css-mixins.ts";
 import { breakpointMedia } from "../../../ui/theme.ts";
 import { newsletterTagIds } from "../../../utils/newsletter-tags.ts";
 
 export let Jam2026NewsletterSignup = clientEntry(
   import.meta.url,
   function Jam2026NewsletterSignup(handle: Handle) {
-    let state: SubscribeState = { status: "idle" };
+    let form = createNewsletterForm(handle);
 
     return () => (
       <section
@@ -32,36 +30,8 @@ export let Jam2026NewsletterSignup = clientEntry(
           <form
             action={routes.actions.newsletter.href()}
             method="post"
-            data-state={state.status}
-            mix={[
-              newsletterFormStyle,
-              on("submit", async (event, signal) => {
-                event.preventDefault();
-                if (state.status === "submitting") return;
-
-                let form = event.currentTarget as HTMLFormElement;
-                state = { status: "submitting" };
-                handle.update();
-
-                try {
-                  let result = await submitNewsletterRequest({
-                    action: form.action,
-                    formData: new FormData(form),
-                    signal,
-                  });
-                  if (signal.aborted) return;
-                  state = result;
-                  if (result.status === "success" && result.shouldReset) {
-                    form.reset();
-                  }
-                } finally {
-                  if (state.status === "submitting") {
-                    state = { status: "idle" };
-                  }
-                  handle.update();
-                }
-              }),
-            ]}
+            data-state={form.state.status}
+            mix={[newsletterFormStyle, form.submit]}
           >
             <input
               type="hidden"
@@ -79,37 +49,37 @@ export let Jam2026NewsletterSignup = clientEntry(
               autoComplete="email"
               placeholder="your@email.com"
               aria-describedby={
-                state.status === "idle"
+                form.state.status === "idle"
                   ? undefined
                   : "jam-2026-newsletter-message"
               }
-              aria-invalid={state.status === "error" ? true : undefined}
+              aria-invalid={form.state.status === "error" ? true : undefined}
               mix={newsletterInputStyle}
             />
             <button
               type="submit"
-              disabled={state.status === "submitting"}
+              disabled={form.state.status === "submitting"}
               mix={newsletterButtonStyle}
             >
-              {state.status === "submitting" ? "Signing up..." : "Sign up"}
+              {form.state.status === "submitting" ? "Signing up..." : "Sign up"}
             </button>
             <div
               id="jam-2026-newsletter-message"
               aria-live="polite"
               hidden={
-                state.status !== "success" && state.status !== "error"
+                form.state.status !== "success" && form.state.status !== "error"
                   ? true
                   : undefined
               }
               mix={newsletterMessageStyle}
             >
-              {state.status === "success" ? (
+              {form.state.status === "success" ? (
                 <p>
                   You&apos;re on the list. Check your email to confirm your
                   subscription.
                 </p>
-              ) : state.status === "error" ? (
-                <p>{state.message} Please try again.</p>
+              ) : form.state.status === "error" ? (
+                <p>{form.state.message} Please try again.</p>
               ) : null}
             </div>
           </form>
@@ -148,10 +118,7 @@ let newsletterContentStyle = css({
     lineHeight: "1.6em",
     textAlign: "center",
     textWrap: "balance",
-    "@supports (text-box-trim: trim-both)": {
-      textBoxTrim: "trim-both",
-      textBoxEdge: "cap alphabetic",
-    },
+    ...textBoxTrim,
   },
 });
 
@@ -165,10 +132,7 @@ let newsletterHeadingStyle = css({
   lineHeight: "normal",
   textAlign: "center",
   textTransform: "uppercase",
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
 });
 
 let newsletterFormStyle = css({
@@ -193,10 +157,7 @@ let labelStyle = css({
   letterSpacing: "0.24px",
   lineHeight: "normal",
   textTransform: "uppercase",
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
 });
 
 let newsletterInputStyle = css({

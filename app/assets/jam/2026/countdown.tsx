@@ -257,7 +257,7 @@ let jam2026CountdownPairStyle = css({
     color: jamTheme.ink,
     fontFamily: theme.fontFamily.mono,
     fontSize: "11px",
-    fontWeight: 700,
+    fontWeight: theme.fontWeight.bold,
     lineHeight: 1,
     textTransform: "uppercase",
     whiteSpace: "nowrap",

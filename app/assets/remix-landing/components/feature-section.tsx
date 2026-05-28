@@ -1,9 +1,8 @@
-import { clientEntry, css, on, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/ui";
+import { theme } from "remix/ui/theme";
 import { routes } from "../../../routes.ts";
-import {
-  submitNewsletterRequest,
-  type SubscribeState,
-} from "../../newsletter-request.ts";
+import { createNewsletterForm } from "../../newsletter-request.ts";
+import { textBoxTrim } from "../../../ui/css-mixins.ts";
 import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
 
 // Vertically center the inner row inside each section's `min-height: 100vh`
@@ -309,40 +308,31 @@ const kickerStyles = css({
   color: "#ffffff",
   fontSize: "12px",
   textTransform: "uppercase",
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
 });
 
 const titleStyles = css({
   margin: "0",
   fontFamily: "'Inter Variable', 'Inter', sans-serif",
-  fontWeight: "700",
+  fontWeight: theme.fontWeight.bold,
   color: colors.fg,
   fontSize: "clamp(30px, 4vw, 56px)",
   lineHeight: "1",
   letterSpacing: "-0.02em",
   whiteSpace: "pre-line",
   textShadow: glowWhite,
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
 });
 
 const bodyStyles = css({
   margin: "48px 0 0",
   fontFamily: "'Inter Variable', 'Inter', sans-serif",
-  fontWeight: "400",
+  fontWeight: theme.fontWeight.normal,
   color: colors.fg,
   fontSize: "16px",
   lineHeight: "1.4",
   letterSpacing: "-0.008px",
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
 });
 
 const ctaStyles = css({
@@ -358,7 +348,7 @@ const ctaStyles = css({
   background: "rgba(255, 255, 255, 0.08)",
   color: "#ffffff",
   fontFamily: "'Inter Variable', 'Inter', sans-serif",
-  fontWeight: "400",
+  fontWeight: theme.fontWeight.normal,
   fontSize: "16px",
   lineHeight: "1.4",
   letterSpacing: "-0.008px",
@@ -423,7 +413,7 @@ const subscribeButtonStyles = css({
   color: "#ffffff",
   padding: "10px 16px",
   fontFamily: "'Inter Variable', 'Inter', sans-serif",
-  fontWeight: "400",
+  fontWeight: theme.fontWeight.normal,
   fontSize: "16px",
   lineHeight: "1.4",
   letterSpacing: "-0.008px",
@@ -512,42 +502,14 @@ export let LandingNewsletterSubscribeForm = clientEntry(
   function LandingNewsletterSubscribeForm(
     handle: Handle<{ placeholder?: string; buttonLabel?: string }>,
   ) {
-    let state: SubscribeState = { status: "idle" };
+    let form = createNewsletterForm(handle);
 
     return () => (
       <>
         <form
           action={routes.actions.newsletter.href()}
           method="post"
-          mix={[
-            subscribeFormStyles,
-            on("submit", async (event, signal) => {
-              event.preventDefault();
-              if (state.status === "submitting") return;
-
-              let form = event.currentTarget as HTMLFormElement;
-              state = { status: "submitting" };
-              handle.update();
-
-              try {
-                let result = await submitNewsletterRequest({
-                  action: form.action,
-                  formData: new FormData(form),
-                  signal,
-                });
-                if (signal.aborted) return;
-                state = result;
-                if (result.status === "success" && result.shouldReset) {
-                  form.reset();
-                }
-              } finally {
-                if (state.status === "submitting") {
-                  state = { status: "idle" };
-                }
-                handle.update();
-              }
-            }),
-          ]}
+          mix={[subscribeFormStyles, form.submit]}
         >
           <label for="landing-newsletter-email" mix={[subscribeLabelStyles]}>
             Email address
@@ -559,18 +521,20 @@ export let LandingNewsletterSubscribeForm = clientEntry(
             required
             autocomplete="email"
             placeholder={handle.props.placeholder ?? "name@example.com"}
-            aria-invalid={state.status === "error" ? true : undefined}
+            aria-invalid={form.state.status === "error" ? true : undefined}
             aria-describedby={
-              state.status === "idle" ? undefined : "landing-newsletter-message"
+              form.state.status === "idle"
+                ? undefined
+                : "landing-newsletter-message"
             }
             mix={[subscribeInputStyles]}
           />
           <button
             type="submit"
-            disabled={state.status === "submitting"}
+            disabled={form.state.status === "submitting"}
             mix={[subscribeButtonStyles]}
           >
-            {state.status === "submitting"
+            {form.state.status === "submitting"
               ? "Subscribing..."
               : (handle.props.buttonLabel ?? "Subscribe")}
           </button>
@@ -580,17 +544,17 @@ export let LandingNewsletterSubscribeForm = clientEntry(
           aria-live="polite"
           mix={[
             subscribeMessageStyles,
-            state.status === "success"
+            form.state.status === "success"
               ? subscribeSuccessStyles
-              : state.status === "error"
+              : form.state.status === "error"
                 ? subscribeErrorStyles
                 : subscribeMessageHiddenStyles,
           ]}
         >
-          {state.status === "success"
+          {form.state.status === "success"
             ? "Got it! Please check your email to confirm your subscription."
-            : state.status === "error"
-              ? state.message
+            : form.state.status === "error"
+              ? form.state.message
               : null}
         </div>
       </>

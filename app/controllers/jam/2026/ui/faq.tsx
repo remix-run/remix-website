@@ -4,6 +4,7 @@ import {
   Jam2026FaqAccordion,
   type Faq,
 } from "../../../../assets/jam/2026/faq-accordion.tsx";
+import { textBoxTrim } from "../../../../ui/css-mixins.ts";
 import { breakpoints } from "../../../../ui/theme.ts";
 import { jamTheme } from "../theme.ts";
 
@@ -228,10 +229,7 @@ let headingStyle = css({
   lineHeight: "clamp(56px, 4.71vw, 66px)",
   textAlign: "left",
   textTransform: "none",
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
   "@media (max-width: 900px)": {
     fontSize: "clamp(28px, 5.5vw, 40px)",
     lineHeight: 1.1,

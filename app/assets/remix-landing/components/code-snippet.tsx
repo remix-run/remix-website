@@ -1,11 +1,12 @@
 import { css, type Handle, type RemixNode } from "remix/ui";
+import { theme } from "remix/ui/theme";
 import { colors } from "../styles/tokens.ts";
 
 const codeStyles = css({
   display: "inline-block",
   fontFamily: "'JetBrains Mono', monospace",
   fontSize: "0.9em",
-  fontWeight: "400",
+  fontWeight: theme.fontWeight.normal,
   lineHeight: "1",
   color: "#ffffff",
   backgroundColor: colors.panelStrong,

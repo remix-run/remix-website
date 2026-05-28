@@ -7,6 +7,7 @@ import {
 } from "remix/ui/accordion";
 import { theme } from "remix/ui/theme";
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
+import { textBoxTrim } from "../../../ui/css-mixins.ts";
 
 export type Faq = {
   id: string;
@@ -240,10 +241,7 @@ let faqAnswerStyle = css({
   "& > :last-child": {
     marginBlockEnd: 0,
   },
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
   "@media (max-width: 900px)": {
     marginInline: "56px 24px",
   },

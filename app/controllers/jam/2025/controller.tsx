@@ -31,17 +31,15 @@ export async function jam2025Handler() {
   );
 }
 
-function getEventStatus(): EventStatus {
-  let now = new Date();
-  let torontoTimeString = now.toLocaleString("en-US", {
-    timeZone: "America/Toronto",
-  });
-  let torontoNow = new Date(torontoTimeString);
-  let eventStartDate = new Date(2025, 9, 10, 0, 0, 0);
-  let eventEndDate = new Date(2025, 9, 10, 18, 0, 0);
+// Toronto is on EDT (UTC-04:00) in October, so these are absolute instants for
+// the event day. Comparing against Date.now() is timezone-independent and does
+// not depend on the server's local timezone.
+const EVENT_START = new Date("2025-10-10T00:00:00-04:00").getTime();
+const EVENT_END = new Date("2025-10-10T18:00:00-04:00").getTime();
 
-  if (torontoNow < eventStartDate) return "before";
-  if (torontoNow >= eventStartDate && torontoNow < eventEndDate) return "live";
+export function getEventStatus(now = Date.now()): EventStatus {
+  if (now < EVENT_START) return "before";
+  if (now < EVENT_END) return "live";
   return "after";
 }
 

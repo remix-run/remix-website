@@ -1,5 +1,18 @@
 import { css } from "remix/ui";
 
+/**
+ * Trims the leading/trailing line-box whitespace so text aligns to its cap and
+ * alphabetic edges. Spread into a `css({...})` object's nested rules:
+ *
+ *   css({ ...someStyles, ...textBoxTrim })
+ */
+export let textBoxTrim = {
+  "@supports (text-box-trim: trim-both)": {
+    textBoxTrim: "trim-both",
+    textBoxEdge: "cap alphabetic",
+  },
+} as const;
+
 export let visuallyHiddenStyle = css({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",

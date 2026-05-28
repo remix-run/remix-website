@@ -1,4 +1,5 @@
 import { addEventListeners, css, on, type Handle } from "remix/ui";
+import { theme } from "remix/ui/theme";
 import { colors } from "../styles/tokens.ts";
 import { clamp } from "../utils/math.ts";
 
@@ -90,7 +91,7 @@ const bulletHiddenStyles = css({
 
 const linkStyles = css({
   fontFamily: "'JetBrains Mono', monospace",
-  fontWeight: "400",
+  fontWeight: theme.fontWeight.normal,
   fontSize: "12px",
   lineHeight: `${ITEM_HEIGHT}px`,
   height: `${ITEM_HEIGHT}px`,
@@ -111,7 +112,7 @@ const linkStyles = css({
 });
 
 const linkActiveStyles = css({
-  fontWeight: "700",
+  fontWeight: theme.fontWeight.bold,
   color: "#ffffff",
   lineHeight: `${ITEM_HEIGHT}px`,
   height: `${ITEM_HEIGHT}px`,

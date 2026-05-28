@@ -1,4 +1,5 @@
 import { css, type Handle } from "remix/ui";
+import { theme } from "remix/ui/theme";
 import { Wordmark } from "../../../ui/wordmark.tsx";
 import { assetPaths } from "../../../utils/asset-paths.ts";
 import { colors } from "../styles/tokens.ts";
@@ -95,7 +96,7 @@ const legalStyles = css({
   gap: "12px",
   width: "100%",
   fontFamily: "'JetBrains Mono', monospace",
-  fontWeight: "400",
+  fontWeight: theme.fontWeight.normal,
   fontSize: "10px",
   lineHeight: "1.6",
   letterSpacing: "0.5px",

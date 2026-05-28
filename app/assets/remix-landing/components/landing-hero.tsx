@@ -1,4 +1,6 @@
 import { css, type Handle } from "remix/ui";
+import { theme } from "remix/ui/theme";
+import { textBoxTrim } from "../../../ui/css-mixins.ts";
 import { colors, glowWhite } from "../styles/tokens.ts";
 import { CodeSnippet } from "./code-snippet.tsx";
 
@@ -35,17 +37,14 @@ const headingStyles = css({
   maxWidth: "920px",
   minWidth: "0",
   fontFamily: "'Inter Variable', 'Inter', sans-serif",
-  fontWeight: "700",
+  fontWeight: theme.fontWeight.bold,
   fontSize: "clamp(42px, 6vw, 84px)",
   lineHeight: "1",
   letterSpacing: "-0.03em",
   color: "#ffffff",
   textShadow: glowWhite,
   textWrap: "balance",
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
 });
 
 const bodyStyles = css({
@@ -53,7 +52,7 @@ const bodyStyles = css({
   maxWidth: "560px",
   minWidth: "0",
   fontFamily: "'Inter Variable', 'Inter', sans-serif",
-  fontWeight: "400",
+  fontWeight: theme.fontWeight.normal,
   fontSize: "16px",
   lineHeight: "1.5",
   letterSpacing: "-0.01em",
@@ -64,10 +63,7 @@ const bodyStyles = css({
     maxWidth: "480px",
     textAlign: "left",
   },
-  "@supports (text-box-trim: trim-both)": {
-    textBoxTrim: "trim-both",
-    textBoxEdge: "cap alphabetic",
-  },
+  ...textBoxTrim,
 });
 
 export function LandingHero(_handle: Handle) {
