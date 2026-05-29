@@ -74,6 +74,19 @@ describe("redirects (fetch-router)", () => {
       );
       expect(url).toBe("https://v2.remix.run/conf/2023/any/nested/path");
     });
+
+    it("keeps non-wildcard :splat destinations as one encoded segment", async () => {
+      let segmentRedirects = parseRedirectsFile("/:splat /docs/:splat 302");
+      let segmentModule = createRedirectRoutes(segmentRedirects);
+      let segmentRouter = createRouter();
+      segmentRouter.map(
+        segmentModule.redirectRoutes,
+        segmentModule.redirectController,
+      );
+
+      let { url } = await getRedirectResult("/a%2Fb", segmentRouter);
+      expect(url).toBe("/docs/a%2Fb");
+    });
   });
 
   describe("no redirect", () => {

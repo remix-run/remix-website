@@ -8,8 +8,33 @@ import { assetServer } from "./assets.server.ts";
 let rootDir = path.resolve(import.meta.dirname, "../..");
 let appDir = path.join(rootDir, "app");
 let rootBrowserEntry = path.join(appDir, "assets/entry.ts");
+let landingEnhancementsEntry = path.join(
+  appDir,
+  "assets/remix-landing/landing-enhancements.tsx",
+);
 
 describe("browser asset module graph", () => {
+  it("does not duplicate symlinked package modules in preloads", async () => {
+    let preloads = await assetServer.getPreloads(landingEnhancementsEntry);
+    let seenRealPaths = new Map<string, string>();
+    let duplicateHrefs: string[] = [];
+
+    for (let href of preloads) {
+      let filePath = toAssetFilePath(href);
+      if (!filePath) continue;
+
+      let realPath = await fs.realpath(filePath);
+      let previousHref = seenRealPaths.get(realPath);
+      if (previousHref) {
+        duplicateHrefs.push(`${previousHref}\n${href}`);
+      } else {
+        seenRealPaths.set(realPath, href);
+      }
+    }
+
+    expect(duplicateHrefs).toEqual([]);
+  });
+
   it("serves every module reachable from browser entrypoints", async () => {
     let modules = await discoverBrowserAssetModules();
     let results = await Promise.all(
@@ -26,6 +51,28 @@ describe("browser asset module graph", () => {
     expect(results.filter(Boolean)).toEqual([]);
   });
 });
+
+function toAssetFilePath(href: string) {
+  let { pathname } = new URL(href, "http://localhost");
+
+  if (pathname.startsWith("/assets/app/")) {
+    return path.join(appDir, ...decodePathSegments(pathname, "/assets/app/"));
+  }
+
+  if (pathname.startsWith("/assets/npm/")) {
+    return path.join(
+      rootDir,
+      "node_modules",
+      ...decodePathSegments(pathname, "/assets/npm/"),
+    );
+  }
+
+  return null;
+}
+
+function decodePathSegments(pathname: string, prefix: string) {
+  return pathname.slice(prefix.length).split("/").map(decodeURIComponent);
+}
 
 async function assertServableBrowserAsset(modulePath: string) {
   let href = await assetServer.getHref(modulePath);

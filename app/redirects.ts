@@ -27,11 +27,31 @@ function getValidRedirectCode(code: string | number | undefined): number {
  * Converts Netlify-style _redirects pattern to route-pattern format.
  * - /conf/2023/* with :splat in destination -> /conf/2023/*splat
  */
+function hasNetlifySplat(from: string): boolean {
+  return from.endsWith("/*");
+}
+
 function toFetchRouterPattern(from: string): string {
-  if (from.endsWith("/*")) {
+  if (hasNetlifySplat(from)) {
     return from.slice(0, -1) + "*splat";
   }
   return from || "/";
+}
+
+/**
+ * Netlify's `:splat` destination placeholder stands in for the source `*`
+ * wildcard match, which can span multiple path segments. route-pattern
+ * `createHref` encodes `/` inside variable (`:param`) values but preserves it
+ * inside wildcard (`*param`) values, so wildcard destinations must use the
+ * wildcard form to keep matched slashes intact.
+ *
+ * Only rewrite destinations for source wildcards. A normal `:splat` source
+ * param should remain a single pathname segment so encoded separators stay
+ * encoded when the redirect URL is generated.
+ */
+function toFetchRouterDestination(from: string, to: string): string {
+  if (!hasNetlifySplat(from)) return to;
+  return to.replaceAll(":splat", "*splat");
 }
 
 type RedirectConfig = { from: string; toPattern: RoutePattern; status: number };
@@ -50,7 +70,7 @@ export function parseRedirectsFile(
     let status = getValidRedirectCode(maybeCode);
     configs.push({
       from,
-      toPattern: RoutePattern.parse(to),
+      toPattern: RoutePattern.parse(toFetchRouterDestination(from, to)),
       status,
     });
   }
