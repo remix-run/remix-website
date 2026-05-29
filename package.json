@@ -45,7 +45,7 @@
     "remark-gfm": "4.0.1",
     "remark-parse": "11.0.0",
     "remark-rehype": "11.1.2",
-    "remix": "3.0.0-beta.2",
+    "remix": "3.0.0-beta.3",
     "satori": "0.26.0",
     "semver": "7.7.4",
     "shiki": "0.14.7",
@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@playwright/cli": "0.1.13",
-    "@playwright/test": "1.59.1",
+    "@playwright/test": "1.60.0",
     "@types/hast": "3.0.4",
     "@types/node": "24.10.13",
     "@types/semver": "7.7.1",
