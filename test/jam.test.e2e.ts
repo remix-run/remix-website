@@ -63,7 +63,7 @@ describe("Jam", () => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/jam/2025");
+    await page.goto("/jam/2025", { waitUntil: "networkidle" });
 
     let menu = page.locator('details:has(nav[aria-label="Mobile"])').filter({
       has: page.locator('a[href="/jam/2025/lineup"]'),

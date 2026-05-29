@@ -99,9 +99,6 @@ export let MobileMenu = clientEntry(
           mix={[
             ref((node) => {
               detailsElement = node;
-              if (node.open) {
-                state = { status: "open" };
-              }
               syncDetailsElement();
             }),
             on("keydown", onDetailsKeyDown),
