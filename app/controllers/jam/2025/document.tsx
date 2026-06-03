@@ -8,6 +8,7 @@ type JamPageProps = {
   title: string;
   description: string;
   previewImage: string;
+  requestUrl: string;
   activePath: string;
   hideBackground?: boolean;
   showSeats?: boolean;
@@ -23,6 +24,7 @@ export function JamDocument(handle: Handle<JamPageProps>) {
       stylesheets={[styleHrefs.app, styleHrefs.jam2025]}
       headTags={[
         ...getSocialHeadTags({
+          requestUrl: handle.props.requestUrl,
           title: handle.props.title,
           description: handle.props.description,
           image: handle.props.previewImage,

@@ -1,6 +1,6 @@
 import { cx } from "../../../utils/cx.ts";
 import type { Handle, RemixNode } from "remix/ui";
-import { render } from "../../../utils/render.ts";
+import type { AppContext } from "../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
 import { AddressMain, ScrambleText, SectionLabel, Title } from "./shared.tsx";
@@ -11,14 +11,15 @@ import { assetPaths } from "../../../utils/asset-paths.ts";
 
 type EventStatus = "before" | "live" | "after";
 
-export async function jam2025Handler() {
+export async function jam2025Handler({ render, request }: AppContext) {
   let eventStatus = getEventStatus();
 
-  return render.document(
+  return render(
     <JamDocument
       title="Remix Jam 2025"
       description="It's time to get the band back together"
       previewImage={assetPaths.jam2025.ogThumbnail1}
+      requestUrl={request.url}
       activePath="/jam/2025"
     >
       <Jam2025Page eventStatus={eventStatus} />

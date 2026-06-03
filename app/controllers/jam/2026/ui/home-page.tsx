@@ -18,6 +18,7 @@ import { Jam2026FloatingTicketCta } from "./floating-ticket-cta.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 
 type Jam2026HomePageProps = {
+  requestUrl: string;
   ticketsModalOpen?: boolean;
   ticketCheckout?: {
     availableForSale: boolean;
@@ -39,7 +40,10 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
         title={head.title}
         description={head.description}
         forceTheme={handle.props.theme}
-        headTags={getJam2026HeadTags(head)}
+        headTags={getJam2026HeadTags({
+          ...head,
+          requestUrl: handle.props.requestUrl,
+        })}
       >
         <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
           <Jam2026CloudBackdrop />

@@ -1,10 +1,10 @@
-import { getRequestContext } from "../../../../utils/request-context.ts";
+import type { AppContext } from "../../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
 import { transformShopifyImageUrl } from "../shared.tsx";
 import { getGalleryPhotos, getSelectedPhotoIndex } from "./controller.tsx";
 
-export async function jam2025GalleryDownloadHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+export async function jam2025GalleryDownloadHandler({ request }: AppContext) {
+  let requestUrl = new URL(request.url);
   let photos = await getGalleryPhotos();
   let selectedPhotoIndex = getSelectedPhotoIndex(
     requestUrl.searchParams.get("photo"),

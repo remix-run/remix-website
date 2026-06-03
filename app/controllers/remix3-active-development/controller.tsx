@@ -1,3 +1,4 @@
+import type { Handle } from "remix/ui";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
@@ -7,19 +8,22 @@ import { PitchSection } from "./pitch-section.tsx";
 import { StayInTheLoopSection } from "./stay-in-the-loop-section.tsx";
 import { TimelineSection } from "./timeline-section/index.tsx";
 import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
-import { render } from "../../utils/render.ts";
+import type { AppContext } from "../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { styleHrefs } from "../../utils/style-hrefs.ts";
 
-export async function remix3ActiveDevelopmentHandler() {
-  return render.document(<Remix3ActiveDevelopmentPage />, {
+export async function remix3ActiveDevelopmentHandler({
+  render,
+  request,
+}: AppContext) {
+  return render(<Remix3ActiveDevelopmentPage requestUrl={request.url} />, {
     headers: {
       "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
   });
 }
 
-function Remix3ActiveDevelopmentPage() {
+function Remix3ActiveDevelopmentPage(handle: Handle<{ requestUrl: string }>) {
   return () => (
     <Document
       title="Remix - A Web Framework for Building Anything"
@@ -27,6 +31,7 @@ function Remix3ActiveDevelopmentPage() {
       forceTheme="light"
       stylesheets={[styleHrefs.app]}
       headTags={getSocialHeadTags({
+        requestUrl: handle.props.requestUrl,
         title: "Remix - A Web Framework for Building Anything",
         description:
           "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.",

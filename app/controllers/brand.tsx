@@ -3,25 +3,26 @@ import type { Handle, RemixNode } from "remix/ui";
 import { Document } from "../ui/document.tsx";
 import { Footer } from "../ui/footer.tsx";
 import { Header } from "../ui/header.tsx";
-import { render } from "../utils/render.ts";
+import type { AppContext } from "../middleware/render.ts";
 import { CACHE_CONTROL } from "../utils/cache-control.ts";
 import { getSocialHeadTags } from "../utils/social-head-tags.server.ts";
 import { styleHrefs } from "../utils/style-hrefs.ts";
 
-export async function brandHandler() {
-  return render.document(<Page />, {
+export async function brandHandler({ render, request }: AppContext) {
+  return render(<Page requestUrl={request.url} />, {
     headers: {
       "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
   });
 }
 
-function Page() {
+function Page(handle: Handle<{ requestUrl: string }>) {
   return () => (
     <Document
       title="Remix Assets and Branding Guidelines"
       description="Remix brand assets and guidelines for using the Remix name and logos."
       headTags={getSocialHeadTags({
+        requestUrl: handle.props.requestUrl,
         title: "Remix Assets and Branding Guidelines",
         description:
           "Remix brand assets and guidelines for using the Remix name and logos.",

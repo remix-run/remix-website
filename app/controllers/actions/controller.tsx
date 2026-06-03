@@ -10,9 +10,7 @@ type NewsletterResponse = { ok: boolean; error: string | null };
 
 export default createController(routes.actions, {
   actions: {
-    async newsletter(context) {
-      let formData =
-        context.get(FormData) ?? (await context.request.formData());
+    async newsletter({ formData }) {
       let result = s.parseSafe(newsletterSubmission, {
         email: formData.get("email"),
         tags: formData.getAll("tag"),

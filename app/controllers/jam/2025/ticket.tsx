@@ -1,12 +1,10 @@
 import * as s from "remix/data-schema";
-import { getContext } from "remix/middleware/async-context";
 import {
   createCart,
   getProduct,
   MAX_QUANTITY,
 } from "../../../data/jam-storefront.server.ts";
-import { getRequestContext } from "../../../utils/request-context.ts";
-import { render } from "../../../utils/render.ts";
+import type { AppContext } from "../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
 import { InfoText, ScrambleText, SectionLabel, Title } from "./shared.tsx";
@@ -14,8 +12,11 @@ import { JamTicketCard } from "../../../assets/jam/2025/ticket-card.tsx";
 import { JamTicketPurchase } from "../../../assets/jam/2025/ticket-purchase.tsx";
 import { assetPaths } from "../../../utils/asset-paths.ts";
 
-export async function jam2025TicketHandler() {
-  let request = getRequestContext().request;
+export async function jam2025TicketHandler({
+  formData,
+  render,
+  request,
+}: AppContext) {
   let requestUrl = new URL(request.url);
   let product = await getProduct("remix-jam-2025");
   let cacheControl =
@@ -25,45 +26,39 @@ export async function jam2025TicketHandler() {
   let status = 200;
 
   if (request.method === "POST") {
-    let formData = getContext().get(FormData);
-    if (!formData) {
-      formError = "Missing form data";
+    let submission = parseTicketPurchaseSubmission(formData);
+    if (!submission.success) {
+      formError = submission.error;
       status = 400;
     } else {
-      let submission = parseTicketPurchaseSubmission(formData);
-      if (!submission.success) {
-        formError = submission.error;
+      initialQuantity = submission.value.quantity;
+      if (submission.value.productId !== product.productId) {
+        formError = "Invalid ticket selection";
         status = 400;
       } else {
-        initialQuantity = submission.value.quantity;
-        if (submission.value.productId !== product.productId) {
-          formError = "Invalid ticket selection";
+        let discountCode = requestUrl.searchParams.get("discount") ?? undefined;
+        let cart = await createCart({
+          productId: submission.value.productId,
+          quantity: submission.value.quantity,
+          discountCode,
+        });
+
+        if ("error" in cart) {
+          formError = cart.error;
           status = 400;
         } else {
-          let discountCode =
-            requestUrl.searchParams.get("discount") ?? undefined;
-          let cart = await createCart({
-            productId: submission.value.productId,
-            quantity: submission.value.quantity,
-            discountCode,
-          });
-
-          if ("error" in cart) {
-            formError = cart.error;
-            status = 400;
-          } else {
-            return Response.redirect(cart.checkoutUrl, 303);
-          }
+          return Response.redirect(cart.checkoutUrl, 303);
         }
       }
     }
   }
 
-  return render.document(
+  return render(
     <JamDocument
       title="Ticket | Remix Jam 2025"
       description="Get your ticket for Remix Jam 2025 in Toronto"
       previewImage={assetPaths.jam2025.ogThumbnail1}
+      requestUrl={request.url}
       activePath="/jam/2025/ticket"
     >
       <main

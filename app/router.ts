@@ -1,4 +1,3 @@
-import { asyncContext } from "remix/middleware/async-context";
 import { compression } from "remix/middleware/compression";
 import { cop } from "remix/middleware/cop";
 import { createRouter, type RequestContext } from "remix/router";
@@ -8,6 +7,7 @@ import { staticFiles } from "remix/middleware/static";
 
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
+import { renderMiddleware, type AppContext } from "./middleware/render.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes.ts";
 import { assetServer } from "./utils/assets.server.ts";
@@ -18,7 +18,7 @@ import { blogOgImageHandler } from "./controllers/blog-og-image.tsx";
 import { blogPostHandler } from "./controllers/blog/post.tsx";
 import { blogRssHandler } from "./controllers/blog/rss.ts";
 import { brandHandler } from "./controllers/brand.tsx";
-import { catchallHandler } from "./controllers/catchall.ts";
+import { catchallHandler } from "./controllers/catchall.tsx";
 import { remix3ActiveDevelopmentHandler } from "./controllers/remix3-active-development/controller.tsx";
 import { homeHandler } from "./controllers/home/controller.tsx";
 import {
@@ -70,8 +70,8 @@ function createAppRouter() {
 
   middleware.push(cop());
   middleware.push(formData());
-  middleware.push(asyncContext());
   middleware.push(loadAssetEntry());
+  middleware.push(renderMiddleware);
   middleware.push(
     rateLimit({
       windowMs: 2 * 60 * 1000,
@@ -84,7 +84,7 @@ function createAppRouter() {
     middleware.push(logger());
   }
 
-  let router = createRouter({ middleware });
+  let router = createRouter<AppContext>({ middleware });
 
   router.map(routes.assets, async ({ request }) => {
     return (

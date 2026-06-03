@@ -3,7 +3,6 @@ import * as s from "remix/data-schema";
 import * as c from "remix/data-schema/checks";
 import * as coerce from "remix/data-schema/coerce";
 import { SuperHeaders } from "remix/headers";
-import { getContext } from "remix/middleware/async-context";
 
 import {
   createCart,
@@ -11,8 +10,7 @@ import {
   MAX_QUANTITY,
 } from "../../../data/jam-storefront.server.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
-import { render } from "../../../utils/render.ts";
-import { getRequestContext } from "../../../utils/request-context.ts";
+import type { AppContext, AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
 import { Jam2026TicketsModalFrame } from "../../../assets/jam/2026/tickets-modal.tsx";
 import { Jam2026HomePage } from "./ui/home-page.tsx";
@@ -36,17 +34,16 @@ export let jam2026TicketAction = createJam2026TicketAction();
 export function createJam2026PageHandler(
   storefront: Jam2026Storefront = { createCart, getProduct },
 ) {
-  return async function jam2026Handler() {
-    return renderJam2026Page({ storefront });
+  return async function jam2026Handler({ render, request }: AppContext) {
+    return renderJam2026Page({ render, request, storefront });
   };
 }
 
 export function createJam2026TicketAction(
   storefront: Jam2026Storefront = { createCart, getProduct },
 ) {
-  return async function jam2026TicketAction() {
-    let { request } = getRequestContext();
-    let formData = getContext().get(FormData) ?? (await request.formData());
+  return async function jam2026TicketAction(context: AppContext) {
+    let { formData, render, request } = context;
     let product = await storefront.getProduct(remixJam2026Ticket.handle);
     let result = await handleTicketCheckoutPost({
       formData,
@@ -58,6 +55,8 @@ export function createJam2026TicketAction(
 
     return renderJam2026Page({
       cacheControl: "no-store",
+      render,
+      request,
       status: result.status,
       storefront,
       ticketCheckout: result.ticketCheckout,
@@ -67,16 +66,19 @@ export function createJam2026TicketAction(
 
 async function renderJam2026Page({
   cacheControl = CACHE_CONTROL.DEFAULT,
+  render,
+  request,
   status = 200,
   storefront,
   ticketCheckout,
 }: {
   cacheControl?: string;
+  render: AppRenderer;
+  request: Request;
   status?: number;
   storefront: Jam2026Storefront;
   ticketCheckout?: ReturnType<typeof createTicketCheckoutState>;
 }) {
-  let { request } = getRequestContext();
   let requestUrl = new URL(request.url);
   let ticketsModalOpen =
     requestUrl.pathname === routes.jam.y2026.ticket.index.href();
@@ -103,7 +105,7 @@ async function renderJam2026Page({
   };
 
   if (isTicketsFrameRequest) {
-    return render.frame(
+    return render(
       <Jam2026TicketsModalFrame
         animateEntrance={!isServerResolvedFrame}
         open={ticketsModalOpen}
@@ -113,8 +115,9 @@ async function renderJam2026Page({
     );
   }
 
-  return render.document(
+  return render(
     <Jam2026HomePage
+      requestUrl={request.url}
       ticketsModalOpen={ticketsModalOpen}
       theme={theme}
       ticketCheckout={ticketCheckout}
@@ -123,9 +126,7 @@ async function renderJam2026Page({
   );
 }
 
-export async function jam2026ThemeAction() {
-  let { request } = getRequestContext();
-  let formData = getContext().get(FormData) ?? (await request.formData());
+export async function jam2026ThemeAction({ formData }: AppContext) {
   let result = s.parseSafe(jam2026ThemeSubmissionSchema, formData);
 
   if (!result.success) {

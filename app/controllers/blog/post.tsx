@@ -6,26 +6,32 @@ import { Header } from "../../ui/header.tsx";
 import { BlogLightbox } from "../../assets/blog-lightbox.tsx";
 import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe.tsx";
 import { routes } from "../../routes.ts";
-import { renderNotFoundPage } from "../../ui/not-found-page.tsx";
-import { render } from "../../utils/render.ts";
+import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
+import type { AppContext } from "../../middleware/render.ts";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.server.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { styleHrefs } from "../../utils/style-hrefs.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
 
-type BlogPostContext = {
+type BlogPostContext = AppContext & {
   params: { slug?: string; ext?: string };
-  request: Request;
 };
 
-export async function blogPostHandler(context: BlogPostContext) {
-  let slug = context.params.slug;
+export async function blogPostHandler({
+  params,
+  render,
+  request,
+}: BlogPostContext) {
+  let slug = params.slug;
   if (!slug) {
-    return renderNotFoundPage();
+    return render(
+      <StatusErrorDocument status={404} statusText="Not Found" />,
+      NOT_FOUND_RESPONSE,
+    );
   }
 
-  let requestUrl = new URL(context.request.url);
-  let isMarkdownRequest = context.params.ext === "md";
+  let requestUrl = new URL(request.url);
+  let isMarkdownRequest = params.ext === "md";
   if (isMarkdownRequest) {
     try {
       let markdown = getRawBlogPostMarkdown(slug);
@@ -48,7 +54,10 @@ export async function blogPostHandler(context: BlogPostContext) {
     post = await getBlogPost(slug);
   } catch (error) {
     if (error instanceof Response && error.status === 404) {
-      return renderNotFoundPage();
+      return render(
+        <StatusErrorDocument status={404} statusText="Not Found" />,
+        NOT_FOUND_RESPONSE,
+      );
     }
     throw error;
   }
@@ -65,8 +74,13 @@ export async function blogPostHandler(context: BlogPostContext) {
     ogImageUrl.searchParams.set("ogImage", post.ogImage);
   }
 
-  return render.document(
-    <Page slug={slug} post={post} socialImageUrl={ogImageUrl.toString()} />,
+  return render(
+    <Page
+      requestUrl={request.url}
+      slug={slug}
+      post={post}
+      socialImageUrl={ogImageUrl.toString()}
+    />,
     {
       headers: {
         "Cache-Control": CACHE_CONTROL.DEFAULT,
@@ -75,8 +89,17 @@ export async function blogPostHandler(context: BlogPostContext) {
   );
 }
 
+const NOT_FOUND_RESPONSE = {
+  status: 404,
+  statusText: "Not Found",
+  headers: {
+    "Cache-Control": "no-store",
+  },
+};
+
 function Page(
   handle: Handle<{
+    requestUrl: string;
     slug: string;
     post: Awaited<ReturnType<typeof getBlogPost>>;
     socialImageUrl: string;
@@ -95,6 +118,7 @@ function Page(
           type: "text/markdown",
         },
         ...getSocialHeadTags({
+          requestUrl: handle.props.requestUrl,
           title: handle.props.post.title,
           description: handle.props.post.summary,
           image: handle.props.socialImageUrl,

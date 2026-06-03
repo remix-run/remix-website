@@ -4,15 +4,15 @@ import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe.tsx";
 import { routes } from "../../routes.ts";
-import { render } from "../../utils/render.ts";
+import type { AppContext } from "../../middleware/render.ts";
 import { getBlogPostListings } from "../../data/blog.server.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
 import { styleHrefs } from "../../utils/style-hrefs.ts";
 
-export async function blogHandler() {
+export async function blogHandler({ render, request }: AppContext) {
   let posts = await getBlogPostListings();
-  return render.document(<Page posts={posts} />, {
+  return render(<Page posts={posts} requestUrl={request.url} />, {
     headers: {
       "Cache-Control": CACHE_CONTROL.DEFAULT,
     },
@@ -22,6 +22,7 @@ export async function blogHandler() {
 function Page(
   handle: Handle<{
     posts: Awaited<ReturnType<typeof getBlogPostListings>>;
+    requestUrl: string;
   }>,
 ) {
   return () => (
@@ -30,6 +31,7 @@ function Page(
       description="Thoughts about building excellent user experiences with Remix."
       stylesheets={[styleHrefs.app]}
       headTags={getSocialHeadTags({
+        requestUrl: handle.props.requestUrl,
         title: "Remix Blog",
         description:
           "Thoughts about building excellent user experiences with Remix.",

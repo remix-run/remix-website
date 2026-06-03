@@ -1,6 +1,5 @@
 import { getPhotos } from "../../../../data/jam-storefront.server.ts";
-import { getRequestContext } from "../../../../utils/request-context.ts";
-import { render } from "../../../../utils/render.ts";
+import type { AppContext } from "../../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
 import { routes } from "../../../../routes.ts";
 import { JamDocument } from "../document.tsx";
@@ -14,19 +13,20 @@ import type { Handle, RemixNode } from "remix/ui";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
-export async function jam2025GalleryHandler() {
-  let requestUrl = new URL(getRequestContext().request.url);
+export async function jam2025GalleryHandler({ render, request }: AppContext) {
+  let requestUrl = new URL(request.url);
   let photos = await getGalleryPhotos();
   let selectedPhotoIndex = getSelectedPhotoIndex(
     requestUrl.searchParams.get("photo"),
     photos.length,
   );
 
-  return render.document(
+  return render(
     <JamDocument
       title="Photo Gallery | Remix Jam 2025"
       description="Photos from Remix Jam 2025"
       previewImage={assetPaths.jam2025.ogGallery}
+      requestUrl={request.url}
       activePath="/jam/2025/gallery"
       hideBackground
     >
