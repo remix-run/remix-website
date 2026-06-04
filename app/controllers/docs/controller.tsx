@@ -1,42 +1,120 @@
 import { createController } from "remix/router";
+import type { Handle } from "remix/ui";
 
+import { getDocsChapters } from "../../data/docs.server.ts";
+import type { DocsChapter } from "../../data/docs.server.ts";
+import type { AppContext } from "../../middleware/render.ts";
 import { routes } from "../../routes.ts";
-import { docsIndexHandler } from "./index-page.tsx";
-import { startHereHandler } from "./chapters/01-start-here.tsx";
-import { coreAppStructureHandler } from "./chapters/02-core-app-structure.tsx";
-import { serverRuntimeHandler } from "./chapters/03-server-runtime.tsx";
-import { renderingUiHandler } from "./chapters/04-rendering-ui.tsx";
-import { interactivityHandler } from "./chapters/05-interactivity.tsx";
-import { animationHandler } from "./chapters/06-animation.tsx";
-import { dataAndValidationHandler } from "./chapters/07-data-and-validation.tsx";
-import { formsAndMutationsHandler } from "./chapters/08-forms-and-mutations.tsx";
-import { authSessionsSecurityHandler } from "./chapters/09-auth-sessions-security.tsx";
-import { filesAndAssetsHandler } from "./chapters/10-files-and-assets.tsx";
-import { testingHandler } from "./chapters/11-testing.tsx";
-import { cliAndToolingHandler } from "./chapters/12-cli-and-tooling.tsx";
-import { productionHandler } from "./chapters/13-production.tsx";
-import { advancedGuidesHandler } from "./chapters/14-advanced-guides.tsx";
-import { exampleAppsHandler } from "./chapters/15-example-apps.tsx";
-import { tutorialsHandler } from "./chapters/16-tutorials.tsx";
+import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
+import { DocsChapterPage, DocsDocument, docsResponseInit } from "./shared.tsx";
 
 export let docsController = createController(routes.docs, {
   actions: {
-    index: docsIndexHandler,
-    startHere: startHereHandler,
-    coreAppStructure: coreAppStructureHandler,
-    serverRuntime: serverRuntimeHandler,
-    renderingUi: renderingUiHandler,
-    interactivity: interactivityHandler,
-    animation: animationHandler,
-    dataAndValidation: dataAndValidationHandler,
-    formsAndMutations: formsAndMutationsHandler,
-    authSessionsSecurity: authSessionsSecurityHandler,
-    filesAndAssets: filesAndAssetsHandler,
-    testing: testingHandler,
-    cliAndTooling: cliAndToolingHandler,
-    production: productionHandler,
-    advancedGuides: advancedGuidesHandler,
-    exampleApps: exampleAppsHandler,
-    tutorials: tutorialsHandler,
+    async index({ render, request }) {
+      let chapters = await getDocsChapters();
+      return render(
+        <DocsIndexPage requestUrl={request.url} chapters={chapters} />,
+        docsResponseInit,
+      );
+    },
+
+    async chapter({ params, render, request }: DocsChapterContext) {
+      let slug = params.slug;
+      let chapters = await getDocsChapters();
+      let chapterIndex = slug
+        ? chapters.findIndex((chapter) => chapter.slug === slug)
+        : -1;
+      let chapter = chapterIndex >= 0 ? chapters[chapterIndex] : undefined;
+
+      if (!chapter) {
+        return render(
+          <StatusErrorDocument status={404} statusText="Not Found" />,
+          {
+            status: 404,
+            statusText: "Not Found",
+            headers: { "Cache-Control": "no-store" },
+          },
+        );
+      }
+
+      return render(
+        <DocsChapterPage
+          requestUrl={request.url}
+          chapter={chapter}
+          previous={chapters[chapterIndex - 1]}
+          next={chapters[chapterIndex + 1]}
+        />,
+        docsResponseInit,
+      );
+    },
   },
 });
+
+type DocsChapterContext = AppContext & {
+  params: { slug?: string };
+};
+
+function DocsIndexPage(
+  handle: Handle<{ requestUrl: string; chapters: Array<DocsChapter> }>,
+) {
+  return () => (
+    <DocsDocument
+      requestUrl={handle.props.requestUrl}
+      title="Remix Docs"
+      description="Guides, explanations, examples, and tutorials for learning Remix."
+    >
+      <div class="docs-index-shell">
+        <header class="docs-page-header docs-index-header">
+          <p class="docs-eyebrow">Remix Docs</p>
+          <h1>Learn Remix from the request up.</h1>
+          <div class="docs-index-intro">
+            <p>
+              These guide chapters introduce Remix at a high level, then
+              progressively deepen into routing, rendering, interactivity, data,
+              security, assets, testing, production, examples, and tutorials.
+            </p>
+            <p>
+              API reference lives separately at{" "}
+              <a href="https://api.remix.run">api.remix.run</a>.
+            </p>
+          </div>
+        </header>
+
+        <ol class="docs-chapter-grid">
+          {handle.props.chapters.map((chapter) => (
+            <ChapterCard key={chapter.slug} chapter={chapter} />
+          ))}
+        </ol>
+      </div>
+    </DocsDocument>
+  );
+}
+
+function ChapterCard(handle: Handle<{ chapter: DocsChapter }>) {
+  return () => (
+    <li>
+      <article class="docs-chapter-card">
+        <p>{handle.props.chapter.chapter}</p>
+        <h2>
+          <a
+            href={routes.docs.chapter.href({ slug: handle.props.chapter.slug })}
+          >
+            {handle.props.chapter.title}
+          </a>
+        </h2>
+        <p>{handle.props.chapter.description}</p>
+        <ol>
+          {handle.props.chapter.headings.map((heading) => (
+            <li key={heading.id}>
+              <a
+                href={`${routes.docs.chapter.href({ slug: handle.props.chapter.slug })}#${heading.id}`}
+              >
+                {heading.title}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </article>
+    </li>
+  );
+}
