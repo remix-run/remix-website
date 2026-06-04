@@ -81,6 +81,9 @@
   "pnpm": {
     "overrides": {
       "svgo": "3.3.3"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

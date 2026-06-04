@@ -19,6 +19,7 @@ import { blogPostHandler } from "./controllers/blog/post.tsx";
 import { blogRssHandler } from "./controllers/blog/rss.ts";
 import { brandHandler } from "./controllers/brand.tsx";
 import { catchallHandler } from "./controllers/catchall.tsx";
+import { docsController } from "./controllers/docs/controller.tsx";
 import { remix3ActiveDevelopmentHandler } from "./controllers/remix3-active-development/controller.tsx";
 import { homeHandler } from "./controllers/home/controller.tsx";
 import {
@@ -110,6 +111,7 @@ function createAppRouter() {
   router.map(routes.blog, blogHandler);
   router.map(routes.actions, actionsController);
   router.map(routes.brand, brandHandler);
+  router.map(routes.docs, docsController);
   router.map(routes.home, homeHandler);
   router.map(routes.newsletter, newsletterHandler);
   router.map(routes.jam.index, jamRedirectHandler);

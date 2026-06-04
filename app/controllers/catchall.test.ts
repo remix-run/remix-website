@@ -18,10 +18,12 @@ describe("catchall route", () => {
     expect(response.headers.get("Location")).toBe("https://remix.run/docs");
   });
 
-  it("redirects the docs root to api docs", async () => {
-    let response = catchallHandler(createContext("/docs"));
-    expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).toBe("https://api.remix.run/");
+  it("serves the docs root before the legacy catchall", async () => {
+    let response = await router.fetch("https://remix.run/docs");
+    expect(response.status).toBe(200);
+
+    let html = await response.text();
+    expect(html).toContain("Learn Remix from the request up.");
   });
 
   it("redirects docs paths to v2", async () => {
