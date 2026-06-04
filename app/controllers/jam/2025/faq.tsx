@@ -1,5 +1,5 @@
 import type { Handle, RemixNode } from "remix/ui";
-import { render } from "../../../utils/render.ts";
+import type { AppContext } from "../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
 import {
@@ -20,12 +20,13 @@ function slugify(input: string) {
     .replace(/\s+/g, "-");
 }
 
-export async function jam2025FaqHandler() {
-  return render.document(
+export async function jam2025FaqHandler({ render, request }: AppContext) {
+  return render(
     <JamDocument
       title="FAQ | Remix Jam 2025"
       description="It's time to get the band back together"
       previewImage={assetPaths.jam2025.ogThumbnail1}
+      requestUrl={request.url}
       activePath="/jam/2025/faq"
     >
       <main

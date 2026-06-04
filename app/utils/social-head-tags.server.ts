@@ -1,9 +1,9 @@
 import type { ManagedHeadTag } from "../ui/document-head.ts";
 import { assetPaths } from "./asset-paths.ts";
-import { getRequestContext } from "./request-context.ts";
 import { createSocialHeadTags } from "./social-head-tags.ts";
 
 type SocialHeadTagsProps = {
+  requestUrl: string | URL;
   title?: string;
   description?: string;
   url?: string;
@@ -14,8 +14,12 @@ type SocialHeadTagsProps = {
 };
 
 export function getSocialHeadTags(props: SocialHeadTagsProps) {
-  let pageUrl = props.url ?? getCurrentPageUrl();
-  let imageUrl = resolveUrl(props.image ?? assetPaths.marketing.defaultOgImage);
+  let requestUrl = new URL(props.requestUrl);
+  let pageUrl = props.url ?? `${requestUrl.origin}${requestUrl.pathname}`;
+  let imageUrl = resolveUrl(
+    props.image ?? assetPaths.marketing.defaultOgImage,
+    requestUrl,
+  );
 
   return createSocialHeadTags({
     title: props.title,
@@ -28,13 +32,8 @@ export function getSocialHeadTags(props: SocialHeadTagsProps) {
   }) satisfies ManagedHeadTag[];
 }
 
-function getCurrentPageUrl() {
-  let requestUrl = new URL(getRequestContext().request.url);
-  return `${requestUrl.origin}${requestUrl.pathname}`;
-}
-
-function resolveUrl(value: string) {
+function resolveUrl(value: string, requestUrl: URL) {
   if (/^https?:\/\//.test(value)) return value;
 
-  return new URL(value, getRequestContext().request.url).toString();
+  return new URL(value, requestUrl).toString();
 }

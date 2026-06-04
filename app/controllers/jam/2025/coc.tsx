@@ -1,15 +1,16 @@
-import { render } from "../../../utils/render.ts";
+import type { AppContext } from "../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
 import { Paragraph, ScrambleText, Subheader, Title } from "./shared.tsx";
 import { assetPaths } from "../../../utils/asset-paths.ts";
 
-export async function jam2025CocHandler() {
-  return render.document(
+export async function jam2025CocHandler({ render, request }: AppContext) {
+  return render(
     <JamDocument
       title="Code of Conduct | Remix Jam 2025"
       description="Adapted from confcodeofconduct.com"
       previewImage={assetPaths.jam2025.ogThumbnail1}
+      requestUrl={request.url}
       activePath="/jam/2025/coc"
     >
       <main

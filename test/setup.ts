@@ -1,24 +1,22 @@
 import { existsSync } from "node:fs";
 import { loadEnvFile } from "node:process";
 
-import { asyncContext } from "remix/middleware/async-context";
 import { formData } from "remix/middleware/form-data";
 import type { Router } from "remix/router";
 import { createRouter } from "remix/router";
 
 import { setAssetEntry } from "../app/middleware/asset-entry.ts";
+import { renderMiddleware, type AppContext } from "../app/middleware/render.ts";
 
 export function globalSetup() {
   loadEnvFileIfExists(".env");
   loadEnvFileIfExists(".env.test");
 }
 
-export function createRouteTestRouter(): Router {
-  let router: Router;
-  router = createRouter({
+export function createRouteTestRouter(): Router<AppContext> {
+  let router = createRouter<AppContext>({
     middleware: [
       formData(),
-      asyncContext(),
       async (context, next) => {
         setAssetEntry(context, {
           src: "/assets/app/assets/entry.ts",
@@ -26,6 +24,7 @@ export function createRouteTestRouter(): Router {
         });
         return next();
       },
+      renderMiddleware,
     ],
   });
 

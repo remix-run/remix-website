@@ -73,7 +73,7 @@ export function getJam2026ClientManagedHeadTags(head: {
 export function getJam2026ServerHeadTags(props: {
   title: string;
   description: string;
-  requestUrl: string;
+  requestUrl: string | URL;
 }) {
   let requestUrl = new URL(props.requestUrl);
   let trustedOrigin = getJam2026TrustedOrigin(requestUrl);

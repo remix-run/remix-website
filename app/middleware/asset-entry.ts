@@ -1,6 +1,9 @@
 import * as path from "node:path";
-import { getContext } from "remix/middleware/async-context";
-import { createContextKey, type Middleware } from "remix/router";
+import {
+  createContextKey,
+  type Middleware,
+  type RequestContext,
+} from "remix/router";
 import { assetServer } from "../utils/assets.server.ts";
 
 export interface AssetEntry {
@@ -8,37 +11,36 @@ export interface AssetEntry {
   preloads: string[];
 }
 
-let assetEntryKey = createContextKey<AssetEntry>();
+export let assetEntryContext = createContextKey<AssetEntry>();
+export type AssetEntryContextEntry = {
+  key: typeof assetEntryContext;
+  value: AssetEntry;
+  property: "assetEntry";
+};
+
 let defaultEntry = path.resolve(import.meta.dirname, "../assets/entry.ts");
 
-export function loadAssetEntry(entry = defaultEntry): Middleware {
+export function loadAssetEntry(
+  entry = defaultEntry,
+): Middleware<AssetEntryContextEntry> {
   return async (context, next) => {
     let [src, preloads] = await Promise.all([
       assetServer.getHref(entry),
       assetServer.getPreloads(entry),
     ]);
 
-    context.set(assetEntryKey, {
-      src,
-      preloads: preloads.filter((href) => href !== src),
-    });
+    context.set(
+      assetEntryContext,
+      {
+        src,
+        preloads: preloads.filter((href) => href !== src),
+      },
+      { property: "assetEntry" },
+    );
     return next();
   };
 }
 
-export function setAssetEntry(
-  context: {
-    set: (key: typeof assetEntryKey, value: AssetEntry) => void;
-  },
-  assetEntry: AssetEntry,
-) {
-  context.set(assetEntryKey, assetEntry);
-}
-
-export function getAssetEntry() {
-  let assetEntry = getContext().get(assetEntryKey);
-  if (!assetEntry) {
-    throw new Error("Missing asset entry on request context");
-  }
-  return assetEntry;
+export function setAssetEntry(context: RequestContext, assetEntry: AssetEntry) {
+  context.set(assetEntryContext, assetEntry, { property: "assetEntry" });
 }

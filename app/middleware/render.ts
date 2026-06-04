@@ -1,24 +1,64 @@
-import type { Router } from "remix/router";
-import { renderToStream } from "remix/ui/server";
-import type { RemixNode } from "remix/ui";
+import { Renderer, renderWith } from "remix/middleware/render";
+import type { ContextWithEntries, RequestContext, Router } from "remix/router";
 import { createHtmlResponse } from "remix/response/html";
-import { getRequestContext } from "./request-context.ts";
-import { assetServer } from "./assets.server.ts";
+import { createElement } from "remix/ui";
+import type { RemixNode } from "remix/ui";
+import { renderToStream, type ResolveFrameContext } from "remix/ui/server";
 
-type FrameRenderContext = {
-  currentFrameSrc?: string;
+import type { AssetEntryContextEntry } from "./asset-entry.ts";
+import { AssetEntryProvider } from "../ui/document.tsx";
+import { assetServer } from "../utils/assets.server.ts";
+
+export interface AppRenderer {
+  (node: RemixNode, init?: ResponseInit): Response;
+}
+
+type FormDataContextEntry = {
+  key: typeof FormData;
+  value: FormData;
+  property: "formData";
 };
 
-export let render = {
-  frame(node: RemixNode, init?: ResponseInit) {
-    let { request } = getRequestContext();
+type RendererContextEntry = {
+  key: typeof Renderer;
+  value: AppRenderer;
+  property: "render";
+};
+
+type RenderMiddlewareContext = ContextWithEntries<
+  RequestContext,
+  [AssetEntryContextEntry]
+>;
+
+export type AppContext = ContextWithEntries<
+  RequestContext,
+  [FormDataContextEntry, AssetEntryContextEntry, RendererContextEntry]
+>;
+
+declare module "remix/router" {
+  interface RouterTypes {
+    context: AppContext;
+  }
+}
+
+export let renderMiddleware = renderWith((context) =>
+  createAppRenderer(context as RenderMiddlewareContext),
+);
+
+function createAppRenderer(context: RenderMiddlewareContext): AppRenderer {
+  let rootNode = (node: RemixNode) =>
+    createElement(AssetEntryProvider, { value: context.assetEntry }, node);
+
+  function renderFrame(node: RemixNode, init?: ResponseInit) {
     let headers = new Headers(init?.headers);
     if (!headers.has("Content-Type")) {
       headers.set("Content-Type", "text/html; charset=utf-8");
     }
+
     return new Response(
-      renderToStream(node, {
-        frameSrc: request.url,
+      renderToStream(rootNode(node), {
+        frameSrc: context.request.url,
+        signal: context.request.signal,
         resolveClientEntry: (entryId, component) =>
           resolveClientEntry(entryId, component.name),
         onError(error) {
@@ -27,28 +67,41 @@ export let render = {
       }),
       { ...init, headers },
     );
-  },
+  }
 
-  document(node: RemixNode, init?: ResponseInit) {
-    let { request, router } = getRequestContext();
-    let stream = renderToStream(node, {
-      frameSrc: request.url,
-      resolveFrame: (src, target, context) =>
-        resolveFrame(src, target, context, router, request),
+  function renderDocument(node: RemixNode, init?: ResponseInit) {
+    let stream = renderToStream(rootNode(node), {
+      frameSrc: context.request.url,
+      signal: context.request.signal,
+      resolveFrame: (src, target, frameContext) =>
+        resolveFrame(
+          src,
+          target,
+          frameContext,
+          context.router,
+          context.request,
+        ),
       resolveClientEntry: (entryId, component) =>
         resolveClientEntry(entryId, component.name),
       onError(error) {
         console.error(error);
       },
     });
+
     return createHtmlResponse(stream, init);
-  },
-};
+  }
+
+  return function render(node: RemixNode, init?: ResponseInit) {
+    return context.request.headers.has("x-remix-target")
+      ? renderFrame(node, init)
+      : renderDocument(node, init);
+  };
+}
 
 async function resolveFrame(
   src: string,
   target: string | undefined,
-  context: FrameRenderContext | undefined,
+  context: ResolveFrameContext | undefined,
   router: Router,
   request: Request,
 ) {

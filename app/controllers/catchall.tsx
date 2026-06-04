@@ -1,5 +1,6 @@
+import type { AppRenderer } from "../middleware/render.ts";
 import semver from "semver";
-import { renderNotFoundPage } from "../ui/not-found-page.tsx";
+import { StatusErrorDocument } from "../ui/not-found-page.tsx";
 
 const SAFE_STATIC_FILE_EXTENSIONS = [
   ".html",
@@ -29,8 +30,14 @@ const SAFE_STATIC_FILE_EXTENSIONS = [
   ".mov",
 ];
 
-export function catchallHandler(context: { request: Request }) {
-  let url = new URL(context.request.url);
+export function catchallHandler({
+  render,
+  request,
+}: {
+  render: AppRenderer;
+  request: Request;
+}) {
+  let url = new URL(request.url);
   let redirectUrl = normalizeLegacyRedirect(url);
   if (redirectUrl) {
     return Response.redirect(redirectUrl, 302);
@@ -39,7 +46,13 @@ export function catchallHandler(context: { request: Request }) {
     return new Response("", { status: 404, statusText: "Not Found" });
   }
 
-  return renderNotFoundPage();
+  return render(<StatusErrorDocument status={404} statusText="Not Found" />, {
+    status: 404,
+    statusText: "Not Found",
+    headers: {
+      "Cache-Control": "no-store",
+    },
+  });
 }
 
 function normalizeLegacyRedirect(url: URL): string | null {

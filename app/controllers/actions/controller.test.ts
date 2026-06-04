@@ -30,10 +30,8 @@ describe("Newsletter subscribe route", () => {
         `http://localhost:3000${routes.actions.newsletter.href()}`,
         { method: "POST" },
       ),
-      get(key: unknown) {
-        return key === FormData ? formData : undefined;
-      },
-    } as NewsletterContext;
+      formData,
+    } as unknown as NewsletterContext;
 
     return actionsController.actions.newsletter(context);
   }

@@ -1,25 +1,9 @@
 import type { Handle } from "remix/ui";
 import { cx } from "../utils/cx.ts";
 import { Document } from "./document.tsx";
-import { render } from "../utils/render.ts";
 import { styleHrefs } from "../utils/style-hrefs.ts";
 
-export function renderNotFoundPage(options?: { statusText?: string }) {
-  let statusText = options?.statusText ?? "Not Found";
-
-  return render.document(
-    <StatusErrorDocument status={404} statusText={statusText} />,
-    {
-      status: 404,
-      statusText,
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    },
-  );
-}
-
-function StatusErrorDocument(
+export function StatusErrorDocument(
   handle: Handle<{ status: number; statusText: string }>,
 ) {
   return () => (

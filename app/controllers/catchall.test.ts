@@ -1,11 +1,13 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
-import { catchallHandler } from "./catchall.ts";
+import { catchallHandler } from "./catchall.tsx";
 import { router } from "../router.ts";
+import type { AppRenderer } from "../middleware/render.ts";
 
 function createContext(pathname: string) {
   return {
     request: new Request(`https://remix.run${pathname}`),
+    render: {} as AppRenderer,
   };
 }
 
