@@ -1,6 +1,6 @@
 import { compression } from "remix/middleware/compression";
 import { cop } from "remix/middleware/cop";
-import { createRouter, type RequestContext } from "remix/router";
+import { createRouter, type Middleware } from "remix/router";
 import { formData } from "remix/middleware/form-data";
 import { logger } from "remix/middleware/logger";
 import { staticFiles } from "remix/middleware/static";
@@ -49,7 +49,7 @@ function createAppRouter() {
   middleware.push(compression());
 
   if (isDev) {
-    middleware.push((context: RequestContext) => {
+    let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
       if (
         context.request.method === "GET" &&
         context.url.pathname ===
@@ -57,7 +57,10 @@ function createAppRouter() {
       ) {
         return new Response(null, { status: 204 });
       }
-    });
+      return next();
+    };
+
+    middleware.push(ignoreChromeDevToolsRequest);
   }
 
   middleware.push(
