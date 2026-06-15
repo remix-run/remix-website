@@ -2,6 +2,7 @@
 title: Remix 3 Beta Preview
 summary: Remix 3 is ready for you to kick the tires and start prompting your next big idea into existence.
 date: 2026-04-30
+featured: true
 authors:
   - Michael Jackson
 image: /blog-images/headers/remix-3-beta-preview.png

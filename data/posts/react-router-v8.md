@@ -6,6 +6,7 @@ image: /blog-images/headers/react-router-v8.jpg
 ogImage: /blog-images/headers/react-router-v8.jpg
 imageAlt: "A big, floating, v8"
 imageDisableOverlay: true
+featured: true
 authors:
   - Brooks Lybrand
 ---
