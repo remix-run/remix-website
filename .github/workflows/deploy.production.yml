@@ -52,28 +52,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: 🎈 Setup Fly
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-
-          tmp_dir="$(mktemp -d)"
-          trap 'rm -rf "$tmp_dir"' EXIT
-
-          flyctl_url="$(
-            curl --fail --silent --show-error --location --retry 5 \
-              --header "Authorization: Bearer $GH_TOKEN" \
-              --header "Accept: application/vnd.github+json" \
-              https://api.github.com/repos/superfly/flyctl/releases/latest \
-              | python3 -c 'import json, sys; print(next(asset["browser_download_url"] for asset in json.load(sys.stdin)["assets"] if asset["name"].endswith("_Linux_x86_64.tar.gz")))'
-          )"
-
-          curl --fail --silent --show-error --location --retry 5 \
-            --output "$tmp_dir/flyctl.tar.gz" \
-            "$flyctl_url"
-          tar -xzf "$tmp_dir/flyctl.tar.gz" -C "$tmp_dir"
-          sudo install "$tmp_dir/flyctl" /usr/local/bin/flyctl
-          flyctl version
+        uses: superfly/flyctl-actions/setup-flyctl@1.6
 
       - name: 🚀 Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
