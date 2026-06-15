@@ -102,7 +102,7 @@ async function resolveFrame(
   src: string,
   target: string | undefined,
   context: ResolveFrameContext | undefined,
-  router: Router,
+  router: Router<RequestContext<any, any>>,
   request: Request,
 ) {
   let frameSrc = context?.currentFrameSrc ?? request.url;
@@ -131,7 +131,7 @@ async function resolveFrame(
 }
 
 export async function followFrameRedirects(
-  router: Router,
+  router: Router<RequestContext<any, any>>,
   request: Request,
   url: URL,
   headers: Headers,

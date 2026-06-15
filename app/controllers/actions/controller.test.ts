@@ -3,6 +3,7 @@ import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
 import { newsletterTagIds } from "../../utils/newsletter-tags.ts";
+import { createRouteTestRouter } from "../../../test/setup.ts";
 import actionsController from "./controller.tsx";
 
 describe("Newsletter subscribe route", () => {
@@ -17,23 +18,15 @@ describe("Newsletter subscribe route", () => {
   });
 
   async function submitNewsletter(body: URLSearchParams) {
-    let formData = new FormData();
-    for (let [key, value] of body.entries()) {
-      formData.append(key, value);
-    }
+    let router = createRouteTestRouter();
+    router.map(routes.actions, actionsController);
 
-    type NewsletterContext = Parameters<
-      typeof actionsController.actions.newsletter
-    >[0];
-    let context = {
-      request: new Request(
-        `http://localhost:3000${routes.actions.newsletter.href()}`,
-        { method: "POST" },
-      ),
-      formData,
-    } as unknown as NewsletterContext;
-
-    return actionsController.actions.newsletter(context);
+    return router.fetch(
+      new Request(`http://localhost:3000${routes.actions.newsletter.href()}`, {
+        method: "POST",
+        body,
+      }),
+    );
   }
 
   it("rejects invalid emails", async () => {
