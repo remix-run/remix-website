@@ -78,7 +78,7 @@ React Router v8 updates the following minimum supported versions:
 
 To modernize the library, React Router is now published as an ESM-only module, and tsconfig target/lib fields have been updated to ES2022 across the board.
 
-A note on Node minimum versions: Starting with v8, React Router will officially support all Active LTS Node versions and only the latest minor branch of Maintenance LTS versions. This better allows us to bump minimum Maintenance LTS versions to account for newly released security patches. It also allows us to more quickly and easily adopt new Active LTS features backported to Maintenance LTS lines. Upgraded minimum Maintenance LTS versions will be done in React Router minor releases.
+A note on [Node version](https://nodejs.org/en/about/previous-releases) support: Starting with v8, React Router will officially support all Active LTS Node versions and only the latest minor branch of Maintenance LTS versions. This better allows us to bump minimum Maintenance LTS versions to account for newly released security patches. It also allows us to more quickly and easily adopt new Active LTS features backported to Maintenance LTS lines. Upgraded minimum Maintenance LTS versions will be done in React Router minor releases.
 
 ### Adopted Future Flag Behavior
 
