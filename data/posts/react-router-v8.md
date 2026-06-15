@@ -1,11 +1,10 @@
 ---
 title: React Router v8
-summary: React Router v8 is coming soon with the next generation of routing for React applications.
-date: 2026-06-15
-draft: true
-image: /blog-images/headers/react-router-v7.jpg
-ogImage: /blog-images/headers/react-router-v7.jpg
-imageAlt: "The React Router logo"
+summary: React Router v8 is available now.
+date: 2026-06-17
+image: /blog-images/headers/react-router-v8.jpg
+ogImage: /blog-images/headers/react-router-v8.jpg
+imageAlt: "A big, floating, v8"
 imageDisableOverlay: true
 authors:
   - Brooks Lybrand
@@ -79,6 +78,13 @@ React Router v8 updates the following minimum supported versions:
 To modernize the library, React Router is now published as an ESM-only module, and tsconfig target/lib fields have been updated to ES2022 across the board.
 
 A note on [Node version](https://nodejs.org/en/about/previous-releases) support: Starting with v8, React Router will officially support all Active LTS Node versions and only the latest minor branch of Maintenance LTS versions. This better allows us to bump minimum Maintenance LTS versions to account for newly released security patches. It also allows us to more quickly and easily adopt new Active LTS features backported to Maintenance LTS lines. Upgraded minimum Maintenance LTS versions will be done in React Router minor releases.
+
+For example, as of this blog post:
+
+- Node 24 is in _Active LTS_ status, so React Router officially supports all 24.x versions
+- Node 22 is in _Maintenance LTS_ status, so React Router only officially supports 22.22.x versions
+  - If a Node 22.23.x line is released, React Router will bump it's minimum Node support to 22.23.x in a Minor release
+  - When Node 22 goes EOL, React Router will drop support in a Major release
 
 ### Adopted Future Flag Behavior
 
