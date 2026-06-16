@@ -43,7 +43,7 @@ Like I said, the problem with boring major versions is they make for boring blog
 
 - Middleware/better context support
 - Split Route Modules
-- `useRoute`/`useRouterState`
+- `useRoute`/`useRouterState` (unstable)
 - Type-safe `href`
 - `fetcher.reset`
 - Vite Environment API support
@@ -53,7 +53,7 @@ Like I said, the problem with boring major versions is they make for boring blog
 - Improvements to SPA mode
 - Improvements to pre-rendering
 - Configurable Lazy Route Discovery
-- `useTransitions`
+- `useTransitions` router prop
 - Object-based `route.lazy`
 - Subresource integrity
 - RouterProvider `onError`
@@ -73,7 +73,7 @@ It's not a major version if nothing broke. The breaking changes for v8 are quite
 In React Router v8 the following are the new minimum supported versions:
 
 - Node 22.22.0+
-- React 19.2.6+
+- React 19.2.7+
 - Vite 7+
 
 To modernize the library, React Router is now published as an ESM-only module, and tsconfig `target`/`lib` fields have been updated to ES2022 across the board.
@@ -104,7 +104,7 @@ We only had a few minor deprecations in React Router:
 - Removed `react-router-dom`. It was just a mirror of `react-router` to help smooth the v6 -> v7 upgrade. If you're still using it, you can safely remove it. Use `react-router` and `react-router/dom` instead.
 - Removed the deprecated `data` parameter in favor of `loaderData` for meta APIs.
 - Removed our Cloudflare dev proxy (`@react-router/dev/vite/cloudflare`) in favor of Cloudflare's Vite plugin (`@cloudflare/vite-plugin`).
-- Removed the The `@react-router/architect` `createRequestHandler` `useRequestContextDomainName` option.
+- Removed the The `@react-router/architect` `createRequestHandler` `useRequestContextDomainName` option - that behavior is now the default.
 
 ## How to Upgrade
 
