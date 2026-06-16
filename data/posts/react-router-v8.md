@@ -135,14 +135,16 @@ Finally, I want to quote directly from [our design goals](https://github.com/rem
 
 ## A Word on Remix
 
-If you made it to the bottom of a blog post on React Router, you're likely already up to date, but in case you're left wondering "wait, whatever happened to Remix?", here's the short of it: [React Router is our React meta-framework](./merging-remix-and-react-router) and [we're taking Remix a different diection](./wake-up-remix) (checkout the [Remix 3 beta](./remix-3-beta-preview), it's pretty cool).
+If you made it to the bottom of a blog post about React Router, you're likely already up to date. But in case you're wondering, "wait, whatever happened to Remix?", here's the short version: [React Router is our React meta-framework](./merging-remix-and-react-router), and [we're taking Remix in a different direction](./wake-up-remix). You should also [check out the Remix 3 beta](./remix-3-beta-preview). It's pretty cool.
 
-This diagram gives you a quick visual of how we've developed both of these projects over the years and how we're going to continue developing moving forward. Think of Remix v0.x-2.x as a feature branch of React Router. Once it matured we up-merged it back into React Router. This frees up Remix to be a truly [full-stack, zero-dependency JavaScript web framework](/), without us abandoning the numerous React-based websites built on React Router. 1 team, 2 projects, 1 goal: build better websites.
+This diagram gives a quick visual history of how both projects have evolved, and how we plan to keep developing them moving forward. Think of Remix v0.x–2.x as a feature branch of React Router. Once it matured, we merged those ideas and APIs back into React Router. That frees Remix to become a truly [full-stack, zero-dependency JavaScript web framework](/), while we continue investing in the many React-based websites built on React Router.
+
+One team. Two projects. One goal: build better websites.
 
 ![Timeline of Remix/React Router history](/blog-images/posts/react-router-v8/remix-history.avif)
 
-> But Brooks, do I use React Router or Remix!?!?
+> But Brooks, should I use React Router or Remix?!?!
 
-If you need something battled tested, stick with React Router, it's awesome! I just wrote a whole blog post about the 40+ releases, easy upgrade path, and future work, we clearly believe in this project.
+If you need something battle-tested, stick with React Router. It's awesome. I just wrote a whole blog post about the 40+ releases we've shipped, the easy upgrade path, and the future work ahead. We clearly believe in this project.
 
-If you happen believe to that nothing is static in tech, and the web and open source should keep pushing and trying new things, [checkout our principles](https://github.com/remix-run/remix#welcome-to-remix-3) behind Remix 3 development, and if it clicks for you the next time you have a new project maybe give it a whirl.
+If you believe nothing is static in tech, and that the web and open source should keep pushing forward and trying new things, [check out the principles behind Remix 3](https://github.com/remix-run/remix#welcome-to-remix-3). If they click for you, consider giving Remix a try the next time you start a new project.
