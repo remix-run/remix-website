@@ -13,11 +13,11 @@ authors:
 
 Today we are excited to announce React Router v8!
 
-React Router has evolved many times over its 12-year history. We're so grateful for the thousands of developers, millions of projects, and billions of downloads. Together, they represent a vote of confidence in React Router.
+React Router has evolved many times over its 12-year history. We're so grateful for the thousands of developers, millions of projects, and billions of downloads that have trusted in this project.
 
-For the veterans in the room, you may remember a time when a new major version of React Router meant a number of breaking changes and you reaching for your inhaler. In all fairness, Michael and Ryan were figuring out open source at the same time as pretty much the entire React community, and I was still in college 😅.
+For the veterans in the room, you may remember a time when a new major version of React Router meant a number of breaking changes and you reaching for your inhaler. Michael and Ryan send their appologies and I kindly request you to recheck the record: with our [future flags](./future-flags) we've released multiple boring upgrades, and we're on track for our most boring one yet.
 
-We've learned a lot since then, and our aim for the past several major versions has been to make them _as boring as possible_. We did our absolute best this time. To make our major versions even more predictable—and consequently more boring—we are adopting a yearly major release schedule.
+We've learned a lot since the early days of React Router (before most of us were even on the team), and our aim for the past several major versions has been to make them _as boring as possible_. We did our absolute best this time. And to make our major versions from here on out even more predictable, and consequently more boring, we are adopting a yearly major release schedule.
 
 The only downside of a boring release is it makes it hard to hype up in a blog post (for which I drew the short straw). Nevertheless, let's recap what the team has been up to since v7, what v8 brings, how to upgrade, and what the future holds.
 
@@ -31,9 +31,9 @@ The big headline for [React Router v7](./react-router-v7) was the introduction o
 - data loading and mutations
 - and much more!
 
-Our goal with v7 was for React Router to be your one-stop package for developing any React-based application. You can use React Router like many have for years as a simple client-side router. You can build your own custom framework with Data Mode, or take it all the way to being your full-stack framework.
+Our goal with v7 was for React Router to be your one-stop package for developing any React-based application. You can use React Router like many have for years as a simple client-side router, you can build your own custom framework with Data Mode, or take it all the way to being your full-stack framework.
 
-We will continue to support and improve [all three React Router modes](https://reactrouter.com/start/modes), while also adopting whatever other features React introduces, such as Server Components and Actions (more on that later).
+We will continue to support and improve [all three React Router modes](https://reactrouter.com/start/modes), while also adopting whatever other features React introduces, such as Server Components and Server Actions (more on that later).
 
 When working with React, we think you should be in charge. We don't force you into using Server Components, SSR, SSG, or any other acronym. Use the tools that make sense to you, and develop the application your users need. Do it all with the decade-old, battle-tested library: `react-router`.
 
@@ -128,7 +128,7 @@ With React Router, we intend to always support the latest React features. One fe
 
 Finally, I want to quote directly from [our design goals](https://github.com/remix-run/react-router/blob/main/GOVERNANCE.md#design-goals). When we think about improving React Router, we aim for the following:
 
-- Less is More.
+- Less is More
 - Routing and Data Focused
 - Simple Migration Paths
 - Lowest Common Mode
