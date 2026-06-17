@@ -4,7 +4,7 @@ summary: React Router v8 is available now.
 date: 2026-06-17
 image: /blog-images/headers/react-router-v8.jpg
 ogImage: /blog-images/headers/react-router-v8.jpg
-imageAlt: "A big, floating, v8"
+imageAlt: "A big, floating v8"
 imageDisableOverlay: true
 featured: true
 authors:
@@ -15,11 +15,11 @@ Today we are excited to announce React Router v8!
 
 React Router has evolved many times over its 12-year history. We're so grateful for the thousands of developers, millions of projects, and billions of downloads that have trusted in this project.
 
-For the veterans in the room, you may remember a time when a new major version of React Router meant a number of breaking changes and you reaching for your inhaler. Michael and Ryan send their appologies and I kindly request you to recheck the record: with our [future flags](./future-flags) we've released multiple boring upgrades, and we're on track for our most boring one yet.
+For the veterans in the room, you may remember a time when a new major version of React Router meant a number of breaking changes that had you reaching for your inhaler. Michael and Ryan send their apologies and I kindly request you to recheck the record: with our [future flags](./future-flags) we've released multiple boring upgrades, and we're on track for our most boring one yet.
 
 We've learned a lot since the early days of React Router (before most of us were even on the team), and our aim for the past several major versions has been to make them _as boring as possible_. We did our absolute best this time. And to make our major versions from here on out even more predictable, and consequently more boring, we are adopting a yearly major release schedule.
 
-The only downside of a boring release is it makes it hard to hype up in a blog post (for which I drew the short straw). Nevertheless, let's recap what the team has been up to since v7, what v8 brings, how to upgrade, and what the future holds.
+The only downside of a boring release is it makes it hard to hype it up in a blog post (for which I drew the short straw). Nevertheless, let's recap what the team has been up to since v7, what v8 brings, how to upgrade, and what the future holds.
 
 ## Quick Recap of v7
 
@@ -31,7 +31,7 @@ The big headline for [React Router v7](./react-router-v7) was the introduction o
 - data loading and mutations
 - and much more!
 
-Our goal with v7 was for React Router to be your one-stop package for developing any React-based application. You can use React Router like many have for years as a simple client-side router, you can build your own custom framework with Data Mode, or take it all the way to being your full-stack framework.
+Our goal with v7 was for React Router to be your one-stop package for developing any React-based application. You can use React Router as a simple client-side router, as many have for years; build your own custom framework with Data Mode; or take it all the way to being your full-stack framework.
 
 We will continue to support and improve [all three React Router modes](https://reactrouter.com/start/modes), while also adopting whatever other features React introduces, such as Server Components and Server Actions (more on that later).
 
@@ -70,7 +70,7 @@ It's not a major version if nothing broke. The breaking changes for v8 are quite
 
 ### Baseline Support
 
-In React Router v8 the following are the new minimum supported versions:
+In React Router v8, the following are the new minimum supported versions:
 
 - Node 22.22.0+
 - React 19.2.7+
@@ -82,7 +82,7 @@ A note on [Node version](https://nodejs.org/en/about/previous-releases) support:
 
 - Node 24 is in _Active LTS_ status, so React Router officially supports all 24.x versions
 - Node 22 is in _Maintenance LTS_ status, so React Router only officially supports 22.22.x versions
-  - If a Node 22.23.x line is released, React Router will bump it's minimum Node support to 22.23.x in a Minor release
+  - If a Node 22.23.x line is released, React Router will bump its minimum Node support to 22.23.x in a Minor release
   - When Node 22 goes EOL, React Router will drop support in a Major release
 
 This allows us to bump minimum Maintenance LTS versions to account for newly released security patches. It also allows us to more quickly and easily adopt new Active LTS features backported to Maintenance LTS lines. Upgraded minimum Maintenance LTS versions will be done in React Router minor releases.
@@ -104,7 +104,7 @@ We only had a few minor deprecations in React Router:
 - Removed `react-router-dom`. It was just a mirror of `react-router` to help smooth the v6 -> v7 upgrade. If you're still using it, you can safely remove it. Use `react-router` and `react-router/dom` instead.
 - Removed the deprecated `data` parameter in favor of `loaderData` for meta APIs.
 - Removed our Cloudflare dev proxy (`@react-router/dev/vite/cloudflare`) in favor of Cloudflare's Vite plugin (`@cloudflare/vite-plugin`).
-- Removed the The `@react-router/architect` `createRequestHandler` `useRequestContextDomainName` option - that behavior is now the default.
+- Removed the `@react-router/architect` `createRequestHandler` `useRequestContextDomainName` option - that behavior is now the default.
 
 ## How to Upgrade
 
@@ -143,7 +143,7 @@ That's our creed and commitment as we continue improving React Router.
 
 If you made it to the bottom of a blog post about React Router, you're likely already up to date. But in case you're wondering, "wait, whatever happened to Remix?", here's the short version: [React Router is our React meta-framework](./merging-remix-and-react-router), and [we're taking Remix in a different direction](./wake-up-remix). You should also [check out the Remix 3 beta](./remix-3-beta-preview). It's pretty cool.
 
-This diagram gives a quick visual history of how both projects have evolved, and how we plan to keep developing them moving forward. Think of Remix v0.x–2.x as a feature branch of React Router. Once it matured, we merged those ideas and APIs back into React Router. That frees Remix to become a truly [full-stack, zero-dependency JavaScript web framework](/) without stopping us from continuing investing in the many React-based websites built on React Router.
+This diagram gives a quick visual history of how both projects have evolved, and how we plan to keep developing them moving forward. Think of Remix v0.x–2.x as a feature branch of React Router. Once it matured, we merged those ideas and APIs back into React Router. That frees Remix to become a truly [full-stack, zero-dependency JavaScript web framework](/) without stopping us from continuing to invest in the many React-based websites built on React Router.
 
 One team. Two projects. One goal: build better websites.
 
