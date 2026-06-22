@@ -21,7 +21,7 @@ const SOCIAL_LINKS = [
     icon: "youtube",
   },
   {
-    href: "https://discord.gg/xwx7mMzVkA",
+    href: "https://remix.run/discord",
     label: "Discord",
     icon: "discord",
   },

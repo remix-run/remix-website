@@ -48,7 +48,7 @@ export function Footer(handle: Handle<FooterProps>) {
             </svg>
           </a>
           <a
-            href="https://discord.gg/xwx7mMzVkA"
+            href="https://remix.run/discord"
             aria-label="Remix"
             mix={footerSocialLinkStyle}
           >

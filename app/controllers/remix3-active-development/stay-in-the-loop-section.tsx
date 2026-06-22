@@ -73,7 +73,7 @@ function DiscordCard() {
       </div>
       <div>
         <a
-          href="https://discord.gg/xwx7mMzVkA"
+          href="https://remix.run/discord"
           class={cx(
             "rmx-bg-button-secondary rmx-text-button-secondary rmx-shadow-low",
             "rmx-button-text",

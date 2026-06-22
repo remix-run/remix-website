@@ -304,7 +304,7 @@ function Footer(handle: Handle<{ showSeats: boolean; className?: string }>) {
             </svg>
           </a>
           <a
-            href="https://discord.gg/xwx7mMzVkA"
+            href="https://remix.run/discord"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Discord"

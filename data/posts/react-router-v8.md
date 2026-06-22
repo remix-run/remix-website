@@ -118,7 +118,7 @@ Then just `pnpm i react-router@latest` and you're off to the races!
 
 You can check out the [full upgrade guide](https://reactrouter.com/upgrading/v7) (or, let's be honest, throw it at your AI agent) for more details.
 
-As always, please open a ticket if you run into a bug or [reach out on Discord](https://discord.gg/xwx7mMzVkA) if you have any questions.
+As always, please open a ticket if you run into a bug or [reach out on Discord](https://remix.run/discord) if you have any questions.
 
 ## React Router Moving Forward
 
