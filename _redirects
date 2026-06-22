@@ -1,5 +1,6 @@
 /login          https://remix-run.web.app/login       302
 /dashboard      https://remix-run.web.app/dashboard   302
+/discord        https://discord.gg/xwx7mMzVkA         302
 /support        https://remix-run.web.app/support     302
 /features       /                                     302
 /api            /api/conventions                      302
@@ -59,7 +60,7 @@
 /route/meta-v2                        /docs/route/meta                     302
 /route/route-module                   /docs/route/action                   302
 
-/docs/future/presets                  /docs/guides/presets                 302  
+/docs/future/presets                  /docs/guides/presets                 302
 /docs/future/server-bundles           /docs/guides/server-bundles          302
 /docs/future/spa-mode                 /docs/guides/spa-mode                302
 /docs/future/vite                     /docs/guides/vite                    302
