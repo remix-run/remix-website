@@ -6,13 +6,12 @@ import {
   type Dispatched,
   type Handle,
 } from "remix/ui";
-import { theme } from "remix/ui/theme";
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
 import {
   jam2026WindowSurfaceStyle,
   jam2026WindowTitleStyle,
 } from "../../../controllers/jam/2026/ui/window-styles.ts";
-import { breakpointMedia } from "../../../ui/theme.ts";
+import { breakpointMedia, theme } from "../../../ui/theme.ts";
 import { assetPaths } from "../../../utils/asset-paths.ts";
 
 type PhotoMoment = {

@@ -1,5 +1,5 @@
 import { css, type Handle, type RemixNode } from "remix/ui";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../ui/theme.ts";
 import { colors } from "../styles/tokens.ts";
 
 const codeStyles = css({

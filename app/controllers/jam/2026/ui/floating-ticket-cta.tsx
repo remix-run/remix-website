@@ -1,10 +1,9 @@
 import { css } from "remix/ui";
-import { theme } from "remix/ui/theme";
 
 import { ticketModalConfig } from "../tickets-modal-contract.ts";
 import { routes } from "../../../../routes.ts";
 import { visuallyHiddenStyle } from "../../../../ui/css-mixins.ts";
-import { breakpointMedia } from "../../../../ui/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/theme.ts";
 import { assetPaths } from "../../../../utils/asset-paths.ts";
 import { jamTheme } from "../theme.ts";
 

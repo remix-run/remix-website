@@ -26,9 +26,7 @@ const storySections = [
     body: "Remix components build on web primitives like EventTarget and avoid the runtime semantics of React hooks, giving you back normal JavaScript control flow and execution. This works seamlessly with the web, including web components and third-party libraries. Remix also provides native mixins for the DOM that make it easier than ever to compose and apply complex behavior on native platform elements.",
     align: "left" as const,
     codeSnippet: `import { type Handle, on } from 'remix/ui'
-import { Glyph } from 'remix/ui/glyph'
-import * as btn from 'remix/ui/button'
-
+import button from 'remix/ui/button'
 
 function CopyToClipboard(handle: Handle<{ url: string }>) {
   let state: "idle" | "copied" | "error" = "idle";
@@ -46,7 +44,7 @@ function CopyToClipboard(handle: Handle<{ url: string }>) {
         aria-label={label}
         aria-live="polite"
         mix={[
-          btn.secondaryStyle,
+          ...button({ tone: "neutral" }),
           on("click", async (_, signal) => {
             try {
               await navigator.clipboard.writeText(handle.props.url);
@@ -67,11 +65,9 @@ function CopyToClipboard(handle: Handle<{ url: string }>) {
           }),
         ]}
       >
-        {state === "copied" ? (
-          <Glyph name="check" />
-        ) : (
-          <Glyph name="clipboard" />
-        )}
+        <span aria-hidden="true">
+          {state === "copied" ? "✓" : "⧉"}
+        </span>
       </button>
     );
   };

@@ -1,5 +1,5 @@
 import { clientEntry, css, type Handle } from "remix/ui";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../ui/theme.ts";
 import { routes } from "../../../routes.ts";
 import { createNewsletterForm } from "../../newsletter-request.ts";
 import { textBoxTrim } from "../../../ui/css-mixins.ts";

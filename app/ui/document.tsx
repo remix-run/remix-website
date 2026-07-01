@@ -1,12 +1,11 @@
 import { css, type Handle, type RemixNode } from "remix/ui";
-import { theme } from "remix/ui/theme";
 
 import { DocumentHeadSync } from "../assets/document-head-sync.tsx";
 import type { AssetEntry } from "../middleware/asset-entry.ts";
 import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head.ts";
 import { assetPaths } from "../utils/asset-paths.ts";
 import { styleHrefs } from "../utils/style-hrefs.ts";
-import { RemixTheme } from "./theme.ts";
+import { theme } from "./theme.ts";
 
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -83,7 +82,6 @@ export function Document(handle: Handle<DocumentProps>) {
             content="width=device-width,initial-scale=1,viewport-fit=cover"
           />
           <meta name="theme-color" content="#121212" />
-          <RemixTheme.Style />
           {handle.props.title ? <title>{handle.props.title}</title> : null}
 
           <link rel="icon" href="/favicon.ico" sizes="32x32" />

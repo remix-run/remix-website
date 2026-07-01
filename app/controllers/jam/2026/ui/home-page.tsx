@@ -1,5 +1,5 @@
 import { css, Frame, type Handle } from "remix/ui";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../../ui/theme.ts";
 import { FpsCounterToggle } from "../../../../assets/fps-counter-toggle.tsx";
 import { Jam2026CloudBackdrop } from "../../../../assets/jam/2026/cloud-backdrop.tsx";
 import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
@@ -64,22 +64,24 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
             </main>
             <Footer mix={footerStyle} />
           </div>
-          {ticketsModalOpen && handle.props.ticketCheckout?.error ? (
-            <Jam2026TicketsModalFrame
-              animateEntrance={false}
-              open
-              ticketCheckout={handle.props.ticketCheckout}
-            />
-          ) : (
-            <Frame
-              name={ticketModalConfig.frameName}
-              src={
-                ticketsModalOpen
-                  ? routes.jam.y2026.ticket.index.href()
-                  : routes.jam.y2026.index.href()
-              }
-            />
-          )}
+          <div {...{ [ticketModalConfig.attributes.frameHost]: "" }}>
+            {ticketsModalOpen && handle.props.ticketCheckout?.error ? (
+              <Jam2026TicketsModalFrame
+                animateEntrance={false}
+                open
+                ticketCheckout={handle.props.ticketCheckout}
+              />
+            ) : (
+              <Frame
+                name={ticketModalConfig.frameName}
+                src={
+                  ticketsModalOpen
+                    ? routes.jam.y2026.ticket.index.href()
+                    : routes.jam.y2026.index.href()
+                }
+              />
+            )}
+          </div>
         </div>
       </Document>
     );

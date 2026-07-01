@@ -1,5 +1,5 @@
 import { css, type Handle } from "remix/ui";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../ui/theme.ts";
 import { textBoxTrim } from "../../../ui/css-mixins.ts";
 import { colors, glowWhite } from "../styles/tokens.ts";
 import { CodeSnippet } from "./code-snippet.tsx";

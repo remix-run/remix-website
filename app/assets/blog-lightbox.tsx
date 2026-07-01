@@ -1,6 +1,7 @@
 import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
 import { cx } from "../utils/cx.ts";
 import { focusTrap } from "../ui/focus-trap.ts";
+import { lockScroll } from "../ui/scroll-lock.ts";
 
 const PROSE_SELECTOR = ".md-prose";
 
@@ -19,15 +20,14 @@ export let BlogLightbox = clientEntry(
     let lightboxEl: HTMLDivElement | null = null;
     let closeButtonEl: HTMLButtonElement | null = null;
     let lastFocused: HTMLElement | null = null;
-    let previousBodyOverflow = "";
+    let unlockScroll = () => {};
     let proseObserver: MutationObserver | null = null;
 
     let openLightbox = (src: string, alt: string) => {
       if (lightbox.open) return;
       let active = document.activeElement;
       lastFocused = active instanceof HTMLElement ? active : null;
-      previousBodyOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
+      unlockScroll = lockScroll();
       lightbox = { open: true, src, alt };
       handle.update();
       handle.queueTask((signal) => {
@@ -39,7 +39,8 @@ export let BlogLightbox = clientEntry(
     let closeLightbox = () => {
       if (!lightbox.open) return;
       lightbox = { open: false };
-      document.body.style.overflow = previousBodyOverflow;
+      unlockScroll();
+      unlockScroll = () => {};
       let toFocus = lastFocused;
       lastFocused = null;
       handle.update();
@@ -130,9 +131,8 @@ export let BlogLightbox = clientEntry(
         () => {
           proseObserver?.disconnect();
           proseObserver = null;
-          if (lightbox.open) {
-            document.body.style.overflow = previousBodyOverflow;
-          }
+          unlockScroll();
+          unlockScroll = () => {};
         },
         { once: true },
       );
