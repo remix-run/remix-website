@@ -15,6 +15,7 @@ import {
   getFocusableElementsWithin,
   isFocusable,
 } from "../../../ui/focus-trap.ts";
+import { lockScroll } from "../../../ui/scroll-lock.ts";
 
 /** Which chevron to focus after keyboard prev/next (URL updates before the new modal paints). */
 let PENDING_KEYBOARD_CHEVRON_KEY = "jam-gallery-pending-chevron-focus";
@@ -68,7 +69,7 @@ function createJamGalleryModalNavigation() {
     let photoCount = 0;
     let galleryPathname = "";
     let modal: HTMLElement | null = null;
-    let previousBodyOverflow = "";
+    let unlockScroll = () => {};
     let didInitialFocus = false;
 
     let getFocusableElements = () => {
@@ -174,8 +175,7 @@ function createJamGalleryModalNavigation() {
     handle.addEventListener("insert", (event) => {
       modal = event.node;
       didInitialFocus = false;
-      previousBodyOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
+      unlockScroll = lockScroll();
 
       let onKeydown = (event: KeyboardEvent) => {
         if (event.defaultPrevented) return;
@@ -248,7 +248,8 @@ function createJamGalleryModalNavigation() {
       handle.signal.addEventListener(
         "abort",
         () => {
-          document.body.style.overflow = previousBodyOverflow;
+          unlockScroll();
+          unlockScroll = () => {};
           window.cancelAnimationFrame(focusWatchRaf);
           subtreeObserver?.disconnect();
         },

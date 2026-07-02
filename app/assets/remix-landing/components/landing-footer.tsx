@@ -1,5 +1,5 @@
 import { css, type Handle } from "remix/ui";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../ui/theme.ts";
 import { Wordmark } from "../../../ui/wordmark.tsx";
 import { assetPaths } from "../../../utils/asset-paths.ts";
 import { colors } from "../styles/tokens.ts";

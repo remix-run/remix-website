@@ -1,6 +1,6 @@
 import { addEventListeners, clientEntry, css, on, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../ui/theme.ts";
 
 import { syncDocumentTheme } from "../../document-head-sync.tsx";
 import { Jam2026Countdown } from "./countdown.tsx";

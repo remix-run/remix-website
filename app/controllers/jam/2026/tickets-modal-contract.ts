@@ -3,6 +3,7 @@ export const ticketModalConfig = {
   frameName: "jam-2026-tickets-modal",
   attributes: {
     backdrop: "data-jam-2026-tickets-backdrop",
+    frameHost: "data-jam-2026-tickets-frame-host",
     modal: "data-jam-2026-tickets-modal",
   },
 } as const;

@@ -1,7 +1,6 @@
 import { css } from "remix/ui";
-import { theme } from "remix/ui/theme";
 import { textBoxTrim, visuallyHiddenStyle } from "../../../../ui/css-mixins.ts";
-import { breakpointMedia } from "../../../../ui/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/theme.ts";
 import { Wordmark } from "../../../../ui/wordmark.tsx";
 import { jamTheme } from "../theme.ts";
 import {

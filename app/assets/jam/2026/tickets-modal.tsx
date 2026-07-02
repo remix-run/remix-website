@@ -7,7 +7,7 @@ import {
   type Handle,
 } from "remix/ui";
 import { animateEntrance, spring } from "remix/ui/animation";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../ui/theme.ts";
 
 import { syncDocumentHead } from "../../document-head-sync.tsx";
 import { assetPaths } from "../../../utils/asset-paths.ts";
@@ -52,6 +52,19 @@ function shouldAnimateEntrance(animateEntrance = true) {
   return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+function restoreScrollPosition(
+  scrollX: number,
+  scrollY: number,
+  signal?: AbortSignal,
+) {
+  if (typeof window === "undefined" || signal?.aborted) return;
+
+  window.scrollTo(scrollX, scrollY);
+  window.requestAnimationFrame(() => {
+    if (!signal?.aborted) window.scrollTo(scrollX, scrollY);
+  });
+}
+
 export let Jam2026TicketsModalFrame = clientEntry(
   import.meta.url,
   function Jam2026TicketsModalFrame(handle: Handle<Jam2026TicketsModalProps>) {
@@ -73,6 +86,8 @@ export let Jam2026TicketsModalFrame = clientEntry(
       if (modalClosing || !isOpen()) return;
 
       modalClosing = true;
+      let scrollX = window.scrollX;
+      let scrollY = window.scrollY;
       handle.update();
 
       let navigationDelay = window.matchMedia(
@@ -87,6 +102,8 @@ export let Jam2026TicketsModalFrame = clientEntry(
           target: ticketModalConfig.frameName,
           history: "replace",
           resetScroll: false,
+        }).finally(() => {
+          restoreScrollPosition(scrollX, scrollY, handle.signal);
         });
       }, navigationDelay);
     }

@@ -1,8 +1,8 @@
 import { addEventListeners, type Handle } from "remix/ui";
-import { lockScroll } from "remix/ui/scroll-lock";
 
 import { ticketModalConfig } from "../../../controllers/jam/2026/tickets-modal-contract.ts";
 import { getFocusableElementsWithin } from "../../../ui/focus-trap.ts";
+import { lockScroll } from "../../../ui/scroll-lock.ts";
 
 type Jam2026TicketsModalHandle = Handle<{
   open?: boolean;

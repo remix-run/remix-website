@@ -1,5 +1,5 @@
 import { css, type Handle, type MixInput } from "remix/ui";
-import { theme } from "remix/ui/theme";
+import { theme } from "./theme.ts";
 import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/asset-paths.ts";
 import { Wordmark } from "./wordmark.tsx";

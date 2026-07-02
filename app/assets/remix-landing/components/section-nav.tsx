@@ -1,5 +1,5 @@
 import { addEventListeners, css, on, type Handle } from "remix/ui";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../ui/theme.ts";
 import { colors } from "../styles/tokens.ts";
 import { clamp } from "../utils/math.ts";
 

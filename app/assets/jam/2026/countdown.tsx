@@ -1,5 +1,5 @@
 import { css, type Handle } from "remix/ui";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../ui/theme.ts";
 
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
 

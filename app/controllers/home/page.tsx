@@ -17,19 +17,6 @@ const HOME_TITLE = "Remix - A Web Framework for Building Anything";
 const HOME_DESCRIPTION =
   "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.";
 
-const landingShellStyles = css({
-  position: "relative",
-  minHeight: "100vh",
-  background: colors.bg,
-  color: colors.fg,
-  overflowX: "clip",
-});
-
-const landingContentStyles = css({
-  position: "relative",
-  zIndex: "10",
-});
-
 export function HomePage(handle: Handle<HomePageProps>) {
   return () => (
     <Document
@@ -86,7 +73,13 @@ export function HomePage(handle: Handle<HomePageProps>) {
       ]}
     >
       <div id="remix-landing-app" mix={[landingShellStyles]}>
-        <RemixLandingEnhancements />
+        {/* Keep the initially-empty landing enhancements client entry inside
+            a stable element so Remix document navigations can hydrate it after
+            diffing in from Jam pages. Without the host, the loading screen can
+            remain visible forever on client-side transitions to /. */}
+        <div>
+          <RemixLandingEnhancements />
+        </div>
         <FpsCounterToggle />
         <main id="main-content" tabIndex={-1} mix={[landingContentStyles]}>
           <LandingContent />
@@ -96,3 +89,16 @@ export function HomePage(handle: Handle<HomePageProps>) {
     </Document>
   );
 }
+
+const landingShellStyles = css({
+  position: "relative",
+  minHeight: "100vh",
+  background: colors.bg,
+  color: colors.fg,
+  overflowX: "clip",
+});
+
+const landingContentStyles = css({
+  position: "relative",
+  zIndex: "10",
+});

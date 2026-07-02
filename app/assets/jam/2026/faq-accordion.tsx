@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "remix/ui/accordion";
-import { theme } from "remix/ui/theme";
+import { theme } from "../../../ui/theme.ts";
 import { jamTheme } from "../../../controllers/jam/2026/theme.ts";
 import { textBoxTrim } from "../../../ui/css-mixins.ts";
 

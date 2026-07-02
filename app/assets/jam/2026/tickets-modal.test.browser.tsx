@@ -259,6 +259,80 @@ describe("Jam2026TicketsModal", () => {
     expect(increaseButton.disabled).toBe(false);
   });
 
+  it("restores page scroll after the close frame navigation", async (t) => {
+    let previousOverflow = document.documentElement.style.overflow;
+    let previousScrollbarGutter =
+      document.documentElement.style.scrollbarGutter;
+    let previousScrollX = window.scrollX;
+    let previousScrollY = window.scrollY;
+    let originalMatchMedia = window.matchMedia;
+    let navigation = window.navigation;
+    let originalNavigate = navigation.navigate;
+
+    window.matchMedia = (query) =>
+      ({
+        matches: query === "(prefers-reduced-motion: reduce)",
+        media: query,
+        onchange: null,
+        addListener() {},
+        removeListener() {},
+        addEventListener() {},
+        removeEventListener() {},
+        dispatchEvent: () => false,
+      }) as MediaQueryList;
+    navigation.navigate = (() => {
+      window.scrollTo(0, 0);
+      return {
+        committed: Promise.resolve(navigation.currentEntry),
+        finished: Promise.resolve(navigation.currentEntry),
+      } as ReturnType<typeof navigation.navigate>;
+    }) as typeof navigation.navigate;
+
+    t.after(() => {
+      window.matchMedia = originalMatchMedia;
+      navigation.navigate = originalNavigate;
+      document.documentElement.style.overflow = previousOverflow;
+      document.documentElement.style.scrollbarGutter = previousScrollbarGutter;
+      window.scrollTo(previousScrollX, previousScrollY);
+    });
+
+    let renderModal = (open = false) => (
+      <div style={{ minHeight: "3000px" }}>
+        <main id={ticketModalConfig.pageBackgroundId}>Page content</main>
+        <Jam2026TicketsModalFrame open={open} />
+      </div>
+    );
+
+    let result = render(renderModal());
+    t.after(result.cleanup);
+
+    window.scrollTo(0, 360);
+
+    await result.act(() => {
+      result.root.render(renderModal(true));
+    });
+    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+
+    expect(window.scrollY).toBe(360);
+
+    await result.act(() => {
+      result.container
+        .querySelector<HTMLAnchorElement>(
+          "section[role='dialog'] [aria-label='Close tickets']",
+        )!
+        .click();
+    });
+    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+    await result.act(
+      () =>
+        new Promise<void>((resolve) => {
+          window.requestAnimationFrame(() => resolve());
+        }),
+    );
+
+    expect(window.scrollY).toBe(360);
+  });
+
   it("releases modal page effects when closing animation starts", async (t) => {
     let previousOverflow = document.documentElement.style.overflow;
     let previousScrollbarGutter =

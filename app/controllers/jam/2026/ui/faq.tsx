@@ -1,11 +1,10 @@
 import { css } from "remix/ui";
-import { theme } from "remix/ui/theme";
 import {
   Jam2026FaqAccordion,
   type Faq,
 } from "../../../../assets/jam/2026/faq-accordion.tsx";
 import { textBoxTrim } from "../../../../ui/css-mixins.ts";
-import { breakpoints } from "../../../../ui/theme.ts";
+import { breakpoints, theme } from "../../../../ui/theme.ts";
 import { jamTheme } from "../theme.ts";
 
 let faqs: Faq[] = [
