@@ -161,7 +161,7 @@
 
   & ol,
   & ul {
-    @apply my-8 mb-4 pl-8;
+    @apply mb-4 mt-0 pl-6;
   }
 
   & ol ol,
@@ -211,7 +211,7 @@
     }
 
     & + li {
-      @apply mt-1;
+      @apply mt-2;
     }
   }
 
@@ -228,7 +228,7 @@
   }
 
   & blockquote {
-    @apply border-l-4 pl-4 italic;
+    @apply my-6 border-l-4 pl-4 italic;
   }
 
   & details {
@@ -277,10 +277,10 @@
   }
 
   & :is(h1, h2, h3, h4, h5, h6) {
-    @apply relative my-8;
+    @apply relative mb-3 mt-6;
     font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.15;
     letter-spacing: -0.02em;
     white-space: pre-line;
     scroll-snap-margin-top: 1em;
@@ -313,6 +313,10 @@
     &:hover a .icon-link::before {
       @apply visible opacity-100;
     }
+  }
+
+  & h2 {
+    @apply mb-4 mt-10;
   }
 
   @supports (text-box-trim: trim-both) {

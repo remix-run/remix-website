@@ -166,7 +166,7 @@ function BlogPostContent(
               <div class="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-10 lg:max-w-4xl">
                 <div class="flex-1">
                   <div class="flex flex-col gap-3">
-                    <div class="rmx-page-body rmx-page-body-sm uppercase text-white">
+                    <div class="rmx-page-meta text-white">
                       {handle.props.post.dateDisplay}
                     </div>
                     <h1

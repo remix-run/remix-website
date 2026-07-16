@@ -70,13 +70,9 @@ function BlogPageContent(
                         alt={latestPost.imageAlt}
                       />
                     </div>
-                    <div class="flex flex-col gap-5">
-                      <p class="rmx-page-body rmx-page-body-sm">
-                        {latestPost.dateDisplay}
-                      </p>
-                      <p class="rmx-page-title !leading-[1.1]">
-                        {latestPost.title}
-                      </p>
+                    <div class="flex flex-col gap-4">
+                      <p class="rmx-page-meta">{latestPost.dateDisplay}</p>
+                      <p class="rmx-page-title">{latestPost.title}</p>
                       <p class="rmx-page-body">{latestPost.summary}</p>
                     </div>
                   </a>
@@ -95,10 +91,8 @@ function BlogPageContent(
                         />
                       </div>
                       <div class="mb-12 flex flex-col gap-4">
-                        <p class="rmx-page-body rmx-page-body-sm">
-                          {post.dateDisplay}
-                        </p>
-                        <p class="rmx-page-title rmx-page-title-xs !leading-[1.4]">
+                        <p class="rmx-page-meta">{post.dateDisplay}</p>
+                        <p class="rmx-page-title rmx-page-title-xs">
                           {post.title}
                         </p>
                         <p class="rmx-page-body">{post.summary}</p>

@@ -58,7 +58,7 @@ function HeaderLink(
     <a
       href={handle.props.to}
       rmx-document={handle.props.document ? "" : undefined}
-      class="whitespace-nowrap text-base font-normal text-[#0074c0] hover:text-[#00304a] dark:text-[#2dacf9] dark:hover:text-[#63c2fb]"
+      class="text-rmx-primary whitespace-nowrap text-base font-normal opacity-80 hover:opacity-100"
     >
       {handle.props.children}
     </a>

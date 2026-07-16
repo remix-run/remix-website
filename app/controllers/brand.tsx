@@ -150,10 +150,10 @@ function AssetGrid(handle: Handle<{ assets: readonly BrandAsset[] }>) {
                 alt={`Remix ${asset.title}`}
               />
             </div>
-            <div class="mt-1 flex items-end gap-4 text-sm text-gray-800 dark:text-gray-100">
+            <div class="mt-1 flex items-end gap-4 text-gray-800 dark:text-gray-100">
               {asset.formats.map((format) => (
                 <a
-                  class="uppercase underline opacity-50 hover:opacity-100"
+                  class="rmx-page-meta underline opacity-50 hover:opacity-100"
                   href={`/_brand/${asset.fileBase}.${format}`}
                   download
                   key={format}
@@ -171,7 +171,7 @@ function AssetGrid(handle: Handle<{ assets: readonly BrandAsset[] }>) {
 
 function BrandPage() {
   return () => (
-    <div class="rmx-page-body prose container mt-8 flex max-w-full flex-col gap-8 lg:max-w-4xl">
+    <div class="rmx-page-body rmx-editorial-prose container mt-8 max-w-full lg:max-w-3xl">
       <h1 class="rmx-page-title dark:text-gray-200">Remix Brand</h1>
       <p>
         These assets are provided for use in situations like articles and video
