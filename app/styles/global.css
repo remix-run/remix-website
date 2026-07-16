@@ -37,6 +37,29 @@
     border: 0 solid #c8c8c8;
   }
 
+  * {
+    scrollbar-color: light-dark(#d1d5db, #3f3f46) transparent;
+    scrollbar-width: thin;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: light-dark(#d1d5db, #3f3f46);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: light-dark(#9ca3af, #52525b);
+  }
+
   ::before,
   ::after {
     --tw-content: "";

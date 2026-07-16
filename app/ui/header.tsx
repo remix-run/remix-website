@@ -1,30 +1,37 @@
 import type { Handle } from "remix/ui";
-import { cx } from "../utils/cx.ts";
 import { MobileMenu } from "../assets/mobile-menu.tsx";
 import { WordmarkLink } from "../assets/wordmark-link.tsx";
 import { routes } from "../routes.ts";
+import { theme } from "./theme.ts";
 
 const LINKS: Array<{ to: string; label: string; document?: boolean }> = [
-  { to: "https://github.com/remix-run/remix", label: "GitHub", document: true },
-  { to: "https://api.remix.run", label: "Docs", document: true },
+  { to: "https://guides.remix.run", label: "Guides", document: true },
+  { to: "https://api.remix.run", label: "API", document: true },
   { to: routes.blog.href(), label: "Blog" },
   { to: routes.jam.y2026.index.href(), label: "Jam" },
   { to: "https://shop.remix.run", label: "Store", document: true },
+  { to: "https://github.com/remix-run/remix", label: "GitHub", document: true },
 ];
 
 export function Header() {
   return () => (
-    <header class={cx("p-6", "text-rmx-primary", "relative z-50")}>
-      <div class="flex w-full items-start justify-between gap-8">
+    <header
+      class="relative z-50 h-16 pl-6 pr-4 sm:pr-6 min-[900px]:pr-[30px]"
+      style={{ fontFamily: theme.fontFamily.system }}
+    >
+      <div class="flex h-full w-full items-center justify-between gap-8">
         <WordmarkLink
           href={routes.home.href()}
           brandHref={routes.brand.href()}
-          width={164}
+          width={163}
           height={16}
           class="text-gray-900 dark:text-gray-200"
         />
 
-        <nav class="hidden items-center gap-6 md:flex" aria-label="Main">
+        <nav
+          class="hidden h-full items-center gap-5 sm:flex min-[900px]:gap-8"
+          aria-label="Main"
+        >
           {LINKS.map((link) => (
             <HeaderLink key={link.to} to={link.to} document={link.document}>
               {link.label}
@@ -32,7 +39,7 @@ export function Header() {
           ))}
         </nav>
 
-        <MobileMenu class="-mt-3 md:hidden">
+        <MobileMenu class="sm:hidden">
           {LINKS.map((link) => (
             <HeaderLink key={link.to} to={link.to} document={link.document}>
               {link.label}
@@ -51,9 +58,7 @@ function HeaderLink(
     <a
       href={handle.props.to}
       rmx-document={handle.props.document ? "" : undefined}
-      class={cx(
-        "text-rmx-primary text-sm font-semibold leading-4 tracking-[0.01em] opacity-80 hover:opacity-100",
-      )}
+      class="whitespace-nowrap text-base font-normal text-[#0074c0] hover:text-[#00304a] dark:text-[#2dacf9] dark:hover:text-[#63c2fb]"
     >
       {handle.props.children}
     </a>

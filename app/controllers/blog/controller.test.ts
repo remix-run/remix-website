@@ -25,5 +25,21 @@ describe("Blog route", () => {
     );
     expect(html).toContain("Featured Articles");
     expect(html).toContain('action="/_actions/newsletter"');
+
+    let mainNavigation = html.match(/<nav aria-label="Main".*?<\/nav>/s)?.[0];
+    if (!mainNavigation) throw new Error("Missing main navigation");
+
+    let navigationLinks = [
+      ...mainNavigation.matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g),
+    ].map((match) => ({ href: match[1], label: match[2] }));
+
+    expect(navigationLinks).toEqual([
+      { href: "https://guides.remix.run", label: "Guides" },
+      { href: "https://api.remix.run", label: "API" },
+      { href: routes.blog.href(), label: "Blog" },
+      { href: routes.jam.y2026.index.href(), label: "Jam" },
+      { href: "https://shop.remix.run", label: "Store" },
+      { href: "https://github.com/remix-run/remix", label: "GitHub" },
+    ]);
   });
 });

@@ -139,14 +139,14 @@ const svgIconStyles = css({
 const NAV_ITEMS = [
   {
     key: "G",
-    label: "github",
-    href: "https://github.com/remix-run/remix",
+    label: "guides",
+    href: "https://guides.remix.run",
     external: true,
   },
   {
-    key: "D",
-    label: "docs",
-    href: "https://api.remix.run/",
+    key: "A",
+    label: "api",
+    href: "https://api.remix.run",
     external: true,
   },
   { key: "B", label: "blog", href: routes.blog.href() },
@@ -159,7 +159,13 @@ const NAV_ITEMS = [
     href: routes.jam.y2026.index.href(),
     document: true,
   },
-  { key: "S", label: "store", href: "https://shop.remix.run/", external: true },
+  { key: "S", label: "store", href: "https://shop.remix.run", external: true },
+  {
+    key: "H",
+    label: "github",
+    href: "https://github.com/remix-run/remix",
+    external: true,
+  },
 ];
 
 type NavItem = (typeof NAV_ITEMS)[number];
