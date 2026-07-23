@@ -2,3 +2,5 @@ minimumReleaseAge: 10800
 minimumReleaseAgeExclude:
   - remix
   - "@remix-run/*"
+onlyBuiltDependencies:
+  - remix
