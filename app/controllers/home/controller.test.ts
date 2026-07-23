@@ -72,8 +72,23 @@ describe("home route", () => {
     expect(html).not.toContain("fonts.googleapis.com");
     expect(html).not.toContain("fonts.gstatic.com");
     expect(html).toContain(
-      '<link rel="modulepreload" href="/assets/app/assets/entry.ts"',
+      '<link rel="modulepreload" href="/assets/app/assets/document-head-sync.tsx"',
     );
+    expect(html).toContain(
+      '<link rel="modulepreload" href="/assets/app/assets/remix-landing/landing-enhancements.tsx"',
+    );
+    expect(html).toContain(
+      '<link rel="modulepreload" href="/assets/app/assets/remix-landing/components/feature-section.tsx"',
+    );
+    expect(html).toContain(
+      '<link rel="modulepreload" href="/assets/app/assets/remix-landing/components/particle-canvas.tsx"',
+    );
+    expect(html).not.toContain(
+      '<link rel="modulepreload" href="/assets/app/assets/fps-counter.tsx"',
+    );
+    expect(
+      html.indexOf("/assets/app/assets/remix-landing/landing-enhancements.tsx"),
+    ).toBeLessThan(html.indexOf("/assets/app/assets/fathom.ts"));
     expect(html).toContain(
       '<script type="module" async src="/assets/app/assets/entry.ts"',
     );

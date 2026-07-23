@@ -19,6 +19,11 @@ export function createRouteTestRouter(): Router<AppContext> {
       formData(),
       async (context, next) => {
         setAssetEntry(context, {
+          sourceEntries: [
+            new URL("../app/assets/entry.ts", import.meta.url).href,
+            new URL("../app/assets/document-head-sync.tsx", import.meta.url)
+              .href,
+          ],
           src: "/assets/app/assets/entry.ts",
           preloads: ["/assets/app/assets/entry.ts"],
         });

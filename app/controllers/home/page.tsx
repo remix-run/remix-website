@@ -1,6 +1,7 @@
 import { css, type Handle } from "remix/ui";
 import { FpsCounterToggle } from "../../assets/fps-counter-toggle.tsx";
 import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements.tsx";
+import { LandingNewsletterSubscribeForm } from "../../assets/remix-landing/components/feature-section.tsx";
 import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen.tsx";
 import { RUNNER_AVIF_SRC } from "../../assets/remix-landing/runner-media.ts";
 import { colors } from "../../assets/remix-landing/styles/tokens.ts";
@@ -16,6 +17,14 @@ type HomePageProps = {
 const HOME_TITLE = "Remix - A Web Framework for Building Anything";
 const HOME_DESCRIPTION =
   "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.";
+
+// Preload the hydration roots needed for the initial experience and let the
+// asset server follow their imports. The FPS counter stays out of this graph so
+// its event-triggered dynamic import remains lazy.
+export let homeBrowserEntries = [
+  RemixLandingEnhancements.$entryId,
+  LandingNewsletterSubscribeForm.$entryId,
+];
 
 export function HomePage(handle: Handle<HomePageProps>) {
   return () => (

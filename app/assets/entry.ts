@@ -6,22 +6,7 @@ initFathomAnalytics();
 let app = run({
   async loadModule(src, exportName) {
     let mod = await import(src);
-
-    let exp = (mod as Record<string, unknown>)[exportName];
-    if (typeof exp === "function") return exp;
-
-    // Minified builds may rename exports (e.g. NewsletterSubscribeForm -> N).
-    // Fallback: find a function with clientEntry metadata.
-    for (let value of Object.values(mod as object)) {
-      if (
-        typeof value === "function" &&
-        (value as { $entry?: boolean }).$entry === true
-      ) {
-        return value;
-      }
-    }
-
-    throw new Error(`Export "${exportName}" from "${src}" is not a function`);
+    return mod[exportName];
   },
   async resolveFrame(src, signal, target) {
     let headers = new Headers();

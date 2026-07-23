@@ -3,6 +3,7 @@ import { PresetGlow } from "./components/preset-glow.tsx";
 import { LandingNav } from "./components/landing-nav.tsx";
 import { LabelOverlay } from "./components/label-overlay.tsx";
 import { PackageLogos } from "./components/package-logos.tsx";
+import { ParticleCanvas } from "./components/particle-canvas.tsx";
 import { ScrollLogo } from "./components/scroll-logo.tsx";
 import { SectionNav } from "./components/section-nav.tsx";
 import { isEditableKeyTarget } from "../keyboard.ts";
@@ -134,9 +135,7 @@ const LANDING_SECTION_IDS = [
   "start-building",
 ] as const;
 
-type ParticleCanvasComponent =
-  typeof import("./components/particle-canvas.tsx").ParticleCanvas;
-type ParticleCanvasStatus = "idle" | "loaded" | "ready" | "failed";
+type ParticleCanvasStatus = "loading" | "ready" | "failed";
 
 function konamiKeyMatches(event: KeyboardEvent, expected: string): boolean {
   if (expected.startsWith("Arrow")) return event.key === expected;
@@ -164,14 +163,8 @@ export let RemixLandingEnhancements = clientEntry(
       frame: 0,
       sectionStops: null as number[] | null,
     };
-    const particleCanvas: {
-      Component: ParticleCanvasComponent | null;
-      load: Promise<void> | null;
-      status: ParticleCanvasStatus;
-    } = {
-      Component: null,
-      load: null,
-      status: "idle",
+    const particleCanvas: { status: ParticleCanvasStatus } = {
+      status: "loading",
     };
     const loadingScreen = {
       minElapsed: false,
@@ -381,20 +374,6 @@ export let RemixLandingEnhancements = clientEntry(
       }, LOADING_SCREEN_MIN_MS);
     }
 
-    function loadParticleCanvas() {
-      particleCanvas.load ??= import("./components/particle-canvas.tsx")
-        .then((module) => {
-          if (handle.signal.aborted) return;
-          particleCanvas.Component = module.ParticleCanvas;
-          particleCanvas.status = "loaded";
-        })
-        .catch((error: unknown) => {
-          particleCanvas.status = "failed";
-          console.error(error);
-        });
-      return particleCanvas.load;
-    }
-
     function markParticleCanvasReady() {
       if (particleCanvas.status === "ready") return;
       particleCanvas.status = "ready";
@@ -449,11 +428,6 @@ export let RemixLandingEnhancements = clientEntry(
       startLoadingScreenMinimumTimer();
 
       syncMorphToScroll();
-      void loadParticleCanvas().then(() => {
-        if (handle.signal.aborted) return;
-        syncLoadingScreenDismissal();
-        handle.update();
-      });
 
       addEventListeners(window, handle.signal, {
         scroll: () => scheduleMorphSync(),
@@ -480,23 +454,20 @@ export let RemixLandingEnhancements = clientEntry(
       const settings = konami.brandMode
         ? BRAND_MODE_SETTINGS
         : DEFAULT_SETTINGS;
-      const ParticleCanvas = particleCanvas.Component;
 
       return (
         <div mix={[appStyles]}>
           <PackageLogos morphValueRef={morphValueRef} />
-          {ParticleCanvas ? (
-            <ParticleCanvas
-              settings={settings}
-              presets={presets}
-              morphValueRef={morphValueRef}
-              modelData={modelData}
-              labelsRef={projectedLabelsRef}
-              labelOpacityRef={labelOpacityRef}
-              onReady={markParticleCanvasReady}
-              onError={markParticleCanvasFailed}
-            />
-          ) : null}
+          <ParticleCanvas
+            settings={settings}
+            presets={presets}
+            morphValueRef={morphValueRef}
+            modelData={modelData}
+            labelsRef={projectedLabelsRef}
+            labelOpacityRef={labelOpacityRef}
+            onReady={markParticleCanvasReady}
+            onError={markParticleCanvasFailed}
+          />
           <LabelOverlay
             labelsRef={projectedLabelsRef}
             opacityRef={labelOpacityRef}
