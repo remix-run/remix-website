@@ -18,6 +18,7 @@ export let assetServer = createAssetServer({
     "app/data/**",
     "app/middleware/**",
   ],
+  fingerprint: isDevelopment ? undefined : { buildId: getBuildId() },
   sourceMaps: isDevelopment ? "external" : undefined,
   minify: !isDevelopment,
   scripts: {
@@ -29,3 +30,13 @@ export let assetServer = createAssetServer({
   },
   watch: false,
 });
+
+function getBuildId() {
+  let buildId = process.env.ASSET_BUILD_ID || process.env.FLY_IMAGE_REF;
+  if (!buildId) {
+    throw new Error(
+      "ASSET_BUILD_ID or FLY_IMAGE_REF is required for production asset fingerprinting",
+    );
+  }
+  return buildId;
+}
