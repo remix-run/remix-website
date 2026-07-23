@@ -12,7 +12,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 ## Server runtime
 
 - **Root `server.ts`** — Node HTTP process entry. Uses `createRequestListener` from `remix/node-fetch-server`, imports the live app router, and closes the asset server during shutdown.
-- **`app/router.ts`** — `createRouter`, root middleware stack, `router.map(...)` wiring, and the `GET /assets/*` route that delegates to `app/utils/assets.server.ts`.
+- **`app/router.ts`** — `createRouter`, root middleware stack, `router.map(...)` wiring, and the `GET /assets/*` route that delegates to `app/utils/assets.ts`.
 - **Production / `pnpm run preview`** — runs the same TypeScript server entry as development (`server.ts`) through `remix/node-tsx`; there is no separate Vite SSR bundle.
 
 ## Keep These Non-Obvious Invariants
@@ -21,14 +21,14 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - Map explicit routes before the `router.map("*", ...)` catch-all.
 - In `app/controllers/**`, keep exported route handler/controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
-- For route-local hydrated UI in `app/assets/**`, keep component/rendering code first and put styles below the components.
+- Browser-reachable source lives in `public/` directories inside `app/`, colocated with the narrowest owner (e.g. `app/controllers/jam/2026/public/`, `app/ui/public/`). The root browser runtime entry is `app/public/entry.ts`. Keep every local dependency of a browser module in a `public/` directory; the shared `app/routes.ts` contract and `allowPackages` entries in `app/utils/assets.ts` are the only exceptions. For route-local hydrated UI in a `public/` directory, keep component/rendering code first and put styles below the components.
 - Let components own their own state and implementation details. If a parent imports a long list of child constants/helpers, that is a boundary smell; extract a child component/module instead.
 - Prefer direct code over tiny wrappers/constants that do not add meaning. Inline one-off helpers, values, and derived constants at their use site when that reads clearly.
 - Use shared theme tokens such as `theme.fontFamily.*`, `theme.fontWeight.*`, and route theme objects instead of hardcoded repeated values. Never hardcode custom `fontWeight` numbers or strings.
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
 - Use `clientEntry(import.meta.url, function ExportName(...) { ... })` for hydrated asset modules so server rendering can resolve them through `resolveClientEntry(...)` using the component function name.
-- Resolve the root browser entry and preload links through `app/middleware/asset-entry.ts` + `app/utils/assets.server.ts`; do not hardcode build output paths.
-- Plain stylesheets still come from `public/styles` via `app/utils/style-hrefs.ts`; this app uses `remix/assets` for hydrated browser modules.
+- Resolve the root browser entry and preload links through `app/middleware/asset-entry.ts` + `app/utils/assets.ts`; do not hardcode build output paths. The asset server boundary is `allowFiles: ['app/routes.ts', 'app/**/public/**']` plus `allowPackages`. The allow-list is narrow enough that the only `denyFiles` entry is `app/**/*.test.*` (tests colocate with their subjects but are not browser runtime source); server-only code is excluded simply by not living in a `public/` directory. There is no `.server.` naming convention.
+- Plain stylesheets still come from root `public/styles` via `app/utils/style-hrefs.ts`; this app uses `remix/assets` for hydrated browser modules compiled from `app/**/public/**` source.
 
 ## UI Behavior Defaults
 
