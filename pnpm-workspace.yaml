@@ -4,3 +4,10 @@ minimumReleaseAgeExclude:
   - "@remix-run/*"
 onlyBuiltDependencies:
   - remix
+# The `remix` git-hosted package (preview/main) ships prebuilt `dist/` but still
+# declares `prepack`/`prepublishOnly` scripts, so pnpm would try to prepare-build
+# it by running `pnpm install` inside the fetched workspace. That sub-install hits
+# the installable branch's stale lockfile under CI's frozen-lockfile mode. Skipping
+# install lifecycle scripts avoids the prepare step; `dist/` is already committed,
+# so no build is needed. `onlyBuiltDependencies` keeps the allowlist explicit.
+ignoreScripts: true
