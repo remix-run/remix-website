@@ -1,8 +1,8 @@
 import type { AppContext } from "../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
-import { Paragraph, ScrambleText, Subheader, Title } from "./shared.tsx";
-import { assetPaths } from "../../../utils/asset-paths.ts";
+import { Paragraph, ScrambleText, Subheader, Title } from "./public/shared.tsx";
+import { assetPaths } from "../../../utils/public/asset-paths.ts";
 
 export async function jam2025CocHandler({ render, request }: AppContext) {
   return render(

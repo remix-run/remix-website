@@ -1,5 +1,5 @@
 import { routes } from "../../routes.ts";
-import { assetPaths } from "../../utils/asset-paths.ts";
+import { assetPaths } from "../../utils/public/asset-paths.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import type { AppContext } from "../../middleware/render.ts";
 import { HomePage } from "./page.tsx";

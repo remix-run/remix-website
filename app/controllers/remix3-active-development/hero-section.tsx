@@ -1,4 +1,4 @@
-import { cx } from "../../utils/cx.ts";
+import { cx } from "../../utils/public/cx.ts";
 
 let heroImageSrc = "/marketing/racecar-teaser-hero.webp";
 

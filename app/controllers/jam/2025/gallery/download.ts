@@ -1,6 +1,6 @@
 import type { AppContext } from "../../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
-import { transformShopifyImageUrl } from "../shared.tsx";
+import { transformShopifyImageUrl } from "../public/shared.tsx";
 import { getGalleryPhotos, getSelectedPhotoIndex } from "./controller.tsx";
 
 export async function jam2025GalleryDownloadHandler({ request }: AppContext) {

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
-import { newsletterTagIds } from "../../utils/newsletter-tags.ts";
+import { newsletterTagIds } from "../../utils/public/newsletter-tags.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 import actionsController from "./controller.tsx";
 

@@ -8,24 +8,24 @@ import {
   createCart,
   getProduct,
   MAX_QUANTITY,
-} from "../../../data/jam-storefront.server.ts";
+} from "../../../data/jam-storefront.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import type { AppContext, AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
-import { Jam2026TicketsModalFrame } from "../../../assets/jam/2026/tickets-modal.tsx";
+import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
 import { Jam2026HomePage } from "./ui/home-page.tsx";
-import { remixJam2026Ticket } from "./ticket-data.ts";
-import { ticketModalConfig } from "./tickets-modal-contract.ts";
+import { remixJam2026Ticket } from "./public/ticket-data.ts";
+import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
 import {
   getJam2026ThemePreference,
   serializeJam2026ThemePreference,
-} from "./theme-preference.server.ts";
+} from "./theme-preference.ts";
 import {
   clearJam2026DiscountCode,
   getJam2026DiscountCode,
   normalizeJam2026DiscountCode,
   serializeJam2026DiscountCode,
-} from "./discount-code.server.ts";
+} from "./discount-code.ts";
 
 type Jam2026Storefront = {
   createCart: typeof createCart;

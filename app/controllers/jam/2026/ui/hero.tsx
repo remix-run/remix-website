@@ -1,13 +1,16 @@
 import { css } from "remix/ui";
-import { textBoxTrim, visuallyHiddenStyle } from "../../../../ui/css-mixins.ts";
-import { breakpointMedia, theme } from "../../../../ui/theme.ts";
-import { Wordmark } from "../../../../ui/wordmark.tsx";
-import { jamTheme } from "../theme.ts";
+import {
+  textBoxTrim,
+  visuallyHiddenStyle,
+} from "../../../../ui/public/css-mixins.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { Wordmark } from "../../../../ui/public/wordmark.tsx";
+import { jamTheme } from "../public/theme.ts";
 import {
   jam2026WindowBodyStyle,
   jam2026WindowSurfaceStyle,
   jam2026WindowTitleStyle,
-} from "./window-styles.ts";
+} from "../public/window-styles.ts";
 
 export function Jam2026Hero() {
   return () => (

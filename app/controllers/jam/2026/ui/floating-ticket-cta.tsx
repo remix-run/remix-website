@@ -1,11 +1,11 @@
 import { css } from "remix/ui";
 
-import { ticketModalConfig } from "../tickets-modal-contract.ts";
+import { ticketModalConfig } from "../public/tickets-modal-contract.ts";
 import { routes } from "../../../../routes.ts";
-import { visuallyHiddenStyle } from "../../../../ui/css-mixins.ts";
-import { breakpointMedia, theme } from "../../../../ui/theme.ts";
-import { assetPaths } from "../../../../utils/asset-paths.ts";
-import { jamTheme } from "../theme.ts";
+import { visuallyHiddenStyle } from "../../../../ui/public/css-mixins.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
+import { assetPaths } from "../../../../utils/public/asset-paths.ts";
+import { jamTheme } from "../public/theme.ts";
 
 export function Jam2026FloatingTicketCta() {
   return () => (

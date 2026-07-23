@@ -4,7 +4,7 @@ import * as coerce from "remix/data-schema/coerce";
 import { createController } from "remix/router";
 
 import { routes } from "../../routes.ts";
-import { isAllowedNewsletterTagId } from "../../utils/newsletter-tags.ts";
+import { isAllowedNewsletterTagId } from "../../utils/public/newsletter-tags.ts";
 
 type NewsletterResponse = { ok: boolean; error: string | null };
 

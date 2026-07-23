@@ -1,8 +1,8 @@
 import type { Handle } from "remix/ui";
-import { MobileMenu } from "../assets/mobile-menu.tsx";
-import { WordmarkLink } from "../assets/wordmark-link.tsx";
+import { MobileMenu } from "./public/mobile-menu.tsx";
+import { WordmarkLink } from "./public/wordmark-link.tsx";
 import { routes } from "../routes.ts";
-import { theme } from "./theme.ts";
+import { theme } from "./public/theme.ts";
 
 const LINKS: Array<{ to: string; label: string; document?: boolean }> = [
   { to: "https://guides.remix.run", label: "Guides", document: true },

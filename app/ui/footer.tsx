@@ -1,8 +1,8 @@
 import { css, type Handle, type MixInput } from "remix/ui";
-import { theme } from "./theme.ts";
+import { theme } from "./public/theme.ts";
 import { routes } from "../routes.ts";
-import { assetPaths } from "../utils/asset-paths.ts";
-import { Wordmark } from "./wordmark.tsx";
+import { assetPaths } from "../utils/public/asset-paths.ts";
+import { Wordmark } from "./public/wordmark.tsx";
 
 type FooterProps = {
   mix?: MixInput<HTMLElement>;

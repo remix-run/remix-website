@@ -8,9 +8,9 @@ import {
   ScrambleText,
   Subheader,
   Title,
-} from "./shared.tsx";
+} from "./public/shared.tsx";
 import { routes } from "../../../routes.ts";
-import { assetPaths } from "../../../utils/asset-paths.ts";
+import { assetPaths } from "../../../utils/public/asset-paths.ts";
 
 function slugify(input: string) {
   return input

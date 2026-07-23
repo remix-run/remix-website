@@ -4,7 +4,7 @@ import {
   type Middleware,
   type RequestContext,
 } from "remix/router";
-import { assetServer } from "../utils/assets.server.ts";
+import { assetServer } from "../utils/assets.ts";
 
 export interface AssetEntry {
   src: string;
@@ -18,7 +18,7 @@ export type AssetEntryContextEntry = {
   property: "assetEntry";
 };
 
-let defaultEntry = path.resolve(import.meta.dirname, "../assets/entry.ts");
+let defaultEntry = path.resolve(import.meta.dirname, "../public/entry.ts");
 
 export function loadAssetEntry(
   entry = defaultEntry,

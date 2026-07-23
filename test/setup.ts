@@ -19,8 +19,8 @@ export function createRouteTestRouter(): Router<AppContext> {
       formData(),
       async (context, next) => {
         setAssetEntry(context, {
-          src: "/assets/app/assets/entry.ts",
-          preloads: ["/assets/app/assets/entry.ts"],
+          src: "/assets/app/public/entry.ts",
+          preloads: ["/assets/app/public/entry.ts"],
         });
         return next();
       },

@@ -1,18 +1,22 @@
 import { css, Frame, type Handle } from "remix/ui";
-import { theme } from "../../../../ui/theme.ts";
-import { FpsCounterToggle } from "../../../../assets/fps-counter-toggle.tsx";
-import { Jam2026CloudBackdrop } from "../../../../assets/jam/2026/cloud-backdrop.tsx";
-import { Jam2026Header } from "../../../../assets/jam/2026/header.tsx";
-import { Jam2026NewsletterSignup } from "../../../../assets/jam/2026/newsletter-signup.tsx";
-import { Jam2026PhotoMoments } from "../../../../assets/jam/2026/photo-moments.tsx";
-import { Jam2026TicketsModalFrame } from "../../../../assets/jam/2026/tickets-modal.tsx";
+import { theme } from "../../../../ui/public/theme.ts";
+import { FpsCounterToggle } from "../../../../ui/public/fps-counter-toggle.tsx";
+import { Jam2026CloudBackdrop } from "../public/cloud-backdrop.tsx";
+import { Jam2026Header } from "../public/header.tsx";
+import { Jam2026NewsletterSignup } from "../public/newsletter-signup.tsx";
+import { Jam2026PhotoMoments } from "../public/photo-moments.tsx";
+import { Jam2026TicketsModalFrame } from "../public/tickets-modal.tsx";
 import { routes } from "../../../../routes.ts";
 import { Document } from "../../../../ui/document.tsx";
 import { Footer } from "../../../../ui/footer.tsx";
-import { getJam2026HeadContent } from "../head-content.ts";
-import { getJam2026HeadTags } from "../head.server.ts";
-import { jamTheme, jamThemeStyle, type Jam2026ThemeMode } from "../theme.ts";
-import { ticketModalConfig } from "../tickets-modal-contract.ts";
+import { getJam2026HeadContent } from "../public/head-content.ts";
+import { getJam2026HeadTags } from "../head.ts";
+import {
+  jamTheme,
+  jamThemeStyle,
+  type Jam2026ThemeMode,
+} from "../public/theme.ts";
+import { ticketModalConfig } from "../public/tickets-modal-contract.ts";
 import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026FloatingTicketCta } from "./floating-ticket-cta.tsx";
 import { Jam2026Hero } from "./hero.tsx";

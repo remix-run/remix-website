@@ -1,11 +1,14 @@
 import { css, type Handle, type RemixNode } from "remix/ui";
 
-import { DocumentHeadSync } from "../assets/document-head-sync.tsx";
+import { DocumentHeadSync } from "./public/document-head-sync.tsx";
 import type { AssetEntry } from "../middleware/asset-entry.ts";
-import { getManagedHeadTagKey, type ManagedHeadTag } from "./document-head.ts";
-import { assetPaths } from "../utils/asset-paths.ts";
-import { styleHrefs } from "../utils/style-hrefs.ts";
-import { theme } from "./theme.ts";
+import {
+  getManagedHeadTagKey,
+  type ManagedHeadTag,
+} from "./public/document-head.ts";
+import { assetPaths } from "../utils/public/asset-paths.ts";
+import { styleHrefs } from "../utils/public/style-hrefs.ts";
+import { theme } from "./public/theme.ts";
 
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");

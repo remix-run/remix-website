@@ -7,10 +7,10 @@ import { IntroMaskReveal } from "./intro-mask-reveal.tsx";
 import { PitchSection } from "./pitch-section.tsx";
 import { StayInTheLoopSection } from "./stay-in-the-loop-section.tsx";
 import { TimelineSection } from "./timeline-section/index.tsx";
-import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
+import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import type { AppContext } from "../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-import { styleHrefs } from "../../utils/style-hrefs.ts";
+import { styleHrefs } from "../../utils/public/style-hrefs.ts";
 
 export async function remix3ActiveDevelopmentHandler({
   render,

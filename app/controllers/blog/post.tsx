@@ -1,17 +1,17 @@
 import type { Handle } from "remix/ui";
-import { cx } from "../../utils/cx.ts";
+import { cx } from "../../utils/public/cx.ts";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
-import { BlogLightbox } from "../../assets/blog-lightbox.tsx";
-import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe.tsx";
+import { BlogLightbox } from "./public/blog-lightbox.tsx";
+import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
 import { routes } from "../../routes.ts";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
 import type { AppContext } from "../../middleware/render.ts";
-import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.server.ts";
+import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-import { styleHrefs } from "../../utils/style-hrefs.ts";
-import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
+import { styleHrefs } from "../../utils/public/style-hrefs.ts";
+import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 
 type BlogPostContext = AppContext & {
   params: { slug?: string; ext?: string };

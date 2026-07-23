@@ -1,5 +1,5 @@
-import { cx } from "../../utils/cx.ts";
-import { assetPaths } from "../../utils/asset-paths.ts";
+import { cx } from "../../utils/public/cx.ts";
+import { assetPaths } from "../../utils/public/asset-paths.ts";
 
 export function PitchSection() {
   return () => (

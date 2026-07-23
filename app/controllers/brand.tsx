@@ -1,12 +1,12 @@
-import { cx } from "../utils/cx.ts";
+import { cx } from "../utils/public/cx.ts";
 import type { Handle, RemixNode } from "remix/ui";
 import { Document } from "../ui/document.tsx";
 import { Footer } from "../ui/footer.tsx";
 import { Header } from "../ui/header.tsx";
 import type { AppContext } from "../middleware/render.ts";
 import { CACHE_CONTROL } from "../utils/cache-control.ts";
-import { getSocialHeadTags } from "../utils/social-head-tags.server.ts";
-import { styleHrefs } from "../utils/style-hrefs.ts";
+import { getSocialHeadTags } from "../utils/social-head-tags.ts";
+import { styleHrefs } from "../utils/public/style-hrefs.ts";
 
 export async function brandHandler({ render, request }: AppContext) {
   return render(<Page requestUrl={request.url} />, {

@@ -2,7 +2,7 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 
 import { routes } from "../../../../routes.ts";
-import { env } from "../../../../utils/env.server.ts";
+import { env } from "../../../../utils/env.ts";
 import { createRouteTestRouter } from "../../../../../test/setup.ts";
 import { jam2025GalleryController } from "../../controller.ts";
 

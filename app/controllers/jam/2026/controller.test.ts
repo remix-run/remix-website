@@ -3,7 +3,7 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../../routes.ts";
-import { parseProduct } from "../../../data/jam-storefront.server.ts";
+import { parseProduct } from "../../../data/jam-storefront.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import { jam2026Controller } from "../controller.ts";
@@ -11,16 +11,16 @@ import {
   createJam2026PageHandler,
   createJam2026TicketAction,
 } from "./controller.tsx";
-import { remixJam2026Ticket } from "./ticket-data.ts";
-import { ticketModalConfig } from "./tickets-modal-contract.ts";
+import { remixJam2026Ticket } from "./public/ticket-data.ts";
+import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
 import {
   getJam2026ThemePreference,
   serializeJam2026ThemePreference,
-} from "./theme-preference.server.ts";
+} from "./theme-preference.ts";
 import {
   getJam2026DiscountCode,
   serializeJam2026DiscountCode,
-} from "./discount-code.server.ts";
+} from "./discount-code.ts";
 
 type TestStorefront = NonNullable<
   Parameters<typeof createJam2026PageHandler>[0]

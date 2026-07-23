@@ -2,7 +2,7 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import { blogPostHandler } from "./post.tsx";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-import { getBlogPost } from "../../data/blog.server.ts";
+import { getBlogPost } from "../../data/blog.ts";
 import { routes } from "../../routes.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 

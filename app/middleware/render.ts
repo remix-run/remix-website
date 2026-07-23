@@ -7,7 +7,7 @@ import { renderToStream, type ResolveFrameContext } from "remix/ui/server";
 
 import type { AssetEntryContextEntry } from "./asset-entry.ts";
 import { AssetEntryProvider } from "../ui/document.tsx";
-import { assetServer } from "../utils/assets.server.ts";
+import { assetServer } from "../utils/assets.ts";
 
 export interface AppRenderer {
   (node: RemixNode, init?: ResponseInit): Response;

@@ -10,7 +10,7 @@ import { loadAssetEntry } from "./middleware/asset-entry.ts";
 import { renderMiddleware, type AppContext } from "./middleware/render.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes.ts";
-import { assetServer } from "./utils/assets.server.ts";
+import { assetServer } from "./utils/assets.ts";
 
 import actionsController from "./controllers/actions/controller.tsx";
 import { blogHandler } from "./controllers/blog/controller.tsx";

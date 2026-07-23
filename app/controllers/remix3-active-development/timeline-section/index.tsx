@@ -1,4 +1,4 @@
-import { cx } from "../../../utils/cx.ts";
+import { cx } from "../../../utils/public/cx.ts";
 import { TimelineDiagramDesktop } from "./desktop.tsx";
 import { TimelineDiagramMobile } from "./mobile.tsx";
 

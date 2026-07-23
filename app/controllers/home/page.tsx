@@ -1,11 +1,11 @@
 import { css, type Handle } from "remix/ui";
-import { FpsCounterToggle } from "../../assets/fps-counter-toggle.tsx";
-import { RemixLandingEnhancements } from "../../assets/remix-landing/landing-enhancements.tsx";
-import { LoadingScreen } from "../../assets/remix-landing/components/loading-screen.tsx";
-import { RUNNER_AVIF_SRC } from "../../assets/remix-landing/runner-media.ts";
-import { colors } from "../../assets/remix-landing/styles/tokens.ts";
+import { FpsCounterToggle } from "../../ui/public/fps-counter-toggle.tsx";
+import { RemixLandingEnhancements } from "./public/remix-landing/landing-enhancements.tsx";
+import { LoadingScreen } from "./public/remix-landing/components/loading-screen.tsx";
+import { RUNNER_AVIF_SRC } from "./public/remix-landing/runner-media.ts";
+import { colors } from "./public/remix-landing/styles/tokens.ts";
 import { Document } from "../../ui/document.tsx";
-import { styleHrefs } from "../../utils/style-hrefs.ts";
+import { styleHrefs } from "../../utils/public/style-hrefs.ts";
 import { LandingContent } from "./landing-content.tsx";
 
 type HomePageProps = {

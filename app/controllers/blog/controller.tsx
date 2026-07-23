@@ -2,13 +2,13 @@ import type { Handle } from "remix/ui";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
-import { NewsletterSubscribeForm } from "../../assets/newsletter-subscribe.tsx";
+import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
 import { routes } from "../../routes.ts";
 import type { AppContext } from "../../middleware/render.ts";
-import { getBlogPostListings } from "../../data/blog.server.ts";
+import { getBlogPostListings } from "../../data/blog.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-import { getSocialHeadTags } from "../../utils/social-head-tags.server.ts";
-import { styleHrefs } from "../../utils/style-hrefs.ts";
+import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
+import { styleHrefs } from "../../utils/public/style-hrefs.ts";
 
 export async function blogHandler({ render, request }: AppContext) {
   let posts = await getBlogPostListings();
