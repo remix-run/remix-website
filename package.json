@@ -18,7 +18,7 @@
     "push:stage": "git tag -f stage && git push origin stage -f",
     "browser": "playwright-cli",
     "start": "cross-env NODE_ENV=production node --import remix/node-tsx server.ts",
-    "preview": "cross-env NODE_ENV=production node --env-file=.env --import remix/node-tsx server.ts",
+    "preview": "cross-env NODE_ENV=production ASSET_BUILD_ID=local-preview node --env-file=.env --import remix/node-tsx server.ts",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "pretest": "pnpm run build:css",
