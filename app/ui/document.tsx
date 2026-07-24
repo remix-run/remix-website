@@ -127,9 +127,6 @@ export function Document(handle: Handle<DocumentProps>) {
             ),
           )}
 
-          {assetEntry.preloads.map((href) => (
-            <link key={href} rel="modulepreload" href={href} />
-          ))}
           <script type="module" async src={assetEntry.src} />
 
           {/* Dark-mode detection (mirrors root.tsx ColorSchemeScript) */}

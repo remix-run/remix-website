@@ -4,13 +4,11 @@ import {
   type Middleware,
   type RequestContext,
 } from "remix/router";
-import { DocumentHeadSync } from "../assets/document-head-sync.tsx";
 import { assetServer } from "../utils/assets.server.ts";
 
 export interface AssetEntry {
-  sourceEntries: string[];
+  source: string;
   src: string;
-  preloads: string[];
 }
 
 export let assetEntryContext = createContextKey<AssetEntry>();
@@ -26,36 +24,18 @@ export function loadAssetEntry(
   entry = defaultEntry,
 ): Middleware<AssetEntryContextEntry> {
   return async (context, next) => {
-    let entries = [entry, DocumentHeadSync.$entryId];
-    let [src, preloads] = await Promise.all([
-      assetServer.getHref(entry),
-      assetServer.getPreloads(entries),
-    ]);
+    let src = await assetServer.getHref(entry);
 
     context.set(
       assetEntryContext,
       {
-        sourceEntries: entries,
+        source: entry,
         src,
-        preloads: preloads.filter((href) => href !== src),
       },
       { property: "assetEntry" },
     );
     return next();
   };
-}
-
-export async function preloadAssetEntries(
-  assetEntry: AssetEntry,
-  entries: readonly string[],
-) {
-  // Resolve one graph so Remix can keep every root ahead of deeper imports.
-  assetEntry.sourceEntries = [
-    ...new Set([...assetEntry.sourceEntries, ...entries]),
-  ];
-  assetEntry.preloads = (
-    await assetServer.getPreloads(assetEntry.sourceEntries)
-  ).filter((href) => href !== assetEntry.src);
 }
 
 export function setAssetEntry(context: RequestContext, assetEntry: AssetEntry) {

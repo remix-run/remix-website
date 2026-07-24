@@ -25,6 +25,9 @@ describe("Blog route", () => {
     );
     expect(html).toContain("Featured Articles");
     expect(html).toContain('action="/_actions/newsletter"');
+    expect(html).toContain(
+      '<link rel="modulepreload" href="/assets/app/assets/newsletter-subscribe.tsx"',
+    );
 
     let mainNavigation = html.match(/<nav aria-label="Main".*?<\/nav>/s)?.[0];
     if (!mainNavigation) throw new Error("Missing main navigation");

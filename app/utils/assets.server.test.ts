@@ -45,7 +45,7 @@ async function discoverBrowserAssetModules() {
 
   for (let file of files) {
     let source = await fs.readFile(file, "utf8");
-    if (source.includes("clientEntry(")) {
+    if (hasClientEntryCall(file, source)) {
       clientEntryModules.push(file);
     }
   }
@@ -77,16 +77,28 @@ async function collectRuntimeAppModules(seeds: string[]) {
   return Array.from(modules).sort();
 }
 
+function hasClientEntryCall(file: string, source: string) {
+  let found = false;
+  let sourceFile = createSourceFile(file, source);
+
+  function visit(node: ts.Node) {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === "clientEntry"
+    ) {
+      found = true;
+      return;
+    }
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+  return found;
+}
+
 function getRuntimeImportSpecifiers(file: string, source: string) {
-  let sourceFile = ts.createSourceFile(
-    file,
-    source,
-    ts.ScriptTarget.Latest,
-    true,
-    file.endsWith(".tsx") || file.endsWith(".jsx")
-      ? ts.ScriptKind.TSX
-      : ts.ScriptKind.TS,
-  );
+  let sourceFile = createSourceFile(file, source);
   let specifiers: string[] = [];
 
   for (let statement of sourceFile.statements) {
@@ -109,6 +121,18 @@ function getRuntimeImportSpecifiers(file: string, source: string) {
   }
 
   return specifiers;
+}
+
+function createSourceFile(file: string, source: string) {
+  return ts.createSourceFile(
+    file,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    file.endsWith(".tsx") || file.endsWith(".jsx")
+      ? ts.ScriptKind.TSX
+      : ts.ScriptKind.TS,
+  );
 }
 
 async function resolveAppModule(importer: string, specifier: string) {
