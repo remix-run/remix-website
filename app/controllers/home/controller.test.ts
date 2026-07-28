@@ -72,10 +72,10 @@ describe("home route", () => {
     expect(html).not.toContain("fonts.googleapis.com");
     expect(html).not.toContain("fonts.gstatic.com");
     expect(html).toContain(
-      '<link rel="modulepreload" href="/assets/app/public/entry.ts"',
+      '<link rel="modulepreload" href="/assets/app/controllers/public/entry.ts"',
     );
     expect(html).toContain(
-      '<script type="module" async src="/assets/app/public/entry.ts"',
+      '<script type="module" async src="/assets/app/controllers/public/entry.ts"',
     );
 
     expect(html).toMatch(/class="loading-screen-overlay\b/);

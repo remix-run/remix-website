@@ -1,7 +1,7 @@
 import { css, type Handle, type RemixNode } from "remix/ui";
 
 import { DocumentHeadSync } from "./public/document-head-sync.tsx";
-import type { AssetEntry } from "../middleware/asset-entry.ts";
+import { getAssetEntry } from "../middleware/asset-entry.ts";
 import {
   getManagedHeadTagKey,
   type ManagedHeadTag,
@@ -46,7 +46,7 @@ interface DocumentProps {
  */
 export function Document(handle: Handle<DocumentProps>) {
   return () => {
-    let assetEntry = handle.context.get(AssetEntryProvider);
+    let assetEntry = getAssetEntry();
     let stylesheets = [
       ...new Set([styleHrefs.global, ...(handle.props.stylesheets ?? [])]),
     ];
@@ -159,13 +159,6 @@ export function Document(handle: Handle<DocumentProps>) {
       </html>
     );
   };
-}
-
-export function AssetEntryProvider(
-  handle: Handle<{ value: AssetEntry; children?: RemixNode }, AssetEntry>,
-) {
-  handle.context.set(handle.props.value);
-  return () => handle.props.children;
 }
 
 // These values intentionally mirror the old Tailwind body utilities so shared

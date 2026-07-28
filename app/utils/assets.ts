@@ -11,13 +11,8 @@ export let assetServer = createAssetServer({
     "/app/*path": "app/*path",
     "/npm/*path": "node_modules/*path",
   },
-  // Browser-reachable source lives in `public/` directories inside `app/`,
-  // colocated with the code that owns it. The shared `app/routes.ts` route
-  // contract is browser-readable so modules can build type-safe hrefs; allowed
-  // packages are the other exception.
   allowFiles: ["app/routes.ts", "app/**/public/**"],
   allowPackages: ["remix", "three", "fathom-client"],
-  // Test files colocate with their subjects but are not browser runtime source.
   denyFiles: ["app/**/*.test.*"],
   fingerprint: isDevelopment ? undefined : { buildId: getBuildId() },
   sourceMaps: isDevelopment ? "external" : undefined,

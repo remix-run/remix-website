@@ -7,7 +7,7 @@ import { assetServer } from "./assets.ts";
 
 let rootDir = path.resolve(import.meta.dirname, "../..");
 let appDir = path.join(rootDir, "app");
-let rootBrowserEntry = path.join(appDir, "public/entry.ts");
+let rootBrowserEntry = path.join(appDir, "controllers/public/entry.ts");
 
 describe("browser asset module graph", () => {
   it("serves every module reachable from browser entrypoints", async () => {

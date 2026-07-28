@@ -5,11 +5,11 @@
 How to serve browser scripts and styles from source. Read this when the task involves:
 
 - Configuring `createAssetServer` (`basePath`, `fileMap`, `allowFiles`, `allowPackages`,
-  fingerprinting, compiler options)
+  `denyFiles`, fingerprinting, compiler options)
 - Choosing between `staticFiles()` for already-built files and `createAssetServer()` for source
   assets that need import rewriting, preloads, or fingerprinted URLs
 - Generating script URLs or `<link rel="modulepreload">` tags for a client entry
-- Keeping server-only files out of the browser by limiting `allowFiles` to `public/` directories
+- Keeping files such as tests out of the browser via `denyFiles` rules
 
 For routing the URL namespace itself, see `routing-and-controllers.md`. For client entry
 hydration, see `hydration-frames-navigation.md`.
@@ -43,6 +43,7 @@ let assetServer = createAssetServer({
   },
   allowFiles: ["app/routes.ts", "app/**/public/**"],
   allowPackages: ["remix"],
+  denyFiles: ["app/**/*.test.*"],
   target: { es: "2020", chrome: "109", safari: "16.4" },
   sourceMaps: process.env.NODE_ENV === "development" ? "external" : undefined,
   minify: process.env.NODE_ENV === "production",
@@ -69,12 +70,13 @@ export default createController(routes, {
 
 ## Rules
 
-- Treat `allowFiles`/`allowPackages` as the security boundary for browser-reachable source files. The allow-list is narrow enough that server-only code is excluded simply by not living in a `public/` directory; the only `denyFiles` entry typically needed is `app/**/*.test.*` for colocated test files that are not browser runtime source.
+- Treat `allowFiles`/`allowPackages` and `denyFiles` as the security boundary for browser-reachable source files.
 - Put browser-reachable app source in a `public/` directory inside `app/`, beside its narrowest owner, such as `app/ui/public/` or `app/actions/cart/public/`.
-- Every local dependency in a browser module graph must match `allowFiles`. Keep the graph inside `public/` directories under `app/`; `app/routes.ts` is allowed separately as the shared server-and-browser route contract so modules can build type-safe links with `routes.*.href(...)`.
-- Use `allowFiles` for file paths and globs. Relative values resolve from `rootDir`.
+- Every local dependency in a browser module graph must match `allowFiles`, so keep the whole graph inside those `public/` directories. `app/routes.ts` is allowed separately so browser modules can build type-safe links with `routes.*.href(...)`.
+- Deny test modules with `denyFiles` so tests can be colocated inside a `public/` directory without becoming browser-reachable.
+- Use `allowFiles` and `denyFiles` for file paths and globs. Relative values resolve from `rootDir`.
 - Use `allowPackages` for exact package names, not globs or subpaths. Packages allowed by `allowPackages` also allow their installed `dependencies` and `optionalDependencies`; peer dependencies must be listed explicitly if they should be browser-reachable.
-- If a `denyFiles` list is used, it takes precedence over both file and package allow rules.
+- `denyFiles` takes precedence over both file and package allow rules.
 - Set `rootDir` explicitly in monorepos so relative paths resolve from the intended project root.
 - `basePath` is the public URL namespace handled by the asset server.
 - `fileMap` keys are URL patterns relative to `basePath`, and values are root-relative file path
@@ -91,8 +93,10 @@ Use `getHref()` when you need the public URL for one module, and `getPreloads()`
 dependencies.
 
 ```typescript
-let entryHref = await assetServer.getHref("app/public/entry.ts");
-let preloads = await assetServer.getPreloads(["app/public/entry.ts"]);
+let entryHref = await assetServer.getHref("app/actions/public/entry.ts");
+let entryPreloads = await assetServer.getPreloads(
+  "app/actions/public/entry.ts",
+);
 ```
 
 Use this when rendering documents or layouts that boot browser behavior with a known client entry.
