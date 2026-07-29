@@ -29,6 +29,7 @@ type Jam2026TicketsModalProps = {
 
 type Jam2026TicketCheckoutState = {
   availableForSale: boolean;
+  discountCode?: string;
   error?: string;
   initialQuantity: number;
   maxQuantity: number;
@@ -348,7 +349,11 @@ export function Jam2026TicketsModalContent(
                   mix={keyringMix}
                 />
               </div>
-              <p mix={ticketsModalDiscountStyle}>Early bird discount applied</p>
+              <p mix={ticketsModalDiscountStyle}>
+                {ticketCheckout?.discountCode
+                  ? `Code ${ticketCheckout.discountCode} will be applied at checkout`
+                  : "Early bird discount applied"}
+              </p>
               <div mix={ticketsModalBottomStyle}>
                 <article
                   aria-label="Remix Jam 2026 ticket"

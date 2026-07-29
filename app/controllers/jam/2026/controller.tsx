@@ -20,6 +20,12 @@ import {
   getJam2026ThemePreference,
   serializeJam2026ThemePreference,
 } from "./theme-preference.server.ts";
+import {
+  clearJam2026DiscountCode,
+  getJam2026DiscountCode,
+  normalizeJam2026DiscountCode,
+  serializeJam2026DiscountCode,
+} from "./discount-code.server.ts";
 
 type Jam2026Storefront = {
   createCart: typeof createCart;
@@ -27,6 +33,8 @@ type Jam2026Storefront = {
 };
 
 type Jam2026StorefrontProduct = Awaited<ReturnType<typeof getProduct>>;
+
+type Jam2026Discount = { code?: string; setCookie?: string };
 
 export let jam2026Handler = createJam2026PageHandler();
 export let jam2026TicketAction = createJam2026TicketAction();
@@ -44,17 +52,29 @@ export function createJam2026TicketAction(
 ) {
   return async function jam2026TicketAction(context: AppContext) {
     let { formData, render, request } = context;
+    let discount = await resolveJam2026Discount(request);
     let product = await storefront.getProduct(remixJam2026Ticket.handle);
     let result = await handleTicketCheckoutPost({
+      discountCode: discount.code,
       formData,
       product,
       storefront,
     });
 
-    if (result instanceof Response) return result;
+    if ("checkoutUrl" in result) {
+      let headers = new SuperHeaders({
+        cacheControl: "no-store",
+        location: result.checkoutUrl,
+      });
+      if (discount.code) {
+        headers.append("Set-Cookie", await clearJam2026DiscountCode());
+      }
+      return new Response(null, { status: 303, headers });
+    }
 
     return renderJam2026Page({
       cacheControl: "no-store",
+      discount,
       render,
       request,
       status: result.status,
@@ -64,8 +84,31 @@ export function createJam2026TicketAction(
   };
 }
 
+/**
+ * Marketing links land on any Jam 2026 page with `?discount=CODE`, but the
+ * tickets modal renders from its own frame request (which has no query string),
+ * so the code is stashed in a cookie and read back at checkout time.
+ */
+async function resolveJam2026Discount(
+  request: Request,
+): Promise<Jam2026Discount> {
+  let urlCode = normalizeJam2026DiscountCode(
+    new URL(request.url).searchParams.get("discount"),
+  );
+  let storedCode = await getJam2026DiscountCode(request.headers.get("cookie"));
+
+  return {
+    code: urlCode ?? storedCode,
+    setCookie:
+      urlCode && urlCode !== storedCode
+        ? await serializeJam2026DiscountCode(urlCode)
+        : undefined,
+  };
+}
+
 async function renderJam2026Page({
   cacheControl = CACHE_CONTROL.DEFAULT,
+  discount,
   render,
   request,
   status = 200,
@@ -73,12 +116,14 @@ async function renderJam2026Page({
   ticketCheckout,
 }: {
   cacheControl?: string;
+  discount?: Jam2026Discount;
   render: AppRenderer;
   request: Request;
   status?: number;
   storefront: Jam2026Storefront;
   ticketCheckout?: ReturnType<typeof createTicketCheckoutState>;
 }) {
+  discount ??= await resolveJam2026Discount(request);
   let requestUrl = new URL(request.url);
   let ticketsModalOpen =
     requestUrl.pathname === routes.jam.y2026.ticket.index.href();
@@ -90,19 +135,30 @@ async function renderJam2026Page({
   let product = ticketsModalOpen
     ? await storefront.getProduct(remixJam2026Ticket.handle)
     : null;
+  let validatedDiscount = await validateJam2026Discount({
+    discount,
+    product,
+    storefront,
+  });
+  discount = validatedDiscount.discount;
   ticketCheckout ??= product
-    ? createTicketCheckoutState({
-        product,
-      })
+    ? createTicketCheckoutState({ product })
     : undefined;
+  if (ticketCheckout) {
+    ticketCheckout = {
+      ...ticketCheckout,
+      discountCode: validatedDiscount.code,
+    };
+  }
 
-  let responseInit = {
-    status,
-    headers: new SuperHeaders({
-      cacheControl,
-      vary: ["Cookie", "x-remix-target", "x-remix-ssr-frame"],
-    }),
-  };
+  let headers = new SuperHeaders({
+    // Never let a shared cache store a response that hands out a Set-Cookie.
+    cacheControl: discount.setCookie ? "no-store" : cacheControl,
+    vary: ["Cookie", "x-remix-target", "x-remix-ssr-frame"],
+  });
+  if (discount.setCookie) headers.append("Set-Cookie", discount.setCookie);
+
+  let responseInit = { status, headers };
 
   if (isTicketsFrameRequest) {
     return render(
@@ -161,10 +217,12 @@ let ticketCheckoutSubmissionSchema = f.object({
 });
 
 async function handleTicketCheckoutPost({
+  discountCode,
   formData,
   product,
   storefront,
 }: {
+  discountCode?: string;
   formData: FormData;
   product: Jam2026StorefrontProduct | null;
   storefront: Jam2026Storefront;
@@ -174,6 +232,7 @@ async function handleTicketCheckoutPost({
     return {
       status: 400,
       ticketCheckout: createTicketCheckoutState({
+        discountCode,
         error: submission.error,
         product,
       }),
@@ -186,6 +245,7 @@ async function handleTicketCheckoutPost({
     return {
       status: checkoutError.invalidInput ? 400 : 200,
       ticketCheckout: createTicketCheckoutState({
+        discountCode,
         error: checkoutError.message,
         initialQuantity: quantity,
         product,
@@ -193,11 +253,12 @@ async function handleTicketCheckoutPost({
     };
   }
 
-  let cart = await storefront.createCart({ productId, quantity });
+  let cart = await storefront.createCart({ discountCode, productId, quantity });
   if ("error" in cart) {
     return {
       status: 200,
       ticketCheckout: createTicketCheckoutState({
+        discountCode,
         error: cart.error,
         initialQuantity: quantity,
         product,
@@ -205,13 +266,41 @@ async function handleTicketCheckoutPost({
     };
   }
 
-  return new Response(null, {
-    status: 303,
-    headers: {
-      "Cache-Control": "no-store",
-      Location: cart.checkoutUrl,
-    },
+  return { checkoutUrl: cart.checkoutUrl };
+}
+
+async function validateJam2026Discount({
+  discount,
+  product,
+  storefront,
+}: {
+  discount: Jam2026Discount;
+  product: Jam2026StorefrontProduct | null;
+  storefront: Jam2026Storefront;
+}): Promise<{ code?: string; discount: Jam2026Discount }> {
+  if (
+    !discount.code ||
+    !product ||
+    product.unavailableReason ||
+    !product.availableForSale
+  ) {
+    return { discount };
+  }
+
+  let cart = await storefront.createCart({
+    discountCode: discount.code,
+    productId: product.productId,
+    quantity: 1,
   });
+  if ("error" in cart) return { discount };
+
+  if (cart.discountCode === discount.code) {
+    return { code: discount.code, discount };
+  }
+
+  return {
+    discount: { setCookie: await clearJam2026DiscountCode() },
+  };
 }
 
 function parseTicketCheckoutSubmission(formData: FormData) {
@@ -270,10 +359,12 @@ function getTicketCheckoutError({
 }
 
 function createTicketCheckoutState({
+  discountCode,
   error,
   initialQuantity = 1,
   product,
 }: {
+  discountCode?: string;
   error?: string;
   initialQuantity?: number;
   product: Jam2026StorefrontProduct | null;
@@ -282,6 +373,7 @@ function createTicketCheckoutState({
 
   return {
     availableForSale: Boolean(product?.availableForSale),
+    discountCode,
     error,
     initialQuantity: Math.min(Math.max(1, initialQuantity), maxQuantity),
     maxQuantity,

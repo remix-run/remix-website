@@ -17,8 +17,14 @@ import {
   getJam2026ThemePreference,
   serializeJam2026ThemePreference,
 } from "./theme-preference.server.ts";
+import {
+  getJam2026DiscountCode,
+  serializeJam2026DiscountCode,
+} from "./discount-code.server.ts";
 
-type TestStorefront = Parameters<typeof createJam2026PageHandler>[0];
+type TestStorefront = NonNullable<
+  Parameters<typeof createJam2026PageHandler>[0]
+>;
 
 describe("Remix Jam 2026 routes", () => {
   it("renders the homepage as the full Jam page with ticket frame navigation", async () => {
@@ -271,7 +277,160 @@ describe("Remix Jam 2026 routes", () => {
       "https://jam.remix.run/checkouts/2026",
     );
   });
+
+  it("stores a discount code from the URL and shows it in the ticket modal", async () => {
+    let router = createJam2026TestRouter(availableStorefront);
+
+    let response = await router.fetch(
+      "http://localhost:3000/jam/2026/ticket?discount=partner-2026",
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+
+    let setCookie = response.headers.get("Set-Cookie");
+    expect(setCookie).not.toBe(null);
+    expect(setCookie).toContain("HttpOnly");
+    expect(setCookie).toContain("Path=/jam/2026");
+    expect(setCookie).not.toContain("Max-Age");
+    expect(await getJam2026DiscountCode(setCookie!.split(";")[0])).toBe(
+      "PARTNER-2026",
+    );
+
+    let html = await response.text();
+
+    expect(html).toContain("Code PARTNER-2026 will be applied at checkout");
+  });
+
+  it("reads the stored discount code on tickets frame requests", async () => {
+    let router = createJam2026TestRouter(availableStorefront);
+    let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026/ticket", {
+        headers: {
+          cookie: cookie.split(";")[0],
+          "x-remix-target": ticketModalConfig.frameName,
+        },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Set-Cookie")).toBe(null);
+    expect(response.headers.get("Vary")).toContain("cookie");
+
+    let html = await response.text();
+
+    expect(html).toContain("Code PARTNER-2026 will be applied at checkout");
+  });
+
+  it("ignores malformed discount codes", async () => {
+    let router = createJam2026TestRouter(availableStorefront);
+
+    let response = await router.fetch(
+      "http://localhost:3000/jam/2026/ticket?discount=not%20a%20code",
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Set-Cookie")).toBe(null);
+    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+
+    let html = await response.text();
+
+    expect(html).toContain("Early bird discount applied");
+  });
+
+  it("silently clears an inapplicable discount code", async () => {
+    let router = createJam2026TestRouter({
+      ...availableStorefront,
+      createCart: async () => ({
+        id: "gid://shopify/Cart/2026",
+        checkoutUrl: "https://jam.remix.run/checkouts/2026",
+        discountCode: undefined,
+      }),
+    });
+    let cookie = await serializeJam2026DiscountCode("EXPIRED-2026");
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026/ticket", {
+        headers: { cookie: cookie.split(";")[0] },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
+
+    let html = await response.text();
+
+    expect(html).toContain("Early bird discount applied");
+    expect(html).not.toContain("EXPIRED-2026");
+  });
+
+  it("silently checks out without an inapplicable stored discount code", async () => {
+    let router = createJam2026TestRouter({
+      ...availableStorefront,
+      createCart: async () => ({
+        id: "gid://shopify/Cart/2026",
+        checkoutUrl: "https://jam.remix.run/checkouts/2026",
+        discountCode: undefined,
+      }),
+    });
+    let cookie = await serializeJam2026DiscountCode("EXPIRED-2026");
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026/ticket", {
+        body: createTicketFormData(),
+        headers: { cookie: cookie.split(";")[0] },
+        method: "POST",
+        redirect: "manual",
+      }),
+    );
+
+    expect(response.status).toBe(303);
+    expect(response.headers.get("Location")).toBe(
+      "https://jam.remix.run/checkouts/2026",
+    );
+    expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
+  });
+
+  it("forwards the stored discount code to the Shopify cart", async () => {
+    let requested: string[] = [];
+    let router = createJam2026TestRouter({
+      ...availableStorefront,
+      createCart: async ({ discountCode }) => {
+        requested.push(discountCode ?? "");
+        return {
+          id: "gid://shopify/Cart/2026",
+          checkoutUrl: "https://jam.remix.run/checkouts/2026",
+          discountCode,
+        };
+      },
+    });
+    let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026/ticket", {
+        body: createTicketFormData(),
+        headers: { cookie: cookie.split(";")[0] },
+        method: "POST",
+        redirect: "manual",
+      }),
+    );
+
+    expect(response.status).toBe(303);
+    expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
+    expect(requested).toEqual(["PARTNER-2026"]);
+  });
 });
+
+function createTicketFormData() {
+  let formData = new FormData();
+  formData.set("ticketType", remixJam2026Ticket.type);
+  formData.set("productId", "gid://shopify/ProductVariant/2026");
+  formData.set("quantity", "2");
+  return formData;
+}
 
 let unavailableStorefront = {
   createCart: async () => ({
@@ -287,10 +446,11 @@ let unavailableStorefront = {
     }),
 };
 
-let availableStorefront = {
-  createCart: async () => ({
+let availableStorefront: TestStorefront = {
+  createCart: async ({ discountCode }) => ({
     id: "gid://shopify/Cart/2026",
     checkoutUrl: "https://jam.remix.run/checkouts/2026",
+    discountCode,
   }),
   getProduct: async () =>
     parseProduct({
