@@ -68,10 +68,10 @@ describe("Navigation", () => {
     await expect(page.locator("html.dark")).toHaveCount(1);
   });
 
-  it("Remix 3 active development page to Jam 2026 applies Jam head content", async (t) => {
+  it("Remix history page to Jam 2026 applies Jam head content", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/remix-3-active-development");
+    await page.goto("/remix-history");
 
     await expectClientNavigation(
       page,

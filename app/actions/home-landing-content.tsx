@@ -93,7 +93,7 @@ function CopyToClipboard(handle: Handle<{ url: string }>) {
     secondary: {
       kicker: "Subscribe to our newsletter",
       title: "Stay in the loop",
-      body: "Once a month, we write about everything in the world of Remix. Sign up to be notified about progress on Remix 3. No spam. Unsubscribe anytime.",
+      body: "Once a month, we write about everything in the world of Remix. Sign up to keep up with what comes next. No spam. Unsubscribe anytime.",
       newsletter: true,
       newsletterPlaceholder: "name@example.com",
       newsletterButtonLabel: "Subscribe",

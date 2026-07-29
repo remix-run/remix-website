@@ -6,7 +6,7 @@ export function TimelineSection() {
   return () => (
     <section
       class={cx(
-        "rmx-remix3-active-development-timeline-bg",
+        "rmx-remix-history-timeline-bg",
         "overflow-x-clip bg-[var(--rmx-neutral-950)] text-white",
       )}
     >
@@ -67,7 +67,7 @@ export function TimelineSection() {
             lightweight, simple to understand, and powerful to wield. If
             you&apos;ve ever wished for a development experience that feels
             lighter, faster, and more aligned with how the web works, Remix 3 is
-            being built for you.
+            for you.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export function TimelineSection() {
               2024: React Router v7 released (Remix features merged into React
               Router)
             </li>
-            <li>2025: Remix 3 in development</li>
+            <li>2025: Remix 3 released</li>
           </ul>
         </div>
       </div>

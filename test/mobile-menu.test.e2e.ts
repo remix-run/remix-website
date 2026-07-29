@@ -17,7 +17,7 @@ async function markPage(page: Page) {
 
 async function gotoMobileMenuPage(page: Page) {
   await page.setViewportSize({ width: 390, height: 844 });
-  let response = await page.goto("/remix-3-active-development");
+  let response = await page.goto("/remix-history");
   expect(response?.ok()).toBe(true);
   await expect(mobileMenuToggle(page)).toBeVisible();
 }

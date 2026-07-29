@@ -12,14 +12,13 @@ export function PitchSection() {
         )}
       >
         <p class="w-full">
-          We are building Remix to be a batteries-included, ultra-productive,
-          zero dependencies and bundler-free framework, ready to develop with in
-          a model-first world.
+          Remix is a batteries-included, ultra-productive, zero dependencies and
+          bundler-free framework, ready to develop with in a model-first world.
         </p>
         <p class="w-full">
           Remix 3 is a reimagining of what a web framework can be;
           <br aria-hidden="true" />a fresh foundation shaped by decades of
-          experience building for the web. Our focus is on simplicity, clarity,
+          experience building for the web. It focuses on simplicity, clarity,
           and performance, without giving up the power developers need.
         </p>
         <a

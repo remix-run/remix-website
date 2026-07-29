@@ -22,7 +22,7 @@ import jam2025GalleryController from "./actions/jam/y2025/gallery/controller.tsx
 import jam2025TicketController from "./actions/jam/y2025/ticket/controller.tsx";
 import jam2026Controller from "./actions/jam/y2026/controller.tsx";
 import jam2026TicketController from "./actions/jam/y2026/ticket/controller.tsx";
-import remix3ActiveDevelopmentController from "./actions/remix3-active-development/controller.tsx";
+import remixHistoryController from "./actions/remix-history/controller.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
 let isTest = process.env.NODE_ENV === "test";
@@ -86,7 +86,7 @@ function createAppRouter() {
   router.map(routes, rootController);
   router.map(routes.api, apiController);
   router.map(routes.blog, blogController);
-  router.map(routes.remix3ActiveDevelopment, remix3ActiveDevelopmentController);
+  router.map(routes.remixHistory, remixHistoryController);
   router.map(routes.jam, jamController);
   router.map(routes.jam.y2025, jam2025Controller);
   router.map(routes.jam.y2025.gallery, jam2025GalleryController);

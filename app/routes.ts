@@ -14,7 +14,7 @@ export let routes = route({
   brand: get("/brand"),
   healthcheck: get("/healthcheck"),
   home: get("/"),
-  remix3ActiveDevelopment: route("remix-3-active-development", {
+  remixHistory: route("remix-history", {
     index: get("/"),
   }),
   jam: route("jam", {

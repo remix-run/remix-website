@@ -12,8 +12,7 @@ export function HeroSection() {
             "text-rmx-primary flex w-full flex-col items-start gap-12 md:items-center md:gap-6 md:text-center",
           )}
         >
-          <h1 class="rmx-heading-hero">Remix 3 is under active development</h1>
-          <p class="rmx-body">A new full stack framework built on Web APIs</p>
+          <h1 class="rmx-heading-hero">The history of Remix</h1>
         </div>
 
         <div class="relative aspect-[1600/367] w-full max-w-[1600px] max-md:-mx-12 max-md:aspect-[480/110] max-md:w-screen max-md:min-w-[480px] max-md:max-w-none">

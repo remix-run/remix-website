@@ -30,8 +30,7 @@ function NewsletterCard() {
         </h3>
         <p class="rmx-body text-rmx-primary">
           Once a month, we write about everything in the world of Remix. Sign up
-          to be notified about progress on Remix 3. No spam. Unsubscribe
-          anytime.
+          to keep up with what comes next. No spam. Unsubscribe anytime.
         </p>
       </div>
       <NewsletterSubscribeForm

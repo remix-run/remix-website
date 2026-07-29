@@ -14,45 +14,45 @@ import { routes } from "../../routes.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { styleHrefs } from "../../utils/public/style-hrefs.ts";
 
-export default createController(routes.remix3ActiveDevelopment, {
+export default createController(routes.remixHistory, {
   actions: {
     index({ render, request }) {
-      return render(<Remix3ActiveDevelopmentPage requestUrl={request.url} />, {
+      return render(<RemixHistoryPage requestUrl={request.url} />, {
         headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
       });
     },
   },
 });
 
-function Remix3ActiveDevelopmentPage(handle: Handle<{ requestUrl: string }>) {
+function RemixHistoryPage(handle: Handle<{ requestUrl: string }>) {
   return () => (
     <Document
-      title="Remix - A Web Framework for Building Anything"
-      description="Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world."
+      title="The History of Remix"
+      description="How Remix got here: a React Router feature branch that became a full stack framework, merged into React Router, and reimagined as Remix 3."
       forceTheme="light"
       stylesheets={[styleHrefs.app]}
       headTags={getSocialHeadTags({
         requestUrl: handle.props.requestUrl,
-        title: "Remix - A Web Framework for Building Anything",
+        title: "The History of Remix",
         description:
-          "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.",
+          "How Remix got here: a React Router feature branch that became a full stack framework, merged into React Router, and reimagined as Remix 3.",
       })}
     >
-      <div class="marketing-remix3-active-development">
-        <div class="rmx-remix3-active-development-hero-bg">
+      <div class="marketing-remix-history">
+        <div class="rmx-remix-history-hero-bg">
           <IntroMaskReveal />
           <Header />
           <HeroSection />
         </div>
 
         <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-          <div class="rmx-remix3-active-development-text-bg">
+          <div class="rmx-remix-history-text-bg">
             <PitchSection />
           </div>
 
           <TimelineSection />
 
-          <div class="rmx-remix3-active-development-surface-bg">
+          <div class="rmx-remix-history-surface-bg">
             <StayInTheLoopSection />
             <Footer />
           </div>
