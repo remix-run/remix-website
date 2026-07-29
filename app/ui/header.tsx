@@ -7,7 +7,7 @@ import { theme } from "./public/theme.ts";
 const LINKS: Array<{ to: string; label: string; document?: boolean }> = [
   { to: "https://guides.remix.run", label: "Guides", document: true },
   { to: "https://api.remix.run", label: "API", document: true },
-  { to: routes.blog.href(), label: "Blog" },
+  { to: routes.blog.index.href(), label: "Blog" },
   { to: routes.jam.y2026.index.href(), label: "Jam" },
   { to: "https://shop.remix.run", label: "Store", document: true },
   { to: "https://github.com/remix-run/remix", label: "GitHub", document: true },

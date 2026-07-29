@@ -1,18 +1,22 @@
 import { form, get, post, route } from "remix/routes";
 
 export let routes = route({
-  actions: route("_actions", {
+  api: route("_actions", {
     newsletter: post("/newsletter"),
   }),
   assets: get("/assets/*path"),
-  blog: get("/blog"),
+  blog: route("blog", {
+    index: get("/"),
+    rss: get("rss.xml"),
+    post: get(":slug(.:ext)"),
+  }),
   blogOgImage: get("/img/:slug"),
-  blogPost: get("/blog/:slug(.:ext)"),
-  blogRss: get("/blog/rss.xml"),
   brand: get("/brand"),
   healthcheck: get("/healthcheck"),
   home: get("/"),
-  remix3ActiveDevelopment: get("/remix-3-active-development"),
+  remix3ActiveDevelopment: route("remix-3-active-development", {
+    index: get("/"),
+  }),
   jam: route("jam", {
     index: get("/"),
     y2025: route("2025", {

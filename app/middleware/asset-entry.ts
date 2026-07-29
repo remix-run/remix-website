@@ -12,7 +12,7 @@ interface AssetEntry {
 let assetEntryKey = createContextKey<AssetEntry>();
 let defaultEntry = path.resolve(
   import.meta.dirname,
-  "../controllers/public/entry.ts",
+  "../actions/public/entry.ts",
 );
 
 export type AssetEntryContextEntry = {

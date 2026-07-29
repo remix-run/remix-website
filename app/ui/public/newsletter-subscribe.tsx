@@ -17,7 +17,7 @@ export let NewsletterSubscribeForm = clientEntry(
     return () => (
       <>
         <form
-          action={routes.actions.newsletter.href()}
+          action={routes.api.newsletter.href()}
           method="post"
           class={cx(handle.props.class, {
             "opacity-50": form.state.status === "submitting",

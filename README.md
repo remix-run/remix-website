@@ -39,7 +39,7 @@ pnpm run push:stage
 
 ## Codebase
 
-- **`app/`** — Remix 3 site: `routes.ts` (URL contract), `router.ts` (Vite SSR entry, middleware, route wiring), `controllers/`, `ui/`, `assets/`, `data/`, etc.
+- **`app/`** — Remix 3 site: `routes.ts` (URL contract), `router.ts` (Vite SSR entry, middleware, route wiring), `actions/`, `ui/`, `data/`, etc.
 - **`server.ts` (repo root)** — Node HTTP server in production; serves the built app from `build/server/`.
 - **`data/`** — Blog posts and author metadata (separate from `app/data/`, which holds app-layer server modules such as blog queries).
 
