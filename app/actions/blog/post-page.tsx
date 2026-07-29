@@ -5,91 +5,12 @@ import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { BlogLightbox } from "./public/blog-lightbox.tsx";
 import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
-import { routes } from "../../routes.ts";
-import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
-import type { AppContext } from "../../middleware/render.ts";
-import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { styleHrefs } from "../../utils/public/style-hrefs.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
+import { routes } from "../../routes.ts";
+import type { getBlogPost } from "../../data/blog.ts";
 
-type BlogPostContext = AppContext & {
-  params: { slug?: string; ext?: string };
-};
-
-export async function blogPostHandler({
-  params,
-  render,
-  request,
-}: BlogPostContext) {
-  let slug = params.slug;
-  if (!slug) {
-    return render(
-      <StatusErrorDocument status={404} statusText="Not Found" />,
-      NOT_FOUND_RESPONSE,
-    );
-  }
-
-  let requestUrl = new URL(request.url);
-  let isMarkdownRequest = params.ext === "md";
-  if (isMarkdownRequest) {
-    try {
-      let markdown = getRawBlogPostMarkdown(slug);
-      return new Response(markdown, {
-        headers: {
-          "Cache-Control": CACHE_CONTROL.DEFAULT,
-          "Content-Type": "text/markdown; charset=utf-8",
-        },
-      });
-    } catch (error) {
-      if (error instanceof Response && error.status === 404) {
-        return error;
-      }
-      throw error;
-    }
-  }
-
-  let post;
-  try {
-    post = await getBlogPost(slug);
-  } catch (error) {
-    if (error instanceof Response && error.status === 404) {
-      return render(
-        <StatusErrorDocument status={404} statusText="Not Found" />,
-        NOT_FOUND_RESPONSE,
-      );
-    }
-    throw error;
-  }
-
-  let siteUrl = requestUrl.origin;
-  let ogImageUrl = new URL(routes.blogOgImage.href({ slug }), siteUrl);
-  ogImageUrl.searchParams.set("title", post.title);
-  ogImageUrl.searchParams.set("date", post.dateDisplay);
-  for (let author of post.authors) {
-    ogImageUrl.searchParams.append("authorName", author.name);
-    ogImageUrl.searchParams.append("authorTitle", author.title);
-  }
-  if (post.ogImage) {
-    ogImageUrl.searchParams.set("ogImage", post.ogImage);
-  }
-
-  return render(
-    <Page
-      requestUrl={request.url}
-      slug={slug}
-      post={post}
-      socialImageUrl={ogImageUrl.toString()}
-    />,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    },
-  );
-}
-
-const NOT_FOUND_RESPONSE = {
+export const NOT_FOUND_RESPONSE = {
   status: 404,
   statusText: "Not Found",
   headers: {
@@ -97,7 +18,7 @@ const NOT_FOUND_RESPONSE = {
   },
 };
 
-function Page(
+export function BlogPostPage(
   handle: Handle<{
     requestUrl: string;
     slug: string;

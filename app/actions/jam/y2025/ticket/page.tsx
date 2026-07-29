@@ -1,11 +1,7 @@
 import * as s from "remix/data-schema";
-import {
-  createCart,
-  getProduct,
-  MAX_QUANTITY,
-} from "../../../../data/jam-storefront.ts";
-import type { AppContext } from "../../../../middleware/render.ts";
-import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
+import type { Handle } from "remix/ui";
+
+import { getProduct, MAX_QUANTITY } from "../../../../data/jam-storefront.ts";
 import { JamDocument } from "../document.tsx";
 import {
   InfoText,
@@ -17,53 +13,20 @@ import { JamTicketCard } from "../public/ticket-card.tsx";
 import { JamTicketPurchase } from "../public/ticket-purchase.tsx";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 
-export async function jam2025TicketHandler({
-  formData,
-  render,
-  request,
-}: AppContext) {
-  let requestUrl = new URL(request.url);
-  let product = await getProduct("remix-jam-2025");
-  let cacheControl =
-    request.method === "POST" ? "no-store" : CACHE_CONTROL.DEFAULT;
-  let formError: string | undefined;
-  let initialQuantity = 1;
-  let status = 200;
-
-  if (request.method === "POST") {
-    let submission = parseTicketPurchaseSubmission(formData);
-    if (!submission.success) {
-      formError = submission.error;
-      status = 400;
-    } else {
-      initialQuantity = submission.value.quantity;
-      if (submission.value.productId !== product.productId) {
-        formError = "Invalid ticket selection";
-        status = 400;
-      } else {
-        let discountCode = requestUrl.searchParams.get("discount") ?? undefined;
-        let cart = await createCart({
-          productId: submission.value.productId,
-          quantity: submission.value.quantity,
-          discountCode,
-        });
-
-        if ("error" in cart) {
-          formError = cart.error;
-          status = 400;
-        } else {
-          return Response.redirect(cart.checkoutUrl, 303);
-        }
-      }
-    }
-  }
-
-  return render(
+export function Jam2025TicketPage(
+  handle: Handle<{
+    formError?: string;
+    initialQuantity: number;
+    product: Jam2025TicketProduct;
+    requestUrl: string;
+  }>,
+) {
+  return () => (
     <JamDocument
       title="Ticket | Remix Jam 2025"
       description="Get your ticket for Remix Jam 2025 in Toronto"
       previewImage={assetPaths.jam2025.ogThumbnail1}
-      requestUrl={request.url}
+      requestUrl={handle.props.requestUrl}
       activePath="/jam/2025/ticket"
     >
       <main
@@ -90,13 +53,13 @@ export async function jam2025TicketHandler({
         />
 
         <JamTicketPurchase
-          initialQuantity={initialQuantity}
+          initialQuantity={handle.props.initialQuantity}
           maxQuantity={MAX_QUANTITY}
           class="z-10 flex w-[90%] flex-col items-center gap-3"
-          price={product.price}
-          productId={product.productId}
-          isSoldOut={!product.availableForSale}
-          error={formError}
+          price={handle.props.product.price}
+          productId={handle.props.product.productId}
+          isSoldOut={!handle.props.product.availableForSale}
+          error={handle.props.formError}
         />
 
         <InfoText>
@@ -104,17 +67,13 @@ export async function jam2025TicketHandler({
           what we&apos;ve been up to.
         </InfoText>
       </main>
-    </JamDocument>,
-    {
-      status,
-      headers: {
-        "Cache-Control": cacheControl,
-      },
-    },
+    </JamDocument>
   );
 }
 
-function parseTicketPurchaseSubmission(formData: FormData) {
+type Jam2025TicketProduct = Awaited<ReturnType<typeof getProduct>>;
+
+export function parseTicketPurchaseSubmission(formData: FormData) {
   let quantity = Number.parseInt(String(formData.get("quantity") ?? "1"), 10);
   let result = s.parseSafe(ticketPurchaseSubmissionSchema, {
     productId: formData.get("productId"),

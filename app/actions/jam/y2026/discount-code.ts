@@ -32,3 +32,27 @@ export function serializeJam2026DiscountCode(code: string) {
 export function clearJam2026DiscountCode() {
   return jam2026DiscountCookie.serialize("", { maxAge: 0 });
 }
+
+export type Jam2026Discount = { code?: string; setCookie?: string };
+
+/**
+ * Marketing links land on any Jam 2026 page with `?discount=CODE`, but the
+ * tickets modal renders from its own frame request (which has no query string),
+ * so the code is stashed in a cookie and read back at checkout time.
+ */
+export async function resolveJam2026Discount(
+  request: Request,
+): Promise<Jam2026Discount> {
+  let urlCode = normalizeJam2026DiscountCode(
+    new URL(request.url).searchParams.get("discount"),
+  );
+  let storedCode = await getJam2026DiscountCode(request.headers.get("cookie"));
+
+  return {
+    code: urlCode ?? storedCode,
+    setCookie:
+      urlCode && urlCode !== storedCode
+        ? await serializeJam2026DiscountCode(urlCode)
+        : undefined,
+  };
+}

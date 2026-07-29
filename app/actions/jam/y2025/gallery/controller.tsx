@@ -2,7 +2,7 @@ import { createController } from "remix/router";
 
 import { getPhotos } from "../../../../data/jam-storefront.ts";
 import { jam2025GalleryDownloadHandler } from "./download.ts";
-import type { AppContext } from "../../../../middleware/render.ts";
+import type { AppRenderer } from "../../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
 import { routes } from "../../../../routes.ts";
 import { JamDocument } from "../document.tsx";
@@ -22,19 +22,31 @@ type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
 export default createController(routes.jam.y2025.gallery, {
   actions: {
-    index: jam2025GalleryHandler,
+    async index({ render, request }) {
+      let photos = await getGalleryPhotos();
+      let selectedPhotoIndex = getSelectedPhotoIndex(
+        new URL(request.url).searchParams.get("photo"),
+        photos.length,
+      );
+
+      return renderGalleryPage({ photos, render, request, selectedPhotoIndex });
+    },
+
     download: jam2025GalleryDownloadHandler,
   },
 });
 
-export async function jam2025GalleryHandler({ render, request }: AppContext) {
-  let requestUrl = new URL(request.url);
-  let photos = await getGalleryPhotos();
-  let selectedPhotoIndex = getSelectedPhotoIndex(
-    requestUrl.searchParams.get("photo"),
-    photos.length,
-  );
-
+function renderGalleryPage({
+  photos,
+  render,
+  request,
+  selectedPhotoIndex,
+}: {
+  photos: Photo[];
+  render: AppRenderer;
+  request: Request;
+  selectedPhotoIndex: number | null;
+}) {
   return render(
     <JamDocument
       title="Photo Gallery | Remix Jam 2025"

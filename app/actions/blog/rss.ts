@@ -19,12 +19,7 @@ interface BlogRssPost {
 
 const POSTS_DIRECTORY = new URL("../../../data/posts/", import.meta.url);
 
-export async function blogRssHandler() {
-  let posts = await getBlogRssPosts();
-  return buildBlogRssResponse(posts);
-}
-
-async function getBlogRssPosts(): Promise<BlogRssPost[]> {
+export async function getBlogRssPosts(): Promise<BlogRssPost[]> {
   let entries = await readdir(POSTS_DIRECTORY, { withFileTypes: true });
   let posts: BlogRssPost[] = [];
 

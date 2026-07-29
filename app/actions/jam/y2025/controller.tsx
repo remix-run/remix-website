@@ -2,12 +2,12 @@ import { createController } from "remix/router";
 import type { Handle, RemixNode } from "remix/ui";
 
 import { cx } from "../../../utils/public/cx.ts";
+import { getSchedule } from "../../../data/jam-schedule.ts";
 import { routes } from "../../../routes.ts";
-import type { AppContext } from "../../../middleware/render.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
-import { jam2025CocHandler } from "./coc.tsx";
-import { jam2025FaqHandler } from "./faq.tsx";
-import { jam2025LineupHandler } from "./lineup.tsx";
+import { Jam2025CocPage } from "./coc.tsx";
+import { Jam2025FaqPage } from "./faq.tsx";
+import { Jam2025LineupPage } from "./lineup.tsx";
 import { JamDocument } from "./document.tsx";
 import {
   AddressMain,
@@ -22,35 +22,44 @@ import { assetPaths } from "../../../utils/public/asset-paths.ts";
 
 type EventStatus = "before" | "live" | "after";
 
+let cacheHeaders = { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } };
+
 export default createController(routes.jam.y2025, {
   actions: {
-    index: jam2025Handler,
-    coc: jam2025CocHandler,
-    faq: jam2025FaqHandler,
-    lineup: jam2025LineupHandler,
+    index({ render, request }) {
+      return render(
+        <JamDocument
+          title="Remix Jam 2025"
+          description="It's time to get the band back together"
+          previewImage={assetPaths.jam2025.ogThumbnail1}
+          requestUrl={request.url}
+          activePath="/jam/2025"
+        >
+          <Jam2025Page eventStatus={getEventStatus()} />
+        </JamDocument>,
+        cacheHeaders,
+      );
+    },
+
+    coc({ render, request }) {
+      return render(<Jam2025CocPage requestUrl={request.url} />, cacheHeaders);
+    },
+
+    faq({ render, request }) {
+      return render(<Jam2025FaqPage requestUrl={request.url} />, cacheHeaders);
+    },
+
+    async lineup({ render, request }) {
+      return render(
+        <Jam2025LineupPage
+          requestUrl={request.url}
+          schedule={await getSchedule()}
+        />,
+        cacheHeaders,
+      );
+    },
   },
 });
-
-export async function jam2025Handler({ render, request }: AppContext) {
-  let eventStatus = getEventStatus();
-
-  return render(
-    <JamDocument
-      title="Remix Jam 2025"
-      description="It's time to get the band back together"
-      previewImage={assetPaths.jam2025.ogThumbnail1}
-      requestUrl={request.url}
-      activePath="/jam/2025"
-    >
-      <Jam2025Page eventStatus={eventStatus} />
-    </JamDocument>,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    },
-  );
-}
 
 // Toronto is on EDT (UTC-04:00) in October, so these are absolute instants for
 // the event day. Comparing against Date.now() is timezone-independent and does

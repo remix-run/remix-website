@@ -1,8 +1,6 @@
 import { cx } from "../../../utils/public/cx.ts";
 import type { Handle } from "remix/ui";
 import { getSchedule } from "../../../data/jam-schedule.ts";
-import type { AppContext } from "../../../middleware/render.ts";
-import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { JamDocument } from "./document.tsx";
 import { ScrambleText, Title } from "./public/shared.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
@@ -13,15 +11,15 @@ let gridColsClassName =
 
 type Schedule = Awaited<ReturnType<typeof getSchedule>>;
 
-export async function jam2025LineupHandler({ render, request }: AppContext) {
-  let schedule = await getSchedule();
-
-  return render(
+export function Jam2025LineupPage(
+  handle: Handle<{ requestUrl: string; schedule: Schedule }>,
+) {
+  return () => (
     <JamDocument
       title="Schedule and Lineup | Remix Jam 2025"
       description="Schedule and Speaker Lineup for Remix Jam 2025"
       previewImage={assetPaths.jam2025.ogThumbnail1}
-      requestUrl={request.url}
+      requestUrl={handle.props.requestUrl}
       activePath="/jam/2025/lineup"
       hideBackground
       showSeats
@@ -43,14 +41,9 @@ export async function jam2025LineupHandler({ render, request }: AppContext) {
           </h2>
         </div>
 
-        <ScheduleTable items={schedule} />
+        <ScheduleTable items={handle.props.schedule} />
       </main>
-    </JamDocument>,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    },
+    </JamDocument>
   );
 }
 

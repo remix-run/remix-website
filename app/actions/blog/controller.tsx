@@ -10,8 +10,10 @@ import { getBlogPostListings } from "../../data/blog.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { styleHrefs } from "../../utils/public/style-hrefs.ts";
-import { blogPostHandler } from "./post-page.tsx";
-import { blogRssHandler } from "./rss.ts";
+import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
+import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
+import { BlogPostPage, NOT_FOUND_RESPONSE } from "./post-page.tsx";
+import { buildBlogRssResponse, getBlogRssPosts } from "./rss.ts";
 
 export default createController(routes.blog, {
   actions: {
@@ -22,9 +24,56 @@ export default createController(routes.blog, {
       });
     },
 
-    post: blogPostHandler,
+    async post({ params, render, request }) {
+      let slug = params.slug;
+      if (!slug) {
+        return render(
+          <StatusErrorDocument status={404} statusText="Not Found" />,
+          NOT_FOUND_RESPONSE,
+        );
+      }
 
-    rss: blogRssHandler,
+      if (params.ext === "md") {
+        try {
+          return new Response(getRawBlogPostMarkdown(slug), {
+            headers: {
+              "Cache-Control": CACHE_CONTROL.DEFAULT,
+              "Content-Type": "text/markdown; charset=utf-8",
+            },
+          });
+        } catch (error) {
+          if (error instanceof Response && error.status === 404) return error;
+          throw error;
+        }
+      }
+
+      let post;
+      try {
+        post = await getBlogPost(slug);
+      } catch (error) {
+        if (error instanceof Response && error.status === 404) {
+          return render(
+            <StatusErrorDocument status={404} statusText="Not Found" />,
+            NOT_FOUND_RESPONSE,
+          );
+        }
+        throw error;
+      }
+
+      return render(
+        <BlogPostPage
+          requestUrl={request.url}
+          slug={slug}
+          post={post}
+          socialImageUrl={getPostSocialImageUrl(post, slug, request.url)}
+        />,
+        { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
+      );
+    },
+
+    async rss() {
+      return buildBlogRssResponse(await getBlogRssPosts());
+    },
   },
 });
 
@@ -161,4 +210,26 @@ function BlogPageContent(
       </div>
     );
   };
+}
+
+function getPostSocialImageUrl(
+  post: Awaited<ReturnType<typeof getBlogPost>>,
+  slug: string,
+  requestUrl: string,
+) {
+  let ogImageUrl = new URL(
+    routes.blogOgImage.href({ slug }),
+    new URL(requestUrl).origin,
+  );
+  ogImageUrl.searchParams.set("title", post.title);
+  ogImageUrl.searchParams.set("date", post.dateDisplay);
+  for (let author of post.authors) {
+    ogImageUrl.searchParams.append("authorName", author.name);
+    ogImageUrl.searchParams.append("authorTitle", author.title);
+  }
+  if (post.ogImage) {
+    ogImageUrl.searchParams.set("ogImage", post.ogImage);
+  }
+
+  return ogImageUrl.toString();
 }

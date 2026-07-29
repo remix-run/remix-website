@@ -1,16 +1,12 @@
-import { createController } from "remix/router";
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../../routes.ts";
-import { parseProduct } from "../../../data/jam-storefront.ts";
+import { env } from "../../../utils/env.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import jam2026Controller from "./controller.tsx";
-import {
-  createJam2026PageHandler,
-  createJam2026TicketAction,
-} from "./controller.tsx";
+import jam2026TicketController from "./ticket/controller.tsx";
 import { remixJam2026Ticket } from "./public/ticket-data.ts";
 import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
 import {
@@ -21,10 +17,6 @@ import {
   getJam2026DiscountCode,
   serializeJam2026DiscountCode,
 } from "./discount-code.ts";
-
-type TestStorefront = NonNullable<
-  Parameters<typeof createJam2026PageHandler>[0]
->;
 
 describe("Remix Jam 2026 routes", () => {
   it("renders the homepage as the full Jam page with ticket frame navigation", async () => {
@@ -256,8 +248,9 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain('role="alert"');
   });
 
-  it("creates a Shopify cart and redirects to checkout", async () => {
-    let router = createJam2026TestRouter(availableStorefront);
+  it("creates a Shopify cart and redirects to checkout", async (t) => {
+    mockStorefront(t);
+    let router = createJam2026TestRouter();
     let formData = new FormData();
     formData.set("ticketType", remixJam2026Ticket.type);
     formData.set("productId", "gid://shopify/ProductVariant/2026");
@@ -278,8 +271,9 @@ describe("Remix Jam 2026 routes", () => {
     );
   });
 
-  it("stores a discount code from the URL and shows it in the ticket modal", async () => {
-    let router = createJam2026TestRouter(availableStorefront);
+  it("stores a discount code from the URL and shows it in the ticket modal", async (t) => {
+    mockStorefront(t);
+    let router = createJam2026TestRouter();
 
     let response = await router.fetch(
       "http://localhost:3000/jam/2026/ticket?discount=partner-2026",
@@ -302,8 +296,9 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain("Code PARTNER-2026 will be applied at checkout");
   });
 
-  it("reads the stored discount code on tickets frame requests", async () => {
-    let router = createJam2026TestRouter(availableStorefront);
+  it("reads the stored discount code on tickets frame requests", async (t) => {
+    mockStorefront(t);
+    let router = createJam2026TestRouter();
     let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
 
     let response = await router.fetch(
@@ -324,8 +319,9 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain("Code PARTNER-2026 will be applied at checkout");
   });
 
-  it("ignores malformed discount codes", async () => {
-    let router = createJam2026TestRouter(availableStorefront);
+  it("ignores malformed discount codes", async (t) => {
+    mockStorefront(t);
+    let router = createJam2026TestRouter();
 
     let response = await router.fetch(
       "http://localhost:3000/jam/2026/ticket?discount=not%20a%20code",
@@ -340,15 +336,9 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain("Early bird discount applied");
   });
 
-  it("silently clears an inapplicable discount code", async () => {
-    let router = createJam2026TestRouter({
-      ...availableStorefront,
-      createCart: async () => ({
-        id: "gid://shopify/Cart/2026",
-        checkoutUrl: "https://jam.remix.run/checkouts/2026",
-        discountCode: undefined,
-      }),
-    });
+  it("silently clears an inapplicable discount code", async (t) => {
+    mockStorefront(t, { applicableDiscountCode: false });
+    let router = createJam2026TestRouter();
     let cookie = await serializeJam2026DiscountCode("EXPIRED-2026");
 
     let response = await router.fetch(
@@ -367,15 +357,9 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).not.toContain("EXPIRED-2026");
   });
 
-  it("silently checks out without an inapplicable stored discount code", async () => {
-    let router = createJam2026TestRouter({
-      ...availableStorefront,
-      createCart: async () => ({
-        id: "gid://shopify/Cart/2026",
-        checkoutUrl: "https://jam.remix.run/checkouts/2026",
-        discountCode: undefined,
-      }),
-    });
+  it("silently checks out without an inapplicable stored discount code", async (t) => {
+    mockStorefront(t, { applicableDiscountCode: false });
+    let router = createJam2026TestRouter();
     let cookie = await serializeJam2026DiscountCode("EXPIRED-2026");
 
     let response = await router.fetch(
@@ -394,19 +378,9 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
   });
 
-  it("forwards the stored discount code to the Shopify cart", async () => {
-    let requested: string[] = [];
-    let router = createJam2026TestRouter({
-      ...availableStorefront,
-      createCart: async ({ discountCode }) => {
-        requested.push(discountCode ?? "");
-        return {
-          id: "gid://shopify/Cart/2026",
-          checkoutUrl: "https://jam.remix.run/checkouts/2026",
-          discountCode,
-        };
-      },
-    });
+  it("forwards the stored discount code to the Shopify cart", async (t) => {
+    let requestedDiscountCodes = mockStorefront(t);
+    let router = createJam2026TestRouter();
     let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
 
     let response = await router.fetch(
@@ -420,7 +394,7 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(response.status).toBe(303);
     expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
-    expect(requested).toEqual(["PARTNER-2026"]);
+    expect(requestedDiscountCodes).toEqual([["PARTNER-2026"]]);
   });
 });
 
@@ -432,50 +406,93 @@ function createTicketFormData() {
   return formData;
 }
 
-let unavailableStorefront = {
-  createCart: async () => ({
-    error: "Ticket checkout is unavailable right now",
-  }),
-  getProduct: async () =>
-    parseProduct({
-      id: "unavailable",
-      price: "399.00",
-      productId: "unavailable",
-      availableForSale: false,
-      unavailableReason: "storefront",
-    }),
-};
-
-let availableStorefront: TestStorefront = {
-  createCart: async ({ discountCode }) => ({
-    id: "gid://shopify/Cart/2026",
-    checkoutUrl: "https://jam.remix.run/checkouts/2026",
-    discountCode,
-  }),
-  getProduct: async () =>
-    parseProduct({
-      id: "gid://shopify/Product/2026",
-      price: "299.00",
-      productId: "gid://shopify/ProductVariant/2026",
-      availableForSale: true,
-    }),
-};
-
-function createJam2026TestRouter(
-  storefront: TestStorefront = unavailableStorefront,
-) {
-  let pageHandler = createJam2026PageHandler(storefront);
-  let ticketAction = createJam2026TicketAction(storefront);
+function createJam2026TestRouter() {
   let router = createRouteTestRouter();
-  router.map(
-    routes.jam.y2026.ticket,
-    createController(routes.jam.y2026.ticket, {
-      actions: {
-        index: pageHandler,
-        action: ticketAction,
-      },
-    }),
-  );
+  router.map(routes.jam.y2026.ticket, jam2026TicketController);
   router.map(routes.jam.y2026, jam2026Controller);
   return router;
+}
+
+/**
+ * Stubs the Shopify Storefront API so tickets are on sale. Without a storefront
+ * token the data layer already reports tickets as unavailable, so only tests
+ * that need a purchasable ticket install this.
+ *
+ * Returns the discount codes sent with each cart mutation.
+ */
+function mockStorefront(
+  t: { after(cleanup: () => void): void },
+  { applicableDiscountCode = true }: { applicableDiscountCode?: boolean } = {},
+) {
+  let requestedDiscountCodes: string[][] = [];
+  let originalToken = env.PUBLIC_STOREFRONT_API_TOKEN;
+  let originalFetch = globalThis.fetch;
+
+  env.PUBLIC_STOREFRONT_API_TOKEN = "test-storefront-token";
+  globalThis.fetch = async (input, init) => {
+    let url = String(input);
+    if (url !== "https://jam.remix.run/api/2026-04/graphql.json") {
+      throw new Error(`Unexpected fetch: ${url}`);
+    }
+
+    let body = JSON.parse(String(init?.body ?? "{}"));
+    let cart = {
+      id: "gid://shopify/Cart/2026",
+      checkoutUrl: "https://jam.remix.run/checkouts/2026",
+    };
+
+    if (body.query.includes("cartCreate")) {
+      let discountCodes: string[] =
+        body.variables.cartInput.discountCodes ?? [];
+      requestedDiscountCodes.push(discountCodes);
+
+      return Response.json({
+        data: {
+          cartCreate: {
+            cart: {
+              ...cart,
+              discountCodes: discountCodes.map((code) => ({
+                code,
+                applicable: applicableDiscountCode,
+              })),
+            },
+            userErrors: [],
+            warnings: [],
+          },
+        },
+      });
+    }
+
+    if (body.query.includes("cartDiscountCodesUpdate")) {
+      return Response.json({
+        data: { cartDiscountCodesUpdate: { cart, userErrors: [] } },
+      });
+    }
+
+    return Response.json({
+      data: {
+        product: {
+          id: "gid://shopify/Product/2026",
+          variants: {
+            edges: [
+              {
+                node: {
+                  id: "gid://shopify/ProductVariant/2026",
+                  price: { amount: "299.00" },
+                  availableForSale: true,
+                },
+              },
+            ],
+          },
+        },
+      },
+    });
+  };
+
+  t.after(() => {
+    env.PUBLIC_STOREFRONT_API_TOKEN = originalToken;
+    globalThis.fetch = originalFetch;
+  });
+
+  return requestedDiscountCodes;
 }
