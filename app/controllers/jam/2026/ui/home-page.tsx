@@ -22,6 +22,7 @@ type Jam2026HomePageProps = {
   ticketsModalOpen?: boolean;
   ticketCheckout?: {
     availableForSale: boolean;
+    discountCode?: string;
     error?: string;
     initialQuantity: number;
     maxQuantity: number;
@@ -34,6 +35,13 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
   return () => {
     let { ticketsModalOpen = false } = handle.props;
     let head = getJam2026HeadContent({ ticketsModalOpen });
+    // Carry the discount code into the frame URL so the server-resolved modal
+    // shows it on the first paint, before the cookie round-trips.
+    let discountCode = handle.props.ticketCheckout?.discountCode;
+    let ticketsFrameSrc = ticketsModalOpen
+      ? routes.jam.y2026.ticket.index.href() +
+        (discountCode ? `?discount=${encodeURIComponent(discountCode)}` : "")
+      : routes.jam.y2026.index.href();
 
     return (
       <Document
@@ -72,14 +80,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
                 ticketCheckout={handle.props.ticketCheckout}
               />
             ) : (
-              <Frame
-                name={ticketModalConfig.frameName}
-                src={
-                  ticketsModalOpen
-                    ? routes.jam.y2026.ticket.index.href()
-                    : routes.jam.y2026.index.href()
-                }
-              />
+              <Frame name={ticketModalConfig.frameName} src={ticketsFrameSrc} />
             )}
           </div>
         </div>

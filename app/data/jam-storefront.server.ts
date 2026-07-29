@@ -46,6 +46,7 @@ const CartSchema = s.object({
     .string()
     .pipe(c.url())
     .refine(isTrustedCheckoutUrl, "Expected trusted checkout URL"),
+  discountCode: s.optional(s.string()),
 });
 
 const PhotoSchema = s.object({
@@ -262,10 +263,66 @@ export async function createCart(params: {
     return { error: "Failed to create cart" };
   }
 
+  let cart = data.cartCreate.cart;
+  let appliedDiscountCode = cart.discountCodes?.find(
+    (candidate: { applicable?: boolean; code?: string }) =>
+      candidate.applicable &&
+      candidate.code?.trim().toUpperCase() === discountCode,
+  )?.code;
+
+  if (discountCode && !appliedDiscountCode) {
+    let cleanCart = await removeCartDiscountCodes(storefrontClient, cart.id);
+    if (!cleanCart) return createCart({ productId, quantity });
+    cart = cleanCart;
+  }
+
   return parseCart({
-    id: data.cartCreate.cart.id,
-    checkoutUrl: data.cartCreate.cart.checkoutUrl,
+    id: cart.id,
+    checkoutUrl: cart.checkoutUrl,
+    discountCode: appliedDiscountCode?.trim().toUpperCase(),
   });
+}
+
+async function removeCartDiscountCodes(
+  storefrontClient: NonNullable<ReturnType<typeof getClient>>,
+  cartId: string,
+) {
+  const removeDiscountCodesMutation = `
+    mutation CartDiscountCodesUpdate(
+      $cartId: ID!
+      $discountCodes: [String!]!
+    ) {
+      cartDiscountCodesUpdate(
+        cartId: $cartId
+        discountCodes: $discountCodes
+      ) {
+        cart {
+          id
+          checkoutUrl
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  try {
+    let response = await storefrontClient.request(removeDiscountCodesMutation, {
+      variables: { cartId, discountCodes: [] },
+    });
+    if (
+      response.errors ||
+      response.data?.cartDiscountCodesUpdate?.userErrors?.length ||
+      !response.data?.cartDiscountCodesUpdate?.cart?.checkoutUrl
+    ) {
+      return null;
+    }
+    return response.data.cartDiscountCodesUpdate.cart;
+  } catch {
+    return null;
+  }
 }
 
 function createUnavailableProduct(

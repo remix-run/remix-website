@@ -40,8 +40,10 @@ describe("parseCart", () => {
     let cart = parseCart({
       id: "gid://shopify/Cart/abc",
       checkoutUrl: "https://jam.remix.run/checkout/abc",
+      discountCode: "PARTNER-2026",
     });
     expect(cart.checkoutUrl).toBe("https://jam.remix.run/checkout/abc");
+    expect(cart.discountCode).toBe("PARTNER-2026");
   });
 
   it("rejects invalid checkoutUrl", () => {
