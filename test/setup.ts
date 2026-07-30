@@ -6,6 +6,7 @@ import { formData } from "remix/middleware/form-data";
 import type { Router } from "remix/router";
 import { createRouter } from "remix/router";
 
+import { getBlogPostListings } from "../app/data/blog.ts";
 import { loadAssetEntry } from "../app/middleware/asset-entry.ts";
 import { renderMiddleware, type AppContext } from "../app/middleware/render.ts";
 
@@ -25,6 +26,18 @@ export function createRouteTestRouter(): Router<AppContext> {
   });
 
   return router;
+}
+
+/**
+ * Renders every blog post's markdown into the server's post cache.
+ *
+ * The blog index renders each post through Shiki on the first request, which
+ * takes ~1s locally and several seconds on CI. Client navigation updates the
+ * URL before that render resolves, so asserting on the listing right after the
+ * URL change otherwise races the cold render instead of the navigation.
+ */
+export async function warmBlogPostListings() {
+  await getBlogPostListings();
 }
 
 export function swallowAbortErrors(r: Router) {

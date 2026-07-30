@@ -3,7 +3,7 @@ import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
-import { swallowAbortErrors } from "../test/setup.ts";
+import { swallowAbortErrors, warmBlogPostListings } from "../test/setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -38,6 +38,7 @@ async function expectLandingNavReady(page: Page) {
 
 describe("Navigation", () => {
   it("home/blog navigation stays client-side and applies forced dark mode", async (t) => {
+    await warmBlogPostListings();
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ colorScheme: "dark" });
