@@ -2,6 +2,7 @@ import assert from "node:assert";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { LRUCache } from "lru-cache";
+import parseFrontMatter from "front-matter";
 import yaml from "yaml";
 import { processMarkdown } from "./md.ts";
 
@@ -71,20 +72,42 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
   return post;
 }
 
-export async function getBlogPostListings(): Promise<
-  Array<MarkdownPostListing>
-> {
-  let slugs = Object.keys(postContentsBySlug);
+let postListings: Array<MarkdownPostListing> | undefined;
+
+/**
+ * The listing only renders frontmatter, so it parses frontmatter instead of
+ * running every post through the markdown/Shiki pipeline. Rendering all posts
+ * just to read their titles cost ~1.1s on the first request to /blog.
+ */
+export function getBlogPostListings(): Array<MarkdownPostListing> {
+  if (postListings) return postListings;
+
   let listings: Array<MarkdownPostListing & { date: Date }> = [];
-  for (let slug of slugs) {
-    let { ...listing } = await getBlogPost(slug);
-    if (!listing.draft) {
-      listings.push({ slug, ...listing });
-    }
+  for (let [slug, contents] of Object.entries(postContentsBySlug)) {
+    let { attributes } = parseFrontMatter(contents);
+    assert(
+      isMarkdownPostFrontmatter(attributes),
+      `Invalid post frontmatter in ${slug}`,
+    );
+    if (attributes.draft) continue;
+
+    listings.push({
+      slug,
+      title: attributes.title,
+      summary: attributes.summary,
+      date: attributes.date,
+      dateDisplay: formatDate(attributes.date),
+      image: attributes.image,
+      imageAlt: attributes.imageAlt,
+      featured: attributes.featured,
+    });
   }
-  return listings
+
+  postListings = listings
     .sort((a, b) => b.date.getTime() - a.date.getTime())
-    .map(({ ...listing }) => listing);
+    .map(({ date, ...listing }) => listing);
+
+  return postListings;
 }
 
 export function getRawBlogPostMarkdown(slug: string): string {

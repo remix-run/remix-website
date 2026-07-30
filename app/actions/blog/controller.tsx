@@ -18,10 +18,12 @@ import { buildBlogRssResponse, getBlogRssPosts } from "./rss.ts";
 export default createController(routes.blog, {
   actions: {
     async index({ render, request }) {
-      let posts = await getBlogPostListings();
-      return render(<Page posts={posts} requestUrl={request.url} />, {
-        headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
-      });
+      return render(
+        <Page posts={getBlogPostListings()} requestUrl={request.url} />,
+        {
+          headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
+        },
+      );
     },
 
     async post({ params, render, request }) {
@@ -79,7 +81,7 @@ export default createController(routes.blog, {
 
 function Page(
   handle: Handle<{
-    posts: Awaited<ReturnType<typeof getBlogPostListings>>;
+    posts: ReturnType<typeof getBlogPostListings>;
     requestUrl: string;
   }>,
 ) {
@@ -106,7 +108,7 @@ function Page(
 
 function BlogPageContent(
   handle: Handle<{
-    posts: Awaited<ReturnType<typeof getBlogPostListings>>;
+    posts: ReturnType<typeof getBlogPostListings>;
   }>,
 ) {
   return () => {
