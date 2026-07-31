@@ -40,6 +40,32 @@ describe("Jam2026PhotoMoments", () => {
     expect(firstWindow.style.transform).toBe("translate(32px, 48px)");
   });
 
+  it("links the racing shirt photo to the shop without dragging", async (t) => {
+    let result = render(
+      <Jam2026PhotoMoments popInBaseDelay={0} popInStagger={0} />,
+    );
+    t.after(result.cleanup);
+
+    let shirtWindow = getPhotoWindow(result.container, "hero-racing-shirt");
+    let shirtLink = shirtWindow.querySelector("a");
+
+    expect(shirtLink?.getAttribute("href")).toBe(
+      "https://shop.remix.run/products/remix-tee?discount=START_YOUR_ENGINES",
+    );
+    expect(shirtLink?.getAttribute("target")).toBe(null);
+    expect(shirtLink?.getAttribute("aria-label")).toBe("Shop Remix tee");
+
+    await result.act(() => {
+      shirtWindow.dispatchEvent(pointerEvent("pointerdown", 100, 100));
+      shirtWindow.dispatchEvent(pointerEvent("pointermove", 140, 160));
+      shirtWindow.dispatchEvent(pointerEvent("pointerup", 140, 160));
+    });
+
+    shirtWindow = getPhotoWindow(result.container, "hero-racing-shirt");
+    expect(shirtWindow.style.transform).toBe("translate(0px, 0px)");
+    expect(shirtWindow.getAttribute("data-dragging")).toBe(null);
+  });
+
   it("closes windows with Escape and moves focus to the next close button", async (t) => {
     let result = render(
       <Jam2026PhotoMoments popInBaseDelay={0} popInStagger={0} />,
