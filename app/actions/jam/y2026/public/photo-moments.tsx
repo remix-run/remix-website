@@ -23,6 +23,8 @@ type PhotoMoment = {
   xCompact: number;
   y: number;
   yCompact: number;
+  href?: string;
+  linkLabel?: string;
 };
 
 type Jam2026PhotoMomentsProps = {
@@ -70,6 +72,8 @@ const PHOTO_MOMENTS = [
     xCompact: -136,
     y: 571,
     yCompact: 365,
+    href: "https://shop.remix.run/products/remix-tee?discount=START_YOUR_ENGINES",
+    linkLabel: "Shop Remix tee",
   },
   {
     id: "speaker-ryan",
@@ -223,6 +227,9 @@ export let Jam2026PhotoMoments = clientEntry(
           let state = runtime[moment.id];
           if (!state?.isOpen) return null;
 
+          let { href, linkLabel = moment.filename }: PhotoMoment = moment;
+          let draggable = !href;
+
           return (
             <article
               key={moment.id}
@@ -230,10 +237,13 @@ export let Jam2026PhotoMoments = clientEntry(
               data-photo-window-id={moment.id}
               mix={[
                 photoMomentPositionStyle,
+                draggable ? photoMomentDraggableStyle : undefined,
                 moment.anchor === "right"
                   ? photoMomentRightStyle
                   : photoMomentLeftStyle,
-                on("pointerdown", (event) => handleStart(event, moment.id)),
+                draggable
+                  ? on("pointerdown", (event) => handleStart(event, moment.id))
+                  : undefined,
                 on("focusin", () => {
                   bringToFront(moment.id);
                   handle.update();
@@ -288,15 +298,34 @@ export let Jam2026PhotoMoments = clientEntry(
                     </button>
                     <p mix={jam2026WindowTitleStyle}>{moment.filename}</p>
                   </div>
-                  <div mix={photoMomentImageFrameStyle}>
-                    <img
-                      alt=""
-                      decoding="async"
-                      draggable={false}
-                      loading="eager"
-                      src={moment.src}
-                    />
-                  </div>
+                  {href ? (
+                    <a
+                      aria-label={linkLabel}
+                      href={href}
+                      mix={[
+                        photoMomentImageFrameStyle,
+                        photoMomentImageLinkStyle,
+                      ]}
+                    >
+                      <img
+                        alt=""
+                        decoding="async"
+                        draggable={false}
+                        loading="eager"
+                        src={moment.src}
+                      />
+                    </a>
+                  ) : (
+                    <div mix={photoMomentImageFrameStyle}>
+                      <img
+                        alt=""
+                        decoding="async"
+                        draggable={false}
+                        loading="eager"
+                        src={moment.src}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </article>
@@ -326,18 +355,21 @@ let photoLayerStyle = css({
 });
 
 let photoMomentPositionStyle = css({
-  cursor: "grab",
   pointerEvents: "auto",
   position: "absolute",
   top: "var(--jam-2026-photo-y)",
+  [breakpointMedia.xl]: {
+    top: "var(--jam-2026-photo-y-wide)",
+  },
+});
+
+let photoMomentDraggableStyle = css({
+  cursor: "grab",
   touchAction: "none",
   userSelect: "none",
   WebkitUserSelect: "none",
   '&[data-dragging="true"]': {
     cursor: "grabbing",
-  },
-  [breakpointMedia.xl]: {
-    top: "var(--jam-2026-photo-y-wide)",
   },
 });
 
@@ -385,9 +417,10 @@ let photoMomentSurfaceStyle = css({
   transformOrigin: "50% 50%",
   transition:
     "transform 350ms cubic-bezier(0.22, 1.5, 0.36, 1), box-shadow 350ms cubic-bezier(0.22, 1.5, 0.36, 1)",
-  "[data-photo-window-id]:hover &": {
-    transform: "rotate(-2deg)",
-  },
+  "[data-photo-window-id]:hover &, [data-photo-window-id]:has(:focus-visible) &":
+    {
+      transform: "rotate(-2deg)",
+    },
   "[data-dragging='true'] &": {
     boxShadow:
       "0 2px 4px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.24)), 0 8px 16px light-dark(rgb(8 40 69 / 0.07), rgb(0 0 0 / 0.28)), 0 20px 36px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.32)), 0 40px 72px light-dark(rgb(8 40 69 / 0.1), rgb(0 0 0 / 0.38))",
@@ -398,9 +431,10 @@ let photoMomentSurfaceStyle = css({
   },
   "@media (prefers-reduced-motion: reduce)": {
     transition: "none",
-    "[data-photo-window-id]:hover &": {
-      transform: "rotate(0deg)",
-    },
+    "[data-photo-window-id]:hover &, [data-photo-window-id]:has(:focus-visible) &":
+      {
+        transform: "rotate(0deg)",
+      },
     "[data-dragging='true'] &": {
       transform: "none",
     },
@@ -464,5 +498,17 @@ let photoMomentImageFrameStyle = css({
     userSelect: "none",
     width: "100%",
     WebkitUserDrag: "none",
+  },
+});
+
+let photoMomentImageLinkStyle = css({
+  color: "inherit",
+  cursor: "pointer",
+  display: "block",
+  outline: "none",
+  textDecoration: "none",
+  "&:focus-visible": {
+    outline: `2px solid ${jamTheme.brandRed}`,
+    outlineOffset: "2px",
   },
 });
