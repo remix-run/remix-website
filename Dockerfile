@@ -6,7 +6,7 @@ FROM base as deps
 
 WORKDIR /remixapp
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN corepack enable && pnpm install --frozen-lockfile --prod=false
 
 # Setup production node_modules
@@ -15,7 +15,7 @@ FROM base as production-deps
 WORKDIR /remixapp
 
 COPY --from=deps /remixapp/node_modules /remixapp/node_modules
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN corepack enable && pnpm prune --prod
 
 # Build the app

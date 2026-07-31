@@ -1,0 +1,45 @@
+import { describe, it } from "remix/test";
+import { expect } from "remix/assert";
+import { parseScheduleItems } from "./jam-schedule.ts";
+
+describe("parseScheduleItems", () => {
+  it("parses valid schedule items", () => {
+    let raw = [
+      {
+        time: "9:00 AM",
+        title: "Keynote",
+        description: "Opening talk",
+        speaker: "Jane Doe",
+      },
+      {
+        time: "10:00 AM",
+        title: "Workshop",
+        description: "Hands on",
+        speaker: "John",
+        imgFilename: "john.webp",
+        bio: "Developer",
+      },
+    ];
+
+    let result = parseScheduleItems(raw);
+    expect(result).toHaveLength(2);
+    expect(result[0]).toMatchObject({
+      time: "9:00 AM",
+      title: "Keynote",
+      description: "Opening talk",
+      speaker: "Jane Doe",
+    });
+    expect(result[1].imgFilename).toBe("john.webp");
+    expect(result[1].bio).toBe("Developer");
+  });
+
+  it("rejects invalid shape - missing required fields", () => {
+    let raw = [{ time: "9:00" }]; // missing title, description, speaker
+    expect(() => parseScheduleItems(raw)).toThrow();
+  });
+
+  it("rejects non-array input", () => {
+    expect(() => parseScheduleItems({})).toThrow();
+    expect(() => parseScheduleItems("not an array")).toThrow();
+  });
+});

@@ -2,6 +2,7 @@
 /dashboard      https://remix-run.web.app/dashboard   302
 /discord        https://discord.gg/xwx7mMzVkA         302
 /support        https://remix-run.web.app/support     302
+/remix-3-active-development /remix-history                        301
 /features       /                                     302
 /api            /api/conventions                      302
 /podcast        https://remix.transistor.fm/          302

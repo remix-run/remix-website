@@ -1,13 +1,11 @@
 import { Renderer, renderWith } from "remix/middleware/render";
 import type { ContextWithEntries, RequestContext, Router } from "remix/router";
 import { createHtmlResponse } from "remix/response/html";
-import { createElement } from "remix/ui";
 import type { RemixNode } from "remix/ui";
 import { renderToStream, type ResolveFrameContext } from "remix/ui/server";
 
 import type { AssetEntryContextEntry } from "./asset-entry.ts";
-import { AssetEntryProvider } from "../ui/document.tsx";
-import { assetServer } from "../utils/assets.server.ts";
+import { assetServer } from "../utils/assets.ts";
 
 export interface AppRenderer {
   (node: RemixNode, init?: ResponseInit): Response;
@@ -25,11 +23,6 @@ type RendererContextEntry = {
   property: "render";
 };
 
-type RenderMiddlewareContext = ContextWithEntries<
-  RequestContext,
-  [AssetEntryContextEntry]
->;
-
 export type AppContext = ContextWithEntries<
   RequestContext,
   [FormDataContextEntry, AssetEntryContextEntry, RendererContextEntry]
@@ -42,13 +35,10 @@ declare module "remix/router" {
 }
 
 export let renderMiddleware = renderWith((context) =>
-  createAppRenderer(context as RenderMiddlewareContext),
+  createAppRenderer(context),
 );
 
-function createAppRenderer(context: RenderMiddlewareContext): AppRenderer {
-  let rootNode = (node: RemixNode) =>
-    createElement(AssetEntryProvider, { value: context.assetEntry }, node);
-
+function createAppRenderer(context: RequestContext): AppRenderer {
   function renderFrame(node: RemixNode, init?: ResponseInit) {
     let headers = new Headers(init?.headers);
     if (!headers.has("Content-Type")) {
@@ -56,7 +46,7 @@ function createAppRenderer(context: RenderMiddlewareContext): AppRenderer {
     }
 
     return new Response(
-      renderToStream(rootNode(node), {
+      renderToStream(node, {
         frameSrc: context.request.url,
         signal: context.request.signal,
         resolveClientEntry: (entryId, component) =>
@@ -70,7 +60,7 @@ function createAppRenderer(context: RenderMiddlewareContext): AppRenderer {
   }
 
   function renderDocument(node: RemixNode, init?: ResponseInit) {
-    let stream = renderToStream(rootNode(node), {
+    let stream = renderToStream(node, {
       frameSrc: context.request.url,
       signal: context.request.signal,
       resolveFrame: (src, target, frameContext) =>

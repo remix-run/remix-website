@@ -1,7 +1,7 @@
 import * as http from "node:http";
 import { createRequestListener } from "remix/node-fetch-server";
 import { router } from "./app/router.ts";
-import { assetServer } from "./app/utils/assets.server.ts";
+import { assetServer } from "./app/utils/assets.ts";
 
 const port = Number(process.env.PORT ?? 3000);
 if (!Number.isFinite(port) || port <= 0) {

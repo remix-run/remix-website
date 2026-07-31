@@ -1,79 +1,39 @@
-import type { ManagedHeadTag } from "../ui/document-head.ts";
+import type { ManagedHeadTag } from "../ui/public/document-head.ts";
+import { assetPaths } from "./public/asset-paths.ts";
+import { createSocialHeadTags } from "./public/social-head-tags.ts";
 
 type SocialHeadTagsProps = {
+  requestUrl: string | URL;
   title?: string;
   description?: string;
-  url: string;
-  imageUrl: string;
+  url?: string;
+  image?: string;
   imageAlt?: string;
   twitterCreator?: string;
   twitterSite?: string;
 };
 
-export function createSocialHeadTags(props: SocialHeadTagsProps) {
-  let tags: ManagedHeadTag[] = [
-    { kind: "meta", property: "og:type", content: "website" },
-  ];
-
-  if (props.title) {
-    tags.push({ kind: "meta", property: "og:title", content: props.title });
-  }
-
-  if (props.description) {
-    tags.push({
-      kind: "meta",
-      property: "og:description",
-      content: props.description,
-    });
-  }
-
-  tags.push(
-    { kind: "meta", property: "og:url", content: props.url },
-    { kind: "meta", property: "og:image", content: props.imageUrl },
-    {
-      kind: "meta",
-      name: "twitter:card",
-      content: "summary_large_image",
-    },
+export function getSocialHeadTags(props: SocialHeadTagsProps) {
+  let requestUrl = new URL(props.requestUrl);
+  let pageUrl = props.url ?? `${requestUrl.origin}${requestUrl.pathname}`;
+  let imageUrl = resolveUrl(
+    props.image ?? assetPaths.marketing.defaultOgImage,
+    requestUrl,
   );
 
-  if (props.title) {
-    tags.push({ kind: "meta", name: "twitter:title", content: props.title });
-  }
+  return createSocialHeadTags({
+    title: props.title,
+    description: props.description,
+    url: pageUrl,
+    imageUrl,
+    imageAlt: props.imageAlt,
+    twitterCreator: props.twitterCreator,
+    twitterSite: props.twitterSite,
+  }) satisfies ManagedHeadTag[];
+}
 
-  if (props.description) {
-    tags.push({
-      kind: "meta",
-      name: "twitter:description",
-      content: props.description,
-    });
-  }
+function resolveUrl(value: string, requestUrl: URL) {
+  if (/^https?:\/\//.test(value)) return value;
 
-  tags.push({ kind: "meta", name: "twitter:image", content: props.imageUrl });
-
-  if (props.imageAlt) {
-    tags.push({
-      kind: "meta",
-      name: "twitter:image:alt",
-      content: props.imageAlt,
-    });
-  }
-
-  if (props.twitterCreator) {
-    tags.push({
-      kind: "meta",
-      name: "twitter:creator",
-      content: props.twitterCreator,
-    });
-  }
-
-  if (props.twitterSite) {
-    tags.push({
-      kind: "meta",
-      name: "twitter:site",
-      content: props.twitterSite,
-    });
-  }
-
-  return tags;
+  return new URL(value, requestUrl).toString();
 }

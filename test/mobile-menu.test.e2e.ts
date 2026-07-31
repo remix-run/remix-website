@@ -3,7 +3,7 @@ import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
-import { swallowAbortErrors } from "../test/setup.ts";
+import { swallowAbortErrors, warmBlogPostListings } from "../test/setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -17,7 +17,7 @@ async function markPage(page: Page) {
 
 async function gotoMobileMenuPage(page: Page) {
   await page.setViewportSize({ width: 390, height: 844 });
-  let response = await page.goto("/remix-3-active-development");
+  let response = await page.goto("/remix-history");
   expect(response?.ok()).toBe(true);
   await expect(mobileMenuToggle(page)).toBeVisible();
 }
@@ -35,6 +35,7 @@ function mobileMenuToggle(page: Page) {
 
 describe("Mobile menu", () => {
   it("mobile menu links navigate", async (t) => {
+    await warmBlogPostListings();
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);

@@ -281,7 +281,7 @@
   }
 }
 
-.rmx-remix3-active-development-hero-bg {
+.rmx-remix-history-hero-bg {
   background: linear-gradient(
     180deg,
     var(--rmx-neutral-200) 0%,
@@ -291,7 +291,7 @@
   );
 }
 
-.rmx-remix3-active-development-text-bg {
+.rmx-remix-history-text-bg {
   background: linear-gradient(
     180deg,
     var(--rmx-white) 0%,
@@ -299,7 +299,7 @@
   );
 }
 
-.rmx-remix3-active-development-timeline-bg {
+.rmx-remix-history-timeline-bg {
   background: linear-gradient(
     180deg,
     var(--rmx-neutral-950) 0%,
@@ -309,7 +309,7 @@
 }
 
 @media (min-width: 1280px) {
-  .rmx-remix3-active-development-timeline-bg {
+  .rmx-remix-history-timeline-bg {
     background: linear-gradient(
       180deg,
       var(--rmx-neutral-950) 0%,
@@ -319,7 +319,7 @@
   }
 }
 
-.rmx-remix3-active-development-surface-bg {
+.rmx-remix-history-surface-bg {
   background: var(--rmx-surface-3);
 }
 

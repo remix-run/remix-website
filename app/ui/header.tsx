@@ -1,13 +1,13 @@
 import type { Handle } from "remix/ui";
-import { MobileMenu } from "../assets/mobile-menu.tsx";
-import { WordmarkLink } from "../assets/wordmark-link.tsx";
+import { MobileMenu } from "./public/mobile-menu.tsx";
+import { WordmarkLink } from "./public/wordmark-link.tsx";
 import { routes } from "../routes.ts";
-import { theme } from "./theme.ts";
+import { theme } from "./public/theme.ts";
 
 const LINKS: Array<{ to: string; label: string; document?: boolean }> = [
   { to: "https://guides.remix.run", label: "Guides", document: true },
   { to: "https://api.remix.run", label: "API", document: true },
-  { to: routes.blog.href(), label: "Blog" },
+  { to: routes.blog.index.href(), label: "Blog" },
   { to: routes.jam.y2026.index.href(), label: "Jam" },
   { to: "https://shop.remix.run", label: "Store", document: true },
   { to: "https://github.com/remix-run/remix", label: "GitHub", document: true },
