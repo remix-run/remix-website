@@ -103,20 +103,19 @@ async function replaceCurrentUrl(href: string) {
 
 export function ScrollLogo(handle: Handle) {
   let largeWidth = window.innerWidth - LEFT * 2;
-  let scrollY = window.scrollY;
+  let scrollY = 0;
 
-  // Each ghost has its own lagging (width, top). Initialize flush with the
-  // main logo so nothing's visible until real motion fans them out.
-  const initialT = getScrollProgress(scrollY);
-  const initialWidth = lerp(largeWidth, SMALL_WIDTH, initialT);
-  const initialTop = lerp(LARGE_TOP, SMALL_TOP, initialT);
+  // Navigation resets scroll after creating the next page's components, so
+  // initialize for the top of the landing page instead of inheriting the
+  // previous page's scroll position.
   const ghostState = GHOST_TAUS.map(() => ({
-    width: initialWidth,
-    top: initialTop,
+    width: largeWidth,
+    top: LARGE_TOP,
   }));
 
   let rafId = 0;
   let lastTime = 0;
+  let canAnimateScroll = false;
 
   const brandMenu = brandContextMenu(routes.brand.href());
   const scrollHomeToTop = on<HTMLAnchorElement>("click", (event) => {
@@ -174,19 +173,38 @@ export function ScrollLogo(handle: Handle) {
     }
   }
 
+  function syncToScroll() {
+    scrollY = window.scrollY;
+    const t = getScrollProgress(scrollY);
+    const width = lerp(largeWidth, SMALL_WIDTH, t);
+    const top = lerp(LARGE_TOP, SMALL_TOP, t);
+    for (const ghost of ghostState) {
+      ghost.width = width;
+      ghost.top = top;
+    }
+    handle.update();
+  }
+
   function ensureLoop() {
     scrollY = window.scrollY;
-    if (rafId) {
-      // Loop is already running; it will pick up the new scrollY on the next
-      // frame. Nothing else to do.
-      return;
-    }
+    if (rafId) return;
     lastTime = 0;
     rafId = requestAnimationFrame(tick);
   }
 
+  handle.queueTask(async () => {
+    await new Promise(requestAnimationFrame);
+    await new Promise(requestAnimationFrame);
+    if (handle.signal.aborted) return;
+    syncToScroll();
+    canAnimateScroll = true;
+  });
+
   addEventListeners(window, handle.signal, {
-    scroll: () => ensureLoop(),
+    scroll: () => {
+      if (canAnimateScroll) ensureLoop();
+      else syncToScroll();
+    },
     resize: () => {
       largeWidth = window.innerWidth - LEFT * 2;
       ensureLoop();
