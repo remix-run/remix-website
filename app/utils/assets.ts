@@ -4,7 +4,7 @@ import { createAssetServer } from "remix/assets";
 let isDevelopment = process.env.NODE_ENV !== "production";
 let rootDir = path.resolve(import.meta.dirname, "../..");
 
-export let assetServer = createAssetServer({
+export let assets = createAssetServer({
   basePath: "/assets",
   rootDir,
   fileMap: {

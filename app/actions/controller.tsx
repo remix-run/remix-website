@@ -2,7 +2,7 @@ import { createController } from "remix/router";
 
 import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
-import { assetServer } from "../utils/assets.ts";
+import { assets } from "../utils/assets.ts";
 import { CACHE_CONTROL } from "../utils/cache-control.ts";
 import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";
@@ -12,7 +12,7 @@ import { NewsletterPage } from "./newsletter.tsx";
 export default createController(routes, {
   actions: {
     async assets({ request }) {
-      let response = await assetServer.fetch(request);
+      let response = await assets.fetch(request);
       return response ?? new Response("Not found", { status: 404 });
     },
 

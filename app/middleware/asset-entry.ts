@@ -2,7 +2,7 @@ import * as path from "node:path";
 import { getContext } from "remix/middleware/async-context";
 import { createContextKey, type Middleware } from "remix/router";
 
-import { assetServer } from "../utils/assets.ts";
+import { assets } from "../utils/assets.ts";
 
 interface AssetEntry {
   src: string;
@@ -25,8 +25,8 @@ export function loadAssetEntry(
 ): Middleware<AssetEntryContextEntry> {
   return async (context, next) => {
     let [src, preloads] = await Promise.all([
-      assetServer.getHref(entry),
-      assetServer.getPreloads(entry).catch((error) => {
+      assets.getHref(entry),
+      assets.getPreloads(entry).catch((error) => {
         // Surface asset compilation errors without breaking HTML rendering.
         console.error(error);
         return [];

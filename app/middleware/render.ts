@@ -1,11 +1,11 @@
 import { Renderer, renderWith } from "remix/middleware/render";
-import type { ContextWithEntries, RequestContext, Router } from "remix/router";
+import type { ContextWithEntries, RequestContext } from "remix/router";
 import { createHtmlResponse } from "remix/response/html";
 import type { RemixNode } from "remix/ui";
 import { renderToStream, type ResolveFrameContext } from "remix/ui/server";
 
 import type { AssetEntryContextEntry } from "./asset-entry.ts";
-import { assetServer } from "../utils/assets.ts";
+import { assets } from "../utils/assets.ts";
 
 export interface AppRenderer {
   (node: RemixNode, init?: ResponseInit): Response;
@@ -34,136 +34,204 @@ declare module "remix/router" {
   }
 }
 
-export let renderMiddleware = renderWith((context) =>
-  createAppRenderer(context),
-);
-
-function createAppRenderer(context: RequestContext): AppRenderer {
-  function renderFrame(node: RemixNode, init?: ResponseInit) {
-    let headers = new Headers(init?.headers);
-    if (!headers.has("Content-Type")) {
-      headers.set("Content-Type", "text/html; charset=utf-8");
-    }
-
-    return new Response(
-      renderToStream(node, {
+/**
+ * Installs `context.render(node, init)` for the current request.
+ *
+ * This mirrors the conventional `render({ assets })` middleware proposed in
+ * remix-run/remix#11607 so it can be swapped for the framework version when it
+ * ships. One app-specific behavior is layered on top: server-resolved frame
+ * requests also carry `X-Remix-Ssr-Frame: true`, which routes use to skip
+ * entrance animations for frames rendered during SSR.
+ */
+export let renderMiddleware = renderWith(
+  (context): AppRenderer =>
+    function render(node, init) {
+      let stream = renderToStream(node, {
         frameSrc: context.request.url,
+        topFrameSrc: getTopFrameSrc(context.request),
         signal: context.request.signal,
-        resolveClientEntry: (entryId, component) =>
-          resolveClientEntry(entryId, component.name),
         onError(error) {
           console.error(error);
         },
-      }),
-      { ...init, headers },
-    );
-  }
+        resolveFrame: (src, target, frameContext) =>
+          resolveFrame(context, src, target, frameContext),
+        resolveClientEntry,
+      });
 
-  function renderDocument(node: RemixNode, init?: ResponseInit) {
-    let stream = renderToStream(node, {
-      frameSrc: context.request.url,
-      signal: context.request.signal,
-      resolveFrame: (src, target, frameContext) =>
-        resolveFrame(
-          src,
-          target,
-          frameContext,
-          context.router,
-          context.request,
-        ),
-      resolveClientEntry: (entryId, component) =>
-        resolveClientEntry(entryId, component.name),
-      onError(error) {
-        console.error(error);
-      },
-    });
+      return createHtmlResponse(stream, init);
+    },
+);
 
-    return createHtmlResponse(stream, init);
-  }
+const FRAME_HEADER = "X-Remix-Frame";
+const FRAME_TARGET_HEADER = "X-Remix-Target";
+const SSR_FRAME_HEADER = "X-Remix-Ssr-Frame";
+const TOP_FRAME_SRC_HEADER = "X-Remix-Top-Frame-Src";
+const MAX_FRAME_REDIRECTS = 20;
+const FRAME_REQUEST_HEADERS_TO_REMOVE = [
+  "Connection",
+  "Content-Encoding",
+  "Content-Language",
+  "Content-Length",
+  "Content-Location",
+  "Content-Type",
+  "Expect",
+  "Host",
+  "If-Match",
+  "If-Modified-Since",
+  "If-None-Match",
+  "If-Range",
+  "If-Unmodified-Since",
+  "Keep-Alive",
+  "Range",
+  "TE",
+  "Trailer",
+  "Transfer-Encoding",
+  "Upgrade",
+] as const;
+// The top frame src header is omitted so cross-origin frames never receive the
+// outer request URL, which may contain private paths or query parameters.
+const CROSS_ORIGIN_FRAME_HEADERS = [
+  "Accept",
+  "Accept-Encoding",
+  FRAME_HEADER,
+  FRAME_TARGET_HEADER,
+] as const;
 
-  return function render(node: RemixNode, init?: ResponseInit) {
-    return context.request.headers.has("x-remix-target")
-      ? renderFrame(node, init)
-      : renderDocument(node, init);
-  };
+function getTopFrameSrc(request: Request) {
+  if (request.headers.get(FRAME_HEADER) !== "true") return request.url;
+  return request.headers.get(TOP_FRAME_SRC_HEADER) ?? request.url;
 }
 
 async function resolveFrame(
+  context: RequestContext<any, any>,
   src: string,
-  target: string | undefined,
-  context: ResolveFrameContext | undefined,
-  router: Router<RequestContext<any, any>>,
-  request: Request,
-) {
-  let frameSrc = context?.currentFrameSrc ?? request.url;
-  let url = new URL(src, frameSrc);
+  target?: string,
+  frameContext?: ResolveFrameContext,
+): Promise<string | ReadableStream<Uint8Array>> {
+  let currentFrameSrc = frameContext?.currentFrameSrc ?? context.request.url;
+  let topFrameSrc =
+    frameContext?.topFrameSrc ?? getTopFrameSrc(context.request);
+  let frameUrl = new URL(src, currentFrameSrc);
+  let headers = createFrameRequestHeaders(context.headers, target, topFrameSrc);
 
-  let headers = new Headers();
-  headers.set("accept", "text/html");
-  headers.set("accept-encoding", "identity");
-  headers.set("x-remix-frame", "true");
-  headers.set("x-remix-ssr-frame", "true");
-  if (target) headers.set("x-remix-target", target);
-  let cookie = request.headers.get("cookie");
-  if (cookie) headers.set("cookie", cookie);
+  let response = await followFrameRedirects(context, frameUrl, headers);
 
-  try {
-    let response = await followFrameRedirects(router, request, url, headers);
-    if (!response.ok) {
-      return `<pre>Frame error: ${response.status} ${response.statusText}</pre>`;
-    }
-    if (response.body) return response.body;
-    return response.text();
-  } catch (error: unknown) {
-    let message = error instanceof Error ? error.message : "Unknown error";
-    return `<pre>Frame error: ${message}</pre>`;
-  }
+  if (response.body != null) return response.body;
+  if (response.ok) return "";
+
+  return `<pre>Frame error: ${response.status} ${escapeHtml(response.statusText)}</pre>`;
 }
 
-export async function followFrameRedirects(
-  router: Router<RequestContext<any, any>>,
-  request: Request,
-  url: URL,
+function createFrameRequestHeaders(
+  requestHeaders: Headers,
+  target: string | undefined,
+  topFrameSrc: string,
+) {
+  let headers = new Headers(requestHeaders);
+
+  for (let name of FRAME_REQUEST_HEADERS_TO_REMOVE) {
+    headers.delete(name);
+  }
+  let secFetchNames = [...headers.keys()].filter((name) =>
+    name.startsWith("sec-fetch-"),
+  );
+  for (let name of secFetchNames) {
+    headers.delete(name);
+  }
+
+  headers.set("Accept", "text/html");
+  headers.set("Accept-Encoding", "identity");
+  headers.set(FRAME_HEADER, "true");
+  headers.set(SSR_FRAME_HEADER, "true");
+  headers.set(TOP_FRAME_SRC_HEADER, topFrameSrc);
+
+  if (target == null) {
+    headers.delete(FRAME_TARGET_HEADER);
+  } else {
+    headers.set(FRAME_TARGET_HEADER, target);
+  }
+
+  return headers;
+}
+
+async function followFrameRedirects(
+  context: RequestContext<any, any>,
+  initialUrl: URL,
   headers: Headers,
 ) {
-  let currentUrl = url;
-  let redirectsRemaining = 10;
+  let url = initialUrl;
 
-  while (true) {
-    let response = await router.fetch(
-      new Request(currentUrl, {
+  for (
+    let redirectCount = 0;
+    redirectCount <= MAX_FRAME_REDIRECTS;
+    redirectCount++
+  ) {
+    if (url.origin !== context.url.origin) {
+      headers = createCrossOriginFrameHeaders(headers);
+    }
+
+    let response = await context.router.fetch(
+      new Request(url, {
         method: "GET",
         headers,
-        signal: request.signal,
+        signal: context.request.signal,
       }),
     );
+    let location = response.headers.get("Location");
 
-    let location = response.headers.get("location");
-    if (!location || response.status < 300 || response.status >= 400) {
+    if (location == null || response.status < 300 || response.status >= 400) {
       return response;
     }
+    if (redirectCount === MAX_FRAME_REDIRECTS) break;
 
-    if (redirectsRemaining-- <= 0) {
-      throw new Error("Too many frame redirects");
-    }
-
-    currentUrl = new URL(location, currentUrl);
+    await response.body?.cancel();
+    url = new URL(location, url);
   }
+
+  throw new Error(
+    `Too many frame redirects while resolving ${initialUrl.href}`,
+  );
 }
 
-async function resolveClientEntry(entryId: string, componentName?: string) {
-  let entryUrl = new URL(entryId);
-  let exportName = entryUrl.hash.slice(1) || componentName;
-  entryUrl.hash = "";
+function createCrossOriginFrameHeaders(headers: Headers) {
+  let crossOriginHeaders = new Headers();
+
+  for (let name of CROSS_ORIGIN_FRAME_HEADERS) {
+    let value = headers.get(name);
+    if (value != null) crossOriginHeaders.set(name, value);
+  }
+
+  return crossOriginHeaders;
+}
+
+async function resolveClientEntry(
+  entryId: string,
+  component: { readonly name: string },
+) {
+  let hashIndex = entryId.lastIndexOf("#");
+  let sourceId = hashIndex === -1 ? entryId : entryId.slice(0, hashIndex);
+  let exportName =
+    (hashIndex === -1 ? "" : entryId.slice(hashIndex + 1)) || component.name;
 
   if (!exportName) {
     throw new Error(
-      `Unable to resolve export name for client entry "${entryId}"`,
+      `Unable to resolve the export name for client entry "${entryId}". Add an export name to the entry ID (e.g. import.meta.url + "#ExportName") or use a named component function.`,
     );
   }
 
   return {
-    href: await assetServer.getHref(entryUrl.toString()),
+    href: sourceId.startsWith("file:")
+      ? await assets.getHref(sourceId)
+      : sourceId,
     exportName,
   };
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
