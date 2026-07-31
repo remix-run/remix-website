@@ -12,12 +12,21 @@ import { RestBaker } from "../engine/rest-baker.ts";
 import { getMorphBlend, type MorphBlend } from "../engine/morph.ts";
 import { createModelTexture } from "../engine/model-texture.ts";
 import type { ModelData } from "../engine/model-loader.ts";
-import type { Preset, ShaderId, SystemSettings } from "../engine/types.ts";
+import { presets } from "../engine/presets.ts";
+import {
+  DEFAULT_SETTINGS,
+  type Preset,
+  type ShaderId,
+  type SystemSettings,
+} from "../engine/types.ts";
 import { clamp, clamp01, lerp } from "../utils/math.ts";
 import { reducedMotion } from "../utils/reduced-motion.ts";
 
-// Must match `LOADING_SCREEN_MIN_MS` in `landing-enhancements.tsx`.
-const PARTICLE_INTRO_DELAY_S = 1;
+const PARTICLE_INTRO_DURATION_S = 3.5;
+const BRAND_MODE_SETTINGS: SystemSettings = {
+  ...DEFAULT_SETTINGS,
+  colorMode: 2,
+};
 const DEFAULT_CAM_POS: [number, number, number] = [0, 30, 80];
 const DEFAULT_CAM_TARGET: [number, number, number] = [0, 0, 0];
 const CAM_LERP_SPEED = 0.025;
@@ -35,10 +44,6 @@ const SHADER_ID_TO_INT: Record<ShaderId, number> = {
   racetrackCar: 4,
 };
 
-function resolveShaderInt(preset: Preset): number {
-  return SHADER_ID_TO_INT[preset.shaderId];
-}
-
 const shellStyles = css({
   position: "fixed",
   inset: "0",
@@ -51,15 +56,6 @@ const canvasStyles = css({
   width: "100%",
   height: "100%",
 });
-
-type PresetRuntimeData = {
-  presets: Preset[];
-  controls: number[][];
-  shaderInts: number[];
-  racetrackIndex: number;
-  driveIndex: number;
-  driveCarPosY: number;
-};
 
 function setDesiredCameraInto(
   presets: Preset[],
@@ -117,39 +113,31 @@ function buildInitialControls(preset: Preset): number[] {
   return controls;
 }
 
-function getControlInitial(preset: Preset, id: string, fallback = 0): number {
-  return (
-    preset.controls.find((control) => control.id === id)?.initial ?? fallback
-  );
-}
+const DRIVE_INDEX = presets.findIndex((preset) => preset.name === "Drive");
+const PRESET_RUNTIME_DATA = {
+  controls: presets.map(buildInitialControls),
+  shaderInts: presets.map((preset) => SHADER_ID_TO_INT[preset.shaderId]),
+  racetrackIndex: presets.findIndex((preset) => preset.name === "Racetrack"),
+  driveIndex: DRIVE_INDEX,
+  driveCarPosY:
+    DRIVE_INDEX >= 0
+      ? (presets[DRIVE_INDEX].controls.find(
+          (control) => control.id === "_carPosY",
+        )?.initial ?? 0)
+      : 0,
+};
 
-function buildPresetRuntimeData(presets: Preset[]): PresetRuntimeData {
-  const driveIndex = presets.findIndex((preset) => preset.name === "Drive");
-  return {
-    presets,
-    controls: presets.map(buildInitialControls),
-    shaderInts: presets.map(resolveShaderInt),
-    racetrackIndex: presets.findIndex((preset) => preset.name === "Racetrack"),
-    driveIndex,
-    driveCarPosY:
-      driveIndex >= 0
-        ? getControlInitial(presets[driveIndex], "_carPosY", 0)
-        : 0,
-  };
-}
+type ParticleCanvasProps = {
+  brandGradientMode: boolean;
+  morphValueRef: { current: number };
+  modelData: (ModelData | undefined)[];
+  labelsRef: { current: ProjectedLabel[] };
+  labelOpacityRef: { current: number };
+  onFirstFrame: () => Promise<void>;
+  onError: (error: unknown) => void;
+};
 
-export function ParticleCanvas(
-  handle: Handle<{
-    settings: SystemSettings;
-    presets: Preset[];
-    morphValueRef: { current: number };
-    modelData: (ModelData | undefined)[];
-    labelsRef: { current: ProjectedLabel[] };
-    labelOpacityRef: { current: number };
-    onReady: () => void;
-    onError: (error: unknown) => void;
-  }>,
-) {
+export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   let containerEl: HTMLDivElement | undefined;
   let canvasEl: HTMLCanvasElement | undefined;
   let engine: Engine | null = null;
@@ -159,9 +147,11 @@ export function ParticleCanvas(
   const appliedModelSlots = new Set<number>();
   let frameId = 0;
   let startTime = 0;
+  let reveal: Promise<void> | null = null;
+  let introStartTime: number | null = null;
+  let introFinished = false;
   let frozenTime: number | null = null;
   let previousNearest = -1;
-  let hasReportedReady = false;
   let initFailed = false;
   const labelControlMgr = new ControlManager();
   const desiredCameraPos = new Vector3();
@@ -174,19 +164,6 @@ export function ParticleCanvas(
   const scratchControlsB = [0, 0, 0, 0, 0, 0, 0, 0];
   const scratchLabelControls = [0, 0, 0, 0, 0, 0, 0, 0];
   const morphBlend: MorphBlend = { fromIndex: 0, toIndex: 0, blend: 0 };
-  let presetRuntimeData: PresetRuntimeData | null = null;
-  let currentProps:
-    | {
-        settings: SystemSettings;
-        presets: Preset[];
-        morphValueRef: { current: number };
-        modelData: (ModelData | undefined)[];
-        labelsRef: { current: ProjectedLabel[] };
-        labelOpacityRef: { current: number };
-        onReady: () => void;
-        onError: (error: unknown) => void;
-      }
-    | undefined;
 
   let mouseNormX = 0;
   let mouseNormY = 0;
@@ -266,12 +243,6 @@ export function ParticleCanvas(
     },
   });
 
-  function getPresetRuntimeData(presets: Preset[]) {
-    if (presetRuntimeData?.presets === presets) return presetRuntimeData;
-    presetRuntimeData = buildPresetRuntimeData(presets);
-    return presetRuntimeData;
-  }
-
   function disposeScene() {
     cancelAnimationFrame(frameId);
     if (particles && engine) {
@@ -295,9 +266,9 @@ export function ParticleCanvas(
   });
 
   function syncModelTextures() {
-    if (!restBaker || !currentProps) return;
+    if (!restBaker) return;
 
-    for (const preset of currentProps.presets) {
+    for (const preset of presets) {
       if (
         preset.modelUrl == null ||
         preset.modelSlot == null ||
@@ -305,8 +276,7 @@ export function ParticleCanvas(
       )
         continue;
 
-      const model =
-        currentProps.modelData[currentProps.presets.indexOf(preset)];
+      const model = handle.props.modelData[presets.indexOf(preset)];
       if (!model) continue;
 
       restBaker.setModelTexture(
@@ -319,26 +289,20 @@ export function ParticleCanvas(
   }
 
   function maybeInit() {
-    if (initFailed || engine || !containerEl || !canvasEl || !currentProps) {
-      return;
-    }
+    if (initFailed || engine || !containerEl || !canvasEl) return;
 
     try {
+      const settings = handle.props.brandGradientMode
+        ? BRAND_MODE_SETTINGS
+        : DEFAULT_SETTINGS;
       engine = new Engine();
-      engine.init(canvasEl, containerEl, currentProps.settings);
+      engine.init(canvasEl, containerEl, settings);
 
-      restBaker = new RestBaker(
-        engine.renderer,
-        currentProps.settings.particleCount,
-      );
-      restBaker.setCount(currentProps.settings.particleCount);
+      restBaker = new RestBaker(engine.renderer, settings.particleCount);
+      restBaker.setCount(settings.particleCount);
 
       particles = new ParticleSystem();
-      particles.init(
-        engine.scene,
-        currentProps.settings.particleCount,
-        currentProps.settings.pointSize,
-      );
+      particles.init(engine.scene, settings.particleCount, settings.pointSize);
       // Bind the baker's MRT texture refs to the draw material once. Three
       // caches the references; subsequent bake() calls update the GL backing
       // in place.
@@ -350,10 +314,7 @@ export function ParticleCanvas(
       );
       syncModelTextures();
 
-      mouseSim = new MouseSim(
-        engine.renderer,
-        currentProps.settings.particleCount,
-      );
+      mouseSim = new MouseSim(engine.renderer, settings.particleCount);
       mouseSim.setRestTextures(
         restBaker.getPosTexture(0),
         restBaker.getPosTexture(1),
@@ -366,8 +327,8 @@ export function ParticleCanvas(
 
       startTime = performance.now() / 1000;
       setDesiredCameraInto(
-        currentProps.presets,
-        currentProps.morphValueRef.current,
+        presets,
+        handle.props.morphValueRef.current,
         desiredCameraPos,
         desiredCameraTarget,
       );
@@ -377,18 +338,17 @@ export function ParticleCanvas(
       // samples populated rest textures. This also forces the baker's
       // RawShaderMaterial to compile here, hiding the link/upload cost from
       // the first animate() frame.
-      const initialPresetData = getPresetRuntimeData(currentProps.presets);
       const initialIndex = Math.min(
-        Math.max(0, Math.floor(currentProps.morphValueRef.current)),
-        initialPresetData.presets.length - 1,
+        Math.max(0, Math.floor(handle.props.morphValueRef.current)),
+        presets.length - 1,
       );
       copyControlsInto(
-        initialPresetData.controls[initialIndex],
+        PRESET_RUNTIME_DATA.controls[initialIndex],
         scratchControlsA,
       );
       restBaker.bake(
         0,
-        initialPresetData.shaderInts[initialIndex],
+        PRESET_RUNTIME_DATA.shaderInts[initialIndex],
         scratchControlsA,
         0,
       );
@@ -400,14 +360,12 @@ export function ParticleCanvas(
     } catch (error) {
       initFailed = true;
       disposeScene();
-      currentProps.onError(error);
+      handle.props.onError(error);
       return;
     }
 
     const animate = () => {
-      if (!engine || !particles || !restBaker || !mouseSim || !currentProps) {
-        return;
-      }
+      if (!engine || !particles || !restBaker || !mouseSim) return;
 
       const now = performance.now();
       const time = now / 1000 - startTime;
@@ -417,14 +375,15 @@ export function ParticleCanvas(
       const dtSeconds =
         lastFrameNow === 0 ? 1 / 60 : (now - lastFrameNow) / 1000;
       lastFrameNow = now;
-      const settings = currentProps.settings;
-      const presets = currentProps.presets;
-      const presetData = getPresetRuntimeData(presets);
-      const morphValue = currentProps.morphValueRef.current;
+      const settings = handle.props.brandGradientMode
+        ? BRAND_MODE_SETTINGS
+        : DEFAULT_SETTINGS;
+      const presetData = PRESET_RUNTIME_DATA;
+      const morphValue = handle.props.morphValueRef.current;
       const reduceMotion = reducedMotion.current;
 
       if (reduceMotion) {
-        frozenTime ??= Math.max(time, PARTICLE_INTRO_DELAY_S + 3.5);
+        frozenTime ??= Math.max(time, PARTICLE_INTRO_DURATION_S);
       } else {
         frozenTime = null;
       }
@@ -471,10 +430,19 @@ export function ParticleCanvas(
 
       particles.setColorMode(settings.colorMode);
       particles.setDof(settings.dofAmount, settings.dofFocus);
-      const introTime = Math.max(0, visualTime - PARTICLE_INTRO_DELAY_S);
-      particles.setIntroProgress(
-        reduceMotion ? 1.5 : Math.min(introTime / 3.5, 1.5),
-      );
+      if (reduceMotion && introStartTime !== null) {
+        // Once reduced motion has skipped the intro, do not replay it if the
+        // preference changes while this component is mounted.
+        introFinished = true;
+      }
+      const introTime =
+        introStartTime === null ? 0 : Math.max(0, visualTime - introStartTime);
+      const introProgress =
+        reduceMotion || introFinished
+          ? 1.5
+          : Math.min(introTime / PARTICLE_INTRO_DURATION_S, 1.5);
+      introFinished ||= introProgress >= 1.5;
+      particles.setIntroProgress(introProgress);
       particles.setTime(visualTime);
 
       const maxValue = presets.length - 1;
@@ -689,7 +657,7 @@ export function ParticleCanvas(
         }
 
         projectLabelsInto(
-          currentProps.labelsRef.current,
+          handle.props.labelsRef.current,
           nearestPreset,
           labelControlMgr,
           activeCtrls,
@@ -700,20 +668,21 @@ export function ParticleCanvas(
         );
 
         const distFromNearest = Math.abs(morphValue - nearest);
-        currentProps.labelOpacityRef.current = Math.max(
+        handle.props.labelOpacityRef.current = Math.max(
           0,
           1 - distFromNearest * 4,
         );
       } else {
-        currentProps.labelsRef.current.length = 0;
-        currentProps.labelOpacityRef.current = 0;
+        handle.props.labelsRef.current.length = 0;
+        handle.props.labelOpacityRef.current = 0;
       }
 
       engine.render(time);
-      if (!hasReportedReady) {
-        hasReportedReady = true;
-        currentProps.onReady();
-      }
+      reveal ??= handle.props.onFirstFrame().then(() => {
+        if (!handle.signal.aborted) {
+          introStartTime = performance.now() / 1000 - startTime;
+        }
+      });
       frameId = requestAnimationFrame(animate);
     };
 
@@ -721,8 +690,6 @@ export function ParticleCanvas(
   }
 
   return () => {
-    currentProps = handle.props;
-
     if (engine) {
       syncModelTextures();
     }
