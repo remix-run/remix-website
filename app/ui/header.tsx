@@ -4,13 +4,13 @@ import { WordmarkLink } from "./public/wordmark-link.tsx";
 import { routes } from "../routes.ts";
 import { theme } from "./public/theme.ts";
 
-const LINKS: Array<{ to: string; label: string; document?: boolean }> = [
-  { to: "https://guides.remix.run", label: "Guides", document: true },
-  { to: "https://api.remix.run", label: "API", document: true },
+const LINKS: Array<{ to: string; label: string }> = [
+  { to: "https://guides.remix.run", label: "Guides" },
+  { to: "https://api.remix.run", label: "API" },
   { to: routes.blog.index.href(), label: "Blog" },
   { to: routes.jam.y2026.index.href(), label: "Jam" },
-  { to: "https://shop.remix.run", label: "Store", document: true },
-  { to: "https://github.com/remix-run/remix", label: "GitHub", document: true },
+  { to: "https://shop.remix.run", label: "Store" },
+  { to: "https://github.com/remix-run/remix", label: "GitHub" },
 ];
 
 export function Header() {
@@ -33,7 +33,7 @@ export function Header() {
           aria-label="Main"
         >
           {LINKS.map((link) => (
-            <HeaderLink key={link.to} to={link.to} document={link.document}>
+            <HeaderLink key={link.to} to={link.to}>
               {link.label}
             </HeaderLink>
           ))}
@@ -41,7 +41,7 @@ export function Header() {
 
         <MobileMenu class="sm:hidden">
           {LINKS.map((link) => (
-            <HeaderLink key={link.to} to={link.to} document={link.document}>
+            <HeaderLink key={link.to} to={link.to}>
               {link.label}
             </HeaderLink>
           ))}
@@ -51,13 +51,10 @@ export function Header() {
   );
 }
 
-function HeaderLink(
-  handle: Handle<{ to: string; document?: boolean; children: string }>,
-) {
+function HeaderLink(handle: Handle<{ to: string; children: string }>) {
   return () => (
     <a
       href={handle.props.to}
-      rmx-document={handle.props.document ? "" : undefined}
       class="text-rmx-primary whitespace-nowrap text-base font-normal opacity-80 hover:opacity-100"
     >
       {handle.props.children}

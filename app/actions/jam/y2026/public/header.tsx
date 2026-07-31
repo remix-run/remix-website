@@ -239,11 +239,7 @@ export let Jam2026Header = clientEntry(
                 Dark
               </span>
             </form>
-            <a
-              href="#faq"
-              rmx-document=""
-              mix={[jam2026NavLinkStyle, onFaqClick]}
-            >
+            <a href="#faq" mix={[jam2026NavLinkStyle, onFaqClick]}>
               FAQ
             </a>
             <a

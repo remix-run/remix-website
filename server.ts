@@ -1,7 +1,7 @@
 import * as http from "node:http";
 import { createRequestListener } from "remix/node-fetch-server";
 import { router } from "./app/router.ts";
-import { assetServer } from "./app/utils/assets.ts";
+import { assets } from "./app/utils/assets.ts";
 
 const port = Number(process.env.PORT ?? 3000);
 if (!Number.isFinite(port) || port <= 0) {
@@ -40,7 +40,7 @@ function installShutdownHandlers(server: http.Server) {
     }, 10_000);
     forceExitTimer.unref();
 
-    await assetServer.close();
+    await assets.close();
     server.close((error) => {
       clearTimeout(forceExitTimer);
       if (error) {

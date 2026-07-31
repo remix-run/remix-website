@@ -91,6 +91,40 @@ describe("Navigation", () => {
       .toBe(`${page.url()}`);
   });
 
+  it("landing nav to Jam 2026 stays client-side and Back restores the landing page", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/");
+    await expectLandingNavReady(page);
+
+    await expectClientNavigation(
+      page,
+      () =>
+        page
+          .locator('nav[aria-label="Primary"] a[href="/jam/2026"]')
+          .first()
+          .click(),
+      "**/jam/2026",
+    );
+    await expect(page).toHaveTitle("Remix Jam 2026");
+
+    await expectClientNavigation(
+      page,
+      async () => {
+        await page.goBack();
+      },
+      "**/",
+    );
+    await expectLandingNavReady(page);
+
+    // The restored landing page is still interactive.
+    await expectClientNavigation(
+      page,
+      () => page.keyboard.press("b"),
+      "**/blog",
+    );
+  });
+
   it("header wordmark context menu uses client navigation for brand", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));

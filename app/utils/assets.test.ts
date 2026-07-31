@@ -3,7 +3,7 @@ import * as path from "node:path";
 import ts from "typescript";
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
-import { assetServer } from "./assets.ts";
+import { assets } from "./assets.ts";
 
 let rootDir = path.resolve(import.meta.dirname, "../..");
 let appDir = path.join(rootDir, "app");
@@ -28,8 +28,8 @@ describe("browser asset module graph", () => {
 });
 
 async function assertServableBrowserAsset(modulePath: string) {
-  let href = await assetServer.getHref(modulePath);
-  let response = await assetServer.fetch(
+  let href = await assets.getHref(modulePath);
+  let response = await assets.fetch(
     new Request(new URL(href, "http://localhost")),
   );
   if (!response?.ok) {
