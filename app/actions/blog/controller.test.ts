@@ -42,4 +42,24 @@ describe("Blog route", () => {
       { href: "https://github.com/remix-run/remix", label: "GitHub" },
     ]);
   });
+
+  it("lists post links newest first", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.blog, blogController);
+
+    let response = await router.fetch("http://localhost:3000/blog");
+    let html = await response.text();
+
+    let main = html.match(/<main[^>]*>.*<\/main>/s)?.[0];
+    if (!main) throw new Error("Missing main content");
+
+    let postLinks = [...main.matchAll(/href="\/blog\/[^"]+"/g)];
+    expect(postLinks.length).toBeGreaterThan(1);
+
+    let dates = [
+      ...main.matchAll(/<p class="rmx-page-meta">([^<]+)<\/p>/g),
+    ].map((match) => new Date(match[1]).getTime());
+    expect(dates.length).toBeGreaterThan(1);
+    expect(dates).toEqual([...dates].sort((a, b) => b - a));
+  });
 });

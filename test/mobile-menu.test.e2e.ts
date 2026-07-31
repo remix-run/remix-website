@@ -3,7 +3,7 @@ import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
-import { swallowAbortErrors, warmBlogPostListings } from "../test/setup.ts";
+import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -35,7 +35,6 @@ function mobileMenuToggle(page: Page) {
 
 describe("Mobile menu", () => {
   it("mobile menu links navigate", async (t) => {
-    await warmBlogPostListings();
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);
