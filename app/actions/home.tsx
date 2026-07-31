@@ -72,6 +72,7 @@ export function HomePage(handle: Handle<HomePageProps>) {
         },
       ]}
     >
+      <LoadingScreen />
       <div id="remix-landing-app" mix={[landingShellStyles]}>
         {/* Keep the initially-empty landing enhancements client entry inside
             a stable element so Remix document navigations can hydrate it after
@@ -84,7 +85,6 @@ export function HomePage(handle: Handle<HomePageProps>) {
         <main id="main-content" tabIndex={-1} mix={[landingContentStyles]}>
           <LandingContent />
         </main>
-        <LoadingScreen />
       </div>
     </Document>
   );
