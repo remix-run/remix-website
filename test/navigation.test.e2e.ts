@@ -125,6 +125,51 @@ describe("Navigation", () => {
     );
   });
 
+  it("does not animate the landing logo from another page's scroll position", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto("/");
+    await expectLandingNavReady(page);
+
+    await expectClientNavigation(
+      page,
+      () =>
+        page
+          .locator('nav[aria-label="Primary"] a[href="/jam/2026"]')
+          .first()
+          .click(),
+      "**/jam/2026",
+    );
+    await page.evaluate(() =>
+      window.scrollTo(0, document.documentElement.scrollHeight),
+    );
+
+    await expectClientNavigation(
+      page,
+      () => page.locator('footer a[href="/"]').first().click(),
+      "**/",
+    );
+
+    let maxGhostOpacity = await page.evaluate(async () => {
+      let maxOpacity = 0;
+      let end = performance.now() + 500;
+      while (performance.now() < end) {
+        await new Promise(requestAnimationFrame);
+        for (let logo of document.querySelectorAll<SVGElement>(
+          '#remix-landing-app svg[viewBox="0 0 440 43"][style*="opacity"]',
+        )) {
+          maxOpacity = Math.max(
+            maxOpacity,
+            Number.parseFloat(getComputedStyle(logo).opacity),
+          );
+        }
+      }
+      return maxOpacity;
+    });
+
+    expect(maxGhostOpacity).toBe(0);
+  });
+
   it("header wordmark context menu uses client navigation for brand", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));

@@ -79,6 +79,9 @@ describe("home route", () => {
     );
 
     expect(html).toMatch(/class="loading-screen-overlay\b/);
+    expect(html.indexOf("loading-screen-overlay")).toBeLessThan(
+      html.indexOf('id="remix-landing-app"'),
+    );
     expect(html).not.toContain("@keyframes loading-screen-dismiss");
   });
 });

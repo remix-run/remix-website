@@ -9,7 +9,6 @@ import { isEditableKeyTarget } from "../../../ui/public/keyboard.ts";
 import type { ProjectedLabel } from "./engine/label-projection.ts";
 import { loadModelPoints, type ModelData } from "./engine/model-loader.ts";
 import { presets } from "./engine/presets.ts";
-import { DEFAULT_SETTINGS, type SystemSettings } from "./engine/types.ts";
 import { colors } from "./styles/tokens.ts";
 import { clamp } from "./utils/math.ts";
 import {
@@ -118,13 +117,7 @@ const KONAMI_KEYS = [
 ] as const;
 
 const KONAMI_IDLE_MS = 4000;
-const LOADING_SCREEN_MIN_MS = 1000;
-const LOADING_SCREEN_SELECTOR = ".loading-screen-overlay";
-const LOADING_SCREEN_DISMISSED_CLASS = "is-dismissed";
-const BRAND_MODE_SETTINGS: SystemSettings = {
-  ...DEFAULT_SETTINGS,
-  colorMode: 2,
-};
+const LOADING_SCREEN_MIN_VISIBLE_MS = 750;
 const LANDING_SECTION_IDS = [
   "the-framework",
   "full-stack",
@@ -136,7 +129,6 @@ const LANDING_SECTION_IDS = [
 
 type ParticleCanvasComponent =
   typeof import("./components/particle-canvas.tsx").ParticleCanvas;
-type ParticleCanvasStatus = "idle" | "loaded" | "ready" | "failed";
 
 function konamiKeyMatches(event: KeyboardEvent, expected: string): boolean {
   if (expected.startsWith("Arrow")) return event.key === expected;
@@ -164,20 +156,9 @@ export let RemixLandingEnhancements = clientEntry(
       frame: 0,
       sectionStops: null as number[] | null,
     };
-    const particleCanvas: {
-      Component: ParticleCanvasComponent | null;
-      load: Promise<void> | null;
-      status: ParticleCanvasStatus;
-    } = {
-      Component: null,
-      load: null,
-      status: "idle",
-    };
-    const loadingScreen = {
-      minElapsed: false,
-      dismissed: false,
-      minTimer: null as ReturnType<typeof setTimeout> | null,
-    };
+    let ParticleCanvas: ParticleCanvasComponent | null = null;
+    let particleCanvasLoad: Promise<void> | null = null;
+    let loadingScreenDismissal: Promise<void> | null = null;
     const projectedLabelsRef = { current: [] as ProjectedLabel[] };
     const labelOpacityRef = { current: 0 };
     const morphValueRef = { current: 0 };
@@ -353,60 +334,51 @@ export let RemixLandingEnhancements = clientEntry(
       }, KONAMI_IDLE_MS);
     }
 
-    function particleCanvasHasSettled() {
-      return (
-        particleCanvas.status === "ready" || particleCanvas.status === "failed"
-      );
-    }
+    function dismissLoadingScreen() {
+      return (loadingScreenDismissal ??= (async () => {
+        const overlay = document.querySelector(".loading-screen-overlay");
+        if (!overlay) return;
 
-    function canDismissLoadingScreen() {
-      return loadingScreen.minElapsed && particleCanvasHasSettled();
-    }
+        const animation = overlay.getAnimations({ subtree: true })[0];
+        let visibleMs = LOADING_SCREEN_MIN_VISIBLE_MS;
+        if (animation) {
+          const now = Number(document.timeline.currentTime ?? 0);
+          const start = Number(animation.startTime ?? now);
+          const delay = Number(animation.effect?.getTiming().delay ?? 0);
+          visibleMs = now - start - delay;
+        }
 
-    function syncLoadingScreenDismissal() {
-      if (loadingScreen.dismissed || !canDismissLoadingScreen()) return;
+        if (visibleMs < 0) {
+          overlay.classList.add("is-skipped");
+          return;
+        }
 
-      const overlay = document.querySelector<HTMLElement>(
-        LOADING_SCREEN_SELECTOR,
-      );
-      overlay?.classList.add(LOADING_SCREEN_DISMISSED_CLASS);
-      loadingScreen.dismissed = true;
-    }
+        const remainingMs = LOADING_SCREEN_MIN_VISIBLE_MS - visibleMs;
+        if (remainingMs > 0) {
+          await new Promise((resolve) => setTimeout(resolve, remainingMs));
+        }
+        if (handle.signal.aborted) return;
 
-    function startLoadingScreenMinimumTimer() {
-      loadingScreen.minTimer = setTimeout(() => {
-        loadingScreen.minTimer = null;
-        loadingScreen.minElapsed = true;
-        syncLoadingScreenDismissal();
-      }, LOADING_SCREEN_MIN_MS);
+        overlay.classList.add("is-dismissed");
+        await overlay.getAnimations()[0]?.finished.catch(() => {});
+      })());
     }
 
     function loadParticleCanvas() {
-      particleCanvas.load ??= import("./components/particle-canvas.tsx")
+      particleCanvasLoad ??= import("./components/particle-canvas.tsx")
         .then((module) => {
-          if (handle.signal.aborted) return;
-          particleCanvas.Component = module.ParticleCanvas;
-          particleCanvas.status = "loaded";
+          if (!handle.signal.aborted) ParticleCanvas = module.ParticleCanvas;
         })
         .catch((error: unknown) => {
-          particleCanvas.status = "failed";
           console.error(error);
+          void dismissLoadingScreen();
         });
-      return particleCanvas.load;
-    }
-
-    function markParticleCanvasReady() {
-      if (particleCanvas.status === "ready") return;
-      particleCanvas.status = "ready";
-      syncLoadingScreenDismissal();
+      return particleCanvasLoad;
     }
 
     function markParticleCanvasFailed(error: unknown) {
-      if (particleCanvas.status === "failed") return;
-      particleCanvas.status = "failed";
       console.error(error);
-      syncLoadingScreenDismissal();
-      handle.update();
+      void dismissLoadingScreen();
     }
 
     function onKonamiKeydown(event: KeyboardEvent) {
@@ -436,8 +408,6 @@ export let RemixLandingEnhancements = clientEntry(
       onKonamiKeydown(event);
     }
 
-    // Body styles (margin/background/color/font-family) live in `home.css`;
-    // don't re-apply them here.
     handle.queueTask((signal) => {
       if (signal.aborted || handle.signal.aborted) return;
 
@@ -446,13 +416,9 @@ export let RemixLandingEnhancements = clientEntry(
         syncMorphToScroll();
         handle.update();
       });
-      startLoadingScreenMinimumTimer();
-
       syncMorphToScroll();
       void loadParticleCanvas().then(() => {
-        if (handle.signal.aborted) return;
-        syncLoadingScreenDismissal();
-        handle.update();
+        if (!handle.signal.aborted) handle.update();
       });
 
       addEventListeners(window, handle.signal, {
@@ -466,7 +432,6 @@ export let RemixLandingEnhancements = clientEntry(
 
       handle.signal.addEventListener("abort", () => {
         window.cancelAnimationFrame(scroll.frame);
-        if (loadingScreen.minTimer) clearTimeout(loadingScreen.minTimer);
         clearKonamiIdleTimer();
         konami.index = 0;
       });
@@ -477,23 +442,17 @@ export let RemixLandingEnhancements = clientEntry(
     return () => {
       if (!isHydrated) return null;
 
-      const settings = konami.brandMode
-        ? BRAND_MODE_SETTINGS
-        : DEFAULT_SETTINGS;
-      const ParticleCanvas = particleCanvas.Component;
-
       return (
         <div mix={[appStyles]}>
           <PackageLogos morphValueRef={morphValueRef} />
           {ParticleCanvas ? (
             <ParticleCanvas
-              settings={settings}
-              presets={presets}
+              brandGradientMode={konami.brandMode}
               morphValueRef={morphValueRef}
               modelData={modelData}
               labelsRef={projectedLabelsRef}
               labelOpacityRef={labelOpacityRef}
-              onReady={markParticleCanvasReady}
+              onFirstFrame={dismissLoadingScreen}
               onError={markParticleCanvasFailed}
             />
           ) : null}
