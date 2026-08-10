@@ -16,7 +16,7 @@ if (!Number.isFinite(port) || port <= 0) {
 const hmrProxyPort = process.env.HMR_PROXY_PORT
   ? Number(process.env.HMR_PROXY_PORT)
   : null;
-if ((hmrProxyPort !== null && !Number.isFinite(hmrProxyPort)) || port <= 0) {
+if (hmrProxyPort !== null && (!Number.isFinite(hmrProxyPort) || port <= 0)) {
   throw new Error(
     `Invalid HMR_PROXY_PORT value "${process.env.HMR_PROXY_PORT ?? ""}". Expected a positive number.`,
   );
