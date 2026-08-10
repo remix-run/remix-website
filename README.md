@@ -13,6 +13,12 @@ pnpm install
 pnpm run dev
 ```
 
+To enable HMR:
+
+```sh
+pnpm run hmr
+```
+
 ## Build and Preview
 
 ```sh

@@ -1,7 +1,6 @@
 import { css, type Handle } from "remix/ui";
 import { FpsCounterToggle } from "../ui/public/fps-counter-toggle.tsx";
 import { RemixLandingEnhancements } from "./public/remix-landing/landing-enhancements.tsx";
-import { LoadingScreen } from "./public/remix-landing/components/loading-screen.tsx";
 import { RUNNER_AVIF_SRC } from "./public/remix-landing/runner-media.ts";
 import { colors } from "./public/remix-landing/styles/tokens.ts";
 import { Document } from "../ui/document.tsx";
@@ -72,7 +71,6 @@ export function HomePage(handle: Handle<HomePageProps>) {
         },
       ]}
     >
-      <LoadingScreen />
       <div id="remix-landing-app" mix={[landingShellStyles]}>
         {/* Keep the initially-empty landing enhancements client entry inside
             a stable element so Remix document navigations can hydrate it after
