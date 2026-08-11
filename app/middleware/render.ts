@@ -7,6 +7,8 @@ import { renderToStream, type ResolveFrameContext } from "remix/ui/server";
 import type { AssetEntryContextEntry } from "./asset-entry.ts";
 import { assets } from "../utils/assets.ts";
 
+const isDevelopment = process.env.NODE_ENV === "development";
+
 export interface AppRenderer {
   (node: RemixNode, init?: ResponseInit): Response;
 }
@@ -58,7 +60,13 @@ export let renderMiddleware = renderWith(
         resolveClientEntry,
       });
 
-      return createHtmlResponse(stream, init);
+      let response = createHtmlResponse(stream, init);
+      if (isDevelopment) {
+        // Frame navigations fetch HTML programmatically, so production cache
+        // headers can hide server changes during development.
+        response.headers.set("Cache-Control", "no-store");
+      }
+      return response;
     },
 );
 

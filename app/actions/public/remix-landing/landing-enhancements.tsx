@@ -2,6 +2,10 @@ import { addEventListeners, clientEntry, css, type Handle } from "remix/ui";
 import { PresetGlow } from "./components/preset-glow.tsx";
 import { LandingNav } from "./components/landing-nav.tsx";
 import { LabelOverlay } from "./components/label-overlay.tsx";
+import {
+  LoadingScreen,
+  type LoadingScreenStatus,
+} from "./components/loading-screen.tsx";
 import { PackageLogos } from "./components/package-logos.tsx";
 import { ScrollLogo } from "./components/scroll-logo.tsx";
 import { SectionNav } from "./components/section-nav.tsx";
@@ -159,6 +163,7 @@ export let RemixLandingEnhancements = clientEntry(
     let ParticleCanvas: ParticleCanvasComponent | null = null;
     let particleCanvasLoad: Promise<void> | null = null;
     let loadingScreenDismissal: Promise<void> | null = null;
+    let loadingScreenStatus: LoadingScreenStatus = "visible";
     const projectedLabelsRef = { current: [] as ProjectedLabel[] };
     const labelOpacityRef = { current: 0 };
     const morphValueRef = { current: 0 };
@@ -349,7 +354,8 @@ export let RemixLandingEnhancements = clientEntry(
         }
 
         if (visibleMs < 0) {
-          overlay.classList.add("is-skipped");
+          loadingScreenStatus = "skipped";
+          await handle.update();
           return;
         }
 
@@ -359,7 +365,10 @@ export let RemixLandingEnhancements = clientEntry(
         }
         if (handle.signal.aborted) return;
 
-        overlay.classList.add("is-dismissed");
+        loadingScreenStatus = "dismissed";
+        const signal = await handle.update();
+        if (signal.aborted) return;
+
         await overlay.getAnimations()[0]?.finished.catch(() => {});
       })());
     }
@@ -440,46 +449,49 @@ export let RemixLandingEnhancements = clientEntry(
     });
 
     return () => {
-      if (!isHydrated) return null;
-
       return (
-        <div mix={[appStyles]}>
-          <PackageLogos morphValueRef={morphValueRef} />
-          {ParticleCanvas ? (
-            <ParticleCanvas
-              brandGradientMode={konami.brandMode}
-              morphValueRef={morphValueRef}
-              modelData={modelData}
-              labelsRef={projectedLabelsRef}
-              labelOpacityRef={labelOpacityRef}
-              onFirstFrame={dismissLoadingScreen}
-              onError={markParticleCanvasFailed}
-            />
+        <>
+          <LoadingScreen status={loadingScreenStatus} />
+          {isHydrated ? (
+            <div mix={[appStyles]}>
+              <PackageLogos morphValueRef={morphValueRef} />
+              {ParticleCanvas ? (
+                <ParticleCanvas
+                  brandGradientMode={konami.brandMode}
+                  morphValueRef={morphValueRef}
+                  modelData={modelData}
+                  labelsRef={projectedLabelsRef}
+                  labelOpacityRef={labelOpacityRef}
+                  onFirstFrame={dismissLoadingScreen}
+                  onError={markParticleCanvasFailed}
+                />
+              ) : null}
+              <LabelOverlay
+                labelsRef={projectedLabelsRef}
+                opacityRef={labelOpacityRef}
+              />
+              <PresetGlow
+                morphValueRef={morphValueRef}
+                brandGradientMode={konami.brandMode}
+              />
+              <ScrollLogo />
+              <div mix={[blurShellStyles]} />
+              <div mix={[topFadeGradientStyles]} />
+              <LandingNav
+                activeIndexRef={activeIndexRef}
+                totalSections={presets.length}
+                onJump={jumpToPreset}
+                scrollYRef={scrollYRef}
+                shouldBlockBlogShortcut={() => konami.index > 0}
+              />
+              <SectionNav
+                activeIndexRef={activeIndexRef}
+                morphValueRef={morphValueRef}
+                onJump={jumpToPreset}
+              />
+            </div>
           ) : null}
-          <LabelOverlay
-            labelsRef={projectedLabelsRef}
-            opacityRef={labelOpacityRef}
-          />
-          <PresetGlow
-            morphValueRef={morphValueRef}
-            brandGradientMode={konami.brandMode}
-          />
-          <ScrollLogo />
-          <div mix={[blurShellStyles]} />
-          <div mix={[topFadeGradientStyles]} />
-          <LandingNav
-            activeIndexRef={activeIndexRef}
-            totalSections={presets.length}
-            onJump={jumpToPreset}
-            scrollYRef={scrollYRef}
-            shouldBlockBlogShortcut={() => konami.index > 0}
-          />
-          <SectionNav
-            activeIndexRef={activeIndexRef}
-            morphValueRef={morphValueRef}
-            onJump={jumpToPreset}
-          />
-        </div>
+        </>
       );
     };
   },
