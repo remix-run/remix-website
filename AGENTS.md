@@ -38,6 +38,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - Treat `prefers-reduced-motion` as its own behavior path. Avoid churny intro animations, large hover expansions, and motion-heavy effects; provide a simple static hover/focus state instead of removing feedback entirely.
 - Keep accessible labels stable when visual text updates frequently. For animated counters/timers, prefer a stable label that states the event/date and hide the decorative changing digits from assistive tech.
 - Add focused tests around public behavior. Prefer component/browser tests for interactive UI when feasible; avoid testing internal helpers just because they are easy to import.
+- Do not add tests that merely assert literal copy/text is present in rendered HTML (e.g. `expect(html).toContain("Some marketing sentence")`). That is a reflection of the source string, not a behavior test — it breaks on any wording change while catching no real bugs. Test behavior: route status, structure (sections/anchors present), ordering, interactions, and data-driven output. Only assert text when it is the actual behavior under test (e.g. a validation error message, a computed/derived value, or dynamic data rendered from a source).
 
 ## Done Checklist (Route/Feature Changes)
 

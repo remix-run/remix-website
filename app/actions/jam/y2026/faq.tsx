@@ -61,8 +61,22 @@ let faqs: Faq[] = [
   {
     id: "where-to-stay",
     question: "Where should I stay?",
-    answer:
-      "Hotel blocks are coming. We'll notify ticket holders as soon as booking links are ready.",
+    answer: [
+      {
+        type: "paragraph",
+        content: [
+          {
+            text: "Le Germain Hotel Toronto Mercer",
+            href: "https://reservation.germainhotels.com/ibe/details.aspx?propertyid=17522&nights=2&checkin=10/01/2026&group=2610SHOPIF&lang=en-us&adults=1&childAges=",
+          },
+          " ($319.00 CAD/night)",
+        ],
+      },
+      {
+        type: "paragraph",
+        content: ["Please select the dates Oct 1–3 when booking."],
+      },
+    ],
   },
   {
     id: "airport",
