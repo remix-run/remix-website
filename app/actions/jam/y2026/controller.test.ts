@@ -40,6 +40,10 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain("data-jam-2026-cloud-backdrop");
     expect(html).toContain("data-jam-2026-performance-tools");
     expect(html).toContain('id="faq"');
+    expect(html).toContain("Le Germain Hotel Toronto Mercer");
+    expect(html).toContain("group=2610SHOPIF");
+    expect(html).toContain("$319.00 CAD/night");
+    expect(html).toContain("Oct 1–3");
     expect(html).toContain('id="newsletter"');
     expect(html).toContain('href="/jam/2026/ticket"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
