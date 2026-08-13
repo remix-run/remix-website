@@ -18,12 +18,12 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 ## Keep These Non-Obvious Invariants
 
-- Route declarations live in `app/routes.ts`; router mappings in `app/router.ts`; keep them aligned. Run `pnpm remix doctor` after route or controller changes.
+- Route declarations live in `app/routes.ts`; router mappings in `app/router.ts`; keep them aligned. Run `pnpm remix doctor` and make sure it reports no issues.
 - Disk layout under `app/actions/**` mirrors the route map: every route map with direct routes owns `app/actions/<key-path>/controller.tsx` (root map owns `app/actions/controller.tsx`), and route-local modules are flat files beside their controller. Do not introduce non-route directories such as `ui/` or `sections/` inside `app/actions/**`.
 - Map explicit routes before the `router.map("*", ...)` catch-all.
 - In `app/actions/**`, keep the exported controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
-- Browser-reachable source lives in `public/` directories inside `app/`, colocated with the narrowest owner (e.g. `app/actions/jam/y2026/public/`, `app/ui/public/`). The root browser runtime entry is `app/actions/public/entry.ts`. `pnpm remix doctor` still reports these `public/` directories as `orphan-route-directory` warnings; that check has not learned the convention yet, so those warnings are expected and every other doctor check must stay green. Keep every local dependency of a browser module in a `public/` directory; the shared `app/routes.ts` contract and `allowPackages` entries in `app/utils/assets.ts` are the only exceptions. For route-local hydrated UI in a `public/` directory, keep component/rendering code first and put styles below the components.
+- Browser-reachable source lives in `public/` directories inside `app/`, colocated with the narrowest owner (e.g. `app/actions/jam/y2026/public/`, `app/ui/public/`). The root browser runtime entry is `app/actions/public/entry.ts`. Keep every local dependency of a browser module in a `public/` directory; the shared `app/routes.ts` contract and `allowPackages` entries in `app/utils/assets.ts` are the only exceptions. For route-local hydrated UI in a `public/` directory, keep component/rendering code first and put styles below the components.
 - Let components own their own state and implementation details. If a parent imports a long list of child constants/helpers, that is a boundary smell; extract a child component/module instead.
 - Prefer direct code over tiny wrappers/constants that do not add meaning. Inline one-off helpers, values, and derived constants at their use site when that reads clearly.
 - Use shared theme tokens such as `theme.fontFamily.*`, `theme.fontWeight.*`, and route theme objects instead of hardcoded repeated values. Never hardcode custom `fontWeight` numbers or strings.
