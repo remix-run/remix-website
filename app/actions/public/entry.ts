@@ -23,13 +23,13 @@ let app = run({
 
     throw new Error(`Export "${exportName}" from "${src}" is not a function`);
   },
-  async resolveFrame(src, signal, target) {
+  async resolveFrame(src, options) {
     let headers = new Headers();
     headers.set("accept", "text/html");
     headers.set("x-remix-frame", "true");
-    if (target) headers.set("x-remix-target", target);
+    if (options?.target) headers.set("x-remix-target", options.target);
 
-    let res = await fetch(src, { headers, signal });
+    let res = await fetch(src, { headers, signal: options?.signal });
     if (!res.ok) {
       throw new Error(`Frame request failed: ${res.status} ${res.statusText}`);
     }
