@@ -29,7 +29,16 @@ let app = run({
     headers.set("x-remix-frame", "true");
     if (options?.target) headers.set("x-remix-target", options.target);
 
-    let res = await fetch(src, { headers, signal: options?.signal });
+    let res = await fetch(src, {
+      headers,
+      method: options?.method,
+      body: getRequestBody(
+        options?.formData,
+        options?.method,
+        options?.encType,
+      ),
+      signal: options?.signal,
+    });
     if (!res.ok) {
       throw new Error(`Frame request failed: ${res.status} ${res.statusText}`);
     }
@@ -52,5 +61,20 @@ if (import.meta.hot) {
 app.addEventListener("error", (event) => {
   console.error(event.error);
 });
+
+function getRequestBody(
+  formData?: FormData,
+  method?: string,
+  encType?: string,
+): BodyInit | undefined {
+  if (!formData || method?.toLowerCase() === "get") return;
+  if (encType !== "application/x-www-form-urlencoded") return formData;
+
+  let body = new URLSearchParams();
+  for (let [name, value] of formData) {
+    body.append(name, typeof value === "string" ? value : value.name);
+  }
+  return body;
+}
 
 await app.ready();
