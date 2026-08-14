@@ -1,6 +1,7 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
+import { DOCUMENT_REDIRECT_HEADER } from "../../public/document-redirect.ts";
 import { routes } from "../../../routes.ts";
 import { env } from "../../../utils/env.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
@@ -267,6 +268,26 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.status).toBe(303);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     expect(response.headers.get("Location")).toBe(
+      "https://jam.remix.run/checkouts/2026",
+    );
+  });
+
+  it("hands an enhanced checkout off to document navigation", async (t) => {
+    mockStorefront(t);
+    let router = createJam2026TestRouter();
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/jam/2026/ticket", {
+        body: createTicketFormData(),
+        headers: { "X-Remix-Frame": "true" },
+        method: "POST",
+      }),
+    );
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Location")).toBe(null);
+    expect(response.headers.get(DOCUMENT_REDIRECT_HEADER)).toBe(
       "https://jam.remix.run/checkouts/2026",
     );
   });

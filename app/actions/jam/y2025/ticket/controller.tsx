@@ -3,6 +3,7 @@ import { createController } from "remix/router";
 import { createCart, getProduct } from "../../../../data/jam-storefront.ts";
 import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
 import { routes } from "../../../../routes.ts";
+import { documentRedirect } from "../../../document-redirect.ts";
 import { Jam2025TicketPage, parseTicketPurchaseSubmission } from "./page.tsx";
 
 export default createController(routes.jam.y2025.ticket, {
@@ -40,7 +41,7 @@ export default createController(routes.jam.y2025.ticket, {
           });
 
           if (!("error" in cart)) {
-            return Response.redirect(cart.checkoutUrl, 303);
+            return documentRedirect(request, cart.checkoutUrl);
           }
 
           formError = cart.error;

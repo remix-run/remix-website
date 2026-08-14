@@ -2,6 +2,7 @@ import { expect, type Page } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
+import { DOCUMENT_REDIRECT_HEADER } from "../app/actions/public/document-redirect.ts";
 import { router } from "../app/router.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
@@ -66,6 +67,35 @@ describe("Navigation", () => {
 
     await expect(page.locator('html[data-theme="dark"]')).toHaveCount(1);
     await expect(page.locator("html.dark")).toHaveCount(1);
+  });
+
+  it("hands enhanced document redirects back to the browser", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.route("**/_actions/newsletter", async (route) => {
+      await route.fulfill({
+        status: 204,
+        headers: { [DOCUMENT_REDIRECT_HEADER]: "/brand" },
+      });
+    });
+    await page.goto("/newsletter", { waitUntil: "networkidle" });
+    await markPage(page);
+
+    await page.evaluate(() => {
+      let form = document.createElement("form");
+      form.action = "/_actions/newsletter";
+      form.method = "post";
+      document.body.append(form);
+      form.requestSubmit();
+    });
+
+    await page.waitForURL("**/brand");
+    await expect(page.locator("main")).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => (window as Window & { __navMarker?: string }).__navMarker,
+      ),
+    ).toBe(undefined);
   });
 
   it("Remix history page to Jam 2026 applies Jam head content", async (t) => {

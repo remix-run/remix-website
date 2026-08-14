@@ -45,7 +45,7 @@ describe("Newsletter page (/newsletter)", () => {
       });
     });
 
-    await page.goto("/newsletter");
+    await page.goto("/newsletter", { waitUntil: "networkidle" });
 
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
     await page.getByPlaceholder("name@example.com").fill("hello@example.com");

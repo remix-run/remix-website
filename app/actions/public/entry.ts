@@ -1,4 +1,5 @@
 import { run } from "remix/ui";
+import { DOCUMENT_REDIRECT_HEADER } from "./document-redirect.ts";
 import { initFathomAnalytics } from "./fathom.ts";
 
 initFathomAnalytics();
@@ -39,11 +40,13 @@ let app = run({
       ),
       signal: options?.signal,
     });
-    if (!res.ok) {
-      throw new Error(`Frame request failed: ${res.status} ${res.statusText}`);
+    let documentRedirect = res.headers.get(DOCUMENT_REDIRECT_HEADER);
+    if (documentRedirect) {
+      window.location.assign(new URL(documentRedirect, res.url).href);
+      return new Response(null);
     }
-    if (res.body) return res.body;
-    return await res.text();
+
+    return res;
   },
 });
 
