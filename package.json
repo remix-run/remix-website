@@ -24,8 +24,11 @@
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "pretest": "pnpm run build:css",
+    "pretest:ci": "pnpm run build:css",
+    "pretest:coverage": "pnpm run build:css",
     "test": "cross-env NODE_ENV=test remix test",
-    "test:coverage": "cross-env NODE_ENV=test COVERAGE=1 remix test --coverage",
+    "test:ci": "cross-env NODE_ENV=test remix test --concurrency 1",
+    "test:coverage": "cross-env NODE_ENV=test remix test --coverage",
     "test:install-browsers": "playwright install chromium",
     "typecheck": "tsc --noEmit"
   },
