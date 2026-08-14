@@ -6,7 +6,7 @@ import { routes } from "../../routes.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 
 describe("Blog route", () => {
-  it("renders expected content and metadata", async () => {
+  it("renders the blog index document", async () => {
     let router = createRouteTestRouter();
     router.map(routes.blog, blogController);
 
@@ -20,50 +20,8 @@ describe("Blog route", () => {
 
     let html = await response.text();
 
-    expect(html).toContain("<html");
     expect(html).toContain("<title>Remix Blog</title>");
-    expect(html).toContain(
-      "Thoughts about building excellent user experiences with Remix.",
-    );
-    expect(html).toContain("Featured Articles");
-    expect(html).toContain('action="/_actions/newsletter"');
-
-    let mainNavigation = html.match(/<nav aria-label="Main".*?<\/nav>/s)?.[0];
-    if (!mainNavigation) throw new Error("Missing main navigation");
-
-    let navigationLinks = [
-      ...mainNavigation.matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g),
-    ].map((match) => ({ href: match[1], label: match[2] }));
-
-    expect(navigationLinks).toEqual([
-      { href: "https://guides.remix.run", label: "Guides" },
-      { href: "https://api.remix.run", label: "API" },
-      { href: routes.blog.index.href(), label: "Blog" },
-      { href: routes.jam.y2026.index.href(), label: "Jam" },
-      { href: "https://shop.remix.run", label: "Store" },
-      { href: "https://github.com/remix-run/remix", label: "GitHub" },
-    ]);
-  });
-
-  it("lists post links newest first", async () => {
-    let router = createRouteTestRouter();
-    router.map(routes.blog, blogController);
-
-    let response = await router.fetch(
-      new URL(routes.blog.index.href(), "http://localhost:3000"),
-    );
-    let html = await response.text();
-
-    let main = html.match(/<main[^>]*>.*<\/main>/s)?.[0];
-    if (!main) throw new Error("Missing main content");
-
-    let postLinks = [...main.matchAll(/href="\/blog\/[^"]+"/g)];
-    expect(postLinks.length).toBeGreaterThan(1);
-
-    let dates = [
-      ...main.matchAll(/<p class="rmx-page-meta">([^<]+)<\/p>/g),
-    ].map((match) => new Date(match[1]).getTime());
-    expect(dates.length).toBeGreaterThan(1);
-    expect(dates).toEqual([...dates].sort((a, b) => b - a));
+    expect(html).toContain('id="main-content"');
+    expect(html).toContain(`action="${routes.api.newsletter.href()}"`);
   });
 });

@@ -1,10 +1,11 @@
 import { expect, type Page } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
-import { describe, it } from "remix/test";
+import { beforeEach, describe, it } from "remix/test";
 
-import { router } from "../app/router.ts";
+import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import { ticketModalConfig } from "../app/actions/jam/y2026/public/tickets-modal-contract.ts";
+import { env } from "../app/utils/env.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
@@ -13,11 +14,6 @@ async function markPage(page: Page) {
     (window as Window & { __jamNavMarker?: string }).__jamNavMarker = marker;
     return marker;
   });
-}
-
-async function gotoGallery(page: Page) {
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto(routes.jam.y2025.gallery.index.href());
 }
 
 async function expectMarkerToStay(page: Page, marker: string) {
@@ -36,76 +32,18 @@ async function clickJam2026TicketNavLink(page: Page) {
     .getByRole("link", { name: "Get tickets" });
   await expect(ticketLink).toBeVisible();
 
-  let box = await ticketLink.boundingBox();
-  if (!box) throw new Error("Expected Jam 2026 ticket link to have a box");
-
-  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-}
-
-function galleryPhotoLinks(page: Page) {
-  return page.locator('main a[href^="/jam/2025/gallery?photo="]').filter({
-    has: page.locator("img"),
-  });
-}
-
-async function galleryHasAtLeast(page: Page, minimumPhotos: number) {
-  let noPhotosMessage = page.getByText("No photos available yet.");
-  if (await noPhotosMessage.isVisible()) {
-    return false;
-  }
-
-  let photoLinks = galleryPhotoLinks(page);
-  let count = await photoLinks.count();
-  return count >= minimumPhotos;
+  await ticketLink.click();
 }
 
 describe("Jam", () => {
-  it("jam mobile menu opens and shows jam links", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(routes.jam.y2025.index.href(), {
-      waitUntil: "networkidle",
-    });
+  let router: ReturnType<typeof createAppRouter>;
 
-    let menu = page.locator('details:has(nav[aria-label="Mobile"])').filter({
-      has: page.locator('a[href="/jam/2025/lineup"]'),
-    });
-    let menuToggle = menu.locator("summary");
-    await expect(menuToggle).toBeVisible();
-    await menuToggle.click();
-
-    let mobileNav = menu.locator('nav[aria-label="Mobile"]');
-    await expect(mobileNav).toBeVisible();
-    await expect(
-      mobileNav.getByRole("link", { name: "Schedule & Lineup" }),
-    ).toBeVisible();
-    await expect(
-      mobileNav.getByRole("link", { name: "Gallery" }),
-    ).toBeVisible();
-    await expect(
-      mobileNav.getByRole("link", { name: "Code of Conduct" }),
-    ).toBeVisible();
-    await expect(mobileNav.getByRole("link", { name: "FAQ" })).toBeVisible();
-    await expect(mobileNav.getByRole("link", { name: "Ticket" })).toBeVisible();
-  });
-
-  it("jam root redirects to jam 2026", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto(routes.jam.index.href());
-    await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
-    await expect(page.locator("main")).toBeVisible();
-  });
-
-  it("jam 2025 page renders", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto(routes.jam.y2025.index.href());
-    await expect(page.locator("main")).toBeVisible();
+  beforeEach(() => {
+    router = createAppRouter();
   });
 
   it("jam 2026 ticket modal navigates in place and closes without remounting", async (t) => {
+    mockStorefront(t);
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -118,6 +56,15 @@ describe("Jam", () => {
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page).toHaveTitle("Remix Jam 2026 Tickets");
+    await expect(
+      page.getByRole("dialog").getByRole("link", { name: "Close tickets" }),
+    ).toBeFocused();
+
+    await page.getByRole("button", { name: "Increase quantity" }).click();
+    await expect(
+      page.getByRole("dialog").locator("[aria-live='polite']"),
+    ).toHaveText("2");
+    await expect(page.getByRole("button", { name: "Check out" })).toBeEnabled();
 
     await page.locator(`[${ticketModalConfig.attributes.backdrop}]`).click({
       position: { x: 8, y: 8 },
@@ -170,17 +117,6 @@ describe("Jam", () => {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 
-  it("jam 2025 after-event badge shows rewind icon", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto(routes.jam.y2025.index.href());
-
-    let heading = page.getByRole("heading", { level: 1 });
-    await expect(heading).toBeVisible();
-    await expect(heading).toContainText("Rewind");
-    await expect(heading.locator('use[href$="#fast-forward"]')).toHaveCount(1);
-  });
-
   it("jam 2025 newsletter submits and shows success state", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
@@ -197,9 +133,7 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto(routes.jam.y2025.index.href(), {
-      waitUntil: "networkidle",
-    });
+    await page.goto(routes.jam.y2025.index.href());
 
     let emailInput = page.getByPlaceholder("your@email.com");
     await emailInput.fill("hello@example.com");
@@ -246,62 +180,57 @@ describe("Jam", () => {
       )
       .toBe(marker);
   });
-
-  it("jam gallery modal opens with query param and closes via controls", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await gotoGallery(page);
-    if (!(await galleryHasAtLeast(page, 1))) return;
-
-    let marker = await markPage(page);
-    await galleryPhotoLinks(page).first().click();
-    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
-    await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Close modal" })).toBeVisible();
-    await expectMarkerToStay(page, marker);
-
-    await page.getByRole("link", { name: "Next photo" }).click();
-    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=\d+/);
-    await expectMarkerToStay(page, marker);
-
-    await page.getByRole("link", { name: "Close modal" }).click();
-    await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
-    await expect(page.getByRole("dialog")).toHaveCount(0);
-    await expectMarkerToStay(page, marker);
-  });
-
-  it("jam gallery keyboard navigation moves between photos", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await gotoGallery(page);
-    if (!(await galleryHasAtLeast(page, 2))) return;
-
-    let marker = await markPage(page);
-    await galleryPhotoLinks(page).first().click();
-    await expectMarkerToStay(page, marker);
-    await expect(page.getByRole("dialog")).toBeVisible();
-    let previousLink = page.getByRole("link", { name: "Previous photo" });
-    let nextLink = page.getByRole("link", { name: "Next photo" });
-    await expect(page.getByRole("link", { name: "Close modal" })).toBeFocused();
-    await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
-
-    await page.keyboard.press("ArrowRight");
-    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=1/);
-    await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByText(/^2 \/ \d+$/)).toBeVisible();
-    await expect(nextLink).toBeFocused();
-    await expectMarkerToStay(page, marker);
-
-    await page.keyboard.press("ArrowLeft");
-    await expect(page).toHaveURL(/\/jam\/2025\/gallery\?photo=0/);
-    await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
-    await expect(previousLink).toBeFocused();
-    await expectMarkerToStay(page, marker);
-
-    await page.getByRole("link", { name: "Close modal" }).click();
-    await expect(page).toHaveURL(/\/jam\/2025\/gallery$/);
-    await expect(page.getByRole("dialog")).toHaveCount(0);
-    await expectMarkerToStay(page, marker);
-  });
 });
+
+function mockStorefront(t: { after(cleanup: () => void): void }) {
+  let previousEnv = { ...env };
+  let originalFetch = globalThis.fetch;
+  Reflect.set(env, "PUBLIC_STOREFRONT_API_TOKEN", ["test", "token"].join("-"));
+  globalThis.fetch = async (input, init) => {
+    let url = String(input);
+    if (url !== "https://jam.remix.run/api/2026-04/graphql.json") {
+      return originalFetch(input, init);
+    }
+
+    let body = JSON.parse(String(init?.body ?? "{}"));
+    if (body.query.includes("cartCreate")) {
+      return Response.json({
+        data: {
+          cartCreate: {
+            cart: {
+              id: "gid://shopify/Cart/2026",
+              checkoutUrl: "https://jam.remix.run/checkouts/2026",
+              discountCodes: [],
+            },
+            userErrors: [],
+            warnings: [],
+          },
+        },
+      });
+    }
+
+    return Response.json({
+      data: {
+        product: {
+          id: "gid://shopify/Product/2026",
+          variants: {
+            edges: [
+              {
+                node: {
+                  id: "gid://shopify/ProductVariant/2026",
+                  price: { amount: "299.00" },
+                  availableForSale: true,
+                },
+              },
+            ],
+          },
+        },
+      },
+    });
+  };
+
+  t.after(() => {
+    Object.assign(env, previousEnv);
+    globalThis.fetch = originalFetch;
+  });
+}

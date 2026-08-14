@@ -11,11 +11,9 @@ function getValidRedirectCode(code: string | number | undefined): number {
   let defaultCode = 302;
   if (!code) return defaultCode;
   if (typeof code === "string") {
-    try {
-      code = parseInt(code.trim(), 10);
-    } catch {
-      return defaultCode;
-    }
+    let normalizedCode = code.trim();
+    if (!/^\d+$/.test(normalizedCode)) return defaultCode;
+    code = Number(normalizedCode);
   }
   if (!Number.isInteger(code) || code < 300 || code >= 400) {
     return defaultCode;

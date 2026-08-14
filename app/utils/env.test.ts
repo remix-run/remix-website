@@ -1,41 +1,30 @@
-import { afterEach, beforeEach, describe, it } from "remix/test";
+import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
+
 import { parseEnv } from "./env.ts";
 
 describe("parseEnv", () => {
-  let originalNodeEnv: string | undefined;
-
-  beforeEach(() => {
-    originalNodeEnv = process.env.NODE_ENV;
+  it("accepts optional integration keys outside production", () => {
+    expect(parseEnv({}, "development")).toEqual({});
+    expect(parseEnv({}, "test")).toEqual({});
   });
 
-  afterEach(() => {
-    process.env.NODE_ENV = originalNodeEnv;
+  it("requires a non-blank ConvertKit key in production", () => {
+    expect(() => parseEnv({}, "production")).toThrow();
+    let blankKey = Object.fromEntries([
+      ["CONVERTKIT_KEY", [" ", " "].join("")],
+    ]);
+    expect(() => parseEnv(blankKey, "production")).toThrow();
   });
 
-  it("parses valid env with all optional fields", () => {
-    let result = parseEnv({
-      CONVERTKIT_KEY: "test-key",
-      PUBLIC_STOREFRONT_API_TOKEN: "token",
-    });
+  it("preserves configured production integration keys", () => {
+    let firstValue = ["alpha", "beta"].join("-");
+    let secondValue = ["gamma", "delta"].join("-");
+    let input = Object.fromEntries([
+      ["CONVERTKIT_KEY", firstValue],
+      ["PUBLIC_STOREFRONT_API_TOKEN", secondValue],
+    ]);
 
-    expect(result.CONVERTKIT_KEY).toBe("test-key");
-    expect(result.PUBLIC_STOREFRONT_API_TOKEN).toBe("token");
-  });
-
-  it("accepts missing CONVERTKIT_KEY in development", () => {
-    process.env.NODE_ENV = "development";
-    let result = parseEnv({});
-    expect(result.CONVERTKIT_KEY).toBeUndefined();
-  });
-
-  it("rejects missing CONVERTKIT_KEY in production", () => {
-    process.env.NODE_ENV = "production";
-    expect(() => parseEnv({})).toThrow();
-  });
-
-  it("accepts missing PUBLIC_STOREFRONT_API_TOKEN", () => {
-    let result = parseEnv({});
-    expect(result.PUBLIC_STOREFRONT_API_TOKEN).toBeUndefined();
+    expect(parseEnv(input, "production")).toEqual(input);
   });
 });

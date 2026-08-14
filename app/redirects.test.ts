@@ -36,16 +36,34 @@ describe("redirects (fetch-router)", () => {
         # comment
         /one /target 301
         /two /target-two not-a-code
+        /three /target-three 301oops
         /broken-only-one-token
       `);
 
-      expect(redirects).toHaveLength(2);
-      expect(redirects[0]?.status).toBe(301);
-      expect(redirects[1]?.status).toBe(302);
+      expect(redirects).toHaveLength(3);
+      expect(redirects.map(({ status }) => status)).toEqual([301, 302, 302]);
     });
   });
 
   describe("exact matches", () => {
+    it("uses the configured redirect status", async () => {
+      let configured = createRedirectRoutes(
+        parseRedirectsFile("/permanent /new-home 301"),
+      );
+      let configuredRouter = createRouter();
+      configuredRouter.map(
+        configured.redirectRoutes,
+        configured.redirectController,
+      );
+
+      let { url, status } = await getRedirectResult(
+        "/permanent",
+        configuredRouter,
+      );
+      expect(url).toBe("/new-home");
+      expect(status).toBe(301);
+    });
+
     it("redirects /login to the legacy app", async () => {
       let { url, status } = await getRedirectResult("/login");
       expect(url).toBe("https://remix-run.web.app/login");
@@ -90,10 +108,10 @@ describe("redirects (fetch-router)", () => {
   });
 
   describe("no redirect", () => {
-    it("returns non-redirect for unmatched paths", async () => {
-      let result = await getRedirectResult("/some/random/path");
-      expect(result.redirect).toBeNull();
-      expect(result.url).toBeNull();
+    it("leaves unmatched paths for the app fallback", async () => {
+      let response = await router.fetch("https://example.com/some/random/path");
+      expect(response.status).toBe(404);
+      expect(response.headers.get("Location")).toBe(null);
     });
   });
 });

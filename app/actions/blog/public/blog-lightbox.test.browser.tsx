@@ -5,14 +5,13 @@ import { render } from "remix/ui/test";
 import { BlogLightbox } from "./blog-lightbox.tsx";
 
 describe("BlogLightbox", () => {
-  it("locks document scrolling while the image preview is open", async (t) => {
-    let documentElement = document.documentElement;
-    let previousOverflow = documentElement.style.overflow;
-    let previousScrollbarGutter = documentElement.style.scrollbarGutter;
-
+  it("opens from the keyboard, traps page scroll, and restores focus on Escape", async (t) => {
+    let root = document.documentElement;
+    let previousOverflow = root.style.overflow;
+    let previousScrollbarGutter = root.style.scrollbarGutter;
     t.after(() => {
-      documentElement.style.overflow = previousOverflow;
-      documentElement.style.scrollbarGutter = previousScrollbarGutter;
+      root.style.overflow = previousOverflow;
+      root.style.scrollbarGutter = previousScrollbarGutter;
     });
 
     let result = render(
@@ -24,28 +23,46 @@ describe("BlogLightbox", () => {
       </div>,
     );
     t.after(result.cleanup);
+    await result.act(() => {});
 
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
-
-    let image =
+    let trigger =
       result.container.querySelector<HTMLImageElement>(".md-prose img")!;
-
-    await result.act(() => image.click());
-
-    expect(documentElement.style.overflow).toBe("hidden");
-    expect(
-      result.container
-        .querySelector<HTMLDivElement>('[role="dialog"]')
-        ?.hasAttribute("hidden"),
-    ).toBe(false);
-
+    trigger.focus();
     await result.act(() => {
-      result.container
-        .querySelector<HTMLButtonElement>('[aria-label="Close image preview"]')!
-        .click();
+      trigger.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          bubbles: true,
+          cancelable: true,
+          key: "Enter",
+        }),
+      );
     });
 
-    expect(documentElement.style.overflow).toBe(previousOverflow);
-    expect(documentElement.style.scrollbarGutter).toBe(previousScrollbarGutter);
+    let dialog =
+      result.container.querySelector<HTMLDivElement>('[role="dialog"]')!;
+    let preview = dialog.querySelector("img")!;
+    let close = dialog.querySelector<HTMLButtonElement>(
+      '[aria-label="Close image preview"]',
+    )!;
+    expect(dialog.hidden).toBe(false);
+    expect(preview.src).toMatch(/\/favicon\.svg$/);
+    expect(preview.alt).toBe("Remix logo");
+    expect(document.activeElement).toBe(close);
+    expect(root.style.overflow).toBe("hidden");
+
+    await result.act(() => {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          bubbles: true,
+          cancelable: true,
+          key: "Escape",
+        }),
+      );
+    });
+
+    expect(dialog.hidden).toBe(true);
+    expect(document.activeElement).toBe(trigger);
+    expect(root.style.overflow).toBe(previousOverflow);
+    expect(root.style.scrollbarGutter).toBe(previousScrollbarGutter);
   });
 });

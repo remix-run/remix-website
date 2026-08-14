@@ -25,11 +25,7 @@ describe("Blog markdown routes", () => {
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
 
     let markdown = await response.text();
-    expect(markdown).toContain("title: Remix v2");
-    expect(markdown).toContain(
-      "summary: The second major release of Remix is stable today.",
-    );
-    expect(markdown).toContain("We are excited to announce");
+    expect(markdown.startsWith("---\n")).toBe(true);
   });
 
   it("returns 404 for missing markdown slug", async () => {

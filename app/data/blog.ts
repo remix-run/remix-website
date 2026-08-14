@@ -105,7 +105,7 @@ export function getBlogPostListings(): Array<MarkdownPostListing> {
 
   postListings = listings
     .sort((a, b) => b.date.getTime() - a.date.getTime())
-    .map(({ date, ...listing }) => listing);
+    .map(({ date: _date, ...listing }) => listing);
 
   return postListings;
 }

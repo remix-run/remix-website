@@ -12,6 +12,15 @@ afterEach(() => {
 });
 
 describe("initFathomAnalytics", () => {
+  it("does not load during server rendering", (t) => {
+    let loadImpl = t.mock.fn<FathomLoad>();
+    globalThis.window = undefined as never;
+
+    initFathomAnalytics({ isDevelopment: false, loadImpl });
+
+    expect(loadImpl).not.toHaveBeenCalled();
+  });
+
   it("does not load Fathom in development", (t) => {
     let loadImpl = t.mock.fn<FathomLoad>();
     globalThis.window = {} as Window & typeof globalThis;

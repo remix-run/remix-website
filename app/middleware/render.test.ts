@@ -126,6 +126,29 @@ describe("render middleware", () => {
     expect(html).toContain("<pre>Frame error: 404 Not Found</pre>");
   });
 
+  it("escapes status text used for empty frame errors", async () => {
+    let router = createTestRouter();
+
+    router.get("/", (context) =>
+      context.render(createElement(Frame, { src: "/unsafe" })),
+    );
+    router.get(
+      "/unsafe",
+      () =>
+        new Response(null, {
+          status: 500,
+          statusText: '<script>alert("xss")</script> & failed',
+        }),
+    );
+
+    let html = await (await router.fetch("http://localhost/")).text();
+
+    expect(html).not.toContain("<script>alert");
+    expect(html).toContain(
+      "&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &amp; failed",
+    );
+  });
+
   it("fails the document render when a frame redirects in a loop", async () => {
     let router = createTestRouter();
 

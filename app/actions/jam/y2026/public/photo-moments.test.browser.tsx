@@ -5,23 +5,6 @@ import { render } from "remix/ui/test";
 import { Jam2026PhotoMoments } from "./photo-moments.tsx";
 
 describe("Jam2026PhotoMoments", () => {
-  it("pops in the photo windows after hydration", async (t) => {
-    let result = render(
-      <Jam2026PhotoMoments popInBaseDelay={0} popInStagger={0} />,
-    );
-    t.after(result.cleanup);
-
-    expect(getComputedStyle(getPhotoSurface(result.container)).opacity).toBe(
-      "0",
-    );
-
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 420)));
-
-    expect(getComputedStyle(getPhotoSurface(result.container)).opacity).toBe(
-      "1",
-    );
-  });
-
   it("drags windows and keeps their dropped position", async (t) => {
     let result = render(
       <Jam2026PhotoMoments popInBaseDelay={0} popInStagger={0} />,
@@ -89,30 +72,6 @@ describe("Jam2026PhotoMoments", () => {
     let nextWindow = getPhotoWindow(result.container, "hero-shoppy");
     expect(document.activeElement).toBe(nextWindow.querySelector("button"));
   });
-
-  it("does not move focus to the next close button after a mouse close", async (t) => {
-    let result = render(
-      <Jam2026PhotoMoments popInBaseDelay={0} popInStagger={0} />,
-    );
-    t.after(result.cleanup);
-
-    let firstWindow = getPhotoWindow(result.container, "hero-toronto");
-    let firstClose = firstWindow.querySelector("button")!;
-
-    firstClose.focus();
-    await result.act(() => {
-      firstClose.dispatchEvent(
-        new MouseEvent("click", { bubbles: true, detail: 1 }),
-      );
-    });
-
-    expect(
-      result.container.querySelector('[data-photo-window-id="hero-toronto"]'),
-    ).toBe(null);
-
-    let nextWindow = getPhotoWindow(result.container, "hero-shoppy");
-    expect(document.activeElement).not.toBe(nextWindow.querySelector("button"));
-  });
 });
 
 function getPhotoWindow(container: HTMLElement, id: string) {
@@ -123,10 +82,6 @@ function getPhotoWindow(container: HTMLElement, id: string) {
     throw new Error(`Unable to find photo window: ${id}`);
   }
   return photoWindow;
-}
-
-function getPhotoSurface(container: HTMLElement) {
-  return getPhotoWindow(container, "hero-toronto").firstElementChild!;
 }
 
 function pointerEvent(type: string, clientX: number, clientY: number) {

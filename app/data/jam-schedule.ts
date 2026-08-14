@@ -25,7 +25,7 @@ const scheduleItemSchema = s.object({
 
 const scheduleArraySchema = s.array(scheduleItemSchema);
 
-export function parseScheduleItems(raw: unknown) {
+function parseScheduleItems(raw: unknown) {
   return s.parse(scheduleArraySchema, raw);
 }
 

@@ -1,110 +1,106 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
-import { parseCart, parsePhotos, parseProduct } from "./jam-storefront.ts";
 
-describe("parseProduct", () => {
-  it("parses valid product data", () => {
-    let product = parseProduct({
-      id: "gid://shopify/Product/123",
-      price: "399.00",
-      productId: "gid://shopify/ProductVariant/456",
-      availableForSale: true,
+import { createCart, getPhotos, getProduct } from "./jam-storefront.ts";
+import { env } from "../utils/env.ts";
+
+describe("Jam Storefront", () => {
+  it("returns stable unavailable states when Storefront is not configured", async (t) => {
+    let previousEnv = { ...env };
+    Reflect.set(env, "PUBLIC_STOREFRONT_API_TOKEN", undefined);
+    t.after(() => {
+      Object.assign(env, previousEnv);
     });
-    expect(product).toEqual({
-      id: "gid://shopify/Product/123",
-      price: "399.00",
-      productId: "gid://shopify/ProductVariant/456",
-      availableForSale: true,
+
+    await expect(getProduct("tickets")).resolves.toMatchObject({
+      availableForSale: false,
+      unavailableReason: "storefront",
     });
+    await expect(getPhotos("gallery")).resolves.toEqual([]);
+    await expect(
+      createCart({ productId: "variant", quantity: 1 }),
+    ).resolves.toEqual({ error: "Ticket checkout is unavailable right now" });
   });
 
-  it("rejects invalid product data", () => {
-    expect(() => parseProduct({ id: "x" })).toThrow();
-    expect(() =>
-      parseProduct({
-        id: 123,
-        price: "1",
-        productId: "p",
-        availableForSale: true,
-      }),
-    ).toThrow();
-  });
-});
-
-describe("parseCart", () => {
-  it("parses valid cart data", () => {
-    let cart = parseCart({
-      id: "gid://shopify/Cart/abc",
-      checkoutUrl: "https://jam.remix.run/checkout/abc",
-      discountCode: "PARTNER-2026",
-    });
-    expect(cart.checkoutUrl).toBe("https://jam.remix.run/checkout/abc");
-    expect(cart.discountCode).toBe("PARTNER-2026");
-  });
-
-  it("rejects invalid checkoutUrl", () => {
-    expect(() =>
-      parseCart({
-        id: "cart-id",
-        checkoutUrl: "not-a-valid-url",
-      }),
-    ).toThrow();
-  });
-
-  it("rejects missing checkoutUrl", () => {
-    expect(() =>
-      parseCart({
-        id: "cart-id",
-      }),
-    ).toThrow();
-  });
-
-  it("rejects checkoutUrl outside the Jam storefront", () => {
-    expect(() =>
-      parseCart({
-        id: "cart-id",
-        checkoutUrl: "https://example.com/checkout/abc",
-      }),
-    ).toThrow();
-
-    expect(() =>
-      parseCart({
-        id: "cart-id",
-        checkoutUrl: "http://jam.remix.run/checkout/abc",
-      }),
-    ).toThrow();
-  });
-});
-
-describe("parsePhotos", () => {
-  it("parses valid photos array", () => {
-    let photos = parsePhotos([
-      {
-        url: "https://example.com/photo.jpg",
-        width: 800,
-        height: 600,
-      },
-      {
-        url: "https://example.com/photo2.jpg",
-        altText: "Alt text",
-        width: 400,
-        height: 300,
-      },
-    ]);
-    expect(photos).toHaveLength(2);
-    expect(photos[0].url).toBe("https://example.com/photo.jpg");
-    expect(photos[1].altText).toBe("Alt text");
-  });
-
-  it("rejects invalid url in photo", () => {
-    expect(() =>
-      parsePhotos([
-        {
-          url: "not-a-url",
-          width: 100,
-          height: 100,
+  it("normalizes product data returned by Storefront", async (t) => {
+    mockStorefront(t, async () =>
+      Response.json({
+        data: {
+          product: {
+            id: "gid://shopify/Product/2026",
+            variants: {
+              edges: [
+                {
+                  node: {
+                    id: "gid://shopify/ProductVariant/2026",
+                    price: { amount: "299" },
+                    availableForSale: true,
+                    quantityRule: { minimum: 2, maximum: 8, increment: 2 },
+                  },
+                },
+              ],
+            },
+          },
         },
-      ]),
-    ).toThrow();
+      }),
+    );
+
+    await expect(getProduct("tickets")).resolves.toEqual({
+      id: "gid://shopify/Product/2026",
+      price: "299.00",
+      productId: "gid://shopify/ProductVariant/2026",
+      availableForSale: true,
+      quantityRule: { minimum: 2, maximum: 8, increment: 2 },
+    });
+  });
+
+  it("degrades safely when gallery requests fail", async (t) => {
+    mockStorefront(t, async () => {
+      throw new Error("Storefront unavailable");
+    });
+
+    await expect(getPhotos("gallery")).resolves.toEqual([]);
+  });
+
+  it("never returns an untrusted checkout URL", async (t) => {
+    mockStorefront(t, async (_input, init) => {
+      let body = JSON.parse(String(init?.body));
+      if (!body.query.includes("cartCreate")) {
+        throw new Error("Unexpected Storefront operation");
+      }
+
+      return Response.json({
+        data: {
+          cartCreate: {
+            cart: {
+              id: "gid://shopify/Cart/2026",
+              checkoutUrl: "https://attacker.example/checkout",
+              discountCodes: [],
+            },
+            userErrors: [],
+            warnings: [],
+          },
+        },
+      });
+    });
+
+    await expect(
+      createCart({ productId: "variant", quantity: 1 }),
+    ).resolves.toEqual({ error: "Failed to create cart" });
   });
 });
+
+function mockStorefront(
+  t: { after(cleanup: () => void): void },
+  fetchImpl: typeof fetch,
+) {
+  let previousEnv = { ...env };
+  let originalFetch = globalThis.fetch;
+  Reflect.set(env, "PUBLIC_STOREFRONT_API_TOKEN", ["test", "token"].join("-"));
+  globalThis.fetch = fetchImpl;
+
+  t.after(() => {
+    Object.assign(env, previousEnv);
+    globalThis.fetch = originalFetch;
+  });
+}

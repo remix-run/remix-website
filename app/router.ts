@@ -52,30 +52,34 @@ let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
   return next();
 };
 
-let requestLogger = isTest ? logger({ log() {} }) : logger();
+function createAppMiddleware() {
+  return createMiddleware(
+    compression(),
+    ignoreChromeDevToolsRequest,
+    staticFiles("public", {
+      cacheControl: isDev
+        ? "no-store, must-revalidate"
+        : "public, max-age=3600",
+      index: false,
+    }),
+    cop(),
+    rateLimit({
+      windowMs: 2 * 60 * 1000,
+      max: 1000,
+      skipLocalhost: shouldBypassLoopbackRateLimit,
+      skip: (context) => shouldSkipRateLimit(context.url.pathname),
+    }),
+    formData(),
+    asyncContext(),
+    loadAssetEntry(),
+    renderMiddleware,
+    isTest ? logger({ log() {} }) : logger(),
+  );
+}
 
-let middleware = createMiddleware(
-  compression(),
-  ignoreChromeDevToolsRequest,
-  staticFiles("public", {
-    cacheControl: isDev ? "no-store, must-revalidate" : "public, max-age=3600",
-    index: false,
-  }),
-  cop(),
-  rateLimit({
-    windowMs: 2 * 60 * 1000,
-    max: 1000,
-    skipLocalhost: shouldBypassLoopbackRateLimit,
-    skip: (context) => shouldSkipRateLimit(context.url.pathname),
-  }),
-  formData(),
-  asyncContext(),
-  loadAssetEntry(),
-  renderMiddleware,
-  requestLogger,
-);
-
-export type AppContext = MiddlewareContext<typeof middleware>;
+export type AppContext = MiddlewareContext<
+  ReturnType<typeof createAppMiddleware>
+>;
 
 declare module "remix/router" {
   interface RouterTypes {
@@ -83,22 +87,28 @@ declare module "remix/router" {
   }
 }
 
-export let router = createRouter({
-  middleware,
-  defaultHandler: catchallHandler,
-});
+export function createAppRouter() {
+  let appRouter = createRouter({
+    middleware: createAppMiddleware(),
+    defaultHandler: catchallHandler,
+  });
 
-router.map(routes, rootController);
-router.map(routes.api, apiController);
-router.map(routes.blog, blogController);
-router.map(routes.remixHistory, remixHistoryController);
-router.map(routes.jam, jamController);
-router.map(routes.jam.y2025, jam2025Controller);
-router.map(routes.jam.y2025.gallery, jam2025GalleryController);
-router.map(routes.jam.y2025.ticket, jam2025TicketController);
-router.map(routes.jam.y2026, jam2026Controller);
-router.map(routes.jam.y2026.ticket, jam2026TicketController);
+  appRouter.map(routes, rootController);
+  appRouter.map(routes.api, apiController);
+  appRouter.map(routes.blog, blogController);
+  appRouter.map(routes.remixHistory, remixHistoryController);
+  appRouter.map(routes.jam, jamController);
+  appRouter.map(routes.jam.y2025, jam2025Controller);
+  appRouter.map(routes.jam.y2025.gallery, jam2025GalleryController);
+  appRouter.map(routes.jam.y2025.ticket, jam2025TicketController);
+  appRouter.map(routes.jam.y2026, jam2026Controller);
+  appRouter.map(routes.jam.y2026.ticket, jam2026TicketController);
 
-let redirects = loadRedirectsFromFile();
-let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
-router.map(redirectRoutes, redirectController);
+  let redirects = loadRedirectsFromFile();
+  let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
+  appRouter.map(redirectRoutes, redirectController);
+
+  return appRouter;
+}
+
+export let router = createAppRouter();

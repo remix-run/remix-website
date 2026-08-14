@@ -40,7 +40,33 @@ describe("Blog OG image route", () => {
     });
   });
 
-  it("parses valid query params into a typed payload", () => {
+  it("returns a cacheable PNG for valid params", async (t) => {
+    t.mock.method(globalThis, "fetch", async () => {
+      let png = Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+        "base64",
+      );
+      return new Response(png, { headers: { "Content-Type": "image/png" } });
+    });
+    let router = createRouteTestRouter();
+    router.map(routes, rootController);
+
+    let response = await router.fetch(
+      new URL(
+        `${routes.blogOgImage.href({ slug: "remix-v2" })}?title=Remix&date=April%2011%2C%202026&authorName=Ada%20Lovelace&authorTitle=Engineer`,
+        "http://localhost:3000",
+      ),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toBe("image/png");
+    expect(response.headers.get("Cache-Control")).toBe("max-age=86400");
+    expect(
+      Array.from(new Uint8Array(await response.arrayBuffer()).slice(0, 8)),
+    ).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+  });
+
+  it("normalizes valid query params", () => {
     let result = parseOgImageQuery(
       new Request(
         new URL(

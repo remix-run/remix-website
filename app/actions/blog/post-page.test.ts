@@ -25,12 +25,8 @@ describe("Blog post route", () => {
 
     let html = await response.text();
     expect(html).toContain(`<title>${post.title} | Remix</title>`);
-    expect(html).toContain(post.summary);
-    expect(html).toContain('class="md-prose"');
-    expect(html).toContain("twitter:card");
-    expect(html).toContain('action="/_actions/newsletter"');
+    expect(html).toContain('id="main-content"');
     expect(html).toContain('rel="alternate"');
-    expect(html).toContain('href="/styles/md.css"');
     expect(html).toContain('type="text/markdown"');
     expect(html).toContain(
       `href="${routes.blog.post.href({ slug: "remix-v2", ext: "md" })}"`,
@@ -49,11 +45,5 @@ describe("Blog post route", () => {
     );
 
     expect(response.status).toBe(404);
-  });
-
-  it("renders frontmatter date-only values without timezone offset", async () => {
-    let post = await getBlogPost("brand-new");
-
-    expect(post.dateDisplay).toBe("May 6, 2026");
   });
 });

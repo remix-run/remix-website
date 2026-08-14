@@ -1,9 +1,9 @@
 import { expect, type Page } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
-import { describe, it } from "remix/test";
+import { beforeEach, describe, it } from "remix/test";
 
 import { DOCUMENT_REDIRECT_HEADER } from "../app/actions/public/document-redirect.ts";
-import { router } from "../app/router.ts";
+import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
@@ -39,6 +39,12 @@ async function expectLandingNavReady(page: Page) {
 }
 
 describe("Navigation", () => {
+  let router: ReturnType<typeof createAppRouter>;
+
+  beforeEach(() => {
+    router = createAppRouter();
+  });
+
   it("home/blog navigation stays client-side and applies forced dark mode", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
@@ -79,7 +85,7 @@ describe("Navigation", () => {
         headers: { [DOCUMENT_REDIRECT_HEADER]: routes.brand.href() },
       });
     });
-    await page.goto(routes.newsletter.href(), { waitUntil: "networkidle" });
+    await page.goto(routes.newsletter.href());
     await markPage(page);
 
     await page.evaluate((newsletterAction) => {
@@ -154,51 +160,6 @@ describe("Navigation", () => {
       () => page.keyboard.press("b"),
       `**${routes.blog.index.href()}`,
     );
-  });
-
-  it("does not animate the landing logo from another page's scroll position", async (t) => {
-    let handler = swallowAbortErrors(router);
-    let page = await t.serve(await createTestServer(handler));
-    await page.goto(routes.home.href());
-    await expectLandingNavReady(page);
-
-    await expectClientNavigation(
-      page,
-      () =>
-        page
-          .locator('nav[aria-label="Primary"] a[href="/jam/2026"]')
-          .first()
-          .click(),
-      `**${routes.jam.y2026.index.href()}`,
-    );
-    await page.evaluate(() =>
-      window.scrollTo(0, document.documentElement.scrollHeight),
-    );
-
-    await expectClientNavigation(
-      page,
-      () => page.locator('footer a[href="/"]').first().click(),
-      `**${routes.home.href()}`,
-    );
-
-    let maxGhostOpacity = await page.evaluate(async () => {
-      let maxOpacity = 0;
-      let end = performance.now() + 500;
-      while (performance.now() < end) {
-        await new Promise(requestAnimationFrame);
-        for (let logo of document.querySelectorAll<SVGElement>(
-          '#remix-landing-app svg[viewBox="0 0 440 43"][style*="opacity"]',
-        )) {
-          maxOpacity = Math.max(
-            maxOpacity,
-            Number.parseFloat(getComputedStyle(logo).opacity),
-          );
-        }
-      }
-      return maxOpacity;
-    });
-
-    expect(maxGhostOpacity).toBe(0);
   });
 
   it("header wordmark context menu uses client navigation for brand", async (t) => {

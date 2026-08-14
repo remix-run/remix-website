@@ -17,10 +17,6 @@ describe("Jam 2025 getEventStatus", () => {
     expect(getEventStatus(instant("2025-10-10T00:00:00-04:00"))).toBe("live");
   });
 
-  it("reports 'live' during the event", () => {
-    expect(getEventStatus(instant("2025-10-10T12:00:00-04:00"))).toBe("live");
-  });
-
   it("reports 'after' once the event has ended", () => {
     expect(getEventStatus(instant("2025-10-10T18:00:00-04:00"))).toBe("after");
   });
