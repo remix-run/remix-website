@@ -2,38 +2,34 @@
 
 ## What This Covers
 
-How to animate insertion, removal, and layout changes of elements. Read this when the task
-involves:
+How to animate insertion, removal, and layout changes of elements. Read this when the task involves:
 
 - Adding entrance, exit, or shared-layout transitions to UI
 - Choosing between spring physics (`spring(...)`) and time-based easing (`tween`)
 - Coordinating CSS transitions with the same easing as JS animations
 - Imperative animation loops via `requestAnimationFrame`
 
-Import animation APIs from `remix/ui/animation`. For the smaller set of animation helpers that
-show up alongside other mixins, see `mixins-styling-events.md`.
+Import animation APIs from `remix/ui/animation`. For the smaller set of animation helpers that show up alongside other mixins, see `mixins-styling-events.md`.
 
 ## Animation Mixins
 
 ### `animateEntrance(config)`
 
-Animates an element when inserted. Config specifies the **starting** style the element animates
-**from**:
+Animates an element when inserted. Config specifies the **starting** style the element animates **from**:
 
 ```tsx
 <div
   mix={animateEntrance({
     opacity: 0,
-    transform: "translateY(8px)",
-    ...spring("smooth"),
+    transform: 'translateY(8px)',
+    ...spring('smooth'),
   })}
 />
 ```
 
 ### `animateExit(config)`
 
-Animates an element when removed. Config specifies the **ending** style the element animates
-**to**. The element stays in the DOM until the animation completes:
+Animates an element when removed. Config specifies the **ending** style the element animates **to**. The element stays in the DOM until the animation completes:
 
 ```tsx
 {
@@ -41,15 +37,11 @@ Animates an element when removed. Config specifies the **ending** style the elem
     <div
       key="panel"
       mix={[
-        animateEntrance({
-          opacity: 0,
-          transform: "scale(0.98)",
-          ...spring("smooth"),
-        }),
-        animateExit({ opacity: 0, duration: 120, easing: "ease-in" }),
+        animateEntrance({ opacity: 0, transform: 'scale(0.98)', ...spring('smooth') }),
+        animateExit({ opacity: 0, duration: 120, easing: 'ease-in' }),
       ]}
     />
-  );
+  )
 }
 ```
 
@@ -60,16 +52,12 @@ Animates layout changes (position/size) using FLIP-style transforms:
 ```tsx
 {
   items.map((item) => (
-    <li
-      key={item.id}
-      mix={animateLayout({ ...spring({ duration: 500, bounce: 0.2 }) })}
-    />
-  ));
+    <li key={item.id} mix={animateLayout({ ...spring({ duration: 500, bounce: 0.2 }) })} />
+  ))
 }
 ```
 
-Options: `duration` (default 200ms), `easing` (default spring snappy), `size` (default true —
-include scale projection for size changes).
+Options: `duration` (default 200ms), `easing` (default spring snappy), `size` (default true — include scale projection for size changes).
 
 ### Combining mixins
 
@@ -77,18 +65,9 @@ include scale projection for size changes).
 <div
   key="card"
   mix={[
-    animateEntrance({
-      opacity: 0,
-      transform: "scale(0.95)",
-      ...spring("snappy"),
-    }),
-    animateExit({
-      opacity: 0,
-      transform: "scale(0.98)",
-      duration: 120,
-      easing: "ease-in",
-    }),
-    animateLayout({ duration: 220, easing: "ease-out" }),
+    animateEntrance({ opacity: 0, transform: 'scale(0.95)', ...spring('snappy') }),
+    animateExit({ opacity: 0, transform: 'scale(0.98)', duration: 120, easing: 'ease-in' }),
+    animateLayout({ duration: 220, easing: 'ease-out' }),
   ]}
 />
 ```
@@ -96,25 +75,18 @@ include scale projection for size changes).
 ### Shared-layout swap
 
 ```tsx
-<div mix={css({ display: "grid", "& > *": { gridArea: "1 / 1" } })}>
+<div mix={css({ display: 'grid', '& > *': { gridArea: '1 / 1' } })}>
   {stateA ? (
-    <div
-      key="a"
-      mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]}
-    />
+    <div key="a" mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]} />
   ) : (
-    <div
-      key="b"
-      mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]}
-    />
+    <div key="b" mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]} />
   )}
 </div>
 ```
 
 ## Spring API
 
-Physics-based spring animation. Returns a `SpringIterator` with `duration`, `easing`, and
-`toString()` for CSS.
+Physics-based spring animation. Returns a `SpringIterator` with `duration`, `easing`, and `toString()` for CSS.
 
 ### Presets
 
@@ -125,17 +97,17 @@ Physics-based spring animation. Returns a `SpringIterator` with `duration`, `eas
 | `bouncy` | 0.3    | 400ms    | Underdamped, visible bounce |
 
 ```tsx
-spring("bouncy");
-spring("snappy");
-spring("smooth");
-spring("bouncy", { duration: 300 }); // override duration
+spring('bouncy')
+spring('snappy')
+spring('smooth')
+spring('bouncy', { duration: 300 }) // override duration
 ```
 
 ### Custom spring
 
 ```tsx
-spring({ duration: 500, bounce: 0.3 });
-spring({ duration: 500, bounce: 0.3, velocity: 2 }); // continue momentum from gesture
+spring({ duration: 500, bounce: 0.3 })
+spring({ duration: 500, bounce: 0.3, velocity: 2 }) // continue momentum from gesture
 ```
 
 ### Spread into animation mixins
@@ -143,7 +115,7 @@ spring({ duration: 500, bounce: 0.3, velocity: 2 }); // continue momentum from g
 Spreading a spring gives both `duration` and `easing`:
 
 ```tsx
-animateEntrance({ opacity: 0, ...spring("bouncy") });
+animateEntrance({ opacity: 0, ...spring('bouncy') })
 ```
 
 ### CSS transitions
@@ -151,20 +123,20 @@ animateEntrance({ opacity: 0, ...spring("bouncy") });
 The iterator stringifies to `"550ms linear(...)"`:
 
 ```tsx
-css({ transition: `width ${spring("bouncy")}` });
+css({ transition: `width ${spring('bouncy')}` })
 ```
 
 Or use the `spring.transition()` helper for multiple properties:
 
 ```tsx
-css({ transition: spring.transition("width", "bouncy") });
-css({ transition: spring.transition(["left", "top"], "snappy") });
+css({ transition: spring.transition('width', 'bouncy') })
+css({ transition: spring.transition(['left', 'top'], 'snappy') })
 ```
 
 ### Web Animations API
 
 ```tsx
-element.animate(keyframes, { ...spring("bouncy") });
+element.animate(keyframes, { ...spring('bouncy') })
 ```
 
 ### JS iteration
@@ -172,41 +144,38 @@ element.animate(keyframes, { ...spring("bouncy") });
 The iterator yields position values from 0 to 1, one per frame:
 
 ```tsx
-for (let t of spring("bouncy")) {
-  let x = from + (to - from) * t;
-  updateSomething(x);
-  await nextFrame();
+for (let t of spring('bouncy')) {
+  let x = from + (to - from) * t
+  updateSomething(x)
+  await nextFrame()
 }
 ```
 
 ## Tween API
 
-Generator-based tween for animating values over time with cubic bezier easing. Prefer animation
-mixins or CSS transitions with `spring` for most UI work. Use `tween` for imperative
-`requestAnimationFrame` loops, canvas/WebGL, or non-CSS properties.
+Generator-based tween for animating values over time with cubic bezier easing. Prefer animation mixins or CSS transitions with `spring` for most UI work. Use `tween` for imperative `requestAnimationFrame` loops, canvas/WebGL, or non-CSS properties.
 
 ```tsx
-import { tween, easings } from "remix/ui/animation";
+import { tween, easings } from 'remix/ui/animation'
 
 let animation = tween({
   from: 0,
   to: 100,
   duration: 300,
   curve: easings.easeOut,
-});
+})
 
-animation.next(); // initialize
+animation.next() // initialize
 function tick(timestamp: number) {
-  if (handle.signal.aborted) return;
-  let { value, done } = animation.next(timestamp);
-  element.style.transform = `translateX(${value}px)`;
-  if (!done) requestAnimationFrame(tick);
+  if (handle.signal.aborted) return
+  let { value, done } = animation.next(timestamp)
+  element.style.transform = `translateX(${value}px)`
+  if (!done) requestAnimationFrame(tick)
 }
-requestAnimationFrame(tick);
+requestAnimationFrame(tick)
 ```
 
-Built-in easings: `easings.linear`, `easings.ease`, `easings.easeIn`, `easings.easeOut`,
-`easings.easeInOut`.
+Built-in easings: `easings.linear`, `easings.ease`, `easings.easeIn`, `easings.easeOut`, `easings.easeInOut`.
 
 ## Practical Guidance
 
