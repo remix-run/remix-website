@@ -1,45 +1,21 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
-import { parseScheduleItems } from "./jam-schedule.ts";
 
-describe("parseScheduleItems", () => {
-  it("parses valid schedule items", () => {
-    let raw = [
-      {
-        time: "9:00 AM",
-        title: "Keynote",
-        description: "Opening talk",
-        speaker: "Jane Doe",
-      },
-      {
-        time: "10:00 AM",
-        title: "Workshop",
-        description: "Hands on",
-        speaker: "John",
-        imgFilename: "john.webp",
-        bio: "Developer",
-      },
-    ];
+import { getSchedule } from "./jam-schedule.ts";
 
-    let result = parseScheduleItems(raw);
-    expect(result).toHaveLength(2);
-    expect(result[0]).toMatchObject({
-      time: "9:00 AM",
-      title: "Keynote",
-      description: "Opening talk",
-      speaker: "Jane Doe",
-    });
-    expect(result[1].imgFilename).toBe("john.webp");
-    expect(result[1].bio).toBe("Developer");
-  });
+describe("getSchedule", () => {
+  it("loads the checked-in schedule with rendered copy and resolved images", async () => {
+    let schedule = await getSchedule();
 
-  it("rejects invalid shape - missing required fields", () => {
-    let raw = [{ time: "9:00" }]; // missing title, description, speaker
-    expect(() => parseScheduleItems(raw)).toThrow();
-  });
-
-  it("rejects non-array input", () => {
-    expect(() => parseScheduleItems({})).toThrow();
-    expect(() => parseScheduleItems("not an array")).toThrow();
+    expect(schedule.length).toBeGreaterThan(1);
+    for (let item of schedule) {
+      expect(item.time.length).toBeGreaterThan(0);
+      expect(item.title.length).toBeGreaterThan(0);
+      expect(item.speaker.length).toBeGreaterThan(0);
+      expect(item.description).toContain("<");
+      if (item.imgSrc) {
+        expect(item.imgSrc).toMatch(/^\/jam\/2025\/images\/schedule\//);
+      }
+    }
   });
 });

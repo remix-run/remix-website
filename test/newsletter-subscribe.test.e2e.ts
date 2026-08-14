@@ -2,13 +2,23 @@ import { expect } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
-import { router } from "../app/router.ts";
+import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
-import { swallowAbortErrors } from "../test/setup.ts";
+import {
+  swallowAbortErrors,
+  waitForClientEntryHydration,
+} from "../test/setup.ts";
+
+function waitForNewsletterHydration(page: import("@playwright/test").Page) {
+  return waitForClientEntryHydration(
+    page,
+    `form[action="${routes.api.newsletter.href()}"]`,
+  );
+}
 
 describe("Newsletter page (/newsletter)", () => {
   it("submits to /_actions/newsletter and shows success", async (t) => {
-    let handler = swallowAbortErrors(router);
+    let handler = swallowAbortErrors(createAppRouter());
     let page = await t.serve(await createTestServer(handler));
     let submittedEmail: string | null = null;
 
@@ -22,7 +32,8 @@ describe("Newsletter page (/newsletter)", () => {
       });
     });
 
-    await page.goto(routes.newsletter.href(), { waitUntil: "networkidle" });
+    await page.goto(routes.newsletter.href());
+    await waitForNewsletterHydration(page);
 
     let emailInput = page.getByPlaceholder("name@example.com");
     await expect(emailInput).toBeVisible();
@@ -36,7 +47,7 @@ describe("Newsletter page (/newsletter)", () => {
   });
 
   it("shows server error UI when submission fails", async (t) => {
-    let handler = swallowAbortErrors(router);
+    let handler = swallowAbortErrors(createAppRouter());
     let page = await t.serve(await createTestServer(handler));
     await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
       await route.fulfill({
@@ -46,7 +57,8 @@ describe("Newsletter page (/newsletter)", () => {
       });
     });
 
-    await page.goto(routes.newsletter.href(), { waitUntil: "networkidle" });
+    await page.goto(routes.newsletter.href());
+    await waitForNewsletterHydration(page);
 
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
     await page.getByPlaceholder("name@example.com").fill("hello@example.com");

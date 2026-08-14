@@ -83,6 +83,10 @@ async function subscribeToNewsletter(email: string, tags: number[]) {
     }),
   });
 
+  if (!response.ok) {
+    throw new Error(`ConvertKit request failed with ${response.status}`);
+  }
+
   let body = await response.json();
   let result = s.parseSafe(s.object({ error: s.optional(s.string()) }), body);
   if (!result.success) {

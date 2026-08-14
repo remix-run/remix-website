@@ -2,19 +2,24 @@ import * as s from "remix/data-schema";
 
 loadEnvFiles();
 
-const envSchema = s
-  .object({
-    // Get from https://app.convertkit.com/account_settings/advanced_settings
-    CONVERTKIT_KEY: s.optional(s.string()),
-    PUBLIC_STOREFRONT_API_TOKEN: s.optional(s.string()),
-  })
-  .refine(
-    (v) => process.env.NODE_ENV !== "production" || !!v.CONVERTKIT_KEY,
-    "CONVERTKIT_KEY is required in production",
-  );
+function createEnvSchema(nodeEnv: string | undefined) {
+  return s
+    .object({
+      // Get from https://app.convertkit.com/account_settings/advanced_settings
+      CONVERTKIT_KEY: s.optional(s.string()),
+      PUBLIC_STOREFRONT_API_TOKEN: s.optional(s.string()),
+    })
+    .refine(
+      (value) => nodeEnv !== "production" || !!value.CONVERTKIT_KEY?.trim(),
+      "CONVERTKIT_KEY is required in production",
+    );
+}
 
-export function parseEnv(input: Record<string, string | undefined>) {
-  return s.parse(envSchema, input);
+export function parseEnv(
+  input: Record<string, string | undefined>,
+  nodeEnv = process.env.NODE_ENV,
+) {
+  return s.parse(createEnvSchema(nodeEnv), input);
 }
 
 export const env = parseEnv(process.env);

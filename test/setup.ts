@@ -1,3 +1,4 @@
+import type { Page } from "@playwright/test";
 import { existsSync } from "node:fs";
 import { loadEnvFile } from "node:process";
 
@@ -27,6 +28,17 @@ export function createRouteTestRouter() {
   });
 
   return router;
+}
+
+export async function waitForClientEntryHydration(
+  page: Page,
+  selector: string,
+) {
+  await page.waitForFunction((targetSelector) => {
+    let target = document.querySelector(targetSelector);
+    let marker = target?.previousSibling;
+    return marker instanceof Comment && "$rmx" in marker;
+  }, selector);
 }
 
 export function swallowAbortErrors(r: Router) {

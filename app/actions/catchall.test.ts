@@ -1,7 +1,6 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import { catchallHandler } from "./catchall.tsx";
-import { router } from "../router.ts";
 import type { AppRenderer } from "../middleware/render.ts";
 
 function createContext(pathname: string) {
@@ -12,10 +11,12 @@ function createContext(pathname: string) {
 }
 
 describe("catchall route", () => {
-  it("redirects trailing slash paths", async () => {
-    let response = catchallHandler(createContext("/docs/"));
+  it("redirects trailing slash paths without dropping the query", async () => {
+    let response = catchallHandler(createContext("/docs/?q=routes"));
     expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).toBe("https://remix.run/docs");
+    expect(response.headers.get("Location")).toBe(
+      "https://remix.run/docs?q=routes",
+    );
   });
 
   it("redirects the docs root to api docs", async () => {
@@ -72,18 +73,17 @@ describe("catchall route", () => {
     );
   });
 
-  it("redirects resources paths to v2", async () => {
-    let response = catchallHandler(createContext("/resources"));
+  it("redirects resources paths to v2 with the query intact", async () => {
+    let response = catchallHandler(createContext("/resources?q=sessions"));
     expect(response.status).toBe(302);
     expect(response.headers.get("Location")).toBe(
-      "https://v2.remix.run/resources",
+      "https://v2.remix.run/resources?q=sessions",
     );
   });
 
-  it("returns 404 for unknown paths", async () => {
-    let response = await router.fetch(
-      new Request("https://remix.run/not-real"),
-    );
+  it("returns a blank 404 for missing static assets", async () => {
+    let response = catchallHandler(createContext("/missing.js"));
     expect(response.status).toBe(404);
+    expect(await response.text()).toBe("");
   });
 });

@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
-import { router } from "../app/router.ts";
+import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
@@ -36,7 +36,7 @@ function mobileMenuToggle(page: Page) {
 
 describe("Mobile menu", () => {
   it("mobile menu links navigate", async (t) => {
-    let handler = swallowAbortErrors(router);
+    let handler = swallowAbortErrors(createAppRouter());
     let page = await t.serve(await createTestServer(handler));
     await gotoMobileMenuPage(page);
 

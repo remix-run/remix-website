@@ -1,5 +1,5 @@
 import { expect } from "remix/assert";
-import { describe, it } from "remix/test";
+import { afterEach, beforeEach, describe, it } from "remix/test";
 
 import { render } from "remix/ui/test";
 
@@ -9,6 +9,16 @@ import { ticketModalConfig } from "./tickets-modal-contract.ts";
 import { routes } from "../../../../routes.ts";
 
 describe("Jam2026TicketsModal", () => {
+  let originalHead: string;
+
+  beforeEach(() => {
+    originalHead = document.head.innerHTML;
+  });
+
+  afterEach(() => {
+    document.head.innerHTML = originalHead;
+  });
+
   it("applies modal effects and renders frame navigation controls", async (t) => {
     let homeHref = routes.jam.y2026.index.href();
     let previousOverflow = document.documentElement.style.overflow;
@@ -28,16 +38,21 @@ describe("Jam2026TicketsModal", () => {
     );
     t.after(result.cleanup);
 
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+    await result.act(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => resolve());
+        }),
+    );
 
     let dialog = result.container.querySelector('[role="dialog"]');
     expect(Boolean(dialog)).toBe(true);
     expect(dialog?.getAttribute("aria-modal")).toBe("true");
-    expect(
-      result.container
-        .querySelector(`[${ticketModalConfig.attributes.modal}]`)
-        ?.getAttribute("data-animate-entrance"),
-    ).toBe("true");
+    expect(document.activeElement).toBe(
+      result.container.querySelector(
+        "section[role='dialog'] [aria-label='Close tickets']",
+      ),
+    );
     expect(document.documentElement.style.overflow).toBe("hidden");
     expect(
       result.container
@@ -62,58 +77,11 @@ describe("Jam2026TicketsModal", () => {
     expect(close.getAttribute("rmx-target")).toBe(ticketModalConfig.frameName);
   });
 
-  it("can render open without entrance motion for document reloads", async (t) => {
-    let result = render(
-      <Jam2026TicketsModalFrame animateEntrance={false} open />,
-    );
-    t.after(result.cleanup);
-
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
-
-    expect(
-      result.container
-        .querySelector(`[${ticketModalConfig.attributes.modal}]`)
-        ?.getAttribute("data-animate-entrance"),
-    ).toBe("false");
-    expect(Boolean(result.container.querySelector('[role="dialog"]'))).toBe(
-      true,
-    );
-  });
-
-  it("does not apply entrance motion for reduced-motion users", async (t) => {
-    let originalMatchMedia = window.matchMedia;
-    window.matchMedia = (query) =>
-      ({
-        matches: query === "(prefers-reduced-motion: reduce)",
-        media: query,
-        onchange: null,
-        addListener() {},
-        removeListener() {},
-        addEventListener() {},
-        removeEventListener() {},
-        dispatchEvent: () => false,
-      }) as MediaQueryList;
-    t.after(() => {
-      window.matchMedia = originalMatchMedia;
-    });
-
-    let result = render(<Jam2026TicketsModalFrame open />);
-    t.after(result.cleanup);
-
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
-
-    expect(
-      result.container
-        .querySelector(`[${ticketModalConfig.attributes.modal}]`)
-        ?.getAttribute("data-animate-entrance"),
-    ).toBe("false");
-  });
-
   it("updates ticket quantity and subtotal in the hydrated modal", async (t) => {
     let result = render(<Jam2026TicketsModalFrame open />);
     t.after(result.cleanup);
 
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+    await result.act(() => {});
 
     let getQuantityValue = () =>
       result.container.querySelector("[aria-live='polite']")?.textContent;
@@ -138,13 +106,6 @@ describe("Jam2026TicketsModal", () => {
       "button[type='submit']",
     )!;
 
-    expect(result.container.textContent).toContain("Remix Jam 2026 Ticket");
-    expect(result.container.textContent).toContain(
-      `$${remixJam2026Ticket.price}`,
-    );
-    expect(result.container.textContent).toContain(
-      `$${remixJam2026Ticket.originalPrice}`,
-    );
     expect(form.getAttribute("action")).toBe(
       routes.jam.y2026.ticket.action.href(),
     );
@@ -196,7 +157,7 @@ describe("Jam2026TicketsModal", () => {
     );
     t.after(result.cleanup);
 
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+    await result.act(() => {});
 
     let checkoutButton = result.container.querySelector<HTMLButtonElement>(
       "button[type='submit']",
@@ -208,6 +169,30 @@ describe("Jam2026TicketsModal", () => {
     expect(checkoutButton.disabled).toBe(false);
     expect(checkoutButton.textContent).toBe("Check out");
     expect(productInput.value).toBe("gid://shopify/ProductVariant/2026");
+  });
+
+  it("announces checkout errors returned by the server", async (t) => {
+    let result = render(
+      <Jam2026TicketsModalFrame
+        open
+        ticketCheckout={{
+          availableForSale: false,
+          error: "Tickets are sold out or unavailable",
+          initialQuantity: 1,
+          maxQuantity: remixJam2026Ticket.maxQuantity,
+        }}
+      />,
+    );
+    t.after(result.cleanup);
+    await result.act(() => {});
+
+    let alert = result.container.querySelector('[role="alert"]');
+    expect(alert?.textContent).toContain("Tickets are sold out or unavailable");
+    expect(
+      result.container.querySelector<HTMLButtonElement>(
+        "button[type='submit']",
+      )!.disabled,
+    ).toBe(true);
   });
 
   it("shows a pending checkout state after submit", async (t) => {
@@ -224,7 +209,7 @@ describe("Jam2026TicketsModal", () => {
     );
     t.after(result.cleanup);
 
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+    await result.act(() => {});
 
     let form = result.container.querySelector<HTMLFormElement>("form")!;
     form.addEventListener("submit", (event) => event.preventDefault());

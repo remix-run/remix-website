@@ -60,15 +60,15 @@ type Product = s.InferOutput<typeof ProductSchema>;
 type Cart = s.InferOutput<typeof CartSchema>;
 type Photo = s.InferOutput<typeof PhotoSchema>;
 
-export function parseProduct(raw: unknown): Product {
+function parseProduct(raw: unknown): Product {
   return s.parse(ProductSchema, raw);
 }
 
-export function parsePhotos(raw: unknown): Photo[] {
+function parsePhotos(raw: unknown): Photo[] {
   return s.parse(s.array(PhotoSchema), raw);
 }
 
-export function parseCart(raw: unknown): Cart {
+function parseCart(raw: unknown): Cart {
   return s.parse(CartSchema, raw);
 }
 
@@ -168,11 +168,17 @@ export async function getPhotos(handle: string): Promise<Photo[]> {
     }
   `;
 
-  const { data, errors } = await storefrontClient.request(metaobjectQuery, {
-    variables: { handle },
-  });
+  let response;
+  try {
+    response = await storefrontClient.request(metaobjectQuery, {
+      variables: { handle },
+    });
+  } catch {
+    return [];
+  }
 
-  if (errors) throw new Error("Failed to fetch photos from metaobject");
+  const { data, errors } = response;
+  if (errors) return [];
 
   const photosField = data?.metaobject?.fields?.find(
     (field: any) => field.key === "photos",
@@ -276,11 +282,15 @@ export async function createCart(params: {
     cart = cleanCart;
   }
 
-  return parseCart({
-    id: cart.id,
-    checkoutUrl: cart.checkoutUrl,
-    discountCode: appliedDiscountCode?.trim().toUpperCase(),
-  });
+  try {
+    return parseCart({
+      id: cart.id,
+      checkoutUrl: cart.checkoutUrl,
+      discountCode: appliedDiscountCode?.trim().toUpperCase(),
+    });
+  } catch {
+    return { error: "Failed to create cart" };
+  }
 }
 
 async function removeCartDiscountCodes(

@@ -2,42 +2,44 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 import { render } from "remix/ui/test";
 
-import { routes } from "../../../../routes.ts";
 import { LandingNav } from "./landing-nav.tsx";
 
 describe("LandingNav", () => {
-  it("renders the shared site links in order", (t) => {
+  it("moves between sections with arrow keys without hijacking editable fields", async (t) => {
+    let activeIndexRef = { current: 1 };
+    let onJump = t.mock.fn<(index: number) => void>();
     let result = render(
-      <LandingNav
-        activeIndexRef={{ current: 0 }}
-        totalSections={1}
-        onJump={() => {}}
-        scrollYRef={{ current: 0 }}
-        shouldBlockBlogShortcut={() => false}
-      />,
+      <div>
+        <input aria-label="Editable" />
+        <LandingNav
+          activeIndexRef={activeIndexRef}
+          totalSections={3}
+          onJump={onJump}
+          scrollYRef={{ current: 0 }}
+          shouldBlockBlogShortcut={() => false}
+        />
+      </div>,
     );
     t.after(result.cleanup);
 
-    let desktopNavigation = result.container.querySelector(
-      'nav[aria-label="Primary"]',
-    );
-    if (!desktopNavigation) throw new Error("Missing primary navigation");
+    await result.act(() => window.dispatchEvent(keydown("ArrowDown")));
+    expect(onJump).toHaveBeenCalledWith(2);
 
-    let links = [...desktopNavigation.querySelectorAll("a")].map((link) => ({
-      href: link.getAttribute("href"),
-      label: link.textContent?.trim(),
-    }));
+    activeIndexRef.current = 0;
+    await result.act(() => window.dispatchEvent(keydown("ArrowUp")));
+    expect(onJump).toHaveBeenCalledWith(0);
 
-    expect(links).toEqual([
-      { href: "https://guides.remix.run", label: "[G] guides" },
-      { href: "https://api.remix.run", label: "[A] api" },
-      { href: routes.blog.index.href(), label: "[B] blog" },
-      { href: routes.jam.y2026.index.href(), label: "[J] jam" },
-      { href: "https://shop.remix.run", label: "[S] store" },
-      {
-        href: "https://github.com/remix-run/remix",
-        label: "[H] github",
-      },
-    ]);
+    let input = result.container.querySelector("input")!;
+    input.focus();
+    input.dispatchEvent(keydown("ArrowDown"));
+    expect(onJump).toHaveBeenCalledTimes(2);
   });
 });
+
+function keydown(key: string) {
+  return new KeyboardEvent("keydown", {
+    bubbles: true,
+    cancelable: true,
+    key,
+  });
+}

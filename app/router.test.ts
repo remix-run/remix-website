@@ -1,10 +1,16 @@
 import { expect } from "remix/assert";
-import { describe, it } from "remix/test";
+import { beforeEach, describe, it } from "remix/test";
 
-import { router } from "./router.ts";
+import { createAppRouter } from "./router.ts";
 import { routes } from "./routes.ts";
 
 describe("app router", () => {
+  let router: ReturnType<typeof createAppRouter>;
+
+  beforeEach(() => {
+    router = createAppRouter();
+  });
+
   it("serves the healthcheck route", async () => {
     let response = await router.fetch(
       new URL(routes.healthcheck.href(), "http://localhost"),
@@ -41,6 +47,17 @@ describe("app router", () => {
     expect(response.status).toBe(302);
     expect(response.headers.get("Location")).toBe(
       routes.jam.y2026.index.href(),
+    );
+  });
+
+  it("maps legacy redirects from the redirects file", async () => {
+    let response = await router.fetch("http://localhost/login", {
+      redirect: "manual",
+    });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.get("Location")).toBe(
+      "https://remix-run.web.app/login",
     );
   });
 

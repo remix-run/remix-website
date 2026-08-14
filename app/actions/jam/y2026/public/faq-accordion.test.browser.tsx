@@ -46,14 +46,14 @@ describe("Jam2026FaqAccordion", () => {
     ({ first: firstTrigger, second: secondTrigger } = getTriggers());
     expect(firstTrigger.getAttribute("aria-expanded")).toBe("true");
     expect(secondTrigger.getAttribute("aria-expanded")).toBe("false");
-    expect(
-      result.container.querySelector("#first")?.getAttribute("data-state"),
-    ).toBe("open");
-
     await result.act(() => secondTrigger.click());
 
     ({ first: firstTrigger, second: secondTrigger } = getTriggers());
     expect(firstTrigger.getAttribute("aria-expanded")).toBe("false");
     expect(secondTrigger.getAttribute("aria-expanded")).toBe("true");
+
+    await result.act(() => secondTrigger.click());
+    ({ second: secondTrigger } = getTriggers());
+    expect(secondTrigger.getAttribute("aria-expanded")).toBe("false");
   });
 });

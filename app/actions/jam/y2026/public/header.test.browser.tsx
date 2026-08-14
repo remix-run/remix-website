@@ -6,52 +6,52 @@ import { routes } from "../../../../routes.ts";
 import { Jam2026Header } from "./header.tsx";
 
 describe("Jam2026Header", () => {
-  it("uses the system theme without forcing a saved theme", async (t) => {
+  it("follows system theme changes until the user chooses a theme", async (t) => {
+    protectRootTheme(t);
+    let systemTheme = createMediaQueryList(
+      "(prefers-color-scheme: dark)",
+      true,
+    );
     let originalMatchMedia = window.matchMedia;
-    let root = document.documentElement;
-
-    window.matchMedia = (query) => mediaQueryList(query, true);
-    root.dataset.theme = "light";
-    root.style.colorScheme = "light";
-
+    window.matchMedia = (query) =>
+      query === systemTheme.media
+        ? systemTheme
+        : createMediaQueryList(query, true);
     t.after(() => {
       window.matchMedia = originalMatchMedia;
-      delete root.dataset.theme;
-      root.style.colorScheme = "";
-      root.classList.remove("dark");
     });
 
     let result = render(<Jam2026Header />);
     t.after(result.cleanup);
+    await result.act(() => {});
 
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
-
-    expect(root.dataset.theme).toBe(undefined);
-    expect(root.style.colorScheme).toBe("light dark");
-    expect(root.classList.contains("dark")).toBe(true);
-    expect(result.container.querySelector("header")?.dataset.theme).toBe(
-      undefined,
-    );
+    expect(document.documentElement.classList.contains("dark")).toBe(true);
     expect(
       result.container.querySelector(
         'button[aria-label="Switch to light mode"]',
       ),
     ).not.toBe(null);
+
+    systemTheme.setMatches(false);
+    await result.act(() => systemTheme.dispatchChange());
+
+    expect(document.documentElement.classList.contains("dark")).toBe(false);
+    expect(
+      result.container.querySelector(
+        'button[aria-label="Switch to dark mode"]',
+      ),
+    ).not.toBe(null);
   });
 
-  it("toggles the page theme with one switch", async (t) => {
+  it("applies and persists an explicit theme choice", async (t) => {
+    protectRootTheme(t);
     let originalMatchMedia = window.matchMedia;
     let originalFetch = window.fetch;
-    let root = document.documentElement;
     let themeSubmission:
       | { method?: string; theme?: FormDataEntryValue | null; url: string }
       | undefined;
-    let formSubmitted = false;
-    let onSubmit = () => {
-      formSubmitted = true;
-    };
 
-    window.matchMedia = (query) => mediaQueryList(query, false);
+    window.matchMedia = (query) => createMediaQueryList(query, false);
     window.fetch = async (input, init) => {
       let body = init?.body;
       themeSubmission = {
@@ -61,49 +61,88 @@ describe("Jam2026Header", () => {
       };
       return new Response(null, { status: 204 });
     };
-    document.addEventListener("submit", onSubmit);
-
     t.after(() => {
       window.matchMedia = originalMatchMedia;
       window.fetch = originalFetch;
-      document.removeEventListener("submit", onSubmit);
-      delete root.dataset.theme;
-      root.style.colorScheme = "";
     });
 
     let result = render(<Jam2026Header initialTheme="light" />);
     t.after(result.cleanup);
-
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
-
-    expect(root.dataset.theme).toBe("light");
-    expect(root.style.colorScheme).toBe("light");
-    expect(
-      result.container.querySelectorAll('button[aria-label^="Switch to"]')
-        .length,
-    ).toBe(1);
+    await result.act(() => {});
 
     let themeSwitch = result.container.querySelector<HTMLButtonElement>(
       'button[aria-label="Switch to dark mode"]',
     )!;
-
     await result.act(() => themeSwitch.click());
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
 
-    expect(root.dataset.theme).toBe("dark");
-    expect(root.style.colorScheme).toBe("dark");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(document.documentElement.style.colorScheme).toBe("dark");
     expect(
       result.container.querySelector(
         'button[aria-label="Switch to light mode"]',
       ),
     ).not.toBe(null);
-    expect(formSubmitted).toBe(false);
-    expect(themeSubmission?.url).toBe(routes.jam.y2026.theme.href());
-    expect(themeSubmission?.method).toBe("POST");
-    expect(themeSubmission?.theme).toBe("dark");
+    expect(themeSubmission).toEqual({
+      url: routes.jam.y2026.theme.href(),
+      method: "POST",
+      theme: "dark",
+    });
   });
 });
 
-function mediaQueryList(media: string, matches: boolean) {
-  return { matches, media } as MediaQueryList;
+function protectRootTheme(t: { after(cleanup: () => void): void }) {
+  let root = document.documentElement;
+  let previousTheme = root.getAttribute("data-theme");
+  let previousColorScheme = root.style.colorScheme;
+  let wasDark = root.classList.contains("dark");
+
+  t.after(() => {
+    if (previousTheme === null) root.removeAttribute("data-theme");
+    else root.setAttribute("data-theme", previousTheme);
+    root.style.colorScheme = previousColorScheme;
+    root.classList.toggle("dark", wasDark);
+  });
+}
+
+function createMediaQueryList(media: string, initialMatches: boolean) {
+  let listeners = new Set<(event: MediaQueryListEvent) => void>();
+  let query = {
+    matches: initialMatches,
+    media,
+    onchange: null,
+    addListener(listener: (event: MediaQueryListEvent) => void) {
+      listeners.add(listener);
+    },
+    removeListener(listener: (event: MediaQueryListEvent) => void) {
+      listeners.delete(listener);
+    },
+    addEventListener(
+      _type: string,
+      listener: EventListenerOrEventListenerObject,
+    ) {
+      if (typeof listener === "function") {
+        listeners.add(listener as (event: MediaQueryListEvent) => void);
+      }
+    },
+    removeEventListener(
+      _type: string,
+      listener: EventListenerOrEventListenerObject,
+    ) {
+      if (typeof listener === "function") {
+        listeners.delete(listener as (event: MediaQueryListEvent) => void);
+      }
+    },
+    dispatchEvent: () => false,
+    setMatches(matches: boolean) {
+      query.matches = matches;
+    },
+    dispatchChange() {
+      let event = { matches: query.matches, media } as MediaQueryListEvent;
+      for (let listener of listeners) listener(event);
+    },
+  };
+  return query as MediaQueryList & {
+    setMatches(matches: boolean): void;
+    dispatchChange(): void;
+  };
 }

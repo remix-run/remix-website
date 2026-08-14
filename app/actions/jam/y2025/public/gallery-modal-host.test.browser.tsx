@@ -6,41 +6,69 @@ import { routes } from "../../../../routes.ts";
 import { JamGalleryModalHost } from "./gallery-modal-host.tsx";
 
 describe("JamGalleryModalHost", () => {
-  it("locks document scrolling while mounted", async (t) => {
-    let documentElement = document.documentElement;
-    let previousOverflow = documentElement.style.overflow;
-    let previousScrollbarGutter = documentElement.style.scrollbarGutter;
+  it("locks scroll, focuses close, and handles keyboard photo navigation", async (t) => {
+    let root = document.documentElement;
+    let previousOverflow = root.style.overflow;
+    let previousScrollbarGutter = root.style.scrollbarGutter;
+    let previousUrl = window.location.href;
+    let navigation = window.navigation;
+    let originalNavigate = navigation.navigate;
+    let navigatedTo: string | undefined;
+    let galleryHref = routes.jam.y2025.gallery.index.href();
 
+    window.history.replaceState(null, "", `${galleryHref}?photo=0`);
+    navigation.navigate = ((destination: string | URL) => {
+      navigatedTo = String(destination);
+      return {
+        committed: Promise.resolve(navigation.currentEntry),
+        finished: Promise.resolve(navigation.currentEntry),
+      } as ReturnType<typeof navigation.navigate>;
+    }) as typeof navigation.navigate;
     t.after(() => {
-      documentElement.style.overflow = previousOverflow;
-      documentElement.style.scrollbarGutter = previousScrollbarGutter;
+      navigation.navigate = originalNavigate;
+      window.history.replaceState(null, "", previousUrl);
+      root.style.overflow = previousOverflow;
+      root.style.scrollbarGutter = previousScrollbarGutter;
     });
 
     let result = render(
       <JamGalleryModalHost
-        photoCount={1}
+        photoCount={3}
         nav={{
-          closeHref: routes.jam.y2025.gallery.index.href(),
-          previousHref: `${routes.jam.y2025.gallery.index.href()}?photo=0`,
-          nextHref: `${routes.jam.y2025.gallery.index.href()}?photo=0`,
+          closeHref: galleryHref,
+          previousHref: `${galleryHref}?photo=2`,
+          nextHref: `${galleryHref}?photo=1`,
         }}
       >
-        <a href={routes.jam.y2025.gallery.index.href()}>Close modal</a>
+        <a href={galleryHref}>Close modal</a>
+        <a href={`${galleryHref}?photo=2`}>Previous photo</a>
+        <a href={`${galleryHref}?photo=1`}>Next photo</a>
       </JamGalleryModalHost>,
     );
-    let cleanedUp = false;
-    t.after(() => {
-      if (!cleanedUp) result.cleanup();
+    t.after(result.cleanup);
+
+    await result.act(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => resolve());
+        }),
+    );
+
+    expect(root.style.overflow).toBe("hidden");
+    expect(document.activeElement?.textContent).toBe("Close modal");
+
+    await result.act(() => {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          bubbles: true,
+          cancelable: true,
+          key: "ArrowRight",
+        }),
+      );
     });
-
-    await result.act(() => new Promise((resolve) => setTimeout(resolve, 0)));
-
-    expect(documentElement.style.overflow).toBe("hidden");
-
-    result.cleanup();
-    cleanedUp = true;
-
-    expect(documentElement.style.overflow).toBe(previousOverflow);
-    expect(documentElement.style.scrollbarGutter).toBe(previousScrollbarGutter);
+    let destination = new URL(navigatedTo!, window.location.origin);
+    expect(destination.pathname + destination.search).toBe(
+      `${galleryHref}?photo=1`,
+    );
   });
 });

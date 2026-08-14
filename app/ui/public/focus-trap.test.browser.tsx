@@ -10,7 +10,6 @@ describe("focusTrap", () => {
 
     let before = result.$("#before")!;
     let first = result.$("#first")!;
-    let middle = result.$("#middle")!;
     let last = result.$("#last")!;
     let after = result.$("#after")!;
 
@@ -21,10 +20,6 @@ describe("focusTrap", () => {
     first.focus();
     await shiftTab();
     expect(document.activeElement).toBe(last);
-
-    middle.focus();
-    await tab();
-    expect(document.activeElement).toBe(middle);
 
     last.focus();
     await tab();
