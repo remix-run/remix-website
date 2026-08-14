@@ -10,7 +10,12 @@ describe("Blog OG image route", () => {
     let router = createRouteTestRouter();
     router.map(routes, rootController);
 
-    let response = await router.fetch("http://localhost:3000/img/remix-v2");
+    let response = await router.fetch(
+      new URL(
+        routes.blogOgImage.href({ slug: "remix-v2" }),
+        "http://localhost:3000",
+      ),
+    );
     let body = await response.json();
 
     expect(response.status).toBe(400);
@@ -22,7 +27,10 @@ describe("Blog OG image route", () => {
     router.map(routes, rootController);
 
     let response = await router.fetch(
-      "http://localhost:3000/img/remix-v2?title=Title&date=Date&authorName=Ada&authorName=Grace&authorTitle=Engineer",
+      new URL(
+        `${routes.blogOgImage.href({ slug: "remix-v2" })}?title=Title&date=Date&authorName=Ada&authorName=Grace&authorTitle=Engineer`,
+        "http://localhost:3000",
+      ),
     );
     let body = await response.json();
 
@@ -35,7 +43,10 @@ describe("Blog OG image route", () => {
   it("parses valid query params into a typed payload", () => {
     let result = parseOgImageQuery(
       new Request(
-        "http://localhost:3000/img/remix-v2?title=Hello%20%F0%9F%91%8B&date=April%2011%2C%202026&authorName=Ada%20Lovelace&authorTitle=Engineer",
+        new URL(
+          `${routes.blogOgImage.href({ slug: "remix-v2" })}?title=Hello%20%F0%9F%91%8B&date=April%2011%2C%202026&authorName=Ada%20Lovelace&authorTitle=Engineer`,
+          "http://localhost:3000",
+        ),
       ),
     );
 

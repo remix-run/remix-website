@@ -33,7 +33,7 @@ export default createController(routes.jam.y2025, {
           description="It's time to get the band back together"
           previewImage={assetPaths.jam2025.ogThumbnail1}
           requestUrl={request.url}
-          activePath="/jam/2025"
+          activePath={routes.jam.y2025.index.href()}
         >
           <Jam2025Page eventStatus={getEventStatus()} />
         </JamDocument>,

@@ -10,7 +10,9 @@ describe("Blog route", () => {
     let router = createRouteTestRouter();
     router.map(routes.blog, blogController);
 
-    let response = await router.fetch("http://localhost:3000/blog");
+    let response = await router.fetch(
+      new URL(routes.blog.index.href(), "http://localhost:3000"),
+    );
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
@@ -47,7 +49,9 @@ describe("Blog route", () => {
     let router = createRouteTestRouter();
     router.map(routes.blog, blogController);
 
-    let response = await router.fetch("http://localhost:3000/blog");
+    let response = await router.fetch(
+      new URL(routes.blog.index.href(), "http://localhost:3000"),
+    );
     let html = await response.text();
 
     let main = html.match(/<main[^>]*>.*<\/main>/s)?.[0];

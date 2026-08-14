@@ -1,5 +1,6 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
+import { routes } from "../../routes.ts";
 import { submitNewsletterRequest } from "./newsletter-request.ts";
 
 describe("submitNewsletterRequest", () => {
@@ -15,7 +16,7 @@ describe("submitNewsletterRequest", () => {
     formData.set("email", "hello@example.com");
 
     let result = await submitNewsletterRequest({
-      action: "/_actions/newsletter",
+      action: routes.api.newsletter.href(),
       formData,
       signal: controller.signal,
       fetchImpl,
@@ -35,7 +36,7 @@ describe("submitNewsletterRequest", () => {
     formData.set("email", "hello@example.com");
 
     let result = await submitNewsletterRequest({
-      action: "/_actions/newsletter",
+      action: routes.api.newsletter.href(),
       formData,
       signal: new AbortController().signal,
       fetchImpl,

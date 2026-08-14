@@ -1,6 +1,7 @@
 import { cx } from "../../../utils/public/cx.ts";
 import type { Handle } from "remix/ui";
 import { getSchedule } from "../../../data/jam-schedule.ts";
+import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";
 import { ScrambleText, Title } from "./public/shared.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
@@ -20,7 +21,7 @@ export function Jam2025LineupPage(
       description="Schedule and Speaker Lineup for Remix Jam 2025"
       previewImage={assetPaths.jam2025.ogThumbnail1}
       requestUrl={handle.props.requestUrl}
-      activePath="/jam/2025/lineup"
+      activePath={routes.jam.y2025.lineup.href()}
       hideBackground
       showSeats
     >

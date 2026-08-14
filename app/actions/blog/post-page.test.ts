@@ -12,7 +12,12 @@ describe("Blog post route", () => {
     let router = createRouteTestRouter();
     router.map(routes.blog, blogController);
 
-    let response = await router.fetch("http://localhost:3000/blog/remix-v2");
+    let response = await router.fetch(
+      new URL(
+        routes.blog.post.href({ slug: "remix-v2" }),
+        "http://localhost:3000",
+      ),
+    );
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
@@ -37,7 +42,10 @@ describe("Blog post route", () => {
     router.map(routes.blog, blogController);
 
     let response = await router.fetch(
-      "http://localhost:3000/blog/this-slug-does-not-exist",
+      new URL(
+        routes.blog.post.href({ slug: "this-slug-does-not-exist" }),
+        "http://localhost:3000",
+      ),
     );
 
     expect(response.status).toBe(404);

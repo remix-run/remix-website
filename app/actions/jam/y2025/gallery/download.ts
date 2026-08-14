@@ -1,4 +1,4 @@
-import type { AppContext } from "../../../../middleware/render.ts";
+import type { AppContext } from "../../../../router.ts";
 import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
 import { transformShopifyImageUrl } from "../public/shared.tsx";
 import { getGalleryPhotos, getSelectedPhotoIndex } from "./controller.tsx";

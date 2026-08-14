@@ -9,7 +9,7 @@ import {
 import { animateEntrance, spring } from "remix/ui/animation";
 import { theme } from "../../../../ui/public/theme.ts";
 
-import { syncDocumentHead } from "../../../../ui/public/document-head-sync.tsx";
+import { syncDocumentHead } from "../../../../ui/public/document-head-sync.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import {
   getJam2026ClientManagedHeadTags,

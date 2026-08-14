@@ -1,4 +1,7 @@
 import * as s from "remix/data-schema";
+import { max, min } from "remix/data-schema/checks";
+import * as coerce from "remix/data-schema/coerce";
+import * as f from "remix/data-schema/form-data";
 import type { Handle } from "remix/ui";
 
 import { getProduct, MAX_QUANTITY } from "../../../../data/jam-storefront.ts";
@@ -11,6 +14,7 @@ import {
 } from "../public/shared.tsx";
 import { JamTicketCard } from "../public/ticket-card.tsx";
 import { JamTicketPurchase } from "../public/ticket-purchase.tsx";
+import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 
 export function Jam2025TicketPage(
@@ -27,7 +31,7 @@ export function Jam2025TicketPage(
       description="Get your ticket for Remix Jam 2025 in Toronto"
       previewImage={assetPaths.jam2025.ogThumbnail1}
       requestUrl={handle.props.requestUrl}
-      activePath="/jam/2025/ticket"
+      activePath={routes.jam.y2025.ticket.index.href()}
     >
       <main
         id="main-content"
@@ -74,32 +78,17 @@ export function Jam2025TicketPage(
 type Jam2025TicketProduct = Awaited<ReturnType<typeof getProduct>>;
 
 export function parseTicketPurchaseSubmission(formData: FormData) {
-  let quantity = Number.parseInt(String(formData.get("quantity") ?? "1"), 10);
-  let result = s.parseSafe(ticketPurchaseSubmissionSchema, {
-    productId: formData.get("productId"),
-    quantity,
-  });
+  let result = s.parseSafe(ticketPurchaseSubmissionSchema, formData);
   if (!result.success) {
     return { success: false as const, error: "Invalid ticket request" };
   }
 
-  if (!Number.isInteger(result.value.quantity)) {
-    return { success: false as const, error: "Invalid quantity" };
-  }
-  if (result.value.quantity < 1 || result.value.quantity > MAX_QUANTITY) {
-    return { success: false as const, error: "Invalid quantity" };
-  }
-
-  return {
-    success: true as const,
-    value: {
-      productId: result.value.productId,
-      quantity: result.value.quantity,
-    },
-  };
+  return { success: true as const, value: result.value };
 }
 
-let ticketPurchaseSubmissionSchema = s.object({
-  productId: s.string(),
-  quantity: s.number(),
+let ticketPurchaseSubmissionSchema = f.object({
+  productId: f.field(s.string()),
+  quantity: f.field(
+    coerce.number().refine(Number.isInteger).pipe(min(1), max(MAX_QUANTITY)),
+  ),
 });

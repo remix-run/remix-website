@@ -10,7 +10,9 @@ describe("home route", () => {
     let router = createRouteTestRouter();
     router.map(routes, rootController);
 
-    let response = await router.fetch("http://localhost:3000/");
+    let response = await router.fetch(
+      new URL(routes.home.href(), "http://localhost:3000"),
+    );
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");

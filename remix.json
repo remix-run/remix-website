@@ -1,0 +1,8 @@
+{
+  "test": {
+    "setup": "./test/setup.ts",
+    "playwright": {
+      "configFile": "./playwright.config.ts"
+    }
+  }
+}

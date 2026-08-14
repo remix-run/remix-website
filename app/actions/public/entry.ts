@@ -1,4 +1,5 @@
 import { run } from "remix/ui";
+import { DOCUMENT_REDIRECT_HEADER } from "./document-redirect.ts";
 import { initFathomAnalytics } from "./fathom.ts";
 
 initFathomAnalytics();
@@ -8,20 +9,11 @@ let app = run({
     let mod = await import(src);
 
     let exp = (mod as Record<string, unknown>)[exportName];
-    if (typeof exp === "function") return exp;
-
-    // Minified builds may rename exports (e.g. NewsletterSubscribeForm -> N).
-    // Fallback: find a function with clientEntry metadata.
-    for (let value of Object.values(mod as object)) {
-      if (
-        typeof value === "function" &&
-        (value as { $entry?: boolean }).$entry === true
-      ) {
-        return value;
-      }
+    if (typeof exp !== "function") {
+      throw new Error(`Export "${exportName}" from "${src}" is not a function`);
     }
 
-    throw new Error(`Export "${exportName}" from "${src}" is not a function`);
+    return exp;
   },
   async resolveFrame(src, options) {
     let headers = new Headers();
@@ -39,11 +31,13 @@ let app = run({
       ),
       signal: options?.signal,
     });
-    if (!res.ok) {
-      throw new Error(`Frame request failed: ${res.status} ${res.statusText}`);
+    let documentRedirect = res.headers.get(DOCUMENT_REDIRECT_HEADER);
+    if (documentRedirect) {
+      window.location.assign(new URL(documentRedirect, res.url).href);
+      return new Response(null);
     }
-    if (res.body) return res.body;
-    return await res.text();
+
+    return res;
   },
 });
 

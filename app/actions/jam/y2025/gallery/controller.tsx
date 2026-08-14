@@ -53,7 +53,7 @@ function renderGalleryPage({
       description="Photos from Remix Jam 2025"
       previewImage={assetPaths.jam2025.ogGallery}
       requestUrl={request.url}
-      activePath="/jam/2025/gallery"
+      activePath={routes.jam.y2025.gallery.index.href()}
       hideBackground
     >
       <main

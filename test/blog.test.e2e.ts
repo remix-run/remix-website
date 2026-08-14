@@ -3,6 +3,7 @@ import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
+import { routes } from "../app/routes.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
@@ -17,7 +18,7 @@ describe("Blog", () => {
   it("relative internal links in rendered markdown use client navigation", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/blog/faster-lazy-loading");
+    await page.goto(routes.blog.post.href({ slug: "faster-lazy-loading" }));
 
     let marker = await markPage(page);
     let link = page.locator('main a[href^="/blog/"]').first();

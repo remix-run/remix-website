@@ -2,7 +2,9 @@ import * as path from "node:path";
 import { createAssetServer } from "remix/assets";
 import { uiHmr } from "remix/ui-hmr/assets";
 
-let isDevelopment = process.env.NODE_ENV !== "production";
+let nodeEnv = process.env.NODE_ENV ?? "development";
+let isDevelopment = nodeEnv === "development";
+let isProduction = nodeEnv === "production";
 let isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
 let rootDir = path.resolve(import.meta.dirname, "../..");
 
@@ -16,18 +18,16 @@ export let assets = createAssetServer({
   allowFiles: ["app/routes.ts", "app/**/public/**"],
   allowPackages: ["remix", "three", "fathom-client"],
   denyFiles: ["app/**/*.test.*"],
-  fingerprint: isDevelopment ? undefined : { buildId: getBuildId() },
+  fingerprint: isProduction ? { buildId: getBuildId() } : undefined,
   sourceMaps: isDevelopment ? "external" : undefined,
-  minify: !isDevelopment,
+  minify: isProduction,
   hmr: isHmr
     ? async () =>
         (await import("remix/node-hmr/runtime")).createBrowserHmrChannel()
     : undefined,
   scripts: {
     define: {
-      "process.env.NODE_ENV": JSON.stringify(
-        process.env.NODE_ENV ?? "development",
-      ),
+      "process.env.NODE_ENV": JSON.stringify(nodeEnv),
     },
     loaders: isHmr ? [uiHmr()] : undefined,
   },

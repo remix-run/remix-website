@@ -16,7 +16,10 @@ if (!Number.isFinite(port) || port <= 0) {
 const hmrProxyPort = process.env.HMR_PROXY_PORT
   ? Number(process.env.HMR_PROXY_PORT)
   : null;
-if (hmrProxyPort !== null && (!Number.isFinite(hmrProxyPort) || port <= 0)) {
+if (
+  hmrProxyPort !== null &&
+  (!Number.isFinite(hmrProxyPort) || hmrProxyPort <= 0)
+) {
   throw new Error(
     `Invalid HMR_PROXY_PORT value "${process.env.HMR_PROXY_PORT ?? ""}". Expected a positive number.`,
   );
@@ -28,7 +31,9 @@ const server = http.createServer(
       try {
         return await router.fetch(request);
       } catch (error) {
-        console.error(error);
+        if (!(request.signal.aborted && error === request.signal.reason)) {
+          console.error(error);
+        }
         return new Response("Internal Server Error", { status: 500 });
       }
     },

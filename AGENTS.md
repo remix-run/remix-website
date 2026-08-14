@@ -20,7 +20,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 - Route declarations live in `app/routes.ts`; router mappings in `app/router.ts`; keep them aligned. Run `pnpm remix doctor` and make sure it reports no issues.
 - Disk layout under `app/actions/**` mirrors the route map: every route map with direct routes owns `app/actions/<key-path>/controller.tsx` (root map owns `app/actions/controller.tsx`), and route-local modules are flat files beside their controller. Do not introduce non-route directories such as `ui/` or `sections/` inside `app/actions/**`.
-- Map explicit routes before the `router.map("*", ...)` catch-all.
+- Handle unmatched requests with `createRouter({ defaultHandler })` instead of registering a wildcard route.
 - In `app/actions/**`, keep the exported controller first and helper/details below.
 - For route-local, single-use UI, keep it in the route file; extract to `app/ui/**` only when shared.
 - Browser-reachable source lives in `public/` directories inside `app/`, colocated with the narrowest owner (e.g. `app/actions/jam/y2026/public/`, `app/ui/public/`). The root browser runtime entry is `app/actions/public/entry.ts`. Keep every local dependency of a browser module in a `public/` directory; the shared `app/routes.ts` contract and `allowPackages` entries in `app/utils/assets.ts` are the only exceptions. For route-local hydrated UI in a `public/` directory, keep component/rendering code first and put styles below the components.
@@ -44,7 +44,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 1. Add/update route pattern in `app/routes.ts`.
 2. Implement the controller in `app/actions/**` at the path the route map implies.
-3. Wire mapping in `app/router.ts` before catch-all fallback.
+3. Wire mapping in `app/router.ts`; unmatched requests fall through to the router's `defaultHandler`.
 4. Add focused tests and run targeted verification (+ Remix typechecks for substantial changes).
 5. Run `pnpm run build` before shipping a PR to catch CSS/runtime regressions.
 6. If behavior changes, update the parity backlog below.

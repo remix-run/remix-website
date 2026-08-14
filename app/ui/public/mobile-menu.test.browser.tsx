@@ -2,14 +2,15 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 import { render } from "remix/ui/test";
 
+import { routes } from "../../routes.ts";
 import { MobileMenu } from "./mobile-menu.tsx";
 
 describe("MobileMenu", () => {
   it("opens, shows navigation links, and escapes back to toggle", async (t) => {
     let result = render(
       <MobileMenu>
-        <a href="/blog">Blog</a>
-        <a href="/jam">Jam</a>
+        <a href={routes.blog.index.href()}>Blog</a>
+        <a href={routes.jam.index.href()}>Jam</a>
         <a href="/store">Store</a>
       </MobileMenu>,
     );

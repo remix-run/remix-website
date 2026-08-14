@@ -1,7 +1,8 @@
 import { css, type Handle, type RemixNode } from "remix/ui";
 
-import { DocumentHeadSync } from "./public/document-head-sync.tsx";
 import { getAssetEntry } from "../middleware/asset-entry.ts";
+import { routes } from "../routes.ts";
+import { DocumentThemeSync } from "./public/document-theme-sync.tsx";
 import {
   getManagedHeadTagKey,
   type ManagedHeadTag,
@@ -36,10 +37,7 @@ interface DocumentProps {
 }
 
 /**
- * Shared document shell for Remix 3 UI routes.
- *
- * Mirrors the essential <head> setup from the React Router root
- * (app/root.tsx) so migrated pages look consistent.
+ * Shared document shell for Remix UI routes.
  *
  * Plain stylesheet assets are compiled into `public/styles`.
  * Route code links to them through `app/utils/style-hrefs.ts`.
@@ -103,7 +101,7 @@ export function Document(handle: Handle<DocumentProps>) {
           <link
             rel="alternate"
             type="application/rss+xml"
-            href="/blog/rss.xml"
+            href={routes.blog.rss.href()}
           />
 
           {managedHeadTags.map((tag, index) =>
@@ -135,16 +133,12 @@ export function Document(handle: Handle<DocumentProps>) {
           ))}
           <script type="module" async src={assetEntry.src} />
 
-          {/* Dark-mode detection (mirrors root.tsx ColorSchemeScript) */}
+          {/* Apply the system color scheme before first paint. */}
           <script innerHTML={colorSchemeScript} />
         </head>
 
         <body mix={documentBodyStyle}>
-          <DocumentHeadSync
-            title={handle.props.title}
-            forceTheme={handle.props.forceTheme}
-            headTags={managedHeadTags}
-          />
+          <DocumentThemeSync forceTheme={handle.props.forceTheme} />
           <img
             src={assetPaths.iconsSprite}
             alt=""
