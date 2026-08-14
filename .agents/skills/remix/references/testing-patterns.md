@@ -25,46 +25,48 @@ Remix tests run with `remix test`, use `remix/test` for the test framework, and 
 Treat the router as a pure `(Request) => Promise<Response>` function. Build a fresh app router per test (or per suite) so middleware state — sessions, in-memory storage, the database — stays isolated.
 
 ```ts
-import * as assert from 'remix/assert'
-import { describe, it } from 'remix/test'
+import * as assert from "remix/assert";
+import { describe, it } from "remix/test";
 
-import { createBookstoreRouter } from '../app/router.ts'
-import { routes } from '../app/routes.ts'
+import { createBookstoreRouter } from "../app/router.ts";
+import { routes } from "../app/routes.ts";
 
-describe('home', () => {
-  it('responds 200 with the home page', async () => {
-    let router = createBookstoreRouter()
-    let response = await router.fetch(new Request('http://localhost' + routes.home.href()))
+describe("home", () => {
+  it("responds 200 with the home page", async () => {
+    let router = createBookstoreRouter();
+    let response = await router.fetch(
+      new Request("http://localhost" + routes.home.href()),
+    );
 
-    assert.equal(response.status, 200)
-    assert.match(await response.text(), /Welcome to the Bookstore/)
-  })
-})
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /Welcome to the Bookstore/);
+  });
+});
 ```
 
 Use `routes.<name>.href(...)` to build URLs in tests so they stay in sync with the route definition. For form-style POSTs, attach a `FormData` body to the `Request`. For tests that need a known session, swap in `createMemorySessionStorage()` and a test cookie when constructing the router.
 
 ```ts
-import { createMemorySessionStorage } from 'remix/session-storage/memory'
-import { createCookie } from 'remix/cookie'
+import { createMemorySessionStorage } from "remix/session-storage/memory";
+import { createCookie } from "remix/cookie";
 
 let router = createBookstoreRouter({
-  sessionCookie: createCookie('session', { secrets: ['test'] }),
+  sessionCookie: createCookie("session", { secrets: ["test"] }),
   sessionStorage: createMemorySessionStorage(),
-})
+});
 ```
 
 Use `createTestServer` from `remix/node-fetch-server/test` when the behavior depends on a real HTTP origin, redirects, streaming, cookies through a network boundary, or browser-style `fetch`:
 
 ```ts
-import { createTestServer } from 'remix/node-fetch-server/test'
+import { createTestServer } from "remix/node-fetch-server/test";
 
-let server = await createTestServer((request) => router.fetch(request))
+let server = await createTestServer((request) => router.fetch(request));
 try {
-  let response = await fetch(new URL(routes.home.href(), server.baseUrl))
-  assert.equal(response.status, 200)
+  let response = await fetch(new URL(routes.home.href(), server.baseUrl));
+  assert.equal(response.status, 200);
 } finally {
-  await server.close()
+  await server.close();
 }
 ```
 
@@ -101,16 +103,16 @@ Use `render(...)` from `remix/ui/test` for most component tests. It creates a re
 ### Basic pattern
 
 ```tsx
-import * as assert from 'remix/assert'
-import { render } from 'remix/ui/test'
+import * as assert from "remix/assert";
+import { render } from "remix/ui/test";
 
-let result = render(<Counter />)
+let result = render(<Counter />);
 
-let button = result.$('button')!
-await result.act(() => button.click())
+let button = result.$("button")!;
+await result.act(() => button.click());
 
-assert.match(result.container.textContent ?? '', /1/)
-result.cleanup()
+assert.match(result.container.textContent ?? "", /1/);
+result.cleanup();
 ```
 
 ### Why act / flush
@@ -124,14 +126,14 @@ result.cleanup()
 For components with async operations in `queueTask`, use `act(...)` after each async step:
 
 ```tsx
-let result = render(<AsyncLoader />)
+let result = render(<AsyncLoader />);
 
-assert.equal(result.container.textContent, 'Loading...')
+assert.equal(result.container.textContent, "Loading...");
 
-await waitForFetch()
-await result.act(() => {})
+await waitForFetch();
+await result.act(() => {});
 
-assert.equal(result.container.textContent, 'Expected data')
+assert.equal(result.container.textContent, "Expected data");
 ```
 
 ### Component removal
@@ -139,12 +141,12 @@ assert.equal(result.container.textContent, 'Expected data')
 Use `result.cleanup()` or `root.dispose()` to remove the component tree and verify cleanup behavior:
 
 ```tsx
-let result = render(<MyComponent />)
+let result = render(<MyComponent />);
 
-assert.ok(result.$('.content'))
+assert.ok(result.$(".content"));
 
-result.cleanup()
-assert.throws(() => result.$('.content'), /cleaned up/)
+result.cleanup();
+assert.throws(() => result.$(".content"), /cleaned up/);
 ```
 
 ### Guidelines

@@ -21,18 +21,18 @@ Attaches a typed DOM event handler. The handler receives the event and an `Abort
 
 ```tsx
 <input
-  mix={on('input', async (event, signal) => {
-    let query = event.currentTarget.value
-    loading = true
-    handle.update()
+  mix={on("input", async (event, signal) => {
+    let query = event.currentTarget.value;
+    loading = true;
+    handle.update();
 
-    let response = await fetch(`/search?q=${query}`, { signal })
-    let data = await response.json()
-    if (signal.aborted) return
+    let response = await fetch(`/search?q=${query}`, { signal });
+    let data = await response.json();
+    if (signal.aborted) return;
 
-    results = data.results
-    loading = false
-    handle.update()
+    results = data.results;
+    loading = false;
+    handle.update();
   })}
 />
 ```
@@ -55,17 +55,17 @@ Applies generated class names for CSS object styles. Produces static CSS rules i
 ```tsx
 <button
   mix={css({
-    color: 'white',
-    backgroundColor: 'blue',
-    padding: '12px 24px',
-    borderRadius: '4px',
-    border: 'none',
-    cursor: 'pointer',
-    '&:hover': { backgroundColor: 'darkblue' },
-    '&:active': { transform: 'scale(0.98)' },
-    '&:disabled': { opacity: 0.5, cursor: 'not-allowed' },
-    '& .title': { fontSize: '20px', fontWeight: 'bold' },
-    '@media (max-width: 768px)': { width: '100%' },
+    color: "white",
+    backgroundColor: "blue",
+    padding: "12px 24px",
+    borderRadius: "4px",
+    border: "none",
+    cursor: "pointer",
+    "&:hover": { backgroundColor: "darkblue" },
+    "&:active": { transform: "scale(0.98)" },
+    "&:disabled": { opacity: 0.5, cursor: "not-allowed" },
+    "& .title": { fontSize: "20px", fontWeight: "bold" },
+    "@media (max-width: 768px)": { width: "100%" },
   })}
 />
 ```
@@ -77,8 +77,8 @@ Use `css(...)` for static styles, selectors, and media queries. Use `style` for 
 ```tsx
 <div
   mix={css({
-    backgroundColor: 'blue', // static
-    '&:hover': { '& .title': { color: 'blue' } }, // parent hover → child
+    backgroundColor: "blue", // static
+    "&:hover": { "& .title": { color: "blue" } }, // parent hover → child
   })}
   style={{ width: `${progress}%` }} // dynamic
 />
@@ -108,7 +108,7 @@ The `ref` callback runs once when the element is first rendered, not on every up
 Adds client-side navigation behavior to any element. Makes non-anchor elements behave like Remix navigation links:
 
 ```tsx
-<article mix={link('/courses/intro')}>
+<article mix={link("/courses/intro")}>
   <h3>Introduction</h3>
 </article>
 ```
@@ -122,7 +122,7 @@ On a native anchor, the `history` option renders the corresponding `rmx-history=
 Use native DOM events directly with `on(...)`. For buttons and links, `click` already includes keyboard activation when the element has the right semantics:
 
 ```tsx
-<button mix={on('click', () => doAction())}>Action</button>
+<button mix={on("click", () => doAction())}>Action</button>
 ```
 
 For gesture-specific behavior, compose the pointer or keyboard events the interaction actually needs:
@@ -159,7 +159,13 @@ Sets HTML attributes through the mixin system.
 Animates an element when it is inserted into the DOM. Config specifies the **starting** style:
 
 ```tsx
-<div mix={animateEntrance({ opacity: 0, transform: 'translateY(8px)', duration: 180 })} />
+<div
+  mix={animateEntrance({
+    opacity: 0,
+    transform: "translateY(8px)",
+    duration: 180,
+  })}
+/>
 ```
 
 ### `animateExit(config)`
@@ -172,11 +178,15 @@ Animates an element when it is removed. Config specifies the **ending** style. T
     <div
       key="panel"
       mix={[
-        animateEntrance({ opacity: 0, transform: 'scale(0.98)', ...spring('smooth') }),
-        animateExit({ opacity: 0, duration: 120, easing: 'ease-in' }),
+        animateEntrance({
+          opacity: 0,
+          transform: "scale(0.98)",
+          ...spring("smooth"),
+        }),
+        animateExit({ opacity: 0, duration: 120, easing: "ease-in" }),
       ]}
     />
-  )
+  );
 }
 ```
 
@@ -187,8 +197,11 @@ Animates layout changes (position/size) using FLIP-style transforms:
 ```tsx
 {
   items.map((item) => (
-    <li key={item.id} mix={animateLayout({ duration: 220, easing: 'ease-out' })} />
-  ))
+    <li
+      key={item.id}
+      mix={animateLayout({ duration: 220, easing: "ease-out" })}
+    />
+  ));
 }
 ```
 
