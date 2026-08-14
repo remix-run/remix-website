@@ -25,7 +25,7 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
       description="It's time to get the band back together"
       previewImage={assetPaths.jam2025.ogThumbnail1}
       requestUrl={handle.props.requestUrl}
-      activePath="/jam/2025/faq"
+      activePath={routes.jam.y2025.faq.href()}
     >
       <main
         id="main-content"

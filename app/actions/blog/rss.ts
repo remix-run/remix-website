@@ -1,6 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { Feed } from "feed";
 import parseFrontMatter from "front-matter";
+import { routes } from "../../routes.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 
 interface BlogRssFrontmatter {
@@ -57,7 +58,7 @@ export async function getBlogRssPosts(): Promise<BlogRssPost[]> {
 }
 
 export function buildBlogRssResponse(posts: BlogRssPost[]) {
-  let blogUrl = "https://remix.run/blog";
+  let blogUrl = new URL(routes.blog.index.href(), "https://remix.run").href;
 
   let feed = new Feed({
     id: blogUrl,
@@ -72,7 +73,10 @@ export function buildBlogRssResponse(posts: BlogRssPost[]) {
   });
 
   for (let post of posts) {
-    let postLink = `${blogUrl}/${post.slug}`;
+    let postLink = new URL(
+      routes.blog.post.href({ slug: post.slug }),
+      "https://remix.run",
+    ).href;
     feed.addItem({
       id: postLink,
       title: post.title,

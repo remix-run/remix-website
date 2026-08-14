@@ -3,6 +3,7 @@ import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
+import { routes } from "../app/routes.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
 describe("Newsletter page (/newsletter)", () => {
@@ -11,7 +12,7 @@ describe("Newsletter page (/newsletter)", () => {
     let page = await t.serve(await createTestServer(handler));
     let submittedEmail: string | null = null;
 
-    await page.route("**/_actions/newsletter", async (route) => {
+    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
       let body = new URLSearchParams(route.request().postData() ?? "");
       submittedEmail = body.get("email");
       await route.fulfill({
@@ -21,7 +22,7 @@ describe("Newsletter page (/newsletter)", () => {
       });
     });
 
-    await page.goto("/newsletter", { waitUntil: "networkidle" });
+    await page.goto(routes.newsletter.href(), { waitUntil: "networkidle" });
 
     let emailInput = page.getByPlaceholder("name@example.com");
     await expect(emailInput).toBeVisible();
@@ -37,7 +38,7 @@ describe("Newsletter page (/newsletter)", () => {
   it("shows server error UI when submission fails", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.route("**/_actions/newsletter", async (route) => {
+    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
       await route.fulfill({
         status: 500,
         contentType: "application/json",
@@ -45,7 +46,7 @@ describe("Newsletter page (/newsletter)", () => {
       });
     });
 
-    await page.goto("/newsletter", { waitUntil: "networkidle" });
+    await page.goto(routes.newsletter.href(), { waitUntil: "networkidle" });
 
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
     await page.getByPlaceholder("name@example.com").fill("hello@example.com");

@@ -23,7 +23,7 @@ describe("Remix Jam 2026 routes", () => {
   it("renders the homepage as the full Jam page with ticket frame navigation", async () => {
     let router = createJam2026TestRouter();
 
-    let response = await router.fetch("http://localhost:3000/jam/2026");
+    let response = await router.fetch(appUrl(routes.jam.y2026.index));
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
@@ -53,7 +53,9 @@ describe("Remix Jam 2026 routes", () => {
   it("does not reflect untrusted request hosts into social head tags", async () => {
     let router = createJam2026TestRouter();
 
-    let response = await router.fetch("https://example.com/jam/2026");
+    let response = await router.fetch(
+      new URL(routes.jam.y2026.index.href(), "https://example.com"),
+    );
 
     expect(response.status).toBe(200);
 
@@ -68,7 +70,7 @@ describe("Remix Jam 2026 routes", () => {
   it("renders the ticket route as the full Jam page with the ticket modal open", async () => {
     let router = createJam2026TestRouter();
 
-    let response = await router.fetch("http://localhost:3000/jam/2026/ticket");
+    let response = await router.fetch(appUrl(routes.jam.y2026.ticket.index));
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
@@ -96,7 +98,7 @@ describe("Remix Jam 2026 routes", () => {
     let cookie = await serializeJam2026ThemePreference("dark");
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026", {
+      new Request(appUrl(routes.jam.y2026.index), {
         headers: {
           cookie: cookie.split(";")[0],
         },
@@ -119,7 +121,7 @@ describe("Remix Jam 2026 routes", () => {
     formData.set("theme", "dark");
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/theme", {
+      new Request(appUrl(routes.jam.y2026.theme), {
         body: formData,
         method: "POST",
         redirect: "manual",
@@ -128,7 +130,9 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(response.status).toBe(303);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
-    expect(response.headers.get("Location")).toBe("/jam/2026");
+    expect(response.headers.get("Location")).toBe(
+      routes.jam.y2026.index.href(),
+    );
 
     let setCookie = response.headers.get("Set-Cookie");
     expect(setCookie).not.toBe(null);
@@ -147,7 +151,7 @@ describe("Remix Jam 2026 routes", () => {
     formData.set("theme", "system");
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/theme", {
+      new Request(appUrl(routes.jam.y2026.theme), {
         body: formData,
         method: "POST",
       }),
@@ -160,7 +164,7 @@ describe("Remix Jam 2026 routes", () => {
     let router = createJam2026TestRouter();
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/ticket", {
+      new Request(appUrl(routes.jam.y2026.ticket.index), {
         headers: {
           "x-remix-target": ticketModalConfig.frameName,
         },
@@ -186,7 +190,7 @@ describe("Remix Jam 2026 routes", () => {
     let router = createJam2026TestRouter();
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/ticket", {
+      new Request(appUrl(routes.jam.y2026.ticket.index), {
         headers: {
           "x-remix-ssr-frame": "true",
           "x-remix-target": ticketModalConfig.frameName,
@@ -207,7 +211,7 @@ describe("Remix Jam 2026 routes", () => {
     let router = createJam2026TestRouter();
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026", {
+      new Request(appUrl(routes.jam.y2026.index), {
         headers: {
           "x-remix-target": ticketModalConfig.frameName,
         },
@@ -234,7 +238,7 @@ describe("Remix Jam 2026 routes", () => {
     formData.set("quantity", "1");
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/ticket", {
+      new Request(appUrl(routes.jam.y2026.ticket.action), {
         body: formData,
         method: "POST",
       }),
@@ -258,7 +262,7 @@ describe("Remix Jam 2026 routes", () => {
     formData.set("quantity", "2");
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/ticket", {
+      new Request(appUrl(routes.jam.y2026.ticket.action), {
         body: formData,
         method: "POST",
         redirect: "manual",
@@ -277,7 +281,7 @@ describe("Remix Jam 2026 routes", () => {
     let router = createJam2026TestRouter();
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/ticket", {
+      new Request(appUrl(routes.jam.y2026.ticket.action), {
         body: createTicketFormData(),
         headers: { "X-Remix-Frame": "true" },
         method: "POST",
@@ -297,7 +301,7 @@ describe("Remix Jam 2026 routes", () => {
     let router = createJam2026TestRouter();
 
     let response = await router.fetch(
-      "http://localhost:3000/jam/2026/ticket?discount=partner-2026",
+      appUrl(routes.jam.y2026.ticket.index, "?discount=partner-2026"),
     );
 
     expect(response.status).toBe(200);
@@ -323,7 +327,7 @@ describe("Remix Jam 2026 routes", () => {
     let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/ticket", {
+      new Request(appUrl(routes.jam.y2026.ticket.index), {
         headers: {
           cookie: cookie.split(";")[0],
           "x-remix-target": ticketModalConfig.frameName,
@@ -345,7 +349,7 @@ describe("Remix Jam 2026 routes", () => {
     let router = createJam2026TestRouter();
 
     let response = await router.fetch(
-      "http://localhost:3000/jam/2026/ticket?discount=not%20a%20code",
+      appUrl(routes.jam.y2026.ticket.index, "?discount=not%20a%20code"),
     );
 
     expect(response.status).toBe(200);
@@ -363,7 +367,7 @@ describe("Remix Jam 2026 routes", () => {
     let cookie = await serializeJam2026DiscountCode("EXPIRED-2026");
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/ticket", {
+      new Request(appUrl(routes.jam.y2026.ticket.index), {
         headers: { cookie: cookie.split(";")[0] },
       }),
     );
@@ -384,7 +388,7 @@ describe("Remix Jam 2026 routes", () => {
     let cookie = await serializeJam2026DiscountCode("EXPIRED-2026");
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/ticket", {
+      new Request(appUrl(routes.jam.y2026.ticket.action), {
         body: createTicketFormData(),
         headers: { cookie: cookie.split(";")[0] },
         method: "POST",
@@ -405,7 +409,7 @@ describe("Remix Jam 2026 routes", () => {
     let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/jam/2026/ticket", {
+      new Request(appUrl(routes.jam.y2026.ticket.action), {
         body: createTicketFormData(),
         headers: { cookie: cookie.split(";")[0] },
         method: "POST",
@@ -418,6 +422,10 @@ describe("Remix Jam 2026 routes", () => {
     expect(requestedDiscountCodes).toEqual([["PARTNER-2026"]]);
   });
 });
+
+function appUrl(route: { href(): string }, search = "") {
+  return new URL(`${route.href()}${search}`, "http://localhost:3000");
+}
 
 function createTicketFormData() {
   let formData = new FormData();

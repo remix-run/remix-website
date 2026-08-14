@@ -59,18 +59,19 @@ let middleware = createMiddleware(
   ignoreChromeDevToolsRequest,
   staticFiles("public", {
     cacheControl: isDev ? "no-store, must-revalidate" : "public, max-age=3600",
+    index: false,
   }),
   cop(),
-  formData(),
-  asyncContext(),
-  loadAssetEntry(),
-  renderMiddleware,
   rateLimit({
     windowMs: 2 * 60 * 1000,
     max: 1000,
     skipLocalhost: shouldBypassLoopbackRateLimit,
     skip: (context) => shouldSkipRateLimit(context.url.pathname),
   }),
+  formData(),
+  asyncContext(),
+  loadAssetEntry(),
+  renderMiddleware,
   requestLogger,
 );
 

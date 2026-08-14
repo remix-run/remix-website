@@ -4,6 +4,7 @@ import { describe, it } from "remix/test";
 
 import { DOCUMENT_REDIRECT_HEADER } from "../app/actions/public/document-redirect.ts";
 import { router } from "../app/router.ts";
+import { routes } from "../app/routes.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
 async function markPage(page: Page) {
@@ -42,7 +43,7 @@ describe("Navigation", () => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ colorScheme: "dark" });
-    await page.goto("/");
+    await page.goto(routes.home.href());
     await expect(
       page.getByRole("heading", {
         name: "A web framework for building anything",
@@ -53,7 +54,7 @@ describe("Navigation", () => {
     await expectClientNavigation(
       page,
       () => page.keyboard.press("b"),
-      "**/blog",
+      `**${routes.blog.index.href()}`,
     );
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
     await expect(page.locator('html[data-theme="light"]')).toHaveCount(0);
@@ -62,7 +63,7 @@ describe("Navigation", () => {
     await expectClientNavigation(
       page,
       () => page.locator('header a[aria-label="Remix"]').first().click(),
-      "**/",
+      `**${routes.home.href()}`,
     );
 
     await expect(page.locator('html[data-theme="dark"]')).toHaveCount(1);
@@ -72,24 +73,24 @@ describe("Navigation", () => {
   it("hands enhanced document redirects back to the browser", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.route("**/_actions/newsletter", async (route) => {
+    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
       await route.fulfill({
         status: 204,
-        headers: { [DOCUMENT_REDIRECT_HEADER]: "/brand" },
+        headers: { [DOCUMENT_REDIRECT_HEADER]: routes.brand.href() },
       });
     });
-    await page.goto("/newsletter", { waitUntil: "networkidle" });
+    await page.goto(routes.newsletter.href(), { waitUntil: "networkidle" });
     await markPage(page);
 
-    await page.evaluate(() => {
+    await page.evaluate((newsletterAction) => {
       let form = document.createElement("form");
-      form.action = "/_actions/newsletter";
+      form.action = newsletterAction;
       form.method = "post";
       document.body.append(form);
       form.requestSubmit();
-    });
+    }, routes.api.newsletter.href());
 
-    await page.waitForURL("**/brand");
+    await page.waitForURL(`**${routes.brand.href()}`);
     await expect(page.locator("main")).toBeVisible();
     expect(
       await page.evaluate(
@@ -101,12 +102,12 @@ describe("Navigation", () => {
   it("Remix history page to Jam 2026 applies Jam head content", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/remix-history");
+    await page.goto(routes.remixHistory.index.href());
 
     await expectClientNavigation(
       page,
       () => page.locator('header a[href="/jam/2026"]').first().click(),
-      "**/jam/2026",
+      `**${routes.jam.y2026.index.href()}`,
     );
 
     await expect(page).toHaveTitle("Remix Jam 2026");
@@ -124,7 +125,7 @@ describe("Navigation", () => {
   it("landing nav to Jam 2026 stays client-side and Back restores the landing page", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/");
+    await page.goto(routes.home.href());
     await expectLandingNavReady(page);
 
     await expectClientNavigation(
@@ -134,7 +135,7 @@ describe("Navigation", () => {
           .locator('nav[aria-label="Primary"] a[href="/jam/2026"]')
           .first()
           .click(),
-      "**/jam/2026",
+      `**${routes.jam.y2026.index.href()}`,
     );
     await expect(page).toHaveTitle("Remix Jam 2026");
 
@@ -143,7 +144,7 @@ describe("Navigation", () => {
       async () => {
         await page.goBack();
       },
-      "**/",
+      `**${routes.home.href()}`,
     );
     await expectLandingNavReady(page);
 
@@ -151,14 +152,14 @@ describe("Navigation", () => {
     await expectClientNavigation(
       page,
       () => page.keyboard.press("b"),
-      "**/blog",
+      `**${routes.blog.index.href()}`,
     );
   });
 
   it("does not animate the landing logo from another page's scroll position", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/");
+    await page.goto(routes.home.href());
     await expectLandingNavReady(page);
 
     await expectClientNavigation(
@@ -168,7 +169,7 @@ describe("Navigation", () => {
           .locator('nav[aria-label="Primary"] a[href="/jam/2026"]')
           .first()
           .click(),
-      "**/jam/2026",
+      `**${routes.jam.y2026.index.href()}`,
     );
     await page.evaluate(() =>
       window.scrollTo(0, document.documentElement.scrollHeight),
@@ -177,7 +178,7 @@ describe("Navigation", () => {
     await expectClientNavigation(
       page,
       () => page.locator('footer a[href="/"]').first().click(),
-      "**/",
+      `**${routes.home.href()}`,
     );
 
     let maxGhostOpacity = await page.evaluate(async () => {
@@ -203,13 +204,13 @@ describe("Navigation", () => {
   it("header wordmark context menu uses client navigation for brand", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/blog");
+    await page.goto(routes.blog.index.href());
 
     let remixLink = page.locator('header a[aria-label="Remix"]').first();
     await expectClientNavigation(
       page,
       () => remixLink.click({ button: "right" }),
-      "**/brand",
+      `**${routes.brand.href()}`,
     );
 
     await expect(

@@ -3,6 +3,7 @@ import { createTestServer } from "remix/node-fetch-server/test";
 import { describe, it } from "remix/test";
 
 import { router } from "../app/router.ts";
+import { routes } from "../app/routes.ts";
 import { ticketModalConfig } from "../app/actions/jam/y2026/public/tickets-modal-contract.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
@@ -16,7 +17,7 @@ async function markPage(page: Page) {
 
 async function gotoGallery(page: Page) {
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/jam/2025/gallery");
+  await page.goto(routes.jam.y2025.gallery.index.href());
 }
 
 async function expectMarkerToStay(page: Page, marker: string) {
@@ -63,7 +64,9 @@ describe("Jam", () => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/jam/2025", { waitUntil: "networkidle" });
+    await page.goto(routes.jam.y2025.index.href(), {
+      waitUntil: "networkidle",
+    });
 
     let menu = page.locator('details:has(nav[aria-label="Mobile"])').filter({
       has: page.locator('a[href="/jam/2025/lineup"]'),
@@ -90,15 +93,15 @@ describe("Jam", () => {
   it("jam root redirects to jam 2026", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/jam");
-    await page.waitForURL("**/jam/2026");
+    await page.goto(routes.jam.index.href());
+    await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
     await expect(page.locator("main")).toBeVisible();
   });
 
   it("jam 2025 page renders", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/jam/2025");
+    await page.goto(routes.jam.y2025.index.href());
     await expect(page.locator("main")).toBeVisible();
   });
 
@@ -107,11 +110,11 @@ describe("Jam", () => {
     let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/jam/2026");
+    await page.goto(routes.jam.y2026.index.href());
 
     let marker = await markPage(page);
     await clickJam2026TicketNavLink(page);
-    await page.waitForURL("**/jam/2026/ticket");
+    await page.waitForURL(`**${routes.jam.y2026.ticket.index.href()}`);
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page).toHaveTitle("Remix Jam 2026 Tickets");
@@ -119,32 +122,32 @@ describe("Jam", () => {
     await page.locator(`[${ticketModalConfig.attributes.backdrop}]`).click({
       position: { x: 8, y: 8 },
     });
-    await page.waitForURL("**/jam/2026");
+    await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(page).toHaveTitle("Remix Jam 2026");
 
     await clickJam2026TicketNavLink(page);
-    await page.waitForURL("**/jam/2026/ticket");
+    await page.waitForURL(`**${routes.jam.y2026.ticket.index.href()}`);
     await expect(page.getByRole("dialog")).toBeVisible();
 
     await page.keyboard.press("Escape");
-    await page.waitForURL("**/jam/2026");
+    await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(page).toHaveTitle("Remix Jam 2026");
 
     await clickJam2026TicketNavLink(page);
-    await page.waitForURL("**/jam/2026/ticket");
+    await page.waitForURL(`**${routes.jam.y2026.ticket.index.href()}`);
     await expect(page.getByRole("dialog")).toBeVisible();
 
     await page.goBack();
-    await page.waitForURL("**/jam/2026");
+    await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toHaveCount(0);
 
     await clickJam2026TicketNavLink(page);
-    await page.waitForURL("**/jam/2026/ticket");
+    await page.waitForURL(`**${routes.jam.y2026.ticket.index.href()}`);
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toBeVisible();
   });
@@ -153,7 +156,7 @@ describe("Jam", () => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/jam/2026");
+    await page.goto(routes.jam.y2026.index.href());
 
     let overflow = await page.evaluate(() => {
       return (
@@ -170,7 +173,7 @@ describe("Jam", () => {
   it("jam 2025 after-event badge shows rewind icon", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/jam/2025");
+    await page.goto(routes.jam.y2025.index.href());
 
     let heading = page.getByRole("heading", { level: 1 });
     await expect(heading).toBeVisible();
@@ -183,7 +186,7 @@ describe("Jam", () => {
     let page = await t.serve(await createTestServer(handler));
     let submittedEmail: string | null = null;
     let submittedTag: string | null = null;
-    await page.route("**/_actions/newsletter", async (route) => {
+    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
       let submittedBody = new URLSearchParams(route.request().postData() ?? "");
       submittedEmail = submittedBody.get("email");
       submittedTag = submittedBody.get("tag");
@@ -194,7 +197,9 @@ describe("Jam", () => {
       });
     });
 
-    await page.goto("/jam/2025", { waitUntil: "networkidle" });
+    await page.goto(routes.jam.y2025.index.href(), {
+      waitUntil: "networkidle",
+    });
 
     let emailInput = page.getByPlaceholder("your@email.com");
     await emailInput.fill("hello@example.com");
@@ -209,12 +214,12 @@ describe("Jam", () => {
   it("jam info navigation stays client-side without a full reload", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.goto("/jam/2025");
+    await page.goto(routes.jam.y2025.index.href());
 
     let marker = await markPage(page);
     await page.getByRole("link", { name: "Schedule & Lineup" }).first().click();
 
-    await page.waitForURL("**/jam/2025/lineup");
+    await page.waitForURL(`**${routes.jam.y2025.lineup.href()}`);
     await expect(page).toHaveTitle(/Schedule and Lineup/i);
     await expect(page.getByText("Oct 10 2025", { exact: true })).toBeVisible();
     await expect
@@ -227,7 +232,7 @@ describe("Jam", () => {
 
     await page.getByRole("link", { name: "FAQ" }).first().click();
 
-    await page.waitForURL("**/jam/2025/faq");
+    await page.waitForURL(`**${routes.jam.y2025.faq.href()}`);
     await expect(page).toHaveTitle(/FAQ/i);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(

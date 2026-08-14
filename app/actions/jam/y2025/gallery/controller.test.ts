@@ -14,7 +14,10 @@ describe("Jam 2025 gallery route", () => {
     router.map(routes.jam.y2025.gallery, jam2025GalleryController);
 
     let galleryResponse = await router.fetch(
-      "http://localhost:3000/jam/2025/gallery?photo=0",
+      new URL(
+        `${routes.jam.y2025.gallery.index.href()}?photo=0`,
+        "http://localhost:3000",
+      ),
     );
 
     expect(galleryResponse.status).toBe(200);
@@ -24,7 +27,10 @@ describe("Jam 2025 gallery route", () => {
     expect(html).toContain('download="remix-jam-2025-photo-1.jpg"');
 
     let downloadResponse = await router.fetch(
-      "http://localhost:3000/jam/2025/gallery/download?photo=0",
+      new URL(
+        `${routes.jam.y2025.gallery.download.href()}?photo=0`,
+        "http://localhost:3000",
+      ),
     );
 
     expect(downloadResponse.status).toBe(200);

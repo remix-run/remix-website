@@ -1,6 +1,7 @@
 import { css, type Handle, type RemixNode } from "remix/ui";
 
 import { getAssetEntry } from "../middleware/asset-entry.ts";
+import { routes } from "../routes.ts";
 import { DocumentThemeSync } from "./public/document-theme-sync.tsx";
 import {
   getManagedHeadTagKey,
@@ -100,7 +101,7 @@ export function Document(handle: Handle<DocumentProps>) {
           <link
             rel="alternate"
             type="application/rss+xml"
-            href="/blog/rss.xml"
+            href={routes.blog.rss.href()}
           />
 
           {managedHeadTags.map((tag, index) =>

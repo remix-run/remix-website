@@ -2,10 +2,13 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 
 import { router } from "./router.ts";
+import { routes } from "./routes.ts";
 
 describe("app router", () => {
   it("serves the healthcheck route", async () => {
-    let response = await router.fetch("http://localhost/healthcheck");
+    let response = await router.fetch(
+      new URL(routes.healthcheck.href(), "http://localhost"),
+    );
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe(
@@ -16,7 +19,9 @@ describe("app router", () => {
   });
 
   it("serves the blog RSS route", async () => {
-    let response = await router.fetch("http://localhost/blog/rss.xml");
+    let response = await router.fetch(
+      new URL(routes.blog.rss.href(), "http://localhost"),
+    );
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("application/xml");
@@ -28,12 +33,15 @@ describe("app router", () => {
   });
 
   it("redirects the Jam index to the 2026 archive", async () => {
-    let response = await router.fetch("http://localhost/jam", {
-      redirect: "manual",
-    });
+    let response = await router.fetch(
+      new URL(routes.jam.index.href(), "http://localhost"),
+      { redirect: "manual" },
+    );
 
     expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).toBe("/jam/2026");
+    expect(response.headers.get("Location")).toBe(
+      routes.jam.y2026.index.href(),
+    );
   });
 
   it("renders the branded fallback for unmatched routes", async () => {
@@ -51,7 +59,7 @@ describe("app router", () => {
     formData.set("theme", "dark");
 
     let response = await router.fetch(
-      new Request("http://localhost/jam/2026/theme", {
+      new Request(new URL(routes.jam.y2026.theme.href(), "http://localhost"), {
         body: formData,
         headers: {
           "Sec-Fetch-Site": "same-origin",
@@ -72,7 +80,7 @@ describe("app router", () => {
     formData.set("theme", "dark");
 
     let response = await router.fetch(
-      new Request("http://localhost/jam/2026/theme", {
+      new Request(new URL(routes.jam.y2026.theme.href(), "http://localhost"), {
         body: formData,
         method: "POST",
         redirect: "manual",
@@ -87,7 +95,7 @@ describe("app router", () => {
     formData.set("theme", "dark");
 
     let response = await router.fetch(
-      new Request("http://localhost/jam/2026/theme", {
+      new Request(new URL(routes.jam.y2026.theme.href(), "http://localhost"), {
         body: formData,
         headers: {
           "Sec-Fetch-Site": "cross-site",
@@ -104,7 +112,7 @@ describe("app router", () => {
     formData.set("theme", "dark");
 
     let response = await router.fetch(
-      new Request("http://localhost/jam/2026/theme", {
+      new Request(new URL(routes.jam.y2026.theme.href(), "http://localhost"), {
         body: formData,
         headers: {
           Origin: "https://example.com",

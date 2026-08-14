@@ -260,7 +260,7 @@ function Footer(handle: Handle<{ showSeats: boolean; className?: string }>) {
       >
         <div class="flex items-center gap-5">
           <a
-            href="/"
+            href={routes.home.href()}
             class={cx(
               "rounded-3xl border px-4 py-1 uppercase text-white",
               handle.props.showSeats

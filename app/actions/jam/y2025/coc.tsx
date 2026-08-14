@@ -1,5 +1,6 @@
 import type { Handle } from "remix/ui";
 
+import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";
 import { Paragraph, ScrambleText, Subheader, Title } from "./public/shared.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
@@ -11,7 +12,7 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
       description="Adapted from confcodeofconduct.com"
       previewImage={assetPaths.jam2025.ogThumbnail1}
       requestUrl={handle.props.requestUrl}
-      activePath="/jam/2025/coc"
+      activePath={routes.jam.y2025.coc.href()}
     >
       <main
         id="main-content"
