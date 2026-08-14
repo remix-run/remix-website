@@ -1,10 +1,9 @@
-import { Renderer, renderWith } from "remix/middleware/render";
-import type { ContextWithEntries, RequestContext } from "remix/router";
+import { renderWith } from "remix/middleware/render";
+import type { RequestContext } from "remix/router";
 import { createHtmlResponse } from "remix/response/html";
 import type { RemixNode } from "remix/ui";
 import { renderToStream, type ResolveFrameContext } from "remix/ui/server";
 
-import type { AssetEntryContextEntry } from "./asset-entry.ts";
 import { assets } from "../utils/assets.ts";
 
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -13,37 +12,11 @@ export interface AppRenderer {
   (node: RemixNode, init?: ResponseInit): Response;
 }
 
-type FormDataContextEntry = {
-  key: typeof FormData;
-  value: FormData;
-  property: "formData";
-};
-
-type RendererContextEntry = {
-  key: typeof Renderer;
-  value: AppRenderer;
-  property: "render";
-};
-
-export type AppContext = ContextWithEntries<
-  RequestContext,
-  [FormDataContextEntry, AssetEntryContextEntry, RendererContextEntry]
->;
-
-declare module "remix/router" {
-  interface RouterTypes {
-    context: AppContext;
-  }
-}
-
 /**
  * Installs `context.render(node, init)` for the current request.
  *
- * This mirrors the conventional `render({ assets })` middleware proposed in
- * remix-run/remix#11607 so it can be swapped for the framework version when it
- * ships. One app-specific behavior is layered on top: server-resolved frame
- * requests also carry `X-Remix-Ssr-Frame: true`, which routes use to skip
- * entrance animations for frames rendered during SSR.
+ * Server-resolved frame requests also carry `X-Remix-Ssr-Frame: true`, which
+ * routes use to skip entrance animations for frames rendered during SSR.
  */
 export let renderMiddleware = renderWith(
   (context): AppRenderer =>

@@ -36,6 +36,16 @@ describe("app router", () => {
     expect(response.headers.get("Location")).toBe("/jam/2026");
   });
 
+  it("renders the branded fallback for unmatched routes", async () => {
+    let response = await router.fetch("http://localhost/not-a-route");
+
+    expect(response.status).toBe(404);
+    expect(response.headers.get("Content-Type")?.toLowerCase()).toBe(
+      "text/html; charset=utf-8",
+    );
+    expect(await response.text()).toMatch(/<main[ >]/);
+  });
+
   it("allows same-origin browser form posts", async () => {
     let formData = new FormData();
     formData.set("theme", "dark");

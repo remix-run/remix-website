@@ -1,51 +1,17 @@
-import { clientEntry, type Handle } from "remix/ui";
 import {
   syncManagedHeadTags,
   syncTitle,
   type ManagedHeadTag,
 } from "./document-head.ts";
 
-export type DocumentHeadSyncProps = {
+type DocumentHead = {
   title?: string;
   forceTheme?: "dark" | "light";
   headTags: ManagedHeadTag[];
 };
 
-export let DocumentHeadSync = clientEntry(
-  import.meta.url,
-  function DocumentHeadSync(handle: Handle<DocumentHeadSyncProps>) {
-    let latestProps: DocumentHeadSyncProps | null = null;
-    let isQueued = false;
-
-    let sync = () => {
-      isQueued = false;
-      if (!latestProps) return;
-
-      syncDocumentHead(latestProps);
-    };
-
-    handle.signal.addEventListener(
-      "abort",
-      () => {
-        latestProps = null;
-        isQueued = false;
-      },
-      { once: true },
-    );
-
-    return () => {
-      latestProps = handle.props;
-      if (!isQueued) {
-        isQueued = true;
-        handle.queueTask(sync);
-      }
-      return null;
-    };
-  },
-);
-
 export function syncDocumentHead(
-  props: DocumentHeadSyncProps,
+  props: DocumentHead,
   options: { syncTheme?: boolean } = {},
 ) {
   syncTitle(props.title);

@@ -2,7 +2,7 @@ import { addEventListeners, clientEntry, css, on, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
 import { theme } from "../../../../ui/public/theme.ts";
 
-import { syncDocumentTheme } from "../../../../ui/public/document-head-sync.tsx";
+import { syncDocumentTheme } from "../../../../ui/public/document-head-sync.ts";
 import { Jam2026Countdown } from "./countdown.tsx";
 import { jamTheme, type Jam2026ThemeMode } from "./theme.ts";
 import { ticketModalConfig } from "./tickets-modal-contract.ts";

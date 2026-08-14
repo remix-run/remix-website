@@ -162,10 +162,6 @@ const NAV_ITEMS = [
 
 type NavItem = (typeof NAV_ITEMS)[number];
 
-function isModifiedClick(event: MouseEvent) {
-  return event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
-}
-
 function openNavItem(item: NavItem) {
   if (item.external) {
     window.location.assign(item.href);
@@ -173,22 +169,6 @@ function openNavItem(item: NavItem) {
   }
 
   void navigate(item.href);
-}
-
-function navItemClick(item: NavItem, afterClick?: () => void) {
-  return on<HTMLAnchorElement>("click", (event) => {
-    if (
-      !item.external &&
-      event instanceof MouseEvent &&
-      event.button === 0 &&
-      !isModifiedClick(event)
-    ) {
-      event.preventDefault();
-      void navigate(item.href);
-    }
-
-    afterClick?.();
-  });
 }
 
 export function LandingNav(
@@ -283,11 +263,7 @@ export function LandingNav(
         </span>
         <nav mix={[desktopNavStyles]} aria-label="Primary">
           {NAV_ITEMS.map((item) => (
-            <a
-              key={item.key}
-              href={item.href}
-              mix={[navItemStyles, navItemClick(item)]}
-            >
+            <a key={item.key} href={item.href} mix={navItemStyles}>
               [{item.key}] {item.label}
             </a>
           ))}
@@ -337,7 +313,7 @@ export function LandingNav(
                   mix={[
                     navItemStyles,
                     mobileMenuItemStyles,
-                    navItemClick(item, () => setMenuOpen(false)),
+                    on<HTMLAnchorElement>("click", () => setMenuOpen(false)),
                   ]}
                 >
                   {item.label}

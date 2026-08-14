@@ -1,14 +1,19 @@
 import { asyncContext } from "remix/middleware/async-context";
 import { compression } from "remix/middleware/compression";
 import { cop } from "remix/middleware/cop";
-import { createRouter, type Middleware } from "remix/router";
+import {
+  createMiddleware,
+  createRouter,
+  type Middleware,
+  type MiddlewareContext,
+} from "remix/router";
 import { formData } from "remix/middleware/form-data";
 import { logger } from "remix/middleware/logger";
 import { staticFiles } from "remix/middleware/static";
 
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
-import { renderMiddleware, type AppContext } from "./middleware/render.ts";
+import { renderMiddleware } from "./middleware/render.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes.ts";
 
@@ -36,74 +41,63 @@ function shouldSkipRateLimit(pathname: string) {
   );
 }
 
-function createAppRouter() {
-  let middleware = [];
-
-  middleware.push(compression());
-
-  if (isDev) {
-    let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
-      if (
-        context.request.method === "GET" &&
-        context.url.pathname ===
-          "/.well-known/appspecific/com.chrome.devtools.json"
-      ) {
-        return new Response(null, { status: 204 });
-      }
-      return next();
-    };
-
-    middleware.push(ignoreChromeDevToolsRequest);
+let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
+  if (
+    isDev &&
+    context.request.method === "GET" &&
+    context.url.pathname === "/.well-known/appspecific/com.chrome.devtools.json"
+  ) {
+    return new Response(null, { status: 204 });
   }
+  return next();
+};
 
-  middleware.push(
-    staticFiles("public", {
-      cacheControl: isDev
-        ? "no-store, must-revalidate"
-        : "public, max-age=3600",
-    }),
-  );
+let requestLogger = isTest ? logger({ log() {} }) : logger();
 
-  middleware.push(cop());
-  middleware.push(formData());
-  middleware.push(asyncContext());
-  middleware.push(loadAssetEntry());
-  middleware.push(renderMiddleware);
-  middleware.push(
-    rateLimit({
-      windowMs: 2 * 60 * 1000,
-      max: 1000,
-      skipLocalhost: shouldBypassLoopbackRateLimit,
-      skip: (context) => shouldSkipRateLimit(context.url.pathname),
-    }),
-  );
-  if (!isTest) {
-    middleware.push(logger());
+let middleware = createMiddleware(
+  compression(),
+  ignoreChromeDevToolsRequest,
+  staticFiles("public", {
+    cacheControl: isDev ? "no-store, must-revalidate" : "public, max-age=3600",
+  }),
+  cop(),
+  formData(),
+  asyncContext(),
+  loadAssetEntry(),
+  renderMiddleware,
+  rateLimit({
+    windowMs: 2 * 60 * 1000,
+    max: 1000,
+    skipLocalhost: shouldBypassLoopbackRateLimit,
+    skip: (context) => shouldSkipRateLimit(context.url.pathname),
+  }),
+  requestLogger,
+);
+
+export type AppContext = MiddlewareContext<typeof middleware>;
+
+declare module "remix/router" {
+  interface RouterTypes {
+    context: AppContext;
   }
-
-  let router = createRouter<AppContext>({ middleware });
-
-  router.map(routes, rootController);
-  router.map(routes.api, apiController);
-  router.map(routes.blog, blogController);
-  router.map(routes.remixHistory, remixHistoryController);
-  router.map(routes.jam, jamController);
-  router.map(routes.jam.y2025, jam2025Controller);
-  router.map(routes.jam.y2025.gallery, jam2025GalleryController);
-  router.map(routes.jam.y2025.ticket, jam2025TicketController);
-  router.map(routes.jam.y2026, jam2026Controller);
-  router.map(routes.jam.y2026.ticket, jam2026TicketController);
-
-  // Redirects from _redirects (must be before * catchall)
-  let redirects = loadRedirectsFromFile();
-  let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
-
-  router.map(redirectRoutes, redirectController);
-
-  // All remaining requests are handled by Remix catch-all.
-  router.map("*", catchallHandler);
-
-  return router;
 }
 
-export let router = createAppRouter();
+export let router = createRouter({
+  middleware,
+  defaultHandler: catchallHandler,
+});
+
+router.map(routes, rootController);
+router.map(routes.api, apiController);
+router.map(routes.blog, blogController);
+router.map(routes.remixHistory, remixHistoryController);
+router.map(routes.jam, jamController);
+router.map(routes.jam.y2025, jam2025Controller);
+router.map(routes.jam.y2025.gallery, jam2025GalleryController);
+router.map(routes.jam.y2025.ticket, jam2025TicketController);
+router.map(routes.jam.y2026, jam2026Controller);
+router.map(routes.jam.y2026.ticket, jam2026TicketController);
+
+let redirects = loadRedirectsFromFile();
+let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);
+router.map(redirectRoutes, redirectController);
