@@ -6,7 +6,10 @@ import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import { ticketModalConfig } from "../app/actions/jam/y2026/public/tickets-modal-contract.ts";
 import { env } from "../app/utils/env.ts";
-import { swallowAbortErrors } from "../test/setup.ts";
+import {
+  swallowAbortErrors,
+  waitForClientEntryHydration,
+} from "../test/setup.ts";
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -134,6 +137,10 @@ describe("Jam", () => {
     });
 
     await page.goto(routes.jam.y2025.index.href());
+    await waitForClientEntryHydration(
+      page,
+      `form[action="${routes.api.newsletter.href()}"]`,
+    );
 
     let emailInput = page.getByPlaceholder("your@email.com");
     await emailInput.fill("hello@example.com");

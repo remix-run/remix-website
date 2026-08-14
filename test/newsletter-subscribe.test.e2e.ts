@@ -4,16 +4,16 @@ import { describe, it } from "remix/test";
 
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
-import { swallowAbortErrors } from "../test/setup.ts";
+import {
+  swallowAbortErrors,
+  waitForClientEntryHydration,
+} from "../test/setup.ts";
 
-async function waitForNewsletterHydration(
-  page: import("@playwright/test").Page,
-) {
-  await page.waitForFunction((action) => {
-    let form = document.querySelector(`form[action="${action}"]`);
-    let marker = form?.previousSibling;
-    return marker instanceof Comment && "$rmx" in marker;
-  }, routes.api.newsletter.href());
+function waitForNewsletterHydration(page: import("@playwright/test").Page) {
+  return waitForClientEntryHydration(
+    page,
+    `form[action="${routes.api.newsletter.href()}"]`,
+  );
 }
 
 describe("Newsletter page (/newsletter)", () => {
