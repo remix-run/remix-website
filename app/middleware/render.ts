@@ -200,12 +200,16 @@ async function resolveClientEntry(
     );
   }
 
-  return {
-    href: sourceId.startsWith("file:")
-      ? await assets.getHref(sourceId)
-      : sourceId,
-    exportName,
-  };
+  if (!sourceId.startsWith("file:")) {
+    return { href: sourceId, exportName };
+  }
+
+  let [href, preloads] = await Promise.all([
+    assets.getHref(sourceId),
+    assets.getPreloads(sourceId),
+  ]);
+
+  return { href, exportName, preloads };
 }
 
 function escapeHtml(value: string) {
