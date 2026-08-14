@@ -47,7 +47,7 @@
     "remark-gfm": "4.0.1",
     "remark-parse": "11.0.0",
     "remark-rehype": "11.1.2",
-    "remix": "github:remix-run/remix#preview/main&path:packages/remix",
+    "remix": "3.0.0-beta.6",
     "satori": "0.26.0",
     "semver": "7.7.4",
     "shiki": "0.14.7",
@@ -82,7 +82,8 @@
   "packageManager": "pnpm@10.30.1",
   "pnpm": {
     "overrides": {
-      "svgo": "3.3.3"
+      "svgo": "3.3.3",
+      "@remix-run/fetch-router": "0.21.0"
     }
   }
 }
