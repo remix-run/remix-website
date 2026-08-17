@@ -21,6 +21,14 @@ describe("app router", () => {
       "text/plain; charset=utf-8",
     );
     expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
+    expect(response.headers.get("Referrer-Policy")).toBe(
+      "strict-origin-when-cross-origin",
+    );
+    expect(response.headers.get("Permissions-Policy")).toBe(
+      "camera=(), geolocation=(), microphone=()",
+    );
+    expect(response.headers.has("Strict-Transport-Security")).toBe(false);
     expect(await response.text()).toBe("OK");
   });
 

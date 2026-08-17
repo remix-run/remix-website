@@ -14,6 +14,7 @@ import { staticFiles } from "remix/middleware/static";
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
 import { renderMiddleware } from "./middleware/render.ts";
+import { securityHeaders } from "./middleware/security-headers.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes.ts";
 
@@ -54,6 +55,7 @@ let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
 
 function createAppMiddleware() {
   return createMiddleware(
+    securityHeaders(),
     compression(),
     ignoreChromeDevToolsRequest,
     staticFiles("public", {
