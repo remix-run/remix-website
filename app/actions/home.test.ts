@@ -25,5 +25,16 @@ describe("home route", () => {
     expect(html).toContain(
       '<source media="(prefers-reduced-motion: reduce)" srcset="/landing/remix-runner-static.png" type="image/png"',
     );
+
+    let stylesheetHrefs: string[] = [];
+    for (let match of html.matchAll(
+      /<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g,
+    )) {
+      stylesheetHrefs.push(match[1]!);
+    }
+    expect(stylesheetHrefs).toEqual([
+      "/assets/app/styles/public/global.css",
+      "/assets/app/styles/public/home.css",
+    ]);
   });
 });

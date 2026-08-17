@@ -8,8 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm run build:css && pnpm run typecheck",
-    "build:analyze": "pnpm run build",
-    "build:css": "postcss app/styles/global.css app/styles/app.css app/styles/home.css app/styles/md.css app/styles/jam-2025.css --dir public/styles",
+    "build:css": "rm -rf public/styles app/styles/public && postcss app/styles/global.css app/styles/app.css app/styles/home.css app/styles/md.css app/styles/jam-2025.css --dir app/styles/public",
     "dev": "concurrently -k --names css,app \"pnpm run dev:css\" \"pnpm run dev:server\"",
     "hmr": "concurrently -k --names css,app \"pnpm run dev:css\" \"pnpm run dev:server:hmr\"",
     "dev:css": "pnpm run build:css --watch",
@@ -20,7 +19,7 @@
     "push:stage": "git tag -f stage && git push origin stage -f",
     "browser": "playwright-cli",
     "start": "cross-env NODE_ENV=production node --import remix/node-tsx server.ts",
-    "preview": "cross-env NODE_ENV=production ASSET_BUILD_ID=local-preview node --env-file=.env --import remix/node-tsx server.ts",
+    "preview": "pnpm run build && cross-env NODE_ENV=production ASSET_BUILD_ID=local-preview node --import remix/node-tsx server.ts",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "pretest": "pnpm run build:css",

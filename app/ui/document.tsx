@@ -1,6 +1,9 @@
 import { css, type Handle, type RemixNode } from "remix/ui";
 
-import { getAssetEntry } from "../middleware/asset-entry.ts";
+import {
+  getAssetEntry,
+  type StylesheetName,
+} from "../middleware/asset-entry.ts";
 import { routes } from "../routes.ts";
 import { DocumentThemeSync } from "./public/document-theme-sync.tsx";
 import {
@@ -8,7 +11,6 @@ import {
   type ManagedHeadTag,
 } from "./public/document-head.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
-import { styleHrefs } from "../utils/public/style-hrefs.ts";
 import { theme } from "./public/theme.ts";
 
 let colorSchemeScript = `
@@ -32,49 +34,61 @@ interface DocumentProps {
   noIndex?: boolean;
   forceTheme?: "dark" | "light";
   headTags?: ManagedHeadTag[];
-  stylesheets?: string[];
+  stylesheets?: StylesheetName[];
   children?: RemixNode;
 }
 
 /**
  * Shared document shell for Remix UI routes.
  *
- * Plain stylesheet assets are compiled into `public/styles`.
- * Route code links to them through `app/utils/style-hrefs.ts`.
+ * PostCSS generates stylesheet sources that are served by `remix/assets`.
  */
 export function Document(handle: Handle<DocumentProps>) {
   return () => {
+    let {
+      title,
+      description,
+      noIndex = false,
+      forceTheme,
+      headTags = [],
+      stylesheets: requestedStylesheets = [],
+      children,
+    } = handle.props;
     let assetEntry = getAssetEntry();
-    let stylesheets = [
-      ...new Set([styleHrefs.global, ...(handle.props.stylesheets ?? [])]),
-    ];
+    let stylesheetNames = new Set<StylesheetName>(["global"]);
+    for (let name of requestedStylesheets) stylesheetNames.add(name);
 
-    let managedHeadTags: ManagedHeadTag[] = [
-      ...(handle.props.noIndex
-        ? [{ kind: "meta" as const, name: "robots", content: "noindex" }]
-        : []),
-      ...(handle.props.description
-        ? [
-            {
-              kind: "meta" as const,
-              name: "description",
-              content: handle.props.description,
-            },
-          ]
-        : []),
-      ...stylesheets.map((href) => ({
-        kind: "link" as const,
-        rel: "stylesheet",
-        href,
-      })),
-      ...(handle.props.headTags ?? []),
-    ];
+    let stylesheets = Array.from(
+      stylesheetNames,
+      (name) => assetEntry.stylesheets[name],
+    );
+
+    let managedHeadTags: ManagedHeadTag[] = [];
+    if (noIndex) {
+      managedHeadTags.push({
+        kind: "meta",
+        name: "robots",
+        content: "noindex",
+      });
+    }
+    if (description) {
+      managedHeadTags.push({
+        kind: "meta",
+        name: "description",
+        content: description,
+      });
+    }
+    for (let { href } of stylesheets) {
+      managedHeadTags.push({ kind: "link", rel: "stylesheet", href });
+    }
+    managedHeadTags.push(...headTags);
+
     return (
       <html
         lang="en"
-        data-theme={handle.props.forceTheme ?? undefined}
-        class={handle.props.forceTheme === "dark" ? "dark" : undefined}
-        style={{ colorScheme: handle.props.forceTheme ?? "light dark" }}
+        data-theme={forceTheme}
+        class={forceTheme === "dark" ? "dark" : undefined}
+        style={{ colorScheme: forceTheme ?? "light dark" }}
       >
         <head>
           <meta charset="utf-8" />
@@ -83,7 +97,7 @@ export function Document(handle: Handle<DocumentProps>) {
             content="width=device-width,initial-scale=1,viewport-fit=cover"
           />
           <meta name="theme-color" content="#121212" />
-          {handle.props.title ? <title>{handle.props.title}</title> : null}
+          {title ? <title>{title}</title> : null}
 
           <link rel="icon" href="/favicon.ico" sizes="32x32" />
           <link
@@ -93,7 +107,7 @@ export function Document(handle: Handle<DocumentProps>) {
             sizes="any"
           />
 
-          {Object.values(styleHrefs).map((href) => (
+          {stylesheets.map(({ href }) => (
             <link key={href} rel="preload" as="style" href={href} />
           ))}
 
@@ -138,7 +152,7 @@ export function Document(handle: Handle<DocumentProps>) {
         </head>
 
         <body mix={documentBodyStyle}>
-          <DocumentThemeSync forceTheme={handle.props.forceTheme} />
+          <DocumentThemeSync forceTheme={forceTheme} />
           <img
             src={assetPaths.iconsSprite}
             alt=""
@@ -148,7 +162,7 @@ export function Document(handle: Handle<DocumentProps>) {
             // Preload icons sprite so <use href> references resolve.
             fetchpriority="high"
           />
-          {handle.props.children}
+          {children}
         </body>
       </html>
     );

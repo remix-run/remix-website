@@ -5,7 +5,6 @@ import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { BlogLightbox } from "./public/blog-lightbox.tsx";
 import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
-import { styleHrefs } from "../../utils/public/style-hrefs.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
 import type { getBlogPost } from "../../data/blog.ts";
@@ -30,7 +29,7 @@ export function BlogPostPage(
     <Document
       title={`${handle.props.post.title} | Remix`}
       description={handle.props.post.summary}
-      stylesheets={[styleHrefs.app, styleHrefs.md]}
+      stylesheets={["app", "md"]}
       headTags={[
         {
           kind: "link",

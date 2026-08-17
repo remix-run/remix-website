@@ -1,7 +1,6 @@
 import type { ManagedHeadTag } from "../../../../ui/public/document-head.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { createSocialHeadTags } from "../../../../utils/public/social-head-tags.ts";
-import { styleHrefs } from "../../../../utils/public/style-hrefs.ts";
 import { routes } from "../../../../routes.ts";
 
 type Jam2026HeadContentProps = {
@@ -61,13 +60,28 @@ export function getJam2026ClientManagedHeadTags(head: {
 
   return [
     { kind: "meta", name: "description", content: head.description },
-    { kind: "link", rel: "stylesheet", href: styleHrefs.global },
+    ...getCurrentStylesheetTags(),
     ...buildJam2026HeadTags({
       ...head,
       pageUrl,
       imageUrl,
     }),
   ] satisfies ManagedHeadTag[];
+}
+
+function getCurrentStylesheetTags(): ManagedHeadTag[] {
+  if (typeof document === "undefined") return [];
+
+  return Array.from(
+    document.head.querySelectorAll<HTMLLinkElement>(
+      'link[data-remix-managed-head="true"][rel="stylesheet"]',
+    ),
+    (link) => ({
+      kind: "link" as const,
+      rel: "stylesheet",
+      href: link.getAttribute("href") ?? link.href,
+    }),
+  );
 }
 
 export function getJam2026ServerHeadTags(props: {

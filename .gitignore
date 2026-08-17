@@ -3,6 +3,7 @@ node_modules
 /build
 /.coverage
 /public/styles
+/app/styles/public
 /.env
 
 /NOTES.md

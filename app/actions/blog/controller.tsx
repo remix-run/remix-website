@@ -9,7 +9,6 @@ import { routes } from "../../routes.ts";
 import { getBlogPostListings } from "../../data/blog.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
-import { styleHrefs } from "../../utils/public/style-hrefs.ts";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
 import { BlogPostPage, NOT_FOUND_RESPONSE } from "./post-page.tsx";
@@ -89,7 +88,7 @@ function Page(
     <Document
       title="Remix Blog"
       description="Thoughts about building excellent user experiences with Remix."
-      stylesheets={[styleHrefs.app]}
+      stylesheets={["app"]}
       headTags={getSocialHeadTags({
         requestUrl: handle.props.requestUrl,
         title: "Remix Blog",

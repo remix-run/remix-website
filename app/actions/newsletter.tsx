@@ -5,7 +5,6 @@ import { Footer } from "../ui/footer.tsx";
 import { Header } from "../ui/header.tsx";
 import { NewsletterSubscribeForm } from "../ui/public/newsletter-subscribe.tsx";
 import { getSocialHeadTags } from "../utils/social-head-tags.ts";
-import { styleHrefs } from "../utils/public/style-hrefs.ts";
 
 export function NewsletterPage(handle: Handle<{ requestUrl: string }>) {
   return () => (
@@ -13,7 +12,7 @@ export function NewsletterPage(handle: Handle<{ requestUrl: string }>) {
       title="Remix Newsletter"
       description="Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. We respect your privacy, unsubscribe at any time."
       forceTheme="dark"
-      stylesheets={[styleHrefs.app]}
+      stylesheets={["app"]}
       headTags={getSocialHeadTags({
         requestUrl: handle.props.requestUrl,
         title: "Remix Newsletter",
