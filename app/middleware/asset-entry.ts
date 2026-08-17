@@ -23,10 +23,6 @@ let stylesheetEntries = {
   app: path.resolve(import.meta.dirname, "../styles/public/generated/app.css"),
   global: path.resolve(import.meta.dirname, "../styles/public/global.css"),
   home: path.resolve(import.meta.dirname, "../styles/public/home.css"),
-  jam2025: path.resolve(
-    import.meta.dirname,
-    "../styles/public/generated/jam-2025.css",
-  ),
   md: path.resolve(import.meta.dirname, "../styles/public/generated/md.css"),
 } as const;
 

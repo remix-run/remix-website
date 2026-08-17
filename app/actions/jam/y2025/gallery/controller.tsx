@@ -103,7 +103,6 @@ function renderGalleryPage({
   );
 }
 
-export { transformShopifyImageUrl };
 export { getSelectedPhotoIndex };
 export { getGalleryPhotos };
 
@@ -178,8 +177,6 @@ function JamGalleryLink(
     class?: string;
     ariaLabel?: string;
     tabindex?: number;
-    target?: string;
-    rel?: string;
     children?: RemixNode;
   }>,
 ) {
@@ -189,8 +186,6 @@ function JamGalleryLink(
       rmx-reset-scroll="false"
       aria-label={handle.props.ariaLabel}
       tabindex={handle.props.tabindex}
-      target={handle.props.target}
-      rel={handle.props.rel}
       class={handle.props.class}
     >
       {handle.props.children}
@@ -232,8 +227,6 @@ function IconLink(
     label: string;
     className?: string;
     download?: string;
-    target?: string;
-    rel?: string;
   }>,
 ) {
   return () =>
@@ -242,8 +235,6 @@ function IconLink(
         href={handle.props.href}
         aria-label={handle.props.label}
         download={handle.props.download}
-        target={handle.props.target}
-        rel={handle.props.rel}
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${handle.props.className ?? ""}`}
       >
         <svg class="pointer-events-none size-6" aria-hidden="true">
@@ -254,8 +245,6 @@ function IconLink(
       <JamGalleryLink
         href={handle.props.href}
         ariaLabel={handle.props.label}
-        target={handle.props.target}
-        rel={handle.props.rel}
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${handle.props.className ?? ""}`}
       >
         <svg class="pointer-events-none size-6" aria-hidden="true">

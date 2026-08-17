@@ -1,4 +1,4 @@
-import { css, type Handle, type RemixNode } from "remix/ui";
+import { css, type Handle, type Props, type RemixNode } from "remix/ui";
 
 import {
   getAssetEntry,
@@ -35,11 +35,9 @@ interface DocumentProps {
   forceTheme?: "dark" | "light";
   headTags?: ManagedHeadTag[];
   stylesheets?: StylesheetName[];
-  stylesheetPool?: StylesheetName[];
+  mix?: Props<"html">["mix"];
   children?: RemixNode;
 }
-
-let defaultStylesheetPool: StylesheetName[] = ["app", "global", "home", "md"];
 
 /**
  * Shared document shell for Remix UI routes.
@@ -55,16 +53,12 @@ export function Document(handle: Handle<DocumentProps>) {
       forceTheme,
       headTags = [],
       stylesheets: requestedStylesheets = [],
-      stylesheetPool: requestedStylesheetPool = defaultStylesheetPool,
+      mix,
       children,
     } = handle.props;
     let assetEntry = getAssetEntry();
     let stylesheetNames = new Set<StylesheetName>(["global"]);
     for (let name of requestedStylesheets) stylesheetNames.add(name);
-    let stylesheetPool = new Set([
-      ...requestedStylesheetPool,
-      ...stylesheetNames,
-    ]);
 
     let managedHeadTags: ManagedHeadTag[] = [];
     if (noIndex) {
@@ -89,6 +83,7 @@ export function Document(handle: Handle<DocumentProps>) {
         data-theme={forceTheme}
         class={forceTheme === "dark" ? "dark" : undefined}
         style={{ colorScheme: forceTheme ?? "light dark" }}
+        mix={mix}
       >
         <head>
           <meta charset="utf-8" />
@@ -109,18 +104,17 @@ export function Document(handle: Handle<DocumentProps>) {
 
           {/* Keep persistent stylesheets attached across document diffs. */}
           {(Object.keys(assetEntry.stylesheets) as StylesheetName[]).map(
-            (name) =>
-              stylesheetPool.has(name) ? (
-                <link
-                  key={name}
-                  data-key={`stylesheet:${name}`}
-                  data-remix-stylesheet={name}
-                  rmx-preserve-dom=""
-                  rel="stylesheet"
-                  href={assetEntry.stylesheets[name].href}
-                  media={stylesheetNames.has(name) ? undefined : "not all"}
-                />
-              ) : null,
+            (name) => (
+              <link
+                key={name}
+                data-key={`stylesheet:${name}`}
+                data-remix-stylesheet={name}
+                rmx-preserve-dom=""
+                rel="stylesheet"
+                href={assetEntry.stylesheets[name].href}
+                media={stylesheetNames.has(name) ? undefined : "not all"}
+              />
+            ),
           )}
 
           {/* RSS */}

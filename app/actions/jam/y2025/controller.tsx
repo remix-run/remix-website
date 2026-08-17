@@ -157,7 +157,7 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
         <h2 class="text-2xl font-bold tracking-tight text-white md:text-3xl">
           Sign up for our Newsletter for the latest Remix Jam news and updates
         </h2>
-        <JamNewsletterSubscribeForm class="top-layer mt-12 flex flex-col items-center" />
+        <JamNewsletterSubscribeForm class="relative z-10 mt-12 flex flex-col items-center" />
       </aside>
     </>
   );

@@ -1,4 +1,4 @@
-import type { Handle, RemixNode } from "remix/ui";
+import { css, type Handle, type RemixNode } from "remix/ui";
 import { Document } from "../../../ui/document.tsx";
 import { getSocialHeadTags } from "../../../utils/social-head-tags.ts";
 import { JamPageScaffold } from "./public/shared.tsx";
@@ -32,8 +32,8 @@ export function JamDocument(handle: Handle<JamPageProps>) {
         title={title}
         description={description}
         forceTheme="dark"
-        stylesheets={["app", "jam2025"]}
-        stylesheetPool={["global", "app", "jam2025"]}
+        stylesheets={["app"]}
+        mix={jamDocumentStyle}
         headTags={getSocialHeadTags({
           requestUrl,
           title,
@@ -52,3 +52,14 @@ export function JamDocument(handle: Handle<JamPageProps>) {
     );
   };
 }
+
+let jamDocumentStyle = css({
+  scrollbarColor: "var(--color-gray-300) var(--color-gray-800)",
+  "& body": {
+    background:
+      "radial-gradient(72% 63% at 50% 32.3%, #3b3b3b 0.036346160613726086%, rgb(26, 26, 26) 100%)",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    scrollBehavior: "auto",
+  },
+});

@@ -471,55 +471,6 @@ export function JamButton(
   );
 }
 
-export function KeepsakesStatic() {
-  return () => (
-    <div class="isolate">
-      <Keepsake
-        className="photo-1"
-        hasBorder
-        src={assetPaths.jam2025.keepsakes.photo1}
-      />
-      <Keepsake
-        className="photo-2"
-        hasBorder
-        src={assetPaths.jam2025.keepsakes.photo2}
-      />
-      <Keepsake className="poster" src={assetPaths.jam2025.keepsakes.poster} />
-      <Keepsake className="pick" src={assetPaths.jam2025.keepsakes.pick} />
-      <Keepsake className="ticket" src={assetPaths.jam2025.keepsakes.ticket} />
-      <Keepsake
-        className="boarding-pass"
-        src={assetPaths.jam2025.keepsakes.boardingPass}
-      />
-      <Keepsake
-        className="sticker"
-        src={assetPaths.jam2025.keepsakes.sticker}
-      />
-    </div>
-  );
-}
-
-function Keepsake(
-  handle: Handle<{ className: string; src: string; hasBorder?: boolean }>,
-) {
-  return () => (
-    <div class="keepsake-container relative">
-      <div class={cx("keepsake select-none", handle.props.className)}>
-        <div class="rotate">
-          <div
-            class={cx("h-full w-full", {
-              "rounded border-[6px] border-white md:border-[16px]":
-                handle.props.hasBorder,
-            })}
-          >
-            <img src={handle.props.src} alt="" draggable={false} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function transformShopifyImageUrl(
   url: string,
   options: {

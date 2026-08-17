@@ -21,6 +21,11 @@
   src: url("/font/jet-brains-mono.woff2") format("woff2");
 }
 
+:root {
+  --color-gray-300: #a4a4a4;
+  --color-gray-800: #383838;
+}
+
 @layer reset {
   /*
    * Adapted from Tailwind CSS Preflight v3.4.19.

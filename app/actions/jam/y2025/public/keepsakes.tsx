@@ -1,6 +1,7 @@
 import { cx } from "../../../../utils/public/cx.ts";
-import { clientEntry, on, type Dispatched, type Handle } from "remix/ui";
+import { css, clientEntry, on, type Dispatched, type Handle } from "remix/ui";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
+import { breakpointMedia } from "../../../../ui/public/theme.ts";
 
 type KeepsakeId =
   | "photo-1"
@@ -165,8 +166,7 @@ export let JamKeepsakes = clientEntry(
             >
               <div
                 class={cx(
-                  "keepsake touch-none select-none",
-                  keepsake.id,
+                  "touch-none select-none",
                   isActiveDrag ? "cursor-grabbing" : "cursor-grab",
                   showJiggle && "animate-jiggle",
                 )}
@@ -177,6 +177,8 @@ export let JamKeepsakes = clientEntry(
                     : undefined,
                 }}
                 mix={[
+                  keepsakeStyle,
+                  keepsakePositionStyles[keepsake.id],
                   on("pointerdown", (event) => {
                     if (!event.isPrimary) return;
                     if (event.pointerType === "mouse" && event.button !== 0)
@@ -185,7 +187,7 @@ export let JamKeepsakes = clientEntry(
                   }),
                 ]}
               >
-                <div class="rotate">
+                <div mix={keepsakeRotationStyle}>
                   <div
                     class={cx("h-full w-full", {
                       "rounded border-[6px] border-white md:border-[16px]":
@@ -196,6 +198,7 @@ export let JamKeepsakes = clientEntry(
                       src={keepsake.src}
                       alt={keepsake.alt}
                       draggable={false}
+                      mix={keepsakeImageStyle}
                     />
                   </div>
                 </div>
@@ -220,3 +223,203 @@ function moveKeepsakeToFront(
   }
   order[id] = KEEPSAKES.length;
 }
+
+let keepsakeStyle = css({ position: "absolute" });
+
+let keepsakeRotationStyle = css({
+  height: "100%",
+  width: "100%",
+  transform: "rotate(var(--rotate))",
+  transition: "transform 0.3s cubic-bezier(0, 1.5, 0.67, 1.06)",
+  willChange: "transform",
+  "@media (hover: hover)": {
+    "&:hover": {
+      transform: "rotate(calc(var(--rotate) + var(--hover-rotate)))",
+    },
+  },
+});
+
+let keepsakeImageStyle = css({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+});
+
+let keepsakePositionStyles: Record<KeepsakeId, ReturnType<typeof css>> = {
+  poster: css({
+    "--rotate": "-2deg",
+    "--hover-rotate": "4deg",
+    top: "240px",
+    left: "-220px",
+    width: "223px",
+    height: "345px",
+    [breakpointMedia.md]: {
+      top: "235px",
+      left: "-300px",
+      width: "355px",
+      height: "550px",
+    },
+    [breakpointMedia.xl]: {
+      top: "300px",
+      left: "-400px",
+      width: "500px",
+      height: "770px",
+    },
+    [breakpointMedia["2xl"]]: {
+      top: "300px",
+      left: "-500px",
+      width: "600px",
+      height: "930px",
+    },
+  }),
+  "photo-1": css({
+    "--rotate": "6deg",
+    "--hover-rotate": "-3deg",
+    top: "110px",
+    right: "-210px",
+    width: "220px",
+    height: "165px",
+    [breakpointMedia.md]: {
+      top: "250px",
+      right: "-300px",
+      width: "350px",
+      height: "263px",
+    },
+    [breakpointMedia.xl]: {
+      top: "380px",
+      right: "-440px",
+      width: "490px",
+      height: "368px",
+    },
+    [breakpointMedia["2xl"]]: {
+      top: "280px",
+      right: "-530px",
+      width: "590px",
+      height: "443px",
+    },
+  }),
+  "photo-2": css({
+    "--rotate": "-6deg",
+    "--hover-rotate": "3deg",
+    top: "740px",
+    left: "-200px",
+    width: "220px",
+    height: "147px",
+    [breakpointMedia.md]: {
+      top: "700px",
+      left: "-300px",
+      width: "350px",
+      height: "233px",
+    },
+    [breakpointMedia.xl]: {
+      top: "880px",
+      left: "-440px",
+      width: "490px",
+      height: "327px",
+    },
+    [breakpointMedia["2xl"]]: {
+      top: "1200px",
+      left: "-400px",
+      width: "590px",
+      height: "394px",
+    },
+  }),
+  pick: css({
+    "--rotate": "-30deg",
+    "--hover-rotate": "10deg",
+    top: "380px",
+    left: "-30px",
+    width: "50px",
+    height: "58px",
+    [breakpointMedia.md]: {
+      top: "260px",
+      left: "20px",
+      width: "80px",
+      height: "93px",
+    },
+    [breakpointMedia.xl]: {
+      top: "340px",
+      left: "120px",
+      width: "100px",
+      height: "116px",
+    },
+  }),
+  ticket: css({
+    "--rotate": "-10deg",
+    "--hover-rotate": "-4deg",
+    top: "620px",
+    right: "-180px",
+    width: "240px",
+    height: "84px",
+    [breakpointMedia.md]: {
+      top: "850px",
+      right: "-180px",
+      width: "375px",
+      height: "131px",
+    },
+    [breakpointMedia.xl]: {
+      top: "800px",
+      right: "-400px",
+      width: "525px",
+      height: "184px",
+    },
+    [breakpointMedia["2xl"]]: {
+      top: "830px",
+      right: "-440px",
+      width: "630px",
+      height: "221px",
+    },
+  }),
+  "boarding-pass": css({
+    "--rotate": "-6deg",
+    "--hover-rotate": "3deg",
+    top: "640px",
+    left: "-220px",
+    width: "260px",
+    height: "97px",
+    [breakpointMedia.md]: {
+      top: "1730px",
+      left: "-300px",
+      width: "400px",
+      height: "149px",
+    },
+    [breakpointMedia.lg]: {
+      top: "900px",
+      left: "-200px",
+      width: "480px",
+      height: "179px",
+    },
+    [breakpointMedia.xl]: {
+      top: "1220px",
+      left: "-340px",
+      width: "560px",
+      height: "209px",
+    },
+    [breakpointMedia["2xl"]]: {
+      top: "1480px",
+      left: "-270px",
+      width: "672px",
+      height: "251px",
+    },
+  }),
+  sticker: css({
+    "--rotate": "-8deg",
+    "--hover-rotate": "5deg",
+    top: "120px",
+    right: "-80px",
+    width: "120px",
+    height: "36px",
+    [breakpointMedia.md]: {
+      top: "340px",
+      right: "-100px",
+      width: "202px",
+      height: "60px",
+    },
+    [breakpointMedia["2xl"]]: {
+      top: "340px",
+      right: "-100px",
+      width: "242px",
+      height: "72px",
+    },
+  }),
+};

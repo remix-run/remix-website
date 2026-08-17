@@ -26,7 +26,7 @@ Building _with_ the web rather than against it meant the shape of our work was m
 
 ![Logo evolution board grouped into three rows: Evolving the Logo, Preserving the DNA, and Logo in use, showing wordmark explorations and applications.](/blog-images/posts/brand-new/frames-logo-evolution.avif)
 
-The new identity was meant to have a clear lineage from its predecessor, and it came quite naturally as we were putting together the <a href="/jam/2025/gallery?photo=46" rmx-document>demo for last year's Remix Jam</a>. Customizing letterforms from the Kanada typeface also seemed like a nice reference to our parent company's Canadian roots. Speaking of which, this was the first substantial shift in the brand since Remix joined Shopify, so I felt that it was necessary for the two brands to work together in harmony. Our racing theme already nudged the logo and wordmark into an italicized direction, so this worked in our favor.
+The new identity was meant to have a clear lineage from its predecessor, and it came quite naturally as we were putting together the [demo for last year's Remix Jam](/jam/2025/gallery?photo=46). Customizing letterforms from the Kanada typeface also seemed like a nice reference to our parent company's Canadian roots. Speaking of which, this was the first substantial shift in the brand since Remix joined Shopify, so I felt that it was necessary for the two brands to work together in harmony. Our racing theme already nudged the logo and wordmark into an italicized direction, so this worked in our favor.
 
 ## Creating a New Website
 
