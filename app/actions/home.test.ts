@@ -27,10 +27,10 @@ describe("home route", () => {
     );
 
     let stylesheetHrefs: string[] = [];
-    for (let match of html.matchAll(
-      /<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g,
-    )) {
-      stylesheetHrefs.push(match[1]!);
+    for (let match of html.matchAll(/<link[^>]+rel="stylesheet"[^>]*>/g)) {
+      if (match[0].includes('media="not all"')) continue;
+      let href = match[0].match(/href="([^"]+)"/)?.[1];
+      if (href) stylesheetHrefs.push(href);
     }
     expect(stylesheetHrefs).toEqual([
       "/assets/app/styles/public/global.css",

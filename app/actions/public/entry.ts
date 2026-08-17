@@ -4,6 +4,13 @@ import { initFathomAnalytics } from "./fathom.ts";
 
 initFathomAnalytics();
 
+// Preserved links stay parsed while route selection changes before the next paint.
+syncRouteStylesheets();
+new MutationObserver(syncRouteStylesheets).observe(document.body, {
+  attributes: true,
+  attributeFilter: ["data-remix-stylesheets"],
+});
+
 let app = run({
   async loadModule(src, exportName) {
     let mod = await import(src);
@@ -55,6 +62,19 @@ if (import.meta.hot) {
 app.addEventListener("error", (event) => {
   console.error(event.error);
 });
+
+function syncRouteStylesheets() {
+  let activeStylesheets = new Set(
+    document.body.dataset.remixStylesheets?.split(" ").filter(Boolean),
+  );
+  for (let link of document.querySelectorAll<HTMLLinkElement>(
+    "link[data-remix-stylesheet]",
+  )) {
+    link.media = activeStylesheets.has(link.dataset.remixStylesheet ?? "")
+      ? ""
+      : "not all";
+  }
+}
 
 function getRequestBody(
   formData?: FormData,

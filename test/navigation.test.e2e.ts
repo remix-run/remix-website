@@ -38,6 +38,27 @@ async function expectLandingNavReady(page: Page) {
   ).toBeVisible();
 }
 
+async function trackUnstyledBlogFrames(page: Page) {
+  await page.evaluate(() => {
+    let navigationState = window as Window & {
+      __sawUnstyledBlogFrame?: boolean;
+    };
+    navigationState.__sawUnstyledBlogFrame = false;
+
+    let checkBlogStyles = () => {
+      let main = document.querySelector("main");
+      if (
+        main?.classList.contains("flex") &&
+        getComputedStyle(main).display !== "flex"
+      ) {
+        navigationState.__sawUnstyledBlogFrame = true;
+      }
+      requestAnimationFrame(checkBlogStyles);
+    };
+    requestAnimationFrame(checkBlogStyles);
+  });
+}
+
 describe("Navigation", () => {
   let router: ReturnType<typeof createAppRouter>;
 
@@ -56,6 +77,7 @@ describe("Navigation", () => {
       }),
     ).toBeVisible();
     await expectLandingNavReady(page);
+    await trackUnstyledBlogFrames(page);
 
     await expectClientNavigation(
       page,
@@ -63,6 +85,17 @@ describe("Navigation", () => {
       `**${routes.blog.index.href()}`,
     );
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
+    );
+    expect(
+      await page.evaluate(
+        () =>
+          (window as Window & { __sawUnstyledBlogFrame?: boolean })
+            .__sawUnstyledBlogFrame,
+      ),
+    ).toBe(false);
     await expect(page.locator('html[data-theme="light"]')).toHaveCount(0);
     await expect(page.locator("html.dark")).toHaveCount(1);
 

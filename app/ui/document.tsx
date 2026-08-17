@@ -58,11 +58,6 @@ export function Document(handle: Handle<DocumentProps>) {
     let stylesheetNames = new Set<StylesheetName>(["global"]);
     for (let name of requestedStylesheets) stylesheetNames.add(name);
 
-    let stylesheets = Array.from(
-      stylesheetNames,
-      (name) => assetEntry.stylesheets[name],
-    );
-
     let managedHeadTags: ManagedHeadTag[] = [];
     if (noIndex) {
       managedHeadTags.push({
@@ -77,9 +72,6 @@ export function Document(handle: Handle<DocumentProps>) {
         name: "description",
         content: description,
       });
-    }
-    for (let { href } of stylesheets) {
-      managedHeadTags.push({ kind: "link", rel: "stylesheet", href });
     }
     managedHeadTags.push(...headTags);
 
@@ -107,9 +99,20 @@ export function Document(handle: Handle<DocumentProps>) {
             sizes="any"
           />
 
-          {stylesheets.map(({ href }) => (
-            <link key={href} rel="preload" as="style" href={href} />
-          ))}
+          {/* Keep every parsed stylesheet attached across document diffs. */}
+          {(Object.keys(assetEntry.stylesheets) as StylesheetName[]).map(
+            (name) => (
+              <link
+                key={name}
+                data-key={`stylesheet:${name}`}
+                data-remix-stylesheet={name}
+                rmx-preserve-dom=""
+                rel="stylesheet"
+                href={assetEntry.stylesheets[name].href}
+                media={stylesheetNames.has(name) ? undefined : "not all"}
+              />
+            ),
+          )}
 
           {/* RSS */}
           <link
@@ -151,7 +154,10 @@ export function Document(handle: Handle<DocumentProps>) {
           <script innerHTML={colorSchemeScript} />
         </head>
 
-        <body mix={documentBodyStyle}>
+        <body
+          mix={documentBodyStyle}
+          data-remix-stylesheets={Array.from(stylesheetNames).join(" ")}
+        >
           <DocumentThemeSync forceTheme={forceTheme} />
           <img
             src={assetPaths.iconsSprite}
