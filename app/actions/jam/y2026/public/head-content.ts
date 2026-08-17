@@ -60,28 +60,12 @@ export function getJam2026ClientManagedHeadTags(head: {
 
   return [
     { kind: "meta", name: "description", content: head.description },
-    ...getCurrentStylesheetTags(),
     ...buildJam2026HeadTags({
       ...head,
       pageUrl,
       imageUrl,
     }),
   ] satisfies ManagedHeadTag[];
-}
-
-function getCurrentStylesheetTags(): ManagedHeadTag[] {
-  if (typeof document === "undefined") return [];
-
-  return Array.from(
-    document.head.querySelectorAll<HTMLLinkElement>(
-      'link[data-remix-managed-head="true"][rel="stylesheet"]',
-    ),
-    (link) => ({
-      kind: "link" as const,
-      rel: "stylesheet",
-      href: link.getAttribute("href") ?? link.href,
-    }),
-  );
 }
 
 export function getJam2026ServerHeadTags(props: {

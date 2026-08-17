@@ -19,24 +19,6 @@ describe("Jam2026TicketsModal", () => {
     document.head.innerHTML = originalHead;
   });
 
-  it("preserves the current stylesheet during head updates", async (t) => {
-    let href = "/assets/app/styles/public/global.@fingerprint.css";
-    document.head.insertAdjacentHTML(
-      "beforeend",
-      `<link data-remix-managed-head="true" rel="stylesheet" href="${href}">`,
-    );
-
-    let result = render(<Jam2026TicketsModalFrame />);
-    t.after(result.cleanup);
-    await result.act(() => {});
-
-    expect(
-      document.head
-        .querySelector<HTMLLinkElement>('link[rel="stylesheet"]')
-        ?.getAttribute("href"),
-    ).toBe(href);
-  });
-
   it("applies modal effects and renders frame navigation controls", async (t) => {
     let homeHref = routes.jam.y2026.index.href();
     let previousOverflow = document.documentElement.style.overflow;
