@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm run build:css && pnpm run typecheck",
-    "build:css": "rm -rf public/styles app/styles/public/generated app/styles/public/app.css app/styles/public/md.css app/styles/public/jam-2025.css && postcss app/styles/app.css app/styles/md.css app/styles/jam-2025.css --dir app/styles/public/generated",
+    "build:css": "rm -rf app/styles/public/generated && postcss app/styles/entries/*.css --dir app/styles/public/generated",
     "dev": "concurrently -k --names css,app \"pnpm run dev:css\" \"pnpm run dev:server\"",
     "hmr": "concurrently -k --names css,app \"pnpm run dev:css\" \"pnpm run dev:server:hmr\"",
     "dev:css": "pnpm run build:css --watch",
