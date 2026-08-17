@@ -1,18 +1,26 @@
 import { clientEntry, type Handle } from "remix/ui";
 
-import { syncDocumentTheme } from "./document-head-sync.ts";
+import {
+  syncDocumentStylesheets,
+  syncDocumentTheme,
+} from "./document-head-sync.ts";
 
-export let DocumentThemeSync = clientEntry(
+export let DocumentSync = clientEntry(
   import.meta.url,
-  function DocumentThemeSync(
-    handle: Handle<{ forceTheme?: "dark" | "light" }>,
+  function DocumentSync(
+    handle: Handle<{
+      forceTheme?: "dark" | "light";
+      stylesheets: string[];
+    }>,
   ) {
     let latestTheme: "dark" | "light" | undefined;
+    let latestStylesheets: string[] = [];
     let isQueued = false;
 
     let sync = () => {
       isQueued = false;
       syncDocumentTheme(latestTheme);
+      syncDocumentStylesheets(latestStylesheets);
     };
 
     handle.signal.addEventListener(
@@ -25,6 +33,7 @@ export let DocumentThemeSync = clientEntry(
 
     return () => {
       latestTheme = handle.props.forceTheme;
+      latestStylesheets = handle.props.stylesheets;
       if (!isQueued) {
         isQueued = true;
         handle.queueTask(sync);

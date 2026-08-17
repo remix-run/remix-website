@@ -5,7 +5,7 @@ import {
   type StylesheetName,
 } from "../middleware/asset-entry.ts";
 import { routes } from "../routes.ts";
-import { DocumentThemeSync } from "./public/document-theme-sync.tsx";
+import { DocumentSync } from "./public/document-sync.tsx";
 import {
   getManagedHeadTagKey,
   type ManagedHeadTag,
@@ -163,11 +163,11 @@ export function Document(handle: Handle<DocumentProps>) {
           <script innerHTML={colorSchemeScript} />
         </head>
 
-        <body
-          mix={documentBodyStyle}
-          data-remix-stylesheets={Array.from(stylesheetNames).join(" ")}
-        >
-          <DocumentThemeSync forceTheme={forceTheme} />
+        <body mix={documentBodyStyle}>
+          <DocumentSync
+            forceTheme={forceTheme}
+            stylesheets={Array.from(stylesheetNames)}
+          />
           <img
             src={assetPaths.iconsSprite}
             alt=""

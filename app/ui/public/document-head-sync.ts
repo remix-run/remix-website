@@ -37,3 +37,14 @@ export function syncDocumentTheme(forceTheme?: "dark" | "light") {
         window.matchMedia("(prefers-color-scheme: dark)").matches),
   );
 }
+
+export function syncDocumentStylesheets(activeStylesheets: string[]) {
+  let active = new Set(activeStylesheets);
+  for (let link of document.querySelectorAll<HTMLLinkElement>(
+    "link[data-remix-stylesheet]",
+  )) {
+    link.media = active.has(link.dataset.remixStylesheet ?? "")
+      ? ""
+      : "not all";
+  }
+}
