@@ -27,7 +27,11 @@ describe("home route", () => {
     );
 
     let stylesheetHrefs: string[] = [];
+    let jam2025Stylesheet: string | undefined;
     for (let match of html.matchAll(/<link[^>]+rel="stylesheet"[^>]*>/g)) {
+      if (match[0].includes('data-remix-stylesheet="jam2025"')) {
+        jam2025Stylesheet = match[0];
+      }
       if (match[0].includes('media="not all"')) continue;
       let href = match[0].match(/href="([^"]+)"/)?.[1];
       if (href) stylesheetHrefs.push(href);
@@ -36,5 +40,6 @@ describe("home route", () => {
       "/assets/app/styles/public/global.css",
       "/assets/app/styles/public/home.css",
     ]);
+    expect(jam2025Stylesheet).toBe(undefined);
   });
 });

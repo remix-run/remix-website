@@ -35,8 +35,11 @@ interface DocumentProps {
   forceTheme?: "dark" | "light";
   headTags?: ManagedHeadTag[];
   stylesheets?: StylesheetName[];
+  stylesheetPool?: StylesheetName[];
   children?: RemixNode;
 }
+
+let defaultStylesheetPool: StylesheetName[] = ["app", "global", "home", "md"];
 
 /**
  * Shared document shell for Remix UI routes.
@@ -52,11 +55,16 @@ export function Document(handle: Handle<DocumentProps>) {
       forceTheme,
       headTags = [],
       stylesheets: requestedStylesheets = [],
+      stylesheetPool: requestedStylesheetPool = defaultStylesheetPool,
       children,
     } = handle.props;
     let assetEntry = getAssetEntry();
     let stylesheetNames = new Set<StylesheetName>(["global"]);
     for (let name of requestedStylesheets) stylesheetNames.add(name);
+    let stylesheetPool = new Set([
+      ...requestedStylesheetPool,
+      ...stylesheetNames,
+    ]);
 
     let managedHeadTags: ManagedHeadTag[] = [];
     if (noIndex) {
@@ -99,19 +107,20 @@ export function Document(handle: Handle<DocumentProps>) {
             sizes="any"
           />
 
-          {/* Keep every parsed stylesheet attached across document diffs. */}
+          {/* Keep persistent stylesheets attached across document diffs. */}
           {(Object.keys(assetEntry.stylesheets) as StylesheetName[]).map(
-            (name) => (
-              <link
-                key={name}
-                data-key={`stylesheet:${name}`}
-                data-remix-stylesheet={name}
-                rmx-preserve-dom=""
-                rel="stylesheet"
-                href={assetEntry.stylesheets[name].href}
-                media={stylesheetNames.has(name) ? undefined : "not all"}
-              />
-            ),
+            (name) =>
+              stylesheetPool.has(name) ? (
+                <link
+                  key={name}
+                  data-key={`stylesheet:${name}`}
+                  data-remix-stylesheet={name}
+                  rmx-preserve-dom=""
+                  rel="stylesheet"
+                  href={assetEntry.stylesheets[name].href}
+                  media={stylesheetNames.has(name) ? undefined : "not all"}
+                />
+              ) : null,
           )}
 
           {/* RSS */}

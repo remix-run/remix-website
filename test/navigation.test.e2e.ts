@@ -69,6 +69,12 @@ describe("Navigation", () => {
   it("home/blog navigation stays client-side and applies forced dark mode", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
+    let jam2025StylesheetRequested = false;
+    page.on("request", (request) => {
+      if (new URL(request.url()).pathname.includes("/jam-2025.css")) {
+        jam2025StylesheetRequested = true;
+      }
+    });
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto(routes.home.href());
     await expect(
@@ -96,6 +102,7 @@ describe("Navigation", () => {
             .__sawUnstyledBlogFrame,
       ),
     ).toBe(false);
+    expect(jam2025StylesheetRequested).toBe(false);
     await expect(page.locator('html[data-theme="light"]')).toHaveCount(0);
     await expect(page.locator("html.dark")).toHaveCount(1);
 

@@ -33,6 +33,7 @@ export function JamDocument(handle: Handle<JamPageProps>) {
         description={description}
         forceTheme="dark"
         stylesheets={["app", "jam2025"]}
+        stylesheetPool={["global", "app", "jam2025"]}
         headTags={getSocialHeadTags({
           requestUrl,
           title,
