@@ -18,6 +18,12 @@ export let assets = createAssetServer({
   allowFiles: ["app/routes.ts", "app/**/public/**"],
   allowPackages: ["remix", "three", "fathom-client"],
   denyFiles: ["app/**/*.test.*"],
+  target: {
+    chrome: "109",
+    es: "2022",
+    firefox: "115",
+    safari: "16.4",
+  },
   fingerprint: isProduction ? { buildId: getBuildId() } : undefined,
   sourceMaps: isDevelopment ? "external" : undefined,
   minify: isProduction,
