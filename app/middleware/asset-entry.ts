@@ -20,11 +20,14 @@ let defaultEntry = path.resolve(
   "../actions/public/entry.ts",
 );
 let stylesheetEntries = {
-  app: path.resolve(import.meta.dirname, "../styles/public/app.css"),
+  app: path.resolve(import.meta.dirname, "../styles/public/generated/app.css"),
   global: path.resolve(import.meta.dirname, "../styles/public/global.css"),
   home: path.resolve(import.meta.dirname, "../styles/public/home.css"),
-  jam2025: path.resolve(import.meta.dirname, "../styles/public/jam-2025.css"),
-  md: path.resolve(import.meta.dirname, "../styles/public/md.css"),
+  jam2025: path.resolve(
+    import.meta.dirname,
+    "../styles/public/generated/jam-2025.css",
+  ),
+  md: path.resolve(import.meta.dirname, "../styles/public/generated/md.css"),
 } as const;
 
 export type StylesheetName = keyof typeof stylesheetEntries;
