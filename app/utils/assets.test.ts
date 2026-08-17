@@ -58,7 +58,7 @@ async function listPublicModules(dir: string): Promise<string[]> {
       if (entry.isDirectory()) return listPublicModules(entryPath);
       if (!entry.isFile()) return [];
       if (!entryPath.split(path.sep).includes("public")) return [];
-      if (!/\.[cm]?[tj]sx?$/.test(entry.name)) return [];
+      if (!/(?:\.[cm]?[tj]sx?|\.css)$/.test(entry.name)) return [];
       if (entry.name.includes(".test.")) return [];
       return [entryPath];
     }),

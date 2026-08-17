@@ -1,6 +1,5 @@
 import type { Handle, RemixNode } from "remix/ui";
 import { Document } from "../../../ui/document.tsx";
-import { styleHrefs } from "../../../utils/public/style-hrefs.ts";
 import { getSocialHeadTags } from "../../../utils/social-head-tags.ts";
 import { JamPageScaffold } from "./public/shared.tsx";
 
@@ -16,28 +15,40 @@ type JamPageProps = {
 };
 
 export function JamDocument(handle: Handle<JamPageProps>) {
-  return () => (
-    <Document
-      title={handle.props.title}
-      description={handle.props.description}
-      forceTheme="dark"
-      stylesheets={[styleHrefs.app, styleHrefs.jam2025]}
-      headTags={[
-        ...getSocialHeadTags({
-          requestUrl: handle.props.requestUrl,
-          title: handle.props.title,
-          description: handle.props.description,
-          image: handle.props.previewImage,
-        }),
-      ]}
-    >
-      <JamPageScaffold
-        activePath={handle.props.activePath}
-        hideBackground={handle.props.hideBackground ?? false}
-        showSeats={handle.props.showSeats ?? false}
+  return () => {
+    let {
+      title,
+      description,
+      previewImage,
+      requestUrl,
+      activePath,
+      hideBackground = false,
+      showSeats = false,
+      children,
+    } = handle.props;
+
+    return (
+      <Document
+        title={title}
+        description={description}
+        forceTheme="dark"
+        stylesheets={["app", "jam2025"]}
+        stylesheetPool={["global", "app", "jam2025"]}
+        headTags={getSocialHeadTags({
+          requestUrl,
+          title,
+          description,
+          image: previewImage,
+        })}
       >
-        {handle.props.children}
-      </JamPageScaffold>
-    </Document>
-  );
+        <JamPageScaffold
+          activePath={activePath}
+          hideBackground={hideBackground}
+          showSeats={showSeats}
+        >
+          {children}
+        </JamPageScaffold>
+      </Document>
+    );
+  };
 }

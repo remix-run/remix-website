@@ -38,6 +38,27 @@ async function expectLandingNavReady(page: Page) {
   ).toBeVisible();
 }
 
+async function trackUnstyledBlogFrames(page: Page) {
+  await page.evaluate(() => {
+    let navigationState = window as Window & {
+      __sawUnstyledBlogFrame?: boolean;
+    };
+    navigationState.__sawUnstyledBlogFrame = false;
+
+    let checkBlogStyles = () => {
+      let main = document.querySelector("main");
+      if (
+        main?.classList.contains("flex") &&
+        getComputedStyle(main).display !== "flex"
+      ) {
+        navigationState.__sawUnstyledBlogFrame = true;
+      }
+      requestAnimationFrame(checkBlogStyles);
+    };
+    requestAnimationFrame(checkBlogStyles);
+  });
+}
+
 describe("Navigation", () => {
   let router: ReturnType<typeof createAppRouter>;
 
@@ -48,6 +69,12 @@ describe("Navigation", () => {
   it("home/blog navigation stays client-side and applies forced dark mode", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
+    let jam2025StylesheetRequested = false;
+    page.on("request", (request) => {
+      if (new URL(request.url()).pathname.includes("/jam-2025.css")) {
+        jam2025StylesheetRequested = true;
+      }
+    });
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto(routes.home.href());
     await expect(
@@ -56,6 +83,7 @@ describe("Navigation", () => {
       }),
     ).toBeVisible();
     await expectLandingNavReady(page);
+    await trackUnstyledBlogFrames(page);
 
     await expectClientNavigation(
       page,
@@ -63,6 +91,18 @@ describe("Navigation", () => {
       `**${routes.blog.index.href()}`,
     );
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
+    );
+    expect(
+      await page.evaluate(
+        () =>
+          (window as Window & { __sawUnstyledBlogFrame?: boolean })
+            .__sawUnstyledBlogFrame,
+      ),
+    ).toBe(false);
+    expect(jam2025StylesheetRequested).toBe(false);
     await expect(page.locator('html[data-theme="light"]')).toHaveCount(0);
     await expect(page.locator("html.dark")).toHaveCount(1);
 

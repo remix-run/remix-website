@@ -22,10 +22,10 @@ pnpm run hmr
 ## Build and Preview
 
 ```sh
-pnpm run typecheck
-pnpm run build
 pnpm run preview
 ```
+
+Preview builds the app before starting the production server.
 
 ## Deployment
 

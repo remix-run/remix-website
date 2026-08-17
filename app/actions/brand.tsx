@@ -4,7 +4,6 @@ import { Document } from "../ui/document.tsx";
 import { Footer } from "../ui/footer.tsx";
 import { Header } from "../ui/header.tsx";
 import { getSocialHeadTags } from "../utils/social-head-tags.ts";
-import { styleHrefs } from "../utils/public/style-hrefs.ts";
 
 export function BrandPage(handle: Handle<{ requestUrl: string }>) {
   return () => (
@@ -17,7 +16,7 @@ export function BrandPage(handle: Handle<{ requestUrl: string }>) {
         description:
           "Remix brand assets and guidelines for using the Remix name and logos.",
       })}
-      stylesheets={[styleHrefs.app]}
+      stylesheets={["app"]}
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>

@@ -1,7 +1,6 @@
 import type { Handle } from "remix/ui";
 import { cx } from "../utils/public/cx.ts";
 import { Document } from "./document.tsx";
-import { styleHrefs } from "../utils/public/style-hrefs.ts";
 
 export function StatusErrorDocument(
   handle: Handle<{ status: number; statusText: string }>,
@@ -11,7 +10,7 @@ export function StatusErrorDocument(
       title={handle.props.statusText}
       noIndex
       forceTheme="dark"
-      stylesheets={[styleHrefs.app]}
+      stylesheets={["app"]}
     >
       <main
         id="main-content"

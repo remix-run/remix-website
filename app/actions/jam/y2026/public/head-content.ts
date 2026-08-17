@@ -1,7 +1,6 @@
 import type { ManagedHeadTag } from "../../../../ui/public/document-head.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { createSocialHeadTags } from "../../../../utils/public/social-head-tags.ts";
-import { styleHrefs } from "../../../../utils/public/style-hrefs.ts";
 import { routes } from "../../../../routes.ts";
 
 type Jam2026HeadContentProps = {
@@ -61,7 +60,6 @@ export function getJam2026ClientManagedHeadTags(head: {
 
   return [
     { kind: "meta", name: "description", content: head.description },
-    { kind: "link", rel: "stylesheet", href: styleHrefs.global },
     ...buildJam2026HeadTags({
       ...head,
       pageUrl,

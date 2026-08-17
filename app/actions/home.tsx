@@ -4,7 +4,6 @@ import { RemixLandingEnhancements } from "./public/remix-landing/landing-enhance
 import { RUNNER_AVIF_SRC } from "./public/remix-landing/runner-media.ts";
 import { colors } from "./public/remix-landing/styles/tokens.ts";
 import { Document } from "../ui/document.tsx";
-import { styleHrefs } from "../utils/public/style-hrefs.ts";
 import { LandingContent } from "./home-landing-content.tsx";
 
 type HomePageProps = {
@@ -22,7 +21,7 @@ export function HomePage(handle: Handle<HomePageProps>) {
       title={HOME_TITLE}
       description={HOME_DESCRIPTION}
       forceTheme="dark"
-      stylesheets={[styleHrefs.home]}
+      stylesheets={["home"]}
       headTags={[
         {
           kind: "link",

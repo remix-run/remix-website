@@ -12,7 +12,6 @@ import { TimelineSection } from "./timeline-section.tsx";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-import { styleHrefs } from "../../utils/public/style-hrefs.ts";
 
 export default createController(routes.remixHistory, {
   actions: {
@@ -30,7 +29,7 @@ function RemixHistoryPage(handle: Handle<{ requestUrl: string }>) {
       title="The History of Remix"
       description="How Remix got here: a React Router feature branch that became a full stack framework, merged into React Router, and reimagined as Remix 3."
       forceTheme="light"
-      stylesheets={[styleHrefs.app]}
+      stylesheets={["app"]}
       headTags={getSocialHeadTags({
         requestUrl: handle.props.requestUrl,
         title: "The History of Remix",
