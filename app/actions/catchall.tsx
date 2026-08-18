@@ -1,5 +1,7 @@
-import type { AppRenderer } from "../middleware/render.ts";
+import { redirect } from "remix/response/redirect";
 import semver from "semver";
+
+import type { AppRenderer } from "../middleware/render.ts";
 import { StatusErrorDocument } from "../ui/not-found-page.tsx";
 
 const SAFE_STATIC_FILE_EXTENSIONS = [
@@ -38,9 +40,12 @@ export function catchallHandler({
   request: Request;
 }) {
   let url = new URL(request.url);
-  let redirectUrl = normalizeLegacyRedirect(url);
+  let redirectUrl =
+    request.method === "GET" || request.method === "HEAD"
+      ? getCatchallRedirect(url)
+      : null;
   if (redirectUrl) {
-    return Response.redirect(redirectUrl, 302);
+    return redirect(redirectUrl, 302);
   }
   if (isLikelyStaticFileRequest(url.pathname)) {
     return new Response("", { status: 404, statusText: "Not Found" });
@@ -55,10 +60,12 @@ export function catchallHandler({
   });
 }
 
-function normalizeLegacyRedirect(url: URL): string | null {
+function getCatchallRedirect(url: URL): string | null {
+  if (url.pathname.startsWith("//")) return null;
+
   if (url.pathname.endsWith("/") && url.pathname !== "/") {
     let normalized = new URL(url.toString());
-    normalized.pathname = normalized.pathname.slice(0, -1);
+    normalized.pathname = normalized.pathname.replace(/\/+$/, "") || "/";
     return normalized.toString();
   }
 

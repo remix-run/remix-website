@@ -58,6 +58,40 @@ describe("app router", () => {
     );
   });
 
+  it("redirects a trailing slash to the canonical page URL", async () => {
+    let response = await router.fetch(
+      `http://localhost${routes.jam.index.href()}/`,
+      { redirect: "manual" },
+    );
+
+    expect(response.status).toBe(302);
+    expect(response.headers.get("Location")).toBe(
+      `http://localhost${routes.jam.index.href()}`,
+    );
+  });
+
+  it("rejects protocol-relative-looking paths without redirecting", async () => {
+    let response = await router.fetch("https://remix.run//attacker.example/", {
+      redirect: "manual",
+    });
+
+    expect(response.status).toBe(404);
+    expect(response.headers.has("Location")).toBe(false);
+  });
+
+  it("does not redirect unmatched mutation requests", async () => {
+    let response = await router.fetch(
+      `http://localhost${routes.jam.index.href()}/`,
+      {
+        method: "POST",
+        redirect: "manual",
+      },
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.headers.has("Location")).toBe(false);
+  });
+
   it("maps legacy redirects from the redirects file", async () => {
     let response = await router.fetch("http://localhost/login", {
       redirect: "manual",

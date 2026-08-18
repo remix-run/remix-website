@@ -3,7 +3,7 @@ import path from "node:path";
 import { route } from "remix/routes";
 import { RoutePattern } from "remix/route-pattern";
 import { createHref } from "remix/route-pattern/href";
-import { createRedirectResponse } from "remix/response/redirect";
+import { redirect } from "remix/response/redirect";
 
 let defaultRedirectsPath = path.join(process.cwd(), "_redirects");
 
@@ -105,7 +105,7 @@ function buildRedirectController(configs: RedirectConfig[]): {
       `redirect${i}_${c.from.replaceAll("/", "_").replaceAll("*", "splat")}`,
       ({ params }: { params: Record<string, string | undefined> }) => {
         let url = createHref(c.toPattern, params);
-        return createRedirectResponse(url, { status: c.status });
+        return redirect(url, { status: c.status });
       },
     ]),
   );

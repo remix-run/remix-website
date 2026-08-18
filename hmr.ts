@@ -18,6 +18,8 @@ const hmrRunner = run("server.ts", {
 });
 
 const proxyFetch = createFetchProxy(`http://127.0.0.1:${appPort}`, {
+  fetch: (input, init) =>
+    globalThis.fetch(input, { ...init, redirect: "manual" }),
   xForwardedHeaders: true,
 });
 

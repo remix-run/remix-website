@@ -1,3 +1,5 @@
+import { redirect } from "remix/response/redirect";
+
 import { DOCUMENT_REDIRECT_HEADER } from "./public/document-redirect.ts";
 
 const FRAME_HEADER = "X-Remix-Frame";
@@ -16,5 +18,5 @@ export function documentRedirect(
   }
 
   headers.set("Location", location);
-  return new Response(null, { ...init, headers, status: 303 });
+  return redirect(location, { ...init, headers, status: 303 });
 }

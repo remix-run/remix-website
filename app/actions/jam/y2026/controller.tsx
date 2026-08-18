@@ -1,6 +1,7 @@
 import * as f from "remix/data-schema/form-data";
 import * as s from "remix/data-schema";
 import { SuperHeaders } from "remix/headers";
+import { redirect } from "remix/response/redirect";
 import { createController } from "remix/router";
 
 import { getProduct } from "../../../data/jam-storefront.ts";
@@ -41,11 +42,10 @@ export default createController(routes.jam.y2026, {
         );
       }
 
-      return new Response(null, {
+      return redirect(routes.jam.y2026.index.href(), {
         status: 303,
         headers: new SuperHeaders({
           cacheControl: "no-store",
-          location: routes.jam.y2026.index.href(),
           setCookie: await serializeJam2026ThemePreference(result.value.theme),
         }),
       });
