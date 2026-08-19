@@ -81,6 +81,8 @@ function BlogPostContent(
                   )}
                   src={handle.props.post.image}
                   alt={handle.props.post.imageAlt}
+                  loading="eager"
+                  fetchpriority="high"
                 />
               </div>
               <div class="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-10 lg:max-w-4xl">

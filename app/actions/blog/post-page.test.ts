@@ -31,6 +31,12 @@ describe("Blog post route", () => {
     expect(html).toContain(
       `href="${routes.blog.post.href({ slug: "remix-v2", ext: "md" })}"`,
     );
+
+    let heroImage = [...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g)]
+      .map((match) => match[0])
+      .find((image) => image.includes(`src="${post.image}"`));
+    expect(heroImage).toContain('loading="eager"');
+    expect(heroImage).toContain('fetchpriority="high"');
   });
 
   it("returns 404 for a non-existent slug", async () => {

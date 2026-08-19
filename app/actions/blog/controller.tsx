@@ -127,6 +127,8 @@ function BlogPageContent(
                         class="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
                         src={latestPost.image}
                         alt={latestPost.imageAlt}
+                        loading="eager"
+                        fetchpriority="high"
                       />
                     </div>
                     <div class="flex flex-col gap-4">
@@ -147,6 +149,8 @@ function BlogPageContent(
                           class="h-full w-full object-cover object-top shadow md:rounded-md"
                           src={post.image}
                           alt={post.imageAlt}
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                       <div class="mb-12 flex flex-col gap-4">

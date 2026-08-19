@@ -56,6 +56,7 @@ async function getProcessor(options?: ProcessorOptions) {
     .use(remarkParse)
     .use(plugins.stripLinkExtPlugin, options)
     .use(plugins.remarkCodeBlocksShiki, options)
+    .use(plugins.lazyImages)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeStringify, { allowDangerousHtml: true })
@@ -92,6 +93,40 @@ async function loadPlugins() {
             return SKIP;
           }
         }
+      });
+    };
+  };
+
+  const lazyImages: InternalPlugin<UnistNode.Root, UnistNode.Root> = () => {
+    return function transformer(tree: UnistNode.Root) {
+      let deferImage = (node: Unist.Node) => {
+        let data = (node.data ?? {}) as Unist.Data & {
+          hProperties?: Record<string, unknown>;
+        };
+        data.hProperties = {
+          loading: "lazy",
+          decoding: "async",
+          ...data.hProperties,
+        };
+        node.data = data;
+      };
+
+      visit(tree, "image", deferImage);
+      visit(tree, "imageReference", deferImage);
+      visit(tree, "html", (node: UnistNode.Html) => {
+        node.value = node.value.replace(
+          /<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/gi,
+          (tag) => {
+            let attributes = "";
+            if (!/\sloading\s*=/i.test(tag)) {
+              attributes += ' loading="lazy"';
+            }
+            if (!/\sdecoding\s*=/i.test(tag)) {
+              attributes += ' decoding="async"';
+            }
+            return tag.replace(/^<img\b/i, `<img${attributes}`);
+          },
+        );
       });
     };
   };
@@ -310,6 +345,7 @@ async function loadPlugins() {
 
   return {
     stripLinkExtPlugin,
+    lazyImages,
     remarkCodeBlocksShiki,
   };
 }

@@ -23,5 +23,18 @@ describe("Blog route", () => {
     expect(html).toContain("<title>Remix Blog</title>");
     expect(html).toContain('id="main-content"');
     expect(html).toContain(`action="${routes.api.newsletter.href()}"`);
+
+    let articleImages = [
+      ...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g),
+    ]
+      .map((match) => match[0])
+      .filter((image) => image.includes('src="/blog-images/'));
+    expect(articleImages.length > 1).toBe(true);
+    expect(articleImages[0]).toContain('loading="eager"');
+    expect(articleImages[0]).toContain('fetchpriority="high"');
+    for (let image of articleImages.slice(1)) {
+      expect(image).toContain('loading="lazy"');
+      expect(image).toContain('decoding="async"');
+    }
   });
 });
