@@ -29,8 +29,8 @@ export function Jam2026FloatingTicketCta() {
         <img
           alt=""
           draggable="false"
-          height={1024}
-          width={1024}
+          height={560}
+          width={560}
           src={assetPaths.jam2026.keyring}
           mix={floatingCtaKeysStyle}
         />

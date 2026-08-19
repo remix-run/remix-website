@@ -4,6 +4,7 @@ import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
+import sharp from "sharp";
 import { createAction } from "remix/router";
 import { routes } from "../routes.ts";
 
@@ -31,7 +32,7 @@ export let blogOgImageAction = createAction(
     let pngData;
     try {
       let svg = await createOgImageSVG(request, parsedQuery.value);
-      pngData = renderSvgToPng(svg);
+      pngData = await renderSvgToPng(svg);
     } catch (error) {
       let message = error instanceof Error ? error.message : String(error);
       return new Response(message || "Failed to generate image", {
@@ -266,9 +267,9 @@ function toArrayBuffer(buffer: Buffer): ArrayBuffer {
   ) as ArrayBuffer;
 }
 
-function renderSvgToPng(svg: string): Uint8Array {
-  let resvg = new Resvg(svg);
-  return resvg.render().asPng();
+async function renderSvgToPng(svg: string): Promise<Uint8Array> {
+  let png = new Resvg(svg).render().asPng();
+  return sharp(png).png({ compressionLevel: 9, effort: 6 }).toBuffer();
 }
 
 async function getOgImageAssets(): Promise<OgImageAssets> {

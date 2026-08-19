@@ -1,3 +1,4 @@
+saveExact: true
 minimumReleaseAge: 10800
 minimumReleaseAgeExclude:
   - remix

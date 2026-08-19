@@ -198,6 +198,8 @@ export let JamLineupAccordionItem = clientEntry(
                         src={handle.props.item.imgSrc}
                         alt={handle.props.item.speaker}
                         class="aspect-square w-full rounded-2xl object-cover sm:max-w-none"
+                        loading="lazy"
+                        decoding="async"
                       />
                       {handle.props.item.bio ? (
                         <div
