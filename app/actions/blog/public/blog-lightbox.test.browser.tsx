@@ -17,7 +17,11 @@ describe("BlogLightbox", () => {
     let result = render(
       <div>
         <article class="md-prose">
-          <img src="/favicon.svg" alt="Remix logo" />
+          <img
+            src="/favicon.svg"
+            data-full-src="/full-remix-logo.svg"
+            alt="Remix logo"
+          />
         </article>
         <BlogLightbox />
       </div>,
@@ -45,7 +49,7 @@ describe("BlogLightbox", () => {
       '[aria-label="Close image preview"]',
     )!;
     expect(dialog.hidden).toBe(false);
-    expect(preview.src).toMatch(/\/favicon\.svg$/);
+    expect(preview.src).toMatch(/\/full-remix-logo\.svg$/);
     expect(preview.alt).toBe("Remix logo");
     expect(document.activeElement).toBe(close);
     expect(root.style.overflow).toBe("hidden");

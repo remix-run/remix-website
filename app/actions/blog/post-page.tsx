@@ -5,6 +5,7 @@ import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { BlogLightbox } from "./public/blog-lightbox.tsx";
 import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
+import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
 import type { getBlogPost } from "../../data/blog.ts";
@@ -22,6 +23,7 @@ export function BlogPostPage(
     requestUrl: string;
     slug: string;
     post: Awaited<ReturnType<typeof getBlogPost>>;
+    heroImage: BlogImageAsset;
     socialImageUrl: string;
   }>,
 ) {
@@ -50,7 +52,10 @@ export function BlogPostPage(
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <BlogPostContent post={handle.props.post} />
+        <BlogPostContent
+          post={handle.props.post}
+          heroImage={handle.props.heroImage}
+        />
       </main>
       <Footer />
       <BlogLightbox />
@@ -59,7 +64,10 @@ export function BlogPostPage(
 }
 
 function BlogPostContent(
-  handle: Handle<{ post: Awaited<ReturnType<typeof getBlogPost>> }>,
+  handle: Handle<{
+    post: Awaited<ReturnType<typeof getBlogPost>>;
+    heroImage: BlogImageAsset;
+  }>,
 ) {
   return () => (
     <>
@@ -79,7 +87,11 @@ function BlogPostContent(
                     "h-full w-full object-cover object-top md:rounded-xl",
                     !handle.props.post.imageDisableOverlay && "opacity-40",
                   )}
-                  src={handle.props.post.image}
+                  src={handle.props.heroImage.src}
+                  srcSet={handle.props.heroImage.srcSet}
+                  sizes="(min-width: 768px) 768px, 100vw"
+                  width={handle.props.heroImage.width}
+                  height={handle.props.heroImage.height}
                   alt={handle.props.post.imageAlt}
                   loading="eager"
                   fetchpriority="high"

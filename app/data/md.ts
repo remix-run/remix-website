@@ -14,6 +14,10 @@ import type * as Unist from "unist";
 import type * as Shiki from "shiki";
 import type * as Unified from "unified";
 import themeJson from "../../data/base16.json" with { type: "json" };
+import {
+  getBlogImageAsset,
+  type BlogImageAsset,
+} from "../utils/blog-image-assets.ts";
 
 interface ProcessorOptions {
   resolveHref?(href: string): string;
@@ -56,9 +60,10 @@ async function getProcessor(options?: ProcessorOptions) {
     .use(remarkParse)
     .use(plugins.stripLinkExtPlugin, options)
     .use(plugins.remarkCodeBlocksShiki, options)
-    .use(plugins.lazyImages)
+    .use(plugins.rawBlogImages)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
+    .use(plugins.blogImages)
     .use(rehypeStringify, { allowDangerousHtml: true })
     .use(rehypeSlug)
     .use(rehypeAutolinkHeadings);
@@ -97,37 +102,38 @@ async function loadPlugins() {
     };
   };
 
-  const lazyImages: InternalPlugin<UnistNode.Root, UnistNode.Root> = () => {
-    return function transformer(tree: UnistNode.Root) {
-      let deferImage = (node: Unist.Node) => {
-        let data = (node.data ?? {}) as Unist.Data & {
-          hProperties?: Record<string, unknown>;
-        };
-        data.hProperties = {
-          loading: "lazy",
-          decoding: "async",
-          ...data.hProperties,
-        };
-        node.data = data;
-      };
-
-      visit(tree, "image", deferImage);
-      visit(tree, "imageReference", deferImage);
+  const rawBlogImages: InternalPlugin<UnistNode.Root, UnistNode.Root> = () => {
+    return async function transformer(tree: UnistNode.Root) {
+      let tasks: Promise<void>[] = [];
       visit(tree, "html", (node: UnistNode.Html) => {
-        node.value = node.value.replace(
-          /<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/gi,
-          (tag) => {
-            let attributes = "";
-            if (!/\sloading\s*=/i.test(tag)) {
-              attributes += ' loading="lazy"';
-            }
-            if (!/\sdecoding\s*=/i.test(tag)) {
-              attributes += ' decoding="async"';
-            }
-            return tag.replace(/^<img\b/i, `<img${attributes}`);
-          },
+        tasks.push(
+          transformRawBlogImages(node.value).then((value) => {
+            node.value = value;
+          }),
         );
       });
+      await Promise.all(tasks);
+    };
+  };
+
+  const blogImages: InternalPlugin<Hast.Root, Hast.Root> = () => {
+    return async function transformer(tree: Hast.Root) {
+      let tasks: Promise<void>[] = [];
+      visit(tree, "element", (node: Hast.Element) => {
+        if (node.tagName !== "img") return;
+        let source = node.properties?.src;
+        if (typeof source !== "string") return;
+
+        tasks.push(
+          getBlogImageAsset(source).then((asset) => {
+            node.properties = getBlogImageProperties(
+              node.properties ?? {},
+              asset,
+            );
+          }),
+        );
+      });
+      await Promise.all(tasks);
     };
   };
 
@@ -344,13 +350,110 @@ async function loadPlugins() {
   };
 
   return {
-    stripLinkExtPlugin,
-    lazyImages,
+    blogImages,
+    rawBlogImages,
     remarkCodeBlocksShiki,
+    stripLinkExtPlugin,
   };
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+const BLOG_IMAGE_SIZES = "(min-width: 768px) 768px, 100vw";
+const RAW_IMAGE_PATTERN = /<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/gi;
+
+function getBlogImageProperties(
+  properties: Hast.Properties,
+  asset: BlogImageAsset,
+): Hast.Properties {
+  let next: Hast.Properties = {
+    ...properties,
+    decoding: properties.decoding ?? "async",
+    loading: properties.loading ?? "lazy",
+    src: asset.src,
+  };
+
+  if (asset.width && properties.width == null) next.width = asset.width;
+  if (asset.height && properties.height == null) next.height = asset.height;
+  if (asset.srcSet) {
+    next.srcSet = asset.srcSet;
+    next.sizes = properties.sizes ?? BLOG_IMAGE_SIZES;
+    next["data-full-src"] = asset.src;
+  }
+
+  return next;
+}
+
+async function transformRawBlogImages(html: string): Promise<string> {
+  let matches = [...html.matchAll(RAW_IMAGE_PATTERN)];
+  if (matches.length === 0) return html;
+
+  let replacements = await Promise.all(
+    matches.map(async (match) => {
+      let source = getHtmlAttribute(match[0], "src");
+      let asset = source ? await getBlogImageAsset(source) : undefined;
+      let tag = setHtmlAttribute(match[0], "loading", "lazy", false);
+      tag = setHtmlAttribute(tag, "decoding", "async", false);
+      if (!asset) return tag;
+
+      tag = setHtmlAttribute(tag, "src", asset.src);
+      if (asset.width) {
+        tag = setHtmlAttribute(tag, "width", String(asset.width), false);
+      }
+      if (asset.height) {
+        tag = setHtmlAttribute(tag, "height", String(asset.height), false);
+      }
+      if (asset.srcSet) {
+        tag = setHtmlAttribute(tag, "srcset", asset.srcSet);
+        tag = setHtmlAttribute(tag, "sizes", BLOG_IMAGE_SIZES, false);
+        tag = setHtmlAttribute(tag, "data-full-src", asset.src);
+      }
+      return tag;
+    }),
+  );
+
+  let output = "";
+  let offset = 0;
+  for (let [index, match] of matches.entries()) {
+    let matchIndex = match.index ?? offset;
+    output += html.slice(offset, matchIndex);
+    output += replacements[index];
+    offset = matchIndex + match[0].length;
+  }
+  return output + html.slice(offset);
+}
+
+function getHtmlAttribute(tag: string, name: string): string | undefined {
+  let match = tag.match(
+    new RegExp(`\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)')`, "i"),
+  );
+  return match?.[1] ?? match?.[2];
+}
+
+function setHtmlAttribute(
+  tag: string,
+  name: string,
+  value: string,
+  overwrite = true,
+): string {
+  let pattern = new RegExp(
+    `\\s${name}\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+)`,
+    "i",
+  );
+  if (pattern.test(tag)) {
+    return overwrite
+      ? tag.replace(pattern, ` ${name}="${escapeHtmlAttribute(value)}"`)
+      : tag;
+  }
+  return tag.replace(
+    /^<img\b/i,
+    `<img ${name}="${escapeHtmlAttribute(value)}"`,
+  );
+}
+
+function escapeHtmlAttribute(value: string): string {
+  return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
+}
 
 function parseLineHighlights(param: string | null) {
   if (!param) return [];

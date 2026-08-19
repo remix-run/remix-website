@@ -28,7 +28,7 @@ describe("Blog route", () => {
       ...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g),
     ]
       .map((match) => match[0])
-      .filter((image) => image.includes('src="/blog-images/'));
+      .filter((image) => image.includes('src="/assets/blog-images/'));
     expect(articleImages.length > 1).toBe(true);
     expect(articleImages[0]).toContain('loading="eager"');
     expect(articleImages[0]).toContain('fetchpriority="high"');

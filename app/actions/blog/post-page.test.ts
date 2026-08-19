@@ -1,8 +1,9 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import blogController from "./controller.tsx";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { getBlogPost } from "../../data/blog.ts";
+import { getBlogImageAsset } from "../../utils/blog-image-assets.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { routes } from "../../routes.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 
@@ -32,9 +33,10 @@ describe("Blog post route", () => {
       `href="${routes.blog.post.href({ slug: "remix-v2", ext: "md" })}"`,
     );
 
+    let heroAsset = await getBlogImageAsset(post.image);
     let heroImage = [...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g)]
       .map((match) => match[0])
-      .find((image) => image.includes(`src="${post.image}"`));
+      .find((image) => image.includes(`src="${heroAsset.src}"`));
     expect(heroImage).toContain('loading="eager"');
     expect(heroImage).toContain('fetchpriority="high"');
   });
