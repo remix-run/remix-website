@@ -378,8 +378,8 @@ function getBlogImageProperties(
   if (asset.srcSet) {
     next.srcSet = asset.srcSet;
     next.sizes = properties.sizes ?? BLOG_IMAGE_SIZES;
-    next["data-full-src"] = asset.src;
   }
+  if (asset.fullSrc) next["data-full-src"] = asset.fullSrc;
 
   return next;
 }
@@ -406,7 +406,9 @@ async function transformRawBlogImages(html: string): Promise<string> {
       if (asset.srcSet) {
         tag = setHtmlAttribute(tag, "srcset", asset.srcSet);
         tag = setHtmlAttribute(tag, "sizes", BLOG_IMAGE_SIZES, false);
-        tag = setHtmlAttribute(tag, "data-full-src", asset.src);
+      }
+      if (asset.fullSrc) {
+        tag = setHtmlAttribute(tag, "data-full-src", asset.fullSrc);
       }
       return tag;
     }),

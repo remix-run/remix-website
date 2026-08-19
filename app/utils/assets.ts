@@ -18,10 +18,16 @@ export let assets = createAssetServer({
   rootDir,
   fileMap: {
     "/app/*path": "app/*path",
+    "/authors/*path": "public/authors/*path",
     "/blog-images/*path": "public/blog-images/*path",
     "/npm/*path": "node_modules/*path",
   },
-  allowFiles: ["app/routes.ts", "app/**/public/**", "public/blog-images/**"],
+  allowFiles: [
+    "app/routes.ts",
+    "app/**/public/**",
+    "public/authors/**",
+    "public/blog-images/**",
+  ],
   allowPackages: ["remix", "three", "fathom-client"],
   denyFiles: ["app/**/*.test.*"],
   target: {
@@ -45,6 +51,8 @@ export let assets = createAssetServer({
     maxRequestTransforms: 1,
     transforms: {
       webp: createWebpTransform(),
+      "webp-64": createWebpTransform(64),
+      "webp-128": createWebpTransform(128),
       "webp-480": createWebpTransform(480),
       "webp-768": createWebpTransform(768),
       "webp-1200": createWebpTransform(1200),

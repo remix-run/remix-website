@@ -7,7 +7,10 @@ import { Header } from "../../ui/header.tsx";
 import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
 import { routes } from "../../routes.ts";
 import { getBlogPostListings } from "../../data/blog.ts";
-import { getBlogImageAsset } from "../../utils/blog-image-assets.ts";
+import {
+  getAuthorImageAsset,
+  getBlogImageAsset,
+} from "../../utils/blog-image-assets.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
@@ -61,12 +64,14 @@ export default createController(routes.blog, {
         throw error;
       }
 
+      let images = await loadBlogPostImages(post);
+
       return render(
         <BlogPostPage
           requestUrl={request.url}
           slug={slug}
           post={post}
-          heroImage={await getBlogImageAsset(post.image)}
+          images={images}
           socialImageUrl={getPostSocialImageUrl(post, slug, request.url)}
         />,
         { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
@@ -233,6 +238,25 @@ async function loadBlogPostListings() {
       imageAsset: await getBlogImageAsset(post.image),
     })),
   );
+}
+
+async function loadBlogPostImages(
+  post: Awaited<ReturnType<typeof getBlogPost>>,
+) {
+  let [hero, authorEntries] = await Promise.all([
+    getBlogImageAsset(post.image),
+    Promise.all(
+      post.authors.map(
+        async (author) =>
+          [author.avatar, await getAuthorImageAsset(author.avatar)] as const,
+      ),
+    ),
+  ]);
+
+  return {
+    authors: Object.fromEntries(authorEntries),
+    hero,
+  };
 }
 
 function getPostSocialImageUrl(

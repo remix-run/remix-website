@@ -37,20 +37,21 @@ describe("browser asset boundary", () => {
     expect(failures).toEqual([]);
   });
 
-  it("serves constrained WebP transforms for blog images", async () => {
-    let imagePath = path.join(
-      rootDir,
-      "public/blog-images/social-background.png",
-    );
-    let href = await assets.getHref(imagePath, {
-      transform: ["webp-480"],
-    });
-    let response = await assets.fetch(
-      new Request(new URL(href, "http://localhost")),
-    );
+  it("serves constrained WebP transforms for blog and author images", async () => {
+    for (let [imagePath, transform] of [
+      ["public/blog-images/social-background.png", "webp-480"],
+      ["public/authors/profile-jacob-ebey.png", "webp-128"],
+    ] as const) {
+      let href = await assets.getHref(path.join(rootDir, imagePath), {
+        transform: [transform],
+      });
+      let response = await assets.fetch(
+        new Request(new URL(href, "http://localhost")),
+      );
 
-    expect(response?.status).toBe(200);
-    expect(response?.headers.get("Content-Type")).toBe("image/webp");
+      expect(response?.status).toBe(200);
+      expect(response?.headers.get("Content-Type")).toBe("image/webp");
+    }
 
     let invalidResponse = await assets.fetch(
       new Request(
