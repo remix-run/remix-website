@@ -7,7 +7,6 @@ import { CACHE_CONTROL } from "../utils/cache-control.ts";
 import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
-import { NewsletterPage } from "./newsletter.tsx";
 
 export default createController(routes, {
   actions: {
@@ -45,12 +44,6 @@ export default createController(routes, {
           "Cache-Control": "no-store",
           "Content-Type": "text/plain; charset=utf-8",
         },
-      });
-    },
-
-    newsletter({ render, request }) {
-      return render(<NewsletterPage requestUrl={request.url} />, {
-        headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
       });
     },
   },

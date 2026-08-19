@@ -5,7 +5,20 @@ import { beforeEach, describe, it } from "remix/test";
 import { DOCUMENT_REDIRECT_HEADER } from "../app/actions/public/document-redirect.ts";
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
+import type { NewsletterRepository } from "../app/data/newsletters.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
+
+let emptyNewsletterRepository: NewsletterRepository = {
+  async listSummaries() {
+    return [];
+  },
+  async getIssue() {
+    return null;
+  },
+  async getImage() {
+    return null;
+  },
+};
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -63,7 +76,9 @@ describe("Navigation", () => {
   let router: ReturnType<typeof createAppRouter>;
 
   beforeEach(() => {
-    router = createAppRouter();
+    router = createAppRouter({
+      newsletterRepository: emptyNewsletterRepository,
+    });
   });
 
   it("home/blog navigation stays client-side and applies forced dark mode", async (t) => {
@@ -118,7 +133,7 @@ describe("Navigation", () => {
         headers: { [DOCUMENT_REDIRECT_HEADER]: routes.brand.href() },
       });
     });
-    await page.goto(routes.newsletter.href());
+    await page.goto(routes.newsletter.index.href());
     await markPage(page);
 
     await page.evaluate((newsletterAction) => {

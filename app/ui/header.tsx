@@ -8,6 +8,7 @@ const LINKS: Array<{ to: string; label: string }> = [
   { to: "https://guides.remix.run", label: "Guides" },
   { to: "https://api.remix.run", label: "API" },
   { to: routes.blog.index.href(), label: "Blog" },
+  { to: routes.newsletter.index.href(), label: "Newsletter" },
   { to: routes.jam.y2026.index.href(), label: "Jam" },
   { to: "https://shop.remix.run", label: "Store" },
   { to: "https://github.com/remix-run/remix", label: "GitHub" },
@@ -29,7 +30,7 @@ export function Header() {
         />
 
         <nav
-          class="hidden h-full items-center gap-5 sm:flex min-[900px]:gap-8"
+          class="hidden h-full items-center gap-5 min-[900px]:flex min-[900px]:gap-6"
           aria-label="Main"
         >
           {LINKS.map((link) => (
@@ -39,7 +40,7 @@ export function Header() {
           ))}
         </nav>
 
-        <MobileMenu class="sm:hidden">
+        <MobileMenu class="min-[900px]:hidden">
           {LINKS.map((link) => (
             <HeaderLink key={link.to} to={link.to}>
               {link.label}

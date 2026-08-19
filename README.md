@@ -51,6 +51,17 @@ pnpm run push:stage
 
 ## Content
 
+### Newsletter Archive
+
+- The `/newsletter` archive renders issues from the private
+  `remix-run/newsletter` GitHub repository at runtime via a single tarball
+  fetch.
+- Because the repo is currently private, set `NEWSLETTER_GITHUB_TOKEN` (see
+  `.env.example`) locally and in production to enable archive rendering.
+  Without it, `/newsletter` returns a 503 when no cached snapshot exists.
+- Issue directories are strict integers (`newsletter-<N>`); markdown
+  filenames carry the UTC publication date (`YYYY-MM-DD-remix-newsletter-N.md`).
+
 ### Authoring Blog Posts
 
 - Add a markdown file at `data/posts/{slug}.md`.

@@ -4,6 +4,20 @@ import { getBlogImageAsset } from "../utils/blog-image-assets.ts";
 import { processMarkdown } from "./md.ts";
 
 describe("Markdown images", () => {
+  it("uses the current request's image resolver with a cached processor", async () => {
+    let first = await processMarkdown("![First](cover.png)", {
+      allowHtml: false,
+      resolveImageUrl: () => "/newsletter/1/image/cover.png",
+    });
+    let second = await processMarkdown("![Second](cover.png)", {
+      allowHtml: false,
+      resolveImageUrl: () => "/newsletter/2/image/cover.png",
+    });
+
+    expect(first.html).toContain('src="/newsletter/1/image/cover.png"');
+    expect(second.html).toContain('src="/newsletter/2/image/cover.png"');
+  });
+
   it("optimizes and defers Markdown and trusted HTML images", async () => {
     let { html } = await processMarkdown(`
 ![Markdown image](/blog-images/social-background.png)

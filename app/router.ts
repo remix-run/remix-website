@@ -28,6 +28,11 @@ import jam2025GalleryController from "./actions/jam/y2025/gallery/controller.tsx
 import jam2025TicketController from "./actions/jam/y2025/ticket/controller.tsx";
 import jam2026Controller from "./actions/jam/y2026/controller.tsx";
 import jam2026TicketController from "./actions/jam/y2026/ticket/controller.tsx";
+import { createNewsletterController } from "./actions/newsletter/controller.tsx";
+import {
+  getLiveNewsletterRepository,
+  type NewsletterRepository,
+} from "./data/newsletters.ts";
 import remixHistoryController from "./actions/remix-history/controller.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
@@ -89,7 +94,11 @@ declare module "remix/router" {
   }
 }
 
-export function createAppRouter() {
+export function createAppRouter(
+  options: {
+    newsletterRepository?: NewsletterRepository;
+  } = {},
+) {
   let appRouter = createRouter({
     middleware: createAppMiddleware(),
     defaultHandler: catchallHandler,
@@ -105,6 +114,12 @@ export function createAppRouter() {
   appRouter.map(routes.jam.y2025.ticket, jam2025TicketController);
   appRouter.map(routes.jam.y2026, jam2026Controller);
   appRouter.map(routes.jam.y2026.ticket, jam2026TicketController);
+  appRouter.map(
+    routes.newsletter,
+    createNewsletterController(
+      options.newsletterRepository ?? getLiveNewsletterRepository(),
+    ),
+  );
 
   let redirects = loadRedirectsFromFile();
   let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);

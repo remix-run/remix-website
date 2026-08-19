@@ -21,21 +21,50 @@ import {
 
 interface ProcessorOptions {
   resolveHref?(href: string): string;
+  /**
+   * Rewrite relative Markdown image src values (for example, to a route that
+   * serves the image). External URLs are left untouched. Defaults to leaving
+   * image src values as-is.
+   */
+  resolveImageUrl?(url: string): string;
+  /**
+   * Allow raw HTML in the source markdown to pass through to the output.
+   * Defaults to `true` to preserve existing blog/Jam behavior. Set to `false`
+   * for untrusted remote markdown so raw HTML is dropped.
+   */
+  allowHtml?: boolean;
 }
 
-let processor: Awaited<ReturnType<typeof getProcessor>>;
+type Processor = Awaited<ReturnType<typeof getProcessor>>;
+
+// Cache processors by `allowHtml` so blog/Jam (allowHtml: true) and remote
+// newsletter markdown (allowHtml: false) each reuse their own processor.
+let processors = new Map<boolean, Promise<Processor>>();
+
 export async function processMarkdown(
   content: string,
   options?: ProcessorOptions,
 ) {
-  processor = processor || (await getProcessor(options));
+  let processor = await getProcessorFor(options);
   let { attributes, body: raw } = parseFrontMatter(content);
-  let vfile = await processor.process(raw);
+  let vfile = await processor.process({
+    value: raw,
+    data: { processorOptions: options ?? {} },
+  });
   let html = vfile.value.toString();
   return { attributes, raw, html };
 }
 
-async function getProcessor(options?: ProcessorOptions) {
+function getProcessorFor(options?: ProcessorOptions): Promise<Processor> {
+  let allowHtml = options?.allowHtml !== false;
+  let cached = processors.get(allowHtml);
+  if (cached) return cached;
+  let promise = getProcessor(allowHtml);
+  processors.set(allowHtml, promise);
+  return promise;
+}
+
+async function getProcessor(allowHtml: boolean) {
   let [
     { unified },
     { default: remarkGfm },
@@ -56,15 +85,23 @@ async function getProcessor(options?: ProcessorOptions) {
     loadPlugins(),
   ]);
 
-  return unified()
+  let processor = unified()
     .use(remarkParse)
-    .use(plugins.stripLinkExtPlugin, options)
-    .use(plugins.remarkCodeBlocksShiki, options)
-    .use(plugins.rawBlogImages)
+    .use(plugins.stripLinkExtPlugin)
+    .use(plugins.rewriteImages)
+    .use(plugins.remarkCodeBlocksShiki);
+
+  if (allowHtml) processor.use(plugins.rawBlogImages);
+
+  processor
+    .use(plugins.lazyImages)
     .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(plugins.blogImages)
-    .use(rehypeStringify, { allowDangerousHtml: true })
+    .use(remarkRehype, { allowDangerousHtml: allowHtml });
+
+  if (allowHtml) processor.use(plugins.blogImages);
+
+  return processor
+    .use(rehypeStringify, { allowDangerousHtml: allowHtml })
     .use(rehypeSlug)
     .use(rehypeAutolinkHeadings);
 }
@@ -72,7 +109,7 @@ async function getProcessor(options?: ProcessorOptions) {
 type InternalPlugin<
   Input extends string | Unist.Node | undefined,
   Output,
-> = Unified.Plugin<[ProcessorOptions?], Input, Output>;
+> = Unified.Plugin<[], Input, Output>;
 
 async function loadPlugins() {
   let [{ visit, SKIP }, { htmlEscape }] = await Promise.all([
@@ -80,10 +117,12 @@ async function loadPlugins() {
     import("escape-goat"),
   ]);
 
-  const stripLinkExtPlugin: InternalPlugin<UnistNode.Root, UnistNode.Root> = (
-    options = {},
-  ) => {
-    return async function transformer(tree: UnistNode.Root) {
+  const stripLinkExtPlugin: InternalPlugin<
+    UnistNode.Root,
+    UnistNode.Root
+  > = () => {
+    return async function transformer(tree: UnistNode.Root, file: any) {
+      let options = (file.data.processorOptions ?? {}) as ProcessorOptions;
       visit(tree, "link", (node, index, parent) => {
         if (
           options.resolveHref &&
@@ -102,9 +141,57 @@ async function loadPlugins() {
     };
   };
 
+  const rewriteImages: InternalPlugin<UnistNode.Root, UnistNode.Root> = () => {
+    return function transformer(tree: UnistNode.Root, file: any) {
+      let options = (file.data.processorOptions ?? {}) as ProcessorOptions;
+      let resolveImageUrl = options.resolveImageUrl;
+      if (!resolveImageUrl) return;
+      visit(tree, "image", (node) => {
+        if (typeof node.url === "string" && isRelativeUrl(node.url)) {
+          node.url = resolveImageUrl(node.url);
+        }
+      });
+    };
+  };
+
+  const lazyImages: InternalPlugin<UnistNode.Root, UnistNode.Root> = () => {
+    return function transformer(tree: UnistNode.Root) {
+      let deferImage = (node: Unist.Node) => {
+        let data = (node.data ?? {}) as Unist.Data & {
+          hProperties?: Record<string, unknown>;
+        };
+        data.hProperties = {
+          loading: "lazy",
+          decoding: "async",
+          ...data.hProperties,
+        };
+        node.data = data;
+      };
+
+      visit(tree, "image", deferImage);
+      visit(tree, "imageReference", deferImage);
+      visit(tree, "html", (node: UnistNode.Html) => {
+        node.value = node.value.replace(
+          /<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/gi,
+          (tag) => {
+            let attributes = "";
+            if (!/\sloading\s*=/i.test(tag)) {
+              attributes += ' loading="lazy"';
+            }
+            if (!/\sdecoding\s*=/i.test(tag)) {
+              attributes += ' decoding="async"';
+            }
+            return tag.replace(/^<img\b/i, `<img${attributes}`);
+          },
+        );
+      });
+    };
+  };
+
   const rawBlogImages: InternalPlugin<UnistNode.Root, UnistNode.Root> = () => {
     return async function transformer(tree: UnistNode.Root) {
       let tasks: Promise<void>[] = [];
+
       visit(tree, "html", (node: UnistNode.Html) => {
         tasks.push(
           transformRawBlogImages(node.value).then((value) => {
@@ -351,8 +438,10 @@ async function loadPlugins() {
 
   return {
     blogImages,
+    lazyImages,
     rawBlogImages,
     remarkCodeBlocksShiki,
+    rewriteImages,
     stripLinkExtPlugin,
   };
 }

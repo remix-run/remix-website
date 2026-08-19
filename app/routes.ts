@@ -36,5 +36,9 @@ export let routes = route({
       ticket: form("ticket"),
     }),
   }),
-  newsletter: get("/newsletter"),
+  newsletter: route("newsletter", {
+    index: get("/"),
+    issue: get(":number"),
+    image: get(":number/image/:filename"),
+  }),
 });

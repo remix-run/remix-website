@@ -5,6 +5,7 @@ node_modules
 /public/styles
 /app/styles/public/generated
 /.env
+/.env.local
 
 /NOTES.md
 
