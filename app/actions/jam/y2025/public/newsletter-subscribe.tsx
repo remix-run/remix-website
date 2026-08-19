@@ -10,7 +10,7 @@ export let JamNewsletterSubscribeForm = clientEntry(
 
     return () => (
       <form
-        action={routes.api.newsletter.href()}
+        action={routes.newsletter.subscribe.href()}
         method="post"
         class={handle.props.class}
         mix={[form.submit]}

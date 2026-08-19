@@ -125,21 +125,26 @@ describe("Jam", () => {
     let page = await t.serve(await createTestServer(handler));
     let submittedEmail: string | null = null;
     let submittedTag: string | null = null;
-    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
-      let submittedBody = new URLSearchParams(route.request().postData() ?? "");
-      submittedEmail = submittedBody.get("email");
-      submittedTag = submittedBody.get("tag");
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({ ok: true, error: null }),
-      });
-    });
+    await page.route(
+      `**${routes.newsletter.subscribe.href()}`,
+      async (route) => {
+        let submittedBody = new URLSearchParams(
+          route.request().postData() ?? "",
+        );
+        submittedEmail = submittedBody.get("email");
+        submittedTag = submittedBody.get("tag");
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ ok: true, error: null }),
+        });
+      },
+    );
 
     await page.goto(routes.jam.y2025.index.href());
     await waitForClientEntryHydration(
       page,
-      `form[action="${routes.api.newsletter.href()}"]`,
+      `form[action="${routes.newsletter.subscribe.href()}"]`,
     );
 
     let emailInput = page.getByPlaceholder("your@email.com");

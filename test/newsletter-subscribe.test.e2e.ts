@@ -25,27 +25,34 @@ let emptyNewsletterRepository: NewsletterRepository = {
 function waitForNewsletterHydration(page: import("@playwright/test").Page) {
   return waitForClientEntryHydration(
     page,
-    `form[action="${routes.api.newsletter.href()}"]`,
+    `form[action="${routes.newsletter.subscribe.href()}"]`,
   );
 }
 
 describe("Newsletter page (/newsletter)", () => {
-  it("submits to /_actions/newsletter and shows success", async (t) => {
+  it("submits to /newsletter and shows success", async (t) => {
     let handler = swallowAbortErrors(
       createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
     );
     let page = await t.serve(await createTestServer(handler));
     let submittedEmail: string | null = null;
 
-    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
-      let body = new URLSearchParams(route.request().postData() ?? "");
-      submittedEmail = body.get("email");
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({ ok: true, error: null }),
-      });
-    });
+    await page.route(
+      `**${routes.newsletter.subscribe.href()}`,
+      async (route) => {
+        if (route.request().method() !== "POST") {
+          await route.continue();
+          return;
+        }
+        let body = new URLSearchParams(route.request().postData() ?? "");
+        submittedEmail = body.get("email");
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ ok: true, error: null }),
+        });
+      },
+    );
 
     await page.goto(routes.newsletter.index.href());
     await waitForNewsletterHydration(page);
@@ -66,13 +73,20 @@ describe("Newsletter page (/newsletter)", () => {
       createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
     );
     let page = await t.serve(await createTestServer(handler));
-    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
-      await route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ ok: false, error: "Something went wrong" }),
-      });
-    });
+    await page.route(
+      `**${routes.newsletter.subscribe.href()}`,
+      async (route) => {
+        if (route.request().method() !== "POST") {
+          await route.continue();
+          return;
+        }
+        await route.fulfill({
+          status: 500,
+          contentType: "application/json",
+          body: JSON.stringify({ ok: false, error: "Something went wrong" }),
+        });
+      },
+    );
 
     await page.goto(routes.newsletter.index.href());
     await waitForNewsletterHydration(page);

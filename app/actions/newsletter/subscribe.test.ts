@@ -4,7 +4,20 @@ import { expect } from "remix/assert";
 import { routes } from "../../routes.ts";
 import { newsletterTagIds } from "../../utils/public/newsletter-tags.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
-import apiController from "./controller.tsx";
+import type { NewsletterRepository } from "../../data/newsletters.ts";
+import { createNewsletterController } from "./controller.tsx";
+
+const emptyRepository: NewsletterRepository = {
+  async listSummaries() {
+    return [];
+  },
+  async getIssue() {
+    return null;
+  },
+  async getImage() {
+    return null;
+  },
+};
 
 describe("Newsletter subscribe route", () => {
   let hadConvertKitKey = false;
@@ -26,13 +39,16 @@ describe("Newsletter subscribe route", () => {
 
   async function submitNewsletter(body: URLSearchParams) {
     let router = createRouteTestRouter();
-    router.map(routes.api, apiController);
+    router.map(routes.newsletter, createNewsletterController(emptyRepository));
 
     return router.fetch(
-      new Request(`http://localhost:3000${routes.api.newsletter.href()}`, {
-        method: "POST",
-        body,
-      }),
+      new Request(
+        `http://localhost:3000${routes.newsletter.subscribe.href()}`,
+        {
+          method: "POST",
+          body,
+        },
+      ),
     );
   }
 

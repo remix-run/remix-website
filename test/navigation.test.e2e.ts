@@ -127,12 +127,19 @@ describe("Navigation", () => {
   it("hands enhanced document redirects back to the browser", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
-      await route.fulfill({
-        status: 204,
-        headers: { [DOCUMENT_REDIRECT_HEADER]: routes.brand.href() },
-      });
-    });
+    await page.route(
+      `**${routes.newsletter.subscribe.href()}`,
+      async (route) => {
+        if (route.request().method() !== "POST") {
+          await route.continue();
+          return;
+        }
+        await route.fulfill({
+          status: 204,
+          headers: { [DOCUMENT_REDIRECT_HEADER]: routes.brand.href() },
+        });
+      },
+    );
     await page.goto(routes.newsletter.index.href());
     await markPage(page);
 
@@ -142,7 +149,7 @@ describe("Navigation", () => {
       form.method = "post";
       document.body.append(form);
       form.requestSubmit();
-    }, routes.api.newsletter.href());
+    }, routes.newsletter.subscribe.href());
 
     await page.waitForURL(`**${routes.brand.href()}`);
     await expect(page.locator("main")).toBeVisible();

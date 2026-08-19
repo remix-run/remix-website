@@ -8,7 +8,7 @@ describe("submitNewsletterRequest", () => {
   it("posts form-urlencoded newsletter data", async () => {
     let captured: { input?: RequestInfo | URL; init?: RequestInit } = {};
     let result = await submitNewsletterRequest({
-      action: routes.api.newsletter.href(),
+      action: routes.newsletter.subscribe.href(),
       formData: newsletterFormData(),
       signal: new AbortController().signal,
       fetchImpl: async (input, init) => {
@@ -18,7 +18,7 @@ describe("submitNewsletterRequest", () => {
     });
 
     expect(result).toEqual({ status: "success", shouldReset: true });
-    expect(String(captured.input)).toBe(routes.api.newsletter.href());
+    expect(String(captured.input)).toBe(routes.newsletter.subscribe.href());
     expect(captured.init?.method).toBe("POST");
     expect(captured.init?.headers).toEqual({
       Accept: "application/json",

@@ -1,9 +1,6 @@
 import { form, get, post, route } from "remix/routes";
 
 export let routes = route({
-  api: route("_actions", {
-    newsletter: post("/newsletter"),
-  }),
   assets: get("/assets/*path"),
   blog: route("blog", {
     index: get("/"),
@@ -38,6 +35,7 @@ export let routes = route({
   }),
   newsletter: route("newsletter", {
     index: get("/"),
+    subscribe: post("/"),
     issue: get(":number"),
     image: get(":number/image/:filename"),
   }),

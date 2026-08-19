@@ -97,7 +97,7 @@ describe("Newsletter index route", () => {
     expect(html).toContain("<title>Remix Newsletter</title>");
     expect(html).toContain('style="color-scheme: light dark;"');
     expect(html).not.toContain('data-theme="dark"');
-    expect(html).toContain(`action="${routes.api.newsletter.href()}"`);
+    expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
     expect(html).toContain('aria-label="Newsletter archive"');
 
     // Issue links appear newest-first.
@@ -160,7 +160,7 @@ describe("Newsletter issue route", () => {
     expect(html).not.toContain("<script>alert(1)</script>");
 
     // Signup form present on the detail page.
-    expect(html).toContain(`action="${routes.api.newsletter.href()}"`);
+    expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
   });
 
   it("returns 404 for a missing issue", async () => {

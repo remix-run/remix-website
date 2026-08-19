@@ -507,7 +507,7 @@ export let LandingNewsletterSubscribeForm = clientEntry(
     return () => (
       <>
         <form
-          action={routes.api.newsletter.href()}
+          action={routes.newsletter.subscribe.href()}
           method="post"
           mix={[subscribeFormStyles, form.submit]}
         >

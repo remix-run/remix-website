@@ -19,7 +19,6 @@ import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes.ts";
 
 import rootController from "./actions/controller.tsx";
-import apiController from "./actions/api/controller.tsx";
 import blogController from "./actions/blog/controller.tsx";
 import { catchallHandler } from "./actions/catchall.tsx";
 import jamController from "./actions/jam/controller.ts";
@@ -105,7 +104,6 @@ export function createAppRouter(
   });
 
   appRouter.map(routes, rootController);
-  appRouter.map(routes.api, apiController);
   appRouter.map(routes.blog, blogController);
   appRouter.map(routes.remixHistory, remixHistoryController);
   appRouter.map(routes.jam, jamController);

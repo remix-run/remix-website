@@ -27,7 +27,7 @@ export let Jam2026NewsletterSignup = clientEntry(
             and speaker line up for Remix Jam 2026.
           </p>
           <form
-            action={routes.api.newsletter.href()}
+            action={routes.newsletter.subscribe.href()}
             method="post"
             data-state={form.state.status}
             mix={[newsletterFormStyle, form.submit]}

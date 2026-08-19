@@ -21,6 +21,6 @@ describe("Remix history route", () => {
 
     let html = await response.text();
     expect(html).toContain('id="main-content"');
-    expect(html).toContain(`action="${routes.api.newsletter.href()}"`);
+    expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
   });
 });
