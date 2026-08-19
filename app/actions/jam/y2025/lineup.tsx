@@ -96,6 +96,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                         alt={item.speaker}
                         class="col-span-full aspect-square w-full rounded-2xl object-cover"
                         loading="lazy"
+                        decoding="async"
                       />
                     ) : null}
                     {item.bio ? (

@@ -313,6 +313,8 @@ export let Jam2026PhotoMoments = clientEntry(
                         draggable={false}
                         loading="eager"
                         src={moment.src}
+                        width={400}
+                        height={400}
                       />
                     </a>
                   ) : (
@@ -323,6 +325,8 @@ export let Jam2026PhotoMoments = clientEntry(
                         draggable={false}
                         loading="eager"
                         src={moment.src}
+                        width={400}
+                        height={400}
                       />
                     </div>
                   )}
