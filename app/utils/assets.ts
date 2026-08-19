@@ -26,7 +26,7 @@ export let assets = createAssetServer({
   },
   fingerprint: isProduction ? { buildId: getBuildId() } : undefined,
   sourceMaps: isDevelopment ? "external" : undefined,
-  minify: isProduction,
+  minify: false,
   hmr: isHmr
     ? async () =>
         (await import("remix/node-hmr/runtime")).createBrowserHmrChannel()
