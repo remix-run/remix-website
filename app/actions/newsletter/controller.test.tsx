@@ -187,8 +187,8 @@ describe("Newsletter issue route", () => {
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     let html = await response.text();
 
-    // Backlink to the archive and md-prose container present.
-    expect(html).toContain(`href="${routes.newsletter.index.href()}"`);
+    // Issue content starts with its date/title and the md-prose container.
+    expect(html).not.toContain("← Newsletter archive");
     expect(html).toContain('class="md-prose"');
     expect([...html.matchAll(/<h1\b/g)].length).toBe(1);
 

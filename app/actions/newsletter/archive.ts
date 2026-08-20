@@ -1,3 +1,4 @@
+import parseFrontMatter from "front-matter";
 import { detectMimeType } from "remix/mime";
 import { parseTar } from "remix/tar-parser";
 
@@ -71,6 +72,7 @@ interface ParsedIssue {
   number: number;
   date: Date;
   title: string;
+  preview: string;
   markdown: string;
 }
 
@@ -145,9 +147,16 @@ export function parseNewsletterSnapshot(
     }
 
     let markdown = new TextDecoder().decode(markdownEntry.bytes);
+    let frontmatter = readNewsletterFrontmatter(markdown);
     let title = extractTitle(markdown, number);
 
-    issues.push({ number, date, title, markdown });
+    issues.push({
+      number,
+      date,
+      title,
+      preview: getNewsletterPreview(frontmatter),
+      markdown,
+    });
   }
 
   issues.sort((a, b) => b.number - a.number);
@@ -175,7 +184,7 @@ export function parseNewsletterSnapshot(
     return {
       number: issue.number,
       date: issue.date,
-      preview: extractNewsletterPreview(issue.markdown),
+      preview: issue.preview,
       image: image
         ? {
             src: routes.newsletter.image.href({
@@ -223,55 +232,37 @@ export async function collectNewsletterFiles(
   return files;
 }
 
+interface NewsletterFrontmatter {
+  previewText?: unknown;
+}
+
+function readNewsletterFrontmatter(markdown: string): NewsletterFrontmatter {
+  try {
+    let { attributes } = parseFrontMatter<Record<string, unknown>>(markdown);
+    if (
+      !attributes ||
+      typeof attributes !== "object" ||
+      Array.isArray(attributes)
+    ) {
+      return {};
+    }
+    return attributes;
+  } catch {
+    return {};
+  }
+}
+
+function getNewsletterPreview(frontmatter: NewsletterFrontmatter): string {
+  return typeof frontmatter.previewText === "string"
+    ? frontmatter.previewText.trim()
+    : "";
+}
+
 function extractTitle(markdown: string, fallbackNumber: number): string {
-  // Prefer an explicit H1 in the body, then frontmatter title, then fallback.
+  // Prefer an explicit H1 in the body, then use the issue number as fallback.
   let h1 = markdown.match(/^#\s+(.+)$/m);
   if (h1) return h1[1].trim();
   return `Remix Newsletter #${fallbackNumber}`;
-}
-
-/**
- * Build a short plaintext preview from newsletter markdown, skipping
- * frontmatter, headings, images, and code blocks. Exported for testing.
- */
-export function extractNewsletterPreview(
-  markdown: string,
-  maxLength = 180,
-): string {
-  let body = stripFrontmatter(markdown);
-  let paragraphs = body.split(/\n\s*\n/);
-  for (let paragraph of paragraphs) {
-    let trimmed = paragraph.trim();
-    if (
-      !trimmed ||
-      trimmed.startsWith("#") ||
-      trimmed.startsWith("!") ||
-      trimmed.startsWith("```")
-    ) {
-      continue;
-    }
-    let text = trimmed
-      .replace(/`([^`]+)`/g, "$1")
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-      .replace(/\*\*([^*]+)\*\*/g, "$1")
-      .replace(/\*([^*]+)\*/g, "$1")
-      .trim();
-    if (!text) continue;
-    if (text.length > maxLength) {
-      let cut = text.substring(0, maxLength);
-      let lastSentenceEnd = Math.max(
-        cut.lastIndexOf("."),
-        cut.lastIndexOf("!"),
-        cut.lastIndexOf("?"),
-      );
-      if (lastSentenceEnd > maxLength * 0.5) {
-        return cut.substring(0, lastSentenceEnd + 1);
-      }
-      return `${cut.trim()}...`;
-    }
-    return text;
-  }
-  return "";
 }
 
 /** Return the first safe, same-directory raster image in newsletter Markdown. */

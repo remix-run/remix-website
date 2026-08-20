@@ -32,7 +32,7 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <div class="rmx-page-body container mb-24 mt-8 max-w-full lg:max-w-3xl">
+        <div class="rmx-page-body container mb-24 mt-8 max-w-full lg:max-w-4xl">
           <NewsletterSignupSection
             subscriptionStatus={handle.props.subscriptionStatus}
           />
@@ -72,15 +72,7 @@ export function NewsletterIssuePage(
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <div class="container mb-24 mt-8 max-w-full md:max-w-3xl">
-          <div class="mb-6">
-            <a
-              href={routes.newsletter.index.href()}
-              class="rmx-page-meta text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-            >
-              ← Newsletter archive
-            </a>
-          </div>
+        <div class="container mb-24 mt-16 max-w-full md:max-w-3xl">
           <div class="rmx-page-meta text-gray-500 dark:text-gray-400">
             <time dateTime={issue.date.toISOString()}>
               {formatNewsletterDate(issue.date)}
@@ -119,7 +111,7 @@ function NewsletterSignupSection(
         like Remix and React Router. We respect your privacy, unsubscribe at any
         time.
       </p>
-      <div class="mt-9 max-w-2xl">
+      <div class="mt-9">
         <NewsletterSubscribe status={handle.props.subscriptionStatus} />
       </div>
     </section>
@@ -153,22 +145,22 @@ function NewsletterArchive(
                 class={cx(
                   "group grid gap-5 text-gray-900 dark:text-gray-100",
                   summary.image
-                    ? "sm:grid-cols-[minmax(0,1fr)_12rem] sm:items-start"
+                    ? "md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-start"
                     : null,
                 )}
               >
-                <div>
+                <div class="flex flex-col gap-4">
                   <time
                     dateTime={summary.date.toISOString()}
                     class="rmx-page-meta text-gray-500 dark:text-gray-400"
                   >
                     {formatNewsletterDate(summary.date)}
                   </time>
-                  <h3 class="rmx-page-title rmx-page-title-xs mt-3 transition-colors group-hover:text-red-brand">
+                  <h3 class="rmx-page-title rmx-page-title-xs transition-colors group-hover:text-red-brand">
                     Remix Newsletter #{summary.number}
                   </h3>
                   {summary.preview ? (
-                    <p class="rmx-page-body mt-2 text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100">
+                    <p class="rmx-page-body text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100">
                       {summary.preview}
                     </p>
                   ) : null}
@@ -177,7 +169,7 @@ function NewsletterArchive(
                   <img
                     src={summary.image.src}
                     alt={summary.image.alt}
-                    class="aspect-video w-full object-cover shadow sm:rounded-md"
+                    class="aspect-[16/9] w-full object-cover object-top shadow md:rounded-md"
                     loading={index === 0 ? "eager" : "lazy"}
                     decoding={index === 0 ? "sync" : "async"}
                     fetchpriority={index === 0 ? "high" : undefined}

@@ -6,7 +6,6 @@ import { routes } from "../../routes.ts";
 import {
   collectNewsletterFiles,
   createGitHubNewsletterRepository,
-  extractNewsletterPreview,
   extractNewsletterPreviewImage,
   isSafeImageFilename,
   parseNewsletterSnapshot,
@@ -14,8 +13,17 @@ import {
   type RawTarFile,
 } from "./archive.ts";
 
-function md(number: number, date: string, body = "Hello world."): string {
-  return `---\ntitle: Remix Newsletter #${number}\n---\n\n# Remix Newsletter #${number}\n\n${body}\n`;
+function md(
+  number: number,
+  date: string,
+  body = "Hello world.",
+  previewText?: string,
+): string {
+  let preview =
+    previewText === undefined
+      ? ""
+      : `previewText: ${JSON.stringify(previewText)}\n`;
+  return `---\ntitle: Remix Newsletter #${number}\n${preview}---\n\n# Remix Newsletter #${number}\n\n${body}\n`;
 }
 
 function issueFile(number: number, date: string, body?: string): RawTarFile {
@@ -114,6 +122,7 @@ describe("parseNewsletterSnapshot", () => {
             7,
             "2025-03-04",
             "![Header art](header.jpg)\n\nThis is the lead paragraph about Remix.",
+            "Generated preview from frontmatter.",
           ),
         ),
       },
@@ -129,7 +138,7 @@ describe("parseNewsletterSnapshot", () => {
       {
         number: 7,
         date: new Date("2025-03-04T00:00:00.000Z"),
-        preview: "This is the lead paragraph about Remix.",
+        preview: "Generated preview from frontmatter.",
         image: {
           src: routes.newsletter.image.href({
             number: 7,
@@ -142,14 +151,29 @@ describe("parseNewsletterSnapshot", () => {
   });
 });
 
-describe("extractNewsletterPreview", () => {
-  it("skips headings, images, and code blocks; truncates long paragraphs", () => {
-    let long = "A".repeat(250);
-    let preview = extractNewsletterPreview(
-      `# Title\n\n![img](a.png)\n\n\`\`\`sh\ncmd\n\`\`\`\n\n${long}`,
-    );
-    expect(preview.length).toBeLessThanOrEqual(183);
-    expect(preview.endsWith("...")).toBe(true);
+describe("frontmatter previews", () => {
+  it("does not derive preview text from the body when metadata is missing or malformed", () => {
+    let snapshot = parseNewsletterSnapshot([
+      {
+        name: "newsletter-1/2024-01-01-remix-newsletter-1.md",
+        type: "file",
+        bytes: new TextEncoder().encode(
+          md(1, "2024-01-01", "This body must not become the preview."),
+        ),
+      },
+      {
+        name: "newsletter-2/2024-02-01-remix-newsletter-2.md",
+        type: "file",
+        bytes: new TextEncoder().encode(
+          `---\ntitle: Remix Newsletter #2\npreviewText: 42\n---\n\n# Remix Newsletter #2\n\nThis body must not become the preview.\n`,
+        ),
+      },
+    ]);
+
+    expect(snapshot.summaries.map((summary) => summary.preview)).toEqual([
+      "",
+      "",
+    ]);
   });
 });
 

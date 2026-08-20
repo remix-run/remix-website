@@ -7,11 +7,11 @@ import { theme } from "./public/theme.ts";
 const LINKS: Array<{ to: string; label: string }> = [
   { to: "https://guides.remix.run", label: "Guides" },
   { to: "https://api.remix.run", label: "API" },
+  { to: "https://github.com/remix-run/remix", label: "GitHub" },
   { to: routes.blog.index.href(), label: "Blog" },
   { to: routes.newsletter.index.href(), label: "Newsletter" },
   { to: routes.jam.y2026.index.href(), label: "Jam" },
   { to: "https://shop.remix.run", label: "Store" },
-  { to: "https://github.com/remix-run/remix", label: "GitHub" },
 ];
 
 export function Header() {

@@ -160,7 +160,7 @@ function AssetGrid(handle: Handle<{ assets: readonly BrandAsset[] }>) {
 
 function BrandPageContent() {
   return () => (
-    <div class="rmx-page-body rmx-editorial-prose container mt-8 max-w-full lg:max-w-3xl">
+    <div class="rmx-page-body rmx-editorial-prose container mt-8 max-w-full lg:max-w-4xl">
       <h1 class="rmx-page-title dark:text-gray-200">Remix Brand</h1>
       <p>
         These assets are provided for use in situations like articles and video

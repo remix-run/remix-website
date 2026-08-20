@@ -81,6 +81,63 @@ describe("Navigation", () => {
     });
   });
 
+  it("keeps the shared header link order on desktop and mobile", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.blog.index.href());
+
+    let expectedLinks = [
+      "Guides",
+      "API",
+      "GitHub",
+      "Blog",
+      "Newsletter",
+      "Jam",
+      "Store",
+    ];
+    await expect(page.locator('header nav[aria-label="Main"] a')).toHaveText(
+      expectedLinks,
+    );
+    await expect(page.locator('header nav[aria-label="Mobile"] a')).toHaveText(
+      expectedLinks,
+    );
+  });
+
+  it("keeps the homepage navigation in the shared order", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.home.href());
+    await expectLandingNavReady(page);
+
+    let desktopLinks = page
+      .locator('header nav[aria-label="Primary"]')
+      .first()
+      .locator("a");
+    let mobileLinks = page
+      .locator('header nav[aria-label="Primary"]')
+      .last()
+      .locator("a");
+
+    expect(await desktopLinks.allTextContents()).toEqual([
+      "[G] guides",
+      "[A] api",
+      "[H] github",
+      "[B] blog",
+      "[N] newsletter",
+      "[J] jam",
+      "[S] store",
+    ]);
+    expect(await mobileLinks.allTextContents()).toEqual([
+      "guides",
+      "api",
+      "github",
+      "blog",
+      "newsletter",
+      "jam",
+      "store",
+    ]);
+  });
+
   it("home/blog navigation stays client-side and applies forced dark mode", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
