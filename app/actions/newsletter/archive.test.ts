@@ -2,10 +2,12 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import { gzipSync } from "node:zlib";
 
+import { routes } from "../../routes.ts";
 import {
   collectNewsletterFiles,
   createGitHubNewsletterRepository,
   extractNewsletterPreview,
+  extractNewsletterPreviewImage,
   isSafeImageFilename,
   parseNewsletterSnapshot,
   NewsletterUpstreamUnavailableError,
@@ -97,7 +99,7 @@ describe("parseNewsletterSnapshot", () => {
     expect(snapshot.issues).toEqual([]);
   });
 
-  it("extracts a title from the first H1 and derives a preview", () => {
+  it("precomputes summary text and available preview-image metadata", () => {
     let snapshot = parseNewsletterSnapshot([
       {
         name: "newsletter-7/draft.md",
@@ -108,15 +110,35 @@ describe("parseNewsletterSnapshot", () => {
         name: "newsletter-7/2025-03-04-remix-newsletter-7.md",
         type: "file",
         bytes: new TextEncoder().encode(
-          md(7, "2025-03-04", "This is the lead paragraph about Remix."),
+          md(
+            7,
+            "2025-03-04",
+            "![Header art](header.jpg)\n\nThis is the lead paragraph about Remix.",
+          ),
         ),
+      },
+      {
+        name: "newsletter-7/header.jpg",
+        type: "file",
+        bytes: new TextEncoder().encode("image"),
       },
     ]);
 
     expect(snapshot.issues[0].title).toBe("Remix Newsletter #7");
-    expect(extractNewsletterPreview(snapshot.issues[0].markdown)).toBe(
-      "This is the lead paragraph about Remix.",
-    );
+    expect(snapshot.summaries).toEqual([
+      {
+        number: 7,
+        date: new Date("2025-03-04T00:00:00.000Z"),
+        preview: "This is the lead paragraph about Remix.",
+        image: {
+          src: routes.newsletter.image.href({
+            number: 7,
+            filename: "header.jpg",
+          }),
+          alt: "Header art",
+        },
+      },
+    ]);
   });
 });
 
@@ -128,6 +150,23 @@ describe("extractNewsletterPreview", () => {
     );
     expect(preview.length).toBeLessThanOrEqual(183);
     expect(preview.endsWith("...")).toBe(true);
+  });
+});
+
+describe("extractNewsletterPreviewImage", () => {
+  it("returns the first safe local raster image and its alt text", () => {
+    expect(
+      extractNewsletterPreviewImage(
+        "![Remote](https://example.com/header.jpg)\n\n![Header art](./header.webp?raw=1)",
+      ),
+    ).toEqual({ filename: "header.webp", alt: "Header art" });
+    expect(extractNewsletterPreviewImage("![Vector](header.svg)")).toBe(null);
+    expect(
+      extractNewsletterPreviewImage(
+        "![Missing](missing.jpg)\n\n![Available](header.jpg)",
+        (filename) => filename === "header.jpg",
+      ),
+    ).toEqual({ filename: "header.jpg", alt: "Available" });
   });
 });
 

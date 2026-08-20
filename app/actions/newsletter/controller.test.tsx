@@ -31,7 +31,21 @@ function makeSummary(
   dateIso: string,
   preview: string,
 ): NewsletterSummary {
-  return { number, date: new Date(dateIso), preview };
+  return {
+    number,
+    date: new Date(dateIso),
+    preview,
+    image:
+      number === 3
+        ? {
+            src: routes.newsletter.image.href({
+              number,
+              filename: "header.jpg",
+            }),
+            alt: "Newsletter 3 header",
+          }
+        : null,
+  };
 }
 
 function fakeRepository(options: {
@@ -107,6 +121,10 @@ describe("Newsletter index route", () => {
     expect(numbers).toEqual([3, 2, 1]);
     expect(html).toContain("#3");
     expect(html).toContain("Third issue preview");
+    expect(html).toContain(
+      `src="${routes.newsletter.image.href({ number: 3, filename: "header.jpg" })}"`,
+    );
+    expect(html).toContain('alt="Newsletter 3 header"');
   });
 
   it("renders the signup fragment without loading the archive", async () => {

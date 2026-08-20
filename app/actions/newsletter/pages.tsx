@@ -32,13 +32,15 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <NewsletterSignupSection
-          subscriptionStatus={handle.props.subscriptionStatus}
-        />
-        <NewsletterArchive
-          summaries={handle.props.summaries}
-          unavailable={handle.props.unavailable}
-        />
+        <div class="rmx-page-body container mb-24 mt-8 max-w-full lg:max-w-3xl">
+          <NewsletterSignupSection
+            subscriptionStatus={handle.props.subscriptionStatus}
+          />
+          <NewsletterArchive
+            summaries={handle.props.summaries}
+            unavailable={handle.props.unavailable}
+          />
+        </div>
       </main>
       <Footer />
     </Document>
@@ -105,20 +107,22 @@ function NewsletterSignupSection(
   }>,
 ) {
   return () => (
-    <div class={cx("container flex flex-col justify-center md:max-w-2xl")}>
-      <div>
-        <div class="h-8" />
-        <div class="text-3xl font-extrabold">Newsletter</div>
-        <div class="h-6" />
-        <div class="text-lg" id="newsletter-text">
-          Stay up-to-date with news, announcements, and releases for our
-          projects like Remix and React Router. We respect your privacy,
-          unsubscribe at any time.
-        </div>
-        <div class="h-9" />
+    <section aria-labelledby="newsletter-heading">
+      <h1 id="newsletter-heading" class="rmx-page-title dark:text-gray-200">
+        Newsletter Archive
+      </h1>
+      <p
+        class="rmx-page-body mt-6 max-w-2xl text-gray-600 dark:text-gray-300"
+        id="newsletter-text"
+      >
+        Stay up-to-date with news, announcements, and releases for our projects
+        like Remix and React Router. We respect your privacy, unsubscribe at any
+        time.
+      </p>
+      <div class="mt-9 max-w-2xl">
         <NewsletterSubscribe status={handle.props.subscriptionStatus} />
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -129,11 +133,7 @@ function NewsletterArchive(
   }>,
 ) {
   return () => (
-    <section
-      aria-label="Newsletter archive"
-      class="container mb-24 mt-16 md:max-w-3xl"
-    >
-      <h2 class="rmx-page-title rmx-page-title-sm mb-6">Archive</h2>
+    <section aria-label="Newsletter archive" class="mt-16">
       {handle.props.unavailable ? (
         <p class="rmx-page-body text-gray-600 dark:text-gray-300">
           The archive is temporarily unavailable. Please check back soon.
@@ -143,33 +143,45 @@ function NewsletterArchive(
           No issues yet.
         </p>
       ) : (
-        <ol class="flex flex-col divide-y divide-gray-200 dark:divide-gray-800">
-          {handle.props.summaries.map((summary) => (
+        <ol class="flex flex-col gap-10">
+          {handle.props.summaries.map((summary, index) => (
             <li key={summary.number}>
               <a
                 href={routes.newsletter.issue.href({
                   number: summary.number,
                 })}
                 class={cx(
-                  "group flex flex-col gap-1 py-4",
-                  "text-gray-900 hover:text-black dark:text-gray-100 dark:hover:text-white",
+                  "group grid gap-5 text-gray-900 dark:text-gray-100",
+                  summary.image
+                    ? "sm:grid-cols-[minmax(0,1fr)_12rem] sm:items-start"
+                    : null,
                 )}
               >
-                <div class="flex items-baseline gap-3">
-                  <span class="font-mono text-sm text-gray-500 dark:text-gray-400">
-                    #{summary.number}
-                  </span>
+                <div>
                   <time
                     dateTime={summary.date.toISOString()}
-                    class="rmx-page-meta"
+                    class="rmx-page-meta text-gray-500 dark:text-gray-400"
                   >
                     {formatNewsletterDate(summary.date)}
                   </time>
+                  <h3 class="rmx-page-title rmx-page-title-xs mt-3 transition-colors group-hover:text-red-brand">
+                    Remix Newsletter #{summary.number}
+                  </h3>
+                  {summary.preview ? (
+                    <p class="rmx-page-body mt-2 text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100">
+                      {summary.preview}
+                    </p>
+                  ) : null}
                 </div>
-                {summary.preview ? (
-                  <p class="rmx-page-body text-gray-600 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100">
-                    {summary.preview}
-                  </p>
+                {summary.image ? (
+                  <img
+                    src={summary.image.src}
+                    alt={summary.image.alt}
+                    class="aspect-video w-full object-cover shadow sm:rounded-md"
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding={index === 0 ? "sync" : "async"}
+                    fetchpriority={index === 0 ? "high" : undefined}
+                  />
                 ) : null}
               </a>
             </li>

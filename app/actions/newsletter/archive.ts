@@ -20,7 +20,7 @@ const NEWSLETTER_REPO_REF = "main";
 /** Raster image types we are willing to serve. SVG is intentionally excluded. */
 const SAFE_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif", "webp"] as const;
 
-const FRESH_TTL_MS = 5 * 60 * 1000;
+const FRESH_TTL_MS = 6 * 60 * 60 * 1000;
 const MAX_ISSUES = 200;
 const MAX_FILES = 1_000;
 const MAX_FILE_BYTES = 8 * 1024 * 1024;
@@ -31,6 +31,10 @@ export interface NewsletterSummary {
   /** UTC publication date parsed from the markdown filename. */
   date: Date;
   preview: string;
+  image: {
+    src: string;
+    alt: string;
+  } | null;
 }
 
 export interface NewsletterIssue {
@@ -72,6 +76,7 @@ interface ParsedIssue {
 
 interface NewsletterSnapshot {
   issues: ParsedIssue[];
+  summaries: NewsletterSummary[];
   files: Map<string, Uint8Array>;
 }
 
@@ -162,7 +167,28 @@ export function parseNewsletterSnapshot(
     fileMap.set(file.name, file.bytes);
   }
 
-  return { issues, files: fileMap };
+  let summaries = issues.map((issue) => {
+    let image = extractNewsletterPreviewImage(issue.markdown, (filename) =>
+      fileMap.has(`newsletter-${issue.number}/${filename}`),
+    );
+
+    return {
+      number: issue.number,
+      date: issue.date,
+      preview: extractNewsletterPreview(issue.markdown),
+      image: image
+        ? {
+            src: routes.newsletter.image.href({
+              number: issue.number,
+              filename: image.filename,
+            }),
+            alt: image.alt,
+          }
+        : null,
+    };
+  });
+
+  return { issues, summaries, files: fileMap };
 }
 
 /**
@@ -248,6 +274,30 @@ export function extractNewsletterPreview(
   return "";
 }
 
+/** Return the first safe, same-directory raster image in newsletter Markdown. */
+export function extractNewsletterPreviewImage(
+  markdown: string,
+  isAvailable: (filename: string) => boolean = () => true,
+): { filename: string; alt: string } | null {
+  let body = stripFrontmatter(markdown);
+  let imagePattern = /!\[([^\]]*)\]\(\s*(?:<([^>\n]+)>|([^\s)]+))[^\n)]*\)/g;
+
+  for (let match of body.matchAll(imagePattern)) {
+    let url = match[2] ?? match[3];
+    let filenameMatch = url.match(/^(?:\.\/)?([^/?#]+)(?:[?#].*)?$/);
+    if (
+      !filenameMatch ||
+      !isSafeImageFilename(filenameMatch[1]) ||
+      !isAvailable(filenameMatch[1])
+    ) {
+      continue;
+    }
+    return { filename: filenameMatch[1], alt: match[1].trim() };
+  }
+
+  return null;
+}
+
 function stripFrontmatter(markdown: string): string {
   if (!markdown.startsWith("---\n")) return markdown;
   let end = markdown.indexOf("\n---\n", 4);
@@ -329,12 +379,7 @@ export function createGitHubNewsletterRepository(
 
   return {
     async listSummaries() {
-      let snap = await getSnapshot();
-      return snap.issues.map((issue) => ({
-        number: issue.number,
-        date: issue.date,
-        preview: extractNewsletterPreview(issue.markdown),
-      }));
+      return (await getSnapshot()).summaries;
     },
 
     async getIssue(number) {
