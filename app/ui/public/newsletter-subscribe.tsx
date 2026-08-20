@@ -1,70 +1,74 @@
-import { clientEntry, type Handle } from "remix/ui";
-import { cx } from "../../utils/public/cx.ts";
+import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
+
 import { routes } from "../../routes.ts";
-import { createNewsletterForm } from "./newsletter-request.ts";
+
+export const NEWSLETTER_SUBSCRIBE_FRAME_NAME = "newsletter-subscribe";
+
+export type NewsletterSubscriptionStatus =
+  | "success"
+  | "invalid-email"
+  | "invalid-tag"
+  | "error";
 
 export let NewsletterSubscribeForm = clientEntry(
   import.meta.url,
   function NewsletterSubscribeForm(
-    handle: Handle<{
-      class?: string;
-      inputClass?: string;
-      buttonClass?: string;
-    }>,
+    handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
   ) {
-    let form = createNewsletterForm(handle);
+    let form: HTMLFormElement | null = null;
+    let submitting = false;
+
+    addEventListeners(handle.frame, handle.signal, {
+      reloadComplete() {
+        submitting = false;
+        if (handle.props.status === "success") form?.reset();
+        handle.update();
+      },
+    });
 
     return () => (
-      <>
-        <form
-          action={routes.newsletter.subscribe.href()}
-          method="post"
-          class={cx(handle.props.class, {
-            "opacity-50": form.state.status === "submitting",
-          })}
-          mix={[form.submit]}
-        >
-          <label htmlFor="newsletter-email" class="sr-only">
-            Email address
-          </label>
-          <input
-            id="newsletter-email"
-            type="email"
-            name="email"
-            autoComplete="email"
-            placeholder="name@example.com"
-            class={handle.props.inputClass}
-            aria-invalid={form.state.status === "error" ? true : undefined}
-          />
-          <button
-            type="submit"
-            class={handle.props.buttonClass}
-            disabled={form.state.status === "submitting"}
-          >
-            {form.state.status === "submitting"
-              ? "Subscribing..."
-              : "Subscribe"}
-          </button>
-        </form>
-        <div
-          aria-live="polite"
-          class={
-            form.state.status === "success" || form.state.status === "error"
-              ? "block py-2"
-              : "hidden"
+      <form
+        action={routes.newsletter.subscribe.href()}
+        method="post"
+        rmx-src={routes.newsletter.subscribe.href()}
+        rmx-target={NEWSLETTER_SUBSCRIBE_FRAME_NAME}
+        class="m-0 flex flex-col gap-6 md:h-14 md:flex-row"
+        mix={[
+          ref((element, signal) => {
+            form = element;
+            element.action = handle.frames.top.src;
+            signal.addEventListener("abort", () => {
+              if (form === element) form = null;
+            });
+          }),
+          on("submit", () => {
+            submitting = true;
+            handle.update();
+          }),
+        ]}
+      >
+        <label htmlFor={handle.id} class="sr-only">
+          Email address
+        </label>
+        <input
+          id={handle.id}
+          type="email"
+          name="email"
+          autoComplete="email"
+          placeholder="name@example.com"
+          class="rmx-bg-neutral-100 placeholder:text-rmx-text-tertiary box-border inline-block h-14 flex-1 appearance-none rounded-lg border-0 px-6 py-4 text-base"
+          aria-invalid={
+            handle.props.status === "invalid-email" ? true : undefined
           }
+        />
+        <button
+          type="submit"
+          class="rmx-bg-button-primary rmx-text-button-primary rmx-shadow-low rmx-button-text box-border inline-flex h-14 appearance-none items-center justify-center rounded-lg border border-black/10 px-6 font-semibold transition-all hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)] active:scale-[0.98] active:opacity-80 md:w-auto md:whitespace-nowrap"
+          disabled={submitting}
         >
-          {form.state.status === "success" ? (
-            <div>
-              <b class="text-green-brand">Got it!</b> Please go{" "}
-              <b class="text-red-brand">check your email</b> to confirm your
-              subscription, otherwise you won&apos;t get our email.
-            </div>
-          ) : form.state.status === "error" ? (
-            <div class="text-red-brand">{form.state.message}</div>
-          ) : null}
-        </div>
-      </>
+          {submitting ? "Subscribing..." : "Subscribe"}
+        </button>
+      </form>
     );
   },
 );

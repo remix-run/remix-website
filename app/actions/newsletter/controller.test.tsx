@@ -2,6 +2,7 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
+import { NEWSLETTER_SUBSCRIBE_FRAME_NAME } from "../../ui/public/newsletter-subscribe.tsx";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 import { createNewsletterController } from "./controller.tsx";
@@ -107,6 +108,33 @@ describe("Newsletter index route", () => {
     expect(numbers).toEqual([3, 2, 1]);
     expect(html).toContain("#3");
     expect(html).toContain("Third issue preview");
+  });
+
+  it("renders only the targeted signup frame without loading the archive", async () => {
+    let router = routerWith({
+      async listSummaries() {
+        throw new Error("The frame should not load the archive");
+      },
+      async getIssue() {
+        return null;
+      },
+      async getImage() {
+        return null;
+      },
+    });
+
+    let response = await router.fetch(
+      new Request("http://localhost:3000/newsletter", {
+        headers: { "x-remix-target": NEWSLETTER_SUBSCRIBE_FRAME_NAME },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Vary")).toBe("x-remix-target");
+    let html = await response.text();
+    expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
+    expect(html).not.toContain("<title>");
   });
 
   it("keeps signup usable without caching when the archive is unavailable", async () => {

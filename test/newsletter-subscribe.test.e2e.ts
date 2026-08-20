@@ -25,33 +25,76 @@ let emptyNewsletterRepository: NewsletterRepository = {
 function waitForNewsletterHydration(page: import("@playwright/test").Page) {
   return waitForClientEntryHydration(
     page,
-    `form[action="${routes.newsletter.subscribe.href()}"]`,
+    'form[rmx-target="newsletter-subscribe"]',
   );
 }
 
-describe("Newsletter page (/newsletter)", () => {
+describe("Newsletter signup frame", () => {
   it("submits to /newsletter and shows success", async (t) => {
     let handler = swallowAbortErrors(
       createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
     );
     let page = await t.serve(await createTestServer(handler));
     let submittedEmail: string | null = null;
+    let releaseResponse!: () => void;
+    let waitForResponse = new Promise<void>((resolve) => {
+      releaseResponse = resolve;
+    });
+    t.mock.method(globalThis, "fetch", async (_input, init) => {
+      let body = JSON.parse(String(init?.body)) as { email?: string };
+      submittedEmail = body.email ?? null;
+      await waitForResponse;
+      return Response.json({});
+    });
 
-    await page.route(
-      `**${routes.newsletter.subscribe.href()}`,
-      async (route) => {
-        if (route.request().method() !== "POST") {
-          await route.continue();
-          return;
-        }
-        let body = new URLSearchParams(route.request().postData() ?? "");
-        submittedEmail = body.get("email");
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ ok: true, error: null }),
-        });
-      },
+    await page.goto(routes.newsletter.index.href());
+    await waitForNewsletterHydration(page);
+
+    let emailInput = page.getByPlaceholder("name@example.com");
+    await expect(emailInput).toBeVisible();
+    await emailInput.fill("hello@example.com");
+    let submission = page.getByRole("button", { name: "Subscribe" }).click();
+    await expect(
+      page.getByRole("button", { name: "Subscribing..." }),
+    ).toBeDisabled();
+    releaseResponse();
+    await submission;
+
+    await expect(page.getByRole("status")).toContainText("Got it!");
+    await expect(page.getByRole("status")).toContainText(/check your email/i);
+    await expect(emailInput).toHaveValue("");
+    await expect(page.getByRole("button", { name: "Subscribe" })).toBeEnabled();
+    expect(submittedEmail).toBe("hello@example.com");
+  });
+
+  it("keeps a shared signup on its host page", async (t) => {
+    let handler = swallowAbortErrors(
+      createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
+    );
+    let page = await t.serve(await createTestServer(handler));
+    t.mock.method(globalThis, "fetch", () =>
+      Promise.resolve(Response.json({})),
+    );
+
+    await page.goto(routes.remixHistory.index.href());
+    await waitForNewsletterHydration(page);
+    await page.getByPlaceholder("name@example.com").fill("hello@example.com");
+    await page.getByRole("button", { name: "Subscribe" }).click();
+
+    await expect(page.getByRole("status")).toContainText("Got it!");
+    await expect(page).toHaveURL(
+      new RegExp(`${routes.remixHistory.index.href()}$`),
+    );
+  });
+
+  it("shows server error UI when submission fails", async (t) => {
+    let handler = swallowAbortErrors(
+      createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
+    );
+    let page = await t.serve(await createTestServer(handler));
+    t.mock.method(console, "error", () => {});
+    t.mock.method(globalThis, "fetch", () =>
+      Promise.reject(new Error("network unavailable")),
     );
 
     await page.goto(routes.newsletter.index.href());
@@ -62,39 +105,7 @@ describe("Newsletter page (/newsletter)", () => {
     await emailInput.fill("hello@example.com");
     await page.getByRole("button", { name: "Subscribe" }).click();
 
-    await expect(page.getByText("Got it!")).toBeVisible();
-    await expect(page.getByText(/check your email/i)).toBeVisible();
-    await expect(emailInput).toHaveValue("");
-    expect(submittedEmail).toBe("hello@example.com");
-  });
-
-  it("shows server error UI when submission fails", async (t) => {
-    let handler = swallowAbortErrors(
-      createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
-    );
-    let page = await t.serve(await createTestServer(handler));
-    await page.route(
-      `**${routes.newsletter.subscribe.href()}`,
-      async (route) => {
-        if (route.request().method() !== "POST") {
-          await route.continue();
-          return;
-        }
-        await route.fulfill({
-          status: 500,
-          contentType: "application/json",
-          body: JSON.stringify({ ok: false, error: "Something went wrong" }),
-        });
-      },
-    );
-
-    await page.goto(routes.newsletter.index.href());
-    await waitForNewsletterHydration(page);
-
-    await expect(page.getByPlaceholder("name@example.com")).toBeVisible();
-    await page.getByPlaceholder("name@example.com").fill("hello@example.com");
-    await page.getByRole("button", { name: "Subscribe" }).click();
-
-    await expect(page.getByText("Something went wrong")).toBeVisible();
+    await expect(page.getByRole("alert")).toContainText("Something went wrong");
+    await expect(emailInput).toHaveValue("hello@example.com");
   });
 });

@@ -10,24 +10,42 @@ import {
   resolveNewsletterImageUrl,
 } from "./archive.ts";
 import { routes } from "../../routes.ts";
+import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
+import { NEWSLETTER_SUBSCRIBE_FRAME_NAME } from "../../ui/public/newsletter-subscribe.tsx";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { NewsletterIndexPage, NewsletterIssuePage } from "./pages.tsx";
 import {
   getNewsletterSubscriptionStatus,
   handleNewsletterSubscriptionError,
   submitNewsletter,
-} from "./subscription.ts";
+} from "./subscription.tsx";
 
 /**
  * Build a newsletter controller bound to a specific repository. Tests pass a
- * fake repository; the default export below binds the live GitHub repository.
+ * fake repository; the app router binds the live GitHub repository.
  */
 export function createNewsletterController(repository: NewsletterRepository) {
   return createController(routes.newsletter, {
     middleware: [newsletterErrorLogger()],
     actions: {
       async index({ render, request }) {
+        let subscriptionStatus = getNewsletterSubscriptionStatus(request);
+        if (
+          request.headers.get("x-remix-target") ===
+          NEWSLETTER_SUBSCRIBE_FRAME_NAME
+        ) {
+          return render(
+            <NewsletterSubscribeFrame status={subscriptionStatus} />,
+            {
+              headers: {
+                "Cache-Control": "no-store",
+                Vary: "x-remix-target",
+              },
+            },
+          );
+        }
+
         let summaries: NewsletterSummary[] = [];
         let unavailable = false;
         try {
@@ -39,8 +57,6 @@ export function createNewsletterController(repository: NewsletterRepository) {
             throw error;
           }
         }
-
-        let subscriptionStatus = getNewsletterSubscriptionStatus(request);
 
         return render(
           <NewsletterIndexPage
@@ -55,13 +71,14 @@ export function createNewsletterController(repository: NewsletterRepository) {
                 unavailable || subscriptionStatus
                   ? "no-store"
                   : CACHE_CONTROL.DEFAULT,
+              Vary: "x-remix-target",
             },
           },
         );
       },
 
-      async subscribe({ formData, request }) {
-        return submitNewsletter(request, formData);
+      async subscribe({ formData, render, request }) {
+        return submitNewsletter(request, formData, render);
       },
 
       async issue({ params, render, request }) {
@@ -175,7 +192,7 @@ function newsletterErrorLogger(): Middleware {
         error,
       });
 
-      let response = handleNewsletterSubscriptionError(context.request, error);
+      let response = handleNewsletterSubscriptionError(error);
       if (response) return response;
 
       throw error;

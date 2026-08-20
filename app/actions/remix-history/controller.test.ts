@@ -7,7 +7,7 @@ import { routes } from "../../routes.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 
 describe("Remix history route", () => {
-  it("renders the history document and newsletter form", async () => {
+  it("renders the history document", async () => {
     let router = createRouteTestRouter();
     router.map(routes.remixHistory, remixHistoryController);
 
@@ -21,6 +21,5 @@ describe("Remix history route", () => {
 
     let html = await response.text();
     expect(html).toContain('id="main-content"');
-    expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
   });
 });

@@ -3,19 +3,20 @@ import * as c from "remix/data-schema/checks";
 import * as coerce from "remix/data-schema/coerce";
 import { redirect } from "remix/response/redirect";
 
+import type { AppRenderer } from "../../middleware/render.ts";
 import { routes } from "../../routes.ts";
+import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
+import {
+  NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+  type NewsletterSubscriptionStatus,
+} from "../../ui/public/newsletter-subscribe.tsx";
 import { env } from "../../utils/env.ts";
 import { isAllowedNewsletterTagId } from "../../utils/public/newsletter-tags.ts";
-
-export type NewsletterSubscriptionStatus =
-  | "success"
-  | "invalid-email"
-  | "invalid-tag"
-  | "error";
 
 export async function submitNewsletter(
   request: Request,
   formData: FormData,
+  render: AppRenderer,
 ): Promise<Response> {
   let result = s.parseSafe(newsletterSubmission, {
     email: formData.get("email"),
@@ -30,17 +31,30 @@ export async function submitNewsletter(
       error = "Invalid Tag";
     }
 
-    return createSubscriptionResponse(request, { ok: false, error }, 400);
+    return createSubscriptionResponse(
+      request,
+      render,
+      { ok: false, error },
+      400,
+    );
   }
 
   try {
     await subscribeToNewsletter(result.value.email, result.value.tags);
-    return createSubscriptionResponse(request, {
+    return createSubscriptionResponse(request, render, {
       ok: true,
       error: null,
     });
   } catch (error) {
-    throw new NewsletterSubscriptionError(error);
+    throw new NewsletterSubscriptionError(
+      error,
+      createSubscriptionResponse(
+        request,
+        render,
+        { ok: false, error: "Something went wrong" },
+        500,
+      ),
+    );
   }
 }
 
@@ -57,16 +71,9 @@ export function getNewsletterSubscriptionStatus(
 }
 
 export function handleNewsletterSubscriptionError(
-  request: Request,
   error: unknown,
 ): Response | null {
-  return error instanceof NewsletterSubscriptionError
-    ? createSubscriptionResponse(
-        request,
-        { ok: false, error: "Something went wrong" },
-        500,
-      )
-    : null;
+  return error instanceof NewsletterSubscriptionError ? error.response : null;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +81,10 @@ export function handleNewsletterSubscriptionError(
 type NewsletterResponse = { ok: boolean; error: string | null };
 
 class NewsletterSubscriptionError extends Error {
-  constructor(cause: unknown) {
+  constructor(
+    cause: unknown,
+    readonly response: Response,
+  ) {
     super("Newsletter subscription failed", { cause });
     this.name = "NewsletterSubscriptionError";
   }
@@ -89,9 +99,25 @@ let newsletterSubmission = s.object({
 
 function createSubscriptionResponse(
   request: Request,
+  render: AppRenderer,
   body: NewsletterResponse,
   status = 200,
 ): Response {
+  if (
+    request.headers.get("x-remix-target") === NEWSLETTER_SUBSCRIBE_FRAME_NAME
+  ) {
+    return render(
+      <NewsletterSubscribeFrame status={getSubscriptionStatus(body)} />,
+      {
+        status,
+        headers: {
+          "Cache-Control": "no-store",
+          Vary: "x-remix-target",
+        },
+      },
+    );
+  }
+
   if (request.headers.get("Accept")?.includes("application/json")) {
     return Response.json(body, {
       status,

@@ -5,10 +5,10 @@ import { routes } from "../../routes.ts";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
-import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
+import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import type { NewsletterSubscriptionStatus } from "../../ui/public/newsletter-subscribe.tsx";
 import { cx } from "../../utils/public/cx.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
-import type { NewsletterSubscriptionStatus } from "./subscription.ts";
 
 interface NewsletterIndexPageProps {
   requestUrl: string;
@@ -116,55 +116,10 @@ function NewsletterSignupSection(
           unsubscribe at any time.
         </div>
         <div class="h-9" />
-        <NewsletterSubscribeForm
-          class={cx("sm:flex sm:gap-2")}
-          inputClass={cx(
-            "w-full sm:w-auto sm:flex-1 dark:placeholder-gray-500",
-            "box-border appearance-none rounded border px-4 py-2",
-          )}
-          buttonClass={cx(
-            "w-full mt-2 sm:w-auto sm:mt-0 uppercase",
-            "rounded border bg-white px-4 py-2 font-semibold text-gray-900",
-            "hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-brand dark:focus:ring-white",
-          )}
-        />
-        <NewsletterSubscriptionNotice
-          status={handle.props.subscriptionStatus}
-        />
+        <NewsletterSubscribe status={handle.props.subscriptionStatus} />
       </div>
     </div>
   );
-}
-
-function NewsletterSubscriptionNotice(
-  handle: Handle<{ status: NewsletterSubscriptionStatus | null }>,
-) {
-  return () => {
-    if (!handle.props.status) return null;
-
-    return (
-      <div
-        role={handle.props.status === "success" ? "status" : "alert"}
-        class={cx("py-2", {
-          "text-red-brand": handle.props.status !== "success",
-        })}
-      >
-        {handle.props.status === "success" ? (
-          <div>
-            <b class="text-green-brand">Got it!</b> Please go{" "}
-            <b class="text-red-brand">check your email</b> to confirm your
-            subscription, otherwise you won&apos;t get our email.
-          </div>
-        ) : handle.props.status === "invalid-email" ? (
-          "Please enter a valid email address."
-        ) : handle.props.status === "invalid-tag" ? (
-          "The selected newsletter is not available."
-        ) : (
-          "Something went wrong. Please try again."
-        )}
-      </div>
-    );
-  };
 }
 
 function NewsletterArchive(
@@ -235,11 +190,7 @@ function NewsletterDetailSignup() {
         Be the first to learn about new Remix features, community events, and
         tutorials.
       </div>
-      <NewsletterSubscribeForm
-        class="sm:flex sm:gap-2"
-        inputClass="w-full sm:w-auto sm:flex-1 box-border appearance-none rounded border px-4 py-2 dark:placeholder-gray-500"
-        buttonClass="mt-2 w-full rounded border bg-white px-4 py-2 font-semibold uppercase text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-brand sm:mt-0 sm:w-auto dark:focus:ring-white"
-      />
+      <NewsletterSubscribe />
     </div>
   );
 }

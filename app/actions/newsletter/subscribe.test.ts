@@ -1,7 +1,9 @@
-import { afterEach, beforeEach, describe, it } from "remix/test";
+import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
+import { NEWSLETTER_SUBSCRIBE_FRAME_NAME } from "../../ui/public/newsletter-subscribe.tsx";
+import { env } from "../../utils/env.ts";
 import { newsletterTagIds } from "../../utils/public/newsletter-tags.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 import type { NewsletterRepository } from "./archive.ts";
@@ -20,26 +22,12 @@ const emptyRepository: NewsletterRepository = {
 };
 
 describe("Newsletter subscribe route", () => {
-  let hadConvertKitKey = false;
-  let originalConvertKitKey: string | undefined;
-
-  beforeEach(() => {
-    hadConvertKitKey = Object.hasOwn(process.env, "CONVERTKIT_KEY");
-    originalConvertKitKey = process.env.CONVERTKIT_KEY;
-    process.env.CONVERTKIT_KEY = "test-key";
-  });
-
-  afterEach(() => {
-    if (hadConvertKitKey) {
-      process.env.CONVERTKIT_KEY = originalConvertKitKey;
-    } else {
-      delete process.env.CONVERTKIT_KEY;
-    }
-  });
-
   async function submitNewsletter(
     body: URLSearchParams,
-    { accept = "application/json" }: { accept?: string } = {},
+    {
+      accept = "application/json",
+      target,
+    }: { accept?: string; target?: string } = {},
   ) {
     let router = createRouteTestRouter();
     router.map(routes.newsletter, createNewsletterController(emptyRepository));
@@ -49,7 +37,10 @@ describe("Newsletter subscribe route", () => {
         `http://localhost:3000${routes.newsletter.subscribe.href()}`,
         {
           method: "POST",
-          headers: { Accept: accept },
+          headers: {
+            Accept: accept,
+            ...(target ? { "x-remix-target": target } : {}),
+          },
           body,
         },
       ),
@@ -113,6 +104,27 @@ describe("Newsletter subscribe route", () => {
     );
   });
 
+  it("renders a targeted frame response after subscribing", async (t) => {
+    t.mock.method(globalThis, "fetch", () =>
+      Promise.resolve(Response.json({})),
+    );
+
+    let response = await submitNewsletter(
+      new URLSearchParams({ email: "hello@example.com" }),
+      {
+        accept: "text/html",
+        target: NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+      },
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Vary")).toBe("x-remix-target");
+    let html = await response.text();
+    expect(html).toContain('role="status"');
+    expect(html).toContain("check your email");
+  });
+
   it("subscribes a valid email and allowed tag", async (t) => {
     let fetchSpy = t.mock.method(globalThis, "fetch", () =>
       Promise.resolve(Response.json({})),
@@ -155,6 +167,27 @@ describe("Newsletter subscribe route", () => {
     expect(errorSpy).toHaveBeenCalledTimes(3);
   });
 
+  it("returns a generic 500 when CONVERTKIT_KEY is missing", async (t) => {
+    let errorSpy = t.mock.method(console, "error", () => {});
+    let originalKey = env.CONVERTKIT_KEY;
+    env.CONVERTKIT_KEY = undefined;
+
+    try {
+      let response = await submitNewsletter(
+        new URLSearchParams({ email: "hello@example.com" }),
+      );
+
+      expect(response.status).toBe(500);
+      await expect(response.json()).resolves.toEqual({
+        ok: false,
+        error: "Something went wrong",
+      });
+      expect(errorSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      env.CONVERTKIT_KEY = originalKey;
+    }
+  });
+
   it("returns a generic 500 when ConvertKit is unavailable", async (t) => {
     let errorSpy = t.mock.method(console, "error", () => {});
     t.mock.method(globalThis, "fetch", () =>
@@ -163,29 +196,14 @@ describe("Newsletter subscribe route", () => {
 
     let response = await submitNewsletter(
       new URLSearchParams({ email: "hello@example.com" }),
+      {
+        accept: "text/html",
+        target: NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+      },
     );
 
     expect(response.status).toBe(500);
-    await expect(response.json()).resolves.toEqual({
-      ok: false,
-      error: "Something went wrong",
-    });
-    expect(errorSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it("returns a generic 500 when CONVERTKIT_KEY is missing", async (t) => {
-    let errorSpy = t.mock.method(console, "error", () => {});
-    delete process.env.CONVERTKIT_KEY;
-
-    let response = await submitNewsletter(
-      new URLSearchParams({ email: "hello@example.com" }),
-    );
-
-    expect(response.status).toBe(500);
-    await expect(response.json()).resolves.toEqual({
-      ok: false,
-      error: "Something went wrong",
-    });
+    expect(await response.text()).toContain('role="alert"');
     expect(errorSpy).toHaveBeenCalledTimes(1);
   });
 });
