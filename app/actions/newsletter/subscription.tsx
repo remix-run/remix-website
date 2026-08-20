@@ -8,6 +8,7 @@ import { routes } from "../../routes.ts";
 import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
 import {
   NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+  type NewsletterSubscribeFrameContext,
   type NewsletterSubscriptionStatus,
 } from "../../ui/public/newsletter-subscribe.tsx";
 import { env } from "../../utils/env.ts";
@@ -97,23 +98,39 @@ let newsletterSubmission = s.object({
     .refine((tags) => tags.every(isAllowedNewsletterTagId), "Invalid Tag"),
 });
 
+const newsletterTargetResponseHeaders = {
+  "Cache-Control": "no-store",
+  Vary: "x-remix-target",
+} as const;
+
+function isNewsletterSubscribeFrameRequest(request: Request) {
+  return (
+    request.headers.get("x-remix-target") === NEWSLETTER_SUBSCRIBE_FRAME_NAME
+  );
+}
+
 function createSubscriptionResponse(
   request: Request,
   render: AppRenderer,
   body: NewsletterResponse,
   status = 200,
 ): Response {
-  if (
-    request.headers.get("x-remix-target") === NEWSLETTER_SUBSCRIBE_FRAME_NAME
-  ) {
+  let frameContext = getNewsletterSubscribeFrameContext(request);
+  if (frameContext) {
+    let location = new URL(newsletterFrameRoutes[frameContext], request.url);
+    location.searchParams.set("subscription", getSubscriptionStatus(body));
+    return redirect(`${location.pathname}${location.search}`, {
+      status: 303,
+      headers: newsletterTargetResponseHeaders,
+    });
+  }
+
+  if (isNewsletterSubscribeFrameRequest(request)) {
     return render(
       <NewsletterSubscribeFrame status={getSubscriptionStatus(body)} />,
       {
         status,
-        headers: {
-          "Cache-Control": "no-store",
-          Vary: "x-remix-target",
-        },
+        headers: newsletterTargetResponseHeaders,
       },
     );
   }
@@ -139,6 +156,24 @@ function getSubscriptionStatus(
   if (response.error === "Invalid Email") return "invalid-email";
   if (response.error === "Invalid Tag") return "invalid-tag";
   return "error";
+}
+
+let newsletterFrameRoutes: Record<NewsletterSubscribeFrameContext, string> = {
+  newsletter: routes.newsletter.signup.href(),
+  home: routes.homeNewsletterSignup.href(),
+  jam2025: routes.jam.y2025.newsletterSignup.href(),
+  jam2026: routes.jam.y2026.newsletterSignup.href(),
+};
+
+function getNewsletterSubscribeFrameContext(
+  request: Request,
+): NewsletterSubscribeFrameContext | null {
+  if (!isNewsletterSubscribeFrameRequest(request)) return null;
+
+  let value = new URL(request.url).searchParams.get("frame");
+  return value != null && Object.hasOwn(newsletterFrameRoutes, value)
+    ? (value as NewsletterSubscribeFrameContext)
+    : null;
 }
 
 async function subscribeToNewsletter(email: string, tags: number[]) {

@@ -2,7 +2,10 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
-import { NEWSLETTER_SUBSCRIBE_FRAME_NAME } from "../../ui/public/newsletter-subscribe.tsx";
+import {
+  NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+  type NewsletterSubscribeFrameContext,
+} from "../../ui/public/newsletter-subscribe.tsx";
 import { env } from "../../utils/env.ts";
 import { newsletterTagIds } from "../../utils/public/newsletter-tags.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
@@ -26,24 +29,33 @@ describe("Newsletter subscribe route", () => {
     body: URLSearchParams,
     {
       accept = "application/json",
+      frame,
       target,
-    }: { accept?: string; target?: string } = {},
+    }: {
+      accept?: string;
+      frame?: NewsletterSubscribeFrameContext;
+      target?: string;
+    } = {},
   ) {
     let router = createRouteTestRouter();
     router.map(routes.newsletter, createNewsletterController(emptyRepository));
 
+    let url = new URL(
+      routes.newsletter.subscribe.href(),
+      "http://localhost:3000",
+    );
+    if (frame) url.searchParams.set("frame", frame);
+
     return router.fetch(
-      new Request(
-        `http://localhost:3000${routes.newsletter.subscribe.href()}`,
-        {
-          method: "POST",
-          headers: {
-            Accept: accept,
-            ...(target ? { "x-remix-target": target } : {}),
-          },
-          body,
+      new Request(url, {
+        method: "POST",
+        headers: {
+          Accept: accept,
+          ...(target ? { "x-remix-target": target } : {}),
         },
-      ),
+        body,
+        redirect: "manual",
+      }),
     );
   }
 
@@ -123,6 +135,42 @@ describe("Newsletter subscribe route", () => {
     let html = await response.text();
     expect(html).toContain('role="status"');
     expect(html).toContain("check your email");
+  });
+
+  it("redirects targeted frame results to their selected fragment", async (t) => {
+    t.mock.method(globalThis, "fetch", () =>
+      Promise.resolve(Response.json({})),
+    );
+
+    let response = await submitNewsletter(
+      new URLSearchParams({ email: "hello@example.com" }),
+      {
+        accept: "text/html",
+        frame: "jam2025",
+        target: NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+      },
+    );
+
+    expect(response.status).toBe(303);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Vary")).toBe("x-remix-target");
+    expect(response.headers.get("Location")).toBe(
+      `${routes.jam.y2025.newsletterSignup.href()}?subscription=success`,
+    );
+
+    let invalid = await submitNewsletter(
+      new URLSearchParams({ email: "invalid-email" }),
+      {
+        accept: "text/html",
+        frame: "jam2025",
+        target: NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+      },
+    );
+
+    expect(invalid.status).toBe(303);
+    expect(invalid.headers.get("Location")).toBe(
+      `${routes.jam.y2025.newsletterSignup.href()}?subscription=invalid-email`,
+    );
   });
 
   it("subscribes a valid email and allowed tag", async (t) => {

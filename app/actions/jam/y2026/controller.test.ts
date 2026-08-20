@@ -50,6 +50,20 @@ describe("Remix Jam 2026 routes", () => {
     );
   });
 
+  it("renders the newsletter signup fragment", async () => {
+    let router = createJam2026TestRouter();
+
+    let response = await router.fetch(
+      appUrl(routes.jam.y2026.newsletterSignup, "?subscription=success"),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    let html = await response.text();
+    expect(html).toContain("rmx-document");
+    expect(html).toContain("You're on the list");
+  });
+
   it("does not reflect untrusted request hosts into social head tags", async () => {
     let router = createJam2026TestRouter();
 

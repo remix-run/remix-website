@@ -23,10 +23,7 @@ let emptyNewsletterRepository: NewsletterRepository = {
 };
 
 function waitForNewsletterHydration(page: import("@playwright/test").Page) {
-  return waitForClientEntryHydration(
-    page,
-    'form[rmx-target="newsletter-subscribe"]',
-  );
+  return waitForClientEntryHydration(page, "form[rmx-document]");
 }
 
 describe("Newsletter signup frame", () => {
@@ -85,6 +82,37 @@ describe("Newsletter signup frame", () => {
     await expect(page).toHaveURL(
       new RegExp(`${routes.remixHistory.index.href()}$`),
     );
+  });
+
+  it("keeps the landing signup on its host page", async (t) => {
+    let handler = swallowAbortErrors(
+      createAppRouter({ newsletterRepository: emptyNewsletterRepository }),
+    );
+    let page = await t.serve(await createTestServer(handler));
+    let submittedEmail: string | null = null;
+    t.mock.method(globalThis, "fetch", (_input, init) => {
+      let submittedBody = JSON.parse(String(init?.body ?? "{}")) as {
+        email?: string;
+      };
+      submittedEmail = submittedBody.email ?? null;
+      return Promise.resolve(Response.json({}));
+    });
+
+    await page.goto(routes.home.href());
+    await waitForNewsletterHydration(page);
+    let form = page.locator("form[rmx-document]");
+    await expect(form).toHaveAttribute("action", /\/newsletter$/);
+
+    let emailInput = page.getByPlaceholder("name@example.com");
+    await emailInput.fill("hello@example.com");
+    await page.getByRole("button", { name: "Subscribe" }).click();
+
+    await expect(
+      page.getByText(/Got it! Please check your email/i),
+    ).toBeVisible();
+    await expect(emailInput).toHaveValue("");
+    await expect(page).toHaveURL(new RegExp(`${routes.home.href()}$`));
+    expect(submittedEmail).toBe("hello@example.com");
   });
 
   it("shows server error UI when submission fails", async (t) => {

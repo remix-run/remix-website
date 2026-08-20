@@ -1,8 +1,8 @@
-import { Frame, type Handle, type MixInput } from "remix/ui";
+import { type Handle, type MixInput } from "remix/ui";
 
 import { routes } from "../routes.ts";
 import {
-  NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+  NewsletterSubscribeFrameHost,
   type NewsletterSubscriptionStatus,
 } from "./public/newsletter-subscribe.tsx";
 
@@ -13,15 +13,11 @@ export function NewsletterSubscribe(
   }>,
 ) {
   return () => {
-    let src = routes.newsletter.index.href();
+    let src = routes.newsletter.signup.href();
     if (handle.props.status) {
       src += `?subscription=${handle.props.status}`;
     }
 
-    return (
-      <div mix={handle.props.mix}>
-        <Frame name={NEWSLETTER_SUBSCRIBE_FRAME_NAME} src={src} />
-      </div>
-    );
+    return <NewsletterSubscribeFrameHost src={src} mix={handle.props.mix} />;
   };
 }

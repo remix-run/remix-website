@@ -95,8 +95,6 @@ function CopyToClipboard(handle: Handle<{ url: string }>) {
       title: "Stay in the loop",
       body: "Once a month, we write about everything in the world of Remix. Sign up to keep up with what comes next. No spam. Unsubscribe anytime.",
       newsletter: true,
-      newsletterPlaceholder: "name@example.com",
-      newsletterButtonLabel: "Subscribe",
     },
   },
 ];

@@ -1,7 +1,11 @@
 import { clientEntry, css, type Handle } from "remix/ui";
+import {
+  createNewsletterFrameForm,
+  NewsletterSubscribeFrameHost,
+  type NewsletterSubscriptionStatus,
+} from "../../../../ui/public/newsletter-subscribe.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
-import { createNewsletterForm } from "../../../../ui/public/newsletter-request.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
 import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
 
@@ -492,73 +496,76 @@ type FeatureSectionProps = {
     title: string;
     body: string;
     newsletter?: boolean;
-    newsletterPlaceholder?: string;
-    newsletterButtonLabel?: string;
   };
 };
 
 export let LandingNewsletterSubscribeForm = clientEntry(
   import.meta.url,
   function LandingNewsletterSubscribeForm(
-    handle: Handle<{ placeholder?: string; buttonLabel?: string }>,
+    handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
   ) {
-    let form = createNewsletterForm(handle);
+    let form = createNewsletterFrameForm(handle);
 
-    return () => (
-      <>
-        <form
-          action={routes.newsletter.subscribe.href()}
-          method="post"
-          mix={[subscribeFormStyles, form.submit]}
-        >
-          <label for="landing-newsletter-email" mix={[subscribeLabelStyles]}>
-            Email address
-          </label>
-          <input
-            id="landing-newsletter-email"
-            type="email"
-            name="email"
-            required
-            autocomplete="email"
-            placeholder={handle.props.placeholder ?? "name@example.com"}
-            aria-invalid={form.state.status === "error" ? true : undefined}
-            aria-describedby={
-              form.state.status === "idle"
-                ? undefined
-                : "landing-newsletter-message"
-            }
-            mix={[subscribeInputStyles]}
-          />
-          <button
-            type="submit"
-            disabled={form.state.status === "submitting"}
-            mix={[subscribeButtonStyles]}
+    return () => {
+      let status = form.state.status;
+
+      return (
+        <>
+          <form
+            action={routes.newsletter.subscribe.href()}
+            method="post"
+            rmx-document
+            mix={[subscribeFormStyles, ...form.submit]}
           >
-            {form.state.status === "submitting"
-              ? "Subscribing..."
-              : (handle.props.buttonLabel ?? "Subscribe")}
-          </button>
-        </form>
-        <div
-          id="landing-newsletter-message"
-          aria-live="polite"
-          mix={[
-            subscribeMessageStyles,
-            form.state.status === "success"
-              ? subscribeSuccessStyles
-              : form.state.status === "error"
-                ? subscribeErrorStyles
-                : subscribeMessageHiddenStyles,
-          ]}
-        >
-          {form.state.status === "success"
-            ? "Got it! Please check your email to confirm your subscription."
-            : form.state.status === "error"
-              ? form.state.message
-              : null}
-        </div>
-      </>
-    );
+            <label for="landing-newsletter-email" mix={[subscribeLabelStyles]}>
+              Email address
+            </label>
+            <input
+              id="landing-newsletter-email"
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder="name@example.com"
+              aria-invalid={status === "invalid-email" ? true : undefined}
+              aria-describedby={
+                status === "idle" ? undefined : "landing-newsletter-message"
+              }
+              mix={[subscribeInputStyles]}
+            />
+            <button
+              type="submit"
+              disabled={status === "submitting"}
+              mix={[subscribeButtonStyles]}
+            >
+              {status === "submitting" ? "Subscribing..." : "Subscribe"}
+            </button>
+          </form>
+          <div
+            id="landing-newsletter-message"
+            aria-live="polite"
+            mix={[
+              subscribeMessageStyles,
+              status === "success"
+                ? subscribeSuccessStyles
+                : status !== "idle" && status !== "submitting"
+                  ? subscribeErrorStyles
+                  : subscribeMessageHiddenStyles,
+            ]}
+          >
+            {status === "success"
+              ? "Got it! Please check your email to confirm your subscription."
+              : status === "invalid-email"
+                ? "Please enter a valid email address."
+                : status === "invalid-tag"
+                  ? "The selected newsletter is not available."
+                  : status === "error"
+                    ? "Something went wrong. Please try again."
+                    : null}
+          </div>
+        </>
+      );
+    };
   },
 );
 
@@ -622,9 +629,8 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
               <h2 mix={[titleStyles]}>{handle.props.secondary.title}</h2>
               <p mix={[bodyStyles]}>{handle.props.secondary.body}</p>
               {handle.props.secondary.newsletter ? (
-                <LandingNewsletterSubscribeForm
-                  placeholder={handle.props.secondary.newsletterPlaceholder}
-                  buttonLabel={handle.props.secondary.newsletterButtonLabel}
+                <NewsletterSubscribeFrameHost
+                  src={routes.homeNewsletterSignup.href()}
                 />
               ) : null}
             </div>

@@ -7,6 +7,24 @@ import { CACHE_CONTROL } from "../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../test/setup.ts";
 
 describe("home route", () => {
+  it("renders the newsletter signup fragment", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes, rootController);
+
+    let response = await router.fetch(
+      new URL(
+        `${routes.homeNewsletterSignup.href()}?subscription=success`,
+        "http://localhost:3000",
+      ),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    let html = await response.text();
+    expect(html).toContain("rmx-document");
+    expect(html).toContain("Got it! Please check your email");
+  });
+
   it("renders the accessible landing document", async () => {
     let router = createRouteTestRouter();
     router.map(routes, rootController);

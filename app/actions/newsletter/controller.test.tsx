@@ -2,7 +2,6 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
-import { NEWSLETTER_SUBSCRIBE_FRAME_NAME } from "../../ui/public/newsletter-subscribe.tsx";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 import { createNewsletterController } from "./controller.tsx";
@@ -110,7 +109,7 @@ describe("Newsletter index route", () => {
     expect(html).toContain("Third issue preview");
   });
 
-  it("renders only the targeted signup frame without loading the archive", async () => {
+  it("renders the signup fragment without loading the archive", async () => {
     let router = routerWith({
       async listSummaries() {
         throw new Error("The frame should not load the archive");
@@ -124,14 +123,11 @@ describe("Newsletter index route", () => {
     });
 
     let response = await router.fetch(
-      new Request("http://localhost:3000/newsletter", {
-        headers: { "x-remix-target": NEWSLETTER_SUBSCRIBE_FRAME_NAME },
-      }),
+      new URL(routes.newsletter.signup.href(), "http://localhost:3000"),
     );
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
-    expect(response.headers.get("Vary")).toBe("x-remix-target");
     let html = await response.text();
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
     expect(html).not.toContain("<title>");

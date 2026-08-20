@@ -5,6 +5,8 @@ import { cx } from "../../../utils/public/cx.ts";
 import { getSchedule } from "../../../data/jam-schedule.ts";
 import { routes } from "../../../routes.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
+import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-subscribe.tsx";
+import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
 import { Jam2025CocPage } from "./coc.tsx";
 import { Jam2025FaqPage } from "./faq.tsx";
 import { Jam2025LineupPage } from "./lineup.tsx";
@@ -38,6 +40,15 @@ export default createController(routes.jam.y2025, {
           <Jam2025Page eventStatus={getEventStatus()} />
         </JamDocument>,
         cacheHeaders,
+      );
+    },
+
+    newsletterSignup({ render, request }) {
+      return render(
+        <JamNewsletterSubscribeForm
+          status={getNewsletterSubscriptionStatus(request)}
+        />,
+        { headers: { "Cache-Control": "no-store" } },
       );
     },
 
@@ -157,7 +168,9 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
         <h2 class="text-2xl font-bold tracking-tight text-white md:text-3xl">
           Sign up for our Newsletter for the latest Remix Jam news and updates
         </h2>
-        <JamNewsletterSubscribeForm class="relative z-10 mt-12 flex flex-col items-center" />
+        <NewsletterSubscribeFrameHost
+          src={routes.jam.y2025.newsletterSignup.href()}
+        />
       </aside>
     </>
   );

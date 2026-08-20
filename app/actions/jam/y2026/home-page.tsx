@@ -3,7 +3,7 @@ import { theme } from "../../../ui/public/theme.ts";
 import { FpsCounterToggle } from "../../../ui/public/fps-counter-toggle.tsx";
 import { Jam2026CloudBackdrop } from "./public/cloud-backdrop.tsx";
 import { Jam2026Header } from "./public/header.tsx";
-import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
+import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-subscribe.tsx";
 import { Jam2026PhotoMoments } from "./public/photo-moments.tsx";
 import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
 import { routes } from "../../../routes.ts";
@@ -72,7 +72,9 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
               <Jam2026PhotoMoments />
               <Jam2026FloatingTicketCta />
               <Jam2026Faq />
-              <Jam2026NewsletterSignup />
+              <NewsletterSubscribeFrameHost
+                src={routes.jam.y2026.newsletterSignup.href()}
+              />
             </main>
             <Footer mix={footerStyle} />
           </div>

@@ -11,6 +11,7 @@ export let routes = route({
   brand: get("/brand"),
   healthcheck: get("/healthcheck"),
   home: get("/"),
+  homeNewsletterSignup: get("/newsletter/signup/home"),
   remixHistory: route("remix-history", {
     index: get("/"),
   }),
@@ -18,6 +19,7 @@ export let routes = route({
     index: get("/"),
     y2025: route("2025", {
       index: get("/"),
+      newsletterSignup: get("newsletter-signup"),
       coc: get("coc"),
       faq: get("faq"),
       gallery: route("gallery", {
@@ -29,12 +31,14 @@ export let routes = route({
     }),
     y2026: route("2026", {
       index: get("/"),
+      newsletterSignup: get("newsletter-signup"),
       theme: post("theme"),
       ticket: form("ticket"),
     }),
   }),
   newsletter: route("newsletter", {
     index: get("/"),
+    signup: get("signup"),
     subscribe: post("/"),
     issue: get(":number"),
     image: get(":number/image/:filename"),

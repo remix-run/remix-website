@@ -4,6 +4,8 @@ import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
 import { assets } from "../utils/assets.ts";
 import { CACHE_CONTROL } from "../utils/cache-control.ts";
+import { getNewsletterSubscriptionStatus } from "./newsletter/subscription.tsx";
+import { LandingNewsletterSubscribeForm } from "./public/remix-landing/components/feature-section.tsx";
 import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
@@ -33,6 +35,15 @@ export default createController(routes, {
         {
           headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
         },
+      );
+    },
+
+    homeNewsletterSignup({ render, request }) {
+      return render(
+        <LandingNewsletterSubscribeForm
+          status={getNewsletterSubscriptionStatus(request)}
+        />,
+        { headers: { "Cache-Control": "no-store" } },
       );
     },
 

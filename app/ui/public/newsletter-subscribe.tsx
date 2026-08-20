@@ -1,4 +1,12 @@
-import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
+import {
+  addEventListeners,
+  clientEntry,
+  Frame,
+  on,
+  ref,
+  type Handle,
+  type MixInput,
+} from "remix/ui";
 
 import { routes } from "../../routes.ts";
 
@@ -10,42 +18,123 @@ export type NewsletterSubscriptionStatus =
   | "invalid-tag"
   | "error";
 
+export type NewsletterSubscribeFrameContext =
+  | "newsletter"
+  | "home"
+  | "jam2025"
+  | "jam2026";
+
+export function NewsletterSubscribeFrameHost(
+  handle: Handle<{ src: string; mix?: MixInput<HTMLElement> }>,
+) {
+  return () => (
+    <div mix={handle.props.mix}>
+      <Frame name={NEWSLETTER_SUBSCRIBE_FRAME_NAME} src={handle.props.src} />
+    </div>
+  );
+}
+
+export type NewsletterSubscribeFormStatus =
+  | "idle"
+  | "submitting"
+  | NewsletterSubscriptionStatus;
+
+export function createNewsletterFrameForm(
+  handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
+) {
+  let form: HTMLFormElement | null = null;
+  let submitting = false;
+
+  addEventListeners(handle.frame, handle.signal, {
+    reloadComplete() {
+      submitting = false;
+      if (handle.props.status === "success") form?.reset();
+      handle.update();
+    },
+  });
+
+  return {
+    get state(): { status: NewsletterSubscribeFormStatus } {
+      return {
+        status: submitting ? "submitting" : (handle.props.status ?? "idle"),
+      };
+    },
+    submit: [
+      ref<HTMLFormElement>((element, signal) => {
+        form = element;
+        signal.addEventListener("abort", () => {
+          if (form === element) form = null;
+        });
+      }),
+      on<HTMLFormElement>("submit", async (event, signal) => {
+        // Keep this mutation out of Navigation API until Remix can preserve
+        // scroll for `rmx-reset-scroll="false"` frame submissions.
+        event.preventDefault();
+        submitting = true;
+        handle.update();
+
+        let status: NewsletterSubscriptionStatus = "error";
+        try {
+          let response = await fetch(routes.newsletter.subscribe.href(), {
+            method: "POST",
+            headers: { Accept: "application/json" },
+            body: new FormData(
+              event.currentTarget,
+              event instanceof SubmitEvent ? event.submitter : null,
+            ),
+            signal,
+          });
+          let result: unknown = await response.json();
+          if (isNewsletterResponse(result)) {
+            status = result.ok
+              ? "success"
+              : result.error === "Invalid Email"
+                ? "invalid-email"
+                : result.error === "Invalid Tag"
+                  ? "invalid-tag"
+                  : "error";
+          }
+        } catch {
+          if (signal.aborted) return;
+        }
+
+        if (signal.aborted) return;
+        let src = new URL(handle.frame.src, window.location.href);
+        src.searchParams.set("subscription", status);
+        handle.frame.src = src.href;
+        await handle.frame.reload();
+      }),
+    ],
+  };
+}
+
+function isNewsletterResponse(
+  value: unknown,
+): value is { ok: boolean; error: string | null } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "ok" in value &&
+    typeof value.ok === "boolean" &&
+    "error" in value &&
+    (value.error === null || typeof value.error === "string")
+  );
+}
+
 export let NewsletterSubscribeForm = clientEntry(
   import.meta.url,
   function NewsletterSubscribeForm(
     handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
   ) {
-    let form: HTMLFormElement | null = null;
-    let submitting = false;
-
-    addEventListeners(handle.frame, handle.signal, {
-      reloadComplete() {
-        submitting = false;
-        if (handle.props.status === "success") form?.reset();
-        handle.update();
-      },
-    });
+    let form = createNewsletterFrameForm(handle);
 
     return () => (
       <form
         action={routes.newsletter.subscribe.href()}
         method="post"
-        rmx-src={routes.newsletter.subscribe.href()}
-        rmx-target={NEWSLETTER_SUBSCRIBE_FRAME_NAME}
+        rmx-document
         class="m-0 flex flex-col gap-6 md:h-14 md:flex-row"
-        mix={[
-          ref((element, signal) => {
-            form = element;
-            element.action = handle.frames.top.src;
-            signal.addEventListener("abort", () => {
-              if (form === element) form = null;
-            });
-          }),
-          on("submit", () => {
-            submitting = true;
-            handle.update();
-          }),
-        ]}
+        mix={form.submit}
       >
         <label htmlFor={handle.id} class="sr-only">
           Email address
@@ -64,9 +153,9 @@ export let NewsletterSubscribeForm = clientEntry(
         <button
           type="submit"
           class="rmx-bg-button-primary rmx-text-button-primary rmx-shadow-low rmx-button-text box-border inline-flex h-14 appearance-none items-center justify-center rounded-lg border border-black/10 px-6 font-semibold transition-all hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)] active:scale-[0.98] active:opacity-80 md:w-auto md:whitespace-nowrap"
-          disabled={submitting}
+          disabled={form.state.status === "submitting"}
         >
-          {submitting ? "Subscribing..." : "Subscribe"}
+          {form.state.status === "submitting" ? "Subscribing..." : "Subscribe"}
         </button>
       </form>
     );

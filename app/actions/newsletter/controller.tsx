@@ -12,7 +12,6 @@ import {
 import { routes } from "../../routes.ts";
 import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
-import { NEWSLETTER_SUBSCRIBE_FRAME_NAME } from "../../ui/public/newsletter-subscribe.tsx";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { NewsletterIndexPage, NewsletterIssuePage } from "./pages.tsx";
 import {
@@ -31,21 +30,6 @@ export function createNewsletterController(repository: NewsletterRepository) {
     actions: {
       async index({ render, request }) {
         let subscriptionStatus = getNewsletterSubscriptionStatus(request);
-        if (
-          request.headers.get("x-remix-target") ===
-          NEWSLETTER_SUBSCRIBE_FRAME_NAME
-        ) {
-          return render(
-            <NewsletterSubscribeFrame status={subscriptionStatus} />,
-            {
-              headers: {
-                "Cache-Control": "no-store",
-                Vary: "x-remix-target",
-              },
-            },
-          );
-        }
-
         let summaries: NewsletterSummary[] = [];
         let unavailable = false;
         try {
@@ -71,9 +55,17 @@ export function createNewsletterController(repository: NewsletterRepository) {
                 unavailable || subscriptionStatus
                   ? "no-store"
                   : CACHE_CONTROL.DEFAULT,
-              Vary: "x-remix-target",
             },
           },
+        );
+      },
+
+      signup({ render, request }) {
+        return render(
+          <NewsletterSubscribeFrame
+            status={getNewsletterSubscriptionStatus(request)}
+          />,
+          { headers: { "Cache-Control": "no-store" } },
         );
       },
 
