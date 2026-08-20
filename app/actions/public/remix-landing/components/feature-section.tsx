@@ -504,7 +504,7 @@ export let LandingNewsletterSubscribeForm = clientEntry(
   function LandingNewsletterSubscribeForm(
     handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
   ) {
-    let form = createNewsletterFrameForm(handle);
+    let form = createNewsletterFrameForm(handle, "home");
 
     return () => {
       let status = form.state.status;
@@ -514,7 +514,7 @@ export let LandingNewsletterSubscribeForm = clientEntry(
           <form
             action={routes.newsletter.subscribe.href()}
             method="post"
-            rmx-document
+            {...form.navigation}
             mix={[subscribeFormStyles, ...form.submit]}
           >
             <label for="landing-newsletter-email" mix={[subscribeLabelStyles]}>

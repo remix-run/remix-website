@@ -15,7 +15,7 @@ export let JamNewsletterSubscribeForm = clientEntry(
       status?: NewsletterSubscriptionStatus | null;
     }>,
   ) {
-    let form = createNewsletterFrameForm(handle);
+    let form = createNewsletterFrameForm(handle, "jam2025");
 
     return () => {
       let status = form.state.status;
@@ -24,7 +24,7 @@ export let JamNewsletterSubscribeForm = clientEntry(
         <form
           action={routes.newsletter.subscribe.href()}
           method="post"
-          rmx-document
+          {...form.navigation}
           class={
             handle.props.class ??
             "relative z-10 mt-12 flex flex-col items-center"

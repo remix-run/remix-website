@@ -12,6 +12,19 @@ import { routes } from "../../routes.ts";
 
 export const NEWSLETTER_SUBSCRIBE_FRAME_NAME = "newsletter-subscribe";
 
+// TEMPORARY WORKAROUND — REMOVE AFTER REMIX PR #11699 LANDS:
+// https://github.com/remix-run/remix/pull/11699
+//
+// The hack: Remix frame form navigation currently scrolls the document to the
+// top even with `rmx-reset-scroll="false"`. While we wait for the runtime fix,
+// newsletter forms opt out of Navigation API interception with `rmx-document`,
+// POST with `fetch()`, and manually reload only their containing frame.
+//
+// How to switch: after upgrading to a Remix release containing that PR, change
+// this flag to `false`. Every newsletter form will return to normal declarative
+// frame navigation without changing any call sites.
+const USE_MANUAL_NEWSLETTER_FRAME_RELOAD = true;
+
 export type NewsletterSubscriptionStatus =
   | "success"
   | "invalid-email"
@@ -41,9 +54,18 @@ export type NewsletterSubscribeFormStatus =
 
 export function createNewsletterFrameForm(
   handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
+  context: NewsletterSubscribeFrameContext,
 ) {
   let form: HTMLFormElement | null = null;
   let submitting = false;
+  let requestSrc = `${routes.newsletter.subscribe.href()}?${new URLSearchParams({ frame: context })}`;
+  let navigation = USE_MANUAL_NEWSLETTER_FRAME_RELOAD
+    ? ({ "rmx-document": true } as const)
+    : ({
+        "rmx-reset-scroll": "false",
+        "rmx-src": requestSrc,
+        "rmx-target": NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+      } as const);
 
   addEventListeners(handle.frame, handle.signal, {
     reloadComplete() {
@@ -62,17 +84,19 @@ export function createNewsletterFrameForm(
     submit: [
       ref<HTMLFormElement>((element, signal) => {
         form = element;
+        if (!USE_MANUAL_NEWSLETTER_FRAME_RELOAD) {
+          element.action = handle.frames.top.src;
+        }
         signal.addEventListener("abort", () => {
           if (form === element) form = null;
         });
       }),
       on<HTMLFormElement>("submit", async (event, signal) => {
-        // Keep this mutation out of Navigation API until Remix can preserve
-        // scroll for `rmx-reset-scroll="false"` frame submissions.
-        event.preventDefault();
         submitting = true;
         handle.update();
+        if (!USE_MANUAL_NEWSLETTER_FRAME_RELOAD) return;
 
+        event.preventDefault();
         let status: NewsletterSubscriptionStatus = "error";
         try {
           let response = await fetch(routes.newsletter.subscribe.href(), {
@@ -105,6 +129,7 @@ export function createNewsletterFrameForm(
         await handle.frame.reload();
       }),
     ],
+    navigation,
   };
 }
 
@@ -126,13 +151,13 @@ export let NewsletterSubscribeForm = clientEntry(
   function NewsletterSubscribeForm(
     handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
   ) {
-    let form = createNewsletterFrameForm(handle);
+    let form = createNewsletterFrameForm(handle, "newsletter");
 
     return () => (
       <form
         action={routes.newsletter.subscribe.href()}
         method="post"
-        rmx-document
+        {...form.navigation}
         class="m-0 flex flex-col gap-6 md:h-14 md:flex-row"
         mix={form.submit}
       >

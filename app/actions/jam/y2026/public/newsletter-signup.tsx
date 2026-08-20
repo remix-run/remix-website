@@ -15,7 +15,7 @@ export let Jam2026NewsletterSignup = clientEntry(
   function Jam2026NewsletterSignup(
     handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
   ) {
-    let form = createNewsletterFrameForm(handle);
+    let form = createNewsletterFrameForm(handle, "jam2026");
 
     return () => {
       let status = form.state.status;
@@ -37,7 +37,7 @@ export let Jam2026NewsletterSignup = clientEntry(
             <form
               action={routes.newsletter.subscribe.href()}
               method="post"
-              rmx-document
+              {...form.navigation}
               data-state={status}
               mix={[newsletterFormStyle, ...form.submit]}
             >
