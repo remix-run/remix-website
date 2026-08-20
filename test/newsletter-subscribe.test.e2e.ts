@@ -4,7 +4,7 @@ import { describe, it } from "remix/test";
 
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
-import type { NewsletterRepository } from "../app/data/newsletters.ts";
+import type { NewsletterRepository } from "../app/actions/newsletter/archive.ts";
 import {
   swallowAbortErrors,
   waitForClientEntryHydration,

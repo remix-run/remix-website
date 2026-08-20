@@ -44,6 +44,9 @@ importers:
       rehype-autolink-headings:
         specifier: 7.1.0
         version: 7.1.0
+      rehype-sanitize:
+        specifier: 6.0.0
+        version: 6.0.0
       rehype-slug:
         specifier: 6.0.0
         version: 6.0.0
@@ -2931,6 +2934,12 @@ packages:
         integrity: sha512-Val9mnv2IWpLbNPqc/pUem+a7Ipj2aHacCwgNfTiK0vJKl0LF+4Ba4+v1oPHFpf3bLYmreq0/l3Gud9S5OH42g==,
       }
 
+  hast-util-sanitize@5.0.2:
+    resolution:
+      {
+        integrity: sha512-3yTWghByc50aGS7JlGhk61SPenfE/p1oaFeNwkOOyrscaOkMGrcW9+Cy/QAIOBpZxP1yqDIzFMR0+Np0i0+usg==,
+      }
+
   hast-util-to-html@9.0.5:
     resolution:
       {
@@ -3891,6 +3900,12 @@ packages:
     resolution:
       {
         integrity: sha512-rItO/pSdvnvsP4QRB1pmPiNHUskikqtPojZKJPPPAVx9Hj8i8TwMBhofrrAYRhYOOBZH9tgmG5lPqDLuIWPWmw==,
+      }
+
+  rehype-sanitize@6.0.0:
+    resolution:
+      {
+        integrity: sha512-CsnhKNsyI8Tub6L4sm5ZFsme4puGfc6pYylvXo1AeqaGbjOYyzNv3qZPwvs0oMJ39eryyeOdmxwUIo94IpEhqg==,
       }
 
   rehype-slug@6.0.0:
@@ -5725,6 +5740,12 @@ snapshots:
     dependencies:
       "@types/hast": 3.0.4
 
+  hast-util-sanitize@5.0.2:
+    dependencies:
+      "@types/hast": 3.0.4
+      "@ungap/structured-clone": 1.3.1
+      unist-util-position: 5.0.0
+
   hast-util-to-html@9.0.5:
     dependencies:
       "@types/hast": 3.0.4
@@ -6477,6 +6498,11 @@ snapshots:
       hast-util-is-element: 3.0.0
       unified: 11.0.5
       unist-util-visit: 5.1.0
+
+  rehype-sanitize@6.0.0:
+    dependencies:
+      "@types/hast": 3.0.4
+      hast-util-sanitize: 5.0.2
 
   rehype-slug@6.0.0:
     dependencies:

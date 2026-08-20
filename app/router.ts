@@ -29,9 +29,9 @@ import jam2026Controller from "./actions/jam/y2026/controller.tsx";
 import jam2026TicketController from "./actions/jam/y2026/ticket/controller.tsx";
 import { createNewsletterController } from "./actions/newsletter/controller.tsx";
 import {
-  getLiveNewsletterRepository,
+  liveNewsletterRepository,
   type NewsletterRepository,
-} from "./data/newsletters.ts";
+} from "./actions/newsletter/archive.ts";
 import remixHistoryController from "./actions/remix-history/controller.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
@@ -115,7 +115,7 @@ export function createAppRouter(
   appRouter.map(
     routes.newsletter,
     createNewsletterController(
-      options.newsletterRepository ?? getLiveNewsletterRepository(),
+      options.newsletterRepository ?? liveNewsletterRepository,
     ),
   );
 

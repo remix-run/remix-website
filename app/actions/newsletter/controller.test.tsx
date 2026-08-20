@@ -11,7 +11,7 @@ import {
   type NewsletterIssue,
   type NewsletterRepository,
   type NewsletterSummary,
-} from "../../data/newsletters.ts";
+} from "./archive.ts";
 
 function makeIssue(
   number: number,
@@ -109,7 +109,7 @@ describe("Newsletter index route", () => {
     expect(html).toContain("Third issue preview");
   });
 
-  it("returns 503 when the upstream repository is unavailable", async () => {
+  it("keeps signup usable without caching when the archive is unavailable", async () => {
     let repo = fakeRepository({ unavailable: true });
     let router = routerWith(repo);
 
@@ -117,7 +117,11 @@ describe("Newsletter index route", () => {
       new URL(routes.newsletter.index.href(), "http://localhost:3000"),
     );
 
-    expect(response.status).toBe(503);
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    let html = await response.text();
+    expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
+    expect(html).toContain("The archive is temporarily unavailable.");
   });
 });
 

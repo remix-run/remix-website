@@ -1,41 +1,23 @@
-import * as s from "remix/data-schema";
-import * as c from "remix/data-schema/checks";
-import * as coerce from "remix/data-schema/coerce";
-import { createController } from "remix/router";
-import type { Handle } from "remix/ui";
+import { createController, type Middleware } from "remix/router";
 
-import { cx } from "../../utils/public/cx.ts";
-import { Document } from "../../ui/document.tsx";
-import { Footer } from "../../ui/footer.tsx";
-import { Header } from "../../ui/header.tsx";
-import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
-import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
-import { routes } from "../../routes.ts";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
 import { processMarkdown } from "../../data/md.ts";
 import {
-  NewsletterUpstreamUnavailableError,
   isSafeImageFilename,
+  NewsletterUpstreamUnavailableError,
   type NewsletterIssue,
   type NewsletterRepository,
   type NewsletterSummary,
   resolveNewsletterImageUrl,
-} from "../../data/newsletters.ts";
-import { getLiveNewsletterRepository } from "../../data/newsletters.ts";
-import { isAllowedNewsletterTagId } from "../../utils/public/newsletter-tags.ts";
-
-const NOT_FOUND_RESPONSE = {
-  status: 404,
-  statusText: "Not Found",
-  headers: { "Cache-Control": "no-store" },
-} as const;
-
-const UNAVAILABLE_RESPONSE = {
-  status: 503,
-  statusText: "Service Unavailable",
-  headers: { "Cache-Control": "no-store" },
-} as const;
+} from "./archive.ts";
+import { routes } from "../../routes.ts";
+import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { NewsletterIndexPage, NewsletterIssuePage } from "./pages.tsx";
+import {
+  getNewsletterSubscriptionStatus,
+  handleNewsletterSubscriptionError,
+  submitNewsletter,
+} from "./subscription.ts";
 
 /**
  * Build a newsletter controller bound to a specific repository. Tests pass a
@@ -43,6 +25,7 @@ const UNAVAILABLE_RESPONSE = {
  */
 export function createNewsletterController(repository: NewsletterRepository) {
   return createController(routes.newsletter, {
+    middleware: [newsletterErrorLogger()],
     actions: {
       async index({ render, request }) {
         let summaries: NewsletterSummary[] = [];
@@ -57,58 +40,28 @@ export function createNewsletterController(repository: NewsletterRepository) {
           }
         }
 
+        let subscriptionStatus = getNewsletterSubscriptionStatus(request);
+
         return render(
           <NewsletterIndexPage
             requestUrl={request.url}
             summaries={summaries}
             unavailable={unavailable}
+            subscriptionStatus={subscriptionStatus}
           />,
           {
-            status: unavailable ? 503 : 200,
             headers: {
-              "Cache-Control": unavailable ? "no-store" : CACHE_CONTROL.DEFAULT,
+              "Cache-Control":
+                unavailable || subscriptionStatus
+                  ? "no-store"
+                  : CACHE_CONTROL.DEFAULT,
             },
           },
         );
       },
 
-      async subscribe({ formData }) {
-        let result = s.parseSafe(newsletterSubmission, {
-          email: formData.get("email"),
-          tags: formData.getAll("tag"),
-        });
-
-        if (!result.success) {
-          let error = "Invalid Submission";
-          if (result.issues.some((issue) => issue.path?.includes("email"))) {
-            error = "Invalid Email";
-          } else if (
-            result.issues.some((issue) => issue.path?.includes("tags"))
-          ) {
-            error = "Invalid Tag";
-          }
-
-          return Response.json(
-            { ok: false, error } satisfies NewsletterResponse,
-            { status: 400 },
-          );
-        }
-
-        try {
-          await subscribeToNewsletter(result.value.email, result.value.tags);
-          return Response.json({
-            ok: true,
-            error: null,
-          } satisfies NewsletterResponse);
-        } catch {
-          return Response.json(
-            {
-              ok: false,
-              error: "Something went wrong",
-            } satisfies NewsletterResponse,
-            { status: 500 },
-          );
-        }
+      async subscribe({ formData, request }) {
+        return submitNewsletter(request, formData);
       },
 
       async issue({ params, render, request }) {
@@ -209,54 +162,38 @@ export function createNewsletterController(repository: NewsletterRepository) {
   });
 }
 
-export default createNewsletterController(getLiveNewsletterRepository());
-
 ////////////////////////////////////////////////////////////////////////////////
 
-type NewsletterResponse = { ok: boolean; error: string | null };
+function newsletterErrorLogger(): Middleware {
+  return async (context, next) => {
+    try {
+      return await next();
+    } catch (error) {
+      console.error("[newsletter] Request failed", {
+        method: context.request.method,
+        pathname: context.url.pathname,
+        error,
+      });
 
-let newsletterSubmission = s.object({
-  email: s.string().pipe(c.email()),
-  tags: s
-    .array(coerce.number())
-    .refine((tags) => tags.every(isAllowedNewsletterTagId), "Invalid Tag"),
-});
+      let response = handleNewsletterSubscriptionError(context.request, error);
+      if (response) return response;
 
-async function subscribeToNewsletter(email: string, tags: number[]) {
-  let apiKey = process.env.CONVERTKIT_KEY;
-  if (!apiKey) {
-    throw new Error("Missing CONVERTKIT_KEY");
-  }
-
-  let apiUrl =
-    process.env.CONVERTKIT_API_URL ?? "https://api.convertkit.com/v3";
-  let formId = process.env.CONVERTKIT_FORM_ID ?? "1334747";
-
-  let response = await fetch(`${apiUrl}/forms/${formId}/subscribe`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-    body: JSON.stringify({
-      api_key: apiKey,
-      email,
-      tags,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`ConvertKit request failed with ${response.status}`);
-  }
-
-  let body = await response.json();
-  let result = s.parseSafe(s.object({ error: s.optional(s.string()) }), body);
-  if (!result.success) {
-    throw new Error("Unexpected response from ConvertKit API");
-  }
-  if (result.value.error) {
-    throw new Error(result.value.error);
-  }
+      throw error;
+    }
+  };
 }
+
+const NOT_FOUND_RESPONSE = {
+  status: 404,
+  statusText: "Not Found",
+  headers: { "Cache-Control": "no-store" },
+} as const;
+
+const UNAVAILABLE_RESPONSE = {
+  status: 503,
+  statusText: "Service Unavailable",
+  headers: { "Cache-Control": "no-store" },
+} as const;
 
 function withoutNewsletterTitle(markdown: string): string {
   let frontmatter = markdown.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
@@ -270,202 +207,4 @@ function parseIssueNumber(value: string | undefined): number | null {
   let number = Number(value);
   if (!Number.isInteger(number) || number <= 0) return null;
   return number;
-}
-
-function formatNewsletterDate(date: Date): string {
-  return new Intl.DateTimeFormat("en-US", {
-    dateStyle: "long",
-    timeZone: "UTC",
-  }).format(date);
-}
-
-interface NewsletterIndexPageProps {
-  requestUrl: string;
-  summaries: NewsletterSummary[];
-  unavailable: boolean;
-}
-
-function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
-  return () => (
-    <Document
-      title="Remix Newsletter"
-      description="Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. Read past issues in the archive."
-      stylesheets={["app"]}
-      headTags={getSocialHeadTags({
-        requestUrl: handle.props.requestUrl,
-        title: "Remix Newsletter",
-        description:
-          "Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. Read past issues in the archive.",
-      })}
-    >
-      <Header />
-      <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <NewsletterSignupSection />
-        <NewsletterArchive
-          summaries={handle.props.summaries}
-          unavailable={handle.props.unavailable}
-        />
-      </main>
-      <Footer />
-    </Document>
-  );
-}
-
-function NewsletterSignupSection() {
-  return () => (
-    <div class={cx("container flex flex-col justify-center md:max-w-2xl")}>
-      <div>
-        <div class="h-8" />
-        <div class="text-3xl font-extrabold">Newsletter</div>
-        <div class="h-6" />
-        <div class="text-lg" id="newsletter-text">
-          Stay up-to-date with news, announcements, and releases for our
-          projects like Remix and React Router. We respect your privacy,
-          unsubscribe at any time.
-        </div>
-        <div class="h-9" />
-        <NewsletterSubscribeForm
-          class={cx("sm:flex sm:gap-2")}
-          inputClass={cx(
-            "w-full sm:w-auto sm:flex-1 dark:placeholder-gray-500",
-            "box-border appearance-none rounded border px-4 py-2",
-          )}
-          buttonClass={cx(
-            "w-full mt-2 sm:w-auto sm:mt-0 uppercase",
-            "rounded border bg-white px-4 py-2 font-semibold text-gray-900",
-            "hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-brand dark:focus:ring-white",
-          )}
-        />
-      </div>
-    </div>
-  );
-}
-
-function NewsletterArchive(
-  handle: Handle<{
-    summaries: NewsletterSummary[];
-    unavailable: boolean;
-  }>,
-) {
-  return () => (
-    <section
-      aria-label="Newsletter archive"
-      class="container mb-24 mt-16 md:max-w-3xl"
-    >
-      <h2 class="rmx-page-title rmx-page-title-sm mb-6">Archive</h2>
-      {handle.props.unavailable ? (
-        <p class="rmx-page-body text-gray-600 dark:text-gray-300">
-          The archive is temporarily unavailable. Please check back soon.
-        </p>
-      ) : handle.props.summaries.length === 0 ? (
-        <p class="rmx-page-body text-gray-600 dark:text-gray-300">
-          No issues yet.
-        </p>
-      ) : (
-        <ol class="flex flex-col divide-y divide-gray-200 dark:divide-gray-800">
-          {handle.props.summaries.map((summary) => (
-            <li key={summary.number}>
-              <a
-                href={routes.newsletter.issue.href({
-                  number: summary.number,
-                })}
-                class={cx(
-                  "group flex flex-col gap-1 py-4",
-                  "text-gray-900 hover:text-black dark:text-gray-100 dark:hover:text-white",
-                )}
-              >
-                <div class="flex items-baseline gap-3">
-                  <span class="font-mono text-sm text-gray-500 dark:text-gray-400">
-                    #{summary.number}
-                  </span>
-                  <time
-                    dateTime={summary.date.toISOString()}
-                    class="rmx-page-meta"
-                  >
-                    {formatNewsletterDate(summary.date)}
-                  </time>
-                </div>
-                {summary.preview ? (
-                  <p class="rmx-page-body text-gray-600 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100">
-                    {summary.preview}
-                  </p>
-                ) : null}
-              </a>
-            </li>
-          ))}
-        </ol>
-      )}
-    </section>
-  );
-}
-
-interface NewsletterIssuePageProps {
-  requestUrl: string;
-  issue: NewsletterIssue;
-  html: string;
-}
-
-function NewsletterIssuePage(handle: Handle<NewsletterIssuePageProps>) {
-  let issue = handle.props.issue;
-  return () => (
-    <Document
-      title={`${issue.title} | Remix`}
-      description={`Remix Newsletter #${issue.number} — ${formatNewsletterDate(
-        issue.date,
-      )}`}
-      stylesheets={["app", "md"]}
-      headTags={getSocialHeadTags({
-        requestUrl: handle.props.requestUrl,
-        title: issue.title,
-        description: `Remix Newsletter #${issue.number} — ${formatNewsletterDate(
-          issue.date,
-        )}`,
-      })}
-    >
-      <Header />
-      <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <div class="container mb-24 mt-8 max-w-full md:max-w-3xl">
-          <div class="mb-6">
-            <a
-              href={routes.newsletter.index.href()}
-              class="rmx-page-meta text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
-            >
-              ← Newsletter archive
-            </a>
-          </div>
-          <div class="rmx-page-meta text-gray-500 dark:text-gray-400">
-            <time dateTime={issue.date.toISOString()}>
-              {formatNewsletterDate(issue.date)}
-            </time>
-          </div>
-          <div class="h-2" />
-          <h1 class="rmx-page-title">{issue.title}</h1>
-          <div class="h-8" />
-          <div class="md-prose" innerHTML={handle.props.html} />
-          <div class="h-16" />
-          <NewsletterDetailSignup />
-        </div>
-      </main>
-      <Footer />
-    </Document>
-  );
-}
-
-function NewsletterDetailSignup() {
-  return () => (
-    <div class="mt-12 max-w-lg">
-      <h2 class="rmx-page-title rmx-page-title-sm mb-4">
-        Get updates on the latest Remix news
-      </h2>
-      <div class="rmx-page-body mb-6" id="newsletter-text">
-        Be the first to learn about new Remix features, community events, and
-        tutorials.
-      </div>
-      <NewsletterSubscribeForm
-        class="sm:flex sm:gap-2"
-        inputClass="w-full sm:w-auto sm:flex-1 box-border appearance-none rounded border px-4 py-2 dark:placeholder-gray-500"
-        buttonClass="mt-2 w-full rounded border bg-white px-4 py-2 font-semibold uppercase text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-brand sm:mt-0 sm:w-auto dark:focus:ring-white"
-      />
-    </div>
-  );
 }

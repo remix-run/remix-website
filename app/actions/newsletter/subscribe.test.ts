@@ -4,7 +4,7 @@ import { expect } from "remix/assert";
 import { routes } from "../../routes.ts";
 import { newsletterTagIds } from "../../utils/public/newsletter-tags.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
-import type { NewsletterRepository } from "../../data/newsletters.ts";
+import type { NewsletterRepository } from "./archive.ts";
 import { createNewsletterController } from "./controller.tsx";
 
 const emptyRepository: NewsletterRepository = {
@@ -37,7 +37,10 @@ describe("Newsletter subscribe route", () => {
     }
   });
 
-  async function submitNewsletter(body: URLSearchParams) {
+  async function submitNewsletter(
+    body: URLSearchParams,
+    { accept = "application/json" }: { accept?: string } = {},
+  ) {
     let router = createRouteTestRouter();
     router.map(routes.newsletter, createNewsletterController(emptyRepository));
 
@@ -46,6 +49,7 @@ describe("Newsletter subscribe route", () => {
         `http://localhost:3000${routes.newsletter.subscribe.href()}`,
         {
           method: "POST",
+          headers: { Accept: accept },
           body,
         },
       ),
@@ -74,6 +78,41 @@ describe("Newsletter subscribe route", () => {
     }
   });
 
+  it("redirects document form submissions to an HTML result", async (t) => {
+    t.mock.method(globalThis, "fetch", () =>
+      Promise.resolve(Response.json({})),
+    );
+
+    let success = await submitNewsletter(
+      new URLSearchParams({ email: "hello@example.com" }),
+      { accept: "text/html" },
+    );
+    expect(success.status).toBe(303);
+    expect(success.headers.get("Cache-Control")).toBe("no-store");
+    expect(success.headers.get("Location")).toBe(
+      `${routes.newsletter.index.href()}?subscription=success`,
+    );
+
+    let router = createRouteTestRouter();
+    router.map(routes.newsletter, createNewsletterController(emptyRepository));
+    let resultPage = await router.fetch(
+      new URL(success.headers.get("Location")!, "http://localhost:3000"),
+    );
+    expect(resultPage.headers.get("Cache-Control")).toBe("no-store");
+    let resultHtml = await resultPage.text();
+    expect(resultHtml).toContain('role="status"');
+    expect(resultHtml).toContain("check your email");
+
+    let invalid = await submitNewsletter(
+      new URLSearchParams({ email: "invalid-email" }),
+      { accept: "text/html" },
+    );
+    expect(invalid.status).toBe(303);
+    expect(invalid.headers.get("Location")).toBe(
+      `${routes.newsletter.index.href()}?subscription=invalid-email`,
+    );
+  });
+
   it("subscribes a valid email and allowed tag", async (t) => {
     let fetchSpy = t.mock.method(globalThis, "fetch", () =>
       Promise.resolve(Response.json({})),
@@ -91,7 +130,8 @@ describe("Newsletter subscribe route", () => {
     await expect(response.json()).resolves.toEqual({ ok: true, error: null });
   });
 
-  it("returns a generic 500 for rejected provider responses", async (t) => {
+  it("returns and logs a generic 500 for rejected provider responses", async (t) => {
+    let errorSpy = t.mock.method(console, "error", () => {});
     let providerResponses = [
       new Response(JSON.stringify({}), { status: 503 }),
       new Response("not json", { status: 200 }),
@@ -112,9 +152,11 @@ describe("Newsletter subscribe route", () => {
         error: "Something went wrong",
       });
     }
+    expect(errorSpy).toHaveBeenCalledTimes(3);
   });
 
   it("returns a generic 500 when ConvertKit is unavailable", async (t) => {
+    let errorSpy = t.mock.method(console, "error", () => {});
     t.mock.method(globalThis, "fetch", () =>
       Promise.reject(new Error("network unavailable")),
     );
@@ -128,9 +170,11 @@ describe("Newsletter subscribe route", () => {
       ok: false,
       error: "Something went wrong",
     });
+    expect(errorSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("returns a generic 500 when CONVERTKIT_KEY is missing", async () => {
+  it("returns a generic 500 when CONVERTKIT_KEY is missing", async (t) => {
+    let errorSpy = t.mock.method(console, "error", () => {});
     delete process.env.CONVERTKIT_KEY;
 
     let response = await submitNewsletter(
@@ -142,5 +186,6 @@ describe("Newsletter subscribe route", () => {
       ok: false,
       error: "Something went wrong",
     });
+    expect(errorSpy).toHaveBeenCalledTimes(1);
   });
 });

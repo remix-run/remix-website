@@ -1,8 +1,8 @@
 import { detectMimeType } from "remix/mime";
 import { parseTar } from "remix/tar-parser";
 
-import { routes } from "../routes.ts";
-import { env } from "../utils/env.ts";
+import { routes } from "../../routes.ts";
+import { env } from "../../utils/env.ts";
 
 /**
  * Newsletter archive.
@@ -13,18 +13,12 @@ import { env } from "../utils/env.ts";
  * parse it once, and keep a parsed snapshot in memory.
  */
 
-export const NEWSLETTER_REPO_OWNER = "remix-run";
-export const NEWSLETTER_REPO_NAME = "newsletter";
-export const NEWSLETTER_REPO_REF = "main";
+const NEWSLETTER_REPO_OWNER = "remix-run";
+const NEWSLETTER_REPO_NAME = "newsletter";
+const NEWSLETTER_REPO_REF = "main";
 
 /** Raster image types we are willing to serve. SVG is intentionally excluded. */
-export const SAFE_IMAGE_EXTENSIONS = [
-  "png",
-  "jpg",
-  "jpeg",
-  "gif",
-  "webp",
-] as const;
+const SAFE_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif", "webp"] as const;
 
 const FRESH_TTL_MS = 5 * 60 * 1000;
 const MAX_ISSUES = 200;
@@ -182,7 +176,7 @@ export async function collectNewsletterFiles(
   let totalBytes = 0;
   await parseTar(archive, (entry) => {
     if (entry.header.type === "directory" || entry.name.endsWith("/")) return;
-    let match = entry.name.match(/[^/]+\/newsletters\/(.+)$/);
+    let match = entry.name.match(/^[^/]+\/newsletters\/(.+)$/);
     if (!match) return;
     if (files.length >= MAX_FILES) {
       throw new Error("Newsletter archive contains too many files");
@@ -270,7 +264,7 @@ export function isSafeImageFilename(filename: string): boolean {
   return (SAFE_IMAGE_EXTENSIONS as ReadonlyArray<string>).includes(ext);
 }
 
-export function isSafeImageContentType(contentType: string): boolean {
+function isSafeImageContentType(contentType: string): boolean {
   let base = contentType.split(";")[0].trim().toLowerCase();
   return ["image/png", "image/jpeg", "image/gif", "image/webp"].includes(base);
 }
@@ -283,6 +277,10 @@ export function createGitHubNewsletterRepository(
     token?: string;
     fetchImpl?: typeof fetch;
     ttlMs?: number;
+    onRefreshError?: (
+      error: unknown,
+      context: { servingStale: boolean },
+    ) => void;
   } = {},
 ): NewsletterRepository {
   let owner = options.owner ?? NEWSLETTER_REPO_OWNER;
@@ -291,6 +289,7 @@ export function createGitHubNewsletterRepository(
   let token = options.token;
   let fetchImpl = options.fetchImpl ?? globalThis.fetch;
   let ttlMs = options.ttlMs ?? FRESH_TTL_MS;
+  let onRefreshError = options.onRefreshError;
 
   let snapshot: NewsletterSnapshot | null = null;
   let expiresAt = 0;
@@ -304,6 +303,7 @@ export function createGitHubNewsletterRepository(
       expiresAt = Date.now() + ttlMs;
       return next;
     } catch (error) {
+      onRefreshError?.(error, { servingStale: snapshot != null });
       if (snapshot) {
         // Serve stale data and stretch freshness so we don't hammer GitHub.
         expiresAt = Date.now() + ttlMs;
@@ -424,18 +424,12 @@ async function fetchTarballFiles(
  * Shared live repository. Reusing one process-wide instance keeps the in-memory
  * cache and concurrent-refresh dedupe effective across requests.
  */
-let liveRepository: NewsletterRepository | null = null;
-
-export function getLiveNewsletterRepository(): NewsletterRepository {
-  if (!liveRepository) {
-    liveRepository = createGitHubNewsletterRepository({
-      token: env.NEWSLETTER_GITHUB_TOKEN,
+export const liveNewsletterRepository = createGitHubNewsletterRepository({
+  onRefreshError(error, { servingStale }) {
+    console.error("[newsletter] GitHub archive refresh failed", {
+      servingStale,
+      error,
     });
-  }
-  return liveRepository;
-}
-
-/** Test-only escape hatch to reset the process-wide repository. */
-export function __resetLiveNewsletterRepository() {
-  liveRepository = null;
-}
+  },
+  token: env.NEWSLETTER_GITHUB_TOKEN,
+});

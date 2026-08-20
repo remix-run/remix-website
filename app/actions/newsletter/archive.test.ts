@@ -10,7 +10,7 @@ import {
   parseNewsletterSnapshot,
   NewsletterUpstreamUnavailableError,
   type RawTarFile,
-} from "./newsletters.ts";
+} from "./archive.ts";
 
 function md(number: number, date: string, body = "Hello world."): string {
   return `---\ntitle: Remix Newsletter #${number}\n---\n\n# Remix Newsletter #${number}\n\n${body}\n`;
@@ -266,8 +266,9 @@ describe("createGitHubNewsletterRepository", () => {
     expect(calls).toBe(1);
   });
 
-  it("retains stale data when a refresh fails after a successful fetch", async () => {
+  it("retains stale data and reports when a refresh fails", async () => {
     let calls = 0;
+    let refreshErrors: Array<{ error: unknown; servingStale: boolean }> = [];
     let repo = createGitHubNewsletterRepository({
       token: "test-token",
       ttlMs: 50,
@@ -278,6 +279,9 @@ describe("createGitHubNewsletterRepository", () => {
         }
         return new Response("nope", { status: 404 });
       },
+      onRefreshError(error, { servingStale }) {
+        refreshErrors.push({ error, servingStale });
+      },
     });
 
     let first = await repo.listSummaries();
@@ -285,6 +289,11 @@ describe("createGitHubNewsletterRepository", () => {
     await new Promise((r) => setTimeout(r, 60));
     let second = await repo.listSummaries();
     expect(second.map((s) => s.number)).toEqual([2]); // stale retained
+    expect(refreshErrors.length).toBe(1);
+    expect(refreshErrors[0].servingStale).toBe(true);
+    expect((refreshErrors[0].error as Error).message).toBe(
+      "Failed to fetch newsletter tarball (404)",
+    );
   });
 
   it("throws UpstreamUnavailableError when the first fetch fails", async () => {
@@ -334,6 +343,11 @@ describe("collectNewsletterFiles", () => {
         name: "repo-sha/newsletters/newsletter-1/cover.png",
         type: "file",
         bytes: new TextEncoder().encode("png"),
+      },
+      {
+        name: "repo-sha/examples/newsletters/newsletter-2/2024-02-02-remix-newsletter-2.md",
+        type: "file",
+        bytes: new TextEncoder().encode(md(2, "2024-02-02")),
       },
     ]);
 

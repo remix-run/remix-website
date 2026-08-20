@@ -10,6 +10,7 @@ import { getHighlighter, toShikiTheme } from "shiki";
 import rangeParser from "parse-numeric-range";
 import parseFrontMatter from "front-matter";
 import type * as Hast from "hast";
+import type { Options as SanitizeOptions } from "rehype-sanitize";
 import type * as Unist from "unist";
 import type * as Shiki from "shiki";
 import type * as Unified from "unified";
@@ -73,6 +74,7 @@ async function getProcessor(allowHtml: boolean) {
     { default: rehypeSlug },
     { default: rehypeStringify },
     { default: rehypeAutolinkHeadings },
+    { default: rehypeSanitize, defaultSchema },
     plugins,
   ] = await Promise.all([
     import("unified"),
@@ -82,6 +84,7 @@ async function getProcessor(allowHtml: boolean) {
     import("rehype-slug"),
     import("rehype-stringify"),
     import("rehype-autolink-headings"),
+    import("rehype-sanitize"),
     loadPlugins(),
   ]);
 
@@ -100,10 +103,62 @@ async function getProcessor(allowHtml: boolean) {
 
   if (allowHtml) processor.use(plugins.blogImages);
 
+  if (!allowHtml) {
+    // Raw HTML is already discarded. Sanitize the generated tree after the
+    // Markdown transforms, then only run the trusted heading plugins below.
+    processor.use(rehypeSanitize, createUntrustedMarkdownSchema(defaultSchema));
+  }
+
   return processor
-    .use(rehypeStringify, { allowDangerousHtml: allowHtml })
-    .use(rehypeSlug)
-    .use(rehypeAutolinkHeadings);
+    .use(rehypeSlug, {
+      // Slugs are added after sanitization, so untrusted documents need a
+      // non-clobbering prefix. Autolinks then receive the prefixed IDs too.
+      prefix: allowHtml ? "" : "newsletter-content-",
+    })
+    .use(rehypeAutolinkHeadings)
+    .use(rehypeStringify, { allowDangerousHtml: allowHtml });
+}
+
+function createUntrustedMarkdownSchema(
+  defaultSchema: SanitizeOptions,
+): SanitizeOptions {
+  // These attributes (including the inline color styles) are emitted by the
+  // trusted Shiki transform. Untrusted raw HTML never reaches this tree.
+  let codeBlockAttributes = [
+    "dataCodeBlock",
+    "dataLineNumbers",
+    "dataLang",
+    "dataHighlight",
+    "dataLineNumber",
+    "dataAdd",
+    "dataRemove",
+    "dataDiffLineNumber",
+  ];
+
+  return {
+    ...defaultSchema,
+    attributes: {
+      ...defaultSchema.attributes,
+      div: [...(defaultSchema.attributes?.div ?? []), ...codeBlockAttributes],
+      img: [...(defaultSchema.attributes?.img ?? []), "decoding", "loading"],
+      pre: [
+        ...(defaultSchema.attributes?.pre ?? []),
+        ...codeBlockAttributes,
+        "style",
+      ],
+      span: [
+        ...(defaultSchema.attributes?.span ?? []),
+        ["className", "codeblock-line"],
+        ...codeBlockAttributes,
+        "style",
+      ],
+    },
+    protocols: {
+      ...defaultSchema.protocols,
+      href: ["http", "https", "mailto"],
+      src: ["https"],
+    },
+  };
 }
 
 type InternalPlugin<

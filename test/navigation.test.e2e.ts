@@ -5,7 +5,7 @@ import { beforeEach, describe, it } from "remix/test";
 import { DOCUMENT_REDIRECT_HEADER } from "../app/actions/public/document-redirect.ts";
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
-import type { NewsletterRepository } from "../app/data/newsletters.ts";
+import type { NewsletterRepository } from "../app/actions/newsletter/archive.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
 let emptyNewsletterRepository: NewsletterRepository = {
