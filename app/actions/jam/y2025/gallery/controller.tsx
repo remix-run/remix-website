@@ -16,6 +16,7 @@ import {
   type JamGalleryModalNav,
 } from "../public/gallery-modal-host.tsx";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import type { Handle, RemixNode } from "remix/ui";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
@@ -237,9 +238,11 @@ function IconLink(
         download={handle.props.download}
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${handle.props.className ?? ""}`}
       >
-        <svg class="pointer-events-none size-6" aria-hidden="true">
-          <use href={`${assetPaths.iconsSprite}#${handle.props.icon}`} />
-        </svg>
+        <Icon
+          name={handle.props.icon}
+          class="pointer-events-none size-6"
+          aria-hidden="true"
+        />
       </a>
     ) : (
       <JamGalleryLink
@@ -247,9 +250,11 @@ function IconLink(
         ariaLabel={handle.props.label}
         class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${handle.props.className ?? ""}`}
       >
-        <svg class="pointer-events-none size-6" aria-hidden="true">
-          <use href={`${assetPaths.iconsSprite}#${handle.props.icon}`} />
-        </svg>
+        <Icon
+          name={handle.props.icon}
+          class="pointer-events-none size-6"
+          aria-hidden="true"
+        />
       </JamGalleryLink>
     );
 }

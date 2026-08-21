@@ -1,7 +1,7 @@
 import { css, type Handle } from "remix/ui";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";
-import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { colors } from "../styles/tokens.ts";
 
 const SOCIAL_LINKS = [
@@ -139,9 +139,11 @@ export function LandingFooter(_handle: Handle) {
                 rel="noopener noreferrer"
                 mix={[socialLinkStyles]}
               >
-                <svg aria-hidden="true" mix={[socialIconStyles]}>
-                  <use href={`${assetPaths.iconsSprite}#${link.icon}`} />
-                </svg>
+                <Icon
+                  name={link.icon}
+                  aria-hidden="true"
+                  mix={[socialIconStyles]}
+                />
               </a>
             ))}
           </div>

@@ -1,7 +1,7 @@
 import { css, type Handle, type MixInput } from "remix/ui";
 import { theme } from "./public/theme.ts";
 import { routes } from "../routes.ts";
-import { assetPaths } from "../utils/public/asset-paths.ts";
+import { Icon } from "./public/icon.tsx";
 import { Wordmark } from "./public/wordmark.tsx";
 
 type FooterProps = {
@@ -25,36 +25,48 @@ export function Footer(handle: Handle<FooterProps>) {
             aria-label="GitHub"
             mix={footerSocialLinkStyle}
           >
-            <svg aria-hidden="true" fill="none" mix={footerSocialIconStyle}>
-              <use href={`${assetPaths.iconsSprite}#github`} />
-            </svg>
+            <Icon
+              name="github"
+              aria-hidden="true"
+              fill="none"
+              mix={footerSocialIconStyle}
+            />
           </a>
           <a
             href="https://x.com/remix_run"
             aria-label="X"
             mix={footerSocialLinkStyle}
           >
-            <svg aria-hidden="true" fill="none" mix={footerSocialIconStyle}>
-              <use href={`${assetPaths.iconsSprite}#x`} />
-            </svg>
+            <Icon
+              name="x"
+              aria-hidden="true"
+              fill="none"
+              mix={footerSocialIconStyle}
+            />
           </a>
           <a
             href="https://youtube.com/remix_run"
             aria-label="YouTube"
             mix={footerSocialLinkStyle}
           >
-            <svg aria-hidden="true" fill="none" mix={footerSocialIconStyle}>
-              <use href={`${assetPaths.iconsSprite}#youtube`} />
-            </svg>
+            <Icon
+              name="youtube"
+              aria-hidden="true"
+              fill="none"
+              mix={footerSocialIconStyle}
+            />
           </a>
           <a
             href="https://remix.run/discord"
             aria-label="Remix"
             mix={footerSocialLinkStyle}
           >
-            <svg aria-hidden="true" fill="none" mix={footerSocialIconStyle}>
-              <use href={`${assetPaths.iconsSprite}#discord`} />
-            </svg>
+            <Icon
+              name="discord"
+              aria-hidden="true"
+              fill="none"
+              mix={footerSocialIconStyle}
+            />
           </a>
         </nav>
       </div>

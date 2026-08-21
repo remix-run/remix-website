@@ -1,5 +1,5 @@
 import { cx } from "../../utils/public/cx.ts";
-import { assetPaths } from "../../utils/public/asset-paths.ts";
+import { Icon } from "../../ui/public/icon.tsx";
 
 export function PitchSection() {
   return () => (
@@ -33,9 +33,12 @@ export function PitchSection() {
             "sm:w-auto sm:whitespace-nowrap",
           )}
         >
-          <svg class="size-6 shrink-0" fill="none" aria-hidden="true">
-            <use href={`${assetPaths.iconsSprite}#github`} />
-          </svg>
+          <Icon
+            name="github"
+            class="size-6 shrink-0"
+            fill="none"
+            aria-hidden="true"
+          />
           <span>Watch the repo</span>
         </a>
       </div>
