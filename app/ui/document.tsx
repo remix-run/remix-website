@@ -57,7 +57,8 @@ export function Document(handle: Handle<DocumentProps>) {
       children,
     } = handle.props;
     let assetEntry = getAssetEntry();
-    let stylesheetNames = new Set<StylesheetName>(requestedStylesheets);
+    let stylesheetNames = new Set<StylesheetName>(["global"]);
+    for (let name of requestedStylesheets) stylesheetNames.add(name);
 
     let managedHeadTags: ManagedHeadTag[] = [];
     if (noIndex) {
@@ -102,15 +103,7 @@ export function Document(handle: Handle<DocumentProps>) {
             sizes="any"
           />
 
-          {/* Inline the small reset to remove a render-blocking request. */}
-          <style
-            data-key="global-styles"
-            data-remix-global-styles=""
-            rmx-preserve-dom=""
-            innerHTML={assetEntry.globalStyles}
-          />
-
-          {/* Keep route stylesheets attached across document diffs. */}
+          {/* Keep persistent stylesheets attached across document diffs. */}
           {(Object.keys(assetEntry.stylesheets) as StylesheetName[]).map(
             (name) => (
               <link
