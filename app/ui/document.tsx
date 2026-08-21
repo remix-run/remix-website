@@ -1,3 +1,5 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { css, type Handle, type Props, type RemixNode } from "remix/ui";
 
 import {
@@ -12,6 +14,15 @@ import {
 } from "./public/document-head.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
 import { theme } from "./public/theme.ts";
+
+let globalStylesheetPath = path.resolve(
+  import.meta.dirname,
+  "../styles/global.css",
+);
+let productionGlobalStyles =
+  process.env.NODE_ENV === "production"
+    ? fs.readFileSync(globalStylesheetPath, "utf8")
+    : undefined;
 
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -57,8 +68,7 @@ export function Document(handle: Handle<DocumentProps>) {
       children,
     } = handle.props;
     let assetEntry = getAssetEntry();
-    let stylesheetNames = new Set<StylesheetName>(["global"]);
-    for (let name of requestedStylesheets) stylesheetNames.add(name);
+    let stylesheetNames = new Set<StylesheetName>(requestedStylesheets);
 
     let managedHeadTags: ManagedHeadTag[] = [];
     if (noIndex) {
@@ -102,7 +112,18 @@ export function Document(handle: Handle<DocumentProps>) {
             sizes="any"
           />
 
-          {/* Keep persistent stylesheets attached across document diffs. */}
+          {/* Inline the small reset to remove a render-blocking request. */}
+          <style
+            data-key="global-styles"
+            data-remix-global-styles=""
+            rmx-preserve-dom=""
+            innerHTML={
+              productionGlobalStyles ??
+              fs.readFileSync(globalStylesheetPath, "utf8")
+            }
+          />
+
+          {/* Keep route stylesheets attached across document diffs. */}
           {(Object.keys(assetEntry.stylesheets) as StylesheetName[]).map(
             (name) => (
               <link

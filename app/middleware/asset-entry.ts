@@ -21,7 +21,6 @@ let defaultEntry = path.resolve(
 );
 let stylesheetEntries = {
   app: path.resolve(import.meta.dirname, "../styles/public/generated/app.css"),
-  global: path.resolve(import.meta.dirname, "../styles/public/global.css"),
   home: path.resolve(import.meta.dirname, "../styles/public/home.css"),
   md: path.resolve(import.meta.dirname, "../styles/public/generated/md.css"),
 } as const;

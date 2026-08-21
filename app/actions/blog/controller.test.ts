@@ -22,6 +22,19 @@ describe("Blog route", () => {
 
     expect(html).toContain("<title>Remix Blog</title>");
     expect(html).toContain('id="main-content"');
+    expect(html).toContain(`action="${routes.api.newsletter.href()}"`);
+    expect(html).toContain("data-remix-global-styles");
+
+    let activeStylesheetHrefs = [
+      ...html.matchAll(/<link[^>]+rel="stylesheet"[^>]*>/g),
+    ]
+      .map((match) => match[0])
+      .filter((link) => !link.includes('media="not all"'))
+      .map((link) => link.match(/href="([^"]+)"/)?.[1]);
+    expect(activeStylesheetHrefs).toEqual([
+      "/assets/app/styles/public/generated/app.css",
+    ]);
+
     let articleImages = [
       ...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g),
     ]
