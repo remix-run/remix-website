@@ -12,6 +12,15 @@ let isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
 let rootDir = path.resolve(import.meta.dirname, "../..");
 let buildId = isProduction ? getBuildId() : undefined;
 let webpInputExtensions = [".jpeg", ".jpg", ".png"] as const;
+let webpTransforms = {
+  webp: createWebpTransform(),
+  "webp-64": createWebpTransform(64),
+  "webp-128": createWebpTransform(128),
+  "webp-480": createWebpTransform(480),
+  "webp-768": createWebpTransform(768),
+  "webp-1200": createWebpTransform(1200),
+  "webp-1600": createWebpTransform(1600),
+};
 
 export let assets = createAssetServer({
   basePath: "/assets",
@@ -49,15 +58,7 @@ export let assets = createAssetServer({
     ),
     extensions: [".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"],
     maxRequestTransforms: 1,
-    transforms: {
-      webp: createWebpTransform(),
-      "webp-64": createWebpTransform(64),
-      "webp-128": createWebpTransform(128),
-      "webp-480": createWebpTransform(480),
-      "webp-768": createWebpTransform(768),
-      "webp-1200": createWebpTransform(1200),
-      "webp-1600": createWebpTransform(1600),
-    },
+    transforms: webpTransforms,
   },
   sourceMaps: isDevelopment ? "external" : undefined,
   minify: isProduction,
@@ -73,6 +74,17 @@ export let assets = createAssetServer({
   },
   watch: isDevelopment,
 });
+
+export function getWebpHref(filePath: string, width?: number) {
+  let transform = width === undefined ? "webp" : `webp-${width}`;
+  if (!Object.hasOwn(webpTransforms, transform)) {
+    throw new TypeError(`Unsupported responsive image width: ${width}`);
+  }
+
+  return assets.getHref(filePath, {
+    transform: [transform as keyof typeof webpTransforms],
+  });
+}
 
 function createWebpTransform(width?: number) {
   return defineFileTransform({

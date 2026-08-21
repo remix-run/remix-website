@@ -3,7 +3,7 @@ import * as path from "node:path";
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
-import { assets } from "./assets.ts";
+import { assets, getWebpHref } from "./assets.ts";
 
 let rootDir = path.resolve(import.meta.dirname, "../..");
 let appDir = path.join(rootDir, "app");
@@ -38,13 +38,11 @@ describe("browser asset boundary", () => {
   });
 
   it("serves constrained WebP transforms for blog and author images", async () => {
-    for (let [imagePath, transform] of [
-      ["public/blog-images/social-background.png", "webp-480"],
-      ["public/authors/profile-jacob-ebey.png", "webp-128"],
+    for (let [imagePath, width] of [
+      ["public/blog-images/social-background.png", 480],
+      ["public/authors/profile-jacob-ebey.png", 128],
     ] as const) {
-      let href = await assets.getHref(path.join(rootDir, imagePath), {
-        transform: [transform],
-      });
+      let href = await getWebpHref(path.join(rootDir, imagePath), width);
       let response = await assets.fetch(
         new Request(new URL(href, "http://localhost")),
       );
@@ -62,6 +60,9 @@ describe("browser asset boundary", () => {
       ),
     );
     expect(invalidResponse?.status).toBe(400);
+    expect(() =>
+      getWebpHref("public/blog-images/social-background.png", 999),
+    ).toThrow("Unsupported responsive image width: 999");
   });
 
   it("does not expose server or test source", async () => {

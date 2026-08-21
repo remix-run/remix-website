@@ -1,21 +1,10 @@
 import * as path from "node:path";
 import sharp, { type Metadata } from "sharp";
+import { createMatcher } from "remix/route-pattern/match";
 
-import { assets } from "./assets.ts";
+import { assets, getWebpHref } from "./assets.ts";
 
-const ROOT_DIR = path.resolve(import.meta.dirname, "../..");
-const AVATAR_WIDTHS = [64, 128] as const;
-const RESPONSIVE_WIDTHS = [480, 768, 1200, 1600] as const;
-const TRANSFORMABLE_EXTENSIONS = new Set([".jpeg", ".jpg", ".png"]);
-
-type WebpTransform =
-  | "webp"
-  | "webp-64"
-  | "webp-128"
-  | "webp-480"
-  | "webp-768"
-  | "webp-1200"
-  | "webp-1600";
+let imageSourceMatcher = createMatcher("http(s)://remix.run/:directory/*path");
 
 export interface BlogImageAsset {
   fullSrc?: string;
@@ -32,7 +21,7 @@ export function getAuthorImageAsset(source: string): Promise<BlogImageAsset> {
   let existing = authorAssetBySource.get(source);
   if (existing) return existing;
 
-  let asset = createImageAsset(source, "/authors/", AVATAR_WIDTHS, false);
+  let asset = createImageAsset(source, "authors", [64, 128]);
   authorAssetBySource.set(source, asset);
   return asset;
 }
@@ -41,82 +30,70 @@ export function getBlogImageAsset(source: string): Promise<BlogImageAsset> {
   let existing = blogAssetBySource.get(source);
   if (existing) return existing;
 
-  let asset = createImageAsset(
-    source,
-    "/blog-images/",
-    RESPONSIVE_WIDTHS,
-    true,
-  );
+  let asset = createImageAsset(source, "blog-images", [480, 768, 1200, 1600]);
   blogAssetBySource.set(source, asset);
   return asset;
 }
 
 async function createImageAsset(
   source: string,
-  sourcePrefix: string,
+  directory: "authors" | "blog-images",
   responsiveWidths: readonly number[],
-  preserveFullSource: boolean,
 ): Promise<BlogImageAsset> {
-  if (!source.startsWith(sourcePrefix)) return { src: source };
+  let fallback: BlogImageAsset = { src: source };
 
-  let pathname = new URL(source, "https://remix.run").pathname;
-  let filePath = `public${decodeURIComponent(pathname)}`;
-  let extension = path.extname(filePath).toLowerCase();
-  let [metadata, originalSrc] = await Promise.all([
-    sharp(path.join(ROOT_DIR, filePath)).metadata(),
-    assets.getHref(filePath),
-  ]);
-  let dimensions = getOrientedDimensions(metadata);
+  try {
+    let match = imageSourceMatcher.match(source, {
+      baseURL: "https://remix.run",
+    });
+    if (match?.params.directory !== directory) return fallback;
 
-  if (!TRANSFORMABLE_EXTENSIONS.has(extension) || !dimensions.width) {
-    return { ...dimensions, src: originalSrc };
-  }
+    let filePath = path.join("public", directory, match.params.path);
+    let extension = path.extname(filePath).toLowerCase();
+    let [metadata, originalSrc] = await Promise.all([
+      sharp(path.resolve(import.meta.dirname, "../..", filePath)).metadata(),
+      assets.getHref(filePath),
+    ]);
+    let dimensions = getOrientedDimensions(metadata);
+    fallback = { ...dimensions, src: originalSrc };
 
-  let sourceWidth = dimensions.width;
-  let outputWidths = responsiveWidths.filter((width) => width < sourceWidth);
-  if (sourceWidth <= responsiveWidths.at(-1)!) {
-    outputWidths.push(sourceWidth);
-  }
+    if (![".jpeg", ".jpg", ".png"].includes(extension) || !dimensions.width) {
+      return fallback;
+    }
 
-  let variants = await Promise.all(
-    outputWidths.map(async (width) => ({
-      href: await assets.getHref(filePath, {
-        transform: [getWebpTransform(width, sourceWidth)],
-      }),
-      width,
-    })),
-  );
-  let largest = variants.at(-1);
-  if (!largest) return { ...dimensions, src: originalSrc };
+    let sourceWidth = dimensions.width;
+    let outputWidths = responsiveWidths.filter((width) => width < sourceWidth);
+    if (sourceWidth <= responsiveWidths.at(-1)!) {
+      outputWidths.push(sourceWidth);
+    }
 
-  return {
-    ...dimensions,
-    fullSrc: preserveFullSource ? originalSrc : undefined,
-    src: largest.href,
-    srcSet:
-      variants.length > 1
-        ? variants.map(({ href, width }) => `${href} ${width}w`).join(", ")
-        : undefined,
-  };
-}
+    let variants = await Promise.all(
+      outputWidths.map(async (width) => ({
+        href: await getWebpHref(
+          filePath,
+          width === sourceWidth ? undefined : width,
+        ),
+        width,
+      })),
+    );
+    let largest = variants.at(-1);
+    if (!largest) return fallback;
 
-function getWebpTransform(width: number, sourceWidth: number): WebpTransform {
-  if (width === sourceWidth) return "webp";
-  switch (width) {
-    case 64:
-      return "webp-64";
-    case 128:
-      return "webp-128";
-    case 480:
-      return "webp-480";
-    case 768:
-      return "webp-768";
-    case 1200:
-      return "webp-1200";
-    case 1600:
-      return "webp-1600";
-    default:
-      throw new TypeError(`Unsupported responsive image width: ${width}`);
+    return {
+      ...dimensions,
+      fullSrc: directory === "blog-images" ? originalSrc : undefined,
+      src: largest.href,
+      srcSet:
+        variants.length > 1
+          ? variants.map(({ href, width }) => `${href} ${width}w`).join(", ")
+          : undefined,
+    };
+  } catch (error) {
+    console.error(
+      `Failed to optimize image "${source}"; using its original source.`,
+      error,
+    );
+    return fallback;
   }
 }
 
