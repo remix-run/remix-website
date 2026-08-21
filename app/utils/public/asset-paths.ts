@@ -1,5 +1,4 @@
 export const assetPaths = {
-  iconsSprite: "/icons.svg",
   marketing: {
     defaultOgImage: "/marketing/remix-run-share-thumbnail.jpg",
   },

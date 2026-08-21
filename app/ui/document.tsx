@@ -1,3 +1,5 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { css, type Handle, type Props, type RemixNode } from "remix/ui";
 
 import {
@@ -10,8 +12,14 @@ import {
   getManagedHeadTagKey,
   type ManagedHeadTag,
 } from "./public/document-head.ts";
-import { assetPaths } from "../utils/public/asset-paths.ts";
 import { theme } from "./public/theme.ts";
+
+// Inlined once per document so `<use href="#name">` icon references resolve
+// immediately, with no separate sprite request or per-deploy URL plumbing.
+let iconsSpriteHtml = fs.readFileSync(
+  path.resolve(import.meta.dirname, "icons.svg"),
+  "utf8",
+);
 
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -102,6 +110,67 @@ export function Document(handle: Handle<DocumentProps>) {
             sizes="any"
           />
 
+          {/* The normal Inter face is used above the fold on every page. Preload
+              only this critical face; the browser discovers other variants from
+              the declarations below if the page actually uses them. */}
+          <link
+            rel="preload"
+            href={assetEntry.fonts.interRoman.href}
+            as="font"
+            type="font/woff2"
+            crossorigin="anonymous"
+          />
+
+          {/* Keep font declarations in the document head so they do not require
+              an additional stylesheet discovery step. The Inter Fallback metrics
+              normalize Arial's average width and vertical metrics to reduce CLS. */}
+          <style
+            key="fonts"
+            data-remix-fonts=""
+            rmx-preserve-dom=""
+            innerHTML={`
+              @font-face {
+                font-family: "Inter";
+                font-style: normal;
+                font-weight: 100 900;
+                font-display: swap;
+                src: url("${assetEntry.fonts.interRoman.href}") format("woff2");
+              }
+              @font-face {
+                font-family: "Inter";
+                font-style: italic;
+                font-weight: 100 900;
+                font-display: swap;
+                src: url("${assetEntry.fonts.interItalic.href}") format("woff2");
+              }
+              @font-face {
+                font-family: "Inter Fallback";
+                font-style: normal;
+                src: local("Arial");
+                ascent-override: 90.44%;
+                descent-override: 22.52%;
+                line-gap-override: 0%;
+                size-adjust: 107.12%;
+              }
+              @font-face {
+                font-family: "Inter Fallback";
+                font-style: italic;
+                src: local("Arial Italic");
+                ascent-override: 90.44%;
+                descent-override: 22.52%;
+                line-gap-override: 0%;
+                size-adjust: 107.12%;
+              }
+              @font-face {
+                font-family: "JetBrains Mono";
+                font-style: normal;
+                font-weight: 100 800;
+                font-display: swap;
+                src: url("${assetEntry.fonts.jetBrainsMono.href}") format("woff2");
+              }
+            `}
+          />
+
           {/* Keep persistent stylesheets attached across document diffs. */}
           {(Object.keys(assetEntry.stylesheets) as StylesheetName[]).map(
             (name) => (
@@ -162,15 +231,8 @@ export function Document(handle: Handle<DocumentProps>) {
             forceTheme={forceTheme}
             stylesheets={Array.from(stylesheetNames)}
           />
-          <img
-            src={assetPaths.iconsSprite}
-            alt=""
-            hidden
-            // Inline so route-local theme resets emitted later cannot reveal the sprite.
-            style={{ display: "none" }}
-            // Preload icons sprite so <use href> references resolve.
-            fetchpriority="high"
-          />
+          {/* Inline so route-local theme resets emitted later cannot reveal the sprite. */}
+          <div style={{ display: "none" }} innerHTML={iconsSpriteHtml} />
           {children}
         </body>
       </html>

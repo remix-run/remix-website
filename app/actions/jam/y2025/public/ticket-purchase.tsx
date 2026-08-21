@@ -1,5 +1,5 @@
 import { clientEntry, on, type Handle } from "remix/ui";
-import { assetPaths } from "../../../../utils/public/asset-paths.ts";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import { JamButton } from "./shared.tsx";
 
 type JamTicketPurchaseProps = {
@@ -63,9 +63,11 @@ export let JamTicketPurchase = clientEntry(
                     }),
                   ]}
                 >
-                  <svg aria-hidden="true" viewBox="0 0 24 24">
-                    <use href={`${assetPaths.iconsSprite}#circle-minus`} />
-                  </svg>
+                  <Icon
+                    name="circle-minus"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                  />
                 </button>
                 <input
                   type="number"
@@ -86,9 +88,11 @@ export let JamTicketPurchase = clientEntry(
                     }),
                   ]}
                 >
-                  <svg aria-hidden="true" viewBox="0 0 24 24">
-                    <use href={`${assetPaths.iconsSprite}#circle-plus`} />
-                  </svg>
+                  <Icon
+                    name="circle-plus"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                  />
                 </button>
               </div>
             </div>

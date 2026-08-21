@@ -65,6 +65,20 @@ describe("browser asset boundary", () => {
     ).toThrow("Unsupported responsive image width: 999");
   });
 
+  it("serves WOFF2 font assets", async () => {
+    let fontPath = path.join(
+      appDir,
+      "styles/public/font/inter-roman-latin-var.woff2",
+    );
+    let fontHref = await assets.getHref(fontPath);
+    let response = await assets.fetch(
+      new Request(new URL(fontHref, "http://localhost")),
+    );
+
+    expect(response?.status).toBe(200);
+    expect(response?.headers.get("Content-Type")).toBe("font/woff2");
+  });
+
   it("does not expose server or test source", async () => {
     for (let pathname of [
       "/assets/app/router.ts",

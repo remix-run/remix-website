@@ -79,7 +79,7 @@
 }
 
 .rmx-page-title {
-  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   font-size: var(--rmx-page-title-size, clamp(30px, 4vw, 56px));
   font-weight: 700;
   line-height: 1.15;
@@ -99,7 +99,7 @@
 }
 
 .rmx-page-body {
-  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   font-size: var(--rmx-page-body-size, 1rem);
   font-weight: 400;
   line-height: 1.4;

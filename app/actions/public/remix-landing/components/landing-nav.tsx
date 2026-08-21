@@ -1,7 +1,7 @@
 import { css, addEventListeners, navigate, on, type Handle } from "remix/ui";
 import * as popover from "remix/ui/popover";
 import { routes } from "../../../../routes.ts";
-import { assetPaths } from "../../../../utils/public/asset-paths.ts";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import { isEditableKeyTarget } from "../../../../ui/public/keyboard.ts";
 import { colors } from "../styles/tokens.ts";
 import { clamp01 } from "../utils/math.ts";
@@ -287,9 +287,12 @@ export function LandingNav(
               ]}
             >
               {menuOpen ? (
-                <svg aria-hidden="true" viewBox="0 0 12 12" mix={svgIconStyles}>
-                  <use href={`${assetPaths.iconsSprite}#x-mark`} />
-                </svg>
+                <Icon
+                  name="x-mark"
+                  aria-hidden="true"
+                  viewBox="0 0 12 12"
+                  mix={svgIconStyles}
+                />
               ) : (
                 "menu"
               )}

@@ -19,6 +19,7 @@ import { JamKeepsakes } from "./public/keepsakes.tsx";
 import { JamFadeInBadge } from "./public/fade-in-badge.tsx";
 import { JamNewsletterSubscribeForm } from "./public/newsletter-subscribe.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
+import { Icon } from "../../../ui/public/icon.tsx";
 
 type EventStatus = "before" | "live" | "after";
 
@@ -85,9 +86,11 @@ const badgeText: Record<EventStatus, RemixNode> = {
   after: (
     <>
       Rewind
-      <svg class="size-6 rotate-180 md:size-12 lg:size-14" aria-hidden="true">
-        <use href={`${assetPaths.iconsSprite}#fast-forward`} />
-      </svg>
+      <Icon
+        name="fast-forward"
+        class="size-6 rotate-180 md:size-12 lg:size-14"
+        aria-hidden="true"
+      />
     </>
   ),
 };

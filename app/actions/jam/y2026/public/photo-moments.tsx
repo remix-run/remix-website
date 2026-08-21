@@ -11,6 +11,7 @@ import {
   jam2026WindowSurfaceStyle,
   jam2026WindowTitleStyle,
 } from "./window-styles.ts";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 
@@ -292,9 +293,11 @@ export let Jam2026PhotoMoments = clientEntry(
                       ]}
                       type="button"
                     >
-                      <svg aria-hidden="true" focusable="false">
-                        <use href={`${assetPaths.iconsSprite}#circle-x`} />
-                      </svg>
+                      <Icon
+                        name="circle-x"
+                        aria-hidden="true"
+                        focusable="false"
+                      />
                     </button>
                     <p mix={jam2026WindowTitleStyle}>{moment.filename}</p>
                   </div>
