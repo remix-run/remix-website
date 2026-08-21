@@ -32,6 +32,13 @@ describe("app router", () => {
     expect(await response.text()).toBe("OK");
   });
 
+  it("does not serve shared assets outside the asset server", async () => {
+    for (let pathname of ["/font/inter-roman-latin-var.woff2", "/icons.svg"]) {
+      let response = await router.fetch(`http://localhost${pathname}`);
+      expect(response.status).toBe(404);
+    }
+  });
+
   it("serves the blog RSS route", async () => {
     let response = await router.fetch(
       new URL(routes.blog.rss.href(), "http://localhost"),

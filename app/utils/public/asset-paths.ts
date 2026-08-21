@@ -1,5 +1,16 @@
+let serverIconsSpriteHref = "/assets/app/ui/public/icons.svg";
+
+export function setIconsSpriteHref(href: string) {
+  serverIconsSpriteHref = href;
+}
+
 export const assetPaths = {
-  iconsSprite: "/icons.dfee5876.svg",
+  get iconsSprite() {
+    return typeof document === "undefined"
+      ? serverIconsSpriteHref
+      : (document.documentElement.dataset.remixIconsSprite ??
+          serverIconsSpriteHref);
+  },
   marketing: {
     defaultOgImage: "/marketing/remix-run-share-thumbnail.jpg",
   },

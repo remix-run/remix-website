@@ -61,13 +61,6 @@ function createAppMiddleware() {
     staticFiles("public", {
       cacheControl: isDev
         ? "no-store, must-revalidate"
-        : "public, max-age=31536000, immutable",
-      filter: (filePath) => /\.[a-f\d]{8}\.[^/]+$/.test(filePath),
-      index: false,
-    }),
-    staticFiles("public", {
-      cacheControl: isDev
-        ? "no-store, must-revalidate"
         : "public, max-age=3600",
       index: false,
     }),

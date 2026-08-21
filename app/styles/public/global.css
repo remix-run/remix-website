@@ -3,7 +3,7 @@
   font-weight: 100 900;
   font-display: swap;
   font-style: normal;
-  src: url("/font/inter-roman-latin-var.1b58736b.woff2") format("woff2");
+  src: url("./font/inter-roman-latin-var.woff2") format("woff2");
 }
 
 @font-face {
@@ -11,14 +11,14 @@
   font-weight: 100 900;
   font-display: swap;
   font-style: italic;
-  src: url("/font/inter-italic-latin-var.65279caf.woff2") format("woff2");
+  src: url("./font/inter-italic-latin-var.woff2") format("woff2");
 }
 
 @font-face {
   font-family: "JetBrains Mono";
   font-style: normal;
   font-display: swap;
-  src: url("/font/jet-brains-mono.f72037d5.woff2") format("woff2");
+  src: url("./font/jet-brains-mono.woff2") format("woff2");
 }
 
 :root {
