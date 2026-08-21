@@ -43,6 +43,7 @@ export interface NewsletterIssue {
   date: Date;
   title: string;
   markdown: string;
+  image: NewsletterSummary["image"];
 }
 
 export interface NewsletterImage {
@@ -383,6 +384,9 @@ export function createGitHubNewsletterRepository(
         date: issue.date,
         title: issue.title,
         markdown: issue.markdown,
+        image:
+          snap.summaries.find((summary) => summary.number === number)?.image ??
+          null,
       };
     },
 

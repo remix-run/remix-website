@@ -31,6 +31,7 @@ let newsletterIssueRepository: NewsletterRepository = {
           date: new Date("2024-01-01T00:00:00.000Z"),
           title: "Remix Newsletter #1",
           markdown: "# Remix Newsletter #1\\n\\nThe latest Remix news.",
+          image: null,
         }
       : null;
   },

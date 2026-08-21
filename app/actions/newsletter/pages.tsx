@@ -21,6 +21,9 @@ interface NewsletterIndexPageProps {
 }
 
 export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
+  let firstImage = handle.props.summaries.find(
+    (summary) => summary.image,
+  )?.image;
   return () => (
     <Document
       title="Remix Newsletter"
@@ -31,6 +34,8 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
         title: "Remix Newsletter",
         description:
           "Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. Read past issues in the archive.",
+        image: firstImage?.src,
+        imageAlt: firstImage?.alt,
       })}
     >
       <Header currentSection="newsletter" />
@@ -71,6 +76,8 @@ export function NewsletterIssuePage(
         description: `Remix Newsletter #${issue.number} — ${formatNewsletterDate(
           issue.date,
         )}`,
+        image: issue.image?.src,
+        imageAlt: issue.image?.alt,
       })}
     >
       <Header currentSection="newsletter" />

@@ -23,6 +23,13 @@ function makeIssue(
     date: new Date(dateIso),
     title: `Remix Newsletter #${number}`,
     markdown,
+    image: {
+      src: routes.newsletter.image.href({
+        number,
+        filename: "cover.png",
+      }),
+      alt: "Cover",
+    },
   };
 }
 
@@ -125,6 +132,14 @@ describe("Newsletter index route", () => {
       `src="${routes.newsletter.image.href({ number: 3, filename: "header.jpg" })}"`,
     );
     expect(html).toContain('alt="Newsletter 3 header"');
+    let expectedOgImage = new URL(
+      routes.newsletter.image.href({ number: 3, filename: "header.jpg" }),
+      "http://localhost:3000",
+    ).href;
+    expect(html).toContain(`property="og:image" content="${expectedOgImage}"`);
+    expect(html).toContain(
+      'name="twitter:image:alt" content="Newsletter 3 header"',
+    );
   });
 
   it("eagerly loads the first four archive images", async () => {
@@ -242,6 +257,10 @@ describe("Newsletter issue route", () => {
       filename: "cover.png",
     });
     expect(html).toContain(`src="${expectedImageSrc}"`);
+    let expectedOgImage = new URL(expectedImageSrc, "http://localhost:3000")
+      .href;
+    expect(html).toContain(`property="og:image" content="${expectedOgImage}"`);
+    expect(html).toContain('name="twitter:image:alt" content="Cover"');
 
     // External image is not proxied.
     expect(html).toContain('src="https://example.com/remote.png"');

@@ -374,13 +374,22 @@ describe("createGitHubNewsletterRepository", () => {
     let repo = createGitHubNewsletterRepository({
       token: "test-token",
       fetchImpl: fakeTarballFetch([
-        issueFile(1, "2024-01-01"),
+        issueFile(1, "2024-01-01", "![Cover](cover.png)"),
         imageFile(1, "cover.png"),
         imageFile(1, "icon.svg"),
       ]),
     });
 
     expect(await repo.getIssue(999)).toBe(null);
+    expect(await repo.getIssue(1)).toMatchObject({
+      image: {
+        src: routes.newsletter.image.href({
+          number: 1,
+          filename: "cover.png",
+        }),
+        alt: "Cover",
+      },
+    });
     expect(await repo.getImage(1, "missing.png")).toBe(null);
     expect(await repo.getImage(1, "icon.svg")).toBe(null);
     let image = await repo.getImage(1, "cover.png");

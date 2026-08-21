@@ -31,6 +31,13 @@ const newsletterRepository: NewsletterRepository = {
 
 ![Newsletter image](cover.png)
 `,
+      image: {
+        src: routes.newsletter.image.href({
+          number: 1,
+          filename: "cover.png",
+        }),
+        alt: "Newsletter image",
+      },
     };
   },
   async getImage() {
