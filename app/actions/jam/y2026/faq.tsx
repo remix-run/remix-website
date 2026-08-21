@@ -74,6 +74,22 @@ let faqs: Faq[] = [
       },
       {
         type: "paragraph",
+        content: [
+          {
+            text: "Ace Hotel Toronto",
+            href: "https://reservations.acehotel.com/?hotel=36680&arrive=2026-10-01&nights=2&group=REMIXJAM2026",
+          },
+          " ($339.00 or $359.00 CAD/night)",
+        ],
+      },
+      {
+        type: "paragraph",
+        content: [
+          "Important: Ace Hotel Toronto bookings must be cancelled at least 7 days before arrival to qualify for free cancellation.",
+        ],
+      },
+      {
+        type: "paragraph",
         content: ["Please select the dates Oct 1–3 when booking."],
       },
     ],
