@@ -5,18 +5,7 @@ import { render } from "remix/ui/test";
 import { Icon } from "./icon.tsx";
 
 describe("Icon", () => {
-  it("resolves the document sprite and stays decorative", (t) => {
-    let previousSpriteHref = document.documentElement.dataset.remixIconsSprite;
-    document.documentElement.dataset.remixIconsSprite =
-      "/assets/app/ui/public/icons.test.svg";
-    t.after(() => {
-      if (previousSpriteHref == null) {
-        delete document.documentElement.dataset.remixIconsSprite;
-      } else {
-        document.documentElement.dataset.remixIconsSprite = previousSpriteHref;
-      }
-    });
-
+  it("references the inline sprite and stays decorative", (t) => {
     let result = render(<Icon name="menu" class="size-5" />);
     t.after(result.cleanup);
 
@@ -24,8 +13,6 @@ describe("Icon", () => {
     expect(svg.getAttribute("aria-hidden")).toBe("true");
     expect(svg.getAttribute("focusable")).toBe("false");
     expect(svg.getAttribute("class")).toBe("size-5");
-    expect(svg.querySelector("use")?.getAttribute("href")).toBe(
-      "/assets/app/ui/public/icons.test.svg#menu",
-    );
+    expect(svg.querySelector("use")?.getAttribute("href")).toBe("#menu");
   });
 });
