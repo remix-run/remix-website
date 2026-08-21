@@ -8,11 +8,13 @@ import { getProduct } from "../../../data/jam-storefront.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
+import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
 import {
   resolveJam2026Discount,
   type Jam2026Discount,
 } from "./discount-code.ts";
 import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
+import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
 import { Jam2026HomePage } from "./home-page.tsx";
 import { remixJam2026Ticket } from "./public/ticket-data.ts";
 import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
@@ -30,6 +32,15 @@ export default createController(routes.jam.y2026, {
   actions: {
     index({ render, request }) {
       return renderJam2026Page({ render, request });
+    },
+
+    newsletterSignup({ render, request }) {
+      return render(
+        <Jam2026NewsletterSignup
+          status={getNewsletterSubscriptionStatus(request)}
+        />,
+        { headers: { "Cache-Control": "no-store" } },
+      );
     },
 
     async theme({ formData }) {
@@ -73,8 +84,9 @@ export async function renderJam2026Page({
   status?: number;
   ticketCheckout?: Jam2026TicketCheckout;
 }) {
-  discount ??= await resolveJam2026Discount(request);
   let requestUrl = new URL(request.url);
+
+  discount ??= await resolveJam2026Discount(request);
   let ticketsModalOpen =
     requestUrl.pathname === routes.jam.y2026.ticket.index.href();
   let isTicketsFrameRequest =

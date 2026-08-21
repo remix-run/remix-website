@@ -1,7 +1,7 @@
 import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
-import { cx } from "../../../utils/public/cx.ts";
-import { focusTrap } from "../../../ui/public/focus-trap.ts";
-import { lockScroll } from "../../../ui/public/scroll-lock.ts";
+import { cx } from "../../utils/public/cx.ts";
+import { focusTrap } from "./focus-trap.ts";
+import { lockScroll } from "./scroll-lock.ts";
 
 const PROSE_SELECTOR = ".md-prose";
 
@@ -13,9 +13,9 @@ type LightboxState = { open: false } | { open: true; src: string; alt: string };
  * `innerHTML` outside of this component to avoid hydration conflicts;
  * this component delegates clicks at the document level.
  */
-export let BlogLightbox = clientEntry(
+export let ImageLightbox = clientEntry(
   import.meta.url,
-  function BlogLightbox(handle: Handle<{}>) {
+  function ImageLightbox(handle: Handle<{}>) {
     let lightbox: LightboxState = { open: false };
     let lightboxEl: HTMLDivElement | null = null;
     let closeButtonEl: HTMLButtonElement | null = null;

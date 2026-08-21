@@ -149,15 +149,20 @@ const NAV_ITEMS = [
     href: "https://api.remix.run",
     external: true,
   },
-  { key: "B", label: "blog", href: routes.blog.index.href() },
-  { key: "J", label: "jam", href: routes.jam.y2026.index.href() },
-  { key: "S", label: "store", href: "https://shop.remix.run", external: true },
   {
     key: "H",
     label: "github",
     href: "https://github.com/remix-run/remix",
     external: true,
   },
+  { key: "B", label: "blog", href: routes.blog.index.href() },
+  {
+    key: "N",
+    label: "newsletter",
+    href: routes.newsletter.index.href(),
+  },
+  { key: "J", label: "jam", href: routes.jam.y2026.index.href() },
+  { key: "S", label: "store", href: "https://shop.remix.run", external: true },
 ];
 
 type NavItem = (typeof NAV_ITEMS)[number];

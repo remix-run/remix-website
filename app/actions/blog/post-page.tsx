@@ -3,8 +3,8 @@ import { cx } from "../../utils/public/cx.ts";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
-import { BlogLightbox } from "./public/blog-lightbox.tsx";
-import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
+import { ImageLightbox } from "../../ui/public/image-lightbox.tsx";
+import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
 import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
@@ -55,7 +55,7 @@ export function BlogPostPage(
         }),
       ]}
     >
-      <Header />
+      <Header currentSection="blog" />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
         <BlogPostContent
           post={handle.props.post}
@@ -63,7 +63,7 @@ export function BlogPostPage(
         />
       </main>
       <Footer />
-      <BlogLightbox />
+      <ImageLightbox />
     </Document>
   );
 }
@@ -161,19 +161,8 @@ function BlogPostContent(
         </div>
       </div>
 
-      <div class="container m-auto mb-12 mt-24 max-w-lg">
-        <h3 class="rmx-page-title rmx-page-title-sm mb-6">
-          Get updates on the latest Remix news
-        </h3>
-        <div class="rmx-page-body mb-6" id="newsletter-text">
-          Be the first to learn about new Remix features, community events, and
-          tutorials.
-        </div>
-        <NewsletterSubscribeForm
-          class="sm:flex sm:gap-2"
-          inputClass="w-full sm:w-auto sm:flex-1 box-border appearance-none rounded border px-4 py-2 dark:placeholder-gray-500"
-          buttonClass="mt-2 w-full rounded border bg-white px-4 py-2 font-semibold uppercase text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white sm:mt-0 sm:w-auto"
-        />
+      <div class="container m-auto mb-12 mt-24 max-w-full">
+        <NewsletterSignupCta />
       </div>
     </>
   );

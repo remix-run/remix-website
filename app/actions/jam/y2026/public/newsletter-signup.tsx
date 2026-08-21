@@ -1,6 +1,9 @@
 import { clientEntry, css, type Handle } from "remix/ui";
 
-import { createNewsletterForm } from "../../../../ui/public/newsletter-request.ts";
+import {
+  createNewsletterFrameForm,
+  type NewsletterSubscriptionStatus,
+} from "../../../../ui/public/newsletter-subscribe.tsx";
 import { jamTheme } from "./theme.ts";
 import { routes } from "../../../../routes.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
@@ -9,82 +12,93 @@ import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
 
 export let Jam2026NewsletterSignup = clientEntry(
   import.meta.url,
-  function Jam2026NewsletterSignup(handle: Handle) {
-    let form = createNewsletterForm(handle);
+  function Jam2026NewsletterSignup(
+    handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
+  ) {
+    let form = createNewsletterFrameForm(handle, "jam2026");
 
-    return () => (
-      <section
-        id="newsletter"
-        aria-labelledby="newsletter-heading"
-        mix={newsletterSectionStyle}
-      >
-        <div mix={newsletterContentStyle}>
-          <h2 id="newsletter-heading" mix={newsletterHeadingStyle}>
-            Get notified
-          </h2>
-          <p>
-            Sign up for our newsletter to receive any updates, announcements,
-            and speaker line up for Remix Jam 2026.
-          </p>
-          <form
-            action={routes.api.newsletter.href()}
-            method="post"
-            data-state={form.state.status}
-            mix={[newsletterFormStyle, form.submit]}
-          >
-            <input
-              type="hidden"
-              name="tag"
-              value={String(newsletterTagIds.jam2026Updates)}
-            />
-            <label htmlFor="jam-2026-newsletter-email" mix={labelStyle}>
-              Email address
-            </label>
-            <input
-              id="jam-2026-newsletter-email"
-              type="email"
-              name="email"
-              required
-              autoComplete="email"
-              placeholder="your@email.com"
-              aria-describedby={
-                form.state.status === "idle"
-                  ? undefined
-                  : "jam-2026-newsletter-message"
-              }
-              aria-invalid={form.state.status === "error" ? true : undefined}
-              mix={newsletterInputStyle}
-            />
-            <button
-              type="submit"
-              disabled={form.state.status === "submitting"}
-              mix={newsletterButtonStyle}
+    return () => {
+      let status = form.state.status;
+
+      return (
+        <section
+          id="newsletter"
+          aria-labelledby="newsletter-heading"
+          mix={newsletterSectionStyle}
+        >
+          <div mix={newsletterContentStyle}>
+            <h2 id="newsletter-heading" mix={newsletterHeadingStyle}>
+              Get notified
+            </h2>
+            <p>
+              Sign up for our newsletter to receive any updates, announcements,
+              and speaker line up for Remix Jam 2026.
+            </p>
+            <form
+              action={routes.newsletter.subscribe.href()}
+              method="post"
+              {...form.navigation}
+              data-state={status}
+              mix={[newsletterFormStyle, ...form.submit]}
             >
-              {form.state.status === "submitting" ? "Signing up..." : "Sign up"}
-            </button>
-            <div
-              id="jam-2026-newsletter-message"
-              aria-live="polite"
-              hidden={
-                form.state.status !== "success" && form.state.status !== "error"
-                  ? true
-                  : undefined
-              }
-              mix={newsletterMessageStyle}
-            >
-              {form.state.status === "success" ? (
-                <p>
-                  You&apos;re on the list. Check your email to confirm your
-                  subscription.
-                </p>
-              ) : form.state.status === "error" ? (
-                <p>{form.state.message} Please try again.</p>
-              ) : null}
-            </div>
-          </form>
-        </div>
-      </section>
-    );
+              <input
+                type="hidden"
+                name="tag"
+                value={String(newsletterTagIds.jam2026Updates)}
+              />
+              <label htmlFor="jam-2026-newsletter-email" mix={labelStyle}>
+                Email address
+              </label>
+              <input
+                id="jam-2026-newsletter-email"
+                type="email"
+                name="email"
+                required
+                autoComplete="email"
+                placeholder="your@email.com"
+                aria-describedby={
+                  status === "idle" ? undefined : "jam-2026-newsletter-message"
+                }
+                aria-invalid={status === "invalid-email" ? true : undefined}
+                mix={newsletterInputStyle}
+              />
+              <button
+                type="submit"
+                disabled={status === "submitting"}
+                mix={newsletterButtonStyle}
+              >
+                {status === "submitting" ? "Signing up..." : "Sign up"}
+              </button>
+              <div
+                id="jam-2026-newsletter-message"
+                aria-live="polite"
+                hidden={
+                  status === "idle" || status === "submitting"
+                    ? true
+                    : undefined
+                }
+                mix={newsletterMessageStyle}
+              >
+                {status === "success" ? (
+                  <p>
+                    You&apos;re on the list. Check your email to confirm your
+                    subscription.
+                  </p>
+                ) : status === "invalid-email" ? (
+                  <p>Please enter a valid email address. Please try again.</p>
+                ) : status === "invalid-tag" ? (
+                  <p>
+                    The selected newsletter is not available. Please try again.
+                  </p>
+                ) : status === "error" ? (
+                  <p>Something went wrong. Please try again.</p>
+                ) : null}
+              </div>
+            </form>
+          </div>
+        </section>
+      );
+    };
   },
 );
 
