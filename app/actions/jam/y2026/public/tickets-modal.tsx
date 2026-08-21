@@ -7,6 +7,7 @@ import {
   type Handle,
 } from "remix/ui";
 import { animateEntrance, spring } from "remix/ui/animation";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 
 import { syncDocumentHead } from "../../../../ui/public/document-head-sync.ts";
@@ -319,14 +320,13 @@ export function Jam2026TicketsModalContent(
               rmx-reset-scroll="false"
               rmx-target={ticketModalConfig.frameName}
             >
-              <svg
+              <Icon
+                name="x-mark"
                 aria-hidden="true"
                 focusable="false"
                 mix={ticketsModalCloseIconStyle}
                 viewBox="0 0 14 14"
-              >
-                <use href={`${assetPaths.iconsSprite}#x-mark`} />
-              </svg>
+              />
             </a>
             <p id="tickets-modal-title" mix={ticketsModalFilenameStyle}>
               TICKETS.TS
@@ -414,16 +414,13 @@ export function Jam2026TicketsModalContent(
                           }),
                         ]}
                       >
-                        <svg
+                        <Icon
+                          name="circle-minus"
                           aria-hidden="true"
                           focusable="false"
                           mix={ticketsModalQuantityIconStyle}
                           viewBox="0 0 24 24"
-                        >
-                          <use
-                            href={`${assetPaths.iconsSprite}#circle-minus`}
-                          />
-                        </svg>
+                        />
                       </button>
                       <span
                         aria-live="polite"
@@ -443,14 +440,13 @@ export function Jam2026TicketsModalContent(
                           }),
                         ]}
                       >
-                        <svg
+                        <Icon
+                          name="circle-plus"
                           aria-hidden="true"
                           focusable="false"
                           mix={ticketsModalQuantityIconStyle}
                           viewBox="0 0 24 24"
-                        >
-                          <use href={`${assetPaths.iconsSprite}#circle-plus`} />
-                        </svg>
+                        />
                       </button>
                     </div>
                   </div>

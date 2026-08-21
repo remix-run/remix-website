@@ -10,7 +10,6 @@ import {
   getManagedHeadTagKey,
   type ManagedHeadTag,
 } from "./public/document-head.ts";
-import { assetPaths } from "../utils/public/asset-paths.ts";
 import { theme } from "./public/theme.ts";
 
 let colorSchemeScript = `
@@ -164,7 +163,7 @@ export function Document(handle: Handle<DocumentProps>) {
             stylesheets={Array.from(stylesheetNames)}
           />
           <img
-            src={assetPaths.iconsSprite}
+            src={assetEntry.iconsSpriteHref}
             alt=""
             hidden
             // Inline so route-local theme resets emitted later cannot reveal the sprite.

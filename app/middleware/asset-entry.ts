@@ -1,9 +1,12 @@
 import * as path from "node:path";
 import { getContext } from "remix/middleware/async-context";
-import { createContextKey, type Middleware } from "remix/router";
+import {
+  createContextKey,
+  type Middleware,
+  type RequestContext,
+} from "remix/router";
 
 import { assets } from "../utils/assets.ts";
-import { setIconsSpriteHref } from "../utils/public/asset-paths.ts";
 
 interface AssetEntry {
   iconsSpriteHref: string;
@@ -67,7 +70,6 @@ export function loadAssetEntry(
       ),
     ]);
 
-    setIconsSpriteHref(iconsSpriteHref);
     context.set(assetEntryKey, {
       iconsSpriteHref,
       src,
@@ -78,6 +80,16 @@ export function loadAssetEntry(
   };
 }
 
-export function getAssetEntry(): AssetEntry {
-  return getContext().get(assetEntryKey);
+export function getAssetEntry(
+  context: RequestContext<any, any> = getContext(),
+): AssetEntry {
+  let entry = getOptionalAssetEntry(context);
+  if (!entry) throw new Error("Asset entry is not loaded");
+  return entry;
+}
+
+export function getOptionalAssetEntry(
+  context: RequestContext<any, any> = getContext(),
+): AssetEntry | undefined {
+  return context.get(assetEntryKey) as AssetEntry | undefined;
 }

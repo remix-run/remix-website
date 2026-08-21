@@ -1,10 +1,12 @@
 import { renderWith } from "remix/middleware/render";
 import type { RequestContext } from "remix/router";
 import { createHtmlResponse } from "remix/response/html";
-import type { RemixNode } from "remix/ui";
+import { createElement, type RemixNode } from "remix/ui";
 import { renderToStream, type ResolveFrameContext } from "remix/ui/server";
 
+import { getOptionalAssetEntry } from "./asset-entry.ts";
 import { assets } from "../utils/assets.ts";
+import { IconProvider, iconSpriteSourceHref } from "../ui/public/icon.tsx";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -21,17 +23,22 @@ export interface AppRenderer {
 export let renderMiddleware = renderWith(
   (context): AppRenderer =>
     function render(node, init) {
-      let stream = renderToStream(node, {
-        frameSrc: context.request.url,
-        topFrameSrc: getTopFrameSrc(context.request),
-        signal: context.request.signal,
-        onError(error) {
-          console.error(error);
+      let spriteHref =
+        getOptionalAssetEntry(context)?.iconsSpriteHref ?? iconSpriteSourceHref;
+      let stream = renderToStream(
+        createElement(IconProvider, { spriteHref }, node),
+        {
+          frameSrc: context.request.url,
+          topFrameSrc: getTopFrameSrc(context.request),
+          signal: context.request.signal,
+          onError(error) {
+            console.error(error);
+          },
+          resolveFrame: (src, target, frameContext) =>
+            resolveFrame(context, src, target, frameContext),
+          resolveClientEntry,
         },
-        resolveFrame: (src, target, frameContext) =>
-          resolveFrame(context, src, target, frameContext),
-        resolveClientEntry,
-      });
+      );
 
       let response = createHtmlResponse(stream, init);
       if (isDevelopment) {

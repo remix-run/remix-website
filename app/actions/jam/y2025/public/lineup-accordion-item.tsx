@@ -1,7 +1,7 @@
 import { cx } from "../../../../utils/public/cx.ts";
 import { clientEntry, on, ref, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
-import { assetPaths } from "../../../../utils/public/asset-paths.ts";
+import { Icon } from "../../../../ui/public/icon.tsx";
 
 type LineupItem = {
   time: string;
@@ -144,15 +144,14 @@ export let JamLineupAccordionItem = clientEntry(
             <span>{handle.props.item.title}</span>
             <span>{handle.props.item.speaker}</span>
             <div class="flex justify-end">
-              <svg
+              <Icon
+                name="chevron-r"
                 class={cx(
                   "size-4 text-white transition-transform sm:size-5 lg:size-6",
                   visuallyOpen ? "-rotate-90" : "rotate-90",
                 )}
                 aria-hidden="true"
-              >
-                <use href={`${assetPaths.iconsSprite}#chevron-r`} />
-              </svg>
+              />
             </div>
           </summary>
 
