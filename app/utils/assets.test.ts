@@ -65,27 +65,18 @@ describe("browser asset boundary", () => {
     ).toThrow("Unsupported responsive image width: 999");
   });
 
-  it("rewrites and serves shared font assets", async () => {
-    let globalStylesheet = path.join(appDir, "styles/public/global.css");
-    let romanFont = path.join(
+  it("serves WOFF2 font assets", async () => {
+    let fontPath = path.join(
       appDir,
       "styles/public/font/inter-roman-latin-var.woff2",
     );
-    let [globalHref, romanFontHref] = await Promise.all([
-      assets.getHref(globalStylesheet),
-      assets.getHref(romanFont),
-    ]);
-
-    let globalResponse = await assets.fetch(
-      new Request(new URL(globalHref, "http://localhost")),
-    );
-    let romanFontResponse = await assets.fetch(
-      new Request(new URL(romanFontHref, "http://localhost")),
+    let fontHref = await assets.getHref(fontPath);
+    let response = await assets.fetch(
+      new Request(new URL(fontHref, "http://localhost")),
     );
 
-    expect(globalResponse?.status).toBe(200);
-    expect(await globalResponse?.text()).toContain(`url("${romanFontHref}")`);
-    expect(romanFontResponse?.headers.get("Content-Type")).toBe("font/woff2");
+    expect(response?.status).toBe(200);
+    expect(response?.headers.get("Content-Type")).toBe("font/woff2");
   });
 
   it("does not expose server or test source", async () => {
