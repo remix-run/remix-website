@@ -3,7 +3,7 @@ import { cx } from "../../utils/public/cx.ts";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
-import { BlogLightbox } from "./public/blog-lightbox.tsx";
+import { ImageLightbox } from "../../ui/public/image-lightbox.tsx";
 import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
 import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
@@ -63,7 +63,7 @@ export function BlogPostPage(
         />
       </main>
       <Footer />
-      <BlogLightbox />
+      <ImageLightbox />
     </Document>
   );
 }

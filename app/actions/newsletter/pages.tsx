@@ -5,6 +5,7 @@ import { routes } from "../../routes.ts";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
+import { ImageLightbox } from "../../ui/public/image-lightbox.tsx";
 import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
 import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
 import { theme } from "../../ui/public/theme.ts";
@@ -84,6 +85,7 @@ export function NewsletterIssuePage(
           </div>
         </div>
       </main>
+      <ImageLightbox />
       <Footer />
     </Document>
   );

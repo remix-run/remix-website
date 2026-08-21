@@ -21,15 +21,56 @@ const newsletterRepository: NewsletterRepository = {
       },
     ];
   },
-  async getIssue() {
-    return null;
+  async getIssue(number) {
+    if (number !== 1) return null;
+    return {
+      number: 1,
+      date: new Date("2024-01-01T00:00:00.000Z"),
+      title: "Remix Newsletter #1",
+      markdown: `# Remix Newsletter #1
+
+![Newsletter image](cover.png)
+`,
+    };
   },
   async getImage() {
     return null;
   },
 };
 
-describe("Newsletter archive cards", () => {
+describe("Newsletter archive", () => {
+  it("opens issue images in the lightbox", async (t) => {
+    let handler = swallowAbortErrors(createAppRouter({ newsletterRepository }));
+    let page = await t.serve(await createTestServer(handler));
+
+    await page.goto(routes.newsletter.issue.href({ number: 1 }));
+
+    let trigger = page.locator(".md-prose img").first();
+    await expect(trigger).toBeVisible();
+    await expect(trigger).toHaveAttribute("role", "button");
+    await expect(trigger).toHaveAttribute("tabindex", "0");
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+
+    let dialog = page.locator('[role="dialog"][aria-label="Image preview"]');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator("img")).toHaveAttribute(
+      "src",
+      new URL(
+        routes.newsletter.image.href({ number: 1, filename: "cover.png" }),
+        page.url(),
+      ).href,
+    );
+    await expect(dialog.locator("img")).toHaveAttribute(
+      "alt",
+      "Newsletter image",
+    );
+
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
+
   it("shows hover, pressed, and keyboard focus states across the card", async (t) => {
     let handler = swallowAbortErrors(createAppRouter({ newsletterRepository }));
     let page = await t.serve(await createTestServer(handler));
