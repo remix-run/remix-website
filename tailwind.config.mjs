@@ -19,7 +19,7 @@ export default {
       },
     },
     fontFamily: {
-      sans: ["Inter", ...defaultTheme.fontFamily.sans],
+      sans: ["Inter", "Inter Fallback", ...defaultTheme.fontFamily.sans],
       mono: ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
     },
     fontSize: {
