@@ -32,9 +32,7 @@ describe("home route", () => {
       let href = match[0].match(/href="([^"]+)"/)?.[1];
       if (href) stylesheetHrefs.push(href);
     }
-    expect(stylesheetHrefs).toEqual([
-      "/assets/app/styles/public/global.css",
-      "/assets/app/styles/public/home.css",
-    ]);
+    expect(stylesheetHrefs).toEqual(["/assets/app/styles/public/home.css"]);
+    expect(html).toContain("data-remix-global-styles");
   });
 });
