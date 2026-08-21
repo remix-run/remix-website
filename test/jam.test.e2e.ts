@@ -137,7 +137,10 @@ describe("Jam", () => {
     });
 
     await page.goto(routes.jam.y2025.index.href());
-    await waitForClientEntryHydration(page, "form[rmx-document]");
+    await waitForClientEntryHydration(
+      page,
+      'form[data-rmx-target="newsletter-subscribe"]',
+    );
 
     let emailInput = page.getByPlaceholder("your@email.com");
     await emailInput.fill("hello@example.com");
@@ -169,8 +172,17 @@ describe("Jam", () => {
 
     await page.goto(routes.jam.y2026.index.href());
     await waitForClientEntryHydration(page, "#newsletter");
-    let newsletterForm = page.locator("form[rmx-document]");
-    await expect(newsletterForm).toHaveAttribute("action", /\/newsletter$/);
+    let newsletterForm = page.locator(
+      'form[data-rmx-target="newsletter-subscribe"]',
+    );
+    await expect(newsletterForm).toHaveAttribute(
+      "data-rmx-src",
+      /\/newsletter\?frame=jam2026$/,
+    );
+    await expect(newsletterForm).toHaveAttribute(
+      "data-rmx-reset-scroll",
+      "false",
+    );
 
     let emailInput = page.getByPlaceholder("your@email.com");
     let submitButton = page.getByRole("button", { name: "Sign up" });
@@ -184,7 +196,7 @@ describe("Jam", () => {
     );
     await submitButton.click();
 
-    expect((await submissionResponse).status()).toBe(200);
+    await submissionResponse;
     await expect(page.getByText(/You're on the list/i)).toBeVisible();
     await page.evaluate(
       () =>

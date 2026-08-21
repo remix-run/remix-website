@@ -23,7 +23,10 @@ let emptyNewsletterRepository: NewsletterRepository = {
 };
 
 function waitForNewsletterHydration(page: import("@playwright/test").Page) {
-  return waitForClientEntryHydration(page, "form[rmx-document]");
+  return waitForClientEntryHydration(
+    page,
+    'form[data-rmx-target="newsletter-subscribe"]',
+  );
 }
 
 describe("Newsletter signup frame", () => {
@@ -100,8 +103,12 @@ describe("Newsletter signup frame", () => {
 
     await page.goto(routes.home.href());
     await waitForNewsletterHydration(page);
-    let form = page.locator("form[rmx-document]");
-    await expect(form).toHaveAttribute("action", /\/newsletter$/);
+    let form = page.locator('form[data-rmx-target="newsletter-subscribe"]');
+    await expect(form).toHaveAttribute(
+      "data-rmx-src",
+      /\/newsletter\?frame=home$/,
+    );
+    await expect(form).toHaveAttribute("data-rmx-reset-scroll", "false");
 
     let emailInput = page.getByPlaceholder("name@example.com");
     await emailInput.fill("hello@example.com");

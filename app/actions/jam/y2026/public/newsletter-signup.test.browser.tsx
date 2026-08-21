@@ -6,12 +6,7 @@ import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
 import { Jam2026NewsletterSignup } from "./newsletter-signup.tsx";
 
 describe("Jam2026NewsletterSignup", () => {
-  it("shows pending state and owns submission outside navigation", async (t) => {
-    t.mock.method(
-      globalThis,
-      "fetch",
-      () => new Promise<Response>(() => undefined),
-    );
+  it("uses declarative frame navigation and shows pending state", async (t) => {
     let result = render(<Jam2026NewsletterSignup />);
     t.after(result.cleanup);
     let form = result.container.querySelector<HTMLFormElement>("form")!;
@@ -19,9 +14,9 @@ describe("Jam2026NewsletterSignup", () => {
       "button[type='submit']",
     )!;
 
-    expect(form.hasAttribute("rmx-document")).toBe(true);
-    expect(form.hasAttribute("rmx-target")).toBe(false);
-    expect(form.hasAttribute("rmx-src")).toBe(false);
+    expect(form.getAttribute("data-rmx-target")).toBe("newsletter-subscribe");
+    expect(form.getAttribute("data-rmx-src")).toBe("/newsletter?frame=jam2026");
+    expect(form.getAttribute("data-rmx-reset-scroll")).toBe("false");
     expect(
       form.querySelector<HTMLInputElement>("input[name='tag']")?.value,
     ).toBe(String(newsletterTagIds.jam2026Updates));
@@ -31,7 +26,7 @@ describe("Jam2026NewsletterSignup", () => {
       acceptedByBrowser = dispatchSubmit(result);
     });
 
-    expect(acceptedByBrowser).toBe(false);
+    expect(acceptedByBrowser).toBe(true);
     expect(button.disabled).toBe(true);
     expect(button.textContent).toBe("Signing up...");
   });

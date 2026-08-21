@@ -12,19 +12,6 @@ import { routes } from "../../routes.ts";
 
 export const NEWSLETTER_SUBSCRIBE_FRAME_NAME = "newsletter-subscribe";
 
-// TEMPORARY WORKAROUND — REMOVE AFTER REMIX PR #11699 LANDS:
-// https://github.com/remix-run/remix/pull/11699
-//
-// The hack: Remix frame form navigation currently scrolls the document to the
-// top even with `rmx-reset-scroll="false"`. While we wait for the runtime fix,
-// newsletter forms opt out of Navigation API interception with `rmx-document`,
-// POST with `fetch()`, and manually reload only their containing frame.
-//
-// How to switch: after upgrading to a Remix release containing that PR, change
-// this flag to `false`. Every newsletter form will return to normal declarative
-// frame navigation without changing any call sites.
-const USE_MANUAL_NEWSLETTER_FRAME_RELOAD = true;
-
 export type NewsletterSubscriptionStatus =
   | "success"
   | "invalid-email"
@@ -59,13 +46,11 @@ export function createNewsletterFrameForm(
   let form: HTMLFormElement | null = null;
   let submitting = false;
   let requestSrc = `${routes.newsletter.subscribe.href()}?${new URLSearchParams({ frame: context })}`;
-  let navigation = USE_MANUAL_NEWSLETTER_FRAME_RELOAD
-    ? ({ "rmx-document": true } as const)
-    : ({
-        "rmx-reset-scroll": "false",
-        "rmx-src": requestSrc,
-        "rmx-target": NEWSLETTER_SUBSCRIBE_FRAME_NAME,
-      } as const);
+  let navigation = {
+    "data-rmx-reset-scroll": "false",
+    "data-rmx-src": requestSrc,
+    "data-rmx-target": NEWSLETTER_SUBSCRIBE_FRAME_NAME,
+  } as const;
 
   addEventListeners(handle.frame, handle.signal, {
     reloadComplete() {
@@ -84,66 +69,18 @@ export function createNewsletterFrameForm(
     submit: [
       ref<HTMLFormElement>((element, signal) => {
         form = element;
-        if (!USE_MANUAL_NEWSLETTER_FRAME_RELOAD) {
-          element.action = handle.frames.top.src;
-        }
+        element.action = handle.frames.top.src;
         signal.addEventListener("abort", () => {
           if (form === element) form = null;
         });
       }),
-      on<HTMLFormElement>("submit", async (event, signal) => {
+      on<HTMLFormElement>("submit", () => {
         submitting = true;
         handle.update();
-        if (!USE_MANUAL_NEWSLETTER_FRAME_RELOAD) return;
-
-        event.preventDefault();
-        let status: NewsletterSubscriptionStatus = "error";
-        try {
-          let response = await fetch(routes.newsletter.subscribe.href(), {
-            method: "POST",
-            headers: { Accept: "application/json" },
-            body: new FormData(
-              event.currentTarget,
-              event instanceof SubmitEvent ? event.submitter : null,
-            ),
-            signal,
-          });
-          let result: unknown = await response.json();
-          if (isNewsletterResponse(result)) {
-            status = result.ok
-              ? "success"
-              : result.error === "Invalid Email"
-                ? "invalid-email"
-                : result.error === "Invalid Tag"
-                  ? "invalid-tag"
-                  : "error";
-          }
-        } catch {
-          if (signal.aborted) return;
-        }
-
-        if (signal.aborted) return;
-        let src = new URL(handle.frame.src, window.location.href);
-        src.searchParams.set("subscription", status);
-        handle.frame.src = src.href;
-        await handle.frame.reload();
       }),
     ],
     navigation,
   };
-}
-
-function isNewsletterResponse(
-  value: unknown,
-): value is { ok: boolean; error: string | null } {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "ok" in value &&
-    typeof value.ok === "boolean" &&
-    "error" in value &&
-    (value.error === null || typeof value.error === "string")
-  );
 }
 
 export let NewsletterSubscribeForm = clientEntry(

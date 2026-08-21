@@ -21,7 +21,8 @@ describe("home route", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     let html = await response.text();
-    expect(html).toContain("rmx-document");
+    expect(html).toContain('data-rmx-target="newsletter-subscribe"');
+    expect(html).toContain('data-rmx-reset-scroll="false"');
     expect(html).toContain("Got it! Please check your email");
   });
 
