@@ -20,6 +20,25 @@ let emptyNewsletterRepository: NewsletterRepository = {
   },
 };
 
+let newsletterIssueRepository: NewsletterRepository = {
+  async listSummaries() {
+    return [];
+  },
+  async getIssue(number) {
+    return number === 1
+      ? {
+          number: 1,
+          date: new Date("2024-01-01T00:00:00.000Z"),
+          title: "Remix Newsletter #1",
+          markdown: "# Remix Newsletter #1\\n\\nThe latest Remix news.",
+        }
+      : null;
+  },
+  async getImage() {
+    return null;
+  },
+};
+
 async function markPage(page: Page) {
   return page.evaluate(() => {
     let marker = Math.random().toString(36).slice(2);
@@ -101,6 +120,67 @@ describe("Navigation", () => {
     await expect(page.locator('header nav[aria-label="Mobile"] a')).toHaveText(
       expectedLinks,
     );
+  });
+
+  it("marks the current shared section on index and detail pages", async (t) => {
+    let handler = swallowAbortErrors(
+      createAppRouter({ newsletterRepository: newsletterIssueRepository }),
+    );
+    let page = await t.serve(await createTestServer(handler));
+
+    for (let [href, sectionHref] of [
+      [routes.blog.index.href(), routes.blog.index.href()],
+      [routes.blog.post.href({ slug: "remix-v2" }), routes.blog.index.href()],
+      [routes.newsletter.index.href(), routes.newsletter.index.href()],
+      [
+        routes.newsletter.issue.href({ number: 1 }),
+        routes.newsletter.index.href(),
+      ],
+    ] as const) {
+      await page.goto(href);
+      for (let navLabel of ["Main", "Mobile"]) {
+        let nav = page.locator(`header nav[aria-label="${navLabel}"]`);
+        let currentLink = nav.locator(`a[href="${sectionHref}"]`);
+        await expect(currentLink).toHaveAttribute("aria-current", "page");
+        await expect(currentLink).toHaveClass(/rmx-header-link-current/);
+        await expect(currentLink).toHaveCSS("color", "rgb(0, 116, 192)");
+        await expect(nav.locator('a[aria-current="page"]')).toHaveCount(1);
+      }
+    }
+  });
+
+  it("does not mark links current when no section is selected", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.brand.href());
+
+    for (let navLabel of ["Main", "Mobile"]) {
+      let nav = page.locator(`header nav[aria-label="${navLabel}"]`);
+      await expect(nav.locator('a[aria-current="page"]')).toHaveCount(0);
+      await expect(nav.locator(".rmx-header-link-current")).toHaveCount(0);
+    }
+  });
+
+  it("uses the active color without an underline for nav hover", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.blog.index.href());
+
+    let apiLink = page
+      .locator('header nav[aria-label="Main"] a')
+      .filter({ hasText: "API" });
+    await apiLink.hover();
+
+    await expect(apiLink).toHaveCSS("color", "rgb(0, 116, 192)");
+    await expect(apiLink).toHaveCSS("text-decoration-line", "none");
+
+    let currentLink = page.locator('header nav[aria-label="Main"] a').filter({
+      hasText: "Blog",
+    });
+    await currentLink.hover();
+
+    await expect(currentLink).toHaveCSS("color", "rgb(0, 116, 192)");
+    await expect(currentLink).toHaveCSS("text-decoration-line", "none");
   });
 
   it("keeps the homepage navigation in the shared order", async (t) => {

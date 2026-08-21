@@ -102,7 +102,7 @@ function Page(
           "Thoughts about building excellent user experiences with Remix.",
       })}
     >
-      <Header />
+      <Header currentSection="blog" />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
         <BlogPageContent posts={handle.props.posts} />
       </main>
@@ -121,7 +121,7 @@ function BlogPageContent(
     let featuredPosts = handle.props.posts.filter((post) => post.featured);
 
     return (
-      <div class="rmx-page-body mt-8 flex flex-1 flex-col px-12">
+      <div class="rmx-page-body container mt-8 flex max-w-full flex-1 flex-col">
         <div class="mx-auto w-full max-w-[1400px]">
           <div class="md:grid md:grid-cols-12">
             <div class="md:col-span-7">

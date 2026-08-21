@@ -4,7 +4,7 @@ import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { BlogLightbox } from "./public/blog-lightbox.tsx";
-import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
 import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
@@ -55,7 +55,7 @@ export function BlogPostPage(
         }),
       ]}
     >
-      <Header />
+      <Header currentSection="blog" />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
         <BlogPostContent
           post={handle.props.post}
@@ -161,15 +161,8 @@ function BlogPostContent(
         </div>
       </div>
 
-      <div class="container m-auto mb-12 mt-24 max-w-lg">
-        <h3 class="rmx-page-title rmx-page-title-sm mb-6">
-          Get updates on the latest Remix news
-        </h3>
-        <div class="rmx-page-body mb-6" id="newsletter-text">
-          Be the first to learn about new Remix features, community events, and
-          tutorials.
-        </div>
-        <NewsletterSubscribe />
+      <div class="container m-auto mb-12 mt-24 max-w-full">
+        <NewsletterSignupCta />
       </div>
     </>
   );

@@ -127,6 +127,49 @@ describe("Newsletter index route", () => {
     expect(html).toContain('alt="Newsletter 3 header"');
   });
 
+  it("eagerly loads the first four archive images", async () => {
+    let repo = fakeRepository({
+      summaries: Array.from({ length: 5 }, (_, index) => {
+        let number = index + 1;
+        return {
+          number,
+          date: new Date(Date.UTC(2024, index, 1)),
+          preview: `Issue ${number} preview`,
+          image: {
+            src: routes.newsletter.image.href({
+              number,
+              filename: "header.jpg",
+            }),
+            alt: `Newsletter ${number} header`,
+          },
+        };
+      }),
+    });
+    let router = routerWith(repo);
+
+    let response = await router.fetch(
+      new URL(routes.newsletter.index.href(), "http://localhost:3000"),
+    );
+
+    expect(response.status).toBe(200);
+    let html = await response.text();
+    let images = [...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g)]
+      .map((match) => match[0])
+      .filter(
+        (image) => image.includes("/newsletter/") && image.includes("/image/"),
+      );
+
+    expect(images).toHaveLength(5);
+    expect(
+      images.slice(0, 4).every((image) => image.includes('loading="eager"')),
+    ).toBe(true);
+    expect(images[4]).toContain('loading="lazy"');
+    expect(images[0]).toContain('fetchpriority="high"');
+    expect(
+      images.slice(1).every((image) => !image.includes("fetchpriority")),
+    ).toBe(true);
+  });
+
   it("renders the signup fragment without loading the archive", async () => {
     let router = routerWith({
       async listSummaries() {
@@ -187,10 +230,11 @@ describe("Newsletter issue route", () => {
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     let html = await response.text();
 
-    // Issue content starts with its date/title and the md-prose container.
+    // Issue content starts with its title and the md-prose container.
     expect(html).not.toContain("← Newsletter archive");
     expect(html).toContain('class="md-prose"');
     expect([...html.matchAll(/<h1\b/g)].length).toBe(1);
+    expect(html).not.toContain("<time");
 
     // Relative image rewritten to the image route.
     let expectedImageSrc = routes.newsletter.image.href({

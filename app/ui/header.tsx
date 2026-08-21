@@ -1,20 +1,32 @@
 import type { Handle } from "remix/ui";
+
+import { cx } from "../utils/public/cx.ts";
 import { MobileMenu } from "./public/mobile-menu.tsx";
 import { WordmarkLink } from "./public/wordmark-link.tsx";
 import { routes } from "../routes.ts";
 import { theme } from "./public/theme.ts";
 
-const LINKS: Array<{ to: string; label: string }> = [
+export type HeaderSection = "blog" | "newsletter" | "jam";
+
+const LINKS: Array<{
+  to: string;
+  label: string;
+  section?: HeaderSection;
+}> = [
   { to: "https://guides.remix.run", label: "Guides" },
   { to: "https://api.remix.run", label: "API" },
   { to: "https://github.com/remix-run/remix", label: "GitHub" },
-  { to: routes.blog.index.href(), label: "Blog" },
-  { to: routes.newsletter.index.href(), label: "Newsletter" },
-  { to: routes.jam.y2026.index.href(), label: "Jam" },
+  { to: routes.blog.index.href(), label: "Blog", section: "blog" },
+  {
+    to: routes.newsletter.index.href(),
+    label: "Newsletter",
+    section: "newsletter",
+  },
+  { to: routes.jam.y2026.index.href(), label: "Jam", section: "jam" },
   { to: "https://shop.remix.run", label: "Store" },
 ];
 
-export function Header() {
+export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
   return () => (
     <header
       class="relative z-50 h-16 pl-6 pr-4 sm:pr-6 min-[900px]:pr-[30px]"
@@ -34,7 +46,14 @@ export function Header() {
           aria-label="Main"
         >
           {LINKS.map((link) => (
-            <HeaderLink key={link.to} to={link.to}>
+            <HeaderLink
+              key={link.to}
+              to={link.to}
+              current={
+                link.section !== undefined &&
+                link.section === handle.props.currentSection
+              }
+            >
               {link.label}
             </HeaderLink>
           ))}
@@ -42,7 +61,14 @@ export function Header() {
 
         <MobileMenu class="min-[900px]:hidden">
           {LINKS.map((link) => (
-            <HeaderLink key={link.to} to={link.to}>
+            <HeaderLink
+              key={link.to}
+              to={link.to}
+              current={
+                link.section !== undefined &&
+                link.section === handle.props.currentSection
+              }
+            >
               {link.label}
             </HeaderLink>
           ))}
@@ -52,11 +78,23 @@ export function Header() {
   );
 }
 
-function HeaderLink(handle: Handle<{ to: string; children: string }>) {
+function HeaderLink(
+  handle: Handle<{
+    to: string;
+    children: string;
+    current?: boolean;
+  }>,
+) {
   return () => (
     <a
       href={handle.props.to}
-      class="text-rmx-primary whitespace-nowrap text-base font-normal opacity-80 hover:opacity-100"
+      aria-current={handle.props.current ? "page" : undefined}
+      class={cx(
+        "whitespace-nowrap text-base font-normal",
+        handle.props.current
+          ? "rmx-header-link-current"
+          : "rmx-header-link text-rmx-primary opacity-80 hover:opacity-100",
+      )}
     >
       {handle.props.children}
     </a>

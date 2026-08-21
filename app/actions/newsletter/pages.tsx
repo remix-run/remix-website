@@ -5,7 +5,9 @@ import { routes } from "../../routes.ts";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
+import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
 import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import { theme } from "../../ui/public/theme.ts";
 import type { NewsletterSubscriptionStatus } from "../../ui/public/newsletter-subscribe.tsx";
 import { cx } from "../../utils/public/cx.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
@@ -30,9 +32,9 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
           "Stay up-to-date with news, announcements, and releases for our projects like Remix and React Router. Read past issues in the archive.",
       })}
     >
-      <Header />
+      <Header currentSection="newsletter" />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <div class="rmx-page-body container mb-24 mt-8 max-w-full lg:max-w-4xl">
+        <div class="rmx-page-body rmx-marketing-page container mb-24 max-w-full lg:max-w-4xl">
           <NewsletterSignupSection
             subscriptionStatus={handle.props.subscriptionStatus}
           />
@@ -70,20 +72,16 @@ export function NewsletterIssuePage(
         )}`,
       })}
     >
-      <Header />
+      <Header currentSection="newsletter" />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
         <div class="container mb-24 mt-16 max-w-full md:max-w-3xl">
-          <div class="rmx-page-meta text-gray-500 dark:text-gray-400">
-            <time dateTime={issue.date.toISOString()}>
-              {formatNewsletterDate(issue.date)}
-            </time>
-          </div>
-          <div class="h-2" />
           <h1 class="rmx-page-title">{issue.title}</h1>
           <div class="h-8" />
           <div class="md-prose" innerHTML={handle.props.html} />
           <div class="h-16" />
-          <NewsletterDetailSignup />
+          <div class="mt-12">
+            <NewsletterSignupCta />
+          </div>
         </div>
       </main>
       <Footer />
@@ -103,8 +101,9 @@ function NewsletterSignupSection(
       <h1 id="newsletter-heading" class="rmx-page-title dark:text-gray-200">
         Newsletter Archive
       </h1>
+      <div class="h-16" />
       <p
-        class="rmx-page-body mt-6 max-w-2xl text-gray-600 dark:text-gray-300"
+        class="rmx-page-body max-w-2xl text-gray-600 dark:text-gray-300"
         id="newsletter-text"
       >
         Stay up-to-date with news, announcements, and releases for our projects
@@ -143,7 +142,7 @@ function NewsletterArchive(
                   number: summary.number,
                 })}
                 class={cx(
-                  "group grid gap-5 text-gray-900 dark:text-gray-100",
+                  "rmx-newsletter-card text-gray-900 dark:text-gray-100",
                   summary.image
                     ? "md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-start"
                     : null,
@@ -152,15 +151,16 @@ function NewsletterArchive(
                 <div class="flex flex-col gap-4">
                   <time
                     dateTime={summary.date.toISOString()}
-                    class="rmx-page-meta text-gray-500 dark:text-gray-400"
+                    class="rmx-page-meta"
+                    style={{ color: theme.colors.text.primary }}
                   >
                     {formatNewsletterDate(summary.date)}
                   </time>
-                  <h3 class="rmx-page-title rmx-page-title-xs transition-colors group-hover:text-red-brand">
+                  <h3 class="rmx-page-title rmx-page-title-xs">
                     Remix Newsletter #{summary.number}
                   </h3>
                   {summary.preview ? (
-                    <p class="rmx-page-body text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100">
+                    <p class="rmx-page-body text-gray-600 dark:text-gray-300">
                       {summary.preview}
                     </p>
                   ) : null}
@@ -170,7 +170,7 @@ function NewsletterArchive(
                     src={summary.image.src}
                     alt={summary.image.alt}
                     class="aspect-[16/9] w-full object-cover object-top shadow md:rounded-md"
-                    loading={index === 0 ? "eager" : "lazy"}
+                    loading={index < 4 ? "eager" : "lazy"}
                     decoding={index === 0 ? "sync" : "async"}
                     fetchpriority={index === 0 ? "high" : undefined}
                   />
@@ -181,21 +181,6 @@ function NewsletterArchive(
         </ol>
       )}
     </section>
-  );
-}
-
-function NewsletterDetailSignup() {
-  return () => (
-    <div class="mt-12 max-w-lg">
-      <h2 class="rmx-page-title rmx-page-title-sm mb-4">
-        Get updates on the latest Remix news
-      </h2>
-      <div class="rmx-page-body mb-6" id="newsletter-text">
-        Be the first to learn about new Remix features, community events, and
-        tutorials.
-      </div>
-      <NewsletterSubscribe />
-    </div>
   );
 }
 
