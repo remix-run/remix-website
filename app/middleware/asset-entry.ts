@@ -9,7 +9,6 @@ import {
 import { assets } from "../utils/assets.ts";
 
 interface AssetEntry {
-  iconsSpriteHref: string;
   src: string;
   preloads: string[];
   stylesheets: Record<StylesheetName, StylesheetAsset>;
@@ -23,10 +22,6 @@ let assetEntryKey = createContextKey<AssetEntry>();
 let defaultEntry = path.resolve(
   import.meta.dirname,
   "../actions/public/entry.ts",
-);
-let iconsSpriteEntry = path.resolve(
-  import.meta.dirname,
-  "../ui/public/icons.svg",
 );
 let stylesheetEntries = {
   app: path.resolve(import.meta.dirname, "../styles/public/generated/app.css"),
@@ -46,8 +41,7 @@ export function loadAssetEntry(
   entry = defaultEntry,
 ): Middleware<AssetEntryContextEntry> {
   return async (context, next) => {
-    let [iconsSpriteHref, src, preloads, stylesheets] = await Promise.all([
-      assets.getHref(iconsSpriteEntry),
+    let [src, preloads, stylesheets] = await Promise.all([
       assets.getHref(entry),
       assets.getPreloads(entry).catch((error) => {
         // Surface asset compilation errors without breaking HTML rendering.
@@ -71,7 +65,6 @@ export function loadAssetEntry(
     ]);
 
     context.set(assetEntryKey, {
-      iconsSpriteHref,
       src,
       preloads,
       stylesheets,

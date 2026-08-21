@@ -65,17 +65,15 @@ describe("browser asset boundary", () => {
     ).toThrow("Unsupported responsive image width: 999");
   });
 
-  it("rewrites and serves shared font and icon assets", async () => {
+  it("rewrites and serves shared font assets", async () => {
     let globalStylesheet = path.join(appDir, "styles/public/global.css");
     let romanFont = path.join(
       appDir,
       "styles/public/font/inter-roman-latin-var.woff2",
     );
-    let iconsSprite = path.join(appDir, "ui/public/icons.svg");
-    let [globalHref, romanFontHref, iconsSpriteHref] = await Promise.all([
+    let [globalHref, romanFontHref] = await Promise.all([
       assets.getHref(globalStylesheet),
       assets.getHref(romanFont),
-      assets.getHref(iconsSprite),
     ]);
 
     let globalResponse = await assets.fetch(
@@ -84,16 +82,10 @@ describe("browser asset boundary", () => {
     let romanFontResponse = await assets.fetch(
       new Request(new URL(romanFontHref, "http://localhost")),
     );
-    let iconsSpriteResponse = await assets.fetch(
-      new Request(new URL(iconsSpriteHref, "http://localhost")),
-    );
 
     expect(globalResponse?.status).toBe(200);
     expect(await globalResponse?.text()).toContain(`url("${romanFontHref}")`);
     expect(romanFontResponse?.headers.get("Content-Type")).toBe("font/woff2");
-    expect(iconsSpriteResponse?.headers.get("Content-Type")).toBe(
-      "image/svg+xml",
-    );
   });
 
   it("does not expose server or test source", async () => {

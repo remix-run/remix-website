@@ -1,3 +1,5 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { css, type Handle, type Props, type RemixNode } from "remix/ui";
 
 import {
@@ -11,6 +13,13 @@ import {
   type ManagedHeadTag,
 } from "./public/document-head.ts";
 import { theme } from "./public/theme.ts";
+
+// Inlined once per document so `<use href="#name">` icon references resolve
+// immediately, with no separate sprite request or per-deploy URL plumbing.
+let iconsSpriteHtml = fs.readFileSync(
+  path.resolve(import.meta.dirname, "icons.svg"),
+  "utf8",
+);
 
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -80,7 +89,6 @@ export function Document(handle: Handle<DocumentProps>) {
       <html
         lang="en"
         data-theme={forceTheme}
-        data-remix-icons-sprite={assetEntry.iconsSpriteHref}
         class={forceTheme === "dark" ? "dark" : undefined}
         style={{ colorScheme: forceTheme ?? "light dark" }}
         mix={mix}
@@ -162,15 +170,8 @@ export function Document(handle: Handle<DocumentProps>) {
             forceTheme={forceTheme}
             stylesheets={Array.from(stylesheetNames)}
           />
-          <img
-            src={assetEntry.iconsSpriteHref}
-            alt=""
-            hidden
-            // Inline so route-local theme resets emitted later cannot reveal the sprite.
-            style={{ display: "none" }}
-            // Preload icons sprite so <use href> references resolve.
-            fetchpriority="high"
-          />
+          {/* Inline so route-local theme resets emitted later cannot reveal the sprite. */}
+          <div style={{ display: "none" }} innerHTML={iconsSpriteHtml} />
           {children}
         </body>
       </html>
