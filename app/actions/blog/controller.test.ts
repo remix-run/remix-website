@@ -24,6 +24,13 @@ describe("Blog route", () => {
     expect(html).toContain('id="main-content"');
     expect(html).toContain(`action="${routes.api.newsletter.href()}"`);
     expect(html).toContain("data-remix-global-styles");
+    expect(html).toContain(
+      'data-remix-icons-sprite="/assets/app/ui/public/icons.svg"',
+    );
+    expect(html).toContain(
+      'url("/assets/app/styles/public/font/inter-roman-latin-var.woff2")',
+    );
+    expect(html).toContain('href="/assets/app/ui/public/icons.svg#github"');
 
     let activeStylesheetHrefs = [
       ...html.matchAll(/<link[^>]+rel="stylesheet"[^>]*>/g),

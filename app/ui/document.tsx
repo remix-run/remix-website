@@ -1,5 +1,3 @@
-import * as fs from "node:fs";
-import * as path from "node:path";
 import { css, type Handle, type Props, type RemixNode } from "remix/ui";
 
 import {
@@ -14,15 +12,6 @@ import {
 } from "./public/document-head.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
 import { theme } from "./public/theme.ts";
-
-let globalStylesheetPath = path.resolve(
-  import.meta.dirname,
-  "../styles/global.css",
-);
-let productionGlobalStyles =
-  process.env.NODE_ENV === "production"
-    ? fs.readFileSync(globalStylesheetPath, "utf8")
-    : undefined;
 
 let colorSchemeScript = `
   let media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -91,6 +80,7 @@ export function Document(handle: Handle<DocumentProps>) {
       <html
         lang="en"
         data-theme={forceTheme}
+        data-remix-icons-sprite={assetEntry.iconsSpriteHref}
         class={forceTheme === "dark" ? "dark" : undefined}
         style={{ colorScheme: forceTheme ?? "light dark" }}
         mix={mix}
@@ -117,10 +107,7 @@ export function Document(handle: Handle<DocumentProps>) {
             data-key="global-styles"
             data-remix-global-styles=""
             rmx-preserve-dom=""
-            innerHTML={
-              productionGlobalStyles ??
-              fs.readFileSync(globalStylesheetPath, "utf8")
-            }
+            innerHTML={assetEntry.globalStyles}
           />
 
           {/* Keep route stylesheets attached across document diffs. */}
