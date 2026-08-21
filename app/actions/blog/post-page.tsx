@@ -5,9 +5,15 @@ import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { BlogLightbox } from "./public/blog-lightbox.tsx";
 import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
+import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
 import type { getBlogPost } from "../../data/blog.ts";
+
+interface BlogPostImageAssets {
+  authors: Record<string, BlogImageAsset>;
+  hero: BlogImageAsset;
+}
 
 export const NOT_FOUND_RESPONSE = {
   status: 404,
@@ -22,6 +28,7 @@ export function BlogPostPage(
     requestUrl: string;
     slug: string;
     post: Awaited<ReturnType<typeof getBlogPost>>;
+    images: BlogPostImageAssets;
     socialImageUrl: string;
   }>,
 ) {
@@ -50,7 +57,10 @@ export function BlogPostPage(
     >
       <Header />
       <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <BlogPostContent post={handle.props.post} />
+        <BlogPostContent
+          post={handle.props.post}
+          images={handle.props.images}
+        />
       </main>
       <Footer />
       <BlogLightbox />
@@ -59,7 +69,10 @@ export function BlogPostPage(
 }
 
 function BlogPostContent(
-  handle: Handle<{ post: Awaited<ReturnType<typeof getBlogPost>> }>,
+  handle: Handle<{
+    post: Awaited<ReturnType<typeof getBlogPost>>;
+    images: BlogPostImageAssets;
+  }>,
 ) {
   return () => (
     <>
@@ -79,7 +92,11 @@ function BlogPostContent(
                     "h-full w-full object-cover object-top md:rounded-xl",
                     !handle.props.post.imageDisableOverlay && "opacity-40",
                   )}
-                  src={handle.props.post.image}
+                  src={handle.props.images.hero.src}
+                  srcSet={handle.props.images.hero.srcSet}
+                  sizes="(min-width: 768px) 768px, 100vw"
+                  width={handle.props.images.hero.width}
+                  height={handle.props.images.hero.height}
                   alt={handle.props.post.imageAlt}
                   loading="eager"
                   fetchpriority="high"
@@ -104,26 +121,34 @@ function BlogPostContent(
                   <div class="h-2" />
                 </div>
                 <div class="flex flex-col gap-1 pb-4 md:pb-10">
-                  {handle.props.post.authors.map((author) => (
-                    <div key={author.name} class="flex items-center">
-                      <div>
-                        <img
-                          class="h-10 w-10 rounded-full md:h-14 md:w-14"
-                          src={author.avatar}
-                          alt=""
-                        />
-                      </div>
-                      <div class="w-6" />
-                      <div class="flex flex-col gap-2">
-                        <div class="rmx-page-title rmx-page-title-xs text-white">
-                          {author.name}
+                  {handle.props.post.authors.map((author) => {
+                    let image = handle.props.images.authors[author.avatar];
+                    return (
+                      <div key={author.name} class="flex items-center">
+                        <div>
+                          <img
+                            class="h-10 w-10 rounded-full md:h-14 md:w-14"
+                            src={image?.src ?? author.avatar}
+                            srcSet={image?.srcSet}
+                            sizes="(min-width: 768px) 56px, 40px"
+                            width={image?.width}
+                            height={image?.height}
+                            alt=""
+                            decoding="async"
+                          />
                         </div>
-                        <div class="rmx-page-body text-white">
-                          {author.title}
+                        <div class="w-6" />
+                        <div class="flex flex-col gap-2">
+                          <div class="rmx-page-title rmx-page-title-xs text-white">
+                            {author.name}
+                          </div>
+                          <div class="rmx-page-body text-white">
+                            {author.title}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>

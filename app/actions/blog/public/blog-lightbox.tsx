@@ -57,7 +57,10 @@ export let BlogLightbox = clientEntry(
       if (!target.closest(PROSE_SELECTOR)) return false;
       // Defer to wrapping links rather than hijacking them.
       if (target.closest("a[href]")) return false;
-      openLightbox(target.currentSrc || target.src, target.alt);
+      openLightbox(
+        target.dataset.fullSrc || target.currentSrc || target.src,
+        target.alt,
+      );
       return true;
     };
 

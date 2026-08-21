@@ -7,6 +7,10 @@ import { Header } from "../../ui/header.tsx";
 import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
 import { routes } from "../../routes.ts";
 import { getBlogPostListings } from "../../data/blog.ts";
+import {
+  getAuthorImageAsset,
+  getBlogImageAsset,
+} from "../../utils/blog-image-assets.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
@@ -17,12 +21,11 @@ import { buildBlogRssResponse, getBlogRssPosts } from "./rss.ts";
 export default createController(routes.blog, {
   actions: {
     async index({ render, request }) {
-      return render(
-        <Page posts={getBlogPostListings()} requestUrl={request.url} />,
-        {
-          headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
-        },
-      );
+      let posts = await loadBlogPostListings();
+
+      return render(<Page posts={posts} requestUrl={request.url} />, {
+        headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
+      });
     },
 
     async post({ params, render, request }) {
@@ -61,11 +64,14 @@ export default createController(routes.blog, {
         throw error;
       }
 
+      let images = await loadBlogPostImages(post);
+
       return render(
         <BlogPostPage
           requestUrl={request.url}
           slug={slug}
           post={post}
+          images={images}
           socialImageUrl={getPostSocialImageUrl(post, slug, request.url)}
         />,
         { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
@@ -80,7 +86,7 @@ export default createController(routes.blog, {
 
 function Page(
   handle: Handle<{
-    posts: ReturnType<typeof getBlogPostListings>;
+    posts: Awaited<ReturnType<typeof loadBlogPostListings>>;
     requestUrl: string;
   }>,
 ) {
@@ -107,7 +113,7 @@ function Page(
 
 function BlogPageContent(
   handle: Handle<{
-    posts: ReturnType<typeof getBlogPostListings>;
+    posts: Awaited<ReturnType<typeof loadBlogPostListings>>;
   }>,
 ) {
   return () => {
@@ -125,7 +131,11 @@ function BlogPageContent(
                     <div class="mb-6 aspect-[16/9]">
                       <img
                         class="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
-                        src={latestPost.image}
+                        src={latestPost.imageAsset.src}
+                        srcSet={latestPost.imageAsset.srcSet}
+                        sizes="(min-width: 1400px) 817px, (min-width: 768px) 58vw, 100vw"
+                        width={latestPost.imageAsset.width}
+                        height={latestPost.imageAsset.height}
                         alt={latestPost.imageAlt}
                         loading="eager"
                         fetchpriority="high"
@@ -147,7 +157,11 @@ function BlogPageContent(
                       <div class="mb-6 aspect-[16/9]">
                         <img
                           class="h-full w-full object-cover object-top shadow md:rounded-md"
-                          src={post.image}
+                          src={post.imageAsset.src}
+                          srcSet={post.imageAsset.srcSet}
+                          sizes="(min-width: 1400px) 397px, (min-width: 1024px) 29vw, (min-width: 768px) 58vw, 100vw"
+                          width={post.imageAsset.width}
+                          height={post.imageAsset.height}
                           alt={post.imageAlt}
                           loading="lazy"
                           decoding="async"
@@ -214,6 +228,34 @@ function BlogPageContent(
         </div>
       </div>
     );
+  };
+}
+
+async function loadBlogPostListings() {
+  return Promise.all(
+    getBlogPostListings().map(async (post) => ({
+      ...post,
+      imageAsset: await getBlogImageAsset(post.image),
+    })),
+  );
+}
+
+async function loadBlogPostImages(
+  post: Awaited<ReturnType<typeof getBlogPost>>,
+) {
+  let [hero, authorEntries] = await Promise.all([
+    getBlogImageAsset(post.image),
+    Promise.all(
+      post.authors.map(
+        async (author) =>
+          [author.avatar, await getAuthorImageAsset(author.avatar)] as const,
+      ),
+    ),
+  ]);
+
+  return {
+    authors: Object.fromEntries(authorEntries),
+    hero,
   };
 }
 

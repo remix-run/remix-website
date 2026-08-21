@@ -1,8 +1,12 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import blogController from "./controller.tsx";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { getBlogPost } from "../../data/blog.ts";
+import {
+  getAuthorImageAsset,
+  getBlogImageAsset,
+} from "../../utils/blog-image-assets.ts";
+import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { routes } from "../../routes.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 
@@ -32,11 +36,22 @@ describe("Blog post route", () => {
       `href="${routes.blog.post.href({ slug: "remix-v2", ext: "md" })}"`,
     );
 
+    let heroAsset = await getBlogImageAsset(post.image);
     let heroImage = [...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g)]
       .map((match) => match[0])
-      .find((image) => image.includes(`src="${post.image}"`));
+      .find((image) => image.includes(`src="${heroAsset.src}"`));
     expect(heroImage).toContain('loading="eager"');
     expect(heroImage).toContain('fetchpriority="high"');
+
+    let author = post.authors[0];
+    let authorAsset = await getAuthorImageAsset(author.avatar);
+    let authorImage = [...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g)]
+      .map((match) => match[0])
+      .find((image) => image.includes(`src="${authorAsset.src}"`));
+    expect(authorImage).toContain('srcset="');
+    expect(authorImage).toContain('sizes="(min-width: 768px) 56px, 40px"');
+    expect(authorImage).toContain(`width="${authorAsset.width}"`);
+    expect(authorImage).toContain(`height="${authorAsset.height}"`);
   });
 
   it("returns 404 for a non-existent slug", async () => {
