@@ -1,13 +1,22 @@
 import * as path from "node:path";
 import { getContext } from "remix/middleware/async-context";
-import { createContextKey, type Middleware } from "remix/router";
+import {
+  createContextKey,
+  type Middleware,
+  type RequestContext,
+} from "remix/router";
 
 import { assets } from "../utils/assets.ts";
 
 interface AssetEntry {
+  fonts: Record<FontName, FontAsset>;
   src: string;
   preloads: string[];
   stylesheets: Record<StylesheetName, StylesheetAsset>;
+}
+
+interface FontAsset {
+  href: string;
 }
 
 interface StylesheetAsset {
@@ -19,6 +28,20 @@ let defaultEntry = path.resolve(
   import.meta.dirname,
   "../actions/public/entry.ts",
 );
+let fontEntries = {
+  interItalic: path.resolve(
+    import.meta.dirname,
+    "../styles/public/font/inter-italic-latin-var.woff2",
+  ),
+  interRoman: path.resolve(
+    import.meta.dirname,
+    "../styles/public/font/inter-roman-latin-var.woff2",
+  ),
+  jetBrainsMono: path.resolve(
+    import.meta.dirname,
+    "../styles/public/font/jet-brains-mono.woff2",
+  ),
+} as const;
 let stylesheetEntries = {
   app: path.resolve(import.meta.dirname, "../styles/public/generated/app.css"),
   global: path.resolve(import.meta.dirname, "../styles/public/global.css"),
@@ -26,6 +49,7 @@ let stylesheetEntries = {
   md: path.resolve(import.meta.dirname, "../styles/public/generated/md.css"),
 } as const;
 
+type FontName = keyof typeof fontEntries;
 export type StylesheetName = keyof typeof stylesheetEntries;
 
 export type AssetEntryContextEntry = {
@@ -37,7 +61,15 @@ export function loadAssetEntry(
   entry = defaultEntry,
 ): Middleware<AssetEntryContextEntry> {
   return async (context, next) => {
-    let [src, preloads, stylesheets] = await Promise.all([
+    let [fonts, src, preloads, stylesheets] = await Promise.all([
+      Promise.all(
+        Object.entries(fontEntries).map(async ([name, fontEntry]) => {
+          let href = await assets.getHref(fontEntry);
+          return [name, { href }] as const;
+        }),
+      ).then(
+        (entries) => Object.fromEntries(entries) as Record<FontName, FontAsset>,
+      ),
       assets.getHref(entry),
       assets.getPreloads(entry).catch((error) => {
         // Surface asset compilation errors without breaking HTML rendering.
@@ -60,11 +92,26 @@ export function loadAssetEntry(
       ),
     ]);
 
-    context.set(assetEntryKey, { src, preloads, stylesheets });
+    context.set(assetEntryKey, {
+      fonts,
+      src,
+      preloads,
+      stylesheets,
+    });
     return next();
   };
 }
 
-export function getAssetEntry(): AssetEntry {
-  return getContext().get(assetEntryKey);
+export function getAssetEntry(
+  context: RequestContext<any, any> = getContext(),
+): AssetEntry {
+  let entry = getOptionalAssetEntry(context);
+  if (!entry) throw new Error("Asset entry is not loaded");
+  return entry;
+}
+
+export function getOptionalAssetEntry(
+  context: RequestContext<any, any> = getContext(),
+): AssetEntry | undefined {
+  return context.get(assetEntryKey) as AssetEntry | undefined;
 }

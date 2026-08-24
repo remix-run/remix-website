@@ -37,7 +37,7 @@
 }
 
 .md-prose {
-  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.6;
@@ -278,7 +278,8 @@
 
   & :is(h1, h2, h3, h4, h5, h6) {
     @apply relative mb-3 mt-6;
-    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-family:
+      "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.02em;

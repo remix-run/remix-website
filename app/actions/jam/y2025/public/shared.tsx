@@ -1,6 +1,7 @@
 import { cx } from "../../../../utils/public/cx.ts";
 import type { Handle, RemixNode } from "remix/ui";
 import { JamScrambleText } from "./scramble-text.tsx";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import { MobileMenu } from "../../../../ui/public/mobile-menu.tsx";
 import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
@@ -277,9 +278,12 @@ function Footer(handle: Handle<{ showSeats: boolean; className?: string }>) {
             aria-label="GitHub"
             class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
-              <use href={`${assetPaths.iconsSprite}#github`} />
-            </svg>
+            <Icon
+              name="github"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            />
           </a>
           <a
             href="https://x.com/remix_run"
@@ -288,9 +292,12 @@ function Footer(handle: Handle<{ showSeats: boolean; className?: string }>) {
             aria-label="X"
             class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
-            <svg aria-hidden="true" viewBox="0 0 300 271" fill="currentColor">
-              <use href={`${assetPaths.iconsSprite}#x`} />
-            </svg>
+            <Icon
+              name="x"
+              aria-hidden="true"
+              viewBox="0 0 300 271"
+              fill="currentColor"
+            />
           </a>
           <a
             href="https://youtube.com/remix_run"
@@ -299,9 +306,12 @@ function Footer(handle: Handle<{ showSeats: boolean; className?: string }>) {
             aria-label="YouTube"
             class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
-            <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
-              <use href={`${assetPaths.iconsSprite}#youtube`} />
-            </svg>
+            <Icon
+              name="youtube"
+              aria-hidden="true"
+              viewBox="0 0 40 40"
+              fill="currentColor"
+            />
           </a>
           <a
             href="https://remix.run/discord"
@@ -310,9 +320,12 @@ function Footer(handle: Handle<{ showSeats: boolean; className?: string }>) {
             aria-label="Discord"
             class="inline-flex size-6 shrink-0 items-center justify-center text-white/50 transition-colors hover:text-white md:size-8 [&>svg]:size-full"
           >
-            <svg aria-hidden="true" viewBox="0 0 40 40" fill="currentColor">
-              <use href={`${assetPaths.iconsSprite}#discord`} />
-            </svg>
+            <Icon
+              name="discord"
+              aria-hidden="true"
+              viewBox="0 0 40 40"
+              fill="currentColor"
+            />
           </a>
         </div>
         <div class="flex flex-col items-center gap-2 uppercase leading-loose">

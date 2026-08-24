@@ -17,6 +17,7 @@ let webpTransforms = {
   "webp-64": createWebpTransform(64),
   "webp-128": createWebpTransform(128),
   "webp-480": createWebpTransform(480),
+  "webp-640": createWebpTransform(640),
   "webp-768": createWebpTransform(768),
   "webp-1200": createWebpTransform(1200),
   "webp-1600": createWebpTransform(1600),
@@ -56,7 +57,16 @@ export let assets = createAssetServer({
           : `process-${process.pid}`,
       ),
     ),
-    extensions: [".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"],
+    extensions: [
+      ".avif",
+      ".gif",
+      ".jpeg",
+      ".jpg",
+      ".png",
+      ".svg",
+      ".webp",
+      ".woff2",
+    ],
     maxRequestTransforms: 1,
     transforms: webpTransforms,
   },
@@ -96,7 +106,7 @@ function createWebpTransform(width?: number) {
       }
 
       let content = await image
-        .webp({ quality: 85, smartSubsample: true })
+        .webp({ quality: 80, smartSubsample: true })
         .toBuffer();
       if (!width && content.byteLength >= bytes.byteLength) return bytes;
 

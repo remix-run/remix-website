@@ -1,5 +1,6 @@
 import { addEventListeners, clientEntry, css, on, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 
 import { syncDocumentTheme } from "../../../../ui/public/document-head-sync.ts";
@@ -214,20 +215,18 @@ export let Jam2026Header = clientEntry(
                 type="submit"
               >
                 <span aria-hidden="true" mix={jam2026ThemeIndicatorStyle}>
-                  <svg
+                  <Icon
+                    name="sun"
                     aria-hidden="true"
                     focusable="false"
                     mix={[jam2026ThemeIconStyle, jam2026SunIconStyle]}
-                  >
-                    <use href={`${assetPaths.iconsSprite}#sun`} />
-                  </svg>
-                  <svg
+                  />
+                  <Icon
+                    name="moon"
                     aria-hidden="true"
                     focusable="false"
                     mix={[jam2026ThemeIconStyle, jam2026MoonIconStyle]}
-                  >
-                    <use href={`${assetPaths.iconsSprite}#moon`} />
-                  </svg>
+                  />
                 </span>
               </button>
               <span

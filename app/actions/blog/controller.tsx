@@ -84,31 +84,50 @@ export default createController(routes.blog, {
   },
 });
 
+let blogHeroImageSizes =
+  "(min-width: 1496px) 817px, (min-width: 768px) calc(58.333vw - 56px), calc(100vw - 96px)";
+
 function Page(
   handle: Handle<{
     posts: Awaited<ReturnType<typeof loadBlogPostListings>>;
     requestUrl: string;
   }>,
 ) {
-  return () => (
-    <Document
-      title="Remix Blog"
-      description="Thoughts about building excellent user experiences with Remix."
-      stylesheets={["app"]}
-      headTags={getSocialHeadTags({
-        requestUrl: handle.props.requestUrl,
-        title: "Remix Blog",
-        description:
-          "Thoughts about building excellent user experiences with Remix.",
-      })}
-    >
-      <Header currentSection="blog" />
-      <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-        <BlogPageContent posts={handle.props.posts} />
-      </main>
-      <Footer />
-    </Document>
-  );
+  return () => {
+    let headTags = getSocialHeadTags({
+      requestUrl: handle.props.requestUrl,
+      title: "Remix Blog",
+      description:
+        "Thoughts about building excellent user experiences with Remix.",
+    });
+    let latestPost = handle.props.posts[0];
+    if (latestPost) {
+      headTags.unshift({
+        kind: "link",
+        rel: "preload",
+        as: "image",
+        href: latestPost.imageAsset.src,
+        imageSrcSet: latestPost.imageAsset.srcSet,
+        imageSizes: blogHeroImageSizes,
+        fetchpriority: "high",
+      });
+    }
+
+    return (
+      <Document
+        title="Remix Blog"
+        description="Thoughts about building excellent user experiences with Remix."
+        stylesheets={["app"]}
+        headTags={headTags}
+      >
+        <Header currentSection="blog" />
+        <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
+          <BlogPageContent posts={handle.props.posts} />
+        </main>
+        <Footer />
+      </Document>
+    );
+  };
 }
 
 function BlogPageContent(
@@ -133,7 +152,7 @@ function BlogPageContent(
                         class="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
                         src={latestPost.imageAsset.src}
                         srcSet={latestPost.imageAsset.srcSet}
-                        sizes="(min-width: 1400px) 817px, (min-width: 768px) 58vw, 100vw"
+                        sizes={blogHeroImageSizes}
                         width={latestPost.imageAsset.width}
                         height={latestPost.imageAsset.height}
                         alt={latestPost.imageAlt}
@@ -159,7 +178,7 @@ function BlogPageContent(
                           class="h-full w-full object-cover object-top shadow md:rounded-md"
                           src={post.imageAsset.src}
                           srcSet={post.imageAsset.srcSet}
-                          sizes="(min-width: 1400px) 397px, (min-width: 1024px) 29vw, (min-width: 768px) 58vw, 100vw"
+                          sizes="(min-width: 1496px) 397px, (min-width: 1024px) calc(29.167vw - 40px), (min-width: 768px) calc(58.333vw - 56px), calc(100vw - 96px)"
                           width={post.imageAsset.width}
                           height={post.imageAsset.height}
                           alt={post.imageAlt}

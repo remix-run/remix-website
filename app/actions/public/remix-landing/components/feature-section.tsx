@@ -317,7 +317,7 @@ const kickerStyles = css({
 
 const titleStyles = css({
   margin: "0",
-  fontFamily: "'Inter Variable', 'Inter', sans-serif",
+  fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
   color: colors.fg,
   fontSize: "clamp(30px, 4vw, 56px)",
@@ -330,7 +330,7 @@ const titleStyles = css({
 
 const bodyStyles = css({
   margin: "48px 0 0",
-  fontFamily: "'Inter Variable', 'Inter', sans-serif",
+  fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   color: colors.fg,
   fontSize: "16px",
@@ -351,7 +351,7 @@ const ctaStyles = css({
   boxShadow: "none",
   background: "rgba(255, 255, 255, 0.08)",
   color: "#ffffff",
-  fontFamily: "'Inter Variable', 'Inter', sans-serif",
+  fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   fontSize: "16px",
   lineHeight: "1.4",
@@ -399,7 +399,7 @@ const subscribeInputStyles = css({
   background: "transparent",
   color: "#ffffff",
   padding: "10px 16px",
-  fontFamily: "'Inter Variable', 'Inter', sans-serif",
+  fontFamily: theme.fontFamily.sans,
   fontSize: "16px",
   lineHeight: "1.4",
   letterSpacing: "-0.008px",
@@ -416,7 +416,7 @@ const subscribeButtonStyles = css({
   background: "rgba(255, 255, 255, 0.08)",
   color: "#ffffff",
   padding: "10px 16px",
-  fontFamily: "'Inter Variable', 'Inter', sans-serif",
+  fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   fontSize: "16px",
   lineHeight: "1.4",
@@ -437,7 +437,7 @@ const subscribeButtonStyles = css({
 
 const subscribeMessageStyles = css({
   marginTop: "12px",
-  fontFamily: "'Inter Variable', 'Inter', sans-serif",
+  fontFamily: theme.fontFamily.sans,
   fontSize: "14px",
   lineHeight: "1.45",
   letterSpacing: "-0.008px",

@@ -39,7 +39,7 @@ describe("browser asset boundary", () => {
 
   it("serves constrained WebP transforms for blog and author images", async () => {
     for (let [imagePath, width] of [
-      ["public/blog-images/social-background.png", 480],
+      ["public/blog-images/social-background.png", 640],
       ["public/authors/profile-jacob-ebey.png", 128],
     ] as const) {
       let href = await getWebpHref(path.join(rootDir, imagePath), width);
@@ -63,6 +63,20 @@ describe("browser asset boundary", () => {
     expect(() =>
       getWebpHref("public/blog-images/social-background.png", 999),
     ).toThrow("Unsupported responsive image width: 999");
+  });
+
+  it("serves WOFF2 font assets", async () => {
+    let fontPath = path.join(
+      appDir,
+      "styles/public/font/inter-roman-latin-var.woff2",
+    );
+    let fontHref = await assets.getHref(fontPath);
+    let response = await assets.fetch(
+      new Request(new URL(fontHref, "http://localhost")),
+    );
+
+    expect(response?.status).toBe(200);
+    expect(response?.headers.get("Content-Type")).toBe("font/woff2");
   });
 
   it("does not expose server or test source", async () => {

@@ -7,7 +7,7 @@ import {
   type RemixNode,
 } from "remix/ui";
 import { cx } from "../../utils/public/cx.ts";
-import { assetPaths } from "../../utils/public/asset-paths.ts";
+import { Icon } from "./icon.tsx";
 
 const mobileMenuStyles = {
   summary: cx(
@@ -109,9 +109,7 @@ export let MobileMenu = clientEntry(
           ]}
         >
           <summary class={summaryClass}>
-            <svg class="h-5 w-5" aria-hidden="true">
-              <use href={`${assetPaths.iconsSprite}#menu`} />
-            </svg>
+            <Icon name="menu" class="h-5 w-5" aria-hidden="true" />
             <span class="sr-only">Open menu</span>
           </summary>
 

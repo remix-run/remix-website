@@ -219,7 +219,7 @@ describe("Navigation", () => {
     ]);
   });
 
-  it("home/blog navigation stays client-side and applies forced dark mode", async (t) => {
+  it("home/blog navigation stays client-side and syncs document state", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ colorScheme: "dark" });
@@ -238,6 +238,18 @@ describe("Navigation", () => {
       `**${routes.blog.index.href()}`,
     );
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
+    let hero = page.locator('main img[src*="/assets/blog-images/"]').first();
+    let heroSizes = await hero.getAttribute("sizes");
+    let heroSrcSet = await hero.getAttribute("srcset");
+    if (!heroSizes || !heroSrcSet) {
+      throw new Error("Expected responsive blog hero attributes");
+    }
+    let heroPreload = page.locator('link[rel="preload"][as="image"]');
+    await expect(heroPreload).toHaveAttribute("imagesizes", heroSizes);
+    await expect(heroPreload).toHaveAttribute("imagesrcset", heroSrcSet);
+    await expect(heroPreload).toHaveAttribute("fetchpriority", "high");
+    await expect(page.locator("body")).toHaveCSS("margin", "0px");
+
     await page.evaluate(
       () =>
         new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
