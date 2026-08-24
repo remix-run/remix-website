@@ -123,6 +123,7 @@ export function Document(handle: Handle<DocumentProps>) {
           {priorityHeadTags.map((tag, index) => (
             <link
               key={getManagedHeadTagKey(tag, index)}
+              data-rmx-key={getManagedHeadTagKey(tag, index)}
               data-remix-managed-head="true"
               rel={tag.rel}
               href={tag.href}
@@ -144,6 +145,7 @@ export function Document(handle: Handle<DocumentProps>) {
               only this critical face; the browser discovers other variants from
               the declarations below if the page actually uses them. */}
           <link
+            data-rmx-key="font-preload:inter-roman"
             rel="preload"
             href={assetEntry.fonts.interRoman.href}
             as="font"
@@ -156,8 +158,9 @@ export function Document(handle: Handle<DocumentProps>) {
               normalize Arial's average width and vertical metrics to reduce CLS. */}
           <style
             key="fonts"
+            data-rmx-key="fonts"
             data-remix-fonts=""
-            rmx-preserve-dom=""
+            data-rmx-preserve-dom=""
             innerHTML={`
               @font-face {
                 font-family: "Inter";
@@ -206,7 +209,7 @@ export function Document(handle: Handle<DocumentProps>) {
             (name) => (
               <link
                 key={name}
-                data-key={`stylesheet:${name}`}
+                data-rmx-key={`stylesheet:${name}`}
                 data-remix-stylesheet={name}
                 data-rmx-preserve-dom=""
                 rel="stylesheet"
@@ -227,6 +230,7 @@ export function Document(handle: Handle<DocumentProps>) {
             tag.kind === "meta" ? (
               <meta
                 key={getManagedHeadTagKey(tag, index)}
+                data-rmx-key={getManagedHeadTagKey(tag, index)}
                 data-remix-managed-head="true"
                 name={tag.name}
                 property={tag.property}
@@ -235,6 +239,7 @@ export function Document(handle: Handle<DocumentProps>) {
             ) : (
               <link
                 key={getManagedHeadTagKey(tag, index)}
+                data-rmx-key={getManagedHeadTagKey(tag, index)}
                 data-remix-managed-head="true"
                 rel={tag.rel}
                 href={tag.href}
@@ -254,7 +259,12 @@ export function Document(handle: Handle<DocumentProps>) {
           )}
 
           {assetEntry.preloads.map((href) => (
-            <link key={href} rel="modulepreload" href={href} />
+            <link
+              key={href}
+              data-rmx-key={`modulepreload:${href}`}
+              rel="modulepreload"
+              href={href}
+            />
           ))}
           <script type="module" async src={assetEntry.src} />
 

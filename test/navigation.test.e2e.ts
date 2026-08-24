@@ -219,6 +219,24 @@ describe("Navigation", () => {
     ]);
   });
 
+  it("activates blog post typography on client navigation", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.blog.index.href());
+
+    let postHref = routes.blog.post.href({ slug: "react-router-v8" });
+    await expectClientNavigation(
+      page,
+      () => page.locator(`main a[href="${postHref}"]`).first().click(),
+      `**${postHref}`,
+    );
+
+    await expect(page.locator(".md-prose p").first()).toHaveCSS(
+      "margin-top",
+      "32px",
+    );
+  });
+
   it("home/blog navigation stays client-side and syncs document state", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
