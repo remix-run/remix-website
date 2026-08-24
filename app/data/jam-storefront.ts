@@ -250,7 +250,7 @@ export async function createCart(params: {
               quantity,
             },
           ],
-          discountCodes: discountCode ? [discountCode] : [],
+          ...(discountCode ? { discountCodes: [discountCode] } : {}),
         },
       },
     });

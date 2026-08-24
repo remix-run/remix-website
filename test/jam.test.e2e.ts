@@ -286,7 +286,7 @@ function mockStorefront(t: { after(cleanup: () => void): void }) {
               {
                 node: {
                   id: "gid://shopify/ProductVariant/2026",
-                  price: { amount: "299.00" },
+                  price: { amount: "399.00" },
                   availableForSale: true,
                 },
               },
