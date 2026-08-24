@@ -19,7 +19,6 @@ import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes.ts";
 
 import rootController from "./actions/controller.tsx";
-import apiController from "./actions/api/controller.tsx";
 import blogController from "./actions/blog/controller.tsx";
 import { catchallHandler } from "./actions/catchall.tsx";
 import jamController from "./actions/jam/controller.ts";
@@ -28,6 +27,11 @@ import jam2025GalleryController from "./actions/jam/y2025/gallery/controller.tsx
 import jam2025TicketController from "./actions/jam/y2025/ticket/controller.tsx";
 import jam2026Controller from "./actions/jam/y2026/controller.tsx";
 import jam2026TicketController from "./actions/jam/y2026/ticket/controller.tsx";
+import { createNewsletterController } from "./actions/newsletter/controller.tsx";
+import {
+  liveNewsletterRepository,
+  type NewsletterRepository,
+} from "./actions/newsletter/archive.ts";
 import remixHistoryController from "./actions/remix-history/controller.tsx";
 
 let isDev = process.env.NODE_ENV !== "production";
@@ -89,14 +93,17 @@ declare module "remix/router" {
   }
 }
 
-export function createAppRouter() {
+export function createAppRouter(
+  options: {
+    newsletterRepository?: NewsletterRepository;
+  } = {},
+) {
   let appRouter = createRouter({
     middleware: createAppMiddleware(),
     defaultHandler: catchallHandler,
   });
 
   appRouter.map(routes, rootController);
-  appRouter.map(routes.api, apiController);
   appRouter.map(routes.blog, blogController);
   appRouter.map(routes.remixHistory, remixHistoryController);
   appRouter.map(routes.jam, jamController);
@@ -105,6 +112,12 @@ export function createAppRouter() {
   appRouter.map(routes.jam.y2025.ticket, jam2025TicketController);
   appRouter.map(routes.jam.y2026, jam2026Controller);
   appRouter.map(routes.jam.y2026.ticket, jam2026TicketController);
+  appRouter.map(
+    routes.newsletter,
+    createNewsletterController(
+      options.newsletterRepository ?? liveNewsletterRepository,
+    ),
+  );
 
   let redirects = loadRedirectsFromFile();
   let { redirectRoutes, redirectController } = createRedirectRoutes(redirects);

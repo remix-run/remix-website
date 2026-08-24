@@ -5,6 +5,7 @@ loadEnvFiles();
 function createEnvSchema(nodeEnv: string | undefined) {
   return s
     .object({
+      NEWSLETTER_GITHUB_TOKEN: s.optional(s.string()),
       // Get from https://app.convertkit.com/account_settings/advanced_settings
       CONVERTKIT_KEY: s.optional(s.string()),
       PUBLIC_STOREFRONT_API_TOKEN: s.optional(s.string()),

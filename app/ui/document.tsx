@@ -109,7 +109,7 @@ export function Document(handle: Handle<DocumentProps>) {
                 key={name}
                 data-key={`stylesheet:${name}`}
                 data-remix-stylesheet={name}
-                rmx-preserve-dom=""
+                data-rmx-preserve-dom=""
                 rel="stylesheet"
                 href={assetEntry.stylesheets[name].href}
                 media={stylesheetNames.has(name) ? undefined : "not all"}

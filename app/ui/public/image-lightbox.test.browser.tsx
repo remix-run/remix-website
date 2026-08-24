@@ -2,9 +2,9 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 import { render } from "remix/ui/test";
 
-import { BlogLightbox } from "./blog-lightbox.tsx";
+import { ImageLightbox } from "./image-lightbox.tsx";
 
-describe("BlogLightbox", () => {
+describe("ImageLightbox", () => {
   it("opens from the keyboard, traps page scroll, and restores focus on Escape", async (t) => {
     let root = document.documentElement;
     let previousOverflow = root.style.overflow;
@@ -23,7 +23,7 @@ describe("BlogLightbox", () => {
             alt="Remix logo"
           />
         </article>
-        <BlogLightbox />
+        <ImageLightbox />
       </div>,
     );
     t.after(result.cleanup);

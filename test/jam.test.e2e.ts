@@ -6,6 +6,7 @@ import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import { ticketModalConfig } from "../app/actions/jam/y2026/public/tickets-modal-contract.ts";
 import { env } from "../app/utils/env.ts";
+import { newsletterTagIds } from "../app/utils/public/newsletter-tags.ts";
 import {
   swallowAbortErrors,
   waitForClientEntryHydration,
@@ -120,26 +121,25 @@ describe("Jam", () => {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 
-  it("jam 2025 newsletter submits and shows success state", async (t) => {
+  it("jam 2025 newsletter submits through its signup frame", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     let submittedEmail: string | null = null;
     let submittedTag: string | null = null;
-    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
-      let submittedBody = new URLSearchParams(route.request().postData() ?? "");
-      submittedEmail = submittedBody.get("email");
-      submittedTag = submittedBody.get("tag");
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({ ok: true, error: null }),
-      });
+    t.mock.method(globalThis, "fetch", (_input, init) => {
+      let submittedBody = JSON.parse(String(init?.body ?? "{}")) as {
+        email?: string;
+        tags?: number[];
+      };
+      submittedEmail = submittedBody.email ?? null;
+      submittedTag = String(submittedBody.tags?.[0] ?? "");
+      return Promise.resolve(Response.json({}));
     });
 
     await page.goto(routes.jam.y2025.index.href());
     await waitForClientEntryHydration(
       page,
-      `form[action="${routes.api.newsletter.href()}"]`,
+      'form[data-rmx-target="newsletter-subscribe"]',
     );
 
     let emailInput = page.getByPlaceholder("your@email.com");
@@ -148,8 +148,69 @@ describe("Jam", () => {
 
     await expect(page.getByText(/You're good to go/i)).toBeVisible();
     await expect(emailInput).toHaveValue("");
+    await expect(page).toHaveURL(
+      new RegExp(`${routes.jam.y2025.index.href()}$`),
+    );
     expect(submittedEmail).toBe("hello@example.com");
-    expect(submittedTag).toBe("6280341");
+    expect(submittedTag).toBe(String(newsletterTagIds.jam2025Updates));
+  });
+
+  it("jam 2026 newsletter submits through its signup frame", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    let submittedEmail: string | null = null;
+    let submittedTag: string | null = null;
+    t.mock.method(globalThis, "fetch", (_input, init) => {
+      let submittedBody = JSON.parse(String(init?.body ?? "{}")) as {
+        email?: string;
+        tags?: number[];
+      };
+      submittedEmail = submittedBody.email ?? null;
+      submittedTag = String(submittedBody.tags?.[0] ?? "");
+      return Promise.resolve(Response.json({}));
+    });
+
+    await page.goto(routes.jam.y2026.index.href());
+    await waitForClientEntryHydration(page, "#newsletter");
+    let newsletterForm = page.locator(
+      'form[data-rmx-target="newsletter-subscribe"]',
+    );
+    await expect(newsletterForm).toHaveAttribute(
+      "data-rmx-src",
+      /\/newsletter\?frame=jam2026$/,
+    );
+    await expect(newsletterForm).toHaveAttribute(
+      "data-rmx-reset-scroll",
+      "false",
+    );
+
+    let emailInput = page.getByPlaceholder("your@email.com");
+    let submitButton = page.getByRole("button", { name: "Sign up" });
+    await emailInput.fill("hello@example.com");
+    await submitButton.scrollIntoViewIfNeeded();
+    let scrollYBeforeSubmit = await page.evaluate(() => window.scrollY);
+    let submissionResponse = page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        new URL(response.url()).pathname === routes.newsletter.subscribe.href(),
+    );
+    await submitButton.click();
+
+    await submissionResponse;
+    await expect(page.getByText(/You're on the list/i)).toBeVisible();
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
+    );
+    expect(await page.evaluate(() => window.scrollY)).toBe(scrollYBeforeSubmit);
+    await expect(emailInput).toHaveValue("");
+    await expect(page).toHaveURL(
+      new RegExp(`${routes.jam.y2026.index.href()}$`),
+    );
+    expect(submittedEmail).toBe("hello@example.com");
+    expect(submittedTag).toBe(String(newsletterTagIds.jam2026Updates));
   });
 
   it("jam info navigation stays client-side without a full reload", async (t) => {

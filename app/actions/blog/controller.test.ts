@@ -22,8 +22,6 @@ describe("Blog route", () => {
 
     expect(html).toContain("<title>Remix Blog</title>");
     expect(html).toContain('id="main-content"');
-    expect(html).toContain(`action="${routes.api.newsletter.href()}"`);
-
     let articleImages = [
       ...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g),
     ]

@@ -14,6 +14,20 @@
   --rmx-surface-3: #f0f4f7;
   --rmx-surface-4: #f7fbff;
 
+  --rmx-newsletter-card-background: #f7f7f8;
+  --rmx-newsletter-card-hover-background: color-mix(
+    in srgb,
+    var(--rmx-newsletter-card-background) 95%,
+    #000
+  );
+  --rmx-newsletter-card-active-background: color-mix(
+    in srgb,
+    var(--rmx-newsletter-card-background) 90%,
+    #000
+  );
+
+  --rmx-header-current-color: #0074c0;
+
   --rmx-highlight-blue: #259eef;
   --rmx-highlight-green: #06ea8a;
   --rmx-highlight-red: #d92c49;
@@ -55,6 +69,18 @@
   &:where(.dark) {
     --rmx-text-primary: #e5e7eb;
     --rmx-text-muted: #9aa0a6;
+    --rmx-header-current-color: #2dacf9;
+    --rmx-newsletter-card-background: #16161a;
+    --rmx-newsletter-card-hover-background: color-mix(
+      in srgb,
+      var(--rmx-newsletter-card-background) 95%,
+      #fff
+    );
+    --rmx-newsletter-card-active-background: color-mix(
+      in srgb,
+      var(--rmx-newsletter-card-background) 90%,
+      #fff
+    );
   }
 }
 
@@ -121,6 +147,62 @@
   text-transform: uppercase;
 }
 
+.rmx-header-link-current {
+  color: var(--rmx-header-current-color);
+  opacity: 1;
+}
+
+.rmx-header-link-current:is(:hover, :focus-visible),
+.rmx-header-link:is(:hover, :focus-visible) {
+  color: var(--rmx-header-current-color);
+}
+
+.rmx-marketing-page {
+  margin-block-start: clamp(2.5rem, 5vw, 4rem);
+}
+
+.rmx-newsletter-signup {
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.rmx-newsletter-signup-title {
+  --rmx-page-title-size: clamp(1.25rem, 2vw, 1.5rem);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.rmx-newsletter-card {
+  display: grid;
+  gap: 1.25rem;
+  margin: -1.5rem;
+  padding: 1.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  outline: none;
+  transition: background-color 150ms ease-in-out;
+}
+
+.rmx-newsletter-card:is(:hover, :focus-within) {
+  background-color: var(--rmx-newsletter-card-hover-background);
+}
+
+.rmx-newsletter-card:active {
+  background-color: var(--rmx-newsletter-card-active-background);
+}
+
+.rmx-newsletter-card:focus-visible {
+  outline: 2px solid var(--rmx-button-surface-primary);
+  outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rmx-newsletter-card {
+    transition: none;
+  }
+}
+
 .rmx-editorial-prose {
   line-height: 1.6;
 }
@@ -134,7 +216,7 @@
 }
 
 .rmx-editorial-prose > .rmx-page-title:first-child {
-  margin-top: 0;
+  margin: 0 0 4rem;
 }
 
 @supports (text-box-trim: trim-both) {

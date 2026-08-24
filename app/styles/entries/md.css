@@ -57,14 +57,14 @@
   }
 
   & h3 {
-    font-size: clamp(1.5rem, 2.5vw, 1.875rem);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
     @apply dark:text-gray-200;
   }
 
   & h4,
   & h5,
   & h6 {
-    font-size: clamp(1.125rem, 2vw, 1.25rem);
+    font-size: clamp(1.125rem, 1.75vw, 1.25rem);
   }
 
   & strong {
@@ -317,6 +317,16 @@
 
   & h2 {
     @apply mb-4 mt-10;
+  }
+
+  & h3 {
+    @apply mb-3 mt-8;
+  }
+
+  & h4,
+  & h5,
+  & h6 {
+    @apply mb-2 mt-6;
   }
 
   @supports (text-box-trim: trim-both) {

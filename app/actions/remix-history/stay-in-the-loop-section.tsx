@@ -1,5 +1,5 @@
 import { cx } from "../../utils/public/cx.ts";
-import { NewsletterSubscribeForm } from "../../ui/public/newsletter-subscribe.tsx";
+import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
 
 export function StayInTheLoopSection() {
   return () => (
@@ -33,23 +33,7 @@ function NewsletterCard() {
           to keep up with what comes next. No spam. Unsubscribe anytime.
         </p>
       </div>
-      <NewsletterSubscribeForm
-        class="m-0 flex flex-col gap-6 md:h-14 md:flex-row"
-        inputClass={cx(
-          "rmx-bg-neutral-100",
-          "box-border inline-block h-14 flex-1 appearance-none rounded-lg border-0 px-6 py-4 text-base",
-          "placeholder:text-rmx-text-tertiary",
-        )}
-        buttonClass={cx(
-          "rmx-bg-button-primary rmx-text-button-primary rmx-shadow-low",
-          "rmx-button-text",
-          "box-border inline-flex h-14 appearance-none items-center justify-center rounded-lg border border-black/10 px-6 font-semibold",
-          "transition-all hover:opacity-90",
-          "active:scale-[0.98] active:opacity-80",
-          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",
-          "md:w-auto md:whitespace-nowrap",
-        )}
-      />
+      <NewsletterSubscribe />
     </div>
   );
 }

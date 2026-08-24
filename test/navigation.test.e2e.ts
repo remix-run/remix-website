@@ -5,7 +5,40 @@ import { beforeEach, describe, it } from "remix/test";
 import { DOCUMENT_REDIRECT_HEADER } from "../app/actions/public/document-redirect.ts";
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
+import type { NewsletterRepository } from "../app/actions/newsletter/archive.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
+
+let emptyNewsletterRepository: NewsletterRepository = {
+  async listSummaries() {
+    return [];
+  },
+  async getIssue() {
+    return null;
+  },
+  async getImage() {
+    return null;
+  },
+};
+
+let newsletterIssueRepository: NewsletterRepository = {
+  async listSummaries() {
+    return [];
+  },
+  async getIssue(number) {
+    return number === 1
+      ? {
+          number: 1,
+          date: new Date("2024-01-01T00:00:00.000Z"),
+          title: "Remix Newsletter #1",
+          markdown: "# Remix Newsletter #1\\n\\nThe latest Remix news.",
+          image: null,
+        }
+      : null;
+  },
+  async getImage() {
+    return null;
+  },
+};
 
 async function markPage(page: Page) {
   return page.evaluate(() => {
@@ -63,7 +96,127 @@ describe("Navigation", () => {
   let router: ReturnType<typeof createAppRouter>;
 
   beforeEach(() => {
-    router = createAppRouter();
+    router = createAppRouter({
+      newsletterRepository: emptyNewsletterRepository,
+    });
+  });
+
+  it("keeps the shared header link order on desktop and mobile", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.blog.index.href());
+
+    let expectedLinks = [
+      "Guides",
+      "API",
+      "GitHub",
+      "Blog",
+      "Newsletter",
+      "Jam",
+      "Store",
+    ];
+    await expect(page.locator('header nav[aria-label="Main"] a')).toHaveText(
+      expectedLinks,
+    );
+    await expect(page.locator('header nav[aria-label="Mobile"] a')).toHaveText(
+      expectedLinks,
+    );
+  });
+
+  it("marks the current shared section on index and detail pages", async (t) => {
+    let handler = swallowAbortErrors(
+      createAppRouter({ newsletterRepository: newsletterIssueRepository }),
+    );
+    let page = await t.serve(await createTestServer(handler));
+
+    for (let [href, sectionHref] of [
+      [routes.blog.index.href(), routes.blog.index.href()],
+      [routes.blog.post.href({ slug: "remix-v2" }), routes.blog.index.href()],
+      [routes.newsletter.index.href(), routes.newsletter.index.href()],
+      [
+        routes.newsletter.issue.href({ number: 1 }),
+        routes.newsletter.index.href(),
+      ],
+    ] as const) {
+      await page.goto(href);
+      for (let navLabel of ["Main", "Mobile"]) {
+        let nav = page.locator(`header nav[aria-label="${navLabel}"]`);
+        let currentLink = nav.locator(`a[href="${sectionHref}"]`);
+        await expect(currentLink).toHaveAttribute("aria-current", "page");
+        await expect(currentLink).toHaveClass(/rmx-header-link-current/);
+        await expect(currentLink).toHaveCSS("color", "rgb(0, 116, 192)");
+        await expect(nav.locator('a[aria-current="page"]')).toHaveCount(1);
+      }
+    }
+  });
+
+  it("does not mark links current when no section is selected", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.brand.href());
+
+    for (let navLabel of ["Main", "Mobile"]) {
+      let nav = page.locator(`header nav[aria-label="${navLabel}"]`);
+      await expect(nav.locator('a[aria-current="page"]')).toHaveCount(0);
+      await expect(nav.locator(".rmx-header-link-current")).toHaveCount(0);
+    }
+  });
+
+  it("uses the active color without an underline for nav hover", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.blog.index.href());
+
+    let apiLink = page
+      .locator('header nav[aria-label="Main"] a')
+      .filter({ hasText: "API" });
+    await apiLink.hover();
+
+    await expect(apiLink).toHaveCSS("color", "rgb(0, 116, 192)");
+    await expect(apiLink).toHaveCSS("text-decoration-line", "none");
+
+    let currentLink = page.locator('header nav[aria-label="Main"] a').filter({
+      hasText: "Blog",
+    });
+    await currentLink.hover();
+
+    await expect(currentLink).toHaveCSS("color", "rgb(0, 116, 192)");
+    await expect(currentLink).toHaveCSS("text-decoration-line", "none");
+  });
+
+  it("keeps the homepage navigation in the shared order", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.home.href());
+    await expectLandingNavReady(page);
+
+    let desktopLinks = page
+      .locator('header nav[aria-label="Primary"]')
+      .first()
+      .locator("a");
+    let mobileLinks = page
+      .locator('header nav[aria-label="Primary"]')
+      .last()
+      .locator("a");
+
+    expect(await desktopLinks.allTextContents()).toEqual([
+      "[G] guides",
+      "[A] api",
+      "[H] github",
+      "[B] blog",
+      "[N] newsletter",
+      "[J] jam",
+      "[S] store",
+    ]);
+    expect(await mobileLinks.allTextContents()).toEqual([
+      "guides",
+      "api",
+      "github",
+      "blog",
+      "newsletter",
+      "jam",
+      "store",
+    ]);
   });
 
   it("home/blog navigation stays client-side and applies forced dark mode", async (t) => {
@@ -112,13 +265,20 @@ describe("Navigation", () => {
   it("hands enhanced document redirects back to the browser", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
-    await page.route(`**${routes.api.newsletter.href()}`, async (route) => {
-      await route.fulfill({
-        status: 204,
-        headers: { [DOCUMENT_REDIRECT_HEADER]: routes.brand.href() },
-      });
-    });
-    await page.goto(routes.newsletter.href());
+    await page.route(
+      `**${routes.newsletter.subscribe.href()}`,
+      async (route) => {
+        if (route.request().method() !== "POST") {
+          await route.continue();
+          return;
+        }
+        await route.fulfill({
+          status: 204,
+          headers: { [DOCUMENT_REDIRECT_HEADER]: routes.brand.href() },
+        });
+      },
+    );
+    await page.goto(routes.newsletter.index.href());
     await markPage(page);
 
     await page.evaluate((newsletterAction) => {
@@ -127,7 +287,7 @@ describe("Navigation", () => {
       form.method = "post";
       document.body.append(form);
       form.requestSubmit();
-    }, routes.api.newsletter.href());
+    }, routes.newsletter.subscribe.href());
 
     await page.waitForURL(`**${routes.brand.href()}`);
     await expect(page.locator("main")).toBeVisible();
