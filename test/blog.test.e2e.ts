@@ -15,6 +15,58 @@ async function markPage(page: Page) {
 }
 
 describe("Blog", () => {
+  it("delivers one correctly sized priority hero request on mobile", async (t) => {
+    let handler = swallowAbortErrors(createAppRouter());
+    let page = await t.serve(await createTestServer(handler));
+    let cdp = await page.context().newCDPSession(page);
+    await cdp.send("Emulation.setDeviceMetricsOverride", {
+      width: 412,
+      height: 823,
+      deviceScaleFactor: 1.75,
+      mobile: true,
+    });
+
+    await page.goto(routes.blog.index.href());
+    let hero = page.locator('main img[src*="/assets/blog-images/"]').first();
+    await expect(hero).toBeVisible();
+    await expect
+      .poll(() => hero.evaluate((image) => image.complete))
+      .toBe(true);
+
+    let delivery = await page.evaluate(() => {
+      let hero = document.querySelector<HTMLImageElement>(
+        'main img[src*="/assets/blog-images/"]',
+      );
+      let preload = document.querySelector<HTMLLinkElement>(
+        'link[rel="preload"][as="image"]',
+      );
+      if (!hero || !preload) throw new Error("Expected hero preload and image");
+
+      let heroPathname = new URL(hero.currentSrc).pathname;
+
+      return {
+        currentSrc: hero.currentSrc,
+        heroSizes: hero.getAttribute("sizes"),
+        heroSrcSet: hero.getAttribute("srcset"),
+        preloadPriority: preload.fetchPriority,
+        preloadSizes: preload.getAttribute("imagesizes"),
+        preloadSrcSet: preload.getAttribute("imagesrcset"),
+        resourceNames: performance
+          .getEntriesByType("resource")
+          .map((entry) => entry.name)
+          .filter((name) => new URL(name).pathname === heroPathname),
+      };
+    });
+
+    expect(new URL(delivery.currentSrc).searchParams.get("transform")).toBe(
+      "webp-640",
+    );
+    expect(delivery.preloadPriority).toBe("high");
+    expect(delivery.preloadSizes).toBe(delivery.heroSizes);
+    expect(delivery.preloadSrcSet).toBe(delivery.heroSrcSet);
+    expect(delivery.resourceNames).toEqual([delivery.currentSrc]);
+  });
+
   it("relative internal links in rendered markdown use client navigation", async (t) => {
     let handler = swallowAbortErrors(createAppRouter());
     let page = await t.serve(await createTestServer(handler));

@@ -30,7 +30,11 @@ export function getBlogImageAsset(source: string): Promise<BlogImageAsset> {
   let existing = blogAssetBySource.get(source);
   if (existing) return existing;
 
-  let asset = createImageAsset(source, "blog-images", [480, 768, 1200, 1600]);
+  let asset = createImageAsset(
+    source,
+    "blog-images",
+    [480, 640, 768, 1200, 1600],
+  );
   blogAssetBySource.set(source, asset);
   return asset;
 }

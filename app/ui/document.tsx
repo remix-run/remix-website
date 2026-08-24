@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { css, type Handle, type Props, type RemixNode } from "remix/ui";
+import { attrs, css, type Handle, type Props, type RemixNode } from "remix/ui";
 
 import {
   getAssetEntry,
@@ -11,6 +11,7 @@ import { DocumentSync } from "./public/document-sync.tsx";
 import {
   getManagedHeadTagKey,
   type ManagedHeadTag,
+  type ManagedLinkTag,
 } from "./public/document-head.ts";
 import { theme } from "./public/theme.ts";
 
@@ -84,6 +85,13 @@ export function Document(handle: Handle<DocumentProps>) {
       });
     }
     managedHeadTags.push(...headTags);
+    let priorityHeadTags = managedHeadTags.filter(
+      (tag): tag is ManagedLinkTag =>
+        tag.kind === "link" && tag.rel === "preload",
+    );
+    let otherHeadTags = managedHeadTags.filter(
+      (tag) => tag.kind !== "link" || tag.rel !== "preload",
+    );
 
     return (
       <html
@@ -109,6 +117,28 @@ export function Document(handle: Handle<DocumentProps>) {
             type="image/svg+xml"
             sizes="any"
           />
+
+          {/* Route-critical preloads belong before fonts and stylesheets so the
+              browser can start fetching the LCP resource immediately. */}
+          {priorityHeadTags.map((tag, index) => (
+            <link
+              key={getManagedHeadTagKey(tag, index)}
+              data-remix-managed-head="true"
+              rel={tag.rel}
+              href={tag.href}
+              type={tag.type}
+              sizes={tag.sizes}
+              imageSrcSet={tag.imageSrcSet}
+              mix={
+                tag.imageSizes
+                  ? attrs({ imagesizes: tag.imageSizes })
+                  : undefined
+              }
+              as={tag.as}
+              crossorigin={tag.crossorigin}
+              fetchpriority={tag.fetchpriority}
+            />
+          ))}
 
           {/* The normal Inter face is used above the fold on every page. Preload
               only this critical face; the browser discovers other variants from
@@ -193,7 +223,7 @@ export function Document(handle: Handle<DocumentProps>) {
             href={routes.blog.rss.href()}
           />
 
-          {managedHeadTags.map((tag, index) =>
+          {otherHeadTags.map((tag, index) =>
             tag.kind === "meta" ? (
               <meta
                 key={getManagedHeadTagKey(tag, index)}
@@ -210,6 +240,12 @@ export function Document(handle: Handle<DocumentProps>) {
                 href={tag.href}
                 type={tag.type}
                 sizes={tag.sizes}
+                imageSrcSet={tag.imageSrcSet}
+                mix={
+                  tag.imageSizes
+                    ? attrs({ imagesizes: tag.imageSizes })
+                    : undefined
+                }
                 as={tag.as}
                 crossorigin={tag.crossorigin}
                 fetchpriority={tag.fetchpriority}

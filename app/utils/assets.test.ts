@@ -39,7 +39,7 @@ describe("browser asset boundary", () => {
 
   it("serves constrained WebP transforms for blog and author images", async () => {
     for (let [imagePath, width] of [
-      ["public/blog-images/social-background.png", 480],
+      ["public/blog-images/social-background.png", 640],
       ["public/authors/profile-jacob-ebey.png", 128],
     ] as const) {
       let href = await getWebpHref(path.join(rootDir, imagePath), width);

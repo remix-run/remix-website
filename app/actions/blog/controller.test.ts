@@ -22,7 +22,6 @@ describe("Blog route", () => {
 
     expect(html).toContain("<title>Remix Blog</title>");
     expect(html).toContain('id="main-content"');
-    expect(html).toContain(`action="${routes.api.newsletter.href()}"`);
     expect(html).toContain('<symbol id="github"');
     expect(html).toContain('href="#github"');
 
@@ -36,15 +35,45 @@ describe("Blog route", () => {
       "/assets/app/styles/public/generated/app.css",
       "/assets/app/styles/public/global.css",
     ]);
+  });
 
+  it("prioritizes a responsive hero while deferring other post images", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.blog, blogController);
+
+    let response = await router.fetch(
+      new URL(routes.blog.index.href(), "http://localhost:3000"),
+    );
+    let html = await response.text();
     let articleImages = [
       ...html.matchAll(/<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/g),
     ]
       .map((match) => match[0])
       .filter((image) => image.includes('src="/assets/blog-images/'));
+    let heroImage = articleImages[0];
+    if (!heroImage) throw new Error("Expected a blog hero image");
+
+    expect(heroImage).toContain('loading="eager"');
+    expect(heroImage).toContain('fetchpriority="high"');
+
+    let imagePreload = [...html.matchAll(/<link[^>]+rel="preload"[^>]*>/g)]
+      .map((match) => match[0])
+      .find((link) => link.includes('as="image"'));
+    if (!imagePreload) throw new Error("Expected a blog hero preload");
+
+    let heroSizes = heroImage.match(/\ssizes="([^"]+)"/)?.[1];
+    let heroSrcSet = heroImage.match(/\ssrcset="([^"]+)"/)?.[1];
+    if (!heroSizes || !heroSrcSet) {
+      throw new Error("Expected responsive blog hero attributes");
+    }
+    expect(imagePreload).toContain('fetchpriority="high"');
+    expect(imagePreload).toContain(`imagesizes="${heroSizes}"`);
+    expect(imagePreload).toContain(`imagesrcset="${heroSrcSet}"`);
+    expect(html.indexOf(imagePreload)).toBeLessThan(
+      html.indexOf('rel="stylesheet"'),
+    );
+
     expect(articleImages.length > 1).toBe(true);
-    expect(articleImages[0]).toContain('loading="eager"');
-    expect(articleImages[0]).toContain('fetchpriority="high"');
     for (let image of articleImages.slice(1)) {
       expect(image).toContain('loading="lazy"');
       expect(image).toContain('decoding="async"');

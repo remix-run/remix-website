@@ -13,6 +13,8 @@ export type ManagedLinkTag = {
   href: string;
   type?: string;
   sizes?: string;
+  imageSizes?: string;
+  imageSrcSet?: string;
   as?: string;
   crossorigin?: "anonymous" | "use-credentials";
   fetchpriority?: "high" | "low" | "auto";
@@ -23,7 +25,7 @@ export function getManagedHeadTagKey(tag: ManagedHeadTag, index: number) {
     return `meta:${tag.name ?? tag.property ?? index}:${tag.content}`;
   }
 
-  return `link:${tag.rel}:${tag.href}:${tag.type ?? ""}:${tag.sizes ?? ""}:${tag.as ?? ""}:${tag.crossorigin ?? ""}:${tag.fetchpriority ?? ""}`;
+  return `link:${tag.rel}:${tag.href}:${tag.type ?? ""}:${tag.sizes ?? ""}:${tag.imageSizes ?? ""}:${tag.imageSrcSet ?? ""}:${tag.as ?? ""}:${tag.crossorigin ?? ""}:${tag.fetchpriority ?? ""}`;
 }
 
 export function syncTitle(title?: string) {
@@ -108,6 +110,8 @@ function getManagedHeadNodeKey(node: HTMLElement, index: number) {
       href: node.getAttribute("href") ?? "",
       type: node.getAttribute("type") ?? undefined,
       sizes: node.getAttribute("sizes") ?? undefined,
+      imageSizes: node.getAttribute("imagesizes") ?? undefined,
+      imageSrcSet: node.getAttribute("imagesrcset") ?? undefined,
       as: node.getAttribute("as") ?? undefined,
       crossorigin:
         (node.getAttribute("crossorigin") as
@@ -138,6 +142,8 @@ function createManagedHeadElement(tag: ManagedHeadTag) {
     element.setAttribute("href", tag.href);
     if (tag.type) element.setAttribute("type", tag.type);
     if (tag.sizes) element.setAttribute("sizes", tag.sizes);
+    if (tag.imageSizes) element.setAttribute("imagesizes", tag.imageSizes);
+    if (tag.imageSrcSet) element.setAttribute("imagesrcset", tag.imageSrcSet);
     if (tag.as) element.setAttribute("as", tag.as);
     if (tag.crossorigin) {
       element.setAttribute("crossorigin", tag.crossorigin);
