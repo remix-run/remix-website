@@ -14,10 +14,6 @@ import {
   getJam2026ThemePreference,
   serializeJam2026ThemePreference,
 } from "./theme-preference.ts";
-import {
-  getJam2026DiscountCode,
-  serializeJam2026DiscountCode,
-} from "./discount-code.ts";
 
 describe("Remix Jam 2026 routes", () => {
   it("renders the homepage as the full Jam page with ticket frame navigation", async () => {
@@ -311,7 +307,7 @@ describe("Remix Jam 2026 routes", () => {
     );
   });
 
-  it("stores a discount code from the URL and shows it in the ticket modal", async (t) => {
+  it("ignores legacy discount query parameters and shows the regular price", async (t) => {
     mockStorefront(t);
     let router = createJam2026TestRouter();
 
@@ -320,121 +316,14 @@ describe("Remix Jam 2026 routes", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
-
-    let setCookie = response.headers.get("Set-Cookie");
-    expect(setCookie).not.toBe(null);
-    expect(setCookie).toContain("HttpOnly");
-    expect(setCookie).toContain("Path=/jam/2026");
-    expect(setCookie).not.toContain("Max-Age");
-    expect(await getJam2026DiscountCode(setCookie!.split(";")[0])).toBe(
-      "PARTNER-2026",
-    );
-
-    let html = await response.text();
-
-    expect(html).toContain("Code PARTNER-2026 will be applied at checkout");
-  });
-
-  it("reads the stored discount code on tickets frame requests", async (t) => {
-    mockStorefront(t);
-    let router = createJam2026TestRouter();
-    let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
-
-    let response = await router.fetch(
-      new Request(appUrl(routes.jam.y2026.ticket.index), {
-        headers: {
-          cookie: cookie.split(";")[0],
-          "x-remix-target": ticketModalConfig.frameName,
-        },
-      }),
-    );
-
-    expect(response.status).toBe(200);
-    expect(response.headers.get("Set-Cookie")).toBe(null);
-    expect(response.headers.get("Vary")).toContain("cookie");
-
-    let html = await response.text();
-
-    expect(html).toContain("Code PARTNER-2026 will be applied at checkout");
-  });
-
-  it("ignores malformed discount codes", async (t) => {
-    mockStorefront(t);
-    let router = createJam2026TestRouter();
-
-    let response = await router.fetch(
-      appUrl(routes.jam.y2026.ticket.index, "?discount=not%20a%20code"),
-    );
-
-    expect(response.status).toBe(200);
-    expect(response.headers.get("Set-Cookie")).toBe(null);
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+    expect(response.headers.get("Set-Cookie")).toBe(null);
 
     let html = await response.text();
 
-    expect(html).toContain("Early bird discount applied");
-  });
-
-  it("silently clears an inapplicable discount code", async (t) => {
-    mockStorefront(t, { applicableDiscountCode: false });
-    let router = createJam2026TestRouter();
-    let cookie = await serializeJam2026DiscountCode("EXPIRED-2026");
-
-    let response = await router.fetch(
-      new Request(appUrl(routes.jam.y2026.ticket.index), {
-        headers: { cookie: cookie.split(";")[0] },
-      }),
-    );
-
-    expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
-    expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
-
-    let html = await response.text();
-
-    expect(html).toContain("Early bird discount applied");
-    expect(html).not.toContain("EXPIRED-2026");
-  });
-
-  it("silently checks out without an inapplicable stored discount code", async (t) => {
-    mockStorefront(t, { applicableDiscountCode: false });
-    let router = createJam2026TestRouter();
-    let cookie = await serializeJam2026DiscountCode("EXPIRED-2026");
-
-    let response = await router.fetch(
-      new Request(appUrl(routes.jam.y2026.ticket.action), {
-        body: createTicketFormData(),
-        headers: { cookie: cookie.split(";")[0] },
-        method: "POST",
-        redirect: "manual",
-      }),
-    );
-
-    expect(response.status).toBe(303);
-    expect(response.headers.get("Location")).toBe(
-      "https://jam.remix.run/checkouts/2026",
-    );
-    expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
-  });
-
-  it("forwards the stored discount code to the Shopify cart", async (t) => {
-    let requestedDiscountCodes = mockStorefront(t);
-    let router = createJam2026TestRouter();
-    let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
-
-    let response = await router.fetch(
-      new Request(appUrl(routes.jam.y2026.ticket.action), {
-        body: createTicketFormData(),
-        headers: { cookie: cookie.split(";")[0] },
-        method: "POST",
-        redirect: "manual",
-      }),
-    );
-
-    expect(response.status).toBe(303);
-    expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
-    expect(requestedDiscountCodes).toEqual([["PARTNER-2026"]]);
+    expect(html).toContain("$399");
+    expect(html).not.toContain("PARTNER-2026");
+    expect(html).not.toContain("$299");
   });
 });
 
@@ -462,13 +351,8 @@ function createJam2026TestRouter() {
  * token the data layer already reports tickets as unavailable, so only tests
  * that need a purchasable ticket install this.
  *
- * Returns the discount codes sent with each cart mutation.
  */
-function mockStorefront(
-  t: { after(cleanup: () => void): void },
-  { applicableDiscountCode = true }: { applicableDiscountCode?: boolean } = {},
-) {
-  let requestedDiscountCodes: string[][] = [];
+function mockStorefront(t: { after(cleanup: () => void): void }) {
   let originalToken = env.PUBLIC_STOREFRONT_API_TOKEN;
   let originalFetch = globalThis.fetch;
 
@@ -486,30 +370,18 @@ function mockStorefront(
     };
 
     if (body.query.includes("cartCreate")) {
-      let discountCodes: string[] =
-        body.variables.cartInput.discountCodes ?? [];
-      requestedDiscountCodes.push(discountCodes);
+      if ("discountCodes" in body.variables.cartInput) {
+        throw new Error("Jam 2026 checkout should not include discount codes");
+      }
 
       return Response.json({
         data: {
           cartCreate: {
-            cart: {
-              ...cart,
-              discountCodes: discountCodes.map((code) => ({
-                code,
-                applicable: applicableDiscountCode,
-              })),
-            },
+            cart: { ...cart, discountCodes: [] },
             userErrors: [],
             warnings: [],
           },
         },
-      });
-    }
-
-    if (body.query.includes("cartDiscountCodesUpdate")) {
-      return Response.json({
-        data: { cartDiscountCodesUpdate: { cart, userErrors: [] } },
       });
     }
 
@@ -522,7 +394,7 @@ function mockStorefront(
               {
                 node: {
                   id: "gid://shopify/ProductVariant/2026",
-                  price: { amount: "299.00" },
+                  price: { amount: "399.00" },
                   availableForSale: true,
                 },
               },
@@ -537,6 +409,4 @@ function mockStorefront(
     env.PUBLIC_STOREFRONT_API_TOKEN = originalToken;
     globalThis.fetch = originalFetch;
   });
-
-  return requestedDiscountCodes;
 }

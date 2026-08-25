@@ -127,9 +127,6 @@ describe("Jam2026TicketsModal", () => {
     expect(result.container.textContent).toContain(
       `$${remixJam2026Ticket.price * 2}`,
     );
-    expect(result.container.textContent).toContain(
-      `$${remixJam2026Ticket.originalPrice * 2}`,
-    );
     expect(getDecreaseButton().disabled).toBe(false);
 
     for (let index = 2; index < remixJam2026Ticket.maxQuantity; index++) {

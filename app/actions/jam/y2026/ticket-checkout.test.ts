@@ -102,7 +102,7 @@ function availableProduct(
 ): Jam2026Product {
   return {
     id: "gid://shopify/Product/2026",
-    price: "299.00",
+    price: "399.00",
     productId: "gid://shopify/ProductVariant/2026",
     availableForSale: true,
     quantityRule: undefined,

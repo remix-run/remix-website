@@ -30,7 +30,6 @@ type Jam2026TicketsModalProps = {
 
 type Jam2026TicketCheckoutState = {
   availableForSale: boolean;
-  discountCode?: string;
   error?: string;
   initialQuantity: number;
   maxQuantity: number;
@@ -349,11 +348,6 @@ export function Jam2026TicketsModalContent(
                   mix={keyringMix}
                 />
               </div>
-              <p mix={ticketsModalDiscountStyle}>
-                {ticketCheckout?.discountCode
-                  ? `Code ${ticketCheckout.discountCode} will be applied at checkout`
-                  : "Early bird discount applied"}
-              </p>
               <div mix={ticketsModalBottomStyle}>
                 <article
                   aria-label="Remix Jam 2026 ticket"
@@ -453,10 +447,7 @@ export function Jam2026TicketsModalContent(
                   <div mix={ticketsModalCheckoutGroupStyle}>
                     <span mix={ticketsModalCheckoutLabelStyle}>Subtotal</span>
                     <div mix={ticketsModalSubtotalStyle}>
-                      <span mix={ticketsModalSubtotalOriginalStyle}>
-                        {formatCurrency(ticket.originalPrice * quantity)}
-                      </span>
-                      <span mix={ticketsModalSubtotalCurrentStyle}>
+                      <span mix={ticketsModalSubtotalAmountStyle}>
                         {formatCurrency(ticket.price * quantity)}
                       </span>
                       <span mix={ticketsModalSubtotalCurrencyStyle}>USD</span>
@@ -694,17 +685,6 @@ let ticketsModalFigureImageEntranceStyle = css({
   },
 });
 
-let ticketsModalDiscountStyle = css({
-  color: jamTheme.brandRed,
-  fontFamily: theme.fontFamily.mono,
-  fontSize: "9px",
-  fontWeight: theme.fontWeight.normal,
-  letterSpacing: "0.12em",
-  lineHeight: 1,
-  margin: 0,
-  textTransform: "uppercase",
-});
-
 let ticketsModalBottomStyle = css({
   alignItems: "center",
   display: "flex",
@@ -864,13 +844,7 @@ let ticketsModalSubtotalStyle = css({
   textTransform: "uppercase",
 });
 
-let ticketsModalSubtotalOriginalStyle = css({
-  color: jamTheme.ink,
-  fontWeight: theme.fontWeight.bold,
-  textDecoration: "line-through",
-});
-
-let ticketsModalSubtotalCurrentStyle = css({
+let ticketsModalSubtotalAmountStyle = css({
   color: jamTheme.brandRed,
   fontWeight: theme.fontWeight.bold,
 });
