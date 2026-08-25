@@ -30,6 +30,7 @@ type Jam2026TicketsModalProps = {
 
 type Jam2026TicketCheckoutState = {
   availableForSale: boolean;
+  discountCode?: string;
   error?: string;
   initialQuantity: number;
   maxQuantity: number;
@@ -348,6 +349,11 @@ export function Jam2026TicketsModalContent(
                   mix={keyringMix}
                 />
               </div>
+              {ticketCheckout?.discountCode ? (
+                <p mix={ticketsModalDiscountStyle}>
+                  Code {ticketCheckout.discountCode} will be applied at checkout
+                </p>
+              ) : null}
               <div mix={ticketsModalBottomStyle}>
                 <article
                   aria-label="Remix Jam 2026 ticket"
@@ -683,6 +689,17 @@ let ticketsModalFigureImageEntranceStyle = css({
   "@media (prefers-reduced-motion: reduce)": {
     animation: "none",
   },
+});
+
+let ticketsModalDiscountStyle = css({
+  color: jamTheme.brandRed,
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "9px",
+  fontWeight: theme.fontWeight.normal,
+  letterSpacing: "0.12em",
+  lineHeight: 1,
+  margin: 0,
+  textTransform: "uppercase",
 });
 
 let ticketsModalBottomStyle = css({

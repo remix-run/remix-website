@@ -9,6 +9,10 @@ import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
 import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
+import {
+  resolveJam2026Discount,
+  type Jam2026Discount,
+} from "./discount-code.ts";
 import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
 import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
 import { Jam2026HomePage } from "./home-page.tsx";
@@ -20,6 +24,7 @@ import {
 } from "./theme-preference.ts";
 import {
   createTicketCheckout,
+  validateTicketDiscount,
   type Jam2026TicketCheckout,
 } from "./ticket-checkout.ts";
 
@@ -66,12 +71,14 @@ export default createController(routes.jam.y2026, {
  */
 export async function renderJam2026Page({
   cacheControl = CACHE_CONTROL.DEFAULT,
+  discount,
   render,
   request,
   status = 200,
   ticketCheckout,
 }: {
   cacheControl?: string;
+  discount?: Jam2026Discount;
   render: AppRenderer;
   request: Request;
   status?: number;
@@ -79,6 +86,7 @@ export async function renderJam2026Page({
 }) {
   let requestUrl = new URL(request.url);
 
+  discount ??= await resolveJam2026Discount(request);
   let ticketsModalOpen =
     requestUrl.pathname === routes.jam.y2026.ticket.index.href();
   let isTicketsFrameRequest =
@@ -90,12 +98,23 @@ export async function renderJam2026Page({
     ? await getProduct(remixJam2026Ticket.handle)
     : null;
 
-  if (product) ticketCheckout ??= createTicketCheckout({ product });
+  let validatedDiscount = await validateTicketDiscount({ discount, product });
+  discount = validatedDiscount.discount;
+
+  if (product) {
+    ticketCheckout ??= createTicketCheckout({ product });
+    ticketCheckout = {
+      ...ticketCheckout,
+      discountCode: validatedDiscount.code,
+    };
+  }
 
   let headers = new SuperHeaders({
-    cacheControl,
+    // Never let a shared cache store a response that hands out a Set-Cookie.
+    cacheControl: discount.setCookie ? "no-store" : cacheControl,
     vary: ["Cookie", "x-remix-target", "x-remix-ssr-frame"],
   });
+  if (discount.setCookie) headers.append("Set-Cookie", discount.setCookie);
 
   let responseInit = { status, headers };
 

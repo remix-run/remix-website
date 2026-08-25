@@ -8,6 +8,8 @@ import {
   getProduct,
   MAX_QUANTITY,
 } from "../../../data/jam-storefront.ts";
+import { clearJam2026DiscountCode } from "./discount-code.ts";
+import type { Jam2026Discount } from "./discount-code.ts";
 import { remixJam2026Ticket } from "./public/ticket-data.ts";
 
 export type Jam2026Product = Awaited<ReturnType<typeof getProduct>>;
@@ -21,9 +23,11 @@ export type Jam2026TicketCheckout = ReturnType<typeof createTicketCheckout>;
  * render back into the tickets modal when it is not.
  */
 export async function submitTicketCheckout({
+  discountCode,
   formData,
   product,
 }: {
+  discountCode?: string;
   formData: FormData;
   product: Jam2026Product | null;
 }) {
@@ -32,6 +36,7 @@ export async function submitTicketCheckout({
     return {
       status: 400,
       ticketCheckout: createTicketCheckout({
+        discountCode,
         error: submission.error,
         product,
       }),
@@ -44,6 +49,7 @@ export async function submitTicketCheckout({
     return {
       status: checkoutError.invalidInput ? 400 : 200,
       ticketCheckout: createTicketCheckout({
+        discountCode,
         error: checkoutError.message,
         initialQuantity: quantity,
         product,
@@ -51,11 +57,12 @@ export async function submitTicketCheckout({
     };
   }
 
-  let cart = await createCart({ productId, quantity });
+  let cart = await createCart({ discountCode, productId, quantity });
   if ("error" in cart) {
     return {
       status: 200,
       ticketCheckout: createTicketCheckout({
+        discountCode,
         error: cart.error,
         initialQuantity: quantity,
         product,
@@ -66,11 +73,47 @@ export async function submitTicketCheckout({
   return { checkoutUrl: cart.checkoutUrl };
 }
 
+/**
+ * Confirms a stored code still applies to the product by pricing a throwaway
+ * cart. Codes that no longer apply are cleared instead of surfaced as errors.
+ */
+export async function validateTicketDiscount({
+  discount,
+  product,
+}: {
+  discount: Jam2026Discount;
+  product: Jam2026Product | null;
+}): Promise<{ code?: string; discount: Jam2026Discount }> {
+  if (
+    !discount.code ||
+    !product ||
+    product.unavailableReason ||
+    !product.availableForSale
+  ) {
+    return { discount };
+  }
+
+  let cart = await createCart({
+    discountCode: discount.code,
+    productId: product.productId,
+    quantity: 1,
+  });
+  if ("error" in cart) return { discount };
+
+  if (cart.discountCode === discount.code) {
+    return { code: discount.code, discount };
+  }
+
+  return { discount: { setCookie: await clearJam2026DiscountCode() } };
+}
+
 export function createTicketCheckout({
+  discountCode,
   error,
   initialQuantity = 1,
   product,
 }: {
+  discountCode?: string;
   error?: string;
   initialQuantity?: number;
   product: Jam2026Product | null;
@@ -79,6 +122,7 @@ export function createTicketCheckout({
 
   return {
     availableForSale: Boolean(product?.availableForSale),
+    discountCode,
     error,
     initialQuantity: Math.min(Math.max(1, initialQuantity), maxQuantity),
     maxQuantity,
