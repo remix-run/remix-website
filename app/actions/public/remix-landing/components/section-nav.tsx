@@ -119,15 +119,15 @@ const linkActiveStyles = css({
 });
 
 const SECTIONS = [
-  { label: "The Framework", anchor: "the-framework" },
-  { label: "Full Stack", anchor: "full-stack" },
-  { label: "AI Ready", anchor: "ai-ready" },
-  { label: "Powerful Components", anchor: "powerful-components" },
-  { label: "Use Cases", anchor: "use-cases" },
-  { label: "Start Building", anchor: "start-building" },
+  { label: "Overview", anchor: "the-framework" },
+  { label: "Toolkit", anchor: "full-stack" },
+  { label: "Simpler Stack", anchor: "ai-ready" },
+  { label: "Different by Design", anchor: "powerful-components" },
+  { label: "Humans + Agents", anchor: "use-cases" },
+  { label: "Test Drive", anchor: "start-building" },
 ];
 
-// Note: "The Framework" points to the Hero section (id="the-framework"),
+// Note: "Overview" points to the Hero section (id="the-framework"),
 // while the remaining 5 map to the FeatureSection panels.
 
 type NavigateEventWithManualScroll = NavigateEvent & {

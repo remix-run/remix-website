@@ -25,6 +25,8 @@ const shellStyles = css({
 });
 
 const rowStyles = css({
+  width: "min(1040px, 100%)",
+  margin: "0 auto",
   display: "grid",
   gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
   gap: "24px",
@@ -34,10 +36,7 @@ const rowStyles = css({
 });
 
 const rowPowerfulComponentsStyles = css({
-  transform: "translateY(clamp(48px, 7dvh, 88px))",
-  "@media (max-width: 880px)": {
-    transform: "none",
-  },
+  transform: "none",
 });
 
 // Option A perf pass: reduce blur radius from 18px → 10px (blur cost is
@@ -52,14 +51,17 @@ const panelStyles = css({
   width: "100%",
   maxWidth: "640px",
   boxSizing: "border-box",
-  padding: "24px",
+  padding: "44px 48px 48px",
+  border: "1px solid rgba(255, 255, 255, 0.12)",
+  borderTop: "3px solid var(--brand-cycle, #7ce95a)",
   borderRadius: "24px",
-  backdropFilter: "blur(10px)",
-  WebkitBackdropFilter: "blur(10px)",
-  background: "rgba(0, 0, 0, 0.50)",
+  backdropFilter: "blur(12px)",
+  WebkitBackdropFilter: "blur(12px)",
+  background: "rgba(0, 0, 0, 0.58)",
   contain: "paint",
   "@media (max-width: 880px)": {
-    background: "rgba(0, 0, 0, 0.55)",
+    padding: "36px 24px 40px",
+    background: "rgba(0, 0, 0, 0.64)",
   },
 });
 
@@ -73,8 +75,9 @@ const rightPanelStyles = css({
 });
 
 const rightPanelUseCasesStyles = css({
-  gridColumn: "8 / -1",
-  justifySelf: "end",
+  gridColumn: "1 / -1",
+  justifySelf: "center",
+  maxWidth: "640px",
   "@media (max-width: 880px)": {
     gridColumn: "1 / -1",
     justifySelf: "stretch",
@@ -91,9 +94,12 @@ const rightPanelNewsletterStyles = css({
 });
 
 const leftPanelFullStackStyles = css({
-  gridColumn: "1 / span 4",
+  gridColumn: "1 / -1",
+  justifySelf: "center",
+  maxWidth: "640px",
   "@media (max-width: 880px)": {
     gridColumn: "1 / -1",
+    justifySelf: "stretch",
   },
 });
 
@@ -110,13 +116,6 @@ const leftPanelStartBuildingStyles = css({
   "@media (max-width: 880px)": {
     gridColumn: "1 / -1",
     justifySelf: "stretch",
-  },
-});
-
-const leftPanelAiReadyStyles = css({
-  gridColumn: "1 / span 4",
-  "@media (max-width: 880px)": {
-    gridColumn: "1 / -1",
   },
 });
 
@@ -306,22 +305,13 @@ function renderHighlightedCode(code: string) {
   return rendered;
 }
 
-const kickerStyles = css({
-  margin: "0 0 20px",
-  fontFamily: "'JetBrains Mono', monospace",
-  color: "#ffffff",
-  fontSize: "12px",
-  textTransform: "uppercase",
-  ...textBoxTrim,
-});
-
 const titleStyles = css({
   margin: "0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
   color: colors.fg,
-  fontSize: "clamp(30px, 4vw, 56px)",
-  lineHeight: "1",
+  fontSize: "clamp(32px, 3.6vw, 50px)",
+  lineHeight: "1.04",
   letterSpacing: "-0.02em",
   whiteSpace: "pre-line",
   textShadow: glowWhite,
@@ -329,13 +319,142 @@ const titleStyles = css({
 });
 
 const bodyStyles = css({
-  margin: "48px 0 0",
+  margin: "36px 0 0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   color: colors.fg,
-  fontSize: "16px",
-  lineHeight: "1.4",
+  fontSize: "18px",
+  lineHeight: "1.55",
   letterSpacing: "-0.008px",
+  ...textBoxTrim,
+});
+
+const pointListStyles = css({
+  display: "grid",
+  gap: "22px",
+  margin: "32px 0 0",
+  padding: "0",
+  listStyle: "none",
+});
+
+const fullStackPointListStyles = css({
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gap: "0",
+  margin: "36px -48px -48px",
+  borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+  "@media (max-width: 880px)": {
+    margin: "32px -24px -40px",
+  },
+  "@media (max-width: 600px)": {
+    gridTemplateColumns: "1fr",
+  },
+});
+
+const pointStyles = css({
+  paddingTop: "20px",
+  borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+});
+
+const fullStackPointStyles = css({
+  padding: "28px 48px 32px",
+  borderTop: "0",
+  "&:nth-child(odd)": {
+    borderRight: "1px solid rgba(255, 255, 255, 0.14)",
+  },
+  "&:nth-child(n + 3)": {
+    borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+  },
+  "@media (max-width: 600px)": {
+    padding: "26px 24px 30px",
+    borderRight: "0",
+    "&:nth-child(odd)": {
+      borderRight: "0",
+    },
+    "&:not(:first-child)": {
+      borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+    },
+  },
+});
+
+const pointTitleStyles = css({
+  display: "block",
+  fontFamily: theme.fontFamily.sans,
+  fontWeight: theme.fontWeight.bold,
+  color: "#ffffff",
+  fontSize: "18px",
+  lineHeight: "1.3",
+  letterSpacing: "-0.008px",
+});
+
+const pointBodyStyles = css({
+  display: "block",
+  marginTop: "8px",
+  fontFamily: theme.fontFamily.sans,
+  fontWeight: theme.fontWeight.normal,
+  color: "rgba(255, 255, 255, 0.72)",
+  fontSize: "16px",
+  lineHeight: "1.5",
+  letterSpacing: "-0.008px",
+});
+
+const detailPanelStyles = css({
+  gridColumn: "6 / -1",
+  minWidth: "0",
+  boxSizing: "border-box",
+  padding: "24px",
+  borderRadius: "24px",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
+  background: "rgba(0, 0, 0, 0.46)",
+  contain: "paint",
+  "@media (max-width: 880px)": {
+    gridColumn: "1 / -1",
+    background: "rgba(0, 0, 0, 0.72)",
+  },
+});
+
+const detailListStyles = css({
+  display: "grid",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gap: "12px",
+  margin: "0",
+  padding: "0",
+  listStyle: "none",
+  "@media (max-width: 1100px)": {
+    gridTemplateColumns: "1fr",
+  },
+});
+
+const detailStyles = css({
+  minHeight: "172px",
+  boxSizing: "border-box",
+  padding: "20px",
+  border: "1px solid rgba(255, 255, 255, 0.12)",
+  borderRadius: "18px",
+  background: "rgba(255, 255, 255, 0.045)",
+  "@media (max-width: 1100px)": {
+    minHeight: "0",
+  },
+});
+
+const detailTitleStyles = css({
+  margin: "0",
+  fontFamily: theme.fontFamily.sans,
+  fontWeight: theme.fontWeight.bold,
+  color: "#ffffff",
+  fontSize: "20px",
+  lineHeight: "1.2",
+  letterSpacing: "-0.012em",
+  ...textBoxTrim,
+});
+
+const detailBodyStyles = css({
+  margin: "14px 0 0",
+  fontFamily: theme.fontFamily.sans,
+  fontWeight: theme.fontWeight.normal,
+  color: "rgba(255, 255, 255, 0.74)",
+  fontSize: "16px",
+  lineHeight: "1.5",
   ...textBoxTrim,
 });
 
@@ -462,9 +581,8 @@ const PRIMARY_PANEL_STYLES_BY_ID: Record<
   string,
   ReturnType<typeof css> | undefined
 > = {
-  "full-stack": leftPanelFullStackStyles,
+  "ai-ready": leftPanelFullStackStyles,
   "start-building": leftPanelStartBuildingStyles,
-  "ai-ready": leftPanelAiReadyStyles,
   "powerful-components": leftPanelPowerfulComponentsStyles,
   "use-cases": rightPanelUseCasesStyles,
 };
@@ -482,17 +600,16 @@ const ROW_STYLES_BY_ID: Record<string, ReturnType<typeof css> | undefined> = {
 
 type FeatureSectionProps = {
   id: string;
-  kicker: string;
   title: string;
   body: string;
   align: "left" | "right";
-  packageLogosAnchor?: boolean;
   ctaLabel?: string;
   ctaHref?: string;
   ctaIcon?: "eye";
   codeSnippet?: string;
+  points?: ReadonlyArray<{ title: string; body: string }>;
+  detailPanel?: ReadonlyArray<{ title: string; body: string }>;
   secondary?: {
-    kicker: string;
     title: string;
     body: string;
     newsletter?: boolean;
@@ -578,15 +695,34 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
     return (
       <section id={handle.props.id} mix={[shellStyles]}>
         <div mix={[rowStyles, ROW_STYLES_BY_ID[handle.props.id]]}>
-          <div
-            data-package-logos-panel={
-              handle.props.packageLogosAnchor ? "true" : undefined
-            }
-            mix={[panelStyles, primaryPanelStyles]}
-          >
-            <p mix={[kickerStyles]}>{handle.props.kicker}</p>
+          <div mix={[panelStyles, primaryPanelStyles]}>
             <h2 mix={[titleStyles]}>{handle.props.title}</h2>
             <p mix={[bodyStyles]}>{handle.props.body}</p>
+            {handle.props.points ? (
+              <ul
+                mix={[
+                  pointListStyles,
+                  handle.props.id === "ai-ready"
+                    ? fullStackPointListStyles
+                    : undefined,
+                ]}
+              >
+                {handle.props.points.map((point) => (
+                  <li
+                    key={point.title}
+                    mix={[
+                      pointStyles,
+                      handle.props.id === "ai-ready"
+                        ? fullStackPointStyles
+                        : undefined,
+                    ]}
+                  >
+                    <span mix={[pointTitleStyles]}>{point.title}</span>
+                    <span mix={[pointBodyStyles]}>{point.body}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             {handle.props.ctaLabel && handle.props.ctaHref ? (
               <a
                 href={handle.props.ctaHref}
@@ -617,6 +753,18 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
               </pre>
             </div>
           ) : null}
+          {handle.props.detailPanel ? (
+            <div mix={[detailPanelStyles]}>
+              <ul mix={[detailListStyles]}>
+                {handle.props.detailPanel.map((detail) => (
+                  <li key={detail.title} mix={[detailStyles]}>
+                    <h3 mix={[detailTitleStyles]}>{detail.title}</h3>
+                    <p mix={[detailBodyStyles]}>{detail.body}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           {handle.props.secondary ? (
             <div
               mix={[
@@ -625,7 +773,6 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                   rightPanelStyles,
               ]}
             >
-              <p mix={[kickerStyles]}>{handle.props.secondary.kicker}</p>
               <h2 mix={[titleStyles]}>{handle.props.secondary.title}</h2>
               <p mix={[bodyStyles]}>{handle.props.secondary.body}</p>
               {handle.props.secondary.newsletter ? (

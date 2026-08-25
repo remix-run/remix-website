@@ -6,9 +6,9 @@ import {
   LoadingScreen,
   type LoadingScreenStatus,
 } from "./components/loading-screen.tsx";
-import { PackageLogos } from "./components/package-logos.tsx";
 import { ScrollLogo } from "./components/scroll-logo.tsx";
 import { SectionNav } from "./components/section-nav.tsx";
+import { PackageLogos } from "./components/package-logos.tsx";
 import { isEditableKeyTarget } from "../../../ui/public/keyboard.ts";
 import type { ProjectedLabel } from "./engine/label-projection.ts";
 import { loadModelPoints, type ModelData } from "./engine/model-loader.ts";

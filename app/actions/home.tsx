@@ -11,7 +11,7 @@ type HomePageProps = {
   previewImage: string;
 };
 
-const HOME_TITLE = "Remix - A Web Framework for Building Anything";
+const HOME_TITLE = "Remix - The Fully-Stacked Web Framework";
 const HOME_DESCRIPTION =
   "Remix is a batteries-included, ultra-productive, zero dependencies and bundler-free framework, ready to develop with in a agent-first world.";
 

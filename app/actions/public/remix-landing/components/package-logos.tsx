@@ -22,48 +22,16 @@ const LOGOS = [
   },
 ];
 
-/**
- * Vertical rhythm for the logo stack, expressed as fractions of the stack's total
- * height. The stack is anchored to the full-stack section's text panel at runtime,
- * so "0" = top of the panel, "1" = bottom of the panel. Heights are fractions of
- * panel height too, which keeps the stack's proportions when the panel grows or
- * shrinks with the copy.
- */
-const ROWS: { topFraction: number; heightFraction: number }[] = [
-  { topFraction: 0.0, heightFraction: 0.242 }, // Auth (sized to match Routing's width)
-  { topFraction: 0.2656, heightFraction: 0.1786 }, // Routing
-  { topFraction: 0.5, heightFraction: 0.1607 }, // Data (row 3, left of Session)
-  { topFraction: 0.5, heightFraction: 0.1607 }, // Session (row 3, right-aligned)
-  { topFraction: 0.75, heightFraction: 0.25 }, // Component
-];
+const LOGO_MAX_WIDTHS = [440, 460, 310, 360, 440] as const;
+const LOGO_STAGE_WIDTHS = [0.85, 0.86, 0.65, 0.72, 0.85] as const;
 
-const VIEWPORT_GUTTER_PX = 24;
-const DATA_SESSION_GAP_PX = 30;
-const STACKED_LOGO_BREAKPOINT_PX = 880;
-const STACKED_LOGO_GAP_PX = 24;
-const MOBILE_LOGO_VIEWPORT_GUTTER_PX = 40;
 const PANEL_SELECTOR = "[data-package-logos-panel]";
-
-// On mobile the panel anchors the logo group's container width, but logo widths
-// derive from container *height* (heightFraction × containerHeight × aspectRatio).
-// Compute the widest logo's width-as-a-fraction-of-containerHeight so we can
-// scale the container vertically to make that widest logo span the panel.
-const WIDEST_LOGO_WIDTH_FRACTION = Math.max(
-  ...LOGOS.map((logo, i) => {
-    const [w, h] = logo.ratio.split("/").map((s) => parseFloat(s.trim()));
-    return ROWS[i].heightFraction * (w / h);
-  }),
-);
-
-// Sum of the Data and Session aspect ratios — used on mobile to size them so
-// their combined width (plus the fixed inter-logo gap) matches the row above.
-const DATA_SESSION_ASPECT_SUM = 577 / 290 + 797 / 288;
 
 const shellStyles = css({
   position: "absolute",
   left: "0",
   right: "0",
-  zIndex: "7",
+  zIndex: "11",
   pointerEvents: "none",
   transition: "opacity 300ms ease",
 });
@@ -77,26 +45,18 @@ const logoStyles = css({
   WebkitMaskRepeat: "no-repeat",
 });
 
-const ARRIVE = 0.48;
-const STAGGER = 0.035;
-const FADE_IN = 0.07;
-const FADE_OUT_START = 1.82;
+const STAGGER = 0.18;
+const FADE_IN = 0.16;
+const FADE_OUT_START = 1.9;
 const FADE_OUT_END = 2.12;
 
 /** morph range where package logos are relevant (Full Stack section). */
 const MORPH_SECTION_MIN = 0.4;
 const MORPH_SECTION_MAX = 2.25;
 
-const LOGO_DELAY_MS = 1000;
-/** Order: Auth → Routing → Data → Session → Component (top-to-bottom, then row L→R). */
-const SEQUENCE_STAGGER_MS = 140;
-const PER_LOGO_FADE_MS = 420;
-const SEQUENCE_TOTAL_MS =
-  (LOGOS.length - 1) * SEQUENCE_STAGGER_MS + PER_LOGO_FADE_MS;
-
-function logoOpacity(morph: number, index: number): number {
-  const inStart = ARRIVE + index * STAGGER;
-  const fadeIn = clamp01((morph - inStart) / FADE_IN);
+function logoOpacity(revealProgress: number, morph: number, index: number) {
+  const inStart = index * STAGGER;
+  const fadeIn = clamp01((revealProgress - inStart) / FADE_IN);
   const fadeOut = clamp01(
     (FADE_OUT_END - morph) / (FADE_OUT_END - FADE_OUT_START),
   );
@@ -107,32 +67,15 @@ function morphInLogoSection(morph: number): boolean {
   return morph >= MORPH_SECTION_MIN && morph <= MORPH_SECTION_MAX;
 }
 
-function sequenceFade(
-  index: number,
-  sequenceStartMs: number | null,
-  now: number,
-): number {
-  if (sequenceStartMs === null) return 0;
-  const elapsed = now - sequenceStartMs;
-  const start = index * SEQUENCE_STAGGER_MS;
-  if (elapsed < start) return 0;
-  return clamp01((elapsed - start) / PER_LOGO_FADE_MS);
-}
-
 export function PackageLogos(
   handle: Handle<{ morphValueRef: { current: number } }>,
 ) {
-  let wasInSection = false;
-  let sequenceStartMs: number | null = null;
-  let delayTimer: ReturnType<typeof setTimeout> | null = null;
-  let rafId = 0;
   let scrollFrameId = 0;
 
   let panelTop = 0;
   let panelLeft = 0;
   let panelWidth = 0;
   let panelHeight = 0;
-  let viewportWidth = 0;
   let panelElement: HTMLElement | null = null;
   let resizeObserver: ResizeObserver | null = null;
 
@@ -143,13 +86,11 @@ export function PackageLogos(
     const nextLeft = rect.left + window.scrollX;
     const nextWidth = rect.width;
     const nextHeight = rect.height;
-    const nextViewportWidth = window.innerWidth;
     if (
       nextTop === panelTop &&
       nextLeft === panelLeft &&
       nextWidth === panelWidth &&
-      nextHeight === panelHeight &&
-      nextViewportWidth === viewportWidth
+      nextHeight === panelHeight
     ) {
       return false;
     }
@@ -157,7 +98,6 @@ export function PackageLogos(
     panelLeft = nextLeft;
     panelWidth = nextWidth;
     panelHeight = nextHeight;
-    viewportWidth = nextViewportWidth;
     return true;
   }
 
@@ -173,22 +113,6 @@ export function PackageLogos(
       resizeObserver.observe(panelElement);
     }
     measurePanel();
-  }
-
-  function stopSequenceLoop() {
-    if (rafId) {
-      cancelAnimationFrame(rafId);
-      rafId = 0;
-    }
-  }
-
-  function runSequenceLoop() {
-    if (sequenceStartMs === null) return;
-    handle.update();
-    const elapsed = performance.now() - sequenceStartMs;
-    if (elapsed < SEQUENCE_TOTAL_MS) {
-      rafId = requestAnimationFrame(runSequenceLoop);
-    }
   }
 
   function scheduleScrollUpdate() {
@@ -216,11 +140,6 @@ export function PackageLogos(
   });
 
   handle.signal.addEventListener("abort", () => {
-    if (delayTimer) {
-      clearTimeout(delayTimer);
-      delayTimer = null;
-    }
-    stopSequenceLoop();
     if (scrollFrameId) {
       cancelAnimationFrame(scrollFrameId);
       scrollFrameId = 0;
@@ -236,112 +155,59 @@ export function PackageLogos(
     const morphValue = handle.props.morphValueRef.current;
     const inSection = morphInLogoSection(morphValue);
     const reduceMotion = reducedMotion.current;
-    const now = performance.now();
-
-    if (reduceMotion) {
-      if (delayTimer) {
-        clearTimeout(delayTimer);
-        delayTimer = null;
-      }
-      stopSequenceLoop();
-      sequenceStartMs = null;
-    } else if (inSection) {
-      if (!wasInSection) {
-        sequenceStartMs = null;
-        stopSequenceLoop();
-        if (delayTimer) clearTimeout(delayTimer);
-        delayTimer = setTimeout(() => {
-          delayTimer = null;
-          sequenceStartMs = performance.now();
-          handle.update();
-          rafId = requestAnimationFrame(runSequenceLoop);
-        }, LOGO_DELAY_MS);
-      }
-    } else if (wasInSection) {
-      if (delayTimer) {
-        clearTimeout(delayTimer);
-        delayTimer = null;
-      }
-      stopSequenceLoop();
-      sequenceStartMs = null;
-    }
-    wasInSection = inSection;
-
-    const stackBelowPanel = viewportWidth <= STACKED_LOGO_BREAKPOINT_PX;
-
-    // On mobile we want the logo group inset MOBILE_LOGO_VIEWPORT_GUTTER_PX
-    // from each viewport edge. The container is already anchored to the
-    // panel (which is itself inset by `panelLeft` from the viewport), so the
-    // remaining gutter we need to apply *within* the container is the
-    // difference between the desired viewport gutter and `panelLeft`.
-    const gutterPx = stackBelowPanel
-      ? Math.max(0, MOBILE_LOGO_VIEWPORT_GUTTER_PX - panelLeft)
-      : VIEWPORT_GUTTER_PX;
-
-    // Scale the container's logical height so the widest logo spans the
-    // available width (panelWidth − 2 × gutter on mobile, full viewport −
-    // gutter on desktop). All other logos scale with it and the existing
-    // scattered layout is preserved.
-    const stackedHeight = stackBelowPanel
-      ? (panelWidth - 2 * gutterPx) / WIDEST_LOGO_WIDTH_FRACTION
-      : panelHeight;
-
-    // Scale the Data + Session row up so their combined width (with the
-    // fixed inter-logo gap) matches the widest single logo, so the row lines
-    // up vertically with the rows above and below it. The Math.max floor
-    // keeps us at or above the original ROWS[2].heightFraction so we never
-    // shrink the row.
-    const dataSessionHeightFraction = Math.max(
-      ROWS[2].heightFraction,
-      (WIDEST_LOGO_WIDTH_FRACTION * stackedHeight - DATA_SESSION_GAP_PX) /
-        (stackedHeight * DATA_SESSION_ASPECT_SUM),
+    const revealDistance = Math.min(900, Math.max(650, window.innerHeight));
+    const revealProgress = clamp01(
+      (window.scrollY + window.innerHeight * 0.68 - panelTop) / revealDistance,
     );
-
-    // Session width derives from its row height, which is a fraction of the
-    // logo container height. Data sits to its left, so its right offset grows
-    // with Session's width.
-    const sessionHeightPx = stackedHeight * dataSessionHeightFraction;
-    const sessionWidthPx = sessionHeightPx * (797 / 288);
-    const dataRightPx = gutterPx + DATA_SESSION_GAP_PX + sessionWidthPx;
+    const stackedHeight = panelHeight * 0.94;
+    const logoScale = window.innerWidth <= 760 ? 0.8 : 1;
+    const logoLayouts = LOGOS.map((logo, index) => {
+      const [intrinsicWidth, intrinsicHeight] = logo.ratio
+        .split("/")
+        .map((value) => parseFloat(value.trim()));
+      const width =
+        Math.min(
+          LOGO_MAX_WIDTHS[index],
+          panelWidth * LOGO_STAGE_WIDTHS[index],
+        ) * logoScale;
+      return { width, height: width * (intrinsicHeight / intrinsicWidth) };
+    });
+    const logoHeight = logoLayouts.reduce(
+      (total, layout) => total + layout.height,
+      0,
+    );
+    const rowGap = (stackedHeight - logoHeight) / (LOGOS.length - 1);
 
     return (
       <div
         mix={[shellStyles]}
         style={{
-          top: `${stackBelowPanel ? panelTop + panelHeight + STACKED_LOGO_GAP_PX : panelTop}px`,
-          left: stackBelowPanel ? `${panelLeft}px` : "0",
-          right: stackBelowPanel ? "auto" : "0",
-          width: stackBelowPanel ? `${panelWidth}px` : "auto",
+          top: `${panelTop + (panelHeight - stackedHeight) / 2}px`,
+          left: `${panelLeft}px`,
+          right: "auto",
+          width: `${panelWidth}px`,
           height: `${stackedHeight}px`,
         }}
       >
         {LOGOS.map((logo, i) => {
-          const row = ROWS[i];
-          const seq = reduceMotion
-            ? inSection
-              ? 1
-              : 0
-            : sequenceFade(i, sequenceStartMs, now);
-          const right = i === 2 ? `${dataRightPx}px` : `${gutterPx}px`;
-          const heightFraction =
-            i === 2 || i === 3 ? dataSessionHeightFraction : row.heightFraction;
-          const top =
-            i === 4
-              ? `calc(${row.topFraction * 100}% - 8px)`
-              : `${row.topFraction * 100}%`;
+          const layout = logoLayouts[i];
+          const top = logoLayouts
+            .slice(0, i)
+            .reduce((offset, row) => offset + row.height + rowGap, 0);
           return (
             <div
               key={logo.alt}
               mix={[logoStyles]}
               style={{
-                top,
+                top: `${top}px`,
                 left: "auto",
-                right,
-                height: `${heightFraction * 100}%`,
+                right: `${(panelWidth - layout.width) / 2}px`,
+                width: `${layout.width}px`,
+                height: `${layout.height}px`,
                 aspectRatio: logo.ratio,
                 maskImage: `url(${logo.src})`,
                 WebkitMaskImage: `url(${logo.src})`,
-                opacity: `${logoOpacity(morphValue, i) * seq}`,
+                opacity: `${reduceMotion && inSection ? 1 : logoOpacity(revealProgress, morphValue, i)}`,
               }}
             />
           );
