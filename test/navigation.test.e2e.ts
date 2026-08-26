@@ -242,7 +242,9 @@ describe("Navigation", () => {
     let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto(routes.home.href());
-    await expect(page.locator("main #the-framework")).toBeVisible();
+    await expect(
+      page.locator("main #fully-stacked-web-framework"),
+    ).toBeVisible();
     await expectLandingNavReady(page);
     await trackUnstyledBlogFrames(page);
 

@@ -23,10 +23,12 @@ import {
 
 /**
  * Fraction of each *middle* scroll segment spent pinned at integer morph presets
- * (clearer hold at integer presets in the center of the page). First and last segments stay linear so
- * hero and footer transitions remain responsive.
+ * (clearer hold at integer presets in the center of the page). The first and
+ * last segments use a smaller hold so hero and footer transitions remain
+ * responsive.
  */
-const SCROLL_MORPH_PLATEAU = 0.34;
+const SCROLL_MORPH_PLATEAU = 0.46;
+const SCROLL_MORPH_EDGE_PLATEAU = 0.2;
 
 function morphPlateauWithinUnitSpan(t: number, plateau: number): number {
   if (plateau <= 1e-6) return t;
@@ -43,10 +45,10 @@ function scrollMorphPlateauForSegment(
   maxMorph: number,
   plateau: number,
 ): number {
-  if (plateau <= 1e-6 || segmentIndex === 0 || segmentIndex === maxMorph - 1) {
-    return 0;
-  }
-  return plateau;
+  if (plateau <= 1e-6) return 0;
+  return segmentIndex === 0 || segmentIndex === maxMorph - 1
+    ? SCROLL_MORPH_EDGE_PLATEAU
+    : plateau;
 }
 
 function morphPlateauAcrossIndices(
@@ -123,12 +125,12 @@ const KONAMI_KEYS = [
 const KONAMI_IDLE_MS = 4000;
 const LOADING_SCREEN_MIN_VISIBLE_MS = 750;
 const LANDING_SECTION_IDS = [
-  "the-framework",
-  "full-stack",
-  "ai-ready",
-  "powerful-components",
-  "use-cases",
-  "start-building",
+  "fully-stacked-web-framework",
+  "everything-you-need",
+  "smaller-mental-model",
+  "re-rethinking-best-practices",
+  "humans-and-agents",
+  "test-drive",
 ] as const;
 
 type ParticleCanvasComponent =

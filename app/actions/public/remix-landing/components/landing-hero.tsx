@@ -72,71 +72,22 @@ const actionGroupStyles = css({
   flexDirection: "column",
   alignItems: "center",
   alignSelf: "center",
-  gap: "28px",
-});
-
-const scrollActionStyles = css({
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "48px",
-  height: "48px",
-  borderRadius: "50%",
-  background: "#ffffff",
-  color: "#050505",
-  textDecoration: "none",
-  transition: "background 150ms ease, transform 150ms ease",
-  "&:hover": {
-    background: `var(--brand-cycle, ${colors.accent})`,
-    transform: "translateY(2px)",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    transition: "none",
-    "&:hover": {
-      transform: "none",
-    },
-  },
-});
-
-const scrollActionIconStyles = css({
-  width: "20px",
-  height: "20px",
 });
 
 export function LandingHero(_handle: Handle) {
   return () => (
-    <section id="the-framework" mix={[shellStyles]}>
+    <section id="fully-stacked-web-framework" mix={[shellStyles]}>
       <div mix={[textGroupStyles]}>
         <h1 mix={[headingStyles]}>The fully-stacked web framework</h1>
         <p mix={[bodyStyles]}>
-          Remix brings the server runtime, routing, data, auth, sessions, UI,
-          and assets together in one simple, cohesive{" "}
-          <span mix={[bodyClosingPhraseStyles]}>
-            framework built on Web APIs.
-          </span>
+          Remix brings together the server runtime, routing, authentication,
+          sessions and database integrations, with its own UI framework, asset
+          compilation, dynamic styling, and accessible component library, all in
+          one simple, cohesive{" "}
+          <span mix={[bodyClosingPhraseStyles]}>stack built on Web APIs.</span>
         </p>
         <div mix={[actionGroupStyles]}>
           <CodeSnippet>npx remix@next new</CodeSnippet>
-          <a
-            href="#full-stack"
-            aria-label="Explore the framework"
-            mix={[scrollActionStyles]}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              mix={[scrollActionIconStyles]}
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 5v14m-6-6 6 6 6-6"
-              />
-            </svg>
-          </a>
         </div>
       </div>
     </section>

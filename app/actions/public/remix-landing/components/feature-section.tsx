@@ -15,13 +15,16 @@ import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
 // height is distributed above and below the content.
 const shellStyles = css({
   width: pageMaxWidth,
-  minHeight: "100vh",
+  minHeight: "112vh",
   margin: "0 auto",
   boxSizing: "border-box",
-  padding: "120px 0",
+  padding: "160px 0",
   display: "grid",
   alignItems: "center",
   alignContent: "center",
+  "@media (max-width: 880px)": {
+    padding: "128px 0",
+  },
 });
 
 const rowStyles = css({
@@ -51,7 +54,7 @@ const panelStyles = css({
   width: "100%",
   maxWidth: "640px",
   boxSizing: "border-box",
-  padding: "44px 48px 48px",
+  padding: "48px",
   border: "1px solid rgba(255, 255, 255, 0.12)",
   borderTop: "3px solid var(--brand-cycle, #7ce95a)",
   borderRadius: "24px",
@@ -60,7 +63,7 @@ const panelStyles = css({
   background: "rgba(0, 0, 0, 0.58)",
   contain: "paint",
   "@media (max-width: 880px)": {
-    padding: "36px 24px 40px",
+    padding: "32px 24px",
     background: "rgba(0, 0, 0, 0.64)",
   },
 });
@@ -80,7 +83,7 @@ const rightPanelUseCasesStyles = css({
   maxWidth: "640px",
   "@media (max-width: 880px)": {
     gridColumn: "1 / -1",
-    justifySelf: "stretch",
+    justifySelf: "center",
   },
 });
 
@@ -89,7 +92,7 @@ const rightPanelNewsletterStyles = css({
   justifySelf: "start",
   "@media (max-width: 880px)": {
     gridColumn: "1 / -1",
-    justifySelf: "stretch",
+    justifySelf: "center",
   },
 });
 
@@ -99,7 +102,7 @@ const leftPanelFullStackStyles = css({
   maxWidth: "640px",
   "@media (max-width: 880px)": {
     gridColumn: "1 / -1",
-    justifySelf: "stretch",
+    justifySelf: "center",
   },
 });
 
@@ -115,7 +118,7 @@ const leftPanelStartBuildingStyles = css({
   justifySelf: "end",
   "@media (max-width: 880px)": {
     gridColumn: "1 / -1",
-    justifySelf: "stretch",
+    justifySelf: "center",
   },
 });
 
@@ -340,13 +343,22 @@ const pointListStyles = css({
 const fullStackPointListStyles = css({
   gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   gap: "0",
-  margin: "36px -48px -48px",
+  margin: "32px -48px -48px",
   borderTop: "1px solid rgba(255, 255, 255, 0.14)",
   "@media (max-width: 880px)": {
-    margin: "32px -24px -40px",
+    margin: "24px -24px -32px",
   },
   "@media (max-width: 600px)": {
     gridTemplateColumns: "1fr",
+  },
+});
+
+const edgeToEdgePointListStyles = css({
+  gap: "0",
+  margin: "32px -48px -48px",
+  borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+  "@media (max-width: 880px)": {
+    margin: "24px -24px -32px",
   },
 });
 
@@ -356,7 +368,7 @@ const pointStyles = css({
 });
 
 const fullStackPointStyles = css({
-  padding: "28px 48px 32px",
+  padding: "32px 48px",
   borderTop: "0",
   "&:nth-child(odd)": {
     borderRight: "1px solid rgba(255, 255, 255, 0.14)",
@@ -364,14 +376,37 @@ const fullStackPointStyles = css({
   "&:nth-child(n + 3)": {
     borderTop: "1px solid rgba(255, 255, 255, 0.14)",
   },
+  "&:nth-last-child(-n + 2)": {
+    paddingBottom: "48px",
+  },
   "@media (max-width: 600px)": {
-    padding: "26px 24px 30px",
+    padding: "24px",
     borderRight: "0",
     "&:nth-child(odd)": {
       borderRight: "0",
     },
     "&:not(:first-child)": {
       borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+    },
+    "&:nth-last-child(-n + 2)": {
+      paddingBottom: "32px",
+    },
+  },
+});
+
+const edgeToEdgePointStyles = css({
+  padding: "32px 48px",
+  borderTop: "0",
+  "&:not(:first-child)": {
+    borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+  },
+  "&:last-child": {
+    paddingBottom: "48px",
+  },
+  "@media (max-width: 880px)": {
+    padding: "24px",
+    "&:last-child": {
+      paddingBottom: "32px",
     },
   },
 });
@@ -384,17 +419,19 @@ const pointTitleStyles = css({
   fontSize: "18px",
   lineHeight: "1.3",
   letterSpacing: "-0.008px",
+  ...textBoxTrim,
 });
 
 const pointBodyStyles = css({
   display: "block",
-  marginTop: "8px",
+  marginTop: "20px",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   color: "rgba(255, 255, 255, 0.72)",
   fontSize: "16px",
   lineHeight: "1.5",
   letterSpacing: "-0.008px",
+  ...textBoxTrim,
 });
 
 const detailPanelStyles = css({
@@ -442,14 +479,14 @@ const detailTitleStyles = css({
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
   color: "#ffffff",
-  fontSize: "20px",
-  lineHeight: "1.2",
+  fontSize: "18px",
+  lineHeight: "1.3",
   letterSpacing: "-0.012em",
   ...textBoxTrim,
 });
 
 const detailBodyStyles = css({
-  margin: "14px 0 0",
+  margin: "20px 0 0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   color: "rgba(255, 255, 255, 0.74)",
@@ -463,8 +500,9 @@ const ctaStyles = css({
   alignItems: "center",
   justifyContent: "center",
   gap: "10px",
-  marginTop: "20px",
-  padding: "10px 16px",
+  minHeight: "44px",
+  marginTop: "32px",
+  padding: "0 18px",
   borderRadius: "999px",
   border: "none",
   boxShadow: "none",
@@ -493,7 +531,7 @@ const subscribeFormStyles = css({
   display: "flex",
   flexWrap: "wrap",
   gap: "10px",
-  marginTop: "20px",
+  marginTop: "32px",
 });
 
 const subscribeLabelStyles = css({
@@ -517,7 +555,8 @@ const subscribeInputStyles = css({
   border: "1px solid rgba(255, 255, 255, 0.18)",
   background: "transparent",
   color: "#ffffff",
-  padding: "10px 16px",
+  height: "44px",
+  padding: "0 18px",
   fontFamily: theme.fontFamily.sans,
   fontSize: "16px",
   lineHeight: "1.4",
@@ -534,7 +573,8 @@ const subscribeButtonStyles = css({
   boxShadow: "none",
   background: "rgba(255, 255, 255, 0.08)",
   color: "#ffffff",
-  padding: "10px 16px",
+  height: "44px",
+  padding: "0 18px",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   fontSize: "16px",
@@ -581,21 +621,21 @@ const PRIMARY_PANEL_STYLES_BY_ID: Record<
   string,
   ReturnType<typeof css> | undefined
 > = {
-  "ai-ready": leftPanelFullStackStyles,
-  "start-building": leftPanelStartBuildingStyles,
-  "powerful-components": leftPanelPowerfulComponentsStyles,
-  "use-cases": rightPanelUseCasesStyles,
+  "smaller-mental-model": leftPanelFullStackStyles,
+  "test-drive": leftPanelStartBuildingStyles,
+  "re-rethinking-best-practices": leftPanelPowerfulComponentsStyles,
+  "humans-and-agents": rightPanelUseCasesStyles,
 };
 
 const SECONDARY_PANEL_STYLES_BY_ID: Record<
   string,
   ReturnType<typeof css> | undefined
 > = {
-  "start-building": rightPanelNewsletterStyles,
+  "test-drive": rightPanelNewsletterStyles,
 };
 
 const ROW_STYLES_BY_ID: Record<string, ReturnType<typeof css> | undefined> = {
-  "powerful-components": rowPowerfulComponentsStyles,
+  "re-rethinking-best-practices": rowPowerfulComponentsStyles,
 };
 
 type FeatureSectionProps = {
@@ -695,26 +735,34 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
     return (
       <section id={handle.props.id} mix={[shellStyles]}>
         <div mix={[rowStyles, ROW_STYLES_BY_ID[handle.props.id]]}>
-          <div mix={[panelStyles, primaryPanelStyles]}>
-            <h2 mix={[titleStyles]}>{handle.props.title}</h2>
+          <div data-home-card="" mix={[panelStyles, primaryPanelStyles]}>
+            <h2 data-card-title="" mix={[titleStyles]}>
+              {handle.props.title}
+            </h2>
             <p mix={[bodyStyles]}>{handle.props.body}</p>
             {handle.props.points ? (
               <ul
+                data-card-grid=""
                 mix={[
                   pointListStyles,
-                  handle.props.id === "ai-ready"
+                  handle.props.id === "smaller-mental-model"
                     ? fullStackPointListStyles
-                    : undefined,
+                    : handle.props.id === "humans-and-agents"
+                      ? edgeToEdgePointListStyles
+                      : undefined,
                 ]}
               >
                 {handle.props.points.map((point) => (
                   <li
                     key={point.title}
+                    data-card-item=""
                     mix={[
                       pointStyles,
-                      handle.props.id === "ai-ready"
+                      handle.props.id === "smaller-mental-model"
                         ? fullStackPointStyles
-                        : undefined,
+                        : handle.props.id === "humans-and-agents"
+                          ? edgeToEdgePointStyles
+                          : undefined,
                     ]}
                   >
                     <span mix={[pointTitleStyles]}>{point.title}</span>
@@ -767,13 +815,16 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
           ) : null}
           {handle.props.secondary ? (
             <div
+              data-home-card=""
               mix={[
                 panelStyles,
                 SECONDARY_PANEL_STYLES_BY_ID[handle.props.id] ??
                   rightPanelStyles,
               ]}
             >
-              <h2 mix={[titleStyles]}>{handle.props.secondary.title}</h2>
+              <h2 data-card-title="" mix={[titleStyles]}>
+                {handle.props.secondary.title}
+              </h2>
               <p mix={[bodyStyles]}>{handle.props.secondary.body}</p>
               {handle.props.secondary.newsletter ? (
                 <NewsletterSubscribeFrameHost

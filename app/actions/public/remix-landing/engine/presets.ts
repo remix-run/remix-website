@@ -12,7 +12,7 @@ const websiteMockups: Preset = {
     { id: "rotX", label: "Rotate X", min: -180, max: 180, initial: 18 },
     { id: "rotY", label: "Rotate Y", min: -180, max: 180, initial: 0 },
     { id: "rotZ", label: "Rotate Z", min: -180, max: 180, initial: -14.4 },
-    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0.23 },
+    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0.08 },
   ],
   info: {
     title: "Website Mockups",
@@ -30,7 +30,7 @@ const racecar: Preset = {
   separation: 0,
   controls: [
     { id: "scale", label: "Scale", min: 5, max: 150, initial: 48 },
-    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0.23 },
+    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0.08 },
     { id: "shimmer", label: "Shimmer", min: 0, max: 2, initial: 0.6 },
     { id: "rotZ", label: "Rotate Z", min: -180, max: 180, initial: 15 },
   ],
@@ -140,13 +140,14 @@ const underTheHood: Preset = {
   modelSlot: 1,
   cameraPosition: [0, 12, -55],
   cameraTarget: [0, -2, 0],
+  cameraTransition: "orbit-left",
   glowColor: [0.3, 0.35, 0.55],
   separation: 0,
   controls: [
     { id: "scale", label: "Scale", min: 5, max: 200, initial: 90 },
-    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0 },
+    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0.08 },
     { id: "shimmer", label: "Shimmer", min: 0, max: 2, initial: 0.6 },
-    { id: "rotZ", label: "Rotate Z", min: -180, max: 180, initial: 0 },
+    { id: "rotZ", label: "Rotate Z", min: -180, max: 180, initial: 15 },
   ],
   info: {
     title: "Under The Hood",
@@ -219,8 +220,8 @@ const drive: Preset = {
 
 export const presets: Preset[] = [
   racetrack,
-  racecar,
   runner,
+  racecar,
   underTheHood,
   websiteMockups,
   drive,

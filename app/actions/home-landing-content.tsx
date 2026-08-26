@@ -29,8 +29,8 @@ const toolkitGroups = [
     body: "Authentication, OAuth, cookies, sessions, storage adapters, and security middleware.",
   },
   {
-    title: "UI & interaction",
-    body: "Server rendering, HTML-first Frames, accessible components, forms, and animation.",
+    title: "UI framework, components & styling",
+    body: "Server rendering, HTML-first Frames, composable styles, accessible components, forms, and animation.",
   },
   {
     title: "Assets & development",
@@ -87,8 +87,8 @@ const differentiators = [
     ),
   },
   {
-    title: "HTTP stays HTTP",
-    body: "Routes receive standard Requests and return standard Responses—HTML, JSON, files, redirects, or anything else. The server contract stays portable and inspectable.",
+    title: "HTTP is the interface",
+    body: "Routes, middleware, assets, and integrations all work with standard Requests and Responses—HTML, JSON, files, redirects, or anything else. The server contract stays portable and inspectable.",
   },
   {
     title: "Assets compile when requested",
@@ -102,7 +102,7 @@ const differentiators = [
 
 const storySections = [
   {
-    id: "ai-ready",
+    id: "smaller-mental-model",
     title: "A bigger toolkit with a smaller mental model",
     body: "Building a complete web app shouldn't mean learning a different system at every layer. Remix gives you more of the stack with fewer concepts.",
     align: "left" as const,
@@ -126,7 +126,7 @@ const storySections = [
     ],
   },
   {
-    id: "use-cases",
+    id: "humans-and-agents",
     title: "Better for humans. Better for agents.",
     body: "Remix keeps the important parts of your app visible: standard Web APIs, explicit updates, runtime boundaries, and source modules that stay recognizable. Humans can reason about the system, agents can change it with confidence, and both can take control when the defaults aren't enough.",
     align: "right" as const,
@@ -139,10 +139,14 @@ const storySections = [
         title: "Built to be changed",
         body: "Follow the defaults, replace a layer, or take control of the logic when your app needs it.",
       },
+      {
+        title: "Built to be generated",
+        body: "Remix skills help agents generate code using the framework’s APIs, conventions, and workflows.",
+      },
     ],
   },
   {
-    id: "start-building",
+    id: "test-drive",
     title: "Take Remix for a test drive",
     body: "Remix 3 is available in beta. Build your first app with the step-by-step guides, then explore the API when you want to go deeper.",
     align: "left" as const,
@@ -173,10 +177,13 @@ export function LandingContent() {
 
 function DifferentiatorSection() {
   return () => (
-    <section id="powerful-components" mix={[differentiatorShellStyles]}>
-      <div mix={[differentiatorContentStyles]}>
+    <section
+      id="re-rethinking-best-practices"
+      mix={[differentiatorShellStyles]}
+    >
+      <div data-home-card="" mix={[differentiatorContentStyles]}>
         <div mix={[differentiatorHeaderStyles]}>
-          <h2 mix={[differentiatorTitleStyles]}>
+          <h2 data-card-title="" mix={[differentiatorTitleStyles]}>
             Re-rethinking best practices
           </h2>
           <p mix={[differentiatorIntroStyles]}>
@@ -186,9 +193,13 @@ function DifferentiatorSection() {
             standards you can follow all the way down.
           </p>
         </div>
-        <ul mix={[differentiatorListStyles]}>
+        <ul data-card-grid="" mix={[differentiatorListStyles]}>
           {differentiators.map((item) => (
-            <li key={item.title} mix={[differentiatorItemStyles]}>
+            <li
+              key={item.title}
+              data-card-item=""
+              mix={[differentiatorItemStyles]}
+            >
               <h3 mix={[differentiatorItemTitleStyles]}>{item.title}</h3>
               <p mix={[differentiatorItemBodyStyles]}>{item.body}</p>
             </li>
@@ -203,10 +214,13 @@ const differentiatorShellStyles = css({
   width: pageMaxWidth,
   minHeight: "100vh",
   margin: "0 auto",
-  padding: "112px 0",
+  padding: "160px 0",
   boxSizing: "border-box",
   display: "flex",
   alignItems: "center",
+  "@media (max-width: 760px)": {
+    padding: "128px 0",
+  },
 });
 
 const differentiatorContentStyles = css({
@@ -222,9 +236,9 @@ const differentiatorContentStyles = css({
 });
 
 const differentiatorHeaderStyles = css({
-  padding: "52px 48px 48px",
+  padding: "48px 48px 32px",
   "@media (max-width: 760px)": {
-    padding: "32px 24px",
+    padding: "32px 24px 24px",
   },
 });
 
@@ -246,16 +260,13 @@ const differentiatorTitleStyles = css({
 
 const differentiatorIntroStyles = css({
   maxWidth: "760px",
-  margin: "32px 0 0",
+  margin: "36px 0 0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   color: colors.fg,
   fontSize: "18px",
   lineHeight: "1.55",
   ...textBoxTrim,
-  "@media (max-width: 760px)": {
-    marginTop: "24px",
-  },
 });
 
 const differentiatorListStyles = css({
@@ -271,26 +282,27 @@ const differentiatorListStyles = css({
 });
 
 const differentiatorItemStyles = css({
-  minHeight: "220px",
   boxSizing: "border-box",
-  padding: "42px 48px 44px",
+  padding: "32px 48px",
   borderRight: "1px solid rgba(255, 255, 255, 0.1)",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
   "&:nth-child(even)": {
     borderRight: "0",
   },
   "&:nth-last-child(-n + 2)": {
+    paddingBottom: "48px",
     borderBottom: "0",
   },
   "@media (max-width: 760px)": {
-    minHeight: "0",
-    padding: "36px 24px 38px",
+    padding: "24px",
     borderRight: "0",
     borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
     "&:nth-last-child(2)": {
+      paddingBottom: "24px",
       borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
     },
     "&:last-child": {
+      paddingBottom: "32px",
       borderBottom: "0",
     },
   },
@@ -302,19 +314,17 @@ const differentiatorItemTitleStyles = css({
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
   color: "#ffffff",
-  fontSize: "24px",
+  fontSize: "18px",
   lineHeight: "1.3",
   letterSpacing: "-0.015em",
   ...textBoxTrim,
   "@media (max-width: 760px)": {
     maxWidth: "none",
-    fontSize: "20px",
-    lineHeight: "1.3",
   },
 });
 
 const differentiatorItemBodyStyles = css({
-  margin: "18px 0 0",
+  margin: "20px 0 0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   color: "rgba(255, 255, 255, 0.76)",
@@ -325,21 +335,21 @@ const differentiatorItemBodyStyles = css({
 
 function ToolkitSection() {
   return () => (
-    <section id="full-stack" mix={[toolkitShellStyles]}>
-      <div mix={[toolkitContentStyles]}>
+    <section id="everything-you-need" mix={[toolkitShellStyles]}>
+      <div data-home-card="" mix={[toolkitContentStyles]}>
         <div mix={[toolkitHeaderStyles]}>
-          <h2 mix={[toolkitTitleStyles]}>
-            Everything you need, all in one framework
+          <h2 data-card-title="" mix={[toolkitTitleStyles]}>
+            Everything you need, all in a single package
           </h2>
           <p mix={[toolkitIntroStyles]}>
-            Remix brings together the core systems you need to build, run, and
-            maintain a modern web application. Use the complete framework or
-            reach for individual packages when you need them.
+            Remix provides the core systems you need to build, run, and maintain
+            a modern web application. Use the complete framework or reach for
+            individual packages when you need them.
           </p>
         </div>
-        <div mix={[toolkitGridStyles]}>
+        <div data-card-grid="" mix={[toolkitGridStyles]}>
           {toolkitGroups.map((group) => (
-            <div key={group.title} mix={[toolkitCardStyles]}>
+            <div key={group.title} data-card-item="" mix={[toolkitCardStyles]}>
               <h3 mix={[toolkitCardTitleStyles]}>{group.title}</h3>
               <p mix={[toolkitCardBodyStyles]}>{group.body}</p>
             </div>
@@ -360,11 +370,14 @@ const toolkitShellStyles = css({
   minHeight: "100vh",
   scrollMarginTop: "clamp(72px, 10vh, 112px)",
   margin: "0 auto",
-  padding: "112px 0",
+  padding: "160px 0",
   boxSizing: "border-box",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
+  "@media (max-width: 760px)": {
+    padding: "128px 0",
+  },
 });
 
 const packageLogoStageStyles = css({
@@ -397,11 +410,11 @@ const toolkitHeaderStyles = css({
   width: "100%",
   margin: "0",
   boxSizing: "border-box",
-  padding: "52px 48px 48px",
+  padding: "48px 48px 32px",
   background: "transparent",
   textAlign: "left",
   "@media (max-width: 760px)": {
-    padding: "36px 24px 32px",
+    padding: "32px 24px 24px",
   },
 });
 
@@ -423,7 +436,8 @@ const toolkitTitleStyles = css({
 });
 
 const toolkitIntroStyles = css({
-  margin: "28px 0 0",
+  maxWidth: "58ch",
+  margin: "36px 0 0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   color: colors.fg,
@@ -445,23 +459,28 @@ const toolkitGridStyles = css({
 const toolkitCardStyles = css({
   minHeight: "0",
   boxSizing: "border-box",
-  padding: "38px 48px 42px",
+  padding: "32px 48px",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
   background: "transparent",
   "&:nth-child(odd)": {
     borderRight: "1px solid rgba(255, 255, 255, 0.1)",
   },
   "&:nth-last-child(-n + 2)": {
+    paddingBottom: "48px",
     borderBottom: "0",
   },
   "@media (max-width: 760px)": {
-    padding: "30px 24px 34px",
+    padding: "24px",
     borderRight: "0",
     "&:nth-child(odd)": {
       borderRight: "0",
     },
     "&:nth-last-child(2)": {
+      paddingBottom: "24px",
       borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+    },
+    "&:last-child": {
+      paddingBottom: "32px",
     },
   },
 });
@@ -471,14 +490,14 @@ const toolkitCardTitleStyles = css({
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
   color: "#ffffff",
-  fontSize: "20px",
-  lineHeight: "1.2",
+  fontSize: "18px",
+  lineHeight: "1.3",
   letterSpacing: "-0.012em",
   ...textBoxTrim,
 });
 
 const toolkitCardBodyStyles = css({
-  margin: "16px 0 0",
+  margin: "20px 0 0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
   color: "rgba(255, 255, 255, 0.76)",
