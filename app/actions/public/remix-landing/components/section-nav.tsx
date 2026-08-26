@@ -17,7 +17,7 @@ const shellStyles = css({
   background: colors.sectionNavBg,
   borderRadius: "24px",
   padding: "24px",
-  "@media (max-width: 960px)": {
+  "@media (max-width: 1440px)": {
     display: "none",
   },
 });
