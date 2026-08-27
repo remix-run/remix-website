@@ -1,4 +1,5 @@
 import * as path from "node:path";
+import type { ScriptEntry } from "remix/assets";
 import { getContext } from "remix/middleware/async-context";
 import {
   createContextKey,
@@ -10,8 +11,7 @@ import { assets } from "../utils/assets.ts";
 
 interface AssetEntry {
   fonts: Record<FontName, FontAsset>;
-  src: string;
-  preloads: string[];
+  scriptEntry: ScriptEntry;
   stylesheets: Record<StylesheetName, StylesheetAsset>;
 }
 
@@ -61,7 +61,7 @@ export function loadAssetEntry(
   entry = defaultEntry,
 ): Middleware<AssetEntryContextEntry> {
   return async (context, next) => {
-    let [fonts, src, preloads, stylesheets] = await Promise.all([
+    let [fonts, scriptEntry, stylesheets] = await Promise.all([
       Promise.all(
         Object.entries(fontEntries).map(async ([name, fontEntry]) => {
           let href = await assets.getHref(fontEntry);
@@ -70,12 +70,7 @@ export function loadAssetEntry(
       ).then(
         (entries) => Object.fromEntries(entries) as Record<FontName, FontAsset>,
       ),
-      assets.getHref(entry),
-      assets.getPreloads(entry).catch((error) => {
-        // Surface asset compilation errors without breaking HTML rendering.
-        console.error(error);
-        return [];
-      }),
+      assets.getScriptEntry(entry),
       Promise.all(
         Object.entries(stylesheetEntries).map(
           async ([name, stylesheetEntry]) => {
@@ -94,8 +89,7 @@ export function loadAssetEntry(
 
     context.set(assetEntryKey, {
       fonts,
-      src,
-      preloads,
+      scriptEntry,
       stylesheets,
     });
     return next();

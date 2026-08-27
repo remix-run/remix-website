@@ -204,12 +204,9 @@ async function resolveClientEntry(
     return { href: sourceId, exportName };
   }
 
-  let [href, preloads] = await Promise.all([
-    assets.getHref(sourceId),
-    assets.getPreloads(sourceId),
-  ]);
+  let { href, importMap, preloads } = await assets.getScriptEntry(sourceId);
 
-  return { href, exportName, preloads };
+  return { href, importMap, exportName, preloads };
 }
 
 function escapeHtml(value: string) {

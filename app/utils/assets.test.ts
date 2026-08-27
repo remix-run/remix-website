@@ -18,7 +18,9 @@ describe("browser asset boundary", () => {
 
     for (let modulePath of modules) {
       try {
-        let href = await assets.getHref(modulePath);
+        let href = modulePath.endsWith(".css")
+          ? await assets.getHref(modulePath)
+          : (await assets.getScriptEntry(modulePath)).href;
         let response = await assets.fetch(
           new Request(new URL(href, "http://localhost")),
         );
