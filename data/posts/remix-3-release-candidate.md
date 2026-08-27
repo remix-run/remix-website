@@ -1,0 +1,102 @@
+---
+title: Remix 3 Release Candidate
+summary: Remix 3 is ready for you to test, build with, and help us prepare for a stable release.
+date: 2026-08-27
+featured: true
+authors:
+  - Brooks Lybrand
+image: /blog-images/headers/remix-3-release-candidate.png
+ogImage: /blog-images/headers/remix-3-release-candidate.png
+imageAlt: "A glowing blue race car driving down a dark racetrack beneath a starry sky."
+imageDisableOverlay: true
+---
+
+We have officially published our Remix 3 Release Candidate!
+
+The last time we shared updates about Remix 3 was when we announced our [beta preview](./remix-3-beta-preview) 4 months ago. We're incredibly proud of what we've built and all the improvements we've made since our first beta, and we're excited to start sharing with you why exactly we think Remix is so awesome.
+
+This blog post just scratches the surface of everything packed into Remix 3: database management, schema validation, a type-safe and super performant router, an unbundled on-demand browser asset server, and a brand-new UI runtime complete with composable event handling, styles, animations, and built-in components. Remix is huge, and it's all in just 1 package, `remix`, combining 40+ different modules.
+
+We're going to dig into all the details in the coming weeks and months, and we'll release Remix 3 on October 2 at [Remix Jam](./jam/2026) (tickets are still available).
+
+## What's New
+
+If you've ever planted a tree, you might have heard an adage that goes something like this:
+
+> The first year, your tree won't grow a whole lot. That's because it's rooting, adjusting to the new soil, and building a strong foundation for growth. In year 2, it's going to suddenly take off, doubling, even tripling in size.
+
+At least that's what I was told.
+
+The journey of Remix 3's development has been a lot like that. Last year at [Remix Jam](./jam/2025), we metaphorically invited you into our "garage" to hear our [demo tape](./jam/2025/gallery?photo=120). We talked about the ideas we loved from React and our work on React Router (previously [Remix v2](./remix-history)), things we don't love so much about those projects, and where we want to take Remix to provide a fully stacked web framework unapologetically built on web primitives and productive out of the gate in an agentic programming landscape.
+
+From then until we released our first beta, we were really establishing and rooting all of those ideas and APIs. We were giving everything a place, making sure the packages would work well together and that the majority of them could be used independently.
+
+Since that beta, Remix has grown a lot:
+
+- A complete database workflow with migrations, seeding, status checks, resets, wipes, and rollbacks built into the CLI.
+- Full-stack HMR (hot module replacement) that reloads server modules and updates compatible UI components in place.
+- Improved unbundled asset serving for JavaScript, CSS, images, fonts, and npm packages, with built-in preloading and import map support.
+- Safer, faster route matching and URL generation, composable routing with `router.mount()`, and improved TypeScript inference.
+- An expanded UI library with tabs, toggles, context menus, and more.
+- SPA support that brings the same router, middleware, controllers, and Request-to-Response model to client-rendered apps.
+- Improved navigation for links and forms, whether updating the whole document or a targeted frame.
+- `remix.json` for configuring databases, assets, tests, and `remix doctor`, plus CLI tooling for inspecting browser-reachable assets.
+
+And that just scratches the surface. We've also made numerous bug fixes and stability improvements across 350+ commits this summer (or winter for Mark).
+
+## Why Remix is Good
+
+We have been a lot quieter about Remix than we would like or had intended. It's not for lack of excitement about Remix. We have genuinely struggled to wrap exactly what is exciting about it into simple, straightforward explanations that we can deliver in quick videos, blog posts, demos, etc.
+
+This is largely for 2 reasons:
+
+1. AI and agentic programming have made it very difficult to talk about technology through the lens of code, which has always been our modus operandi.
+2. Remix 3 is so much bigger than just a React or metaframework replacement. It is a true full-stack JavaScript framework unlike anything we've yet to see in the ecosystem.
+
+This has meant that we've defaulted a lot more to building than to showing. But no more.
+
+We've been putting Remix through its paces, particularly by migrating this very website as well as the [Remix Store](https://shop.remix.run) (works on my machine, I really should deploy it). We have been gathering feedback from early adopters, both externally and internally here at Shopify, some of whom you may or may not hear from at [Remix Jam](./jam/2026).
+
+Overall, our best pitch for Remix is that we like it. Everyone is trying to pitch that they're building _for agents_. No one really knows what that means. We built this for ourselves, and we use agents. We use agents a lot. We're the most biased of the bunch, but we're finding again and again that:
+
+- Agents get Remix because it's built on web primitives, is extremely type-safe, and treats things like UI state as Just JavaScript™ scope.
+- On those occasions when we do still happen to look at the code, we get what the agent has produced, not because we totally get Remix, but because we find Remix so get-able.
+
+You shouldn't—and really can't—take our word for it, though. Try it out. Build something. And if you don't find Remix to be as grokable as we say, we still have 1 trick up our sleeve. The default `remix` template `package.json` looks like this:
+
+```json
+"dependencies": {
+  "remix": "3.0.0-rc.1"
+},
+```
+
+With Remix, you can build truly full-stack applications, not merely a backend-for-frontend (though you can do that) or a server-rendered app that punts on the database (no offense, React Router; we still do love you and are making you better all the time). No more middle stack—leaning on other libraries for anything interesting you want to do on the server or punting in the browser and relying on React (which we do still love and have a ton of respect for, by the way).
+
+Remix is full-stack, fully stacked, all in 1 dependency, and designed to be changed. That means less surface area in your `package.json` for the next npm supply-chain attack. That means less churn from you or your agent deciding on 10 different packages just to build your blog with 4 posts (guilty). And if you don't like one of our choices, you can just change that piece. Swap our schema validation for Zod (it's compatible), or pull in Drizzle. Heck, you can even swap our `render` middleware with a React-based one. It's composable by design so that you always stay in charge.
+
+We built Remix to be something we want to use, and we hope to see agents continue to excel with it and other humans come to love it.
+
+## What's Left
+
+You're probably wondering at this point how long it will be before we call Remix 3 stable. We know many are waiting until we mark the software as stable, or at least until we have some better docs (that one's mostly on me, but the first few entries in our [guides](https://guides.remix.run) are pretty decent if you haven't checked them out).
+
+At this point, we are done adding features to Remix 3 before the official release. We have plenty of ideas for continuing to expand and improve the framework (I've had multiple people ask me if we're gonna include background jobs), and we probably could spend years in pre-3 release mode if we wanted. Agents only enable our addiction to enhancing and improving and expanding Remix. But perfecting the perfect framework is no good for you, and we really want Remix to help you build your ideas. So it's time to ship and start binding ourselves to SemVer so you can trust Remix with your ideas.
+
+The Release Candidate marks the end of feature development, if we can help it, and allows us to clean up known bugs, perform thorough security audits, gather feedback from early adopters, write more docs, and, oh yeah, prepare for [Remix Jam](./jam/2026), where we will release Remix 3.
+
+## Try it out
+
+Want to take this RC for a spin?
+
+```sh
+npx remix@next new my-remix-app
+```
+
+You can also learn more and stay up-to-date by checking out:
+
+- [The docs](https://guides.remix.run) (which we're actively updating)
+- [This website's source code](https://github.com/remix-run/remix-website) for a real-world site
+- [Our Discord](https://remix.run/discord) to connect with other folks building with Remix
+- [Our newsletter](./newsletter) to receive monthly updates
+
+Alright, back to work for us—we've got this release to ship. See you in person or online at [Remix Jam](./jam/2026)!
