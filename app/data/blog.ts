@@ -10,14 +10,10 @@ const DATA_DIRECTORY = path.join(process.cwd(), "data");
 const POSTS_DIRECTORY = path.join(DATA_DIRECTORY, "posts");
 const AUTHORS_FILE_PATH = path.join(DATA_DIRECTORY, "authors.yml");
 
-const postContentsBySlug = Object.fromEntries(
-  readdirSync(POSTS_DIRECTORY, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
-    .map((entry) => [
-      entry.name.replace(/\.md$/, ""),
-      readFileSync(path.join(POSTS_DIRECTORY, entry.name), "utf8"),
-    ]),
-);
+const shouldCacheBlogData = process.env.NODE_ENV === "production";
+const cachedPostContentsBySlug = shouldCacheBlogData
+  ? readPostContentsBySlug()
+  : undefined;
 
 const AUTHORS: BlogAuthor[] = yaml.parse(
   readFileSync(AUTHORS_FILE_PATH, "utf8"),
@@ -32,9 +28,12 @@ const postsCache = new LRUCache<string, BlogPost>({
 });
 
 export async function getBlogPost(slug: string): Promise<BlogPost> {
-  let cached = postsCache.get(slug);
-  if (cached) return cached;
-  let contents = postContentsBySlug[slug];
+  if (shouldCacheBlogData) {
+    let cached = postsCache.get(slug);
+    if (cached) return cached;
+  }
+
+  let contents = getPostContentsBySlug()[slug];
   if (!contents) {
     throw new Response("Not Found", { status: 404, statusText: "Not Found" });
   }
@@ -68,7 +67,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
     dateDisplay: formatDate(attributes.date),
     html,
   };
-  postsCache.set(slug, post);
+  if (shouldCacheBlogData) postsCache.set(slug, post);
   return post;
 }
 
@@ -80,10 +79,10 @@ let postListings: Array<MarkdownPostListing> | undefined;
  * just to read their titles cost ~1.1s on the first request to /blog.
  */
 export function getBlogPostListings(): Array<MarkdownPostListing> {
-  if (postListings) return postListings;
+  if (shouldCacheBlogData && postListings) return postListings;
 
   let listings: Array<MarkdownPostListing & { date: Date }> = [];
-  for (let [slug, contents] of Object.entries(postContentsBySlug)) {
+  for (let [slug, contents] of Object.entries(getPostContentsBySlug())) {
     let { attributes } = parseFrontMatter(contents);
     assert(
       isMarkdownPostFrontmatter(attributes),
@@ -103,19 +102,35 @@ export function getBlogPostListings(): Array<MarkdownPostListing> {
     });
   }
 
-  postListings = listings
+  let sortedListings = listings
     .sort((a, b) => b.date.getTime() - a.date.getTime())
     .map(({ date: _date, ...listing }) => listing);
 
-  return postListings;
+  if (shouldCacheBlogData) postListings = sortedListings;
+  return sortedListings;
 }
 
 export function getRawBlogPostMarkdown(slug: string): string {
-  let contents = postContentsBySlug[slug];
+  let contents = getPostContentsBySlug()[slug];
   if (!contents) {
     throw new Response("Not Found", { status: 404, statusText: "Not Found" });
   }
   return contents;
+}
+
+function getPostContentsBySlug(): Record<string, string> {
+  return cachedPostContentsBySlug ?? readPostContentsBySlug();
+}
+
+function readPostContentsBySlug(): Record<string, string> {
+  return Object.fromEntries(
+    readdirSync(POSTS_DIRECTORY, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+      .map((entry) => [
+        entry.name.replace(/\.md$/, ""),
+        readFileSync(path.join(POSTS_DIRECTORY, entry.name), "utf8"),
+      ]),
+  );
 }
 
 function getAuthor(name: string): BlogAuthor | undefined {
