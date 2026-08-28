@@ -1,6 +1,6 @@
 ---
 title: Remix 3 Release Candidate
-summary: Remix 3 RC is available. A full-stack JavaScript framework built on web primitives and shipped as a single dependency.
+summary: Remix 3 RC is available now. A full-stack JavaScript framework built on web primitives and shipped as a single dependency.
 date: 2026-08-28
 featured: true
 authors:
@@ -29,7 +29,7 @@ At least that's what I was told.
 
 The journey of Remix 3's development has been a lot like planting a tree. Last year at [Remix Jam][remix-jam-2025], we metaphorically invited you into our "garage" to hear our [demo tape][remix-jam-2025-demo-tape]. We talked about the ideas we love from React and React Router (previously [Remix v2][remix-history]). We also talked about the things we don't love so much about those projects, and where we want to take Remix. With Remix we want to provide a fully stacked web framework, unapologetically built on web primitives and productive out the gate in an agentic programming landscape.
 
-From that point up until we released our first beta, we were focused on establishing and rooting all of those ideas and APIs. We were giving every piece it's proper place, making sure the packages would work well together and that the majority of them [could be used independently][solid-remix-cookie].
+From that point up until we released our first beta, we were focused on establishing and rooting all of those ideas and APIs. We were giving every piece its proper place, making sure the packages would work well together and that the majority of them [could be used independently][solid-remix-cookie].
 
 Since that beta, Remix has grown a lot:
 
@@ -59,7 +59,7 @@ We've been putting Remix through its paces, particularly by migrating this very 
 
 Overall, our best pitch for Remix is that we like it. Everyone is trying to pitch that they're building _for agents_. No one really knows what that means. We built this for ourselves, and we use agents. We use agents a lot. We're the most biased of the bunch, but we're finding again and again that:
 
-- Agents get Remix because it's built on web primitives, it's type-safe, and treats things like UI state as Just JavaScript™ scope.
+- Agents get Remix because it's built on web primitives, is type-safe, and treats things like UI state as Just JavaScript™ scope.
 - On those occasions when we do still happen to look at the code, we get what the agent has produced, not because we totally get Remix, but because we find Remix so get-able.
 
 You shouldn't (and really can't) take our word for it, though. Try it out. Build something. And if you don't find Remix to be as grokable as we say, we still have 1 trick up our sleeve. The default `remix` template `package.json` looks like this:
@@ -86,7 +86,7 @@ The Release Candidate marks the end of feature development (if we can help it) a
 
 <figure>
   <img alt="Michael Jackson presenting onstage to an audience at Remix Jam 2025" src="/blog-images/posts/remix-3-release-candidate/remix-jam-2025-photo-139.jpg" />
-  <figcaption class="pt-2">Michael Jackson and co-founder of Remix presenting at Remix Jam 2025.</figcaption>
+  <figcaption class="pt-2">Michael Jackson, co-founder of Remix, presenting at Remix Jam 2025.</figcaption>
 </figure>
 
 ## Try it out
