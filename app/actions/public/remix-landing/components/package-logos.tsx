@@ -1,4 +1,4 @@
-import { addEventListeners, css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 import { clamp01 } from "../utils/math.ts";
 import { reducedMotion } from "../utils/reduced-motion.ts";
 
@@ -199,12 +199,16 @@ export function PackageLogos(
     });
   }
 
-  addEventListeners(window, handle.signal, {
-    scroll: scheduleScrollUpdate,
-    resize: () => {
+  window.addEventListener("scroll", scheduleScrollUpdate, {
+    signal: handle.signal,
+  });
+  window.addEventListener(
+    "resize",
+    () => {
       if (measurePanel()) handle.update();
     },
-  });
+    { signal: handle.signal },
+  );
 
   handle.queueTask(() => {
     locatePanel();

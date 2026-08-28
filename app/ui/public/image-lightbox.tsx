@@ -1,4 +1,4 @@
-import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
+import { clientEntry, on, ref, type Handle } from "remix/ui";
 import { cx } from "../../utils/public/cx.ts";
 import { focusTrap } from "./focus-trap.ts";
 import { lockScroll } from "./scroll-lock.ts";
@@ -101,8 +101,9 @@ export let ImageLightbox = clientEntry(
         subtree: true,
       });
 
-      addEventListeners(document, handle.signal, {
-        click: (event) => {
+      document.addEventListener(
+        "click",
+        (event) => {
           if (event.defaultPrevented || event.button !== 0) return;
           if (
             event.metaKey ||
@@ -116,7 +117,11 @@ export let ImageLightbox = clientEntry(
             event.preventDefault();
           }
         },
-        keydown: (event) => {
+        { signal: handle.signal },
+      );
+      document.addEventListener(
+        "keydown",
+        (event) => {
           if (lightbox.open && event.key === "Escape") {
             event.preventDefault();
             closeLightbox();
@@ -127,7 +132,8 @@ export let ImageLightbox = clientEntry(
             event.preventDefault();
           }
         },
-      });
+        { signal: handle.signal },
+      );
 
       handle.signal.addEventListener(
         "abort",

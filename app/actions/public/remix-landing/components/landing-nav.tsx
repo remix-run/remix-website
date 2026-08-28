@@ -1,4 +1,4 @@
-import { css, addEventListeners, navigate, on, type Handle } from "remix/ui";
+import { css, navigate, on, type Handle } from "remix/ui";
 import * as popover from "remix/ui/popover";
 import { routes } from "../../../../routes.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
@@ -207,46 +207,54 @@ export function LandingNav(
     });
   }
 
-  addEventListeners(window, handle.signal, {
-    keydown: (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (isEditableKeyTarget(e)) return;
+  window.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isEditableKeyTarget(event)) return;
 
-      if (e.key === "Escape" && menuOpen) {
-        e.preventDefault();
+      if (event.key === "Escape" && menuOpen) {
+        event.preventDefault();
         setMenuOpen(false);
         return;
       }
 
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
         const next = Math.min(activeIndexRef.current + 1, totalSections - 1);
         onJump?.(next);
         return;
       }
-      if (e.key === "ArrowUp") {
-        e.preventDefault();
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
         const prev = Math.max(activeIndexRef.current - 1, 0);
         onJump?.(prev);
         return;
       }
 
       const item = NAV_ITEMS.find(
-        (n) => n.key.toLowerCase() === e.key.toLowerCase(),
+        (item) => item.key.toLowerCase() === event.key.toLowerCase(),
       );
       if (item) {
         if (item.key === "B" && shouldBlockBlogShortcut()) return;
-        e.preventDefault();
+        event.preventDefault();
         openNavItem(item);
       }
     },
-    scroll: scheduleScrollUpdate,
-    resize: () => {
+    { signal: handle.signal },
+  );
+  window.addEventListener("scroll", scheduleScrollUpdate, {
+    signal: handle.signal,
+  });
+  window.addEventListener(
+    "resize",
+    () => {
       if (menuOpen && window.innerWidth > MOBILE_BREAKPOINT_PX) {
         setMenuOpen(false);
       }
     },
-  });
+    { signal: handle.signal },
+  );
 
   handle.signal.addEventListener("abort", () => {
     if (scrollFrame) cancelAnimationFrame(scrollFrame);

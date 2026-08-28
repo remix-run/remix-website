@@ -1,4 +1,4 @@
-import { addEventListeners, clientEntry, css, on, type Handle } from "remix/ui";
+import { clientEntry, css, on, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
@@ -121,12 +121,14 @@ export let Jam2026Header = clientEntry(
         );
       }
 
-      addEventListeners(window, handle.signal, {
-        scroll: requestEventLockupUpdate,
-        resize: requestEventLockupUpdate,
+      window.addEventListener("scroll", requestEventLockupUpdate, {
+        signal: handle.signal,
       });
-      addEventListeners(document, handle.signal, {
-        scroll: requestEventLockupUpdate,
+      window.addEventListener("resize", requestEventLockupUpdate, {
+        signal: handle.signal,
+      });
+      document.addEventListener("scroll", requestEventLockupUpdate, {
+        signal: handle.signal,
       });
 
       handle.signal.addEventListener(

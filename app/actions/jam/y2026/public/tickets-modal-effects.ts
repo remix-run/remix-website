@@ -1,4 +1,4 @@
-import { addEventListeners, type Handle } from "remix/ui";
+import { type Handle } from "remix/ui";
 
 import { ticketModalConfig } from "./tickets-modal-contract.ts";
 import { getFocusableElementsWithin } from "../../../../ui/public/focus-trap.ts";
@@ -166,8 +166,9 @@ export function createJam2026TicketsModalEffects(
   handle.queueTask(() => {
     syncModalState();
 
-    addEventListeners(document, handle.signal, {
-      keydown(event) {
+    document.addEventListener(
+      "keydown",
+      (event) => {
         handleTab(event);
         if (!isActive() || event.defaultPrevented || event.key !== "Escape") {
           return;
@@ -176,7 +177,10 @@ export function createJam2026TicketsModalEffects(
         event.preventDefault();
         options.requestClose();
       },
-      focusin: keepFocusInModal,
+      { signal: handle.signal },
+    );
+    document.addEventListener("focusin", keepFocusInModal, {
+      signal: handle.signal,
     });
 
     handle.signal.addEventListener(

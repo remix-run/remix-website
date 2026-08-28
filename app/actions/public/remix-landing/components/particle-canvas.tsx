@@ -1,4 +1,4 @@
-import { css, ref, addEventListeners, type Handle } from "remix/ui";
+import { css, ref, type Handle } from "remix/ui";
 import { Matrix4, Vector3 } from "three";
 import { ControlManager } from "../engine/controls.ts";
 import { Engine } from "../engine/engine.ts";
@@ -228,12 +228,17 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
     }
   }
 
-  addEventListeners(window, handle.signal, {
-    pointermove: (event) => {
+  window.addEventListener(
+    "pointermove",
+    (event) => {
       if (event.pointerType !== "mouse") return;
       setMousePosition(event.clientX, event.clientY);
     },
-    mousemove: (event) => {
+    { signal: handle.signal },
+  );
+  window.addEventListener(
+    "mousemove",
+    (event) => {
       if (window.PointerEvent) return;
       if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
         return;
@@ -241,7 +246,8 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
 
       setMousePosition(event.clientX, event.clientY);
     },
-  });
+    { signal: handle.signal },
+  );
 
   function disposeScene() {
     cancelAnimationFrame(frameId);

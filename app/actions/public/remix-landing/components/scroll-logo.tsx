@@ -1,4 +1,4 @@
-import { css, addEventListeners, on, type Handle } from "remix/ui";
+import { css, on, type Handle } from "remix/ui";
 import { routes } from "../../../../routes.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";
 import { brandContextMenu } from "../../../../ui/public/brand-context-menu.ts";
@@ -200,16 +200,22 @@ export function ScrollLogo(handle: Handle) {
     canAnimateScroll = true;
   });
 
-  addEventListeners(window, handle.signal, {
-    scroll: () => {
+  window.addEventListener(
+    "scroll",
+    () => {
       if (canAnimateScroll) ensureLoop();
       else syncToScroll();
     },
-    resize: () => {
+    { signal: handle.signal },
+  );
+  window.addEventListener(
+    "resize",
+    () => {
       largeWidth = window.innerWidth - LEFT * 2;
       ensureLoop();
     },
-  });
+    { signal: handle.signal },
+  );
 
   handle.signal.addEventListener("abort", () => {
     if (rafId) cancelAnimationFrame(rafId);

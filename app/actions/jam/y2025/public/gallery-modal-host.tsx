@@ -1,5 +1,4 @@
 import {
-  addEventListeners,
   clientEntry,
   createMixin,
   navigate,
@@ -234,9 +233,11 @@ function createJamGalleryModalNavigation() {
         void closeGallery();
       };
 
-      addEventListeners(document, handle.signal, {
-        keydown: onKeydown,
-        click: onClick,
+      document.addEventListener("keydown", onKeydown, {
+        signal: handle.signal,
+      });
+      document.addEventListener("click", onClick, {
+        signal: handle.signal,
       });
 
       // `insert` can run before descendants are committed or before layout (see `isFocusable` +

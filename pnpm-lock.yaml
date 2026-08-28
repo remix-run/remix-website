@@ -64,7 +64,7 @@ importers:
         version: 11.1.2
       remix:
         specifier: github:remix-run/remix#preview/main&path:packages/remix
-        version: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/remix(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
+        version: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/remix(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
       satori:
         specifier: 0.26.0
         version: 0.26.0
@@ -1642,108 +1642,108 @@ packages:
     engines: { node: ">=18" }
     hasBin: true
 
-  "@remix-run/assert@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/assert":
+  "@remix-run/assert@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/assert":
     resolution:
       {
         path: packages/assert,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.3.0
 
-  "@remix-run/assets@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/assets":
+  "@remix-run/assets@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/assets":
     resolution:
       {
         path: packages/assets,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.5.0
 
-  "@remix-run/async-context-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/async-context-middleware":
+  "@remix-run/async-context-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/async-context-middleware":
     resolution:
       {
         path: packages/async-context-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.3.5
 
-  "@remix-run/auth-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/auth-middleware":
+  "@remix-run/auth-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/auth-middleware":
     resolution:
       {
         path: packages/auth-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.2.5
 
-  "@remix-run/auth@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/auth":
+  "@remix-run/auth@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/auth":
     resolution:
       {
         path: packages/auth,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.2.7
 
-  "@remix-run/cli@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cli":
+  "@remix-run/cli@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cli":
     resolution:
       {
         path: packages/cli,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.5.0
     engines: { node: ">=24.3.0" }
 
-  "@remix-run/compression-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/compression-middleware":
+  "@remix-run/compression-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/compression-middleware":
     resolution:
       {
         path: packages/compression-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.13
 
-  "@remix-run/cookie@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cookie":
+  "@remix-run/cookie@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cookie":
     resolution:
       {
         path: packages/cookie,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.6.0
 
-  "@remix-run/cop-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cop-middleware":
+  "@remix-run/cop-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cop-middleware":
     resolution:
       {
         path: packages/cop-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.8
 
-  "@remix-run/cors-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cors-middleware":
+  "@remix-run/cors-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cors-middleware":
     resolution:
       {
         path: packages/cors-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.8
 
-  "@remix-run/csrf-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/csrf-middleware":
+  "@remix-run/csrf-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/csrf-middleware":
     resolution:
       {
         path: packages/csrf-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.8
 
-  "@remix-run/data-schema@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-schema":
+  "@remix-run/data-schema@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-schema":
     resolution:
       {
         path: packages/data-schema,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.3.0
 
-  "@remix-run/data-table-mysql@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-mysql":
+  "@remix-run/data-table-mysql@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-mysql":
     resolution:
       {
         path: packages/data-table-mysql,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.5.0
     peerDependencies:
@@ -1752,11 +1752,11 @@ packages:
       mysql2:
         optional: true
 
-  "@remix-run/data-table-postgres@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-postgres":
+  "@remix-run/data-table-postgres@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-postgres":
     resolution:
       {
         path: packages/data-table-postgres,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.5.0
     peerDependencies:
@@ -1765,27 +1765,27 @@ packages:
       pg:
         optional: true
 
-  "@remix-run/data-table-sqlite@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-sqlite":
+  "@remix-run/data-table-sqlite@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-sqlite":
     resolution:
       {
         path: packages/data-table-sqlite,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.6.0
 
-  "@remix-run/data-table@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table":
+  "@remix-run/data-table@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table":
     resolution:
       {
         path: packages/data-table,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.4.0
 
-  "@remix-run/fetch-proxy@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/fetch-proxy":
+  "@remix-run/fetch-proxy@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/fetch-proxy":
     resolution:
       {
         path: packages/fetch-proxy,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.8.5
 
@@ -1795,140 +1795,140 @@ packages:
         integrity: sha512-dN3Lsd4dHAV0USTF3Dm04effXcdr7GMgXiqeozTFDfvVIx2DbRAl94bwF6UdAWurgTOK2Oyz4cs9uadW/ylWXA==,
       }
 
-  "@remix-run/file-storage-s3@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/file-storage-s3":
+  "@remix-run/file-storage-s3@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/file-storage-s3":
     resolution:
       {
         path: packages/file-storage-s3,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.4
 
-  "@remix-run/file-storage@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/file-storage":
+  "@remix-run/file-storage@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/file-storage":
     resolution:
       {
         path: packages/file-storage,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.13.7
 
-  "@remix-run/form-data-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/form-data-middleware":
+  "@remix-run/form-data-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/form-data-middleware":
     resolution:
       {
         path: packages/form-data-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.3.5
 
-  "@remix-run/form-data-parser@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/form-data-parser":
+  "@remix-run/form-data-parser@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/form-data-parser":
     resolution:
       {
         path: packages/form-data-parser,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.17.5
 
-  "@remix-run/fs@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/fs":
+  "@remix-run/fs@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/fs":
     resolution:
       {
         path: packages/fs,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.4.6
 
-  "@remix-run/headers@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/headers":
+  "@remix-run/headers@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/headers":
     resolution:
       {
         path: packages/headers,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.21.1
 
-  "@remix-run/html-template@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/html-template":
+  "@remix-run/html-template@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/html-template":
     resolution:
       {
         path: packages/html-template,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.3.1
 
-  "@remix-run/lazy-file@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/lazy-file":
+  "@remix-run/lazy-file@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/lazy-file":
     resolution:
       {
         path: packages/lazy-file,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 5.0.6
 
-  "@remix-run/logger-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/logger-middleware":
+  "@remix-run/logger-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/logger-middleware":
     resolution:
       {
         path: packages/logger-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.3.5
 
-  "@remix-run/method-override-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/method-override-middleware":
+  "@remix-run/method-override-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/method-override-middleware":
     resolution:
       {
         path: packages/method-override-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.13
 
-  "@remix-run/mime@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/mime":
+  "@remix-run/mime@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/mime":
     resolution:
       {
         path: packages/mime,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.4.2
 
-  "@remix-run/multipart-parser@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/multipart-parser":
+  "@remix-run/multipart-parser@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/multipart-parser":
     resolution:
       {
         path: packages/multipart-parser,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.16.4
 
-  "@remix-run/node-fetch-server@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-fetch-server":
+  "@remix-run/node-fetch-server@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-fetch-server":
     resolution:
       {
         path: packages/node-fetch-server,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.14.1
 
-  "@remix-run/node-hmr@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-hmr":
+  "@remix-run/node-hmr@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-hmr":
     resolution:
       {
         path: packages/node-hmr,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.0
 
-  "@remix-run/node-tsx@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-tsx":
+  "@remix-run/node-tsx@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-tsx":
     resolution:
       {
         path: packages/node-tsx,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.1
     engines: { node: ">=24.3.0" }
 
-  "@remix-run/render-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/render-middleware":
+  "@remix-run/render-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/render-middleware":
     resolution:
       {
         path: packages/render-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.5
 
-  "@remix-run/response@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/response":
+  "@remix-run/response@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/response":
     resolution:
       {
         path: packages/response,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.3.8
 
@@ -1938,35 +1938,35 @@ packages:
         integrity: sha512-w0/lhgY40l2GrBQjJIOeYWIuKm1rxlOsc9Hvt+nyydnka0v4aI9Vv0VK4XzLD3aP08JzGtTlxFxwf1PZ8SGdLg==,
       }
 
-  "@remix-run/route-pattern@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/route-pattern":
+  "@remix-run/route-pattern@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/route-pattern":
     resolution:
       {
         path: packages/route-pattern,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.24.0
 
-  "@remix-run/session-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session-middleware":
+  "@remix-run/session-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session-middleware":
     resolution:
       {
         path: packages/session-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.4.0
 
-  "@remix-run/session-storage-memcache@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session-storage-memcache":
+  "@remix-run/session-storage-memcache@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session-storage-memcache":
     resolution:
       {
         path: packages/session-storage-memcache,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.2
 
-  "@remix-run/session-storage-redis@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session-storage-redis":
+  "@remix-run/session-storage-redis@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session-storage-redis":
     resolution:
       {
         path: packages/session-storage-redis,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.1
     peerDependencies:
@@ -1975,43 +1975,51 @@ packages:
       redis:
         optional: true
 
-  "@remix-run/session@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session":
+  "@remix-run/session@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session":
     resolution:
       {
         path: packages/session,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.4.2
 
-  "@remix-run/static-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/static-middleware":
+  "@remix-run/spa@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/spa":
+    resolution:
+      {
+        path: packages/spa,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
+      }
+    version: 0.0.0
+
+  "@remix-run/static-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/static-middleware":
     resolution:
       {
         path: packages/static-middleware,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.4.14
 
-  "@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/tar-parser":
+  "@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/tar-parser":
     resolution:
       {
         path: packages/tar-parser,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.7.1
 
-  "@remix-run/terminal@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/terminal":
+  "@remix-run/terminal@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/terminal":
     resolution:
       {
         path: packages/terminal,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.1
 
-  "@remix-run/test@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/test":
+  "@remix-run/test@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/test":
     resolution:
       {
         path: packages/test,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.6.0
     engines: { node: ">=24.3.0" }
@@ -2021,19 +2029,19 @@ packages:
       playwright:
         optional: true
 
-  "@remix-run/ui-hmr@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/ui-hmr":
+  "@remix-run/ui-hmr@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/ui-hmr":
     resolution:
       {
         path: packages/ui-hmr,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.1.0
 
-  "@remix-run/ui@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/ui":
+  "@remix-run/ui@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/ui":
     resolution:
       {
         path: packages/ui,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 0.7.0
 
@@ -2812,10 +2820,10 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
-  es-module-lexer@2.3.1:
+  es-module-lexer@2.3.2:
     resolution:
       {
-        integrity: sha512-shc1dbU90Yl/xq1QrC7QRtfcwURZuVRfPhZbDoldJ1cn1gzDvBaBWlv0eFolj5+0znnPJz5TXLxsN77X/12KTA==,
+        integrity: sha512-poHGpORABojJJucnV9KbOavETW8lBVnphkW77ER5/BQ5Fz7oXSoCNek7IH3vR5nRjdsEz926ibFYX8KtLQmdyw==,
       }
 
   esbuild@0.27.7:
@@ -4034,11 +4042,11 @@ packages:
         integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==,
       }
 
-  remix@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/remix:
+  remix@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/remix:
     resolution:
       {
         path: packages/remix,
-        tarball: https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e,
+        tarball: https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e,
       }
     version: 3.0.0-beta.10
     engines: { node: ">=24.3.0" }
@@ -5120,18 +5128,17 @@ snapshots:
     dependencies:
       playwright: 1.60.0
 
-  "@remix-run/assert@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/assert":
+  "@remix-run/assert@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/assert":
     {}
 
-  "@remix-run/assets@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/assets(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)":
+  "@remix-run/assets@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/assets(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)":
     dependencies:
       "@oxc-project/runtime": 0.121.0
-      "@remix-run/file-storage": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/file-storage
-      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/headers
-      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/mime
-      "@remix-run/route-pattern": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/route-pattern
+      "@remix-run/file-storage": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/file-storage
+      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/headers
+      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/mime
       chokidar: 5.0.0
-      es-module-lexer: 2.3.1
+      es-module-lexer: 2.3.2
       get-tsconfig: 4.14.1
       lightningcss: 1.32.0
       magic-string: 0.30.21
@@ -5145,28 +5152,29 @@ snapshots:
       - "@emnapi/core"
       - "@emnapi/runtime"
 
-  "@remix-run/async-context-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/async-context-middleware":
+  "@remix-run/async-context-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/async-context-middleware":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
 
-  "@remix-run/auth-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/auth-middleware":
+  "@remix-run/auth-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/auth-middleware":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
-      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session
+      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session
 
-  "@remix-run/auth@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/auth":
+  "@remix-run/auth@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/auth":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
-      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session
+      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session
 
-  "@remix-run/cli@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cli(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)":
+  "@remix-run/cli@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cli(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)":
     dependencies:
-      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table
-      "@remix-run/data-table-mysql": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-mysql
-      "@remix-run/data-table-postgres": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-postgres
-      "@remix-run/data-table-sqlite": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-sqlite
-      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/terminal
-      "@remix-run/test": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/test(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
+      "@remix-run/assets": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/assets(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
+      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table
+      "@remix-run/data-table-mysql": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-mysql
+      "@remix-run/data-table-postgres": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-postgres
+      "@remix-run/data-table-sqlite": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-sqlite
+      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/terminal
+      "@remix-run/test": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/test(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
       jsonc-parser: 3.3.1
       semver: 7.7.4
     transitivePeerDependencies:
@@ -5176,113 +5184,113 @@ snapshots:
       - pg
       - playwright
 
-  "@remix-run/compression-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/compression-middleware":
+  "@remix-run/compression-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/compression-middleware":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
-      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/mime
-      "@remix-run/response": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/response
+      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/mime
+      "@remix-run/response": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/response
 
-  "@remix-run/cookie@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cookie":
+  "@remix-run/cookie@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cookie":
     dependencies:
-      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/headers
+      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/headers
 
-  "@remix-run/cop-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cop-middleware":
-    dependencies:
-      "@remix-run/fetch-router": 0.21.0
-
-  "@remix-run/cors-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cors-middleware":
+  "@remix-run/cop-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cop-middleware":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
-      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/headers
 
-  "@remix-run/csrf-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/csrf-middleware":
+  "@remix-run/cors-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cors-middleware":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
-      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session
+      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/headers
 
-  "@remix-run/data-schema@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-schema":
+  "@remix-run/csrf-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/csrf-middleware":
+    dependencies:
+      "@remix-run/fetch-router": 0.21.0
+      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session
+
+  "@remix-run/data-schema@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-schema":
     dependencies:
       "@standard-schema/spec": 1.1.0
 
-  "@remix-run/data-table-mysql@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-mysql":
+  "@remix-run/data-table-mysql@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-mysql":
     dependencies:
-      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table
+      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table
 
-  "@remix-run/data-table-postgres@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-postgres":
+  "@remix-run/data-table-postgres@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-postgres":
     dependencies:
-      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table
+      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table
 
-  "@remix-run/data-table-sqlite@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-sqlite":
+  "@remix-run/data-table-sqlite@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-sqlite":
     dependencies:
-      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table
+      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table
 
-  "@remix-run/data-table@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table":
+  "@remix-run/data-table@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table":
     {}
 
-  "@remix-run/fetch-proxy@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/fetch-proxy":
+  "@remix-run/fetch-proxy@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/fetch-proxy":
     dependencies:
-      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/headers
+      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/headers
 
   "@remix-run/fetch-router@0.21.0":
     dependencies:
       "@remix-run/route-pattern": 0.24.0
 
-  "@remix-run/file-storage-s3@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/file-storage-s3":
+  "@remix-run/file-storage-s3@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/file-storage-s3":
     dependencies:
-      "@remix-run/file-storage": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/file-storage
+      "@remix-run/file-storage": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/file-storage
       aws4fetch: 1.0.20
 
-  "@remix-run/file-storage@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/file-storage":
+  "@remix-run/file-storage@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/file-storage":
     dependencies:
-      "@remix-run/fs": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/fs
-      "@remix-run/lazy-file": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/lazy-file
+      "@remix-run/fs": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/fs
+      "@remix-run/lazy-file": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/lazy-file
 
-  "@remix-run/form-data-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/form-data-middleware":
-    dependencies:
-      "@remix-run/fetch-router": 0.21.0
-      "@remix-run/form-data-parser": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/form-data-parser
-
-  "@remix-run/form-data-parser@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/form-data-parser":
-    dependencies:
-      "@remix-run/multipart-parser": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/multipart-parser
-
-  "@remix-run/fs@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/fs":
-    dependencies:
-      "@remix-run/lazy-file": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/lazy-file
-      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/mime
-
-  "@remix-run/headers@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/headers":
-    {}
-
-  "@remix-run/html-template@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/html-template":
-    {}
-
-  "@remix-run/lazy-file@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/lazy-file":
-    dependencies:
-      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/mime
-
-  "@remix-run/logger-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/logger-middleware":
+  "@remix-run/form-data-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/form-data-middleware":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
-      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/terminal
+      "@remix-run/form-data-parser": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/form-data-parser
 
-  "@remix-run/method-override-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/method-override-middleware":
+  "@remix-run/form-data-parser@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/form-data-parser":
+    dependencies:
+      "@remix-run/multipart-parser": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/multipart-parser
+
+  "@remix-run/fs@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/fs":
+    dependencies:
+      "@remix-run/lazy-file": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/lazy-file
+      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/mime
+
+  "@remix-run/headers@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/headers":
+    {}
+
+  "@remix-run/html-template@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/html-template":
+    {}
+
+  "@remix-run/lazy-file@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/lazy-file":
+    dependencies:
+      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/mime
+
+  "@remix-run/logger-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/logger-middleware":
+    dependencies:
+      "@remix-run/fetch-router": 0.21.0
+      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/terminal
+
+  "@remix-run/method-override-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/method-override-middleware":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
 
-  "@remix-run/mime@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/mime":
+  "@remix-run/mime@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/mime":
     {}
 
-  "@remix-run/multipart-parser@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/multipart-parser":
+  "@remix-run/multipart-parser@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/multipart-parser":
     dependencies:
-      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/headers
+      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/headers
 
-  "@remix-run/node-fetch-server@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-fetch-server":
+  "@remix-run/node-fetch-server@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-fetch-server":
     {}
 
-  "@remix-run/node-hmr@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-hmr(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)":
+  "@remix-run/node-hmr@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-hmr(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)":
     dependencies:
-      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/terminal
+      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/terminal
       chokidar: 5.0.0
       oxc-parser: 0.121.0(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
       source-map-js: 1.2.1
@@ -5290,7 +5298,7 @@ snapshots:
       - "@emnapi/core"
       - "@emnapi/runtime"
 
-  "@remix-run/node-tsx@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-tsx(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)":
+  "@remix-run/node-tsx@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-tsx(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)":
     dependencies:
       get-tsconfig: 4.14.1
       oxc-transform: 0.121.0(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
@@ -5298,57 +5306,63 @@ snapshots:
       - "@emnapi/core"
       - "@emnapi/runtime"
 
-  "@remix-run/render-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/render-middleware":
+  "@remix-run/render-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/render-middleware":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
 
-  "@remix-run/response@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/response":
+  "@remix-run/response@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/response":
     dependencies:
-      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/headers
-      "@remix-run/html-template": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/html-template
-      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/mime
+      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/headers
+      "@remix-run/html-template": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/html-template
+      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/mime
 
   "@remix-run/route-pattern@0.24.0": {}
 
-  "@remix-run/route-pattern@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/route-pattern":
+  "@remix-run/route-pattern@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/route-pattern":
     {}
 
-  "@remix-run/session-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session-middleware":
+  "@remix-run/session-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session-middleware":
     dependencies:
-      "@remix-run/cookie": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cookie
+      "@remix-run/cookie": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cookie
       "@remix-run/fetch-router": 0.21.0
-      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session
+      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session
 
-  "@remix-run/session-storage-memcache@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session-storage-memcache":
+  "@remix-run/session-storage-memcache@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session-storage-memcache":
     dependencies:
-      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session
+      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session
 
-  "@remix-run/session-storage-redis@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session-storage-redis":
+  "@remix-run/session-storage-redis@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session-storage-redis":
     dependencies:
-      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session
+      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session
 
-  "@remix-run/session@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session":
+  "@remix-run/session@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session":
     {}
 
-  "@remix-run/static-middleware@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/static-middleware":
+  "@remix-run/spa@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/spa":
     dependencies:
       "@remix-run/fetch-router": 0.21.0
-      "@remix-run/fs": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/fs
-      "@remix-run/html-template": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/html-template
-      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/mime
-      "@remix-run/response": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/response
+      "@remix-run/render-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/render-middleware
+      "@remix-run/ui": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/ui
 
-  "@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/tar-parser":
-    {}
-
-  "@remix-run/terminal@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/terminal":
-    {}
-
-  "@remix-run/test@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/test(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)":
+  "@remix-run/static-middleware@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/static-middleware":
     dependencies:
-      "@remix-run/node-tsx": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-tsx(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
-      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/terminal
-      es-module-lexer: 2.3.1
+      "@remix-run/fetch-router": 0.21.0
+      "@remix-run/fs": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/fs
+      "@remix-run/html-template": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/html-template
+      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/mime
+      "@remix-run/response": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/response
+
+  "@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/tar-parser":
+    {}
+
+  "@remix-run/terminal@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/terminal":
+    {}
+
+  "@remix-run/test@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/test(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)":
+    dependencies:
+      "@remix-run/node-tsx": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-tsx(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
+      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/terminal
+      es-module-lexer: 2.3.2
       esbuild: 0.27.7
       get-tsconfig: 4.14.1
       istanbul-lib-coverage: 3.2.2
@@ -5364,7 +5378,7 @@ snapshots:
       - "@emnapi/core"
       - "@emnapi/runtime"
 
-  "@remix-run/ui-hmr@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/ui-hmr(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)":
+  "@remix-run/ui-hmr@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/ui-hmr(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)":
     dependencies:
       magic-string: 0.30.21
       oxc-parser: 0.121.0(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
@@ -5373,7 +5387,7 @@ snapshots:
       - "@emnapi/core"
       - "@emnapi/runtime"
 
-  "@remix-run/ui@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/ui":
+  "@remix-run/ui@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/ui":
     dependencies:
       "@types/dom-navigation": 1.0.7
 
@@ -5716,7 +5730,7 @@ snapshots:
 
   es-errors@1.3.0: {}
 
-  es-module-lexer@2.3.1: {}
+  es-module-lexer@2.3.2: {}
 
   esbuild@0.27.7:
     optionalDependencies:
@@ -6651,54 +6665,55 @@ snapshots:
       mdast-util-to-markdown: 2.1.2
       unified: 11.0.5
 
-  remix@https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/remix(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0):
+  remix@https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/remix(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0):
     dependencies:
-      "@remix-run/assert": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/assert
-      "@remix-run/assets": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/assets(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
-      "@remix-run/async-context-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/async-context-middleware
-      "@remix-run/auth": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/auth
-      "@remix-run/auth-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/auth-middleware
-      "@remix-run/cli": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cli(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
-      "@remix-run/compression-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/compression-middleware
-      "@remix-run/cookie": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cookie
-      "@remix-run/cop-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cop-middleware
-      "@remix-run/cors-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/cors-middleware
-      "@remix-run/csrf-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/csrf-middleware
-      "@remix-run/data-schema": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-schema
-      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table
-      "@remix-run/data-table-mysql": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-mysql
-      "@remix-run/data-table-postgres": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-postgres
-      "@remix-run/data-table-sqlite": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/data-table-sqlite
-      "@remix-run/fetch-proxy": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/fetch-proxy
+      "@remix-run/assert": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/assert
+      "@remix-run/assets": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/assets(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
+      "@remix-run/async-context-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/async-context-middleware
+      "@remix-run/auth": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/auth
+      "@remix-run/auth-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/auth-middleware
+      "@remix-run/cli": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cli(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
+      "@remix-run/compression-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/compression-middleware
+      "@remix-run/cookie": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cookie
+      "@remix-run/cop-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cop-middleware
+      "@remix-run/cors-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/cors-middleware
+      "@remix-run/csrf-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/csrf-middleware
+      "@remix-run/data-schema": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-schema
+      "@remix-run/data-table": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table
+      "@remix-run/data-table-mysql": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-mysql
+      "@remix-run/data-table-postgres": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-postgres
+      "@remix-run/data-table-sqlite": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/data-table-sqlite
+      "@remix-run/fetch-proxy": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/fetch-proxy
       "@remix-run/fetch-router": 0.21.0
-      "@remix-run/file-storage": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/file-storage
-      "@remix-run/file-storage-s3": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/file-storage-s3
-      "@remix-run/form-data-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/form-data-middleware
-      "@remix-run/form-data-parser": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/form-data-parser
-      "@remix-run/fs": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/fs
-      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/headers
-      "@remix-run/html-template": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/html-template
-      "@remix-run/lazy-file": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/lazy-file
-      "@remix-run/logger-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/logger-middleware
-      "@remix-run/method-override-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/method-override-middleware
-      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/mime
-      "@remix-run/multipart-parser": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/multipart-parser
-      "@remix-run/node-fetch-server": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-fetch-server
-      "@remix-run/node-hmr": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-hmr(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
-      "@remix-run/node-tsx": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/node-tsx(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
-      "@remix-run/render-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/render-middleware
-      "@remix-run/response": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/response
-      "@remix-run/route-pattern": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/route-pattern
-      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session
-      "@remix-run/session-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session-middleware
-      "@remix-run/session-storage-memcache": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session-storage-memcache
-      "@remix-run/session-storage-redis": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/session-storage-redis
-      "@remix-run/static-middleware": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/static-middleware
-      "@remix-run/tar-parser": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/tar-parser
-      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/terminal
-      "@remix-run/test": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/test(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
-      "@remix-run/ui": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/ui
-      "@remix-run/ui-hmr": https://codeload.github.com/remix-run/remix/tar.gz/ea2db2fc57bc8b04d7e0da9da6da953f01e7277e#path:packages/ui-hmr(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
+      "@remix-run/file-storage": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/file-storage
+      "@remix-run/file-storage-s3": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/file-storage-s3
+      "@remix-run/form-data-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/form-data-middleware
+      "@remix-run/form-data-parser": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/form-data-parser
+      "@remix-run/fs": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/fs
+      "@remix-run/headers": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/headers
+      "@remix-run/html-template": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/html-template
+      "@remix-run/lazy-file": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/lazy-file
+      "@remix-run/logger-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/logger-middleware
+      "@remix-run/method-override-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/method-override-middleware
+      "@remix-run/mime": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/mime
+      "@remix-run/multipart-parser": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/multipart-parser
+      "@remix-run/node-fetch-server": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-fetch-server
+      "@remix-run/node-hmr": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-hmr(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
+      "@remix-run/node-tsx": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/node-tsx(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
+      "@remix-run/render-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/render-middleware
+      "@remix-run/response": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/response
+      "@remix-run/route-pattern": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/route-pattern
+      "@remix-run/session": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session
+      "@remix-run/session-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session-middleware
+      "@remix-run/session-storage-memcache": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session-storage-memcache
+      "@remix-run/session-storage-redis": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/session-storage-redis
+      "@remix-run/spa": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/spa
+      "@remix-run/static-middleware": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/static-middleware
+      "@remix-run/tar-parser": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/tar-parser
+      "@remix-run/terminal": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/terminal
+      "@remix-run/test": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/test(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
+      "@remix-run/ui": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/ui
+      "@remix-run/ui-hmr": https://codeload.github.com/remix-run/remix/tar.gz/fde93d57355eecd811bb4fcd58793685feb5813e#path:packages/ui-hmr(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
     optionalDependencies:
       playwright: 1.60.0
     transitivePeerDependencies:

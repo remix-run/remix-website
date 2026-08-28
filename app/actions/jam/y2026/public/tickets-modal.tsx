@@ -1,11 +1,4 @@
-import {
-  addEventListeners,
-  clientEntry,
-  css,
-  navigate,
-  on,
-  type Handle,
-} from "remix/ui";
+import { clientEntry, css, navigate, on, type Handle } from "remix/ui";
 import { animateEntrance, spring } from "remix/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
@@ -235,11 +228,13 @@ export function Jam2026TicketsModalContent(
   }
 
   handle.queueTask(() => {
-    addEventListeners(window, handle.signal, {
-      pageshow(event) {
+    window.addEventListener(
+      "pageshow",
+      (event) => {
         if (event.persisted) resetSubmitting();
       },
-    });
+      { signal: handle.signal },
+    );
   });
 
   function setQuantity(nextQuantity: number) {

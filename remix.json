@@ -1,4 +1,34 @@
 {
+  "assets": {
+    "rootDir": ".",
+    "basePath": "/assets",
+    "mounts": {
+      "app": "app",
+      "authors": "public/authors",
+      "blog-images": "public/blog-images",
+      "npm": "node_modules"
+    },
+    "allowFiles": [
+      "app/routes.ts",
+      "app/**/public/**",
+      "public/authors/**",
+      "public/blog-images/**"
+    ],
+    "allowPackages": ["remix", "three", "fathom-client"],
+    "denyFiles": ["app/**/*.test.*"],
+    "files": {
+      "extensions": [
+        ".avif",
+        ".gif",
+        ".jpeg",
+        ".jpg",
+        ".png",
+        ".svg",
+        ".webp",
+        ".woff2"
+      ]
+    }
+  },
   "test": {
     "setup": "./test/setup.ts",
     "playwright": {

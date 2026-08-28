@@ -1,5 +1,5 @@
 import { cx } from "../../../../utils/public/cx.ts";
-import { addEventListeners, clientEntry, type Handle } from "remix/ui";
+import { clientEntry, type Handle } from "remix/ui";
 
 const SCRAMBLE_CHARS =
   "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -161,8 +161,8 @@ export let JamScrambleText = clientEntry(
       if (signal.aborted || handle.signal.aborted) return;
 
       let cleanupOnPageHide = () => cleanupTimers();
-      addEventListeners(window, handle.signal, {
-        pagehide: cleanupOnPageHide,
+      window.addEventListener("pagehide", cleanupOnPageHide, {
+        signal: handle.signal,
       });
       handle.signal.addEventListener(
         "abort",

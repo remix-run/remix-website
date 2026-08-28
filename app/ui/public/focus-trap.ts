@@ -1,4 +1,4 @@
-import { addEventListeners, createMixin } from "remix/ui";
+import { createMixin } from "remix/ui";
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -59,8 +59,9 @@ export let focusTrap = createMixin<HTMLElement, [enabled?: boolean]>(
     handle.addEventListener("insert", (event) => {
       host = event.node;
 
-      addEventListeners(document, handle.signal, {
-        keydown(event) {
+      document.addEventListener(
+        "keydown",
+        (event) => {
           if (!enabled || event.defaultPrevented || event.key !== "Tab") {
             return;
           }
@@ -85,7 +86,11 @@ export let focusTrap = createMixin<HTMLElement, [enabled?: boolean]>(
           event.preventDefault();
           target.focus();
         },
-        focusin(event) {
+        { signal: handle.signal },
+      );
+      document.addEventListener(
+        "focusin",
+        (event) => {
           if (!enabled) return;
           let target = event.target;
           let currentHost = host;
@@ -94,7 +99,8 @@ export let focusTrap = createMixin<HTMLElement, [enabled?: boolean]>(
 
           focusBoundary("start");
         },
-      });
+        { signal: handle.signal },
+      );
     });
 
     handle.addEventListener("remove", () => {

@@ -1,11 +1,4 @@
-import {
-  addEventListeners,
-  clientEntry,
-  on,
-  ref,
-  type Handle,
-  type RemixNode,
-} from "remix/ui";
+import { clientEntry, on, ref, type Handle, type RemixNode } from "remix/ui";
 import { cx } from "../../utils/public/cx.ts";
 import { Icon } from "./icon.tsx";
 
@@ -54,10 +47,14 @@ export let MobileMenu = clientEntry(
     };
 
     handle.queueTask(() => {
-      addEventListeners(document, handle.signal, {
-        mousedown: closeMenu,
-        touchstart: closeMenu,
-        focusin: closeMenu,
+      document.addEventListener("mousedown", closeMenu, {
+        signal: handle.signal,
+      });
+      document.addEventListener("touchstart", closeMenu, {
+        signal: handle.signal,
+      });
+      document.addEventListener("focusin", closeMenu, {
+        signal: handle.signal,
       });
     });
 

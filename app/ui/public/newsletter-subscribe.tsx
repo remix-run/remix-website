@@ -1,5 +1,4 @@
 import {
-  addEventListeners,
   clientEntry,
   Frame,
   on,
@@ -52,13 +51,15 @@ export function createNewsletterFrameForm(
     "data-rmx-target": NEWSLETTER_SUBSCRIBE_FRAME_NAME,
   } as const;
 
-  addEventListeners(handle.frame, handle.signal, {
-    reloadComplete() {
+  handle.frame.addEventListener(
+    "reloadComplete",
+    () => {
       submitting = false;
       if (handle.props.status === "success") form?.reset();
       handle.update();
     },
-  });
+    { signal: handle.signal },
+  );
 
   return {
     get state(): { status: NewsletterSubscribeFormStatus } {

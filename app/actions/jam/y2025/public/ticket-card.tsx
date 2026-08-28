@@ -1,4 +1,4 @@
-import { addEventListeners, clientEntry, on, ref, type Handle } from "remix/ui";
+import { clientEntry, on, ref, type Handle } from "remix/ui";
 
 export let JamTicketCard = clientEntry(
   import.meta.url,
@@ -24,7 +24,9 @@ export let JamTicketCard = clientEntry(
     };
 
     handle.queueTask(() => {
-      addEventListeners(window, handle.signal, { resize: updateDimensions });
+      window.addEventListener("resize", updateDimensions, {
+        signal: handle.signal,
+      });
     });
 
     return () => {

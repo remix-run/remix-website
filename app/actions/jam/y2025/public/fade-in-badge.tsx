@@ -1,10 +1,5 @@
 import { cx } from "../../../../utils/public/cx.ts";
-import {
-  addEventListeners,
-  clientEntry,
-  type Handle,
-  type RemixNode,
-} from "remix/ui";
+import { clientEntry, type Handle, type RemixNode } from "remix/ui";
 
 type JamFadeInBadgeProps = {
   delay?: number;
@@ -38,8 +33,8 @@ export let JamFadeInBadge = clientEntry(
       let clearTimeoutOnPageHide = () => {
         window.clearTimeout(timeout);
       };
-      addEventListeners(window, handle.signal, {
-        pagehide: clearTimeoutOnPageHide,
+      window.addEventListener("pagehide", clearTimeoutOnPageHide, {
+        signal: handle.signal,
       });
       handle.signal.addEventListener(
         "abort",

@@ -1,4 +1,4 @@
-import { addEventListeners, clientEntry, css, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/ui";
 
 import type { FpsCounter } from "./fps-counter.tsx";
 import { isEditableKeyTarget } from "./keyboard.ts";
@@ -50,8 +50,8 @@ export let FpsCounterToggle = clientEntry(
     }
 
     handle.queueTask(() => {
-      addEventListeners(window, handle.signal, {
-        keydown: onKeydown,
+      window.addEventListener("keydown", onKeydown, {
+        signal: handle.signal,
       });
     });
 

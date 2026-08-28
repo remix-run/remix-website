@@ -1,6 +1,7 @@
 import * as os from "node:os";
 import * as path from "node:path";
 import { createAssetServer, defineFileTransform } from "remix/assets";
+import { loadConfig } from "remix/cli";
 import { createFsFileStorage } from "remix/file-storage/fs";
 import { uiHmr } from "remix/ui-hmr/assets";
 import sharp from "sharp";
@@ -9,7 +10,10 @@ let nodeEnv = process.env.NODE_ENV ?? "development";
 let isDevelopment = nodeEnv === "development";
 let isProduction = nodeEnv === "production";
 let isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
-let rootDir = path.resolve(import.meta.dirname, "../..");
+let config = await loadConfig(import.meta.dirname);
+if (!config.assets) throw new Error("Missing assets configuration");
+if (!config.assets.files) throw new Error("Missing asset file configuration");
+
 let buildId = isProduction ? getBuildId() : undefined;
 let webpInputExtensions = [".jpeg", ".jpg", ".png"] as const;
 let webpTransforms = {
@@ -24,22 +28,7 @@ let webpTransforms = {
 };
 
 export let assets = createAssetServer({
-  basePath: "/assets",
-  rootDir,
-  fileMap: {
-    "/app/*path": "app/*path",
-    "/authors/*path": "public/authors/*path",
-    "/blog-images/*path": "public/blog-images/*path",
-    "/npm/*path": "node_modules/*path",
-  },
-  allowFiles: [
-    "app/routes.ts",
-    "app/**/public/**",
-    "public/authors/**",
-    "public/blog-images/**",
-  ],
-  allowPackages: ["remix", "three", "fathom-client"],
-  denyFiles: ["app/**/*.test.*"],
+  ...config.assets,
   target: {
     chrome: "109",
     es: "2022",
@@ -48,6 +37,7 @@ export let assets = createAssetServer({
   },
   fingerprint: buildId ? { buildId } : undefined,
   files: {
+    ...config.assets.files,
     cache: createFsFileStorage(
       path.join(
         os.tmpdir(),
@@ -57,16 +47,6 @@ export let assets = createAssetServer({
           : `process-${process.pid}`,
       ),
     ),
-    extensions: [
-      ".avif",
-      ".gif",
-      ".jpeg",
-      ".jpg",
-      ".png",
-      ".svg",
-      ".webp",
-      ".woff2",
-    ],
     maxRequestTransforms: 1,
     transforms: webpTransforms,
   },

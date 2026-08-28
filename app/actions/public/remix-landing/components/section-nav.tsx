@@ -1,4 +1,4 @@
-import { addEventListeners, css, on, type Handle } from "remix/ui";
+import { css, on, type Handle } from "remix/ui";
 import { theme } from "../../../../ui/public/theme.ts";
 import { colors } from "../styles/tokens.ts";
 import { clamp } from "../utils/math.ts";
@@ -193,8 +193,8 @@ export function SectionNav(
     });
   }
 
-  addEventListeners(window, handle.signal, {
-    scroll: scheduleScrollUpdate,
+  window.addEventListener("scroll", scheduleScrollUpdate, {
+    signal: handle.signal,
   });
   handle.signal.addEventListener("abort", () => {
     if (scrollFrame) cancelAnimationFrame(scrollFrame);

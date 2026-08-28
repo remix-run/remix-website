@@ -1,4 +1,4 @@
-import { addEventListeners, clientEntry, css, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/ui";
 import { PresetGlow } from "./components/preset-glow.tsx";
 import { LandingNav } from "./components/landing-nav.tsx";
 import { LabelOverlay } from "./components/label-overlay.tsx";
@@ -430,13 +430,19 @@ export let RemixLandingEnhancements = clientEntry(
         if (!handle.signal.aborted) handle.update();
       });
 
-      addEventListeners(window, handle.signal, {
-        scroll: () => scheduleMorphSync(),
-        resize: () => {
+      window.addEventListener("scroll", scheduleMorphSync, {
+        signal: handle.signal,
+      });
+      window.addEventListener(
+        "resize",
+        () => {
           scroll.sectionStops = null;
           scheduleMorphSync();
         },
-        keydown: onKeydown,
+        { signal: handle.signal },
+      );
+      window.addEventListener("keydown", onKeydown, {
+        signal: handle.signal,
       });
 
       handle.signal.addEventListener("abort", () => {
