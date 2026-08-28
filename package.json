@@ -19,7 +19,7 @@
     "push:stage": "git tag -f stage && git push origin stage -f",
     "browser": "playwright-cli",
     "start": "cross-env NODE_ENV=production node --import remix/node-tsx server.ts",
-    "preview": "pnpm run build && cross-env NODE_ENV=production ASSET_BUILD_ID=local-preview node --import remix/node-tsx server.ts",
+    "preview": "pnpm run build && cross-env NODE_ENV=production node --import remix/node-tsx server.ts",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "pretest": "pnpm run build:css",
@@ -49,7 +49,7 @@
     "remark-gfm": "4.0.1",
     "remark-parse": "11.0.0",
     "remark-rehype": "11.1.2",
-    "remix": "github:remix-run/remix#preview/main&path:packages/remix",
+    "remix": "github:remix-run/remix#preview/pr-11706&path:packages/remix",
     "satori": "0.26.0",
     "semver": "7.7.4",
     "sharp": "0.35.3",
@@ -84,8 +84,7 @@
   "packageManager": "pnpm@10.30.1",
   "pnpm": {
     "overrides": {
-      "svgo": "3.3.3",
-      "@remix-run/fetch-router": "0.21.0"
+      "svgo": "3.3.3"
     }
   }
 }

@@ -83,5 +83,19 @@ describe("home route", () => {
       "/assets/app/styles/public/global.css",
       "/assets/app/styles/public/home.css",
     ]);
+
+    let importMapIndices = [...html.matchAll(/<script[^>]+type="importmap"/g)]
+      .map((match) => match.index)
+      .filter((index) => index !== undefined);
+    let modulePreloadIndices = [...html.matchAll(/rel="modulepreload"/g)]
+      .map((match) => match.index)
+      .filter((index) => index !== undefined);
+    let moduleScriptIndex = html.indexOf('<script type="module"');
+    expect(importMapIndices.length).toBeGreaterThan(0);
+    expect(modulePreloadIndices.length).toBeGreaterThan(0);
+    expect(moduleScriptIndex).toBeGreaterThan(Math.max(...importMapIndices));
+    expect(moduleScriptIndex).toBeGreaterThan(
+      Math.max(...modulePreloadIndices),
+    );
   });
 });

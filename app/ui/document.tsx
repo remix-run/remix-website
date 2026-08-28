@@ -66,6 +66,7 @@ export function Document(handle: Handle<DocumentProps>) {
       children,
     } = handle.props;
     let assetEntry = getAssetEntry();
+    let { href: scriptHref, importMap, preloads } = assetEntry.scriptEntry;
     let stylesheetNames = new Set<StylesheetName>(["global"]);
     for (let name of requestedStylesheets) stylesheetNames.add(name);
 
@@ -258,7 +259,8 @@ export function Document(handle: Handle<DocumentProps>) {
             ),
           )}
 
-          {assetEntry.preloads.map((href) => (
+          <script type="importmap">{JSON.stringify(importMap)}</script>
+          {preloads.map((href) => (
             <link
               key={href}
               data-rmx-key={`modulepreload:${href}`}
@@ -266,7 +268,6 @@ export function Document(handle: Handle<DocumentProps>) {
               href={href}
             />
           ))}
-          <script type="module" async src={assetEntry.src} />
 
           {/* Apply the system color scheme before first paint. */}
           <script innerHTML={colorSchemeScript} />
@@ -280,6 +281,7 @@ export function Document(handle: Handle<DocumentProps>) {
           {/* Inline so route-local theme resets emitted later cannot reveal the sprite. */}
           <div style={{ display: "none" }} innerHTML={iconsSpriteHtml} />
           {children}
+          <script type="module" src={scriptHref} />
         </body>
       </html>
     );

@@ -14,7 +14,7 @@ let config = await loadConfig(import.meta.dirname);
 if (!config.assets) throw new Error("Missing assets configuration");
 if (!config.assets.files) throw new Error("Missing asset file configuration");
 
-let buildId = isProduction ? getBuildId() : undefined;
+let fileCacheKey = process.env.FLY_IMAGE_REF ?? `process-${process.pid}`;
 let webpInputExtensions = [".jpeg", ".jpg", ".png"] as const;
 let webpTransforms = {
   webp: createWebpTransform(),
@@ -35,18 +35,11 @@ export let assets = createAssetServer({
     firefox: "115",
     safari: "16.4",
   },
-  fingerprint: buildId ? { buildId } : undefined,
+  fingerprint: isProduction,
   files: {
     ...config.assets.files,
-    cache: createFsFileStorage(
-      path.join(
-        os.tmpdir(),
-        "remix-website-assets",
-        buildId
-          ? Buffer.from(buildId).toString("base64url")
-          : `process-${process.pid}`,
-      ),
-    ),
+    cache: createFsFileStorage(path.join(os.tmpdir(), "remix-website-assets")),
+    cacheKey: fileCacheKey,
     maxRequestTransforms: 1,
     transforms: webpTransforms,
   },
@@ -93,14 +86,4 @@ function createWebpTransform(width?: number) {
       return { content, extension: ".webp" };
     },
   });
-}
-
-function getBuildId() {
-  let buildId = process.env.ASSET_BUILD_ID || process.env.FLY_IMAGE_REF;
-  if (!buildId) {
-    throw new Error(
-      "ASSET_BUILD_ID or FLY_IMAGE_REF is required for production asset fingerprinting",
-    );
-  }
-  return buildId;
 }
