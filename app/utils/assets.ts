@@ -1,3 +1,4 @@
+import { readdirSync } from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { createAssetServer, defineFileTransform } from "remix/assets";
@@ -13,6 +14,7 @@ let isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
 let config = await loadConfig(import.meta.dirname);
 if (!config.assets) throw new Error("Missing assets configuration");
 if (!config.assets.files) throw new Error("Missing asset file configuration");
+let rootDir = config.assets.rootDir;
 
 let buildId = isProduction ? getBuildId() : undefined;
 let webpInputExtensions = [".jpeg", ".jpg", ".png"] as const;
@@ -52,10 +54,7 @@ export let assets = createAssetServer({
   },
   sourceMaps: isDevelopment ? "external" : undefined,
   minify: isProduction,
-  hmr: isHmr
-    ? async () =>
-        (await import("remix/node-hmr/runtime")).createBrowserHmrChannel()
-    : undefined,
+  hmr: isHmr ? createAppBrowserHmrChannel : undefined,
   scripts: {
     define: {
       "process.env.NODE_ENV": JSON.stringify(nodeEnv),
@@ -64,6 +63,29 @@ export let assets = createAssetServer({
   },
   watch: isDevelopment,
 });
+
+async function createAppBrowserHmrChannel() {
+  let channel = await (
+    await import("remix/node-hmr/runtime")
+  ).createBrowserHmrChannel();
+  let postsDirectory = path.join(rootDir, "data/posts");
+  let postFilePaths = new Set(
+    readdirSync(postsDirectory, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+      .map((entry) => path.join(postsDirectory, entry.name)),
+  );
+
+  channel.updateWatchedFiles({ add: [...postFilePaths], remove: [] });
+  channel.onFileEvents(async (events) => {
+    let files = events
+      .map((event) => event.filePath)
+      .filter((filePath) => postFilePaths.has(filePath));
+
+    return files.length > 0 ? [{ type: "reload", files }] : [];
+  });
+
+  return channel;
+}
 
 export function getWebpHref(filePath: string, width?: number) {
   let transform = width === undefined ? "webp" : `webp-${width}`;
