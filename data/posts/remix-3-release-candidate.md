@@ -1,6 +1,6 @@
 ---
 title: Remix 3 Release Candidate
-summary: Remix 3 is ready for you to test, build with, and help us prepare for a stable release.
+summary: Remix 3 RC is available. A full-stack JavaScript framework built on web primitives and shipped as a single dependency.
 date: 2026-08-28
 featured: true
 authors:
@@ -17,7 +17,7 @@ The last time we shared updates about Remix 3 was when we announced our [beta pr
 
 This post barely scratches the surface of everything we've packed into Remix 3: database management, schema validation, a fast, type-safe router, an unbundled asset server, and a brand-new UI runtime complete with composable event handling, styles, animations, and built-in components. Remix is more capable than it has ever been, and it's all in a single `remix` package.
 
-We're going to dig into all the details in the coming weeks and months, and we'll release Remix 3 on October 2 at [Remix Jam][remix-jam-2026] (tickets are still available).
+We're going to dig into all the details in the coming weeks and months, and we'll release Remix 3 on October 2 at <a href="/jam/2026" data-rmx-document>Remix Jam</a> (tickets are still available).
 
 ## What's New
 
@@ -55,7 +55,7 @@ This is largely for 2 reasons:
 
 This has meant that we've defaulted a lot more to building than to showing. But no more.
 
-We've been putting Remix through its paces, particularly by migrating this very website as well as the [Remix Store][remix-store] (works on my machine, I really should deploy it). We have been gathering feedback from early adopters, both externally and internally here at Shopify, some of whom you may or may not hear from at [Remix Jam][remix-jam-2026].
+We've been putting Remix through its paces, particularly by migrating this very website as well as the [Remix Store][remix-store] (works on my machine, I really should deploy it). We have been gathering feedback from early adopters, both externally and internally here at Shopify, some of whom you may or may not hear from at <a href="/jam/2026" data-rmx-document>Remix Jam</a>.
 
 Overall, our best pitch for Remix is that we like it. Everyone is trying to pitch that they're building _for agents_. No one really knows what that means. We built this for ourselves, and we use agents. We use agents a lot. We're the most biased of the bunch, but we're finding again and again that:
 
@@ -82,7 +82,7 @@ You're probably wondering at this point how long it will be before we call Remix
 
 At this point, we are done adding features to Remix 3 before the official release. We have plenty of ideas for continuing to expand and improve the framework (I've had multiple people ask me if we're gonna include background jobs), and we probably could spend years in pre-3 release mode if we wanted. Agents only enable our addiction to enhancing and improving and expanding Remix. But endlessly perfecting the perfect framework is no good for you, and we really want Remix to help you build your ideas. So it's time to ship and start binding ourselves to SemVer so you can trust Remix with your ideas.
 
-The Release Candidate marks the end of feature development (if we can help it) and allows us to clean up known bugs, perform thorough security audits, gather feedback from early adopters, write more docs, and, oh yeah, prepare for [Remix Jam][remix-jam-2026] (where we will release Remix 3).
+The Release Candidate marks the end of feature development (if we can help it) and allows us to clean up known bugs, perform thorough security audits, gather feedback from early adopters, write more docs, and, oh yeah, prepare for <a href="/jam/2026" data-rmx-document>Remix Jam</a> (where we will release Remix 3).
 
 <figure>
   <img alt="Michael Jackson presenting onstage to an audience at Remix Jam 2025" src="/blog-images/posts/remix-3-release-candidate/remix-jam-2025-photo-139.jpg" />
@@ -104,10 +104,9 @@ You can also learn more and stay up-to-date by checking out:
 - [Our Discord][remix-discord] to connect with other folks building with Remix
 - [Our newsletter][remix-newsletter] to receive monthly updates
 
-Alright, back to work for us, we've gotta ship this thing! See you in person or online at [Remix Jam][remix-jam-2026]!
+Alright, back to work for us, we've gotta ship this thing! See you in person or online at <a href="/jam/2026" data-rmx-document>Remix Jam</a>!
 
 [remix-3-beta-preview]: /blog/remix-3-beta-preview
-[remix-jam-2026]: /jam/2026
 [remix-jam-2025]: /jam/2025
 [remix-jam-2025-demo-tape]: /jam/2025/gallery?photo=120
 [remix-history]: /remix-history
