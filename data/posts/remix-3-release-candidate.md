@@ -11,11 +11,11 @@ imageAlt: "A glowing blue race car driving down a dark racetrack beneath a starr
 imageDisableOverlay: true
 ---
 
-We have officially published our Remix 3 Release Candidate!
+Today we published the first release candidate for Remix 3.
 
 The last time we shared updates about Remix 3 was when we announced our [beta preview](./remix-3-beta-preview) 4 months ago. We're incredibly proud of what we've built and all the improvements we've made since our first beta, and we're excited to start sharing with you why exactly we think Remix is so awesome.
 
-This blog post just scratches the surface of everything packed into Remix 3: database management, schema validation, a type-safe and super performant router, an unbundled on-demand browser asset server, and a brand-new UI runtime complete with composable event handling, styles, animations, and built-in components. Remix is huge, and it's all in just 1 package, `remix`, combining 40+ different modules.
+This post barely scratches the surface of everything we've packed into Remix 3: database management, schema validation, a fast, type-safe router, an unbundled asset server, and a brand-new UI runtime complete with composable event handling, styles, animations, and built-in components. Remix is more capable than it has ever been, and it's all in a single `remix` package.
 
 We're going to dig into all the details in the coming weeks and months, and we'll release Remix 3 on October 2 at [Remix Jam](./jam/2026) (tickets are still available).
 
@@ -59,7 +59,7 @@ We've been putting Remix through its paces, particularly by migrating this very 
 
 Overall, our best pitch for Remix is that we like it. Everyone is trying to pitch that they're building _for agents_. No one really knows what that means. We built this for ourselves, and we use agents. We use agents a lot. We're the most biased of the bunch, but we're finding again and again that:
 
-- Agents get Remix because it's built on web primitives, is extremely type-safe, and treats things like UI state as Just JavaScript™ scope.
+- Agents get Remix because it's built on web primitives, it's type-safe, and treats things like UI state as Just JavaScript™ scope.
 - On those occasions when we do still happen to look at the code, we get what the agent has produced, not because we totally get Remix, but because we find Remix so get-able.
 
 You shouldn't—and really can't—take our word for it, though. Try it out. Build something. And if you don't find Remix to be as grokable as we say, we still have 1 trick up our sleeve. The default `remix` template `package.json` looks like this:
@@ -72,7 +72,7 @@ You shouldn't—and really can't—take our word for it, though. Try it out. Bui
 
 With Remix, you can build truly full-stack applications, not merely a backend-for-frontend (though you can do that) or a server-rendered app that punts on the database (no offense, React Router; we still do love you and are making you better all the time). No more middle stack—leaning on other libraries for anything interesting you want to do on the server or punting in the browser and relying on React (which we do still love and have a ton of respect for, by the way).
 
-Remix is full-stack, fully stacked, all in 1 dependency, and designed to be changed. That means less surface area in your `package.json` for the next npm supply-chain attack. That means less churn from you or your agent deciding on 10 different packages just to build your blog with 4 posts (guilty). And if you don't like one of our choices, you can just change that piece. Swap our schema validation for Zod (it's compatible), or pull in Drizzle. Heck, you can even swap our `render` middleware with a React-based one. It's composable by design so that you always stay in charge.
+Remix is a truly full-stack framework in a single dependency. That means less surface area in your `package.json` for the next npm supply-chain attack. It also means less churn from you or your agent cobbling together various packages just to build your blog with 4 posts (guilty). And if you don't like one of our choices, you can swap out just that piece. For example, use Zod instead of `@remix-run/data-schema` (it's compatible), or pull in Drizzle instead of `@remix-run/data-table`. Heck, you can even swap our `render` middleware with a React-based one. It's composable by design so that you always stay in charge.
 
 We built Remix to be something we want to use, and we hope to see agents continue to excel with it and other humans come to love it.
 
