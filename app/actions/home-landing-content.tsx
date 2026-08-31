@@ -308,6 +308,7 @@ const differentiatorItemStyles = css({
 });
 
 const differentiatorItemTitleStyles = css({
+  maxWidth: "28ch",
   margin: "0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
