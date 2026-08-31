@@ -12,8 +12,7 @@ type HomePageProps = {
 };
 
 const HOME_TITLE = "Remix - The Fully-Stacked Web Framework";
-const HOME_DESCRIPTION =
-  "Remix is a full-stack web framework with built-in server, data, UI, asset, and testing tools. Build from a single package with first-class support for coding agents.";
+const HOME_DESCRIPTION = "The fully-stacked web framework";
 
 export function HomePage(handle: Handle<HomePageProps>) {
   return () => (
