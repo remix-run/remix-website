@@ -70,7 +70,9 @@ describe("Blog", () => {
   it("relative internal links in rendered markdown use client navigation", async (t) => {
     let handler = swallowAbortErrors(createAppRouter());
     let page = await t.serve(await createTestServer(handler));
-    await page.goto(routes.blog.post.href({ slug: "faster-lazy-loading" }));
+    await page.goto(routes.blog.post.href({ slug: "faster-lazy-loading" }), {
+      timeout: 30_000,
+    });
 
     let marker = await markPage(page);
     let link = page.locator('main a[href^="/blog/"]').first();

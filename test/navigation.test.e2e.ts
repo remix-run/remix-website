@@ -243,9 +243,7 @@ describe("Navigation", () => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto(routes.home.href());
     await expect(
-      page.getByRole("heading", {
-        name: "A web framework for building anything",
-      }),
+      page.locator("main #fully-stacked-web-framework"),
     ).toBeVisible();
     await expectLandingNavReady(page);
     await trackUnstyledBlogFrames(page);

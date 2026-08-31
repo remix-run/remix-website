@@ -1,6 +1,7 @@
 import { css, ref, type Handle } from "remix/ui";
 import { Matrix4, Vector3 } from "three";
 import { ControlManager } from "../engine/controls.ts";
+import { setDesiredCameraInto } from "../engine/camera-transition.ts";
 import { Engine } from "../engine/engine.ts";
 import {
   projectLabelsInto,
@@ -27,8 +28,6 @@ const BRAND_MODE_SETTINGS: SystemSettings = {
   ...DEFAULT_SETTINGS,
   colorMode: 2,
 };
-const DEFAULT_CAM_POS: [number, number, number] = [0, 30, 80];
-const DEFAULT_CAM_TARGET: [number, number, number] = [0, 0, 0];
 const CAM_LERP_SPEED = 0.025;
 
 /**
@@ -56,35 +55,6 @@ const canvasStyles = css({
   width: "100%",
   height: "100%",
 });
-
-function setDesiredCameraInto(
-  presets: Preset[],
-  morphValue: number,
-  outPos: Vector3,
-  outTarget: Vector3,
-) {
-  const maxIdx = presets.length - 1;
-  const clamped = clamp(morphValue, 0, maxIdx);
-  const fromIdx = Math.min(Math.floor(clamped), maxIdx);
-  const toIdx = Math.min(fromIdx + 1, maxIdx);
-  const blend = clamped - fromIdx;
-
-  const fromPos = presets[fromIdx].cameraPosition ?? DEFAULT_CAM_POS;
-  const fromTarget = presets[fromIdx].cameraTarget ?? DEFAULT_CAM_TARGET;
-  const toPos = presets[toIdx].cameraPosition ?? DEFAULT_CAM_POS;
-  const toTarget = presets[toIdx].cameraTarget ?? DEFAULT_CAM_TARGET;
-
-  outPos.set(
-    lerp(fromPos[0], toPos[0], blend),
-    lerp(fromPos[1], toPos[1], blend),
-    lerp(fromPos[2], toPos[2], blend),
-  );
-  outTarget.set(
-    lerp(fromTarget[0], toTarget[0], blend),
-    lerp(fromTarget[1], toTarget[1], blend),
-    lerp(fromTarget[2], toTarget[2], blend),
-  );
-}
 
 function copyControlsInto(source: number[], target: number[]) {
   for (let i = 0; i < 8; i++) {

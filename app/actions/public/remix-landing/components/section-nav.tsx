@@ -17,7 +17,7 @@ const shellStyles = css({
   background: colors.sectionNavBg,
   borderRadius: "24px",
   padding: "24px",
-  "@media (max-width: 960px)": {
+  "@media (max-width: 1440px)": {
     display: "none",
   },
 });
@@ -119,16 +119,19 @@ const linkActiveStyles = css({
 });
 
 const SECTIONS = [
-  { label: "The Framework", anchor: "the-framework" },
-  { label: "Full Stack", anchor: "full-stack" },
-  { label: "AI Ready", anchor: "ai-ready" },
-  { label: "Powerful Components", anchor: "powerful-components" },
-  { label: "Use Cases", anchor: "use-cases" },
-  { label: "Start Building", anchor: "start-building" },
+  { label: "Fully Stacked", anchor: "fully-stacked-web-framework" },
+  { label: "Everything You Need", anchor: "everything-you-need" },
+  { label: "Smaller Mental Model", anchor: "smaller-mental-model" },
+  {
+    label: "Re-rethinking",
+    anchor: "re-rethinking-best-practices",
+  },
+  { label: "Humans + Agents", anchor: "humans-and-agents" },
+  { label: "Test Drive", anchor: "test-drive" },
 ];
 
-// Note: "The Framework" points to the Hero section (id="the-framework"),
-// while the remaining 5 map to the FeatureSection panels.
+// The first item points to the Hero section, while the remaining 5 map to the
+// FeatureSection panels.
 
 type NavigateEventWithManualScroll = NavigateEvent & {
   intercept(options: {

@@ -26,8 +26,6 @@ const textGroupStyles = css({
   padding: "0 24px",
   textAlign: "center",
   "@media (max-width: 880px)": {
-    alignItems: "stretch",
-    textAlign: "left",
     gap: "24px",
   },
 });
@@ -47,35 +45,49 @@ const headingStyles = css({
   ...textBoxTrim,
 });
 
+const bodyClosingPhraseStyles = css({
+  whiteSpace: "nowrap",
+});
+
 const bodyStyles = css({
   margin: "0",
   maxWidth: "560px",
   minWidth: "0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
-  fontSize: "16px",
-  lineHeight: "1.5",
+  fontSize: "18px",
+  lineHeight: "1.55",
   letterSpacing: "-0.01em",
   color: colors.fg,
   textShadow: glowWhite,
   textWrap: "pretty",
   "@media (max-width: 880px)": {
     maxWidth: "480px",
-    textAlign: "left",
   },
   ...textBoxTrim,
 });
 
+const actionGroupStyles = css({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  alignSelf: "center",
+});
+
 export function LandingHero(_handle: Handle) {
   return () => (
-    <section id="the-framework" mix={[shellStyles]}>
+    <section id="fully-stacked-web-framework" mix={[shellStyles]}>
       <div mix={[textGroupStyles]}>
-        <h1 mix={[headingStyles]}>A web framework for building anything</h1>
+        <h1 mix={[headingStyles]}>The fully-stacked web framework</h1>
         <p mix={[bodyStyles]}>
-          Remix gives you the power and tools to build anything you can dream
-          of. To get started, just <CodeSnippet>npx remix@next new</CodeSnippet>{" "}
-          and you're off to the races.
+          Remix brings together a server runtime, routing, authentication,
+          sessions, database integrations, a UI framework, asset compilation,
+          dynamic styling, and accessible components in a cohesive{" "}
+          <span mix={[bodyClosingPhraseStyles]}>stack built on Web APIs.</span>
         </p>
+        <div mix={[actionGroupStyles]}>
+          <CodeSnippet>npx remix@next new my-app</CodeSnippet>
+        </div>
       </div>
     </section>
   );

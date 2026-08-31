@@ -50,6 +50,8 @@ export interface Preset {
   modelSlot?: number;
   cameraPosition?: [number, number, number];
   cameraTarget?: [number, number, number];
+  /** How the camera moves from the preceding preset into this one. */
+  cameraTransition?: "orbit-left" | "orbit-right";
   glowColor?: [number, number, number];
   controls: PresetControlDef[];
   cameraControls?: PresetControlDef[];

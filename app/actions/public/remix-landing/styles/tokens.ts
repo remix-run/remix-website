@@ -12,4 +12,4 @@ export const colors = {
 export const glowWhite =
   "0px 0px 2px rgba(255,255,255,0.15), 0px 0px 4px rgba(255,255,255,0.15), 0px 0px 12px rgba(255,255,255,0.15), 0px 0px 16px rgba(255,255,255,0.15), 0px 0px 24px rgba(255,255,255,0.15)";
 
-export const pageMaxWidth = "calc(100vw - 48px)";
+export const pageMaxWidth = "calc(100vw - 20px)";
