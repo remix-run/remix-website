@@ -1,7 +1,7 @@
 ---
 title: Remix 3 Release Candidate
 summary: Remix 3 RC is available now. A full-stack JavaScript framework built on web primitives and shipped as a single dependency.
-date: 2026-08-28
+date: 2026-08-31
 featured: true
 authors:
   - Brooks Lybrand
