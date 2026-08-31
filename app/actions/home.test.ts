@@ -39,6 +39,9 @@ describe("home route", () => {
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
 
     let html = await response.text();
+    expect(html).toContain(
+      'name="description" content="The fully-stacked web framework"',
+    );
     expect(html).toContain('id="main-content"');
     expect(html).toContain('id="remix-landing-app"');
     expect(html).toContain(
