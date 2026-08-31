@@ -80,14 +80,13 @@ export function LandingHero(_handle: Handle) {
       <div mix={[textGroupStyles]}>
         <h1 mix={[headingStyles]}>The fully-stacked web framework</h1>
         <p mix={[bodyStyles]}>
-          Remix brings together the server runtime, routing, authentication,
-          sessions and database integrations, with its own UI framework, asset
-          compilation, dynamic styling, and accessible component library, all in
-          one simple, cohesive{" "}
+          Remix brings together a server runtime, routing, authentication,
+          sessions, database integrations, a UI framework, asset compilation,
+          dynamic styling, and accessible components in a cohesive{" "}
           <span mix={[bodyClosingPhraseStyles]}>stack built on Web APIs.</span>
         </p>
         <div mix={[actionGroupStyles]}>
-          <CodeSnippet>npx remix@next new</CodeSnippet>
+          <CodeSnippet>npx remix@next new my-app</CodeSnippet>
         </div>
       </div>
     </section>

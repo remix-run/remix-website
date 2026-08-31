@@ -55,7 +55,7 @@ const differentiatorInlineCodeStyles = css({
 const differentiators = [
   {
     title: "State is just JavaScript",
-    body: "A component runs setup once, then returns a function that renders JSX. Keep state in ordinary JavaScript variables, objects, or classes—without hooks or a prescribed state container.",
+    body: "A component runs setup once, then returns a function that renders JSX. Keep state in ordinary JavaScript variables, objects, or classes rather than hooks or a prescribed state container.",
   },
   {
     title: "Updates are explicit",
@@ -64,18 +64,17 @@ const differentiators = [
         Your code decides when the UI renders. Call{" "}
         <code mix={[differentiatorInlineCodeStyles]}>handle.update()</code>{" "}
         after changing state, and await it when your next step depends on the
-        updated DOM. The path from update to screen stays visible and
-        predictable.
+        updated DOM.
       </>
     ),
   },
   {
     title: "Not everything needs a component",
-    body: "Mixins attach reusable behavior directly to individual elements—events, styles, refs, and accessibility—without changing the markup or introducing another component.",
+    body: "Mixins attach reusable behavior di events, styles, refs, and accessibility behavior directly to individual elements. This keeps the markup intact without introducing another component.",
   },
   {
-    title: "Client components, without the bundler magic",
-    body: "Your server runtime decides how hydrated client components map to browser code—without a bundler hiding the boundary from you.",
+    title: "Client components with visible boundaries",
+    body: "You define how hydrated client components map to browser code in the server runtime. The client boundary stays visible in your code.",
   },
   {
     title: "HTML over the wire",
@@ -89,11 +88,11 @@ const differentiators = [
   },
   {
     title: "HTTP is the interface",
-    body: "Routes, middleware, assets, and integrations all work with standard Requests and Responses—HTML, JSON, files, redirects, or anything else. The server contract stays portable and inspectable.",
+    body: "Routes, middleware, assets, and integrations all use standard Request and Response objects for HTML, JSON, files, redirects, and more. The server contract stays portable and inspectable.",
   },
   {
     title: "Assets compile when requested",
-    body: "Start your server immediately. TypeScript, JSX, and CSS compile only when requested, in development and production—no application build step required.",
+    body: "Start your server immediately. TypeScript, JSX, and CSS compile on demand in development and production, so there is no application build step.",
   },
   {
     title: "Modules stay modules",
@@ -129,7 +128,7 @@ const storySections = [
   {
     id: "humans-and-agents",
     title: "Better for humans. Better for agents.",
-    body: "Remix keeps the important parts of your app visible: standard Web APIs, explicit updates, runtime boundaries, and source modules that stay recognizable. Humans can reason about the system, agents can change it with confidence, and both can take control when the defaults aren't enough.",
+    body: "Remix keeps the important parts of your app visible: standard Web APIs, explicit updates, runtime boundaries, and recognizable source modules. Humans and coding agents can trace how the system works and take control when the defaults aren't enough.",
     align: "right" as const,
     points: [
       {
@@ -188,10 +187,9 @@ function DifferentiatorSection() {
             Re-rethinking best practices
           </h2>
           <p mix={[differentiatorIntroStyles]}>
-            The web framework playbook has accumulated layers of complexity and
-            indirection that are now treated as inevitable. Remix revisits those
-            assumptions with explicit APIs, visible boundaries, and web
-            standards you can follow all the way down.
+            Web frameworks have accumulated layers of complexity and indirection
+            that now feel inevitable. Remix revisits those assumptions with APIs
+            and boundaries you can follow all the way down to web standards.
           </p>
         </div>
         <ul data-card-grid="" mix={[differentiatorListStyles]}>
@@ -310,7 +308,6 @@ const differentiatorItemStyles = css({
 });
 
 const differentiatorItemTitleStyles = css({
-  maxWidth: "24ch",
   margin: "0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
