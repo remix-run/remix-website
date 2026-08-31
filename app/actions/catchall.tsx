@@ -70,7 +70,7 @@ function getCatchallRedirect(url: URL): string | null {
   }
 
   if (url.pathname === "/docs") {
-    return "https://api.remix.run/";
+    return "https://guides.remix.run/";
   }
 
   if (url.pathname.startsWith("/docs/")) {
