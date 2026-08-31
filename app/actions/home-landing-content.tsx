@@ -55,16 +55,17 @@ const differentiatorInlineCodeStyles = css({
 const differentiators = [
   {
     title: "State is just JavaScript",
-    body: "A component runs its setup once, then returns a function that renders JSX. Store state however you like in ordinary JavaScript variables—without hooks or a reactive state system.",
+    body: "A component runs setup once, then returns a function that renders JSX. Keep state in ordinary JavaScript variables, objects, or classes—without hooks or a prescribed state container.",
   },
   {
-    title: "Rendering is explicit",
+    title: "Updates are explicit",
     body: (
       <>
-        Changing state doesn&apos;t trigger rendering. Store it however you
-        like, then call{" "}
-        <code mix={[differentiatorInlineCodeStyles]}>handle.update()</code> when
-        the UI should change. You decide when state reaches the screen.
+        Your code decides when the UI renders. Call{" "}
+        <code mix={[differentiatorInlineCodeStyles]}>handle.update()</code>{" "}
+        after changing state, and await it when your next step depends on the
+        updated DOM. The path from update to screen stays visible and
+        predictable.
       </>
     ),
   },
@@ -96,7 +97,7 @@ const differentiators = [
   },
   {
     title: "Modules stay modules",
-    body: "Native JavaScript modules, Import Maps, and module preloads let the browser own loading and caching. Each module can be cached independently instead of invalidating an entire bundle.",
+    body: "Native JavaScript modules and module preloads let the browser own loading and caching. Each module can be cached independently instead of invalidating an entire bundle.",
   },
 ] as const;
 
@@ -140,15 +141,15 @@ const storySections = [
         body: "Follow the defaults, replace a layer, or take control of the logic when your app needs it.",
       },
       {
-        title: "Built to be generated",
-        body: "Remix skills help agents generate code using the framework’s APIs, conventions, and workflows.",
+        title: "Built for coding agents",
+        body: "Remix skills teach agents the framework’s APIs, conventions, and workflows.",
       },
     ],
   },
   {
     id: "test-drive",
     title: "Take Remix for a test drive",
-    body: "Remix 3 is available in beta. Build your first app with the step-by-step guides, then explore the API when you want to go deeper.",
+    body: "Build your first app with the step-by-step guide, then explore the API when you want to go deeper.",
     align: "left" as const,
     ctaLabel: "Get started",
     ctaHref: "https://guides.remix.run/start-here/",
