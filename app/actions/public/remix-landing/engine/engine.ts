@@ -78,10 +78,21 @@ export class Engine {
       // attachments to save bandwidth on the default framebuffer.
       depth: false,
       stencil: false,
-      // Prefer the integrated GPU on dual-GPU laptops: with the frame cap
-      // and half-res bloom the workload fits, and it runs far cooler.
-      powerPreference: "low-power",
+      // "default" lets the browser weigh hardware/battery state. Unlike the
+      // old "high-performance" it never forces the discrete GPU awake, and
+      // unlike "low-power" it can't pin this still-substantial workload to a
+      // weak iGPU on hybrid laptops we haven't measured on.
+      powerPreference: "default",
     });
+    // RestBaker and MouseSim render to float MRTs. Without this extension
+    // those targets fail silently (GL errors, not exceptions), leaving a
+    // black particle layer. Throw so ParticleCanvas's init try/catch
+    // degrades to the static page instead.
+    if (!this.renderer.extensions.has("EXT_color_buffer_float")) {
+      throw new Error(
+        "EXT_color_buffer_float is not supported; skipping particle scene",
+      );
+    }
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.clearColor.set(settings.backgroundColor);
