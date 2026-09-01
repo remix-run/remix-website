@@ -12,6 +12,11 @@ const shellStyles = css({
   alignItems: "flex-start",
   paddingTop:
     "calc(clamp(128px, 92px + 7vw, 188px) + (100vw - 48px) * 43 / 440)",
+  "@media (min-width: 881px) and (max-height: 900px), (min-width: 881px) and (min-aspect-ratio: 16/9)":
+    {
+      background:
+        "radial-gradient(ellipse 42% 45% at 50% 54%, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.38) 48%, rgba(0, 0, 0, 0.16) 78%, rgba(0, 0, 0, 0.1) 100%)",
+    },
 });
 
 const textGroupStyles = css({
