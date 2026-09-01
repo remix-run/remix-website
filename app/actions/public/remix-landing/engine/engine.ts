@@ -20,6 +20,8 @@ function screenScale(width: number): number {
   return Math.min(width / ref, 1);
 }
 
+const BLOOM_RESOLUTION_SCALE = 0.5;
+
 // Stand-in for `three/addons/controls/OrbitControls`. We only need the
 // look-at target and an enabled flag; the real addon pulled in pointer/touch/
 // wheel gesture handlers and damping logic that the landing never used.
@@ -122,6 +124,16 @@ export class Engine {
       0.4,
       settings.bloomThreshold,
     );
+    // Bloom is the most expensive pass (~10 blur passes over 5 mips) and is
+    // a blur, so run it at half resolution (~4x less pixel work). Override
+    // setSize because the composer re-feeds full DPR size on every resize.
+    const bloomSetSize = this.bloomPass.setSize.bind(this.bloomPass);
+    this.bloomPass.setSize = (width: number, height: number) => {
+      bloomSetSize(
+        Math.max(1, Math.round(width * BLOOM_RESOLUTION_SCALE)),
+        Math.max(1, Math.round(height * BLOOM_RESOLUTION_SCALE)),
+      );
+    };
     this.composer.addPass(this.bloomPass);
 
     this.resizeObserver = new ResizeObserver(() =>
