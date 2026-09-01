@@ -49,11 +49,6 @@ const bodyClosingPhraseStyles = css({
   whiteSpace: "nowrap",
 });
 
-const darkHalo =
-  "0 0 2px rgba(0, 0, 0, 0.9), 0 1px 4px rgba(0, 0, 0, 0.85), 0 0 10px rgba(0, 0, 0, 0.7), 0 0 18px rgba(0, 0, 0, 0.45)";
-const darkHaloStrong =
-  "0 0 4px #000, 0 0 8px rgba(0, 0, 0, 0.92), 0 1px 14px rgba(0, 0, 0, 0.82), 0 0 24px rgba(0, 0, 0, 0.55)";
-
 const bodyStyles = css({
   margin: "0",
   maxWidth: "560px",
@@ -64,14 +59,10 @@ const bodyStyles = css({
   lineHeight: "1.55",
   letterSpacing: "-0.01em",
   color: colors.fg,
-  textShadow: darkHalo,
+  textShadow: glowWhite,
   textWrap: "pretty",
   "@media (max-width: 880px)": {
     maxWidth: "480px",
-  },
-  "@media (max-height: 980px)": {
-    color: "#ffffff",
-    textShadow: darkHaloStrong,
   },
   ...textBoxTrim,
 });
