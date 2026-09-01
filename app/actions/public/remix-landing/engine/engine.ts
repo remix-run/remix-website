@@ -22,6 +22,7 @@ function screenScale(width: number): number {
 
 const MAX_PIXEL_RATIO = 1.5;
 const BLOOM_RESOLUTION_SCALE = 0.5;
+const RESIZE_SETTLE_MS = 100;
 
 class HalfResolutionBloomPass extends UnrealBloomPass {
   override setSize(width: number, height: number) {
@@ -59,7 +60,10 @@ export class Engine {
   backgroundPass!: BackgroundPass;
 
   private resizeObserver: ResizeObserver | null = null;
-  private containerWidth = 1440;
+  private container: HTMLElement | null = null;
+  private resizeRequestedAt: number | null = null;
+  private containerWidth = 0;
+  private containerHeight = 0;
   private lastAppliedSettings: SystemSettings | null = null;
   private lastAppliedWidth = -1;
   private clearColor = new Color();
@@ -96,7 +100,6 @@ export class Engine {
     this.renderer.setPixelRatio(
       Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO),
     );
-    this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.clearColor.set(settings.backgroundColor);
     this.renderer.setClearColor(this.clearColor);
 
@@ -136,21 +139,45 @@ export class Engine {
     );
     this.composer.addPass(this.bloomPass);
 
-    this.resizeObserver = new ResizeObserver(() =>
-      this.handleResize(container),
-    );
+    this.container = container;
+    this.applyResize(container.clientWidth, container.clientHeight);
+    // setSize clears the canvas, so resize targets immediately before a frame.
+    this.resizeObserver = new ResizeObserver(() => {
+      this.resizeRequestedAt = performance.now();
+    });
     this.resizeObserver.observe(container);
   }
 
-  private handleResize(container: HTMLElement) {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    this.containerWidth = w;
-    this.camera.aspect = w / h;
+  resizeIfNeeded(nowMs: number): boolean {
+    if (
+      !this.container ||
+      this.resizeRequestedAt === null ||
+      nowMs - this.resizeRequestedAt < RESIZE_SETTLE_MS
+    ) {
+      return false;
+    }
+
+    const width = this.container.clientWidth;
+    const height = this.container.clientHeight;
+    if (width <= 0 || height <= 0) return false;
+
+    this.resizeRequestedAt = null;
+    if (width === this.containerWidth && height === this.containerHeight) {
+      return false;
+    }
+
+    this.applyResize(width, height);
+    return true;
+  }
+
+  private applyResize(width: number, height: number) {
+    this.containerWidth = width;
+    this.containerHeight = height;
+    this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(w, h);
-    this.composer.setSize(w, h);
-    this.backgroundPass.setSize(w, h);
+    this.renderer.setSize(width, height, false);
+    this.composer.setSize(width, height);
+    this.backgroundPass.setSize(width, height);
   }
 
   getScreenScale(): number {
@@ -194,6 +221,9 @@ export class Engine {
 
   dispose() {
     this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
+    this.container = null;
+    this.resizeRequestedAt = null;
     this.controls?.dispose();
     this.renderer?.dispose();
     this.composer?.dispose();

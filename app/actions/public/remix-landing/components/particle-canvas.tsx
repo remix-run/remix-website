@@ -400,6 +400,11 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       }
       renderDeadline = nextDeadline;
 
+      // Resize after the pacing gate so clearing targets is followed by a draw.
+      if (engine.resizeIfNeeded(now)) {
+        lastStaticKey = null;
+      }
+
       const staticKey =
         reduceMotion &&
         introFinished &&
