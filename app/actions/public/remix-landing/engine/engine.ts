@@ -78,8 +78,9 @@ export class Engine {
       // attachments to save bandwidth on the default framebuffer.
       depth: false,
       stencil: false,
-      // Hint dual-GPU laptops to use the discrete GPU.
-      powerPreference: "high-performance",
+      // Prefer the integrated GPU on dual-GPU laptops: with the frame cap
+      // and half-res bloom the workload fits, and it runs far cooler.
+      powerPreference: "low-power",
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(container.clientWidth, container.clientHeight);

@@ -158,7 +158,9 @@ void main() {
     : 0.0;
   vCoc = clamp(coc, 0.0, 1.0);
 
-  gl_PointSize = clamp((baseSize + coc * 12.0) * aSizeBoost, 1.0, 128.0);
+  // Capped at 64px: additive-blended glow points are pure overdraw, and the
+  // cap only binds on extreme close fly-bys.
+  gl_PointSize = clamp((baseSize + coc * 12.0) * aSizeBoost, 1.0, 64.0);
   gl_Position = projectionMatrix * mvPosition;
   vAlpha = smoothstep(500.0, 50.0, dist);
 }

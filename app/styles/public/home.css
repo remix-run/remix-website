@@ -27,7 +27,10 @@
 
 :root {
   color-scheme: dark;
-  animation: brand-cycle 10s linear infinite;
+  /* Paused; the landing client entry drives animation-delay at ~10Hz. A
+     running custom-property animation forces style invalidation at native
+     refresh (120Hz) forever, keeping the compositor from ever idling. */
+  animation: brand-cycle 10s linear infinite paused;
   scrollbar-width: thin;
   scrollbar-color: gray transparent;
 }

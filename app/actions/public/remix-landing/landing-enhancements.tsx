@@ -69,29 +69,9 @@ const appStyles = css({
   display: "contents",
 });
 
-// The previous implementation stacked five `backdrop-filter: blur()` panes of
-// increasing strength (2/4/8/16/32 px) to fake a progressive blur ramp. Each
-// pane forced the browser to run a separate Gaussian blur pass against the
-// scrolling content underneath on every frame — five stacked blurs over a
-// mix-blend-mode WebGL canvas. That was the dominant cost during scroll. A
-// single moderate blur with a shorter dynamic viewport height gives visually
-// similar "softest at top, clean at bottom" behavior with less content covered.
-const blurShellStyles = css({
-  position: "fixed",
-  top: "0",
-  left: "0",
-  right: "0",
-  height: "15dvh",
-  zIndex: "20",
-  pointerEvents: "none",
-  backdropFilter: "blur(16px)",
-  WebkitBackdropFilter: "blur(16px)",
-  maskImage:
-    "linear-gradient(to bottom, black 0%, black 25%, transparent 100%)",
-  WebkitMaskImage:
-    "linear-gradient(to bottom, black 0%, black 25%, transparent 100%)",
-});
-
+// Top-of-viewport legibility comes from this fade gradient alone. Earlier
+// versions added a backdrop-filter pane here, but any blur over the animating
+// canvas forces the compositor to re-blur a full-width band every frame.
 const topFadeGradientStyles = css({
   position: "fixed",
   top: "0",
@@ -123,6 +103,7 @@ const KONAMI_KEYS = [
 ] as const;
 
 const KONAMI_IDLE_MS = 4000;
+const BRAND_CYCLE_TICK_MS = 100;
 const LOADING_SCREEN_MIN_VISIBLE_MS = 750;
 const LANDING_SECTION_IDS = [
   "fully-stacked-web-framework",
@@ -412,6 +393,22 @@ export let RemixLandingEnhancements = clientEntry(
       }
     }
 
+    // The :root brand-cycle animation is paused in CSS; sample it here by
+    // sliding a negative animation-delay so color updates happen at 10Hz
+    // instead of every compositor frame.
+    function startBrandCycle() {
+      const start = performance.now();
+      const interval = setInterval(() => {
+        if (reducedMotion.current) return;
+        const elapsedS = (performance.now() - start) / 1000;
+        document.documentElement.style.animationDelay = `-${elapsedS.toFixed(2)}s`;
+      }, BRAND_CYCLE_TICK_MS);
+      handle.signal.addEventListener("abort", () => {
+        clearInterval(interval);
+        document.documentElement.style.animationDelay = "";
+      });
+    }
+
     function onKeydown(event: KeyboardEvent) {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (isEditableKeyTarget(event)) return;
@@ -428,6 +425,7 @@ export let RemixLandingEnhancements = clientEntry(
         handle.update();
       });
       syncMorphToScroll();
+      startBrandCycle();
       void loadParticleCanvas().then(() => {
         if (!handle.signal.aborted) handle.update();
       });
@@ -483,7 +481,6 @@ export let RemixLandingEnhancements = clientEntry(
                 brandGradientMode={konami.brandMode}
               />
               <ScrollLogo />
-              <div mix={[blurShellStyles]} />
               <div mix={[topFadeGradientStyles]} />
               <LandingNav
                 activeIndexRef={activeIndexRef}

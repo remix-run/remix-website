@@ -84,6 +84,16 @@ function buildInitialControls(preset: Preset): number[] {
   return controls;
 }
 
+/** Halve the particle budget on devices unlikely to keep up at full count. */
+function adaptiveParticleCount(base: number): number {
+  const nav = navigator as Navigator & { deviceMemory?: number };
+  const lowEnd =
+    window.matchMedia("(pointer: coarse)").matches ||
+    (nav.hardwareConcurrency || 8) <= 4 ||
+    (nav.deviceMemory ?? 8) <= 4;
+  return lowEnd ? Math.round(base / 2) : base;
+}
+
 const DRIVE_INDEX = presets.findIndex((preset) => preset.name === "Drive");
 const PRESET_RUNTIME_DATA = {
   controls: presets.map(buildInitialControls),
@@ -294,11 +304,12 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       engine = new Engine();
       engine.init(canvasEl, containerEl, settings);
 
-      restBaker = new RestBaker(engine.renderer, settings.particleCount);
-      restBaker.setCount(settings.particleCount);
+      const particleCount = adaptiveParticleCount(settings.particleCount);
+      restBaker = new RestBaker(engine.renderer, particleCount);
+      restBaker.setCount(particleCount);
 
       particles = new ParticleSystem();
-      particles.init(engine.scene, settings.particleCount, settings.pointSize);
+      particles.init(engine.scene, particleCount, settings.pointSize);
       // Bind the baker's MRT texture refs to the draw material once. Three
       // caches the references; subsequent bake() calls update the GL backing
       // in place.
@@ -310,7 +321,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       );
       syncModelTextures();
 
-      mouseSim = new MouseSim(engine.renderer, settings.particleCount);
+      mouseSim = new MouseSim(engine.renderer, particleCount);
       mouseSim.setRestTextures(
         restBaker.getPosTexture(0),
         restBaker.getPosTexture(1),
