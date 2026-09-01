@@ -6,7 +6,6 @@
  *   - MIT https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/LICENSE
  *   - https://github.com/ggoodman/nostalgie/blob/45f3f6356684287a214dab667064ec9776def933/src/worker/mdxCompiler.ts
  */
-import { getHighlighter, toShikiTheme } from "shiki";
 import rangeParser from "parse-numeric-range";
 import parseFrontMatter from "front-matter";
 import type * as Hast from "hast";
@@ -167,10 +166,12 @@ type InternalPlugin<
 > = Unified.Plugin<[], Input, Output>;
 
 async function loadPlugins() {
-  let [{ visit, SKIP }, { htmlEscape }] = await Promise.all([
-    import("unist-util-visit"),
-    import("escape-goat"),
-  ]);
+  let [{ visit, SKIP }, { htmlEscape }, { getHighlighter, toShikiTheme }] =
+    await Promise.all([
+      import("unist-util-visit"),
+      import("escape-goat"),
+      import("shiki"),
+    ]);
 
   const stripLinkExtPlugin: InternalPlugin<
     UnistNode.Root,

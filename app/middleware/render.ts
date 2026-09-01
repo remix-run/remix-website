@@ -7,6 +7,7 @@ import { renderToStream, type ResolveFrameContext } from "remix/ui/server";
 import { assets } from "../utils/assets.ts";
 
 const isDevelopment = process.env.NODE_ENV === "development";
+const isProduction = process.env.NODE_ENV === "production";
 
 export interface AppRenderer {
   (node: RemixNode, init?: ResponseInit): Response;
@@ -185,6 +186,11 @@ function createCrossOriginFrameHeaders(headers: Headers) {
   return crossOriginHeaders;
 }
 
+let productionClientEntryPromises = new Map<
+  string,
+  Promise<{ href: string; exportName: string; preloads: string[] }>
+>();
+
 async function resolveClientEntry(
   entryId: string,
   component: { readonly name: string },
@@ -204,6 +210,21 @@ async function resolveClientEntry(
     return { href: sourceId, exportName };
   }
 
+  if (!isProduction) return resolveFileClientEntry(sourceId, exportName);
+
+  let cacheKey = `${sourceId}\0${exportName}`;
+  let existing = productionClientEntryPromises.get(cacheKey);
+  if (existing) return existing;
+
+  let promise = resolveFileClientEntry(sourceId, exportName).catch((error) => {
+    productionClientEntryPromises.delete(cacheKey);
+    throw error;
+  });
+  productionClientEntryPromises.set(cacheKey, promise);
+  return promise;
+}
+
+async function resolveFileClientEntry(sourceId: string, exportName: string) {
   let [href, preloads] = await Promise.all([
     assets.getHref(sourceId),
     assets.getPreloads(sourceId),

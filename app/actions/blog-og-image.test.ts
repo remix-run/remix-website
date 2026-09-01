@@ -41,13 +41,25 @@ describe("Blog OG image route", () => {
   });
 
   it("returns a cacheable PNG for valid params", async (t) => {
-    t.mock.method(globalThis, "fetch", async () => {
-      let png = Buffer.from(
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
-        "base64",
-      );
-      return new Response(png, { headers: { "Content-Type": "image/png" } });
-    });
+    let originalFetch = globalThis.fetch;
+    t.mock.method(
+      globalThis,
+      "fetch",
+      async (...args: Parameters<typeof fetch>) => {
+        let [input] = args;
+        if (!String(input).includes("/authors/")) {
+          return originalFetch(...args);
+        }
+
+        let png = Buffer.from(
+          "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+          "base64",
+        );
+        return new Response(png, {
+          headers: { "Content-Type": "image/png" },
+        });
+      },
+    );
     let router = createRouteTestRouter();
     router.map(routes, rootController);
 

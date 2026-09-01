@@ -1,3 +1,7 @@
+import { randomUUID } from "node:crypto";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import * as os from "node:os";
+import * as path from "node:path";
 import parseFrontMatter from "front-matter";
 import { detectMimeType } from "remix/mime";
 import { parseTar } from "remix/tar-parser";
@@ -11,7 +15,8 @@ import { env } from "../../utils/env.ts";
  * Issues live in the private `remix-run/newsletter` GitHub repository under
  * `newsletters/newsletter-<N>/<YYYY-MM-DD>-remix-newsletter-<N>.md`, with any
  * images beside the markdown. We fetch a single repository tarball at runtime,
- * parse it once, and keep a parsed snapshot in memory.
+ * parse it once, and keep parsed content plus image file references in memory.
+ * The live repository stores image bytes in a process-local disk cache.
  */
 
 const NEWSLETTER_REPO_OWNER = "remix-run";
@@ -80,7 +85,8 @@ interface ParsedIssue {
 interface NewsletterSnapshot {
   issues: ParsedIssue[];
   summaries: NewsletterSummary[];
-  files: Map<string, Uint8Array>;
+  files: Map<string, Uint8Array | string>;
+  imageCacheDirectory?: string;
 }
 
 export interface RawTarFile {
@@ -163,9 +169,11 @@ export function parseNewsletterSnapshot(
   issues.sort((a, b) => b.number - a.number);
   issues = issues.slice(0, MAX_ISSUES);
 
-  let fileMap = new Map<string, Uint8Array>();
+  let fileMap = new Map<string, Uint8Array | string>();
   for (let file of files) {
-    let [directory, filename] = file.name.split("/");
+    let parts = file.name.split("/");
+    if (parts.length !== 2) continue;
+    let [directory, filename] = parts;
     if (
       !directory ||
       !filename ||
@@ -319,6 +327,7 @@ export function createGitHubNewsletterRepository(
     token?: string;
     fetchImpl?: typeof fetch;
     ttlMs?: number;
+    imageCacheDir?: string;
     onRefreshError?: (
       error: unknown,
       context: { servingStale: boolean },
@@ -331,9 +340,11 @@ export function createGitHubNewsletterRepository(
   let token = options.token;
   let fetchImpl = options.fetchImpl ?? globalThis.fetch;
   let ttlMs = options.ttlMs ?? FRESH_TTL_MS;
+  let imageCacheDir = options.imageCacheDir;
   let onRefreshError = options.onRefreshError;
 
   let snapshot: NewsletterSnapshot | null = null;
+  let retiredImageCacheDirectory: string | undefined;
   let expiresAt = 0;
   let refreshPromise: Promise<NewsletterSnapshot> | null = null;
 
@@ -341,8 +352,24 @@ export function createGitHubNewsletterRepository(
     try {
       let files = await fetchTarballFiles(fetchImpl, owner, repo, ref, token);
       let next = parseNewsletterSnapshot(files);
+      if (imageCacheDir) {
+        await persistNewsletterImages(next, imageCacheDir);
+      }
+
+      let previousSnapshot = snapshot;
       snapshot = next;
       expiresAt = Date.now() + ttlMs;
+      if (retiredImageCacheDirectory) {
+        void rm(retiredImageCacheDirectory, {
+          recursive: true,
+          force: true,
+        }).catch((error) =>
+          console.error("[newsletter] Failed to remove retired image cache", {
+            error,
+          }),
+        );
+      }
+      retiredImageCacheDirectory = previousSnapshot?.imageCacheDirectory;
       return next;
     } catch (error) {
       onRefreshError?.(error, { servingStale: snapshot != null });
@@ -394,10 +421,21 @@ export function createGitHubNewsletterRepository(
       if (!Number.isInteger(number) || number <= 0) return null;
       if (!isSafeImageFilename(filename)) return null;
       let snap = await getSnapshot();
-      let bytes = snap.files.get(`newsletter-${number}/${filename}`);
-      if (!bytes) return null;
+      let cachedImage = snap.files.get(`newsletter-${number}/${filename}`);
+      if (!cachedImage) return null;
       let mimeType = detectMimeType(filename);
       if (!mimeType || !isSafeImageContentType(mimeType)) return null;
+
+      let bytes;
+      try {
+        bytes =
+          typeof cachedImage === "string"
+            ? new Uint8Array(await readFile(cachedImage))
+            : cachedImage;
+      } catch (error) {
+        if (isFileNotFoundError(error)) return null;
+        throw error;
+      }
       return { filename, contentType: mimeType, bytes };
     },
   };
@@ -460,11 +498,47 @@ async function fetchTarballFiles(
   return collectNewsletterFiles(stream);
 }
 
+async function persistNewsletterImages(
+  snapshot: NewsletterSnapshot,
+  cacheRoot: string,
+) {
+  let cacheDirectory = path.join(cacheRoot, randomUUID());
+  try {
+    for (let [key, bytes] of snapshot.files) {
+      if (typeof bytes === "string") continue;
+
+      let filePath = path.join(cacheDirectory, key);
+      await mkdir(path.dirname(filePath), { recursive: true });
+      await writeFile(filePath, bytes);
+      snapshot.files.set(key, filePath);
+    }
+    snapshot.imageCacheDirectory = cacheDirectory;
+  } catch (error) {
+    await rm(cacheDirectory, { recursive: true, force: true });
+    throw error;
+  }
+}
+
+function isFileNotFoundError(
+  error: unknown,
+): error is NodeJS.ErrnoException & { code: "ENOENT" | "ENOTDIR" } {
+  return (
+    error instanceof Error &&
+    "code" in error &&
+    (error.code === "ENOENT" || error.code === "ENOTDIR")
+  );
+}
+
 /**
  * Shared live repository. Reusing one process-wide instance keeps the in-memory
  * cache and concurrent-refresh dedupe effective across requests.
  */
 export const liveNewsletterRepository = createGitHubNewsletterRepository({
+  imageCacheDir: path.join(
+    os.tmpdir(),
+    "remix-website-newsletter",
+    `process-${process.pid}`,
+  ),
   onRefreshError(error, { servingStale }) {
     console.error("[newsletter] GitHub archive refresh failed", {
       servingStale,

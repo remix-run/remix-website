@@ -1,8 +1,9 @@
 import * as path from "node:path";
-import sharp, { type Metadata } from "sharp";
+import type { Metadata } from "sharp";
 import { createMatcher } from "remix/route-pattern/match";
 
 import { assets, getWebpHref } from "./assets.ts";
+import { sharp, withNativeImageOperation } from "./native-image.ts";
 
 let imageSourceMatcher = createMatcher("http(s)://remix.run/:directory/*path");
 
@@ -55,7 +56,9 @@ async function createImageAsset(
     let filePath = path.join("public", directory, match.params.path);
     let extension = path.extname(filePath).toLowerCase();
     let [metadata, originalSrc] = await Promise.all([
-      sharp(path.resolve(import.meta.dirname, "../..", filePath)).metadata(),
+      withNativeImageOperation(() =>
+        sharp(path.resolve(import.meta.dirname, "../..", filePath)).metadata(),
+      ),
       assets.getHref(filePath),
     ]);
     let dimensions = getOrientedDimensions(metadata);

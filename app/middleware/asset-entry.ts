@@ -24,6 +24,7 @@ interface StylesheetAsset {
 }
 
 let assetEntryKey = createContextKey<AssetEntry>();
+let productionDefaultEntryPromise: Promise<AssetEntry> | undefined;
 let defaultEntry = path.resolve(
   import.meta.dirname,
   "../actions/public/entry.ts",
@@ -61,45 +62,61 @@ export function loadAssetEntry(
   entry = defaultEntry,
 ): Middleware<AssetEntryContextEntry> {
   return async (context, next) => {
-    let [fonts, src, preloads, stylesheets] = await Promise.all([
-      Promise.all(
-        Object.entries(fontEntries).map(async ([name, fontEntry]) => {
-          let href = await assets.getHref(fontEntry);
-          return [name, { href }] as const;
-        }),
-      ).then(
-        (entries) => Object.fromEntries(entries) as Record<FontName, FontAsset>,
-      ),
-      assets.getHref(entry),
-      assets.getPreloads(entry).catch((error) => {
-        // Surface asset compilation errors without breaking HTML rendering.
-        console.error(error);
-        return [];
-      }),
-      Promise.all(
-        Object.entries(stylesheetEntries).map(
-          async ([name, stylesheetEntry]) => {
-            let href = await assets.getHref(stylesheetEntry);
-            return [name, { href }] as const;
-          },
-        ),
-      ).then(
-        (entries) =>
-          Object.fromEntries(entries) as Record<
-            StylesheetName,
-            StylesheetAsset
-          >,
-      ),
-    ]);
+    if (shouldBypassAssetEntry(context.url.pathname)) return next();
 
-    context.set(assetEntryKey, {
-      fonts,
-      src,
-      preloads,
-      stylesheets,
-    });
+    context.set(assetEntryKey, await getResolvedAssetEntry(entry));
     return next();
   };
+}
+
+function getResolvedAssetEntry(entry: string): Promise<AssetEntry> {
+  if (process.env.NODE_ENV !== "production" || entry !== defaultEntry) {
+    return resolveAssetEntry(entry);
+  }
+
+  productionDefaultEntryPromise ??= resolveAssetEntry(entry).catch((error) => {
+    productionDefaultEntryPromise = undefined;
+    throw error;
+  });
+  return productionDefaultEntryPromise;
+}
+
+async function resolveAssetEntry(entry: string): Promise<AssetEntry> {
+  let [fonts, src, preloads, stylesheets] = await Promise.all([
+    Promise.all(
+      Object.entries(fontEntries).map(async ([name, fontEntry]) => {
+        let href = await assets.getHref(fontEntry);
+        return [name, { href }] as const;
+      }),
+    ).then(
+      (entries) => Object.fromEntries(entries) as Record<FontName, FontAsset>,
+    ),
+    assets.getHref(entry),
+    assets.getPreloads(entry).catch((error) => {
+      // Surface asset compilation errors without breaking HTML rendering.
+      console.error(error);
+      return [];
+    }),
+    Promise.all(
+      Object.entries(stylesheetEntries).map(async ([name, stylesheetEntry]) => {
+        let href = await assets.getHref(stylesheetEntry);
+        return [name, { href }] as const;
+      }),
+    ).then(
+      (entries) =>
+        Object.fromEntries(entries) as Record<StylesheetName, StylesheetAsset>,
+    ),
+  ]);
+
+  return { fonts, src, preloads, stylesheets };
+}
+
+function shouldBypassAssetEntry(pathname: string) {
+  return (
+    pathname === "/healthcheck" ||
+    pathname === "/assets" ||
+    pathname.startsWith("/assets/")
+  );
 }
 
 export function getAssetEntry(

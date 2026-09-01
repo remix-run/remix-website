@@ -1,6 +1,9 @@
-import { describe, it } from "remix/test";
-import { expect } from "remix/assert";
+import { mkdtemp, readdir, rm, writeFile } from "node:fs/promises";
+import * as os from "node:os";
+import * as path from "node:path";
 import { gzipSync } from "node:zlib";
+import { expect } from "remix/assert";
+import { describe, it } from "remix/test";
 
 import { routes } from "../../routes.ts";
 import {
@@ -368,6 +371,35 @@ describe("createGitHubNewsletterRepository", () => {
     await expect(repo.listSummaries()).rejects.toBeInstanceOf(
       NewsletterUpstreamUnavailableError,
     );
+  });
+
+  it("serves images from a filesystem-backed snapshot", async (t) => {
+    let imageCacheDir = await mkdtemp(
+      path.join(os.tmpdir(), "remix-newsletter-test-"),
+    );
+    t.after(() => rm(imageCacheDir, { recursive: true, force: true }));
+    let repo = createGitHubNewsletterRepository({
+      token: "[REDACTED:SECRET]",
+      imageCacheDir,
+      fetchImpl: fakeTarballFetch([
+        issueFile(1, "2024-01-01", "![Cover](cover.png)"),
+        imageFile(1, "cover.png"),
+      ]),
+    });
+
+    await repo.listSummaries();
+    let cacheGenerations = await readdir(imageCacheDir);
+    expect(cacheGenerations).toHaveLength(1);
+    let cachedImagePath = path.join(
+      imageCacheDir,
+      cacheGenerations[0],
+      "newsletter-1",
+      "cover.png",
+    );
+    await writeFile(cachedImagePath, "filesystem-image");
+
+    let image = await repo.getImage(1, "cover.png");
+    expect(new TextDecoder().decode(image?.bytes)).toBe("filesystem-image");
   });
 
   it("returns null for missing issues and missing/unsafe images", async () => {

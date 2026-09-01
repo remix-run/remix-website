@@ -2,11 +2,9 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
-import { Resvg } from "@resvg/resvg-js";
-import satori from "satori";
-import sharp from "sharp";
 import { createAction } from "remix/router";
 import { routes } from "../routes.ts";
+import { sharp, withNativeImageOperation } from "../utils/native-image.ts";
 
 type ParsedOgImageQuery =
   | { success: true; value: OgImageQuery }
@@ -31,8 +29,10 @@ export let blogOgImageAction = createAction(
 
     let pngData;
     try {
-      let svg = await createOgImageSVG(request, parsedQuery.value);
-      pngData = await renderSvgToPng(svg);
+      pngData = await withNativeImageOperation(async () => {
+        let svg = await createOgImageSVG(request, parsedQuery.value);
+        return renderSvgToPng(svg);
+      });
     } catch (error) {
       let message = error instanceof Error ? error.message : String(error);
       return new Response(message || "Failed to generate image", {
@@ -95,7 +95,10 @@ export function parseOgImageQuery(request: Request): ParsedOgImageQuery {
 }
 
 async function createOgImageSVG(request: Request, data: OgImageQuery) {
-  let ogImageAssets = await getOgImageAssets();
+  let [{ default: satori }, ogImageAssets] = await Promise.all([
+    import("satori"),
+    getOgImageAssets(),
+  ]);
   let rootNode = createOgRootNode(request, data, ogImageAssets);
   return satori(rootNode, {
     width: 2400,
@@ -268,6 +271,7 @@ function toArrayBuffer(buffer: Buffer): ArrayBuffer {
 }
 
 async function renderSvgToPng(svg: string): Promise<Uint8Array> {
+  let { Resvg } = await import("@resvg/resvg-js");
   let png = new Resvg(svg).render().asPng();
   return sharp(png).png({ compressionLevel: 9, effort: 6 }).toBuffer();
 }

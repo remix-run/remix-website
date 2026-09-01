@@ -5,7 +5,8 @@ import { createAssetServer, defineFileTransform } from "remix/assets";
 import { loadConfig } from "remix/cli";
 import { createFsFileStorage } from "remix/file-storage/fs";
 import { uiHmr } from "remix/ui-hmr/assets";
-import sharp from "sharp";
+
+import { sharp, withNativeImageOperation } from "./native-image.ts";
 
 let nodeEnv = process.env.NODE_ENV ?? "development";
 let isDevelopment = nodeEnv === "development";
@@ -101,18 +102,20 @@ export function getWebpHref(filePath: string, width?: number) {
 function createWebpTransform(width?: number) {
   return defineFileTransform({
     extensions: webpInputExtensions,
-    async transform(bytes) {
-      let image = sharp(bytes).rotate();
-      if (width) {
-        image.resize({ width, withoutEnlargement: true });
-      }
+    transform(bytes) {
+      return withNativeImageOperation(async () => {
+        let image = sharp(bytes).rotate();
+        if (width) {
+          image.resize({ width, withoutEnlargement: true });
+        }
 
-      let content = await image
-        .webp({ quality: 80, smartSubsample: true })
-        .toBuffer();
-      if (!width && content.byteLength >= bytes.byteLength) return bytes;
+        let content = await image
+          .webp({ quality: 80, smartSubsample: true })
+          .toBuffer();
+        if (!width && content.byteLength >= bytes.byteLength) return bytes;
 
-      return { content, extension: ".webp" };
+        return { content, extension: ".webp" };
+      });
     },
   });
 }
