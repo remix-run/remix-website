@@ -1,5 +1,4 @@
 import { css, type Handle } from "remix/ui";
-import { FpsCounterToggle } from "../ui/public/fps-counter-toggle.tsx";
 import { RemixLandingEnhancements } from "./public/remix-landing/landing-enhancements.tsx";
 import { RUNNER_AVIF_SRC } from "./public/remix-landing/runner-media.ts";
 import { colors } from "./public/remix-landing/styles/tokens.ts";
@@ -70,14 +69,10 @@ export function HomePage(handle: Handle<HomePageProps>) {
       ]}
     >
       <div id="remix-landing-app" mix={[landingShellStyles]}>
-        {/* Keep the initially-empty landing enhancements client entry inside
-            a stable element so Remix document navigations can hydrate it after
-            diffing in from Jam pages. Without the host, the loading screen can
-            remain visible forever on client-side transitions to /. */}
+        {/* Keep a stable host so this entry hydrates after document navigations. */}
         <div>
           <RemixLandingEnhancements />
         </div>
-        <FpsCounterToggle />
         <main
           id="main-content"
           tabIndex={-1}

@@ -21,10 +21,7 @@ import { BAKE_TEX_W, computeBakeTexHeight } from "./rest-baker.ts";
 // Reused so the constructor's clear-pass doesn't allocate.
 const _scratchClearColor = new Color();
 
-// GPGPU mouse displacement. First-order exponential blend toward a **screen-space**
-// push: falloff uses NDC distance (same basis as particle rendering), and the
-// shove aligns with camera right/up so the hole tracks the cursor through
-// scene morphs / camera rotates. Ping-pong MRT retained; textures[1] cleared.
+// GPGPU mouse displacement, ping-ponged between two float textures.
 
 const SIM_VS = /* glsl */ `
 precision highp float;
@@ -62,14 +59,12 @@ uniform float uFollowTau; // smoothing rate (/s)
 uniform float uDt;
 uniform float uCount;
 
-layout(location = 0) out vec4 oDisp;
-layout(location = 1) out vec4 oVel;
+out vec4 oDisp;
 
 void main() {
   float fi = floor(gl_FragCoord.y) * ${BAKE_TEX_W}.0 + floor(gl_FragCoord.x);
   if (int(fi) >= int(uCount)) {
     oDisp = vec4(0.0);
-    oVel = vec4(0.0);
     return;
   }
 
@@ -108,37 +103,25 @@ void main() {
   disp = mix(disp, desired, a);
 
   oDisp = vec4(disp, 0.0);
-  oVel = vec4(0.0);
 }
 `;
 }
 
-type SimSlot = {
-  target: WebGLRenderTarget;
-  disp: Texture;
-  vel: Texture;
-};
-
 export class MouseSim {
   private renderer: WebGLRenderer;
-  private slots: [SimSlot, SimSlot];
+  private slots: [WebGLRenderTarget, WebGLRenderTarget];
   private current: 0 | 1 = 0;
   private scene: Scene;
   private camera: OrthographicCamera;
   private material: RawShaderMaterial;
   private mesh: Mesh;
-  readonly bakeTexHeight: number;
+  private readonly bakeTexHeight: number;
 
   constructor(renderer: WebGLRenderer, count: number) {
     this.renderer = renderer;
     this.bakeTexHeight = computeBakeTexHeight(count);
 
-    // FloatType to match RestBaker (the GPU/driver combo in this app is
-    // already known-good with float MRT). HalfFloat would save ~1.5MB but
-    // some Mac/Intel drivers silently zero MRT half-float writes, and the
-    // savings aren't worth the debug surface.
     const targetOptions = {
-      count: 2,
       type: FloatType,
       format: RGBAFormat,
       depthBuffer: false,
@@ -150,18 +133,8 @@ export class MouseSim {
       wrapT: ClampToEdgeWrapping,
     } as const;
 
-    const makeSlot = (): SimSlot => {
-      const target = new WebGLRenderTarget(
-        BAKE_TEX_W,
-        this.bakeTexHeight,
-        targetOptions,
-      );
-      return {
-        target,
-        disp: target.textures[0],
-        vel: target.textures[1],
-      };
-    };
+    const makeSlot = () =>
+      new WebGLRenderTarget(BAKE_TEX_W, this.bakeTexHeight, targetOptions);
     this.slots = [makeSlot(), makeSlot()];
 
     this.scene = new Scene();
@@ -194,16 +167,14 @@ export class MouseSim {
     this.mesh.frustumCulled = false;
     this.scene.add(this.mesh);
 
-    // Zero out both ping-pong slots so the first step() reads (0, 0, 0) for
-    // disp and vel rather than uninitialized GPU memory. WebGL2 doesn't
-    // guarantee zeroed render targets across all drivers, especially with MRT.
+    // Initialize both displacement textures to zero.
     const prev = renderer.getRenderTarget();
     const prevClearColor = renderer.getClearColor(_scratchClearColor).getHex();
     const prevClearAlpha = renderer.getClearAlpha();
     renderer.setClearColor(0x000000, 0);
-    renderer.setRenderTarget(this.slots[0].target);
+    renderer.setRenderTarget(this.slots[0]);
     renderer.clear(true, false, false);
-    renderer.setRenderTarget(this.slots[1].target);
+    renderer.setRenderTarget(this.slots[1]);
     renderer.clear(true, false, false);
     renderer.setRenderTarget(prev);
     renderer.setClearColor(prevClearColor, prevClearAlpha);
@@ -273,10 +244,6 @@ export class MouseSim {
     this.material.uniforms.uFollowTau.value = tau;
   }
 
-  setCount(count: number) {
-    this.material.uniforms.uCount.value = count;
-  }
-
   /**
    * Step the simulation by `dt` seconds. Reads the previous disp slot and
    * writes the next; swaps. `dt` is clamped for tab-switch stability.
@@ -288,24 +255,23 @@ export class MouseSim {
 
     const prev = this.slots[this.current];
     const next = this.slots[1 - this.current];
-    u.uDispPrev.value = prev.disp;
+    u.uDispPrev.value = prev.texture;
 
     const prevTarget = this.renderer.getRenderTarget();
-    this.renderer.setRenderTarget(next.target);
+    this.renderer.setRenderTarget(next);
     this.renderer.render(this.scene, this.camera);
     this.renderer.setRenderTarget(prevTarget);
 
     this.current = (1 - this.current) as 0 | 1;
   }
 
-  /** Latest displacement texture; bind once on the draw material. */
   getDispTexture(): Texture {
-    return this.slots[this.current].disp;
+    return this.slots[this.current].texture;
   }
 
   dispose() {
-    this.slots[0].target.dispose();
-    this.slots[1].target.dispose();
+    this.slots[0].dispose();
+    this.slots[1].dispose();
     this.material.dispose();
     this.mesh.geometry.dispose();
   }

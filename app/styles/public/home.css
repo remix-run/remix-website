@@ -27,7 +27,8 @@
 
 :root {
   color-scheme: dark;
-  animation: brand-cycle 10s linear infinite;
+  /* Advanced at 10Hz by the landing client entry. */
+  animation: brand-cycle 10s linear infinite paused;
   scrollbar-width: thin;
   scrollbar-color: gray transparent;
 }

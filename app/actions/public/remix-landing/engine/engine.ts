@@ -20,6 +20,20 @@ function screenScale(width: number): number {
   return Math.min(width / ref, 1);
 }
 
+const MAX_PIXEL_RATIO = 1.5;
+const BLOOM_RESOLUTION_SCALE = 0.5;
+const LIVE_RESIZE_INTERVAL_MS = 1000 / 30;
+const RESIZE_SETTLE_MS = 100;
+
+class HalfResolutionBloomPass extends UnrealBloomPass {
+  override setSize(width: number, height: number) {
+    super.setSize(
+      Math.max(1, Math.round(width * BLOOM_RESOLUTION_SCALE)),
+      Math.max(1, Math.round(height * BLOOM_RESOLUTION_SCALE)),
+    );
+  }
+}
+
 // Stand-in for `three/addons/controls/OrbitControls`. We only need the
 // look-at target and an enabled flag; the real addon pulled in pointer/touch/
 // wheel gesture handlers and damping logic that the landing never used.
@@ -47,7 +61,12 @@ export class Engine {
   backgroundPass!: BackgroundPass;
 
   private resizeObserver: ResizeObserver | null = null;
-  private containerWidth = 1440;
+  private container: HTMLElement | null = null;
+  private resizeRequestedAt: number | null = null;
+  private lastResizeAt = -Infinity;
+  private liveResize = false;
+  private containerWidth = 0;
+  private containerHeight = 0;
   private lastAppliedSettings: SystemSettings | null = null;
   private lastAppliedWidth = -1;
   private clearColor = new Color();
@@ -71,24 +90,25 @@ export class Engine {
       canvas,
       antialias: false,
       alpha: false,
-      // The composer pipeline is fully alpha-blended with `depthWrite: false`
-      // and never reads/writes the stencil buffer, so we can drop both
-      // attachments to save bandwidth on the default framebuffer.
+      // No pass uses depth or stencil.
       depth: false,
       stencil: false,
-      // Hint dual-GPU laptops to use the discrete GPU.
-      powerPreference: "high-performance",
     });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(container.clientWidth, container.clientHeight);
+    // Float MRTs require this extension; otherwise use the static fallback.
+    if (!this.renderer.extensions.has("EXT_color_buffer_float")) {
+      throw new Error(
+        "EXT_color_buffer_float is not supported; skipping particle scene",
+      );
+    }
+    this.renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO),
+    );
     this.clearColor.set(settings.backgroundColor);
     this.renderer.setClearColor(this.clearColor);
 
     this.controls = new CameraTargetControls(this.camera);
 
-    // Match Three's default render-target type (HalfFloat) so tone reproduction
-    // through bloom/afterimage stays identical, but drop depth/stencil since
-    // no pass uses them.
+    // Preserve Three's HalfFloat color target without depth/stencil buffers.
     const composerTarget = new WebGLRenderTarget(1, 1, {
       type: HalfFloatType,
       depthBuffer: false,
@@ -96,9 +116,7 @@ export class Engine {
     });
     this.composer = new EffectComposer(this.renderer, composerTarget);
 
-    // Background pass draws the mesh gradient into the composer's read
-    // buffer first. RenderPass then runs with `clear = false` so particles
-    // composite on top of the gradient instead of wiping it to black.
+    // Render the gradient before particles without clearing the shared buffer.
     this.backgroundPass = new BackgroundPass();
     this.backgroundPass.setSize(container.clientWidth, container.clientHeight);
     this.composer.addPass(this.backgroundPass);
@@ -116,7 +134,7 @@ export class Engine {
       container.clientWidth,
       container.clientHeight,
     );
-    this.bloomPass = new UnrealBloomPass(
+    this.bloomPass = new HalfResolutionBloomPass(
       bloomSize,
       settings.bloomStrength * s,
       0.4,
@@ -124,21 +142,49 @@ export class Engine {
     );
     this.composer.addPass(this.bloomPass);
 
-    this.resizeObserver = new ResizeObserver(() =>
-      this.handleResize(container),
-    );
+    this.container = container;
+    this.liveResize = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    ).matches;
+    this.applyResize(container.clientWidth, container.clientHeight);
+    // setSize clears the canvas, so resize targets immediately before a frame.
+    this.resizeObserver = new ResizeObserver(() => {
+      this.resizeRequestedAt = performance.now();
+    });
     this.resizeObserver.observe(container);
   }
 
-  private handleResize(container: HTMLElement) {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    this.containerWidth = w;
-    this.camera.aspect = w / h;
+  resizeIfNeeded(nowMs: number): boolean {
+    if (!this.container || this.resizeRequestedAt === null) return false;
+
+    if (this.liveResize) {
+      if (nowMs - this.lastResizeAt < LIVE_RESIZE_INTERVAL_MS) return false;
+    } else if (nowMs - this.resizeRequestedAt < RESIZE_SETTLE_MS) {
+      return false;
+    }
+
+    const width = this.container.clientWidth;
+    const height = this.container.clientHeight;
+    if (width <= 0 || height <= 0) return false;
+
+    this.resizeRequestedAt = null;
+    if (width === this.containerWidth && height === this.containerHeight) {
+      return false;
+    }
+
+    this.applyResize(width, height);
+    this.lastResizeAt = nowMs;
+    return true;
+  }
+
+  private applyResize(width: number, height: number) {
+    this.containerWidth = width;
+    this.containerHeight = height;
+    this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(w, h);
-    this.composer.setSize(w, h);
-    this.backgroundPass.setSize(w, h);
+    this.renderer.setSize(width, height, false);
+    this.composer.setSize(width, height);
+    this.backgroundPass.setSize(width, height);
   }
 
   getScreenScale(): number {
@@ -182,6 +228,11 @@ export class Engine {
 
   dispose() {
     this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
+    this.container = null;
+    this.resizeRequestedAt = null;
+    this.lastResizeAt = -Infinity;
+    this.liveResize = false;
     this.controls?.dispose();
     this.renderer?.dispose();
     this.composer?.dispose();
