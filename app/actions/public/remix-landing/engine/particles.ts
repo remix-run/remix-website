@@ -10,7 +10,6 @@ import {
 } from "three";
 import { BAKE_TEX_W, computeBakeTexHeight } from "./rest-baker.ts";
 
-// ~7% of particles get gl_PointSize scaled in [SIZE_BOOST_MIN, SIZE_BOOST_MAX].
 const SIZE_BOOST_FRACTION = 0.03;
 const SIZE_BOOST_MIN = 1.32;
 const SIZE_BOOST_MAX = 3.05;
@@ -56,9 +55,8 @@ uniform sampler2D uPosB;
 uniform sampler2D uColA;
 uniform sampler2D uColB;
 
-// Per-particle displacement (offset from rest pose) produced by MouseSim.
-// xyz = world-space offset; w unused. Zero means "use rest pose as-is".
 uniform sampler2D uDispTex;
+uniform float uDispEnabled;
 
 vec3 hsl2rgb(float h, float s, float l) {
   float c = (1.0 - abs(2.0 * l - 1.0)) * s;
@@ -114,10 +112,9 @@ void main() {
   // (rest pose comes from textures); scale avoids affecting the scene.
   finalPos.xy += position.xy * 1e-7;
 
-  // GPGPU-driven cursor distortion: the sim writes a world-space offset into
-  // uDispTex each frame (spring-back to rest + cursor push + damping). When
-  // the strength is zero the disp settles to ~0 and this becomes a no-op.
-  finalPos += texture(uDispTex, uv).xyz;
+  if (uDispEnabled > 0.5) {
+    finalPos += texture(uDispTex, uv).xyz;
+  }
 
   if (uColorMode > 1.5) {
     float spatialRatio = fract(dot(finalPos, vec3(0.018, 0.014, 0.012)));
@@ -158,8 +155,7 @@ void main() {
     : 0.0;
   vCoc = clamp(coc, 0.0, 1.0);
 
-  // Capped at 64px: additive-blended glow points are pure overdraw, and the
-  // cap only binds on extreme close fly-bys.
+  // Bound glow overdraw on close fly-bys.
   gl_PointSize = clamp((baseSize + coc * 12.0) * aSizeBoost, 1.0, 64.0);
   gl_Position = projectionMatrix * mvPosition;
   vAlpha = smoothstep(500.0, 50.0, dist);
@@ -228,6 +224,7 @@ export class ParticleSystem {
   private lastFogNear = NaN;
   private lastFogFar = NaN;
   private lastBlend = NaN;
+  private lastDisplacementEnabled: boolean | null = null;
 
   private resetSetterCaches() {
     this.lastPointSize = NaN;
@@ -242,9 +239,10 @@ export class ParticleSystem {
     this.lastFogNear = NaN;
     this.lastFogFar = NaN;
     this.lastBlend = NaN;
+    this.lastDisplacementEnabled = null;
   }
 
-  init(scene: Scene, count: number, pointSize: number) {
+  init(scene: Scene, count: number, pointSize: number, pixelRatio: number) {
     this.dispose(scene);
     this.count = count;
     this.resetSetterCaches();
@@ -274,7 +272,7 @@ export class ParticleSystem {
       fragmentShader: FRAGMENT_SHADER,
       uniforms: {
         uPointSize: { value: pointSize },
-        uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+        uPixelRatio: { value: pixelRatio },
         uIntroProgress: { value: 0.0 },
         uFogEnabled: { value: 0.0 },
         uFogNear: { value: 10.0 },
@@ -292,6 +290,7 @@ export class ParticleSystem {
         uColA: { value: null as Texture | null },
         uColB: { value: null as Texture | null },
         uDispTex: { value: null as Texture | null },
+        uDispEnabled: { value: 0 },
       },
       transparent: true,
       blending: AdditiveBlending,
@@ -380,6 +379,12 @@ export class ParticleSystem {
   setDispTexture(disp: Texture) {
     if (!this.material) return;
     this.material.uniforms.uDispTex.value = disp;
+  }
+
+  setDisplacementEnabled(enabled: boolean) {
+    if (!this.material || enabled === this.lastDisplacementEnabled) return;
+    this.lastDisplacementEnabled = enabled;
+    this.material.uniforms.uDispEnabled.value = enabled ? 1 : 0;
   }
 
   setColorMode(value: number) {

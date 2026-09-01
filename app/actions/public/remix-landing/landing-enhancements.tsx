@@ -69,9 +69,6 @@ const appStyles = css({
   display: "contents",
 });
 
-// Top-of-viewport legibility comes from this fade gradient alone. Earlier
-// versions added a backdrop-filter pane here, but any blur over the animating
-// canvas forces the compositor to re-blur a full-width band every frame.
 const topFadeGradientStyles = css({
   position: "fixed",
   top: "0",
@@ -393,13 +390,11 @@ export let RemixLandingEnhancements = clientEntry(
       }
     }
 
-    // The :root brand-cycle animation is paused in CSS; sample it here by
-    // sliding a negative animation-delay so color updates happen at 10Hz
-    // instead of every compositor frame.
+    // Advance the paused CSS animation at 10Hz instead of display refresh.
     function startBrandCycle() {
       const start = performance.now();
       const interval = setInterval(() => {
-        if (reducedMotion.current) return;
+        if (document.hidden || reducedMotion.current) return;
         const elapsedS = (performance.now() - start) / 1000;
         document.documentElement.style.animationDelay = `-${elapsedS.toFixed(2)}s`;
       }, BRAND_CYCLE_TICK_MS);

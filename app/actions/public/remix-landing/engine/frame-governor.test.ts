@@ -1,41 +1,51 @@
 import { expect } from "remix/assert";
 import { it } from "remix/test";
-import { shouldRenderFrame } from "./frame-governor.ts";
+import { nextRenderDeadline } from "./frame-governor.ts";
 
-/** Count rendered frames over one second of rAF ticks at `refreshHz`. */
 function renderedFramesPerSecond(refreshHz: number, idle: boolean): number {
   const tickMs = 1000 / refreshHz;
-  let lastRenderMs = 0;
+  let deadlineMs = 0;
   let rendered = 0;
   for (let tick = 0; tick < refreshHz; tick++) {
-    const nowMs = (tick + 1) * tickMs;
-    if (shouldRenderFrame(nowMs, lastRenderMs, idle)) {
-      lastRenderMs = nowMs;
+    const nextDeadline = nextRenderDeadline(
+      (tick + 1) * tickMs,
+      deadlineMs,
+      idle,
+    );
+    if (nextDeadline !== null) {
+      deadlineMs = nextDeadline;
       rendered++;
     }
   }
   return rendered;
 }
 
-it("renders the very first frame regardless of timing", () => {
-  expect(shouldRenderFrame(0, 0, false)).toBe(true);
-  expect(shouldRenderFrame(0, 0, true)).toBe(true);
+it("renders the first frame", () => {
+  expect(nextRenderDeadline(0, 0, false)).not.toBe(null);
+  expect(nextRenderDeadline(0, 0, true)).not.toBe(null);
 });
 
-it("locks a 120Hz display to ~60fps while active", () => {
-  expect(renderedFramesPerSecond(120, false)).toBe(60);
-});
-
-it("renders every tick on a 60Hz display while active", () => {
+it("caps active rendering near 60fps across refresh rates", () => {
   expect(renderedFramesPerSecond(60, false)).toBe(60);
+  expect(renderedFramesPerSecond(75, false)).toBe(60);
+  expect(renderedFramesPerSecond(90, false)).toBe(60);
+  expect(renderedFramesPerSecond(120, false)).toBe(60);
+  expect(renderedFramesPerSecond(144, false)).toBe(60);
 });
 
 it("drops to ~30fps when idle", () => {
   expect(renderedFramesPerSecond(60, true)).toBe(30);
+  expect(renderedFramesPerSecond(90, true)).toBe(30);
   expect(renderedFramesPerSecond(120, true)).toBe(30);
 });
 
-it("tolerates rAF timestamp jitter without skipping extra ticks", () => {
-  // 60Hz ticks arriving ~1ms early must still render (16.67ms target).
-  expect(shouldRenderFrame(115.7, 100, false)).toBe(true);
+it("tolerates slightly early animation-frame timestamps", () => {
+  expect(nextRenderDeadline(115.7, 116.667, false)).not.toBe(null);
+});
+
+it("does not catch up missed frames after a long pause", () => {
+  const deadlineMs = nextRenderDeadline(100, 0, false)!;
+  const resumedDeadlineMs = nextRenderDeadline(10_000, deadlineMs, false)!;
+  expect(resumedDeadlineMs).toBeGreaterThan(10_000);
+  expect(nextRenderDeadline(10_001, resumedDeadlineMs, false)).toBe(null);
 });

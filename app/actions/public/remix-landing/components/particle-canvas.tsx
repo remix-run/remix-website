@@ -3,7 +3,7 @@ import { Matrix4, Vector3 } from "three";
 import { ControlManager } from "../engine/controls.ts";
 import { setDesiredCameraInto } from "../engine/camera-transition.ts";
 import { Engine } from "../engine/engine.ts";
-import { IDLE_AFTER_MS, shouldRenderFrame } from "../engine/frame-governor.ts";
+import { IDLE_AFTER_MS, nextRenderDeadline } from "../engine/frame-governor.ts";
 import {
   projectLabelsInto,
   type ProjectedLabel,
@@ -84,7 +84,6 @@ function buildInitialControls(preset: Preset): number[] {
   return controls;
 }
 
-/** Halve the particle budget on devices unlikely to keep up at full count. */
 function adaptiveParticleCount(base: number): number {
   const nav = navigator as Navigator & { deviceMemory?: number };
   const lowEnd =
@@ -141,7 +140,8 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   const scratchCamRight = new Vector3();
   const scratchCamUp = new Vector3();
   let lastFrameNow = 0;
-  let lastRenderAt = 0;
+  let renderDeadline = 0;
+  let renderWasIdle = false;
   let lastActivityAt = 0;
   let lastActivityMorph = NaN;
   let lastStaticKey: string | null = null;
@@ -198,9 +198,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   const MOUSE_SIM_BRUSH_SMOOTH_TAU = 14;
   const MOUSE_SIM_PUSH_GAIN =
     MOUSE_SIM_PEAK_DISP / (MOUSE_SIM_STRENGTH_SCALE * MOUSE_SIM_REPULSION_REF);
-  /** Post-brush decay window (uFollowTau = 10/s → disp ≈ 0 within 1s). */
   const MOUSE_SIM_SETTLE_S = 1.0;
-  // Starts settled: sim targets are cleared to zero at construction.
   let mouseSimSettleS = MOUSE_SIM_SETTLE_S;
 
   function setMousePosition(clientX: number, clientY: number) {
@@ -262,7 +260,8 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
     mouseVelPrimed = false;
     mouseNdcSpeedSmoothed = 0;
     mouseBrushSmoothed = 0;
-    lastRenderAt = 0;
+    renderDeadline = 0;
+    renderWasIdle = false;
     lastStaticKey = null;
     mouseSimSettleS = MOUSE_SIM_SETTLE_S;
   }
@@ -291,6 +290,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         model.positions.length / 3,
       );
       appliedModelSlots.add(preset.modelSlot);
+      lastStaticKey = null;
     }
   }
 
@@ -309,7 +309,12 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       restBaker.setCount(particleCount);
 
       particles = new ParticleSystem();
-      particles.init(engine.scene, particleCount, settings.pointSize);
+      particles.init(
+        engine.scene,
+        particleCount,
+        settings.pointSize,
+        engine.renderer.getPixelRatio(),
+      );
       // Bind the baker's MRT texture refs to the draw material once. Three
       // caches the references; subsequent bake() calls update the GL backing
       // in place.
@@ -379,20 +384,22 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       const morphValue = handle.props.morphValueRef.current;
       const reduceMotion = reducedMotion.current;
 
-      // Cap at 60fps (30fps when idle); rAF alone runs at native refresh.
-      // Morph movement counts as activity to cover programmatic jumps.
       if (morphValue !== lastActivityMorph) {
         lastActivityMorph = morphValue;
         lastActivityAt = now;
       }
       const idle = introFinished && now - lastActivityAt >= IDLE_AFTER_MS;
-      if (!shouldRenderFrame(now, lastRenderAt, idle)) {
+      if (idle !== renderWasIdle) {
+        renderWasIdle = idle;
+        renderDeadline = 0;
+      }
+      const nextDeadline = nextRenderDeadline(now, renderDeadline, idle);
+      if (nextDeadline === null) {
         frameId = requestAnimationFrame(animate);
         return;
       }
+      renderDeadline = nextDeadline;
 
-      // Under reduced motion the settled scene is fully static; skip
-      // rendering identical frames until one of these inputs changes.
       const staticKey =
         reduceMotion &&
         introFinished &&
@@ -405,7 +412,6 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         return;
       }
       lastStaticKey = staticKey;
-      lastRenderAt = now;
 
       const time = now / 1000 - startTime;
       // Real-time delta for the mouse sim. First frame falls back to a 60fps
@@ -462,7 +468,6 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         const brushTarget = linear * linear * (3 - 2 * linear);
         const kBrush = 1 - Math.exp(-MOUSE_SIM_BRUSH_SMOOTH_TAU * dtClamp);
         mouseBrushSmoothed += (brushTarget - mouseBrushSmoothed) * kBrush;
-        // Snap the exponential tail so the sim-settled skip can engage.
         if (mouseBrushSmoothed < 1e-3) mouseBrushSmoothed = 0;
         mouseBrushFactor = mouseBrushSmoothed;
       }
@@ -482,7 +487,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
           : Math.min(introTime / PARTICLE_INTRO_DURATION_S, 1.5);
       if (!introFinished && introProgress >= 1.5) {
         introFinished = true;
-        lastActivityAt = now; // grace period before idle fps kicks in
+        lastActivityAt = now;
       }
       particles.setIntroProgress(introProgress);
       particles.setTime(visualTime);
@@ -557,7 +562,6 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         ? 0
         : Math.min(effectiveTrail + trailBoost, 0.97);
       engine.afterImagePass.uniforms.damp.value = afterImageDamp;
-      // Zero damp = fullscreen no-op pass; let the composer skip it.
       engine.afterImagePass.enabled = afterImageDamp > 0.001;
 
       const driveIndex = presetData.driveIndex;
@@ -658,7 +662,6 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
       // Run look-at once before reading view/proj so MouseSim matrices match
       // this frame's render (render() calls update() again later on).
       engine.controls.update();
-      // Step the sim only while the brush is active or still decaying.
       if (!reduceMotion && mouseBrushFactor > 0) {
         mouseSimSettleS = 0;
       } else {
@@ -667,7 +670,8 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
           MOUSE_SIM_SETTLE_S,
         );
       }
-      if (mouseSimSettleS < MOUSE_SIM_SETTLE_S) {
+      const displacementActive = mouseSimSettleS < MOUSE_SIM_SETTLE_S;
+      if (displacementActive) {
         scratchViewProj.multiplyMatrices(
           engine.camera.projectionMatrix,
           engine.camera.matrixWorldInverse,
@@ -689,6 +693,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         mouseSim.step(dtSeconds);
         particles.setDispTexture(mouseSim.getDispTexture());
       }
+      particles.setDisplacementEnabled(displacementActive);
 
       const nearest = Math.round(clamp(morphValue, 0, maxValue));
       if (nearest !== previousNearest) {
@@ -733,7 +738,6 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         handle.props.labelOpacityRef.current = 0;
       }
 
-      // visualTime freezes the background warp under reduced motion too.
       engine.render(visualTime);
       reveal ??= handle.props.onFirstFrame().then(() => {
         if (!handle.signal.aborted) {

@@ -20,7 +20,17 @@ function screenScale(width: number): number {
   return Math.min(width / ref, 1);
 }
 
+const MAX_PIXEL_RATIO = 1.5;
 const BLOOM_RESOLUTION_SCALE = 0.5;
+
+class HalfResolutionBloomPass extends UnrealBloomPass {
+  override setSize(width: number, height: number) {
+    super.setSize(
+      Math.max(1, Math.round(width * BLOOM_RESOLUTION_SCALE)),
+      Math.max(1, Math.round(height * BLOOM_RESOLUTION_SCALE)),
+    );
+  }
+}
 
 // Stand-in for `three/addons/controls/OrbitControls`. We only need the
 // look-at target and an enabled flag; the real addon pulled in pointer/touch/
@@ -73,36 +83,26 @@ export class Engine {
       canvas,
       antialias: false,
       alpha: false,
-      // The composer pipeline is fully alpha-blended with `depthWrite: false`
-      // and never reads/writes the stencil buffer, so we can drop both
-      // attachments to save bandwidth on the default framebuffer.
+      // No pass uses depth or stencil.
       depth: false,
       stencil: false,
-      // "default" lets the browser weigh hardware/battery state. Unlike the
-      // old "high-performance" it never forces the discrete GPU awake, and
-      // unlike "low-power" it can't pin this still-substantial workload to a
-      // weak iGPU on hybrid laptops we haven't measured on.
-      powerPreference: "default",
     });
-    // RestBaker and MouseSim render to float MRTs. Without this extension
-    // those targets fail silently (GL errors, not exceptions), leaving a
-    // black particle layer. Throw so ParticleCanvas's init try/catch
-    // degrades to the static page instead.
+    // Float MRTs require this extension; otherwise use the static fallback.
     if (!this.renderer.extensions.has("EXT_color_buffer_float")) {
       throw new Error(
         "EXT_color_buffer_float is not supported; skipping particle scene",
       );
     }
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO),
+    );
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.clearColor.set(settings.backgroundColor);
     this.renderer.setClearColor(this.clearColor);
 
     this.controls = new CameraTargetControls(this.camera);
 
-    // Match Three's default render-target type (HalfFloat) so tone reproduction
-    // through bloom/afterimage stays identical, but drop depth/stencil since
-    // no pass uses them.
+    // Preserve Three's HalfFloat color target without depth/stencil buffers.
     const composerTarget = new WebGLRenderTarget(1, 1, {
       type: HalfFloatType,
       depthBuffer: false,
@@ -110,9 +110,7 @@ export class Engine {
     });
     this.composer = new EffectComposer(this.renderer, composerTarget);
 
-    // Background pass draws the mesh gradient into the composer's read
-    // buffer first. RenderPass then runs with `clear = false` so particles
-    // composite on top of the gradient instead of wiping it to black.
+    // Render the gradient before particles without clearing the shared buffer.
     this.backgroundPass = new BackgroundPass();
     this.backgroundPass.setSize(container.clientWidth, container.clientHeight);
     this.composer.addPass(this.backgroundPass);
@@ -130,22 +128,12 @@ export class Engine {
       container.clientWidth,
       container.clientHeight,
     );
-    this.bloomPass = new UnrealBloomPass(
+    this.bloomPass = new HalfResolutionBloomPass(
       bloomSize,
       settings.bloomStrength * s,
       0.4,
       settings.bloomThreshold,
     );
-    // Bloom is the most expensive pass (~10 blur passes over 5 mips) and is
-    // a blur, so run it at half resolution (~4x less pixel work). Override
-    // setSize because the composer re-feeds full DPR size on every resize.
-    const bloomSetSize = this.bloomPass.setSize.bind(this.bloomPass);
-    this.bloomPass.setSize = (width: number, height: number) => {
-      bloomSetSize(
-        Math.max(1, Math.round(width * BLOOM_RESOLUTION_SCALE)),
-        Math.max(1, Math.round(height * BLOOM_RESOLUTION_SCALE)),
-      );
-    };
     this.composer.addPass(this.bloomPass);
 
     this.resizeObserver = new ResizeObserver(() =>
