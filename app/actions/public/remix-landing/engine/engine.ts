@@ -22,6 +22,7 @@ function screenScale(width: number): number {
 
 const MAX_PIXEL_RATIO = 1.5;
 const BLOOM_RESOLUTION_SCALE = 0.5;
+const LIVE_RESIZE_INTERVAL_MS = 1000 / 30;
 const RESIZE_SETTLE_MS = 100;
 
 class HalfResolutionBloomPass extends UnrealBloomPass {
@@ -62,6 +63,8 @@ export class Engine {
   private resizeObserver: ResizeObserver | null = null;
   private container: HTMLElement | null = null;
   private resizeRequestedAt: number | null = null;
+  private lastResizeAt = -Infinity;
+  private liveResize = false;
   private containerWidth = 0;
   private containerHeight = 0;
   private lastAppliedSettings: SystemSettings | null = null;
@@ -140,6 +143,9 @@ export class Engine {
     this.composer.addPass(this.bloomPass);
 
     this.container = container;
+    this.liveResize = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    ).matches;
     this.applyResize(container.clientWidth, container.clientHeight);
     // setSize clears the canvas, so resize targets immediately before a frame.
     this.resizeObserver = new ResizeObserver(() => {
@@ -149,11 +155,11 @@ export class Engine {
   }
 
   resizeIfNeeded(nowMs: number): boolean {
-    if (
-      !this.container ||
-      this.resizeRequestedAt === null ||
-      nowMs - this.resizeRequestedAt < RESIZE_SETTLE_MS
-    ) {
+    if (!this.container || this.resizeRequestedAt === null) return false;
+
+    if (this.liveResize) {
+      if (nowMs - this.lastResizeAt < LIVE_RESIZE_INTERVAL_MS) return false;
+    } else if (nowMs - this.resizeRequestedAt < RESIZE_SETTLE_MS) {
       return false;
     }
 
@@ -167,6 +173,7 @@ export class Engine {
     }
 
     this.applyResize(width, height);
+    this.lastResizeAt = nowMs;
     return true;
   }
 
@@ -224,6 +231,8 @@ export class Engine {
     this.resizeObserver = null;
     this.container = null;
     this.resizeRequestedAt = null;
+    this.lastResizeAt = -Infinity;
+    this.liveResize = false;
     this.controls?.dispose();
     this.renderer?.dispose();
     this.composer?.dispose();
