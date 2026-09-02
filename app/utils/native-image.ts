@@ -1,23 +1,9 @@
 import sharp from "sharp";
 
-export const nativeImageOperationConcurrency = readIntegerEnvironmentValue(
-  "REMIX_IMAGE_CONCURRENCY",
-  2,
-  { minimum: 1 },
-);
-const sharpThreadConcurrency = readIntegerEnvironmentValue(
-  "REMIX_SHARP_THREADS",
-  2,
-  { minimum: 1 },
-);
-const sharpCacheMemoryMb = readIntegerEnvironmentValue(
-  "REMIX_SHARP_CACHE_MEMORY_MB",
-  16,
-  { minimum: 0 },
-);
+export const nativeImageOperationConcurrency = 2;
 
-sharp.cache({ memory: sharpCacheMemoryMb });
-sharp.concurrency(sharpThreadConcurrency);
+sharp.cache({ memory: 16 });
+sharp.concurrency(2);
 
 let activeOperations = 0;
 let waiters: Array<() => void> = [];
@@ -49,20 +35,3 @@ export async function withNativeImageOperation<T>(
 }
 
 export { sharp };
-
-function readIntegerEnvironmentValue(
-  name: string,
-  fallback: number,
-  { minimum }: { minimum: number },
-) {
-  let rawValue = process.env[name];
-  if (rawValue === undefined || rawValue === "") return fallback;
-
-  let value = Number(rawValue);
-  if (!Number.isInteger(value) || value < minimum) {
-    throw new Error(
-      `${name} must be an integer greater than or equal to ${minimum}`,
-    );
-  }
-  return value;
-}
