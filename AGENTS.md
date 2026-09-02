@@ -30,7 +30,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - In actions/mutations, validate request-derived input with `remix/data-schema` + `parseSafe` and return explicit `400` on invalid input.
 - Use `clientEntry(import.meta.url, function ExportName(...) { ... })` for hydrated asset modules so server rendering can resolve them through `resolveClientEntry(...)` using the component function name.
 - Resolve the root browser entry and preload links through `app/middleware/asset-entry.ts` + `app/utils/assets.ts`; do not hardcode build output paths. `loadAssetEntry()` runs in the root stack and UI reads it with `getAssetEntry()` via `asyncContext()`, so no provider component threads asset URLs through render. The asset server boundary is `allowFiles: ['app/routes.ts', 'app/**/public/**']` plus `allowPackages`. The allow-list is narrow enough that the only `denyFiles` entry is `app/**/*.test.*` (tests colocate with their subjects but are not browser runtime source); server-only code is excluded simply by not living in a `public/` directory. There is no `.server.` naming convention.
-- Plain stylesheets still come from root `public/styles` via `app/utils/style-hrefs.ts`; this app uses `remix/assets` for hydrated browser modules compiled from `app/**/public/**` source.
+- Plain stylesheet source lives in `app/styles/public/` and is served through `remix/assets`; hydrated browser modules are compiled from `app/**/public/**` source.
 
 ## UI Behavior Defaults
 
@@ -46,7 +46,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 2. Implement the controller in `app/actions/**` at the path the route map implies.
 3. Wire mapping in `app/router.ts`; unmatched requests fall through to the router's `defaultHandler`.
 4. Add focused tests and run targeted verification (+ Remix typechecks for substantial changes).
-5. Run `pnpm run build` before shipping a PR to catch CSS/runtime regressions.
+5. Run `pnpm run validate` before shipping a PR.
 6. If behavior changes, update the parity backlog below.
 
 ## Commit / Push Hygiene

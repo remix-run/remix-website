@@ -19,13 +19,13 @@ To enable HMR:
 pnpm run hmr
 ```
 
-## Build and Preview
+## Production Preview
 
 ```sh
 pnpm run preview
 ```
 
-Preview builds the app before starting the production server.
+Preview runs the TypeScript server with the production asset configuration.
 
 ## Deployment
 
@@ -40,13 +40,13 @@ pnpm run push:stage
 
 - Create a branch from the latest target branch.
 - Push your branch and open a PR.
-- Run `pnpm run build` before shipping a PR.
-- See `AGENTS.md` for repo-specific rules (routes, assets, tests). Remix framework patterns live under `.agents/skills/` (start with `remix-overview`).
+- Run `pnpm run validate` before shipping a PR.
+- See `AGENTS.md` for repo-specific rules (routes, assets, tests). Remix framework patterns live under `.agents/skills/remix/`.
 
 ## Codebase
 
-- **`app/`** — Remix 3 site: `routes.ts` (URL contract), `router.ts` (Vite SSR entry, middleware, route wiring), `actions/`, `ui/`, `data/`, etc.
-- **`server.ts` (repo root)** — Node HTTP server in production; serves the built app from `build/server/`.
+- **`app/`** — Remix 3 site: `routes.ts` (URL contract), `router.ts` (middleware and route wiring), `actions/`, `ui/`, `data/`, etc.
+- **`server.ts` (repo root)** — Node HTTP server used in development and production.
 - **`data/`** — Blog posts and author metadata (separate from `app/data/`, which holds app-layer server modules such as blog queries).
 
 ## Content
