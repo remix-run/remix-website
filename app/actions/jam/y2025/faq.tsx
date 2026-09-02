@@ -28,8 +28,23 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
       requestUrl={handle.props.requestUrl}
       activePath={routes.jam.y2025.faq.href()}
     >
-      <main id="main-content" mix={faqMainStyle} tabIndex={-1}>
-        <Title mix={centeredTitleStyle}>
+      <main
+        id="main-content"
+        mix={css({
+          display: "flex",
+          maxWidth: "800px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          paddingBlock: "80px",
+          paddingTop: "120px",
+          [breakpointMedia.md]: { paddingTop: "270px" },
+          [breakpointMedia.lg]: { paddingTop: "280px" },
+        })}
+        tabIndex={-1}
+      >
+        <Title mix={css({ textAlign: "center" })}>
           <ScrambleText
             text="Frequently Asked"
             delay={100}
@@ -39,7 +54,17 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
           <ScrambleText text="Questions" delay={300} color="green" />
         </Title>
 
-        <div mix={faqContentStyle}>
+        <div
+          mix={css({
+            position: "relative",
+            zIndex: 10,
+            color: "#ffffff",
+            fontSize: "1rem",
+            lineHeight: 1.5,
+            textAlign: "justify",
+            [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
+          })}
+        >
           <FAQSection
             question="Where can I find the event lineup?"
             answer={
@@ -220,9 +245,24 @@ function FAQSection(handle: Handle<{ question: string; answer: RemixNode }>) {
   return () => {
     let id = slugify(handle.props.question);
     return (
-      <section id={id} mix={faqSectionStyle}>
+      <section
+        id={id}
+        mix={css({
+          marginTop: "20px",
+          scrollMarginTop: "128px",
+          color: "#ffffff",
+          fontSize: "1rem",
+          lineHeight: 1.5,
+          "& > * + *": { marginTop: "12px" },
+          [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
+          [breakpointMedia.lg]: { marginTop: "40px" },
+        })}
+      >
         <Subheader>
-          <a href={`#${id}`} mix={headingLinkStyle}>
+          <a
+            href={`#${id}`}
+            mix={css({ "&:hover": { textDecoration: "underline" } })}
+          >
             {handle.props.question}
           </a>
         </Subheader>
@@ -244,31 +284,6 @@ function JamEmail() {
   );
 }
 
-let faqMainStyle = css({
-  display: "flex",
-  maxWidth: "800px",
-  marginInline: "auto",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "48px",
-  paddingBlock: "80px",
-  paddingTop: "120px",
-  [breakpointMedia.md]: { paddingTop: "270px" },
-  [breakpointMedia.lg]: { paddingTop: "280px" },
-});
-
-let centeredTitleStyle = css({ textAlign: "center" });
-
-let faqContentStyle = css({
-  position: "relative",
-  zIndex: 10,
-  color: "#ffffff",
-  fontSize: "1rem",
-  lineHeight: 1.5,
-  textAlign: "justify",
-  [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
-});
-
 let strongStyle = css({
   color: "#ffffff",
   fontWeight: theme.fontWeight.bold,
@@ -280,20 +295,7 @@ let faqListStyle = css({
   "& > * + *": { marginTop: "4px" },
 });
 
-let faqSectionStyle = css({
-  marginTop: "20px",
-  scrollMarginTop: "128px",
-  color: "#ffffff",
-  fontSize: "1rem",
-  lineHeight: 1.5,
-  "& > * + *": { marginTop: "12px" },
-  [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
-  [breakpointMedia.lg]: { marginTop: "40px" },
-});
-
 let textLinkStyle = css({
   color: "#59b0ff",
   "&:hover": { textDecoration: "underline" },
 });
-
-let headingLinkStyle = css({ "&:hover": { textDecoration: "underline" } });

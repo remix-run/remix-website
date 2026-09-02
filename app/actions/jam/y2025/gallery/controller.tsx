@@ -58,22 +58,78 @@ function renderGalleryPage({
       activePath={routes.jam.y2025.gallery.index.href()}
       hideBackground
     >
-      <main id="main-content" mix={galleryMainStyle} tabIndex={-1}>
+      <main
+        id="main-content"
+        mix={css({
+          display: "flex",
+          maxWidth: "1920px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          paddingBlock: "80px",
+          paddingTop: "120px",
+          textAlign: "center",
+          [breakpointMedia.md]: { paddingTop: "200px" },
+          [breakpointMedia.lg]: { paddingTop: "210px" },
+        })}
+        tabIndex={-1}
+      >
         <Title>
           <ScrambleText text="Photo" delay={100} color="blue" />
           <ScrambleText text="Gallery" delay={300} color="green" />
         </Title>
 
         {photos.length === 0 ? (
-          <p mix={emptyGalleryStyle}>No photos available yet.</p>
+          <p
+            mix={css({
+              color: "rgb(255 255 255 / 0.7)",
+              fontSize: "1.125rem",
+              lineHeight: 1.556,
+            })}
+          >
+            No photos available yet.
+          </p>
         ) : (
-          <div mix={galleryContentStyle}>
-            <div mix={galleryGridStyle}>
+          <div mix={css({ width: "100%" })}>
+            <div
+              mix={css({
+                width: "100%",
+                columnCount: 1,
+                columnGap: "16px",
+                [breakpointMedia.md]: { columnCount: 2, columnGap: "24px" },
+                [breakpointMedia.lg]: { columnCount: 3 },
+                [breakpointMedia["2xl"]]: { columnCount: 4 },
+              })}
+            >
               {photos.map((photo, index) => (
-                <div key={photo.url} mix={galleryItemStyle}>
+                <div
+                  key={photo.url}
+                  mix={css({
+                    width: "100%",
+                    marginBottom: "16px",
+                    breakInside: "avoid",
+                    [breakpointMedia.md]: { marginBottom: "24px" },
+                  })}
+                >
                   <JamGalleryLink
                     href={`${routes.jam.y2025.gallery.index.href()}?photo=${index}`}
-                    mix={galleryLinkStyle}
+                    mix={css({
+                      display: "block",
+                      overflow: "hidden",
+                      borderRadius: "8px",
+                      backgroundColor: "rgb(255 255 255 / 0.05)",
+                      outline: "none",
+                      transition: "opacity 300ms",
+                      "&:is(:hover, :focus-visible)": { opacity: 0.85 },
+                      "&:focus-visible": {
+                        outline: `2px solid ${theme.colors.brand.blue}`,
+                        outlineOffset: "2px",
+                      },
+                      "@media (prefers-reduced-motion: reduce)": {
+                        transition: "none",
+                      },
+                    })}
                   >
                     <PhotoImage {...photo} />
                   </JamGalleryLink>
@@ -120,10 +176,34 @@ function GalleryModal(
           href={nav.closeHref}
           tabindex={-1}
           ariaLabel="Close gallery backdrop"
-          mix={modalBackdropStyle}
+          mix={css({
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
+            display: "block",
+          })}
         />
-        <div mix={modalContentStyle}>
-          <div mix={modalTopBarStyle}>
+        <div
+          mix={css({
+            position: "relative",
+            zIndex: 10,
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            flexDirection: "column",
+            gap: "24px",
+            padding: "16px",
+            [breakpointMedia.md]: { padding: "36px" },
+          })}
+        >
+          <div
+            mix={css({
+              display: "flex",
+              flexShrink: 0,
+              alignItems: "center",
+              justifyContent: "space-between",
+            })}
+          >
             <IconLink href={nav.closeHref} icon="x-mark" label="Close modal" />
             <IconLink
               href={downloadHref}
@@ -132,8 +212,18 @@ function GalleryModal(
               download={`remix-jam-2025-photo-${handle.props.selectedPhotoIndex + 1}.jpg`}
             />
           </div>
-          <div mix={modalPhotoAreaStyle}>
-            <div mix={[modalChevronStyle, previousChevronStyle]}>
+          <div
+            mix={css({
+              position: "relative",
+              display: "flex",
+              minHeight: 0,
+              flex: "1",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+            })}
+          >
+            <div mix={[modalChevronStyle, css({ left: 0 })]}>
               <IconLink
                 href={nav.previousHref}
                 icon="chevron-r"
@@ -141,7 +231,7 @@ function GalleryModal(
                 flip
               />
             </div>
-            <div mix={[modalChevronStyle, nextChevronStyle]}>
+            <div mix={[modalChevronStyle, css({ right: 0 })]}>
               <IconLink
                 href={nav.nextHref}
                 icon="chevron-r"
@@ -150,8 +240,24 @@ function GalleryModal(
             </div>
             <ModalImage key={selectedPhoto.url} photo={selectedPhoto} />
           </div>
-          <div mix={modalCounterRowStyle}>
-            <div mix={modalCounterStyle}>
+          <div
+            mix={css({
+              display: "flex",
+              flexShrink: 0,
+              justifyContent: "center",
+            })}
+          >
+            <div
+              mix={css({
+                borderRadius: theme.radius.full,
+                padding: "8px 16px",
+                backgroundColor: "#ffffff",
+                color: "#000000",
+                fontSize: "0.875rem",
+                fontWeight: theme.fontWeight.semibold,
+                lineHeight: 1.425,
+              })}
+            >
               {handle.props.selectedPhotoIndex + 1} /{" "}
               {handle.props.photos.length}
             </div>
@@ -192,7 +298,11 @@ function ModalImage(handle: Handle<{ photo: Photo }>) {
 
     return (
       <div
-        mix={modalImageFrameStyle}
+        mix={css({
+          marginInline: "-24px",
+          backgroundColor: "rgb(255 255 255 / 0.05)",
+          [breakpointMedia.md]: { marginInline: 0 },
+        })}
         style={{
           aspectRatio: String(aspectRatio),
           width: isLandscape ? "100%" : "auto",
@@ -204,7 +314,11 @@ function ModalImage(handle: Handle<{ photo: Photo }>) {
         <img
           src={imageSrc}
           alt={handle.props.photo.altText || ""}
-          mix={modalImageStyle}
+          mix={css({
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+          })}
         />
       </div>
     );
@@ -331,137 +445,26 @@ function PhotoImage(handle: Handle<Photo>) {
         height={handle.props.height}
         sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw"
         loading="lazy"
-        mix={galleryImageStyle}
+        mix={css({
+          width: "100%",
+          userSelect: "none",
+          transition: "transform 300ms",
+          "&:hover": { transform: "scale(1.05)" },
+          "@media (prefers-reduced-motion: reduce)": {
+            transition: "none",
+            "&:hover": { transform: "none" },
+          },
+        })}
       />
     );
   };
 }
-
-let galleryMainStyle = css({
-  display: "flex",
-  maxWidth: "1920px",
-  marginInline: "auto",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "48px",
-  paddingBlock: "80px",
-  paddingTop: "120px",
-  textAlign: "center",
-  [breakpointMedia.md]: { paddingTop: "200px" },
-  [breakpointMedia.lg]: { paddingTop: "210px" },
-});
-
-let emptyGalleryStyle = css({
-  color: "rgb(255 255 255 / 0.7)",
-  fontSize: "1.125rem",
-  lineHeight: 1.556,
-});
-
-let galleryContentStyle = css({ width: "100%" });
-
-let galleryGridStyle = css({
-  width: "100%",
-  columnCount: 1,
-  columnGap: "16px",
-  [breakpointMedia.md]: { columnCount: 2, columnGap: "24px" },
-  [breakpointMedia.lg]: { columnCount: 3 },
-  [breakpointMedia["2xl"]]: { columnCount: 4 },
-});
-
-let galleryItemStyle = css({
-  width: "100%",
-  marginBottom: "16px",
-  breakInside: "avoid",
-  [breakpointMedia.md]: { marginBottom: "24px" },
-});
-
-let galleryLinkStyle = css({
-  display: "block",
-  overflow: "hidden",
-  borderRadius: "8px",
-  backgroundColor: "rgb(255 255 255 / 0.05)",
-  outline: "none",
-  transition: "opacity 300ms",
-  "&:is(:hover, :focus-visible)": { opacity: 0.85 },
-  "&:focus-visible": {
-    outline: `2px solid ${theme.colors.brand.blue}`,
-    outlineOffset: "2px",
-  },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let modalBackdropStyle = css({
-  position: "absolute",
-  inset: 0,
-  zIndex: 0,
-  display: "block",
-});
-
-let modalContentStyle = css({
-  position: "relative",
-  zIndex: 10,
-  display: "flex",
-  width: "100%",
-  height: "100%",
-  flexDirection: "column",
-  gap: "24px",
-  padding: "16px",
-  [breakpointMedia.md]: { padding: "36px" },
-});
-
-let modalTopBarStyle = css({
-  display: "flex",
-  flexShrink: 0,
-  alignItems: "center",
-  justifyContent: "space-between",
-});
-
-let modalPhotoAreaStyle = css({
-  position: "relative",
-  display: "flex",
-  minHeight: 0,
-  flex: "1",
-  alignItems: "center",
-  justifyContent: "center",
-  overflow: "hidden",
-});
 
 let modalChevronStyle = css({
   position: "absolute",
   top: "50%",
   zIndex: 10,
   transform: "translateY(-50%)",
-});
-
-let previousChevronStyle = css({ left: 0 });
-let nextChevronStyle = css({ right: 0 });
-
-let modalCounterRowStyle = css({
-  display: "flex",
-  flexShrink: 0,
-  justifyContent: "center",
-});
-
-let modalCounterStyle = css({
-  borderRadius: theme.radius.full,
-  padding: "8px 16px",
-  backgroundColor: "#ffffff",
-  color: "#000000",
-  fontSize: "0.875rem",
-  fontWeight: theme.fontWeight.semibold,
-  lineHeight: 1.425,
-});
-
-let modalImageFrameStyle = css({
-  marginInline: "-24px",
-  backgroundColor: "rgb(255 255 255 / 0.05)",
-  [breakpointMedia.md]: { marginInline: 0 },
-});
-
-let modalImageStyle = css({
-  width: "100%",
-  height: "100%",
-  objectFit: "contain",
 });
 
 let iconLinkStyle = css({
@@ -493,14 +496,3 @@ let iconLinkIconStyle = css({
 });
 
 let flippedIconStyle = css({ transform: "rotate(180deg)" });
-
-let galleryImageStyle = css({
-  width: "100%",
-  userSelect: "none",
-  transition: "transform 300ms",
-  "&:hover": { transform: "scale(1.05)" },
-  "@media (prefers-reduced-motion: reduce)": {
-    transition: "none",
-    "&:hover": { transform: "none" },
-  },
-});

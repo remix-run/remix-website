@@ -152,7 +152,7 @@ export let JamKeepsakes = clientEntry(
     );
 
     return () => (
-      <div mix={keepsakesRootStyle}>
+      <div mix={css({ isolation: "isolate" })}>
         {KEEPSAKES.map((keepsake) => {
           let t = getTranslate(keepsake.id);
           let isActiveDrag = drag?.id === keepsake.id;
@@ -160,7 +160,7 @@ export let JamKeepsakes = clientEntry(
           return (
             <div
               key={keepsake.id}
-              mix={keepsakeContainerStyle}
+              mix={css({ position: "relative" })}
               style={{ zIndex: order[keepsake.id] }}
             >
               <div
@@ -176,7 +176,18 @@ export let JamKeepsakes = clientEntry(
                         keepsakeStyle,
                         keepsakePositionStyles[keepsake.id],
                         isActiveDrag ? draggingStyle : draggableStyle,
-                        jiggleStyle,
+                        css({
+                          animation:
+                            "jam-2025-keepsake-jiggle 3s cubic-bezier(0.99, 0.78, 0.72, 1.04) infinite forwards",
+                          "@keyframes jam-2025-keepsake-jiggle": {
+                            "0%, 91%, 100%": { transform: "rotate(0deg)" },
+                            "94%": { transform: "rotate(-3deg)" },
+                            "97%": { transform: "rotate(3deg)" },
+                          },
+                          "@media (prefers-reduced-motion: reduce)": {
+                            animation: "none",
+                          },
+                        }),
                         on("pointerdown", (event) => {
                           if (!event.isPrimary) return;
                           if (
@@ -203,11 +214,36 @@ export let JamKeepsakes = clientEntry(
                       ]
                 }
               >
-                <div mix={keepsakeRotationStyle}>
+                <div
+                  mix={css({
+                    height: "100%",
+                    width: "100%",
+                    transform: "rotate(var(--rotate))",
+                    transition:
+                      "transform 0.3s cubic-bezier(0, 1.5, 0.67, 1.06)",
+                    willChange: "transform",
+                    "@media (hover: hover)": {
+                      "&:hover": {
+                        transform:
+                          "rotate(calc(var(--rotate) + var(--hover-rotate)))",
+                      },
+                    },
+                    "@media (prefers-reduced-motion: reduce)": {
+                      transition: "none",
+                    },
+                  })}
+                >
                   <div
                     mix={
                       keepsake.hasBorder
-                        ? [keepsakeFrameStyle, borderedKeepsakeStyle]
+                        ? [
+                            keepsakeFrameStyle,
+                            css({
+                              border: "6px solid #ffffff",
+                              borderRadius: "4px",
+                              [breakpointMedia.md]: { borderWidth: "16px" },
+                            }),
+                          ]
                         : keepsakeFrameStyle
                     }
                   >
@@ -215,7 +251,11 @@ export let JamKeepsakes = clientEntry(
                       src={keepsake.src}
                       alt={keepsake.alt}
                       draggable={false}
-                      mix={keepsakeImageStyle}
+                      mix={css({
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      })}
                     />
                   </div>
                 </div>
@@ -241,9 +281,6 @@ function moveKeepsakeToFront(
   order[id] = KEEPSAKES.length;
 }
 
-let keepsakesRootStyle = css({ isolation: "isolate" });
-let keepsakeContainerStyle = css({ position: "relative" });
-
 let keepsakeStyle = css({
   position: "absolute",
   touchAction: "none",
@@ -253,44 +290,7 @@ let keepsakeStyle = css({
 let draggableStyle = css({ cursor: "grab" });
 let draggingStyle = css({ cursor: "grabbing" });
 
-let jiggleStyle = css({
-  animation:
-    "jam-2025-keepsake-jiggle 3s cubic-bezier(0.99, 0.78, 0.72, 1.04) infinite forwards",
-  "@keyframes jam-2025-keepsake-jiggle": {
-    "0%, 91%, 100%": { transform: "rotate(0deg)" },
-    "94%": { transform: "rotate(-3deg)" },
-    "97%": { transform: "rotate(3deg)" },
-  },
-  "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-});
-
 let keepsakeFrameStyle = css({ width: "100%", height: "100%" });
-
-let borderedKeepsakeStyle = css({
-  border: "6px solid #ffffff",
-  borderRadius: "4px",
-  [breakpointMedia.md]: { borderWidth: "16px" },
-});
-
-let keepsakeRotationStyle = css({
-  height: "100%",
-  width: "100%",
-  transform: "rotate(var(--rotate))",
-  transition: "transform 0.3s cubic-bezier(0, 1.5, 0.67, 1.06)",
-  willChange: "transform",
-  "@media (hover: hover)": {
-    "&:hover": {
-      transform: "rotate(calc(var(--rotate) + var(--hover-rotate)))",
-    },
-  },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let keepsakeImageStyle = css({
-  width: "100%",
-  height: "100%",
-  objectFit: "cover",
-});
 
 let keepsakePositionStyles: Record<KeepsakeId, ReturnType<typeof css>> = {
   poster: css({

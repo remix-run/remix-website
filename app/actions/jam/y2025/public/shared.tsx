@@ -15,10 +15,10 @@ export function JamPageScaffold(
   }>,
 ) {
   return () => (
-    <div mix={pageScaffoldStyle}>
+    <div mix={css({ position: "relative", overflow: "hidden" })}>
       <Background hideBackground={handle.props.hideBackground}>
         <Navbar activePath={handle.props.activePath} />
-        <div mix={pageContentStyle}>{handle.props.children}</div>
+        <div mix={css({ paddingInline: "24px" })}>{handle.props.children}</div>
         <Footer showSeats={handle.props.showSeats} />
       </Background>
     </div>
@@ -30,11 +30,18 @@ function Background(
 ) {
   return () => {
     return (
-      <div mix={backgroundRootStyle}>
+      <div mix={css({ isolation: "isolate" })}>
         {handle.props.children}
         {!handle.props.hideBackground ? (
-          <div mix={backgroundEffectStyle} aria-hidden="true">
-            <svg mix={backgroundFilterSvgStyle}>
+          <div
+            mix={css({
+              position: "fixed",
+              inset: "-44px",
+              filter: "url(#jam-background-filter) blur(4px)",
+            })}
+            aria-hidden="true"
+          >
+            <svg mix={css({ position: "absolute" })}>
               <defs>
                 <filter id="jam-background-filter">
                   <feTurbulence
@@ -66,7 +73,17 @@ function Background(
                 </filter>
               </defs>
             </svg>
-            <div mix={backgroundMaskStyle} />
+            <div
+              mix={css({
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgb(0 0 0 / 0.3)",
+                maskImage: `url('${assetPaths.jam2025.backgroundMask}')`,
+                maskSize: "cover",
+                maskRepeat: "no-repeat",
+                maskPosition: "center",
+              })}
+            />
           </div>
         ) : null}
       </div>
@@ -76,11 +93,50 @@ function Background(
 
 function Navbar(handle: Handle<{ activePath: string }>) {
   return () => (
-    <nav mix={navbarStyle}>
-      <a href={routes.jam.y2025.index.href()} mix={navbarLogoLinkStyle}>
-        <JamLogo mix={jamLogoStyle} />
+    <nav
+      mix={css({
+        position: "fixed",
+        inset: "0 0 auto",
+        zIndex: 40,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "16px",
+        background: "linear-gradient(rgb(0 0 0 / 0.7) 0%, rgb(0 0 0 / 0) 75%)",
+        [breakpointMedia.md]: { padding: "36px" },
+      })}
+    >
+      <a
+        href={routes.jam.y2025.index.href()}
+        mix={css({
+          display: "flex",
+          alignItems: "center",
+          [breakpointMedia.md]: { display: "block" },
+        })}
+      >
+        <JamLogo
+          mix={css({
+            height: "48px",
+            fill: "#ffffff",
+            [breakpointMedia.md]: { width: "200px", height: "auto" },
+            [breakpointMedia.lg]: { width: "160px" },
+            [breakpointMedia.xl]: { width: "200px" },
+          })}
+        />
       </a>
-      <div mix={desktopNavStyle}>
+      <div
+        mix={css({
+          display: "none",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
+          borderRadius: theme.radius.full,
+          padding: "8px",
+          backgroundColor: "rgb(0 0 0 / 0.4)",
+          backdropFilter: "blur(16px)",
+          [breakpointMedia.lg]: { display: "flex" },
+        })}
+      >
         <NavLink
           href={routes.jam.y2025.lineup.href()}
           active={handle.props.activePath === routes.jam.y2025.lineup.href()}
@@ -109,13 +165,81 @@ function Navbar(handle: Handle<{ activePath: string }>) {
         </NavLink>
       </div>
       <a
-        mix={[jamButtonStyle, navbarTicketStyle]}
+        mix={[
+          jamButtonStyle,
+          css({
+            display: "none",
+            backgroundColor: "#ffffff",
+            color: "#000000",
+            [breakpointMedia.lg]: { display: "flex" },
+          }),
+        ]}
         href={routes.jam.y2025.ticket.index.href()}
       >
-        <TicketLogo mix={navbarTicketIconStyle} />
+        <TicketLogo
+          mix={css({
+            width: "24px",
+            height: "24px",
+            fill: "currentColor",
+            [breakpointMedia.md]: { width: "32px", height: "32px" },
+            [breakpointMedia.lg]: { width: "24px", height: "24px" },
+            [breakpointMedia.xl]: { width: "32px", height: "32px" },
+          })}
+        />
         <span>Ticket</span>
       </a>
-      <div mix={jamMobileMenuStyle}>
+      <div
+        mix={css({
+          "& [data-mobile-menu-summary]": {
+            display: "grid",
+            width: "48px",
+            height: "48px",
+            placeItems: "center",
+            borderRadius: theme.radius.full,
+            backgroundColor: "#ffffff",
+            color: "#000000",
+            backdropFilter: "blur(16px)",
+            listStyle: "none",
+            outline: "none",
+            transition: "color 300ms, background-color 300ms",
+          },
+          "& [data-mobile-menu-summary]::-webkit-details-marker": {
+            display: "none",
+          },
+          "& [data-mobile-menu-summary]:hover, & details[open] > [data-mobile-menu-summary]":
+            { backgroundColor: theme.colors.brand.blue, color: "#ffffff" },
+          "& [data-mobile-menu-summary]:focus-visible": {
+            outline: `2px solid ${theme.colors.brand.blue}`,
+            outlineOffset: "2px",
+          },
+          "& [data-mobile-menu-summary] svg": { width: "24px", height: "24px" },
+          "& [data-mobile-menu-position]": {
+            position: "absolute",
+            right: 0,
+            zIndex: 20,
+          },
+          "& [data-mobile-menu-surface]": {
+            position: "relative",
+            top: "4px",
+            width: "max-content",
+            padding: "4px",
+          },
+          "& [data-mobile-menu-nav]": {
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+            overflow: "hidden",
+            borderRadius: "2rem",
+            padding: "10px 8px",
+            backgroundColor: "rgb(0 0 0 / 0.4)",
+            backdropFilter: "blur(16px)",
+          },
+          [breakpointMedia.lg]: { display: "none" },
+          "@media (prefers-reduced-motion: reduce)": {
+            "& [data-mobile-menu-summary]": { transition: "none" },
+          },
+        })}
+      >
         <MobileMenu unstyled>
           <MobileNavLink
             href={routes.jam.y2025.lineup.href()}
@@ -164,7 +288,34 @@ function NavLink(
     <a
       href={handle.props.href}
       mix={[
-        navLinkStyle,
+        css({
+          border: "2px solid",
+          borderRadius: theme.radius.full,
+          padding: "2px 20px",
+          fontSize: "1rem",
+          fontWeight: theme.fontWeight.bold,
+          lineHeight: 1.5,
+          outline: "none",
+          transition: "color 300ms, border-color 300ms",
+          [breakpointMedia.md]: {
+            borderWidth: "4px",
+            paddingBlock: "12px",
+            fontSize: "1.25rem",
+            lineHeight: 1.556,
+          },
+          [breakpointMedia.lg]: {
+            borderWidth: "2px",
+            padding: "8px 16px",
+            fontSize: "1rem",
+            lineHeight: 1.5,
+          },
+          [breakpointMedia.xl]: {
+            padding: "12px 20px",
+            fontSize: "1.25rem",
+            lineHeight: 1.556,
+          },
+          "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+        }),
         handle.props.active ? activeNavLinkStyle : inactiveNavLinkStyle,
       ]}
     >
@@ -180,7 +331,19 @@ function MobileNavLink(
     <a
       href={handle.props.href}
       mix={[
-        mobileNavLinkStyle,
+        css({
+          display: "block",
+          minWidth: "max-content",
+          border: "2px solid",
+          borderRadius: theme.radius.full,
+          padding: "8px 16px",
+          fontSize: "1.125rem",
+          fontWeight: theme.fontWeight.bold,
+          lineHeight: 1.556,
+          outline: "none",
+          transition: "color 300ms, border-color 300ms",
+          "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+        }),
         handle.props.active ? activeNavLinkStyle : inactiveNavLinkStyle,
       ]}
     >
@@ -191,16 +354,45 @@ function MobileNavLink(
 
 function Footer(handle: Handle<{ showSeats: boolean }>) {
   return () => (
-    <footer mix={jamFooterStyle}>
+    <footer
+      mix={css({
+        position: "relative",
+        zIndex: 20,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      })}
+    >
       {handle.props.showSeats ? (
         <>
-          <div mix={seatsSpacerStyle} />
-          <div mix={seatsFrameStyle}>
+          <div
+            mix={css({
+              width: "100%",
+              height: 0,
+              [breakpointMedia.md]: { height: "112px" },
+            })}
+          />
+          <div
+            mix={css({
+              display: "flex",
+              width: "100vw",
+              justifyContent: "center",
+              overflow: "hidden",
+            })}
+          >
             <img
               loading="lazy"
               src={assetPaths.jam2025.colorSeats}
               alt=""
-              mix={seatsImageStyle}
+              mix={css({
+                display: "block",
+                minWidth: "1400px",
+                [breakpointMedia.sm]: { minWidth: "1600px" },
+                [breakpointMedia.md]: { minWidth: "1800px" },
+                [breakpointMedia.lg]: { minWidth: "2000px" },
+                [breakpointMedia.xl]: { minWidth: "2200px" },
+                [breakpointMedia["2xl"]]: { minWidth: "110vw" },
+              })}
               aria-hidden="true"
             />
           </div>
@@ -208,18 +400,55 @@ function Footer(handle: Handle<{ showSeats: boolean }>) {
       ) : null}
       <div
         mix={[
-          footerContentStyle,
-          handle.props.showSeats ? seatsFooterStyle : plainFooterStyle,
+          css({
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "8px",
+            paddingBlock: "160px",
+            fontFamily: theme.fontFamily.mono,
+            fontSize: "0.75rem",
+            lineHeight: 1.333,
+            textAlign: "center",
+            [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
+            [breakpointMedia["2xl"]]: { paddingBlock: "128px" },
+          }),
+          handle.props.showSeats
+            ? css({
+                width: "100%",
+                background:
+                  "linear-gradient(180deg, rgb(255 51 0), rgb(186 37 0))",
+                color: "#ffffff",
+              })
+            : css({ color: "#a4a4a4" }),
         ]}
       >
-        <div mix={footerLinksStyle}>
+        <div
+          mix={css({
+            display: "flex",
+            alignItems: "center",
+            gap: "20px",
+          })}
+        >
           <a
             href={routes.home.href()}
             mix={[
-              footerHomeLinkStyle,
+              css({
+                border: "1px solid",
+                borderRadius: "24px",
+                padding: "4px 16px",
+                color: "#ffffff",
+                textTransform: "uppercase",
+              }),
               handle.props.showSeats
-                ? seatsFooterLinkStyle
-                : plainFooterLinkStyle,
+                ? css({
+                    borderColor: "#ffffff",
+                    "&:hover": { textDecoration: "underline" },
+                  })
+                : css({
+                    borderColor: "#a4a4a4",
+                    "&:hover": { color: theme.colors.brand.blue },
+                  }),
             ]}
           >
             remix.run
@@ -281,7 +510,16 @@ function Footer(handle: Handle<{ showSeats: boolean }>) {
             />
           </a>
         </div>
-        <div mix={footerLegalStyle}>
+        <div
+          mix={css({
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "8px",
+            lineHeight: 2,
+            textTransform: "uppercase",
+          })}
+        >
           <div>
             docs and examples licensed under{" "}
             <a
@@ -331,7 +569,21 @@ export function Title(
 export let ScrambleText = JamScrambleText;
 
 export function SectionLabel(handle: Handle<{ children: RemixNode }>) {
-  return () => <p mix={sectionLabelStyle}>{handle.props.children}</p>;
+  return () => (
+    <p
+      mix={css({
+        color: "rgb(255 255 255 / 0.5)",
+        fontFamily: theme.fontFamily.mono,
+        fontSize: "0.75rem",
+        lineHeight: 1.333,
+        letterSpacing: "0.1em",
+        textTransform: "uppercase",
+        [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
+      })}
+    >
+      {handle.props.children}
+    </p>
+  );
 }
 
 export function InfoText(
@@ -341,7 +593,17 @@ export function InfoText(
     <div
       mix={handle.props.mix ? [infoTextStyle, handle.props.mix] : infoTextStyle}
     >
-      <p mix={infoTextParagraphStyle}>{handle.props.children}</p>
+      <p
+        mix={css({
+          color: "#ffffff",
+          fontSize: "1.125rem",
+          fontWeight: theme.fontWeight.bold,
+          lineHeight: 1.4,
+          [breakpointMedia.md]: { fontSize: "1.875rem", lineHeight: 1.2 },
+        })}
+      >
+        {handle.props.children}
+      </p>
     </div>
   );
 }
@@ -376,7 +638,17 @@ export function Paragraph(
 
 export function AddressMain() {
   return () => (
-    <address mix={addressMainStyle}>
+    <address
+      mix={css({
+        display: "inline-block",
+        color: "#ffffff",
+        fontSize: "1.125rem",
+        fontStyle: "normal",
+        fontWeight: theme.fontWeight.bold,
+        lineHeight: 1.625,
+        [breakpointMedia.md]: { fontSize: "1.875rem" },
+      })}
+    >
       620 King St W
       <br />
       Toronto, ON M5V 1M7, Canada
@@ -390,7 +662,10 @@ export function AddressLink() {
       href="https://maps.app.goo.gl/GpacrBAJJMnctN9W7"
       target="_blank"
       rel="noopener noreferrer"
-      mix={textLinkStyle}
+      mix={css({
+        color: "#59b0ff",
+        "&:hover": { textDecoration: "underline" },
+      })}
     >
       620 King St W Toronto, ON M5V 1M7, Canada
     </a>
@@ -408,8 +683,14 @@ export function JamButton(
 ) {
   return () => {
     let stateStyle = handle.props.active
-      ? activeJamButtonStyle
-      : inactiveJamButtonStyle;
+      ? css({
+          backgroundColor: theme.colors.brand.blue,
+          color: "#ffffff",
+        })
+      : css({
+          backgroundColor: "#ffffff",
+          color: "#000000",
+        });
     return (
       <button
         type={handle.props.type ?? "button"}
@@ -470,66 +751,6 @@ function TicketLogo(handle: Handle<{ mix?: Props<"svg">["mix"] }>) {
   );
 }
 
-let pageScaffoldStyle = css({ position: "relative", overflow: "hidden" });
-let pageContentStyle = css({ paddingInline: "24px" });
-let backgroundRootStyle = css({ isolation: "isolate" });
-
-let backgroundEffectStyle = css({
-  position: "fixed",
-  inset: "-44px",
-  filter: "url(#jam-background-filter) blur(4px)",
-});
-
-let backgroundFilterSvgStyle = css({ position: "absolute" });
-
-let backgroundMaskStyle = css({
-  width: "100%",
-  height: "100%",
-  backgroundColor: "rgb(0 0 0 / 0.3)",
-  maskImage: `url('${assetPaths.jam2025.backgroundMask}')`,
-  maskSize: "cover",
-  maskRepeat: "no-repeat",
-  maskPosition: "center",
-});
-
-let navbarStyle = css({
-  position: "fixed",
-  inset: "0 0 auto",
-  zIndex: 40,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "16px",
-  background: "linear-gradient(rgb(0 0 0 / 0.7) 0%, rgb(0 0 0 / 0) 75%)",
-  [breakpointMedia.md]: { padding: "36px" },
-});
-
-let navbarLogoLinkStyle = css({
-  display: "flex",
-  alignItems: "center",
-  [breakpointMedia.md]: { display: "block" },
-});
-
-let jamLogoStyle = css({
-  height: "48px",
-  fill: "#ffffff",
-  [breakpointMedia.md]: { width: "200px", height: "auto" },
-  [breakpointMedia.lg]: { width: "160px" },
-  [breakpointMedia.xl]: { width: "200px" },
-});
-
-let desktopNavStyle = css({
-  display: "none",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "8px",
-  borderRadius: theme.radius.full,
-  padding: "8px",
-  backgroundColor: "rgb(0 0 0 / 0.4)",
-  backdropFilter: "blur(16px)",
-  [breakpointMedia.lg]: { display: "flex" },
-});
-
 let jamButtonStyle = css({
   display: "flex",
   minWidth: "fit-content",
@@ -554,114 +775,6 @@ let jamButtonStyle = css({
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
-let navbarTicketStyle = css({
-  display: "none",
-  backgroundColor: "#ffffff",
-  color: "#000000",
-  [breakpointMedia.lg]: { display: "flex" },
-});
-
-let navbarTicketIconStyle = css({
-  width: "24px",
-  height: "24px",
-  fill: "currentColor",
-  [breakpointMedia.md]: { width: "32px", height: "32px" },
-  [breakpointMedia.lg]: { width: "24px", height: "24px" },
-  [breakpointMedia.xl]: { width: "32px", height: "32px" },
-});
-
-let jamMobileMenuStyle = css({
-  "& [data-mobile-menu-summary]": {
-    display: "grid",
-    width: "48px",
-    height: "48px",
-    placeItems: "center",
-    borderRadius: theme.radius.full,
-    backgroundColor: "#ffffff",
-    color: "#000000",
-    backdropFilter: "blur(16px)",
-    listStyle: "none",
-    outline: "none",
-    transition: "color 300ms, background-color 300ms",
-  },
-  "& [data-mobile-menu-summary]::-webkit-details-marker": { display: "none" },
-  "& [data-mobile-menu-summary]:hover, & details[open] > [data-mobile-menu-summary]":
-    { backgroundColor: theme.colors.brand.blue, color: "#ffffff" },
-  "& [data-mobile-menu-summary]:focus-visible": {
-    outline: `2px solid ${theme.colors.brand.blue}`,
-    outlineOffset: "2px",
-  },
-  "& [data-mobile-menu-summary] svg": { width: "24px", height: "24px" },
-  "& [data-mobile-menu-position]": {
-    position: "absolute",
-    right: 0,
-    zIndex: 20,
-  },
-  "& [data-mobile-menu-surface]": {
-    position: "relative",
-    top: "4px",
-    width: "max-content",
-    padding: "4px",
-  },
-  "& [data-mobile-menu-nav]": {
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-    overflow: "hidden",
-    borderRadius: "2rem",
-    padding: "10px 8px",
-    backgroundColor: "rgb(0 0 0 / 0.4)",
-    backdropFilter: "blur(16px)",
-  },
-  [breakpointMedia.lg]: { display: "none" },
-  "@media (prefers-reduced-motion: reduce)": {
-    "& [data-mobile-menu-summary]": { transition: "none" },
-  },
-});
-
-let navLinkStyle = css({
-  border: "2px solid",
-  borderRadius: theme.radius.full,
-  padding: "2px 20px",
-  fontSize: "1rem",
-  fontWeight: theme.fontWeight.bold,
-  lineHeight: 1.5,
-  outline: "none",
-  transition: "color 300ms, border-color 300ms",
-  [breakpointMedia.md]: {
-    borderWidth: "4px",
-    paddingBlock: "12px",
-    fontSize: "1.25rem",
-    lineHeight: 1.556,
-  },
-  [breakpointMedia.lg]: {
-    borderWidth: "2px",
-    padding: "8px 16px",
-    fontSize: "1rem",
-    lineHeight: 1.5,
-  },
-  [breakpointMedia.xl]: {
-    padding: "12px 20px",
-    fontSize: "1.25rem",
-    lineHeight: 1.556,
-  },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let mobileNavLinkStyle = css({
-  display: "block",
-  minWidth: "max-content",
-  border: "2px solid",
-  borderRadius: theme.radius.full,
-  padding: "8px 16px",
-  fontSize: "1.125rem",
-  fontWeight: theme.fontWeight.bold,
-  lineHeight: 1.556,
-  outline: "none",
-  transition: "color 300ms, border-color 300ms",
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
 let activeNavLinkStyle = css({
   borderColor: "#ffffff",
   color: "#ffffff",
@@ -674,82 +787,6 @@ let inactiveNavLinkStyle = css({
     borderColor: "#ffffff",
     color: "#ffffff",
   },
-});
-
-let jamFooterStyle = css({
-  position: "relative",
-  zIndex: 20,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-});
-
-let seatsSpacerStyle = css({
-  width: "100%",
-  height: 0,
-  [breakpointMedia.md]: { height: "112px" },
-});
-
-let seatsFrameStyle = css({
-  display: "flex",
-  width: "100vw",
-  justifyContent: "center",
-  overflow: "hidden",
-});
-
-let seatsImageStyle = css({
-  display: "block",
-  minWidth: "1400px",
-  [breakpointMedia.sm]: { minWidth: "1600px" },
-  [breakpointMedia.md]: { minWidth: "1800px" },
-  [breakpointMedia.lg]: { minWidth: "2000px" },
-  [breakpointMedia.xl]: { minWidth: "2200px" },
-  [breakpointMedia["2xl"]]: { minWidth: "110vw" },
-});
-
-let footerContentStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "8px",
-  paddingBlock: "160px",
-  fontFamily: theme.fontFamily.mono,
-  fontSize: "0.75rem",
-  lineHeight: 1.333,
-  textAlign: "center",
-  [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
-  [breakpointMedia["2xl"]]: { paddingBlock: "128px" },
-});
-
-let seatsFooterStyle = css({
-  width: "100%",
-  background: "linear-gradient(180deg, rgb(255 51 0), rgb(186 37 0))",
-  color: "#ffffff",
-});
-
-let plainFooterStyle = css({ color: "#a4a4a4" });
-let footerLinksStyle = css({
-  display: "flex",
-  alignItems: "center",
-  gap: "20px",
-});
-
-let footerHomeLinkStyle = css({
-  border: "1px solid",
-  borderRadius: "24px",
-  padding: "4px 16px",
-  color: "#ffffff",
-  textTransform: "uppercase",
-});
-
-let seatsFooterLinkStyle = css({
-  borderColor: "#ffffff",
-  "&:hover": { textDecoration: "underline" },
-});
-
-let plainFooterLinkStyle = css({
-  borderColor: "#a4a4a4",
-  "&:hover": { color: theme.colors.brand.blue },
 });
 
 let footerSocialLinkStyle = css({
@@ -765,15 +802,6 @@ let footerSocialLinkStyle = css({
   "& > svg": { width: "100%", height: "100%" },
   [breakpointMedia.md]: { width: "32px", height: "32px" },
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let footerLegalStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "8px",
-  lineHeight: 2,
-  textTransform: "uppercase",
 });
 
 let seatsLegalLinkStyle = css({
@@ -800,25 +828,7 @@ let titleStyle = css({
   [breakpointMedia.md]: { fontSize: "4.5rem", lineHeight: 1 },
 });
 
-let sectionLabelStyle = css({
-  color: "rgb(255 255 255 / 0.5)",
-  fontFamily: theme.fontFamily.mono,
-  fontSize: "0.75rem",
-  lineHeight: 1.333,
-  letterSpacing: "0.1em",
-  textTransform: "uppercase",
-  [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
-});
-
 let infoTextStyle = css({ textAlign: "center" });
-
-let infoTextParagraphStyle = css({
-  color: "#ffffff",
-  fontSize: "1.125rem",
-  fontWeight: theme.fontWeight.bold,
-  lineHeight: 1.4,
-  [breakpointMedia.md]: { fontSize: "1.875rem", lineHeight: 1.2 },
-});
 
 let subheaderStyle = css({
   color: "#ffffff",
@@ -835,32 +845,7 @@ let paragraphStyle = css({
   "& a:hover": { textDecoration: "underline" },
 });
 
-let addressMainStyle = css({
-  display: "inline-block",
-  color: "#ffffff",
-  fontSize: "1.125rem",
-  fontStyle: "normal",
-  fontWeight: theme.fontWeight.bold,
-  lineHeight: 1.625,
-  [breakpointMedia.md]: { fontSize: "1.875rem" },
-});
-
-let textLinkStyle = css({
-  color: "#59b0ff",
-  "&:hover": { textDecoration: "underline" },
-});
-
 let jamButtonDisabledStyle = css({
   "&:disabled": { cursor: "not-allowed", opacity: 0.5 },
   "&:disabled:hover": { backgroundColor: "#ffffff", color: "#000000" },
-});
-
-let activeJamButtonStyle = css({
-  backgroundColor: theme.colors.brand.blue,
-  color: "#ffffff",
-});
-
-let inactiveJamButtonStyle = css({
-  backgroundColor: "#ffffff",
-  color: "#000000",
 });

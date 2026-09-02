@@ -7,11 +7,33 @@ export function StatusErrorDocument(
 ) {
   return () => (
     <Document title={handle.props.statusText} noIndex forceTheme="dark">
-      <main id="main-content" tabIndex={-1} mix={statusMainStyle}>
-        <div mix={statusContentStyle}>
-          <h1 mix={statusCodeStyle}>{handle.props.status}</h1>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        mix={css({
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+          justifyContent: "center",
+          backgroundColor: theme.colors.brand.blue,
+          color: "#ffffff",
+        })}
+      >
+        <div mix={css({ textAlign: "center", lineHeight: 1 })}>
+          <h1
+            mix={css({
+              fontFamily: theme.fontFamily.mono,
+              fontSize: "25vw",
+            })}
+          >
+            {handle.props.status}
+          </h1>
           <a
-            mix={statusLinkStyle}
+            mix={css({
+              display: "inline-block",
+              fontSize: "8vw",
+              textDecorationLine: "underline",
+            })}
             href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${handle.props.status}`}
           >
             {handle.props.statusText}
@@ -21,25 +43,3 @@ export function StatusErrorDocument(
     </Document>
   );
 }
-
-let statusMainStyle = css({
-  display: "flex",
-  flex: 1,
-  flexDirection: "column",
-  justifyContent: "center",
-  backgroundColor: theme.colors.brand.blue,
-  color: "#ffffff",
-});
-
-let statusContentStyle = css({ textAlign: "center", lineHeight: 1 });
-
-let statusCodeStyle = css({
-  fontFamily: theme.fontFamily.mono,
-  fontSize: "25vw",
-});
-
-let statusLinkStyle = css({
-  display: "inline-block",
-  fontSize: "8vw",
-  textDecorationLine: "underline",
-});

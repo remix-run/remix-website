@@ -223,7 +223,18 @@ export let Jam2026PhotoMoments = clientEntry(
     handle.signal.addEventListener("abort", endDragSession, { once: true });
 
     return () => (
-      <div mix={photoLayerStyle}>
+      <div
+        mix={css({
+          isolation: "isolate",
+          overflowX: "clip",
+          pointerEvents: "none",
+          position: "absolute",
+          inset: "0 auto auto 0",
+          minHeight: "100%",
+          width: "100%",
+          zIndex: 4,
+        })}
+      >
         {PHOTO_MOMENTS.map((moment) => {
           let state = runtime[moment.id];
           if (!state?.isOpen) return null;
@@ -237,11 +248,40 @@ export let Jam2026PhotoMoments = clientEntry(
               data-dragging={drag?.id === moment.id ? "true" : undefined}
               data-photo-window-id={moment.id}
               mix={[
-                photoMomentPositionStyle,
-                ...(draggable ? [photoMomentDraggableStyle] : []),
+                css({
+                  pointerEvents: "auto",
+                  position: "absolute",
+                  top: "var(--jam-2026-photo-y)",
+                  [breakpointMedia.xl]: {
+                    top: "var(--jam-2026-photo-y-wide)",
+                  },
+                }),
+                ...(draggable
+                  ? [
+                      css({
+                        cursor: "grab",
+                        touchAction: "none",
+                        userSelect: "none",
+                        WebkitUserSelect: "none",
+                        '&[data-dragging="true"]': {
+                          cursor: "grabbing",
+                        },
+                      }),
+                    ]
+                  : []),
                 moment.anchor === "right"
-                  ? photoMomentRightStyle
-                  : photoMomentLeftStyle,
+                  ? css({
+                      right: "var(--jam-2026-photo-x)",
+                      [breakpointMedia.xl]: {
+                        right: "var(--jam-2026-photo-x-wide)",
+                      },
+                    })
+                  : css({
+                      left: "var(--jam-2026-photo-x)",
+                      [breakpointMedia.xl]: {
+                        left: "var(--jam-2026-photo-x-wide)",
+                      },
+                    }),
                 ...(draggable
                   ? [
                       on<HTMLElement, "pointerdown">("pointerdown", (event) =>
@@ -269,17 +309,112 @@ export let Jam2026PhotoMoments = clientEntry(
               }}
             >
               <div
-                mix={photoMomentEntranceStyle}
+                mix={css({
+                  animation:
+                    "jam-2026-photo-pop-in 350ms cubic-bezier(0.22, 1.5, 0.36, 1) both",
+                  opacity: 0,
+                  transform: "scale(0.6)",
+                  transformOrigin: "50% 50%",
+                  willChange: "opacity, transform",
+                  "@keyframes jam-2026-photo-pop-in": {
+                    "100%": {
+                      opacity: 1,
+                      transform: "scale(1)",
+                    },
+                  },
+                  "@media (prefers-reduced-motion: reduce)": {
+                    animation: "none",
+                    opacity: 1,
+                    transform: "none",
+                    willChange: "auto",
+                  },
+                })}
                 style={{
                   animationDelay: `${getPopInDelay(moment.id, handle.props)}ms`,
                 }}
               >
-                <div mix={[jam2026WindowSurfaceStyle, photoMomentSurfaceStyle]}>
-                  <div mix={photoMomentHeaderStyle}>
+                <div
+                  mix={[
+                    jam2026WindowSurfaceStyle,
+                    css({
+                      display: "flex",
+                      width: "196px",
+                      flexDirection: "column",
+                      gap: "8px",
+                      transform: "rotate(0deg)",
+                      transformOrigin: "50% 50%",
+                      transition:
+                        "transform 350ms cubic-bezier(0.22, 1.5, 0.36, 1), box-shadow 350ms cubic-bezier(0.22, 1.5, 0.36, 1)",
+                      "[data-photo-window-id]:hover &, [data-photo-window-id]:has(:focus-visible) &":
+                        {
+                          transform: "rotate(-2deg)",
+                        },
+                      "[data-dragging='true'] &": {
+                        boxShadow:
+                          "0 2px 4px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.24)), 0 8px 16px light-dark(rgb(8 40 69 / 0.07), rgb(0 0 0 / 0.28)), 0 20px 36px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.32)), 0 40px 72px light-dark(rgb(8 40 69 / 0.1), rgb(0 0 0 / 0.38))",
+                        transform: "scale(1.1)",
+                      },
+                      "[data-dragging='true']:hover &": {
+                        transform: "rotate(-2deg) scale(1.1)",
+                      },
+                      "@media (prefers-reduced-motion: reduce)": {
+                        transition: "none",
+                        "[data-photo-window-id]:hover &, [data-photo-window-id]:has(:focus-visible) &":
+                          {
+                            transform: "rotate(0deg)",
+                          },
+                        "[data-dragging='true'] &": {
+                          transform: "none",
+                        },
+                      },
+                    }),
+                  ]}
+                >
+                  <div
+                    mix={css({
+                      alignItems: "center",
+                      display: "flex",
+                      gap: "6px",
+                      width: "100%",
+                    })}
+                  >
                     <button
                       aria-label={`Close ${moment.filename}`}
                       mix={[
-                        photoMomentCloseStyle,
+                        css({
+                          alignItems: "center",
+                          background: "transparent",
+                          border: 0,
+                          borderRadius: theme.radius.full,
+                          color: jamTheme.ink,
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          flex: "0 0 auto",
+                          height: "28px",
+                          justifyContent: "center",
+                          margin: "-8px",
+                          outline: "none",
+                          padding: 0,
+                          transition: "opacity 140ms ease",
+                          width: "28px",
+                          "& svg": {
+                            display: "block",
+                            height: "12px",
+                            width: "12px",
+                          },
+                          "&:hover": {
+                            opacity: 0.7,
+                          },
+                          "&:focus, &:focus-visible": {
+                            backgroundColor: "transparent",
+                            color: jamTheme.brandRed,
+                            outline: `2px solid ${jamTheme.brandRed}`,
+                            outlineOffset: "2px",
+                          },
+                          "@media (prefers-reduced-motion: reduce)": {
+                            transition: "none",
+                          },
+                        }),
                         on("pointerdown", (event) => event.stopPropagation()),
                         on("click", (event) =>
                           closeMoment(moment.id, {
@@ -311,7 +446,17 @@ export let Jam2026PhotoMoments = clientEntry(
                       href={href}
                       mix={[
                         photoMomentImageFrameStyle,
-                        photoMomentImageLinkStyle,
+                        css({
+                          color: "inherit",
+                          cursor: "pointer",
+                          display: "block",
+                          outline: "none",
+                          textDecoration: "none",
+                          "&:focus-visible": {
+                            outline: `2px solid ${jamTheme.brandRed}`,
+                            outlineOffset: "2px",
+                          },
+                        }),
                       ]}
                     >
                       <img
@@ -354,146 +499,6 @@ function getPopInDelay(id: PhotoMomentId, props: Jam2026PhotoMomentsProps) {
   return baseDelay + PHOTO_MOMENT_POP_IN_INDEX[id] * stagger;
 }
 
-let photoLayerStyle = css({
-  isolation: "isolate",
-  overflowX: "clip",
-  pointerEvents: "none",
-  position: "absolute",
-  inset: "0 auto auto 0",
-  minHeight: "100%",
-  width: "100%",
-  zIndex: 4,
-});
-
-let photoMomentPositionStyle = css({
-  pointerEvents: "auto",
-  position: "absolute",
-  top: "var(--jam-2026-photo-y)",
-  [breakpointMedia.xl]: {
-    top: "var(--jam-2026-photo-y-wide)",
-  },
-});
-
-let photoMomentDraggableStyle = css({
-  cursor: "grab",
-  touchAction: "none",
-  userSelect: "none",
-  WebkitUserSelect: "none",
-  '&[data-dragging="true"]': {
-    cursor: "grabbing",
-  },
-});
-
-let photoMomentLeftStyle = css({
-  left: "var(--jam-2026-photo-x)",
-  [breakpointMedia.xl]: {
-    left: "var(--jam-2026-photo-x-wide)",
-  },
-});
-
-let photoMomentRightStyle = css({
-  right: "var(--jam-2026-photo-x)",
-  [breakpointMedia.xl]: {
-    right: "var(--jam-2026-photo-x-wide)",
-  },
-});
-
-let photoMomentEntranceStyle = css({
-  animation:
-    "jam-2026-photo-pop-in 350ms cubic-bezier(0.22, 1.5, 0.36, 1) both",
-  opacity: 0,
-  transform: "scale(0.6)",
-  transformOrigin: "50% 50%",
-  willChange: "opacity, transform",
-  "@keyframes jam-2026-photo-pop-in": {
-    "100%": {
-      opacity: 1,
-      transform: "scale(1)",
-    },
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    animation: "none",
-    opacity: 1,
-    transform: "none",
-    willChange: "auto",
-  },
-});
-
-let photoMomentSurfaceStyle = css({
-  display: "flex",
-  width: "196px",
-  flexDirection: "column",
-  gap: "8px",
-  transform: "rotate(0deg)",
-  transformOrigin: "50% 50%",
-  transition:
-    "transform 350ms cubic-bezier(0.22, 1.5, 0.36, 1), box-shadow 350ms cubic-bezier(0.22, 1.5, 0.36, 1)",
-  "[data-photo-window-id]:hover &, [data-photo-window-id]:has(:focus-visible) &":
-    {
-      transform: "rotate(-2deg)",
-    },
-  "[data-dragging='true'] &": {
-    boxShadow:
-      "0 2px 4px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.24)), 0 8px 16px light-dark(rgb(8 40 69 / 0.07), rgb(0 0 0 / 0.28)), 0 20px 36px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.32)), 0 40px 72px light-dark(rgb(8 40 69 / 0.1), rgb(0 0 0 / 0.38))",
-    transform: "scale(1.1)",
-  },
-  "[data-dragging='true']:hover &": {
-    transform: "rotate(-2deg) scale(1.1)",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    transition: "none",
-    "[data-photo-window-id]:hover &, [data-photo-window-id]:has(:focus-visible) &":
-      {
-        transform: "rotate(0deg)",
-      },
-    "[data-dragging='true'] &": {
-      transform: "none",
-    },
-  },
-});
-
-let photoMomentHeaderStyle = css({
-  alignItems: "center",
-  display: "flex",
-  gap: "6px",
-  width: "100%",
-});
-
-let photoMomentCloseStyle = css({
-  alignItems: "center",
-  background: "transparent",
-  border: 0,
-  borderRadius: theme.radius.full,
-  color: jamTheme.ink,
-  cursor: "pointer",
-  display: "inline-flex",
-  flex: "0 0 auto",
-  height: "28px",
-  justifyContent: "center",
-  margin: "-8px",
-  outline: "none",
-  padding: 0,
-  transition: "opacity 140ms ease",
-  width: "28px",
-  "& svg": {
-    display: "block",
-    height: "12px",
-    width: "12px",
-  },
-  "&:hover": {
-    opacity: 0.7,
-  },
-  "&:focus, &:focus-visible": {
-    backgroundColor: "transparent",
-    color: jamTheme.brandRed,
-    outline: `2px solid ${jamTheme.brandRed}`,
-    outlineOffset: "2px",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    transition: "none",
-  },
-});
-
 let photoMomentImageFrameStyle = css({
   borderRadius: "0.25rem",
   flex: "0 0 auto",
@@ -509,17 +514,5 @@ let photoMomentImageFrameStyle = css({
     userSelect: "none",
     width: "100%",
     WebkitUserDrag: "none",
-  },
-});
-
-let photoMomentImageLinkStyle = css({
-  color: "inherit",
-  cursor: "pointer",
-  display: "block",
-  outline: "none",
-  textDecoration: "none",
-  "&:focus-visible": {
-    outline: `2px solid ${jamTheme.brandRed}`,
-    outlineOffset: "2px",
   },
 });

@@ -5,9 +5,44 @@ const REMIX_R_PATH =
 
 export function IntroMaskReveal() {
   return () => (
-    <div aria-hidden="true" mix={introMaskOverlayStyle}>
+    <div
+      aria-hidden="true"
+      mix={css({
+        position: "fixed",
+        inset: 0,
+        bottom: "-2px",
+        zIndex: 9999,
+        overflow: "hidden",
+        pointerEvents: "none",
+        animation:
+          "rmx-history-intro-reveal var(--rmx-intro-logo-duration) var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          zIndex: 1,
+          background: "#000000",
+          animation:
+            "rmx-history-fade-out var(--rmx-intro-black-fade) ease-out var(--rmx-intro-black-hold) forwards",
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          visibility: "hidden",
+          opacity: 0,
+          animation: "none",
+          "&::before": { opacity: 0, animation: "none" },
+        },
+      })}
+    >
       <svg
-        mix={introMaskSvgStyle}
+        mix={css({
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          transformOrigin: "center center",
+          animation:
+            "rmx-history-intro-scale var(--rmx-intro-logo-duration) var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards",
+          "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+        })}
         viewBox="0 0 3600 1921"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +64,14 @@ export function IntroMaskReveal() {
         </defs>
 
         <path
-          mix={introRFillStyle}
+          mix={css({
+            animation:
+              "rmx-history-fade-out var(--rmx-intro-r-fade-duration) ease-out var(--rmx-intro-logo-start) forwards",
+            "@media (prefers-reduced-motion: reduce)": {
+              opacity: 0,
+              animation: "none",
+            },
+          })}
           d={REMIX_R_PATH}
           fill="var(--rmx-neutral-200)"
         />
@@ -108,48 +150,3 @@ export function IntroMaskReveal() {
     </div>
   );
 }
-
-let introMaskOverlayStyle = css({
-  position: "fixed",
-  inset: 0,
-  bottom: "-2px",
-  zIndex: 9999,
-  overflow: "hidden",
-  pointerEvents: "none",
-  animation:
-    "rmx-history-intro-reveal var(--rmx-intro-logo-duration) var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards",
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    inset: 0,
-    zIndex: 1,
-    background: "#000000",
-    animation:
-      "rmx-history-fade-out var(--rmx-intro-black-fade) ease-out var(--rmx-intro-black-hold) forwards",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    visibility: "hidden",
-    opacity: 0,
-    animation: "none",
-    "&::before": { opacity: 0, animation: "none" },
-  },
-});
-
-let introMaskSvgStyle = css({
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  transformOrigin: "center center",
-  animation:
-    "rmx-history-intro-scale var(--rmx-intro-logo-duration) var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards",
-  "@media (prefers-reduced-motion: reduce)": { animation: "none" },
-});
-
-let introRFillStyle = css({
-  animation:
-    "rmx-history-fade-out var(--rmx-intro-r-fade-duration) ease-out var(--rmx-intro-logo-start) forwards",
-  "@media (prefers-reduced-motion: reduce)": {
-    opacity: 0,
-    animation: "none",
-  },
-});

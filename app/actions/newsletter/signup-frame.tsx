@@ -34,9 +34,9 @@ function NewsletterSubscriptionNotice(
       >
         {handle.props.status === "success" ? (
           <div>
-            <b mix={subscriptionSuccessStyle}>Got it!</b> Please go{" "}
-            <b mix={subscriptionErrorStyle}>check your email</b> to confirm your
-            subscription, otherwise you won&apos;t get our email.
+            <b mix={css({ color: theme.colors.brand.green })}>Got it!</b> Please
+            go <b mix={subscriptionErrorStyle}>check your email</b> to confirm
+            your subscription, otherwise you won&apos;t get our email.
           </div>
         ) : handle.props.status === "invalid-email" ? (
           "Please enter a valid email address."
@@ -51,5 +51,4 @@ function NewsletterSubscriptionNotice(
 }
 
 let subscriptionNoticeStyle = css({ paddingBlock: "8px" });
-let subscriptionSuccessStyle = css({ color: theme.colors.brand.green });
 let subscriptionErrorStyle = css({ color: theme.colors.brand.red });

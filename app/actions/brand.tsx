@@ -25,7 +25,11 @@ export function BrandPage(handle: Handle<{ requestUrl: string }>) {
       })}
     >
       <Header />
-      <main id="main-content" mix={brandMainStyle} tabIndex={-1}>
+      <main
+        id="main-content"
+        mix={css({ display: "flex", flex: 1, flexDirection: "column" })}
+        tabIndex={-1}
+      >
         <BrandPageContent />
       </main>
       <Footer />
@@ -133,23 +137,69 @@ let wordmarkAssets = [
 
 function AssetGrid(handle: Handle<{ assets: readonly BrandAsset[] }>) {
   return () => (
-    <div mix={assetGridStyle}>
+    <div
+      mix={css({
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr)",
+        gap: "16px 24px",
+        [breakpointMedia.sm]: {
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        },
+      })}
+    >
       {handle.props.assets.map((asset) => {
         let primaryFormat = asset.formats[0];
 
         return (
-          <div mix={assetStyle} key={asset.fileBase}>
-            <div mix={[assetPreviewStyle, previewThemes[asset.previewTheme]]}>
+          <div
+            mix={css({ display: "flex", flexDirection: "column" })}
+            key={asset.fileBase}
+          >
+            <div
+              mix={[
+                css({
+                  display: "flex",
+                  height: "160px",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderStyle: "solid",
+                  borderWidth: "3px",
+                  borderRadius: "8px",
+                  padding: "32px",
+                  [breakpointMedia.md]: { height: "192px", padding: "40px" },
+                }),
+                previewThemes[asset.previewTheme],
+              ]}
+            >
               <img
-                mix={assetImageStyle}
+                mix={css({
+                  height: "100%",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                })}
                 src={`/_brand/${asset.fileBase}.${primaryFormat}`}
                 alt={`Remix ${asset.title}`}
               />
             </div>
-            <div mix={assetFormatsStyle}>
+            <div
+              mix={css({
+                display: "flex",
+                alignItems: "flex-end",
+                gap: "16px",
+                marginTop: "4px",
+                color: "light-dark(#383838, #e3e3e3)",
+              })}
+            >
               {asset.formats.map((format) => (
                 <a
-                  mix={[pageMetaStyle, assetFormatLinkStyle]}
+                  mix={[
+                    pageMetaStyle,
+                    css({
+                      opacity: 0.5,
+                      textDecorationLine: "underline",
+                      "&:hover": { opacity: 1 },
+                    }),
+                  ]}
                   href={`/_brand/${asset.fileBase}.${format}`}
                   download
                   key={format}
@@ -167,7 +217,25 @@ function AssetGrid(handle: Handle<{ assets: readonly BrandAsset[] }>) {
 
 function BrandPageContent() {
   return () => (
-    <div mix={[pageBodyStyle, marketingPageStyle, brandPageContentStyle]}>
+    <div
+      mix={[
+        pageBodyStyle,
+        marketingPageStyle,
+        css({
+          boxSizing: "border-box",
+          width: "100%",
+          maxWidth: "100%",
+          marginInline: "auto",
+          paddingInline: "24px",
+          lineHeight: 1.6,
+          "& > p": { margin: "0 0 16px" },
+          "& > h1, & > h2": { margin: "40px 0 16px" },
+          "& > h1:first-child": { margin: "0 0 64px" },
+          [breakpointMedia.md]: { paddingInline: "32px" },
+          [breakpointMedia.lg]: { maxWidth: "896px", paddingInline: "40px" },
+        }),
+      ]}
+    >
       <h1 mix={[pageTitleStyle, brandHeadingStyle]}>Remix Brand</h1>
       <p>
         These assets are provided for use in situations like articles and video
@@ -188,7 +256,14 @@ function BrandPageContent() {
       <AssetHeader>Download Assets</AssetHeader>
       <p>You can download a zip file containing all the Remix brand assets:</p>
       <p>
-        <a href={BRAND_ASSETS_ZIP} mix={brandDownloadLinkStyle} download>
+        <a
+          href={BRAND_ASSETS_ZIP}
+          mix={css({
+            textDecorationLine: "underline",
+            "&:hover": { color: "#f44250" },
+          })}
+          download
+        >
           Remix Brand Assets
         </a>
       </p>
@@ -210,68 +285,4 @@ function BrandPageContent() {
   );
 }
 
-let brandMainStyle = css({ display: "flex", flex: 1, flexDirection: "column" });
-
 let brandHeadingStyle = css({ color: theme.colors.text.primary });
-
-let assetGridStyle = css({
-  display: "grid",
-  gridTemplateColumns: "minmax(0, 1fr)",
-  gap: "16px 24px",
-  [breakpointMedia.sm]: {
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-  },
-});
-
-let assetStyle = css({ display: "flex", flexDirection: "column" });
-
-let assetPreviewStyle = css({
-  display: "flex",
-  height: "160px",
-  alignItems: "center",
-  justifyContent: "center",
-  borderStyle: "solid",
-  borderWidth: "3px",
-  borderRadius: "8px",
-  padding: "32px",
-  [breakpointMedia.md]: { height: "192px", padding: "40px" },
-});
-
-let assetImageStyle = css({
-  height: "100%",
-  maxWidth: "100%",
-  objectFit: "contain",
-});
-
-let assetFormatsStyle = css({
-  display: "flex",
-  alignItems: "flex-end",
-  gap: "16px",
-  marginTop: "4px",
-  color: "light-dark(#383838, #e3e3e3)",
-});
-
-let assetFormatLinkStyle = css({
-  opacity: 0.5,
-  textDecorationLine: "underline",
-  "&:hover": { opacity: 1 },
-});
-
-let brandPageContentStyle = css({
-  boxSizing: "border-box",
-  width: "100%",
-  maxWidth: "100%",
-  marginInline: "auto",
-  paddingInline: "24px",
-  lineHeight: 1.6,
-  "& > p": { margin: "0 0 16px" },
-  "& > h1, & > h2": { margin: "40px 0 16px" },
-  "& > h1:first-child": { margin: "0 0 64px" },
-  [breakpointMedia.md]: { paddingInline: "32px" },
-  [breakpointMedia.lg]: { maxWidth: "896px", paddingInline: "40px" },
-});
-
-let brandDownloadLinkStyle = css({
-  textDecorationLine: "underline",
-  "&:hover": { color: "#f44250" },
-});

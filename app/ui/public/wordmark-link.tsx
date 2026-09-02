@@ -18,7 +18,14 @@ export let WordmarkLink = clientEntry(
       <a
         href={handle.props.href}
         aria-label="Remix"
-        mix={[wordmarkLinkStyle, brandContextMenu(handle.props.brandHref)]}
+        mix={[
+          css({
+            display: "inline-flex",
+            alignItems: "center",
+            color: theme.colors.text.primary,
+          }),
+          brandContextMenu(handle.props.brandHref),
+        ]}
       >
         <Wordmark
           width={handle.props.width}
@@ -31,9 +38,3 @@ export let WordmarkLink = clientEntry(
     );
   },
 );
-
-let wordmarkLinkStyle = css({
-  display: "inline-flex",
-  alignItems: "center",
-  color: theme.colors.text.primary,
-});

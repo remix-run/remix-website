@@ -1,35 +1,94 @@
 import { css } from "remix/ui";
 
-import {
-  bodyMediumStyle,
-  bodyOnDarkStyle,
-  headingExtraLargeStyle,
-} from "../../ui/public/marketing-styles.ts";
+import { headingExtraLargeStyle } from "../../ui/public/marketing-styles.ts";
 import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 import { TimelineDiagramDesktop } from "./timeline-section-desktop.tsx";
 import { TimelineDiagramMobile } from "./timeline-section-mobile.tsx";
 
 export function TimelineSection() {
   return () => (
-    <section mix={timelineSectionStyle}>
-      <div mix={timelineContentStyle}>
-        <h2 mix={[headingExtraLargeStyle, timelineHeadingStyle]}>
+    <section
+      mix={css({
+        overflowX: "clip",
+        background:
+          "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-neutral-950) 70%, var(--rmx-neutral-750) 100%)",
+        color: "#ffffff",
+        [breakpointMedia.xl]: {
+          background:
+            "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-neutral-950) 50%, var(--rmx-neutral-750) 100%)",
+        },
+      })}
+    >
+      <div
+        mix={css({
+          display: "flex",
+          width: "100%",
+          maxWidth: "1400px",
+          marginInline: "auto",
+          flexDirection: "column",
+          gap: "48px",
+          paddingTop: "64px",
+          [breakpointMedia.md]: { gap: "64px", paddingTop: "96px" },
+        })}
+      >
+        <h2
+          mix={[
+            headingExtraLargeStyle,
+            css({
+              color: "var(--rmx-neutral-100)",
+              textAlign: "center",
+            }),
+          ]}
+        >
           The story so far
         </h2>
 
-        <div mix={mobileTimelineStyle}>
+        <div
+          mix={css({
+            [breakpointMedia.xl]: { display: "none" },
+          })}
+        >
           <TimelineDiagramMobile />
         </div>
 
-        <div mix={desktopTimelineStyle}>
-          <TimelineDiagramDesktop mix={desktopDiagramStyle} />
+        <div
+          mix={css({
+            display: "none",
+            overflow: "visible",
+            [breakpointMedia.xl]: { display: "flex", justifyContent: "center" },
+          })}
+        >
+          <TimelineDiagramDesktop mix={css({ flexShrink: 0 })} />
         </div>
 
-        <div mix={[bodyMediumStyle, bodyOnDarkStyle, timelineCopyStyle]}>
+        <div
+          mix={css({
+            width: "100%",
+            maxWidth: "1024px",
+            marginInline: "auto",
+            paddingInline: "48px",
+            paddingBottom: "64px",
+            color: "rgb(255 255 255 / 0.8)",
+            fontSize: "1rem",
+            lineHeight: 1.6,
+            letterSpacing: "0.025em",
+            "& > * + *": { marginTop: "32px" },
+            [breakpointMedia.md]: {
+              paddingBottom: "96px",
+              fontSize: "1.5rem",
+              lineHeight: 1.4,
+              letterSpacing: 0,
+              "& > * + *": { marginTop: "48px" },
+            },
+          })}
+        >
           <p>
             <a
               href="https://v2.remix.run/"
-              mix={[timelineLinkStyle, remixLinkStyle]}
+              mix={[
+                timelineLinkStyle,
+                css({ color: "var(--rmx-highlight-blue)" }),
+              ]}
             >
               The first manifestation of Remix
             </a>{" "}
@@ -41,7 +100,10 @@ export function TimelineSection() {
             We&apos;ve now merged Remix&apos;s features directly into{" "}
             <a
               href="https://reactrouter.com/"
-              mix={[timelineLinkStyle, reactRouterLinkStyle]}
+              mix={[
+                timelineLinkStyle,
+                css({ color: "var(--rmx-highlight-red)" }),
+              ]}
             >
               React Router
             </a>
@@ -52,7 +114,10 @@ export function TimelineSection() {
           <p>
             <a
               href="https://github.com/remix-run/remix"
-              mix={[timelineLinkStyle, remixThreeLinkStyle]}
+              mix={[
+                timelineLinkStyle,
+                css({ color: "var(--rmx-highlight-green)" }),
+              ]}
             >
               Remix 3
             </a>{" "}
@@ -68,7 +133,17 @@ export function TimelineSection() {
           </p>
         </div>
 
-        <div mix={screenReaderOnlyStyle}>
+        <div
+          mix={css({
+            position: "absolute",
+            width: "1px",
+            height: "1px",
+            margin: "-1px",
+            overflow: "hidden",
+            clip: "rect(0, 0, 0, 0)",
+            whiteSpace: "nowrap",
+          })}
+        >
           <h3>Timeline milestones</h3>
           <ul>
             <li>2017: React Router v4 released</li>
@@ -88,73 +163,7 @@ export function TimelineSection() {
   );
 }
 
-let timelineSectionStyle = css({
-  overflowX: "clip",
-  background:
-    "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-neutral-950) 70%, var(--rmx-neutral-750) 100%)",
-  color: "#ffffff",
-  [breakpointMedia.xl]: {
-    background:
-      "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-neutral-950) 50%, var(--rmx-neutral-750) 100%)",
-  },
-});
-
-let timelineContentStyle = css({
-  display: "flex",
-  width: "100%",
-  maxWidth: "1400px",
-  marginInline: "auto",
-  flexDirection: "column",
-  gap: "48px",
-  paddingTop: "64px",
-  [breakpointMedia.md]: { gap: "64px", paddingTop: "96px" },
-});
-
-let timelineHeadingStyle = css({
-  color: "var(--rmx-neutral-100)",
-  textAlign: "center",
-});
-
-let mobileTimelineStyle = css({
-  [breakpointMedia.xl]: { display: "none" },
-});
-
-let desktopTimelineStyle = css({
-  display: "none",
-  overflow: "visible",
-  [breakpointMedia.xl]: { display: "flex", justifyContent: "center" },
-});
-
-let desktopDiagramStyle = css({ flexShrink: 0 });
-
-let timelineCopyStyle = css({
-  width: "100%",
-  maxWidth: "1024px",
-  marginInline: "auto",
-  paddingInline: "48px",
-  paddingBottom: "64px",
-  "& > * + *": { marginTop: "32px" },
-  [breakpointMedia.md]: {
-    paddingBottom: "96px",
-    "& > * + *": { marginTop: "48px" },
-  },
-});
-
 let timelineLinkStyle = css({
   fontWeight: theme.fontWeight.bold,
   "&:hover": { textDecoration: "underline" },
-});
-
-let remixLinkStyle = css({ color: "var(--rmx-highlight-blue)" });
-let reactRouterLinkStyle = css({ color: "var(--rmx-highlight-red)" });
-let remixThreeLinkStyle = css({ color: "var(--rmx-highlight-green)" });
-
-let screenReaderOnlyStyle = css({
-  position: "absolute",
-  width: "1px",
-  height: "1px",
-  margin: "-1px",
-  overflow: "hidden",
-  clip: "rect(0, 0, 0, 0)",
-  whiteSpace: "nowrap",
 });

@@ -45,7 +45,16 @@ export let JamGalleryModalHost = clientEntry(
           aria-modal="true"
           tabindex={-1}
           mix={[
-            modalHostStyle,
+            css({
+              position: "fixed",
+              inset: 0,
+              zIndex: 50,
+              width: "100%",
+              height: "100%",
+              userSelect: "none",
+              backgroundColor: "rgb(0 0 0 / 0.7)",
+              backdropFilter: "blur(8px)",
+            }),
             focusTrap(),
             modalNavigation(handle.props.nav, handle.props.photoCount),
           ]}
@@ -56,17 +65,6 @@ export let JamGalleryModalHost = clientEntry(
     };
   },
 );
-
-let modalHostStyle = css({
-  position: "fixed",
-  inset: 0,
-  zIndex: 50,
-  width: "100%",
-  height: "100%",
-  userSelect: "none",
-  backgroundColor: "rgb(0 0 0 / 0.7)",
-  backdropFilter: "blur(8px)",
-});
 
 function createJamGalleryModalNavigation() {
   return createMixin<

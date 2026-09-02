@@ -16,7 +16,10 @@ export function TimelineDiagramDesktop(
       xmlns="http://www.w3.org/2000/svg"
     >
       {/* Year labels (non-interactive years) */}
-      <g mix={[captionStyle, yearLabelsStyle]} textAnchor="middle">
+      <g
+        mix={[captionStyle, css({ fill: "var(--rmx-text-tertiary)" })]}
+        textAnchor="middle"
+      >
         <text x="373" y="9" opacity="0.1">
           2014
         </text>
@@ -482,7 +485,15 @@ function TrackLabel(handle: Handle<{ x: number; y: number; label: string }>) {
     <text
       x={handle.props.x}
       y={handle.props.y}
-      mix={[captionStyle, trackLabelStyle]}
+      mix={[
+        captionStyle,
+        css({
+          fill: "var(--rmx-neutral-100)",
+          fontWeight: theme.fontWeight.semibold,
+          letterSpacing: "0.05em",
+          textTransform: "uppercase",
+        }),
+      ]}
       textAnchor="middle"
     >
       {handle.props.label}
@@ -572,7 +583,7 @@ function Milestone(handle: Handle<MilestoneProps>) {
             x={handle.props.nodeX}
             y={handle.props.labelY}
             textAnchor="middle"
-            mix={[captionStyle, milestoneLabelTextStyle]}
+            mix={[captionStyle, css({ fontWeight: theme.fontWeight.semibold })]}
             fill={handle.props.labelColor}
           >
             {handle.props.label}
@@ -587,7 +598,7 @@ function Milestone(handle: Handle<MilestoneProps>) {
           href={handle.props.href}
           target="_blank"
           rel="noopener noreferrer"
-          mix={[milestoneStyle, milestoneLinkStyle]}
+          mix={[milestoneStyle, css({ cursor: "pointer" })]}
         >
           {content}
         </a>
@@ -599,22 +610,13 @@ function Milestone(handle: Handle<MilestoneProps>) {
         tabIndex={0}
         role="img"
         aria-label={`${handle.props.label} released in ${handle.props.year}`}
-        mix={[milestoneStyle, milestoneStaticStyle]}
+        mix={[milestoneStyle, css({ cursor: "default" })]}
       >
         {content}
       </g>
     );
   };
 }
-
-let yearLabelsStyle = css({ fill: "var(--rmx-text-tertiary)" });
-
-let trackLabelStyle = css({
-  fill: "var(--rmx-neutral-100)",
-  fontWeight: theme.fontWeight.semibold,
-  letterSpacing: "0.05em",
-  textTransform: "uppercase",
-});
 
 let milestoneStyle = css({
   "& [data-milestone-year]": {
@@ -647,7 +649,3 @@ let milestoneStyle = css({
       },
   },
 });
-
-let milestoneLinkStyle = css({ cursor: "pointer" });
-let milestoneStaticStyle = css({ cursor: "default" });
-let milestoneLabelTextStyle = css({ fontWeight: theme.fontWeight.semibold });

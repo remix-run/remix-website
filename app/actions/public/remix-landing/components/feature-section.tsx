@@ -13,34 +13,6 @@ import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
 // box. `align-items: center` handles grid-cell alignment, but this single
 // auto-sized row also needs `align-content: center` so the leftover section
 // height is distributed above and below the content.
-const shellStyles = css({
-  width: pageMaxWidth,
-  minHeight: "112vh",
-  margin: "0 auto",
-  boxSizing: "border-box",
-  padding: "160px 0",
-  display: "grid",
-  alignItems: "center",
-  alignContent: "center",
-  "@media (max-width: 880px)": {
-    padding: "128px 0",
-  },
-});
-
-const rowStyles = css({
-  width: "min(1040px, 100%)",
-  margin: "0 auto",
-  display: "grid",
-  gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
-  gap: "24px",
-  "@media (max-width: 880px)": {
-    gridTemplateColumns: "1fr",
-  },
-});
-
-const rowPowerfulComponentsStyles = css({
-  transform: "none",
-});
 
 // Option A perf pass: reduce blur radius from 18px → 10px (blur cost is
 // ~quadratic in radius, so this cuts this section's backdrop-filter work
@@ -77,59 +49,6 @@ const rightPanelStyles = css({
   },
 });
 
-const rightPanelUseCasesStyles = css({
-  gridColumn: "1 / -1",
-  justifySelf: "center",
-  maxWidth: "640px",
-  "@media (max-width: 880px)": {
-    gridColumn: "1 / -1",
-    justifySelf: "center",
-  },
-});
-
-const rightPanelNewsletterStyles = css({
-  gridColumn: "7 / -1",
-  justifySelf: "start",
-  "@media (max-width: 880px)": {
-    gridColumn: "1 / -1",
-    justifySelf: "center",
-  },
-});
-
-const leftPanelFullStackStyles = css({
-  gridColumn: "1 / -1",
-  justifySelf: "center",
-  maxWidth: "640px",
-  "@media (max-width: 880px)": {
-    gridColumn: "1 / -1",
-    justifySelf: "center",
-  },
-});
-
-const leftPanelStyles = css({
-  gridColumn: "2 / span 5",
-  "@media (max-width: 880px)": {
-    gridColumn: "1 / -1",
-  },
-});
-
-const leftPanelStartBuildingStyles = css({
-  gridColumn: "1 / span 6",
-  justifySelf: "end",
-  "@media (max-width: 880px)": {
-    gridColumn: "1 / -1",
-    justifySelf: "center",
-  },
-});
-
-const leftPanelPowerfulComponentsStyles = css({
-  gridColumn: "1 / span 5",
-  maxWidth: "720px",
-  "@media (max-width: 880px)": {
-    gridColumn: "1 / -1",
-  },
-});
-
 // The shell stays static so its backdrop-filter layer doesn't get
 // re-rasterized on every scroll — which was pinning the main thread and
 // starving the particle canvas / scroll-linked logo animation. The snippet
@@ -138,34 +57,6 @@ const leftPanelPowerfulComponentsStyles = css({
 // Option A perf pass (see matching note on `panelStyles`): reduced blur from
 // 18px → 10px with a slightly more opaque local tint; added `contain: paint`
 // to bound compositor invalidation.
-const codeContainerStyles = css({
-  gridColumn: "6 / -1",
-  minWidth: "0",
-  boxSizing: "border-box",
-  padding: "24px",
-  borderRadius: "24px",
-  backdropFilter: "blur(10px)",
-  WebkitBackdropFilter: "blur(10px)",
-  background: "rgba(0, 0, 0, 0.38)",
-  overflow: "hidden",
-  contain: "paint",
-  "@media (max-width: 880px)": {
-    gridColumn: "1 / -1",
-    background: "rgba(0, 0, 0, 0.72)",
-  },
-});
-
-const codePreStyles = css({
-  margin: "0",
-  fontFamily: "'JetBrains Mono', monospace",
-  fontSize: "13px",
-  lineHeight: "1.6",
-  letterSpacing: "0",
-  color: "#ffffff",
-  whiteSpace: "pre",
-  overflowX: "auto",
-  tabSize: "2",
-});
 
 // Remix brand cycle colors, used to syntax-highlight the code snippet.
 const SYNTAX_COLORS = {
@@ -332,310 +223,63 @@ const bodyStyles = css({
   ...textBoxTrim,
 });
 
-const pointListStyles = css({
-  display: "grid",
-  gap: "22px",
-  margin: "32px 0 0",
-  padding: "0",
-  listStyle: "none",
-});
-
-const fullStackPointListStyles = css({
-  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-  gap: "0",
-  margin: "32px -48px -48px",
-  borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-  "@media (max-width: 880px)": {
-    margin: "24px -24px -32px",
-  },
-  "@media (max-width: 600px)": {
-    gridTemplateColumns: "1fr",
-  },
-});
-
-const edgeToEdgePointListStyles = css({
-  gap: "0",
-  margin: "32px -48px -48px",
-  borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-  "@media (max-width: 880px)": {
-    margin: "24px -24px -32px",
-  },
-});
-
-const pointStyles = css({
-  paddingTop: "20px",
-  borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-});
-
-const fullStackPointStyles = css({
-  padding: "32px 48px",
-  borderTop: "0",
-  "&:nth-child(odd)": {
-    borderRight: "1px solid rgba(255, 255, 255, 0.14)",
-  },
-  "&:nth-child(n + 3)": {
-    borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-  },
-  "&:nth-last-child(-n + 2)": {
-    paddingBottom: "48px",
-  },
-  "@media (max-width: 600px)": {
-    padding: "24px",
-    borderRight: "0",
-    "&:nth-child(odd)": {
-      borderRight: "0",
-    },
-    "&:not(:first-child)": {
-      borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-    },
-    "&:nth-last-child(-n + 2)": {
-      paddingBottom: "32px",
-    },
-  },
-});
-
-const edgeToEdgePointStyles = css({
-  padding: "32px 48px",
-  borderTop: "0",
-  "&:not(:first-child)": {
-    borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-  },
-  "&:last-child": {
-    paddingBottom: "48px",
-  },
-  "@media (max-width: 880px)": {
-    padding: "24px",
-    "&:last-child": {
-      paddingBottom: "32px",
-    },
-  },
-});
-
-const pointTitleStyles = css({
-  display: "block",
-  fontFamily: theme.fontFamily.sans,
-  fontWeight: theme.fontWeight.bold,
-  color: "#ffffff",
-  fontSize: "18px",
-  lineHeight: "1.3",
-  letterSpacing: "-0.008px",
-  ...textBoxTrim,
-});
-
-const pointBodyStyles = css({
-  display: "block",
-  marginTop: "20px",
-  fontFamily: theme.fontFamily.sans,
-  fontWeight: theme.fontWeight.normal,
-  color: "rgba(255, 255, 255, 0.72)",
-  fontSize: "16px",
-  lineHeight: "1.5",
-  letterSpacing: "-0.008px",
-  ...textBoxTrim,
-});
-
-const detailPanelStyles = css({
-  gridColumn: "6 / -1",
-  minWidth: "0",
-  boxSizing: "border-box",
-  padding: "24px",
-  borderRadius: "24px",
-  backdropFilter: "blur(10px)",
-  WebkitBackdropFilter: "blur(10px)",
-  background: "rgba(0, 0, 0, 0.46)",
-  contain: "paint",
-  "@media (max-width: 880px)": {
-    gridColumn: "1 / -1",
-    background: "rgba(0, 0, 0, 0.72)",
-  },
-});
-
-const detailListStyles = css({
-  display: "grid",
-  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-  gap: "12px",
-  margin: "0",
-  padding: "0",
-  listStyle: "none",
-  "@media (max-width: 1100px)": {
-    gridTemplateColumns: "1fr",
-  },
-});
-
-const detailStyles = css({
-  minHeight: "172px",
-  boxSizing: "border-box",
-  padding: "20px",
-  border: "1px solid rgba(255, 255, 255, 0.12)",
-  borderRadius: "18px",
-  background: "rgba(255, 255, 255, 0.045)",
-  "@media (max-width: 1100px)": {
-    minHeight: "0",
-  },
-});
-
-const detailTitleStyles = css({
-  margin: "0",
-  fontFamily: theme.fontFamily.sans,
-  fontWeight: theme.fontWeight.bold,
-  color: "#ffffff",
-  fontSize: "18px",
-  lineHeight: "1.3",
-  letterSpacing: "-0.012em",
-  ...textBoxTrim,
-});
-
-const detailBodyStyles = css({
-  margin: "20px 0 0",
-  fontFamily: theme.fontFamily.sans,
-  fontWeight: theme.fontWeight.normal,
-  color: "rgba(255, 255, 255, 0.74)",
-  fontSize: "16px",
-  lineHeight: "1.5",
-  ...textBoxTrim,
-});
-
-const ctaStyles = css({
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "10px",
-  minHeight: "44px",
-  marginTop: "32px",
-  padding: "0 18px",
-  borderRadius: "999px",
-  border: "none",
-  boxShadow: "none",
-  background: "rgba(255, 255, 255, 0.08)",
-  color: "#ffffff",
-  fontFamily: theme.fontFamily.sans,
-  fontWeight: theme.fontWeight.normal,
-  fontSize: "16px",
-  lineHeight: "1.4",
-  letterSpacing: "-0.008px",
-  textDecoration: "none",
-  transition:
-    "background 150ms ease, border-color 150ms ease, color 150ms ease",
-  "&:hover": {
-    background: `color-mix(in srgb, var(--brand-cycle, ${colors.accent}) 18%, rgba(255, 255, 255, 0.08))`,
-  },
-});
-
-const ctaIconStyles = css({
-  width: "18px",
-  height: "18px",
-  flexShrink: "0",
-});
-
-const subscribeFormStyles = css({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: "10px",
-  marginTop: "32px",
-});
-
-const subscribeLabelStyles = css({
-  position: "absolute",
-  width: "1px",
-  height: "1px",
-  padding: "0",
-  margin: "-1px",
-  overflow: "hidden",
-  clip: "rect(0, 0, 0, 0)",
-  whiteSpace: "nowrap",
-  border: "0",
-});
-
-const subscribeInputStyles = css({
-  flex: "1 1 220px",
-  minWidth: "0",
-  boxSizing: "border-box",
-  appearance: "none",
-  borderRadius: "999px",
-  border: "1px solid rgba(255, 255, 255, 0.18)",
-  background: "transparent",
-  color: "#ffffff",
-  height: "44px",
-  padding: "0 18px",
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "16px",
-  lineHeight: "1.4",
-  letterSpacing: "-0.008px",
-  "&::placeholder": {
-    color: "rgba(255, 255, 255, 0.3)",
-  },
-});
-
-const subscribeButtonStyles = css({
-  flexShrink: "0",
-  borderRadius: "999px",
-  border: "none",
-  boxShadow: "none",
-  background: "rgba(255, 255, 255, 0.08)",
-  color: "#ffffff",
-  height: "44px",
-  padding: "0 18px",
-  fontFamily: theme.fontFamily.sans,
-  fontWeight: theme.fontWeight.normal,
-  fontSize: "16px",
-  lineHeight: "1.4",
-  letterSpacing: "-0.008px",
-  cursor: "pointer",
-  transition: "background 150ms ease, color 150ms ease",
-  "@media (max-width: 680px)": {
-    width: "100%",
-  },
-  "&:hover": {
-    background: `color-mix(in srgb, var(--brand-cycle, ${colors.accent}) 18%, rgba(255, 255, 255, 0.08))`,
-  },
-  "&:disabled": {
-    cursor: "not-allowed",
-    opacity: "0.55",
-  },
-});
-
-const subscribeMessageStyles = css({
-  marginTop: "12px",
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "14px",
-  lineHeight: "1.45",
-  letterSpacing: "-0.008px",
-  color: "rgba(255, 255, 255, 0.76)",
-});
-
-const subscribeMessageHiddenStyles = css({
-  display: "none",
-});
-
-const subscribeSuccessStyles = css({
-  display: "block",
-  color: "#7ce95a",
-});
-
-const subscribeErrorStyles = css({
-  display: "block",
-  color: "#ff6b6b",
-});
-
 const PRIMARY_PANEL_STYLES_BY_ID: Record<
   string,
   ReturnType<typeof css> | undefined
 > = {
-  "smaller-mental-model": leftPanelFullStackStyles,
-  "test-drive": leftPanelStartBuildingStyles,
-  "re-rethinking-best-practices": leftPanelPowerfulComponentsStyles,
-  "humans-and-agents": rightPanelUseCasesStyles,
+  "smaller-mental-model": css({
+    gridColumn: "1 / -1",
+    justifySelf: "center",
+    maxWidth: "640px",
+    "@media (max-width: 880px)": {
+      gridColumn: "1 / -1",
+      justifySelf: "center",
+    },
+  }),
+  "test-drive": css({
+    gridColumn: "1 / span 6",
+    justifySelf: "end",
+    "@media (max-width: 880px)": {
+      gridColumn: "1 / -1",
+      justifySelf: "center",
+    },
+  }),
+  "re-rethinking-best-practices": css({
+    gridColumn: "1 / span 5",
+    maxWidth: "720px",
+    "@media (max-width: 880px)": {
+      gridColumn: "1 / -1",
+    },
+  }),
+  "humans-and-agents": css({
+    gridColumn: "1 / -1",
+    justifySelf: "center",
+    maxWidth: "640px",
+    "@media (max-width: 880px)": {
+      gridColumn: "1 / -1",
+      justifySelf: "center",
+    },
+  }),
 };
 
 const SECONDARY_PANEL_STYLES_BY_ID: Record<
   string,
   ReturnType<typeof css> | undefined
 > = {
-  "test-drive": rightPanelNewsletterStyles,
+  "test-drive": css({
+    gridColumn: "7 / -1",
+    justifySelf: "start",
+    "@media (max-width: 880px)": {
+      gridColumn: "1 / -1",
+      justifySelf: "center",
+    },
+  }),
 };
 
 const ROW_STYLES_BY_ID: Record<string, ReturnType<typeof css> | undefined> = {
-  "re-rethinking-best-practices": rowPowerfulComponentsStyles,
+  "re-rethinking-best-practices": css({
+    transform: "none",
+  }),
 };
 
 type FeatureSectionProps = {
@@ -672,9 +316,32 @@ export let LandingNewsletterSubscribeForm = clientEntry(
             action={routes.newsletter.subscribe.href()}
             method="post"
             {...form.navigation}
-            mix={[subscribeFormStyles, ...form.submit]}
+            mix={[
+              css({
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                marginTop: "32px",
+              }),
+              ...form.submit,
+            ]}
           >
-            <label for="landing-newsletter-email" mix={[subscribeLabelStyles]}>
+            <label
+              for="landing-newsletter-email"
+              mix={[
+                css({
+                  position: "absolute",
+                  width: "1px",
+                  height: "1px",
+                  padding: "0",
+                  margin: "-1px",
+                  overflow: "hidden",
+                  clip: "rect(0, 0, 0, 0)",
+                  whiteSpace: "nowrap",
+                  border: "0",
+                }),
+              ]}
+            >
               Email address
             </label>
             <input
@@ -688,12 +355,60 @@ export let LandingNewsletterSubscribeForm = clientEntry(
               aria-describedby={
                 status === "idle" ? undefined : "landing-newsletter-message"
               }
-              mix={[subscribeInputStyles]}
+              mix={[
+                css({
+                  flex: "1 1 220px",
+                  minWidth: "0",
+                  boxSizing: "border-box",
+                  appearance: "none",
+                  borderRadius: "999px",
+                  border: "1px solid rgba(255, 255, 255, 0.18)",
+                  background: "transparent",
+                  color: "#ffffff",
+                  height: "44px",
+                  padding: "0 18px",
+                  fontFamily: theme.fontFamily.sans,
+                  fontSize: "16px",
+                  lineHeight: "1.4",
+                  letterSpacing: "-0.008px",
+                  "&::placeholder": {
+                    color: "rgba(255, 255, 255, 0.3)",
+                  },
+                }),
+              ]}
             />
             <button
               type="submit"
               disabled={status === "submitting"}
-              mix={[subscribeButtonStyles]}
+              mix={[
+                css({
+                  flexShrink: "0",
+                  borderRadius: "999px",
+                  border: "none",
+                  boxShadow: "none",
+                  background: "rgba(255, 255, 255, 0.08)",
+                  color: "#ffffff",
+                  height: "44px",
+                  padding: "0 18px",
+                  fontFamily: theme.fontFamily.sans,
+                  fontWeight: theme.fontWeight.normal,
+                  fontSize: "16px",
+                  lineHeight: "1.4",
+                  letterSpacing: "-0.008px",
+                  cursor: "pointer",
+                  transition: "background 150ms ease, color 150ms ease",
+                  "@media (max-width: 680px)": {
+                    width: "100%",
+                  },
+                  "&:hover": {
+                    background: `color-mix(in srgb, var(--brand-cycle, ${colors.accent}) 18%, rgba(255, 255, 255, 0.08))`,
+                  },
+                  "&:disabled": {
+                    cursor: "not-allowed",
+                    opacity: "0.55",
+                  },
+                }),
+              ]}
             >
               {status === "submitting" ? "Subscribing..." : "Subscribe"}
             </button>
@@ -702,12 +417,27 @@ export let LandingNewsletterSubscribeForm = clientEntry(
             id="landing-newsletter-message"
             aria-live="polite"
             mix={[
-              subscribeMessageStyles,
+              css({
+                marginTop: "12px",
+                fontFamily: theme.fontFamily.sans,
+                fontSize: "14px",
+                lineHeight: "1.45",
+                letterSpacing: "-0.008px",
+                color: "rgba(255, 255, 255, 0.76)",
+              }),
               status === "success"
-                ? subscribeSuccessStyles
+                ? css({
+                    display: "block",
+                    color: "#7ce95a",
+                  })
                 : status !== "idle" && status !== "submitting"
-                  ? subscribeErrorStyles
-                  : subscribeMessageHiddenStyles,
+                  ? css({
+                      display: "block",
+                      color: "#ff6b6b",
+                    })
+                  : css({
+                      display: "none",
+                    }),
             ]}
           >
             {status === "success"
@@ -730,26 +460,117 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
   return () => {
     const primaryPanelStyles =
       PRIMARY_PANEL_STYLES_BY_ID[handle.props.id] ??
-      (handle.props.align === "right" ? rightPanelStyles : leftPanelStyles);
+      (handle.props.align === "right"
+        ? rightPanelStyles
+        : css({
+            gridColumn: "2 / span 5",
+            "@media (max-width: 880px)": {
+              gridColumn: "1 / -1",
+            },
+          }));
     const rowVariantStyles = ROW_STYLES_BY_ID[handle.props.id];
     const pointListVariantStyles =
       handle.props.id === "smaller-mental-model"
-        ? fullStackPointListStyles
+        ? css({
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: "0",
+            margin: "32px -48px -48px",
+            borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+            "@media (max-width: 880px)": {
+              margin: "24px -24px -32px",
+            },
+            "@media (max-width: 600px)": {
+              gridTemplateColumns: "1fr",
+            },
+          })
         : handle.props.id === "humans-and-agents"
-          ? edgeToEdgePointListStyles
+          ? css({
+              gap: "0",
+              margin: "32px -48px -48px",
+              borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+              "@media (max-width: 880px)": {
+                margin: "24px -24px -32px",
+              },
+            })
           : undefined;
     const pointVariantStyles =
       handle.props.id === "smaller-mental-model"
-        ? fullStackPointStyles
+        ? css({
+            padding: "32px 48px",
+            borderTop: "0",
+            "&:nth-child(odd)": {
+              borderRight: "1px solid rgba(255, 255, 255, 0.14)",
+            },
+            "&:nth-child(n + 3)": {
+              borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+            },
+            "&:nth-last-child(-n + 2)": {
+              paddingBottom: "48px",
+            },
+            "@media (max-width: 600px)": {
+              padding: "24px",
+              borderRight: "0",
+              "&:nth-child(odd)": {
+                borderRight: "0",
+              },
+              "&:not(:first-child)": {
+                borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+              },
+              "&:nth-last-child(-n + 2)": {
+                paddingBottom: "32px",
+              },
+            },
+          })
         : handle.props.id === "humans-and-agents"
-          ? edgeToEdgePointStyles
+          ? css({
+              padding: "32px 48px",
+              borderTop: "0",
+              "&:not(:first-child)": {
+                borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+              },
+              "&:last-child": {
+                paddingBottom: "48px",
+              },
+              "@media (max-width: 880px)": {
+                padding: "24px",
+                "&:last-child": {
+                  paddingBottom: "32px",
+                },
+              },
+            })
           : undefined;
 
     return (
-      <section id={handle.props.id} mix={[shellStyles]}>
+      <section
+        id={handle.props.id}
+        mix={[
+          css({
+            width: pageMaxWidth,
+            minHeight: "112vh",
+            margin: "0 auto",
+            boxSizing: "border-box",
+            padding: "160px 0",
+            display: "grid",
+            alignItems: "center",
+            alignContent: "center",
+            "@media (max-width: 880px)": {
+              padding: "128px 0",
+            },
+          }),
+        ]}
+      >
         <div
           mix={[
-            rowStyles,
+            css({
+              width: "min(1040px, 100%)",
+              margin: "0 auto",
+              display: "grid",
+              gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
+              gap: "24px",
+              "@media (max-width: 880px)": {
+                gridTemplateColumns: "1fr",
+              },
+            }),
             ...(rowVariantStyles === undefined ? [] : [rowVariantStyles]),
           ]}
         >
@@ -762,7 +583,13 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
               <ul
                 data-card-grid=""
                 mix={[
-                  pointListStyles,
+                  css({
+                    display: "grid",
+                    gap: "22px",
+                    margin: "32px 0 0",
+                    padding: "0",
+                    listStyle: "none",
+                  }),
                   ...(pointListVariantStyles === undefined
                     ? []
                     : [pointListVariantStyles]),
@@ -773,14 +600,48 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                     key={point.title}
                     data-card-item=""
                     mix={[
-                      pointStyles,
+                      css({
+                        paddingTop: "20px",
+                        borderTop: "1px solid rgba(255, 255, 255, 0.14)",
+                      }),
                       ...(pointVariantStyles === undefined
                         ? []
                         : [pointVariantStyles]),
                     ]}
                   >
-                    <span mix={[pointTitleStyles]}>{point.title}</span>
-                    <span mix={[pointBodyStyles]}>{point.body}</span>
+                    <span
+                      mix={[
+                        css({
+                          display: "block",
+                          fontFamily: theme.fontFamily.sans,
+                          fontWeight: theme.fontWeight.bold,
+                          color: "#ffffff",
+                          fontSize: "18px",
+                          lineHeight: "1.3",
+                          letterSpacing: "-0.008px",
+                          ...textBoxTrim,
+                        }),
+                      ]}
+                    >
+                      {point.title}
+                    </span>
+                    <span
+                      mix={[
+                        css({
+                          display: "block",
+                          marginTop: "20px",
+                          fontFamily: theme.fontFamily.sans,
+                          fontWeight: theme.fontWeight.normal,
+                          color: "rgba(255, 255, 255, 0.72)",
+                          fontSize: "16px",
+                          lineHeight: "1.5",
+                          letterSpacing: "-0.008px",
+                          ...textBoxTrim,
+                        }),
+                      ]}
+                    >
+                      {point.body}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -790,13 +651,45 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                 href={handle.props.ctaHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                mix={[ctaStyles]}
+                mix={[
+                  css({
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    minHeight: "44px",
+                    marginTop: "32px",
+                    padding: "0 18px",
+                    borderRadius: "999px",
+                    border: "none",
+                    boxShadow: "none",
+                    background: "rgba(255, 255, 255, 0.08)",
+                    color: "#ffffff",
+                    fontFamily: theme.fontFamily.sans,
+                    fontWeight: theme.fontWeight.normal,
+                    fontSize: "16px",
+                    lineHeight: "1.4",
+                    letterSpacing: "-0.008px",
+                    textDecoration: "none",
+                    transition:
+                      "background 150ms ease, border-color 150ms ease, color 150ms ease",
+                    "&:hover": {
+                      background: `color-mix(in srgb, var(--brand-cycle, ${colors.accent}) 18%, rgba(255, 255, 255, 0.08))`,
+                    },
+                  }),
+                ]}
               >
                 {handle.props.ctaIcon === "eye" ? (
                   <svg
                     viewBox="0 0 24 24"
                     aria-hidden="true"
-                    mix={[ctaIconStyles]}
+                    mix={[
+                      css({
+                        width: "18px",
+                        height: "18px",
+                        flexShrink: "0",
+                      }),
+                    ]}
                   >
                     <path
                       fill="currentColor"
@@ -809,19 +702,128 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
             ) : null}
           </div>
           {handle.props.codeSnippet ? (
-            <div mix={[codeContainerStyles]}>
-              <pre mix={[codePreStyles]}>
+            <div
+              mix={[
+                css({
+                  gridColumn: "6 / -1",
+                  minWidth: "0",
+                  boxSizing: "border-box",
+                  padding: "24px",
+                  borderRadius: "24px",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                  background: "rgba(0, 0, 0, 0.38)",
+                  overflow: "hidden",
+                  contain: "paint",
+                  "@media (max-width: 880px)": {
+                    gridColumn: "1 / -1",
+                    background: "rgba(0, 0, 0, 0.72)",
+                  },
+                }),
+              ]}
+            >
+              <pre
+                mix={[
+                  css({
+                    margin: "0",
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: "13px",
+                    lineHeight: "1.6",
+                    letterSpacing: "0",
+                    color: "#ffffff",
+                    whiteSpace: "pre",
+                    overflowX: "auto",
+                    tabSize: "2",
+                  }),
+                ]}
+              >
                 <code>{renderHighlightedCode(handle.props.codeSnippet)}</code>
               </pre>
             </div>
           ) : null}
           {handle.props.detailPanel ? (
-            <div mix={[detailPanelStyles]}>
-              <ul mix={[detailListStyles]}>
+            <div
+              mix={[
+                css({
+                  gridColumn: "6 / -1",
+                  minWidth: "0",
+                  boxSizing: "border-box",
+                  padding: "24px",
+                  borderRadius: "24px",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                  background: "rgba(0, 0, 0, 0.46)",
+                  contain: "paint",
+                  "@media (max-width: 880px)": {
+                    gridColumn: "1 / -1",
+                    background: "rgba(0, 0, 0, 0.72)",
+                  },
+                }),
+              ]}
+            >
+              <ul
+                mix={[
+                  css({
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                    gap: "12px",
+                    margin: "0",
+                    padding: "0",
+                    listStyle: "none",
+                    "@media (max-width: 1100px)": {
+                      gridTemplateColumns: "1fr",
+                    },
+                  }),
+                ]}
+              >
                 {handle.props.detailPanel.map((detail) => (
-                  <li key={detail.title} mix={[detailStyles]}>
-                    <h3 mix={[detailTitleStyles]}>{detail.title}</h3>
-                    <p mix={[detailBodyStyles]}>{detail.body}</p>
+                  <li
+                    key={detail.title}
+                    mix={[
+                      css({
+                        minHeight: "172px",
+                        boxSizing: "border-box",
+                        padding: "20px",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        borderRadius: "18px",
+                        background: "rgba(255, 255, 255, 0.045)",
+                        "@media (max-width: 1100px)": {
+                          minHeight: "0",
+                        },
+                      }),
+                    ]}
+                  >
+                    <h3
+                      mix={[
+                        css({
+                          margin: "0",
+                          fontFamily: theme.fontFamily.sans,
+                          fontWeight: theme.fontWeight.bold,
+                          color: "#ffffff",
+                          fontSize: "18px",
+                          lineHeight: "1.3",
+                          letterSpacing: "-0.012em",
+                          ...textBoxTrim,
+                        }),
+                      ]}
+                    >
+                      {detail.title}
+                    </h3>
+                    <p
+                      mix={[
+                        css({
+                          margin: "20px 0 0",
+                          fontFamily: theme.fontFamily.sans,
+                          fontWeight: theme.fontWeight.normal,
+                          color: "rgba(255, 255, 255, 0.74)",
+                          fontSize: "16px",
+                          lineHeight: "1.5",
+                          ...textBoxTrim,
+                        }),
+                      ]}
+                    >
+                      {detail.body}
+                    </p>
                   </li>
                 ))}
               </ul>

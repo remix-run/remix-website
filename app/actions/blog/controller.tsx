@@ -125,7 +125,15 @@ function Page(
         headTags={headTags}
       >
         <Header currentSection="blog" />
-        <main id="main-content" mix={blogMainStyle} tabIndex={-1}>
+        <main
+          id="main-content"
+          mix={css({
+            display: "flex",
+            flex: 1,
+            flexDirection: "column",
+          })}
+          tabIndex={-1}
+        >
           <BlogPageContent posts={handle.props.posts} />
         </main>
         <Footer />
@@ -144,12 +152,41 @@ function BlogPageContent(
     let featuredPosts = handle.props.posts.filter((post) => post.featured);
 
     return (
-      <div mix={[pageBodyStyle, blogIndexStyle]}>
-        <div mix={blogIndexInnerStyle}>
-          <div mix={blogGridStyle}>
-            <div mix={blogPrimaryColumnStyle}>
+      <div
+        mix={[
+          pageBodyStyle,
+          css({
+            ...blogContainerStyle,
+            display: "flex",
+            maxWidth: "100%",
+            flex: 1,
+            flexDirection: "column",
+            marginBlockStart: "32px",
+          }),
+        ]}
+      >
+        <div
+          mix={css({
+            width: "100%",
+            maxWidth: "1400px",
+            marginInline: "auto",
+          })}
+        >
+          <div
+            mix={css({
+              [breakpointMedia.md]: {
+                display: "grid",
+                gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
+              },
+            })}
+          >
+            <div
+              mix={css({
+                [breakpointMedia.md]: { gridColumn: "span 7 / span 7" },
+              })}
+            >
               {latestPost ? (
-                <div mix={blogLatestPostStyle}>
+                <div mix={css({ marginBlockEnd: "56px" })}>
                   <a href={routes.blog.post.href({ slug: latestPost.slug })}>
                     <div mix={blogImageFrameStyle}>
                       <img
@@ -173,7 +210,16 @@ function BlogPageContent(
                 </div>
               ) : null}
 
-              <div mix={blogPostGridStyle}>
+              <div
+                mix={css({
+                  marginBlockStart: "48px",
+                  [breakpointMedia.lg]: {
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                    gap: "24px",
+                  },
+                })}
+              >
                 {posts.map((post) => (
                   <div key={post.slug}>
                     <a href={routes.blog.post.href({ slug: post.slug })}>
@@ -190,7 +236,12 @@ function BlogPageContent(
                           decoding="async"
                         />
                       </div>
-                      <div mix={[blogCardCopyStyle, blogPostCopyStyle]}>
+                      <div
+                        mix={[
+                          blogCardCopyStyle,
+                          css({ marginBlockEnd: "48px" }),
+                        ]}
+                      >
                         <p mix={pageMetaStyle}>{post.dateDisplay}</p>
                         <p mix={[pageTitleStyle, pageTitleExtraSmallStyle]}>
                           {post.title}
@@ -202,20 +253,36 @@ function BlogPageContent(
                 ))}
               </div>
             </div>
-            <div mix={blogSidebarSpacerStyle} />
-            <div mix={blogSidebarStyle}>
+            <div
+              mix={css({
+                height: "96px",
+                [breakpointMedia.md]: { display: "none" },
+              })}
+            />
+            <div
+              mix={css({
+                minWidth: 0,
+                [breakpointMedia.md]: { gridColumn: "9 / span 4" },
+              })}
+            >
               {featuredPosts.length ? (
                 <>
                   <h3
                     mix={[
                       pageTitleStyle,
                       pageTitleSmallStyle,
-                      blogFeaturedHeadingStyle,
+                      css({ marginBlockEnd: "32px" }),
                     ]}
                   >
                     Featured Articles
                   </h3>
-                  <div mix={blogFeaturedListStyle}>
+                  <div
+                    mix={css({
+                      display: "grid",
+                      gridTemplateColumns: "minmax(0, 1fr)",
+                      gap: "16px",
+                    })}
+                  >
                     {featuredPosts.map((post, index, array) => (
                       <div key={post.slug}>
                         <a
@@ -225,12 +292,12 @@ function BlogPageContent(
                           {post.title}
                         </a>
                         {index !== array.length - 1 ? (
-                          <hr mix={blogFeaturedDividerStyle} />
+                          <hr mix={css({ marginBlock: "16px" })} />
                         ) : null}
                       </div>
                     ))}
                   </div>
-                  <div mix={blogFeaturedSpacerStyle} />
+                  <div mix={css({ height: "96px" })} />
                 </>
               ) : null}
 
@@ -239,13 +306,13 @@ function BlogPageContent(
                   mix={[
                     pageTitleStyle,
                     pageTitleSmallStyle,
-                    blogNewsletterHeadingStyle,
+                    css({ marginBlockEnd: "24px" }),
                   ]}
                 >
                   Get updates on the latest Remix news
                 </h3>
                 <div
-                  mix={[pageBodyStyle, blogNewsletterBodyStyle]}
+                  mix={[pageBodyStyle, css({ marginBlockEnd: "24px" })]}
                   id="newsletter-text"
                 >
                   Be the first to learn about new Remix features, community
@@ -314,12 +381,6 @@ function getPostSocialImageUrl(
 let blogHeroImageSizes =
   "(min-width: 1496px) 817px, (min-width: 768px) calc(58.333vw - 56px), calc(100vw - 96px)";
 
-let blogMainStyle = css({
-  display: "flex",
-  flex: 1,
-  flexDirection: "column",
-});
-
 let blogContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
@@ -328,34 +389,6 @@ let blogContainerStyle = {
   [breakpointMedia.md]: { paddingInline: "32px" },
   [breakpointMedia.lg]: { paddingInline: "40px" },
 } as const;
-
-let blogIndexStyle = css({
-  ...blogContainerStyle,
-  display: "flex",
-  maxWidth: "100%",
-  flex: 1,
-  flexDirection: "column",
-  marginBlockStart: "32px",
-});
-
-let blogIndexInnerStyle = css({
-  width: "100%",
-  maxWidth: "1400px",
-  marginInline: "auto",
-});
-
-let blogGridStyle = css({
-  [breakpointMedia.md]: {
-    display: "grid",
-    gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
-  },
-});
-
-let blogPrimaryColumnStyle = css({
-  [breakpointMedia.md]: { gridColumn: "span 7 / span 7" },
-});
-
-let blogLatestPostStyle = css({ marginBlockEnd: "56px" });
 
 let blogImageFrameStyle = css({
   aspectRatio: "16 / 9",
@@ -376,40 +409,3 @@ let blogCardCopyStyle = css({
   flexDirection: "column",
   gap: "16px",
 });
-
-let blogPostGridStyle = css({
-  marginBlockStart: "48px",
-  [breakpointMedia.lg]: {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-    gap: "24px",
-  },
-});
-
-let blogPostCopyStyle = css({ marginBlockEnd: "48px" });
-
-let blogSidebarSpacerStyle = css({
-  height: "96px",
-  [breakpointMedia.md]: { display: "none" },
-});
-
-let blogSidebarStyle = css({
-  minWidth: 0,
-  [breakpointMedia.md]: { gridColumn: "9 / span 4" },
-});
-
-let blogFeaturedHeadingStyle = css({ marginBlockEnd: "32px" });
-
-let blogFeaturedListStyle = css({
-  display: "grid",
-  gridTemplateColumns: "minmax(0, 1fr)",
-  gap: "16px",
-});
-
-let blogFeaturedDividerStyle = css({ marginBlock: "16px" });
-
-let blogFeaturedSpacerStyle = css({ height: "96px" });
-
-let blogNewsletterHeadingStyle = css({ marginBlockEnd: "24px" });
-
-let blogNewsletterBodyStyle = css({ marginBlockEnd: "24px" });

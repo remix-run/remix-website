@@ -34,7 +34,23 @@ export function Jam2025TicketPage(
       requestUrl={handle.props.requestUrl}
       activePath={routes.jam.y2025.ticket.index.href()}
     >
-      <main id="main-content" mix={ticketMainStyle} tabIndex={-1}>
+      <main
+        id="main-content"
+        mix={css({
+          display: "flex",
+          maxWidth: "800px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          paddingBlock: "80px",
+          paddingTop: "120px",
+          textAlign: "center",
+          [breakpointMedia.md]: { paddingTop: "270px" },
+          [breakpointMedia.lg]: { paddingTop: "280px" },
+        })}
+        tabIndex={-1}
+      >
         <Title>
           <ScrambleText
             text="General Admission"
@@ -70,20 +86,6 @@ export function Jam2025TicketPage(
     </JamDocument>
   );
 }
-
-let ticketMainStyle = css({
-  display: "flex",
-  maxWidth: "800px",
-  marginInline: "auto",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "48px",
-  paddingBlock: "80px",
-  paddingTop: "120px",
-  textAlign: "center",
-  [breakpointMedia.md]: { paddingTop: "270px" },
-  [breakpointMedia.lg]: { paddingTop: "280px" },
-});
 
 type Jam2025TicketProduct = Awaited<ReturnType<typeof getProduct>>;
 

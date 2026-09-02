@@ -25,14 +25,33 @@ export let JamNewsletterSubscribeForm = clientEntry(
           action={routes.newsletter.subscribe.href()}
           method="post"
           {...form.navigation}
-          mix={[newsletterFormStyle, form.submit]}
+          mix={[
+            css({
+              position: "relative",
+              zIndex: 10,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }),
+            form.submit,
+          ]}
         >
           <input
             type="hidden"
             name="tag"
             value={String(newsletterTagIds.jam2025Updates)}
           />
-          <p mix={newsletterLabelStyle}>
+          <p
+            mix={css({
+              color: "rgb(255 255 255 / 0.5)",
+              fontFamily: theme.fontFamily.mono,
+              fontSize: "0.75rem",
+              lineHeight: 1.333,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
+            })}
+          >
             <label htmlFor="jam-newsletter-email">email</label>
           </p>
           <input
@@ -46,12 +65,50 @@ export let JamNewsletterSubscribeForm = clientEntry(
             aria-describedby={
               status === "idle" ? undefined : "jam-newsletter-message"
             }
-            mix={newsletterInputStyle}
+            mix={css({
+              width: "100%",
+              maxWidth: "384px",
+              marginTop: "10px",
+              border: 0,
+              borderRadius: theme.radius.full,
+              padding: "16px 24px",
+              backgroundColor: "#000000",
+              color: "#ffffff",
+              fontSize: "1.125rem",
+              lineHeight: 1.556,
+              textAlign: "center",
+              outline: "none",
+              "&::placeholder": { color: "rgb(255 255 255 / 0.3)" },
+              "&:focus": {
+                boxShadow: `inset 0 0 0 2px ${theme.colors.brand.blue}`,
+              },
+              [breakpointMedia.sm]: { lineHeight: "24px" },
+            })}
           />
           <button
             type="submit"
             disabled={status === "submitting"}
-            mix={newsletterButtonStyle}
+            mix={css({
+              width: "100%",
+              minWidth: "fit-content",
+              maxWidth: "384px",
+              marginTop: "20px",
+              borderRadius: theme.radius.full,
+              padding: "12px 16px",
+              backgroundColor: "#000000",
+              color: "#ffffff",
+              fontSize: "0.875rem",
+              fontWeight: theme.fontWeight.semibold,
+              lineHeight: 1.425,
+              transition: "color 300ms, background-color 300ms",
+              "&:disabled": { cursor: "not-allowed", opacity: 0.5 },
+              [breakpointMedia.md]: {
+                padding: "16px 24px",
+                fontSize: "1.25rem",
+                lineHeight: 1.556,
+              },
+              "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+            })}
           >
             {status === "submitting" ? "Signing Up..." : "Sign Up"}
           </button>
@@ -60,8 +117,13 @@ export let JamNewsletterSubscribeForm = clientEntry(
             aria-live="polite"
             mix={
               status !== "idle" && status !== "submitting"
-                ? newsletterMessageStyle
-                : hiddenStyle
+                ? css({
+                    marginTop: "16px",
+                    color: "#ffffff",
+                    fontSize: "0.875rem",
+                    lineHeight: 1.425,
+                  })
+                : css({ display: "none" })
             }
           >
             {status === "success" ? (
@@ -89,70 +151,4 @@ export let JamNewsletterSubscribeForm = clientEntry(
   },
 );
 
-let newsletterFormStyle = css({
-  position: "relative",
-  zIndex: 10,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-});
-
-let newsletterLabelStyle = css({
-  color: "rgb(255 255 255 / 0.5)",
-  fontFamily: theme.fontFamily.mono,
-  fontSize: "0.75rem",
-  lineHeight: 1.333,
-  letterSpacing: "0.1em",
-  textTransform: "uppercase",
-  [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
-});
-
-let newsletterInputStyle = css({
-  width: "100%",
-  maxWidth: "384px",
-  marginTop: "10px",
-  border: 0,
-  borderRadius: theme.radius.full,
-  padding: "16px 24px",
-  backgroundColor: "#000000",
-  color: "#ffffff",
-  fontSize: "1.125rem",
-  lineHeight: 1.556,
-  textAlign: "center",
-  outline: "none",
-  "&::placeholder": { color: "rgb(255 255 255 / 0.3)" },
-  "&:focus": { boxShadow: `inset 0 0 0 2px ${theme.colors.brand.blue}` },
-  [breakpointMedia.sm]: { lineHeight: "24px" },
-});
-
-let newsletterButtonStyle = css({
-  width: "100%",
-  minWidth: "fit-content",
-  maxWidth: "384px",
-  marginTop: "20px",
-  borderRadius: theme.radius.full,
-  padding: "12px 16px",
-  backgroundColor: "#000000",
-  color: "#ffffff",
-  fontSize: "0.875rem",
-  fontWeight: theme.fontWeight.semibold,
-  lineHeight: 1.425,
-  transition: "color 300ms, background-color 300ms",
-  "&:disabled": { cursor: "not-allowed", opacity: 0.5 },
-  [breakpointMedia.md]: {
-    padding: "16px 24px",
-    fontSize: "1.25rem",
-    lineHeight: 1.556,
-  },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let newsletterMessageStyle = css({
-  marginTop: "16px",
-  color: "#ffffff",
-  fontSize: "0.875rem",
-  lineHeight: 1.425,
-});
-
 let newsletterErrorStyle = css({ color: theme.colors.brand.red });
-let hiddenStyle = css({ display: "none" });

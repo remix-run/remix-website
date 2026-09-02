@@ -79,7 +79,7 @@ export let MobileMenu = clientEntry(
         <details
           open={state.status === "open"}
           mix={[
-            mobileMenuStyle,
+            css({ position: "relative", cursor: "pointer" }),
             ref((node) => {
               detailsElement = node;
               syncDetailsElement();
@@ -93,23 +93,87 @@ export let MobileMenu = clientEntry(
         >
           <summary
             data-mobile-menu-summary=""
-            mix={!handle.props.unstyled ? mobileMenuSummaryStyle : undefined}
+            mix={
+              !handle.props.unstyled
+                ? css({
+                    display: "grid",
+                    width: "40px",
+                    height: "40px",
+                    placeItems: "center",
+                    borderRadius: theme.radius.full,
+                    backgroundColor: "light-dark(#e3e3e3, #383838)",
+                    color: theme.colors.text.marketingPrimary,
+                    listStyle: "none",
+                    "&::-webkit-details-marker": { display: "none" },
+                    "&:hover, details[open] > &": {
+                      backgroundColor: "light-dark(#c8c8c8, #434343)",
+                    },
+                  })
+                : undefined
+            }
           >
-            <Icon name="menu" mix={mobileMenuIconStyle} aria-hidden="true" />
+            <Icon
+              name="menu"
+              mix={css({ width: "20px", height: "20px" })}
+              aria-hidden="true"
+            />
             <span mix={visuallyHiddenStyle}>Open menu</span>
           </summary>
 
           <div
             data-mobile-menu-position=""
-            mix={!handle.props.unstyled ? mobileMenuPositionStyle : undefined}
+            mix={
+              !handle.props.unstyled
+                ? css({
+                    position: "absolute",
+                    right: 0,
+                    zIndex: 20,
+                    [breakpointMedia.md]: { right: "auto", left: 0 },
+                  })
+                : undefined
+            }
           >
             <div
               data-mobile-menu-surface=""
-              mix={!handle.props.unstyled ? mobileMenuSurfaceStyle : undefined}
+              mix={
+                !handle.props.unstyled
+                  ? css({
+                      position: "relative",
+                      top: "4px",
+                      width: "160px",
+                      border: "1px solid light-dark(#e3e3e3, #383838)",
+                      borderRadius: "6px",
+                      backgroundColor: "light-dark(#ffffff, #121212)",
+                      padding: "4px",
+                      boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+                    })
+                  : undefined
+              }
             >
               <nav
                 data-mobile-menu-nav=""
-                mix={!handle.props.unstyled ? mobileMenuNavStyle : undefined}
+                mix={
+                  !handle.props.unstyled
+                    ? css({
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px",
+                        padding: "10px 8px",
+                        "& [data-header-link]": {
+                          color: theme.colors.text.marketingPrimary,
+                          fontSize: "1rem",
+                          fontWeight: theme.fontWeight.normal,
+                          opacity: 0.8,
+                          whiteSpace: "nowrap",
+                        },
+                        "& [data-header-link]:hover, & [data-header-link]:focus-visible, & [data-header-link][aria-current]":
+                          {
+                            color: theme.colors.action.current,
+                            opacity: 1,
+                          },
+                      })
+                    : undefined
+                }
                 aria-label="Mobile"
               >
                 {handle.props.children}
@@ -121,59 +185,3 @@ export let MobileMenu = clientEntry(
     };
   },
 );
-
-let mobileMenuStyle = css({ position: "relative", cursor: "pointer" });
-
-let mobileMenuSummaryStyle = css({
-  display: "grid",
-  width: "40px",
-  height: "40px",
-  placeItems: "center",
-  borderRadius: theme.radius.full,
-  backgroundColor: "light-dark(#e3e3e3, #383838)",
-  color: theme.colors.text.marketingPrimary,
-  listStyle: "none",
-  "&::-webkit-details-marker": { display: "none" },
-  "&:hover, details[open] > &": {
-    backgroundColor: "light-dark(#c8c8c8, #434343)",
-  },
-});
-
-let mobileMenuIconStyle = css({ width: "20px", height: "20px" });
-
-let mobileMenuPositionStyle = css({
-  position: "absolute",
-  right: 0,
-  zIndex: 20,
-  [breakpointMedia.md]: { right: "auto", left: 0 },
-});
-
-let mobileMenuSurfaceStyle = css({
-  position: "relative",
-  top: "4px",
-  width: "160px",
-  border: "1px solid light-dark(#e3e3e3, #383838)",
-  borderRadius: "6px",
-  backgroundColor: "light-dark(#ffffff, #121212)",
-  padding: "4px",
-  boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-});
-
-let mobileMenuNavStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  gap: "8px",
-  padding: "10px 8px",
-  "& [data-header-link]": {
-    color: theme.colors.text.marketingPrimary,
-    fontSize: "1rem",
-    fontWeight: theme.fontWeight.normal,
-    opacity: 0.8,
-    whiteSpace: "nowrap",
-  },
-  "& [data-header-link]:hover, & [data-header-link]:focus-visible, & [data-header-link][aria-current]":
-    {
-      color: theme.colors.action.current,
-      opacity: 1,
-    },
-});

@@ -15,8 +15,23 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
       requestUrl={handle.props.requestUrl}
       activePath={routes.jam.y2025.coc.href()}
     >
-      <main id="main-content" mix={cocMainStyle} tabIndex={-1}>
-        <Title mix={centeredTitleStyle}>
+      <main
+        id="main-content"
+        mix={css({
+          display: "flex",
+          maxWidth: "800px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          paddingBlock: "80px",
+          paddingTop: "120px",
+          [breakpointMedia.md]: { paddingTop: "270px" },
+          [breakpointMedia.lg]: { paddingTop: "280px" },
+        })}
+        tabIndex={-1}
+      >
+        <Title mix={css({ textAlign: "center" })}>
           <ScrambleText
             text="Code of Conduct"
             delay={100}
@@ -25,7 +40,18 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
           />
         </Title>
 
-        <div mix={cocContentStyle}>
+        <div
+          mix={css({
+            position: "relative",
+            zIndex: 10,
+            color: "#ffffff",
+            fontSize: "1rem",
+            lineHeight: 1.5,
+            textAlign: "justify",
+            "& > * + *": { marginTop: "32px" },
+            [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
+          })}
+        >
           <Paragraph>
             All attendees, speakers, and volunteers at our conference are
             required to agree with the following code of conduct. Organizers
@@ -101,7 +127,12 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
             </Paragraph>
           </section>
 
-          <div mix={adaptedFromStyle}>
+          <div
+            mix={css({
+              color: "rgb(255 255 255 / 0.7)",
+              fontSize: "0.875rem",
+            })}
+          >
             Adapted from{" "}
             <a
               mix={textLinkStyle}
@@ -119,40 +150,9 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
   );
 }
 
-let cocMainStyle = css({
-  display: "flex",
-  maxWidth: "800px",
-  marginInline: "auto",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "48px",
-  paddingBlock: "80px",
-  paddingTop: "120px",
-  [breakpointMedia.md]: { paddingTop: "270px" },
-  [breakpointMedia.lg]: { paddingTop: "280px" },
-});
-
-let centeredTitleStyle = css({ textAlign: "center" });
-
-let cocContentStyle = css({
-  position: "relative",
-  zIndex: 10,
-  color: "#ffffff",
-  fontSize: "1rem",
-  lineHeight: 1.5,
-  textAlign: "justify",
-  "& > * + *": { marginTop: "32px" },
-  [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
-});
-
 let cocSectionStyle = css({ "& > * + *": { marginTop: "16px" } });
 
 let textLinkStyle = css({
   color: "#59b0ff",
   "&:hover": { textDecoration: "underline" },
-});
-
-let adaptedFromStyle = css({
-  color: "rgb(255 255 255 / 0.7)",
-  fontSize: "0.875rem",
 });

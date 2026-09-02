@@ -127,23 +127,76 @@ export let JamLineupAccordionItem = clientEntry(
         state.status === "opening";
 
       return (
-        <details mix={accordionStyle} open={mountedOpen}>
+        <details
+          mix={css({
+            overflow: "hidden",
+            borderTop: "1px solid rgb(255 255 255 / 0.1)",
+            "&:hover [data-accordion-body]": { backgroundColor: "#121212" },
+          })}
+          open={mountedOpen}
+        >
           <summary
             mix={[
               scheduleGridStyle,
-              accordionSummaryStyle,
+              css({
+                cursor: "pointer",
+                userSelect: "none",
+                padding: "16px",
+                color: "#ffffff",
+                fontSize: "0.875rem",
+                fontWeight: theme.fontWeight.bold,
+                lineHeight: 1.425,
+                outline: "none",
+                transition: "background-color 300ms",
+                "&::-webkit-details-marker": { display: "none" },
+                "&:is(:hover, :focus-visible)": { backgroundColor: "#121212" },
+                "&:focus-visible": {
+                  outline: `2px solid ${theme.colors.brand.blue}`,
+                  outlineOffset: "-2px",
+                },
+                [breakpointMedia.sm]: {
+                  padding: "24px",
+                  fontSize: "1rem",
+                  lineHeight: 1.5,
+                },
+                [breakpointMedia.md]: {
+                  padding: "32px",
+                  fontSize: "1.125rem",
+                  lineHeight: 1.556,
+                },
+                [breakpointMedia.lg]: {
+                  padding: "36px",
+                  fontSize: "1.5rem",
+                  lineHeight: 1.333,
+                },
+                "@media (prefers-reduced-motion: reduce)": {
+                  transition: "none",
+                },
+              }),
               on<HTMLElement>("click", onSummaryClick),
             ]}
           >
             <span>{handle.props.item.time}</span>
             <span>{handle.props.item.title}</span>
             <span>{handle.props.item.speaker}</span>
-            <div mix={chevronCellStyle}>
+            <div mix={css({ display: "flex", justifyContent: "flex-end" })}>
               <Icon
                 name="chevron-r"
                 mix={[
-                  chevronStyle,
-                  visuallyOpen ? openChevronStyle : closedChevronStyle,
+                  css({
+                    width: "16px",
+                    height: "16px",
+                    color: "#ffffff",
+                    transition: "transform 150ms",
+                    [breakpointMedia.sm]: { width: "20px", height: "20px" },
+                    [breakpointMedia.lg]: { width: "24px", height: "24px" },
+                    "@media (prefers-reduced-motion: reduce)": {
+                      transition: "none",
+                    },
+                  }),
+                  visuallyOpen
+                    ? css({ transform: "rotate(-90deg)" })
+                    : css({ transform: "rotate(90deg)" }),
                 ]}
                 aria-hidden="true"
               />
@@ -152,7 +205,7 @@ export let JamLineupAccordionItem = clientEntry(
 
           <div
             mix={[
-              accordionPanelStyle,
+              css({ display: "block" }),
               ref((node, signal) => {
                 panel = node;
                 if (!mountedOpen) {
@@ -175,24 +228,102 @@ export let JamLineupAccordionItem = clientEntry(
                 }),
               ]}
             >
-              <div data-accordion-body="" mix={accordionBodyStyle}>
-                <div mix={[scheduleGridStyle, accordionBodyGridStyle]}>
+              <div
+                data-accordion-body=""
+                mix={css({
+                  paddingBottom: "32px",
+                  transition: "background-color 300ms",
+                  "@media (prefers-reduced-motion: reduce)": {
+                    transition: "none",
+                  },
+                })}
+              >
+                <div
+                  mix={[
+                    scheduleGridStyle,
+                    css({
+                      padding: "16px",
+                      [breakpointMedia.sm]: { padding: "24px" },
+                      [breakpointMedia.md]: { padding: "32px" },
+                      [breakpointMedia.lg]: { padding: "36px" },
+                    }),
+                  ]}
+                >
                   <div
-                    mix={accordionDescriptionStyle}
+                    mix={css({
+                      gridColumn: "1 / -1",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "16px",
+                      color: "#ffffff",
+                      fontSize: "0.875rem",
+                      lineHeight: 1.425,
+                      "& a": { color: "#59b0ff" },
+                      "& a:hover": { textDecoration: "underline" },
+                      [breakpointMedia.sm]: {
+                        gridColumn: "2 / span 1",
+                        gap: "24px",
+                        fontSize: "1rem",
+                        lineHeight: 1.5,
+                      },
+                      [breakpointMedia.md]: {
+                        fontSize: "1.125rem",
+                        lineHeight: 1.556,
+                      },
+                      [breakpointMedia.lg]: {
+                        fontSize: "1.25rem",
+                        lineHeight: 1.556,
+                      },
+                    })}
                     innerHTML={handle.props.item.description}
                   />
                   {handle.props.item.imgSrc ? (
-                    <div mix={speakerColumnStyle}>
+                    <div
+                      mix={css({
+                        gridColumn: "1 / -1",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "16px",
+                        [breakpointMedia.sm]: { gridColumn: "3 / span 1" },
+                      })}
+                    >
                       <img
                         src={handle.props.item.imgSrc}
                         alt={handle.props.item.speaker}
-                        mix={speakerImageStyle}
+                        mix={css({
+                          width: "100%",
+                          maxWidth: "none",
+                          borderRadius: "16px",
+                          objectFit: "cover",
+                          aspectRatio: "1",
+                        })}
                         loading="lazy"
                         decoding="async"
                       />
                       {handle.props.item.bio ? (
                         <div
-                          mix={speakerBioStyle}
+                          mix={css({
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "16px",
+                            color: "#ffffff",
+                            fontSize: "0.75rem",
+                            lineHeight: 1.333,
+                            "& a": { color: "#59b0ff" },
+                            "& a:hover": { textDecoration: "underline" },
+                            [breakpointMedia.sm]: {
+                              gap: "24px",
+                              fontSize: "0.875rem",
+                              lineHeight: 1.425,
+                            },
+                            [breakpointMedia.md]: {
+                              fontSize: "1rem",
+                              lineHeight: 1.5,
+                            },
+                            [breakpointMedia.lg]: {
+                              fontFamily: theme.fontFamily.mono,
+                            },
+                          })}
                           innerHTML={handle.props.item.bio}
                         />
                       ) : null}
@@ -224,127 +355,4 @@ export let scheduleGridStyle = css({
     gridTemplateColumns: "150px 1fr 1fr 24px",
     gap: "48px",
   },
-});
-
-let accordionStyle = css({
-  overflow: "hidden",
-  borderTop: "1px solid rgb(255 255 255 / 0.1)",
-  "&:hover [data-accordion-body]": { backgroundColor: "#121212" },
-});
-
-let accordionSummaryStyle = css({
-  cursor: "pointer",
-  userSelect: "none",
-  padding: "16px",
-  color: "#ffffff",
-  fontSize: "0.875rem",
-  fontWeight: theme.fontWeight.bold,
-  lineHeight: 1.425,
-  outline: "none",
-  transition: "background-color 300ms",
-  "&::-webkit-details-marker": { display: "none" },
-  "&:is(:hover, :focus-visible)": { backgroundColor: "#121212" },
-  "&:focus-visible": {
-    outline: `2px solid ${theme.colors.brand.blue}`,
-    outlineOffset: "-2px",
-  },
-  [breakpointMedia.sm]: {
-    padding: "24px",
-    fontSize: "1rem",
-    lineHeight: 1.5,
-  },
-  [breakpointMedia.md]: {
-    padding: "32px",
-    fontSize: "1.125rem",
-    lineHeight: 1.556,
-  },
-  [breakpointMedia.lg]: {
-    padding: "36px",
-    fontSize: "1.5rem",
-    lineHeight: 1.333,
-  },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let chevronCellStyle = css({ display: "flex", justifyContent: "flex-end" });
-
-let chevronStyle = css({
-  width: "16px",
-  height: "16px",
-  color: "#ffffff",
-  transition: "transform 150ms",
-  [breakpointMedia.sm]: { width: "20px", height: "20px" },
-  [breakpointMedia.lg]: { width: "24px", height: "24px" },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let openChevronStyle = css({ transform: "rotate(-90deg)" });
-let closedChevronStyle = css({ transform: "rotate(90deg)" });
-let accordionPanelStyle = css({ display: "block" });
-
-let accordionBodyStyle = css({
-  paddingBottom: "32px",
-  transition: "background-color 300ms",
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let accordionBodyGridStyle = css({
-  padding: "16px",
-  [breakpointMedia.sm]: { padding: "24px" },
-  [breakpointMedia.md]: { padding: "32px" },
-  [breakpointMedia.lg]: { padding: "36px" },
-});
-
-let accordionDescriptionStyle = css({
-  gridColumn: "1 / -1",
-  display: "flex",
-  flexDirection: "column",
-  gap: "16px",
-  color: "#ffffff",
-  fontSize: "0.875rem",
-  lineHeight: 1.425,
-  "& a": { color: "#59b0ff" },
-  "& a:hover": { textDecoration: "underline" },
-  [breakpointMedia.sm]: {
-    gridColumn: "2 / span 1",
-    gap: "24px",
-    fontSize: "1rem",
-    lineHeight: 1.5,
-  },
-  [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
-  [breakpointMedia.lg]: { fontSize: "1.25rem", lineHeight: 1.556 },
-});
-
-let speakerColumnStyle = css({
-  gridColumn: "1 / -1",
-  display: "flex",
-  flexDirection: "column",
-  gap: "16px",
-  [breakpointMedia.sm]: { gridColumn: "3 / span 1" },
-});
-
-let speakerImageStyle = css({
-  width: "100%",
-  maxWidth: "none",
-  borderRadius: "16px",
-  objectFit: "cover",
-  aspectRatio: "1",
-});
-
-let speakerBioStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  gap: "16px",
-  color: "#ffffff",
-  fontSize: "0.75rem",
-  lineHeight: 1.333,
-  "& a": { color: "#59b0ff" },
-  "& a:hover": { textDecoration: "underline" },
-  [breakpointMedia.sm]: {
-    gap: "24px",
-    fontSize: "0.875rem",
-    lineHeight: 1.425,
-  },
-  [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
-  [breakpointMedia.lg]: { fontFamily: theme.fontFamily.mono },
 });

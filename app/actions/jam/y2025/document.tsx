@@ -32,7 +32,16 @@ export function JamDocument(handle: Handle<JamPageProps>) {
         title={title}
         description={description}
         forceTheme="dark"
-        mix={jamDocumentStyle}
+        mix={css({
+          scrollbarColor: "var(--color-gray-300) var(--color-gray-800)",
+          "& body": {
+            background:
+              "radial-gradient(72% 63% at 50% 32.3%, #3b3b3b 0.036346160613726086%, rgb(26, 26, 26) 100%)",
+          },
+          "@media (prefers-reduced-motion: reduce)": {
+            scrollBehavior: "auto",
+          },
+        })}
         headTags={getSocialHeadTags({
           requestUrl,
           title,
@@ -51,14 +60,3 @@ export function JamDocument(handle: Handle<JamPageProps>) {
     );
   };
 }
-
-let jamDocumentStyle = css({
-  scrollbarColor: "var(--color-gray-300) var(--color-gray-800)",
-  "& body": {
-    background:
-      "radial-gradient(72% 63% at 50% 32.3%, #3b3b3b 0.036346160613726086%, rgb(26, 26, 26) 100%)",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    scrollBehavior: "auto",
-  },
-});

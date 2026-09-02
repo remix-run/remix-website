@@ -272,7 +272,23 @@ export function Document(handle: Handle<DocumentProps>) {
           <script innerHTML={colorSchemeScript} />
         </head>
 
-        <body mix={documentBodyStyle}>
+        <body
+          mix={css({
+            display: "flex",
+            minHeight: "100vh",
+            width: "100%",
+            flexDirection: "column",
+            overflowX: "hidden",
+            backgroundColor: theme.surface.lvl0,
+            color: theme.colors.text.primary,
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
+            "&::selection": {
+              backgroundColor: "light-dark(#bce0ff, #1747b6)",
+              color: "light-dark(#000000, #ffffff)",
+            },
+          })}
+        >
           <DocumentSync
             forceTheme={forceTheme}
             stylesheets={Array.from(stylesheetNames)}
@@ -288,18 +304,3 @@ export function Document(handle: Handle<DocumentProps>) {
 
 // Shared document chrome belongs to the component rather than a global
 // application stylesheet.
-let documentBodyStyle = css({
-  display: "flex",
-  minHeight: "100vh",
-  width: "100%",
-  flexDirection: "column",
-  overflowX: "hidden",
-  backgroundColor: theme.surface.lvl0,
-  color: theme.colors.text.primary,
-  WebkitFontSmoothing: "antialiased",
-  MozOsxFontSmoothing: "grayscale",
-  "&::selection": {
-    backgroundColor: "light-dark(#bce0ff, #1747b6)",
-    color: "light-dark(#000000, #ffffff)",
-  },
-});

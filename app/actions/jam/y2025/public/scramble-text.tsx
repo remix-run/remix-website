@@ -188,9 +188,23 @@ export let JamScrambleText = clientEntry(
     return () => {
       return (
         <>
-          <span mix={screenReaderOnlyStyle}>{text}</span>
           <span
-            mix={handle.props.nowrap ? nowrapStyle : undefined}
+            mix={css({
+              position: "absolute",
+              width: "1px",
+              height: "1px",
+              margin: "-1px",
+              overflow: "hidden",
+              clip: "rect(0, 0, 0, 0)",
+              whiteSpace: "nowrap",
+            })}
+          >
+            {text}
+          </span>
+          <span
+            mix={
+              handle.props.nowrap ? css({ whiteSpace: "nowrap" }) : undefined
+            }
             aria-hidden="true"
           >
             {textChars.map((char, index) => {
@@ -208,9 +222,9 @@ export let JamScrambleText = clientEntry(
                 <span
                   key={index}
                   mix={[
-                    visible ? visibleCharacterStyle : hiddenCharacterStyle,
+                    visible ? css({ opacity: 1 }) : css({ opacity: 0 }),
                     resolved
-                      ? resolvedCharacterStyle
+                      ? css({ color: "#ffffff" })
                       : colorStyles[handle.props.color ?? "blue"],
                   ]}
                 >
@@ -224,21 +238,6 @@ export let JamScrambleText = clientEntry(
     };
   },
 );
-
-let screenReaderOnlyStyle = css({
-  position: "absolute",
-  width: "1px",
-  height: "1px",
-  margin: "-1px",
-  overflow: "hidden",
-  clip: "rect(0, 0, 0, 0)",
-  whiteSpace: "nowrap",
-});
-
-let nowrapStyle = css({ whiteSpace: "nowrap" });
-let visibleCharacterStyle = css({ opacity: 1 });
-let hiddenCharacterStyle = css({ opacity: 0 });
-let resolvedCharacterStyle = css({ color: "#ffffff" });
 
 let colorStyles = {
   blue: css({ color: theme.colors.brand.blue }),

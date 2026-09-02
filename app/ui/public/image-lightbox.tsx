@@ -158,8 +158,17 @@ export let ImageLightbox = clientEntry(
           tabIndex={-1}
           hidden={!isOpen}
           mix={[
-            lightboxStyle,
-            ...(isOpen ? [lightboxOpenStyle] : []),
+            css({
+              position: "fixed",
+              inset: 0,
+              zIndex: 50,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgb(0 0 0 / 0.9)",
+              padding: "16px",
+              backdropFilter: "blur(4px)",
+            }),
+            ...(isOpen ? [css({ display: "flex" })] : []),
             ref((node) => {
               lightboxEl = node;
             }),
@@ -167,12 +176,42 @@ export let ImageLightbox = clientEntry(
             on("click", onBackdropClick),
           ]}
         >
-          <img src={src} alt={alt} mix={lightboxImageStyle} draggable={false} />
+          <img
+            src={src}
+            alt={alt}
+            mix={css({
+              maxWidth: "min(100%, 1600px)",
+              maxHeight: "100%",
+              userSelect: "none",
+              objectFit: "contain",
+            })}
+            draggable={false}
+          />
           <button
             type="button"
             aria-label="Close image preview"
             mix={[
-              lightboxCloseStyle,
+              css({
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                display: "grid",
+                width: "44px",
+                height: "44px",
+                placeItems: "center",
+                borderRadius: "9999px",
+                backgroundColor: "rgb(0 0 0 / 0.6)",
+                color: "#ffffff",
+                transition: "background-color 150ms ease",
+                "&:hover": { backgroundColor: "rgb(0 0 0 / 0.8)" },
+                "&:focus": {
+                  outline: "2px solid #ffffff",
+                  outlineOffset: "2px",
+                },
+                "@media (prefers-reduced-motion: reduce)": {
+                  transition: "none",
+                },
+              }),
               ref((node) => {
                 closeButtonEl = node;
               }),
@@ -181,7 +220,7 @@ export let ImageLightbox = clientEntry(
           >
             <svg
               viewBox="0 0 24 24"
-              mix={lightboxCloseIconStyle}
+              mix={css({ width: "24px", height: "24px" })}
               aria-hidden="true"
               fill="none"
               stroke="currentColor"
@@ -199,42 +238,3 @@ export let ImageLightbox = clientEntry(
     };
   },
 );
-
-let lightboxStyle = css({
-  position: "fixed",
-  inset: 0,
-  zIndex: 50,
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "rgb(0 0 0 / 0.9)",
-  padding: "16px",
-  backdropFilter: "blur(4px)",
-});
-
-let lightboxOpenStyle = css({ display: "flex" });
-
-let lightboxImageStyle = css({
-  maxWidth: "min(100%, 1600px)",
-  maxHeight: "100%",
-  userSelect: "none",
-  objectFit: "contain",
-});
-
-let lightboxCloseStyle = css({
-  position: "absolute",
-  top: "16px",
-  right: "16px",
-  display: "grid",
-  width: "44px",
-  height: "44px",
-  placeItems: "center",
-  borderRadius: "9999px",
-  backgroundColor: "rgb(0 0 0 / 0.6)",
-  color: "#ffffff",
-  transition: "background-color 150ms ease",
-  "&:hover": { backgroundColor: "rgb(0 0 0 / 0.8)" },
-  "&:focus": { outline: "2px solid #ffffff", outlineOffset: "2px" },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let lightboxCloseIconStyle = css({ width: "24px", height: "24px" });

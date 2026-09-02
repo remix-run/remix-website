@@ -94,17 +94,41 @@ const sectionLabelText: Record<EventStatus, string> = {
 function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
   return () => (
     <>
-      <div mix={keepsakesLayerStyle}>
+      <div mix={css({ position: "relative", zIndex: 30 })}>
         <JamKeepsakes />
       </div>
 
-      <main id="main-content" mix={jamHomeMainStyle} tabIndex={-1}>
+      <main
+        id="main-content"
+        mix={css({
+          display: "flex",
+          maxWidth: "800px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          paddingBlock: "80px",
+          paddingTop: "170px",
+          textAlign: "center",
+          [breakpointMedia.md]: { paddingTop: "200px" },
+          [breakpointMedia.lg]: { paddingTop: "210px" },
+        })}
+        tabIndex={-1}
+      >
         <SectionLabel>
           {sectionLabelText[handle.props.eventStatus]}
         </SectionLabel>
         <Title>
           <ScrambleText text="Remix Jam" delay={100} color="blue" />
-          <span mix={titleRowStyle}>
+          <span
+            mix={css({
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "12px",
+              [breakpointMedia.md]: { gap: "20px" },
+            })}
+          >
             <ScrambleText text="Toronto" delay={400} color="green" />
             <JamFadeInBadge
               delay={1200}
@@ -115,10 +139,23 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
           </span>
         </Title>
 
-        <div mix={videoLayerStyle}>
-          <div mix={videoFrameStyle}>
+        <div mix={css({ zIndex: 10, width: "100%" })}>
+          <div
+            mix={css({
+              position: "relative",
+              width: "100%",
+              overflow: "hidden",
+              borderRadius: "8px",
+              aspectRatio: "16 / 9",
+            })}
+          >
             <iframe
-              mix={videoStyle}
+              mix={css({
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+              })}
               src="https://www.youtube.com/embed/xt_iEOn2a6Y?si=paROll6GT5taxAdl"
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -131,22 +168,50 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
         {handle.props.eventStatus === "before" ? (
           <>
             <SectionLabel>Location</SectionLabel>
-            <div mix={locationStyle}>
+            <div
+              mix={css({
+                zIndex: 10,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "24px",
+                [breakpointMedia.md]: { gap: "32px" },
+              })}
+            >
               <AddressMain />
             </div>
           </>
         ) : null}
       </main>
 
-      <div mix={newsletterSpacerStyle} />
+      <div mix={css({ width: "100%", height: "100px" })} />
 
-      <aside id="newsletter" mix={newsletterSectionStyle}>
-        <h2 mix={newsletterHeadingStyle}>
+      <aside
+        id="newsletter"
+        mix={css({
+          position: "relative",
+          zIndex: 10,
+          maxWidth: "672px",
+          marginInline: "auto",
+          fontSize: "1rem",
+          textAlign: "center",
+        })}
+      >
+        <h2
+          mix={css({
+            color: "#ffffff",
+            fontSize: "1.5rem",
+            fontWeight: theme.fontWeight.bold,
+            lineHeight: 1.333,
+            letterSpacing: "-0.025em",
+            [breakpointMedia.md]: { fontSize: "1.875rem", lineHeight: 1.2 },
+          })}
+        >
           Sign up for our Newsletter for the latest Remix Jam news and updates
         </h2>
         <NewsletterSubscribeFrameHost
           src={routes.jam.y2025.newsletterSignup.href()}
-          mix={jamNewsletterFrameStyle}
+          mix={css({ marginTop: "48px" })}
         />
       </aside>
     </>
@@ -159,87 +224,17 @@ function getBadgeText(eventStatus: EventStatus): RemixNode {
   return (
     <>
       Rewind
-      <Icon name="fast-forward" mix={rewindIconStyle} aria-hidden="true" />
+      <Icon
+        name="fast-forward"
+        mix={css({
+          width: "24px",
+          height: "24px",
+          transform: "rotate(180deg)",
+          [breakpointMedia.md]: { width: "48px", height: "48px" },
+          [breakpointMedia.lg]: { width: "56px", height: "56px" },
+        })}
+        aria-hidden="true"
+      />
     </>
   );
 }
-
-let keepsakesLayerStyle = css({ position: "relative", zIndex: 30 });
-
-let jamHomeMainStyle = css({
-  display: "flex",
-  maxWidth: "800px",
-  marginInline: "auto",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "48px",
-  paddingBlock: "80px",
-  paddingTop: "170px",
-  textAlign: "center",
-  [breakpointMedia.md]: { paddingTop: "200px" },
-  [breakpointMedia.lg]: { paddingTop: "210px" },
-});
-
-let titleRowStyle = css({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "12px",
-  [breakpointMedia.md]: { gap: "20px" },
-});
-
-let rewindIconStyle = css({
-  width: "24px",
-  height: "24px",
-  transform: "rotate(180deg)",
-  [breakpointMedia.md]: { width: "48px", height: "48px" },
-  [breakpointMedia.lg]: { width: "56px", height: "56px" },
-});
-
-let videoLayerStyle = css({ zIndex: 10, width: "100%" });
-
-let videoFrameStyle = css({
-  position: "relative",
-  width: "100%",
-  overflow: "hidden",
-  borderRadius: "8px",
-  aspectRatio: "16 / 9",
-});
-
-let videoStyle = css({
-  position: "absolute",
-  inset: 0,
-  width: "100%",
-  height: "100%",
-});
-
-let locationStyle = css({
-  zIndex: 10,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "24px",
-  [breakpointMedia.md]: { gap: "32px" },
-});
-
-let newsletterSpacerStyle = css({ width: "100%", height: "100px" });
-
-let newsletterSectionStyle = css({
-  position: "relative",
-  zIndex: 10,
-  maxWidth: "672px",
-  marginInline: "auto",
-  fontSize: "1rem",
-  textAlign: "center",
-});
-
-let newsletterHeadingStyle = css({
-  color: "#ffffff",
-  fontSize: "1.5rem",
-  fontWeight: theme.fontWeight.bold,
-  lineHeight: 1.333,
-  letterSpacing: "-0.025em",
-  [breakpointMedia.md]: { fontSize: "1.875rem", lineHeight: 1.2 },
-});
-
-let jamNewsletterFrameStyle = css({ marginTop: "48px" });

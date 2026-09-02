@@ -31,10 +31,46 @@ const LANE_CELL_CONFIG: Record<string, Record<number, CellConfig>> = {
 
 export function TimelineDiagramMobile() {
   return () => (
-    <div mix={mobileDiagramStyle}>
-      <div mix={[laneBackgroundStyle, reactRouterLaneBackgroundStyle]} />
-      <div mix={[laneBackgroundStyle, remixLaneBackgroundStyle]} />
-      <div mix={[laneBackgroundStyle, remixThreeLaneBackgroundStyle]} />
+    <div
+      mix={css({
+        position: "relative",
+        display: "grid",
+        width: "380px",
+        marginInline: "auto",
+        gridTemplateColumns: "auto repeat(3, 1fr)",
+        gridTemplateRows: `repeat(${YEARS.length + 1}, ${ROW_HEIGHT}px)`,
+      })}
+    >
+      <div
+        mix={[
+          laneBackgroundStyle,
+          css({
+            gridColumn: 2,
+            background:
+              "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-red) 70%, var(--rmx-neutral-950) 100%)",
+          }),
+        ]}
+      />
+      <div
+        mix={[
+          laneBackgroundStyle,
+          css({
+            gridColumn: 3,
+            background:
+              "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-blue) 70%, var(--rmx-neutral-950) 100%)",
+          }),
+        ]}
+      />
+      <div
+        mix={[
+          laneBackgroundStyle,
+          css({
+            gridColumn: 4,
+            background:
+              "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-green) 70%, var(--rmx-neutral-950) 100%)",
+          }),
+        ]}
+      />
 
       <TrackSegments />
 
@@ -82,31 +118,93 @@ function TrackSegments() {
 
     return (
       <>
-        <div mix={[verticalTrackStyle, reactRouterTrackStyle]} />
         <div
-          mix={[verticalTrackStyle, remixMergeStartStyle]}
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 2,
+              gridRow: "1 / -1",
+              borderRadius: "0 0 24px 24px",
+              background:
+                "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-highlight-red) 30%)",
+            }),
+          ]}
+        />
+        <div
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 2,
+              gridRow: "8 / 10",
+              borderRadius: "24px 24px 0 24px",
+              background: "var(--rmx-highlight-blue)",
+            }),
+          ]}
           style={{ marginBottom: verticalSegmentMargin }}
         />
         <div
-          mix={remixMergeAcrossStyle}
+          mix={css({
+            alignSelf: "center",
+            height: "48px",
+            marginLeft: "48px",
+            gridColumn: "2 / 4",
+            gridRow: 9,
+            borderRadius: "0 24px 0 24px",
+            background: "var(--rmx-highlight-blue)",
+          })}
           style={{ marginRight: horizontalSegmentInset }}
         />
         <div
-          mix={[verticalTrackStyle, remixTrackStyle]}
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 3,
+              gridRow: "9 / 12",
+              borderRadius: "0 24px 24px 0",
+              background: "var(--rmx-highlight-blue)",
+            }),
+          ]}
           style={{
             marginTop: verticalSegmentMargin,
             marginBottom: verticalSegmentMargin,
           }}
         />
         <div
-          mix={remixReturnAcrossStyle}
+          mix={css({
+            alignSelf: "center",
+            height: "48px",
+            marginRight: "48px",
+            gridColumn: "2 / 4",
+            gridRow: 11,
+            borderRadius: "24px 0 24px 0",
+            background: "var(--rmx-highlight-blue)",
+          })}
           style={{ marginLeft: horizontalSegmentInset }}
         />
         <div
-          mix={[verticalTrackStyle, reactRouterReturnStyle]}
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 2,
+              gridRow: "11 / 13",
+              borderRadius: "48px 24px 0 0",
+              background:
+                "linear-gradient(180deg, var(--rmx-highlight-blue) 46.82%, var(--rmx-highlight-red) 100%)",
+            }),
+          ]}
           style={{ marginTop: verticalSegmentMargin }}
         />
-        <div mix={[verticalTrackStyle, remixThreeTrackStyle]} />
+        <div
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 4,
+              gridRow: "13 / 15",
+              borderRadius: "24px",
+              background: "var(--rmx-highlight-green)",
+            }),
+          ]}
+        />
       </>
     );
   };
@@ -116,7 +214,21 @@ function LaneHeader(
   handle: Handle<{ children: RemixNode; style?: StyleProps }>,
 ) {
   return () => (
-    <div mix={laneHeaderStyle} style={handle.props.style}>
+    <div
+      mix={css({
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "var(--rmx-neutral-100)",
+        fontSize: "0.75rem",
+        fontWeight: theme.fontWeight.extrabold,
+        lineHeight: 1.6,
+        letterSpacing: "0.6px",
+        textTransform: "uppercase",
+        whiteSpace: "nowrap",
+      })}
+      style={handle.props.style}
+    >
       {handle.props.children}
     </div>
   );
@@ -134,7 +246,16 @@ function YearLabel(
 
     return (
       <div
-        mix={[captionStyle, yearLabelStyle]}
+        mix={[
+          captionStyle,
+          css({
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            paddingInline: "24px",
+            color: "var(--rmx-text-tertiary)",
+          }),
+        ]}
         style={{
           opacity,
           ...(typeof handle.props.style === "object" && handle.props.style
@@ -159,7 +280,15 @@ function LaneCell(
     if (label) {
       return (
         <div
-          mix={[captionStyle, laneCellLabelStyle]}
+          mix={[
+            captionStyle,
+            css({
+              alignSelf: "center",
+              justifySelf: "center",
+              color: "var(--rmx-neutral-100)",
+              fontWeight: theme.fontWeight.bold,
+            }),
+          ]}
           style={{
             ...(typeof handle.props.style === "object" && handle.props.style
               ? handle.props.style
@@ -175,135 +304,25 @@ function LaneCell(
     }
 
     return (
-      <div mix={laneCellStyle} style={handle.props.style}>
-        <div mix={laneCellDotStyle} style={configStyle} />
+      <div
+        mix={css({ alignSelf: "center", justifySelf: "center" })}
+        style={handle.props.style}
+      >
+        <div
+          mix={css({
+            width: "9px",
+            height: "9px",
+            border: "1px solid var(--rmx-neutral-100)",
+            borderRadius: "9999px",
+            opacity: 0.4,
+          })}
+          style={configStyle}
+        />
       </div>
     );
   };
 }
 
-let mobileDiagramStyle = css({
-  position: "relative",
-  display: "grid",
-  width: "380px",
-  marginInline: "auto",
-  gridTemplateColumns: "auto repeat(3, 1fr)",
-  gridTemplateRows: `repeat(${YEARS.length + 1}, ${ROW_HEIGHT}px)`,
-});
-
 let laneBackgroundStyle = css({ gridRow: "1 / -1" });
 
-let reactRouterLaneBackgroundStyle = css({
-  gridColumn: 2,
-  background:
-    "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-red) 70%, var(--rmx-neutral-950) 100%)",
-});
-
-let remixLaneBackgroundStyle = css({
-  gridColumn: 3,
-  background:
-    "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-blue) 70%, var(--rmx-neutral-950) 100%)",
-});
-
-let remixThreeLaneBackgroundStyle = css({
-  gridColumn: 4,
-  background:
-    "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-green) 70%, var(--rmx-neutral-950) 100%)",
-});
-
 let verticalTrackStyle = css({ width: "48px", marginInline: "auto" });
-
-let reactRouterTrackStyle = css({
-  gridColumn: 2,
-  gridRow: "1 / -1",
-  borderRadius: "0 0 24px 24px",
-  background:
-    "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-highlight-red) 30%)",
-});
-
-let remixMergeStartStyle = css({
-  gridColumn: 2,
-  gridRow: "8 / 10",
-  borderRadius: "24px 24px 0 24px",
-  background: "var(--rmx-highlight-blue)",
-});
-
-let remixMergeAcrossStyle = css({
-  alignSelf: "center",
-  height: "48px",
-  marginLeft: "48px",
-  gridColumn: "2 / 4",
-  gridRow: 9,
-  borderRadius: "0 24px 0 24px",
-  background: "var(--rmx-highlight-blue)",
-});
-
-let remixTrackStyle = css({
-  gridColumn: 3,
-  gridRow: "9 / 12",
-  borderRadius: "0 24px 24px 0",
-  background: "var(--rmx-highlight-blue)",
-});
-
-let remixReturnAcrossStyle = css({
-  alignSelf: "center",
-  height: "48px",
-  marginRight: "48px",
-  gridColumn: "2 / 4",
-  gridRow: 11,
-  borderRadius: "24px 0 24px 0",
-  background: "var(--rmx-highlight-blue)",
-});
-
-let reactRouterReturnStyle = css({
-  gridColumn: 2,
-  gridRow: "11 / 13",
-  borderRadius: "48px 24px 0 0",
-  background:
-    "linear-gradient(180deg, var(--rmx-highlight-blue) 46.82%, var(--rmx-highlight-red) 100%)",
-});
-
-let remixThreeTrackStyle = css({
-  gridColumn: 4,
-  gridRow: "13 / 15",
-  borderRadius: "24px",
-  background: "var(--rmx-highlight-green)",
-});
-
-let laneHeaderStyle = css({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "var(--rmx-neutral-100)",
-  fontSize: "0.75rem",
-  fontWeight: theme.fontWeight.extrabold,
-  lineHeight: 1.6,
-  letterSpacing: "0.6px",
-  textTransform: "uppercase",
-  whiteSpace: "nowrap",
-});
-
-let yearLabelStyle = css({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  paddingInline: "24px",
-  color: "var(--rmx-text-tertiary)",
-});
-
-let laneCellLabelStyle = css({
-  alignSelf: "center",
-  justifySelf: "center",
-  color: "var(--rmx-neutral-100)",
-  fontWeight: theme.fontWeight.bold,
-});
-
-let laneCellStyle = css({ alignSelf: "center", justifySelf: "center" });
-
-let laneCellDotStyle = css({
-  width: "9px",
-  height: "9px",
-  border: "1px solid var(--rmx-neutral-100)",
-  borderRadius: "9999px",
-  opacity: 0.4,
-});

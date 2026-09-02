@@ -50,9 +50,36 @@ export let JamFadeInBadge = clientEntry(
       return (
         <span
           mix={[
-            badgeStyle,
-            handle.props.live ? liveBadgeStyle : outlinedBadgeStyle,
-            isVisible ? visibleBadgeStyle : hiddenBadgeStyle,
+            css({
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              borderRadius: theme.radius.full,
+              padding: "12px 16px",
+              fontSize: "1.25rem",
+              lineHeight: 1,
+              transition: "opacity 500ms",
+              [breakpointMedia.md]: {
+                gap: "16px",
+                padding: "20px 32px",
+                fontSize: "2.25rem",
+              },
+              "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+            }),
+            handle.props.live
+              ? css({
+                  backgroundColor: theme.colors.brand.red,
+                  color: "#ffffff",
+                })
+              : css({
+                  color: "#ffffff",
+                  boxShadow: "inset 0 0 0 4px #ffffff",
+                  [breakpointMedia.md]: {
+                    boxShadow: "inset 0 0 0 6px #ffffff",
+                  },
+                }),
+            isVisible ? css({ opacity: 1 }) : css({ opacity: 0 }),
           ]}
         >
           {handle.props.children}
@@ -61,35 +88,3 @@ export let JamFadeInBadge = clientEntry(
     };
   },
 );
-
-let badgeStyle = css({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "8px",
-  borderRadius: theme.radius.full,
-  padding: "12px 16px",
-  fontSize: "1.25rem",
-  lineHeight: 1,
-  transition: "opacity 500ms",
-  [breakpointMedia.md]: {
-    gap: "16px",
-    padding: "20px 32px",
-    fontSize: "2.25rem",
-  },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let liveBadgeStyle = css({
-  backgroundColor: theme.colors.brand.red,
-  color: "#ffffff",
-});
-
-let outlinedBadgeStyle = css({
-  color: "#ffffff",
-  boxShadow: "inset 0 0 0 4px #ffffff",
-  [breakpointMedia.md]: { boxShadow: "inset 0 0 0 6px #ffffff" },
-});
-
-let visibleBadgeStyle = css({ opacity: 1 });
-let hiddenBadgeStyle = css({ opacity: 0 });

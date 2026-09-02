@@ -27,8 +27,28 @@ const LINKS: Array<{
 
 export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
   return () => (
-    <header mix={headerStyle}>
-      <div mix={headerInnerStyle}>
+    <header
+      mix={css({
+        position: "relative",
+        zIndex: 50,
+        height: "64px",
+        paddingLeft: "24px",
+        paddingRight: "16px",
+        fontFamily: theme.fontFamily.system,
+        "@media (min-width: 640px)": { paddingRight: "24px" },
+        "@media (min-width: 900px)": { paddingRight: "30px" },
+      })}
+    >
+      <div
+        mix={css({
+          display: "flex",
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "32px",
+        })}
+      >
         <WordmarkLink
           href={routes.home.href()}
           brandHref={routes.brand.href()}
@@ -36,7 +56,28 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
           height={16}
         />
 
-        <nav mix={desktopNavStyle} aria-label="Main">
+        <nav
+          mix={css({
+            display: "none",
+            height: "100%",
+            alignItems: "center",
+            gap: "20px",
+            "& [data-header-link]": {
+              color: theme.colors.text.marketingPrimary,
+              fontSize: "1rem",
+              fontWeight: theme.fontWeight.normal,
+              opacity: 0.8,
+              whiteSpace: "nowrap",
+            },
+            "& [data-header-link]:hover, & [data-header-link]:focus-visible, & [data-header-link][aria-current]":
+              {
+                color: theme.colors.action.current,
+                opacity: 1,
+              },
+            "@media (min-width: 900px)": { display: "flex", gap: "24px" },
+          })}
+          aria-label="Main"
+        >
           {LINKS.map((link) => (
             <HeaderLink
               key={link.to}
@@ -51,7 +92,11 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
           ))}
         </nav>
 
-        <div mix={mobileNavStyle}>
+        <div
+          mix={css({
+            "@media (min-width: 900px)": { display: "none" },
+          })}
+        >
           <MobileMenu>
             {LINKS.map((link) => (
               <HeaderLink
@@ -89,47 +134,3 @@ function HeaderLink(
     </a>
   );
 }
-
-let headerStyle = css({
-  position: "relative",
-  zIndex: 50,
-  height: "64px",
-  paddingLeft: "24px",
-  paddingRight: "16px",
-  fontFamily: theme.fontFamily.system,
-  "@media (min-width: 640px)": { paddingRight: "24px" },
-  "@media (min-width: 900px)": { paddingRight: "30px" },
-});
-
-let headerInnerStyle = css({
-  display: "flex",
-  width: "100%",
-  height: "100%",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: "32px",
-});
-
-let desktopNavStyle = css({
-  display: "none",
-  height: "100%",
-  alignItems: "center",
-  gap: "20px",
-  "& [data-header-link]": {
-    color: theme.colors.text.marketingPrimary,
-    fontSize: "1rem",
-    fontWeight: theme.fontWeight.normal,
-    opacity: 0.8,
-    whiteSpace: "nowrap",
-  },
-  "& [data-header-link]:hover, & [data-header-link]:focus-visible, & [data-header-link][aria-current]":
-    {
-      color: theme.colors.action.current,
-      opacity: 1,
-    },
-  "@media (min-width: 900px)": { display: "flex", gap: "24px" },
-});
-
-let mobileNavStyle = css({
-  "@media (min-width: 900px)": { display: "none" },
-});

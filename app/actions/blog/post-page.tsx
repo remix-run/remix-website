@@ -63,7 +63,15 @@ export function BlogPostPage(
       ]}
     >
       <Header currentSection="blog" />
-      <main id="main-content" mix={blogPostMainStyle} tabIndex={-1}>
+      <main
+        id="main-content"
+        mix={css({
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+        })}
+        tabIndex={-1}
+      >
         <BlogPostContent
           post={handle.props.post}
           images={handle.props.images}
@@ -84,21 +92,56 @@ function BlogPostContent(
   return () => (
     <>
       {handle.props.post.draft ? (
-        <div mix={blogDraftStyle}>
+        <div
+          mix={css({
+            maxWidth: "768px",
+            marginInline: "auto",
+            marginBlockEnd: "32px",
+            borderRadius: "2px",
+            backgroundColor: "light-dark(#bd1825, #fc6d78)",
+            padding: "12px 20px",
+            color: "light-dark(#e3e3e3, #434343)",
+            textAlign: "center",
+          })}
+        >
           🚨 This is a draft, please do not share this page until it&apos;s
           officially published 🚨
         </div>
       ) : null}
-      <div mix={blogPostShellStyle}>
-        <div mix={blogPostContentStyle}>
+      <div
+        mix={css({
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+        })}
+      >
+        <div mix={css({ flex: 1 })}>
           <div>
-            <div mix={blogPostHeroStyle}>
-              <div mix={blogPostHeroImageFrameStyle}>
+            <div
+              mix={css({
+                position: "relative",
+                height: "280px",
+                backgroundColor: "#121212",
+                [breakpointMedia.md]: {
+                  height: "400px",
+                  maxWidth: "768px",
+                  marginInline: "auto",
+                  borderRadius: "12px",
+                },
+                [breakpointMedia.xl]: { height: "480px" },
+              })}
+            >
+              <div
+                mix={css({
+                  position: "absolute",
+                  inset: 0,
+                })}
+              >
                 <img
                   mix={
                     handle.props.post.imageDisableOverlay
                       ? blogPostHeroImageStyle
-                      : [blogPostHeroImageStyle, blogPostHeroImageOverlayStyle]
+                      : [blogPostHeroImageStyle, css({ opacity: 0.4 })]
                   }
                   src={handle.props.images.hero.src}
                   srcSet={handle.props.images.hero.srcSet}
@@ -110,9 +153,34 @@ function BlogPostContent(
                   fetchpriority="high"
                 />
               </div>
-              <div mix={blogPostHeroContentStyle}>
-                <div mix={blogPostHeroHeadingAreaStyle}>
-                  <div mix={blogPostHeroHeadingStyle}>
+              <div
+                mix={css({
+                  ...blogPostContainerStyle,
+                  position: "relative",
+                  zIndex: 10,
+                  display: "flex",
+                  height: "100%",
+                  maxWidth: "100%",
+                  flexDirection: "column",
+                  paddingBlockStart: "24px",
+                  [breakpointMedia.md]: {
+                    paddingInline: "32px",
+                    paddingBlockStart: "40px",
+                  },
+                  [breakpointMedia.lg]: {
+                    maxWidth: "896px",
+                    paddingInline: "40px",
+                  },
+                })}
+              >
+                <div mix={css({ flex: 1 })}>
+                  <div
+                    mix={css({
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "12px",
+                    })}
+                  >
                     <div mix={[pageMetaStyle, blogPostOnImageStyle]}>
                       {handle.props.post.dateDisplay}
                     </div>
@@ -130,15 +198,38 @@ function BlogPostContent(
                       {handle.props.post.title}
                     </h1>
                   </div>
-                  <div mix={blogPostTitleSpacerStyle} />
+                  <div mix={css({ height: "8px" })} />
                 </div>
-                <div mix={blogPostAuthorsStyle}>
+                <div
+                  mix={css({
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                    paddingBlockEnd: "16px",
+                    [breakpointMedia.md]: { paddingBlockEnd: "40px" },
+                  })}
+                >
                   {handle.props.post.authors.map((author) => {
                     let image = handle.props.images.authors[author.avatar];
                     return (
-                      <div key={author.name} mix={blogPostAuthorStyle}>
+                      <div
+                        key={author.name}
+                        mix={css({
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "24px",
+                        })}
+                      >
                         <img
-                          mix={blogPostAuthorImageStyle}
+                          mix={css({
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: theme.radius.full,
+                            [breakpointMedia.md]: {
+                              width: "56px",
+                              height: "56px",
+                            },
+                          })}
                           src={image?.src ?? author.avatar}
                           srcSet={image?.srcSet}
                           sizes="(min-width: 768px) 56px, 40px"
@@ -147,7 +238,13 @@ function BlogPostContent(
                           alt=""
                           decoding="async"
                         />
-                        <div mix={blogPostAuthorCopyStyle}>
+                        <div
+                          mix={css({
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "8px",
+                          })}
+                        >
                           <div
                             mix={[
                               pageTitleStyle,
@@ -167,8 +264,22 @@ function BlogPostContent(
                 </div>
               </div>
             </div>
-            <div mix={blogPostHeroSpacerStyle} />
-            <div mix={blogPostProseStyle}>
+            <div
+              mix={css({
+                height: "24px",
+                [breakpointMedia.sm]: { height: "48px" },
+              })}
+            />
+            <div
+              mix={css({
+                ...blogPostContainerStyle,
+                maxWidth: "100%",
+                [breakpointMedia.lg]: {
+                  maxWidth: "768px",
+                  paddingInline: "40px",
+                },
+              })}
+            >
               <div class="md-prose" innerHTML={handle.props.post.html} />
               <hr />
             </div>
@@ -176,7 +287,13 @@ function BlogPostContent(
         </div>
       </div>
 
-      <div mix={blogPostNewsletterStyle}>
+      <div
+        mix={css({
+          ...blogPostContainerStyle,
+          maxWidth: "100%",
+          marginBlock: "96px 48px",
+        })}
+      >
         <NewsletterSignupCta />
       </div>
     </>
@@ -192,49 +309,6 @@ let blogPostContainerStyle = {
   [breakpointMedia.lg]: { paddingInline: "40px" },
 } as const;
 
-let blogPostMainStyle = css({
-  display: "flex",
-  flex: 1,
-  flexDirection: "column",
-});
-
-let blogDraftStyle = css({
-  maxWidth: "768px",
-  marginInline: "auto",
-  marginBlockEnd: "32px",
-  borderRadius: "2px",
-  backgroundColor: "light-dark(#bd1825, #fc6d78)",
-  padding: "12px 20px",
-  color: "light-dark(#e3e3e3, #434343)",
-  textAlign: "center",
-});
-
-let blogPostShellStyle = css({
-  display: "flex",
-  flex: 1,
-  flexDirection: "column",
-});
-
-let blogPostContentStyle = css({ flex: 1 });
-
-let blogPostHeroStyle = css({
-  position: "relative",
-  height: "280px",
-  backgroundColor: "#121212",
-  [breakpointMedia.md]: {
-    height: "400px",
-    maxWidth: "768px",
-    marginInline: "auto",
-    borderRadius: "12px",
-  },
-  [breakpointMedia.xl]: { height: "480px" },
-});
-
-let blogPostHeroImageFrameStyle = css({
-  position: "absolute",
-  inset: 0,
-});
-
 let blogPostHeroImageStyle = css({
   width: "100%",
   height: "100%",
@@ -243,73 +317,4 @@ let blogPostHeroImageStyle = css({
   [breakpointMedia.md]: { borderRadius: "12px" },
 });
 
-let blogPostHeroImageOverlayStyle = css({ opacity: 0.4 });
-
-let blogPostHeroContentStyle = css({
-  ...blogPostContainerStyle,
-  position: "relative",
-  zIndex: 10,
-  display: "flex",
-  height: "100%",
-  maxWidth: "100%",
-  flexDirection: "column",
-  paddingBlockStart: "24px",
-  [breakpointMedia.md]: { paddingInline: "32px", paddingBlockStart: "40px" },
-  [breakpointMedia.lg]: { maxWidth: "896px", paddingInline: "40px" },
-});
-
-let blogPostHeroHeadingAreaStyle = css({ flex: 1 });
-
-let blogPostHeroHeadingStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  gap: "12px",
-});
-
 let blogPostOnImageStyle = css({ color: "#ffffff" });
-
-let blogPostTitleSpacerStyle = css({ height: "8px" });
-
-let blogPostAuthorsStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  gap: "4px",
-  paddingBlockEnd: "16px",
-  [breakpointMedia.md]: { paddingBlockEnd: "40px" },
-});
-
-let blogPostAuthorStyle = css({
-  display: "flex",
-  alignItems: "center",
-  gap: "24px",
-});
-
-let blogPostAuthorImageStyle = css({
-  width: "40px",
-  height: "40px",
-  borderRadius: theme.radius.full,
-  [breakpointMedia.md]: { width: "56px", height: "56px" },
-});
-
-let blogPostAuthorCopyStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  gap: "8px",
-});
-
-let blogPostHeroSpacerStyle = css({
-  height: "24px",
-  [breakpointMedia.sm]: { height: "48px" },
-});
-
-let blogPostProseStyle = css({
-  ...blogPostContainerStyle,
-  maxWidth: "100%",
-  [breakpointMedia.lg]: { maxWidth: "768px", paddingInline: "40px" },
-});
-
-let blogPostNewsletterStyle = css({
-  ...blogPostContainerStyle,
-  maxWidth: "100%",
-  marginBlock: "96px 48px",
-});

@@ -46,7 +46,19 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
       <Header currentSection="newsletter" />
       <main id="main-content" mix={newsletterMainStyle} tabIndex={-1}>
         <div
-          mix={[pageBodyStyle, marketingPageStyle, newsletterIndexContentStyle]}
+          mix={[
+            pageBodyStyle,
+            marketingPageStyle,
+            css({
+              ...newsletterContainerStyle,
+              maxWidth: "100%",
+              marginBlockEnd: "96px",
+              [breakpointMedia.lg]: {
+                maxWidth: "896px",
+                paddingInline: "40px",
+              },
+            }),
+          ]}
         >
           <NewsletterSignupSection
             subscriptionStatus={handle.props.subscriptionStatus}
@@ -89,12 +101,19 @@ export function NewsletterIssuePage(
     >
       <Header currentSection="newsletter" />
       <main id="main-content" mix={newsletterMainStyle} tabIndex={-1}>
-        <div mix={newsletterIssueContentStyle}>
-          <h1 mix={[pageTitleStyle, newsletterIssueTitleStyle]}>
+        <div
+          mix={css({
+            ...newsletterContainerStyle,
+            maxWidth: "100%",
+            marginBlock: "64px 96px",
+            [breakpointMedia.md]: { maxWidth: "768px", paddingInline: "32px" },
+          })}
+        >
+          <h1 mix={[pageTitleStyle, css({ marginBlockEnd: "32px" })]}>
             {issue.title}
           </h1>
           <div class="md-prose" innerHTML={handle.props.html} />
-          <div mix={newsletterIssueSignupStyle}>
+          <div mix={css({ marginBlockStart: "112px" })}>
             <NewsletterSignupCta />
           </div>
         </div>
@@ -117,12 +136,22 @@ function NewsletterSignupSection(
       <h1 id="newsletter-heading" mix={pageTitleStyle}>
         Newsletter Archive
       </h1>
-      <p mix={[pageBodyStyle, newsletterIntroStyle]} id="newsletter-text">
+      <p
+        mix={[
+          pageBodyStyle,
+          css({
+            maxWidth: "672px",
+            marginBlockStart: "64px",
+            color: theme.colors.text.marketingSecondary,
+          }),
+        ]}
+        id="newsletter-text"
+      >
         Stay up-to-date with news, announcements, and releases for our projects
         like Remix and React Router. We respect your privacy, unsubscribe at any
         time.
       </p>
-      <div mix={newsletterSubscribeStyle}>
+      <div mix={css({ marginBlockStart: "36px" })}>
         <NewsletterSubscribe status={handle.props.subscriptionStatus} />
       </div>
     </section>
@@ -136,7 +165,10 @@ function NewsletterArchive(
   }>,
 ) {
   return () => (
-    <section aria-label="Newsletter archive" mix={newsletterArchiveStyle}>
+    <section
+      aria-label="Newsletter archive"
+      mix={css({ marginBlockStart: "64px" })}
+    >
       {handle.props.unavailable ? (
         <p mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
           The archive is temporarily unavailable. Please check back soon.
@@ -146,7 +178,13 @@ function NewsletterArchive(
           No issues yet.
         </p>
       ) : (
-        <ol mix={newsletterListStyle}>
+        <ol
+          mix={css({
+            display: "flex",
+            flexDirection: "column",
+            gap: "40px",
+          })}
+        >
           {handle.props.summaries.map((summary, index) => (
             <li key={summary.number}>
               <a
@@ -155,14 +193,32 @@ function NewsletterArchive(
                 })}
                 mix={
                   summary.image
-                    ? [newsletterCardStyle, newsletterCardWithImageStyle]
+                    ? [
+                        newsletterCardStyle,
+                        css({
+                          [breakpointMedia.md]: {
+                            gridTemplateColumns:
+                              "minmax(0, 5fr) minmax(0, 7fr)",
+                            alignItems: "start",
+                          },
+                        }),
+                      ]
                     : newsletterCardStyle
                 }
               >
-                <div mix={newsletterCardCopyStyle}>
+                <div
+                  mix={css({
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  })}
+                >
                   <time
                     dateTime={summary.date.toISOString()}
-                    mix={[pageMetaStyle, newsletterCardDateStyle]}
+                    mix={[
+                      pageMetaStyle,
+                      css({ color: theme.colors.text.primary }),
+                    ]}
                   >
                     {formatNewsletterDate(summary.date)}
                   </time>
@@ -179,7 +235,15 @@ function NewsletterArchive(
                   <img
                     src={summary.image.src}
                     alt={summary.image.alt}
-                    mix={newsletterCardImageStyle}
+                    mix={css({
+                      width: "100%",
+                      aspectRatio: "16 / 9",
+                      objectFit: "cover",
+                      objectPosition: "top",
+                      boxShadow:
+                        "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+                      [breakpointMedia.md]: { borderRadius: "6px" },
+                    })}
                     loading={index < 4 ? "eager" : "lazy"}
                     decoding={index === 0 ? "sync" : "async"}
                     fetchpriority={index === 0 ? "high" : undefined}
@@ -216,42 +280,8 @@ let newsletterContainerStyle = {
   [breakpointMedia.lg]: { paddingInline: "40px" },
 } as const;
 
-let newsletterIndexContentStyle = css({
-  ...newsletterContainerStyle,
-  maxWidth: "100%",
-  marginBlockEnd: "96px",
-  [breakpointMedia.lg]: { maxWidth: "896px", paddingInline: "40px" },
-});
-
-let newsletterIssueContentStyle = css({
-  ...newsletterContainerStyle,
-  maxWidth: "100%",
-  marginBlock: "64px 96px",
-  [breakpointMedia.md]: { maxWidth: "768px", paddingInline: "32px" },
-});
-
-let newsletterIssueTitleStyle = css({ marginBlockEnd: "32px" });
-
-let newsletterIssueSignupStyle = css({ marginBlockStart: "112px" });
-
-let newsletterIntroStyle = css({
-  maxWidth: "672px",
-  marginBlockStart: "64px",
-  color: theme.colors.text.marketingSecondary,
-});
-
-let newsletterSubscribeStyle = css({ marginBlockStart: "36px" });
-
-let newsletterArchiveStyle = css({ marginBlockStart: "64px" });
-
 let newsletterSecondaryTextStyle = css({
   color: theme.colors.text.marketingSecondary,
-});
-
-let newsletterListStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  gap: "40px",
 });
 
 let newsletterCardStyle = css({
@@ -277,28 +307,4 @@ let newsletterCardStyle = css({
     outlineOffset: "-2px",
   },
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-});
-
-let newsletterCardWithImageStyle = css({
-  [breakpointMedia.md]: {
-    gridTemplateColumns: "minmax(0, 5fr) minmax(0, 7fr)",
-    alignItems: "start",
-  },
-});
-
-let newsletterCardCopyStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  gap: "16px",
-});
-
-let newsletterCardDateStyle = css({ color: theme.colors.text.primary });
-
-let newsletterCardImageStyle = css({
-  width: "100%",
-  aspectRatio: "16 / 9",
-  objectFit: "cover",
-  objectPosition: "top",
-  boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-  [breakpointMedia.md]: { borderRadius: "6px" },
 });
