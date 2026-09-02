@@ -238,13 +238,17 @@ export let Jam2026PhotoMoments = clientEntry(
               data-photo-window-id={moment.id}
               mix={[
                 photoMomentPositionStyle,
-                draggable ? photoMomentDraggableStyle : undefined,
+                ...(draggable ? [photoMomentDraggableStyle] : []),
                 moment.anchor === "right"
                   ? photoMomentRightStyle
                   : photoMomentLeftStyle,
-                draggable
-                  ? on("pointerdown", (event) => handleStart(event, moment.id))
-                  : undefined,
+                ...(draggable
+                  ? [
+                      on<HTMLElement, "pointerdown">("pointerdown", (event) =>
+                        handleStart(event, moment.id),
+                      ),
+                    ]
+                  : []),
                 on("focusin", () => {
                   bringToFront(moment.id);
                   handle.update();

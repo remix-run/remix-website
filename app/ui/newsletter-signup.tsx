@@ -1,6 +1,7 @@
-import type { Handle } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 
 import { NewsletterSubscribe } from "./newsletter-subscribe.tsx";
+import { pageBodyStyle, pageTitleStyle } from "./public/marketing-styles.ts";
 import type { NewsletterSubscriptionStatus } from "./public/newsletter-subscribe.tsx";
 
 export function NewsletterSignupCta(
@@ -9,17 +10,14 @@ export function NewsletterSignupCta(
   }>,
 ) {
   return () => (
-    <section
-      class="rmx-newsletter-signup"
-      aria-labelledby="newsletter-signup-heading"
-    >
+    <section mix={signupStyle} aria-labelledby="newsletter-signup-heading">
       <h2
         id="newsletter-signup-heading"
-        class="rmx-page-title rmx-newsletter-signup-title mb-6"
+        mix={[pageTitleStyle, signupTitleStyle]}
       >
         Get updates on the latest Remix news
       </h2>
-      <p class="rmx-page-body mb-6 max-w-2xl">
+      <p mix={[pageBodyStyle, signupBodyStyle]}>
         Be the first to learn about new Remix features, community events, and
         tutorials.
       </p>
@@ -27,3 +25,19 @@ export function NewsletterSignupCta(
     </section>
   );
 }
+
+let signupStyle = css({
+  width: "max-content",
+  maxWidth: "100%",
+  marginInline: "auto",
+});
+
+let signupTitleStyle = css({
+  maxWidth: "672px",
+  marginBottom: "24px",
+  fontSize: "clamp(1.25rem, 2vw, 1.5rem)",
+  letterSpacing: "-0.02em",
+  textWrap: "balance",
+});
+
+let signupBodyStyle = css({ maxWidth: "672px", marginBottom: "24px" });

@@ -731,10 +731,28 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
     const primaryPanelStyles =
       PRIMARY_PANEL_STYLES_BY_ID[handle.props.id] ??
       (handle.props.align === "right" ? rightPanelStyles : leftPanelStyles);
+    const rowVariantStyles = ROW_STYLES_BY_ID[handle.props.id];
+    const pointListVariantStyles =
+      handle.props.id === "smaller-mental-model"
+        ? fullStackPointListStyles
+        : handle.props.id === "humans-and-agents"
+          ? edgeToEdgePointListStyles
+          : undefined;
+    const pointVariantStyles =
+      handle.props.id === "smaller-mental-model"
+        ? fullStackPointStyles
+        : handle.props.id === "humans-and-agents"
+          ? edgeToEdgePointStyles
+          : undefined;
 
     return (
       <section id={handle.props.id} mix={[shellStyles]}>
-        <div mix={[rowStyles, ROW_STYLES_BY_ID[handle.props.id]]}>
+        <div
+          mix={[
+            rowStyles,
+            ...(rowVariantStyles === undefined ? [] : [rowVariantStyles]),
+          ]}
+        >
           <div data-home-card="" mix={[panelStyles, primaryPanelStyles]}>
             <h2 data-card-title="" mix={[titleStyles]}>
               {handle.props.title}
@@ -745,11 +763,9 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                 data-card-grid=""
                 mix={[
                   pointListStyles,
-                  handle.props.id === "smaller-mental-model"
-                    ? fullStackPointListStyles
-                    : handle.props.id === "humans-and-agents"
-                      ? edgeToEdgePointListStyles
-                      : undefined,
+                  ...(pointListVariantStyles === undefined
+                    ? []
+                    : [pointListVariantStyles]),
                 ]}
               >
                 {handle.props.points.map((point) => (
@@ -758,11 +774,9 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                     data-card-item=""
                     mix={[
                       pointStyles,
-                      handle.props.id === "smaller-mental-model"
-                        ? fullStackPointStyles
-                        : handle.props.id === "humans-and-agents"
-                          ? edgeToEdgePointStyles
-                          : undefined,
+                      ...(pointVariantStyles === undefined
+                        ? []
+                        : [pointVariantStyles]),
                     ]}
                   >
                     <span mix={[pointTitleStyles]}>{point.title}</span>

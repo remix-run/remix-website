@@ -1,7 +1,7 @@
-import { cx } from "../../../../utils/public/cx.ts";
-import { clientEntry, on, ref, type Handle } from "remix/ui";
+import { clientEntry, css, on, ref, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 
 type LineupItem = {
   time: string;
@@ -23,9 +23,7 @@ const accordionMotion = spring("smooth", { duration: 150 });
 
 export let JamLineupAccordionItem = clientEntry(
   import.meta.url,
-  function JamLineupAccordionItem(
-    handle: Handle<{ item: LineupItem; gridColsClassName: string }>,
-  ) {
+  function JamLineupAccordionItem(handle: Handle<{ item: LineupItem }>) {
     let state: AccordionState = { status: "closed" };
     let panel: HTMLDivElement | null = null;
     let panelInner: HTMLDivElement | null = null;
@@ -129,35 +127,32 @@ export let JamLineupAccordionItem = clientEntry(
         state.status === "opening";
 
       return (
-        <details
-          class="group overflow-hidden border-t border-white/10"
-          open={mountedOpen}
-        >
+        <details mix={accordionStyle} open={mountedOpen}>
           <summary
-            mix={[on<HTMLElement>("click", onSummaryClick)]}
-            class={cx(
-              "_no-triangle grid cursor-pointer select-none p-4 text-sm font-bold text-white outline-none transition-colors duration-300 hover:bg-gray-900 focus-visible:bg-gray-900 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-brand sm:p-6 sm:text-base md:p-8 md:text-lg lg:p-9 lg:text-2xl",
-              handle.props.gridColsClassName,
-            )}
+            mix={[
+              scheduleGridStyle,
+              accordionSummaryStyle,
+              on<HTMLElement>("click", onSummaryClick),
+            ]}
           >
             <span>{handle.props.item.time}</span>
             <span>{handle.props.item.title}</span>
             <span>{handle.props.item.speaker}</span>
-            <div class="flex justify-end">
+            <div mix={chevronCellStyle}>
               <Icon
                 name="chevron-r"
-                class={cx(
-                  "size-4 text-white transition-transform sm:size-5 lg:size-6",
-                  visuallyOpen ? "-rotate-90" : "rotate-90",
-                )}
+                mix={[
+                  chevronStyle,
+                  visuallyOpen ? openChevronStyle : closedChevronStyle,
+                ]}
                 aria-hidden="true"
               />
             </div>
           </summary>
 
           <div
-            class="block"
             mix={[
+              accordionPanelStyle,
               ref((node, signal) => {
                 panel = node;
                 if (!mountedOpen) {
@@ -180,29 +175,24 @@ export let JamLineupAccordionItem = clientEntry(
                 }),
               ]}
             >
-              <div class="pb-8 transition-colors duration-300 group-hover:bg-gray-900">
-                <div
-                  class={cx(
-                    "p-4 sm:p-6 md:p-8 lg:p-9",
-                    handle.props.gridColsClassName,
-                  )}
-                >
+              <div data-accordion-body="" mix={accordionBodyStyle}>
+                <div mix={[scheduleGridStyle, accordionBodyGridStyle]}>
                   <div
-                    class="col-span-full flex flex-col gap-4 text-sm text-white sm:col-span-1 sm:col-start-2 sm:gap-6 sm:text-base md:text-lg lg:text-xl [&_a:hover]:underline [&_a]:text-blue-400"
+                    mix={accordionDescriptionStyle}
                     innerHTML={handle.props.item.description}
                   />
                   {handle.props.item.imgSrc ? (
-                    <div class="col-span-full flex flex-col gap-4 sm:col-span-1 sm:col-start-3">
+                    <div mix={speakerColumnStyle}>
                       <img
                         src={handle.props.item.imgSrc}
                         alt={handle.props.item.speaker}
-                        class="aspect-square w-full rounded-2xl object-cover sm:max-w-none"
+                        mix={speakerImageStyle}
                         loading="lazy"
                         decoding="async"
                       />
                       {handle.props.item.bio ? (
                         <div
-                          class="flex flex-col gap-4 text-xs text-white sm:gap-6 sm:text-sm md:text-base lg:font-mono [&_a:hover]:underline [&_a]:text-blue-400"
+                          mix={speakerBioStyle}
                           innerHTML={handle.props.item.bio}
                         />
                       ) : null}
@@ -217,3 +207,144 @@ export let JamLineupAccordionItem = clientEntry(
     };
   },
 );
+
+export let scheduleGridStyle = css({
+  display: "grid",
+  gridTemplateColumns: "75px 1fr auto",
+  gap: "16px",
+  [breakpointMedia.sm]: {
+    gridTemplateColumns: "100px 1fr 1fr 24px",
+    gap: "24px",
+  },
+  [breakpointMedia.md]: {
+    gridTemplateColumns: "120px 1fr 1fr 24px",
+    gap: "32px",
+  },
+  [breakpointMedia.lg]: {
+    gridTemplateColumns: "150px 1fr 1fr 24px",
+    gap: "48px",
+  },
+});
+
+let accordionStyle = css({
+  overflow: "hidden",
+  borderTop: "1px solid rgb(255 255 255 / 0.1)",
+  "&:hover [data-accordion-body]": { backgroundColor: "#121212" },
+});
+
+let accordionSummaryStyle = css({
+  cursor: "pointer",
+  userSelect: "none",
+  padding: "16px",
+  color: "#ffffff",
+  fontSize: "0.875rem",
+  fontWeight: theme.fontWeight.bold,
+  lineHeight: 1.425,
+  outline: "none",
+  transition: "background-color 300ms",
+  "&::-webkit-details-marker": { display: "none" },
+  "&:is(:hover, :focus-visible)": { backgroundColor: "#121212" },
+  "&:focus-visible": {
+    outline: `2px solid ${theme.colors.brand.blue}`,
+    outlineOffset: "-2px",
+  },
+  [breakpointMedia.sm]: {
+    padding: "24px",
+    fontSize: "1rem",
+    lineHeight: 1.5,
+  },
+  [breakpointMedia.md]: {
+    padding: "32px",
+    fontSize: "1.125rem",
+    lineHeight: 1.556,
+  },
+  [breakpointMedia.lg]: {
+    padding: "36px",
+    fontSize: "1.5rem",
+    lineHeight: 1.333,
+  },
+  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+});
+
+let chevronCellStyle = css({ display: "flex", justifyContent: "flex-end" });
+
+let chevronStyle = css({
+  width: "16px",
+  height: "16px",
+  color: "#ffffff",
+  transition: "transform 150ms",
+  [breakpointMedia.sm]: { width: "20px", height: "20px" },
+  [breakpointMedia.lg]: { width: "24px", height: "24px" },
+  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+});
+
+let openChevronStyle = css({ transform: "rotate(-90deg)" });
+let closedChevronStyle = css({ transform: "rotate(90deg)" });
+let accordionPanelStyle = css({ display: "block" });
+
+let accordionBodyStyle = css({
+  paddingBottom: "32px",
+  transition: "background-color 300ms",
+  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+});
+
+let accordionBodyGridStyle = css({
+  padding: "16px",
+  [breakpointMedia.sm]: { padding: "24px" },
+  [breakpointMedia.md]: { padding: "32px" },
+  [breakpointMedia.lg]: { padding: "36px" },
+});
+
+let accordionDescriptionStyle = css({
+  gridColumn: "1 / -1",
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  color: "#ffffff",
+  fontSize: "0.875rem",
+  lineHeight: 1.425,
+  "& a": { color: "#59b0ff" },
+  "& a:hover": { textDecoration: "underline" },
+  [breakpointMedia.sm]: {
+    gridColumn: "2 / span 1",
+    gap: "24px",
+    fontSize: "1rem",
+    lineHeight: 1.5,
+  },
+  [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
+  [breakpointMedia.lg]: { fontSize: "1.25rem", lineHeight: 1.556 },
+});
+
+let speakerColumnStyle = css({
+  gridColumn: "1 / -1",
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  [breakpointMedia.sm]: { gridColumn: "3 / span 1" },
+});
+
+let speakerImageStyle = css({
+  width: "100%",
+  maxWidth: "none",
+  borderRadius: "16px",
+  objectFit: "cover",
+  aspectRatio: "1",
+});
+
+let speakerBioStyle = css({
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  color: "#ffffff",
+  fontSize: "0.75rem",
+  lineHeight: 1.333,
+  "& a": { color: "#59b0ff" },
+  "& a:hover": { textDecoration: "underline" },
+  [breakpointMedia.sm]: {
+    gap: "24px",
+    fontSize: "0.875rem",
+    lineHeight: 1.425,
+  },
+  [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
+  [breakpointMedia.lg]: { fontFamily: theme.fontFamily.mono },
+});

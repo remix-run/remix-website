@@ -57,7 +57,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
           requestUrl: handle.props.requestUrl,
         })}
       >
-        <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
+        <div mix={[jamThemeStyle, pageStyle]}>
           <Jam2026CloudBackdrop />
           <FpsCounterToggle dataAttribute="data-jam-2026-performance-tools" />
           <div

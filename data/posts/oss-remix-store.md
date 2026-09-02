@@ -60,7 +60,7 @@ We have also been able to use the store to dogfood out new features like [upgrad
 
 <figure>
   <img alt="Remix Store built on React Server Components example" src="/blog-images/posts/oss-remix-store/remix-store-rsc-demo.gif" />
-  <figcaption class="pt-2">Jacob Ebey's <a href="https://react-router-rsc-ecommerce.up.railway.app/">reimagining of the Remix Store</a> using React Server Components</figcaption>
+  <figcaption class="md-caption-spaced">Jacob Ebey's <a href="https://react-router-rsc-ecommerce.up.railway.app/">reimagining of the Remix Store</a> using React Server Components</figcaption>
 </figure>
 
 The only thing we haven't done is share the store's source code for React Router and Shopify developers to learn from.
@@ -107,7 +107,7 @@ The reason for this was pretty simple: I had no design support until then.
 
 With the Remix store, we wanted both our website and our products to be unique and well designed. Our launch video showcases the final product well:
 
-<div class="mx-auto max-w-fit">
+<div class="md-embed-centered">
   <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Soft Wear update is available <a href="https://t.co/VhVbdVV8GN">pic.twitter.com/VhVbdVV8GN</a></p>&mdash; Remix 💿 (@remix_run) <a href="https://twitter.com/remix_run/status/1924558330225156190?ref_src=twsrc%5Etfw">May 19, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </div>
 
@@ -151,7 +151,7 @@ We got some feedback from Michael on the design, and went for a less chunky, mor
 
 We were feeling pretty good about ourselves, and had some great product ideas in place (pretty much [everything currently listed on the store][remix-store-products]). The only thing we needed was some money from Shopify to get the store going.
 
-<img class="mx-auto" src="/blog-images/posts/oss-remix-store/money-pweaz.gif" alt="Mona-Lisa Saperstein from Parks and Rec saying 'Money pleeeease' while gesturing for money to be given to her." />
+<img class="md-media-centered" src="/blog-images/posts/oss-remix-store/money-pweaz.gif" alt="Mona-Lisa Saperstein from Parks and Rec saying 'Money pleeeease' while gesturing for money to be given to her." />
 
 Quite reasonably, big companies such as ours don't necessarily just write blank checks when requested, and actually want to know what you intend to do with their resources and how it will support the [underlying mission][shopify-mission]. In retrospect that's pretty reasonable, but it did require a bit more work internally on our end.
 

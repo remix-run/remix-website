@@ -1,4 +1,3 @@
-import { cx } from "../../../../utils/public/cx.ts";
 import { css, clientEntry, on, type Dispatched, type Handle } from "remix/ui";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { breakpointMedia } from "../../../../ui/public/theme.ts";
@@ -153,7 +152,7 @@ export let JamKeepsakes = clientEntry(
     );
 
     return () => (
-      <div class="isolate">
+      <div mix={keepsakesRootStyle}>
         {KEEPSAKES.map((keepsake) => {
           let t = getTranslate(keepsake.id);
           let isActiveDrag = drag?.id === keepsake.id;
@@ -161,38 +160,56 @@ export let JamKeepsakes = clientEntry(
           return (
             <div
               key={keepsake.id}
-              class="keepsake-container relative"
+              mix={keepsakeContainerStyle}
               style={{ zIndex: order[keepsake.id] }}
             >
               <div
-                class={cx(
-                  "touch-none select-none",
-                  isActiveDrag ? "cursor-grabbing" : "cursor-grab",
-                  showJiggle && "animate-jiggle",
-                )}
                 style={{
                   transform: `translate(${t.x}px, ${t.y}px)`,
                   animationDelay: keepsake.jiggleDelay
                     ? `${keepsake.jiggleDelay}ms`
                     : undefined,
                 }}
-                mix={[
-                  keepsakeStyle,
-                  keepsakePositionStyles[keepsake.id],
-                  on("pointerdown", (event) => {
-                    if (!event.isPrimary) return;
-                    if (event.pointerType === "mouse" && event.button !== 0)
-                      return;
-                    handleStart(event, keepsake.id);
-                  }),
-                ]}
+                mix={
+                  showJiggle
+                    ? [
+                        keepsakeStyle,
+                        keepsakePositionStyles[keepsake.id],
+                        isActiveDrag ? draggingStyle : draggableStyle,
+                        jiggleStyle,
+                        on("pointerdown", (event) => {
+                          if (!event.isPrimary) return;
+                          if (
+                            event.pointerType === "mouse" &&
+                            event.button !== 0
+                          )
+                            return;
+                          handleStart(event, keepsake.id);
+                        }),
+                      ]
+                    : [
+                        keepsakeStyle,
+                        keepsakePositionStyles[keepsake.id],
+                        isActiveDrag ? draggingStyle : draggableStyle,
+                        on("pointerdown", (event) => {
+                          if (!event.isPrimary) return;
+                          if (
+                            event.pointerType === "mouse" &&
+                            event.button !== 0
+                          )
+                            return;
+                          handleStart(event, keepsake.id);
+                        }),
+                      ]
+                }
               >
                 <div mix={keepsakeRotationStyle}>
                   <div
-                    class={cx("h-full w-full", {
-                      "rounded border-[6px] border-white md:border-[16px]":
-                        keepsake.hasBorder,
-                    })}
+                    mix={
+                      keepsake.hasBorder
+                        ? [keepsakeFrameStyle, borderedKeepsakeStyle]
+                        : keepsakeFrameStyle
+                    }
                   >
                     <img
                       src={keepsake.src}
@@ -224,7 +241,36 @@ function moveKeepsakeToFront(
   order[id] = KEEPSAKES.length;
 }
 
-let keepsakeStyle = css({ position: "absolute" });
+let keepsakesRootStyle = css({ isolation: "isolate" });
+let keepsakeContainerStyle = css({ position: "relative" });
+
+let keepsakeStyle = css({
+  position: "absolute",
+  touchAction: "none",
+  userSelect: "none",
+});
+
+let draggableStyle = css({ cursor: "grab" });
+let draggingStyle = css({ cursor: "grabbing" });
+
+let jiggleStyle = css({
+  animation:
+    "jam-2025-keepsake-jiggle 3s cubic-bezier(0.99, 0.78, 0.72, 1.04) infinite forwards",
+  "@keyframes jam-2025-keepsake-jiggle": {
+    "0%, 91%, 100%": { transform: "rotate(0deg)" },
+    "94%": { transform: "rotate(-3deg)" },
+    "97%": { transform: "rotate(3deg)" },
+  },
+  "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+});
+
+let keepsakeFrameStyle = css({ width: "100%", height: "100%" });
+
+let borderedKeepsakeStyle = css({
+  border: "6px solid #ffffff",
+  borderRadius: "4px",
+  [breakpointMedia.md]: { borderWidth: "16px" },
+});
 
 let keepsakeRotationStyle = css({
   height: "100%",
@@ -237,6 +283,7 @@ let keepsakeRotationStyle = css({
       transform: "rotate(calc(var(--rotate) + var(--hover-rotate)))",
     },
   },
+  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
 let keepsakeImageStyle = css({

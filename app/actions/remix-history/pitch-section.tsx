@@ -1,21 +1,21 @@
-import { cx } from "../../utils/public/cx.ts";
+import { css } from "remix/ui";
+
 import { Icon } from "../../ui/public/icon.tsx";
+import {
+  bodyLargeStyle,
+  buttonTextLargeStyle,
+} from "../../ui/public/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 
 export function PitchSection() {
   return () => (
-    <section class="flex flex-col items-center px-12 py-12 md:px-12 md:pb-24 md:pt-12">
-      <div
-        class={cx(
-          "text-rmx-primary",
-          "rmx-body-lg",
-          "flex w-full max-w-[1024px] flex-col items-center gap-12",
-        )}
-      >
-        <p class="w-full">
+    <section mix={pitchSectionStyle}>
+      <div mix={[bodyLargeStyle, pitchContentStyle]}>
+        <p mix={pitchParagraphStyle}>
           Remix is a batteries-included, ultra-productive, zero dependencies and
           bundler-free framework, ready to develop with in a model-first world.
         </p>
-        <p class="w-full">
+        <p mix={pitchParagraphStyle}>
           Remix 3 is a reimagining of what a web framework can be;
           <br aria-hidden="true" />a fresh foundation shaped by decades of
           experience building for the web. It focuses on simplicity, clarity,
@@ -23,19 +23,11 @@ export function PitchSection() {
         </p>
         <a
           href="https://github.com/remix-run/remix"
-          class={cx(
-            "rmx-bg-button-primary rmx-text-button-primary rmx-shadow-mid",
-            "rmx-button-text-lg",
-            "inline-flex h-14 w-full items-center justify-center gap-2 rounded-lg border border-black/10 px-4 py-4 no-underline",
-            "transition-all hover:opacity-90",
-            "active:scale-[0.98] active:opacity-80",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",
-            "sm:w-auto sm:whitespace-nowrap",
-          )}
+          mix={[buttonTextLargeStyle, watchButtonStyle]}
         >
           <Icon
             name="github"
-            class="size-6 shrink-0"
+            mix={watchButtonIconStyle}
             fill="none"
             aria-hidden="true"
           />
@@ -45,3 +37,57 @@ export function PitchSection() {
     </section>
   );
 }
+
+let pitchSectionStyle = css({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  padding: "48px",
+  [breakpointMedia.md]: { paddingBottom: "96px" },
+});
+
+let pitchContentStyle = css({
+  display: "flex",
+  width: "100%",
+  maxWidth: "1024px",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "48px",
+  color: "var(--rmx-text-primary)",
+});
+
+let pitchParagraphStyle = css({ width: "100%" });
+
+let watchButtonStyle = css({
+  display: "inline-flex",
+  width: "100%",
+  height: "56px",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "8px",
+  border: "1px solid rgb(0 0 0 / 0.1)",
+  borderRadius: "8px",
+  padding: "16px",
+  background: theme.colors.action.primary,
+  color: theme.colors.action.primaryLabel,
+  boxShadow: theme.shadow.mid,
+  textDecoration: "none",
+  transition: "all 150ms ease",
+  "&:hover": { opacity: 0.9 },
+  "&:active": { opacity: 0.8, transform: "scale(0.98)" },
+  "&:focus-visible": {
+    outline: `2px solid ${theme.colors.action.primary}`,
+    outlineOffset: "2px",
+  },
+  [breakpointMedia.sm]: { width: "auto", whiteSpace: "nowrap" },
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+    "&:active": { transform: "none" },
+  },
+});
+
+let watchButtonIconStyle = css({
+  width: "24px",
+  height: "24px",
+  flexShrink: 0,
+});

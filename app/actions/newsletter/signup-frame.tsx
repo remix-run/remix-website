@@ -1,9 +1,10 @@
-import type { Handle } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 
 import {
   NewsletterSubscribeForm,
   type NewsletterSubscriptionStatus,
 } from "../../ui/public/newsletter-subscribe.tsx";
+import { theme } from "../../ui/public/theme.ts";
 
 export function NewsletterSubscribeFrame(
   handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
@@ -25,14 +26,16 @@ function NewsletterSubscriptionNotice(
     return (
       <div
         role={handle.props.status === "success" ? "status" : "alert"}
-        class={
-          handle.props.status === "success" ? "py-2" : "py-2 text-red-brand"
+        mix={
+          handle.props.status === "success"
+            ? subscriptionNoticeStyle
+            : [subscriptionNoticeStyle, subscriptionErrorStyle]
         }
       >
         {handle.props.status === "success" ? (
           <div>
-            <b class="text-green-brand">Got it!</b> Please go{" "}
-            <b class="text-red-brand">check your email</b> to confirm your
+            <b mix={subscriptionSuccessStyle}>Got it!</b> Please go{" "}
+            <b mix={subscriptionErrorStyle}>check your email</b> to confirm your
             subscription, otherwise you won&apos;t get our email.
           </div>
         ) : handle.props.status === "invalid-email" ? (
@@ -46,3 +49,7 @@ function NewsletterSubscriptionNotice(
     );
   };
 }
+
+let subscriptionNoticeStyle = css({ paddingBlock: "8px" });
+let subscriptionSuccessStyle = css({ color: theme.colors.brand.green });
+let subscriptionErrorStyle = css({ color: theme.colors.brand.red });

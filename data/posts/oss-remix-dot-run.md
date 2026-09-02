@@ -46,8 +46,8 @@ The main reason we do this is so we don't have to rebuild our entire site every 
 
 This last point is the other main reason we SSR our docs instead of SSG-ing them. We are able to keep the docs for each version of Remix forever. We can even render the most up-to-date version of the [dev docs](https://remix.run/docs/en/dev) without redeploying. Imagine rebuilding _every single_ doc for _every single_ Remix version _every time_ someone commits a change. That would be a lot.
 
-<div class="flex justify-center">
-  <img alt="Remix docs version dropdown menu" src="/blog-images/posts/oss-remix-dot-run/docs-dropdown.png" width="724" height="724" class="max-w-[500px] w-full" />
+<div class="md-centered-media">
+  <img alt="Remix docs version dropdown menu" src="/blog-images/posts/oss-remix-dot-run/docs-dropdown.png" width="724" height="724" class="md-media-compact" />
 </div>
 
 We're able to accomplish this by fetching the markdown from GitHub in the `loader` and server rendering the requested doc page in the route. Since this content doesn't change frequently, we leverage a [LRU cache](https://www.npmjs.com/package/lru-cache) to cache the results on the server for 5 minutes. We also send a `Cache-Control` header with the `stale-while-revalidate` directive along with the response, that way when there is a fresh doc, the old one will be served while the new one renders and populates in the CDN for the next request.

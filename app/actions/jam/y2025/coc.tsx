@@ -1,9 +1,10 @@
-import type { Handle } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 
 import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";
 import { Paragraph, ScrambleText, Subheader, Title } from "./public/shared.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
+import { breakpointMedia } from "../../../ui/public/theme.ts";
 
 export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
   return () => (
@@ -14,21 +15,17 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
       requestUrl={handle.props.requestUrl}
       activePath={routes.jam.y2025.coc.href()}
     >
-      <main
-        id="main-content"
-        class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]"
-        tabIndex={-1}
-      >
-        <Title className="text-center">
+      <main id="main-content" mix={cocMainStyle} tabIndex={-1}>
+        <Title mix={centeredTitleStyle}>
           <ScrambleText
             text="Code of Conduct"
             delay={100}
             color="blue"
-            className="whitespace-nowrap"
+            nowrap
           />
         </Title>
 
-        <div class="relative z-10 space-y-8 text-justify text-base text-white md:text-lg">
+        <div mix={cocContentStyle}>
           <Paragraph>
             All attendees, speakers, and volunteers at our conference are
             required to agree with the following code of conduct. Organizers
@@ -37,7 +34,7 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
             environment for everybody.
           </Paragraph>
 
-          <section class="space-y-4">
+          <section mix={cocSectionStyle}>
             <Subheader>The Quick Version</Subheader>
             <Paragraph>
               Our conference is dedicated to providing a harassment-free
@@ -54,7 +51,7 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
             </Paragraph>
           </section>
 
-          <section class="space-y-4">
+          <section mix={cocSectionStyle}>
             <Subheader>The Less Quick Version</Subheader>
 
             <Paragraph>
@@ -85,10 +82,7 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
               harassed, or have any other concerns, please contact a member of
               conference staff immediately. Conference staff can be identified
               as they&apos;ll be wearing branded t-shirts. Or email{" "}
-              <a
-                class="text-blue-400 hover:underline"
-                href="mailto:jam@remix.run"
-              >
+              <a mix={textLinkStyle} href="mailto:jam@remix.run">
                 jam@remix.run
               </a>
               .
@@ -107,10 +101,10 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
             </Paragraph>
           </section>
 
-          <div class="text-sm text-white/70">
+          <div mix={adaptedFromStyle}>
             Adapted from{" "}
             <a
-              class="text-blue-400 hover:underline"
+              mix={textLinkStyle}
               target="_blank"
               rel="noopener noreferrer"
               href="https://confcodeofconduct.com"
@@ -124,3 +118,41 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
     </JamDocument>
   );
 }
+
+let cocMainStyle = css({
+  display: "flex",
+  maxWidth: "800px",
+  marginInline: "auto",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "48px",
+  paddingBlock: "80px",
+  paddingTop: "120px",
+  [breakpointMedia.md]: { paddingTop: "270px" },
+  [breakpointMedia.lg]: { paddingTop: "280px" },
+});
+
+let centeredTitleStyle = css({ textAlign: "center" });
+
+let cocContentStyle = css({
+  position: "relative",
+  zIndex: 10,
+  color: "#ffffff",
+  fontSize: "1rem",
+  lineHeight: 1.5,
+  textAlign: "justify",
+  "& > * + *": { marginTop: "32px" },
+  [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
+});
+
+let cocSectionStyle = css({ "& > * + *": { marginTop: "16px" } });
+
+let textLinkStyle = css({
+  color: "#59b0ff",
+  "&:hover": { textDecoration: "underline" },
+});
+
+let adaptedFromStyle = css({
+  color: "rgb(255 255 255 / 0.7)",
+  fontSize: "0.875rem",
+});

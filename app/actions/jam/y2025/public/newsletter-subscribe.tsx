@@ -1,4 +1,4 @@
-import { clientEntry, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/ui";
 
 import {
   createNewsletterFrameForm,
@@ -6,12 +6,12 @@ import {
 } from "../../../../ui/public/newsletter-subscribe.tsx";
 import { routes } from "../../../../routes.ts";
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 
 export let JamNewsletterSubscribeForm = clientEntry(
   import.meta.url,
   function JamNewsletterSubscribeForm(
     handle: Handle<{
-      class?: string;
       status?: NewsletterSubscriptionStatus | null;
     }>,
   ) {
@@ -25,18 +25,14 @@ export let JamNewsletterSubscribeForm = clientEntry(
           action={routes.newsletter.subscribe.href()}
           method="post"
           {...form.navigation}
-          class={
-            handle.props.class ??
-            "relative z-10 mt-12 flex flex-col items-center"
-          }
-          mix={form.submit}
+          mix={[newsletterFormStyle, form.submit]}
         >
           <input
             type="hidden"
             name="tag"
             value={String(newsletterTagIds.jam2025Updates)}
           />
-          <p class="font-mono text-xs uppercase tracking-widest text-white/50 md:text-base">
+          <p mix={newsletterLabelStyle}>
             <label htmlFor="jam-newsletter-email">email</label>
           </p>
           <input
@@ -50,22 +46,22 @@ export let JamNewsletterSubscribeForm = clientEntry(
             aria-describedby={
               status === "idle" ? undefined : "jam-newsletter-message"
             }
-            class="mt-[10px] w-full max-w-sm rounded-full border-0 bg-black px-6 py-4 text-center text-lg text-white ring-inset placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-brand sm:leading-6"
+            mix={newsletterInputStyle}
           />
           <button
             type="submit"
             disabled={status === "submitting"}
-            class="mt-5 w-full min-w-fit max-w-sm rounded-full bg-black px-4 py-3 text-sm font-semibold text-white transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50 md:px-6 md:py-4 md:text-xl"
+            mix={newsletterButtonStyle}
           >
             {status === "submitting" ? "Signing Up..." : "Sign Up"}
           </button>
           <div
             id="jam-newsletter-message"
             aria-live="polite"
-            class={
+            mix={
               status !== "idle" && status !== "submitting"
-                ? "mt-4 text-sm text-white"
-                : "hidden"
+                ? newsletterMessageStyle
+                : hiddenStyle
             }
           >
             {status === "success" ? (
@@ -74,13 +70,15 @@ export let JamNewsletterSubscribeForm = clientEntry(
                 when ticket sales are available.
               </p>
             ) : status === "invalid-email" ? (
-              <p class="text-red-brand">Please enter a valid email address.</p>
+              <p mix={newsletterErrorStyle}>
+                Please enter a valid email address.
+              </p>
             ) : status === "invalid-tag" ? (
-              <p class="text-red-brand">
+              <p mix={newsletterErrorStyle}>
                 The selected newsletter is not available. Please try again.
               </p>
             ) : status === "error" ? (
-              <p class="text-red-brand">
+              <p mix={newsletterErrorStyle}>
                 Something went wrong. Please try again.
               </p>
             ) : null}
@@ -90,3 +88,71 @@ export let JamNewsletterSubscribeForm = clientEntry(
     };
   },
 );
+
+let newsletterFormStyle = css({
+  position: "relative",
+  zIndex: 10,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+});
+
+let newsletterLabelStyle = css({
+  color: "rgb(255 255 255 / 0.5)",
+  fontFamily: theme.fontFamily.mono,
+  fontSize: "0.75rem",
+  lineHeight: 1.333,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
+});
+
+let newsletterInputStyle = css({
+  width: "100%",
+  maxWidth: "384px",
+  marginTop: "10px",
+  border: 0,
+  borderRadius: theme.radius.full,
+  padding: "16px 24px",
+  backgroundColor: "#000000",
+  color: "#ffffff",
+  fontSize: "1.125rem",
+  lineHeight: 1.556,
+  textAlign: "center",
+  outline: "none",
+  "&::placeholder": { color: "rgb(255 255 255 / 0.3)" },
+  "&:focus": { boxShadow: `inset 0 0 0 2px ${theme.colors.brand.blue}` },
+  [breakpointMedia.sm]: { lineHeight: "24px" },
+});
+
+let newsletterButtonStyle = css({
+  width: "100%",
+  minWidth: "fit-content",
+  maxWidth: "384px",
+  marginTop: "20px",
+  borderRadius: theme.radius.full,
+  padding: "12px 16px",
+  backgroundColor: "#000000",
+  color: "#ffffff",
+  fontSize: "0.875rem",
+  fontWeight: theme.fontWeight.semibold,
+  lineHeight: 1.425,
+  transition: "color 300ms, background-color 300ms",
+  "&:disabled": { cursor: "not-allowed", opacity: 0.5 },
+  [breakpointMedia.md]: {
+    padding: "16px 24px",
+    fontSize: "1.25rem",
+    lineHeight: 1.556,
+  },
+  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+});
+
+let newsletterMessageStyle = css({
+  marginTop: "16px",
+  color: "#ffffff",
+  fontSize: "0.875rem",
+  lineHeight: 1.425,
+});
+
+let newsletterErrorStyle = css({ color: theme.colors.brand.red });
+let hiddenStyle = css({ display: "none" });

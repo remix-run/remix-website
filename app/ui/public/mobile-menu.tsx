@@ -1,26 +1,19 @@
-import { clientEntry, on, ref, type Handle, type RemixNode } from "remix/ui";
-import { cx } from "../../utils/public/cx.ts";
+import {
+  clientEntry,
+  css,
+  on,
+  ref,
+  type Handle,
+  type RemixNode,
+} from "remix/ui";
+import { visuallyHiddenStyle } from "./css-mixins.ts";
 import { Icon } from "./icon.tsx";
-
-const mobileMenuStyles = {
-  summary: cx(
-    "bg-gray-100 hover:bg-gray-200 text-rmx-primary [[open]>&]:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:[[open]>&]:bg-gray-700",
-    "_no-triangle grid h-10 w-10 place-items-center rounded-full",
-  ),
-  menuWrapper:
-    "relative top-1 w-40 rounded-md border border-gray-100 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-gray-900",
-  menuPosition: "absolute right-0 z-20 md:left-0",
-  nav: "flex flex-col gap-2 px-2 py-2.5",
-};
+import { breakpointMedia, theme } from "./theme.ts";
 
 type MobileMenuProps = {
   open?: boolean;
   children: RemixNode;
-  class?: string;
-  summaryClass?: string;
-  menuPositionClass?: string;
-  menuWrapperClass?: string;
-  navClass?: string;
+  unstyled?: boolean;
 };
 
 type MenuState = { status: "open" } | { status: "closed" };
@@ -82,18 +75,11 @@ export let MobileMenu = clientEntry(
     };
 
     return () => {
-      let summaryClass = handle.props.summaryClass ?? mobileMenuStyles.summary;
-      let menuWrapperClass =
-        handle.props.menuWrapperClass ?? mobileMenuStyles.menuWrapper;
-      let menuPositionClass =
-        handle.props.menuPositionClass ?? mobileMenuStyles.menuPosition;
-      let navClass = handle.props.navClass ?? mobileMenuStyles.nav;
-
       return (
         <details
           open={state.status === "open"}
-          class={cx("relative cursor-pointer", handle.props.class)}
           mix={[
+            mobileMenuStyle,
             ref((node) => {
               detailsElement = node;
               syncDetailsElement();
@@ -105,14 +91,27 @@ export let MobileMenu = clientEntry(
             on<HTMLDetailsElement>("focusin", stopPropagation),
           ]}
         >
-          <summary class={summaryClass}>
-            <Icon name="menu" class="h-5 w-5" aria-hidden="true" />
-            <span class="sr-only">Open menu</span>
+          <summary
+            data-mobile-menu-summary=""
+            mix={!handle.props.unstyled ? mobileMenuSummaryStyle : undefined}
+          >
+            <Icon name="menu" mix={mobileMenuIconStyle} aria-hidden="true" />
+            <span mix={visuallyHiddenStyle}>Open menu</span>
           </summary>
 
-          <div class={menuPositionClass}>
-            <div class={menuWrapperClass}>
-              <nav class={navClass} aria-label="Mobile">
+          <div
+            data-mobile-menu-position=""
+            mix={!handle.props.unstyled ? mobileMenuPositionStyle : undefined}
+          >
+            <div
+              data-mobile-menu-surface=""
+              mix={!handle.props.unstyled ? mobileMenuSurfaceStyle : undefined}
+            >
+              <nav
+                data-mobile-menu-nav=""
+                mix={!handle.props.unstyled ? mobileMenuNavStyle : undefined}
+                aria-label="Mobile"
+              >
                 {handle.props.children}
               </nav>
             </div>
@@ -122,3 +121,59 @@ export let MobileMenu = clientEntry(
     };
   },
 );
+
+let mobileMenuStyle = css({ position: "relative", cursor: "pointer" });
+
+let mobileMenuSummaryStyle = css({
+  display: "grid",
+  width: "40px",
+  height: "40px",
+  placeItems: "center",
+  borderRadius: theme.radius.full,
+  backgroundColor: "light-dark(#e3e3e3, #383838)",
+  color: theme.colors.text.marketingPrimary,
+  listStyle: "none",
+  "&::-webkit-details-marker": { display: "none" },
+  "&:hover, details[open] > &": {
+    backgroundColor: "light-dark(#c8c8c8, #434343)",
+  },
+});
+
+let mobileMenuIconStyle = css({ width: "20px", height: "20px" });
+
+let mobileMenuPositionStyle = css({
+  position: "absolute",
+  right: 0,
+  zIndex: 20,
+  [breakpointMedia.md]: { right: "auto", left: 0 },
+});
+
+let mobileMenuSurfaceStyle = css({
+  position: "relative",
+  top: "4px",
+  width: "160px",
+  border: "1px solid light-dark(#e3e3e3, #383838)",
+  borderRadius: "6px",
+  backgroundColor: "light-dark(#ffffff, #121212)",
+  padding: "4px",
+  boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+});
+
+let mobileMenuNavStyle = css({
+  display: "flex",
+  flexDirection: "column",
+  gap: "8px",
+  padding: "10px 8px",
+  "& [data-header-link]": {
+    color: theme.colors.text.marketingPrimary,
+    fontSize: "1rem",
+    fontWeight: theme.fontWeight.normal,
+    opacity: 0.8,
+    whiteSpace: "nowrap",
+  },
+  "& [data-header-link]:hover, & [data-header-link]:focus-visible, & [data-header-link][aria-current]":
+    {
+      color: theme.colors.action.current,
+      opacity: 1,
+    },
+});

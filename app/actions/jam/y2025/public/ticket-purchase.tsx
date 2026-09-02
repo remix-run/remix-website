@@ -1,6 +1,7 @@
-import { clientEntry, on, type Handle } from "remix/ui";
+import { clientEntry, css, on, type Handle } from "remix/ui";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { JamButton } from "./shared.tsx";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 
 type JamTicketPurchaseProps = {
   initialQuantity?: number;
@@ -9,7 +10,6 @@ type JamTicketPurchaseProps = {
   productId: string;
   isSoldOut: boolean;
   error?: string;
-  class?: string;
 };
 
 export let JamTicketPurchase = clientEntry(
@@ -27,11 +27,11 @@ export let JamTicketPurchase = clientEntry(
       let incrementDisabled = handle.props.isSoldOut || quantity >= maxQuantity;
 
       return (
-        <div class={handle.props.class}>
+        <div mix={ticketPurchaseStyle}>
           <form
             method="post"
-            class="flex w-full flex-col items-center gap-3 text-base md:flex-row md:text-xl"
             mix={[
+              ticketFormStyle,
               on("submit", () => {
                 if (handle.props.isSoldOut || submitting) return;
                 submitting = true;
@@ -45,17 +45,15 @@ export let JamTicketPurchase = clientEntry(
               value={handle.props.productId}
             />
             <input type="hidden" name="quantity" value={String(quantity)} />
-            <div class="flex w-full grow items-center justify-between rounded-[48px] px-4 py-2.5 ring-2 ring-inset ring-white/30 md:px-6 md:py-4 md:ring-4">
-              <span class="font-mono font-normal text-white">
-                $ {handle.props.price}
-              </span>
-              <div class="flex items-center gap-4">
+            <div mix={priceControlStyle}>
+              <span mix={priceStyle}>$ {handle.props.price}</span>
+              <div mix={quantityControlsStyle}>
                 <button
                   type="button"
-                  class="size-6 text-white/30 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-white/30 md:size-8"
                   aria-label="Decrease quantity"
                   disabled={decrementDisabled}
                   mix={[
+                    quantityButtonStyle,
                     on("click", () => {
                       if (decrementDisabled) return;
                       quantity = Math.max(1, quantity - 1);
@@ -73,14 +71,19 @@ export let JamTicketPurchase = clientEntry(
                   type="number"
                   value={String(quantity)}
                   readOnly
-                  class={`bg-transparent text-center text-white outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${quantity > 9 ? "w-8" : "w-4"}`}
+                  mix={[
+                    quantityInputStyle,
+                    quantity > 9
+                      ? doubleDigitQuantityStyle
+                      : singleDigitQuantityStyle,
+                  ]}
                 />
                 <button
                   type="button"
-                  class="size-6 text-white/30 transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-white/30 md:size-8"
                   aria-label="Increase quantity"
                   disabled={incrementDisabled}
                   mix={[
+                    quantityButtonStyle,
                     on("click", () => {
                       if (incrementDisabled) return;
                       quantity = Math.min(maxQuantity, quantity + 1);
@@ -100,7 +103,7 @@ export let JamTicketPurchase = clientEntry(
               type="submit"
               disabled={handle.props.isSoldOut || submitting}
               active={submitting}
-              className="w-full md:w-auto"
+              mix={checkoutButtonStyle}
             >
               {handle.props.isSoldOut
                 ? "Sold Out"
@@ -110,9 +113,7 @@ export let JamTicketPurchase = clientEntry(
             </JamButton>
           </form>
           {handle.props.error ? (
-            <p class="mt-1 text-sm font-semibold text-red-brand md:text-base">
-              {handle.props.error}
-            </p>
+            <p mix={ticketErrorStyle}>{handle.props.error}</p>
           ) : null}
         </div>
       );
@@ -126,3 +127,95 @@ function normalizeQuantity(quantity: number, maxQuantity: number) {
   if (quantity > maxQuantity) return maxQuantity;
   return Math.floor(quantity);
 }
+
+let ticketPurchaseStyle = css({
+  zIndex: 10,
+  display: "flex",
+  width: "90%",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "12px",
+});
+
+let ticketFormStyle = css({
+  display: "flex",
+  width: "100%",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "12px",
+  fontSize: "1rem",
+  lineHeight: 1.5,
+  [breakpointMedia.md]: {
+    flexDirection: "row",
+    fontSize: "1.25rem",
+    lineHeight: 1.556,
+  },
+});
+
+let priceControlStyle = css({
+  display: "flex",
+  width: "100%",
+  flexGrow: 1,
+  alignItems: "center",
+  justifyContent: "space-between",
+  borderRadius: "48px",
+  padding: "10px 16px",
+  boxShadow: "inset 0 0 0 2px rgb(255 255 255 / 0.3)",
+  [breakpointMedia.md]: {
+    padding: "16px 24px",
+    boxShadow: "inset 0 0 0 4px rgb(255 255 255 / 0.3)",
+  },
+});
+
+let priceStyle = css({
+  color: "#ffffff",
+  fontFamily: theme.fontFamily.mono,
+  fontWeight: theme.fontWeight.normal,
+});
+
+let quantityControlsStyle = css({
+  display: "flex",
+  alignItems: "center",
+  gap: "16px",
+});
+
+let quantityButtonStyle = css({
+  width: "24px",
+  height: "24px",
+  color: "rgb(255 255 255 / 0.3)",
+  transition: "color 150ms",
+  "&:hover": { color: "#ffffff" },
+  "&:disabled": { cursor: "not-allowed", opacity: 0.3 },
+  "&:disabled:hover": { color: "rgb(255 255 255 / 0.3)" },
+  "& > svg": { width: "100%", height: "100%" },
+  [breakpointMedia.md]: { width: "32px", height: "32px" },
+  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+});
+
+let quantityInputStyle = css({
+  appearance: "textfield",
+  backgroundColor: "transparent",
+  color: "#ffffff",
+  textAlign: "center",
+  outline: "none",
+  "&::-webkit-inner-spin-button, &::-webkit-outer-spin-button": {
+    appearance: "none",
+  },
+});
+
+let singleDigitQuantityStyle = css({ width: "16px" });
+let doubleDigitQuantityStyle = css({ width: "32px" });
+
+let checkoutButtonStyle = css({
+  width: "100%",
+  [breakpointMedia.md]: { width: "auto" },
+});
+
+let ticketErrorStyle = css({
+  marginTop: "4px",
+  color: theme.colors.brand.red,
+  fontSize: "0.875rem",
+  fontWeight: theme.fontWeight.semibold,
+  lineHeight: 1.425,
+  [breakpointMedia.md]: { fontSize: "1rem", lineHeight: 1.5 },
+});

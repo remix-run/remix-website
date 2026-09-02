@@ -1,6 +1,5 @@
-import type { Handle } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 
-import { cx } from "../utils/public/cx.ts";
 import { MobileMenu } from "./public/mobile-menu.tsx";
 import { WordmarkLink } from "./public/wordmark-link.tsx";
 import { routes } from "../routes.ts";
@@ -28,23 +27,16 @@ const LINKS: Array<{
 
 export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
   return () => (
-    <header
-      class="relative z-50 h-16 pl-6 pr-4 sm:pr-6 min-[900px]:pr-[30px]"
-      style={{ fontFamily: theme.fontFamily.system }}
-    >
-      <div class="flex h-full w-full items-center justify-between gap-8">
+    <header mix={headerStyle}>
+      <div mix={headerInnerStyle}>
         <WordmarkLink
           href={routes.home.href()}
           brandHref={routes.brand.href()}
           width={163}
           height={16}
-          class="text-gray-900 dark:text-gray-200"
         />
 
-        <nav
-          class="hidden h-full items-center gap-5 min-[900px]:flex min-[900px]:gap-6"
-          aria-label="Main"
-        >
+        <nav mix={desktopNavStyle} aria-label="Main">
           {LINKS.map((link) => (
             <HeaderLink
               key={link.to}
@@ -59,20 +51,22 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
           ))}
         </nav>
 
-        <MobileMenu class="min-[900px]:hidden">
-          {LINKS.map((link) => (
-            <HeaderLink
-              key={link.to}
-              to={link.to}
-              current={
-                link.section !== undefined &&
-                link.section === handle.props.currentSection
-              }
-            >
-              {link.label}
-            </HeaderLink>
-          ))}
-        </MobileMenu>
+        <div mix={mobileNavStyle}>
+          <MobileMenu>
+            {LINKS.map((link) => (
+              <HeaderLink
+                key={link.to}
+                to={link.to}
+                current={
+                  link.section !== undefined &&
+                  link.section === handle.props.currentSection
+                }
+              >
+                {link.label}
+              </HeaderLink>
+            ))}
+          </MobileMenu>
+        </div>
       </div>
     </header>
   );
@@ -89,14 +83,53 @@ function HeaderLink(
     <a
       href={handle.props.to}
       aria-current={handle.props.current ? "page" : undefined}
-      class={cx(
-        "whitespace-nowrap text-base font-normal",
-        handle.props.current
-          ? "rmx-header-link-current"
-          : "rmx-header-link text-rmx-primary opacity-80 hover:opacity-100",
-      )}
+      data-header-link=""
     >
       {handle.props.children}
     </a>
   );
 }
+
+let headerStyle = css({
+  position: "relative",
+  zIndex: 50,
+  height: "64px",
+  paddingLeft: "24px",
+  paddingRight: "16px",
+  fontFamily: theme.fontFamily.system,
+  "@media (min-width: 640px)": { paddingRight: "24px" },
+  "@media (min-width: 900px)": { paddingRight: "30px" },
+});
+
+let headerInnerStyle = css({
+  display: "flex",
+  width: "100%",
+  height: "100%",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: "32px",
+});
+
+let desktopNavStyle = css({
+  display: "none",
+  height: "100%",
+  alignItems: "center",
+  gap: "20px",
+  "& [data-header-link]": {
+    color: theme.colors.text.marketingPrimary,
+    fontSize: "1rem",
+    fontWeight: theme.fontWeight.normal,
+    opacity: 0.8,
+    whiteSpace: "nowrap",
+  },
+  "& [data-header-link]:hover, & [data-header-link]:focus-visible, & [data-header-link][aria-current]":
+    {
+      color: theme.colors.action.current,
+      opacity: 1,
+    },
+  "@media (min-width: 900px)": { display: "flex", gap: "24px" },
+});
+
+let mobileNavStyle = css({
+  "@media (min-width: 900px)": { display: "none" },
+});

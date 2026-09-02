@@ -51,7 +51,7 @@ interface DocumentProps {
 /**
  * Shared document shell for Remix UI routes.
  *
- * PostCSS generates stylesheet sources that are served by `remix/assets`.
+ * Retained stylesheet sources are served directly by `remix/assets`.
  */
 export function Document(handle: Handle<DocumentProps>) {
   return () => {
@@ -286,8 +286,8 @@ export function Document(handle: Handle<DocumentProps>) {
   };
 }
 
-// These values intentionally mirror the old Tailwind body utilities so shared
-// document chrome does not depend on app.css being loaded.
+// Shared document chrome belongs to the component rather than a global
+// application stylesheet.
 let documentBodyStyle = css({
   display: "flex",
   minHeight: "100vh",

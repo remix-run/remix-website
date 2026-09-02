@@ -1,11 +1,13 @@
+import { css } from "remix/ui";
+
 const REMIX_R_PATH =
   "M1736.59 960.945L1728.85 990H1803.07L1809.45 966.049C1810.14 963.474 1808.21 960.945 1805.56 960.945H1736.59ZM1757.03 884.15L1749.5 912.391H1889.37C1894.63 912.391 1898.27 914.755 1897.49 917.672H1897.49C1896.71 920.588 1891.81 922.953 1886.56 922.953H1746.69L1739.17 951.195H1819.02C1821.29 951.195 1823.51 951.847 1825.42 953.075L1881.65 990H1968.06L1908.97 951.196H1911.85C1939.98 951.196 1966.15 938.553 1970.3 922.956L1973.12 912.396C1977.27 896.799 1957.84 884.155 1929.71 884.155V884.153L1929.71 884.15H1757.03Z";
 
 export function IntroMaskReveal() {
   return () => (
-    <div aria-hidden="true" class="rmx-intro-mask-overlay">
+    <div aria-hidden="true" mix={introMaskOverlayStyle}>
       <svg
-        class="rmx-intro-mask-svg"
+        mix={introMaskSvgStyle}
         viewBox="0 0 3600 1921"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +29,7 @@ export function IntroMaskReveal() {
         </defs>
 
         <path
-          class="rmx-intro-r-fill"
+          mix={introRFillStyle}
           d={REMIX_R_PATH}
           fill="var(--rmx-neutral-200)"
         />
@@ -106,3 +108,48 @@ export function IntroMaskReveal() {
     </div>
   );
 }
+
+let introMaskOverlayStyle = css({
+  position: "fixed",
+  inset: 0,
+  bottom: "-2px",
+  zIndex: 9999,
+  overflow: "hidden",
+  pointerEvents: "none",
+  animation:
+    "rmx-history-intro-reveal var(--rmx-intro-logo-duration) var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    inset: 0,
+    zIndex: 1,
+    background: "#000000",
+    animation:
+      "rmx-history-fade-out var(--rmx-intro-black-fade) ease-out var(--rmx-intro-black-hold) forwards",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    visibility: "hidden",
+    opacity: 0,
+    animation: "none",
+    "&::before": { opacity: 0, animation: "none" },
+  },
+});
+
+let introMaskSvgStyle = css({
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  transformOrigin: "center center",
+  animation:
+    "rmx-history-intro-scale var(--rmx-intro-logo-duration) var(--rmx-intro-logo-easing) var(--rmx-intro-logo-start) forwards",
+  "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+});
+
+let introRFillStyle = css({
+  animation:
+    "rmx-history-fade-out var(--rmx-intro-r-fade-duration) ease-out var(--rmx-intro-logo-start) forwards",
+  "@media (prefers-reduced-motion: reduce)": {
+    opacity: 0,
+    animation: "none",
+  },
+});

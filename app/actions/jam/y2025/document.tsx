@@ -32,7 +32,6 @@ export function JamDocument(handle: Handle<JamPageProps>) {
         title={title}
         description={description}
         forceTheme="dark"
-        stylesheets={["app"]}
         mix={jamDocumentStyle}
         headTags={getSocialHeadTags({
           requestUrl,

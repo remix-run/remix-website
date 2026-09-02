@@ -1,6 +1,7 @@
-import { cx } from "../../utils/public/cx.ts";
-import { clientEntry, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/ui";
 import { brandContextMenu } from "./brand-context-menu.ts";
+import { visuallyHiddenStyle } from "./css-mixins.ts";
+import { theme } from "./theme.ts";
 import { Wordmark } from "./wordmark.tsx";
 
 export let WordmarkLink = clientEntry(
@@ -11,15 +12,13 @@ export let WordmarkLink = clientEntry(
       brandHref: string;
       width?: number | string;
       height?: number | string;
-      class?: string;
     }>,
   ) {
     return () => (
       <a
         href={handle.props.href}
         aria-label="Remix"
-        class={cx("inline-flex items-center", handle.props.class)}
-        mix={[brandContextMenu(handle.props.brandHref)]}
+        mix={[wordmarkLinkStyle, brandContextMenu(handle.props.brandHref)]}
       >
         <Wordmark
           width={handle.props.width}
@@ -27,8 +26,14 @@ export let WordmarkLink = clientEntry(
           aria-hidden
         />
 
-        <span class="sr-only">Remix</span>
+        <span mix={visuallyHiddenStyle}>Remix</span>
       </a>
     );
   },
 );
+
+let wordmarkLinkStyle = css({
+  display: "inline-flex",
+  alignItems: "center",
+  color: theme.colors.text.primary,
+});

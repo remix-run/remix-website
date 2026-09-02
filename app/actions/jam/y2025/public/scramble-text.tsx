@@ -1,16 +1,11 @@
-import { cx } from "../../../../utils/public/cx.ts";
-import { clientEntry, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/ui";
+
+import { theme } from "../../../../ui/public/theme.ts";
 
 const SCRAMBLE_CHARS =
   "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 type ScrambleColor = "blue" | "green" | "yellow";
-
-const colorMap: Record<ScrambleColor, string> = {
-  blue: "text-blue-brand",
-  green: "text-green-brand",
-  yellow: "text-yellow-brand",
-};
 
 type ScrambleState = {
   visible: boolean;
@@ -28,7 +23,7 @@ type ScrambleSetup = {
 };
 
 type JamScrambleTextProps = ScrambleSetup & {
-  className?: string;
+  nowrap?: boolean;
 };
 
 let playedAnimations = new Set<string>();
@@ -193,8 +188,11 @@ export let JamScrambleText = clientEntry(
     return () => {
       return (
         <>
-          <span class="sr-only">{text}</span>
-          <span class={handle.props.className} aria-hidden="true">
+          <span mix={screenReaderOnlyStyle}>{text}</span>
+          <span
+            mix={handle.props.nowrap ? nowrapStyle : undefined}
+            aria-hidden="true"
+          >
             {textChars.map((char, index) => {
               let current = state[index];
               let visible = current?.visible ?? false;
@@ -209,12 +207,12 @@ export let JamScrambleText = clientEntry(
               return (
                 <span
                   key={index}
-                  class={cx(
-                    visible ? "opacity-100" : "opacity-0",
+                  mix={[
+                    visible ? visibleCharacterStyle : hiddenCharacterStyle,
                     resolved
-                      ? "text-white"
-                      : colorMap[handle.props.color ?? "blue"],
-                  )}
+                      ? resolvedCharacterStyle
+                      : colorStyles[handle.props.color ?? "blue"],
+                  ]}
                 >
                   {displayChar}
                 </span>
@@ -226,3 +224,24 @@ export let JamScrambleText = clientEntry(
     };
   },
 );
+
+let screenReaderOnlyStyle = css({
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+});
+
+let nowrapStyle = css({ whiteSpace: "nowrap" });
+let visibleCharacterStyle = css({ opacity: 1 });
+let hiddenCharacterStyle = css({ opacity: 0 });
+let resolvedCharacterStyle = css({ color: "#ffffff" });
+
+let colorStyles = {
+  blue: css({ color: theme.colors.brand.blue }),
+  green: css({ color: theme.colors.brand.green }),
+  yellow: css({ color: "#fecc1b" }),
+} satisfies Record<ScrambleColor, ReturnType<typeof css>>;

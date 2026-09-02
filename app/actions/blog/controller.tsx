@@ -1,10 +1,18 @@
 import { createController } from "remix/router";
-import type { Handle } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import {
+  pageBodyStyle,
+  pageMetaStyle,
+  pageTitleExtraSmallStyle,
+  pageTitleSmallStyle,
+  pageTitleStyle,
+} from "../../ui/public/marketing-styles.ts";
+import { breakpointMedia } from "../../ui/public/theme.ts";
 import { routes } from "../../routes.ts";
 import { getBlogPostListings } from "../../data/blog.ts";
 import {
@@ -84,9 +92,6 @@ export default createController(routes.blog, {
   },
 });
 
-let blogHeroImageSizes =
-  "(min-width: 1496px) 817px, (min-width: 768px) calc(58.333vw - 56px), calc(100vw - 96px)";
-
 function Page(
   handle: Handle<{
     posts: Awaited<ReturnType<typeof loadBlogPostListings>>;
@@ -117,11 +122,10 @@ function Page(
       <Document
         title="Remix Blog"
         description="Thoughts about building excellent user experiences with Remix."
-        stylesheets={["app"]}
         headTags={headTags}
       >
         <Header currentSection="blog" />
-        <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
+        <main id="main-content" mix={blogMainStyle} tabIndex={-1}>
           <BlogPageContent posts={handle.props.posts} />
         </main>
         <Footer />
@@ -140,16 +144,16 @@ function BlogPageContent(
     let featuredPosts = handle.props.posts.filter((post) => post.featured);
 
     return (
-      <div class="rmx-page-body container mt-8 flex max-w-full flex-1 flex-col">
-        <div class="mx-auto w-full max-w-[1400px]">
-          <div class="md:grid md:grid-cols-12">
-            <div class="md:col-span-7">
+      <div mix={[pageBodyStyle, blogIndexStyle]}>
+        <div mix={blogIndexInnerStyle}>
+          <div mix={blogGridStyle}>
+            <div mix={blogPrimaryColumnStyle}>
               {latestPost ? (
-                <div class="mb-14">
+                <div mix={blogLatestPostStyle}>
                   <a href={routes.blog.post.href({ slug: latestPost.slug })}>
-                    <div class="mb-6 aspect-[16/9]">
+                    <div mix={blogImageFrameStyle}>
                       <img
-                        class="mb-6 h-full w-full object-cover object-top shadow md:rounded-md"
+                        mix={blogCardImageStyle}
                         src={latestPost.imageAsset.src}
                         srcSet={latestPost.imageAsset.srcSet}
                         sizes={blogHeroImageSizes}
@@ -160,22 +164,22 @@ function BlogPageContent(
                         fetchpriority="high"
                       />
                     </div>
-                    <div class="flex flex-col gap-4">
-                      <p class="rmx-page-meta">{latestPost.dateDisplay}</p>
-                      <p class="rmx-page-title">{latestPost.title}</p>
-                      <p class="rmx-page-body">{latestPost.summary}</p>
+                    <div mix={blogCardCopyStyle}>
+                      <p mix={pageMetaStyle}>{latestPost.dateDisplay}</p>
+                      <p mix={pageTitleStyle}>{latestPost.title}</p>
+                      <p mix={pageBodyStyle}>{latestPost.summary}</p>
                     </div>
                   </a>
                 </div>
               ) : null}
 
-              <div class="mt-12 lg:grid lg:grid-cols-2 lg:gap-6">
+              <div mix={blogPostGridStyle}>
                 {posts.map((post) => (
                   <div key={post.slug}>
                     <a href={routes.blog.post.href({ slug: post.slug })}>
-                      <div class="mb-6 aspect-[16/9]">
+                      <div mix={blogImageFrameStyle}>
                         <img
-                          class="h-full w-full object-cover object-top shadow md:rounded-md"
+                          mix={blogCardImageStyle}
                           src={post.imageAsset.src}
                           srcSet={post.imageAsset.srcSet}
                           sizes="(min-width: 1496px) 397px, (min-width: 1024px) calc(29.167vw - 40px), (min-width: 768px) calc(58.333vw - 56px), calc(100vw - 96px)"
@@ -186,53 +190,64 @@ function BlogPageContent(
                           decoding="async"
                         />
                       </div>
-                      <div class="mb-12 flex flex-col gap-4">
-                        <p class="rmx-page-meta">{post.dateDisplay}</p>
-                        <p class="rmx-page-title rmx-page-title-xs">
+                      <div mix={[blogCardCopyStyle, blogPostCopyStyle]}>
+                        <p mix={pageMetaStyle}>{post.dateDisplay}</p>
+                        <p mix={[pageTitleStyle, pageTitleExtraSmallStyle]}>
                           {post.title}
                         </p>
-                        <p class="rmx-page-body">{post.summary}</p>
+                        <p mix={pageBodyStyle}>{post.summary}</p>
                       </div>
                     </a>
                   </div>
                 ))}
               </div>
             </div>
-            <div class="h-24 md:hidden" />
-            <div class="md:col-span-4 md:col-start-9">
+            <div mix={blogSidebarSpacerStyle} />
+            <div mix={blogSidebarStyle}>
               {featuredPosts.length ? (
                 <>
-                  <h3 class="rmx-page-title rmx-page-title-sm mb-8">
+                  <h3
+                    mix={[
+                      pageTitleStyle,
+                      pageTitleSmallStyle,
+                      blogFeaturedHeadingStyle,
+                    ]}
+                  >
                     Featured Articles
                   </h3>
-                  <div class="grid grid-cols-1 gap-4">
+                  <div mix={blogFeaturedListStyle}>
                     {featuredPosts.map((post, index, array) => (
                       <div key={post.slug}>
-                        <div class="flex flex-col">
-                          <div class="flex flex-col">
-                            <a
-                              href={routes.blog.post.href({ slug: post.slug })}
-                              class="rmx-page-body"
-                            >
-                              {post.title}
-                            </a>
-                          </div>
-                        </div>
+                        <a
+                          href={routes.blog.post.href({ slug: post.slug })}
+                          mix={pageBodyStyle}
+                        >
+                          {post.title}
+                        </a>
                         {index !== array.length - 1 ? (
-                          <hr class="my-4" />
+                          <hr mix={blogFeaturedDividerStyle} />
                         ) : null}
                       </div>
                     ))}
                   </div>
-                  <div class="h-24" />
+                  <div mix={blogFeaturedSpacerStyle} />
                 </>
               ) : null}
 
               <div>
-                <h3 class="rmx-page-title rmx-page-title-sm mb-6">
+                <h3
+                  mix={[
+                    pageTitleStyle,
+                    pageTitleSmallStyle,
+                    blogNewsletterHeadingStyle,
+                  ]}
+                >
                   Get updates on the latest Remix news
                 </h3>
-                <div class="rmx-page-body mb-6" id="newsletter-text">
+                <div
+                  mix={[pageBodyStyle, blogNewsletterBodyStyle]}
+                  id="newsletter-text"
+                >
                   Be the first to learn about new Remix features, community
                   events, and tutorials.
                 </div>
@@ -295,3 +310,106 @@ function getPostSocialImageUrl(
 
   return ogImageUrl.toString();
 }
+
+let blogHeroImageSizes =
+  "(min-width: 1496px) 817px, (min-width: 768px) calc(58.333vw - 56px), calc(100vw - 96px)";
+
+let blogMainStyle = css({
+  display: "flex",
+  flex: 1,
+  flexDirection: "column",
+});
+
+let blogContainerStyle = {
+  boxSizing: "border-box",
+  width: "100%",
+  marginInline: "auto",
+  paddingInline: "24px",
+  [breakpointMedia.md]: { paddingInline: "32px" },
+  [breakpointMedia.lg]: { paddingInline: "40px" },
+} as const;
+
+let blogIndexStyle = css({
+  ...blogContainerStyle,
+  display: "flex",
+  maxWidth: "100%",
+  flex: 1,
+  flexDirection: "column",
+  marginBlockStart: "32px",
+});
+
+let blogIndexInnerStyle = css({
+  width: "100%",
+  maxWidth: "1400px",
+  marginInline: "auto",
+});
+
+let blogGridStyle = css({
+  [breakpointMedia.md]: {
+    display: "grid",
+    gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
+  },
+});
+
+let blogPrimaryColumnStyle = css({
+  [breakpointMedia.md]: { gridColumn: "span 7 / span 7" },
+});
+
+let blogLatestPostStyle = css({ marginBlockEnd: "56px" });
+
+let blogImageFrameStyle = css({
+  aspectRatio: "16 / 9",
+  marginBlockEnd: "24px",
+});
+
+let blogCardImageStyle = css({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  objectPosition: "top",
+  boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  [breakpointMedia.md]: { borderRadius: "6px" },
+});
+
+let blogCardCopyStyle = css({
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+});
+
+let blogPostGridStyle = css({
+  marginBlockStart: "48px",
+  [breakpointMedia.lg]: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: "24px",
+  },
+});
+
+let blogPostCopyStyle = css({ marginBlockEnd: "48px" });
+
+let blogSidebarSpacerStyle = css({
+  height: "96px",
+  [breakpointMedia.md]: { display: "none" },
+});
+
+let blogSidebarStyle = css({
+  minWidth: 0,
+  [breakpointMedia.md]: { gridColumn: "9 / span 4" },
+});
+
+let blogFeaturedHeadingStyle = css({ marginBlockEnd: "32px" });
+
+let blogFeaturedListStyle = css({
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 1fr)",
+  gap: "16px",
+});
+
+let blogFeaturedDividerStyle = css({ marginBlock: "16px" });
+
+let blogFeaturedSpacerStyle = css({ height: "96px" });
+
+let blogNewsletterHeadingStyle = css({ marginBlockEnd: "24px" });
+
+let blogNewsletterBodyStyle = css({ marginBlockEnd: "24px" });

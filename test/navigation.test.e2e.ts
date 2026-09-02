@@ -81,7 +81,7 @@ async function trackUnstyledBlogFrames(page: Page) {
     let checkBlogStyles = () => {
       let main = document.querySelector("main");
       if (
-        main?.classList.contains("flex") &&
+        main?.querySelector('a[href^="/blog/"]') &&
         getComputedStyle(main).display !== "flex"
       ) {
         navigationState.__sawUnstyledBlogFrame = true;
@@ -143,7 +143,6 @@ describe("Navigation", () => {
         let nav = page.locator(`header nav[aria-label="${navLabel}"]`);
         let currentLink = nav.locator(`a[href="${sectionHref}"]`);
         await expect(currentLink).toHaveAttribute("aria-current", "page");
-        await expect(currentLink).toHaveClass(/rmx-header-link-current/);
         await expect(currentLink).toHaveCSS("color", "rgb(0, 116, 192)");
         await expect(nav.locator('a[aria-current="page"]')).toHaveCount(1);
       }
@@ -158,7 +157,6 @@ describe("Navigation", () => {
     for (let navLabel of ["Main", "Mobile"]) {
       let nav = page.locator(`header nav[aria-label="${navLabel}"]`);
       await expect(nav.locator('a[aria-current="page"]')).toHaveCount(0);
-      await expect(nav.locator(".rmx-header-link-current")).toHaveCount(0);
     }
   });
 

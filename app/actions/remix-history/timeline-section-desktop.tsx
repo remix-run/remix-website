@@ -1,10 +1,14 @@
-import type { Handle } from "remix/ui";
-import { cx } from "../../utils/public/cx.ts";
+import { css, type Handle, type Props } from "remix/ui";
 
-export function TimelineDiagramDesktop(handle: Handle<{ class?: string }>) {
+import { captionStyle } from "../../ui/public/marketing-styles.ts";
+import { theme } from "../../ui/public/theme.ts";
+
+export function TimelineDiagramDesktop(
+  handle: Handle<{ mix?: Props<"svg">["mix"] }>,
+) {
   return () => (
     <svg
-      class={handle.props.class}
+      mix={handle.props.mix}
       width="1919"
       height="209"
       viewBox="0 0 1919 209"
@@ -12,10 +16,7 @@ export function TimelineDiagramDesktop(handle: Handle<{ class?: string }>) {
       xmlns="http://www.w3.org/2000/svg"
     >
       {/* Year labels (non-interactive years) */}
-      <g
-        class={cx("rmx-caption", "fill-[var(--rmx-text-tertiary)]")}
-        textAnchor="middle"
-      >
+      <g mix={[captionStyle, yearLabelsStyle]} textAnchor="middle">
         <text x="373" y="9" opacity="0.1">
           2014
         </text>
@@ -481,10 +482,7 @@ function TrackLabel(handle: Handle<{ x: number; y: number; label: string }>) {
     <text
       x={handle.props.x}
       y={handle.props.y}
-      class={cx(
-        "rmx-caption",
-        "fill-[var(--rmx-neutral-100)] font-semibold uppercase tracking-wider",
-      )}
+      mix={[captionStyle, trackLabelStyle]}
       textAnchor="middle"
     >
       {handle.props.label}
@@ -528,12 +526,8 @@ function Milestone(handle: Handle<MilestoneProps>) {
           x={handle.props.yearX}
           y="9"
           textAnchor="middle"
-          class={cx(
-            "rmx-caption",
-            "fill-[var(--rmx-text-tertiary)] transition-all duration-150",
-            "group-hover:fill-[var(--rmx-neutral-100)] group-hover:font-bold",
-            "group-focus-visible:fill-[var(--rmx-neutral-100)] group-focus-visible:font-bold",
-          )}
+          data-milestone-year=""
+          mix={captionStyle}
         >
           {handle.props.year}
         </text>
@@ -554,7 +548,7 @@ function Milestone(handle: Handle<MilestoneProps>) {
           y2="20"
           stroke="var(--rmx-neutral-200)"
           strokeWidth="2"
-          class="opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+          data-milestone-line=""
         />
 
         {/* Default state: small dot */}
@@ -563,11 +557,11 @@ function Milestone(handle: Handle<MilestoneProps>) {
           cy={handle.props.nodeY}
           r="6"
           fill="var(--rmx-neutral-200)"
-          class="opacity-100 transition-opacity duration-150 group-hover:opacity-0 group-focus-visible:opacity-0"
+          data-milestone-dot=""
         />
 
         {/* Hover/focus state: white circle with colored label */}
-        <g class="opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
+        <g data-milestone-label="">
           <circle
             cx={handle.props.nodeX}
             cy={handle.props.nodeY}
@@ -578,7 +572,7 @@ function Milestone(handle: Handle<MilestoneProps>) {
             x={handle.props.nodeX}
             y={handle.props.labelY}
             textAnchor="middle"
-            class="rmx-caption font-semibold"
+            mix={[captionStyle, milestoneLabelTextStyle]}
             fill={handle.props.labelColor}
           >
             {handle.props.label}
@@ -593,7 +587,7 @@ function Milestone(handle: Handle<MilestoneProps>) {
           href={handle.props.href}
           target="_blank"
           rel="noopener noreferrer"
-          class="group cursor-pointer"
+          mix={[milestoneStyle, milestoneLinkStyle]}
         >
           {content}
         </a>
@@ -605,10 +599,55 @@ function Milestone(handle: Handle<MilestoneProps>) {
         tabIndex={0}
         role="img"
         aria-label={`${handle.props.label} released in ${handle.props.year}`}
-        class="group cursor-default"
+        mix={[milestoneStyle, milestoneStaticStyle]}
       >
         {content}
       </g>
     );
   };
 }
+
+let yearLabelsStyle = css({ fill: "var(--rmx-text-tertiary)" });
+
+let trackLabelStyle = css({
+  fill: "var(--rmx-neutral-100)",
+  fontWeight: theme.fontWeight.semibold,
+  letterSpacing: "0.05em",
+  textTransform: "uppercase",
+});
+
+let milestoneStyle = css({
+  "& [data-milestone-year]": {
+    fill: "var(--rmx-text-tertiary)",
+    transition: "all 150ms ease",
+  },
+  "& [data-milestone-line]": {
+    opacity: 0,
+    transition: "opacity 150ms ease",
+  },
+  "& [data-milestone-dot]": {
+    opacity: 1,
+    transition: "opacity 150ms ease",
+  },
+  "& [data-milestone-label]": {
+    opacity: 0,
+    transition: "opacity 150ms ease",
+  },
+  "&:is(:hover, :focus-visible) [data-milestone-year]": {
+    fill: "var(--rmx-neutral-100)",
+    fontWeight: theme.fontWeight.bold,
+  },
+  "&:is(:hover, :focus-visible) [data-milestone-line]": { opacity: 1 },
+  "&:is(:hover, :focus-visible) [data-milestone-dot]": { opacity: 0 },
+  "&:is(:hover, :focus-visible) [data-milestone-label]": { opacity: 1 },
+  "@media (prefers-reduced-motion: reduce)": {
+    "& [data-milestone-year], & [data-milestone-line], & [data-milestone-dot], & [data-milestone-label]":
+      {
+        transition: "none",
+      },
+  },
+});
+
+let milestoneLinkStyle = css({ cursor: "pointer" });
+let milestoneStaticStyle = css({ cursor: "default" });
+let milestoneLabelTextStyle = css({ fontWeight: theme.fontWeight.semibold });

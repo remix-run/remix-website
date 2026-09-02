@@ -10,7 +10,13 @@ type FooterProps = {
 
 export function Footer(handle: Handle<FooterProps>) {
   return () => (
-    <footer aria-label="Site footer" mix={[footerStyle, handle.props.mix]}>
+    <footer
+      aria-label="Site footer"
+      mix={[
+        footerStyle,
+        ...(handle.props.mix === undefined ? [] : [handle.props.mix]),
+      ]}
+    >
       <div mix={footerTopStyle}>
         <a
           href={routes.home.href()}
