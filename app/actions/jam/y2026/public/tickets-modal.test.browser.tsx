@@ -61,7 +61,7 @@ describe("Jam2026TicketsModal", () => {
     ).toBe(true);
 
     let backdrop = result.container.querySelector<HTMLAnchorElement>(
-      `[${ticketModalConfig.attributes.backdrop}]`,
+      "a[aria-label='Close tickets'][tabindex='-1']",
     )!;
     expect(backdrop.getAttribute("href")).toBe(homeHref);
     expect(backdrop.getAttribute("rmx-reset-scroll")).toBe("false");
@@ -221,7 +221,6 @@ describe("Jam2026TicketsModal", () => {
     await result.act(() => checkoutButton.click());
 
     expect(form.getAttribute("aria-busy")).toBe("true");
-    expect(form.getAttribute("data-pending")).toBe("true");
     expect(checkoutButton.disabled).toBe(true);
     expect(checkoutButton.textContent).toBe("Checking out...");
     expect(increaseButton.disabled).toBe(true);
@@ -235,7 +234,6 @@ describe("Jam2026TicketsModal", () => {
     });
 
     expect(form.hasAttribute("aria-busy")).toBe(false);
-    expect(form.getAttribute("data-pending")).toBe("false");
     expect(checkoutButton.disabled).toBe(false);
     expect(checkoutButton.textContent).toBe("Check out");
     expect(increaseButton.disabled).toBe(false);

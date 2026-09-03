@@ -11,7 +11,7 @@ describe("Jam2026PhotoMoments", () => {
     );
     t.after(result.cleanup);
 
-    let firstWindow = getPhotoWindow(result.container, "hero-toronto");
+    let firstWindow = getPhotoWindow(result.container, "TORONTO-CN-TOWER.AVIF");
 
     await result.act(() => {
       firstWindow.dispatchEvent(pointerEvent("pointerdown", 100, 100));
@@ -19,7 +19,7 @@ describe("Jam2026PhotoMoments", () => {
       firstWindow.dispatchEvent(pointerEvent("pointerup", 132, 148));
     });
 
-    firstWindow = getPhotoWindow(result.container, "hero-toronto");
+    firstWindow = getPhotoWindow(result.container, "TORONTO-CN-TOWER.AVIF");
     expect(firstWindow.style.transform).toBe("translate(32px, 48px)");
   });
 
@@ -29,7 +29,10 @@ describe("Jam2026PhotoMoments", () => {
     );
     t.after(result.cleanup);
 
-    let shirtWindow = getPhotoWindow(result.container, "hero-racing-shirt");
+    let shirtWindow = getPhotoWindow(
+      result.container,
+      "REMIX-RACING-SHIRT.AVIF",
+    );
     let shirtLink = shirtWindow.querySelector("a");
 
     expect(shirtLink?.getAttribute("href")).toBe(
@@ -44,9 +47,8 @@ describe("Jam2026PhotoMoments", () => {
       shirtWindow.dispatchEvent(pointerEvent("pointerup", 140, 160));
     });
 
-    shirtWindow = getPhotoWindow(result.container, "hero-racing-shirt");
+    shirtWindow = getPhotoWindow(result.container, "REMIX-RACING-SHIRT.AVIF");
     expect(shirtWindow.style.transform).toBe("translate(0px, 0px)");
-    expect(shirtWindow.getAttribute("data-dragging")).toBe(null);
   });
 
   it("closes windows with Escape and moves focus to the next close button", async (t) => {
@@ -55,7 +57,7 @@ describe("Jam2026PhotoMoments", () => {
     );
     t.after(result.cleanup);
 
-    let firstWindow = getPhotoWindow(result.container, "hero-toronto");
+    let firstWindow = getPhotoWindow(result.container, "TORONTO-CN-TOWER.AVIF");
     let firstClose = firstWindow.querySelector("button")!;
 
     firstClose.focus();
@@ -66,20 +68,25 @@ describe("Jam2026PhotoMoments", () => {
     });
 
     expect(
-      result.container.querySelector('[data-photo-window-id="hero-toronto"]'),
+      result.container.querySelector(
+        'button[aria-label="Close TORONTO-CN-TOWER.AVIF"]',
+      ),
     ).toBe(null);
 
-    let nextWindow = getPhotoWindow(result.container, "hero-shoppy");
+    let nextWindow = getPhotoWindow(
+      result.container,
+      "REMIX-JAM-2025-SHOPPY.AVIF",
+    );
     expect(document.activeElement).toBe(nextWindow.querySelector("button"));
   });
 });
 
-function getPhotoWindow(container: HTMLElement, id: string) {
-  let photoWindow = container.querySelector<HTMLElement>(
-    `[data-photo-window-id="${id}"]`,
-  );
+function getPhotoWindow(container: HTMLElement, filename: string) {
+  let photoWindow = container
+    .querySelector(`button[aria-label="Close ${filename}"]`)
+    ?.closest<HTMLElement>("article");
   if (!photoWindow) {
-    throw new Error(`Unable to find photo window: ${id}`);
+    throw new Error(`Unable to find photo window: ${filename}`);
   }
   return photoWindow;
 }

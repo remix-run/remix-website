@@ -9,6 +9,7 @@ import {
 import { routes } from "../routes.ts";
 import { DocumentSync } from "./public/document-sync.tsx";
 import {
+  getCompactHeadKey,
   getManagedHeadTagKey,
   type ManagedHeadTag,
   type ManagedLinkTag,
@@ -51,7 +52,7 @@ interface DocumentProps {
 /**
  * Shared document shell for Remix UI routes.
  *
- * PostCSS generates stylesheet sources that are served by `remix/assets`.
+ * Retained stylesheet sources are served directly by `remix/assets`.
  */
 export function Document(handle: Handle<DocumentProps>) {
   return () => {
@@ -159,8 +160,7 @@ export function Document(handle: Handle<DocumentProps>) {
           <style
             key="fonts"
             data-rmx-key="fonts"
-            data-remix-fonts=""
-            data-rmx-preserve-dom=""
+            data-rmx-preserve-dom
             innerHTML={`
               @font-face {
                 font-family: "Inter";
@@ -211,7 +211,7 @@ export function Document(handle: Handle<DocumentProps>) {
                 key={name}
                 data-rmx-key={`stylesheet:${name}`}
                 data-remix-stylesheet={name}
-                data-rmx-preserve-dom=""
+                data-rmx-preserve-dom
                 rel="stylesheet"
                 href={assetEntry.stylesheets[name].href}
                 media={stylesheetNames.has(name) ? undefined : "not all"}
@@ -261,7 +261,7 @@ export function Document(handle: Handle<DocumentProps>) {
           {assetEntry.preloads.map((href) => (
             <link
               key={href}
-              data-rmx-key={`modulepreload:${href}`}
+              data-rmx-key={`modulepreload:${getCompactHeadKey(href)}`}
               rel="modulepreload"
               href={href}
             />
@@ -272,7 +272,23 @@ export function Document(handle: Handle<DocumentProps>) {
           <script innerHTML={colorSchemeScript} />
         </head>
 
-        <body mix={documentBodyStyle}>
+        <body
+          mix={css({
+            display: "flex",
+            minHeight: "100vh",
+            width: "100%",
+            flexDirection: "column",
+            overflowX: "hidden",
+            backgroundColor: theme.surface.lvl0,
+            color: theme.colors.text.primary,
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
+            "&::selection": {
+              backgroundColor: "light-dark(#bce0ff, #1747b6)",
+              color: "light-dark(#000000, #ffffff)",
+            },
+          })}
+        >
           <DocumentSync
             forceTheme={forceTheme}
             stylesheets={Array.from(stylesheetNames)}
@@ -286,20 +302,5 @@ export function Document(handle: Handle<DocumentProps>) {
   };
 }
 
-// These values intentionally mirror the old Tailwind body utilities so shared
-// document chrome does not depend on app.css being loaded.
-let documentBodyStyle = css({
-  display: "flex",
-  minHeight: "100vh",
-  width: "100%",
-  flexDirection: "column",
-  overflowX: "hidden",
-  backgroundColor: theme.surface.lvl0,
-  color: theme.colors.text.primary,
-  WebkitFontSmoothing: "antialiased",
-  MozOsxFontSmoothing: "grayscale",
-  "&::selection": {
-    backgroundColor: "light-dark(#bce0ff, #1747b6)",
-    color: "light-dark(#000000, #ffffff)",
-  },
-});
+// Shared document chrome belongs to the component rather than a global
+// application stylesheet.

@@ -21,7 +21,6 @@ describe("Blog route", () => {
     let html = await response.text();
 
     expect(html).toContain("<title>Remix Blog</title>");
-    expect(html).toContain('id="main-content"');
     expect(html).toContain('<symbol id="github"');
     expect(html).toContain('href="#github"');
 
@@ -32,7 +31,6 @@ describe("Blog route", () => {
       .filter((link) => !link.includes('media="not all"'))
       .map((link) => link.match(/href="([^"]+)"/)?.[1]);
     expect(activeStylesheetHrefs).toEqual([
-      "/assets/app/styles/public/generated/app.css",
       "/assets/app/styles/public/global.css",
     ]);
   });

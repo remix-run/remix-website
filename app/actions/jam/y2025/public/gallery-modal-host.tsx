@@ -1,5 +1,6 @@
 import {
   clientEntry,
+  css,
   createMixin,
   navigate,
   type Handle,
@@ -28,7 +29,6 @@ export type JamGalleryModalNav = {
 
 type JamGalleryModalHostProps = {
   photoCount: number;
-  class?: string;
   children: RemixNode;
   nav: JamGalleryModalNav;
 };
@@ -44,8 +44,17 @@ export let JamGalleryModalHost = clientEntry(
           role="dialog"
           aria-modal="true"
           tabindex={-1}
-          class={handle.props.class}
           mix={[
+            css({
+              position: "fixed",
+              inset: 0,
+              zIndex: 50,
+              width: "100%",
+              height: "100%",
+              userSelect: "none",
+              backgroundColor: "rgb(0 0 0 / 0.7)",
+              backdropFilter: "blur(8px)",
+            }),
             focusTrap(),
             modalNavigation(handle.props.nav, handle.props.photoCount),
           ]}

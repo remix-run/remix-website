@@ -21,8 +21,8 @@ We on the Remix team sat down with our colleagues [Sebastian Ekström][sebastian
 
 ## What is Shop?
 
-<div class="flex flex-col items-center">
-  <img alt="Shop app on Apple Play Store. Title says 'Shop: All your favorite brands'" src="/blog-images/posts/shop-case-study/shop-app-ios.jpg" class="h-svh" />
+<div class="md-centered-column">
+  <img alt="Shop app on Apple Play Store. Title says 'Shop: All your favorite brands'" src="/blog-images/posts/shop-case-study/shop-app-ios.jpg" class="md-viewport-image" />
 </div>
 
 Shop is an application that allows buyers to discover merchants and products, make purchases, and track orders. Shop automatically aggregates shipping information across various delivery services. Whether it's through UPS, FedEx, or any other delivery method or company, Shop will automatically track all of your deliveries in one spot.
@@ -74,15 +74,15 @@ This positive experience gave them confidence to pick Remix when it came time to
 ### Monorepo + Remix = Success
 
 <figure>
-  <blockquote class="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 dark:text-gray-200 sm:text-2xl sm:leading-9">
+  <blockquote class="md-testimonial">
     <p>“With Shop.app we wanted to reuse a lot of the code we had from the [native] app. Remix allowed us to do that without being a hurdle. It allowed us to migrate piece by piece.”</p>
   </blockquote>
   <figcaption>
-    <a class="mt-10 flex items-center gap-x-6" href="https://github.com/linddominic">
-      <img class="h-12 w-12 rounded-full bg-gray-50" src="/blog-images/posts/shop-case-study/dominic-lind.png" alt="">
-      <div class="text-sm leading-6 text-left">
-        <div class="font-semibold text-gray-900 dark:text-gray-200">Dominic Lind</div>
-        <div class="mt-0.5 text-gray-600 dark:text-gray-400 font-light">Senior Staff Developer at Shopify</div>
+    <a class="md-testimonial-author" href="https://github.com/linddominic">
+      <img class="md-avatar" src="/blog-images/posts/shop-case-study/dominic-lind.png" alt="">
+      <div class="md-testimonial-author-copy">
+        <div class="md-testimonial-author-name">Dominic Lind</div>
+        <div class="md-testimonial-author-role">Senior Staff Developer at Shopify</div>
       </div>
     </a>
   </figcaption>
@@ -97,15 +97,15 @@ The Shop team was able to easily integrate Remix with the existing infrastructur
 ### Get Sh\*t Done
 
 <figure>
-  <blockquote class="mt-10 text-xl font-semibold leading-8 tracking-tight text-gray-900 dark:text-gray-200 sm:text-2xl sm:leading-9">
+  <blockquote class="md-testimonial">
     <p>“I have never produced so much, in such a short amount of time, with such good results.”</p>
   </blockquote>
   <figcaption>
-    <a class="mt-10 flex items-center gap-x-6" href="https://github.com/sebastianekstrom">
-      <img class="h-12 w-12 rounded-full bg-gray-50" src="/blog-images/posts/shop-case-study/sebastian-ekstrom.jpg" alt="">
-      <div class="text-sm leading-6 text-left">
-        <div class="font-semibold text-gray-900 dark:text-gray-200">Sebastian Ekström</div>
-        <div class="mt-0.5 text-gray-600 dark:text-gray-400 font-light">Senior Developer at Shopify</div>
+    <a class="md-testimonial-author" href="https://github.com/sebastianekstrom">
+      <img class="md-avatar" src="/blog-images/posts/shop-case-study/sebastian-ekstrom.jpg" alt="">
+      <div class="md-testimonial-author-copy">
+        <div class="md-testimonial-author-name">Sebastian Ekström</div>
+        <div class="md-testimonial-author-role">Senior Developer at Shopify</div>
       </div>
     </a>
   </figcaption>

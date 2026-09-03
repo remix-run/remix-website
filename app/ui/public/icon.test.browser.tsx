@@ -6,13 +6,12 @@ import { Icon } from "./icon.tsx";
 
 describe("Icon", () => {
   it("references the inline sprite and stays decorative", (t) => {
-    let result = render(<Icon name="menu" class="size-5" />);
+    let result = render(<Icon name="menu" />);
     t.after(result.cleanup);
 
     let svg = result.container.querySelector("svg")!;
     expect(svg.getAttribute("aria-hidden")).toBe("true");
     expect(svg.getAttribute("focusable")).toBe("false");
-    expect(svg.getAttribute("class")).toBe("size-5");
     expect(svg.querySelector("use")?.getAttribute("href")).toBe("#menu");
   });
 });

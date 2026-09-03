@@ -10,6 +10,7 @@ import { ScrollLogo } from "./components/scroll-logo.tsx";
 import { SectionNav } from "./components/section-nav.tsx";
 import { PackageLogos } from "./components/package-logos.tsx";
 import { isEditableKeyTarget } from "../../../ui/public/keyboard.ts";
+import { breakpointMedia } from "../../../ui/public/theme.ts";
 import type { ProjectedLabel } from "./engine/label-projection.ts";
 import { loadModelPoints, type ModelData } from "./engine/model-loader.ts";
 import { presets } from "./engine/presets.ts";
@@ -74,13 +75,13 @@ const topFadeGradientStyles = css({
   top: "0",
   left: "0",
   right: "0",
-  height: "min(42vh, 360px)",
+  height: "min(24vh, 180px)",
   zIndex: "21",
   pointerEvents: "none",
-  background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.65) 38%, rgba(0, 0, 0, 0.12) 72%, transparent 100%)`,
-  "@media (max-width: 880px)": {
-    height: "min(24vh, 180px)",
-    background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.48) 32%, rgba(0, 0, 0, 0.08) 68%, transparent 100%)`,
+  background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.48) 32%, rgba(0, 0, 0, 0.08) 68%, transparent 100%)`,
+  [breakpointMedia.lg]: {
+    height: "min(42vh, 360px)",
+    background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.65) 38%, rgba(0, 0, 0, 0.12) 72%, transparent 100%)`,
   },
 });
 

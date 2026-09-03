@@ -17,7 +17,8 @@ import {
 } from "../public/gallery-modal-host.tsx";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import type { Handle, RemixNode } from "remix/ui";
+import { css, type Handle, type Props, type RemixNode } from "remix/ui";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];
 
@@ -58,9 +59,19 @@ function renderGalleryPage({
       hideBackground
     >
       <main
-        id="main-content"
-        class="mx-auto flex max-w-[1920px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[200px] lg:pt-[210px]"
-        tabIndex={-1}
+        mix={css({
+          display: "flex",
+          maxWidth: "1920px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          paddingBlock: "80px",
+          paddingTop: "120px",
+          textAlign: "center",
+          [breakpointMedia.md]: { paddingTop: "200px" },
+          [breakpointMedia.lg]: { paddingTop: "210px" },
+        })}
       >
         <Title>
           <ScrambleText text="Photo" delay={100} color="blue" />
@@ -68,18 +79,55 @@ function renderGalleryPage({
         </Title>
 
         {photos.length === 0 ? (
-          <p class="text-lg text-white/70">No photos available yet.</p>
+          <p
+            mix={css({
+              color: "rgb(255 255 255 / 0.7)",
+              fontSize: "1.125rem",
+              lineHeight: 1.556,
+            })}
+          >
+            No photos available yet.
+          </p>
         ) : (
-          <div class="w-full">
-            <div class="w-full columns-1 gap-4 md:columns-2 md:gap-6 lg:columns-3 2xl:columns-4">
+          <div mix={css({ width: "100%" })}>
+            <div
+              mix={css({
+                width: "100%",
+                columnCount: 1,
+                columnGap: "16px",
+                [breakpointMedia.md]: { columnCount: 2, columnGap: "24px" },
+                [breakpointMedia.lg]: { columnCount: 3 },
+                [breakpointMedia["2xl"]]: { columnCount: 4 },
+              })}
+            >
               {photos.map((photo, index) => (
                 <div
                   key={photo.url}
-                  class="mb-4 w-full break-inside-avoid md:mb-6"
+                  mix={css({
+                    width: "100%",
+                    marginBottom: "16px",
+                    breakInside: "avoid",
+                    [breakpointMedia.md]: { marginBottom: "24px" },
+                  })}
                 >
                   <JamGalleryLink
                     href={`${routes.jam.y2025.gallery.index.href()}?photo=${index}`}
-                    class="block overflow-hidden rounded-lg bg-white/5 outline-none transition-opacity duration-300 hover:opacity-85 focus-visible:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-brand"
+                    mix={css({
+                      display: "block",
+                      overflow: "hidden",
+                      borderRadius: "8px",
+                      backgroundColor: "rgb(255 255 255 / 0.05)",
+                      outline: "none",
+                      transition: "opacity 300ms",
+                      "&:is(:hover, :focus-visible)": { opacity: 0.85 },
+                      "&:focus-visible": {
+                        outline: `2px solid ${theme.colors.brand.blue}`,
+                        outlineOffset: "2px",
+                      },
+                      "@media (prefers-reduced-motion: reduce)": {
+                        transition: "none",
+                      },
+                    })}
                   >
                     <PhotoImage {...photo} />
                   </JamGalleryLink>
@@ -121,19 +169,39 @@ function GalleryModal(
     );
     let downloadHref = `${routes.jam.y2025.gallery.download.href()}?photo=${handle.props.selectedPhotoIndex}`;
     return (
-      <JamGalleryModalHost
-        photoCount={handle.props.photos.length}
-        nav={nav}
-        class="fixed inset-0 z-50 size-full select-none bg-black/70 backdrop-blur"
-      >
+      <JamGalleryModalHost photoCount={handle.props.photos.length} nav={nav}>
         <JamGalleryLink
           href={nav.closeHref}
           tabindex={-1}
           ariaLabel="Close gallery backdrop"
-          class="absolute inset-0 z-0 block"
+          mix={css({
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
+            display: "block",
+          })}
         />
-        <div class="relative z-10 flex h-full w-full flex-col gap-6 p-4 md:p-9">
-          <div class="flex shrink-0 items-center justify-between">
+        <div
+          mix={css({
+            position: "relative",
+            zIndex: 10,
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            flexDirection: "column",
+            gap: "24px",
+            padding: "16px",
+            [breakpointMedia.md]: { padding: "36px" },
+          })}
+        >
+          <div
+            mix={css({
+              display: "flex",
+              flexShrink: 0,
+              alignItems: "center",
+              justifyContent: "space-between",
+            })}
+          >
             <IconLink href={nav.closeHref} icon="x-mark" label="Close modal" />
             <IconLink
               href={downloadHref}
@@ -142,16 +210,26 @@ function GalleryModal(
               download={`remix-jam-2025-photo-${handle.props.selectedPhotoIndex + 1}.jpg`}
             />
           </div>
-          <div class="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
-            <div class="absolute left-0 top-1/2 z-10 -translate-y-1/2">
+          <div
+            mix={css({
+              position: "relative",
+              display: "flex",
+              minHeight: 0,
+              flex: "1",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+            })}
+          >
+            <div mix={[modalChevronStyle, css({ left: 0 })]}>
               <IconLink
                 href={nav.previousHref}
                 icon="chevron-r"
                 label="Previous photo"
-                className="[&_svg]:rotate-180"
+                flip
               />
             </div>
-            <div class="absolute right-0 top-1/2 z-10 -translate-y-1/2">
+            <div mix={[modalChevronStyle, css({ right: 0 })]}>
               <IconLink
                 href={nav.nextHref}
                 icon="chevron-r"
@@ -160,8 +238,24 @@ function GalleryModal(
             </div>
             <ModalImage key={selectedPhoto.url} photo={selectedPhoto} />
           </div>
-          <div class="flex shrink-0 justify-center">
-            <div class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black">
+          <div
+            mix={css({
+              display: "flex",
+              flexShrink: 0,
+              justifyContent: "center",
+            })}
+          >
+            <div
+              mix={css({
+                borderRadius: theme.radius.full,
+                padding: "8px 16px",
+                backgroundColor: "#ffffff",
+                color: "#000000",
+                fontSize: "0.875rem",
+                fontWeight: theme.fontWeight.semibold,
+                lineHeight: 1.425,
+              })}
+            >
               {handle.props.selectedPhotoIndex + 1} /{" "}
               {handle.props.photos.length}
             </div>
@@ -175,7 +269,7 @@ function GalleryModal(
 function JamGalleryLink(
   handle: Handle<{
     href: string;
-    class?: string;
+    mix?: Props<"a">["mix"];
     ariaLabel?: string;
     tabindex?: number;
     children?: RemixNode;
@@ -187,7 +281,7 @@ function JamGalleryLink(
       rmx-reset-scroll="false"
       aria-label={handle.props.ariaLabel}
       tabindex={handle.props.tabindex}
-      class={handle.props.class}
+      mix={handle.props.mix}
     >
       {handle.props.children}
     </a>
@@ -202,7 +296,11 @@ function ModalImage(handle: Handle<{ photo: Photo }>) {
 
     return (
       <div
-        class="-mx-6 bg-white/5 md:mx-0"
+        mix={css({
+          marginInline: "-24px",
+          backgroundColor: "rgb(255 255 255 / 0.05)",
+          [breakpointMedia.md]: { marginInline: 0 },
+        })}
         style={{
           aspectRatio: String(aspectRatio),
           width: isLandscape ? "100%" : "auto",
@@ -214,7 +312,11 @@ function ModalImage(handle: Handle<{ photo: Photo }>) {
         <img
           src={imageSrc}
           alt={handle.props.photo.altText || ""}
-          class="size-full object-contain"
+          mix={css({
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+          })}
         />
       </div>
     );
@@ -226,7 +328,7 @@ function IconLink(
     href: string;
     icon: "chevron-r" | "x-mark" | "download";
     label: string;
-    className?: string;
+    flip?: boolean;
     download?: string;
   }>,
 ) {
@@ -236,11 +338,15 @@ function IconLink(
         href={handle.props.href}
         aria-label={handle.props.label}
         download={handle.props.download}
-        class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${handle.props.className ?? ""}`}
+        mix={iconLinkStyle}
       >
         <Icon
           name={handle.props.icon}
-          class="pointer-events-none size-6"
+          mix={
+            handle.props.flip
+              ? [iconLinkIconStyle, flippedIconStyle]
+              : iconLinkIconStyle
+          }
           aria-hidden="true"
         />
       </a>
@@ -248,11 +354,15 @@ function IconLink(
       <JamGalleryLink
         href={handle.props.href}
         ariaLabel={handle.props.label}
-        class={`focus-visible:outline-offset-3 m-1 flex items-center justify-center rounded-full bg-white p-3 text-black outline-none transition-colors duration-300 hover:bg-blue-brand hover:text-white focus-visible:bg-blue-brand focus-visible:text-white focus-visible:outline-2 focus-visible:outline-blue-brand ${handle.props.className ?? ""}`}
+        mix={iconLinkStyle}
       >
         <Icon
           name={handle.props.icon}
-          class="pointer-events-none size-6"
+          mix={
+            handle.props.flip
+              ? [iconLinkIconStyle, flippedIconStyle]
+              : iconLinkIconStyle
+          }
           aria-hidden="true"
         />
       </JamGalleryLink>
@@ -333,8 +443,54 @@ function PhotoImage(handle: Handle<Photo>) {
         height={handle.props.height}
         sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw"
         loading="lazy"
-        class="w-full select-none transition-transform duration-300 hover:scale-105"
+        mix={css({
+          width: "100%",
+          userSelect: "none",
+          transition: "transform 300ms",
+          "&:hover": { transform: "scale(1.05)" },
+          "@media (prefers-reduced-motion: reduce)": {
+            transition: "none",
+            "&:hover": { transform: "none" },
+          },
+        })}
       />
     );
   };
 }
+
+let modalChevronStyle = css({
+  position: "absolute",
+  top: "50%",
+  zIndex: 10,
+  transform: "translateY(-50%)",
+});
+
+let iconLinkStyle = css({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  margin: "4px",
+  borderRadius: theme.radius.full,
+  padding: "12px",
+  backgroundColor: "#ffffff",
+  color: "#000000",
+  outline: "none",
+  transition: "color 300ms, background-color 300ms",
+  "&:is(:hover, :focus-visible)": {
+    backgroundColor: theme.colors.brand.blue,
+    color: "#ffffff",
+  },
+  "&:focus-visible": {
+    outline: `2px solid ${theme.colors.brand.blue}`,
+    outlineOffset: "3px",
+  },
+  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+});
+
+let iconLinkIconStyle = css({
+  width: "24px",
+  height: "24px",
+  pointerEvents: "none",
+});
+
+let flippedIconStyle = css({ transform: "rotate(180deg)" });

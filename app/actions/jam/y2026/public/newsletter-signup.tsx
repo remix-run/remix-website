@@ -22,7 +22,6 @@ export let Jam2026NewsletterSignup = clientEntry(
 
       return (
         <section
-          id="newsletter"
           aria-labelledby="newsletter-heading"
           mix={newsletterSectionStyle}
         >

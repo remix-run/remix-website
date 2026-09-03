@@ -86,7 +86,7 @@ The Release Candidate marks the end of feature development (if we can help it) a
 
 <figure>
   <img alt="Michael Jackson presenting onstage to an audience at Remix Jam 2025" src="/blog-images/posts/remix-3-release-candidate/remix-jam-2025-photo-139.jpg" />
-  <figcaption class="pt-2">Michael Jackson, co-founder of Remix, presenting at Remix Jam 2025.</figcaption>
+  <figcaption class="md-caption-spaced">Michael Jackson, co-founder of Remix, presenting at Remix Jam 2025.</figcaption>
 </figure>
 
 ## Try it out

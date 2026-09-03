@@ -1,4 +1,4 @@
-import type { Handle, RemixNode } from "remix/ui";
+import { css, type Handle, type RemixNode } from "remix/ui";
 import { JamDocument } from "./document.tsx";
 import {
   AddressLink,
@@ -9,6 +9,7 @@ import {
 } from "./public/shared.tsx";
 import { routes } from "../../../routes.ts";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
+import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
 
 function slugify(input: string) {
   return input
@@ -28,21 +29,40 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
       activePath={routes.jam.y2025.faq.href()}
     >
       <main
-        id="main-content"
-        class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] md:pt-[270px] lg:pt-[280px]"
-        tabIndex={-1}
+        mix={css({
+          display: "flex",
+          maxWidth: "800px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          paddingBlock: "80px",
+          paddingTop: "120px",
+          [breakpointMedia.md]: { paddingTop: "270px" },
+          [breakpointMedia.lg]: { paddingTop: "280px" },
+        })}
       >
-        <Title className="text-center">
+        <Title mix={css({ textAlign: "center" })}>
           <ScrambleText
             text="Frequently Asked"
             delay={100}
             color="blue"
-            className="whitespace-nowrap"
+            nowrap
           />
           <ScrambleText text="Questions" delay={300} color="green" />
         </Title>
 
-        <div class="relative z-10 text-justify text-base text-white md:text-lg">
+        <div
+          mix={css({
+            position: "relative",
+            zIndex: 10,
+            color: "#ffffff",
+            fontSize: "1rem",
+            lineHeight: 1.5,
+            textAlign: "justify",
+            [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
+          })}
+        >
           <FAQSection
             question="Where can I find the event lineup?"
             answer={
@@ -64,10 +84,9 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
                   office: <AddressLink />.
                 </Paragraph>
                 <Paragraph>
-                  Check-in starts at{" "}
-                  <strong class="font-bold text-white">8:30 AM</strong> in the
-                  lobby. Enter on the west side of the building on Waterloo
-                  Terrace.
+                  Check-in starts at <strong mix={strongStyle}>8:30 AM</strong>{" "}
+                  in the lobby. Enter on the west side of the building on
+                  Waterloo Terrace.
                 </Paragraph>
               </>
             }
@@ -106,7 +125,7 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
             answer={
               <>
                 <Paragraph>We have 2 hotel blocks for the event:</Paragraph>
-                <ul class="list-disc space-y-1 pl-8">
+                <ul mix={faqListStyle}>
                   <li>
                     <a
                       href="https://reservation.germainhotels.com/ibe/details.aspx?propertyid=17522&nights=2&checkin=10/09/2025&group=2510SHOPIF&lang=en-us&adults=2"
@@ -129,7 +148,7 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
                   </li>
                 </ul>
 
-                <Paragraph className="font-bold text-white">
+                <Paragraph mix={strongStyle}>
                   <strong>You must select the dates Oct 9-11.</strong>
                 </Paragraph>
               </>
@@ -144,7 +163,7 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
           <FAQSection
             question="Do I need a visa to attend?"
             answer={
-              <ul class="list-disc space-y-1 pl-8">
+              <ul mix={faqListStyle}>
                 <li>
                   Check{" "}
                   <a
@@ -173,7 +192,7 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
                     href="https://forms.gle/DdPs7rREJaFz8Pzf9"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-blue-400 hover:underline"
+                    mix={textLinkStyle}
                   >
                     letter of invitation
                   </a>{" "}
@@ -226,10 +245,22 @@ function FAQSection(handle: Handle<{ question: string; answer: RemixNode }>) {
     return (
       <section
         id={id}
-        class="mt-5 scroll-mt-32 space-y-3 text-base text-white md:text-lg lg:mt-10"
+        mix={css({
+          marginTop: "20px",
+          scrollMarginTop: "128px",
+          color: "#ffffff",
+          fontSize: "1rem",
+          lineHeight: 1.5,
+          "& > * + *": { marginTop: "12px" },
+          [breakpointMedia.md]: { fontSize: "1.125rem", lineHeight: 1.556 },
+          [breakpointMedia.lg]: { marginTop: "40px" },
+        })}
       >
         <Subheader>
-          <a href={`#${id}`} class="hover:underline">
+          <a
+            href={`#${id}`}
+            mix={css({ "&:hover": { textDecoration: "underline" } })}
+          >
             {handle.props.question}
           </a>
         </Subheader>
@@ -245,8 +276,24 @@ function FAQSection(handle: Handle<{ question: string; answer: RemixNode }>) {
 
 function JamEmail() {
   return () => (
-    <a href="mailto:jam@remix.run" class="text-blue-400 hover:underline">
+    <a href="mailto:jam@remix.run" mix={textLinkStyle}>
       jam@remix.run
     </a>
   );
 }
+
+let strongStyle = css({
+  color: "#ffffff",
+  fontWeight: theme.fontWeight.bold,
+});
+
+let faqListStyle = css({
+  paddingLeft: "32px",
+  listStyleType: "disc",
+  "& > * + *": { marginTop: "4px" },
+});
+
+let textLinkStyle = css({
+  color: "#59b0ff",
+  "&:hover": { textDecoration: "underline" },
+});

@@ -1,3 +1,5 @@
+@layer reset, route, rmx, content;
+
 :root {
   --color-gray-300: #a4a4a4;
   --color-gray-800: #383838;
@@ -5,12 +7,10 @@
 
 @layer reset {
   /*
-   * Adapted from Tailwind CSS Preflight v3.4.19.
-   * Tailwind's generated Preflight is disabled in `tailwind.config.mjs` so this
-   * always-loaded stylesheet is the single source for global base styles.
+   * Maintained from the site's historical browser reset. This always-loaded
+   * stylesheet is the single source for global base styles.
    * Keep these reset rules layered so route/component styles in later layers can
    * override base element defaults.
-   * https://tailwindcss.com/docs/preflight
    */
   *,
   ::before,
@@ -40,11 +40,6 @@
 
   *::-webkit-scrollbar-thumb:hover {
     background: light-dark(#9ca3af, #52525b);
-  }
-
-  ::before,
-  ::after {
-    --tw-content: "";
   }
 
   html,

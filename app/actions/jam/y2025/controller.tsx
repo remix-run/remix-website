@@ -1,7 +1,6 @@
 import { createController } from "remix/router";
-import type { Handle, RemixNode } from "remix/ui";
+import { css, type Handle, type RemixNode } from "remix/ui";
 
-import { cx } from "../../../utils/public/cx.ts";
 import { getSchedule } from "../../../data/jam-schedule.ts";
 import { routes } from "../../../routes.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
@@ -22,6 +21,7 @@ import { JamFadeInBadge } from "./public/fade-in-badge.tsx";
 import { JamNewsletterSubscribeForm } from "./public/newsletter-subscribe.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../ui/public/icon.tsx";
+import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
 
 type EventStatus = "before" | "live" | "after";
 
@@ -91,58 +91,69 @@ const sectionLabelText: Record<EventStatus, string> = {
   after: "In Case You Missed It",
 };
 
-const badgeText: Record<EventStatus, RemixNode> = {
-  before: "Event",
-  live: "Live",
-  after: (
-    <>
-      Rewind
-      <Icon
-        name="fast-forward"
-        class="size-6 rotate-180 md:size-12 lg:size-14"
-        aria-hidden="true"
-      />
-    </>
-  ),
-};
-
 function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
   return () => (
     <>
-      <div class="relative z-30">
+      <div mix={css({ position: "relative", zIndex: 30 })}>
         <JamKeepsakes />
       </div>
 
       <main
-        id="main-content"
-        class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[170px] text-center md:pt-[200px] lg:pt-[210px]"
-        tabIndex={-1}
+        mix={css({
+          display: "flex",
+          maxWidth: "800px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          paddingBlock: "80px",
+          paddingTop: "170px",
+          textAlign: "center",
+          [breakpointMedia.md]: { paddingTop: "200px" },
+          [breakpointMedia.lg]: { paddingTop: "210px" },
+        })}
       >
         <SectionLabel>
           {sectionLabelText[handle.props.eventStatus]}
         </SectionLabel>
         <Title>
           <ScrambleText text="Remix Jam" delay={100} color="blue" />
-          <span class="flex items-center justify-center gap-3 md:gap-5">
+          <span
+            mix={css({
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "12px",
+              [breakpointMedia.md]: { gap: "20px" },
+            })}
+          >
             <ScrambleText text="Toronto" delay={400} color="green" />
             <JamFadeInBadge
               delay={1200}
-              class={cx(
-                "flex items-center justify-center gap-2 md:gap-4",
-                handle.props.eventStatus === "live"
-                  ? "bg-red-brand text-white"
-                  : "text-white ring-4 ring-inset ring-white md:ring-[6px]",
-              )}
+              live={handle.props.eventStatus === "live"}
             >
-              {badgeText[handle.props.eventStatus]}
+              {getBadgeText(handle.props.eventStatus)}
             </JamFadeInBadge>
           </span>
         </Title>
 
-        <div class="z-10 w-full">
-          <div class="relative aspect-video w-full overflow-hidden rounded-lg">
+        <div mix={css({ zIndex: 10, width: "100%" })}>
+          <div
+            mix={css({
+              position: "relative",
+              width: "100%",
+              overflow: "hidden",
+              borderRadius: "8px",
+              aspectRatio: "16 / 9",
+            })}
+          >
             <iframe
-              class="absolute inset-0 h-full w-full"
+              mix={css({
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+              })}
               src="https://www.youtube.com/embed/xt_iEOn2a6Y?si=paROll6GT5taxAdl"
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -155,26 +166,72 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
         {handle.props.eventStatus === "before" ? (
           <>
             <SectionLabel>Location</SectionLabel>
-            <div class="z-10 flex flex-col items-center gap-6 md:gap-8">
+            <div
+              mix={css({
+                zIndex: 10,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "24px",
+                [breakpointMedia.md]: { gap: "32px" },
+              })}
+            >
               <AddressMain />
             </div>
           </>
         ) : null}
       </main>
 
-      <div class="h-[100px] w-full" />
+      <div mix={css({ width: "100%", height: "100px" })} />
 
       <aside
-        id="newsletter"
-        class="relative z-10 mx-auto max-w-2xl text-center text-base"
+        mix={css({
+          position: "relative",
+          zIndex: 10,
+          maxWidth: "672px",
+          marginInline: "auto",
+          fontSize: "1rem",
+          textAlign: "center",
+        })}
       >
-        <h2 class="text-2xl font-bold tracking-tight text-white md:text-3xl">
+        <h2
+          mix={css({
+            color: "#ffffff",
+            fontSize: "1.5rem",
+            fontWeight: theme.fontWeight.bold,
+            lineHeight: 1.333,
+            letterSpacing: "-0.025em",
+            [breakpointMedia.md]: { fontSize: "1.875rem", lineHeight: 1.2 },
+          })}
+        >
           Sign up for our Newsletter for the latest Remix Jam news and updates
         </h2>
         <NewsletterSubscribeFrameHost
           src={routes.jam.y2025.newsletterSignup.href()}
+          mix={css({ marginTop: "48px" })}
         />
       </aside>
+    </>
+  );
+}
+
+function getBadgeText(eventStatus: EventStatus): RemixNode {
+  if (eventStatus === "before") return "Event";
+  if (eventStatus === "live") return "Live";
+  return (
+    <>
+      Rewind
+      <Icon
+        name="fast-forward"
+        mix={css({
+          width: "24px",
+          height: "24px",
+          transform: "rotate(180deg)",
+          [breakpointMedia.md]: { width: "48px", height: "48px" },
+          [breakpointMedia.lg]: { width: "56px", height: "56px" },
+        })}
+        aria-hidden="true"
+      />
     </>
   );
 }

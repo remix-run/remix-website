@@ -1,25 +1,97 @@
-import { cx } from "../../utils/public/cx.ts";
+import { css } from "remix/ui";
 
-let heroImageSrc = "/marketing/racecar-teaser-hero.webp";
+import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 
 export function HeroSection() {
   return () => (
-    <section class="flex min-h-[540px] flex-col items-center justify-end overflow-hidden px-12 pb-6 md:min-h-[70vh] md:pb-12 xl:min-h-[80vh]">
-      <div class="flex w-full flex-col items-center gap-12 md:gap-24">
+    <section
+      mix={css({
+        display: "flex",
+        minHeight: "540px",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        overflow: "hidden",
+        paddingInline: "48px",
+        paddingBottom: "24px",
+        [breakpointMedia.md]: { minHeight: "70vh", paddingBottom: "48px" },
+        [breakpointMedia.xl]: { minHeight: "80vh" },
+      })}
+    >
+      <div
+        mix={css({
+          display: "flex",
+          width: "100%",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          [breakpointMedia.md]: { gap: "96px" },
+        })}
+      >
         <div
-          class={cx(
-            "rmx-hero",
-            "text-rmx-primary flex w-full flex-col items-start gap-12 md:items-center md:gap-6 md:text-center",
-          )}
+          mix={css({
+            display: "flex",
+            width: "100%",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: "48px",
+            color: "var(--rmx-text-primary)",
+            opacity: 0,
+            animation:
+              "rmx-history-fade-in var(--rmx-hero-fade-duration) ease-out var(--rmx-hero-fade-delay) forwards",
+            [breakpointMedia.md]: {
+              alignItems: "center",
+              gap: "24px",
+              textAlign: "center",
+            },
+            "@media (prefers-reduced-motion: reduce)": {
+              animation: "none",
+              opacity: 1,
+            },
+          })}
         >
-          <h1 class="rmx-heading-hero">The history of Remix</h1>
+          <h1
+            mix={css({
+              fontSize: "1.5rem",
+              fontWeight: theme.fontWeight.bold,
+              lineHeight: 1.4,
+              [breakpointMedia.md]: {
+                fontSize: "2.25rem",
+                fontWeight: theme.fontWeight.semibold,
+                letterSpacing: "-0.025em",
+              },
+            })}
+          >
+            The history of Remix
+          </h1>
         </div>
 
-        <div class="relative aspect-[1600/367] w-full max-w-[1600px] max-md:-mx-12 max-md:aspect-[480/110] max-md:w-screen max-md:min-w-[480px] max-md:max-w-none">
+        <div
+          mix={css({
+            position: "relative",
+            width: "100%",
+            maxWidth: "1600px",
+            aspectRatio: "1600 / 367",
+            "@media (max-width: 767px)": {
+              width: "100vw",
+              minWidth: "480px",
+              maxWidth: "none",
+              marginInline: "-48px",
+              aspectRatio: "480 / 110",
+            },
+          })}
+        >
           <img
-            src={heroImageSrc}
+            src="/marketing/racecar-teaser-hero.webp"
             alt="Racecar under a black sheet with a Remix 3 logo"
-            class="pointer-events-none absolute inset-0 size-full object-cover"
+            mix={css({
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+              objectFit: "cover",
+            })}
             width={1600}
             height={367}
           />

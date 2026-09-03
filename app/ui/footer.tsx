@@ -10,16 +10,62 @@ type FooterProps = {
 
 export function Footer(handle: Handle<FooterProps>) {
   return () => (
-    <footer aria-label="Site footer" mix={[footerStyle, handle.props.mix]}>
-      <div mix={footerTopStyle}>
+    <footer
+      aria-label="Site footer"
+      mix={[
+        css({
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "16px",
+          padding: "48px 24px 144px",
+          color: theme.colors.text.muted,
+          "& a": {
+            color: "inherit",
+            opacity: 0.8,
+            textDecoration: "none",
+            transition: "opacity 150ms ease",
+          },
+          "& a:hover": {
+            opacity: 1,
+          },
+          "& a:focus-visible": {
+            outline: "2px solid currentColor",
+            outlineOffset: "4px",
+          },
+          "@media (min-width: 1024px)": {
+            paddingInline: "48px",
+          },
+        }),
+        ...(handle.props.mix === undefined ? [] : [handle.props.mix]),
+      ]}
+    >
+      <div
+        mix={css({
+          display: "flex",
+          alignItems: "center",
+          gap: "24px",
+        })}
+      >
         <a
           href={routes.home.href()}
           aria-label="Remix"
-          mix={footerBrandLinkStyle}
+          mix={css({
+            display: "inline-flex",
+            alignItems: "center",
+          })}
         >
           <Wordmark height={12} aria-hidden />
         </a>
-        <nav aria-label="Find us on the web" mix={footerSocialNavStyle}>
+        <nav
+          aria-label="Find us on the web"
+          mix={css({
+            display: "flex",
+            alignItems: "center",
+            gap: "24px",
+          })}
+        >
           <a
             href="https://github.com/remix-run"
             aria-label="GitHub"
@@ -71,56 +117,25 @@ export function Footer(handle: Handle<FooterProps>) {
         </nav>
       </div>
 
-      <div mix={footerLegalStyle}>
+      <div
+        mix={css({
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "8px",
+          fontFamily: theme.fontFamily.mono,
+          fontSize: "10px",
+          lineHeight: "1.6",
+          letterSpacing: "0.05em",
+          textTransform: "uppercase",
+        })}
+      >
         <p>docs and examples licensed under mit</p>
         <p>©{new Date().getFullYear()} Shopify, Inc.</p>
       </div>
     </footer>
   );
 }
-
-let footerStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "16px",
-  padding: "48px 24px 144px",
-  color: theme.colors.text.muted,
-  "& a": {
-    color: "inherit",
-    opacity: 0.8,
-    textDecoration: "none",
-    transition: "opacity 150ms ease",
-  },
-  "& a:hover": {
-    opacity: 1,
-  },
-  "& a:focus-visible": {
-    outline: "2px solid currentColor",
-    outlineOffset: "4px",
-  },
-  "@media (min-width: 1024px)": {
-    paddingInline: "48px",
-  },
-});
-
-let footerTopStyle = css({
-  display: "flex",
-  alignItems: "center",
-  gap: "24px",
-});
-
-let footerBrandLinkStyle = css({
-  display: "inline-flex",
-  alignItems: "center",
-});
-
-let footerSocialNavStyle = css({
-  display: "flex",
-  alignItems: "center",
-  gap: "24px",
-});
 
 let footerSocialLinkStyle = css({
   display: "inline-flex",
@@ -131,16 +146,4 @@ let footerSocialLinkStyle = css({
 let footerSocialIconStyle = css({
   width: "20px",
   height: "20px",
-});
-
-let footerLegalStyle = css({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "8px",
-  fontFamily: theme.fontFamily.mono,
-  fontSize: "10px",
-  lineHeight: "1.6",
-  letterSpacing: "0.05em",
-  textTransform: "uppercase",
 });

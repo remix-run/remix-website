@@ -42,8 +42,6 @@ describe("home route", () => {
     expect(html).toContain(
       'name="description" content="The fully-stacked web framework"',
     );
-    expect(html).toContain('id="main-content"');
-    expect(html).toContain('id="remix-landing-app"');
     expect(html).toContain(
       '<source media="(prefers-reduced-motion: reduce)" srcset="/landing/remix-runner-static.png" type="image/png"',
     );
@@ -60,9 +58,9 @@ describe("home route", () => {
     expect(fontPreloadLinks[0]).toContain('crossorigin="anonymous"');
 
     let fontDeclarations =
-      html.match(
-        /<style[^>]+data-remix-fonts=""[^>]*>[\s\S]*?<\/style>/,
-      )?.[0] ?? "";
+      [...html.matchAll(/<style[^>]*>[\s\S]*?<\/style>/g)]
+        .map((match) => match[0])
+        .find((style) => style.includes("inter-roman-latin-var.woff2")) ?? "";
     for (let filename of [
       "inter-roman-latin-var.woff2",
       "inter-italic-latin-var.woff2",

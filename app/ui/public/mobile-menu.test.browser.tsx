@@ -39,6 +39,22 @@ describe("MobileMenu", () => {
     expect(document.activeElement).toBe(summary);
   });
 
+  it("closes after the viewport changes", async (t) => {
+    let result = render(
+      <MobileMenu>
+        <a href="/blog">Blog</a>
+      </MobileMenu>,
+    );
+    t.after(result.cleanup);
+
+    let details = result.container.querySelector("details")!;
+    await result.act(() => result.container.querySelector("summary")!.click());
+    expect(details.open).toBe(true);
+
+    await result.act(() => window.dispatchEvent(new Event("resize")));
+    expect(details.open).toBe(false);
+  });
+
   it("closes when focus moves outside", async (t) => {
     let result = render(
       <div>

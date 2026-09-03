@@ -1,5 +1,7 @@
-import { cx } from "../../utils/public/cx.ts";
-import type { Handle, Props, RemixNode } from "remix/ui";
+import { css, type Handle, type Props, type RemixNode } from "remix/ui";
+
+import { captionStyle } from "../../ui/public/marketing-styles.ts";
+import { theme } from "../../ui/public/theme.ts";
 
 const YEARS = Array.from({ length: 13 }, (_, index) => 2014 + index);
 const ROW_HEIGHT = 57;
@@ -30,35 +32,44 @@ const LANE_CELL_CONFIG: Record<string, Record<number, CellConfig>> = {
 export function TimelineDiagramMobile() {
   return () => (
     <div
-      class="relative mx-auto grid w-[380px]"
-      style={{
+      mix={css({
+        position: "relative",
+        display: "grid",
+        width: "380px",
+        marginInline: "auto",
         gridTemplateColumns: "auto repeat(3, 1fr)",
         gridTemplateRows: `repeat(${YEARS.length + 1}, ${ROW_HEIGHT}px)`,
-      }}
+      })}
     >
       <div
-        style={{
-          gridColumn: 2,
-          gridRow: "1 / -1",
-          background:
-            "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-red) 70%, var(--rmx-neutral-950) 100%)",
-        }}
+        mix={[
+          laneBackgroundStyle,
+          css({
+            gridColumn: 2,
+            background:
+              "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-red) 70%, var(--rmx-neutral-950) 100%)",
+          }),
+        ]}
       />
       <div
-        style={{
-          gridColumn: 3,
-          gridRow: "1 / -1",
-          background:
-            "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-blue) 70%, var(--rmx-neutral-950) 100%)",
-        }}
+        mix={[
+          laneBackgroundStyle,
+          css({
+            gridColumn: 3,
+            background:
+              "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-blue) 70%, var(--rmx-neutral-950) 100%)",
+          }),
+        ]}
       />
       <div
-        style={{
-          gridColumn: 4,
-          gridRow: "1 / -1",
-          background:
-            "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-green) 70%, var(--rmx-neutral-950) 100%)",
-        }}
+        mix={[
+          laneBackgroundStyle,
+          css({
+            gridColumn: 4,
+            background:
+              "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-shade-green) 70%, var(--rmx-neutral-950) 100%)",
+          }),
+        ]}
       />
 
       <TrackSegments />
@@ -108,74 +119,91 @@ function TrackSegments() {
     return (
       <>
         <div
-          class="mx-auto w-12"
-          style={{
-            gridColumn: 2,
-            gridRow: "1 / -1",
-            borderRadius: "0 0 24px 24px",
-            background:
-              "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-highlight-red) 30%)",
-          }}
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 2,
+              gridRow: "1 / -1",
+              borderRadius: "0 0 24px 24px",
+              background:
+                "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-highlight-red) 30%)",
+            }),
+          ]}
         />
         <div
-          class="mx-auto w-12"
-          style={{
-            gridColumn: 2,
-            gridRow: "8 / 10",
-            borderRadius: "24px 24px 0 24px",
-            background: "var(--rmx-highlight-blue)",
-            marginBottom: verticalSegmentMargin,
-          }}
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 2,
+              gridRow: "8 / 10",
+              borderRadius: "24px 24px 0 24px",
+              background: "var(--rmx-highlight-blue)",
+            }),
+          ]}
+          style={{ marginBottom: verticalSegmentMargin }}
         />
         <div
-          class="ml-12 h-12 self-center"
-          style={{
+          mix={css({
+            alignSelf: "center",
+            height: "48px",
+            marginLeft: "48px",
             gridColumn: "2 / 4",
             gridRow: 9,
             borderRadius: "0 24px 0 24px",
             background: "var(--rmx-highlight-blue)",
-            marginRight: horizontalSegmentInset,
-          }}
+          })}
+          style={{ marginRight: horizontalSegmentInset }}
         />
         <div
-          class="mx-auto w-12"
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 3,
+              gridRow: "9 / 12",
+              borderRadius: "0 24px 24px 0",
+              background: "var(--rmx-highlight-blue)",
+            }),
+          ]}
           style={{
-            gridColumn: 3,
-            gridRow: "9 / 12",
-            borderRadius: "0 24px 24px 0",
-            background: "var(--rmx-highlight-blue)",
             marginTop: verticalSegmentMargin,
             marginBottom: verticalSegmentMargin,
           }}
         />
         <div
-          class="mr-12 h-12 self-center"
-          style={{
+          mix={css({
+            alignSelf: "center",
+            height: "48px",
+            marginRight: "48px",
             gridColumn: "2 / 4",
             gridRow: 11,
             borderRadius: "24px 0 24px 0",
             background: "var(--rmx-highlight-blue)",
-            marginLeft: horizontalSegmentInset,
-          }}
+          })}
+          style={{ marginLeft: horizontalSegmentInset }}
         />
         <div
-          class="mx-auto w-12"
-          style={{
-            gridColumn: 2,
-            gridRow: "11 / 13",
-            borderRadius: "48px 24px 0 0",
-            background:
-              "linear-gradient(180deg, var(--rmx-highlight-blue) 46.82%, var(--rmx-highlight-red) 100%)",
-            marginTop: verticalSegmentMargin,
-          }}
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 2,
+              gridRow: "11 / 13",
+              borderRadius: "48px 24px 0 0",
+              background:
+                "linear-gradient(180deg, var(--rmx-highlight-blue) 46.82%, var(--rmx-highlight-red) 100%)",
+            }),
+          ]}
+          style={{ marginTop: verticalSegmentMargin }}
         />
         <div
-          class="mx-auto w-12 rounded-3xl"
-          style={{
-            gridColumn: 4,
-            gridRow: "13 / 15",
-            background: "var(--rmx-highlight-green)",
-          }}
+          mix={[
+            verticalTrackStyle,
+            css({
+              gridColumn: 4,
+              gridRow: "13 / 15",
+              borderRadius: "24px",
+              background: "var(--rmx-highlight-green)",
+            }),
+          ]}
         />
       </>
     );
@@ -187,10 +215,18 @@ function LaneHeader(
 ) {
   return () => (
     <div
-      class={cx(
-        "text-rmx-neutral-100",
-        "flex items-center justify-center whitespace-nowrap text-xs font-extrabold uppercase leading-[1.6] tracking-[0.6px]",
-      )}
+      mix={css({
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "var(--rmx-neutral-100)",
+        fontSize: "0.75rem",
+        fontWeight: theme.fontWeight.extrabold,
+        lineHeight: 1.6,
+        letterSpacing: "0.6px",
+        textTransform: "uppercase",
+        whiteSpace: "nowrap",
+      })}
       style={handle.props.style}
     >
       {handle.props.children}
@@ -210,7 +246,16 @@ function YearLabel(
 
     return (
       <div
-        class="rmx-caption text-rmx-tertiary flex items-center justify-end px-6"
+        mix={[
+          captionStyle,
+          css({
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            paddingInline: "24px",
+            color: "var(--rmx-text-tertiary)",
+          }),
+        ]}
         style={{
           opacity,
           ...(typeof handle.props.style === "object" && handle.props.style
@@ -235,10 +280,15 @@ function LaneCell(
     if (label) {
       return (
         <div
-          class={cx(
-            "rmx-caption text-rmx-neutral-100",
-            "self-center justify-self-center font-bold",
-          )}
+          mix={[
+            captionStyle,
+            css({
+              alignSelf: "center",
+              justifySelf: "center",
+              color: "var(--rmx-neutral-100)",
+              fontWeight: theme.fontWeight.bold,
+            }),
+          ]}
           style={{
             ...(typeof handle.props.style === "object" && handle.props.style
               ? handle.props.style
@@ -254,12 +304,25 @@ function LaneCell(
     }
 
     return (
-      <div class="self-center justify-self-center" style={handle.props.style}>
+      <div
+        mix={css({ alignSelf: "center", justifySelf: "center" })}
+        style={handle.props.style}
+      >
         <div
-          class="size-[9px] rounded-full border border-[--rmx-neutral-100] opacity-40"
+          mix={css({
+            width: "9px",
+            height: "9px",
+            border: "1px solid var(--rmx-neutral-100)",
+            borderRadius: "9999px",
+            opacity: 0.4,
+          })}
           style={configStyle}
         />
       </div>
     );
   };
 }
+
+let laneBackgroundStyle = css({ gridRow: "1 / -1" });
+
+let verticalTrackStyle = css({ width: "48px", marginInline: "auto" });

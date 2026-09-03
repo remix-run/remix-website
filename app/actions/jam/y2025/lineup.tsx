@@ -1,14 +1,14 @@
-import { cx } from "../../../utils/public/cx.ts";
-import type { Handle } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 import { getSchedule } from "../../../data/jam-schedule.ts";
 import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";
 import { ScrambleText, Title } from "./public/shared.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
-import { JamLineupAccordionItem } from "./public/lineup-accordion-item.tsx";
-
-let gridColsClassName =
-  "grid grid-cols-[75px_1fr_auto] gap-4 sm:grid-cols-[100px_1fr_1fr_24px] sm:gap-6 md:grid-cols-[120px_1fr_1fr_24px] md:gap-8 lg:grid-cols-[150px_1fr_1fr_24px] lg:gap-12";
+import {
+  JamLineupAccordionItem,
+  scheduleGridStyle,
+} from "./public/lineup-accordion-item.tsx";
+import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
 
 type Schedule = Awaited<ReturnType<typeof getSchedule>>;
 
@@ -26,18 +26,57 @@ export function Jam2025LineupPage(
       showSeats
     >
       <main
-        id="main-content"
-        class="mx-auto flex max-w-[1200px] flex-col items-center py-20 pt-[120px] md:pt-[180px] lg:pt-[200px]"
-        tabIndex={-1}
+        mix={css({
+          display: "flex",
+          maxWidth: "1200px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          paddingBlock: "80px",
+          paddingTop: "120px",
+          [breakpointMedia.md]: { paddingTop: "180px" },
+          [breakpointMedia.lg]: { paddingTop: "200px" },
+        })}
       >
-        <Title className="text-center">
+        <Title mix={css({ textAlign: "center" })}>
           <ScrambleText text="Schedule" delay={100} color="blue" />
           <ScrambleText text="& Lineup" delay={300} color="green" />
         </Title>
 
-        <div class="mt-16 flex w-full flex-col gap-1 py-6 sm:mt-24 sm:px-2 sm:py-9 md:mt-24">
-          <h1 class="text-lg text-white sm:text-3xl">Friday</h1>
-          <h2 class="text-xl font-bold text-white sm:text-4xl md:text-5xl">
+        <div
+          mix={css({
+            display: "flex",
+            width: "100%",
+            flexDirection: "column",
+            gap: "4px",
+            marginTop: "64px",
+            paddingBlock: "24px",
+            [breakpointMedia.sm]: {
+              marginTop: "96px",
+              padding: "36px 8px",
+            },
+          })}
+        >
+          <h1
+            mix={css({
+              color: "#ffffff",
+              fontSize: "1.125rem",
+              lineHeight: 1.556,
+              [breakpointMedia.sm]: { fontSize: "1.875rem", lineHeight: 1.2 },
+            })}
+          >
+            Friday
+          </h1>
+          <h2
+            mix={css({
+              color: "#ffffff",
+              fontSize: "1.25rem",
+              fontWeight: theme.fontWeight.bold,
+              lineHeight: 1.556,
+              [breakpointMedia.sm]: { fontSize: "2.25rem", lineHeight: 1.111 },
+              [breakpointMedia.md]: { fontSize: "3rem", lineHeight: 1.083 },
+            })}
+          >
             Oct 10 2025
           </h2>
         </div>
@@ -51,13 +90,32 @@ export function Jam2025LineupPage(
 function ScheduleTable(handle: Handle<{ items: Schedule }>) {
   return () => (
     <>
-      <section class="z-10 w-full sm:hidden">
-        <div class="-mx-10 border-y-2 border-white/20 px-4">
+      <section
+        mix={css({
+          zIndex: 10,
+          width: "100%",
+          [breakpointMedia.sm]: { display: "none" },
+        })}
+      >
+        <div
+          mix={css({
+            marginInline: "-40px",
+            borderBlock: "2px solid rgb(255 255 255 / 0.2)",
+            paddingInline: "16px",
+          })}
+        >
           <div
-            class={cx(
-              "p-6 font-mono text-xs uppercase text-white/40",
-              gridColsClassName,
-            )}
+            mix={[
+              scheduleGridStyle,
+              css({
+                padding: "24px",
+                color: "rgb(255 255 255 / 0.4)",
+                fontFamily: theme.fontFamily.mono,
+                fontSize: "0.75rem",
+                lineHeight: 1.333,
+                textTransform: "uppercase",
+              }),
+            ]}
           >
             <div>Time</div>
             <div>Topic</div>
@@ -67,41 +125,85 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
           {handle.props.items.map((item) => {
             let key = `${item.time}-${item.title}`;
             return (
-              <div key={key} class="overflow-hidden">
+              <div key={key} mix={css({ overflow: "hidden" })}>
                 <div
-                  class={cx(
-                    "my-2 border-t border-white/10 p-6 text-sm font-bold text-white",
-                    gridColsClassName,
-                  )}
+                  mix={[
+                    scheduleGridStyle,
+                    css({
+                      marginBlock: "8px",
+                      borderTop: "1px solid rgb(255 255 255 / 0.1)",
+                      padding: "24px",
+                      color: "#ffffff",
+                      fontSize: "0.875rem",
+                      fontWeight: theme.fontWeight.bold,
+                      lineHeight: 1.425,
+                    }),
+                  ]}
                 >
                   <span>
                     {item.time}
                     <br />
-                    <span class="text-xs font-normal text-white/60">
+                    <span
+                      mix={css({
+                        color: "rgb(255 255 255 / 0.6)",
+                        fontSize: "0.75rem",
+                        fontWeight: theme.fontWeight.normal,
+                        lineHeight: 1.333,
+                      })}
+                    >
                       (UTC-04:00)
                     </span>
                   </span>
                   <span>{item.title}</span>
                   <span>{item.speaker}</span>
                 </div>
-                <div class="pb-6">
-                  <div class={cx("px-6", gridColsClassName)}>
+                <div mix={css({ paddingBottom: "24px" })}>
+                  <div
+                    mix={[scheduleGridStyle, css({ paddingInline: "24px" })]}
+                  >
                     <div
-                      class="col-span-full flex flex-col gap-4 text-sm text-white [&_a:hover]:underline [&_a]:text-blue-400"
+                      mix={css({
+                        gridColumn: "1 / -1",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "16px",
+                        color: "#ffffff",
+                        fontSize: "0.875rem",
+                        lineHeight: 1.425,
+                        "& a": { color: "#59b0ff" },
+                        "& a:hover": { textDecoration: "underline" },
+                      })}
                       innerHTML={item.description}
                     />
                     {item.imgSrc ? (
                       <img
                         src={item.imgSrc}
                         alt={item.speaker}
-                        class="col-span-full aspect-square w-full rounded-2xl object-cover"
+                        mix={css({
+                          gridColumn: "1 / -1",
+                          width: "100%",
+                          borderRadius: "16px",
+                          objectFit: "cover",
+                          aspectRatio: "1",
+                        })}
                         loading="lazy"
                         decoding="async"
                       />
                     ) : null}
                     {item.bio ? (
                       <div
-                        class="col-span-full flex flex-col gap-4 font-mono text-xs leading-5 text-white [&_a:hover]:underline [&_a]:text-blue-400"
+                        mix={css({
+                          gridColumn: "1 / -1",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "16px",
+                          color: "#ffffff",
+                          fontFamily: theme.fontFamily.mono,
+                          fontSize: "0.75rem",
+                          lineHeight: "20px",
+                          "& a": { color: "#59b0ff" },
+                          "& a:hover": { textDecoration: "underline" },
+                        })}
                         innerHTML={item.bio}
                       />
                     ) : null}
@@ -113,13 +215,40 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
         </div>
       </section>
 
-      <section class="z-10 hidden w-full px-4 sm:block">
-        <div class="-mx-10 border-y-2 border-white/20">
+      <section
+        mix={css({
+          zIndex: 10,
+          display: "none",
+          width: "100%",
+          paddingInline: "16px",
+          [breakpointMedia.sm]: { display: "block" },
+        })}
+      >
+        <div
+          mix={css({
+            marginInline: "-40px",
+            borderBlock: "2px solid rgb(255 255 255 / 0.2)",
+          })}
+        >
           <div
-            class={cx(
-              "p-4 font-mono text-xs uppercase text-white/40 sm:p-6 sm:text-sm md:p-8 lg:p-9",
-              gridColsClassName,
-            )}
+            mix={[
+              scheduleGridStyle,
+              css({
+                padding: "16px",
+                color: "rgb(255 255 255 / 0.4)",
+                fontFamily: theme.fontFamily.mono,
+                fontSize: "0.75rem",
+                lineHeight: 1.333,
+                textTransform: "uppercase",
+                [breakpointMedia.sm]: {
+                  padding: "24px",
+                  fontSize: "0.875rem",
+                  lineHeight: 1.425,
+                },
+                [breakpointMedia.md]: { padding: "32px" },
+                [breakpointMedia.lg]: { padding: "36px" },
+              }),
+            ]}
           >
             <div>Time (UTC-04:00)</div>
             <div>Topic</div>
@@ -137,10 +266,5 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
 }
 
 function DesktopScheduleItem(handle: Handle<{ item: Schedule[number] }>) {
-  return () => (
-    <JamLineupAccordionItem
-      item={handle.props.item}
-      gridColsClassName={gridColsClassName}
-    />
-  );
+  return () => <JamLineupAccordionItem item={handle.props.item} />;
 }

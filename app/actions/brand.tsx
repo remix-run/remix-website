@@ -1,8 +1,15 @@
-import { cx } from "../utils/public/cx.ts";
-import type { Handle, RemixNode } from "remix/ui";
+import { css, type Handle, type RemixNode } from "remix/ui";
 import { Document } from "../ui/document.tsx";
 import { Footer } from "../ui/footer.tsx";
 import { Header } from "../ui/header.tsx";
+import {
+  marketingPageStyle,
+  pageBodyStyle,
+  pageMetaStyle,
+  pageTitleSmallStyle,
+  pageTitleStyle,
+} from "../ui/public/marketing-styles.ts";
+import { breakpointMedia, theme } from "../ui/public/theme.ts";
 import { getSocialHeadTags } from "../utils/social-head-tags.ts";
 
 export function BrandPage(handle: Handle<{ requestUrl: string }>) {
@@ -16,10 +23,9 @@ export function BrandPage(handle: Handle<{ requestUrl: string }>) {
         description:
           "Remix brand assets and guidelines for using the Remix name and logos.",
       })}
-      stylesheets={["app"]}
     >
       <Header />
-      <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
+      <main mix={css({ display: "flex", flex: 1, flexDirection: "column" })}>
         <BrandPageContent />
       </main>
       <Footer />
@@ -29,7 +35,7 @@ export function BrandPage(handle: Handle<{ requestUrl: string }>) {
 
 function AssetHeader(handle: Handle<{ children: RemixNode }>) {
   return () => (
-    <h2 class="rmx-page-title rmx-page-title-sm dark:text-gray-200">
+    <h2 mix={[pageTitleStyle, pageTitleSmallStyle, brandHeadingStyle]}>
       {handle.props.children}
     </h2>
   );
@@ -47,14 +53,22 @@ type BrandAsset = {
 };
 
 let previewThemes = {
-  light: {
-    bg: "__asset_checker __asset_checker_light",
-    border: "border-gray-50 dark:border-transparent",
-  },
-  dark: {
-    bg: "__asset_checker __asset_checker_dark",
-    border: "border-transparent dark:border-gray-800",
-  },
+  light: css({
+    borderColor: "light-dark(#f7f7f7, transparent)",
+    backgroundColor: "#ffffff",
+    backgroundImage:
+      "linear-gradient(45deg, #e8e8e8 25%, transparent 25%), linear-gradient(-45deg, #e8e8e8 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e8e8e8 75%), linear-gradient(-45deg, transparent 75%, #e8e8e8 75%)",
+    backgroundPosition: "0 0, 0 12px, 12px -12px, -12px 0",
+    backgroundSize: "24px 24px",
+  }),
+  dark: css({
+    borderColor: "light-dark(transparent, #383838)",
+    backgroundColor: "#181818",
+    backgroundImage:
+      "linear-gradient(45deg, #242424 25%, transparent 25%), linear-gradient(-45deg, #242424 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #242424 75%), linear-gradient(-45deg, transparent 75%, #242424 75%)",
+    backgroundPosition: "0 0, 0 12px, 12px -12px, -12px 0",
+    backgroundSize: "24px 24px",
+  }),
 } as const;
 
 let logoAssets = [
@@ -119,30 +133,69 @@ let wordmarkAssets = [
 
 function AssetGrid(handle: Handle<{ assets: readonly BrandAsset[] }>) {
   return () => (
-    <div class="not-prose grid grid-cols-1 gap-4 gap-x-6 sm:grid-cols-2">
+    <div
+      mix={css({
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr)",
+        gap: "16px 24px",
+        [breakpointMedia.sm]: {
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        },
+      })}
+    >
       {handle.props.assets.map((asset) => {
-        let { bg, border } = previewThemes[asset.previewTheme];
         let primaryFormat = asset.formats[0];
 
         return (
-          <div class="flex flex-col" key={asset.fileBase}>
+          <div
+            mix={css({ display: "flex", flexDirection: "column" })}
+            key={asset.fileBase}
+          >
             <div
-              class={cx(
-                "flex h-40 items-center justify-center rounded-lg border-[3px] p-8 md:h-48 md:p-10",
-                bg,
-                border,
-              )}
+              mix={[
+                css({
+                  display: "flex",
+                  height: "160px",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderStyle: "solid",
+                  borderWidth: "3px",
+                  borderRadius: "8px",
+                  padding: "32px",
+                  [breakpointMedia.md]: { height: "192px", padding: "40px" },
+                }),
+                previewThemes[asset.previewTheme],
+              ]}
             >
               <img
-                class="h-full max-w-full object-contain"
+                mix={css({
+                  height: "100%",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                })}
                 src={`/_brand/${asset.fileBase}.${primaryFormat}`}
                 alt={`Remix ${asset.title}`}
               />
             </div>
-            <div class="mt-1 flex items-end gap-4 text-gray-800 dark:text-gray-100">
+            <div
+              mix={css({
+                display: "flex",
+                alignItems: "flex-end",
+                gap: "16px",
+                marginTop: "4px",
+                color: "light-dark(#383838, #e3e3e3)",
+              })}
+            >
               {asset.formats.map((format) => (
                 <a
-                  class="rmx-page-meta underline opacity-50 hover:opacity-100"
+                  mix={[
+                    pageMetaStyle,
+                    css({
+                      opacity: 0.5,
+                      textDecorationLine: "underline",
+                      "&:hover": { opacity: 1 },
+                    }),
+                  ]}
                   href={`/_brand/${asset.fileBase}.${format}`}
                   download
                   key={format}
@@ -160,8 +213,26 @@ function AssetGrid(handle: Handle<{ assets: readonly BrandAsset[] }>) {
 
 function BrandPageContent() {
   return () => (
-    <div class="rmx-page-body rmx-editorial-prose rmx-marketing-page container max-w-full lg:max-w-4xl">
-      <h1 class="rmx-page-title dark:text-gray-200">Remix Brand</h1>
+    <div
+      mix={[
+        pageBodyStyle,
+        marketingPageStyle,
+        css({
+          boxSizing: "border-box",
+          width: "100%",
+          maxWidth: "100%",
+          marginInline: "auto",
+          paddingInline: "24px",
+          lineHeight: 1.6,
+          "& > p": { margin: "0 0 16px" },
+          "& > h1, & > h2": { margin: "40px 0 16px" },
+          "& > h1:first-child": { margin: "0 0 64px" },
+          [breakpointMedia.md]: { paddingInline: "32px" },
+          [breakpointMedia.lg]: { maxWidth: "896px", paddingInline: "40px" },
+        }),
+      ]}
+    >
+      <h1 mix={[pageTitleStyle, brandHeadingStyle]}>Remix Brand</h1>
       <p>
         These assets are provided for use in situations like articles and video
         tutorials.
@@ -183,7 +254,10 @@ function BrandPageContent() {
       <p>
         <a
           href={BRAND_ASSETS_ZIP}
-          class="underline hover:text-red-brand"
+          mix={css({
+            textDecorationLine: "underline",
+            "&:hover": { color: "#f44250" },
+          })}
           download
         >
           Remix Brand Assets
@@ -206,3 +280,5 @@ function BrandPageContent() {
     </div>
   );
 }
+
+let brandHeadingStyle = css({ color: theme.colors.text.primary });

@@ -1,5 +1,5 @@
 import { css, on, type Handle } from "remix/ui";
-import { theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { colors } from "../styles/tokens.ts";
 import { clamp } from "../utils/math.ts";
 
@@ -9,6 +9,7 @@ const ITEM_GAP = 8;
 const VIEWPORT_GUTTER = 24;
 
 const shellStyles = css({
+  display: "none",
   position: "fixed",
   bottom: `${VIEWPORT_GUTTER}px`,
   left: `${VIEWPORT_GUTTER}px`,
@@ -17,8 +18,8 @@ const shellStyles = css({
   background: colors.sectionNavBg,
   borderRadius: "24px",
   padding: "24px",
-  "@media (max-width: 1440px)": {
-    display: "none",
+  [breakpointMedia["2xl"]]: {
+    display: "block",
   },
 });
 

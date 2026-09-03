@@ -1,4 +1,5 @@
 import { css, type Handle } from "remix/ui";
+import { breakpoints } from "../../../../ui/public/theme.ts";
 import { clamp01 } from "../utils/math.ts";
 import { reducedMotion } from "../utils/reduced-motion.ts";
 
@@ -160,7 +161,8 @@ export function PackageLogos(
       (window.scrollY + window.innerHeight * 0.68 - panelTop) / revealDistance,
     );
     const stackedHeight = panelHeight * 0.94;
-    const logoScale = window.innerWidth <= 760 ? 0.8 : 1;
+    const logoScale =
+      window.innerWidth < Number.parseInt(breakpoints.md, 10) ? 0.8 : 1;
     const logoLayouts = LOGOS.map((logo, index) => {
       const [intrinsicWidth, intrinsicHeight] = logo.ratio
         .split("/")

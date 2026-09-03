@@ -1,7 +1,7 @@
 import { css } from "remix/ui";
 import { Jam2026FaqAccordion, type Faq } from "./public/faq-accordion.tsx";
 import { textBoxTrim } from "../../../ui/public/css-mixins.ts";
-import { breakpoints, theme } from "../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
 import { jamTheme } from "./public/theme.ts";
 
 let faqs: Faq[] = [
@@ -213,8 +213,6 @@ let faqs: Faq[] = [
   },
 ];
 
-let smMaxMedia = `@media (max-width: ${breakpoints.sm})` as const;
-
 export function Jam2026Faq() {
   return () => (
     <section id="faq" aria-labelledby="faq-heading" mix={faqStyle}>
@@ -231,11 +229,11 @@ export function Jam2026Faq() {
 let faqStyle = css({
   position: "relative",
   zIndex: 1,
-  paddingBlock: "max(32px, 4.8vw)",
+  paddingBlock: "120px 88px",
   backgroundColor: "light-dark(rgb(255 255 255 / 0.5), rgb(0 38 68 / 0.5))",
   scrollMarginBlockStart: "48px",
-  [smMaxMedia]: {
-    paddingBlock: "120px 88px",
+  [breakpointMedia.sm]: {
+    paddingBlock: "max(32px, 4.8vw)",
   },
 });
 

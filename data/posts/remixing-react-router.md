@@ -130,15 +130,15 @@ This is a **render+fetch chain**. All three fetches in our sample app could logi
 
 If each fetch takes one second to resolve, the whole page takes at least three seconds to render! This is why so many React apps have slow loads and slow transitions.
 
-<img alt="network diagram showing sequential network requests" src="/blog-images/posts/remixing-react-router/network1.png" class="border rounded-md p-3 shadow" />
+<img alt="network diagram showing sequential network requests" src="/blog-images/posts/remixing-react-router/network1.png" class="md-diagram" />
 
-<figcaption class="my-2">Coupling data fetching to components leads to render+fetch chains</figcaption>
+<figcaption class="md-spaced">Coupling data fetching to components leads to render+fetch chains</figcaption>
 
 The solution is to decouple _initiating fetches_ from _reading results_. That's exactly what the Remix APIs do today, and what React Router will do soon. By initiating your fetches at nested route boundaries the request waterfall chain is flattened and 3x faster.
 
-<img alt="network diagram showing parallel network requests" src="/blog-images/posts/remixing-react-router/network2.png" class="border rounded-md p-3 shadow" />
+<img alt="network diagram showing parallel network requests" src="/blog-images/posts/remixing-react-router/network2.png" class="md-diagram" />
 
-<figcaption class="my-2">Route fetching parallelizes requests, eliminating slow render+fetch chains</figcaption>
+<figcaption class="md-spaced">Route fetching parallelizes requests, eliminating slow render+fetch chains</figcaption>
 
 It's not just about the user experience though. The amount of problems the new APIs solve all at once has a huge impact on the simplicity of your code and the fun you have while coding.
 

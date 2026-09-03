@@ -1,5 +1,10 @@
-name: 🧪 Test
+name: ✅ Validate
 on:
+  push:
+    branches:
+      - main
+      - dev
+      - stage
   pull_request:
 
 concurrency:
@@ -7,7 +12,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: ⬣ Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: 📥 Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔬 Validate static checks
+        run: pnpm remix doctor --strict && pnpm run lint && pnpm run typecheck
+
   test:
+    if: github.event_name == 'pull_request'
     name: ⚡ Remix Test
     runs-on: ubuntu-latest
     steps:

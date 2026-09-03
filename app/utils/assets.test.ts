@@ -1,15 +1,32 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { describe, it } from "remix/test";
+import { afterAll, describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { assets, getWebpHref } from "./assets.ts";
+
+let originalNodeEnv = process.env.NODE_ENV;
+let originalAssetBuildId = process.env.ASSET_BUILD_ID;
+let productionAssets: typeof import("./assets.ts");
+
+try {
+  process.env.NODE_ENV = "production";
+  process.env.ASSET_BUILD_ID = "asset-test";
+  productionAssets = (await import(
+    new URL("./assets.ts?environment=production", import.meta.url).href
+  )) as typeof import("./assets.ts");
+} finally {
+  restoreEnv("NODE_ENV", originalNodeEnv);
+  restoreEnv("ASSET_BUILD_ID", originalAssetBuildId);
+}
+
+afterAll(() => productionAssets.assets.close());
 
 let rootDir = path.resolve(import.meta.dirname, "../..");
 let appDir = path.join(rootDir, "app");
 
 describe("browser asset boundary", () => {
-  it("compiles every browser-owned module and the shared route contract", async () => {
+  it("production-compiles every browser-owned module and the shared route contract", async () => {
     let modules = [
       path.join(appDir, "routes.ts"),
       ...(await listPublicModules(appDir)),
@@ -18,8 +35,8 @@ describe("browser asset boundary", () => {
 
     for (let modulePath of modules) {
       try {
-        let href = await assets.getHref(modulePath);
-        let response = await assets.fetch(
+        let href = await productionAssets.assets.getHref(modulePath);
+        let response = await productionAssets.assets.fetch(
           new Request(new URL(href, "http://localhost")),
         );
         if (!response?.ok) {
@@ -91,6 +108,14 @@ describe("browser asset boundary", () => {
     }
   });
 });
+
+function restoreEnv(name: "NODE_ENV" | "ASSET_BUILD_ID", value?: string) {
+  if (value === undefined) {
+    delete process.env[name];
+  } else {
+    process.env[name] = value;
+  }
+}
 
 async function listPublicModules(dir: string): Promise<string[]> {
   let entries = await fs.readdir(dir, { withFileTypes: true });

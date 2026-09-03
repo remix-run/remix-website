@@ -279,14 +279,11 @@ export function Jam2026TicketsModalContent(
 
     return (
       <div
-        {...{ [ticketModalConfig.attributes.modal]: "" }}
-        data-animate-entrance={String(useEntranceMotion)}
         data-state={handle.props.closing ? "closing" : "open"}
         mix={scrimMix}
       >
         <a
           aria-label="Close tickets"
-          {...{ [ticketModalConfig.attributes.backdrop]: "" }}
           href={routes.jam.y2026.index.href()}
           mix={[
             ticketsModalBackdropStyle,
@@ -368,7 +365,6 @@ export function Jam2026TicketsModalContent(
                 <form
                   aria-busy={submitting ? "true" : undefined}
                   action={routes.jam.y2026.ticket.action.href()}
-                  data-pending={String(submitting)}
                   method="post"
                   mix={[
                     ticketsModalCheckoutStyle,

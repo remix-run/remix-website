@@ -1,5 +1,5 @@
 import { createController } from "remix/router";
-import type { Handle } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
@@ -9,6 +9,7 @@ import { IntroMaskReveal } from "./intro-mask-reveal.tsx";
 import { PitchSection } from "./pitch-section.tsx";
 import { StayInTheLoopSection } from "./stay-in-the-loop-section.tsx";
 import { TimelineSection } from "./timeline-section.tsx";
+import { theme } from "../../ui/public/theme.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
 import { CACHE_CONTROL } from "../../utils/cache-control.ts";
@@ -29,7 +30,6 @@ function RemixHistoryPage(handle: Handle<{ requestUrl: string }>) {
       title="The History of Remix"
       description="How Remix got here: a React Router feature branch that became a full stack framework, merged into React Router, and reimagined as Remix 3."
       forceTheme="light"
-      stylesheets={["app"]}
       headTags={getSocialHeadTags({
         requestUrl: handle.props.requestUrl,
         title: "The History of Remix",
@@ -37,21 +37,79 @@ function RemixHistoryPage(handle: Handle<{ requestUrl: string }>) {
           "How Remix got here: a React Router feature branch that became a full stack framework, merged into React Router, and reimagined as Remix 3.",
       })}
     >
-      <div class="marketing-remix-history">
-        <div class="rmx-remix-history-hero-bg">
+      <div
+        mix={css({
+          "--rmx-text-primary": "#313539",
+          "--rmx-text-secondary": "#63676b",
+          "--rmx-text-tertiary": "#7c8084",
+          "--rmx-neutral-50": theme.colors.neutral[50],
+          "--rmx-neutral-100": theme.colors.neutral[100],
+          "--rmx-neutral-200": theme.colors.neutral[200],
+          "--rmx-neutral-750": theme.colors.neutral[750],
+          "--rmx-neutral-950": theme.colors.neutral[950],
+          "--rmx-highlight-blue": theme.colors.action.primary,
+          "--rmx-highlight-green": "#06ea8a",
+          "--rmx-highlight-red": "#d92c49",
+          "--rmx-shade-blue": "#0b2f48",
+          "--rmx-shade-green": "#024629",
+          "--rmx-shade-red": "#410d16",
+          "--rmx-intro-black-hold": "150ms",
+          "--rmx-intro-black-fade": "400ms",
+          "--rmx-intro-logo-duration": "1500ms",
+          "--rmx-intro-logo-easing": "cubic-bezier(0.85, 0, 0.15, 1)",
+          "--rmx-intro-logo-start": "700ms",
+          "--rmx-intro-r-fade-duration": "600ms",
+          "--rmx-hero-fade-delay": "1450ms",
+          "--rmx-hero-fade-duration": "750ms",
+          "@keyframes rmx-history-fade-in": {
+            from: { opacity: 0 },
+            to: { opacity: 1 },
+          },
+          "@keyframes rmx-history-fade-out": {
+            from: { opacity: 1 },
+            to: { opacity: 0 },
+          },
+          "@keyframes rmx-history-intro-scale": {
+            from: { transform: "translate(0, 0) scale(1)" },
+            to: { transform: "translate(-55%, 100%) scale(80)" },
+          },
+          "@keyframes rmx-history-intro-reveal": {
+            "0%": { visibility: "visible", opacity: 1 },
+            "65%": { visibility: "visible", opacity: 1 },
+            "100%": { visibility: "hidden", opacity: 0 },
+          },
+        })}
+      >
+        <div
+          mix={css({
+            background:
+              "linear-gradient(180deg, var(--rmx-neutral-200) 0%, var(--rmx-neutral-100) 30%, var(--rmx-neutral-50) 60%, #ffffff 100%)",
+          })}
+        >
           <IntroMaskReveal />
           <Header />
           <HeroSection />
         </div>
 
-        <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
-          <div class="rmx-remix-history-text-bg">
+        <main
+          mix={css({
+            display: "flex",
+            flex: 1,
+            flexDirection: "column",
+          })}
+        >
+          <div
+            mix={css({
+              background:
+                "linear-gradient(180deg, #ffffff 0%, var(--rmx-neutral-50) 100%)",
+            })}
+          >
             <PitchSection />
           </div>
 
           <TimelineSection />
 
-          <div class="rmx-remix-history-surface-bg">
+          <div mix={css({ background: theme.surface.lvl3 })}>
             <StayInTheLoopSection />
             <Footer />
           </div>

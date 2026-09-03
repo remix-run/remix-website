@@ -38,16 +38,10 @@ describe("Remix Jam 2026 routes", () => {
       'data-remix-managed-head="true" rel="canonical" href="http://localhost:3000/jam/2026"',
     );
     expect(html).toContain('aria-label="Page navigation"');
-    expect(html).toContain("data-jam-2026-cloud-backdrop");
-    expect(html).toContain("data-jam-2026-performance-tools");
     expect(html).toContain('id="faq"');
-    expect(html).toContain('id="newsletter"');
     expect(html).toContain('href="/jam/2026/ticket"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
     expect(html).not.toContain('role="dialog"');
-    expect(html.indexOf('id="newsletter"')).toBeGreaterThan(
-      html.indexOf('id="faq"'),
-    );
   });
 
   it("renders the newsletter signup fragment", async () => {
@@ -102,7 +96,6 @@ describe("Remix Jam 2026 routes", () => {
     expect(html).toContain('aria-label="Page navigation"');
     expect(html).toContain('role="dialog"');
     expect(html).toContain('aria-modal="true"');
-    expect(html).toContain('data-animate-entrance="false"');
     expect(html).toContain('aria-label="Close tickets"');
     expect(html).toContain('href="/jam/2026"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
@@ -196,30 +189,8 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(html).toContain('role="dialog"');
     expect(html).toContain('aria-modal="true"');
-    expect(html).toContain('data-animate-entrance="true"');
     expect(html).not.toContain("<title>Remix Jam 2026 Tickets</title>");
     expect(html).not.toContain('aria-label="Page navigation"');
-  });
-
-  it("skips ticket modal entrance animation for server-resolved frame requests", async () => {
-    let router = createJam2026TestRouter();
-
-    let response = await router.fetch(
-      new Request(appUrl(routes.jam.y2026.ticket.index), {
-        headers: {
-          "x-remix-ssr-frame": "true",
-          "x-remix-target": ticketModalConfig.frameName,
-        },
-      }),
-    );
-
-    expect(response.status).toBe(200);
-    expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
-
-    let html = await response.text();
-
-    expect(html).toContain('role="dialog"');
-    expect(html).toContain('data-animate-entrance="false"');
   });
 
   it("renders the homepage route as closed modal frame content for the tickets frame", async () => {

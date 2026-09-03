@@ -1,6 +1,6 @@
 import type { Handle, Props } from "remix/ui";
 
-type WordmarkProps = Props<"svg"> & {
+type WordmarkProps = Omit<Props<"svg">, "class"> & {
   height?: number | string;
   width?: number | string;
 };
@@ -14,7 +14,6 @@ export function Wordmark(handle: Handle<WordmarkProps>) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role={handle.props.role}
-      class={handle.props.class}
       style={handle.props.style}
       mix={handle.props.mix}
       aria-hidden={handle.props["aria-hidden"]}

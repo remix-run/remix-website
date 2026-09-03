@@ -60,7 +60,7 @@ export default function Component() {
 
 When clicking a link to a new route, each matching route’s lazy function would be invoked before calling loaders. Visualized in a timeline, it looks like this:
 
-<img alt="Waterfall diagram showing `Click /projects/123` with a row for the matching routes of `projects` and `:projectId`, with each matching route’s `route.lazy()` function being called in parallel followed by calling its loader, with each route being handled in parallel" src="/blog-images/posts/faster-lazy-loading/lazy-with-loaders.png" class="m-auto sm:w-4/5 lg:w-full border sm:p-3 rounded-md shadow" />
+<img alt="Waterfall diagram showing `Click /projects/123` with a row for the matching routes of `projects` and `:projectId`, with each matching route’s `route.lazy()` function being called in parallel followed by calling its loader, with each route being handled in parallel" src="/blog-images/posts/faster-lazy-loading/lazy-with-loaders.png" class="md-diagram md-diagram-responsive" />
 
 With this `route.lazy()` API, we were able to provide a nice, simple way to split route code out of the main bundle and only load it when needed.
 
@@ -72,11 +72,11 @@ Up to this point, lazy routes could be loaded in parallel with their loaders/act
 
 If we were to continue using the existing `route.lazy()` API with middleware, we wouldn’t be able to start executing middleware until every single `lazy` function for all matching routes had been resolved:
 
-<img alt="Waterfall diagram showing `Click /projects/123` with a row for the matching routes of `projects` and `:projectId`, with each matching route’s `route.lazy()` function being called in parallel, followed by the first route’s middleware being called once all `route.lazy()` functions have resolved, followed by all routes loaders being called in parallel" src="/blog-images/posts/faster-lazy-loading/lazy-with-loaders-and-middleware.png" class="m-auto sm:w-4/5 lg:w-full border sm:p-3 rounded-md shadow" />
+<img alt="Waterfall diagram showing `Click /projects/123` with a row for the matching routes of `projects` and `:projectId`, with each matching route’s `route.lazy()` function being called in parallel, followed by the first route’s middleware being called once all `route.lazy()` functions have resolved, followed by all routes loaders being called in parallel" src="/blog-images/posts/faster-lazy-loading/lazy-with-loaders-and-middleware.png" class="md-diagram md-diagram-responsive" />
 
 To make matters worse, you’d have to pay this performance penalty even if you weren’t using any middleware at all. It’s entirely possible to wait for all `route.lazy()` functions to resolve only to discover that none of the matching routes even have middleware.
 
-<img alt="Waterfall diagram showing `Click /projects/123` with a row for the matching routes of `projects` and `:projectId`, with each matching route’s `route.lazy()` function being called in parallel, followed by all route loaders being called in parallel once all `route.lazy()` functions have resolved" src="/blog-images/posts/faster-lazy-loading/lazy-with-loaders-without-middleware.png" class="m-auto sm:w-4/5 lg:w-full border sm:p-3 rounded-md shadow" />
+<img alt="Waterfall diagram showing `Click /projects/123` with a row for the matching routes of `projects` and `:projectId`, with each matching route’s `route.lazy()` function being called in parallel, followed by all route loaders being called in parallel once all `route.lazy()` functions have resolved" src="/blog-images/posts/faster-lazy-loading/lazy-with-loaders-without-middleware.png" class="md-diagram md-diagram-responsive" />
 
 In the example above, all loaders were delayed unnecessarily, waiting on some potential lazy middleware that ultimately wasn’t there.
 
@@ -176,7 +176,7 @@ const routes = [
 
 To visualize this on a timeline:
 
-<img alt="Waterfall diagram showing `Click /projects/123` with a row for the matching routes of `projects` and `:projectId`, with each matching route’s `route.lazy.middleware()`, `route.lazy.loader()`, and `route.lazy.Component()` functions being called in parallel. The lazy middleware is only present for the first route, and the middleware is called as soon as `route.lazy.middleware()` resolves. Once the middleware has finished being called, the route loaders are called in parallel." src="/blog-images/posts/faster-lazy-loading/granular-lazy-routes.png" class="m-auto sm:w-4/5 lg:w-full border sm:p-3 rounded-md shadow" />
+<img alt="Waterfall diagram showing `Click /projects/123` with a row for the matching routes of `projects` and `:projectId`, with each matching route’s `route.lazy.middleware()`, `route.lazy.loader()`, and `route.lazy.Component()` functions being called in parallel. The lazy middleware is only present for the first route, and the middleware is called as soon as `route.lazy.middleware()` resolves. Once the middleware has finished being called, the route loaders are called in parallel." src="/blog-images/posts/faster-lazy-loading/granular-lazy-routes.png" class="md-diagram md-diagram-responsive" />
 
 Now we’re only waiting on a single `route.lazy.unstable_middleware()` function to resolve during the middleware phase, executing it as soon as it’s available. Meanwhile, we’re also downloading the lazy `loader` and `Component` route properties in parallel.
 

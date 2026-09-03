@@ -29,7 +29,6 @@ describe("Blog post route", () => {
 
     let html = await response.text();
     expect(html).toContain(`<title>${post.title} | Remix</title>`);
-    expect(html).toContain('id="main-content"');
     expect(html).toContain('rel="alternate"');
     expect(html).toContain('type="text/markdown"');
     expect(html).toContain(

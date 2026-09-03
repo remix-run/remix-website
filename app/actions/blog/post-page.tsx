@@ -1,9 +1,16 @@
-import type { Handle } from "remix/ui";
-import { cx } from "../../utils/public/cx.ts";
+import { css, type Handle } from "remix/ui";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { ImageLightbox } from "../../ui/public/image-lightbox.tsx";
+import {
+  pageBodyStyle,
+  pageMetaStyle,
+  pageTitleExtraSmallStyle,
+  pageTitleSmallStyle,
+  pageTitleStyle,
+} from "../../ui/public/marketing-styles.ts";
+import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
 import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
@@ -36,7 +43,7 @@ export function BlogPostPage(
     <Document
       title={`${handle.props.post.title} | Remix`}
       description={handle.props.post.summary}
-      stylesheets={["app", "md"]}
+      stylesheets={["md"]}
       headTags={[
         {
           kind: "link",
@@ -56,7 +63,13 @@ export function BlogPostPage(
       ]}
     >
       <Header currentSection="blog" />
-      <main id="main-content" class="flex flex-1 flex-col" tabIndex={-1}>
+      <main
+        mix={css({
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+        })}
+      >
         <BlogPostContent
           post={handle.props.post}
           images={handle.props.images}
@@ -77,21 +90,57 @@ function BlogPostContent(
   return () => (
     <>
       {handle.props.post.draft ? (
-        <div class="m-auto mb-8 max-w-3xl rounded-sm bg-red-700 px-5 py-3 text-center text-gray-100 dark:bg-red-400 dark:text-gray-700">
+        <div
+          mix={css({
+            maxWidth: "768px",
+            marginInline: "auto",
+            marginBlockEnd: "32px",
+            borderRadius: "2px",
+            backgroundColor: "light-dark(#bd1825, #fc6d78)",
+            padding: "12px 20px",
+            color: "light-dark(#e3e3e3, #434343)",
+            textAlign: "center",
+          })}
+        >
           🚨 This is a draft, please do not share this page until it&apos;s
           officially published 🚨
         </div>
       ) : null}
-      <div class="flex flex-1 flex-col">
-        <div class="flex-1">
+      <div
+        mix={css({
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+        })}
+      >
+        <div mix={css({ flex: 1 })}>
           <div>
-            <div class="relative h-[280px] bg-gray-900 md:mx-auto md:h-[400px] md:max-w-3xl md:rounded-xl xl:h-[480px]">
-              <div class="absolute inset-0">
+            <div
+              mix={css({
+                position: "relative",
+                height: "280px",
+                backgroundColor: "#121212",
+                [breakpointMedia.md]: {
+                  height: "400px",
+                  maxWidth: "768px",
+                  marginInline: "auto",
+                  borderRadius: "12px",
+                },
+                [breakpointMedia.xl]: { height: "480px" },
+              })}
+            >
+              <div
+                mix={css({
+                  position: "absolute",
+                  inset: 0,
+                })}
+              >
                 <img
-                  class={cx(
-                    "h-full w-full object-cover object-top md:rounded-xl",
-                    !handle.props.post.imageDisableOverlay && "opacity-40",
-                  )}
+                  mix={
+                    handle.props.post.imageDisableOverlay
+                      ? blogPostHeroImageStyle
+                      : [blogPostHeroImageStyle, css({ opacity: 0.4 })]
+                  }
                   src={handle.props.images.hero.src}
                   srcSet={handle.props.images.hero.srcSet}
                   sizes="(min-width: 768px) 768px, 100vw"
@@ -102,47 +151,108 @@ function BlogPostContent(
                   fetchpriority="high"
                 />
               </div>
-              <div class="container relative z-10 flex h-full w-full max-w-full flex-col pt-6 md:pt-10 lg:max-w-4xl">
-                <div class="flex-1">
-                  <div class="flex flex-col gap-3">
-                    <div class="rmx-page-meta text-white">
+              <div
+                mix={css({
+                  ...blogPostContainerStyle,
+                  position: "relative",
+                  zIndex: 10,
+                  display: "flex",
+                  height: "100%",
+                  maxWidth: "100%",
+                  flexDirection: "column",
+                  paddingBlockStart: "24px",
+                  [breakpointMedia.md]: {
+                    paddingInline: "32px",
+                    paddingBlockStart: "40px",
+                  },
+                  [breakpointMedia.lg]: {
+                    maxWidth: "896px",
+                    paddingInline: "40px",
+                  },
+                })}
+              >
+                <div mix={css({ flex: 1 })}>
+                  <div
+                    mix={css({
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "12px",
+                    })}
+                  >
+                    <div mix={[pageMetaStyle, blogPostOnImageStyle]}>
                       {handle.props.post.dateDisplay}
                     </div>
                     <h1
-                      class={cx(
-                        "rmx-page-title text-white",
-                        handle.props.post.title.length > 50 &&
-                          "rmx-page-title-sm",
-                      )}
+                      mix={
+                        handle.props.post.title.length > 50
+                          ? [
+                              pageTitleStyle,
+                              pageTitleSmallStyle,
+                              blogPostOnImageStyle,
+                            ]
+                          : [pageTitleStyle, blogPostOnImageStyle]
+                      }
                     >
                       {handle.props.post.title}
                     </h1>
                   </div>
-                  <div class="h-2" />
+                  <div mix={css({ height: "8px" })} />
                 </div>
-                <div class="flex flex-col gap-1 pb-4 md:pb-10">
+                <div
+                  mix={css({
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                    paddingBlockEnd: "16px",
+                    [breakpointMedia.md]: { paddingBlockEnd: "40px" },
+                  })}
+                >
                   {handle.props.post.authors.map((author) => {
                     let image = handle.props.images.authors[author.avatar];
                     return (
-                      <div key={author.name} class="flex items-center">
-                        <div>
-                          <img
-                            class="h-10 w-10 rounded-full md:h-14 md:w-14"
-                            src={image?.src ?? author.avatar}
-                            srcSet={image?.srcSet}
-                            sizes="(min-width: 768px) 56px, 40px"
-                            width={image?.width}
-                            height={image?.height}
-                            alt=""
-                            decoding="async"
-                          />
-                        </div>
-                        <div class="w-6" />
-                        <div class="flex flex-col gap-2">
-                          <div class="rmx-page-title rmx-page-title-xs text-white">
+                      <div
+                        key={author.name}
+                        mix={css({
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "24px",
+                        })}
+                      >
+                        <img
+                          mix={css({
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: theme.radius.full,
+                            [breakpointMedia.md]: {
+                              width: "56px",
+                              height: "56px",
+                            },
+                          })}
+                          src={image?.src ?? author.avatar}
+                          srcSet={image?.srcSet}
+                          sizes="(min-width: 768px) 56px, 40px"
+                          width={image?.width}
+                          height={image?.height}
+                          alt=""
+                          decoding="async"
+                        />
+                        <div
+                          mix={css({
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "8px",
+                          })}
+                        >
+                          <div
+                            mix={[
+                              pageTitleStyle,
+                              pageTitleExtraSmallStyle,
+                              blogPostOnImageStyle,
+                            ]}
+                          >
                             {author.name}
                           </div>
-                          <div class="rmx-page-body text-white">
+                          <div mix={[pageBodyStyle, blogPostOnImageStyle]}>
                             {author.title}
                           </div>
                         </div>
@@ -152,8 +262,22 @@ function BlogPostContent(
                 </div>
               </div>
             </div>
-            <div class="h-6 sm:h-12" />
-            <div class="container max-w-full lg:max-w-3xl">
+            <div
+              mix={css({
+                height: "24px",
+                [breakpointMedia.sm]: { height: "48px" },
+              })}
+            />
+            <div
+              mix={css({
+                ...blogPostContainerStyle,
+                maxWidth: "100%",
+                [breakpointMedia.lg]: {
+                  maxWidth: "768px",
+                  paddingInline: "40px",
+                },
+              })}
+            >
               <div class="md-prose" innerHTML={handle.props.post.html} />
               <hr />
             </div>
@@ -161,9 +285,34 @@ function BlogPostContent(
         </div>
       </div>
 
-      <div class="container m-auto mb-12 mt-24 max-w-full">
+      <div
+        mix={css({
+          ...blogPostContainerStyle,
+          maxWidth: "100%",
+          marginBlock: "96px 48px",
+        })}
+      >
         <NewsletterSignupCta />
       </div>
     </>
   );
 }
+
+let blogPostContainerStyle = {
+  boxSizing: "border-box",
+  width: "100%",
+  marginInline: "auto",
+  paddingInline: "24px",
+  [breakpointMedia.md]: { paddingInline: "32px" },
+  [breakpointMedia.lg]: { paddingInline: "40px" },
+} as const;
+
+let blogPostHeroImageStyle = css({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  objectPosition: "top",
+  [breakpointMedia.md]: { borderRadius: "12px" },
+});
+
+let blogPostOnImageStyle = css({ color: "#ffffff" });

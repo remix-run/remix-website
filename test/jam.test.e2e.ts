@@ -4,7 +4,6 @@ import { beforeEach, describe, it } from "remix/test";
 
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
-import { ticketModalConfig } from "../app/actions/jam/y2026/public/tickets-modal-contract.ts";
 import { env } from "../app/utils/env.ts";
 import { newsletterTagIds } from "../app/utils/public/newsletter-tags.ts";
 import {
@@ -70,9 +69,9 @@ describe("Jam", () => {
     ).toHaveText("2");
     await expect(page.getByRole("button", { name: "Check out" })).toBeEnabled();
 
-    await page.locator(`[${ticketModalConfig.attributes.backdrop}]`).click({
-      position: { x: 8, y: 8 },
-    });
+    await page
+      .locator('a[aria-label="Close tickets"][tabindex="-1"]')
+      .click({ position: { x: 8, y: 8 } });
     await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -171,7 +170,10 @@ describe("Jam", () => {
     });
 
     await page.goto(routes.jam.y2026.index.href());
-    await waitForClientEntryHydration(page, "#newsletter");
+    await waitForClientEntryHydration(
+      page,
+      "section[aria-labelledby='newsletter-heading']",
+    );
     let newsletterForm = page.locator(
       'form[data-rmx-target="newsletter-subscribe"]',
     );

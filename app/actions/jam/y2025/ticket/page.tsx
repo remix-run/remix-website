@@ -2,7 +2,7 @@ import * as s from "remix/data-schema";
 import { max, min } from "remix/data-schema/checks";
 import * as coerce from "remix/data-schema/coerce";
 import * as f from "remix/data-schema/form-data";
-import type { Handle } from "remix/ui";
+import { css, type Handle } from "remix/ui";
 
 import { getProduct, MAX_QUANTITY } from "../../../../data/jam-storefront.ts";
 import { JamDocument } from "../document.tsx";
@@ -16,6 +16,7 @@ import { JamTicketCard } from "../public/ticket-card.tsx";
 import { JamTicketPurchase } from "../public/ticket-purchase.tsx";
 import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
+import { breakpointMedia } from "../../../../ui/public/theme.ts";
 
 export function Jam2025TicketPage(
   handle: Handle<{
@@ -34,16 +35,26 @@ export function Jam2025TicketPage(
       activePath={routes.jam.y2025.ticket.index.href()}
     >
       <main
-        id="main-content"
-        class="mx-auto flex max-w-[800px] flex-col items-center gap-12 py-20 pt-[120px] text-center md:pt-[270px] lg:pt-[280px]"
-        tabIndex={-1}
+        mix={css({
+          display: "flex",
+          maxWidth: "800px",
+          marginInline: "auto",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          paddingBlock: "80px",
+          paddingTop: "120px",
+          textAlign: "center",
+          [breakpointMedia.md]: { paddingTop: "270px" },
+          [breakpointMedia.lg]: { paddingTop: "280px" },
+        })}
       >
         <Title>
           <ScrambleText
             text="General Admission"
             delay={100}
             color="blue"
-            className="whitespace-nowrap"
+            nowrap
           />
           <ScrambleText text="ticket" delay={300} color="green" />
         </Title>
@@ -59,7 +70,6 @@ export function Jam2025TicketPage(
         <JamTicketPurchase
           initialQuantity={handle.props.initialQuantity}
           maxQuantity={MAX_QUANTITY}
-          class="z-10 flex w-[90%] flex-col items-center gap-3"
           price={handle.props.product.price}
           productId={handle.props.product.productId}
           isSoldOut={!handle.props.product.availableForSale}

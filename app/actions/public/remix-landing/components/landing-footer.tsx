@@ -1,6 +1,6 @@
 import { css, type Handle } from "remix/ui";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";
 import { colors } from "../styles/tokens.ts";
 
@@ -27,8 +27,6 @@ const SOCIAL_LINKS = [
   },
 ] as const;
 
-const MOBILE_BREAKPOINT_PX = 880;
-
 const footerShellStyles = css({
   padding: "40px 24px 24px",
 });
@@ -36,23 +34,23 @@ const footerShellStyles = css({
 const footerContentStyles = css({
   display: "flex",
   flexDirection: "column",
-  alignItems: "flex-end",
+  alignItems: "center",
   justifyContent: "flex-end",
   gap: "12px",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
-    alignItems: "center",
+  [breakpointMedia.lg]: {
+    alignItems: "flex-end",
   },
 });
 
 const brandRowStyles = css({
   display: "flex",
   alignItems: "center",
-  justifyContent: "flex-end",
+  justifyContent: "center",
   gap: "24px",
   width: "100%",
   flexWrap: "wrap",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
-    justifyContent: "center",
+  [breakpointMedia.lg]: {
+    justifyContent: "flex-end",
   },
 });
 
@@ -65,10 +63,10 @@ const wordmarkStyles = css({
 const socialLinksStyles = css({
   display: "flex",
   alignItems: "center",
-  justifyContent: "flex-end",
+  justifyContent: "center",
   gap: "16px",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
-    justifyContent: "center",
+  [breakpointMedia.lg]: {
+    justifyContent: "flex-end",
   },
 });
 
@@ -91,7 +89,7 @@ const socialIconStyles = css({
 const legalStyles = css({
   display: "flex",
   flexDirection: "column",
-  alignItems: "flex-end",
+  alignItems: "center",
   justifyContent: "flex-end",
   gap: "12px",
   width: "100%",
@@ -103,9 +101,10 @@ const legalStyles = css({
   textTransform: "uppercase",
   color: colors.fg,
   whiteSpace: "nowrap",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
-    alignItems: "center",
-    textAlign: "center",
+  textAlign: "center",
+  [breakpointMedia.lg]: {
+    alignItems: "flex-end",
+    textAlign: "start",
   },
 });
 

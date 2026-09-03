@@ -35,6 +35,52 @@ function mobileMenuToggle(page: Page) {
 }
 
 describe("Mobile menu", () => {
+  it("keeps the shared header responsive and inside the viewport", async (t) => {
+    let handler = swallowAbortErrors(createAppRouter());
+    let page = await t.serve(await createTestServer(handler));
+    await page.setViewportSize({ width: 320, height: 844 });
+    await page.goto(routes.blog.index.href());
+
+    let details = mobileMenuDetails(page);
+    let menuToggle = mobileMenuToggle(page);
+    let mobileNavigation = details.getByRole("navigation", { name: "Mobile" });
+    let desktopNavigation = page.getByRole("navigation", { name: "Main" });
+
+    for (let width of [320, 720, 768, 880, 899]) {
+      await page.setViewportSize({ width, height: 844 });
+      await expect(details).toHaveJSProperty("open", false);
+      await expect(menuToggle).toBeVisible();
+      await expect(desktopNavigation).toBeHidden();
+      await expect
+        .poll(() =>
+          page.evaluate(
+            () =>
+              document.documentElement.scrollWidth <=
+              document.documentElement.clientWidth,
+          ),
+        )
+        .toBe(true);
+
+      await menuToggle.click();
+      await expect(details).toHaveJSProperty("open", true);
+      let bounds = await mobileNavigation.evaluate((element) => {
+        let rect = element.getBoundingClientRect();
+        return {
+          left: rect.left,
+          right: rect.right,
+          viewportWidth: document.documentElement.clientWidth,
+        };
+      });
+      expect(bounds.left).toBeGreaterThanOrEqual(0);
+      expect(bounds.right).toBeLessThanOrEqual(bounds.viewportWidth);
+    }
+
+    await page.setViewportSize({ width: 900, height: 844 });
+    await expect(details).toHaveJSProperty("open", false);
+    await expect(menuToggle).toBeHidden();
+    await expect(desktopNavigation).toBeVisible();
+  });
+
   it("mobile menu links navigate", async (t) => {
     let handler = swallowAbortErrors(createAppRouter());
     let page = await t.serve(await createTestServer(handler));
@@ -56,6 +102,7 @@ describe("Mobile menu", () => {
 
     await page.waitForURL(`**${routes.blog.index.href()}`);
     await expect(page.locator('main a[href^="/blog/"]').first()).toBeVisible();
+    await expect(mobileMenuDetails(page)).toHaveJSProperty("open", false);
     await expect
       .poll(() =>
         page.evaluate(

@@ -137,13 +137,13 @@ The constraint is that users can submit an infinite number of queries. With the 
 
 Because SSG doesn't scale to dynamic pages, Next.js switched to clientside data fetching from the user's browser. Taking a peak at the network waterfall will tell us why it's 2.3x slower than Remix.
 
-<div class="flex w-full gap-4">
-  <div class="w-1/2">
-    <figcaption class="text-center bold text-base">Remix Search</figcaption>
+<div class="md-comparison">
+  <div class="md-comparison-item">
+    <figcaption class="md-comparison-caption">Remix Search</figcaption>
     <a data-noprefetch href="/blog-images/posts/remix-vs-next/wpt-search-remix-waterfall.png"><img src="/blog-images/posts/remix-vs-next/wpt-search-remix-waterfall.png" /></a>
   </div>
-  <div class="w-1/2">
-    <figcaption class="text-center text-base">Next.js Search</figcaption>
+  <div class="md-comparison-item">
+    <figcaption class="md-comparison-caption">Next.js Search</figcaption>
     <a data-noprefetch href="/blog-images/posts/remix-vs-next/wpt-search-next-waterfall.png"><img src="/blog-images/posts/remix-vs-next/wpt-search-next-waterfall.png" /></a>
   </div>
 </div>
@@ -315,13 +315,13 @@ It's like riding your bike to the train to get into town, instead of riding your
 
 You can see this play out in the network waterfall (as usual):
 
-<div class="flex w-full gap-4">
-  <div class="w-1/2">
-    <figcaption class="text-center bold text-base">Remix Rewrite @ Edge</figcaption>
+<div class="md-comparison">
+  <div class="md-comparison-item">
+    <figcaption class="md-comparison-caption">Remix Rewrite @ Edge</figcaption>
     <a data-noprefetch href="/blog-images/posts/remix-vs-next/wpt-hkg-search-rewrite-waterfall.png"><img src="/blog-images/posts/remix-vs-next/wpt-hkg-search-rewrite-waterfall.png" /></a>
   </div>
-  <div class="w-1/2">
-    <figcaption class="text-center text-base">Remix Port in US East</figcaption>
+  <div class="md-comparison-item">
+    <figcaption class="md-comparison-caption">Remix Port in US East</figcaption>
     <a data-noprefetch href="/blog-images/posts/remix-vs-next/wpt-hkg-search-port-waterfall.png"><img src="/blog-images/posts/remix-vs-next/wpt-hkg-search-port-waterfall.png" /></a>
   </div>
 </div>

@@ -22,10 +22,31 @@ export type ManagedLinkTag = {
 
 export function getManagedHeadTagKey(tag: ManagedHeadTag, index: number) {
   if (tag.kind === "meta") {
-    return `meta:${tag.name ?? tag.property ?? index}:${tag.content}`;
+    return `meta:${tag.name ?? tag.property ?? index}:${getCompactHeadKey(tag.content)}`;
   }
 
-  return `link:${tag.rel}:${tag.href}:${tag.type ?? ""}:${tag.sizes ?? ""}:${tag.imageSizes ?? ""}:${tag.imageSrcSet ?? ""}:${tag.as ?? ""}:${tag.crossorigin ?? ""}:${tag.fetchpriority ?? ""}`;
+  return `link:${tag.rel}:${getCompactHeadKey(
+    [
+      tag.href,
+      tag.type,
+      tag.sizes,
+      tag.imageSizes,
+      tag.imageSrcSet,
+      tag.as,
+      tag.crossorigin,
+      tag.fetchpriority,
+    ].join("\0"),
+  )}`;
+}
+
+export function getCompactHeadKey(value: string) {
+  // Length-prefixed FNV-1a keeps serialized keys compact and deterministic in
+  // both the server and browser runtimes.
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index++) {
+    hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
+  }
+  return `${value.length.toString(36)}-${(hash >>> 0).toString(36)}`;
 }
 
 export function syncTitle(title?: string) {

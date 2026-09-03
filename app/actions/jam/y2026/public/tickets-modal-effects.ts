@@ -28,7 +28,7 @@ export function createJam2026TicketsModalEffects(
 
   function getModalRoot() {
     return document.querySelector<HTMLElement>(
-      `[${ticketModalConfig.attributes.modal}]`,
+      "[role='dialog'][aria-labelledby='tickets-modal-title']",
     );
   }
 

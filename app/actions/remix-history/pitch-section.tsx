@@ -1,21 +1,48 @@
-import { cx } from "../../utils/public/cx.ts";
+import { css } from "remix/ui";
+
 import { Icon } from "../../ui/public/icon.tsx";
+import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 
 export function PitchSection() {
   return () => (
-    <section class="flex flex-col items-center px-12 py-12 md:px-12 md:pb-24 md:pt-12">
+    <section
+      mix={css({
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "48px",
+        [breakpointMedia.md]: { paddingBottom: "96px" },
+      })}
+    >
       <div
-        class={cx(
-          "text-rmx-primary",
-          "rmx-body-lg",
-          "flex w-full max-w-[1024px] flex-col items-center gap-12",
-        )}
+        mix={css({
+          display: "flex",
+          width: "100%",
+          maxWidth: "1024px",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
+          color: "var(--rmx-text-primary)",
+          fontSize: "1rem",
+          lineHeight: 1.6,
+          letterSpacing: "0.025em",
+          [breakpointMedia.md]: {
+            fontSize: "1.5rem",
+            lineHeight: 1.4,
+            letterSpacing: 0,
+          },
+          [breakpointMedia.xl]: {
+            fontSize: "2.25rem",
+            lineHeight: 1.4,
+            letterSpacing: "-0.025em",
+          },
+        })}
       >
-        <p class="w-full">
+        <p mix={pitchParagraphStyle}>
           Remix is a batteries-included, ultra-productive, zero dependencies and
           bundler-free framework, ready to develop with in a model-first world.
         </p>
-        <p class="w-full">
+        <p mix={pitchParagraphStyle}>
           Remix 3 is a reimagining of what a web framework can be;
           <br aria-hidden="true" />a fresh foundation shaped by decades of
           experience building for the web. It focuses on simplicity, clarity,
@@ -23,19 +50,45 @@ export function PitchSection() {
         </p>
         <a
           href="https://github.com/remix-run/remix"
-          class={cx(
-            "rmx-bg-button-primary rmx-text-button-primary rmx-shadow-mid",
-            "rmx-button-text-lg",
-            "inline-flex h-14 w-full items-center justify-center gap-2 rounded-lg border border-black/10 px-4 py-4 no-underline",
-            "transition-all hover:opacity-90",
-            "active:scale-[0.98] active:opacity-80",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--rmx-button-surface-primary)]",
-            "sm:w-auto sm:whitespace-nowrap",
-          )}
+          mix={css({
+            display: "inline-flex",
+            width: "100%",
+            height: "56px",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            border: "1px solid rgb(0 0 0 / 0.1)",
+            borderRadius: "8px",
+            padding: "16px",
+            background: theme.colors.action.primary,
+            color: theme.colors.action.primaryLabel,
+            boxShadow: theme.shadow.mid,
+            fontSize: "1.25rem",
+            fontWeight: theme.fontWeight.semibold,
+            lineHeight: 1,
+            letterSpacing: "-0.025em",
+            textDecoration: "none",
+            transition: "all 150ms ease",
+            "&:hover": { opacity: 0.9 },
+            "&:active": { opacity: 0.8, transform: "scale(0.98)" },
+            "&:focus-visible": {
+              outline: `2px solid ${theme.colors.action.primary}`,
+              outlineOffset: "2px",
+            },
+            [breakpointMedia.sm]: { width: "auto", whiteSpace: "nowrap" },
+            "@media (prefers-reduced-motion: reduce)": {
+              transition: "none",
+              "&:active": { transform: "none" },
+            },
+          })}
         >
           <Icon
             name="github"
-            class="size-6 shrink-0"
+            mix={css({
+              width: "24px",
+              height: "24px",
+              flexShrink: 0,
+            })}
             fill="none"
             aria-hidden="true"
           />
@@ -45,3 +98,5 @@ export function PitchSection() {
     </section>
   );
 }
+
+let pitchParagraphStyle = css({ width: "100%" });

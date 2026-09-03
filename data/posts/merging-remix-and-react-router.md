@@ -25,7 +25,7 @@ There are millions of projects using React Router, many built on top of Create R
 
 Turns out we made that bridge a little too well, specifically with the introduction of [our Vite plugin][remix-vite-stable] and [SPA Mode][spa-mode]. We found ourselves looking at Remix, then looking at React Router, then looking back at Remix, and we could no longer meaningful tell the difference.
 
-<img alt="Spider-man as Remix pointing to spider-man as React Router" src="/blog-images/posts/merging-remix-and-react-router/remix-react-router-spider-man.png" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="Spider-man as Remix pointing to spider-man as React Router" src="/blog-images/posts/merging-remix-and-react-router/remix-react-router-spider-man.png" class="md-media md-media-wide md-media-bordered" />
 
 So we're remixing React Router (again).
 
@@ -45,11 +45,11 @@ We just passed the [10 year anniversary of the first commit to React Router][rea
 
 For 10 years, React Router has remained one of the most widely used dependencies in the React Ecosystem. Just looking at the number of public GitHub repositories using React Router fills us on the Remix team with a tremendous amount of responsibility for these projects.
 
-<img alt="React Router's repo on GitHub is used by 7.8m other projects" src="/blog-images/posts/merging-remix-and-react-router/react-router-usage.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="React Router's repo on GitHub is used by 7.8m other projects" src="/blog-images/posts/merging-remix-and-react-router/react-router-usage.jpeg" class="md-media md-media-wide md-media-bordered" />
 
 Shopify itself heavily depends on React Router. In fact, we currently have a 5 million line application that is very core to Shopify's business running on React Router. That's just one of many Shopify sites using React Router.
 
-<img alt="Shopify logo with text reading 5m lines and a ton of other apps" src="/blog-images/posts/merging-remix-and-react-router/react-router-usage-shopify.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="Shopify logo with text reading 5m lines and a ton of other apps" src="/blog-images/posts/merging-remix-and-react-router/react-router-usage-shopify.jpeg" class="md-media md-media-wide md-media-bordered" />
 
 ## Building better websites
 
@@ -70,7 +70,7 @@ However, CRA didn't provide a router, a data fetching solution, or any of the fe
 
 These days CRA is no longer a recommended way to create React applications, and it hasn't been for a while. It's been nearly a year since the last commit to CRA, and commits slowed down considerably leading up to it. At this point, CRA is considered unmaintained, and [the React docs don't even recommend using it][react-start-a-project].
 
-<img alt="Create React App GitHub showing the last 3 commits from June 14, 2023, May 29, 2023, and Sep 8, 2022. There is a cartoon tombstone to the right with RIP engraved on it" src="/blog-images/posts/merging-remix-and-react-router/rip-cra.png" class="rounded-md shadow-lg" />
+<img alt="Create React App GitHub showing the last 3 commits from June 14, 2023, May 29, 2023, and Sep 8, 2022. There is a cartoon tombstone to the right with RIP engraved on it" src="/blog-images/posts/merging-remix-and-react-router/rip-cra.png" class="md-media" />
 
 So not only do we feel a huge responsibility for all the React Router apps, we also believe there is a large, unmet need for a good CRA replacement.
 
@@ -78,13 +78,13 @@ At the same time, [Vite][vite] has risen substantially in popularity, offering a
 
 Vite provides a default React starter, and for many has taken up the mantel of the "CRA replacement". This is good, but it still doesn't provide a solution like the React docs recommend, and it certainly doesn't provide all of the features we think React apps should care about. In fact, [the Vite team even prefers the CRA replacement come from deeper within the React community][patak-remix-cra-tweet].
 
-<img alt="NPM trends of @vitejs/plugin-react vs react-scripts with @vitejs/plugin-react overtaking react-scripts" src="/blog-images/posts/merging-remix-and-react-router/vite-ftw.png" class="rounded-md shadow-lg" />
+<img alt="NPM trends of @vitejs/plugin-react vs react-scripts with @vitejs/plugin-react overtaking react-scripts" src="/blog-images/posts/merging-remix-and-react-router/vite-ftw.png" class="md-media" />
 
 Last fall we decided to [bet on Vite][remix-heart-vite] and start deprecating our classic compiler. The Vite team and community have been very accepting and supportive, and we're excited to be one of many great projects building on top of Vite.
 
 Switching to Vite opens up Remix to even more users. We also added [SPA mode][spa-mode] and [Client Data][client-data] to create the best bridge we possibly could to _convince devs with React Router apps to migrate to Remix_ and take advantage of all the great features it has to offer. After all, at this point what is Remix but React Router + Vite?
 
-<img alt="React Router logo plus Vite logo equals Remix logo" src="/blog-images/posts/merging-remix-and-react-router/rr-plus-vite-is-remix.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="React Router logo plus Vite logo equals Remix logo" src="/blog-images/posts/merging-remix-and-react-router/rr-plus-vite-is-remix.jpeg" class="md-media md-media-wide md-media-bordered" />
 
 ## Modern React without a rewrite
 
@@ -102,7 +102,7 @@ Turns out we made that **Remix ➡️ React Router** bridge a little too well, a
 
 So that's what we're gonna do.
 
-<img alt="React Router logo plus Vite logo equals React Router logo with a v7 under it" src="/blog-images/posts/merging-remix-and-react-router/rr-plus-vite-is-rr-7.jpeg" class="w-full aspect-[16/9] border border-gray-100/60 rounded-md shadow-lg" />
+<img alt="React Router logo plus Vite logo equals React Router logo with a v7 under it" src="/blog-images/posts/merging-remix-and-react-router/rr-plus-vite-is-rr-7.jpeg" class="md-media md-media-wide md-media-bordered" />
 
 We want everyone in the React ecosystem to have access to
 
@@ -159,9 +159,9 @@ We are heads-down on releasing React Router v7 and getting it into your hands AS
 
 As for the Remix brand, it's not going anywhere. We are the Remix team, React Router is a Remix project, and we have really exciting plans beyond React Router we can't wait to talk about. The Remix packages are going to take a little nap. Right now the Remix team is going to be heads down shipping React Router v7 and delivering the smoothest upgrade process we possibly can.
 
-<img alt="React Router versions on a line with Remix versions crossing over. They cross at React Router v7 and Remix v3, with React Router continuing on and Remix continuing with the shushing face emoji" src="/blog-images/posts/merging-remix-and-react-router/react-router-remix-graphic.jpeg" class="w-full aspect-[16/9] rounded-md shadow-lg" />
+<img alt="React Router versions on a line with Remix versions crossing over. They cross at React Router v7 and Remix v3, with React Router continuing on and Remix continuing with the shushing face emoji" src="/blog-images/posts/merging-remix-and-react-router/react-router-remix-graphic.jpeg" class="md-media md-media-wide" />
 
-<figcaption class="my-2">Graphic by <a href="https://twitter.com/jacobmparis/status/1790904647630151889">Jacob Paris</a></figcaption>
+<figcaption class="md-spaced">Graphic by <a href="https://twitter.com/jacobmparis/status/1790904647630151889">Jacob Paris</a></figcaption>
 
 With any project that's been around for 4 years (or 10 years), you learn a lot along the way and have to wrestle with the urge to throw everything away and start from scratch without the baggage of early APIs and design decisions. On top of that, we believe React Server Components really change the game, but they're a new primitive to build on top of, and just like everyone we're discovering the best way to do that. We can't talk about it much (yet!), but we have ideas to make Remix something more powerful and even more server-centric, something you'd use a React Router project on top of.
 

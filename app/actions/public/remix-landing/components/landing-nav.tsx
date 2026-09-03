@@ -3,10 +3,9 @@ import * as popover from "remix/ui/popover";
 import { routes } from "../../../../routes.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { isEditableKeyTarget } from "../../../../ui/public/keyboard.ts";
+import { breakpointMedia, breakpoints } from "../../../../ui/public/theme.ts";
 import { colors } from "../styles/tokens.ts";
 import { clamp01 } from "../utils/math.ts";
-
-const MOBILE_BREAKPOINT_PX = 720;
 
 const headerStyles = css({
   position: "fixed",
@@ -22,6 +21,7 @@ const headerStyles = css({
 });
 
 const hintStyles = css({
+  display: "none",
   fontFamily: "'JetBrains Mono', monospace",
   fontSize: "12px",
   lineHeight: "normal",
@@ -30,18 +30,18 @@ const hintStyles = css({
   whiteSpace: "nowrap",
   pointerEvents: "none",
   paddingTop: "5px",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
-    display: "none",
+  [breakpointMedia.sm]: {
+    display: "inline",
   },
 });
 
 const desktopNavStyles = css({
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  pointerEvents: "auto",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
-    display: "none",
+  display: "none",
+  [breakpointMedia.lg]: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    pointerEvents: "auto",
   },
 });
 
@@ -68,13 +68,13 @@ const navItemStyles = css({
 
 const mobileContainerStyles = css({
   position: "relative",
-  display: "none",
+  display: "block",
+  marginLeft: "auto",
+  marginTop: "-12px",
+  marginRight: "-12px",
   pointerEvents: "auto",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
-    display: "block",
-    marginLeft: "auto",
-    marginTop: "-12px",
-    marginRight: "-12px",
+  [breakpointMedia.lg]: {
+    display: "none",
   },
 });
 
@@ -249,7 +249,10 @@ export function LandingNav(
   window.addEventListener(
     "resize",
     () => {
-      if (menuOpen && window.innerWidth > MOBILE_BREAKPOINT_PX) {
+      if (
+        menuOpen &&
+        window.innerWidth >= Number.parseInt(breakpoints.lg, 10)
+      ) {
         setMenuOpen(false);
       }
     },

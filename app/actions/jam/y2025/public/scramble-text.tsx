@@ -1,16 +1,11 @@
-import { cx } from "../../../../utils/public/cx.ts";
-import { clientEntry, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/ui";
+
+import { theme } from "../../../../ui/public/theme.ts";
 
 const SCRAMBLE_CHARS =
   "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 type ScrambleColor = "blue" | "green" | "yellow";
-
-const colorMap: Record<ScrambleColor, string> = {
-  blue: "text-blue-brand",
-  green: "text-green-brand",
-  yellow: "text-yellow-brand",
-};
 
 type ScrambleState = {
   visible: boolean;
@@ -28,7 +23,7 @@ type ScrambleSetup = {
 };
 
 type JamScrambleTextProps = ScrambleSetup & {
-  className?: string;
+  nowrap?: boolean;
 };
 
 let playedAnimations = new Set<string>();
@@ -193,8 +188,25 @@ export let JamScrambleText = clientEntry(
     return () => {
       return (
         <>
-          <span class="sr-only">{text}</span>
-          <span class={handle.props.className} aria-hidden="true">
+          <span
+            mix={css({
+              position: "absolute",
+              width: "1px",
+              height: "1px",
+              margin: "-1px",
+              overflow: "hidden",
+              clip: "rect(0, 0, 0, 0)",
+              whiteSpace: "nowrap",
+            })}
+          >
+            {text}
+          </span>
+          <span
+            mix={
+              handle.props.nowrap ? css({ whiteSpace: "nowrap" }) : undefined
+            }
+            aria-hidden="true"
+          >
             {textChars.map((char, index) => {
               let current = state[index];
               let visible = current?.visible ?? false;
@@ -209,12 +221,12 @@ export let JamScrambleText = clientEntry(
               return (
                 <span
                   key={index}
-                  class={cx(
-                    visible ? "opacity-100" : "opacity-0",
+                  mix={[
+                    visible ? css({ opacity: 1 }) : css({ opacity: 0 }),
                     resolved
-                      ? "text-white"
-                      : colorMap[handle.props.color ?? "blue"],
-                  )}
+                      ? css({ color: "#ffffff" })
+                      : colorStyles[handle.props.color ?? "blue"],
+                  ]}
                 >
                   {displayChar}
                 </span>
@@ -226,3 +238,9 @@ export let JamScrambleText = clientEntry(
     };
   },
 );
+
+let colorStyles = {
+  blue: css({ color: theme.colors.brand.blue }),
+  green: css({ color: theme.colors.brand.green }),
+  yellow: css({ color: "#fecc1b" }),
+} satisfies Record<ScrambleColor, ReturnType<typeof css>>;

@@ -57,17 +57,53 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
           requestUrl: handle.props.requestUrl,
         })}
       >
-        <div class="jam-2026-page" mix={[jamThemeStyle, pageStyle]}>
+        <div
+          mix={[
+            jamThemeStyle,
+            css({
+              position: "relative",
+              isolation: "isolate",
+              display: "flex",
+              minHeight: "100svh",
+              flexDirection: "column",
+              color: jamTheme.ink,
+              fontFamily: theme.fontFamily.sans,
+              overflowX: "clip",
+              "&::before": {
+                content: '""',
+                position: "fixed",
+                inset: 0,
+                zIndex: -3,
+                pointerEvents: "none",
+                background: `linear-gradient(180deg, ${jamTheme.skyTop} 0%, ${jamTheme.skyMiddle} 43%, ${jamTheme.skyHorizon} 72%, ${jamTheme.skyGround} 100%)`,
+              },
+            }),
+          ]}
+        >
           <Jam2026CloudBackdrop />
-          <FpsCounterToggle dataAttribute="data-jam-2026-performance-tools" />
+          <FpsCounterToggle />
           <div
             id={ticketModalConfig.pageBackgroundId}
             aria-hidden={ticketsModalOpen ? "true" : undefined}
             inert={ticketsModalOpen || undefined}
-            mix={pageBackgroundStyle}
+            mix={css({
+              display: "flex",
+              minHeight: "100svh",
+              flex: "1 1 auto",
+              flexDirection: "column",
+            })}
           >
             <Jam2026Header initialTheme={handle.props.theme} />
-            <main id="main-content" tabIndex={-1} mix={mainStyle}>
+            <main
+              tabIndex={-1}
+              mix={css({
+                width: "100%",
+                marginInline: "auto",
+                flex: "1 1 auto",
+                display: "flex",
+                flexDirection: "column",
+              })}
+            >
               <Jam2026Hero />
               <Jam2026PhotoMoments />
               <Jam2026FloatingTicketCta />
@@ -76,9 +112,17 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
                 src={routes.jam.y2026.newsletterSignup.href()}
               />
             </main>
-            <Footer mix={footerStyle} />
+            <Footer
+              mix={css({
+                position: "relative",
+                zIndex: 1,
+                paddingTop: "40px",
+                backgroundColor: jamTheme.surfaceRaised,
+                color: jamTheme.ink,
+              })}
+            />
           </div>
-          <div {...{ [ticketModalConfig.attributes.frameHost]: "" }}>
+          <div>
             {ticketsModalOpen && handle.props.ticketCheckout?.error ? (
               <Jam2026TicketsModalFrame
                 animateEntrance={false}
@@ -94,45 +138,3 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
     );
   };
 }
-
-let pageStyle = css({
-  position: "relative",
-  isolation: "isolate",
-  display: "flex",
-  minHeight: "100svh",
-  flexDirection: "column",
-  color: jamTheme.ink,
-  fontFamily: theme.fontFamily.sans,
-  overflowX: "clip",
-  "&::before": {
-    content: '""',
-    position: "fixed",
-    inset: 0,
-    zIndex: -3,
-    pointerEvents: "none",
-    background: `linear-gradient(180deg, ${jamTheme.skyTop} 0%, ${jamTheme.skyMiddle} 43%, ${jamTheme.skyHorizon} 72%, ${jamTheme.skyGround} 100%)`,
-  },
-});
-
-let pageBackgroundStyle = css({
-  display: "flex",
-  minHeight: "100svh",
-  flex: "1 1 auto",
-  flexDirection: "column",
-});
-
-let mainStyle = css({
-  width: "100%",
-  marginInline: "auto",
-  flex: "1 1 auto",
-  display: "flex",
-  flexDirection: "column",
-});
-
-let footerStyle = css({
-  position: "relative",
-  zIndex: 1,
-  paddingTop: "40px",
-  backgroundColor: jamTheme.surfaceRaised,
-  color: jamTheme.ink,
-});
