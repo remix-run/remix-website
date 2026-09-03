@@ -4,15 +4,10 @@ import {
   NewsletterSubscribeFrameHost,
   type NewsletterSubscriptionStatus,
 } from "../../../../ui/public/newsletter-subscribe.tsx";
-import { theme } from "../../../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
-import {
-  colors,
-  glowWhite,
-  landingMedia,
-  pageMaxWidth,
-} from "../styles/tokens.ts";
+import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
 
 // Vertically center the inner row inside each section's `min-height: 100vh`
 // box. `align-items: center` handles grid-cell alignment, but this single
@@ -31,26 +26,26 @@ const panelStyles = css({
   width: "100%",
   maxWidth: "640px",
   boxSizing: "border-box",
-  padding: "48px",
+  padding: "32px 24px",
   border: "1px solid rgba(255, 255, 255, 0.12)",
   borderTop: "3px solid var(--brand-cycle, #7ce95a)",
   borderRadius: "24px",
   backdropFilter: "blur(12px)",
   WebkitBackdropFilter: "blur(12px)",
-  background: "rgba(0, 0, 0, 0.58)",
+  background: "rgba(0, 0, 0, 0.64)",
   contain: "paint",
-  [landingMedia.large]: {
-    padding: "32px 24px",
-    background: "rgba(0, 0, 0, 0.64)",
+  [breakpointMedia.lg]: {
+    padding: "48px",
+    background: "rgba(0, 0, 0, 0.58)",
   },
 });
 
 const rightPanelStyles = css({
-  gridColumn: "8 / -2",
-  justifySelf: "end",
-  [landingMedia.large]: {
-    gridColumn: "1 / -1",
-    justifySelf: "stretch",
+  gridColumn: "1 / -1",
+  justifySelf: "stretch",
+  [breakpointMedia.lg]: {
+    gridColumn: "8 / -2",
+    justifySelf: "end",
   },
 });
 
@@ -236,34 +231,26 @@ const PRIMARY_PANEL_STYLES_BY_ID: Record<
     gridColumn: "1 / -1",
     justifySelf: "center",
     maxWidth: "640px",
-    [landingMedia.large]: {
-      gridColumn: "1 / -1",
-      justifySelf: "center",
-    },
   }),
   "test-drive": css({
-    gridColumn: "1 / span 6",
-    justifySelf: "end",
-    [landingMedia.large]: {
-      gridColumn: "1 / -1",
-      justifySelf: "center",
+    gridColumn: "1 / -1",
+    justifySelf: "center",
+    [breakpointMedia.lg]: {
+      gridColumn: "1 / span 6",
+      justifySelf: "end",
     },
   }),
   "re-rethinking-best-practices": css({
-    gridColumn: "1 / span 5",
+    gridColumn: "1 / -1",
     maxWidth: "720px",
-    [landingMedia.large]: {
-      gridColumn: "1 / -1",
+    [breakpointMedia.lg]: {
+      gridColumn: "1 / span 5",
     },
   }),
   "humans-and-agents": css({
     gridColumn: "1 / -1",
     justifySelf: "center",
     maxWidth: "640px",
-    [landingMedia.large]: {
-      gridColumn: "1 / -1",
-      justifySelf: "center",
-    },
   }),
 };
 
@@ -272,11 +259,11 @@ const SECONDARY_PANEL_STYLES_BY_ID: Record<
   ReturnType<typeof css> | undefined
 > = {
   "test-drive": css({
-    gridColumn: "7 / -1",
-    justifySelf: "start",
-    [landingMedia.large]: {
-      gridColumn: "1 / -1",
-      justifySelf: "center",
+    gridColumn: "1 / -1",
+    justifySelf: "center",
+    [breakpointMedia.lg]: {
+      gridColumn: "7 / -1",
+      justifySelf: "start",
     },
   }),
 };
@@ -401,9 +388,10 @@ export let LandingNewsletterSubscribeForm = clientEntry(
                   lineHeight: "1.4",
                   letterSpacing: "-0.008px",
                   cursor: "pointer",
+                  width: "100%",
                   transition: "background 150ms ease, color 150ms ease",
-                  "@media (max-width: 680px)": {
-                    width: "100%",
+                  [breakpointMedia.sm]: {
+                    width: "auto",
                   },
                   "&:hover": {
                     background: `color-mix(in srgb, var(--brand-cycle, ${colors.accent}) 18%, rgba(255, 255, 255, 0.08))`,
@@ -468,78 +456,78 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
       (handle.props.align === "right"
         ? rightPanelStyles
         : css({
-            gridColumn: "2 / span 5",
-            [landingMedia.large]: {
-              gridColumn: "1 / -1",
+            gridColumn: "1 / -1",
+            [breakpointMedia.lg]: {
+              gridColumn: "2 / span 5",
             },
           }));
     const rowVariantStyles = ROW_STYLES_BY_ID[handle.props.id];
     const pointListVariantStyles =
       handle.props.id === "smaller-mental-model"
         ? css({
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gridTemplateColumns: "1fr",
             gap: "0",
-            margin: "32px -48px -48px",
+            margin: "24px -24px -32px",
             borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-            [landingMedia.large]: {
-              margin: "24px -24px -32px",
+            [breakpointMedia.sm]: {
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
             },
-            "@media (max-width: 600px)": {
-              gridTemplateColumns: "1fr",
+            [breakpointMedia.lg]: {
+              margin: "32px -48px -48px",
             },
           })
         : handle.props.id === "humans-and-agents"
           ? css({
               gap: "0",
-              margin: "32px -48px -48px",
+              margin: "24px -24px -32px",
               borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-              [landingMedia.large]: {
-                margin: "24px -24px -32px",
+              [breakpointMedia.lg]: {
+                margin: "32px -48px -48px",
               },
             })
           : undefined;
     const pointVariantStyles =
       handle.props.id === "smaller-mental-model"
         ? css({
-            padding: "32px 48px",
+            padding: "24px",
             borderTop: "0",
-            "&:nth-child(odd)": {
-              borderRight: "1px solid rgba(255, 255, 255, 0.14)",
-            },
-            "&:nth-child(n + 3)": {
+            borderRight: "0",
+            "&:not(:first-child)": {
               borderTop: "1px solid rgba(255, 255, 255, 0.14)",
             },
             "&:nth-last-child(-n + 2)": {
-              paddingBottom: "48px",
+              paddingBottom: "32px",
             },
-            "@media (max-width: 600px)": {
-              padding: "24px",
-              borderRight: "0",
+            [breakpointMedia.sm]: {
+              padding: "32px 48px",
               "&:nth-child(odd)": {
-                borderRight: "0",
+                borderRight: "1px solid rgba(255, 255, 255, 0.14)",
               },
               "&:not(:first-child)": {
+                borderTop: "0",
+              },
+              "&:nth-child(n + 3)": {
                 borderTop: "1px solid rgba(255, 255, 255, 0.14)",
               },
               "&:nth-last-child(-n + 2)": {
-                paddingBottom: "32px",
+                paddingBottom: "48px",
               },
             },
           })
         : handle.props.id === "humans-and-agents"
           ? css({
-              padding: "32px 48px",
+              padding: "24px",
               borderTop: "0",
               "&:not(:first-child)": {
                 borderTop: "1px solid rgba(255, 255, 255, 0.14)",
               },
               "&:last-child": {
-                paddingBottom: "48px",
+                paddingBottom: "32px",
               },
-              [landingMedia.large]: {
-                padding: "24px",
+              [breakpointMedia.lg]: {
+                padding: "32px 48px",
                 "&:last-child": {
-                  paddingBottom: "32px",
+                  paddingBottom: "48px",
                 },
               },
             })
@@ -554,12 +542,12 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
             minHeight: "112vh",
             margin: "0 auto",
             boxSizing: "border-box",
-            padding: "160px 0",
+            padding: "128px 0",
             display: "grid",
             alignItems: "center",
             alignContent: "center",
-            [landingMedia.large]: {
-              padding: "128px 0",
+            [breakpointMedia.lg]: {
+              padding: "160px 0",
             },
           }),
         ]}
@@ -570,10 +558,10 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
               width: "min(1040px, 100%)",
               margin: "0 auto",
               display: "grid",
-              gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
+              gridTemplateColumns: "1fr",
               gap: "24px",
-              [landingMedia.large]: {
-                gridTemplateColumns: "1fr",
+              [breakpointMedia.lg]: {
+                gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
               },
             }),
             ...(rowVariantStyles === undefined ? [] : [rowVariantStyles]),
@@ -708,19 +696,19 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
             <div
               mix={[
                 css({
-                  gridColumn: "6 / -1",
+                  gridColumn: "1 / -1",
                   minWidth: "0",
                   boxSizing: "border-box",
                   padding: "24px",
                   borderRadius: "24px",
                   backdropFilter: "blur(10px)",
                   WebkitBackdropFilter: "blur(10px)",
-                  background: "rgba(0, 0, 0, 0.38)",
+                  background: "rgba(0, 0, 0, 0.72)",
                   overflow: "hidden",
                   contain: "paint",
-                  [landingMedia.large]: {
-                    gridColumn: "1 / -1",
-                    background: "rgba(0, 0, 0, 0.72)",
+                  [breakpointMedia.lg]: {
+                    gridColumn: "6 / -1",
+                    background: "rgba(0, 0, 0, 0.38)",
                   },
                 }),
               ]}
@@ -748,18 +736,18 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
             <div
               mix={[
                 css({
-                  gridColumn: "6 / -1",
+                  gridColumn: "1 / -1",
                   minWidth: "0",
                   boxSizing: "border-box",
                   padding: "24px",
                   borderRadius: "24px",
                   backdropFilter: "blur(10px)",
                   WebkitBackdropFilter: "blur(10px)",
-                  background: "rgba(0, 0, 0, 0.46)",
+                  background: "rgba(0, 0, 0, 0.72)",
                   contain: "paint",
-                  [landingMedia.large]: {
-                    gridColumn: "1 / -1",
-                    background: "rgba(0, 0, 0, 0.72)",
+                  [breakpointMedia.lg]: {
+                    gridColumn: "6 / -1",
+                    background: "rgba(0, 0, 0, 0.46)",
                   },
                 }),
               ]}
@@ -768,13 +756,13 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                 mix={[
                   css({
                     display: "grid",
-                    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                    gridTemplateColumns: "1fr",
                     gap: "12px",
                     margin: "0",
                     padding: "0",
                     listStyle: "none",
-                    [landingMedia.wide]: {
-                      gridTemplateColumns: "1fr",
+                    [breakpointMedia.xl]: {
+                      gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
                     },
                   }),
                 ]}
@@ -784,14 +772,14 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                     key={detail.title}
                     mix={[
                       css({
-                        minHeight: "172px",
+                        minHeight: "0",
                         boxSizing: "border-box",
                         padding: "20px",
                         border: "1px solid rgba(255, 255, 255, 0.12)",
                         borderRadius: "18px",
                         background: "rgba(255, 255, 255, 0.045)",
-                        [landingMedia.wide]: {
-                          minHeight: "0",
+                        [breakpointMedia.xl]: {
+                          minHeight: "172px",
                         },
                       }),
                     ]}

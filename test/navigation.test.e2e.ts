@@ -226,17 +226,20 @@ describe("Navigation", () => {
     let menuButton = page.getByRole("button", { name: "Open menu" });
     let scrollHint = page.getByText("scroll or press ↓ and ↑", { exact: true });
 
-    await page.setViewportSize({ width: 881, height: 720 });
+    await page.setViewportSize({ width: 1024, height: 720 });
     await expect(desktopNav).toBeVisible();
     await expect(menuButton).toBeHidden();
     await expect(scrollHint).toBeVisible();
 
-    await page.setViewportSize({ width: 880, height: 720 });
+    await page.setViewportSize({ width: 1023, height: 720 });
     await expect(desktopNav).toBeHidden();
     await expect(menuButton).toBeVisible();
     await expect(scrollHint).toBeVisible();
 
-    await page.setViewportSize({ width: 720, height: 720 });
+    await page.setViewportSize({ width: 640, height: 720 });
+    await expect(scrollHint).toBeVisible();
+
+    await page.setViewportSize({ width: 639, height: 720 });
     await expect(scrollHint).toBeHidden();
   });
 

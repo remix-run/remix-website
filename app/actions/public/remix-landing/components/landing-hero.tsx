@@ -1,16 +1,15 @@
 import { css, type Handle } from "remix/ui";
-import { theme } from "../../../../ui/public/theme.ts";
-import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
 import {
-  colors,
-  glowWhite,
-  landingBreakpoints,
-  landingMedia,
-} from "../styles/tokens.ts";
+  breakpointMedia,
+  breakpoints,
+  theme,
+} from "../../../../ui/public/theme.ts";
+import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
+import { colors, glowWhite } from "../styles/tokens.ts";
 import { CodeSnippet } from "./code-snippet.tsx";
 
 const WIDE_HERO_MEDIA =
-  `@media (min-width: ${landingBreakpoints.largeMin}px) and (max-height: 900px), (min-width: ${landingBreakpoints.largeMin}px) and (min-aspect-ratio: 16/9)` as const;
+  `@media (min-width: ${breakpoints.lg}) and (max-height: 900px), (min-width: ${breakpoints.lg}) and (min-aspect-ratio: 16/9)` as const;
 
 const shellStyles = css({
   minHeight: "100vh",
@@ -34,11 +33,11 @@ const textGroupStyles = css({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  gap: "clamp(20px, 2.5vw, 32px)",
+  gap: "24px",
   padding: "0 24px",
   textAlign: "center",
-  [landingMedia.large]: {
-    gap: "24px",
+  [breakpointMedia.lg]: {
+    gap: "clamp(20px, 2.5vw, 32px)",
   },
 });
 
@@ -63,7 +62,7 @@ const bodyClosingPhraseStyles = css({
 
 const bodyStyles = css({
   margin: "0",
-  maxWidth: "560px",
+  maxWidth: "480px",
   minWidth: "0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
@@ -73,8 +72,8 @@ const bodyStyles = css({
   color: colors.fg,
   textShadow: glowWhite,
   textWrap: "pretty",
-  [landingMedia.large]: {
-    maxWidth: "480px",
+  [breakpointMedia.lg]: {
+    maxWidth: "560px",
   },
   ...textBoxTrim,
 });

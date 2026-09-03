@@ -3,7 +3,8 @@ import * as popover from "remix/ui/popover";
 import { routes } from "../../../../routes.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { isEditableKeyTarget } from "../../../../ui/public/keyboard.ts";
-import { colors, landingBreakpoints, landingMedia } from "../styles/tokens.ts";
+import { breakpointMedia, breakpoints } from "../../../../ui/public/theme.ts";
+import { colors } from "../styles/tokens.ts";
 import { clamp01 } from "../utils/math.ts";
 
 const headerStyles = css({
@@ -20,6 +21,7 @@ const headerStyles = css({
 });
 
 const hintStyles = css({
+  display: "none",
   fontFamily: "'JetBrains Mono', monospace",
   fontSize: "12px",
   lineHeight: "normal",
@@ -28,18 +30,18 @@ const hintStyles = css({
   whiteSpace: "nowrap",
   pointerEvents: "none",
   paddingTop: "5px",
-  [landingMedia.small]: {
-    display: "none",
+  [breakpointMedia.sm]: {
+    display: "inline",
   },
 });
 
 const desktopNavStyles = css({
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  pointerEvents: "auto",
-  [landingMedia.large]: {
-    display: "none",
+  display: "none",
+  [breakpointMedia.lg]: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    pointerEvents: "auto",
   },
 });
 
@@ -66,13 +68,13 @@ const navItemStyles = css({
 
 const mobileContainerStyles = css({
   position: "relative",
-  display: "none",
+  display: "block",
+  marginLeft: "auto",
+  marginTop: "-12px",
+  marginRight: "-12px",
   pointerEvents: "auto",
-  [landingMedia.large]: {
-    display: "block",
-    marginLeft: "auto",
-    marginTop: "-12px",
-    marginRight: "-12px",
+  [breakpointMedia.lg]: {
+    display: "none",
   },
 });
 
@@ -247,7 +249,10 @@ export function LandingNav(
   window.addEventListener(
     "resize",
     () => {
-      if (menuOpen && window.innerWidth > landingBreakpoints.large) {
+      if (
+        menuOpen &&
+        window.innerWidth >= Number.parseInt(breakpoints.lg, 10)
+      ) {
         setMenuOpen(false);
       }
     },
