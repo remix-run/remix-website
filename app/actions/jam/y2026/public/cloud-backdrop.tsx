@@ -28,7 +28,6 @@ export let Jam2026CloudBackdrop = clientEntry(
     return () => (
       <div
         aria-hidden="true"
-        data-jam-2026-cloud-backdrop=""
         mix={[
           cloudBackdropStyle,
           ref((host, signal) => {

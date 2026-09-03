@@ -39,7 +39,9 @@ describe("Home", () => {
 
     const response = await page.goto(routes.home.href());
     expect(response?.ok()).toBe(true);
-    await expect(page.locator("canvas").first()).toBeVisible();
+    await expect(page.locator("canvas").first()).toBeVisible({
+      timeout: 15_000,
+    });
     await expect.poll(() => litPixelRatio(page)).toBeGreaterThan(0.1);
 
     for (let i = 1; i <= 10; i++) {

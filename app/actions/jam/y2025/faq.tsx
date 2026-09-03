@@ -29,7 +29,6 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
       activePath={routes.jam.y2025.faq.href()}
     >
       <main
-        id="main-content"
         mix={css({
           display: "flex",
           maxWidth: "800px",
@@ -42,7 +41,6 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
           [breakpointMedia.md]: { paddingTop: "270px" },
           [breakpointMedia.lg]: { paddingTop: "280px" },
         })}
-        tabIndex={-1}
       >
         <Title mix={css({ textAlign: "center" })}>
           <ScrambleText

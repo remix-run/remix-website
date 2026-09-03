@@ -16,7 +16,6 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
       activePath={routes.jam.y2025.coc.href()}
     >
       <main
-        id="main-content"
         mix={css({
           display: "flex",
           maxWidth: "800px",
@@ -29,7 +28,6 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
           [breakpointMedia.md]: { paddingTop: "270px" },
           [breakpointMedia.lg]: { paddingTop: "280px" },
         })}
-        tabIndex={-1}
       >
         <Title mix={css({ textAlign: "center" })}>
           <ScrambleText

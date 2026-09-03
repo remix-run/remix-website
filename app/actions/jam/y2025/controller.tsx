@@ -99,7 +99,6 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
       </div>
 
       <main
-        id="main-content"
         mix={css({
           display: "flex",
           maxWidth: "800px",
@@ -113,7 +112,6 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
           [breakpointMedia.md]: { paddingTop: "200px" },
           [breakpointMedia.lg]: { paddingTop: "210px" },
         })}
-        tabIndex={-1}
       >
         <SectionLabel>
           {sectionLabelText[handle.props.eventStatus]}
@@ -187,7 +185,6 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
       <div mix={css({ width: "100%", height: "100px" })} />
 
       <aside
-        id="newsletter"
         mix={css({
           position: "relative",
           zIndex: 10,

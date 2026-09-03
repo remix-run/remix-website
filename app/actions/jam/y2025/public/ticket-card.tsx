@@ -43,7 +43,6 @@ export let JamTicketCard = clientEntry(
 
       return (
         <div
-          data-jam-ticket-card
           mix={[
             css({
               zIndex: 10,

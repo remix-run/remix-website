@@ -62,18 +62,17 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
             height: "100%",
             alignItems: "center",
             gap: "20px",
-            "& [data-header-link]": {
+            "& > a": {
               color: theme.colors.text.marketingPrimary,
               fontSize: "1rem",
               fontWeight: theme.fontWeight.normal,
               opacity: 0.8,
               whiteSpace: "nowrap",
             },
-            "& [data-header-link]:hover, & [data-header-link]:focus-visible, & [data-header-link][aria-current]":
-              {
-                color: theme.colors.action.current,
-                opacity: 1,
-              },
+            "& > a:hover, & > a:focus-visible, & > a[aria-current]": {
+              color: theme.colors.action.current,
+              opacity: 1,
+            },
             "@media (min-width: 900px)": { display: "flex", gap: "24px" },
           })}
           aria-label="Main"
@@ -128,7 +127,6 @@ function HeaderLink(
     <a
       href={handle.props.to}
       aria-current={handle.props.current ? "page" : undefined}
-      data-header-link=""
     >
       {handle.props.children}
     </a>

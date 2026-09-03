@@ -8,8 +8,6 @@ export function StatusErrorDocument(
   return () => (
     <Document title={handle.props.statusText} noIndex forceTheme="dark">
       <main
-        id="main-content"
-        tabIndex={-1}
         mix={css({
           display: "flex",
           flex: 1,

@@ -44,7 +44,7 @@ export function NewsletterIndexPage(handle: Handle<NewsletterIndexPageProps>) {
       })}
     >
       <Header currentSection="newsletter" />
-      <main id="main-content" mix={newsletterMainStyle} tabIndex={-1}>
+      <main mix={newsletterMainStyle}>
         <div
           mix={[
             pageBodyStyle,
@@ -100,7 +100,7 @@ export function NewsletterIssuePage(
       })}
     >
       <Header currentSection="newsletter" />
-      <main id="main-content" mix={newsletterMainStyle} tabIndex={-1}>
+      <main mix={newsletterMainStyle}>
         <div
           mix={css({
             ...newsletterContainerStyle,
@@ -145,7 +145,6 @@ function NewsletterSignupSection(
             color: theme.colors.text.marketingSecondary,
           }),
         ]}
-        id="newsletter-text"
       >
         Stay up-to-date with news, announcements, and releases for our projects
         like Remix and React Router. We respect your privacy, unsubscribe at any

@@ -2,7 +2,7 @@ import { css, type Handle } from "remix/ui";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";
-import { colors } from "../styles/tokens.ts";
+import { colors, landingMedia } from "../styles/tokens.ts";
 
 const SOCIAL_LINKS = [
   {
@@ -27,8 +27,6 @@ const SOCIAL_LINKS = [
   },
 ] as const;
 
-const MOBILE_BREAKPOINT_PX = 880;
-
 const footerShellStyles = css({
   padding: "40px 24px 24px",
 });
@@ -39,7 +37,7 @@ const footerContentStyles = css({
   alignItems: "flex-end",
   justifyContent: "flex-end",
   gap: "12px",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+  [landingMedia.large]: {
     alignItems: "center",
   },
 });
@@ -51,7 +49,7 @@ const brandRowStyles = css({
   gap: "24px",
   width: "100%",
   flexWrap: "wrap",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+  [landingMedia.large]: {
     justifyContent: "center",
   },
 });
@@ -67,7 +65,7 @@ const socialLinksStyles = css({
   alignItems: "center",
   justifyContent: "flex-end",
   gap: "16px",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+  [landingMedia.large]: {
     justifyContent: "center",
   },
 });
@@ -103,7 +101,7 @@ const legalStyles = css({
   textTransform: "uppercase",
   color: colors.fg,
   whiteSpace: "nowrap",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+  [landingMedia.large]: {
     alignItems: "center",
     textAlign: "center",
   },

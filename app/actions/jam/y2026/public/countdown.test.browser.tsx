@@ -78,7 +78,7 @@ describe("Jam2026Countdown", () => {
 });
 
 function countdownValues(container: HTMLElement) {
-  return [...container.querySelectorAll("[data-countdown-number]")].map(
+  return [...container.querySelectorAll("strong")].map(
     (element) => element.textContent,
   );
 }

@@ -92,13 +92,11 @@ function RemixHistoryPage(handle: Handle<{ requestUrl: string }>) {
         </div>
 
         <main
-          id="main-content"
           mix={css({
             display: "flex",
             flex: 1,
             flexDirection: "column",
           })}
-          tabIndex={-1}
         >
           <div
             mix={css({

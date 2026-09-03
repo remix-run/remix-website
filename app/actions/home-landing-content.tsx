@@ -8,6 +8,7 @@ import { LandingHero } from "./public/remix-landing/components/landing-hero.tsx"
 import {
   colors,
   glowWhite,
+  landingMedia,
   pageMaxWidth,
 } from "./public/remix-landing/styles/tokens.ts";
 
@@ -183,7 +184,7 @@ function DifferentiatorSection() {
     >
       <div data-home-card="" mix={[differentiatorContentStyles]}>
         <div mix={[differentiatorHeaderStyles]}>
-          <h2 data-card-title="" mix={[differentiatorTitleStyles]}>
+          <h2 mix={[differentiatorTitleStyles]}>
             Re-rethinking best practices
           </h2>
           <p mix={[differentiatorIntroStyles]}>
@@ -217,7 +218,7 @@ const differentiatorShellStyles = css({
   boxSizing: "border-box",
   display: "flex",
   alignItems: "center",
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     padding: "128px 0",
   },
 });
@@ -236,7 +237,7 @@ const differentiatorContentStyles = css({
 
 const differentiatorHeaderStyles = css({
   padding: "48px 48px 32px",
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     padding: "32px 24px 24px",
   },
 });
@@ -252,7 +253,7 @@ const differentiatorTitleStyles = css({
   textShadow: glowWhite,
   textWrap: "balance",
   ...textBoxTrim,
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     fontSize: "32px",
   },
 });
@@ -275,7 +276,7 @@ const differentiatorListStyles = css({
   padding: "0",
   borderTop: "1px solid rgba(255, 255, 255, 0.12)",
   listStyle: "none",
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     gridTemplateColumns: "1fr",
   },
 });
@@ -292,7 +293,7 @@ const differentiatorItemStyles = css({
     paddingBottom: "48px",
     borderBottom: "0",
   },
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     padding: "24px",
     borderRight: "0",
     borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
@@ -317,7 +318,7 @@ const differentiatorItemTitleStyles = css({
   lineHeight: "1.3",
   letterSpacing: "-0.015em",
   ...textBoxTrim,
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     maxWidth: "none",
   },
 });
@@ -337,7 +338,7 @@ function ToolkitSection() {
     <section id="everything-you-need" mix={[toolkitShellStyles]}>
       <div data-home-card="" mix={[toolkitContentStyles]}>
         <div mix={[toolkitHeaderStyles]}>
-          <h2 data-card-title="" mix={[toolkitTitleStyles]}>
+          <h2 mix={[toolkitTitleStyles]}>
             Everything you need, all in a single package
           </h2>
           <p mix={[toolkitIntroStyles]}>
@@ -374,7 +375,7 @@ const toolkitShellStyles = css({
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     padding: "128px 0",
   },
 });
@@ -384,7 +385,7 @@ const packageLogoStageStyles = css({
   height: "clamp(720px, 64vw, 820px)",
   margin: "144px auto 0",
   flexShrink: "0",
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     height: "680px",
     marginTop: "112px",
   },
@@ -412,7 +413,7 @@ const toolkitHeaderStyles = css({
   padding: "48px 48px 32px",
   background: "transparent",
   textAlign: "left",
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     padding: "32px 24px 24px",
   },
 });
@@ -429,7 +430,7 @@ const toolkitTitleStyles = css({
   textShadow: glowWhite,
   textWrap: "balance",
   ...textBoxTrim,
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     fontSize: "32px",
   },
 });
@@ -450,7 +451,7 @@ const toolkitGridStyles = css({
   gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   gap: "0",
   borderTop: "1px solid rgba(255, 255, 255, 0.12)",
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     gridTemplateColumns: "1fr",
   },
 });
@@ -468,7 +469,7 @@ const toolkitCardStyles = css({
     paddingBottom: "48px",
     borderBottom: "0",
   },
-  "@media (max-width: 760px)": {
+  [landingMedia.medium]: {
     padding: "24px",
     borderRight: "0",
     "&:nth-child(odd)": {

@@ -68,16 +68,12 @@ export function HomePage(handle: Handle<HomePageProps>) {
         },
       ]}
     >
-      <div id="remix-landing-app" mix={[landingShellStyles]}>
+      <div mix={[landingShellStyles]}>
         {/* Keep a stable host so this entry hydrates after document navigations. */}
         <div>
           <RemixLandingEnhancements />
         </div>
-        <main
-          id="main-content"
-          tabIndex={-1}
-          mix={[landingContentStyles, cardGlassStyles]}
-        >
+        <main mix={[landingContentStyles, cardGlassStyles]}>
           <LandingContent />
         </main>
       </div>

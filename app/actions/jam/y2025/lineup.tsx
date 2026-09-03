@@ -26,7 +26,6 @@ export function Jam2025LineupPage(
       showSeats
     >
       <main
-        id="main-content"
         mix={css({
           display: "flex",
           maxWidth: "1200px",
@@ -38,7 +37,6 @@ export function Jam2025LineupPage(
           [breakpointMedia.md]: { paddingTop: "180px" },
           [breakpointMedia.lg]: { paddingTop: "200px" },
         })}
-        tabIndex={-1}
       >
         <Title mix={css({ textAlign: "center" })}>
           <ScrambleText text="Schedule" delay={100} color="blue" />

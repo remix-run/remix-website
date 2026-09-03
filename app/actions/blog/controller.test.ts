@@ -21,7 +21,6 @@ describe("Blog route", () => {
     let html = await response.text();
 
     expect(html).toContain("<title>Remix Blog</title>");
-    expect(html).toContain('id="main-content"');
     expect(html).toContain('<symbol id="github"');
     expect(html).toContain('href="#github"');
 

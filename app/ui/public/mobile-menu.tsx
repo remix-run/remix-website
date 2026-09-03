@@ -8,10 +8,9 @@ import {
 } from "remix/ui";
 import { visuallyHiddenStyle } from "./css-mixins.ts";
 import { Icon } from "./icon.tsx";
-import { breakpointMedia, theme } from "./theme.ts";
+import { theme } from "./theme.ts";
 
 type MobileMenuProps = {
-  open?: boolean;
   children: RemixNode;
   unstyled?: boolean;
 };
@@ -21,9 +20,7 @@ type MenuState = { status: "open" } | { status: "closed" };
 export let MobileMenu = clientEntry(
   import.meta.url,
   function MobileMenu(handle: Handle<MobileMenuProps>) {
-    let state: MenuState = handle.props.open
-      ? { status: "open" }
-      : { status: "closed" };
+    let state: MenuState = { status: "closed" };
     let detailsElement: HTMLDetailsElement | null = null;
 
     let syncDetailsElement = () => {
@@ -49,6 +46,10 @@ export let MobileMenu = clientEntry(
       document.addEventListener("focusin", closeMenu, {
         signal: handle.signal,
       });
+      window.navigation?.addEventListener("navigatesuccess", closeMenu, {
+        signal: handle.signal,
+      });
+      window.addEventListener("resize", closeMenu, { signal: handle.signal });
     });
 
     let stopPropagation = (e: Event) => {
@@ -117,7 +118,7 @@ export let MobileMenu = clientEntry(
               mix={css({ width: "20px", height: "20px" })}
               aria-hidden="true"
             />
-            <span mix={visuallyHiddenStyle}>Open menu</span>
+            <span mix={visuallyHiddenStyle}>Menu</span>
           </summary>
 
           <div
@@ -128,7 +129,6 @@ export let MobileMenu = clientEntry(
                     position: "absolute",
                     right: 0,
                     zIndex: 20,
-                    [breakpointMedia.md]: { right: "auto", left: 0 },
                   })
                 : undefined
             }
@@ -159,14 +159,14 @@ export let MobileMenu = clientEntry(
                         flexDirection: "column",
                         gap: "8px",
                         padding: "10px 8px",
-                        "& [data-header-link]": {
+                        "& > a": {
                           color: theme.colors.text.marketingPrimary,
                           fontSize: "1rem",
                           fontWeight: theme.fontWeight.normal,
                           opacity: 0.8,
                           whiteSpace: "nowrap",
                         },
-                        "& [data-header-link]:hover, & [data-header-link]:focus-visible, & [data-header-link][aria-current]":
+                        "& > a:hover, & > a:focus-visible, & > a[aria-current]":
                           {
                             color: theme.colors.action.current,
                             opacity: 1,

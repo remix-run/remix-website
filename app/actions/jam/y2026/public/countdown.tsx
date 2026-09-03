@@ -203,11 +203,7 @@ export function Jam2026Countdown(handle: Handle) {
           return (
             <span key={label} mix={jam2026CountdownPairStyle}>
               <strong>
-                <span
-                  aria-hidden="true"
-                  data-countdown-number=""
-                  mix={jam2026CountdownNumberStyle}
-                >
+                <span aria-hidden="true" mix={jam2026CountdownNumberStyle}>
                   {value.split("").map((digit, index) => (
                     <span
                       key={`${unit}-${index}-${digit}-${flip}`}
@@ -270,9 +266,7 @@ let jam2026CountdownPairStyle = css({
     textTransform: "uppercase",
     whiteSpace: "nowrap",
   },
-  "&:first-child [data-countdown-number]": {
-    minWidth: "3ch",
-  },
+  "&:first-child strong > span": { minWidth: "3ch" },
 });
 
 let jam2026CountdownNumberStyle = css({

@@ -3,10 +3,8 @@ import * as popover from "remix/ui/popover";
 import { routes } from "../../../../routes.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { isEditableKeyTarget } from "../../../../ui/public/keyboard.ts";
-import { colors } from "../styles/tokens.ts";
+import { colors, landingBreakpoints, landingMedia } from "../styles/tokens.ts";
 import { clamp01 } from "../utils/math.ts";
-
-const MOBILE_BREAKPOINT_PX = 720;
 
 const headerStyles = css({
   position: "fixed",
@@ -30,7 +28,7 @@ const hintStyles = css({
   whiteSpace: "nowrap",
   pointerEvents: "none",
   paddingTop: "5px",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+  [landingMedia.small]: {
     display: "none",
   },
 });
@@ -40,7 +38,7 @@ const desktopNavStyles = css({
   alignItems: "center",
   gap: "8px",
   pointerEvents: "auto",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+  [landingMedia.large]: {
     display: "none",
   },
 });
@@ -70,7 +68,7 @@ const mobileContainerStyles = css({
   position: "relative",
   display: "none",
   pointerEvents: "auto",
-  [`@media (max-width: ${MOBILE_BREAKPOINT_PX}px)`]: {
+  [landingMedia.large]: {
     display: "block",
     marginLeft: "auto",
     marginTop: "-12px",
@@ -249,7 +247,7 @@ export function LandingNav(
   window.addEventListener(
     "resize",
     () => {
-      if (menuOpen && window.innerWidth > MOBILE_BREAKPOINT_PX) {
+      if (menuOpen && window.innerWidth > landingBreakpoints.large) {
         setMenuOpen(false);
       }
     },

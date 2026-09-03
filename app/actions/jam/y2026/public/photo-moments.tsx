@@ -154,7 +154,7 @@ export let Jam2026PhotoMoments = clientEntry(
           return;
         }
 
-        document.getElementById("main-content")?.focus();
+        document.querySelector<HTMLElement>("main")?.focus();
       });
     };
 
@@ -246,7 +246,6 @@ export let Jam2026PhotoMoments = clientEntry(
             <article
               key={moment.id}
               data-dragging={drag?.id === moment.id ? "true" : undefined}
-              data-photo-window-id={moment.id}
               mix={[
                 css({
                   pointerEvents: "auto",
@@ -345,10 +344,9 @@ export let Jam2026PhotoMoments = clientEntry(
                       transformOrigin: "50% 50%",
                       transition:
                         "transform 350ms cubic-bezier(0.22, 1.5, 0.36, 1), box-shadow 350ms cubic-bezier(0.22, 1.5, 0.36, 1)",
-                      "[data-photo-window-id]:hover &, [data-photo-window-id]:has(:focus-visible) &":
-                        {
-                          transform: "rotate(-2deg)",
-                        },
+                      "article:hover &, article:has(:focus-visible) &": {
+                        transform: "rotate(-2deg)",
+                      },
                       "[data-dragging='true'] &": {
                         boxShadow:
                           "0 2px 4px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.24)), 0 8px 16px light-dark(rgb(8 40 69 / 0.07), rgb(0 0 0 / 0.28)), 0 20px 36px light-dark(rgb(8 40 69 / 0.08), rgb(0 0 0 / 0.32)), 0 40px 72px light-dark(rgb(8 40 69 / 0.1), rgb(0 0 0 / 0.38))",
@@ -359,10 +357,9 @@ export let Jam2026PhotoMoments = clientEntry(
                       },
                       "@media (prefers-reduced-motion: reduce)": {
                         transition: "none",
-                        "[data-photo-window-id]:hover &, [data-photo-window-id]:has(:focus-visible) &":
-                          {
-                            transform: "rotate(0deg)",
-                          },
+                        "article:hover &, article:has(:focus-visible) &": {
+                          transform: "rotate(0deg)",
+                        },
                         "[data-dragging='true'] &": {
                           transform: "none",
                         },

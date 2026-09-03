@@ -59,7 +59,6 @@ function renderGalleryPage({
       hideBackground
     >
       <main
-        id="main-content"
         mix={css({
           display: "flex",
           maxWidth: "1920px",
@@ -73,7 +72,6 @@ function renderGalleryPage({
           [breakpointMedia.md]: { paddingTop: "200px" },
           [breakpointMedia.lg]: { paddingTop: "210px" },
         })}
-        tabIndex={-1}
       >
         <Title>
           <ScrambleText text="Photo" delay={100} color="blue" />

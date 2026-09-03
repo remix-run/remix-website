@@ -1,3 +1,18 @@
+export const landingBreakpoints = {
+  small: 720,
+  medium: 760,
+  large: 880,
+  largeMin: 881,
+  wide: 1100,
+} as const;
+
+export const landingMedia = {
+  small: `@media (max-width: ${landingBreakpoints.small}px)`,
+  medium: `@media (max-width: ${landingBreakpoints.medium}px)`,
+  large: `@media (max-width: ${landingBreakpoints.large}px)`,
+  wide: `@media (max-width: ${landingBreakpoints.wide}px)`,
+} as const;
+
 export const colors = {
   bg: "#000000",
   fg: "#dee2e6",

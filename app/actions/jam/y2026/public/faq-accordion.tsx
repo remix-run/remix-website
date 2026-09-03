@@ -55,16 +55,10 @@ export let Jam2026FaqAccordion = clientEntry(
         mix={faqListStyle}
       >
         {handle.props.faqs.map((faq) => (
-          <AccordionItem
-            key={faq.id}
-            value={faq.id}
-            id={faq.id}
-            mix={faqItemStyle}
-          >
+          <AccordionItem key={faq.id} value={faq.id} mix={faqItemStyle}>
             <AccordionTrigger indicator={null} mix={faqTriggerStyle}>
               <span
                 aria-hidden="true"
-                data-faq-icon=""
                 mix={
                   openFaqId === faq.id
                     ? [faqIconStyle, faqIconOpenStyle]

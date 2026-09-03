@@ -81,7 +81,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
           ]}
         >
           <Jam2026CloudBackdrop />
-          <FpsCounterToggle dataAttribute="data-jam-2026-performance-tools" />
+          <FpsCounterToggle />
           <div
             id={ticketModalConfig.pageBackgroundId}
             aria-hidden={ticketsModalOpen ? "true" : undefined}
@@ -95,7 +95,6 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
           >
             <Jam2026Header initialTheme={handle.props.theme} />
             <main
-              id="main-content"
               tabIndex={-1}
               mix={css({
                 width: "100%",
@@ -123,7 +122,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
               })}
             />
           </div>
-          <div {...{ [ticketModalConfig.attributes.frameHost]: "" }}>
+          <div>
             {ticketsModalOpen && handle.props.ticketCheckout?.error ? (
               <Jam2026TicketsModalFrame
                 animateEntrance={false}

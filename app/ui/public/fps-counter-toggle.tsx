@@ -3,15 +3,11 @@ import { clientEntry, css, type Handle } from "remix/ui";
 import type { FpsCounter } from "./fps-counter.tsx";
 import { isEditableKeyTarget } from "./keyboard.ts";
 
-type FpsCounterToggleProps = {
-  dataAttribute?: string;
-};
-
 type FpsCounterComponent = typeof FpsCounter;
 
 export let FpsCounterToggle = clientEntry(
   import.meta.url,
-  function FpsCounterToggle(handle: Handle<FpsCounterToggleProps>) {
+  function FpsCounterToggle(handle: Handle) {
     let fpsCounter: {
       Component: FpsCounterComponent | null;
       load: Promise<void> | null;
@@ -57,13 +53,9 @@ export let FpsCounterToggle = clientEntry(
 
     return () => {
       let FpsCounter = fpsCounter.Component;
-      let dataAttribute = handle.props.dataAttribute;
 
       return (
-        <div
-          {...(dataAttribute ? { [dataAttribute]: "" } : {})}
-          mix={fpsCounterToggleStyle}
-        >
+        <div mix={fpsCounterToggleStyle}>
           {fpsCounter.visible && FpsCounter ? <FpsCounter /> : null}
         </div>
       );

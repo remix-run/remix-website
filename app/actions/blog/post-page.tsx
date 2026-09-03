@@ -64,13 +64,11 @@ export function BlogPostPage(
     >
       <Header currentSection="blog" />
       <main
-        id="main-content"
         mix={css({
           display: "flex",
           flex: 1,
           flexDirection: "column",
         })}
-        tabIndex={-1}
       >
         <BlogPostContent
           post={handle.props.post}

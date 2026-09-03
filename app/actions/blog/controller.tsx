@@ -126,13 +126,11 @@ function Page(
       >
         <Header currentSection="blog" />
         <main
-          id="main-content"
           mix={css({
             display: "flex",
             flex: 1,
             flexDirection: "column",
           })}
-          tabIndex={-1}
         >
           <BlogPageContent posts={handle.props.posts} />
         </main>
@@ -311,10 +309,7 @@ function BlogPageContent(
                 >
                   Get updates on the latest Remix news
                 </h3>
-                <div
-                  mix={[pageBodyStyle, css({ marginBlockEnd: "24px" })]}
-                  id="newsletter-text"
-                >
+                <div mix={[pageBodyStyle, css({ marginBlockEnd: "24px" })]}>
                   Be the first to learn about new Remix features, community
                   events, and tutorials.
                 </div>

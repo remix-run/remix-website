@@ -35,7 +35,6 @@ export function Jam2025TicketPage(
       activePath={routes.jam.y2025.ticket.index.href()}
     >
       <main
-        id="main-content"
         mix={css({
           display: "flex",
           maxWidth: "800px",
@@ -49,7 +48,6 @@ export function Jam2025TicketPage(
           [breakpointMedia.md]: { paddingTop: "270px" },
           [breakpointMedia.lg]: { paddingTop: "280px" },
         })}
-        tabIndex={-1}
       >
         <Title>
           <ScrambleText

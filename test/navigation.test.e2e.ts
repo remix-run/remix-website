@@ -217,6 +217,29 @@ describe("Navigation", () => {
     ]);
   });
 
+  it("switches to the menu before hiding the homepage scroll hint", async (t) => {
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.home.href());
+
+    let desktopNav = page.locator('header nav[aria-label="Primary"]').first();
+    let menuButton = page.getByRole("button", { name: "Open menu" });
+    let scrollHint = page.getByText("scroll or press ↓ and ↑", { exact: true });
+
+    await page.setViewportSize({ width: 881, height: 720 });
+    await expect(desktopNav).toBeVisible();
+    await expect(menuButton).toBeHidden();
+    await expect(scrollHint).toBeVisible();
+
+    await page.setViewportSize({ width: 880, height: 720 });
+    await expect(desktopNav).toBeHidden();
+    await expect(menuButton).toBeVisible();
+    await expect(scrollHint).toBeVisible();
+
+    await page.setViewportSize({ width: 720, height: 720 });
+    await expect(scrollHint).toBeHidden();
+  });
+
   it("activates blog post typography on client navigation", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));

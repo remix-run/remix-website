@@ -167,7 +167,6 @@ export let Jam2026Header = clientEntry(
             >
               <img
                 alt=""
-                data-logo="shopify"
                 height={24}
                 src={assetPaths.jam2026.shopifyGlyph}
                 width={21}
@@ -175,7 +174,6 @@ export let Jam2026Header = clientEntry(
               />
               <img
                 alt=""
-                data-logo="event"
                 height={54}
                 src={assetPaths.jam2026.horizontalLockup}
                 width={404}

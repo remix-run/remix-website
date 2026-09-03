@@ -1,8 +1,16 @@
 import { css, type Handle } from "remix/ui";
 import { theme } from "../../../../ui/public/theme.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
-import { colors, glowWhite } from "../styles/tokens.ts";
+import {
+  colors,
+  glowWhite,
+  landingBreakpoints,
+  landingMedia,
+} from "../styles/tokens.ts";
 import { CodeSnippet } from "./code-snippet.tsx";
+
+const WIDE_HERO_MEDIA =
+  `@media (min-width: ${landingBreakpoints.largeMin}px) and (max-height: 900px), (min-width: ${landingBreakpoints.largeMin}px) and (min-aspect-ratio: 16/9)` as const;
 
 const shellStyles = css({
   minHeight: "100vh",
@@ -12,11 +20,10 @@ const shellStyles = css({
   alignItems: "flex-start",
   paddingTop:
     "calc(clamp(128px, 92px + 7vw, 188px) + (100vw - 48px) * 43 / 440)",
-  "@media (min-width: 881px) and (max-height: 900px), (min-width: 881px) and (min-aspect-ratio: 16/9)":
-    {
-      background:
-        "radial-gradient(ellipse 42% 45% at 50% 54%, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.38) 48%, rgba(0, 0, 0, 0.16) 78%, rgba(0, 0, 0, 0.1) 100%)",
-    },
+  [WIDE_HERO_MEDIA]: {
+    background:
+      "radial-gradient(ellipse 42% 45% at 50% 54%, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.38) 48%, rgba(0, 0, 0, 0.16) 78%, rgba(0, 0, 0, 0.1) 100%)",
+  },
 });
 
 const textGroupStyles = css({
@@ -30,7 +37,7 @@ const textGroupStyles = css({
   gap: "clamp(20px, 2.5vw, 32px)",
   padding: "0 24px",
   textAlign: "center",
-  "@media (max-width: 880px)": {
+  [landingMedia.large]: {
     gap: "24px",
   },
 });
@@ -66,7 +73,7 @@ const bodyStyles = css({
   color: colors.fg,
   textShadow: glowWhite,
   textWrap: "pretty",
-  "@media (max-width: 880px)": {
+  [landingMedia.large]: {
     maxWidth: "480px",
   },
   ...textBoxTrim,
@@ -83,7 +90,11 @@ export function LandingHero(_handle: Handle) {
   return () => (
     <section id="fully-stacked-web-framework" mix={[shellStyles]}>
       <div mix={[textGroupStyles]}>
-        <h1 mix={[headingStyles]}>The fully-stacked web framework</h1>
+        <h1 mix={[headingStyles]}>
+          The fully-stacked
+          <br />
+          web framework
+        </h1>
         <p mix={[bodyStyles]}>
           Remix brings together a server runtime, routing, authentication,
           sessions, database integrations, a UI framework, asset compilation,

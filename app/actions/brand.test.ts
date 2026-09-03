@@ -20,7 +20,6 @@ describe("Brand route", () => {
     expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
 
     let html = await response.text();
-    expect(html).toContain('id="main-content"');
     expect(html).toContain('href="/_brand/remix-brand-assets.zip"');
   });
 });

@@ -7,7 +7,12 @@ import {
 import { theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
-import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
+import {
+  colors,
+  glowWhite,
+  landingMedia,
+  pageMaxWidth,
+} from "../styles/tokens.ts";
 
 // Vertically center the inner row inside each section's `min-height: 100vh`
 // box. `align-items: center` handles grid-cell alignment, but this single
@@ -34,7 +39,7 @@ const panelStyles = css({
   WebkitBackdropFilter: "blur(12px)",
   background: "rgba(0, 0, 0, 0.58)",
   contain: "paint",
-  "@media (max-width: 880px)": {
+  [landingMedia.large]: {
     padding: "32px 24px",
     background: "rgba(0, 0, 0, 0.64)",
   },
@@ -43,7 +48,7 @@ const panelStyles = css({
 const rightPanelStyles = css({
   gridColumn: "8 / -2",
   justifySelf: "end",
-  "@media (max-width: 880px)": {
+  [landingMedia.large]: {
     gridColumn: "1 / -1",
     justifySelf: "stretch",
   },
@@ -231,7 +236,7 @@ const PRIMARY_PANEL_STYLES_BY_ID: Record<
     gridColumn: "1 / -1",
     justifySelf: "center",
     maxWidth: "640px",
-    "@media (max-width: 880px)": {
+    [landingMedia.large]: {
       gridColumn: "1 / -1",
       justifySelf: "center",
     },
@@ -239,7 +244,7 @@ const PRIMARY_PANEL_STYLES_BY_ID: Record<
   "test-drive": css({
     gridColumn: "1 / span 6",
     justifySelf: "end",
-    "@media (max-width: 880px)": {
+    [landingMedia.large]: {
       gridColumn: "1 / -1",
       justifySelf: "center",
     },
@@ -247,7 +252,7 @@ const PRIMARY_PANEL_STYLES_BY_ID: Record<
   "re-rethinking-best-practices": css({
     gridColumn: "1 / span 5",
     maxWidth: "720px",
-    "@media (max-width: 880px)": {
+    [landingMedia.large]: {
       gridColumn: "1 / -1",
     },
   }),
@@ -255,7 +260,7 @@ const PRIMARY_PANEL_STYLES_BY_ID: Record<
     gridColumn: "1 / -1",
     justifySelf: "center",
     maxWidth: "640px",
-    "@media (max-width: 880px)": {
+    [landingMedia.large]: {
       gridColumn: "1 / -1",
       justifySelf: "center",
     },
@@ -269,7 +274,7 @@ const SECONDARY_PANEL_STYLES_BY_ID: Record<
   "test-drive": css({
     gridColumn: "7 / -1",
     justifySelf: "start",
-    "@media (max-width: 880px)": {
+    [landingMedia.large]: {
       gridColumn: "1 / -1",
       justifySelf: "center",
     },
@@ -464,7 +469,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
         ? rightPanelStyles
         : css({
             gridColumn: "2 / span 5",
-            "@media (max-width: 880px)": {
+            [landingMedia.large]: {
               gridColumn: "1 / -1",
             },
           }));
@@ -476,7 +481,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
             gap: "0",
             margin: "32px -48px -48px",
             borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-            "@media (max-width: 880px)": {
+            [landingMedia.large]: {
               margin: "24px -24px -32px",
             },
             "@media (max-width: 600px)": {
@@ -488,7 +493,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
               gap: "0",
               margin: "32px -48px -48px",
               borderTop: "1px solid rgba(255, 255, 255, 0.14)",
-              "@media (max-width: 880px)": {
+              [landingMedia.large]: {
                 margin: "24px -24px -32px",
               },
             })
@@ -531,7 +536,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
               "&:last-child": {
                 paddingBottom: "48px",
               },
-              "@media (max-width: 880px)": {
+              [landingMedia.large]: {
                 padding: "24px",
                 "&:last-child": {
                   paddingBottom: "32px",
@@ -553,7 +558,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
             display: "grid",
             alignItems: "center",
             alignContent: "center",
-            "@media (max-width: 880px)": {
+            [landingMedia.large]: {
               padding: "128px 0",
             },
           }),
@@ -567,7 +572,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
               display: "grid",
               gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
               gap: "24px",
-              "@media (max-width: 880px)": {
+              [landingMedia.large]: {
                 gridTemplateColumns: "1fr",
               },
             }),
@@ -575,9 +580,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
           ]}
         >
           <div data-home-card="" mix={[panelStyles, primaryPanelStyles]}>
-            <h2 data-card-title="" mix={[titleStyles]}>
-              {handle.props.title}
-            </h2>
+            <h2 mix={[titleStyles]}>{handle.props.title}</h2>
             <p mix={[bodyStyles]}>{handle.props.body}</p>
             {handle.props.points ? (
               <ul
@@ -715,7 +718,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                   background: "rgba(0, 0, 0, 0.38)",
                   overflow: "hidden",
                   contain: "paint",
-                  "@media (max-width: 880px)": {
+                  [landingMedia.large]: {
                     gridColumn: "1 / -1",
                     background: "rgba(0, 0, 0, 0.72)",
                   },
@@ -754,7 +757,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                   WebkitBackdropFilter: "blur(10px)",
                   background: "rgba(0, 0, 0, 0.46)",
                   contain: "paint",
-                  "@media (max-width: 880px)": {
+                  [landingMedia.large]: {
                     gridColumn: "1 / -1",
                     background: "rgba(0, 0, 0, 0.72)",
                   },
@@ -770,7 +773,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                     margin: "0",
                     padding: "0",
                     listStyle: "none",
-                    "@media (max-width: 1100px)": {
+                    [landingMedia.wide]: {
                       gridTemplateColumns: "1fr",
                     },
                   }),
@@ -787,7 +790,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                         border: "1px solid rgba(255, 255, 255, 0.12)",
                         borderRadius: "18px",
                         background: "rgba(255, 255, 255, 0.045)",
-                        "@media (max-width: 1100px)": {
+                        [landingMedia.wide]: {
                           minHeight: "0",
                         },
                       }),
@@ -838,9 +841,7 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                   rightPanelStyles,
               ]}
             >
-              <h2 data-card-title="" mix={[titleStyles]}>
-                {handle.props.secondary.title}
-              </h2>
+              <h2 mix={[titleStyles]}>{handle.props.secondary.title}</h2>
               <p mix={[bodyStyles]}>{handle.props.secondary.body}</p>
               {handle.props.secondary.newsletter ? (
                 <NewsletterSubscribeFrameHost

@@ -25,11 +25,7 @@ export function BrandPage(handle: Handle<{ requestUrl: string }>) {
       })}
     >
       <Header />
-      <main
-        id="main-content"
-        mix={css({ display: "flex", flex: 1, flexDirection: "column" })}
-        tabIndex={-1}
-      >
+      <main mix={css({ display: "flex", flex: 1, flexDirection: "column" })}>
         <BrandPageContent />
       </main>
       <Footer />
