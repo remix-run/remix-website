@@ -9,12 +9,11 @@ import {
 } from "remix/router";
 import { formData } from "remix/middleware/form-data";
 import { logger } from "remix/middleware/logger";
-import { staticFiles } from "remix/middleware/static";
 
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
-import { CACHE } from "./utils/cache-control.ts";
 import { renderMiddleware } from "./middleware/render.ts";
+import { rootPublicFiles } from "./middleware/root-public-files.ts";
 import { securityHeaders } from "./middleware/security-headers.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes.ts";
@@ -77,27 +76,6 @@ function createAppMiddleware() {
     renderMiddleware,
     isTest ? logger({ log() {} }) : logger(),
   );
-}
-
-function rootPublicFiles(): Middleware {
-  let serveStaticFiles = staticFiles("public", {
-    cacheControl: isDev ? "no-store, must-revalidate" : "public, max-age=3600",
-    index: false,
-  });
-
-  return async (context, next) => {
-    let fellThrough = false;
-    let response = await serveStaticFiles(context, () => {
-      fellThrough = true;
-      return next();
-    });
-
-    if (!fellThrough && response) {
-      response.headers.set("Surrogate-Key", CACHE.STATIC_ASSET_TAG);
-    }
-
-    return response;
-  };
 }
 
 export type AppContext = MiddlewareContext<
