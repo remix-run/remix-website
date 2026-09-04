@@ -6,7 +6,7 @@ import {
   RUNNER_WEBP_SRC,
 } from "../runner-media.ts";
 
-const LOADING_SCREEN_FAILSAFE_MS = 8_000;
+export const LOADING_SCREEN_FAILSAFE_MS = 8_000;
 
 const overlayStyles = css({
   position: "fixed",

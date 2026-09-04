@@ -56,6 +56,70 @@ describe("Home", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
+  it("keeps the server-rendered page visible when browser assets arrive late", async (t) => {
+    const page = await t.serve(
+      await createTestServer(swallowAbortErrors(createAppRouter())),
+    );
+    let releaseParticleCanvas = () => {};
+    const particleCanvasReleased = new Promise<void>((resolve) => {
+      releaseParticleCanvas = resolve;
+    });
+    let markParticleCanvasRequested = () => {};
+    const particleCanvasRequested = new Promise<void>((resolve) => {
+      markParticleCanvasRequested = resolve;
+    });
+    await page.route("**/assets/**", async (route) => {
+      if (route.request().url().includes("particle-canvas")) {
+        markParticleCanvasRequested();
+        await particleCanvasReleased;
+      }
+      await route.continue();
+    });
+
+    const response = await page.goto(routes.home.href());
+    expect(response?.ok()).toBe(true);
+    await particleCanvasRequested;
+    const overlay = page.locator(".loading-screen-overlay");
+    await expect(overlay).toBeVisible();
+    await expect(overlay).toBeHidden({ timeout: 10_000 });
+    await expect(page.locator("main")).toBeVisible();
+    await page.evaluate(() => {
+      const root = document.documentElement;
+      root.dataset.loadingScreenReappeared = "false";
+      const checkOverlay = () => {
+        const element = document.querySelector(".loading-screen-overlay");
+        if (!element) return;
+        const style = getComputedStyle(element);
+        if (
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          Number(style.opacity) > 0
+        ) {
+          root.dataset.loadingScreenReappeared = "true";
+        }
+      };
+      new MutationObserver(checkOverlay).observe(root, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      });
+      const sampleAnimationFrames = () => {
+        checkOverlay();
+        requestAnimationFrame(sampleAnimationFrames);
+      };
+      requestAnimationFrame(sampleAnimationFrames);
+    });
+
+    releaseParticleCanvas();
+    await expect(page.locator("canvas").first()).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(overlay).toBeHidden();
+    expect(
+      await page.locator("html").getAttribute("data-loading-screen-reappeared"),
+    ).toBe("false");
+  });
+
   it("keeps the particle scene visible after resizing with reduced motion", async (t) => {
     const page = await t.serve(
       await createTestServer(swallowAbortErrors(createAppRouter())),
