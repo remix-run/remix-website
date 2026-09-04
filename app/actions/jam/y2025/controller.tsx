@@ -3,7 +3,7 @@ import { css, type Handle, type RemixNode } from "remix/ui";
 
 import { getSchedule } from "../../../data/jam-schedule.ts";
 import { routes } from "../../../routes.ts";
-import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
+import { CACHE } from "../../../utils/cache-control.ts";
 import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-subscribe.tsx";
 import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
 import { Jam2025CocPage } from "./coc.tsx";
@@ -25,8 +25,6 @@ import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
 
 type EventStatus = "before" | "live" | "after";
 
-let cacheHeaders = { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } };
-
 export default createController(routes.jam.y2025, {
   actions: {
     index({ render, request }) {
@@ -40,7 +38,6 @@ export default createController(routes.jam.y2025, {
         >
           <Jam2025Page eventStatus={getEventStatus()} />
         </JamDocument>,
-        cacheHeaders,
       );
     },
 
@@ -49,16 +46,16 @@ export default createController(routes.jam.y2025, {
         <JamNewsletterSubscribeForm
           status={getNewsletterSubscriptionStatus(request)}
         />,
-        { headers: { "Cache-Control": "no-store" } },
+        { headers: { "Cache-Control": CACHE.PRIVATE } },
       );
     },
 
     coc({ render, request }) {
-      return render(<Jam2025CocPage requestUrl={request.url} />, cacheHeaders);
+      return render(<Jam2025CocPage requestUrl={request.url} />);
     },
 
     faq({ render, request }) {
-      return render(<Jam2025FaqPage requestUrl={request.url} />, cacheHeaders);
+      return render(<Jam2025FaqPage requestUrl={request.url} />);
     },
 
     async lineup({ render, request }) {
@@ -67,7 +64,6 @@ export default createController(routes.jam.y2025, {
           requestUrl={request.url}
           schedule={await getSchedule()}
         />,
-        cacheHeaders,
       );
     },
   },

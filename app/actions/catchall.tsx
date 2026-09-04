@@ -3,6 +3,7 @@ import semver from "semver";
 
 import type { AppRenderer } from "../middleware/render.ts";
 import { StatusErrorDocument } from "../ui/not-found-page.tsx";
+import { CACHE } from "../utils/cache-control.ts";
 
 const SAFE_STATIC_FILE_EXTENSIONS = [
   ".html",
@@ -55,7 +56,7 @@ export function catchallHandler({
     status: 404,
     statusText: "Not Found",
     headers: {
-      "Cache-Control": "no-store",
+      "Cache-Control": CACHE.PRIVATE,
     },
   });
 }

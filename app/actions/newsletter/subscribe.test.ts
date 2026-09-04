@@ -91,7 +91,7 @@ describe("Newsletter subscribe route", () => {
       { accept: "text/html" },
     );
     expect(success.status).toBe(303);
-    expect(success.headers.get("Cache-Control")).toBe("no-store");
+    expect(success.headers.get("Cache-Control")).toBe("private, no-store");
     expect(success.headers.get("Location")).toBe(
       `${routes.newsletter.index.href()}?subscription=success`,
     );
@@ -101,7 +101,7 @@ describe("Newsletter subscribe route", () => {
     let resultPage = await router.fetch(
       new URL(success.headers.get("Location")!, "http://localhost:3000"),
     );
-    expect(resultPage.headers.get("Cache-Control")).toBe("no-store");
+    expect(resultPage.headers.get("Cache-Control")).toBe("private, no-store");
     let resultHtml = await resultPage.text();
     expect(resultHtml).toContain('role="status"');
     expect(resultHtml).toContain("check your email");
@@ -130,7 +130,7 @@ describe("Newsletter subscribe route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(response.headers.get("Vary")).toBe("x-remix-target");
     let html = await response.text();
     expect(html).toContain('role="status"');
@@ -152,7 +152,7 @@ describe("Newsletter subscribe route", () => {
     );
 
     expect(response.status).toBe(303);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(response.headers.get("Vary")).toBe("x-remix-target");
     expect(response.headers.get("Location")).toBe(
       `${routes.jam.y2025.newsletterSignup.href()}?subscription=success`,

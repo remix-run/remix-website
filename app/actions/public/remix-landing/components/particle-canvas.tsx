@@ -380,6 +380,16 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
     }
 
     const animate = () => {
+      try {
+        renderFrame();
+      } catch (error) {
+        initFailed = true;
+        disposeScene();
+        handle.props.onError(error);
+      }
+    };
+
+    function renderFrame() {
       if (!engine || !particles || !restBaker || !mouseSim) return;
 
       const now = performance.now();
@@ -752,7 +762,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         }
       });
       frameId = requestAnimationFrame(animate);
-    };
+    }
 
     frameId = requestAnimationFrame(animate);
   }

@@ -4,7 +4,6 @@ import { expect } from "remix/assert";
 import { DOCUMENT_REDIRECT_HEADER } from "../../public/document-redirect.ts";
 import { routes } from "../../../routes.ts";
 import { env } from "../../../utils/env.ts";
-import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import jam2026Controller from "./controller.tsx";
 import jam2026TicketController from "./ticket/controller.tsx";
@@ -27,7 +26,6 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(response.headers.get("Vary")).toContain("x-remix-target");
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
 
@@ -52,7 +50,7 @@ describe("Remix Jam 2026 routes", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     let html = await response.text();
     expect(html).toContain('data-rmx-target="newsletter-subscribe"');
     expect(html).toContain('data-rmx-reset-scroll="false"');
@@ -83,7 +81,6 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(response.headers.get("Vary")).toContain("x-remix-target");
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
 
@@ -137,7 +134,7 @@ describe("Remix Jam 2026 routes", () => {
     );
 
     expect(response.status).toBe(303);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(response.headers.get("Location")).toBe(
       routes.jam.y2026.index.href(),
     );
@@ -181,7 +178,6 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(response.headers.get("Vary")).toContain("x-remix-target");
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
 
@@ -206,7 +202,6 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(response.headers.get("Vary")).toContain("x-remix-target");
     expect(response.headers.get("Vary")).toContain("x-remix-ssr-frame");
 
@@ -231,7 +226,7 @@ describe("Remix Jam 2026 routes", () => {
     );
 
     expect(response.status).toBe(400);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
 
     let html = await response.text();
 
@@ -256,7 +251,7 @@ describe("Remix Jam 2026 routes", () => {
     );
 
     expect(response.status).toBe(303);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(response.headers.get("Location")).toBe(
       "https://jam.remix.run/checkouts/2026",
     );
@@ -275,7 +270,7 @@ describe("Remix Jam 2026 routes", () => {
     );
 
     expect(response.status).toBe(204);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(response.headers.get("Location")).toBe(null);
     expect(response.headers.get(DOCUMENT_REDIRECT_HEADER)).toBe(
       "https://jam.remix.run/checkouts/2026",
@@ -289,7 +284,6 @@ describe("Remix Jam 2026 routes", () => {
     let response = await router.fetch(appUrl(routes.jam.y2026.ticket.index));
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(response.headers.get("Set-Cookie")).toBe(null);
 
     let html = await response.text();
@@ -308,7 +302,7 @@ describe("Remix Jam 2026 routes", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
 
     let setCookie = response.headers.get("Set-Cookie");
     expect(setCookie).not.toBe(null);
@@ -358,7 +352,6 @@ describe("Remix Jam 2026 routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Set-Cookie")).toBe(null);
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
 
     let html = await response.text();
 
@@ -378,7 +371,7 @@ describe("Remix Jam 2026 routes", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
 
     let html = await response.text();

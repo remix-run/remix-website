@@ -325,7 +325,13 @@ export let RemixLandingEnhancements = clientEntry(
         const overlay = document.querySelector(".loading-screen-overlay");
         if (!overlay) return;
 
-        const animation = overlay.getAnimations({ subtree: true })[0];
+        if (getComputedStyle(overlay).visibility === "hidden") {
+          loadingScreenStatus = "skipped";
+          await handle.update();
+          return;
+        }
+
+        const animation = overlay.querySelector("picture")?.getAnimations()[0];
         let visibleMs = LOADING_SCREEN_MIN_VISIBLE_MS;
         if (animation) {
           const now = Number(document.timeline.currentTime ?? 0);
@@ -345,6 +351,13 @@ export let RemixLandingEnhancements = clientEntry(
           await new Promise((resolve) => setTimeout(resolve, remainingMs));
         }
         if (handle.signal.aborted) return;
+
+        // The CSS fail-safe may have elapsed while this task was waiting.
+        if (getComputedStyle(overlay).visibility === "hidden") {
+          loadingScreenStatus = "skipped";
+          await handle.update();
+          return;
+        }
 
         loadingScreenStatus = "dismissed";
         const signal = await handle.update();
@@ -415,39 +428,45 @@ export let RemixLandingEnhancements = clientEntry(
     handle.queueTask((signal) => {
       if (signal.aborted || handle.signal.aborted) return;
 
-      isHydrated = true;
-      initReducedMotion(handle.signal, () => {
+      try {
+        isHydrated = true;
+        initReducedMotion(handle.signal, () => {
+          syncMorphToScroll();
+          handle.update();
+        });
         syncMorphToScroll();
+        startBrandCycle();
+        void loadParticleCanvas().then(() => {
+          if (!handle.signal.aborted) handle.update();
+        });
+
+        window.addEventListener("scroll", scheduleMorphSync, {
+          signal: handle.signal,
+        });
+        window.addEventListener(
+          "resize",
+          () => {
+            scroll.sectionStops = null;
+            scheduleMorphSync();
+          },
+          { signal: handle.signal },
+        );
+        window.addEventListener("keydown", onKeydown, {
+          signal: handle.signal,
+        });
+
+        handle.signal.addEventListener("abort", () => {
+          window.cancelAnimationFrame(scroll.frame);
+          clearKonamiIdleTimer();
+          konami.index = 0;
+        });
+
         handle.update();
-      });
-      syncMorphToScroll();
-      startBrandCycle();
-      void loadParticleCanvas().then(() => {
-        if (!handle.signal.aborted) handle.update();
-      });
-
-      window.addEventListener("scroll", scheduleMorphSync, {
-        signal: handle.signal,
-      });
-      window.addEventListener(
-        "resize",
-        () => {
-          scroll.sectionStops = null;
-          scheduleMorphSync();
-        },
-        { signal: handle.signal },
-      );
-      window.addEventListener("keydown", onKeydown, {
-        signal: handle.signal,
-      });
-
-      handle.signal.addEventListener("abort", () => {
-        window.cancelAnimationFrame(scroll.frame);
-        clearKonamiIdleTimer();
-        konami.index = 0;
-      });
-
-      handle.update();
+      } catch (error) {
+        isHydrated = false;
+        console.error(error);
+        void dismissLoadingScreen();
+      }
     });
 
     return () => {

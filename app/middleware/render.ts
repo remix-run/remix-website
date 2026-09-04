@@ -5,6 +5,7 @@ import { type RemixNode } from "remix/ui";
 import { renderToStream, type ResolveFrameContext } from "remix/ui/server";
 
 import { assets } from "../utils/assets.ts";
+import { CACHE } from "../utils/cache-control.ts";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -38,6 +39,10 @@ export let renderMiddleware = renderWith(
         // Frame navigations fetch HTML programmatically, so production cache
         // headers can hide server changes during development.
         response.headers.set("Cache-Control", "no-store");
+      } else if (!response.headers.has("Cache-Control")) {
+        for (let [name, value] of Object.entries(CACHE.DOCUMENT)) {
+          response.headers.set(name, value);
+        }
       }
       return response;
     },

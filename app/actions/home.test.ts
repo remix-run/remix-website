@@ -3,7 +3,6 @@ import { expect } from "remix/assert";
 
 import rootController from "./controller.tsx";
 import { routes } from "../routes.ts";
-import { CACHE_CONTROL } from "../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../test/setup.ts";
 
 describe("home route", () => {
@@ -19,7 +18,9 @@ describe("home route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
+    expect(response.headers.get("Surrogate-Control")).toBe(null);
+    expect(response.headers.get("Surrogate-Key")).toBe(null);
     let html = await response.text();
     expect(html).toContain('data-rmx-target="newsletter-subscribe"');
     expect(html).toContain('data-rmx-reset-scroll="false"');
@@ -36,7 +37,13 @@ describe("home route", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+    expect(response.headers.get("Cache-Control")).toBe(
+      "public, max-age=0, must-revalidate",
+    );
+    expect(response.headers.get("Surrogate-Control")).toBe(
+      "max-age=300, stale-while-revalidate=604800",
+    );
+    expect(response.headers.get("Surrogate-Key")).toBe("documents");
 
     let html = await response.text();
     expect(html).toContain(

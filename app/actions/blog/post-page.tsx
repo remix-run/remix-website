@@ -13,6 +13,7 @@ import {
 import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
 import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
+import { CACHE } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
 import type { getBlogPost } from "../../data/blog.ts";
@@ -26,7 +27,7 @@ export const NOT_FOUND_RESPONSE = {
   status: 404,
   statusText: "Not Found",
   headers: {
-    "Cache-Control": "no-store",
+    "Cache-Control": CACHE.PRIVATE,
   },
 };
 

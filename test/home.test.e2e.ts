@@ -30,6 +30,32 @@ async function litPixelRatio(page: Page) {
 }
 
 describe("Home", () => {
+  it("reveals the server-rendered page when browser assets fail", async (t) => {
+    const page = await t.serve(
+      await createTestServer(swallowAbortErrors(createAppRouter())),
+    );
+    await page.route("**/assets/**", (route) => route.abort("failed"));
+
+    const response = await page.goto(routes.home.href());
+    expect(response?.ok()).toBe(true);
+
+    const overlay = page.locator(".loading-screen-overlay");
+    await expect(overlay).toBeVisible();
+    await overlay.evaluate((element) => {
+      const animations = element.getAnimations();
+      if (animations.length === 0) {
+        throw new Error("Loading screen is missing its fail-safe animation");
+      }
+      for (const animation of animations) {
+        const endTime = Number(animation.effect?.getComputedTiming().endTime);
+        animation.currentTime = endTime + 1;
+      }
+    });
+
+    await expect(overlay).toBeHidden();
+    await expect(page.locator("main")).toBeVisible();
+  });
+
   it("keeps the particle scene visible after resizing with reduced motion", async (t) => {
     const page = await t.serve(
       await createTestServer(swallowAbortErrors(createAppRouter())),

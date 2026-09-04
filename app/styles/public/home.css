@@ -59,39 +59,6 @@ body {
   background: var(--brand-cycle);
 }
 
-/* Delay the runner so fast WebGL starts can skip it without flashing. */
-@keyframes loading-screen-appear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.loading-screen-overlay picture {
-  opacity: 0;
-  animation: loading-screen-appear 200ms ease-out 250ms forwards;
-}
-
-@keyframes loading-screen-dismiss {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-
-.loading-screen-overlay.is-dismissed {
-  animation: loading-screen-dismiss 600ms ease-out forwards;
-}
-
-.loading-screen-overlay.is-skipped {
-  display: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   :root {
     --brand-cycle: #2dacf9;
@@ -105,11 +72,5 @@ body {
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-  }
-
-  .loading-screen-overlay.is-dismissed {
-    visibility: hidden;
-    opacity: 0;
-    animation: none;
   }
 }

@@ -17,7 +17,7 @@ describe("rateLimit", () => {
     expect(blocked.status).toBe(429);
     expect(await blocked.text()).toBe("Too Many Requests");
     expect(blocked.headers.get("Retry-After")).toBe("60");
-    expect(blocked.headers.get("Cache-Control")).toBe("no-store");
+    expect(blocked.headers.get("Cache-Control")).toBe("private, no-store");
 
     now += 1_000;
     expect((await request(router, "10.0.0.1")).headers.get("Retry-After")).toBe(
