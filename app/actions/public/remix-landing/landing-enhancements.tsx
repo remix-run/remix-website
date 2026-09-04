@@ -4,6 +4,7 @@ import { LandingNav } from "./components/landing-nav.tsx";
 import { LabelOverlay } from "./components/label-overlay.tsx";
 import {
   LoadingScreen,
+  LOADING_SCREEN_FAILSAFE_MS,
   type LoadingScreenStatus,
 } from "./components/loading-screen.tsx";
 import { ScrollLogo } from "./components/scroll-logo.tsx";
@@ -115,6 +116,12 @@ const LANDING_SECTION_IDS = [
 type ParticleCanvasComponent =
   typeof import("./components/particle-canvas.tsx").ParticleCanvas;
 
+function loadingScreenIsHidden(overlay: Element | null) {
+  if (!overlay) return false;
+  const style = getComputedStyle(overlay);
+  return style.display === "none" || style.visibility === "hidden";
+}
+
 function konamiKeyMatches(event: KeyboardEvent, expected: string): boolean {
   if (expected.startsWith("Arrow")) return event.key === expected;
   if (expected === "Enter") return event.key === "Enter";
@@ -144,7 +151,15 @@ export let RemixLandingEnhancements = clientEntry(
     let ParticleCanvas: ParticleCanvasComponent | null = null;
     let particleCanvasLoad: Promise<void> | null = null;
     let loadingScreenDismissal: Promise<void> | null = null;
-    let loadingScreenStatus: LoadingScreenStatus = "visible";
+    let loadingScreenFailsafeTimer: ReturnType<typeof setTimeout> | null = null;
+    let loadingScreenStatus: LoadingScreenStatus =
+      typeof document !== "undefined" &&
+      (performance.now() >= LOADING_SCREEN_FAILSAFE_MS ||
+        loadingScreenIsHidden(
+          document.querySelector(".loading-screen-overlay"),
+        ))
+        ? "skipped"
+        : "visible";
     const projectedLabelsRef = { current: [] as ProjectedLabel[] };
     const labelOpacityRef = { current: 0 };
     const morphValueRef = { current: 0 };
@@ -320,12 +335,30 @@ export let RemixLandingEnhancements = clientEntry(
       }, KONAMI_IDLE_MS);
     }
 
+    function clearLoadingScreenFailsafe() {
+      if (loadingScreenFailsafeTimer !== null) {
+        clearTimeout(loadingScreenFailsafeTimer);
+        loadingScreenFailsafeTimer = null;
+      }
+    }
+
+    function skipLoadingScreen() {
+      loadingScreenStatus = "skipped";
+      clearLoadingScreenFailsafe();
+      return handle.update();
+    }
+
     function dismissLoadingScreen() {
       return (loadingScreenDismissal ??= (async () => {
         const overlay = document.querySelector(".loading-screen-overlay");
         if (!overlay) return;
 
-        const animation = overlay.getAnimations({ subtree: true })[0];
+        if (loadingScreenIsHidden(overlay)) {
+          await skipLoadingScreen();
+          return;
+        }
+
+        const animation = overlay.querySelector("picture")?.getAnimations()[0];
         let visibleMs = LOADING_SCREEN_MIN_VISIBLE_MS;
         if (animation) {
           const now = Number(document.timeline.currentTime ?? 0);
@@ -346,7 +379,17 @@ export let RemixLandingEnhancements = clientEntry(
         }
         if (handle.signal.aborted) return;
 
+        // The CSS or JS fail-safe may have elapsed while this task was waiting.
+        if (
+          loadingScreenStatus !== "visible" ||
+          loadingScreenIsHidden(overlay)
+        ) {
+          await skipLoadingScreen();
+          return;
+        }
+
         loadingScreenStatus = "dismissed";
+        clearLoadingScreenFailsafe();
         const signal = await handle.update();
         if (signal.aborted) return;
 
@@ -415,39 +458,60 @@ export let RemixLandingEnhancements = clientEntry(
     handle.queueTask((signal) => {
       if (signal.aborted || handle.signal.aborted) return;
 
-      isHydrated = true;
-      initReducedMotion(handle.signal, () => {
+      if (loadingScreenStatus === "visible") {
+        loadingScreenFailsafeTimer = setTimeout(
+          () => {
+            loadingScreenFailsafeTimer = null;
+            if (!handle.signal.aborted && loadingScreenStatus === "visible") {
+              void skipLoadingScreen();
+            }
+          },
+          Math.max(0, LOADING_SCREEN_FAILSAFE_MS - performance.now()),
+        );
+        handle.signal.addEventListener("abort", clearLoadingScreenFailsafe, {
+          once: true,
+        });
+      }
+
+      try {
+        isHydrated = true;
+        initReducedMotion(handle.signal, () => {
+          syncMorphToScroll();
+          handle.update();
+        });
         syncMorphToScroll();
+        startBrandCycle();
+        void loadParticleCanvas().then(() => {
+          if (!handle.signal.aborted) handle.update();
+        });
+
+        window.addEventListener("scroll", scheduleMorphSync, {
+          signal: handle.signal,
+        });
+        window.addEventListener(
+          "resize",
+          () => {
+            scroll.sectionStops = null;
+            scheduleMorphSync();
+          },
+          { signal: handle.signal },
+        );
+        window.addEventListener("keydown", onKeydown, {
+          signal: handle.signal,
+        });
+
+        handle.signal.addEventListener("abort", () => {
+          window.cancelAnimationFrame(scroll.frame);
+          clearKonamiIdleTimer();
+          konami.index = 0;
+        });
+
         handle.update();
-      });
-      syncMorphToScroll();
-      startBrandCycle();
-      void loadParticleCanvas().then(() => {
-        if (!handle.signal.aborted) handle.update();
-      });
-
-      window.addEventListener("scroll", scheduleMorphSync, {
-        signal: handle.signal,
-      });
-      window.addEventListener(
-        "resize",
-        () => {
-          scroll.sectionStops = null;
-          scheduleMorphSync();
-        },
-        { signal: handle.signal },
-      );
-      window.addEventListener("keydown", onKeydown, {
-        signal: handle.signal,
-      });
-
-      handle.signal.addEventListener("abort", () => {
-        window.cancelAnimationFrame(scroll.frame);
-        clearKonamiIdleTimer();
-        konami.index = 0;
-      });
-
-      handle.update();
+      } catch (error) {
+        isHydrated = false;
+        console.error(error);
+        void dismissLoadingScreen();
+      }
     });
 
     return () => {

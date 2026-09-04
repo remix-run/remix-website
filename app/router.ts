@@ -9,11 +9,11 @@ import {
 } from "remix/router";
 import { formData } from "remix/middleware/form-data";
 import { logger } from "remix/middleware/logger";
-import { staticFiles } from "remix/middleware/static";
 
 import { rateLimit } from "./middleware/rate-limit.ts";
 import { loadAssetEntry } from "./middleware/asset-entry.ts";
 import { renderMiddleware } from "./middleware/render.ts";
+import { rootPublicFiles } from "./middleware/root-public-files.ts";
 import { securityHeaders } from "./middleware/security-headers.ts";
 import { createRedirectRoutes, loadRedirectsFromFile } from "./redirects.ts";
 import { routes } from "./routes.ts";
@@ -62,12 +62,7 @@ function createAppMiddleware() {
     securityHeaders(),
     compression(),
     ignoreChromeDevToolsRequest,
-    staticFiles("public", {
-      cacheControl: isDev
-        ? "no-store, must-revalidate"
-        : "public, max-age=3600",
-      index: false,
-    }),
+    rootPublicFiles(),
     cop(),
     rateLimit({
       windowMs: 2 * 60 * 1000,

@@ -6,6 +6,8 @@ import {
   RUNNER_WEBP_SRC,
 } from "../runner-media.ts";
 
+export const LOADING_SCREEN_FAILSAFE_MS = 8_000;
+
 const overlayStyles = css({
   position: "fixed",
   inset: "0",
@@ -14,6 +16,43 @@ const overlayStyles = css({
   zIndex: "50",
   background: "#000",
   pointerEvents: "none",
+  // The page content is useful without JavaScript or WebGL. Never let a stale
+  // deploy asset or an unexpected client error leave this overlay up forever.
+  animation: `loading-screen-failsafe 1ms linear ${LOADING_SCREEN_FAILSAFE_MS}ms forwards`,
+  "@keyframes loading-screen-failsafe": {
+    to: {
+      opacity: "0",
+      visibility: "hidden",
+    },
+  },
+  "@keyframes loading-screen-appear": {
+    from: { opacity: "0" },
+    to: { opacity: "1" },
+  },
+  "& picture": {
+    opacity: "0",
+    animation: "loading-screen-appear 200ms ease-out 250ms forwards",
+  },
+  "@keyframes loading-screen-dismiss": {
+    from: { opacity: "1" },
+    to: {
+      opacity: "0",
+      visibility: "hidden",
+    },
+  },
+  "&.is-dismissed": {
+    animation: "loading-screen-dismiss 600ms ease-out forwards",
+  },
+  "&.is-skipped": {
+    display: "none",
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    "&.is-dismissed": {
+      visibility: "hidden",
+      opacity: "0",
+      animation: "none",
+    },
+  },
 });
 
 const runnerStyles = css({
@@ -32,7 +71,6 @@ const loadingScreenStatusClassNames: Record<
   skipped: "is-skipped",
 };
 
-// Dismiss animation lives in `home.css` under `.loading-screen-overlay`.
 export function LoadingScreen(handle: Handle<{ status: LoadingScreenStatus }>) {
   return () => {
     const statusClassName = loadingScreenStatusClassNames[handle.props.status];

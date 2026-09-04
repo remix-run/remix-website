@@ -2,7 +2,6 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import remixHistoryController from "./controller.tsx";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { routes } from "../../routes.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 
@@ -17,6 +16,5 @@ describe("Remix history route", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/html");
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
   });
 });

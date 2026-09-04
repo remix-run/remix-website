@@ -5,7 +5,7 @@ import { redirect } from "remix/response/redirect";
 import { createController } from "remix/router";
 
 import { getProduct } from "../../../data/jam-storefront.ts";
-import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
+import { CACHE } from "../../../utils/cache-control.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
 import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
@@ -39,7 +39,7 @@ export default createController(routes.jam.y2026, {
         <Jam2026NewsletterSignup
           status={getNewsletterSubscriptionStatus(request)}
         />,
-        { headers: { "Cache-Control": "no-store" } },
+        { headers: { "Cache-Control": CACHE.PRIVATE } },
       );
     },
 
@@ -56,7 +56,7 @@ export default createController(routes.jam.y2026, {
       return redirect(routes.jam.y2026.index.href(), {
         status: 303,
         headers: new SuperHeaders({
-          cacheControl: "no-store",
+          cacheControl: CACHE.PRIVATE,
           setCookie: await serializeJam2026ThemePreference(result.value.theme),
         }),
       });
@@ -70,7 +70,7 @@ export default createController(routes.jam.y2026, {
  * with the modal open.
  */
 export async function renderJam2026Page({
-  cacheControl = CACHE_CONTROL.DEFAULT,
+  cacheControl,
   discount,
   render,
   request,
@@ -109,9 +109,9 @@ export async function renderJam2026Page({
     };
   }
 
+  // Never let a shared cache store a response that hands out a Set-Cookie.
   let headers = new SuperHeaders({
-    // Never let a shared cache store a response that hands out a Set-Cookie.
-    cacheControl: discount.setCookie ? "no-store" : cacheControl,
+    cacheControl: discount.setCookie ? CACHE.PRIVATE : cacheControl,
     vary: ["Cookie", "x-remix-target", "x-remix-ssr-frame"],
   });
   if (discount.setCookie) headers.append("Set-Cookie", discount.setCookie);

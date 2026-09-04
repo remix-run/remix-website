@@ -19,7 +19,7 @@ import {
   getAuthorImageAsset,
   getBlogImageAsset,
 } from "../../utils/blog-image-assets.ts";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { CACHE } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
@@ -31,9 +31,7 @@ export default createController(routes.blog, {
     async index({ render, request }) {
       let posts = await loadBlogPostListings();
 
-      return render(<Page posts={posts} requestUrl={request.url} />, {
-        headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
-      });
+      return render(<Page posts={posts} requestUrl={request.url} />);
     },
 
     async post({ params, render, request }) {
@@ -49,7 +47,7 @@ export default createController(routes.blog, {
         try {
           return new Response(getRawBlogPostMarkdown(slug), {
             headers: {
-              "Cache-Control": CACHE_CONTROL.DEFAULT,
+              "Cache-Control": CACHE.RESOURCE,
               "Content-Type": "text/markdown; charset=utf-8",
             },
           });
@@ -82,7 +80,6 @@ export default createController(routes.blog, {
           images={images}
           socialImageUrl={getPostSocialImageUrl(post, slug, request.url)}
         />,
-        { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
       );
     },
 

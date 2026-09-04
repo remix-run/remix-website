@@ -2,7 +2,6 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 import { createNewsletterController } from "./controller.tsx";
 import {
@@ -112,7 +111,6 @@ describe("Newsletter index route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     let html = await response.text();
 
     expect(html).toContain("<title>Remix Newsletter</title>");
@@ -203,7 +201,6 @@ describe("Newsletter index route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
     let html = await response.text();
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
     expect(html).not.toContain("<title>");
@@ -218,7 +215,7 @@ describe("Newsletter index route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     let html = await response.text();
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
     expect(html).toContain("The archive is temporarily unavailable.");
@@ -242,7 +239,6 @@ describe("Newsletter issue route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     let html = await response.text();
 
     // Issue content starts with its title and the md-prose container.
@@ -341,7 +337,9 @@ describe("Newsletter image route", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("image/png");
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+    expect(response.headers.get("Cache-Control")).toBe(
+      "max-age=300, stale-while-revalidate=604800",
+    );
     expect(response.headers.get("Content-Length")).toBe(
       String(pngImage().bytes.byteLength),
     );

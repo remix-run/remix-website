@@ -12,14 +12,10 @@ import { TimelineSection } from "./timeline-section.tsx";
 import { theme } from "../../ui/public/theme.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
-
 export default createController(routes.remixHistory, {
   actions: {
     index({ render, request }) {
-      return render(<RemixHistoryPage requestUrl={request.url} />, {
-        headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
-      });
+      return render(<RemixHistoryPage requestUrl={request.url} />);
     },
   },
 });

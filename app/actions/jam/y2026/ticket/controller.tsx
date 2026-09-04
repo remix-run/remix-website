@@ -3,6 +3,7 @@ import { createController } from "remix/router";
 
 import { getProduct } from "../../../../data/jam-storefront.ts";
 import { routes } from "../../../../routes.ts";
+import { CACHE } from "../../../../utils/cache-control.ts";
 import { documentRedirect } from "../../../document-redirect.ts";
 import { renderJam2026Page } from "../controller.tsx";
 import {
@@ -31,7 +32,7 @@ export default createController(routes.jam.y2026.ticket, {
           throw new Error("Shopify cart did not return a checkout URL");
         }
 
-        let headers = new SuperHeaders({ cacheControl: "no-store" });
+        let headers = new SuperHeaders({ cacheControl: CACHE.PRIVATE });
         // The code is consumed by the Shopify cart, so stop carrying it.
         if (discount.code) {
           headers.append("Set-Cookie", await clearJam2026DiscountCode());
@@ -41,7 +42,7 @@ export default createController(routes.jam.y2026.ticket, {
       }
 
       return renderJam2026Page({
-        cacheControl: "no-store",
+        cacheControl: CACHE.PRIVATE,
         discount,
         render,
         request,

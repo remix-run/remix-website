@@ -1,7 +1,6 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import blogController from "./controller.tsx";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
 import { routes } from "../../routes.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";
 
@@ -22,7 +21,9 @@ describe("Blog markdown routes", () => {
     expect(response.headers.get("Content-Type")).toBe(
       "text/markdown; charset=utf-8",
     );
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
+    expect(response.headers.get("Cache-Control")).toBe(
+      "max-age=300, stale-while-revalidate=604800",
+    );
 
     let markdown = await response.text();
     expect(markdown.startsWith("---\n")).toBe(true);

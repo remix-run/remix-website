@@ -1,5 +1,5 @@
 import type { AppContext } from "../../../../router.ts";
-import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
+import { CACHE } from "../../../../utils/cache-control.ts";
 import { transformShopifyImageUrl } from "../public/shared.tsx";
 import { getGalleryPhotos, getSelectedPhotoIndex } from "./controller.tsx";
 
@@ -39,7 +39,7 @@ export async function jam2025GalleryDownloadHandler({ request }: AppContext) {
 
   return new Response(upstreamResponse.body, {
     headers: {
-      "Cache-Control": CACHE_CONTROL.DEFAULT,
+      "Cache-Control": CACHE.RESOURCE,
       "Content-Type": contentType,
       "Content-Disposition": `attachment; filename="remix-jam-2025-photo-${selectedPhotoIndex + 1}.${extension}"`,
     },

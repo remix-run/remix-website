@@ -3,7 +3,7 @@ import { createController } from "remix/router";
 import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
 import { assets } from "../utils/assets.ts";
-import { CACHE_CONTROL } from "../utils/cache-control.ts";
+import { CACHE } from "../utils/cache-control.ts";
 import { getNewsletterSubscriptionStatus } from "./newsletter/subscription.tsx";
 import { LandingNewsletterSubscribeForm } from "./public/remix-landing/components/feature-section.tsx";
 import { blogOgImageAction } from "./blog-og-image.tsx";
@@ -20,9 +20,7 @@ export default createController(routes, {
     blogOgImage: blogOgImageAction,
 
     brand({ render, request }) {
-      return render(<BrandPage requestUrl={request.url} />, {
-        headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
-      });
+      return render(<BrandPage requestUrl={request.url} />);
     },
 
     home({ render, request }) {
@@ -30,12 +28,7 @@ export default createController(routes, {
       let pageUrl = `${requestUrl.origin}${routes.home.href()}`;
       let previewImage = `${requestUrl.origin}${assetPaths.marketing.defaultOgImage}`;
 
-      return render(
-        <HomePage pageUrl={pageUrl} previewImage={previewImage} />,
-        {
-          headers: { "Cache-Control": CACHE_CONTROL.DEFAULT },
-        },
-      );
+      return render(<HomePage pageUrl={pageUrl} previewImage={previewImage} />);
     },
 
     homeNewsletterSignup({ render, request }) {
@@ -43,7 +36,7 @@ export default createController(routes, {
         <LandingNewsletterSubscribeForm
           status={getNewsletterSubscriptionStatus(request)}
         />,
-        { headers: { "Cache-Control": "no-store" } },
+        { headers: { "Cache-Control": CACHE.PRIVATE } },
       );
     },
 
@@ -52,7 +45,7 @@ export default createController(routes, {
     healthcheck() {
       return new Response("OK", {
         headers: {
-          "Cache-Control": "no-store",
+          "Cache-Control": CACHE.PRIVATE,
           "Content-Type": "text/plain; charset=utf-8",
         },
       });

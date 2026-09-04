@@ -27,7 +27,7 @@ describe("Jam 2025 ticket submission", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(await response.text()).toContain("Invalid ticket selection");
   });
 

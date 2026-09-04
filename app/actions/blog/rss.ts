@@ -2,7 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { Feed } from "feed";
 import parseFrontMatter from "front-matter";
 import { routes } from "../../routes.ts";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { CACHE } from "../../utils/cache-control.ts";
 
 interface BlogRssFrontmatter {
   title?: string;
@@ -89,7 +89,7 @@ export function buildBlogRssResponse(posts: BlogRssPost[]) {
   return new Response(feed.rss2(), {
     headers: {
       "Content-Type": "application/xml",
-      "Cache-Control": CACHE_CONTROL.DEFAULT,
+      "Cache-Control": CACHE.RESOURCE,
     },
   });
 }

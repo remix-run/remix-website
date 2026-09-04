@@ -12,7 +12,7 @@ import {
 import { routes } from "../../routes.ts";
 import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
-import { CACHE_CONTROL } from "../../utils/cache-control.ts";
+import { CACHE } from "../../utils/cache-control.ts";
 import { NewsletterIndexPage, NewsletterIssuePage } from "./pages.tsx";
 import {
   getNewsletterSubscriptionStatus,
@@ -50,12 +50,10 @@ export function createNewsletterController(repository: NewsletterRepository) {
             subscriptionStatus={subscriptionStatus}
           />,
           {
-            headers: {
-              "Cache-Control":
-                unavailable || subscriptionStatus
-                  ? "no-store"
-                  : CACHE_CONTROL.DEFAULT,
-            },
+            headers:
+              unavailable || subscriptionStatus
+                ? { "Cache-Control": CACHE.PRIVATE }
+                : undefined,
           },
         );
       },
@@ -65,7 +63,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
           <NewsletterSubscribeFrame
             status={getNewsletterSubscriptionStatus(request)}
           />,
-          { headers: { "Cache-Control": "no-store" } },
+          { headers: { "Cache-Control": CACHE.PRIVATE } },
         );
       },
 
@@ -119,7 +117,6 @@ export function createNewsletterController(repository: NewsletterRepository) {
             issue={issue}
             html={html}
           />,
-          { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
         );
       },
 
@@ -162,7 +159,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
         return new Response(Uint8Array.from(image.bytes), {
           headers: {
             "Content-Type": image.contentType,
-            "Cache-Control": CACHE_CONTROL.DEFAULT,
+            "Cache-Control": CACHE.RESOURCE,
             "Content-Length": String(image.bytes.byteLength),
           },
         });
@@ -195,13 +192,13 @@ function newsletterErrorLogger(): Middleware {
 const NOT_FOUND_RESPONSE = {
   status: 404,
   statusText: "Not Found",
-  headers: { "Cache-Control": "no-store" },
+  headers: { "Cache-Control": CACHE.PRIVATE },
 } as const;
 
 const UNAVAILABLE_RESPONSE = {
   status: 503,
   statusText: "Service Unavailable",
-  headers: { "Cache-Control": "no-store" },
+  headers: { "Cache-Control": CACHE.PRIVATE },
 } as const;
 
 function withoutNewsletterTitle(markdown: string): string {

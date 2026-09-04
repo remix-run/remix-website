@@ -1,7 +1,7 @@
 import { createController } from "remix/router";
 
 import { createCart, getProduct } from "../../../../data/jam-storefront.ts";
-import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
+import { CACHE } from "../../../../utils/cache-control.ts";
 import { routes } from "../../../../routes.ts";
 import { documentRedirect } from "../../../document-redirect.ts";
 import { Jam2025TicketPage, parseTicketPurchaseSubmission } from "./page.tsx";
@@ -15,7 +15,6 @@ export default createController(routes.jam.y2025.ticket, {
           product={await getProduct("remix-jam-2025")}
           requestUrl={request.url}
         />,
-        { headers: { "Cache-Control": CACHE_CONTROL.DEFAULT } },
       );
     },
 
@@ -55,7 +54,7 @@ export default createController(routes.jam.y2025.ticket, {
           product={product}
           requestUrl={request.url}
         />,
-        { status: 400, headers: { "Cache-Control": "no-store" } },
+        { status: 400, headers: { "Cache-Control": CACHE.PRIVATE } },
       );
     },
   },

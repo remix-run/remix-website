@@ -1,5 +1,7 @@
 import type { Middleware } from "remix/router";
 
+import { CACHE } from "../utils/cache-control.ts";
+
 interface RateLimitOptions {
   windowMs?: number;
   max?: number;
@@ -56,7 +58,7 @@ export function rateLimit({
       return new Response("Too Many Requests", {
         status: 429,
         headers: {
-          "Cache-Control": "no-store",
+          "Cache-Control": CACHE.PRIVATE,
           "Content-Type": "text/plain; charset=utf-8",
           "Retry-After": String(retryAfterSeconds),
           "X-Remix-Response": "yes",

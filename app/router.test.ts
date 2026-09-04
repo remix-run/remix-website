@@ -20,7 +20,7 @@ describe("app router", () => {
     expect(response.headers.get("Content-Type")).toBe(
       "text/plain; charset=utf-8",
     );
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
     expect(response.headers.get("Referrer-Policy")).toBe(
       "strict-origin-when-cross-origin",
@@ -29,7 +29,18 @@ describe("app router", () => {
       "camera=(), geolocation=(), microphone=()",
     );
     expect(response.headers.has("Strict-Transport-Security")).toBe(false);
+    expect(response.headers.get("Surrogate-Key")).toBe(null);
     expect(await response.text()).toBe("OK");
+  });
+
+  it("tags root public files for targeted CDN purging", async () => {
+    let response = await router.fetch("http://localhost/favicon.ico");
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Cache-Control")).toBe(
+      "no-store, must-revalidate",
+    );
+    expect(response.headers.get("Surrogate-Key")).toBe("static-assets");
   });
 
   it("does not serve shared assets outside the asset server", async () => {

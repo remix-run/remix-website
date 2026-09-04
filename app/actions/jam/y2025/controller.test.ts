@@ -2,7 +2,6 @@ import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
 
 import { routes } from "../../../routes.ts";
-import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import { createRouteTestRouter } from "../../../../test/setup.ts";
 import jam2025Controller, { getEventStatus } from "./controller.tsx";
 
@@ -24,14 +23,14 @@ describe("Remix Jam 2025 routes", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     let html = await response.text();
     expect(html).toContain('data-rmx-target="newsletter-subscribe"');
     expect(html).toContain('data-rmx-reset-scroll="false"');
     expect(html).toContain("You're good to go");
   });
 
-  it("keeps the index response as a cacheable document", async () => {
+  it("renders the index document", async () => {
     let router = createRouteTestRouter();
     router.map(routes.jam.y2025, jam2025Controller);
 
@@ -40,7 +39,6 @@ describe("Remix Jam 2025 routes", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe(CACHE_CONTROL.DEFAULT);
     expect(await response.text()).toContain("<html");
   });
 });

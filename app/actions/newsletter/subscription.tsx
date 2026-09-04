@@ -11,6 +11,7 @@ import {
   type NewsletterSubscribeFrameContext,
   type NewsletterSubscriptionStatus,
 } from "../../ui/public/newsletter-subscribe.tsx";
+import { CACHE } from "../../utils/cache-control.ts";
 import { env } from "../../utils/env.ts";
 import { isAllowedNewsletterTagId } from "../../utils/public/newsletter-tags.ts";
 
@@ -99,7 +100,7 @@ let newsletterSubmission = s.object({
 });
 
 const newsletterTargetResponseHeaders = {
-  "Cache-Control": "no-store",
+  "Cache-Control": CACHE.PRIVATE,
   Vary: "x-remix-target",
 } as const;
 
@@ -138,14 +139,14 @@ function createSubscriptionResponse(
   if (request.headers.get("Accept")?.includes("application/json")) {
     return Response.json(body, {
       status,
-      headers: { "Cache-Control": "no-store" },
+      headers: { "Cache-Control": CACHE.PRIVATE },
     });
   }
 
   let location = new URL(routes.newsletter.index.href(), request.url);
   location.searchParams.set("subscription", getSubscriptionStatus(body));
   let response = redirect(`${location.pathname}${location.search}`, 303);
-  response.headers.set("Cache-Control", "no-store");
+  response.headers.set("Cache-Control", CACHE.PRIVATE);
   return response;
 }
 

@@ -3,7 +3,6 @@ import { createController } from "remix/router";
 import { getPhotos } from "../../../../data/jam-storefront.ts";
 import { jam2025GalleryDownloadHandler } from "./download.ts";
 import type { AppRenderer } from "../../../../middleware/render.ts";
-import { CACHE_CONTROL } from "../../../../utils/cache-control.ts";
 import { routes } from "../../../../routes.ts";
 import { JamDocument } from "../document.tsx";
 import {
@@ -144,11 +143,6 @@ function renderGalleryPage({
         )}
       </main>
     </JamDocument>,
-    {
-      headers: {
-        "Cache-Control": CACHE_CONTROL.DEFAULT,
-      },
-    },
   );
 }
 
