@@ -10,12 +10,8 @@
       imgFilename: toronto-port-outside.webp
 
 - time: "10:30 AM"
-  title: Remix Philosophy
-  description: >-
-    Remix has always been guided by a few durable ideas: lean on the web, keep the mental model simple, and make full-stack development feel direct and fun.
-
-
-    Michael will share the principles behind Remix 3, how those principles shaped a ground-up redesign, and what they mean for the way we build software for the web.
+  title: Do Frameworks Still Matter?
+  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   speakers:
     - name: Michael Jackson
       imgFilename: michael.webp
@@ -49,11 +45,7 @@
 
 - time: "1:30 PM"
   title: Remix Unbundled
-  description: >-
-    Remix 3 is more than a framework-shaped package. Its focused modules are designed to stand on their own, work together, and let you choose the parts your application actually needs.
-
-
-    Mark will unpack this modular architecture, show how the pieces fit together, and explore what becomes possible when a full-stack framework is built without treating the bundle as the boundary.
+  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   speakers:
     - name: Mark Dalgleish
       imgFilename: mark-dalgleish.webp
@@ -61,12 +53,8 @@
         Mark Dalgleish is a staff developer at Shopify working on Remix. He is a co-creator of CSS Modules and the creator of [vanilla-extract](https://vanilla-extract.style/), and has spent his career improving the way developers build and ship web interfaces.
 
 - time: "2:00 PM"
-  title: Agentic Remix
-  description: >-
-    Software agents are changing how applications are designed, built, and maintained. A framework for this new workflow needs to be understandable by people, legible to agents, and composed from tools that work across the network boundary.
-
-
-    Brooks will explore how Remix 3's direct architecture supports agent-assisted development and what we've learned while building Remix with agents in the loop.
+  title: What Does It Mean to Build for Agents?
+  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   speakers:
     - name: Brooks Lybrand
       imgFilename: brooks-lybrand.webp
@@ -74,12 +62,8 @@
         Brooks Lybrand is the developer relations manager for Remix at Shopify. He works across education, community, product, and open source to help developers build better web applications—and to help the Remix team learn from the people using it.
 
 - time: "2:30 PM"
-  title: "Full-stack JavaScript, Actually: From Testing to Single Page Apps"
-  description: >-
-    “Full stack” should mean more than sharing a language between two disconnected halves of an application. The same web primitives should carry an idea from a test, through the server, and into an interactive browser experience.
-
-
-    Matt will trace that path through Remix 3, showing how its modules compose across environments and how the architecture scales from focused tests all the way to single-page applications.
+  title: Full-Stack JavaScript, Actually
+  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   speakers:
     - name: Matt Brophy
       imgFilename: matt-brophy.webp
@@ -95,9 +79,8 @@
       imgFilename: merchant-market.webp
 
 - time: "3:30 PM"
-  title: Session details coming soon
-  description: >-
-    Sergio Xalambrí will join us for an afternoon session. We're working with Sergio on the final title and abstract and will share both soon.
+  title: How to Extend Remix
+  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   speakers:
     - name: Sergio Xalambrí
       imgFilename: sergio-xalambri.webp
@@ -106,11 +89,7 @@
 
 - time: "4:00 PM"
   title: What Should the Browser Actually Own?
-  description: >-
-    Modern applications can put nearly anything in the browser—but capability isn't the same as responsibility. Where should state live? Which interactions belong on the client? When should the server stay in control?
-
-
-    Josh will examine the browser/server boundary and offer a practical way to decide what the browser should own, what it should borrow, and what it should leave behind.
+  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   speakers:
     - name: Josh Sanger
       imgFilename: josh-sanger.webp
