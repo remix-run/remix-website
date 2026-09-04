@@ -88,13 +88,13 @@
         Sergio Xalambrí is a web developer with more than a decade of experience. He works at [Daffy](https://daffy.org/) and maintains open-source libraries around React Router and OAuth 2.0.
 
 - time: "4:00 PM"
-  title: What Should the Browser Actually Own?
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  title: What should the browser actually own?
+  description: Every Shopify Edition asks the browser to do more. This is the story of how we started asking it to do less.
   speakers:
     - name: Josh Sanger
       imgFilename: josh-sanger.webp
       bio: >-
-        Josh Sanger is a developer at Shopify who builds ambitious web experiences and explores the boundaries between browser capabilities, application architecture, and product design.
+        Josh Sanger is a senior engineer at Shopify who builds ambitious web projects like Shopify Editions and explores the boundaries between browser capabilities, application architecture, and delightful experiences.
 
 - time: "5:00 PM"
   title: After Party / Social
