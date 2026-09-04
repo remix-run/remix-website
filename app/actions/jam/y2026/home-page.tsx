@@ -20,9 +20,12 @@ import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
 import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026FloatingTicketCta } from "./floating-ticket-cta.tsx";
 import { Jam2026Hero } from "./hero.tsx";
+import { Jam2026Schedule } from "./schedule.tsx";
+import type { getJam2026Schedule } from "../../../data/jam-schedule-2026.ts";
 
 type Jam2026HomePageProps = {
   requestUrl: string;
+  schedule: Awaited<ReturnType<typeof getJam2026Schedule>>;
   ticketsModalOpen?: boolean;
   ticketCheckout?: {
     availableForSale: boolean;
@@ -107,6 +110,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
               <Jam2026Hero />
               <Jam2026PhotoMoments />
               <Jam2026FloatingTicketCta />
+              <Jam2026Schedule items={handle.props.schedule} />
               <Jam2026Faq />
               <NewsletterSubscribeFrameHost
                 src={routes.jam.y2026.newsletterSignup.href()}

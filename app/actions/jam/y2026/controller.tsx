@@ -5,6 +5,7 @@ import { redirect } from "remix/response/redirect";
 import { createController } from "remix/router";
 
 import { getProduct } from "../../../data/jam-storefront.ts";
+import { getJam2026Schedule } from "../../../data/jam-schedule-2026.ts";
 import { CACHE_CONTROL } from "../../../utils/cache-control.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
@@ -132,6 +133,7 @@ export async function renderJam2026Page({
   return render(
     <Jam2026HomePage
       requestUrl={request.url}
+      schedule={await getJam2026Schedule()}
       ticketsModalOpen={ticketsModalOpen}
       theme={theme}
       ticketCheckout={ticketCheckout}

@@ -9,7 +9,7 @@ let faqs: Faq[] = [
     id: "schedule",
     question: "Where can I find the event lineup and schedule?",
     answer:
-      "The Remix Jam 2026 schedule is coming soon. We'll share the full lineup and session times when they're ready.",
+      "You'll find the Remix Jam 2026 schedule just above this FAQ. Expand any session to read more about the talk and speaker.",
   },
   {
     id: "event-hosted",
@@ -54,7 +54,7 @@ let faqs: Faq[] = [
       },
       {
         type: "paragraph",
-        content: ["The full lineup and schedule are coming."],
+        content: ["You'll find the full schedule and lineup above."],
       },
     ],
   },

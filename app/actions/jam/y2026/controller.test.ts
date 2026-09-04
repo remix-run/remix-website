@@ -38,7 +38,11 @@ describe("Remix Jam 2026 routes", () => {
       'data-remix-managed-head="true" rel="canonical" href="http://localhost:3000/jam/2026"',
     );
     expect(html).toContain('aria-label="Page navigation"');
+    expect(html).toContain('id="schedule"');
     expect(html).toContain('id="faq"');
+    expect(html.indexOf('id="schedule"')).toBeLessThan(
+      html.indexOf('id="faq"'),
+    );
     expect(html).toContain('href="/jam/2026/ticket"');
     expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
     expect(html).not.toContain('role="dialog"');
