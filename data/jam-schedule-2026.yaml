@@ -1,0 +1,126 @@
+- time: "8:30 AM"
+  title: Registration & Breakfast
+  description: >-
+    Check in, grab your badge, and head upstairs for breakfast. Meet fellow developers before the talks begin.
+
+
+    The entrance is on the west side of [620 King St West](https://maps.app.goo.gl/GpacrBAJJMnctN9W7) on Waterloo Terrace.
+  speakers:
+    - name: "☕️"
+      imgFilename: toronto-port-outside.webp
+
+- time: "10:30 AM"
+  title: Remix Philosophy
+  description: >-
+    Remix has always been guided by a few durable ideas: lean on the web, keep the mental model simple, and make full-stack development feel direct and fun.
+
+
+    Michael will share the principles behind Remix 3, how those principles shaped a ground-up redesign, and what they mean for the way we build software for the web.
+  speakers:
+    - name: Michael Jackson
+      imgFilename: michael.webp
+      bio: >-
+        Michael Jackson is a prolific contributor to open source. He is the co-author of Remix and [React Router](https://reactrouter.com), and the creator of [unpkg.com](https://unpkg.com). He enjoys system design, front-end architecture, and playing guitar. Michael lives in Carlsbad, California with his wife and four children.
+
+- time: "11:30 AM"
+  title: Remix Q&A
+  description: >-
+    Michael Jackson and Brooks Lybrand open the floor for questions about the ideas behind Remix 3, the decisions that shaped it, and what developers can build with it.
+
+
+    Bring the questions you have after the opening talk—or the ones you've been waiting to ask the Remix team directly.
+  speakers:
+    - name: Michael Jackson
+      imgFilename: michael.webp
+      bio: >-
+        Michael Jackson is the co-author of Remix and React Router and the creator of unpkg.com.
+    - name: Brooks Lybrand
+      imgFilename: brooks-lybrand.webp
+      bio: >-
+        Brooks Lybrand leads developer relations for Remix at Shopify, where he helps developers understand and get the most out of the framework.
+
+- time: "12:00 PM"
+  title: Lunch
+  description: >-
+    Take a break and enjoy lunch with fellow attendees. This is a great time to discuss the morning sessions and meet more of the Remix community.
+  speakers:
+    - name: "🥪"
+      imgFilename: toronto-port-nook.webp
+
+- time: "1:30 PM"
+  title: Remix Unbundled
+  description: >-
+    Remix 3 is more than a framework-shaped package. Its focused modules are designed to stand on their own, work together, and let you choose the parts your application actually needs.
+
+
+    Mark will unpack this modular architecture, show how the pieces fit together, and explore what becomes possible when a full-stack framework is built without treating the bundle as the boundary.
+  speakers:
+    - name: Mark Dalgleish
+      imgFilename: mark-dalgleish.webp
+      bio: >-
+        Mark Dalgleish is a staff developer at Shopify working on Remix. He is a co-creator of CSS Modules and the creator of [vanilla-extract](https://vanilla-extract.style/), and has spent his career improving the way developers build and ship web interfaces.
+
+- time: "2:00 PM"
+  title: Agentic Remix
+  description: >-
+    Software agents are changing how applications are designed, built, and maintained. A framework for this new workflow needs to be understandable by people, legible to agents, and composed from tools that work across the network boundary.
+
+
+    Brooks will explore how Remix 3's direct architecture supports agent-assisted development and what we've learned while building Remix with agents in the loop.
+  speakers:
+    - name: Brooks Lybrand
+      imgFilename: brooks-lybrand.webp
+      bio: >-
+        Brooks Lybrand is the developer relations manager for Remix at Shopify. He works across education, community, product, and open source to help developers build better web applications—and to help the Remix team learn from the people using it.
+
+- time: "2:30 PM"
+  title: "Full-stack JavaScript, Actually: From Testing to Single Page Apps"
+  description: >-
+    “Full stack” should mean more than sharing a language between two disconnected halves of an application. The same web primitives should carry an idea from a test, through the server, and into an interactive browser experience.
+
+
+    Matt will trace that path through Remix 3, showing how its modules compose across environments and how the architecture scales from focused tests all the way to single-page applications.
+  speakers:
+    - name: Matt Brophy
+      imgFilename: matt-brophy.webp
+      bio: >-
+        Matt Brophy is a staff developer at Shopify and a core contributor to Remix and React Router. He focuses on routing, data loading, framework architecture, and making complex web application behavior easier to reason about.
+
+- time: "3:00 PM"
+  title: Snacks & Coffee
+  description: >-
+    Take a quick break to refuel, compare notes, and get ready for the final sessions of the day.
+  speakers:
+    - name: "🍪"
+      imgFilename: merchant-market.webp
+
+- time: "3:30 PM"
+  title: Session details coming soon
+  description: >-
+    Sergio Xalambrí will join us for an afternoon session. We're working with Sergio on the final title and abstract and will share both soon.
+  speakers:
+    - name: Sergio Xalambrí
+      imgFilename: sergio-xalambri.webp
+      bio: >-
+        Sergio Xalambrí is a web developer with more than a decade of experience. He works at [Daffy](https://daffy.org/) and maintains open-source libraries around React Router and OAuth 2.0.
+
+- time: "4:00 PM"
+  title: What Should the Browser Actually Own?
+  description: >-
+    Modern applications can put nearly anything in the browser—but capability isn't the same as responsibility. Where should state live? Which interactions belong on the client? When should the server stay in control?
+
+
+    Josh will examine the browser/server boundary and offer a practical way to decide what the browser should own, what it should borrow, and what it should leave behind.
+  speakers:
+    - name: Josh Sanger
+      imgFilename: josh-sanger.webp
+      bio: >-
+        Josh Sanger is a developer at Shopify who builds ambitious web experiences and explores the boundaries between browser capabilities, application architecture, and product design.
+
+- time: "5:00 PM"
+  title: After Party / Social
+  description: >-
+    Stick around for food, drinks, and more time with the speakers and Remix community. Continue the day's conversations, make new connections, and help us wrap up Remix Jam 2026.
+  speakers:
+    - name: "🏁"
+      imgFilename: challenge-accepted.webp
