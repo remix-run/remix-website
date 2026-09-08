@@ -5,7 +5,7 @@ import { render } from "remix/ui/test";
 import { Jam2026ScheduleAccordion } from "./schedule-accordion.tsx";
 
 describe("Jam2026ScheduleAccordion", () => {
-  it("keeps only one schedule item open at a time", async (t) => {
+  it("allows multiple schedule items to stay open", async (t) => {
     let result = render(
       <Jam2026ScheduleAccordion
         items={[
@@ -40,10 +40,11 @@ describe("Jam2026ScheduleAccordion", () => {
     expect(second.getAttribute("aria-expanded")).toBe("false");
 
     await result.act(() => second.click());
-    expect(first.getAttribute("aria-expanded")).toBe("false");
+    expect(first.getAttribute("aria-expanded")).toBe("true");
     expect(second.getAttribute("aria-expanded")).toBe("true");
 
     await result.act(() => second.click());
+    expect(first.getAttribute("aria-expanded")).toBe("true");
     expect(second.getAttribute("aria-expanded")).toBe("false");
   });
 });

@@ -1,13 +1,13 @@
 - time: "8:30 AM"
   title: Registration & Breakfast
-  description: >-
+  description: |-
     Check in, grab your badge, and head upstairs for breakfast. Meet fellow developers before the talks begin.
 
 
     The entrance is on the west side of [620 King St West](https://maps.app.goo.gl/GpacrBAJJMnctN9W7) on Waterloo Terrace.
   speakers:
     - name: "☕️"
-      imgFilename: toronto-port-outside.webp
+      imgFilename: remix-jam-2025-registration.webp
 
 - time: "10:30 AM"
   title: Do Frameworks Still Matter?
@@ -20,7 +20,7 @@
 
 - time: "11:30 AM"
   title: Remix Q&A
-  description: >-
+  description: |-
     Michael Jackson and Brooks Lybrand open the floor for questions about the ideas behind Remix 3, the decisions that shaped it, and what developers can build with it.
 
 
@@ -37,23 +37,24 @@
 
 - time: "12:00 PM"
   title: Lunch
-  description: >-
+  description: |-
     Take a break and enjoy lunch with fellow attendees. This is a great time to discuss the morning sessions and meet more of the Remix community.
   speakers:
     - name: "🥪"
-      imgFilename: toronto-port-nook.webp
+      imgFilename: remix-jam-2025-lunch.webp
 
 - time: "1:30 PM"
   title: Remix Unbundled
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  description: |-
+    What if you could skip the bundler build step and start your production server immediately? Remix ships with an asset server designed for production use, where TypeScript, JSX, CSS and static files compile when requested, without sacrificing the developer experience we've come to expect from modern tooling. In this talk we'll explore how the Remix philosophy changes the way we think about bundling, and why we think it's time to give "unbundling" a try.
   speakers:
     - name: Mark Dalgleish
       imgFilename: mark-dalgleish.webp
       bio: >-
-        Mark Dalgleish is a staff developer at Shopify working on Remix. He is a co-creator of CSS Modules and the creator of [vanilla-extract](https://vanilla-extract.style/), and has spent his career improving the way developers build and ship web interfaces.
+        Mark Dalgleish is a staff developer at Shopify working on Remix. He is a co-creator of CSS Modules and Vanilla Extract, and has spent his career improving the way developers build and ship web interfaces.
 
 - time: "2:00 PM"
-  title: What Does It Mean to Build for Agents?
+  title: What do Agents Think of Remix?
   description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   speakers:
     - name: Brooks Lybrand
@@ -62,33 +63,41 @@
         Brooks Lybrand is the developer relations manager for Remix at Shopify. He works across education, community, product, and open source to help developers build better web applications—and to help the Remix team learn from the people using it.
 
 - time: "2:30 PM"
-  title: Full-Stack JavaScript, Actually
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  title: "Beyond the Server: Frames, SPAs, and Testing in Remix"
+  description: |-
+    By the time an application returns a response, Remix has already handled routing, middleware, rendering, and data—but a full-stack framework shouldn’t stop at the server boundary.
+
+
+    Remix extends up into the browser, where frames provide incremental navigation and granular updates to route-owned regions, while the SPA package runs Remix routes entirely on the client. It also extends out into the test runner, with tools for testing routes directly, exercising components in real browsers, and verifying complete end-to-end flows.
+
+
+    In this talk, we’ll explore how these pieces fit together and how Remix carries a consistent, web-standard programming model across server, browser, and test environments.
   speakers:
     - name: Matt Brophy
       imgFilename: matt-brophy.webp
       bio: >-
-        Matt Brophy is a staff developer at Shopify and a core contributor to Remix and React Router. He focuses on routing, data loading, framework architecture, and making complex web application behavior easier to reason about.
+        Matt Brophy is a staff developer at Shopify working on Remix and React Router. He enjoys working at the intersection of routing, data loading, and framework architecture (a.k.a., the “back end of the front end.") and making complex web application behavior easier to reason about.
 
 - time: "3:00 PM"
   title: Snacks & Coffee
-  description: >-
+  description: |-
     Take a quick break to refuel, compare notes, and get ready for the final sessions of the day.
   speakers:
     - name: "🍪"
-      imgFilename: merchant-market.webp
+      imgFilename: remix-jam-2025-snacks.webp
 
 - time: "3:30 PM"
   title: The Remix Way
-  description: >-
+  description: |-
     What happens when you take the ideas behind Remix and apply them to everything you build?
+
 
     After months of building real apps with Remix 3, Sergio ended up growing an entire stack around it, from i18n and background jobs to email, MCP, and UI components. In this talk, Sergio will share how that happened, why so much of it starts with the Web Platform, and what he's learned about building the Remix way.
   speakers:
     - name: Sergio Xalambrí
       imgFilename: sergio-xalambri.webp
       bio: >-
-        Sergio Xalambrí is an Argentinian web developer with more than a decade of experience. He works at [Daffy}(https://www.daffy.org/) and maintains open-source libraries around React Router, Remix, and OAuth 2.0. He enjoys building full-stack applications, designing libraries, and exploring the Web Platform.
+        Sergio Xalambrí is an Argentinian web developer with more than a decade of experience. He works at [Daffy](https://www.daffy.org/) and maintains open-source libraries around React Router, Remix, and OAuth 2.0. He enjoys building full-stack applications, designing libraries, and exploring the Web Platform.
 
 - time: "4:00 PM"
   title: What should the browser actually own?
@@ -101,8 +110,8 @@
 
 - time: "5:00 PM"
   title: After Party / Social
-  description: >-
+  description: |-
     Stick around for food, drinks, and more time with the speakers and Remix community. Continue the day's conversations, make new connections, and help us wrap up Remix Jam 2026.
   speakers:
     - name: "🏁"
-      imgFilename: challenge-accepted.webp
+      imgFilename: remix-jam-2025-after-party.webp

@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "remix/ui/accordion";
+import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 import { jamTheme } from "./theme.ts";
 
@@ -22,25 +23,25 @@ type ScheduleItem = {
 export let Jam2026ScheduleAccordion = clientEntry(
   import.meta.url,
   function Jam2026ScheduleAccordion(handle: Handle<{ items: ScheduleItem[] }>) {
-    let openItemId: string | null = null;
+    let openItemIds: string[] = [];
 
     return () => (
       <Accordion
-        type="single"
-        collapsible
+        type="multiple"
         headingLevel={3}
-        value={openItemId}
+        value={openItemIds}
         onValueChange={(value) => {
-          openItemId = value;
+          openItemIds = value;
           handle.update();
         }}
         mix={scheduleTableStyle}
       >
         <div aria-hidden="true" mix={[scheduleGridStyle, tableHeaderStyle]}>
-          <span />
-          <span mix={desktopOnlyHeaderStyle}>Topic</span>
-          <span mix={desktopOnlyHeaderStyle}>Speaker</span>
-          <span mix={timeHeaderStyle}>Time (UTC-04:00)</span>
+          <span mix={timeHeaderStyle}>Time</span>
+          <span mix={[desktopOnlyHeaderStyle, topicHeaderStyle]}>Topic</span>
+          <span mix={[desktopOnlyHeaderStyle, speakerHeaderStyle]}>
+            Speaker
+          </span>
         </div>
         {handle.props.items.map((item, index) => (
           <ScheduleAccordionItem
@@ -58,6 +59,7 @@ function ScheduleAccordionItem(
   handle: Handle<{ item: ScheduleItem; value: string }>,
 ) {
   return () => {
+    let [clockTime, meridiem] = handle.props.item.time.split(" ");
     let speakerNames = handle.props.item.speakers.map(
       (speaker) => speaker.name,
     );
@@ -70,7 +72,7 @@ function ScheduleAccordionItem(
         <AccordionTrigger indicator={null} mix={scheduleTriggerStyle}>
           <span mix={[scheduleGridStyle, scheduleSummaryStyle]}>
             <span mix={timeStyle}>
-              {handle.props.item.time}
+              <span>{clockTime}</span> <span>{meridiem}</span>
               <span mix={mobileTimezoneStyle}>UTC-04</span>
             </span>
             <span mix={titleStyle}>{handle.props.item.title}</span>
@@ -80,7 +82,7 @@ function ScheduleAccordionItem(
             >
               {speakerNames.join(" + ")}
             </span>
-            <span aria-hidden="true" mix={summaryIconStyle} />
+            <Icon name="chevron-r" aria-hidden="true" mix={summaryIconStyle} />
           </span>
         </AccordionTrigger>
 
@@ -166,19 +168,18 @@ function SpeakerDetails(
 }
 
 let scheduleTableStyle = css({
-  marginBlockStart: "40px",
+  marginBlockStart: 0,
   width: "100%",
 });
 
 let scheduleGridStyle = css({
   display: "grid",
-  gridTemplateColumns: "18px minmax(0, 1fr) 96px",
-  columnGap: "12px",
-  paddingInline: "24px",
+  gridTemplateColumns: "72px 24px minmax(0, 1fr) 16px 18px",
+  paddingInline: "8px",
   "@media (min-width: 900px)": {
-    gridTemplateColumns: "18px minmax(0, 1.4fr) minmax(220px, 0.8fr) 160px",
-    columnGap: "32px",
-    paddingInline: "max(32px, 4.8vw)",
+    gridTemplateColumns:
+      "128px 40px minmax(0, 1.4fr) 40px minmax(220px, 0.8fr) 16px 18px",
+    paddingInline: "16px",
   },
 });
 
@@ -200,17 +201,32 @@ let desktopOnlyHeaderStyle = css({
   "@media (min-width: 900px)": { display: "inline" },
 });
 
-let timeHeaderStyle = css({
+let topicHeaderStyle = css({
   gridColumn: 3,
-  justifySelf: "end",
-  textAlign: "right",
-  "@media (min-width: 900px)": { gridColumn: 4 },
+});
+
+let speakerHeaderStyle = css({
+  gridColumn: 5,
+});
+
+let timeHeaderStyle = css({
+  gridColumn: 1,
+  justifySelf: "start",
+  textAlign: "left",
+  "@media (min-width: 900px)": {
+    "&::after": { content: '" (UTC-04:00)"' },
+  },
 });
 
 let scheduleItemStyle = css({
+  borderRadius: "0.5rem",
   color: jamTheme.ink,
   transition: "background 180ms ease",
-  "&:hover, &:focus-within, &[data-state='open']": {
+  "&:hover": {
+    backgroundColor:
+      "light-dark(rgb(255 255 255 / 0.35), rgb(10 29 39 / 0.35))",
+  },
+  "&[data-state='open']": {
     backgroundColor: jamTheme.surfaceRaisedHover,
   },
   "@media (prefers-reduced-motion: reduce)": {
@@ -255,37 +271,38 @@ let scheduleSummaryStyle = css({
 });
 
 let timeStyle = css({
-  gridColumn: 3,
+  gridColumn: 1,
   gridRow: 1,
   alignSelf: "start",
-  justifySelf: "end",
-  display: "flex",
-  flexDirection: "column",
-  gap: "4px",
+  justifySelf: "start",
+  display: "grid",
+  gridTemplateColumns: "5ch 2ch",
+  columnGap: "1ch",
+  rowGap: "4px",
   color: jamTheme.ink,
   fontFamily: theme.fontFamily.mono,
   fontSize: "12px",
   fontWeight: theme.fontWeight.bold,
   letterSpacing: "0.03em",
   lineHeight: 1.5,
-  textAlign: "right",
+  textAlign: "left",
   "@media (min-width: 900px)": {
-    gridColumn: 4,
     alignSelf: "center",
     fontSize: "13px",
   },
 });
 
 let mobileTimezoneStyle = css({
+  gridColumn: "1 / -1",
   color: jamTheme.textMuted,
-  fontSize: "9px",
+  fontSize: "12px",
   fontWeight: theme.fontWeight.normal,
   letterSpacing: "0.06em",
   "@media (min-width: 900px)": { display: "none" },
 });
 
 let titleStyle = css({
-  gridColumn: 2,
+  gridColumn: 3,
   gridRow: 1,
   alignSelf: "start",
   color: jamTheme.ink,
@@ -301,7 +318,7 @@ let titleStyle = css({
 });
 
 let speakerStyle = css({
-  gridColumn: 2,
+  gridColumn: 3,
   gridRow: 2,
   marginBlockStart: "8px",
   color: jamTheme.inkMuted,
@@ -318,7 +335,7 @@ let speakerStyle = css({
     lineHeight: 1,
   },
   "@media (min-width: 900px)": {
-    gridColumn: 3,
+    gridColumn: 5,
     gridRow: 1,
     marginBlockStart: 0,
     color: jamTheme.ink,
@@ -330,21 +347,18 @@ let speakerStyle = css({
 });
 
 let summaryIconStyle = css({
-  gridColumn: 1,
+  gridColumn: 5,
   gridRow: "1 / span 2",
   alignSelf: "center",
+  justifySelf: "end",
   width: "18px",
   height: "18px",
-  borderRadius: theme.radius.full,
-  backgroundColor: jamTheme.ink,
-  backgroundImage: `linear-gradient(${jamTheme.skyGround}, ${jamTheme.skyGround}), linear-gradient(${jamTheme.skyGround}, ${jamTheme.skyGround})`,
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
-  backgroundSize: "9px 2px, 2px 9px",
+  color: jamTheme.ink,
+  transform: "rotate(90deg)",
   transition: "transform 180ms ease",
-  "[data-state='open'] &": { transform: "rotate(45deg)" },
+  "[data-state='open'] &": { transform: "rotate(-90deg)" },
   "@media (min-width: 900px)": {
-    gridColumn: 1,
+    gridColumn: 7,
     gridRow: 1,
   },
   "@media (prefers-reduced-motion: reduce)": {
@@ -376,7 +390,10 @@ let descriptionStyle = css({
   fontFamily: theme.fontFamily.sans,
   fontSize: "16px",
   lineHeight: 1.65,
-  "& p": { margin: "0 0 16px" },
+  "& p": {
+    margin: "0 0 16px",
+    whiteSpace: "pre-line",
+  },
   "& p:last-child": { marginBlockEnd: 0 },
   "& a": {
     color: jamTheme.accent,
@@ -384,7 +401,7 @@ let descriptionStyle = css({
     textUnderlineOffset: "0.16em",
   },
   "@media (min-width: 900px)": {
-    gridColumn: 2,
+    gridColumn: 3,
     fontSize: "17px",
   },
 });
@@ -395,7 +412,7 @@ let speakerDetailsStyle = css({
   flexDirection: "column",
   gap: "20px",
   "@media (min-width: 900px)": {
-    gridColumn: 3,
+    gridColumn: 5,
   },
 });
 
@@ -420,7 +437,7 @@ let speakerImageStyle = css({
   display: "block",
   width: "100%",
   maxWidth: "420px",
-  borderRadius: "16px",
+  borderRadius: "0.5rem",
   objectFit: "cover",
   aspectRatio: "1",
 });
