@@ -10,7 +10,7 @@
     "dev": "cross-env NODE_ENV=development PORT=44100 node --watch --import remix/node-tsx server.ts",
     "hmr": "cross-env NODE_ENV=development PORT=44100 node hmr.ts",
     "format": "prettier --write ./",
-    "deploy": "flyctl deploy --build-arg REMIX_TOKEN=${REMIX_TOKEN}",
+    "deploy": "flyctl deploy --remote-only --config ./fly.production.toml --strategy rolling",
     "push:stage": "git tag -f stage && git push origin stage -f",
     "browser": "playwright-cli",
     "start": "cross-env NODE_ENV=production node --import remix/node-tsx server.ts",

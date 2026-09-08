@@ -23,6 +23,9 @@ FROM base
 
 ENV PORT="8080"
 ENV NODE_ENV="production"
+# Bound glibc allocator arenas so native compiler/image work retains less
+# fragmented memory between requests on our single-CPU Fly machines.
+ENV MALLOC_ARENA_MAX="2"
 
 WORKDIR /remixapp
 
