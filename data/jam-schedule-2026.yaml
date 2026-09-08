@@ -79,13 +79,16 @@
       imgFilename: merchant-market.webp
 
 - time: "3:30 PM"
-  title: How to Extend Remix
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  title: The Remix Way
+  description: >-
+    What happens when you take the ideas behind Remix and apply them to everything you build?
+
+    After months of building real apps with Remix 3, Sergio ended up growing an entire stack around it, from i18n and background jobs to email, MCP, and UI components. In this talk, Sergio will share how that happened, why so much of it starts with the Web Platform, and what he's learned about building the Remix way.
   speakers:
     - name: Sergio Xalambrí
       imgFilename: sergio-xalambri.webp
       bio: >-
-        Sergio Xalambrí is a web developer with more than a decade of experience. He works at [Daffy](https://daffy.org/) and maintains open-source libraries around React Router and OAuth 2.0.
+        Sergio Xalambrí is an Argentinian web developer with more than a decade of experience. He works at [Daffy}(https://www.daffy.org/) and maintains open-source libraries around React Router, Remix, and OAuth 2.0. He enjoys building full-stack applications, designing libraries, and exploring the Web Platform.
 
 - time: "4:00 PM"
   title: What should the browser actually own?
