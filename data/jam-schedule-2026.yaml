@@ -1,10 +1,7 @@
 - time: "8:30 AM"
   title: Registration & Breakfast
   description: |-
-    Check in, grab your badge, and head upstairs for breakfast. Meet fellow developers before the talks begin.
-
-
-    The entrance is on the west side of [620 King St West](https://maps.app.goo.gl/GpacrBAJJMnctN9W7) on Waterloo Terrace.
+    Enter from Waterloo Terrace on the west side of [620 King St West](https://maps.app.goo.gl/GpacrBAJJMnctN9W7). Check in, grab your badge, and head upstairs for breakfast.
   speakers:
     - name: "☕️"
       imgFilename: remix-jam-2025-registration.webp
@@ -21,10 +18,7 @@
 - time: "11:30 AM"
   title: Remix Q&A
   description: |-
-    Michael Jackson and Brooks Lybrand open the floor for questions about the ideas behind Remix 3, the decisions that shaped it, and what developers can build with it.
-
-
-    Bring the questions you have after the opening talk—or the ones you've been waiting to ask the Remix team directly.
+    Michael Jackson and Brooks Lybrand take questions after the opening talk. Ask them about Remix 3's ideas, its tradeoffs, the decisions behind it, or whatever else you've been waiting to ask the Remix team.
   speakers:
     - name: Michael Jackson
       imgFilename: michael.webp
@@ -33,12 +27,12 @@
     - name: Brooks Lybrand
       imgFilename: brooks-lybrand.webp
       bio: >-
-        Brooks Lybrand leads developer relations for Remix at Shopify, where he helps developers understand and get the most out of the framework.
+        Brooks Lybrand leads developer relations for Remix at Shopify. He works across product, education, open source, and community—helping developers build better web applications and bringing what he learns from them back into Remix.
 
 - time: "12:00 PM"
   title: Lunch
   description: |-
-    Take a break and enjoy lunch with fellow attendees. This is a great time to discuss the morning sessions and meet more of the Remix community.
+    Lunch is on us. Grab a plate and pick up the morning's conversations.
   speakers:
     - name: "🥪"
       imgFilename: remix-jam-2025-lunch.webp
@@ -54,13 +48,20 @@
         Mark Dalgleish is a staff developer at Shopify working on Remix. He is a co-creator of CSS Modules and Vanilla Extract, and has spent his career improving the way developers build and ship web interfaces.
 
 - time: "2:00 PM"
-  title: What do Agents Think of Remix?
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  title: How Do Agents Experience Remix?
+  description: >-
+    When we first announced the direction we were taking Remix, we shared [a few principles](https://remix.run/blog/wake-up-remix#principles). The first (and most controversial at the time) was “Model-First Development.” The premise was that Remix should be easy not only for people to understand, but also for large language models to generate, navigate, and modify.
+
+
+    More than a year later, we’ve used coding agents across a wide range of Remix projects: building the Remix Store, migrating remix.run from React, creating demos and proofs of concept, publishing newsletter archives, and finally rebuilding the Store with Remix 3. Along the way, we’ve learned what makes Remix especially usable for agents, where they get stuck, and where our patterns and abstractions either help or get in the way.
+
+
+    This talk traces that feedback loop: how Brooks works with coding agents, what those agents reveal about Remix (the good, bad, and ugly), and how those lessons are shaping the framework itself.
   speakers:
     - name: Brooks Lybrand
       imgFilename: brooks-lybrand.webp
       bio: >-
-        Brooks Lybrand is the developer relations manager for Remix at Shopify. He works across education, community, product, and open source to help developers build better web applications—and to help the Remix team learn from the people using it.
+        Brooks Lybrand leads developer relations for Remix at Shopify. He works across product, education, open source, and community—helping developers build better web applications and bringing what he learns from them back into Remix.
 
 - time: "2:30 PM"
   title: "Beyond the Server: Frames, SPAs, and Testing in Remix"
@@ -68,7 +69,7 @@
     By the time an application returns a response, Remix has already handled routing, middleware, rendering, and data—but a full-stack framework shouldn’t stop at the server boundary.
 
 
-    Remix extends up into the browser, where frames provide incremental navigation and granular updates to route-owned regions, while the SPA package runs Remix routes entirely on the client. It also extends out into the test runner, with tools for testing routes directly, exercising components in real browsers, and verifying complete end-to-end flows.
+    Remix extends _up_ into the browser, where frames provide incremental navigation and granular updates to route-owned regions, while the SPA package runs Remix routes entirely on the client. It also extends _out_ into the test runner, with tools for testing routes directly, exercising components in real browsers, and verifying complete end-to-end flows.
 
 
     In this talk, we’ll explore how these pieces fit together and how Remix carries a consistent, web-standard programming model across server, browser, and test environments.
@@ -81,7 +82,7 @@
 - time: "3:00 PM"
   title: Snacks & Coffee
   description: |-
-    Take a quick break to refuel, compare notes, and get ready for the final sessions of the day.
+    Coffee and snacks will be out during the afternoon break.
   speakers:
     - name: "🍪"
       imgFilename: remix-jam-2025-snacks.webp
@@ -111,7 +112,7 @@
 - time: "5:00 PM"
   title: After Party / Social
   description: |-
-    Stick around for food, drinks, and more time with the speakers and Remix community. Continue the day's conversations, make new connections, and help us wrap up Remix Jam 2026.
+    After the last talk, stick around for food and drinks with the speakers and other attendees.
   speakers:
     - name: "🏁"
       imgFilename: remix-jam-2025-after-party.webp
