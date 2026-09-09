@@ -46,7 +46,7 @@
         Mark Dalgleish is a staff developer at Shopify working on Remix. He is a co-creator of CSS Modules and Vanilla Extract, and has spent his career improving the way developers build and ship web interfaces.
 
 - time: "2:00 PM"
-  title: What do Agents Think of Remix?
+  title: How Do Agents Experience Remix?
   description: >-
     When we first announced the direction we were taking Remix, we shared [a few principles](https://remix.run/blog/wake-up-remix#principles). The first (and most controversial at the time) was “Model-First Development.” The premise was that Remix should be easy not only for people to understand, but also for large language models to generate, navigate, and modify.
 
