@@ -1,3 +1,8 @@
+import {
+  detectMultipleImportMapSupport,
+  importModule,
+  preloadShim,
+} from "remix/multiple-import-maps-polyfill";
 import { run } from "remix/ui";
 import { DOCUMENT_REDIRECT_HEADER } from "./document-redirect.ts";
 import { initFathomAnalytics } from "./fathom.ts";
@@ -6,14 +11,20 @@ initFathomAnalytics();
 
 let app = run({
   async loadModule(src, exportName) {
-    let mod = await import(src);
+    let mod = await importModule(src);
 
-    let exp = (mod as Record<string, unknown>)[exportName];
+    let exp = mod[exportName];
     if (typeof exp !== "function") {
       throw new Error(`Export "${exportName}" from "${src}" is not a function`);
     }
 
     return exp;
+  },
+  async processClientEntryPreloads(preloads) {
+    if (await detectMultipleImportMapSupport()) return preloads;
+
+    preloadShim(preloads);
+    return [];
   },
   async resolveFrame(src, options) {
     let headers = new Headers();
