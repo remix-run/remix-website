@@ -149,6 +149,7 @@ export function parseNewsletterSnapshot(
 
     let markdown = new TextDecoder().decode(markdownEntry.bytes);
     let frontmatter = readNewsletterFrontmatter(markdown);
+    if (frontmatter.draft === true) continue;
     let title = extractTitle(markdown, number);
 
     issues.push({
@@ -234,6 +235,7 @@ export async function collectNewsletterFiles(
 }
 
 interface NewsletterFrontmatter {
+  draft?: unknown;
   previewText?: unknown;
 }
 

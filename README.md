@@ -76,6 +76,8 @@ Surrogate keys are public cache tags, not credentials; Fastly normally removes t
   Without it, `/newsletter` returns a 503 when no cached snapshot exists.
 - Issue directories are strict integers (`newsletter-<N>`); markdown
   filenames carry the UTC publication date (`YYYY-MM-DD-remix-newsletter-N.md`).
+- Add `draft: true` to an issue's frontmatter to keep it out of the archive.
+  Missing or false `draft` values are treated as published.
 
 ### Authoring Blog Posts
 

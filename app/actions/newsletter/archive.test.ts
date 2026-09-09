@@ -85,6 +85,33 @@ describe("parseNewsletterSnapshot", () => {
     expect(snapshot.issues.some((i) => i.number === 0)).toBe(false);
   });
 
+  it("skips only issues explicitly marked as drafts", () => {
+    let snapshot = parseNewsletterSnapshot([
+      {
+        name: "newsletter-1/2025-01-01-remix-newsletter-1.md",
+        type: "file",
+        bytes: new TextEncoder().encode(
+          md(1, "2025-01-01").replace("title:", "draft: true\ntitle:"),
+        ),
+      },
+      {
+        name: "newsletter-2/2025-01-02-remix-newsletter-2.md",
+        type: "file",
+        bytes: new TextEncoder().encode(md(2, "2025-01-02")),
+      },
+      {
+        name: "newsletter-3/2025-01-03-remix-newsletter-3.md",
+        type: "file",
+        bytes: new TextEncoder().encode(
+          md(3, "2025-01-03").replace("title:", "draft: false\ntitle:"),
+        ),
+      },
+    ]);
+
+    expect(snapshot.issues.map((issue) => issue.number)).toEqual([3, 2]);
+    expect(snapshot.summaries.map((summary) => summary.number)).toEqual([3, 2]);
+  });
+
   it("skips issues whose markdown filename does not match the issue or date contract", () => {
     let snapshot = parseNewsletterSnapshot([
       {
