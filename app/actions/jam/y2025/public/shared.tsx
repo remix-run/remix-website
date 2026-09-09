@@ -659,7 +659,7 @@ export function AddressMain() {
 export function AddressLink() {
   return () => (
     <a
-      href="https://maps.app.goo.gl/GpacrBAJJMnctN9W7"
+      href="https://maps.app.goo.gl/uxa4a9ANKAYAcWx7A"
       target="_blank"
       rel="noopener noreferrer"
       mix={css({

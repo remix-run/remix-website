@@ -4,7 +4,7 @@
     Check in and grab your badge before heading upstairs for breakfast. Meet fellow developers from all over the world before the talks begin.
 
 
-    The entrance is on the west side of [620 King St West](https://maps.app.goo.gl/GpacrBAJJMnctN9W7) on Waterloo Terrace. Look for the Remix Jam flag.
+    The entrance is on the west side of [620 King St West](https://maps.app.goo.gl/uxa4a9ANKAYAcWx7A) on Waterloo Terrace. Look for the Remix Jam flag.
   imgFilename: "toronto-port-outside.webp"
   speaker: ☕️
 
@@ -12,17 +12,17 @@
   title: "Interactive MCP with React Router"
   description: >-
     Model Context Protocol is a powerful way to extend AI with context from the
-    outside world, but right now the interaction with an AI is mostly 
-    text-based. Text is fine for answering simple questions, but when it comes 
-    to things like "help me find a good shirt for my kid's spider-man themed 
-    birthday party" or "get me directions to the nearest taco stand," we need 
-    much more. Clients like ChatGPT do have UIs for maps and things, but it's 
-    pretty limited and bespoke because it's built case-by-case by ChatGPT 
+    outside world, but right now the interaction with an AI is mostly
+    text-based. Text is fine for answering simple questions, but when it comes
+    to things like "help me find a good shirt for my kid's spider-man themed
+    birthday party" or "get me directions to the nearest taco stand," we need
+    much more. Clients like ChatGPT do have UIs for maps and things, but it's
+    pretty limited and bespoke because it's built case-by-case by ChatGPT
     engineers.
 
 
-    As we extend the model with more context and capabilities via MCP, we can 
-    also extend it with a proper user interface using React Router and MCP UI 
+    As we extend the model with more context and capabilities via MCP, we can
+    also extend it with a proper user interface using React Router and MCP UI
     getting the best of both worlds. A powerful agent + a great UI.
 
 
@@ -38,7 +38,7 @@
     [EpicReact.dev](https://epicreact.dev/), and [TestingJavaScript.com](https://testingjavascript.com/).
     He's a [Microsoft MVP](https://kcd.im/mvp), instructor on [egghead.io](https://kcd.im/egghead)
     and [Frontend Masters](https://kcd.im/fem), [live streamer](https://www.youtube.com/c/kentcdodds-vids),
-    and [podcaster](https://kentcdodds.com/calls). Kent is married and the 
+    and [podcaster](https://kentcdodds.com/calls). Kent is married and the
     father of five kids and he lives in Utah.
 
 - time: "11:00 AM"
@@ -55,13 +55,13 @@
   speaker: "Craig Brunner"
   imgFilename: "craig.webp"
   bio: >-
-    Craig Brunner is a Principal Engineer at Shopify, where he focuses on 
+    Craig Brunner is a Principal Engineer at Shopify, where he focuses on
     [admin.shopify.com](http://admin.shopify.com/).
-    Previously, he served as a Distinguished Engineer at ServiceNow and has 
-    held engineering roles across the spectrum from small startups to large 
-    tech companies like Apple and Amazon. As a full-stack enthusiast, Craig is 
-    passionate about building dynamic user interfaces that seamlessly integrate 
-    with large language models, bridging the gap between traditional web 
+    Previously, he served as a Distinguished Engineer at ServiceNow and has
+    held engineering roles across the spectrum from small startups to large
+    tech companies like Apple and Amazon. As a full-stack enthusiast, Craig is
+    passionate about building dynamic user interfaces that seamlessly integrate
+    with large language models, bridging the gap between traditional web
     development and AI-powered experiences.
 
 - time: "11:30 AM"
@@ -120,10 +120,10 @@
   speaker: "Ryan Florence"
   imgFilename: "ryan.webp"
   bio: >-
-    Ryan Florence is co-creator of [React Router](https://reactrouter.com) and 
-    Remix. He's obsessed with finding better ways to build great user 
-    experiences on the open web. Outside of coding, he's a dad of three who 
-    loves guitar, tennis, soccer, snowboarding and spending time in the Utah 
+    Ryan Florence is co-creator of [React Router](https://reactrouter.com) and
+    Remix. He's obsessed with finding better ways to build great user
+    experiences on the open web. Outside of coding, he's a dad of three who
+    loves guitar, tennis, soccer, snowboarding and spending time in the Utah
     outdoors.
 
 - time: "3:15 PM"
@@ -159,10 +159,10 @@
   speaker: "Michael Jackson"
   imgFilename: "michael.webp"
   bio: >-
-    Michael Jackson is a prolific contributor to open source. He is the 
-    co-author of Remix and [React Router](https://reactrouter.com), and the 
-    creator of [unpkg.com](https://unpkg.com). He enjoys system design, 
-    front-end architecture, and playing his guitar. Michael lives in Carlsbad, 
+    Michael Jackson is a prolific contributor to open source. He is the
+    co-author of Remix and [React Router](https://reactrouter.com), and the
+    creator of [unpkg.com](https://unpkg.com). He enjoys system design,
+    front-end architecture, and playing his guitar. Michael lives in Carlsbad,
     CA with his wife and 4 children.
 
 - time: "4:30 PM"

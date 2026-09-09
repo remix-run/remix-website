@@ -1,7 +1,7 @@
 - time: "8:30 AM"
   title: Registration & Breakfast
   description: |-
-    Enter from Waterloo Terrace on the west side of [620 King St West](https://maps.app.goo.gl/GpacrBAJJMnctN9W7). Check in, grab your badge, and head upstairs for breakfast.
+    Enter from Waterloo Terrace on the west side of [620 King St West](https://maps.app.goo.gl/uxa4a9ANKAYAcWx7A). Check in, grab your badge, and head upstairs for breakfast.
   emoji: "☕️"
   imgFilename: remix-jam-2025-registration.webp
 
@@ -51,7 +51,7 @@
     When we first announced the direction we were taking Remix, we shared [a few principles](https://remix.run/blog/wake-up-remix#principles). The first (and most controversial at the time) was “Model-First Development.” The premise was that Remix should be easy not only for people to understand, but also for large language models to generate, navigate, and modify.
 
 
-    More than a year later, we’ve used coding agents across a wide range of Remix projects: building the Remix Store, migrating remix.run from React, creating demos and proofs of concept, publishing newsletter archives, and finally rebuilding the Store with Remix 3. Along the way, we’ve learned what makes Remix especially usable for agents, where they get stuck, and where our patterns and abstractions either help or get in the way.
+    More than a year later, we’ve used coding agents across a wide range of Remix projects: building the Remix Store (with React Router), migrating remix.run from React, creating demos and proofs of concept, publishing newsletter archives, and finally rebuilding the Store with Remix 3. Along the way, we’ve learned what makes Remix especially usable for agents, where they get stuck, and where our patterns and abstractions either help or get in the way.
 
 
     This talk traces that feedback loop: how Brooks works with coding agents, what those agents reveal about Remix (the good, bad, and ugly), and how those lessons are shaping the framework itself.

@@ -20,7 +20,7 @@ let faqs: Faq[] = [
         content: [
           {
             text: "620 King St W Toronto, ON M5V 1M7, Canada",
-            href: "https://maps.app.goo.gl/GpacrBAJJMnctN9W7",
+            href: "https://maps.app.goo.gl/uxa4a9ANKAYAcWx7A",
           },
         ],
       },
