@@ -75,7 +75,7 @@
     - name: Matt Brophy
       imgFilename: matt-brophy.webp
       bio: >-
-        Matt Brophy is a staff developer at Shopify working on Remix and React Router. He enjoys working at the intersection of routing, data loading, and framework architecture (a.k.a., the “back end of the front end.") and making complex web application behavior easier to reason about.
+        Matt Brophy is a staff developer at Shopify working on Remix and React Router. He enjoys working at the intersection of routing, data loading, and framework architecture (a.k.a., the “back end of the front end") and making complex web application behavior easier to reason about.
 
 - time: "3:00 PM"
   title: Snacks & Coffee
@@ -98,7 +98,7 @@
         Sergio Xalambrí is an Argentinian web developer with more than a decade of experience. He works at [Daffy](https://www.daffy.org/) and maintains open-source libraries around React Router, Remix, and OAuth 2.0. He enjoys building full-stack applications, designing libraries, and exploring the Web Platform.
 
 - time: "4:00 PM"
-  title: What should the browser actually own?
+  title: What Should the Browser Actually Own?
   description: Every Shopify Edition asks the browser to do more. This is the story of how we started asking it to do less.
   speakers:
     - name: Josh Sanger
