@@ -1,5 +1,10 @@
 import { css, type Handle } from "remix/ui";
-import type { getJam2026Schedule } from "../../../data/jam-schedule-2026.ts";
+import { visuallyHiddenStyle } from "../../../ui/public/css-mixins.ts";
+import type { ScheduleItem } from "./public/schedule-types.ts";
+import {
+  ScheduleDetails,
+  ScheduleSpeakerSummary,
+} from "./public/schedule-content.tsx";
 import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
 import { Jam2026ScheduleAccordion } from "./public/schedule-accordion.tsx";
 import {
@@ -9,11 +14,12 @@ import {
 } from "./public/window-styles.ts";
 import { jamTheme } from "./public/theme.ts";
 
-type Schedule = Awaited<ReturnType<typeof getJam2026Schedule>>;
-
-export function Jam2026Schedule(handle: Handle<{ items: Schedule }>) {
+export function Jam2026Schedule(handle: Handle<{ items: ScheduleItem[] }>) {
   return () => (
     <section id="schedule" aria-label="Schedule" mix={scheduleStyle}>
+      <p mix={visuallyHiddenStyle}>
+        All times are Eastern Daylight Time (UTC-04:00).
+      </p>
       <div mix={[jam2026WindowSurfaceStyle, scheduleWindowStyle]}>
         <p mix={jam2026WindowTitleStyle}>SCHEDULE.TSX</p>
         <div mix={jam2026WindowBodyStyle}>
@@ -27,7 +33,7 @@ export function Jam2026Schedule(handle: Handle<{ items: Schedule }>) {
   );
 }
 
-function Jam2026MobileSchedule(handle: Handle<{ items: Schedule }>) {
+function Jam2026MobileSchedule(handle: Handle<{ items: ScheduleItem[] }>) {
   return () => (
     <div mix={mobileScheduleStyle}>
       <div aria-hidden="true" mix={[mobileGridStyle, mobileHeaderStyle]}>
@@ -35,45 +41,21 @@ function Jam2026MobileSchedule(handle: Handle<{ items: Schedule }>) {
         <span>Topic</span>
         <span>Speaker</span>
       </div>
-      {handle.props.items.map((item) => {
-        let speakerNames = item.speakers.map((speaker) => speaker.name);
-
-        return (
-          <article key={`${item.time}-${item.title}`} mix={mobileItemStyle}>
-            <div mix={[mobileGridStyle, mobileSummaryStyle]}>
-              <span mix={mobileTimeStyle}>
-                {item.time}
-                <span mix={mobileTimezoneStyle}>UTC-04</span>
+      {handle.props.items.map((item) => (
+        <article key={`${item.time}-${item.title}`} mix={mobileItemStyle}>
+          <div mix={[mobileGridStyle, mobileSummaryStyle]}>
+            <span mix={mobileTimeStyle}>
+              {item.time}
+              <span aria-hidden="true" mix={mobileTimezoneStyle}>
+                UTC-04
               </span>
-              <h3 mix={mobileTitleStyle}>{item.title}</h3>
-              <span mix={mobileSpeakerStyle}>{speakerNames.join(" + ")}</span>
-            </div>
-            <div mix={mobileDetailsStyle}>
-              <div mix={mobileDescriptionStyle} innerHTML={item.description} />
-              {item.speakers.map((speaker) => (
-                <div key={speaker.name} mix={mobileSpeakerDetailsStyle}>
-                  {speaker.imgSrc ? (
-                    <img
-                      src={speaker.imgSrc}
-                      alt={
-                        /[\p{Letter}\p{Number}]/u.test(speaker.name)
-                          ? speaker.name
-                          : item.title
-                      }
-                      loading="lazy"
-                      decoding="async"
-                      mix={mobileSpeakerImageStyle}
-                    />
-                  ) : null}
-                  {speaker.bio ? (
-                    <div mix={mobileBioStyle} innerHTML={speaker.bio} />
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          </article>
-        );
-      })}
+            </span>
+            <h3 mix={mobileTitleStyle}>{item.title}</h3>
+            <ScheduleSpeakerSummary item={item} presentation="mobile" />
+          </div>
+          <ScheduleDetails item={item} presentation="mobile" />
+        </article>
+      ))}
     </div>
   );
 }
@@ -167,65 +149,4 @@ let mobileTitleStyle = css({
   fontWeight: theme.fontWeight.bold,
   letterSpacing: "-0.02em",
   lineHeight: 1.4,
-});
-
-let mobileSpeakerStyle = css({
-  gridColumn: 3,
-  gridRow: 1,
-  color: jamTheme.ink,
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "14px",
-  fontWeight: theme.fontWeight.bold,
-  letterSpacing: "-0.02em",
-  lineHeight: 1.4,
-  overflowWrap: "anywhere",
-});
-
-let mobileDetailsStyle = css({
-  display: "grid",
-  gap: "20px",
-  padding: "0 8px 24px",
-});
-
-let mobileDescriptionStyle = css({
-  color: jamTheme.ink,
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "14px",
-  lineHeight: 1.6,
-  "& p": {
-    margin: "0 0 12px",
-    whiteSpace: "pre-line",
-  },
-  "& p:last-child": { marginBlockEnd: 0 },
-  "& a": {
-    color: jamTheme.accent,
-    textDecoration: "underline",
-    textUnderlineOffset: "0.16em",
-  },
-});
-
-let mobileSpeakerDetailsStyle = css({
-  display: "grid",
-  gap: "16px",
-});
-
-let mobileSpeakerImageStyle = css({
-  display: "block",
-  width: "100%",
-  borderRadius: "0.5rem",
-  objectFit: "cover",
-  aspectRatio: "1",
-});
-
-let mobileBioStyle = css({
-  color: jamTheme.inkMuted,
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "12px",
-  lineHeight: 1.65,
-  "& p": { margin: 0 },
-  "& a": {
-    color: jamTheme.accent,
-    textDecoration: "underline",
-    textUnderlineOffset: "0.16em",
-  },
 });

@@ -21,11 +21,11 @@ import { Jam2026Faq } from "./faq.tsx";
 import { Jam2026FloatingTicketCta } from "./floating-ticket-cta.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 import { Jam2026Schedule } from "./schedule.tsx";
-import type { getJam2026Schedule } from "../../../data/jam-schedule-2026.ts";
+import type { ScheduleItem } from "./public/schedule-types.ts";
 
 type Jam2026HomePageProps = {
   requestUrl: string;
-  schedule: Awaited<ReturnType<typeof getJam2026Schedule>>;
+  schedule: ScheduleItem[];
   ticketsModalOpen?: boolean;
   ticketCheckout?: {
     availableForSale: boolean;

@@ -2,9 +2,8 @@
   title: Registration & Breakfast
   description: |-
     Enter from Waterloo Terrace on the west side of [620 King St West](https://maps.app.goo.gl/GpacrBAJJMnctN9W7). Check in, grab your badge, and head upstairs for breakfast.
-  speakers:
-    - name: "☕️"
-      imgFilename: remix-jam-2025-registration.webp
+  emoji: "☕️"
+  imgFilename: remix-jam-2025-registration.webp
 
 - time: "10:30 AM"
   title: Remix 3
@@ -33,9 +32,8 @@
   title: Lunch
   description: |-
     Take a break and enjoy lunch with fellow attendees. This is a great time to discuss the morning talks and make new connections.
-  speakers:
-    - name: "🥪"
-      imgFilename: remix-jam-2025-lunch.webp
+  emoji: "🥪"
+  imgFilename: remix-jam-2025-lunch.webp
 
 - time: "1:30 PM"
   title: Remix Unbundled
@@ -83,9 +81,8 @@
   title: Snacks & Coffee
   description: |-
     Make a quick pit stop for snacks and coffee before the final talks.
-  speakers:
-    - name: "🍪"
-      imgFilename: remix-jam-2025-snacks.webp
+  emoji: "🍪"
+  imgFilename: remix-jam-2025-snacks.webp
 
 - time: "3:30 PM"
   title: The Remix Way
@@ -113,6 +110,5 @@
   title: After Party / Social
   description: |-
     Once we cross the finish line, stick around for food, drinks, and time with the speakers and fellow attendees.
-  speakers:
-    - name: "🏁"
-      imgFilename: remix-jam-2025-after-party.webp
+  emoji: "🏁"
+  imgFilename: remix-jam-2025-after-party.webp
