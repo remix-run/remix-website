@@ -6,12 +6,6 @@ import { jamTheme } from "./public/theme.ts";
 
 let faqs: Faq[] = [
   {
-    id: "schedule",
-    question: "Where can I find the event lineup and schedule?",
-    answer:
-      "The Remix Jam 2026 schedule is coming soon. We'll share the full lineup and session times when they're ready.",
-  },
-  {
     id: "event-hosted",
     question: "Where will the event be hosted?",
     answer: [
@@ -37,26 +31,6 @@ let faqs: Faq[] = [
     question: "Will there be a bag check?",
     answer:
       "Yes, there will be bag and coat check available all day on L11 (the first floor you will go to after registration).",
-  },
-  {
-    id: "cfp",
-    question: "Will there be a CFP?",
-    answer: [
-      {
-        type: "paragraph",
-        content: ["No, there will not be a CFP."],
-      },
-      {
-        type: "paragraph",
-        content: [
-          "You'll hear talks focused on Remix 3 and real-world web development, with perspective from the core team, product builders, and experts working on modern web application architecture.",
-        ],
-      },
-      {
-        type: "paragraph",
-        content: ["The full lineup and schedule are coming."],
-      },
-    ],
   },
   {
     id: "where-to-stay",
