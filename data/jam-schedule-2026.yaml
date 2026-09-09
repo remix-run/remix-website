@@ -7,13 +7,13 @@
       imgFilename: remix-jam-2025-registration.webp
 
 - time: "10:30 AM"
-  title: Do Frameworks Still Matter?
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  title: Remix 3
+  description: In a world where agents write most of the code, we should expect a whole lot more from a web framework. That's the idea behind Remix 3. We set out to make every piece faster, smaller, and easier to use, from the server to the browser. It's built for you and your agents, and you can use as much or as little of it as you want. In this talk Michael will show you what we've been working on and where we're going from here.
   speakers:
     - name: Michael Jackson
       imgFilename: michael.webp
       bio: >-
-        Michael Jackson is a prolific contributor to open source. He is the co-author of Remix and [React Router](https://reactrouter.com), and the creator of [unpkg.com](https://unpkg.com). He enjoys system design, front-end architecture, and playing guitar. Michael lives in Carlsbad, California with his wife and four children.
+        Michael Jackson is a prolific contributor to open source.
 
 - time: "11:30 AM"
   title: Remix Q&A
@@ -23,7 +23,7 @@
     - name: Michael Jackson
       imgFilename: michael.webp
       bio: >-
-        Michael Jackson is the co-author of Remix and React Router and the creator of unpkg.com.
+        Michael Jackson created unpkg and co-created Remix and React Router.
     - name: Brooks Lybrand
       imgFilename: brooks-lybrand.webp
       bio: >-
@@ -32,7 +32,7 @@
 - time: "12:00 PM"
   title: Lunch
   description: |-
-    Lunch is on us. Grab a plate and pick up the morning's conversations.
+    Take a break and enjoy lunch with fellow attendees. This is a great time to discuss the morning talks and make new connections.
   speakers:
     - name: "🥪"
       imgFilename: remix-jam-2025-lunch.webp
@@ -48,7 +48,7 @@
         Mark Dalgleish is a staff developer at Shopify working on Remix. He is a co-creator of CSS Modules and Vanilla Extract, and has spent his career improving the way developers build and ship web interfaces.
 
 - time: "2:00 PM"
-  title: How Do Agents Experience Remix?
+  title: What do Agents Think of Remix?
   description: >-
     When we first announced the direction we were taking Remix, we shared [a few principles](https://remix.run/blog/wake-up-remix#principles). The first (and most controversial at the time) was “Model-First Development.” The premise was that Remix should be easy not only for people to understand, but also for large language models to generate, navigate, and modify.
 
@@ -82,7 +82,7 @@
 - time: "3:00 PM"
   title: Snacks & Coffee
   description: |-
-    Coffee and snacks will be out during the afternoon break.
+    Make a quick pit stop for snacks and coffee before the final talks.
   speakers:
     - name: "🍪"
       imgFilename: remix-jam-2025-snacks.webp
@@ -112,7 +112,7 @@
 - time: "5:00 PM"
   title: After Party / Social
   description: |-
-    After the last talk, stick around for food and drinks with the speakers and other attendees.
+    Once we cross the finish line, stick around for food, drinks, and time with the speakers and fellow attendees.
   speakers:
     - name: "🏁"
       imgFilename: remix-jam-2025-after-party.webp
