@@ -251,7 +251,7 @@ function NewsletterArchive(
                       [breakpointMedia.md]: { borderRadius: "6px" },
                     })}
                     loading={index < 4 ? "eager" : "lazy"}
-                    decoding={index === 0 ? "sync" : "async"}
+                    decoding="async"
                     fetchpriority={index === 0 ? "high" : undefined}
                   />
                 ) : null}

@@ -144,7 +144,7 @@ describe("Newsletter index route", () => {
     );
   });
 
-  it("eagerly loads the first four archive images", async () => {
+  it("loads four images eagerly and decodes all asynchronously", async () => {
     let repo = fakeRepository({
       summaries: Array.from({ length: 5 }, (_, index) => {
         let number = index + 1;
@@ -177,6 +177,9 @@ describe("Newsletter index route", () => {
       );
 
     expect(images).toHaveLength(5);
+    for (let image of images) {
+      expect(image).toContain('decoding="async"');
+    }
     expect(
       images.slice(0, 4).every((image) => image.includes('loading="eager"')),
     ).toBe(true);
