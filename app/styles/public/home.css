@@ -41,10 +41,6 @@ body {
   color: #dee2e6;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   overflow-x: hidden;
   font-family:

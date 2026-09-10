@@ -3,10 +3,7 @@ import { routes } from "../../../../routes.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";
 import { brandContextMenu } from "../../../../ui/public/brand-context-menu.ts";
 import { clamp01, lerp } from "../utils/math.ts";
-import {
-  motionScrollBehavior,
-  reducedMotion,
-} from "../utils/reduced-motion.ts";
+import { reducedMotion } from "../utils/reduced-motion.ts";
 
 const SMALL_HEIGHT = 16;
 const LARGE_TOP = 92;
@@ -129,7 +126,7 @@ export function ScrollLogo(handle: Handle) {
     ) {
       event.preventDefault();
       void replaceCurrentUrl(routes.home.href());
-      window.scrollTo({ top: 0, behavior: motionScrollBehavior() });
+      window.scrollTo({ top: 0, behavior: "auto" });
     }
   });
 

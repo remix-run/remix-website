@@ -215,6 +215,30 @@ describe("Jam", () => {
     expect(submittedTag).toBe(String(newsletterTagIds.jam2026Updates));
   });
 
+  it("jam 2025 gallery advances with keyboard and chevron navigation", async (t) => {
+    mockGalleryStorefront(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    let galleryHref = routes.jam.y2025.gallery.index.href();
+
+    await page.goto(`${galleryHref}?photo=0`);
+    let marker = await markPage(page);
+    let dialog = page.getByRole("dialog");
+    await expect(
+      dialog.getByRole("link", { name: "Close modal" }),
+    ).toBeFocused();
+
+    await page.keyboard.press("ArrowRight");
+    await page.waitForURL(`**${galleryHref}?photo=1`);
+    await expectMarkerToStay(page, marker);
+    await expect(dialog).toContainText("2 / 2");
+
+    await dialog.getByRole("link", { name: "Next photo" }).click();
+    await page.waitForURL(`**${galleryHref}?photo=0`);
+    await expectMarkerToStay(page, marker);
+    await expect(dialog).toContainText("1 / 2");
+  });
+
   it("jam info navigation stays client-side without a full reload", async (t) => {
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
@@ -251,6 +275,52 @@ describe("Jam", () => {
       .toBe(marker);
   });
 });
+
+function mockGalleryStorefront(t: { after(cleanup: () => void): void }) {
+  let previousEnv = { ...env };
+  let originalFetch = globalThis.fetch;
+  Reflect.set(env, "PUBLIC_STOREFRONT_API_TOKEN", ["test", "token"].join("-"));
+  globalThis.fetch = async (input, init) => {
+    let url = String(input);
+    if (url !== "https://jam.remix.run/api/2026-04/graphql.json") {
+      return originalFetch(input, init);
+    }
+
+    let body = JSON.parse(String(init?.body ?? "{}"));
+    let handle = String(body.variables?.handle ?? "");
+    let photoNumber = handle.endsWith("-1") ? 1 : 2;
+    return Response.json({
+      data: {
+        metaobject: {
+          fields: [
+            {
+              key: "photos",
+              references: {
+                edges: [
+                  {
+                    node: {
+                      image: {
+                        url: `https://cdn.example.com/photo-${photoNumber}.jpg`,
+                        altText: `Gallery photo ${photoNumber}`,
+                        width: 1200,
+                        height: 800,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    });
+  };
+
+  t.after(() => {
+    Object.assign(env, previousEnv);
+    globalThis.fetch = originalFetch;
+  });
+}
 
 function mockStorefront(t: { after(cleanup: () => void): void }) {
   let previousEnv = { ...env };

@@ -11,7 +11,6 @@ import {
   storeGalleryFocus,
 } from "./gallery-focus-restore.tsx";
 import {
-  focusTrap,
   getFocusableElementsWithin,
   isFocusable,
 } from "../../../../ui/public/focus-trap.ts";
@@ -34,35 +33,47 @@ type JamGalleryModalHostProps = {
 };
 
 /** Gallery modal shell with focus trap, keyboard nav, and backdrop close. */
-export let JamGalleryModalHost = clientEntry(
+export function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
+  return () => (
+    <div
+      role="dialog"
+      aria-modal="true"
+      tabindex={-1}
+      mix={css({
+        position: "fixed",
+        inset: 0,
+        zIndex: 50,
+        width: "100%",
+        height: "100%",
+        userSelect: "none",
+        backgroundColor: "rgb(0 0 0 / 0.7)",
+        backdropFilter: "blur(8px)",
+      })}
+    >
+      <JamGalleryModalBehavior
+        photoCount={handle.props.photoCount}
+        nav={handle.props.nav}
+      />
+      {handle.props.children}
+    </div>
+  );
+}
+
+// Keep styled modal children outside client-entry props: CSS mix descriptors are
+// runtime values and cannot survive client-entry serialization.
+export let JamGalleryModalBehavior = clientEntry(
   import.meta.url,
-  function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
+  function JamGalleryModalBehavior(
+    handle: Handle<Pick<JamGalleryModalHostProps, "photoCount" | "nav">>,
+  ) {
     let modalNavigation = createJamGalleryModalNavigation();
-    return () => {
-      return (
-        <div
-          role="dialog"
-          aria-modal="true"
-          tabindex={-1}
-          mix={[
-            css({
-              position: "fixed",
-              inset: 0,
-              zIndex: 50,
-              width: "100%",
-              height: "100%",
-              userSelect: "none",
-              backgroundColor: "rgb(0 0 0 / 0.7)",
-              backdropFilter: "blur(8px)",
-            }),
-            focusTrap(),
-            modalNavigation(handle.props.nav, handle.props.photoCount),
-          ]}
-        >
-          {handle.props.children}
-        </div>
-      );
-    };
+    return () => (
+      <span
+        hidden
+        aria-hidden="true"
+        mix={modalNavigation(handle.props.nav, handle.props.photoCount)}
+      />
+    );
   },
 );
 
@@ -181,7 +192,9 @@ function createJamGalleryModalNavigation() {
     };
 
     handle.addEventListener("insert", (event) => {
-      modal = event.node;
+      modal = event.node.parentElement;
+      if (!modal) return;
+
       didInitialFocus = false;
       unlockScroll = lockScroll();
 
@@ -194,6 +207,25 @@ function createJamGalleryModalNavigation() {
         let isModified = event.metaKey || event.ctrlKey || event.altKey;
 
         switch (key) {
+          case "Tab": {
+            let focusableElements = getFocusableElements();
+            let first = focusableElements[0] ?? host;
+            let last = focusableElements.at(-1) ?? host;
+            let active = document.activeElement;
+            let target = !host.contains(active)
+              ? event.shiftKey
+                ? last
+                : first
+              : event.shiftKey && active === first
+                ? last
+                : !event.shiftKey && active === last
+                  ? first
+                  : null;
+            if (!target) break;
+            event.preventDefault();
+            target.focus();
+            break;
+          }
           case "Escape":
             event.preventDefault();
             void closeGallery();
@@ -245,6 +277,17 @@ function createJamGalleryModalNavigation() {
       document.addEventListener("keydown", onKeydown, {
         signal: handle.signal,
       });
+      document.addEventListener(
+        "focusin",
+        (event) => {
+          let host = modal;
+          let target = event.target;
+          if (!host || (target instanceof Node && host.contains(target)))
+            return;
+          focusBoundary("start");
+        },
+        { signal: handle.signal },
+      );
       document.addEventListener("click", onClick, {
         signal: handle.signal,
       });
