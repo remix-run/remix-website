@@ -15,6 +15,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - **`app/router.ts`** — `createRouter`, root middleware stack, `router.map(...)` wiring, and the `GET /assets/*` route that delegates to `app/utils/assets.ts`.
 - **Production / `pnpm run preview`** — runs the same TypeScript server entry as development (`server.ts`) through `remix/node-tsx`; there is no separate Vite SSR bundle.
 - **HMR / `pnpm run hmr`** - runs the server in development mode with HMR enabled, for use during heavy UI iteration.
+- HTML compression must flush streamed chunks for both gzip/deflate and Brotli; otherwise pending server content can delay the initial document.
 
 ## Keep These Non-Obvious Invariants
 

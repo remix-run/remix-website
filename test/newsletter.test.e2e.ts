@@ -4,7 +4,10 @@ import { describe, it } from "remix/test";
 
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
-import type { NewsletterRepository } from "../app/actions/newsletter/archive.ts";
+import {
+  NewsletterUpstreamUnavailableError,
+  type NewsletterRepository,
+} from "../app/actions/newsletter/archive.ts";
 import { swallowAbortErrors } from "../test/setup.ts";
 
 const newsletterRepository: NewsletterRepository = {
@@ -46,6 +49,60 @@ const newsletterRepository: NewsletterRepository = {
 };
 
 describe("Newsletter archive", () => {
+  it("renders the archive and signup without JavaScript", async (t) => {
+    let handler = swallowAbortErrors(createAppRouter({ newsletterRepository }));
+    let server = await createTestServer(handler);
+    let harnessPage = await t.serve(server);
+    let context = await harnessPage
+      .context()
+      .browser()!
+      .newContext({ javaScriptEnabled: false });
+    t.after(() => context.close());
+    let page = await context.newPage();
+    await page.goto(
+      new URL(routes.newsletter.index.href(), server.baseUrl).href,
+    );
+    await expect(
+      page.getByRole("link", { name: /Remix Newsletter #1/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("textbox", { name: "Email address" }),
+    ).toBeVisible();
+    await expect(page.getByRole("status")).toHaveCount(0);
+  });
+
+  it("lets visitors retry a failed archive load while keeping signup available", async (t) => {
+    let unavailable = true;
+    let handler = swallowAbortErrors(
+      createAppRouter({
+        newsletterRepository: {
+          ...newsletterRepository,
+          async listSummaries() {
+            if (unavailable)
+              throw new NewsletterUpstreamUnavailableError(
+                "upstream unavailable",
+              );
+            return newsletterRepository.listSummaries();
+          },
+        },
+      }),
+    );
+    let page = await t.serve(await createTestServer(handler));
+    await page.goto(routes.newsletter.index.href());
+    await expect(page.getByRole("alert")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Try again" })).toBeVisible();
+    await expect(
+      page.getByRole("textbox", { name: "Email address" }),
+    ).toBeVisible();
+    await expect(page.getByRole("status")).toHaveCount(0);
+
+    unavailable = false;
+    await page.getByRole("link", { name: "Try again" }).click();
+    await expect(
+      page.getByRole("link", { name: /Remix Newsletter #1/ }),
+    ).toBeVisible();
+  });
+
   it("opens issue images in the lightbox", async (t) => {
     let handler = swallowAbortErrors(createAppRouter({ newsletterRepository }));
     let page = await t.serve(await createTestServer(handler));

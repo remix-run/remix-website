@@ -111,8 +111,12 @@ describe("Newsletter index route", () => {
     );
 
     expect(response.status).toBe(200);
+    expect(response.headers.get("Surrogate-Control")).toContain(
+      "stale-while-revalidate",
+    );
     let html = await response.text();
 
+    expect(html).not.toContain('role="status"');
     expect(html).toContain("<title>Remix Newsletter</title>");
     expect(html).toContain('style="color-scheme: light dark;"');
     expect(html).not.toContain('data-theme="dark"');

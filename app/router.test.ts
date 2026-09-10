@@ -1,4 +1,5 @@
 import { expect } from "remix/assert";
+import { createTestServer } from "remix/node-fetch-server/test";
 import { beforeEach, describe, it } from "remix/test";
 
 import { createAppRouter } from "./router.ts";
@@ -10,6 +11,64 @@ describe("app router", () => {
   beforeEach(() => {
     router = createAppRouter();
   });
+
+  for (let encoding of ["gzip", "deflate", "br"]) {
+    it(
+      `flushes ${encoding} HTML before the response stream finishes`,
+      { timeout: 5_000 },
+      async (t) => {
+        let finish!: () => void;
+        let pending = new Promise<void>((resolve) => {
+          finish = resolve;
+        });
+        let encoder = new TextEncoder();
+        router.get(
+          "/streamed-html",
+          () =>
+            new Response(
+              new ReadableStream({
+                async start(controller) {
+                  controller.enqueue(encoder.encode("<main>"));
+                  await pending;
+                  controller.enqueue(encoder.encode("</main>"));
+                  controller.close();
+                },
+              }),
+              { headers: { "Content-Type": "text/html; charset=utf-8" } },
+            ),
+        );
+        let server = await createTestServer((request) => router.fetch(request));
+        t.after(() => {
+          finish();
+          return server.close();
+        });
+
+        // Exercise the HTTP adapter and real decompression, not just headers.
+        let response = await fetch(new URL("/streamed-html", server.baseUrl), {
+          headers: { "Accept-Encoding": encoding },
+          signal: t.signal,
+        });
+        expect(response.headers.get("Content-Encoding")).toBe(encoding);
+        let reader = response
+          .body!.pipeThrough(new TextDecoderStream())
+          .getReader();
+        let html = "";
+        while (!html.includes("<main>")) {
+          let { value, done } = await reader.read();
+          expect(done).toBe(false);
+          html += value;
+        }
+        // We must receive the first chunk before allowing the rest to exist.
+        finish();
+        while (true) {
+          let { value, done } = await reader.read();
+          if (done) break;
+          html += value;
+        }
+        expect(html).toBe("<main></main>");
+      },
+    );
+  }
 
   it("serves the healthcheck route", async () => {
     let response = await router.fetch(
