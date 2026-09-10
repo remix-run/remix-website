@@ -11,7 +11,8 @@ import { env } from "../../utils/env.ts";
  * Issues live in the private `remix-run/newsletter` GitHub repository under
  * `newsletters/newsletter-<N>/<YYYY-MM-DD>-remix-newsletter-<N>.md`, with any
  * images beside the markdown. We fetch a single repository tarball at runtime,
- * parse it once, and keep a parsed snapshot in memory.
+ * parse it once, and keep a parsed snapshot in memory. Expired snapshots remain
+ * available while one shared refresh runs in the background.
  */
 
 const NEWSLETTER_REPO_OWNER = "remix-run";
@@ -362,13 +363,15 @@ export function createGitHubNewsletterRepository(
 
   async function getSnapshot(): Promise<NewsletterSnapshot> {
     if (snapshot && Date.now() < expiresAt) return snapshot;
-    if (refreshPromise) return refreshPromise;
-    refreshPromise = refresh();
-    try {
-      return await refreshPromise;
-    } finally {
-      refreshPromise = null;
+    if (!refreshPromise) {
+      refreshPromise = refresh().finally(() => {
+        refreshPromise = null;
+      });
+      // Warm requests don't await the refresh. Errors are reported in refresh();
+      // cold callers still receive the original promise and its rejection.
+      void refreshPromise.catch(() => {});
     }
+    return snapshot ?? refreshPromise;
   }
 
   return {

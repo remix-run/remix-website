@@ -1,6 +1,7 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import { gzipSync } from "node:zlib";
+import { setImmediate } from "node:timers/promises";
 
 import { routes } from "../../routes.ts";
 import {
@@ -308,93 +309,147 @@ describe("createGitHubNewsletterRepository", () => {
     expect(calls).toBe(1);
   });
 
-  it("serves cached snapshot within TTL and refetches after expiry", async () => {
+  it(
+    "serves stale summaries, issues, and images during one background refresh",
+    { timeout: 5_000 },
+    async (t) => {
+      let now = 0;
+      t.mock.method(Date, "now", () => now);
+      let calls = 0;
+      let refresh = deferred<Response>();
+      t.after(() => refresh.resolve(new Response(null, { status: 503 })));
+      let repo = createGitHubNewsletterRepository({
+        token: "test-token",
+        ttlMs: 1_000,
+        fetchImpl: async () => {
+          calls++;
+          if (calls === 2) return refresh.promise;
+          return fakeTarballFetch([
+            issueFile(1, "2024-01-01", "![Cover](cover.png)"),
+            imageFile(1, "cover.png"),
+          ])();
+        },
+      });
+
+      let first = await repo.listSummaries();
+      now = 999;
+      expect(await repo.listSummaries()).toEqual(first);
+      expect(calls).toBe(1);
+
+      now = 1_000;
+      // These must finish before GitHub responds, including requests arriving
+      // after the refresh has already started.
+      expect(await repo.listSummaries()).toEqual(first);
+      let [summaries, issue, image] = await Promise.all([
+        repo.listSummaries(),
+        repo.getIssue(1),
+        repo.getImage(1, "cover.png"),
+      ]);
+      expect(summaries).toEqual(first);
+      expect(issue?.number).toBe(1);
+      expect(image?.bytes).toEqual(new TextEncoder().encode("fake-image"));
+      expect(calls).toBe(2);
+
+      refresh.resolve(await fakeTarballFetch([issueFile(2, "2024-02-02")])());
+      // Wait for the new snapshot to become observable, not a fixed sleep for
+      // the asynchronous gzip/tar pipeline.
+      while (!(await repo.getIssue(2))) {
+        await setImmediate(undefined, { signal: t.signal });
+      }
+      expect((await repo.listSummaries()).map((s) => s.number)).toEqual([2]);
+      expect(await repo.getIssue(1)).toBe(null);
+      expect(await repo.getImage(1, "cover.png")).toBe(null);
+      expect(calls).toBe(2);
+    },
+  );
+
+  it("deduplicates concurrent cold loads", async () => {
     let calls = 0;
+    let initial = deferred<Response>();
     let repo = createGitHubNewsletterRepository({
       token: "test-token",
-      ttlMs: 50,
       fetchImpl: async () => {
         calls++;
-        return fakeTarballFetch([issueFile(1, "2024-01-01")])();
+        return initial.promise;
       },
     });
 
-    let first = await repo.listSummaries();
-    expect(first.map((s) => s.number)).toEqual([1]);
-    await repo.listSummaries();
-    expect(calls).toBe(1); // served from cache
-
-    await new Promise((r) => setTimeout(r, 60));
-    let third = await repo.listSummaries();
-    expect(third.map((s) => s.number)).toEqual([1]);
-    expect(calls).toBe(2); // refetched after TTL
-  });
-
-  it("deduplicates concurrent refreshes", async () => {
-    let calls = 0;
-    let repo = createGitHubNewsletterRepository({
-      token: "test-token",
-      ttlMs: 1000,
-      fetchImpl: async () => {
-        calls++;
-        // Resolve on a later tick so two concurrent calls share one refresh.
-        return new Promise<Response>((resolve) =>
-          setTimeout(
-            () => resolve(fakeTarballFetch([issueFile(1, "2024-01-01")])()),
-            0,
-          ),
-        );
-      },
-    });
-
-    let [a, b] = await Promise.all([
-      repo.listSummaries(),
-      repo.listSummaries(),
-    ]);
-    expect(a.map((s) => s.number)).toEqual([1]);
-    expect(b.map((s) => s.number)).toEqual([1]);
+    let a = repo.listSummaries();
+    let b = repo.getIssue(1);
+    expect(calls).toBe(1);
+    initial.resolve(await fakeTarballFetch([issueFile(1, "2024-01-01")])());
+    expect((await a).map((s) => s.number)).toEqual([1]);
+    expect((await b)?.number).toBe(1);
     expect(calls).toBe(1);
   });
 
-  it("retains stale data and reports when a refresh fails", async () => {
+  it(
+    "retains stale data after a failed refresh and retries after the TTL",
+    { timeout: 5_000 },
+    async (t) => {
+      let now = 0;
+      t.mock.method(Date, "now", () => now);
+      let calls = 0;
+      let refresh = deferred<Response>();
+      t.after(() => refresh.resolve(new Response(null, { status: 503 })));
+      let reported = deferred<{
+        error: unknown;
+        servingStale: boolean;
+      }>();
+      let repo = createGitHubNewsletterRepository({
+        token: "test-token",
+        ttlMs: 1_000,
+        fetchImpl: async () => {
+          calls++;
+          if (calls === 2) return refresh.promise;
+          return fakeTarballFetch([issueFile(calls, "2024-01-01")])();
+        },
+        onRefreshError(error, { servingStale }) {
+          reported.resolve({ error, servingStale });
+        },
+      });
+
+      let first = await repo.listSummaries();
+      now = 1_000;
+      expect(await repo.listSummaries()).toEqual(first);
+      refresh.resolve(new Response("nope", { status: 404 }));
+      let { error, servingStale } = await reported.promise;
+      expect(servingStale).toBe(true);
+      expect((error as Error).message).toBe(
+        "Failed to fetch newsletter tarball (404)",
+      );
+
+      now = 1_999;
+      expect(await repo.listSummaries()).toEqual(first);
+      expect(calls).toBe(2);
+
+      now = 2_000;
+      expect(await repo.listSummaries()).toEqual(first);
+      while (!(await repo.getIssue(3))) {
+        await setImmediate(undefined, { signal: t.signal });
+      }
+      expect((await repo.listSummaries()).map((s) => s.number)).toEqual([3]);
+      expect(calls).toBe(3);
+    },
+  );
+
+  it("throws on a failed cold load and allows the next request to retry", async () => {
     let calls = 0;
-    let refreshErrors: Array<{ error: unknown; servingStale: boolean }> = [];
     let repo = createGitHubNewsletterRepository({
       token: "test-token",
-      ttlMs: 50,
       fetchImpl: async () => {
         calls++;
-        if (calls === 1) {
-          return fakeTarballFetch([issueFile(2, "2024-02-02")])();
-        }
-        return new Response("nope", { status: 404 });
+        return calls === 1
+          ? new Response("nope", { status: 404 })
+          : fakeTarballFetch([issueFile(1, "2024-01-01")])();
       },
-      onRefreshError(error, { servingStale }) {
-        refreshErrors.push({ error, servingStale });
-      },
-    });
-
-    let first = await repo.listSummaries();
-    expect(first.map((s) => s.number)).toEqual([2]);
-    await new Promise((r) => setTimeout(r, 60));
-    let second = await repo.listSummaries();
-    expect(second.map((s) => s.number)).toEqual([2]); // stale retained
-    expect(refreshErrors.length).toBe(1);
-    expect(refreshErrors[0].servingStale).toBe(true);
-    expect((refreshErrors[0].error as Error).message).toBe(
-      "Failed to fetch newsletter tarball (404)",
-    );
-  });
-
-  it("throws UpstreamUnavailableError when the first fetch fails", async () => {
-    let repo = createGitHubNewsletterRepository({
-      token: "test-token",
-      fetchImpl: async () => new Response("nope", { status: 404 }),
     });
 
     await expect(repo.listSummaries()).rejects.toBeInstanceOf(
       NewsletterUpstreamUnavailableError,
     );
+    expect((await repo.listSummaries()).map((s) => s.number)).toEqual([1]);
+    expect(calls).toBe(2);
   });
 
   it("returns null for missing issues and missing/unsafe images", async () => {
@@ -459,6 +514,14 @@ describe("collectNewsletterFiles", () => {
     );
   });
 });
+
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  let promise = new Promise<T>((fulfill) => {
+    resolve = fulfill;
+  });
+  return { promise, resolve };
+}
 
 // Build an uncompressed POSIX tar archive from a list of entries. Sufficient
 // for parseTar; headers we don't care about are zeroed except name/size/type.
