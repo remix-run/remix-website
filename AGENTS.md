@@ -58,7 +58,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 Remaining differences vs the previous production site (small, shippable items):
 
-- **Newsletter cold starts**: Expired in-memory snapshots now revalidate in the background, but a fresh process still downloads the full GitHub archive before serving newsletter content.
+- **Newsletter origin dependency**: Cold metadata and uncached image reads still depend on GitHub. Metadata keeps six-hour SWR; images load by immutable Git SHA into a bounded 64 MiB cache. The eventual replacement is a newsletter-repo build that publishes a static manifest and images to a bucket/CDN.
 - **Link prefetch parity**: Intent/predictive prefetch is not yet mirrored across Remix pages.
 - **Analytics on in-app transitions**: Verify one pageview per navigation when using client-side navigation.
 - **Client navigation shape**: Keep Jam on top-level client navigation unless a future route needs an independently updating region.

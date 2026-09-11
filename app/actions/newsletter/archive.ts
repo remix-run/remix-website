@@ -1,6 +1,12 @@
 import parseFrontMatter from "front-matter";
 import { detectMimeType } from "remix/mime";
-import { parseTar } from "remix/tar-parser";
+import { LRUCache } from "lru-cache";
+
+import {
+  NEWSLETTER_MARKDOWN_PATTERN,
+  type NewsletterFile,
+} from "./file-contract.ts";
+import { createGitHubNewsletterSource } from "./github.ts";
 
 import { routes } from "../../routes.ts";
 import { env } from "../../utils/env.ts";
@@ -10,9 +16,9 @@ import { env } from "../../utils/env.ts";
  *
  * Issues live in the private `remix-run/newsletter` GitHub repository under
  * `newsletters/newsletter-<N>/<YYYY-MM-DD>-remix-newsletter-<N>.md`, with any
- * images beside the markdown. We fetch a single repository tarball at runtime,
- * parse it once, and keep a parsed snapshot in memory. Expired snapshots remain
- * available while one shared refresh runs in the background.
+ * images beside the markdown. We fetch the file tree and batch only Markdown
+ * into a snapshot. Images are fetched on demand by immutable Git SHA and cached
+ * separately. Expired snapshots remain available during a shared refresh.
  */
 
 const NEWSLETTER_REPO_OWNER = "remix-run";
@@ -24,9 +30,7 @@ const SAFE_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif", "webp"] as const;
 
 const FRESH_TTL_MS = 6 * 60 * 60 * 1000;
 const MAX_ISSUES = 200;
-const MAX_FILES = 1_000;
-const MAX_FILE_BYTES = 8 * 1024 * 1024;
-const MAX_ARCHIVE_BYTES = 64 * 1024 * 1024;
+const MAX_CACHED_IMAGE_BYTES = 64 * 1024 * 1024;
 
 export interface NewsletterSummary {
   number: number;
@@ -81,24 +85,17 @@ interface ParsedIssue {
 interface NewsletterSnapshot {
   issues: ParsedIssue[];
   summaries: NewsletterSummary[];
-  files: Map<string, Uint8Array>;
-}
-
-export interface RawTarFile {
-  name: string;
-  type: string;
-  bytes: Uint8Array;
+  files: Map<string, string>;
 }
 
 /**
- * Pure snapshot parser. Accepts the flattened set of tar entries whose names
- * are rooted at the repository's `newsletters/` directory and returns a sorted
- * (newest-first) snapshot. Exported for unit testing without live GitHub.
+ * Parse Markdown and image references rooted at the repository's newsletters/
+ * directory into a newest-first snapshot, without downloading any images.
  */
 export function parseNewsletterSnapshot(
-  files: RawTarFile[],
+  files: NewsletterFile[],
 ): NewsletterSnapshot {
-  let issueDirs = new Map<number, Map<string, RawTarFile>>();
+  let issueDirs = new Map<number, Map<string, NewsletterFile>>();
 
   for (let file of files) {
     let parts = file.name.split("/");
@@ -121,21 +118,19 @@ export function parseNewsletterSnapshot(
 
   let issues: ParsedIssue[] = [];
   for (let [number, bucket] of issueDirs) {
-    let filenamePattern = new RegExp(
-      `^(\\d{4})-(\\d{2})-(\\d{2})-remix-newsletter-${number}\\.md$`,
-    );
-    let markdownEntry: RawTarFile | undefined;
+    let markdown: string | undefined;
     let dateMatch: RegExpMatchArray | null = null;
     for (let file of bucket.values()) {
-      let filename = file.name.split("/").pop()!;
-      let match = filename.match(filenamePattern);
-      if (!match) continue;
-      markdownEntry = file;
+      let match = file.name.match(NEWSLETTER_MARKDOWN_PATTERN);
+      if (!match || Number(match[1]) !== number || !("markdown" in file)) {
+        continue;
+      }
+      markdown = file.markdown;
       dateMatch = match;
       break;
     }
-    if (!markdownEntry || !dateMatch) continue;
-    let [, yearValue, monthValue, dayValue] = dateMatch;
+    if (markdown === undefined || !dateMatch) continue;
+    let [, , yearValue, monthValue, dayValue] = dateMatch;
     let year = Number(yearValue);
     let month = Number(monthValue);
     let day = Number(dayValue);
@@ -148,7 +143,6 @@ export function parseNewsletterSnapshot(
       continue;
     }
 
-    let markdown = new TextDecoder().decode(markdownEntry.bytes);
     let frontmatter = readNewsletterFrontmatter(markdown);
     if (frontmatter.draft === true) continue;
     let title = extractTitle(markdown, number);
@@ -165,18 +159,19 @@ export function parseNewsletterSnapshot(
   issues.sort((a, b) => b.number - a.number);
   issues = issues.slice(0, MAX_ISSUES);
 
-  let fileMap = new Map<string, Uint8Array>();
+  let fileMap = new Map<string, string>();
   for (let file of files) {
     let [directory, filename] = file.name.split("/");
     if (
       !directory ||
       !filename ||
       !/^newsletter-\d+$/.test(directory) ||
-      !isSafeImageFilename(filename)
+      !isSafeImageFilename(filename) ||
+      !("sha" in file)
     ) {
       continue;
     }
-    fileMap.set(file.name, file.bytes);
+    fileMap.set(file.name, file.sha);
   }
 
   let summaries = issues.map((issue) => {
@@ -201,38 +196,6 @@ export function parseNewsletterSnapshot(
   });
 
   return { issues, summaries, files: fileMap };
-}
-
-/**
- * Collect tar entries rooted under `newsletters/` into the flat relative paths
- * the snapshot parser expects (`newsletter-<N>/<filename>`).
- */
-export async function collectNewsletterFiles(
-  archive: ReadableStream<Uint8Array> | Uint8Array,
-): Promise<RawTarFile[]> {
-  let files: RawTarFile[] = [];
-  let totalBytes = 0;
-  await parseTar(archive, (entry) => {
-    if (entry.header.type === "directory" || entry.name.endsWith("/")) return;
-    let match = entry.name.match(/^[^/]+\/newsletters\/(.+)$/);
-    if (!match) return;
-    if (files.length >= MAX_FILES) {
-      throw new Error("Newsletter archive contains too many files");
-    }
-    if (entry.size > MAX_FILE_BYTES) {
-      throw new Error("Newsletter archive contains an oversized file");
-    }
-    totalBytes += entry.size;
-    if (totalBytes > MAX_ARCHIVE_BYTES) {
-      throw new Error("Newsletter archive is too large");
-    }
-
-    let relativePath = match[1];
-    return entry.bytes().then((bytes) => {
-      files.push({ name: relativePath, type: entry.header.type, bytes });
-    });
-  });
-  return files;
 }
 
 interface NewsletterFrontmatter {
@@ -326,6 +289,7 @@ export function createGitHubNewsletterRepository(
       error: unknown,
       context: { servingStale: boolean },
     ) => void;
+    onImageError?: (error: unknown) => void;
   } = {},
 ): NewsletterRepository {
   let owner = options.owner ?? NEWSLETTER_REPO_OWNER;
@@ -335,6 +299,32 @@ export function createGitHubNewsletterRepository(
   let fetchImpl = options.fetchImpl ?? globalThis.fetch;
   let ttlMs = options.ttlMs ?? FRESH_TTL_MS;
   let onRefreshError = options.onRefreshError;
+  let onImageError = options.onImageError;
+  let source = createGitHubNewsletterSource({
+    owner,
+    repo,
+    ref,
+    token,
+    fetchImpl,
+  });
+  let imageCache = new LRUCache<string, Uint8Array>({
+    max: 1_000,
+    maxSize: MAX_CACHED_IMAGE_BYTES,
+    sizeCalculation: (bytes) => Math.max(1, bytes.byteLength),
+    // Eviction must not fail an image response whose download is in progress.
+    ignoreFetchAbort: true,
+    async fetchMethod(sha) {
+      try {
+        return await source.getImage(sha);
+      } catch (error) {
+        onImageError?.(error);
+        throw new NewsletterUpstreamUnavailableError(
+          "Newsletter image is currently unavailable",
+          { cause: error },
+        );
+      }
+    },
+  });
 
   let snapshot: NewsletterSnapshot | null = null;
   let expiresAt = 0;
@@ -342,7 +332,7 @@ export function createGitHubNewsletterRepository(
 
   async function refresh(): Promise<NewsletterSnapshot> {
     try {
-      let files = await fetchTarballFiles(fetchImpl, owner, repo, ref, token);
+      let files = await source.listFiles();
       let next = parseNewsletterSnapshot(files);
       snapshot = next;
       expiresAt = Date.now() + ttlMs;
@@ -399,10 +389,11 @@ export function createGitHubNewsletterRepository(
       if (!Number.isInteger(number) || number <= 0) return null;
       if (!isSafeImageFilename(filename)) return null;
       let snap = await getSnapshot();
-      let bytes = snap.files.get(`newsletter-${number}/${filename}`);
-      if (!bytes) return null;
+      let sha = snap.files.get(`newsletter-${number}/${filename}`);
+      if (!sha) return null;
       let mimeType = detectMimeType(filename);
       if (!mimeType || !isSafeImageContentType(mimeType)) return null;
+      let bytes = await imageCache.forceFetch(sha);
       return { filename, contentType: mimeType, bytes };
     },
   };
@@ -415,66 +406,19 @@ export function resolveNewsletterImageUrl(number: number, url: string): string {
   return routes.newsletter.image.href({ number, filename: match[1] });
 }
 
-async function fetchTarballFiles(
-  fetchImpl: typeof fetch,
-  owner: string,
-  repo: string,
-  ref: string,
-  token: string | undefined,
-): Promise<RawTarFile[]> {
-  let tarballUrl = `https://api.github.com/repos/${owner}/${repo}/tarball/${ref}`;
-  let headers: Record<string, string> = {
-    Accept: "application/vnd.github.v3.raw",
-  };
-  if (token) headers.Authorization = `Bearer ${token}`;
-
-  let signal = AbortSignal.timeout(15_000);
-  let response = await fetchImpl(tarballUrl, {
-    headers,
-    redirect: "manual",
-    signal,
-  });
-
-  if (response.status >= 300 && response.status < 400) {
-    let location = response.headers.get("Location");
-    if (!location) {
-      throw new Error("Newsletter tarball redirect had no location");
-    }
-
-    let redirectUrl = new URL(location, tarballUrl);
-    if (
-      redirectUrl.protocol !== "https:" ||
-      redirectUrl.hostname !== "codeload.github.com"
-    ) {
-      throw new Error("Newsletter tarball redirect had an unexpected origin");
-    }
-
-    // GitHub returns a short-lived signed codeload URL. Deliberately omit all
-    // request headers so the repository token cannot cross the API boundary.
-    response = await fetchImpl(redirectUrl, {
-      redirect: "error",
-      signal,
-    });
-  }
-
-  if (!response.ok || !response.body) {
-    throw new Error(`Failed to fetch newsletter tarball (${response.status})`);
-  }
-
-  let stream = response.body.pipeThrough(new DecompressionStream("gzip"));
-  return collectNewsletterFiles(stream);
-}
-
 /**
  * Shared live repository. Reusing one process-wide instance keeps the in-memory
  * cache and concurrent-refresh dedupe effective across requests.
  */
 export const liveNewsletterRepository = createGitHubNewsletterRepository({
   onRefreshError(error, { servingStale }) {
-    console.error("[newsletter] GitHub archive refresh failed", {
+    console.error("[newsletter] GitHub refresh failed", {
       servingStale,
       error,
     });
+  },
+  onImageError(error) {
+    console.error("[newsletter] GitHub image fetch failed", { error });
   },
   token: env.NEWSLETTER_GITHUB_TOKEN,
 });
