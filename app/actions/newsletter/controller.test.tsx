@@ -111,8 +111,12 @@ describe("Newsletter index route", () => {
     );
 
     expect(response.status).toBe(200);
+    expect(response.headers.get("Surrogate-Control")).toContain(
+      "stale-while-revalidate",
+    );
     let html = await response.text();
 
+    expect(html).not.toContain('role="status"');
     expect(html).toContain("<title>Remix Newsletter</title>");
     expect(html).toContain('style="color-scheme: light dark;"');
     expect(html).not.toContain('data-theme="dark"');
@@ -140,7 +144,7 @@ describe("Newsletter index route", () => {
     );
   });
 
-  it("eagerly loads the first four archive images", async () => {
+  it("loads four images eagerly and decodes all asynchronously", async () => {
     let repo = fakeRepository({
       summaries: Array.from({ length: 5 }, (_, index) => {
         let number = index + 1;
@@ -173,6 +177,9 @@ describe("Newsletter index route", () => {
       );
 
     expect(images).toHaveLength(5);
+    for (let image of images) {
+      expect(image).toContain('decoding="async"');
+    }
     expect(
       images.slice(0, 4).every((image) => image.includes('loading="eager"')),
     ).toBe(true);

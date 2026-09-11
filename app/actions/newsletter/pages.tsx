@@ -169,8 +169,15 @@ function NewsletterArchive(
       mix={css({ marginBlockStart: "64px" })}
     >
       {handle.props.unavailable ? (
-        <p mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
-          The archive is temporarily unavailable. Please check back soon.
+        <p role="alert" mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
+          The archive is temporarily unavailable. Please check back soon.{" "}
+          <a
+            href={routes.newsletter.index.href()}
+            rmx-document
+            mix={newsletterArchiveLinkStyle}
+          >
+            Try again
+          </a>
         </p>
       ) : handle.props.summaries.length === 0 ? (
         <p mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
@@ -244,7 +251,7 @@ function NewsletterArchive(
                       [breakpointMedia.md]: { borderRadius: "6px" },
                     })}
                     loading={index < 4 ? "eager" : "lazy"}
-                    decoding={index === 0 ? "sync" : "async"}
+                    decoding="async"
                     fetchpriority={index === 0 ? "high" : undefined}
                   />
                 ) : null}
@@ -278,6 +285,16 @@ let newsletterContainerStyle = {
   [breakpointMedia.md]: { paddingInline: "32px" },
   [breakpointMedia.lg]: { paddingInline: "40px" },
 } as const;
+
+let newsletterArchiveLinkStyle = css({
+  color: theme.colors.action.primary,
+  textDecoration: "underline",
+  textUnderlineOffset: "3px",
+  "&:focus-visible": {
+    outline: `2px solid ${theme.colors.action.primary}`,
+    outlineOffset: "4px",
+  },
+});
 
 let newsletterSecondaryTextStyle = css({
   color: theme.colors.text.marketingSecondary,

@@ -15,6 +15,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - **`app/router.ts`** — `createRouter`, root middleware stack, `router.map(...)` wiring, and the `GET /assets/*` route that delegates to `app/utils/assets.ts`.
 - **Production / `pnpm run preview`** — runs the same TypeScript server entry as development (`server.ts`) through `remix/node-tsx`; there is no separate Vite SSR bundle.
 - **HMR / `pnpm run hmr`** - runs the server in development mode with HMR enabled, for use during heavy UI iteration.
+- HTML compression must flush streamed chunks for both gzip/deflate and Brotli; otherwise pending server content can delay the initial document.
 
 ## Keep These Non-Obvious Invariants
 
@@ -57,6 +58,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 Remaining differences vs the previous production site (small, shippable items):
 
+- **Newsletter origin dependency**: Cold metadata and uncached image reads still depend on GitHub. Metadata keeps six-hour SWR; images load by immutable Git SHA into a bounded 64 MiB cache. The eventual replacement is a newsletter-repo build that publishes a static manifest and images to a bucket/CDN.
 - **Link prefetch parity**: Intent/predictive prefetch is not yet mirrored across Remix pages.
 - **Analytics on in-app transitions**: Verify one pageview per navigation when using client-side navigation.
 - **Client navigation shape**: Keep Jam on top-level client navigation unless a future route needs an independently updating region.
