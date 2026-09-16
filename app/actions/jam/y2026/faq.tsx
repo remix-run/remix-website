@@ -53,7 +53,7 @@ let faqs: Faq[] = [
             text: "Ace Hotel Toronto",
             href: "https://reservations.acehotel.com/?hotel=36680&arrive=2026-10-01&nights=2&group=REMIXJAM2026",
           },
-          " ($339.00 or $359.00 CAD/night)",
+          " ($368.00 CAD/night)",
         ],
       },
       {
