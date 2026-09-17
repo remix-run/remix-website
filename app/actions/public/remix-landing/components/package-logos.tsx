@@ -48,29 +48,26 @@ const logoStyles = css({
 
 const STAGGER = 0.18;
 const FADE_IN = 0.16;
-const FADE_OUT_START = 1.9;
-const FADE_OUT_END = 2.12;
+const FADE_OUT_VIEWPORT_START = 0.45;
+const FADE_OUT_VIEWPORT_END = 0.1;
 
-/** morph range where package logos are relevant (Full Stack section). */
-const MORPH_SECTION_MIN = 0.4;
-const MORPH_SECTION_MAX = 2.25;
-
-function logoOpacity(revealProgress: number, morph: number, index: number) {
+function logoOpacity(
+  revealProgress: number,
+  panelBottomInViewport: number,
+  viewportHeight: number,
+  index: number,
+) {
   const inStart = index * STAGGER;
   const fadeIn = clamp01((revealProgress - inStart) / FADE_IN);
   const fadeOut = clamp01(
-    (FADE_OUT_END - morph) / (FADE_OUT_END - FADE_OUT_START),
+    (panelBottomInViewport - viewportHeight * FADE_OUT_VIEWPORT_END) /
+      (viewportHeight *
+        (FADE_OUT_VIEWPORT_START - FADE_OUT_VIEWPORT_END)),
   );
   return fadeIn * fadeOut;
 }
 
-function morphInLogoSection(morph: number): boolean {
-  return morph >= MORPH_SECTION_MIN && morph <= MORPH_SECTION_MAX;
-}
-
-export function PackageLogos(
-  handle: Handle<{ morphValueRef: { current: number } }>,
-) {
+export function PackageLogos(handle: Handle) {
   let scrollFrameId = 0;
 
   let panelTop = 0;
@@ -153,13 +150,16 @@ export function PackageLogos(
   return () => {
     if (!panelElement || !panelElement.isConnected) locatePanel();
 
-    const morphValue = handle.props.morphValueRef.current;
-    const inSection = morphInLogoSection(morphValue);
     const reduceMotion = reducedMotion.current;
     const revealDistance = Math.min(900, Math.max(650, window.innerHeight));
     const revealProgress = clamp01(
       (window.scrollY + window.innerHeight * 0.68 - panelTop) / revealDistance,
     );
+    const panelBottomInViewport =
+      panelTop + panelHeight - window.scrollY;
+    const inSection =
+      panelTop < window.scrollY + window.innerHeight &&
+      panelBottomInViewport > 0;
     const stackedHeight = panelHeight * 0.94;
     const logoScale =
       window.innerWidth < Number.parseInt(breakpoints.md, 10) ? 0.8 : 1;
@@ -209,7 +209,16 @@ export function PackageLogos(
                 aspectRatio: logo.ratio,
                 maskImage: `url(${logo.src})`,
                 WebkitMaskImage: `url(${logo.src})`,
-                opacity: `${reduceMotion && inSection ? 1 : logoOpacity(revealProgress, morphValue, i)}`,
+                opacity: `${
+                  reduceMotion && inSection
+                    ? 1
+                    : logoOpacity(
+                        revealProgress,
+                        panelBottomInViewport,
+                        window.innerHeight,
+                        i,
+                      )
+                }`,
               }}
             />
           );

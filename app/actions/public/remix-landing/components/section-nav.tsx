@@ -131,8 +131,8 @@ const SECTIONS = [
   { label: "Test Drive", anchor: "test-drive" },
 ];
 
-// The first item points to the Hero section, while the remaining 5 map to the
-// FeatureSection panels.
+// The first item points to the Hero section, while the remaining items map to
+// the landing-page sections in DOM order.
 
 type NavigateEventWithManualScroll = NavigateEvent & {
   intercept(options: {

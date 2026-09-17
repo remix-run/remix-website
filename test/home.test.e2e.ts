@@ -141,4 +141,64 @@ describe("Home", () => {
 
     await expect.poll(() => litPixelRatio(page)).toBeGreaterThan(0.1);
   });
+
+  it("navigates stack layers and examples with the keyboard", async (t) => {
+    const page = await t.serve(
+      await createTestServer(swallowAbortErrors(createAppRouter())),
+    );
+    const response = await page.goto(routes.home.href());
+    expect(response?.ok()).toBe(true);
+
+    await expect(
+      page.locator('nav[aria-label="Primary"] a[href="/blog"]').first(),
+    ).toBeVisible();
+
+    const stackLayers = page.getByRole("tablist", {
+      name: "Remix stack layers",
+    });
+    const server = stackLayers.getByRole("tab", {
+      name: "Server",
+      exact: true,
+    });
+    const data = stackLayers.getByRole("tab", { name: "Data", exact: true });
+    const auth = stackLayers.getByRole("tab", { name: "Auth", exact: true });
+    const assets = stackLayers.getByRole("tab", {
+      name: "Assets",
+      exact: true,
+    });
+
+    await server.focus();
+    await server.press("ArrowRight");
+    await expect(data).toBeFocused();
+    await expect(data).toHaveAttribute("aria-selected", "true");
+    await data.press("ArrowRight");
+    await expect(auth).toBeFocused();
+    await auth.press("ArrowRight");
+    await expect(assets).toBeFocused();
+    await expect(assets).toHaveAttribute("aria-selected", "true");
+
+    const assetExamples = page.getByRole("tablist", {
+      name: "Assets examples",
+    });
+    const assetServer = assetExamples.getByRole("tab", {
+      name: "Server",
+      exact: true,
+    });
+    const typescript = assetExamples.getByRole("tab", {
+      name: "TypeScript",
+      exact: true,
+    });
+    const caching = assetExamples.getByRole("tab", {
+      name: "Caching",
+      exact: true,
+    });
+
+    await expect(assetServer).toHaveAttribute("aria-selected", "true");
+    await assetServer.focus();
+    await assetServer.press("ArrowRight");
+    await expect(typescript).toBeFocused();
+    await typescript.press("ArrowRight");
+    await expect(caching).toBeFocused();
+    await expect(caching).toHaveAttribute("aria-selected", "true");
+  });
 });
