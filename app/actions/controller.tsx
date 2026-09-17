@@ -9,6 +9,7 @@ import { LandingNewsletterSubscribeForm } from "./public/remix-landing/component
 import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
+import { getStackExplorerCodeHighlights } from "./stack-explorer-highlighting.ts";
 
 export default createController(routes, {
   actions: {
@@ -23,12 +24,19 @@ export default createController(routes, {
       return render(<BrandPage requestUrl={request.url} />);
     },
 
-    home({ render, request }) {
+    async home({ render, request }) {
       let requestUrl = new URL(request.url);
       let pageUrl = `${requestUrl.origin}${routes.home.href()}`;
       let previewImage = `${requestUrl.origin}${assetPaths.marketing.defaultOgImage}`;
+      let explorerCodeHighlights = await getStackExplorerCodeHighlights();
 
-      return render(<HomePage pageUrl={pageUrl} previewImage={previewImage} />);
+      return render(
+        <HomePage
+          explorerCodeHighlights={explorerCodeHighlights}
+          pageUrl={pageUrl}
+          previewImage={previewImage}
+        />,
+      );
     },
 
     homeNewsletterSignup({ render, request }) {

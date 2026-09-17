@@ -4,8 +4,10 @@ import { RUNNER_AVIF_SRC } from "./public/remix-landing/runner-media.ts";
 import { colors } from "./public/remix-landing/styles/tokens.ts";
 import { Document } from "../ui/document.tsx";
 import { LandingContent } from "./home-landing-content.tsx";
+import type { StackExplorerCodeHighlights } from "./public/remix-landing/components/stack-explorer-content.tsx";
 
 type HomePageProps = {
+  explorerCodeHighlights?: StackExplorerCodeHighlights;
   pageUrl: string;
   previewImage: string;
 };
@@ -74,7 +76,9 @@ export function HomePage(handle: Handle<HomePageProps>) {
           <RemixLandingEnhancements />
         </div>
         <main mix={[landingContentStyles, cardGlassStyles]}>
-          <LandingContent />
+          <LandingContent
+            explorerCodeHighlights={handle.props.explorerCodeHighlights}
+          />
         </main>
       </div>
     </Document>
