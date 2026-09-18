@@ -1,7 +1,6 @@
 import { clientEntry, css, type Handle } from "remix/ui";
 import { PresetGlow } from "./components/preset-glow.tsx";
 import { LandingNav } from "./components/landing-nav.tsx";
-import { LabelOverlay } from "./components/label-overlay.tsx";
 import {
   LoadingScreen,
   LOADING_SCREEN_FAILSAFE_MS,
@@ -12,7 +11,6 @@ import { SectionNav } from "./components/section-nav.tsx";
 import { PackageLogos } from "./components/package-logos.tsx";
 import { isEditableKeyTarget } from "../../../ui/public/keyboard.ts";
 import { breakpointMedia } from "../../../ui/public/theme.ts";
-import type { ProjectedLabel } from "./engine/label-projection.ts";
 import { loadModelPoints, type ModelData } from "./engine/model-loader.ts";
 import { presets } from "./engine/presets.ts";
 import { colors } from "./styles/tokens.ts";
@@ -160,11 +158,10 @@ export let RemixLandingEnhancements = clientEntry(
         ))
         ? "skipped"
         : "visible";
-    const projectedLabelsRef = { current: [] as ProjectedLabel[] };
-    const labelOpacityRef = { current: 0 };
     const morphValueRef = { current: 0 };
     const scrollYRef = { current: 0 };
     const activeIndexRef = { current: 0 };
+    const rotationPausedRef = { current: false };
     const eagerModelIndexes = presets
       .map((preset, index) => (preset.preloadEager ? index : -1))
       .filter((index) => index >= 0);
@@ -294,6 +291,19 @@ export let RemixLandingEnhancements = clientEntry(
       const activeIndex = Math.round(
         clamp(rawMorphValue, 0, presets.length - 1),
       );
+      const viewportCenterX = window.innerWidth / 2;
+      const viewportCenterY = window.innerHeight / 2;
+      rotationPausedRef.current = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-home-card]"),
+      ).some((card) => {
+        const rect = card.getBoundingClientRect();
+        return (
+          rect.left <= viewportCenterX &&
+          rect.right >= viewportCenterX &&
+          rect.top <= viewportCenterY &&
+          rect.bottom >= viewportCenterY
+        );
+      });
       scroll.morphValue = reducedMotion.current ? activeIndex : rawMorphValue;
       morphValueRef.current = scroll.morphValue;
       scroll.currentY = window.scrollY;
@@ -525,17 +535,12 @@ export let RemixLandingEnhancements = clientEntry(
                 <ParticleCanvas
                   brandGradientMode={konami.brandMode}
                   morphValueRef={morphValueRef}
+                  rotationPausedRef={rotationPausedRef}
                   modelData={modelData}
-                  labelsRef={projectedLabelsRef}
-                  labelOpacityRef={labelOpacityRef}
                   onFirstFrame={dismissLoadingScreen}
                   onError={markParticleCanvasFailed}
                 />
               ) : null}
-              <LabelOverlay
-                labelsRef={projectedLabelsRef}
-                opacityRef={labelOpacityRef}
-              />
               <PresetGlow
                 morphValueRef={morphValueRef}
                 brandGradientMode={konami.brandMode}

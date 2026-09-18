@@ -20,13 +20,6 @@ export interface PresetControlDef {
   initial: number;
 }
 
-export interface PresetLabelDef {
-  id: string;
-  text: string;
-  anchor: [number, number, number];
-  offset: [number, number];
-}
-
 /**
  * Names the GLSL shader function that draws a preset. Decouples preset order
  * in the `presets` array from the shader dispatch table, so reordering panels
@@ -55,8 +48,6 @@ export interface Preset {
   glowColor?: [number, number, number];
   controls: PresetControlDef[];
   cameraControls?: PresetControlDef[];
-  labels?: PresetLabelDef[];
-  labelColor?: string;
   separation: number;
   info: InfoState;
   systemOverrides?: Partial<SystemSettings>;
