@@ -120,6 +120,58 @@ describe("Home", () => {
     ).toBe("false");
   });
 
+  it("keeps create-command menu keyboard interactions local", async (t) => {
+    const page = await t.serve(
+      await createTestServer(swallowAbortErrors(createAppRouter())),
+    );
+    await page.setViewportSize({ width: 1440, height: 1000 });
+
+    const response = await page.goto(routes.home.href());
+    expect(response?.ok()).toBe(true);
+    await expect(page.locator(".loading-screen-overlay")).toBeHidden({
+      timeout: 10_000,
+    });
+
+    const scrollY = await page.evaluate(() => window.scrollY);
+    const trigger = page.getByRole("button", {
+      name: "Choose a package runner",
+    });
+    const listbox = page.getByRole("listbox");
+    const copyButton = page.getByRole("button", {
+      name: "Copy create command",
+    });
+
+    await page.keyboard.press("Tab");
+    await expect(trigger).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(copyButton).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(trigger).toBeFocused();
+
+    await trigger.click();
+    await expect(listbox).toBeVisible();
+    await expect(listbox).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scrollY);
+
+    await page.keyboard.press("Escape");
+
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(listbox).toBeHidden();
+    await expect(trigger).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scrollY);
+
+    await trigger.click();
+    await expect(listbox).toBeVisible();
+    await expect(listbox).toBeFocused();
+    await page.keyboard.press("ArrowDown");
+
+    await expect(page.getByRole("option", { name: "pnpm" })).toHaveAttribute(
+      "data-highlighted",
+      "true",
+    );
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scrollY);
+  });
+
   it("keeps the particle scene visible after resizing with reduced motion", async (t) => {
     const page = await t.serve(
       await createTestServer(swallowAbortErrors(createAppRouter())),
