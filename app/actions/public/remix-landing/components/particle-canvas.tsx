@@ -95,7 +95,7 @@ const PRESET_RUNTIME_DATA = {
 type ParticleCanvasProps = {
   brandGradientMode: boolean;
   morphValueRef: { current: number };
-  rotationPausedRef: { current: boolean };
+  interactionPausedRef: { current: boolean };
   modelData: (ModelData | undefined)[];
   onFirstFrame: () => Promise<void>;
   onError: (error: unknown) => void;
@@ -187,7 +187,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   function setMousePosition(clientX: number, clientY: number) {
     // The foreground card owns attention while the model is paused; pointer
     // movement must not wake rendering, parallax, or particle displacement.
-    if (handle.props.rotationPausedRef.current) return;
+    if (handle.props.interactionPausedRef.current) return;
     lastActivityAt = performance.now();
     const vp = containerEl ?? canvasEl;
     if (vp) {
@@ -433,7 +433,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         frozenTime = null;
       }
       const visualTime = frozenTime ?? time;
-      const interactionPaused = handle.props.rotationPausedRef.current;
+      const interactionPaused = handle.props.interactionPausedRef.current;
       const rotationTime = rotationClock.read(visualTime, interactionPaused);
 
       if (interactionPaused !== interactionWasPaused) {
@@ -632,9 +632,6 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
           rotationTime,
         );
       }
-
-      engine.controls.enabled =
-        !reduceMotion && !interactionPaused && driveProximity < 0.5;
 
       setDesiredCameraInto(
         presets,

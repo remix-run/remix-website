@@ -8,16 +8,12 @@ const websiteMockups: Preset = {
   glowColor: [0.3, 0.35, 0.55],
   separation: 0,
   controls: [
-    { id: "scale", label: "Scale", min: 5, max: 80, initial: 55 },
-    { id: "rotX", label: "Rotate X", min: -180, max: 180, initial: 18 },
-    { id: "rotY", label: "Rotate Y", min: -180, max: 180, initial: 0 },
-    { id: "rotZ", label: "Rotate Z", min: -180, max: 180, initial: -14.4 },
-    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0.08 },
+    { id: "scale", initial: 55 },
+    { id: "rotX", initial: 18 },
+    { id: "rotY", initial: 0 },
+    { id: "rotZ", initial: -14.4 },
+    { id: "spin", initial: 0.08 },
   ],
-  info: {
-    title: "Website Mockups",
-    description: "5 website mockups spinning as a particle cloud",
-  },
 };
 
 const racecar: Preset = {
@@ -29,15 +25,11 @@ const racecar: Preset = {
   glowColor: [0.3, 0.35, 0.55],
   separation: 0,
   controls: [
-    { id: "scale", label: "Scale", min: 5, max: 150, initial: 48 },
-    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0.08 },
-    { id: "shimmer", label: "Shimmer", min: 0, max: 2, initial: 0.6 },
-    { id: "rotZ", label: "Rotate Z", min: -180, max: 180, initial: 15 },
+    { id: "scale", initial: 48 },
+    { id: "spin", initial: 0.08 },
+    { id: "shimmer", initial: 0.6 },
+    { id: "rotZ", initial: 15 },
   ],
-  info: {
-    title: "Racecar",
-    description: "Race car rendered as a particle cloud",
-  },
 };
 
 const racetrack: Preset = {
@@ -48,32 +40,14 @@ const racetrack: Preset = {
   glowColor: [0.15, 0.25, 0.08],
   separation: 0,
   controls: [
-    { id: "speed", label: "Speed", min: 0.1, max: 10, initial: 0.1 },
-    { id: "trackW", label: "Track Width", min: 5, max: 60, initial: 40 },
-    { id: "curveAmp", label: "Curve Intensity", min: 0, max: 25, initial: 10 },
-    { id: "hillH", label: "Hill Height", min: 5, max: 40, initial: 7.8 },
-    { id: "_fogMode", label: "Fog: Color / Scene", min: 0, max: 1, initial: 1 },
-    {
-      id: "starDensity",
-      label: "Star Density",
-      min: 0,
-      max: 0.3,
-      initial: 0.005,
-    },
-    { id: "curveSway", label: "Curve Sway Speed", min: 0, max: 2, initial: 0 },
+    { id: "speed", initial: 0.1 },
+    { id: "trackW", initial: 40 },
+    { id: "curveAmp", initial: 10 },
+    { id: "hillH", initial: 7.8 },
+    { id: "_fogMode", initial: 1 },
+    { id: "starDensity", initial: 0.005 },
+    { id: "curveSway", initial: 0 },
   ],
-  cameraControls: [
-    { id: "_camPosX", label: "Camera X", min: -80, max: 80, initial: -0.8 },
-    { id: "_camPosY", label: "Camera Y", min: -60, max: 60, initial: -18.6 },
-    { id: "_camPosZ", label: "Camera Z", min: 10, max: 150, initial: 81.4 },
-    { id: "_camTgtX", label: "Look-at X", min: -80, max: 80, initial: 0 },
-    { id: "_camTgtY", label: "Look-at Y", min: -60, max: 60, initial: -4.2 },
-    { id: "_camTgtZ", label: "Look-at Z", min: -120, max: 60, initial: -30 },
-  ],
-  info: {
-    title: "Racetrack",
-    description: "A mountain circuit streaming past at speed",
-  },
 };
 
 const runner: Preset = {
@@ -86,15 +60,11 @@ const runner: Preset = {
   glowColor: [0.3, 0.35, 0.55],
   separation: 0,
   controls: [
-    { id: "scale", label: "Scale", min: 5, max: 150, initial: 58 },
-    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0.23 },
-    { id: "shimmer", label: "Shimmer", min: 0, max: 2, initial: 0.5 },
-    { id: "rotZ", label: "Rotate Z", min: -180, max: 180, initial: 15 },
+    { id: "scale", initial: 58 },
+    { id: "spin", initial: 0.23 },
+    { id: "shimmer", initial: 0.5 },
+    { id: "rotZ", initial: 15 },
   ],
-  info: {
-    title: "Model Kit Runner",
-    description: "Runner figure rendered as a particle cloud",
-  },
 };
 
 const underTheHood: Preset = {
@@ -108,15 +78,11 @@ const underTheHood: Preset = {
   glowColor: [0.3, 0.35, 0.55],
   separation: 0,
   controls: [
-    { id: "scale", label: "Scale", min: 5, max: 200, initial: 90 },
-    { id: "spin", label: "Spin Speed", min: 0, max: 1, initial: 0.08 },
-    { id: "shimmer", label: "Shimmer", min: 0, max: 2, initial: 0.6 },
-    { id: "rotZ", label: "Rotate Z", min: -180, max: 180, initial: 15 },
+    { id: "scale", initial: 90 },
+    { id: "spin", initial: 0.08 },
+    { id: "shimmer", initial: 0.6 },
+    { id: "rotZ", initial: 15 },
   ],
-  info: {
-    title: "Under The Hood",
-    description: "Race car viewed from the rear",
-  },
 };
 
 const drive: Preset = {
@@ -129,57 +95,17 @@ const drive: Preset = {
   glowColor: [0.15, 0.25, 0.08],
   separation: 0,
   controls: [
-    { id: "speed", label: "Speed", min: 0.1, max: 10, initial: 2.3 },
-    { id: "trackW", label: "Track Width", min: 5, max: 60, initial: 40 },
-    { id: "curveAmp", label: "Curve Intensity", min: 0, max: 25, initial: 0 },
-    {
-      id: "wheelThick",
-      label: "Wheel Thickness",
-      min: 0.02,
-      max: 0.5,
-      initial: 0.18,
-    },
-    {
-      id: "wheelbase",
-      label: "Wheelbase (F/R)",
-      min: 0.2,
-      max: 2.0,
-      initial: 1.14,
-    },
-    {
-      id: "wheelTrack",
-      label: "Wheel Track (L/R)",
-      min: 0.2,
-      max: 2.0,
-      initial: 0.68,
-    },
-    {
-      id: "wheelY",
-      label: "Wheel Y Position",
-      min: -1.0,
-      max: 0.5,
-      initial: -0.13,
-    },
-    {
-      id: "wheelZ",
-      label: "Wheel Z Offset",
-      min: -0.5,
-      max: 0.5,
-      initial: -0.11,
-    },
-    {
-      id: "_carPosY",
-      label: "Car Y Position",
-      min: -15,
-      max: 15,
-      initial: -3.15,
-    },
+    { id: "speed", initial: 2.3 },
+    { id: "trackW", initial: 40 },
+    { id: "curveAmp", initial: 0 },
+    { id: "wheelThick", initial: 0.18 },
+    { id: "wheelbase", initial: 1.14 },
+    { id: "wheelTrack", initial: 0.68 },
+    { id: "wheelY", initial: -0.13 },
+    { id: "wheelZ", initial: -0.11 },
+    { id: "_carPosY", initial: -3.15 },
   ],
   systemOverrides: { trailIntensity: 0.5, cursorRepulsion: 0 },
-  info: {
-    title: "Drive",
-    description: "Race car driving on a straight mountain circuit",
-  },
 };
 
 export const presets: Preset[] = [

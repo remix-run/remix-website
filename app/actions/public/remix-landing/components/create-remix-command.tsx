@@ -1,7 +1,8 @@
-import { clientEntry, css, on, type Handle, type RemixNode } from "remix/ui";
+import { clientEntry, css, on, type Handle } from "remix/ui";
 import * as popover from "remix/ui/popover";
 import * as select from "remix/ui/select/primitives";
 
+import { visuallyHiddenStyle } from "../../../../ui/public/css-mixins.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { colors } from "../styles/tokens.ts";
@@ -39,23 +40,221 @@ const PACKAGE_RUNNERS = [
   },
 ] as const;
 
-export type PackageRunner = (typeof PACKAGE_RUNNERS)[number]["value"];
-
+type PackageRunner = (typeof PACKAGE_RUNNERS)[number];
 type CopyStatus = "idle" | "copied" | "error";
 
-export function getCreateCommand(runner: PackageRunner): string {
-  return PACKAGE_RUNNERS.find((option) => option.value === runner)!.command;
-}
+export let CreateRemixCommand = clientEntry(
+  import.meta.url,
+  function CreateRemixCommand(handle: Handle) {
+    let runner: PackageRunner = PACKAGE_RUNNERS[0];
+    let copyStatus: CopyStatus = "idle";
+    let copyRequestId = 0;
+    let resetTimer: ReturnType<typeof setTimeout> | null = null;
 
-function isPackageRunner(value: string | null): value is PackageRunner {
-  return PACKAGE_RUNNERS.some((option) => option.value === value);
-}
+    handle.signal.addEventListener("abort", () => {
+      copyRequestId++;
+      if (resetTimer) clearTimeout(resetTimer);
+    });
 
-function getRunnerByLabel(label: string) {
-  return (
-    PACKAGE_RUNNERS.find((option) => option.label === label) ??
-    PACKAGE_RUNNERS[0]
+    function setRunner(nextRunner: PackageRunner) {
+      copyRequestId++;
+      runner = nextRunner;
+      copyStatus = "idle";
+      if (resetTimer) {
+        clearTimeout(resetTimer);
+        resetTimer = null;
+      }
+      handle.update();
+    }
+
+    async function copyCommand() {
+      const requestId = ++copyRequestId;
+      if (resetTimer) {
+        clearTimeout(resetTimer);
+        resetTimer = null;
+      }
+
+      try {
+        await copyText(runner.command);
+        if (handle.signal.aborted || requestId !== copyRequestId) return;
+        copyStatus = "copied";
+      } catch {
+        if (handle.signal.aborted || requestId !== copyRequestId) return;
+        copyStatus = "error";
+      }
+      handle.update();
+
+      resetTimer = setTimeout(() => {
+        resetTimer = null;
+        copyStatus = "idle";
+        handle.update();
+      }, 1800);
+    }
+
+    return () => {
+      return (
+        <div mix={[shellStyles]}>
+          <div mix={[commandBarStyles]}>
+            <PackageRunnerSelect runner={runner} onChange={setRunner} />
+            <code mix={[codeStyles]}>{runner.command}</code>
+            <button
+              type="button"
+              aria-label="Copy create command"
+              data-copy-status={copyStatus}
+              mix={[copyButtonStyles, on("click", copyCommand)]}
+            >
+              <Icon
+                name={copyStatus === "copied" ? "check-mark" : "copy"}
+                mix={[copyIconStyles]}
+              />
+            </button>
+          </div>
+          <span role="status" aria-live="polite" mix={visuallyHiddenStyle}>
+            {copyStatus === "copied"
+              ? "Create command copied"
+              : copyStatus === "error"
+                ? "Unable to copy the create command"
+                : null}
+          </span>
+        </div>
+      );
+    };
+  },
+);
+
+function PackageRunnerIcon(handle: Handle<{ runner: PackageRunner }>) {
+  return () => (
+    <img
+      src={handle.props.runner.icon}
+      alt=""
+      width="24"
+      height="24"
+      mix={[runnerIconStyles]}
+    />
   );
+}
+
+function PackageRunnerSelectValue(handle: Handle<{ runner: PackageRunner }>) {
+  return () => (
+    <>
+      <PackageRunnerIcon runner={handle.props.runner} />
+      <span mix={[triggerLabelStyles]}>{handle.props.runner.label}</span>
+    </>
+  );
+}
+
+function PackageRunnerSelect(
+  handle: Handle<{
+    runner: PackageRunner;
+    onChange: (runner: PackageRunner) => void;
+  }>,
+) {
+  let scrollPosition = { x: 0, y: 0 };
+  let restoreFrame = 0;
+
+  handle.signal.addEventListener("abort", () => {
+    cancelAnimationFrame(restoreFrame);
+  });
+
+  function rememberScrollPosition() {
+    scrollPosition.x = window.scrollX;
+    scrollPosition.y = window.scrollY;
+  }
+
+  function restoreScrollPosition() {
+    const restore = () => {
+      if (
+        window.scrollX !== scrollPosition.x ||
+        window.scrollY !== scrollPosition.y
+      ) {
+        window.scrollTo(scrollPosition.x, scrollPosition.y);
+      }
+    };
+
+    // The native focus scroll runs after focus handlers in some Chromium
+    // versions. Restore before the next paint as well as synchronously.
+    restore();
+    cancelAnimationFrame(restoreFrame);
+    restoreFrame = requestAnimationFrame(() => {
+      restoreFrame = 0;
+      if (!handle.signal.aborted) restore();
+    });
+  }
+
+  return () => {
+    return (
+      <select.Context
+        defaultLabel={handle.props.runner.label}
+        defaultValue={handle.props.runner.value}
+      >
+        <button
+          type="button"
+          aria-label="Choose a package runner"
+          mix={[
+            selectTriggerStyles,
+            on("click", rememberScrollPosition),
+            on("keydown", (event) => {
+              if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                rememberScrollPosition();
+              }
+            }),
+            select.trigger(),
+            select.onSelectChange((event) => {
+              const runner = PACKAGE_RUNNERS.find(
+                (option) => option.value === event.value,
+              );
+              if (runner) handle.props.onChange(runner);
+            }),
+          ]}
+        >
+          <PackageRunnerSelectValue runner={handle.props.runner} />
+          <Icon name="chevron-d" mix={[chevronStyles]} />
+        </button>
+        <popover.Context>
+          <div
+            mix={[
+              popoverSurfaceStyles,
+              select.popover(),
+              on("toggle", (event) => {
+                if (event.newState === "closed") restoreScrollPosition();
+              }),
+            ]}
+          >
+            <div
+              mix={[
+                optionListStyles,
+                select.list(),
+                on("focus", restoreScrollPosition),
+                on("keydown", restoreScrollPosition),
+              ]}
+            >
+              {PACKAGE_RUNNERS.map((runner) => (
+                <div
+                  key={runner.value}
+                  mix={[
+                    optionStyles,
+                    select.option({
+                      label: runner.label,
+                      textValue: runner.label,
+                      value: runner.value,
+                    }),
+                  ]}
+                >
+                  <PackageRunnerIcon runner={runner} />
+                  <span>{runner.label}</span>
+                  <Icon
+                    name="check-mark"
+                    data-runner-check=""
+                    mix={[optionCheckStyles]}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </popover.Context>
+      </select.Context>
+    );
+  };
 }
 
 async function copyText(text: string) {
@@ -74,18 +273,6 @@ async function copyText(text: string) {
   textarea.remove();
   if (!copied) throw new Error("Copy command was unavailable");
 }
-
-const visuallyHiddenStyles = css({
-  position: "absolute",
-  width: "1px",
-  height: "1px",
-  padding: "0",
-  margin: "-1px",
-  overflow: "hidden",
-  clip: "rect(0, 0, 0, 0)",
-  whiteSpace: "nowrap",
-  border: "0",
-});
 
 const shellStyles = css({
   width: "min(720px, calc(100vw - 32px))",
@@ -339,221 +526,3 @@ const copyIconStyles = css({
   width: "19px",
   height: "19px",
 });
-
-function PackageRunnerIcon(
-  handle: Handle<{ runner: (typeof PACKAGE_RUNNERS)[number] }>,
-) {
-  return () => (
-    <img
-      src={handle.props.runner.icon}
-      alt=""
-      width="24"
-      height="24"
-      mix={[runnerIconStyles]}
-    />
-  );
-}
-
-function PackageRunnerSelectValue(handle: Handle): () => RemixNode {
-  const context = handle.context.get(select.Context);
-
-  return () => {
-    const runner = getRunnerByLabel(context.displayedLabel);
-    return (
-      <>
-        <PackageRunnerIcon runner={runner} />
-        <span mix={[triggerLabelStyles]}>{context.displayedLabel}</span>
-      </>
-    );
-  };
-}
-
-function PackageRunnerSelect(
-  handle: Handle<{
-    runner: PackageRunner;
-    onChange: (runner: PackageRunner) => void;
-  }>,
-) {
-  let scrollPosition = { x: 0, y: 0 };
-  let restoreFrame = 0;
-
-  handle.signal.addEventListener("abort", () => {
-    cancelAnimationFrame(restoreFrame);
-  });
-
-  function rememberScrollPosition() {
-    scrollPosition.x = window.scrollX;
-    scrollPosition.y = window.scrollY;
-  }
-
-  function restoreScrollPosition() {
-    const restore = () => {
-      if (
-        window.scrollX !== scrollPosition.x ||
-        window.scrollY !== scrollPosition.y
-      ) {
-        window.scrollTo(scrollPosition.x, scrollPosition.y);
-      }
-    };
-
-    // The native focus scroll runs after focus handlers in some Chromium
-    // versions. Restore before the next paint as well as synchronously.
-    restore();
-    cancelAnimationFrame(restoreFrame);
-    restoreFrame = requestAnimationFrame(() => {
-      restoreFrame = 0;
-      if (!handle.signal.aborted) restore();
-    });
-  }
-
-  return () => {
-    const activeRunner = PACKAGE_RUNNERS.find(
-      (option) => option.value === handle.props.runner,
-    )!;
-
-    return (
-      <select.Context
-        defaultLabel={activeRunner.label}
-        defaultValue={activeRunner.value}
-      >
-        <button
-          type="button"
-          tabIndex={1}
-          aria-label="Choose a package runner"
-          mix={[
-            selectTriggerStyles,
-            on("click", rememberScrollPosition),
-            on("keydown", (event) => {
-              if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-                rememberScrollPosition();
-              }
-            }),
-            select.trigger(),
-            select.onSelectChange((event) => {
-              if (isPackageRunner(event.value)) {
-                handle.props.onChange(event.value);
-              }
-            }),
-          ]}
-        >
-          <PackageRunnerSelectValue />
-          <Icon name="chevron-d" mix={[chevronStyles]} />
-        </button>
-        <popover.Context>
-          <div
-            mix={[
-              popoverSurfaceStyles,
-              select.popover(),
-              on("toggle", (event) => {
-                if (event.newState === "closed") restoreScrollPosition();
-              }),
-            ]}
-          >
-            <div
-              mix={[
-                optionListStyles,
-                select.list(),
-                on("focus", restoreScrollPosition),
-              ]}
-            >
-              {PACKAGE_RUNNERS.map((runner) => (
-                <div
-                  key={runner.value}
-                  mix={[
-                    optionStyles,
-                    select.option({
-                      label: runner.label,
-                      textValue: runner.label,
-                      value: runner.value,
-                    }),
-                  ]}
-                >
-                  <PackageRunnerIcon runner={runner} />
-                  <span>{runner.label}</span>
-                  <Icon
-                    name="check-mark"
-                    data-runner-check=""
-                    mix={[optionCheckStyles]}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </popover.Context>
-      </select.Context>
-    );
-  };
-}
-
-export let CreateRemixCommand = clientEntry(
-  import.meta.url,
-  function CreateRemixCommand(handle: Handle) {
-    let runner: PackageRunner = "npm";
-    let copyStatus: CopyStatus = "idle";
-    let resetTimer: ReturnType<typeof setTimeout> | null = null;
-
-    handle.signal.addEventListener("abort", () => {
-      if (resetTimer) clearTimeout(resetTimer);
-    });
-
-    function setRunner(nextRunner: PackageRunner) {
-      runner = nextRunner;
-      copyStatus = "idle";
-      if (resetTimer) {
-        clearTimeout(resetTimer);
-        resetTimer = null;
-      }
-      handle.update();
-    }
-
-    async function copyCommand() {
-      try {
-        await copyText(getCreateCommand(runner));
-        if (handle.signal.aborted) return;
-        copyStatus = "copied";
-      } catch {
-        if (handle.signal.aborted) return;
-        copyStatus = "error";
-      }
-      handle.update();
-
-      if (resetTimer) clearTimeout(resetTimer);
-      resetTimer = setTimeout(() => {
-        resetTimer = null;
-        copyStatus = "idle";
-        handle.update();
-      }, 1800);
-    }
-
-    return () => {
-      const command = getCreateCommand(runner);
-      return (
-        <div mix={[shellStyles]}>
-          <div mix={[commandBarStyles]}>
-            <PackageRunnerSelect runner={runner} onChange={setRunner} />
-            <code mix={[codeStyles]}>{command}</code>
-            <button
-              type="button"
-              tabIndex={2}
-              aria-label="Copy create command"
-              data-copy-status={copyStatus}
-              mix={[copyButtonStyles, on("click", copyCommand)]}
-            >
-              <Icon
-                name={copyStatus === "copied" ? "check-mark" : "copy"}
-                mix={[copyIconStyles]}
-              />
-            </button>
-          </div>
-          <span role="status" aria-live="polite" mix={[visuallyHiddenStyles]}>
-            {copyStatus === "copied"
-              ? "Create command copied"
-              : copyStatus === "error"
-                ? "Unable to copy the create command"
-                : null}
-          </span>
-        </div>
-      );
-    };
-  },
-);

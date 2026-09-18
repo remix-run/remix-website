@@ -1,22 +1,5 @@
-export interface ControlDef {
+export interface PresetControl {
   id: string;
-  label: string;
-  min: number;
-  max: number;
-  value: number;
-  initial: number;
-}
-
-export interface InfoState {
-  title: string;
-  description: string;
-}
-
-export interface PresetControlDef {
-  id: string;
-  label: string;
-  min: number;
-  max: number;
   initial: number;
 }
 
@@ -46,10 +29,8 @@ export interface Preset {
   /** How the camera moves from the preceding preset into this one. */
   cameraTransition?: "orbit-left" | "orbit-right";
   glowColor?: [number, number, number];
-  controls: PresetControlDef[];
-  cameraControls?: PresetControlDef[];
+  controls: PresetControl[];
   separation: number;
-  info: InfoState;
   systemOverrides?: Partial<SystemSettings>;
   /** Preload this preset's model as soon as the app boots. */
   preloadEager?: boolean;

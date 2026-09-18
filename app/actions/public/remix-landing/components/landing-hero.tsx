@@ -5,6 +5,7 @@ import {
   theme,
 } from "../../../../ui/public/theme.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
+import { RemixLandingSectionNav } from "../landing-enhancements.tsx";
 import { colors, glowWhite } from "../styles/tokens.ts";
 import { CreateRemixCommand } from "./create-remix-command.tsx";
 
@@ -104,6 +105,7 @@ export function LandingHero(_handle: Handle) {
           <CreateRemixCommand />
         </div>
       </div>
+      <RemixLandingSectionNav />
     </section>
   );
 }
