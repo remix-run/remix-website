@@ -6,7 +6,7 @@ import {
 } from "../../../../ui/public/theme.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
 import { colors, glowWhite } from "../styles/tokens.ts";
-import { CodeSnippet } from "./code-snippet.tsx";
+import { CreateRemixCommand } from "./create-remix-command.tsx";
 
 const WIDE_HERO_MEDIA =
   `@media (min-width: ${breakpoints.lg}) and (max-height: 900px), (min-width: ${breakpoints.lg}) and (min-aspect-ratio: 16/9)` as const;
@@ -101,7 +101,7 @@ export function LandingHero(_handle: Handle) {
           <span mix={[bodyClosingPhraseStyles]}>stack built on Web APIs.</span>
         </p>
         <div mix={[actionGroupStyles]}>
-          <CodeSnippet>npx remix@next new my-app</CodeSnippet>
+          <CreateRemixCommand />
         </div>
       </div>
     </section>

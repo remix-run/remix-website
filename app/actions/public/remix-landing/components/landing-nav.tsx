@@ -210,6 +210,7 @@ export function LandingNav(
   window.addEventListener(
     "keydown",
     (event) => {
+      if (event.defaultPrevented) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (isEditableKeyTarget(event)) return;
 

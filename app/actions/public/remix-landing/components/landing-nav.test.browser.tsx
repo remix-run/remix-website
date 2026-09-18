@@ -5,7 +5,7 @@ import { render } from "remix/ui/test";
 import { LandingNav } from "./landing-nav.tsx";
 
 describe("LandingNav", () => {
-  it("moves between sections with arrow keys without hijacking editable fields", async (t) => {
+  it("moves between sections without hijacking handled keys or editable fields", async (t) => {
     let activeIndexRef = { current: 1 };
     let onJump = t.mock.fn<(index: number) => void>();
     let result = render(
@@ -28,6 +28,11 @@ describe("LandingNav", () => {
     activeIndexRef.current = 0;
     await result.act(() => window.dispatchEvent(keydown("ArrowUp")));
     expect(onJump).toHaveBeenCalledWith(0);
+
+    let handledArrow = keydown("ArrowDown");
+    handledArrow.preventDefault();
+    await result.act(() => window.dispatchEvent(handledArrow));
+    expect(onJump).toHaveBeenCalledTimes(2);
 
     let input = result.container.querySelector("input")!;
     input.focus();
