@@ -69,7 +69,7 @@ export function HomePage(handle: Handle<HomePageProps>) {
       ]}
     >
       <div mix={[landingShellStyles]}>
-        {/* Keep a stable host so this entry hydrates after document navigations. */}
+        {/* Keep stable hydration hosts across document navigations. */}
         <div>
           <RemixLandingEnhancements />
         </div>

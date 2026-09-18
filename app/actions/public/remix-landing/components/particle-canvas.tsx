@@ -1,14 +1,10 @@
 import { css, ref, type Handle } from "remix/ui";
 import { Matrix4, Vector3 } from "three";
-import { ControlManager } from "../engine/controls.ts";
 import { setDesiredCameraInto } from "../engine/camera-transition.ts";
 import { Engine } from "../engine/engine.ts";
 import { IDLE_AFTER_MS, nextRenderDeadline } from "../engine/frame-governor.ts";
-import {
-  projectLabelsInto,
-  type ProjectedLabel,
-} from "../engine/label-projection.ts";
 import { MouseSim } from "../engine/mouse-sim.ts";
+import { PausableClock } from "../engine/pausable-clock.ts";
 import { ParticleSystem } from "../engine/particles.ts";
 import { RestBaker } from "../engine/rest-baker.ts";
 import { getMorphBlend, type MorphBlend } from "../engine/morph.ts";
@@ -65,19 +61,6 @@ function copyControlsInto(source: number[], target: number[]) {
   }
 }
 
-function copyManagedControlsInto(
-  preset: Preset,
-  controlMgr: ControlManager,
-  target: number[],
-) {
-  for (let i = 0; i < 8; i++) {
-    const control = preset.controls[i];
-    target[i] = control
-      ? (controlMgr.controls.get(control.id)?.value ?? control.initial)
-      : 0;
-  }
-}
-
 function buildInitialControls(preset: Preset): number[] {
   const controls = [0, 0, 0, 0, 0, 0, 0, 0];
   for (let i = 0; i < Math.min(preset.controls.length, 8); i++) {
@@ -112,9 +95,8 @@ const PRESET_RUNTIME_DATA = {
 type ParticleCanvasProps = {
   brandGradientMode: boolean;
   morphValueRef: { current: number };
+  interactionPausedRef: { current: boolean };
   modelData: (ModelData | undefined)[];
-  labelsRef: { current: ProjectedLabel[] };
-  labelOpacityRef: { current: number };
   onFirstFrame: () => Promise<void>;
   onError: (error: unknown) => void;
 };
@@ -133,9 +115,8 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   let introStartTime: number | null = null;
   let introFinished = false;
   let frozenTime: number | null = null;
-  let previousNearest = -1;
+  const rotationClock = new PausableClock();
   let initFailed = false;
-  const labelControlMgr = new ControlManager();
   const desiredCameraPos = new Vector3();
   const desiredCameraTarget = new Vector3();
   const scratchViewProj = new Matrix4();
@@ -149,11 +130,11 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   let lastStaticKey: string | null = null;
   const scratchControlsA = [0, 0, 0, 0, 0, 0, 0, 0];
   const scratchControlsB = [0, 0, 0, 0, 0, 0, 0, 0];
-  const scratchLabelControls = [0, 0, 0, 0, 0, 0, 0, 0];
   const morphBlend: MorphBlend = { fromIndex: 0, toIndex: 0, blend: 0 };
 
   let mouseNormX = 0;
   let mouseNormY = 0;
+  let interactionWasPaused = false;
   let prevMouseNormX = 0;
   let prevMouseNormY = 0;
   let mouseVelPrimed = false;
@@ -204,6 +185,9 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
   let mouseSimSettleS = MOUSE_SIM_SETTLE_S;
 
   function setMousePosition(clientX: number, clientY: number) {
+    // The foreground card owns attention while the model is paused; pointer
+    // movement must not wake rendering, parallax, or particle displacement.
+    if (handle.props.interactionPausedRef.current) return;
     lastActivityAt = performance.now();
     const vp = containerEl ?? canvasEl;
     if (vp) {
@@ -366,6 +350,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         PRESET_RUNTIME_DATA.shaderInts[initialIndex],
         scratchControlsA,
         0,
+        0,
       );
       // Compile the particle RawShaderMaterial up front so the first
       // `composer.render()` doesn't pay for the GLSL3 link/upload during
@@ -448,6 +433,15 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         frozenTime = null;
       }
       const visualTime = frozenTime ?? time;
+      const interactionPaused = handle.props.interactionPausedRef.current;
+      const rotationTime = rotationClock.read(visualTime, interactionPaused);
+
+      if (interactionPaused !== interactionWasPaused) {
+        interactionWasPaused = interactionPaused;
+        mouseVelPrimed = false;
+        mouseNdcSpeedSmoothed = 0;
+        mouseBrushSmoothed = 0;
+      }
 
       engine.updateSettings(settings);
 
@@ -627,6 +621,7 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         presetData.shaderInts[fromIndex],
         scratchControlsA,
         visualTime,
+        rotationTime,
       );
       if (blend > 0.001) {
         restBaker.bake(
@@ -634,10 +629,9 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
           presetData.shaderInts[toIndex],
           scratchControlsB,
           visualTime,
+          rotationTime,
         );
       }
-
-      engine.controls.enabled = !reduceMotion && driveProximity < 0.5;
 
       setDesiredCameraInto(
         presets,
@@ -711,49 +705,6 @@ export function ParticleCanvas(handle: Handle<ParticleCanvasProps>) {
         particles.setDispTexture(mouseSim.getDispTexture());
       }
       particles.setDisplacementEnabled(displacementActive);
-
-      const nearest = Math.round(clamp(morphValue, 0, maxValue));
-      if (nearest !== previousNearest) {
-        previousNearest = nearest;
-        labelControlMgr.loadPreset(presets[nearest]);
-      }
-
-      const nearestPreset = presets[nearest];
-      if (
-        nearestPreset?.labels &&
-        nearestPreset.labels.length > 0 &&
-        containerEl
-      ) {
-        let activeCtrls = presetData.controls[nearest];
-        if (blend < 0.001) {
-          copyManagedControlsInto(
-            nearestPreset,
-            labelControlMgr,
-            scratchLabelControls,
-          );
-          activeCtrls = scratchLabelControls;
-        }
-
-        projectLabelsInto(
-          handle.props.labelsRef.current,
-          nearestPreset,
-          labelControlMgr,
-          activeCtrls,
-          visualTime,
-          engine.camera,
-          containerEl.clientWidth,
-          containerEl.clientHeight,
-        );
-
-        const distFromNearest = Math.abs(morphValue - nearest);
-        handle.props.labelOpacityRef.current = Math.max(
-          0,
-          1 - distFromNearest * 4,
-        );
-      } else {
-        handle.props.labelsRef.current.length = 0;
-        handle.props.labelOpacityRef.current = 0;
-      }
 
       engine.render(visualTime);
       reveal ??= handle.props.onFirstFrame().then(() => {

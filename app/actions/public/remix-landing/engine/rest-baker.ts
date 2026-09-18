@@ -95,6 +95,7 @@ export type Slot = 0 | 1;
 type SlotCache = {
   presetId: number;
   time: number;
+  rotationTime: number;
   ctrl: Float32Array;
   carLaneOffset: number;
   carLaneActivity: number;
@@ -104,6 +105,7 @@ type SlotCache = {
 const initCache = (): SlotCache => ({
   presetId: -1,
   time: NaN,
+  rotationTime: NaN,
   ctrl: new Float32Array(8).fill(NaN),
   carLaneOffset: NaN,
   carLaneActivity: NaN,
@@ -159,6 +161,7 @@ export class RestBaker {
       depthTest: false,
       uniforms: {
         uTime: { value: 0 },
+        uRotationTime: { value: 0 },
         uPresetId: { value: 0 },
         uCount: { value: 0 },
         uCtrl: { value: Array.from({ length: 8 }, () => 0) },
@@ -217,7 +220,13 @@ export class RestBaker {
    * false if all inputs match the previous bake (cache hit). Caller should
    * skip calling for the inactive endpoint when `blend < eps` to save a pass.
    */
-  bake(slot: Slot, presetId: number, ctrl: number[], time: number): boolean {
+  bake(
+    slot: Slot,
+    presetId: number,
+    ctrl: number[],
+    time: number,
+    rotationTime: number,
+  ): boolean {
     const u = this.material.uniforms;
     const cache = slot === 0 ? this.cacheA : this.cacheB;
     const carLO = u.uCarLaneOffset.value as number;
@@ -227,6 +236,7 @@ export class RestBaker {
     if (
       cache.presetId === presetId &&
       cache.time === time &&
+      cache.rotationTime === rotationTime &&
       cache.carLaneOffset === carLO &&
       cache.carLaneActivity === carLA &&
       cache.carPosY === carPY &&
@@ -237,6 +247,7 @@ export class RestBaker {
 
     u.uPresetId.value = presetId;
     u.uTime.value = time;
+    u.uRotationTime.value = rotationTime;
     const arr = u.uCtrl.value as number[];
     for (let i = 0; i < 8; i++) arr[i] = ctrl[i] ?? 0;
 
@@ -248,6 +259,7 @@ export class RestBaker {
 
     cache.presetId = presetId;
     cache.time = time;
+    cache.rotationTime = rotationTime;
     cache.carLaneOffset = carLO;
     cache.carLaneActivity = carLA;
     cache.carPosY = carPY;
