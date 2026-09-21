@@ -79,10 +79,10 @@ const topFadeGradientStyles = css({
   height: "min(24vh, 180px)",
   zIndex: "21",
   pointerEvents: "none",
-  background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.48) 32%, rgba(0, 0, 0, 0.08) 68%, transparent 100%)`,
+  background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.48) 32%, rgba(0, 0, 0, 0.08) 68%, transparent 92%, transparent 100%)`,
   [breakpointMedia.lg]: {
     height: "min(42vh, 360px)",
-    background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.65) 38%, rgba(0, 0, 0, 0.12) 72%, transparent 100%)`,
+    background: `linear-gradient(to bottom, ${colors.bg} 0%, rgba(0, 0, 0, 0.65) 38%, rgba(0, 0, 0, 0.12) 72%, transparent 92%, transparent 100%)`,
   },
 });
 
@@ -520,7 +520,7 @@ export let RemixLandingEnhancements = clientEntry(
           <LoadingScreen status={loadingScreenStatus} />
           {isHydrated ? (
             <div mix={[appStyles]}>
-              <PackageLogos morphValueRef={morphValueRef} />
+              <PackageLogos />
               {ParticleCanvas ? (
                 <ParticleCanvas
                   brandGradientMode={konami.brandMode}
