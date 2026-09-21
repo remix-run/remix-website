@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, unsafeHTML, type Handle } from "remix/ui";
 import { getSchedule } from "../../../data/jam-schedule.ts";
 import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";
@@ -173,7 +173,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                         "& a": { color: "#59b0ff" },
                         "& a:hover": { textDecoration: "underline" },
                       })}
-                      innerHTML={item.description}
+                      innerHTML={unsafeHTML(item.description)}
                     />
                     {item.imgSrc ? (
                       <img
@@ -204,7 +204,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                           "& a": { color: "#59b0ff" },
                           "& a:hover": { textDecoration: "underline" },
                         })}
-                        innerHTML={item.bio}
+                        innerHTML={unsafeHTML(item.bio)}
                       />
                     ) : null}
                   </div>

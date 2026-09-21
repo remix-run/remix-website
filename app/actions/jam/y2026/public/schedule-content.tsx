@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, unsafeHTML, type Handle } from "remix/ui";
 import { theme } from "../../../../ui/public/theme.ts";
 import { jamTheme } from "./theme.ts";
 import type { ScheduleItem } from "./schedule-types.ts";
@@ -42,7 +42,7 @@ export function ScheduleDetails(
             : mobileDetailsStyle
         }
       >
-        <div mix={descriptionStyle} innerHTML={item.description} />
+        <div mix={descriptionStyle} innerHTML={unsafeHTML(item.description)} />
         {item.imgSrc ||
         speakersWithImages.length > 0 ||
         speakersWithBios.length > 0 ? (
@@ -124,7 +124,7 @@ function SpeakerBio(handle: Handle<{ speaker: Speaker; showName: boolean }>) {
         {handle.props.showName ? (
           <h4 mix={speakerBioNameStyle}>{handle.props.speaker.name}</h4>
         ) : null}
-        <div mix={bioStyle} innerHTML={handle.props.speaker.bio} />
+        <div mix={bioStyle} innerHTML={unsafeHTML(handle.props.speaker.bio)} />
       </div>
     ) : null;
 }

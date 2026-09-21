@@ -1,4 +1,4 @@
-import { clientEntry, css, on, ref, type Handle } from "remix/ui";
+import { clientEntry, css, on, ref, unsafeHTML, type Handle } from "remix/ui";
 import { spring } from "remix/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
@@ -275,7 +275,7 @@ export let JamLineupAccordionItem = clientEntry(
                         lineHeight: 1.556,
                       },
                     })}
-                    innerHTML={handle.props.item.description}
+                    innerHTML={unsafeHTML(handle.props.item.description)}
                   />
                   {handle.props.item.imgSrc ? (
                     <div
@@ -324,7 +324,7 @@ export let JamLineupAccordionItem = clientEntry(
                               fontFamily: theme.fontFamily.mono,
                             },
                           })}
-                          innerHTML={handle.props.item.bio}
+                          innerHTML={unsafeHTML(handle.props.item.bio)}
                         />
                       ) : null}
                     </div>

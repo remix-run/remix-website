@@ -1,4 +1,3 @@
-import { constants } from "node:zlib";
 import { asyncContext } from "remix/middleware/async-context";
 import { compression } from "remix/middleware/compression";
 import { cop } from "remix/middleware/cop";
@@ -61,21 +60,7 @@ let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
 function createAppMiddleware() {
   return createMiddleware(
     securityHeaders(),
-    compression({
-      // TODO: Remove this workaround once Remix ships the upstream fix for
-      // HTML compression flushing. Until then, flush chunks as they become
-      // available rather than waiting for the entire response stream to finish.
-      zlib(response) {
-        return response.headers.get("Content-Type")?.startsWith("text/html")
-          ? { flush: constants.Z_SYNC_FLUSH }
-          : {};
-      },
-      brotli(response) {
-        return response.headers.get("Content-Type")?.startsWith("text/html")
-          ? { flush: constants.BROTLI_OPERATION_FLUSH }
-          : {};
-      },
-    }),
+    compression(),
     ignoreChromeDevToolsRequest,
     rootPublicFiles(),
     cop(),

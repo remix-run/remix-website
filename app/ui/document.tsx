@@ -1,6 +1,13 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { attrs, css, type Handle, type Props, type RemixNode } from "remix/ui";
+import {
+  attrs,
+  css,
+  unsafeHTML,
+  type Handle,
+  type Props,
+  type RemixNode,
+} from "remix/ui";
 import { ImportMap } from "remix/ui/server";
 
 import {
@@ -163,7 +170,7 @@ export function Document(handle: Handle<DocumentProps>) {
             key="fonts"
             data-rmx-key="fonts"
             data-rmx-preserve-dom
-            innerHTML={`
+            innerHTML={unsafeHTML(`
               @font-face {
                 font-family: "Inter";
                 font-style: normal;
@@ -203,7 +210,7 @@ export function Document(handle: Handle<DocumentProps>) {
                 font-display: swap;
                 src: url("${assetEntry.fonts.jetBrainsMono.href}") format("woff2");
               }
-            `}
+            `)}
           />
 
           {/* Keep persistent stylesheets attached across document diffs. */}
@@ -271,7 +278,7 @@ export function Document(handle: Handle<DocumentProps>) {
           ))}
 
           {/* Apply the system color scheme before first paint. */}
-          <script innerHTML={colorSchemeScript} />
+          <script innerHTML={unsafeHTML(colorSchemeScript)} />
         </head>
 
         <body
@@ -296,7 +303,10 @@ export function Document(handle: Handle<DocumentProps>) {
             stylesheets={Array.from(stylesheetNames)}
           />
           {/* Inline so route-local theme resets emitted later cannot reveal the sprite. */}
-          <div style={{ display: "none" }} innerHTML={iconsSpriteHtml} />
+          <div
+            style={{ display: "none" }}
+            innerHTML={unsafeHTML(iconsSpriteHtml)}
+          />
           {children}
           <script type="module" src={scriptHref} />
         </body>

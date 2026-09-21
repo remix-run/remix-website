@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, unsafeHTML, type Handle } from "remix/ui";
 
 import type { NewsletterIssue, NewsletterSummary } from "./archive.ts";
 import { routes } from "../../routes.ts";
@@ -112,7 +112,7 @@ export function NewsletterIssuePage(
           <h1 mix={[pageTitleStyle, css({ marginBlockEnd: "32px" })]}>
             {issue.title}
           </h1>
-          <div class="md-prose" innerHTML={handle.props.html} />
+          <div class="md-prose" innerHTML={unsafeHTML(handle.props.html)} />
           <div mix={css({ marginBlockStart: "112px" })}>
             <NewsletterSignupCta />
           </div>

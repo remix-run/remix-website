@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, unsafeHTML, type Handle } from "remix/ui";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
@@ -279,7 +279,10 @@ function BlogPostContent(
                 },
               })}
             >
-              <div class="md-prose" innerHTML={handle.props.post.html} />
+              <div
+                class="md-prose"
+                innerHTML={unsafeHTML(handle.props.post.html)}
+              />
               <hr />
             </div>
           </div>
