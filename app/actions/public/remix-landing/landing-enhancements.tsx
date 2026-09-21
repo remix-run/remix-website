@@ -1,7 +1,6 @@
 import { clientEntry, css, type Handle } from "remix/ui";
 import { PresetGlow } from "./components/preset-glow.tsx";
 import { LandingNav } from "./components/landing-nav.tsx";
-import { LabelOverlay } from "./components/label-overlay.tsx";
 import {
   LoadingScreen,
   LOADING_SCREEN_FAILSAFE_MS,
@@ -12,7 +11,6 @@ import { SectionNav } from "./components/section-nav.tsx";
 import { PackageLogos } from "./components/package-logos.tsx";
 import { isEditableKeyTarget } from "../../../ui/public/keyboard.ts";
 import { breakpointMedia } from "../../../ui/public/theme.ts";
-import type { ProjectedLabel } from "./engine/label-projection.ts";
 import { loadModelPoints, type ModelData } from "./engine/model-loader.ts";
 import { presets } from "./engine/presets.ts";
 import { colors } from "./styles/tokens.ts";
@@ -65,6 +63,97 @@ function morphPlateauAcrossIndices(
   const frac = clamped - base;
   const p = scrollMorphPlateauForSegment(base, maxValue, plateau);
   return base + morphPlateauWithinUnitSpan(frac, p);
+}
+
+function createLandingScrollController() {
+  let sectionStops: number[] | null = null;
+
+  function getScrollRange() {
+    return Math.max(
+      document.documentElement.scrollHeight - window.innerHeight,
+      1,
+    );
+  }
+
+  function clampScrollY(scrollY: number) {
+    return clamp(scrollY, 0, getScrollRange());
+  }
+
+  function getSectionScrollStop(index: number): number | undefined {
+    if (index === 0) return 0;
+    const id = LANDING_SECTION_IDS[index];
+    if (!id) return undefined;
+    const el = document.getElementById(id);
+    if (!el) return undefined;
+    if (el.offsetHeight > window.innerHeight) {
+      return clampScrollY(el.offsetTop);
+    }
+    const sectionCenter = el.offsetTop + el.offsetHeight / 2;
+    return clampScrollY(sectionCenter - window.innerHeight / 2);
+  }
+
+  function getSectionScrollStops(): number[] | undefined {
+    if (sectionStops) return sectionStops;
+
+    const stops: number[] = [];
+    for (let index = 0; index < presets.length; index++) {
+      const stop = getSectionScrollStop(index);
+      if (stop === undefined) return undefined;
+      stops.push(stop);
+    }
+    sectionStops = stops;
+    return stops;
+  }
+
+  return {
+    getMorphValue(scrollY: number) {
+      const maxValue = presets.length - 1;
+      const stops = getSectionScrollStops();
+      if (!stops) {
+        const linearMorph =
+          (clampScrollY(scrollY) / getScrollRange()) * maxValue;
+        return morphPlateauAcrossIndices(
+          linearMorph,
+          maxValue,
+          SCROLL_MORPH_PLATEAU,
+        );
+      }
+
+      const clampedScrollY = clampScrollY(scrollY);
+      if (clampedScrollY <= stops[0]) return 0;
+
+      for (let index = 0; index < maxValue; index++) {
+        const from = stops[index];
+        const to = stops[index + 1];
+        if (clampedScrollY > to) continue;
+        const span = to - from;
+        if (span <= 1) return index + 1;
+        const t = (clampedScrollY - from) / span;
+        const plateau = scrollMorphPlateauForSegment(
+          index,
+          maxValue,
+          SCROLL_MORPH_PLATEAU,
+        );
+        return index + morphPlateauWithinUnitSpan(t, plateau);
+      }
+
+      return maxValue;
+    },
+
+    invalidate() {
+      sectionStops = null;
+    },
+
+    jumpToPreset(index: number) {
+      if (index === 0) {
+        window.scrollTo({ top: 0, behavior: motionScrollBehavior() });
+        return;
+      }
+      const targetY = getSectionScrollStop(index);
+      if (targetY === undefined) return;
+      window.scrollTo({ top: targetY, behavior: motionScrollBehavior() });
+    },
+  };
 }
 
 const appStyles = css({
@@ -146,7 +235,6 @@ export let RemixLandingEnhancements = clientEntry(
       morphValue: 0,
       currentY: 0,
       frame: 0,
-      sectionStops: null as number[] | null,
     };
     let ParticleCanvas: ParticleCanvasComponent | null = null;
     let particleCanvasLoad: Promise<void> | null = null;
@@ -160,85 +248,14 @@ export let RemixLandingEnhancements = clientEntry(
         ))
         ? "skipped"
         : "visible";
-    const projectedLabelsRef = { current: [] as ProjectedLabel[] };
-    const labelOpacityRef = { current: 0 };
     const morphValueRef = { current: 0 };
     const scrollYRef = { current: 0 };
     const activeIndexRef = { current: 0 };
+    const interactionPausedRef = { current: false };
+    const landingScroll = createLandingScrollController();
     const eagerModelIndexes = presets
       .map((preset, index) => (preset.preloadEager ? index : -1))
       .filter((index) => index >= 0);
-
-    function getScrollRange() {
-      return Math.max(
-        document.documentElement.scrollHeight - window.innerHeight,
-        1,
-      );
-    }
-
-    function clampScrollY(scrollY: number) {
-      return clamp(scrollY, 0, getScrollRange());
-    }
-
-    function getSectionScrollStop(index: number): number | undefined {
-      if (index === 0) return 0;
-      const id = LANDING_SECTION_IDS[index];
-      if (!id) return undefined;
-      const el = document.getElementById(id);
-      if (!el) return undefined;
-      if (el.offsetHeight > window.innerHeight) {
-        return clampScrollY(el.offsetTop);
-      }
-      const sectionCenter = el.offsetTop + el.offsetHeight / 2;
-      return clampScrollY(sectionCenter - window.innerHeight / 2);
-    }
-
-    function getSectionScrollStops(): number[] | undefined {
-      if (scroll.sectionStops) return scroll.sectionStops;
-
-      const stops: number[] = [];
-      for (let index = 0; index < presets.length; index++) {
-        const stop = getSectionScrollStop(index);
-        if (stop === undefined) return undefined;
-        stops.push(stop);
-      }
-      scroll.sectionStops = stops;
-      return stops;
-    }
-
-    function getMorphValueForScroll(scrollY: number) {
-      const maxValue = presets.length - 1;
-      const stops = getSectionScrollStops();
-      if (!stops) {
-        const linearMorph =
-          (clampScrollY(scrollY) / getScrollRange()) * maxValue;
-        return morphPlateauAcrossIndices(
-          linearMorph,
-          maxValue,
-          SCROLL_MORPH_PLATEAU,
-        );
-      }
-
-      const clampedScrollY = clampScrollY(scrollY);
-      if (clampedScrollY <= stops[0]) return 0;
-
-      for (let index = 0; index < maxValue; index++) {
-        const from = stops[index];
-        const to = stops[index + 1];
-        if (clampedScrollY > to) continue;
-        const span = to - from;
-        if (span <= 1) return index + 1;
-        const t = (clampedScrollY - from) / span;
-        const plateau = scrollMorphPlateauForSegment(
-          index,
-          maxValue,
-          SCROLL_MORPH_PLATEAU,
-        );
-        return index + morphPlateauWithinUnitSpan(t, plateau);
-      }
-
-      return maxValue;
-    }
 
     function assignModelData(url: string, data: ModelData) {
       presets.forEach((preset, index) => {
@@ -290,26 +307,29 @@ export let RemixLandingEnhancements = clientEntry(
     }
 
     function syncMorphToScroll() {
-      const rawMorphValue = getMorphValueForScroll(window.scrollY);
+      const rawMorphValue = landingScroll.getMorphValue(window.scrollY);
       const activeIndex = Math.round(
         clamp(rawMorphValue, 0, presets.length - 1),
       );
+      const viewportCenterX = window.innerWidth / 2;
+      const viewportCenterY = window.innerHeight / 2;
+      interactionPausedRef.current = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-home-card]"),
+      ).some((card) => {
+        const rect = card.getBoundingClientRect();
+        return (
+          rect.left <= viewportCenterX &&
+          rect.right >= viewportCenterX &&
+          rect.top <= viewportCenterY &&
+          rect.bottom >= viewportCenterY
+        );
+      });
       scroll.morphValue = reducedMotion.current ? activeIndex : rawMorphValue;
       morphValueRef.current = scroll.morphValue;
       scroll.currentY = window.scrollY;
       scrollYRef.current = scroll.currentY;
       activeIndexRef.current = activeIndex;
       requestNearbyModels();
-    }
-
-    function jumpToPreset(index: number) {
-      if (index === 0) {
-        window.scrollTo({ top: 0, behavior: motionScrollBehavior() });
-        return;
-      }
-      const targetY = getSectionScrollStop(index);
-      if (targetY === undefined) return;
-      window.scrollTo({ top: targetY, behavior: motionScrollBehavior() });
     }
 
     function scheduleMorphSync() {
@@ -491,7 +511,7 @@ export let RemixLandingEnhancements = clientEntry(
         window.addEventListener(
           "resize",
           () => {
-            scroll.sectionStops = null;
+            landingScroll.invalidate();
             scheduleMorphSync();
           },
           { signal: handle.signal },
@@ -525,17 +545,12 @@ export let RemixLandingEnhancements = clientEntry(
                 <ParticleCanvas
                   brandGradientMode={konami.brandMode}
                   morphValueRef={morphValueRef}
+                  interactionPausedRef={interactionPausedRef}
                   modelData={modelData}
-                  labelsRef={projectedLabelsRef}
-                  labelOpacityRef={labelOpacityRef}
                   onFirstFrame={dismissLoadingScreen}
                   onError={markParticleCanvasFailed}
                 />
               ) : null}
-              <LabelOverlay
-                labelsRef={projectedLabelsRef}
-                opacityRef={labelOpacityRef}
-              />
               <PresetGlow
                 morphValueRef={morphValueRef}
                 brandGradientMode={konami.brandMode}
@@ -545,19 +560,76 @@ export let RemixLandingEnhancements = clientEntry(
               <LandingNav
                 activeIndexRef={activeIndexRef}
                 totalSections={presets.length}
-                onJump={jumpToPreset}
+                onJump={landingScroll.jumpToPreset}
                 scrollYRef={scrollYRef}
                 shouldBlockBlogShortcut={() => konami.index > 0}
-              />
-              <SectionNav
-                activeIndexRef={activeIndexRef}
-                morphValueRef={morphValueRef}
-                onJump={jumpToPreset}
               />
             </div>
           ) : null}
         </>
       );
     };
+  },
+);
+
+export let RemixLandingSectionNav = clientEntry(
+  import.meta.url,
+  function RemixLandingSectionNav(handle: Handle) {
+    let isHydrated = false;
+    let scrollFrame = 0;
+    const activeIndexRef = { current: 0 };
+    const morphValueRef = { current: 0 };
+    const landingScroll = createLandingScrollController();
+
+    function syncToScroll() {
+      const rawMorphValue = landingScroll.getMorphValue(window.scrollY);
+      const activeIndex = Math.round(
+        clamp(rawMorphValue, 0, presets.length - 1),
+      );
+      morphValueRef.current = reducedMotion.current
+        ? activeIndex
+        : rawMorphValue;
+      activeIndexRef.current = activeIndex;
+      handle.update();
+    }
+
+    function scheduleSync() {
+      if (scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        syncToScroll();
+      });
+    }
+
+    handle.queueTask(() => {
+      initReducedMotion(handle.signal, scheduleSync);
+      syncToScroll();
+      isHydrated = true;
+      window.addEventListener("scroll", scheduleSync, {
+        signal: handle.signal,
+      });
+      window.addEventListener(
+        "resize",
+        () => {
+          landingScroll.invalidate();
+          scheduleSync();
+        },
+        { signal: handle.signal },
+      );
+      handle.update();
+    });
+
+    handle.signal.addEventListener("abort", () => {
+      window.cancelAnimationFrame(scrollFrame);
+    });
+
+    return () =>
+      isHydrated ? (
+        <SectionNav
+          activeIndexRef={activeIndexRef}
+          morphValueRef={morphValueRef}
+          onJump={landingScroll.jumpToPreset}
+        />
+      ) : null;
   },
 );

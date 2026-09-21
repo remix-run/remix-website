@@ -167,6 +167,18 @@ const NAV_ITEMS = [
 
 type NavItem = (typeof NAV_ITEMS)[number];
 
+function isInteractiveKeyTarget(event: KeyboardEvent) {
+  if (isEditableKeyTarget(event)) return true;
+
+  const target = event.target;
+  return (
+    target instanceof Element &&
+    target.closest(
+      "a[href], button, select, [role='listbox'], [role='menu']",
+    ) !== null
+  );
+}
+
 function openNavItem(item: NavItem) {
   if (item.external) {
     window.location.assign(item.href);
@@ -210,8 +222,9 @@ export function LandingNav(
   window.addEventListener(
     "keydown",
     (event) => {
+      if (event.defaultPrevented) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
-      if (isEditableKeyTarget(event)) return;
+      if (isInteractiveKeyTarget(event)) return;
 
       if (event.key === "Escape" && menuOpen) {
         event.preventDefault();

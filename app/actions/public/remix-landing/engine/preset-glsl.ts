@@ -7,6 +7,7 @@
 //   uniform float     uCarLaneOffset;
 //   uniform float     uCarLaneActivity;
 //   uniform float     uCarPosY;
+//   uniform float     uRotationTime;
 //
 // The `id` passed to `computePreset` is the ShaderId enum from
 // `particle-canvas.tsx` (SHADER_ID_TO_INT). Keep that map and this file's
@@ -73,7 +74,7 @@ export const PRESET_GLSL = /* glsl */ `
   {
     float scale = c0;
     float rX = c1 * 0.01745329;
-    float rY = c2 * 0.01745329 - time * c4;
+    float rY = c2 * 0.01745329 - uRotationTime * c4;
     float rZ = c3 * 0.01745329;
 
     vec3 mp = sampleModelTex(uModelTex0, uModelCount0, fi);
@@ -116,7 +117,7 @@ export const PRESET_GLSL = /* glsl */ `
     float shimmer = c2;
     float rotZ = c3 * 0.01745329;
 
-    float angle = time * spin;
+    float angle = uRotationTime * spin;
     float cosA = cos(angle), sinA = sin(angle);
 
     vec3 mp = sampleModelTex(uModelTex1, uModelCount1, fi);
@@ -301,7 +302,7 @@ export const PRESET_GLSL = /* glsl */ `
     float shimmer = c2;
     float rotZ = c3 * 0.01745329;
 
-    float angle = time * spin;
+    float angle = uRotationTime * spin;
     float cosA = cos(angle), sinA = sin(angle);
 
     vec3 mp = sampleModelTex(uModelTex2, uModelCount2, fi);
@@ -385,12 +386,12 @@ export const PRESET_GLSL = /* glsl */ `
     float pz = vA.z + (vB.z - vA.z) * t + sin(fi * 5.13) * 0.1 * edgeDens;
     float pw = vA.w + (vB.w - vA.w) * t + cos(fi * 2.17) * 0.1 * edgeDens;
 
-    float axw = time * speedXW;
+    float axw = uRotationTime * speedXW;
     float cXW = cos(axw), sXW = sin(axw);
     float rx = px * cXW - pw * sXW;
     float rw = px * sXW + pw * cXW;
 
-    float ayz = time * speedYZ;
+    float ayz = uRotationTime * speedYZ;
     float cYZ = cos(ayz), sYZ = sin(ayz);
     float ry = py * cYZ - pz * sYZ;
     float rz = py * sYZ + pz * cYZ;
@@ -572,4 +573,5 @@ export const PRESET_UNIFORMS_GLSL = /* glsl */ `
   uniform float uCarLaneOffset;
   uniform float uCarLaneActivity;
   uniform float uCarPosY;
+  uniform float uRotationTime;
 `;

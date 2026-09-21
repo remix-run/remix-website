@@ -120,6 +120,89 @@ describe("Home", () => {
     ).toBe("false");
   });
 
+  it("keeps create-command menu keyboard interactions local", async (t) => {
+    const page = await t.serve(
+      await createTestServer(swallowAbortErrors(createAppRouter())),
+    );
+    await page.setViewportSize({ width: 1600, height: 1000 });
+
+    const response = await page.goto(routes.home.href());
+    expect(response?.ok()).toBe(true);
+    await expect(page.locator(".loading-screen-overlay")).toBeHidden({
+      timeout: 10_000,
+    });
+
+    const scrollY = await page.evaluate(() => window.scrollY);
+    const primaryLinks = page
+      .locator('header nav[aria-label="Primary"]')
+      .first()
+      .locator("a");
+    const trigger = page.getByRole("button", {
+      name: "Choose a package runner",
+    });
+    const listbox = page.getByRole("listbox");
+    const copyButton = page.getByRole("button", {
+      name: "Copy create command",
+    });
+    const firstSectionLink = page.getByRole("link", {
+      name: "Fully Stacked",
+    });
+
+    for (const link of await primaryLinks.all()) {
+      await page.keyboard.press("Tab");
+      await expect(link).toBeFocused();
+    }
+    await page.keyboard.press("Tab");
+    await expect(trigger).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(copyButton).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(firstSectionLink).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(copyButton).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(trigger).toBeFocused();
+
+    await trigger.click();
+    await expect(listbox).toBeVisible();
+    await expect(listbox).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scrollY);
+
+    await page.keyboard.press("Escape");
+
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(listbox).toBeHidden();
+    await expect(trigger).toBeFocused();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scrollY);
+
+    await trigger.click();
+    await expect(listbox).toBeVisible();
+    await expect(listbox).toBeFocused();
+    await page.keyboard.press("ArrowDown");
+
+    await expect(page.getByRole("option", { name: "pnpm" })).toHaveAttribute(
+      "data-highlighted",
+      "true",
+    );
+    await page.keyboard.press("b");
+    await expect(page.getByRole("option", { name: "Bun" })).toHaveAttribute(
+      "data-highlighted",
+      "true",
+    );
+    await expect(page).toHaveURL(new RegExp(`${routes.home.href()}$`));
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scrollY);
+
+    await page.keyboard.press("Escape");
+    await expect(trigger).toBeFocused();
+    await page.keyboard.press("b");
+
+    await expect(trigger).toContainText("Bun");
+    await expect(
+      page.locator("code").filter({ hasText: /^bunx remix@next new my-app$/ }),
+    ).toHaveText("bunx remix@next new my-app");
+    await expect(page).toHaveURL(new RegExp(`${routes.home.href()}$`));
+  });
+
   it("keeps the particle scene visible after resizing with reduced motion", async (t) => {
     const page = await t.serve(
       await createTestServer(swallowAbortErrors(createAppRouter())),
