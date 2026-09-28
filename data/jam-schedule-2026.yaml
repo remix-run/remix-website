@@ -46,22 +46,6 @@
         Mark Dalgleish is a staff developer at Shopify working on Remix. He is a co-creator of CSS Modules and Vanilla Extract, and has spent his career improving the way developers build and ship web interfaces.
 
 - time: "2:00 PM"
-  title: How Do Agents Experience Remix?
-  description: >-
-    When we first announced the direction we were taking Remix, we shared [a few principles](https://remix.run/blog/wake-up-remix#principles). The first (and most controversial at the time) was “Model-First Development.” The premise was that Remix should be easy not only for people to understand, but also for large language models to generate, navigate, and modify.
-
-
-    More than a year later, we’ve used coding agents across a wide range of Remix projects: building the Remix Store (with React Router), migrating remix.run from React, creating demos and proofs of concept, publishing newsletter archives, and finally rebuilding the Store with Remix 3. Along the way, we’ve learned what makes Remix especially usable for agents, where they get stuck, and where our patterns and abstractions either help or get in the way.
-
-
-    This talk traces that feedback loop: how Brooks works with coding agents, what those agents reveal about Remix (the good, bad, and ugly), and how those lessons are shaping the framework itself.
-  speakers:
-    - name: Brooks Lybrand
-      imgFilename: brooks-lybrand.webp
-      bio: >-
-        Brooks Lybrand leads developer relations for Remix at Shopify. He works across product, education, open source, and community—helping developers build better web applications and bringing what he learns from them back into Remix.
-
-- time: "2:30 PM"
   title: "Beyond the Server: Frames, SPAs, and Testing in Remix"
   description: |-
     By the time an application returns a response, Remix has already handled routing, middleware, rendering, and data—but a full-stack framework shouldn’t stop at the server boundary.
@@ -76,6 +60,22 @@
       imgFilename: matt-brophy.webp
       bio: >-
         Matt Brophy is a staff developer at Shopify working on Remix and React Router. He enjoys working at the intersection of routing, data loading, and framework architecture (a.k.a., the “back end of the front end") and making complex web application behavior easier to reason about.
+
+- time: "2:30 PM"
+  title: How Do Agents Experience Remix?
+  description: >-
+    When we first announced the direction we were taking Remix, we shared [a few principles](https://remix.run/blog/wake-up-remix#principles). The first (and most controversial at the time) was “Model-First Development.” The premise was that Remix should be easy not only for people to understand, but also for large language models to generate, navigate, and modify.
+
+
+    More than a year later, we’ve used coding agents across a wide range of Remix projects: building the Remix Store (with React Router), migrating remix.run from React, creating demos and proofs of concept, publishing newsletter archives, and finally rebuilding the Store with Remix 3. Along the way, we’ve learned what makes Remix especially usable for agents, where they get stuck, and where our patterns and abstractions either help or get in the way.
+
+
+    This talk traces that feedback loop: how Brooks works with coding agents, what those agents reveal about Remix (the good, bad, and ugly), and how those lessons are shaping the framework itself.
+  speakers:
+    - name: Brooks Lybrand
+      imgFilename: brooks-lybrand.webp
+      bio: >-
+        Brooks Lybrand leads developer relations for Remix at Shopify. He works across product, education, open source, and community—helping developers build better web applications and bringing what he learns from them back into Remix.
 
 - time: "3:00 PM"
   title: Snacks & Coffee
