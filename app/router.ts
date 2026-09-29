@@ -82,7 +82,7 @@ export type AppContext = MiddlewareContext<
   ReturnType<typeof createAppMiddleware>
 >;
 
-declare module "remix/router" {
+declare module "remix" {
   interface RouterTypes {
     context: AppContext;
   }
