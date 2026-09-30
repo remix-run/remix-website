@@ -280,10 +280,18 @@ const shellStyles = css({
 });
 
 const commandBarStyles = css({
+  // Shared by the trigger and the popover so the selected option lands exactly
+  // on top of the trigger, in the same colors, when the list opens.
+  "--runner-trigger-width": "116px",
+  "--runner-row-height": "56px",
+  "--runner-trigger-bg": "rgba(255, 255, 255, 0.035)",
+  "--runner-trigger-highlight-bg":
+    "color-mix(in srgb, var(--brand-cycle, #2dacf9) 12%, rgba(255, 255, 255, 0.04))",
   width: "100%",
-  minHeight: "58px",
+  // Row height plus the top and bottom borders.
+  minHeight: "calc(var(--runner-row-height) + 2px)",
   display: "grid",
-  gridTemplateColumns: "104px minmax(0, 1fr) 54px",
+  gridTemplateColumns: "var(--runner-trigger-width) minmax(0, 1fr) 54px",
   alignItems: "stretch",
   boxSizing: "border-box",
   border: `1px solid ${colors.line}`,
@@ -296,7 +304,8 @@ const commandBarStyles = css({
   WebkitBackdropFilter: "blur(14px)",
   overflow: "visible",
   [breakpointMedia.sm]: {
-    gridTemplateColumns: "128px minmax(0, 1fr) 58px",
+    "--runner-trigger-width": "128px",
+    gridTemplateColumns: "var(--runner-trigger-width) minmax(0, 1fr) 58px",
   },
 });
 
@@ -312,7 +321,7 @@ const selectTriggerStyles = css({
   border: "0",
   borderRight: `1px solid ${colors.line}`,
   borderRadius: "13px 0 0 13px",
-  background: "rgba(255, 255, 255, 0.035)",
+  background: "var(--runner-trigger-bg)",
   color: "#ffffff",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.medium,
@@ -322,8 +331,7 @@ const selectTriggerStyles = css({
   textAlign: "left",
   transition: "background-color 150ms ease",
   "&:hover, &[aria-expanded='true']": {
-    background:
-      "color-mix(in srgb, var(--brand-cycle, #2dacf9) 9%, rgba(255, 255, 255, 0.04))",
+    background: "var(--runner-trigger-highlight-bg)",
   },
   "&:focus-visible": {
     position: "relative",
@@ -368,30 +376,31 @@ const chevronStyles = css({
 const popoverSurfaceStyles = css({
   position: "fixed",
   inset: "auto",
-  width: "176px",
-  minWidth: "0",
+  // Covers the trigger column exactly: the left border sits on the command
+  // bar's border and the flat right edge lands on the trigger's divider.
+  width: "calc(var(--runner-trigger-width) + 1px)",
   maxHeight: "min(360px, 70dvh)",
   margin: "0",
-  padding: "6px",
+  padding: "0",
   boxSizing: "border-box",
   display: "none",
   flexDirection: "column",
   minHeight: "0",
   border: `1px solid ${colors.line}`,
-  borderRadius: "12px",
-  background: "rgba(8, 12, 20, 0.98)",
+  borderRadius: "14px 0 0 14px",
+  // Opaque match for the left end of the command bar's gradient.
+  background: "rgb(11, 16, 27)",
   color: "#ffffff",
-  boxShadow: "0 22px 70px rgba(0, 0, 0, 0.55)",
+  textAlign: "left",
+  // No shadow or lift: the list should read as the control expanding in place,
+  // not a layer floating above it.
   overflow: "hidden",
   opacity: "0",
-  transform: "translateY(-4px)",
-  transition:
-    "opacity 140ms ease, transform 140ms ease, overlay 140ms ease, display 140ms ease",
+  transition: "opacity 140ms ease, overlay 140ms ease, display 140ms ease",
   transitionBehavior: "allow-discrete",
   "&:popover-open": {
     display: "flex",
     opacity: "1",
-    transform: "translateY(0)",
   },
   "&:not(:popover-open)": {
     pointerEvents: "none",
@@ -402,12 +411,10 @@ const popoverSurfaceStyles = css({
   "@starting-style": {
     "&:popover-open": {
       opacity: "0",
-      transform: "translateY(-4px)",
     },
   },
   "@media (prefers-reduced-motion: reduce)": {
     transition: "none",
-    transform: "none",
   },
 });
 
@@ -425,30 +432,35 @@ const optionListStyles = css({
 
 const optionStyles = css({
   position: "relative",
-  minHeight: "42px",
+  // Same height as the trigger so every option reads as an extension of it.
+  minHeight: "var(--runner-row-height)",
   display: "grid",
-  gridTemplateColumns: "22px 1fr 16px",
+  // Mirrors the trigger's icon, label, and chevron positions.
+  gridTemplateColumns: "19px minmax(0, 1fr) 15px",
   alignItems: "center",
-  gap: "9px",
-  padding: "0 10px",
+  gap: "8px",
+  padding: "0 12px",
   boxSizing: "border-box",
-  borderRadius: "8px",
+  background: "var(--runner-option-bg, transparent)",
   color: "rgba(255, 255, 255, 0.74)",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.normal,
-  fontSize: "14px",
+  fontSize: "13px",
   lineHeight: "1",
   cursor: "pointer",
   userSelect: "none",
   "&:focus": {
     outline: "none",
   },
-  "&[data-highlighted='true']": {
-    background:
-      "color-mix(in srgb, var(--brand-cycle, #2dacf9) 14%, rgba(255, 255, 255, 0.04))",
-    color: "#ffffff",
-  },
+  // The selected option wears the trigger's resting color, and the highlight
+  // matches the trigger's hover color. Highlight is declared last so it wins.
   "&[aria-selected='true']": {
+    "--runner-option-bg": "var(--runner-trigger-bg)",
+    color: "#ffffff",
+    fontWeight: theme.fontWeight.medium,
+  },
+  "&[data-highlighted='true']": {
+    "--runner-option-bg": "var(--runner-trigger-highlight-bg)",
     color: "#ffffff",
   },
   "& [data-runner-check]": {
