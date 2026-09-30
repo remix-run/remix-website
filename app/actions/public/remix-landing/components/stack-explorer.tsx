@@ -308,7 +308,7 @@ function TogglePreview() {
       <div mix={[skeletonControlRowStyles]}>
         <span mix={[skeletonControlCopyStyles]}>
           <span mix={[formLabelStyles]}>Public release</span>
-          <span mix={[formHintStyles]}>Visible in your catalogue</span>
+          <span mix={[formHintStyles]}>Visible in your catalog</span>
         </span>
         <span mix={[skeletonToggleStyles]}>
           <span />
@@ -422,7 +422,7 @@ function MenusPreview() {
       <div mix={[staticMenuStyles]}>
         <span>Edit album</span>
         <span>Share album</span>
-        <span mix={[staticSubmenuRowStyles]}>✓&nbsp; Favourite</span>
+        <span mix={[staticSubmenuRowStyles]}>✓&nbsp; Favorite</span>
       </div>
       <div mix={[overlayContentStyles]}>
         <span mix={[overlayHeroStyles]} />
@@ -763,7 +763,7 @@ const cardStyles = css({
   borderRadius: "28px",
   backdropFilter: "blur(12px)",
   WebkitBackdropFilter: "blur(12px)",
-  background: "rgba(0, 0, 0, 0.58)",
+  background: colors.cardBg,
   overflow: "hidden",
 });
 

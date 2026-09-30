@@ -72,7 +72,7 @@ async function createStackExplorerCodeHighlights() {
 function getStackExplorerHighlighter() {
   return (highlighterPromise ??= getHighlighter({
     themes: [stackExplorerTheme],
-    langs: ["tsx", "css"],
+    langs: ["tsx", "css", "sql"],
   }));
 }
 

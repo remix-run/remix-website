@@ -32,11 +32,10 @@ const panelStyles = css({
   borderRadius: "24px",
   backdropFilter: "blur(12px)",
   WebkitBackdropFilter: "blur(12px)",
-  background: "rgba(0, 0, 0, 0.64)",
+  background: colors.cardBg,
   contain: "paint",
   [breakpointMedia.lg]: {
     padding: "48px",
-    background: "rgba(0, 0, 0, 0.58)",
   },
 });
 
@@ -703,12 +702,11 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                   borderRadius: "24px",
                   backdropFilter: "blur(10px)",
                   WebkitBackdropFilter: "blur(10px)",
-                  background: "rgba(0, 0, 0, 0.72)",
+                  background: colors.cardBg,
                   overflow: "hidden",
                   contain: "paint",
                   [breakpointMedia.lg]: {
                     gridColumn: "6 / -1",
-                    background: "rgba(0, 0, 0, 0.38)",
                   },
                 }),
               ]}
@@ -743,11 +741,10 @@ export function FeatureSection(handle: Handle<FeatureSectionProps>) {
                   borderRadius: "24px",
                   backdropFilter: "blur(10px)",
                   WebkitBackdropFilter: "blur(10px)",
-                  background: "rgba(0, 0, 0, 0.72)",
+                  background: colors.cardBg,
                   contain: "paint",
                   [breakpointMedia.lg]: {
                     gridColumn: "6 / -1",
-                    background: "rgba(0, 0, 0, 0.46)",
                   },
                 }),
               ]}

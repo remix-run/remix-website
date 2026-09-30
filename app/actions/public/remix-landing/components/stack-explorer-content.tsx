@@ -44,14 +44,14 @@ export const stackCategories = [
     label: "Server",
     introTitle: "Build a complete server with Web APIs",
     introBody:
-      "Route standard web Requests through middleware and typed controllers, then return standard Responses for HTML, JSON, redirects, files, and streams.",
+      "Route standard Web Requests through typed middleware and Controllers, then return standard Responses for HTML, JSON, redirects, files, and streams.",
     showExampleCopy: true,
     examples: [
       {
         id: "request",
         label: "Request",
         title: "Receive a standard Request",
-        body: "Your server adapter turns an incoming HTTP request into a Web Request, then hands it to the router. The request remains the common language all the way through.",
+        body: "Your server adapter turns an incoming HTTP request into a Web Request, then hands it to the router. The Request remains the common language all the way through.",
         code: `import { createRequestListener } from "remix/node-fetch-server"
 import { router } from "./app/router.ts"
 
@@ -65,7 +65,7 @@ server.listen(3000)`,
         id: "middleware",
         label: "Middleware",
         title: "Run middleware before and after your routes",
-        body: "Middleware runs before route matching. Each layer can enrich the request context, wrap the response, or answer early when it owns the request.",
+        body: "Middleware runs before route matching. Each layer can enrich the Controller's context, wrap the response, or handle the request itself.",
         code: `import { createRouter } from "remix/router"
 import { compression } from "remix/middleware/compression"
 import { formData } from "remix/middleware/form-data"
@@ -92,7 +92,11 @@ export const routes = route({
   albums: {
     show: get("/albums/:albumId"),
   },
-})`,
+})
+
+// Build URLs from the same typed contract:
+// routes.albums.show.href({ albumId: "thriller" })
+// → "/albums/thriller"`,
       },
       {
         id: "resources",
@@ -110,18 +114,18 @@ export const routes = route({
       {
         id: "controllers",
         label: "Controllers",
-        title: "Map controller logic to routes",
-        body: "Controllers turn a route map into complete request handling. Remix checks that each route has an action, rejects unknown names, and gives each action its matching typed params and request context.",
+        title: "Map Controller logic to routes",
+        body: "Controllers turn a route map into complete request handling. Remix checks that each route has an Action, rejects unknown names, and gives each Action its matching typed params and request context.",
         code: `import { createController } from "remix/router"
 import { redirect } from "remix/response/redirect"
 
 export const albumsController = createController(routes.albums, {
   actions: {
-    async index({ get }) {
+    async index({ get, render }) {
       let allAlbums = await get(db).findMany(albums)
       return render(<AlbumList albums={allAlbums} />)
     },
-    async show({ params, get }) {
+    async show({ params, get, render }) {
       let album = await get(db).find(params.albumId)
       return render(<AlbumPage album={album} />)
     },
@@ -138,19 +142,19 @@ router.map(routes.albums, albumsController)`,
         id: "rendering",
         label: "Rendering",
         title: "Stream UI from the server",
-        body: "Render JSX on the server and return it as an HTML response. The renderer produces a standard web stream that fits directly into the platform Response API.",
+        body: "Add the render middleware once, then render JSX from any Action. Remix streams the HTML to the browser as a standard Response, with whatever status and headers you pass.",
         filename: "render.tsx",
-        code: `import { createHtmlResponse } from "remix/response/html"
-import { renderToStream } from "remix/ui/server"
+        code: `import { render } from "remix/middleware/render"
+import { createRouter } from "remix/router"
 
-async function show({ params, get }) {
-  let album = await get(db).find(params.albumId)
+let router = createRouter({
+  middleware: [render({ assets })],
+})
 
-  let stream = renderToStream(
-    <AlbumPage album={album} />,
-  )
+async function show(context) {
+  let album = await context.get(db).find(context.params.albumId)
 
-  return createHtmlResponse(stream)
+  return context.render(<AlbumPage album={album} />)
 }`,
       },
       {
@@ -194,16 +198,15 @@ export let db = createPostgresDatabase(pool)`,
       {
         id: "migrations",
         label: "Migrations",
-        title: "Keep database changes in migrations",
-        body: "Evolve your schema with ordered up and down SQL, built-in database lifecycle commands, checksum drift detection, and transactional execution where supported.",
-        filename: "migrate.ts",
-        code: `import { loadMigrations } from "remix/data-table/migrations/node"
-
-let migrations = await loadMigrations(
-  "./db/migrations",
-)
-
-await db.migrate(migrations)`,
+        title: "Keep database changes in SQL migrations",
+        body: "Write each schema change as plain SQL in a timestamped migration directory, with an optional down.sql to roll it back. Remix applies migrations in order, detects checksum drift, and runs each one in a transaction where the database supports it.",
+        filename: "20260301113000_create_albums/up.sql",
+        code: `create table albums (
+  id integer primary key,
+  title text not null,
+  artist_id integer references artists (id),
+  year integer
+);`,
       },
       {
         id: "tables",
@@ -338,7 +341,7 @@ if (cover instanceof File) {
     label: "Auth",
     introTitle: "Authenticate users and manage sessions",
     introBody:
-      "Authenticate users with credentials or external providers, resolve each request to a typed identity, protect routes with middleware, and keep session data on the server while the browser holds only a secure session cookie.",
+      "Authenticate users with credentials or external providers, resolve each request to a typed identity, protect routes with middleware, and store session data on the server behind a signed session cookie.",
     showExampleCopy: true,
     examples: [
       {
@@ -363,7 +366,7 @@ export let loadAuth = auth({
         id: "credentials",
         label: "Credentials",
         title: "Build a standard password login",
-        body: "Verify credentials, establish the authenticated session, and redirect. Failed credentials stay an ordinary, renderable response.",
+        body: "Check submitted credentials with your own verification logic, then start an authenticated session. Remix handles the protocol work, like rotating the session ID on sign-in, while your route decides what happens next.",
         code: `import {
   completeAuth,
   verifyCredentials,
@@ -372,7 +375,7 @@ import { redirect } from "remix/response/redirect"
 
 async function login(context) {
   let user = await verifyCredentials(provider, context)
-  if (!user) return render(<LoginPage />, { status: 400 })
+  if (!user) return context.render(<LoginPage />, { status: 400 })
 
   let session = completeAuth(context)
   session.set("auth", { userId: user.id })
@@ -424,14 +427,14 @@ async function addToCart({ get, params }) {
         id: "protection",
         label: "Access control",
         title: "Protect routes and data",
-        body: "Gate route areas with middleware, then keep resource ownership checks beside the data they protect.",
+        body: "Protect a whole Controller with auth middleware, then read the typed identity in each of its Actions.",
         code: `import { Auth, requireAuth } from "remix/middleware/auth"
 import { createController } from "remix/router"
 
 const account = createController(routes.account, {
   middleware: [requireAuth()],
   actions: {
-    async index({ get }) {
+    async index({ get, render }) {
       let auth = get(Auth)
       return render(<AccountPage user={auth.identity} />)
     },
@@ -445,7 +448,7 @@ const account = createController(routes.account, {
     label: "Assets",
     introTitle: "Serve source modules without a build step",
     introBody:
-      "Compile TypeScript, JavaScript, and CSS on demand, serve native browser modules with import maps and independently fingerprinted dependencies, dynamically transform files, and hot reload code instantly during development.",
+      "Compile TypeScript, JavaScript, and CSS on demand, transform files on the fly, and serve them as native browser modules with import maps. During development, code hot reloads instantly.",
     showExampleCopy: true,
     examples: [
       {
@@ -484,14 +487,22 @@ let entry = await assets.getScriptEntry(
         id: "caching",
         label: "Caching",
         title: "Keep unchanged assets cached",
-        body: "Content fingerprints give every production asset an immutable URL. Browsers can cache it for a year because changed content always gets a new address.",
+        body: "Production uses the same asset server as development, with optimizations turned on. Minify the output and fingerprint every file by its content, so browsers can cache it for a year and still get new URLs the moment it changes.",
         filename: "assets.ts",
         code: `import { createAssetServer } from "remix/assets"
 
 let assets = createAssetServer({
-  watch: false,
+  basePath: "/assets",
+  allowFiles: ["app/**/public/**"],
+  minify: true,
   fingerprint: true,
-})`,
+  // Fingerprints assume files won't change on disk
+  watch: false,
+})
+
+// /assets/app/public/entry.ts is served as
+// /assets/app/public/entry.@3f9a1c2e.ts with
+// Cache-Control: public, max-age=31536000, immutable`,
       },
       {
         id: "import-maps",
@@ -507,8 +518,13 @@ let { href, importMap } =
     "app/actions/public/entry.ts",
   )
 
-<ImportMap value={importMap} />
-<script type="module" src={href} />`,
+<html>
+  <head>
+    <ImportMap value={importMap} />
+    <script type="module" src={href} />
+  </head>
+  <body>{children}</body>
+</html>`,
       },
       {
         id: "preloads",
@@ -524,17 +540,22 @@ let { href, importMap, preloads } =
     "app/actions/public/entry.ts",
   )
 
-<ImportMap value={importMap} />
-{preloads.map((href) => (
-  <link rel="modulepreload" href={href} />
-))}
-<script type="module" src={href} />`,
+<html>
+  <head>
+    <ImportMap value={importMap} />
+    {preloads.map((href) => (
+      <link rel="modulepreload" href={href} />
+    ))}
+    <script type="module" src={href} />
+  </head>
+  <body>{children}</body>
+</html>`,
       },
       {
         id: "css",
         label: "CSS",
         title: "Load CSS through the asset server",
-        body: "Compile CSS on request and rewrite local imports, images, fonts, and other URLs through the same asset pipeline.",
+        body: "Write modern CSS and let the asset server compile it for your browser targets. Relative @import and url() references resolve through the same pipeline, and production CSS is minified and fingerprinted just like your scripts.",
         filename: "app.css",
         code: `@import "./reset.css";
 
@@ -576,7 +597,7 @@ let assets = createAssetServer({
         id: "hmr",
         label: "HMR",
         title: "See component changes without a full reload",
-        body: "During development, Remix swaps compatible component implementations in place, preserving their identity and local state. Other server changes fall back to a coordinated restart when needed.",
+        body: "During development, hot module replacement (HMR) swaps compatible component implementations in place, preserving their identity and local state. Other server changes fall back to a coordinated restart when needed.",
         filename: "assets.ts",
         code: `import { createAssetServer } from "remix/assets"
 import { uiHmr } from "remix/ui-hmr/assets"
@@ -606,15 +627,18 @@ let assets = createAssetServer({
       {
         id: "component-model",
         label: "Component model",
-        title: "Keep components on the server by default",
-        body: "Component code stays on the server unless a component specifically needs browser behavior.",
+        title: "Set up once, render on every update",
+        body: "A component is a setup function that returns a render function. Setup runs once per instance, so it’s where local variables and listeners live. Render runs on the first render and again on every update.",
         filename: "album-card.tsx",
         code: `import { type Handle } from "remix/ui"
 
 function AlbumCard(
   handle: Handle<{ album: Album }>,
 ) {
+  // Setup: runs once per component instance
+
   return () => (
+    // Render: runs on every update
     <article>
       <h2>{handle.props.album.title}</h2>
       <p>{handle.props.album.artist} ({handle.props.album.year})</p>
@@ -625,12 +649,13 @@ function AlbumCard(
       {
         id: "hydration",
         label: "Hydration",
-        title: "Hydrate a browser enhancement",
+        title: "Hydrate only the interactive parts",
         body: (
           <>
-            Mark the components that need events or browser APIs with{" "}
-            <CodeSnippet>clientEntry()</CodeSnippet>. Remix renders them on the
-            server, then hydrates that individual component in place.
+            Mark components that need state, event handlers, or browser APIs
+            with <CodeSnippet>clientEntry()</CodeSnippet>. Remix renders them on
+            the server with the rest of the page, then hydrates just those
+            components in the browser.
           </>
         ),
         filename: "copy-link.tsx",
@@ -653,7 +678,7 @@ export let CopyLink = clientEntry(
         id: "state",
         label: "State",
         title: "Keep state in ordinary variables",
-        body: "Keep local component state in regular JavaScript variables, then explicitly schedule a render when it changes. There are no hooks, state containers or implicit reactivity to learn.",
+        body: "Keep local component state in regular JavaScript variables, then explicitly schedule a render when it changes. There are no hooks, state management libraries, or reactivity systems to learn.",
         filename: "counter.tsx",
         code: `import { clientEntry, on, type Handle } from "remix/ui"
 
@@ -682,7 +707,8 @@ export let Counter = clientEntry(
             A <CodeSnippet>{"<Frame>"}</CodeSnippet> connects a region of the
             page to its own route. Render it during the initial request or
             stream it later, then reload it or point it at another route without
-            replacing the surrounding UI.
+            replacing the surrounding UI. The route just returns HTML, and Remix
+            reconciles it into the page in place.
           </>
         ),
         filename: "dashboard.tsx",
@@ -706,16 +732,16 @@ function Dashboard() {
         id: "mixins",
         label: "Mixins",
         title: "Enhance an element in place with mixins",
-        body: "Attach events, attributes, navigation, refs, and reusable behaviors without wrapping or replacing the host element.",
-        filename: "save-button.tsx",
+        body: "Attach events and attributes with built-in mixins, or package your own reusable behavior as a mixin, all without wrapping or replacing the element.",
+        filename: "album-toolbar.tsx",
         code: `import { attrs, on } from "remix/ui"
+import { tooltip } from "./tooltip.ts"
 
 <button
   mix={[
-    attrs({ "aria-label": "Save draft" }),
-    on("click", (_, signal) =>
-      saveDraft({ signal })
-    ),
+    attrs({ "aria-keyshortcuts": "Meta+S" }),
+    tooltip("Save draft (⌘S)"),
+    on("click", (_, signal) => saveDraft({ signal })),
   ]}
 >
   Save changes
@@ -725,7 +751,7 @@ function Dashboard() {
         id: "styling",
         label: "Styling",
         title: "Define dynamic styling inline in JavaScript",
-        body: "Write colocated styles as data and let Remix produce static, browser-native CSS, both on the server and dynamically in the browser.",
+        body: "Write styles as typed objects right next to your markup. Remix turns them into static, browser-native CSS, both on the server and dynamically in the browser.",
         filename: "button.tsx",
         code: `import { css } from "remix/ui"
 
@@ -769,7 +795,7 @@ function Header(handle: Handle) {
         id: "forms",
         label: "Forms",
         title: "Send mutations through ordinary forms",
-        body: "Post directly to typed routes and let the server return HTML, validation errors, or redirects, and optionally layer on client behavior.",
+        body: "Post directly to typed routes and let the server respond with HTML, validation errors, or a redirect.",
         filename: "new-album.tsx",
         code: `<form
   method="post"
@@ -786,7 +812,7 @@ function Header(handle: Handle) {
         id: "spa",
         label: "SPA",
         title: "Optionally render your entire app on the client",
-        body: "Run the same Remix route contract in the browser, including middleware, redirects, and standard Responses.",
+        body: "Run your app as a single-page app (SPA) with the same Remix route contract in the browser, including middleware, redirects, and standard Responses.",
         filename: "entry.tsx",
         code: `import { createRouter } from "remix/router"
 import { render, run } from "remix/spa"
@@ -808,7 +834,7 @@ await app.ready()`,
     label: "Primitives",
     introTitle: "Create accessible controls from your own markup",
     introBody:
-      "Compose unstyled primitives and mixins with your own markup and CSS. Remix handles focus, keyboard navigation, selection, dismissal, and the interaction details people expect.",
+      "Compose unstyled primitives and mixins with your own markup and CSS. Remix handles focus, keyboard navigation, selection, dismissal, and the ARIA roles and attributes that make them accessible.",
     examples: [
       {
         id: "menus",
@@ -830,9 +856,9 @@ import * as menu from "remix/ui/menu/primitives"
         Edit album
       </div>
       <div mix={[menu.item({
-        name: "favourite", type: "checkbox", checked: true,
+        name: "favorite", type: "checkbox", checked: true,
       }), css({/*...*/})]}>
-        Favourite
+        Favorite
       </div>
     </div>
   </div>
@@ -1138,6 +1164,8 @@ export const stackExplorerCodeSamples = stackCategories.flatMap((category) =>
     language:
       "filename" in example && example.filename.endsWith(".css")
         ? "css"
-        : "tsx",
+        : "filename" in example && example.filename.endsWith(".sql")
+          ? "sql"
+          : "tsx",
   })),
 );

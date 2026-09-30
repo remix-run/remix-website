@@ -201,7 +201,7 @@ const differentiatorContentStyles = css({
   borderRadius: "28px",
   backdropFilter: "blur(12px)",
   WebkitBackdropFilter: "blur(12px)",
-  background: "rgba(0, 0, 0, 0.58)",
+  background: colors.cardBg,
   overflow: "hidden",
 });
 

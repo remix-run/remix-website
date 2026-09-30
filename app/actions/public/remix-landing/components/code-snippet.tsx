@@ -9,7 +9,7 @@ const codeStyles = css({
   fontWeight: theme.fontWeight.normal,
   lineHeight: "1",
   color: "#ffffff",
-  backgroundColor: colors.panelStrong,
+  backgroundColor: "rgba(5, 8, 16, 0.82)",
   border: `1px solid ${colors.line}`,
   borderRadius: "4px",
   padding: "5px 8px",
