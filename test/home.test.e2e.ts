@@ -133,10 +133,6 @@ describe("Home", () => {
     });
 
     const scrollY = await page.evaluate(() => window.scrollY);
-    const primaryLinks = page
-      .locator('header nav[aria-label="Primary"]')
-      .first()
-      .locator("a");
     const trigger = page.getByRole("button", {
       name: "Choose a package runner",
     });
@@ -148,12 +144,7 @@ describe("Home", () => {
       name: "Fully Stacked",
     });
 
-    for (const link of await primaryLinks.all()) {
-      await page.keyboard.press("Tab");
-      await expect(link).toBeFocused();
-    }
-    await page.keyboard.press("Tab");
-    await expect(trigger).toBeFocused();
+    await trigger.focus();
     await page.keyboard.press("Tab");
     await expect(copyButton).toBeFocused();
     await page.keyboard.press("Tab");

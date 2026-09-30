@@ -167,14 +167,16 @@ const NAV_ITEMS = [
 
 type NavItem = (typeof NAV_ITEMS)[number];
 
-function isInteractiveKeyTarget(event: KeyboardEvent) {
+// Controls that own arrow keys or typeahead themselves. Plain links and buttons
+// are not included so shortcuts keep working after one is clicked.
+function isKeyHandlingTarget(event: KeyboardEvent) {
   if (isEditableKeyTarget(event)) return true;
 
   const target = event.target;
   return (
     target instanceof Element &&
     target.closest(
-      "a[href], button, select, [role='listbox'], [role='menu']",
+      "select, [aria-haspopup], [role='listbox'], [role='menu']",
     ) !== null
   );
 }
@@ -224,7 +226,7 @@ export function LandingNav(
     (event) => {
       if (event.defaultPrevented) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
-      if (isInteractiveKeyTarget(event)) return;
+      if (isKeyHandlingTarget(event)) return;
 
       if (event.key === "Escape" && menuOpen) {
         event.preventDefault();

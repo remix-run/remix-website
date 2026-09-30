@@ -75,7 +75,7 @@ export let CreateRemixCommand = clientEntry(
       }
 
       try {
-        await copyText(runner.command);
+        await navigator.clipboard.writeText(runner.command);
         if (handle.signal.aborted || requestId !== copyRequestId) return;
         copyStatus = "copied";
       } catch {
@@ -149,6 +149,11 @@ function PackageRunnerSelect(
     onChange: (runner: PackageRunner) => void;
   }>,
 ) {
+  // Workaround: as of remix 3.0.0-rc.4, opening the select focuses its list
+  // before the popover is anchored, which scrolls the page (~950px in the e2e
+  // test). Remember the scroll position when opening and put it back. Remove
+  // once the `remix/ui/select` focus scroll is fixed upstream; the Home e2e
+  // test "keeps create-command menu keyboard interactions local" covers it.
   let scrollPosition = { x: 0, y: 0 };
   let restoreFrame = 0;
 
@@ -255,23 +260,6 @@ function PackageRunnerSelect(
       </select.Context>
     );
   };
-}
-
-async function copyText(text: string) {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-  document.body.appendChild(textarea);
-  textarea.select();
-  const copied = document.execCommand("copy");
-  textarea.remove();
-  if (!copied) throw new Error("Copy command was unavailable");
 }
 
 const shellStyles = css({

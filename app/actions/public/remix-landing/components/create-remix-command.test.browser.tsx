@@ -1,5 +1,5 @@
 import { expect } from "remix/assert";
-import { describe, it } from "remix/test";
+import { describe, it, type TestContext } from "remix/test";
 import { render } from "remix/ui/test";
 
 import { CreateRemixCommand } from "./create-remix-command.tsx";
@@ -7,25 +7,9 @@ import { CreateRemixCommand } from "./create-remix-command.tsx";
 describe("CreateRemixCommand", () => {
   it("switches package runners and copies the selected command", async (t) => {
     let copiedText = "";
-    let clipboardDescriptor = Object.getOwnPropertyDescriptor(
-      navigator,
-      "clipboard",
-    );
-    Object.defineProperty(navigator, "clipboard", {
-      configurable: true,
-      value: {
-        writeText(text: string) {
-          copiedText = text;
-          return Promise.resolve();
-        },
-      },
-    });
-    t.after(() => {
-      if (clipboardDescriptor) {
-        Object.defineProperty(navigator, "clipboard", clipboardDescriptor);
-      } else {
-        Reflect.deleteProperty(navigator, "clipboard");
-      }
+    stubClipboard(t, (text) => {
+      copiedText = text;
+      return Promise.resolve();
     });
 
     let result = render(
@@ -36,35 +20,17 @@ describe("CreateRemixCommand", () => {
     t.after(result.cleanup);
     window.scrollTo(0, 0);
 
-    let runnerButton = result.container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Choose a package runner"]',
-    )!;
+    let runnerButton = getRunnerButton(result.container);
     let scrollYBeforeOpen = window.scrollY;
     await result.act(() => runnerButton.click());
     expect(window.scrollY).toBe(scrollYBeforeOpen);
 
-    let pnpmOption = Array.from(
-      result.container.querySelectorAll<HTMLElement>('[role="option"]'),
-    ).find((option) => option.textContent?.includes("pnpm"))!;
-    let selected = new Promise<void>((resolve) => {
-      runnerButton.addEventListener("rmx:select-change", () => resolve(), {
-        once: true,
-      });
-    });
-    await result.act(async () => {
-      pnpmOption.click();
-      await selected;
-    });
-
+    await chooseRunner(result, "pnpm");
     expect(result.container.querySelector("code")?.textContent).toBe(
       "pnpm dlx remix@next new my-app",
     );
 
-    let copyButton = result.container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Copy create command"]',
-    )!;
-    await result.act(() => copyButton.click());
-
+    await result.act(() => getCopyButton(result.container).click());
     expect(copiedText).toBe("pnpm dlx remix@next new my-app");
   });
 
@@ -74,53 +40,20 @@ describe("CreateRemixCommand", () => {
     let writeFinished = new Promise<void>((resolve) => {
       resolveWrite = resolve;
     });
-    let clipboardDescriptor = Object.getOwnPropertyDescriptor(
-      navigator,
-      "clipboard",
-    );
-    Object.defineProperty(navigator, "clipboard", {
-      configurable: true,
-      value: {
-        writeText(text: string) {
-          copiedText = text;
-          return writeFinished;
-        },
-      },
-    });
-    t.after(() => {
-      if (clipboardDescriptor) {
-        Object.defineProperty(navigator, "clipboard", clipboardDescriptor);
-      } else {
-        Reflect.deleteProperty(navigator, "clipboard");
-      }
+    stubClipboard(t, (text) => {
+      copiedText = text;
+      return writeFinished;
     });
 
     let result = render(<CreateRemixCommand />);
     t.after(result.cleanup);
 
-    let runnerButton = result.container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Choose a package runner"]',
-    )!;
-    let copyButton = result.container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Copy create command"]',
-    )!;
+    let copyButton = getCopyButton(result.container);
     await result.act(() => copyButton.click());
     expect(copiedText).toBe("npx remix@next new my-app");
 
-    await result.act(() => runnerButton.click());
-    let pnpmOption = Array.from(
-      result.container.querySelectorAll<HTMLElement>('[role="option"]'),
-    ).find((option) => option.textContent?.includes("pnpm"))!;
-    let selected = new Promise<void>((resolve) => {
-      runnerButton.addEventListener("rmx:select-change", () => resolve(), {
-        once: true,
-      });
-    });
-    await result.act(async () => {
-      pnpmOption.click();
-      await selected;
-    });
-
+    await result.act(() => getRunnerButton(result.container).click());
+    await chooseRunner(result, "pnpm");
     await result.act(async () => {
       resolveWrite();
       await writeFinished;
@@ -134,4 +67,69 @@ describe("CreateRemixCommand", () => {
       "",
     );
   });
+
+  it("announces when the clipboard rejects the copy", async (t) => {
+    stubClipboard(t, () => Promise.reject(new Error("Permission denied")));
+
+    let result = render(<CreateRemixCommand />);
+    t.after(result.cleanup);
+
+    let copyButton = getCopyButton(result.container);
+    await result.act(() => copyButton.click());
+
+    expect(copyButton.dataset.copyStatus).toBe("error");
+    expect(result.container.querySelector('[role="status"]')?.textContent).toBe(
+      "Unable to copy the create command",
+    );
+  });
 });
+
+type RenderResult = ReturnType<typeof render>;
+
+function stubClipboard(
+  t: TestContext,
+  writeText: (text: string) => Promise<void>,
+) {
+  let descriptor = Object.getOwnPropertyDescriptor(navigator, "clipboard");
+  Object.defineProperty(navigator, "clipboard", {
+    configurable: true,
+    value: { writeText },
+  });
+  t.after(() => {
+    if (descriptor) {
+      Object.defineProperty(navigator, "clipboard", descriptor);
+    } else {
+      Reflect.deleteProperty(navigator, "clipboard");
+    }
+  });
+}
+
+function getRunnerButton(container: HTMLElement) {
+  return container.querySelector<HTMLButtonElement>(
+    'button[aria-label="Choose a package runner"]',
+  )!;
+}
+
+function getCopyButton(container: HTMLElement) {
+  return container.querySelector<HTMLButtonElement>(
+    'button[aria-label="Copy create command"]',
+  )!;
+}
+
+/** Clicks an option in the open menu and waits for the select to commit it. */
+async function chooseRunner(result: RenderResult, label: string) {
+  let option = Array.from(
+    result.container.querySelectorAll<HTMLElement>('[role="option"]'),
+  ).find((option) => option.textContent?.trim() === label)!;
+  let selected = new Promise<void>((resolve) => {
+    getRunnerButton(result.container).addEventListener(
+      "rmx:select-change",
+      () => resolve(),
+      { once: true },
+    );
+  });
+  await result.act(async () => {
+    option.click();
+    await selected;
+  });
+}

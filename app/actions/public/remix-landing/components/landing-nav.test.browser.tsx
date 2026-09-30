@@ -41,6 +41,34 @@ describe("LandingNav", () => {
     expect(onJump).toHaveBeenCalledTimes(2);
   });
 
+  it("keeps section shortcuts working while a link or button has focus", async (t) => {
+    let onJump = t.mock.fn<(index: number) => void>();
+    let result = render(
+      <div>
+        <a href="#section">Section</a>
+        <button type="button">Copy</button>
+        <LandingNav
+          activeIndexRef={{ current: 0 }}
+          totalSections={3}
+          onJump={onJump}
+          scrollYRef={{ current: 0 }}
+          shouldBlockBlogShortcut={() => false}
+        />
+      </div>,
+    );
+    t.after(result.cleanup);
+
+    let link = result.container.querySelector("a")!;
+    link.focus();
+    await result.act(() => link.dispatchEvent(keydown("ArrowDown")));
+    expect(onJump).toHaveBeenCalledTimes(1);
+
+    let button = result.container.querySelector("button")!;
+    button.focus();
+    await result.act(() => button.dispatchEvent(keydown("ArrowDown")));
+    expect(onJump).toHaveBeenCalledTimes(2);
+  });
+
   it("keeps package-runner typeahead out of global navigation shortcuts", async (t) => {
     let shouldBlockBlogShortcut = t.mock.fn(() => true);
     let result = render(
