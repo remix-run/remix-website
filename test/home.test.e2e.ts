@@ -191,9 +191,9 @@ describe("Home", () => {
     await expect(trigger).toContainText("Bun");
     await expect(
       page.locator("code").filter({
-        hasText: `bunx remix@next new ${landingContent.projectDirectory}`,
+        hasText: `bunx remix new ${landingContent.projectDirectory}`,
       }),
-    ).toHaveText(`bunx remix@next new ${landingContent.projectDirectory}`);
+    ).toHaveText(`bunx remix new ${landingContent.projectDirectory}`);
     await expect(page).toHaveURL(new RegExp(`${routes.home.href()}$`));
   });
 

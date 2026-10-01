@@ -111,7 +111,7 @@ describe("LandingNav", () => {
     });
 
     expect(result.container.querySelector("code")?.textContent).toBe(
-      `bunx remix@next new ${landingContent.projectDirectory}`,
+      `bunx remix new ${landingContent.projectDirectory}`,
     );
     expect(onJump).not.toHaveBeenCalled();
   });
