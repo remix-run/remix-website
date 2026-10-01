@@ -751,7 +751,7 @@ import { tooltip } from "./tooltip.ts"
       {
         id: "styling",
         label: "Styling",
-        title: "Define dynamic styling inline in JavaScript",
+        title: "Define dynamic styling inline in TypeScript",
         body: "Write styles as typed objects right next to your markup. Remix turns them into static, browser-native CSS, both on the server and dynamically in the browser.",
         filename: "button.tsx",
         code: `import { css } from "remix/ui"

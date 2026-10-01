@@ -31,7 +31,6 @@ export let StackExplorer = clientEntry(
   ) {
     let categoryId: string = stackCategories[0].id;
     let exampleId: string = stackCategories[0].examples[0].id;
-    let transitionLevel: "category" | "example" = "category";
     return () => {
       let category: StackCategory =
         stackCategories.find((candidate) => candidate.id === categoryId) ??
@@ -51,12 +50,6 @@ export let StackExplorer = clientEntry(
           filename={example.filename ?? "app.tsx"}
         />
       );
-      let contentEntrance = animateEntrance({
-        opacity: 0,
-        transform: "translateY(8px)",
-        ...spring("snappy"),
-      });
-
       return (
         <section id="everything-you-need" mix={[sectionStyles]}>
           <div mix={[cardSlotStyles]}>
@@ -68,7 +61,6 @@ export let StackExplorer = clientEntry(
                 );
                 if (!nextCategory) return;
 
-                transitionLevel = "category";
                 categoryId = nextCategory.id;
                 exampleId = nextCategory.examples[0].id;
                 void handle.update();
@@ -117,7 +109,6 @@ export let StackExplorer = clientEntry(
                             return;
                           }
 
-                          transitionLevel = "example";
                           exampleId = nextExampleId;
                           void handle.update();
                         }}
@@ -125,12 +116,7 @@ export let StackExplorer = clientEntry(
                         <div
                           key={category.id}
                           data-stack-category-content={category.id}
-                          mix={[
-                            tabs.root(),
-                            ...(transitionLevel === "category"
-                              ? [contentEntrance]
-                              : []),
-                          ]}
+                          mix={tabs.root()}
                         >
                           {hasCategoryIntro ? (
                             <div data-category-intro="" mix={[copyStyles]}>
@@ -183,9 +169,6 @@ export let StackExplorer = clientEntry(
                                     exampleContentStyles,
                                     ...(editorPreview
                                       ? [editorExampleContentStyles]
-                                      : []),
-                                    ...(transitionLevel === "example"
-                                      ? [contentEntrance]
                                       : []),
                                   ]}
                                 >
