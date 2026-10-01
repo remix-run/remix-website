@@ -258,21 +258,22 @@ describe("Home", () => {
       name: "Server",
       exact: true,
     });
-    const typescript = assetExamples.getByRole("tab", {
-      name: "TypeScript",
-      exact: true,
-    });
     const caching = assetExamples.getByRole("tab", {
       name: "Caching",
+      exact: true,
+    });
+    const importMaps = assetExamples.getByRole("tab", {
+      name: "Import maps",
       exact: true,
     });
 
     await expect(assetServer).toHaveAttribute("aria-selected", "true");
     await assetServer.focus();
     await assetServer.press("ArrowRight");
-    await expect(typescript).toBeFocused();
-    await typescript.press("ArrowRight");
     await expect(caching).toBeFocused();
     await expect(caching).toHaveAttribute("aria-selected", "true");
+    await caching.press("ArrowRight");
+    await expect(importMaps).toBeFocused();
+    await expect(importMaps).toHaveAttribute("aria-selected", "true");
   });
 });

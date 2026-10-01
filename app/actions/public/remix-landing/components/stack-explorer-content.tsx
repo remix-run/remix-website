@@ -62,26 +62,6 @@ let server = http.createServer(
 server.listen(3000)`,
       },
       {
-        id: "middleware",
-        label: "Middleware",
-        title: "Run middleware before and after your routes",
-        body: "Middleware runs before route matching. Each layer can enrich the Controller's context, wrap the response, or handle the request itself.",
-        code: `import { createRouter } from "remix/router"
-import { compression } from "remix/middleware/compression"
-import { formData } from "remix/middleware/form-data"
-import { logger } from "remix/middleware/logger"
-import { session } from "remix/middleware/session"
-
-const router = createRouter({
-  middleware: [
-    logger(),
-    compression(),
-    formData(),
-    session(cookie, storage),
-  ],
-})`,
-      },
-      {
         id: "routes",
         label: "Routes",
         title: "Define your routes as data",
@@ -137,6 +117,26 @@ export const albumsController = createController(routes.albums, {
 })
 
 router.map(routes.albums, albumsController)`,
+      },
+      {
+        id: "middleware",
+        label: "Middleware",
+        title: "Run middleware before and after your routes",
+        body: "Middleware runs before route matching. Each layer can enrich the Controller's context, wrap the response, or handle the request itself.",
+        code: `import { createRouter } from "remix/router"
+import { compression } from "remix/middleware/compression"
+import { formData } from "remix/middleware/form-data"
+import { logger } from "remix/middleware/logger"
+import { session } from "remix/middleware/session"
+
+const router = createRouter({
+  middleware: [
+    logger(),
+    compression(),
+    formData(),
+    session(cookie, storage),
+  ],
+})`,
       },
       {
         id: "rendering",
@@ -410,33 +410,44 @@ export function login(context) {
         id: "sessions",
         label: "Sessions",
         title: "Persist state between requests",
-        body: "Read, update, flash, and rotate per-browser state without exposing implementation details to the client.",
-        code: `import { redirect } from "remix/response/redirect"
-import { Session } from "remix/session"
+        body: "Keep login state and other per-browser data between requests. Remix handles loading and saving sessions, with built-in support for one-time flash messages, rotating session IDs on sign-in, and clearing sessions on sign-out.",
+        code: `import {
+  completeAuth,
+  verifyCredentials,
+} from "remix/auth"
+import { redirect } from "remix/response/redirect"
 
-async function addToCart({ get, params }) {
-  let session = get(Session)
-  let cart = session.get("cart") ?? []
+async function login(context) {
+  let user = await verifyCredentials(provider, context)
+  if (!user) return context.render(<LoginPage />, { status: 400 })
 
-  session.set("cart", [...cart, params.productId])
-  session.flash("message", "Added to cart")
-  return redirect(routes.cart.href())
+  let session = completeAuth(context)
+  session.set("auth", { userId: user.id })
+  session.flash("message", "Signed in")
+
+  return redirect(routes.account.href())
 }`,
       },
       {
         id: "protection",
         label: "Access control",
         title: "Protect routes and data",
-        body: "Protect a whole Controller with auth middleware, then read the typed identity in each of its Actions.",
+        body: "Auth middleware protects Controllers and makes the request’s typed identity available for resource ownership checks.",
         code: `import { Auth, requireAuth } from "remix/middleware/auth"
 import { createController } from "remix/router"
 
-const account = createController(routes.account, {
+const ordersController = createController(routes.orders, {
   middleware: [requireAuth()],
   actions: {
-    async index({ get, render }) {
+    async show({ get, params, render }) {
       let auth = get(Auth)
-      return render(<AccountPage user={auth.identity} />)
+      let order = await get(db).find(orders, params.orderId)
+
+      if (!order || order.userId !== auth.identity.id) {
+        return new Response("Not found", { status: 404 })
+      }
+
+      return render(<OrderPage order={order} />)
     },
   },
 })`,
@@ -455,7 +466,7 @@ const account = createController(routes.account, {
         id: "asset-server",
         label: "Server",
         title: "Configure the asset pipeline",
-        body: "Choose which source files and packages are browser-accessible, configure how they’re compiled, and mount the asset server in your application.",
+        body: "Serve TypeScript, JSX, and CSS through one asset server. Choose what’s browser-accessible and let Remix compile it on demand for your target browsers, without a separate build step.",
         filename: "assets.ts",
         code: `import { createAssetServer } from "remix/assets"
 
@@ -467,20 +478,10 @@ export const assets = createAssetServer({
   sourceMaps: "external",
 })
 
+// Requests for allowed TypeScript/JSX source
+// receive compiled JavaScript for the browser.
 router.get("/assets/*", ({ request }) =>
   assets.fetch(request)
-)`,
-      },
-      {
-        id: "typescript",
-        label: "TypeScript",
-        title: "Compile TypeScript on request",
-        body: "Turn TypeScript and JSX source into browser-ready module entries on request, with optional source maps and minification. Each source module remains independently served and cached.",
-        filename: "asset-entry.ts",
-        code: `import { assets } from "./assets.ts"
-
-let entry = await assets.getScriptEntry(
-  "app/actions/player/public/player.ts",
 )`,
       },
       {
@@ -678,7 +679,7 @@ export let CopyLink = clientEntry(
         id: "state",
         label: "State",
         title: "Keep state in ordinary variables",
-        body: "Keep local component state in regular JavaScript variables, then explicitly schedule a render when it changes. There are no hooks, state management libraries, or reactivity systems to learn.",
+        body: "Keep local component state in regular JavaScript variables and tell Remix when to update the UI. There are no hooks, state management libraries, or reactivity systems to learn.",
         filename: "counter.tsx",
         code: `import { clientEntry, on, type Handle } from "remix/ui"
 
