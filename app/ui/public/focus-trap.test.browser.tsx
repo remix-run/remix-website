@@ -1,5 +1,5 @@
 import { expect } from "remix/assert";
-import { render } from "remix/ui/test";
+import { render } from "remix/component/test";
 import { describe, it } from "remix/test";
 import { focusTrap } from "./focus-trap.ts";
 

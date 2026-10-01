@@ -1,4 +1,4 @@
-import { clientEntry, css, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/component";
 import { brandContextMenu } from "./brand-context-menu.ts";
 import { visuallyHiddenStyle } from "./css-mixins.ts";
 import { theme } from "./theme.ts";

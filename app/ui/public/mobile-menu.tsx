@@ -5,7 +5,7 @@ import {
   ref,
   type Handle,
   type RemixNode,
-} from "remix/ui";
+} from "remix/component";
 import { visuallyHiddenStyle } from "./css-mixins.ts";
 import { Icon } from "./icon.tsx";
 import { theme } from "./theme.ts";

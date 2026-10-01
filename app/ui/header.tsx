@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/component";
 
 import { MobileMenu } from "./public/mobile-menu.tsx";
 import { WordmarkLink } from "./public/wordmark-link.tsx";

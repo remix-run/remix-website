@@ -1,6 +1,6 @@
 import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
-import { render } from "remix/ui/test";
+import { render } from "remix/component/test";
 
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
 import { Jam2026NewsletterSignup } from "./newsletter-signup.tsx";

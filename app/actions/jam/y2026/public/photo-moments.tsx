@@ -5,7 +5,7 @@ import {
   ref,
   type Dispatched,
   type Handle,
-} from "remix/ui";
+} from "remix/component";
 import { jamTheme } from "./theme.ts";
 import {
   jam2026WindowSurfaceStyle,

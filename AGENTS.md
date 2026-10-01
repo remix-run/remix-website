@@ -35,7 +35,7 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 ## UI Behavior Defaults
 
-- Prefer CSS for visual states and animations. Use `remix/ui/animation` helpers for CSS transitions when they fit; keep JavaScript for state/timing rather than frame-by-frame styling.
+- Prefer CSS for visual states and animations. Use `@remix-run/ui/animation` helpers for CSS transitions when they fit; keep JavaScript for state/timing rather than frame-by-frame styling.
 - Treat `prefers-reduced-motion` as its own behavior path. Avoid churny intro animations, large hover expansions, and motion-heavy effects; provide a simple static hover/focus state instead of removing feedback entirely.
 - Keep accessible labels stable when visual text updates frequently. For animated counters/timers, prefer a stable label that states the event/date and hide the decorative changing digits from assistive tech.
 - Add focused tests around public behavior. Prefer component/browser tests for interactive UI when feasible; avoid testing internal helpers just because they are easy to import.

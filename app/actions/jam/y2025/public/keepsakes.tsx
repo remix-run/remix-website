@@ -1,4 +1,10 @@
-import { css, clientEntry, on, type Dispatched, type Handle } from "remix/ui";
+import {
+  css,
+  clientEntry,
+  on,
+  type Dispatched,
+  type Handle,
+} from "remix/component";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { breakpointMedia } from "../../../../ui/public/theme.ts";
 

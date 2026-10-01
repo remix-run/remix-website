@@ -7,8 +7,8 @@ import {
   type Handle,
   type Props,
   type RemixNode,
-} from "remix/ui";
-import { ImportMap } from "remix/ui/server";
+} from "remix/component";
+import { ImportMap } from "remix/component/server";
 
 import {
   getAssetEntry,

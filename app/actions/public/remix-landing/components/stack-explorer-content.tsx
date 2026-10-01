@@ -1,4 +1,4 @@
-import type { RemixNode } from "remix/ui";
+import type { RemixNode } from "remix/component";
 import { CodeSnippet } from "./code-snippet.tsx";
 
 export type StackExample = {
@@ -839,10 +839,11 @@ await app.ready()`,
   {
     id: "primitives",
     label: "UI",
-    documentationHref: "https://api.remix.run/api/remix/ui/overview.md",
+    documentationHref:
+      "https://github.com/remix-run/remix/tree/main/packages/ui",
     introTitle: "Create accessible controls from your own markup",
     introBody:
-      "Compose unstyled primitives and mixins with your own markup and CSS. Remix handles focus, keyboard navigation, selection, dismissal, and the ARIA roles and attributes that make them accessible.",
+      "Install @remix-run/ui separately to compose unstyled primitives and mixins with your own markup and CSS. It handles focus, keyboard navigation, selection, dismissal, and accessible ARIA roles and attributes.",
     examples: [
       {
         id: "menus",

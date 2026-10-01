@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/component";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";

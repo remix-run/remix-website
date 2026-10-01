@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/component";
 import { breakpoints } from "../../../../ui/public/theme.ts";
 import { clamp01 } from "../utils/math.ts";
 import { reducedMotion } from "../utils/reduced-motion.ts";

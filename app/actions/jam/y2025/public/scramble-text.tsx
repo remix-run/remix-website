@@ -1,4 +1,4 @@
-import { clientEntry, css, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/component";
 
 import { theme } from "../../../../ui/public/theme.ts";
 

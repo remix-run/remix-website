@@ -1,4 +1,4 @@
-import { navigate, on } from "remix/ui";
+import { navigate, on } from "remix/component";
 
 export function brandContextMenu(brandHref: string) {
   return on<HTMLElement>("contextmenu", (event) => {

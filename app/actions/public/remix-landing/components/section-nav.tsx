@@ -1,4 +1,4 @@
-import { css, on, type Handle } from "remix/ui";
+import { css, on, type Handle } from "remix/component";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { colors } from "../styles/tokens.ts";
 import { clamp } from "../utils/math.ts";

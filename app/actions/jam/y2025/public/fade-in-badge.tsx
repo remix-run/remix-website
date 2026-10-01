@@ -1,4 +1,4 @@
-import { clientEntry, css, type Handle, type RemixNode } from "remix/ui";
+import { clientEntry, css, type Handle, type RemixNode } from "remix/component";
 
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 

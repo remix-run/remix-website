@@ -1,4 +1,4 @@
-import type { Handle, Props } from "remix/ui";
+import type { Handle, Props } from "remix/component";
 
 type WordmarkProps = Omit<Props<"svg">, "class"> & {
   height?: number | string;

@@ -2,7 +2,7 @@ import * as s from "remix/data-schema";
 import { max, min } from "remix/data-schema/checks";
 import * as coerce from "remix/data-schema/coerce";
 import * as f from "remix/data-schema/form-data";
-import { css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/component";
 
 import { getProduct, MAX_QUANTITY } from "../../../../data/jam-storefront.ts";
 import { JamDocument } from "../document.tsx";

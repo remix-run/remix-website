@@ -1,4 +1,4 @@
-import { css } from "remix/ui";
+import { css } from "remix/component";
 
 export type Jam2026ThemeMode = "light" | "dark";
 

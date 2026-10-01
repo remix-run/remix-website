@@ -1,5 +1,5 @@
 import { createController } from "remix/router";
-import { css, type Handle, type RemixNode } from "remix/ui";
+import { css, type Handle, type RemixNode } from "remix/component";
 
 import { getSchedule } from "../../../data/jam-schedule.ts";
 import { routes } from "../../../routes.ts";

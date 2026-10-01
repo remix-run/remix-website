@@ -1,5 +1,5 @@
-import { clientEntry, css, navigate, on, type Handle } from "remix/ui";
-import { animateEntrance, spring } from "remix/ui/animation";
+import { clientEntry, css, navigate, on, type Handle } from "remix/component";
+import { animateEntrance, spring } from "@remix-run/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 

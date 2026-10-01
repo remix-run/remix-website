@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/component";
 import { RemixLandingEnhancements } from "./public/remix-landing/landing-enhancements.tsx";
 import { RUNNER_AVIF_SRC } from "./public/remix-landing/runner-media.ts";
 import { colors } from "./public/remix-landing/styles/tokens.ts";

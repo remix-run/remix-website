@@ -1,10 +1,10 @@
-import { clientEntry, css, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/component";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "remix/ui/accordion";
+} from "./accordion.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 import { jamTheme } from "./theme.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
@@ -56,7 +56,7 @@ export let Jam2026FaqAccordion = clientEntry(
       >
         {handle.props.faqs.map((faq) => (
           <AccordionItem key={faq.id} value={faq.id} mix={faqItemStyle}>
-            <AccordionTrigger indicator={null} mix={faqTriggerStyle}>
+            <AccordionTrigger mix={faqTriggerStyle}>
               <span
                 aria-hidden="true"
                 mix={

@@ -1,4 +1,4 @@
-import { css, type Handle, type RemixNode } from "remix/ui";
+import { css, type Handle, type RemixNode } from "remix/component";
 import { theme } from "../../../../ui/public/theme.ts";
 import { colors } from "../styles/tokens.ts";
 

@@ -1,4 +1,4 @@
-import { createMixin } from "remix/ui";
+import { createMixin } from "remix/component";
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';

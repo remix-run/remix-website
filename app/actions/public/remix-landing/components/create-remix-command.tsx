@@ -1,6 +1,6 @@
-import { clientEntry, css, on, type Handle } from "remix/ui";
-import * as popover from "remix/ui/popover";
-import * as select from "remix/ui/select/primitives";
+import { clientEntry, css, on, type Handle } from "remix/component";
+import * as popover from "@remix-run/ui/popover";
+import * as select from "@remix-run/ui/select";
 
 import { visuallyHiddenStyle } from "../../../../ui/public/css-mixins.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
@@ -120,7 +120,7 @@ function PackageRunnerSelect(
   // Workaround: as of remix 3.0.0-rc.4, opening the select focuses its list
   // before the popover is anchored, which scrolls the page (~950px in the e2e
   // test). Remember the scroll position when opening and put it back. Remove
-  // once the `remix/ui/select` focus scroll is fixed upstream; the Home e2e
+  // once the `@remix-run/ui/select` focus scroll is fixed upstream; the Home e2e
   // test "keeps create-command menu keyboard interactions local" covers it.
   let scrollPosition = { x: 0, y: 0 };
   let restoreFrame = 0;

@@ -1,4 +1,4 @@
-import { clientEntry, css, ref, type Handle } from "remix/ui";
+import { clientEntry, css, ref, type Handle } from "remix/component";
 import {
   animateEntrance,
   animateExit,
@@ -6,8 +6,8 @@ import {
   easings,
   spring,
   tween,
-} from "remix/ui/animation";
-import * as tabs from "remix/ui/tabs/primitives";
+} from "@remix-run/ui/animation";
+import * as tabs from "@remix-run/ui/tabs";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { colors, pageMaxWidth } from "../styles/tokens.ts";
 

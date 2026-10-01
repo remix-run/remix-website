@@ -3,7 +3,7 @@ import {
   importModule,
   preloadShim,
 } from "remix/multiple-import-maps-polyfill";
-import { run } from "remix/ui";
+import { run } from "remix/component";
 import { DOCUMENT_REDIRECT_HEADER } from "./document-redirect.ts";
 import { initFathomAnalytics } from "./fathom.ts";
 

@@ -1,6 +1,6 @@
 import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
-import { render } from "remix/ui/test";
+import { render } from "remix/component/test";
 
 import { CreateRemixCommand } from "./create-remix-command.tsx";
 import { LandingNav } from "./landing-nav.tsx";

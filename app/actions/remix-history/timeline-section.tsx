@@ -1,4 +1,4 @@
-import { css } from "remix/ui";
+import { css } from "remix/component";
 
 import { headingExtraLargeStyle } from "../../ui/public/marketing-styles.ts";
 import { breakpointMedia, theme } from "../../ui/public/theme.ts";

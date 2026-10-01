@@ -1,4 +1,4 @@
-import { css } from "remix/ui";
+import { css } from "remix/component";
 
 /**
  * Trims the leading/trailing line-box whitespace so text aligns to its cap and
