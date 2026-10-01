@@ -1,4 +1,5 @@
 import { createController } from "remix/router";
+import { Accept } from "remix/headers/accept";
 
 import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
@@ -9,6 +10,7 @@ import { LandingNewsletterSubscribeForm } from "./public/remix-landing/component
 import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
+import { homeMarkdownResponse } from "./home-markdown.ts";
 import { getStackExplorerCodeHighlights } from "./stack-explorer-highlighting.ts";
 
 export default createController(routes, {
@@ -24,7 +26,29 @@ export default createController(routes, {
       return render(<BrandPage requestUrl={request.url} />);
     },
 
+    homeMarkdown: homeMarkdownResponse,
+
     async home({ render, request }) {
+      let accept = Accept.from(request.headers.get("Accept"));
+      let markdownQuality = accept.get("text/markdown") ?? 0;
+      let htmlQuality =
+        accept.get("text/html") ??
+        accept.get("text/*") ??
+        accept.get("*/*") ??
+        0;
+
+      // Wildcards alone keep the browser experience. Explicit Markdown wins
+      // equal quality, while a higher HTML preference still gets HTML.
+      if (
+        markdownQuality > 0 &&
+        markdownQuality <= 1 &&
+        markdownQuality >= htmlQuality
+      ) {
+        let response = homeMarkdownResponse();
+        response.headers.set("Vary", "Accept");
+        return response;
+      }
+
       let requestUrl = new URL(request.url);
       let pageUrl = `${requestUrl.origin}${routes.home.href()}`;
       let previewImage = `${requestUrl.origin}${assetPaths.marketing.defaultOgImage}`;
@@ -36,6 +60,7 @@ export default createController(routes, {
           pageUrl={pageUrl}
           previewImage={previewImage}
         />,
+        { headers: { Vary: "Accept" } },
       );
     },
 

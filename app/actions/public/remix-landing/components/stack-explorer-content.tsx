@@ -32,8 +32,9 @@ export type ComponentKind =
 export type StackCategory = {
   id: string;
   label: string;
+  documentationHref: string;
   introTitle?: string;
-  introBody?: RemixNode;
+  introBody?: string;
   showExampleCopy?: boolean;
   examples: readonly StackExample[];
 };
@@ -42,6 +43,7 @@ export const stackCategories = [
   {
     id: "server",
     label: "Server",
+    documentationHref: "https://guides.remix.run/routing-and-controllers.md",
     introTitle: "Build a complete server with Web APIs",
     introBody:
       "Route standard Web Requests through typed middleware and Controllers, then return standard Responses for HTML, JSON, redirects, files, and streams.",
@@ -178,6 +180,7 @@ async function create({ get }) {
   {
     id: "data",
     label: "Data",
+    documentationHref: "https://guides.remix.run/data-and-validation.md",
     introTitle: "Manage your database with type-safe APIs",
     introBody:
       "Connect to SQLite, PostgreSQL, or MySQL, then define schemas, run migrations, read and write records, compose queries, validate input and manage uploads with one type-safe set of tools.",
@@ -339,6 +342,7 @@ if (cover instanceof File) {
   {
     id: "auth",
     label: "Auth",
+    documentationHref: "https://api.remix.run/api/remix/auth/overview.md",
     introTitle: "Authenticate users and manage sessions",
     introBody:
       "Authenticate users with credentials or external providers, resolve each request to a typed identity, protect routes with middleware, and store session data on the server behind a signed session cookie.",
@@ -457,6 +461,7 @@ const ordersController = createController(routes.orders, {
   {
     id: "assets",
     label: "Assets",
+    documentationHref: "https://api.remix.run/api/remix/assets/overview.md",
     introTitle: "Serve source modules without a build step",
     introBody:
       "Compile TypeScript, JavaScript, and CSS on demand, transform files on the fly, and serve them as native browser modules with import maps. During development, code hot reloads instantly.",
@@ -620,6 +625,7 @@ let assets = createAssetServer({
   {
     id: "ui",
     label: "UI",
+    documentationHref: "https://guides.remix.run/rendering-ui.md",
     introTitle: "Build rich interfaces with a simpler UI model",
     introBody:
       "Render JSX-based components on the server, hydrate client entry components, update independent page regions via the Frame component, manage client state with regular variables and explicit updates, and optionally run your entire UI client-side.",
@@ -833,6 +839,7 @@ await app.ready()`,
   {
     id: "primitives",
     label: "Primitives",
+    documentationHref: "https://api.remix.run/api/remix/ui/overview.md",
     introTitle: "Create accessible controls from your own markup",
     introBody:
       "Compose unstyled primitives and mixins with your own markup and CSS. Remix handles focus, keyboard navigation, selection, dismissal, and the ARIA roles and attributes that make them accessible.",
@@ -1041,6 +1048,7 @@ import * as listbox from "remix/ui/listbox"
   {
     id: "animation",
     label: "Animation",
+    documentationHref: "https://guides.remix.run/animation.md",
     introTitle: "Add declarative motion to your interface",
     introBody:
       "Animate elements as they enter, exit, move, and resize with simple mixins. Configure CSS transitions with springs, or tween values directly in JavaScript for more advanced transitions.",

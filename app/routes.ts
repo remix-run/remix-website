@@ -11,6 +11,7 @@ export let routes = route({
   brand: get("/brand"),
   healthcheck: get("/healthcheck"),
   home: get("/"),
+  homeMarkdown: get("/index.md"),
   homeNewsletterSignup: get("/newsletter/signup/home"),
   remixHistory: route("remix-history", {
     index: get("/"),

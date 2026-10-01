@@ -11,6 +11,7 @@ import * as tabs from "remix/ui/tabs/primitives";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
+import { landingContent } from "../landing-content.ts";
 
 import {
   stackCategories,
@@ -68,9 +69,7 @@ export let StackExplorer = clientEntry(
             >
               <div data-home-card="" mix={[tabs.root(), cardStyles]}>
                 <header mix={[headerStyles]}>
-                  <h2 mix={[titleStyles]}>
-                    Everything you need, all in a single package
-                  </h2>
+                  <h2 mix={[titleStyles]}>{landingContent.stackTitle}</h2>
                 </header>
 
                 <div

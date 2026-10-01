@@ -7,6 +7,7 @@ import {
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
 import { RemixLandingSectionNav } from "../landing-enhancements.tsx";
 import { colors, glowWhite } from "../styles/tokens.ts";
+import { landingContent } from "../landing-content.ts";
 import { CreateRemixCommand } from "./create-remix-command.tsx";
 
 const WIDE_HERO_MEDIA =
@@ -91,15 +92,15 @@ export function LandingHero(_handle: Handle) {
     <section id="fully-stacked-web-framework" mix={[shellStyles]}>
       <div mix={[textGroupStyles]}>
         <h1 mix={[headingStyles]}>
-          The fully-stacked
+          {landingContent.hero.title[0]}
           <br />
-          web framework
+          {landingContent.hero.title[1]}
         </h1>
         <p mix={[bodyStyles]}>
-          Remix brings together a server runtime, routing, authentication,
-          sessions, database integrations, a UI framework, asset compilation,
-          dynamic styling, and accessible components in a cohesive{" "}
-          <span mix={[bodyClosingPhraseStyles]}>stack built on Web APIs.</span>
+          {landingContent.hero.body[0]}{" "}
+          <span mix={[bodyClosingPhraseStyles]}>
+            {landingContent.hero.body[1]}
+          </span>
         </p>
         <div mix={[actionGroupStyles]}>
           <CreateRemixCommand />

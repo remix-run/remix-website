@@ -6,6 +6,7 @@ import { FeatureSection } from "./public/remix-landing/components/feature-sectio
 import { LandingFooter } from "./public/remix-landing/components/landing-footer.tsx";
 import { LandingHero } from "./public/remix-landing/components/landing-hero.tsx";
 import { StackExplorer } from "./public/remix-landing/components/stack-explorer.tsx";
+import { landingContent } from "./public/remix-landing/landing-content.ts";
 import type { StackExplorerCodeHighlights } from "./public/remix-landing/components/stack-explorer-content.tsx";
 import {
   colors,
@@ -19,114 +20,6 @@ const differentiatorInlineCodeStyles = css({
   color: "#ffffff",
 });
 
-const differentiators = [
-  {
-    title: "State is just JavaScript",
-    body: "A component runs setup once, then returns a function that renders JSX. Keep state in ordinary JavaScript variables, objects, or classes rather than hooks or a prescribed state container.",
-  },
-  {
-    title: "Updates are explicit",
-    body: (
-      <>
-        Your code decides when the UI renders. Call{" "}
-        <code mix={[differentiatorInlineCodeStyles]}>handle.update()</code>{" "}
-        after changing state, and await it when your next step depends on the
-        updated DOM.
-      </>
-    ),
-  },
-  {
-    title: "Not everything needs a component",
-    body: "Mixins attach reusable behavior to events, styles, refs, and accessibility behavior directly on individual elements. This keeps the markup intact without introducing another component.",
-  },
-  {
-    title: "Client components with visible boundaries",
-    body: "You define how hydrated client components map to browser code in the server runtime. The client boundary stays visible in your code.",
-  },
-  {
-    title: "HTML over the wire",
-    body: (
-      <>
-        Use <code mix={[differentiatorInlineCodeStyles]}>{"<Frame>"}</code> to
-        update regions of a page independently with server-rendered HTML from
-        ordinary routes.
-      </>
-    ),
-  },
-  {
-    title: "HTTP is the interface",
-    body: "Routes, middleware, assets, and integrations all use standard Request and Response objects for HTML, JSON, files, redirects, and more. The server contract stays portable and inspectable.",
-  },
-  {
-    title: "Assets compile when requested",
-    body: "Start your server immediately. TypeScript, JSX, and CSS compile on demand in development and production, so there is no application build step.",
-  },
-  {
-    title: "Modules stay modules",
-    body: "Native JavaScript modules and module preloads let the browser own loading and caching. Each module can be cached independently instead of invalidating an entire bundle.",
-  },
-] as const;
-
-const storySections = [
-  {
-    id: "smaller-mental-model",
-    title: "A bigger toolkit with a smaller mental model",
-    body: "Building a complete web app shouldn't mean learning a different system at every layer. Remix gives you more of the stack with fewer concepts.",
-    align: "left" as const,
-    points: [
-      {
-        title: "Web APIs throughout",
-        body: "Use standard requests, responses, streams, and files across the stack.",
-      },
-      {
-        title: "Runtime-first",
-        body: "Run source directly without making a bundler the center of the architecture.",
-      },
-      {
-        title: "Composable packages",
-        body: "Use the complete framework or adopt focused parts independently.",
-      },
-      {
-        title: "One coherent model",
-        body: "Server, data, UI, assets, and testing are designed to work together.",
-      },
-    ],
-  },
-  {
-    id: "humans-and-agents",
-    title: "Better for humans. Better for agents.",
-    body: "Remix keeps the important parts of your app visible: standard Web APIs, explicit updates, runtime boundaries, and recognizable source modules. Humans and coding agents can trace how the system works and take control when the defaults aren't enough.",
-    align: "right" as const,
-    points: [
-      {
-        title: "Built to be understood",
-        body: "Trace behavior through ordinary code and web standards instead of hidden framework machinery.",
-      },
-      {
-        title: "Built to be changed",
-        body: "Follow the defaults, replace a layer, or take control of the logic when your app needs it.",
-      },
-      {
-        title: "Built for coding agents",
-        body: "Remix skills teach agents the framework’s APIs, conventions, and workflows.",
-      },
-    ],
-  },
-  {
-    id: "test-drive",
-    title: "Take Remix for a test drive",
-    body: "Build your first app with the step-by-step guide, then explore the API when you want to go deeper.",
-    align: "left" as const,
-    ctaLabel: "Get started",
-    ctaHref: "https://guides.remix.run/start-here/",
-    secondary: {
-      title: "Stay in the loop",
-      body: "Get a monthly update on releases, technical work, events, and what is coming next. No spam. Unsubscribe anytime.",
-      newsletter: true,
-    },
-  },
-];
-
 type LandingContentProps = {
   explorerCodeHighlights?: StackExplorerCodeHighlights;
 };
@@ -136,9 +29,9 @@ export function LandingContent(handle: Handle<LandingContentProps>) {
     <>
       <LandingHero />
       <StackExplorer codeHighlights={handle.props.explorerCodeHighlights} />
-      <FeatureSection {...storySections[0]} />
+      <FeatureSection {...landingContent.storySections[0]} />
       <DifferentiatorSection />
-      {storySections.slice(1).map((section) => (
+      {landingContent.storySections.slice(1).map((section) => (
         <FeatureSection key={section.id} {...section} />
       ))}
       <LandingFooter />
@@ -155,23 +48,31 @@ function DifferentiatorSection() {
       <div data-home-card="" mix={[differentiatorContentStyles]}>
         <div mix={[differentiatorHeaderStyles]}>
           <h2 mix={[differentiatorTitleStyles]}>
-            Re-rethinking best practices
+            {landingContent.differentiators.title}
           </h2>
           <p mix={[differentiatorIntroStyles]}>
-            Web frameworks have accumulated layers of complexity and indirection
-            that now feel inevitable. Remix revisits those assumptions with APIs
-            and boundaries you can follow all the way down to web standards.
+            {landingContent.differentiators.body}
           </p>
         </div>
         <ul data-card-grid="" mix={[differentiatorListStyles]}>
-          {differentiators.map((item) => (
+          {landingContent.differentiators.items.map((item) => (
             <li
               key={item.title}
               data-card-item=""
               mix={[differentiatorItemStyles]}
             >
               <h3 mix={[differentiatorItemTitleStyles]}>{item.title}</h3>
-              <p mix={[differentiatorItemBodyStyles]}>{item.body}</p>
+              <p mix={[differentiatorItemBodyStyles]}>
+                {item.body.split(/`([^`]+)`/).map((part, index) =>
+                  index % 2 === 0 ? (
+                    part
+                  ) : (
+                    <code key={index} mix={[differentiatorInlineCodeStyles]}>
+                      {part}
+                    </code>
+                  ),
+                )}
+              </p>
             </li>
           ))}
         </ul>
