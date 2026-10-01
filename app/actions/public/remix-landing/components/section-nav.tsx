@@ -182,35 +182,18 @@ async function replaceHash(anchor: string) {
 
 export function SectionNav(
   handle: Handle<{
-    activeIndexRef: { current: number };
-    morphValueRef: { current: number };
+    activeIndex: number;
+    morphValue: number;
     onJump: (index: number) => void;
   }>,
 ) {
-  let scrollFrame = 0;
-
-  function scheduleScrollUpdate() {
-    if (scrollFrame) return;
-    scrollFrame = requestAnimationFrame(() => {
-      scrollFrame = 0;
-      handle.update();
-    });
-  }
-
-  window.addEventListener("scroll", scheduleScrollUpdate, {
-    signal: handle.signal,
-  });
-  handle.signal.addEventListener("abort", () => {
-    if (scrollFrame) cancelAnimationFrame(scrollFrame);
-  });
-
   return () => {
     const count = SECTIONS.length;
     const maxMorph = count - 1;
     const step = ITEM_HEIGHT + ITEM_GAP;
     const trackHeight = (count - 1) * step + ITEM_HEIGHT;
-    const morph = clamp(handle.props.morphValueRef.current, 0, maxMorph);
-    const activeIndex = clamp(handle.props.activeIndexRef.current, 0, maxMorph);
+    const morph = clamp(handle.props.morphValue, 0, maxMorph);
+    const activeIndex = clamp(handle.props.activeIndex, 0, maxMorph);
     const dotCenterY = (index: number) => index * step + ITEM_HEIGHT / 2;
     const scrollFillPx =
       maxMorph > 0

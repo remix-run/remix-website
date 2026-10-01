@@ -9,7 +9,6 @@ const preset = (overrides: Partial<Preset>): Preset => ({
   shaderId: "racecar",
   controls: [],
   separation: 0,
-  info: { title: "Camera test", description: "Camera test" },
   ...overrides,
 });
 

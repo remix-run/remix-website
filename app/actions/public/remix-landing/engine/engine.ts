@@ -35,11 +35,10 @@ class HalfResolutionBloomPass extends UnrealBloomPass {
 }
 
 // Stand-in for `three/addons/controls/OrbitControls`. We only need the
-// look-at target and an enabled flag; the real addon pulled in pointer/touch/
-// wheel gesture handlers and damping logic that the landing never used.
+// look-at target; the real addon pulled in pointer/touch/wheel gesture handlers
+// and damping logic that the landing never used.
 class CameraTargetControls {
   target = new Vector3();
-  enabled = true;
 
   constructor(private camera: PerspectiveCamera) {}
 
