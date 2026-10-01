@@ -3,6 +3,10 @@ import { visuallyHiddenStyle } from "../../../ui/public/css-mixins.ts";
 import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
 import { Wordmark } from "../../../ui/public/wordmark.tsx";
 import { jamTheme } from "./public/theme.ts";
+import {
+  jam2026WindowSurfaceStyle,
+  jam2026WindowTitleStyle,
+} from "./public/window-styles.ts";
 
 export function Jam2026Hero() {
   return () => (
@@ -45,22 +49,32 @@ export function Jam2026Hero() {
         </div>
       </div>
 
-      <div mix={livestreamStyle}>
-        <iframe
-          src="https://www.youtube.com/embed/TaKBQnYm9tM?si=jdVAJ6fS6hWvoLTG"
-          title="Remix Jam 2026 livestream"
-          width={560}
-          height={315}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
+      <div mix={[jam2026WindowSurfaceStyle, livestreamStyle]}>
+        <p mix={jam2026WindowTitleStyle}>LIVESTREAM.MP4</p>
+        <div
           mix={css({
-            display: "block",
-            width: "100%",
-            height: "100%",
-            border: 0,
+            aspectRatio: "16 / 9",
+            overflow: "hidden",
+            borderRadius: "0.25rem",
+            backgroundColor: "#000",
           })}
-        />
+        >
+          <iframe
+            src="https://www.youtube.com/embed/TaKBQnYm9tM?si=jdVAJ6fS6hWvoLTG"
+            title="Remix Jam 2026 livestream"
+            width={560}
+            height={315}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+            mix={css({
+              display: "block",
+              width: "100%",
+              height: "100%",
+              border: 0,
+            })}
+          />
+        </div>
       </div>
     </section>
   );
@@ -308,10 +322,9 @@ let livestreamStyle = css({
   width: "calc(100% - 32px)",
   maxWidth: "960px",
   marginInline: "auto",
-  aspectRatio: "16 / 9",
-  overflow: "hidden",
-  borderRadius: "8px",
-  backgroundColor: "#000",
+  display: "flex",
+  flexDirection: "column",
+  gap: "0.5rem",
   [breakpointMedia.sm]: {
     width: "calc(100% - 64px)",
   },
