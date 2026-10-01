@@ -8,10 +8,8 @@ import {
   tween,
 } from "remix/ui/animation";
 import * as tabs from "remix/ui/tabs/primitives";
-import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
-import { colors, glowWhite, pageMaxWidth } from "../styles/tokens.ts";
-import { landingContent } from "../landing-content.ts";
+import { colors, pageMaxWidth } from "../styles/tokens.ts";
 
 import {
   stackCategories,
@@ -68,10 +66,6 @@ export let StackExplorer = clientEntry(
               }}
             >
               <div data-home-card="" mix={[tabs.root(), cardStyles]}>
-                <header mix={[headerStyles]}>
-                  <h2 mix={[titleStyles]}>{landingContent.stackTitle}</h2>
-                </header>
-
                 <div
                   aria-label="Remix stack layers"
                   mix={[tabs.list(), categoryTabsStyles]}
@@ -755,25 +749,6 @@ const cardSlotStyles = css({
   [breakpointMedia.md]: { minHeight: "1300px" },
 });
 
-const headerStyles = css({
-  padding: "36px 24px",
-  [breakpointMedia.md]: { padding: "48px" },
-});
-
-const titleStyles = css({
-  margin: "0",
-  fontFamily: theme.fontFamily.sans,
-  fontWeight: theme.fontWeight.bold,
-  color: colors.fg,
-  fontSize: "32px",
-  lineHeight: "1.04",
-  letterSpacing: "-0.025em",
-  textShadow: glowWhite,
-  textWrap: "balance",
-  ...textBoxTrim,
-  [breakpointMedia.md]: { fontSize: "clamp(36px, 4vw, 54px)" },
-});
-
 const scrollableTabs = {
   display: "flex",
   overflowX: "auto",
@@ -785,7 +760,6 @@ const scrollableTabs = {
 const categoryTabsStyles = css({
   ...scrollableTabs,
   padding: "0 12px",
-  borderTop: "1px solid rgba(255, 255, 255, 0.1)",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
   background: "rgba(0, 0, 0, 0.18)",
   [breakpointMedia.sm]: { padding: "0 24px" },

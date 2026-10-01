@@ -9,7 +9,7 @@ import {
 import { ScrollLogo } from "./components/scroll-logo.tsx";
 import { SectionNav } from "./components/section-nav.tsx";
 import { PackageLogos } from "./components/package-logos.tsx";
-import { isEditableKeyTarget } from "../../../ui/public/keyboard.ts";
+import { listenForKonamiCode } from "./konami-code.ts";
 import { breakpointMedia } from "../../../ui/public/theme.ts";
 import { loadModelPoints, type ModelData } from "./engine/model-loader.ts";
 import { presets } from "./engine/presets.ts";
@@ -36,22 +36,6 @@ const topFadeGradientStyles = css({
   },
 });
 
-/** Konami (↑↑↓↓←→←→BA Enter): toggles particle `colorMode` 2 (shader brand gradient on all presets). */
-const KONAMI_KEYS = [
-  "ArrowUp",
-  "ArrowUp",
-  "ArrowDown",
-  "ArrowDown",
-  "ArrowLeft",
-  "ArrowRight",
-  "ArrowLeft",
-  "ArrowRight",
-  "b",
-  "a",
-  "Enter",
-] as const;
-
-const KONAMI_IDLE_MS = 4000;
 const BRAND_CYCLE_TICK_MS = 100;
 const LOADING_SCREEN_MIN_VISIBLE_MS = 750;
 
@@ -64,21 +48,11 @@ function loadingScreenIsHidden(overlay: Element | null) {
   return style.display === "none" || style.visibility === "hidden";
 }
 
-function konamiKeyMatches(event: KeyboardEvent, expected: string): boolean {
-  if (expected.startsWith("Arrow")) return event.key === expected;
-  if (expected === "Enter") return event.key === "Enter";
-  return event.key.length === 1 && event.key.toLowerCase() === expected;
-}
-
 export let RemixLandingEnhancements = clientEntry(
   import.meta.url,
   function RemixLandingEnhancements(handle: Handle) {
     let isHydrated = false;
-    const konami = {
-      index: 0,
-      idleTimer: null as ReturnType<typeof setTimeout> | null,
-      brandMode: false,
-    };
+    let brandMode = false;
     const modelData: (ModelData | undefined)[] = presets.map(() => undefined);
     const modelLoads = {
       pendingUrls: new Set<string>(),
@@ -174,21 +148,6 @@ export let RemixLandingEnhancements = clientEntry(
       requestNearbyModels();
     }
 
-    function clearKonamiIdleTimer() {
-      if (konami.idleTimer) {
-        clearTimeout(konami.idleTimer);
-        konami.idleTimer = null;
-      }
-    }
-
-    function armKonamiIdle() {
-      clearKonamiIdleTimer();
-      konami.idleTimer = setTimeout(() => {
-        konami.idleTimer = null;
-        konami.index = 0;
-      }, KONAMI_IDLE_MS);
-    }
-
     function clearLoadingScreenFailsafe() {
       if (loadingScreenFailsafeTimer !== null) {
         clearTimeout(loadingScreenFailsafeTimer);
@@ -268,26 +227,6 @@ export let RemixLandingEnhancements = clientEntry(
       void dismissLoadingScreen();
     }
 
-    function onKonamiKeydown(event: KeyboardEvent) {
-      const expected = KONAMI_KEYS[konami.index];
-      if (konamiKeyMatches(event, expected)) {
-        konami.index += 1;
-        if (konami.index >= KONAMI_KEYS.length) {
-          event.preventDefault();
-          clearKonamiIdleTimer();
-          konami.brandMode = !konami.brandMode;
-          konami.index = 0;
-          handle.update();
-        } else {
-          armKonamiIdle();
-        }
-      } else {
-        konami.index = konamiKeyMatches(event, KONAMI_KEYS[0]) ? 1 : 0;
-        if (konami.index > 0) armKonamiIdle();
-        else clearKonamiIdleTimer();
-      }
-    }
-
     // Advance the paused CSS animation at 10Hz instead of display refresh.
     function startBrandCycle() {
       const start = performance.now();
@@ -300,13 +239,6 @@ export let RemixLandingEnhancements = clientEntry(
         clearInterval(interval);
         document.documentElement.style.animationDelay = "";
       });
-    }
-
-    function onKeydown(event: KeyboardEvent) {
-      if (event.metaKey || event.ctrlKey || event.altKey) return;
-      if (isEditableKeyTarget(event)) return;
-
-      onKonamiKeydown(event);
     }
 
     handle.queueTask((signal) => {
@@ -338,14 +270,10 @@ export let RemixLandingEnhancements = clientEntry(
           if (!handle.signal.aborted) handle.update();
         });
 
-        window.addEventListener("keydown", onKeydown, {
-          signal: handle.signal,
-        });
-
-        handle.signal.addEventListener("abort", () => {
-          clearKonamiIdleTimer();
-          konami.index = 0;
-        });
+        listenForKonamiCode(() => {
+          brandMode = !brandMode;
+          handle.update();
+        }, handle.signal);
 
         handle.update();
       } catch (error) {
@@ -364,7 +292,7 @@ export let RemixLandingEnhancements = clientEntry(
               <PackageLogos />
               {ParticleCanvas ? (
                 <ParticleCanvas
-                  brandGradientMode={konami.brandMode}
+                  brandGradientMode={brandMode}
                   morphValueRef={morphValueRef}
                   interactionPausedRef={interactionPausedRef}
                   modelData={modelData}
@@ -374,7 +302,7 @@ export let RemixLandingEnhancements = clientEntry(
               ) : null}
               <PresetGlow
                 morphValueRef={morphValueRef}
-                brandGradientMode={konami.brandMode}
+                brandGradientMode={brandMode}
               />
               <ScrollLogo />
               <div mix={[topFadeGradientStyles]} />
@@ -383,7 +311,6 @@ export let RemixLandingEnhancements = clientEntry(
                 totalSections={presets.length}
                 onJump={landingScroll.jumpToPreset}
                 scrollYRef={scrollYRef}
-                shouldBlockBlogShortcut={() => konami.index > 0}
               />
             </div>
           ) : null}

@@ -180,7 +180,6 @@ export function LandingNav(
     totalSections: number;
     onJump: (index: number) => void;
     scrollYRef: { current: number };
-    shouldBlockBlogShortcut: () => boolean;
   }>,
 ) {
   let onJump: ((index: number) => void) | null = null;
@@ -189,7 +188,6 @@ export function LandingNav(
   let scrollFrame = 0;
   let activeIndexRef: { current: number } = { current: 0 };
   let scrollYRef: { current: number } = { current: 0 };
-  let shouldBlockBlogShortcut = () => false;
 
   function setMenuOpen(next: boolean) {
     if (menuOpen === next) return;
@@ -235,7 +233,6 @@ export function LandingNav(
         (item) => item.key.toLowerCase() === event.key.toLowerCase(),
       );
       if (item) {
-        if (item.key === "B" && shouldBlockBlogShortcut()) return;
         event.preventDefault();
         openNavItem(item);
       }
@@ -267,7 +264,6 @@ export function LandingNav(
     totalSections = handle.props.totalSections;
     onJump = handle.props.onJump;
     scrollYRef = handle.props.scrollYRef;
-    shouldBlockBlogShortcut = handle.props.shouldBlockBlogShortcut;
 
     const hintOpacity = clamp01(1 - scrollYRef.current / 80);
 

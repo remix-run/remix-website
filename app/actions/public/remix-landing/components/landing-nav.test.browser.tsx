@@ -18,7 +18,6 @@ describe("LandingNav", () => {
           totalSections={3}
           onJump={onJump}
           scrollYRef={{ current: 0 }}
-          shouldBlockBlogShortcut={() => false}
         />
       </div>,
     );
@@ -53,7 +52,6 @@ describe("LandingNav", () => {
           totalSections={3}
           onJump={onJump}
           scrollYRef={{ current: 0 }}
-          shouldBlockBlogShortcut={() => false}
         />
       </div>,
     );
@@ -71,16 +69,15 @@ describe("LandingNav", () => {
   });
 
   it("keeps package-runner typeahead out of global navigation shortcuts", async (t) => {
-    let shouldBlockBlogShortcut = t.mock.fn(() => true);
+    let onJump = t.mock.fn<(index: number) => void>();
     let result = render(
       <div>
         <CreateRemixCommand />
         <LandingNav
           activeIndexRef={{ current: 0 }}
           totalSections={3}
-          onJump={() => {}}
+          onJump={onJump}
           scrollYRef={{ current: 0 }}
-          shouldBlockBlogShortcut={shouldBlockBlogShortcut}
         />
       </div>,
     );
@@ -98,7 +95,8 @@ describe("LandingNav", () => {
       result.container.querySelectorAll<HTMLElement>('[role="option"]'),
     ).find((option) => option.textContent?.includes("Bun"))!;
     expect(bunOption.dataset.highlighted).toBe("true");
-    expect(shouldBlockBlogShortcut).not.toHaveBeenCalled();
+    await result.act(() => list.dispatchEvent(keydown("ArrowDown")));
+    expect(onJump).not.toHaveBeenCalled();
 
     await result.act(() => list.dispatchEvent(keydown("Escape")));
     let selected = new Promise<void>((resolve) => {
@@ -115,7 +113,7 @@ describe("LandingNav", () => {
     expect(result.container.querySelector("code")?.textContent).toBe(
       `bunx remix@next new ${landingContent.projectDirectory}`,
     );
-    expect(shouldBlockBlogShortcut).not.toHaveBeenCalled();
+    expect(onJump).not.toHaveBeenCalled();
   });
 });
 
