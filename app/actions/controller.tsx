@@ -10,7 +10,7 @@ import { LandingNewsletterSubscribeForm } from "./public/remix-landing/component
 import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
-import { homeMarkdownResponse } from "./home-markdown.ts";
+import { renderHomeMarkdown } from "./home-markdown.ts";
 import { getStackExplorerCodeHighlights } from "./stack-explorer-highlighting.ts";
 
 export default createController(routes, {
@@ -26,7 +26,16 @@ export default createController(routes, {
       return render(<BrandPage requestUrl={request.url} />);
     },
 
-    homeMarkdown: homeMarkdownResponse,
+    homeMarkdown() {
+      return new Response(renderHomeMarkdown(), {
+        headers: {
+          "Content-Type": "text/markdown; charset=utf-8",
+          ...(process.env.NODE_ENV === "development"
+            ? { "Cache-Control": "no-store" }
+            : CACHE.DOCUMENT),
+        },
+      });
+    },
 
     async home({ render, request }) {
       let accept = Accept.from(request.headers.get("Accept"));
@@ -44,9 +53,15 @@ export default createController(routes, {
         markdownQuality <= 1 &&
         markdownQuality >= htmlQuality
       ) {
-        let response = homeMarkdownResponse();
-        response.headers.set("Vary", "Accept");
-        return response;
+        return new Response(renderHomeMarkdown(), {
+          headers: {
+            "Content-Type": "text/markdown; charset=utf-8",
+            Vary: "Accept",
+            ...(process.env.NODE_ENV === "development"
+              ? { "Cache-Control": "no-store" }
+              : CACHE.DOCUMENT),
+          },
+        });
       }
 
       let requestUrl = new URL(request.url);

@@ -23,7 +23,7 @@ export const landingScroll = createLandingScroll();
 
 const LANDING_SECTION_IDS = [
   "fully-stacked-web-framework",
-  "everything-you-need",
+  "single-package",
   "smaller-mental-model",
   "re-rethinking-best-practices",
   "humans-and-agents",

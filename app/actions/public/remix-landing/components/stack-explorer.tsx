@@ -52,7 +52,7 @@ export let StackExplorer = clientEntry(
         />
       );
       return (
-        <section id="everything-you-need" mix={[sectionStyles]}>
+        <section id="single-package" mix={[sectionStyles]}>
           <div mix={[cardSlotStyles]}>
             <tabs.Context
               activeTab={category.id}

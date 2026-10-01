@@ -5,6 +5,7 @@ import { describe, it } from "remix/test";
 
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
+import { landingContent } from "../app/actions/public/remix-landing/landing-content.ts";
 import { swallowAbortErrors } from "./setup.ts";
 
 async function litPixelRatio(page: Page) {
@@ -189,9 +190,34 @@ describe("Home", () => {
 
     await expect(trigger).toContainText("Bun");
     await expect(
-      page.locator("code").filter({ hasText: /^bunx remix@next new my-app$/ }),
-    ).toHaveText("bunx remix@next new my-app");
+      page.locator("code").filter({
+        hasText: `bunx remix@next new ${landingContent.projectDirectory}`,
+      }),
+    ).toHaveText(`bunx remix@next new ${landingContent.projectDirectory}`);
     await expect(page).toHaveURL(new RegExp(`${routes.home.href()}$`));
+  });
+
+  it("links Single Package to its section and scrolls there", async (t) => {
+    const page = await t.serve(
+      await createTestServer(swallowAbortErrors(createAppRouter())),
+    );
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(routes.home.href());
+    await expect(page.locator(".loading-screen-overlay")).toBeHidden();
+
+    const link = page.getByRole("link", {
+      name: "Single Package",
+      exact: true,
+    });
+    await expect(link).toHaveAttribute("href", "#single-package");
+    await link.click();
+
+    await expect(page).toHaveURL(/#single-package$/);
+    await expect(page.locator("#single-package")).toBeVisible();
+    await expect(
+      page.getByRole("tablist", { name: "Remix stack layers" }),
+    ).toBeInViewport();
   });
 
   it("keeps the particle scene visible after resizing with reduced motion", async (t) => {

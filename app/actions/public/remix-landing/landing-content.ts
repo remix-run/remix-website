@@ -1,4 +1,5 @@
 export const landingContent = {
+  projectDirectory: "my-app",
   hero: {
     title: ["The fully-stacked", "web framework"],
     body: [
@@ -133,30 +134,30 @@ export const packageRunners = [
     value: "npm",
     label: "npm",
     icon: "/landing/package-runner-npm.svg",
-    command: "npx remix@next new my-app",
+    command: `npx remix@next new ${landingContent.projectDirectory}`,
   },
   {
     value: "pnpm",
     label: "pnpm",
     icon: "/landing/package-runner-pnpm.svg",
-    command: "pnpm dlx remix@next new my-app",
+    command: `pnpm dlx remix@next new ${landingContent.projectDirectory}`,
   },
   {
     value: "yarn",
     label: "Yarn",
     icon: "/landing/package-runner-yarn.svg",
-    command: "yarn dlx remix@next new my-app",
+    command: `yarn dlx remix@next new ${landingContent.projectDirectory}`,
   },
   {
     value: "bun",
     label: "Bun",
     icon: "/landing/package-runner-bun.svg",
-    command: "bunx remix@next new my-app",
+    command: `bunx remix@next new ${landingContent.projectDirectory}`,
   },
   {
     value: "deno",
     label: "Deno",
     icon: "/landing/package-runner-deno.svg",
-    command: "deno run -A npm:remix@next new my-app",
+    command: `deno run -A npm:remix@next new ${landingContent.projectDirectory}`,
   },
 ] as const;

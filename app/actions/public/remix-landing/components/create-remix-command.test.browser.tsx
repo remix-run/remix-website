@@ -3,6 +3,7 @@ import { describe, it, type TestContext } from "remix/test";
 import { render } from "remix/ui/test";
 
 import { CreateRemixCommand } from "./create-remix-command.tsx";
+import { landingContent } from "../landing-content.ts";
 
 describe("CreateRemixCommand", () => {
   it("switches package runners and copies the selected command", async (t) => {
@@ -27,11 +28,13 @@ describe("CreateRemixCommand", () => {
 
     await chooseRunner(result, "pnpm");
     expect(result.container.querySelector("code")?.textContent).toBe(
-      "pnpm dlx remix@next new my-app",
+      `pnpm dlx remix@next new ${landingContent.projectDirectory}`,
     );
 
     await result.act(() => getCopyButton(result.container).click());
-    expect(copiedText).toBe("pnpm dlx remix@next new my-app");
+    expect(copiedText).toBe(
+      `pnpm dlx remix@next new ${landingContent.projectDirectory}`,
+    );
   });
 
   it("ignores copy feedback after the selected runner changes", async (t) => {
@@ -50,7 +53,9 @@ describe("CreateRemixCommand", () => {
 
     let copyButton = getCopyButton(result.container);
     await result.act(() => copyButton.click());
-    expect(copiedText).toBe("npx remix@next new my-app");
+    expect(copiedText).toBe(
+      `npx remix@next new ${landingContent.projectDirectory}`,
+    );
 
     await result.act(() => getRunnerButton(result.container).click());
     await chooseRunner(result, "pnpm");
@@ -60,7 +65,7 @@ describe("CreateRemixCommand", () => {
     });
 
     expect(result.container.querySelector("code")?.textContent).toBe(
-      "pnpm dlx remix@next new my-app",
+      `pnpm dlx remix@next new ${landingContent.projectDirectory}`,
     );
     expect(copyButton.dataset.copyStatus).toBe("idle");
     expect(result.container.querySelector('[role="status"]')?.textContent).toBe(

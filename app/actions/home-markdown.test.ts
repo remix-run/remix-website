@@ -76,6 +76,48 @@ describe("homepage representations", () => {
     }
   });
 
+  it("uses shared setup details and keeps quickstart before capabilities and stories", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes, rootController);
+    let response = await router.fetch(
+      new URL(routes.homeMarkdown.href(), "http://localhost"),
+    );
+    let markdown = await response.text();
+    let storyTitles = new Map(
+      landingContent.storySections.map((section) => [
+        section.id,
+        section.title,
+      ]),
+    );
+    let quickstart = landingContent.storySections.find(
+      (section) => section.id === "test-drive",
+    )!;
+    let guides = landingContent.resources.find(
+      (resource) => resource.key === "G",
+    )!;
+
+    expect(
+      [...markdown.matchAll(/^## (.+)$/gm)]
+        .slice(0, 5)
+        .map((match) => match[1]),
+    ).toEqual([
+      storyTitles.get("test-drive"),
+      landingContent.stackTitle,
+      storyTitles.get("smaller-mental-model"),
+      landingContent.differentiators.title,
+      storyTitles.get("humans-and-agents"),
+    ]);
+    expect(markdown.match(/```sh\n([\s\S]+?)\n```/)?.[1]?.split("\n")).toEqual([
+      packageRunners[0].command,
+      `cd ${landingContent.projectDirectory}`,
+      "npm install",
+      "npm run dev",
+    ]);
+    expect(markdown).toContain(
+      `[${quickstart.ctaLabel}](${guides.markdownHref})`,
+    );
+  });
+
   it("includes every stack overview and its Markdown docs without the example payloads", async () => {
     let router = createRouteTestRouter();
     router.map(routes, rootController);

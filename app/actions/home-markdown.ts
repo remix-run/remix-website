@@ -1,19 +1,34 @@
-import { CACHE } from "../utils/cache-control.ts";
 import {
   landingContent,
   packageRunners,
 } from "./public/remix-landing/landing-content.ts";
 import { stackCategories } from "./public/remix-landing/components/stack-explorer-content.tsx";
 
-export function homeMarkdownResponse() {
-  let [mentalModel, agents, quickstart] = landingContent.storySections;
+export function renderHomeMarkdown() {
+  let mentalModel = landingContent.storySections.find(
+    (section) => section.id === "smaller-mental-model",
+  )!;
+  let agents = landingContent.storySections.find(
+    (section) => section.id === "humans-and-agents",
+  )!;
+  let quickstart = landingContent.storySections.find(
+    (section) => section.id === "test-drive",
+  )!;
+  let guides = landingContent.resources.find(
+    (resource) => resource.key === "G",
+  )!;
   let markdown = [
     `# Remix 3 — ${landingContent.hero.title.join(" ")}`,
     landingContent.hero.body.join(" "),
     `## ${quickstart.title}`,
     quickstart.body,
-    `\`\`\`sh\n${packageRunners[0].command}\ncd my-app\nnpm install\nnpm run dev\n\`\`\``,
-    `[${quickstart.ctaLabel}](${quickstart.ctaHref.replace(/\/$/, ".md")})`,
+    `\`\`\`sh
+${packageRunners[0].command}
+cd ${landingContent.projectDirectory}
+npm install
+npm run dev
+\`\`\``,
+    `[${quickstart.ctaLabel}](${guides.markdownHref})`,
     `## ${landingContent.stackTitle}`,
     ...stackCategories.flatMap((category) => [
       `### ${category.label}`,
@@ -44,12 +59,5 @@ export function homeMarkdownResponse() {
       .join("\n"),
   ].join("\n\n");
 
-  return new Response(`${markdown}\n`, {
-    headers: {
-      "Content-Type": "text/markdown; charset=utf-8",
-      ...(process.env.NODE_ENV === "development"
-        ? { "Cache-Control": "no-store" }
-        : CACHE.DOCUMENT),
-    },
-  });
+  return `${markdown}\n`;
 }

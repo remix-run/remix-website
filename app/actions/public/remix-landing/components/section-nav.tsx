@@ -121,7 +121,7 @@ const linkActiveStyles = css({
 
 const SECTIONS = [
   { label: "Fully Stacked", anchor: "fully-stacked-web-framework" },
-  { label: "Single Package", anchor: "everything-you-need" },
+  { label: "Single Package", anchor: "single-package" },
   { label: "Smaller Mental Model", anchor: "smaller-mental-model" },
   {
     label: "Re-rethinking",
