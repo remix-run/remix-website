@@ -28,12 +28,12 @@ describe("CreateRemixCommand", () => {
 
     await chooseRunner(result, "pnpm");
     expect(result.container.querySelector("code")?.textContent).toBe(
-      `pnpm dlx remix@next new ${landingContent.projectDirectory}`,
+      `pnpm dlx remix new ${landingContent.projectDirectory}`,
     );
 
     await result.act(() => getCopyButton(result.container).click());
     expect(copiedText).toBe(
-      `pnpm dlx remix@next new ${landingContent.projectDirectory}`,
+      `pnpm dlx remix new ${landingContent.projectDirectory}`,
     );
   });
 
@@ -53,9 +53,7 @@ describe("CreateRemixCommand", () => {
 
     let copyButton = getCopyButton(result.container);
     await result.act(() => copyButton.click());
-    expect(copiedText).toBe(
-      `npx remix@next new ${landingContent.projectDirectory}`,
-    );
+    expect(copiedText).toBe(`npx remix new ${landingContent.projectDirectory}`);
 
     await result.act(() => getRunnerButton(result.container).click());
     await chooseRunner(result, "pnpm");
@@ -65,7 +63,7 @@ describe("CreateRemixCommand", () => {
     });
 
     expect(result.container.querySelector("code")?.textContent).toBe(
-      `pnpm dlx remix@next new ${landingContent.projectDirectory}`,
+      `pnpm dlx remix new ${landingContent.projectDirectory}`,
     );
     expect(copyButton.dataset.copyStatus).toBe("idle");
     expect(result.container.querySelector('[role="status"]')?.textContent).toBe(
