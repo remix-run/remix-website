@@ -4,7 +4,6 @@ import { FpsCounterToggle } from "../../../ui/public/fps-counter-toggle.tsx";
 import { Jam2026CloudBackdrop } from "./public/cloud-backdrop.tsx";
 import { Jam2026Header } from "./public/header.tsx";
 import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-subscribe.tsx";
-import { Jam2026PhotoMoments } from "./public/photo-moments.tsx";
 import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
 import { routes } from "../../../routes.ts";
 import { Document } from "../../../ui/document.tsx";
@@ -18,7 +17,6 @@ import {
 } from "./public/theme.ts";
 import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
 import { Jam2026Faq } from "./faq.tsx";
-import { Jam2026FloatingTicketCta } from "./floating-ticket-cta.tsx";
 import { Jam2026Hero } from "./hero.tsx";
 import { Jam2026Schedule } from "./schedule.tsx";
 import type { ScheduleItem } from "./public/schedule-types.ts";
@@ -108,8 +106,6 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
               })}
             >
               <Jam2026Hero />
-              <Jam2026PhotoMoments />
-              <Jam2026FloatingTicketCta />
               <Jam2026Schedule items={handle.props.schedule} />
               <Jam2026Faq />
               <NewsletterSubscribeFrameHost

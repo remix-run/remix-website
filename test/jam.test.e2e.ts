@@ -29,15 +29,6 @@ async function expectMarkerToStay(page: Page, marker: string) {
     .toBe(marker);
 }
 
-async function clickJam2026TicketNavLink(page: Page) {
-  let ticketLink = page
-    .getByRole("navigation", { name: "Page navigation" })
-    .getByRole("link", { name: "Get tickets" });
-  await expect(ticketLink).toBeVisible();
-
-  await ticketLink.click();
-}
-
 describe("Jam", () => {
   let router: ReturnType<typeof createAppRouter>;
 
@@ -45,61 +36,35 @@ describe("Jam", () => {
     router = createAppRouter();
   });
 
-  it("jam 2026 ticket modal navigates in place and closes without remounting", async (t) => {
+  it("jam 2026 direct ticket visits stay disabled and close to the livestream without remounting", async (t) => {
     mockStorefront(t);
     let handler = swallowAbortErrors(router);
     let page = await t.serve(await createTestServer(handler));
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto(routes.jam.y2026.index.href());
+    await page.goto(routes.jam.y2026.ticket.index.href());
 
     let marker = await markPage(page);
-    await clickJam2026TicketNavLink(page);
-    await page.waitForURL(`**${routes.jam.y2026.ticket.index.href()}`);
-    await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page).toHaveTitle("Remix Jam 2026 Tickets");
     await expect(
+      page.getByRole("button", { name: "Unavailable", exact: true }),
+    ).toBeDisabled();
+    await expect(
       page.getByRole("dialog").getByRole("link", { name: "Close tickets" }),
     ).toBeFocused();
-
-    await page.getByRole("button", { name: "Increase quantity" }).click();
-    await expect(
-      page.getByRole("dialog").locator("[aria-live='polite']"),
-    ).toHaveText("2");
-    await expect(page.getByRole("button", { name: "Check out" })).toBeEnabled();
-
-    await page
-      .locator('a[aria-label="Close tickets"][tabindex="-1"]')
-      .click({ position: { x: 8, y: 8 } });
-    await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
-    await expectMarkerToStay(page, marker);
-    await expect(page.getByRole("dialog")).toHaveCount(0);
-    await expect(page).toHaveTitle("Remix Jam 2026");
-
-    await clickJam2026TicketNavLink(page);
-    await page.waitForURL(`**${routes.jam.y2026.ticket.index.href()}`);
-    await expect(page.getByRole("dialog")).toBeVisible();
 
     await page.keyboard.press("Escape");
     await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
     await expectMarkerToStay(page, marker);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(page).toHaveTitle("Remix Jam 2026");
-
-    await clickJam2026TicketNavLink(page);
-    await page.waitForURL(`**${routes.jam.y2026.ticket.index.href()}`);
-    await expect(page.getByRole("dialog")).toBeVisible();
-
-    await page.goBack();
-    await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
-    await expectMarkerToStay(page, marker);
-    await expect(page.getByRole("dialog")).toHaveCount(0);
-
-    await clickJam2026TicketNavLink(page);
-    await page.waitForURL(`**${routes.jam.y2026.ticket.index.href()}`);
-    await expectMarkerToStay(page, marker);
-    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(page.getByRole("link", { name: /Get.*tickets/i })).toHaveCount(
+      0,
+    );
+    await expect(
+      page.locator('iframe[title="Remix Jam 2026 livestream"]'),
+    ).toBeVisible();
   });
 
   it("jam 2026 mobile layout does not create horizontal document overflow", async (t) => {

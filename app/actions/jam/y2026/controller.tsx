@@ -4,7 +4,6 @@ import { SuperHeaders } from "remix/headers";
 import { redirect } from "remix/response/redirect";
 import { createController } from "remix/router";
 
-import { getProduct } from "../../../data/jam-storefront.ts";
 import { getJam2026Schedule } from "../../../data/jam-schedule-2026.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
@@ -17,7 +16,6 @@ import {
 import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
 import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
 import { Jam2026HomePage } from "./home-page.tsx";
-import { remixJam2026Ticket } from "./public/ticket-data.ts";
 import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
 import {
   getJam2026ThemePreference,
@@ -25,7 +23,6 @@ import {
 } from "./theme-preference.ts";
 import {
   createTicketCheckout,
-  validateTicketDiscount,
   type Jam2026TicketCheckout,
 } from "./ticket-checkout.ts";
 
@@ -95,19 +92,10 @@ export async function renderJam2026Page({
   let isServerResolvedFrame =
     request.headers.get("x-remix-ssr-frame") === "true";
   let theme = await getJam2026ThemePreference(request.headers.get("cookie"));
-  let product = ticketsModalOpen
-    ? await getProduct(remixJam2026Ticket.handle)
-    : null;
-
-  let validatedDiscount = await validateTicketDiscount({ discount, product });
-  discount = validatedDiscount.discount;
-
-  if (product) {
-    ticketCheckout ??= createTicketCheckout({ product });
-    ticketCheckout = {
-      ...ticketCheckout,
-      discountCode: validatedDiscount.code,
-    };
+  // Conference-day sales are closed, regardless of Shopify inventory.
+  // Do not fetch products or create discount-validation carts for this page.
+  if (ticketsModalOpen) {
+    ticketCheckout ??= createTicketCheckout({ product: null });
   }
 
   // Never let a shared cache store a response that hands out a Set-Cookie.
