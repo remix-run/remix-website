@@ -202,8 +202,8 @@ export let db = createPostgresDatabase(pool)`,
         id: "migrations",
         label: "Migrations",
         title: "Keep database changes in SQL migrations",
-        body: "Write each schema change as plain SQL in a timestamped migration directory, with an optional down.sql to roll it back. Remix applies migrations in order, detects checksum drift, and runs each one in a transaction where the database supports it.",
-        filename: "20260301113000_create_albums/up.sql",
+        body: "Write each schema change as plain SQL in a numbered migration directory, with an optional down.sql to roll it back. Remix applies migrations in order, detects checksum drift, and runs each one in a transaction where the database supports it.",
+        filename: "0001_create_albums/up.sql",
         code: `create table albums (
   id integer primary key,
   title text not null,
@@ -478,7 +478,7 @@ const ordersController = createController(routes.orders, {
 export const assets = createAssetServer({
   basePath: "/assets",
   allowFiles: ["app/**/public/**"],
-  allowPackages: ["remix"],
+  allowPackages: ["@remix-run/ui", "remix"],
   target: { es: "2020", safari: "16.4" },
   sourceMaps: "external",
 })
@@ -516,7 +516,7 @@ let assets = createAssetServer({
         title: "Change one module and keep the rest cached",
         body: "Your imports stay the same while the import map updates each module’s fingerprinted file URL. Only changed modules need new cache entries.",
         filename: "document.tsx",
-        code: `import { ImportMap } from "remix/ui/server"
+        code: `import { ImportMap } from "remix/component/server"
 import { assets } from "./assets.ts"
 
 let { href, importMap } =
@@ -538,7 +538,7 @@ let { href, importMap } =
         title: "Start loading modules early",
         body: "A script entry includes preload URLs for its dependencies, letting the browser fetch the module graph while it parses the document.",
         filename: "document.tsx",
-        code: `import { ImportMap } from "remix/ui/server"
+        code: `import { ImportMap } from "remix/component/server"
 import { assets } from "./assets.ts"
 
 let { href, importMap, preloads } =
@@ -606,7 +606,7 @@ let assets = createAssetServer({
         body: "During development, hot module replacement (HMR) swaps compatible component implementations in place, preserving their identity and local state. Other server changes fall back to a coordinated restart when needed.",
         filename: "assets.ts",
         code: `import { createAssetServer } from "remix/assets"
-import { uiHmr } from "remix/ui-hmr/assets"
+import { componentHmr } from "remix/component-hmr/assets"
 
 let assets = createAssetServer({
   basePath: "/assets",
@@ -616,7 +616,7 @@ let assets = createAssetServer({
     (await import("remix/node-hmr/runtime"))
       .createBrowserHmrChannel(),
   scripts: {
-    loaders: [uiHmr()],
+    loaders: [componentHmr()],
   },
 })`,
       },
@@ -624,7 +624,7 @@ let assets = createAssetServer({
   },
   {
     id: "ui",
-    label: "UI",
+    label: "Components",
     documentationHref: "https://guides.remix.run/rendering-ui.md",
     introTitle: "Build rich interfaces with a simpler UI model",
     introBody:
@@ -637,7 +637,7 @@ let assets = createAssetServer({
         title: "Set up once, render on every update",
         body: "A component is a setup function that returns a render function. Setup runs once per instance, so it’s where local variables and listeners live. Render runs on the first render and again on every update.",
         filename: "album-card.tsx",
-        code: `import { type Handle } from "remix/ui"
+        code: `import { type Handle } from "remix/component"
 
 function AlbumCard(
   handle: Handle<{ album: Album }>,
@@ -666,7 +666,7 @@ function AlbumCard(
           </>
         ),
         filename: "copy-link.tsx",
-        code: `import { clientEntry, on, type Handle } from "remix/ui"
+        code: `import { clientEntry, on, type Handle } from "remix/component"
 
 export let CopyLink = clientEntry(
   import.meta.url,
@@ -687,7 +687,7 @@ export let CopyLink = clientEntry(
         title: "Keep state in ordinary variables",
         body: "Keep local component state in regular JavaScript variables and tell Remix when to update the UI. There are no hooks, state management libraries, or reactivity systems to learn.",
         filename: "counter.tsx",
-        code: `import { clientEntry, on, type Handle } from "remix/ui"
+        code: `import { clientEntry, on, type Handle } from "remix/component"
 
 export let Counter = clientEntry(
   import.meta.url,
@@ -719,7 +719,7 @@ export let Counter = clientEntry(
           </>
         ),
         filename: "dashboard.tsx",
-        code: `import { Frame } from "remix/ui"
+        code: `import { Frame } from "remix/component"
 import { routes } from "../routes.ts"
 
 function Dashboard() {
@@ -741,7 +741,7 @@ function Dashboard() {
         title: "Enhance an element in place with mixins",
         body: "Attach events and attributes with built-in mixins, or package your own reusable behavior as a mixin, all without wrapping or replacing the element.",
         filename: "album-toolbar.tsx",
-        code: `import { attrs, on } from "remix/ui"
+        code: `import { attrs, on } from "remix/component"
 import { tooltip } from "./tooltip.ts"
 
 <button
@@ -760,7 +760,7 @@ import { tooltip } from "./tooltip.ts"
         title: "Define dynamic styling inline in TypeScript",
         body: "Write styles as typed objects right next to your markup. Remix turns them into static, browser-native CSS, both on the server and dynamically in the browser.",
         filename: "button.tsx",
-        code: `import { css } from "remix/ui"
+        code: `import { css } from "remix/component"
 
 <button
   mix={css({
@@ -782,7 +782,7 @@ import { tooltip } from "./tooltip.ts"
         title: "Any component can provide context",
         body: "Keep shared state close to the part of the tree that owns it, without passing props through every layer.",
         filename: "theme.tsx",
-        code: `import { type Handle } from "remix/ui"
+        code: `import { type Handle } from "remix/component"
 
 function App(
   handle: Handle<Record<string, never>, { color: string }>,
@@ -838,7 +838,7 @@ await app.ready()`,
   },
   {
     id: "primitives",
-    label: "Primitives",
+    label: "UI",
     documentationHref: "https://api.remix.run/api/remix/ui/overview.md",
     introTitle: "Create accessible controls from your own markup",
     introBody:
@@ -851,8 +851,8 @@ await app.ready()`,
         body: "Attach menu behavior to your own trigger, surface, and item elements. Remix handles focus, keyboard navigation, typeahead, checked items, and selection events while your CSS owns the presentation.",
         filename: "album-actions.tsx",
         component: "menus",
-        code: `import { css } from "remix/ui"
-import * as menu from "remix/ui/menu/primitives"
+        code: `import { css } from "remix/component"
+import * as menu from "@remix-run/ui/menu"
 
 <menu.Context label="Album actions">
   <button type="button" mix={[menu.trigger(), css({/*...*/})]}>
@@ -879,8 +879,8 @@ import * as menu from "remix/ui/menu/primitives"
         body: "Connect an input, filtered option list, floating surface, and form value. Remix coordinates draft text, keyboard focus, selection, dismissal, and the committed value without owning their appearance.",
         filename: "artist-picker.tsx",
         component: "combobox",
-        code: `import { css } from "remix/ui"
-import * as combobox from "remix/ui/combobox/primitives"
+        code: `import { css } from "remix/component"
+import * as combobox from "@remix-run/ui/combobox"
 
 <combobox.Context name="artist">
   <input
@@ -907,8 +907,8 @@ import * as combobox from "remix/ui/combobox/primitives"
         body: "Build a select from your own trigger, popup, options, and hidden form input. Remix supplies the accessible relationships, typeahead, focus movement, and committed value.",
         filename: "release-format.tsx",
         component: "select",
-        code: `import { css, type Handle } from "remix/ui"
-import * as select from "remix/ui/select/primitives"
+        code: `import { css, type Handle } from "remix/component"
+import * as select from "@remix-run/ui/select"
 
 function SelectValue(handle: Handle) {
   let value = handle.context.get(select.Context)
@@ -935,8 +935,8 @@ function SelectValue(handle: Handle) {
         body: "Use your own buttons and panel elements while Remix manages selection, keyboard activation, focus order, visibility, and the accessible relationships between them.",
         filename: "album-tabs.tsx",
         component: "tabs",
-        code: `import { css } from "remix/ui"
-import * as tabs from "remix/ui/tabs/primitives"
+        code: `import { css } from "remix/component"
+import * as tabs from "@remix-run/ui/tabs"
 
 <tabs.Context defaultActiveTab="overview">
   <div mix={[tabs.root(), css({/*...*/})]}>
@@ -956,8 +956,8 @@ import * as tabs from "remix/ui/tabs/primitives"
         body: "Keep the headings, buttons, panels, and styles in application code. Remix coordinates expanded state, keyboard movement, generated IDs, inert panels, and ARIA relationships.",
         filename: "album-details.tsx",
         component: "accordion",
-        code: `import { css } from "remix/ui"
-import * as accordion from "remix/ui/accordion/primitives"
+        code: `import { css } from "remix/component"
+import * as accordion from "@remix-run/ui/accordion"
 
 <accordion.Context defaultValue="credits">
   <div mix={[accordion.root(), css({/*...*/})]}>
@@ -977,8 +977,8 @@ import * as accordion from "remix/ui/accordion/primitives"
         body: "Turn your own elements into an anchor and controlled surface. Remix handles placement, outside clicks, Escape, scroll locking, and focus restoration without prescribing the panel design.",
         filename: "track-inspector.tsx",
         component: "popovers",
-        code: `import { css, on, type Handle } from "remix/ui"
-import * as popover from "remix/ui/popover"
+        code: `import { css, on, type Handle } from "remix/component"
+import * as popover from "@remix-run/ui/popover"
 
 function TrackInspector(handle: Handle) {
   let open = false
@@ -1008,8 +1008,8 @@ function TrackInspector(handle: Handle) {
         body: "Apply normalized checked state, switch semantics, keyboard interaction, and change events to a native input or a custom host, then style the states with your own CSS.",
         filename: "release-visibility.tsx",
         component: "toggle",
-        code: `import { css } from "remix/ui"
-import * as toggle from "remix/ui/toggle/primitives"
+        code: `import { css } from "remix/component"
+import * as toggle from "@remix-run/ui/toggle"
 
 <div mix={css({/*...*/})}>
   <span>Public release</span>
@@ -1030,8 +1030,8 @@ import * as toggle from "remix/ui/toggle/primitives"
         body: "Turn application-owned option markup into a controlled listbox with highlighting, selection, disabled items, typeahead, and focus scrolling.",
         filename: "genre-list.tsx",
         component: "listbox",
-        code: `import { css } from "remix/ui"
-import * as listbox from "remix/ui/listbox"
+        code: `import { css } from "remix/component"
+import * as listbox from "@remix-run/ui/listbox"
 
 <listbox.Context
   value={genre} activeValue={activeGenre}
@@ -1062,7 +1062,7 @@ import * as listbox from "remix/ui/listbox"
         animation: "presence",
         code: `import {
   animateEntrance, animateExit, spring
-} from "remix/ui/animation"
+} from "@remix-run/ui/animation"
 
 {showNotice && (
   <Notice
@@ -1091,7 +1091,7 @@ import * as listbox from "remix/ui/listbox"
         animation: "layout",
         code: `import {
   animateLayout, spring
-} from "remix/ui/animation"
+} from "@remix-run/ui/animation"
 
 {items.map((item) => (
   <Card
@@ -1110,7 +1110,7 @@ import * as listbox from "remix/ui/listbox"
         body: "Turn spring settings into CSS transition timing with natural acceleration and bounce.",
         filename: "shape.tsx",
         animation: "spring",
-        code: `import { spring } from "remix/ui/animation"
+        code: `import { spring } from "@remix-run/ui/animation"
 
 <div
   style={{
@@ -1131,8 +1131,8 @@ import * as listbox from "remix/ui/listbox"
         body: "Generate interpolated values over time, then use them in your own rendering code.",
         filename: "meter.tsx",
         animation: "tween",
-        code: `import { type Handle } from "remix/ui"
-import { easings, tween } from "remix/ui/animation"
+        code: `import { type Handle } from "remix/component"
+import { easings, tween } from "@remix-run/ui/animation"
 
 function Percentage(handle: Handle) {
   let percentage = 0

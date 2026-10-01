@@ -240,6 +240,11 @@ describe("Home", () => {
       name: "Assets",
       exact: true,
     });
+    const components = stackLayers.getByRole("tab", {
+      name: "Components",
+      exact: true,
+    });
+    const ui = stackLayers.getByRole("tab", { name: "UI", exact: true });
 
     await server.focus();
     await server.press("ArrowRight");
@@ -275,5 +280,19 @@ describe("Home", () => {
     await caching.press("ArrowRight");
     await expect(importMaps).toBeFocused();
     await expect(importMaps).toHaveAttribute("aria-selected", "true");
+
+    await assets.focus();
+    await assets.press("ArrowRight");
+    await expect(components).toBeFocused();
+    await expect(components).toHaveAttribute("aria-selected", "true");
+    await expect(
+      page.getByRole("tablist", { name: "Components examples" }),
+    ).toBeVisible();
+    await components.press("ArrowRight");
+    await expect(ui).toBeFocused();
+    await expect(ui).toHaveAttribute("aria-selected", "true");
+    await expect(
+      page.getByRole("tablist", { name: "UI examples" }),
+    ).toBeVisible();
   });
 });
