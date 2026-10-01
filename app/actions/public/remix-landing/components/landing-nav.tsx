@@ -5,6 +5,7 @@ import { Icon } from "../../../../ui/public/icon.tsx";
 import { isEditableKeyTarget } from "../../../../ui/public/keyboard.ts";
 import { breakpointMedia, breakpoints } from "../../../../ui/public/theme.ts";
 import { colors } from "../styles/tokens.ts";
+import { landingContent } from "../landing-content.ts";
 import { clamp01 } from "../utils/math.ts";
 
 const headerStyles = css({
@@ -137,24 +138,7 @@ const svgIconStyles = css({
 });
 
 const NAV_ITEMS = [
-  {
-    key: "G",
-    label: "guides",
-    href: "https://guides.remix.run",
-    external: true,
-  },
-  {
-    key: "A",
-    label: "api",
-    href: "https://api.remix.run",
-    external: true,
-  },
-  {
-    key: "H",
-    label: "github",
-    href: "https://github.com/remix-run/remix",
-    external: true,
-  },
+  ...landingContent.resources,
   { key: "B", label: "blog", href: routes.blog.index.href() },
   {
     key: "N",

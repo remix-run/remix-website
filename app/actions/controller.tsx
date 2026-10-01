@@ -1,4 +1,5 @@
 import { createController } from "remix/router";
+import { Accept } from "remix/headers/accept";
 
 import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
@@ -9,6 +10,8 @@ import { LandingNewsletterSubscribeForm } from "./public/remix-landing/component
 import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
+import { renderHomeMarkdown } from "./home-markdown.ts";
+import { getStackExplorerCodeHighlights } from "./stack-explorer-highlighting.ts";
 
 export default createController(routes, {
   actions: {
@@ -23,12 +26,57 @@ export default createController(routes, {
       return render(<BrandPage requestUrl={request.url} />);
     },
 
-    home({ render, request }) {
+    homeMarkdown() {
+      return new Response(renderHomeMarkdown(), {
+        headers: {
+          "Content-Type": "text/markdown; charset=utf-8",
+          ...(process.env.NODE_ENV === "development"
+            ? { "Cache-Control": "no-store" }
+            : CACHE.DOCUMENT),
+        },
+      });
+    },
+
+    async home({ render, request }) {
+      let accept = Accept.from(request.headers.get("Accept"));
+      let markdownQuality = accept.get("text/markdown") ?? 0;
+      let htmlQuality =
+        accept.get("text/html") ??
+        accept.get("text/*") ??
+        accept.get("*/*") ??
+        0;
+
+      // Wildcards alone keep the browser experience. Explicit Markdown wins
+      // equal quality, while a higher HTML preference still gets HTML.
+      if (
+        markdownQuality > 0 &&
+        markdownQuality <= 1 &&
+        markdownQuality >= htmlQuality
+      ) {
+        return new Response(renderHomeMarkdown(), {
+          headers: {
+            "Content-Type": "text/markdown; charset=utf-8",
+            Vary: "Accept",
+            ...(process.env.NODE_ENV === "development"
+              ? { "Cache-Control": "no-store" }
+              : CACHE.DOCUMENT),
+          },
+        });
+      }
+
       let requestUrl = new URL(request.url);
       let pageUrl = `${requestUrl.origin}${routes.home.href()}`;
       let previewImage = `${requestUrl.origin}${assetPaths.marketing.defaultOgImage}`;
+      let explorerCodeHighlights = await getStackExplorerCodeHighlights();
 
-      return render(<HomePage pageUrl={pageUrl} previewImage={previewImage} />);
+      return render(
+        <HomePage
+          explorerCodeHighlights={explorerCodeHighlights}
+          pageUrl={pageUrl}
+          previewImage={previewImage}
+        />,
+        { headers: { Vary: "Accept" } },
+      );
     },
 
     homeNewsletterSignup({ render, request }) {

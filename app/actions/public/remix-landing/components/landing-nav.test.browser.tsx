@@ -4,6 +4,7 @@ import { render } from "remix/ui/test";
 
 import { CreateRemixCommand } from "./create-remix-command.tsx";
 import { LandingNav } from "./landing-nav.tsx";
+import { landingContent } from "../landing-content.ts";
 
 describe("LandingNav", () => {
   it("moves between sections without hijacking handled keys or editable fields", async (t) => {
@@ -112,7 +113,7 @@ describe("LandingNav", () => {
     });
 
     expect(result.container.querySelector("code")?.textContent).toBe(
-      "bunx remix@next new my-app",
+      `bunx remix@next new ${landingContent.projectDirectory}`,
     );
     expect(shouldBlockBlogShortcut).not.toHaveBeenCalled();
   });

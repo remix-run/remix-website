@@ -121,7 +121,7 @@ const linkActiveStyles = css({
 
 const SECTIONS = [
   { label: "Fully Stacked", anchor: "fully-stacked-web-framework" },
-  { label: "Everything You Need", anchor: "everything-you-need" },
+  { label: "Single Package", anchor: "single-package" },
   { label: "Smaller Mental Model", anchor: "smaller-mental-model" },
   {
     label: "Re-rethinking",
@@ -131,8 +131,8 @@ const SECTIONS = [
   { label: "Test Drive", anchor: "test-drive" },
 ];
 
-// The first item points to the Hero section, while the remaining 5 map to the
-// FeatureSection panels.
+// The first item points to the Hero section, while the remaining items map to
+// the landing-page sections in DOM order.
 
 type NavigateEventWithManualScroll = NavigateEvent & {
   intercept(options: {

@@ -62,6 +62,7 @@ Remaining differences vs the previous production site (small, shippable items):
 - **Link prefetch parity**: Intent/predictive prefetch is not yet mirrored across Remix pages.
 - **Analytics on in-app transitions**: Verify one pageview per navigation when using client-side navigation.
 - **Client navigation shape**: Keep Jam on top-level client navigation unless a future route needs an independently updating region.
+- **Homepage Markdown cache verification**: After deployment, alternate HTML and `Accept: text/markdown` requests to `/` and verify independent warm Fastly HITs with `Vary: Accept`. `/index.md` always returns Markdown. The production workflow's `documents` purge must clear the old HTML objects that predate negotiation.
 
 ## E2E Gotchas (Playwright)
 

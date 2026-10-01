@@ -5,6 +5,7 @@ import { describe, it } from "remix/test";
 
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
+import { landingContent } from "../app/actions/public/remix-landing/landing-content.ts";
 import { swallowAbortErrors } from "./setup.ts";
 
 async function litPixelRatio(page: Page) {
@@ -189,9 +190,34 @@ describe("Home", () => {
 
     await expect(trigger).toContainText("Bun");
     await expect(
-      page.locator("code").filter({ hasText: /^bunx remix@next new my-app$/ }),
-    ).toHaveText("bunx remix@next new my-app");
+      page.locator("code").filter({
+        hasText: `bunx remix@next new ${landingContent.projectDirectory}`,
+      }),
+    ).toHaveText(`bunx remix@next new ${landingContent.projectDirectory}`);
     await expect(page).toHaveURL(new RegExp(`${routes.home.href()}$`));
+  });
+
+  it("links Single Package to its section and scrolls there", async (t) => {
+    const page = await t.serve(
+      await createTestServer(swallowAbortErrors(createAppRouter())),
+    );
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(routes.home.href());
+    await expect(page.locator(".loading-screen-overlay")).toBeHidden();
+
+    const link = page.getByRole("link", {
+      name: "Single Package",
+      exact: true,
+    });
+    await expect(link).toHaveAttribute("href", "#single-package");
+    await link.click();
+
+    await expect(page).toHaveURL(/#single-package$/);
+    await expect(page.locator("#single-package")).toBeVisible();
+    await expect(
+      page.getByRole("tablist", { name: "Remix stack layers" }),
+    ).toBeInViewport();
   });
 
   it("keeps the particle scene visible after resizing with reduced motion", async (t) => {
@@ -214,5 +240,85 @@ describe("Home", () => {
     }
 
     await expect.poll(() => litPixelRatio(page)).toBeGreaterThan(0.1);
+  });
+
+  it("navigates stack layers and examples with the keyboard", async (t) => {
+    const page = await t.serve(
+      await createTestServer(swallowAbortErrors(createAppRouter())),
+    );
+    const response = await page.goto(routes.home.href());
+    expect(response?.ok()).toBe(true);
+
+    await expect(
+      page.locator('nav[aria-label="Primary"] a[href="/blog"]').first(),
+    ).toBeVisible();
+
+    const stackLayers = page.getByRole("tablist", {
+      name: "Remix stack layers",
+    });
+    const server = stackLayers.getByRole("tab", {
+      name: "Server",
+      exact: true,
+    });
+    const data = stackLayers.getByRole("tab", { name: "Data", exact: true });
+    const auth = stackLayers.getByRole("tab", { name: "Auth", exact: true });
+    const assets = stackLayers.getByRole("tab", {
+      name: "Assets",
+      exact: true,
+    });
+    const components = stackLayers.getByRole("tab", {
+      name: "Components",
+      exact: true,
+    });
+    const ui = stackLayers.getByRole("tab", { name: "UI", exact: true });
+
+    await server.focus();
+    await server.press("ArrowRight");
+    await expect(data).toBeFocused();
+    await expect(data).toHaveAttribute("aria-selected", "true");
+    await data.press("ArrowRight");
+    await expect(auth).toBeFocused();
+    await auth.press("ArrowRight");
+    await expect(assets).toBeFocused();
+    await expect(assets).toHaveAttribute("aria-selected", "true");
+
+    const assetExamples = page.getByRole("tablist", {
+      name: "Assets examples",
+    });
+    const assetServer = assetExamples.getByRole("tab", {
+      name: "Server",
+      exact: true,
+    });
+    const caching = assetExamples.getByRole("tab", {
+      name: "Caching",
+      exact: true,
+    });
+    const importMaps = assetExamples.getByRole("tab", {
+      name: "Import maps",
+      exact: true,
+    });
+
+    await expect(assetServer).toHaveAttribute("aria-selected", "true");
+    await assetServer.focus();
+    await assetServer.press("ArrowRight");
+    await expect(caching).toBeFocused();
+    await expect(caching).toHaveAttribute("aria-selected", "true");
+    await caching.press("ArrowRight");
+    await expect(importMaps).toBeFocused();
+    await expect(importMaps).toHaveAttribute("aria-selected", "true");
+
+    await assets.focus();
+    await assets.press("ArrowRight");
+    await expect(components).toBeFocused();
+    await expect(components).toHaveAttribute("aria-selected", "true");
+    await expect(
+      page.getByRole("tablist", { name: "Components examples" }),
+    ).toBeVisible();
+    await components.press("ArrowRight");
+    await expect(ui).toBeFocused();
+    await expect(ui).toHaveAttribute("aria-selected", "true");
+    await expect(
+      page.getByRole("tablist", { name: "UI examples" }),
+    ).toBeVisible();
   });
 });

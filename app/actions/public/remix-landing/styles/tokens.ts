@@ -3,7 +3,8 @@ export const colors = {
   fg: "#dee2e6",
   muted: "rgba(214, 227, 255, 0.68)",
   line: "rgba(255, 255, 255, 0.12)",
-  panelStrong: "rgba(5, 8, 16, 0.82)",
+  /** Base behind home-page content cards; dark enough to keep text readable over the particle scene. */
+  cardBg: "rgba(0, 0, 0, 0.9)",
   accent: "#2dacf9",
   surface0: "#1e2226",
   sectionNavBg: "rgba(0, 0, 0, 0.2)",

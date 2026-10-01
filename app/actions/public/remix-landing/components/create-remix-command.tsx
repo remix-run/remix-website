@@ -6,39 +6,7 @@ import { visuallyHiddenStyle } from "../../../../ui/public/css-mixins.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { colors } from "../styles/tokens.ts";
-
-const PACKAGE_RUNNERS = [
-  {
-    value: "npm",
-    label: "npm",
-    icon: "/landing/package-runner-npm.svg",
-    command: "npx remix@next new my-app",
-  },
-  {
-    value: "pnpm",
-    label: "pnpm",
-    icon: "/landing/package-runner-pnpm.svg",
-    command: "pnpm dlx remix@next new my-app",
-  },
-  {
-    value: "yarn",
-    label: "Yarn",
-    icon: "/landing/package-runner-yarn.svg",
-    command: "yarn dlx remix@next new my-app",
-  },
-  {
-    value: "bun",
-    label: "Bun",
-    icon: "/landing/package-runner-bun.svg",
-    command: "bunx remix@next new my-app",
-  },
-  {
-    value: "deno",
-    label: "Deno",
-    icon: "/landing/package-runner-deno.svg",
-    command: "deno run -A npm:remix@next new my-app",
-  },
-] as const;
+import { packageRunners as PACKAGE_RUNNERS } from "../landing-content.ts";
 
 type PackageRunner = (typeof PACKAGE_RUNNERS)[number];
 type CopyStatus = "idle" | "copied" | "error";
