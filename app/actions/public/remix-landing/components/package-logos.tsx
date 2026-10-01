@@ -61,8 +61,7 @@ function logoOpacity(
   const fadeIn = clamp01((revealProgress - inStart) / FADE_IN);
   const fadeOut = clamp01(
     (panelBottomInViewport - viewportHeight * FADE_OUT_VIEWPORT_END) /
-      (viewportHeight *
-        (FADE_OUT_VIEWPORT_START - FADE_OUT_VIEWPORT_END)),
+      (viewportHeight * (FADE_OUT_VIEWPORT_START - FADE_OUT_VIEWPORT_END)),
   );
   return fadeIn * fadeOut;
 }
@@ -155,8 +154,7 @@ export function PackageLogos(handle: Handle) {
     const revealProgress = clamp01(
       (window.scrollY + window.innerHeight * 0.68 - panelTop) / revealDistance,
     );
-    const panelBottomInViewport =
-      panelTop + panelHeight - window.scrollY;
+    const panelBottomInViewport = panelTop + panelHeight - window.scrollY;
     const inSection =
       panelTop < window.scrollY + window.innerHeight &&
       panelBottomInViewport > 0;
