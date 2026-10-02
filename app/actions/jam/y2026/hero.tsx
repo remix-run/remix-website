@@ -1,13 +1,9 @@
 import { css } from "remix/component";
-import {
-  textBoxTrim,
-  visuallyHiddenStyle,
-} from "../../../ui/public/css-mixins.ts";
+import { visuallyHiddenStyle } from "../../../ui/public/css-mixins.ts";
 import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
 import { Wordmark } from "../../../ui/public/wordmark.tsx";
 import { jamTheme } from "./public/theme.ts";
 import {
-  jam2026WindowBodyStyle,
   jam2026WindowSurfaceStyle,
   jam2026WindowTitleStyle,
 } from "./public/window-styles.ts";
@@ -53,23 +49,31 @@ export function Jam2026Hero() {
         </div>
       </div>
 
-      <div mix={storyStyle}>
-        <h2 mix={[storyHeadingStyle, conferenceHeadingStyle]}>
-          The Remix team's annual conference returns to Toronto to show off
-          Remix 3.
-        </h2>
-
-        <div mix={[storyNoteStyle, jam2026WindowSurfaceStyle, readmeNoteStyle]}>
-          <p mix={jam2026WindowTitleStyle}>README.MD</p>
-          <div mix={jam2026WindowBodyStyle}>
-            <p mix={storyCopyStyle}>
-              Remix Jam is back, and we're putting Remix 3 through its paces.
-              <br />
-              <br />
-              Come hear from the team about the features, modules, and ideas
-              that make Remix our favorite all-in-one JavaScript framework.
-            </p>
-          </div>
+      <div mix={[jam2026WindowSurfaceStyle, livestreamStyle]}>
+        <p mix={jam2026WindowTitleStyle}>LIVESTREAM.MP4</p>
+        <div
+          mix={css({
+            aspectRatio: "16 / 9",
+            overflow: "hidden",
+            borderRadius: "0.25rem",
+            backgroundColor: "#000",
+          })}
+        >
+          <iframe
+            src="https://www.youtube.com/embed/TaKBQnYm9tM?si=jdVAJ6fS6hWvoLTG"
+            title="Remix Jam 2026 livestream"
+            width={560}
+            height={315}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+            mix={css({
+              display: "block",
+              width: "100%",
+              height: "100%",
+              border: 0,
+            })}
+          />
         </div>
       </div>
     </section>
@@ -312,98 +316,16 @@ let yearBadgePathStyle = css({
   fill: "currentColor",
 });
 
-let storyNarrowMedia = "@media (max-width: 980px)" as const;
-let storyTabletMedia =
-  "@media (min-width: 601px) and (max-width: 980px)" as const;
-
-let storyStyle = css({
+let livestreamStyle = css({
   position: "relative",
   zIndex: 1,
-  width: "100%",
-  maxWidth: "1920px",
-  minHeight: 0,
+  width: "calc(100% - 32px)",
+  maxWidth: "960px",
   marginInline: "auto",
-  display: "grid",
-  gridTemplateColumns:
-    "minmax(32px, 0.47fr) minmax(0, 2.12fr) minmax(24px, 0.71fr) minmax(0, 2.53fr) minmax(24px, 0.71fr) minmax(0, 2.12fr) minmax(32px, 0.47fr)",
-  paddingBlock: "88px 120px",
-  [storyNarrowMedia]: {
-    display: "block",
-    paddingBlock: "64px 88px",
-    paddingInline: "24px",
-  },
-  [storyTabletMedia]: {
-    display: "grid",
-    columnGap: "24px",
-    gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-    rowGap: "48px",
-  },
-});
-
-let storyHeadingStyle = css({
-  margin: 0,
-  color: jamTheme.ink,
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "clamp(48px, 4.07vw, 57px)",
-  fontWeight: theme.fontWeight.bold,
-  letterSpacing: "-0.03em",
-  lineHeight: "clamp(56px, 4.71vw, 66px)",
-  textAlign: "left",
-  textTransform: "none",
-  ...textBoxTrim,
-  [storyNarrowMedia]: {
-    fontSize: "clamp(28px, 5.5vw, 40px)",
-    lineHeight: 1.1,
-  },
-});
-
-let conferenceHeadingStyle = css({
-  gridColumn: "2 / 6",
-  gridRow: 1,
-  [storyTabletMedia]: {
-    gridColumn: 1,
-    gridRow: 1,
-  },
-});
-
-let storyNoteStyle = css({
-  alignSelf: "start",
   display: "flex",
   flexDirection: "column",
   gap: "0.5rem",
-  [storyNarrowMedia]: {
-    maxWidth: "520px",
-    marginBlockStart: "32px",
+  [breakpointMedia.sm]: {
+    width: "calc(100% - 64px)",
   },
-  [storyTabletMedia]: {
-    maxWidth: "none",
-    marginBlockStart: 0,
-  },
-});
-
-let readmeNoteStyle = css({
-  gridColumn: 6,
-  gridRow: 1,
-  marginBlockStart: "-48px",
-  [storyNarrowMedia]: {
-    marginBlockStart: "32px",
-  },
-  [storyTabletMedia]: {
-    gridColumn: 2,
-    gridRow: 1,
-    marginBlockStart: 0,
-  },
-});
-
-let storyCopyStyle = css({
-  margin: 0,
-  color: jamTheme.ink,
-  fontFamily: theme.fontFamily.sans,
-  fontSize: "16px",
-  fontWeight: theme.fontWeight.normal,
-  letterSpacing: "-0.01em",
-  lineHeight: "1.6em",
-  textAlign: "left",
-  textTransform: "none",
-  ...textBoxTrim,
 });

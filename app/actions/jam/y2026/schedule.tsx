@@ -63,11 +63,17 @@ function Jam2026MobileSchedule(handle: Handle<{ items: ScheduleItem[] }>) {
 let scheduleStyle = css({
   position: "relative",
   zIndex: 1,
-  padding: "240px 16px 88px",
+  padding: "72px 16px 88px",
   scrollMarginBlockStart: "48px",
   [breakpointMedia.sm]: {
     paddingBlockEnd: "max(48px, 5.6vw)",
     paddingInline: "max(24px, 3.2vw)",
+  },
+  [breakpointMedia.lg]: {
+    paddingBlockStart: "40px",
+  },
+  [breakpointMedia.xl]: {
+    paddingBlockStart: "144px",
   },
 });
 

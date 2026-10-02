@@ -6,7 +6,6 @@ import { theme } from "../../../../ui/public/theme.ts";
 import { syncDocumentTheme } from "../../../../ui/public/document-head-sync.ts";
 import { Jam2026Countdown } from "./countdown.tsx";
 import { jamTheme, type Jam2026ThemeMode } from "./theme.ts";
-import { ticketModalConfig } from "./tickets-modal-contract.ts";
 import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 
@@ -241,15 +240,6 @@ export let Jam2026Header = clientEntry(
             <a href="#faq" mix={[jam2026NavLinkStyle, onFaqClick]}>
               FAQ
             </a>
-            <a
-              href={routes.jam.y2026.ticket.index.href()}
-              mix={jam2026TicketLinkStyle}
-              rmx-reset-scroll="false"
-              rmx-target={ticketModalConfig.frameName}
-            >
-              <span aria-hidden="true" mix={jam2026TicketLinkFillStyle} />
-              <span mix={jam2026TicketLinkLabelStyle}>Get tickets</span>
-            </a>
           </nav>
         </header>
       );
@@ -443,68 +433,6 @@ let jam2026NavLinkStyle = css({
   "@media (max-width: 380px)": {
     padding: "0 10px",
   },
-});
-
-let jam2026TicketLinkStyle = css({
-  "--jam-2026-ticket-fill-delay": "0ms",
-  "--jam-2026-ticket-fill-width": "100%",
-  alignItems: "center",
-  background: "transparent",
-  color: "#ffffff",
-  display: "inline-flex",
-  fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-  fontSize: "11px",
-  fontWeight: theme.fontWeight.bold,
-  height: "100%",
-  isolation: "isolate",
-  lineHeight: 1,
-  padding: "0 16px",
-  position: "relative",
-  textDecoration: "none",
-  textTransform: "uppercase",
-  whiteSpace: "nowrap",
-  "&:hover": {
-    "--jam-2026-ticket-fill-delay": "200ms",
-    "--jam-2026-ticket-fill-width": "100vw",
-  },
-  "&:focus, &:focus-visible": {
-    boxShadow: "inset 0 0 0 1px rgb(8 40 69 / 0.35)",
-    outline: "2px solid #ffffff",
-    outlineOffset: "-4px",
-  },
-  "@media (max-width: 640px)": {
-    padding: "0 12px",
-  },
-  "@media (max-width: 380px)": {
-    padding: "0 10px",
-  },
-  "@media (prefers-reduced-motion: reduce)": {
-    background: jamTheme.brandRed,
-    "&:hover": {
-      "--jam-2026-ticket-fill-delay": "0ms",
-      "--jam-2026-ticket-fill-width": "100%",
-      background: jamTheme.accentActive,
-    },
-  },
-});
-
-let jam2026TicketLinkFillStyle = css({
-  background: jamTheme.brandRed,
-  bottom: 0,
-  position: "absolute",
-  right: 0,
-  top: 0,
-  transition: `width ${spring("smooth", { duration: 200 })}`,
-  transitionDelay: "var(--jam-2026-ticket-fill-delay)",
-  width: "var(--jam-2026-ticket-fill-width)",
-  zIndex: -1,
-  "@media (prefers-reduced-motion: reduce)": {
-    display: "none",
-  },
-});
-
-let jam2026TicketLinkLabelStyle = css({
-  color: "#ffffff",
 });
 
 let jam2026ThemeToggleStyle = css({
