@@ -6,7 +6,7 @@ import {
   ref,
   type Handle,
   type MixInput,
-} from "remix/ui";
+} from "remix/component";
 
 import { routes } from "../../routes.ts";
 import { visuallyHiddenStyle } from "./css-mixins.ts";

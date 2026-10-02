@@ -1,4 +1,4 @@
-import { type Handle } from "remix/ui";
+import { type Handle } from "remix/component";
 
 import { ticketModalConfig } from "./tickets-modal-contract.ts";
 import { getFocusableElementsWithin } from "../../../../ui/public/focus-trap.ts";

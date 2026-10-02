@@ -1,6 +1,6 @@
 import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
-import { render } from "remix/ui/test";
+import { render } from "remix/component/test";
 
 import { ImageLightbox } from "./image-lightbox.tsx";
 

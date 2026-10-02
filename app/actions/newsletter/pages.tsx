@@ -1,4 +1,4 @@
-import { css, unsafeHTML, type Handle } from "remix/ui";
+import { css, unsafeHTML, type Handle } from "remix/component";
 
 import type { NewsletterIssue, NewsletterSummary } from "./archive.ts";
 import { routes } from "../../routes.ts";

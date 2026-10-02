@@ -1,4 +1,4 @@
-import { css, ref, type Handle } from "remix/ui";
+import { css, ref, type Handle } from "remix/component";
 import { presets } from "../engine/presets.ts";
 import { clamp, lerp } from "../utils/math.ts";
 

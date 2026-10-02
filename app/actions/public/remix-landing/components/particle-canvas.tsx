@@ -1,4 +1,4 @@
-import { css, ref, type Handle } from "remix/ui";
+import { css, ref, type Handle } from "remix/component";
 import { Matrix4, Vector3 } from "three";
 import { setDesiredCameraInto } from "../engine/camera-transition.ts";
 import { Engine } from "../engine/engine.ts";

@@ -1,6 +1,6 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
-import { render } from "remix/ui/test";
+import { render } from "remix/component/test";
 
 import { Jam2026Countdown } from "./countdown.tsx";
 

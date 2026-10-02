@@ -1,4 +1,4 @@
-import { css, type Handle, type Props } from "remix/ui";
+import { css, type Handle, type Props } from "remix/component";
 
 import { captionStyle } from "../../ui/public/marketing-styles.ts";
 import { theme } from "../../ui/public/theme.ts";

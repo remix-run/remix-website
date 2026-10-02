@@ -1,4 +1,4 @@
-import { css, unsafeHTML, type Handle } from "remix/ui";
+import { css, unsafeHTML, type Handle } from "remix/component";
 import { getSchedule } from "../../../data/jam-schedule.ts";
 import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";

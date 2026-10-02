@@ -1,7 +1,7 @@
 import { expect } from "remix/assert";
 import { createRouter } from "remix/router";
 import { describe, it } from "remix/test";
-import { createElement, Frame, type Handle } from "remix/ui";
+import { createElement, Frame, type Handle } from "remix/component";
 
 import { renderMiddleware } from "./render.ts";
 

@@ -1,4 +1,4 @@
-import { css, type Handle, type RemixNode } from "remix/ui";
+import { css, type Handle, type RemixNode } from "remix/component";
 import { Document } from "../../../ui/document.tsx";
 import { getSocialHeadTags } from "../../../utils/social-head-tags.ts";
 import { JamPageScaffold } from "./public/shared.tsx";

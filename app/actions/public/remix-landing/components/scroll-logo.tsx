@@ -1,4 +1,4 @@
-import { css, on, type Handle } from "remix/ui";
+import { css, on, type Handle } from "remix/component";
 import { routes } from "../../../../routes.ts";
 import { Wordmark } from "../../../../ui/public/wordmark.tsx";
 import { brandContextMenu } from "../../../../ui/public/brand-context-menu.ts";

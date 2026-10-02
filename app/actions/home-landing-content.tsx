@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/component";
 
 import { textBoxTrim } from "../ui/public/css-mixins.ts";
 import { breakpointMedia, theme } from "../ui/public/theme.ts";

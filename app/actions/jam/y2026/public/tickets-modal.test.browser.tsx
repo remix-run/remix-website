@@ -1,7 +1,7 @@
 import { expect } from "remix/assert";
 import { afterEach, beforeEach, describe, it } from "remix/test";
 
-import { render } from "remix/ui/test";
+import { render } from "remix/component/test";
 
 import { Jam2026TicketsModalFrame } from "./tickets-modal.tsx";
 import { remixJam2026Ticket } from "./ticket-data.ts";

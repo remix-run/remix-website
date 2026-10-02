@@ -1,4 +1,4 @@
-import { clientEntry, css, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/component";
 import { PresetGlow } from "./components/preset-glow.tsx";
 import { LandingNav } from "./components/landing-nav.tsx";
 import {

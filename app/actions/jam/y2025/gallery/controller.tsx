@@ -16,7 +16,7 @@ import {
 } from "../public/gallery-modal-host.tsx";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
-import { css, type Handle, type Props, type RemixNode } from "remix/ui";
+import { css, type Handle, type Props, type RemixNode } from "remix/component";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 
 type Photo = Awaited<ReturnType<typeof getPhotos>>[number];

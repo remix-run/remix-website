@@ -5,7 +5,7 @@ import {
   navigate,
   type Handle,
   type RemixNode,
-} from "remix/ui";
+} from "remix/component";
 import {
   restoreGalleryFocus,
   storeGalleryFocus,

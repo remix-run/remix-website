@@ -1,4 +1,4 @@
-import { css } from "remix/ui";
+import { css } from "remix/component";
 
 import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
 import { routes } from "../../../routes.ts";

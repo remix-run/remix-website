@@ -1,4 +1,4 @@
-import { clientEntry, css, on, type Handle } from "remix/ui";
+import { clientEntry, css, on, type Handle } from "remix/component";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { JamButton } from "./shared.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";

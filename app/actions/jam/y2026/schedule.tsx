@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/component";
 import { visuallyHiddenStyle } from "../../../ui/public/css-mixins.ts";
 import type { ScheduleItem } from "./public/schedule-types.ts";
 import {

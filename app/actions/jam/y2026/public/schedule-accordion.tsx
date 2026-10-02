@@ -1,10 +1,10 @@
-import { clientEntry, css, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/component";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "remix/ui/accordion";
+} from "./accordion.tsx";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 import { jamTheme } from "./theme.ts";
@@ -61,7 +61,7 @@ function ScheduleAccordionItem(
 
     return (
       <AccordionItem value={handle.props.value} mix={scheduleItemStyle}>
-        <AccordionTrigger indicator={null} mix={scheduleTriggerStyle}>
+        <AccordionTrigger mix={scheduleTriggerStyle}>
           <span mix={[scheduleGridStyle, scheduleSummaryStyle]}>
             <span mix={timeStyle}>
               <span>{clockTime}</span> <span>{meridiem}</span>

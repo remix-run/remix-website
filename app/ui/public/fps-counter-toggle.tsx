@@ -1,4 +1,4 @@
-import { clientEntry, css, type Handle } from "remix/ui";
+import { clientEntry, css, type Handle } from "remix/component";
 
 import type { FpsCounter } from "./fps-counter.tsx";
 import { isEditableKeyTarget } from "./keyboard.ts";

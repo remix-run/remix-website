@@ -1,4 +1,4 @@
-import { css, type Handle, type Props, type RemixNode } from "remix/ui";
+import { css, type Handle, type Props, type RemixNode } from "remix/component";
 import { JamScrambleText } from "./scramble-text.tsx";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { MobileMenu } from "../../../../ui/public/mobile-menu.tsx";

@@ -14,7 +14,7 @@
       "public/authors/**",
       "public/blog-images/**"
     ],
-    "allowPackages": ["remix", "three", "fathom-client"],
+    "allowPackages": ["@remix-run/ui", "remix", "three", "fathom-client"],
     "denyFiles": ["app/**/*.test.*"],
     "files": {
       "extensions": [

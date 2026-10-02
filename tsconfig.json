@@ -14,7 +14,7 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "remix/ui",
+    "jsxImportSource": "remix/component",
     "types": ["node", "remix/assets/types/hmr"]
   }
 }

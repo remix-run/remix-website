@@ -1,4 +1,4 @@
-import { css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/component";
 
 import { NewsletterSubscribe } from "./newsletter-subscribe.tsx";
 import { pageBodyStyle, pageTitleStyle } from "./public/marketing-styles.ts";

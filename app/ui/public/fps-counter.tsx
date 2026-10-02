@@ -1,4 +1,4 @@
-import { css, ref, type Handle } from "remix/ui";
+import { css, ref, type Handle } from "remix/component";
 
 const containerStyles = css({
   position: "fixed",

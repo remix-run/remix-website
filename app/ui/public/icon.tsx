@@ -1,4 +1,4 @@
-import { type Handle, type Props } from "remix/ui";
+import { type Handle, type Props } from "remix/component";
 
 export type IconName =
   | "check-mark"

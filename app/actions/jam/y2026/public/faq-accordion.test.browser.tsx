@@ -1,6 +1,6 @@
 import { expect } from "remix/assert";
 import { describe, it } from "remix/test";
-import { render } from "remix/ui/test";
+import { render } from "remix/component/test";
 
 import { Jam2026FaqAccordion } from "./faq-accordion.tsx";
 
@@ -41,7 +41,33 @@ describe("Jam2026FaqAccordion", () => {
     expect(firstTrigger.getAttribute("aria-expanded")).toBe("false");
     expect(secondTrigger.getAttribute("aria-expanded")).toBe("false");
 
+    let firstPanel = result.container.querySelector<HTMLElement>(
+      `[id="${firstTrigger.getAttribute("aria-controls")}"]`,
+    )!;
+    expect(firstPanel.getAttribute("aria-labelledby")).toBe(firstTrigger.id);
+    expect(firstPanel.inert).toBe(true);
+    expect(firstPanel.getBoundingClientRect().height).toBe(0);
+
+    await result.act(() => {
+      firstTrigger.focus();
+      firstTrigger.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),
+      );
+    });
+    expect(document.activeElement).toBe(secondTrigger);
+    await result.act(() => {
+      secondTrigger.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Home", bubbles: true }),
+      );
+    });
+    expect(document.activeElement).toBe(firstTrigger);
+
     await result.act(() => firstTrigger.click());
+    await result.act(() => {
+      for (let animation of firstPanel.getAnimations()) animation.finish();
+    });
+    expect(firstPanel.inert).toBe(false);
+    expect(firstPanel.getBoundingClientRect().height > 0).toBe(true);
 
     ({ first: firstTrigger, second: secondTrigger } = getTriggers());
     expect(firstTrigger.getAttribute("aria-expanded")).toBe("true");
@@ -51,6 +77,11 @@ describe("Jam2026FaqAccordion", () => {
     ({ first: firstTrigger, second: secondTrigger } = getTriggers());
     expect(firstTrigger.getAttribute("aria-expanded")).toBe("false");
     expect(secondTrigger.getAttribute("aria-expanded")).toBe("true");
+    await result.act(() => {
+      for (let animation of firstPanel.getAnimations()) animation.finish();
+    });
+    expect(firstPanel.inert).toBe(true);
+    expect(firstPanel.getBoundingClientRect().height).toBe(0);
 
     await result.act(() => secondTrigger.click());
     ({ second: secondTrigger } = getTriggers());

@@ -1,5 +1,5 @@
 import { createController } from "remix/router";
-import { css, type Handle } from "remix/ui";
+import { css, type Handle } from "remix/component";
 
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";

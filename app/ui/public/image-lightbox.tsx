@@ -1,4 +1,4 @@
-import { clientEntry, css, on, ref, type Handle } from "remix/ui";
+import { clientEntry, css, on, ref, type Handle } from "remix/component";
 import { focusTrap } from "./focus-trap.ts";
 import { lockScroll } from "./scroll-lock.ts";
 

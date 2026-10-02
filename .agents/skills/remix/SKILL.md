@@ -73,8 +73,8 @@ The runtime adapter passes requests to `router.fetch(request)`. Generate URLs fr
 Remix UI uses JSX, but it is not React. A component's setup function runs once per instance and returns a render function. Local variables in setup preserve state between renders; event handlers change that state and call `handle.update()` to request another render:
 
 ```tsx
-import { on } from "remix/ui";
-import type { Handle } from "remix/ui";
+import { on } from "remix/component";
+import type { Handle } from "remix/component";
 
 function Counter(handle: Handle) {
   let count = 0;
@@ -94,6 +94,8 @@ function Counter(handle: Handle) {
 ```
 
 Read changing props from `handle.props` during render, rather than capturing their initial values in setup. Do not apply React hooks or lifecycle assumptions.
+
+The runtime and its server/test/JSX subpaths live in `remix/component`; component HMR lives in `remix/component-hmr`. Headless UI primitives and animations require the separately installed `@remix-run/ui` package (for example, `@remix-run/ui/accordion` and `@remix-run/ui/animation`). Add it to the asset server’s `allowPackages` when used in browser modules. App code owns markup and styles; the previous styled UI components are no longer available.
 
 Event handlers run only when the component is mounted or hydrated in the browser; server-rendered HTML alone is not interactive. Follow the installed interactivity guide and the app's existing browser-entry setup.
 

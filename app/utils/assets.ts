@@ -4,7 +4,7 @@ import * as path from "node:path";
 import { createAssetServer, defineFileTransform } from "remix/assets";
 import { loadConfig } from "remix/cli";
 import { createFsFileStorage } from "remix/file-storage/fs";
-import { uiHmr } from "remix/ui-hmr/assets";
+import { componentHmr } from "remix/component-hmr/assets";
 import sharp from "sharp";
 
 let nodeEnv = process.env.NODE_ENV ?? "development";
@@ -57,7 +57,7 @@ export let assets = createAssetServer({
     define: {
       "process.env.NODE_ENV": JSON.stringify(nodeEnv),
     },
-    loaders: isHmr ? [uiHmr()] : undefined,
+    loaders: isHmr ? [componentHmr()] : undefined,
   },
   watch: isDevelopment,
 });
