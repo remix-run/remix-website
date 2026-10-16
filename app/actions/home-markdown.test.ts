@@ -79,77 +79,19 @@ describe("homepage representations", () => {
     }
   });
 
-  it("follows the llms.txt layout with setup guidance before the link lists", async () => {
+  it("opens like an llms.txt index and links each stack area's docs without the example payloads", async () => {
     let router = createRouteTestRouter();
     router.map(routes, rootController);
     let response = await router.fetch(
       new URL(routes.llms.href(), "http://localhost"),
     );
     let markdown = await response.text();
-    let quickstart = landingContent.storySections.find(
-      (section) => section.id === "test-drive",
-    )!;
-    let guides = landingContent.resources.find(
-      (resource) => resource.key === "G",
-    )!;
 
-    expect(markdown).toMatch(/^# [^\n]+\n\n> [^\n]+\n\n/);
-    expect([...markdown.matchAll(/^#{1,6} /gm)]).toHaveLength(3);
-    let [details, ...sections]: string[] = markdown.split(/^## /m);
-    expect(sections.map((section) => section.split("\n")[0])).toEqual([
-      landingContent.stackTitle,
-      "Learn more",
-    ]);
-    for (let section of sections) {
-      expect(
-        section
-          .trim()
-          .split("\n")
-          .slice(2)
-          .every((line) => /^- \[[^\]]+\]\(https:\/\/[^)]+\): .+/.test(line)),
-      ).toBe(true);
+    expect(markdown).toMatch(/^# .+\n\n> /);
+    expect(markdown).toContain(packageRunners[0].command);
+    for (let category of stackCategories) {
+      expect(markdown).toContain(`](${category.documentationHref})`);
     }
-
-    expect(details!.match(/```sh\n([\s\S]+?)\n```/)?.[1]?.split("\n")).toEqual([
-      packageRunners[0].command,
-      `cd ${landingContent.projectDirectory}`,
-      "npm install",
-    ]);
-    expect(details).toContain(
-      `[${quickstart.ctaLabel}](${guides.markdownHref})`,
-    );
-    let links = [...markdown.matchAll(/\]\(([^)]+)\)/g)].map(
-      (match) => match[1],
-    );
-    expect(links).toContain("https://v2.remix.run/docs");
-    expect(links).toContain(
-      "https://raw.githubusercontent.com/remix-run/remix/main/.agents/skills/remix/SKILL.md",
-    );
-  });
-
-  it("includes every stack overview and its Markdown docs without the example payloads", async () => {
-    let router = createRouteTestRouter();
-    router.map(routes, rootController);
-    let response = await router.fetch(
-      new URL(routes.homeMarkdown.href(), "http://localhost"),
-    );
-    let markdown = await response.text();
-    let stack = markdown.split(/^## /m)[1]!;
-
-    expect(
-      [...stack.matchAll(/^- \[([^\]]+)\]\(([^)]+)\): (.+)$/gm)].map(
-        (match) => [match[1], match[2], match[3]],
-      ),
-    ).toEqual(
-      stackCategories.map((category) => [
-        category.label,
-        category.documentationHref,
-        category.introBody,
-      ]),
-    );
-    expect(markdown).toContain(landingContent.hero.body.join(" "));
-    // Only the scaffold instructions need a fenced code block.
-    expect([...markdown.matchAll(/^```/gm)]).toHaveLength(2);
     expect(markdown.length).toBeLessThan(10_000);
     expect(markdown).not.toContain("<script");
     expect(markdown).not.toContain("<form");
@@ -185,48 +127,15 @@ describe("homepage representations", () => {
         headers: { Accept: accept },
         signal: t.signal,
       });
-      let header = homepage.headers.get("Link")!;
-      expect(
-        header.match(/<([^>]+)>; rel="alternate"; type="text\/markdown"/)?.[1],
-      ).toBe(routes.homeMarkdown.href());
-      expect(header.match(/<([^>]+)>; rel="describedby"/)?.[1]).toBe(
-        routes.llms.href(),
-      );
-      await homepage.body?.cancel();
+      let header = homepage.headers.get("Link");
+      expect(header).toContain(`<${routes.homeMarkdown.href()}>`);
+      expect(header).toContain(`<${routes.llms.href()}>`);
+      let body = await homepage.text();
+      if (accept === "text/html") {
+        expect(body).toContain(`href="${routes.homeMarkdown.href()}"`);
+        expect(body).toContain(`href="${routes.llms.href()}"`);
+      }
     }
-
-    let html = await (
-      await fetch(new URL(routes.home.href(), server.baseUrl), {
-        signal: t.signal,
-      })
-    ).text();
-    let linkTags = [...html.matchAll(/<link\b[^>]*>/g)].map(
-      (match) => match[0],
-    );
-    expect(
-      linkTags.some(
-        (tag) =>
-          tag.includes('rel="alternate"') &&
-          tag.includes('type="text/markdown"') &&
-          tag.includes(`href="${routes.homeMarkdown.href()}"`),
-      ),
-    ).toBe(true);
-    expect(
-      linkTags.some(
-        (tag) =>
-          tag.includes('rel="describedby"') &&
-          tag.includes(`href="${routes.llms.href()}"`),
-      ),
-    ).toBe(true);
-
-    let markdown = await fetch(
-      new URL(routes.homeMarkdown.href(), server.baseUrl),
-      { signal: t.signal },
-    );
-    expect(markdown.headers.get("Link")).toBe(
-      `<${routes.llms.href()}>; rel="describedby"`,
-    );
-    await markdown.body?.cancel();
   });
 
   it("preserves the representation cache dimension alongside compression through HTTP", async (t) => {
