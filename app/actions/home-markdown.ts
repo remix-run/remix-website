@@ -2,7 +2,6 @@ import {
   landingContent,
   packageRunners,
 } from "./public/remix-landing/landing-content.ts";
-import { stackCategories } from "./public/remix-landing/components/stack-explorer-content.tsx";
 
 // Served at `/` (Accept: text/markdown), `/index.md`, and `/llms.txt`, so it
 // follows the llms.txt layout: H1, blockquote summary, heading-free details,
@@ -35,13 +34,6 @@ npm install
       "2. Search `node_modules/remix/INDEX.md` for the task or API and read the matching guide and package README. These match the installed version; the online docs follow the latest release.",
       "3. Check your work with typechecks and focused tests, and run `npx remix doctor` after changing routes or configuration.",
     ].join("\n"),
-    `## ${landingContent.stackTitle}`,
-    stackCategories
-      .map(
-        (category) =>
-          `- [${category.label}](${category.documentationHref}): ${category.introBody}`,
-      )
-      .join("\n"),
     "## Learn more",
     [
       `- [Guides](${guides.markdownHref}): Build your first app, then learn how each part of Remix fits together.`,

@@ -8,7 +8,6 @@ import {
   landingContent,
   packageRunners,
 } from "./public/remix-landing/landing-content.ts";
-import { stackCategories } from "./public/remix-landing/components/stack-explorer-content.tsx";
 import { createAppRouter } from "../router.ts";
 import { routes } from "../routes.ts";
 import { CACHE } from "../utils/cache-control.ts";
@@ -79,7 +78,7 @@ describe("homepage representations", () => {
     }
   });
 
-  it("opens like an llms.txt index and links each stack area's docs without the example payloads", async () => {
+  it("opens like an llms.txt index and stays compact without page markup", async () => {
     let router = createRouteTestRouter();
     router.map(routes, rootController);
     let response = await router.fetch(
@@ -89,10 +88,7 @@ describe("homepage representations", () => {
 
     expect(markdown).toMatch(/^# .+\n\n> /);
     expect(markdown).toContain(packageRunners[0].command);
-    for (let category of stackCategories) {
-      expect(markdown).toContain(`](${category.documentationHref})`);
-    }
-    expect(markdown.length).toBeLessThan(10_000);
+    expect(markdown.length).toBeLessThan(5_000);
     expect(markdown).not.toContain("<script");
     expect(markdown).not.toContain("<form");
   });
