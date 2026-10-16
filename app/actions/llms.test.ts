@@ -9,7 +9,7 @@ import {
   landingContent,
   packageRunners,
 } from "./public/remix-landing/landing-content.ts";
-import { stackCategories } from "./public/remix-landing/components/stack-explorer-content.tsx";
+import { guideLinks } from "./llms.ts";
 
 describe("agent discovery", () => {
   it("serves a compact Markdown index regardless of Accept with document cache tags", async () => {
@@ -44,8 +44,8 @@ describe("agent discovery", () => {
       packageRunners[0].command,
       `cd ${landingContent.projectDirectory}`,
       "npm install",
-      "npm run dev",
     ]);
+    expect(guidance).toContain("`npx remix doctor`");
     let sections = markdown.split(/^## /m).slice(1);
     expect(sections.length).toBeGreaterThan(0);
     for (let section of sections) {
@@ -66,8 +66,8 @@ describe("agent discovery", () => {
     expect(links).toContain(
       "https://raw.githubusercontent.com/remix-run/remix/main/.agents/skills/remix/SKILL.md",
     );
-    for (let category of stackCategories) {
-      expect(links).toContain(category.documentationHref);
+    for (let guide of guideLinks) {
+      expect(links).toContain(guide.href);
     }
   });
 

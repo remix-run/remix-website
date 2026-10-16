@@ -1,6 +1,6 @@
 import { landingContent } from "./public/remix-landing/landing-content.ts";
 import { stackCategories } from "./public/remix-landing/components/stack-explorer-content.tsx";
-import { agentGuidance, quickstartMarkdown } from "./llms.ts";
+import { agentGuidance } from "./llms.ts";
 import { routes } from "../routes.ts";
 
 export function renderHomeMarkdown() {
@@ -24,7 +24,6 @@ export function renderHomeMarkdown() {
     `[Documentation index](https://remix.run${routes.llms.href()})`,
     `## ${quickstart.title}`,
     quickstart.body,
-    quickstartMarkdown,
     `[${quickstart.ctaLabel}](${guides.markdownHref})`,
     `## ${landingContent.stackTitle}`,
     ...stackCategories.flatMap((category) => [

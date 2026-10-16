@@ -108,18 +108,11 @@ describe("homepage representations", () => {
       landingContent.differentiators.title,
       storyTitles.get("humans-and-agents"),
     ]);
-    let commandBlocks = [...markdown.matchAll(/```sh\n([\s\S]+?)\n```/g)].map(
-      (match) => match[1]!.split("\n"),
-    );
-    expect(commandBlocks).toHaveLength(2);
-    for (let commands of commandBlocks) {
-      expect(commands).toEqual([
-        packageRunners[0].command,
-        `cd ${landingContent.projectDirectory}`,
-        "npm install",
-        "npm run dev",
-      ]);
-    }
+    expect(markdown.match(/```sh\n([\s\S]+?)\n```/)?.[1]?.split("\n")).toEqual([
+      packageRunners[0].command,
+      `cd ${landingContent.projectDirectory}`,
+      "npm install",
+    ]);
     expect(markdown).toContain(
       `[${quickstart.ctaLabel}](${guides.markdownHref})`,
     );
@@ -151,8 +144,8 @@ describe("homepage representations", () => {
     }
     expect(markdown).toContain(landingContent.hero.body.join(" "));
     expect(markdown).toContain(packageRunners[0].command);
-    // Agent guidance and the quickstart share the scaffold/run instructions.
-    expect([...markdown.matchAll(/^```/gm)]).toHaveLength(4);
+    // Only the agent scaffold instructions need a fenced code block.
+    expect([...markdown.matchAll(/^```/gm)]).toHaveLength(2);
     expect(markdown.length).toBeLessThan(10_000);
     expect(markdown).not.toContain("<script");
     expect(markdown).not.toContain("<form");
