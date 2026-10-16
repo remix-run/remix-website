@@ -19,14 +19,6 @@ export function renderHomeMarkdown() {
     `# Remix 3 — ${landingContent.hero.title.join(" ")}`,
     `> ${landingContent.hero.body.join(" ")}`,
     "This site documents Remix 3. Remix 3 has its own UI runtime; do not assume React hooks or Remix 2 route conventions. For apps on Remix 1 or 2, use the [legacy documentation](https://v2.remix.run/docs).",
-    [
-      "**Key differences:**",
-      "",
-      "- A component runs setup once and returns a render function. State lives in ordinary variables, and `handle.update()` re-renders explicitly.",
-      "- Routes, middleware, and assets use standard `Request` and `Response` objects.",
-      "- `<Frame>` updates regions of a page with server-rendered HTML from ordinary routes.",
-      "- TypeScript, JSX, and CSS compile on request; there is no application build step.",
-    ].join("\n"),
     "Create an app with the Remix CLI:",
     `\`\`\`sh
 ${packageRunners[0].command}
