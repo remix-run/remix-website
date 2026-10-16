@@ -76,7 +76,7 @@ describe("homepage representations", () => {
     }
   });
 
-  it("uses shared setup details and keeps quickstart before capabilities and stories", async () => {
+  it("puts agent guidance before setup and keeps quickstart before capabilities and stories", async () => {
     let router = createRouteTestRouter();
     router.map(routes, rootController);
     let response = await router.fetch(
@@ -98,24 +98,40 @@ describe("homepage representations", () => {
 
     expect(
       [...markdown.matchAll(/^## (.+)$/gm)]
-        .slice(0, 5)
+        .slice(0, 6)
         .map((match) => match[1]),
     ).toEqual([
+      "For coding agents",
       storyTitles.get("test-drive"),
       landingContent.stackTitle,
       storyTitles.get("smaller-mental-model"),
       landingContent.differentiators.title,
       storyTitles.get("humans-and-agents"),
     ]);
-    expect(markdown.match(/```sh\n([\s\S]+?)\n```/)?.[1]?.split("\n")).toEqual([
-      packageRunners[0].command,
-      `cd ${landingContent.projectDirectory}`,
-      "npm install",
-      "npm run dev",
-    ]);
+    let commandBlocks = [...markdown.matchAll(/```sh\n([\s\S]+?)\n```/g)].map(
+      (match) => match[1]!.split("\n"),
+    );
+    expect(commandBlocks).toHaveLength(2);
+    for (let commands of commandBlocks) {
+      expect(commands).toEqual([
+        packageRunners[0].command,
+        `cd ${landingContent.projectDirectory}`,
+        "npm install",
+        "npm run dev",
+      ]);
+    }
     expect(markdown).toContain(
       `[${quickstart.ctaLabel}](${guides.markdownHref})`,
     );
+    let guidance = markdown.split(/^## /m)[1]!;
+    let links = [...guidance.matchAll(/\]\(([^)]+)\)/g)].map(
+      (match) => match[1],
+    );
+    expect(links).toContain("https://v2.remix.run/docs");
+    expect(links).toContain(
+      "https://raw.githubusercontent.com/remix-run/remix/main/.agents/skills/remix/SKILL.md",
+    );
+    expect(links).toContain(`https://remix.run${routes.llms.href()}`);
   });
 
   it("includes every stack overview and its Markdown docs without the example payloads", async () => {
@@ -135,8 +151,8 @@ describe("homepage representations", () => {
     }
     expect(markdown).toContain(landingContent.hero.body.join(" "));
     expect(markdown).toContain(packageRunners[0].command);
-    // Only the scaffold/run instructions need a fenced code block.
-    expect([...markdown.matchAll(/^```/gm)]).toHaveLength(2);
+    // Agent guidance and the quickstart share the scaffold/run instructions.
+    expect([...markdown.matchAll(/^```/gm)]).toHaveLength(4);
     expect(markdown.length).toBeLessThan(10_000);
     expect(markdown).not.toContain("<script");
     expect(markdown).not.toContain("<form");
@@ -145,7 +161,7 @@ describe("homepage representations", () => {
     );
   });
 
-  it("preserves shared inline code in both formats without advertising the Markdown URL", async () => {
+  it("preserves shared inline code in both formats", async () => {
     let router = createRouteTestRouter();
     router.map(routes, rootController);
     let html = await (await router.fetch("http://localhost/")).text();
@@ -163,8 +179,6 @@ describe("homepage representations", () => {
         expect(markdown).toContain(match[0]);
       }
     }
-    let hrefs = [...html.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
-    expect(hrefs).not.toContain(routes.homeMarkdown.href());
   });
 
   it("preserves the representation cache dimension alongside compression through HTTP", async (t) => {
@@ -187,6 +201,12 @@ describe("homepage representations", () => {
       expect(vary).toContain("accept-encoding");
       expect(response.headers.get("Surrogate-Key")).toBe(
         CACHE.DOCUMENT["Surrogate-Key"],
+      );
+      expect(response.headers.get("Link")).toContain(
+        `<${routes.homeMarkdown.href()}>; rel="alternate"; type="text/markdown"`,
+      );
+      expect(response.headers.get("Link")).toContain(
+        `<${routes.llms.href()}>; rel="describedby"`,
       );
       expect((await response.text()).startsWith("# ")).toBe(
         format === "markdown",

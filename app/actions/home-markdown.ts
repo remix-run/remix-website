@@ -1,8 +1,7 @@
-import {
-  landingContent,
-  packageRunners,
-} from "./public/remix-landing/landing-content.ts";
+import { landingContent } from "./public/remix-landing/landing-content.ts";
 import { stackCategories } from "./public/remix-landing/components/stack-explorer-content.tsx";
+import { agentGuidance, quickstartMarkdown } from "./llms.ts";
+import { routes } from "../routes.ts";
 
 export function renderHomeMarkdown() {
   let mentalModel = landingContent.storySections.find(
@@ -20,14 +19,12 @@ export function renderHomeMarkdown() {
   let markdown = [
     `# Remix 3 — ${landingContent.hero.title.join(" ")}`,
     landingContent.hero.body.join(" "),
+    "## For coding agents",
+    agentGuidance,
+    `[Documentation index](https://remix.run${routes.llms.href()})`,
     `## ${quickstart.title}`,
     quickstart.body,
-    `\`\`\`sh
-${packageRunners[0].command}
-cd ${landingContent.projectDirectory}
-npm install
-npm run dev
-\`\`\``,
+    quickstartMarkdown,
     `[${quickstart.ctaLabel}](${guides.markdownHref})`,
     `## ${landingContent.stackTitle}`,
     ...stackCategories.flatMap((category) => [
