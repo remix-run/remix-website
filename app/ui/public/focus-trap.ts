@@ -111,6 +111,7 @@ export let focusTrap = createMixin<HTMLElement, [enabled?: boolean]>(
       enabled = nextEnabled;
     };
   },
+  { ssr: false },
 );
 
 export function isFocusable(element: HTMLElement) {
