@@ -1,6 +1,19 @@
 import * as accordion from "@remix-run/ui/accordion";
 import { spring } from "@remix-run/ui/animation";
-import { css, type Handle, type Props } from "remix/component";
+import { css, type Handle, type Props, type RemixNode } from "remix/component";
+
+type AccordionItemProps = Omit<Props<"div">, "children"> &
+  accordion.AccordionItemOptions & { children?: RemixNode };
+
+type AccordionTriggerProps = Omit<Props<"button">, "children" | "type"> &
+  accordion.AccordionTriggerOptions & {
+    children?: RemixNode;
+    type?: "button" | "submit" | "reset";
+  };
+
+type AccordionContentProps = Omit<Props<"div">, "children"> & {
+  children?: RemixNode;
+};
 
 export function Accordion(
   handle: Handle<
@@ -17,7 +30,7 @@ export function Accordion(
   };
 }
 
-export function AccordionItem(handle: Handle<accordion.AccordionItemProps>) {
+export function AccordionItem(handle: Handle<AccordionItemProps>) {
   return () => {
     let { children, disabled, mix, value, ...props } = handle.props;
     return (
@@ -30,9 +43,7 @@ export function AccordionItem(handle: Handle<accordion.AccordionItemProps>) {
   };
 }
 
-export function AccordionTrigger(
-  handle: Handle<accordion.AccordionTriggerProps>,
-) {
+export function AccordionTrigger(handle: Handle<AccordionTriggerProps>) {
   return () => {
     let { children, mix, type, ...props } = handle.props;
     return (
@@ -49,9 +60,7 @@ export function AccordionTrigger(
   };
 }
 
-export function AccordionContent(
-  handle: Handle<accordion.AccordionContentProps>,
-) {
+export function AccordionContent(handle: Handle<AccordionContentProps>) {
   return () => {
     let { children, mix, ...props } = handle.props;
     return (
