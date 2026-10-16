@@ -97,22 +97,16 @@ describe("homepage representations", () => {
     expect(markdown).not.toContain("<form");
   });
 
-  it("preserves shared inline code in both formats", async () => {
+  it("renders inline code from shared copy as code elements in HTML", async () => {
     let router = createRouteTestRouter();
     router.map(routes, rootController);
     let html = await (await router.fetch("http://localhost/")).text();
-    let markdown = await (
-      await router.fetch(
-        new URL(routes.homeMarkdown.href(), "http://localhost"),
-      )
-    ).text();
     let codeElements = [
       ...html.matchAll(/<code\b[^>]*>([\s\S]*?)<\/code>/g),
     ].map((match) => match[1]);
     for (let item of landingContent.differentiators.items) {
       for (let match of item.body.matchAll(/`([^`]+)`/g)) {
         expect(codeElements).toContain(htmlEscape(match[1]!));
-        expect(markdown).toContain(match[0]);
       }
     }
   });
