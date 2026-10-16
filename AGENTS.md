@@ -58,6 +58,8 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 
 Intentional conference-day difference: Jam 2026 retains `/jam/2026/ticket` with disabled checkout and blocks direct submissions, regardless of Shopify inventory. Unlike the 2025 ticket route, sales closure is enforced by the website.
 
+Intentional agent support addition: `/llms.txt` provides a short documentation index and shares app creation, version, and workflow guidance with the Markdown homepage. Homepage HTML and HTTP `Link` headers advertise the Markdown representation and agent index. Both agent documents use the `documents` cache tag so production deploys purge them with HTML.
+
 Remaining differences vs the previous production site (small, shippable items):
 
 - **Newsletter origin dependency**: Cold metadata and uncached image reads still depend on GitHub. Metadata keeps six-hour SWR; images load by immutable Git SHA into a bounded 64 MiB cache. The eventual replacement is a newsletter-repo build that publishes a static manifest and images to a bucket/CDN.

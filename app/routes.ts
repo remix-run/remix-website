@@ -13,6 +13,7 @@ export let routes = route({
   home: get("/"),
   homeMarkdown: get("/index.md"),
   homeNewsletterSignup: get("/newsletter/signup/home"),
+  llms: get("/llms.txt"),
   remixHistory: route("remix-history", {
     index: get("/"),
   }),
