@@ -16,13 +16,12 @@ function makeIssue(
   number: number,
   dateIso: string,
   markdown: string,
-  { subject = "", preview = "" } = {},
+  preview = "",
 ): NewsletterIssue {
   return {
     number,
     date: new Date(dateIso),
     title: `Remix Newsletter #${number}`,
-    subject,
     preview,
     markdown,
     image: {
@@ -278,18 +277,13 @@ describe("Newsletter issue route", () => {
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
   });
 
-  it("combines the issue subject and preview text for its descriptions", async () => {
-    let subject = "Remix Newsletter #2 | Big News";
-    let preview = "Preview text from frontmatter.";
-    let description = `${subject}\n${preview}`;
+  it("uses the issue preview text for its descriptions", async () => {
+    let description = "Preview text from frontmatter.";
     let repo = fakeRepository({
       issues: new Map([
         [
           2,
-          makeIssue(2, "2024-02-01T00:00:00.000Z", NEWSLETTER_MD, {
-            subject,
-            preview,
-          }),
+          makeIssue(2, "2024-02-01T00:00:00.000Z", NEWSLETTER_MD, description),
         ],
       ]),
     });

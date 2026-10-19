@@ -83,7 +83,7 @@ export function NewsletterIssuePage(
 ) {
   let issue = handle.props.issue;
   let description =
-    [issue.subject, issue.preview].filter(Boolean).join("\n") ||
+    issue.preview ||
     `Remix Newsletter #${issue.number} — ${formatNewsletterDate(issue.date)}`;
   return () => (
     <Document
