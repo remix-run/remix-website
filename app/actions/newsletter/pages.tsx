@@ -82,19 +82,18 @@ export function NewsletterIssuePage(
   }>,
 ) {
   let issue = handle.props.issue;
+  let description =
+    issue.preview ||
+    `Remix Newsletter #${issue.number} — ${formatNewsletterDate(issue.date)}`;
   return () => (
     <Document
       title={`${issue.title} | Remix`}
-      description={`Remix Newsletter #${issue.number} — ${formatNewsletterDate(
-        issue.date,
-      )}`}
+      description={description}
       stylesheets={["md"]}
       headTags={getSocialHeadTags({
         requestUrl: handle.props.requestUrl,
         title: issue.title,
-        description: `Remix Newsletter #${issue.number} — ${formatNewsletterDate(
-          issue.date,
-        )}`,
+        description,
         image: issue.image?.src,
         imageAlt: issue.image?.alt,
       })}
