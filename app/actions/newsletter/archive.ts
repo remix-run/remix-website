@@ -47,6 +47,8 @@ export interface NewsletterIssue {
   number: number;
   date: Date;
   title: string;
+  subject: string;
+  preview: string;
   markdown: string;
   image: NewsletterSummary["image"];
 }
@@ -78,6 +80,7 @@ interface ParsedIssue {
   number: number;
   date: Date;
   title: string;
+  subject: string;
   preview: string;
   markdown: string;
 }
@@ -151,7 +154,8 @@ export function parseNewsletterSnapshot(
       number,
       date,
       title,
-      preview: getNewsletterPreview(frontmatter),
+      subject: readFrontmatterString(frontmatter.subject),
+      preview: readFrontmatterString(frontmatter.previewText),
       markdown,
     });
   }
@@ -200,6 +204,7 @@ export function parseNewsletterSnapshot(
 
 interface NewsletterFrontmatter {
   draft?: unknown;
+  subject?: unknown;
   previewText?: unknown;
 }
 
@@ -219,10 +224,8 @@ function readNewsletterFrontmatter(markdown: string): NewsletterFrontmatter {
   }
 }
 
-function getNewsletterPreview(frontmatter: NewsletterFrontmatter): string {
-  return typeof frontmatter.previewText === "string"
-    ? frontmatter.previewText.trim()
-    : "";
+function readFrontmatterString(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
 }
 
 function extractTitle(markdown: string, fallbackNumber: number): string {
@@ -378,6 +381,8 @@ export function createGitHubNewsletterRepository(
         number: issue.number,
         date: issue.date,
         title: issue.title,
+        subject: issue.subject,
+        preview: issue.preview,
         markdown: issue.markdown,
         image:
           snap.summaries.find((summary) => summary.number === number)?.image ??

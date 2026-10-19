@@ -16,11 +16,14 @@ function makeIssue(
   number: number,
   dateIso: string,
   markdown: string,
+  { subject = "", preview = "" } = {},
 ): NewsletterIssue {
   return {
     number,
     date: new Date(dateIso),
     title: `Remix Newsletter #${number}`,
+    subject,
+    preview,
     markdown,
     image: {
       src: routes.newsletter.image.href({
@@ -273,6 +276,41 @@ describe("Newsletter issue route", () => {
 
     // Signup form present on the detail page.
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
+  });
+
+  it("combines the issue subject and preview text for its descriptions", async () => {
+    let subject = "Remix Newsletter #2 | Big News";
+    let preview = "Preview text from frontmatter.";
+    let description = `${subject}\n${preview}`;
+    let repo = fakeRepository({
+      issues: new Map([
+        [
+          2,
+          makeIssue(2, "2024-02-01T00:00:00.000Z", NEWSLETTER_MD, {
+            subject,
+            preview,
+          }),
+        ],
+      ]),
+    });
+    let router = routerWith(repo);
+
+    let response = await router.fetch(
+      new URL(
+        routes.newsletter.issue.href({ number: 2 }),
+        "http://localhost:3000",
+      ),
+    );
+
+    expect(response.status).toBe(200);
+    let html = await response.text();
+    expect(html).toContain(`name="description" content="${description}"`);
+    expect(html).toContain(
+      `property="og:description" content="${description}"`,
+    );
+    expect(html).toContain(
+      `name="twitter:description" content="${description}"`,
+    );
   });
 
   it("returns 404 for a missing issue", async () => {
