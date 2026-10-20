@@ -508,16 +508,15 @@
     left: -1.5rem;
     right: -0px;
     top: 0px;
-    z-index: 10;
     display: flex;
     height: 100%;
     align-items: center;
     line-height: 1;
   }
 
+  /* Positioned content links paint after the prepended anchor overlay. */
   .md-prose :is(h1, h2, h3, h4, h5, h6) a:not(:has(> .icon-link)) {
     position: relative;
-    z-index: 11;
   }
 
   .md-prose :is(h1, h2, h3, h4, h5, h6):hover a:has(> .icon-link),
