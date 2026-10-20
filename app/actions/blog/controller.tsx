@@ -12,7 +12,7 @@ import {
   pageTitleSmallStyle,
   pageTitleStyle,
 } from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia } from "../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 import { routes } from "../../routes.ts";
 import { getBlogPostListings } from "../../data/blog.ts";
 import {
@@ -377,9 +377,7 @@ let blogContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
-  paddingInline: "24px",
-  [breakpointMedia.md]: { paddingInline: "32px" },
-  [breakpointMedia.lg]: { paddingInline: "40px" },
+  paddingInline: theme.space.edge,
 } as const;
 
 let blogImageFrameStyle = css({
