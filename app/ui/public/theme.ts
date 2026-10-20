@@ -23,6 +23,8 @@ export const theme = {
     sm: "8px",
     lg: "16px",
     xl: "24px",
+    /** Inset of page chrome (logo, nav, corner panels) from the viewport edges. */
+    edge: "var(--site-edge-inset)",
   },
   radius: {
     full: "9999px",

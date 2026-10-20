@@ -3,6 +3,13 @@
 :root {
   --color-gray-300: #a4a4a4;
   --color-gray-800: #383838;
+  --site-edge-inset: 24px;
+}
+
+@media (min-width: 900px) {
+  :root {
+    --site-edge-inset: 36px;
+  }
 }
 
 @layer reset {
