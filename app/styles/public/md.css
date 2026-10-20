@@ -503,7 +503,7 @@
     scroll-margin-top: 1em;
   }
 
-  .md-prose :is(h1, h2, h3, h4, h5, h6) a {
+  .md-prose :is(h1, h2, h3, h4, h5, h6) a:has(> .icon-link) {
     position: absolute;
     left: -1.5rem;
     right: -0px;
@@ -515,8 +515,13 @@
     line-height: 1;
   }
 
-  .md-prose :is(h1, h2, h3, h4, h5, h6):hover a,
-  .md-prose :is(h1, h2, h3, h4, h5, h6) a:hover {
+  .md-prose :is(h1, h2, h3, h4, h5, h6) a:not(:has(> .icon-link)) {
+    position: relative;
+    z-index: 11;
+  }
+
+  .md-prose :is(h1, h2, h3, h4, h5, h6):hover a:has(> .icon-link),
+  .md-prose :is(h1, h2, h3, h4, h5, h6) a:has(> .icon-link):hover {
     text-decoration-line: none;
   }
 
