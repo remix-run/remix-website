@@ -12,6 +12,7 @@ import {
   marketingPageStyle,
   pageBodyStyle,
   pageMetaStyle,
+  pageSecondaryTextStyle,
   pageTitleExtraSmallStyle,
   pageTitleStyle,
 } from "../../ui/public/marketing-styles.ts";
@@ -141,7 +142,7 @@ function NewsletterSignupSection(
           css({
             maxWidth: "672px",
             marginBlockStart: "64px",
-            color: theme.colors.text.marketingSecondary,
+            color: theme.colors.text.primary,
           }),
         ]}
       >
@@ -168,7 +169,7 @@ function NewsletterArchive(
       mix={css({ marginBlockStart: "64px" })}
     >
       {handle.props.unavailable ? (
-        <p role="alert" mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
+        <p role="alert" mix={[pageBodyStyle, pageSecondaryTextStyle]}>
           The archive is temporarily unavailable. Please check back soon.{" "}
           <a
             href={routes.newsletter.index.href()}
@@ -179,9 +180,7 @@ function NewsletterArchive(
           </a>
         </p>
       ) : handle.props.summaries.length === 0 ? (
-        <p mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
-          No issues yet.
-        </p>
+        <p mix={[pageBodyStyle, pageSecondaryTextStyle]}>No issues yet.</p>
       ) : (
         <ol
           mix={css({
@@ -220,10 +219,7 @@ function NewsletterArchive(
                 >
                   <time
                     dateTime={summary.date.toISOString()}
-                    mix={[
-                      pageMetaStyle,
-                      css({ color: theme.colors.text.primary }),
-                    ]}
+                    mix={[pageMetaStyle, pageSecondaryTextStyle]}
                   >
                     {formatNewsletterDate(summary.date)}
                   </time>
@@ -231,7 +227,7 @@ function NewsletterArchive(
                     Remix Newsletter #{summary.number}
                   </h3>
                   {summary.preview ? (
-                    <p mix={[pageBodyStyle, newsletterSecondaryTextStyle]}>
+                    <p mix={[pageBodyStyle, pageSecondaryTextStyle]}>
                       {summary.preview}
                     </p>
                   ) : null}
@@ -293,10 +289,6 @@ let newsletterArchiveLinkStyle = css({
   },
 });
 
-let newsletterSecondaryTextStyle = css({
-  color: theme.colors.text.marketingSecondary,
-});
-
 let newsletterCardStyle = css({
   display: "grid",
   gap: "20px",
@@ -304,7 +296,7 @@ let newsletterCardStyle = css({
   overflow: "hidden",
   borderRadius: "12px",
   padding: "24px",
-  color: theme.colors.text.newsletterCard,
+  color: theme.colors.text.primary,
   outline: "none",
   transition: "background-color 150ms ease-in-out",
   "&:hover, &:focus-within": {

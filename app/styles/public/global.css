@@ -3,7 +3,16 @@
 :root {
   --color-gray-300: #a4a4a4;
   --color-gray-800: #383838;
+  /* Text colors shared with the Remix docs sites */
+  --color-text-primary: #1b1b1f;
+  --color-text-secondary: #6b7280;
   --site-edge-inset: 24px;
+}
+
+/* Lightning CSS rewrites light-dark() in stylesheets, so follow the .dark class */
+:root:where(.dark) {
+  --color-text-primary: #e7e7ea;
+  --color-text-secondary: #9aa0aa;
 }
 
 @media (min-width: 900px) {

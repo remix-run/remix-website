@@ -8,6 +8,7 @@ import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
 import {
   pageBodyStyle,
   pageMetaStyle,
+  pageSecondaryTextStyle,
   pageTitleExtraSmallStyle,
   pageTitleSmallStyle,
   pageTitleStyle,
@@ -197,9 +198,13 @@ function BlogPageContent(
                       />
                     </div>
                     <div mix={blogCardCopyStyle}>
-                      <p mix={pageMetaStyle}>{latestPost.dateDisplay}</p>
+                      <p mix={[pageMetaStyle, pageSecondaryTextStyle]}>
+                        {latestPost.dateDisplay}
+                      </p>
                       <p mix={pageTitleStyle}>{latestPost.title}</p>
-                      <p mix={pageBodyStyle}>{latestPost.summary}</p>
+                      <p mix={[pageBodyStyle, pageSecondaryTextStyle]}>
+                        {latestPost.summary}
+                      </p>
                     </div>
                   </a>
                 </div>
@@ -237,11 +242,15 @@ function BlogPageContent(
                           css({ marginBlockEnd: "48px" }),
                         ]}
                       >
-                        <p mix={pageMetaStyle}>{post.dateDisplay}</p>
+                        <p mix={[pageMetaStyle, pageSecondaryTextStyle]}>
+                          {post.dateDisplay}
+                        </p>
                         <p mix={[pageTitleStyle, pageTitleExtraSmallStyle]}>
                           {post.title}
                         </p>
-                        <p mix={pageBodyStyle}>{post.summary}</p>
+                        <p mix={[pageBodyStyle, pageSecondaryTextStyle]}>
+                          {post.summary}
+                        </p>
                       </div>
                     </a>
                   </div>

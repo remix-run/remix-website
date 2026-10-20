@@ -52,12 +52,11 @@ export const theme = {
   },
   colors: {
     text: {
-      primary: "light-dark(#121212, #c8c8c8)",
-      muted: "light-dark(#94989c, #9aa0a6)",
+      /** Body copy, ledes, headings and navigation links. */
+      primary: "var(--color-text-primary)",
+      /** Small meta labels (dates, eyebrows), card descriptions and footer text. */
+      secondary: "var(--color-text-secondary)",
       marketingPrimary: "light-dark(#313539, #e5e7eb)",
-      marketingSecondary: "light-dark(#515151, #a4a4a4)",
-      newsletterCard: "light-dark(#121212, #e3e3e3)",
-      secondary: "#63676b",
       tertiary: "#7c8084",
     },
     neutral: {
