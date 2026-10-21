@@ -202,9 +202,7 @@ function BlogPageContent(
                         {latestPost.dateDisplay}
                       </p>
                       <p mix={pageTitleStyle}>{latestPost.title}</p>
-                      <p mix={[pageBodyStyle, pageSecondaryTextStyle]}>
-                        {latestPost.summary}
-                      </p>
+                      <p mix={pageBodyStyle}>{latestPost.summary}</p>
                     </div>
                   </a>
                 </div>
@@ -248,9 +246,7 @@ function BlogPageContent(
                         <p mix={[pageTitleStyle, pageTitleExtraSmallStyle]}>
                           {post.title}
                         </p>
-                        <p mix={[pageBodyStyle, pageSecondaryTextStyle]}>
-                          {post.summary}
-                        </p>
+                        <p mix={pageBodyStyle}>{post.summary}</p>
                       </div>
                     </a>
                   </div>

@@ -169,7 +169,7 @@ function NewsletterArchive(
       mix={css({ marginBlockStart: "64px" })}
     >
       {handle.props.unavailable ? (
-        <p role="alert" mix={[pageBodyStyle, pageSecondaryTextStyle]}>
+        <p role="alert" mix={pageBodyStyle}>
           The archive is temporarily unavailable. Please check back soon.{" "}
           <a
             href={routes.newsletter.index.href()}
@@ -180,7 +180,7 @@ function NewsletterArchive(
           </a>
         </p>
       ) : handle.props.summaries.length === 0 ? (
-        <p mix={[pageBodyStyle, pageSecondaryTextStyle]}>No issues yet.</p>
+        <p mix={pageBodyStyle}>No issues yet.</p>
       ) : (
         <ol
           mix={css({
@@ -227,9 +227,7 @@ function NewsletterArchive(
                     Remix Newsletter #{summary.number}
                   </h3>
                   {summary.preview ? (
-                    <p mix={[pageBodyStyle, pageSecondaryTextStyle]}>
-                      {summary.preview}
-                    </p>
+                    <p mix={pageBodyStyle}>{summary.preview}</p>
                   ) : null}
                 </div>
                 {summary.image ? (
