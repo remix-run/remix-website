@@ -17,7 +17,6 @@ export let WordmarkLink = clientEntry(
     return () => (
       <a
         href={handle.props.href}
-        data-rmx-prefetch="intent"
         aria-label="Remix"
         mix={[
           css({

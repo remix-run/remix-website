@@ -11,6 +11,9 @@ const LINKS: Array<{
   to: string;
   label: string;
   section?: HeaderSection;
+  // Only prefetch pages sent with CACHE.PREFETCHABLE_DOCUMENT; other
+  // documents are fetched again on click, so prefetching them doubles the work.
+  prefetch?: boolean;
 }> = [
   { to: "https://guides.remix.run", label: "Guides" },
   { to: "https://docs.remix.run", label: "Docs" },
@@ -20,6 +23,7 @@ const LINKS: Array<{
     to: routes.newsletter.index.href(),
     label: "Newsletter",
     section: "newsletter",
+    prefetch: true,
   },
   { to: routes.jam.y2026.index.href(), label: "Jam", section: "jam" },
   { to: "https://shop.remix.run", label: "Store" },
@@ -82,6 +86,7 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
             <HeaderLink
               key={link.to}
               to={link.to}
+              prefetch={link.prefetch}
               current={
                 link.section !== undefined &&
                 link.section === handle.props.currentSection
@@ -102,6 +107,7 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
               <HeaderLink
                 key={link.to}
                 to={link.to}
+                prefetch={link.prefetch}
                 current={
                   link.section !== undefined &&
                   link.section === handle.props.currentSection
@@ -122,12 +128,13 @@ function HeaderLink(
     to: string;
     children: string;
     current?: boolean;
+    prefetch?: boolean;
   }>,
 ) {
   return () => (
     <a
       href={handle.props.to}
-      data-rmx-prefetch={handle.props.to.startsWith("/") ? "intent" : undefined}
+      data-rmx-prefetch={handle.props.prefetch ? "intent" : undefined}
       aria-current={handle.props.current ? "page" : undefined}
     >
       {handle.props.children}
