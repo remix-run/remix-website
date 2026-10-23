@@ -37,7 +37,14 @@ const server = http.createServer(
         return new Response("Internal Server Error", { status: 500 });
       }
     },
-    { trustProxy: isHmr },
+    {
+      trustProxy: isHmr,
+      // Fly terminates TLS (and force_https upgrades plain HTTP), so the app
+      // only sees HTTP connections. A fixed protocol keeps request URLs, and
+      // the redirects and absolute URLs built from them, on https without
+      // trusting client-spoofable forwarded headers.
+      protocol: process.env.FLY_APP_NAME ? "https:" : undefined,
+    },
   ),
 );
 

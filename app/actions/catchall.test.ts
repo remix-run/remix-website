@@ -12,10 +12,18 @@ function createContext(pathname: string) {
 
 describe("catchall route", () => {
   it("redirects trailing slash paths without dropping the query", async () => {
-    let response = catchallHandler(createContext("/docs/?q=routes"));
+    let response = catchallHandler(createContext("/blog/?q=routes"));
     expect(response.status).toBe(302);
     expect(response.headers.get("Location")).toBe(
-      "https://remix.run/docs?q=routes",
+      "https://remix.run/blog?q=routes",
+    );
+  });
+
+  it("sends trailing-slash legacy paths straight to their final destination", async () => {
+    let response = catchallHandler(createContext("/docs/en/main/guides/"));
+    expect(response.status).toBe(302);
+    expect(response.headers.get("Location")).toBe(
+      "https://v2.remix.run/docs/guides/",
     );
   });
 
@@ -25,12 +33,33 @@ describe("catchall route", () => {
     expect(response.headers.get("Location")).toBe("https://guides.remix.run/");
   });
 
-  it("redirects docs paths to v2", async () => {
-    let response = catchallHandler(createContext("/docs/en/main/guides"));
-    expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).toBe(
-      "https://v2.remix.run/docs/guides",
-    );
+  it("redirects legacy docs refs to v2", async () => {
+    for (let pathname of [
+      "/docs/en/main/guides/spa-mode",
+      "/docs/en/release-next/guides/spa-mode",
+      "/docs/en/2/guides/spa-mode",
+      "/docs/main/guides/spa-mode",
+    ]) {
+      let response = catchallHandler(createContext(pathname));
+      expect(response.status).toBe(302);
+      expect(response.headers.get("Location")).toBe(
+        "https://v2.remix.run/docs/guides/spa-mode/",
+      );
+    }
+  });
+
+  it("redirects unprefixed docs paths to v2 only for v2 docs sections", async () => {
+    for (let [pathname, location] of [
+      [
+        "/docs/hooks/use-fetcher",
+        "https://v2.remix.run/docs/hooks/use-fetcher/",
+      ],
+      ["/docs/getting-started", "https://guides.remix.run/"],
+    ]) {
+      let response = catchallHandler(createContext(pathname));
+      expect(response.status).toBe(302);
+      expect(response.headers.get("Location")).toBe(location);
+    }
   });
 
   it("redirects /docs/en/v1 docs paths to the final v1 GitHub snapshot", async () => {

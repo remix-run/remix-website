@@ -5,6 +5,7 @@ import { routes } from "../routes.ts";
 import { assetPaths } from "../utils/public/asset-paths.ts";
 import { assets } from "../utils/assets.ts";
 import { CACHE } from "../utils/cache-control.ts";
+import { getCanonicalUrl } from "../utils/public/canonical-url.ts";
 import { getNewsletterSubscriptionStatus } from "./newsletter/subscription.tsx";
 import { LandingNewsletterSubscribeForm } from "./public/remix-landing/components/feature-section.tsx";
 import { blogOgImageAction } from "./blog-og-image.tsx";
@@ -26,10 +27,12 @@ export default createController(routes, {
       return render(<BrandPage requestUrl={request.url} />);
     },
 
-    homeMarkdown() {
+    homeMarkdown({ request }) {
+      let htmlUrl = getCanonicalUrl(new URL(request.url), routes.home.href());
       return new Response(renderHomeMarkdown(), {
         headers: {
           "Content-Type": "text/markdown; charset=utf-8",
+          Link: `<${htmlUrl}>; rel="canonical"`,
           ...(process.env.NODE_ENV === "development"
             ? { "Cache-Control": "no-store" }
             : CACHE.DOCUMENT),

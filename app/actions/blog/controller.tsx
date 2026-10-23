@@ -20,6 +20,7 @@ import {
   getBlogImageAsset,
 } from "../../utils/blog-image-assets.ts";
 import { CACHE } from "../../utils/cache-control.ts";
+import { getCanonicalUrl } from "../../utils/public/canonical-url.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
@@ -45,10 +46,15 @@ export default createController(routes.blog, {
 
       if (params.ext === "md") {
         try {
+          let htmlUrl = getCanonicalUrl(
+            new URL(request.url),
+            routes.blog.post.href({ slug }),
+          );
           return new Response(getRawBlogPostMarkdown(slug), {
             headers: {
               "Cache-Control": CACHE.RESOURCE,
               "Content-Type": "text/markdown; charset=utf-8",
+              Link: `<${htmlUrl}>; rel="canonical"`,
             },
           });
         } catch (error) {

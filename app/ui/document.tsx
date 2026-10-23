@@ -9,12 +9,14 @@ import {
   type RemixNode,
 } from "remix/component";
 import { ImportMap } from "remix/component/server";
+import { getContext } from "remix/middleware/async-context";
 
 import {
   getAssetEntry,
   type StylesheetName,
 } from "../middleware/asset-entry.ts";
 import { routes } from "../routes.ts";
+import { getCanonicalUrl } from "../utils/public/canonical-url.ts";
 import { DocumentSync } from "./public/document-sync.tsx";
 import {
   getCompactHeadKey,
@@ -92,6 +94,16 @@ export function Document(handle: Handle<DocumentProps>) {
         kind: "meta",
         name: "description",
         content: description,
+      });
+    }
+    let hasCanonical = headTags.some(
+      (tag) => tag.kind === "link" && tag.rel === "canonical",
+    );
+    if (!noIndex && !hasCanonical) {
+      managedHeadTags.push({
+        kind: "link",
+        rel: "canonical",
+        href: getCanonicalUrl(getContext().url),
       });
     }
     managedHeadTags.push(...headTags);
