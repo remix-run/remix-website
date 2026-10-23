@@ -114,8 +114,8 @@ export const landingContent = {
       external: true,
     },
     {
-      key: "A",
-      label: "api",
+      key: "D",
+      label: "docs",
       href: "https://docs.remix.run",
       markdownHref: "https://docs.remix.run/remix.md",
       external: true,

@@ -199,7 +199,7 @@ describe("Navigation", () => {
 
     expect(await desktopLinks.allTextContents()).toEqual([
       "[G] guides",
-      "[A] api",
+      "[D] docs",
       "[H] github",
       "[B] blog",
       "[N] newsletter",
@@ -208,7 +208,7 @@ describe("Navigation", () => {
     ]);
     expect(await mobileLinks.allTextContents()).toEqual([
       "guides",
-      "api",
+      "docs",
       "github",
       "blog",
       "newsletter",
