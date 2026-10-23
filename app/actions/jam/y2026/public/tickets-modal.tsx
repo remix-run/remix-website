@@ -90,6 +90,7 @@ export let Jam2026TicketsModalFrame = clientEntry(
           target: ticketModalConfig.frameName,
           history: "replace",
           resetScroll: "manual",
+          resetFocus: "manual",
         }).finally(() => {
           restoreScrollPosition(scrollX, scrollY, handle.signal);
         });
