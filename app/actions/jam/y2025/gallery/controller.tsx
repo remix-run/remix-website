@@ -272,7 +272,7 @@ function JamGalleryLink(
   return () => (
     <a
       href={handle.props.href}
-      rmx-reset-scroll="false"
+      data-rmx-reset-scroll="manual"
       aria-label={handle.props.ariaLabel}
       tabindex={handle.props.tabindex}
       mix={handle.props.mix}

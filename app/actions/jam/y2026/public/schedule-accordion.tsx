@@ -24,7 +24,6 @@ export let Jam2026ScheduleAccordion = clientEntry(
     return () => (
       <Accordion
         type="multiple"
-        headingLevel={3}
         value={openItemIds}
         onValueChange={(value) => {
           openItemIds = value;

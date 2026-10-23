@@ -13,8 +13,8 @@ export function Jam2026FloatingTicketCta() {
       <a
         href={routes.jam.y2026.ticket.index.href()}
         mix={floatingCtaLinkStyle}
-        rmx-reset-scroll="false"
-        rmx-target={ticketModalConfig.frameName}
+        data-rmx-reset-scroll="manual"
+        data-rmx-target={ticketModalConfig.frameName}
       >
         <span mix={visuallyHiddenStyle}>Get Remix Jam 2026 tickets</span>
         <span aria-hidden="true" mix={floatingCtaRingFrameStyle}>

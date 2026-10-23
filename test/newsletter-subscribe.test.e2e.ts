@@ -108,7 +108,7 @@ describe("Newsletter signup frame", () => {
       "data-rmx-src",
       /\/newsletter\?frame=home$/,
     );
-    await expect(form).toHaveAttribute("data-rmx-reset-scroll", "false");
+    await expect(form).toHaveAttribute("data-rmx-reset-scroll", "manual");
 
     let emailInput = page.getByPlaceholder("name@example.com");
     await emailInput.fill("hello@example.com");

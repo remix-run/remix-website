@@ -148,7 +148,7 @@ describe("Jam", () => {
     );
     await expect(newsletterForm).toHaveAttribute(
       "data-rmx-reset-scroll",
-      "false",
+      "manual",
     );
 
     let emailInput = page.getByPlaceholder("your@email.com");

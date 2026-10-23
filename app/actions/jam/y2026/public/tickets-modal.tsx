@@ -1,5 +1,9 @@
 import { clientEntry, css, navigate, on, type Handle } from "remix/component";
-import { animateEntrance, spring } from "@remix-run/ui/animation";
+import {
+  animateEntrance,
+  prefersReducedMotion,
+  spring,
+} from "@remix-run/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 
@@ -37,14 +41,7 @@ let usdFormatter = new Intl.NumberFormat("en-US", {
 });
 
 function shouldAnimateEntrance(animateEntrance = true) {
-  if (!animateEntrance) return false;
-  if (
-    typeof window === "undefined" ||
-    typeof window.matchMedia !== "function"
-  ) {
-    return true;
-  }
-  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return animateEntrance && !prefersReducedMotion();
 }
 
 function restoreScrollPosition(
@@ -85,18 +82,14 @@ export let Jam2026TicketsModalFrame = clientEntry(
       let scrollY = window.scrollY;
       handle.update();
 
-      let navigationDelay = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches
-        ? 0
-        : 220;
+      let navigationDelay = prefersReducedMotion() ? 0 : 220;
 
       closeNavigationTimer = setTimeout(() => {
         closeNavigationTimer = undefined;
         void navigate(routes.jam.y2026.index.href(), {
           target: ticketModalConfig.frameName,
           history: "replace",
-          resetScroll: false,
+          resetScroll: "manual",
         }).finally(() => {
           restoreScrollPosition(scrollX, scrollY, handle.signal);
         });
@@ -184,7 +177,8 @@ function syncTicketModalNavigationEntry(open: boolean) {
   // Back closes the modal without remounting the animated page.
   let state = {
     $rmx: true,
-    resetScroll: false,
+    resetScroll: "manual",
+    resetFocus: "after-transition",
     src: new URL(open ? ticketHref : homeHref, window.location.href).href,
     target: ticketModalConfig.frameName,
   };
@@ -194,6 +188,7 @@ function syncTicketModalNavigationEntry(open: boolean) {
     isRecord(currentState) &&
     currentState.$rmx === state.$rmx &&
     currentState.resetScroll === state.resetScroll &&
+    currentState.resetFocus === state.resetFocus &&
     currentState.src === state.src &&
     currentState.target === state.target
   ) {
@@ -289,8 +284,8 @@ export function Jam2026TicketsModalContent(
             ticketsModalBackdropStyle,
             on("click", (event) => handle.props.onRequestClose(event)),
           ]}
-          rmx-reset-scroll="false"
-          rmx-target={ticketModalConfig.frameName}
+          data-rmx-reset-scroll="manual"
+          data-rmx-target={ticketModalConfig.frameName}
           tabIndex={-1}
         />
         <section
@@ -309,8 +304,8 @@ export function Jam2026TicketsModalContent(
                 ticketsModalCloseStyle,
                 on("click", (event) => handle.props.onRequestClose(event)),
               ]}
-              rmx-reset-scroll="false"
-              rmx-target={ticketModalConfig.frameName}
+              data-rmx-reset-scroll="manual"
+              data-rmx-target={ticketModalConfig.frameName}
             >
               <Icon
                 name="x-mark"
