@@ -173,7 +173,7 @@ function NewsletterArchive(
           The archive is temporarily unavailable. Please check back soon.{" "}
           <a
             href={routes.newsletter.index.href()}
-            rmx-document
+            data-rmx-document
             mix={newsletterArchiveLinkStyle}
           >
             Try again

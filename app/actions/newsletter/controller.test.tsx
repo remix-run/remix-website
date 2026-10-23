@@ -228,6 +228,12 @@ describe("Newsletter index route", () => {
     let html = await response.text();
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
     expect(html).toContain("The archive is temporarily unavailable.");
+    // Retrying must bypass client frame navigation so a full reload happens.
+    expect(html).toMatch(
+      new RegExp(
+        `<a[^>]*href="${routes.newsletter.index.href()}"[^>]*data-rmx-document`,
+      ),
+    );
   });
 });
 
