@@ -87,6 +87,7 @@ export default createController(routes.blog, {
           images={images}
           socialImageUrl={getPostSocialImageUrl(post, slug, request.url)}
         />,
+        { headers: CACHE.PREFETCHABLE_DOCUMENT },
       );
     },
 
