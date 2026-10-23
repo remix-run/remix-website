@@ -127,6 +127,7 @@ function HeaderLink(
   return () => (
     <a
       href={handle.props.to}
+      data-rmx-prefetch={handle.props.to.startsWith("/") ? "intent" : undefined}
       aria-current={handle.props.current ? "page" : undefined}
     >
       {handle.props.children}

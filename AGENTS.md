@@ -61,7 +61,7 @@ Intentional conference-day difference: Jam 2026 retains `/jam/2026/ticket` with 
 Remaining differences vs the previous production site (small, shippable items):
 
 - **Newsletter origin dependency**: Cold metadata and uncached image reads still depend on GitHub. Metadata keeps six-hour SWR; images load by immutable Git SHA into a bounded 64 MiB cache. The eventual replacement is a newsletter-repo build that publishes a static manifest and images to a bucket/CDN.
-- **Link prefetch parity**: Intent/predictive prefetch is not yet mirrored across Remix pages.
+- **Link prefetch parity**: The shared header, wordmark, blog index, and newsletter archive use `data-rmx-prefetch="intent"`. Because documents send `max-age=0, must-revalidate` without validators, navigation refetches prefetched HTML; the gain is early asset discovery and a warm CDN. Reusing HTML would need a short browser max-age or ETags.
 - **Analytics on in-app transitions**: Verify one pageview per navigation when using client-side navigation.
 - **Client navigation shape**: Keep Jam on top-level client navigation unless a future route needs an independently updating region.
 - **Homepage Markdown cache verification**: After deployment, alternate HTML and `Accept: text/markdown` requests to `/` and verify independent warm Fastly HITs with `Vary: Accept`. `/index.md` always returns Markdown. The production workflow's `documents` purge must clear the old HTML objects that predate negotiation.

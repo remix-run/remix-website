@@ -195,6 +195,7 @@ function NewsletterArchive(
                 href={routes.newsletter.issue.href({
                   number: summary.number,
                 })}
+                data-rmx-prefetch="intent"
                 mix={
                   summary.image
                     ? [

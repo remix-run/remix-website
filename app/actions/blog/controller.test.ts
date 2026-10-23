@@ -32,6 +32,35 @@ describe("Blog route", () => {
     ]);
   });
 
+  it("prefetches same-origin navigation and post links on intent only", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.blog, blogController);
+
+    let response = await router.fetch(
+      new URL(routes.blog.index.href(), "http://localhost:3000"),
+    );
+    let anchors = [...(await response.text()).matchAll(/<a\b[^>]*>/g)].map(
+      (match) => match[0],
+    );
+    let prefetchedHrefs = new Set(
+      anchors
+        .filter((tag) => tag.includes('data-rmx-prefetch="intent"'))
+        .map((tag) => tag.match(/href="([^"]+)"/)?.[1]),
+    );
+
+    expect(prefetchedHrefs.has(routes.home.href())).toBe(true);
+    expect(prefetchedHrefs.has(routes.newsletter.index.href())).toBe(true);
+    expect(
+      [...prefetchedHrefs].some((href) => href?.startsWith("/blog/")),
+    ).toBe(true);
+    expect(
+      anchors.some(
+        (tag) =>
+          tag.includes("data-rmx-prefetch") && /href="https?:\/\//.test(tag),
+      ),
+    ).toBe(false);
+  });
+
   it("prioritizes a responsive hero while deferring other post images", async () => {
     let router = createRouteTestRouter();
     router.map(routes.blog, blogController);
