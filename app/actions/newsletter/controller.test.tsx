@@ -2,7 +2,10 @@ import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
 import { routes } from "../../routes.ts";
-import { createRouteTestRouter } from "../../../test/setup.ts";
+import {
+  createRouteTestRouter,
+  expectPrefetchableDocument,
+} from "../../../test/setup.ts";
 import { createNewsletterController } from "./controller.tsx";
 import {
   NewsletterUpstreamUnavailableError as UpstreamError,
@@ -113,9 +116,7 @@ describe("Newsletter index route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Surrogate-Control")).toContain(
-      "stale-while-revalidate",
-    );
+    expectPrefetchableDocument(response);
     let html = await response.text();
 
     expect(html).not.toContain('role="status"');
@@ -228,6 +229,12 @@ describe("Newsletter index route", () => {
     let html = await response.text();
     expect(html).toContain(`action="${routes.newsletter.subscribe.href()}"`);
     expect(html).toContain("The archive is temporarily unavailable.");
+    // Retrying must bypass client frame navigation so a full reload happens.
+    expect(html).toMatch(
+      new RegExp(
+        `<a[^>]*href="${routes.newsletter.index.href()}"[^>]*data-rmx-document`,
+      ),
+    );
   });
 });
 
@@ -248,6 +255,7 @@ describe("Newsletter issue route", () => {
     );
 
     expect(response.status).toBe(200);
+    expectPrefetchableDocument(response);
     let html = await response.text();
 
     // Issue content starts with its title and the md-prose container.

@@ -1010,7 +1010,7 @@ function TrackInspector(handle: Handle) {
         filename: "release-visibility.tsx",
         component: "toggle",
         code: `import { css } from "remix/component"
-import * as toggle from "@remix-run/ui/toggle"
+import { toggle } from "@remix-run/ui/toggle"
 
 <div mix={css({/*...*/})}>
   <span>Public release</span>
@@ -1018,7 +1018,7 @@ import * as toggle from "@remix-run/ui/toggle"
     aria-label="Public release"
     type="button"
     mix={[
-      toggle.control({ defaultChecked: true }),
+      toggle({ defaultChecked: true }),
       css({/*...*/}),
     ]}
   />

@@ -1,3 +1,5 @@
+import zlib from "node:zlib";
+
 import { asyncContext } from "remix/middleware/async-context";
 import { compression } from "remix/middleware/compression";
 import { cop } from "remix/middleware/cop";
@@ -60,7 +62,19 @@ let ignoreChromeDevToolsRequest: Middleware = (context, next) => {
 function createAppMiddleware() {
   return createMiddleware(
     securityHeaders(),
-    compression(),
+    compression({
+      // Node's default Brotli quality (11) took ~160 ms per streamed HTML
+      // response; 4 costs about the same as gzip. Cached assets keep 11.
+      brotli: (response) => ({
+        params: {
+          [zlib.constants.BROTLI_PARAM_QUALITY]: response.headers
+            .get("Content-Type")
+            ?.startsWith("text/html")
+            ? 4
+            : 11,
+        },
+      }),
+    }),
     ignoreChromeDevToolsRequest,
     rootPublicFiles(),
     cop(),

@@ -87,6 +87,7 @@ export default createController(routes.blog, {
           images={images}
           socialImageUrl={getPostSocialImageUrl(post, slug, request.url)}
         />,
+        { headers: CACHE.PREFETCHABLE_DOCUMENT },
       );
     },
 
@@ -189,7 +190,10 @@ function BlogPageContent(
             >
               {latestPost ? (
                 <div mix={css({ marginBlockEnd: "56px" })}>
-                  <a href={routes.blog.post.href({ slug: latestPost.slug })}>
+                  <a
+                    href={routes.blog.post.href({ slug: latestPost.slug })}
+                    data-rmx-prefetch="intent"
+                  >
                     <div mix={blogImageFrameStyle}>
                       <img
                         mix={blogCardImageStyle}
@@ -226,7 +230,10 @@ function BlogPageContent(
               >
                 {posts.map((post) => (
                   <div key={post.slug}>
-                    <a href={routes.blog.post.href({ slug: post.slug })}>
+                    <a
+                      href={routes.blog.post.href({ slug: post.slug })}
+                      data-rmx-prefetch="intent"
+                    >
                       <div mix={blogImageFrameStyle}>
                         <img
                           mix={blogCardImageStyle}
@@ -293,6 +300,7 @@ function BlogPageContent(
                       <div key={post.slug}>
                         <a
                           href={routes.blog.post.href({ slug: post.slug })}
+                          data-rmx-prefetch="intent"
                           mix={pageBodyStyle}
                         >
                           {post.title}

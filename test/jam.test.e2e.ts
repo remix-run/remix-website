@@ -2,6 +2,7 @@ import { expect, type Page } from "@playwright/test";
 import { createTestServer } from "remix/node-fetch-server/test";
 import { beforeEach, describe, it } from "remix/test";
 
+import { ticketModalConfig } from "../app/actions/jam/y2026/public/tickets-modal-contract.ts";
 import { createAppRouter } from "../app/router.ts";
 import { routes } from "../app/routes.ts";
 import { env } from "../app/utils/env.ts";
@@ -27,6 +28,16 @@ async function expectMarkerToStay(page: Page, marker: string) {
       ),
     )
     .toBe(marker);
+}
+
+async function waitForRuntime(page: Page) {
+  await page.waitForFunction(() => {
+    let walker = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT);
+    while (walker.nextNode()) {
+      if ("$rmx" in walker.currentNode) return true;
+    }
+    return false;
+  });
 }
 
 describe("Jam", () => {
@@ -65,6 +76,87 @@ describe("Jam", () => {
     await expect(
       page.locator('iframe[title="Remix Jam 2026 livestream"]'),
     ).toBeVisible();
+  });
+
+  it("jam 2026 ticket modal returns focus to its opener after closing", async (t) => {
+    mockStorefront(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(routes.jam.y2026.index.href());
+    await waitForRuntime(page);
+
+    // No page CTA opens the modal on conference day, so stand in an opener
+    // that uses the same named-frame navigation contract.
+    await page.evaluate(
+      ({ href, target }) => {
+        let opener = document.createElement("a");
+        opener.href = href;
+        opener.textContent = "Open tickets";
+        opener.setAttribute("data-rmx-target", target);
+        opener.setAttribute("data-rmx-reset-scroll", "manual");
+        document.querySelector("main")?.prepend(opener);
+      },
+      {
+        href: routes.jam.y2026.ticket.index.href(),
+        target: ticketModalConfig.frameName,
+      },
+    );
+    let opener = page.getByRole("link", { name: "Open tickets" });
+    await opener.focus();
+    await page.keyboard.press("Enter");
+
+    let dialog = page.getByRole("dialog");
+    await expect(
+      dialog.getByRole("link", { name: "Close tickets" }),
+    ).toBeFocused();
+
+    await page.keyboard.press("Escape");
+    await page.waitForURL(`**${routes.jam.y2026.index.href()}`);
+    await expect(dialog).toHaveCount(0);
+    await expect(opener).toBeFocused();
+  });
+
+  it("jam 2025 gallery keeps keyboard focus and scroll through open, browse, and close", async (t) => {
+    mockGalleryStorefront(t);
+    let handler = swallowAbortErrors(router);
+    let page = await t.serve(await createTestServer(handler));
+    await page.setViewportSize({ width: 1280, height: 500 });
+    let galleryHref = routes.jam.y2025.gallery.index.href();
+    await page.goto(galleryHref);
+    await waitForRuntime(page);
+
+    let thumbnail = page.locator(`main a[href="${galleryHref}?photo=1"]`);
+    await thumbnail.scrollIntoViewIfNeeded();
+    let scrollY = await page.evaluate(() => window.scrollY);
+    expect(scrollY).toBeGreaterThan(0);
+
+    await thumbnail.focus();
+    await page.keyboard.press("Enter");
+    await page.waitForURL(`**${galleryHref}?photo=1`);
+    let dialog = page.getByRole("dialog");
+    await expect(
+      dialog.getByRole("link", { name: "Close modal" }),
+    ).toBeFocused();
+    expect(await page.evaluate(() => window.scrollY)).toBe(scrollY);
+
+    await page.keyboard.press("ArrowRight");
+    await page.waitForURL(`**${galleryHref}?photo=0`);
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          Boolean(document.activeElement?.closest("[role=dialog]")),
+        ),
+      )
+      .toBe(true);
+
+    await page.keyboard.press("Escape");
+    await page.waitForURL(`**${galleryHref}`);
+    await expect(dialog).toHaveCount(0);
+    await expect(
+      page.locator(`main a[href="${galleryHref}?photo=0"]`),
+    ).toBeFocused();
   });
 
   it("jam 2026 mobile layout does not create horizontal document overflow", async (t) => {
@@ -148,7 +240,7 @@ describe("Jam", () => {
     );
     await expect(newsletterForm).toHaveAttribute(
       "data-rmx-reset-scroll",
-      "false",
+      "manual",
     );
 
     let emailInput = page.getByPlaceholder("your@email.com");

@@ -54,7 +54,7 @@ describe("Remix Jam 2026 routes", () => {
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     let html = await response.text();
     expect(html).toContain('data-rmx-target="newsletter-subscribe"');
-    expect(html).toContain('data-rmx-reset-scroll="false"');
+    expect(html).toContain('data-rmx-reset-scroll="manual"');
     expect(html).toContain("You're on the list");
   });
 
@@ -86,7 +86,9 @@ describe("Remix Jam 2026 routes", () => {
       expect(html).toContain('aria-modal="true"');
       expect(html).toContain('aria-label="Close tickets"');
       expect(html).toContain('href="/jam/2026"');
-      expect(html).toContain(`rmx-target="${ticketModalConfig.frameName}"`);
+      expect(html).toContain(
+        `data-rmx-target="${ticketModalConfig.frameName}"`,
+      );
       // The native disabled attribute protects checkout even before hydration.
       expect(html).toMatch(/<button[^>]*disabled[^>]*type="submit"/);
       if (frame) {

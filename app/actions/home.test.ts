@@ -23,7 +23,7 @@ describe("home route", () => {
     expect(response.headers.get("Surrogate-Key")).toBe(null);
     let html = await response.text();
     expect(html).toContain('data-rmx-target="newsletter-subscribe"');
-    expect(html).toContain('data-rmx-reset-scroll="false"');
+    expect(html).toContain('data-rmx-reset-scroll="manual"');
     expect(html).toContain("Got it! Please check your email");
   });
 
