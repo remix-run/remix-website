@@ -13,7 +13,7 @@ const LINKS: Array<{
   section?: HeaderSection;
 }> = [
   { to: "https://guides.remix.run", label: "Guides" },
-  { to: "https://api.remix.run", label: "API" },
+  { to: "https://api.remix.run", label: "Docs" },
   { to: "https://github.com/remix-run/remix", label: "GitHub" },
   { to: routes.blog.index.href(), label: "Blog", section: "blog" },
   {
@@ -31,12 +31,13 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
       mix={css({
         position: "relative",
         zIndex: 50,
-        height: "64px",
-        paddingLeft: "24px",
+        // Even space above, left of and below the 16px wordmark
+        height: `calc(${theme.space.edge} * 2 + 16px)`,
+        paddingLeft: theme.space.edge,
         paddingRight: "16px",
         fontFamily: theme.fontFamily.system,
         "@media (min-width: 640px)": { paddingRight: "24px" },
-        "@media (min-width: 900px)": { paddingRight: "30px" },
+        "@media (min-width: 900px)": { paddingRight: theme.space.edge },
       })}
     >
       <div

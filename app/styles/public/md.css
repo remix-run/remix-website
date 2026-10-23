@@ -62,7 +62,7 @@
   }
 
   .md-prose h2:where(.dark, .dark *) {
-    color: rgb(200 200 200);
+    color: var(--color-text-primary);
   }
 
   .md-prose h3 {
@@ -70,7 +70,7 @@
   }
 
   .md-prose h3:where(.dark, .dark *) {
-    color: rgb(200 200 200);
+    color: var(--color-text-primary);
   }
 
   .md-prose h4,
@@ -80,7 +80,7 @@
   }
 
   .md-prose strong:where(.dark, .dark *) {
-    color: rgb(200 200 200);
+    color: var(--color-text-primary);
   }
 
   .md-prose hr:where(.dark, .dark *) {
@@ -722,7 +722,7 @@
 
   .md-prose .md-testimonial {
     margin-block-start: 2.5rem;
-    color: light-dark(#121212, #c8c8c8);
+    color: var(--color-text-primary);
     font-size: 1.25rem;
     font-weight: 600;
     line-height: 2rem;
@@ -758,13 +758,13 @@
   }
 
   .md-prose .md-testimonial-author-name {
-    color: light-dark(#121212, #c8c8c8);
+    color: var(--color-text-primary);
     font-weight: 600;
   }
 
   .md-prose .md-testimonial-author-role {
     margin-block-start: 0.125rem;
-    color: light-dark(#515151, #818181);
+    color: var(--color-text-secondary);
     font-weight: 300;
   }
 }

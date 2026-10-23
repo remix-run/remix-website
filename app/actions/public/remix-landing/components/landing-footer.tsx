@@ -28,7 +28,7 @@ const SOCIAL_LINKS = [
 ] as const;
 
 const footerShellStyles = css({
-  padding: "40px 24px 24px",
+  padding: `40px ${theme.space.edge} ${theme.space.edge}`,
 });
 
 const footerContentStyles = css({

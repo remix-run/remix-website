@@ -108,7 +108,7 @@ describe("Navigation", () => {
 
     let expectedLinks = [
       "Guides",
-      "API",
+      "Docs",
       "GitHub",
       "Blog",
       "Newsletter",
@@ -165,13 +165,13 @@ describe("Navigation", () => {
     let page = await t.serve(await createTestServer(handler));
     await page.goto(routes.blog.index.href());
 
-    let apiLink = page
+    let docsLink = page
       .locator('header nav[aria-label="Main"] a')
-      .filter({ hasText: "API" });
-    await apiLink.hover();
+      .filter({ hasText: "Docs" });
+    await docsLink.hover();
 
-    await expect(apiLink).toHaveCSS("color", "rgb(0, 116, 192)");
-    await expect(apiLink).toHaveCSS("text-decoration-line", "none");
+    await expect(docsLink).toHaveCSS("color", "rgb(0, 116, 192)");
+    await expect(docsLink).toHaveCSS("text-decoration-line", "none");
 
     let currentLink = page.locator('header nav[aria-label="Main"] a').filter({
       hasText: "Blog",

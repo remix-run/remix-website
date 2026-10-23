@@ -8,11 +8,12 @@ import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
 import {
   pageBodyStyle,
   pageMetaStyle,
+  pageSecondaryTextStyle,
   pageTitleExtraSmallStyle,
   pageTitleSmallStyle,
   pageTitleStyle,
 } from "../../ui/public/marketing-styles.ts";
-import { breakpointMedia } from "../../ui/public/theme.ts";
+import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 import { routes } from "../../routes.ts";
 import { getBlogPostListings } from "../../data/blog.ts";
 import {
@@ -203,7 +204,9 @@ function BlogPageContent(
                       />
                     </div>
                     <div mix={blogCardCopyStyle}>
-                      <p mix={pageMetaStyle}>{latestPost.dateDisplay}</p>
+                      <p mix={[pageMetaStyle, pageSecondaryTextStyle]}>
+                        {latestPost.dateDisplay}
+                      </p>
                       <p mix={pageTitleStyle}>{latestPost.title}</p>
                       <p mix={pageBodyStyle}>{latestPost.summary}</p>
                     </div>
@@ -243,7 +246,9 @@ function BlogPageContent(
                           css({ marginBlockEnd: "48px" }),
                         ]}
                       >
-                        <p mix={pageMetaStyle}>{post.dateDisplay}</p>
+                        <p mix={[pageMetaStyle, pageSecondaryTextStyle]}>
+                          {post.dateDisplay}
+                        </p>
                         <p mix={[pageTitleStyle, pageTitleExtraSmallStyle]}>
                           {post.title}
                         </p>
@@ -383,9 +388,7 @@ let blogContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
-  paddingInline: "24px",
-  [breakpointMedia.md]: { paddingInline: "32px" },
-  [breakpointMedia.lg]: { paddingInline: "40px" },
+  paddingInline: theme.space.edge,
 } as const;
 
 let blogImageFrameStyle = css({
