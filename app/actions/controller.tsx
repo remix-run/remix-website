@@ -11,6 +11,7 @@ import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";
 import { HomePage } from "./home.tsx";
 import { renderHomeMarkdown } from "./home-markdown.ts";
+import { renderLlmsTxt } from "./llms.ts";
 import { getStackExplorerCodeHighlights } from "./stack-explorer-highlighting.ts";
 
 export default createController(routes, {
@@ -30,6 +31,7 @@ export default createController(routes, {
       return new Response(renderHomeMarkdown(), {
         headers: {
           "Content-Type": "text/markdown; charset=utf-8",
+          Link: `<${routes.llms.href()}>; rel="describedby"`,
           ...(process.env.NODE_ENV === "development"
             ? { "Cache-Control": "no-store" }
             : CACHE.DOCUMENT),
@@ -38,6 +40,7 @@ export default createController(routes, {
     },
 
     async home({ render, request }) {
+      let discoveryLinks = `<${routes.homeMarkdown.href()}>; rel="alternate"; type="text/markdown", <${routes.llms.href()}>; rel="describedby"`;
       let accept = Accept.from(request.headers.get("Accept"));
       let markdownQuality = accept.get("text/markdown") ?? 0;
       let htmlQuality =
@@ -56,6 +59,7 @@ export default createController(routes, {
         return new Response(renderHomeMarkdown(), {
           headers: {
             "Content-Type": "text/markdown; charset=utf-8",
+            Link: discoveryLinks,
             Vary: "Accept",
             ...(process.env.NODE_ENV === "development"
               ? { "Cache-Control": "no-store" }
@@ -75,7 +79,7 @@ export default createController(routes, {
           pageUrl={pageUrl}
           previewImage={previewImage}
         />,
-        { headers: { Vary: "Accept" } },
+        { headers: { Vary: "Accept", Link: discoveryLinks } },
       );
     },
 
@@ -86,6 +90,17 @@ export default createController(routes, {
         />,
         { headers: { "Cache-Control": CACHE.PRIVATE } },
       );
+    },
+
+    llms() {
+      return new Response(renderLlmsTxt(), {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          ...(process.env.NODE_ENV === "development"
+            ? { "Cache-Control": "no-store" }
+            : CACHE.DOCUMENT),
+        },
+      });
     },
 
     // Keep healthcheck on a stable path so deploy checks never depend on the
