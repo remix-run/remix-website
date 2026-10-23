@@ -342,7 +342,7 @@ if (cover instanceof File) {
   {
     id: "auth",
     label: "Auth",
-    documentationHref: "https://docs.remix.run/auth.md",
+    documentationHref: "https://api.remix.run/auth.md",
     introTitle: "Authenticate users and manage sessions",
     introBody:
       "Authenticate users with credentials or external providers, resolve each request to a typed identity, protect routes with middleware, and store session data on the server behind a signed session cookie.",
@@ -461,7 +461,7 @@ const ordersController = createController(routes.orders, {
   {
     id: "assets",
     label: "Assets",
-    documentationHref: "https://docs.remix.run/assets.md",
+    documentationHref: "https://api.remix.run/assets.md",
     introTitle: "Serve source modules without a build step",
     introBody:
       "Compile TypeScript, JavaScript, and CSS on demand, transform files on the fly, and serve them as native browser modules with import maps. During development, code hot reloads instantly.",

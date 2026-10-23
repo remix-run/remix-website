@@ -13,7 +13,7 @@ const LINKS: Array<{
   section?: HeaderSection;
 }> = [
   { to: "https://guides.remix.run", label: "Guides" },
-  { to: "https://docs.remix.run", label: "Docs" },
+  { to: "https://api.remix.run", label: "Docs" },
   { to: "https://github.com/remix-run/remix", label: "GitHub" },
   { to: routes.blog.index.href(), label: "Blog", section: "blog" },
   {
