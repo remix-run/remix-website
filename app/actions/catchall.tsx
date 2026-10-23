@@ -64,22 +64,26 @@ export function catchallHandler({
 function getCatchallRedirect(url: URL): string | null {
   if (url.pathname.startsWith("//")) return null;
 
-  if (url.pathname.endsWith("/") && url.pathname !== "/") {
-    let normalized = new URL(url.toString());
-    normalized.pathname = normalized.pathname.replace(/\/+$/, "") || "/";
-    return normalized.toString();
-  }
+  // Resolve legacy destinations from the slash-trimmed path so a trailing
+  // slash never costs an extra redirect hop.
+  let pathname = url.pathname.replace(/\/+$/, "") || "/";
 
-  if (url.pathname === "/docs") {
+  if (pathname === "/docs") {
     return "https://guides.remix.run/";
   }
 
-  if (url.pathname.startsWith("/docs/")) {
-    return getDocsRedirect(url.pathname);
+  if (pathname.startsWith("/docs/")) {
+    return getDocsRedirect(pathname);
   }
 
-  if (url.pathname === "/resources" || url.pathname.startsWith("/resources/")) {
-    return `https://v2.remix.run${url.pathname}${url.search}`;
+  if (pathname === "/resources" || pathname.startsWith("/resources/")) {
+    return `https://v2.remix.run${pathname}${url.search}`;
+  }
+
+  if (pathname !== url.pathname) {
+    let normalized = new URL(url.toString());
+    normalized.pathname = pathname;
+    return normalized.toString();
   }
 
   return null;
@@ -104,37 +108,50 @@ function getGitHubDocsUrl(tag: string, path: string[]): string {
   return `https://github.com/remix-run/remix/${view}/${encodeURIComponent(tag)}${docsPath}`;
 }
 
-function getDocsRedirect(pathname: string): string {
-  let fullPathWithoutDocs = pathname.split("/").slice(2);
-  let [langOrRef, refOrPath, ...rest] = fullPathWithoutDocs;
-
-  if (langOrRef === "en") {
-    let ref = refOrPath;
-    let path = rest;
-
-    if (ref) {
-      let tag = getVersionedDocsTag(ref);
-      if (tag !== null) {
-        return getGitHubDocsUrl(tag, path);
-      }
-    }
-
-    if (ref === "main" || ref === "dev") {
-      return `https://v2.remix.run/docs/${path.join("/")}`;
-    }
-
-    return `https://v2.remix.run/docs/${[ref, ...path].filter(Boolean).join("/")}`;
-  }
-
-  if (langOrRef) {
-    let tag = getVersionedDocsTag(langOrRef);
-    if (tag !== null) {
-      return getGitHubDocsUrl(tag, [refOrPath, ...rest].filter(Boolean));
-    }
-  }
-
-  return `https://v2.remix.run/docs/${fullPathWithoutDocs.join("/")}`;
+function getV2DocsUrl(path: string[]): string {
+  // v2.remix.run redirects slashless doc paths, so link to the final URL.
+  let docsPath = path.join("/");
+  return `https://v2.remix.run/docs/${docsPath ? `${docsPath}/` : ""}`;
 }
+
+function getDocsRedirect(pathname: string): string {
+  let segments = pathname.split("/").slice(2);
+  // Legacy docs lived at /docs/en/<ref>/*, though links often omit `en`.
+  let isLegacyDocsPath = segments[0] === "en";
+  if (isLegacyDocsPath) segments = segments.slice(1);
+
+  let [ref = "", ...path] = segments;
+  let tag = getVersionedDocsTag(ref);
+  if (tag !== null) {
+    return getGitHubDocsUrl(tag, path);
+  }
+
+  if (V2_DOCS_REFS.has(ref)) {
+    return getV2DocsUrl(path);
+  }
+
+  // Only clearly-v2 paths go to v2; anything else gets the current guides.
+  if (isLegacyDocsPath || V2_DOCS_SECTIONS.has(ref)) {
+    return getV2DocsUrl(segments);
+  }
+
+  return "https://guides.remix.run/";
+}
+
+const V2_DOCS_REFS = new Set(["main", "dev", "release-next", "2"]);
+
+const V2_DOCS_SECTIONS = new Set([
+  "components",
+  "discussion",
+  "file-conventions",
+  "guides",
+  "hooks",
+  "other-api",
+  "route",
+  "start",
+  "styling",
+  "utils",
+]);
 
 function isLikelyStaticFileRequest(pathname: string) {
   let trailingSegment = pathname.split("/").pop();

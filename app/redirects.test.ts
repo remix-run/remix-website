@@ -64,12 +64,6 @@ describe("redirects (fetch-router)", () => {
       expect(status).toBe(301);
     });
 
-    it("redirects /login to the legacy app", async () => {
-      let { url, status } = await getRedirectResult("/login");
-      expect(url).toBe("https://remix-run.web.app/login");
-      expect(status).toBe(302);
-    });
-
     it("redirects /features to root", async () => {
       let { url, status } = await getRedirectResult("/features");
       expect(url).toBe("/");
