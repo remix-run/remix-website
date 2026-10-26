@@ -1,9 +1,12 @@
 import { readdirSync } from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { createAssetServer, defineFileTransform } from "remix/assets";
+import {
+  createAssetServer,
+  createFsFileCache,
+  defineFileTransform,
+} from "remix/assets";
 import { loadConfig } from "remix/cli";
-import { createFsFileStorage } from "remix/file-storage/fs";
 import { componentHmr } from "remix/component-hmr/assets";
 import sharp from "sharp";
 
@@ -40,7 +43,11 @@ export let assets = createAssetServer({
   fingerprint: isProduction,
   files: {
     ...config.assets.files,
-    cache: createFsFileStorage(path.join(os.tmpdir(), "remix-website-assets")),
+    cache: createFsFileCache({
+      directory: path.join(os.tmpdir(), "remix-website-assets"),
+      maxFileSize: 16 * 1024 * 1024,
+      maxTotalSize: 512 * 1024 * 1024,
+    }),
     cacheKey: fileCacheKey,
     maxRequestTransforms: 1,
     transforms: webpTransforms,
