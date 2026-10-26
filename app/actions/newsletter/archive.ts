@@ -1,6 +1,8 @@
+import * as os from "node:os";
+import * as path from "node:path";
 import parseFrontMatter from "front-matter";
+import { createFsFileCache, type FileCache } from "remix/assets";
 import { detectMimeType } from "remix/mime";
-import { LRUCache } from "lru-cache";
 
 import {
   NEWSLETTER_MARKDOWN_PATTERN,
@@ -17,8 +19,8 @@ import { env } from "../../utils/env.ts";
  * Issues live in the private `remix-run/newsletter` GitHub repository under
  * `newsletters/newsletter-<N>/<YYYY-MM-DD>-remix-newsletter-<N>.md`, with any
  * images beside the markdown. We fetch the file tree and batch only Markdown
- * into a snapshot. Images are fetched on demand by immutable Git SHA and cached
- * separately. Expired snapshots remain available during a shared refresh.
+ * into a snapshot. Images are fetched on demand by immutable Git SHA and stored
+ * in a file cache. Expired snapshots remain available during a shared refresh.
  */
 
 const NEWSLETTER_REPO_OWNER = "remix-run";
@@ -31,6 +33,8 @@ const SAFE_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif", "webp"] as const;
 const FRESH_TTL_MS = 6 * 60 * 60 * 1000;
 const MAX_ISSUES = 200;
 const MAX_CACHED_IMAGE_BYTES = 64 * 1024 * 1024;
+// GitHub image downloads are capped at 8 MiB; leave room for cache metadata.
+const MAX_CACHED_IMAGE_ENTRY_BYTES = 9 * 1024 * 1024;
 
 export interface NewsletterSummary {
   number: number;
@@ -278,21 +282,19 @@ function isSafeImageContentType(contentType: string): boolean {
   return ["image/png", "image/jpeg", "image/gif", "image/webp"].includes(base);
 }
 
-export function createGitHubNewsletterRepository(
-  options: {
-    owner?: string;
-    repo?: string;
-    ref?: string;
-    token?: string;
-    fetchImpl?: typeof fetch;
-    ttlMs?: number;
-    onRefreshError?: (
-      error: unknown,
-      context: { servingStale: boolean },
-    ) => void;
-    onImageError?: (error: unknown) => void;
-  } = {},
-): NewsletterRepository {
+export function createGitHubNewsletterRepository(options: {
+  /** Stores downloaded images by Git SHA. Failures never block serving. */
+  imageCache: FileCache;
+  owner?: string;
+  repo?: string;
+  ref?: string;
+  token?: string;
+  fetchImpl?: typeof fetch;
+  ttlMs?: number;
+  onRefreshError?: (error: unknown, context: { servingStale: boolean }) => void;
+  onImageError?: (error: unknown) => void;
+  onImageCacheError?: (error: unknown) => void;
+}): NewsletterRepository {
   let owner = options.owner ?? NEWSLETTER_REPO_OWNER;
   let repo = options.repo ?? NEWSLETTER_REPO_NAME;
   let ref = options.ref ?? NEWSLETTER_REPO_REF;
@@ -301,6 +303,7 @@ export function createGitHubNewsletterRepository(
   let ttlMs = options.ttlMs ?? FRESH_TTL_MS;
   let onRefreshError = options.onRefreshError;
   let onImageError = options.onImageError;
+  let onImageCacheError = options.onImageCacheError;
   let source = createGitHubNewsletterSource({
     owner,
     repo,
@@ -308,24 +311,46 @@ export function createGitHubNewsletterRepository(
     token,
     fetchImpl,
   });
-  let imageCache = new LRUCache<string, Uint8Array>({
-    max: 1_000,
-    maxSize: MAX_CACHED_IMAGE_BYTES,
-    sizeCalculation: (bytes) => Math.max(1, bytes.byteLength),
-    // Eviction must not fail an image response whose download is in progress.
-    ignoreFetchAbort: true,
-    async fetchMethod(sha) {
-      try {
-        return await source.getImage(sha);
-      } catch (error) {
-        onImageError?.(error);
-        throw new NewsletterUpstreamUnavailableError(
-          "Newsletter image is currently unavailable",
-          { cause: error },
-        );
-      }
-    },
-  });
+  let pendingImages = new Map<string, Promise<Uint8Array>>();
+
+  /** Share one cache lookup or download per SHA across concurrent requests. */
+  function getImageBytes(sha: string): Promise<Uint8Array> {
+    let pending = pendingImages.get(sha);
+    if (pending) return pending;
+    let load = loadImageBytes(sha).finally(() => pendingImages.delete(sha));
+    pendingImages.set(sha, load);
+    return load;
+  }
+
+  async function loadImageBytes(sha: string): Promise<Uint8Array> {
+    try {
+      let cached = await options.imageCache.get(sha);
+      if (cached) return new Uint8Array(await cached.arrayBuffer());
+    } catch (error) {
+      onImageCacheError?.(error);
+    }
+
+    let bytes: Uint8Array;
+    try {
+      bytes = await source.getImage(sha);
+    } catch (error) {
+      onImageError?.(error);
+      throw new NewsletterUpstreamUnavailableError(
+        "Newsletter image is currently unavailable",
+        { cause: error },
+      );
+    }
+
+    try {
+      await options.imageCache.put(
+        sha,
+        new File([Uint8Array.from(bytes)], sha),
+      );
+    } catch (error) {
+      onImageCacheError?.(error);
+    }
+    return bytes;
+  }
 
   let snapshot: NewsletterSnapshot | null = null;
   let expiresAt = 0;
@@ -395,7 +420,7 @@ export function createGitHubNewsletterRepository(
       if (!sha) return null;
       let mimeType = detectMimeType(filename);
       if (!mimeType || !isSafeImageContentType(mimeType)) return null;
-      let bytes = await imageCache.forceFetch(sha);
+      let bytes = await getImageBytes(sha);
       return { filename, contentType: mimeType, bytes };
     },
   };
@@ -409,10 +434,16 @@ export function resolveNewsletterImageUrl(number: number, url: string): string {
 }
 
 /**
- * Shared live repository. Reusing one process-wide instance keeps the in-memory
- * cache and concurrent-refresh dedupe effective across requests.
+ * Shared live repository. Reusing one process-wide instance keeps the snapshot
+ * and concurrent refresh and download dedupe effective across requests.
  */
 export const liveNewsletterRepository = createGitHubNewsletterRepository({
+  imageCache: createFsFileCache({
+    directory: path.join(os.tmpdir(), "remix-website-newsletter-images"),
+    maxEntries: 1_000,
+    maxFileSize: MAX_CACHED_IMAGE_ENTRY_BYTES,
+    maxTotalSize: MAX_CACHED_IMAGE_BYTES,
+  }),
   onRefreshError(error, { servingStale }) {
     console.error("[newsletter] GitHub refresh failed", {
       servingStale,
@@ -421,6 +452,9 @@ export const liveNewsletterRepository = createGitHubNewsletterRepository({
   },
   onImageError(error) {
     console.error("[newsletter] GitHub image fetch failed", { error });
+  },
+  onImageCacheError(error) {
+    console.error("[newsletter] Image cache failed", { error });
   },
   token: env.NEWSLETTER_GITHUB_TOKEN,
 });

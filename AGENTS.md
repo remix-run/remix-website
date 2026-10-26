@@ -60,7 +60,7 @@ Intentional conference-day difference: Jam 2026 retains `/jam/2026/ticket` with 
 
 Remaining differences vs the previous production site (small, shippable items):
 
-- **Newsletter origin dependency**: Cold metadata and uncached image reads still depend on GitHub. Metadata keeps six-hour SWR; images load by immutable Git SHA into a bounded 64 MiB cache. The eventual replacement is a newsletter-repo build that publishes a static manifest and images to a bucket/CDN.
+- **Newsletter origin dependency**: Cold metadata and uncached image reads still depend on GitHub. Metadata keeps six-hour SWR; images load by immutable Git SHA into a bounded 64 MiB `createFsFileCache` in `os.tmpdir()` (survives restarts, not deploys). The eventual replacement is a newsletter-repo build that publishes a static manifest and images to a bucket/CDN.
 - **Link prefetch parity**: Only links to pages sent with `CACHE.PREFETCHABLE_DOCUMENT` (`public, max-age=5`) use `data-rmx-prefetch="intent"`: blog posts, the newsletter archive, and newsletter issues. The click after a prefetch then reuses the HTML (about 160 ms faster at a 150 ms RTT). Prefetching a `max-age=0` document measured no faster and downloads its HTML twice, so the home, blog index, and Jam links do not prefetch. Never use `private` for this: Fastly passes `private` responses to the origin.
 - **Analytics on in-app transitions**: Verify one pageview per navigation when using client-side navigation.
 - **Client navigation shape**: Keep Jam on top-level client navigation unless a future route needs an independently updating region.

@@ -1,3 +1,4 @@
+import type { FileCache } from "remix/assets";
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 import { createHash } from "node:crypto";
@@ -174,7 +175,7 @@ describe("createGitHubNewsletterRepository", () => {
     let upstream = fakeGitHubFetch([issue, image]);
     let requests: Array<{ url: string; init?: RequestInit }> = [];
     let token = ["test", "newsletter", "token"].join("-");
-    let repo = createGitHubNewsletterRepository({
+    let repo = createRepository({
       token,
       fetchImpl: async (input, init) => {
         requests.push({ url: String(input), init });
@@ -220,7 +221,7 @@ describe("createGitHubNewsletterRepository", () => {
 
   it("rejects API redirects without forwarding authorization", async () => {
     let calls = 0;
-    let repo = createGitHubNewsletterRepository({
+    let repo = createRepository({
       token: "test",
       fetchImpl: async (_input, init) => {
         calls++;
@@ -252,7 +253,7 @@ describe("createGitHubNewsletterRepository", () => {
         "private nested image",
       ),
     ];
-    let repo = createGitHubNewsletterRepository({
+    let repo = createRepository({
       fetchImpl: fakeGitHubFetch(files),
     });
     expect(
@@ -276,7 +277,7 @@ describe("createGitHubNewsletterRepository", () => {
     t.after(() => download.resolve(new Response(null, { status: 503 })));
     let started = deferred<void>();
     let imageCalls = 0;
-    let repo = createGitHubNewsletterRepository({
+    let repo = createRepository({
       token: "test",
       fetchImpl: async (input, init) => {
         if (String(input).includes("/git/blobs/")) {
@@ -327,7 +328,7 @@ describe("createGitHubNewsletterRepository", () => {
       let calls = 0;
       let refresh = deferred<Response>();
       t.after(() => refresh.resolve(new Response(null, { status: 503 })));
-      let repo = createGitHubNewsletterRepository({
+      let repo = createRepository({
         ttlMs: 1_000,
         fetchImpl: async (input, init) => {
           if (String(input).includes("/git/trees/") && ++calls === 2)
@@ -378,7 +379,7 @@ describe("createGitHubNewsletterRepository", () => {
       let image = imageFile(1, "cover.png");
       let upstream = fakeGitHubFetch([issueFile(1, "2024-01-01"), image]);
       let downloads = 0;
-      let repo = createGitHubNewsletterRepository({
+      let repo = createRepository({
         ttlMs: 1_000,
         fetchImpl: async (input, init) => {
           if (String(input).includes("/git/blobs/")) downloads++;
@@ -423,7 +424,7 @@ describe("createGitHubNewsletterRepository", () => {
       let calls = 0;
       let fail = false;
       let reported = deferred<boolean>();
-      let repo = createGitHubNewsletterRepository({
+      let repo = createRepository({
         ttlMs: 1_000,
         fetchImpl: async (input, init) => {
           if (String(input).includes("/git/trees/")) calls++;
@@ -461,7 +462,7 @@ describe("createGitHubNewsletterRepository", () => {
   it("throws on a failed cold load and allows the next request to retry", async () => {
     let calls = 0;
     let upstream = fakeGitHubFetch([issueFile(1, "2024-01-01")]);
-    let repo = createGitHubNewsletterRepository({
+    let repo = createRepository({
       fetchImpl: async (input, init) =>
         ++calls === 1
           ? new Response(null, { status: 404 })
@@ -486,7 +487,7 @@ describe("createGitHubNewsletterRepository", () => {
   ]) {
     it(`rejects an incomplete or invalid snapshot: ${failure}`, async () => {
       let upstream = fakeGitHubFetch([issueFile(1, "2024-01-01")]);
-      let repo = createGitHubNewsletterRepository({
+      let repo = createRepository({
         fetchImpl: async (input, init) => {
           let result = await (await upstream(input, init)).json();
           if (String(input).includes("/git/trees/")) {
@@ -515,7 +516,7 @@ describe("createGitHubNewsletterRepository", () => {
     let issue = issueFile(1, "2024-01-01");
     let upstream = fakeGitHubFetch([issue]);
     let reportedError: unknown;
-    let repo = createGitHubNewsletterRepository({
+    let repo = createRepository({
       fetchImpl: async (input, init) => {
         let response = await upstream(input, init);
         if (!String(input).endsWith("/graphql")) return response;
@@ -550,7 +551,7 @@ describe("createGitHubNewsletterRepository", () => {
         let imageErrors = 0;
         let refreshErrors = 0;
         let cancelled = deferred<void>();
-        let repo = createGitHubNewsletterRepository({
+        let repo = createRepository({
           fetchImpl: async (input, init) => {
             if (String(input).includes("/git/blobs/") && ++downloads === 1) {
               if (failure === "HTTP error")
@@ -602,13 +603,62 @@ describe("createGitHubNewsletterRepository", () => {
     );
   }
 
+  it("reuses stored images after a restart without downloading them again", async () => {
+    let image = imageFile(1, "cover.png");
+    let upstream = fakeGitHubFetch([issueFile(1, "2024-01-01"), image]);
+    let downloads = 0;
+    let imageCache = createMemoryImageCache();
+    let options = {
+      imageCache,
+      fetchImpl: (async (input, init) => {
+        if (String(input).includes("/git/blobs/")) downloads++;
+        return upstream(input, init);
+      }) as typeof fetch,
+    };
+
+    await createRepository(options).getImage(1, "cover.png");
+    // A new instance has an empty snapshot but shares the stored images.
+    let restarted = await createRepository(options).getImage(1, "cover.png");
+
+    expect(restarted).toEqual({
+      filename: "cover.png",
+      contentType: "image/png",
+      bytes: image.bytes,
+    });
+    expect(downloads).toBe(1);
+  });
+
+  it("serves images from GitHub when the image cache cannot read or write", async () => {
+    let image = imageFile(1, "cover.png");
+    let upstream = fakeGitHubFetch([issueFile(1, "2024-01-01"), image]);
+    let cacheErrors: unknown[] = [];
+    let repo = createRepository({
+      imageCache: {
+        get() {
+          throw new Error("disk read failed");
+        },
+        put() {
+          throw new Error("disk write failed");
+        },
+      },
+      fetchImpl: upstream,
+      onImageCacheError: (error) => cacheErrors.push(error),
+    });
+
+    expect((await repo.getImage(1, "cover.png"))?.bytes).toEqual(image.bytes);
+    expect(cacheErrors.map((error) => (error as Error).message)).toEqual([
+      "disk read failed",
+      "disk write failed",
+    ]);
+  });
+
   it("returns null for missing issues and missing/unsafe images without blob requests", async () => {
     let upstream = fakeGitHubFetch([
       issueFile(1, "2024-01-01"),
       imageFile(1, "icon.svg"),
     ]);
     let calls = 0;
-    let repo = createGitHubNewsletterRepository({
+    let repo = createRepository({
       fetchImpl: async (input, init) => {
         calls++;
         return upstream(input, init);
@@ -623,6 +673,26 @@ describe("createGitHubNewsletterRepository", () => {
     expect(calls).toBe(2);
   });
 });
+
+/** Isolated per repository so fixtures with identical bytes never share state. */
+function createRepository(
+  options: Partial<Parameters<typeof createGitHubNewsletterRepository>[0]> = {},
+) {
+  return createGitHubNewsletterRepository({
+    imageCache: createMemoryImageCache(),
+    ...options,
+  });
+}
+
+function createMemoryImageCache(): FileCache {
+  let files = new Map<string, File>();
+  return {
+    get: (key) => files.get(key) ?? null,
+    put(key, file) {
+      files.set(key, file);
+    },
+  };
+}
 
 interface FixtureFile {
   name: string;
