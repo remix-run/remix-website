@@ -30,7 +30,7 @@ describe("catchall route", () => {
   it("redirects the docs root to the Remix 3 guides", async () => {
     let response = catchallHandler(createContext("/docs"));
     expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).toBe("https://guides.remix.run/");
+    expect(response.headers.get("Location")).toBe("https://docs.remix.run/");
   });
 
   it("redirects legacy docs refs to v2", async () => {
@@ -54,7 +54,7 @@ describe("catchall route", () => {
         "/docs/hooks/use-fetcher",
         "https://v2.remix.run/docs/hooks/use-fetcher/",
       ],
-      ["/docs/getting-started", "https://guides.remix.run/"],
+      ["/docs/getting-started", "https://docs.remix.run/"],
     ]) {
       let response = catchallHandler(createContext(pathname));
       expect(response.status).toBe(302);

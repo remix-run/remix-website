@@ -69,7 +69,7 @@ function getCatchallRedirect(url: URL): string | null {
   let pathname = url.pathname.replace(/\/+$/, "") || "/";
 
   if (pathname === "/docs") {
-    return "https://guides.remix.run/";
+    return "https://docs.remix.run/";
   }
 
   if (pathname.startsWith("/docs/")) {
@@ -135,7 +135,7 @@ function getDocsRedirect(pathname: string): string {
     return getV2DocsUrl(segments);
   }
 
-  return "https://guides.remix.run/";
+  return "https://docs.remix.run/";
 }
 
 const V2_DOCS_REFS = new Set(["main", "dev", "release-next", "2"]);

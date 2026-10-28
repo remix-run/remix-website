@@ -97,8 +97,8 @@ export const landingContent = {
       body: "Build your first app with the step-by-step guide, then explore the API when you want to go deeper.",
       align: "left",
       ctaLabel: "Get started",
-      ctaHref: "https://guides.remix.run/start-here/",
-      ctaMarkdownHref: "https://guides.remix.run/start-here.md",
+      ctaHref: "https://docs.remix.run/start-here/",
+      ctaMarkdownHref: "https://docs.remix.run/start-here.md",
       secondary: {
         title: "Stay in the loop",
         body: "Get a monthly update on releases, technical work, events, and what is coming next. No spam. Unsubscribe anytime.",
@@ -111,7 +111,7 @@ export const landingContent = {
       key: "D",
       label: "docs",
       href: "https://docs.remix.run",
-      markdownHref: "https://docs.remix.run/remix.md",
+      markdownHref: "https://docs.remix.run/api/remix.md",
       external: true,
     },
     {
