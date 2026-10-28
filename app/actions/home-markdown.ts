@@ -14,9 +14,6 @@ export function renderHomeMarkdown() {
   let quickstart = landingContent.storySections.find(
     (section) => section.id === "test-drive",
   )!;
-  let guides = landingContent.resources.find(
-    (resource) => resource.key === "G",
-  )!;
   let markdown = [
     `# Remix 3 — ${landingContent.hero.title.join(" ")}`,
     landingContent.hero.body.join(" "),
@@ -28,7 +25,7 @@ cd ${landingContent.projectDirectory}
 npm install
 npm run dev
 \`\`\``,
-    `[${quickstart.ctaLabel}](${guides.markdownHref})`,
+    `[${quickstart.ctaLabel}](${quickstart.ctaMarkdownHref})`,
     `## ${landingContent.stackTitle}`,
     ...stackCategories.flatMap((category) => [
       `### ${category.label}`,
