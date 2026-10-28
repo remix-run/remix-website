@@ -10,6 +10,32 @@ import { visuallyHiddenStyle } from "./css-mixins.ts";
 import { Icon } from "./icon.tsx";
 import { theme } from "./theme.ts";
 
+// Match the docs site's mobile navigation
+const navHoverBackground = "light-dark(rgb(0 0 0 / 5%), #2a2a30)";
+const borderSubtle = "light-dark(#e5e7eb, #2a2a30)";
+
+const menuIconCss = css({
+  display: "grid",
+  width: "16px",
+  gap: "3px",
+  "& span": {
+    display: "block",
+    height: "1.5px",
+    borderRadius: "9999px",
+    background: "currentColor",
+    transformOrigin: "center",
+  },
+  ":where(details[open] > summary) & span:nth-child(1)": {
+    transform: "translateY(4.5px) rotate(45deg)",
+  },
+  ":where(details[open] > summary) & span:nth-child(2)": {
+    opacity: 0,
+  },
+  ":where(details[open] > summary) & span:nth-child(3)": {
+    transform: "translateY(-4.5px) rotate(-45deg)",
+  },
+});
+
 type MobileMenuProps = {
   children: RemixNode;
   unstyled?: boolean;
@@ -80,7 +106,11 @@ export let MobileMenu = clientEntry(
         <details
           open={state.status === "open"}
           mix={[
-            css({ position: "relative", cursor: "pointer" }),
+            // The styled panel spans the header, so it positions against the header instead.
+            css({
+              position: handle.props.unstyled ? "relative" : "static",
+              cursor: "pointer",
+            }),
             ref((node) => {
               detailsElement = node;
               syncDetailsElement();
@@ -98,26 +128,34 @@ export let MobileMenu = clientEntry(
               !handle.props.unstyled
                 ? css({
                     display: "grid",
-                    width: "40px",
-                    height: "40px",
+                    minWidth: "44px",
+                    minHeight: "40px",
+                    padding: "8px 10px",
                     placeItems: "center",
-                    borderRadius: theme.radius.full,
-                    backgroundColor: "light-dark(#e3e3e3, #383838)",
+                    borderRadius: "8px",
                     color: theme.colors.text.marketingPrimary,
                     listStyle: "none",
                     "&::-webkit-details-marker": { display: "none" },
-                    "&:hover, details[open] > &": {
-                      backgroundColor: "light-dark(#c8c8c8, #434343)",
+                    "&:hover, &:focus-visible": {
+                      backgroundColor: navHoverBackground,
                     },
                   })
                 : undefined
             }
           >
-            <Icon
-              name="menu"
-              mix={css({ width: "20px", height: "20px" })}
-              aria-hidden="true"
-            />
+            {handle.props.unstyled ? (
+              <Icon
+                name="menu"
+                mix={css({ width: "20px", height: "20px" })}
+                aria-hidden="true"
+              />
+            ) : (
+              <span aria-hidden="true" mix={menuIconCss}>
+                <span />
+                <span />
+                <span />
+              </span>
+            )}
             <span mix={visuallyHiddenStyle}>Menu</span>
           </summary>
 
@@ -127,6 +165,8 @@ export let MobileMenu = clientEntry(
               !handle.props.unstyled
                 ? css({
                     position: "absolute",
+                    top: "100%",
+                    left: 0,
                     right: 0,
                     zIndex: 20,
                   })
@@ -138,14 +178,11 @@ export let MobileMenu = clientEntry(
               mix={
                 !handle.props.unstyled
                   ? css({
-                      position: "relative",
-                      top: "4px",
-                      width: "160px",
-                      border: "1px solid light-dark(#e3e3e3, #383838)",
-                      borderRadius: "6px",
-                      backgroundColor: "light-dark(#ffffff, #121212)",
-                      padding: "4px",
-                      boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+                      borderTop: `1px solid ${borderSubtle}`,
+                      borderBottom: `1px solid ${borderSubtle}`,
+                      backgroundColor: theme.surface.lvl0,
+                      padding: "8px 16px 16px",
+                      boxShadow: "0 12px 24px rgb(0 0 0 / 12%)",
                     })
                   : undefined
               }
@@ -157,9 +194,13 @@ export let MobileMenu = clientEntry(
                     ? css({
                         display: "flex",
                         flexDirection: "column",
-                        gap: "8px",
-                        padding: "10px 8px",
+                        gap: "4px",
                         "& > a": {
+                          display: "flex",
+                          alignItems: "center",
+                          minHeight: "44px",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
                           color: theme.colors.text.marketingPrimary,
                           fontSize: "1rem",
                           fontWeight: theme.fontWeight.normal,
@@ -171,6 +212,9 @@ export let MobileMenu = clientEntry(
                             color: theme.colors.action.current,
                             opacity: 1,
                           },
+                        "& > a:hover, & > a:focus-visible": {
+                          backgroundColor: navHoverBackground,
+                        },
                       })
                     : undefined
                 }
