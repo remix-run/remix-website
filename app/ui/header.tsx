@@ -15,7 +15,6 @@ const LINKS: Array<{
   // documents are fetched again on click, so prefetching them doubles the work.
   prefetch?: boolean;
 }> = [
-  { to: "https://guides.remix.run", label: "Guides" },
   { to: "https://docs.remix.run", label: "Docs" },
   { to: "https://github.com/remix-run/remix", label: "GitHub" },
   { to: routes.blog.index.href(), label: "Blog", section: "blog" },

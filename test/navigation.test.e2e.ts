@@ -107,7 +107,6 @@ describe("Navigation", () => {
     await page.goto(routes.blog.index.href());
 
     let expectedLinks = [
-      "Guides",
       "Docs",
       "GitHub",
       "Blog",
@@ -198,16 +197,14 @@ describe("Navigation", () => {
       .locator("a");
 
     expect(await desktopLinks.allTextContents()).toEqual([
-      "[G] guides",
       "[D] docs",
-      "[H] github",
+      "[G] github",
       "[B] blog",
       "[N] newsletter",
       "[J] jam",
       "[S] store",
     ]);
     expect(await mobileLinks.allTextContents()).toEqual([
-      "guides",
       "docs",
       "github",
       "blog",

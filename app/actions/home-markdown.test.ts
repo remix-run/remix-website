@@ -92,9 +92,6 @@ describe("homepage representations", () => {
     let quickstart = landingContent.storySections.find(
       (section) => section.id === "test-drive",
     )!;
-    let guides = landingContent.resources.find(
-      (resource) => resource.key === "G",
-    )!;
 
     expect(
       [...markdown.matchAll(/^## (.+)$/gm)]
@@ -114,7 +111,7 @@ describe("homepage representations", () => {
       "npm run dev",
     ]);
     expect(markdown).toContain(
-      `[${quickstart.ctaLabel}](${guides.markdownHref})`,
+      `[${quickstart.ctaLabel}](${quickstart.ctaMarkdownHref})`,
     );
   });
 

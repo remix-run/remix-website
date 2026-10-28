@@ -111,7 +111,7 @@ Alright, back to work for us, we've gotta ship this thing! See you in person or 
 [remix-jam-2025-demo-tape]: /jam/2025/gallery?photo=120
 [remix-history]: /remix-history
 [remix-store]: https://shop.remix.run
-[remix-guides]: https://guides.remix.run
+[remix-guides]: https://docs.remix.run
 [remix-website-github]: https://github.com/remix-run/remix-website
 [remix-discord]: https://remix.run/discord
 [remix-newsletter]: /newsletter
