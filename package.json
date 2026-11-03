@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@remix-run/ui": "github:remix-run/remix#preview/pr-12161&path:packages/ui",
+    "@remix-run/ui": "https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/ui.tgz",
     "@resvg/resvg-js": "2.6.2",
     "@shopify/storefront-api-client": "1.0.10",
     "cross-env": "10.1.0",
@@ -43,7 +43,7 @@
     "remark-gfm": "4.0.1",
     "remark-parse": "11.0.0",
     "remark-rehype": "11.1.2",
-    "remix": "github:remix-run/remix#preview/pr-12161&path:packages/remix",
+    "remix": "https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/remix.tgz",
     "satori": "0.26.0",
     "semver": "7.7.4",
     "sharp": "0.35.3",
