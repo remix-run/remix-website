@@ -67,7 +67,7 @@ importers:
         version: 11.1.2
       remix:
         specifier: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/remix.tgz
-        version: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/remix.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
+        version: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/remix.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.64.1)
       satori:
         specifier: 0.26.0
         version: 0.26.0
@@ -94,11 +94,11 @@ importers:
         version: 2.8.4
     devDependencies:
       '@playwright/cli':
-        specifier: 0.1.13
-        version: 0.1.13
+        specifier: 0.1.23
+        version: 0.1.23
       '@playwright/test':
-        specifier: 1.60.0
-        version: 1.60.0
+        specifier: 1.64.1
+        version: 1.64.1
       '@types/hast':
         specifier: 3.0.4
         version: 3.0.4
@@ -1092,75 +1092,75 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@playwright/cli@0.1.13':
-    resolution: {integrity: sha512-ntG80HgWp9y5HUDApoucNXx1Ny6YlCaRJdGpZZeY43Oh8Q+Iivs0hlEcGhnW/bEwsTkw72JxxlzEMOLwH42a9g==}
+  '@playwright/cli@0.1.23':
+    resolution: {integrity: sha512-+TuHfVgpK1SIlwyV7bcZ9SRRhnVOAIwJwxZCgEh5LWkZuyGfSYnHNx8J7H78dhCwMyLkJtGb/j5XICjzEKzrfg==, tarball: https://registry.npmjs.org/@playwright/cli/-/cli-0.1.23.tgz}
     engines: {node: '>=18'}
     hasBin: true
 
-  '@playwright/test@1.60.0':
-    resolution: {integrity: sha512-O71yZIbAh/PxDMNGns37GHBIfrVkEVyn+AXyIa5dOTfb4/xNvRWV+Vv/NMbNCtODB/pO7vLlF2OTmMVLhmr7Ag==}
-    engines: {node: '>=18'}
+  '@playwright/test@1.64.1':
+    resolution: {integrity: sha512-IaYGml/nSOiZWROfPtuIL7neuu9qDOZ3TNvNljUIrhDMxiGTgPjzj/g9p9RxpS2tSepPDRY+UwAaEeiKtUvIAg==, tarball: https://registry.npmjs.org/@playwright/test/-/test-1.64.1.tgz}
+    engines: {node: '>=20'}
     hasBin: true
 
   '@remix-run/assert@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assert.tgz':
-    resolution: {integrity: sha512-ygVYpSz7uc7Wg72Ty0rN29J9Qtna30BVwwHF8K/M8WcSt28peoe8jRAAivUQe+7haSizemwUL3E7UxTCBycW9w==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assert.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assert.tgz}
     version: 1.0.0
 
   '@remix-run/assets@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assets.tgz':
-    resolution: {integrity: sha512-QUA44uU2S2LK1MuPt8AJTXwmcgTpYxqy4p/0c4dOPtv5dRLTTH9j88yP1CiImrFXVbSM6uRcLn0/vcM4SeE5kw==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assets.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assets.tgz}
     version: 1.0.1
 
   '@remix-run/async-context-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/async-context-middleware.tgz':
-    resolution: {integrity: sha512-xODvePmIoXAGbiDpMlWsAa52MX6i+2E60pXC5X4btrQ79+MoSstZObd98Ttx2oxXpU1ogI/V7b5iG4Utj46mWQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/async-context-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/async-context-middleware.tgz}
     version: 1.0.0
 
   '@remix-run/auth-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/auth-middleware.tgz':
-    resolution: {integrity: sha512-tleR5n8VvRhgHnTao5CKHOuuocvt42Qj57dtOT7TFKXCnFP3NBUosj8tYWrVHXenDsEWvi+bxT2eatiLJ7FiiQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/auth-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/auth-middleware.tgz}
     version: 1.0.0
 
   '@remix-run/auth@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/auth.tgz':
-    resolution: {integrity: sha512-W8FFEMTHyL1+1Qu7qY5cuopJKNLodRzzliQwrNpGAkob/a6d9T8pTgZMzI+WmjuUPmBj7pt5NzbPsFzz0ZfW1Q==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/auth.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/auth.tgz}
     version: 1.0.0
 
   '@remix-run/cli@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cli.tgz':
-    resolution: {integrity: sha512-e7I31UTEGVj/pJ8veocx+TyNsPbABK9eDujwPAooEz35r1kRvpTnj48aje8C3VEm1UwZeba3sw8uuFwtwkl+lQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cli.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cli.tgz}
     version: 1.0.1
     engines: {node: '>=24.3.0'}
 
   '@remix-run/component-hmr@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/component-hmr.tgz':
-    resolution: {integrity: sha512-xsT0Vs/9Fwwic1BEtdOjZbGfCR3oUyJmiZc3/ajkWNelXT8UslvkdvnW+qhcQZq77J7L78XEPy5j0hlSTi/S3Q==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/component-hmr.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/component-hmr.tgz}
     version: 1.0.0
 
   '@remix-run/component@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/component.tgz':
-    resolution: {integrity: sha512-+JUpCpAI5tlOZUw042zRHOJ1n7Nm0IR8Je83vBPm43uGRGXfxDXfhp8XJ+8GihRtPi0Ghz07gqo7bkn2+NNkFA==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/component.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/component.tgz}
     version: 1.1.0
 
   '@remix-run/compression-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/compression-middleware.tgz':
-    resolution: {integrity: sha512-7wdJrWFK7+argF6WIP0RCMBUcoYtvGw/h8ruPeFriJQBY7PgKmxWDgbovmmy3V4YMRAZJUOIcJ32JwEB0VMEBg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/compression-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/compression-middleware.tgz}
     version: 1.0.1
 
   '@remix-run/cookie@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cookie.tgz':
-    resolution: {integrity: sha512-l/stErr+D3Kq9ldq5AxqiRtlhhT35wJI7b2lcaVI3VZs2KH6RHTRai33rJdSrWVWhz7DggAmYbuFyoppmbeGCg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cookie.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cookie.tgz}
     version: 1.0.1
 
   '@remix-run/cop-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cop-middleware.tgz':
-    resolution: {integrity: sha512-O7X6dt+XwWDAITp257ayw+UwwpPYLhYgMszDgHblSyCxYMyyhy6fszdUbY2+HwknDXdxw4U+H3+/decBUahFeQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cop-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cop-middleware.tgz}
     version: 1.0.0
 
   '@remix-run/cors-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cors-middleware.tgz':
-    resolution: {integrity: sha512-5jZd8pOsdXY2W9FwesU9Cz+L6cV99f4vVshsUAZaj/talmW+5dFnIw4TkFEHkBSpgwInbDEpR7a9Cf6+HQITMg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cors-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cors-middleware.tgz}
     version: 1.0.1
 
   '@remix-run/csrf-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/csrf-middleware.tgz':
-    resolution: {integrity: sha512-olTegzxEOmofiQaiomfeqINCS4VGg4CoJd+NZoEoROusvb2cBveaQa5lm8h705qhFPVFLucULy8ZNUWwnw2lkQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/csrf-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/csrf-middleware.tgz}
     version: 1.0.0
 
   '@remix-run/data-schema@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-schema.tgz':
-    resolution: {integrity: sha512-xuJlVJiVLHLLb5eBUZjG3+Xb7F/DSYcTBFGdGvaqJ1HJTIxlthD2xXyfLTq1Y4pTWm7N7Vasq7p5Y+v7n/jzSQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-schema.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-schema.tgz}
     version: 1.0.0
 
   '@remix-run/data-table-mysql@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-mysql.tgz':
-    resolution: {integrity: sha512-Wn6nk3yzmTzdfLJqaQntoL6fBIjvLyx3zRckwce9XqV+r2sX+rpRECOS7FD+796qUWS2kKEXK5skkENaL+uMBg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-mysql.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-mysql.tgz}
     version: 1.0.0
     peerDependencies:
       mysql2: ^3.15.3
@@ -1169,7 +1169,7 @@ packages:
         optional: true
 
   '@remix-run/data-table-postgres@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-postgres.tgz':
-    resolution: {integrity: sha512-Kn3KkQpnFGs3PjObKcdRYi0o5t8FUJtYljJ8e0e1x6odAOnmFuC+qnwmqERotPBJ4BQQDBoEoQovyCqAY6ww9A==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-postgres.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-postgres.tgz}
     version: 1.0.0
     peerDependencies:
       pg: ^8.16.3
@@ -1178,108 +1178,108 @@ packages:
         optional: true
 
   '@remix-run/data-table-sqlite@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-sqlite.tgz':
-    resolution: {integrity: sha512-oGsHQu3zQZGoyPNPmf5J5iJbyanHGjD0Lq6muAzgkLFHvZAPY8gy+QKFI6TqHINUwSlpTnhLhtCO0RPFTOOmkw==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-sqlite.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-sqlite.tgz}
     version: 1.0.0
 
   '@remix-run/data-table@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table.tgz':
-    resolution: {integrity: sha512-aFY0MxCH7NZp8HEJttGXsMQhdL5XeK9s34hW5stGdFfRST8WbGTApHMq78jahMBO6LaWgP/PNZRk9Mjr1GUYoA==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table.tgz}
     version: 1.0.0
 
   '@remix-run/fetch-proxy@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fetch-proxy.tgz':
-    resolution: {integrity: sha512-FhPsayfbX38mWzXzZasOPtU7OFnyXsFDyGwMwOUwnmRLeYXJlB4oQbfeBfb6GOhJV9AhYf2oCiwe99OfCAOmXg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fetch-proxy.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fetch-proxy.tgz}
     version: 1.0.1
 
   '@remix-run/fetch-router@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fetch-router.tgz':
-    resolution: {integrity: sha512-dGMapYPdVP7DRpc0Ci3i+0bqFi5c74D2RwQ/zl6MpvTPMNZEsfWsW6ND7aKkafuN56t7ffevVYRzuWIwlORm4A==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fetch-router.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fetch-router.tgz}
     version: 1.0.0
 
   '@remix-run/file-storage-s3@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/file-storage-s3.tgz':
-    resolution: {integrity: sha512-zt2buJDgiCIri9gGBYObPYD/0LNl9FfPovOG8c9XxofOUK4Uzdg64nU/C3yclnuLqGr24WxK5d1bICavY/c8YA==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/file-storage-s3.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/file-storage-s3.tgz}
     version: 1.1.0
 
   '@remix-run/file-storage@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/file-storage.tgz':
-    resolution: {integrity: sha512-3dAYyNrwKusBjhf6tN/ehylbC3iZvl2kw1+mmtp68MSi0ssCSlaJfnf93c6ROwNCU/mKCQD+F7e1Mb9ROPlCiw==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/file-storage.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/file-storage.tgz}
     version: 1.0.0
 
   '@remix-run/form-data-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/form-data-middleware.tgz':
-    resolution: {integrity: sha512-USJxMAxmb+dSvmuBXHdmHtT6aEd1T+Mfo/mLnC6PD0GGH3zhTNw1inGZ1i+s7f2wdYhH79j5VtT9bwE2Q5/NXQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/form-data-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/form-data-middleware.tgz}
     version: 1.1.0
 
   '@remix-run/form-data-parser@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/form-data-parser.tgz':
-    resolution: {integrity: sha512-ybMoWC9w++LRDnlDu5534vFT8l57afRSoSs5L8RWjRLq3Y7878UbUH/vZhBfV0vSkHHJOuMvccEf6KHTbAhk4g==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/form-data-parser.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/form-data-parser.tgz}
     version: 1.1.0
 
   '@remix-run/fs@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fs.tgz':
-    resolution: {integrity: sha512-c3GmzUmeeSBwNRY/KNtVGpPybjw3XUOtBA8rVvayiKppNC8v+bCFmE1V1upBDde4KgdISAWY/dVvRnyAW0/80g==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fs.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fs.tgz}
     version: 1.0.0
 
   '@remix-run/headers@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/headers.tgz':
-    resolution: {integrity: sha512-C1iaFscxEcAVZl4g6u46aZqEvLUWrUaG2jliTgNW0wlqZRVemsTw7msOQ1UDBmhiqa4LzPK/l+7ynYHYUIxzaA==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/headers.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/headers.tgz}
     version: 1.0.1
 
   '@remix-run/html-template@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/html-template.tgz':
-    resolution: {integrity: sha512-H2KwpoF9zznjyzeFZECc3U/EGrpCUTgKKdB+W3UK4io0QBEJ2SsuNvY5QzM3uENgPflK8QgIMW7ofcc4dhuA4A==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/html-template.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/html-template.tgz}
     version: 1.0.0
 
   '@remix-run/lazy-file@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/lazy-file.tgz':
-    resolution: {integrity: sha512-iY09lcitmNg4/v/LUEBP/KpdzCObs9pTxOpLT8x7AIeqTSZX0M3pijnpTbBIt3WDyvH/2WbVLYOtdXNI9kf/uQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/lazy-file.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/lazy-file.tgz}
     version: 5.0.8
 
   '@remix-run/logger-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/logger-middleware.tgz':
-    resolution: {integrity: sha512-qP5xWyebXYVSLLwdL8vMqt7XgArKBp/da2DN9bFuccJzDAckWetJ7wM2Xc5jWAP4iVBKifX9GgbGQKIAcK/ZTw==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/logger-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/logger-middleware.tgz}
     version: 1.0.0
 
   '@remix-run/method-override-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/method-override-middleware.tgz':
-    resolution: {integrity: sha512-7Jn/cYmhAb8FSNZ/aFz8+9NQOHFD4XtEpw2aVI1fvk7B/K1p/mssHl1qW0Tf82jfrgTV8a/T6mrXSxisw4osyw==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/method-override-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/method-override-middleware.tgz}
     version: 1.0.0
 
   '@remix-run/mime@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/mime.tgz':
-    resolution: {integrity: sha512-oOPL/TMsNIbfNpSzjtZhTmIeqfgCYM3mQOYs13UsHKTmgLRgKfiNz4B1q/SN3juhCrtPwDwjwUEx1Vn8vp9SEg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/mime.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/mime.tgz}
     version: 1.0.0
 
   '@remix-run/multipart-parser@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/multipart-parser.tgz':
-    resolution: {integrity: sha512-tuHfXRiR2ojroUTbtZ+YgxwzgXCOzqdYmjSsHxpImYdputecGfyJ9+OPdnjPUXCJrYzKXkQ4RcD7sQdpvyFYSQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/multipart-parser.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/multipart-parser.tgz}
     version: 1.1.0
 
   '@remix-run/multiple-import-maps-polyfill@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/multiple-import-maps-polyfill.tgz':
-    resolution: {integrity: sha512-IiCCfRJ56ho5a6aYW7RtsycSbShOIj01ClzDpSDVS94XRBJmW71WuKH89wQaMq1NeaXZE8KcQ3wdhHYkRLxyiw==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/multiple-import-maps-polyfill.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/multiple-import-maps-polyfill.tgz}
     version: 1.0.0
 
   '@remix-run/node-fetch-server@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-fetch-server.tgz':
-    resolution: {integrity: sha512-M/zI70dmLQdIae+mG95XecvoI3uw0o/ZwflsMAFtaQA/MceznyKaT8aSPvvGVK6yRufzQrY++Ohwei7EhyY3qw==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-fetch-server.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-fetch-server.tgz}
     version: 1.0.0
 
   '@remix-run/node-hmr@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-hmr.tgz':
-    resolution: {integrity: sha512-S6GAxOaOh6zNeSdj2YPROhwrTpo58lBZWstUEZkhXWEzrRtY6QzRbpEp/ehp2bpWtpIzSlnWq2G77Mx4vCaIdg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-hmr.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-hmr.tgz}
     version: 1.0.0
 
   '@remix-run/node-tsx@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-tsx.tgz':
-    resolution: {integrity: sha512-K/HBHJLDLBpZFB0cBSjuqXdDeE6Q5m/S2yq3Xdzpcc6pDPEmKbmajsF0s8S+6aJnaujye58lnX4hfwVZXXWQCg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-tsx.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-tsx.tgz}
     version: 1.0.0
     engines: {node: '>=24.3.0'}
 
   '@remix-run/render-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/render-middleware.tgz':
-    resolution: {integrity: sha512-Q7PrqDNNAnVitmE/Cz9vcRFgdx/VAu0M+RIeyd0T52I+zm+77azugEVi/Okj7lCqgzVYAgXy6eZFX3DJqK0JSQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/render-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/render-middleware.tgz}
     version: 1.0.1
 
   '@remix-run/response@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/response.tgz':
-    resolution: {integrity: sha512-Ya1aMPSMwGLiwJ92jZ4PeeNp/uw0A7yo9PPZ9TILmNrH71APvzFghePcJGp5g/0QpWqBzUZkeReJYdVHJBvE2A==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/response.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/response.tgz}
     version: 1.0.1
 
   '@remix-run/route-pattern@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/route-pattern.tgz':
-    resolution: {integrity: sha512-23buIc6JweCNJraJfWevjbXE5e5fEG3qwWMLQmx+Ke+C8Dr3n/3kjCLbC+590+h3I6VKDsuetHzRGy2qbXM6Hw==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/route-pattern.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/route-pattern.tgz}
     version: 1.0.0
 
   '@remix-run/session-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session-middleware.tgz':
-    resolution: {integrity: sha512-tJ+GQDjYQL7zRGlH9tMbraqTjgprYrEbojVoRSsa1r0nqRNZcRx+3BnkgXrh7jOvRf2Mt6icFlkyUCtAKuQCsQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session-middleware.tgz}
     version: 1.0.1
 
   '@remix-run/session-storage-memcache@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session-storage-memcache.tgz':
-    resolution: {integrity: sha512-+q2dcMiUhwpRz4jFBN3tHCFv7MfYDwS5sVy1qJ4oNikfuoVWb9/Wz9yDwENZwrcSh4pb0hUiIVy+p4KVvHHnrg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session-storage-memcache.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session-storage-memcache.tgz}
     version: 1.0.0
 
   '@remix-run/session-storage-redis@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session-storage-redis.tgz':
-    resolution: {integrity: sha512-43ZwDSOlViJdfx2WLddfFvpdFNEC+wL2F/O7yar+BU2uLmNhM5ZkSo83x6odZlHRCi85NUPoo23OeJCvdjTJlA==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session-storage-redis.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session-storage-redis.tgz}
     version: 1.0.0
     peerDependencies:
       redis: ^5.10.0
@@ -1288,27 +1288,27 @@ packages:
         optional: true
 
   '@remix-run/session@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session.tgz':
-    resolution: {integrity: sha512-SIcnyGYYdmQ03wWUWv8Xd/IT2wdTlyquL5MAkHjIQplKYTpT8oWpoDav7NV/H0zTNL0Ql7VJlG9Ee9q0Abm+6w==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session.tgz}
     version: 1.0.0
 
   '@remix-run/spa@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/spa.tgz':
-    resolution: {integrity: sha512-fY/VoSpDktBLWztL+MhrNdExrOuLLQGRL9ZBypYJc9AMSvYQNdtGK3fvXx51GV0ML3tzX4z2BW5u8MZwKv9iFQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/spa.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/spa.tgz}
     version: 1.0.1
 
   '@remix-run/static-middleware@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/static-middleware.tgz':
-    resolution: {integrity: sha512-fRBZXwfi/9YSElE72ik+13jMhJY1bwkYZr6TM5Coc0nhROHjh/pH9e6x3ImmD84EscpWNeEMJcDEZHN5JCVpBQ==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/static-middleware.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/static-middleware.tgz}
     version: 1.0.1
 
   '@remix-run/tar-parser@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/tar-parser.tgz':
-    resolution: {integrity: sha512-6TvwF0ycIYMZVFOKRgC53TveneygkjbvK+uaaT2l/GjDOJm8Cu/b+D1lXc2kmMdMiNYl8PWh8R55oYeV2mJOMg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/tar-parser.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/tar-parser.tgz}
     version: 1.0.1
 
   '@remix-run/terminal@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/terminal.tgz':
-    resolution: {integrity: sha512-3O310KO1kIlAx6S1plIQ0z8nM3zbuEQc13+QBLeHJZ6+zqBqQePu3M4U/JLodYqqnhNCVUN9xALMP8QHEOgdEg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/terminal.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/terminal.tgz}
     version: 1.0.0
 
   '@remix-run/test@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/test.tgz':
-    resolution: {integrity: sha512-m+t1lN9eCc3GHgVYOQJBYseujl60ER7RCwTyYXMARZbdCE/S4kSFLUTKc1B6IIF3G+tvo426aPL6j0yMC2dYdg==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/test.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/test.tgz}
     version: 1.0.0
     engines: {node: '>=24.3.0'}
     peerDependencies:
@@ -1318,7 +1318,7 @@ packages:
         optional: true
 
   '@remix-run/ui@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/ui.tgz':
-    resolution: {integrity: sha512-aYbXtNZPGNyaCd7qKoo1RgwTrNenT246CPIA85cLTuzoJeFdrakQLKwJ2cL/GndeU03YVFit/TvSctE4YQvcfA==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/ui.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/ui.tgz}
     version: 0.13.0
 
   '@resvg/resvg-js-android-arm-eabi@2.6.2':
@@ -1753,18 +1753,13 @@ packages:
   front-matter@4.0.2:
     resolution: {integrity: sha512-I8ZuJ/qG92NWX8i5x1Y8qyj3vizhXS31OxjKDu3LKP+7/qBgfIKValiZIEwoVoJKUHlhWtYrktkxV1XsX+pPlg==}
 
-  fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==, tarball: https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==, tarball: https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  get-tsconfig@4.14.1:
-    resolution: {integrity: sha512-Dz/6HxkrxgNehhxLVeyv8sad9UzF2xBVeaKBQNDfJ5XiSXmp2gTR0eO0RWiT2NCKS5aGP9jjkOMggTN90qU50A==, tarball: https://registry.npmjs.org/get-tsconfig/-/get-tsconfig-4.14.1.tgz}
+  get-tsconfig@4.14.3:
+    resolution: {integrity: sha512-++QEw4DIY7WGoukz+/+A/8dGYPT9l9yIadnmSgZ8Rjr3YVSVDipQSO9CdnJo9ePqFqUUqh+wk9uIaoiAwsiPkA==, tarball: https://registry.npmjs.org/get-tsconfig/-/get-tsconfig-4.14.3.tgz}
 
   github-slugger@2.0.0:
     resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
@@ -2100,24 +2095,24 @@ packages:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
-  playwright-core@1.60.0:
-    resolution: {integrity: sha512-9bW6zvX/m0lEbgTKJ6YppOKx8H3VOPBMOCFh2irXFOT4BbHgrx5hPjwJYLT40Lu+4qtD36qKc/Hn56StUW57IA==}
-    engines: {node: '>=18'}
+  playwright-core@1.64.1:
+    resolution: {integrity: sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ==, tarball: https://registry.npmjs.org/playwright-core/-/playwright-core-1.64.1.tgz}
+    engines: {node: '>=20'}
     hasBin: true
 
-  playwright-core@1.61.0-alpha-1778188671000:
-    resolution: {integrity: sha512-nsw2Crz0uZS3IRHiEcOXUt+RaKB/Hna+GAD4oD6cPqCHfJfW77cJdgktC0jzp3Ndyv23EJI3bcWSqFIiqSNE5A==}
-    engines: {node: '>=18'}
+  playwright-core@1.65.0-alpha-2026-10-30:
+    resolution: {integrity: sha512-LPMw8B/HRQKMcJeXTqWSrkB/AfCKKmbDQMbu0p7zg8MgibOWaKMjZWR/StAtrQkOxvOmZEju1o1TnPgdoOCwrg==, tarball: https://registry.npmjs.org/playwright-core/-/playwright-core-1.65.0-alpha-2026-10-30.tgz}
+    engines: {node: '>=20'}
     hasBin: true
 
-  playwright@1.60.0:
-    resolution: {integrity: sha512-hheHdokM8cdqCb0lcE3s+zT4t4W+vvjpGxsZlDnikarzx8tSzMebh3UiFtgqwFwnTnjYQcsyMF8ei2mCO/tpeA==}
-    engines: {node: '>=18'}
+  playwright@1.64.1:
+    resolution: {integrity: sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==, tarball: https://registry.npmjs.org/playwright/-/playwright-1.64.1.tgz}
+    engines: {node: '>=20'}
     hasBin: true
 
-  playwright@1.61.0-alpha-1778188671000:
-    resolution: {integrity: sha512-A6fFc7ExLRmvm0ZHqCyY2uHXSvEdpb8W+/HyIPK4ecRqNil8Mc1Vig1WFYoqk82x3+U9Qb571fQE95wgKqIQ1g==}
-    engines: {node: '>=18'}
+  playwright@1.65.0-alpha-2026-10-30:
+    resolution: {integrity: sha512-dmAJMVHKzHvMQjn+XDcaq/pxaZ0W6n8i78rwTM+VGRtQ3WBF5ZiSdB1yL/cyoYUGUMwg3jxN65KqC9cERaCbIg==, tarball: https://registry.npmjs.org/playwright/-/playwright-1.65.0-alpha-2026-10-30.tgz}
+    engines: {node: '>=20'}
     hasBin: true
 
   postcss-value-parser@4.2.0:
@@ -2164,7 +2159,7 @@ packages:
     resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
 
   remix@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/remix.tgz:
-    resolution: {integrity: sha512-RnFIP0oLvpVbQD2TbWazoZntbS4HEpVTH0dX8C6alc6u9yKM2EOVDG7xHlKXIjSGc/n4SoWaohVLBDAQBsTVNA==, tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/remix.tgz}
+    resolution: {tarball: https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/remix.tgz}
     version: 3.1.0
     engines: {node: '>=24.3.0'}
     hasBin: true
@@ -2917,14 +2912,14 @@ snapshots:
   '@oxlint/binding-win32-x64-msvc@1.50.0':
     optional: true
 
-  '@playwright/cli@0.1.13':
+  '@playwright/cli@0.1.23':
     dependencies:
-      playwright: 1.61.0-alpha-1778188671000
-      playwright-core: 1.61.0-alpha-1778188671000
+      playwright: 1.65.0-alpha-2026-10-30
+      playwright-core: 1.65.0-alpha-2026-10-30
 
-  '@playwright/test@1.60.0':
+  '@playwright/test@1.64.1':
     dependencies:
-      playwright: 1.60.0
+      playwright: 1.64.1
 
   '@remix-run/assert@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assert.tgz': {}
 
@@ -2936,7 +2931,7 @@ snapshots:
       '@remix-run/mime': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/mime.tgz
       chokidar: 5.0.0
       es-module-lexer: 2.3.2
-      get-tsconfig: 4.14.1
+      get-tsconfig: 4.14.3
       lightningcss: 1.32.0
       magic-string: 0.30.21
       oxc-minify: 0.121.0(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
@@ -2963,7 +2958,7 @@ snapshots:
       '@remix-run/fetch-router': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/fetch-router.tgz
       '@remix-run/session': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/session.tgz
 
-  '@remix-run/cli@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cli.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)':
+  '@remix-run/cli@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cli.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.64.1)':
     dependencies:
       '@remix-run/assets': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assets.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
       '@remix-run/data-table': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table.tgz
@@ -2971,7 +2966,7 @@ snapshots:
       '@remix-run/data-table-postgres': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-postgres.tgz
       '@remix-run/data-table-sqlite': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/data-table-sqlite.tgz
       '@remix-run/terminal': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/terminal.tgz
-      '@remix-run/test': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/test.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
+      '@remix-run/test': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/test.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.64.1)
       jsonc-parser: 3.3.1
       semver: 7.7.4
     transitivePeerDependencies:
@@ -3111,7 +3106,7 @@ snapshots:
 
   '@remix-run/node-tsx@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-tsx.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)':
     dependencies:
-      get-tsconfig: 4.14.1
+      get-tsconfig: 4.14.3
       oxc-transform: 0.121.0(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
     transitivePeerDependencies:
       - '@emnapi/core'
@@ -3172,13 +3167,13 @@ snapshots:
 
   '@remix-run/terminal@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/terminal.tgz': {}
 
-  '@remix-run/test@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/test.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)':
+  '@remix-run/test@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/test.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.64.1)':
     dependencies:
       '@remix-run/node-tsx': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/node-tsx.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
       '@remix-run/terminal': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/terminal.tgz
       es-module-lexer: 2.3.2
       esbuild: 0.27.7
-      get-tsconfig: 4.14.1
+      get-tsconfig: 4.14.3
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-reports: 3.2.0
@@ -3187,7 +3182,7 @@ snapshots:
       source-map-js: 1.2.1
       v8-to-istanbul: 9.3.0
     optionalDependencies:
-      playwright: 1.60.0
+      playwright: 1.64.1
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
@@ -3521,13 +3516,10 @@ snapshots:
     dependencies:
       js-yaml: 3.15.1
 
-  fsevents@2.3.2:
-    optional: true
-
   fsevents@2.3.3:
     optional: true
 
-  get-tsconfig@4.14.1:
+  get-tsconfig@4.14.3:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
@@ -4122,21 +4114,17 @@ snapshots:
 
   picomatch@4.0.4: {}
 
-  playwright-core@1.60.0: {}
+  playwright-core@1.64.1: {}
 
-  playwright-core@1.61.0-alpha-1778188671000: {}
+  playwright-core@1.65.0-alpha-2026-10-30: {}
 
-  playwright@1.60.0:
+  playwright@1.64.1:
     dependencies:
-      playwright-core: 1.60.0
-    optionalDependencies:
-      fsevents: 2.3.2
+      playwright-core: 1.64.1
 
-  playwright@1.61.0-alpha-1778188671000:
+  playwright@1.65.0-alpha-2026-10-30:
     dependencies:
-      playwright-core: 1.61.0-alpha-1778188671000
-    optionalDependencies:
-      fsevents: 2.3.2
+      playwright-core: 1.65.0-alpha-2026-10-30
 
   postcss-value-parser@4.2.0: {}
 
@@ -4214,14 +4202,14 @@ snapshots:
       mdast-util-to-markdown: 2.1.2
       unified: 11.0.5
 
-  remix@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/remix.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0):
+  remix@https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/remix.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.64.1):
     dependencies:
       '@remix-run/assert': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assert.tgz
       '@remix-run/assets': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/assets.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
       '@remix-run/async-context-middleware': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/async-context-middleware.tgz
       '@remix-run/auth': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/auth.tgz
       '@remix-run/auth-middleware': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/auth-middleware.tgz
-      '@remix-run/cli': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cli.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
+      '@remix-run/cli': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/cli.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.64.1)
       '@remix-run/component': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/component.tgz
       '@remix-run/component-hmr': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/component-hmr.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
       '@remix-run/compression-middleware': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/compression-middleware.tgz
@@ -4263,9 +4251,9 @@ snapshots:
       '@remix-run/static-middleware': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/static-middleware.tgz
       '@remix-run/tar-parser': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/tar-parser.tgz
       '@remix-run/terminal': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/terminal.tgz
-      '@remix-run/test': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/test.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.60.0)
+      '@remix-run/test': https://github.com/remix-run/previews/releases/download/v0.20261103.195415-main-2269870f/test.tgz(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(playwright@1.64.1)
     optionalDependencies:
-      playwright: 1.60.0
+      playwright: 1.64.1
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
@@ -4405,7 +4393,7 @@ snapshots:
   tsx@4.21.0:
     dependencies:
       esbuild: 0.27.7
-      get-tsconfig: 4.14.1
+      get-tsconfig: 4.14.3
     optionalDependencies:
       fsevents: 2.3.3
     optional: true

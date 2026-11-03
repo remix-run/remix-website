@@ -69,9 +69,9 @@ Remaining differences vs the previous production site (small, shippable items):
 ## E2E Gotchas (Playwright)
 
 - In sandboxed runs, Playwright may not reach `localhost:5173` and may fail to download browsers.
-- For reliable local runs, install and run with project-local browsers:
-  - `PLAYWRIGHT_BROWSERS_PATH=0 pnpm exec playwright install chromium`
-  - `PLAYWRIGHT_BROWSERS_PATH=0 pnpm exec playwright test e2e/jam.spec.ts --grep newsletter`
+- For reliable local runs, use the installed stable Chrome selected by `playwright.config.ts`:
+  - `pnpm exec playwright test e2e/jam.spec.ts --grep newsletter`
+  - Do not run `playwright install chromium`; it downloads Playwright's pinned Chromium instead of your patched system Chrome.
 - If a dev server is already running, prefer reusing it; otherwise Playwright may try to start another `pnpm run dev` and hit `EMFILE` (too many file watchers).
 
 ## Deploying to staging
