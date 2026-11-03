@@ -306,9 +306,7 @@ let blogPostContainerStyle = {
   boxSizing: "border-box",
   width: "100%",
   marginInline: "auto",
-  paddingInline: "24px",
-  [breakpointMedia.md]: { paddingInline: "32px" },
-  [breakpointMedia.lg]: { paddingInline: "40px" },
+  paddingInline: theme.space.edge,
 } as const;
 
 let blogPostHeroImageStyle = css({

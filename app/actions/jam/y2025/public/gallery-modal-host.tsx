@@ -113,7 +113,7 @@ function createJamGalleryModalNavigation() {
     };
 
     let navigateGallery = (href: string) => {
-      void navigate(href, { resetScroll: false });
+      void navigate(href, { resetScroll: "manual" });
     };
 
     let currentPhotoIndexFromLocation = () => {
@@ -144,7 +144,7 @@ function createJamGalleryModalNavigation() {
       storeGalleryFocus(
         `${closeHref}?photo=${currentPhotoIndexFromLocation()}`,
       );
-      await navigate(closeHref, { resetScroll: false });
+      await navigate(closeHref, { resetScroll: "manual" });
       await new Promise<void>((resolve) => {
         window.requestAnimationFrame(() => resolve());
       });

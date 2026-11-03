@@ -11,15 +11,18 @@ const LINKS: Array<{
   to: string;
   label: string;
   section?: HeaderSection;
+  // Only prefetch pages sent with CACHE.PREFETCHABLE_DOCUMENT; other
+  // documents are fetched again on click, so prefetching them doubles the work.
+  prefetch?: boolean;
 }> = [
-  { to: "https://guides.remix.run", label: "Guides" },
-  { to: "https://api.remix.run", label: "API" },
+  { to: "https://docs.remix.run", label: "Docs" },
   { to: "https://github.com/remix-run/remix", label: "GitHub" },
   { to: routes.blog.index.href(), label: "Blog", section: "blog" },
   {
     to: routes.newsletter.index.href(),
     label: "Newsletter",
     section: "newsletter",
+    prefetch: true,
   },
   { to: routes.jam.y2026.index.href(), label: "Jam", section: "jam" },
   { to: "https://shop.remix.run", label: "Store" },
@@ -31,12 +34,13 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
       mix={css({
         position: "relative",
         zIndex: 50,
-        height: "64px",
-        paddingLeft: "24px",
+        // Even space above, left of and below the 16px wordmark
+        height: `calc(${theme.space.edge} * 2 + 16px)`,
+        paddingLeft: theme.space.edge,
         paddingRight: "16px",
         fontFamily: theme.fontFamily.system,
         "@media (min-width: 640px)": { paddingRight: "24px" },
-        "@media (min-width: 900px)": { paddingRight: "30px" },
+        "@media (min-width: 900px)": { paddingRight: theme.space.edge },
       })}
     >
       <div
@@ -81,6 +85,7 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
             <HeaderLink
               key={link.to}
               to={link.to}
+              prefetch={link.prefetch}
               current={
                 link.section !== undefined &&
                 link.section === handle.props.currentSection
@@ -101,6 +106,7 @@ export function Header(handle: Handle<{ currentSection?: HeaderSection }>) {
               <HeaderLink
                 key={link.to}
                 to={link.to}
+                prefetch={link.prefetch}
                 current={
                   link.section !== undefined &&
                   link.section === handle.props.currentSection
@@ -121,11 +127,13 @@ function HeaderLink(
     to: string;
     children: string;
     current?: boolean;
+    prefetch?: boolean;
   }>,
 ) {
   return () => (
     <a
       href={handle.props.to}
+      data-rmx-prefetch={handle.props.prefetch ? "intent" : undefined}
       aria-current={handle.props.current ? "page" : undefined}
     >
       {handle.props.children}

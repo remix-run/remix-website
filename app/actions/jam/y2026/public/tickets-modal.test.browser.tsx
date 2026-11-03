@@ -64,8 +64,8 @@ describe("Jam2026TicketsModal", () => {
       "a[aria-label='Close tickets'][tabindex='-1']",
     )!;
     expect(backdrop.getAttribute("href")).toBe(homeHref);
-    expect(backdrop.getAttribute("rmx-reset-scroll")).toBe("false");
-    expect(backdrop.getAttribute("rmx-target")).toBe(
+    expect(backdrop.getAttribute("data-rmx-reset-scroll")).toBe("manual");
+    expect(backdrop.getAttribute("data-rmx-target")).toBe(
       ticketModalConfig.frameName,
     );
 
@@ -73,8 +73,10 @@ describe("Jam2026TicketsModal", () => {
       "[aria-label='Close tickets']",
     )!;
     expect(close.getAttribute("href")).toBe(homeHref);
-    expect(close.getAttribute("rmx-reset-scroll")).toBe("false");
-    expect(close.getAttribute("rmx-target")).toBe(ticketModalConfig.frameName);
+    expect(close.getAttribute("data-rmx-reset-scroll")).toBe("manual");
+    expect(close.getAttribute("data-rmx-target")).toBe(
+      ticketModalConfig.frameName,
+    );
   });
 
   it("updates ticket quantity and subtotal in the hydrated modal", async (t) => {

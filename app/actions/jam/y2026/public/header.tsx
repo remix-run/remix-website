@@ -1,5 +1,5 @@
 import { clientEntry, css, on, type Handle } from "remix/component";
-import { spring } from "@remix-run/ui/animation";
+import { prefersReducedMotion, spring } from "@remix-run/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { theme } from "../../../../ui/public/theme.ts";
 
@@ -35,9 +35,7 @@ function isPlainLeftClick(event: MouseEvent) {
 }
 
 function getReducedMotionScrollBehavior(): ScrollBehavior {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ? "auto"
-    : "smooth";
+  return prefersReducedMotion() ? "auto" : "smooth";
 }
 
 export let Jam2026Header = clientEntry(

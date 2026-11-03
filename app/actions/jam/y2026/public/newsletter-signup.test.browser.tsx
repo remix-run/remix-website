@@ -16,7 +16,7 @@ describe("Jam2026NewsletterSignup", () => {
 
     expect(form.getAttribute("data-rmx-target")).toBe("newsletter-subscribe");
     expect(form.getAttribute("data-rmx-src")).toBe("/newsletter?frame=jam2026");
-    expect(form.getAttribute("data-rmx-reset-scroll")).toBe("false");
+    expect(form.getAttribute("data-rmx-reset-scroll")).toBe("manual");
     expect(
       form.querySelector<HTMLInputElement>("input[name='tag']")?.value,
     ).toBe(String(newsletterTagIds.jam2026Updates));

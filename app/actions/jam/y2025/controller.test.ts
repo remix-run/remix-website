@@ -26,7 +26,7 @@ describe("Remix Jam 2025 routes", () => {
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     let html = await response.text();
     expect(html).toContain('data-rmx-target="newsletter-subscribe"');
-    expect(html).toContain('data-rmx-reset-scroll="false"');
+    expect(html).toContain('data-rmx-reset-scroll="manual"');
     expect(html).toContain("You're good to go");
   });
 

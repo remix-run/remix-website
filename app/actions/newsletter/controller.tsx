@@ -53,7 +53,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
             headers:
               unavailable || subscriptionStatus
                 ? { "Cache-Control": CACHE.PRIVATE }
-                : undefined,
+                : CACHE.PREFETCHABLE_DOCUMENT,
           },
         );
       },
@@ -117,6 +117,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
             issue={issue}
             html={html}
           />,
+          { headers: CACHE.PREFETCHABLE_DOCUMENT },
         );
       },
 

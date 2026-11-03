@@ -1,3 +1,4 @@
+import { prefersReducedMotion } from "@remix-run/ui/animation";
 import { clientEntry, css, type Handle, type RemixNode } from "remix/component";
 
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
@@ -16,10 +17,7 @@ export let JamFadeInBadge = clientEntry(
 
     handle.queueTask((signal) => {
       if (signal.aborted) return;
-      let prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      if (prefersReducedMotion) {
+      if (prefersReducedMotion()) {
         isVisible = true;
         handle.update();
         return;

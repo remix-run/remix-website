@@ -32,6 +32,31 @@ describe("Blog route", () => {
     ]);
   });
 
+  it("prefetches only links to briefly browser-cacheable pages", async () => {
+    let router = createRouteTestRouter();
+    router.map(routes.blog, blogController);
+
+    let response = await router.fetch(
+      new URL(routes.blog.index.href(), "http://localhost:3000"),
+    );
+    let prefetchedHrefs = [...(await response.text()).matchAll(/<a\b[^>]*>/g)]
+      .map((match) => match[0])
+      .filter((tag) => tag.includes('data-rmx-prefetch="intent"'))
+      .map((tag) => tag.match(/href="([^"]+)"/)?.[1]);
+
+    expect(prefetchedHrefs).toContain(routes.newsletter.index.href());
+    expect(prefetchedHrefs.some((href) => href?.startsWith("/blog/"))).toBe(
+      true,
+    );
+    // These pages are not sent with a short browser max-age.
+    expect(prefetchedHrefs).not.toContain(routes.home.href());
+    expect(prefetchedHrefs).not.toContain(routes.blog.index.href());
+    expect(prefetchedHrefs).not.toContain(routes.jam.y2026.index.href());
+    expect(
+      prefetchedHrefs.some((href) => /^https?:\/\//.test(href ?? "")),
+    ).toBe(false);
+  });
+
   it("prioritizes a responsive hero while deferring other post images", async () => {
     let router = createRouteTestRouter();
     router.map(routes.blog, blogController);
