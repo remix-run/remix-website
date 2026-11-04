@@ -1,4 +1,4 @@
-import { describe, it } from "remix/test";
+import { describe, it, type TestContext } from "remix/test";
 import { expect } from "remix/assert";
 
 import { createCart, getPhotos, getProduct } from "./jam-storefront.ts";
@@ -90,17 +90,12 @@ describe("Jam Storefront", () => {
   });
 });
 
-function mockStorefront(
-  t: { after(cleanup: () => void): void },
-  fetchImpl: typeof fetch,
-) {
+function mockStorefront(t: TestContext, fetchImpl: typeof fetch) {
   let previousEnv = { ...env };
-  let originalFetch = globalThis.fetch;
   Reflect.set(env, "PUBLIC_STOREFRONT_API_TOKEN", ["test", "token"].join("-"));
-  globalThis.fetch = fetchImpl;
+  t.mock.method(globalThis, "fetch", fetchImpl);
 
   t.after(() => {
     Object.assign(env, previousEnv);
-    globalThis.fetch = originalFetch;
   });
 }

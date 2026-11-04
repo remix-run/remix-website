@@ -1,5 +1,5 @@
 import { expect } from "remix/assert";
-import { describe, it } from "remix/test";
+import { describe, it, type TestContext } from "remix/test";
 
 import { routes } from "../../../../routes.ts";
 import { env } from "../../../../utils/env.ts";
@@ -65,11 +65,10 @@ async function submitTicket(fields: { productId: string; quantity: string }) {
   );
 }
 
-function mockStorefront(t: { after(cleanup: () => void): void }) {
+function mockStorefront(t: TestContext) {
   let previousEnv = { ...env };
-  let originalFetch = globalThis.fetch;
   Reflect.set(env, "PUBLIC_STOREFRONT_API_TOKEN", ["test", "token"].join("-"));
-  globalThis.fetch = async (_input, init) => {
+  let storefrontFetch: typeof fetch = async (_input, init) => {
     let body = JSON.parse(String(init?.body ?? "{}"));
     if (body.query.includes("cartCreate")) {
       return Response.json({
@@ -106,9 +105,9 @@ function mockStorefront(t: { after(cleanup: () => void): void }) {
       },
     });
   };
+  t.mock.method(globalThis, "fetch", storefrontFetch);
 
   t.after(() => {
     Object.assign(env, previousEnv);
-    globalThis.fetch = originalFetch;
   });
 }

@@ -288,7 +288,7 @@ export function LandingNav(
             <button
               type="button"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen ? "true" : "false"}
+              aria-expanded={menuOpen}
               aria-controls="mobile-nav-menu"
               mix={[
                 navItemStyles,
