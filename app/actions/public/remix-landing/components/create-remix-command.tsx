@@ -11,6 +11,12 @@ import { packageRunners as PACKAGE_RUNNERS } from "../landing-content.ts";
 type PackageRunner = (typeof PACKAGE_RUNNERS)[number];
 type CopyStatus = "idle" | "copied" | "error";
 
+const COPY_STATUS_MESSAGES: Record<CopyStatus, string | null> = {
+  idle: null,
+  copied: "Create command copied",
+  error: "Unable to copy the create command",
+};
+
 export let CreateRemixCommand = clientEntry(
   import.meta.url,
   function CreateRemixCommand(handle: Handle) {
@@ -21,42 +27,45 @@ export let CreateRemixCommand = clientEntry(
 
     handle.signal.addEventListener("abort", () => {
       copyRequestId++;
-      if (resetTimer) clearTimeout(resetTimer);
+      clearResetTimer();
     });
+
+    function clearResetTimer() {
+      if (!resetTimer) return;
+      clearTimeout(resetTimer);
+      resetTimer = null;
+    }
+
+    function resetCopyStatus() {
+      resetTimer = null;
+      copyStatus = "idle";
+      handle.update();
+    }
 
     function setRunner(nextRunner: PackageRunner) {
       copyRequestId++;
       runner = nextRunner;
       copyStatus = "idle";
-      if (resetTimer) {
-        clearTimeout(resetTimer);
-        resetTimer = null;
-      }
+      clearResetTimer();
       handle.update();
     }
 
     async function copyCommand() {
       let requestId = ++copyRequestId;
-      if (resetTimer) {
-        clearTimeout(resetTimer);
-        resetTimer = null;
-      }
+      clearResetTimer();
 
+      let nextStatus: CopyStatus;
       try {
         await navigator.clipboard.writeText(runner.command);
-        if (handle.signal.aborted || requestId !== copyRequestId) return;
-        copyStatus = "copied";
+        nextStatus = "copied";
       } catch {
-        if (handle.signal.aborted || requestId !== copyRequestId) return;
-        copyStatus = "error";
+        nextStatus = "error";
       }
+      if (handle.signal.aborted || requestId !== copyRequestId) return;
+      copyStatus = nextStatus;
       handle.update();
 
-      resetTimer = setTimeout(() => {
-        resetTimer = null;
-        copyStatus = "idle";
-        handle.update();
-      }, 1800);
+      resetTimer = setTimeout(resetCopyStatus, 1800);
     }
 
     return () => {
@@ -78,11 +87,7 @@ export let CreateRemixCommand = clientEntry(
             </button>
           </div>
           <span role="status" aria-live="polite" mix={visuallyHiddenStyle}>
-            {copyStatus === "copied"
-              ? "Create command copied"
-              : copyStatus === "error"
-                ? "Unable to copy the create command"
-                : null}
+            {COPY_STATUS_MESSAGES[copyStatus]}
           </span>
         </div>
       );

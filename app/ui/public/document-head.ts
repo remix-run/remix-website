@@ -20,6 +20,17 @@ export type ManagedLinkTag = {
   fetchpriority?: "high" | "low" | "auto";
 };
 
+// Optional link attributes, in key order, paired with their DOM attribute names.
+const OPTIONAL_LINK_ATTRIBUTES = [
+  ["type", "type"],
+  ["sizes", "sizes"],
+  ["imageSizes", "imagesizes"],
+  ["imageSrcSet", "imagesrcset"],
+  ["as", "as"],
+  ["crossorigin", "crossorigin"],
+  ["fetchpriority", "fetchpriority"],
+] as const satisfies ReadonlyArray<readonly [keyof ManagedLinkTag, string]>;
+
 export function getManagedHeadTagKey(tag: ManagedHeadTag, index: number) {
   if (tag.kind === "meta") {
     return `meta:${tag.name ?? tag.property ?? index}:${getCompactHeadKey(tag.content)}`;
@@ -28,13 +39,7 @@ export function getManagedHeadTagKey(tag: ManagedHeadTag, index: number) {
   return `link:${tag.rel}:${getCompactHeadKey(
     [
       tag.href,
-      tag.type,
-      tag.sizes,
-      tag.imageSizes,
-      tag.imageSrcSet,
-      tag.as,
-      tag.crossorigin,
-      tag.fetchpriority,
+      ...OPTIONAL_LINK_ATTRIBUTES.map(([property]) => tag[property]),
     ].join("\0"),
   )}`;
 }
@@ -124,30 +129,18 @@ function getManagedHeadNodeKey(node: HTMLElement, index: number) {
     );
   }
 
-  return getManagedHeadTagKey(
-    {
-      kind: "link",
-      rel: node.getAttribute("rel") ?? "",
-      href: node.getAttribute("href") ?? "",
-      type: node.getAttribute("type") ?? undefined,
-      sizes: node.getAttribute("sizes") ?? undefined,
-      imageSizes: node.getAttribute("imagesizes") ?? undefined,
-      imageSrcSet: node.getAttribute("imagesrcset") ?? undefined,
-      as: node.getAttribute("as") ?? undefined,
-      crossorigin:
-        (node.getAttribute("crossorigin") as
-          | "anonymous"
-          | "use-credentials"
-          | null) ?? undefined,
-      fetchpriority:
-        (node.getAttribute("fetchpriority") as
-          | "high"
-          | "low"
-          | "auto"
-          | null) ?? undefined,
-    },
-    index,
-  );
+  let tag: ManagedLinkTag = {
+    kind: "link",
+    rel: node.getAttribute("rel") ?? "",
+    href: node.getAttribute("href") ?? "",
+  };
+  for (let [property, attribute] of OPTIONAL_LINK_ATTRIBUTES) {
+    // Managed nodes are only created from ManagedLinkTag values, so their
+    // attributes already satisfy the narrower `crossorigin`/`fetchpriority` types.
+    (tag as Record<string, string | undefined>)[property] =
+      node.getAttribute(attribute) ?? undefined;
+  }
+  return getManagedHeadTagKey(tag, index);
 }
 
 function createManagedHeadElement(tag: ManagedHeadTag) {
@@ -158,21 +151,14 @@ function createManagedHeadElement(tag: ManagedHeadTag) {
     if (tag.name) element.setAttribute("name", tag.name);
     if (tag.property) element.setAttribute("property", tag.property);
     element.setAttribute("content", tag.content);
-  } else {
-    element.setAttribute("rel", tag.rel);
-    element.setAttribute("href", tag.href);
-    if (tag.type) element.setAttribute("type", tag.type);
-    if (tag.sizes) element.setAttribute("sizes", tag.sizes);
-    if (tag.imageSizes) element.setAttribute("imagesizes", tag.imageSizes);
-    if (tag.imageSrcSet) element.setAttribute("imagesrcset", tag.imageSrcSet);
-    if (tag.as) element.setAttribute("as", tag.as);
-    if (tag.crossorigin) {
-      element.setAttribute("crossorigin", tag.crossorigin);
-    }
-    if (tag.fetchpriority) {
-      element.setAttribute("fetchpriority", tag.fetchpriority);
-    }
+    return element;
   }
 
+  element.setAttribute("rel", tag.rel);
+  element.setAttribute("href", tag.href);
+  for (let [property, attribute] of OPTIONAL_LINK_ATTRIBUTES) {
+    let value = tag[property];
+    if (value) element.setAttribute(attribute, value);
+  }
   return element;
 }

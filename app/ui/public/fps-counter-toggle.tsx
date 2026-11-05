@@ -10,7 +10,7 @@ export let FpsCounterToggle = clientEntry(
   function FpsCounterToggle(handle: Handle) {
     let fpsCounter: {
       Component: FpsCounterComponent | null;
-      load: Promise<void> | null;
+      load: Promise<typeof import("./fps-counter.tsx")> | null;
       visible: boolean;
     } = {
       Component: null,
@@ -18,21 +18,18 @@ export let FpsCounterToggle = clientEntry(
       visible: false,
     };
 
-    function loadFpsCounter() {
-      fpsCounter.load ??= import("./fps-counter.tsx").then((module) => {
-        if (handle.signal.aborted) return;
-        fpsCounter.Component = module.FpsCounter;
-      });
-      return fpsCounter.load;
+    async function loadFpsCounter() {
+      fpsCounter.load ??= import("./fps-counter.tsx");
+      let module = await fpsCounter.load;
+      if (handle.signal.aborted) return;
+      fpsCounter.Component = module.FpsCounter;
+      handle.update();
     }
 
     function toggleFpsCounter() {
       fpsCounter.visible = !fpsCounter.visible;
       if (fpsCounter.visible && !fpsCounter.Component) {
-        void loadFpsCounter().then(() => {
-          if (handle.signal.aborted) return;
-          handle.update();
-        });
+        void loadFpsCounter();
       }
       handle.update();
     }

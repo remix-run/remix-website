@@ -30,13 +30,13 @@ export function FpsCounter(handle: Handle) {
 
   function tick() {
     frameId = 0;
-    const now = performance.now();
+    let now = performance.now();
     if (lastSampleMs === 0) lastSampleMs = now;
     frames += 1;
 
-    const elapsed = now - lastSampleMs;
+    let elapsed = now - lastSampleMs;
     if (elapsed >= 500) {
-      const instantaneous = (frames * 1000) / elapsed;
+      let instantaneous = (frames * 1000) / elapsed;
       displayFps =
         displayFps === 0
           ? instantaneous
@@ -66,19 +66,14 @@ export function FpsCounter(handle: Handle) {
     frameId = 0;
   }
 
+  function attachElement(node: HTMLDivElement) {
+    el = node;
+    startLoop();
+  }
+
   handle.signal.addEventListener("abort", stopLoop);
 
   return () => {
-    return (
-      <div
-        mix={[
-          containerStyles,
-          ref((node) => {
-            el = node;
-            if (node) startLoop();
-          }),
-        ]}
-      />
-    );
+    return <div mix={[containerStyles, ref(attachElement)]} />;
   };
 }
