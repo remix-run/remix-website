@@ -119,19 +119,15 @@ export function createNewsletterController(repository: NewsletterRepository) {
       },
 
       async image({ params }) {
+        let notFound = () =>
+          new Response("Not Found", {
+            status: 404,
+            headers: NOT_FOUND_RESPONSE.headers,
+          });
         let number = parseIssueNumber(params.number);
-        if (number == null) {
-          return new Response("Not Found", {
-            status: 404,
-            headers: NOT_FOUND_RESPONSE.headers,
-          });
-        }
         let filename = params.filename;
-        if (!filename || !isSafeImageFilename(filename)) {
-          return new Response("Not Found", {
-            status: 404,
-            headers: NOT_FOUND_RESPONSE.headers,
-          });
+        if (number == null || !filename || !isSafeImageFilename(filename)) {
+          return notFound();
         }
 
         let image;
@@ -147,12 +143,7 @@ export function createNewsletterController(repository: NewsletterRepository) {
           throw error;
         }
 
-        if (!image) {
-          return new Response("Not Found", {
-            status: 404,
-            headers: NOT_FOUND_RESPONSE.headers,
-          });
-        }
+        if (!image) return notFound();
 
         return new Response(Uint8Array.from(image.bytes), {
           headers: {
