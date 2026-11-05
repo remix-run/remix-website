@@ -3,6 +3,8 @@
 // cache made a fresh machine resize every blog image inside its first /blog
 // request (~20s on one shared CPU). This uses the same functions the blog
 // routes call, so the cache keys match what production renders.
+//
+// Pass blog post slugs as arguments to warm only those posts.
 import { getBlogPost, getBlogPostListings } from "./app/data/blog.ts";
 import { assets } from "./app/utils/assets.ts";
 import {
@@ -20,7 +22,13 @@ console.error = (...args: unknown[]) => {
 };
 
 let start = performance.now();
-let listings = getBlogPostListings();
+let slugs = process.argv.slice(2);
+let listings = getBlogPostListings().filter(
+  ({ slug }) => slugs.length === 0 || slugs.includes(slug),
+);
+if (listings.length === 0) {
+  throw new Error(`No blog posts match ${slugs.join(", ")}`);
+}
 
 // One post at a time keeps sharp's memory bounded; each post's widths still
 // resize in parallel.
