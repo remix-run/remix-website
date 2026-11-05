@@ -16,7 +16,7 @@ import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
 import { CACHE } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 import { routes } from "../../routes.ts";
-import type { getBlogPost } from "../../data/blog.ts";
+import type { BlogPost } from "../../data/blog.ts";
 
 interface BlogPostImageAssets {
   authors: Record<string, BlogImageAsset>;
@@ -35,7 +35,7 @@ export function BlogPostPage(
   handle: Handle<{
     requestUrl: string;
     slug: string;
-    post: Awaited<ReturnType<typeof getBlogPost>>;
+    post: BlogPost;
     images: BlogPostImageAssets;
     socialImageUrl: string;
   }>,
@@ -84,7 +84,7 @@ export function BlogPostPage(
 
 function BlogPostContent(
   handle: Handle<{
-    post: Awaited<ReturnType<typeof getBlogPost>>;
+    post: BlogPost;
     images: BlogPostImageAssets;
   }>,
 ) {

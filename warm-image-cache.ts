@@ -27,6 +27,7 @@ let listings = getBlogPostListings();
 for (let { slug } of listings) {
   // Rendering the post also resolves the images inside its Markdown.
   let post = await getBlogPost(slug);
+  if (!post) throw new Error(`Listed blog post "${slug}" could not be loaded`);
   await Promise.all([
     getBlogImageAsset(post.image),
     ...post.authors.map((author) => getAuthorImageAsset(author.avatar)),

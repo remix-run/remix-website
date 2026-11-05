@@ -15,7 +15,12 @@ import {
 } from "../../ui/public/marketing-styles.ts";
 import { breakpointMedia, theme } from "../../ui/public/theme.ts";
 import { routes } from "../../routes.ts";
-import { getBlogPostListings } from "../../data/blog.ts";
+import {
+  getBlogPost,
+  getBlogPostListings,
+  getRawBlogPostMarkdown,
+  type BlogPost,
+} from "../../data/blog.ts";
 import {
   getAuthorImageAsset,
   getBlogImageAsset,
@@ -23,10 +28,9 @@ import {
 import { CACHE } from "../../utils/cache-control.ts";
 import { getCanonicalUrl } from "../../utils/public/canonical-url.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
-import { getBlogPost, getRawBlogPostMarkdown } from "../../data/blog.ts";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
 import { BlogPostPage, NOT_FOUND_RESPONSE } from "./post-page.tsx";
-import { buildBlogRssResponse, getBlogRssPosts } from "./rss.ts";
+import { buildBlogRssResponse } from "./rss.ts";
 
 export default createController(routes.blog, {
   actions: {
@@ -46,35 +50,32 @@ export default createController(routes.blog, {
       }
 
       if (params.ext === "md") {
-        try {
-          let htmlUrl = getCanonicalUrl(
-            new URL(request.url),
-            routes.blog.post.href({ slug }),
-          );
-          return new Response(getRawBlogPostMarkdown(slug), {
-            headers: {
-              "Cache-Control": CACHE.RESOURCE,
-              "Content-Type": "text/markdown; charset=utf-8",
-              Link: `<${htmlUrl}>; rel="canonical"`,
-            },
+        let markdown = getRawBlogPostMarkdown(slug);
+        if (markdown === null) {
+          return new Response("Not Found", {
+            status: 404,
+            statusText: "Not Found",
           });
-        } catch (error) {
-          if (error instanceof Response && error.status === 404) return error;
-          throw error;
         }
+        let htmlUrl = getCanonicalUrl(
+          new URL(request.url),
+          routes.blog.post.href({ slug }),
+        );
+        return new Response(markdown, {
+          headers: {
+            "Cache-Control": CACHE.RESOURCE,
+            "Content-Type": "text/markdown; charset=utf-8",
+            Link: `<${htmlUrl}>; rel="canonical"`,
+          },
+        });
       }
 
-      let post;
-      try {
-        post = await getBlogPost(slug);
-      } catch (error) {
-        if (error instanceof Response && error.status === 404) {
-          return render(
-            <StatusErrorDocument status={404} statusText="Not Found" />,
-            NOT_FOUND_RESPONSE,
-          );
-        }
-        throw error;
+      let post = await getBlogPost(slug);
+      if (!post) {
+        return render(
+          <StatusErrorDocument status={404} statusText="Not Found" />,
+          NOT_FOUND_RESPONSE,
+        );
       }
 
       let images = await loadBlogPostImages(post);
@@ -91,8 +92,8 @@ export default createController(routes.blog, {
       );
     },
 
-    async rss() {
-      return buildBlogRssResponse(await getBlogRssPosts());
+    rss() {
+      return buildBlogRssResponse(getBlogPostListings());
     },
   },
 });
@@ -348,9 +349,7 @@ async function loadBlogPostListings() {
   );
 }
 
-async function loadBlogPostImages(
-  post: Awaited<ReturnType<typeof getBlogPost>>,
-) {
+async function loadBlogPostImages(post: BlogPost) {
   let [hero, authorEntries] = await Promise.all([
     getBlogImageAsset(post.image),
     Promise.all(
@@ -368,7 +367,7 @@ async function loadBlogPostImages(
 }
 
 function getPostSocialImageUrl(
-  post: Awaited<ReturnType<typeof getBlogPost>>,
+  post: BlogPost,
   slug: string,
   requestUrl: string,
 ) {

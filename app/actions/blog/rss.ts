@@ -1,65 +1,9 @@
-import { readdir, readFile } from "node:fs/promises";
 import { Feed } from "feed";
-import { parseFrontmatter } from "../../data/frontmatter.ts";
+import type { BlogPostListing } from "../../data/blog.ts";
 import { routes } from "../../routes.ts";
 import { CACHE } from "../../utils/cache-control.ts";
 
-interface BlogRssFrontmatter {
-  title?: string;
-  summary?: string;
-  date?: string | Date;
-  draft?: boolean;
-}
-
-interface BlogRssPost {
-  slug: string;
-  title: string;
-  summary: string;
-  date: Date;
-}
-
-const POSTS_DIRECTORY = new URL("../../../data/posts/", import.meta.url);
-
-export async function getBlogRssPosts(): Promise<BlogRssPost[]> {
-  let entries = await readdir(POSTS_DIRECTORY, { withFileTypes: true });
-  let posts: BlogRssPost[] = [];
-
-  for (let entry of entries) {
-    if (!entry.isFile() || !entry.name.endsWith(".md")) {
-      continue;
-    }
-
-    let fileUrl = new URL(entry.name, POSTS_DIRECTORY);
-    let source = await readFile(fileUrl, "utf8");
-    let { attributes } = parseFrontmatter(source) as {
-      attributes: BlogRssFrontmatter;
-    };
-
-    if (attributes.draft || !attributes.title || !attributes.summary) {
-      continue;
-    }
-
-    let parsedDate =
-      attributes.date instanceof Date
-        ? attributes.date
-        : new Date(String(attributes.date ?? ""));
-
-    if (Number.isNaN(parsedDate.getTime())) {
-      continue;
-    }
-
-    posts.push({
-      slug: entry.name.replace(/\.md$/, ""),
-      title: attributes.title,
-      summary: attributes.summary,
-      date: parsedDate,
-    });
-  }
-
-  return posts.sort((a, b) => b.date.getTime() - a.date.getTime());
-}
-
-export function buildBlogRssResponse(posts: BlogRssPost[]) {
+export function buildBlogRssResponse(posts: BlogPostListing[]) {
   let blogUrl = new URL(routes.blog.index.href(), "https://remix.run").href;
 
   let feed = new Feed({
