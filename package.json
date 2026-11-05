@@ -62,8 +62,7 @@
     "oxlint": "1.50.0",
     "prettier": "3.8.1",
     "typescript": "5.9.3",
-    "vfile": "6.0.3",
-    "vite": "7.3.5"
+    "vfile": "6.0.3"
   },
   "engines": {
     "node": ">=24.3.0"
