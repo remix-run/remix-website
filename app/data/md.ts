@@ -35,9 +35,10 @@ interface ProcessorOptions {
    */
   resolveImageUrl?(url: string): string;
   /**
-   * Allow raw HTML in the source markdown to pass through to the output.
-   * Defaults to `true` to preserve existing blog/Jam behavior. Set to `false`
-   * for untrusted remote markdown so raw HTML is dropped.
+   * Allow raw HTML in the source markdown. Trusted raw HTML is parsed into the
+   * HTML tree, so its images get the same blog-image treatment as Markdown
+   * images. Defaults to `true` for blog/Jam content. Set to `false` for
+   * untrusted remote markdown so raw HTML is dropped and the output sanitized.
    */
   allowHtml?: boolean;
 }
@@ -111,6 +112,7 @@ async function getProcessor(allowHtml: boolean) {
     { default: rehypeSlug },
     { default: rehypeStringify },
     { default: rehypeAutolinkHeadings },
+    { default: rehypeRaw },
     { default: rehypeSanitize, defaultSchema },
     { visit },
     highlighter,
@@ -122,6 +124,7 @@ async function getProcessor(allowHtml: boolean) {
     import("rehype-slug"),
     import("rehype-stringify"),
     import("rehype-autolink-headings"),
+    import("rehype-raw"),
     import("rehype-sanitize"),
     import("unist-util-visit"),
     getSingletonHighlighter({ themes: [theme], langs: highlightedLanguages }),
@@ -145,7 +148,7 @@ async function getProcessor(allowHtml: boolean) {
     });
   };
 
-  // Raw HTML `<img>` tags are deferred by `rawBlogImages` (trusted documents
+  // Raw HTML `<img>` tags are deferred by `blogImages` (trusted documents
   // only); untrusted documents drop raw HTML entirely.
   const lazyImages: MarkdownPlugin = () => (tree) => {
     visit(tree, ["image", "imageReference"], (node) => {
@@ -156,18 +159,6 @@ async function getProcessor(allowHtml: boolean) {
         ...data.hProperties,
       };
     });
-  };
-
-  const rawBlogImages: MarkdownPlugin = () => async (tree) => {
-    let tasks: Promise<void>[] = [];
-    visit(tree, "html", (node) => {
-      tasks.push(
-        transformRawBlogImages(node.value).then((value) => {
-          node.value = value;
-        }),
-      );
-    });
-    await Promise.all(tasks);
   };
 
   const blogImages: Unified.Plugin<[], Hast.Root> = () => async (tree) => {
@@ -189,11 +180,7 @@ async function getProcessor(allowHtml: boolean) {
   let processor = unified()
     .use(remarkParse)
     .use(resolveLinks)
-    .use(rewriteImages);
-
-  if (allowHtml) processor.use(rawBlogImages);
-
-  processor
+    .use(rewriteImages)
     .use(lazyImages)
     .use(remarkGfm)
     .use(remarkRehype, {
@@ -204,9 +191,11 @@ async function getProcessor(allowHtml: boolean) {
       },
     });
 
-  if (allowHtml) processor.use(blogImages);
-
-  if (!allowHtml) {
+  if (allowHtml) {
+    // Parse trusted raw HTML into elements so every image, Markdown or raw,
+    // goes through the same blog-image transform.
+    processor.use(rehypeRaw).use(blogImages);
+  } else {
     // Raw HTML is already discarded. Sanitize the generated tree after the
     // Markdown transforms, then only run the trusted heading plugins below.
     processor.use(rehypeSanitize, createUntrustedMarkdownSchema(defaultSchema));
@@ -219,7 +208,7 @@ async function getProcessor(allowHtml: boolean) {
       prefix: allowHtml ? "" : "newsletter-content-",
     })
     .use(rehypeAutolinkHeadings)
-    .use(rehypeStringify, { allowDangerousHtml: allowHtml });
+    .use(rehypeStringify);
 }
 
 type MarkdownPlugin = Unified.Plugin<[], Mdast.Root>;
@@ -416,7 +405,6 @@ function parseCodeMeta(meta: string | null | undefined) {
 ////////////////////////////////////////////////////////////////////////////////
 
 const BLOG_IMAGE_SIZES = "(min-width: 768px) 768px, 100vw";
-const RAW_IMAGE_PATTERN = /<img\b(?:[^"'<>]|"[^"]*"|'[^']*')*>/gi;
 
 function getBlogImageProperties(
   properties: Hast.Properties,
@@ -438,79 +426,6 @@ function getBlogImageProperties(
   if (asset.fullSrc) next["data-full-src"] = asset.fullSrc;
 
   return next;
-}
-
-async function transformRawBlogImages(html: string): Promise<string> {
-  let matches = [...html.matchAll(RAW_IMAGE_PATTERN)];
-  if (matches.length === 0) return html;
-
-  let replacements = await Promise.all(
-    matches.map(async (match) => {
-      let source = getHtmlAttribute(match[0], "src");
-      let asset = source ? await getBlogImageAsset(source) : undefined;
-      let tag = setHtmlAttribute(match[0], "loading", "lazy", false);
-      tag = setHtmlAttribute(tag, "decoding", "async", false);
-      if (!asset) return tag;
-
-      tag = setHtmlAttribute(tag, "src", asset.src);
-      if (asset.width) {
-        tag = setHtmlAttribute(tag, "width", String(asset.width), false);
-      }
-      if (asset.height) {
-        tag = setHtmlAttribute(tag, "height", String(asset.height), false);
-      }
-      if (asset.srcSet) {
-        tag = setHtmlAttribute(tag, "srcset", asset.srcSet);
-        tag = setHtmlAttribute(tag, "sizes", BLOG_IMAGE_SIZES, false);
-      }
-      if (asset.fullSrc) {
-        tag = setHtmlAttribute(tag, "data-full-src", asset.fullSrc);
-      }
-      return tag;
-    }),
-  );
-
-  let output = "";
-  let offset = 0;
-  for (let [index, match] of matches.entries()) {
-    let matchIndex = match.index ?? offset;
-    output += html.slice(offset, matchIndex);
-    output += replacements[index];
-    offset = matchIndex + match[0].length;
-  }
-  return output + html.slice(offset);
-}
-
-function getHtmlAttribute(tag: string, name: string): string | undefined {
-  let match = tag.match(
-    new RegExp(`\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)')`, "i"),
-  );
-  return match?.[1] ?? match?.[2];
-}
-
-function setHtmlAttribute(
-  tag: string,
-  name: string,
-  value: string,
-  overwrite = true,
-): string {
-  let pattern = new RegExp(
-    `\\s${name}\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+)`,
-    "i",
-  );
-  if (pattern.test(tag)) {
-    return overwrite
-      ? tag.replace(pattern, ` ${name}="${escapeHtmlAttribute(value)}"`)
-      : tag;
-  }
-  return tag.replace(
-    /^<img\b/i,
-    `<img ${name}="${escapeHtmlAttribute(value)}"`,
-  );
-}
-
-function escapeHtmlAttribute(value: string): string {
-  return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
 }
 
 function parseLineHighlights(param: string | null) {

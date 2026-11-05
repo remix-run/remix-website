@@ -49,6 +49,17 @@ describe("Untrusted Markdown", () => {
     expect(html).toContain('class="codeblock-line"');
     expect(html).toContain("color: var(--base");
   });
+
+  it("drops raw HTML instead of parsing it", async () => {
+    let { html } = await processMarkdown(
+      '<img src="https://example.com/a.png" onerror="alert(1)"><script>alert(1)</script>\n\nText',
+      { allowHtml: false },
+    );
+
+    expect(html).not.toContain("<img");
+    expect(html).not.toContain("<script");
+    expect(html).not.toContain("onerror");
+  });
 });
 
 describe("Markdown images", () => {
@@ -96,5 +107,32 @@ describe("Markdown images", () => {
       expect(image).toContain('loading="lazy"');
       expect(image).toContain('decoding="async"');
     }
+  });
+
+  it("gives raw HTML images, including nested ones, the same attributes as Markdown images", async () => {
+    let { html } = await processMarkdown(`
+![Alt](/blog-images/social-background.png)
+
+<figure>
+  <p><img src="/blog-images/social-background.png" alt="Alt"></p>
+</figure>
+
+\`\`\`ts
+let image = "<img src='/blog-images/social-background.png'>";
+\`\`\`
+`);
+
+    let images = [...html.matchAll(/<img\b[^>]*>/g)].map((match) =>
+      Object.fromEntries(
+        [...match[0].matchAll(/([\w-]+)="([^"]*)"/g)].map(([, name, value]) => [
+          name,
+          value,
+        ]),
+      ),
+    );
+    expect(images.length).toBe(2);
+    expect(images[1]).toEqual(images[0]);
+    expect(images[0].srcset).toContain("transform=webp-480");
+    expect(html).toContain('data-code-block=""');
   });
 });
