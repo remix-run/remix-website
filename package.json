@@ -29,7 +29,6 @@
     "@shopify/storefront-api-client": "1.0.10",
     "cross-env": "10.1.0",
     "emoji-regex": "10.6.0",
-    "escape-goat": "4.0.0",
     "fathom-client": "3.7.2",
     "feed": "4.2.2",
     "lru-cache": "10.4.3",
@@ -45,7 +44,7 @@
     "satori": "0.26.0",
     "semver": "7.7.4",
     "sharp": "0.35.3",
-    "shiki": "0.14.7",
+    "shiki": "4.5.0",
     "three": "0.184.0",
     "unified": "11.0.5",
     "unist-util-visit": "5.1.0",
@@ -55,6 +54,7 @@
     "@playwright/cli": "0.1.23",
     "@playwright/test": "1.64.1",
     "@types/hast": "3.0.4",
+    "@types/mdast": "4.0.4",
     "@types/node": "24.10.13",
     "@types/semver": "7.7.1",
     "@types/three": "0.184.0",
@@ -62,6 +62,7 @@
     "oxlint": "1.50.0",
     "prettier": "3.8.1",
     "typescript": "5.9.3",
+    "vfile": "6.0.3",
     "vite": "7.3.5"
   },
   "engines": {

@@ -25,9 +25,6 @@ importers:
       emoji-regex:
         specifier: 10.6.0
         version: 10.6.0
-      escape-goat:
-        specifier: 4.0.0
-        version: 4.0.0
       fathom-client:
         specifier: 3.7.2
         version: 3.7.2
@@ -74,8 +71,8 @@ importers:
         specifier: 0.35.3
         version: 0.35.3(@types/node@24.10.13)
       shiki:
-        specifier: 0.14.7
-        version: 0.14.7
+        specifier: 4.5.0
+        version: 4.5.0
       three:
         specifier: 0.184.0
         version: 0.184.0
@@ -98,6 +95,9 @@ importers:
       "@types/hast":
         specifier: 3.0.4
         version: 3.0.4
+      "@types/mdast":
+        specifier: 4.0.4
+        version: 4.0.4
       "@types/node":
         specifier: 24.10.13
         version: 24.10.13
@@ -119,6 +119,9 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+      vfile:
+        specifier: 6.0.3
+        version: 6.0.3
       vite:
         specifier: 7.3.5
         version: 7.3.5(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.4)
@@ -2244,6 +2247,61 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  "@shikijs/core@4.5.0":
+    resolution:
+      {
+        integrity: sha512-6CIgwq+bt2JZ3OSjb/nBkkwEf/CfpHcbam+Mg5Pllco7HAGRQ2/EFhZrrJtbyNTgKwknfVS+llsXGygiDGwJWw==,
+      }
+    engines: { node: ">=20" }
+
+  "@shikijs/engine-javascript@4.5.0":
+    resolution:
+      {
+        integrity: sha512-Ed6UdEj84LyYkwnxM5CvSMWAD+id9ExTYri0/+x41U9zrgNifPSS9lZm0JqBP0VfYI8yr8tY5nbNq9+p9R0kFA==,
+      }
+    engines: { node: ">=20" }
+
+  "@shikijs/engine-oniguruma@4.5.0":
+    resolution:
+      {
+        integrity: sha512-dKVmbJecVdB9recl8a/CU4jdpNXyjJQrIcesIkpS70s5HS02ohpnCSpMUbotPnEUzbAcLQ+S4hwZYbkBBiTcJw==,
+      }
+    engines: { node: ">=20" }
+
+  "@shikijs/langs@4.5.0":
+    resolution:
+      {
+        integrity: sha512-wwBTqwduXSz0X4v9Qa2EWeFaYJEw1clCncWjoRNQRbVDu3SPRTRWucnouYapKj3b8Q+sk/41Vbc4B5c8nuYzLA==,
+      }
+    engines: { node: ">=20" }
+
+  "@shikijs/primitive@4.5.0":
+    resolution:
+      {
+        integrity: sha512-UM7ShlA8oz0OWxLLO8BmO9Ip6fVqdkt8yF0EH7nOCqHfrx1eEAzF0ZUVK7L+I8NEgeu1PEWSRlxaiPPeCb4iDg==,
+      }
+    engines: { node: ">=20" }
+
+  "@shikijs/themes@4.5.0":
+    resolution:
+      {
+        integrity: sha512-zGb87H3UBbpuI4yoh5UguB1XbU+2BDU3kflM7UfZ+Cy2hWo9lBtqjSVK20gmLY6ukYl040hAypGXMgud9vul8Q==,
+      }
+    engines: { node: ">=20" }
+
+  "@shikijs/types@4.5.0":
+    resolution:
+      {
+        integrity: sha512-drtPrtD8N0DENyD2cyt6Ajy+IWsiCLgMxODwLTpvH1UsN6a9jf90tNTPjqwHvA+0Lzu9e0txk8DjfqH1p9UJRw==,
+      }
+    engines: { node: ">=20" }
+
+  "@shikijs/vscode-textmate@10.1.0":
+    resolution:
+      {
+        integrity: sha512-cVBuhDQjBZaNMTwBquYfPydrUP+E3hE6oYGasx8h6ZrODIM7/r+gxLDXdd66oszbrggZHEntdE6j+5gYIVyMWQ==,
+      }
+
   "@shopify/graphql-client@1.4.2":
     resolution:
       {
@@ -2306,6 +2364,12 @@ packages:
         integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==,
       }
 
+  "@types/hast@3.0.5":
+    resolution:
+      {
+        integrity: sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g==,
+      }
+
   "@types/istanbul-lib-coverage@2.0.6":
     resolution:
       {
@@ -2364,12 +2428,6 @@ packages:
     resolution:
       {
         integrity: sha512-mUFwbeTqrVgDQxFveS+df2yfap6iuP20NAKAsBt5jDEoOTDew+zwLAOilHCeQJOVSvmgCX4ogqIrA0mnyr08yQ==,
-      }
-
-  ansi-sequence-parser@1.1.3:
-    resolution:
-      {
-        integrity: sha512-+fksAx9eG3Ab6LDnLs3ZqZa8KVJ/jYnX+D4Qe1azX+LFGFAXqynCQLOdLpNYN/l9e7l6hMWwZbrnctqr6eSQSw==,
       }
 
   aws4fetch@1.0.20:
@@ -2557,13 +2615,6 @@ packages:
       }
     engines: { node: ">=18" }
     hasBin: true
-
-  escape-goat@4.0.0:
-    resolution:
-      {
-        integrity: sha512-2Sd4ShcWxbx6OY1IHyla/CVNwvg7XwZVoXZHcSu9w9SReNP1EzzD5T8NWKIR38fIqEns9kDWKUQTXXAmlDrdPg==,
-      }
-    engines: { node: ">=12" }
 
   escape-html@1.0.3:
     resolution:
@@ -3157,6 +3208,18 @@ packages:
     engines: { node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1 }
     hasBin: true
 
+  oniguruma-parser@0.12.2:
+    resolution:
+      {
+        integrity: sha512-6HVa5oIrgMC6aA6WF6XyyqbhRPJrKR02L20+2+zpDtO5QAzGHAUGw5TKQvwi5vctNnRHkJYmjAhRVQF2EKdTQw==,
+      }
+
+  oniguruma-to-es@4.3.6:
+    resolution:
+      {
+        integrity: sha512-csuQ9x3Yr0cEIs/Zgx/OEt9iBw9vqIunAPQkx19R/fiMq2oGVTgcMqO/V3Ybqefr1TBvosI6jU539ksaBULJyA==,
+      }
+
   oxc-minify@0.121.0:
     resolution:
       {
@@ -3301,6 +3364,24 @@ packages:
       }
     engines: { node: ">= 20.19.0" }
 
+  regex-recursion@6.0.2:
+    resolution:
+      {
+        integrity: sha512-0YCaSCq2VRIebiaUviZNs0cBz1kg5kVS2UKUfNIx8YVs1cN3AV7NTctO5FOKBA+UT2BPJIWZauYHPqJODG50cg==,
+      }
+
+  regex-utilities@2.3.0:
+    resolution:
+      {
+        integrity: sha512-8VhliFJAWRaUiVvREIiW2NXXTmHs4vMNnSzuJVhscgmGav3g9VDxLrQndI3dZZVVdp0ZO/5v0xmX516/7M9cng==,
+      }
+
+  regex@6.1.0:
+    resolution:
+      {
+        integrity: sha512-6VwtthbV4o/7+OaAF9I5L5V3llLEsoPyq9P1JVXkedTP33c7MfCG0/5NOPcSJn0TzXcG9YUrR0gQSWioew3LDg==,
+      }
+
   rehype-autolink-headings@7.1.0:
     resolution:
       {
@@ -3441,11 +3522,12 @@ packages:
       }
     engines: { node: ">=8" }
 
-  shiki@0.14.7:
+  shiki@4.5.0:
     resolution:
       {
-        integrity: sha512-dNPAPrxSc87ua2sKJ3H5dQ/6ZaY8RNnaAqK+t0eG7p0Soi2ydiqbGOTaZCqaYvA/uZYfS1LJnemt3Q+mSfcPCg==,
+        integrity: sha512-OcRW72ngQvc+MSVWBRIovC/BTW589iUE/Vxav7VeM4RcY9MUjqB+IR6ILG1k9nuW6LiG/nct9uma4/MBtnZbmQ==,
       }
+    engines: { node: ">=20" }
 
   source-map-js@1.2.1:
     resolution:
@@ -3641,18 +3723,6 @@ packages:
         optional: true
       yaml:
         optional: true
-
-  vscode-oniguruma@1.7.0:
-    resolution:
-      {
-        integrity: sha512-L9WMGRfrjOhgHSdOYgCt/yRMsXzLDJSL7BPrOZt73gU0iWO4mpqzqQzOz5srxqTvMBaR0XZTSrVWo4j55Rc6cA==,
-      }
-
-  vscode-textmate@8.0.0:
-    resolution:
-      {
-        integrity: sha512-AFbieoL7a5LMqcnOF04ji+rpXadgOXnZsxQr//r83kLPr7biP7am3g9zbaZIaBGwBRWeSvoMD4mgPdX3e4NWBg==,
-      }
 
   which@2.0.2:
     resolution:
@@ -4638,6 +4708,46 @@ snapshots:
   "@rollup/rollup-win32-x64-msvc@4.60.4":
     optional: true
 
+  "@shikijs/core@4.5.0":
+    dependencies:
+      "@shikijs/primitive": 4.5.0
+      "@shikijs/types": 4.5.0
+      "@shikijs/vscode-textmate": 10.1.0
+      "@types/hast": 3.0.5
+      hast-util-to-html: 9.0.5
+
+  "@shikijs/engine-javascript@4.5.0":
+    dependencies:
+      "@shikijs/types": 4.5.0
+      "@shikijs/vscode-textmate": 10.1.0
+      oniguruma-to-es: 4.3.6
+
+  "@shikijs/engine-oniguruma@4.5.0":
+    dependencies:
+      "@shikijs/types": 4.5.0
+      "@shikijs/vscode-textmate": 10.1.0
+
+  "@shikijs/langs@4.5.0":
+    dependencies:
+      "@shikijs/types": 4.5.0
+
+  "@shikijs/primitive@4.5.0":
+    dependencies:
+      "@shikijs/types": 4.5.0
+      "@shikijs/vscode-textmate": 10.1.0
+      "@types/hast": 3.0.5
+
+  "@shikijs/themes@4.5.0":
+    dependencies:
+      "@shikijs/types": 4.5.0
+
+  "@shikijs/types@4.5.0":
+    dependencies:
+      "@shikijs/vscode-textmate": 10.1.0
+      "@types/hast": 3.0.5
+
+  "@shikijs/vscode-textmate@10.1.0": {}
+
   "@shopify/graphql-client@1.4.2": {}
 
   "@shopify/storefront-api-client@1.0.10":
@@ -4667,6 +4777,10 @@ snapshots:
   "@types/estree@1.0.8": {}
 
   "@types/hast@3.0.4":
+    dependencies:
+      "@types/unist": 3.0.3
+
+  "@types/hast@3.0.5":
     dependencies:
       "@types/unist": 3.0.3
 
@@ -4700,8 +4814,6 @@ snapshots:
   "@types/webxr@0.5.24": {}
 
   "@ungap/structured-clone@1.3.1": {}
-
-  ansi-sequence-parser@1.1.3: {}
 
   aws4fetch@1.0.20: {}
 
@@ -4804,8 +4916,6 @@ snapshots:
       "@esbuild/win32-arm64": 0.27.7
       "@esbuild/win32-ia32": 0.27.7
       "@esbuild/win32-x64": 0.27.7
-
-  escape-goat@4.0.0: {}
 
   escape-html@1.0.3: {}
 
@@ -5281,6 +5391,14 @@ snapshots:
 
   nanoid@3.3.18: {}
 
+  oniguruma-parser@0.12.2: {}
+
+  oniguruma-to-es@4.3.6:
+    dependencies:
+      oniguruma-parser: 0.12.2
+      regex: 6.1.0
+      regex-recursion: 6.0.2
+
   oxc-minify@0.121.0(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2):
     optionalDependencies:
       "@oxc-minify/binding-android-arm-eabi": 0.121.0
@@ -5445,6 +5563,16 @@ snapshots:
   property-information@7.1.0: {}
 
   readdirp@5.1.1: {}
+
+  regex-recursion@6.0.2:
+    dependencies:
+      regex-utilities: 2.3.0
+
+  regex-utilities@2.3.0: {}
+
+  regex@6.1.0:
+    dependencies:
+      regex-utilities: 2.3.0
 
   rehype-autolink-headings@7.1.0:
     dependencies:
@@ -5657,12 +5785,16 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
-  shiki@0.14.7:
+  shiki@4.5.0:
     dependencies:
-      ansi-sequence-parser: 1.1.3
-      jsonc-parser: 3.3.1
-      vscode-oniguruma: 1.7.0
-      vscode-textmate: 8.0.0
+      "@shikijs/core": 4.5.0
+      "@shikijs/engine-javascript": 4.5.0
+      "@shikijs/engine-oniguruma": 4.5.0
+      "@shikijs/langs": 4.5.0
+      "@shikijs/themes": 4.5.0
+      "@shikijs/types": 4.5.0
+      "@shikijs/vscode-textmate": 10.1.0
+      "@types/hast": 3.0.5
 
   source-map-js@1.2.1: {}
 
@@ -5776,10 +5908,6 @@ snapshots:
       lightningcss: 1.32.0
       tsx: 4.21.0
       yaml: 2.8.4
-
-  vscode-oniguruma@1.7.0: {}
-
-  vscode-textmate@8.0.0: {}
 
   which@2.0.2:
     dependencies:
