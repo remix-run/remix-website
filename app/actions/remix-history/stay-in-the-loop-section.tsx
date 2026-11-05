@@ -1,6 +1,6 @@
 import { css } from "remix/component";
 
-import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import { NewsletterFrame } from "../../ui/newsletter-frame.tsx";
 import {
   bodyStyle,
   headingExtraLargeStyle,
@@ -61,7 +61,7 @@ function NewsletterCard() {
           to keep up with what comes next. No spam. Unsubscribe anytime.
         </p>
       </div>
-      <NewsletterSubscribe />
+      <NewsletterFrame />
     </div>
   );
 }

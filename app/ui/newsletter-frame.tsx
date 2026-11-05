@@ -4,9 +4,9 @@ import { routes } from "../routes.ts";
 import {
   NewsletterSubscribeFrameHost,
   type NewsletterSubscriptionStatus,
-} from "./public/newsletter-subscribe.tsx";
+} from "./public/newsletter-frame-form.tsx";
 
-export function NewsletterSubscribe(
+export function NewsletterFrame(
   handle: Handle<{
     mix?: MixInput<HTMLElement>;
     status?: NewsletterSubscriptionStatus | null;

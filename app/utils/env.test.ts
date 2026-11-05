@@ -3,10 +3,30 @@ import { expect } from "remix/assert";
 
 import { parseEnv } from "./env.ts";
 
+let convertKitDefaults = {
+  CONVERTKIT_API_URL: "https://api.convertkit.com/v3",
+  CONVERTKIT_FORM_ID: "1334747",
+};
+
 describe("parseEnv", () => {
   it("accepts optional integration keys outside production", () => {
-    expect(parseEnv({}, "development")).toEqual({});
-    expect(parseEnv({}, "test")).toEqual({});
+    expect(parseEnv({}, "development")).toEqual(convertKitDefaults);
+    expect(parseEnv({}, "test")).toEqual(convertKitDefaults);
+  });
+
+  it("lets the ConvertKit endpoint and form be overridden", () => {
+    expect(
+      parseEnv(
+        {
+          CONVERTKIT_API_URL: "http://localhost:4010/v3",
+          CONVERTKIT_FORM_ID: "42",
+        },
+        "test",
+      ),
+    ).toMatchObject({
+      CONVERTKIT_API_URL: "http://localhost:4010/v3",
+      CONVERTKIT_FORM_ID: "42",
+    });
   });
 
   it("requires a non-blank ConvertKit key in production", () => {
@@ -27,6 +47,9 @@ describe("parseEnv", () => {
       ["NEWSLETTER_GITHUB_TOKEN", thirdValue],
     ]);
 
-    expect(parseEnv(input, "production")).toEqual(input);
+    expect(parseEnv(input, "production")).toEqual({
+      ...convertKitDefaults,
+      ...input,
+    });
   });
 });

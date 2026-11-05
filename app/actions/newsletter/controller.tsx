@@ -10,15 +10,12 @@ import {
   resolveNewsletterImageUrl,
 } from "./archive.ts";
 import { routes } from "../../routes.ts";
-import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
+import { NewsletterSubscribeFrame } from "./subscribe-frame.tsx";
 import { StatusErrorDocument } from "../../ui/not-found-page.tsx";
 import { CACHE } from "../../utils/cache-control.ts";
 import { NewsletterIndexPage, NewsletterIssuePage } from "./pages.tsx";
-import {
-  getNewsletterSubscriptionStatus,
-  handleNewsletterSubscriptionError,
-  submitNewsletter,
-} from "./subscription.tsx";
+import { getNewsletterSubscriptionStatus } from "../../utils/newsletter-subscription.ts";
+import { submitNewsletter } from "./subscribe.tsx";
 
 /**
  * Build a newsletter controller bound to a specific repository. Tests pass a
@@ -181,10 +178,6 @@ function newsletterErrorLogger(): Middleware {
         pathname: context.url.pathname,
         error,
       });
-
-      let response = handleNewsletterSubscriptionError(error);
-      if (response) return response;
-
       throw error;
     }
   };

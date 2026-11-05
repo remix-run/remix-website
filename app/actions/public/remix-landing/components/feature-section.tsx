@@ -3,7 +3,7 @@ import {
   createNewsletterFrameForm,
   NewsletterSubscribeFrameHost,
   type NewsletterSubscriptionStatus,
-} from "../../../../ui/public/newsletter-subscribe.tsx";
+} from "../../../../ui/public/newsletter-frame-form.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { routes } from "../../../../routes.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";

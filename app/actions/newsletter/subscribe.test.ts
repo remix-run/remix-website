@@ -5,7 +5,7 @@ import { routes } from "../../routes.ts";
 import {
   NEWSLETTER_SUBSCRIBE_FRAME_NAME,
   type NewsletterSubscribeFrameContext,
-} from "../../ui/public/newsletter-subscribe.tsx";
+} from "../../ui/public/newsletter-frame-form.tsx";
 import { env } from "../../utils/env.ts";
 import { newsletterTagIds } from "../../utils/public/newsletter-tags.ts";
 import { createRouteTestRouter } from "../../../test/setup.ts";

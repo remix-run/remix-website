@@ -3,7 +3,7 @@ import { theme } from "../../../ui/public/theme.ts";
 import { FpsCounterToggle } from "../../../ui/public/fps-counter-toggle.tsx";
 import { Jam2026CloudBackdrop } from "./public/cloud-backdrop.tsx";
 import { Jam2026Header } from "./public/header.tsx";
-import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-subscribe.tsx";
+import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-frame-form.tsx";
 import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
 import { routes } from "../../../routes.ts";
 import { Document } from "../../../ui/document.tsx";

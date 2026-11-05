@@ -8,10 +8,10 @@ import { getJam2026Schedule } from "../../../data/jam-schedule-2026.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
-import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
+import { getNewsletterSubscriptionStatus } from "../../../utils/newsletter-subscription.ts";
 import { getJam2026DiscountCookieUpdate } from "./discount-code.ts";
 import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
-import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
+import { Jam2026NewsletterForm } from "./public/newsletter-form.tsx";
 import { Jam2026HomePage } from "./home-page.tsx";
 import { ticketModalConfig } from "./public/tickets-modal-contract.ts";
 import {
@@ -31,7 +31,7 @@ export default createController(routes.jam.y2026, {
 
     newsletterSignup({ render, request }) {
       return render(
-        <Jam2026NewsletterSignup
+        <Jam2026NewsletterForm
           status={getNewsletterSubscriptionStatus(request)}
         />,
         { headers: { "Cache-Control": CACHE.PRIVATE } },

@@ -5,16 +5,21 @@ import { redirect } from "remix/response/redirect";
 
 import type { AppRenderer } from "../../middleware/render.ts";
 import { routes } from "../../routes.ts";
-import { NewsletterSubscribeFrame } from "./signup-frame.tsx";
+import { NewsletterSubscribeFrame } from "./subscribe-frame.tsx";
 import {
   NEWSLETTER_SUBSCRIBE_FRAME_NAME,
   type NewsletterSubscribeFrameContext,
   type NewsletterSubscriptionStatus,
-} from "../../ui/public/newsletter-subscribe.tsx";
+} from "../../ui/public/newsletter-frame-form.tsx";
 import { CACHE } from "../../utils/cache-control.ts";
 import { env } from "../../utils/env.ts";
 import { isAllowedNewsletterTagId } from "../../utils/public/newsletter-tags.ts";
 
+/**
+ * Subscribes the submitted email to ConvertKit and answers in the shape the
+ * caller asked for (frame redirect, frame render, JSON, or document redirect).
+ * Never throws: upstream failures are logged and answered with a 500.
+ */
 export async function submitNewsletter(
   request: Request,
   formData: FormData,
@@ -26,71 +31,38 @@ export async function submitNewsletter(
   });
 
   if (!result.success) {
-    let error = "Invalid Submission";
-    if (result.issues.some((issue) => issue.path?.includes("email"))) {
-      error = "Invalid Email";
-    } else if (result.issues.some((issue) => issue.path?.includes("tags"))) {
-      error = "Invalid Tag";
-    }
-
-    return createSubscriptionResponse(
-      request,
-      render,
-      { ok: false, error },
-      400,
-    );
+    let status: NewsletterSubscriptionStatus | "invalid-submission" =
+      result.issues.some((issue) => issue.path?.includes("email"))
+        ? "invalid-email"
+        : result.issues.some((issue) => issue.path?.includes("tags"))
+          ? "invalid-tag"
+          : "invalid-submission";
+    return createSubscriptionResponse(request, render, status, 400);
   }
 
   try {
     await subscribeToNewsletter(result.value.email, result.value.tags);
-    return createSubscriptionResponse(request, render, {
-      ok: true,
-      error: null,
-    });
   } catch (error) {
-    throw new NewsletterSubscriptionError(
-      error,
-      createSubscriptionResponse(
-        request,
-        render,
-        { ok: false, error: "Something went wrong" },
-        500,
-      ),
-    );
+    console.error("[newsletter] Subscription failed", { error });
+    return createSubscriptionResponse(request, render, "error", 500);
   }
-}
 
-export function getNewsletterSubscriptionStatus(
-  request: Request,
-): NewsletterSubscriptionStatus | null {
-  let value = new URL(request.url).searchParams.get("subscription");
-  return value === "success" ||
-    value === "invalid-email" ||
-    value === "invalid-tag" ||
-    value === "error"
-    ? value
-    : null;
-}
-
-export function handleNewsletterSubscriptionError(
-  error: unknown,
-): Response | null {
-  return error instanceof NewsletterSubscriptionError ? error.response : null;
+  return createSubscriptionResponse(request, render, "success");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-type NewsletterResponse = { ok: boolean; error: string | null };
+// "invalid-submission" only differs from "error" in the JSON body; pages show
+// the generic error notice for it.
+type SubmissionOutcome = NewsletterSubscriptionStatus | "invalid-submission";
 
-class NewsletterSubscriptionError extends Error {
-  constructor(
-    cause: unknown,
-    readonly response: Response,
-  ) {
-    super("Newsletter subscription failed", { cause });
-    this.name = "NewsletterSubscriptionError";
-  }
-}
+let jsonErrors: Record<SubmissionOutcome, string | null> = {
+  success: null,
+  "invalid-email": "Invalid Email",
+  "invalid-tag": "Invalid Tag",
+  "invalid-submission": "Invalid Submission",
+  error: "Something went wrong",
+};
 
 let newsletterSubmission = s.object({
   email: s.string().pipe(c.email()),
@@ -113,13 +85,15 @@ function isNewsletterSubscribeFrameRequest(request: Request) {
 function createSubscriptionResponse(
   request: Request,
   render: AppRenderer,
-  body: NewsletterResponse,
+  outcome: SubmissionOutcome,
   status = 200,
 ): Response {
+  let subscriptionStatus: NewsletterSubscriptionStatus =
+    outcome === "invalid-submission" ? "error" : outcome;
   let frameContext = getNewsletterSubscribeFrameContext(request);
   if (frameContext) {
     let location = new URL(newsletterFrameRoutes[frameContext], request.url);
-    location.searchParams.set("subscription", getSubscriptionStatus(body));
+    location.searchParams.set("subscription", subscriptionStatus);
     return redirect(`${location.pathname}${location.search}`, {
       status: 303,
       headers: newsletterTargetResponseHeaders,
@@ -127,36 +101,28 @@ function createSubscriptionResponse(
   }
 
   if (isNewsletterSubscribeFrameRequest(request)) {
-    return render(
-      <NewsletterSubscribeFrame status={getSubscriptionStatus(body)} />,
+    return render(<NewsletterSubscribeFrame status={subscriptionStatus} />, {
+      status,
+      headers: newsletterTargetResponseHeaders,
+    });
+  }
+
+  if (request.headers.get("Accept")?.includes("application/json")) {
+    let error = jsonErrors[outcome];
+    return Response.json(
+      { ok: error === null, error },
       {
         status,
-        headers: newsletterTargetResponseHeaders,
+        headers: { "Cache-Control": CACHE.PRIVATE },
       },
     );
   }
 
-  if (request.headers.get("Accept")?.includes("application/json")) {
-    return Response.json(body, {
-      status,
-      headers: { "Cache-Control": CACHE.PRIVATE },
-    });
-  }
-
   let location = new URL(routes.newsletter.index.href(), request.url);
-  location.searchParams.set("subscription", getSubscriptionStatus(body));
+  location.searchParams.set("subscription", subscriptionStatus);
   let response = redirect(`${location.pathname}${location.search}`, 303);
   response.headers.set("Cache-Control", CACHE.PRIVATE);
   return response;
-}
-
-function getSubscriptionStatus(
-  response: NewsletterResponse,
-): NewsletterSubscriptionStatus {
-  if (response.ok) return "success";
-  if (response.error === "Invalid Email") return "invalid-email";
-  if (response.error === "Invalid Tag") return "invalid-tag";
-  return "error";
 }
 
 let newsletterFrameRoutes: Record<NewsletterSubscribeFrameContext, string> = {
@@ -188,21 +154,20 @@ async function subscribeToNewsletter(email: string, tags: number[]) {
     throw new Error("Missing CONVERTKIT_KEY");
   }
 
-  let apiUrl =
-    process.env.CONVERTKIT_API_URL ?? "https://api.convertkit.com/v3";
-  let formId = process.env.CONVERTKIT_FORM_ID ?? "1334747";
-
-  let response = await fetch(`${apiUrl}/forms/${formId}/subscribe`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
+  let response = await fetch(
+    `${env.CONVERTKIT_API_URL}/forms/${env.CONVERTKIT_FORM_ID}/subscribe`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({
+        api_key: apiKey,
+        email,
+        tags,
+      }),
     },
-    body: JSON.stringify({
-      api_key: apiKey,
-      email,
-      tags,
-    }),
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`ConvertKit request failed with ${response.status}`);

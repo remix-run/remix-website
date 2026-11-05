@@ -4,7 +4,7 @@ import { css, type Handle } from "remix/component";
 import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
-import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import { NewsletterFrame } from "../../ui/newsletter-frame.tsx";
 import {
   pageBodyStyle,
   pageMetaStyle,
@@ -330,7 +330,7 @@ function BlogPageContent(
                   Be the first to learn about new Remix features, community
                   events, and tutorials.
                 </div>
-                <NewsletterSubscribe />
+                <NewsletterFrame />
               </div>
             </div>
           </div>

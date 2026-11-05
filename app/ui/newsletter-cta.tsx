@@ -1,10 +1,10 @@
 import { css, type Handle } from "remix/component";
 
-import { NewsletterSubscribe } from "./newsletter-subscribe.tsx";
+import { NewsletterFrame } from "./newsletter-frame.tsx";
 import { pageBodyStyle, pageTitleStyle } from "./public/marketing-styles.ts";
-import type { NewsletterSubscriptionStatus } from "./public/newsletter-subscribe.tsx";
+import type { NewsletterSubscriptionStatus } from "./public/newsletter-frame-form.tsx";
 
-export function NewsletterSignupCta(
+export function NewsletterCta(
   handle: Handle<{
     status?: NewsletterSubscriptionStatus | null;
   }>,
@@ -16,10 +16,10 @@ export function NewsletterSignupCta(
         maxWidth: "100%",
         marginInline: "auto",
       })}
-      aria-labelledby="newsletter-signup-heading"
+      aria-labelledby="newsletter-cta-heading"
     >
       <h2
-        id="newsletter-signup-heading"
+        id="newsletter-cta-heading"
         mix={[
           pageTitleStyle,
           css({
@@ -39,7 +39,7 @@ export function NewsletterSignupCta(
         Be the first to learn about new Remix features, community events, and
         tutorials.
       </p>
-      <NewsletterSubscribe status={handle.props.status} />
+      <NewsletterFrame status={handle.props.status} />
     </section>
   );
 }

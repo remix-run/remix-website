@@ -3,16 +3,16 @@ import { clientEntry, css, type Handle } from "remix/component";
 import {
   createNewsletterFrameForm,
   type NewsletterSubscriptionStatus,
-} from "../../../../ui/public/newsletter-subscribe.tsx";
+} from "../../../../ui/public/newsletter-frame-form.tsx";
 import { jamTheme } from "./theme.ts";
 import { routes } from "../../../../routes.ts";
 import { textBoxTrim } from "../../../../ui/public/css-mixins.ts";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
 
-export let Jam2026NewsletterSignup = clientEntry(
+export let Jam2026NewsletterForm = clientEntry(
   import.meta.url,
-  function Jam2026NewsletterSignup(
+  function Jam2026NewsletterForm(
     handle: Handle<{ status?: NewsletterSubscriptionStatus | null }>,
   ) {
     let form = createNewsletterFrameForm(handle, "jam2026");

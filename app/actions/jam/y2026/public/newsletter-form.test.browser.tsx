@@ -3,11 +3,11 @@ import { describe, it } from "remix/test";
 import { render } from "remix/component/test";
 
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
-import { Jam2026NewsletterSignup } from "./newsletter-signup.tsx";
+import { Jam2026NewsletterForm } from "./newsletter-form.tsx";
 
-describe("Jam2026NewsletterSignup", () => {
+describe("Jam2026NewsletterForm", () => {
   it("uses declarative frame navigation and shows pending state", async (t) => {
-    let result = render(<Jam2026NewsletterSignup />);
+    let result = render(<Jam2026NewsletterForm />);
     t.after(result.cleanup);
     let form = result.container.querySelector<HTMLFormElement>("form")!;
     let button = form.querySelector<HTMLButtonElement>(
@@ -32,8 +32,8 @@ describe("Jam2026NewsletterSignup", () => {
   });
 
   it("renders server success and error results", (t) => {
-    let success = render(<Jam2026NewsletterSignup status="success" />);
-    let error = render(<Jam2026NewsletterSignup status="error" />);
+    let success = render(<Jam2026NewsletterForm status="success" />);
+    let error = render(<Jam2026NewsletterForm status="error" />);
     t.after(() => {
       success.cleanup();
       error.cleanup();

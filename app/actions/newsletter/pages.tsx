@@ -6,8 +6,8 @@ import { Document } from "../../ui/document.tsx";
 import { Footer } from "../../ui/footer.tsx";
 import { Header } from "../../ui/header.tsx";
 import { ImageLightbox } from "../../ui/public/image-lightbox.tsx";
-import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
-import { NewsletterSubscribe } from "../../ui/newsletter-subscribe.tsx";
+import { NewsletterCta } from "../../ui/newsletter-cta.tsx";
+import { NewsletterFrame } from "../../ui/newsletter-frame.tsx";
 import {
   marketingPageStyle,
   pageBodyStyle,
@@ -17,7 +17,7 @@ import {
   pageTitleStyle,
 } from "../../ui/public/marketing-styles.ts";
 import { breakpointMedia, theme } from "../../ui/public/theme.ts";
-import type { NewsletterSubscriptionStatus } from "../../ui/public/newsletter-subscribe.tsx";
+import type { NewsletterSubscriptionStatus } from "../../ui/public/newsletter-frame-form.tsx";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
 
 interface NewsletterIndexPageProps {
@@ -114,7 +114,7 @@ export function NewsletterIssuePage(
           </h1>
           <div class="md-prose" innerHTML={unsafeHTML(handle.props.html)} />
           <div mix={css({ marginBlockStart: "112px" })}>
-            <NewsletterSignupCta />
+            <NewsletterCta />
           </div>
         </div>
       </main>
@@ -151,7 +151,7 @@ function NewsletterSignupSection(
         time.
       </p>
       <div mix={css({ marginBlockStart: "36px" })}>
-        <NewsletterSubscribe status={handle.props.subscriptionStatus} />
+        <NewsletterFrame status={handle.props.subscriptionStatus} />
       </div>
     </section>
   );

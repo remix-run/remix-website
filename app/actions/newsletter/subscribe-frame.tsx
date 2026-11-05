@@ -3,7 +3,7 @@ import { css, type Handle } from "remix/component";
 import {
   NewsletterSubscribeForm,
   type NewsletterSubscriptionStatus,
-} from "../../ui/public/newsletter-subscribe.tsx";
+} from "../../ui/public/newsletter-frame-form.tsx";
 import { theme } from "../../ui/public/theme.ts";
 
 export function NewsletterSubscribeFrame(

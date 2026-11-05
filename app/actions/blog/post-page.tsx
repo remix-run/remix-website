@@ -11,7 +11,7 @@ import {
   pageTitleStyle,
 } from "../../ui/public/marketing-styles.ts";
 import { breakpointMedia, theme } from "../../ui/public/theme.ts";
-import { NewsletterSignupCta } from "../../ui/newsletter-signup.tsx";
+import { NewsletterCta } from "../../ui/newsletter-cta.tsx";
 import type { BlogImageAsset } from "../../utils/blog-image-assets.ts";
 import { CACHE } from "../../utils/cache-control.ts";
 import { getSocialHeadTags } from "../../utils/social-head-tags.ts";
@@ -296,7 +296,7 @@ function BlogPostContent(
           marginBlock: "96px 48px",
         })}
       >
-        <NewsletterSignupCta />
+        <NewsletterCta />
       </div>
     </>
   );

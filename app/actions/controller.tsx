@@ -6,7 +6,7 @@ import { assetPaths } from "../utils/public/asset-paths.ts";
 import { assets } from "../utils/assets.ts";
 import { CACHE } from "../utils/cache-control.ts";
 import { getCanonicalUrl } from "../utils/public/canonical-url.ts";
-import { getNewsletterSubscriptionStatus } from "./newsletter/subscription.tsx";
+import { getNewsletterSubscriptionStatus } from "../utils/newsletter-subscription.ts";
 import { LandingNewsletterSubscribeForm } from "./public/remix-landing/components/feature-section.tsx";
 import { blogOgImageAction } from "./blog-og-image.tsx";
 import { BrandPage } from "./brand.tsx";

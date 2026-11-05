@@ -4,8 +4,8 @@ import { css, type Handle, type RemixNode } from "remix/component";
 import { getSchedule } from "../../../data/jam-schedule.ts";
 import { routes } from "../../../routes.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
-import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-subscribe.tsx";
-import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
+import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-frame-form.tsx";
+import { getNewsletterSubscriptionStatus } from "../../../utils/newsletter-subscription.ts";
 import { Jam2025CocPage } from "./coc.tsx";
 import { Jam2025FaqPage } from "./faq.tsx";
 import { Jam2025LineupPage } from "./lineup.tsx";
@@ -18,7 +18,7 @@ import {
 } from "./public/shared.tsx";
 import { JamKeepsakes } from "./public/keepsakes.tsx";
 import { JamFadeInBadge } from "./public/fade-in-badge.tsx";
-import { JamNewsletterSubscribeForm } from "./public/newsletter-subscribe.tsx";
+import { JamNewsletterForm } from "./public/newsletter-form.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../ui/public/theme.ts";
@@ -43,9 +43,7 @@ export default createController(routes.jam.y2025, {
 
     newsletterSignup({ render, request }) {
       return render(
-        <JamNewsletterSubscribeForm
-          status={getNewsletterSubscriptionStatus(request)}
-        />,
+        <JamNewsletterForm status={getNewsletterSubscriptionStatus(request)} />,
         { headers: { "Cache-Control": CACHE.PRIVATE } },
       );
     },

@@ -3,14 +3,14 @@ import { clientEntry, css, type Handle } from "remix/component";
 import {
   createNewsletterFrameForm,
   type NewsletterSubscriptionStatus,
-} from "../../../../ui/public/newsletter-subscribe.tsx";
+} from "../../../../ui/public/newsletter-frame-form.tsx";
 import { routes } from "../../../../routes.ts";
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
 import { breakpointMedia, theme } from "../../../../ui/public/theme.ts";
 
-export let JamNewsletterSubscribeForm = clientEntry(
+export let JamNewsletterForm = clientEntry(
   import.meta.url,
-  function JamNewsletterSubscribeForm(
+  function JamNewsletterForm(
     handle: Handle<{
       status?: NewsletterSubscriptionStatus | null;
     }>,
