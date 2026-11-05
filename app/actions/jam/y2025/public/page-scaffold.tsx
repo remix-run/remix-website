@@ -5,6 +5,7 @@ import { routes } from "../../../../routes.ts";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
 import { jamButtonStyle } from "./jam-button.tsx";
+import { jamColors, whiteAlpha, blackAlpha } from "./theme.ts";
 
 export function JamPageScaffold(
   handle: Handle<{
@@ -77,7 +78,7 @@ function Background(
               mix={css({
                 width: "100%",
                 height: "100%",
-                backgroundColor: "rgb(0 0 0 / 0.3)",
+                backgroundColor: blackAlpha(0.3),
                 maskImage: `url('${assetPaths.jam2025.backgroundMask}')`,
                 maskSize: "cover",
                 maskRepeat: "no-repeat",
@@ -102,7 +103,7 @@ function Navbar(handle: Handle<{ activePath: string }>) {
         alignItems: "center",
         justifyContent: "space-between",
         padding: "16px",
-        background: "linear-gradient(rgb(0 0 0 / 0.7) 0%, rgb(0 0 0 / 0) 75%)",
+        background: `linear-gradient(${blackAlpha(0.7)} 0%, ${blackAlpha(0)} 75%)`,
         [breakpointMedia.md]: { padding: "36px" },
       })}
     >
@@ -117,7 +118,7 @@ function Navbar(handle: Handle<{ activePath: string }>) {
         <JamLogo
           mix={css({
             height: "48px",
-            fill: "#ffffff",
+            fill: jamColors.white,
             [breakpointMedia.md]: { width: "200px", height: "auto" },
             [breakpointMedia.lg]: { width: "160px" },
             [breakpointMedia.xl]: { width: "200px" },
@@ -132,7 +133,7 @@ function Navbar(handle: Handle<{ activePath: string }>) {
           gap: "8px",
           borderRadius: theme.radius.full,
           padding: "8px",
-          backgroundColor: "rgb(0 0 0 / 0.4)",
+          backgroundColor: blackAlpha(0.4),
           backdropFilter: "blur(16px)",
           [breakpointMedia.lg]: { display: "flex" },
         })}
@@ -169,8 +170,8 @@ function Navbar(handle: Handle<{ activePath: string }>) {
           jamButtonStyle,
           css({
             display: "none",
-            backgroundColor: "#ffffff",
-            color: "#000000",
+            backgroundColor: jamColors.white,
+            color: jamColors.black,
             [breakpointMedia.lg]: { display: "flex" },
           }),
         ]}
@@ -196,8 +197,8 @@ function Navbar(handle: Handle<{ activePath: string }>) {
             height: "48px",
             placeItems: "center",
             borderRadius: theme.radius.full,
-            backgroundColor: "#ffffff",
-            color: "#000000",
+            backgroundColor: jamColors.white,
+            color: jamColors.black,
             backdropFilter: "blur(16px)",
             listStyle: "none",
             outline: "none",
@@ -207,7 +208,10 @@ function Navbar(handle: Handle<{ activePath: string }>) {
             display: "none",
           },
           "& [data-mobile-menu-summary]:hover, & details[open] > [data-mobile-menu-summary]":
-            { backgroundColor: theme.colors.brand.blue, color: "#ffffff" },
+            {
+              backgroundColor: theme.colors.brand.blue,
+              color: jamColors.white,
+            },
           "& [data-mobile-menu-summary]:focus-visible": {
             outline: `2px solid ${theme.colors.brand.blue}`,
             outlineOffset: "2px",
@@ -231,7 +235,7 @@ function Navbar(handle: Handle<{ activePath: string }>) {
             overflow: "hidden",
             borderRadius: "2rem",
             padding: "10px 8px",
-            backgroundColor: "rgb(0 0 0 / 0.4)",
+            backgroundColor: blackAlpha(0.4),
             backdropFilter: "blur(16px)",
           },
           [breakpointMedia.lg]: { display: "none" },
@@ -418,9 +422,9 @@ function Footer(handle: Handle<{ showSeats: boolean }>) {
                 width: "100%",
                 background:
                   "linear-gradient(180deg, rgb(255 51 0), rgb(186 37 0))",
-                color: "#ffffff",
+                color: jamColors.white,
               })
-            : css({ color: "#a4a4a4" }),
+            : css({ color: jamColors.textMuted }),
         ]}
       >
         <div
@@ -437,16 +441,16 @@ function Footer(handle: Handle<{ showSeats: boolean }>) {
                 border: "1px solid",
                 borderRadius: "24px",
                 padding: "4px 16px",
-                color: "#ffffff",
+                color: jamColors.white,
                 textTransform: "uppercase",
               }),
               handle.props.showSeats
                 ? css({
-                    borderColor: "#ffffff",
+                    borderColor: jamColors.white,
                     "&:hover": { textDecoration: "underline" },
                   })
                 : css({
-                    borderColor: "#a4a4a4",
+                    borderColor: jamColors.textMuted,
                     "&:hover": { color: theme.colors.brand.blue },
                   }),
             ]}
@@ -574,16 +578,16 @@ function TicketLogo(handle: Handle<{ mix?: Props<"svg">["mix"] }>) {
 }
 
 let activeNavLinkStyle = css({
-  borderColor: "#ffffff",
-  color: "#ffffff",
+  borderColor: jamColors.white,
+  color: jamColors.white,
 });
 
 let inactiveNavLinkStyle = css({
   borderColor: "transparent",
-  color: "rgb(255 255 255 / 0.7)",
+  color: whiteAlpha(0.7),
   "&:is(:hover, :focus-visible)": {
-    borderColor: "#ffffff",
-    color: "#ffffff",
+    borderColor: jamColors.white,
+    color: jamColors.white,
   },
 });
 
@@ -594,20 +598,20 @@ let footerSocialLinkStyle = css({
   flexShrink: 0,
   alignItems: "center",
   justifyContent: "center",
-  color: "rgb(255 255 255 / 0.5)",
+  color: whiteAlpha(0.5),
   transition: "color 150ms",
-  "&:hover": { color: "#ffffff" },
+  "&:hover": { color: jamColors.white },
   "& > svg": { width: "100%", height: "100%" },
   [breakpointMedia.md]: { width: "32px", height: "32px" },
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
 let seatsLegalLinkStyle = css({
-  color: "#ffffff",
+  color: jamColors.white,
   "&:hover": { textDecoration: "underline" },
 });
 
 let plainLegalLinkStyle = css({
-  color: "#ffffff",
+  color: jamColors.white,
   "&:hover": { color: theme.colors.brand.blue },
 });

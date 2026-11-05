@@ -1,5 +1,6 @@
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "./theme.ts";
 
 export function Title(
   handle: Handle<{ children: RemixNode; mix?: Props<"h1">["mix"] }>,
@@ -15,7 +16,7 @@ export function SectionLabel(handle: Handle<{ children: RemixNode }>) {
   return () => (
     <p
       mix={css({
-        color: "rgb(255 255 255 / 0.5)",
+        color: whiteAlpha(0.5),
         fontFamily: theme.fontFamily.mono,
         fontSize: "0.75rem",
         lineHeight: 1.333,
@@ -38,7 +39,7 @@ export function InfoText(
     >
       <p
         mix={css({
-          color: "#ffffff",
+          color: jamColors.white,
           fontSize: "1.125rem",
           fontWeight: theme.fontWeight.bold,
           lineHeight: 1.4,
@@ -83,7 +84,7 @@ let titleStyle = css({
   display: "flex",
   flexDirection: "column",
   gap: "8px",
-  color: "#ffffff",
+  color: jamColors.white,
   fontSize: "1.875rem",
   fontWeight: theme.fontWeight.extrabold,
   lineHeight: 1,
@@ -96,7 +97,7 @@ let titleStyle = css({
 let infoTextStyle = css({ textAlign: "center" });
 
 let subheaderStyle = css({
-  color: "#ffffff",
+  color: jamColors.white,
   fontSize: "1.5rem",
   fontWeight: theme.fontWeight.bold,
   lineHeight: 1.333,
@@ -105,7 +106,7 @@ let subheaderStyle = css({
 });
 
 let paragraphStyle = css({
-  color: "rgb(255 255 255 / 0.8)",
-  "& a": { color: "#59b0ff" },
+  color: whiteAlpha(0.8),
+  "& a": { color: jamColors.link },
   "& a:hover": { textDecoration: "underline" },
 });

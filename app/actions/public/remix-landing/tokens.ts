@@ -1,6 +1,8 @@
 export const colors = {
   bg: "#000000",
   fg: "#dee2e6",
+  /** Emphasized text: active labels, inline code, and hovered links. */
+  fgStrong: "#ffffff",
   muted: "rgba(214, 227, 255, 0.68)",
   line: "rgba(255, 255, 255, 0.12)",
   /** Base behind home-page content cards; dark enough to keep text readable over the particle scene. */

@@ -95,8 +95,8 @@ export default createController(routes.blog, {
       );
     },
 
-    rss() {
-      return buildBlogRssResponse(getBlogPostListings());
+    rss({ url }) {
+      return buildBlogRssResponse(getBlogPostListings(), url);
     },
   },
 });

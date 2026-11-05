@@ -1,5 +1,6 @@
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors } from "./theme.ts";
 
 export function JamButton(
   handle: Handle<{
@@ -14,11 +15,11 @@ export function JamButton(
     let stateStyle = handle.props.active
       ? css({
           backgroundColor: theme.colors.brand.blue,
-          color: "#ffffff",
+          color: jamColors.white,
         })
       : css({
-          backgroundColor: "#ffffff",
-          color: "#000000",
+          backgroundColor: jamColors.white,
+          color: jamColors.black,
         });
     return (
       <button
@@ -56,7 +57,7 @@ export let jamButtonStyle = css({
   transition: "color 300ms, background-color 300ms",
   "&:hover": {
     backgroundColor: theme.colors.brand.blue,
-    color: "#ffffff",
+    color: jamColors.white,
   },
   [breakpointMedia.md]: {
     padding: "16px 24px",
@@ -68,5 +69,8 @@ export let jamButtonStyle = css({
 
 let jamButtonDisabledStyle = css({
   "&:disabled": { cursor: "not-allowed", opacity: 0.5 },
-  "&:disabled:hover": { backgroundColor: "#ffffff", color: "#000000" },
+  "&:disabled:hover": {
+    backgroundColor: jamColors.white,
+    color: jamColors.black,
+  },
 });

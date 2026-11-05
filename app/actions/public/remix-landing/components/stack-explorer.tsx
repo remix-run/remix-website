@@ -792,13 +792,16 @@ const categoryTabStyles = css({
     height: "2px",
     background: "transparent",
   },
-  "&:hover": { color: "#ffffff", background: "rgba(255, 255, 255, 0.025)" },
+  "&:hover": {
+    color: colors.fgStrong,
+    background: "rgba(255, 255, 255, 0.025)",
+  },
   "&:focus-visible": {
     outline: "2px solid var(--brand-cycle)",
     outlineOffset: "-4px",
   },
   '&[data-state="active"]': {
-    color: "#ffffff",
+    color: colors.fgStrong,
     background: "rgba(255, 255, 255, 0.035)",
     "&::after": {
       background: "var(--brand-cycle, #7ce95a)",
@@ -854,13 +857,16 @@ const exampleTabStyles = css({
   cursor: "pointer",
   transition:
     "border-color 160ms ease, background 160ms ease, color 160ms ease",
-  "&:hover": { color: "#ffffff", borderColor: "rgba(255, 255, 255, 0.22)" },
+  "&:hover": {
+    color: colors.fgStrong,
+    borderColor: "rgba(255, 255, 255, 0.22)",
+  },
   "&:focus-visible": {
     outline: "2px solid var(--brand-cycle)",
     outlineOffset: "2px",
   },
   '&[data-state="active"]': {
-    color: "#ffffff",
+    color: colors.fgStrong,
     borderColor: "color-mix(in srgb, var(--brand-cycle) 52%, transparent)",
     background:
       "color-mix(in srgb, var(--brand-cycle) 12%, rgba(255,255,255,.035))",
@@ -940,7 +946,7 @@ const exampleTitleStyles = css({
   margin: "0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
-  color: "#ffffff",
+  color: colors.fgStrong,
   fontSize: "clamp(23px, 3vw, 32px)",
   lineHeight: "1.12",
   letterSpacing: "-0.02em",
@@ -958,7 +964,7 @@ const exampleBodyStyles = css({
 const exampleFeatureLeadStyles = css({
   display: "block",
   marginBottom: "12px",
-  color: "#ffffff",
+  color: colors.fgStrong,
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
   fontSize: "18px",

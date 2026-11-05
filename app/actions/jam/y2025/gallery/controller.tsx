@@ -20,6 +20,7 @@ import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { css, type Handle, type Props, type RemixNode } from "remix/component";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "../public/theme.ts";
 
 export default createController(routes.jam.y2025.gallery, {
   actions: {
@@ -80,7 +81,7 @@ function renderGalleryPage({
         {photos.length === 0 ? (
           <p
             mix={css({
-              color: "rgb(255 255 255 / 0.7)",
+              color: whiteAlpha(0.7),
               fontSize: "1.125rem",
               lineHeight: 1.556,
             })}
@@ -115,7 +116,7 @@ function renderGalleryPage({
                       display: "block",
                       overflow: "hidden",
                       borderRadius: "8px",
-                      backgroundColor: "rgb(255 255 255 / 0.05)",
+                      backgroundColor: whiteAlpha(0.05),
                       outline: "none",
                       transition: "opacity 300ms",
                       "&:is(:hover, :focus-visible)": { opacity: 0.85 },
@@ -240,8 +241,8 @@ function GalleryModal(
               mix={css({
                 borderRadius: theme.radius.full,
                 padding: "8px 16px",
-                backgroundColor: "#ffffff",
-                color: "#000000",
+                backgroundColor: jamColors.white,
+                color: jamColors.black,
                 fontSize: "0.875rem",
                 fontWeight: theme.fontWeight.semibold,
                 lineHeight: 1.425,
@@ -289,7 +290,7 @@ function ModalImage(handle: Handle<{ photo: Photo }>) {
       <div
         mix={css({
           marginInline: "-24px",
-          backgroundColor: "rgb(255 255 255 / 0.05)",
+          backgroundColor: whiteAlpha(0.05),
           [breakpointMedia.md]: { marginInline: 0 },
         })}
         style={{
@@ -445,13 +446,13 @@ let iconLinkStyle = css({
   margin: "4px",
   borderRadius: theme.radius.full,
   padding: "12px",
-  backgroundColor: "#ffffff",
-  color: "#000000",
+  backgroundColor: jamColors.white,
+  color: jamColors.black,
   outline: "none",
   transition: "color 300ms, background-color 300ms",
   "&:is(:hover, :focus-visible)": {
     backgroundColor: theme.colors.brand.blue,
-    color: "#ffffff",
+    color: jamColors.white,
   },
   "&:focus-visible": {
     outline: `2px solid ${theme.colors.brand.blue}`,

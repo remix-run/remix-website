@@ -7,6 +7,7 @@ import {
 import { routes } from "../../../../routes.ts";
 import { newsletterTagIds } from "../../../../utils/public/newsletter-tags.ts";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "./theme.ts";
 
 export let JamNewsletterForm = clientEntry(
   import.meta.url,
@@ -43,7 +44,7 @@ export let JamNewsletterForm = clientEntry(
           />
           <p
             mix={css({
-              color: "rgb(255 255 255 / 0.5)",
+              color: whiteAlpha(0.5),
               fontFamily: theme.fontFamily.mono,
               fontSize: "0.75rem",
               lineHeight: 1.333,
@@ -72,13 +73,13 @@ export let JamNewsletterForm = clientEntry(
               border: 0,
               borderRadius: theme.radius.full,
               padding: "16px 24px",
-              backgroundColor: "#000000",
-              color: "#ffffff",
+              backgroundColor: jamColors.black,
+              color: jamColors.white,
               fontSize: "1.125rem",
               lineHeight: 1.556,
               textAlign: "center",
               outline: "none",
-              "&::placeholder": { color: "rgb(255 255 255 / 0.3)" },
+              "&::placeholder": { color: whiteAlpha(0.3) },
               "&:focus": {
                 boxShadow: `inset 0 0 0 2px ${theme.colors.brand.blue}`,
               },
@@ -95,8 +96,8 @@ export let JamNewsletterForm = clientEntry(
               marginTop: "20px",
               borderRadius: theme.radius.full,
               padding: "12px 16px",
-              backgroundColor: "#000000",
-              color: "#ffffff",
+              backgroundColor: jamColors.black,
+              color: jamColors.white,
               fontSize: "0.875rem",
               fontWeight: theme.fontWeight.semibold,
               lineHeight: 1.425,
@@ -119,7 +120,7 @@ export let JamNewsletterForm = clientEntry(
               status !== "idle" && status !== "submitting"
                 ? css({
                     marginTop: "16px",
-                    color: "#ffffff",
+                    color: jamColors.white,
                     fontSize: "0.875rem",
                     lineHeight: 1.425,
                   })

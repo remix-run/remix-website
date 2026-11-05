@@ -1,6 +1,7 @@
 import { clientEntry, css, type Handle } from "remix/component";
 
 import { theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors } from "./theme.ts";
 
 const SCRAMBLE_CHARS =
   "!@#$%^&*(){}[]<>~`'\",.?/\\|=+-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -224,7 +225,7 @@ export let JamScrambleText = clientEntry(
                   mix={[
                     visible ? css({ opacity: 1 }) : css({ opacity: 0 }),
                     resolved
-                      ? css({ color: "#ffffff" })
+                      ? css({ color: jamColors.white })
                       : colorStyles[handle.props.color ?? "blue"],
                   ]}
                 >
@@ -242,5 +243,5 @@ export let JamScrambleText = clientEntry(
 let colorStyles = {
   blue: css({ color: theme.colors.brand.blue }),
   green: css({ color: theme.colors.brand.green }),
-  yellow: css({ color: "#fecc1b" }),
+  yellow: css({ color: theme.colors.brand.yellow }),
 } satisfies Record<ScrambleColor, ReturnType<typeof css>>;

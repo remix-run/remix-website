@@ -255,7 +255,7 @@ function BrandPageContent() {
           href={BRAND_ASSETS_ZIP}
           mix={css({
             textDecorationLine: "underline",
-            "&:hover": { color: "#f44250" },
+            "&:hover": { color: theme.colors.brand.red },
           })}
           download
         >

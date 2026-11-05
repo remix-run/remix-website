@@ -7,6 +7,7 @@ import {
 } from "remix/component";
 import { assetPaths } from "../../../../utils/public/asset-paths.ts";
 import { breakpointMedia } from "../../../../ui/public/styles/theme.ts";
+import { jamColors } from "./theme.ts";
 
 type KeepsakeId =
   | "photo-1"
@@ -245,7 +246,7 @@ export let JamKeepsakes = clientEntry(
                         ? [
                             keepsakeFrameStyle,
                             css({
-                              border: "6px solid #ffffff",
+                              border: `6px solid ${jamColors.white}`,
                               borderRadius: "4px",
                               [breakpointMedia.md]: { borderWidth: "16px" },
                             }),

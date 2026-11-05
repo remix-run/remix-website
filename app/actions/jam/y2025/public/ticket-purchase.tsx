@@ -2,6 +2,7 @@ import { clientEntry, css, on, type Handle } from "remix/component";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { JamButton } from "./jam-button.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "./theme.ts";
 
 type JamTicketPurchaseProps = {
   initialQuantity?: number;
@@ -76,16 +77,16 @@ export let JamTicketPurchase = clientEntry(
                 justifyContent: "space-between",
                 borderRadius: "48px",
                 padding: "10px 16px",
-                boxShadow: "inset 0 0 0 2px rgb(255 255 255 / 0.3)",
+                boxShadow: `inset 0 0 0 2px ${whiteAlpha(0.3)}`,
                 [breakpointMedia.md]: {
                   padding: "16px 24px",
-                  boxShadow: "inset 0 0 0 4px rgb(255 255 255 / 0.3)",
+                  boxShadow: `inset 0 0 0 4px ${whiteAlpha(0.3)}`,
                 },
               })}
             >
               <span
                 mix={css({
-                  color: "#ffffff",
+                  color: jamColors.white,
                   fontFamily: theme.fontFamily.mono,
                   fontWeight: theme.fontWeight.normal,
                 })}
@@ -126,7 +127,7 @@ export let JamTicketPurchase = clientEntry(
                     css({
                       appearance: "textfield",
                       backgroundColor: "transparent",
-                      color: "#ffffff",
+                      color: jamColors.white,
                       textAlign: "center",
                       outline: "none",
                       "&::-webkit-inner-spin-button, &::-webkit-outer-spin-button":
@@ -206,11 +207,11 @@ function normalizeQuantity(quantity: number, maxQuantity: number) {
 let quantityButtonStyle = css({
   width: "24px",
   height: "24px",
-  color: "rgb(255 255 255 / 0.3)",
+  color: whiteAlpha(0.3),
   transition: "color 150ms",
-  "&:hover": { color: "#ffffff" },
+  "&:hover": { color: jamColors.white },
   "&:disabled": { cursor: "not-allowed", opacity: 0.3 },
-  "&:disabled:hover": { color: "rgb(255 255 255 / 0.3)" },
+  "&:disabled:hover": { color: whiteAlpha(0.3) },
   "& > svg": { width: "100%", height: "100%" },
   [breakpointMedia.md]: { width: "32px", height: "32px" },
   "@media (prefers-reduced-motion: reduce)": { transition: "none" },

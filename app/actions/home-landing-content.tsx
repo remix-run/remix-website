@@ -17,7 +17,7 @@ import {
 const differentiatorInlineCodeStyles = css({
   fontFamily: "'JetBrains Mono', monospace",
   fontSize: "0.92em",
-  color: "#ffffff",
+  color: colors.fgStrong,
 });
 
 type LandingContentProps = {
@@ -183,7 +183,7 @@ const differentiatorItemTitleStyles = css({
   margin: "0",
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.bold,
-  color: "#ffffff",
+  color: colors.fgStrong,
   fontSize: "18px",
   lineHeight: "1.3",
   letterSpacing: "-0.015em",

@@ -2,6 +2,7 @@ import { prefersReducedMotion } from "@remix-run/ui/animation";
 import { clientEntry, css, type Handle, type RemixNode } from "remix/component";
 
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors } from "./theme.ts";
 
 type JamFadeInBadgeProps = {
   delay?: number;
@@ -68,13 +69,13 @@ export let JamFadeInBadge = clientEntry(
             handle.props.live
               ? css({
                   backgroundColor: theme.colors.brand.red,
-                  color: "#ffffff",
+                  color: jamColors.white,
                 })
               : css({
-                  color: "#ffffff",
-                  boxShadow: "inset 0 0 0 4px #ffffff",
+                  color: jamColors.white,
+                  boxShadow: `inset 0 0 0 4px ${jamColors.white}`,
                   [breakpointMedia.md]: {
-                    boxShadow: "inset 0 0 0 6px #ffffff",
+                    boxShadow: `inset 0 0 0 6px ${jamColors.white}`,
                   },
                 }),
             isVisible ? css({ opacity: 1 }) : css({ opacity: 0 }),

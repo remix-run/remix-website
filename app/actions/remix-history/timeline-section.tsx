@@ -12,7 +12,7 @@ export function TimelineSection() {
         overflowX: "clip",
         background:
           "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-neutral-950) 70%, var(--rmx-neutral-750) 100%)",
-        color: "#ffffff",
+        color: theme.colors.text.onDark,
         [breakpointMedia.xl]: {
           background:
             "linear-gradient(180deg, var(--rmx-neutral-950) 0%, var(--rmx-neutral-950) 50%, var(--rmx-neutral-750) 100%)",

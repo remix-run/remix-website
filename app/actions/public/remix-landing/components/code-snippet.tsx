@@ -8,7 +8,7 @@ const codeStyles = css({
   fontSize: "0.9em",
   fontWeight: theme.fontWeight.normal,
   lineHeight: "1",
-  color: "#ffffff",
+  color: colors.fgStrong,
   backgroundColor: "rgba(5, 8, 16, 0.82)",
   border: `1px solid ${colors.line}`,
   borderRadius: "4px",

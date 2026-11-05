@@ -18,6 +18,7 @@ import { JamNewsletterForm } from "./public/newsletter-form.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import { Icon } from "../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
+import { jamColors } from "./public/theme.ts";
 
 type EventStatus = "before" | "live" | "after";
 
@@ -186,7 +187,7 @@ function Jam2025Page(handle: Handle<{ eventStatus: EventStatus }>) {
       >
         <h2
           mix={css({
-            color: "#ffffff",
+            color: jamColors.white,
             fontSize: "1.5rem",
             fontWeight: theme.fontWeight.bold,
             lineHeight: 1.333,
@@ -231,7 +232,7 @@ function AddressMain() {
     <address
       mix={css({
         display: "inline-block",
-        color: "#ffffff",
+        color: jamColors.white,
         fontSize: "1.125rem",
         fontStyle: "normal",
         fontWeight: theme.fontWeight.bold,

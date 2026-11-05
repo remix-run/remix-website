@@ -131,7 +131,17 @@ describe("app router", () => {
     let xml = await response.text();
     expect(xml).toContain("<rss");
     expect(xml).toContain("<title>Remix Blog</title>");
+    expect(xml).toContain("<link>http://localhost/blog</link>");
+  });
+
+  it("links the blog RSS feed to the canonical origin on deployed hosts", async () => {
+    let response = await router.fetch(
+      new URL(routes.blog.rss.href(), "https://remix-website-staging.fly.dev"),
+    );
+
+    let xml = await response.text();
     expect(xml).toContain("<link>https://remix.run/blog</link>");
+    expect(xml).not.toContain("fly.dev");
   });
 
   it("redirects the Jam index to the 2026 archive", async () => {

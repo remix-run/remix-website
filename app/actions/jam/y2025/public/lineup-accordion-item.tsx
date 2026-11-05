@@ -9,6 +9,7 @@ import {
 import { spring } from "@remix-run/ui/animation";
 import { Icon } from "../../../../ui/public/icon.tsx";
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "./theme.ts";
 
 type LineupItem = {
   time: string;
@@ -137,8 +138,10 @@ export let JamLineupAccordionItem = clientEntry(
         <details
           mix={css({
             overflow: "hidden",
-            borderTop: "1px solid rgb(255 255 255 / 0.1)",
-            "&:hover [data-accordion-body]": { backgroundColor: "#121212" },
+            borderTop: `1px solid ${whiteAlpha(0.1)}`,
+            "&:hover [data-accordion-body]": {
+              backgroundColor: jamColors.surfaceHover,
+            },
           })}
           open={mountedOpen}
         >
@@ -149,14 +152,16 @@ export let JamLineupAccordionItem = clientEntry(
                 cursor: "pointer",
                 userSelect: "none",
                 padding: "16px",
-                color: "#ffffff",
+                color: jamColors.white,
                 fontSize: "0.875rem",
                 fontWeight: theme.fontWeight.bold,
                 lineHeight: 1.425,
                 outline: "none",
                 transition: "background-color 300ms",
                 "&::-webkit-details-marker": { display: "none" },
-                "&:is(:hover, :focus-visible)": { backgroundColor: "#121212" },
+                "&:is(:hover, :focus-visible)": {
+                  backgroundColor: jamColors.surfaceHover,
+                },
                 "&:focus-visible": {
                   outline: `2px solid ${theme.colors.brand.blue}`,
                   outlineOffset: "-2px",
@@ -193,7 +198,7 @@ export let JamLineupAccordionItem = clientEntry(
                   css({
                     width: "16px",
                     height: "16px",
-                    color: "#ffffff",
+                    color: jamColors.white,
                     transition: "transform 150ms",
                     [breakpointMedia.sm]: { width: "20px", height: "20px" },
                     [breakpointMedia.lg]: { width: "24px", height: "24px" },
@@ -262,10 +267,10 @@ export let JamLineupAccordionItem = clientEntry(
                       display: "flex",
                       flexDirection: "column",
                       gap: "16px",
-                      color: "#ffffff",
+                      color: jamColors.white,
                       fontSize: "0.875rem",
                       lineHeight: 1.425,
-                      "& a": { color: "#59b0ff" },
+                      "& a": { color: jamColors.link },
                       "& a:hover": { textDecoration: "underline" },
                       [breakpointMedia.sm]: {
                         gridColumn: "2 / span 1",
@@ -313,10 +318,10 @@ export let JamLineupAccordionItem = clientEntry(
                             display: "flex",
                             flexDirection: "column",
                             gap: "16px",
-                            color: "#ffffff",
+                            color: jamColors.white,
                             fontSize: "0.75rem",
                             lineHeight: 1.333,
-                            "& a": { color: "#59b0ff" },
+                            "& a": { color: jamColors.link },
                             "& a:hover": { textDecoration: "underline" },
                             [breakpointMedia.sm]: {
                               gap: "24px",

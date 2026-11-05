@@ -58,6 +58,8 @@ export const theme = {
       secondary: "var(--color-text-secondary)",
       marketingPrimary: "light-dark(#313539, #e5e7eb)",
       tertiary: "#7c8084",
+      /** Fixed white for text over photos and always-dark surfaces. */
+      onDark: "#ffffff",
     },
     neutral: {
       50: "#ebeff2",
@@ -77,6 +79,7 @@ export const theme = {
       blue: "#3992ff",
       green: "#6bd968",
       red: "#f44250",
+      yellow: "#fecc1b",
     },
   },
   shadow: {

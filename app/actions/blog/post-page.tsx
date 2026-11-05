@@ -308,4 +308,4 @@ let blogPostHeroImageStyle = css({
   [breakpointMedia.md]: { borderRadius: "12px" },
 });
 
-let blogPostOnImageStyle = css({ color: "#ffffff" });
+let blogPostOnImageStyle = css({ color: theme.colors.text.onDark });

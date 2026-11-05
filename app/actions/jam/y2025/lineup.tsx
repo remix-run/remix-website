@@ -10,6 +10,7 @@ import {
   scheduleGridStyle,
 } from "./public/lineup-accordion-item.tsx";
 import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "./public/theme.ts";
 
 type Schedule = Awaited<ReturnType<typeof getJam2025Schedule>>;
 
@@ -60,7 +61,7 @@ export function Jam2025LineupPage(
         >
           <h1
             mix={css({
-              color: "#ffffff",
+              color: jamColors.white,
               fontSize: "1.125rem",
               lineHeight: 1.556,
               [breakpointMedia.sm]: { fontSize: "1.875rem", lineHeight: 1.2 },
@@ -70,7 +71,7 @@ export function Jam2025LineupPage(
           </h1>
           <h2
             mix={css({
-              color: "#ffffff",
+              color: jamColors.white,
               fontSize: "1.25rem",
               fontWeight: theme.fontWeight.bold,
               lineHeight: 1.556,
@@ -101,7 +102,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
         <div
           mix={css({
             marginInline: "-40px",
-            borderBlock: "2px solid rgb(255 255 255 / 0.2)",
+            borderBlock: `2px solid ${whiteAlpha(0.2)}`,
             paddingInline: "16px",
           })}
         >
@@ -110,7 +111,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
               scheduleGridStyle,
               css({
                 padding: "24px",
-                color: "rgb(255 255 255 / 0.4)",
+                color: whiteAlpha(0.4),
                 fontFamily: theme.fontFamily.mono,
                 fontSize: "0.75rem",
                 lineHeight: 1.333,
@@ -132,9 +133,9 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                     scheduleGridStyle,
                     css({
                       marginBlock: "8px",
-                      borderTop: "1px solid rgb(255 255 255 / 0.1)",
+                      borderTop: `1px solid ${whiteAlpha(0.1)}`,
                       padding: "24px",
-                      color: "#ffffff",
+                      color: jamColors.white,
                       fontSize: "0.875rem",
                       fontWeight: theme.fontWeight.bold,
                       lineHeight: 1.425,
@@ -146,7 +147,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                     <br />
                     <span
                       mix={css({
-                        color: "rgb(255 255 255 / 0.6)",
+                        color: whiteAlpha(0.6),
                         fontSize: "0.75rem",
                         fontWeight: theme.fontWeight.normal,
                         lineHeight: 1.333,
@@ -168,10 +169,10 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                         display: "flex",
                         flexDirection: "column",
                         gap: "16px",
-                        color: "#ffffff",
+                        color: jamColors.white,
                         fontSize: "0.875rem",
                         lineHeight: 1.425,
-                        "& a": { color: "#59b0ff" },
+                        "& a": { color: jamColors.link },
                         "& a:hover": { textDecoration: "underline" },
                       })}
                       innerHTML={unsafeHTML(item.description)}
@@ -198,11 +199,11 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
                           display: "flex",
                           flexDirection: "column",
                           gap: "16px",
-                          color: "#ffffff",
+                          color: jamColors.white,
                           fontFamily: theme.fontFamily.mono,
                           fontSize: "0.75rem",
                           lineHeight: "20px",
-                          "& a": { color: "#59b0ff" },
+                          "& a": { color: jamColors.link },
                           "& a:hover": { textDecoration: "underline" },
                         })}
                         innerHTML={unsafeHTML(item.bio)}
@@ -228,7 +229,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
         <div
           mix={css({
             marginInline: "-40px",
-            borderBlock: "2px solid rgb(255 255 255 / 0.2)",
+            borderBlock: `2px solid ${whiteAlpha(0.2)}`,
           })}
         >
           <div
@@ -236,7 +237,7 @@ function ScheduleTable(handle: Handle<{ items: Schedule }>) {
               scheduleGridStyle,
               css({
                 padding: "16px",
-                color: "rgb(255 255 255 / 0.4)",
+                color: whiteAlpha(0.4),
                 fontFamily: theme.fontFamily.mono,
                 fontSize: "0.75rem",
                 lineHeight: 1.333,

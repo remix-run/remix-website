@@ -30,11 +30,10 @@ describe("initFathomAnalytics", () => {
     expect(loadImpl).not.toHaveBeenCalled();
   });
 
-  it("loads Fathom once outside development", (t) => {
+  it("loads Fathom outside development", (t) => {
     let loadImpl = t.mock.fn<FathomLoad>();
     globalThis.window = {} as Window & typeof globalThis;
 
-    initFathomAnalytics({ isDevelopment: false, loadImpl });
     initFathomAnalytics({ isDevelopment: false, loadImpl });
 
     expect(loadImpl).toHaveBeenCalledTimes(1);

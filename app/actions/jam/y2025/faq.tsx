@@ -5,6 +5,7 @@ import { Paragraph, Subheader } from "./public/typography.tsx";
 import { routes } from "../../../routes.ts";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import { breakpointMedia, theme } from "../../../ui/public/styles/theme.ts";
+import { jamColors } from "./public/theme.ts";
 
 function slugify(input: string) {
   return input
@@ -38,7 +39,7 @@ export function Jam2025FaqPage(handle: Handle<{ requestUrl: string }>) {
         mix={css({
           position: "relative",
           zIndex: 10,
-          color: "#ffffff",
+          color: jamColors.white,
           fontSize: "1rem",
           lineHeight: 1.5,
           textAlign: "justify",
@@ -227,7 +228,7 @@ function FAQSection(handle: Handle<{ question: string; answer: RemixNode }>) {
         mix={css({
           marginTop: "20px",
           scrollMarginTop: "128px",
-          color: "#ffffff",
+          color: jamColors.white,
           fontSize: "1rem",
           lineHeight: 1.5,
           "& > * + *": { marginTop: "12px" },
@@ -268,7 +269,7 @@ function AddressLink() {
       target="_blank"
       rel="noopener noreferrer"
       mix={css({
-        color: "#59b0ff",
+        color: jamColors.link,
         "&:hover": { textDecoration: "underline" },
       })}
     >
@@ -278,7 +279,7 @@ function AddressLink() {
 }
 
 let strongStyle = css({
-  color: "#ffffff",
+  color: jamColors.white,
   fontWeight: theme.fontWeight.bold,
 });
 
@@ -289,6 +290,6 @@ let faqListStyle = css({
 });
 
 let textLinkStyle = css({
-  color: "#59b0ff",
+  color: jamColors.link,
   "&:hover": { textDecoration: "underline" },
 });

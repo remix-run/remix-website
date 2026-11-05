@@ -6,6 +6,7 @@ import { JamScrambleText } from "./public/scramble-text.tsx";
 import { Paragraph, Subheader } from "./public/typography.tsx";
 import { assetPaths } from "../../../utils/public/asset-paths.ts";
 import { breakpointMedia } from "../../../ui/public/styles/theme.ts";
+import { jamColors, whiteAlpha } from "./public/theme.ts";
 
 export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
   return () => (
@@ -30,7 +31,7 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
         mix={css({
           position: "relative",
           zIndex: 10,
-          color: "#ffffff",
+          color: jamColors.white,
           fontSize: "1rem",
           lineHeight: 1.5,
           textAlign: "justify",
@@ -113,7 +114,7 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
 
         <div
           mix={css({
-            color: "rgb(255 255 255 / 0.7)",
+            color: whiteAlpha(0.7),
             fontSize: "0.875rem",
           })}
         >
@@ -136,6 +137,6 @@ export function Jam2025CocPage(handle: Handle<{ requestUrl: string }>) {
 let cocSectionStyle = css({ "& > * + *": { marginTop: "16px" } });
 
 let textLinkStyle = css({
-  color: "#59b0ff",
+  color: jamColors.link,
   "&:hover": { textDecoration: "underline" },
 });

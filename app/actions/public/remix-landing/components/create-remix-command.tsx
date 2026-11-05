@@ -278,7 +278,7 @@ const selectTriggerStyles = css({
   borderRight: `1px solid ${colors.line}`,
   borderRadius: "13px 0 0 13px",
   background: "var(--runner-trigger-bg)",
-  color: "#ffffff",
+  color: colors.fgStrong,
   fontFamily: theme.fontFamily.sans,
   fontWeight: theme.fontWeight.medium,
   fontSize: "13px",
@@ -346,7 +346,7 @@ const popoverSurfaceStyles = css({
   borderRadius: "14px 0 0 14px",
   // Opaque match for the left end of the command bar's gradient.
   background: "rgb(11, 16, 27)",
-  color: "#ffffff",
+  color: colors.fgStrong,
   textAlign: "left",
   // No shadow or lift: the list should read as the control expanding in place,
   // not a layer floating above it.
@@ -412,12 +412,12 @@ const optionStyles = css({
   // matches the trigger's hover color. Highlight is declared last so it wins.
   "&[aria-selected='true']": {
     "--runner-option-bg": "var(--runner-trigger-bg)",
-    color: "#ffffff",
+    color: colors.fgStrong,
     fontWeight: theme.fontWeight.medium,
   },
   "&[data-highlighted='true']": {
     "--runner-option-bg": "var(--runner-trigger-highlight-bg)",
-    color: "#ffffff",
+    color: colors.fgStrong,
   },
   "& [data-runner-check]": {
     opacity: "0",
@@ -473,7 +473,7 @@ const copyButtonStyles = css({
   "&:hover": {
     background:
       "color-mix(in srgb, var(--brand-cycle, #2dacf9) 10%, rgba(255, 255, 255, 0.035))",
-    color: "#ffffff",
+    color: colors.fgStrong,
   },
   "&:focus-visible": {
     outline: "2px solid var(--brand-cycle, #2dacf9)",

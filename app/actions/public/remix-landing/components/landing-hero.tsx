@@ -71,7 +71,7 @@ const headingStyles = css({
   fontSize: "clamp(42px, 6vw, 84px)",
   lineHeight: "1",
   letterSpacing: "-0.03em",
-  color: "#ffffff",
+  color: colors.fgStrong,
   textShadow: glowWhite,
   textWrap: "balance",
   ...textBoxTrim,

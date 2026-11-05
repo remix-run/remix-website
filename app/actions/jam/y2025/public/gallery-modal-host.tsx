@@ -15,6 +15,7 @@ import {
   isFocusable,
 } from "../../../../ui/public/focus-trap.ts";
 import { lockScroll } from "../../../../ui/public/scroll-lock.ts";
+import { blackAlpha } from "./theme.ts";
 
 /** Which chevron to focus after keyboard prev/next (URL updates before the new modal paints). */
 let PENDING_KEYBOARD_CHEVRON_KEY = "jam-gallery-pending-chevron-focus";
@@ -46,7 +47,7 @@ export function JamGalleryModalHost(handle: Handle<JamGalleryModalHostProps>) {
         width: "100%",
         height: "100%",
         userSelect: "none",
-        backgroundColor: "rgb(0 0 0 / 0.7)",
+        backgroundColor: blackAlpha(0.7),
         backdropFilter: "blur(8px)",
       })}
     >

@@ -1,6 +1,7 @@
 import { clientEntry, css, on, ref, type Handle } from "remix/component";
 
 import { breakpointMedia, theme } from "../../../../ui/public/styles/theme.ts";
+import { jamColors } from "./theme.ts";
 
 export let JamTicketCard = clientEntry(
   import.meta.url,
@@ -179,7 +180,7 @@ export let JamTicketCard = clientEntry(
                 zIndex: 40,
                 paddingBottom: "4px",
                 paddingLeft: "8px",
-                color: "#ffffff",
+                color: jamColors.white,
                 fontFamily: theme.fontFamily.mono,
                 fontSize: "8px",
                 textAlign: "left",

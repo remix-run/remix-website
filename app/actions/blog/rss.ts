@@ -2,9 +2,13 @@ import { Feed } from "feed";
 import type { BlogPostListing } from "../../data/blog.ts";
 import { routes } from "../../routes.ts";
 import { CACHE } from "../../utils/cache-control.ts";
+import { getCanonicalUrl } from "../../utils/public/canonical-url.ts";
 
-export function buildBlogRssResponse(posts: BlogPostListing[]) {
-  let blogUrl = new URL(routes.blog.index.href(), "https://remix.run").href;
+export function buildBlogRssResponse(
+  posts: BlogPostListing[],
+  requestUrl: URL,
+) {
+  let blogUrl = getCanonicalUrl(requestUrl, routes.blog.index.href());
 
   let feed = new Feed({
     id: blogUrl,
@@ -19,10 +23,10 @@ export function buildBlogRssResponse(posts: BlogPostListing[]) {
   });
 
   for (let post of posts) {
-    let postLink = new URL(
+    let postLink = getCanonicalUrl(
+      requestUrl,
       routes.blog.post.href({ slug: post.slug }),
-      "https://remix.run",
-    ).href;
+    );
     feed.addItem({
       id: postLink,
       title: post.title,

@@ -113,7 +113,7 @@ const linkStyles = css({
 
 const linkActiveStyles = css({
   fontWeight: theme.fontWeight.bold,
-  color: "#ffffff",
+  color: colors.fgStrong,
   lineHeight: `${ITEM_HEIGHT}px`,
   height: `${ITEM_HEIGHT}px`,
 });

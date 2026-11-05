@@ -22,7 +22,7 @@ export function StatusErrorDocument(
           flexDirection: "column",
           justifyContent: "center",
           backgroundColor: theme.colors.brand.blue,
-          color: "#ffffff",
+          color: theme.colors.text.onDark,
         })}
       >
         <div mix={css({ textAlign: "center", lineHeight: 1 })}>
