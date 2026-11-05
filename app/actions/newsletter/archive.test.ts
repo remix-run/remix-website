@@ -535,6 +535,33 @@ describe("createGitHubNewsletterRepository", () => {
     expect((reportedError as Error).message).toContain(issue.name);
   });
 
+  for (let [label, matches] of [
+    ["tree", (url: string) => url.includes("/git/trees/")],
+    ["GraphQL", (url: string) => url.endsWith("/graphql")],
+  ] as const) {
+    it(`reports which request returned malformed JSON: ${label}`, async () => {
+      let upstream = fakeGitHubFetch([issueFile(1, "2024-01-01")]);
+      let reportedError: unknown;
+      let repo = createRepository({
+        fetchImpl: async (input, init) =>
+          matches(String(input))
+            ? new Response("<html>rate limited</html>")
+            : upstream(input, init),
+        onRefreshError(error) {
+          reportedError = error;
+        },
+      });
+
+      await expect(repo.listSummaries()).rejects.toBeInstanceOf(
+        NewsletterUpstreamUnavailableError,
+      );
+      expect((reportedError as Error).message).toBe(
+        `Newsletter GitHub ${label} response is not valid JSON`,
+      );
+      expect((reportedError as Error).cause).toBeInstanceOf(SyntaxError);
+    });
+  }
+
   for (let failure of [
     "HTTP error",
     "stream error",
