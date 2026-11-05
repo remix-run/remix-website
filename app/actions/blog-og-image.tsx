@@ -2,7 +2,6 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import getEmojiRegex from "emoji-regex";
 import * as s from "remix/data-schema";
-import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
 import sharp from "sharp";
 import { createAction } from "remix/router";
@@ -267,9 +266,12 @@ function toArrayBuffer(buffer: Buffer): ArrayBuffer {
   ) as ArrayBuffer;
 }
 
+// satori draws text as paths and inlines images as data URIs, so sharp can
+// rasterize and compress the SVG in one pass.
 async function renderSvgToPng(svg: string): Promise<Uint8Array> {
-  let png = new Resvg(svg).render().asPng();
-  return sharp(png).png({ compressionLevel: 9, effort: 6 }).toBuffer();
+  return sharp(Buffer.from(svg))
+    .png({ compressionLevel: 9, effort: 6 })
+    .toBuffer();
 }
 
 async function getOgImageAssets(): Promise<OgImageAssets> {

@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "@remix-run/ui": "0.13.1",
-    "@resvg/resvg-js": "2.6.2",
     "@shopify/storefront-api-client": "1.0.10",
     "cross-env": "10.1.0",
     "emoji-regex": "10.6.0",
