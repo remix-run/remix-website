@@ -110,6 +110,16 @@ describe("app router", () => {
     }
   });
 
+  it("keeps missing assets out of shared caches", async () => {
+    let response = await router.fetch(
+      "http://localhost/assets/blog-images/headers/missing.@abc123.png?transform=webp-480",
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
+    expect(response.headers.get("Surrogate-Key")).toBe(null);
+  });
+
   it("serves the blog RSS route", async () => {
     let response = await router.fetch(
       new URL(routes.blog.rss.href(), "http://localhost"),

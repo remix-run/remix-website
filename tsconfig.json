@@ -1,5 +1,11 @@
 {
-  "include": ["./app/**/*.ts", "./app/**/*.tsx", "./server.ts", "./hmr.ts"],
+  "include": [
+    "./app/**/*.ts",
+    "./app/**/*.tsx",
+    "./server.ts",
+    "./hmr.ts",
+    "./warm-image-cache.ts"
+  ],
   "compilerOptions": {
     "target": "ES2019",
     "module": "ESNext",

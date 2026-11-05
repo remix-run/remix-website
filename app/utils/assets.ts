@@ -1,4 +1,4 @@
-import { readdirSync } from "node:fs";
+import { mkdtempSync, readdirSync, rmSync } from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
@@ -19,7 +19,14 @@ if (!config.assets) throw new Error("Missing assets configuration");
 if (!config.assets.files) throw new Error("Missing asset file configuration");
 let rootDir = config.assets.rootDir;
 
-let fileCacheKey = process.env.FLY_IMAGE_REF ?? `process-${process.pid}`;
+// The Docker image ships a transform cache filled at build time (see
+// `warm-image-cache.ts`), so production points both values at it. Elsewhere
+// keys are per process, so each process gets its own directory: the built-in
+// cache supports one instance per directory, and test workers and dev servers
+// otherwise race on shared files.
+let fileCacheDirectory =
+  process.env.ASSET_FILE_CACHE_DIR ?? createProcessFileCacheDirectory();
+let fileCacheKey = process.env.ASSET_FILE_CACHE_KEY ?? `process-${process.pid}`;
 let webpInputExtensions = [".jpeg", ".jpg", ".png"] as const;
 let webpTransforms = {
   webp: createWebpTransform(),
@@ -44,7 +51,11 @@ export let assets = createAssetServer({
   files: {
     ...config.assets.files,
     cache: createFsFileCache({
-      directory: path.join(os.tmpdir(), "remix-website-assets"),
+      directory: fileCacheDirectory,
+      // Keys ignore the requested fingerprint and transforms take no params,
+      // so entries are capped at served images × transforms (1,192 today).
+      // Staying above that keeps requests from evicting build-time entries.
+      maxEntries: 4096,
       maxFileSize: 16 * 1024 * 1024,
       maxTotalSize: 512 * 1024 * 1024,
     }),
@@ -120,4 +131,12 @@ function createWebpTransform(width?: number) {
       return { content, extension: ".webp" };
     },
   });
+}
+
+function createProcessFileCacheDirectory() {
+  let directory = mkdtempSync(path.join(os.tmpdir(), "remix-website-assets-"));
+  process.once("exit", () => {
+    rmSync(directory, { recursive: true, force: true });
+  });
+  return directory;
 }
