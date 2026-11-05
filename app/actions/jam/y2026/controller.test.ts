@@ -182,14 +182,10 @@ describe("Remix Jam 2026 routes", () => {
   });
 
   it("blocks stale and enhanced checkout submissions without contacting Shopify, even with a discount", async (t) => {
-    let originalFetch = globalThis.fetch;
     let requests: string[] = [];
-    globalThis.fetch = async (input) => {
+    t.mock.method(globalThis, "fetch", async (input: RequestInfo | URL) => {
       requests.push(String(input));
       throw new Error("Closed ticket sales must not contact Shopify");
-    };
-    t.after(() => {
-      globalThis.fetch = originalFetch;
     });
     let cookie = await serializeJam2026DiscountCode("PARTNER-2026");
     for (let enhanced of [false, true]) {
