@@ -4,11 +4,9 @@ import { createAppRouter } from "./app/router.ts";
 import { assets } from "./app/utils/assets.ts";
 import { assertProductionEnv, env } from "./app/utils/env.ts";
 import { isDevelopment, isProduction } from "./app/utils/node-env.ts";
-import { createOriginAuth } from "./app/utils/origin-auth.ts";
 import { warmServer } from "./app/utils/warm-up.ts";
 
 const router = createAppRouter();
-const rejectDirectRequest = createOriginAuth(env.ORIGIN_AUTH_SECRET);
 
 const isHmr = Boolean(isDevelopment && process.env.REMIX_NODE_HMR);
 
@@ -33,9 +31,6 @@ if (
 const server = http.createServer(
   createRequestListener(
     async (request) => {
-      let rejection = rejectDirectRequest(request);
-      if (rejection) return rejection;
-
       try {
         return await router.fetch(request);
       } catch (error) {
@@ -71,9 +66,6 @@ server.listen(port, () => {
   console.log(
     `Server listening on port ${port} (http://localhost:${hmrProxyPort ?? port})`,
   );
-  if (env.ORIGIN_AUTH_SECRET?.trim()) {
-    console.log("Origin auth enabled: rejecting requests that bypass Fastly");
-  }
 });
 
 let shuttingDown = false;

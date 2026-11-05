@@ -7,9 +7,6 @@ const envSchema = s.object({
   CONVERTKIT_API_URL: s.defaulted(s.string(), "https://api.convertkit.com/v3"),
   CONVERTKIT_FORM_ID: s.defaulted(s.string(), "1334747"),
   PUBLIC_STOREFRONT_API_TOKEN: s.optional(s.string()),
-  // Shared with Fastly, which sends it as `X-Origin-Auth`. When set, the server
-  // rejects requests that bypassed the CDN (see `utils/origin-auth.ts`).
-  ORIGIN_AUTH_SECRET: s.optional(s.string()),
 });
 
 export type Env = s.InferOutput<typeof envSchema>;
