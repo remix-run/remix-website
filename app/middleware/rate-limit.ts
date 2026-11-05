@@ -84,8 +84,8 @@ function cleanupExpiredEntries(hits: Map<string, RateLimitEntry>, now: number) {
 // appended, so the entry just left of the rightmost peer is the visitor as
 // Fastly saw it. Entries further left are client-supplied and ignored, as are
 // headers no proxy here sets (`True-Client-IP`, `CF-Connecting-IP`, ...).
-// Until the origin only accepts Fastly traffic, a direct request can still
-// pick that left neighbor (see the parity backlog in AGENTS.md).
+// A direct `*.fly.dev` request could pick that left neighbor, which is why
+// `server.ts` rejects traffic that bypasses Fastly (`utils/origin-auth.ts`).
 function getClientIp(context: Parameters<Middleware>[0]) {
   let peer = normalizeClientIp(context.headers.get("fly-client-ip") ?? "");
   if (!peer) return "unknown";
