@@ -3,8 +3,8 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import * as s from "remix/data-schema";
 import yaml from "yaml";
-import { processMarkdown } from "./md.ts";
-import type { ScheduleItem } from "../actions/jam/y2026/public/schedule-types.ts";
+import { processMarkdown } from "../../../data/md.ts";
+import type { ScheduleItem } from "./public/schedule-types.ts";
 
 const SCHEDULE_IMAGES_DIRECTORY = path.join(
   process.cwd(),
@@ -36,7 +36,11 @@ const scheduleSchema = s.array(
 let schedulePromise: Promise<ScheduleItem[]> | undefined;
 
 export function getJam2026Schedule(): Promise<ScheduleItem[]> {
-  schedulePromise ??= loadJam2026Schedule();
+  // Forget a failed load so a transient file error doesn't stick until restart.
+  schedulePromise ??= loadJam2026Schedule().catch((error: unknown) => {
+    schedulePromise = undefined;
+    throw error;
+  });
   return schedulePromise;
 }
 

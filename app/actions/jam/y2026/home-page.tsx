@@ -9,7 +9,7 @@ import { routes } from "../../../routes.ts";
 import { Document } from "../../../ui/document.tsx";
 import { Footer } from "../../../ui/footer.tsx";
 import { getJam2026HeadContent } from "./public/head-content.ts";
-import { getJam2026HeadTags } from "./head.ts";
+import { getJam2026ServerHeadTags } from "./public/head-content.ts";
 import {
   jamTheme,
   jamThemeStyle,
@@ -48,7 +48,7 @@ export function Jam2026HomePage(handle: Handle<Jam2026HomePageProps>) {
         title={head.title}
         description={head.description}
         forceTheme={handle.props.theme}
-        headTags={getJam2026HeadTags({
+        headTags={getJam2026ServerHeadTags({
           ...head,
           requestUrl: handle.props.requestUrl,
         })}

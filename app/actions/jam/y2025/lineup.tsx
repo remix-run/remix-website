@@ -1,5 +1,5 @@
 import { css, unsafeHTML, type Handle } from "remix/component";
-import { getJam2025Schedule } from "../../../data/jam-schedule-2025.ts";
+import { getJam2025Schedule } from "./schedule-data.ts";
 import { routes } from "../../../routes.ts";
 import { JamDocument } from "./document.tsx";
 import { JamScrambleText } from "./public/scramble-text.tsx";

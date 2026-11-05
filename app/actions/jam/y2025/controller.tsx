@@ -1,7 +1,7 @@
 import { createController } from "remix/router";
 import { css, type Handle, type RemixNode } from "remix/component";
 
-import { getJam2025Schedule } from "../../../data/jam-schedule-2025.ts";
+import { getJam2025Schedule } from "./schedule-data.ts";
 import { routes } from "../../../routes.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
 import { NewsletterSubscribeFrameHost } from "../../../ui/public/newsletter-frame-form.tsx";

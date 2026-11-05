@@ -4,7 +4,7 @@ import { SuperHeaders } from "remix/headers";
 import { redirect } from "remix/response/redirect";
 import { createController } from "remix/router";
 
-import { getJam2026Schedule } from "../../../data/jam-schedule-2026.ts";
+import { getJam2026Schedule } from "./schedule-data.ts";
 import { CACHE } from "../../../utils/cache-control.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";

@@ -1,7 +1,7 @@
 import { describe, it } from "remix/test";
 import { expect } from "remix/assert";
 
-import { getJam2025Schedule } from "./jam-schedule-2025.ts";
+import { getJam2025Schedule } from "./schedule-data.ts";
 
 describe("getJam2025Schedule", () => {
   it("loads the checked-in schedule with rendered copy and resolved images", async () => {
