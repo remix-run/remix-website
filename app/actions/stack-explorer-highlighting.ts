@@ -6,7 +6,6 @@ import {
 
 import {
   stackExplorerCodeSamples,
-  type StackExplorerCodeHighlights,
   type StackExplorerCodeToken,
 } from "./public/remix-landing/stack-explorer-content.tsx";
 import { memoizeAsync } from "../utils/memoize-async.ts";
