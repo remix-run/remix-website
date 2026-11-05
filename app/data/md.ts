@@ -10,14 +10,29 @@ import {
   getSingletonHighlighter,
   type BundledLanguage,
   type Highlighter,
+  type ThemedToken,
   type ThemeRegistrationAny,
 } from "shiki";
 import rangeParser from "parse-numeric-range";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, {
+  defaultSchema,
+  type Options as SanitizeOptions,
+} from "rehype-sanitize";
+import rehypeSlug from "rehype-slug";
+import rehypeStringify from "rehype-stringify";
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkRehype, {
+  defaultHandlers,
+  type Options as RemarkRehypeOptions,
+} from "remark-rehype";
+import { unified } from "unified";
+import { visit } from "unist-util-visit";
 import { parseFrontmatter } from "./frontmatter.ts";
 import type * as Hast from "hast";
 import type * as Mdast from "mdast";
-import type { Options as RemarkRehypeOptions } from "remark-rehype";
-import type { Options as SanitizeOptions } from "rehype-sanitize";
 import type * as Unified from "unified";
 import type { VFile } from "vfile";
 import themeJson from "../../data/base16.json" with { type: "json" };
@@ -104,78 +119,11 @@ function getProcessorFor(options?: ProcessorOptions): Promise<Processor> {
 }
 
 async function getProcessor(allowHtml: boolean) {
-  let [
-    { unified },
-    { default: remarkGfm },
-    { default: remarkParse },
-    { default: remarkRehype, defaultHandlers },
-    { default: rehypeSlug },
-    { default: rehypeStringify },
-    { default: rehypeAutolinkHeadings },
-    { default: rehypeRaw },
-    { default: rehypeSanitize, defaultSchema },
-    { visit },
-    highlighter,
-  ] = await Promise.all([
-    import("unified"),
-    import("remark-gfm"),
-    import("remark-parse"),
-    import("remark-rehype"),
-    import("rehype-slug"),
-    import("rehype-stringify"),
-    import("rehype-autolink-headings"),
-    import("rehype-raw"),
-    import("rehype-sanitize"),
-    import("unist-util-visit"),
-    getSingletonHighlighter({ themes: [theme], langs: highlightedLanguages }),
-  ]);
-
+  let highlighter = await getSingletonHighlighter({
+    themes: [theme],
+    langs: highlightedLanguages,
+  });
   let highlightCode = createCodeHandler(highlighter);
-
-  const resolveLinks: MarkdownPlugin = () => (tree, file) => {
-    let { resolveHref } = getProcessorOptions(file);
-    if (!resolveHref) return;
-    visit(tree, "link", (node) => {
-      if (isRelativeUrl(node.url)) node.url = resolveHref(node.url);
-    });
-  };
-
-  const rewriteImages: MarkdownPlugin = () => (tree, file) => {
-    let { resolveImageUrl } = getProcessorOptions(file);
-    if (!resolveImageUrl) return;
-    visit(tree, "image", (node) => {
-      if (isRelativeUrl(node.url)) node.url = resolveImageUrl(node.url);
-    });
-  };
-
-  // Raw HTML `<img>` tags are deferred by `blogImages` (trusted documents
-  // only); untrusted documents drop raw HTML entirely.
-  const lazyImages: MarkdownPlugin = () => (tree) => {
-    visit(tree, ["image", "imageReference"], (node) => {
-      let data = (node.data ??= {});
-      data.hProperties = {
-        loading: "lazy",
-        decoding: "async",
-        ...data.hProperties,
-      };
-    });
-  };
-
-  const blogImages: Unified.Plugin<[], Hast.Root> = () => async (tree) => {
-    let tasks: Promise<void>[] = [];
-    visit(tree, "element", (node) => {
-      if (node.tagName !== "img") return;
-      let source = node.properties.src;
-      if (typeof source !== "string") return;
-
-      tasks.push(
-        getBlogImageAsset(source).then((asset) => {
-          node.properties = getBlogImageProperties(node.properties, asset);
-        }),
-      );
-    });
-    await Promise.all(tasks);
-  };
 
   let processor = unified()
     .use(remarkParse)
@@ -198,7 +146,7 @@ async function getProcessor(allowHtml: boolean) {
   } else {
     // Raw HTML is already discarded. Sanitize the generated tree after the
     // Markdown transforms, then only run the trusted heading plugins below.
-    processor.use(rehypeSanitize, createUntrustedMarkdownSchema(defaultSchema));
+    processor.use(rehypeSanitize, createUntrustedMarkdownSchema());
   }
 
   return processor
@@ -213,13 +161,56 @@ async function getProcessor(allowHtml: boolean) {
 
 type MarkdownPlugin = Unified.Plugin<[], Mdast.Root>;
 
+const resolveLinks: MarkdownPlugin = () => (tree, file) => {
+  let { resolveHref } = getProcessorOptions(file);
+  if (!resolveHref) return;
+  visit(tree, "link", (node) => {
+    if (isRelativeUrl(node.url)) node.url = resolveHref(node.url);
+  });
+};
+
+const rewriteImages: MarkdownPlugin = () => (tree, file) => {
+  let { resolveImageUrl } = getProcessorOptions(file);
+  if (!resolveImageUrl) return;
+  visit(tree, "image", (node) => {
+    if (isRelativeUrl(node.url)) node.url = resolveImageUrl(node.url);
+  });
+};
+
+// Raw HTML `<img>` tags are handled by `blogImages` (trusted documents
+// only); untrusted documents drop raw HTML entirely.
+const lazyImages: MarkdownPlugin = () => (tree) => {
+  visit(tree, ["image", "imageReference"], (node) => {
+    let data = (node.data ??= {});
+    data.hProperties = {
+      loading: "lazy",
+      decoding: "async",
+      ...data.hProperties,
+    };
+  });
+};
+
+const blogImages: Unified.Plugin<[], Hast.Root> = () => async (tree) => {
+  let tasks: Promise<void>[] = [];
+  visit(tree, "element", (node) => {
+    if (node.tagName !== "img") return;
+    let source = node.properties.src;
+    if (typeof source !== "string") return;
+
+    tasks.push(
+      getBlogImageAsset(source).then((asset) => {
+        node.properties = getBlogImageProperties(node.properties, asset);
+      }),
+    );
+  });
+  await Promise.all(tasks);
+};
+
 function getProcessorOptions(file: VFile): ProcessorOptions {
   return file.data.processorOptions ?? {};
 }
 
-function createUntrustedMarkdownSchema(
-  defaultSchema: SanitizeOptions,
-): SanitizeOptions {
+function createUntrustedMarkdownSchema(): SanitizeOptions {
   // These attributes (including the inline color styles) are emitted by the
   // trusted Shiki transform. Untrusted raw HTML never reaches this tree.
   let codeBlockAttributes = [
@@ -279,17 +270,9 @@ function createCodeHandler(highlighter: Highlighter) {
   ): Hast.Element | undefined {
     if (!node.value || !isHighlightedLanguage(node.lang)) return undefined;
 
-    let language = languageNames[node.lang] ?? node.lang;
-    let {
-      addedLines,
-      highlightLines,
-      metaProperties,
-      removedLines,
-      startingLineNumber,
-      usesLineNumbers,
-    } = parseCodeMeta(node.meta);
-    let isDiff = addedLines.length > 0 || removedLines.length > 0;
-    let diffLineNumber = startingLineNumber - 1;
+    let meta = parseCodeMeta(node.meta);
+    let isDiff = meta.addedLines.length > 0 || meta.removedLines.length > 0;
+    let diffLineNumber = meta.startingLineNumber - 1;
 
     let tokens = highlighter.codeToTokensBase(node.value, {
       lang: node.lang,
@@ -297,69 +280,80 @@ function createCodeHandler(highlighter: Highlighter) {
       includeExplanation: false,
     });
 
-    let lines = tokens.map((lineTokens, lineIndex): Hast.Element => {
-      let lineNumber = lineIndex + startingLineNumber;
-      let removeLine = removedLines.includes(lineNumber);
-      if (!removeLine) diffLineNumber++;
+    let lines = tokens.map((lineTokens, lineIndex) => {
+      let lineNumber = lineIndex + meta.startingLineNumber;
+      let removed = meta.removedLines.includes(lineNumber);
+      if (!removed) diffLineNumber++;
 
-      let children = lineTokens.map((token): Hast.ElementContent => {
-        let color = convertFakeHexToCustomProp(token.color ?? "");
-        let text: Hast.Text = { type: "text", value: token.content };
-        return color && color !== fgColor
-          ? {
-              type: "element",
-              tagName: "span",
-              properties: { style: `color: ${color}` },
-              children: [text],
-            }
-          : text;
-      });
-      children.push({ type: "text", value: "\n" });
-
-      return {
-        type: "element",
-        tagName: "span",
-        properties: {
+      return renderCodeLine(
+        lineTokens.map((token) => renderToken(token, fgColor)),
+        {
           className: "codeblock-line",
-          dataHighlight: highlightLines.includes(lineNumber)
+          dataHighlight: meta.highlightLines.includes(lineNumber)
             ? "true"
             : undefined,
-          dataLineNumber: usesLineNumbers ? lineNumber : undefined,
-          dataAdd: isDiff ? addedLines.includes(lineNumber) : undefined,
-          dataRemove: isDiff ? removeLine : undefined,
+          dataLineNumber: meta.usesLineNumbers ? lineNumber : undefined,
+          dataAdd: isDiff ? meta.addedLines.includes(lineNumber) : undefined,
+          dataRemove: isDiff ? removed : undefined,
           dataDiffLineNumber: isDiff ? diffLineNumber : undefined,
         },
-        children,
-      };
+      );
     });
 
-    let blockProperties = {
-      ...metaProperties,
-      dataLineNumbers: usesLineNumbers ? "true" : "false",
-      dataLang: language,
-    };
-    let result: Hast.Element = {
-      type: "element",
-      tagName: "div",
-      properties: { dataCodeBlock: "", ...blockProperties },
-      children: [
-        {
-          type: "element",
-          tagName: "pre",
-          properties: { ...blockProperties, style: `color: ${fgColor};` },
-          children: [
-            {
-              type: "element",
-              tagName: "code",
-              properties: {},
-              children: lines,
-            },
-          ],
-        },
-      ],
-    };
+    let result = renderCodeBlock(lines, fgColor, {
+      ...meta.metaProperties,
+      dataLineNumbers: meta.usesLineNumbers ? "true" : "false",
+      dataLang: languageNames[node.lang] ?? node.lang,
+    });
     state.patch(node, result);
     return state.applyData(node, result);
+  };
+}
+
+/** Colors a token with a span unless it already matches the block's color. */
+function renderToken(token: ThemedToken, fgColor: string): Hast.ElementContent {
+  let color = convertFakeHexToCustomProp(token.color ?? "");
+  let text: Hast.Text = { type: "text", value: token.content };
+  if (!color || color === fgColor) return text;
+  return {
+    type: "element",
+    tagName: "span",
+    properties: { style: `color: ${color}` },
+    children: [text],
+  };
+}
+
+function renderCodeLine(
+  children: Hast.ElementContent[],
+  properties: Hast.Properties,
+): Hast.Element {
+  return {
+    type: "element",
+    tagName: "span",
+    properties,
+    children: [...children, { type: "text", value: "\n" }],
+  };
+}
+
+function renderCodeBlock(
+  lines: Hast.Element[],
+  fgColor: string,
+  blockProperties: Hast.Properties,
+): Hast.Element {
+  return {
+    type: "element",
+    tagName: "div",
+    properties: { dataCodeBlock: "", ...blockProperties },
+    children: [
+      {
+        type: "element",
+        tagName: "pre",
+        properties: { ...blockProperties, style: `color: ${fgColor};` },
+        children: [
+          { type: "element", tagName: "code", properties: {}, children: lines },
+        ],
+      },
+    ],
   };
 }
 
