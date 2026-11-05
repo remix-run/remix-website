@@ -32,7 +32,6 @@
     "escape-goat": "4.0.0",
     "fathom-client": "3.7.2",
     "feed": "4.2.2",
-    "front-matter": "4.0.2",
     "lru-cache": "10.4.3",
     "parse-numeric-range": "1.3.0",
     "rehype-autolink-headings": "7.1.0",

@@ -8,7 +8,7 @@
  */
 import { getHighlighter, toShikiTheme } from "shiki";
 import rangeParser from "parse-numeric-range";
-import parseFrontMatter from "front-matter";
+import { parseFrontmatter } from "./frontmatter.ts";
 import type * as Hast from "hast";
 import type { Options as SanitizeOptions } from "rehype-sanitize";
 import type * as Unist from "unist";
@@ -47,7 +47,7 @@ export async function processMarkdown(
   options?: ProcessorOptions,
 ) {
   let processor = await getProcessorFor(options);
-  let { attributes, body: raw } = parseFrontMatter(content);
+  let { attributes, body: raw } = parseFrontmatter(content);
   let vfile = await processor.process({
     value: raw,
     data: { processorOptions: options ?? {} },
