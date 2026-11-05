@@ -90,7 +90,7 @@ describe("Remix Jam 2026 routes", () => {
         `data-rmx-target="${ticketModalConfig.frameName}"`,
       );
       // The native disabled attribute protects checkout even before hydration.
-      expect(html).toMatch(/<button[^>]*disabled[^>]*type="submit"/);
+      expect(isTicketSubmitDisabled(html)).toBe(true);
       if (frame) {
         expect(html).not.toContain('aria-label="Page navigation"');
       } else {
@@ -215,7 +215,7 @@ describe("Remix Jam 2026 routes", () => {
       expect(response.headers.get(DOCUMENT_REDIRECT_HEADER)).toBe(null);
       let html = await response.text();
       expect(html).toContain("Ticket sales are closed");
-      expect(html).toMatch(/<button[^>]*disabled[^>]*type="submit"/);
+      expect(isTicketSubmitDisabled(html)).toBe(true);
     }
     expect(requests).toEqual([]);
   });
@@ -235,9 +235,22 @@ describe("Remix Jam 2026 routes", () => {
     );
     let html = await response.text();
     expect(html).not.toContain("will be applied at checkout");
-    expect(html).toMatch(/<button[^>]*disabled[^>]*type="submit"/);
+    expect(isTicketSubmitDisabled(html)).toBe(true);
   });
 });
+
+// Checks the native disabled attribute on the ticket form's submit button
+// regardless of how the renderer orders attributes.
+function isTicketSubmitDisabled(html: string) {
+  let form = html.match(
+    /<form\b[^>]*action="\/jam\/2026\/ticket"[\s\S]*?<\/form>/,
+  )?.[0];
+  let submitButton = form
+    ?.match(/<button\b[^>]*>/g)
+    ?.find((tag) => /\stype="submit"/.test(tag));
+  expect(submitButton).toBeDefined();
+  return /\sdisabled(?=[\s=>])/.test(submitButton!);
+}
 
 function appUrl(route: { href(): string }, search = "") {
   return new URL(`${route.href()}${search}`, "http://localhost:3000");

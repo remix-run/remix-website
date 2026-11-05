@@ -9,10 +9,7 @@ import { CACHE } from "../../../utils/cache-control.ts";
 import type { AppRenderer } from "../../../middleware/render.ts";
 import { routes } from "../../../routes.ts";
 import { getNewsletterSubscriptionStatus } from "../../newsletter/subscription.tsx";
-import {
-  resolveJam2026Discount,
-  type Jam2026Discount,
-} from "./discount-code.ts";
+import { getJam2026DiscountCookieUpdate } from "./discount-code.ts";
 import { Jam2026TicketsModalFrame } from "./public/tickets-modal.tsx";
 import { Jam2026NewsletterSignup } from "./public/newsletter-signup.tsx";
 import { Jam2026HomePage } from "./home-page.tsx";
@@ -22,7 +19,7 @@ import {
   serializeJam2026ThemePreference,
 } from "./theme-preference.ts";
 import {
-  createTicketCheckout,
+  createClosedTicketCheckout,
   type Jam2026TicketCheckout,
 } from "./ticket-checkout.ts";
 
@@ -69,14 +66,12 @@ export default createController(routes.jam.y2026, {
  */
 export async function renderJam2026Page({
   cacheControl,
-  discount,
   render,
   request,
   status = 200,
   ticketCheckout,
 }: {
   cacheControl?: string;
-  discount?: Jam2026Discount;
   render: AppRenderer;
   request: Request;
   status?: number;
@@ -84,7 +79,7 @@ export async function renderJam2026Page({
 }) {
   let requestUrl = new URL(request.url);
 
-  discount ??= await resolveJam2026Discount(request);
+  let discountCookie = await getJam2026DiscountCookieUpdate(request);
   let ticketsModalOpen =
     requestUrl.pathname === routes.jam.y2026.ticket.index.href();
   let isTicketsFrameRequest =
@@ -92,18 +87,14 @@ export async function renderJam2026Page({
   let isServerResolvedFrame =
     request.headers.get("x-remix-ssr-frame") === "true";
   let theme = await getJam2026ThemePreference(request.headers.get("cookie"));
-  // Conference-day sales are closed, regardless of Shopify inventory.
-  // Do not fetch products or create discount-validation carts for this page.
-  if (ticketsModalOpen) {
-    ticketCheckout ??= createTicketCheckout({ product: null });
-  }
+  if (ticketsModalOpen) ticketCheckout ??= createClosedTicketCheckout();
 
   // Never let a shared cache store a response that hands out a Set-Cookie.
   let headers = new SuperHeaders({
-    cacheControl: discount.setCookie ? CACHE.PRIVATE : cacheControl,
+    cacheControl: discountCookie ? CACHE.PRIVATE : cacheControl,
     vary: ["Cookie", "x-remix-target", "x-remix-ssr-frame"],
   });
-  if (discount.setCookie) headers.append("Set-Cookie", discount.setCookie);
+  if (discountCookie) headers.append("Set-Cookie", discountCookie);
 
   let responseInit = { status, headers };
 
