@@ -16,6 +16,8 @@ Keep the Remix 3 website implementation lean, stable, and behaviorally aligned w
 - **Production / `pnpm run preview`** — runs the same TypeScript server entry as development (`server.ts`) through `remix/node-tsx`; there is no separate Vite SSR bundle.
 - **HMR / `pnpm run hmr`** - runs the server in development mode with HMR enabled, for use during heavy UI iteration.
 - HTML compression must flush streamed chunks for both gzip/deflate and Brotli; otherwise pending server content can delay the initial document.
+- **Cold starts** — with fingerprinting on, rendering a transformed image URL runs the transform. `warm-image-cache.ts` fills the transform cache during `docker build` (`ASSET_FILE_CACHE_DIR`/`ASSET_FILE_CACHE_KEY` point production at it); keep it free of `app/router.ts` imports, since the build has no production secrets. In production, `server.ts` calls `warmServer()` from `app/utils/warm-up.ts` to render the busiest pages before listening, so Fly doesn't route traffic until in-memory caches are warm. Any new route that renders `getWebpHref` images for many files should be covered by the warm-image script.
+- **Deploy purge** — the production workflow hard-purges the `documents` and `static-assets` surrogate keys. Don't switch to soft purges: with Fastly shielding, an edge can re-cache a soft-purged shield copy as fresh, serving old HTML that references asset fingerprints the new machines can't serve. Fingerprinted `/assets/*` responses carry no surrogate key and are never purged, and asset 404s must stay uncacheable.
 
 ## Keep These Non-Obvious Invariants
 
@@ -64,7 +66,7 @@ Remaining differences vs the previous production site (small, shippable items):
 - **Link prefetch parity**: Only links to pages sent with `CACHE.PREFETCHABLE_DOCUMENT` (`public, max-age=5`) use `data-rmx-prefetch="intent"`: blog posts, the newsletter archive, and newsletter issues. The click after a prefetch then reuses the HTML (about 160 ms faster at a 150 ms RTT). Prefetching a `max-age=0` document measured no faster and downloads its HTML twice, so the home, blog index, and Jam links do not prefetch. Never use `private` for this: Fastly passes `private` responses to the origin.
 - **Analytics on in-app transitions**: Verify one pageview per navigation when using client-side navigation.
 - **Client navigation shape**: Keep Jam on top-level client navigation unless a future route needs an independently updating region.
-- **Homepage Markdown cache verification**: After deployment, alternate HTML and `Accept: text/markdown` requests to `/` and verify independent warm Fastly HITs with `Vary: Accept`. `/index.md` always returns Markdown. The production workflow's `documents` purge must clear the old HTML objects that predate negotiation.
+- **Homepage Markdown cache verification**: After deployment, alternate HTML and `Accept: text/markdown` requests to `/` and verify independent warm Fastly HITs with `Vary: Accept`. `/index.md` always returns Markdown.
 
 ## E2E Gotchas (Playwright)
 

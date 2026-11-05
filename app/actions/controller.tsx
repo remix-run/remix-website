@@ -18,7 +18,15 @@ export default createController(routes, {
   actions: {
     async assets({ request }) {
       let response = await assets.fetch(request);
-      return response ?? new Response("Not found", { status: 404 });
+      // During a rolling deploy, one machine can 404 a fingerprint that the
+      // other machine just rendered. Keep that 404 out of Fastly.
+      return (
+        response ??
+        new Response("Not found", {
+          status: 404,
+          headers: { "Cache-Control": CACHE.PRIVATE },
+        })
+      );
     },
 
     blogOgImage: blogOgImageAction,
