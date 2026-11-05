@@ -76,14 +76,6 @@ const KEEPSAKES = [
   },
 ] satisfies Keepsake[];
 
-type DragSession = {
-  id: KeepsakeId;
-  element: HTMLElement;
-  pointerId: number;
-  start: { x: number; y: number };
-  abort: AbortController;
-};
-
 export let JamKeepsakes = clientEntry(
   import.meta.url,
   function JamKeepsakes(handle: Handle) {
@@ -91,201 +83,148 @@ export let JamKeepsakes = clientEntry(
     for (let [index, keepsake] of KEEPSAKES.entries()) {
       order[keepsake.id] = index + 1;
     }
-    let interacted: Partial<Record<KeepsakeId, boolean>> = {};
-    let translate: Partial<Record<KeepsakeId, { x: number; y: number }>> = {};
-    let drag: DragSession | null = null;
-
-    let getTranslate = (id: KeepsakeId) => translate[id] ?? { x: 0, y: 0 };
-
-    let endDragSession = () => {
-      if (!drag) return;
-      try {
-        drag.element.releasePointerCapture(drag.pointerId);
-      } catch {
-        /* already released or capture never applied */
-      }
-      drag.abort.abort();
-      drag = null;
-      handle.update();
-    };
-
-    let handleMove = (e: PointerEvent) => {
-      if (!drag || e.pointerId !== drag.pointerId) {
-        return;
-      }
-
-      let tx = e.clientX - drag.start.x;
-      let ty = e.clientY - drag.start.y;
-      translate[drag.id] = { x: tx, y: ty };
-      drag.element.style.transform = `translate(${tx}px, ${ty}px)`;
-    };
-
-    let handleStart = (
-      e: Dispatched<PointerEvent, HTMLDivElement>,
-      id: KeepsakeId,
-    ) => {
-      let el = e.currentTarget;
-      let t = getTranslate(id);
-      drag = {
-        id,
-        element: el,
-        pointerId: e.pointerId,
-        start: { x: e.clientX - t.x, y: e.clientY - t.y },
-        abort: new AbortController(),
-      };
-
-      try {
-        el.setPointerCapture(e.pointerId);
-      } catch {
-        /* element may not support capture in edge cases */
-      }
-
-      interacted[id] = true;
-      moveKeepsakeToFront(id, order);
-      handle.update();
-
-      let { signal } = drag.abort;
-      el.addEventListener("pointermove", handleMove, { signal });
-      el.addEventListener("pointerup", endDragSession, { signal });
-      el.addEventListener("pointercancel", endDragSession, { signal });
-    };
-
-    handle.signal.addEventListener(
-      "abort",
-      () => {
-        endDragSession();
-      },
-      { once: true },
-    );
 
     return () => (
       <div mix={css({ isolation: "isolate" })}>
-        {KEEPSAKES.map((keepsake) => {
-          let t = getTranslate(keepsake.id);
-          let isActiveDrag = drag?.id === keepsake.id;
-          let showJiggle = keepsake.shouldJiggle && !interacted[keepsake.id];
-          return (
-            <div
-              key={keepsake.id}
-              mix={css({ position: "relative" })}
-              style={{ zIndex: order[keepsake.id] }}
-            >
-              <div
-                style={{
-                  transform: `translate(${t.x}px, ${t.y}px)`,
-                  animationDelay: keepsake.jiggleDelay
-                    ? `${keepsake.jiggleDelay}ms`
-                    : undefined,
-                }}
-                mix={
-                  showJiggle
-                    ? [
-                        keepsakeStyle,
-                        keepsakePositionStyles[keepsake.id],
-                        isActiveDrag ? draggingStyle : draggableStyle,
-                        css({
-                          animation:
-                            "jam-2025-keepsake-jiggle 3s cubic-bezier(0.99, 0.78, 0.72, 1.04) infinite forwards",
-                          "@keyframes jam-2025-keepsake-jiggle": {
-                            "0%, 91%, 100%": { transform: "rotate(0deg)" },
-                            "94%": { transform: "rotate(-3deg)" },
-                            "97%": { transform: "rotate(3deg)" },
-                          },
-                          "@media (prefers-reduced-motion: reduce)": {
-                            animation: "none",
-                          },
-                        }),
-                        on("pointerdown", (event) => {
-                          if (!event.isPrimary) return;
-                          if (
-                            event.pointerType === "mouse" &&
-                            event.button !== 0
-                          )
-                            return;
-                          handleStart(event, keepsake.id);
-                        }),
-                      ]
-                    : [
-                        keepsakeStyle,
-                        keepsakePositionStyles[keepsake.id],
-                        isActiveDrag ? draggingStyle : draggableStyle,
-                        on("pointerdown", (event) => {
-                          if (!event.isPrimary) return;
-                          if (
-                            event.pointerType === "mouse" &&
-                            event.button !== 0
-                          )
-                            return;
-                          handleStart(event, keepsake.id);
-                        }),
-                      ]
-                }
-              >
-                <div
-                  mix={css({
-                    height: "100%",
-                    width: "100%",
-                    transform: "rotate(var(--rotate))",
-                    transition:
-                      "transform 0.3s cubic-bezier(0, 1.5, 0.67, 1.06)",
-                    willChange: "transform",
-                    "@media (hover: hover)": {
-                      "&:hover": {
-                        transform:
-                          "rotate(calc(var(--rotate) + var(--hover-rotate)))",
-                      },
-                    },
-                    "@media (prefers-reduced-motion: reduce)": {
-                      transition: "none",
-                    },
-                  })}
-                >
-                  <div
-                    mix={
-                      keepsake.hasBorder
-                        ? [
-                            keepsakeFrameStyle,
-                            css({
-                              border: `6px solid ${jamColors.white}`,
-                              borderRadius: "4px",
-                              [breakpointMedia.md]: { borderWidth: "16px" },
-                            }),
-                          ]
-                        : keepsakeFrameStyle
-                    }
-                  >
-                    <img
-                      src={keepsake.src}
-                      alt={keepsake.alt}
-                      draggable={false}
-                      mix={css({
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      })}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {KEEPSAKES.map((keepsake) => (
+          <div
+            key={keepsake.id}
+            mix={css({ position: "relative" })}
+            style={{ zIndex: order[keepsake.id] }}
+          >
+            <DraggableKeepsake
+              keepsake={keepsake}
+              onGrab={() => {
+                moveToFront(order, keepsake.id);
+                handle.update();
+              }}
+            />
+          </div>
+        ))}
       </div>
     );
   },
 );
 
-function moveKeepsakeToFront(
-  id: KeepsakeId,
-  order: Record<KeepsakeId, number>,
+type DragSession = {
+  element: HTMLElement;
+  pointerId: number;
+  start: { x: number; y: number };
+  abort: AbortController;
+};
+
+function DraggableKeepsake(
+  handle: Handle<{ keepsake: Keepsake; onGrab: () => void }>,
+) {
+  let interacted = false;
+  let offset = { x: 0, y: 0 };
+  let drag: DragSession | null = null;
+
+  let endDrag = () => {
+    if (!drag) return;
+    try {
+      drag.element.releasePointerCapture(drag.pointerId);
+    } catch {
+      /* already released or capture never applied */
+    }
+    drag.abort.abort();
+    drag = null;
+    handle.update();
+  };
+
+  let moveDrag = (event: PointerEvent) => {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+
+    offset = {
+      x: event.clientX - drag.start.x,
+      y: event.clientY - drag.start.y,
+    };
+    drag.element.style.transform = `translate(${offset.x}px, ${offset.y}px)`;
+  };
+
+  let startDrag = (event: Dispatched<PointerEvent, HTMLDivElement>) => {
+    if (!event.isPrimary) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    let element = event.currentTarget;
+    drag = {
+      element,
+      pointerId: event.pointerId,
+      start: { x: event.clientX - offset.x, y: event.clientY - offset.y },
+      abort: new AbortController(),
+    };
+
+    try {
+      element.setPointerCapture(event.pointerId);
+    } catch {
+      /* element may not support capture in edge cases */
+    }
+
+    interacted = true;
+    handle.props.onGrab();
+    handle.update();
+
+    let { signal } = drag.abort;
+    element.addEventListener("pointermove", moveDrag, { signal });
+    element.addEventListener("pointerup", endDrag, { signal });
+    element.addEventListener("pointercancel", endDrag, { signal });
+  };
+
+  handle.signal.addEventListener("abort", endDrag, { once: true });
+
+  return () => {
+    let { keepsake } = handle.props;
+    let showJiggle = keepsake.shouldJiggle && !interacted;
+    return (
+      <div
+        style={{
+          transform: `translate(${offset.x}px, ${offset.y}px)`,
+          animationDelay: keepsake.jiggleDelay
+            ? `${keepsake.jiggleDelay}ms`
+            : undefined,
+        }}
+        mix={[
+          keepsakeStyle,
+          keepsakePositionStyles[keepsake.id],
+          drag ? draggingStyle : draggableStyle,
+          showJiggle && jiggleStyle,
+          on("pointerdown", startDrag),
+        ]}
+      >
+        <div mix={rotateStyle}>
+          <div
+            mix={
+              keepsake.hasBorder
+                ? [keepsakeFrameStyle, borderedFrameStyle]
+                : keepsakeFrameStyle
+            }
+          >
+            <img
+              src={keepsake.src}
+              alt={keepsake.alt}
+              draggable={false}
+              mix={imageStyle}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+}
+
+/** Raises `id` to the top of a 1-based stacking order, shifting the ones above it down. */
+export function moveToFront<Id extends string>(
+  order: Record<Id, number>,
+  id: Id,
 ) {
   let currentIndex = order[id];
-  for (let keepsake of KEEPSAKES) {
-    if (order[keepsake.id] > currentIndex) {
-      order[keepsake.id]--;
+  let ids = Object.keys(order) as Id[];
+  for (let other of ids) {
+    if (order[other] > currentIndex) {
+      order[other]--;
     }
   }
-  order[id] = KEEPSAKES.length;
+  order[id] = ids.length;
 }
 
 let keepsakeStyle = css({
@@ -297,7 +236,48 @@ let keepsakeStyle = css({
 let draggableStyle = css({ cursor: "grab" });
 let draggingStyle = css({ cursor: "grabbing" });
 
+let jiggleStyle = css({
+  animation:
+    "jam-2025-keepsake-jiggle 3s cubic-bezier(0.99, 0.78, 0.72, 1.04) infinite forwards",
+  "@keyframes jam-2025-keepsake-jiggle": {
+    "0%, 91%, 100%": { transform: "rotate(0deg)" },
+    "94%": { transform: "rotate(-3deg)" },
+    "97%": { transform: "rotate(3deg)" },
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    animation: "none",
+  },
+});
+
+let rotateStyle = css({
+  height: "100%",
+  width: "100%",
+  transform: "rotate(var(--rotate))",
+  transition: "transform 0.3s cubic-bezier(0, 1.5, 0.67, 1.06)",
+  willChange: "transform",
+  "@media (hover: hover)": {
+    "&:hover": {
+      transform: "rotate(calc(var(--rotate) + var(--hover-rotate)))",
+    },
+  },
+  "@media (prefers-reduced-motion: reduce)": {
+    transition: "none",
+  },
+});
+
 let keepsakeFrameStyle = css({ width: "100%", height: "100%" });
+
+let borderedFrameStyle = css({
+  border: `6px solid ${jamColors.white}`,
+  borderRadius: "4px",
+  [breakpointMedia.md]: { borderWidth: "16px" },
+});
+
+let imageStyle = css({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+});
 
 let keepsakePositionStyles: Record<KeepsakeId, ReturnType<typeof css>> = {
   poster: css({
