@@ -4,7 +4,7 @@ import * as coerce from "remix/data-schema/coerce";
 import * as f from "remix/data-schema/form-data";
 import { css, type Handle } from "remix/component";
 
-import { getProduct, MAX_QUANTITY } from "../../../../data/jam-storefront.ts";
+import { MAX_QUANTITY, type Product } from "../../../../data/jam-storefront.ts";
 import { JamDocument } from "../document.tsx";
 import {
   InfoText,
@@ -22,7 +22,8 @@ export function Jam2025TicketPage(
   handle: Handle<{
     formError?: string;
     initialQuantity: number;
-    product: Jam2025TicketProduct;
+    /** Null when Storefront can't load the ticket; renders as sold out. */
+    product: Product | null;
     requestUrl: string;
   }>,
 ) {
@@ -70,9 +71,9 @@ export function Jam2025TicketPage(
         <JamTicketPurchase
           initialQuantity={handle.props.initialQuantity}
           maxQuantity={MAX_QUANTITY}
-          price={handle.props.product.price}
-          productId={handle.props.product.productId}
-          isSoldOut={!handle.props.product.availableForSale}
+          price={handle.props.product?.price ?? "399.00"}
+          productId={handle.props.product?.productId ?? ""}
+          isSoldOut={!handle.props.product?.availableForSale}
           error={handle.props.formError}
         />
 
@@ -84,8 +85,6 @@ export function Jam2025TicketPage(
     </JamDocument>
   );
 }
-
-type Jam2025TicketProduct = Awaited<ReturnType<typeof getProduct>>;
 
 export function parseTicketPurchaseSubmission(formData: FormData) {
   let result = s.parseSafe(ticketPurchaseSubmissionSchema, formData);

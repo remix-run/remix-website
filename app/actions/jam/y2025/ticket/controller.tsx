@@ -29,7 +29,9 @@ export default createController(routes.jam.y2025.ticket, {
       } else {
         initialQuantity = submission.value.quantity;
 
-        if (submission.value.productId !== product.productId) {
+        if (!product) {
+          formError = "Ticket checkout is unavailable right now";
+        } else if (submission.value.productId !== product.productId) {
           formError = "Invalid ticket selection";
         } else {
           let cart = await createCart({
